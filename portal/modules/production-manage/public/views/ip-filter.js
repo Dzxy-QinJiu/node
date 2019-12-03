@@ -13,6 +13,7 @@ import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import AddIpForm from './add-ip-form';
 import SavedTips from 'CMP_DIR/saved-tips';
+import production_manager_privilegeConfig from '../privilege-config';
 
 class IpFilter extends React.Component {
     constructor(props) {
@@ -88,7 +89,7 @@ class IpFilter extends React.Component {
                     {Intl.get('product.global.filter.ip.title', '全部产品统计分析时过滤以下IP：')}
                 </span>
                 {
-                    hasPrivilege('CREATE_CONFIG_IP') ? (
+                    hasPrivilege(production_manager_privilegeConfig.PRODUCTS_MANAGE) ? (
                         this.state.isShowAddIp ? null : (
                             <span className="operate-btn" onClick={this.handleShowAddIp}>
                                 <i className="iconfont icon-plus"></i>

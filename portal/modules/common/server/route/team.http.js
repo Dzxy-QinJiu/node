@@ -3,7 +3,7 @@
  */
 
 'use strict';
-
+import privilegeConst_common from '../../public/privilege-const';
 module.exports = {
     module: 'common/server/action/team',
     routes: [{
@@ -12,7 +12,8 @@ module.exports = {
         'handler': 'getSalesTeamMemberList',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_TEAM]
     }, {
         'method': 'get',
         'path': '/rest/team/sales_team_list',
@@ -20,7 +21,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_TEAM]
     }, {
         'method': 'get',
         'path': '/rest/team/member/count/list',
@@ -28,7 +29,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_TEAM]
     },{
         'method': 'get',
         'path': '/rest/team/my_team/tree',
@@ -36,6 +37,6 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_TEAM]
     }]
 };

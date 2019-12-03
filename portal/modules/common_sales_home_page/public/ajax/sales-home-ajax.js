@@ -1,4 +1,6 @@
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
+import commonSalesHomePrivilegeConst from '../privilege-const';
 //获取今日电话统计数据
 var getPhoneTotalAjax;
 exports.getPhoneTotal = function(reqData) {
@@ -66,7 +68,7 @@ exports.getTodayContactCustomer = function(rangParams, pageSize, sorter) {
         rangParams: JSON.stringify(rangParams),
     };
     let type = 'user';
-    if(hasPrivilege('CUSTOMER_ALL')){
+    if(hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL)){
         type = 'manager';
     }
     getTodayContactCustomerAjax = $.ajax({
@@ -107,9 +109,9 @@ exports.getScheduleList = function(queryObj) {
 };
 //最近登录的客户
 const AUTHS = {
-    'GETALL': 'CUSTOMER_ALL',
-    'UPDATE_ALL': 'CUSTOMER_MANAGER_UPDATE_ALL',
-    'TRANSFER_MANAGER': 'CRM_MANAGER_TRANSFER'
+    'GETALL': crmPrivilegeConst.CUSTOMER_ALL,
+    'UPDATE_ALL': crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL,
+    'TRANSFER_MANAGER': crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
 };
 //最近登录的客户
 exports.getRecentLoginCustomers = function(condition, rangParams, pageSize, pageNum, sorter) {
@@ -202,7 +204,7 @@ exports.getCrmUserList = function(reqData) {
 exports.getExpireCustomer = function(data) {
     var Deferred = $.Deferred();
     //普通销售，销售领导和舆情秘书用common，其他的用manager
-    let type = hasPrivilege('KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER') ? 'manager' : 'common';
+    let type = hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL) ? 'manager' : 'common';
     $.ajax({
         url: '/rest/get_expire_customer/' + type,
         dataType: 'json',
@@ -323,7 +325,7 @@ exports.getClueCustomerList = function(constObj, unexist_fields) {
         data.lastClueId = constObj.id;
     }
     var type = 'user';
-    if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+    if (hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
         type = 'manager';
     }
     var Deferred = $.Deferred();

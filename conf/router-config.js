@@ -4,6 +4,7 @@
  * Created by liwenjun on 2018/12/19.
  */
 const MODULE_PATH = 'modules/';
+
 let routers = [
     {
         id: 'HOME_PAGE', //唯一标识，首页
@@ -12,7 +13,7 @@ let routers = [
         isNotShow: 'true',//不在菜单中展示
         component: `${MODULE_PATH}home_page/public`,
         //有这个权限，才显示入口图标
-        showPrivileges: ['USER_INFO_USER']
+        showPrivileges: ['BASE_QUERY_PERMISSION_MEMBER']
     },
     {
         id: 'ClUE_CUSTOMER',
@@ -21,7 +22,7 @@ let routers = [
         component: `${MODULE_PATH}clue_customer/public`,
         shortName: 'crm.sales.clue',//线索
         //有这个权限，才显示入口图标
-        showPrivileges: ['CLUECUSTOMER_VIEW']
+        showPrivileges: ['CURTAO_CRM_LEAD_QUERY_ALL', 'CURTAO_CRM_LEAD_QUERY_SELF']
     },
     {
         id: 'CRM',
@@ -39,7 +40,7 @@ let routers = [
         component: `${MODULE_PATH}deal_manage/public`,
         shortName: 'user.apply.detail.order',//订单
         //有这个权限，才显示入口图标
-        showPrivileges: ['CRM_MANAGER_LIST_SALESOPPORTUNITY','CRM_USER_LIST_SALESOPPORTUNITY']
+        showPrivileges: ['CRM_MANAGER_LIST_SALESOPPORTUNITY','SALESOPPORTUNITY_QUERY']
     },
     {
         id: 'CALL_RECORD',
@@ -48,7 +49,7 @@ let routers = [
         component: `${MODULE_PATH}call_record/public`,
         shortName: 'menu.shortName.call',//通话
         //有这个权限，才显示入口图标
-        showPrivileges: ['CUSTOMER_CALLRECORD_SALE_ONLY']
+        showPrivileges: ['CURTAO_CRM_TRACE_QUERY_ALL', 'CURTAO_CRM_TRACE_QUERY_SELF']
     },
     {
         id: 'APP_USER_MANAGE',//唯一标识
@@ -61,7 +62,7 @@ let routers = [
             routePath: '/users/list',
             component: `${MODULE_PATH}app_user_manage/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['APP_USER_LIST']
+            showPrivileges: ['APP_USER_QUERY']
         }, {
             id: 'USER_AUDIT_LOG', // 用户审计日志的唯一标识
             name: 'menu.appuser.auditlog',//操作记录
@@ -75,7 +76,7 @@ let routers = [
             routePath: '/users/active',
             component: `${MODULE_PATH}app_user_manage/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['USER_TIME_LINE']
+            showPrivileges: ['APP_USER_QUERY']
         }]
     },
     {
@@ -91,8 +92,8 @@ let routers = [
                 component: `${MODULE_PATH}analysis/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: [
-                    'CUSTOMER_ANALYSIS_COMMON',
-                    'CUSTOMER_ANALYSIS_MANAGER',
+                    'CURTAO_CRM_CUSTOMER_ANALYSIS_SELF',
+                    'CURTAO_CRM_CUSTOMER_ANALYSIS_ALL',
                 ]
             },
             {
@@ -108,8 +109,8 @@ let routers = [
                         routePath: '/analysis/report/weekly',
                         component: `${MODULE_PATH}weekly_report/public`,
                         showPrivileges: [
-                            'KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER',
-                            'KETAO_SALES_TEAM_WEEKLY_REPORTS_COMMON',
+                            'CURTAO_CRM_CUSTOMER_ANALYSIS_ALL',
+                            'CURTAO_CRM_CUSTOMER_ANALYSIS_SELF'
                         ],
                     },
                     //月报统计
@@ -119,8 +120,8 @@ let routers = [
                         routePath: '/analysis/report/monthly',
                         component: `${MODULE_PATH}monthly-report/public`,
                         showPrivileges: [
-                            'CALLRECORD_ASKFORLEAVE_QUERY_MANAGER',
-                            'CALLRECORD_ASKFORLEAVE_QUERY_USER',
+                            'CURTAO_CRM_CUSTOMER_ANALYSIS_ALL',
+                            'CURTAO_CRM_CUSTOMER_ANALYSIS_SELF'
                         ],
                     },
                     //销售报告
@@ -131,8 +132,8 @@ let routers = [
                         component: `${MODULE_PATH}sales-report/public`,
                         //有这个权限，才显示入口图标
                         showPrivileges: [
-                            'CURTAO_SALES_REPORTS_COMMON',
-                            'CURTAO_SALES_REPORTS_MANAGER',
+                            'CRM_CONTRACT_SALES_REPORTS_MANAGER',
+                            'CRM_CONTRACT_SALES_REPORTS_COMMON'
                         ]
                     },
                 ],
@@ -147,7 +148,7 @@ let routers = [
         component: `${MODULE_PATH}common_sales_home_page/public`,
         otherAuth: 'isCommonSale',
         //有这个权限，才显示入口图标
-        showPrivileges: ['GET_MY_CALL_RECORD', 'GET_ALL_CALL_RECORD']// 获取我的电话统计记录
+        showPrivileges: ['CURTAO_CRM_CALLRECORD_STATISTICS']// 获取我的电话统计记录
     },
     {
         id: 'SALES_HOME_PAGE', //唯一标识，销售首页
@@ -156,7 +157,7 @@ let routers = [
         isNotShow: 'true',//不在菜单中展示
         component: `${MODULE_PATH}sales_home_page/public`,
         //有这个权限，才显示入口图标
-        showPrivileges: ['GET_MY_CALL_RECORD', 'GET_ALL_CALL_RECORD']// 获取我的电话统计记录
+        showPrivileges: ['CURTAO_CRM_CALLRECORD_STATISTICS']// 获取我的电话统计记录
     },
     {
         id: 'SCHEDULE_MANAGEMENT',
@@ -178,7 +179,7 @@ let routers = [
             routePath: '/apply/users',
             component: `${MODULE_PATH}user_apply/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['APP_USER_APPLY_LIST']
+            showPrivileges: ['USERAPPLY_BASE_PERMISSION']
 
         }, {
             id: 'SALES_BUSSINESS_APPLY_MANAGEMENT',
@@ -186,35 +187,35 @@ let routers = [
             routePath: '/apply/oppotunities',
             component: `${MODULE_PATH}sales_opportunity/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_BUSINESSOPPO_MANAGE']
+            showPrivileges: ['MEMBER_BUSINESSOPPO_APPLY_APPROVE']
         }, {
             id: 'BUSSINESS_APPLY_MANAGEMENT',
             name: 'leave.apply.add.leave.apply',//出差申请
             routePath: '/apply/business',
             component: `${MODULE_PATH}business-apply/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['BUSINESS_TRIP_MANAGE']
+            showPrivileges: ['BUSINESS_TRIP_APPLY_APPROVE']
         }, {
             id: 'LEAVE_APPLY_MANAGEMENT',
             name: 'leave.apply.leave.application',//请假申请
             routePath: '/apply/leave',
             component: `${MODULE_PATH}leave-apply/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_LEAVE_MANAGE']
+            showPrivileges: ['MEMBER_LEAVE_APPLY_APPROVE']
         }, {
             id: 'REPORTSEND_APPLY_MANAGEMENT',
             name: 'apply.approve.lyrical.report',//舆情报告
             routePath: '/apply/reports',
             component: `${MODULE_PATH}report_send/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_OPINION_MANAGE']
+            showPrivileges: ['MEMBER_REPORT_APPLY_APPROVE']
         }, {
             id: 'DOCUMENTWRITING_APPLY_MANAGEMENT',
             name: 'apply.approve.document.writing',//文件撰写
             routePath: '/apply/documents',
             component: `${MODULE_PATH}document_write/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
+            showPrivileges: ['MEMBER_REPORT_APPLY_APPROVE']
         },
         {
             //todo 待修改的！！！！！！
@@ -223,7 +224,7 @@ let routers = [
             routePath: '/apply/visits',
             component: `${MODULE_PATH}self_setting/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
+            showPrivileges: ['MEMBER_REPORT_APPLY_APPROVE']
         }, {
             //todo 待修改的！！！！！！
             id: 'MY_DOMAIN_APPLY_MANAGEMENT',
@@ -231,7 +232,7 @@ let routers = [
             routePath: '/apply/domain-name',
             component: `${MODULE_PATH}domain_application/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
+            showPrivileges: ['MEMBER_REPORT_APPLY_APPROVE']
         }
         ]
     },
@@ -243,7 +244,7 @@ let routers = [
         shortName: 'menu.notification',//通知
         bottom: true,
         //有这个权限，才显示入口图标
-        showPrivileges: ['NOTIFICATION_SYSTEM_LIST']
+        showPrivileges: ['CUSTOMER_NOTICE_MANAGE']
     },
     {
         id: 'BACKGROUND_MANAGEMENT',//唯一标识
@@ -291,7 +292,7 @@ let routers = [
                 routePath: '/settings/industry',
                 component: `${MODULE_PATH}industry/public`,
                 //有这个权限，才显示入口图标
-                showPrivileges: ['CREATE_CONFIG_INDUSTRY']
+                showPrivileges: ['ORGANIZATION_CONFIG']
             },
             {
                 id: 'COMPETE',
@@ -343,23 +344,24 @@ let routers = [
             routePath: '/user-preference/info',
             component: `${MODULE_PATH}user_info/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['USER_INFO_USER']
+            showPrivileges: ['BASE_QUERY_PERMISSION_MEMBER']
         }, {
             id: 'USER_PASSWORD',
             name: 'menu.user.password',//密码管理
             routePath: '/user-preference/password',
             component: `${MODULE_PATH}user_password/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['USER_INFO_PWD']
+            showPrivileges: ['USER_INFO_UPDATE']
         }]
     },
-    //todo 申请审批代码优化后会去掉
+    // 没有配置的申请审批流程时的提示页面，todo 申请审批代码优化后会去掉
     {
         id: 'APPLICATION_APPLY_MANAGEMENT1',
         name: 'crm.109',//申请
         routePath: '/apply',
         shortName: 'crm.109',//申请
         component: `${MODULE_PATH}/setting_workflow_tip/public`,
+        showPrivileges: ['WORKFLOW_BASE_PERMISSION'],
     },
     {
         id: 'NO_MATCH',

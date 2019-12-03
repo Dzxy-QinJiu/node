@@ -5,6 +5,8 @@
 
 'use strict';
 
+import privilegeConst_user_info from '../../public/privilege-config';
+
 /**
  * 请求路径 - login
  */
@@ -31,7 +33,8 @@ module.exports = {
         'handler': 'activeUserEmail',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': []
     }, {
         'method': 'put',
         'path': '/rest/user_info',
@@ -45,14 +48,16 @@ module.exports = {
         'handler': 'setUserLanguage',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': [privilegeConst_user_info.CURTAO_USER_CONFIG]
     }, {
         'method': 'put',
         'path': '/rest/user_info_pwd',
         'handler': 'editUserInfoPwd',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': [privilegeConst_user_info.USER_INFO_UPDATE]
     }, {
         'method': 'get',
         'path': '/rest/user_info_pwd',
@@ -68,7 +73,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'GET_MANAGED_REALM', 'GET_MEMBER_SELF_INFO'
+            privilegeConst_user_info.BASE_QUERY_PERMISSION_ORGANIZATION
         ]
     },{
         'method': 'post',
@@ -78,7 +83,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'MEMBER_APPLY_EMAIL_REJECTION'
+            privilegeConst_user_info.CURTAO_USER_CONFIG
         ]
     },{
         'method': 'get',
@@ -88,7 +93,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_PHONE_BINDING'
+            privilegeConst_user_info.USER_INFO_UPDATE
         ]
     },{
         'method': 'put',
@@ -96,7 +101,8 @@ module.exports = {
         'handler': 'bindUserInfoPhone',
         'passport': {
             'needLogin': true
-        }
+        },
+        privileges: [privilegeConst_user_info.USER_INFO_UPDATE]
     }, {
         // 获取用户交易记录
         'method': 'get',

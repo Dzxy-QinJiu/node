@@ -13,6 +13,7 @@ import {Form, Input, Select} from 'antd';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 const FormItem = Form.Item;
 const Option = Select.Option;
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 
 
 class PhoneAddToCustomerForm extends React.Component {
@@ -132,7 +133,7 @@ class PhoneAddToCustomerForm extends React.Component {
 
     getCustomerContacts(customerId) {
         let type = 'user';//CRM_USER_LIST_CONTACTS
-        if (hasPrivilege('CRM_MANAGER_LIST_CONTACTS')) {
+        if (hasPrivilege(crmPrivilegeConst.CRM_MANAGER_LIST_CONTACTS)) {
             type = 'manager';
         }
         this.setState({isLoadingContactList: true});

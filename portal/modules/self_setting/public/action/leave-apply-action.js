@@ -11,6 +11,7 @@ var applyApproveManageAjax = require('../ajax/leave-apply-ajax');
 import {APPLY_TYPE_STATUS_CONST} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import homePagePrivilegeConst from 'MOD_DIR/home_page/public/privilege-const';
 function LeaveApplyActions() {
     this.generateActions(
         'setInitState',
@@ -104,7 +105,7 @@ function getDiffTypeApplyList(that,queryObj,workListArr) {
         }
         //给 自己申请的并且是未通过的审批加上可以撤销的标识
         _.forEach(data.list,(item) => {
-            if (item.status === 'ongoing' && _.get(item,'applicant.user_id') === userData.getUserData().user_id && hasPrivilege('GET_MY_WORKFLOW_LIST')){
+            if (item.status === 'ongoing' && _.get(item,'applicant.user_id') === userData.getUserData().user_id && hasPrivilege(homePagePrivilegeConst.BASE_QUERY_PERMISSION_MEMBER)){
                 item.showCancelBtn = true;
             }
         });

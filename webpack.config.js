@@ -29,7 +29,8 @@ var entry = function () {
     var entryMap = {
         app: ['./portal/public/index'],
         login: ['./portal/public/login'],
-        login_curtao: ['./portal/public/login-curtao']
+        login_curtao: ['./portal/public/login-curtao'],
+        register: ['./portal/public/register']
     };
     //开发模式下并且带test参数时打包测试文件
     if (webpackMode !== 'production' && process.argv.indexOf('test') !== -1) {

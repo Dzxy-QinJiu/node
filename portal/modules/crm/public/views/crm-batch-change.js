@@ -22,6 +22,7 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import crmUtil from '../utils/crm-util';
 import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 import classNames from 'classnames';
+import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 var CrmAction = require('../action/crm-actions');
 const BATCH_OPERATE_TYPE = {
     CHANGE_SALES: 'changeSales',//变更销售人员
@@ -704,7 +705,7 @@ var CrmBatchChange = createReactClass({
         return(
             <Menu onClick={this.handleMenuClick} defaultSelectedKeys={[BATCH_OPERATE_TYPE.CHANGE_TAG]}>
                 {_.map(BATCH_MENU_TYPE, item => {
-                    if (item.key === BATCH_OPERATE_TYPE.CHANGE_SALES && this.isCommonSales()) return null;
+                    if (item.key === BATCH_OPERATE_TYPE.CHANGE_SALES && isCommonSalesOrPersonnalVersion()) return null;
                     return (<Menu.Item key={item.key}>{item.value}</Menu.Item>);
                 })}
             </Menu>

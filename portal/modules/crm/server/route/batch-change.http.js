@@ -1,3 +1,5 @@
+var crmPrivilegeConst = require('../../public/privilege-const').default;
+
 module.exports = {
     module: 'crm/server/action/batch-change-controller',
     routes: [
@@ -8,6 +10,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [crmPrivilegeConst.BASE_QUERY_PERMISSION_TEAM]
         },
         {
             method: 'put',
@@ -16,7 +19,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: ['CUSTOMER_UPDATE', 'CUSTOMER_MANAGER_UPDATE_ALL']
+            privileges: [
+                crmPrivilegeConst.CUSTOMER_UPDATE,
+                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+            ]
         },
         {
             method: 'get',
@@ -24,7 +30,11 @@ module.exports = {
             handler: 'getRecommendTags',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [
+                crmPrivilegeConst.CUSTOMER_ALL,
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS
+            ]
         },
         {
             method: 'get',
@@ -32,7 +42,8 @@ module.exports = {
             handler: 'getIndustries',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: ['BASE_QUERY_PERMISSION_ORGANIZATION']
         }
     ]
 };

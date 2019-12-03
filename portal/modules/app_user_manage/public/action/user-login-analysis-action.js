@@ -7,6 +7,8 @@ var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var ShareObj = require('../util/app-id-share-util');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import UserScoreCommonAjax from '../../../common/public/ajax/user-score';
+import USER_MANAGE_PRIVILEGE from '../privilege-const';
+
 function UserLoginAnalysisAction() {
     this.generateActions(
         'resetState', // 切换用户时，恢复到默认状态
@@ -56,7 +58,7 @@ function UserLoginAnalysisAction() {
                 account_id: searchObj.user_id
             };
             let type = 'self';
-            if (hasPrivilege('USER_ANALYSIS_MANAGER')) {
+            if (hasPrivilege(USER_MANAGE_PRIVILEGE.USER_ANALYSIS_MANAGER)) {
                 type = 'all';
             }
             this.actions.getLoginUserScore(reqData, type);

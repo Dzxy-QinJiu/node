@@ -1,3 +1,6 @@
+import orderPrivilegeConst from '../../public/privilege-const';
+import analysisPrivilegeConst from '../../../analysis/public/privilege-const';
+
 module.exports = {
     module: 'deal_manage/server/action/deal-manage-controller',
     routes: [{
@@ -7,7 +10,10 @@ module.exports = {
         passport: {
             needLogin: true
         },
-        privileges: ['CRM_MANAGER_LIST_SALESOPPORTUNITY', 'CRM_USER_LIST_SALESOPPORTUNITY']
+        privileges: [
+            orderPrivilegeConst.CRM_MANAGER_LIST_SALESOPPORTUNITY,
+            orderPrivilegeConst.SALESOPPORTUNITY_QUERY
+        ]
     }, {
         method: 'post',
         path: '/rest/deal',
@@ -15,7 +21,7 @@ module.exports = {
         passport: {
             needLogin: true
         },
-        privileges: ['SALESOPPORTUNITY_ADD']
+        privileges: [orderPrivilegeConst.SALESOPPORTUNITY_ADD]
     }, {
         method: 'put',
         path: '/rest/deal',
@@ -23,7 +29,7 @@ module.exports = {
         passport: {
             needLogin: true
         },
-        privileges: ['SALESOPPORTUNITY_UPDATE']
+        privileges: [orderPrivilegeConst.SALESOPPORTUNITY_UPDATE]
     }, {
         method: 'delete',
         path: '/rest/deal/:deal_id',
@@ -31,7 +37,7 @@ module.exports = {
         passport: {
             needLogin: true
         },
-        privileges: ['CRM_SALESOPPORTUNITY_DELETE']
+        privileges: [orderPrivilegeConst.CRM_SALESOPPORTUNITY_DELETE]
     }, {
         method: 'get',
         path: '/rest/deal/:type/stage/total_budget',
@@ -39,6 +45,6 @@ module.exports = {
         passport: {
             needLogin: true
         },
-        privileges: []
+        // privileges: [analysisPrivilegeConst.USER_ANALYSIS_COMMON, analysisPrivilegeConst.CUSTOMER_ANALYSIS_MANAGER]
     }]
 };

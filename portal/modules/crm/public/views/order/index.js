@@ -16,6 +16,7 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import classNames from 'classnames';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import { PrivilegeChecker } from 'CMP_DIR/privilege/checker';
+import orderPrivilegeConst from 'MOD_DIR/deal_manage/public/privilege-const';
 //高度常量
 const LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
@@ -24,7 +25,7 @@ const LAYOUT_CONSTANTS = {
     ADD_ORDER_HEIGHHT: 155,//添加订单面板的高度
     TOP_TOTAL_HEIGHT: 30//共xxx条的高度
 };
-const HAS_ADD = 'SALESOPPORTUNITY_ADD';//添加权限的常量
+const HAS_ADD = orderPrivilegeConst.SALESOPPORTUNITY_ADD;//添加权限的常量
 //用户类型的转换对象
 const userTypeMap = {
     '正式用户': Intl.get('common.official', '签约'),
@@ -59,8 +60,8 @@ class OrderIndex extends React.Component {
         if (isMerge) {
             OrderAction.getMergeOrderList(curCustomer);
         } else {
-            let type = 'user';//CRM_USER_LIST_SALESOPPORTUNITY
-            if (hasPrivilege('CRM_MANAGER_LIST_SALESOPPORTUNITY')) {
+            let type = 'user';//orderPrivilegeConst.SALESOPPORTUNITY_QUERY
+            if (hasPrivilege(orderPrivilegeConst.CRM_MANAGER_LIST_SALESOPPORTUNITY)) {
                 type = 'manager';
             }
             OrderAction.setOrderListLoading(true);

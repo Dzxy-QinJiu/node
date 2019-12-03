@@ -1,3 +1,4 @@
+import privilegeConst_common from '../../public/privilege-const';
 module.exports = {
     module: 'common/server/action/user',
     routes: [{
@@ -8,7 +9,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_MEMBER]
     },{
         //根据成员id获取成员信息
         'method': 'get',
@@ -17,13 +18,14 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_MEMBER]
     }, { // 根据角色id，获取启用状态的下成员列表
         'method': 'get',
         'path': '/rest/get/enable/member/by/role',
         'handler': 'getEnableMemberListByRoleId',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': []
     }]
 };

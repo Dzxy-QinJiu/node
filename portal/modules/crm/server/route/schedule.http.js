@@ -1,3 +1,6 @@
+//日程管理
+var crmPrivilegeConst = require('../../public/privilege-const').default;
+
 module.exports = {
     module: 'crm/server/action/schedule-controller',
     routes: [
@@ -8,6 +11,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [crmPrivilegeConst.MEMBER_SCHEDULE_MANAGE]
         },
         {
             method: 'post',
@@ -16,6 +20,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [crmPrivilegeConst.MEMBER_SCHEDULE_MANAGE]
         },
         {
             method: 'put',
@@ -24,6 +29,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [crmPrivilegeConst.MEMBER_SCHEDULE_MANAGE]
         },
         {
             method: 'delete',
@@ -32,6 +38,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [crmPrivilegeConst.MEMBER_SCHEDULE_MANAGE]
         },{
             method: 'put',
             path: '/rest/customer/change/schedule/:scheduleId/:status',
@@ -39,6 +46,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [crmPrivilegeConst.MEMBER_SCHEDULE_MANAGE]
         },
     ]
 };

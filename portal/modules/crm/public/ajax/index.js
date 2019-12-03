@@ -1,5 +1,5 @@
 const hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
-import {AUTHS} from '../utils/crm-util';
+import crmPrivilegeConst from '../privilege-const';
 //添加客户
 let addCustomerAjax = null;
 exports.addCustomer = function(newCus) {
@@ -82,7 +82,7 @@ exports.deleteCustomer = function(id) {
 
 //更新客户（单项修改）
 exports.updateCustomer = function(newCus) {
-    if (hasPrivilege(AUTHS.UPDATE_ALL)) {
+    if (hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL)) {
         newCus.urlType = 'manager';
     } else {
         newCus.urlType = 'user';
@@ -105,8 +105,8 @@ exports.updateCustomer = function(newCus) {
 
 //转出客户
 exports.transferCustomer = function(customer) {
-    let urlType = 'user';// CRM_USER_TRANSFER
-    if (hasPrivilege(AUTHS.TRANSFER_MANAGER)) {
+    let urlType = 'user';// crmPrivilegeConst.CUSTOMER_UPDATE
+    if (hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL)) {
         urlType = 'manager';
     }
     delete customer.type;
@@ -128,7 +128,7 @@ exports.transferCustomer = function(customer) {
 //获取重复的客户列表
 exports.getRepeatCustomerList = function(queryParams) {
     queryParams.type = 'user';
-    if (hasPrivilege(AUTHS.GETALL)) {
+    if (hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL)) {
         queryParams.type = 'manager';
     }
     var Deferred = $.Deferred();
@@ -150,7 +150,7 @@ exports.getRepeatCustomerList = function(queryParams) {
 //通过重复客户的id获取重复的客户列表
 exports.getRepeatCustomersById = function(customerId) {
     let type = 'user';
-    if (hasPrivilege(AUTHS.GETALL)) {
+    if (hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL)) {
         type = 'manager';
     }
     var Deferred = $.Deferred();
@@ -191,7 +191,7 @@ exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
     pageNum = pageNum || 1;
     //没有关注客户置顶时
     sorter = sorter ? sorter : {field: 'id', order: 'ascend'};
-    if (hasPrivilege(AUTHS.GETALL)) {
+    if (hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL)) {
         params.hasManageAuth = true;
     }
     queryCustomerAjax && queryCustomerAjax.abort();

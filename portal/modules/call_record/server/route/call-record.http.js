@@ -3,7 +3,7 @@
  * * 请求路径 - app
  */
 require('../action/call-record-controller');
-
+import call_record_privilegeConst from '../../public/privilege-const';
 module.exports = {
     module: 'call_record/server/action/call-record-controller',
     routes: [{

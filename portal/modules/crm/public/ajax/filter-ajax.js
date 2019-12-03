@@ -1,9 +1,10 @@
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 var appAjaxTrans = require('../../../common/public/ajax/app');
 import ajaxPro from 'MOD_DIR/common/ajaxUtil';
+import crmPrivilegeConst from '../privilege-const';
 function getFilterItemPrivelegeType() {
-    let type = 'user';//CRM_CUSTOMER_FIELD_TERM_USER
-    if (hasPrivilege('CRM_CUSTOMER_FIELD_TERM_MANAGER')) {
+    let type = 'user';//crmPrivilegeConst.CRM_LIST_CUSTOMERS
+    if (hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL)) {
         type = 'manager';
     }
     return type;
@@ -81,10 +82,7 @@ exports.getTagList = function() {
 //获取销售角色列表
 let salesRoleListAjax;
 exports.getSalesRoleList = function() {
-    let type = 'user';//CRM_GET_USER_ROLE
-    if (hasPrivilege('CRM_GET_MANAGER_ROLE')) {
-        type = 'manager';
-    }
+    let type = getFilterItemPrivelegeType();
     salesRoleListAjax && salesRoleListAjax.abort();
     let Deferred = $.Deferred();
     salesRoleListAjax = $.ajax({
@@ -104,10 +102,7 @@ exports.getSalesRoleList = function() {
 };
 //获取负责人列表
 exports.getOwnerList = function() {
-    let type = 'user';//CUSTOMER_USER_GET_USER_NAME
-    if (hasPrivilege('CUSTOMER_MANAGER_GET_USER_NAME')) {
-        type = 'manager';
-    }
+    let type = getFilterItemPrivelegeType();
     let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/crm/owner/' + type,

@@ -1,6 +1,7 @@
 require('./sources/dependence');
 import {storageUtil} from 'ant-utils';
-
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import phonePrivilegConst from './privilege-const';
 var userData = require('./sources/user-data');
 var AppStarter = require('./sources/app-starter');
 var PrivilegeGet = require('./sources/privilege-get');
@@ -72,7 +73,10 @@ function getUserPrivilegeAndStart() {
         AppStarter.init({
             goIndex: false
         });
-        phoneUtil.initPhone(user);
+        //有打电话的权限才初始化电话系统
+        if(hasPrivilege(phonePrivilegConst.PHONE_ACCESS_CALL_OU)){
+            phoneUtil.initPhone(user);
+        }
         //启动socketio接收数据
         !Oplate.hideSomeItem && require('./sources/push').startSocketIo();
     }).fail(function(errorTip) {

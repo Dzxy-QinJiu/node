@@ -12,6 +12,7 @@ import {Link} from 'react-router-dom';
 var crmCustomerAjax = require('MOD_DIR/crm/public/ajax/index');
 var userData = require('../../../../../public/sources/user-data');
 var classNames = require('classnames');
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 
 class CustomerSuggest extends React.Component {
     static defaultProps = {
@@ -289,7 +290,7 @@ class CustomerSuggest extends React.Component {
                     </div>
                 );
             } else {
-                var canCreateCustomer = userData.getUserData().privileges.indexOf('CRM_CUSTOMER_INFO_EDIT') >= 0;
+                var canCreateCustomer = userData.getUserData().privileges.indexOf(crmPrivilegeConst.CUSTOMER_ADD) >= 0;
                 //是否跳转到crm页面添加客户
                 var noJumpToAddCrmPanel = this.props.noJumpToCrm;
                 return (

@@ -11,11 +11,14 @@ import {
     COMMON_OTHER_ITEM,
     OTHER_FILTER_ITEMS
 } from 'PUB_DIR/sources/utils/consts';
-import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import {isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import { sourceClassifyArray } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import { DatePicker } from 'antd';
 const { RangePicker } = DatePicker;
 import Trace from 'LIB_DIR/trace';
+import crmPrivilegeConst from '../privilege-const';
+import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 //行政级别筛选项
 let filterLevelArray = administrativeLevels;
 
@@ -132,7 +135,6 @@ class CrmFilterPanel extends React.Component {
         //获取竞品的列表
         FilterAction.getCompetitorList();
         FilterAction.getIndustries();
-        //负责任人名称列表
         FilterAction.getUserList();
         FilterAction.getFilterProvinces();
         setTimeout(() => {
@@ -365,18 +367,6 @@ class CrmFilterPanel extends React.Component {
                 }))
             },
             {
-                groupName: Intl.get('common.qualified', '合格'),
-                groupId: 'qualify_label',
-                singleSelect: true,
-                data: _.map(qualifiedTagList, x => {
-                    return {
-                        name: x.name,
-                        value: x.value,
-                        selected: x.value && x.value === _.get(this.state, 'condition.qualify_label', '')
-                    };
-                })
-            },
-            {
                 groupName: Intl.get('crm.system.labels', '系统标签'),
                 groupId: 'immutable_labels',
                 data: _.map(this.state.systemTagList, x => {
@@ -432,15 +422,6 @@ class CrmFilterPanel extends React.Component {
                 }))
             },
             {
-                groupName: Intl.get('crm.administrative.level', '行政级别'),
-                groupId: 'administrative_level',
-                data: _.map(filterLevelArray, x => ({
-                    name: x.level,
-                    value: x.id,
-                    selected: x.id && _.indexOf(selectedLevel, x.id) !== -1
-                }))
-            },
-            {
                 groupName: Intl.get('crm.96', '地域'),
                 groupId: 'province',
                 singleSelect: true,
@@ -453,6 +434,33 @@ class CrmFilterPanel extends React.Component {
                     }))
             }
         ];
+        //有获取用户列表的权限,才展示合格筛选项
+        if(hasPrivilege(crmPrivilegeConst.APP_USER_QUERY)) {
+            advancedData.splice(1, 0, {
+                groupName: Intl.get('common.qualified', '合格'),
+                groupId: 'qualify_label',
+                singleSelect: true,
+                data: _.map(qualifiedTagList, x => {
+                    return {
+                        name: x.name,
+                        value: x.value,
+                        selected: x.value && x.value === _.get(this.state, 'condition.qualify_label', '')
+                    };
+                })
+            });
+        }
+        //不是个人试用时，放在地域前面
+        if(!checkVersionAndType().isPersonalTrial) {
+            advancedData.splice(advancedData.length - 1, 0, {
+                groupName: Intl.get('crm.administrative.level', '行政级别'),
+                groupId: 'administrative_level',
+                data: _.map(filterLevelArray, x => ({
+                    name: x.level,
+                    value: x.id,
+                    selected: x.id && _.indexOf(selectedLevel, x.id) !== -1
+                }))
+            });
+        }
         if(!isCurtao()){
             advancedData.unshift({
                 groupName: Intl.get('crm.order.stage', '订单阶段'),
@@ -465,29 +473,33 @@ class CrmFilterPanel extends React.Component {
                 }))
             });
         }
-        //普通销售展示负责人和联合跟进人的筛选（用户来筛选销售是负责人还是联合跟进人）
-        if (userData.getUserData().isCommonSales) {
+        //普通销售或者个人版，展示负责人和联合跟进人的筛选（用户来筛选销售是负责人还是联合跟进人）
+        if (isCommonSalesOrPersonnalVersion()) {
             let loginUserName = userData.getUserData().nick_name;
-            advancedData.unshift({
-                groupName: Intl.get('crm.second.sales', '联合跟进人'),
-                groupId: 'second_nickname',
-                singleSelect: true,
-                data: [{
-                    name: loginUserName,
-                    value: loginUserName,
-                    selected: loginUserName && loginUserName === _.get(this.state, 'condition.second_nickname', '')
-                }]
-            });
-            advancedData.unshift({
-                groupName: Intl.get('crm.6', '负责人'),
-                groupId: 'nickname',
-                singleSelect: true,
-                data: [{
-                    name: loginUserName,
-                    value: loginUserName,
-                    selected: loginUserName && loginUserName === _.get(this.state, 'condition.nickname', '')
-                }]
-            });
+            if(hasPrivilege(crmPrivilegeConst.CRM_ASSERT_CUSTOMER_SALES)) {
+                advancedData.unshift({
+                    groupName: Intl.get('crm.second.sales', '联合跟进人'),
+                    groupId: 'second_nickname',
+                    singleSelect: true,
+                    data: [{
+                        name: loginUserName,
+                        value: loginUserName,
+                        selected: loginUserName && loginUserName === _.get(this.state, 'condition.second_nickname', '')
+                    }]
+                });
+            }
+            if(!checkVersionAndType().isPersonalTrial) {
+                advancedData.unshift({
+                    groupName: Intl.get('crm.6', '负责人'),
+                    groupId: 'nickname',
+                    singleSelect: true,
+                    data: [{
+                        name: loginUserName,
+                        value: loginUserName,
+                        selected: loginUserName && loginUserName === _.get(this.state, 'condition.nickname', '')
+                    }]
+                });
+            }
         } else {//非普通销售才有销售角色和团队
             let salesTeamId = _.get(this.state, 'condition.sales_team_id', '');
             let userList = [];
@@ -510,26 +522,30 @@ class CrmFilterPanel extends React.Component {
             }
             userList = _.uniqBy(userList, 'nickname');
             if (_.get(userList, 'length')) {
-                advancedData.unshift({
-                    groupName: Intl.get('crm.second.sales', '联合跟进人'),
-                    groupId: 'second_nickname',
-                    singleSelect: true,
-                    data: _.map(userList, x => ({
-                        name: x.nickname,
-                        value: x.nickname,
-                        selected: x.nickname && x.nickname === _.get(this.state, 'condition.second_nickname', '')
-                    }))
-                });
-                advancedData.unshift({
-                    groupName: Intl.get('crm.6', '负责人'),
-                    groupId: 'nickname',
-                    singleSelect: true,
-                    data: _.map(userList, x => ({
-                        name: x.nickname,
-                        value: x.nickname,
-                        selected: x.nickname && x.nickname === _.get(this.state, 'condition.nickname', '')
-                    }))
-                });
+                if(hasPrivilege(crmPrivilegeConst.CRM_ASSERT_CUSTOMER_SALES)) {
+                    advancedData.unshift({
+                        groupName: Intl.get('crm.second.sales', '联合跟进人'),
+                        groupId: 'second_nickname',
+                        singleSelect: true,
+                        data: _.map(userList, x => ({
+                            name: x.nickname,
+                            value: x.nickname,
+                            selected: x.nickname && x.nickname === _.get(this.state, 'condition.second_nickname', '')
+                        }))
+                    });
+                }
+                if(!checkVersionAndType().isPersonalTrial) {
+                    advancedData.unshift({
+                        groupName: Intl.get('crm.6', '负责人'),
+                        groupId: 'nickname',
+                        singleSelect: true,
+                        data: _.map(userList, x => ({
+                            name: x.nickname,
+                            value: x.nickname,
+                            selected: x.nickname && x.nickname === _.get(this.state, 'condition.nickname', '')
+                        }))
+                    });
+                }
             }
             //已选中的销售角色列表
             let selectedRoles = _.get(this.state, 'condition.member_role', '').split(',');

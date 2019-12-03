@@ -16,6 +16,7 @@ import crmAjax from '../ajax/index';
 import userData from 'PUB_DIR/sources/user-data';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {formatSalesmanList, isResponsiveDisplay, removeEmptyItem} from 'PUB_DIR/sources/utils/common-method-util';
 import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
@@ -29,6 +30,8 @@ import CustomerLabel from 'CMP_DIR/customer_label';
 import CustomerPoolRule from './customer_pool_rule';
 import BackMainPage from 'CMP_DIR/btn-back';
 import { CRM_VIEW_TYPES } from '../utils/crm-util';
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
+import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -137,7 +140,7 @@ class CustomerPool extends React.Component {
             getAllSalesUserList((allUserList) => {
                 this.setState({userList: allUserList});
             });
-        } else if (!userData.getUserData().isCommonSales && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {//销售领导获取我所在团队及下级团队的销售
+        } else if (!isCommonSalesOrPersonnalVersion() && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {//销售领导获取我所在团队及下级团队的销售
             salesmanAjax.getSalesmanListAjax().sendRequest({filter_manager: true})
                 .success(list => {
                     this.setState({userList: list});
@@ -271,7 +274,7 @@ class CustomerPool extends React.Component {
         let paramObj = {
             customerIds: customerIds
         };
-        if (userData.getUserData().isCommonSales) {
+        if (isCommonSalesOrPersonnalVersion()) {
             paramObj.ownerId = userData.getUserData().user_id;
             if (_.get(paramObj, 'customerIds.length') > 20) {
                 message.error(Intl.get('crm.customer.extract.limit.tip', '一次最多提取20个客户'));
@@ -439,13 +442,18 @@ class CustomerPool extends React.Component {
             }
         ];
 
+        //没有获取用户列表的权限，或者不是销售或者管理员时不展示分数
+        if(!hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) || !(hasPrivilege(crmPrivilegeConst.CRM_LIST_CUSTOMERS) || hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL))){
+            columns = _.filter(columns, column => column.title !== Intl.get('user.login.score', '分数'));
+        }
+
         //只要不是运营人员都可以提取
         if (!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
             columns.push({
                 title: Intl.get('common.operate', '操作'),
                 width: 40,
                 render: (text, record, index) => {
-                    return userData.getUserData().isCommonSales ? (
+                    return isCommonSalesOrPersonnalVersion() ? (
                         <Popconfirm
                             placement="left"
                             title={Intl.get('crm.pool.single.extract.tip', '您确定要提取此客户吗？')}
@@ -645,8 +653,8 @@ class CustomerPool extends React.Component {
                 </Button>);
             //选择客户后可以进行批量提取
             if (selectCustomerLength) {
-                //普通销售可以直接将客户提取到自己身上
-                if (userData.getUserData().isCommonSales) {
+                //普通销售或者个人版，可以直接将客户提取到自己身上
+                if (isCommonSalesOrPersonnalVersion()) {
                     return (<Popconfirm
                         title={Intl.get('crm.pool.batch.extract.tip', '您确定要提取选中的客户吗？')}
                         onConfirm={this.batchExtractCustomer}

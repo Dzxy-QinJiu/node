@@ -23,14 +23,12 @@ import {RightPanel} from '../../../../components/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {SELECT_TYPE, AVALIBILITYSTATUS} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
-var timeoutFunc;//定时方法
-var timeout = 1000;//1秒后刷新未读数
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {renderClueStatus, subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
-import { AUTHS,TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
+import commonSalesHomePrivilegeConst from '../privilege-const';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import CustomerLabel from 'CMP_DIR/customer_label';
+import {assignSalesPrivilege} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 class SalesClueItem extends React.Component {
     constructor(props) {
         super(props);
@@ -349,11 +347,9 @@ class SalesClueItem extends React.Component {
         var handlePersonName = _.get(salesClueItem,'user_name');//当前跟进人
         var cls = 'foot-text-content';
         //是否有标记线索无效的权限
-        var avalibilityPrivilege = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
-        //分配线索给销售的权限
-        var hasAssignedPrivilege = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales);
+        var avalibilityPrivilege = hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_SELF) || hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_ALL);
         //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && salesClueItem.availability !== '1';
+        var associatedPrivilege = (hasPrivilege(cluePrivilegeConst.LEAD_TRANSFER_MERGE_CUSTOMER)) && salesClueItem.availability !== '1';
         return <div className={cls} data-tracename="线索详情操作区域">
             {/*有跟进记录*/}
             {traceContent ?
@@ -393,7 +389,7 @@ class SalesClueItem extends React.Component {
                 <div className="handle-and-trace">
                     {handlePersonName ? <span className="current-trace-person">{Intl.get('crm.6', '负责人')}: {handlePersonName}</span> : null}
                     {/*有分配权限*/}
-                    {hasAssignedPrivilege ?
+                    {assignSalesPrivilege(salesClueItem) ?
                         <AntcDropdown
                             ref={'changesale' + salesClueItem.id}
                             content={<span
@@ -411,7 +407,7 @@ class SalesClueItem extends React.Component {
                         /> : null
                     }
                 </div>
-                {hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
+                {hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_TRACE_ADD) ?
                     <Button className='add-trace-content handle-btn-item'  
                         onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</Button>
                     : null}

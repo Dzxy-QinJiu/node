@@ -369,7 +369,8 @@ var zh_CN = {
     'register.wechat.register.bind': '注册新账号',
     'register.wechat.bind.btn': '立即绑定',
     'register.wechat.register.btn': '注册并登录',
-    
+    'register.personal.title': '注册个人版',
+
     //首页
     'menu.home.page': '首页',
     'home.page.my.work': '我的工作',
@@ -1854,6 +1855,7 @@ var zh_CN = {
     'crm.customer.release': '释放',
     'crm.customer.release.pool': '释放到客户池',
     'crm.customer.release.confirm.tip': '释放到客户池后，其他人也可以查看、提取，您确定要释放吗？',
+    'crm.customer.personal.release.confirm.tip': '释放后可以再从客户池提取',
     'crm.customer.release.failed': '释放客户失败',
     'crm.customer.pool.failed': '获取客户池客户失败',
     'crm.customer.extract.failed': '提取客户失败',
@@ -2925,6 +2927,7 @@ var zh_CN = {
     'crm.75': '点',
     'scan.ketao.qrcode.download.tip': '扫码下载客套APP安卓端',
     'config.manage.input.teleRepeat': '该电话号码已录入',
+    'config.not.fill.in': '暂不填写',
     //缺失补充end
     'common.batch.sales.target': '设置团队销售目标',
     'common.batch.self.sales.target': '批量设置个人销售目标',
@@ -3117,6 +3120,7 @@ var zh_CN = {
     'clue.customer.delete': '删除后无法恢复，您确定要删除吗？',
     'clue.customer.release.pool': '释放到线索池',
     'clue.customer.release.confirm.tip': '释放到线索池后，其他人也可以查看、提取，您确定要释放吗？',
+    'clue.customer.personal.release.confirm.tip': '释放后可以再从线索池提取',
     'clue.customer.batch.release': '批量释放',
     'clue.customer.fail.to.release.tip': '释放线索失败',
     'clue.pool.batch.extract.clue': '批量提取',
@@ -3131,6 +3135,7 @@ var zh_CN = {
     'clue.search.no.found': '没有符合条件的线索，您可以去{cluepool}查看是否有该线索',
     'clue.edit.condition.search': '请修改条件再查看',
     'clue.customer.has.clue.can.extract': '您可以从这里提取线索哦',
+    'clue.customer.export.select.clue': '导出选中的线索',
     //线索模块 end
     'common.memeber.all': '全部成员',
     'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3855,8 +3860,13 @@ var zh_CN = {
     'payment.renewal.version.success': '您已成功续费，{time} 到期',
     'payment.get.payment.mode.faild': '获取支付渠道失败',
     'payment.get.discount.faild': '获取商品折扣信息失败',
-    'payment.please.upgrade.company.version': '请先升级为企业版。您可以联系我们的销售：{contact}',
+    'payment.please.upgrade.company.version': '请先升级到基础版以上版本，联系销售：{contact}',
     /*支付流程 --- end*/
+
+    /*个人试用 --- start*/
+    'personal.welcome.use.curtao': '欢迎使用客套',
+    'personal.open.success.tip': '恭喜您成功开通试用版，试用期剩余 {count} 天',
+    /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': '您的试用期剩余{time}天，是否{upgrade}？',

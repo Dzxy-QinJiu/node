@@ -1,4 +1,3 @@
-var React = require('react');
 /**
 * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
 * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -16,6 +15,7 @@ import OrganizationAjax from 'MOD_DIR/common/public/ajax/organization';
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 const Option = Select.Option;
 const CATEGORY_TYPE = oplateConsts.CATEGORY_TYPE;
+import USER_MANAGE_PRIVILEGE from '../../privilege-const';
 
 class OrgCard extends React.Component {
     constructor(props) {
@@ -133,7 +133,7 @@ class OrgCard extends React.Component {
     render() {
         const options = this.getOrganizationOptions();
         const { groupsInfo } = this.props;
-        const hasEditAuth = hasPrivilege('USER_ORGANIZATION_MEMBER_EDIT') && hasPrivilege('APP_USER_EDIT');
+        const hasEditAuth = hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE);
         const renderOrgCard = ({groupsData = null, departmentData = null, teamData = null }) => (
             <DetailCard
                 loading={this.state.submitType === 'loading'}
