@@ -473,9 +473,9 @@ class UserInfo extends React.Component{
         return null;
     };
 
-    setChangePhoneResult = (result) => {
+    setChangePhoneResult = () => {
         this.setState({
-            changePhoneMsg: result
+            changePhoneMsg: Intl.get('user.info.bind.phone', '绑定成功，您可以用此手机号登录系统了。')
         });
     };
 
@@ -603,7 +603,7 @@ class UserInfo extends React.Component{
                             <PhoneShowEditField
                                 id={formData.id}
                                 phone={formData.phone}
-                                getChangePhoneResult={this.setChangePhoneResult}
+                                onChangedPhoneNumber={this.setChangePhoneResult}
                             />
                         </span>
                         {

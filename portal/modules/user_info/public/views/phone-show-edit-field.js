@@ -77,7 +77,7 @@ class PhoneShowEditField extends React.Component {
                     success: data => {
                         if (data) {
                             this.resetState(newPhone);
-                            this.props.getChangePhoneResult(Intl.get('user.info.bind.phone', '绑定成功，您可以用此手机号登录系统了。'));
+                            _.isFunction(this.props.onChangedPhoneNumber) && this.props.onChangedPhoneNumber();
                         } else {
                             this.setState({submitErrorMsg: Intl.get('crm.219', '修改失败'), loading: false,});
                         }
@@ -271,7 +271,7 @@ PhoneShowEditField.propTypes = {
     id: PropTypes.string,
     phone: PropTypes.string,
     form: PropTypes.object,
-    getChangePhoneResult: PropTypes.func
+    onChangedPhoneNumber: PropTypes.func
 };
 export default Form.create()(PhoneShowEditField);
 
