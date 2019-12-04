@@ -18,6 +18,7 @@ let codeEffectiveInterval = null;
 //验证码的有效时间：60s
 const CODE_EFFECTIVE_TIME = 60;
 const CODE_INTERVAL_TIME = 1000;
+
 class PhoneShowEditField extends React.Component {
     constructor(props) {
         super(props);
@@ -76,6 +77,7 @@ class PhoneShowEditField extends React.Component {
                     success: data => {
                         if (data) {
                             this.resetState(newPhone);
+                            _.isFunction(this.props.onChangedPhoneNumber) && this.props.onChangedPhoneNumber();
                         } else {
                             this.setState({submitErrorMsg: Intl.get('crm.219', '修改失败'), loading: false,});
                         }
@@ -269,6 +271,7 @@ PhoneShowEditField.propTypes = {
     id: PropTypes.string,
     phone: PropTypes.string,
     form: PropTypes.object,
+    onChangedPhoneNumber: PropTypes.func
 };
 export default Form.create()(PhoneShowEditField);
 

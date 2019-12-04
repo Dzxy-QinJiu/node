@@ -1113,6 +1113,7 @@ var en_US = {
     'user.info.version': 'Version', // 版本
     'user.info.version.expire': 'expiration{time}', // {time}到期
     'user.info.version.upgrade': 'Upgrade to the official version', // 升级为正式版
+    'user.info.bind.phone': 'Binding is successful, you can use this number login system.', // 绑定成功，您可以用此手机号登录系统了。
     'user.trade.record': 'Purchase record', // 购买记录
     'user.trade.get.record': 'Failed to get purchase record', // 获取购买记录失败
     'user.trade.record.order.number': 'Order number', // 订单号
@@ -2563,6 +2564,8 @@ var en_US = {
     'errorcode.organization.expire': 'Your account has expired',//您的账号已到期
     'errorcode.clue.batch.change.pending': 'Last batch operation has not completed, please try again later',//上次批量操作未完成，请稍后再试
     'errorcode.login.failed': 'Login failed',//登录失败
+    'errorcode.166': 'The number has been used, you can not be bound to the current account', // 该手机号已被使用，不能绑定到当前账号
+    'errorcode.167': 'The number has been bound to the other account, please login first original account unbundling', // 该手机号已被绑定到其他账号，请先登录原账号解绑
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索

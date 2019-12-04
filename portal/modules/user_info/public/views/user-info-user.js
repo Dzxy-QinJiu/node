@@ -17,6 +17,7 @@ import {getEmailActiveUrl, checkCurrentVersion, checkCurrentVersionType} from 'P
 import {getOrganizationInfo} from 'PUB_DIR/sources/utils/common-data-util';
 import {paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import history from 'PUB_DIR/sources/history';
+import SavedTips from 'CMP_DIR/saved-tips';
 const session = storageUtil.session;
 const CLOSE_TIP_TIME = 56;
 const langArray = [{key: 'zh_CN', val: '简体中文'},
@@ -61,6 +62,7 @@ class UserInfo extends React.Component{
             sendTime: 60,//计时器显示时间
             versionName: '', // 版本信息
             endTime: '', // 到期时间
+            changePhoneMsg: '',
         };
     }
 
@@ -471,6 +473,28 @@ class UserInfo extends React.Component{
         return null;
     };
 
+    setChangePhoneResult = () => {
+        this.setState({
+            changePhoneMsg: Intl.get('user.info.bind.phone', '绑定成功，您可以用此手机号登录系统了。')
+        });
+    };
+
+    renderChangePhoneMsgTips = () => {
+        let hide = () => {
+            this.setState({
+                changePhoneMsg: '',
+            });
+        };
+        return (
+            <SavedTips
+                time={3000}
+                tipsContent={this.state.changePhoneMsg}
+                savedResult='success'
+                onHide={hide}
+            />
+        );
+    }
+
     renderUserInfo() {
         let formData = this.props.userInfo;
         //根据是否拥有邮箱改变渲染input默认文字
@@ -571,13 +595,24 @@ class UserInfo extends React.Component{
                         </span>
                     </div>
                     {this.state.sendMail && !this.state.closeMsg && this.state.sendTime > CLOSE_TIP_TIME ? this.sendMailMsg() : null}
-                    <div className="user-info-item">
+                    <div className="user-info-item user-bind-phone">
                         <span className="user-info-item-title">
                             {Intl.get('member.phone', '手机')}
                             ：</span>
                         <span className="user-info-item-content">
-                            <PhoneShowEditField id={formData.id} phone={formData.phone}/>
+                            <PhoneShowEditField
+                                id={formData.id}
+                                phone={formData.phone}
+                                onChangedPhoneNumber={this.setChangePhoneResult}
+                            />
                         </span>
+                        {
+                            this.state.changePhoneMsg ? (
+                                <div className="bind-phone-tips">
+                                    {this.renderChangePhoneMsgTips()}
+                                </div>
+                            ) : null
+                        }
                     </div>
                     <div className="user-info-item">
                         <span className="user-info-item-title">QQ：</span>
