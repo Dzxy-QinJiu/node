@@ -1010,7 +1010,7 @@ class ClueDetailOverview extends React.Component {
         if (avalibility){
             let pathname = window.location.pathname;
             //不是运营人员，且（在首页或者线索列表里）
-            var showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (pathname === '/home' || pathname === '/clue_customer');
+            var showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (pathname === '/home' || pathname === '/leads');
             return <div>
                 {associatedPrivilege ? <Button type="primary"
                     onClick={this.convertToCustomer.bind(this, curClue)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}

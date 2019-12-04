@@ -105,7 +105,7 @@ class OPLATE_CUSTOMER_ANALYSIS extends React.Component {
             customerType: conditionObj.tab,
         };
 
-        const url = '/crm?' + querystring.stringify(query);
+        const url = '/accounts?' + querystring.stringify(query);
 
         //跳转到客户列表
         window.open(url);
@@ -128,7 +128,7 @@ class OPLATE_CUSTOMER_ANALYSIS extends React.Component {
 
     //处理试用合格客户数统计数字点击事件
     handleTrialQualifiedNumClick = (customerIds) => {
-        history.push('/crm', {
+        history.push('/accounts', {
             from: 'sales_home',
             trialQualifiedCustomerIds: customerIds
         });

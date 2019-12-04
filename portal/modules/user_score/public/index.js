@@ -749,7 +749,7 @@ class userScore extends React.Component {
         userScoreAction.hideSaveErrMsg();
     };
     jumpToUserPanel = () => {
-        history.push('/user/list');
+        history.push('/users');
     };
     renderAddAndImportBtns = () => {
         return (

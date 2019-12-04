@@ -393,7 +393,7 @@ class CustomVariable extends React.Component {
                 <Icon type="check-circle" theme="filled" />
                 <span className="test-success-tip">
                     {Intl.get('user.user.add.success', '添加成功')},
-                    <a href="/user/list">{Intl.get('user.list.check.refresh', '刷新查看用户列表')}</a>
+                    <a href="/users">{Intl.get('user.list.check.refresh', '刷新查看用户列表')}</a>
                 </span>
             </div>);
         } else if(jsCode && _.isEqual(testResult, 'error')) {

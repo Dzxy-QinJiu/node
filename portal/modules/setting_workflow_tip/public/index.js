@@ -26,7 +26,7 @@ class SettingWorkflowTip extends React.Component {
                         defaultMessage={'尚未配置流程，{tip}'}
                         values={{
                             tip: <span className="set-workflow">
-                                <NavLink to="/background_management/apply_approve" activeClassName="active" data-tracename="设置流程">
+                                <NavLink to="/settings/applies" activeClassName="active" data-tracename="设置流程">
                                     {Intl.get('apply.approve.go.set.workflow','去设置？')}
                                 </NavLink>
                             </span>

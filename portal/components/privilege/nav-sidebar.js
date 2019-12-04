@@ -216,13 +216,13 @@ var NavSidebar = createReactClass({
                 this.selectedIntroElement();
             }
         });
-        $('.navbar').on('click', '.clue_customer_icon_container', function(e) {
+        $('.navbar').on('click', '.leads_icon_container', function(e) {
             //点击到a标签上，不做处理
             if ($(e.target).is('a')) {
                 return;
             }
             //点击到线索未处理的数字上，进行跳转
-            history.push('/clue_customer', {clickUnhandleNum: true});
+            history.push('/leads', {clickUnhandleNum: true});
         });
     },
     //呼叫中心的电话系统初始化完成后，触发拨号键盘是否展示的判断
@@ -481,7 +481,7 @@ var NavSidebar = createReactClass({
                             src={this.state.userInfoLogo}
                             userName={this.state.userInfo.user_name}
                             nickName={this.state.userInfo.nick_name}
-                            round="true" link="true" url="/user_info_manage"
+                            round="true" link="true" url="/user-preference"
                             isActiveFlag={this.props.isShowNotificationPanel}
                             isUseDefaultUserImage={true}
                         />
@@ -632,7 +632,7 @@ var NavSidebar = createReactClass({
     render: function() {
         const iconCls = classNames('iconfont ', {
             'icon-dial-up-keybord': !this.state.ronglianNum,
-            'icon-active-call_record-ico': this.state.ronglianNum,
+            'icon-active-call-records-ico': this.state.ronglianNum,
         });
         const DialIcon = this.state.hideNavIcon ? Intl.get('phone.dial.up.text', '拨号') :
             (<i className={iconCls}/>);

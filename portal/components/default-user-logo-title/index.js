@@ -53,7 +53,7 @@ class DefaultUserLogoTitle extends React.Component {
                     >
                         {
                             this.props.isUseDefaultUserImage ? (
-                                <i className="iconfont icon-user-ico"></i>
+                                <i className="iconfont icon-users-ico"></i>
                             ) : (nickName.substr(0, 1))
                         }
                     </div>

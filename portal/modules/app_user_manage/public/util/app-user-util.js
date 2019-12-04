@@ -59,10 +59,10 @@ exports.getCurrentView = function() {
     //当前界面视图
     var currentView = 'user';
     //从href中获取
-    if (window.location.href.indexOf('/user/log') >= 0){
+    if (window.location.href.indexOf('/users/logs') >= 0){
         currentView = 'log';
     }
-    if (window.location.href.indexOf('/user/active') >= 0){
+    if (window.location.href.indexOf('/users/active') >= 0){
         currentView = 'active';
     }
     return currentView;

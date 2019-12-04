@@ -140,7 +140,7 @@ class UserAnlyis extends React.Component {
             }
         }
         return {
-            url: '/user/list',
+            url: '/users',
             query: {
                 app_id: '',
                 analysis_filter_field: analysis_filter_field

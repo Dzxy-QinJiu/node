@@ -191,13 +191,13 @@ class ClueSuggest extends Component {
         if(this.props.tryCustomer) {
             suggestTip = this.getNoCustomerTip() ?
                 <span>{Intl.get('crm.suggest.clue.not.found','未找到该线索')}，<a onClick={this.props.searchCustomer}>{Intl.get('clue.customer.search.by.client.name', '根据客户名搜索')}</a>
-                    {Intl.get('common.or', '或')}<Link to="/clue_customer?add=true">{Intl.get('crm.clue.suggest.create.clue','创建线索')}</Link>
+                    {Intl.get('common.or', '或')}<Link to="/leads?add=true">{Intl.get('crm.clue.suggest.create.clue','创建线索')}</Link>
                 </span> :
                 <span>{Intl.get('crm.suggest.clue.not.found','未找到该线索')}, <a onClick={this.props.searchCustomer}>{Intl.get('clue.customer.search.by.client.name', '根据客户名搜索')}</a></span>;
         } else {
             suggestTip = this.getNoCustomerTip() ?
                 <span>{Intl.get('crm.suggest.clue.not.found','未找到该线索')}，{Intl.get('common.yesno', '是否')}
-                    <Link to="/clue_customer?add=true">{Intl.get('crm.clue.suggest.create.clue','创建线索')}</Link>
+                    <Link to="/leads?add=true">{Intl.get('crm.clue.suggest.create.clue','创建线索')}</Link>
                 </span> :
                 <span>{Intl.get('crm.suggest.clue.not.found','未找到该线索')}</span>;
         }

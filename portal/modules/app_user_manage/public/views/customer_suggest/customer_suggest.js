@@ -295,7 +295,7 @@ class CustomerSuggest extends React.Component {
                 return (
                     <div className="customer_suggest_tip">
                         {canCreateCustomer ? <span>{Intl.get('user.customer.suggest.not.found','未找到该客户')}，{Intl.get('common.yesno','是否')}
-                            {noJumpToAddCrmPanel ? <a onClick={this.props.addAssignedCustomer}>{Intl.get('user.customer.suggest.create.customer','创建客户')}？</a> : <Link to="/crm?add=true">{Intl.get('user.customer.suggest.create.customer','创建客户')}？</Link>}
+                            {noJumpToAddCrmPanel ? <a onClick={this.props.addAssignedCustomer}>{Intl.get('user.customer.suggest.create.customer','创建客户')}？</a> : <Link to="/accounts?add=true">{Intl.get('user.customer.suggest.create.customer','创建客户')}？</Link>}
                         </span> : <span>{Intl.get('user.customer.suggest.not.found','未找到该客户')}</span>}
                     </div>
                 );

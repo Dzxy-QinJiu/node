@@ -266,14 +266,14 @@ class CustomerSuggest extends React.Component {
                 <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')}，<a onClick={this.props.searchClue}>{Intl.get('clue.customer.search.by.name', '根据线索名搜索')}</a>{Intl.get('common.or', '或')}
                     {noJumpToAddCrmPanel ?
                         <a onClick={this.props.addAssignedCustomer} data-tracename="点击创建客户按钮">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</a> :
-                        <Link to="/crm?add=true">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</Link>}
+                        <Link to="/accounts?add=true">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</Link>}
                 </span> : <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')},<a onClick={this.props.searchClue}>{Intl.get('clue.customer.search.by.name', '根据线索名搜索')}</a></span>;
         } else {
             suggestTip = this.getNoCustomerTip() ?
                 <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')}，{Intl.get('common.yesno', '是否')}
                     {noJumpToAddCrmPanel ?
                         <a onClick={this.props.addAssignedCustomer} data-tracename="点击创建客户按钮">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</a> :
-                        <Link to="/crm?add=true">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</Link>}
+                        <Link to="/accounts?add=true">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</Link>}
                 </span> : <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')}</span>;
         }
         return suggestTip;

@@ -892,7 +892,7 @@ class SalesHomePage extends React.Component {
 
     //跳转到个人信息页面
     jumpToUserInfo = () => {
-        history.push('/user_info_manage/user_info', {});
+        history.push('/user-preference', {});
     };
 
     renderWillExpireUser = () => {

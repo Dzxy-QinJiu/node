@@ -106,7 +106,7 @@ class PhoneNumberBoard extends React.Component {
         var isRonglianCalling = this.props.inputNumber;
         var phonePopIcon = classNames('iconfont',{
             'icon-phone-hang-up': isRonglianCalling,
-            'icon-active-call_record-ico': !isRonglianCalling,
+            'icon-active-call-records-ico': !isRonglianCalling,
         });
         var phoneBtnWrap = classNames('call-btn',{
             'hang-up-background': isRonglianCalling,

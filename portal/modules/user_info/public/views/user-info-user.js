@@ -384,7 +384,7 @@ class UserInfo extends React.Component{
     handleVersionUpgrade = () => {
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
             continueFn: () => {
-                history.push('/clue_customer');
+                history.push('/leads');
             }
         });
     };

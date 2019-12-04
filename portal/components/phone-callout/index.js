@@ -31,7 +31,7 @@ class PhoneCallout extends React.Component {
             if (callFee >= accountBalance) {
                 message.warn(Intl.get('common.call.owe.tips', '您的电话号码已欠费，请充值后再试！'));
             } else {
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-active-call_record-ico'), '拨打电话');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-active-call-records-ico'), '拨打电话');
                 handleCallOutResult({
                     contactName: contactName,//联系人姓名
                     phoneNumber: phoneNumber,//拨打的电话
@@ -85,7 +85,7 @@ class PhoneCallout extends React.Component {
         var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
         var contactName = this.props.contactName;
         var visible = this.state.visible;
-        var iconCls = classNames('iconfont icon-active-call_record-ico handle-btn-item',{
+        var iconCls = classNames('iconfont icon-active-call-records-ico handle-btn-item',{
             'default-show': this.props.showPhoneIcon || this.props.hidePhoneNumber
         });
         return (
