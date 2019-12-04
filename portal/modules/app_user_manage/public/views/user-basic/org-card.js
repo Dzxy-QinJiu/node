@@ -133,7 +133,6 @@ class OrgCard extends React.Component {
     render() {
         const options = this.getOrganizationOptions();
         const { groupsInfo } = this.props;
-        const hasEditAuth = hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE);
         const renderOrgCard = ({groupsData = null, departmentData = null, teamData = null }) => (
             <DetailCard
                 loading={this.state.submitType === 'loading'}
@@ -150,14 +149,6 @@ class OrgCard extends React.Component {
                             <span className="sales-team-text">
                                 {groupsData}
                             </span>
-                            {
-                                hasEditAuth && isOplateUser() ?
-                                    <DetailEditBtn
-                                        title={Intl.get('common.edit', '编辑')}
-                                        onClick={this.toggleEdit}
-                                    /> : null
-                            }
-
                         </div>
                     </div>
                 )}
