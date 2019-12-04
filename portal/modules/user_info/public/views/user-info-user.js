@@ -473,8 +473,7 @@ class UserInfo extends React.Component{
         return null;
     };
 
-    getChangePhoneResult = (result) => {
-        console.log('result:',result);
+    setChangePhoneResult = (result) => {
         this.setState({
             changePhoneMsg: result
         });
@@ -604,7 +603,7 @@ class UserInfo extends React.Component{
                             <PhoneShowEditField
                                 id={formData.id}
                                 phone={formData.phone}
-                                getChangePhoneResult={this.getChangePhoneResult}
+                                getChangePhoneResult={this.setChangePhoneResult}
                             />
                         </span>
                         {
