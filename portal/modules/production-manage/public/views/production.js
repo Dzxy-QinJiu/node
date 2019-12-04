@@ -8,6 +8,8 @@ import '../style/production-info.less';
 import {Form, Icon, Input, Switch,message, Popover} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {productNameRule, getNumberValidateRule, productNameRuleForValidator} from 'PUB_DIR/sources/utils/validate-util';
+import { num as antUtilsNum } from 'ant-utils';
+const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
@@ -393,7 +395,7 @@ class Production extends React.Component {
         saveObj = _.mapValues(saveObj, obj => _.trim(obj));
         //如果保存的是产品单价，将其转化为number类型
         if(_.has(saveObj, 'price')) {
-            saveObj.price = _.toNumber(saveObj.price);
+            saveObj.price = _.toNumber(removeCommaFromNum(saveObj.price));
         }
         _.extend(production, saveObj);
         ProductionFormAction.setSaveFlag(true);

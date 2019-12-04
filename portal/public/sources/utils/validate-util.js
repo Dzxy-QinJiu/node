@@ -19,7 +19,7 @@ export const clueNameContactRule = {
 export const customerNameRegex = regex.getNameRegex(25);
 // 数字验证规则
 exports.getNumberValidateRule = function() {
-    return {pattern: /^(\d|,)+(\.\d+)?$/, message: Intl.get('contract.45', '请填写数字')};
+    return {pattern: /^(\d|,)+(\.\d+)?(,\d+)*$/, message: Intl.get('contract.45', '请填写数字')};
 };
 //是否是手机号
 export const isPhone = function(value) {
