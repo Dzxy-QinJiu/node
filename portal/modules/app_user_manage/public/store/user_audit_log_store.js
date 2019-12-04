@@ -83,9 +83,6 @@ UserAuditLogStore.prototype.getUserApp = function(result){
             let matchSelectApp = _.find(result.data, item => item.app_id === lastSelectAppId);
             if (matchSelectApp) {
                 this.selectAppTerminals = matchSelectApp.app_terminals;
-                if (_.get(matchSelectApp.app_terminals, 'length')) {
-                    this.selectAppTerminals.unshift({id: '', name: '所有终端'});
-                }
             }
         }else{
             // 不存在（首次）
@@ -95,18 +92,12 @@ UserAuditLogStore.prototype.getUserApp = function(result){
                 let matchSelectApp = _.find(result.data, item => item.app_id === this.selectAppId);
                 if (matchSelectApp) {
                     this.selectAppTerminals = matchSelectApp.app_terminals;
-                    if (_.get(matchSelectApp.app_terminals, 'length')) {
-                        this.selectAppTerminals.unshift({id: '', name: '所有终端'});
-                    }
                 }
             }else{
                 // 已有用户应用选择框中选择全部时，用户审计日志默认展示第一个应用的
                 if( _.isArray(this.userAppArray) && (this.userAppArray.length >= 1) ){
                     this.selectAppId = this.userAppArray[0].app_id;
                     this.selectAppTerminals = this.userAppArray[0].app_terminals;
-                    if (_.get(this.selectAppTerminals, 'length')) {
-                        this.selectAppTerminals.unshift({id: '', name: '所有终端'});
-                    }
                 }
             }
         }
@@ -160,9 +151,6 @@ UserAuditLogStore.prototype.setUserLogSelectedAppId = function(appId){
     let matchSelectApp = _.find(this.userAppArray, item => item.app_id === appId);
     if (matchSelectApp) {
         this.selectAppTerminals = matchSelectApp.app_terminals;
-        if (_.get(matchSelectApp.app_terminals, 'length')) {
-            this.selectAppTerminals.unshift({id: '', name: '所有终端'});
-        }
     }
     this.selectAppId = appId;
     ShareObj.app_id = this.selectAppId;
@@ -198,6 +186,14 @@ UserAuditLogStore.prototype.handleFilterLogType = function() {
     this.auditLogList = [];
     this.firstLoading = true;
 };
+
+// 过滤产品的多終端类型
+UserAuditLogStore.prototype.handleFilterAppTerminalType = function() {
+    this.sortId = '';
+    this.auditLogList = [];
+    this.firstLoading = true;
+};
+
 //获取团队列表
 UserAuditLogStore.prototype.getTeamList = function(result) {
     if (result.errorMsg) {
