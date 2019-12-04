@@ -9,6 +9,7 @@
 @personal-complete: personal-complete;
 @boot-complete: boot-complete;
 @personal-form-bg-color: #F1F4F8;
+@welcome-icon-color: #3DCBAE;
 .boot-complete-info-wrapper{
   .right-panel-modal-content{
     box-shadow: none;
@@ -68,23 +69,35 @@
   width: 100%;
   height: 100%;
   .@{boot-complete}-title{
-    color: @has-transfer-color;
+    color: @title-color;
     font-size: 14px;
+    height: 32px;
+    line-height: 32px;
+    display: block;
+    background-color: #fff;
+    border-radius: 4px;
+    .icon-huanying{
+      color: @welcome-icon-color;
+      width: 16px;
+      height: 16px;
+      margin: 0 8px;
+    }
   }
   .@{boot-complete}-content{
     width: 100%;
     margin-top: 10px;
-    height: calc(100vh - 74px);
+    height: calc(100vh - 86px);
     background: #fff;
     position: relative;
+    border-radius: 4px;
     .@{boot-complete}-step-container{
-      width: 564px;
+      width: 612px;
       margin: 0 auto;
-      padding-top: 100px;
+      padding-top: 80px;
       height: 100%;
       overflow: hidden;
       .boot-complete-step-title{
-        font-size: 16px;
+        font-size: 20px;
         margin-bottom: 15px;
         color: @title-color;
       }
@@ -104,7 +117,7 @@
             margin-bottom: 5px;
             text-align: center;
             height: 70px;
-            width: 138px;
+            width: 150px;
             border-radius: 4px;
             font-size: 14px;
             color: @title-color;
@@ -112,7 +125,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            &.is-active{
+            &:hover, &.is-active{
               color: @BORDER-BLUE;
               border-color: @BORDER-BLUE;
               background-color: @select-btn-color;
@@ -150,6 +163,7 @@
         font-size: 16px;
         height: 32px;
         min-width: 96px;
+        margin: 0!important;
       }
       .button-cancel{
         float: left;

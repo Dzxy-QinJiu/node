@@ -3854,7 +3854,7 @@ var zh_CN = {
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
-    'personal.welcome.use.curtao': '欢迎使用客套系统',
+    'personal.welcome.use.curtao': '欢迎试用客套系统，完成以下引导将向您推荐精准的线索客户',
     'personal.open.success.tip': '恭喜您成功开通试用版，试用期剩余 {count} 天',
     'boot.complete.step.set.industry': '您关注哪些行业的客户?',
     'boot.complete.step.set.area': '您关注哪个地域的客户?',

@@ -3805,7 +3805,7 @@ var en_US = {
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
-    'personal.welcome.use.curtao': 'Welcome to use the Curtao System',//欢迎使用客套系统
+    'personal.welcome.use.curtao': 'Welcome to use the Curtao System, Complete the following guide to recommend accurate leads to customers',//欢迎试用客套系统，完成以下引导将向您推荐精准的线索客户
     'personal.open.success.tip': 'Congratulations! You have successfully opened the trial version. The rest of the trial period is {count} days',//恭喜您成功开通试用版，试用期剩余 {count} 天
     'boot.complete.step.set.industry': 'Which industries do you focus on?',//您关注哪些行业的客户?
     'boot.complete.step.set.area': 'Which geographic customers do you focus on?',//您关注哪个地域的客户?

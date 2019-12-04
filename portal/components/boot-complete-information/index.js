@@ -32,7 +32,7 @@ const STEPS_MAPS = {
 };
 
 //默认最多展示的数目
-const MAX_COUNT = 16;
+const MAX_COUNT = 20;
 //默认最小高度
 const MIN_HEIGHT = 75;
 
@@ -70,10 +70,10 @@ class BootCompleteInformation extends React.Component{
                 let industryList = this.state.industryList, showIndustryList = [];
                 let industryListHeight = this.state.industryListHeight;
                 industryList = _.isArray(list) ? list : [];
-                if(industryList.length > MAX_COUNT) {//超过16个，在末尾添加一个更多按钮
+                if(industryList.length > MAX_COUNT) {//超过20个，在末尾添加一个更多按钮
                     showIndustryList = industryList.slice(0, MAX_COUNT - 1);
                     showIndustryList.push(Intl.get('crm.basic.more', '更多'));
-                    industryListHeight = 4 * MIN_HEIGHT;
+                    industryListHeight = 5 * MIN_HEIGHT;
                 }else {//没有超过时,计算整个高度
                     showIndustryList = industryList;
                     let col = Math.ceil(showIndustryList.length / 4);
@@ -128,6 +128,7 @@ class BootCompleteInformation extends React.Component{
                 jumpLeadPage();
             }
         });
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '保存推荐线索条件');
 
         function jumpLeadPage() {
             setWebConfig();
@@ -233,7 +234,7 @@ class BootCompleteInformation extends React.Component{
                         <div className='personal-complete-title-welcome'>
                             <img src={KefuImage}/>
                             <div className="personal-complete-title-dec">
-                                <div>{Intl.get('personal.welcome.use.curtao', '欢迎使用客套')}</div>
+                                <div>{Intl.get('personal.welcome.use.curtao', '欢迎试用客套系统，完成以下引导将向您推荐精准的线索客户')}</div>
                                 <ReactIntl.FormattedMessage
                                     id="personal.open.success.tip"
                                     defaultMessage={'恭喜您成功开通试用版，试用期剩余 {count} 天'}
@@ -316,11 +317,16 @@ class BootCompleteInformation extends React.Component{
         areaData.province = addressObj.provName || '';
         areaData.city = addressObj.cityName || '';
         areaData.district = addressObj.countyName || '';
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '第二步选择地址');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '选择地域');
     };
 
     onReturnBack = (step) => {
+        const operate = {
+            [STEPS_MAPS.SET_FIRST]: '上一步',
+            [STEPS_MAPS.SET_SECOND]: '下一步'
+        };
         this.setState({currentStep: step});
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击' + operate[step]);
     };
 
     //选择行业
@@ -329,16 +335,18 @@ class BootCompleteInformation extends React.Component{
         let industrys = stepData.industrys;
         if(item === Intl.get('crm.basic.more', '更多')) {
             this.setState({
-                industryListHeight: 5 * MIN_HEIGHT,
                 showIndustryList: this.state.industryList
             });
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击查看更多');
             return false;
         }
         let index = _.findIndex(industrys, industry => industry === item);
         if(index > -1) {//如果选中，那就需要移除选中
             industrys.splice(index, 1);
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)), '移除行业：' + item);
         }else {//没有就选中
             industrys.push(item);
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)), '选中行业：' + item);
         }
         this.setState({stepData});
     };
@@ -443,7 +451,10 @@ class BootCompleteInformation extends React.Component{
         const currentStep = this.state.currentStep;
         return (
             <div className="boot-complete-container">
-                <span className='boot-complete-title'>{Intl.get('personal.welcome.use.curtao', '欢迎使用客套系统')}</span>
+                <div className='boot-complete-title'>
+                    <i className="iconfont icon-huanying"/>
+                    {Intl.get('personal.welcome.use.curtao', '欢迎试用客套系统，完成以下引导将向您推荐精准的线索客户')}
+                </div>
                 <div className="boot-complete-content">
                     <div className="boot-complete-step-container">
                         {currentStep === STEPS_MAPS.SET_FIRST ? (
