@@ -4,18 +4,19 @@
  */
 require('../action/sales-home-controller');
 var shpPrivilegeConst = require('../../public/privilege-const').default;
+var userInfoPrivilegeConst = require('../../../user_info/public/privilege-config').default;
 
 module.exports = {
     module: 'sales_home_page/server/action/sales-home-controller',
     routes: [{
-        //接口已删除
+        // TODO 接口已删除
         'method': 'get',
         'path': '/rest/sales/customer',
         'handler': 'getSalesCustomer',
         'passport': {
             'needLogin': true
         },
-        'privileges': ['SALES_CUSTOMER_LIST']
+        // 'privileges': ['SALES_CUSTOMER_LIST']
     }, {//获取销售对应的通话状态,已删
         'method': 'get',
         'path': '/rest/sales/call_status',
@@ -35,25 +36,25 @@ module.exports = {
             shpPrivilegeConst.CURTAO_CRM_CALLRECORD_STATISTICS
         ]
     }, {
-        //接口已删除
+        // TODO 接口已删除
         'method': 'get',
         'path': '/rest/sales/user',
         'handler': 'getSalesUser',
         'passport': {
             'needLogin': true
         },
-        'privileges': ['SALES_USER_LIST']
+        // 'privileges': ['SALES_USER_LIST']
     }, {
-        //接口已删除
+        // TODO 接口已删除
         'method': 'get',
         'path': '/rest/sales/contract',
         'handler': 'getSalesContract',
         'passport': {
             'needLogin': true
         },
-        'privileges': [
-            'SALES_CONTRACT_LIST'
-        ]
+        // 'privileges': [
+        //     'SALES_CONTRACT_LIST'
+        // ]
     }, {
         'method': 'get',
         'path': '/rest/expireuser',
@@ -73,7 +74,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'MEMBER_WEBSITE_CONFIG'
+            userInfoPrivilegeConst.CURTAO_USER_CONFIG
         ]
     }, {
         //移到common
@@ -84,7 +85,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'MEMBER_WEBSITE_CONFIG'
+            userInfoPrivilegeConst.CURTAO_USER_CONFIG
         ]
     }, {
         //移到通话记录中
