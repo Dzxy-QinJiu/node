@@ -42,6 +42,7 @@ class LogView extends React.Component {
     state = {
         curShowCustomerId: '', //查看右侧详情的客户id
         userType: USER_TYPE_OPTION.ALL, // 用户类型类型
+        appTerminalType: '', // 应用终端类型，默认全部
         selectedRowIndex: null, // 点击的行索引
         isShowRightPanel: this.props.isShowRightPanel,
         firstSelectValue: FIRSR_SELECT_DATA[0], // 第一个选择框的值
@@ -169,6 +170,12 @@ class LogView extends React.Component {
         if (endtime) {
             bodyObj.end_time = endtime;
         }
+        // 多终端类型 TODO 参数传值待定
+        let appTerminalType = _.get(queryParams, 'appTerminalType') || this.state.appTerminalType;
+        if (appTerminalType) {
+            bodyObj.terminal = appTerminalType;
+        }
+
         let searchObj = {
             queryObj: JSON.stringify(queryObj),
             bodyObj: JSON.stringify(bodyObj)
@@ -217,9 +224,13 @@ class LogView extends React.Component {
         UserAuditLogAction.setUserLogSelectedAppId(app_id);
         Trace.traceEvent('用户审计日志', '点击筛选菜单中的应用');
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
-        this.getAuditLog({
-            appid: app_id,
-            sort_id: ''
+        this.setState({
+            appTerminalType: '',
+        }, () => {
+            this.getAuditLog({
+                appid: app_id,
+                sort_id: '',
+            });
         });
     };
 
@@ -618,6 +629,37 @@ class LogView extends React.Component {
             </div>
         );
     }
+
+    // 筛选终端类型
+    onSelectTerminalsUserType = (value) => {
+        this.setState({
+            appTerminalType: value
+        }, () => {
+            this.getAuditLog({
+                appTerminalType: value
+            });
+        });
+        Trace.traceEvent('用户审计日志', '多终端类型');
+    }
+
+    // 渲染多终端类型
+    renderAppTerminalsType = () => {
+        let selectAppTerminals = this.state.selectAppTerminals;
+        return (
+            <Select
+                className="select-app-terminal-type btn-item"
+                value={this.state.appTerminalType}
+                onChange={this.onSelectTerminalsUserType}
+            >
+                {
+                    selectAppTerminals.map((terminalType, idx) => {
+                        return (<Option key={idx} value={terminalType.id}> {terminalType.name} </Option>);
+                    })
+                }
+            </Select>
+        );
+    }
+
     renderLogHeader = () => {
         var appOptions = this.getAppOptions();
         let teamList = _.get(this.state, 'teamList.list', []); // 团队数据
@@ -666,6 +708,11 @@ class LogView extends React.Component {
                                 {appOptions}
                             </SelectFullWidth>
                         </div>
+                        {
+                            _.get(this.state.selectAppTerminals, 'length') ? (
+                                this.renderAppTerminalsType()
+                            ) : null
+                        }
                         {Oplate.hideSomeItem ? null : this.renderFilterUserType()} {/**委内维拉项目隐藏*/}
                         <div className="user_audit_log_search_content btn-item">
                             <SearchInput

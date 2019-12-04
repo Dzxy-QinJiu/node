@@ -63,6 +63,8 @@ UserAuditLogStore.prototype.resetState = function() {
     this.userAppArrayErrMsg = '';
     //选中用户的应用产品
     this.selectAppId = '';
+    // 选择产品对应的终端类型
+    this.selectAppTerminals = [];
     // 记录input框中的输入的内容
     this.searchName = '';
     this.resetAuditLog();
@@ -78,19 +80,36 @@ UserAuditLogStore.prototype.getUserApp = function(result){
         if(lastSelectAppId){
             //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
             this.selectAppId = lastSelectAppId;
+            let matchSelectApp = _.find(result.data, item => item.app_id === lastSelectAppId);
+            if (matchSelectApp) {
+                this.selectAppTerminals = matchSelectApp.app_terminals;
+                if (_.get(matchSelectApp.app_terminals, 'length')) {
+                    this.selectAppTerminals.unshift({id: '', name: '所有终端'});
+                }
+            }
         }else{
             // 不存在（首次）
             if(ShareObj.app_id){
                 // 已有用戶有选择的应用时，用户审计日志也要展示该应用的
                 this.selectAppId = ShareObj.app_id;
+                let matchSelectApp = _.find(result.data, item => item.app_id === this.selectAppId);
+                if (matchSelectApp) {
+                    this.selectAppTerminals = matchSelectApp.app_terminals;
+                    if (_.get(matchSelectApp.app_terminals, 'length')) {
+                        this.selectAppTerminals.unshift({id: '', name: '所有终端'});
+                    }
+                }
             }else{
                 // 已有用户应用选择框中选择全部时，用户审计日志默认展示第一个应用的
                 if( _.isArray(this.userAppArray) && (this.userAppArray.length >= 1) ){
                     this.selectAppId = this.userAppArray[0].app_id;
+                    this.selectAppTerminals = this.userAppArray[0].app_terminals;
+                    if (_.get(this.selectAppTerminals, 'length')) {
+                        this.selectAppTerminals.unshift({id: '', name: '所有终端'});
+                    }
                 }
             }
         }
-       
     }
 };
 // 获取用户审计日志的信息
@@ -138,6 +157,13 @@ UserAuditLogStore.prototype.changeSearchTime = function({startTime,endTime, rang
 
 // 设置选中的appid
 UserAuditLogStore.prototype.setUserLogSelectedAppId = function(appId){
+    let matchSelectApp = _.find(this.userAppArray, item => item.app_id === appId);
+    if (matchSelectApp) {
+        this.selectAppTerminals = matchSelectApp.app_terminals;
+        if (_.get(matchSelectApp.app_terminals, 'length')) {
+            this.selectAppTerminals.unshift({id: '', name: '所有终端'});
+        }
+    }
     this.selectAppId = appId;
     ShareObj.app_id = this.selectAppId;
     let obj = AppUserUtil.getLocalStorageObj('logViewAppId', this.selectAppId );

@@ -50,6 +50,13 @@ function SingleUserLogAction() {
 
             if (selectedAppId) { // 已选中应用
                 getLogParam.appid = selectedAppId;
+                // dispatch是为了能拿到应用列表，用来展示多终端类型
+                this.dispatch(
+                    {
+                        appId: selectedAppId,
+                        appList: appLists
+                    }
+                );
             } else { // 全部应用条件下查看
                 if (appLists.length) {
                     handleLogParams(this, getLogParam, appLists);
