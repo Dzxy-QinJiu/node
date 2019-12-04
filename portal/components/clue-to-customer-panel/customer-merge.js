@@ -19,7 +19,8 @@ const CONTACT_OTHER_KEYS = ContactForm.CONTACT_OTHER_KEYS;
 //联系人store
 const ContactStore = require('MOD_DIR/crm/public/store/contact-store');
 
-const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig')) || {};
+const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
+const websiteConfig = getLocalWebsiteConfig() || {};
 
 //联系方式种类
 const CONTACT_WAY_TYPES = [
@@ -589,21 +590,17 @@ class CustomerMerge extends React.Component {
 
     //不再提示按钮点击事件
     handleNoLongerTipsBtnClick = () => {
-        ajax.send({
-            url: '/rest/base/v1/user/website/config/personnel',
-            type: 'post',
-            data: {
-                no_longer_tips_clue_will_disappear: true
-            }
-        })
-            .done(result => {
-                this.setState({
-                    isShowClueWillDisappearTip: false
-                });
-            })
-            .fail(err => {
-                message.error(err);
+        setWebsiteConfig({
+            no_longer_tips_clue_will_disappear: true
+        },
+        result => {
+            this.setState({
+                isShowClueWillDisappearTip: false
             });
+        },
+        err => {
+            message.error(err);
+        });
     }
 }
 
