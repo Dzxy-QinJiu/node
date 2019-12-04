@@ -29,10 +29,7 @@ class SingleUserLog extends React.Component {
     };
 
     getStateData = () => {
-        return {
-            appTerminalType: '', // 应用终端类型，默认全部
-            ...SingleUserLogStore.getState()
-        };
+        return SingleUserLogStore.getState();
     };
 
     getSingleUserLogInfoByApp = (userId, selectedAppId, appLists) => {
@@ -121,7 +118,7 @@ class SingleUserLog extends React.Component {
             queryObj.log_type = log_type;
         }
         // 多终端类型 TODO 参数传值待定
-        let appTerminalType = _.get(queryParams, 'appTerminalType') || this.state.appTerminalType;
+        let appTerminalType = queryParams && 'appTerminalType' in queryParams ? queryParams.appTerminalType : this.state.appTerminalType;
         if (appTerminalType) {
             queryObj.terminal = appTerminalType;
         }
@@ -204,29 +201,25 @@ class SingleUserLog extends React.Component {
 
     // 筛选终端类型
     onSelectTerminalsUserType = (value) => {
-        this.setState({
-            appTerminalType: value
-        }, () => {
-            this.getSingleUserAuditLogList({
-                appTerminalType: value
-            });
-        });
+        SingleUserLogAction.resetLogState();
+        SingleUserLogAction.setAppTerminalsType(value);
+        this.getSingleUserAuditLogList({appTerminalType: value});
     };
 
     // 渲染多终端类型
     renderAppTerminalsType = () => {
         let selectAppTerminals = this.state.selectAppTerminals;
+        // TODO 由于现在后端返回的数据是code,没有返回name, 暂时使用code 展示，需要修改
+        let appTerminals = _.map(selectAppTerminals, terminalType =>
+            <Option key={terminalType.id} value={terminalType.code}> {terminalType.code} </Option>);
+        appTerminals.unshift(<Option value="" id="">{Intl.get('common.all.terminals', '所有終端')}</Option>);
         return (
             <SelectFullWidth
                 className="select-app-terminal-type btn-item"
                 value={this.state.appTerminalType}
                 onChange={this.onSelectTerminalsUserType}
             >
-                {
-                    selectAppTerminals.map((terminalType, idx) => {
-                        return (<Option key={idx} value={terminalType.id}> {terminalType.name} </Option>);
-                    })
-                }
+                {appTerminals}
             </SelectFullWidth>
         );
     };
@@ -252,7 +245,9 @@ class SingleUserLog extends React.Component {
                 </div>}
                 {
                     _.get(this.state.selectAppTerminals, 'length') ? (
-                        this.renderAppTerminalsType()
+                        <div className="app-terminals-select">
+                            {this.renderAppTerminalsType()}
+                        </div>
                     ) : null
                 }
                 <div className="select-time">
