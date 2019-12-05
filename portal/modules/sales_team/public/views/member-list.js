@@ -3,7 +3,7 @@
  */
 const createReactClass = require('create-react-class');
 import {InputNumber, Button, message, Icon} from 'antd';
-import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
+import {PrivilegeChecker, hasPrivilege} from 'CMP_DIR/privilege/checker';
 const Spinner = require('../../../../components/spinner');
 const AlertTimer = require('../../../../components/alert-timer');
 import {SearchInput} from 'antc';
@@ -22,6 +22,8 @@ import MemberTableList from 'MOD_DIR/member-table-list';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 import SALES_DEPARTMENT_PRIVILEGE from '../privilege-const';
+import MEMBER_MANAGE_PRIVILEGE from 'MOD_DIR/member_manage/public/privilege-const';
+import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 
 const tableHeadHeight = 50; // table表格头部高度
 
@@ -1065,6 +1067,10 @@ const MemberList = createReactClass({
 
     //渲染团队目标
     renderSalesGoals: function() {
+        // 开通营收中心并且有销售目标的权限
+        if (!isOpenCash() || !hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL)) {
+            return;
+        }
         let groupGoal = _.get(this.state.salesGoals, 'goal'); // 部门销售目标
         let memberGoal = this.state.salesGoals.member_goal; // 个人销售目标
         return (

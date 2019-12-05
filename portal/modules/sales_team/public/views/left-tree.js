@@ -5,7 +5,7 @@ import {Popover} from 'antd';
 import commonMethodUtil from '../../../../public/sources/utils/common-method-util';
 var classNames = require('classnames');
 var GroupFrom = require('./edit-group-form');
-import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
+import {PrivilegeChecker, hasPrivilege} from 'CMP_DIR/privilege/checker';
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var AlertTimer = require('../../../../components/alert-timer');
 import {SearchInput} from 'antc';
@@ -15,6 +15,8 @@ import Trace from 'LIB_DIR/trace';
 import privilegeConfig_industry from 'MOD_DIR/industry/public/privilege-config';
 const TAB_HAED_HEIGHT = 40; // tabs 头部高度
 import SALES_DEPARTMENT_PRIVILEGE from '../privilege-const';
+import MEMBER_MANAGE_PRIVILEGE from 'MOD_DIR/member_manage/public/privilege-const';
+import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 
 function noop() {
 }
@@ -114,8 +116,11 @@ class LeftTree extends React.Component {
         let groupId = item.key;
         SalesTeamAction.selectTree(groupId);
         SalesTeamAction.setTeamMemberLoading(true);
-        //获取销售目标
-        SalesTeamAction.getSalesGoals(groupId);
+        // 开通营收中心并且有销售目标的权限
+        if (isOpenCash() && hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL) && groupId) {
+            //获取销售目标
+            SalesTeamAction.getSalesGoals(groupId);
+        }
         SalesTeamAction.getSalesTeamMemberList(groupId);
         SalesTeamAction.setSelectSalesTeamGroup(groupId);
     };
