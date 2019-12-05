@@ -16,7 +16,6 @@ import privilegeConfig_industry from 'MOD_DIR/industry/public/privilege-config';
 const TAB_HAED_HEIGHT = 40; // tabs 头部高度
 import SALES_DEPARTMENT_PRIVILEGE from '../privilege-const';
 import MEMBER_MANAGE_PRIVILEGE from 'MOD_DIR/member_manage/public/privilege-const';
-import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 
 function noop() {
 }
@@ -116,8 +115,8 @@ class LeftTree extends React.Component {
         let groupId = item.key;
         SalesTeamAction.selectTree(groupId);
         SalesTeamAction.setTeamMemberLoading(true);
-        // 开通营收中心并且有销售目标的权限
-        if (isOpenCash() && hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL) && groupId) {
+        // 有销售目标的权限
+        if (hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL) && groupId) {
             //获取销售目标
             SalesTeamAction.getSalesGoals(groupId);
         }

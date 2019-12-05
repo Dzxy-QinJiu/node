@@ -23,7 +23,6 @@ import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 import SALES_DEPARTMENT_PRIVILEGE from '../privilege-const';
 import MEMBER_MANAGE_PRIVILEGE from 'MOD_DIR/member_manage/public/privilege-const';
-import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 
 const tableHeadHeight = 50; // table表格头部高度
 
@@ -1067,8 +1066,8 @@ const MemberList = createReactClass({
 
     //渲染团队目标
     renderSalesGoals: function() {
-        // 开通营收中心并且有销售目标的权限
-        if (!isOpenCash() || !hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL)) {
+        //没有销售目标的权限，不展示
+        if (!hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL)) {
             return;
         }
         let groupGoal = _.get(this.state.salesGoals, 'goal'); // 部门销售目标

@@ -31,7 +31,6 @@ import MemberRecord from './member-record';
 import { storageUtil } from 'ant-utils';
 import ajax from 'ant-ajax';
 import MEMBER_MANAGE_PRIVILEGE from '../privilege-const';
-import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 
 const TAB_KEYS = {
     BASIC_INFO_TAB: '1',//基本信息
@@ -121,8 +120,8 @@ class MemberInfo extends React.Component {
     };
     
     getUserData = (user) => {
-        // 开通营收中心并且有销售目标的权限
-        if (isOpenCash() && hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL) && user.id) {
+        // 有销售目标的权限
+        if (hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL) && user.id) {
             //跟据用户的id获取销售提成和比例
             MemberInfoAction.getSalesGoals({user_id: user.id});
         }
@@ -955,7 +954,7 @@ class MemberInfo extends React.Component {
             //是否是销售角色
             let isSales = _.find(roleNames, roleName => roleName && roleName.indexOf(Intl.get('sales.home.sales', '销售')) !== -1);
             // 开通营收中心并且有销售目标的权限
-            let showSalesGoalPrivilege = isSales && isOpenCash() && hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL);
+            let showSalesGoalPrivilege = isSales && hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL);
             return (
                 <div className="member-detail-basic-container" style={{height: this.getContainerHeight()}}>
                     <GeminiScrollbar>
