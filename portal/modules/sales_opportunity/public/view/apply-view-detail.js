@@ -33,7 +33,7 @@ import {
     formatSalesmanList,
     formatUsersmanList,
     updateUnapprovedCount,
-    isCiviwRealm
+    isCiviwRealm, timeShowFormat
 } from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
@@ -689,7 +689,7 @@ class ApplyViewDetail extends React.Component {
                 }
                 stepArr.push({
                     title: (replyItem.nick_name || userData.getUserData().nick_name) + descrpt,
-                    description: moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
+                    description: timeShowFormat(replyItem.comment_time, oplateConsts.DATE_TIME_FORMAT)
                 });
             });
         }else if(applicantList.status === 'cancel'){

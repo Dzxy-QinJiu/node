@@ -20,7 +20,18 @@ import ApplyDetailCustomer from 'CMP_DIR/apply-components/apply-detail-customer'
 import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
-import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList,handleDiffTypeApply,formatUsersmanList,updateUnapprovedCount,isCiviwRealm,formatSalesmanList,} from 'PUB_DIR/sources/utils/common-method-util';
+import {
+    getApplyTopicText,
+    getApplyResultDscr,
+    getApplyStatusTimeLineDesc,
+    getFilterReplyList,
+    handleDiffTypeApply,
+    formatUsersmanList,
+    updateUnapprovedCount,
+    isCiviwRealm,
+    formatSalesmanList,
+    timeShowFormat,
+} from 'PUB_DIR/sources/utils/common-method-util';
 import {handleTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
@@ -613,7 +624,7 @@ class ApplyViewDetail extends React.Component {
                 }
                 stepArr.push({
                     title: (replyItem.nick_name || replyItem.user_name || userData.getUserData().nick_name || '') + descrpt,
-                    description: moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
+                    description: timeShowFormat(replyItem.comment_time, oplateConsts.DATE_TIME_FORMAT)
                 });
             });
         }else if(applicantList.status === 'cancel'){
