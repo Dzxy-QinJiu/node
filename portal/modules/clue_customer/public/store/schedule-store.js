@@ -77,11 +77,13 @@ ClueCustomerScheduleStore.prototype.cancelEdit = function() {
 ClueCustomerScheduleStore.prototype.afterAddSchedule = function(newSchedule) {
     this.scheduleList.splice(0,1);
     this.scheduleList.unshift(newSchedule);
+    this.total++;
 };
 ClueCustomerScheduleStore.prototype.afterDelSchedule = function(id) {
     this.scheduleList = _.filter(this.scheduleList,(schedule) => {
         return schedule.id !== id;
     });
+    this.total--;
 };
 
 ClueCustomerScheduleStore.prototype.afterHandleStatus = function(newStatusObj) {
