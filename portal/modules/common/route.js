@@ -355,7 +355,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     },
-    'privileges': [privilegeConst_common.KETAO_WEEKLY_REPORTS_CUSTOMER_STAGE_STATISITC_COMMON, privilegeConst_common.KETAO_WEEKLY_REPORTS_CUSTOMER_STAGE_STATISITC_MANAGER]
+    'privileges': [analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL, analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_SELF]
 }, {
     //获取销售新开客户数
     'method': 'get',
