@@ -1,7 +1,6 @@
 /**
  * 用户管理-已有用户-编辑单个应用
  */
-var React = require('react');
 var createReactClass = require('create-react-class');
 import AppUserPanelSwitchAction from '../../action/app-user-panelswitch-actions';
 import UserDetailEditAppActions from '../../action/v2/user-detail-edit-app-actions';
