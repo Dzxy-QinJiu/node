@@ -829,17 +829,25 @@
             }
             .sales-team-label {
                 position: absolute;
-                top: 4px;
+                top: 8px;
                 left: 12px;
             }
             .sales-team-text {
                 float: left;
                 width: 100%;
-                padding: 5px 0;
+                padding: 5px;
                 padding-left: 50px;
                 min-height: 31px;
                 &:hover {
                     background: @bg-lightblue;
+                }
+                // 输入框和保存区域没有对齐的问题调整
+                .basic-edit-field-input {
+                    .ant-form-item-control {
+                        input {
+                            margin-left: 0;
+                        }
+                    }
                 }
             }
 
