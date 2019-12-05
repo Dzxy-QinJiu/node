@@ -31,11 +31,9 @@ class RecommendCustomerCondition extends React.Component {
     hasOtherCondition = (hasSavedRecommendParams) => {
         var checkConditionItem = ['name','startTime','endTime','entTypes','staffnumMax','staffnumMin','capitalMin','capitalMax'];
         var hasOtherCondition = false;
-        _.forEach(checkConditionItem, key => {
-            if(_.isArray(hasSavedRecommendParams[key]) && _.get(hasSavedRecommendParams[key],'[0]')){
-                hasOtherCondition = true;
-            }else if(hasSavedRecommendParams[key]){
-                hasOtherCondition = true;
+        hasOtherCondition = _.some(checkConditionItem, key => {
+            if(!_.isEmpty(hasSavedRecommendParams[key]) ){
+                return true;
             }
         });
         return hasOtherCondition;
