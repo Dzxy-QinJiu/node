@@ -19,7 +19,7 @@ if (hasWindow) {
 }
 const ssoLogin = new SSOClient({
     // SSO所在的服务器
-    ssoOrigin: config.ssoUrl,//'https://sso.curtao.com',
+    ssoOrigin: Oplate.ssoUrl,//'https://sso.curtao.com',
     // 待接入应用的 client_id
     clientId: clientId,
     // 指定语言（用于登录失败时，返回的出错提示所使用的语言，如：zh-CN）
