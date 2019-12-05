@@ -4,7 +4,10 @@ var showTypeConstant = require('../util/constant').SHOW_TYPE_CONSTANT;
 var DateSelectorUtils = require('../../../../components/datepicker/utils');
 var TimeUtil = require('../../../../public/sources/utils/time-format-util');
 let userData = require('../../../../public/sources/user-data');
+import shpPrivilegeConst from '../privilege-const';
+import analysisPrivilegeConst from '../../../analysis/public/privilege-const';
 import {formatRoundingPercentData, getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 function SalesHomeStore() {
     this.setInitState();
     this.bindActions(SalesHomeActions);
@@ -14,7 +17,13 @@ function SalesHomeStore() {
 SalesHomeStore.prototype.setInitState = function() {
     //设置客户、用户、电话、合同总数的初始化数据
     this.setInitTotalData('loading');
-    this.activeView = viewConstant.CUSTOMER;//默认展示客户分析视图
+    if (hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL) || hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_SELF)) {
+        this.activeView = viewConstant.CUSTOMER;//默认展示客户分析视图
+    } else if (hasPrivilege(shpPrivilegeConst.GET_USER_STATISTIC_VIEW) || hasPrivilege(shpPrivilegeConst.USER_ANALYSIS_COMMON)) {
+        this.activeView = viewConstant.USER;//默认展示用户户分析视图
+    } else {
+        this.activeView = viewConstant.PHONE;//默认展示电话统计视图
+    }
     //默认展示本周的时间
     this.timeType = 'week';
     // true:本周截止到今天为止
