@@ -1,7 +1,6 @@
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
-var React = require('react');
 const PropTypes = require('prop-types');
 import { Alert, Icon ,Tooltip } from 'antd';
 import { Button as BootstrapButton, Modal as BootstrapModal } from 'react-bootstrap';
@@ -742,7 +741,9 @@ class UserDetailBasic extends React.Component {
                         hasEditPrivilege: hasEditPrivilege ,
                         validators: [{ validator: checkPhone }],
                         placeholder: Intl.get('user.input.phone', '请输入手机号'),
-                        title: Intl.get('user.phone.set.tip', '修改手机号')
+                        title: Intl.get('user.phone.set.tip', '修改手机号'),
+                        addDataTip: Intl.get('member.phone.add', '添加手机号'),
+                        noDataTip: Intl.get('member.phone.no.data', '未添加手机号'),
                     }}
                     email={{
                         value: userInfo.email,
@@ -755,7 +756,9 @@ class UserDetailBasic extends React.Component {
                             message: Intl.get('common.correct.email', '请输入正确的邮箱')
                         }],
                         placeholder: Intl.get('member.input.email', '请输入邮箱'),
-                        title: Intl.get('user.email.set.tip', '修改邮箱')
+                        title: Intl.get('user.email.set.tip', '修改邮箱'),
+                        noDataTip: Intl.get('crm.contact.email.none', '暂无邮箱'),
+                        addDataTip: Intl.get('crm.contact.email.add', '添加邮箱')
                     }}
                     saveEditInput={AppUserAjax.editAppUser}
                 />
