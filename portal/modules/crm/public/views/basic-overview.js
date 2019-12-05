@@ -539,8 +539,8 @@ class BasicOverview extends React.Component {
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
-                    {!this.props.disableEdit && !isCurtao() ? (
-                        hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) && _.get(this.state.crmUserList, '[0]') ?
+                    {!this.props.disableEdit && !isCurtao() && hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) ? (
+                        _.get(this.state.crmUserList, '[0]') ?
                             this.renderExpireTip() : this.renderApplyUserBlock()) : null}
                     {/*<CustomerStageCard*/}
                     {/*isMerge={this.props.isMerge}*/}
