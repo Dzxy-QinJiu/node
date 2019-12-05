@@ -1034,20 +1034,21 @@ class MemberInfo extends React.Component {
                             : null
                     }
                 </TabPane>
-                <TabPane
-                    tab={Intl.get('member.operation.log', '操作日志')}
-                    key={TAB_KEYS.LOG_TAB}
-                >
-                    {
-                        this.state.activeKey === TAB_KEYS.LOG_TAB ? (
-                            <MemberLog
-                                getContainerHeight={this.getContainerHeight}
-                                userName={_.get(this.state, 'memberInfo.userName.value') ||
-                                       _.get(this.state, 'memberInfo.userName', '')}
-                            />
-                        ) : null
-                    }
-                </TabPane>
+                {hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_LOG) ? (
+                    <TabPane
+                        tab={Intl.get('member.operation.log', '操作日志')}
+                        key={TAB_KEYS.LOG_TAB}
+                    >
+                        {
+                            this.state.activeKey === TAB_KEYS.LOG_TAB ? (
+                                <MemberLog
+                                    getContainerHeight={this.getContainerHeight}
+                                    userName={_.get(this.state, 'memberInfo.userName.value') ||
+                                        _.get(this.state, 'memberInfo.userName', '')}
+                                />
+                            ) : null
+                        }
+                    </TabPane>) : null}
                 <TabPane
                     tab={Intl.get('user.change.record', '变更记录')}
                     key={TAB_KEYS.RECORD_TAB}
