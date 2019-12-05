@@ -24,9 +24,22 @@ class RecommendCustomerCondition extends React.Component {
             registerStartTime: hasSavedRecommendParams.startTime || '',
             registerEndTime: hasSavedRecommendParams.endTime || '',
             hasSavedRecommendParams: hasSavedRecommendParams,
-            showOtherCondition: false
+            showOtherCondition: this.hasOtherCondition(hasSavedRecommendParams),//展示推荐线索其他的条件
         };
     }
+    //除了行业或者地域是否还有选中的其他的筛选条件
+    hasOtherCondition = (hasSavedRecommendParams) => {
+        var checkConditionItem = ['name','startTime','endTime','entTypes','staffnumMax','staffnumMin','capitalMin','capitalMax'];
+        var hasOtherCondition = false;
+        _.forEach(checkConditionItem, key => {
+            if(_.isArray(hasSavedRecommendParams[key]) && _.get(hasSavedRecommendParams[key],'[0]')){
+                hasOtherCondition = true;
+            }else if(hasSavedRecommendParams[key]){
+                hasOtherCondition = true;
+            }
+        });
+        return hasOtherCondition;
+    };
 
     onStoreChange = () => {
 
@@ -251,20 +264,7 @@ class RecommendCustomerCondition extends React.Component {
             saveResult: saveResult
         });
     }
-    //除了行业或者地域是否还有选中的其他的筛选条件
-    hasOtherCondition = () => {
-        var checkConditionItem = ['name','startTime','endTime','entTypes','staffnumMax','staffnumMin','capitalMin','capitalMax'];
-        var {hasSavedRecommendParams} = this.state;
-        var hasOtherCondition = false;
-        _.forEach(checkConditionItem, key => {
-            if(_.isArray(hasSavedRecommendParams[key]) && _.get(hasSavedRecommendParams[key],'[0]')){
-                hasOtherCondition = true;
-            }else if(hasSavedRecommendParams[key]){
-                hasOtherCondition = true;
-            }
-        });
-        return hasOtherCondition;
-    };
+
     handleToggleOtherCondition = () => {
         this.setState({
             showOtherCondition: !this.state.showOtherCondition
@@ -305,13 +305,14 @@ class RecommendCustomerCondition extends React.Component {
         }
         var cls = 'other-condition-container',show_tip = '';
         //是否展示其他的筛选条件
-        if(this.hasOtherCondition() || showOtherCondition){
+        if(showOtherCondition){
             cls += 'show-container';
-            show_tip = '收起';
+            show_tip = Intl.get('lead.recommend.form.hide.some.condition', '收起部分条件');
         }else{
             cls += ' hide-container';
-            show_tip = '展开';
+            show_tip = Intl.get('lead.recommend.form.show.all.condition', '展开全部条件');
         }
+
         return (
             <div className="recommend-customer-condition recommend-customer-condition-wrapper" data-tracename="设置推荐线索条件面板">
                 <div
