@@ -9,7 +9,7 @@ import StatusWrapper from 'CMP_DIR/status-wrapper';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import { AntcChart } from 'antc';
-import { Progress, Tooltip, Icon, Alert, Select,Popover } from 'antd';
+import { Progress, Tooltip, Icon, Alert, Select, Popover } from 'antd';
 const Option = Select.Option;
 import PropTypes from 'prop-types';
 import {DATE_SELECT} from 'PUB_DIR/sources/utils/consts';
@@ -113,6 +113,14 @@ class UserLoginAnalysis extends React.Component {
         let lastLoginParams = this.getUserLastLoginParams(queryParams);
         let reqData = this.getUserLoginScoreParams(queryParams);
         let type = this.getUserLoginType();
+        // 增加多终端筛选
+        // 多终端类型 TODO 参数传值待定
+        let appTerminalType = queryParams && 'appTerminalType' in queryParams ? queryParams.appTerminalType : this.state.appTerminalType;
+        if (appTerminalType) {
+            queryObj.terminal = appTerminalType;
+            lastLoginParams.terminal = appTerminalType;
+            reqData.terminal = appTerminalType;
+        }
         UserLoginAnalysisAction.getUserLoginInfo(queryObj);
         // 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
         UserLoginAnalysisAction.getLoginUserActiveStatistics(lastLoginParams, type);
@@ -571,6 +579,7 @@ class UserLoginAnalysis extends React.Component {
         const showDetailMap = this.state.showDetailMap;
         showDetailMap[app.app_id] = isShow;
         if (isShow) {
+            UserLoginAnalysisAction.setSelectedAppTerminals(app.app_id);
             this.getUserAnalysisData({ appid: app.app_id });
         }
         this.setState({
@@ -623,8 +632,7 @@ class UserLoginAnalysis extends React.Component {
         let type = this.getUserLoginType();
         UserLoginAnalysisAction.getLoginUserActiveStatistics(queryObj, type);
     };
-
-
+    
     // 渲染用户最近的登录信息（登录时长、登录次数、活跃天数）
     renderLastLoginInfo = (app) => {
         const activeInfo = _.get(this.state.appUserDataMap, [app.app_id, 'activeInfo']);
@@ -682,6 +690,31 @@ class UserLoginAnalysis extends React.Component {
         ...this.getStateData()
     };
 
+    // 筛选终端类型
+    onSelectTerminalsUserType = (value) => {
+        UserLoginAnalysisAction.resetState();
+        UserLoginAnalysisAction.setAppTerminalsType(value);
+        this.getUserAnalysisData({ appTerminalType: value });
+    };
+
+    // 渲染多终端类型
+    renderAppTerminalsType = () => {
+        let selectAppTerminals = this.state.selectAppTerminals;
+        // TODO 由于现在后端返回的数据是code,没有返回name, 暂时使用code 展示，需要修改
+        let appTerminals = _.map(selectAppTerminals, terminalType =>
+            <Option key={terminalType.id} value={terminalType.code}> {terminalType.code} </Option>);
+        appTerminals.unshift(<Option value="" id="">{Intl.get('common.all.terminals', '所有終端')}</Option>);
+        return (
+            <Select
+                className="select-app-terminal-type"
+                value={this.state.appTerminalType}
+                onChange={this.onSelectTerminalsUserType}
+            >
+                {appTerminals}
+            </Select>
+        );
+    };
+
     render() {
         const userLoginBlock = (
             <ul>
@@ -706,10 +739,22 @@ class UserLoginAnalysis extends React.Component {
                                         <span className="btn-bar">
                                             {
                                                 this.state.showDetailMap[app.app_id] ?
-                                                    <span className="iconfont icon-up-twoline handle-btn-item" onClick={this.showAppDetail.bind(this, app, false)}></span> :
-                                                    <span className="iconfont icon-down-twoline handle-btn-item" onClick={this.showAppDetail.bind(this, app, true)}></span>
+                                                    <span
+                                                        className="iconfont icon-up-twoline handle-btn-item"
+                                                        onClick={this.showAppDetail.bind(this, app, false)}
+                                                    ></span> :
+                                                    <span
+                                                        className="iconfont icon-down-twoline handle-btn-item"
+                                                        onClick={this.showAppDetail.bind(this, app, true)}></span>
                                             }
                                         </span>
+                                        {
+                                            this.state.showDetailMap[app.app_id] && _.get(this.state.selectAppTerminals, 'length') ? (
+                                                <span className="app-terminals-select">
+                                                    {this.renderAppTerminalsType()}
+                                                </span>
+                                            ) : null
+                                        }
                                     </div>
                                 )}
                                 content={
