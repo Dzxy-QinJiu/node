@@ -30,6 +30,7 @@ class SelectOption extends React.Component {
         );
     };
     componentWillReceiveProps(nextProps) {
+        //如果select中的value被置为空值时，重新set一下select的选中值
         if(!_.isEqual(nextProps.selectOptionValue,this.props.selectOptionValue) && !nextProps.selectOptionValue){
             var formItem = this.props;
             this.props.form.resetFields([_.get(formItem, 'formItemKey')]);
@@ -75,15 +76,21 @@ class SelectOption extends React.Component {
         }
     };
     renderComponentContent = () => {
-        if (this.props.type === 'radio') {
-            return this.renderRadioGroup();
-        } else if (this.props.type === 'checkbox') {
-            return this.renderCheckGroup();
-        } else if (this.props.type === 'option') {
-            return this.renderOptionGroup();
-        } else {
-            return null;
+        var type = this.props.type,content = null;
+        switch (type) {
+            case 'radio':
+                content = this.renderRadioGroup();
+                break;
+            case 'checkbox':
+                content = this.renderCheckGroup();
+                break;
+            case 'option':
+                content = this.renderOptionGroup();
+                break;
+            default:
+                content = null;
         }
+        return content;
     };
 
     render = () => {

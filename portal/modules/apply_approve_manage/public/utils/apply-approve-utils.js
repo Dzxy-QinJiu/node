@@ -419,8 +419,9 @@ export const checkDomainName = function(rule, value, callback) {
     }
 };
 
-//名称的规则是 32个字符， 其中，英文数字算一个字符长度，其他字符一个算2个字符长度。
+//计算字符串长度
 function getDomainPlatLength(str) {
+    //名称的规则是1-32个字符， 其中，英文数字算一个字符，其他字符一个算2个字符。
     var length = str.length + str.replace(/[\da-z]+/ig,'').length;
     return length >= 1 && length <= 32;
 }

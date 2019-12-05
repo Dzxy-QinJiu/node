@@ -34,6 +34,7 @@ class SaveCancelButton extends React.Component {
             this.props.hideSaveTooltip();
         }, this.props.successShowTime);
     };
+    //展示失败信息后，一定时间需要自动消失的定时器
     setErrorTimer = () => {
         clearTimeout(this.errorTimer);
         this.isSetTimered = true;
