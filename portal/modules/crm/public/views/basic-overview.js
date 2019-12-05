@@ -514,6 +514,9 @@ class BasicOverview extends React.Component {
     renderSecondLevelDomain = (subDomain) => {
         return <span className="second-level-domain-name">{`${subDomain}.eagok.com`}</span>;
     };
+    renderPlatFormName = (platFormName) => {
+        return <span className="plat-form-name">{platFormName}</span>;
+    };
 
     //获取集客方式
     getSourceClassify = (sourceClassify) => {
@@ -533,8 +536,8 @@ class BasicOverview extends React.Component {
             tagArray = basicData.immutable_labels.concat(tagArray);
         }
         var noRecordData = !this.state.customerRecord.length && !this.state.customerRecordLoading;
-        var subDomain = _.get(basicData, 'sub_domains', '');
-
+        var subDomain = _.get(basicData, 'sub_domains', '');//域名
+        var platformName = _.get(basicData,'platform_name','');//平台名称
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
@@ -570,6 +573,13 @@ class BasicOverview extends React.Component {
                             />
                         ) : null
                     }
+                    {platformName ? (
+                        <DetailCard
+                            title={`${Intl.get('crm.basic.plat.form.name', '舆情平台名称')}:`}
+                            titleBottomBorderNone
+                            titleDescr={this.renderPlatFormName(platformName)}
+                        />
+                    ) : null}
                     {hasPrivilege(PRIVILEGE_MAP.CRM_CUSTOMER_SCORE_RECORD) && !this.props.disableEdit ? (
                         <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
                             showUserDetail={this.props.showUserDetail}

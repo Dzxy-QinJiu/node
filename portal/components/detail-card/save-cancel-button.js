@@ -18,10 +18,12 @@ class SaveCancelButton extends React.Component {
     isSetTimered = false;
 
     successTimer = null;
+    errorTimer = null;
 
     componentWillUnmount() {
         this.isSetTimered = false;
         clearTimeout(this.successTimer);
+        clearTimeout(this.errorTimer);
     }
 
     setTimer = () => {
@@ -32,6 +34,14 @@ class SaveCancelButton extends React.Component {
             this.props.hideSaveTooltip();
         }, this.props.successShowTime);
     };
+    setErrorTimer = () => {
+        clearTimeout(this.errorTimer);
+        this.isSetTimered = true;
+        this.errorTimer = setTimeout(() => {
+            this.isSetTimered = false;
+            this.props.hideSaveTooltip();
+        }, this.props.errorShowTime);
+    };
 
     renderMsgBlock() {
         if(this.props.saveResult === RESULT_TYPES.SUCCESS) {//显示成功提示信息
@@ -40,7 +50,11 @@ class SaveCancelButton extends React.Component {
             }
             return (<span className="save-success">{this.props.saveSuccessMsg}</span>);
         }else {
+
             if(this.props.saveErrorMsg) {//显示失败信息
+                if(this.props.errorShowTime && !this.isSetTimered){
+                    this.setErrorTimer();
+                }
                 return (<span className="save-error">{this.props.saveErrorMsg}</span>);
             }else { return null; }
         }
@@ -78,6 +92,7 @@ SaveCancelButton.defaultProps = {
     saveResult: '',//保存后的结果（success, error）
     successShowTime: 600,//成功后，提示信息显示的时间
     saveSuccessMsg: '',//成功的提示信息(跟saveResult一起使用)
+    errorShowTime: 0 //有失败提示，过多久要消失
 };
 SaveCancelButton.propTypes = {
     handleSubmit: PropTypes.func,
@@ -91,6 +106,7 @@ SaveCancelButton.propTypes = {
     saveResult: PropTypes.string,
     successShowTime: PropTypes.number,
     saveSuccessMsg: PropTypes.string,
+    errorShowTime: PropTypes.number,
 };
 //保存后的结果类型
 SaveCancelButton.RESULT_TYPES = RESULT_TYPES;

@@ -256,10 +256,18 @@ class ApplyFormAndRules extends React.Component {
     validateBeforeSubmit = (submitObj) => {
         var customiz_form = _.get(submitObj, 'customiz_form');
         //如果有时间相关组件，需要把默认的时间值去掉，要不就会报错
-        _.forEach(customiz_form, item => {
+        _.forEach(customiz_form, (item,index) => {
             if (item.component_type === ALL_COMPONENTS.DATETIME){
                 delete item.defaultValue;
             }
+            //与业务相关的一些组件，字段的key值必须按后端给定的格式传
+            //todo 域名申请约定的相关字段 配置完该流程要及时删掉
+            // if(index === 1){
+            //     item['key'] = 'customer_sign';
+            // }
+            // if(index === 2){
+            //     item['key'] = 'display_name';
+            // }
         });
         return !_.includes(_.map(customiz_form, 'isEditting'), true);
     };

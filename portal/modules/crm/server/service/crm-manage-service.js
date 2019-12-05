@@ -8,8 +8,6 @@ var uploadTimeOut = 5 * 60 * 1000;
 const editCustomerBaseUrl = '/rest/customer/v3/customer/property/:url_type';
 var crmRestApis = {
     customer: '/rest/customer/v3/customer',
-    //获取客户开通的用户列表
-    getCrmUserList: '/rest/base/v1/user/customer/users',
     //获取客户的历史分数
     getHistoryScoreList: '/rest/customer/v2/customer/score/:customer_id/:start_time/:end_time',
     list: '/rest/customer/v2/customer/all',
@@ -160,15 +158,7 @@ exports.getHistoryScoreList = function(req, res, queryObj) {
             res: res
         }, null);
 };
-//获取客户的用户列表
-exports.getCrmUserList = function(req, res, queryObj) {
-    return restUtil.authRest.get(
-        {
-            url: crmRestApis.getCrmUserList,
-            req: req,
-            res: res
-        }, queryObj);
-};
+
 //获取筛选面板的行业列表
 exports.getFilterIndustries = function(req, res) {
     return restUtil.authRest.post(

@@ -30,8 +30,8 @@ export const ALL_COMPONENTS = {
     DATETIME: 'datetime',//日期或者日期加时间
     PRODUCTION: 'prodution',//产品
     CUSTOMERSEARCH: 'customerSearch',//客户的搜索
-    TIMEPERIOD: 'timeperiod'
-
+    TIMEPERIOD: 'timeperiod',
+    USERSEARCH: 'userSearch'
 };
 export const ALL_COMPONENTS_TYPE = {
     TEXTAREA: 'textarea',
@@ -66,6 +66,9 @@ exports.applyComponentsType = [{
 }, {
     name: ALL_COMPONENTS.TIMEPERIOD,
     component: TimePeriod
+}, {
+    name: ALL_COMPONENTS.USERSEARCH,
+    component: SelectOption
 }];
 exports.CONDITION_KEYS = [
     {
@@ -220,6 +223,17 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'default_value': [],
         component: SelectOption,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
+    },
+    {
+        'rulename': Intl.get('apply.approve.user.select', '用户选择'), 'iconfontCls': 'icon-fuwu',
+        'component_type': ALL_COMPONENTS.USERSEARCH,
+        'type': 'option',
+        'placeholder': Intl.get('user.position.select.user', '请选择用户'),
+        'notshowInList': true,
+        'default_value': [],
+        'key': 'managers',
+        component: SelectOption,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     }
 ];
 
@@ -234,8 +248,8 @@ const INNER_SETTING_FLOW = {
 const SELF_SETTING_FLOW = {
     VISITAPPLY: 'visitapply',//拜访申请
     VISITAPPLYTOPIC: Intl.get('apply.my.self.setting.work.flow', '拜访申请'),
-    DOMAINAPPLY: 'domainName',//域名申请
-    DOMAINAPPLYTOPIC: Intl.get('apply.domain.application.work.flow', '域名申请'),
+    DOMAINAPPLY: 'domainName',//舆情平台申请
+    DOMAINAPPLYTOPIC: Intl.get('apply.domain.application.work.flow', '舆情平台申请'),
 };
 exports.SELF_SETTING_FLOW = SELF_SETTING_FLOW;
 exports.INNER_SETTING_FLOW = INNER_SETTING_FLOW;
@@ -292,18 +306,18 @@ exports.getTeamHigerLevel = function() {
         value: 'team_0_true'
     }];
     var levels = [
-        {name: Intl.get('user.number.second', '二'),value: '1'},
-        {name: Intl.get('user.number.three', '三'),value: '2'},
-        {name: Intl.get('user.number.four', '四'),value: '3'},
-        {name: Intl.get('apply.approve.level.five', '五'),value: '4'},
-        {name: Intl.get('apply.approve.level.six', '六'),value: '5'},
-        {name: Intl.get('user.num.seven', '七'),value: '6'},
-        {name: Intl.get('apply.approve.level.eight', '八'),value: '7'},
-        {name: Intl.get('apply.approve.level.nine', '九'),value: '8'},
-        {name: Intl.get('user.num.ten', '十'),value: '9'}];
+        {name: Intl.get('user.number.second', '二'), value: '1'},
+        {name: Intl.get('user.number.three', '三'), value: '2'},
+        {name: Intl.get('user.number.four', '四'), value: '3'},
+        {name: Intl.get('apply.approve.level.five', '五'), value: '4'},
+        {name: Intl.get('apply.approve.level.six', '六'), value: '5'},
+        {name: Intl.get('user.num.seven', '七'), value: '6'},
+        {name: Intl.get('apply.approve.level.eight', '八'), value: '7'},
+        {name: Intl.get('apply.approve.level.nine', '九'), value: '8'},
+        {name: Intl.get('user.num.ten', '十'), value: '9'}];
     _.forEach(levels, item => {
         teamList.push({
-            name: Intl.get('apply.approve.some.level', '第{n}级上级',{n: item.name}),
+            name: Intl.get('apply.approve.some.level', '第{n}级上级', {n: item.name}),
             value: `team_${item.value}_true`
         });
     });
@@ -353,7 +367,7 @@ exports.isSalesOpportunityFlow = function(itemType) {
 exports.isVisitApplyFlow = function(itemType) {
     return itemType === SELF_SETTING_FLOW.VISITAPPLY;
 };
-//是域名申请流程
+//是舆情平台申请流程
 exports.isDomainApplyFlow = function(itemType) {
     return itemType === SELF_SETTING_FLOW.DOMAINAPPLY;
 };
@@ -368,31 +382,31 @@ exports.isLeaveFlow = function(itemType) {
 //是否展示该节点
 exports.isShowCCNode = (item) => {
     var showFlag = false;
-    if (_.isArray(item) && _.get(item,'[0]')){
+    if (_.isArray(item) && _.get(item, '[0]')) {
         showFlag = true;
-    }else if (_.isObject(item)){
-        if (_.get(item, 'all_senior_teams')){
+    } else if (_.isObject(item)) {
+        if (_.get(item, 'all_senior_teams')) {
             showFlag = true;
         }
-        if (_.get(item, 'team_levels[0]','') !== ''){
+        if (_.get(item, 'team_levels[0]', '') !== '') {
             showFlag = true;
         }
     }
     return showFlag;
 };
-exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked','adminApproveChecked','submitFiles','assignNextNodeApprover','distributeSales','distributeSalesToVisit','customerSLDUpdate'];
+exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked', 'adminApproveChecked', 'submitFiles', 'assignNextNodeApprover', 'distributeSales', 'distributeSalesToVisit', 'customerSLDUpdate'];
 export const checkDomainName = function(rule, value, callback) {
     value = _.trim(value);
     if (value) {
         if (domainNameRule.test(value)) {
             //发请求校验是否该域名重复
-            ApplyAction.checkDomainExist({sub_domains: value},(result) => {
-                if (_.isString(result) ){
+            ApplyAction.checkDomainExist({sub_domains: value}, (result) => {
+                if (_.isString(result)) {
                     callback(new Error(result || Intl.get('apply.domain.name.check.err', '二级域名校验失败！')));
-                }else{
-                    if (result){
+                } else {
+                    if (result) {
                         callback(new Error(Intl.get('apply.domain.sub.name.exist', '该域名已存在')));
-                    }else{
+                    } else {
                         callback();
                     }
                 }
@@ -400,8 +414,48 @@ export const checkDomainName = function(rule, value, callback) {
         } else {
             callback(new Error(Intl.get('apply.domain.descriptipn.reg', '域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间')));
         }
-    }
-    else{
+    } else {
         callback();
     }
 };
+
+//名称的规则是 32个字符， 其中，英文数字算一个字符长度，其他字符一个算2个字符长度。
+function getDomainPlatLength(str) {
+    var length = str.length + str.replace(/[\da-z]+/ig,'').length;
+    return length >= 1 && length <= 32;
+}
+
+export const checkPlatName = function(rule, value, callback) {
+    value = _.trim(value);
+    if (value) {
+        if (getDomainPlatLength(value)) {
+            callback();
+        } else {
+            callback(new Error(Intl.get('apply.domain.plat.name.reg', '平台名称长度在1到32个字符之间(英文数字算一个字符，其他字符一个算2个字符)')));
+        }
+    } else {
+        callback();
+    }
+};
+
+const formItemLayout = {
+    labelCol: {
+        xs: {span: 24},
+        sm: {span: 6},
+    },
+    wrapperCol: {
+        xs: {span: 24},
+        sm: {span: 18},
+    },
+};
+const maxFormItemLayout = {
+    labelCol: {
+        xs: {span: 0},
+        sm: {span: 0},
+    },
+    wrapperCol: {
+        xs: {span: 24},
+        sm: {span: 24},
+    },
+};
+

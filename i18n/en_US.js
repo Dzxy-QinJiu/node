@@ -704,6 +704,7 @@ var en_US = {
     'user.jscode.copy.trace': 'copy the trace code',//复制跟踪代码
     'user.test.error.tip': 'Test failed',//测试失败
     'user.list.check.refresh': 'Refresh to view the user list',//刷新查看用户列表
+    'user.list.click.user.detail': 'Click to see user detail',//点击可查看用户详情
     //账号相关start
     'user.login.browser.chrom': 'Chrome',//谷歌
     'user.login.browser.Firefox': 'Firefox',//火狐
@@ -1875,6 +1876,7 @@ var en_US = {
     'crm.customer.pool.rule.own.visible': 'The self released is invisible',//自己释放的自己不可见
     'crm.filter.extract.from.customer.pool': 'Customers extracted from the customer pool',//从客户池中提取的客户
     'crm.basic.second.level.domain': 'Public opinion platform domain name',//舆情平台域名
+    'crm.basic.plat.form.name': 'Public opinion platform name',//舆情平台名称
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
@@ -3501,8 +3503,10 @@ var en_US = {
     'apply.time.distinct.am': 'Distinguish between afternoon and afternoon',//区分上下午
     'apply.form.has.edit.components': 'Do you have a component or edit state?',//您有组件还是编辑状态
     'apply.my.self.setting.work.flow': 'Visit apply',//拜访申请
-    'apply.domain.application.work.flow': 'Domain name application',//域名申请
+    'apply.domain.application.work.flow': 'Domain name application',//舆情平台申请
     'apply.domain.descriptipn.reg': 'The domain name description can only contain letters, numbers, underscores (cannot begin or end with a dash), and is between 1 and 32 in length.',//域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间
+    'apply.domain.plat.name.reg': 'Platform name length is between 1 and 32 characters (English characters count as one character, and other characters count as 2 characters)',//平台名称长度在1到32个字符之间(英文数字算一个字符，其他字符一个算2个字符)
+    'apply.domain.at.least.one.item': 'Platform domain name, platform name, organization administrator, should write at least one!',//平台域名，平台名称，组织管理员，至少应写一项!
     'apply.domain.name.check.err': 'Second-level domain name verification failed!',//二级域名校验失败！
     'apply.domain.sub.name.exist': 'The domain already exists',//该域名已存在
     'apply.approve.set.approver': 'Assgin approver',//指定审批人
