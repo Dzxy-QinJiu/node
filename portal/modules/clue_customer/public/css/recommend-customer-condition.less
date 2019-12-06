@@ -6,14 +6,28 @@
     margin-bottom: 12px;
   }
   form {
+    .area-selector{
+      .ant-col-24.ant-form-item-label{
+        padding: 0;
+        line-height: 32px;
+      }
+    }
     .ant-form-item{
       width:100%;
+      margin-bottom: 4px;
       input, textarea, .ant-select{
         width: 100%
       }
-      .ant-form-item-label label{
-        font-size: 14px;
-        color:#999;
+
+      .ant-form-item-label{
+        text-align: left;
+        label{
+          font-size: 14px;
+          color:#999;
+          &:after{
+            content: ''
+          }
+        }
       }
       .ant-form-explain{
         text-align: left;
@@ -39,7 +53,8 @@
      .show-hide-tip{
         font-size: 13px;
         cursor:pointer;
-        color:@FILTER-BUTTON
+        color:@FILTER-BUTTON;
+        float: left;
       }
     .submit-button-container{
  
@@ -56,9 +71,6 @@
           margin:0 auto;
         }
       }
-    }
-    .show-hide-tip{
-      text-align: right;
     }
     .other-condition-container{
        &.show-container{

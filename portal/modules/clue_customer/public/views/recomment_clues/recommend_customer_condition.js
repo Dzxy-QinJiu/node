@@ -273,12 +273,10 @@ class RecommendCustomerCondition extends React.Component {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const formItemLayout = {
             labelCol: {
-                xs: {span: 24},
-                sm: {span: 4},
+                sm: {span: 24},
             },
             wrapperCol: {
-                xs: {span: 24},
-                sm: {span: 20},
+                sm: {span: 24},
             },
         };
         var recommendIndustry = this.state.recommendIndustry;
@@ -342,7 +340,7 @@ class RecommendCustomerCondition extends React.Component {
                                     </Select>
                                 )}
                         </FormItem>
-                        <AntcAreaSelection labelCol="4" wrapperCol="20" width="100%"
+                        <AntcAreaSelection labelCol="24" wrapperCol="24" width="100%"
                             colon={false}
                             label={Intl.get('crm.96', '地域')}
                             placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
@@ -351,9 +349,6 @@ class RecommendCustomerCondition extends React.Component {
                             countyName={hasSavedRecommendParams.district}
                             updateLocation={this.updateLocation}
                         />
-                        <div className='show-hide-tip' onClick={this.handleToggleOtherCondition}>
-                            {show_tip}
-                        </div>
                         <div className={cls}>
                             <FormItem
                                 label={Intl.get('clue.recommed.keyword.list', '关键词')}
@@ -368,9 +363,9 @@ class RecommendCustomerCondition extends React.Component {
                                     )}
                             </FormItem>
                             <div className="ant-row ant-form-item">
-                                <div className="ant-form-item-label ant-col-xs-24 ant-col-sm-4">
+                                <div className="ant-form-item-label ant-col-xs-24">
                                     <label >{Intl.get('clue.customer.register.time', '注册时间')}</label></div>
-                                <div className="ant-form-item-control-wrapper ant-col-xs-24 ant-col-sm-20">
+                                <div className="ant-form-item-control-wrapper ant-col-xs-24">
                                     <div className="ant-form-item-control has-success">
                                         <RangePicker defaultValue={defaultValue} onChange={this.onDateChange}/>
                                     </div>
@@ -441,6 +436,9 @@ class RecommendCustomerCondition extends React.Component {
                             </FormItem>
                         </div>
                         <div className="submit-button-container">
+                            <div className='show-hide-tip' onClick={this.handleToggleOtherCondition}>
+                                {show_tip}
+                            </div>
                             <SaveCancelButton loading={this.state.isSaving}
                                 saveErrorMsg={this.state.saveMsg}
                                 handleSubmit={this.handleSubmit}
