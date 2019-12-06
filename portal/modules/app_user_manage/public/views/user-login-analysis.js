@@ -702,7 +702,7 @@ class UserLoginAnalysis extends React.Component {
         let selectAppTerminals = this.state.selectAppTerminals;
         // TODO 由于现在后端返回的数据是code,没有返回name, 暂时使用code 展示，需要修改
         let appTerminals = _.map(selectAppTerminals, terminalType =>
-            <Option key={terminalType.id} value={terminalType.code}> {terminalType.code} </Option>);
+            <Option key={terminalType.id} value={terminalType.name}> {terminalType.name} </Option>);
         appTerminals.unshift(<Option value="" id="">{Intl.get('common.all.terminals', '所有終端')}</Option>);
         return (
             <Select
