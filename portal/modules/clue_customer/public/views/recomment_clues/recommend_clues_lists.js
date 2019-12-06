@@ -272,7 +272,10 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     // 单个提取线索
     handleExtractClueAssignToSale(record, flag, isDetailExtract) {
-        if (!this.state.salesMan && flag) {
+        if(this.state.singleExtractLoading){
+            //防止多次点击提取多次的情况
+            return;
+        }else if (!this.state.salesMan && flag) {
             clueCustomerAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
         } else {
             this.setState({
@@ -623,6 +626,9 @@ class RecommendCustomerRightPanel extends React.Component {
         updateGuideMark(BOOT_PROCESS_KEYS.EXTRACT_CLUE);
     };
     handleBatchAssignClues = (submitObj) => {
+        if(this.state.batchExtractLoading){
+            return;
+        }
         this.setState({
             batchExtractLoading: true
         });
@@ -698,6 +704,7 @@ class RecommendCustomerRightPanel extends React.Component {
                         data-tracename="点击批量提取线索按钮"
                         className='btn-item common-sale-batch-extract'
                         onClick={this.handleSubmitAssignSalesBatch}
+                        disabled={this.state.batchExtractLoading}
                     >
                         {isWebMin ? <span className="iconfont icon-extract"></span> :
                             <React.Fragment>
