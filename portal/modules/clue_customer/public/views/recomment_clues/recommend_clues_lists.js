@@ -272,7 +272,10 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     // 单个提取线索
     handleExtractClueAssignToSale(record, flag, isDetailExtract) {
-        if (!this.state.salesMan && flag) {
+        if(this.state.singleExtractLoading){
+            //防止多次点击提取多次的情况
+            return;
+        }else if (!this.state.salesMan && flag) {
             clueCustomerAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
         } else {
             this.setState({
