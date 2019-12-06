@@ -18,7 +18,16 @@ import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList,handleDiffTypeApply,formatUsersmanList,updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
+import {
+    getApplyTopicText,
+    getApplyResultDscr,
+    getApplyStatusTimeLineDesc,
+    getFilterReplyList,
+    handleDiffTypeApply,
+    formatUsersmanList,
+    updateUnapprovedCount,
+    timeShowFormat
+} from 'PUB_DIR/sources/utils/common-method-util';
 import {handleTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 import {TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
@@ -593,7 +602,7 @@ class ApplyViewDetail extends React.Component {
                 }
                 stepArr.push({
                     title: (replyItem.nick_name || userData.getUserData().nick_name || '') + descrpt,
-                    description: moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
+                    description: timeShowFormat(replyItem.comment_time, oplateConsts.DATE_TIME_FORMAT)
                 });
             });
         }
