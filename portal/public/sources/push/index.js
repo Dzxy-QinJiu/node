@@ -153,7 +153,7 @@ function applyApproveUnhandledListener(data) {
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_VISIT, data);
                 break;
             case SELF_SETTING_FLOW.DOMAINAPPLYTOPIC:
-                //这里应该用的是域名申请手动输入的名字
+                //这里应该用的是舆情平台申请手动输入的名字
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_DOMAIN, data);
                 break;

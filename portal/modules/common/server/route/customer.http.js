@@ -9,5 +9,12 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
+    }, {
+        'method': 'get',
+        'path': '/rest/crm/user_list',
+        'handler': 'getCrmUserList',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

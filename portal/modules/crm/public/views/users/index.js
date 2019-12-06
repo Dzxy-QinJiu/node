@@ -787,24 +787,30 @@ class CustomerUsers extends React.Component {
                     {crmUserList.map((userObj, index) => {
                         let user = _.isObject(userObj) ? userObj.user : {};
                         let userNameText = `${_.get(user, 'user_name', '')}(${_.get(user, 'nick_name', '')})`;
+                        let isManager = _.get(user, 'group_position', '') === 'manager';//该用户是否是管理员
                         return (
                             <div className="crm-user-item" key={index}>
                                 <div className="crm-user-name">
                                     {isShowCheckbox ? (
                                         <Checkbox checked={user.checked} disabled={!!this.state.applyType}
                                             onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
+                                            {isManager ? <i className='iconfont icon-team-role' title={Intl.get('common.managers', '管理员')}></i> : null}
                                             <span className={classNames('user-name-text', {'can-click-open-detail': !this.props.isMerge})}
                                                 title={userNameText}
                                                 onClick={this.showUserDetail.bind(this, user.user_id)}>
                                                 {userNameText}
                                             </span>
                                         </Checkbox>) :
-                                        <span
-                                            className={classNames('user-name-text', {'can-click-open-detail': !this.props.isMerge})}
-                                            title={userNameText}
-                                            onClick={this.showUserDetail.bind(this, user.user_id)}>
-                                            {userNameText}
+                                        <span>
+                                            {isManager ? <i className='iconfont icon-team-role' title={Intl.get('common.managers', '管理员')}></i> : null}
+                                            <span
+                                                className={classNames('user-name-text', {'can-click-open-detail': !this.props.isMerge})}
+                                                title={userNameText}
+                                                onClick={this.showUserDetail.bind(this, user.user_id)}>
+                                                {userNameText}
+                                            </span>
                                         </span>
+
                                     }
                                 </div>
                                 <div

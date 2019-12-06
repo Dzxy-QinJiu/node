@@ -94,15 +94,6 @@ exports.getHistoryScoreList = function(req, res) {
             res.status(500).json(err.message);
         });
 };
-//获取客户的用列表
-exports.getCrmUserList = function(req, res) {
-    crmService.getCrmUserList(req, res, req.query)
-        .on('success', function(data) {
-            res.status(200).json(data);
-        }).on('error', function(err) {
-            res.status(500).json(err.message);
-        });
-};
 
 //根据客户名获取行政级别
 exports.getAdministrativeLevel = function(req, res) {

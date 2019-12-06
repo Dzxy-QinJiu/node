@@ -705,6 +705,7 @@ var zh_CN = {
     'user.jscode.copy.trace': '复制跟踪代码',
     'user.test.error.tip': '测试失败',
     'user.list.check.refresh': '刷新查看用户列表',
+    'user.list.click.user.detail': '点击可查看用户详情',
 
     //账号相关start
     'user.login.browser.chrom': '谷歌',
@@ -1897,6 +1898,7 @@ var zh_CN = {
     'crm.customer.pool.rule.own.visible': '自己释放的自己不可见',
     'crm.filter.extract.from.customer.pool': '从客户池中提取的客户',
     'crm.basic.second.level.domain': '舆情平台域名',
+    'crm.basic.plat.form.name': '舆情平台名称',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
@@ -3528,8 +3530,10 @@ var zh_CN = {
     'apply.time.distinct.am': '区分上下午',
     'apply.form.has.edit.components': '您有组件还是编辑状态',
     'apply.my.self.setting.work.flow': '拜访申请',
-    'apply.domain.application.work.flow': '域名申请',
+    'apply.domain.application.work.flow': '舆情平台申请',
     'apply.domain.descriptipn.reg': '域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间',
+    'apply.domain.plat.name.reg': '平台名称长度在1到32个字符之间(英文数字算一个字符，其他字符一个算2个字符)',
+    'apply.domain.at.least.one.item': '平台域名，平台名称，组织管理员，至少应写一项!',
     'apply.domain.name.check.err': '二级域名校验失败！',
     'apply.domain.sub.name.exist': '该域名已存在',
     'apply.approve.set.approver': '指定审批人',
