@@ -1,7 +1,6 @@
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
-var React = require('react');
 var createReactClass = require('create-react-class');
 require('./index.less');
 var language = require('PUB_DIR/language/getLanguage');
@@ -22,6 +21,7 @@ import UserTimeRangeField from 'CMP_DIR/user_manage_components/user-time-rangefi
 import UserOverDraftField from 'CMP_DIR/user_manage_components/user-over-draftfield';
 import UserTwoFactorField from 'CMP_DIR/user_manage_components/user-two-factorfield';
 import UserMultiLoginField from 'CMP_DIR/user_manage_components/user-multilogin-radiofield';
+import UserAppTerminalCheckboxField from 'CMP_DIR/user_manage_components/user-app-terminal-checkboxfield';
 import AppRolePermission from '../app-role-permission';
 import DetailCard from 'CMP_DIR/detail-card';
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
@@ -39,7 +39,8 @@ const AppPropertySetting = createReactClass({
         UserTwoFactorField,
         UserTypeRadioField,
         UserMultiLoginField,
-        UserStatusRadioField
+        UserStatusRadioField,
+        UserAppTerminalCheckboxField
     ],
 
     propTypes: {
@@ -64,6 +65,7 @@ const AppPropertySetting = createReactClass({
         appInfo: PropTypes.object,
         appSelectRoleError: PropTypes.string,
         height: PropTypes.string,
+        appList: PropTypes.array, // 应用列表
     },
 
     getDefaultProps() {
@@ -192,9 +194,7 @@ const AppPropertySetting = createReactClass({
         //根据传入的配置生成配置(修改单个应用，修改申请单-审批)
         const createPropertySettingByAppsSetting = () => {
             _.each(selectedApps, (currentApp) => {
-
                 const appSettingConfig = appsSetting[currentApp.app_id];
-
                 //检查角色、权限
                 function checkRolePermission() {
                     if (!originAppSetting.roles) {
@@ -252,6 +252,9 @@ const AppPropertySetting = createReactClass({
                 }
                 if (this.props.showMultiLogin) {
                     checkSingleProp('multilogin');
+                }
+                if (this.props.isSingleAppEdit && _.get(appSettingConfig, 'terminals')) {
+                    checkSingleProp('terminals');
                 }
                 checkRolePermission();
                 checkTime();
@@ -351,6 +354,8 @@ const AppPropertySetting = createReactClass({
         var currentAppInfo = this.state.appPropSettingsMap[currentApp.app_id] || {};
         var selectedRoles = currentAppInfo.roles || [];
         var selectedPermissions = currentAppInfo.permissions || [];
+        let selectedAppAllTerminals = _.find(this.props.appList, item => item.app_id === app_id);
+        let isShowAppTerminals = selectedAppAllTerminals && !_.isEmpty(selectedAppAllTerminals.app_terminals);
         return (
             <div className={this.state.changeCurrentAppLoading ? 'app-property-container-content change-current-app-loading' : 'app-property-container-content'}>
                 <div className="app-property-custom-settings">
@@ -451,7 +456,24 @@ const AppPropertySetting = createReactClass({
                                     }
                                 </div>
                             </div>
-                        }                       
+                        }
+                        {
+                            isShowAppTerminals ? (
+                                <div className="form-item">
+                                    <div className="form-item-label">终端：</div>
+                                    <div className="form-item-content">
+                                        {
+                                            this.renderUserAppTerminalCheckboxBlock({
+                                                isCustomSetting: true,
+                                                appId: currentApp.app_id,
+                                                globalTerminals: defaultSettings.terminals,
+                                                appAllTerminals: _.get(selectedAppAllTerminals, 'app_terminals')
+                                            })
+                                        }
+                                    </div>
+                                </div>
+                            ) : null
+                        }
                     </div>
                     {
                         this.props.appSelectRoleError && !selectedRoles.length ? (

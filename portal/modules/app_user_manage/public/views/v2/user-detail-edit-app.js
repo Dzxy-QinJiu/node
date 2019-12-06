@@ -12,6 +12,7 @@ import OperationStepsFooter from '../../../../../components/user_manage_componen
 import AppUserUtil from '../../util/app-user-util';
 import PropTypes from 'prop-types';
 import {isEqualArray} from 'LIB_DIR/func';
+import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 
 //记录上下留白布局
@@ -26,7 +27,10 @@ const UserDetailEditApp = createReactClass({
     displayName: 'UserDetailEditApp',
 
     getInitialState() {
-        return UserDetailEditAppStore.getState();
+        return {
+            appList: [], // 拥有列表
+            ...UserDetailEditAppStore.getState()
+        };
     },
     propTypes: {
         appInfo: PropTypes.object,
@@ -48,7 +52,14 @@ const UserDetailEditApp = createReactClass({
     componentDidMount() {
         UserDetailEditAppStore.listen(this.onStoreChange);
         $(window).on('resize', this.onStoreChange);
+        this.getAppList();
         UserDetailEditAppActions.setInitialData(this.props.appInfo);
+    },
+
+    getAppList(){
+        getAppList(appList => {
+            this.setState({appList: appList});
+        });
     },
 
     componentWillUnmount() {
@@ -95,6 +106,8 @@ const UserDetailEditApp = createReactClass({
         changeAppInfo.user_type = appData.user_type.value;
         //多次登录(平台部的单词拼错了)
         changeAppInfo.mutilogin = +appData.multilogin.value;
+        // 多终端状态
+        changeAppInfo.terminals = appData.terminals.value;
         //角色
         changeAppInfo.roles = appData.roles;
         //权限
@@ -160,6 +173,12 @@ const UserDetailEditApp = createReactClass({
         if (_.get(savedAppSetting, 'multilogin.setted')) {
             submitData.mutilogin = savedAppSetting.multilogin.value; //多次登录(平台部的单词拼错了)
         }
+
+        // 判断是否修改了多终端类型
+        if (_.get(savedAppSetting, 'terminals.setted')) {
+            submitData.terminals = savedAppSetting.terminals.value;
+        }
+
         // 未修改之前的应用角色
         let originalAppRoles = this.props.appInfo.roles;
         // 修改之后的应用角色
@@ -239,6 +258,7 @@ const UserDetailEditApp = createReactClass({
                     isSingleAppEdit={true}
                     appSelectRoleError={this.state.appSelectRoleError}
                     appInfo={this.props.appInfo}
+                    appList={this.state.appList}
                 />
                 <OperationStepsFooter
                     currentStep={2}
