@@ -362,6 +362,7 @@ var en_US = {
     'register.wechat.register.bind': 'Registration of new accounts',//注册新账号
     'register.wechat.bind.btn': 'Bind immediately', // 立即绑定
     'login.wechat.register.login.error': 'WeChat register login failed',//微信号注册登录失败
+    'register.personal.title': 'Register for personal',//注册个人版
 
     //首页
     'home.page': 'Home page',//首页
@@ -1834,6 +1835,7 @@ var en_US = {
     'crm.customer.release.pool': 'Release to customer pool',//释放到客户池
     'crm.customer.delete': 'After deletion, the customer can be found in the recycle bin. Are you sure you want to delete it?',//删除后，可以在回收站中找回该客户，您确定要删除吗？
     'crm.customer.release.confirm.tip': 'After release to the customer pool, other people can also view and extract. Are you sure you want to release it?',//释放到客户池后，其他人也可以查看、提取，您确定要释放吗？
+    'crm.customer.personal.release.confirm.tip': 'After release, it can be extracted from the customer pool',//释放后可以再从客户池提取
     'crm.customer.release.failed': 'Customer Release Failed',//释放客户失败
     'crm.customer.pool.failed': 'Failure to get customer pool customer',//获取客户池客户失败
     'crm.customer.extract.failed': 'Failure to extract customer',//提取客户失败
@@ -2885,6 +2887,7 @@ var en_US = {
     'crm.75': '',//点
     'scan.ketao.qrcode.download.tip': 'Scan to download KETAO APP Android',//扫码下载客套APP安卓端
     'config.manage.input.teleRepeat': 'The phone number has been recorded in',//该电话号码已录入
+    'config.not.fill.in': 'Not to fill in',//暂不填写
     'common.ketao.app': 'Ketao APP',//客套APP
     'contract.130': 'Social expenses',//交际费
     'contract.131': 'Local Transportation',//市内交通费
@@ -3100,6 +3103,7 @@ var en_US = {
     'clue.customer.release.pool': 'Release to clue pool',//释放到线索池
     'clue.customer.batch.release': 'Batch release',//批量释放
     'clue.customer.release.confirm.tip': 'When released into the clue pool, other people can also view and extract it. Are you sure you want to release it?',//释放到线索池后，其他人也可以查看、提取，您确定要释放吗？
+    'clue.customer.personal.release.confirm.tip': 'After release, it can be extracted from the cue pool',//释放后可以再从线索池提取
     'clue.customer.fail.to.release.tip': 'Fail to release to clue pool',//释放线索失败
     'clue.pool.batch.extract.clue': 'Batch extract', // 批量提取
     'clue.extract.get.list.failed': 'Failed to get extract clue lists', // 获取提取线索列表失败
@@ -3115,6 +3119,10 @@ var en_US = {
     'clue.customer.has.clue.can.extract': 'You can extract clues from here',//您可以从这里提取线索哦
     'lead.recommend.refresh.list': 'If there is no lead that matches your needs, you can',//如果没有符合您需求的线索，您可以
     'lead.recommend.change.condition': 'Please have a try',//再试试
+    'clue.customer.export.select.clue': 'Export selected clues',//导出选中的线索
+    'lead.recommend.form.show.all.condition': 'Show all conditions',//展开全部条件
+    'lead.recommend.form.hide.some.condition': 'Hide some condition',//收起部分条件
+    'boot.select.industry.count.tip': 'You can select {count} at most',//最多可选择{count}个行业
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3815,9 +3823,13 @@ var en_US = {
     'payment.renewal.version.success': 'You have successfully renewed the subscription. {time} expires',//您已成功续费，{time} 到期
     'payment.get.payment.mode.faild': 'Failed to obtain payment channel',//获取支付渠道失败
     'payment.get.discount.faild': 'Failed to get item discount information',//获取商品折扣信息失败
-    'payment.please.upgrade.company.version': 'Please upgrade to enterprise first. You can contact our sales: {contact}',//请先升级为企业版。您可以联系我们的销售：{contact}
+    'payment.please.upgrade.company.version': 'Please first upgrade to the basic version of the above version, contact sales: {contact}',//请先升级到基础版以上版本，联系销售：{contact}
     /*支付流程 --- end*/
 
+    /*个人试用 --- start*/
+    'personal.welcome.use.curtao': 'Welcome to use the Curtao',//欢迎使用客套
+    'personal.open.success.tip': 'Congratulations! You have successfully opened the trial version. The rest of the trial period is {count} days',//恭喜您成功开通试用版，试用期剩余 {count} 天
+    /*个人试用 --- end*/
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': 'Your probation period remains {time} days, whether {upgrade}？',//您的试用期剩余{time}天，是否{upgrade}
     'organization.company.trial.expired.tip': 'The rest of your probationary period {time} days, please contact our sales staff: {contact}',//您的试用期剩余{time}天，请联系我们的销售人员: {contact}

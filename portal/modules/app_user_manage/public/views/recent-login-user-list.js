@@ -42,6 +42,7 @@ import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import { AntcTable } from 'antc';
 import { userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
+import USER_MANAGE_PRIVILEGE from '../privilege-const';
 
 class RecentLoginUsers extends React.Component {
     constructor(props) {
@@ -304,7 +305,7 @@ class RecentLoginUsers extends React.Component {
 
                     return (
                         <div title={user_name}>
-                            {hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && isShown ?
+                            {hasPrivilege(USER_MANAGE_PRIVILEGE.USER_QUERY) && isShown ?
                                 <i className="iconfont icon-warn-icon unnormal-login"
                                     title={Intl.get('user.login.abnormal', '异常登录')} /> : null}
                             {user_name}

@@ -23,7 +23,7 @@ const TabPane = Tabs.TabPane;
 import TradeRecord from './views/trade-record';
 import history from 'PUB_DIR/sources/history';
 import { getOrganizationInfo } from 'PUB_DIR/sources/utils/common-data-util';
-
+import userInfoPrivilege from './privilege-config';
 const TAB_KEYS = {
     OPERATE_RECORD_TAB: '1',// 操作记录
     TRADE_TAB: '2',// 交易记录
@@ -165,7 +165,7 @@ var UserInfoPage = createReactClass({
                             }
                         </TabPane>
                         {
-                            hasPrivilege('CURTAO_TRADE_ORDERS') ? (
+                            hasPrivilege(userInfoPrivilege.CURTAO_TRADE_ORDERS) ? (
                                 <TabPane
                                     tab={Intl.get('user.trade.record', '购买记录')}
                                     key={TAB_KEYS.TRADE_TAB}
@@ -180,6 +180,7 @@ var UserInfoPage = createReactClass({
                                 </TabPane>
                             ) : null
                         }
+
                     </Tabs>
                 </div>
             </div>

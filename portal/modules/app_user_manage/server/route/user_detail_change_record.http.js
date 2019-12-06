@@ -3,6 +3,8 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/5/11.
  */
+import user_info_privilegeConst from '../../../user_info/public/privilege-config';
+
 module.exports = {
     module: 'app_user_manage/server/action/user_detail_change_record_controller',
     routes: [{
@@ -13,7 +15,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_TIME_LINE'
+            user_info_privilegeConst.BASE_QUERY_PERMISSION_MEMBER
         ]
     },]
 };

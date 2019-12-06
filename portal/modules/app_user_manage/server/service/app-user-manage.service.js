@@ -492,7 +492,7 @@ function getAppUserTypeDefaultConfig(req, res, applyBasicDetail, user_type, emit
     // 获取登陆用户的权限
     let privilegesArray = req.session.user && req.session.user.privileges ? req.session.user.privileges : [];
     // GET_APP_EXTRA_GRANTS获取应用的默认配置信息
-    let index = _.indexOf(privilegesArray, 'GET_APP_EXTRA_GRANTS');
+    let index = _.indexOf(privilegesArray, 'BASE_QUERY_PERMISSION_APPLICATION');
     if (index !== -1 && _.get(applyBasicDetail, 'apps[0]')) {
         let appIdList = _.map(applyBasicDetail.apps, 'client_id');
         let obj = {

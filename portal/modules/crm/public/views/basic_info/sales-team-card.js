@@ -15,8 +15,11 @@ import {
     getSalesmanList
 } from 'PUB_DIR/sources/utils/common-data-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
+import {formatSalesmanList, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
+import {checkPrivilege} from '../../utils/crm-util';
+import crmPrivilegeConst from '../../privilege-const';
+import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 
 //展示的类型
 const DISPLAY_TYPES = {
@@ -28,13 +31,6 @@ const DISPLAY_TYPES = {
 const SALES_EDIT_TYPES = {
     SALES_TEAM: 'sales_team',//负责人及团队的修改
     SECOND_SALES_TEAM: 'second_sales_team'//联合跟进人及团队的修改
-};
-//修改的权限
-const EDIT_PRIVILIGES = {
-    //修复负责人的权限
-    EDIT_SALES: 'CUSTOMER_UPDATE_SALES',
-    //修改联合跟进人的权限
-    EDIT_SECOND_SALES: 'CRM_ASSERT_CUSTOMER_SALES'
 };
 //编辑表单的宽度设置
 const EDIT_FEILD_WIDTH = {
@@ -81,7 +77,7 @@ class SalesTeamCard extends React.Component {
 
     componentDidMount() {
         //不是普通销售时，获取负责人、联合跟进人修改时的下拉列表
-        if (!this.isCommonSales()) {
+        if (!isCommonSalesOrPersonnalVersion()) {
             // 验证是否能修改负责人和联合跟进人
             this.checkCanEditSales(this.state.customerId);
             this.checkCanEditSecondSales(this.state.customerId);
@@ -112,7 +108,7 @@ class SalesTeamCard extends React.Component {
         if (nextProps.customerId !== this.state.customerId) {
             //切换客户时，重新设置state数据
             this.setState(this.getInitStateData(nextProps));
-            if(!this.isCommonSales()) {
+            if(!isCommonSalesOrPersonnalVersion()) {
                 // 验证是否能修改负责人和联合跟进人
                 this.checkCanEditSales(nextProps.customerId);
                 this.checkCanEditSecondSales(nextProps.customerId);
@@ -426,13 +422,13 @@ class SalesTeamCard extends React.Component {
     //是否可修改负责人
     enableEditSales() {
         //有修改负责人的权限，可修改，不是普通销售,负责人是我团队的人
-        return hasPrivilege(EDIT_PRIVILIGES.EDIT_SALES) && !this.props.disableEdit && !this.isCommonSales();
+        return checkPrivilege([crmPrivilegeConst.CUSTOMER_UPDATE, crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL]) && !this.props.disableEdit && !isCommonSalesOrPersonnalVersion();
     }
 
     //是否可修改联合跟进人
     enableEditSecondSales() {
-        //有修改联合跟进人的权限，可修改，不是普通销售
-        return hasPrivilege(EDIT_PRIVILIGES.EDIT_SECOND_SALES) && !this.props.disableEdit && !this.isCommonSales();
+        //有修改联合跟进人的权限，可修改，不是普通销售或者个人版
+        return checkPrivilege(crmPrivilegeConst.CRM_ASSERT_CUSTOMER_SALES) && !this.props.disableEdit && !isCommonSalesOrPersonnalVersion();
     }
 
     // 验证是否可以处理负责人
@@ -507,47 +503,55 @@ class SalesTeamCard extends React.Component {
 
         return (
             <div className="sales-team-show-block">
-                <div className={salesTeam}>
-                    <span className="sales-team-label">{Intl.get('crm.6', '负责人')}:</span>
-                    <BasicEditSelectField
-                        width={EDIT_FEILD_WIDTH.SALES}
-                        updateMergeCustomer={this.props.updateMergeCustomer}
-                        id={this.state.customerId}
-                        displayText={this.getSalesTeamText(this.state.userName, this.state.salesTeam)}
-                        value={this.getSelectValue(SALES_EDIT_TYPES.SALES_TEAM)}
-                        field={SALES_EDIT_TYPES.SALES_TEAM}
-                        selectOptions={this.getSelectOptions(SALES_EDIT_TYPES.SALES_TEAM)}
-                        onSelectChange={this.handleChangeSalesTeam}
-                        hasEditPrivilege={hasEditSalesPrivilege}
-                        placeholder={Intl.get('contract.63', '请选择负责人')}
-                        saveEditSelect={this.handleEditSalesTeam}
-                        cancelEditField={this.handleCancelSalesTeam}
-                        noDataTip={Intl.get('contract.64', '暂无负责人')}
-                        addDataTip={Intl.get('contract.206', '设置负责人')}
-                    />
-                    { this.state.duplicateSalesWarning ?
-                        <span className="select-warning">{Intl.get('crm.second.sale.delete','保存后，联合跟进人中{user}将被删除', {user: secondUserName})}</span> : null
-                    }
-                </div>
-                <div className="sales-team">
-                    <span className="sales-team-label">{Intl.get('crm.second.sales', '联合跟进人')}:</span>
-                    {this.state.isLoadingSecondSales ? <Icon type="loading"/> :
-                        <BasicEditSelectField
-                            width={EDIT_FEILD_WIDTH.SECOND_SALES}
-                            updateMergeCustomer={this.props.updateMergeCustomer}
-                            id={this.state.customerId}
-                            displayText={this.getSalesTeamText(this.state.secondUserName, this.state.secondTeamName)}
-                            value={this.getSelectValue(SALES_EDIT_TYPES.SECOND_SALES_TEAM)}
-                            field={SALES_EDIT_TYPES.SECOND_SALES_TEAM}
-                            selectOptions={this.getSelectOptions(SALES_EDIT_TYPES.SECOND_SALES_TEAM)}
-                            hasEditPrivilege={hasEditSecondSalesPrivilege}
-                            placeholder={Intl.get('crm.select.second.sales', '请选择联合跟进人')}
-                            saveEditSelect={this.saveSecondSales}
-                            validators={[{ validator: this.checkSecondSales }]}
-                            noDataTip={Intl.get('crm.no.second.sales', '暂无联合跟进人')}
-                            addDataTip={Intl.get('crm.set.second.sales', '设置联合跟进人')}
-                        />}
-                </div>
+                {
+                    checkVersionAndType().isPersonalTrial ? null : (
+                        <div className={salesTeam}>
+                            <span className="sales-team-label">{Intl.get('crm.6', '负责人')}:</span>
+                            <BasicEditSelectField
+                                width={EDIT_FEILD_WIDTH.SALES}
+                                updateMergeCustomer={this.props.updateMergeCustomer}
+                                id={this.state.customerId}
+                                displayText={this.getSalesTeamText(this.state.userName, this.state.salesTeam)}
+                                value={this.getSelectValue(SALES_EDIT_TYPES.SALES_TEAM)}
+                                field={SALES_EDIT_TYPES.SALES_TEAM}
+                                selectOptions={this.getSelectOptions(SALES_EDIT_TYPES.SALES_TEAM)}
+                                onSelectChange={this.handleChangeSalesTeam}
+                                hasEditPrivilege={hasEditSalesPrivilege}
+                                placeholder={Intl.get('contract.63', '请选择负责人')}
+                                saveEditSelect={this.handleEditSalesTeam}
+                                cancelEditField={this.handleCancelSalesTeam}
+                                noDataTip={Intl.get('contract.64', '暂无负责人')}
+                                addDataTip={Intl.get('contract.206', '设置负责人')}
+                            />
+                            { this.state.duplicateSalesWarning ?
+                                <span className="select-warning">{Intl.get('crm.second.sale.delete','保存后，联合跟进人中{user}将被删除', {user: secondUserName})}</span> : null
+                            }
+                        </div>
+                    )
+                }
+                {
+                    hasPrivilege(crmPrivilegeConst.CRM_ASSERT_CUSTOMER_SALES) ? (
+                        <div className="sales-team">
+                            <span className="sales-team-label">{Intl.get('crm.second.sales', '联合跟进人')}:</span>
+                            {this.state.isLoadingSecondSales ? <Icon type="loading"/> :
+                                <BasicEditSelectField
+                                    width={EDIT_FEILD_WIDTH.SECOND_SALES}
+                                    updateMergeCustomer={this.props.updateMergeCustomer}
+                                    id={this.state.customerId}
+                                    displayText={this.getSalesTeamText(this.state.secondUserName, this.state.secondTeamName)}
+                                    value={this.getSelectValue(SALES_EDIT_TYPES.SECOND_SALES_TEAM)}
+                                    field={SALES_EDIT_TYPES.SECOND_SALES_TEAM}
+                                    selectOptions={this.getSelectOptions(SALES_EDIT_TYPES.SECOND_SALES_TEAM)}
+                                    hasEditPrivilege={hasEditSecondSalesPrivilege}
+                                    placeholder={Intl.get('crm.select.second.sales', '请选择联合跟进人')}
+                                    saveEditSelect={this.saveSecondSales}
+                                    validators={[{ validator: this.checkSecondSales }]}
+                                    noDataTip={Intl.get('crm.no.second.sales', '暂无联合跟进人')}
+                                    addDataTip={Intl.get('crm.set.second.sales', '设置联合跟进人')}
+                                />}
+                        </div>
+                    ) : null
+                }
             </div>
         );
     };

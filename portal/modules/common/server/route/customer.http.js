@@ -1,3 +1,4 @@
+import privilegeConst_common from '../../public/privilege-const';
 module.exports = {
     module: 'common/server/action/customer',
     routes: [{
@@ -8,7 +9,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [privilegeConst_common.CUSTOMER_ALL]
     }, {
         'method': 'get',
         'path': '/rest/crm/user_list',

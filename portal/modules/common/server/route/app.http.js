@@ -1,3 +1,6 @@
+import privilegeConst_user_info from '../../../user_info/public/privilege-config';
+import privilegeConst_common from '../../public/privilege-const';
+
 module.exports = {
     module: 'common/server/action/app',
     routes: [{
@@ -7,8 +10,7 @@ module.exports = {
         'handler': 'getIntegrationConfig',
         'passport': {
             'needLogin': true
-        },
-        'privileges': ['PRODUCT_BASE_PERMISSION']
+        }
     },{
         //根据当前用户数据权限，获取应用列表
         'method': 'get',
@@ -17,7 +19,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_MEMBER]
     }, {
         //路径 获取新增用户的团队统计
         'method': 'get',
@@ -49,6 +51,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
+            privilegeConst_common.BASE_QUERY_PERMISSION_APPLICATION
             //"APP_MANAGE_LIST_APPS"
             //有一个需求：获取一个app_id对应的logo
             //如果限制了权限，产品总经理看在线用户统计的时候，将不能显示应用logo
@@ -58,7 +61,7 @@ module.exports = {
         'path': '/rest/userquery/condition',
         'handler': 'queryUserCondition',
         'privileges': [
-            'ORGANIZATION_BASE_PERMISSION'//为用户修改应用
+            privilegeConst_user_info.BASE_QUERY_PERMISSION_MEMBER//为用户修改应用
         ],
         'passport': {
             'needLogin': true

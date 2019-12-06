@@ -1,6 +1,7 @@
 /**
  * 请求路径 - login
  */
+import memberPrivilegeConst from '../../public/privilege-const';
 
 module.exports = {
     module: 'member_manage/server/action/member-manage-controller',
@@ -20,7 +21,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_MANAGE_LIST_LOG'
+            memberPrivilegeConst.USER_LOG
         ]
     }, {
         'method': 'get',
@@ -48,7 +49,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'UPDATE_MEMBER_BASE_INFO'
+            'USER_MANAGE_EDIT_USER'
         ]
     },{
         'method': 'put',
@@ -75,7 +76,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'UPDATE_MEMBER_ROLE'
+            'USER_MANAGE_EDIT_USER'
         ]
     }, {
         'method': 'put',

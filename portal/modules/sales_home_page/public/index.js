@@ -40,6 +40,10 @@ import {getEmailActiveUrl} from 'PUB_DIR/sources/utils/common-method-util';
 import InviteMember from 'MOD_DIR/invite_member/public';
 import AlertTip from 'CMP_DIR/alert-tip';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+import commonSalesHomePrivilegeConst from './privilege-const';
+import publicPrivilegeConst from 'PUB_DIR/privilege-const';
+import shpPrivilegeConst from './privilege-const';
+import analysisPrivilegeConst from '../../analysis/public/privilege-const';
 
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
@@ -96,9 +100,10 @@ class SalesHomePage extends React.Component {
     };
 
     getDataType = () => {
-        if (hasPrivilege('GET_TEAM_LIST_ALL')) {
+        //这个权限保留了
+        if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL)) {
             return 'all';
-        } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
+        } else if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS)) {
             return 'self';
         } else {
             return '';
@@ -124,7 +129,7 @@ class SalesHomePage extends React.Component {
         SalesHomeStore.listen(this.onChange);
         let type = this.getDataType();
         // 有审批权限时，获取待我审批的邀请成员列表
-        if (hasPrivilege('MEMBER_INVITE_MANAGE')) {
+        if (hasPrivilege(commonSalesHomePrivilegeConst.MEMBER_INVITE_APPLY)) {
             SalesHomeAction.getPendingApproveMemberApplyList();
         }
         //获取统计团队内成员个数的列表
@@ -251,8 +256,12 @@ class SalesHomePage extends React.Component {
         let queryParams = this.getQueryParams();
         let dataType = this.getDataType();
         queryParams.dataType = dataType;
-        SalesHomeAction.getCustomerTotal(queryParams);
-        SalesHomeAction.getUserTotal(queryParams);
+        if (hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL) || hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_SELF)){
+            SalesHomeAction.getCustomerTotal(queryParams);
+        }
+        if(hasPrivilege(shpPrivilegeConst.GET_USER_STATISTIC_VIEW) || hasPrivilege(shpPrivilegeConst.USER_ANALYSIS_COMMON)){
+            SalesHomeAction.getUserTotal(queryParams);
+        }
         //获取销售(团队)-电话列表
         SalesHomeAction.setListIsLoading(viewConstant.PHONE);
         //电话统计取“全部”时，开始时间传0，结束时间传当前时间
@@ -263,15 +272,18 @@ class SalesHomePage extends React.Component {
         if (!isSwitchTeam){
             this.getCallBackList();
         }
-        var queryObj = {};
-        if (queryParams.member_id) {
-            queryObj.member_id = queryParams.member_id;
+
+        if(hasPrivilege(shpPrivilegeConst.GET_USER_STATISTIC_VIEW)){
+            var queryObj = {};
+            if (queryParams.member_id) {
+                queryObj.member_id = queryParams.member_id;
+            }
+            if (queryParams.team_id) {
+                queryObj.team_id = queryParams.team_id;
+            }
+            //获取过期用户列表
+            SalesHomeAction.getExpireUser(queryObj);
         }
-        if (queryParams.team_id) {
-            queryObj.team_id = queryParams.team_id;
-        }
-        //获取过期用户列表
-        SalesHomeAction.getExpireUser(queryObj);
     };
 
     getPhoneParams = () => {
@@ -1152,7 +1164,7 @@ class SalesHomePage extends React.Component {
                                 activeView={this.state.activeView}
                             />
                             {/*即将过期的用户列表*/}
-                            {hasPrivilege('GET_EXPIRE_USER_STATISTIC') ? (
+                            {hasPrivilege(commonSalesHomePrivilegeConst.GET_USER_STATISTIC_VIEW) ? (
                                 <div className="will-expire-user-container">
                                     {this.renderWillExpireUser()}
                                 </div>

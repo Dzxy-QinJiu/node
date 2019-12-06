@@ -24,6 +24,8 @@ import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 import {getClueUnhandledPrivilege, getUnhandledClueCountParams, isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 const session = storageUtil.session;
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 
 // 获取弹窗通知的状态
 function getNotifyStatus() {
@@ -517,7 +519,7 @@ function phoneEventListener(phonemsgObj) {
     //为了避免busy事件在两个不同的通话中错乱的问题，过滤掉推送过来的busy状态
     const PHONE_STATUS = [CALL_TYPES.ALERT, CALL_TYPES.ANSWERED, CALL_TYPES.phone, CALL_TYPES.curtao_phone, CALL_TYPES.call_back];
     //过滤掉其他状态 只展示ALERT、ANSWERED、 phone、curtao_phone、call_back状态的数据
-    if (hasPrivilege('CRM_LIST_CUSTOMERS') && PHONE_STATUS.indexOf(phonemsgObj.type) !== -1) {
+    if (hasPrivilege(crmPrivilegeConst.CRM_LIST_CUSTOMERS) && PHONE_STATUS.indexOf(phonemsgObj.type) !== -1) {
         if ([CALL_TYPES.phone, CALL_TYPES.curtao_phone, CALL_TYPES.call_back].indexOf(phonemsgObj.type) !== -1) {
             //通话结束后，可以继续拨打电话了
             Oplate.isCalling = false;
@@ -1035,7 +1037,7 @@ function getNotificationUnread(queryObj, callback) {
 function getClueUnreadNum(data, callback){
     //pageSize设置为0，只取到数据就行
     var type = 'user';
-    if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+    if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
         type = 'manager';
     }
     $.ajax({

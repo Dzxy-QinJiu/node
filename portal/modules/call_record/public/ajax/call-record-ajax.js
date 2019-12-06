@@ -1,4 +1,5 @@
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import call_record_privilegeConst from '../privilege-const';
 //获取当前页的应用列表
 var getCallRecordAjax = null;
 
@@ -16,7 +17,7 @@ exports.getCallRecordList = function(params, filterObj) {
     //查询全部和客户电话记录
     if (querAll || queryCustomer) {
         let filter_phone = queryCustomer;//是否过滤114和无效的电话号码
-        let auth_type = hasPrivilege('CUSTOMER_CALLRECORD_MANAGER_ONLY') ? 'manager' : 'user';
+        let auth_type = hasPrivilege(call_record_privilegeConst.CURTAO_CRM_TRACE_QUERY_ALL) ? 'manager' : 'user';
         url = '/rest/call_record/' + auth_type + '/' + params.start_time + '/' + params.end_time + '/' + params.page_size + '/' + params.sort_field + '/' + params.sort_order;
         if (params.lastId) {
             url += '?id=' + params.lastId;            
@@ -29,7 +30,7 @@ exports.getCallRecordList = function(params, filterObj) {
     //查询无效电话记录
     else {
         //角色类型
-        let type = hasPrivilege('CUSTOMER_TRACE_MANAGER_QUERY') ? 'manager' : 'user';
+        let type = hasPrivilege(call_record_privilegeConst.CURTAO_CRM_TRACE_QUERY_ALL) ? 'manager' : 'user';
         url = '/rest/invalid_call_record/' + type + '/' + params.start_time + '/' + params.end_time + '/' + params.page_size + '/' + params.sort_field + '/' + params.sort_order;
         if (params.lastId) {
             url += '?id=' + params.lastId;

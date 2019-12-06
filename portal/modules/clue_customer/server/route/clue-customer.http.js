@@ -4,6 +4,8 @@
  * Created by zhangshujuan on 2017/10/16.
  */
 require('../action/clue-customer-controller');
+import cluePrivilegeConst from '../../../clue_customer/public/privilege-const';
+
 module.exports = {
     module: 'clue_customer/server/action/clue-customer-controller',
     routes: [{
@@ -30,7 +32,8 @@ module.exports = {
             needLogin: true
         },
         privileges: [
-            'CLUECUSTOMER_CLUE_SOURCE_GET'
+            cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_SELF,
+            cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL
         ]
     }, {
         method: 'get',
@@ -40,7 +43,8 @@ module.exports = {
             needLogin: true
         },
         privileges: [
-            'CLUECUSTOMER_ACCESS_CHANNEL_GET'
+            cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_SELF,
+            cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL
         ]
     }, {
         method: 'get',
@@ -57,7 +61,8 @@ module.exports = {
             needLogin: true
         },
         privileges: [
-            'CLUECUSTOMER_CLUE_CLASSIFY_GET'
+            cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_SELF,
+            cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL
         ]
     }, {
         method: 'post',
@@ -158,7 +163,8 @@ module.exports = {
             needLogin: true
         },
         privileges: [
-            'CUSTOMERCLUE_DYNAMIC_QUERY'
+            cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL,
+            cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_SELF
         ]
     }, {
         method: 'delete',
@@ -168,7 +174,7 @@ module.exports = {
             needLogin: true
         },
         privileges: [
-            'CLUECUSTOMER_DELETE'
+            cluePrivilegeConst.CURTAO_CRM_LEAD_DELETE
         ]
     }, {
         method: 'get',

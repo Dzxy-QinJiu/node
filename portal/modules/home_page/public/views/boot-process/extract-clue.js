@@ -18,6 +18,7 @@ import {SetLocalSalesClickCount} from 'MOD_DIR/clue_customer/public/utils/clue-c
 import { formatSalesmanList, checkCurrentVersionType, checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
 import {getMaxLimitExtractClueCount} from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
+import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 
@@ -243,7 +244,7 @@ class ExtractClues extends React.Component {
 
     // 批量提取，发请求前的参数处理
     handleBeforeSubmitChangeSales = (itemId) => {
-        if(this.isCommonSales()) {// 普通销售
+        if(isCommonSalesOrPersonnalVersion()) {// 普通销售或者个人版
             let saleLoginData = userData.getUserData();
             let submitObj = {
                 'user_id': saleLoginData.user_id,
@@ -444,7 +445,7 @@ class ExtractClues extends React.Component {
     };
 
     renderExtractOperator = () => {
-        let hasAssignedPrivilege = !this.isCommonSales();
+        let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
         if(hasAssignedPrivilege) {
             return (
                 <div className="button-container">

@@ -1,7 +1,6 @@
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
-const PropTypes = require('prop-types');
 import { Alert, Icon ,Tooltip } from 'antd';
 import { Button as BootstrapButton, Modal as BootstrapModal } from 'react-bootstrap';
 import UserStatusSwitch from './user-status-switch';
@@ -31,6 +30,7 @@ import {checkPhone} from 'PUB_DIR/sources/utils/validate-util';
 const FORMAT = oplateConsts.DATE_FORMAT;
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import ShareObj from'../util/app-id-share-util';
+import USER_MANAGE_PRIVILEGE from '../privilege-const';
 
 class UserDetailBasic extends React.Component {
     static defaultProps = {
@@ -211,7 +211,7 @@ class UserDetailBasic extends React.Component {
         }
         return (
             <PrivilegeChecker
-                check="USER_BATCH_OPERATE"
+                check={USER_MANAGE_PRIVILEGE.USER_MANAGE}
                 tagName="a"
                 className="a_button"
                 href="javascript:void(0)"
@@ -253,7 +253,7 @@ class UserDetailBasic extends React.Component {
 
     renderMultiLogin = (app, readOnly) => {
         var multilogin = /^[10]$/.test((app.multilogin + '')) ? app.multilogin + '' : '';
-        if (!hasPrivilege('APP_USER_EDIT')) {
+        if (!hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE)) {
             return multilogin ? (multilogin === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')) : multilogin;
         }
         if (!multilogin) {
@@ -279,7 +279,7 @@ class UserDetailBasic extends React.Component {
 
     renderIsTwoFactor = (app, readOnly) => {
         var is_two_factor = /^[10]$/.test((app.is_two_factor + '')) ? app.is_two_factor + '' : '';
-        if (!hasPrivilege('APP_USER_EDIT')) {
+        if (!hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE)) {
             return is_two_factor ? (is_two_factor === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')) : is_two_factor;
         }
         if (!is_two_factor) {
@@ -321,7 +321,7 @@ class UserDetailBasic extends React.Component {
         }
         if(isOplateUser()) {
             //没有编辑的权限
-            if (!hasPrivilege('APP_USER_EDIT')) {
+            if (!hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE)) {
                 return is_disabled ? (is_disabled === 'true' ? Intl.get('common.app.status.close', '关闭') : Intl.get('common.app.status.open', '开启')) : is_disabled;
             }
             if (!is_disabled) {
@@ -547,7 +547,7 @@ class UserDetailBasic extends React.Component {
                             {
                                 !hideDetail && isOplateUser() ?
                                     <PrivilegeChecker
-                                        check="APP_USER_EDIT"
+                                        check={USER_MANAGE_PRIVILEGE.USER_MANAGE}
                                         tagName="div"
                                         className="operate"
                                     >
@@ -582,7 +582,7 @@ class UserDetailBasic extends React.Component {
         return (
             leftApps.length && isOplateUser() ? (
                 <PrivilegeChecker
-                    check="APP_USER_ADD"
+                    check={USER_MANAGE_PRIVILEGE.USER_MANAGE}
                     tagName="a"
                     className="a_button"
                     href="javascript:void(0)"
@@ -682,7 +682,7 @@ class UserDetailBasic extends React.Component {
 
     renderUserStatus = (user, useIcon = false) => {
         let userStatus = user && user.status;
-        if (!hasPrivilege('APP_USER_EDIT')) {
+        if (!hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE)) {
             return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
         }
         return (<UserStatusSwitch useIcon={useIcon} userId={_.get(user, 'user_id')} status={userStatus === '1' ? true : false} />);
@@ -717,11 +717,11 @@ class UserDetailBasic extends React.Component {
         let initialUser = _.get(this.state, 'initialUser', {});
         let userInfo = _.get(initialUser, 'user', {});
         let groupsInfo = _.get(initialUser, 'groups', []);
-        let hasEditPrivilege = hasPrivilege('APP_USER_EDIT');
+        let hasEditPrivilege = hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE);
         var DetailBlock = !this.state.isLoading && !this.state.getDetailErrorMsg ? (
             <div className='user-detail-baisc-v3'>
                 <UserBasicCard
-                    hasEditPrivilege={hasEditPrivilege || hasPrivilege('CHANGE_USER_CUSTOMER')}
+                    hasEditPrivilege={hasEditPrivilege}
                     customer_id={this.state.customer_id}
                     customer_name={this.state.customer_name}
                     sales_id={_.get(initialUser, 'sales.sales_id','')}

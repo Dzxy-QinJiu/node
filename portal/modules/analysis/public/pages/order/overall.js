@@ -4,14 +4,15 @@
 
 import orderChart from '../../charts/order';
 import {ORDER_MENUS} from '../../consts';
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 
 module.exports = {
     title: ORDER_MENUS.OVERALL.name,
     key: ORDER_MENUS.OVERALL.key,
     menuIndex: 1,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_SELF,
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL,
     ],
     adjustDatePicker,
     charts: getCharts()

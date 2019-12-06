@@ -19,7 +19,7 @@ module.exports = {
         },
         //需要权限
         'privileges': [
-            'OPLATE_CUSTOMER_ANALYSIS_ZONE'
+            // 'OPLATE_CUSTOMER_ANALYSIS_ZONE'
         ]
     },{
         //http方法
@@ -34,7 +34,7 @@ module.exports = {
         },
         //需要权限
         'privileges': [
-            'OPLATE_CUSTOMER_ANALYSIS_ZONE'
+            // 'OPLATE_CUSTOMER_ANALYSIS_ZONE'
         ]
     },{
         //http方法

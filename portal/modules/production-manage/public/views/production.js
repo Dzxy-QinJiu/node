@@ -29,7 +29,7 @@ import classNames from 'classnames';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import AddIpForm from './add-ip-form';
 import productionAjax from '../ajax/production-ajax';
-
+import production_manager_privilegeConfig from '../privilege-config';
 
 const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
@@ -458,7 +458,7 @@ class Production extends React.Component {
                     {Intl.get('product.filter.ip.title', '该产品统计分析时过滤以下IP：')}
                 </span>
                 {
-                    hasPrivilege('CREATE_CONFIG_IP') ? (
+                    hasPrivilege(production_manager_privilegeConfig.PRODUCTS_MANAGE) ? (
                         this.state.isShowAddIp ? null : (
                             <span className="operate-btn" onClick={this.handleShowAddIp}>
                                 <i className="iconfont icon-plus"></i>

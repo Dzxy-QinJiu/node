@@ -4,9 +4,8 @@
  * Created by zhangshujuan on 2018/8/27.
  */
 var FilterAction = require('../action/filter-action');
-const datePickerUtils = require('CMP_DIR/datepicker/utils');
-import {SELECT_TYPE, CLUE_DIFF_TYPE, AVALIBILITYSTATUS, clueStartTime, NEED_MY_HANDLE} from '../utils/clue-customer-utils';
-import {isSalesRole, getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {SELECT_TYPE, CLUE_DIFF_TYPE, AVALIBILITYSTATUS, clueStartTime, NEED_MY_HANDLE,isCommonSalesOrPersonnalVersion} from '../utils/clue-customer-utils';
+import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 function ClueFilterStore() {
     this.setInitialData();
     //绑定action方法
@@ -15,15 +14,15 @@ function ClueFilterStore() {
 
 ClueFilterStore.prototype.setInitialFilterClueStatus = function() {
     let filterClueStatus = _.cloneDeep(CLUE_DIFF_TYPE);
-    //如果不是销售角色，就展示待分配
-    if(!isSalesRole()){
+    //如果不是销售角色也不是个人版本，就展示待分配
+    if(!isCommonSalesOrPersonnalVersion()){
         filterClueStatus.push({
             name: Intl.get('clue.customer.will.distribution', '待分配'),
             value: SELECT_TYPE.WILL_DISTRIBUTE,
             selected: true
         });
     }else{
-        //如果是销售角色，默认展示待跟进
+        //如果是销售角色或者是个人版本，默认展示待跟进
         _.forEach(filterClueStatus, item => {
             if(_.isEqual(item.value, SELECT_TYPE.WILL_TRACE)){
                 item.selected = true;

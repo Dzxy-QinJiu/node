@@ -4,8 +4,10 @@
  * Created by wangliping on 2018/10/31.
  */
 import {hasPrivilege, getDataAuthType} from 'CMP_DIR/privilege/checker';
+import orderPrivilege from '../privilege-const';
+import analysisPrivilegeConst from '../../../analysis/public/privilege-const';
 const AUTHS = {
-    MANAGER_DEAL_LIST: 'CRM_MANAGER_LIST_SALESOPPORTUNITY',
+    MANAGER_DEAL_LIST: orderPrivilege.CRM_MANAGER_LIST_SALESOPPORTUNITY,
 };
 //获取订单列表
 exports.getDealList = function(params, body) {
@@ -68,7 +70,11 @@ exports.deleteDeal = function(deal_id) {
 
 //各阶段总预算的获取
 exports.getStageTotalBudget = function(query) {
-    let type = getDataAuthType().toLowerCase();
+    // let type = getDataAuthType().toLowerCase();
+    let type = 'common';//CURTAO_CRM_CUSTOMER_ANALYSIS_SELF
+    if(hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL)) {
+        type = 'manager';
+    }
     let Deferred = $.Deferred();
     $.ajax({
         url: `/rest/deal/${type}/stage/total_budget`,

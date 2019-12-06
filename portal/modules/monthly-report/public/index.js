@@ -9,6 +9,7 @@ import ajax from 'ant-ajax';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {LEAVE_TYPES} from './consts';
 import {AntcAttendanceRemarks} from 'antc';
+import publicPrivilegeConst from 'PUB_DIR/privilege-const';
 
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
 
@@ -35,6 +36,7 @@ import {storageUtil} from 'ant-utils';
 
 const STORED_TEAM_KEY = 'monthly_report_selected_team';
 import {getMyTeamTreeAndFlattenList,getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 
 class MonthlyReport extends React.Component {
     state = {
@@ -91,7 +93,7 @@ class MonthlyReport extends React.Component {
     getAuthType = () => {
         let authType = 'user';//CALL_RECORD_VIEW_USER
 
-        if (hasPrivilege('CALL_RECORD_VIEW_MANAGER')) {
+        if (hasPrivilege(analysisPrivilegeConst.CALL_RECORD_VIEW_MANAGER)) {
             authType = 'manager';
         }
 
@@ -99,7 +101,7 @@ class MonthlyReport extends React.Component {
     };
 
     getDataType = () => {
-        if (hasPrivilege('GET_TEAM_LIST_ALL')) {
+        if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL)) {
             return 'all';
         } else {
             return 'self';

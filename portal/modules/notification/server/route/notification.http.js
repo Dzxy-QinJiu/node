@@ -1,3 +1,4 @@
+import privilegeConst_notification from '../../public/privilege-const';
 /**
  * author:周连毅
  * 说明：统计分析-用户分析-用户构成 的路由配置
@@ -30,7 +31,9 @@ module.exports = {
         //是否需要登录
         'passport': {
             'needLogin': true
-        }
+        },
+        // eslint-disable-next-line no-undef
+        'privileges': [privilegeConst_notification.USERAPPLY_BASE_PERMISSION]
     }, {
         //http方法
         'method': 'get',
@@ -43,7 +46,7 @@ module.exports = {
             'needLogin': true
         },
         //需要权限
-        'privileges': []
+        'privileges': [privilegeConst_notification.CUSTOMER_NOTICE_MANAGE]
     }, {
         //http方法
         'method': 'put',
@@ -56,6 +59,6 @@ module.exports = {
             'needLogin': true
         },
         //需要权限
-        'privileges': []
+        'privileges': [privilegeConst_notification.CUSTOMER_NOTICE_MANAGE]
     }]
 };

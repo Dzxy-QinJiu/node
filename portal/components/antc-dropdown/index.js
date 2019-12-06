@@ -114,7 +114,7 @@ class AntcDropdown extends React.Component {
                 placement={this.props.placement} trigger={[this.props.triggerEventStr || 'click']}
                 onVisibleChange={this.handleVisibleChange.bind(this)}
                 overlayClassName={overLayClass}
-                getPopupContainer={this.getPopupContainer}
+                getPopupContainer={this.getPopupContainer} disabled={this.props.isDropdownAble}
             >
                 {this.props.content}
             </Dropdown>
@@ -152,7 +152,8 @@ AntcDropdown.defaultProps = {
 
     },
     triggerEventStr: 'click',//触发事件hover、click
-    popupContainerId: ''//渲染到哪个元素上默认body上
+    popupContainerId: '',//渲染到哪个元素上默认body上
+    isDropdownAble: false
 };
 AntcDropdown.propTypes = {
     showMenu: PropTypes.bool,
@@ -173,6 +174,7 @@ AntcDropdown.propTypes = {
     isShowDropDownContent: PropTypes.bool,
     showDropDownContent: PropTypes.func,
     popupContainerId: PropTypes.string,
-    triggerEventStr: PropTypes.string
+    triggerEventStr: PropTypes.string,
+    isDropdownAble: PropTypes.bool,
 };
 export default AntcDropdown;

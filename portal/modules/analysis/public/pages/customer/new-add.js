@@ -5,14 +5,15 @@
 import { argCallbackUnderlineTimeToTime } from '../../utils';
 import customerChart from '../../charts/customer';
 import {CUSTOMER_MENUS} from '../../consts';
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 
 module.exports = {
     title: CUSTOMER_MENUS.NEW_ADD.name,
     key: CUSTOMER_MENUS.NEW_ADD.key,
     menuIndex: 4,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_SELF,
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL,
     ],
     charts: getCharts({
         type: 'added',

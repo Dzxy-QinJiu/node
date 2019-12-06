@@ -19,6 +19,7 @@ import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply
 //是否是csm.curtao.com，是否在蚁坊域的判断方法
 import {isCurtao, isOrganizationEefung, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
+import privilegeConst_user_info from '../../../modules/user_info/public/privilege-config';
 //如果访问/，跳转到左侧导航菜单的第一个路由
 class FirstIndexRoute extends React.Component {
     //当组件即将加载的时候，跳转到第一个路由
@@ -93,7 +94,7 @@ const IndexRoute = (props) => {
     } else {
         //个人版（试用，正式）,暂时没有首页
         var home_page = menuUtil.getMenuById(ROUTE_CONST.HOME_PAGE);
-        if (hasPrivilege('USER_INFO_USER') && home_page) {// USER_INFO_USER 获取我的个人资料的权限
+        if (hasPrivilege(privilegeConst_user_info.BASE_QUERY_PERMISSION_MEMBER) && home_page) {// BASE_QUERY_PERMISSION_MEMBER 获取我的个人资料的权限
             //客套首页
             return <HomeIndexRoute/>;
         } else {

@@ -1,3 +1,5 @@
+import {AntcAreaSelection} from 'antc';
+
 var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
@@ -14,7 +16,7 @@ const FormItem = Form.Item;
 import ajax from '../../../crm/common/ajax';
 const routes = require('../../../crm/common/route');
 var clueCustomerAction = require('../action/clue-customer-action');
-import {checkClueName, checkClueSourceIP,contactNameRule, sourceClassifyOptions} from '../utils/clue-customer-utils';
+import {checkClueName, checkClueSourceIP,contactNameRule, sourceClassifyOptions,isCommonSalesOrPersonnalVersion} from '../utils/clue-customer-utils';
 import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
@@ -25,6 +27,8 @@ require('../css/add-clues-info.less');
 import DynamicAddDelContact from 'CMP_DIR/dynamic-add-del-contacts';
 import Trace from 'LIB_DIR/trace';
 import {renderClueNameMsg} from 'PUB_DIR/sources/utils/common-method-util';
+import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
+import userData from 'PUB_DIR/sources/user-data';
 const DIFCONTACTWAY = {
     PHONE: 'phone',
     EMAIL: 'email',
@@ -53,6 +57,14 @@ class ClueAddForm extends React.Component {
                 source_ip: '',//客户来源的ip
                 source_time: today,//线索时间，默认：今天,
                 source_classify: 'outbound',//集客类型，默认：自拓
+                industry: '',//行业
+                province: '',
+                city: '',
+                county: '',
+                province_code: '',
+                city_code: '',
+                county_code: '',
+                address: '',//详细地址
             },
             isSaving: false,
             saveMsg: '',
@@ -61,10 +73,13 @@ class ClueAddForm extends React.Component {
             existClueList: [],//相似的线索列表
             checkNameError: false,//线索名称
             phoneDuplicateWarning: [],//联系人电话重复时的提示
+            isLoadingIndustry: false,
+            industryList: []//获取行业列表
         };
     }
 
     componentDidMount() {
+        this.getIndustry();
         $('.contact-containers .ant-form-item-label label').addClass('ant-form-item-required');
     }
 
@@ -161,7 +176,7 @@ class ClueAddForm extends React.Component {
         if (_.get(submitObj,'contacts[0]')) {
             submitObj.contacts[0]['def_contancts'] = 'true';
         }
-        return submitObj;
+        return {...this.state.formData,...submitObj};
     }
 
     handleSubmit = (e) => {
@@ -176,6 +191,24 @@ class ClueAddForm extends React.Component {
             let submitObj = this.getSubmitObj(values);
             let addRoute = _.find(routes, (route) => route.handler === 'addSalesClue');
             this.setState({isSaving: true, saveMsg: '', saveResult: ''});
+            //添加线索的时候，如果是管理员添加不需要加字段
+            //如果是普通销售添加，字段加上user_id user_name team_id team_name
+            //如果是个人版本，字段加上user_id user_name
+            if(isCommonSalesOrPersonnalVersion()){
+                var userDataInfo = userData.getUserData();
+                var user_id = userDataInfo.user_id;
+                var user_name = userDataInfo.user_name;
+                var team_id = userDataInfo.team_id;
+                var team_name = userDataInfo.team_name;
+                if(user_id && user_name){
+                    submitObj.user_id = user_id;
+                    submitObj.user_name = user_name;
+                }
+                if(team_id && team_name){
+                    submitObj.team_id = team_id;
+                    submitObj.team_name = team_name;
+                }
+            }
             ajax({
                 url: addRoute.path,
                 type: addRoute.method,
@@ -189,7 +222,7 @@ class ClueAddForm extends React.Component {
                     });
                     clueCustomerAction.afterAddSalesClue({newCustomer: data.result});
                     this.afterAddClue(submitObj);
-                    //线索客户添加成功后的回调
+                    //在其他模块，线索客户添加成功后的回调
                     _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
                 } else {
                     var errTip = Intl.get('crm.154', '添加失败');
@@ -311,6 +344,17 @@ class ClueAddForm extends React.Component {
             this.setState({clueNameExist: false, checkNameError: false, existClueList: []});
         }
     };
+    getIndustry() {
+        //获取后台管理中设置的行业列表
+        this.setState({isLoadingIndustry: true});
+        CrmAction.getIndustries(result => {
+            let list = _.isArray(result) ? result : [];
+            if (list.length > 0) {
+                list = _.map(list, 'industry');
+            }
+            this.setState({isLoadingIndustry: false, industryList: list});
+        });
+    }
 
     //电话修改时的回调
     onPhoneChange = (phoneObj) => {
@@ -373,7 +417,20 @@ class ClueAddForm extends React.Component {
             phoneDuplicateWarning
         });
     };
-
+    handleSelect() {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item label[for=\'industry\']').next('div'), '选择行业');
+    }
+    //更新地址
+    updateLocation = (addressObj) => {
+        let formData = this.state.formData;
+        formData.province = addressObj.provName || '';
+        formData.city = addressObj.cityName || '';
+        formData.county = addressObj.countyName || '';
+        formData.province_code = addressObj.provCode || '';
+        formData.city_code = addressObj.cityCode || '';
+        formData.county_code = addressObj.countyCode || '';
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item'), '选择地址');
+    };
     render() {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const formItemLayout = {
@@ -404,6 +461,11 @@ class ClueAddForm extends React.Component {
             }]
         });
         const contact_keys = getFieldValue('contact_keys');
+        let industryList = this.state.industryList || [];
+        //行业下拉列表
+        let industryOptions = industryList.map(function(industry, index) {
+            return (<Option key={index} value={industry}>{industry}</Option>);
+        });
         return (
             <RightPanel showFlag={true} data-tracename="添加线索" className="sales-clue-add-container">
                 <BasicData
@@ -533,6 +595,59 @@ class ClueAddForm extends React.Component {
                                         id="source_ip"
                                     />
                                 )}
+                            </FormItem>
+                            <FormItem
+                                {...formItemLayout}
+                                label={Intl.get('common.industry', '行业')}
+                                id="industry"
+                            >
+                                {this.state.isLoadingIndustry ? (
+                                    <div className="industry-list-loading">
+                                        <ReactIntl.FormattedMessage
+                                            id="crm.88"
+                                            defaultMessage="正在获取行业列表"/>
+                                        <Icon type="loading"/></div>) : (
+                                    getFieldDecorator('industry')(
+                                        <Select
+                                            showSearch
+                                            placeholder={Intl.get('crm.22', '请选择行业')}
+                                            searchPlaceholder={Intl.get('crm.89', '输入行业进行搜索')}
+                                            optionFilterProp="children"
+                                            notFoundContent={!industryList.length ? Intl.get('crm.24', '暂无行业') : Intl.get('crm.23', '无相关行业')}
+                                            onSelect={(e) => {
+                                                this.handleSelect(e);
+                                            }}
+                                            getPopupContainer={() => document.getElementById('sales-clue-form')}
+                                            filterOption={(input, option) => ignoreCase(input, option)}
+                                        >
+                                            {industryOptions}
+                                        </Select>
+                                    )
+                                )}
+                            </FormItem>
+                            <AntcAreaSelection
+                                labelCol="5"
+                                wrapperCol="19"
+                                width="100%"
+                                colon={false}
+                                label={Intl.get('crm.96', '地域')}
+                                placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
+                                provName={formData.province}
+                                cityName={formData.city}
+                                countyName={formData.county}
+                                updateLocation={this.updateLocation}
+                            />
+                            <FormItem
+                                label={Intl.get('common.address', '地址')}
+                                {...formItemLayout}
+                            >
+                                {
+                                    getFieldDecorator('address')(
+                                        <Input
+                                            placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
+                                        />
+                                    )
+                                }
                             </FormItem>
                             <FormItem
                                 label={Intl.get('crm.sales.clue.access.channel', '接入渠道')}

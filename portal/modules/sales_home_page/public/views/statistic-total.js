@@ -11,6 +11,8 @@ let viewConstant = require('../util/constant').VIEW_CONSTANT;//视图常量
 let TimeUtil = require('../../../../public/sources/utils/time-format-util');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {listPanelEmitter} from 'PUB_DIR/sources/utils/emitters';
+import shpPrivilegeConst from '../privilege-const';
+import analysisPrivilegeConst from '../../../analysis/public/privilege-const';
 
 class StatisticTotal extends React.Component {
     static propTypes = {
@@ -193,14 +195,16 @@ class StatisticTotal extends React.Component {
         let activeView = this.props.activeView;
         return (
             <div className="statistic-total-data" data-tracename="销售首页">
-                <div className={autoResizeCls}>
-                    <div onClick={this.setActiveView.bind(this,viewConstant.CUSTOMER)}
-                        className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.CUSTOMER})}>
-                        <p>{Intl.get('sales.home.customer', '客户')}</p>
-                        {this.renderCustomerContent()}
-                    </div>
-                </div>
-                {hasPrivilege('USER_ANALYSIS_MANAGER') || hasPrivilege('USER_ANALYSIS_COMMON') ? (
+                {hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL) || hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_SELF) ? (
+                    <div className={autoResizeCls}>
+                        <div onClick={this.setActiveView.bind(this,viewConstant.CUSTOMER)}
+                            className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.CUSTOMER})}>
+                            <p>{Intl.get('sales.home.customer', '客户')}</p>
+                            {this.renderCustomerContent()}
+                        </div>
+                    </div>) : null
+                }
+                {hasPrivilege(shpPrivilegeConst.USER_ANALYSIS_MANAGER) || hasPrivilege(shpPrivilegeConst.USER_ANALYSIS_COMMON) ? (
                     <div className={autoResizeCls}>
                         <div onClick={this.setActiveView.bind(this,viewConstant.USER)}
                             className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.USER})}>
