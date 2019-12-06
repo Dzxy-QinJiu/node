@@ -1024,7 +1024,7 @@ SalesTeamStore.prototype.salesTeamTree = function(flag) {
         //第一个团队的销售目标
         if (hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL)){
             setTimeout(() => {
-                SalesTeamActions.getSalesGoals(filterTeamArray[0].key);
+                SalesTeamActions.getSalesGoals(salesTeamArray[0].key);
             });
         }
         SalesTeamActions.getSalesTeamMemberList(salesTeamArray[0].key);

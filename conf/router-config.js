@@ -276,7 +276,7 @@ let routers = [
                 routePath: '/settings/applies',
                 component: `${MODULE_PATH}apply_approve_manage/public`,
                 //todo 权限名称待修改= 有这个权限，才显示入口图标
-                showPrivileges: ['PRODUCTS_MANAGE']
+                showPrivileges: ['WORKFLOW_CONFIG_CUSTOMIZE']
             },
             {
                 id: 'ORDERSTAGE',
