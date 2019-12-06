@@ -3705,6 +3705,7 @@ var zh_CN = {
     'user.score.total.hours': '总小时数',
     'user.score.total.days': '总天数',
     'user.score.choose.interval': '请选择周期',
+    'apply.approve.user.select': '用户选择',
     // 引导流程
     'guide.add.customer.title': '添加您的客户',
     'guide.add.customer.des': '添加客户后，可以轻松跟进您的客户',
