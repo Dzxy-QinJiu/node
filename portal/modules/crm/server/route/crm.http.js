@@ -12,15 +12,6 @@ module.exports = {
             },
             privileges: [crmPrivilegeConst.CUSTOMER_ADD]
         },
-        {
-            'method': 'get',
-            'path': '/rest/crm/user_list',
-            'handler': 'getCrmUserList',
-            'passport': {
-                'needLogin': true
-            },
-            privileges: [crmPrivilegeConst.APP_USER_QUERY]
-        },
         {//获取客户回收站中的客户列表
             method: 'post',
             path: '/rest/crm/recycle_bin/customer/:type',
