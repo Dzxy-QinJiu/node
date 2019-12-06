@@ -141,7 +141,9 @@ class TeamDataColumn extends React.Component {
         this.getContactClueCount();
         this.getMaxLimitCount();
         this.getExtractCluesCount();
-        this.getExpireContractData();
+        if(isOpenCash()){
+            this.getExpireContractData();
+        }
         this.changeTableHeight();
         $(window).on('resize', e => this.changeTableHeight());
     }
