@@ -121,6 +121,6 @@ export default {
   
     //获取数字验证规则
     getNumberValidateRule() {
-        return {pattern: /^(\d|,)+(\.\d+)?$/, message: Intl.get('contract.45', '请填写数字')};
+        return {pattern: /^(\d|,)+(\.\d+)?(,\d+)*$/, message: Intl.get('contract.45', '请填写数字')};
     },
 };
