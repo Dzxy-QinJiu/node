@@ -176,7 +176,8 @@ const UserDetailEditApp = createReactClass({
 
         // 判断是否修改了多终端类型
         if (_.get(savedAppSetting, 'terminals.setted')) {
-            submitData.terminals = savedAppSetting.terminals.value;
+            // 修改终端类型，接口需要传id字符串数组
+            submitData.terminals = _.map(savedAppSetting.terminals.value, 'id');
         }
 
         // 未修改之前的应用角色
