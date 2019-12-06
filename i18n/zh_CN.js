@@ -3127,6 +3127,7 @@ var zh_CN = {
     'clue.customer.export.select.clue': '导出选中的线索',
     'lead.recommend.form.show.all.condition': '展开全部条件',
     'lead.recommend.form.hide.some.condition': '收起部分条件',
+    'boot.select.industry.count.tip': '最多可选择{count}个行业',
     //线索模块 end
     'common.memeber.all': '全部成员',
     'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分中占比30%',

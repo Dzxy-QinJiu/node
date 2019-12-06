@@ -12,6 +12,7 @@ require('../../css/recommend-customer-condition.less');
 import {companyProperty, moneySize,staffSize} from '../../utils/clue-customer-utils';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import Trace from 'LIB_DIR/trace';
+import {MAXINDUSTRYCOUNT} from 'PUB_DIR/sources/utils/consts';
 class RecommendCustomerCondition extends React.Component {
     constructor(props) {
         super(props);
@@ -268,6 +269,13 @@ class RecommendCustomerCondition extends React.Component {
             showOtherCondition: !this.state.showOtherCondition
         });
     };
+    validateIndustryCount = (rule, value, callback) => {
+        if (value && value.length > MAXINDUSTRYCOUNT) {
+            callback(new Error(Intl.get('boot.select.industry.count.tip', '最多可选择{count}个行业',{'count': MAXINDUSTRYCOUNT})));
+        } else {
+            callback();
+        }
+    };
     render() {
         const { registerStartTime, registerEndTime, showOtherCondition} = this.state;
         const {getFieldDecorator, getFieldValue} = this.props.form;
@@ -322,7 +330,13 @@ class RecommendCustomerCondition extends React.Component {
                         >
                             {
                                 getFieldDecorator('industrys',
-                                    {initialValue: _.get(hasSavedRecommendParams,'industrys',[])}
+                                    {initialValue: _.get(hasSavedRecommendParams,'industrys',[]),
+                                        rules: [
+                                            {
+                                                validator: this.validateIndustryCount,
+                                            },
+                                        ],
+                                    }
                                 )(
                                     <Select
                                         mode="multiple"

@@ -3104,6 +3104,7 @@ var en_US = {
     'clue.customer.export.select.clue': 'Export selected clues',//导出选中的线索
     'lead.recommend.form.show.all.condition': 'Show all conditions',//展开全部条件
     'lead.recommend.form.hide.some.condition': 'Hide some condition',//收起部分条件
+    'boot.select.industry.count.tip': 'You can select {count} at most',//最多可选择{count}个行业
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
