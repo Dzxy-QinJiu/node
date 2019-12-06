@@ -1,4 +1,5 @@
 import privilegeConst_common from '../../public/privilege-const';
+var crmPrivilegeConst = require('../../../crm/public/privilege-const').default;
 module.exports = {
     module: 'common/server/action/customer',
     routes: [{
@@ -16,6 +17,7 @@ module.exports = {
         'handler': 'getCrmUserList',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': [crmPrivilegeConst.APP_USER_QUERY]
     }]
 };
