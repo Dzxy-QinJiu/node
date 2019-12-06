@@ -626,6 +626,9 @@ class RecommendCustomerRightPanel extends React.Component {
         updateGuideMark(BOOT_PROCESS_KEYS.EXTRACT_CLUE);
     };
     handleBatchAssignClues = (submitObj) => {
+        if(this.state.batchExtractLoading){
+            return;
+        }
         this.setState({
             batchExtractLoading: true
         });
@@ -701,6 +704,7 @@ class RecommendCustomerRightPanel extends React.Component {
                         data-tracename="点击批量提取线索按钮"
                         className='btn-item common-sale-batch-extract'
                         onClick={this.handleSubmitAssignSalesBatch}
+                        disabled={this.state.batchExtractLoading}
                     >
                         {isWebMin ? <span className="iconfont icon-extract"></span> :
                             <React.Fragment>
