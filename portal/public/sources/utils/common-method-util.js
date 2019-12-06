@@ -1279,3 +1279,7 @@ exports.recordChangeTimeLineItem = (item) => {
         </dl>
     );
 };
+//展示时间的时候加上为空的判断
+exports.timeShowFormat = (time,format) => {
+    return time ? moment(time).format(format) : '';
+};
