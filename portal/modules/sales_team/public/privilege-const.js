@@ -1,0 +1,10 @@
+/**
+ * Created by hzl on 2019/11/19.
+ */
+export default {
+    CREATE_DEPARTMENT: 'BGM_SALES_TEAM_ADD', // 创建部门
+    DELETE_DEPARTMENT: 'BGM_SALES_TEAM_DELETE', // 删除部门
+    EDIT_DEPARTMENT: 'BGM_SALES_TEAM_EDIT', // 修改部门
+    GET_DEPARTMENT: 'BGM_SALES_TEAM_LIST', // 获取部门列表
+    ORGANIZATION: 'ORGANIZATION_CONFIG', // 组织配置
+};

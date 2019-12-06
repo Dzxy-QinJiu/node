@@ -19,6 +19,7 @@ import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import PhoneInput from 'CMP_DIR/phone-input';
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 class ContactItem extends React.Component {
     static defaultProps = {
         contact: ContactUtil.getEmptyViewContactObject()
@@ -175,7 +176,7 @@ class ContactItem extends React.Component {
                         </Button>
                     </span>) : (
                     <span className="contact-item-buttons">
-                        {this.props.disableEdit ? null : (
+                        {this.props.disableEdit || !hasPrivilege(crmPrivilegeConst.CRM_DELETE_CONTACT) ? null : (
                             <span className="iconfont icon-delete handle-btn-item"
                                 title={Intl.get('common.delete', '删除')}
                                 data-tracename="点击删除联系人按钮"
@@ -296,7 +297,7 @@ class ContactItem extends React.Component {
         let contact = this.props.contact.contact;
         let isExpanded = this.props.contact.isExpanded;
         const EDIT_FEILD_WIDTH = 350;
-        let hasEditPrivilege = hasPrivilege('CRM_EDIT_CONTACT') && !this.props.disableEdit;
+        let hasEditPrivilege = hasPrivilege(crmPrivilegeConst.CRM_EDIT_CONTACT) && !this.props.disableEdit;
         return (
             <div className="contact-item-wrap">
                 {isExpanded ? (

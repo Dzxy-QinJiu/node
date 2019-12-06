@@ -1,10 +1,11 @@
+import common_privilegeConst from 'MOD_DIR/common/public/privilege-const';
+
 var language = require('../../../../public/language/getLanguage');
 require('../css/user-detail-zh_CN.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/user-detail-v3.less');
     require('../css/user-detail-es_VE.less');
 } else if (language.lan() === 'zh') {
-    require('../css/third-party-app-config.less');
     require('../css/user-detail-v3.less');
 }
 var Tabs = require('antd').Tabs;
@@ -24,8 +25,6 @@ var UserDetailEditApp = require('./v2/user-detail-edit-app');
 var SingleUserLogAction = require('../action/single_user_log_action');
 var AppUserUtil = require('../util/app-user-util');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
-import ThirdPartyAppConfig from './third_app/third-party-app-config';
-import ThirdAppDetail from './third_app/third-app-detail';
 import { StatusWrapper } from 'antc';
 import { Button } from 'antd';
 var AppUserAjax = require('../ajax/app-user-ajax');
@@ -39,6 +38,8 @@ import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import classNames from 'classnames';
+import USER_MANAGE_PRIVILEGE from '../privilege-const';
+import GENERAL_PERMISSIONS from 'PUB_DIR/privilege-const';
 const EDIT_PASSWORD_WIDTH = 260;
 //当前面板z-index
 let thisPanelZIndex;
@@ -307,7 +308,7 @@ class UserDetail extends React.Component {
     renderUserStatus = (user, useIcon = false) => {
         let userStatus = user && user.status;
         if(this.state.isOplateUser) {
-            let hasEditPrivilege = hasPrivilege('APP_USER_EDIT');
+            let hasEditPrivilege = hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE);
             if (!hasEditPrivilege) {
                 return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
             }
@@ -381,10 +382,6 @@ class UserDetail extends React.Component {
                             appInfo={appInfo} />
                     );
                     break;
-                case 'thirdapp':
-                    moveView = (
-                        <ThirdAppDetail {...thirdApp} />
-                    );
             }
         }
         //当前选择的应用（用户详情的接口中无法返回应用是否合格的属性，需要用用户列表接口中返回的应用是否合格属性）
@@ -411,7 +408,7 @@ class UserDetail extends React.Component {
                 </div> : null}
             </TabPane>
         ];
-        if (hasPrivilege('USER_AUDIT_LOG_LIST')) {
+        if (hasPrivilege(USER_MANAGE_PRIVILEGE.CRM_USER_ANALYSIS_ALL_ROLE_QUERY)) {
             tabPaneList.push(
                 <TabPane tab={Intl.get('sales.user.analysis', '用户分析')} key="2">
                     {
@@ -427,6 +424,8 @@ class UserDetail extends React.Component {
                     }
                 </TabPane>
             );
+        }
+        if (hasPrivilege(USER_MANAGE_PRIVILEGE.USER_AUDIT_LOG_LIST)) {
             tabPaneList.push(
                 <TabPane tab={Intl.get('menu.appuser.auditlog', '操作记录')} key="3">
                     {this.state.activeKey === '3' ? <div className="user-log">
@@ -441,7 +440,8 @@ class UserDetail extends React.Component {
                 </TabPane>
             );
         }
-        if (hasPrivilege('USER_TIME_LINE')) {
+
+        if (hasPrivilege(GENERAL_PERMISSIONS.MEMBER_QUERY_PERMISSION)) {
             tabPaneList.push(
                 <TabPane tab={Intl.get('user.change.record', '变更记录')} key="4">
                     {this.state.activeKey === '4' ? <div className="user_manage_user_record">
@@ -456,7 +456,7 @@ class UserDetail extends React.Component {
             );
         }
         //异常登录isShownExceptionTab
-        if (hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && this.props.isShownExceptionTab) {
+        if (hasPrivilege(USER_MANAGE_PRIVILEGE.USER_QUERY) && this.props.isShownExceptionTab) {
             tabPaneList.push(
                 <TabPane tab={Intl.get('user.login.abnormal', '异常登录')} key="5">
                     {
@@ -473,22 +473,9 @@ class UserDetail extends React.Component {
                 </TabPane>
             );
         }
-
-        // 权限控制
-        if (hasPrivilege('GET_USER_THIRDPARTYS') || hasPrivilege('THIRD_PARTY_MANAGE')) {
-            tabPaneList.push(
-                <TabPane tab={Intl.get('third.party.app', '开放应用平台')} key="6">
-                    <div className="third_party_app_config">
-                        <ThirdPartyAppConfig
-                            userId={this.props.userId}
-                        />
-                    </div>
-                </TabPane>
-            );
-        }
-
+        
         const EDIT_FEILD_WIDTH = 395;
-        let hasEditPrivilege = hasPrivilege('APP_USER_EDIT') && this.state.isOplateUser;
+        let hasEditPrivilege = hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE) && this.state.isOplateUser;
         let rightPanelCls = classNames('apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel', {
             'notification-system-user': this.props.isNotificationOpenUserDetail
         });
@@ -572,7 +559,7 @@ class UserDetail extends React.Component {
                                                                         field="nick_name"
                                                                         editBtnTip={Intl.get('user.nickname.set.tip', '设置昵称')}
                                                                         placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
-                                                                        hasEditPrivilege={hasPrivilege('APP_USER_EDIT')}
+                                                                        hasEditPrivilege={hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE)}
                                                                         saveEditInput={this.handleUserInfoEdit}
                                                                         noDataTip={Intl.get('user.nickname.no.tip', '暂无昵称')}
                                                                         addDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}
@@ -589,7 +576,7 @@ class UserDetail extends React.Component {
                                                                         textCut={true}
                                                                         editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
                                                                         placeholder={Intl.get('user.input.remark', '请输入备注')}
-                                                                        hasEditPrivilege={hasPrivilege('APP_USER_EDIT')}
+                                                                        hasEditPrivilege={hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE)}
                                                                         saveEditInput={this.handleUserInfoEdit}
                                                                         noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
                                                                         addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}

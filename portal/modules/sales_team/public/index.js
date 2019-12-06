@@ -9,7 +9,7 @@ let SalesTeamAction = require('./action/sales-team-actions');
 let Spinner = require('../../../components/spinner');
 let NoData = require('../../../components/analysis-nodata');
 let AlertTimer = require('../../../components/alert-timer');
-let PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
+import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 let LeftTree = require('./views/left-tree');
 let MemberList = require('./views/member-list');
 let SalesTeamAjax = require('./ajax/sales-team-ajax');
@@ -18,6 +18,7 @@ import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import MemberManage from '../../member_manage/public';
 import MemberManageAjax from 'MOD_DIR/member_manage/public/ajax';
 import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
+import SALES_DEPARTMENT_PRIVILEGE from './privilege-const';
 
 let CONSTANT = {
     SALES_TEAM_IS_NULL: 'sales-team-is-null',//没有团队时的提示信息
@@ -169,7 +170,10 @@ class SalesTeamPage extends React.Component {
 
     //无团队时，添加团队面板的渲染
     renderAddSalesTeam = () => {
-        return (<PrivilegeChecker check="BGM_SALES_TEAM_ADD" className="sales-team-null-add-container">
+        return (<PrivilegeChecker
+            check={SALES_DEPARTMENT_PRIVILEGE.CREATE_DEPARTMENT}
+            className="sales-team-null-add-container"
+        >
             <div className="no-sales-team-tip">
                 <ReactIntl.FormattedMessage id="sales.team.no.sales.team.tip" defaultMessage="暂无团队，请先添加："/>
             </div>

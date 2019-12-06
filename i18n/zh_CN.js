@@ -369,7 +369,8 @@ var zh_CN = {
     'register.wechat.register.bind': '注册新账号',
     'register.wechat.bind.btn': '立即绑定',
     'register.wechat.register.btn': '注册并登录',
-    
+    'register.personal.title': '注册个人版',
+
     //首页
     'menu.home.page': '首页',
     'home.page.my.work': '我的工作',
@@ -705,6 +706,7 @@ var zh_CN = {
     'user.jscode.copy.trace': '复制跟踪代码',
     'user.test.error.tip': '测试失败',
     'user.list.check.refresh': '刷新查看用户列表',
+    'user.list.click.user.detail': '点击可查看用户详情',
 
     //账号相关start
     'user.login.browser.chrom': '谷歌',
@@ -1114,6 +1116,7 @@ var zh_CN = {
     'user.info.version': '版本',
     'user.info.version.expire': '{time}到期',
     'user.info.version.upgrade': '升级为正式版',
+    'user.info.bind.phone': '绑定成功，您可以用此手机号登录系统了。',
     'user.trade.record': '购买记录',
     'user.trade.get.record': '获取购买记录失败',
     'user.trade.record.order.number': '订单号',
@@ -1854,6 +1857,7 @@ var zh_CN = {
     'crm.customer.release': '释放',
     'crm.customer.release.pool': '释放到客户池',
     'crm.customer.release.confirm.tip': '释放到客户池后，其他人也可以查看、提取，您确定要释放吗？',
+    'crm.customer.personal.release.confirm.tip': '释放后可以再从客户池提取',
     'crm.customer.release.failed': '释放客户失败',
     'crm.customer.pool.failed': '获取客户池客户失败',
     'crm.customer.extract.failed': '提取客户失败',
@@ -1896,6 +1900,7 @@ var zh_CN = {
     'crm.customer.pool.rule.own.visible': '自己释放的自己不可见',
     'crm.filter.extract.from.customer.pool': '从客户池中提取的客户',
     'crm.basic.second.level.domain': '舆情平台域名',
+    'crm.basic.plat.form.name': '舆情平台名称',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
@@ -2601,6 +2606,8 @@ var zh_CN = {
     'errorcode.organization.expire': '您的账号已到期',
     'errorcode.clue.batch.change.pending': '上次批量操作未完成，请稍后再试',
     'errorcode.login.failed': '登录失败',
+    'errorcode.166': '该手机号已被使用，不能绑定到当前账号',
+    'errorcode.167': '该手机号已被绑定到其他账号，请先登录原账号解绑',
 
     //遗漏部分
     'user.input.phone': '请输入手机号',
@@ -2925,6 +2932,7 @@ var zh_CN = {
     'crm.75': '点',
     'scan.ketao.qrcode.download.tip': '扫码下载客套APP安卓端',
     'config.manage.input.teleRepeat': '该电话号码已录入',
+    'config.not.fill.in': '暂不填写',
     //缺失补充end
     'common.batch.sales.target': '设置团队销售目标',
     'common.batch.self.sales.target': '批量设置个人销售目标',
@@ -3117,6 +3125,7 @@ var zh_CN = {
     'clue.customer.delete': '删除后无法恢复，您确定要删除吗？',
     'clue.customer.release.pool': '释放到线索池',
     'clue.customer.release.confirm.tip': '释放到线索池后，其他人也可以查看、提取，您确定要释放吗？',
+    'clue.customer.personal.release.confirm.tip': '释放后可以再从线索池提取',
     'clue.customer.batch.release': '批量释放',
     'clue.customer.fail.to.release.tip': '释放线索失败',
     'clue.pool.batch.extract.clue': '批量提取',
@@ -3131,6 +3140,11 @@ var zh_CN = {
     'clue.search.no.found': '没有符合条件的线索，您可以去{cluepool}查看是否有该线索',
     'clue.edit.condition.search': '请修改条件再查看',
     'clue.customer.has.clue.can.extract': '您可以从这里提取线索哦',
+    'lead.recommend.refresh.list': '如果没有符合您需求的线索，您可以',
+    'lead.recommend.change.condition': '再试试', 'clue.customer.export.select.clue': '导出选中的线索',
+    'lead.recommend.form.show.all.condition': '展开全部条件',
+    'lead.recommend.form.hide.some.condition': '收起部分条件',
+    'boot.select.industry.count.tip': '最多可选择{count}个行业',
     //线索模块 end
     'common.memeber.all': '全部成员',
     'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3523,8 +3537,10 @@ var zh_CN = {
     'apply.time.distinct.am': '区分上下午',
     'apply.form.has.edit.components': '您有组件还是编辑状态',
     'apply.my.self.setting.work.flow': '拜访申请',
-    'apply.domain.application.work.flow': '域名申请',
+    'apply.domain.application.work.flow': '舆情平台申请',
     'apply.domain.descriptipn.reg': '域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间',
+    'apply.domain.plat.name.reg': '平台名称长度在1到32个字符之间(英文数字算一个字符，其他字符一个算2个字符)',
+    'apply.domain.at.least.one.item': '平台域名，平台名称，组织管理员，至少应写一项!',
     'apply.domain.name.check.err': '二级域名校验失败！',
     'apply.domain.sub.name.exist': '该域名已存在',
     'apply.approve.set.approver': '指定审批人',
@@ -3855,8 +3871,13 @@ var zh_CN = {
     'payment.renewal.version.success': '您已成功续费，{time} 到期',
     'payment.get.payment.mode.faild': '获取支付渠道失败',
     'payment.get.discount.faild': '获取商品折扣信息失败',
-    'payment.please.upgrade.company.version': '请先升级为企业版。您可以联系我们的销售：{contact}',
+    'payment.please.upgrade.company.version': '请先升级到基础版以上版本，联系销售：{contact}',
     /*支付流程 --- end*/
+
+    /*个人试用 --- start*/
+    'personal.welcome.use.curtao': '欢迎使用客套',
+    'personal.open.success.tip': '恭喜您成功开通试用版，试用期剩余 {count} 天',
+    /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': '您的试用期剩余{time}天，是否{upgrade}？',

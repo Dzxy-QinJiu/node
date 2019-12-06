@@ -82,9 +82,19 @@
             .icon-edit-btn{
               visibility: hidden;
             }
+            .ant-form-item {
+              margin-right: 16px;
+            }
+            .button-container {
+              margin-right: 10px;
+            }
             &:hover{
               .icon-edit-btn{
+                padding-top: 3px;
                 visibility: visible;
+              }
+              .ant-form-item {
+                padding-top: 10px;
               }
               background: #F1F8FE;
             }
@@ -333,6 +343,17 @@
           float: right;
           cursor: pointer;
           margin-top: 2px;
+        }
+        .user-bind-phone {
+          position: relative;
+          .bind-phone-tips {
+            width: 335px;
+            position: absolute;
+            bottom: 0;
+            left: 165px;
+            z-index: 1;
+            line-height: initial;
+          }
         }
       }
 

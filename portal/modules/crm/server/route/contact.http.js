@@ -1,6 +1,8 @@
 /**
  * 请求路径 - contact
+ * 联系人管理
  */
+var crmPrivilegeConst = require('../../public/privilege-const').default;
 
 module.exports = {
     module: 'crm/server/action/contact-controller',
@@ -20,7 +22,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'CRM_DELETE_CONTACT'
+            crmPrivilegeConst.CRM_DELETE_CONTACT
         ]
     },{
         'method': 'post',
@@ -30,7 +32,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'CRM_ADD_CONTACT'
+            crmPrivilegeConst.CRM_ADD_CONTACT
         ]
     },{
         'method': 'put',
@@ -40,7 +42,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'CRM_EDIT_CONTACT'
+            crmPrivilegeConst.CRM_EDIT_CONTACT
         ]
     },{
         //小程序中使用
@@ -50,6 +52,9 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
+        'privileges': [
+            crmPrivilegeConst.CRM_EDIT_CONTACT
+        ]
     },
     {
         'method': 'post',
@@ -59,7 +64,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'CRM_EDIT_CONTACT'
+            crmPrivilegeConst.CRM_EDIT_CONTACT
         ]
     }]
 };

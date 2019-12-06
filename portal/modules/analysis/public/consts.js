@@ -3,11 +3,11 @@
  */
 
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 //权限类型
-export const authType = hasPrivilege('CUSTOMER_ANALYSIS_MANAGER') ? 'manager' : 'common';
+export const authType = hasPrivilege('CURTAO_CRM_CUSTOMER_ANALYSIS_ALL') ? 'manager' : 'common';
 //数据类型
-export const dataType = hasPrivilege('GET_TEAM_LIST_ALL') ? 'all' : 'self';
+export const dataType = hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL) || hasPrivilege(analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_MANAGER) || hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_ANALYSIS_LEAD_ALL) ? 'all' : 'self';
 
 //初始时间
 export const initialTime = {
@@ -238,9 +238,3 @@ export const SALES_PRODUCTIVITY_MENUS = {
         key: 'sales_productivity_overall'
     }
 };
-
-// 没有开通营收中心，不能展示的菜单
-export const NO_OPEN_CASH_SHOW_MENUS_KEY = [
-    CONTRACT_MENUS.INDEX.key,// 合同分析
-    CHANCE_MENUS.INDEX.key,// 销售机会分析
-];

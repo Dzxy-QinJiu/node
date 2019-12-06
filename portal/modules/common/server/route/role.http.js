@@ -1,3 +1,5 @@
+import privilegeConst_common from '../../public/privilege-const';
+
 module.exports = {
     module: 'common/server/action/role',
     routes: [{
@@ -8,7 +10,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_APPLICATION]
     },{
         //获取权限列表
         'method': 'get',
@@ -17,6 +19,6 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_APPLICATION]
     }]
 };

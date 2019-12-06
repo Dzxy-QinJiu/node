@@ -1,3 +1,5 @@
+import privilegeConst_common from '../../public/privilege-const';
+
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -13,6 +15,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
         }, {
             method: 'put',
             path: '/rest/put/self_setting/work_flow',
@@ -20,6 +23,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
         }, {
             method: 'delete',
             path: '/rest/delete/self_setting/work_flow/:id',
@@ -27,6 +31,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
         }, {
             method: 'post',
             path: '/rest/put/self_setting/work_flow/rules/:id',
@@ -34,6 +39,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
         }, {
             method: 'post',
             path: '/rest/add/self_setting/apply',
@@ -41,6 +47,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
         }, {
             method: 'post',
             path: '/rest/approve/self_setting/apply',
@@ -48,6 +55,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
         }, {
             method: 'get',
             path: '/rest/get/self_setting/work_flow',
@@ -55,6 +63,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
         }
     ]
 };

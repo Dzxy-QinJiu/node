@@ -23,6 +23,8 @@ import {
     USEROPTIONS
 } from '../../utils/apply-approve-utils';
 require('../../style/add-apply-node.less');
+//用户昵称和index直接的链接用&& 间隔
+const CONNECT_NAME_INDEX = '&&';
 class AddApplyNodePanel extends React.Component {
     constructor(props) {
         super(props);
@@ -46,7 +48,13 @@ class AddApplyNodePanel extends React.Component {
                 selectRole: [],//选中的角色
                 showSelectRole: [],
             },
-            roleList: [],//角色列表
+            //可选择用户，可以多选
+            setting_users: {
+                selectUser: [],
+                showSelectUser: [],
+            },
+            roleList: this.props.roleList,//角色列表
+            userList: this.props.userList,//用户列表
             submitErrorMsg: '',//提交时的错误提示
             higherUpLists: this.getHigherLevelLists()
 
@@ -54,36 +62,13 @@ class AddApplyNodePanel extends React.Component {
     }
 
     componentDidMount() {
-        //获取用户列表
-        this.getUserList();
     }
-
-    getUserList = () => {
-        $.ajax({
-            url: '/rest/user',
-            dataType: 'json',
-            type: 'get',
-            data: {cur_page: 1},
-            success: (userListObj) => {
-                var rolesList = _.get(userListObj, 'roles');
-                _.forEach(rolesList, item => {
-                    var roleName = item.role_name;
-                    var target = _.find(ROLES_SETTING, levelItem => levelItem.name === roleName);
-                    if (target) {
-                        item.save_role_value = target.value;
-                    }
-                });
-                this.setState({
-                    roleList: _.filter(rolesList, item => item.save_role_value)//暂时把销售角色先去掉
-                });
-            },
-            error: (xhr, textStatus) => {
-                this.setState({
-                    roleList: []
-                });
-            }
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            roleList: nextProps.roleList,
+            userList: nextProps.userList,
         });
-    };
+    }
     onRadioChange = (event) => {
         //把其他类型的下面的选项都置为空
         var radioValue = event.target.value;
@@ -155,7 +140,7 @@ class AddApplyNodePanel extends React.Component {
         system_roles.selectRole = [];
         system_roles.showSelectRole = [];
         _.forEach(rolesArr, value => {
-            var userArr = value.split('-');
+            var userArr = value.split(CONNECT_NAME_INDEX);
             var index = _.get(userArr, '[1]');
             var target = _.get(this, `state.roleList[${index}]`);
             if (target) {
@@ -163,6 +148,24 @@ class AddApplyNodePanel extends React.Component {
                 system_roles.showSelectRole.push(target.role_name);
                 this.setState({
                     system_roles: system_roles
+                });
+            }
+        });
+    };
+    //筛选用户
+    handleChangeSelectUser = (selectUserArr) => {
+        var setting_users = this.state.setting_users;
+        setting_users.selectUser = [];
+        setting_users.showSelectUser = [];
+        _.forEach(selectUserArr,value => {
+            var userArr = value.split(CONNECT_NAME_INDEX);
+            var index = _.get(userArr,'[1]');
+            var target = _.get(this.state,`userList[${index}]`);
+            if (target){
+                setting_users.selectUser.push(target.userId);
+                setting_users.showSelectUser.push(target.nickName);
+                this.setState({
+                    setting_users
                 });
             }
         });
@@ -178,7 +181,7 @@ class AddApplyNodePanel extends React.Component {
             });
         }
     };
-    handleChangeSelectUser = (value) => {
+    handleChangeSelectTeamMember = (value) => {
         var teammember_range = this.state.teammember_range;
         var target = _.find(USEROPTIONS, item => item.value === value);
         if (value && target) {
@@ -236,7 +239,7 @@ class AddApplyNodePanel extends React.Component {
                         <div className="addition-condition">
                             <div className="addition-condition-item">
                                 <Select showSearch
-                                    onChange={this.handleChangeSelectUser}
+                                    onChange={this.handleChangeSelectTeamMember}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
                                     {_.map(USEROPTIONS, (item, index) => {
                                         return <Option value={item.value} key={index}>{item.name}</Option>;
@@ -253,8 +256,22 @@ class AddApplyNodePanel extends React.Component {
                                     onChange={this.handleChangeSelectRole}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
                                     {_.map(this.state.roleList, (item, index) => {
-                                        return <Option value={item.role_name + '-' + index} key={index}>{item.role_name}(
+                                        return <Option value={item.role_name + CONNECT_NAME_INDEX + index} key={index}>{item.role_name}(
                                             {Intl.get('apply.add.approve.num.person', '{num}人', {num: item.num})})</Option>;
+                                    })}
+                                </Select>
+                            </div>
+                        </div>
+                    );
+                case 'member_ids':
+                    return (
+                        <div className="addition-condition">
+                            <div className="addition-condition-item">
+                                <Select showSearch mode="multiple"
+                                    onChange={this.handleChangeSelectUser}
+                                    filterOption={(input, option) => ignoreCase(input, option)}>
+                                    {_.map(this.state.userList, (item,index) => {
+                                        return <Option value={item.nickName + CONNECT_NAME_INDEX + index} key={index}>{item.nickName}</Option>;
                                     })}
                                 </Select>
                             </div>
@@ -339,18 +356,22 @@ class AddApplyNodePanel extends React.Component {
                         errTip = false;
                     }
                     break;
+                case 'member_ids':
+                    var setting_users = this.state.setting_users;
+                    if (_.get(setting_users,'selectUser[0]')) {
+                        submitObj.member_ids = setting_users.selectUser;
+                        errTip = false;
+                    }
+                    break;
             }
 
 
         } else {
-
-
         }
         if (!errTip) {
             this.setState({
                 submitErrorMsg: ''
             });
-
             this.props.saveAddCCApproveNode(submitObj);
             this.props.hideRightPanel();
         } else {
@@ -416,7 +437,9 @@ AddApplyNodePanel.defaultProps = {
 
     },
     notify_configs: [],
-    addCCNodePanelFlow: ''
+    addCCNodePanelFlow: '',
+    roleList: [],
+    userList: []
 
 
 };
@@ -425,5 +448,7 @@ AddApplyNodePanel.propTypes = {
     saveAddCCApproveNode: PropTypes.func,
     notify_configs: PropTypes.array,
     addCCNodePanelFlow: PropTypes.string,
+    roleList: PropTypes.array,
+    userList: PropTypes.array,
 };
 export default Form.create()(AddApplyNodePanel);

@@ -4,6 +4,7 @@
 
 import { getFunnelWithConvertRateProcessDataFunc, funnelWithConvertRateProcessCsvData } from '../../utils';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 import {listPanelEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 export function getStageChart() {
@@ -91,7 +92,7 @@ export function getStageChart() {
             name: 'click',
             func: (name, params) => {
                 let label = getName(params);
-                let type = hasPrivilege('CRM_CLUE_ANALYSIS_STATISTICAL_MANAGER') ? 'all' : 'self';
+                let type = hasPrivilege('CURTAO_CRM_CUSTOMER_ANALYSIS_ALL') ? 'all' : 'self';
                 const paramObj = {
                     listType: 'customer',
                     url: '/rest/analysis/customer/v3/lead/:type/realtime/stage/detail/:page_size/:page_num',

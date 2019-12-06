@@ -1,8 +1,9 @@
 import ajax from '../../../common/ajax';
 const routes = require('../../../common/route');
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 const AUTHS = {
-    'GETALL': 'CUSTOMER_ALL'
+    'GETALL': crmPrivilegeConst.CUSTOMER_ALL
 };
 //获取统计总数
 var summaryNumbersAjax;

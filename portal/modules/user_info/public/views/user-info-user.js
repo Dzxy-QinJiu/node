@@ -13,10 +13,12 @@ import { storageUtil } from 'ant-utils';
 import PhoneShowEditField from './phone-show-edit-field';
 import userData from 'PUB_DIR/sources/user-data';
 import {checkQQ, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
-import {getEmailActiveUrl, checkCurrentVersion, checkCurrentVersionType} from 'PUB_DIR/sources/utils/common-method-util';
+import {getEmailActiveUrl, checkCurrentVersion, checkCurrentVersionType, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 import {getOrganizationInfo} from 'PUB_DIR/sources/utils/common-data-util';
 import {paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import history from 'PUB_DIR/sources/history';
+import SavedTips from 'CMP_DIR/saved-tips';
+import privilegeConst_user_info from '../privilege-config';
 const session = storageUtil.session;
 const CLOSE_TIP_TIME = 56;
 const langArray = [{key: 'zh_CN', val: '简体中文'},
@@ -61,6 +63,7 @@ class UserInfo extends React.Component{
             sendTime: 60,//计时器显示时间
             versionName: '', // 版本信息
             endTime: '', // 到期时间
+            changePhoneMsg: '',
         };
     }
 
@@ -471,6 +474,28 @@ class UserInfo extends React.Component{
         return null;
     };
 
+    setChangePhoneResult = () => {
+        this.setState({
+            changePhoneMsg: Intl.get('user.info.bind.phone', '绑定成功，您可以用此手机号登录系统了。')
+        });
+    };
+
+    renderChangePhoneMsgTips = () => {
+        let hide = () => {
+            this.setState({
+                changePhoneMsg: '',
+            });
+        };
+        return (
+            <SavedTips
+                time={3000}
+                tipsContent={this.state.changePhoneMsg}
+                savedResult='success'
+                onHide={hide}
+            />
+        );
+    }
+
     renderUserInfo() {
         let formData = this.props.userInfo;
         //根据是否拥有邮箱改变渲染input默认文字
@@ -495,6 +520,7 @@ class UserInfo extends React.Component{
         </span>;
         // 根据是否拥有qq改变渲染input默认文字
         let qqInputInfo = _.get(formData, 'qq', '');
+        let currentVersion = checkCurrentVersion();
 
         if (this.props.userInfoErrorMsg) {
             var errMsg = <span>{this.props.userInfoErrorMsg}<a onClick={this.retryUserInfo.bind(this)}
@@ -571,13 +597,24 @@ class UserInfo extends React.Component{
                         </span>
                     </div>
                     {this.state.sendMail && !this.state.closeMsg && this.state.sendTime > CLOSE_TIP_TIME ? this.sendMailMsg() : null}
-                    <div className="user-info-item">
+                    <div className="user-info-item user-bind-phone">
                         <span className="user-info-item-title">
                             {Intl.get('member.phone', '手机')}
                             ：</span>
                         <span className="user-info-item-content">
-                            <PhoneShowEditField id={formData.id} phone={formData.phone}/>
+                            <PhoneShowEditField
+                                id={formData.id}
+                                phone={formData.phone}
+                                onChangedPhoneNumber={this.setChangePhoneResult}
+                            />
                         </span>
+                        {
+                            this.state.changePhoneMsg ? (
+                                <div className="bind-phone-tips">
+                                    {this.renderChangePhoneMsgTips()}
+                                </div>
+                            ) : null
+                        }
                     </div>
                     <div className="user-info-item">
                         <span className="user-info-item-title">QQ：</span>
@@ -587,7 +624,7 @@ class UserInfo extends React.Component{
                                 displayType={this.state.qqEditType}
                                 field="qq"
                                 value={qqInputInfo}
-                                hasEditPrivilege={isEditable}
+                                hasEditPrivilege={hasPrivilege(privilegeConst_user_info.USER_INFO_UPDATE)}
                                 hoverShowEdit={false}
                                 validators={[{validator: checkQQ}]}
                                 placeholder={Intl.get('member.input.qq', '请输入QQ号')}
@@ -617,17 +654,17 @@ class UserInfo extends React.Component{
                                         </a>)}
                         </span>
                     </div>
-                    <div className="user-info-item">
-                        <span className="user-info-item-title">
-                            <ReactIntl.FormattedMessage id="common.role" defaultMessage="角色"/>
-                            ：</span>
-                        <span className="user-info-item-content">{formData.rolesName}</span>
-                    </div>
-                    {hasPrivilege('GET_MANAGED_REALM') || hasPrivilege('GET_MEMBER_SELF_INFO') ? (
+                    {
+                        currentVersion.personal ? null : (
+                            <div className="user-info-item">
+                                <span className="user-info-item-title">{Intl.get('common.role', '角色')}：</span>
+                                <span className="user-info-item-content">{formData.rolesName}</span>
+                            </div>
+                        )
+                    }
+                    {hasPrivilege(privilegeConst_user_info.BASE_QUERY_PERMISSION_ORGANIZATION) ? (
                         <div className="user-info-item">
-                            <span className="user-info-item-title">
-                                <ReactIntl.FormattedMessage className="user-info-item-content" id="common.company" defaultMessage="公司"/>：
-                            </span>
+                            <span className="user-info-item-title">{Intl.get('common.company', '公司')}：</span>
                             <span className="user-info-item-content">{this.props.managedRealm}</span>
                         </div>
                     ) : null}
@@ -640,7 +677,7 @@ class UserInfo extends React.Component{
                                 value={this.state.lang}
                                 field="language"
                                 selectOptions={this.getLangOptions()}
-                                hasEditPrivilege={hasPrivilege('MEMBER_LANGUAGE_SETTING')}
+                                hasEditPrivilege={hasPrivilege(privilegeConst_user_info.CURTAO_USER_CONFIG)}
                                 onSelectChange={this.onSelectLang.bind(this)}
                                 cancelEditField={this.cancelEditLang.bind(this)}
                                 saveEditSelect={this.saveEditLanguage}
@@ -731,7 +768,12 @@ class UserInfo extends React.Component{
                             isUseDefaultUserImage={true}
                         />
                         <div className="user-info-nickname">
-                            {_.get(this.state, 'iconSaveError') ? <span className="icon-save-error">{_.get(this.state, 'iconSaveError')}</span> : null}
+                            {
+                                _.get(this.state, 'iconSaveError') ?
+                                    <span className="icon-save-error">
+                                        {_.get(this.state, 'iconSaveError')}
+                                    </span> : null
+                            }
                             <BasicEditInputField
                                 displayType="text"
                                 id={formData.id}
@@ -741,6 +783,8 @@ class UserInfo extends React.Component{
                                 hoverShowEdit={false}
                                 validators={[nameLengthRule]}
                                 saveEditInput={this.saveNicknameEditInput}
+                                noDataTip={Intl.get('user.nickname.no.tip', '暂无昵称')}
+                                addDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}
                             />
                         </div>
                     </div>
@@ -751,15 +795,19 @@ class UserInfo extends React.Component{
                     </div> ) : (
                         this.renderUserInfo()
                     )}
-                    <PrivilegeChecker check="MEMBER_APPLY_EMAIL_REJECTION">
-                        <div className="user-tips-div">
-                            <div className="user-tips-title-div">
-                                <div className="user-tips-name">
-                                    {this.renderReceiveEmail()}
+                    {
+                        isCurtao() ? null : (
+                            <PrivilegeChecker check={privilegeConst_user_info.CURTAO_USER_CONFIG}>
+                                <div className="user-tips-div">
+                                    <div className="user-tips-title-div">
+                                        <div className="user-tips-name">
+                                            {this.renderReceiveEmail()}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </PrivilegeChecker>
+                            </PrivilegeChecker>
+                        )
+                    }
                 </div> : null}
             </div>
         );

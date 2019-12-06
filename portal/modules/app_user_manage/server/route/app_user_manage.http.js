@@ -1,7 +1,9 @@
 /**
  * 请求路径 - user
  */
-
+import appUserPrivilegeConst from '../../public/privilege-const';
+import crmPrivilegeConst from '../../../crm/public/privilege-const';
+import commonPrivilegeConst from '../../../common/public/privilege-const';
 module.exports = {
     module: 'app_user_manage/server/action/app_user_manage.action',
     routes: [{
@@ -12,7 +14,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_LIST'
+            appUserPrivilegeConst.USER_QUERY
         ]
     }, {
         'method': 'get',
@@ -30,7 +32,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_LIST'
+            appUserPrivilegeConst.USER_QUERY
         ]
     },
     {
@@ -50,7 +52,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_ADD'
+            appUserPrivilegeConst.USER_MANAGE
         ]
     }, {
         'method': 'put',
@@ -69,7 +71,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_LIST'
+            appUserPrivilegeConst.USER_QUERY
         ]
     },
     {
@@ -80,7 +82,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_BATCH_OPERATE'
+            appUserPrivilegeConst.USER_MANAGE
         ]
     },
     {
@@ -91,7 +93,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_BATCH_OPERATE'
+            appUserPrivilegeConst.USER_MANAGE
         ]
     },
     {
@@ -102,8 +104,8 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_LIST', //列出用户
-            'CRM_LIST_CUSTOMERS' //列出客户
+            appUserPrivilegeConst.USER_QUERY, //列出用户
+            crmPrivilegeConst.CRM_LIST_CUSTOMERS //列出客户
         ]
     },
     {
@@ -114,7 +116,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_APPLY_LIST'//获取用户审批列表
+            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批列表
         ]
     },
     {
@@ -125,7 +127,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'GET_MEMBER_APPLY_LIST'//获取未读回复列表
+            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取未读回复列表
         ]
     },
     {
@@ -144,7 +146,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_APPLY_LIST'//获取用户审批详情
+            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批详情
         ]
     },
     {
@@ -163,7 +165,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_ADD'//为用户添加应用
+            appUserPrivilegeConst.USER_MANAGE//为用户添加应用
         ]
     },
     {
@@ -174,7 +176,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_EDIT'//为用户修改应用
+            appUserPrivilegeConst.USER_MANAGE//为用户修改应用
         ]
     },
     {

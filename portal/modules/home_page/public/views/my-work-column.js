@@ -51,6 +51,7 @@ import ajax from 'ant-ajax';
 import CRMAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import CustomerRecordActions from 'MOD_DIR/crm/public/action/customer-record-action';
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -725,7 +726,7 @@ class MyWorkColumn extends React.Component {
             'personal_leave': Intl.get('leave.apply.leave.application', '请假申请'),
             'opinion_report': Intl.get('home.page.user.application.for', '{type}申请', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')}),
             'document_writing': Intl.get('home.page.user.application.for', '{type}申请', {type: Intl.get('apply.approve.document.writing', '文件撰写')}),
-            'domainName': Intl.get('apply.domain.application.work.flow', '域名申请'),
+            'domainName': Intl.get('apply.domain.application.work.flow', '舆情平台申请'),
             'apply_user_official': Intl.get('home.page.user.formal.apply', '签约用户申请'),
             'apply_user_trial': Intl.get('home.page.user.trial.apply', '试用用户申请'),
             'apply_app_official': Intl.get('home.page.user.formal.apply', '签约用户申请'),
@@ -1189,7 +1190,7 @@ class MyWorkColumn extends React.Component {
         this.setState({isShowRecormendClue: true});
     }
     renderAddAndImportBtns = () => {
-        if (hasPrivilege('CUSTOMER_ADD')) {
+        if (hasPrivilege(crmPrivilegeConst.CUSTOMER_ADD)) {
             return (
                 <div className="btn-containers">
                     <Button type='primary' className='import-btn'
@@ -1375,7 +1376,7 @@ class MyWorkColumn extends React.Component {
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
-                case APPLY_APPROVE_TYPES.DOMAINAPPLY: //域名申请
+                case APPLY_APPROVE_TYPES.DOMAINAPPLY: //舆情平台申请
                     detailContent = (
                         <DomainApplyDetail
                             isHomeMyWork={true}

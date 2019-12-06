@@ -10,7 +10,7 @@ import Trace from 'LIB_DIR/trace';
 import {Alert, Icon, Input, Row, Col, Button, Steps,message} from 'antd';
 const Step = Steps.Step;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 require('../css/leave-apply-detail.less');
@@ -325,7 +325,11 @@ class ApplyViewDetail extends React.Component {
                 currentId: customer_id
             }
         });
-    }
+    };
+    //查看用户详情 触发打开用户详情面板
+    handleShowUserDetail = (user_id) => {
+        userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, {userId: user_id});
+    };
     calculateStartAndEndRange = (visit_time) => {
         var start = _.get(visit_time, 'begin_time');
         var end = _.get(visit_time, 'end_time');
@@ -366,14 +370,26 @@ class ApplyViewDetail extends React.Component {
                 if (showItem){
                     //有几个需要特殊处理的组件展示
                     if (item.component_type === ALL_COMPONENTS.CUSTOMERSEARCH){
+                        var customerText = <a href="javascript:void(0)"
+                            onClick={this.handleShowCustomerDetail.bind(this, _.get(showItem,'[0].id'))}
+                            data-tracename="查看客户详情"
+                            className="customer-name"
+                            title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
+                        >{_.get(showItem,'[0].name')}</a>;
                         showApplyInfo.push({
                             label: _.get(item,'title'),
-                            text: <a href="javascript:void(0)"
-                                onClick={this.handleShowCustomerDetail.bind(this, _.get(showItem,'[0].id'))}
-                                data-tracename="查看客户详情"
-                                className="customer-name"
-                                title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
-                            >{_.get(showItem,'[0].name')}</a>
+                            text: customerText
+                        });
+                    }else if(item.component_type === ALL_COMPONENTS.USERSEARCH){
+                        var userText = <a href="javascript:void(0)"
+                            onClick={this.handleShowUserDetail.bind(this, _.get(showItem,'[0].id'))}
+                            data-tracename="查看用户详情"
+                            className="customer-name"
+                            title={Intl.get('user.list.click.user.detail', '点击可查看用户详情')}
+                        >{_.get(showItem,'[0].nick_name')}</a>;
+                        showApplyInfo.push({
+                            label: _.get(item,'title'),
+                            text: userText
                         });
                     }else if (item.component_type === ALL_COMPONENTS.TIMEPERIOD ){
                         var starttime = '', endtime = '';

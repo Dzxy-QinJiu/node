@@ -18,7 +18,8 @@ import {
     APPLYAPPROVE_LAYOUT,
     ALL_COMPONENTS,
     ALL_COMPONENTS_TYPE,
-    ADDAPPLYFORMCOMPONENTS
+    ADDAPPLYFORMCOMPONENTS,
+    ROLES_SETTING
 } from '../utils/apply-approve-utils';
 import ComponentEdit from './basic-components/component-edit';
 import ComponentShow from './basic-components/component-show';
@@ -38,6 +39,8 @@ class ApplyFormAndRules extends React.Component {
             isEdittingApplyName: false,//正在修改申请审批的标题
             updateApplyName: '',//修改后标题的名称
             applyTypeData: {},//编辑某个审批的相关数据
+            roleList: [],
+            userList: [],
             ...ApplyApproveManageStore.getState()
         };
     }
@@ -48,8 +51,38 @@ class ApplyFormAndRules extends React.Component {
     componentDidMount = () => {
         //如果还没有配置过，就只有一个默认的规则
         ApplyApproveManageStore.listen(this.onStoreChange);
+        //获取用户列表
+        this.getUserList();
         //请求展示内容
         this.getSelfSettingWorkFlow(this.props.applyTypeId);
+    };
+    getUserList = () => {
+        $.ajax({
+            url: '/rest/user',
+            dataType: 'json',
+            type: 'get',
+            data: {cur_page: 1},
+            success: (userListObj) => {
+                var rolesList = _.get(userListObj, 'roles');
+                _.forEach(rolesList, item => {
+                    var roleName = item.role_name;
+                    var target = _.find(ROLES_SETTING, levelItem => levelItem.name === roleName);
+                    if (target) {
+                        item.save_role_value = target.value;
+                    }
+                });
+                this.setState({
+                    userList: _.get(userListObj, 'data'),
+                    roleList: _.filter(rolesList, item => item.save_role_value)//暂时把销售角色先去掉
+                });
+            },
+            error: (xhr, textStatus) => {
+                this.setState({
+                    roleList: [],
+                    userList: []
+                });
+            }
+        });
     };
     componentWillUnmount(){
         ApplyApproveManageStore.unlisten(this.onStoreChange);
@@ -223,10 +256,18 @@ class ApplyFormAndRules extends React.Component {
     validateBeforeSubmit = (submitObj) => {
         var customiz_form = _.get(submitObj, 'customiz_form');
         //如果有时间相关组件，需要把默认的时间值去掉，要不就会报错
-        _.forEach(customiz_form, item => {
+        _.forEach(customiz_form, (item,index) => {
             if (item.component_type === ALL_COMPONENTS.DATETIME){
                 delete item.defaultValue;
             }
+            //与业务相关的一些组件，字段的key值必须按后端给定的格式传
+            //todo 域名申请约定的相关字段 配置完该流程要及时删掉
+            // if(index === 1){
+            //     item['key'] = 'customer_sign';
+            // }
+            // if(index === 2){
+            //     item['key'] = 'display_name';
+            // }
         });
         return !_.includes(_.map(customiz_form, 'isEditting'), true);
     };
@@ -370,6 +411,8 @@ class ApplyFormAndRules extends React.Component {
             <ApplyRulesView
                 applyTypeData={applyTypeData}
                 updateRegRulesView={this.updateRegRulesView}
+                roleList={this.state.roleList}
+                userList={this.state.userList}
             />
         );
     };

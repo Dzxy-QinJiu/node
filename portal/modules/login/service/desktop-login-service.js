@@ -36,8 +36,8 @@ var urls = {
     getCompanyByName: '/rest/open/resource/organization',
     //获取短信验证码
     getVertificationCode: '/rest/open/resource/verificationcode',
-    //注册新公司账号
-    registerAccount: '/rest/open/resource/organization',
+    //注册个人账号
+    registerAccount: '/rest/open/resource/organization/personal',
     //短信验证码的验证
     validatePhoneCode: 'rest/open/resource/verificationcode/check',
     //检查微信是否已绑定客套账号
@@ -413,7 +413,7 @@ exports.getVertificationCode = function(req, res) {
             res: res,
         }, req.query);
 };
-//注册新公司账号
+//注册个人账号
 exports.registerAccount = function(req, res) {
     return restUtil.baseRest.post(
         {

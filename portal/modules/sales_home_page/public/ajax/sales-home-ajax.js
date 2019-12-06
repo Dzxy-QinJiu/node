@@ -1,6 +1,7 @@
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import querystring from 'querystring';
 let teamAjax = require('../../../common/public/ajax/team');
+import call_record_privilegeConst from '../../../call_record/public/privilege-const';
 /**
  * 获取销售是什么角色
  * 普通销售：sales
@@ -277,7 +278,7 @@ exports.getCallBackList = function(paramsObj, filterObj) {
     getCallBackAjax && getCallBackAjax.abort();
     const queryCustomer = paramsObj.query.phone_type === 'customer'; // 客户电话的类型过滤
     let filter_phone = queryCustomer; // 是否过滤114和无效的电话号码
-    let auth_type = hasPrivilege('CUSTOMER_CALLRECORD_MANAGER_ONLY') ? 'manager/' : 'user/';
+    let auth_type = hasPrivilege(call_record_privilegeConst.CURTAO_CRM_TRACE_QUERY_ALL) ? 'manager/' : 'user/';
     let url = '/rest/call_record/' + auth_type;
     var paramsArray = Object.keys(paramsObj.params).map(function(key) {
         return paramsObj.params[key];

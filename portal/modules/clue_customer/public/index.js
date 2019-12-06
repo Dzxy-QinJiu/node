@@ -56,7 +56,15 @@ import {
     ADD_SELECT_TYPE,
     SIMILAR_CLUE,
     SIMILAR_CUSTOMER,
-    NEED_MY_HANDLE
+    NEED_MY_HANDLE,
+    isCommonSalesOrPersonnalVersion,
+    freedCluePrivilege,
+    deleteCluePrivilege,
+    deleteClueIconPrivilege,
+    avalibilityCluePrivilege,
+    transferClueToCustomerIconPrivilege,
+    addCluePrivilege,
+    releaseClueTip,
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -103,6 +111,7 @@ import { clueEmitter, notificationEmitter } from 'PUB_DIR/sources/utils/emitters
 import { parabola } from 'PUB_DIR/sources/utils/parabola';
 import { storageUtil } from 'ant-utils';
 import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 const DIFFREF = {
     ASSIGN: 'assign',//分配
     TRACE: 'trace', //跟进
@@ -139,7 +148,6 @@ class ClueCustomer extends React.Component {
             selectedClues: [],//获取批量操作选中的线索
             isShowExtractCluePanel: false, // 是否显示提取线索界面，默认不显示
             addType: 'start',//添加按钮的初始
-            showRecommendCustomerCondition: false,
             isReleasingClue: false,//是否正在释放线索
             selectedClue: [],//选中的线索
             isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
@@ -151,9 +159,6 @@ class ClueCustomer extends React.Component {
             ...clueCustomerStore.getState()
         };
     }
-    isCommonSales = () => {
-        return userData.getUserData().isCommonSales;
-    };
 
     componentDidMount() {
         const query = queryString.parse(this.props.location.search);
@@ -554,7 +559,7 @@ class ClueCustomer extends React.Component {
         return (
             <div className="recomend-clue-customer-container">
                 {
-                    hasPrivilege('CUSTOMER_ADD_CLUE') ?
+                    addCluePrivilege() ?
                         <Dropdown overlay={menu} overlayClassName="norm-add-dropdown" placement="bottomCenter">
                             <Button className="ant-btn ant-btn-primary manual-add-btn">
                                 <Icon type="plus" className="add-btn"/>
@@ -596,7 +601,7 @@ class ClueCustomer extends React.Component {
     renderClueRecommend = () => {
         return (
             <div className="recomend-clue-customer-container pull-right">
-                {hasPrivilege('COMPANYS_GET') ?
+                {hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE) ?
                     <Popover
                         placement="bottom"
                         content={(
@@ -754,7 +759,7 @@ class ClueCustomer extends React.Component {
             && _.isEmpty(filterStoreData.filterClueAccess)
             && _.isEmpty(filterStoreData.filterClueClassify)
             && _.isEmpty(filterStoreData.filterSourceClassify)
-            && _.get(filterStoreData, 'rangeParams[0].from') === clueStartTime
+            && _.get(filterStoreData, 'rangeParams[0].from') === 0
             && this.state.keyword === ''
             && _.isEmpty(filterStoreData.exist_fields)
             && _.isEmpty(filterStoreData.unexist_fields)
@@ -865,7 +870,7 @@ class ClueCustomer extends React.Component {
             queryParam: {
                 rangeParams: rangeParams,
                 keyword: isGetAllClue ? '' : _.trim(this.state.keyword),
-                statistics_fields: 'status,availability',
+                statistics_fields: 'status,availability'
             },
             bodyParam: {
                 query: {
@@ -923,11 +928,21 @@ class ClueCustomer extends React.Component {
         Trace.traceEvent('线索管理', '导出线索');
         const sorter = this.state.sorter;
         var type = 'user';
-        if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+        if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
             type = 'manager';
         }
-        var isGetAll = this.state.exportRange === 'all';
-        const reqData = isGetAll ? this.getClueSearchCondition(true, true) : this.getClueSearchCondition(true,false);
+        //如果是有已经选中的线索，那么导出的就是已经选中的线索
+        //没有选中的线索，再根据radio的选择不同导出该筛选条件下或者是全部的线索
+        var reqData = {};
+        if(this.hasSelectedClues()){
+            reqData = _.cloneDeep(this.getClueSearchCondition(true, true));
+            //然后再在query中加id字段
+            var selectCluesIds = _.map(_.get(this, 'state.selectedClues'),'id');
+            reqData.bodyParam.query.id = selectCluesIds.join(',');
+        }else{
+            var isGetAll = this.state.exportRange === 'all';
+            reqData = isGetAll ? this.getClueSearchCondition(true, true) : this.getClueSearchCondition(true,false);
+        }
         const params = {
             page_size: 10000,
             sort_field: sorter.field,
@@ -1267,11 +1282,9 @@ class ClueCustomer extends React.Component {
         });
     };
     renderInavailabilityOrValidClue = (salesClueItem) => {
-        //是否有标记线索无效的权限
-        var avalibilityPrivilege = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
         return(
             <span className="valid-or-invalid-container">
-                {avalibilityPrivilege ? <span className="cancel-invalid" onClick={this.handleClickClueInvalid.bind(this, salesClueItem)}
+                {avalibilityCluePrivilege() ? <span className="cancel-invalid" onClick={this.handleClickClueInvalid.bind(this, salesClueItem)}
                     data-tracename="判定线索无效">
                     {editCluePrivilege(salesClueItem) ? <span className="can-edit handle-btn-item">{Intl.get('clue.customer.set.invalid', '标为无效')}</span> : <span className="can-edit handle-btn-item"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
                 </span> : null}
@@ -1433,7 +1446,7 @@ class ClueCustomer extends React.Component {
     };
     renderAvailabilityClue = (salesClueItem) => {
         //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && salesClueItem.availability === AVALIBILITYSTATUS.AVALIBILITY;
+        var associatedPrivilege = transferClueToCustomerIconPrivilege(salesClueItem);
         return(
             <div className="avalibility-container">
                 <div className="associate-customer">
@@ -1480,11 +1493,7 @@ class ClueCustomer extends React.Component {
             if (errorMsg) {
                 message.error(errorMsg);
             } else {
-                subtracteGlobalClue(curDeleteClue, (flag) => {
-                    if(flag){
-                        clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curDeleteClue);
-                    }
-                });
+                subtracteGlobalClue(curDeleteClue);
             }
         });
     }
@@ -1515,7 +1524,7 @@ class ClueCustomer extends React.Component {
         //如果选中了待我审批状态，就不展示已转化
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
         return <span className={clueStatusCls}>
-            {isSalesRole() ? null : <span className={willDistCls}
+            {isCommonSalesOrPersonnalVersion() ? null : <span className={willDistCls}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)}
                 title={getCertainTabsTitle(SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
                 <span ref={dom => {this.$willDistribute = dom;}} className="clue-status-num">{_.get(statics, 'willDistribute', 0)}</span>
@@ -1533,7 +1542,7 @@ class ClueCustomer extends React.Component {
                 <span className="clue-status-num" ref={dom => {this.$hasTrace = dom;}}>{_.get(statics, 'hasTrace', 0)}</span>
                 <span className={hasTraceAddCls}> +1 </span>
             </span>
-            {filterAllotNoTraced || isSalesRole() ? null : <span className={hasTransfer}
+            {filterAllotNoTraced || isCommonSalesOrPersonnalVersion() ? null : <span className={hasTransfer}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}
                 title={getCertainTabsTitle(SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
                 <span className="clue-status-num" ref={dom => {this.$hasTransfer = dom;}} >{_.get(statics, 'hasTransfer', 0)}</span>
@@ -1740,11 +1749,11 @@ class ClueCustomer extends React.Component {
         let hasTrace = SELECT_TYPE.HAS_TRACE === typeFilter.status;
         let filterStore = clueFilterStore.getState();
         let invalidClue = filterStore.filterClueAvailability === AVALIBILITYSTATUS.INAVALIBILITY;
-        //除了运营不能释放线索，管理员、销售都可以释放
+        //除了运营不能释放线索，管理员、销售，都可以释放
         //待跟进，已跟进，无效线索才可以被释放
         let showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (willTrace || hasTrace || invalidClue);
-        let showDelete = hasPrivilege('CLUECUSTOMER_DELETE');
-        if(showRelease || showDelete) {
+        if(showRelease || deleteCluePrivilege()) {
+            let releaseTip = releaseClueTip();
             columns.push({
                 dataIndex: 'clue_action',
                 className: 'action-td-clue',
@@ -1754,14 +1763,14 @@ class ClueCustomer extends React.Component {
                         <React.Fragment>
                             {showRelease ? <div className="release-clue-btn">
                                 <Popconfirm placement="topRight" onConfirm={this.releaseClue.bind(this, salesClueItem)}
-                                    title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？')}>
+                                    title={releaseTip}>
                                     <a className='release-customer'
                                         title={Intl.get('crm.customer.release', '释放')}>
                                         <i className="iconfont icon-release handle-btn-item"/>
                                     </a>
                                 </Popconfirm>
                             </div> : null}
-                            {showDelete && editCluePrivilege(salesClueItem) ?
+                            {deleteClueIconPrivilege(salesClueItem) ?
                                 <Popconfirm placement="topRight" onConfirm={this.deleteClue.bind(this, salesClueItem)}
                                     title={Intl.get('clue.customer.delete', '删除后无法恢复，您确定要删除吗？')}>
                                     <a className="order-btn-class delete-btn handle-btn-item"
@@ -1818,7 +1827,7 @@ class ClueCustomer extends React.Component {
     };
     getRowSelection = () => {
         //只有有批量变更权限并且不是普通销售的时候，才展示选择框的处理
-        let showSelectionFlag = (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales;
+        let showSelectionFlag = (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_SELF) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) && !userData.getUserData().isCommonSales);
         //待跟进，已跟进，无效可以有批量释放,可以展示选择框
         let typeFilter = this.getFilterStatus();//线索类型
         let willTrace = SELECT_TYPE.WILL_TRACE === typeFilter.status;
@@ -2115,7 +2124,7 @@ class ClueCustomer extends React.Component {
         });
     };
     renderAddDataContent = () => {
-        if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
+        if (addCluePrivilege()) {
             return (
                 <div className="btn-containers">
                     <div>
@@ -2131,7 +2140,7 @@ class ClueCustomer extends React.Component {
         }
     };
     renderImportDataContent = () => {
-        if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
+        if (addCluePrivilege()) {
             return (
                 <div className="btn-containers">
                     <div>
@@ -2201,7 +2210,7 @@ class ClueCustomer extends React.Component {
         }
         else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueLists.length) {
             //总的线索不存在并且没有筛选条件时
-            var showAddBtn = !this.state.allClueCount && this.hasNoFilterCondition() && hasPrivilege('CUSTOMER_ADD_CLUE');
+            var showAddBtn = !this.state.allClueCount && this.hasNoFilterCondition() && addCluePrivilege();
             return (
                 <NoDataAddAndImportIntro
                     renderOtherOperation={this.renderOtherOperation}
@@ -2217,11 +2226,6 @@ class ClueCustomer extends React.Component {
             return this.renderClueCustomerBlock();
         }
     };
-    openRecommendClues = () => {
-        this.setState({
-            showRecommendCustomerCondition: true
-        });
-    }
     renderOtherOperation = () => {
         return (
             <div className="intro-recommend-list">
@@ -2229,7 +2233,7 @@ class ClueCustomer extends React.Component {
                     id="import.excel.no.data"
                     defaultMessage={'试下客套给您{recommend}的功能'}
                     values={{
-                        'recommend': <a onClick={this.openRecommendClues} data-tracename="点击推荐线索">
+                        'recommend': <a onClick={this.showClueRecommendTemplate} data-tracename="点击推荐线索">
                             {Intl.get('import.recommend.clue.lists', '推荐线索')}
                         </a>
                     }}/>
@@ -2662,7 +2666,7 @@ class ClueCustomer extends React.Component {
     //渲染批量操作按钮
     renderBatchChangeClues = () => {
         //只有有批量变更权限并且不是普通销售的时候，才展示批量分配
-        let showBatchChange = ((hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales) && this.editCluePrivilege();
+        let showBatchChange = ((hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_SELF)) && !isCommonSalesOrPersonnalVersion()) && this.editCluePrivilege();
         let filterClueStatus = clueFilterStore.getState().filterClueStatus;
         let curStatus = getClueStatusValue(filterClueStatus);
         //除了运营不能释放线索，管理员、销售都可以释放
@@ -2674,8 +2678,10 @@ class ClueCustomer extends React.Component {
         let assignCls = classNames('pull-right', {
             'responsive-mini-btn': isWebMin
         });
+        let releaseTip = releaseClueTip();
         return (
             <div className="pull-right">
+                {this.renderExportClue()}
                 <div className={assignCls}>
                     {showBatchChange ?
                         <AntcDropdown
@@ -2703,7 +2709,7 @@ class ClueCustomer extends React.Component {
                     {
                         roleRule && batchRule ? (
                             <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseClue}
-                                title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？')}>
+                                title={releaseTip}>
                                 <Button data-tracename="点击批量释放线索按钮"
                                     className='btn-item handle-btn-item'
                                     title={Intl.get('clue.customer.release.pool', '释放到线索池')}>
@@ -2758,12 +2764,12 @@ class ClueCustomer extends React.Component {
     }
     topBarDropList = (isWebMin) => {
         return (<Menu onClick={this.handleMenuSelectClick.bind(this)}>
-            {isWebMin && hasPrivilege('CUSTOMER_ADD_CLUE') ?
+            {isWebMin && addCluePrivilege() ?
                 <Menu.Item key="add" >
                     {Intl.get('crm.sales.manual_add.clue','手动添加')}
                 </Menu.Item>
                 : null}
-            {isWebMin && hasPrivilege('CUSTOMER_ADD_CLUE') ?
+            {isWebMin && addCluePrivilege() ?
                 <Menu.Item key="import" >
                     {Intl.get('crm.sales.manual.import.clue','导入线索')}
                 </Menu.Item>
@@ -2771,11 +2777,11 @@ class ClueCustomer extends React.Component {
             <Menu.Item key="export" >
                 {Intl.get('clue.export.clue.list','导出线索')}
             </Menu.Item>
-            {hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF') ?
+            {freedCluePrivilege() ?
                 <Menu.Item key="clue_pool">
                     {Intl.get('clue.pool', '线索池')}
                 </Menu.Item> : null}
-            {hasPrivilege('COMPANYS_GET') ?
+            {hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE) ?
                 <Menu.Item key="recommend">
                     {Intl.get('clue.customer.clue.recommend', '线索推荐')}
                 </Menu.Item> : null}
@@ -2797,7 +2803,7 @@ class ClueCustomer extends React.Component {
                 {/*this.renderClueAnalysisBtn() : null*/}
                 {/*}*/}
                 {
-                    !(isWebMiddle || isWebMin) && (hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF')) ?
+                    !(isWebMiddle || isWebMin) && freedCluePrivilege() ?
                         this.renderExtractClue() : null
                 }
                 {!(isWebMiddle || isWebMin) ? this.renderExportClue() : null}
@@ -2811,22 +2817,6 @@ class ClueCustomer extends React.Component {
     };
     isFirstLoading = () => {
         return this.state.isLoading && this.state.firstLogin;
-    };
-    isShowRecommendSettingPanel = () => {
-        var settedCustomerRecommend = this.state.settedCustomerRecommend;
-        return (!this.state.isLoading && !this.state.clueCustomerErrMsg) && !settedCustomerRecommend.loading && this.state.showRecommendCustomerCondition && hasPrivilege('COMPANYS_GET');
-    };
-    hideFocusCustomerPanel = () => {
-        this.setState({
-            showRecommendCustomerCondition: false
-        });
-    };
-    saveRecommedConditionsSuccess = (saveCondition) => {
-        //修改掉查询条件
-        this.hideFocusCustomerPanel();
-        //将保存后的条件记录下来
-        clueCustomerAction.saveSettingCustomerRecomment(saveCondition);
-        this.showClueRecommendTemplate();
     };
 
     //渲染有新线索，刷新页面提示
@@ -3057,22 +3047,28 @@ class ClueCustomer extends React.Component {
                         onOk={this.exportData}
                         onCancel={this.hideExportModal}
                     >
-                        <div>
-                            {Intl.get('contract.116', '导出范围')}:
-                            <RadioGroup
-                                value={this.state.exportRange}
-                                onChange={this.onExportRangeChange}
-                            >
-                                <Radio key="all" value="all">
-                                    {Intl.get('common.all', '全部')}
-                                </Radio>
-                                <Radio key="filtered" value="filtered">
-                                    {Intl.get('contract.117', '符合当前筛选条件')}
-                                </Radio>
-                            </RadioGroup>
+                        <div className='modal-tip'>
+                            {Intl.get('contract.116', '导出范围')}：
+                            {/*如果当前有选中的线索就提示导出选中的线索，如果没有就提示导出全部或者符合当前条件的线索*/}
+                            {this.hasSelectedClues() ?
+                                <span>
+                                    {Intl.get('clue.customer.export.select.clue', '导出选中的线索')}
+                                </span>
+                                : <RadioGroup
+                                    value={this.state.exportRange}
+                                    onChange={this.onExportRangeChange}
+                                >
+                                    <Radio key="all" value="all">
+                                        {Intl.get('common.all', '全部')}
+                                    </Radio>
+                                    <Radio key="filtered" value="filtered">
+                                        {Intl.get('contract.117', '符合当前筛选条件')}
+                                    </Radio>
+                                </RadioGroup>}
+
                         </div>
-                        <div>
-                            {Intl.get('contract.118','导出类型')}:
+                        <div className='modal-tip'>
+                            {Intl.get('contract.118','导出类型')}：
                             {Intl.get('contract.152','excel格式')}
                         </div>
                     </Modal>
@@ -3092,12 +3088,6 @@ class ClueCustomer extends React.Component {
                                 }
                             </RightPanel> : null
                     }
-
-                    {this.isShowRecommendSettingPanel() ?
-                        <RecommendCluesForm
-                            hideFocusCustomerPanel={this.hideFocusCustomerPanel}
-                            saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
-                        /> : null}
                 </div>
             </RightContent>
         );

@@ -10,9 +10,7 @@
     right: 0;
     left: 0;
     bottom: 0;
-    background-image: url('./image/login-bg.png');
-    background-size: cover;
-    background-color: #5e5e60;
+    background-color: #FFFFFF;
     font-family: 'Noto Sans CJK SC', 'Noto Sans CJK', 'Source Han Sans', source-han-sans-simplified-c, sans-serif !important;
     //等待效果
     .isloading{
@@ -21,14 +19,21 @@
         left:48%;
     }
     a.logo{
-        margin-top: 12px;
-        margin-left: 12px;
-        .image{
-            margin-right: 8px!important;
-        }
-        >span{
-            font-size: 24px!important;
-        }
+        margin-top: 16px;
+        margin-left: 16px;
+    }
+
+    //登录页图片区
+    .login-image-container{
+      position: absolute;
+      width: 50%;
+      height: 413px;
+      top: 0;
+      bottom: 0;
+      margin: auto 0;
+      .login-image{
+        float: right;
+      }
     }
     //登录、注册按钮
     .login-register-btn{
@@ -52,33 +57,25 @@
         position: absolute;
         top: 0;
         right: 0;
-        width: 100%;
+        width: 50%;
         height: 100%;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        align-items: center;//上下居中
+        //justify-content: center;//左右居中
     }
 
     .form-wrap {
         position: relative;
-        width: 492px;
-        //height: 300px;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        //margin: auto;
-        border-radius: 3px;
-        background-color: @wihte-color;
-        padding-bottom: 20px;
+        width: 416px;
+        margin-left: 48px;
+        padding: 40px;
+        border-radius: 4px;
+        background-color: #F1F4F8;
         .form-title{
-            height: 68px;
-            margin-bottom: 20px;
-            line-height: 64px;
-            border-bottom: 1px solid @title-border-color;
-            font-size: 20px;
-            text-align: center;
-            color: @font-color;
+          font-size: 16px;
+          font-weight: bold;
+          text-align: center;
+          color: #213340;
         }
         //隐藏密码输入框的样式
         .password-hidden-input{
@@ -121,10 +118,14 @@
         color: #ee5b44;
     }
     .login-error-tip{
-        width: 276px;
-        margin: 0 auto;
+        margin-top: 0;
         .icon-warn-icon{
             margin-right: 10px;
         }
     }
+}
+#footer {
+  .footer-content {
+    color: #000000;
+  }
 }

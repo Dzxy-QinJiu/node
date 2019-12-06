@@ -1,8 +1,9 @@
 var phoneAlertAjax = require('../ajax/phone-alert-ajax');
 var customerRecordAjax = require('MOD_DIR/crm/public/ajax/customer-record-ajax');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 const AUTHS = {
-    'GETALL': 'CUSTOMER_ALL'
+    'GETALL': crmPrivilegeConst.CUSTOMER_ALL
 };
 function PhoneAlertAction() {
     this.generateActions(

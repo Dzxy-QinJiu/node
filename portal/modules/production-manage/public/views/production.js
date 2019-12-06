@@ -8,6 +8,8 @@ import '../style/production-info.less';
 import {Form, Icon, Input, Switch,message, Popover} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {productNameRule, getNumberValidateRule, productNameRuleForValidator} from 'PUB_DIR/sources/utils/validate-util';
+import { num as antUtilsNum } from 'ant-utils';
+const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
@@ -27,7 +29,7 @@ import classNames from 'classnames';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import AddIpForm from './add-ip-form';
 import productionAjax from '../ajax/production-ajax';
-
+import production_manager_privilegeConfig from '../privilege-config';
 
 const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
@@ -393,7 +395,7 @@ class Production extends React.Component {
         saveObj = _.mapValues(saveObj, obj => _.trim(obj));
         //如果保存的是产品单价，将其转化为number类型
         if(_.has(saveObj, 'price')) {
-            saveObj.price = _.toNumber(saveObj.price);
+            saveObj.price = _.toNumber(removeCommaFromNum(saveObj.price));
         }
         _.extend(production, saveObj);
         ProductionFormAction.setSaveFlag(true);
@@ -456,7 +458,7 @@ class Production extends React.Component {
                     {Intl.get('product.filter.ip.title', '该产品统计分析时过滤以下IP：')}
                 </span>
                 {
-                    hasPrivilege('CREATE_CONFIG_IP') ? (
+                    hasPrivilege(production_manager_privilegeConfig.PRODUCTS_MANAGE) ? (
                         this.state.isShowAddIp ? null : (
                             <span className="operate-btn" onClick={this.handleShowAddIp}>
                                 <i className="iconfont icon-plus"></i>

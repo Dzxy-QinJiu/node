@@ -6,6 +6,8 @@ var pageLogger = require('../../../lib/utils/logger').getLogger('page');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var EventEmitter = require('events');
 let BackendIntl = require('../../../lib/utils/backend_intl');
+import publicPrivilegeConst from '../../../public/privilege-const';
+
 //获取用户权限
 function getPrivileges(req) {
     var userInfo = auth.getUser(req);
@@ -58,7 +60,7 @@ exports.getUserInfo = function(req, res, userId) {
     let promiseList = [getUserBasicInfo, getUserRole, getUserWorkflowConfigs, getUserGuideCOnfigs];
     let userPrivileges = getPrivileges(req);
     //是否有获取所有团队数据的权限
-    let hasGetAllTeamPrivilege = userPrivileges.indexOf('GET_TEAM_LIST_ALL') !== -1;
+    let hasGetAllTeamPrivilege = userPrivileges.indexOf(publicPrivilegeConst.GET_TEAM_LIST_ALL) !== -1;
     //没有获取所有团队数据的权限,通过获取我所在的团队及下级团队来判断是否是普通销售
     if (!hasGetAllTeamPrivilege) {
         promiseList.push(getDataPromise(req, res, userInfoRestApis.getMyTeamWithSubteams));

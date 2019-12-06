@@ -10,6 +10,7 @@ var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitte
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {APPLY_TYPE_STATUS_CONST} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
+import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
 function SalesOpportunityApplyActions() {
     this.generateActions(
         'setInitState',
@@ -40,7 +41,7 @@ function SalesOpportunityApplyActions() {
                     _.forEach(workList.list,(workItem) => {
                         workItem.showApproveBtn = true;
                         //如果是我申请的，除了可以审批之外，我也可以撤回
-                        if (_.get(workItem,'applicant.user_id') === userData.getUserData().user_id && hasPrivilege('GET_MY_WORKFLOW_LIST') && hasPrivilege('GET_MY_WORKFLOW_LIST')){
+                        if (_.get(workItem,'applicant.user_id') === userData.getUserData().user_id && hasPrivilege(applyPrivilegeConst.WORKFLOW_BASE_PERMISSION)){
                             workItem.showCancelBtn = true;
                         }
 

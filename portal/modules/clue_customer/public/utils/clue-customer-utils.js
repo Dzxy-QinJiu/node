@@ -6,6 +6,8 @@ var userData = require('PUB_DIR/sources/user-data');
 import { storageUtil } from 'ant-utils';
 const local = storageUtil.local;
 import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import { checkCurrentVersion, checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
 export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
 export const checkClueName = function(rule, value, callback) {
     value = _.trim(value);
@@ -85,9 +87,42 @@ export const isNotHasTransferStatus = function(salesClueItem){
 export const editCluePrivilege = function(clueItem) {
     return isNotHasTransferStatus(clueItem) && clueItem.availability === AVALIBILITYSTATUS.AVALIBILITY;
 };
+// 判断是否为普通销售或者是个人版本
+export const isCommonSalesOrPersonnalVersion = () => {
+    return userData.getUserData().isCommonSales || checkVersionAndType().personal;
+};
+//分配线索的权限
 export const assignSalesPrivilege = (curClue) => {
     let user = userData.getUserData();
-    return (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales)) && editCluePrivilege(curClue);
+    return (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DISTRIBUTE_SELF) || (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DISTRIBUTE_ALL) && !isCommonSalesOrPersonnalVersion())) && editCluePrivilege(curClue);
+};
+//渲染释放线索的权限
+export const freedCluePrivilege = () => {
+    return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_SELF);
+};
+//删除线索的权限
+export const deleteCluePrivilege = () => {
+    return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DELETE);
+};
+//能有展示删除线索按钮的权限
+export const deleteClueIconPrivilege = (clue) => {
+    return deleteCluePrivilege() && editCluePrivilege(clue);
+};
+//标记线索有效或者无效的权限
+export const avalibilityCluePrivilege = () => {
+    return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_SELF);
+};
+//线索转客户的权限
+export const transferClueToCustomerIconPrivilege = (clue) => {
+    return hasPrivilege(cluePrivilegeConst.LEAD_TRANSFER_MERGE_CUSTOMER) && editCluePrivilege(clue);
+};
+//添加线索的权限
+export const addCluePrivilege = () => {
+    return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_ADD);
+};
+//修改线索基本资料的权限
+export const editClueItemIconPrivilege = (clue) => {
+    return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) && editCluePrivilege(clue);
 };
 
 export const CLUE_DIFF_TYPE = [
@@ -219,11 +254,11 @@ export const handleSubmitContactData = function(submitObj){
 export const handlePrivilegeType = function(isMarkingAvalibility) {
     var type = 'user';
     if (isMarkingAvalibility){
-        if (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER')){
+        if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL)){
             type = 'manager';
         }
     }else{
-        if (hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER')){
+        if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL)){
             type = 'manager';
         }
     }
@@ -246,6 +281,9 @@ export const handleSubmitClueItemData = function(submitObj,isMarkingAvalibility)
     for (var key in submitObj) {
         data.updateItem = key;
         updateObj[key] = submitObj[key];
+    }
+    if(submitObj['province'] || submitObj['city'] || submitObj['county']){
+        data.updateItem = 'province';
     }
     data.updateObj = JSON.stringify(updateObj);
     data.type = handlePrivilegeType(isMarkingAvalibility);
@@ -420,3 +458,11 @@ export const sourceClassifyOptions = sourceClassifyWithoutOtherArray.map((source
 });
 export const FLOW_FLY_TIME = 800;//增加一个数字的动画时长
 export const HIDE_CLUE_TIME = 2000;
+//释放线索的提示
+export function releaseClueTip() {
+    let releaseTip = Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？');
+    if(checkCurrentVersion().personal) {//个人版
+        releaseTip = Intl.get('clue.customer.personal.release.confirm.tip', '释放后可以再从线索池提取');
+    }
+    return releaseTip;
+}

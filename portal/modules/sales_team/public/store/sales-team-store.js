@@ -5,6 +5,8 @@ const SalesTeamActions = require('../action/sales-team-actions');
 //没有团队时的提示信息
 let salesTeamIsNull = 'sales-team-is-null';
 import {storageUtil} from 'ant-utils';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import MEMBER_MANAGE_PRIVILEGE from 'MOD_DIR/member_manage/public/privilege-const';
 //localstorage字段key
 const STORED_TEAM_KEY = 'weekly_report_selected_team';
 
@@ -177,9 +179,11 @@ SalesTeamStore.prototype.filterByTeamName = function(teamName) {
         //获取第一个团队的成员
         this.setTeamMemberLoading(true);
         //第一个团队的销售目标
-        setTimeout(() => {
-            SalesTeamActions.getSalesGoals(filterTeamArray[0].key);
-        });
+        if (hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL)){
+            setTimeout(() => {
+                SalesTeamActions.getSalesGoals(filterTeamArray[0].key);
+            });
+        }
         SalesTeamActions.getSalesTeamMemberList(filterTeamArray[0].key);
         this.curShowTeamMemberObj = {
             groupId: filterTeamArray[0].key,
@@ -212,9 +216,11 @@ SalesTeamStore.prototype.filterByUserName = function(filterTeamList) {
         //获取第一个团队的成员
         this.setTeamMemberLoading(true);
         //第一个团队的销售目标
-        setTimeout(() => {
-            SalesTeamActions.getSalesGoals(filterTeamArray[0].key);
-        });
+        if (hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL)) {
+            setTimeout(() => {
+                SalesTeamActions.getSalesGoals(filterTeamArray[0].key);
+            });
+        }
         SalesTeamActions.getSalesTeamMemberList(filterTeamArray[0].key);
         this.curShowTeamMemberObj = {
             groupId: filterTeamArray[0].key,
@@ -1016,9 +1022,11 @@ SalesTeamStore.prototype.salesTeamTree = function(flag) {
     if (salesTeamArray.length > 0 && !flag) {
         this.setTeamMemberLoading(true);
         //第一个团队的销售目标
-        setTimeout(() => {
-            SalesTeamActions.getSalesGoals(salesTeamArray[0].key);
-        });
+        if (hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL)){
+            setTimeout(() => {
+                SalesTeamActions.getSalesGoals(salesTeamArray[0].key);
+            });
+        }
         SalesTeamActions.getSalesTeamMemberList(salesTeamArray[0].key);
         this.curShowTeamMemberObj = {
             groupId: salesTeamArray[0].key,

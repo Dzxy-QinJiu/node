@@ -12,6 +12,7 @@ require('../../css/recommend-customer-condition.less');
 import {companyProperty, moneySize,staffSize} from '../../utils/clue-customer-utils';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import Trace from 'LIB_DIR/trace';
+import {MAXINDUSTRYCOUNT} from 'PUB_DIR/sources/utils/consts';
 class RecommendCustomerCondition extends React.Component {
     constructor(props) {
         super(props);
@@ -23,9 +24,21 @@ class RecommendCustomerCondition extends React.Component {
             recommendProperty: companyProperty,
             registerStartTime: hasSavedRecommendParams.startTime || '',
             registerEndTime: hasSavedRecommendParams.endTime || '',
-            hasSavedRecommendParams: hasSavedRecommendParams
+            hasSavedRecommendParams: hasSavedRecommendParams,
+            showOtherCondition: this.hasOtherCondition(hasSavedRecommendParams),//展示推荐线索其他的条件
         };
     }
+    //除了行业或者地域是否还有选中的其他的筛选条件
+    hasOtherCondition = (hasSavedRecommendParams) => {
+        var checkConditionItem = ['name','startTime','endTime','entTypes','staffnumMax','staffnumMin','capitalMin','capitalMax'];
+        var hasOtherCondition = false;
+        hasOtherCondition = _.some(checkConditionItem, key => {
+            if(!_.isEmpty(hasSavedRecommendParams[key]) ){
+                return true;
+            }
+        });
+        return hasOtherCondition;
+    };
 
     onStoreChange = () => {
 
@@ -250,17 +263,28 @@ class RecommendCustomerCondition extends React.Component {
             saveResult: saveResult
         });
     }
+
+    handleToggleOtherCondition = () => {
+        this.setState({
+            showOtherCondition: !this.state.showOtherCondition
+        });
+    };
+    validateIndustryCount = (rule, value, callback) => {
+        if (value && value.length > MAXINDUSTRYCOUNT) {
+            callback(new Error(Intl.get('boot.select.industry.count.tip', '最多可选择{count}个行业',{'count': MAXINDUSTRYCOUNT})));
+        } else {
+            callback();
+        }
+    };
     render() {
-        const { registerStartTime, registerEndTime} = this.state;
+        const { registerStartTime, registerEndTime, showOtherCondition} = this.state;
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const formItemLayout = {
             labelCol: {
-                xs: {span: 24},
-                sm: {span: 4},
+                sm: {span: 24},
             },
             wrapperCol: {
-                xs: {span: 24},
-                sm: {span: 20},
+                sm: {span: 24},
             },
         };
         var recommendIndustry = this.state.recommendIndustry;
@@ -283,6 +307,15 @@ class RecommendCustomerCondition extends React.Component {
         if (registerStartTime && registerEndTime){
             defaultValue = [moment(registerStartTime), moment(registerEndTime)];
         }
+        var cls = 'other-condition-container',show_tip = '';
+        //是否展示其他的筛选条件
+        if(showOtherCondition){
+            cls += 'show-container';
+            show_tip = Intl.get('lead.recommend.form.hide.some.condition', '收起部分条件');
+        }else{
+            cls += ' hide-container';
+            show_tip = Intl.get('lead.recommend.form.show.all.condition', '展开全部条件');
+        }
 
         return (
             <div className="recommend-customer-condition recommend-customer-condition-wrapper" data-tracename="设置推荐线索条件面板">
@@ -291,34 +324,19 @@ class RecommendCustomerCondition extends React.Component {
                 <div className="add-customer-recommend">
                     <Form layout='horizontal' className="customer-recommend-form" id="customer-recommend-form">
                         <FormItem
-                            label={Intl.get('clue.recommed.keyword.list', '关键词')}
-                            id="name"
-                            {...formItemLayout}
-                        >
-                            {
-                                getFieldDecorator('name',
-                                    {initialValue: _.get(hasSavedRecommendParams,'name','')}
-                                )(
-                                    <Input placeholder={Intl.get('clue.recommend.input.keyword', '请输入关键词')}/>
-                                )}
-                        </FormItem>
-                        <div className="ant-row ant-form-item">
-                            <div className="ant-form-item-label ant-col-xs-24 ant-col-sm-4">
-                                <label >{Intl.get('clue.customer.register.time', '注册时间')}</label></div>
-                            <div className="ant-form-item-control-wrapper ant-col-xs-24 ant-col-sm-20">
-                                <div className="ant-form-item-control has-success">
-                                    <RangePicker defaultValue={defaultValue} onChange={this.onDateChange}/>
-                                </div>
-                            </div>
-                        </div>
-                        <FormItem
                             label={Intl.get('menu.industry', '行业')}
                             id="industrys"
                             {...formItemLayout}
                         >
                             {
                                 getFieldDecorator('industrys',
-                                    {initialValue: _.get(hasSavedRecommendParams,'industrys',[])}
+                                    {initialValue: _.get(hasSavedRecommendParams,'industrys',[]),
+                                        rules: [
+                                            {
+                                                validator: this.validateIndustryCount,
+                                            },
+                                        ],
+                                    }
                                 )(
                                     <Select
                                         mode="multiple"
@@ -336,7 +354,7 @@ class RecommendCustomerCondition extends React.Component {
                                     </Select>
                                 )}
                         </FormItem>
-                        <AntcAreaSelection labelCol="4" wrapperCol="20" width="100%"
+                        <AntcAreaSelection labelCol="24" wrapperCol="24" width="100%"
                             colon={false}
                             label={Intl.get('crm.96', '地域')}
                             placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
@@ -345,70 +363,96 @@ class RecommendCustomerCondition extends React.Component {
                             countyName={hasSavedRecommendParams.district}
                             updateLocation={this.updateLocation}
                         />
-                        <FormItem
-                            label={Intl.get('clue.customer.staff.size', '人员规模')}
-                            id="staff_size"
-                            {...formItemLayout}
-                        >
-                            {
-                                getFieldDecorator('staff_size',{initialValue: _.isEmpty(staffTarget) ? '' : JSON.stringify(staffTarget)})(
-                                    <Select
-                                        placeholder={Intl.get('clue.customer.select.size', '请选择规模')}
-                                        name="staff_size"
-                                        getPopupContainer={() => document.getElementById('customer-recommend-form')}
+                        <div className={cls}>
+                            <FormItem
+                                label={Intl.get('clue.recommed.keyword.list', '关键词')}
+                                id="name"
+                                {...formItemLayout}
+                            >
+                                {
+                                    getFieldDecorator('name',
+                                        {initialValue: _.get(hasSavedRecommendParams,'name','')}
+                                    )(
+                                        <Input placeholder={Intl.get('clue.recommend.input.keyword', '请输入关键词')}/>
+                                    )}
+                            </FormItem>
+                            <div className="ant-row ant-form-item">
+                                <div className="ant-form-item-label ant-col-xs-24">
+                                    <label >{Intl.get('clue.customer.register.time', '注册时间')}</label></div>
+                                <div className="ant-form-item-control-wrapper ant-col-xs-24">
+                                    <div className="ant-form-item-control has-success">
+                                        <RangePicker defaultValue={defaultValue} onChange={this.onDateChange}/>
+                                    </div>
+                                </div>
+                            </div>
+                            <FormItem
+                                label={Intl.get('clue.customer.staff.size', '人员规模')}
+                                id="staff_size"
+                                {...formItemLayout}
+                            >
+                                {
+                                    getFieldDecorator('staff_size',{initialValue: _.isEmpty(staffTarget) ? '' : JSON.stringify(staffTarget)})(
+                                        <Select
+                                            placeholder={Intl.get('clue.customer.select.size', '请选择规模')}
+                                            name="staff_size"
+                                            getPopupContainer={() => document.getElementById('customer-recommend-form')}
 
-                                    >
-                                        {_.isArray(recommendStaffSize) && recommendStaffSize.length ?
-                                            recommendStaffSize.map((sizeItem, idx) => {
-                                                return (<Option key={idx} value={JSON.stringify(sizeItem)}>{sizeItem.name}</Option>);
-                                            }) : null
-                                        }
-                                    </Select>
-                                )}
-                        </FormItem>
-                        <FormItem
-                            label={Intl.get('clue.customer.money.size', '资本规模')}
-                            id="money_size"
-                            {...formItemLayout}
-                        >
-                            {
-                                getFieldDecorator('money_size',{initialValue: _.isEmpty(capitalTarget) ? '' : JSON.stringify(capitalTarget)})(
-                                    <Select
-                                        placeholder={Intl.get('clue.customer.select.size', '请选择规模')}
-                                        name="money_size"
-                                        getPopupContainer={() => document.getElementById('customer-recommend-form')}
+                                        >
+                                            {_.isArray(recommendStaffSize) && recommendStaffSize.length ?
+                                                recommendStaffSize.map((sizeItem, idx) => {
+                                                    return (<Option key={idx} value={JSON.stringify(sizeItem)}>{sizeItem.name}</Option>);
+                                                }) : null
+                                            }
+                                        </Select>
+                                    )}
+                            </FormItem>
+                            <FormItem
+                                label={Intl.get('clue.customer.money.size', '资本规模')}
+                                id="money_size"
+                                {...formItemLayout}
+                            >
+                                {
+                                    getFieldDecorator('money_size',{initialValue: _.isEmpty(capitalTarget) ? '' : JSON.stringify(capitalTarget)})(
+                                        <Select
+                                            placeholder={Intl.get('clue.customer.select.size', '请选择规模')}
+                                            name="money_size"
+                                            getPopupContainer={() => document.getElementById('customer-recommend-form')}
 
-                                    >
-                                        {_.isArray(recommendMoneySize) && recommendMoneySize.length ?
-                                            recommendMoneySize.map((sizeItem, idx) => {
-                                                return (<Option key={idx} value={JSON.stringify(sizeItem)}>{sizeItem.name}</Option>);
-                                            }) : null
-                                        }
-                                    </Select>
-                                )}
-                        </FormItem>
-                        <FormItem
-                            label={Intl.get('clue.customer.company.property', '性质')}
-                            id="entTypes"
-                            {...formItemLayout}
-                        >
-                            {
-                                getFieldDecorator('entTypes',{initialValue: _.get(hasSavedRecommendParams,'entTypes')})(
-                                    <Select
-                                        mode="multiple"
-                                        placeholder={Intl.get('clue.customer.select.property', '请选择性质')}
-                                        name="entTypes"
-                                        getPopupContainer={() => document.getElementById('customer-recommend-form')}
-                                    >
-                                        {_.isArray(recommendProperty) && recommendProperty.length ?
-                                            recommendProperty.map((propertyItem, idx) => {
-                                                return (<Option key={idx} value={propertyItem.value}>{propertyItem.name}</Option>);
-                                            }) : null
-                                        }
-                                    </Select>
-                                )}
-                        </FormItem>
+                                        >
+                                            {_.isArray(recommendMoneySize) && recommendMoneySize.length ?
+                                                recommendMoneySize.map((sizeItem, idx) => {
+                                                    return (<Option key={idx} value={JSON.stringify(sizeItem)}>{sizeItem.name}</Option>);
+                                                }) : null
+                                            }
+                                        </Select>
+                                    )}
+                            </FormItem>
+                            <FormItem
+                                label={Intl.get('clue.customer.company.property', '性质')}
+                                id="entTypes"
+                                {...formItemLayout}
+                            >
+                                {
+                                    getFieldDecorator('entTypes',{initialValue: _.get(hasSavedRecommendParams,'entTypes')})(
+                                        <Select
+                                            mode="multiple"
+                                            placeholder={Intl.get('clue.customer.select.property', '请选择性质')}
+                                            name="entTypes"
+                                            getPopupContainer={() => document.getElementById('customer-recommend-form')}
+                                        >
+                                            {_.isArray(recommendProperty) && recommendProperty.length ?
+                                                recommendProperty.map((propertyItem, idx) => {
+                                                    return (<Option key={idx} value={propertyItem.value}>{propertyItem.name}</Option>);
+                                                }) : null
+                                            }
+                                        </Select>
+                                    )}
+                            </FormItem>
+                        </div>
                         <div className="submit-button-container">
+                            <div className='show-hide-tip' onClick={this.handleToggleOtherCondition}>
+                                {show_tip}
+                            </div>
                             <SaveCancelButton loading={this.state.isSaving}
                                 saveErrorMsg={this.state.saveMsg}
                                 handleSubmit={this.handleSubmit}

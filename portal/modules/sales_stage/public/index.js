@@ -16,6 +16,7 @@ import {message, Button, Popover, Icon} from 'antd';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
+import sales_stage_privilegeConst from './privilege-const';
 
 function getStateFromStore(_this) {
     return {
@@ -158,7 +159,7 @@ class SalesStagePage extends React.Component {
         return (
             <div className='condition-operator'>
                 <div className='pull-left'>
-                    <PrivilegeChecker check="BGM_SALES_STAGE_ADD" className="sales-stage-top-div">
+                    <PrivilegeChecker check={sales_stage_privilegeConst.BGM_SALES_STAGE_ADD} className="sales-stage-top-div">
                         {title ? (
                             <Popover content={title}>
                                 <Button
@@ -206,7 +207,7 @@ class SalesStagePage extends React.Component {
                                 </div>
                             </div>) : (
                                 <PrivilegeChecker
-                                    check="BGM_SALES_STAGE_SORT"
+                                    check={sales_stage_privilegeConst.BGM_SALES_STAGE_SORT}
                                 >
                                     <Button
                                         type="ghost"

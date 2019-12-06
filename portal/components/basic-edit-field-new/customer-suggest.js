@@ -14,6 +14,7 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import CustomerLabel from 'CMP_DIR/customer_label';
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 
 class CustomerSuggest extends React.Component {
 
@@ -250,7 +251,7 @@ class CustomerSuggest extends React.Component {
         this.suggestChange(search_input_val);
     };
     getNoCustomerTip = () => {
-        return this.props.canCreateCustomer && hasPrivilege('CRM_CUSTOMER_INFO_EDIT');
+        return this.props.canCreateCustomer && hasPrivilege(crmPrivilegeConst.CUSTOMER_ADD);
     };
     getSearchValue = () => {
         var $search_input = this.getCustomerSearchInput();

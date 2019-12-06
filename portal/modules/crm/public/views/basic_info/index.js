@@ -21,6 +21,9 @@ import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import Trace from 'LIB_DIR/trace';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import { myWorkEmitter } from 'OPLATE_EMITTER';
+import crmPrivilegeConst from '../../privilege-const';
+import {checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 
 let customerLabelList = [];//存储客户阶段的列表
 const CRM_VIEW_TYPES = crmUtil.CRM_VIEW_TYPES;
@@ -52,7 +55,7 @@ class BasicData extends React.Component {
     componentDidMount() {
         CrmOverviewStore.listen(this.onChange);
         CrmOverviewActions.getBasicData(this.props.curCustomer);
-        let isGetIndustryListFlag = hasPrivilege('GET_CONFIG_INDUSTRY') && hasPrivilege('CUSTOMER_UPDATE_INDUSTRY')
+        let isGetIndustryListFlag = hasPrivilege(crmPrivilegeConst.BASE_QUERY_PERMISSION_ORGANIZATION) && hasPrivilege(crmPrivilegeConst.ORGANIZATION_CONFIG)
             && !this.props.disableEdit;
         if (isGetIndustryListFlag) {
             this.getIndustryList();
@@ -76,7 +79,7 @@ class BasicData extends React.Component {
     }
 
     hasEditCutomerLabelPrivilege() {
-        return hasPrivilege('CRM_MANAGER_UPDATE_CUSTOMER_LABEL') || hasPrivilege('CRM_USER_UPDATE_CUSTOMER_LABEL');
+        return crmUtil.checkPrivilege([crmPrivilegeConst.CUSTOMER_UPDATE, crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL]);
     }
 
     componentWillUnmount() {
@@ -88,11 +91,11 @@ class BasicData extends React.Component {
             isCustomerLabelLoading: true
         });
         $.ajax({
-            url: '/rest/customer_stage',
+            url: '/rest/customer/v2/salestage',
             type: 'get',
             dateType: 'json',
             success: (data) => {
-                customerLabelList = _.isArray(data) ? data : customerLabelList;
+                customerLabelList = _.isArray(_.get(data, 'result')) ? _.get(data, 'result') : customerLabelList;
                 this.setState({
                     customerLabelList: customerLabelList,
                     isCustomerLabelLoading: false
@@ -154,12 +157,11 @@ class BasicData extends React.Component {
 
     //是否有转出客户的权限
     enableTransferCustomer = () => {
-        let isCommonSales = userData.getUserData().isCommonSales;
         let enable = false;
         //管理员有转出的权限
-        if (hasPrivilege('CRM_MANAGER_TRANSFER')) {
+        if (hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL)) {
             enable = true;
-        } else if (hasPrivilege('CRM_USER_TRANSFER') && !isCommonSales) {
+        } else if (hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) && !isCommonSalesOrPersonnalVersion()) {
             //销售主管有转出的权限
             enable = true;
         }
@@ -291,8 +293,8 @@ class BasicData extends React.Component {
     };
 
     getEditCustomerLabelType() {
-        let type = 'user';//'CRM_USER_UPDATE_CUSTOMER_LABEL'
-        if (hasPrivilege('CRM_MANAGER_UPDATE_CUSTOMER_LABEL')) {
+        let type = 'user';//crmPrivilegeConst.CUSTOMER_UPDATE
+        if (hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL)) {
             type = 'manager';
         }
         return type;
@@ -350,25 +352,30 @@ class BasicData extends React.Component {
         return (
             <div className="basic-info-detail-block">
                 <div className="basic-info-detail-show">
-                    <div className="basic-info-administrative basic-info-item">
-                        <span className="basic-info-label">
-                            {Intl.get('crm.administrative.level', '行政级别')}:
-                        </span>
-                        <BasicEditSelectField
-                            width={EDIT_FEILD_WIDTH_LESS}
-                            updateMergeCustomer={this.props.updateMergeCustomer}
-                            id={basicData.id}
-                            displayText={this.getAdministrativeLevel(level)}
-                            value={level}
-                            field="administrative_level"
-                            selectOptions={this.getAdministrativeLevelOptions()}
-                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_INDUSTRY') && !this.props.disableEdit}
-                            placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
-                            saveEditSelect={this.saveEditBasicInfo.bind(this, 'administrative_level')}
-                            noDataTip={Intl.get('crm.basic.no.administrative', '暂无行政级别')}
-                            addDataTip={Intl.get('crm.basic.add.administrative', '添加行政级别')}
-                        />
-                    </div>
+                    {checkVersionAndType().isPersonalTrial ? null : (
+                        <div className="basic-info-administrative basic-info-item">
+                            <span className="basic-info-label">
+                                {Intl.get('crm.administrative.level', '行政级别')}:
+                            </span>
+                            <BasicEditSelectField
+                                width={EDIT_FEILD_WIDTH_LESS}
+                                updateMergeCustomer={this.props.updateMergeCustomer}
+                                id={basicData.id}
+                                displayText={this.getAdministrativeLevel(level)}
+                                value={level}
+                                field="administrative_level"
+                                selectOptions={this.getAdministrativeLevelOptions()}
+                                hasEditPrivilege={crmUtil.checkPrivilege([
+                                    crmPrivilegeConst.CUSTOMER_UPDATE,
+                                    crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+                                ]) && !this.props.disableEdit}
+                                placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
+                                saveEditSelect={this.saveEditBasicInfo.bind(this, 'administrative_level')}
+                                noDataTip={Intl.get('crm.basic.no.administrative', '暂无行政级别')}
+                                addDataTip={Intl.get('crm.basic.add.administrative', '添加行政级别')}
+                            />
+                        </div>
+                    )}
                     <div className="basic-info-indestry basic-info-item">
                         <span className="basic-info-label">
                             {Intl.get('common.industry', '行业')}:
@@ -381,7 +388,10 @@ class BasicData extends React.Component {
                             value={basicData.industry}
                             field="industry"
                             selectOptions={industryOptions}
-                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_INDUSTRY') && !this.props.disableEdit}
+                            hasEditPrivilege={crmUtil.checkPrivilege([
+                                crmPrivilegeConst.CUSTOMER_UPDATE,
+                                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+                            ]) && !this.props.disableEdit}
                             placeholder={Intl.get('crm.22', '请选择行业')}
                             editBtnTip={Intl.get('crm.163', '设置行业')}
                             saveEditSelect={this.saveEditBasicInfo.bind(this, 'industry')}
@@ -403,7 +413,10 @@ class BasicData extends React.Component {
                             city_code={basicData.city_code}
                             county_code={basicData.county_code}
                             saveEditLocation={this.saveEditBasicInfo.bind(this, 'address')}
-                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_ADDRESS') && !this.props.disableEdit}
+                            hasEditPrivilege={crmUtil.checkPrivilege([
+                                crmPrivilegeConst.CUSTOMER_UPDATE,
+                                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+                            ]) && !this.props.disableEdit}
                             noDataTip={Intl.get('crm.basic.no.location', '暂无地域信息')}
                             addDataTip={Intl.get('crm.basic.add.location', '添加地域信息')}
                         />
@@ -419,7 +432,10 @@ class BasicData extends React.Component {
                             field="address"
                             type="input"
                             placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
-                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_ADDRESS') && !this.props.disableEdit}
+                            hasEditPrivilege={crmUtil.checkPrivilege([
+                                crmPrivilegeConst.CUSTOMER_UPDATE,
+                                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+                            ]) && !this.props.disableEdit}
                             saveEditInput={this.saveEditBasicInfo.bind(this, 'detail_address')}
                             noDataTip={Intl.get('crm.basic.no.address', '暂无详细地址')}
                             addDataTip={Intl.get('crm.basic.add.address', '添加详细地址')}
@@ -436,7 +452,10 @@ class BasicData extends React.Component {
                             value={basicData.remarks}
                             editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
                             placeholder={Intl.get('user.input.remark', '请输入备注')}
-                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_REMARK') && !this.props.disableEdit}
+                            hasEditPrivilege={crmUtil.checkPrivilege([
+                                crmPrivilegeConst.CUSTOMER_UPDATE,
+                                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+                            ]) && !this.props.disableEdit}
                             saveEditInput={this.saveEditBasicInfo.bind(this, 'remarks')}
                             noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
                             addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
@@ -478,6 +497,10 @@ class BasicData extends React.Component {
         const basicInfoNameCls = classNames('basic-info-name', {
             'show-release-btn': isShowRelease
         });
+        var releaseTip = '';
+        if(isShowRelease) {
+            releaseTip = crmUtil.releaseCustomerTip();
+        }
         return (
             <div className="basic-info-contianer" data-trace="客户基本信息">
                 {this.state.editNameFlag ? (
@@ -502,9 +525,12 @@ class BasicData extends React.Component {
                                     </span>
                                 </Dropdown>) : customerLabel}
                             <span className="basic-name-text">{basicData.name}</span>
-                            {hasPrivilege('CUSTOMER_UPDATE_NAME') && !this.props.disableEdit ? (
-                                <DetailEditBtn title={Intl.get('common.edit', '编辑')}
-                                    onClick={this.setEditNameFlag.bind(this, true)}/>) : null}
+                            {crmUtil.checkPrivilege([
+                                crmPrivilegeConst.CUSTOMER_UPDATE,
+                                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+                            ]) && !this.props.disableEdit ? (
+                                    <DetailEditBtn title={Intl.get('common.edit', '编辑')}
+                                        onClick={this.setEditNameFlag.bind(this, true)}/>) : null}
                         </div>
                         <div className="basic-info-btns">
                             <span
@@ -520,7 +546,7 @@ class BasicData extends React.Component {
                                 />)}
                             {isShowRelease ? (
                                 <Popconfirm placement="bottomRight" onConfirm={this.releaseCustomer}
-                                    title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确定要释放吗？')}>
+                                    title={releaseTip}>
                                     <span className='iconfont icon-release handle-btn-item'
                                         title={Intl.get('crm.customer.release', '释放')}/>
                                 </Popconfirm>

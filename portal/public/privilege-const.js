@@ -1,0 +1,19 @@
+/**
+ * Created by hzl on 2019/11/20.
+ */
+export default {
+    // 应用基础查询权限
+    APP_QUERY_PERMISSION: 'BASE_QUERY_PERMISSION_APPLICATION',
+    // 成员基础查询权限
+    MEMBER_QUERY_PERMISSION: 'BASE_QUERY_PERMISSION_MEMBER',
+    // 团队基础查询权限
+    TEAM_QUERY_PERMISSION: 'BASE_QUERY_PERMISSION_TEAM',
+    // 基础操作权限
+    BASE_QUERY_PERMISSION: 'BASE_OPERATE_PERMISSION',
+    // 获取所有团队信息
+    GET_TEAM_LIST_ALL: 'GET_TEAM_LIST_ALL',
+    // 获取我的团队以及我的下属团队
+    GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS: 'GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS',
+    //是否有打电话的权限
+    PHONE_ACCESS_CALL_OU: 'PHONE_ACCESS_CALL_OU',
+};

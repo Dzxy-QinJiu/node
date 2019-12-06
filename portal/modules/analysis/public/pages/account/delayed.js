@@ -5,14 +5,15 @@
 import {ACCOUNT_MENUS} from '../../consts';
 import accountChart from '../../charts/account';
 import Store from '../../store';
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 
 module.exports = {
     title: ACCOUNT_MENUS.DELAYED.name,
     key: ACCOUNT_MENUS.DELAYED.key,
     menuIndex: 5,
     privileges: [
-        'USER_ANALYSIS_COMMON',
-        'USER_ANALYSIS_MANAGER',
+        analysisPrivilegeConst.USER_ANALYSIS_MANAGER,
+        analysisPrivilegeConst.USER_ANALYSIS_COMMON,
     ],
     isShowCallback: () => {
         //应用列表不为空的时候才显示该菜单

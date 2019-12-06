@@ -2,6 +2,7 @@
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
 import teamAjax from 'MOD_DIR/common/public/ajax/team';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 
 // 获取线索池列表
 exports.getCluePoolList = (queryObj) => {
@@ -10,7 +11,7 @@ exports.getCluePoolList = (queryObj) => {
     let sorter = queryObj.sorter ? queryObj.sorter : {field: 'source_time', order: 'descend'};
     delete queryObj.sorter;
     let type = 'user';
-    if (hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL')) {
+    if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL)) {
         type = 'manager';
     }
     let url = '/rest/clue_pool/fulltext/' + pageSize + '/' + sorter.field + '/' + sorter.order + '/' + type;
@@ -137,7 +138,7 @@ exports.extractClueAssignToSale = (reqData) => {
 // 批量提取线索
 exports.batchExtractClueAssignToSale = (reqData) => {
     let type = 'self';
-    if (hasPrivilege('LEAD_EXTRACT_ALL')) {
+    if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL)) {
         type = 'all';
     }
     let Deferred = $.Deferred();

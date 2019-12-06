@@ -3,6 +3,7 @@
  */
 
 import {regex} from 'ant-utils';
+import {Button} from 'antd';
 //用户类型的下拉选项
 export const userTypeList = [
     {name: Intl.get('user.online.all.type', '全部类型'), value: ''},
@@ -79,7 +80,7 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLEDOCUMENTWRITE: 'unhandleDocumentWrite',//未处理的请假申请数量
     UNHANDLEMEMBERINIVTE: 'unhandleMemberInivte', // 未处理的成员申请数量
     UNHANDLEMEVISISTAPPLY: 'unhandleVisitApply', // 未处理的拜访申请数量
-    UNHANDLEMEDOMAINAPPLY: 'unhandleDomainApply', // 未处理的域名申请数量
+    UNHANDLEMEDOMAINAPPLY: 'unhandleDomainApply', // 未处理的舆情平台申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
 };
 // 系统消息对应的通知类型
@@ -677,7 +678,12 @@ export const INDICATOR_TOOLTIP = [{
     key: 'online_time',
     value: Intl.get('user.score.online.time.score', '指定时间内在线时长分数')
 }];
-export const extractIcon = (<i className="iconfont icon-extract" title={Intl.get('clue.extract', '提取')}/>);
+// export const extractIcon = (<Button>
+//     <i className="iconfont icon-extract" title={Intl.get('clue.extract', '提取')}></i>
+//     {Intl.get('clue.extract.clue', '提取线索')}
+// </Button>);
+export const extractIcon = (
+    <i className="iconfont icon-extract" title={Intl.get('clue.extract', '提取')}></i>);
 export const DIFF_STATUS_TAB = [{
     key: '0',
     value: Intl.get('clue.diff.type.tab.title.noassign', '未分配负责人')
@@ -701,7 +707,7 @@ export const PRIVILEGE_MAP = {
     EDIT_TEAM_USER: 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM',//销售修改所属团队的权限
     EDIT_ASSERT_CUSTOMER_SALES: 'CRM_ASSERT_CUSTOMER_SALES',//修改客户联合跟进人的权限
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
-    APP_USER_LIST: 'APP_USER_LIST',//获取用户列表的权限
+    APP_USER_LIST: 'APP_USER_QUERY',//获取用户列表的权限
     CRM_CONTRACT_OPERATOR_COMMON_BASE: 'CRM_CONTRACT_OPERATOR_COMMON_BASE',//合同修改基础权限
     CRM_CONTRACT_QUERY_COMMON_BASE: 'CRM_CONTRACT_QUERY_COMMON_BASE',//合同查询基础权限
 };
@@ -712,3 +718,5 @@ export const RESPONSIVE_LAYOUT = {
 };
 //域名固定结尾
 export const DOMAIN_END = '.eagok.com';
+//线索推荐最多选取多少个行业
+export const MAXINDUSTRYCOUNT = 10;

@@ -1,4 +1,4 @@
-var crmController = require('../action/crm-controller');
+var crmPrivilegeConst = require('../../public/privilege-const').default;
 
 module.exports = {
     module: 'crm/server/action/crm-controller',
@@ -9,7 +9,8 @@ module.exports = {
             'handler': 'getCrmTemplate',
             'passport': {
                 'needLogin': true
-            }
+            },
+            privileges: [crmPrivilegeConst.CUSTOMER_ADD]
         },
         {
             'method': 'get',
@@ -17,7 +18,8 @@ module.exports = {
             'handler': 'getCrmUserList',
             'passport': {
                 'needLogin': true
-            }
+            },
+            privileges: [crmPrivilegeConst.APP_USER_QUERY]
         },
         {//获取客户回收站中的客户列表
             method: 'post',
@@ -26,7 +28,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: ['CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD', 'CRM_USER_GET_CUSTOMER_BAK_OPERATOR_RECORD']
+            privileges: [
+                crmPrivilegeConst.CRM_MANAGER_CUSTOMER_BAK_OPERATOR_RECORD,
+                crmPrivilegeConst.CRM_USER_CUSTOMER_BAK_OPERATOR_RECORD
+            ]
         },
         {//恢复客户
             method: 'put',
@@ -35,7 +40,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: ['CRM_RECOVERY_CUSTOMER']
+            privileges: [
+                crmPrivilegeConst.CRM_MANAGER_CUSTOMER_BAK_OPERATOR_RECORD,
+                crmPrivilegeConst.CRM_USER_CUSTOMER_BAK_OPERATOR_RECORD
+            ]
         },
         {//删除回收站中的客户
             method: 'delete',
@@ -44,7 +52,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: ['CRM_DELETE_CUSTOMER']
+            privileges: [
+                crmPrivilegeConst.CRM_MANAGER_CUSTOMER_BAK_OPERATOR_RECORD,
+                crmPrivilegeConst.CRM_USER_CUSTOMER_BAK_OPERATOR_RECORD
+            ]
         },
         {
             method: 'get',
@@ -53,9 +64,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: [
-                'CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL'
-            ]
+            privileges: []
         },
         {//获取系统标签列表
             method: 'get',
@@ -63,7 +72,11 @@ module.exports = {
             handler: 'getSystemLabelsList',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
+            ]
         },
         {
             method: 'get',
@@ -71,7 +84,11 @@ module.exports = {
             handler: 'getCompetitorList',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
+            ]
         },
         {
             method: 'get',
@@ -79,7 +96,11 @@ module.exports = {
             handler: 'getOwnerList',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
+            ]
         },
         {
             method: 'get',
@@ -87,7 +108,11 @@ module.exports = {
             handler: 'getStageTagList',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
+            ]
         },
         {
             method: 'get',
@@ -96,7 +121,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: []
+            privileges: [
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
+            ]
         }, {
             method: 'get',
             path: '/rest/crm/repeat_customer/:type/:customer_id',
@@ -104,7 +132,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: []
+            privileges: [
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
+            ]
         },
         {
             method: 'get',
@@ -113,7 +144,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: []
+            privileges: [
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
+            ]
         },
         {
             method: 'get',
@@ -122,7 +156,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: []
+            // privileges: [crmPrivilegeConst.CUSTOMER_ADD]
         },
         {
             method: 'post',
@@ -132,7 +166,8 @@ module.exports = {
                 needLogin: true
             },
             privileges: [
-                'CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL'
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
             ]
         },
         {
@@ -142,9 +177,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: [
-                'CUSTOMER_ADD'
-            ]
+            privileges: [crmPrivilegeConst.CUSTOMER_ADD]
         },
         { //小程序中使用
             method: 'put',
@@ -153,6 +186,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [crmPrivilegeConst.CUSTOMER_ADD]
         },
         {
             method: 'post',
@@ -160,7 +194,9 @@ module.exports = {
             handler: 'addCustomerByClue',
             passport: {
                 needLogin: true
-            }
+            },
+            //TODO，待确定
+            // privileges: ['LEAD_TRANSFER_MERGE_CUSTOMER', 'CUSTOMER_ADD']
         },
         {
             method: 'delete',
@@ -169,9 +205,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: [
-                'CRM_DELETE_CUSTOMER'
-            ]
+            privileges: [crmPrivilegeConst.CRM_DELETE_CUSTOMER]
         },
         {
             method: 'put',
@@ -180,7 +214,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: []
+            privileges: [
+                crmPrivilegeConst.CUSTOMER_UPDATE,
+                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+            ]
         }, {
             method: 'put',
             path: '/rest/crm/repeat_customer/merge',
@@ -188,7 +225,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: []
+            privileges: [
+                crmPrivilegeConst.CUSTOMER_UPDATE,
+                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+            ]
         },
         {
             method: 'put',
@@ -197,7 +237,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: []
+            privileges: [
+                crmPrivilegeConst.CUSTOMER_UPDATE,
+                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+            ]
         },
         {
             method: 'put',
@@ -206,7 +249,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: []
+            privileges: [
+                crmPrivilegeConst.CUSTOMER_UPDATE,
+                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+            ]
         },
         {
             'method': 'get',
@@ -215,8 +261,9 @@ module.exports = {
             'passport': {
                 'needLogin': true
             },
-            'privileges': [
-                'CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL'
+            privileges: [
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
             ]
         },
         {
@@ -226,9 +273,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: [
-                'CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL'
-            ]
+            privileges: [crmPrivilegeConst.CUSTOMER_DYNAMIC]
         },
         {
             'method': 'post',
@@ -236,7 +281,8 @@ module.exports = {
             'handler': 'uploadCustomers',
             'passport': {
                 'needLogin': true
-            }
+            },
+            privileges: [crmPrivilegeConst.CUSTOMER_ADD]
         },
         {
             method: 'get',
@@ -244,7 +290,11 @@ module.exports = {
             handler: 'getFilterIndustries',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
+            ]
         },
         {
             method: 'get',
@@ -252,7 +302,11 @@ module.exports = {
             handler: 'getFilterSalesRoleList',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
+            ]
         },
         {
             method: 'get',
@@ -268,7 +322,8 @@ module.exports = {
             handler: 'getAdministrativeLevel',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [crmPrivilegeConst.CUSTOMER_ADD]
         },
         { // 拨打电话
             'method': 'post',
@@ -276,7 +331,8 @@ module.exports = {
             'handler': 'callOut',
             'passport': {
                 'needLogin': true
-            }
+            },
+            privileges: [crmPrivilegeConst.PHONE_ACCESS_CALL_OU]
         },
         {
             method: 'get',
@@ -285,9 +341,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: [
-                'CRM_CUSTOMER_LIMIT_FLAG'
-            ]
+            privileges: [crmPrivilegeConst.CUSTOMER_ADD]
         },
         {
             method: 'get',
@@ -297,7 +351,8 @@ module.exports = {
                 needLogin: true
             },
             privileges: [
-                'CRM_CUSTOMER_SCORE_RECORD'
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
             ]
         }, {
             method: 'put',
@@ -306,7 +361,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: ['CRM_USER_UPDATE_CUSTOMER_LABEL', 'CRM_MANAGER_UPDATE_CUSTOMER_LABEL']
+            privileges: [
+                crmPrivilegeConst.CUSTOMER_UPDATE,
+                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+            ]
         },{
             method: 'put',
             path: '/rest/crm/:type/team',
@@ -314,7 +372,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: ['CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM', 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM']
+            privileges: [
+                crmPrivilegeConst.CUSTOMER_UPDATE,
+                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+            ]
 
         },{//获取客户所属销售及联合跟进人
             method: 'get',
@@ -323,7 +384,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: ['CRM_GET_CUSTOMER_TRACE_USER']
+            privileges: [
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
+            ]
         },{//修改客户的联合跟进人
             method: 'put',
             path: '/rest/crm/second_sales',
@@ -331,7 +395,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: ['CRM_ASSERT_CUSTOMER_SALES']
+            privileges: [
+                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL,
+                crmPrivilegeConst.CUSTOMER_UPDATE
+            ]
         },{
             method: 'put',
             path: '/rest/customer/release',
@@ -339,7 +406,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: []
+            privileges: [crmPrivilegeConst.CUSTOMER_POOL_MANAGE]
         }, {//获取客户池中的客户
             method: 'get',
             path: '/rest/customer_pool/customer',
@@ -347,7 +414,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: ['CUSTOMER_POOL_MANAGE']
+            privileges: [crmPrivilegeConst.CUSTOMER_POOL_MANAGE]
         }, {//提取客户
             method: 'post',
             path: '/rest/customer_pool/customer',
@@ -355,7 +422,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: ['CUSTOMER_POOL_MANAGE']
+            privileges: [crmPrivilegeConst.CUSTOMER_POOL_MANAGE]
         }, {//获取客户池中聚合的筛选项
             method: 'get',
             path: '/rest/customer_pool/filter/items',
@@ -363,28 +430,37 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: ['CUSTOMER_POOL_MANAGE']
+            privileges: [crmPrivilegeConst.CUSTOMER_POOL_MANAGE]
         }, {// 通过团队id获取客户阶段（销售流程）
             method: 'get',
             path: '/rest/get/customer/stage/:teamId',
             handler: 'getCustomerStageByTeamId',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [crmPrivilegeConst.CRM_GET_SALES_PROCESS]
         }, {// 验证是否有权限处理跟进人
             method: 'get',
             path: '/rest/customer/check/update/:customer_id',
             handler: 'checkCustomerUpdateUser',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
+            ]
         }, {// 是否有权限处理联合跟进人
             method: 'get',
             path: '/rest/customer/check/join/:customer_id',
             handler: 'checkCustomerJoinUser',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [
+                crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+                crmPrivilegeConst.CUSTOMER_ALL
+            ]
         }
     ]
 };
