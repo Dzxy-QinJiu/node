@@ -3,7 +3,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import './index.less';
 
-export default class index extends Component {
+export default class ColsLayout extends Component {
     static propTypes = {
         commonData: PropTypes.array.isRequired, //jsx集合（每个子元素集合）
         showWidth: PropTypes.number, //显示出来的最外层width,若showWidth小于width，则局部出现左右滚动条,若不传，则与width相同
