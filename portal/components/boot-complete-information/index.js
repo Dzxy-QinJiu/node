@@ -6,7 +6,8 @@
 // 个人登录后完善资料
 import './style.less';
 import KefuImage from './kefu.png';
-import { Form, Input, Button, message, Col, Row } from 'antd';
+import { Form, Input, Button, message, Col, Row, Select } from 'antd';
+const Option = Select.Option;
 const FormItem = Form.Item;
 import { nameLengthRule, validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
@@ -32,9 +33,13 @@ const STEPS_MAPS = {
 };
 
 //默认最多展示的数目
-const MAX_COUNT = 20;
+const MAX_COUNT = 12;
 //默认最小高度
-const MIN_HEIGHT = 75;
+const MIN_HEIGHT = 78;
+//显示行数
+const MAX_COLUMN = 3;
+//最多选择行业的个数
+const MAX_SELECTED_COUNT = 10;
 
 class BootCompleteInformation extends React.Component{
     constructor(props) {
@@ -50,13 +55,15 @@ class BootCompleteInformation extends React.Component{
                 industrys: [],
                 areaData: {}
             },
-            isGetIndustrys: false
+            isGetIndustrys: false,
+            searchValue: '',
         };
     }
 
     hasSetWebConfigSuccess = false;
 
     componentDidMount() {
+        this.getAreaByPhone();
         this.getRecommendCustomerIndustry();
     }
 
@@ -70,10 +77,10 @@ class BootCompleteInformation extends React.Component{
                 let industryList = this.state.industryList, showIndustryList = [];
                 let industryListHeight = this.state.industryListHeight;
                 industryList = _.isArray(list) ? list : [];
-                if(industryList.length > MAX_COUNT) {//超过20个，在末尾添加一个更多按钮
-                    showIndustryList = industryList.slice(0, MAX_COUNT - 1);
-                    showIndustryList.push(Intl.get('crm.basic.more', '更多'));
-                    industryListHeight = 5 * MIN_HEIGHT;
+                if(industryList.length > MAX_COUNT) {//超过12个，在末尾添加一个更多按钮
+                    showIndustryList = industryList;//industryList.slice(0, MAX_COUNT - 1);
+                    // showIndustryList.push(Intl.get('crm.basic.more', '更多'));
+                    industryListHeight = MAX_COLUMN * MIN_HEIGHT;
                 }else {//没有超过时,计算整个高度
                     showIndustryList = industryList;
                     let col = Math.ceil(showIndustryList.length / 4);
@@ -90,6 +97,23 @@ class BootCompleteInformation extends React.Component{
                 this.setState({isGetIndustrys: false});
             }
         });
+    };
+
+    getAreaByPhone = () => {
+        let phone = _.get(userData.getUserData(), 'phone');
+        if(phone) {
+            $.ajax({
+                url: '/rest/user/address/' + phone,
+                type: 'get',
+                dataType: 'json',
+                success: (data) => {
+                    this.updateLocation({
+                        provName: data.province,
+                        cityName: data.city
+                    });
+                }
+            });
+        }
     };
 
     setRecommends = () => {
@@ -344,11 +368,19 @@ class BootCompleteInformation extends React.Component{
         if(index > -1) {//如果选中，那就需要移除选中
             industrys.splice(index, 1);
             Trace.traceEvent($(ReactDOM.findDOMNode(this)), '移除行业：' + item);
-        }else {//没有就选中
+        }else {//没有就选中, 不能超过10个
+            if(industrys.length > MAX_SELECTED_COUNT) {
+                this.setState({isShowMaxSelectedCountTip: true});
+                return false;
+            }
             industrys.push(item);
             Trace.traceEvent($(ReactDOM.findDOMNode(this)), '选中行业：' + item);
         }
-        this.setState({stepData});
+        this.setState({stepData, isShowMaxSelectedCountTip: false});
+    };
+
+    handleSearch = (e) => {
+        this.setState({searchValue: _.trim(e.target.value)});
     };
 
     //渲染行业
@@ -372,27 +404,50 @@ class BootCompleteInformation extends React.Component{
             );
         }
         else {
+            const searchValue = this.state.searchValue;
             return (
-                <div style={{height: this.state.industryListHeight}}>
-                    <GeminiScrollBar>
-                        <div className="recommend-industrys-container">
-                            <Row gutter={4} className="recommend-industrys-content">
-                                {this.state.showIndustryList.map((item, index) => {
-                                    const isSelected = _.includes(this.state.stepData.industrys, item);
-                                    const cls = classNames('recommend-industrys-item',{
-                                        'is-active': isSelected
-                                    });
-                                    return (
-                                        <Col span={6} key={index}>
-                                            <div className={cls} title={item} onClick={this.handleSelectIndustrysItem.bind(this, item)}>
+                <div className="boot-recommend-industries-wrapper">
+                    <ul className="select-selection-wrapper clearfix">
+                        {_.map(this.state.stepData.industrys, (item, index) => {
+                            return (
+                                <li
+                                    key={index}
+                                    unselectable="unselectable"
+                                    className="select-selection__choice"
+                                    title={item}
+                                >
+                                    <div className="select-selection__choice__content">{item}</div>
+                                    <span className="select-selection__choice__remove" onClick={this.handleSelectIndustrysItem.bind(this, item)}/>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                    <Input
+                        placeholder={Intl.get('boot.complete.step.select.recommend.tip', '请选择或输入搜索')}
+                        value={searchValue}
+                        onChange={this.handleSearch}
+                        className='search-industry-input'
+                    />
+                    <div style={{height: this.state.industryListHeight}}>
+                        <GeminiScrollBar>
+                            <div className="recommend-industrys-container">
+                                <div className="recommend-industrys-content">
+                                    {this.state.showIndustryList.map((item, index) => {
+                                        const isSelected = _.includes(this.state.stepData.industrys, item);
+                                        const cls = classNames('recommend-industrys-item',{
+                                            'is-active': isSelected,
+                                            'hidden-industry-item': searchValue && item.indexOf(searchValue) === -1
+                                        });
+                                        return (
+                                            <div key={index} className={cls} title={item} onClick={this.handleSelectIndustrysItem.bind(this,item)}>
                                                 <span>{item}</span>
                                             </div>
-                                        </Col>
-                                    );
-                                })}
-                            </Row>
-                        </div>
-                    </GeminiScrollBar>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </GeminiScrollBar>
+                    </div>
                 </div>
             );
         }
@@ -409,6 +464,9 @@ class BootCompleteInformation extends React.Component{
                     </div>
                 </div>
                 <div className="btn-container">
+                    {this.state.isShowMaxSelectedCountTip ? (
+                        <span className="error-select-tip">{Intl.get('boot.select.industry.count.tip', '最多可选择{count}个行业', {count: MAX_SELECTED_COUNT})}</span>
+                    ) : null}
                     <Button size="large" type='primary' className='btn-item pull-right' onClick={this.onReturnBack.bind(this, STEPS_MAPS.SET_SECOND)}>{Intl.get('user.user.add.next', '下一步')}</Button>
                 </div>
             </div>

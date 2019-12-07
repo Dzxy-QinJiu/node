@@ -100,6 +100,7 @@ exports.getUserData = function(req, res) {
                 user.isCommonSales = data.isCommonSales;//是否是普通销售
                 user.workFlowConfigs = data.workFlowConfigs;//配置过的流程列表
                 user.guideConfig = data.guideConfig;//引导流程
+                user.phone = data.phone;
                 req.session.user.nickname = data.nick_name;
                 req.session.save(function() {
                     res.header('Content-Type', 'application/javascript');
@@ -175,4 +176,13 @@ exports.activeEmail = function(req, res) {
 exports.recordLog = function(req, res) {
     DesktopIndexService.recordLog(req, res, req.query.message);
     res.send('');
+};
+
+//根据手机号获取用户所在区域
+exports.getUserAreaData = function(req, res) {
+    DesktopIndexService.getUserAreaData(req, res).on('success', function(data) {
+        res.json(data);
+    }).on('error', function(err) {
+        res.json(err.message);
+    });
 };

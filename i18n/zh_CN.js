@@ -3858,6 +3858,8 @@ var zh_CN = {
     'personal.open.success.tip': '恭喜您成功开通试用版，试用期剩余 {count} 天',
     'boot.complete.step.set.industry': '您关注哪些行业的客户?',
     'boot.complete.step.set.area': '您关注哪个地域的客户?',
+    'boot.complete.step.select.recommend.tip': '请选择或输入搜索',
+    'boot.select.industry.count.tip': '最多可选择{count}个行业',
     /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/
