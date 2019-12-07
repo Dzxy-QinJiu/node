@@ -12,7 +12,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 
 require('./css/index.less');
 
-export default class index extends PureComponent {
+export default class DifferentVersion extends PureComponent {
     state = {
         versionItems: [],
         showApply: false,
