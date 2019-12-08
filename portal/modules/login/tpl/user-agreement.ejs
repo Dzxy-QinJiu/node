@@ -38,10 +38,7 @@
 
 <div id="react-placeholder">
     <style>
-        #newBridge #nb_icon_wrap {
-            display: none;
-        }
-        .register-wrap {
+        .user-agreement-wrap {
             position: absolute;
             top: 0;
             right: 0;
@@ -50,7 +47,7 @@
             font-size: 14px;
             color: #d8eaf4;
         }
-        .register-wrap .isloading {
+        .user-agreement-wrap .isloading {
             position: absolute;
             top: 45%;
             left: 48%;
@@ -97,7 +94,7 @@
             }
         }
     </style>
-    <div class="register-wrap" style="background-color: '#FFFFFF'">
+    <div class="user-agreement-wrap" style="background-color: '#F1F4F8'">
         <div class="load8 isloading">
             <div class="loader8"></div>
         </div>
@@ -108,7 +105,7 @@
 <script src="/dll/dll.reactRel.js?timestamp=<%= timeStamp %>"></script>
 <script src="/resources/common.bundle.js?timestamp=<%= timeStamp %>"></script>
 <% // --- 注册界面 ---   %>
-<script src="/resources/register.bundle.js?timestamp=<%= timeStamp %>"></script>
+<script src="/resources/user_agreement.bundle.js?timestamp=<%= timeStamp %>"></script>
 <% // 注册页展示客服           %>
 <% show_custom_service = true %>
 <% showFooterContent = true %>

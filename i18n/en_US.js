@@ -335,7 +335,9 @@ var en_US = {
     'login.wechat.login.error': 'WeChat login failed',//微信登录失败
     'login.wechat.bind.error': 'WeChat binding failed',//微信绑定失败
     'login.wechat.bind.check.error': 'Check whether or not to bind WeChat is failed',//检查是否绑定微信出错了
-
+    'login.user.agreement': 'User agreement', //用户使用协议
+    
+    'register.slogan.tip': 'Sales acceleration, starting here ...',//销售加速，从这里开始...
     'register.set.company.id': 'Set up company ID',//设置公司标识
     'register.valid.phone': 'Phone number verification',//验证手机
     'register.fill.account': 'Set up account',//账号设置
@@ -363,6 +365,10 @@ var en_US = {
     'register.wechat.bind.btn': 'Bind immediately', // 立即绑定
     'login.wechat.register.login.error': 'WeChat register login failed',//微信号注册登录失败
     'register.personal.title': 'Register for personal',//注册个人版
+    'register.user.agreement.tip': 'Read and agreed to {useragreement}',//已阅读并同意{userAgreement}
+    'register.user.agreement.curtao': 'Curtao user agreement',//《客套用户协议》
+    'register.user.agreement.valid.tip': 'Please read and agreed to "Curtao user agreement"',//请先阅读并同意《客套用户协议》
+    'register.to.login.tip': 'Existing account, go to {login}',//已有账号，去{login}
 
     //首页
     'home.page': 'Home page',//首页

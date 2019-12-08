@@ -281,7 +281,9 @@ class LoginForm extends React.Component {
             }
         });
     };
-
+    openUserAgreement=(e) => {
+        window.open('/user/agreement');
+    }
     render() {
         const loginButtonClassName = classnames('login-button', {'not-allowed': this.state.loginButtonDisabled});
 
@@ -322,6 +324,7 @@ class LoginForm extends React.Component {
                     {hasWindow ? Intl.get('login.login', '登录') : null}
                     {this.state.logining ? <Icon type="loading"/> : null}
                 </button>
+                <a className='login-user-agreement-tip' onClick={this.openUserAgreement}>{Intl.get('login.user.agreement', '用户使用协议')}</a>
             </form>
         );
     }
