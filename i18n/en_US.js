@@ -3122,7 +3122,6 @@ var en_US = {
     'clue.customer.export.select.clue': 'Export selected clues',//导出选中的线索
     'lead.recommend.form.show.all.condition': 'Show all conditions',//展开全部条件
     'lead.recommend.form.hide.some.condition': 'Hide some condition',//收起部分条件
-    'boot.select.industry.count.tip': 'You can select {count} at most',//最多可选择{count}个行业
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3750,6 +3749,7 @@ var en_US = {
     'crm.search.customer.name.no.found.tip': 'If there is no qualified customer, you can go to {customerpool} to see if there is one',//没有符合条件的客户，您可以去{customerpool}查看是否有该客户
     'batch.faild.count': 'The number of failed: {count}',//失败数{count}
     'batch.success.count': 'The number of successful: {count}',//成功数{count}
+    'clue.see.recommend': 'See recommendations',//查看推荐
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
     'clue.assignment.strategy.fail.to.get': 'Fail to fetch clue assignment strategy list',//获取线索分配策略列表失败
@@ -3828,8 +3828,12 @@ var en_US = {
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
-    'personal.welcome.use.curtao': 'Welcome to use the Curtao',//欢迎使用客套
+    'personal.welcome.use.curtao': 'Welcome to use the Curtao System, Complete the following guide to recommend accurate leads to customers',//欢迎试用客套系统，完成以下引导将向您推荐精准的线索客户
     'personal.open.success.tip': 'Congratulations! You have successfully opened the trial version. The rest of the trial period is {count} days',//恭喜您成功开通试用版，试用期剩余 {count} 天
+    'boot.complete.step.set.industry': 'Which industries do you focus on?',//您关注哪些行业的客户?
+    'boot.complete.step.set.area': 'Which geographic customers do you focus on?',//您关注哪个地域的客户?
+    'boot.complete.step.select.recommend.tip': 'Please select or enter a search',//请选择或输入搜索
+    'boot.select.industry.count.tip': 'Up to {count} industries can be selected',//最多可选择{count}个行业
     /*个人试用 --- end*/
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': 'Your probation period remains {time} days, whether {upgrade}？',//您的试用期剩余{time}天，是否{upgrade}

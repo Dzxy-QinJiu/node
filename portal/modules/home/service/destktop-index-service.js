@@ -177,6 +177,18 @@ exports.getUserLanguage = function(req, res) {
 exports.recordLog = function(req, res, message) {
     pageLogger.info(message);
 };
+//根据手机号获取用户所在区域
+exports.getUserAreaData = function(req, res) {
+    return restUtil.baseRest.get({
+        url: userInfoRestApis.getAreaByPhone.replace(':phone', req.params.phone),
+        req: req,
+        res: res,
+        headers: {
+            realm: global.config.loginParams.realm
+        }
+    }, null);
+};
+var baseUrl = 'http://dataservice.curtao.com';
 var userInfoRestApis = {
     getUserInfo: '/rest/base/v1/user/id',
     getMemberRoles: '/rest/base/v1/user/member/roles',
@@ -185,7 +197,8 @@ var userInfoRestApis = {
     getMyTeamWithSubteams: '/rest/base/v1/group/teams/tree/self',
     getUserWorkFlowConfigs: '/rest/base/v1/workflow/configs',
     getOrganizationInfoById: '/rest/base/v1/realm/organization',
-    getGuideConfig: '/rest/base/v1/user/member/guide'
+    getGuideConfig: '/rest/base/v1/user/member/guide',
+    getAreaByPhone: baseUrl + '/rest/es/v2/es/phone_location/:phone',
 };
 
 exports.getPrivileges = getPrivileges;
