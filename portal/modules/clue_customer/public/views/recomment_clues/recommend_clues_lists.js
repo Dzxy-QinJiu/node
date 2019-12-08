@@ -39,6 +39,7 @@ import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 import {leadRecommendEmitter} from 'PUB_DIR/sources/utils/emitters';
+import DifferentVersion from 'MOD_DIR/different_version/public';
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -55,6 +56,7 @@ class RecommendCustomerRightPanel extends React.Component {
             batchPopoverVisible: false,//批量操作展示popover
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             canClickExtract: true,//防止用户连续点击批量提取
+            showDifferentVersion: false,//是否显示版本信息面板
             ...clueCustomerStore.getState()
         };
     }
@@ -466,6 +468,10 @@ class RecommendCustomerRightPanel extends React.Component {
     handleUpgradePersonalVersion = () => {
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL);
     };
+    //显示/隐藏版本信息面板
+    triggerShowVersionInfo = () => {
+        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
+    };
     //增加线索量
     handleClickAddClues = () => {
         paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL, {
@@ -495,11 +501,19 @@ class RecommendCustomerRightPanel extends React.Component {
                     defaultMessage={'明天可再提取{count}条，如需马上提取请{upgradedVersion}'}
                     values={{
                         count: maxLimitExtractNumber,
-                        upgradedVersion: <a onClick={this.handleUpgradePersonalVersion} data-tracename="点击个人升级为正式版按钮">{Intl.get('personal.upgrade.to.official.version', '升级为正式版')}</a>
+                        upgradedVersion: <a onClick={this.triggerShowVersionInfo} data-tracename="点击个人升级为正式版按钮">{Intl.get('personal.upgrade.to.official.version', '升级为正式版')}</a>
                     }}
                 />;
             } else if(currentVersion.company && this.isTrialAccount()) {//企业试用
-                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',{count: maxLimitExtractNumber,contact: '400-6978-520'});
+                // maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',{count: maxLimitExtractNumber,contact: '400-6978-520'});
+                maxLimitTip = <ReactIntl.FormattedMessage
+                    id="clue.recommend.trial.extract.num.limit.tip"
+                    defaultMessage={'明天可再提取{count}条，如需马上提取请{upgradedVersion}'}
+                    values={{
+                        count: maxLimitExtractNumber,
+                        upgradedVersion: <a onClick={this.triggerShowVersionInfo} data-tracename="点击升级为正式版按钮">{Intl.get('personal.upgrade.to.official.version', '升级为正式版')}</a>
+                    }}
+                />;
             } else if(currentVersion.personal && this.isOfficalAccount()//个人正式版
                 || currentVersion.company && this.isOfficalAccount() && this.isManager()) { //或企业正式版管理员
                 maxLimitTip = <ReactIntl.FormattedMessage
@@ -867,6 +881,10 @@ class RecommendCustomerRightPanel extends React.Component {
                         hideFocusCustomerPanel={this.hideFocusCustomerPanel}
                         saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
                     /> : null}
+                <DifferentVersion
+                    showFlag={this.state.showDifferentVersion}
+                    closeVersion={this.triggerShowVersionInfo}
+                />
             </div>
 
 
