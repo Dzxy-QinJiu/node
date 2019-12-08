@@ -343,6 +343,7 @@ var zh_CN = {
     'login.wechat.bind.check.error': '检查是否绑定微信出错了',
     'login.wechat.register.login.error': '微信号注册登录失败',
 
+    'register.slogan.tip': '销售加速，从这里开始 ...',
     'register.set.company.id': '设置公司标识',
     'register.valid.phone': '验证手机',
     'register.fill.account': '账号设置',
@@ -370,6 +371,10 @@ var zh_CN = {
     'register.wechat.bind.btn': '立即绑定',
     'register.wechat.register.btn': '注册并登录',
     'register.personal.title': '注册个人版',
+    'register.user.agreement.tip': '已阅读并同意{userAgreement}',
+    'register.user.agreement.curtao': '《客套用户协议》',
+    'register.user.agreement.valid.tip': '请先阅读并同意《客套用户协议》',
+    'register.to.login.tip': '已有账号，去{login}',
 
     //首页
     'menu.home.page': '首页',
