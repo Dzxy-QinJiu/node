@@ -20,7 +20,7 @@ export default class DifferentVersion extends PureComponent {
         showCallKey: null,
         width: document.body.clientWidth - 75,
         wrapperWidth: document.body.clientWidth > 1536 ? document.body.clientWidth - 126 : 1410,
-        showFlag: true
+        showFlag: this.props.showFlag
     };
 
     resizeHandler = () => {
@@ -35,7 +35,8 @@ export default class DifferentVersion extends PureComponent {
     static propTypes = {
         nowVersion: PropTypes.string, //当前版本,不传值则认为是试用版 
         closePath: PropTypes.string, //点击关闭以后的跳转路径
-        closeVersion: PropTypes.func //关闭函数
+        closeVersion: PropTypes.func, //关闭函数
+        showFlag: PropTypes.bool, //版本信息面板是否显示
     }
     onChange = () => {
         this.setState({...differentVersionStore.getState()});
@@ -45,6 +46,11 @@ export default class DifferentVersion extends PureComponent {
         differentVersionAction.getAllVersions();
         document.onclick = this.cancleConnectWrapper;
         $(window).on('resize', this.resizeHandler);
+    }
+    componentWillReceiveProps(nextProps) {
+        if(!_.isEqual(nextProps.showFlag, this.props.showFlag)) {
+            this.setState({showFlag: nextProps.showFlag});
+        }
     }
     componentWillUnmount() {
         differentVersionStore.unlisten(this.onChange);
@@ -83,9 +89,7 @@ export default class DifferentVersion extends PureComponent {
         });
     }
     closeVersion = () => { //关闭面板
-        this.setState({
-            showFlag: false
-        });
+        _.isFunction(this.props.closeVersion) && this.props.closeVersion();
     }
 
     renderVersionItem() { //渲染每一个版本模块，返回一个jsx数组
@@ -132,7 +136,7 @@ export default class DifferentVersion extends PureComponent {
     render() {
         return (<RightPanel className='different-versions-right-panel' showFlag={this.state.showFlag} style={{width: this.state.width + 'px'}}>
             <GeminiScrollbar>
-                <i className="iconfont icon-close-wide different-version-close" onClick={this.closeVersion}></i>
+                <i className="iconfont icon-close-wide different-version-close" title={Intl.get('common.app.status.close', '关闭')} onClick={this.closeVersion}/>
                 {this.state.errorMessage ?
                     <div>{this.state.errorMessage}</div> :
                     <ColsLayout

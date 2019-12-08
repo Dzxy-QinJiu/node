@@ -95,6 +95,7 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import ClueExtract from 'MOD_DIR/clue_pool/public';
 import MoreButton from 'CMP_DIR/more-btn';
+import DifferentVersion from 'MOD_DIR/different_version/public';
 import {subtracteGlobalClue, formatSalesmanList,isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -155,6 +156,7 @@ class ClueCustomer extends React.Component {
             filterInputWidth: 210,//筛选输入框的宽度
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             showRecommendTips: !_.get(websiteConfig,['oplateConsts','STORE_PERSONNAL_SETTING','NO_SHOW_RECOMMEND_CLUE_TIPS'],false),
+            showDifferentVersion: false,//是否显示版本信息面板
             //显示内容
             ...clueCustomerStore.getState()
         };
@@ -670,15 +672,21 @@ class ClueCustomer extends React.Component {
     handleUpgradePersonalVersion = () => {
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {});
     };
+    //显示/隐藏版本信息面板
+    triggerShowVersionInfo = () => {
+        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
+    };
+
 
     getExportClueTips = () => {
         let currentVersion = checkCurrentVersion();
         let currentVersionType = checkCurrentVersionType();
         let tips = '';
         if(currentVersion.personal && currentVersionType.trial) {//个人试用
-            tips = <a onClick={this.handleUpgradePersonalVersion}>{Intl.get('clue.customer.export.trial.user.tip', '请升级正式版')}</a>;
+            tips = <a onClick={this.triggerShowVersionInfo}>{Intl.get('clue.customer.export.trial.user.tip', '请升级正式版')}</a>;
         }else if(currentVersion.company && currentVersionType.trial){//企业试用
-            tips = Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'});
+            // tips = Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})
+            tips = <a onClick={this.triggerShowVersionInfo}>{Intl.get('clue.customer.export.trial.user.tip', '请升级正式版')}</a>;
         }
         return tips;
     };
@@ -3096,6 +3104,10 @@ class ClueCustomer extends React.Component {
                                 }
                             </RightPanel> : null
                     }
+                    <DifferentVersion
+                        showFlag={this.state.showDifferentVersion}
+                        closeVersion={this.triggerShowVersionInfo}
+                    />
                 </div>
             </RightContent>
         );

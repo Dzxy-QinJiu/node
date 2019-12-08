@@ -330,7 +330,7 @@ OfficialPersonalEdition.propTypes = {
 };
 module.exports = HocGoodsBuy({
     leftTitle: Intl.get('personal.upgrade.to.official.version', '升级为正式版'),
-    rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
+    // rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
     i18nId: 'clues.extract.count.at.month',
     i18nMessage: '线索推荐每月可提取 {count} 条',
     dataTraceName: '升级个人正式版界面',
