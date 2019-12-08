@@ -33,7 +33,7 @@ class Logo extends React.Component {
                 <span style={textStyle}>
                     {
                         this.props.logoText ? this.props.logoText : (
-                            <i className="iconfont icon-ketao-logo"></i>
+                            <i className="iconfont icon-ketao-logo" style={{fontSize: this.props.fontSize || '24px'}}/>
                         )
                     }
                 </span>

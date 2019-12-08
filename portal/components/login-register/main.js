@@ -81,11 +81,8 @@ class RegisterPage extends React.Component {
                             <div className="form-title">{Intl.get('login.register', '注册')}</div>
                             <RegisterForm/>
                         </div>
-                    </div>
-
-                ) : null
+                    </div>) : null
                 }
-                <SideBar showChat={curtaoObj.isCurtao}></SideBar>
             </div>
         );
     }

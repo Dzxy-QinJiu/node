@@ -18,16 +18,21 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
-    },
-    {//注册界面
+    }, {//注册界面
         'method': 'get',
         'path': '/register',
         'handler': 'showRegisterPage',
         'passport': {
             'needLogin': false
         }
-    },
-    {
+    }, {//注册界面
+        'method': 'get',
+        'path': '/user/agreement',
+        'handler': 'showUserAgreementPage',
+        'passport': {
+            'needLogin': false
+        }
+    }, {
         'method': 'get',
         'path': '/wechat_bind',
         'handler': 'showWechatBindPage',

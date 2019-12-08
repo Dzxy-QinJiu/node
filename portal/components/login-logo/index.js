@@ -5,7 +5,12 @@
  */
 const Logo = require('../Logo');
 const logoSrc = require('./curtao-logo.png');
-const LoginLogo = () => {
-    return (<Logo logoSrc={logoSrc} fontColor="#000000" fontSize='24px' size='32px'/>);
+const PropTypes = require('prop-types');
+const LoginLogo = (props) => {
+    return (<Logo logoSrc={logoSrc} fontColor="#000000" fontSize={props.fontSize || '24px'} size={props.size || '32px'} />);
+};
+LoginLogo.propTypes = {
+    size: PropTypes.string,
+    fontSize: PropTypes.string,
 };
 export default LoginLogo;

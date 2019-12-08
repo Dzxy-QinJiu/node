@@ -229,7 +229,7 @@ class RegisterForm extends React.Component {
     //     });
     // }
     openUserAgreement = (e) => {
-        window.open('/user/agreement', 'target', '');
+        window.open('/user/agreement');
     }
     toLogin = (e) => {
         window.location.href = '/login';
