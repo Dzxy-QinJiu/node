@@ -3669,6 +3669,7 @@ var en_US = {
     'user.score.total.hours': 'Total hours',//总小时数
     'user.score.total.days': 'Total number of days',//总天数
     'user.score.choose.interval': 'Please select the period',//请选择周期
+    'apply.approve.user.select': 'User select',//用户选择
     // 引导流程
     'guide.add.customer.title': 'Add your customer',//添加您的客户
     'guide.add.customer.des': 'After adding customers, you can easily follow up with your customers',//添加客户后，可以轻松跟进您的客户

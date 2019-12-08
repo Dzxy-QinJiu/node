@@ -43,7 +43,8 @@ class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedRecommendClues: [],
+            selectedRecommendClues: [],//选中状态的推荐线索
+            disabledCheckedClues: [],//禁用状态的线索
             singleExtractLoading: false, // 单个提取的loading
             batchExtractLoading: false,
             closeFocusCustomer: false,
@@ -159,13 +160,14 @@ class RecommendCustomerRightPanel extends React.Component {
             this.getRecommendClueLists();
         }
         this.setState({
-            selectedRecommendClues: []
+            selectedRecommendClues: [],
+            disabledCheckedClues: []
         });
     };
     updateRecommendClueLists = (updateClueId) => {
-        var selectedRecommendClues = this.state.selectedRecommendClues;
+        var disabledCheckedClues = this.state.disabledCheckedClues;
         this.setState({
-            selectedRecommendClues: _.filter(selectedRecommendClues,item => item.id !== updateClueId)
+            disabledCheckedClues: _.filter(disabledCheckedClues,item => item.id !== updateClueId)
         });
         clueCustomerAction.updateRecommendClueLists(updateClueId);
     };
@@ -528,6 +530,14 @@ class RecommendCustomerRightPanel extends React.Component {
         }else{
             //批量提取之前要验证一下可以再提取多少条的数量，如果提取的总量比今日上限多，就提示还能再提取几条
             //如果获取提取总量失败了,就不校验数字了
+            //点击批量提取后把select的check选中状态都取消，并且加上disabled的样式
+            this.setState({
+                disabledCheckedClues: this.state.selectedRecommendClues
+            },() => {
+                this.setState({
+                    selectedRecommendClues: [],
+                });
+            });
             if(this.state.getMaxLimitExtractNumberError){
                 this.batchAssignRecommendClues(submitObj);
             }else{
@@ -538,7 +548,7 @@ class RecommendCustomerRightPanel extends React.Component {
                         //是试用账号或者正式账号
                         (this.isTrialAccount() || this.isOfficalAccount()) &&
                         //已经提取的数量和这次要提取数量之和大于最大限制的提取数
-                        count + _.get(this, 'state.selectedRecommendClues.length') > this.state.maxLimitExtractNumber
+                        count + _.get(this, 'state.disabledCheckedClues.length') > this.state.maxLimitExtractNumber
                     ){
                         this.setState({
                             batchPopoverVisible: true,
@@ -609,7 +619,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中全部线索');
             },
             getCheckboxProps: record => ({
-                disabled: record.hasExtracted, // 有hasExtracted属性是已经成功提取了的
+                disabled: record.hasExtracted || _.has(this.state.disabledCheckedClues,item => item.id === record.id ), // 有hasExtracted属性是已经成功提取了的
             }),
         };
         return rowSelection;
@@ -705,7 +715,9 @@ class RecommendCustomerRightPanel extends React.Component {
                     //立即在界面上显示推送通知
                     //界面上立即显示一个初始化推送
                     //批量操作参数
-                    var totalSelectedSize = _.get(this,'state.selectedRecommendClues.length',0);
+                    // var totalSelectedSize = _.get(this,'state.selectedRecommendClues.length',0);
+
+                    var totalSelectedSize = _.get(this,'state.disabledCheckedClues.length',0);
                     batchOperate.batchOperateListener({
                         taskId: taskId,
                         total: totalSelectedSize,
@@ -801,7 +813,8 @@ class RecommendCustomerRightPanel extends React.Component {
         }
     };
     render() {
-        var hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length');
+        var hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length') || _.get(this, 'state.disabledCheckedClues.length');
+
         let {isWebMin} = isResponsiveDisplay();
         let recommendCls = classNames('recommend-customer-top-nav-wrap', {
             'responsive-mini-btn': isWebMin
