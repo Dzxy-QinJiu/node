@@ -69,6 +69,12 @@ var UserInfoPage = createReactClass({
             load_size: this.state.loadSize
         });
     },
+    componentWillReceiveProps(nextProps) {
+        // 判断是不是跳转过来的，若是的话，显示购买记录界面
+        if(_.get(nextProps, 'history.action') === 'PUSH' && _.get(history.location, 'state.show_pay_record')) {
+            this.changeActiveKey(TAB_KEYS.TRADE_TAB);
+        }
+    },
 
     componentWillUnmount: function() {
         $('body').css('overflow', 'auto');

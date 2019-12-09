@@ -310,21 +310,7 @@ class ExtractClues extends React.Component {
                     }}
                 />;
             } else if(versionAndType.isCompanyTrial) {//企业试用
-                // maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',{count: maxLimitExtractNumber,contact: '400-6978-520'});
-                maxLimitTip = <ReactIntl.FormattedMessage
-                    id="clue.recommend.trial.extract.num.limit.tip"
-                    defaultMessage={'明天可再提取{count}条，如需马上提取请{upgradedVersion}'}
-                    values={{
-                        count: maxLimitExtractNumber,
-                        upgradedVersion: (
-                            <Button className="customer-btn" data-tracename="点击升级为正式版按钮"
-                                    title={Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
-                                    onClick={this.triggerShowVersionInfo}>
-                                {Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
-                            </Button>
-                        )
-                    }}
-                />;
+                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',{count: maxLimitExtractNumber,contact: '400-6978-520'});
             } else if(versionAndType.isPersonalFormal//个人正式版
                 || versionAndType.isCompanyFormal && this.isManager()) { //或企业正式版管理员
                 maxLimitTip = <ReactIntl.FormattedMessage
