@@ -13,9 +13,9 @@ module.exports = {
         'handler': 'getProduct',
         'passport': {
             'needLogin': true
-        },
+        },// 获取产品列表使用基础权限
         'privileges': [
-            production_manager_privilegeConfig.PRODUCTS_MANAGE
+            production_manager_privilegeConfig.BASE_QUERY_PERMISSION_MEMBER
         ]
     },{
         'method': 'get',

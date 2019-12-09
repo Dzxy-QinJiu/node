@@ -328,7 +328,10 @@ var SalesTeamForm = createReactClass({
                                     placeholder={Intl.get('organization.tree.name.placeholder', '请输入{name}名称', {name: name})}
                                     data-tracename="填写团队名称"
                                     onBlur={(e) => {
-                                        this.checkOrganizationName(e);
+                                        // 组织修改的是昵称不需要校验,只校验团队名称是否存在
+                                        if(!formData.isOrganizationFlag){
+                                            this.checkOrganizationName(e);
+                                        }
                                     }}
                                     onFocus={(e) => {
                                         this.handleFocueInput(e);
