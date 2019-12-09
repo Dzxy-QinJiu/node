@@ -32,8 +32,8 @@ export function getCallRecordChart(paramObj = {}) {
                     const teamName = _.get(callInfo, 'name');
 
                     if (teamName) {
-                        const corrTeamInfo = _.find(teamInfoList, teamInfo => teamInfo.team_name = teamName);
-                        const availableUserNum = _.get(corrTeamInfo, 'available.user');
+                        const corrTeamInfo = _.find(teamInfoList, teamInfo => teamInfo.team_name === teamName);
+                        const availableUserNum = _.get(corrTeamInfo, 'available.user', 1);
 
                         if (availableUserNum) {
                             callInfo.per_capita_duration = _.toInteger(callInfo.total_time / availableUserNum);
