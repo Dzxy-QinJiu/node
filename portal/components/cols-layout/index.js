@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
 import './index.less';
 
-export default class ColsLayout extends Component {
+
+/*
+    此组件的功能是实现一个多列布局，原理是flex布局的space-around
+    如果传入的每个子组件之间的间隙小于30px的话，将会强制设置子组件的width，使其宽度为传入width -（子组件数量+1）*30
+*/
+export default class ColsLayout extends React.Component {
     static propTypes = {
         commonData: PropTypes.array.isRequired, //jsx集合（每个子元素集合）
         showWidth: PropTypes.number, //显示出来的最外层width,若showWidth小于width，则局部出现左右滚动条,若不传，则与width相同
