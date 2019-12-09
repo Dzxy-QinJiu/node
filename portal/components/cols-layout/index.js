@@ -3,6 +3,11 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import './index.less';
 
+
+/*
+    此组件的功能是实现一个多列布局，原理是flex布局的space-around
+    如果传入的每个子组件之间的间隙小于30px的话，将会强制设置子组件的width，使其宽度为传入width -（子组件数量+1）*30
+*/
 export default class ColsLayout extends Component {
     static propTypes = {
         commonData: PropTypes.array.isRequired, //jsx集合（每个子元素集合）
