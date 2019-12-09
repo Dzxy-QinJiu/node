@@ -3903,6 +3903,7 @@ var zh_CN = {
     'versions.personal.price': '元/月',
     'versions.pay.least.number': '人起售',
     'versions.monthly.clues.recommend': '{clues}条/月线索推荐',
+    'versions.please.call.phone': '请拨打{phone}',
     /*版本信息 --- start */
 
 };

@@ -3851,9 +3851,10 @@ var en_US = {
     /*版本信息 --- start */
     'versions.online.pay': 'Online Payment',//在线购买
     'versions.connect.sale': 'contact our sales staff', //联系销售
-    'versions.personal.price': '$/Month', // 元/月
+    'versions.personal.price': 'yuan/Month', // 元/月
     'versions.pay.least.number': 'pieces minimum per order', //人起售
     'versions.monthly.clues.recommend': '{clues}item/month clues recommend', //{clues}条/月线索推荐
+    'versions.please.call.phone': 'please call{phone}', //请拨打
     /*版本信息 --- start */
 };
 export default en_US;

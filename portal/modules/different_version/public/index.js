@@ -9,6 +9,7 @@ import ApplyTry from 'MOD_DIR/apply_try/puiblic';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {COMPANY_PHONE} from 'PUB_DIR/sources/utils/consts';
 
 
 require('./css/index.less');
@@ -37,7 +38,7 @@ export default class DifferentVersion extends PureComponent {
         closePath: PropTypes.string, //点击关闭以后的跳转路径
         closeVersion: PropTypes.func, //关闭函数
         showFlag: PropTypes.bool, //版本信息面板是否显示
-        continueFn: PropTypes.func, //点击购买后的回调函数
+        continueFn: PropTypes.func, //个人版购买支付成功后，点击提取线索的回调函数
     }
     onChange = () => {
         this.setState({...differentVersionStore.getState()});
@@ -114,7 +115,7 @@ export default class DifferentVersion extends PureComponent {
                     }</button> : null}
                     {versionItem.applyTry ? <button className='version-apply-try-btn' onClick={this.handleApplyBtn}>{Intl.get('login.apply.trial','申请试用')}</button> : null}
                 </div>
-                {this.state.showCall && this.state.showCallKey === versionItem.versionId ? <div className='version-show-call' onClick={this.showConnectWrapper}>请拨打400-6978-520</div> : null}
+                {this.state.showCall && this.state.showCallKey === versionItem.versionId ? <div className='version-show-call' onClick={this.showConnectWrapper}>{Intl.get('versions.please.call.phone', '请拨打{phone}', {phone: COMPANY_PHONE})}</div> : null}
                 <div className='version-item-features-wrapper'>
                     <GeminiScrollbar>
                         {_.map(versionItem.features, (featureItem, featureIndex) => {
