@@ -10,7 +10,6 @@ import ajax from 'ant-ajax';
 import { Button, Row, Col, message } from 'antd';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import { storageUtil } from 'ant-utils';
 import { VIEW_TYPE, NOOP } from './consts';
 import DetailCard from 'CMP_DIR/detail-card';
 //联系人表单
@@ -20,7 +19,6 @@ const CONTACT_OTHER_KEYS = ContactForm.CONTACT_OTHER_KEYS;
 const ContactStore = require('MOD_DIR/crm/public/store/contact-store');
 
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
-const websiteConfig = getLocalWebsiteConfig() || {};
 
 //联系方式种类
 const CONTACT_WAY_TYPES = [
@@ -84,6 +82,8 @@ class CustomerMerge extends React.Component {
 
     constructor(props) {
         super(props);
+
+        const websiteConfig = getLocalWebsiteConfig() || {};
 
         this.state = {
             //当前操作的客户的id
