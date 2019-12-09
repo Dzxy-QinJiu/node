@@ -363,7 +363,7 @@ exports.CONDITION_LIMITE = [{
 exports.isSalesOpportunityFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.BUSINESSOPPORTUNITIES;
 };
-//是拜访机会申请流程
+//是拜访申请流程
 exports.isVisitApplyFlow = function(itemType) {
     return itemType === SELF_SETTING_FLOW.VISITAPPLY;
 };
@@ -378,6 +378,10 @@ exports.isBussinessTripFlow = function(itemType) {
 //是请假申请流程
 exports.isLeaveFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.LEAVE;
+};
+//是用户申请流程
+exports.isUserApplyFlow = function(itemType) {
+    return itemType === INNER_SETTING_FLOW.USERAPPLY;
 };
 //是否展示该节点
 exports.isShowCCNode = (item) => {

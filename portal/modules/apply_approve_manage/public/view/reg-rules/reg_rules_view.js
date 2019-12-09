@@ -31,9 +31,11 @@ import {
     ASSIGEN_APPROVER,
     isSalesOpportunityFlow,
     isVisitApplyFlow,
-    isDomainApplyFlow, ROLES_SETTING,CC_SETTINGT_TYPE
+    isDomainApplyFlow,
+    CC_SETTINGT_TYPE,
+    isUserApplyFlow
 } from '../../utils/apply-approve-utils';
-import {CC_INFO,NOTIFY_PERSON_TYPE} from 'PUB_DIR/sources/utils/consts';
+import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveManageStore from '../../store/apply_approve_manage_store';
 class RegRulesView extends React.Component {
     constructor(props) {
@@ -887,6 +889,7 @@ class RegRulesView extends React.Component {
             }
         });
 
+        var applyType = _.get(this, 'props.applyTypeData.type');
         return (
             <div className="reg-rule-container" style={{'height': divHeight}}>
                 <GeminiScrollbar>
@@ -907,7 +910,8 @@ class RegRulesView extends React.Component {
                                 {this.renderAddConditionFlow()}
                             </div>
                         </div>
-                        <div className="inform-cc rule-item">
+                        {/*现在只有用户审批的加上抄送通知，其他的没有模板暂时先不展示这个功能*/}
+                        {isUserApplyFlow(applyType) ? <div className="inform-cc rule-item">
                             <span className="item-label">
                                 {Intl.get('menu.notification', '通知')}：
                             </span>
@@ -974,8 +978,7 @@ class RegRulesView extends React.Component {
                                     </div>
                                 </Checkbox.Group>
                             </div>
-                        </div>
-
+                        </div> : null}
                         {/*<div className="cancel-privilege rule-item">*/}
                         {/*<span className="item-label">*/}
                         {/*{Intl.get('apply.info.cancel.privilege', '撤销权限')}*/}
