@@ -17,9 +17,9 @@ export const clueNameContactRule = {
 
 //客户名验证的正则表达式（包含大小写字母、下划线、中英文括号、点及汉字，长度1-25之间）
 export const customerNameRegex = regex.getNameRegex(25);
-// 数字验证规则
+// 数字验证规则（带千分位以及两位小数）
 exports.getNumberValidateRule = function() {
-    return {pattern: /^(\d|,)+(\.\d+)?(,\d+)*$/, message: Intl.get('contract.45', '请填写数字')};
+    return {pattern: /^\d{1,3}(,?\d{3})*(\.\d{1,2})?$/, message: Intl.get('contract.45', '请填写数字')};
 };
 //是否是手机号
 export const isPhone = function(value) {
