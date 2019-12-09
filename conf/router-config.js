@@ -184,7 +184,7 @@ let routers = [
         }, {
             id: 'SALES_BUSSINESS_APPLY_MANAGEMENT',
             name: 'leave.apply.sales.oppotunity',//机会申请
-            routePath: '/apply/oppotunities',
+            routePath: '/apply/opportunities',
             component: `${MODULE_PATH}sales_opportunity/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_BUSINESSOPPO_APPLY_APPROVE']
