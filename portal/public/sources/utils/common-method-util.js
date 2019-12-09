@@ -123,9 +123,9 @@ exports.removeEmptyItem = removeEmptyItem;
 
 exports.getParamByPrivilege = function() {
     let reqData = {};
-    if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL) || hasPrivilege(publicPrivilegeConst.TEAM_QUERY_PERMISSION)) {
+    if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL)) {
         reqData.type = 'all';
-    } else if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS) || hasPrivilege(publicPrivilegeConst.TEAM_QUERY_PERMISSION)) {
+    } else if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS)) {
         reqData.type = 'self';
     }
     return reqData;
