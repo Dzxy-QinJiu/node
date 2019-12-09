@@ -505,15 +505,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     }}
                 />;
             } else if(currentVersion.company && this.isTrialAccount()) {//企业试用
-                // maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',{count: maxLimitExtractNumber,contact: '400-6978-520'});
-                maxLimitTip = <ReactIntl.FormattedMessage
-                    id="clue.recommend.trial.extract.num.limit.tip"
-                    defaultMessage={'明天可再提取{count}条，如需马上提取请{upgradedVersion}'}
-                    values={{
-                        count: maxLimitExtractNumber,
-                        upgradedVersion: <a onClick={this.triggerShowVersionInfo} data-tracename="点击升级为正式版按钮">{Intl.get('personal.upgrade.to.official.version', '升级为正式版')}</a>
-                    }}
-                />;
+                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',{count: maxLimitExtractNumber,contact: '400-6978-520'});
             } else if(currentVersion.personal && this.isOfficalAccount()//个人正式版
                 || currentVersion.company && this.isOfficalAccount() && this.isManager()) { //或企业正式版管理员
                 maxLimitTip = <ReactIntl.FormattedMessage

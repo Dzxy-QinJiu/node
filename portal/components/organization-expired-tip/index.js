@@ -10,6 +10,7 @@ import { getOrganizationInfo } from 'PUB_DIR/sources/utils/common-data-util';
 import { checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
 import { paymentEmitter } from 'PUB_DIR/sources/utils/emitters';
 import DifferentVersion from 'MOD_DIR/different_version/public';
+import history from 'PUB_DIR/sources/history';
 
 
 const REMIND_DAYS = {
@@ -67,6 +68,9 @@ class OrganizationExipreTip extends React.PureComponent {
     triggerShowVersionInfo = () => {
         this.setState({showDifferentVersion: !this.state.showDifferentVersion});
     };
+    handleContinueFn = (orderInfo) => {
+        history.push('/leads');
+    };
     renderMsgBlock = () => {
         //试用期提前三天提醒，正式的提前一周
         let versionAndType = checkVersionAndType();
@@ -93,7 +97,7 @@ class OrganizationExipreTip extends React.PureComponent {
                     id="organization.formal.expired.tip"
                     defaultMessage={'您的账号即将到期，是否{renewal}？'}
                     values={{
-                        renewal: <a data-tracename="点击组织到期，升级续费按钮" onClick={this.handleClickRenewal}>{Intl.get('payment.renewal', '续费')}</a>
+                        renewal: <a data-tracename="点击组织到期，升级续费按钮" onClick={this.triggerShowVersionInfo}>{Intl.get('payment.renewal', '续费')}</a>
                     }}
                 />;
             }else {
@@ -116,6 +120,8 @@ class OrganizationExipreTip extends React.PureComponent {
                     <DifferentVersion
                         showFlag={this.state.showDifferentVersion}
                         closeVersion={this.triggerShowVersionInfo}
+                        continueFn={this.handleContinueFn}
+
                     />
                 </div>
             );
