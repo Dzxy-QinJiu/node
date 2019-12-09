@@ -3897,5 +3897,13 @@ var zh_CN = {
     'organization.company.formal.expired.tip': '您的账号即将到期，请联系我们的销售人员: {contact}',
     /*组织到期提示 --- end*/
 
+    /*版本信息 --- start */
+    'versions.online.pay': '在线购买',
+    'versions.connect.sale': '联系销售',
+    'versions.personal.price': '元/月',
+    'versions.pay.least.number': '人起售',
+    'versions.monthly.clues.recommend': '{clues}条/月线索推荐',
+    /*版本信息 --- start */
+
 };
 export default zh_CN;
