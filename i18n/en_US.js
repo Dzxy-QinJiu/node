@@ -3847,5 +3847,14 @@ var en_US = {
     'organization.personal.formal.expired.tip': 'Your account is about to expire, is it {renewal}?',//您的账号即将到期，是否{renewal}？
     'organization.company.formal.expired.tip': 'Your account is about to expire, please contact our sales staff: {contact}',//您的账号即将到期，请联系我们的销售人员: {contact}
     /*组织到期提示 --- end*/
+
+    /*版本信息 --- start */
+    'versions.online.pay': 'Online Payment',//在线购买
+    'versions.connect.sale': 'contact our sales staff', //联系销售
+    'versions.personal.price': 'yuan/Month', // 元/月
+    'versions.pay.least.number': 'pieces minimum per order', //人起售
+    'versions.monthly.clues.recommend': '{clues}item/month clues recommend', //{clues}条/月线索推荐
+    'versions.please.call.phone': 'please call{phone}', //请拨打
+    /*版本信息 --- start */
 };
 export default en_US;
