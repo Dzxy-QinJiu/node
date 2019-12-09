@@ -299,6 +299,7 @@ var zh_CN = {
     'common.no.more.data.tips': '没有更多{name}了',
     'common.no.data.tips': '暂无{name}',
     'common.call.owe.tips': '您的电话号码已欠费，请充值后再试！',
+    'common.number.validate.tips': '请填写最多两位小数的数字',
 
     //公共部分--end
     'login.login': '登录',
