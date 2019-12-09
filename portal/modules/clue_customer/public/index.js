@@ -2002,6 +2002,7 @@ class ClueCustomer extends React.Component {
             if (item){
                 //有item的是单个修改跟进人
                 clueCustomerAction.updateClueItemAfterAssign({item: item,submitObj: submitObj,isWillDistribute: isWillDistribute});
+                subtracteGlobalClue(item);
                 if (this['changesale' + clue_id]) {
                     //隐藏批量变更销售面板
                     this['changesale' + clue_id].handleCancel();
@@ -2042,6 +2043,7 @@ class ClueCustomer extends React.Component {
                         running: totalSelectedSize,
                         typeText: Intl.get('clue.batch.change.trace.man', '变更跟进人')
                     });
+                    subtracteGlobalClue({id: clue_id});
                     if (isWillDistribute) {
                         clueCustomerAction.afterAssignSales(clue_id);
                     }

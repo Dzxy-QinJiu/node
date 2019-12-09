@@ -31,7 +31,7 @@ let cluePrivilegeConst = {
     CURTAO_CRM_LEAD_QUERY_ALL: 'CURTAO_CRM_LEAD_QUERY_ALL',
     //销售线索查询
     CURTAO_CRM_LEAD_QUERY_SELF: 'CURTAO_CRM_LEAD_QUERY_SELF',
-    //线索删除end
+    //线索查询end
 
     //线索转客户start
     //线索转客户
