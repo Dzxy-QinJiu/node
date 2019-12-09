@@ -2,6 +2,8 @@ var insertStyle = require('../../insert-style');
 var UserData = require('../../../public/sources/user-data');
 var notificationEmitter = require('../../../public/sources/utils/emitters').notificationEmitter;
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 
 /**
  * 待处理的数据列表
@@ -88,40 +90,64 @@ var UnreadMixin = {
     },
     registerEventEmitter: function() {
         //线索待分配（待跟进）数的监听
-        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[0]));
+        if(this.shouldGetUnhandleLeadData()){
+            notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[0]));
+        }
         //用户申请的待审批数的监听
-        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[1]));
+        if(this.shouldGetUnhandleUserApplyData()){
+            notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[1]));
+        }
         //出差申请、请假申请、销售机会申请待我审批数的监听
-        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[1]));
+        if(this.shouldGetUnhandleWorkFlowData()){
+            notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[1]));
+        }
     },
     unregisterEventEmitter: function() {
-        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[0]));
-        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[1]));
-        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[1]));
+        if(this.shouldGetUnhandleLeadData()){
+            notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[0]));
+        }
+        if(this.shouldGetUnhandleUserApplyData()){
+            notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[1]));
+        }
+        if(this.shouldGetUnhandleWorkFlowData()){
+            notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[1]));
+        }
     },
-    //能够获取未读数
-    shouldGetUnreadData: function() {
+    //能够获取线索未读数的权限
+    shouldGetUnhandleLeadData: function() {
         var userData = UserData.getUserData();
         var privileges = userData.privileges || [];
-        if (privileges.indexOf('APP_USER_APPLY_LIST') >= 0) {
+        if (privileges.indexOf(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL) >= 0 || privileges.indexOf(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_SELF) >= 0) {
+            return true;
+        }
+        return false;
+    },
+    //能够获取用户申请审批列表权限
+    shouldGetUnhandleUserApplyData: function() {
+        var userData = UserData.getUserData();
+        var privileges = userData.privileges || [];
+        if (privileges.indexOf(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) >= 0) {
+            return true;
+        }
+        return false;
+    },
+    //能够获取其他工作流申请审批列表权限
+    shouldGetUnhandleWorkFlowData: function() {
+        var userData = UserData.getUserData();
+        var privileges = userData.privileges || [];
+        if (privileges.indexOf(commonPrivilegeConst.WORKFLOW_BASE_PERMISSION) >= 0) {
             return true;
         }
         return false;
     },
 
     componentDidMount: function() {
-        if (!this.shouldGetUnreadData()) {
-            return;
-        }
         _.forEach(UNREADCOUNT,(item) => {
             this.showUnhandledCount(item);
         });
         this.registerEventEmitter();
     },
     componentWillUnmount: function() {
-        if (!this.shouldGetUnreadData()) {
-            return;
-        }
         _.forEach(UNREADCOUNT,(item) => {
             if (this[item.style]) {
                 this[item.style].destroy();
