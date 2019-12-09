@@ -1,7 +1,5 @@
-import React, { PureComponent } from 'react';
 import differentVersionAction from '../public/action/different-version-action';
 import differentVersionStore from '../public/store/different-version-store';
-import PropTypes from 'prop-types';
 import ColsLayout from 'CMP_DIR/cols-layout';
 import {paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import history from 'PUB_DIR/sources/history';
@@ -14,7 +12,7 @@ import {COMPANY_PHONE} from 'PUB_DIR/sources/utils/consts';
 
 require('./css/index.less');
 
-export default class DifferentVersion extends PureComponent {
+export default class DifferentVersion extends React.PureComponent {
     state = {
         versionItems: [],
         showApply: false,

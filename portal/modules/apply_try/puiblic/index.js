@@ -1,10 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {Input} from 'antd';
 require('./css/index.less');
 
-export default class index extends Component {
+export default class index extends React.Component {
     state={
         successFlag: false
     }
