@@ -22,6 +22,7 @@ import CustomerUsers from './users';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import Spinner from 'CMP_DIR/spinner';
 import crmPrivilegeConst from '../privilege-const';
+import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 
 class CrmRightMergePanel extends React.Component {
     componentDidMount() {
@@ -616,7 +617,7 @@ class CrmRightMergePanel extends React.Component {
                                         ) : null}
                                     </TabPane>
                                     {
-                                        hasPrivilege(crmPrivilegeConst.CRM_CONTRACT_QUERY) ? (
+                                        hasPrivilege(crmPrivilegeConst.CRM_CONTRACT_QUERY_COMMON_BASE) && isOpenCash() ? (
                                             <TabPane
                                                 tab={Intl.get('contract.125', '合同')}
                                                 key='6'

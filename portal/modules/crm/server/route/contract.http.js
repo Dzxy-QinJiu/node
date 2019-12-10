@@ -14,7 +14,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': [crmPrivilegeCons.CRM_CONTRACT_COMMON_BASE]
+        'privileges': [crmPrivilegeCons.CRM_CONTRACT_QUERY_COMMON_BASE]
     }, {
         // 添加合同
         'method': 'post',

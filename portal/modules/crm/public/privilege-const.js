@@ -41,10 +41,10 @@ const privilegeConst = {
     //联系人--end
 
     //合同--start
-    //合同基础权限
+    //合同基础权限（增、删、改、查）
     CRM_CONTRACT_COMMON_BASE: 'CRM_CONTRACT_COMMON_BASE',
-    //查询合同
-    CRM_CONTRACT_QUERY: 'CRM_CONTRACT_QUERY',
+    //合同查询基础权限（运营）
+    CRM_CONTRACT_QUERY_COMMON_BASE: 'CRM_CONTRACT_QUERY_COMMON_BASE',
     //合同--end
 
     //客户池--start
