@@ -187,7 +187,7 @@ const getMyTeamTreeMemberList = function(filter_disabled) {
             resolve(data);
         } else {
             var type = 'self';
-            if (hasPrivilege(publicPrivilegeConst.TEAM_QUERY_PERMISSION)){
+            if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL)){
                 type = 'all';
             }
             salesmanAjax.getMyTeamTreeMemberListAjax().resolvePath({
