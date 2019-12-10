@@ -760,7 +760,7 @@ const AddOrEditUser = createReactClass({
         AppUserFormActions.setSelectedApps(apps);
         //当只有一个应用的时候，并且这个应用没有多终端类型时，需要把特殊设置的应用属性隐藏掉，
         // 这个时候，要把第三步的应用属性同步到通用配置属性上
-        if (apps.length === 1 && _.isEmpty(apps[0].app_terminals)) {
+        if (apps.length === 1 && _.isEmpty(apps[0].terminals)) {
             //渲染是异步的，加setTimeout能够获取到最新的配置信息
             setTimeout(() => {
                 //将应用的特殊设置同步到全局设置

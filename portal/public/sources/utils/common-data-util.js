@@ -45,7 +45,7 @@ exports.getAppList = function(cb) {
                         app_id: app.app_id,
                         app_name: app.app_name,
                         app_logo: app.app_logo,
-                        app_terminals: app.app_terminals // 多终端类型
+                        terminals: app.terminals // 多终端类型
                     };
                 });
             }

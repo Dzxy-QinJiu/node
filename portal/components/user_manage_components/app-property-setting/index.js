@@ -152,7 +152,7 @@ const AppPropertySetting = createReactClass({
                     if(!originAppSetting[prop].setted) {
                         // 若是多终端属性，则用选择当前应用的多终端的值
                         if (prop === 'terminals') {
-                            originAppSetting[prop].value = currentApp.app_terminals;
+                            originAppSetting[prop].value = currentApp.terminals;
                         } else {
                             originAppSetting[prop].value = defaultSettings[prop];
                         }
@@ -190,7 +190,7 @@ const AppPropertySetting = createReactClass({
                     checkSingleProp('multilogin');
                 }
                 // 判断当前选择的应用，是否有多终端类型
-                if ( !_.isEmpty(currentApp.app_terminals)) {
+                if ( !_.isEmpty(currentApp.terminals)) {
                     checkSingleProp('terminals');
                 }
 

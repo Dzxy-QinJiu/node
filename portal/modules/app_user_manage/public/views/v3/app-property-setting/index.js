@@ -355,7 +355,7 @@ const AppPropertySetting = createReactClass({
         var selectedRoles = currentAppInfo.roles || [];
         var selectedPermissions = currentAppInfo.permissions || [];
         let selectedAppAllTerminals = _.find(this.props.appList, item => item.app_id === app_id);
-        let isShowAppTerminals = selectedAppAllTerminals && !_.isEmpty(selectedAppAllTerminals.app_terminals);
+        let isShowAppTerminals = selectedAppAllTerminals && !_.isEmpty(selectedAppAllTerminals.terminals);
         return (
             <div className={this.state.changeCurrentAppLoading ? 'app-property-container-content change-current-app-loading' : 'app-property-container-content'}>
                 <div className="app-property-custom-settings">
@@ -467,7 +467,7 @@ const AppPropertySetting = createReactClass({
                                                 isCustomSetting: true,
                                                 appId: currentApp.app_id,
                                                 globalTerminals: defaultSettings.terminals,
-                                                appAllTerminals: _.get(selectedAppAllTerminals, 'app_terminals')
+                                                appAllTerminals: _.get(selectedAppAllTerminals, 'terminals')
                                             })
                                         }
                                     </div>

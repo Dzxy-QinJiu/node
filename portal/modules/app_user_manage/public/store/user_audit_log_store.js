@@ -82,7 +82,7 @@ UserAuditLogStore.prototype.getUserApp = function(result){
             this.selectAppId = lastSelectAppId;
             let matchSelectApp = _.find(result.data, item => item.app_id === lastSelectAppId);
             if (matchSelectApp) {
-                this.selectAppTerminals = matchSelectApp.app_terminals;
+                this.selectAppTerminals = matchSelectApp.terminals;
             }
         }else{
             // 不存在（首次）
@@ -91,13 +91,13 @@ UserAuditLogStore.prototype.getUserApp = function(result){
                 this.selectAppId = ShareObj.app_id;
                 let matchSelectApp = _.find(result.data, item => item.app_id === this.selectAppId);
                 if (matchSelectApp) {
-                    this.selectAppTerminals = matchSelectApp.app_terminals;
+                    this.selectAppTerminals = matchSelectApp.terminals;
                 }
             }else{
                 // 已有用户应用选择框中选择全部时，用户审计日志默认展示第一个应用的
                 if( _.isArray(this.userAppArray) && (this.userAppArray.length >= 1) ){
                     this.selectAppId = this.userAppArray[0].app_id;
-                    this.selectAppTerminals = this.userAppArray[0].app_terminals;
+                    this.selectAppTerminals = this.userAppArray[0].terminals;
                 }
             }
         }
@@ -150,7 +150,7 @@ UserAuditLogStore.prototype.changeSearchTime = function({startTime,endTime, rang
 UserAuditLogStore.prototype.setUserLogSelectedAppId = function(appId){
     let matchSelectApp = _.find(this.userAppArray, item => item.app_id === appId);
     if (matchSelectApp) {
-        this.selectAppTerminals = matchSelectApp.app_terminals;
+        this.selectAppTerminals = matchSelectApp.terminals;
     }
     this.selectAppId = appId;
     ShareObj.app_id = this.selectAppId;

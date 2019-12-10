@@ -7,7 +7,7 @@ function App(obj) {
     this.app_id = obj.id || '';
     this.app_name = obj.name || '';
     this.app_logo = obj.full_image || '';
-    this.app_terminals = obj.terminals || [];
+    this.terminals = obj.terminals || [];
 }
 
 exports.App = App;
