@@ -897,7 +897,9 @@ class AppUserManage extends React.Component {
             switch (this.state.rightPanelType) {
                 case 'addOrEditUser':
                     rightPanelView = (
-                        <AddOrEditUser operation_type={this.state.appUserFormType}/>
+                        <AddOrEditUser 
+                            operation_type={this.state.appUserFormType}
+                        />
                     );
                     break;
                 case 'batch':

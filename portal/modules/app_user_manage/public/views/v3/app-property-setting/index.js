@@ -467,7 +467,8 @@ const AppPropertySetting = createReactClass({
                                                 isCustomSetting: true,
                                                 appId: currentApp.app_id,
                                                 globalTerminals: defaultSettings.terminals,
-                                                appAllTerminals: _.get(selectedAppAllTerminals, 'terminals')
+                                                appAllTerminals: _.get(selectedAppAllTerminals, 'terminals'),
+                                                selectedApps: selectedAppAllTerminals
                                             })
                                         }
                                     </div>

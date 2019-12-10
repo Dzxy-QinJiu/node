@@ -315,8 +315,10 @@ const AddOrEditUser = createReactClass({
             customAppSetting.user_type = user_type;
             //多人登录
             customAppSetting.mutilogin = savedAppSetting.multilogin.value;
-            // 应用多终端选择
-            customAppSetting.terminals = _.map(savedAppSetting.terminals.value, 'id');
+            if (savedAppSetting.terminals) {
+                // 应用多终端选择
+                customAppSetting.terminals = _.map(savedAppSetting.terminals.value, 'id');
+            }
             //添加到列表中
             result.products.push(customAppSetting);
         });
