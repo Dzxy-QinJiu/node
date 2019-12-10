@@ -26,6 +26,7 @@ import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply
 const session = storageUtil.session;
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 
 // 获取弹窗通知的状态
 function getNotifyStatus() {
@@ -880,7 +881,7 @@ function getMessageCount(callback) {
                     getUnapproveApplyLists(APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES,APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES);//获取销售机会待我审批数量;
                     break;
                 case 'app_user_manage_apply':
-                    if(hasPrivilege('APP_USER_APPLY_LIST')){
+                    if(hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION)){
                         getNotificationUnread({type: 'unapproved'}, callback);
                     }
                     break;
@@ -915,7 +916,7 @@ function getMessageCount(callback) {
         callback('unhandleClue');
     }
     //获取未读回复列表
-    if(hasPrivilege('GET_MEMBER_APPLY_LIST')){
+    if(hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION)){
         //获取用户审批未读数
         getUnreadReplyList(callback);
         //获取其他类型申请审批未读数，根据type对类型进行区分
