@@ -698,9 +698,11 @@ var NavSidebar = createReactClass({
                         this.userInfo = element;
                     }}>
                         {this.renderDailCallBlock()}
-                        <div className='customer-service-navicon' onClick={this.onChatClick}>
-                            <a className='iconfont icon-customer-service sidebar-bottom-icon' title={Intl.get('menu.online.consulting', '在线咨询')}/>
-                        </div>
+                        {isCurtao() ? null : (
+                            <div className='customer-service-navicon' onClick={this.onChatClick}>
+                                <a className='iconfont icon-customer-service sidebar-bottom-icon' title={Intl.get('menu.online.consulting', '在线咨询')}/>
+                            </div>)
+                        }
                         {isCurtao() ? null : this.getNotificationBlock()}
                         {this.renderBackendConfigBlock()}
                         {this.getUserInfoBlock()}
