@@ -111,7 +111,9 @@ export default class DifferentVersion extends React.PureComponent {
                             Intl.get('payment.renewal','续费') :
                             Intl.get('versions.online.pay','在线购买')
                     }</button> : null}
+                    {/* TODO 后端接口没有做好，等待接口实现
                     {versionItem.applyTry ? <button className='version-apply-try-btn' onClick={this.handleApplyBtn}>{Intl.get('login.apply.trial','申请试用')}</button> : null}
+                    */}
                 </div>
                 {this.state.showCall && this.state.showCallKey === versionItem.versionId ? <div className='version-show-call' onClick={this.showConnectWrapper}>{Intl.get('versions.please.call.phone', '请拨打{phone}', {phone: COMPANY_PHONE})}</div> : null}
                 <div className='version-item-features-wrapper'>
