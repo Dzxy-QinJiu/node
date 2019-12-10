@@ -555,7 +555,7 @@ class BasicOverview extends React.Component {
                     {/*editBasicSuccess={this.editBasicSuccess}*/}
                     {/*/>*/}
                     {/*只要负责人或者联合跟进人有一项能修改，就展示*/}
-                    {!hasPrivilege(crmPrivilegeConst.CRM_ASSERT_CUSTOMER_SALES) && checkVersionAndType().isPersonalTrial ? null : (
+                    {!hasPrivilege(crmPrivilegeConst.CRM_ASSERT_CUSTOMER_SALES) && checkVersionAndType().personal ? null : (
                         <SalesTeamCard
                             isMerge={this.props.isMerge}
                             updateMergeCustomer={this.props.updateMergeCustomer}

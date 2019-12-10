@@ -328,8 +328,8 @@ class CRMAddForm extends React.Component {
                     }
                 }
             });
-
-            if(!commonMethodUtil.checkVersionAndType().isPersonalTrial) {
+            //个人版不用根据客户名获取客户的行政级别
+            if(!commonMethodUtil.checkVersionAndType().personal) {
                 this.getAdministrativeLevelByName(customerName);
             }
             //根据客户名查询地域、行业等信息并自动填充到相关字段
@@ -499,7 +499,7 @@ class CRMAddForm extends React.Component {
                                     )
                                 )}
                             </FormItem >
-                            {commonMethodUtil.checkVersionAndType().isPersonalTrial ? null : (
+                            {commonMethodUtil.checkVersionAndType().personal ? null : (
                                 <FormItem
                                     label={Intl.get('crm.administrative.level', '行政级别')}
                                     {...formItemLayout}

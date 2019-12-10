@@ -449,8 +449,8 @@ class CrmFilterPanel extends React.Component {
                 })
             });
         }
-        //不是个人试用时，放在地域前面
-        if(!checkVersionAndType().isPersonalTrial) {
+        //不是个人版时展示，放在地域前面
+        if(!checkVersionAndType().personal) {
             advancedData.splice(advancedData.length - 1, 0, {
                 groupName: Intl.get('crm.administrative.level', '行政级别'),
                 groupId: 'administrative_level',
@@ -488,7 +488,7 @@ class CrmFilterPanel extends React.Component {
                     }]
                 });
             }
-            if(!checkVersionAndType().isPersonalTrial) {
+            if(!checkVersionAndType().personal) {
                 advancedData.unshift({
                     groupName: Intl.get('crm.6', '负责人'),
                     groupId: 'nickname',
@@ -534,7 +534,7 @@ class CrmFilterPanel extends React.Component {
                         }))
                     });
                 }
-                if(!checkVersionAndType().isPersonalTrial) {
+                if(!checkVersionAndType().personal) {
                     advancedData.unshift({
                         groupName: Intl.get('crm.6', '负责人'),
                         groupId: 'nickname',

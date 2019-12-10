@@ -399,8 +399,8 @@ class CustomerRecycleBin extends React.Component {
         if (isCurtao()) {
             columns = _.filter(columns, column => column.title !== Intl.get('user.apply.detail.order', '订单'));
         }
-        //个人试用不展示负责人
-        if(checkVersionAndType().isPersonalTrial) {
+        //个人版不展示负责人
+        if(checkVersionAndType().personal) {
             columns = _.filter(columns, column => column.title !== Intl.get('crm.6', '负责人'));
         }
         //没有恢复、彻底删除的权限，就去掉操作列
@@ -517,8 +517,8 @@ class CustomerRecycleBin extends React.Component {
                 field: 'contact_name'
             }
         ];
-        //个人试用不展示负责人
-        if(!checkVersionAndType().isPersonalTrial) {
+        //个人版不展示负责人
+        if(!checkVersionAndType().personal) {
             searchFields.splice(searchFields.length - 1, 0, {
                 name: Intl.get('crm.6', '负责人'),
                 field: 'user_name'

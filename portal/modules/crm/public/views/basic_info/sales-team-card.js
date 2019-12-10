@@ -504,7 +504,7 @@ class SalesTeamCard extends React.Component {
         return (
             <div className="sales-team-show-block">
                 {
-                    checkVersionAndType().isPersonalTrial ? null : (
+                    checkVersionAndType().personal ? null : (
                         <div className={salesTeam}>
                             <span className="sales-team-label">{Intl.get('crm.6', '负责人')}:</span>
                             <BasicEditSelectField
