@@ -122,12 +122,14 @@ class BasicOverview extends React.Component {
         });
     }
     getAppList = () => {
+        // TODO 需要统一把app_terminals调整为terminals
         commonDataUtil.getAppList(appList => {
             this.setState({appList: _.map(appList, app => {
                 return {
                     client_id: app.app_id,
                     client_name: app.app_name,
-                    client_logo: app.app_logo
+                    client_logo: app.app_logo,
+                    terminals: app.app_terminals
                 };
             })
             });

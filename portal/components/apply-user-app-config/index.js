@@ -1,5 +1,4 @@
 const PropTypes = require('prop-types');
-var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -29,9 +28,13 @@ class ApplyUserAppConfig extends React.Component {
         return (
             <div className="app-config-tab-container">
                 <Tabs type="card" activeKey={this.props.configType} onChange={this.changeConfigType.bind(this)}>
-                    <TabPane tab={Intl.get('crm.apply.user.unified.config', '统一配置')} key={CONFIG_TYPE.UNIFIED_CONFIG}>
-                        {this.renderAppConfigForm(appsFormData[0], apps[0])}
-                    </TabPane>
+                    {
+                        this.props.configType === CONFIG_TYPE.UNIFIED_CONFIG ? (
+                            <TabPane tab={Intl.get('crm.apply.user.unified.config', '统一配置')} key={CONFIG_TYPE.UNIFIED_CONFIG}>
+                                {this.renderAppConfigForm(appsFormData[0], apps[0])}
+                            </TabPane>
+                        ) : null
+                    }
                     <TabPane tab={Intl.get('crm.apply.user.separate.config', '分别配置')} key={CONFIG_TYPE.SEPARATE_CONFIG}>
                         {_.map(apps, app => {
                             let formData = _.find(appsFormData, data => data.client_id === app.client_id);
@@ -47,7 +50,7 @@ class ApplyUserAppConfig extends React.Component {
                         })}
                     </TabPane>
                 </Tabs>
-            </div>);
+            </div>); 
     }
 
     renderAppConfigForm(appFormData, app) {
@@ -60,10 +63,12 @@ class ApplyUserAppConfig extends React.Component {
     render() {
         let apps = this.props.apps || [];
         let appsFormData = this.props.appsFormData || [];
+        // 若是多终端类型，则不需要区分统一配置和分别配置，直接展示分别配置界面即可
+        // 注意：针对申请一个应用时，需要根据应用是否有多终端类型展示
         return (
             <div className="apply-app-user-config">
                 <Col span={20} className="app-config-wrap">
-                    {apps.length === 1 ? this.renderAppConfigForm(appsFormData[0]) :
+                    {apps.length === 1 ? this.renderAppConfigForm(appsFormData[0], apps[0]) :
                         apps.length > 1 ? this.renderConfigTabs(apps, appsFormData) : null}
                 </Col>
             </div>);

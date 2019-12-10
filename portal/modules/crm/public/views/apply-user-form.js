@@ -217,7 +217,6 @@ const ApplyUserForm = createReactClass({
                 client_id: appIds.join(','),
                 with_addition: false
             }).success((dataList) => {
-                console.log('dataList:',dataList);
                 if (_.isArray(dataList) && dataList.length) {
                     //去重取并集
                     let appDefaultConfigList = _.union(this.state.appDefaultConfigList, dataList);
@@ -242,6 +241,11 @@ const ApplyUserForm = createReactClass({
         //找到该应用对应用户类型的配置信息
         let defaultConfig = _.find(appDefaultConfigList, data => data.client_id === app.client_id && userType === data.user_type);
         app.begin_date = DateSelectorPicker.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT));
+        // 查找该应用的应用列表是否有多终端信息
+        let appTerminals = _.find(this.props.appList, data => data.client_id === app.client_id && !_.isEmpty(data.terminals));
+        if (appTerminals) {
+            app.terminals = appTerminals.terminals;
+        }
         if (defaultConfig) {
             //应用默认设置中的开通周期、到期可选项
             app.end_date = app.begin_date + defaultConfig.valid_period;
@@ -397,14 +401,22 @@ const ApplyUserForm = createReactClass({
                             number: this.state.applyFrom === 'order' || this.isApplyNewUsers() ? appFormData.number : app.num,
                             begin_date: appFormData.begin_date,
                             end_date: appFormData.end_date,
-                            over_draft: appFormData.over_draft
+                            over_draft: appFormData.over_draft,
+                            terminals: _.map(appFormData.terminals, 'id') || [],
                         };
                     });
                 } else {//分别配置
                     submitData.products.forEach(app => {
+                        let terminals = app.terminals;
+                        if ( !_.isEmpty(terminals)) {
+                            app.terminals = _.map(terminals, 'id');
+                        }
                         delete app.range;
                         delete app.onlyOneUserTip;
                     });
+                }
+                if (_.isEmpty(submitData.products.terminals)) {
+                    delete submitData.products.terminals;
                 }
                 submitData.products = JSON.stringify(submitData.products);
                 //添加申请邮件中用的应用名
@@ -589,13 +601,34 @@ const ApplyUserForm = createReactClass({
         this.setFormHeight();
     },
 
-    renderAppConfigForm: function(appFormData) {
+    // 选择多终端类型
+    onSelectTerminalChange(app, selectedApp, checkedValue) {
+        let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
+        if (appFormData) {
+            let terminals = [];
+            if (!_.isEmpty(checkedValue)) {
+                _.each(checkedValue, checked => {
+                    if (checked) {
+                        let selectedTerminals = _.find(selectedApp.terminals, item => item.code === checked);
+                        terminals.push(selectedTerminals);
+                    }
+                });
+                appFormData.terminals = terminals;
+            } else {
+                appFormData.terminals = [];
+            }
+        }
+        this.setState(this.state);
+    },
+
+    renderAppConfigForm: function(appFormData, app) {
         const timePickerConfig = {
             isCustomSetting: true,
             appId: 'applyUser'
         };
         var isOplateUser = this.state.isOplateUser;
         return (<AppConfigForm
+            selectedApp={app}
             appFormData={appFormData}
             needApplyNum={(this.state.applyFrom === 'order' || this.isApplyNewUsers()) && isOplateUser}
             timePickerConfig={timePickerConfig}
@@ -604,19 +637,10 @@ const ApplyUserForm = createReactClass({
             onOverDraftChange={this.onOverDraftChange}
             needEndTimeOnly={!isOplateUser}
             hideExpiredSelect={!isOplateUser}
-            isHideTerminals={false}
+            isShowTerminals={!_.isEmpty(app.terminals)}
             onSelectTerminalChange={this.onSelectTerminalChange}
         />);
     },
-
-    onSelectTerminalChange(app, checkedValues) {
-        let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
-        if (appFormData) {
-            appFormData.terminals = checkedValues;
-        }
-        this.setState(this.state);
-    },
-
 
     //从订单中申请用户或申请新用户时，用户名和昵称输入框的渲染
     renderUserNamesInputs: function(formData, formItemLayout) {
@@ -749,6 +773,7 @@ const ApplyUserForm = createReactClass({
         };
         let selectAppIds = _.map(this.state.apps, 'client_id');
         var isOplateUser = this.state.isOplateUser;
+
         return (
             <div
                 className="apply-user-form-wrap"
@@ -806,7 +831,10 @@ const ApplyUserForm = createReactClass({
                                     message: Intl.get('user.product.select.please','请选择产品'),
                                     type: 'array'
                                 }]}>
-                                    <Select mode="tags" value={selectAppIds} name='selectAppIds'
+                                    <Select
+                                        mode="tags"
+                                        value={selectAppIds}
+                                        name='selectAppIds'
                                         dropdownClassName="apply-user-apps-dropdown"
                                         placeholder={Intl.get('user.product.select.please','请选择产品')}
                                         onChange={this.handleChangeApps.bind(this)}>
@@ -815,12 +843,14 @@ const ApplyUserForm = createReactClass({
                                 </Validator>
                             </FormItem>
                             {_.isArray(selectAppIds) && selectAppIds.length ? (
-                                <ApplyUserAppConfig apps={this.state.apps}
+                                <ApplyUserAppConfig
+                                    apps={this.state.apps}
                                     appsFormData={formData.products}
                                     configType={this.state.configType}
                                     changeConfigType={this.changeConfigType}
                                     renderAppConfigForm={this.renderAppConfigForm.bind(this)}
-                                />) : null}
+                                />
+                            ) : null}
                             <FormItem
                                 {...formItemLayout}
                                 label={Intl.get('common.remark', '备注')}
@@ -844,8 +874,26 @@ const ApplyUserForm = createReactClass({
             let selectApp = _.find(this.props.appList, app => app.client_id === appId);
             if (selectApp) {
                 apps.push(selectApp);
+
             }
         });
+        // 若所选应用包括多终端类型，则直接显示分别配置界面
+        if (appIds.length > 1) {
+            if (_.find(apps, item => !_.isEmpty(item.terminals))) {
+                this.setState({
+                    configType: CONFIG_TYPE.SEPARATE_CONFIG
+                });
+            } else {
+                this.setState({
+                    configType: CONFIG_TYPE.UNIFIED_CONFIG
+                });
+            }
+
+        } else {
+            this.setState({
+                configType: CONFIG_TYPE.UNIFIED_CONFIG
+            });
+        }
         //获取的应用默认配置列表
         let appDefaultConfigList = this.state.appDefaultConfigList || [];
         let num = 1;//申请用户的个数
@@ -902,12 +950,19 @@ const ApplyUserForm = createReactClass({
                 if (_.isArray(selectAppIds) && selectAppIds.length && selectAppIds.indexOf(appId) !== -1) {
                     className = 'app-options-selected';
                 }
-                return (<Option className={className} key={appId} value={appId} title={app.client_name}>
-                    <SquareLogoTag
-                        name={app ? app.client_name : ''}
-                        logo={app ? app.client_logo : ''}
-                    />
-                </Option>);
+                return (
+                    <Option
+                        className={className}
+                        key={appId}
+                        value={appId}
+                        title={app.client_name}
+                    >
+                        <SquareLogoTag
+                            name={app ? app.client_name : ''}
+                            logo={app ? app.client_logo : ''}
+                        />
+                    </Option>
+                );
             });
         }
         return [];

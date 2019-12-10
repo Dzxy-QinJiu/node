@@ -1,4 +1,3 @@
-var React = require('react');
 import PropTypes from 'prop-types';
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
@@ -23,6 +22,11 @@ class AppConfigForm extends React.Component {
             labelCol: {span: 5},
             wrapperCol: {span: 19},
         };
+        let terminalsOptions = _.map(this.props.selectedApp.terminals, 'code');
+        let checkedTerminals = [];
+        if (!_.isEmpty(appFormData.terminals)) {
+            checkedTerminals = _.map(appFormData.terminals, 'code');
+        }
         return (
             <div className="app-config-content">
                 {this.props.needUserType ? (
@@ -77,19 +81,18 @@ class AppConfigForm extends React.Component {
                     </RadioGroup>
                 </FormItem>}
                 {
-                    this.props.isHideTerminals ? null : (
+                    this.props.isShowTerminals ? (
                         <FormItem
                             {...formItemLayout}
                             label={Intl.get('common.terminals.type', '终端类型')}
                         >
                             <CheckboxGroup
-                                options={['web', 'pc', 'app']}
-                                onChange={this.props.onSelectTerminalChange.bind(this, appFormData)}
-                                value={['web', 'pc', 'app']}
-                            >
-                            </CheckboxGroup>
+                                options={terminalsOptions}
+                                onChange={this.props.onSelectTerminalChange.bind(this, appFormData, this.props.selectedApp)}
+                                value={checkedTerminals}
+                            />
                         </FormItem>
-                    )
+                    ) : null
                 }
                 {this.props.needTwoFactorMultiLogin ? (
                     <FormItem
@@ -127,8 +130,9 @@ AppConfigForm.propTypes = {
     onCheckMultiLogin: PropTypes.func,//多人登录修改事件
     needEndTimeOnly: PropTypes.bool, //是否只传结束时间
     hideExpiredSelect: PropTypes.bool, //是否展示到期可选
-    isHideTerminals: PropTypes.bool, //是否隐藏终端类型
+    isShowTerminals: PropTypes.bool, //是否显示终端类型
     onSelectTerminalChange: PropTypes.func,
+    selectedApp: PropTypes.array, // 选择的应用列表
 };
 AppConfigForm.defaultProps = {
     appFormData: {
@@ -157,8 +161,9 @@ AppConfigForm.defaultProps = {
     },//二步认证修改事件
     onCheckMultiLogin: function() {
     },//多人登录修改事件
-    isHideTerminals: true, // 默认隐藏
+    isShowTerminals: false, // 默认不显示
     onSelectTerminalChange: function() {
     },// 多终端选择
+    selectedApp: [], // 默认为空
 };
 export default AppConfigForm;
