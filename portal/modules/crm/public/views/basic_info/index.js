@@ -352,7 +352,7 @@ class BasicData extends React.Component {
         return (
             <div className="basic-info-detail-block">
                 <div className="basic-info-detail-show">
-                    {checkVersionAndType().isPersonalTrial ? null : (
+                    {checkVersionAndType().personal ? null : (
                         <div className="basic-info-administrative basic-info-item">
                             <span className="basic-info-label">
                                 {Intl.get('crm.administrative.level', '行政级别')}:

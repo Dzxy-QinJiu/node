@@ -2164,8 +2164,8 @@ class Crm extends React.Component {
         if(!hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) || !(hasPrivilege(crmPrivilegeConst.CRM_LIST_CUSTOMERS) || hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL))){
             columns = _.filter(columns, column => column.title !== Intl.get('user.login.score', '分数'));
         }
-        //个人试用不展示负责人
-        if(checkVersionAndType().isPersonalTrial) {
+        //个人版不展示负责人
+        if(checkVersionAndType().personal) {
             columns = _.filter(columns, column => column.title !== Intl.get('crm.6', '负责人'));
         }
 
