@@ -6,7 +6,7 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import AlertTimer from '../../../../../components/alert-timer';
 const Option = Select.Option;
 const ID = 'user-organization';
-import USER_MANAGE_PRIVILEGE from '../../privilege-const';
+import userManagePrivilege from '../../privilege-const';
 //class的前缀
 const CLASS_PREFIX = ID;
 //布局使用的常量
@@ -181,7 +181,7 @@ class Organization extends React.Component {
             return (
                 <div className="user-basic-edit-field">
                     <span>{this.state.organization_name}</span>
-                    { hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE) ?
+                    { hasPrivilege(userManagePrivilege.USER_MANAGE) ?
                         <i className="iconfont icon-update" onClick={this.changeDisplayType.bind(this,'edit')}/>
                         : null
                     }

@@ -48,7 +48,7 @@ import ImportUser from './views/import';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 import userData from 'PUB_DIR/sources/user-data';
 import BackMainPage from 'CMP_DIR/btn-back';
-import USER_MANAGE_PRIVILEGE from './privilege-const';
+import userManagePrivilege from './privilege-const';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 
 const UPLOAD_USER_TIPS = {
@@ -407,7 +407,7 @@ class AppUserManage extends React.Component {
 
     //是否有添加用户按钮
     addUserBtnCheckun = () => {
-        return hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE) && !this.state.customer_id;
+        return hasPrivilege(userManagePrivilege.USER_MANAGE) && !this.state.customer_id;
     };
 
     //销售选择用户的提示
@@ -879,7 +879,7 @@ class AppUserManage extends React.Component {
                         <span>
                             <PrivilegeChecker
                                 onClick={this.showImportUserRightPanel}
-                                check={USER_MANAGE_PRIVILEGE.USER_MANAGE}
+                                check={userManagePrivilege.USER_MANAGE}
                                 className="inline-block  btn-item">
                                 <Button>{Intl.get('user.import.user', '导入用户')}</Button>
                             </PrivilegeChecker>
