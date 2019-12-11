@@ -141,6 +141,10 @@ const UserDetailAddApp = createReactClass({
                         originAppSetting.permissions = defaultSettings.permissions;
                     }
                 }
+                // 多终端类型，不会出现在默认配置中，是根据所选应用确定是否包含多终端类型
+                if (!_.isEmpty(currentApp.terminals)) {
+                    defaultSettings.terminals = currentApp.terminals;
+                }
                 //检查单个属性，如果没有重新设置值，用defaultSettings里的值，重新生成
                 function checkSingleProp(prop) {
                     if (!originAppSetting[prop]) {
@@ -149,7 +153,12 @@ const UserDetailAddApp = createReactClass({
                         };
                     }
                     if (!originAppSetting[prop].setted) {
-                        originAppSetting[prop].value = defaultSettings[prop];
+                        // 若是多终端属性，则用选择当前应用的多终端的值
+                        if (prop === 'terminals') {
+                            originAppSetting[prop].value = currentApp.terminals;
+                        } else {
+                            originAppSetting[prop].value = defaultSettings[prop];
+                        }
                     }
                 }
                 //检查时间,时间格式比较特殊
@@ -175,6 +184,10 @@ const UserDetailAddApp = createReactClass({
                 checkSingleProp('status');
                 //检查多人登录
                 checkSingleProp('multilogin');
+                // 检查多终端类型
+                if (!_.isEmpty(currentApp.terminals)) {
+                    checkSingleProp('terminals');
+                }
                 //检查角色、权限
                 checkRolePermission();
                 //检查时间
@@ -291,7 +304,7 @@ const UserDetailAddApp = createReactClass({
         selectedAppIds = selectedAppIds.filter(x => x !== removeAppId);
         this.setState({
             selectedAppIds,
-            //删除后只剩一个时，改成统一配置
+            //删除后只剩一个时，需要考虑所选应用，改成统一配置
             configType: selectedAppIds.length === 1 ? CONFIG_TYPE.UNIFIED_CONFIG : this.state.configType,
         }, () => {
             this.handleSetSelectedApps(this.state.selectedAppIds);
@@ -307,11 +320,29 @@ const UserDetailAddApp = createReactClass({
 
     handleFormItemEdit(field, app, appFormData, e) {
         let value = null;
-        if (e.target.type === 'checkbox') {
-            value = e.target.checked ? '1' : '0';
+        //处理多终端
+        if (field === 'terminals') {
+            let checkedValue = e;
+            let terminals = [];
+            if (!_.isEmpty(checkedValue)) {
+                _.each(checkedValue, checked => {
+                    if (checked) {
+                        let selectedTerminals = _.find(app.terminals, item => item.code === checked);
+                        terminals.push(selectedTerminals);
+                    }
+                });
+                value = terminals;
+            } else {
+                value = [];
+            }
         } else {
-            value = e.target.value;
+            if (e.target.type === 'checkbox') {
+                value = e.target.checked ? '1' : '0';
+            } else {
+                value = e.target.value;
+            }
         }
+
         if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {            
             const appPropSettingsMap = this.state.appPropSettingsMap;
             _.each(appPropSettingsMap, item => {
@@ -417,6 +448,22 @@ const UserDetailAddApp = createReactClass({
         //检验通过了，切换到下一步
         const apps = selectedAppIds.map(id => this.state.rawApps.find(x => x.app_id === id));
         UserDetailAddAppActions.setSelectedApps(apps);
+        // 若所选应用包括多终端类型，则直接显示分别配置界面
+        if (selectedAppIds.length > 1) {
+            if (_.find(apps, item => !_.isEmpty(item.terminals))) {
+                this.setState({
+                    configType: CONFIG_TYPE.SEPARATE_CONFIG
+                });
+            } else {
+                this.setState({
+                    configType: CONFIG_TYPE.UNIFIED_CONFIG
+                });
+            }
+        } else {
+            this.setState({
+                configType: CONFIG_TYPE.UNIFIED_CONFIG
+            });
+        }
         setTimeout(() => {
             this.setState({
                 appPropSettingsMap: this.createPropertySettingData(this.state)
@@ -466,6 +513,23 @@ const UserDetailAddApp = createReactClass({
         );
     },
 
+    getAppConfigSetting() {
+        return _.map(this.state.selectedApps, app => {
+            let configInfo = {
+                begin_date: moment(),
+                client_id: app.app_id,
+                end_date: moment().add(0.5, 'm'),
+                number: 1,
+                over_draft: 1,
+                range: '0.5m',
+            };
+            if (!_.isEmpty(app.terminals)) {
+                configInfo.terminals = app.terminals;
+            }
+            return configInfo;
+        });
+    },
+
     renderAppConfig() {
         return (
             <div style={{ height: this.props.height - LAYOUT_CONSTANTS.TOP_PADDING}}>
@@ -510,6 +574,7 @@ const UserDetailAddApp = createReactClass({
                                 number: 1,
                                 over_draft: 1,
                                 range: '0.5m',
+                                terminals: x.terminals
                             }))}
                             configType={this.state.configType}
                             changeConfigType={this.changeConfigType}
@@ -526,7 +591,7 @@ const UserDetailAddApp = createReactClass({
         if (!mapItem) {
             item = this.state.defaultSettings;
         }
-        return {
+        let appConfig = {
             ...item.time,
             user_type: item.user_type.value,
             over_draft: item.over_draft.value,
@@ -535,6 +600,31 @@ const UserDetailAddApp = createReactClass({
             //多人登录
             multilogin: item.multilogin.value,
         };
+        if (!_.isEmpty(item.terminals)) {
+            // 应用的多终端
+            appConfig.terminals = item.terminals.value;
+        }
+        return appConfig;
+    },
+
+    // 选择多终端类型
+    onSelectTerminalChange(app, selectedApp, checkedValue) {
+        let appFormData = _.find(this.state.formData, item => item.client_id === app.client_id);
+        if (appFormData) {
+            let terminals = [];
+            if (!_.isEmpty(checkedValue)) {
+                _.each(checkedValue, checked => {
+                    if (checked) {
+                        let selectedTerminals = _.find(selectedApp.terminals, item => item.code === checked);
+                        terminals.push(selectedTerminals);
+                    }
+                });
+                appFormData.terminals = terminals;
+            } else {
+                appFormData.terminals = [];
+            }
+        }
+        this.setState(this.state);
     },
 
     //渲染“开通信息”步骤
@@ -557,6 +647,7 @@ const UserDetailAddApp = createReactClass({
         };
         return (
             <AppConfigForm
+                selectedApp={app}
                 appFormData={formData}
                 needApplyNum={false}
                 needUserType={true}
@@ -567,6 +658,8 @@ const UserDetailAddApp = createReactClass({
                 onCheckTwoFactor={this.handleFormItemEdit.bind(this, 'is_two_factor', app)}
                 onCheckMultiLogin={this.handleFormItemEdit.bind(this, 'multilogin', app)}
                 needTwoFactorMultiLogin={true}
+                isShowTerminals={!_.isEmpty(app.terminals)}
+                onSelectTerminalChange={this.handleFormItemEdit.bind(this, 'terminals')}
             />
         );
     },
@@ -715,6 +808,10 @@ const UserDetailAddApp = createReactClass({
             customAppSetting.is_two_factor = savedAppSetting.is_two_factor.value;
             //多人登录
             customAppSetting.mutilogin = savedAppSetting.multilogin.value;
+            // 多终端类型
+            if (savedAppSetting.terminals) {
+                customAppSetting.terminals = _.map(savedAppSetting.terminals.value, 'id');
+            }
             //正式、试用
             customAppSetting.user_type = savedAppSetting.user_type.value;
             //设置user_id

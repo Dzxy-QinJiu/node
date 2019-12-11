@@ -80,20 +80,6 @@ class AppConfigForm extends React.Component {
                             defaultMessage="不变"/></Radio>
                     </RadioGroup>
                 </FormItem>}
-                {
-                    this.props.isShowTerminals ? (
-                        <FormItem
-                            {...formItemLayout}
-                            label={Intl.get('common.terminals.type', '终端类型')}
-                        >
-                            <CheckboxGroup
-                                options={terminalsOptions}
-                                onChange={this.props.onSelectTerminalChange.bind(this, appFormData, this.props.selectedApp)}
-                                value={checkedTerminals}
-                            />
-                        </FormItem>
-                    ) : null
-                }
                 {this.props.needTwoFactorMultiLogin ? (
                     <FormItem
                         {...formItemLayout}
@@ -112,6 +98,20 @@ class AppConfigForm extends React.Component {
                             {Intl.get('user.multi.login', '多人登录')}
                         </Checkbox>
                     </FormItem>) : null}
+                {
+                    this.props.isShowTerminals ? (
+                        <FormItem
+                            {...formItemLayout}
+                            label={Intl.get('common.terminals.type', '终端类型')}
+                        >
+                            <CheckboxGroup
+                                options={terminalsOptions}
+                                onChange={this.props.onSelectTerminalChange.bind(this, this.props.selectedApp, appFormData, )}
+                                value={checkedTerminals}
+                            />
+                        </FormItem>
+                    ) : null
+                }
             </div>
         );
     }

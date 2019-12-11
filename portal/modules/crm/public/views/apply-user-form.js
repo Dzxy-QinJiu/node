@@ -602,7 +602,7 @@ const ApplyUserForm = createReactClass({
     },
 
     // 选择多终端类型
-    onSelectTerminalChange(app, selectedApp, checkedValue) {
+    onSelectTerminalChange(selectedApp, app, checkedValue) {
         let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
         if (appFormData) {
             let terminals = [];
