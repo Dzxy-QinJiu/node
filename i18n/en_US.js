@@ -1645,7 +1645,7 @@ var en_US = {
     'crm.clue.suggest.create.clue': 'Create clue', //创建线索
     'crm.suggest.select.clue.tip': 'Please choose a clue from the dropdown list',//请在下拉框中选择线索
     'crm.suggest.select.clue': 'Please choose a clue', //请选择线索
-    'crm。suggest.select.clue.first': 'Please choose a clue first',//请先选择线索
+    'crm.suggest.select.clue.first': 'Please choose a clue first',//请先选择线索
     'crm.sales.clue': 'Clue',//线索
     'crm.sales.clue.add.disable': '\'{label}\' tags cannot be added manually',//不能手动添加'{label}'标签
     'crm.clue.require.one': 'Telephone, mail, QQ and weChat required one',//电话、邮箱、QQ必填一项
@@ -3031,9 +3031,12 @@ var en_US = {
     'clue.add.wechat.num': 'Wechat',//微信号码
     'clue.alanalysis.charts': 'clue analysis',//线索分析
     'clue.detail.info': 'clue info',//线索信息
+    'clue.no.clue.source': 'Not added clue source', //未添加线索来源
     'clue.add.clue.source': 'Add clue source',//添加线索来源
+    'clue.no.access.channel': 'Not added access channel', //未添加接入渠道
     'clue.add.access.channel': 'Add access channel',//添加接入渠道
     'clue.add.clue.classfify': 'Add clue classify',//添加线索分类
+    'clue.no.clue.describe': 'Not added clue description', //未添加线索描述
     'clue.add.clue.describe': 'Add clue description',//添加线索描述
     'clue.add.clue.placeholder': 'Please fill in clue description',//请填写线索描述
     'clue.unknown.access.channel': 'unknown access channel',//未知接入渠道
@@ -3081,6 +3084,7 @@ var en_US = {
     'clue.statistic.get.error': 'Failed to get clue statistic data',//获取线索统计数据失败
     'user.email.only.error': 'Failed to verify email',//邮箱唯一性验证失败
     'clue.customer.source.ip': 'source IP',//客户ip
+    'clue.customer.no.source.ip': 'Not set source IP',//未设置来源IP
     'clue.source.province.city': 'source address',//线索归属地
     'common.assessment.index': 'Assessment index',//考核指标
     'common.call.charge': 'call charge',//话费
