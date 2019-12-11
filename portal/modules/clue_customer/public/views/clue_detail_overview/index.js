@@ -1236,7 +1236,7 @@ class ClueDetailOverview extends React.Component {
                                 field='source'
                                 type='textarea'
                                 row={3}
-                                noDataTip={Intl.get('common.unknown', '未知')}
+                                noDataTip={Intl.get('clue.no.clue.describe', '未添加线索描述')}
                                 addDataTip={Intl.get('clue.add.clue.describe', '添加线索描述')}
                                 placeholder={Intl.get('clue.add.clue.placeholder', '请填写线索描述')}
                             />
@@ -1282,7 +1282,7 @@ class ClueDetailOverview extends React.Component {
                                 displayText={curClue.clue_source}
                                 onSelectChange={this.onSelectCluesource}
                                 placeholder={Intl.get('crm.clue.source.placeholder', '请选择或输入线索来源')}
-                                noDataTip={Intl.get('common.unknown', '未知')}
+                                noDataTip={Intl.get('clue.no.clue.source', '未添加线索来源')}
                                 addDataTip={Intl.get('clue.add.clue.source', '添加线索来源')}
                             />
                         </div>
@@ -1298,7 +1298,7 @@ class ClueDetailOverview extends React.Component {
                                 saveEditInput={this.saveEditBasicInfo.bind(this, 'source_ip')}
                                 value={curClue.source_ip}
                                 field='source_ip'
-                                noDataTip={Intl.get('common.unknown', '未知')}
+                                noDataTip={Intl.get('clue.customer.no.source.ip', '未设置来源IP')}
                             />
                         </div>
                     </div>
@@ -1381,7 +1381,7 @@ class ClueDetailOverview extends React.Component {
                                 selectOptions={this.getAccessChannelOptions()}
                                 onSelectChange={this.onSelectAccessChannel}
                                 placeholder={Intl.get('crm.access.channel.placeholder', '请选择或输入接入渠道')}
-                                noDataTip={Intl.get('common.unknown', '未知')}
+                                noDataTip={Intl.get('clue.no.access.channel', '未添加接入渠道')}
                                 addDataTip={Intl.get('clue.add.access.channel', '添加接入渠道')}
                             />
                         </div>
@@ -1424,7 +1424,7 @@ class ClueDetailOverview extends React.Component {
                                                     saveEditInput={this.saveEditBasicInfo.bind(this, {editItem: 'contact_name',id: contactItem.id})}
                                                     value={contactItem.name}
                                                     field='contact_name'
-                                                    noDataTip={Intl.get('common.unknown', '未知')}
+                                                    noDataTip={Intl.get('crm.no.contact', '暂无联系人')}
                                                     addDataTip={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
                                                     placeholder={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
                                                     validators={contactNameRule()}
