@@ -75,7 +75,7 @@ exports.saveSelfSettingWorkFlowRules = function(applyId,data) {
 exports.getSelfSettingWorkFlow = function(submitObj) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/get/self_setting/work_flow/',
+        url: '/rest/get/self_setting/work_flow',
         dataType: 'json',
         type: 'get',
         data: submitObj,
