@@ -905,7 +905,10 @@ class AppUserManage extends React.Component {
                 case 'batch':
                     rightPanelView = (
                         <div className="full_size wrap_padding">
-                            <UserDetailAddApp multiple={true} initialUser={this.state.selectedUserRows}/>
+                            <UserDetailAddApp 
+                                multiple={true} 
+                                initialUser={this.state.selectedUserRows}
+                            />
                         </div>
                     );
                     break;

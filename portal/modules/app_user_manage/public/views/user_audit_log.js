@@ -647,7 +647,7 @@ class LogView extends React.Component {
     renderAppTerminalsType = () => {
         let selectAppTerminals = this.state.selectAppTerminals;
         let appTerminals = _.map(selectAppTerminals, terminalType =>
-            <Option key={terminalType.id} value={terminalType.name}> {terminalType.name} </Option>);
+            <Option key={terminalType.id} value={terminalType.code}> {terminalType.name} </Option>);
         appTerminals.unshift(<Option value="" id="">{Intl.get('common.all.terminals', '所有終端')}</Option>);
         return (
             <Select
