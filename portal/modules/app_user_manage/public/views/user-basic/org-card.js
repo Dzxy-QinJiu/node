@@ -15,7 +15,6 @@ import OrganizationAjax from 'MOD_DIR/common/public/ajax/organization';
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 const Option = Select.Option;
 const CATEGORY_TYPE = oplateConsts.CATEGORY_TYPE;
-import USER_MANAGE_PRIVILEGE from '../../privilege-const';
 
 class OrgCard extends React.Component {
     constructor(props) {

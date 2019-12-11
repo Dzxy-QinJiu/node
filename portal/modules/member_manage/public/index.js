@@ -16,7 +16,7 @@ import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
 import MemberTableList from 'MOD_DIR/member-table-list';
 import {BACKGROUG_LAYOUT_CONSTANTS, BOOT_PROCESS_KEYS} from 'PUB_DIR/sources/utils/consts';
 import {updateGuideMark, getOrganizationInfo} from 'PUB_DIR/sources/utils/common-data-util';
-import MEMBER_MANAGE_PRIVILEGE from './privilege-const';
+import memberManagePrivilege from './privilege-const';
 
 let openTimeout = null;//打开面板时的时间延迟设置
 let focusTimeout = null;//focus事件的时间延迟设置
@@ -191,7 +191,7 @@ class MemberManage extends React.Component {
         return (
             <div className='condition-operator'>
                 <div className='pull-left'>
-                    <PrivilegeChecker check={MEMBER_MANAGE_PRIVILEGE.CREATE_MEMBER} className="btn-item">
+                    <PrivilegeChecker check={memberManagePrivilege.CREATE_MEMBER} className="btn-item">
                         {title ? (
                             <Popover content={title}>
                                 <Button

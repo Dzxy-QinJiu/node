@@ -38,8 +38,8 @@ import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import classNames from 'classnames';
-import USER_MANAGE_PRIVILEGE from '../privilege-const';
-import GENERAL_PERMISSIONS from 'PUB_DIR/privilege-const';
+import userManagePrivilege from '../privilege-const';
+import publicPrivilege from 'PUB_DIR/privilege-const';
 const EDIT_PASSWORD_WIDTH = 260;
 //当前面板z-index
 let thisPanelZIndex;
@@ -308,7 +308,7 @@ class UserDetail extends React.Component {
     renderUserStatus = (user, useIcon = false) => {
         let userStatus = user && user.status;
         if(this.state.isOplateUser) {
-            let hasEditPrivilege = hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE);
+            let hasEditPrivilege = hasPrivilege(userManagePrivilege.USER_MANAGE);
             if (!hasEditPrivilege) {
                 return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
             }
@@ -408,7 +408,7 @@ class UserDetail extends React.Component {
                 </div> : null}
             </TabPane>
         ];
-        if (hasPrivilege(USER_MANAGE_PRIVILEGE.CRM_USER_ANALYSIS_ALL_ROLE_QUERY)) {
+        if (hasPrivilege(userManagePrivilege.CRM_USER_ANALYSIS_ALL_ROLE_QUERY)) {
             tabPaneList.push(
                 <TabPane tab={Intl.get('sales.user.analysis', '用户分析')} key="2">
                     {
@@ -425,7 +425,7 @@ class UserDetail extends React.Component {
                 </TabPane>
             );
         }
-        if (hasPrivilege(USER_MANAGE_PRIVILEGE.USER_AUDIT_LOG_LIST)) {
+        if (hasPrivilege(userManagePrivilege.USER_AUDIT_LOG_LIST)) {
             tabPaneList.push(
                 <TabPane tab={Intl.get('menu.appuser.auditlog', '操作记录')} key="3">
                     {this.state.activeKey === '3' ? <div className="user-log">
@@ -441,7 +441,7 @@ class UserDetail extends React.Component {
             );
         }
 
-        if (hasPrivilege(GENERAL_PERMISSIONS.MEMBER_QUERY_PERMISSION)) {
+        if (hasPrivilege(publicPrivilege.MEMBER_QUERY_PERMISSION)) {
             tabPaneList.push(
                 <TabPane tab={Intl.get('user.change.record', '变更记录')} key="4">
                     {this.state.activeKey === '4' ? <div className="user_manage_user_record">
@@ -456,7 +456,7 @@ class UserDetail extends React.Component {
             );
         }
         //异常登录isShownExceptionTab
-        if (hasPrivilege(USER_MANAGE_PRIVILEGE.USER_QUERY) && this.props.isShownExceptionTab) {
+        if (hasPrivilege(userManagePrivilege.USER_QUERY) && this.props.isShownExceptionTab) {
             tabPaneList.push(
                 <TabPane tab={Intl.get('user.login.abnormal', '异常登录')} key="5">
                     {
@@ -475,7 +475,7 @@ class UserDetail extends React.Component {
         }
         
         const EDIT_FEILD_WIDTH = 395;
-        let hasEditPrivilege = hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE) && this.state.isOplateUser;
+        let hasEditPrivilege = hasPrivilege(userManagePrivilege.USER_MANAGE) && this.state.isOplateUser;
         let rightPanelCls = classNames('apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel', {
             'notification-system-user': this.props.isNotificationOpenUserDetail
         });
@@ -559,7 +559,7 @@ class UserDetail extends React.Component {
                                                                         field="nick_name"
                                                                         editBtnTip={Intl.get('user.nickname.set.tip', '设置昵称')}
                                                                         placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
-                                                                        hasEditPrivilege={hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE)}
+                                                                        hasEditPrivilege={hasPrivilege(userManagePrivilege.USER_MANAGE)}
                                                                         saveEditInput={this.handleUserInfoEdit}
                                                                         noDataTip={Intl.get('user.nickname.no.tip', '暂无昵称')}
                                                                         addDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}
@@ -576,7 +576,7 @@ class UserDetail extends React.Component {
                                                                         textCut={true}
                                                                         editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
                                                                         placeholder={Intl.get('user.input.remark', '请输入备注')}
-                                                                        hasEditPrivilege={hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE)}
+                                                                        hasEditPrivilege={hasPrivilege(userManagePrivilege.USER_MANAGE)}
                                                                         saveEditInput={this.handleUserInfoEdit}
                                                                         noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
                                                                         addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}

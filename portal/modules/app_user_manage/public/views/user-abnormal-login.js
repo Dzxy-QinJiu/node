@@ -21,7 +21,7 @@ import UserAbnormalLoginAjax from '../ajax/user-abnormal-login-ajax';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import ShearContent from '../../../../components/shear-content';
-import USER_MANAGE_PRIVILEGE from '../privilege-const';
+import userManagePrivilege from '../privilege-const';
 var Option = Select.Option;
 // 没有消息的提醒
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
@@ -215,7 +215,7 @@ class UserAbnormalLogin extends React.Component {
                 <dd>
                     {title}
                     {
-                        hasPrivilege(USER_MANAGE_PRIVILEGE.USER_QUERY) && item.type === 'illegalLocation' ?
+                        hasPrivilege(userManagePrivilege.USER_QUERY) && item.type === 'illegalLocation' ?
                             <span className="title-btn" onClick={this.handleIgnoreAbnormal.bind(this, item)}>
                                 {Intl.get('user.login.abnormal.ignore', '忽略')}
                             </span> : null
