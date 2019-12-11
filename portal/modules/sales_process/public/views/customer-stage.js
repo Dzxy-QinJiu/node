@@ -21,7 +21,7 @@ import Spinner from 'CMP_DIR/spinner';
 import CustomerStageInfo from './customer-stage-info';
 import {nameRule} from 'PUB_DIR/sources/utils/validate-util';
 import { CUSTOMER_STAGE_COLOR } from 'PUB_DIR/sources/utils/consts';
-import CUSTOMER_STAGE_PRIVILEGE from '../privilege-const';
+import customerStagePrivilege from '../privilege-const';
 
 class CustomerStage extends React.Component {
     constructor(props) {
@@ -355,7 +355,7 @@ class CustomerStage extends React.Component {
             <div className='condition-operator'>
                 <div className="customer-stage-operator">
                     <PrivilegeChecker
-                        check={CUSTOMER_STAGE_PRIVILEGE.CREATE_SPECIFIC_STAGE}
+                        check={customerStagePrivilege.CREATE_SPECIFIC_STAGE}
                         className="add-customer-stage-btn"
                     >
                         {title ? (
@@ -405,7 +405,7 @@ class CustomerStage extends React.Component {
                                     </div>
                                 </div>) : (
                                     <PrivilegeChecker
-                                        check={CUSTOMER_STAGE_PRIVILEGE.UPDATE_SPECIFIC_STAGE}
+                                        check={customerStagePrivilege.UPDATE_SPECIFIC_STAGE}
                                     >
                                         <Button
                                             type="ghost"

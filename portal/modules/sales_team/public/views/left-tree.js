@@ -14,8 +14,8 @@ import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 import privilegeConfig_industry from 'MOD_DIR/industry/public/privilege-config';
 const TAB_HAED_HEIGHT = 40; // tabs 头部高度
-import SALES_DEPARTMENT_PRIVILEGE from '../privilege-const';
-import MEMBER_MANAGE_PRIVILEGE from 'MOD_DIR/member_manage/public/privilege-const';
+import salesDepartmentPrivilege from '../privilege-const';
+import memberManagePrivilege from 'MOD_DIR/member_manage/public/privilege-const';
 
 function noop() {
 }
@@ -116,7 +116,7 @@ class LeftTree extends React.Component {
         SalesTeamAction.selectTree(groupId);
         SalesTeamAction.setTeamMemberLoading(true);
         // 有销售目标的权限
-        if (hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL) && groupId) {
+        if (hasPrivilege(memberManagePrivilege.USER_MANAGE_ADD_SALES_GOAL) && groupId) {
             //获取销售目标
             SalesTeamAction.getSalesGoals(groupId);
         }
@@ -137,7 +137,7 @@ class LeftTree extends React.Component {
     operationElement = (item) => {
         return (
             <div className="tree-operation-btn-div" ref="operationElement">
-                <PrivilegeChecker check={SALES_DEPARTMENT_PRIVILEGE.EDIT_DEPARTMENT}>
+                <PrivilegeChecker check={salesDepartmentPrivilege.EDIT_DEPARTMENT}>
                     <div className="tree-operation-btn-div-item" onClick={this.editGroup.bind(this, item)}>
                         <span className="icon-operation iconfont icon-update">
                         </span>
@@ -145,7 +145,7 @@ class LeftTree extends React.Component {
                             defaultMessage="修改"/></span>
                     </div>
                 </PrivilegeChecker>
-                <PrivilegeChecker check={SALES_DEPARTMENT_PRIVILEGE.DELETE_DEPARTMENT}>
+                <PrivilegeChecker check={salesDepartmentPrivilege.DELETE_DEPARTMENT}>
                     <div className="tree-operation-btn-div-item" onClick={this.deleteGroup.bind(this, item)}>
                         <span className="icon-operation iconfont icon-delete handle-btn-item">
                         </span>
@@ -162,7 +162,7 @@ class LeftTree extends React.Component {
     renderOperateChildTeam = (item, type) => {
         return (
             <div className="tree-operation-div">
-                <PrivilegeChecker check={SALES_DEPARTMENT_PRIVILEGE.CREATE_DEPARTMENT}>
+                <PrivilegeChecker check={salesDepartmentPrivilege.CREATE_DEPARTMENT}>
                     <div className="tree-operation-item-zone icon-operation tree-operation-icon"
                         onClick={this.addGroup.bind(this, item)}
                     >
@@ -172,7 +172,7 @@ class LeftTree extends React.Component {
                         </span>
                     </div>
                 </PrivilegeChecker>
-                <PrivilegeChecker check={SALES_DEPARTMENT_PRIVILEGE.EDIT_DEPARTMENT}>
+                <PrivilegeChecker check={salesDepartmentPrivilege.EDIT_DEPARTMENT}>
                     <div className="tree-operation-item-zone icon-operation tree-operation-icon"
                         onClick={this.editGroup.bind(this, item)}
                     >
@@ -184,7 +184,7 @@ class LeftTree extends React.Component {
                 </PrivilegeChecker>
                 {
                     type ? null : (
-                        <PrivilegeChecker check={SALES_DEPARTMENT_PRIVILEGE.DELETE_DEPARTMENT}>
+                        <PrivilegeChecker check={salesDepartmentPrivilege.DELETE_DEPARTMENT}>
                             <div className="tree-operation-item-zone icon-operation tree-operation-icon"
                                 onClick={this.deleteGroup.bind(this, item)}
                             >
@@ -236,7 +236,7 @@ class LeftTree extends React.Component {
     renderOperateRootDepartment = (item) => {
         return (
             <div className="tree-operation-div">
-                <PrivilegeChecker check={SALES_DEPARTMENT_PRIVILEGE.CREATE_DEPARTMENT}>
+                <PrivilegeChecker check={salesDepartmentPrivilege.CREATE_DEPARTMENT}>
                     <div
                         className="tree-operation-item-zone icon-operation tree-operation-icon"
                         onClick={this.handleAddRootDepartment}
@@ -247,7 +247,7 @@ class LeftTree extends React.Component {
                         </span>
                     </div>
                 </PrivilegeChecker>
-                <PrivilegeChecker check={SALES_DEPARTMENT_PRIVILEGE.ORGANIZATION}>
+                <PrivilegeChecker check={salesDepartmentPrivilege.ORGANIZATION}>
                     <div className="tree-operation-item-zone icon-operation tree-operation-icon"
                         onClick={this.editGroup.bind(this, item)}
                     >

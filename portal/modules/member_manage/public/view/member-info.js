@@ -30,7 +30,7 @@ import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 import MemberRecord from './member-record';
 import { storageUtil } from 'ant-utils';
 import ajax from 'ant-ajax';
-import MEMBER_MANAGE_PRIVILEGE from '../privilege-const';
+import memberManagePrivilege from '../privilege-const';
 
 const TAB_KEYS = {
     BASIC_INFO_TAB: '1',//基本信息
@@ -121,7 +121,7 @@ class MemberInfo extends React.Component {
     
     getUserData = (user) => {
         // 有销售目标的权限
-        if (hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL) && user.id) {
+        if (hasPrivilege(memberManagePrivilege.USER_MANAGE_ADD_SALES_GOAL) && user.id) {
             //跟据用户的id获取销售提成和比例
             MemberInfoAction.getSalesGoals({user_id: user.id});
         }
@@ -542,7 +542,7 @@ class MemberInfo extends React.Component {
                         value={roleId}
                         field="role"
                         selectOptions={roleSelectOptions}
-                        hasEditPrivilege={hasPrivilege(MEMBER_MANAGE_PRIVILEGE.EDIT_MEMBER)}
+                        hasEditPrivilege={hasPrivilege(memberManagePrivilege.EDIT_MEMBER)}
                         validators={[{
                             required: true,
                             message: Intl.get('member.select.role', '请选择角色'),
@@ -573,7 +573,7 @@ class MemberInfo extends React.Component {
                             onSelectChange={this.onSelectTeam}
                             cancelEditField={this.cancelEditTeam}
                             width={EDIT_FEILD_LESS_WIDTH}
-                            hasEditPrivilege={hasPrivilege(MEMBER_MANAGE_PRIVILEGE.EDIT_MEMBER)}
+                            hasEditPrivilege={hasPrivilege(memberManagePrivilege.EDIT_MEMBER)}
                             saveEditSelect={this.saveEditTeam.bind(this)}
                             noDataTip={Intl.get('contract.68', '暂无部门')}
                             addDataTip={Intl.get('organization.add.department', '添加部门')}
@@ -592,7 +592,7 @@ class MemberInfo extends React.Component {
                         onSelectChange={this.onSelectPosition}
                         cancelEditField={this.cancelEditPosition}
                         width={EDIT_FEILD_LESS_WIDTH}
-                        hasEditPrivilege={hasPrivilege(MEMBER_MANAGE_PRIVILEGE.EDIT_MEMBER)}
+                        hasEditPrivilege={hasPrivilege(memberManagePrivilege.EDIT_MEMBER)}
                         saveEditSelect={this.saveEditPosition.bind(this)}
                         noDataTip={Intl.get('member.no.position', '暂无职务')}
                         addDataTip={Intl.get('member.add.position', '添加职务')}
@@ -667,7 +667,7 @@ class MemberInfo extends React.Component {
                         placeholder={Intl.get('member.sales.goal.add', '设置销售目标')}
                         afterTextTip={Intl.get('contract.82', '元')}
                         afterValTip={Intl.get('contract.82', '元')}
-                        hasEditPrivilege={hasPrivilege(MEMBER_MANAGE_PRIVILEGE.EDIT_MEMBER)}
+                        hasEditPrivilege={hasPrivilege(memberManagePrivilege.EDIT_MEMBER)}
                         saveEditInput={this.saveSalesGole}
                         noDataTip={Intl.get('member.sales.goal.no.data', '未设置销售目标')}
                         addDataTip={Intl.get('member.sales.goal.add', '设置销售目标')}
@@ -697,7 +697,7 @@ class MemberInfo extends React.Component {
                         value={memberInfo.phone}
                         field="phone"
                         type="text"
-                        hasEditPrivilege={hasPrivilege(MEMBER_MANAGE_PRIVILEGE.EDIT_MEMBER)}
+                        hasEditPrivilege={hasPrivilege(memberManagePrivilege.EDIT_MEMBER)}
                         validators={[{validator: checkPhone}]}
                         placeholder={Intl.get('user.input.phone', '请输入手机号')}
                         saveEditInput={this.saveEditMemberInfo.bind(this, 'phone')}
@@ -714,7 +714,7 @@ class MemberInfo extends React.Component {
                         afterTextTip={`(${memberInfo.emailEnable ? Intl.get('common.actived', '已激活') : Intl.get('member.not.actived', '未激活')})`}
                         field="email"
                         type="text"
-                        hasEditPrivilege={hasPrivilege(MEMBER_MANAGE_PRIVILEGE.EDIT_MEMBER)}
+                        hasEditPrivilege={hasPrivilege(memberManagePrivilege.EDIT_MEMBER)}
                         validators={[{
                             type: 'email',
                             required: true,
@@ -734,7 +734,7 @@ class MemberInfo extends React.Component {
                         value={memberInfo.qq}
                         field="qq"
                         type="text"
-                        hasEditPrivilege={hasPrivilege(MEMBER_MANAGE_PRIVILEGE.EDIT_MEMBER)}
+                        hasEditPrivilege={hasPrivilege(memberManagePrivilege.EDIT_MEMBER)}
                         validators={[{validator: checkQQ}]}
                         placeholder={Intl.get('member.input.qq', '请输入QQ号')}
                         saveEditInput={this.saveEditMemberInfo.bind(this, 'qq')}
@@ -820,7 +820,7 @@ class MemberInfo extends React.Component {
                                 message: Intl.get('organization.tree.name.placeholder', '请输入{name}名称', {name: name}),
                             }, validatorNameRuleRegex(50, name)]}
                             placeholder={Intl.get('user.info.input.nickname', '请输入昵称')}
-                            hasEditPrivilege={hasPrivilege(MEMBER_MANAGE_PRIVILEGE.EDIT_MEMBER)}
+                            hasEditPrivilege={hasPrivilege(memberManagePrivilege.EDIT_MEMBER)}
                             saveEditInput={this.saveEditMemberInfo.bind(this, 'nick_name')}
                             noDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}
                             addDataTip={Intl.get('user.nickname.no.tip', '暂无昵称')}
@@ -829,7 +829,7 @@ class MemberInfo extends React.Component {
                 </div>
                 <div className="member-title-btns">
                     {
-                        hasPrivilege(MEMBER_MANAGE_PRIVILEGE.EDIT_MEMBER) ? (
+                        hasPrivilege(memberManagePrivilege.EDIT_MEMBER) ? (
                             <div>{this.renderMemberStatus(memberInfo)}</div>
                         ) : null
                     }
@@ -954,7 +954,7 @@ class MemberInfo extends React.Component {
             //是否是销售角色
             let isSales = _.find(roleNames, roleName => roleName && roleName.indexOf(Intl.get('sales.home.sales', '销售')) !== -1);
             // 开通营收中心并且有销售目标的权限
-            let showSalesGoalPrivilege = isSales && hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL);
+            let showSalesGoalPrivilege = isSales && hasPrivilege(memberManagePrivilege.USER_MANAGE_ADD_SALES_GOAL);
             return (
                 <div className="member-detail-basic-container" style={{height: this.getContainerHeight()}}>
                     <GeminiScrollbar>
@@ -987,7 +987,7 @@ class MemberInfo extends React.Component {
                                 className='member-contact-card-container'
                             />
                             {
-                                hasPrivilege(MEMBER_MANAGE_PRIVILEGE.EDIT_MEMBER) ? (
+                                hasPrivilege(memberManagePrivilege.EDIT_MEMBER) ? (
                                     <DetailCard
                                         className='password-card-container-wrap'
                                         content={this.renderPasswordContent(memberInfo)}
@@ -1033,7 +1033,7 @@ class MemberInfo extends React.Component {
                             : null
                     }
                 </TabPane>
-                {hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_LOG) ? (
+                {hasPrivilege(memberManagePrivilege.USER_LOG) ? (
                     <TabPane
                         tab={Intl.get('member.operation.log', '操作日志')}
                         key={TAB_KEYS.LOG_TAB}

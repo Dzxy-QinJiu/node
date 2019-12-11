@@ -18,7 +18,7 @@ import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {AntcTable} from 'antc';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import classNames from 'classnames';
-import CUSTOMER_STAGE_PRIVILEGE from './privilege-const';
+import customerStagePrivilege from './privilege-const';
 
 const saleId = CONSTS.ROLE_ID_CONSTANS.SALE_ID;
 const pageSize = 1000;
@@ -142,7 +142,7 @@ class SalesProcess extends React.Component {
         return (
             <div className='condition-operator'>
                 <div className='pull-left'>
-                    <PrivilegeChecker check={CUSTOMER_STAGE_PRIVILEGE.CREATE_CUSTOMER_STAGE}>
+                    <PrivilegeChecker check={customerStagePrivilege.CREATE_CUSTOMER_STAGE}>
                         {title ? (
                             <Popover content={title}>
                                 <Button
@@ -362,7 +362,7 @@ class SalesProcess extends React.Component {
                                             <i className="iconfont icon-role-auth-config handle-btn-item"></i>
                                         </span>
                                         {
-                                            hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.DELETE_CUSTOMER_STAGE) && item.type === 'custom' ? (
+                                            hasPrivilege(customerStagePrivilege.DELETE_CUSTOMER_STAGE) && item.type === 'custom' ? (
                                                 <span
                                                     title={Intl.get('sales.process.delete.process', '删除销售流程')}
                                                     onClick={this.handleDeleteSaleProcess.bind(this, item)}
@@ -456,7 +456,7 @@ class SalesProcess extends React.Component {
                             <i className="iconfont icon-role-auth-config"></i>
                         </span>
                         {
-                            hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.DELETE_CUSTOMER_STAGE) && type === 'custom' ? (
+                            hasPrivilege(customerStagePrivilege.DELETE_CUSTOMER_STAGE) && type === 'custom' ? (
                                 <span
                                     title={Intl.get('customer.stage.delete.stage', '删除客户阶段')}
                                     onClick={this.handleDeleteSaleProcess.bind(this, record)}
@@ -554,7 +554,7 @@ class SalesProcess extends React.Component {
                                     <span className="stage-name">{item.name}</span>
                                     <span className="stage-delete-operator">
                                         {
-                                            hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.DELETE_CUSTOMER_STAGE) && item.type === 'custom' ? (
+                                            hasPrivilege(customerStagePrivilege.DELETE_CUSTOMER_STAGE) && item.type === 'custom' ? (
                                                 item.id === this.state.deleteCustomerStageId ? (
                                                     <span className="item-delete-buttons">
                                                         <Button

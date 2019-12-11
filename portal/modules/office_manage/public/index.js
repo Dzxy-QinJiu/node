@@ -10,7 +10,7 @@ import OfficeForm from './office-form';
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
-import POSITION_PRIVILEGE from './privilege-const';
+import positionPrivilege from './privilege-const';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 
 const LAYOUT = {
@@ -349,7 +349,7 @@ class OfficeManage extends React.Component {
                 </div>
             );
         } else if (_.isArray(positionList) && length) {
-            let privilege = hasPrivilege(POSITION_PRIVILEGE.POSITION_MANAGE);
+            let privilege = hasPrivilege(positionPrivilege.POSITION_MANAGE);
             // 职务列表
             return (
                 <div className="office-content-zone">
@@ -476,7 +476,7 @@ class OfficeManage extends React.Component {
         return (
             <div className="office-container" data-tracename="职务" style={{height: height}}>
                 {
-                    hasPrivilege(POSITION_PRIVILEGE.POSITION_MANAGE) ? (
+                    hasPrivilege(positionPrivilege.POSITION_MANAGE) ? (
                         <div className="add-office-container">
                             { this.state.isShowAddPosition ? (
                                 <div className="add-office" onClick={this.addPosition}>
