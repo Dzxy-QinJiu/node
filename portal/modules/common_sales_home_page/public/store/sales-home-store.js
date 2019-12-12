@@ -522,7 +522,7 @@ SalesHomeStore.prototype.getContractExpireRemind = function(result) {
         this.contractExpireRemind.total = result.resData.total;
     }
 };
-SalesHomeStore.prototype.getNewDistributeCustomerAgain = function(customer_id){
+SalesHomeStore.prototype.updatePageNewDistributeCustomer = function(customer_id){
     const newDistributeCustomer = this.newDistributeCustomer;
     newDistributeCustomer.data.list = _.filter(newDistributeCustomer.data.list, item => item.id !== customer_id);
     this.customerContactTodayObj.data.total++;

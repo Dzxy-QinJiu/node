@@ -270,7 +270,7 @@ class CustomerRecord extends React.Component {
                 }
                 this.toggleAddRecordPanel();
                 //处理旧版首页中对新增但未分配的客户的跟进操作，页面中删除掉此次操作跟进的用户
-                SalesHomeAction.getNewDistributeCustomerAgain(queryObj.customer_id);
+                SalesHomeAction.updatePageNewDistributeCustomer(queryObj.customer_id);
             });
             // $('.add-content-input').focus();
         } else {

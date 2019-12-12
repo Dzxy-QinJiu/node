@@ -200,7 +200,7 @@ function SalesHomeActions() {
     };
 
     //在客户panel中点击了添加跟进，此时需要将页面中跟进的客户删除，并且今日已跟进客户+1
-    this.getNewDistributeCustomerAgain = function (customer_id) {
+    this.updatePageNewDistributeCustomer = function (customer_id) {
         this.dispatch(customer_id);
     };
 }
