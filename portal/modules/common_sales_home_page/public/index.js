@@ -175,7 +175,7 @@ class SalesHomePage extends React.Component {
                 currentId: customer_id,
                 curCustomer: this.state.curCustomer,
                 ShowCustomerUserListPanel: this.ShowCustomerUserListPanel.bind(this),
-                hideRightPanel: this.closeRightCustomerPanel
+                hideRightPanel: this.closeRightCustomerPanel,
             }
         });
     };
