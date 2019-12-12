@@ -2609,7 +2609,9 @@ var zh_CN = {
     'errorcode.login.failed': '登录失败',
     'errorcode.166': '该手机号已被使用，不能绑定到当前账号',
     'errorcode.167': '该手机号已被绑定到其他账号，请先登录原账号解绑',
-
+    'errorcode.168': '该查询条件下的线索已提取完毕，请修改查询条件再查看',
+    'errorcode.169': '该线索已被其他同事提取',
+    'errorcode.170': '您选择的线索都已经被其他同事提取',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',
