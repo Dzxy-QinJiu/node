@@ -863,7 +863,7 @@ class ClueCustomer extends React.Component {
         }
         var queryRangeParam = _.cloneDeep(rangeParams);
         if (filterStoreData.notConnectedClues){
-            queryRangeParam = [{name: 'no_answer_times', from: 1}];
+            queryRangeParam.push({name: 'no_answer_times', from: 1});
         }
         //查询线索列表的请求参数
         return {
