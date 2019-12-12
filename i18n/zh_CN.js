@@ -304,6 +304,7 @@ var zh_CN = {
     'common.all.terminals': '所有终端',
     'common.terminals': '终端',
     //公共部分--end
+    
     'login.login': '登录',
     'login.register': '注册',
     'login.service.error': '很抱歉,服务器出现了异常状况',

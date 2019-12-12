@@ -606,7 +606,7 @@ const UserDetailAddApp = createReactClass({
         }
         return appConfig;
     },
-    
+
     //渲染“开通信息”步骤
     renderAppConfigForm(appFormData, app) {
         let formData = this.state.formData;
