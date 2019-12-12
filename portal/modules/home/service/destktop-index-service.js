@@ -55,8 +55,6 @@ exports.getUserInfo = function(req, res, userId) {
     let getUserBasicInfo = getDataPromise(req, res, userInfoRestApis.getUserInfo, {userId: userId}, queryObj);
     //获取登录用户的角色信息
     let getUserRole = getDataPromise(req, res, userInfoRestApis.getMemberRoles);
-    //获取登录用户已经配置过的流程
-    let getUserWorkflowConfigs = getDataPromise(req, res, userInfoRestApis.getUserWorkFlowConfigs,'',{page_size: 1000});
     //获取登录用户的引导流程
     let getUserGuideCOnfigs = getDataPromise(req, res, userInfoRestApis.getGuideConfig);
     let promiseList = [getUserBasicInfo, getUserRole, getUserGuideCOnfigs];
@@ -69,10 +67,11 @@ exports.getUserInfo = function(req, res, userId) {
     if (!hasGetAllTeamPrivilege) {
         promiseList.push(getDataPromise(req, res, userInfoRestApis.getMyTeamWithSubteams));
         if(hasWorkFlowPrivilege){
-            promiseList.push(getUserWorkflowConfigs);
+            //获取登录用户已经配置过的流程
+            promiseList.push(getDataPromise(req, res, userInfoRestApis.getUserWorkFlowConfigs,'',{page_size: 1000}));
         }
     }else if(hasWorkFlowPrivilege){
-        promiseList.push(getUserWorkflowConfigs);
+        promiseList.push(getDataPromise(req, res, userInfoRestApis.getUserWorkFlowConfigs,'',{page_size: 1000}));
     }
 
     Promise.all(promiseList).then(resultList => {
