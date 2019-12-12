@@ -203,7 +203,7 @@ class SingleUserLog extends React.Component {
     onSelectTerminalsUserType = (value) => {
         SingleUserLogAction.resetLogState();
         SingleUserLogAction.setAppTerminalsType(value);
-        this.getSingleUserAuditLogList({appTerminalType: value});
+        this.getSingleUserAuditLogList({appTerminalType: value, page: 1});
     };
 
     // 渲染多终端类型
@@ -211,11 +211,11 @@ class SingleUserLog extends React.Component {
         let selectAppTerminals = this.state.selectAppTerminals;
         // TODO 由于现在后端返回的数据是code,没有返回name, 暂时使用code 展示，需要修改
         let appTerminals = _.map(selectAppTerminals, terminalType =>
-            <Option key={terminalType.id} value={terminalType.name}> {terminalType.name} </Option>);
+            <Option key={terminalType.id} value={terminalType.code}> {terminalType.name} </Option>);
         appTerminals.unshift(<Option value="" id="">{Intl.get('common.all.terminals', '所有終端')}</Option>);
         return (
             <SelectFullWidth
-                className="select-app-terminal-type btn-item"
+                className="select-app-terminal-type"
                 value={this.state.appTerminalType}
                 onChange={this.onSelectTerminalsUserType}
             >

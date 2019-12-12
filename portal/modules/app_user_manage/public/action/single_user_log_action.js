@@ -48,7 +48,7 @@ function SingleUserLogAction() {
             if (searchObj.search) {
                 getLogParam.search = searchObj.search;
             }
-
+            
             if (selectedAppId) { // 已选中应用
                 getLogParam.appid = selectedAppId;
                 // dispatch是为了能拿到应用列表，用来展示多终端类型

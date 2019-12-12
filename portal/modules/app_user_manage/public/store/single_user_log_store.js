@@ -17,6 +17,7 @@ SingleUserLogStore.prototype.logInitialState = function() {
     this.auditLogList = [];
     this.logListLoading = 'loading';
     this.listenScrollBottom = true;
+    this.appTerminalType = ''; // 应用终端类型，默认全部
     // 获取单个用户日志失败的错误提示
     this.getUserLogErrorMsg = '';
 };
@@ -27,7 +28,6 @@ SingleUserLogStore.prototype.resetState = function() {
     this.selectedLogAppId = '';
     // 选择产品对应的终端类型
     this.selectAppTerminals = [];
-    this.appTerminalType = ''; // 应用终端类型，默认全部
     this.searchName = '';
     this.defaultRange = 'week';
     // 默认显示审计日志（对应的是过滤掉心跳服务和角色权限），this.typeFilter = ''显示全部日志
@@ -62,7 +62,6 @@ SingleUserLogStore.prototype.changUserIdKeepSearch = function() {
     this.userOwnAppArray = [];
     this.selectedLogAppId = '';
     this.logInitialState();
-
 };
 
 // 获取单个用户审计日志的信息
@@ -96,9 +95,7 @@ SingleUserLogStore.prototype.getSingleUserAppList = function(obj) {
                 this.selectAppTerminals = matchSelectApp.terminals || [];
             }
         }
-
     }
-
 };
 
 SingleUserLogStore.prototype.setSelectedAppId = function(appId){
