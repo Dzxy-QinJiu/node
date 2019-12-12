@@ -33,7 +33,8 @@ class RecommendCustomerCondition extends React.Component {
         var checkConditionItem = ['name','startTime','endTime','entTypes','staffnumMax','staffnumMin','capitalMin','capitalMax'];
         var hasOtherCondition = false;
         hasOtherCondition = _.some(checkConditionItem, key => {
-            if(!_.isEmpty(hasSavedRecommendParams[key]) ){
+            //针对checkConditionItem中的不同的key，hasSavedRecommendParams[key]会有不同的类型，可能是数组，也可能是字符串（空字符串需要return false），也可能是数字（数字是0 需要return false）
+            if(hasSavedRecommendParams[key] || _.get(hasSavedRecommendParams[key],'[0]')) {
                 return true;
             }
         });
