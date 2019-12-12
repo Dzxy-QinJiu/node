@@ -229,6 +229,7 @@ class RecommendCustomerRightPanel extends React.Component {
             success: (data) => {
                 this.setState({
                     singleExtractLoading: false,
+                    canClickExtract: true
                 });
                 if (data){
                     var leadId = _.get(reqData,'companyIds[0]');
@@ -251,6 +252,7 @@ class RecommendCustomerRightPanel extends React.Component {
             error: (errorInfo) => {
                 this.setState({
                     singleExtractLoading: false,
+                    canClickExtract: true
                 });
                 message.error(errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败'));
             }
@@ -333,7 +335,8 @@ class RecommendCustomerRightPanel extends React.Component {
                     if (_.isNumber(count) && (this.isTrialAccount() || this.isOfficalAccount()) && count >= this.state.maxLimitExtractNumber){
                         this.setState({
                             tablePopoverVisible: record.id,
-                            singleExtractLoading: false
+                            singleExtractLoading: false,
+                            canClickExtract: true
                         });
                     }else{
                         this.extractRecommendCluesSingele(record);
@@ -644,7 +647,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中全部线索');
             },
             getCheckboxProps: record => ({
-                disabled: record.hasExtracted || _.has(this.state.disabledCheckedClues,item => item.id === record.id || record.hasExtractedByOther), // 有hasExtracted属性是已经成功提取了的,有hasExtractedByOther属性是已经被别人提取了的
+                disabled: record.hasExtracted || _.has(this.state.disabledCheckedClues,item => item.id === record.id) || record.hasExtractedByOther, // 有hasExtracted属性是已经成功提取了的,有hasExtractedByOther属性是已经被别人提取了的
             }),
         };
         return rowSelection;
