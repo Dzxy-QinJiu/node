@@ -44,7 +44,8 @@ function ClueCustomerActions() {
         'updateRecommendClueLists',
         'updateClueTabNum',
         'updateClueItemAfterAssign',
-        'setPageNum'
+        'setPageNum',
+        'remarkLeadExtractedByOther'//给被别人提取过的线索加一个标识
     );
     //获取销售列表
     this.getSalesManList = function(cb) {

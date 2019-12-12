@@ -2609,7 +2609,9 @@ var zh_CN = {
     'errorcode.login.failed': '登录失败',
     'errorcode.166': '该手机号已被使用，不能绑定到当前账号',
     'errorcode.167': '该手机号已被绑定到其他账号，请先登录原账号解绑',
-
+    'errorcode.168': '该查询条件下的线索已提取完毕，请修改查询条件再查看',
+    'errorcode.169': '该线索已被其他同事提取',
+    'errorcode.170': '您选择的线索都已经被其他同事提取',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',
@@ -3104,6 +3106,7 @@ var zh_CN = {
     'clue.statistic.get.error': '获取线索统计数据失败',
     'user.email.only.error': '邮箱唯一性验证失败',
     'clue.customer.source.ip': '来源IP',
+    'clue.customer.no.source.ip': '未设置来源IP',
     'clue.source.province.city': '线索归属地',
     'common.assessment.index': '考核指标',
     'common.call.charge': '话费',
@@ -3706,6 +3709,7 @@ var zh_CN = {
     'user.score.total.hours': '总小时数',
     'user.score.total.days': '总天数',
     'user.score.choose.interval': '请选择周期',
+    'apply.approve.user.select': '用户选择',
     // 引导流程
     'guide.add.customer.title': '添加您的客户',
     'guide.add.customer.des': '添加客户后，可以轻松跟进您的客户',

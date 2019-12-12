@@ -1645,7 +1645,7 @@ var en_US = {
     'crm.clue.suggest.create.clue': 'Create clue', //创建线索
     'crm.suggest.select.clue.tip': 'Please choose a clue from the dropdown list',//请在下拉框中选择线索
     'crm.suggest.select.clue': 'Please choose a clue', //请选择线索
-    'crm。suggest.select.clue.first': 'Please choose a clue first',//请先选择线索
+    'crm.suggest.select.clue.first': 'Please choose a clue first',//请先选择线索
     'crm.sales.clue': 'Clue',//线索
     'crm.sales.clue.add.disable': '\'{label}\' tags cannot be added manually',//不能手动添加'{label}'标签
     'crm.clue.require.one': 'Telephone, mail, QQ and weChat required one',//电话、邮箱、QQ必填一项
@@ -2571,7 +2571,9 @@ var en_US = {
     'errorcode.login.failed': 'Login failed',//登录失败
     'errorcode.166': 'The number has been used, you can not be bound to the current account', // 该手机号已被使用，不能绑定到当前账号
     'errorcode.167': 'The number has been bound to the other account, please login first original account unbundling', // 该手机号已被绑定到其他账号，请先登录原账号解绑
-
+    'errorcode.168': 'The leads under this query condition have been extracted, please modify the query conditions and check again',//该查询条件下的线索已提取完毕，请修改查询条件再查看
+    'errorcode.169': 'The company information has been extracted',//该线索已被其他同事提取
+    'errorcode.170': 'The leads you selected have already been picked up by others',//您选择的线索都已经被其他同事提取
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
     'user.user.info': 'information',//开通信息
@@ -3081,6 +3083,7 @@ var en_US = {
     'clue.statistic.get.error': 'Failed to get clue statistic data',//获取线索统计数据失败
     'user.email.only.error': 'Failed to verify email',//邮箱唯一性验证失败
     'clue.customer.source.ip': 'source IP',//客户ip
+    'clue.customer.no.source.ip': 'Not set source IP',//未设置来源IP
     'clue.source.province.city': 'source address',//线索归属地
     'common.assessment.index': 'Assessment index',//考核指标
     'common.call.charge': 'call charge',//话费
@@ -3670,6 +3673,7 @@ var en_US = {
     'user.score.total.hours': 'Total hours',//总小时数
     'user.score.total.days': 'Total number of days',//总天数
     'user.score.choose.interval': 'Please select the period',//请选择周期
+    'apply.approve.user.select': 'User select',//用户选择
     // 引导流程
     'guide.add.customer.title': 'Add your customer',//添加您的客户
     'guide.add.customer.des': 'After adding customers, you can easily follow up with your customers',//添加客户后，可以轻松跟进您的客户
