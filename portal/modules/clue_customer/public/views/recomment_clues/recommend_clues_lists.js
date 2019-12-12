@@ -226,9 +226,9 @@ class RecommendCustomerRightPanel extends React.Component {
                 });
                 if (data){
                     var leadId = _.get(reqData,'companyIds[0]');
-                    if (this['changesales' + leadId]) {
+                    if (this['changeSales' + leadId]) {
                         //隐藏批量变更销售面板
-                        this['changesales' + leadId].handleCancel();
+                        this['changeSales' + leadId].handleCancel();
                     }
                     // 更新引导流程
                     this.upDateGuideMark();
@@ -348,7 +348,7 @@ class RecommendCustomerRightPanel extends React.Component {
             return (
                 <AntcDropdown
                     isDropdownAble={record.hasExtracted}
-                    ref={assignSale => this['changesales' + record.id] = assignSale}
+                    ref={assignSale => this['changeSales' + record.id] = assignSale}
                     content={
                         <span
                             data-tracename="点击提取按钮"
@@ -708,9 +708,9 @@ class RecommendCustomerRightPanel extends React.Component {
                     batchExtractLoading: false,
                     canClickExtract: true
                 });
-                if (this.refs.changesales) {
+                if (this.refs.changeSales) {
                     //隐藏批量变更销售面板
-                    this.refs.changesales.handleCancel();
+                    this.refs.changeSales.handleCancel();
                 }
                 var taskId = _.get(data, 'batch_label','');
                 if (taskId){
@@ -725,7 +725,7 @@ class RecommendCustomerRightPanel extends React.Component {
                         urlPath: '/leads'
                     });
                     //总的被选中的线索数量
-                    var totalSelectedSize = _.get(this,'state.selectedRecommendClues.length',0);
+                    var totalSelectedSize = _.get(this.state,'selectedRecommendClues.length',0);
                     //已经被其他同事提取的线索
                     var hasExtractedLeadIds = _.get(data,'picked',[]);
                     var hasExtractedLeadCount = hasExtractedLeadIds.length;
@@ -801,7 +801,7 @@ class RecommendCustomerRightPanel extends React.Component {
         } else { // 管理员或是销售领导批量提取线索
             return (
                 <AntcDropdown
-                    ref='changesales'
+                    ref='changeSales'
                     content={
                         <Button
                             title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}

@@ -250,9 +250,9 @@ ClueCustomerStore.prototype.updateRecommendClueLists = function(extractClues) {
     }
 };
 //给已经被其他人提取的线索加一个标识
-ClueCustomerStore.prototype.remarkLeadExtractedByOther = function(extractCluesByOther) {
+ClueCustomerStore.prototype.remarkLeadExtractedByOther = function(extractCluesByOtherLeadId) {
     //需要给已经被别人过的加上一个类名，界面相应的加上对应的不能处理的样式
-    var targetObj = _.find(this.recommendClueLists, item => item.id === extractCluesByOther);
+    var targetObj = _.find(this.recommendClueLists, item => item.id === extractCluesByOtherLeadId);
     if(targetObj){
         targetObj.hasExtractedByOther = true;
     }
