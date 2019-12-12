@@ -1,7 +1,6 @@
 /**
  * Created by wangliping on 2016/3/30.
  */
-var React = require('react');
 require('./index.less');
 
 var classNames = require('classnames');
@@ -82,7 +81,11 @@ exports.getPassStrenth = function(value) {
 
 };
 
+PassStrengthBar.propTypes = {
+    passStrength: PropTypes.string,
+};
+
 exports.PassStrengthBar = PassStrengthBar;
 //6到18位字母、数字、符号组成的密码验证规则
-exports.passwordRegex = /^([a-z]|[A-Z]|[0-9]|[! @#$%^&*-_]){6,18}$/;
+exports.passwordRegex = /^([a-z]|[A-Z]|[0-9]|[`~! @#$%^&*()-_+={}\[\]|\\:;'"<>,.?/]){6,18}$/;
 
