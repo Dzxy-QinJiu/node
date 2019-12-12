@@ -268,6 +268,8 @@ class CustomerRecord extends React.Component {
                     myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
                 }
                 this.toggleAddRecordPanel();
+                //处理旧版首页中对新增但未分配的客户的跟进操作，页面中删除掉此次操作跟进的用户
+                _.isFunction(this.props.getNewDistributeCustomer) && this.props.getNewDistributeCustomer(queryObj.customer_id);
             });
             // $('.add-content-input').focus();
         } else {
@@ -1061,6 +1063,7 @@ CustomerRecord.propTypes = {
     changeActiveKey: PropTypes.func,
     disableEdit: PropTypes.bool,
     hideContactWay: PropTypes.bool,
+    getNewDistributeCustomer: PropTypes.func,
 };
 module.exports = CustomerRecord;
 
