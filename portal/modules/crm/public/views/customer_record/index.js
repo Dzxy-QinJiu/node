@@ -3,6 +3,7 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/5/11.
  */
+const SalesHomeAction = require('MOD_DIR/common_sales_home_page/public/action/sales-home-actions');
 var React = require('react');
 var language = require('../../../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
@@ -269,7 +270,7 @@ class CustomerRecord extends React.Component {
                 }
                 this.toggleAddRecordPanel();
                 //处理旧版首页中对新增但未分配的客户的跟进操作，页面中删除掉此次操作跟进的用户
-                _.isFunction(this.props.getNewDistributeCustomer) && this.props.getNewDistributeCustomer(queryObj.customer_id);
+                SalesHomeAction.getNewDistributeCustomerAgain(queryObj.customer_id);
             });
             // $('.add-content-input').focus();
         } else {
@@ -1063,7 +1064,6 @@ CustomerRecord.propTypes = {
     changeActiveKey: PropTypes.func,
     disableEdit: PropTypes.bool,
     hideContactWay: PropTypes.bool,
-    getNewDistributeCustomer: PropTypes.func,
 };
 module.exports = CustomerRecord;
 

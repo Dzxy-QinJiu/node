@@ -176,7 +176,6 @@ class SalesHomePage extends React.Component {
                 curCustomer: this.state.curCustomer,
                 ShowCustomerUserListPanel: this.ShowCustomerUserListPanel.bind(this),
                 hideRightPanel: this.closeRightCustomerPanel,
-                getNewDistributeCustomer: this.getNewDistributeCustomer
             }
         });
     };
@@ -311,21 +310,10 @@ class SalesHomePage extends React.Component {
         }];
     };
     //获取新分配但未联系的客户
-    getNewDistributeCustomer = (customer_id) => {
+    getNewDistributeCustomer = () => {
         //客户被分配后是否已联系 allot_no_contact  未联系 : "0" ，已联系 :"1"
         //获取新分配的客户
-        if(customer_id){ //若传id值，说明是在客户panel中点击了添加跟进，此时需要将页面中跟进的客户删除，并且今日已跟进客户+1
-            const newDistributeCustomer = this.state.newDistributeCustomer;
-            newDistributeCustomer.data.list =  _.filter(newDistributeCustomer.data.list, item => item.id !== customer_id);
-            const newCustomerContactTodayObj = this.state.customerContactTodayObj;
-            newCustomerContactTodayObj.data.total++;
-            this.setState({
-                newDistributeCustomer: newDistributeCustomer,
-                customerContactTodayObj: newCustomerContactTodayObj
-            });
-        }else{ //第一次请求页面
-            SalesHomeAction.getNewDistributeCustomer({allot_no_contact: '0'}, this.getCrmDistributeRangParams(), this.state.page_size, _.get(this.state, 'newDistributeCustomer.curPage', 1), this.state.sorterDistribute);
-        }
+        SalesHomeAction.getNewDistributeCustomer({allot_no_contact: '0'}, this.getCrmDistributeRangParams(), this.state.page_size, _.get(this.state, 'newDistributeCustomer.curPage', 1), this.state.sorterDistribute);
     };
     getTodayStartAndEndTime = () => {
         return {

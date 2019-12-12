@@ -453,7 +453,6 @@ class BasicOverview extends React.Component {
             disableEdit={this.props.disableEdit || this.props.isMerge}
             hideContactWay={this.props.hideContactWay}
             updateCustomerLastContact={this.props.updateCustomerLastContact}
-            getNewDistributeCustomer={this.props.getNewDistributeCustomer}
         />;
     };
 
@@ -642,7 +641,6 @@ BasicOverview.propTypes = {
     hideContactWay: PropTypes.bool,
     updateCustomerLastContact: PropTypes.func,
     showUserDetail: PropTypes.func,
-    getNewDistributeCustomer: PropTypes.func,
 };
 module.exports = BasicOverview;
 
