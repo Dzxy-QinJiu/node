@@ -151,6 +151,17 @@ class UserDetailAddAppStore {
                             delete appInfo.end_date;
                             delete appInfo.client_id;
                             delete appInfo.rolesInfo;
+                            // 选择的多终端类型
+                            if (!_.isEmpty(appInfo.terminals)) {
+                                let terminals = [];
+                                _.each(appInfo.terminals, checked => {
+                                    let selectedTerminals = _.find(app.terminals, item => item.id === checked);
+                                    if (selectedTerminals) {
+                                        terminals.push(selectedTerminals);
+                                    }
+                                });
+                                appInfo.terminals = terminals;
+                            }
                         }
                     });
                 });

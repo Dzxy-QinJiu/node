@@ -300,7 +300,9 @@ var zh_CN = {
     'common.no.data.tips': '暂无{name}',
     'common.call.owe.tips': '您的电话号码已欠费，请充值后再试！',
     'common.number.validate.tips': '请填写最多两位小数的数字',
-
+    'common.terminals.type': '终端类型',
+    'common.all.terminals': '所有终端',
+    'common.terminals': '终端',
     //公共部分--end
     'login.login': '登录',
     'login.register': '注册',

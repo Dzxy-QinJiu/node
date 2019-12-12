@@ -66,6 +66,8 @@ class UserDetailEditAppStore {
                 end_time: end_time,
                 range: range
             },
+            // 多终端类型
+            terminals: _.get(appInfo, 'terminals', []),
             status: 'is_disabled' in appInfo ? appInfo.is_disabled + '' : '',
             roles: _.isArray(appInfo.roles) ? appInfo.roles : [],
             permissions: _.isArray(appInfo.permissions) ? appInfo.permissions : []

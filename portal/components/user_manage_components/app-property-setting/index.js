@@ -1,8 +1,6 @@
-const PropTypes = require('prop-types');
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
-var React = require('react');
 var createReactClass = require('create-react-class');
 require('./index.less');
 var language = require('../../../public/language/getLanguage');
@@ -24,6 +22,7 @@ import UserTimeRangeField from '../user-time-rangefield';
 import UserOverDraftField from '../user-over-draftfield';
 import UserTwoFactorField from '../user-two-factorfield';
 import UserMultiLoginField from '../user-multilogin-radiofield';
+import UserAppTerminalCheckboxField from '../user-app-terminal-checkboxfield';
 import AppRolePermission from '../app-role-permission';
 
 const AppPropertySetting = createReactClass({
@@ -36,7 +35,8 @@ const AppPropertySetting = createReactClass({
         UserTwoFactorField,
         UserTypeRadioField,
         UserMultiLoginField,
-        UserStatusRadioField
+        UserStatusRadioField,
+        UserAppTerminalCheckboxField
     ],
 
     propTypes: {
@@ -150,7 +150,12 @@ const AppPropertySetting = createReactClass({
                         };
                     }
                     if(!originAppSetting[prop].setted) {
-                        originAppSetting[prop].value = defaultSettings[prop];
+                        // 若是多终端属性，则用选择当前应用的多终端的值
+                        if (prop === 'terminals') {
+                            originAppSetting[prop].value = currentApp.terminals;
+                        } else {
+                            originAppSetting[prop].value = defaultSettings[prop];
+                        }
                     }
                 }
                 //检查时间,时间格式比较特殊
@@ -184,6 +189,11 @@ const AppPropertySetting = createReactClass({
                 if(this.props.showMultiLogin) {
                     checkSingleProp('multilogin');
                 }
+                // 判断当前选择的应用，是否有多终端类型
+                if ( !_.isEmpty(currentApp.terminals)) {
+                    checkSingleProp('terminals');
+                }
+
                 //检查角色、权限
                 checkRolePermission();
                 //检查时间
@@ -354,13 +364,15 @@ const AppPropertySetting = createReactClass({
         var currentAppInfo = this.state.appPropSettingsMap[key] || {};
         var selectedRoles = currentAppInfo.roles || [];
         var selectedPermissions = currentAppInfo.permissions || [];
+        let isShowAppTerminals = !_.isEmpty(currentAppInfo.terminals);
         return (
             <div className={this.state.changeCurrentAppLoading ? 'app-property-container-content change-current-app-loading' : 'app-property-container-content'}>
                 <div className="app-property-custom-settings">
                     {//多用户的应用设置时，只需要更改角色、权限，其他选项不需要更改
                         this.props.isMultiUser ? null : (
-                            <div className="app-property-content basic-data-form app-property-other-property"
-                                style={{display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 ? 'none' : 'block'}}
+                            <div
+                                className="app-property-content basic-data-form app-property-other-property"
+                                style={{display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 && !isShowAppTerminals ? 'none' : 'block'}}
                             >
                                 {this.props.showUserNumber ? (
                                     <div className="form-item">
@@ -459,6 +471,25 @@ const AppPropertySetting = createReactClass({
                                             </div>
                                         </div>) : null
                                 }
+                                {
+                                    isShowAppTerminals ? (
+                                        <div className="form-item">
+                                            <div className="form-item-label">终端：</div>
+                                            <div className="form-item-content">
+                                                {
+                                                    this.renderUserAppTerminalCheckboxBlock({
+                                                        isCustomSetting: true,
+                                                        appId: currentApp.app_id,
+                                                        globalTerminals: defaultSettings.terminals,
+                                                        appAllTerminals: currentAppInfo.terminals.value,
+                                                        selectedApps: currentApp
+                                                    })
+                                                }
+                                            </div>
+                                        </div>
+                                    ) : null
+                                }
+
                             </div>
                         )
                     }
@@ -531,11 +562,20 @@ const AppPropertySetting = createReactClass({
                     >
                         {
                             this.props.selectedApps.map((app) => {
-                                return <TabPane tab={this.renderTabToolTip(app.app_name)} key={this.getAppSettingKey(app.app_id, app.user_id)}>
-                                    <GeminiScrollBar style={{height: height}} ref="gemini" className="app-property-content">
-                                        {this.renderTabContent(app.app_id)}
-                                    </GeminiScrollBar>
-                                </TabPane>;
+                                return (
+                                    <TabPane
+                                        tab={this.renderTabToolTip(app.app_name)}
+                                        key={this.getAppSettingKey(app.app_id, app.user_id)}
+                                    >
+                                        <GeminiScrollBar
+                                            style={{height: height}}
+                                            ref="gemini"
+                                            className="app-property-content"
+                                        >
+                                            {this.renderTabContent(app.app_id)}
+                                        </GeminiScrollBar>
+                                    </TabPane>
+                                );
                             })
                         }
                     </Tabs>

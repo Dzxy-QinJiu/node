@@ -897,13 +897,18 @@ class AppUserManage extends React.Component {
             switch (this.state.rightPanelType) {
                 case 'addOrEditUser':
                     rightPanelView = (
-                        <AddOrEditUser operation_type={this.state.appUserFormType}/>
+                        <AddOrEditUser 
+                            operation_type={this.state.appUserFormType}
+                        />
                     );
                     break;
                 case 'batch':
                     rightPanelView = (
                         <div className="full_size wrap_padding">
-                            <UserDetailAddApp multiple={true} initialUser={this.state.selectedUserRows}/>
+                            <UserDetailAddApp 
+                                multiple={true} 
+                                initialUser={this.state.selectedUserRows}
+                            />
                         </div>
                     );
                     break;
