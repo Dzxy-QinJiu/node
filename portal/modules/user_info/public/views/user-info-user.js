@@ -564,7 +564,7 @@ class UserInfo extends React.Component{
                         <span className="user-info-item-content">{formData.userName}</span>
                     </div>
                     <div className="user-info-item">
-                        <span className="user-info-item-title">
+                        <span className="user-info-item-title user-email-title">
                             {Intl.get('common.email', '邮箱')}
                             ：</span>
                         <span className="user-email-item user-info-item-content">
