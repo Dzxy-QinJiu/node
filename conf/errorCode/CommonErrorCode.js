@@ -173,6 +173,9 @@ function getConfigJson(req) {
         '90031': {'httpCode': 500, 'message': backendIntl.get('errorcode.152', '线索重复')},
         '90061': {'httpCode': 500, 'message': backendIntl.get('errorcode.162', '已达到一天的提取上限')},
         '90064': {'httpCode': 500, 'message': backendIntl.get('errorcode.165', '已达到本月的提取上限')},
+        '90065': {'httpCode': 500, 'message': backendIntl.get('errorcode.168', '该查询条件下的线索已推荐完毕，请修改查询条件再查看')},
+        '90060': {'httpCode': 500, 'message': backendIntl.get('errorcode.169', '该线索已被其他同事提取')},
+        '90066': {'httpCode': 500, 'message': backendIntl.get('errorcode.170', '您选择的线索都已经被其他同事提取')},
         '190001': {'httpCode': 500, 'message': backendIntl.get('errorcode.phone.busy', '座机繁忙，请稍后再试！')},//总机返回busy，分机忙
 
         /*************************** 角色权限 *****************************/

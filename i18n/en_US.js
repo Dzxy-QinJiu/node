@@ -2571,7 +2571,9 @@ var en_US = {
     'errorcode.login.failed': 'Login failed',//登录失败
     'errorcode.166': 'The number has been used, you can not be bound to the current account', // 该手机号已被使用，不能绑定到当前账号
     'errorcode.167': 'The number has been bound to the other account, please login first original account unbundling', // 该手机号已被绑定到其他账号，请先登录原账号解绑
-
+    'errorcode.168': 'The leads under this query condition have been extracted, please modify the query conditions and check again',//该查询条件下的线索已提取完毕，请修改查询条件再查看
+    'errorcode.169': 'The company information has been extracted',//该线索已被其他同事提取
+    'errorcode.170': 'The leads you selected have already been picked up by others',//您选择的线索都已经被其他同事提取
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
     'user.user.info': 'information',//开通信息
