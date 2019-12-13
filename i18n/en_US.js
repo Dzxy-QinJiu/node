@@ -3121,7 +3121,7 @@ var en_US = {
     'clue.list.clue.availibility': 'Invalid clue',//无效线索
     'clue.list.total.num': 'A total of {num} clues',//共{num}个线索
     'clue.search.no.found': 'There are no qualified leads, you can go to {cluepool} to see if there is any clue',//没有符合条件的线索，您可以去{cluepool}查看是否有该线索
-    'clue.edit.condition.search': 'Please change search condition',//请修改条件再查看
+    'clue.edit.condition.search': 'Please {changeCondition}',//请{changeCondition}再查看
     'clue.customer.has.clue.can.extract': 'You can extract clues from here',//您可以从这里提取线索哦
     'lead.recommend.refresh.list': 'If there is no lead that matches your needs, you can',//如果没有符合您需求的线索，您可以
     'lead.recommend.change.condition': 'Please have a try',//再试试
