@@ -63,11 +63,10 @@ class AntcDropdown extends React.Component {
     }
 
     render() {
-        var dropdownContainer = this.props.datatraceContainer || '下拉框';
         const menu = (
             <Menu onClick={this.handleMenuClick.bind(this)}>
                 <Menu.Item>
-                    <div data-tracename={dropdownContainer}>
+                    <div data-tracename={this.props.datatraceContainer}>
                         <div className="custom-dropdown-title-container dropdown-li" data-tracename="下拉选择框">
                             <div className="dropdown-title">
                                 <span>{this.props.overlayTitle}</span>
@@ -156,7 +155,7 @@ AntcDropdown.defaultProps = {
     triggerEventStr: 'click',//触发事件hover、click
     popupContainerId: '',//渲染到哪个元素上默认body上
     isDropdownAble: false,
-    datatraceContainer: '',
+    datatraceContainer: '下拉框',
 };
 AntcDropdown.propTypes = {
     showMenu: PropTypes.bool,
