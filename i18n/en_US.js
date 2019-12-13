@@ -3033,9 +3033,12 @@ var en_US = {
     'clue.add.wechat.num': 'Wechat',//微信号码
     'clue.alanalysis.charts': 'clue analysis',//线索分析
     'clue.detail.info': 'clue info',//线索信息
+    'clue.no.clue.source': 'Not added clue source', //未添加线索来源
     'clue.add.clue.source': 'Add clue source',//添加线索来源
+    'clue.no.access.channel': 'Not added access channel', //未添加接入渠道
     'clue.add.access.channel': 'Add access channel',//添加接入渠道
     'clue.add.clue.classfify': 'Add clue classify',//添加线索分类
+    'clue.no.clue.describe': 'Not added clue description', //未添加线索描述
     'clue.add.clue.describe': 'Add clue description',//添加线索描述
     'clue.add.clue.placeholder': 'Please fill in clue description',//请填写线索描述
     'clue.unknown.access.channel': 'unknown access channel',//未知接入渠道
@@ -3083,6 +3086,7 @@ var en_US = {
     'clue.statistic.get.error': 'Failed to get clue statistic data',//获取线索统计数据失败
     'user.email.only.error': 'Failed to verify email',//邮箱唯一性验证失败
     'clue.customer.source.ip': 'source IP',//客户ip
+    'clue.customer.no.source.ip': 'Not set source IP',//未设置来源IP
     'clue.source.province.city': 'source address',//线索归属地
     'common.assessment.index': 'Assessment index',//考核指标
     'common.call.charge': 'call charge',//话费
@@ -3672,6 +3676,7 @@ var en_US = {
     'user.score.total.hours': 'Total hours',//总小时数
     'user.score.total.days': 'Total number of days',//总天数
     'user.score.choose.interval': 'Please select the period',//请选择周期
+    'apply.approve.user.select': 'User select',//用户选择
     // 引导流程
     'guide.add.customer.title': 'Add your customer',//添加您的客户
     'guide.add.customer.des': 'After adding customers, you can easily follow up with your customers',//添加客户后，可以轻松跟进您的客户

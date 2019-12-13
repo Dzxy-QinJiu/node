@@ -43,7 +43,8 @@ class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedRecommendClues: [],
+            selectedRecommendClues: [],//选中状态的推荐线索
+            disabledCheckedClues: [],//禁用状态的线索,用于记录提取之前selected中的线索数量
             singleExtractLoading: false, // 单个提取的loading
             batchExtractLoading: false,
             closeFocusCustomer: false,
@@ -159,17 +160,22 @@ class RecommendCustomerRightPanel extends React.Component {
             this.getRecommendClueLists();
         }
         this.setState({
-            selectedRecommendClues: []
+            selectedRecommendClues: [],
+            disabledCheckedClues: []
         });
     };
     updateRecommendClueLists = (updateClueId) => {
         this.updateSelectedClueLists(updateClueId);
+        var disabledCheckedClues = this.state.disabledCheckedClues;
+        this.setState({
+            disabledCheckedClues: _.filter(disabledCheckedClues,item => item.id !== updateClueId)
+        });
         clueCustomerAction.updateRecommendClueLists(updateClueId);
     };
     updateSelectedClueLists = (updateClueId) => {
         var selectedRecommendClues = this.state.selectedRecommendClues;
         this.setState({
-            selectedRecommendClues: _.filter(selectedRecommendClues,item => item.id !== updateClueId)
+            selectedRecommendClues: _.filter(selectedRecommendClues,item => item.id !== updateClueId),
         });
     };
     remarkLeadExtractedByOther = (remarkLeadId) => {
@@ -223,6 +229,7 @@ class RecommendCustomerRightPanel extends React.Component {
             success: (data) => {
                 this.setState({
                     singleExtractLoading: false,
+                    canClickExtract: true
                 });
                 if (data){
                     var leadId = _.get(reqData,'companyIds[0]');
@@ -245,6 +252,7 @@ class RecommendCustomerRightPanel extends React.Component {
             error: (errorInfo) => {
                 this.setState({
                     singleExtractLoading: false,
+                    canClickExtract: true
                 });
                 message.error(errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败'));
             }
@@ -327,7 +335,8 @@ class RecommendCustomerRightPanel extends React.Component {
                     if (_.isNumber(count) && (this.isTrialAccount() || this.isOfficalAccount()) && count >= this.state.maxLimitExtractNumber){
                         this.setState({
                             tablePopoverVisible: record.id,
-                            singleExtractLoading: false
+                            singleExtractLoading: false,
+                            canClickExtract: true
                         });
                     }else{
                         this.extractRecommendCluesSingele(record);
@@ -348,6 +357,7 @@ class RecommendCustomerRightPanel extends React.Component {
             return (
                 <AntcDropdown
                     isDropdownAble={record.hasExtracted}
+                    datatraceContainer='线索推荐页面单个提取'
                     ref={assignSale => this['changeSales' + record.id] = assignSale}
                     content={
                         <span
@@ -547,6 +557,14 @@ class RecommendCustomerRightPanel extends React.Component {
         }else{
             //批量提取之前要验证一下可以再提取多少条的数量，如果提取的总量比今日上限多，就提示还能再提取几条
             //如果获取提取总量失败了,就不校验数字了
+            //点击批量提取后把select的check选中状态都取消，并且加上disabled的样式
+            this.setState({
+                disabledCheckedClues: this.state.selectedRecommendClues
+            },() => {
+                this.setState({
+                    selectedRecommendClues: [],
+                });
+            });
             if(this.state.getMaxLimitExtractNumberError){
                 this.batchAssignRecommendClues(submitObj);
             }else{
@@ -557,7 +575,7 @@ class RecommendCustomerRightPanel extends React.Component {
                         //是试用账号或者正式账号
                         (this.isTrialAccount() || this.isOfficalAccount()) &&
                         //已经提取的数量和这次要提取数量之和大于最大限制的提取数
-                        count + _.get(this, 'state.selectedRecommendClues.length') > this.state.maxLimitExtractNumber
+                        count + _.get(this, 'state.disabledCheckedClues.length') > this.state.maxLimitExtractNumber
                     ){
                         this.setState({
                             batchPopoverVisible: true,
@@ -628,7 +646,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中全部线索');
             },
             getCheckboxProps: record => ({
-                disabled: record.hasExtracted || record.hasExtractedByOther, // 有hasExtracted属性是已经成功提取了的 有hasExtractedByOther属性是已经被别人提取了的
+                disabled: record.hasExtracted || _.has(this.state.disabledCheckedClues,item => item.id === record.id) || record.hasExtractedByOther, // 有hasExtracted属性是已经成功提取了的,有hasExtractedByOther属性是已经被别人提取了的
             }),
         };
         return rowSelection;
@@ -723,7 +741,7 @@ class RecommendCustomerRightPanel extends React.Component {
                         urlPath: '/leads'
                     });
                     //总的被选中的线索数量
-                    var totalSelectedSize = _.get(this.state,'selectedRecommendClues.length',0);
+                    var totalSelectedSize = _.get(this.state,'disabledCheckedClues.length',0);
                     //已经被其他同事提取的线索
                     var hasExtractedLeadIds = _.get(data,'picked',[]);
                     var hasExtractedLeadCount = hasExtractedLeadIds.length;
@@ -800,6 +818,7 @@ class RecommendCustomerRightPanel extends React.Component {
             return (
                 <AntcDropdown
                     ref='changeSales'
+                    datatraceContainer='线索推荐页面批量提取'
                     content={
                         <Button
                             title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
@@ -835,7 +854,8 @@ class RecommendCustomerRightPanel extends React.Component {
         }
     };
     render() {
-        var hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length');
+        var hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length') || _.get(this, 'state.disabledCheckedClues.length');
+
         let {isWebMin} = isResponsiveDisplay();
         let recommendCls = classNames('recommend-customer-top-nav-wrap', {
             'responsive-mini-btn': isWebMin
