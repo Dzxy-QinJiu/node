@@ -3770,8 +3770,8 @@ var zh_CN = {
     'clue.recommend.extract.num.limit': '您所在组织{timerange}提取的线索数已达{maxLimit}条上限，请明天再来提取',
     'clue.recommend.has.extract': '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
     'clue.recommend.formal.extract.num.limit.tip': '本月{count}条已提取完毕，如需继续提取请{addClues}',
-    'clue.recommend.trial.extract.num.limit.tip': '明天可再提取{count}条，如需马上提取请{upgradedVersion}',
-    'clue.recommend.company.trial.extract.num.limit.tip': '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',
+    'clue.recommend.trial.extract.num.limit.tip': '已提取{count}条，如需继续提取请{upgradedVersion}',
+    'clue.recommend.company.trial.extract.num.limit.tip': '已提取{count}条，如需继续提取请联系销售：{contact}',
     'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',
     'common.personal.contribution.score': '个人贡献分数',
@@ -3888,6 +3888,7 @@ var zh_CN = {
     'boot.complete.step.set.area': '您关注哪个地域的客户?',
     'boot.complete.step.select.recommend.tip': '请选择或输入搜索',
     'boot.select.industry.count.tip': '最多可选择{count}个行业',
+    'boot.not.found.industry.tip': '没有搜索到 “{search}” 相关行业，您可能关心以下行业',
     /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/

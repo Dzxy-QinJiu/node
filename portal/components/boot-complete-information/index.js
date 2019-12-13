@@ -22,6 +22,7 @@ import Trace from 'LIB_DIR/trace';
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import classNames from 'classnames';
+import {MAXINDUSTRYCOUNT as MAX_SELECTED_COUNT} from 'PUB_DIR/sources/utils/consts';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
 
 const LAYOUT = {
@@ -38,8 +39,6 @@ const MAX_COUNT = 12;
 const MIN_HEIGHT = 78;
 //显示行数
 const MAX_COLUMN = 3;
-//最多选择行业的个数
-const MAX_SELECTED_COUNT = 10;
 
 class BootCompleteInformation extends React.Component{
     constructor(props) {
@@ -380,7 +379,27 @@ class BootCompleteInformation extends React.Component{
     };
 
     handleSearch = (e) => {
-        this.setState({searchValue: _.trim(e.target.value)});
+        const searchValue = _.trim(e.target.value);
+        /*let uncorrelatedArr = [];
+        _.each(this.state.industryList, (item, index) => {
+            //跟搜索词不相关
+            if(searchValue && item.indexOf(searchValue) === -1) {
+                uncorrelatedArr.push(index);
+            }
+        });
+        //如果相等，说明没有搜索出相应行业，可以给出推荐行业
+        let others = [];
+        if(_.isEqual(uncorrelatedArr.length, this.state.industryList.length)) {
+            _.each(this.state.industryList, (item, index) => {
+                //过滤出已选的行业
+                if(!_.includes(this.state.stepData.industrys, item)) {
+                    others.push(index);
+                }
+            });
+            //推荐行业最多不超过MAX_COUNT 12个
+            others = others.slice(0, MAX_COUNT - 1);
+        }*/
+        this.setState({searchValue: searchValue, otherIndustries: []});
     };
 
     //渲染行业
@@ -405,6 +424,7 @@ class BootCompleteInformation extends React.Component{
         }
         else {
             const searchValue = this.state.searchValue;
+            const otherIndustries = this.state.otherIndustries;
             return (
                 <div className="boot-recommend-industries-wrapper">
                     <ul className="select-selection-wrapper clearfix">
@@ -428,6 +448,11 @@ class BootCompleteInformation extends React.Component{
                         onChange={this.handleSearch}
                         className='search-industry-input'
                     />
+                    {_.get(otherIndustries,'length') ? (
+                        <div className="recommend-not-found-tip">
+                            {Intl.get('boot.not.found.industry.tip', '没有搜索到 “{search}” 相关行业，您可能关心以下行业', {search: searchValue})}
+                        </div>
+                    ) : null}
                     <div style={{height: this.state.industryListHeight}}>
                         <GeminiScrollBar>
                             <div className="recommend-industrys-container">
@@ -436,7 +461,8 @@ class BootCompleteInformation extends React.Component{
                                         const isSelected = _.includes(this.state.stepData.industrys, item);
                                         const cls = classNames('recommend-industrys-item',{
                                             'is-active': isSelected,
-                                            'hidden-industry-item': searchValue && item.indexOf(searchValue) === -1
+                                            'hidden-industry-item': searchValue && item.indexOf(searchValue) === -1,
+                                            // 'show-other-industry-item': _.get(otherIndustries,'length') && _.includes(this.state.otherIndustries, index)
                                         });
                                         return (
                                             <div key={index} className={cls} title={item} onClick={this.handleSelectIndustrysItem.bind(this,item)}>
@@ -489,6 +515,7 @@ class BootCompleteInformation extends React.Component{
                     cityName={areaData.city}
                     countyName={areaData.district}
                     isAlwayShow={false}
+                    hiddenCounty
                     updateLocation={this.updateLocation}
                 />
                 <div className="btn-container">
@@ -497,7 +524,7 @@ class BootCompleteInformation extends React.Component{
                         saveErrorMsg={this.state.errMsg}
                         handleSubmit={this.setRecommends}
                         handleCancel={this.onReturnBack.bind(this, STEPS_MAPS.SET_FIRST)}
-                        okBtnText={Intl.get('clue.see.recommend', '查看推荐')}
+                        okBtnText={Intl.get('user.user.add.finish', '完成')}
                         cancelBtnText={Intl.get('user.user.add.back', '上一步')}
                     />
                 </div>
@@ -509,10 +536,10 @@ class BootCompleteInformation extends React.Component{
         const currentStep = this.state.currentStep;
         return (
             <div className="boot-complete-container">
-                <div className='boot-complete-title'>
+                {/*<div className='boot-complete-title'>
                     <i className="iconfont icon-huanying"/>
                     {Intl.get('personal.welcome.use.curtao', '欢迎试用客套系统，完成以下引导将向您推荐精准的线索客户')}
-                </div>
+                </div>*/}
                 <div className="boot-complete-content">
                     <div className="boot-complete-step-container">
                         {currentStep === STEPS_MAPS.SET_FIRST ? (
@@ -527,13 +554,12 @@ class BootCompleteInformation extends React.Component{
     }
 
     render() {
-        let width = this.props.width ? this.props.width : $(window).width() - LAYOUT.LEFT_SIDEBAR_WIDTH;
         return (
             <RightPanelModal
                 isShowMadal
                 closePanel={this.onClosePanel}
                 showCloseBtn={this.props.showCloseBtn}
-                width={width}
+                width={'100%'}
                 content={this.renderContent()}
                 className="boot-complete-info-wrapper"
                 dataTracename="线索推荐引导"
