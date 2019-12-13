@@ -1,18 +1,13 @@
-var React = require('react');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
-const Validator = Validation.Validator;
 require('../../css/apply-user-form.less');
-import {Form, Input, Radio, InputNumber, Icon, message, Checkbox, Tabs, Tooltip} from 'antd';
+import {Form, Input, Radio,message, Checkbox, Tabs, Tooltip} from 'antd';
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
-const RightPanelSubmit = require('../../../../../components/rightPanel').RightPanelSubmit;
-const RightPanelCancel = require('../../../../../components/rightPanel').RightPanelCancel;
+const CheckboxGroup = Checkbox.Group;
 import UserTimeRangeField from '../../../../../components/user_manage_components/user-time-rangefield';
 import ValidateMixin from '../../../../../mixins/ValidateMixin';
-const DefaultUserLogoTitle = require('../../../../../components/default-user-logo-title');
-const AlertTimer = require('../../../../../components/alert-timer');
 const Spinner = require('../../../../../components/spinner');
 const history = require('../../../../../public/sources/history');
 const UserApplyAction = require('../../action/user-apply-actions');
@@ -26,7 +21,8 @@ const ApplyUserForm = createReactClass({
     propTypes: {
         apps: PropTypes.array,
         emailData: PropTypes.obj,
-        cancelApply: PropTypes.func
+        cancelApply: PropTypes.func,
+        appList: PropTypes.array,
     },
 
     getInitialState: function() {
@@ -122,6 +118,11 @@ const ApplyUserForm = createReactClass({
         //找到该应用对应用户类型的配置信息
         let defaultConfig = _.find(appDefaultConfigList, data => data.client_id === app.client_id && userType === data.user_type);
         let begin_date = DateSelectorPicker.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT));
+        // 查找该应用的应用列表是否有多终端信息
+        let appTerminals = _.find(this.props.appList, data => data.client_id === app.client_id && !_.isEmpty(data.terminals));
+        if (appTerminals) {
+            app.terminals = appTerminals.terminals;
+        }
         if (defaultConfig) {
             //应用默认设置中的开通周期、到期可选项
             app.begin_date = begin_date;
@@ -184,16 +185,26 @@ const ApplyUserForm = createReactClass({
                 if (this.state.setAllChecked) {
                     let appFormData = this.state.appFormData;
                     submitData.products = submitData.products.map(app => {
-                        return {
+                        let appConfigInfo = {
                             client_id: app.client_id,
                             number: app.num,
                             begin_date: appFormData.begin_date,
                             end_date: appFormData.end_date,
-                            over_draft: appFormData.over_draft
+                            over_draft: appFormData.over_draft,
                         };
+                        if (!_.isEmpty(appFormData.terminals)) {
+                            appConfigInfo.terminals = _.map(appFormData.terminals, 'id');
+                        }
+                        return appConfigInfo;
                     });
                 } else {
-                    submitData.products.forEach(app => delete app.range);
+                    submitData.products.forEach(app => {
+                        let terminals = app.terminals;
+                        if ( !_.isEmpty(terminals)) {
+                            app.terminals = _.map(terminals, 'id');
+                        }
+                        delete app.range;
+                    });
                 }
                 submitData.user_ids = JSON.stringify(submitData.user_ids);
                 submitData.user_names = JSON.stringify(submitData.user_names);
@@ -239,6 +250,26 @@ const ApplyUserForm = createReactClass({
         );
     },
 
+    // 选择多终端类型
+    onSelectTerminalChange(selectedApp, app, checkedValue) {
+        let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
+        if (appFormData) {
+            let terminals = [];
+            if (!_.isEmpty(checkedValue)) {
+                _.each(checkedValue, checked => {
+                    if (checked) {
+                        let selectedTerminals = _.find(selectedApp.terminals, item => item.code === checked);
+                        terminals.push(selectedTerminals);
+                    }
+                });
+                appFormData.terminals = terminals;
+            } else {
+                appFormData.terminals = [];
+            }
+        }
+        this.setState(this.state);
+    },
+
     render: function() {
         const formData = this.state.formData;
         const appFormData = this.state.appFormData;
@@ -246,7 +277,18 @@ const ApplyUserForm = createReactClass({
             isCustomSetting: true,
             appId: 'applyUser',
         };
-
+        let isShowSetAllCheck = true;
+        let selectedApps = _.get(this.state.formData, 'products', []);
+        // 所选应用包括多终端信息或只开通一个产品时，不显示设置到所有应用上的内容
+        if (!_.isEmpty(selectedApps)) {
+            if (selectedApps.length === 1) {
+                isShowSetAllCheck = false;
+            } else {
+                if (_.find(selectedApps, item => item.terminals)) {
+                    isShowSetAllCheck = false;
+                }
+            }
+        }
         return (
             <div className="full_size wrap_padding apply_user_form_wrap">
                 <div className="apply_user_form" ref="scrollWrap">
@@ -290,23 +332,35 @@ const ApplyUserForm = createReactClass({
                             </FormItem>
                         </Validation>
                         <div className="app-user-info ant-form-item">
-                            <Tabs tabPosition="left" onChange={this.onAppChange}
-                                prefixCls="antd-vertical-tabs">
+                            <Tabs
+                                tabPosition="left"
+                                onChange={this.onAppChange}
+                                prefixCls="antd-vertical-tabs"
+                            >
                                 {this.props.apps.map(app => {
                                     let disabled = this.state.setAllChecked && app.client_id !== appFormData.client_id;
+                                    let terminalsOptions = _.map(app.terminals, 'code');
+                                    let checkedTerminals = [];
+                                    if (!_.isEmpty(appFormData.terminals)) {
+                                        checkedTerminals = _.map(appFormData.terminals, 'code');
+                                    }
                                     return (<TabPane key={app.client_id}
                                         tab={this.renderTabToolTip(app.client_name)}
                                         disabled={disabled}>
-                                        <div className="set-all-check-box col-24">
-                                            <Checkbox checked={this.state.setAllChecked}
-                                                onChange={this.toggleCheckbox}/>
-                                            <span className="checkbox-title" onClick={this.toggleCheckbox}>
-                                                {Intl.get('user.all.app.set', '设置到所有应用上')}
-                                            </span>
-                                            {/*<span className="checkbox-notice">*/}
-                                            {/*({Intl.get("user.set.single.app", "注：若想设置单个应用，请取消此项的勾选")})*/}
-                                            {/*</span>*/}
-                                        </div>
+                                        {
+                                            isShowSetAllCheck ? (
+                                                <div className="set-all-check-box col-24">
+                                                    <Checkbox checked={this.state.setAllChecked}
+                                                        onChange={this.toggleCheckbox}/>
+                                                    <span className="checkbox-title" onClick={this.toggleCheckbox}>
+                                                        {Intl.get('user.all.app.set', '设置到所有应用上')}
+                                                    </span>
+                                                    {/*<span className="checkbox-notice">*/}
+                                                    {/*({Intl.get("user.set.single.app", "注：若想设置单个应用，请取消此项的勾选")})*/}
+                                                    {/*</span>*/}
+                                                </div>
+                                            ) : null
+                                        }
                                         <div className="app-tab-pane col-24">
                                             <FormItem
                                                 label={Intl.get('user.open.cycle', '开通周期')}
@@ -330,6 +384,21 @@ const ApplyUserForm = createReactClass({
                                                         id="user.status.immutability" defaultMessage="不变"/></Radio>
                                                 </RadioGroup>
                                             </FormItem>
+                                            {
+                                                _.isEmpty(app.terminals) ? null : (
+                                                    <FormItem
+                                                        label={Intl.get('common.terminals.type', '终端类型')}
+                                                        labelCol={{span: 5}}
+                                                        wrapperCol={{span: 19}}
+                                                    >
+                                                        <CheckboxGroup
+                                                            options={terminalsOptions}
+                                                            onChange={this.onSelectTerminalChange.bind(this, appFormData, app)}
+                                                            value={checkedTerminals}
+                                                        />
+                                                    </FormItem>
+                                                )
+                                            }
                                         </div>
                                     </TabPane>);
                                 })}

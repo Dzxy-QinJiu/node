@@ -460,7 +460,7 @@ const AppPropertySetting = createReactClass({
                         {
                             isShowAppTerminals ? (
                                 <div className="form-item">
-                                    <div className="form-item-label">终端：</div>
+                                    <div className="form-item-label">{Intl.get('common.terminals', '终端')}</div>
                                     <div className="form-item-content">
                                         {
                                             this.renderUserAppTerminalCheckboxBlock({

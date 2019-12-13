@@ -920,7 +920,8 @@ class AppUserManage extends React.Component {
                         return {
                             client_id: obj.app_id,
                             client_name: obj.app_name,
-                            client_image: obj.app_logo
+                            client_image: obj.app_logo,
+                            terminals: obj.terminals,
                         };
                     });
                     rightPanelView = (
