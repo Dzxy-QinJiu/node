@@ -100,8 +100,7 @@ class AntcDropdown extends React.Component {
                             </Button>
                             <Button type='primary' className="inline-block icon-choose"
                                 disabled={this.props.isSaving || this.props.isDisabled}
-                                onClick={this.props.handleSubmit.bind(this)}
-                                data-tracename="点击保存按钮">{this.props.okTitle}
+                                onClick={this.props.handleSubmit.bind(this)}>{this.props.okTitle}
                                 {this.props.isSaving ? <Icon type="loading"/> : null}</Button>
                         </div> : null}
                     </div>
