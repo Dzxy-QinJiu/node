@@ -22,10 +22,10 @@ class AppConfigForm extends React.Component {
             labelCol: {span: 5},
             wrapperCol: {span: 19},
         };
-        let terminalsOptions = _.map(this.props.selectedApp.terminals, 'code');
+        let terminalsOptions = _.map(this.props.selectedApp.terminals, 'name');
         let checkedTerminals = [];
         if (!_.isEmpty(appFormData.terminals)) {
-            checkedTerminals = _.map(appFormData.terminals, 'code');
+            checkedTerminals = _.map(appFormData.terminals, 'name');
         }
         return (
             <div className="app-config-content">

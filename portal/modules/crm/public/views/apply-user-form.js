@@ -609,7 +609,7 @@ const ApplyUserForm = createReactClass({
             if (!_.isEmpty(checkedValue)) {
                 _.each(checkedValue, checked => {
                     if (checked) {
-                        let selectedTerminals = _.find(selectedApp.terminals, item => item.code === checked);
+                        let selectedTerminals = _.find(selectedApp.terminals, item => item.name === checked);
                         terminals.push(selectedTerminals);
                     }
                 });

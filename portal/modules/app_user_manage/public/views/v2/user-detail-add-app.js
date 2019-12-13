@@ -327,7 +327,7 @@ const UserDetailAddApp = createReactClass({
             if (!_.isEmpty(checkedValue)) {
                 _.each(checkedValue, checked => {
                     if (checked) {
-                        let selectedTerminals = _.find(app.terminals, item => item.code === checked);
+                        let selectedTerminals = _.find(app.terminals, item => item.name === checked);
                         terminals.push(selectedTerminals);
                     }
                 });

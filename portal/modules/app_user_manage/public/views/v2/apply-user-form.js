@@ -258,7 +258,7 @@ const ApplyUserForm = createReactClass({
             if (!_.isEmpty(checkedValue)) {
                 _.each(checkedValue, checked => {
                     if (checked) {
-                        let selectedTerminals = _.find(selectedApp.terminals, item => item.code === checked);
+                        let selectedTerminals = _.find(selectedApp.terminals, item => item.name === checked);
                         terminals.push(selectedTerminals);
                     }
                 });
@@ -339,10 +339,10 @@ const ApplyUserForm = createReactClass({
                             >
                                 {this.props.apps.map(app => {
                                     let disabled = this.state.setAllChecked && app.client_id !== appFormData.client_id;
-                                    let terminalsOptions = _.map(app.terminals, 'code');
+                                    let terminalsOptions = _.map(app.terminals, 'name');
                                     let checkedTerminals = [];
                                     if (!_.isEmpty(appFormData.terminals)) {
-                                        checkedTerminals = _.map(appFormData.terminals, 'code');
+                                        checkedTerminals = _.map(appFormData.terminals, 'name');
                                     }
                                     return (<TabPane key={app.client_id}
                                         tab={this.renderTabToolTip(app.client_name)}

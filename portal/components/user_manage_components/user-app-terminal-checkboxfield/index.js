@@ -23,9 +23,9 @@ const UserAppTerminalCheckboxField = {
             let checkedTerminals = [];
             // 选择待处理
             _.each(checkedValues, (checked) => {
-                let matchApp = _.find(config.selectedApps.terminals, item => item.code === checked);
+                let matchApp = _.find(config.selectedApps.terminals, item => item.name === checked);
                 if (matchApp) {
-                    checkedTerminals.push({id: matchApp.id, code: matchApp.code});
+                    checkedTerminals.push({id: matchApp.id, code: matchApp.code, name: matchApp.name});
                 }
             });
             const formData = appPropSettingsMap[config.appId] || {};
@@ -37,11 +37,11 @@ const UserAppTerminalCheckboxField = {
         };
 
         let currentValue;
-        let options = _.map(config.selectedApps.terminals, 'code');
+        let options = _.map(config.selectedApps.terminals, 'name');
         if(config.isCustomSetting) {
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const terminalsValue = appPropSettingsMap[config.appId].terminals.value;
-            currentValue = _.map(terminalsValue, 'code');
+            currentValue = _.map(terminalsValue, 'name');
         } else {
             currentValue = _.map(this.state.formData.terminals, 'value');
         }
