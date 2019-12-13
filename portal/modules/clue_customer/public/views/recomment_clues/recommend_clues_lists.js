@@ -357,6 +357,7 @@ class RecommendCustomerRightPanel extends React.Component {
             return (
                 <AntcDropdown
                     isDropdownAble={record.hasExtracted}
+                    datatraceContainer='线索推荐页面单个提取'
                     ref={assignSale => this['changeSales' + record.id] = assignSale}
                     content={
                         <span
@@ -819,6 +820,7 @@ class RecommendCustomerRightPanel extends React.Component {
             return (
                 <AntcDropdown
                     ref='changeSales'
+                    datatraceContainer='线索推荐页面批量提取'
                     content={
                         <Button
                             title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
