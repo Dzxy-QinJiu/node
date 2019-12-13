@@ -868,7 +868,6 @@ class ClueCustomer extends React.Component {
         //查询线索列表的请求参数
         return {
             queryParam: {
-                rangeParams: rangeParams,
                 keyword: isGetAllClue ? '' : _.trim(this.state.keyword),
                 statistics_fields: 'status,availability'
             },

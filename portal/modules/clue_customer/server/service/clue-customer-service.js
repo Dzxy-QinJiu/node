@@ -293,7 +293,7 @@ function handleBatchClueSalesParams(req, clueUrl) {
     var bodyParams = _.get(reqBody,'bodyParam');
     var bodyObj = {
         ...bodyParams,
-        rangParams: _.get(queryParams,'rangeParams'),
+        rangParams: _.get(bodyParams,'rang_params'),
 
     };
 
@@ -314,20 +314,12 @@ function handleClueParams(req, clueUrl) {
     }
     var url = clueUrl.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':page_num',req.params.page_num).replace(':order',req.params.order);
     var queryParams = _.get(reqBody,'queryParam');
-    var rangeParams = _.get(queryParams,'rangeParams');
-    if (rangeParams[0].from){
-        url += `?start_time=${rangeParams[0].from}`;
-    }
-    if (rangeParams[0].to){
-        url += `&end_time=${rangeParams[0].to}`;
+    if (queryParams.statistics_fields){
+        url += `?statistics_fields=${queryParams.statistics_fields}`;
     }
     if (queryParams.keyword){
         var keyword = encodeURI(queryParams.keyword);
         url += `&keyword=${keyword}`;
-    }
-
-    if (queryParams.statistics_fields){
-        url += `&statistics_fields=${queryParams.statistics_fields}`;
     }
     if (queryParams.id){
         url += `&id=${queryParams.id}`;
