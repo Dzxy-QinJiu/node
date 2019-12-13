@@ -92,9 +92,9 @@ export default class DifferentVersion extends React.PureComponent {
             return <div className='version-item' key={versionItem.versionId} >
                 <div className='version-item-header'>
                     <span className='version-item-name'>
-                        {versionItem.versionName === '基础版' && <img className='version-item-img' src={[require('./img/basic-verison-company@2x.png')]}/>}
-                        {versionItem.versionName === '专业版' && <img className='version-item-img' src={[require('./img/professional-verison-company@2x.png')]}/>}
-                        {versionItem.versionName === '企业版' && <img className='version-item-img' src={[require('./img/company-verison-company@2x.png')]}/>}
+                        {versionItem.versionName === '基础版' && <img className='version-item-img' src={[require('./img/version-basic-level-company@2x.png')]}/>}
+                        {versionItem.versionName === '专业版' && <img className='version-item-img' src={[require('./img/version-professional-level-company@2x.png')]}/>}
+                        {versionItem.versionName === '企业版' && <img className='version-item-img' src={[require('./img/version-company-level-company@2x.png')]}/>}
                         {versionItem.versionName}
                         {versionItem.type === '企业' && <span className='version-item-type'>({versionItem.type})</span>}
                         <span className='version-show-call'>{Intl.get('versions.please.call.phone', '请拨打{phone}', {phone: COMPANY_PHONE})}</span>
