@@ -186,6 +186,11 @@ export function getVisitCustomerChart() {
                 }
             },
             {
+                title: Intl.get('common.customer.visit.target', '拜访目标'),
+                dataIndex: 'milestone',
+                isSetCsvValueBlank: true,
+            },
+            {
                 title: Intl.get('common.customer.visit.record', '拜访记录'),
                 dataIndex: 'visit_record',
                 isSetCsvValueBlank: true,
