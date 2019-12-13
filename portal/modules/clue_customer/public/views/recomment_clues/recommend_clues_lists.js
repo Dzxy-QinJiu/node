@@ -392,7 +392,7 @@ class RecommendCustomerRightPanel extends React.Component {
         const column_width = '80px';
         let columns = [
             {
-                title: Intl.get('clue.customer.recommend.clue.lists', '推荐线索'),
+                title: Intl.get('clue.customer.clue.name.abbrev', '线索名'),
                 dataIndex: 'name',
                 width: '300px',
             }, {
@@ -429,10 +429,8 @@ class RecommendCustomerRightPanel extends React.Component {
                     // 提取线索分配给相关的销售人员的权限
                     let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
                     let assigenCls = classNames('assign-btn',{'can-edit': !text});
-                    let containerCls = classNames('singl-extract-clue',{'assign-privilege handle-btn-item': hasAssignedPrivilege},);
-
                     return (
-                        <div className={containerCls} ref='trace-person'>
+                        <div className='singl-extract-clue assign-privilege handle-btn-item' ref='trace-person'>
                             {this.extractClueOperator(hasAssignedPrivilege, record, assigenCls, false)}
                         </div>
                     );
@@ -646,7 +644,15 @@ class RecommendCustomerRightPanel extends React.Component {
             delete conditionObj.load_size;
             delete conditionObj.userId;
             //如果有筛选条件的时候，提醒修改条件再查看，没有筛选条件的时候，提示暂无数据
-            var emptyText = _.isEmpty(conditionObj) ? Intl.get('common.no.data', '暂无数据') : Intl.get('clue.edit.condition.search', '请修改条件再查看');
+            var emptyText = _.isEmpty(conditionObj) ? Intl.get('common.no.data', '暂无数据') : <ReactIntl.FormattedMessage
+                id="clue.edit.condition.search"
+                defaultMessage={'请{changeCondition}再查看'}
+                values={{
+                    'changeCondition': <a onClick={this.handleClickEditCondition}>
+                        {Intl.get('clue.customer.condition.change', '修改条件')}
+                    </a>
+                }}
+            />;
             var recommendList = this.state.recommendClueLists;
             //因为antctable中的noMoreDataText只接受字符串，所以这个带点击功能的提示要用字符串拼接起来
             var refreshTip = Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以') +
