@@ -639,7 +639,9 @@ var UserDetailAddApp = createReactClass({
         var app_selector_id = _.uniqueId('app_selector');
         return (
             <div className="ant-form-item">
-                <label className="col-4"><ReactIntl.FormattedMessage id="common.add.product" defaultMessage="添加产品" /></label>
+                <label className="col-4">
+                    {Intl.get('common.add.product', '添加产品')}
+                </label>
                 <div className="col-20">
                     <div ref="app_selector_wrap" data-ref="app_selector_wrap" className={this.state.show_app_error ? 'app_selector_wrap permission-required' : 'app_selector_wrap'}>
                         <AppSelector
@@ -655,7 +657,11 @@ var UserDetailAddApp = createReactClass({
                         {
                             this.state.show_app_error && !formData.selected_apps.length ?
                                 (
-                                    <div className="has-error"><span className="ant-form-explain"><ReactIntl.FormattedMessage id="user.product.select" defaultMessage="请选择产品" /></span></div>
+                                    <div className="has-error">
+                                        <span className="ant-form-explain">
+                                            {Intl.get('user.product.select', '请选择产品')}
+                                        </span>
+                                    </div>
                                 ) :
                                 null
                         }

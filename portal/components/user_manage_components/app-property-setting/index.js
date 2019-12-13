@@ -376,7 +376,9 @@ const AppPropertySetting = createReactClass({
                             >
                                 {this.props.showUserNumber ? (
                                     <div className="form-item">
-                                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.batch.open.count" defaultMessage="开通个数" /></div>
+                                        <div className="form-item-label">
+                                            <ReactIntl.FormattedMessage id="user.batch.open.count" defaultMessage="开通个数" />
+                                        </div>
                                         <div className="form-item-content">
                                             {
                                                 this.renderUserCountNumberField({
@@ -391,7 +393,9 @@ const AppPropertySetting = createReactClass({
                                 ) : null}
                                 {this.props.isSingleAppEdit ? (
                                     !Oplate.hideSomeItem && <div className="form-item">
-                                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.user.type" defaultMessage="用户类型" /></div>
+                                        <div className="form-item-label">
+                                            <ReactIntl.FormattedMessage id="user.user.type" defaultMessage="用户类型" />
+                                        </div>
                                         <div className="form-item-content">
                                             {
                                                 this.renderUserTypeRadioBlock({
@@ -404,7 +408,9 @@ const AppPropertySetting = createReactClass({
                                     </div>
                                 ) : null}
                                 <div className="form-item">
-                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.open.cycle" defaultMessage="开通周期" /></div>
+                                    <div className="form-item-label">
+                                        <ReactIntl.FormattedMessage id="user.open.cycle" defaultMessage="开通周期" />
+                                    </div>
                                     <div className="form-item-content">
                                         {this.renderUserTimeRangeBlock({
                                             isCustomSetting: true,
@@ -416,7 +422,9 @@ const AppPropertySetting = createReactClass({
                                     </div>
                                 </div>
                                 <div className="form-item">
-                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.expire.select" defaultMessage="到期可选" /></div>
+                                    <div className="form-item-label">
+                                        <ReactIntl.FormattedMessage id="user.expire.select" defaultMessage="到期可选" />
+                                    </div>
                                     <div className="form-item-content">
                                         {
                                             this.renderUserOverDraftBlock({
@@ -430,7 +438,9 @@ const AppPropertySetting = createReactClass({
                                 {
                                     this.props.showIsTwoFactor ? (
                                         !Oplate.hideSomeItem && <div className="form-item">
-                                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.two.step.certification" defaultMessage="二步认证" /></div>
+                                            <div className="form-item-label">
+                                                <ReactIntl.FormattedMessage id="user.two.step.certification" defaultMessage="二步认证" />
+                                            </div>
                                             <div className="form-item-content">
                                                 {
                                                     this.renderUserTwoFactorBlock({
@@ -444,7 +454,9 @@ const AppPropertySetting = createReactClass({
                                 }
                                 {this.props.isSingleAppEdit ? (
                                     <div className="form-item">
-                                        <div className="form-item-label"><ReactIntl.FormattedMessage id="common.app.status" defaultMessage="开通状态" /></div>
+                                        <div className="form-item-label">
+                                            <ReactIntl.FormattedMessage id="common.app.status" defaultMessage="开通状态" />
+                                        </div>
                                         <div className="form-item-content">
                                             {
                                                 this.renderUserStatusRadioBlock({
@@ -459,7 +471,9 @@ const AppPropertySetting = createReactClass({
                                 {
                                     this.props.showMultiLogin ? (
                                         !Oplate.hideSomeItem && <div className="form-item">
-                                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login" defaultMessage="多人登录" /></div>
+                                            <div className="form-item-label">
+                                                <ReactIntl.FormattedMessage id="user.multi.login" defaultMessage="多人登录" />
+                                            </div>
                                             <div className="form-item-content">
                                                 {
                                                     this.renderMultiLoginRadioBlock({
@@ -474,7 +488,7 @@ const AppPropertySetting = createReactClass({
                                 {
                                     isShowAppTerminals ? (
                                         <div className="form-item">
-                                            <div className="form-item-label">终端：</div>
+                                            <div className="form-item-label">{Intl.get('common.terminals', '终端')}</div>
                                             <div className="form-item-content">
                                                 {
                                                     this.renderUserAppTerminalCheckboxBlock({
