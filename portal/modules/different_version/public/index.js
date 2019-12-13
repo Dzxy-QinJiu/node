@@ -2,12 +2,12 @@ import differentVersionAction from '../public/action/different-version-action';
 import differentVersionStore from '../public/store/different-version-store';
 import ColsLayout from 'CMP_DIR/cols-layout';
 import {paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
-import history from 'PUB_DIR/sources/history';
 import ApplyTry from 'MOD_DIR/apply_try/puiblic';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import {COMPANY_PHONE} from 'PUB_DIR/sources/utils/consts';
+import {Button} from 'antd';
 
 
 require('./css/index.less');
@@ -16,11 +16,10 @@ export default class DifferentVersion extends React.PureComponent {
     state = {
         versionItems: [],
         showApply: false,
-        showCall: false,
-        showCallKey: null,
         width: document.body.clientWidth - 75,
         wrapperWidth: document.body.clientWidth > 1536 ? document.body.clientWidth - 126 : 1410,
         showFlag: this.props.showFlag,
+        maxHeight: 0,
     };
 
     resizeHandler = () => {
@@ -39,12 +38,24 @@ export default class DifferentVersion extends React.PureComponent {
         continueFn: PropTypes.func, //个人版购买支付成功后，点击提取线索的回调函数
     }
     onChange = () => {
-        this.setState({...differentVersionStore.getState()});
+        this.setState({...differentVersionStore.getState()},() => {
+            //获取height值最大的version-item-features-wrapper，然后将最大值赋给每一个version-item-features-wrapper
+            let maxHeight = this.state.maxHeight; 
+            _.each($('.version-item-features-wrapper') , ele => {
+                if(maxHeight < ele.offsetHeight){
+                    maxHeight = ele.offsetHeight;
+                }
+            });
+            this.setState({
+                maxHeight: maxHeight
+            },() => {
+                $('.version-item-features-wrapper').css('height', maxHeight + 'px');
+            });
+        });
     }
     componentDidMount() {
         differentVersionStore.listen(this.onChange);
         differentVersionAction.getAllVersions();
-        document.onclick = this.cancleConnectWrapper;
         $(window).on('resize', this.resizeHandler);
     }
     componentWillReceiveProps(nextProps) {
@@ -56,32 +67,17 @@ export default class DifferentVersion extends React.PureComponent {
         differentVersionStore.unlisten(this.onChange);
         $(window).off('resize', this.resizeHandler);
     }
-    cancleConnectWrapper = () => {//点击document隐藏联系销售
-        this.setState({
-            showCall: false
-        });
-    }
-    showConnectWrapper = e => {
-        e.nativeEvent.stopImmediatePropagation();
-    }
-    handleConnectBtn = (n,e) => { //点击联系销售按钮
-        this.setState({
-            showCall: !this.state.showCall,
-            showCallKey: n
-        });
-        e.nativeEvent.stopImmediatePropagation();
-    }
     handlePayBtn = () => { //点击购买按钮
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
             continueFn: _.isFunction(this.props.continueFn) && this.props.continueFn  
         });
     }
-    handleApplyBtn = () => {//点击申请试用按钮
+    handleApplyBtn = () => { //点击申请试用按钮
         this.setState({
             showApply: !this.state.showApply
         });
     }
-    hideApply = () => {//关闭申请页面
+    hideApply = () => { //关闭申请页面
         this.setState({
             showApply: !this.state.showApply
         });
@@ -92,46 +88,55 @@ export default class DifferentVersion extends React.PureComponent {
 
     renderVersionItem() { //渲染每一个版本模块，返回一个jsx数组
         const versionData = this.state.versionData;
-        return _.map(versionData, (versionItem) => {
+        return _.isArray(versionData) && versionData.map((versionItem, versionIndex) => {
             return <div className='version-item' key={versionItem.versionId} >
                 <div className='version-item-header'>
-                    <div className='version-item-name'>{versionItem.versionName}</div>
+                    <span className='version-item-name'>
+                        {versionItem.versionName === '基础版' && <img className='version-item-img' src={[require('./img/基础版（企业）@2x.png')]}/>}
+                        {versionItem.versionName === '专业版' && <img className='version-item-img' src={[require('./img/专业版（企业）@2x.png')]}/>}
+                        {versionItem.versionName === '企业版' && <img className='version-item-img' src={[require('./img/企业版（企业）@2x.png')]}/>}
+                        {versionItem.versionName}
+                        {versionItem.type === '企业' && <span className='version-item-type'>({versionItem.type})</span>}
+                        <span className='version-show-call'>{Intl.get('versions.please.call.phone', '请拨打{phone}', {phone: COMPANY_PHONE})}</span>
+                    </span>
                     {versionItem.cost ? <div className='version-item-cost-wrapper'>
                         <span className='version-item-cost'>{versionItem.cost}</span>
-                        元/月</div> : null}
-                    {versionItem.beginSale ? <div className='version-item-begin-sale-wrapper'>
-                        <span className='version-item-begin-sale'>{versionItem.beginSale}</span>
-                    人起售</div> : null}
+                        {Intl.get('versions.personal.price','元/月')}</div> : null}
                 </div>
-                <div className='version-item-clues-recommend'>{Intl.get('versions.monthly.clues.recommend','{clues}条/月线索推荐',{clues: versionItem.recommendClues})}</div>
+                <div className='version-item-clues-recommend'><span className='version-item-clues-recommend-number'>{versionItem.recommendClues}</span>{Intl.get('versions.monthly.clues.recommend','条/月线索推荐')}</div>
                 <div className='version-btn-wrapper'>
-                    <button className='version-connect-btn' onClick={this.handleConnectBtn.bind(this,versionItem.versionId)}>{Intl.get('versions.connect.sale','联系销售')}</button>
-                    {versionItem.cost ? <button className='version-pay-btn' onClick={this.handlePayBtn}>{
+                    {versionItem.cost ? <Button className='version-pay-btn' type="primary" onClick={this.handlePayBtn} >{
                         checkVersionAndType().isPersonalFormal ?
                             Intl.get('payment.renewal','续费') :
                             Intl.get('versions.online.pay','在线购买')
-                    }</button> : null}
-                    {/* TODO 后端接口没有做好，等待接口实现
-                    {versionItem.applyTry ? <button className='version-apply-try-btn' onClick={this.handleApplyBtn}>{Intl.get('login.apply.trial','申请试用')}</button> : null}
-                    */}
+                    }</Button> : null}
+                    {/* TODO 后端接口没有做好，等待接口实现*/}
+                    {versionItem.applyTry &&
+                        <Button type="primary" className='version-apply-try-btn' >{Intl.get('versions.apply.try','体验{version}',{version: versionItem.versionName})}</Button>}
                 </div>
-                {this.state.showCall && this.state.showCallKey === versionItem.versionId ? <div className='version-show-call' onClick={this.showConnectWrapper}>{Intl.get('versions.please.call.phone', '请拨打{phone}', {phone: COMPANY_PHONE})}</div> : null}
+                
+                <div className='version-item-add-feature'>
+                    {versionIndex > 0 ?
+                        Intl.get('versions.compare.add.features','比{versionName}增加以下功能:',{versionName: versionData[versionIndex - 1]['versionName']}) :
+                        Intl.get('versions.compare.add.features','比{versionName}增加以下功能:',{versionName: '个人版'})
+                    }
+                </div>
                 <div className='version-item-features-wrapper'>
-                    <GeminiScrollbar>
-                        {_.map(versionItem.features, (featureItem, featureIndex) => {
-                            return <div className='version-item-feature-item' key={featureIndex}>
-                                <h4 className='version-item-feature-item-title'>{featureItem.featureName}</h4>
-                                <div className='version-item-feature-item-children'>
-                                    {featureItem.featureChildren && _.map(featureItem.featureChildren, (featureChild,index) => {
-                                        let featureChildClass = featureChild.type === 'add' ? 'version-item-feature-item-child-add' : 'version-item-feature-item-child-have';
-                                        return (
-                                            <div className={featureChildClass} key={index}>{featureChild.featureChildName}</div>
-                                        );
-                                    })}
-                                </div>
-                            </div>;
-                        })}
-                    </GeminiScrollbar>
+                    {_.map(versionItem.features, (featureItem, featureIndex) => {
+                        return <div className='version-item-feature-item' key={featureIndex}>
+                            <h4 className='version-item-feature-item-title'>{featureItem.featureName}</h4>
+                            <div className='version-item-feature-item-children'>
+                                {featureItem.featureChildren && _.map(featureItem.featureChildren, (featureChild,index) => {
+                                    return (
+                                        <div className='version-item-feature-item-child-have' key={index}>
+                                            <i className='iconfont icon-versions-feature-item'/>&nbsp;
+                                            {featureChild.featureChildName}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>;
+                    })}
                 </div>
             </div>;
         });
@@ -140,16 +145,18 @@ export default class DifferentVersion extends React.PureComponent {
     render() {
         return (<RightPanel className='different-versions-right-panel' showFlag={this.state.showFlag} style={{width: this.state.width + 'px'}}>
             <GeminiScrollbar>
-                <i className="iconfont icon-close-wide different-version-close" title={Intl.get('common.app.status.close', '关闭')} onClick={this.closeVersion}/>
                 {this.state.errorMessage ?
                     <div>{this.state.errorMessage}</div> :
                     <ColsLayout
                         commonData={this.renderVersionItem()}
                         width={this.state.wrapperWidth}
-                        itemWidth={310}
-                    />
+                        itemWidth={360}
+                    >
+                        <i className="iconfont icon-close-wide different-version-close" title={Intl.get('common.app.status.close', '关闭')} onClick={this.closeVersion}/>
+                    </ColsLayout>
                 }
                 {this.state.showApply ? <ApplyTry hideApply={this.hideApply} destroyOnClose/> : null}
+                
             </GeminiScrollbar>
         </RightPanel>);
     }

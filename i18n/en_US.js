@@ -3853,8 +3853,10 @@ var en_US = {
     'versions.connect.sale': 'contact our sales staff', //联系销售
     'versions.personal.price': 'yuan/Month', // 元/月
     'versions.pay.least.number': 'pieces minimum per order', //人起售
-    'versions.monthly.clues.recommend': '{clues}item/month clues recommend', //{clues}条/月线索推荐
+    'versions.monthly.clues.recommend': 'item/month clues recommend', //{clues}条/月线索推荐
     'versions.please.call.phone': 'please call{phone}', //请拨打
+    'versions.apply.try': 'experience{version}', //体验
+    'versions.compare.add.features': 'compare with {versionName}, add:' //比{versionName}增加以下功能:
     /*版本信息 --- start */
 };
 export default en_US;

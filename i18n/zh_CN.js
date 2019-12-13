@@ -3902,8 +3902,10 @@ var zh_CN = {
     'versions.connect.sale': '联系销售',
     'versions.personal.price': '元/月',
     'versions.pay.least.number': '人起售',
-    'versions.monthly.clues.recommend': '{clues}条/月线索推荐',
+    'versions.monthly.clues.recommend': '条/月线索推荐',
     'versions.please.call.phone': '请拨打{phone}',
+    'versions.apply.try': '体验{version}',
+    'versions.compare.add.features': '比{versionName}增加以下功能:'
     /*版本信息 --- start */
 
 };
