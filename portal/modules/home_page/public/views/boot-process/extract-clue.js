@@ -20,6 +20,7 @@ import {getMaxLimitExtractClueCount} from 'PUB_DIR/sources/utils/common-data-uti
 import Trace from 'LIB_DIR/trace';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import DifferentVersion from 'MOD_DIR/different_version/public';
+import {COMPANY_PHONE} from 'PUB_DIR/sources/utils/consts';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 
 const LAYOUT_CONSTANCE = {
@@ -297,7 +298,7 @@ class ExtractClues extends React.Component {
             if(versionAndType.isPersonalTrial) {//个人试用
                 maxLimitTip = <ReactIntl.FormattedMessage
                     id="clue.recommend.trial.extract.num.limit.tip"
-                    defaultMessage={'明天可再提取{count}条，如需马上提取请{upgradedVersion}'}
+                    defaultMessage={'已提取{count}条，如需继续提取请{upgradedVersion}'}
                     values={{
                         count: maxLimitExtractNumber,
                         upgradedVersion: (
@@ -310,7 +311,7 @@ class ExtractClues extends React.Component {
                     }}
                 />;
             } else if(versionAndType.isCompanyTrial) {//企业试用
-                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',{count: maxLimitExtractNumber,contact: '400-6978-520'});
+                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '已提取{count}条，如需继续提取请联系销售：{contact}',{count: maxLimitExtractNumber,contact: COMPANY_PHONE});
             } else if(versionAndType.isPersonalFormal//个人正式版
                 || versionAndType.isCompanyFormal && this.isManager()) { //或企业正式版管理员
                 maxLimitTip = <ReactIntl.FormattedMessage

@@ -40,6 +40,7 @@ import BackMainPage from 'CMP_DIR/btn-back';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 import {leadRecommendEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DifferentVersion from 'MOD_DIR/different_version/public';
+import {COMPANY_PHONE} from 'PUB_DIR/sources/utils/consts';
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -317,6 +318,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 this.getRecommendClueCount((count) => {
                     //如果获取出错了就不要校验数字了
                     if (_.isNumber(count) && (this.isTrialAccount() || this.isOfficalAccount()) && count >= this.state.maxLimitExtractNumber){
+                        // this.handleTrialAndFormal();
                         this.setState({
                             tablePopoverVisible: record.id,
                             singleExtractLoading: false
@@ -466,7 +468,9 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     //个人试用升级为正式版
     handleUpgradePersonalVersion = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL);
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            leftTitle: Intl.get()
+        });
     };
     //显示/隐藏版本信息面板
     triggerShowVersionInfo = () => {
@@ -492,20 +496,20 @@ class RecommendCustomerRightPanel extends React.Component {
         var maxLimitExtractNumber = this.state.maxLimitExtractNumber;
         var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
         let currentVersion = checkCurrentVersion();
-        if(!ableExtract){
+        if(ableExtract){
             //个人版试用提示升级,正式提示增加线索量
             //企业版试用提示升级,正式（管理员）提示增加线索量
             if(currentVersion.personal && this.isTrialAccount()) {//个人试用
                 maxLimitTip = <ReactIntl.FormattedMessage
                     id="clue.recommend.trial.extract.num.limit.tip"
-                    defaultMessage={'明天可再提取{count}条，如需马上提取请{upgradedVersion}'}
+                    defaultMessage={'已提取{count}条，如需继续提取请{upgradedVersion}'}
                     values={{
                         count: maxLimitExtractNumber,
                         upgradedVersion: <a onClick={this.triggerShowVersionInfo} data-tracename="点击个人升级为正式版按钮">{Intl.get('personal.upgrade.to.official.version', '升级为正式版')}</a>
                     }}
                 />;
             } else if(currentVersion.company && this.isTrialAccount()) {//企业试用
-                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',{count: maxLimitExtractNumber,contact: '400-6978-520'});
+                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '已提取{count}条，如需继续提取请联系销售：{contact}',{count: maxLimitExtractNumber,contact: COMPANY_PHONE});
             } else if(currentVersion.personal && this.isOfficalAccount()//个人正式版
                 || currentVersion.company && this.isOfficalAccount() && this.isManager()) { //或企业正式版管理员
                 maxLimitTip = <ReactIntl.FormattedMessage
@@ -519,6 +523,15 @@ class RecommendCustomerRightPanel extends React.Component {
             }
         }
         return maxLimitTip;
+    };
+    handleTrialAndFormal = () => {
+        const versionAndType = checkVersionAndType();
+        //如果是个人试用,直接显示购买个人版界面
+        if(versionAndType.isPersonalTrial) {
+            this.handleUpgradePersonalVersion();
+        }else if(versionAndType.formal) {//如果是正式，直接显示购买线索量界面
+            this.handleClickAddClues();
+        }
     };
     batchAssignRecommendClues = (submitObj) => {
         this.setState({
@@ -556,6 +569,7 @@ class RecommendCustomerRightPanel extends React.Component {
                         //已经提取的数量和这次要提取数量之和大于最大限制的提取数
                         count + _.get(this, 'state.disabledCheckedClues.length') > this.state.maxLimitExtractNumber
                     ){
+                        // this.handleTrialAndFormal();
                         this.setState({
                             batchPopoverVisible: true,
                             singleExtractLoading: false,
