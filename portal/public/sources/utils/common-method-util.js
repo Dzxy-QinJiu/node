@@ -555,7 +555,7 @@ exports.getFilterReplyList = function(thisState) {
     //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
     var applicantList = _.get(thisState, 'detailInfoObj.info');
     var replyList = [];
-    if ((APPLY_FINISH_STATUS.includes(applicantList.status)) && _.isArray(_.get(thisState, 'detailInfoObj.info.approve_details'))) {
+    if ((_.includes(APPLY_FINISH_STATUS, applicantList.status)) && _.isArray(_.get(thisState, 'detailInfoObj.info.approve_details'))) {
         replyList = _.get(thisState, 'detailInfoObj.info.approve_details');
     } else {
         replyList = _.get(thisState, 'replyListInfo.list');
@@ -583,7 +583,7 @@ exports.getUserApplyFilterReplyList = function(thisState) {
             comment_time: applicantList.approval_time
         });
     }
-    if ([APPLY_USER_STATUS.PASSED_USER_APPLY, APPLY_USER_STATUS.REJECTED_USER_APPLY].includes(_.get(applicantList, 'approval_state')) && !replyList.length) {
+    if (_.includes([APPLY_USER_STATUS.PASSED_USER_APPLY, APPLY_USER_STATUS.REJECTED_USER_APPLY], _.get(applicantList, 'approval_state')) && !replyList.length) {
         //通过某条申请
         if (_.get(applicantList, 'approval_state') === APPLY_USER_STATUS.PASSED_USER_APPLY) {
             replyList.push({
@@ -789,7 +789,7 @@ exports.checkFileNameAllowRule = (filename, regnamerules) => {
     if (_.isArray(regnamerules) && _.isString(filename)){
         _.forEach(regnamerules,(item) => {
             var fileType = _.last(filename.split('.'));
-            if(_.isArray(item.valueArr) && !item.valueArr.includes(fileType)){
+            if(_.isArray(item.valueArr) && !_.includes(item.valueArr, fileType)){
                 warningMsg = item.messageTips;
                 nameQualified = false;
                 return false;
@@ -834,19 +834,19 @@ const isLeaderOfCandidate = function(candidateList, callback) {
                 //判断待审批人在该团队成员列表中，并且登录的账号是该团队的管理员
                 var userArr = getTeamUsers(teamList);
                 isCandidateLeader = _.some(candidateList, (item) => {
-                    return userArr.includes(item.user_id) && user_id === item.owner_id;
+                    return _.includes(userArr, item.user_id) && user_id === item.owner_id;
                 });
             } else {
                 //如果我及我的下级团队大于一个团队，先把登录的账号所在的团队过滤掉,这样是为了防止有A,B两个同级的不同团队的销售主管，当A的下属有待审批的申请的时候，B是不应该有转审功能的
                 teamList = _.filter(teamList, (teamItem) => {
                     var userArr = [];
                     userArr = _.concat(userArr, teamItem.owner_id, teamItem.manager_ids, teamItem.user_ids);
-                    return !userArr.includes(user_id);
+                    return !_.includes(userArr, user_id);
                 });
                 //判断待审批人是否在剩下团队的成员列表中
                 var userArr = getTeamUsers(teamList);
                 isCandidateLeader = _.some(candidateList, (item) => {
-                    return userArr.includes(item.user_id);
+                    return _.includes(userArr, item.user_id);
                 });
             }
         }

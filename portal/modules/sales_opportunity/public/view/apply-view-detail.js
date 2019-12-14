@@ -241,7 +241,7 @@ class ApplyViewDetail extends React.Component {
             SalesOpportunityApplyDetailAction.setInitialData(detailItem);
             //如果申请的状态是已通过或者是已驳回的时候，就不用发请求获取回复列表，直接用详情中的回复列表
             //其他状态需要发请求请求回复列表
-            if (APPLY_FINISH_STATUS.includes(detailItem.status)) {
+            if (_.includes(APPLY_FINISH_STATUS, detailItem.status)) {
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyCommentList({id: detailItem.id});
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id}, detailItem.status, applyData);
                 this.getNextCandidate(detailItem.id);
@@ -259,7 +259,7 @@ class ApplyViewDetail extends React.Component {
     refreshReplyList = (e) => {
         Trace.traceEvent(e, '点击了重新获取');
         var detailItem = this.props.detailItem;
-        if (APPLY_FINISH_STATUS.includes(detailItem.status)) {
+        if (_.includes(APPLY_FINISH_STATUS, detailItem.status)) {
             SalesOpportunityApplyDetailAction.setApplyComment(detailItem.approve_details);
         } else if (detailItem.id) {
             SalesOpportunityApplyDetailAction.getSalesOpportunityApplyCommentList({id: detailItem.id});
@@ -525,7 +525,7 @@ class ApplyViewDetail extends React.Component {
     renderDetailBottom() {
         var detailInfoObj = this.state.detailInfoObj.info;
         //是否审批
-        let isConsumed = APPLY_FINISH_STATUS.includes(detailInfoObj.status);
+        let isConsumed = _.includes(APPLY_FINISH_STATUS, detailInfoObj.status);
         var userName = _.last(_.get(detailInfoObj, 'approve_details')) ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name : '' : '';
         var approvalDes = getApplyResultDscr(detailInfoObj);
         var showApproveBtn = detailInfoObj.showApproveBtn || this.props.isHomeMyWork;

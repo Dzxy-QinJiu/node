@@ -921,7 +921,7 @@ class RegRulesView extends React.Component {
                                         <Checkbox value={CC_INFO.APPLY_NOTIFY_CONFIG}>
                                             {Intl.get('apply.cc.when,submit', '提交申请时通知审批人')}
                                         </Checkbox>
-                                        {ccInformationType.includes(CC_INFO.APPLY_NOTIFY_CONFIG) ?
+                                        {_.includes(ccInformationType, CC_INFO.APPLY_NOTIFY_CONFIG) ?
                                             <div>
                                                 <div className='apply-cc-node'>
                                                     <span className="cc-person-label sub-item-label">{Intl.get('apply.condition.item.add.cc', '抄送人')}</span>
@@ -951,7 +951,7 @@ class RegRulesView extends React.Component {
                                         <Checkbox value={CC_INFO.APPROVE_NOTIFY_CONFIG}>
                                             {Intl.get('apply.cc.when.approve.apply', '审批通过后通知申请人')}
                                         </Checkbox>
-                                        {ccInformationType.includes(CC_INFO.APPROVE_NOTIFY_CONFIG) ?
+                                        {_.includes(ccInformationType, CC_INFO.APPROVE_NOTIFY_CONFIG) ?
                                             <div>
                                                 <div className='apply-cc-node'>
                                                     <span className="cc-person-label sub-item-label">{Intl.get('apply.condition.item.add.cc', '抄送人')}</span>

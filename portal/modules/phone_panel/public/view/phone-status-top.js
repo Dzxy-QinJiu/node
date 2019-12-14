@@ -254,7 +254,7 @@ class phoneStatusTop extends React.Component {
                         ) : null}
                     </div>
                     {//通话结束后，展示保存跟进记录的按钮
-                        HANG_UP_TYPES.includes(phonemsgObj.type) ?
+                        _.includes(HANG_UP_TYPES, phonemsgObj.type) ?
                             <div className="btn-select-container">
                                 {/*如果获取到的客户不止一个，要手动选择要关联的客户*/}
                                 {this.state.customerInfoArr.length > 1 ?
@@ -300,7 +300,7 @@ class phoneStatusTop extends React.Component {
         var phoneNum = this.props.contactNameObj && this.props.contactNameObj.contact ? this.props.contactNameObj.contact + '-' : '';
         if (phonemsgObj.call_type === 'IN') {
             phoneNum += phonemsgObj.extId;
-            if (HANG_UP_TYPES.includes(phonemsgObj.type)) {
+            if (_.includes(HANG_UP_TYPES, phonemsgObj.type)) {
                 phoneNum += phonemsgObj.dst;
             }
         } else {
@@ -410,7 +410,7 @@ class phoneStatusTop extends React.Component {
             }
         } else if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
             iconFontCls += ' icon-phone-answering';
-        } else if (HANG_UP_TYPES.includes(phonemsgObj.type)) {
+        } else if (_.includes(HANG_UP_TYPES, phonemsgObj.type)) {
             iconFontCls += ' icon-phone-bye';
             phoneStatusContainer += ' finish-phone-call';
         }

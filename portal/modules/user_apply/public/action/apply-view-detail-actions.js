@@ -140,7 +140,7 @@ class ApplyViewDetailActions {
         this.dispatch({loading: true, error: false});
         let promise = null;
         //延期、停用审批用新接口
-        if (APPLY_MULTI_TYPE_VALUES.includes(type)) {
+        if (_.includes(APPLY_MULTI_TYPE_VALUES, type)) {
             promise = AppUserAjax.submitMultiAppApply({
                 data: obj
             });

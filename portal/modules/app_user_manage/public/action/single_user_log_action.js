@@ -81,7 +81,7 @@ function SingleUserLogAction() {
         this.dispatch({ loading: true, error: false });
         let promise = null;
         //查询全部应用的日志调用另一个接口
-        if (searchObj.appid.includes(',')) {
+        if (_.includes(searchObj.appid, ',')) {
             let data = {
                 ...searchObj,
                 app_id: searchObj.appid,

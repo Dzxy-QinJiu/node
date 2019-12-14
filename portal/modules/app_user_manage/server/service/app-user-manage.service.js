@@ -789,7 +789,7 @@ exports.submitApply = function(req, res, requestObj) {
         delete requestObj.delay;
         delete requestObj.end_date;
         //如果是申请新用户（试用、签约）的审批，不用删除密码
-        if (![CONSTANTS.APPLY_USER_OFFICIAL,CONSTANTS.APPLY_USER_TRIAL,CONSTANTS.APPLY_USER].includes(requestObj.type)){
+        if (!_.includes([CONSTANTS.APPLY_USER_OFFICIAL,CONSTANTS.APPLY_USER_TRIAL,CONSTANTS.APPLY_USER], requestObj.type)){
             delete requestObj.password;
         }
         if (requestObj.user_name) {
