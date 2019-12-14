@@ -1,4 +1,3 @@
-var React = require('react');
 /**
 * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
 * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -8,7 +7,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 import { PropTypes } from 'prop-types';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 var UserDetailEditField = require('CMP_DIR/basic-edit-field-new/input');
-import userManagePrivilege from '../../privilege-const';
+
 
 class ContactCard extends React.Component {
     constructor(props) {
@@ -35,7 +34,6 @@ class ContactCard extends React.Component {
     }
     render() {
         const { userInfo } = this.props;
-        const hasEditAuth = hasPrivilege(userManagePrivilege.USER_MANAGE);
         return (
             <DetailCard
                 className='contact-card-container'
@@ -47,12 +45,12 @@ class ContactCard extends React.Component {
                                 {Intl.get('common.email', '邮箱')}:
                             </span>
                             <span className="sales-team-text">
-                                {hasEditAuth ? <UserDetailEditField
+                                <UserDetailEditField
                                     id={userInfo.user_id}
                                     saveEditInput={this.props.saveEditInput}
                                     showBtn={true}
                                     {...this.props.email}
-                                /> : this.props.email.value}
+                                />
                             </span>
                         </div>
                         <div className="sales-team clearfix">
@@ -60,12 +58,12 @@ class ContactCard extends React.Component {
                                 {Intl.get('user.phone', '手机号')}:
                             </span>
                             <span className="sales-team-text">
-                                {hasEditAuth ? <UserDetailEditField
+                                <UserDetailEditField
                                     id={userInfo.user_id}
                                     saveEditInput={this.props.saveEditInput}
                                     showBtn={true}
                                     {...this.props.phone}
-                                /> : this.props.phone.value}
+                                />
                             </span>
                         </div>
                     </div>
