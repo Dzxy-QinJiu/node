@@ -62,7 +62,9 @@ class OrganizationExipreTip extends React.PureComponent {
     };
 
     handleClickRenewal = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL);
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            showDifferentVersion: this.triggerShowVersionInfo
+        });
     };
     //显示/隐藏版本信息面板
     triggerShowVersionInfo = () => {
@@ -82,7 +84,7 @@ class OrganizationExipreTip extends React.PureComponent {
                     defaultMessage={'您的试用期剩余{time}天，是否{upgrade}？'}
                     values={{
                         'time': this.state.endTime,
-                        upgrade: <a data-tracename="点击组织到期，升级为正式版按钮" onClick={this.triggerShowVersionInfo}>{Intl.get('user.info.version.upgrade', '升级为正式版')}</a>
+                        upgrade: <a data-tracename="点击组织到期，升级为正式版按钮" onClick={this.handleClickRenewal}>{Intl.get('user.info.version.upgrade', '升级为正式版')}</a>
                     }}
                 />;
             }else {
@@ -97,7 +99,7 @@ class OrganizationExipreTip extends React.PureComponent {
                     id="organization.formal.expired.tip"
                     defaultMessage={'您的账号即将到期，是否{renewal}？'}
                     values={{
-                        renewal: <a data-tracename="点击组织到期，升级续费按钮" onClick={this.triggerShowVersionInfo}>{Intl.get('payment.renewal', '续费')}</a>
+                        renewal: <a data-tracename="点击组织到期，升级续费按钮" onClick={this.handleClickRenewal}>{Intl.get('payment.renewal', '续费')}</a>
                     }}
                 />;
             }else {
