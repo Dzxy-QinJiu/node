@@ -176,7 +176,7 @@ const getFilterItemFromConditionItem = function(item) {
     };
     //处理筛选项的value，处理成前端的格式
     const handleValue = (value, key) => {
-        if (['term_fields'].includes(key)) {
+        if (_.includes(['term_fields'], key)) {
             return;
         }
         let item = null;
@@ -340,7 +340,7 @@ const getFilterItemFromConditionItem = function(item) {
                     }
                     if (typeof value === 'string') {
                         //拼接字符串（数组value）
-                        if (value.includes(',')) {
+                        if (_.includes(value, ',')) {
                             valueList = value.split(',');
                         }
                         //单个字符串

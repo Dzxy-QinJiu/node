@@ -215,7 +215,7 @@ const ApplyViewDetail = createReactClass({
             ApplyViewDetailActions.showDetailLoading(detailItem);
             //1代表已通过，2代表已驳回，3 代表已撤销
             var approval_state = '';
-            if (['1','2','3'].includes(_.get(detailItem,'approval_state'))){
+            if (_.includes(['1','2','3'], _.get(detailItem,'approval_state'))){
                 approval_state = _.get(detailItem,'approval_state');
             }
             ApplyViewDetailActions.getApplyDetail(detailItem.id, applyData, approval_state);
@@ -531,7 +531,7 @@ const ApplyViewDetail = createReactClass({
         if (currentLength) {
             _.forEach(replyList, (replyItem, index) => {
                 var descrpt = getApplyStatusTimeLineDesc(replyItem.approve_status);
-                if (['reject'].includes(replyItem.approve_status)){
+                if (_.includes(['reject'], replyItem.approve_status)){
                     stepStatus = 'error';
                     currentLength--;
                 }
@@ -1772,7 +1772,7 @@ const ApplyViewDetail = createReactClass({
     },
     //是否是待审批
     isUnApproved() {
-        return ['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'));
+        return _.includes(['false', '0'], _.get(this.state, 'detailInfoObj.info.approval_state'));
     },
     renderModifyDelayTime() {
         if (!this.isUnApproved()) {
@@ -2001,9 +2001,9 @@ const ApplyViewDetail = createReactClass({
     },
     notShowRoleAndPrivilegeSettingBtn(detailInfo){
         //不展示配置按钮的情况
-        if ([APPLY_TYPES.APPLY_PWD_CHANGE,APPLY_TYPES.APPLY_STH_ELSE,APPLY_TYPES.APPLY_GRANT_DELAY,APPLY_TYPES.APPLY_GRANT_STATUS_CHANGE,APPLY_TYPES.DISABLE].includes(detailInfo.type)){
+        if (_.includes([APPLY_TYPES.APPLY_PWD_CHANGE,APPLY_TYPES.APPLY_STH_ELSE,APPLY_TYPES.APPLY_GRANT_DELAY,APPLY_TYPES.APPLY_GRANT_STATUS_CHANGE,APPLY_TYPES.DISABLE], detailInfo.type)){
             return true;
-        }else if([APPLY_TYPES.DELAY].includes(detailInfo.type)){
+        }else if(_.includes([APPLY_TYPES.DELAY], detailInfo.type)){
             //延期申请类型不加配置按钮的情况
             return !this.showConfigOfDelayApply(detailInfo) || this.notShowIcon();
         }else{

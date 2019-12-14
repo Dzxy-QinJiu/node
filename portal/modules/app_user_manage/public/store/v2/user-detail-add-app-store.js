@@ -219,7 +219,7 @@ class UserDetailAddAppStore {
         if (!keyWords) {
             this.currentRealmApps = this.rawApps;
         }
-        this.currentRealmApps = this.rawApps.filter(x => x.app_name.includes(keyWords));
+        this.currentRealmApps = this.rawApps.filter(x => _.includes(x.app_name, keyWords));
     }
 }
 

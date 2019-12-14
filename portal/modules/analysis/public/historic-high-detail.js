@@ -74,7 +74,7 @@ class HistoricHighDetail extends React.Component {
 
             _.each(data.allot_ids, allot_id => {
                 //若分配入的客户不在转入的客户列表中，则将其加入转入的客户列表
-                if (!turnInCustomerIds.includes(allot_id)) {
+                if (!_.includes(turnInCustomerIds, allot_id)) {
                     turnInCustomers.push({
                         customer_id: allot_id,
                     });

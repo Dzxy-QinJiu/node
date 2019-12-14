@@ -138,7 +138,7 @@ class CustomerPoolFilter extends React.Component {
         data.forEach(item => {
             if (item.groupId) {
                 condition[item.groupId] = _.map(item.data, x => x.value);
-                if (['customer_label', 'immutable_labels', 'labels', COMMON_OTHER_ITEM, 'source_classify'].includes(item.groupId)) {
+                if (_.includes(['customer_label', 'immutable_labels', 'labels', COMMON_OTHER_ITEM, 'source_classify'], item.groupId)) {
                     condition[item.groupId] = condition[item.groupId].join(',');
                 } else if (item.singleSelect) {
                     condition[item.groupId] = condition[item.groupId][0] || '';

@@ -180,7 +180,7 @@ class CrmFilterPanel extends React.Component {
             if (item.groupId) {
                 if (item.groupId !== 'sales_opportunities') {
                     condition[item.groupId] = item.data.map(x => x.value);
-                    if (['customer_label', 'province', 'industry', 'member_role', 'administrative_level', 'sales_team_id', 'source_classify',COMMON_OTHER_ITEM].includes(item.groupId)) {
+                    if (_.includes(['customer_label', 'province', 'industry', 'member_role', 'administrative_level', 'sales_team_id', 'source_classify',COMMON_OTHER_ITEM], item.groupId)) {
                         condition[item.groupId] = condition[item.groupId].join(',');
                     } else if (item.singleSelect) {
                         condition[item.groupId] = condition[item.groupId][0] || '';
