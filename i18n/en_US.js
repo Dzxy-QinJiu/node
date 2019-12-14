@@ -3728,8 +3728,8 @@ var en_US = {
     'clue.recommend.extract.num.limit': 'The number of clues extracted by your organization {timerange} has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
     'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} {timerange} and can extract up to {ableExtract} clues',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
     'clue.recommend.formal.extract.num.limit.tip': 'The {count} clause of this month has been extracted. If you need to continue to extract, please {addClues}.',//本月{count}条已提取完毕，如需继续提取请{addClues}
-    'clue.recommend.trial.extract.num.limit.tip': '{count} can be extracted again tomorrow. If necessary, {upgradedVersion} can be extracted immediately.',//明天可再提取{count}条，如需马上提取请{upgradedVersion}
-    'clue.recommend.company.trial.extract.num.limit.tip': 'You can extract {count} again tomorrow. If you need to extract it immediately, please contact our sales staff ({contact}) for upgrading',//明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级
+    'clue.recommend.trial.extract.num.limit.tip': 'The {count} bar has been extracted, if you want to continue extracting please {upgradedVersion}',//已提取{count}条，如需继续提取请{upgradedVersion}
+    'clue.recommend.company.trial.extract.num.limit.tip': '{count} bar has been extracted, if you want to continue extracting, please contact sales: {contact}',//已提取{count}条，如需继续提取请联系销售：{contact}
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
     'common.personal.contribution.score': 'Personal contribution score',//个人贡献分数
@@ -3840,6 +3840,7 @@ var en_US = {
     'boot.complete.step.set.area': 'Which geographic customers do you focus on?',//您关注哪个地域的客户?
     'boot.complete.step.select.recommend.tip': 'Please select or enter a search',//请选择或输入搜索
     'boot.select.industry.count.tip': 'Up to {count} industries can be selected',//最多可选择{count}个行业
+    'boot.not.found.industry.tip': 'No "{search}" related industries were found. You may be interested in the following industries',//没有搜索到 “{search}” 相关行业，您可能关心以下行业
     /*个人试用 --- end*/
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': 'Your probation period remains {time} days, whether {upgrade}？',//您的试用期剩余{time}天，是否{upgrade}

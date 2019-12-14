@@ -347,6 +347,11 @@ class ClueCustomer extends React.Component {
         //清空页面上的筛选条件
         clueFilterAction.setInitialData();
         clueCustomerAction.resetState();
+        //“这里可以提取线索”，只提示一次（登录后或者点击关闭）
+        const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+        if(this.state.showRecommendTips && !_.get(websiteConfig,['oplateConsts','STORE_PERSONNAL_SETTING','NO_SHOW_RECOMMEND_CLUE_TIPS'],false)) {
+            this.handleClickCloseClue();
+        }
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         clueEmitter.removeListener(clueEmitter.REMOVE_CLUE_ITEM, this.removeClueItem);

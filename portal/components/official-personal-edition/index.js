@@ -30,6 +30,7 @@ class OfficialPersonalEdition extends React.Component{
             listHeight: DEFAULT_HEIGHT,
             discountList: [],//商品折扣信息
             showCountDown: true,
+            leftTitle: _.get(this.props.paramObj,'leftTitle',''),
         };
     }
 

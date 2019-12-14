@@ -195,7 +195,7 @@ const HOCGoodsBuy = (options = {}) => {
                     }else {
                         title = (
                             <div className="hoc-goods-buy-title-wrapper" id="hoc-goods-buy-title-wrapper">
-                                <span>{options.leftTitle}</span>
+                                <span>{this.state.leftTitle || options.leftTitle}</span>
                                 {
                                     options.rightTitle ? (
                                         <Popover
