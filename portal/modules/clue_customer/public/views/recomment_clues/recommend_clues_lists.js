@@ -496,7 +496,7 @@ class RecommendCustomerRightPanel extends React.Component {
         var maxLimitExtractNumber = this.state.maxLimitExtractNumber;
         var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
         let currentVersion = checkCurrentVersion();
-        if(ableExtract){
+        if(!ableExtract){
             //个人版试用提示升级,正式提示增加线索量
             //企业版试用提示升级,正式（管理员）提示增加线索量
             if(currentVersion.personal && this.isTrialAccount()) {//个人试用
