@@ -19,7 +19,8 @@ import { formatSalesmanList, checkCurrentVersionType, checkVersionAndType } from
 import {getMaxLimitExtractClueCount} from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-
+import DifferentVersion from 'MOD_DIR/different_version/public';
+import {COMPANY_PHONE} from 'PUB_DIR/sources/utils/consts';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 
 const LAYOUT_CONSTANCE = {
@@ -44,7 +45,8 @@ class ExtractClues extends React.Component {
             getMaxLimitExtractNumberError: false,//获取该账号的最大提取量出错
             batchPopoverVisible: false,//批量操作展示popover
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
-            canClickExtract: true //防止连续点击批量提取相同线索
+            canClickExtract: true, //防止连续点击批量提取相同线索
+            showDifferentVersion: false,//是否显示版本信息面板
         };
     }
 
@@ -296,7 +298,7 @@ class ExtractClues extends React.Component {
             if(versionAndType.isPersonalTrial) {//个人试用
                 maxLimitTip = <ReactIntl.FormattedMessage
                     id="clue.recommend.trial.extract.num.limit.tip"
-                    defaultMessage={'明天可再提取{count}条，如需马上提取请{upgradedVersion}'}
+                    defaultMessage={'已提取{count}条，如需继续提取请{upgradedVersion}'}
                     values={{
                         count: maxLimitExtractNumber,
                         upgradedVersion: (
@@ -309,7 +311,7 @@ class ExtractClues extends React.Component {
                     }}
                 />;
             } else if(versionAndType.isCompanyTrial) {//企业试用
-                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',{count: maxLimitExtractNumber,contact: '400-6978-520'});
+                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '已提取{count}条，如需继续提取请联系销售：{contact}',{count: maxLimitExtractNumber,contact: COMPANY_PHONE});
             } else if(versionAndType.isPersonalFormal//个人正式版
                 || versionAndType.isCompanyFormal && this.isManager()) { //或企业正式版管理员
                 maxLimitTip = <ReactIntl.FormattedMessage
@@ -404,7 +406,13 @@ class ExtractClues extends React.Component {
     };
     //个人试用升级为正式版
     handleUpgradePersonalVersion = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL);
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            showDifferentVersion: this.triggerShowVersionInfo
+        });
+    };
+    //显示/隐藏版本信息面板
+    triggerShowVersionInfo = () => {
+        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
     };
     //增加线索量
     handleClickAddClues = () => {
@@ -523,6 +531,10 @@ class ExtractClues extends React.Component {
                     <Button className="back-btn" data-tracename="点击返回上一步" onClick={this.props.handleBackClick}>{Intl.get('user.user.add.back', '上一步')}</Button>
                     {this.renderExtractOperator()}
                 </div>
+                <DifferentVersion
+                    showFlag={this.state.showDifferentVersion}
+                    closeVersion={this.triggerShowVersionInfo}
+                />
             </div>
         );
     }

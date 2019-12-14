@@ -7,6 +7,7 @@
 @margin: 24px;
 .register-wrap{
   height: 100vh;
+  font-family: 'Noto Sans CJK SC', 'Noto Sans CJK', 'Source Han Sans', source-han-sans-simplified-c, sans-serif !important;
   .logo{
     margin-top: 16px;
     margin-left: 16px;
@@ -14,32 +15,52 @@
   //注册页图片区
   .register-image-container{
     position: absolute;
-    width: 50%;
-    height: 413px;
+    width: 40%;
     top: 0;
     bottom: 0;
     margin: auto 0;
-    .register-image{
-      float: right;
+    background: linear-gradient(to bottom,#2196f3, #3dcbae);
+    .register-left-content-style{
+      position: relative;
+      height: 50%;
+      width: 100%;
+      .logo, .register-slogan-tip{
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+      }
+      .logo{
+        width: 96px;
+      }
+      .register-slogan-tip{
+        width: 200px; 
+        height: 24px;
+        color: #ffffff;
+        font-size: 18px;
+      }
     }
+    
   }
   //注册表单区
   .register-form-wrap{
     position: absolute;
     top: 0;
     right: 0;
-    width: 50%;
+    width: 60%;
     height: 100%;
     display: flex;
     align-items: center;
     .form-wrap{
-      width: 416px;
-      margin-left: 48px;
-      padding: 40px;
-      border-radius: 4px;
-      background-color: #F1F4F8;
+      position: absolute;
+      width: 384px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
       .form-title{
-        font-size: 14px;
+        font-size: 16px;
         font-weight: bold;
         text-align: center;
         color: #213340;
@@ -48,7 +69,7 @@
       .register-form{
         margin-top: 10px;
         .ant-form-item{
-          margin-bottom: 8px;
+          margin-bottom: 20px;
         }
         input{
           height: 40px;
@@ -73,7 +94,7 @@
 
         //验证码输入框
         input.captcha-code-input{
-          width: 180px;
+          width: 225px;
         }
         .captcha-code-wrap{
           float: right;
@@ -92,10 +113,12 @@
             margin-left: 4px;
           }
         }
+        .user-agreement-checkbox{
+          font-size: 14px;
+        }
         button{
           width: 100%;
           height: 40px;
-          margin-top: 20px;
           color: #ffffff;
           background-color: #EFA246;
           border-color: #EFA246;
@@ -112,12 +135,17 @@
       .register-form.register-finished-form{
         margin-top: 8px;
       }
+      .register-to-login{
+        float: right;
+        font-size: 14px;
+      }
     }
   }
 }
 
 #footer {
   .footer-content {
+    width: 60% !important;
     color: #000000;
   }
 }

@@ -39,6 +39,8 @@ import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 import {leadRecommendEmitter} from 'PUB_DIR/sources/utils/emitters';
+import DifferentVersion from 'MOD_DIR/different_version/public';
+import {COMPANY_PHONE} from 'PUB_DIR/sources/utils/consts';
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -55,6 +57,7 @@ class RecommendCustomerRightPanel extends React.Component {
             batchPopoverVisible: false,//批量操作展示popover
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             canClickExtract: true,//防止用户连续点击批量提取
+            showDifferentVersion: false,//是否显示版本信息面板
             ...clueCustomerStore.getState()
         };
     }
@@ -333,6 +336,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 this.getRecommendClueCount((count) => {
                     //如果获取出错了就不要校验数字了
                     if (_.isNumber(count) && (this.isTrialAccount() || this.isOfficalAccount()) && count >= this.state.maxLimitExtractNumber){
+                        // this.handleTrialAndFormal();
                         this.setState({
                             tablePopoverVisible: record.id,
                             singleExtractLoading: false,
@@ -410,7 +414,7 @@ class RecommendCustomerRightPanel extends React.Component {
         const column_width = '80px';
         let columns = [
             {
-                title: Intl.get('clue.customer.recommend.clue.lists', '推荐线索'),
+                title: Intl.get('clue.customer.clue.name.abbrev', '线索名'),
                 dataIndex: 'name',
                 width: '300px',
                 render: (text, record, index) => {
@@ -491,7 +495,13 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     //个人试用升级为正式版
     handleUpgradePersonalVersion = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL);
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            showDifferentVersion: this.triggerShowVersionInfo
+        });
+    };
+    //显示/隐藏版本信息面板
+    triggerShowVersionInfo = () => {
+        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
     };
     //增加线索量
     handleClickAddClues = () => {
@@ -519,14 +529,14 @@ class RecommendCustomerRightPanel extends React.Component {
             if(currentVersion.personal && this.isTrialAccount()) {//个人试用
                 maxLimitTip = <ReactIntl.FormattedMessage
                     id="clue.recommend.trial.extract.num.limit.tip"
-                    defaultMessage={'明天可再提取{count}条，如需马上提取请{upgradedVersion}'}
+                    defaultMessage={'已提取{count}条，如需继续提取请{upgradedVersion}'}
                     values={{
                         count: maxLimitExtractNumber,
                         upgradedVersion: <a onClick={this.handleUpgradePersonalVersion} data-tracename="点击个人升级为正式版按钮">{Intl.get('personal.upgrade.to.official.version', '升级为正式版')}</a>
                     }}
                 />;
             } else if(currentVersion.company && this.isTrialAccount()) {//企业试用
-                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',{count: maxLimitExtractNumber,contact: '400-6978-520'});
+                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '已提取{count}条，如需继续提取请联系销售：{contact}',{count: maxLimitExtractNumber,contact: COMPANY_PHONE});
             } else if(currentVersion.personal && this.isOfficalAccount()//个人正式版
                 || currentVersion.company && this.isOfficalAccount() && this.isManager()) { //或企业正式版管理员
                 maxLimitTip = <ReactIntl.FormattedMessage
@@ -540,6 +550,15 @@ class RecommendCustomerRightPanel extends React.Component {
             }
         }
         return maxLimitTip;
+    };
+    handleTrialAndFormal = () => {
+        const versionAndType = checkVersionAndType();
+        //如果是个人试用,直接显示购买个人版界面
+        if(versionAndType.isPersonalTrial) {
+            this.handleUpgradePersonalVersion();
+        }else if(versionAndType.formal) {//如果是正式，直接显示购买线索量界面
+            this.handleClickAddClues();
+        }
     };
     batchAssignRecommendClues = (submitObj) => {
         this.setState({
@@ -577,6 +596,7 @@ class RecommendCustomerRightPanel extends React.Component {
                         //已经提取的数量和这次要提取数量之和大于最大限制的提取数
                         count + _.get(this, 'state.disabledCheckedClues.length') > this.state.maxLimitExtractNumber
                     ){
+                        // this.handleTrialAndFormal();
                         this.setState({
                             batchPopoverVisible: true,
                             singleExtractLoading: false,
@@ -667,7 +687,15 @@ class RecommendCustomerRightPanel extends React.Component {
             delete conditionObj.load_size;
             delete conditionObj.userId;
             //如果有筛选条件的时候，提醒修改条件再查看，没有筛选条件的时候，提示暂无数据
-            var emptyText = _.isEmpty(conditionObj) ? Intl.get('common.no.data', '暂无数据') : Intl.get('clue.edit.condition.search', '请修改条件再查看');
+            var emptyText = _.isEmpty(conditionObj) ? Intl.get('common.no.data', '暂无数据') : <ReactIntl.FormattedMessage
+                id="clue.edit.condition.search"
+                defaultMessage={'请{changeCondition}再查看'}
+                values={{
+                    'changeCondition': <a onClick={this.handleClickEditCondition}>
+                        {Intl.get('clue.customer.condition.change', '修改条件')}
+                    </a>
+                }}
+            />;
             var recommendList = this.state.recommendClueLists;
             //因为antctable中的noMoreDataText只接受字符串，所以这个带点击功能的提示要用字符串拼接起来
             var refreshTip = Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以') +
@@ -908,6 +936,10 @@ class RecommendCustomerRightPanel extends React.Component {
                         hideFocusCustomerPanel={this.hideFocusCustomerPanel}
                         saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
                     /> : null}
+                <DifferentVersion
+                    showFlag={this.state.showDifferentVersion}
+                    closeVersion={this.triggerShowVersionInfo}
+                />
             </div>
 
 

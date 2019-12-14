@@ -8,7 +8,7 @@ const PropTypes = require('prop-types');
 import Trace from '../../lib/trace';
 import {commonPhoneRegex} from '../../public/sources/utils/validate-util';
 import crypto from 'crypto';
-import {Form, Button, Input, Icon} from 'antd';
+import {Form, Button, Input, Icon, Checkbox} from 'antd';
 const FormItem = Form.Item;
 let codeEffectiveInterval = null;
 //验证码的有效时间：60s
@@ -223,7 +223,17 @@ class RegisterForm extends React.Component {
             callback();
         }
     }
-
+    // onChangeUserAgreement = (e) => {
+    //     this.setState({
+    //         checkedUserAgreement: e.target.checked,
+    //     });
+    // }
+    openUserAgreement = (e) => {
+        window.open('/user/agreement');
+    }
+    toLogin = (e) => {
+        window.location.href = '/login';
+    }
     render() {
         const {getFieldDecorator} = this.props.form;
         return (
@@ -276,10 +286,42 @@ class RegisterForm extends React.Component {
                     )}
                 </FormItem>
                 <FormItem>
+                    {getFieldDecorator('checkedUserAgreement', {
+                        rules: [{
+                            required: true, message: Intl.get('register.user.agreement.valid.tip', '请先阅读并同意《客套用户协议》')
+                        }]
+                    })(
+                        <Checkbox className='user-agreement-checkbox'>
+                            <ReactIntl.FormattedMessage
+                                id='register.user.agreement.tip'
+                                defaultMessage='已阅读并同意{userAgreement}'
+                                values={{
+                                    'userAgreement': (
+                                        <a onClick={this.openUserAgreement}>
+                                            {Intl.get('register.user.agreement.curtao', '《客套用户协议》')}
+                                        </a>)
+                                }}
+                            />
+                        </Checkbox>
+                    )}
+                </FormItem>
+                <FormItem>
                     <Button onClick={this.submitFormData.bind(this)}>
                         {Intl.get('register.wechat.register.btn', '注册并登录')}
                         {this.state.isRegistering ? <Icon type="loading"/> : null}
                     </Button>
+                    <div className='register-to-login'> 
+                        <ReactIntl.FormattedMessage
+                            id='register.to.login.tip'
+                            defaultMessage= '已有账号，去{login}'
+                            values={{
+                                'login': (
+                                    <a onClick={this.toLogin}>
+                                        {Intl.get('login.login', '登录')}
+                                    </a>)
+                            }}
+                        />
+                    </div>
                     {this.state.registerErrorMsg ? (
                         <div className="register-error-tip">{this.state.registerErrorMsg}</div>) : null}
                 </FormItem>
