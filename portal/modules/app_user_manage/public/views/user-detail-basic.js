@@ -731,45 +731,54 @@ class UserDetailBasic extends React.Component {
                     onChangeSuccess={this.userCustomerChangeSuccess}
                     user_id={userInfo.user_id}
                 />
-                <ContactCard
-                    id={userInfo.user_id}
-                    userInfo={userInfo}
-                    phone={{
-                        value: userInfo.phone,
-                        field: 'phone',
-                        type: 'text',
-                        hasEditPrivilege: hasEditPrivilege ,
-                        validators: [{ validator: checkPhone }],
-                        placeholder: Intl.get('user.input.phone', '请输入手机号'),
-                        title: Intl.get('user.phone.set.tip', '修改手机号'),
-                        addDataTip: Intl.get('member.phone.add', '添加手机号'),
-                        noDataTip: Intl.get('member.phone.no.data', '未添加手机号'),
-                    }}
-                    email={{
-                        value: userInfo.email,
-                        field: 'email',
-                        type: 'text',
-                        hasEditPrivilege: hasEditPrivilege ,
-                        validators: [{
-                            type: 'email',
-                            required: true,
-                            message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                        }],
-                        placeholder: Intl.get('member.input.email', '请输入邮箱'),
-                        title: Intl.get('user.email.set.tip', '修改邮箱'),
-                        noDataTip: Intl.get('crm.contact.email.none', '暂无邮箱'),
-                        addDataTip: Intl.get('crm.contact.email.add', '添加邮箱')
-                    }}
-                    saveEditInput={AppUserAjax.editAppUser}
-                />
-                {isOplateUser() ? <OrgCard
-                    user_id={userInfo.user_id}
-                    showBtn={true}
-                    groupsInfo={groupsInfo}
-                    onModifySuccess={this.organizationChangeSuccess}
-                    userInfo={userInfo}
-                    sales_team={_.get(initialUser, 'sales_team', {})}
-                /> : null}
+                {
+                    hasEditPrivilege || userInfo.phone || userInfo.email ? (
+                        <ContactCard
+                            id={userInfo.user_id}
+                            userInfo={userInfo}
+                            phone={{
+                                value: userInfo.phone,
+                                field: 'phone',
+                                type: 'text',
+                                hasEditPrivilege: hasEditPrivilege ,
+                                validators: [{ validator: checkPhone }],
+                                placeholder: Intl.get('user.input.phone', '请输入手机号'),
+                                title: Intl.get('user.phone.set.tip', '修改手机号'),
+                                addDataTip: Intl.get('member.phone.add', '添加手机号'),
+                                noDataTip: Intl.get('member.phone.no.data', '未添加手机号'),
+                            }}
+                            email={{
+                                value: userInfo.email,
+                                field: 'email',
+                                type: 'text',
+                                hasEditPrivilege: hasEditPrivilege ,
+                                validators: [{
+                                    type: 'email',
+                                    required: true,
+                                    message: Intl.get('common.correct.email', '请输入正确的邮箱')
+                                }],
+                                placeholder: Intl.get('member.input.email', '请输入邮箱'),
+                                title: Intl.get('user.email.set.tip', '修改邮箱'),
+                                noDataTip: Intl.get('crm.contact.email.none', '暂无邮箱'),
+                                addDataTip: Intl.get('crm.contact.email.add', '添加邮箱')
+                            }}
+                            saveEditInput={AppUserAjax.editAppUser}
+                        />
+                    ) : null
+                }
+
+                {
+                    isOplateUser() && !_.isEmpty(groupsInfo) ? (
+                        <OrgCard
+                            user_id={userInfo.user_id}
+                            showBtn={true}
+                            groupsInfo={groupsInfo}
+                            onModifySuccess={this.organizationChangeSuccess}
+                            userInfo={userInfo}
+                            sales_team={_.get(initialUser, 'sales_team', {})}
+                        />
+                    ) : null
+                }
                 <div className="app_wrap" ref="app_wrap"> 
                     <DetailCard
                         title={(<div className="sales-team-show-block">
