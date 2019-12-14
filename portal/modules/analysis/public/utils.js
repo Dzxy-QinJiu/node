@@ -101,7 +101,7 @@ export function ifNotSingleApp(conditions) {
     const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
     const appId = _.get(appIdCondition, 'value');
 
-    if (appId && (appId.includes('all') || appId.includes(','))) {
+    if (appId && (_.includes(appId, 'all') || _.includes(appId, ','))) {
         return true;
     } else {
         return false;

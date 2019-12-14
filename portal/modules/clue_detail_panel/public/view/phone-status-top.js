@@ -289,7 +289,7 @@ class phoneStatusTop extends React.Component {
                         ) : null}
                     </div>
                     {//通话结束后，展示保存跟进记录的按钮
-                        HANG_UP_TYPES.includes(phonemsgObj.type) ? <div className="btn-select-container">
+                        _.includes(HANG_UP_TYPES, phonemsgObj.type) ? <div className="btn-select-container">
                             {/*如果获取到的线索不止一个，要手动选择要关联的线索*/}
                             {clueInfoArr.length > 1 ?
                                 <div className="select-add-trace-customer">
@@ -338,7 +338,7 @@ class phoneStatusTop extends React.Component {
         var phoneNum = this.props.contactNameObj && this.props.contactNameObj.contact ? this.props.contactNameObj.contact + '-' : '';
         if (phonemsgObj.call_type === 'IN') {
             phoneNum += phonemsgObj.extId;
-            if (HANG_UP_TYPES.includes(phonemsgObj.type)) {
+            if (_.includes(HANG_UP_TYPES, phonemsgObj.type)) {
                 phoneNum += phonemsgObj.dst;
             }
         } else {
@@ -438,7 +438,7 @@ class phoneStatusTop extends React.Component {
             }
         } else if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
             iconFontCls += ' icon-phone-answering';
-        } else if (HANG_UP_TYPES.includes(phonemsgObj.type)) {
+        } else if (_.includes(HANG_UP_TYPES, phonemsgObj.type)) {
             iconFontCls += ' icon-phone-bye';
             phoneStatusContainer += ' finish-phone-call';
         }
@@ -465,7 +465,7 @@ class phoneStatusTop extends React.Component {
                             this.renderTraceItem(phonemsgObj)}
                     </div>
                     {/*已转化的线索和无效线索不能展示这两个按钮*/}
-                    {!this.state.isAddingMoreProdctInfo && !this.state.isAddingPlanInfo && ![SELECT_TYPE.HAS_TRANSFER].includes(_.get(this, 'state.curClue.status')) && _.get(this, 'state.curClue.availability') === AVALIBILITYSTATUS.AVALIBILITY ?
+                    {!this.state.isAddingMoreProdctInfo && !this.state.isAddingPlanInfo && !_.includes([SELECT_TYPE.HAS_TRANSFER], _.get(this, 'state.curClue.status')) && _.get(this, 'state.curClue.availability') === AVALIBILITYSTATUS.AVALIBILITY ?
                         <div className="add-trace-and-plan">
                             {this.state.showMarkClueInvalid ? <div className="add-plan-info-container">
                                 <div className="contact-tip">{Intl.get('crm.clue.next.contact.time', '下次联系时间')}

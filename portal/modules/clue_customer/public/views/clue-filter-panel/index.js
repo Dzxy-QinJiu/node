@@ -178,7 +178,7 @@ class ClueFilterPanel extends React.Component {
                         }
                         if (typeof value === 'string') {
                             //拼接字符串（数组value）
-                            if (value.includes(',')) {
+                            if (_.includes(value, ',')) {
                                 valueList = value.split(',');
                             }
                             //单个字符串

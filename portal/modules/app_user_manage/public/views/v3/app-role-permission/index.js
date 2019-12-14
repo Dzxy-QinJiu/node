@@ -421,8 +421,8 @@ class AppRolePermission extends React.Component {
                                         key={idx}
                                         disabled={this.state.selectedRolesAlreadyContainedPermissionIds.includes(x.permission_id)}
                                         checked={
-                                            this.state.selectedPermissionList.includes(x.permission_id) ||
-                                            this.state.selectedRolesAlreadyContainedPermissionIds.includes(x.permission_id)
+                                            _.includes(this.state.selectedPermissionList, x.permission_id) ||
+                                            _.includes(this.state.selectedRolesAlreadyContainedPermissionIds, x.permission_id)
                                         }
                                         onChange={this.toggleSelectedPermission.bind(this, x)}
                                     >{x.permission_name}</Checkbox>

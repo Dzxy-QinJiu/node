@@ -80,7 +80,7 @@ export function getCustomerDealActiveChart(title = '', stages = []) {
                 let count = 0;
 
                 _.each(dataItem, (value, key) => {
-                    if (stages.includes(key)) {
+                    if (_.includes(stages, key)) {
                         count += dataItem[key].total;
                     }
                 });
