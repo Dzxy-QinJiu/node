@@ -1,4 +1,3 @@
-var React = require('react');
 /**
 * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
 * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -42,32 +41,40 @@ class ContactCard extends React.Component {
                 title={Intl.get('crm.5', '联系方式')}
                 content={(
                     <div className="sales-team-show-block">
-                        <div className="sales-team clearfix">
-                            <span className="sales-team-label">
-                                {Intl.get('common.email', '邮箱')}:
-                            </span>
-                            <span className="sales-team-text">
-                                {hasEditAuth ? <UserDetailEditField
-                                    id={userInfo.user_id}
-                                    saveEditInput={this.props.saveEditInput}
-                                    showBtn={true}
-                                    {...this.props.email}
-                                /> : this.props.email.value}
-                            </span>
-                        </div>
-                        <div className="sales-team clearfix">
-                            <span className="sales-team-label">
-                                {Intl.get('user.phone', '手机号')}:
-                            </span>
-                            <span className="sales-team-text">
-                                {hasEditAuth ? <UserDetailEditField
-                                    id={userInfo.user_id}
-                                    saveEditInput={this.props.saveEditInput}
-                                    showBtn={true}
-                                    {...this.props.phone}
-                                /> : this.props.phone.value}
-                            </span>
-                        </div>
+                        {
+                            hasEditAuth || this.props.email.value ? (
+                                <div className="sales-team clearfix">
+                                    <span className="sales-team-label">
+                                        {Intl.get('common.email', '邮箱')}:
+                                    </span>
+                                    <span className="sales-team-text">
+                                        <UserDetailEditField
+                                            id={userInfo.user_id}
+                                            saveEditInput={this.props.saveEditInput}
+                                            showBtn={true}
+                                            {...this.props.email}
+                                        />
+                                    </span>
+                                </div>
+                            ) : null
+                        }
+                        {
+                            hasEditAuth || this.props.phone.value ? (
+                                <div className="sales-team clearfix">
+                                    <span className="sales-team-label">
+                                        {Intl.get('user.phone', '手机号')}:
+                                    </span>
+                                    <span className="sales-team-text">
+                                        <UserDetailEditField
+                                            id={userInfo.user_id}
+                                            saveEditInput={this.props.saveEditInput}
+                                            showBtn={true}
+                                            {...this.props.phone}
+                                        />
+                                    </span>
+                                </div>
+                            ) : null
+                        }
                     </div>
                 )}
             />
