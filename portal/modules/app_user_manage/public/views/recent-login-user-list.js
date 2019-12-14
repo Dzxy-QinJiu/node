@@ -405,8 +405,9 @@ class RecentLoginUsers extends React.Component {
                 title: Intl.get('user.login.times', '登录次数'),
                 dataIndex: 'logins',
                 key: 'logins',
-                width: '100px',
                 className: 'has-filter',
+                width: '100px',
+                align: 'right',
                 render: function(text, rowData, idx) {
                     let loginCount = 0;
                     if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
@@ -422,6 +423,7 @@ class RecentLoginUsers extends React.Component {
                 key: 'login_day_count',
                 width: '100px',
                 className: 'has-filter',
+                align: 'right',
                 render: function(text, rowData, idx) {
                     let loginDays = 0;
                     if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
