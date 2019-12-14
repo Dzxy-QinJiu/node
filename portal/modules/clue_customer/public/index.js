@@ -675,7 +675,9 @@ class ClueCustomer extends React.Component {
 
     //个人试用升级为正式版
     handleUpgradePersonalVersion = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {});
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            showDifferentVersion: this.triggerShowVersionInfo
+        });
     };
     //显示/隐藏版本信息面板
     triggerShowVersionInfo = () => {
@@ -688,7 +690,7 @@ class ClueCustomer extends React.Component {
         let currentVersionType = checkCurrentVersionType();
         let tips = '';
         if(currentVersion.personal && currentVersionType.trial) {//个人试用
-            tips = <a onClick={this.triggerShowVersionInfo}>{Intl.get('clue.customer.export.trial.user.tip', '请升级正式版')}</a>;
+            tips = <a onClick={this.handleUpgradePersonalVersion}>{Intl.get('clue.customer.export.trial.user.tip', '请升级正式版')}</a>;
         }else if(currentVersion.company && currentVersionType.trial){//企业试用
             tips = Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'});
         }

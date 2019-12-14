@@ -15,6 +15,7 @@ import {checkCurrentVersionType} from 'PUB_DIR/sources/utils/common-method-util'
 import { setUserData, getUserData } from 'PUB_DIR/sources/user-data';
 import history from 'PUB_DIR/sources/history';
 import { paymentEmitter } from 'OPLATE_EMITTER';
+import Trace from 'LIB_DIR/trace';
 
 const PERSONAL_VERSION_GOODS_TYPE = 'curtao_personal';
 
@@ -185,7 +186,11 @@ class OfficialPersonalEdition extends React.Component{
     };
 
     handleUpgradeEnterprise = () => {
-        console.log('点击升级企业版');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击升级为企业版');
+        if(_.isFunction(this.props.paramObj.showDifferentVersion)) {
+            this.props.paramObj.showDifferentVersion();
+            this.onClosePanel();
+        }
     };
 
     //处理提交的商品信息
@@ -331,7 +336,7 @@ OfficialPersonalEdition.propTypes = {
 };
 module.exports = HocGoodsBuy({
     leftTitle: Intl.get('personal.upgrade.to.official.version', '升级为正式版'),
-    // rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
+    rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
     i18nId: 'clues.extract.count.at.month',
     i18nMessage: '线索推荐每月可提取 {count} 条',
     dataTraceName: '升级个人正式版界面',

@@ -469,7 +469,7 @@ class RecommendCustomerRightPanel extends React.Component {
     //个人试用升级为正式版
     handleUpgradePersonalVersion = () => {
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
-            leftTitle: Intl.get()
+            showDifferentVersion: this.triggerShowVersionInfo
         });
     };
     //显示/隐藏版本信息面板
@@ -505,7 +505,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     defaultMessage={'已提取{count}条，如需继续提取请{upgradedVersion}'}
                     values={{
                         count: maxLimitExtractNumber,
-                        upgradedVersion: <a onClick={this.triggerShowVersionInfo} data-tracename="点击个人升级为正式版按钮">{Intl.get('personal.upgrade.to.official.version', '升级为正式版')}</a>
+                        upgradedVersion: <a onClick={this.handleUpgradePersonalVersion} data-tracename="点击个人升级为正式版按钮">{Intl.get('personal.upgrade.to.official.version', '升级为正式版')}</a>
                     }}
                 />;
             } else if(currentVersion.company && this.isTrialAccount()) {//企业试用

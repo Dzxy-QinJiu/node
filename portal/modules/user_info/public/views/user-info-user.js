@@ -388,6 +388,7 @@ class UserInfo extends React.Component{
     // 处理版本升级
     handleVersionUpgrade = () => {
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            showDifferentVersion: this.triggerShowVersionInfo,
             continueFn: () => {
                 history.push('/leads');
             }
@@ -428,7 +429,7 @@ class UserInfo extends React.Component{
                 return (
                     <Button
                         className="user-version-upgrade"
-                        onClick={this.triggerShowVersionInfo}
+                        onClick={this.handleVersionUpgrade}
                         data-tracename="点击升级为个人正式版按钮"
                     >
                         {Intl.get('user.info.version.upgrade', '升级为正式版')}
@@ -438,7 +439,7 @@ class UserInfo extends React.Component{
                 return (
                     <Button
                         className="user-version-upgrade"
-                        onClick={this.triggerShowVersionInfo}
+                        onClick={this.handleVersionUpgrade}
                         data-tracename="点击个人续费按钮"
                     >
                         {Intl.get('payment.renewal', '续费')}

@@ -198,7 +198,8 @@ const HOCGoodsBuy = (options = {}) => {
                                 <span>{this.state.leftTitle || options.leftTitle}</span>
                                 {
                                     options.rightTitle ? (
-                                        <Popover
+                                        <React.Fragment>
+                                            {/*<Popover
                                             placement="left"
                                             content={Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})}
                                             trigger="hover"
@@ -212,7 +213,14 @@ const HOCGoodsBuy = (options = {}) => {
                                                 data-tracename={`点击${options.rightTitle}按钮`}
                                                 onClick={this.handleUpgradeEnterprise}
                                             >{options.rightTitle}</span>
-                                        </Popover>
+                                        </Popover>*/}
+                                            <span
+                                                className="hoc-goods-buy-title-btn"
+                                                title={options.rightTitle}
+                                                data-tracename={`点击${options.rightTitle}按钮`}
+                                                onClick={this.handleUpgradeEnterprise}
+                                            >{options.rightTitle}</span>
+                                        </React.Fragment>
                                     ) : null
                                 }
                             </div>

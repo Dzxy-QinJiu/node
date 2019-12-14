@@ -304,7 +304,7 @@ class ExtractClues extends React.Component {
                         upgradedVersion: (
                             <Button className="customer-btn" data-tracename="点击个人升级为正式版按钮"
                                 title={Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
-                                onClick={this.triggerShowVersionInfo}>
+                                onClick={this.handleUpgradePersonalVersion}>
                                 {Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
                             </Button>
                         )
@@ -406,7 +406,9 @@ class ExtractClues extends React.Component {
     };
     //个人试用升级为正式版
     handleUpgradePersonalVersion = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL);
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            showDifferentVersion: this.triggerShowVersionInfo
+        });
     };
     //显示/隐藏版本信息面板
     triggerShowVersionInfo = () => {
