@@ -289,6 +289,7 @@ class RecentLoginUsers extends React.Component {
     }
 
     getTableColumns() {
+        let numberRightAlignCls = 'has-filter num-float-right';
         return [
             {
                 title: Intl.get('common.username', '用户名'),
@@ -406,7 +407,7 @@ class RecentLoginUsers extends React.Component {
                 dataIndex: 'logins',
                 key: 'logins',
                 width: '100px',
-                className: 'has-filter',
+                className: numberRightAlignCls,
                 render: function(text, rowData, idx) {
                     let loginCount = 0;
                     if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
@@ -421,7 +422,7 @@ class RecentLoginUsers extends React.Component {
                 dataIndex: 'login_day_count',
                 key: 'login_day_count',
                 width: '100px',
-                className: 'has-filter',
+                className: numberRightAlignCls,
                 render: function(text, rowData, idx) {
                     let loginDays = 0;
                     if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
