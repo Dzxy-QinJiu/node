@@ -1,3 +1,4 @@
+
 var path = require('path');
 var auth = require(path.join(portal_root_path, './lib/utils/auth'));
 var _ = require('lodash');
@@ -7,6 +8,7 @@ var restUtil = require('ant-auth-request').restUtil(restLogger);
 var EventEmitter = require('events');
 let BackendIntl = require('../../../lib/utils/backend_intl');
 import publicPrivilegeConst from '../../../public/privilege-const';
+import privilegeConstCommon from '../../../modules/common/public/privilege-const';
 
 //获取用户权限
 function getPrivileges(req) {
@@ -53,17 +55,23 @@ exports.getUserInfo = function(req, res, userId) {
     let getUserBasicInfo = getDataPromise(req, res, userInfoRestApis.getUserInfo, {userId: userId}, queryObj);
     //获取登录用户的角色信息
     let getUserRole = getDataPromise(req, res, userInfoRestApis.getMemberRoles);
-    //获取登录用户已经配置过的流程
-    let getUserWorkflowConfigs = getDataPromise(req, res, userInfoRestApis.getUserWorkFlowConfigs,'',{page_size: 1000});
     //获取登录用户的引导流程
     let getUserGuideCOnfigs = getDataPromise(req, res, userInfoRestApis.getGuideConfig);
-    let promiseList = [getUserBasicInfo, getUserRole, getUserWorkflowConfigs, getUserGuideCOnfigs];
+    let promiseList = [getUserBasicInfo, getUserRole, getUserGuideCOnfigs];
     let userPrivileges = getPrivileges(req);
     //是否有获取所有团队数据的权限
     let hasGetAllTeamPrivilege = userPrivileges.indexOf(publicPrivilegeConst.GET_TEAM_LIST_ALL) !== -1;
+    //是否有获取流程配置的权限
+    let hasWorkFlowPrivilege = userPrivileges.indexOf(privilegeConstCommon.WORKFLOW_BASE_PERMISSION) !== -1;
     //没有获取所有团队数据的权限,通过获取我所在的团队及下级团队来判断是否是普通销售
     if (!hasGetAllTeamPrivilege) {
         promiseList.push(getDataPromise(req, res, userInfoRestApis.getMyTeamWithSubteams));
+        if(hasWorkFlowPrivilege){
+            //获取登录用户已经配置过的流程
+            promiseList.push(getDataPromise(req, res, userInfoRestApis.getUserWorkFlowConfigs,'',{page_size: 1000}));
+        }
+    }else if(hasWorkFlowPrivilege){
+        promiseList.push(getDataPromise(req, res, userInfoRestApis.getUserWorkFlowConfigs,'',{page_size: 1000}));
     }
 
     Promise.all(promiseList).then(resultList => {
@@ -73,16 +81,23 @@ exports.getUserInfo = function(req, res, userId) {
             let userData = userInfoResult.successData;
             //角色标识的数组['realm_manager', 'sales', ...]
             userData.roles = _.get(resultList, '[1].successData', []);
-            //已经配置过的流程
-            userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[2].successData', []));
             //引导流程
-            userData.guideConfig = _.get(resultList,'[3].successData',[]);
+            userData.guideConfig = _.get(resultList,'[2].successData',[]);
             //是否是普通销售
             if (hasGetAllTeamPrivilege) {//管理员或运营人员，肯定不是普通销售
                 userData.isCommonSales = false;
+                //已经配置过的流程
+                if(hasWorkFlowPrivilege){
+                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[3].successData', []));
+                }
+
             } else {//普通销售、销售主管、销售总监等，通过我所在的团队及下级团队来判断是否是普通销售
-                let teamTreeList = _.get(resultList, '[4].successData', []);
+                let teamTreeList = _.get(resultList, '[3].successData', []);
                 userData.isCommonSales = getIsCommonSalesByTeams(userData.user_id, teamTreeList);
+                //已经配置过的流程
+                if(hasWorkFlowPrivilege){
+                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[4].successData', []));
+                }
             }
             emitter.emit('success', userData);
         } else if (userInfoResult.errorData) {//只有用户信息获取失败时，才返回失败信息
@@ -177,6 +192,18 @@ exports.getUserLanguage = function(req, res) {
 exports.recordLog = function(req, res, message) {
     pageLogger.info(message);
 };
+//根据手机号获取用户所在区域
+exports.getUserAreaData = function(req, res) {
+    return restUtil.baseRest.get({
+        url: userInfoRestApis.getAreaByPhone.replace(':phone', req.params.phone),
+        req: req,
+        res: res,
+        headers: {
+            realm: global.config.loginParams.realm
+        }
+    }, null);
+};
+var baseUrl = 'http://dataservice.curtao.com';
 var userInfoRestApis = {
     getUserInfo: '/rest/base/v1/user/id',
     getMemberRoles: '/rest/base/v1/user/member/roles',
@@ -185,7 +212,8 @@ var userInfoRestApis = {
     getMyTeamWithSubteams: '/rest/base/v1/group/teams/tree/self',
     getUserWorkFlowConfigs: '/rest/base/v1/workflow/configs',
     getOrganizationInfoById: '/rest/base/v1/realm/organization',
-    getGuideConfig: '/rest/base/v1/user/member/guide'
+    getGuideConfig: '/rest/base/v1/user/member/guide',
+    getAreaByPhone: baseUrl + '/rest/es/v2/es/phone_location/:phone',
 };
 
 exports.getPrivileges = getPrivileges;

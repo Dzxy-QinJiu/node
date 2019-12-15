@@ -21,8 +21,8 @@ import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import MemberTableList from 'MOD_DIR/member-table-list';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
-import SALES_DEPARTMENT_PRIVILEGE from '../privilege-const';
-import MEMBER_MANAGE_PRIVILEGE from 'MOD_DIR/member_manage/public/privilege-const';
+import salesDepartmentPrivilege from '../privilege-const';
+import memberManagePrivilege from 'MOD_DIR/member_manage/public/privilege-const';
 
 const tableHeadHeight = 50; // table表格头部高度
 
@@ -1067,7 +1067,7 @@ const MemberList = createReactClass({
     //渲染团队目标
     renderSalesGoals: function() {
         //没有销售目标的权限，不展示
-        if (!hasPrivilege(MEMBER_MANAGE_PRIVILEGE.USER_MANAGE_ADD_SALES_GOAL)) {
+        if (!hasPrivilege(memberManagePrivilege.USER_MANAGE_ADD_SALES_GOAL)) {
             return;
         }
         let groupGoal = _.get(this.state.salesGoals, 'goal'); // 部门销售目标
@@ -1196,7 +1196,7 @@ const MemberList = createReactClass({
             >
                 <div className="member-top-operation-div">
                     <div className='pull-left'>
-                        <PrivilegeChecker check={SALES_DEPARTMENT_PRIVILEGE.EDIT_DEPARTMENT} className="btn-item">
+                        <PrivilegeChecker check={salesDepartmentPrivilege.EDIT_DEPARTMENT} className="btn-item">
                             <Button
                                 title={Intl.get('sales.team.add.team.member', '添加团队成员')}
                                 data-tracename="添加团队成员"

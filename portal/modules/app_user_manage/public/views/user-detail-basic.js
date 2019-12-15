@@ -30,7 +30,7 @@ import {checkPhone} from 'PUB_DIR/sources/utils/validate-util';
 const FORMAT = oplateConsts.DATE_FORMAT;
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import ShareObj from'../util/app-id-share-util';
-import USER_MANAGE_PRIVILEGE from '../privilege-const';
+import userManagePrivilege from '../privilege-const';
 
 class UserDetailBasic extends React.Component {
     static defaultProps = {
@@ -211,7 +211,7 @@ class UserDetailBasic extends React.Component {
         }
         return (
             <PrivilegeChecker
-                check={USER_MANAGE_PRIVILEGE.USER_MANAGE}
+                check={userManagePrivilege.USER_MANAGE}
                 tagName="a"
                 className="a_button"
                 href="javascript:void(0)"
@@ -253,7 +253,7 @@ class UserDetailBasic extends React.Component {
 
     renderMultiLogin = (app, readOnly) => {
         var multilogin = /^[10]$/.test((app.multilogin + '')) ? app.multilogin + '' : '';
-        if (!hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE)) {
+        if (!hasPrivilege(userManagePrivilege.USER_MANAGE)) {
             return multilogin ? (multilogin === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')) : multilogin;
         }
         if (!multilogin) {
@@ -279,7 +279,7 @@ class UserDetailBasic extends React.Component {
 
     renderIsTwoFactor = (app, readOnly) => {
         var is_two_factor = /^[10]$/.test((app.is_two_factor + '')) ? app.is_two_factor + '' : '';
-        if (!hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE)) {
+        if (!hasPrivilege(userManagePrivilege.USER_MANAGE)) {
             return is_two_factor ? (is_two_factor === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')) : is_two_factor;
         }
         if (!is_two_factor) {
@@ -321,7 +321,7 @@ class UserDetailBasic extends React.Component {
         }
         if(isOplateUser()) {
             //没有编辑的权限
-            if (!hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE)) {
+            if (!hasPrivilege(userManagePrivilege.USER_MANAGE)) {
                 return is_disabled ? (is_disabled === 'true' ? Intl.get('common.app.status.close', '关闭') : Intl.get('common.app.status.open', '开启')) : is_disabled;
             }
             if (!is_disabled) {
@@ -547,7 +547,7 @@ class UserDetailBasic extends React.Component {
                             {
                                 !hideDetail && isOplateUser() ?
                                     <PrivilegeChecker
-                                        check={USER_MANAGE_PRIVILEGE.USER_MANAGE}
+                                        check={userManagePrivilege.USER_MANAGE}
                                         tagName="div"
                                         className="operate"
                                     >
@@ -582,7 +582,7 @@ class UserDetailBasic extends React.Component {
         return (
             leftApps.length && isOplateUser() ? (
                 <PrivilegeChecker
-                    check={USER_MANAGE_PRIVILEGE.USER_MANAGE}
+                    check={userManagePrivilege.USER_MANAGE}
                     tagName="a"
                     className="a_button"
                     href="javascript:void(0)"
@@ -682,7 +682,7 @@ class UserDetailBasic extends React.Component {
 
     renderUserStatus = (user, useIcon = false) => {
         let userStatus = user && user.status;
-        if (!hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE)) {
+        if (!hasPrivilege(userManagePrivilege.USER_MANAGE)) {
             return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
         }
         return (<UserStatusSwitch useIcon={useIcon} userId={_.get(user, 'user_id')} status={userStatus === '1' ? true : false} />);
@@ -717,7 +717,7 @@ class UserDetailBasic extends React.Component {
         let initialUser = _.get(this.state, 'initialUser', {});
         let userInfo = _.get(initialUser, 'user', {});
         let groupsInfo = _.get(initialUser, 'groups', []);
-        let hasEditPrivilege = hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE);
+        let hasEditPrivilege = hasPrivilege(userManagePrivilege.USER_MANAGE);
         var DetailBlock = !this.state.isLoading && !this.state.getDetailErrorMsg ? (
             <div className='user-detail-baisc-v3'>
                 <UserBasicCard
@@ -731,45 +731,54 @@ class UserDetailBasic extends React.Component {
                     onChangeSuccess={this.userCustomerChangeSuccess}
                     user_id={userInfo.user_id}
                 />
-                <ContactCard
-                    id={userInfo.user_id}
-                    userInfo={userInfo}
-                    phone={{
-                        value: userInfo.phone,
-                        field: 'phone',
-                        type: 'text',
-                        hasEditPrivilege: hasEditPrivilege ,
-                        validators: [{ validator: checkPhone }],
-                        placeholder: Intl.get('user.input.phone', '请输入手机号'),
-                        title: Intl.get('user.phone.set.tip', '修改手机号'),
-                        addDataTip: Intl.get('member.phone.add', '添加手机号'),
-                        noDataTip: Intl.get('member.phone.no.data', '未添加手机号'),
-                    }}
-                    email={{
-                        value: userInfo.email,
-                        field: 'email',
-                        type: 'text',
-                        hasEditPrivilege: hasEditPrivilege ,
-                        validators: [{
-                            type: 'email',
-                            required: true,
-                            message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                        }],
-                        placeholder: Intl.get('member.input.email', '请输入邮箱'),
-                        title: Intl.get('user.email.set.tip', '修改邮箱'),
-                        noDataTip: Intl.get('crm.contact.email.none', '暂无邮箱'),
-                        addDataTip: Intl.get('crm.contact.email.add', '添加邮箱')
-                    }}
-                    saveEditInput={AppUserAjax.editAppUser}
-                />
-                {isOplateUser() ? <OrgCard
-                    user_id={userInfo.user_id}
-                    showBtn={true}
-                    groupsInfo={groupsInfo}
-                    onModifySuccess={this.organizationChangeSuccess}
-                    userInfo={userInfo}
-                    sales_team={_.get(initialUser, 'sales_team', {})}
-                /> : null}
+                {
+                    hasEditPrivilege || userInfo.phone || userInfo.email ? (
+                        <ContactCard
+                            id={userInfo.user_id}
+                            userInfo={userInfo}
+                            phone={{
+                                value: userInfo.phone,
+                                field: 'phone',
+                                type: 'text',
+                                hasEditPrivilege: hasEditPrivilege ,
+                                validators: [{ validator: checkPhone }],
+                                placeholder: Intl.get('user.input.phone', '请输入手机号'),
+                                title: Intl.get('user.phone.set.tip', '修改手机号'),
+                                addDataTip: Intl.get('member.phone.add', '添加手机号'),
+                                noDataTip: Intl.get('member.phone.no.data', '未添加手机号'),
+                            }}
+                            email={{
+                                value: userInfo.email,
+                                field: 'email',
+                                type: 'text',
+                                hasEditPrivilege: hasEditPrivilege ,
+                                validators: [{
+                                    type: 'email',
+                                    required: true,
+                                    message: Intl.get('common.correct.email', '请输入正确的邮箱')
+                                }],
+                                placeholder: Intl.get('member.input.email', '请输入邮箱'),
+                                title: Intl.get('user.email.set.tip', '修改邮箱'),
+                                noDataTip: Intl.get('crm.contact.email.none', '暂无邮箱'),
+                                addDataTip: Intl.get('crm.contact.email.add', '添加邮箱')
+                            }}
+                            saveEditInput={AppUserAjax.editAppUser}
+                        />
+                    ) : null
+                }
+
+                {
+                    isOplateUser() && !_.isEmpty(groupsInfo) ? (
+                        <OrgCard
+                            user_id={userInfo.user_id}
+                            showBtn={true}
+                            groupsInfo={groupsInfo}
+                            onModifySuccess={this.organizationChangeSuccess}
+                            userInfo={userInfo}
+                            sales_team={_.get(initialUser, 'sales_team', {})}
+                        />
+                    ) : null
+                }
                 <div className="app_wrap" ref="app_wrap"> 
                     <DetailCard
                         title={(<div className="sales-team-show-block">

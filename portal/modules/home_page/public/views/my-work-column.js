@@ -1093,7 +1093,8 @@ class MyWorkColumn extends React.Component {
         if(_.isBoolean(omitAjax) && omitAjax) {
             this.filterMyWork(myWorkList, item);
         } else {
-            myWorkAjax.handleMyWorkStatus({id: item.id, status: 1}).then(result => {
+            //status '1':已处理, '0'待处理
+            myWorkAjax.handleMyWorkStatus({id: item.id, status: '1'}).then(result => {
                 if (result) {
                     this.filterMyWork(myWorkList, item);
                 } else {

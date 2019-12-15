@@ -24,7 +24,7 @@ const CALENDER_COLOR = {
 };
 import userData from 'PUB_DIR/sources/user-data';
 import { data as antUtilData } from 'ant-utils';
-import USER_MANAGE_PRIVILEGE from '../privilege-const';
+import userManagePrivilege from '../privilege-const';
 
 class UserLoginAnalysis extends React.Component {
     static defaultProps = {
@@ -179,7 +179,7 @@ class UserLoginAnalysis extends React.Component {
     // 获取登录用户的类型
     getUserLoginType = () => {
         let type = 'self';
-        if (hasPrivilege(USER_MANAGE_PRIVILEGE.USER_ANALYSIS_MANAGER)) {
+        if (hasPrivilege(userManagePrivilege.USER_ANALYSIS_MANAGER)) {
             type = 'all';
         }
         return type;

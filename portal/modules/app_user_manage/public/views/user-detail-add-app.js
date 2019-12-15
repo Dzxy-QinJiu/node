@@ -34,7 +34,7 @@ var language = require('../../../../public/language/getLanguage');
 import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 import userData from 'PUB_DIR/sources/user-data';
-import USER_MANAGE_PRIVILEGE from '../privilege-const';
+import userManagePrivilege from '../privilege-const';
 import { isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
@@ -567,7 +567,7 @@ var UserDetailAddApp = createReactClass({
         var selectUserCount = AppUserStore.getState().selectUserCount;
         var options = [];
 
-        if(hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE)) {
+        if(hasPrivilege(userManagePrivilege.USER_MANAGE)) {
             // 针对管理员做判断
             if (isAdmin) {
                 //批量开通、修改应用

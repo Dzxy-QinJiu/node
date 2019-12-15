@@ -1222,7 +1222,7 @@ class ClueExtract extends React.Component {
                             <div className="search-input-inner" style={{width: this.state.filterInputWidth}}>
                                 <SearchInput
                                     ref="searchInput"
-                                    searchEvent={this.searchFullTextEvent}
+                                    searchEvent={this.getClueByKeywords}
                                     searchPlaceHolder={Intl.get('clue.search.full.text', '全文搜索')}
                                 />
                             </div>}

@@ -51,7 +51,7 @@ export function getAllChanceChart(specifyColumns) {
             //如果指定了要显示的列
             if (specifyColumns) {
                 //按指定的显示
-                option.columns = _.filter(option.columns, column => specifyColumns.includes(column.dataIndex));
+                option.columns = _.filter(option.columns, column => _.includes(specifyColumns, column.dataIndex));
             } else {
                 //接口返回数据中的第一条记录
                 const firstDataItem = _.get(chartProps.data, '[0]');

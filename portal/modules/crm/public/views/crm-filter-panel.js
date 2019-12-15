@@ -180,7 +180,7 @@ class CrmFilterPanel extends React.Component {
             if (item.groupId) {
                 if (item.groupId !== 'sales_opportunities') {
                     condition[item.groupId] = item.data.map(x => x.value);
-                    if (['customer_label', 'province', 'industry', 'member_role', 'administrative_level', 'sales_team_id', 'source_classify',COMMON_OTHER_ITEM].includes(item.groupId)) {
+                    if (_.includes(['customer_label', 'province', 'industry', 'member_role', 'administrative_level', 'sales_team_id', 'source_classify',COMMON_OTHER_ITEM], item.groupId)) {
                         condition[item.groupId] = condition[item.groupId].join(',');
                     } else if (item.singleSelect) {
                         condition[item.groupId] = condition[item.groupId][0] || '';
@@ -449,8 +449,8 @@ class CrmFilterPanel extends React.Component {
                 })
             });
         }
-        //不是个人试用时，放在地域前面
-        if(!checkVersionAndType().isPersonalTrial) {
+        //不是个人版时展示，放在地域前面
+        if(!checkVersionAndType().personal) {
             advancedData.splice(advancedData.length - 1, 0, {
                 groupName: Intl.get('crm.administrative.level', '行政级别'),
                 groupId: 'administrative_level',
@@ -488,7 +488,7 @@ class CrmFilterPanel extends React.Component {
                     }]
                 });
             }
-            if(!checkVersionAndType().isPersonalTrial) {
+            if(!checkVersionAndType().personal) {
                 advancedData.unshift({
                     groupName: Intl.get('crm.6', '负责人'),
                     groupId: 'nickname',
@@ -534,7 +534,7 @@ class CrmFilterPanel extends React.Component {
                         }))
                     });
                 }
-                if(!checkVersionAndType().isPersonalTrial) {
+                if(!checkVersionAndType().personal) {
                     advancedData.unshift({
                         groupName: Intl.get('crm.6', '负责人'),
                         groupId: 'nickname',

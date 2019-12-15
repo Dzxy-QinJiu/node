@@ -15,8 +15,7 @@ var Spinner = require('../spinner');
 const USER_LANG_KEY = 'userLang';//存储用户语言环境的key
 import {storageUtil} from 'ant-utils';
 
-const logoSrc = require('./image/curtao-logo.png');
-const registerSrc = require('./image/register.png');
+const logoSrc = require('./image/wihte-logo.png');
 const FOMR_HEIGHT = {
     COMMON_H: 300,//只有用户名、密码时，登录表单的容器高度
     CAPTCHA_H: 48,//验证码输入框的高度
@@ -68,21 +67,22 @@ class RegisterPage extends React.Component {
         const hasWindow = !(typeof window === 'undefined');
         return (
             <div className="register-wrap" data-tracename="个人注册页面">
-                <Logo logoSrc={logoSrc} fontColor="#000000" fontSize='24px' size='32px'/>
                 <div className="register-image-container">
-                    <img className="register-image" src={registerSrc}/>
+                    <div className='register-left-content-style'>
+                        <Logo logoSrc={logoSrc} fontSize='24px' size='32px'/>
+                    </div>
+                    <div className='register-left-content-style'>
+                        <span className='register-slogan-tip'>{Intl.get('register.slogan.tip', '销售加速，从这里开始...')}</span>
+                    </div>
                 </div>
                 {hasWindow ? (
                     <div className="register-form-wrap">
                         <div className="form-wrap">
-                            <div className="form-title">{Intl.get('register.personal.title', '注册个人版')}</div>
+                            <div className="form-title">{Intl.get('register.title.tip', '欢迎注册客套')}</div>
                             <RegisterForm/>
                         </div>
-                    </div>
-
-                ) : null
+                    </div>) : null
                 }
-                <SideBar showChat={curtaoObj.isCurtao}></SideBar>
             </div>
         );
     }

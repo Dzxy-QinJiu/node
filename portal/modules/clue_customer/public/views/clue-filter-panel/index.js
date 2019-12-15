@@ -178,7 +178,7 @@ class ClueFilterPanel extends React.Component {
                         }
                         if (typeof value === 'string') {
                             //拼接字符串（数组value）
-                            if (value.includes(',')) {
+                            if (_.includes(value, ',')) {
                                 valueList = value.split(',');
                             }
                             //单个字符串
@@ -272,9 +272,14 @@ class ClueFilterPanel extends React.Component {
                     FilterAction.setFilterClueSoure( _.get(item,'data'));
                 }else if (item.groupId === 'access_channel'){
                     //线索接入渠道
-                    FilterAction.setFilterClueAccess( _.get(item,'data'));
+                    if(_.isEqual(_.get(item, 'data[0].name'), Intl.get('clue.customer.filter.classify.not.setting', '未设置'))) {
+                        FilterAction.setUnexistedFiled('access_channel');
+                        FilterAction.setFilterClueAccess();
+                    }else {
+                        FilterAction.setFilterClueAccess(_.get(item, 'data'));
+                    }
                 }else if (item.groupId === 'sales_team_id'){
-                    //线索接入渠道
+                    //销售团队列表
                     FilterAction.setFilterTeamList( _.get(item,'data'));
                 }else if (item.groupId === 'clue_classify'){
                     //线索分类
@@ -391,15 +396,15 @@ class ClueFilterPanel extends React.Component {
         }
         _.isFunction(callback) && callback(targetIndex);
     };
-    //线索分类列表
-    processClueClassifyArray = (clueClassifyArray) => {
+    //线索分类列表和接入渠道列表的处理
+    processClueClassifyArray = (arrayData) => {
         let processedArray = [];
         processedArray.push({
             name: Intl.get('clue.customer.filter.classify.not.setting', '未设置'),
             value: Intl.get('clue.customer.filter.classify.not.setting', '未设置'),
             selectOnly: true
         });
-        _.forEach(clueClassifyArray, x => {
+        _.forEach(arrayData, x => {
             processedArray.push({
                 name: x,
                 value: x
@@ -470,10 +475,7 @@ class ClueFilterPanel extends React.Component {
         advancedData.unshift({
             groupName: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
             groupId: 'access_channel',
-            data: accessChannelArray.map(x => ({
-                name: x,
-                value: x
-            }))
+            data: this.processClueClassifyArray(accessChannelArray)
         },{
             groupName: Intl.get('clue.customer.classify', '线索分类'),
             groupId: 'clue_classify',

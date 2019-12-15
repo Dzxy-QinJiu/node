@@ -42,7 +42,7 @@ import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import { AntcTable } from 'antc';
 import { userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
-import USER_MANAGE_PRIVILEGE from '../privilege-const';
+import userManagePrivilege from '../privilege-const';
 
 class RecentLoginUsers extends React.Component {
     constructor(props) {
@@ -305,7 +305,7 @@ class RecentLoginUsers extends React.Component {
 
                     return (
                         <div title={user_name}>
-                            {hasPrivilege(USER_MANAGE_PRIVILEGE.USER_QUERY) && isShown ?
+                            {hasPrivilege(userManagePrivilege.USER_QUERY) && isShown ?
                                 <i className="iconfont icon-warn-icon unnormal-login"
                                     title={Intl.get('user.login.abnormal', '异常登录')} /> : null}
                             {user_name}
@@ -405,8 +405,9 @@ class RecentLoginUsers extends React.Component {
                 title: Intl.get('user.login.times', '登录次数'),
                 dataIndex: 'logins',
                 key: 'logins',
-                width: '100px',
                 className: 'has-filter',
+                width: '100px',
+                align: 'right',
                 render: function(text, rowData, idx) {
                     let loginCount = 0;
                     if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
@@ -422,6 +423,7 @@ class RecentLoginUsers extends React.Component {
                 key: 'login_day_count',
                 width: '100px',
                 className: 'has-filter',
+                align: 'right',
                 render: function(text, rowData, idx) {
                     let loginDays = 0;
                     if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {

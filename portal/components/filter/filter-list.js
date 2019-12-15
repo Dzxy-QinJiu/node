@@ -306,7 +306,7 @@ class FilterList extends React.Component {
         }));
         if (isMix) {
             const commonGroupIds = _.uniq(commonData.map(x => x.groupId));
-            const filterList = advancedData.filter(group => !commonGroupIds.includes(group.groupId));
+            const filterList = advancedData.filter(group => !_.includes(commonGroupIds, group.groupId));
             return newCommonData.concat(this.processSelectedFilters(filterList));
         } else {
             return newCommonData.concat(this.processSelectedFilters(advancedData));

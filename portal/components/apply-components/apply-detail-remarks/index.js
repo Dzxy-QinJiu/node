@@ -92,7 +92,7 @@ class ApplyDetailRemarks extends React.Component {
     }
     getApplyFinishedStatus = () => {
         let detailInfo = this.state.detailInfo;
-        return APPLY_FINISH_STATUS.includes(detailInfo.status);
+        return _.includes(APPLY_FINISH_STATUS, detailInfo.status);
     };
     //渲染刷新回复列表的提示
     renderRefreshReplyTip = () => {

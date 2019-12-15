@@ -539,7 +539,7 @@ function phoneEventListener(phonemsgObj) {
                 if (phonemsgObj.dst || phonemsgObj.to) {
                     let phone = phonemsgObj.to || phonemsgObj.dst;
                     //当前状态的电话跟存储的联系电话不是同一个电话时，
-                    if (!phone.includes(contactNameObj.phone) && !contactNameObj.phone.includes(phone)) {
+                    if (!_.includes(phone, contactNameObj.phone) && !_.includes(contactNameObj.phone, phone)) {
                         // 清空存储的联系人、电话信息
                         setInitialPhoneObj();
                     }

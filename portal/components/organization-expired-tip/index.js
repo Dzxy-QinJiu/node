@@ -9,6 +9,8 @@ import {Alert} from 'antd';
 import { getOrganizationInfo } from 'PUB_DIR/sources/utils/common-data-util';
 import { checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
 import { paymentEmitter } from 'PUB_DIR/sources/utils/emitters';
+import DifferentVersion from 'MOD_DIR/different_version/public';
+import history from 'PUB_DIR/sources/history';
 
 
 const REMIND_DAYS = {
@@ -19,7 +21,8 @@ class OrganizationExipreTip extends React.PureComponent {
 
     state = {
         visible: false,
-        endTime: 0
+        endTime: 0,
+        showDifferentVersion: false,//是否显示版本信息面板
     };
 
     componentDidMount() {
@@ -59,15 +62,23 @@ class OrganizationExipreTip extends React.PureComponent {
     };
 
     handleClickRenewal = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL);
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            showDifferentVersion: this.triggerShowVersionInfo
+        });
     };
-
+    //显示/隐藏版本信息面板
+    triggerShowVersionInfo = () => {
+        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
+    };
+    handleContinueFn = (orderInfo) => {
+        history.push('/leads');
+    };
     renderMsgBlock = () => {
         //试用期提前三天提醒，正式的提前一周
         let versionAndType = checkVersionAndType();
         let tip = '';
         if(versionAndType.trial) {
-            if(versionAndType.personal) {
+            if(versionAndType.personal || versionAndType.company) {
                 tip = <ReactIntl.FormattedMessage
                     id="organization.personal.trial.expired.tip"
                     defaultMessage={'您的试用期剩余{time}天，是否{upgrade}？'}
@@ -100,12 +111,22 @@ class OrganizationExipreTip extends React.PureComponent {
 
     render() {
         if(this.state.visible) {
-            return <Alert
-                message={this.renderMsgBlock()}
-                banner
-                closable
-                className="organization-expired-tip"
-            />;
+            return (
+                <div>
+                    <Alert
+                        message={this.renderMsgBlock()}
+                        banner
+                        closable
+                        className="organization-expired-tip"
+                    />
+                    <DifferentVersion
+                        showFlag={this.state.showDifferentVersion}
+                        closeVersion={this.triggerShowVersionInfo}
+                        continueFn={this.handleContinueFn}
+
+                    />
+                </div>
+            );
         }else {return null;}
     }
 }

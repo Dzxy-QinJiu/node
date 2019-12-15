@@ -294,7 +294,7 @@ class CustomerRepeat extends React.Component {
                         <Col span={2} className="repeat-customer-col">
                             {Intl.get('user.apply.detail.order', '订单')}
                         </Col>)}
-                    {checkVersionAndType().isPersonalTrial ? null : (
+                    {checkVersionAndType().personal ? null : (
                         <Col span={2} className="repeat-customer-col">{Intl.get('crm.6', '负责人')}</Col>
                     )}
                     <Col span={2}

@@ -8,9 +8,11 @@ const PropTypes = require('prop-types');
 import Trace from '../../lib/trace';
 import {commonPhoneRegex} from '../../public/sources/utils/validate-util';
 import crypto from 'crypto';
-import {Form, Button, Input, Icon} from 'antd';
+import {Form, Button, Input, Icon, Checkbox} from 'antd';
+import classNames from 'classnames';
 const FormItem = Form.Item;
 let codeEffectiveInterval = null;
+let hasInputPhone = false;
 //验证码的有效时间：60s
 const CODE_EFFECTIVE_TIME = 60;
 const CODE_INTERVAL_TIME = 1000;
@@ -120,9 +122,12 @@ class RegisterForm extends React.Component {
                     {Intl.get('register.code.effective.time', '{second}秒后重试', {second: this.state.codeEffectiveTime})}
                 </span>);
         } else {
+            let cls = classNames('get-captcha-code', {
+                'active': hasInputPhone,//输入电话后，获取验证码的字体高亮
+            });
             return (
-                <span className="get-captcha-code">
-                    {Intl.get('register.get.phone.captcha.code', '获取短信验证码')}
+                <span className={cls}>
+                    {Intl.get('register.get.phone.captcha.code', '获取验证码')}
                     {this.state.isLoadingValidCode ? <Icon type="loading"/> : null}
                 </span>);
         }
@@ -162,6 +167,7 @@ class RegisterForm extends React.Component {
                 type: 'get',
                 data: {phone},
                 success: data => {
+                    hasInputPhone = false;
                     if (data) {
                         this.setState({
                             captchaCode: data,
@@ -180,6 +186,7 @@ class RegisterForm extends React.Component {
                     }
                 },
                 error: xhr => {
+                    hasInputPhone = false;
                     this.setState({
                         getCodeErrorMsg: xhr.responseJSON || Intl.get('register.code.get.error', '获取短信验证码失败'),
                         validateCodeErrorMsg: '',
@@ -194,11 +201,14 @@ class RegisterForm extends React.Component {
         let phone = _.trim(value);
         if (phone) {
             if (commonPhoneRegex.test(phone)) {
+                hasInputPhone = true;
                 callback();
             } else {
+                hasInputPhone = false;
                 callback(Intl.get('register.phon.validat.tip', '请输入正确的手机号, 格式如:13877775555'));
             }
         } else {
+            hasInputPhone = false;
             callback(Intl.get('user.input.phone', '请输入手机号'));
         }
     }
@@ -223,7 +233,17 @@ class RegisterForm extends React.Component {
             callback();
         }
     }
-
+    // onChangeUserAgreement = (e) => {
+    //     this.setState({
+    //         checkedUserAgreement: e.target.checked,
+    //     });
+    // }
+    openUserAgreement = (e) => {
+        window.open('/user/agreement');
+    }
+    toLogin = (e) => {
+        window.location.href = '/login';
+    }
     render() {
         const {getFieldDecorator} = this.props.form;
         return (
@@ -236,6 +256,10 @@ class RegisterForm extends React.Component {
                     })(
                         <Input placeholder={Intl.get('user.phone', '手机号')}/>
                     )}
+                    {this.state.getCodeErrorMsg || this.state.validateCodeErrorMsg ?
+                        <div className="register-error-tip">
+                            {this.state.getCodeErrorMsg || this.state.validateCodeErrorMsg}
+                        </div> : null}
                 </FormItem>
                 <FormItem>
                     {getFieldDecorator('code', {
@@ -248,10 +272,6 @@ class RegisterForm extends React.Component {
                     <div className="captcha-code-wrap" onClick={this.getValidateCode.bind(this)}>
                         {this.renderCaptchaCode()}
                     </div>
-                    {this.state.getCodeErrorMsg || this.state.validateCodeErrorMsg ?
-                        <div className="register-error-tip">
-                            {this.state.getCodeErrorMsg || this.state.validateCodeErrorMsg}
-                        </div> : null}
                 </FormItem>
                 <FormItem>
                     {getFieldDecorator('pwd', {
@@ -275,11 +295,36 @@ class RegisterForm extends React.Component {
                             autocomplete="off"/>
                     )}
                 </FormItem>
+                <div className='register-user-agreement-tip'>
+                    <ReactIntl.FormattedMessage
+                        id='login.user.agreement.tip'
+                        defaultMessage='点击{btn}表示您已同意我们的{userAgreement}'
+                        values={{
+                            'btn': Intl.get('login.register', '注册'),
+                            'userAgreement': (
+                                <a onClick={this.openUserAgreement} data-tracename="点击《用户协议》">
+                                    {Intl.get('register.user.agreement.curtao', '《用户协议》')}
+                                </a>)
+                        }}
+                    />
+                </div>
                 <FormItem>
-                    <Button onClick={this.submitFormData.bind(this)}>
-                        {Intl.get('register.wechat.register.btn', '注册并登录')}
+                    <Button onClick={this.submitFormData.bind(this)} data-tracename="点击注册"> 
+                        {Intl.get('login.register', '注册')}
                         {this.state.isRegistering ? <Icon type="loading"/> : null}
                     </Button>
+                    <div className='register-to-login' data-tracename="点击登录"> 
+                        <ReactIntl.FormattedMessage
+                            id='register.to.login.tip'
+                            defaultMessage= '已有账号，去{login}'
+                            values={{
+                                'login': (
+                                    <a onClick={this.toLogin}>
+                                        {Intl.get('login.login', '登录')}
+                                    </a>)
+                            }}
+                        />
+                    </div>
                     {this.state.registerErrorMsg ? (
                         <div className="register-error-tip">{this.state.registerErrorMsg}</div>) : null}
                 </FormItem>

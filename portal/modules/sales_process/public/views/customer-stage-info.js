@@ -5,7 +5,7 @@ import { Button } from 'antd';
 import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import Trace from 'LIB_DIR/trace';
-import CUSTOMER_STAGE_PRIVILEGE from '../privilege-const';
+import customerStagePrivilege from '../privilege-const';
 const OPERATE_ZONE_WIDTH = 100; // 按钮操作区的宽度
 
 class CustomerStageInfo extends React.Component {
@@ -156,7 +156,7 @@ class CustomerStageInfo extends React.Component {
                         (
                             this.props.saleProcessType === 'custom' ? (
                                 <div className="customer-stage-btn-div operation-btn">
-                                    <PrivilegeChecker check={CUSTOMER_STAGE_PRIVILEGE.DELETE_SPECIFIC_STAGE}>
+                                    <PrivilegeChecker check={customerStagePrivilege.DELETE_SPECIFIC_STAGE}>
                                         <Button
                                             className="customer-stage-btn-class icon-delete iconfont handle-btn-item"
                                             onClick={this.showCustomerStageModalDialog.bind(this, customerStage)}
@@ -164,7 +164,7 @@ class CustomerStageInfo extends React.Component {
                                         >
                                         </Button>
                                     </PrivilegeChecker>
-                                    <PrivilegeChecker check={CUSTOMER_STAGE_PRIVILEGE.UPDATE_SPECIFIC_STAGE}>
+                                    <PrivilegeChecker check={customerStagePrivilege.UPDATE_SPECIFIC_STAGE}>
                                         <Button
                                             className="customer-stage-btn-class icon-update iconfont"
                                             onClick={this.showCustomerStageForm.bind(this, customerStage)}
@@ -174,7 +174,7 @@ class CustomerStageInfo extends React.Component {
                                     </PrivilegeChecker>
                                     {
                                         /*** 先注释到客户阶段的设置功能
-                                         * <PrivilegeChecker check={CUSTOMER_STAGE_PRIVILEGE.UPDATE_SPECIFIC_STAGE}>
+                                         * <PrivilegeChecker check={customerStagePrivilege.UPDATE_SPECIFIC_STAGE}>
                                          <Button
                                          className="customer-stage-btn-class icon-role-auth-config iconfont"
                                          onClick={this.showCustomerStageDetail.bind(this, customerStage)}
