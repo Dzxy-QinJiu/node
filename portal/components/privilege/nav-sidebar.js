@@ -386,8 +386,8 @@ var NavSidebar = createReactClass({
         if (!notification) {
             return null;
         }
-        let noticeCls = classNames('iconfont icon-tongzhi', 'sidebar-bottom-icon', {
-            'acitve': this.props.isShowNotificationPanel,
+        let noticeCls = classNames('iconfont icon-nav-notice', 'sidebar-bottom-icon', {
+            'active': this.props.isShowNotificationPanel,
             // 'nav-small-icon': this.isShowSmallIcon()
         });
         // let aCls = classNames({
@@ -442,7 +442,7 @@ var NavSidebar = createReactClass({
             // 'reduce-nav-icon-li': this.state.isReduceNavIcon,
             // 'reduce-nav-margin-li': this.state.isReduceNavMargin
         });
-        let backendConfigCls = classNames('iconfont icon-role-auth-config', 'sidebar-bottom-icon', {
+        let backendConfigCls = classNames('iconfont icon-nav-setting', 'sidebar-bottom-icon', {
             'deactivation': this.props.isShowNotificationPanel,
             // 'nav-small-icon': this.isShowSmallIcon()
         });
@@ -639,12 +639,12 @@ var NavSidebar = createReactClass({
     //生成拨号按钮
     renderDailCallBlock() {
         if(this.state.isShowDialUpKeyboard) {
-            const iconCls = classNames('iconfont ', {
-                'icon-dial-up-keybord': !this.state.ronglianNum,
+            const iconCls = classNames('iconfont', 'sidebar-bottom-icon', {
+                'icon-nav-dial-up': !this.state.ronglianNum,
                 'icon-active-call_record-ico': this.state.ronglianNum,
             });
             const DialIcon = this.state.hideNavIcon ? Intl.get('phone.dial.up.text', '拨号') :
-                (<i className={iconCls} style={{fontSize: 24}}/>);
+                (<i className={iconCls}/>);
 
             const versionAndType = checkVersionAndType();
             let dialUpKeyBoardContent = null;
@@ -698,12 +698,10 @@ var NavSidebar = createReactClass({
                         this.userInfo = element;
                     }}>
                         {this.renderDailCallBlock()}
-                        {//是csm.curtao.com域名下，在线咨询的展示
-                            isCurtao() ? (
-                                <div className='customer-service-navicon' onClick={this.onChatClick}>
-                                    <a className='iconfont icon-customer-service' title={Intl.get('menu.online.consulting', '在线咨询')}/>
-                                </div>
-                            ) : null
+                        {isCurtao() ? (
+                            <div className='customer-service-navicon' onClick={this.onChatClick}>
+                                <a className='iconfont icon-customer-service sidebar-bottom-icon' title={Intl.get('menu.online.consulting', '在线咨询')}/>
+                            </div>) : null
                         }
                         {isCurtao() ? null : this.getNotificationBlock()}
                         {this.renderBackendConfigBlock()}

@@ -56,20 +56,9 @@
             }
         }
         .sidebar-user {
-            .notification, .sidebar-backend-config {
+            .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon {
                 .iconfont.sidebar-bottom-icon {
                     font-size: 22px;
-                }
-            }
-            .dial-up-keyboard-btn {
-                .iconfont.icon-dial-up-keybord {
-                    font-size: 22px;
-                }
-            }
-              //客服电话的样式
-            .customer-service-navicon{
-                .iconfont.icon-customer-service{
-                    font-size: 22px
                 }
             }
         }
@@ -92,20 +81,9 @@
             }
         }
         .sidebar-user {
-            .notification, .sidebar-backend-config {
+            .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon {
                 .iconfont.sidebar-bottom-icon {
                     font-size: 16px;
-                }
-            }
-            .dial-up-keyboard-btn {
-                .iconfont.icon-dial-up-keybord {
-                    font-size: 16px;
-                }
-            }
-            //客服电话的样式
-            .customer-service-navicon{
-                .iconfont.icon-customer-service{
-                    font-size: 16px
                 }
             }
         }
@@ -305,70 +283,62 @@
         overflow: hidden;
         background-color: @bg-white;
         @hover-color: @icon-blue;
-        a {
-            color: @icon-grey;
-        }
-        a:hover,
-        a.active,
-        a:active,
-        a:focus {
-            color: @icon-blue;
-            .iconfont {
-                color: @icon-blue;
-            }
-        }
-        a.deactivation {
-            color: @icon-grey;
-            .iconfont {
-                color: @icon-grey;
-            }
-        }
-        .notification,
-        .sidebar-backend-config {
-            &>a {
-                font-size: 14px;
-                display: block;
-                text-decoration: none !important;
-            }
+        .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon {
             text-align: center;
-            padding-bottom: 4px;
-            .nav-small-icon.iconfont {
-                font-size: 20px;
-            }
-            .iconfont {
-                cursor: pointer;
+            cursor: pointer;
+            .iconfont{
+                color:@icon-grey;
                 font-size: 28px;
-                width: 24px;
-                height: 24px;
-                position: relative;
-                color: @icon-grey;
-                margin-left: -3px;
-            }
-            &>a .deactivation {
-                color: @icon-grey;
-            }
-            b {
-                position: absolute;
-                width: 7px;
-                height: 7px;
-                top: 1px;
-                right: 3px;
-                overflow: hidden;
-                background: #f41919;
-                border-radius: 50%;
-            }
-        }
-        .notification  {
-            .acitve {
-                color: @icon-blue;
-            }
-            a.active {
-                color: @icon-blue;
-                .iconfont {
+                &:hover{
                     color: @icon-blue;
                 }
             }
+            // 在线客服、拨号键盘active加到了iconfont上
+            .active.iconfont {
+                color: @icon-blue;
+            }
+            // 打开通知面板时
+            .active.deactivation.iconfont{
+                color: @bd-grey;
+            }
+            // 后台管理、通知active加到了a标签上
+            a.active {
+                text-decoration: none;
+                .iconfont{
+                    color: @icon-blue;
+                }
+                // 打开通知面板时
+                .deactivation.iconfont{
+                    color: @bd-grey;
+                }
+            }
+        }    
+        //拨号按钮的样式
+        .dial-up-keyboard-btn{
+            margin-top: 10px;
         }
+        .dial-up-keyboard-btn.keyboard-expanded{
+            >.iconfont:before{
+                content: "\E733";
+                color: @icon-blue;
+            }
+        }
+        // 通知图标
+        .notification {
+            .iconfont.active:before{
+                content: "\E737";
+            }
+        }
+        // 后台管理
+        .sidebar-backend-config{
+            margin-bottom: 8px;
+            .active{
+                .iconfont:before{
+                    content: "\E738";
+                }
+            }
+        }
+    
         .avatar {
             img {
                 border: 2px solid rgba(0, 0, 0, 0);
@@ -410,22 +380,6 @@
                 color: @hover-color;
             }
         }
-        .sidebar-qrcode {
-            padding: 10px 0;
-            .anticon {
-                width: 31px;
-                height: 30px;
-                line-height: 32px;
-                cursor: pointer;
-                text-align: center;
-                color: #b6c2c9;
-                font-size: 24px;
-                margin-left: 21px;
-            }
-            .anticon:hover {
-                color: @hover-color;
-            }
-        }
         .avatar_container {
             overflow: hidden;
             text-align: center;
@@ -435,24 +389,6 @@
                         font-size: 32px;
                     }
                 }
-            }
-        }
-        //拨号按钮的样式
-        .dial-up-keyboard-btn{
-            margin-top: 10px;
-            padding-bottom: 4px;
-            .iconfont {
-                font-size: 28px;
-            }
-        }
-        //客服电话的样式
-        .customer-service-navicon{
-            width: 100%;
-            padding-bottom: 4px;
-            text-align: center;
-            color: #CBCBCB;
-            .iconfont{
-                font-size: 30px
             }
         }
     }
@@ -500,20 +436,6 @@
     }
     .pad em {
         padding: 0 3px;
-    }
-}
-
-// 客套app二维码样式
-.nav-sidebar-qrcode {
-    .ant-popover-arrow {
-        display: none;
-    }
-    .ant-popover-content {
-        padding: 8px 8px;
-        text-align: center;
-    }
-    .ant-popover-inner {
-        margin-left: 16px;
     }
 }
 
