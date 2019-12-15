@@ -78,7 +78,7 @@ class RegisterPage extends React.Component {
                 {hasWindow ? (
                     <div className="register-form-wrap">
                         <div className="form-wrap">
-                            <div className="form-title">{Intl.get('login.register', '注册')}</div>
+                            <div className="form-title">{Intl.get('register.title.tip', '欢迎注册客套')}</div>
                             <RegisterForm/>
                         </div>
                     </div>) : null
