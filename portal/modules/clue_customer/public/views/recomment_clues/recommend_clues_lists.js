@@ -33,7 +33,7 @@ var batchOperate = require('PUB_DIR/sources/push/batch');
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {updateGuideMark, getMaxLimitExtractClueCount} from 'PUB_DIR/sources/utils/common-data-util';
-import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,isCommonSalesOrPersonnalVersion} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,isCommonSalesOrPersonnalVersion,HASEXTRACTBYOTHERERRTIP} from '../../utils/clue-customer-utils';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
@@ -221,6 +221,7 @@ class RecommendCustomerRightPanel extends React.Component {
     handleExtractRecommendClues = (reqData) => {
         //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
         let salesMan = _.cloneDeep(this.state.salesMan);
+        var leadId = _.get(reqData,'companyIds[0]');
         $.ajax({
             url: '/rest/clue/extract/recommend/clue',
             dataType: 'json',
@@ -232,7 +233,6 @@ class RecommendCustomerRightPanel extends React.Component {
                     canClickExtract: true
                 });
                 if (data){
-                    var leadId = _.get(reqData,'companyIds[0]');
                     if (this['changeSales' + leadId]) {
                         //隐藏批量变更销售面板
                         this['changeSales' + leadId].handleCancel();
@@ -254,10 +254,27 @@ class RecommendCustomerRightPanel extends React.Component {
                     singleExtractLoading: false,
                     canClickExtract: true
                 });
-                message.error(errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败'));
+                var errTip = errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败');
+                //如果提取失败的原因是因为被其他同事提取过，将该推荐线索设置不可点击并且前面加提示
+                if(_.includes(HASEXTRACTBYOTHERERRTIP, errTip)){
+                    this.handleLeadHasExtractedByOther(reqData.companyIds);
+                    if (this['changeSales' + leadId]) {
+                        //隐藏批量变更销售面板
+                        this['changeSales' + leadId].handleCancel();
+                    }
+                }
+                message.error(errTip);
             }
         });
 
+    };
+    //处理被别人提取过的线索
+    handleLeadHasExtractedByOther = (hasExtractedLeadIds) => {
+        if(_.isArray(hasExtractedLeadIds)){
+            _.each(hasExtractedLeadIds, remarkId => {
+                this.remarkLeadExtractedByOther(remarkId);
+            });
+        }
     };
     // 获取待分配人员列表
     getSalesDataList = () => {
@@ -646,10 +663,15 @@ class RecommendCustomerRightPanel extends React.Component {
                 Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中全部线索');
             },
             getCheckboxProps: record => ({
-                disabled: record.hasExtracted || _.has(this.state.disabledCheckedClues,item => item.id === record.id) || record.hasExtractedByOther, // 有hasExtracted属性是已经成功提取了的,有hasExtractedByOther属性是已经被别人提取了的
+                disabled: this.getDisabledClue(record)
             }),
         };
         return rowSelection;
+    };
+    //该线索前的checkbox不可用
+    getDisabledClue = (record) => {
+        // 有hasExtracted属性是已经成功提取了的,有hasExtractedByOther属性是已经被别人提取了的
+        return record.hasExtracted || _.has(this.state.disabledCheckedClues,item => item.id === record.id) || record.hasExtractedByOther;
     };
     renderRecommendClueLists = () => {
         if (this.state.isLoadingRecommendClue) {
@@ -698,6 +720,9 @@ class RecommendCustomerRightPanel extends React.Component {
         var cls = '';
         if(record.hasExtracted){
             cls += ' has-extracted-row';
+        }
+        if(record.hasExtractedByOther){
+            cls += ' has-extracted-by-other-row';
         }
         return cls;
     };
@@ -751,9 +776,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     }
                     //在这些数据上加一个特殊的标识
                     if(hasExtractedLeadCount){
-                        _.each(hasExtractedLeadIds, remarkId => {
-                            this.remarkLeadExtractedByOther(remarkId);
-                        });
+                        this.handleLeadHasExtractedByOther(hasExtractedLeadIds);
                     }
                     //立即在界面上显示推送通知
                     //界面上立即显示一个初始化推送
@@ -774,7 +797,16 @@ class RecommendCustomerRightPanel extends React.Component {
                     batchExtractLoading: false,
                     canClickExtract: true
                 });
-                message.error(errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败'));
+                var errTip = errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败');
+                //如果提取失败的原因是因为被其他同事提取过，将该推荐线索设置不可点击并且前面加提示
+                if(_.includes(HASEXTRACTBYOTHERERRTIP, errTip)){
+                    this.handleLeadHasExtractedByOther(submitObj.companyIds);
+                    if (this['changeSales']) {
+                        //隐藏批量变更销售面板
+                        this['changeSales'].handleCancel();
+                    }
+                }
+                message.error(errTip);
             }
         });
     };
