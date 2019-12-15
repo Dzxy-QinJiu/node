@@ -466,3 +466,5 @@ export function releaseClueTip() {
     }
     return releaseTip;
 }
+//已被其他同事提取的错误提示
+export const HASEXTRACTBYOTHERERRTIP = [Intl.get('errorcode.169', '该线索已被其他同事提取'),Intl.get('errorcode.170', '您选择的线索都已经被其他同事提取')];

@@ -399,7 +399,7 @@ class ApplyFormAndRules extends React.Component {
                                 flowIndex: '1_2'
                             }
                         ],
-                        ccPerson: [],//默认抄送人
+                        ccPerson: [],//默认
                     }
                 },//审批规则
                 cancelAfterApprove: false,//撤销权限
