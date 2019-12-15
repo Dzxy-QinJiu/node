@@ -337,7 +337,10 @@ var en_US = {
     'login.wechat.bind.error': 'WeChat binding failed',//微信绑定失败
     'login.wechat.bind.check.error': 'Check whether or not to bind WeChat is failed',//检查是否绑定微信出错了
     'login.user.agreement': 'User agreement', //用户使用协议
-    
+    'login.user.agreement.tip': 'Clicked {btn}, you agree to our {userAgreement}',//点击{btn}表示您已同意我们的{userAgreement}
+    'login.no.account.register.tip': 'No account, go to {register}',//没有账号，去{register}
+
+    'register.title.tip': 'Welcome to register',//欢迎注册客套
     'register.slogan.tip': 'Sales acceleration, starting here ...',//销售加速，从这里开始...
     'register.set.company.id': 'Set up company ID',//设置公司标识
     'register.valid.phone': 'Phone number verification',//验证手机
@@ -347,7 +350,7 @@ var en_US = {
     'register.company.valid.tip': 'Please enter lowercase and middle line',//请输入小写字母和中划线组成的公司标识
     'register.company.only.error': 'Failed to validate company identifier',//公司标识唯一性验证失败
     'register.company.name.exist': 'Company identifier already exists',//公司标识已存在
-    'register.get.phone.captcha.code': 'Get SMS code',//获取短信验证码
+    'register.get.phone.captcha.code': 'Get SMS code',//获取验证码
     'register.company.name.fill': 'Please enter company name',//请输入公司名称
     'register.finished.button': 'Finish',//完成注册
     'register.phon.validat.tip': 'Please input the correct phone number, eg: 13877775555',//请输入正确的手机号, 格式如:13877775555
@@ -367,7 +370,7 @@ var en_US = {
     'login.wechat.register.login.error': 'WeChat register login failed',//微信号注册登录失败
     'register.personal.title': 'Register for personal',//注册个人版
     'register.user.agreement.tip': 'Read and agreed to {useragreement}',//已阅读并同意{userAgreement}
-    'register.user.agreement.curtao': 'Curtao user agreement',//《客套用户协议》
+    'register.user.agreement.curtao': 'User agreement',//《用户协议》
     'register.user.agreement.valid.tip': 'Please read and agreed to "Curtao user agreement"',//请先阅读并同意《客套用户协议》
     'register.to.login.tip': 'Existing account, go to {login}',//已有账号，去{login}
 
