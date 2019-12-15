@@ -668,7 +668,7 @@ class RegRulesView extends React.Component {
             delete data.updateConditionFlowKey;
             applyApproveRules[flowKey]['conditionRuleLists'] = data;
             var limitRules = _.get(data, 'limitRules', []);
-            var firstNode = _.get(applyApproveRules[flowKey], 'bpmnNode[0]');
+            var firstNode = _.get(applyApproveRules[flowKey], 'bpmnNode[0]',{});
             _.forEach(limitRules, (item, index) => {
                 if (index === 0) {
                     firstNode['conditionTotalRule'] = _.get(item, 'conditionRule');
@@ -787,10 +787,10 @@ class RegRulesView extends React.Component {
                                         </div>
                                     }
                                 </div>
-                                <div className="condition-item condition-item-cc">
-                                    <span
-                                        className="condition-item-label">{Intl.get('apply.condition.item.add.cc', '抄送人')}:</span>
-                                </div>
+                                {/*<div className="condition-item condition-item-cc">*/}
+                                {/*    <span*/}
+                                {/*        className="condition-item-label">{Intl.get('apply.condition.item.add.cc', '抄送人')}:</span>*/}
+                                {/*</div>*/}
 
                             </div>
                         );
