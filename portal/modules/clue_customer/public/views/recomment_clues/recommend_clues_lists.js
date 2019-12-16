@@ -676,20 +676,43 @@ class RecommendCustomerRightPanel extends React.Component {
     renderRecommendClueLists = () => {
         if (this.state.isLoadingRecommendClue) {
             return <Spinner/>;
-        } else if (this.state.getRecommendClueErrMsg) {
-            return (<div className="errmsg-container">
-                <span className="errmsg-tip">{this.state.getRecommendClueErrMsg},</span>
-                <a className="retry-btn" onClick={this.getRecommendClueLists}>
-                    {Intl.get('user.info.retry', '请重试')}
-                </a>
-            </div>);
+        } else if (this.state.getRecommendClueErrMsg && this.state.getRecommendClueErrMsg !== Intl.get('errorcode.168', '符合条件的线索已被提取完成，请修改条件再查看')) {
+            //如果报错的信息是 '符合条件的线索已被提取完成，请修改条件再查看',要在修改条件上在加上点击的链接
+            //不是这个错误就直接显示
+            if(this.state.getRecommendClueErrMsg ){
+                return (<div className="errmsg-container">
+                    <span className="errmsg-tip">{this.state.getRecommendClueErrMsg},</span>
+                    <a className="retry-btn" onClick={this.getRecommendClueLists}>
+                        {Intl.get('user.info.retry', '请重试')}
+                    </a>
+                </div>);
+            }
         } else {
             var rowSelection = this.getRowSelection();
             var conditionObj = this.getSearchCondition();
             delete conditionObj.load_size;
             delete conditionObj.userId;
             //如果有筛选条件的时候，提醒修改条件再查看，没有筛选条件的时候，提示暂无数据
-            var emptyText = _.isEmpty(conditionObj) ? Intl.get('common.no.data', '暂无数据') : Intl.get('clue.edit.condition.search', '请修改条件再查看');
+            var emptyText = _.isEmpty(conditionObj) ? Intl.get('common.no.data', '暂无数据') : <ReactIntl.FormattedMessage
+                id="clue.edit.condition.search"
+                defaultMessage={'请{changeCondition}再查看'}
+                values={{
+                    'changeCondition': <a onClick={this.handleClickEditCondition}>
+                        {Intl.get('clue.customer.condition.change', '修改条件')}
+                    </a>
+                }}
+            />;
+            if(this.state.getRecommendClueErrMsg && this.state.getRecommendClueErrMsg === Intl.get('errorcode.168', '符合条件的线索已被提取完成，请修改条件再查看')){
+                emptyText = <ReactIntl.FormattedMessage
+                    id='clue.has.extract.by.other'
+                    defaultMessage={'符合条件的线索已被提取完成，请{changeCondition}再查看'}
+                    values={{
+                        'changeCondition': <a onClick={this.handleClickEditCondition}>
+                            {Intl.get('clue.customer.condition.change', '修改条件')}
+                        </a>
+                    }}
+                />;
+            }
             var recommendList = this.state.recommendClueLists;
             //因为antctable中的noMoreDataText只接受字符串，所以这个带点击功能的提示要用字符串拼接起来
             var refreshTip = Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以') +

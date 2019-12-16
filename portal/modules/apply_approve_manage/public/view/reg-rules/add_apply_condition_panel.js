@@ -295,19 +295,6 @@ AddApplyConditionPanel.propTypes = {
     applyTypeData: PropTypes.object,
     updateConditionObj: PropTypes.object,
     updateConditionFlowKey: PropTypes.string,
-
-
-    defaultClueData: PropTypes.object,
-    clueSourceArray: PropTypes.object,
-    updateClueSource: PropTypes.func,
-    accessChannelArray: PropTypes.object,
-    updateClueChannel: PropTypes.func,
-    clueClassifyArray: PropTypes.object,
-    updateClueClassify: PropTypes.func,
-    afterAddSalesClue: PropTypes.func,
     form: PropTypes.object,
-    hideAddForm: PropTypes.func,
-    appUserId: PropTypes.string,
-    appUserName: PropTypes.string
 };
 export default Form.create()(AddApplyConditionPanel);
