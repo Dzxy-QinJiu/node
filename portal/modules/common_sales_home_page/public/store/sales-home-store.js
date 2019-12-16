@@ -524,6 +524,7 @@ SalesHomeStore.prototype.getContractExpireRemind = function(result) {
 };
 SalesHomeStore.prototype.updatePageNewDistributeCustomer = function(customer_id){
     const newDistributeCustomer = this.newDistributeCustomer;
+    newDistributeCustomer.data.total--;
     newDistributeCustomer.data.list = _.filter(newDistributeCustomer.data.list, item => item.id !== customer_id);
     this.customerContactTodayObj.data.total++;
 };
