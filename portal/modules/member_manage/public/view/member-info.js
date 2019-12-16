@@ -18,7 +18,7 @@ import MemberInfoAction from '../action/member-info-action';
 import Trace from 'LIB_DIR/trace';
 const UserData = require('PUB_DIR/sources/user-data');
 import RadioCard from './radio-card';
-import {checkPhone, checkQQ, validatorNameRuleRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {checkPhone, checkQQ, validatorNameRuleRegex, getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
@@ -665,6 +665,7 @@ class MemberInfo extends React.Component {
                         field="goal"
                         type="number"
                         placeholder={Intl.get('member.sales.goal.add', '设置销售目标')}
+                        validators={[getNumberValidateRule()]}
                         afterTextTip={Intl.get('contract.82', '元')}
                         afterValTip={Intl.get('contract.82', '元')}
                         hasEditPrivilege={hasPrivilege(memberManagePrivilege.EDIT_MEMBER)}

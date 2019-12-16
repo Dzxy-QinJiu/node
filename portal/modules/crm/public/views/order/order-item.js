@@ -20,6 +20,7 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import classNames from 'classnames';
 import ApplyUserForm from '../apply-user-form';
 import StepsBar from 'CMP_DIR/steps-bar';
+import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import orderPrivilegeConst from 'MOD_DIR/deal_manage/public/privilege-const';
 //订单状态
 const ORDER_STATUS = {
@@ -428,13 +429,16 @@ class OrderItem extends React.Component {
                             <BasicEditInputField
                                 width={EDIT_FEILD_WIDTH}
                                 id={order.id}
-                                type="number"
+                                // type="number"
                                 field="budget"
                                 value={order.budget}
                                 afterValTip={Intl.get('contract.82', '元')}
                                 placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
                                 hasEditPrivilege={hasEditPrivilege}
-                                validators={[{required: true, message: Intl.get('crm.order.budget.input', '请输入预算金额')}]}
+                                validators={[
+                                    {required: true, message: Intl.get('crm.order.budget.input', '请输入预算金额')},
+                                    getNumberValidateRule()
+                                ]}
                                 saveEditInput={this.saveOrderBasicInfo.bind(this, 'budget')}
                                 noDataTip={Intl.get('crm.order.no.budget', '暂无预算')}
                                 addDataTip={Intl.get('crm.order.add.budget', '添加预算')}
