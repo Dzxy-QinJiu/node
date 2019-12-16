@@ -126,8 +126,10 @@ class PhoneNumberBoard extends React.Component {
                 <div className="number-key-container">
                     {_.map(phoneNumArray, item => {
                         return (
-                            <Button size='small' className='phone-num-btn' disabled={['*', '#'].indexOf(item) !== -1}
-                                onClick={this.onButtonClick.bind(this, item)}>{item}</Button>);
+                            <Button size='small' className='phone-num-btn' disabled={['*'].indexOf(item) !== -1}
+                                onClick={item === '#' ? this.delPhoneLastNum.bind(this) : this.onButtonClick.bind(this, item)}>
+                                {item === '#' ? <i className='iconfont icon-phone-back'/> : item}
+                            </Button>);
                     })}
                 </div>
                 <Button type='primary' className={phoneBtnWrap} onClick={isRonglianCalling && callClient.needShowAnswerView() ? this.hangUpPhone.bind(this, callClient) : this.dialPhoneNumber}>
