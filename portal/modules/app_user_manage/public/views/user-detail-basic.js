@@ -382,21 +382,21 @@ class UserDetailBasic extends React.Component {
         var end_time = moment(new Date(+app.end_time)).format(FORMAT);
         var establish_time = moment(new Date(+app.create_time)).format(FORMAT);
         var displayStartTime = '', displayEndTime = '', displayEstablishTime = '';
-        if (app.start_time === '0') {
+        if (+app.start_time === 0) {
             displayStartTime = Intl.get('user.nothing', '无');
         } else if (start_time === 'Invalid date') {
             displayStartTime = Intl.get('common.unknown', '未知');
         } else {
             displayStartTime = start_time;
         }
-        if (app.end_time === '0') {
+        if (+app.end_time === 0) {
             displayEndTime = Intl.get('user.nothing', '无');
         } else if (end_time === 'Invalid date') {
             displayEndTime = Intl.get('common.unknown', '未知');
         } else {
             displayEndTime = end_time;
         }
-        if (app.create_time === '0') {
+        if (+app.create_time === 0) {
             displayEstablishTime = Intl.get('user.nothing', '无');
         } else if (establish_time === 'Invalid date') {
             displayEstablishTime = Intl.get('common.unknown', '未知');
@@ -430,7 +430,7 @@ class UserDetailBasic extends React.Component {
         var end_time = moment(new Date(+app.end_time)).format(FORMAT);
         var displayEndTime = '';
 
-        if (app.end_time === '0') {
+        if (+app.end_time === 0) {
             displayEndTime = Intl.get('user.nothing', '无');
         } else if (end_time === 'Invalid date') {
             displayEndTime = Intl.get('common.unknown', '未知');
