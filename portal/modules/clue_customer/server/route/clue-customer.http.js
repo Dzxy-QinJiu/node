@@ -185,6 +185,13 @@ module.exports = {
         }
     }, {
         method: 'post',
+        path: '/rest/clue/detail/belongTome/:page_size/:page_num/:sort_field/:order/:type',
+        handler: 'getClueDetailByIdBelongTome',
+        passport: {
+            'needLogin': true
+        }
+    }, {
+        method: 'post',
         path: '/rest/cluecustomer/change/sales/batch/:type',
         handler: 'changeClueSalesBatch',
         passport: {

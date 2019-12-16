@@ -313,16 +313,16 @@ function handleClueParams(req, clueUrl) {
         reqBody = JSON.parse(req.body.reqData);
     }
     var url = clueUrl.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':page_num',req.params.page_num).replace(':order',req.params.order);
-    var queryParams = _.get(reqBody,'queryParam');
+    var queryParams = _.get(reqBody,'queryParam',{});
     if (queryParams.statistics_fields){
         url += `?statistics_fields=${queryParams.statistics_fields}`;
-    }
-    if (queryParams.keyword){
-        var keyword = encodeURI(queryParams.keyword);
-        url += `&keyword=${keyword}`;
-    }
-    if (queryParams.id){
-        url += `&id=${queryParams.id}`;
+        if (queryParams.keyword){
+            var keyword = encodeURI(queryParams.keyword);
+            url += `&keyword=${keyword}`;
+        }
+        if (queryParams.id){
+            url += `&id=${queryParams.id}`;
+        }
     }
     var bodyParams = _.get(reqBody,'bodyParam');
     var exist_fields = _.get(bodyParams,'exist_fields',[]);
@@ -515,6 +515,18 @@ exports.getClueDetailById = function(req, res) {
             req: req,
             res: res
         }, null);
+};
+//根据线索id获取属于我的线索
+exports.getClueDetailByIdBelongTome = function(req, res){
+    var obj = handleClueParams(req, restApis.exportClueFulltext);
+    let emitter = new EventEmitter();
+    let promiseList = [getTypeClueLists(req, res, obj)];
+    Promise.all(promiseList).then((dataList) => {
+        emitter.emit('success', _.get(dataList,'[0].result[0]'));
+    }, function(errorMsg) {
+        emitter.emit('error', errorMsg);
+    });
+    return emitter;
 };
 //获取相似线索
 exports.getSimilarClueLists = function(req, res) {

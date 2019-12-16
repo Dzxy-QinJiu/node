@@ -234,6 +234,13 @@ class phoneStatusTop extends React.Component {
     handleVisibleChange = flag => {
         this.setState({visible: flag});
     };
+    //后端推送的消息是否有lead_id
+    isPhoneMsgWithLeadId(phoneMsg) {
+        return phoneMsg && phoneMsg.lead_id;
+    }
+    isOnlyOpenClueDetail(paramObj) {
+        return paramObj.clue_params && !paramObj.call_params;
+    }
 
     renderTraceItem(phonemsgObj) {
         var onHide = function() {
@@ -241,9 +248,18 @@ class phoneStatusTop extends React.Component {
         };
 
         var clueInfoArr = _.get(this,'state.clueInfoArr[0]') ? this.state.clueInfoArr : [];
-        if(_.isEmpty(clueInfoArr) && !this.state.isClueDetailCall && _.get(phonemsgObj,'leads[0]')) {
-            clueInfoArr = phonemsgObj.leads;
+        //如果所打电话不仅对应自己的线索也对应其他人的线索，那也可以把跟进记录写在其他人所拥有的线索上
+        if(_.isArray(phonemsgObj.leads) && phonemsgObj.leads.length){
+            if(!this.state.isClueDetailCall &&
+                !this.state.isGettingCustomer &&
+                !this.state.getCustomerErrMsg &&
+                ((phonemsgObj.leads.length === 1 && !_.get(clueInfoArr,'[0]'))
+                || (phonemsgObj.leads.length > 1 && !(this.isPhoneMsgWithLeadId(phonemsgObj) && _.get(clueInfoArr,'[0]'))))
+                && _.includes(HANG_UP_TYPES, phonemsgObj.type)){
+                clueInfoArr = _.sortBy(phonemsgObj.leads, (item) => _.find(clueInfoArr, clue => clue.id === item.id));
+            }
         }
+
         const options = clueInfoArr.map((item) => (
             <Option value={item.id} key={item.id}>{item.name}</Option>
         ));

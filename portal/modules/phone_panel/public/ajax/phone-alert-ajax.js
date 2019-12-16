@@ -1,4 +1,3 @@
-
 var appAjaxTrans = require('MOD_DIR/common/public/ajax/app');
 //根据客户id获取客户信息
 exports.getCustomerById = function(data) {

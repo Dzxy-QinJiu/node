@@ -208,6 +208,15 @@ exports.getClueFulltext = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
+exports.getClueDetailByIdBelongTome = function(req, res) {
+    clueCustomerService.getClueDetailByIdBelongTome(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        })
+        .on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
 exports.getClueFulltextSelfHandle = function(req, res) {
     clueCustomerService.getClueFulltextSelfHandle(req, res)
         .on('success', function(data) {
