@@ -217,8 +217,7 @@ class Production extends React.Component {
                                     initialValue: this.props.info.price || 0,
                                     rules: [{
                                         required: false,
-                                        type: 'number',
-                                        message: Intl.get('config.product.input.number', '请输入数字'),
+                                        ...getNumberValidateRule(),
                                         transform: (value) => {
                                             return +value;
                                         }

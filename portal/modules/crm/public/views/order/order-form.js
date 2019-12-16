@@ -5,6 +5,7 @@ const OrderAction = require('../../action/order-actions');
 import SearchIconList from '../../../../../components/search-icon-list';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
+import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 class OrderForm extends React.Component {
     constructor(props){
         super(props);
@@ -98,8 +99,7 @@ class OrderForm extends React.Component {
                         {...formItemLayout}
                     >
                         {getFieldDecorator('budget', {
-                            rules: [{required: true, message: Intl.get('crm.order.budget.input', '请输入预算金额')},
-                                {pattern: /^\d+(\.\d+)?$/, message: Intl.get('crm.157', '预算金额必须为数字')}]
+                            rules: [{required: true, message: Intl.get('crm.order.budget.input', '请输入预算金额')},getNumberValidateRule()]
                         })(
                             <Input placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
                                 addonAfter={Intl.get('contract.82', '元')}
