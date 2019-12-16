@@ -222,7 +222,7 @@ class ClueAddForm extends React.Component {
                     });
                     clueCustomerAction.afterAddSalesClue({newCustomer: data.result});
                     this.afterAddClue(submitObj);
-                    //在其他模块，线索客户添加成功后的回调
+                    //在其他模块，线索添加成功后的回调
                     _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
                 } else {
                     var errTip = Intl.get('crm.154', '添加失败');
