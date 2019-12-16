@@ -15,6 +15,7 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';
 const { CategoryList, ContractLabel} = require('PUB_DIR/sources/utils/consts');
+import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import crmPrivilegeConst from '../../privilege-const';
 const EDIT_WIDTH = 350;
 
@@ -274,9 +275,13 @@ class ContractItem extends React.Component {
                     <BasicEditInputField
                         width={EDIT_WIDTH}
                         id={contract.id}
-                        type='number'
+                        // type='number'
                         field='contract_amount'
                         value={contract.contract_amount}
+                        validators={[
+                            {required: true, message: Intl.get('crm.contract.enter.contract.money', '请输入合同额')},
+                            getNumberValidateRule()
+                        ]}
                         afterValTip={Intl.get('contract.82', '元')}
                         placeholder={Intl.get('crm.contract.enter.contract.money', '请输入合同额')}
                         hasEditPrivilege={hasEditPrivilege}
@@ -290,9 +295,10 @@ class ContractItem extends React.Component {
                     <BasicEditInputField
                         width={EDIT_WIDTH}
                         id={contract.id}
-                        type='number'
+                        // type='number'
                         field='gross_profit'
                         value={contract.gross_profit}
+                        validators={[getNumberValidateRule()]}
                         afterValTip={Intl.get('contract.82', '元')}
                         placeholder={Intl.get('crm.contract.enter.gross', '请输入毛利')}
                         hasEditPrivilege={hasEditPrivilege}
