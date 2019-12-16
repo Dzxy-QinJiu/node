@@ -366,7 +366,7 @@ class RecommendCustomerCondition extends React.Component {
                         />
                         <div className={cls}>
                             <FormItem
-                                label={Intl.get('clue.recommed.keyword.list', '关键词')}
+                                label={Intl.get('clue.recommed.keyword.list', '公司名')}
                                 id="name"
                                 {...formItemLayout}
                             >
@@ -374,7 +374,7 @@ class RecommendCustomerCondition extends React.Component {
                                     getFieldDecorator('name',
                                         {initialValue: _.get(hasSavedRecommendParams,'name','')}
                                     )(
-                                        <Input placeholder={Intl.get('clue.recommend.input.keyword', '请输入关键词')}/>
+                                        <Input placeholder={Intl.get('clue.recommend.input.keyword', '请输入公司名')}/>
                                     )}
                             </FormItem>
                             <div className="ant-row ant-form-item">

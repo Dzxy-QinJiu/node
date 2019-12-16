@@ -384,20 +384,19 @@ ClueCustomerStore.prototype.afterAddSalesClue = function(updateObj) {
         if (((typeFilter.status === newCustomer.status)) && clueFilterStore.getState().rangeParams[0].from <= newCustomer.start_time && newCustomer.start_time <= clueFilterStore.getState().rangeParams[0].to) {
             this.curClueLists.unshift(newCustomer);
             this.customersSize++;
-
-            if(newCustomer.status === SELECT_TYPE.WILL_DISTRIBUTE){
-                //把统计数字也更新一下
-                var count = this.agg_list['willDistribute'] || 0;
-                this.agg_list['willDistribute'] = count + 1;
-                //统计总数字也加一下
-                this.allClueCount += 1;
-            }else if(newCustomer.status === SELECT_TYPE.WILL_TRACE){
-                //把统计数字也更新一下
-                var count = this.agg_list['willTrace'] || 0;
-                this.agg_list['willTrace'] = count + 1;
-                //统计总数字也加一下
-                this.allClueCount += 1;
-            }
+        }
+        if(newCustomer.status === SELECT_TYPE.WILL_DISTRIBUTE){
+            //把统计数字也更新一下
+            var count = this.agg_list['willDistribute'] || 0;
+            this.agg_list['willDistribute'] = count + 1;
+            //统计总数字也加一下
+            this.allClueCount += 1;
+        }else if(newCustomer.status === SELECT_TYPE.WILL_TRACE){
+            //把统计数字也更新一下
+            var count = this.agg_list['willTrace'] || 0;
+            this.agg_list['willTrace'] = count + 1;
+            //统计总数字也加一下
+            this.allClueCount += 1;
         }
     }
 

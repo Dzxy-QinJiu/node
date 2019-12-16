@@ -2571,7 +2571,7 @@ var en_US = {
     'errorcode.login.failed': 'Login failed',//登录失败
     'errorcode.166': 'The number has been used, you can not be bound to the current account', // 该手机号已被使用，不能绑定到当前账号
     'errorcode.167': 'The number has been bound to the other account, please login first original account unbundling', // 该手机号已被绑定到其他账号，请先登录原账号解绑
-    'errorcode.168': 'The leads under this query condition have been extracted, please modify the query conditions and check again',//该查询条件下的线索已提取完毕，请修改查询条件再查看
+    'errorcode.168': 'The leads under this query condition have been extracted, please modify the query conditions and check again',//符合条件的线索已被提取完成，请修改条件再查看
     'errorcode.169': 'The company information has been extracted',//该线索已被其他同事提取
     'errorcode.170': 'The leads you selected have already been picked up by others',//您选择的线索都已经被其他同事提取
     'user.input.phone': 'Please enter your phone',//请输入手机号
@@ -3122,7 +3122,8 @@ var en_US = {
     'clue.list.clue.availibility': 'Invalid clue',//无效线索
     'clue.list.total.num': 'A total of {num} clues',//共{num}个线索
     'clue.search.no.found': 'There are no qualified leads, you can go to {cluepool} to see if there is any clue',//没有符合条件的线索，您可以去{cluepool}查看是否有该线索
-    'clue.edit.condition.search': 'Please change search condition',//请修改条件再查看
+    'clue.has.extract.by.other': 'Eligible leads have been extracted, please check {changeCondition} again',//符合条件的线索已被提取完成，请{changeCondition}再查看
+    'clue.edit.condition.search': 'Please {changeCondition}',//请{changeCondition}再查看
     'clue.customer.has.clue.can.extract': 'You can extract clues from here',//您可以从这里提取线索哦
     'lead.recommend.refresh.list': 'If there is no lead that matches your needs, you can',//如果没有符合您需求的线索，您可以
     'lead.recommend.change.condition': 'Please have a try',//再试试
@@ -3725,8 +3726,8 @@ var en_US = {
     'self.setting.has.no.apply': 'There is no suited apply',//暂无符合条件的申请
     'failed.distribute.apply': 'Failed assign!',//分配失败！
     'apply.approve.required.err.msg': 'Please input tips',//请输入未填写时的提示
-    'clue.recommed.keyword.list': 'Keyword',//关键词
-    'clue.recommend.input.keyword': 'Please input keyword',//请输入关键词
+    'clue.recommed.keyword.list': 'Company name',//公司名
+    'clue.recommend.input.keyword': 'Please input company name',//请输入公司名
     'clue.recommend.extract.num.limit': 'The number of clues extracted by your organization {timerange} has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
     'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} {timerange} and can extract up to {ableExtract} clues',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
     'clue.recommend.formal.extract.num.limit.tip': 'The {count} clause of this month has been extracted. If you need to continue to extract, please {addClues}.',//本月{count}条已提取完毕，如需继续提取请{addClues}
