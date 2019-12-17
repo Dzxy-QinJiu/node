@@ -226,7 +226,7 @@ class ClueAddForm extends React.Component {
                     _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
                 } else {
                     var errTip = Intl.get('crm.154', '添加失败');
-                    if (_.isString(data.msg) && _.isArray(data.result) && data.result.length){
+                    if (_.isString(data.message) && _.isArray(data.result) && data.result.length){
                         var phone = _.get(data, 'result[0].phones',[]);
                         errTip = Intl.get('clue.manage.has.exist.clue','线索名为{name}，联系电话为{phone}的线索已存在！',{name: _.get(data, 'result[0].name',''),phone: phone.join(',')});
                     }
@@ -356,6 +356,22 @@ class ClueAddForm extends React.Component {
         });
     }
 
+    //判断当前电话是否被其他线索使用，报警告
+    renderComnnonPhoneMessage = (customerList, showRightPanel) => {
+        const list = _.cloneDeep(customerList);
+        let showMessage = (clue) => {
+            return <span>
+                <span>{Intl.get('clue.customer.phone.used.by.clue','该电话已被其他线索使用，')}</span>
+                <a href="javascript:void(0)" onClick={showRightPanel.bind(this, clue)} className="handle-btn-item">
+                    {_.get(clue, 'name', '')}
+                </a>
+            </span>;
+        };
+        if(customerList.length > 0){
+            return showMessage(list.shift());
+        }
+    };
+
     //电话修改时的回调
     onPhoneChange = (phoneObj) => {
         let {key, value} = phoneObj;
@@ -372,8 +388,8 @@ class ClueAddForm extends React.Component {
                         let existed = this.isPhoneExisted(value);
                         //如果有“电话已存在”的验证错误，先展示"电话已存在"
                         if(!existed) {
-                            let message = Intl.get('clue.customer.repeat.phone.user', '该电话已被线索"{userName}"使用',{userName: _.get(data, 'list[0].name', [])});
-                            //已存在
+                            const customer = data.list;
+                            const message = this.renderComnnonPhoneMessage(customer, this.props.showRightPanel);
                             this.handleDuplicatePhoneMsg(key, true, message);
                         }
                     }
