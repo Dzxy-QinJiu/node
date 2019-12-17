@@ -176,6 +176,11 @@ function getConfigJson(req) {
         '90065': {'httpCode': 500, 'message': backendIntl.get('errorcode.168', '符合条件的线索已被提取完成，请修改条件再查看')},
         '90060': {'httpCode': 500, 'message': backendIntl.get('errorcode.169', '该线索已被其他同事提取')},
         '90066': {'httpCode': 500, 'message': backendIntl.get('errorcode.170', '您选择的线索都已经被其他同事提取')},
+        '90071': {'httpCode': 500, 'message': backendIntl.get('errorcode.171', '不是您的线索，无法转为客户')},
+        '90072': {'httpCode': 500, 'message': backendIntl.get('errorcode.172', '不是您的线索，无法合并到客户')},
+        '90073': {'httpCode': 500, 'message': backendIntl.get('errorcode.173', '线索转为客户失败')},
+        '90074': {'httpCode': 500, 'message': backendIntl.get('errorcode.174', '线索合并到客户失败')},
+
         '190001': {'httpCode': 500, 'message': backendIntl.get('errorcode.phone.busy', '座机繁忙，请稍后再试！')},//总机返回busy，分机忙
 
         /*************************** 角色权限 *****************************/
