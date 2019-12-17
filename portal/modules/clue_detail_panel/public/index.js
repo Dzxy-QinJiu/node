@@ -25,9 +25,9 @@ import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 import {AVALIBILITYSTATUS} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {clueEmitter} from 'PUB_DIR/sources/utils/emitters';
 const DIVLAYOUT = {
-    CUSTOMER_COUNT_TIP_H: 26,//对应几个线索提示的高度
+    CUSTOMER_COUNT_TIP_H: 26 + 80,//对应几个线索提示和写联系计划提示的高度
     PHONE_STATUS_TIP_H: 50,//只展示通话状态时的高度
-    PHONE_STATUS_INPUT_H: 148//通话结束后，带跟进记录输入框的通话状态展示区域的高度
+    PHONE_STATUS_INPUT_H: 180//通话结束后，带跟进记录输入框的通话状态展示区域的高度
 };
 const Add_CUSTOMER_LAYOUT_CONSTANTS = {
     TOP_DELTA: 62,//顶部提示框的高度

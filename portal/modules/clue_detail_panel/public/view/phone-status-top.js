@@ -256,6 +256,7 @@ class phoneStatusTop extends React.Component {
                 ((phonemsgObj.leads.length === 1 && !_.get(clueInfoArr,'[0]'))
                 || (phonemsgObj.leads.length > 1 && !(this.isPhoneMsgWithLeadId(phonemsgObj) && _.get(clueInfoArr,'[0]'))))
                 && _.includes(HANG_UP_TYPES, phonemsgObj.type)){
+                //这个if的判断条件和父组件index文件中的渲染 renderClueCard() 方法的条件是一样的
                 clueInfoArr = _.sortBy(phonemsgObj.leads, (item) => _.find(clueInfoArr, clue => clue.id === item.id));
             }
         }
