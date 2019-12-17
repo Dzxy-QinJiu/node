@@ -2574,6 +2574,10 @@ var en_US = {
     'errorcode.168': 'The leads under this query condition have been extracted, please modify the query conditions and check again',//符合条件的线索已被提取完成，请修改条件再查看
     'errorcode.169': 'The company information has been extracted',//该线索已被其他同事提取
     'errorcode.170': 'The leads you selected have already been picked up by others',//您选择的线索都已经被其他同事提取
+    'errorcode.171': 'Not your lead, cannot be turned into a customer',//不是您的线索，无法转为客户
+    'errorcode.172': 'Not your lead, cannot be merged into a customer',//不是您的线索，无法合并到客户
+    'errorcode.173': 'Failed to turn lead to customer',//线索转为客户失败
+    'errorcode.174': 'Failed to merge lead to customer',//线索合并到客户失败
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
     'user.user.info': 'information',//开通信息
@@ -2686,7 +2690,7 @@ var en_US = {
     'crm.phone.failed.get.customer': 'Failed to query the customer connectting to this phone number',//查询此号码对应的客户信息失败
     'call.record.show.customer.detail': 'See details',//查看详情
     'call.record.customer.source': 'Source',//来源
-    'call.record.no.response.customer': 'This number does not have a corresponding customer',//此号码无对应客户
+    'call.record.no.response.customer': 'This number does not have a corresponding {type}',//此号码无对应客户
     'call.record.some.customer': 'This number has {num} corresponding customers',//此号码对应{num}个客户
     'call.record.contact.phone': 'contact phone',//联系号码
     'call.record.getting.tag.lists': 'Getting the tag list',//正在获取标签列表

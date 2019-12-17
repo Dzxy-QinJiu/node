@@ -390,15 +390,13 @@ exports.getClueUnhandledPrivilege = function() {
 //获取线索未读数的参数
 exports.getUnhandledClueCountParams = function() {
     return {
-        queryParam: {
-            rangeParams: [{//时间范围参数
+        bodyParam: {
+            rang_params: [{//时间范围参数
                 from: moment('2010-01-01 00:00:00').valueOf(),//开始时间设置为2010年
                 to: moment().valueOf(),
                 type: 'time',
                 name: 'source_time'
             }],
-        },
-        bodyParam: {
             query: {
                 status: '1',
                 availability: '0'

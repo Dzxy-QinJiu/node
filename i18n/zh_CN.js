@@ -2612,6 +2612,10 @@ var zh_CN = {
     'errorcode.168': '符合条件的线索已被提取完成，请修改条件再查看',
     'errorcode.169': '该线索已被其他同事提取',
     'errorcode.170': '您选择的线索都已经被其他同事提取',
+    'errorcode.171': '不是您的线索，无法转为客户',
+    'errorcode.172': '不是您的线索，无法合并到客户',
+    'errorcode.173': '线索转为客户失败',
+    'errorcode.174': '线索合并到客户失败',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',

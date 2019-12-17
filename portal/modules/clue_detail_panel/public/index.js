@@ -25,9 +25,9 @@ import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 import {AVALIBILITYSTATUS} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {clueEmitter} from 'PUB_DIR/sources/utils/emitters';
 const DIVLAYOUT = {
-    CUSTOMER_COUNT_TIP_H: 26,//对应几个线索提示的高度
+    CUSTOMER_COUNT_TIP_H: 26 + 80,//对应几个线索提示和写联系计划提示的高度
     PHONE_STATUS_TIP_H: 50,//只展示通话状态时的高度
-    PHONE_STATUS_INPUT_H: 148//通话结束后，带跟进记录输入框的通话状态展示区域的高度
+    PHONE_STATUS_INPUT_H: 180//通话结束后，带跟进记录输入框的通话状态展示区域的高度
 };
 const Add_CUSTOMER_LAYOUT_CONSTANTS = {
     TOP_DELTA: 62,//顶部提示框的高度
@@ -393,10 +393,13 @@ class ClueDetailPanel extends React.Component {
                     } else {
                         height -= DIVLAYOUT.PHONE_STATUS_TIP_H;
                     }
+                    var leadsLists = phonemsgObj.leads;
+                    //把属于自己的线索放在最前面
+                    leadsLists = _.sortBy(leadsLists, (item) => _.find(clueInfoArr, clue => clue.id === item.id));
                     return (<div className="customer-card-list" style={{height: height}}>
                         <GeminiScrollbar ref="customerCardsScrollbar">
                             {
-                                _.map(phonemsgObj.leads, (item) => {
+                                _.map(leadsLists, (item) => {
                                     //我的线索，可以查看线索详情
                                     let myClue = _.find(clueInfoArr, clue => clue.id === item.id);
                                     return this.renderClueCard(item, myClue);
@@ -599,7 +602,7 @@ class ClueDetailPanel extends React.Component {
                         showMarkClueInvalid={showMarkClueInvalid}
                         curClue={curClue}
                         ref={dom => {this.phoneStatusTop = dom;}}
-                        isClueDetailCall={this.isClueDetailCall(this.state.paramObj) || this.isPhoneMsgWithLeadId(phonemsgObj)}
+                        isClueDetailCall={this.isClueDetailCall(this.state.paramObj) || this.isPhoneMsgWithLeadId(phonemsgObj) || this.isOnlyOpenClueDetail(this.state.paramObj)}
                     />
                     {this.renderMainContent()}
                     {!this.isClueDetailCall(this.state.paramObj) ? //不是从线索详情中拨打的电话并且推送来的消息中有lead_id时
