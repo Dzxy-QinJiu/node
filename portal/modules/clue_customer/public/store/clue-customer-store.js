@@ -69,6 +69,7 @@ ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
     } else if (result.error) {
         this.isLoadingRecommendClue = false;
         this.getRecommendClueErrMsg = result.errorMsg;
+        this.recommendClueLists = [];
     } else {
         this.isLoadingRecommendClue = false;
         this.getRecommendClueErrMsg = '';
