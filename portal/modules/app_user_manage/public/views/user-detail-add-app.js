@@ -38,6 +38,7 @@ import userManagePrivilege from '../privilege-const';
 import { isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
+import BatchAddAppUser from './v2/batch-add-app-user';
 
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
@@ -1243,7 +1244,7 @@ var UserDetailAddApp = createReactClass({
     render: function() {
 
         var fixedHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA;
-
+        let contentHeight = fixedHeight - $('.addapp_major_items').outerHeight();
         return (
             <div style={{height: '100%'}}>
                 <RightPanelClose onClick={this.closeRightPanel}/>
@@ -1259,7 +1260,20 @@ var UserDetailAddApp = createReactClass({
                                                     this.renderTabForBatch()
                                                 }
                                             </div>
-                                            <div className="addapp_minor_items" style={{display: this.state.multipleSubType === 'grant_roles' ? 'none' : 'block'}}>
+                                            {
+                                                this.state.multipleSubType === 'grant_application' ? (
+                                                    <div className="addapp_minor_items full_size detail-v3-panel">
+                                                        <BatchAddAppUser
+                                                            height={contentHeight}
+                                                            initialUser={this.props.initialUser}
+                                                        />
+                                                    </div>
+                                                ) : null
+                                            }
+                                            <div
+                                                className="addapp_minor_items"
+                                                style={{display: this.state.multipleSubType === 'grant_roles' ? 'none' : 'block'}}
+                                            >
                                                 {
                                                     this.renderAppsBlock('inner')
                                                 }
@@ -1312,6 +1326,13 @@ var UserDetailAddApp = createReactClass({
                                     <RightPanelSubmit onClick={this.handleSubmit} data-tracename="点击确定按钮">
                                         <ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" />
                                     </RightPanelSubmit>
+                                    {
+                                        this.state.multipleSubType === 'grant_application' ? null : (
+                                            <RightPanelSubmit onClick={this.handleSubmit} data-tracename="点击确定按钮">
+                                                <ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" />
+                                            </RightPanelSubmit>
+                                        )
+                                    }
                                 </div>
                             </div>
                         </Validation>
