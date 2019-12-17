@@ -162,7 +162,7 @@ let routers = [
     {
         id: 'SCHEDULE_MANAGEMENT',
         name: 'menu.shortName.schedule',//日程
-        routePath: '/calender',
+        routePath: '/calendar',
         component: `${MODULE_PATH}schedule_management/public`,
         shortName: 'menu.shortName.schedule',//日程
         //有这个权限，才显示入口图标
