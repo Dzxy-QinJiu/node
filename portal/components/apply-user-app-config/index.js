@@ -25,15 +25,19 @@ class ApplyUserAppConfig extends React.Component {
     }
 
     renderConfigTabs(apps, appsFormData) {
+        // 判断所选产品中，是否包含多终端信息，要是包含的话，则不展示统一配置信息
+        let isHideUnifiedConfig = _.find(apps, item => !_.isEmpty(item.terminals));
         return (
             <div className="app-config-tab-container">
                 <Tabs type="card" activeKey={this.props.configType} onChange={this.changeConfigType.bind(this)}>
                     {
-                        this.props.configType === CONFIG_TYPE.UNIFIED_CONFIG ? (
-                            <TabPane tab={Intl.get('crm.apply.user.unified.config', '统一配置')} key={CONFIG_TYPE.UNIFIED_CONFIG}>
+                        isHideUnifiedConfig ? null : (
+                            <TabPane
+                                tab={Intl.get('crm.apply.user.unified.config', '统一配置')}
+                                key={CONFIG_TYPE.UNIFIED_CONFIG}>
                                 {this.renderAppConfigForm(appsFormData[0], apps[0])}
                             </TabPane>
-                        ) : null
+                        )
                     }
                     <TabPane tab={Intl.get('crm.apply.user.separate.config', '分别配置')} key={CONFIG_TYPE.SEPARATE_CONFIG}>
                         {_.map(apps, app => {
