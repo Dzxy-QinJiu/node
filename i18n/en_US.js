@@ -20,7 +20,7 @@ var en_US = {
     'menu.appuser.list': 'Users Lists',//用户列表
     'menu.appuser.org': 'Organizations',//组织管理
     'menu.appuser.auditlog': 'Operation record',//操作记录
-    'menu.appuser.position': 'Position Deal', // 座席号管理
+    'menu.appuser.position': 'Position Order', // 座席号管理
     'menu.backend': 'Background',//后台管理
     'menu.member': 'Members', // 成员
     'menu.product': 'Product', // 产品
@@ -136,7 +136,7 @@ var en_US = {
     'common.status': 'status',//状态
     'common.owner': 'Owner',//所有者：
     'common.managers': 'Administrator',//管理员：
-    'common.secret.app': 'Secret deal APP',//密令APP：
+    'common.secret.app': 'Secret order APP',//密令APP：
     'common.captcha': 'Captcha',//验证码：
     'common.describe': 'DESCR',//描述：
     'common.time.connector': ' to ',// // ' 至 -'至
@@ -795,7 +795,7 @@ var en_US = {
     'user.third.thirdapp.success.enable': 'active successfully',//'启用成功',
     'user.third.thirdapp.success.disable': 'disable successfully',//'禁用成功',
     'user.third.thirdapp.success.edit': 'modify successfully',//'修改成功',
-    'user.add.position': 'Add Phone Deal', // 添加座席号
+    'user.add.position': 'Add Phone Order', // 添加座席号
     'user.position.input.tips': 'please enter number', // 请输入数字
     'user.position.unbind.user': 'No unbind User', // 暂无未绑定的用户
     'user.position.bind.user': 'Bind user', // 绑定用户
@@ -809,7 +809,7 @@ var en_US = {
     'user.position.select.organization.first': 'Select Organization First', // 请先选择组织
     'user.position.tips.no.organization': 'This organization is not exist.', // 暂无此组织
     'user.position.input.name.search': 'Search for organization', // 输入组织名称搜索
-    'user.position.number.tips': 'Plese enter phone deal', // 请输入座席号
+    'user.position.number.tips': 'Plese enter phone order', // 请输入座席号
     'user.position.select.user': 'Please select user', // 请选择用户
     'user.third.thirdapp.consts.sina': 'Sina Weibo',//新浪微博',
     'user.third.thirdapp.consts.tencent': 'Tencent Weibo',//腾讯微博',
@@ -874,7 +874,7 @@ var en_US = {
     'member.phone.no.data': 'No phone',//未添加手机号
     'member.phone.add': 'Add phone',//添加手机号
     'member.email.no.data': 'No email',//未添加邮箱
-    'member.phone.order.null': 'No phone deal',//暂无座席
+    'member.phone.order.null': 'No phone order',//暂无座席
     'member.sales.goal.add': 'Set sales goal',//设置销售目标
     'member.sales.goal.no.data': 'Sales goal not set',//未设置销售目标
     'member.log.no.data': 'No operation log',//暂无操作日志
@@ -996,8 +996,8 @@ var en_US = {
     'sales.process.customer.stage.nodata.tips': 'No customer stage, please add first', // 暂无客户阶段，请先添加
     'sales.process.customer.stage.toplimit': 'The number of customer stages has reached the upper limit(8).', // 客户阶段个数已达上限（8个）
     'sales.process.delete.customer.stage.tips': 'Are you sure to delete the customer stage?', // 确定删除这个客户阶段么
-    'sales.process.change.order.success': 'Success to change the deal of customer stages', // 变更客户阶段顺序成功
-    'sales.process.change.order.failed': 'Failed to change the deal of customer stages', // 变更客户阶段顺序失败
+    'sales.process.change.order.success': 'Success to change the order of customer stages', // 变更客户阶段顺序成功
+    'sales.process.change.order.failed': 'Failed to change the order of customer stages', // 变更客户阶段顺序失败
     'sales.process.customer.stage.play': 'Play', // 剧本
     'sales.process.customer.stage.play.placeholder': 'Please enter scenarios', // 请输入剧本
     'sales.process.customer.stage.no.play': 'No scenarios', // 暂无剧本
@@ -1051,9 +1051,9 @@ var en_US = {
     'app.app.get.managers.list': 'Getting manager list', // 正在获取管理员列表
     'app.app.managers.placeholder': 'please select manager', // 请选择管理员*@
     'app.app.no.managers': 'no manager', // 暂无管理员@
-    'app.app.get.secret.list': 'Getting secret deal list', // 正在获取密令APP列表@
-    'app.app.secret.placeholder': 'please select deal secret', // 请选择密令APP@
-    'app.app.no.secret': 'no deal secret', // 暂无密令APP
+    'app.app.get.secret.list': 'Getting secret order list', // 正在获取密令APP列表@
+    'app.app.secret.placeholder': 'please select order secret', // 请选择密令APP@
+    'app.app.no.secret': 'no order secret', // 暂无密令APP
     'app.app.secret.search.placeholder': 'Filter by application name', // 请输入应用名称进行过滤@
     'app.app.disable.modal.content': 'whether to enable', // 是否启用此应用？
     'app.app.enable.modal.content': 'whether to disable', // 是否禁用此应用？@
