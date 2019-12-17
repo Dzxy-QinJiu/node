@@ -1855,7 +1855,7 @@ const ApplyViewDetail = createReactClass({
                     passStrength: 'L'
                 }
             });
-            callback(Intl.get('common.password.validate.rule', '请输入6-18位数字、字母、符号组成的密码'));
+            callback(Intl.get('common.password.validate.rule', ' 请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
         }
     },
 
@@ -2001,9 +2001,9 @@ const ApplyViewDetail = createReactClass({
     },
     notShowRoleAndPrivilegeSettingBtn(detailInfo){
         //不展示配置按钮的情况
-        if (_.includes([APPLY_TYPES.APPLY_PWD_CHANGE,APPLY_TYPES.APPLY_STH_ELSE,APPLY_TYPES.APPLY_GRANT_DELAY,APPLY_TYPES.APPLY_GRANT_STATUS_CHANGE,APPLY_TYPES.DISABLE], detailInfo.type)){
+        if ([APPLY_TYPES.APPLY_PWD_CHANGE,APPLY_TYPES.APPLY_STH_ELSE,APPLY_TYPES.APPLY_GRANT_DELAY,APPLY_TYPES.APPLY_GRANT_STATUS_CHANGE,APPLY_TYPES.DISABLE].includes(detailInfo.type)){
             return true;
-        }else if(_.includes([APPLY_TYPES.DELAY], detailInfo.type)){
+        }else if([APPLY_TYPES.DELAY].includes(detailInfo.type)){
             //延期申请类型不加配置按钮的情况
             return !this.showConfigOfDelayApply(detailInfo) || this.notShowIcon();
         }else{
