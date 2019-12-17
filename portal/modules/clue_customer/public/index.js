@@ -1698,6 +1698,7 @@ class ClueCustomer extends React.Component {
                             {/*有分配权限*/}
                             {hasAssignedPrivilege ?
                                 <AntcDropdown
+                                    datatraceContainer='线索列表分配销售按钮'
                                     ref={changeSale => this['changesale' + salesClueItem.id] = changeSale}
                                     content={<span
                                         data-tracename="点击分配线索客户按钮"
@@ -2687,9 +2688,9 @@ class ClueCustomer extends React.Component {
                     {showBatchChange ?
                         <AntcDropdown
                             ref='changesales'
+                            datatraceContainer='线索列表批量分配销售按钮'
                             content={<Button type="primary"
                                 title={Intl.get('clue.batch.assign.sales', '批量分配')}
-                                data-tracename="点击分配线索客户按钮"
                                 className='btn-item'>
                                 { isWebMin ? <span className="iconfont icon-assign"></span> :
                                     <React.Fragment>

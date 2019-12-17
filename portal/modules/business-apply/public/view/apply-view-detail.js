@@ -163,8 +163,8 @@ class ApplyViewDetail extends React.Component {
             <div className="pull-right">
                 <AntcDropdown
                     ref={AssignSales => this.addNextCandidate = AssignSales}
+                    datatraceContainer='出差申请转审按钮'
                     content={<Button
-                        data-tracename="点击转出申请按钮"
                         className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('apply.view.transfer.candidate','转审')}</Button>}
                     overlayTitle={Intl.get('apply.will.approve.apply.item','待审批人')}
                     okTitle={Intl.get('common.confirm', '确认')}

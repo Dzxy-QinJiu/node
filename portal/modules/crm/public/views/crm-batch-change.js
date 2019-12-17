@@ -772,6 +772,7 @@ var CrmBatchChange = createReactClass({
                     (this.state.currentTab === BATCH_OPERATE_TYPE.CHANGE_TAG ||
                     this.state.currentTab === 'addTag' || this.state.currentTab === 'removeTag') && isShowDropDownContent ? (
                             <AntcDropdown
+                                datatraceContainer='客户批量变更标签'
                                 content={changeBtns.btn}
                                 overlayTitle={Intl.get('common.tag', '标签')}
                                 isSaving={this.state.isLoading}
@@ -789,6 +790,7 @@ var CrmBatchChange = createReactClass({
                 {
                     this.state.currentTab === BATCH_OPERATE_TYPE.CHANGE_INDUSTRY && isShowDropDownContent ? (
                         <AntcDropdown
+                            datatraceContainer='客户批量变更行业'
                             content={changeBtns.btn}
                             overlayTitle={Intl.get('common.industry', '行业')}
                             isSaving={this.state.isLoading}
@@ -806,6 +808,7 @@ var CrmBatchChange = createReactClass({
                 {
                     this.state.currentTab === BATCH_OPERATE_TYPE.CHANGE_TERRITORY && isShowDropDownContent ? (
                         <AntcDropdown
+                            datatraceContainer='客户批量变更地域'
                             content={changeBtns.btn}
                             overlayTitle={Intl.get('crm.96', '地域')}
                             isSaving={this.state.isLoading}
@@ -823,6 +826,7 @@ var CrmBatchChange = createReactClass({
                 {
                     this.state.currentTab === BATCH_OPERATE_TYPE.CHANGE_SALES && isShowDropDownContent ? (
                         <AntcDropdown
+                            datatraceContainer='客户批量变更负责人'
                             content={changeBtns.btn}
                             overlayTitle={Intl.get('crm.6', '负责人')}
                             isSaving={this.state.isLoading}
@@ -840,6 +844,7 @@ var CrmBatchChange = createReactClass({
                 {
                     this.state.currentTab === BATCH_OPERATE_TYPE.CHANGE_ADMINISTRATIVE_LEVEL && isShowDropDownContent ? (
                         <AntcDropdown
+                            datatraceContainer='客户批量变更行政级别'
                             content={changeBtns.btn}
                             overlayTitle={Intl.get('crm.administrative.level', '行政级别')}
                             isSaving={this.state.isLoading}
@@ -855,6 +860,7 @@ var CrmBatchChange = createReactClass({
                     ) : null
                 }
                 <AntcDropdown
+                    datatraceContainer='客户批量添加联系计划'
                     ref="addSchedule"
                     placement="bottomRight"
                     stopContentHide={this.state.stopContentHide}

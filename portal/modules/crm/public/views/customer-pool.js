@@ -462,6 +462,7 @@ class CustomerPool extends React.Component {
                             {extractIcon}
                         </Popconfirm>
                     ) : (<AntcDropdown
+                        datatraceContainer='客户池提取客户并分配负责人'
                         content={extractIcon}
                         overlayTitle={Intl.get('crm.pool.extract.distribute', '提取并分配负责人')}
                         okTitle={Intl.get('common.confirm', '确认')}
@@ -663,6 +664,7 @@ class CustomerPool extends React.Component {
                     </Popconfirm>);
                 } else {//销售领导、管理员提取需要分配客户的负责人
                     return (<AntcDropdown
+                        datatraceContainer='客户池提取并分配负责人'
                         ref={batchExtract => this.batchExtractRef = batchExtract}
                         content={batchExtractBtn}
                         overlayTitle={Intl.get('crm.pool.extract.distribute', '提取并分配负责人')}

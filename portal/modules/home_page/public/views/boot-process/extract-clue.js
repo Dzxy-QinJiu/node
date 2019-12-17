@@ -451,10 +451,10 @@ class ExtractClues extends React.Component {
                 <div className="button-container">
                     <Button className="button-cancel" onClick={this.props.onClosePanel}>{Intl.get('common.cancel', '取消')}</Button>
                     <AntcDropdown
+                        datatraceContainer='首页批量立即提取线索'
                         ref="changeSales"
                         content={
                             <Button
-                                data-tracename="点击批量提取线索按钮"
                                 type="primary"
                                 className="button-save"
                             >
