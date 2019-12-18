@@ -33,7 +33,7 @@ var batchOperate = require('PUB_DIR/sources/push/batch');
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {updateGuideMark, getMaxLimitExtractClueCount} from 'PUB_DIR/sources/utils/common-data-util';
-import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,isCommonSalesOrPersonnalVersion} from '../../utils/clue-customer-utils';
+import {checkClueCondition,ADD_INDUSTRY_ADDRESS_CLUE_CONDITION,SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,isCommonSalesOrPersonnalVersion} from '../../utils/clue-customer-utils';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
@@ -105,13 +105,8 @@ class RecommendCustomerRightPanel extends React.Component {
     }
 
     isShowRecommendSettingPanel = () => {
-        var hasCondition = false;
         var settedCustomerRecommend = this.state.settedCustomerRecommend;
-        for (var key in settedCustomerRecommend.obj){
-            if (!_.isEmpty(settedCustomerRecommend.obj[key])){
-                hasCondition = true;
-            }
-        }
+        var hasCondition = checkClueCondition(ADD_INDUSTRY_ADDRESS_CLUE_CONDITION, _.get(settedCustomerRecommend,'obj'));
         return (!settedCustomerRecommend.loading && !hasCondition) && !this.state.closeFocusCustomer;
     };
     getSearchCondition = () => {
