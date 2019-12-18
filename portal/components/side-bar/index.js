@@ -18,7 +18,7 @@ class SideBar extends React.Component {
         super(props);
         this.state = {
             showChat: this.props.showChat !== 'false',
-            isShowIsoQRCode: false, // 是否显示iso二维码，默认false
+            isShowIosQRCode: false, // 是否显示ios二维码，默认false
         };
     }
 
@@ -47,15 +47,15 @@ class SideBar extends React.Component {
         );
     };
 
-    isoAppMouseEnter = () => {
+    iosAppMouseEnter = () => {
         this.setState({
-            isShowIsoQRCode: true
+            isShowIosQRCode: true
         });
     };
 
-    isoAppMouseLeave = () => {
+    iosAppMouseLeave = () => {
         this.setState({
-            isShowIsoQRCode: false
+            isShowIosQRCode: false
         });
     };
 
@@ -67,13 +67,13 @@ class SideBar extends React.Component {
     render() {
         let weixinBottom = 3 * singleSideBarHeight - weixinHeight;
         let appBottom = 2 * singleSideBarHeight - appHeight;
-        if (this.state.isShowIsoQRCode) {
+        if (this.state.isShowIosQRCode) {
             appBottom = singleSideBarHeight - appHeight;
         }
         let weixinClassName = classNames('qrcode', 'weixin', {'hide': !this.state.showWeixin});
-        let appClassName = classNames('qrcode', 'app', {'hide': !this.state.showApp && !this.state.isShowIsoQRCode});
+        let appClassName = classNames('qrcode', 'app', {'hide': !this.state.showApp && !this.state.isShowIosQRCode});
         let qRCodeUrl = location.protocol + '//' + location.host + '/ketao';
-        if (this.state.isShowIsoQRCode) {
+        if (this.state.isShowIosQRCode) {
             qRCodeUrl = 'https://testflight.apple.com/join/q7kTEZVB';
         }
         let onlyService = classNames('single-bar-box', {
@@ -107,9 +107,9 @@ class SideBar extends React.Component {
                                 <i className='single-bar-label'>{Intl.get('common.app.android', '安卓版')}</i>
                             </div>
                             <div className='single-bar-box'>
-                                <i className='iconfont icon-ketao-app' onMouseEnter={this.isoAppMouseEnter}
-                                    onMouseLeave={this.isoAppMouseLeave}></i>
-                                <i className='single-bar-label'>{Intl.get('common.app.iso', 'ISO版')}</i>
+                                <i className='iconfont icon-ketao-app' onMouseEnter={this.iosAppMouseEnter}
+                                    onMouseLeave={this.iosAppMouseLeave}></i>
+                                <i className='single-bar-label'>{Intl.get('common.app.ios', 'IOS版')}</i>
                             </div>
                         </React.Fragment>
                     )}

@@ -301,7 +301,7 @@ var zh_CN = {
     'common.call.owe.tips': '您的电话号码已欠费，请充值后再试！',
     'common.number.validate.tips': '请填写最多两位小数的数字',
     'common.app.android': '安卓版',
-    'common.app.iso': 'ISO版',
+    'common.app.ios': 'IOS版',
     //公共部分--end
     'login.login': '登录',
     'login.register': '注册',
