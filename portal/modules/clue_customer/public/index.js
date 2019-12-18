@@ -828,7 +828,7 @@ class ClueCustomer extends React.Component {
             if (_.isArray(filterClueClassify) && filterClueClassify.length){
                 typeFilter.clue_classify = filterClueClassify.join(',');
             }
-            //选中的集客方式
+            //选中的获客方式
             let filterSourceClassify = filterStoreData.filterSourceClassify;
             if (_.isArray(filterSourceClassify) && filterSourceClassify.length){
                 typeFilter.source_classify = filterSourceClassify.join(',');
@@ -2467,7 +2467,7 @@ class ClueCustomer extends React.Component {
                     }
                 }
             }, {
-                title: Intl.get('crm.clue.client.source', '集客方式'),
+                title: Intl.get('crm.clue.client.source', '获客方式'),
                 render: function(text, record, index) {
                     let type = _.get(record, 'source_classify');
                     let displayObj = _.find(sourceClassifyArray, item => _.isEqual(item.value, type));
