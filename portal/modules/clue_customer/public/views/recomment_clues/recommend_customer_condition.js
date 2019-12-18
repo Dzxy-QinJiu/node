@@ -30,9 +30,7 @@ class RecommendCustomerCondition extends React.Component {
     }
     //除了行业或者地域是否还有选中的其他的筛选条件
     hasOtherCondition = (hasSavedRecommendParams) => {
-        var checkConditionItem = ['name','startTime','endTime','entTypes','staffnumMax','staffnumMin','capitalMin','capitalMax'];
-        var hasOtherCondition = checkClueCondition(CLUE_CONDITION, hasSavedRecommendParams);
-        return hasOtherCondition;
+        return checkClueCondition(CLUE_CONDITION, hasSavedRecommendParams);
     };
 
     onStoreChange = () => {
