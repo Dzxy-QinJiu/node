@@ -80,7 +80,7 @@ var en_US = {
     'common.correct.no.wechat': 'please enter the WeChat account',//请输入微信号
     'common.password.length': 'The password must be around 6 to 18 characters.',//密码长度应为6-18位
     'common.password.compose.rule': '6 ~ 18 characters (numbers, letters or symbols)',//6-18位字符(由数字，字母，符号组成)
-    'common.password.validate.rule': 'Please enter the password with 6-18 digits, letters and symbols',//请输入6-18位数字、字母、符号组成的密码,
+    'common.password.validate.rule': 'Please enter the password with 6-18 digits, letters and characters, excluding Spaces, Chinese and illegal characters.',// 请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符
     'common.confirm.password': 'Please confirm the password',//确认密码
     'common.phone': 'Phone',//电话
     'common.email': 'Email',//邮箱
