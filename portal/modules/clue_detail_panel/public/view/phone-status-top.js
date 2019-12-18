@@ -249,18 +249,15 @@ class phoneStatusTop extends React.Component {
 
         var clueInfoArr = _.get(this,'state.clueInfoArr[0]') ? this.state.clueInfoArr : [];
         //如果所打电话不仅对应自己的线索也对应其他人的线索，那也可以把跟进记录写在其他人所拥有的线索上
-        if(_.isArray(phonemsgObj.leads) && phonemsgObj.leads.length){
-            if(!this.state.isClueDetailCall &&
-                !this.state.isGettingCustomer &&
-                !this.state.getCustomerErrMsg &&
-                ((phonemsgObj.leads.length === 1 && !_.get(clueInfoArr,'[0]'))
-                || (phonemsgObj.leads.length > 1 && !(this.isPhoneMsgWithLeadId(phonemsgObj) && _.get(clueInfoArr,'[0]'))))
-                && _.includes(HANG_UP_TYPES, phonemsgObj.type)){
-                //这个if的判断条件和父组件index文件中的渲染 renderClueCard() 方法的条件是一样的
-                clueInfoArr = _.sortBy(phonemsgObj.leads, (item) => _.find(clueInfoArr, clue => clue.id === item.id));
-            }
+        if (!this.state.isClueDetailCall &&
+            !this.state.isGettingCustomer &&
+            !this.state.getCustomerErrMsg &&
+            ((_.get(phonemsgObj, 'leads.length') === 1 && !_.get(clueInfoArr, '[0]'))
+                || (_.get(phonemsgObj, 'leads.length') > 1 && !(this.isPhoneMsgWithLeadId(phonemsgObj) && _.get(clueInfoArr, '[0]'))))
+            && _.includes(HANG_UP_TYPES, phonemsgObj.type)) {
+            //这个if的判断条件和父组件index文件中的渲染 renderClueCard() 方法的条件是一样的
+            clueInfoArr = _.sortBy(phonemsgObj.leads, (item) => _.find(clueInfoArr, clue => clue.id === item.id));
         }
-
         const options = clueInfoArr.map((item) => (
             <Option value={item.id} key={item.id}>{item.name}</Option>
         ));
