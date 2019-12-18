@@ -466,3 +466,16 @@ export function releaseClueTip() {
     }
     return releaseTip;
 }
+//检查是否已选中了条件
+export const CLUE_CONDITION = ['name','startTime','endTime','entTypes','staffnumMax','staffnumMin','capitalMin','capitalMax'];
+export const ADD_INDUSTRY_ADDRESS_CLUE_CONDITION = _.concat(['industrys','province','city','district'],CLUE_CONDITION);
+export const checkClueCondition = (checkConditionItem,settedCondition) => {
+    var hasCondition = false;
+    hasCondition = _.some(checkConditionItem, key => {
+        //针对checkConditionItem中的不同的key，hasSavedRecommendParams[key]会有不同的类型，可能是数组，也可能是字符串（空字符串需要return false），也可能是数字（数字是0 需要return false）
+        if(_.get(settedCondition, [key]) || _.get(settedCondition, `[${key}][0]`)) {
+            return true;
+        }
+    });
+    return hasCondition;
+};
