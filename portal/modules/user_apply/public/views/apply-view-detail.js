@@ -2001,9 +2001,9 @@ const ApplyViewDetail = createReactClass({
     },
     notShowRoleAndPrivilegeSettingBtn(detailInfo){
         //不展示配置按钮的情况
-        if ([APPLY_TYPES.APPLY_PWD_CHANGE,APPLY_TYPES.APPLY_STH_ELSE,APPLY_TYPES.APPLY_GRANT_DELAY,APPLY_TYPES.APPLY_GRANT_STATUS_CHANGE,APPLY_TYPES.DISABLE].includes(detailInfo.type)){
+        if (_.includes([APPLY_TYPES.APPLY_PWD_CHANGE,APPLY_TYPES.APPLY_STH_ELSE,APPLY_TYPES.APPLY_GRANT_DELAY,APPLY_TYPES.APPLY_GRANT_STATUS_CHANGE,APPLY_TYPES.DISABLE], detailInfo.type)){
             return true;
-        }else if([APPLY_TYPES.DELAY].includes(detailInfo.type)){
+        }else if(_.includes([APPLY_TYPES.DELAY], detailInfo.type)){
             //延期申请类型不加配置按钮的情况
             return !this.showConfigOfDelayApply(detailInfo) || this.notShowIcon();
         }else{
