@@ -112,6 +112,7 @@ class ProductDropdown extends React.Component {
         return (
             <div className="product-dropdown-container btn-item">
                 <AntcDropdown
+                    datatraceContainer='添加产品页面导入产品'
                     ref={productDropdown => this.productDropdownRef = productDropdown}
                     content={importBtn}
                     overlayTitle={Intl.get('config.product.import.tip', '您已集成{type}，可以导入以下{type}的产品', {type: integrateType})}

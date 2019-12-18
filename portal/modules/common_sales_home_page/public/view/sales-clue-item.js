@@ -391,9 +391,10 @@ class SalesClueItem extends React.Component {
                     {/*有分配权限*/}
                     {assignSalesPrivilege(salesClueItem) ?
                         <AntcDropdown
+                            datatraceContainer='普通销售首页线索分配按钮'
                             ref={'changesale' + salesClueItem.id}
                             content={<span
-                                data-tracename="点击分配线索客户按钮"
+                                data-tracename="点击分配线索按钮"
                                 className='assign-btn'>{Intl.get('clue.customer.distribute', '分配')}</span>}
                             overlayTitle={Intl.get('user.salesman', '销售人员')}
                             okTitle={Intl.get('common.confirm', '确认')}

@@ -1017,6 +1017,7 @@ class MyWorkColumn extends React.Component {
                         </span>
                     </div>);
                 return (<AntcDropdown content={distributeBtn} key={`antc-dropdwon${item.id}`}
+                                      datatraceContainer='我的工作线索分配按钮'
                     triggerEventStr='hover'
                     popupContainerId={`home-page-work${item.id}`}
                     overlayTitle={Intl.get('user.salesman', '销售人员')}
