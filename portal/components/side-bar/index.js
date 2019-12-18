@@ -17,7 +17,8 @@ class SideBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showChat: this.props.showChat !== 'false'
+            showChat: this.props.showChat !== 'false',
+            isShowIosQRCode: false, // 是否显示ios二维码，默认false
         };
     }
 
@@ -33,18 +34,31 @@ class SideBar extends React.Component {
         }
         );
     };
-    appMouseEnter = () => {
+    androidAppMouseEnter = () => {
         this.setState({
             showApp: true
         }
         );
     };
-    appMouseLeave = () => {
+    androidAppMouseLeave = () => {
         this.setState({
             showApp: false
         }
         );
     };
+
+    iosAppMouseEnter = () => {
+        this.setState({
+            isShowIosQRCode: true
+        });
+    };
+
+    iosAppMouseLeave = () => {
+        this.setState({
+            isShowIosQRCode: false
+        });
+    };
+
     chatClick = () => {
         //如果有客服时，点击触发出客服界面
         $('#newBridge #nb_icon_wrap').trigger('click');
@@ -53,8 +67,15 @@ class SideBar extends React.Component {
     render() {
         let weixinBottom = 3 * singleSideBarHeight - weixinHeight;
         let appBottom = 2 * singleSideBarHeight - appHeight;
+        if (this.state.isShowIosQRCode) {
+            appBottom = singleSideBarHeight - appHeight;
+        }
         let weixinClassName = classNames('qrcode', 'weixin', {'hide': !this.state.showWeixin});
-        let appClassName = classNames('qrcode', 'app', {'hide': !this.state.showApp});
+        let appClassName = classNames('qrcode', 'app', {'hide': !this.state.showApp && !this.state.isShowIosQRCode});
+        let qRCodeUrl = location.protocol + '//' + location.host + '/ketao';
+        if (this.state.isShowIosQRCode) {
+            qRCodeUrl = 'https://testflight.apple.com/join/q7kTEZVB';
+        }
         let onlyService = classNames('single-bar-box', {
             'only-service': _.get(this.state, 'showChat')
         });
@@ -81,9 +102,14 @@ class SideBar extends React.Component {
                                 <i className='single-bar-label'>{Intl.get('weixin.mini.program', '小程序')}</i>
                             </div>
                             <div className='single-bar-box'>
-                                <i className='iconfont icon-ketao-app' onMouseEnter={this.appMouseEnter}
-                                    onMouseLeave={this.appMouseLeave}></i>
-                                <i className='single-bar-label'>{Intl.get('login.ketao.app.name', '客套APP')}</i>
+                                <i className='iconfont icon-ketao-app' onMouseEnter={this.androidAppMouseEnter}
+                                    onMouseLeave={this.androidAppMouseLeave}></i>
+                                <i className='single-bar-label'>{Intl.get('common.app.android', '安卓版')}</i>
+                            </div>
+                            <div className='single-bar-box'>
+                                <i className='iconfont icon-ketao-app' onMouseEnter={this.iosAppMouseEnter}
+                                    onMouseLeave={this.iosAppMouseLeave}></i>
+                                <i className='single-bar-label'>{Intl.get('common.app.ios', 'IOS版')}</i>
                             </div>
                         </React.Fragment>
                     )}
@@ -101,7 +127,7 @@ class SideBar extends React.Component {
                 <div className={appClassName}
                     style={{'margin-bottom': appBottom + 'px'}}>
                     <QRCode
-                        value={location.protocol + '//' + location.host + '/ketao'}
+                        value={qRCodeUrl}
                         level="H"
                         size={100}
                     />
