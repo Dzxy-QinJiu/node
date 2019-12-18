@@ -240,6 +240,10 @@ class RecommendCustomerCondition extends React.Component {
             });
         });
     };
+    handleCancel = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div.submit-button-container'), '取消保存线索推荐查询条件');
+        this.props.hideFocusCustomerPanel();
+    };
     onDateChange = (dates, dateStrings) => {
         if (_.get(dateStrings,'[0]') && _.get(dateStrings,'[1]')){
             //开始时间要取那天早上的00:00:00
@@ -457,7 +461,7 @@ class RecommendCustomerCondition extends React.Component {
                             <SaveCancelButton loading={this.state.isSaving}
                                 saveErrorMsg={this.state.saveMsg}
                                 handleSubmit={this.handleSubmit}
-                                handleCancel={this.props.hideFocusCustomerPanel}
+                                handleCancel={this.handleCancel}
                                 okBtnText={Intl.get('config.manage.realm.oktext', '确定')}
                             />
                         </div>
