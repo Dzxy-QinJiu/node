@@ -38,7 +38,7 @@ class FilterStore {
         this.filterClueClassify = [];
         //筛选线索的地域
         this.filterClueProvince = [];
-        //筛选集客方式
+        //筛选获客方式
         this.filterSourceClassify = [];
         //按销售进行筛选
         this.filterClueUsers = [];
@@ -103,7 +103,7 @@ class FilterStore {
     setFilterClueAccess(updateAccess) {
         this.filterClueAccess = _.map(updateAccess, 'value');
     }
-    //设置筛选集客方式
+    //设置筛选获客方式
     setFilterSourceClassify(updateSourceClassify) {
         let selectedSourceClassify = [];
         _.forEach(updateSourceClassify, (item) => {

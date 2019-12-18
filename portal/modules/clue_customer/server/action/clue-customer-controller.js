@@ -269,7 +269,7 @@ function getClueListColumns(backendIntl) {
             dataIndex: 'source_time',
         },
         {
-            title: backendIntl.get('crm.clue.client.source', '集客方式'),
+            title: backendIntl.get('crm.clue.client.source', '获客方式'),
             dataIndex: 'source_classify'
         },
         {

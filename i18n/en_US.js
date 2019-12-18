@@ -2946,9 +2946,9 @@ var en_US = {
     'failed.to.get.clue.classify': 'Failed to get clue classify',//获取线索分类出错了
     'clue.customer.classify': 'clue  classification',//线索分类
     'crm.clue.classify.placeholder': 'Please select or enter the clue classify',//请选择或输入线索分类
-    'crm.clue.client.source': 'Client Source',//集客方式
-    'crm.clue.client.source.placeholder': 'Please select the client source',//请选择集客方式
-    'crm.clue.client.source.add': 'Add client source',//添加集客方式
+    'crm.clue.client.source': 'Way Of Obtaining Customer',//获客方式
+    'crm.clue.client.source.placeholder': 'Please select the way of obtaining customer',//请选择获客方式
+    'crm.clue.client.source.add': 'Add way of obtaining customer',//添加获客方式
     'crm.clue.client.source.inbound': 'inbound',//市场
     'crm.clue.client.source.outbound': 'outbound',//自拓
     'crm.clue.client.source.other': 'other', //未知
@@ -2998,7 +2998,7 @@ var en_US = {
     'clue.analysis.classify.chart': 'Classify statistics',//分类统计
     'clue.analysis.avalibility.chart': 'Validity statistics',//有效性统计
     'clue.analysis.assigned.chart': 'Contract statistics',//签约统计
-    'clue.analysis.all.source.classify': 'All Client Source',//全部集客方式
+    'clue.analysis.all.source.classify': 'All Way Of Obtaining Customer',//全部获客方式
     'sales.home.sales.clue': 'Sales Clue to be handled',//待处理的线索
     'sales.home.will.trace': 'To be followed up',//待跟进
     'sales.home.i.trace': 'I',//我

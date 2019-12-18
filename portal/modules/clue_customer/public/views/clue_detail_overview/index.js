@@ -1183,7 +1183,7 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
-    //获取集客方式
+    //获取获客方式
     getSourceClassify = (sourceClassify) => {
         let displayText = '';
         if(_.isEqual(sourceClassify, SOURCE_CLASSIFY.OTHER)) {
@@ -1244,7 +1244,7 @@ class ClueDetailOverview extends React.Component {
                     </div>
                     <div className="clue-info-item">
                         <div className="clue-info-label">
-                            {Intl.get('crm.clue.client.source', '集客方式')}
+                            {Intl.get('crm.clue.client.source', '获客方式')}
                         </div>
                         <div className="clue-info-detail source-classify">
                             <BasicEditSelectField
@@ -1257,8 +1257,8 @@ class ClueDetailOverview extends React.Component {
                                 displayText={this.getSourceClassify(curClue.source_classify)}
                                 onSelectChange={this.onSelectSourceClassify}
                                 value={curClue.source_classify}
-                                placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择集客方式')}
-                                addDataTip={Intl.get('crm.clue.client.source.add', '添加集客方式')}
+                                placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择获客方式')}
+                                addDataTip={Intl.get('crm.clue.client.source.add', '添加获客方式')}
                                 field="source_classify"
                                 noDataTip={Intl.get('common.unknown', '未知')}
                             />

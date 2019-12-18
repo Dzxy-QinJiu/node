@@ -152,7 +152,7 @@ class ClueFilterPanel extends React.Component {
                         nameObj.name = item.group_name;
                     }
                     break;
-                //如果当前条件是“集客方式”，需要找到其对应的中文名作为显示名称
+                //如果当前条件是“获客方式”，需要找到其对应的中文名作为显示名称
                 case 'source_classify':
                     item = sourceClassifyArray.find(x => x.value === value);
                     if (item) {
@@ -481,7 +481,7 @@ class ClueFilterPanel extends React.Component {
             groupId: 'clue_classify',
             data: this.processClueClassifyArray(clueClassifyArray)
         },{
-            groupName: Intl.get('crm.clue.client.source', '集客方式'),
+            groupName: Intl.get('crm.clue.client.source', '获客方式'),
             groupId: 'source_classify',
             data: sourceClassifyArray.map(x => ({
                 name: x.name,

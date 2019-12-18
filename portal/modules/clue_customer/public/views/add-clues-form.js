@@ -56,7 +56,7 @@ class ClueAddForm extends React.Component {
                 source: '',//线索描述
                 source_ip: '',//客户来源的ip
                 source_time: today,//线索时间，默认：今天,
-                source_classify: 'outbound',//集客类型，默认：自拓
+                source_classify: 'outbound',//获客类型，默认：自拓
                 industry: '',//行业
                 province: '',
                 city: '',
@@ -542,7 +542,7 @@ class ClueAddForm extends React.Component {
                                 )}
                             </FormItem>
                             <FormItem
-                                label={Intl.get('crm.clue.client.source', '集客方式')}
+                                label={Intl.get('crm.clue.client.source', '获客方式')}
                                 id="source_classify"
                                 {...formItemLayout}
                             >
@@ -551,7 +551,7 @@ class ClueAddForm extends React.Component {
                                         initialValue: formData.source_classify
                                     })(
                                         <Select
-                                            placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择集客方式')}
+                                            placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择获客方式')}
                                             name="source_classify"
                                             value={formData.source_classify}
                                             getPopupContainer={() => document.getElementById('sales-clue-form')}

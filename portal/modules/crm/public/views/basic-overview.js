@@ -519,7 +519,7 @@ class BasicOverview extends React.Component {
         return <span className="plat-form-name">{platFormName}</span>;
     };
 
-    //获取集客方式
+    //获取获客方式
     getSourceClassify = (sourceClassify) => {
         let displayText = '';
         let displayObj = _.find(sourceClassifyArray, item => item.value === sourceClassify);
@@ -609,7 +609,7 @@ class BasicOverview extends React.Component {
                     />
                     {
                         _.get(basicData, 'source_classify') ?
-                            <TagCard title={`${Intl.get('crm.clue.client.source', '集客方式')}:`}
+                            <TagCard title={`${Intl.get('crm.clue.client.source', '获客方式')}:`}
                                 tags={this.getSourceClassify(basicData.source_classify)}
                                 data={basicData}
                                 enableEdit={false}
