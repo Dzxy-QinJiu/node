@@ -86,6 +86,5 @@ PassStrengthBar.propTypes = {
 };
 
 exports.PassStrengthBar = PassStrengthBar;
-//6到18位字母、数字、符号组成的密码验证规则
-exports.passwordRegex = /^([a-z]|[A-Z]|[0-9]|[`~! @#$%^&*()-_+={}\[\]|\\:;'"<>,.?/]){6,18}$/;
-
+//6到18位字母、数字、符号组成的密码验证规则（不能包含空格、中文和非法字符）
+exports.passwordRegex = /^([a-z]|[A-Z]|[0-9]|[`~!@#$%^&*()-_+={}\[\]|\\:;'"<>,.?/]){6,18}$/;

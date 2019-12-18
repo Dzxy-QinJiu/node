@@ -81,7 +81,7 @@ var zh_CN = {
     'common.correct.no.wechat': '请输入微信号',
     'common.password.length': '密码长度应大于6位小于18位',
     'common.password.compose.rule': '6-18位数字、字母、符号的组合',
-    'common.password.validate.rule': '请输入6-18位数字、字母、符号组成的密码',
+    'common.password.validate.rule': '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符',
     'common.confirm.password': '确认密码',
     'common.phone': '电话',
     'common.email': '邮箱',
