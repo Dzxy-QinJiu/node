@@ -125,10 +125,11 @@ class PhoneNumberBoard extends React.Component {
                 />
                 <div className="number-key-container">
                     {_.map(phoneNumArray, item => {
+                        const cls = classNames({ 'phone-num-star-btn-inner': item === '*' });
                         return (
                             <Button size='small' className='phone-num-btn' disabled={['*'].indexOf(item) !== -1}
                                 onClick={item === '#' ? this.delPhoneLastNum.bind(this) : this.onButtonClick.bind(this, item)}>
-                                {item === '#' ? <i className='iconfont icon-phone-back phone-back-btn'/> : <span className={item === '*' && 'phone-num-star-btn-inner'}>{item}</span>}
+                                {item === '#' ? <i className='iconfont icon-phone-back phone-back-btn'/> : <span className={cls}>{item}</span>}
                             </Button>);
                     })}
                 </div>
