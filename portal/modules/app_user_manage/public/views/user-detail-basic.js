@@ -667,7 +667,7 @@ class UserDetailBasic extends React.Component {
                     passStrength: 'L'
                 }
             });
-            callback(Intl.get('common.password.validate.rule', ' 请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
+            callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
         }
     };
 
