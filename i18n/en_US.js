@@ -2824,6 +2824,7 @@ var en_US = {
     'clue.customer.search.by.name': 'search by lead name',//根据线索名搜索
     'clue.customer.fillin.clue.name': 'Please fill in the lead names',//请填写线索名称
     'clue.customer.register.user': 'registered user',//注册用户
+    'clue.customer.phone.used.by.clue': 'This phone has been used by other leads,',//该电话已被其他线索使用,
     'clue.customer,add,schedule,success': 'This schedule has been added',//联系计划已添加
     'clue,customer.add.schedule.error': 'This schedule fail to add',//联系计划添加失败
     'batch.failed.add.schedule': '{customerName} failed to add schedule',//{customerName}添加联系计划失败
