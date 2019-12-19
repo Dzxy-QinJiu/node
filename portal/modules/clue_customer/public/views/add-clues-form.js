@@ -356,21 +356,6 @@ class ClueAddForm extends React.Component {
         });
     }
 
-    //判断当前电话是否被其他线索使用，报警告
-    renderComnnonPhoneMessage = (customerList, showRightPanel) => {
-        const list = _.cloneDeep(customerList);
-        let showMessage = (clue) => {
-            return <span>
-                <span>{Intl.get('clue.customer.phone.used.by.clue','该电话已被其他线索使用，')}</span>
-                <a href="javascript:void(0)" onClick={showRightPanel.bind(this, clue)} className="handle-btn-item">
-                    {_.get(clue, 'name', '')}
-                </a>
-            </span>;
-        };
-        if(customerList.length > 0){
-            return showMessage(list.shift());
-        }
-    };
 
     //电话修改时的回调
     onPhoneChange = (phoneObj) => {
@@ -388,9 +373,18 @@ class ClueAddForm extends React.Component {
                         let existed = this.isPhoneExisted(value);
                         //如果有“电话已存在”的验证错误，先展示"电话已存在"
                         if(!existed) {
-                            const customer = data.list;
-                            const message = this.renderComnnonPhoneMessage(customer, this.props.showRightPanel);
-                            this.handleDuplicatePhoneMsg(key, true, message);
+                            const list = _.cloneDeep(data.list);
+                            if(list.length > 0){
+                                //如果返回的列表长度不为0，渲染某电话被其他线索占用的警告
+                                const lead = list.shift();
+                                const renderWranningMessage = <span>
+                                    <span>{Intl.get('clue.customer.phone.used.by.clue','该电话已被其他线索使用，')}</span>
+                                    <a href="javascript:void(0)" onClick={this.props.showRightPanel.bind(this, lead)} className="handle-btn-item">
+                                        {_.get(lead, 'name')}
+                                    </a>
+                                </span>;
+                                this.handleDuplicatePhoneMsg(key, true, renderWranningMessage);
+                            }
                         }
                     }
                 }
