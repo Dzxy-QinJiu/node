@@ -3851,5 +3851,11 @@ var en_US = {
     'organization.personal.formal.expired.tip': 'Your account is about to expire, is it {renewal}?',//您的账号即将到期，是否{renewal}？
     'organization.company.formal.expired.tip': 'Your account is about to expire, please contact our sales staff: {contact}',//您的账号即将到期，请联系我们的销售人员: {contact}
     /*组织到期提示 --- end*/
+
+    /*销售出差反馈，弹窗给邮件抄送人 ---start*/
+    'leave-feedback-title': 'Leave Feedback', //出差反馈
+    'leave-feedback-visit-consumer': 'visit', //拜访了
+    'leave-feedback-visit-record': 'Leave feedback record:', //拜访记录：
+    /*销售出差反馈，弹窗给邮件抄送人 ---end*/
 };
 export default en_US;
