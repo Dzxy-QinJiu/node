@@ -908,6 +908,7 @@ class AppUserManage extends React.Component {
                             <UserDetailAddApp 
                                 multiple={true} 
                                 initialUser={this.state.selectedUserRows}
+                                appList={this.state.appList}
                             />
                         </div>
                     );

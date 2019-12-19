@@ -38,7 +38,7 @@ import userManagePrivilege from '../privilege-const';
 import { isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
-import BatchAddAppUser from './v2/batch-add-app-user';
+import BatchAddAppUser from 'CMP_DIR/user_manage_components/user-add-app';
 
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
@@ -52,7 +52,8 @@ const USER_DETAIL_ADD_APP_CUSTOMER_SELECT_WRAP = 'user-detail-add-app-customer-s
 var UserDetailAddApp = createReactClass({
     displayName: 'UserDetailAddApp',
     propTypes: {
-        initialUser: PropTypes.object
+        initialUser: PropTypes.object,
+        appList: PropTypes.array,
     },
     getDefaultProps: function() {
         return {
@@ -1264,8 +1265,7 @@ var UserDetailAddApp = createReactClass({
                                                 this.state.multipleSubType === 'grant_application' ? (
                                                     <div className="addapp_minor_items full_size detail-v3-panel">
                                                         <BatchAddAppUser
-                                                            height={contentHeight}
-                                                            initialUser={this.props.initialUser}
+                                                            appList={this.props.appList}
                                                         />
                                                     </div>
                                                 ) : null

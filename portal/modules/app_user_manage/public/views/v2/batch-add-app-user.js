@@ -557,7 +557,7 @@ const BatchAddAppUser = createReactClass({
 
     //当应用的个性设置改变的时候触发
     onAppPropertyChange(appsSetting) {
-        let newAppsSetting = this.state.appsSetting;
+        let newAppsSetting = _.get(this.state, 'appsSetting');
         _.each(newAppsSetting, (value, appId) => {
             value.roles = _.get(appsSetting[appId], 'roles', []);
             value.rolesInfo = _.get(appsSetting[appId], 'rolesInfo', []);
