@@ -662,12 +662,16 @@ class UserInfo extends React.Component{
                             </div>
                         )
                     }
-                    {hasPrivilege(privilegeConst_user_info.BASE_QUERY_PERMISSION_ORGANIZATION) ? (
-                        <div className="user-info-item">
-                            <span className="user-info-item-title">{Intl.get('common.company', '公司')}：</span>
-                            <span className="user-info-item-content">{this.props.managedRealm}</span>
-                        </div>
-                    ) : null}
+                    {
+                        currentVersion.personal ? null : (
+                            hasPrivilege(privilegeConst_user_info.BASE_QUERY_PERMISSION_ORGANIZATION) ? (
+                                <div className="user-info-item">
+                                    <span className="user-info-item-title">{Intl.get('common.company', '公司')}：</span>
+                                    <span className="user-info-item-content">{this.props.managedRealm}</span>
+                                </div>
+                            ) : null
+                        )
+                    }
                     { !Oplate.hideSomeItem && <div className="user-info-item">
                         <span className="user-info-item-title">{Intl.get('common.user.lang', '语言')}：</span>
                         <span className="user-lang-value user-info-item-content">
