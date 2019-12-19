@@ -352,7 +352,7 @@ class CrmFilterPanel extends React.Component {
         let selectedImmutableLabels = _.get(this.state, 'condition.immutable_labels', []);
         //选中的竞品列表
         let selectedCompetings = _.get(this.state, 'condition.competing_products', []);
-        //选中的集客方式列表
+        //选中的获客方式列表
         let selectedSourceClassify = _.get(this.state, 'condition.source_classify', '').split(',');
         //选中的行政级别列表
         let selectedLevel = _.get(this.state, 'condition.administrative_level', '').split(',');
@@ -403,7 +403,7 @@ class CrmFilterPanel extends React.Component {
                 }))
             },
             {
-                groupName: Intl.get('crm.clue.client.source', '集客方式'),
+                groupName: Intl.get('crm.clue.client.source', '获客方式'),
                 groupId: 'source_classify',
                 data: _.map(sourceClassifyArray, x => ({
                     name: x.name,

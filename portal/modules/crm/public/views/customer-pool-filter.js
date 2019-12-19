@@ -45,7 +45,7 @@ class CustomerPoolFilter extends React.Component {
                 qualify_label: '',//合格标签（合格、曾经合格）
                 immutable_labels: '', //系统标签
                 labels: '',//标签的筛选
-                source_classify: '',//集客方式的筛选
+                source_classify: '',//获客方式的筛选
                 industry: '',
                 province: '',
                 otherSelectedItem: '',//其他类型的筛选
@@ -179,7 +179,7 @@ class CustomerPoolFilter extends React.Component {
         let selectedImmutLabels = _.get(this.state, 'condition.immutable_labels', '').split(',');
         //选中的标签列表
         let selectedLabels = _.get(this.state, 'condition.labels', '').split(',');
-        //选中的集客方式列表
+        //选中的获客方式列表
         let selectedSourceClassify = _.get(this.state, 'condition.source_classify', '').split(',');
         const advancedData = [
             {
@@ -214,7 +214,7 @@ class CustomerPoolFilter extends React.Component {
                 })
             },
             {
-                groupName: Intl.get('crm.clue.client.source', '集客方式'),
+                groupName: Intl.get('crm.clue.client.source', '获客方式'),
                 groupId: 'source_classify',
                 data: _.map(sourceClassifyArray, x => ({
                     name: x.name,

@@ -220,7 +220,7 @@ class ClueFilterPanel extends React.Component {
                 value: x
             }))
         }, {
-            groupName: Intl.get('crm.clue.client.source', '集客方式'),
+            groupName: Intl.get('crm.clue.client.source', '获客方式'),
             groupId: 'source_classify',
             data: sourceClassifyArray.map(x => ({
                 name: x.name,
