@@ -113,7 +113,7 @@ export function getRemainAccountChart(paramObj = {}) {
                 const actives = dataItem.actives;
 
                 _.each(actives, activeItem => {
-                    const diffDay = moment(activeItem.timestamp).diff(dataItem.timestamp, interval);
+                    const diffDay = moment(activeItem.timestamp).diff(moment(dataItem.timestamp).startOf(interval), interval);
                     dataItem[interval + diffDay] = activeItem.active;
                 });
             });
