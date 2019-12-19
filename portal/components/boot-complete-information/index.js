@@ -163,7 +163,7 @@ class BootCompleteInformation extends React.Component{
             
             //保存成功后跳转到推荐线索列表
             if(location.pathname.indexOf(ROUTE_CONSTS.LEADS) === -1) {
-                history.push('/leads', {
+                history.push('/' + ROUTE_CONSTS.LEADS, {
                     showRecommendCluePanel: true,
                     targetObj: targetObj
                 });
