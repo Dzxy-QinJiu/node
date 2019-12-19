@@ -201,7 +201,7 @@ function clueUnhandledListener(data) {
             }
             clueTotalCount++;
             var clueHtml = '',titleHtml = '';
-            titleHtml += '< class="clue-title">' + '<span class="title-tip">' + title + '</span>';
+            titleHtml += '<p class="clue-title">' + '<span class="title-tip">' + title + '</span>';
             _.each(clueArr, (clueItem) => {
                 clueHtml += 
                 '<p class="clue-item" title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(_.get(clueItem,'id','')) + ')\'>' + 
