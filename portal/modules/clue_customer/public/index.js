@@ -171,8 +171,6 @@ class ClueCustomer extends React.Component {
         this.getClueChannel();
         //获取线索分类
         this.getClueClassify();
-        //获取是否配置过线索推荐条件
-        this.getSettingCustomerRecomment();
         //获取已提取线索量
         this.getRecommendClueCount();
         this.getSalesmanList();
@@ -185,6 +183,7 @@ class ClueCustomer extends React.Component {
         clueEmitter.on(clueEmitter.FLY_CLUE_HASTRACE, this.flyClueHastrace);
         clueEmitter.on(clueEmitter.FLY_CLUE_HASTRANSFER, this.flyClueHastransfer);
         clueEmitter.on(clueEmitter.FLY_CLUE_INVALID, this.flyClueInvalid);
+        clueEmitter.on(clueEmitter.SHOW_RECOMMEND_PANEL, this.showClueRecommendTemplate);
 
         notificationEmitter.on(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
         //如果从url跳转到该页面，并且有add=true，则打开右侧面板
@@ -192,8 +191,14 @@ class ClueCustomer extends React.Component {
             this.showAddForm();
         }
         //如果是进入线索推荐
-        if(_.get(this.props, 'history.action') === 'REPLACE' && _.get(this.props, 'location.state.showRecommendCluePanel')) {
+        if(_.get(this.props, 'history.action') === 'PUSH' && _.get(this.props, 'location.state.showRecommendCluePanel')) {
+            if(_.get(this.props, 'location.state.targetObj')) {
+                 clueCustomerAction.saveSettingCustomerRecomment(_.get(this.props, 'location.state.targetObj', {})); 
+            }
             this.showClueRecommendTemplate();
+        }else {
+            //获取是否配置过线索推荐条件
+            this.getSettingCustomerRecomment();
         }
         this.setFilterInputWidth();
         //响应式布局时动态计算filterinput的宽度
@@ -289,10 +294,6 @@ class ClueCustomer extends React.Component {
         if (_.get(nextProps, 'history.action') === 'PUSH' && _.get(nextProps, 'location.state.refreshClueList')){
             this.onTypeChange();
         }
-        //如果是进入线索推荐
-        if(_.get(nextProps, 'history.action') === 'REPLACE' && _.get(nextProps, 'location.state.showRecommendCluePanel')) {
-            this.showClueRecommendTemplate();
-        }
     }
 
     batchChangeTraceMan = (taskInfo, taskParams) => {
@@ -360,6 +361,7 @@ class ClueCustomer extends React.Component {
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_HASTRACE, this.flyClueHastrace);
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_HASTRANSFER, this.flyClueHastransfer);
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_INVALID, this.flyClueInvalid);
+        clueEmitter.removeListener(clueEmitter.SHOW_RECOMMEND_PANEL, this.showClueRecommendTemplate);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
         $(window).off('resize', this.resizeHandler);
     }

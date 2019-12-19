@@ -22,6 +22,7 @@ import Trace from 'LIB_DIR/trace';
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import classNames from 'classnames';
+import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 import {MAXINDUSTRYCOUNT as MAX_SELECTED_COUNT} from 'PUB_DIR/sources/utils/consts';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
 
@@ -39,6 +40,10 @@ const MAX_COUNT = 12;
 const MIN_HEIGHT = 78;
 //显示行数
 const MAX_COLUMN = 3;
+//路由常量
+const ROUTE_CONSTS = {
+    LEADS: 'leads'//线索
+};
 
 class BootCompleteInformation extends React.Component{
     constructor(props) {
@@ -144,7 +149,7 @@ class BootCompleteInformation extends React.Component{
                 var targetObj = _.get(data, '[0]');
                 clueCustomerAction.saveSettingCustomerRecomment(targetObj);
                 setTimeout(() => {
-                    jumpLeadPage();
+                    jumpLeadPage(targetObj);
                 });
             },
             error: (xhr) => {
@@ -153,12 +158,18 @@ class BootCompleteInformation extends React.Component{
         });
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '保存推荐线索条件');
 
-        function jumpLeadPage() {
+        function jumpLeadPage(targetObj) {
             setWebConfig();
+            
             //保存成功后跳转到推荐线索列表
-            history.replace('/leads', {
-                showRecommendCluePanel: true
-            });
+            if(location.pathname.indexOf(ROUTE_CONSTS.LEADS) === -1) {
+                history.push('/' + ROUTE_CONSTS.LEADS, {
+                    showRecommendCluePanel: true,
+                    targetObj: targetObj
+                });
+            }else { //如果在线索界面，不用跳转
+                clueEmitter.emit(clueEmitter.SHOW_RECOMMEND_PANEL);
+            }
             _.isFunction(_this.props.hideRightPanel) && _this.props.hideRightPanel();
         }
         function setWebConfig(callback) {
