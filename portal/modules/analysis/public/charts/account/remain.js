@@ -50,13 +50,8 @@ export function getRemainAccountChart(paramObj = {}) {
                 let columns = [
                     {
                         title: Intl.get('common.login.time', '时间'),
-                        dataIndex: 'timestamp',
+                        dataIndex: 'date',
                         width: 100,
-                        align: 'left',
-                        render: text => {
-                            text = moment(text).format(oplateConsts.DATE_FORMAT);
-                            return <b>{text}</b>;
-                        },
                     }, {
                         title: Intl.get('oplate.user.analysis.32', '新增数'),
                         dataIndex: 'count',
@@ -116,6 +111,8 @@ export function getRemainAccountChart(paramObj = {}) {
                     const diffDay = moment(activeItem.timestamp).diff(moment(dataItem.timestamp).startOf(interval), interval);
                     dataItem[interval + diffDay] = activeItem.active;
                 });
+
+                dataItem.date = moment(dataItem.timestamp).format(oplateConsts.DATE_FORMAT);
             });
 
             return data;
