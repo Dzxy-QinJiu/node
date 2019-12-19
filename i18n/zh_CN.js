@@ -3901,5 +3901,10 @@ var zh_CN = {
     'organization.company.formal.expired.tip': '您的账号即将到期，请联系我们的销售人员: {contact}',
     /*组织到期提示 --- end*/
 
+    /*销售出差反馈，弹窗给邮件抄送人 ---start*/
+    'leave-feedback-title': '出差反馈',
+    'leave-feedback-visit-consumer': '拜访了',
+    'leave-feedback-visit-record': '拜访记录：',
+    /*销售出差反馈，弹窗给邮件抄送人 ---end*/
 };
 export default zh_CN;

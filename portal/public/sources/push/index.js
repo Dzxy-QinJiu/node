@@ -27,6 +27,7 @@ const session = storageUtil.session;
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
+import {getTimeStr} from 'PUB_DIR/sources/utils/common-method-util';
 
 // 获取弹窗通知的状态
 function getNotifyStatus() {
@@ -570,6 +571,46 @@ function crmOperatorAlertListener(data) {
         }
     }
 }
+//处理 将销售的拜访结果推送给邮件抄送人 的弹窗中的客户名称点击
+window.handleVisitCallback = function(customer_id) {
+    phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+        customer_params: {
+            currentId: customer_id
+        }
+    });
+};
+//监听将销售的拜访结果推送给邮件抄送人
+function applyVisitCustomerListener(obj) {
+    let isOpenPopUpNotify = getNotifyStatus();
+    if(_.isObject(obj)){
+        const title = Intl.get('leave-feedback-title', '出差反馈');
+        const nickname = _.get(obj,'nickname');
+        const customer_name = _.get(obj,'customer_name');
+        const remark = _.get(obj,'remark');
+        const customer_id = _.get(obj,'customer_id');
+        const create_time = getTimeStr(_.get(obj,'create_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+        
+        if(canPopDesktop()){
+            //桌面通知的显示
+            const content1 = nickname + Intl.get('leave-feedback-visit-consumer','拜访了') + customer_name;
+            const content2 = Intl.get('leave-feedback-visit-record','拜访记录：') + remark + create_time;
+            showDesktopNotification(title, content1 + content2, true, isOpenPopUpNotify);
+        }else{
+            if(!isOpenPopUpNotify){
+                return;
+            }
+            const contentHtml = '<p>' + nickname + Intl.get('leave-feedback-visit-consumer','拜访了') + '<a href="javascript:void(0)" onclick="handleVisitCallback(\'' + customer_id + '\')">' + customer_name + '</a>' + '</p>'
+            + '<p>' + Intl.get('leave-feedback-visit-record','拜访记录：') + remark + '</p><br/>'
+            + '<p class=\'visit-customer-callback-to-superior\'>' + create_time + '</p>';
+            notificationUtil.showNotification({
+                title: title,
+                content: contentHtml,
+                closeWith: ['button'],
+                timeout: 5 * 1000
+            });
+        }
+    }
+}
 
 //可否弹出桌面通知
 function canPopDesktop() {
@@ -803,6 +844,7 @@ function disconnectListener() {
         socketIo.off('apply_unread_reply', applyUnreadReplyListener);
         socketIo.off('cluemsg', clueUnhandledListener);
         socketIo.off('applyApprovemsg', applyApproveUnhandledListener);
+        socketIo.off('applyVisitCustomerMsg', applyVisitCustomerListener);
         socketIo.off('crm_operator_alert_msg', crmOperatorAlertListener);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
@@ -832,6 +874,8 @@ function startSocketIo() {
         socketIo.on('scheduleAlertMsg', scheduleAlertListener);
         //监听客户操作
         socketIo.on('crm_operator_alert_msg', crmOperatorAlertListener);
+        //监听销售的拜访反馈，推送给相应的抄送人
+        socketIo.on('applyVisitCustomerMsg', applyVisitCustomerListener);
         //监听后端消息
         phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         //如果接受到主动断开的方法，调用socket的断开
