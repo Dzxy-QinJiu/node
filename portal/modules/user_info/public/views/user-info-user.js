@@ -757,7 +757,7 @@ class UserInfo extends React.Component{
         const {getFieldDecorator} = this.props.form;
         var formData = this.state.formData;
         let values = this.props.form.getFieldsValue();
-        // 只有在有申请审批功能,并且不是csm.curtao.com域名下，才展示邮件订阅
+        // 域名不是csm.curtao.com并且只有在有申请审批功能,才展示邮件订阅
         const hasSubscribeEmailPrivilege = !isCurtao() && (hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ||
             hasPrivilege(applyPrivilegeConst.MEMBER_BUSINESSOPPO_APPLY_APPROVE) ||
             hasPrivilege(applyPrivilegeConst.BUSINESS_TRIP_APPLY_APPROVE) ||
