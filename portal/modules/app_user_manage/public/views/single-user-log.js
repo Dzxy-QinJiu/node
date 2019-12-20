@@ -328,14 +328,7 @@ class SingleUserLog extends React.Component {
 
     // 下拉加载日志列表信息
     handleScrollBarBottom = () => {
-        // 判断加载的条件
-        if (this.state.curPage <= (Math.ceil(this.state.total / this.state.pageSize))) {
-            this.getSingleUserAuditLogList({ page: this.state.curPage });
-        } else {
-            this.setState({
-                listenScrollBottom: false
-            });
-        }
+        this.getSingleUserAuditLogList({ page: this.state.curPage });
     };
 
     renderLogInformation = () => {
