@@ -122,7 +122,7 @@ export const addCluePrivilege = () => {
 };
 //修改线索基本资料的权限
 export const editClueItemIconPrivilege = (clue) => {
-    return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) && editCluePrivilege(clue);
+    return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_SELF) && editCluePrivilege(clue);
 };
 
 export const CLUE_DIFF_TYPE = [
