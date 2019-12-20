@@ -25,12 +25,12 @@ var en_US = {
     'menu.member': 'Members', // 成员
     'menu.product': 'Product', // 产品
     'menu.apply.approve': 'Application for approval', // 申请审批
-    'menu.order.stage': 'Order Stage', // 订单阶段
+    'menu.order.stage': 'Deal Stage', // 订单阶段
     'menu.industry': 'Industry', // 行业
     'menu.competing.product': 'Competing products', // 竞品
     'menu.sales.process': 'Customer Stage', // 客户阶段
-    'menu.clue.integration': 'Clue integration', // 线索集成
-    'menu.clue.allocation': 'Clue allocation', // 线索分配
+    'menu.clue.integration': 'Lead integration', // 线索集成
+    'menu.clue.allocation': 'Lead allocation', // 线索分配
     'menu.my.company': 'My Company', // 我的企业
     'menu.user': 'Members',//成员管理
     'menu.role': 'Roles',//角色管理
@@ -63,7 +63,7 @@ var en_US = {
     //公共部分提取start
     'common.actived': 'Activated',//已激活
     'common.no.data': 'No data',//暂无数据
-    'common.no.more.clue': 'There is no more clue',//没有更多线索了
+    'common.no.more.clue': 'There is no more lead',//没有更多线索了
     'common.no.more.user.log': 'There is no more log',//没有更多日志了
     'common.no.more.abnormal.login': 'There is no more abnormal login',//没有更多异常登录了
     'common.no.more.system.message': 'There is no more system message',//没有更多系统消息
@@ -174,10 +174,10 @@ var en_US = {
     'common.no.more.filter.crm': 'There is no customer match condition',//没有符合条件的客户了
     'common.no.filter.crm': 'There is no customer match condition',//没有符合条件的客户
     'common.no.more.schedule': 'There is no schedule',//暂无计划
-    'common.no.more.order': 'There is no order',//没有更多订单
+    'common.no.more.order': 'There is no deal',//没有更多订单
     'common.no.more.contract': 'No contract', // 暂无合同
     'common.no.more.trace.record': 'There is no trace record',//暂无跟进记录
-    'common.no.clue': 'There is no clue',//暂无线索
+    'common.no.clue': 'There is no lead',//暂无线索
     'common.no.audit': 'There is no operation record',//暂无操作记录
     'common.no.call.record': 'There is no call record',//暂无通话记录
 
@@ -294,6 +294,8 @@ var en_US = {
     'common.no.data.tips': 'No {name}', // 暂无{name}
     'common.call.owe.tips': 'Your telephone charge is overdue, please try it after topping up', // 您的电话号码已欠费，请充值后再试！
     'common.number.validate.tips': 'Please fill in at most two decimal places',//请填写最多两位小数的数字
+    'common.app.android': 'Android', // 安卓版
+    'common.app.ios': 'IOS', // IOS版
     
     //公共部分--end
     'login.login': 'Login',//登录
@@ -371,7 +373,7 @@ var en_US = {
     'home.page.work.all': 'All works',//全部事务
     'home.page.my.interest': 'My concern',//我的关注
     'home.page.my.data': 'My data',//我的数据
-    'home.page.deal.handle': 'Pending orders',//待处理的订单
+    'home.page.deal.handle': 'Pending deals',//待处理的订单
     'home.page.no.work.tip': 'No job for the time being',//暂无工作
     'home.page.new.work.tip': 'Work changes, click here {refreshTip}',//工作有变动，点此{refreshTip}
     'home.page.my.work.finished': 'Click Set to Completed',//点击设为已完成
@@ -411,15 +413,15 @@ var en_US = {
     'home.page.try.new': 'Try new',//试用新版
     'home.page.contacts.clues.week': 'Total leads contacted this week',//本周已联系线索总数
     'home.page.expire.contract.at.time': '{time} expiring contract statistics',//{time}即将到期合同统计
-    'home.page.extract.clues.statistical': 'Statistics of the quantity of clues extracted',//提取线索量统计
-    'home.page.extract.clues.get.counts': 'Extract {count} clues in total',//共提取{count}条线索
-    'home.page.extract.clues.on.months': 'This month has been extracted {extractedCount} clues, can also extract {canCount} clues',//本月已提取{extractedCount}条线索，还可提取{canCount}条线索
-    'home.page.extract.clues.on.today': '{extractedCount} clues have been extracted today, can also extract {canCount} clues',//今天已提取{extractedCount}条线索，还可提取{canCount}条线索
-    'home.page.extracted.clues.on.months': 'The {count} clue has been extracted this month',//本月已提取{count}条线索
-    'home.page.extracted.clues.on.today': 'The {count} clues have been extracted today',//今天已提取{count}条线索
+    'home.page.extract.clues.statistical': 'Statistics of the quantity of leads extracted',//提取线索量统计
+    'home.page.extract.clues.get.counts': 'Extract {count} leads in total',//共提取{count}条线索
+    'home.page.extract.clues.on.months': 'This month has been extracted {extractedCount} leads, can also extract {canCount} leads',//本月已提取{extractedCount}条线索，还可提取{canCount}条线索
+    'home.page.extract.clues.on.today': '{extractedCount} leads have been extracted today, can also extract {canCount} leads',//今天已提取{extractedCount}条线索，还可提取{canCount}条线索
+    'home.page.extracted.clues.on.months': 'The {count} lead has been extracted this month',//本月已提取{count}条线索
+    'home.page.extracted.clues.on.today': 'The {count} leads have been extracted today',//今天已提取{count}条线索
     'home.page.performance.at.time': '{time} performance',//{time}业绩
     'home.page.new.customer': 'New customer',//新客户
-    'home.page.new.clue': 'New clues',//新线索
+    'home.page.new.clue': 'New leads',//新线索
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
@@ -739,7 +741,7 @@ var en_US = {
     'user.login.analysis.number.durant': 'Quantity and duration statistics',//数量与时长统计
     'user.login.analysis.call.other': 'Other analysis',//其他分析
     'user.login.analysis.chance': 'Sales opportunity analysis',//销售机会分析
-    'user.login.analysis.clue': 'Clue analysis',//线索分析
+    'user.login.analysis.clue': 'Lead analysis',//线索分析
     'user.login.analysis.contract': 'Contract analysis',//合同分析
     'user.login.analysis.new.contract': 'New contract analysis',//新增合同分析
     'user.login.analysis.cost': 'Cost analysis',//费用分析
@@ -751,7 +753,7 @@ var en_US = {
     'user.login.analysis.customer.signed': 'Singed customer analysis',//签约客户分析
     'user.login.analysis.customer.stage': 'Stage change analysis',//阶段变更分析
     'user.login.analysis.customer.qualified': 'Qualified customer analysis',//试用合格客户分析
-    'user.login.analysis.order': 'Order analysis',//订单分析
+    'user.login.analysis.order': 'Deal analysis',//订单分析
 
     //统计
     'user.statistics.new': 'New user count',//新增用户数统计
@@ -1119,8 +1121,8 @@ var en_US = {
     'user.info.bind.phone': 'Binding is successful, you can use this number login system.', // 绑定成功，您可以用此手机号登录系统了。
     'user.trade.record': 'Purchase record', // 购买记录
     'user.trade.get.record': 'Failed to get purchase record', // 获取购买记录失败
-    'user.trade.record.order.number': 'Order number', // 订单号
-    'user.trade.record.time': 'Order time', // 订单时间
+    'user.trade.record.order.number': 'Deal number', // 订单号
+    'user.trade.record.time': 'Deal time', // 订单时间
     'user.trade.record.total': '{total} purchase records', // 共有{total}条购买记录
     'user.trade.payment.mode': 'Payment method', // 支付方式
     'user.trade.payment.name': '{name} payment', // {name}支付
@@ -1176,13 +1178,13 @@ var en_US = {
     'notification.pop.up.notify': 'Pop-up notification', // 弹窗通知
     'notification.pop.up.notify.title': '{status} pop-up notification', // {status}弹窗通知
     'notification.call.up.failed': 'Failed to call out', // 拨打电话失败
-    'notification.extract.clue.failed': 'Failed to extract clue', // 提取线索失败
+    'notification.extract.clue.failed': 'Failed to extract lead', // 提取线索失败
     'notification.system.count': '{count} times', // {count}次
 
     //通知end
     //销售阶段start
-    'sales.stage.change.sort': 'Change order',//变更顺序
-    'sales.stage.add.order.stage': 'Add order stage', // 添加订单阶段
+    'sales.stage.change.sort': 'Change deal',//变更顺序
+    'sales.stage.add.order.stage': 'Add deal stage', // 添加订单阶段
     'sales.stage.sales.stage': 'Sales Stage',//销售阶段
     'sales.stage.input.length200.tip': '1 ~ 200 characters',//最少1个字符,最多200个字符
     'sales.stage.delete.sales.stage': 'Are you sure to delete this sales stage?',//确定删除这个销售阶段麽
@@ -1190,7 +1192,7 @@ var en_US = {
     'sales.stage.intention': 'intention',//意向
     'sales.stage.message': 'message',//信息
     'sales.stage.lost': 'lost',//'流失'
-    'sales.stage.toplimit': 'The number of order stages has reached the upper limit(8).', // 订单阶段个数已达上限（8个）
+    'sales.stage.toplimit': 'The number of deal stages has reached the upper limit(8).', // 订单阶段个数已达上限（8个）
     //销售阶段end
     //销售团队start
     'sales.team.no.sales.team.tip': 'There is no team, please add!',//暂无团队，请先添加：
@@ -1368,7 +1370,7 @@ var en_US = {
     'user.apply.no.unread': 'No unread reply',//已无未读回复的申请
     'user.apply.show.update.tip': 'The data has been updated, Whether to', // 数据已更新,是否
     'user.apply.total.apply': '{number} applies {apply_type}', // apply_type: null=>全部 已通过 已驳回 待审批 已撤销  共{number}条申请{apply_type}@
-    'user.apply.detail.order': 'Order', // 订单
+    'user.apply.detail.order': 'Deal', // 订单
     'user.apply.detail.change.username.title': 'change username', // 修改用户名
     'user.apply.detail.change.nickname.title': 'change nickname', // 修改昵称
     'user.apply.detail.change.delay.time': 'modify delay time', // 修改延期时间
@@ -1537,7 +1539,7 @@ var en_US = {
     'crm.125': 'the latest 3 months', // 最近三个月
     'crm.126': 'the latest half an year', //最近半年
     'crm.127': 'the latest an year', // 最近一年
-    'crm.137': 'Are you sure to delete this order', // 确定要删除这个订单吗
+    'crm.137': 'Are you sure to delete this deal', // 确定要删除这个订单吗
     'crm.138': 'Delete success', // 删除成功
     'crm.139': 'Delete error', // 删除失败
     'crm.140': 'Generate contract success', // 生成合同成功
@@ -1558,7 +1560,7 @@ var en_US = {
     'crm.157': 'Budget Amount must digital ', // 预算金额必须为数字
     'crm.158': 'The number of users', //  用户数
     'crm.159': 'Apply official Account or trial Account', //  申请正式/试用帐号
-    'crm.161': 'Add order', // 添加订单
+    'crm.161': 'Add deal', // 添加订单
     'crm.162': 'Failed to modify industry', // 修改客户行业失败
     'crm.163': 'Setting industry', // 设置行业
     'crm.164': 'Failed to modify labels', // 修改客户标签失败
@@ -1602,7 +1604,7 @@ var en_US = {
     'crm.211': 'Trace content',//跟进内容
     'crm.212': 'Please select labels',//请选择标签
     'crm.213': 'Undistributed Customer',//未分配客户
-    'crm.215': 'A total of {count} clues',//共{count}个线索
+    'crm.215': 'A total of {count} leads',//共{count}个线索
     'crm.216': 'Add failed',//添加成功
     'crm.217': 'Failed to get the list',//获取列表失败
     'crm.218': 'Edit successfully',//修改成功
@@ -1629,24 +1631,24 @@ var en_US = {
     'crm.detail.address.placeholder': 'Please enter a full address',//请输入详细地址
     'crm.system.labels': 'System Label', //系统标签
     'crm.sales.clue.add': 'Add sales leads',//添加销售线索
-    'crm.sales.clue.source': 'Clue source',//线索来源
+    'crm.sales.clue.source': 'Lead source',//线索来源
     'crm.sales.clue.access.channel': 'Access channel',//接入渠道
-    'crm.sales.clue.descr': 'Clue description',//线索描述
-    'crm.sales.clue.time': 'Clue time',//线索时间
+    'crm.sales.clue.descr': 'Lead description',//线索描述
+    'crm.sales.clue.time': 'Lead time',//线索时间
     'crm.sales.clue.phone': '400 phone',//400电话
     'crm.sales.clue.qq': 'Marketing QQ',//营销QQ
     'crm.sales.clue.baidu': 'Baidu search',//百度搜索
     'crm.sales.clue.weibo': 'Micro-blog promotion',//微博推广
     'crm.sales.clue.customer.recommend': 'Customer recommendation',//客户推荐
     'crm.access.channel.placeholder': 'Please select access channels',//请选择接入渠道
-    'crm.clue.source.placeholder': 'Please select the source of the clues',//请选择线索来源
-    'crm.suggest.clue.search': 'Please input clue name to implement search',//请输入线索名称搜索
-    'crm.suggest.clue.not.found': 'Clue not found',//未找到该线索
-    'crm.clue.suggest.create.clue': 'Create clue', //创建线索
-    'crm.suggest.select.clue.tip': 'Please choose a clue from the dropdown list',//请在下拉框中选择线索
-    'crm.suggest.select.clue': 'Please choose a clue', //请选择线索
-    'crm.suggest.select.clue.first': 'Please choose a clue first',//请先选择线索
-    'crm.sales.clue': 'Clue',//线索
+    'crm.clue.source.placeholder': 'Please select the source of the leads',//请选择线索来源
+    'crm.suggest.clue.search': 'Please input lead name to implement search',//请输入线索名称搜索
+    'crm.suggest.clue.not.found': 'Lead not found',//未找到该线索
+    'crm.clue.suggest.create.clue': 'Create lead', //创建线索
+    'crm.suggest.select.clue.tip': 'Please choose a lead from the dropdown list',//请在下拉框中选择线索
+    'crm.suggest.select.clue': 'Please choose a lead', //请选择线索
+    'crm.suggest.select.clue.first': 'Please choose a lead first',//请先选择线索
+    'crm.sales.clue': 'Lead',//线索
     'crm.sales.clue.add.disable': '\'{label}\' tags cannot be added manually',//不能手动添加'{label}'标签
     'crm.clue.require.one': 'Telephone, mail, QQ and weChat required one',//电话、邮箱、QQ必填一项
     'crm.contact.list.failed': 'Failed to get contact list',//获取联系人列表失败
@@ -1661,7 +1663,7 @@ var en_US = {
     'crm.select.level': 'Please select administrative level',//请选择行政级别
     'crm.no.level': 'No match administrative level',//无相关行政级别
     'crm.stage.tag': 'Phase label',//阶段标签
-    'crm.order.more.customer': 'Multi-order customers',//多个订单的客户
+    'crm.order.more.customer': 'Multi-deal customers',//多个订单的客户
     'crm.available.customer': 'Available customers',//有效客户
     'crm.call.no.remark': 'Final contact but no record',//最后联系但未写跟进记录
     'crm.call.no.remark.over': 'No follow-up records over {day} days',//超{day}天未写跟进记录
@@ -1681,7 +1683,7 @@ var en_US = {
     'crm.repeat.phone': 'Phone repeating',//电话重复
     'crm.repeat.phone.user': 'The phone has been used by customer {userName}',//该电话已被客户{userName}使用
     'crm.repeat.phone.unhandle': 'You have an unprocessed repeat phone: ',//您还有未处理的重复电话：
-    'crm.order.stage': 'Order stage',//订单阶段
+    'crm.order.stage': 'Deal stage',//订单阶段
     'crm.basic.detail.show': 'Show detail',//展开详情
     'crm.basic.detail.hide': 'Hide detail',//收起详情
     'crm.basic.overview': 'Overview',//概览
@@ -1696,12 +1698,12 @@ var en_US = {
     'crm.contact.delete.confirm': 'Confirm deletion',//确认删除
     'crm.contact.deparment.input': 'Please enter the Department',//请输入部门
     'crm.order.budget.input': 'Please enter the budget amount',//请输入预算金额
-    'crm.order.id': 'Order Num',//订单编号
-    'crm.order.remarks': 'Order Remarks',//订单备注
+    'crm.order.id': 'Deal Num',//订单编号
+    'crm.order.remarks': 'Deal Remarks',//订单备注
     'crm.schedule.begin.time': 'Begin time',//开始
     'crm.schedule.end.time': 'End time',//结束
-    'crm.schedule.clue.customer.name': 'Please input customer or clue name',//请输入客户名或线索名
-    'crm.schedule.clue.customer.name.error': 'Please select search by customer or clue name',//请选择根据客户名或线索名搜索
+    'crm.schedule.clue.customer.name': 'Please input customer or lead name',//请输入客户名或线索名
+    'crm.schedule.clue.customer.name.error': 'Please select search by customer or lead name',//请选择根据客户名或线索名搜索
     'crm.basic.concerned': 'Concerned',//已关注
     'crm.basic.unconcerned': 'Unconcerned',//未关注
     'crm.basic.more': 'More',//更多
@@ -1741,7 +1743,7 @@ var en_US = {
     'crm.no.trace.record': 'The customer has not been followed up', //还没有跟进过该客户
     'crm.no.contact.tip': 'The customer has not contact yet',//该客户还没有联系人
     'crm.no.contact': 'No contact',//暂无联系人
-    'crm.no.order.tip': 'The customer has no order yet',//该客户还没有订单
+    'crm.no.order.tip': 'The customer has no deal yet',//该客户还没有订单
     'crm.detail.no.user': 'No users',//暂无用户
     'crm.detail.no.schedule': 'The customer has no schedule yet',//该客户还没有联系计划
     'crm.order.status.underway': 'Underway',//进行中
@@ -1749,8 +1751,8 @@ var en_US = {
     'crm.order.status.lose': 'Lose',//丢单
     'crm.order.status.won': 'Won',//赢单
     'crm.order.status.lost': 'Lost',//赢单
-    'crm.order.closing': 'Order closing',//订单关闭中
-    'crm.order.close.failed': 'Closing the order failure',//关闭订单失败
+    'crm.order.closing': 'Deal closing',//订单关闭中
+    'crm.order.close.failed': 'Closing the deal failure',//关闭订单失败
     'crm.order.no.stage': 'No sales stage',//暂无销售阶段
     'crm.order.add.stage': 'Add sales stage',//添加销售阶段
     'crm.order.no.budget': 'No budget',//暂无预算
@@ -1763,14 +1765,14 @@ var en_US = {
     'crm.order.no.expected.deal.time': 'No expected deal time',//暂无预计成交时间
     'crm.order.add.expected.deal.time': 'Add expected deal time',//添加预计成交时间
     'crm.order.add.to': 'add to {time}',//添加于{time}
-    'crm.order.close.step': 'Close the order',//关闭订单
-    'crm.order.update.confirm': 'Do you want to modify the order phase?',//确定要修改订单阶段吗？
-    'crm.order.close.win.confirm': 'Do you want to close order as a win status?',//确定将订单的关闭状态设为赢单吗？
-    'crm.order.lose.confirm': 'Confirm lose order',//确认丢单
-    'crm.order.lose.reason.input': 'Please enter the reason for the loss of the order',//请输入丢单原因
-    'crm.order.lose.reason': 'lose Order reason',//丢单原因
-    'crm.no.order.lose.reason': 'no lose order reason',//暂无丢单原因
-    'crm.fill.order.lose.reason': 'add the reason of lose order',//补充丢单原因
+    'crm.order.close.step': 'Close the deal',//关闭订单
+    'crm.order.update.confirm': 'Do you want to modify the deal phase?',//确定要修改订单阶段吗？
+    'crm.order.close.win.confirm': 'Do you want to close deal as a win status?',//确定将订单的关闭状态设为赢单吗？
+    'crm.order.lose.confirm': 'Confirm lose deal',//确认丢单
+    'crm.order.lose.reason.input': 'Please enter the reason for the loss of the deal',//请输入丢单原因
+    'crm.order.lose.reason': 'lose Deal reason',//丢单原因
+    'crm.no.order.lose.reason': 'no lose deal reason',//暂无丢单原因
+    'crm.fill.order.lose.reason': 'add the reason of lose deal',//补充丢单原因
     'crm.filter.select.placeholder': 'Plaase select the {groupName} you want to filter',//请选择要筛选的${groupName}
     'crm.score.label': 'Customer score',//客户评分
     'crm.score.text': '{score} points',//{score}分
@@ -2233,7 +2235,7 @@ var en_US = {
     'sales.commission.add.remark': 'Please enter or select remarks', // 请输入或选择备注信息
     'sales.commission.add.commission': 'Add commission', // 添加提成
     'sales.commission.info': 'Commission information', // 提成信息
-    'sales.commission.remark.1': 'Get effective clues', // 获得有效线索
+    'sales.commission.remark.1': 'Get effective leads', // 获得有效线索
     'sales.commission.remark.2': 'Confirmed as sales opportunity', // 确认为销售机会
     'sales.commission.remark.3': 'Return payment', // 成交回款
     'sales.commission.remark.4': 'Quarterly assessment', // 季度考核合格
@@ -2475,11 +2477,11 @@ var en_US = {
     'errorcode.76': 'Failed to configure contact person',//设置联系人失败
     'errorcode.77': 'Failed to delete contact person',//删除联系人失败
     'errorcode.78': 'Failed to query contact person',//查询联系人失败
-    'errorcode.79': 'Failed to add order',//添加订单失败
-    'errorcode.80': 'Failed to delete order',//删除订单失败
-    'errorcode.81': 'Failed to modify order',//修改订单失败
-    'errorcode.82': 'Failed to query customer corresponding to order',//查询订单对应客户失败
-    'errorcode.83': 'Failed to query order',//查询订单失败
+    'errorcode.79': 'Failed to add deal',//添加订单失败
+    'errorcode.80': 'Failed to delete deal',//删除订单失败
+    'errorcode.81': 'Failed to modify deal',//修改订单失败
+    'errorcode.82': 'Failed to query customer corresponding to deal',//查询订单对应客户失败
+    'errorcode.83': 'Failed to query deal',//查询订单失败
     'errorcode.84': 'Failed to add role',//添加角色失败
     'errorcode.85': 'Failed to modify role',//修改角色失败
     'errorcode.86': 'Failed to get role lists',//获取角色列表失败
@@ -2532,9 +2534,9 @@ var en_US = {
     'errorcode.137': 'You have not open this application yet',//您尚未开通此应用
     'errorcode.138': 'This seat number is existed',//座席号已存在！
     'errorcode.139': 'The ID of assigned user can not be empty',//被分配的用户ID不能为空
-    'errorcode.140': 'No permission to distribute clues customer',//没有权限执行分配线索客户的操作
+    'errorcode.140': 'No permission to distribute leads customer',//没有权限执行分配线索客户的操作
     'errorcode.141': 'This member does not belong to you',//该成员不属于您管理
-    'errorcode.142': 'The clue does not exist',//线索不存在
+    'errorcode.142': 'The lead does not exist',//线索不存在
     'errorcode.143': 'The phone system has an unknown error',//通话系统出现未知异常
     'errorcode.144': 'The phone system did not respond',//通话系统没有响应
     'errorcode.145': 'Landline busy',//座机繁忙
@@ -2542,9 +2544,9 @@ var en_US = {
     'errorcode.147': 'The qr code has expired',//二维码已失效
     'errorcode.148': 'The call duration statistics view fails to be obtained',//电话时长统计视图获取失败
     'errorcode.149': 'The post cannot be deleted because it has already been allocated',//已有成员设置了该职务，不能删除
-    'errorcode.150': 'Failed to update the clue',//修改线索信息失败
+    'errorcode.150': 'Failed to update the lead',//修改线索信息失败
     'errorcode.151': 'Failed to get sales new open accounts and new open accounts',//获取销售新开客户数和新开帐号数失败
-    'errorcode.152': 'There are repeat clues!',//线索重复
+    'errorcode.152': 'There are repeat leads!',//线索重复
     'errorcode.153': 'Failed to add sale process', // 添加销售流程失败
     'errorcode.154': 'Failed to get sale process', // 获取销售流程失败
     'errorcode.155': 'Failed to add customer stage', // 添加客户阶段失败
@@ -2705,7 +2707,7 @@ var en_US = {
     'call.record.input.feedback.content': 'Please fill in feedback content',//请输入反馈内容
     'call.record.input.feedback.topic': 'Please fill in feedback topic',//请输入反馈主题
     'call.record.failed.add.app.feedback': 'Failed to add feedback content',//添加产品反馈内容失败
-    'failed.to.get.clue.customer.list': 'Failed to get clue',//获取线索列表失败
+    'failed.to.get.clue.customer.list': 'Failed to get lead',//获取线索列表失败
     'sales.frontpage.active.info': 'Please activate your mailbox, so as not to affect the receipt of approval emails!',//请激活邮箱，以免影响收取审批邮件！
     'sales.frontpage.active.email': 'Activate mailbox',//激活邮箱
     'crm.customer.user': 'users of {customer}',//{customer}客户的用户
@@ -2721,9 +2723,9 @@ var en_US = {
     'sales.homepage.show.teamlist': 'Show team lists',//展开团队列表
     'crm.save.customertrace.first': 'Please save or cancel the editing customer trace record first',//请先保存或取消正在编辑的跟进记录内容
     'sales.add.email.info': 'Please add the E-mail address on the {userinfo} page, otherwise you will be unable to receive the email from ketao',//请到{userinfo}页面添加邮箱，否则将会无法收到客套向您发送的邮件。
-    'crm.sales.add.clue': 'Add clue',//添加线索
+    'crm.sales.add.clue': 'Add lead',//添加线索
     'crm.sales.manual_add.clue': 'Manual addition',//手动添加
-    'crm.sales.manual.import.clue': 'Import clue',//导入线索
+    'crm.sales.manual.import.clue': 'Import lead',//导入线索
     'clue.customer.export.trial.user.tip': 'Please update your account to official version',//请升级正式版
     'clue.customer.will.distribution': 'To be assigned',//待分配
     'clue.customer.has.distribution': 'Assigned',//已分配
@@ -2735,11 +2737,11 @@ var en_US = {
     'failed.submit.trace.content': 'Failed to add follow-up content',//添加跟进内容失败
     'clue.customer.save.content': 'Please save or cancel the editing follow-up content first',//请先保存或取消保存正在编辑的跟进内容
     'clue.customer.update.content': 'Edit follow-up content button',//编辑跟进内容按钮
-    'failed.distribute.cluecustomer.to.sales': 'Failed to assigne clue customer to the corresponding sales ',//把线索客户分配给对应的销售失败
-    'failed.update.customer.detail': 'Failed to update clue customer information',//更新线索客户信息失败
+    'failed.distribute.cluecustomer.to.sales': 'Failed to assigne lead customer to the corresponding sales ',//把线索客户分配给对应的销售失败
+    'failed.update.customer.detail': 'Failed to update lead customer information',//更新线索客户信息失败
     'clue.customer.distribute': 'distribution',//分配
     'clue.customer.add.trace.content': 'Please fill in follow-up content',//请填写跟进内容
-    'failed.to.distribute.cluecustomer': 'Failed to distribute clue customers',//分配线索客户失败
+    'failed.to.distribute.cluecustomer': 'Failed to distribute lead customers',//分配线索客户失败
     'crm.alert.topic': 'Title',//标题
     'crm.contact.time': 'Contact time',//联系时间
     'crm.alert.time': 'Alert time',//提醒时间
@@ -2762,7 +2764,7 @@ var en_US = {
     'crm.schedule.fill.content': 'Please fill in schedule content!',//请填写联系内容
     'crm.schedule.input.content': 'Please input schedule content',//请输入联系内容
     'schedule.list.management': 'Schedule Management',//日程管理
-    'schedule.object': 'ClueOrCustomer',//对象
+    'schedule.object': 'LeadOrCustomer',//对象
     'schedule.expired.list.failed': 'Failed to get expired schedule management list',//获取超时日程管理列表失败
     'schedule.expired.list': 'Expired and incomplete schedule list',//超时未完成
     'schedule.list.remind': 'Reminder time',//提醒
@@ -2814,14 +2816,15 @@ var en_US = {
     'weekly.report.customer.stage.projected': 'Project stage',//立项报价阶段
     'weekly.report.customer.stage.intentioned': 'Intention stage',//意向阶段
     'weekly.report.customer.stage.info': 'Information stage',//信息阶段
-    'app.user.trans.clue.customer': 'Generate clues',//生成线索
+    'app.user.trans.clue.customer': 'Generate leads',//生成线索
     'clue.customer.register.self': 'Independent register',//自主注册
     'clue.customer.product.website': 'Production website',//产品网站
-    'clue.customer.clue.name': 'clue names',//线索名称
-    'clue.customer.clue.name.abbrev': 'clue name',//线索名
-    'clue.customer.search.by.name': 'search by clue name',//根据线索名搜索
-    'clue.customer.fillin.clue.name': 'Please fill in the clue names',//请填写线索名称
+    'clue.customer.clue.name': 'lead names',//线索名称
+    'clue.customer.clue.name.abbrev': 'lead name',//线索名
+    'clue.customer.search.by.name': 'search by lead name',//根据线索名搜索
+    'clue.customer.fillin.clue.name': 'Please fill in the lead names',//请填写线索名称
     'clue.customer.register.user': 'registered user',//注册用户
+    'clue.customer.phone.used.by.clue': 'This phone has been used by other leads,',//该电话已被其他线索使用,
     'clue.customer,add,schedule,success': 'This schedule has been added',//联系计划已添加
     'clue,customer.add.schedule.error': 'This schedule fail to add',//联系计划添加失败
     'batch.failed.add.schedule': '{customerName} failed to add schedule',//{customerName}添加联系计划失败
@@ -2933,28 +2936,28 @@ var en_US = {
     'sales.if.switch.type': 'Whether to distinguish between two types of new and renewal',//是否区分新签和续约类型
     'sales.new.write.contract.radio': 'New signing ratio',//新签提成比例
     'sales.rewrite.contract.radio': 'Renewed signing ratio',//续约提成比例
-    'sales.remark.clue.enable': 'Mark this clue effective',//线索有效
-    'sales.remark.clue.able': 'Mark this clue invalid',//线索无效
+    'sales.remark.clue.enable': 'Mark this lead effective',//线索有效
+    'sales.remark.clue.able': 'Mark this lead invalid',//线索无效
     'sales.clue.is.enable': 'Invalid',//无效
-    'failed.sales.remark.clue.valid': 'Failed to mark the validity of the clue',//标记该线索有效性失败
-    'clue.customer.check.only.exist': 'Failed to verify the only clue names',//线索名称唯一性校验失败
-    'clue.customer.check.only.fail': 'Clue name is already taken',//线索名称唯一性校验出错
-    'clue.customer.check.repeat': 'The clue name is already existed',//该线索名称已存在
-    'clue.customer.similar.clue.contains': 'Similar clues',//相似的线索还有
-    'clue.customer.repeat.phone.user': 'The phone has been used by clue "{userName}"',//该电话已被线索{userName}使用
+    'failed.sales.remark.clue.valid': 'Failed to mark the validity of the lead',//标记该线索有效性失败
+    'clue.customer.check.only.exist': 'Failed to verify the only lead names',//线索名称唯一性校验失败
+    'clue.customer.check.only.fail': 'Lead name is already taken',//线索名称唯一性校验出错
+    'clue.customer.check.repeat': 'The lead name is already existed',//该线索名称已存在
+    'clue.customer.similar.clue.contains': 'Similar leads',//相似的线索还有
+    'clue.customer.repeat.phone.user': 'The phone has been used by lead "{userName}"',//该电话已被线索{userName}使用
     'clue.customer.clue.time': 'Consult on {relative}',//咨询于{relative}
-    'failed.to.get.clue.classify': 'Failed to get clue classify',//获取线索分类出错了
-    'clue.customer.classify': 'clue  classification',//线索分类
-    'crm.clue.classify.placeholder': 'Please select or enter the clue classify',//请选择或输入线索分类
-    'crm.clue.client.source': 'Client Source',//集客方式
-    'crm.clue.client.source.placeholder': 'Please select the client source',//请选择集客方式
-    'crm.clue.client.source.add': 'Add client source',//添加集客方式
+    'failed.to.get.clue.classify': 'Failed to get lead classify',//获取线索分类出错了
+    'clue.customer.classify': 'lead  classification',//线索分类
+    'crm.clue.classify.placeholder': 'Please select or enter the lead classify',//请选择或输入线索分类
+    'crm.clue.client.source': 'Way Of Obtaining Customer',//获客方式
+    'crm.clue.client.source.placeholder': 'Please select the way of obtaining customer',//请选择获客方式
+    'crm.clue.client.source.add': 'Add way of obtaining customer',//添加获客方式
     'crm.clue.client.source.inbound': 'inbound',//市场
     'crm.clue.client.source.outbound': 'outbound',//自拓
     'crm.clue.client.source.other': 'other', //未知
     'clue.customer.classify.agend': 'Agents',//代理商
     'clue.customer.classify.search': 'Academic research',//学术研究
-    'clue.customer.may.associate.customer': 'The customer may be associated with the clue',//该线索可能关联的客户
+    'clue.customer.may.associate.customer': 'The customer may be associated with the lead',//该线索可能关联的客户
     'clue.customer.phone.same': 'The phone is the same',//电话一致
     'clue.customer.customer.name.similar': 'The customer is similar',//客户名相似
     'clue.customer.search.by.client.name': 'search by customer name',//根据客户名搜索
@@ -2965,11 +2968,11 @@ var en_US = {
     'sales.frontpage.has.no.conneted': 'You have missed the call',//您有电话未接听
     'clue.manage.import.clue': 'Import {type}',//导入{type}
     'clue.manage.failed.import.clue': 'Failed to import {type}.Please try again!',//导入{type}失败，请重试!
-    'clue.manage.has.exist.clue': 'The clue named {name} and with the contact number {phone} has already existed!',//线索名为{name}，联系电话为{phone}的线索已存在！
+    'clue.manage.has.exist.clue': 'The lead named {name} and with the contact number {phone} has already existed!',//线索名为{name}，联系电话为{phone}的线索已存在！
     'clue.customer.import.clue.suceess': 'Import {type} successfully',//导入{type}成功
     'clue.customer.import.clue.failed': 'Failed to import {type}',//导入{type}失败
-    'clue.delete.duplicate.failed': 'Failed to delete clue',//删除重复线索失败
-    'clue.repeat.delete': 'Red indicates that the clue name or contact information already exists, please delete it before importing it',//红色标示线索名及联系方式已存在，请删除后再导入
+    'clue.delete.duplicate.failed': 'Failed to delete lead',//删除重复线索失败
+    'clue.repeat.delete': 'Red indicates that the lead name or contact information already exists, please delete it before importing it',//红色标示线索名及联系方式已存在，请删除后再导入
     'import.repeat.delete.tip': 'Red labeled data already exists or does not conform to the rules. Please delete the red labeled data and import it directly, or re-import it after modifying the data locally.',//'红色标示数据已存在或不符合规则，请删除红色标示的数据后直接导入，或本地修改数据后重新导入'
     'clue.customer.belong.to.other.sales': 'This phone is registered to {customer} and belongs to {sales}',//该电话属于客户{customer}，所属销售{sales}
     'phone.alert.select.customer': 'Please select the customer to follow',//请选择要跟进的客户
@@ -2979,7 +2982,7 @@ var en_US = {
     'noMoreTip.callRecord': 'no more call records',
     'noMoreTip.visitBack': 'no more visit record',
     'noMoreTip.customer': 'no more customers',
-    'failed.change.source.time': 'Failed to change clue source time',//修改线索咨询时间失败
+    'failed.change.source.time': 'Failed to change lead source time',//修改线索咨询时间失败
     'china.zone.distribute.south.island': 'South China Sea Islands',//南海诸岛
     'phone.status.record.content': 'Please fill in this follow-up content',//请填写本次跟进内容
     'phone.status.other.hang.out': 'The other hangs up',//对方挂断
@@ -2988,7 +2991,7 @@ var en_US = {
     'phone.dial.up.text': 'Dial up',//拨号
     'phone.call.error.tip': 'The phone number is wrong!',//电话号码错误！
     'clue.customer.analysis.trend': 'Trend',//趋势
-    'clue.stage.statics': 'Clue stage statistics',//线索阶段统计
+    'clue.stage.statics': 'Lead stage statistics',//线索阶段统计
     'clue.funnel.statics': 'Lead funnel statistics',//线索漏斗统计
     'clue.analysis.access.channel': 'channel',//渠道
     'clue.analysis.source': 'source',//来源
@@ -2999,12 +3002,12 @@ var en_US = {
     'clue.analysis.classify.chart': 'Classify statistics',//分类统计
     'clue.analysis.avalibility.chart': 'Validity statistics',//有效性统计
     'clue.analysis.assigned.chart': 'Contract statistics',//签约统计
-    'clue.analysis.all.source.classify': 'All Client Source',//全部集客方式
-    'sales.home.sales.clue': 'Sales Clue to be handled',//待处理的线索
+    'clue.analysis.all.source.classify': 'All Way Of Obtaining Customer',//全部获客方式
+    'sales.home.sales.clue': 'Sales Lead to be handled',//待处理的线索
     'sales.home.will.trace': 'To be followed up',//待跟进
     'sales.home.i.trace': 'I',//我
     'sales.home.fill.in.trace.content': 'Please fill in follow-up content',//请输入跟进内容
-    'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.',//本条线索处理完毕后，将不在首页展示
+    'sales.home.no.show.frontpage': 'After this lead is processed, it will not be displayed on the homepage.',//本条线索处理完毕后，将不在首页展示
     'analysis.weekly.report': 'Weekly report',//周报分析
     'appEdit.basicConig': 'basic config',//'基本配置',
     'back.openApp.range': 'range of open-app',//'开通范围',
@@ -3024,35 +3027,35 @@ var en_US = {
     'common.this.month.new': 'this month new',//本月新增
     'common.this.month': 'this month',//本月
     //线索模块 start
-    'clue.search.by.name': 'search by clue name',//按线索名搜索
+    'clue.search.by.name': 'search by lead name',//按线索名搜索
     'clue.add.trace.content': 'Add follow-up content',//添加跟进内容
     'clue.add.trace.follow': 'follow up',//跟进
     'clue.search.full.text': 'search',//全文搜索
     'clue.suggest.input.customer.name': 'Recommend to enter the customer name',//建议输入客户名称
-    'clue.name.rule': 'The clue name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 50 (including 50).',//线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间
+    'clue.name.rule': 'The lead name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 50 (including 50).',//线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间
     'clue.add.customer.need': 'Please describe the customer needs',//请描述一下客户需求
     'clue.add.phone.num': 'Phone',//电话号码
     'clue.add.qq.num': 'QQ',//QQ号码
     'clue.add.email.addr': 'Email address',//邮箱地址
-    'clue.fill.clue.contacts': 'Please fill in the contact information of the clue',//请填写线索的联系方式
+    'clue.fill.clue.contacts': 'Please fill in the contact information of the lead',//请填写线索的联系方式
     'clue.add.wechat.num': 'Wechat',//微信号码
-    'clue.alanalysis.charts': 'clue analysis',//线索分析
-    'clue.detail.info': 'clue info',//线索信息
-    'clue.no.clue.source': 'Not added clue source', //未添加线索来源
-    'clue.add.clue.source': 'Add clue source',//添加线索来源
+    'clue.alanalysis.charts': 'lead analysis',//线索分析
+    'clue.detail.info': 'lead info',//线索信息
+    'clue.no.clue.source': 'Not added lead source', //未添加线索来源
+    'clue.add.clue.source': 'Add lead source',//添加线索来源
     'clue.no.access.channel': 'Not added access channel', //未添加接入渠道
     'clue.add.access.channel': 'Add access channel',//添加接入渠道
-    'clue.add.clue.classfify': 'Add clue classify',//添加线索分类
-    'clue.no.clue.describe': 'Not added clue description', //未添加线索描述
-    'clue.add.clue.describe': 'Add clue description',//添加线索描述
-    'clue.add.clue.placeholder': 'Please fill in clue description',//请填写线索描述
+    'clue.add.clue.classfify': 'Add lead classify',//添加线索分类
+    'clue.no.clue.describe': 'Not added lead description', //未添加线索描述
+    'clue.add.clue.describe': 'Add lead description',//添加线索描述
+    'clue.add.clue.placeholder': 'Please fill in lead description',//请填写线索描述
     'clue.unknown.access.channel': 'unknown access channel',//未知接入渠道
     'clue.add.clue.time': 'Added to',//添加于
     'clue.no.trace.content': 'no trace content',//暂无跟进
     'clue.associate.user': 'Associated account',//关联账号
     'clue.handle.no.distribute.clue': '未分配',//
     'clue.has.no.data': 'No',//暂无
-    'clue.handle.clue': 'Clue handle',//线索处理
+    'clue.handle.clue': 'Lead handle',//线索处理
     'clue.has.no.handle': 'Not processed yet',//暂未处理
     'clue.set.invalid': 'Invalid judgment',//判定无效
     'clue.cancel.set.invalid': 'Cancel invalid',//改为有效
@@ -3061,34 +3064,34 @@ var en_US = {
     'analysis.business.visit.frequency.statistics': 'Analysis business visit frequency statistics', //出差拜访频率统计
     'analysis.sales.visiting.customer.frequency': 'Analysis statistics on the frequency of {sales} visiting customers', //{sales}拜访客户频率统计
     'analysis.visits.customer.frequency': 'Analysis statistics on frequency of visits to {customer}', //拜访{customer}的频率统计
-    'analysis.contact.customer.statistics': 'Contact clue statistics',//联系客户统计
-    'analysis.contact.clue.statistics': 'Contact clue statistics',//联系线索统计
-    'analysis.number.of.contact.clue': 'Number of contact clue',//联系线索数
+    'analysis.contact.customer.statistics': 'Contact lead statistics',//联系客户统计
+    'analysis.contact.clue.statistics': 'Contact lead statistics',//联系线索统计
+    'analysis.number.of.contact.clue': 'Number of contact lead',//联系线索数
     'analysis.number.of.remarked.trace': 'Number of remarked trace',//跟进记录数
     'analysis.market.lead.allocation.statistics': 'market lead allocation statistics',//市场线索分配统计
     'analysis.sales.pull.lead.statistics': 'sales pull lead statistics',//销售提取线索统计
-    'analysis.assigned.clue.number': 'assigned clue number',//分配线索数
+    'analysis.assigned.clue.number': 'assigned lead number',//分配线索数
     'analysis.extracting.cue.number': 'extracting cue number',//提取线索数
     'analysis.follow-up.leads': 'follow-up leads',//跟进线索数
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
-    'clue.failed.get.clue.detail': 'Failed to get clue detail',//获取线索详情失败
-    'clue.has.distribute.clue': 'You have new clues',//您有新的线索
-    'clue.click.show.clue.detail': 'Click to show clue details',//点击查看线索详情
+    'clue.failed.get.clue.detail': 'Failed to get lead detail',//获取线索详情失败
+    'clue.has.distribute.clue': 'You have new leads',//您有新的线索
+    'clue.click.show.clue.detail': 'Click to show lead details',//点击查看线索详情
     'user.get.suggest.name.error': 'Failed to get suggest username',//获取建议用户名失败
     'clue.import.csv': 'Upload form',//上传表格
     'clue.download.clue.csv': 'Download the import {type} template',//下载{type}模板
-    'clue.has.not.distribute': 'The clue has not been assigned yet',//该线索还没有分配
+    'clue.has.not.distribute': 'The lead has not been assigned yet',//该线索还没有分配
     'clue.not.complete.schedule': 'The schedule of today',//今天的联系计划
     'menu.shortName.call': 'call', //'通话',
     'menu.shortName.operate': 'operate', //'运营',
     'menu.shortName.schedule': 'schedule', //'日程',
     'menu.shortName.config': 'config', //'设置',
-    'clue.no.data.during.range.and.status': 'No qualifying clues',//没有符合条件的线索
-    'clue.no.data': 'There is no relevant clue information',//暂无线索信息
-    'clue.filter.clue.status': 'clue status',//线索状态
-    'clue.statistic.get.error': 'Failed to get clue statistic data',//获取线索统计数据失败
+    'clue.no.data.during.range.and.status': 'No qualifying leads',//没有符合条件的线索
+    'clue.no.data': 'There is no relevant lead information',//暂无线索信息
+    'clue.filter.clue.status': 'lead status',//线索状态
+    'clue.statistic.get.error': 'Failed to get lead statistic data',//获取线索统计数据失败
     'user.email.only.error': 'Failed to verify email',//邮箱唯一性验证失败
     'clue.customer.source.ip': 'source IP',//客户ip
     'clue.customer.no.source.ip': 'Not set source IP',//未设置来源IP
@@ -3103,36 +3106,36 @@ var en_US = {
     'common.ketao.app.telephone.statistics': 'Ketao app telephone statistics',//客套APP电话量统计
     'common.trial.qualified.customer.statistics': 'Trial qualified customer statistics',//试用合格客户数统计
     'clue.has.similar.customer': 'similar customer',//有相似客户
-    'clue.has.similar.clue': 'similar clue',//有相似线索
-    'clue.export.clue.list': 'Export clue',//导出线索
-    'clue.extract.clue': 'Extract clue', // 提取线索
-    'clue.release': 'Release Clue',//释放线索
-    'clue.customer.refresh.tip': 'You have new clues, please {refreshPage} to check',//有新线索，{refreshPage}查看
+    'clue.has.similar.clue': 'similar lead',//有相似线索
+    'clue.export.clue.list': 'Export lead',//导出线索
+    'clue.extract.clue': 'Extract lead', // 提取线索
+    'clue.release': 'Release Lead',//释放线索
+    'clue.customer.refresh.tip': 'You have new leads, please {refreshPage} to check',//有新线索，{refreshPage}查看
     'clue.customer.refresh.page': 'refresh page',//刷新页面
-    'clue.pool': 'Clue Pool', // 线索池
-    'clue.pool.explain': 'Store release clues',//存放释放的线索
+    'clue.pool': 'Lead Pool', // 线索池
+    'clue.pool.explain': 'Store release leads',//存放释放的线索
     'clue.customer.delete': 'Can\'t be restored after deletion. Are you sure you want to delete it?',//删除后无法恢复，您确定要删除吗？
-    'clue.customer.release.pool': 'Release to clue pool',//释放到线索池
+    'clue.customer.release.pool': 'Release to lead pool',//释放到线索池
     'clue.customer.batch.release': 'Batch release',//批量释放
-    'clue.customer.release.confirm.tip': 'When released into the clue pool, other people can also view and extract it. Are you sure you want to release it?',//释放到线索池后，其他人也可以查看、提取，您确定要释放吗？
+    'clue.customer.release.confirm.tip': 'When released into the lead pool, other people can also view and extract it. Are you sure you want to release it?',//释放到线索池后，其他人也可以查看、提取，您确定要释放吗？
     'clue.customer.personal.release.confirm.tip': 'After release, it can be extracted from the cue pool',//释放后可以再从线索池提取
-    'clue.customer.fail.to.release.tip': 'Fail to release to clue pool',//释放线索失败
+    'clue.customer.fail.to.release.tip': 'Fail to release to lead pool',//释放线索失败
     'clue.pool.batch.extract.clue': 'Batch extract', // 批量提取
-    'clue.extract.get.list.failed': 'Failed to get extract clue lists', // 获取提取线索列表失败
-    'clue.extract.batch.extract.failed': 'Failed to extract clues in bulk', // 批量提取线索失败
+    'clue.extract.get.list.failed': 'Failed to get extract lead lists', // 获取提取线索列表失败
+    'clue.extract.batch.extract.failed': 'Failed to extract leads in bulk', // 批量提取线索失败
     'clue.extract.former.responsible.person': 'Former responsible person', // 原负责人
     'clue.extract': 'Extract', // 提取
     'clue.extract.failed': 'Failed', // 提取失败
     'clue.extract.success': 'Success', // 提取成功
-    'clue.list.clue.availibility': 'Invalid clue',//无效线索
-    'clue.list.total.num': 'A total of {num} clues',//共{num}个线索
-    'clue.search.no.found': 'There are no qualified leads, you can go to {cluepool} to see if there is any clue',//没有符合条件的线索，您可以去{cluepool}查看是否有该线索
+    'clue.list.clue.availibility': 'Invalid lead',//无效线索
+    'clue.list.total.num': 'A total of {num} leads',//共{num}个线索
+    'clue.search.no.found': 'There are no qualified leads, you can go to {cluepool} to see if there is any lead',//没有符合条件的线索，您可以去{cluepool}查看是否有该线索
     'clue.has.extract.by.other': 'Eligible leads have been extracted, please check {changeCondition} again',//符合条件的线索已被提取完成，请{changeCondition}再查看
     'clue.edit.condition.search': 'Please {changeCondition}',//请{changeCondition}再查看
-    'clue.customer.has.clue.can.extract': 'You can extract clues from here',//您可以从这里提取线索哦
+    'clue.customer.has.clue.can.extract': 'You can extract leads from here',//您可以从这里提取线索哦
     'lead.recommend.refresh.list': 'If there is no lead that matches your needs, you can',//如果没有符合您需求的线索，您可以
     'lead.recommend.change.condition': 'Please have a try',//再试试
-    'clue.customer.export.select.clue': 'Export selected clues',//导出选中的线索
+    'clue.customer.export.select.clue': 'Export selected leads',//导出选中的线索
     'lead.recommend.form.show.all.condition': 'Show all conditions',//展开全部条件
     'lead.recommend.form.hide.some.condition': 'Hide some condition',//收起部分条件
     'boot.select.industry.count.tip': 'You can select {count} at most',//最多可选择{count}个行业
@@ -3156,13 +3159,13 @@ var en_US = {
     'apply.bind.email.tips': 'bind email',//绑定邮箱
     'apply.active.email.tips': 'active email',//激活邮箱
     'shear.expand': 'expand', //'展开'
-    'crm.order.stage.manage': 'Order stage management',//订单阶段管理
-    'crm.order.stage.add': 'Add Order stage',//添加订单阶段
-    'crm.order.stage.edit': 'Edit Order stage',//编辑订单阶段
+    'crm.order.stage.manage': 'Deal stage management',//订单阶段管理
+    'crm.order.stage.add': 'Add Deal stage',//添加订单阶段
+    'crm.order.stage.edit': 'Edit Deal stage',//编辑订单阶段
     'crm.order.stage.name': 'Stage name',//阶段名称
     'crm.order.stage.name.placeholder': 'Please fill in stage name',//请输入阶段名称
     'crm.order.stage.destrip.palceholder': 'Please fill in stage description',//请输入阶段的描述信息
-    'crm.order.stage.nodata.tips': 'No order stage, please add first', // 暂无订单阶段，请先添加
+    'crm.order.stage.nodata.tips': 'No deal stage, please add first', // 暂无订单阶段，请先添加
     'crm.order.stage.name.verify': 'The stage name is existed', // 该阶段名称已存在
     'crm.release.no.permissions': 'You cannot release a co-follow up customer',//您不能释放共同跟进的客户
     'crm.no.permissions.update.sales': 'You do not have permission to modify the person in charge',//您没有权限修改负责人
@@ -3215,14 +3218,14 @@ var en_US = {
     'leave.apply.approve.rejected': 'Was rejected',//被驳回
     'app.user.manager.click.get.app': 'Click to get app lists',//点击获取应用
     'app.user.failed.get.apps': 'Get data failed',//获取失败
-    'clue.check.only.clue.phone': 'Failed to check only clue phone',//线索电话唯一性校验失败
+    'clue.check.only.clue.phone': 'Failed to check only lead phone',//线索电话唯一性校验失败
     'leave.apply.apartment.apply': 'Supervisor',//上级主管
     'leave.apply.general.apply': 'Distribution sales',//分配销售
     'leave.apply.select.assigned.sales': 'Please select the sales to be assigned',//请选择要分配的销售
     'schedule.expired.call.time.at': 'at',//于
     'schedule.expired.call.in.phone.num': 'dial your phone number',//拨打过您的电话
-    'config.integrated.clue.manage': 'Clue integration',//线索同步
-    'config.integrated.clue.no.list': 'There is no clue integration',//暂无线索集成
+    'config.integrated.clue.manage': 'Lead integration',//线索同步
+    'config.integrated.clue.no.list': 'There is no lead integration',//暂无线索集成
     'failed.get.config.integrate.list': 'Failed to get integrated lists',//获取线索集成列表失败
     'sales.opportunity.assign.department.owner': 'Please select the department head to be assigned',//请选择要分配的部门主管
     'sales.opportunity.process.config.list': 'Failed to get process node',//获取流程节点失败
@@ -3258,7 +3261,7 @@ var en_US = {
     'deal.detail.no.products': 'No products',//暂无产品
     'deal.no.filter.deal': 'There is no deal match condition',//没有符合条件的订单
     'deal.drag.data.saving': 'Is saving dragged data...',//正在保存拖动的数据...
-    'deal.drag.data.disabled': 'Closed orders cannot be modified',//关闭的订单不可以修改
+    'deal.drag.data.disabled': 'Closed deals cannot be modified',//关闭的订单不可以修改
     'common.individual.report': 'Individual report',//个人报告
     'common.entry.time': 'Entry time',//入职时间
     'common.overall.analysis': 'Overall analysis',//总体分析
@@ -3413,7 +3416,7 @@ var en_US = {
     'apply.detail.hide.password': 'Hide password',//隐藏密码
     'bussiness.trip.time.range': 'Visit time',//拜访时间
     'business.leave.time.range': 'Bussiness range',//出差时长
-    'clue.batch.select.clues': 'Has selected {num} clues',//已选择{num}个线索
+    'clue.batch.select.clues': 'Has selected {num} leads',//已选择{num}个线索
     'clue.batch.assign.sales': 'Assign in batch',//批量分配
     'clue.export.trace.msg': '{traceman} added in {tracetime}',//{traceman}于{tracetime}添加
     'clue.batch.change.trace.man': 'Change follower',//变更跟进人
@@ -3565,22 +3568,22 @@ var en_US = {
     'clue.filter.wait.me.handle': 'Wait me to handle',//待我处理
     'clue.item.source.from': 'From {source}',//来自“{source}”
     'clue.item.acceess.channel': 'Detail: {content}',//详情：“{content}”
-    'clue.show.no.show.tip': 'There has {num} new clues not showing',//还有{num}个新线索未展示
+    'clue.show.no.show.tip': 'There has {num} new leads not showing',//还有{num}个新线索未展示
     'clue.close.all.noty': 'Close all',//关闭所有提醒？
     'clue.fail.customer.trace.statics': 'Failed to get trace type statics!',//获取跟进记录的分类统计失败
-    'clue.customer.trace.clues': 'Trace clue',//跟进线索
-    'clue.need.complete.clue.name': 'Please complete the clue name first.',//请先完善线索名
+    'clue.customer.trace.clues': 'Trace lead',//跟进线索
+    'clue.need.complete.clue.name': 'Please complete the lead name first.',//请先完善线索名
     'apply.select.search.clear.value': 'Modify the filter range, the checked {type} will be cleared',//修改筛选范围，已勾选的{type}将被清空
     'apply.phone.close': 'Phone off',//手机关机
-    'apply.select.trace.clue': 'Please select trace clue',//请选择要跟进的线索
+    'apply.select.trace.clue': 'Please select trace lead',//请选择要跟进的线索
     'common.not.modify': 'not modify',//不修改
     'common.confirm.modify': 'confirm modify',//确认修改
     'common.confirm.merge': 'confirm merge',//确认合并
     'common.merge.success': 'merge success',//合并成功
-    'clue.has.no.schedule.list': 'This clue has no schedule',//该线索还没有联系计划
-    'clue.check.customer.detail.warning': 'This clue has belonged to other sales',//此线索已在其他销售名下
+    'clue.has.no.schedule.list': 'This lead has no schedule',//该线索还没有联系计划
+    'clue.check.customer.detail.warning': 'This lead has belonged to other sales',//此线索已在其他销售名下
     'fail.get.clue.schedule.list': 'Failed to get schedule list',//获取联系计划列表失败
-    'clue.manage.contact.clue': 'Contact clue',//联系线索
+    'clue.manage.contact.clue': 'Contact lead',//联系线索
     'crm.103': 'Change in charge',//变更负责人
     'crm.104': 'Changing customers will exceed the maximum number of customers this person has. Please reduce the number of changing {num} customers',//变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人
     'clue.customer.has.transfer': 'Has transfer',//已转化
@@ -3590,8 +3593,8 @@ var en_US = {
     'contract.amount.check.tip': 'The total product amount cannot be greater than the total contract amount {num} yuan, please check it',// 产品总额不能大于合同总额{amount}元，请核对
     'contract.profit.check.tip': 'The gross profit can not be greater than {num} yuan of the total contract amount, please check it',//产品毛利不能大于合同总额{amount}元，请核对
     'customer.has.similar.lists': 'Similar customer',//相似客户
-    'clue.has.similar.lists': 'Similar clue',//相似线索
-    'clue.similar.clue': 'Similar clue or customer', //相似线索或客户
+    'clue.has.similar.lists': 'Similar lead',//相似线索
+    'clue.similar.clue': 'Similar lead or customer', //相似线索或客户
     'apply.approve.first.higher.level': 'Directly superior',//直属上级
     'apply.approve.some.level': 'Level {n}',//第{n}级上级
     'apply.approve.level.five': 'Five',//五
@@ -3604,8 +3607,8 @@ var en_US = {
     'call.record.phone.err.msg': 'Wrong phone number!',//电话号码错误
     'clue.detail.last.contact.time': 'Last trace time',//最后跟进时间
     'common.sales.develop': 'sales develop',//销售开发
-    'common.clue.convert': 'clue convert',//线索转化
-    'common.clue.name.need.at.least.two.char.to.do.customer.convert': 'clue name need at least two char to do customer convert',//线索名称必须在两个字或以上，才能进行转为客户的操作
+    'common.clue.convert': 'lead convert',//线索转化
+    'common.clue.name.need.at.least.two.char.to.do.customer.convert': 'lead name need at least two char to do customer convert',//线索名称必须在两个字或以上，才能进行转为客户的操作
     'app.manege.access.no.amdin.tip': 'No user,please contact the administrator to access the user',//暂无用户，请联系管理员接入用户
     'app.manage.no.user.info': 'No user infomation', //暂无用户信息
     'app.manage.access.user': 'Access User', //接入用户
@@ -3627,7 +3630,7 @@ var en_US = {
     'clue.customer.select.size': 'Please choose size',//请选择规模
     'clue.customer.company.property': 'Nature',//性质
     'clue.customer.select.property': 'Please select the nature',//请选择性质
-    'clue.customer.clue.recommend': 'Clue recommendation',//线索推荐
+    'clue.customer.clue.recommend': 'Lead recommendation',//线索推荐
     'clue.customer.condition.staff.size': '{num} below',//{num}人以下
     'clue.customer.condition.staff.range': '{min}-{max}',//{min}-{max}人
     'clue.customer.staff.over.num': '{num} above',//{num}人以上
@@ -3648,7 +3651,7 @@ var en_US = {
     'clue.customer.condition.company.not.above.type': 'Non-aforementioned types',//非上述类型
     'clue.customer.refresh.list': 'Change batches',//换一批
     'clue.customer.condition.change': 'modify condition',//修改条件
-    'clue.customer.recommend.clue.lists': 'Recommendation clues',//推荐线索
+    'clue.customer.recommend.clue.lists': 'Recommendation leads',//推荐线索
     'clue.customer.confirm.valid': 'Confirm valid',//确认有效
     'clue.customer.customer.level': 'Customer level',//客户评级
     'clue.customer.score.good': 'high quality',//优质
@@ -3671,7 +3674,7 @@ var en_US = {
     'clue.customer.last.quarter': 'Last quarter',//近一季度
     'clue.customer.last.year': 'Last year',//近一年
     'clue.customer.close.filter.panel': 'Close filter panel',//收起筛选
-    'clue.customer.not.connect.phone': 'Not connected clues',//未打通电话的线索
+    'clue.customer.not.connect.phone': 'Not connected leads',//未打通电话的线索
     'user.score.level.rule': 'User rating rules',//用户评分规则
     'user.score.basic.score': 'Basic rating',//基础评分
     'user.score.particate.in.score': 'Participation score',//参与度评分
@@ -3686,9 +3689,9 @@ var en_US = {
     // 引导流程
     'guide.add.customer.title': 'Add your customer',//添加您的客户
     'guide.add.customer.des': 'After adding customers, you can easily follow up with your customers',//添加客户后，可以轻松跟进您的客户
-    'guide.extract.clue.title': 'Extract clues that interest you',//提取您感兴趣的线索
-    'guide.extract.clue.des': 'The system will recommend you clues based on your interests',//系统会根据您的兴趣，推荐给您线索
-    'guide.extract.clue.loading': 'Getting clues',//获取线索中
+    'guide.extract.clue.title': 'Extract leads that interest you',//提取您感兴趣的线索
+    'guide.extract.clue.des': 'The system will recommend you leads based on your interests',//系统会根据您的兴趣，推荐给您线索
+    'guide.extract.clue.loading': 'Getting leads',//获取线索中
     'guide.extract.clue.now': 'Pick up',//立即提取
     'guide.add.organization.title': 'Refine your organizational structure',//完善您的组织架构
     'guide.add.organization.des': 'The improved organizational structure allows you to use other functions smoothly',//完善组织架构后,有利于您顺畅的使用其他功能
@@ -3712,17 +3715,17 @@ var en_US = {
     'guide.see.cutomer': 'View Customers',//查看客户
     'guide.add.or.import.customer.success': 'Add or import successful',//添加/导入成功
     'guide.continue.extract': 'Continue to extract',//继续提取
-    'guide.see.clue': 'Check the clues',//查看线索
+    'guide.see.clue': 'Check the leads',//查看线索
     'guide.close.tips': 'This prompt will no longer appear when you turn it off. Do you want to turn it off?',//关闭后此提示将不再出现，是否要关闭？
     'guide.import.customer.success': 'Import Success',//导入成功
-    'common.after.convert.to.customer.tip': 'Clue content will shift to customer after convert to customer',//转为客户后，线索相关内容都将转入客户。
+    'common.after.convert.to.customer.tip': 'Lead content will shift to customer after convert to customer',//转为客户后，线索相关内容都将转入客户。
     'crm.clue.phone.on.meeting': 'In a meeting, it is not convenient to answer',//在开会，不方便接听
     'common.report.num': 'report numer',//报送数量
     'common.signed.customer.public.opinion.report.statistics': 'Signed customer public opinion report statistics',//签约客户舆情报送统计,
     'no.data.add.import.tip': 'Add {type} to the guest suite',//向客套中添加{type}
     'import.excel.data.ketao': 'Import {type} from excel into the guest suite',//将excel中的{type}导入到客套中
     'import.excel.no.data': 'Try to give you a set of {recommend}',//试下客套给您{recommend}的功能
-    'import.recommend.clue.lists': 'Recommend clues',//推荐线索
+    'import.recommend.clue.lists': 'Recommend leads',//推荐线索
     'menu.sales.auto.manage.config': 'Sales auto',//销售自动化
     'customer.score.status.rules': 'Are you sure to {status} this rule?',//确定要{status}该规则？
     'common.signed.customer.activity': 'Signed customer activity',//签约客户活跃度
@@ -3733,9 +3736,9 @@ var en_US = {
     'apply.approve.required.err.msg': 'Please input tips',//请输入未填写时的提示
     'clue.recommed.keyword.list': 'Company name',//公司名
     'clue.recommend.input.keyword': 'Please input company name',//请输入公司名
-    'clue.recommend.extract.num.limit': 'The number of clues extracted by your organization {timerange} has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
-    'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} {timerange} and can extract up to {ableExtract} clues',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
-    'clue.recommend.formal.extract.num.limit.tip': 'The {count} clause of this month has been extracted. If you need to continue to extract, please {addClues}.',//本月{count}条已提取完毕，如需继续提取请{addClues}
+    'clue.recommend.extract.num.limit': 'The number of leads extracted by your organization {timerange} has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
+    'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} {timerange} and can extract up to {ableExtract} leads',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
+    'clue.recommend.formal.extract.num.limit.tip': 'The {count} clause of this month has been extracted. If you need to continue to extract, please {addLeads}.',//本月{count}条已提取完毕，如需继续提取请{addLeads}
     'clue.recommend.trial.extract.num.limit.tip': '{count} can be extracted again tomorrow. If necessary, {upgradedVersion} can be extracted immediately.',//明天可再提取{count}条，如需马上提取请{upgradedVersion}
     'clue.recommend.company.trial.extract.num.limit.tip': 'You can extract {count} again tomorrow. If you need to extract it immediately, please contact our sales staff ({contact}) for upgrading',//明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
@@ -3765,15 +3768,15 @@ var en_US = {
     'batch.success.count': 'The number of successful: {count}',//成功数{count}
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
-    'clue.assignment.strategy.fail.to.get': 'Fail to fetch clue assignment strategy list',//获取线索分配策略列表失败
-    'clue.assignment.no.strategy.tip': 'There is no clue assignment strategy yet',//您还没有线索分配策略
+    'clue.assignment.strategy.fail.to.get': 'Fail to fetch lead assignment strategy list',//获取线索分配策略列表失败
+    'clue.assignment.no.strategy.tip': 'There is no lead assignment strategy yet',//您还没有线索分配策略
     'clue.assignment.name': 'Name',//名称
-    'clue.assignment.name.tip': 'Please input clue assignment name',//请输入线索分配策略名称
-    'clue.assignment.no.description.tip': 'There is no clue assignment strategy description',//暂无线索分配策略描述
-    'clue.assignment.add.description.tip': 'Add clue assignment strategy description',//添加线索分配策略描述
-    'clue.assignment.name.required.tip': 'The name of clue assignment strategy can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10',//线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
+    'clue.assignment.name.tip': 'Please input lead assignment name',//请输入线索分配策略名称
+    'clue.assignment.no.description.tip': 'There is no lead assignment strategy description',//暂无线索分配策略描述
+    'clue.assignment.add.description.tip': 'Add lead assignment strategy description',//添加线索分配策略描述
+    'clue.assignment.name.required.tip': 'The name of lead assignment strategy can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10',//线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
     'clue.assignment.description': 'Description',//描述
-    'clue.assignment.description.tip': 'Please describe clue assignment strategy',//请描述一下线索分配策略
+    'clue.assignment.description.tip': 'Please describe lead assignment strategy',//请描述一下线索分配策略
     'clue.assignment.needs': 'Needs',//满足条件
     'clue.assignment.needs.region': 'Region',//地域
     'clue.assignment.needs.region.tip': 'please select or input region',//请选择或输入地域
@@ -3783,15 +3786,15 @@ var en_US = {
     'clue.assignment.needs.regions.all.regions': 'All Regions',//全部地域
     'clue.assignment.all.regions.tips': 'All regions has been included, place change before you add a new strategy',//策略中已包含全部地域，请修改后再添加
     'clue.assignment.needs.source': 'Source',//来源
-    'clue.assignment.needs.source.tip': 'Please select or input clue source',//请选择或输入线索来源
-    'clue.assignment.needs.source.required.tip': 'Clue source should not be empty',//线索来源不能为空
+    'clue.assignment.needs.source.tip': 'Please select or input lead source',//请选择或输入线索来源
+    'clue.assignment.needs.source.required.tip': 'Lead source should not be empty',//线索来源不能为空
     'clue.assignment.needs.access.channel': 'Access Channel',//接入渠道
     'clue.assignment.needs.access.channel.tip': 'Please input ',//请选择或输入接入渠道
     'clue.assignment.needs.access.channel.required.tip': 'Access channel should not be empty',//接入渠道不能为空
-    'clue.assignment.needs.clue.classify': 'Clue Classify',//线索分类
-    'clue.assignment.needs.clue.type': 'Clue Type',//线索类型
-    'clue.assignment.needs.clue.classify.tip': 'Please select or input clue classify',//请选择或输入线索分类
-    'clue.assignment.needs.clue.classify.required.tip': 'Clue type should not be empty',//线索分类不能为空
+    'clue.assignment.needs.clue.classify': 'Lead Classify',//线索分类
+    'clue.assignment.needs.clue.type': 'Lead Type',//线索类型
+    'clue.assignment.needs.clue.classify.tip': 'Please select or input lead classify',//请选择或输入线索分类
+    'clue.assignment.needs.clue.classify.required.tip': 'Lead type should not be empty',//线索分类不能为空
     'clue.assignment.assignee': 'Assignee',//分配给
     'clue.assignment.assignee.tip': 'Please select or input assignee',//请选择或输入被分配人
     'clue.assignment.assignee.required.tip': 'Assignee should not be empty',//被分配人不能为空
@@ -3804,11 +3807,11 @@ var en_US = {
     /*支付流程 --- start*/
     'personal.upgrade.to.official.version': 'Upgrade to the official version',//升级为正式版
     'personal.upgrade.to.enterprise.edition': 'Upgrade to enterprise edition',//升级为企业版
-    'clues.extract.count.at.month': 'Clue recommendation can be extracted every month {count}',//线索推荐每月可提取{count}条
+    'clues.extract.count.at.month': 'Lead recommendation can be extracted every month {count}',//线索推荐每月可提取{count}条
     'goods.price.most.favorable': 'The most favorable',//最优惠
     'goods.immediate.payment': 'Immediate payment',//立即支付
-    'goods.increase.clues': 'Increase the amount of clues',//增加线索量
-    'clues.extract.count.at.part': 'Clue extraction amount per {count}',//线索提取量每份 {count} 条
+    'goods.increase.clues': 'Increase the amount of leads',//增加线索量
+    'clues.extract.count.at.part': 'Lead extraction amount per {count}',//线索提取量每份 {count} 条
     'clues.no.goods.data': 'No goods',//暂无商品
     'clues.get.goods.faild': 'Failure to acquire goods',//获取商品失败
     'clues.leads.part': 'Part',//份
@@ -3816,19 +3819,19 @@ var en_US = {
     'clues.leads.integer.range': 'The integer 1 ~ 100',//1~100整数
     'payment.notification.tip': 'prompt',//提示
     'payment.goods.no.payment.mod.tip': 'You are unable to purchase the goods for the time being',//您暂时不能购买该商品
-    'payment.goods.number': 'The order number：{orderNumber}',//订单号：{orderNumber}
+    'payment.goods.number': 'The deal number：{orderNumber}',//订单号：{orderNumber}
     'payment.goods.trade.name': 'Trading goods',//交易商品
     'payment.goods.trade.amount': 'Transaction amount',//交易金额
-    'payment.goods.trade.time': 'Place the order of time',//下单时间
-    'payment.goods.create.success': 'Place an order successfully',//下单成功
-    'payment.goods.create.faild': 'Place the order failed',//下单失败
+    'payment.goods.trade.time': 'Place the deal of time',//下单时间
+    'payment.goods.create.success': 'Place an deal successfully',//下单成功
+    'payment.goods.create.faild': 'Place the deal failed',//下单失败
     'payment.get.qrcode.faild': '获取失败，请{retry}',//获取失败，请{retry}
     'payment.success': 'Pay for success',//支付成功
-    'payment.order.record': 'Order record',//订单记录
-    'payment.add.clue.extracted.number': 'You have successfully increased the number of clues extracted by {count}',//您已成功增加{count}条线索提取量
+    'payment.order.record': 'Deal record',//订单记录
+    'payment.add.clue.extracted.number': 'You have successfully increased the number of leads extracted by {count}',//您已成功增加{count}条线索提取量
     'payment.again.create.order': 'rebuild',//重新生成
-    'payment.order.timeout': 'Order timeout, {retry}',//订单超时，{retry}
-    'payment.again.create.order.faild': 'Failed to generate order, {retry}',//生成订单失败，{retry}
+    'payment.order.timeout': 'Deal timeout, {retry}',//订单超时，{retry}
+    'payment.again.create.order.faild': 'Failed to generate deal, {retry}',//生成订单失败，{retry}
     'payment.renewal': 'renewal',//续费
     'payment.please.contact.our.sale': 'Please contact our sales staff for upgrade. Contact: {contact}',//请联系我们的销售人员进行升级，联系方式：{contact}
     'payment.upgrading': 'Upgrading...',//正在升级...
@@ -3850,5 +3853,11 @@ var en_US = {
     'organization.personal.formal.expired.tip': 'Your account is about to expire, is it {renewal}?',//您的账号即将到期，是否{renewal}？
     'organization.company.formal.expired.tip': 'Your account is about to expire, please contact our sales staff: {contact}',//您的账号即将到期，请联系我们的销售人员: {contact}
     /*组织到期提示 --- end*/
+
+    /*销售出差反馈，弹窗给邮件抄送人 ---start*/
+    'leave-feedback-title': 'Leave Feedback', //出差反馈
+    'leave-feedback-visit-consumer': 'visit', //拜访了
+    'leave-feedback-visit-record': 'Leave feedback record:', //拜访记录：
+    /*销售出差反馈，弹窗给邮件抄送人 ---end*/
 };
 export default en_US;

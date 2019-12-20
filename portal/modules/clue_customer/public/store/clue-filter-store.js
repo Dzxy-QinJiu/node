@@ -52,7 +52,7 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.filterClueAvailability = AVALIBILITYSTATUS.AVALIBILITY;
     //筛选线索的地域
     this.filterClueProvince = [];
-    //筛选集客方式
+    //筛选获客方式
     this.filterSourceClassify = [];
     //筛选线索的销售团队
     this.filterTeamList = [];
@@ -141,7 +141,7 @@ ClueFilterStore.prototype.setFilterClueClassify = function(updateClassify) {
     });
     this.filterClueClassify = selectedClassify;
 };
-//设置筛选集客方式
+//设置筛选获客方式
 ClueFilterStore.prototype.setFilterSourceClassify = function(updateSourceClassify) {
     let selectedSourceClassify = [];
     _.forEach(updateSourceClassify, (item) => {

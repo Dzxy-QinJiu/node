@@ -122,7 +122,7 @@ export const addCluePrivilege = () => {
 };
 //修改线索基本资料的权限
 export const editClueItemIconPrivilege = (clue) => {
-    return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) && editCluePrivilege(clue);
+    return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_SELF) && editCluePrivilege(clue);
 };
 
 export const CLUE_DIFF_TYPE = [
@@ -424,13 +424,13 @@ export const clueStatusTabNum = [{
     numName: 'hasTransfer',
     status: SELECT_TYPE.HAS_TRANSFER,
 },];
-//集客类型后端存储的数据
+//获客类型后端存储的数据
 export const SOURCE_CLASSIFY = {
     INBOUND: 'inbound',
     OUTBOUND: 'outbound',
     OTHER: 'other'
 };
-//集客方式下拉列表
+//获客方式下拉列表
 const sourceClassifyWithoutOtherArray = [
     {
         title: Intl.get('crm.clue.client.source.outbound', '自拓'),
@@ -439,7 +439,7 @@ const sourceClassifyWithoutOtherArray = [
         title: Intl.get('crm.clue.client.source.inbound', '市场'),
         value: SOURCE_CLASSIFY.INBOUND
     }];
-//集客方式
+//获客方式
 export const sourceClassifyArray = [
     {
         name: Intl.get('crm.clue.client.source.inbound', '市场'),
@@ -452,7 +452,7 @@ export const sourceClassifyArray = [
         value: SOURCE_CLASSIFY.OTHER
     }
 ];
-//集客方式options
+//获客方式options
 export const sourceClassifyOptions = sourceClassifyWithoutOtherArray.map((source, index) => {
     return (<Option value={source.value} key={index}>{source.title}</Option>);
 });

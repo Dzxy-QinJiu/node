@@ -111,3 +111,14 @@ exports.applyApproveMsgToFrontend = function(applyApproveMsg,memberId) {
         member_id: memberId,//分配给谁的申请审批
     };
 };
+//将销售的拜访结果推送给邮件抄送人的数据
+exports.applyVisitCustomerMsgToFrontend = function(applyVisitCustomerMsg, memberId) {
+    return{
+        nickname: applyVisitCustomerMsg.nickname,//销售名字
+        remark: applyVisitCustomerMsg.remark,//反馈内容
+        customer_name: applyVisitCustomerMsg.customer_name,//客户名字
+        create_time: applyVisitCustomerMsg.create_time,//创建时间
+        member_id: memberId,//推送给谁的提示
+        customer_id: applyVisitCustomerMsg.customer_id//客户id
+    };
+};

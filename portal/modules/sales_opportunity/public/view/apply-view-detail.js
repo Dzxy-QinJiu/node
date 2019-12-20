@@ -163,9 +163,9 @@ class ApplyViewDetail extends React.Component {
         return (
             <div className="pull-right">
                 <AntcDropdown
+                    datatraceContainer='销售机会页面转审按钮'
                     ref={AssignSales => this.addNextCandidate = AssignSales}
                     content={<Button
-                        data-tracename="点击转出申请按钮"
                         className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('apply.view.transfer.candidate','转审')}</Button>}
                     overlayTitle={Intl.get('apply.will.approve.apply.item','待审批人')}
                     okTitle={Intl.get('common.confirm', '确认')}
@@ -455,9 +455,9 @@ class ApplyViewDetail extends React.Component {
         var assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
         return (
             <AntcDropdown
+                datatraceContainer='销售机会申请分配按钮'
                 ref={AssignSales => this.assignSales = AssignSales}
                 content={<Button
-                    data-tracename="点击分配销售按钮"
                     className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('clue.customer.distribute', '分配')}</Button>}
                 overlayTitle={Intl.get('user.salesman', '销售人员')}
                 okTitle={Intl.get('common.confirm', '确认')}
@@ -478,9 +478,9 @@ class ApplyViewDetail extends React.Component {
         var assignedCandidateUserIds = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
         return (
             <AntcDropdown
+                datatraceContainer='销售机会申请通过按钮'
                 ref={AssignSales => this.assignSales = AssignSales}
                 content={<Button
-                    data-tracename="点击分配销售总经理按钮"
                     className='assign-candidate-btn btn-primary-sure' size="small"
                     type="primary">{Intl.get('user.apply.detail.button.pass', '通过')}</Button>}
                 overlayTitle={Intl.get('user.salesman', '销售人员')}

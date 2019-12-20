@@ -94,12 +94,11 @@ class AntcDropdown extends React.Component {
                                 * {this.props.unSelectDataTip}
                                 </div>) : null}
                             <Button className="inline-block icon-close"
-                                onClick={this.handleCancel.bind(this)}>{this.props.cancelTitle}
-
+                                onClick={this.handleCancel.bind(this)} data-tracename="点击关闭按钮">{this.props.cancelTitle}
                             </Button>
                             <Button type='primary' className="inline-block icon-choose"
                                 disabled={this.props.isSaving || this.props.isDisabled}
-                                onClick={this.props.handleSubmit.bind(this)}>{this.props.okTitle}
+                                onClick={this.props.handleSubmit.bind(this)} data-tracename="点击保存按钮">{this.props.okTitle}
                                 {this.props.isSaving ? <Icon type="loading"/> : null}</Button>
                         </div> : null}
                     </div>

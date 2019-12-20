@@ -358,7 +358,7 @@ class ClueExtract extends React.Component {
         if (_.isArray(filterClueTeamIds) && filterClueTeamIds.length){
             typeFilter.sales_team_id = filterClueTeamIds.join(',');
         }
-        //选中的集客方式
+        //选中的获客方式
         let filterSourceClassify = filterStoreData.filterSourceClassify;
         if (_.isArray(filterSourceClassify) && filterSourceClassify.length){
             typeFilter.source_classify = filterSourceClassify.join(',');
@@ -689,6 +689,7 @@ class ClueExtract extends React.Component {
         if (hasAssignedPrivilege) {
             return (
                 <AntcDropdown
+                    datatraceContainer='线索池提取线索'
                     ref={assignSale => this['assignSale' + record.id] = assignSale}
                     content={
                         <span
@@ -1049,11 +1050,11 @@ class ClueExtract extends React.Component {
             return (
                 <div className={extractCls}>
                     <AntcDropdown
+                        datatraceContainer='线索池批量提取线索'
                         ref='changesales'
                         content={
                             <Button
                                 type="primary"
-                                data-tracename="点击批量提取线索按钮"
                                 className='btn-item'
                                 title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
                             >

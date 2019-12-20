@@ -873,12 +873,11 @@ class RecommendCustomerRightPanel extends React.Component {
             return (
                 <AntcDropdown
                     ref='changeSales'
-                    datatraceContainer='线索推荐页面批量提取'
+                    datatraceContainer='线索推荐页面批量提取线索'
                     content={
                         <Button
                             title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
                             type="primary"
-                            data-tracename="点击批量提取线索按钮"
                             className='btn-item'
                         >
                             {isWebMin ? <span className="iconfont icon-extract"></span> :

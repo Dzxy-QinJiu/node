@@ -122,7 +122,13 @@ function applyApproveNumListener(data) {
         //遍历消息接收者
         applyApprovesgObj.consumers.forEach(function(consumer) {
             //将数据推送到浏览器
-            emitMsgBySocket(consumer, 'applyApprovemsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+            //如果是将销售的拜访结果推送给邮件抄送人
+            if(applyApprovesgObj.type && applyApprovesgObj.type === 'customer_visit' ){
+                console.log(applyApprovesgObj);
+                emitMsgBySocket(consumer, 'applyVisitCustomerMsg', pushDto.applyVisitCustomerMsgToFrontend(applyApprovesgObj, consumer));
+            }else{
+                emitMsgBySocket(consumer, 'applyApprovemsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+            }
         });
     }
 }

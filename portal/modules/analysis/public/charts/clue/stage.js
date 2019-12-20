@@ -8,7 +8,7 @@ import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 import {listPanelEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 export function getStageChart() {
-    //集客方式的选项
+    //获客方式的选项
     let sourceClassifyOptionItems = [{
         value: 'inbound',
         name: Intl.get('crm.clue.client.source.inbound', '市场')
@@ -43,8 +43,8 @@ export function getStageChart() {
         processData: (data, chart) => {
             //保存cache_key
             cacheKey = data[0].cache_key;
-            //设置集客方式筛选器
-            setSelector(data, 3, chart, Intl.get( 'clue.analysis.all.source.classify','全部集客方式'), 'source_classify', sourceClassifyOptionItems);
+            //设置获客方式筛选器
+            setSelector(data, 3, chart, Intl.get( 'clue.analysis.all.source.classify','全部获客方式'), 'source_classify', sourceClassifyOptionItems);
 
             //设置渠道筛选器
             setSelector(data, 1, chart, '全部渠道', 'access_channel');

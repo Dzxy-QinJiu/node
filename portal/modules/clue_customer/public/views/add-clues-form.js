@@ -56,7 +56,7 @@ class ClueAddForm extends React.Component {
                 source: '',//线索描述
                 source_ip: '',//客户来源的ip
                 source_time: today,//线索时间，默认：今天,
-                source_classify: 'outbound',//集客类型，默认：自拓
+                source_classify: 'outbound',//获客类型，默认：自拓
                 industry: '',//行业
                 province: '',
                 city: '',
@@ -226,7 +226,7 @@ class ClueAddForm extends React.Component {
                     _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
                 } else {
                     var errTip = Intl.get('crm.154', '添加失败');
-                    if (_.isString(data.msg) && _.isArray(data.result) && data.result.length){
+                    if (_.isString(data.message) && _.isArray(data.result) && data.result.length){
                         var phone = _.get(data, 'result[0].phones',[]);
                         errTip = Intl.get('clue.manage.has.exist.clue','线索名为{name}，联系电话为{phone}的线索已存在！',{name: _.get(data, 'result[0].name',''),phone: phone.join(',')});
                     }
@@ -356,6 +356,7 @@ class ClueAddForm extends React.Component {
         });
     }
 
+
     //电话修改时的回调
     onPhoneChange = (phoneObj) => {
         let {key, value} = phoneObj;
@@ -372,9 +373,17 @@ class ClueAddForm extends React.Component {
                         let existed = this.isPhoneExisted(value);
                         //如果有“电话已存在”的验证错误，先展示"电话已存在"
                         if(!existed) {
-                            let message = Intl.get('clue.customer.repeat.phone.user', '该电话已被线索"{userName}"使用',{userName: _.get(data, 'list[0].name', [])});
-                            //已存在
-                            this.handleDuplicatePhoneMsg(key, true, message);
+                            const lead = _.get(data,'list[0]');
+                            if(lead){
+                                //如果返回的列表长度不为0，渲染某电话被其他线索占用的警告
+                                const renderWarningMessage = <span>
+                                    <span>{Intl.get('clue.customer.phone.used.by.clue','该电话已被其他线索使用，')}</span>
+                                    <a href="javascript:void(0)" onClick={this.props.showRightPanel.bind(this, lead)} className="handle-btn-item">
+                                        {_.get(lead, 'name')}
+                                    </a>
+                                </span>;
+                                this.handleDuplicatePhoneMsg(key, true, renderWarningMessage);
+                            }
                         }
                     }
                 }
@@ -542,7 +551,7 @@ class ClueAddForm extends React.Component {
                                 )}
                             </FormItem>
                             <FormItem
-                                label={Intl.get('crm.clue.client.source', '集客方式')}
+                                label={Intl.get('crm.clue.client.source', '获客方式')}
                                 id="source_classify"
                                 {...formItemLayout}
                             >
@@ -551,7 +560,7 @@ class ClueAddForm extends React.Component {
                                         initialValue: formData.source_classify
                                     })(
                                         <Select
-                                            placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择集客方式')}
+                                            placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择获客方式')}
                                             name="source_classify"
                                             value={formData.source_classify}
                                             getPopupContainer={() => document.getElementById('sales-clue-form')}

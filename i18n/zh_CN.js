@@ -300,7 +300,8 @@ var zh_CN = {
     'common.no.data.tips': '暂无{name}',
     'common.call.owe.tips': '您的电话号码已欠费，请充值后再试！',
     'common.number.validate.tips': '请填写最多两位小数的数字',
-
+    'common.app.android': '安卓版',
+    'common.app.ios': 'IOS版',
     //公共部分--end
     'login.login': '登录',
     'login.register': '注册',
@@ -2862,6 +2863,7 @@ var zh_CN = {
     'clue.customer.search.by.name': '根据线索名搜索',
     'clue.customer.fillin.clue.name': '请填写线索名称',
     'clue.customer.register.user': '注册用户',
+    'clue.customer.phone.used.by.clue': '该电话已被其他线索使用，',
     'clue.customer,add,schedule,success': '联系计划已添加',
     'clue,customer.add.schedule.error': '联系计划添加失败',
     'batch.failed.add.schedule': '{customerName}添加联系计划失败',
@@ -2969,9 +2971,9 @@ var zh_CN = {
     'failed.to.get.clue.classify': '获取线索分类出错了',
     'clue.customer.classify': '线索分类',
     'crm.clue.classify.placeholder': '请选择或输入线索分类',
-    'crm.clue.client.source': '集客方式',
-    'crm.clue.client.source.placeholder': '请选择集客方式',
-    'crm.clue.client.source.add': '添加集客方式',
+    'crm.clue.client.source': '获客方式',
+    'crm.clue.client.source.placeholder': '请选择获客方式',
+    'crm.clue.client.source.add': '添加获客方式',
     'crm.clue.client.source.inbound': '市场',
     'crm.clue.client.source.outbound': '自拓',
     'crm.clue.client.source.other': '未知',
@@ -3022,7 +3024,7 @@ var zh_CN = {
     'clue.analysis.classify.chart': '分类统计',
     'clue.analysis.avalibility.chart': '有效性统计',
     'clue.analysis.assigned.chart': '签约统计',
-    'clue.analysis.all.source.classify': '全部集客方式',
+    'clue.analysis.all.source.classify': '全部获客方式',
     'sales.home.sales.clue': '待处理的线索',
     'sales.home.will.trace': '待跟进',
     'sales.home.i.trace': '我',
@@ -3900,5 +3902,10 @@ var zh_CN = {
     'organization.company.formal.expired.tip': '您的账号即将到期，请联系我们的销售人员: {contact}',
     /*组织到期提示 --- end*/
 
+    /*销售出差反馈，弹窗给邮件抄送人 ---start*/
+    'leave-feedback-title': '出差反馈',
+    'leave-feedback-visit-consumer': '拜访了',
+    'leave-feedback-visit-record': '拜访记录：',
+    /*销售出差反馈，弹窗给邮件抄送人 ---end*/
 };
 export default zh_CN;

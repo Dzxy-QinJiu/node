@@ -18,7 +18,7 @@ const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util')
 import {getCertainTypeTooltip} from 'PUB_DIR/sources/utils/common-method-util';
 import history from 'PUB_DIR/sources/history';
 //日历热力图颜色
-const CALENDER_COLOR = {
+const CALENDAR_COLOR = {
     BORDER: '#A2A2A2',
     CONTENT: ['#90caf9', '#2196f3', '#006bc0']
 };
@@ -433,7 +433,7 @@ class UserLoginAnalysis extends React.Component {
         //去零、去重、按从小到大排序后的数值数组
         const numArr = _.chain(data).map('sum').filter(it => it > 0).uniq().sort().value();
         //颜色数组
-        const colorArr = CALENDER_COLOR.CONTENT;
+        const colorArr = CALENDAR_COLOR.CONTENT;
         //块配置数组
         let pieceArr = [];
 
@@ -501,7 +501,7 @@ class UserLoginAnalysis extends React.Component {
                 range,
                 splitLine: {
                     lineStyle: {
-                        color: CALENDER_COLOR.BORDER
+                        color: CALENDAR_COLOR.BORDER
                     }
                 }
             }],

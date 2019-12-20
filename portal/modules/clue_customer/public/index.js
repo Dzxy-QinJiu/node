@@ -828,7 +828,7 @@ class ClueCustomer extends React.Component {
             if (_.isArray(filterClueClassify) && filterClueClassify.length){
                 typeFilter.clue_classify = filterClueClassify.join(',');
             }
-            //选中的集客方式
+            //选中的获客方式
             let filterSourceClassify = filterStoreData.filterSourceClassify;
             if (_.isArray(filterSourceClassify) && filterSourceClassify.length){
                 typeFilter.source_classify = filterSourceClassify.join(',');
@@ -1698,6 +1698,7 @@ class ClueCustomer extends React.Component {
                             {/*有分配权限*/}
                             {hasAssignedPrivilege ?
                                 <AntcDropdown
+                                    datatraceContainer='线索列表分配销售按钮'
                                     ref={changeSale => this['changesale' + salesClueItem.id] = changeSale}
                                     content={<span
                                         data-tracename="点击分配线索客户按钮"
@@ -2467,7 +2468,7 @@ class ClueCustomer extends React.Component {
                     }
                 }
             }, {
-                title: Intl.get('crm.clue.client.source', '集客方式'),
+                title: Intl.get('crm.clue.client.source', '获客方式'),
                 render: function(text, record, index) {
                     let type = _.get(record, 'source_classify');
                     let displayObj = _.find(sourceClassifyArray, item => _.isEqual(item.value, type));
@@ -2687,9 +2688,9 @@ class ClueCustomer extends React.Component {
                     {showBatchChange ?
                         <AntcDropdown
                             ref='changesales'
+                            datatraceContainer='线索列表批量分配销售按钮'
                             content={<Button type="primary"
                                 title={Intl.get('clue.batch.assign.sales', '批量分配')}
-                                data-tracename="点击分配线索客户按钮"
                                 className='btn-item'>
                                 { isWebMin ? <span className="iconfont icon-assign"></span> :
                                     <React.Fragment>
