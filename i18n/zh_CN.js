@@ -3012,6 +3012,7 @@ var zh_CN = {
     'phone.call.error.tip': '电话号码错误！',
     'clue.customer.analysis.trend': '趋势',
     'clue.stage.statics': '线索阶段统计',
+    'clue.funnel.statics': '线索漏斗统计',
     'clue.analysis.access.channel': '渠道',
     'clue.analysis.source': '来源',
     'clue.analysis.access.chart': '渠道统计',
