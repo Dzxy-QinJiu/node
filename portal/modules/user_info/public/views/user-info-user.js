@@ -19,6 +19,8 @@ import {paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import history from 'PUB_DIR/sources/history';
 import SavedTips from 'CMP_DIR/saved-tips';
 import privilegeConst_user_info from '../privilege-config';
+import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
+import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
 const session = storageUtil.session;
 const CLOSE_TIP_TIME = 56;
 const langArray = [{key: 'zh_CN', val: '简体中文'},
@@ -662,12 +664,16 @@ class UserInfo extends React.Component{
                             </div>
                         )
                     }
-                    {hasPrivilege(privilegeConst_user_info.BASE_QUERY_PERMISSION_ORGANIZATION) ? (
-                        <div className="user-info-item">
-                            <span className="user-info-item-title">{Intl.get('common.company', '公司')}：</span>
-                            <span className="user-info-item-content">{this.props.managedRealm}</span>
-                        </div>
-                    ) : null}
+                    {
+                        currentVersion.personal ? null : (
+                            hasPrivilege(privilegeConst_user_info.BASE_QUERY_PERMISSION_ORGANIZATION) ? (
+                                <div className="user-info-item">
+                                    <span className="user-info-item-title">{Intl.get('common.company', '公司')}：</span>
+                                    <span className="user-info-item-content">{this.props.managedRealm}</span>
+                                </div>
+                            ) : null
+                        )
+                    }
                     { !Oplate.hideSomeItem && <div className="user-info-item">
                         <span className="user-info-item-title">{Intl.get('common.user.lang', '语言')}：</span>
                         <span className="user-lang-value user-info-item-content">
@@ -749,9 +755,14 @@ class UserInfo extends React.Component{
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        var _this = this;
         var formData = this.state.formData;
         let values = this.props.form.getFieldsValue();
+        // 域名不是csm.curtao.com并且只有在有申请审批功能,才展示邮件订阅
+        const hasSubscribeEmailPrivilege = !isCurtao() && (hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ||
+            hasPrivilege(applyPrivilegeConst.MEMBER_BUSINESSOPPO_APPLY_APPROVE) ||
+            hasPrivilege(applyPrivilegeConst.BUSINESS_TRIP_APPLY_APPROVE) ||
+            hasPrivilege(applyPrivilegeConst.MEMBER_LEAVE_APPLY_APPROVE) ||
+            hasPrivilege(applyPrivilegeConst.MEMBER_REPORT_APPLY_APPROVE));
         return (
             <div className="user-info-container-div col-md-4">
                 <div className="user-logo-div">
@@ -796,7 +807,7 @@ class UserInfo extends React.Component{
                         this.renderUserInfo()
                     )}
                     {
-                        isCurtao() ? null : (
+                        hasSubscribeEmailPrivilege ? (
                             <PrivilegeChecker check={privilegeConst_user_info.CURTAO_USER_CONFIG}>
                                 <div className="user-tips-div">
                                     <div className="user-tips-title-div">
@@ -806,7 +817,7 @@ class UserInfo extends React.Component{
                                     </div>
                                 </div>
                             </PrivilegeChecker>
-                        )
+                        ) : null
                     }
                 </div> : null}
             </div>
