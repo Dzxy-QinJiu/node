@@ -14,6 +14,7 @@ import AppConfigSetting from '../app-config-setting';
 // import ApplyUserAppConfig from '../../apply-user-app-config';
 import AppConfigForm from '../../apply-user-app-config/app-config-form';
 import DefaultUserLogoTitle from '../../default-user-logo-title';
+import UserAppConfig from '../../../modules/app_user_manage/public/views/v3/AppPropertySetting';
 // 开通时间，默认为半个月
 const defaultSelectedTime = DateSelectorUtils.getHalfAMonthTime();
 
@@ -33,7 +34,12 @@ const LAYOUT_CONSTANTS = {
 class UserAddApp extends React.Component {
     constructor(props) {
         super(props);
+        const appPropSettingsMap = this.createPropertySettingData(props);
+        if(!_.isEmpty(appPropSettingsMap)) {
+            this.onAppPropertyChange(appPropSettingsMap);
+        }
         this.state = {
+            appPropSettingsMap,
             step: 0, // //当前处在第一步 ， 用来控制上一步，下一步  Carousel使用
             stepDirection: 'next', // 一步还是下一步，Carousel使用
             selectedApps: [], //选中的应用列表的数组
@@ -51,6 +57,113 @@ class UserAddApp extends React.Component {
             },
             configType: CONFIG_TYPE.UNIFIED_CONFIG,// 配置类型, 默认为统一配置
         };
+    }
+
+    createPropertySettingData(props) {
+        //选中的应用
+        const selectedApps = props.selectedApps;
+        //默认配置，添加的情况下会传
+        const defaultSettings = props.defaultSettings;
+        //修改的情况下会传appsSetting
+        const appsSetting = props.appsSetting;
+        //当前的各个应用的设置
+        const appPropSettingsMap = this.state && this.state.appPropSettingsMap || {};
+        //最终生成的数据
+        const finalResult = {};
+        //根据默认属性生成配置(添加用户，添加应用)
+        const createPropertySettingByDefaultSettings = () => {
+            _.each(selectedApps , (currentApp) => {
+                //当前应用的id
+                const appId = currentApp.app_id;
+                let key = this.getAppSettingKey(currentApp.app_id, currentApp.user_id);
+                //当前应用的设置
+                const originAppSetting = appPropSettingsMap[key] || {};
+                //检查角色、权限
+                function checkRolePermission() {
+                    if(!originAppSetting.roles) {
+                        originAppSetting.roles = [];
+                    }
+                    if(!originAppSetting.permissions) {
+                        originAppSetting.permissions = [];
+                    }
+                    //角色、权限，赋值，不会出现在全局设置里，直接设置
+                    if(defaultSettings.roles && _.isArray(defaultSettings.roles)) {
+                        originAppSetting.roles = defaultSettings.roles;
+                    }
+                    if(defaultSettings.permissions && _.isArray(defaultSettings.permissions)) {
+                        originAppSetting.permissions = defaultSettings.permissions;
+                    }
+                }
+                //检查单个属性，如果没有重新设置值，用defaultSettings里的值，重新生成
+                function checkSingleProp(prop) {
+                    if(!originAppSetting[prop]) {
+                        originAppSetting[prop] = {
+                            setted: false
+                        };
+                    }
+                    if(!originAppSetting[prop].setted) {
+                        // 若是多终端属性，则用选择当前应用的多终端的值
+                        if (prop === 'terminals') {
+                            originAppSetting[prop].value = currentApp.terminals;
+                        } else {
+                            originAppSetting[prop].value = defaultSettings[prop];
+                        }
+                    }
+                }
+                //检查时间,时间格式比较特殊
+                function checkTime() {
+                    if(!originAppSetting.time) {
+                        originAppSetting.time = {
+                            setted: false
+                        };
+                    }
+                    if(!originAppSetting.time.setted) {
+                        originAppSetting.time.start_time = defaultSettings.time.start_time;
+                        originAppSetting.time.end_time = defaultSettings.time.end_time;
+                        originAppSetting.time.range = defaultSettings.time.range;
+                    }
+                }
+                //检查用户类型
+                checkSingleProp('user_type');
+                //检查到期停用
+                checkSingleProp('over_draft');
+                //检查二步验证
+                checkSingleProp('is_two_factor');
+                //检查用户状态（启用、停用）
+                checkSingleProp('status');
+                //检查多人登录
+                checkSingleProp('multilogin');
+                // 判断当前选择的应用，是否有多终端类型
+                if ( !_.isEmpty(currentApp.terminals)) {
+                    checkSingleProp('terminals');
+                }
+
+                //检查角色、权限
+                checkRolePermission();
+                //检查时间
+                checkTime();
+                //添加到map中
+                finalResult[appId] = originAppSetting;
+            });
+        };
+        //如果有默认配置，用默认配置
+        if(!_.isEmpty(defaultSettings)) {
+            createPropertySettingByDefaultSettings();
+            return finalResult;
+        } else {
+            //什么都没有，则什么都没有
+            return appPropSettingsMap;
+        }
+    }
+
+    //当应用的个性设置改变的时候触发
+    onAppPropertyChange(appsSetting) {
+        let newAppsSetting = _.get(this.state, 'appsSetting');
+        _.each(newAppsSetting, (value, appId) => {
+            value.roles = _.get(appsSetting[appId], 'roles', []);
+            value.rolesInfo = _.get(appsSetting[appId], 'rolesInfo', []);
+            value.permissions = _.get(appsSetting[appId], 'permissions', []);
+        });
     }
 
     //选中的应用发生变化的时候
@@ -166,50 +279,6 @@ class UserAddApp extends React.Component {
             configType: configType
         });
     }
-
-    //  todo 渲染“开通信息”步骤(暂时这个实现，需要提取对应的组件中)
-
-    // TODO 需要修改
-    handleFormItemEdit(field, app, appFormData, e) {
-        let value = null;
-        //处理多终端
-        if (field === 'terminals') {
-            let checkedValue = e;
-            let terminals = [];
-            if (!_.isEmpty(checkedValue)) {
-                _.each(checkedValue, checked => {
-                    if (checked) {
-                        let selectedTerminals = _.find(app.terminals, item => item.name === checked);
-                        terminals.push(selectedTerminals);
-                    }
-                });
-                value = terminals;
-            } else {
-                value = [];
-            }
-        } else {
-            if (e.target.type === 'checkbox') {
-                value = e.target.checked ? '1' : '0';
-            } else {
-                value = e.target.value;
-            }
-        }
-
-        if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
-            const appPropSettingsMap = this.state.appPropSettingsMap;
-            _.each(appPropSettingsMap, item => {
-                const formData = item || {};
-                formData[field].value = value;
-            });
-            this.setState({ appPropSettingsMap });
-            return this.setField.call(this, field, e);
-        } else {
-            const appPropSettingsMap = this.state.appPropSettingsMap;
-            const formData = appPropSettingsMap[app.app_id] || {};
-            formData[field].value = value;
-            this.setState({ appPropSettingsMap });
-        }
-    }
     
     renderAppConfig = () => {
         return (
@@ -285,15 +354,69 @@ class UserAddApp extends React.Component {
 
     // 渲染应用角色步骤
     renderRolesCarousel = () => {
+        const formData = this.state.formData;
+        const height = this.props.height - OperationSteps.height - OperationStepsFooter.height;
+        return (
+            <div className="app-role-config-container">
+                <UserAppConfig
+                    defaultSettings={this.state.defaultSettings}
+                    selectedApps={this.state.selectedApps}
+                    onAppPropertyChange={this.onAppPropertyChange}
+                    height={height}
+                    hideSingleApp={true}
+                />
+            </div>
+        );
+    }
 
+    turnStep(direction) {
+        //获取到当前是第几步
+        let step = _.get(this.state, 'step', 0);
+        if (direction === 'next') {
+            if (step === 0) {
+                //第一部“选择应用”检查选中应用个数
+                if (_.isEmpty(this.state.selectedApps)) {
+                    return;
+                } else {
+                    this.clickTurnStep(direction);
+                    const { appPropSettingsMap } = this.state;
+                    //统一配置时将formData数据同步到appSettingMap中
+                    if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
+                        const { range, end_time, start_time } = this.state.formData;
+                        _.each(appPropSettingsMap, item => {
+                            item.time = {
+                                range,
+                                end_time,
+                                start_time
+                            };
+                        });
+                    }
+                    this.setState({
+                        appPropSettingsMap
+                    }, () => {
+                        //点击下一步时存储应用设置map
+                        // UserDetailAddAppActions.saveAppsSetting(this.state.appPropSettingsMap);
+                    });
+                }
+            } else {
+                this.clickTurnStep(direction);
+            }
+        } else {
+            this.clickTurnStep(direction);
+        }
     }
 
     //上一步、下一步
-    turnStep = (direction) => {
+    clickTurnStep = (direction) => {
         let step = this.state.step;
+        if (direction === 'next') {
+            step += 1;
+        } else {
+            step -= 1;
+        }
         this.setState({
             stepDirection: direction,
-            step: direction === 'next' ? step++ : step--
+            step: step
         });
     }
 

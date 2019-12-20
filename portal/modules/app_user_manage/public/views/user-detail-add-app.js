@@ -1243,7 +1243,6 @@ var UserDetailAddApp = createReactClass({
     },
 
     render: function() {
-
         var fixedHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA;
         let contentHeight = fixedHeight - $('.addapp_major_items').outerHeight();
         return (
