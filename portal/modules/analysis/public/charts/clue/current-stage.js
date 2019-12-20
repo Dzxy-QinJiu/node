@@ -2,8 +2,6 @@
  * 当前线索阶段统计
  */
 
-import { argCallbackMemberIdToMemberIds, argCallbackUnderlineTimeToTime } from '../../utils';
-import {customerStages} from 'PUB_DIR/sources/utils/analysis-util';
 export function getCurrentStageChart(paramObj = {}) {
     return {
         title: Intl.get('clue.stage.statics', '线索阶段统计'),
@@ -20,7 +18,6 @@ export function getCurrentStageChart(paramObj = {}) {
                 });
                 return item;
             });
-            console.log(processedData);
             return processedData;
         },
         option: {
