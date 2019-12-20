@@ -2992,6 +2992,7 @@ var en_US = {
     'phone.call.error.tip': 'The phone number is wrong!',//电话号码错误！
     'clue.customer.analysis.trend': 'Trend',//趋势
     'clue.stage.statics': 'Lead stage statistics',//线索阶段统计
+    'clue.funnel.statics': 'Lead funnel statistics',//线索漏斗统计
     'clue.analysis.access.channel': 'channel',//渠道
     'clue.analysis.source': 'source',//来源
     'clue.analysis.access.chart': 'Channel statistics',//渠道统计

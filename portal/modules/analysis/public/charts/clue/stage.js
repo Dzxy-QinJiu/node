@@ -22,7 +22,7 @@ export function getStageChart() {
     //储存当前的key值
     let cacheKey = '';
     return {
-        title: Intl.get('clue.stage.statics', '线索阶段统计'),
+        title: Intl.get('clue.funnel.statics', '线索漏斗统计'),
         chartType: 'funnel',
         url: [
             '/rest/analysis/customer/v2/clue/:data_type/realtime/stage',
