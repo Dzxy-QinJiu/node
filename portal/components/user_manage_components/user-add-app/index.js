@@ -14,7 +14,6 @@ import AppConfigSetting from '../app-config-setting';
 // import ApplyUserAppConfig from '../../apply-user-app-config';
 import AppConfigForm from '../../apply-user-app-config/app-config-form';
 import DefaultUserLogoTitle from '../../default-user-logo-title';
-import UserTimeRangeField from '../user-time-rangefield';
 // 开通时间，默认为半个月
 const defaultSelectedTime = DateSelectorUtils.getHalfAMonthTime();
 
