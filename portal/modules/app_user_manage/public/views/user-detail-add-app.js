@@ -1,3 +1,4 @@
+require('../css/user-batch-change.less');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
@@ -38,7 +39,8 @@ import userManagePrivilege from '../privilege-const';
 import { isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
-import BatchAddAppUser from 'CMP_DIR/user_manage_components/user-add-app';
+// import BatchAddAppUser from 'CMP_DIR/user_manage_components/user-add-app';
+import BatchAddAppUser from './v2/batch-add-app-user';
 
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
@@ -1265,13 +1267,15 @@ var UserDetailAddApp = createReactClass({
                                                     <div className="addapp_minor_items full_size detail-v3-panel">
                                                         <BatchAddAppUser
                                                             appList={this.props.appList}
+                                                            initialUser={this.props.initialUser}
                                                         />
                                                     </div>
                                                 ) : null
                                             }
                                             <div
                                                 className="addapp_minor_items"
-                                                style={{display: this.state.multipleSubType === 'grant_roles' ? 'none' : 'block'}}
+                                                style={{display: this.state.multipleSubType === 'grant_roles' ||
+                                                            this.state.multipleSubType === 'grant_application' ? 'none' : 'block'}}
                                             >
                                                 {
                                                     this.renderAppsBlock('inner')
@@ -1322,9 +1326,6 @@ var UserDetailAddApp = createReactClass({
                                     <RightPanelCancel onClick={this.cancel} data-tracename="点击取消按钮">
                                         <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" />
                                     </RightPanelCancel>
-                                    <RightPanelSubmit onClick={this.handleSubmit} data-tracename="点击确定按钮">
-                                        <ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" />
-                                    </RightPanelSubmit>
                                     {
                                         this.state.multipleSubType === 'grant_application' ? null : (
                                             <RightPanelSubmit onClick={this.handleSubmit} data-tracename="点击确定按钮">

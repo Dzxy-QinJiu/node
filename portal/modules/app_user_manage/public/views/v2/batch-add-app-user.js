@@ -27,7 +27,7 @@ const CheckboxGroup = Checkbox.Group;
 import UserAppConfig from '../v3/AppPropertySetting';
 import ApplyUserAppConfig from 'CMP_DIR/apply-user-app-config';
 import AppConfigForm from 'CMP_DIR/apply-user-app-config/app-config-form';
-
+var UserDetailAddAppAction = require('../../action/user-detail-add-app-actions');
 const CONFIG_TYPE = {
     UNIFIED_CONFIG: 'unified_config',//统一配置
     SEPARATE_CONFIG: 'separate_config'//分别配置
@@ -677,18 +677,13 @@ const BatchAddAppUser = createReactClass({
             customAppSetting.begin_date = savedAppSetting.time.start_time;
             //结束时间
             customAppSetting.end_date = savedAppSetting.time.end_time;
-            //两步验证
-            customAppSetting.is_two_factor = savedAppSetting.is_two_factor.value;
-            //多人登录
-            customAppSetting.mutilogin = savedAppSetting.multilogin.value;
             // 多终端类型
             if (savedAppSetting.terminals) {
                 customAppSetting.terminals = _.map(savedAppSetting.terminals.value, 'id');
             }
             //正式、试用
             customAppSetting.user_type = savedAppSetting.user_type.value;
-            //设置user_id
-            customAppSetting.user_id = this.props.initialUser.user.user_id;
+
             //添加到列表中
             products.push(customAppSetting);
         });
@@ -701,10 +696,24 @@ const BatchAddAppUser = createReactClass({
             return;
         }
         //获取提交数据
-        const submitData = this.getSubmitData();
-        //选中的应用列表
-        const selectedApps = this.state.selectedApps;
-
+        const productionData = this.getSubmitData();
+        var userList = this.props.initialUser;
+        var userIds = userList.map( (obj) => {
+            return obj.user.user_id;
+        });
+        // 要提交的数据
+        let submitData = [];
+        _.each(userIds, item => {
+            _.each(productionData, product => {
+                product.user_id = item;
+                submitData.push(product);
+            });
+        });
+        //调用action进行更新
+        UserDetailAddAppAction.submitAddApp({
+            data: submitData,
+            subType: 'grant_application'
+        });
     },
 
     //render函数

@@ -972,7 +972,8 @@ class AppUserManage extends React.Component {
         }
         //是否显示“过滤”按钮
         const cls = classNames('app_user_manage_rightpanel white-space-nowrap right-panel', {
-            'detail-v3-panel': this.state.rightPanelType === 'detail'
+            'detail-v3-panel': this.state.rightPanelType === 'detail',
+            'batch-change-panel': this.state.rightPanelType === 'batch'
         });
         //用户列表中，如果集成类型还未获取回来或获取出错或还未配置集成类型时，不展示头部导航和按钮区
         let isHideTopNavBtn = AppUserUtil.getCurrentView() === 'user' && (

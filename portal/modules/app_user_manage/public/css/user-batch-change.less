@@ -1,0 +1,212 @@
+/**
+* 用户-批量变更界面改版
+*/
+@import '../../../../public/css/common-variables';
+@right_panel_width: 504px;
+@right_panel_content_width: 480px;
+@right_panel_bgcolor: #f5f5f5;
+@box_shadow_color: #cac8c8;
+@btn-blue: #108ee9;
+@font-grey: #999999;
+@bg-lightblue: #EEF7FE;
+@app-logo-width: 24px;
+@app-logo-mr: 7px;
+@app-pl: @app-logo-width + @app-logo-mr;
+@app-title-width: 150px;
+@user-name-width: 185px;
+@font-lightblue: #9FB5CC;
+@font-grey: #999999;
+@bd-lightgrey: #EBEBEB;
+@bd-blue: #2497F4;
+@color: #4c8ec4;
+@chart-height: 116px;
+
+.app_user_manage_rightpanel.right-pannel-default.right-panel {
+  &.batch-change-panel {
+    width: @right_panel_width  !important;
+    transform: translate(@right_panel_width, 0);
+    background-color: transparent !important;
+  }
+  .full_size.wrap_padding,
+  .user-manage-v2 {
+    background: #e6edef;
+    &.move_left {
+      background: transparent !important;
+    }
+  }
+  .full_size.wrap_padding {
+    background: @right_panel_bgcolor;
+  }
+  .right-panel-content {
+    width: @right_panel_content_width  !important;
+    box-shadow: -4px 0 20px @box_shadow_color;
+    background-color: @right_panel_bgcolor  !important;
+  }
+  >.right-panel-wrapper .icon-close {
+    color: #fff;
+    background-color: #8ea9c4;
+    border-radius: 0 !important;
+    width: 24px;
+    height: 24px;
+    float: left;
+    font-size: 14px;
+    z-index: 1010;
+  }
+  .add-app-container {
+    background: white; //布局样式
+    .operation-steps-footer {
+      background: @right_panel_bgcolor;
+      border: none;
+      .btns {
+        .ant-btn {
+          background: @btn-blue;
+          border-color: @btn-blue;
+          color: #fff;
+        }
+      }
+    }
+    .apply-app-user-config .app-config-wrap .user-type-radio-form-item.ant-form-item .ant-radio-group label {
+      padding: 0;
+    }
+    .app-config-wrap {
+      .ant-radio-group label {
+        text-align: center;
+      }
+      .user-time-rangefield-block {
+        .ant-col-24 {
+          width: 68%;
+        }
+      }
+      .ant-col-5 {
+        width: 18%;
+        margin-top: -1px;
+      }
+      .ant-col-19 {
+        width: 68%;
+        text-align: left;
+        input {
+          width: 100%;
+        }
+      }
+    }
+    .apply-app-user-config {
+      float: none;
+      .app-config-wrap {
+        float: none;
+        width: 100%;
+      }
+    }
+    .app-property-setting {
+      padding-left: 3px;
+      padding-top: 0;
+    }
+    .operation-steps {
+      background: @right_panel_bgcolor;
+      height: 38px;
+      border: none;
+      .operation-steps-title {
+        margin-top: 6px;
+        color: black;
+        border: none;
+        padding: 0;
+      }
+    }
+    .carousel>.carousel-inner>.item {
+      height: 100vh;
+      padding: 95px 0 54px 0;
+    }
+    ul.list-unstyled {
+      margin: 0;
+      margin-top: 10px;
+      padding-left: 6px;
+      width: 100%;
+      border-bottom: 1px solid #eee;
+      li.operation-steps-action {
+        padding: 8px;
+        font-size: 14px;
+        color: #5a5e5f;
+        line-height: 22px;
+        position: relative;
+        width: initial;
+        &:after {
+          content: none;
+        }
+        .active-dot {
+          display: none;
+        }
+        span.active {
+          font-weight: bold;
+        }
+      }
+    }
+    .btn-bar {
+      text-align: right;
+      button {
+        margin-left: 5px;
+      }
+    }
+    .left-nav-container,
+    .add-app-content {
+      display: inline-block;
+      vertical-align: top;
+    }
+    .left-nav-container {
+      font-size: 14px;
+      color: @font-grey;
+    }
+    .add-app-content {
+      width: 340px;
+    }
+    .app-config-container {
+      overflow-x: hidden;
+      .ant-form-item {
+        margin-bottom: 3px;
+      }
+    }
+    .selected-app-container {
+      border: 1px solid @bd-lightgrey;
+      border-radius: 4px;
+      padding: 5px 0;
+      p.btn-text {
+        text-align: left;
+        font-size: 14px;
+        padding-left: 11px;
+        margin-top: 5px;
+      }
+      ul {
+        li {
+          padding: 2px 0 2px 11px;
+          margin: 3px 0;
+          &:hover {
+            background: @bg-lightblue;
+          }
+          .anticon {
+            cursor: pointer;
+            vertical-align: bottom;
+          }
+        }
+      }
+    }
+    .app-selector-container {
+      padding: 12px;
+      border: 1px solid @bd-blue;
+      border-radius: 4px;
+      .input-container {
+        margin-bottom: 12px;
+      }
+      .app-list-container {
+        text-align: left;
+        .ant-checkbox-wrapper {
+          display: block;
+          font-size: 14px;
+          line-height: 32px;
+          margin: 0 -12px;
+          padding: 0 12px;
+          &:hover {
+            background: @bg-lightblue;
+          }
+        }
+      }
+    }
+  }
+}
