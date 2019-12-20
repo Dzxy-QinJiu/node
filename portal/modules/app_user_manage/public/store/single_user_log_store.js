@@ -16,7 +16,7 @@ SingleUserLogStore.prototype.logInitialState = function() {
     this.total = 0;
     this.auditLogList = [];
     this.logListLoading = 'loading';
-    this.listenScrollBottom = true;
+    this.listenScrollBottom = false;
     // 获取单个用户日志失败的错误提示
     this.getUserLogErrorMsg = '';
 };
@@ -76,6 +76,11 @@ SingleUserLogStore.prototype.getSingleAuditLogList = function(result) {
         this.auditLogList = this.auditLogList.concat(result.data.user_logs);
         this.curPage++;
         this.total = result.data.total;
+        if (this.auditLogList.length < this.total) {
+            this.listenScrollBottom = true;
+        } else {
+            this.listenScrollBottom = false;
+        }
     }
 };
 
