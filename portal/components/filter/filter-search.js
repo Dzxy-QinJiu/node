@@ -23,6 +23,22 @@ class FilterSearch extends React.Component {
         filterEmitter.on(filterEmitter.SELECT_FILTERS + this.props.key, this.onSelectFilters);
         filterEmitter.on(filterEmitter.ASK_FOR_CHANGE + this.props.key, this.handleChangeRequest);
     }
+    changeCollapseClass() { //当筛选框内元素变化时，class的变化
+        const collapse = $('.show-zone .collapse').get(0);
+        let targetClass = 'collapse';
+        if(collapse && collapse.childNodes && collapse.childNodes.length > 0){
+            let collapseChildrenLen = 0;
+            _.each(collapse.childNodes, ele => {
+                if(ele.tagName === 'LI'){
+                    collapseChildrenLen += ele.offsetWidth + 6;
+                }
+            });
+            if(collapseChildrenLen >= 205){
+                targetClass += ' collapse-ul';
+            }
+        }
+        return targetClass;
+    }
     componentWillUnmount() {
         filterEmitter.removeListener(filterEmitter.SELECT_FILTERS + this.props.key, this.onSelectFilters);
         filterEmitter.removeListener(filterEmitter.ASK_FOR_CHANGE + this.props.key, this.handleChangeRequest);
@@ -172,7 +188,7 @@ class FilterSearch extends React.Component {
                                 <span className={this.props.showList ? 'icon-wrapper active' : 'icon-wrapper'}>
                                     <Icon type="filter" onClick={this.handleToggle.bind(this)} />
                                 </span>
-                                <ul className={this.state.showAddZone ? 'conserve' : 'collapse'}>
+                                <ul className={this.state.showAddZone ? 'conserve' : (this.changeCollapseClass())}>
                                     {
                                         this.state.plainFilterList.map((x, idx) => (
                                             <li className="active" key={idx}>
