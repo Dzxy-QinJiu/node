@@ -64,7 +64,7 @@ class SideBar extends React.Component {
     };
 
     render() {
-        let qrCodeBottom = 4 * singleSideBarHeight - (qrcodeHeight + singleSideBarHeight) / 2;
+        let qrCodeBottom = 4 * singleSideBarHeight - qrcodeHeight;
         if (this.state.showApp) {
             qrCodeBottom = qrCodeBottom - singleSideBarHeight;
         } else if (this.state.isShowIosQRCode) {
