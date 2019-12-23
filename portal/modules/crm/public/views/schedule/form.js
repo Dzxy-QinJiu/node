@@ -478,7 +478,7 @@ var CrmAlertForm = createReactClass({
     },
 
     handleCancel: function(e) {
-        Trace.traceEvent(e, '取消添加联系计划');
+        Trace.traceEvent(e, '关闭添加联系计划页面');
         _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel();
         if(this.props.isAddToDoClicked) return;
         //如果是批量添加联系计划,关闭后应该清空数据

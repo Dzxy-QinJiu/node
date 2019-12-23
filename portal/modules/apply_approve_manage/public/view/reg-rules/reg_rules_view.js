@@ -530,7 +530,9 @@ class RegRulesView extends React.Component {
         this.setState({
             addNodePanelFlow: '',
             showAddConditionPanel: false,
-            addCCNodePanelFlow: ''
+            addCCNodePanelFlow: '',
+            updateConditionObj: {},
+            updateConditionFlowKey: ''
         });
     };
 
