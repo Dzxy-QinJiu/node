@@ -616,7 +616,13 @@ class RecentLoginUsers extends React.Component {
             doNotShow = true;
         }
         let tableHeight = commonMethodUtil.getTableContainerHeight();
-        const columns = this.getTableColumns();
+        let columns = this.getTableColumns();
+        // 用户类型筛选后，在指定的类型下，不显示类型列
+        if (this.state.user_type !== '') {
+            columns = _.filter(columns, item => {
+                return item.key !== 'accountType';
+            });
+        }
 
         const dropLoadConfig = {
             listenScrollBottom: this.state.listenScrollBottom,
