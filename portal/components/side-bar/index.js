@@ -7,8 +7,7 @@ require('./index.less');
 const PropTypes = require('prop-types');
 const weixinImgUrl = require('./image/weixin.jpg');
 const singleSideBarHeight = 68;//一个图标的高度
-const weixinHeight = 100;//二维码高度
-const appHeight = 108;
+const qrcodeHeight = 100; // 二维码高度
 const QRCode = require('qrcode.react');
 import classNames from 'classnames';
 import { Button } from 'antd';
@@ -65,10 +64,11 @@ class SideBar extends React.Component {
     };
 
     render() {
-        let weixinBottom = 3 * singleSideBarHeight - weixinHeight;
-        let appBottom = 2 * singleSideBarHeight - appHeight;
-        if (this.state.isShowIosQRCode) {
-            appBottom = singleSideBarHeight - appHeight;
+        let qrCodeBottom = 4 * singleSideBarHeight - qrcodeHeight;
+        if (this.state.showApp) {
+            qrCodeBottom = qrCodeBottom - singleSideBarHeight;
+        } else if (this.state.isShowIosQRCode) {
+            qrCodeBottom = qrCodeBottom - 2 * singleSideBarHeight;
         }
         let weixinClassName = classNames('qrcode', 'weixin', {'hide': !this.state.showWeixin});
         let appClassName = classNames('qrcode', 'app', {'hide': !this.state.showApp && !this.state.isShowIosQRCode});
@@ -123,13 +123,13 @@ class SideBar extends React.Component {
                     ) : (<div className='single-bar-box is-placeholder'/>)}
                 </div>
                 <img className={weixinClassName} src={weixinImgUrl}
-                    style={{'margin-bottom': weixinBottom + 'px'}}></img>
+                    style={{'margin-bottom': qrCodeBottom + 'px'}}></img>
                 <div className={appClassName}
-                    style={{'margin-bottom': appBottom + 'px'}}>
+                    style={{'margin-bottom': qrCodeBottom + 'px'}}>
                     <QRCode
                         value={qRCodeUrl}
                         level="H"
-                        size={100}
+                        size={92}
                     />
                 </div>
             </div>
