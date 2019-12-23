@@ -381,11 +381,11 @@ export function getFunnelWithConvertRateProcessDataFunc(stageList, prefixRule = 
         //获取第一个阶段的键
         const firstStageKey = _.first(stageList).key;
         //通过第一个阶段的键获取第一个阶段的值
-        const firstStageValue = data[firstStageKey];
+        const firstStageValue = data[firstStageKey] || 0;
         //获取最后一个阶段的键
         const lastStageKey = _.last(stageList).key;
         //通过最后一个阶段的键获取最后一个阶段的值
-        const lastStageValue = data[lastStageKey];
+        const lastStageValue = data[lastStageKey] || 0;
 
         //如果第一个阶段值为0，则直接将总转化率设为'0%'，以防止其作为被除数时会得出错误的结果
         if (firstStageValue === 0) {
