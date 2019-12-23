@@ -545,7 +545,7 @@ class DealDetailPanel extends React.Component {
                         id={deal.id}
                         // type="number"
                         field="budget"
-                        value={formatNumHasDotToFixed(deal.budget, 1)}
+                        value={formatNumHasDotToFixed(deal.budget, 2)}
                         validators={[
                             {required: true, message: Intl.get('crm.order.budget.input', '请输入预算金额')},
                             getNumberValidateRule()
