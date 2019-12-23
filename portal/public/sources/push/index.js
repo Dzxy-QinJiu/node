@@ -571,7 +571,16 @@ function crmOperatorAlertListener(data) {
         }
     }
 }
-//处理 将销售的拜访结果推送给邮件抄送人 的弹窗中的客户名称点击
+//线索名可点击
+window.handleLeadClickCallback = function(lead_id) {
+    phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+        clue_params: {
+            currentId: lead_id,
+        }
+    });
+};
+
+//客户名称可点击
 window.handleVisitCallback = function(customer_id) {
     phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
         customer_params: {
@@ -684,13 +693,27 @@ function scheduleAlertListener(scheduleAlertMsg) {
         let type = scheduleAlertMsg.type;
         //注：客户和线索的电联采用不同的标签
         switch(type){
-            case 'calls':title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + scheduleAlertMsg.topic;//客户电联
+            case 'calls':title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + '<a href="javascript:void(0)" onclick="handleVisitCallback(\'' + scheduleAlertMsg.customer_id + '\')">' + scheduleAlertMsg.topic + '</a>';//客户电联
                 break;
-            case 'lead':title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + scheduleAlertMsg.topic;//线索电联
+            case 'lead':title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + '<a href="javascript:void(0)" onclick="handleLeadClickCallback(\'' + scheduleAlertMsg.lead_id + '\')">' + scheduleAlertMsg.topic + '</a>';//线索电联
                 break;
-            case 'visit':title = '【' + Intl.get('common.visit', '拜访') + '】 ' + scheduleAlertMsg.topic;
+            case 'visit':
+                if(scheduleAlertMsg.customer_id){
+                    title = '【' + Intl.get('schedule.phone.connect', '拜访') + '】 ' + '<a href="javascript:void(0)" onclick="handleVisitCallback(\'' + scheduleAlertMsg.customer_id + '\')">' + scheduleAlertMsg.topic + '</a>';
+                }else if (scheduleAlertMsg.lead_id){
+                    title = '【' + Intl.get('schedule.phone.connect', '拜访') + '】 ' + '<a href="javascript:void(0)" onclick="handleLeadClickCallback(\'' + scheduleAlertMsg.lead_id + '\')">' + scheduleAlertMsg.topic + '</a>';
+                }else{
+                    title = '【' + Intl.get('common.visit', '拜访') + '】 ' + scheduleAlertMsg.topic;
+                }
                 break;
-            case 'other':title = '【' + Intl.get('user.login.analysis.customer.other', '其他') + '】 ' + scheduleAlertMsg.topic;
+            case 'other':
+                if(scheduleAlertMsg.customer_id){
+                    title = '【' + Intl.get('schedule.phone.connect', '其他') + '】 ' + '<a href="javascript:void(0)" onclick="handleVisitCallback(\'' + scheduleAlertMsg.customer_id + '\')">' + scheduleAlertMsg.topic + '</a>';
+                }else if (scheduleAlertMsg.lead_id){
+                    title = '【' + Intl.get('schedule.phone.connect', '其他') + '】 ' + '<a href="javascript:void(0)" onclick="handleLeadClickCallback(\'' + scheduleAlertMsg.lead_id + '\')">' + scheduleAlertMsg.topic + '</a>';
+                }else{
+                    title = '【' + Intl.get('common.visit', '其他') + '】 ' + scheduleAlertMsg.topic;
+                }
                 break;
             default:title = scheduleAlertMsg.topic;
         }
@@ -699,7 +722,8 @@ function scheduleAlertListener(scheduleAlertMsg) {
             title: title,
             content: tipContent,
             type: type,
-            closeWith: ['button']
+            closeWith: ['button'],
+            ignoreTitleLength: true
         });
     }
 }
