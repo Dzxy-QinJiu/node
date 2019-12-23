@@ -42,7 +42,7 @@ class DealCard extends React.Component {
 
     renderDealContent() {
         let deal = this.props.deal;
-        let budget = deal.budget ? parseAmount(formatNumHasDotToFixed(deal.budget, 1)) : '';
+        let budget = deal.budget ? parseAmount(formatNumHasDotToFixed(deal.budget, 2)) : '';
         return (
             <div className="deal-card-content" onClick={this.showDealDetial}>
                 <div className="deal-info-item deal-customer-name">

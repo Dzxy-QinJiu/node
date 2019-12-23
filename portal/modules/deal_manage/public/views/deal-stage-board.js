@@ -96,7 +96,7 @@ class DealStageBoard extends React.Component {
 
     render() {
         let stageObj = this.props.stageObj;
-        let totalBudget = stageObj.totalBudget ? parseAmount(formatNumHasDotToFixed(stageObj.totalBudget, 1)) : '';
+        let totalBudget = stageObj.totalBudget ? parseAmount(formatNumHasDotToFixed(stageObj.totalBudget, 2)) : '';
         let title = (
             <span>
                 <span className='deal-stage-name'> {this.getStageName(stageObj)}</span>

@@ -125,8 +125,8 @@ class DealTable extends React.Component {
                 sorter: true,
                 className: 'has-filter',
                 render: (text, record, index) => {
-                    //有小数的预算，四舍五入精确到毛
-                    return text === 0 ? text : parseAmount(formatNumHasDotToFixed(text, 1));
+                    //有小数的预算，四舍五入精确到分
+                    return text === 0 ? text : parseAmount(formatNumHasDotToFixed(text, 2));
                 }
             },
             {
