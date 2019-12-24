@@ -409,6 +409,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 >
                     <span
                         onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege, isDetailExtract)}
+                        data-tracename='单个提取推荐线索'
                     >
                         {extractIcon}
                     </span>
