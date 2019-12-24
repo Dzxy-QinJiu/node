@@ -98,6 +98,7 @@ AppUserStore.prototype.resetState = function() {
     //uem过滤字段的对应关系
     //键值对存储结构 user_type=xxx   outdate=xxx   user_status=xxx customer_unknown=xxx
     this.uemFilterFieldMap = {};
+    this.isShowBatchChangePanel = false; // 是否显示批量变更面板，默认不显示
 };
 //恢复初始值
 AppUserStore.prototype.setInitialData = function() {
@@ -116,9 +117,12 @@ AppUserStore.prototype.showUserDetail = function(user) {
 };
 
 AppUserStore.prototype.showBatchOperate = function() {
-    this.isShowRightPanel = true;
-    this.rightPanelType = 'batch';
-    this.detailUser = {};
+    this.isShowBatchChangePanel = true;
+};
+
+// 关闭批量变更面板
+AppUserStore.prototype.closeBatchChangePanel = function() {
+    this.isShowBatchChangePanel = false;
 };
 
 //FromAction-获取App用户列表

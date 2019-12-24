@@ -29,6 +29,7 @@ function AppUserAction() {
         'showUserDetail',
         //显示批量操作
         'showBatchOperate',
+        'closeBatchChangePanel', // 关闭批量变更面板
         //显示加入组织
         'showAddOrganizeMember',
         //显示App用户的表单

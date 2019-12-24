@@ -2,10 +2,9 @@ require('../css/user-batch-change.less');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
-var RightPanelClose = require('../../../../components/rightPanel').RightPanelClose;
 var RightPanelCancel = require('../../../../components/rightPanel').RightPanelCancel;
 var RightPanelSubmit = require('../../../../components/rightPanel').RightPanelSubmit;
-var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
+import GeminiScrollBar from 'CMP_DIR//react-gemini-scrollbar';
 //app选择器，能选择权限
 var AppSelector = require('../../../../components/app-selector/app-selector');
 var AppRolePermission = require('../../../../components/user_manage_components/app-role-permission');
@@ -15,8 +14,6 @@ var PasswdStrengthBar = passwdStrengthFile.PassStrengthBar;
 var AppUserUtil = require('../util/app-user-util');
 var AppUserAction = require('../action/app-user-actions');
 var AppUserStore = require('../store/app-user-store');
-var AppUserDetailAction = require('../action/app-user-detail-actions');
-var AppUserPanelSwitchAction = require('../action/app-user-panelswitch-actions');
 var UserDetailAddAppAction = require('../action/user-detail-add-app-actions');
 import UserDetailAddAppStore from '../store/user-detail-add-app-store';
 
@@ -41,7 +38,8 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 // import BatchAddAppUser from 'CMP_DIR/user_manage_components/user-add-app';
 import BatchAddAppUser from './v2/batch-add-app-user';
-
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import DetailCard from 'CMP_DIR/detail-card';
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
 
@@ -51,11 +49,24 @@ var wrapperCol = {span: 11};
 var CustomerSuggest = require('./customer_suggest/customer_suggest');
 const SELECT_CUSTOM_TIME_TYPE = 'custom';
 const USER_DETAIL_ADD_APP_CUSTOMER_SELECT_WRAP = 'user-detail-add-app-customer-suggest-wrap';
+const TAB_KEYS = {
+    GRANT_APP: 'grant_application',// 开通产品
+    CHANGE_PASSWORD: 'change_password',// 修改密码
+    GRANT_TYPE: 'grant_type', // 开通类型
+    STATUS: 'grant_status',// 开通状态
+    PERIOD: 'grant_period',// 开通周期
+    CUSTOMER: 'grant_customer', // 所属客户
+    ROLES: 'grant_roles',// 权限设置
+    DELAY: 'grant_delay',// 批量延期
+};
+
+
 var UserDetailAddApp = createReactClass({
     displayName: 'UserDetailAddApp',
     propTypes: {
         initialUser: PropTypes.object,
         appList: PropTypes.array,
+        closeRightPanel: PropType.func
     },
     getDefaultProps: function() {
         return {
@@ -64,12 +75,8 @@ var UserDetailAddApp = createReactClass({
         };
     },
 
-    closeRightPanel: function() {
-        AppUserDetailAction.dismiss();
-        AppUserPanelSwitchAction.resetState();
-        //面板向右滑
-        AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
-        AppUserAction.closeRightPanel();
+    closeRightPanel() {
+        this.props.closeRightPanel();
         UserDetailAddAppAction.resetState();
     },
 
@@ -356,11 +363,6 @@ var UserDetailAddApp = createReactClass({
         });
     },
 
-    cancel: function() {
-        UserDetailAddAppAction.resetState();
-        AppUserAction.closeRightPanel();
-    },
-
     addApp: function(app) {
         UserDetailAddAppAction.addApp(app);
     },
@@ -479,8 +481,8 @@ var UserDetailAddApp = createReactClass({
         return result;
     },
 
-    batchTabChange: function(selectedTab) {
-        UserDetailAddAppAction.changeMultipleSubType(selectedTab);
+    batchTabChange(key) {
+        UserDetailAddAppAction.changeMultipleSubType(key);
     },
 
     //grant_application
@@ -568,7 +570,6 @@ var UserDetailAddApp = createReactClass({
         // 销售角色判断
         let isSales = isSalesRole();
         var subType = this.state.multipleSubType;
-        var selectUserCount = AppUserStore.getState().selectUserCount;
         var options = [];
 
         if(hasPrivilege(userManagePrivilege.USER_MANAGE)) {
@@ -597,30 +598,6 @@ var UserDetailAddApp = createReactClass({
                 options.push({name: Intl.get('common.edit.password', '修改密码'),value: 'sales_change_password'});
             }
         }
-
-        return (
-            <div className="user-batch-operator-style">
-                <div className="selected-number">
-                    <ReactIntl.FormattedMessage
-                        id="user.batch.selected.num"
-                        defaultMessage={'已选择{num}个用户'}
-                        values={{'num': <span className="the-number">{selectUserCount}</span>}}
-                    />
-                </div>
-                <dl className="dl-horizontal">
-                    <dt><ReactIntl.FormattedMessage id="user.batch.change.type" defaultMessage="变更类型" /></dt>
-                    <dd className="batch-update-tabs">
-                        <CustomRadioGroup
-                            options={options}
-                            value={subType}
-                            marginRight={4}
-                            padding={this.getTabPadding()}
-                            onChange={this.batchTabChange}
-                        />
-                    </dd>
-                </dl>
-            </div>
-        );
     },
 
     selectedAppChange: function(selected_apps) {
@@ -707,9 +684,6 @@ var UserDetailAddApp = createReactClass({
 
     //渲染修改密码
     renderChangePassword: function() {
-        if(!this.hasChangePassword()) {
-            return null;
-        }
         var formData = this.state.formData;
         var status = this.state.status;
         return (
@@ -783,9 +757,6 @@ var UserDetailAddApp = createReactClass({
 
     //渲染开通类型
     renderApplyType: function() {
-        if(!this.hasApplyTypeBlock()) {
-            return null;
-        }
         var formData = this.state.formData;
         var options = _.map(AppUserUtil.USER_TYPE_VALUE_MAP , (value,KEY) => {
             return {
@@ -1244,104 +1215,168 @@ var UserDetailAddApp = createReactClass({
         UserDetailAddAppAction.rolesPermissionsChange({roles,permissions,rolesInfo});
     },
 
-    render: function() {
-        var fixedHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA;
-        let contentHeight = fixedHeight - $('.addapp_major_items').outerHeight();
+    renderContent() {
+        const fixedHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA;
+        const selectUserCount = AppUserStore.getState().selectUserCount;
+        // 管理员角色判断
+        const isAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
+        // 销售角色判断
+        const isSales = isSalesRole();
+        let tabPaneList = [];
+        if (isAdmin) {
+            if (hasPrivilege(userManagePrivilege.CRM_USER_ANALYSIS_ALL_ROLE_QUERY)) {
+                tabPaneList.push(
+                    <TabPane tab={Intl.get('user.batch.app.open', '开通产品')} key={TAB_KEYS.GRANT_APP}>
+                        {
+                            this.state.multipleSubType === TAB_KEYS.GRANT_APP ? (
+                                <DetailCard
+                                    content={ this.renderAppsBlock('inner')}
+                                />
+                            ) : null
+                        }
+                    </TabPane>
+                );
+                tabPaneList.push(
+                    <TabPane tab={Intl.get('common.edit.password', '修改密码')} key={TAB_KEYS.CHANGE_PASSWORD}>
+                        {
+                            this.state.multipleSubType === TAB_KEYS.CHANGE_PASSWORD ? (
+                                <DetailCard
+                                    content={this.renderApplyType()}
+                                />
+                            ) : null
+                        }
+                    </TabPane>
+                );
+                tabPaneList.push(
+                    <TabPane tab={Intl.get('common.type', '类型')} key={TAB_KEYS.GRANT_TYPE}>
+                        {
+                            this.state.multipleSubType === TAB_KEYS.GRANT_TYPE ? (
+                                <DetailCard
+                                    content={this.renderApplyType()}
+                                />
+                            ) : null
+                        }
+                    </TabPane>
+                );
+                tabPaneList.push(
+                    <TabPane tab={Intl.get('common.status', '状态')} key={TAB_KEYS.STATUS}>
+                        {
+                            this.state.multipleSubType === TAB_KEYS.STATUS ? (
+                                <DetailCard
+                                    content={this.renderApplyStatus()}
+                                />
+                            ) : null
+                        }
+                    </TabPane>
+                );
+                tabPaneList.push(
+                    <TabPane tab={Intl.get('user.apply.detail.table.time', '周期')} key={TAB_KEYS.PERIOD}>
+                        {
+                            this.state.multipleSubType === TAB_KEYS.PERIOD ? (
+                                <DetailCard
+                                    content={this.renderApplyTime()}
+                                />
+                            ) : null
+                        }
+                    </TabPane>
+                );
+                tabPaneList.push(
+                    <TabPane tab={Intl.get('common.belong.customer', '所属客户')} key={TAB_KEYS.CUSTOMER}>
+                        {
+                            this.state.multipleSubType === TAB_KEYS.CUSTOMER ? (
+                                <DetailCard
+                                    content={this.renderCustomer()}
+                                />
+                            ) : null
+                        }
+                    </TabPane>
+                );
+                tabPaneList.push(
+                    <TabPane tab={Intl.get('common.app.auth', '权限')} key={TAB_KEYS.ROLES}>
+                        {
+                            this.state.multipleSubType === TAB_KEYS.ROLES ? (
+                                <DetailCard
+                                    content={this.renderRolesBlock()}
+                                />
+                            ) : null
+                        }
+                    </TabPane>
+                );
+                tabPaneList.push(
+                    <TabPane
+                        tab={Intl.get('crm.user.delay', '延期')}
+                        key={TAB_KEYS.DELAY}
+                    >
+                        {
+                            this.state.multipleSubType === TAB_KEYS.DELAY ? (
+                                <DetailCard
+                                    content={this.renderDelayTime()}
+                                />
+                            ) : null
+                        }
+                    </TabPane>
+                );
+            }
+        } else if (isSales) {
+
+        }
         return (
-            <div style={{height: '100%'}}>
-                <RightPanelClose onClick={this.closeRightPanel}/>
-                <div className="user-detail-add-app">
-                    <Form layout='horizontal' action="javascript:void(0)">
-                        <Validation ref="validation" onValidate={this.handleValidate}>
-                            <Tabs defaultActiveKey="addapp">
-                                <TabPane tab={Intl.get('user.batch.change', '批量变更')} key="addapp">
-                                    <div className="user_manage_user_detail_addapp" style={{height: fixedHeight}}>
-                                        <GeminiScrollbar ref="gemini">
-                                            <div className="addapp_major_items">
-                                                {
-                                                    this.renderTabForBatch()
-                                                }
-                                            </div>
-                                            {
-                                                this.state.multipleSubType === 'grant_application' ? (
-                                                    <div className="addapp_minor_items full_size detail-v3-panel">
-                                                        <BatchAddAppUser
-                                                            appList={this.props.appList}
-                                                            initialUser={this.props.initialUser}
-                                                        />
-                                                    </div>
-                                                ) : null
-                                            }
-                                            <div
-                                                className="addapp_minor_items"
-                                                style={{display: this.state.multipleSubType === 'grant_roles' ||
-                                                            this.state.multipleSubType === 'grant_application' ? 'none' : 'block'}}
-                                            >
-                                                {
-                                                    this.renderAppsBlock('inner')
-                                                }
-                                                {
-                                                    this.renderChangePassword()
-                                                }
-                                                {
-                                                    this.renderApplyType()
-                                                }
-                                                {
-                                                    this.renderApplyTime()
-                                                }
-                                                {
-                                                    this.renderApplyStatus()
-                                                }
-                                                {
-                                                    this.renderCustomer()
-                                                }
-                                                {
-                                                    this.renderDelayTime()
-                                                }
-                                                {
-                                                    this.renderSalesApplyStatus()
-                                                }
-                                                {
-                                                    this.renderSalesChangePassword()
-                                                }
-                                            </div>
-                                            {
-                                                this.renderRolesBlock()
-                                            }
-                                        </GeminiScrollbar>
-                                    </div>
-                                </TabPane>
-                            </Tabs>
-                            <div className="clearfix form_btns">
-                                <p className="pull-left">
-                                    {Intl.get('user.operator','操作人')}:
-                                    {this.state.accountHolder}
-                                </p>
-                                <div className="indicator">
-                                    {
-                                        this.renderIndicator()
-                                    }
-                                </div>
-                                <div className="pull-right" data-tracename="批量变更">
-                                    <RightPanelCancel onClick={this.cancel} data-tracename="点击取消按钮">
-                                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" />
-                                    </RightPanelCancel>
-                                    {
-                                        this.state.multipleSubType === 'grant_application' ? null : (
-                                            <RightPanelSubmit onClick={this.handleSubmit} data-tracename="点击确定按钮">
-                                                <ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" />
-                                            </RightPanelSubmit>
-                                        )
-                                    }
-                                </div>
-                            </div>
-                        </Validation>
-                    </Form>
+            <div className="user-batch-change-content-wrap">
+                <div className="selected-number">
+                    <ReactIntl.FormattedMessage
+                        id="user.batch.selected.num"
+                        defaultMessage={'已选择{num}个用户'}
+                        values={{'num': <span className="the-number">{selectUserCount}</span>}}
+                    />
+                </div>
+                <div className="batch-change-content" style={{height: fixedHeight}}>
+                    <Tabs
+                        activeKey={this.state.multipleSubType}
+                        onChange={this.batchTabChange}
+                    >
+                        {tabPaneList}
+                    </Tabs>
+                </div>
+                <div className="clearfix form_btns">
+                    <p className="pull-left">
+                        {Intl.get('user.operator','操作人')}:
+                        {this.state.accountHolder}
+                    </p>
+                    <div className="indicator">
+                        {
+                            this.renderIndicator()
+                        }
+                    </div>
+                    <div className="pull-right" data-tracename="批量变更">
+                        <RightPanelCancel onClick={this.closeRightPanel} data-tracename="点击取消按钮">
+                            <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" />
+                        </RightPanelCancel>
+                        {
+                            true || this.state.multipleSubType === 'grant_application' ? null : (
+                                <RightPanelSubmit onClick={this.handleSubmit} data-tracename="点击确定按钮">
+                                    <ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" />
+                                </RightPanelSubmit>
+                            )
+                        }
+                    </div>
                 </div>
             </div>
         );
     },
+
+    render() {
+        return (
+            <RightPanelModal
+                className="user-batch-change-wrap"
+                isShowMadal={false}
+                isShowCloseBtn={true}
+                onClosePanel={this.closeRightPanel}
+                title={Intl.get('user.batch.change', '批量变更')}
+                content={this.renderContent()}
+                dataTracename='用户管理-批量变更'
+            />
+        );
+    }
 });
 
 module.exports = UserDetailAddApp;
-
