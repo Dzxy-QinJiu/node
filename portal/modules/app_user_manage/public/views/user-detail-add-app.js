@@ -40,6 +40,7 @@ import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 import BatchAddAppUser from './v2/batch-add-app-user';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import DetailCard from 'CMP_DIR/detail-card';
+import {USER_TYPE_VALUE_MAP, USER_TYPE_TEXT_MAP} from 'PUB_DIR/sources/utils/consts';
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
 
@@ -66,7 +67,7 @@ var UserDetailAddApp = createReactClass({
     propTypes: {
         initialUser: PropTypes.object,
         appList: PropTypes.array,
-        closeRightPanel: PropType.func
+        closeRightPanel: PropTypes.func
     },
     getDefaultProps: function() {
         return {
@@ -371,7 +372,8 @@ var UserDetailAddApp = createReactClass({
         UserDetailAddAppAction.removeApp(app);
     },
 
-    customRadioValueChange: function(field, value) {
+    customRadioValueChange: function(field, event) {
+        let value = _.get(event, 'target.value');
         UserDetailAddAppAction.customRadioValueChange({field, value});
     },
 
@@ -758,12 +760,6 @@ var UserDetailAddApp = createReactClass({
     //渲染开通类型
     renderApplyType: function() {
         var formData = this.state.formData;
-        var options = _.map(AppUserUtil.USER_TYPE_VALUE_MAP , (value,KEY) => {
-            return {
-                name: AppUserUtil.USER_TYPE_TEXT_MAP[KEY],
-                value: value
-            };
-        });
         return (
             <div>
                 {this.renderMultiAppSelectBlock()}
@@ -771,17 +767,20 @@ var UserDetailAddApp = createReactClass({
                 <FormItem
                     label={Intl.get('user.batch.open.type', '开通类型')}
                     labelCol={labelCol}
-                    wrapperCol={{span: ((language.lan() === 'es' || language.lan() === 'en') ? 18 : 16)}}
+                    wrapperCol={{span: ((language.lan() === 'es' || language.lan() === 'en') ? 18 : 20)}}
                 >
-                    <CustomRadioGroup
-                        options={options}
+                    <Radio.Group
                         value={formData.user_type}
-                        marginRight={14}
-                        onChange={this.customRadioValueChange.bind(this,'user_type')}
-                    />
+                        onChange={this.customRadioValueChange.bind(this, 'user_type')}
+                    >
+                        {
+                            _.map(USER_TYPE_VALUE_MAP, (value, key) => {
+                                return (<Radio.Button value={value}>{USER_TYPE_TEXT_MAP[key]}</Radio.Button>);
+                            })
+                        }
+                    </Radio.Group>
                 </FormItem>}
             </div>
-
         );
     },
 
@@ -828,10 +827,7 @@ var UserDetailAddApp = createReactClass({
     },
 
     //渲染开通状态
-    renderApplyStatus: function() {
-        if(!this.hasApplyStatusBlock()) {
-            return null;
-        }
+    renderApplyStatus() {
         var formData = this.state.formData;
         return (
             <div>
@@ -1038,10 +1034,7 @@ var UserDetailAddApp = createReactClass({
     },
 
     //申请延期
-    renderDelayTime: function() {
-        if(!this.hasDelayTimeBlock()) {
-            return null;
-        }
+    renderDelayTime() {
         var isSales = isSalesRole();
         var divWidth = (language.lan() === 'zh') ? '80px' : '74px';
         let label = '';
@@ -1131,7 +1124,7 @@ var UserDetailAddApp = createReactClass({
                 <FormItem
                     label={Intl.get('common.belong.customer', '所属客户')}
                     labelCol={labelCol}
-                    wrapperCol={wrapperCol}
+                    wrapperCol={{span: 20}}
                 >
                     <CustomerSuggest
                         show_error={this.state.show_customer_error}
@@ -1155,10 +1148,7 @@ var UserDetailAddApp = createReactClass({
         this.refs.gemini && this.refs.gemini.update();
     },
 
-    renderRolesBlock: function() {
-        if(!this.hasRolesBlock()) {
-            return null;
-        }
+    renderRolesBlock() {
         var selectedApp = this.state.formData.rolePermissionApp;
         var options = this.getBatchAppOptions();
         return (
@@ -1169,6 +1159,7 @@ var UserDetailAddApp = createReactClass({
                     wrapperCol={{span: 20}}
                 >
                     <Select
+                        dropdownMatchSelectWidth={false}
                         placeholder={Intl.get('user.product.select.please','请选择产品')}
                         value={selectedApp}
                         optionFilterProp="children"
@@ -1296,7 +1287,12 @@ var UserDetailAddApp = createReactClass({
                         {
                             this.state.multipleSubType === TAB_KEYS.ROLES ? (
                                 <DetailCard
-                                    content={this.renderRolesBlock()}
+                                    content={<GeminiScrollBar
+                                        style={{height: fixedHeight - 40}}
+                                        ref="gemini"
+                                    >
+                                        {this.renderRolesBlock()}
+                                    </GeminiScrollBar>}
                                 />
                             ) : null
                         }

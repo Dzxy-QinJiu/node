@@ -24,11 +24,12 @@
         }
       }
       .batch-change-content {
+        // tabs 样式
         .ant-tabs {
           .ant-tabs-bar {
             margin-bottom: 8px;
             .ant-tabs-nav {
-              color: #999999;
+              color: @label-content-color;
               .ant-tabs-tab {
                 margin-right: 8px;
                 font-size: 14px;
@@ -40,6 +41,42 @@
             }
           }
         }
+        // 内容区
+        .detail-card-container {
+            .detail-card-content {
+              .ant-form-item-label {
+                label {
+                  font-size: 14px;
+                  font-weight: normal;
+                  color: @label-content-color;
+                }
+              }
+              // 单选框样式
+              .ant-radio-group {
+                .ant-radio-wrapper {
+                  .ant-radio + span {
+                    color: #5d5d5d;
+                    font-weight: normal;
+                  }
+                }
+              }
+              //所属客户样式
+              .customer_searchbox_wrap {
+                  .ant-select {
+                    width: 100%;
+                  }
+              }
+              // 权限设置样式
+              .app-role-permission {
+                .app-role-permission-role, .app-role-permission-permission {
+                  .app-property-content {
+                    background-color: #ffffff;
+                  }
+                }
+              }
+            }
+        }
+
       }
     }
   }
