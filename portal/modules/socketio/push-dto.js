@@ -48,6 +48,8 @@ exports.scheduleMsgToFrontend = function(scheduleMsg) {
         content: scheduleMsg.content,//日程内容
         topic: scheduleMsg.topic,
         type: scheduleMsg.type,//日程类型
+        customer_id: scheduleMsg.customer_id,//客户id
+        lead_id: scheduleMsg.lead_id,//线索id
     };
 };
 
