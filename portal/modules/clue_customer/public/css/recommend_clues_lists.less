@@ -49,8 +49,13 @@
           margin-left: 0.5em !important;
           margin-right: 0 !important;
           float: right;
+          position: relative;
           .iconfont {
             margin-right: 0.5em;
+          }
+          .change-new-span{
+            position: relative;
+            top: -10px;        
           }
         }
         .add-clues-btn{
@@ -101,4 +106,19 @@
 }
 .ant-message{
   z-index: 1060;
+}
+.change-new-icon-rotation{
+  position: relative;
+  animation: rotate-arround 1s linear infinite ;
+  display: inline-block !important;
+  margin-right: 0.2em !important;
+}
+
+@keyframes rotate-arround {
+	0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

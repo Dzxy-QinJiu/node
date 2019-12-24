@@ -66,14 +66,17 @@ ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
     if (result.loading) {
         this.isLoadingRecommendClue = true;
         this.getRecommendClueErrMsg = '';
+        this.canClickMoreBatch = false;
     } else if (result.error) {
         this.isLoadingRecommendClue = false;
         this.getRecommendClueErrMsg = result.errorMsg;
         this.recommendClueLists = [];
+        this.canClickMoreBatch = true;
     } else {
         this.isLoadingRecommendClue = false;
         this.getRecommendClueErrMsg = '';
         this.recommendClueLists = result.list;
+        this.canClickMoreBatch = true;
     }
 };
 //保存查询条件
