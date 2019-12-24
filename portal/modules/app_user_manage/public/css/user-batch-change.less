@@ -23,6 +23,7 @@
           padding:5px;
         }
       }
+      // 内容区
       .batch-change-content {
         // tabs 样式
         .ant-tabs {
@@ -77,6 +78,23 @@
             }
         }
 
+      }
+
+      // 操作区
+      .batch-change-btns{
+        position: absolute;
+        bottom: 0;
+        left: 21px;
+        right: 19px;
+        z-index: 1;
+        height: 54px;
+        border-top: 1px solid #d7dce0;
+        padding: 13px 0 0 0;
+        .pull-right {
+          .ant-btn-primary {
+            margin-left: 8px;
+          }
+        }
       }
     }
   }

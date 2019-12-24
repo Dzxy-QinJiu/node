@@ -1,26 +1,17 @@
 require('../css/user-batch-change.less');
 var createReactClass = require('create-react-class');
-const Validation = require('rc-form-validation-for-react16');
-const Validator = Validation.Validator;
-var RightPanelCancel = require('../../../../components/rightPanel').RightPanelCancel;
-var RightPanelSubmit = require('../../../../components/rightPanel').RightPanelSubmit;
 import GeminiScrollBar from 'CMP_DIR//react-gemini-scrollbar';
 //app选择器，能选择权限
 var AppSelector = require('../../../../components/app-selector/app-selector');
 var AppRolePermission = require('../../../../components/user_manage_components/app-role-permission');
-var passwdStrengthFile = require('../../../../components/password-strength-bar');
-var PasswdStrengthBar = passwdStrengthFile.PassStrengthBar;
-
+var passwdStrengthFile = require('CMP_DIR/password-strength-bar');
 var AppUserUtil = require('../util/app-user-util');
-var AppUserAction = require('../action/app-user-actions');
 var AppUserStore = require('../store/app-user-store');
 var UserDetailAddAppAction = require('../action/user-detail-add-app-actions');
 import UserDetailAddAppStore from '../store/user-detail-add-app-store';
-
-var CustomRadioGroup = require('../../../../components/custom_radio_group');
 import DateSelector from '../../../../components/date-selector';
 var crypto = require('crypto');
-import { Tabs, Form, Input, InputNumber, Select, DatePicker, Radio, Icon, Alert } from 'antd';
+import { Tabs, Form, Input, InputNumber, Select, DatePicker, Radio, Icon, Alert, Button} from 'antd';
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -43,6 +34,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 import {USER_TYPE_VALUE_MAP, USER_TYPE_TEXT_MAP} from 'PUB_DIR/sources/utils/consts';
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
+LAYOUT_CONSTANTS.SELECT_USER_TIPS = 20;
 
 var labelCol = {span: 4};
 var wrapperCol = {span: 11};
@@ -67,7 +59,8 @@ var UserDetailAddApp = createReactClass({
     propTypes: {
         initialUser: PropTypes.object,
         appList: PropTypes.array,
-        closeRightPanel: PropTypes.func
+        closeRightPanel: PropTypes.func,
+        form: PropTypes.object,
     },
     getDefaultProps: function() {
         return {
@@ -81,13 +74,13 @@ var UserDetailAddApp = createReactClass({
         UserDetailAddAppAction.resetState();
     },
 
-    md5: function(value) {
-        var md5Hash = crypto.createHash('md5');
+    md5(value) {
+        let md5Hash = crypto.createHash('md5');
         md5Hash.update(value);
         return md5Hash.digest('hex');
     },
 
-    getDelayTimeMillis: function() {
+    getDelayTimeMillis() {
         //延期周期
         var delayTimeRange = this.state.formData.delayTimeRange;
         var delayTimeNumber = this.state.formData.delayTimeNumber;
@@ -95,7 +88,7 @@ var UserDetailAddApp = createReactClass({
         return millis;
     },
 
-    handleSubmit: function(e) {
+    handleSubmit(e) {
         e.preventDefault();
         var formData = this.state.formData || {};
         var batchSelectedApps = this.state.formData.batchSelectedApps;
@@ -171,8 +164,9 @@ var UserDetailAddApp = createReactClass({
                 result.over_draft = overDraft;
                 result.status = status;
             }
+            // 修改密码
             if(_this.hasChangePassword()) {
-                var password = formData.password;
+                const password = _this.props.form.getFieldValue('password');
                 result.password = _this.md5(password);
             }
             if(_this.hasCustomerBlock()) {
@@ -251,13 +245,14 @@ var UserDetailAddApp = createReactClass({
         }
         //修改密码要验证表单再提交
         if(this.hasChangePassword()) {
-            var validation = this.refs.validation;
-            validation.validate(valid => {
-                if (!valid) {
-                    return;
-                }
-                submit();
-            });
+            submit();
+            // var validation = this.refs.validation;
+            // validation.validate(valid => {
+            //     if (!valid) {
+            //         return;
+            //     }
+            //
+            // });
         } else if (this.hasDelayTimeBlock()) {//批量延期
             if (isSales) {//销售，延期申请
                 this.delayApply();
@@ -565,43 +560,6 @@ var UserDetailAddApp = createReactClass({
         }
     },
 
-    //渲染批量操作的tab
-    renderTabForBatch: function() {
-        // 管理员角色判断
-        let isAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
-        // 销售角色判断
-        let isSales = isSalesRole();
-        var subType = this.state.multipleSubType;
-        var options = [];
-
-        if(hasPrivilege(userManagePrivilege.USER_MANAGE)) {
-            // 针对管理员做判断
-            if (isAdmin) {
-                //批量开通、修改应用
-                options.push({name: Intl.get('user.batch.app.open', '开通产品'),value: 'grant_application'});
-                //批量修改密码
-                options.push({name: Intl.get('common.edit.password', '修改密码'),value: 'change_password'});
-                //批量修改类型
-                options.push({name: Intl.get('user.batch.open.type', '开通类型'),value: 'grant_type'});
-                //批量修改开通状态
-                options.push({name: Intl.get('common.app.status', '开通状态'),value: 'grant_status'});
-                //批量修改开通时间
-                options.push({name: Intl.get('user.open.cycle', '开通周期'),value: 'grant_period'});
-                //批量修改用户所属客户
-                options.push({name: Intl.get('common.belong.customer', '所属客户'),value: 'grant_customer'});
-                //批量修改角色、权限
-                options.push({name: Intl.get('user.batch.auth.set', '权限设置'),value: 'grant_roles'});
-                options.push({name: Intl.get('user.batch.delay', '批量延期') , value: 'grant_delay'});
-            }
-        } else if(hasPrivilege(commonPrivilegeConst.USER_APPLY_APPROVE)) {
-            if(isSales){ // 针对销售做判断
-                options.push({name: Intl.get('user.batch.apply.delay', '申请延期') , value: 'grant_delay'});
-                options.push({name: Intl.get('common.app.status', '开通状态'),value: 'sales_grant_status'});
-                options.push({name: Intl.get('common.edit.password', '修改密码'),value: 'sales_change_password'});
-            }
-        }
-    },
-
     selectedAppChange: function(selected_apps) {
         UserDetailAddAppAction.setSelectedApps(selected_apps);
 
@@ -658,14 +616,11 @@ var UserDetailAddApp = createReactClass({
     checkPass: function(rule, value, callback) {
         if (value && value.match(passwdStrengthFile.passwordRegex)) {
             //获取密码强度及是否展示
-            var passStrengthObj = passwdStrengthFile.getPassStrenth(value);
+            const passStrengthObj = passwdStrengthFile.getPassStrenth(value);
             this.setState({
                 passBarShow: passStrengthObj.passBarShow,
                 passStrength: passStrengthObj.passStrength
             });
-            if (this.state.formData.password) {
-                this.refs.validation.forceValidate(['repassword']);
-            }
             callback();
         } else {
             this.setState({
@@ -676,84 +631,59 @@ var UserDetailAddApp = createReactClass({
         }
     },
 
-    checkPass2: function(rule, value, callback) {
-        if (value && value !== this.state.formData.password) {
-            callback( Intl.get('common.password.unequal', '两次输入密码不一致！'));
+    checkPass2(rule, value, callback) {
+        if (value && value !== this.props.form.getFieldValue('repassword')) {
+            callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
         } else {
             callback();
         }
     },
 
     //渲染修改密码
-    renderChangePassword: function() {
-        var formData = this.state.formData;
-        var status = this.state.status;
+    renderChangePassword() {
+        const {getFieldDecorator} = this.props.form;
         return (
-            <div>
-                <input type="password" name="password" style={{display: 'none'}}/>
+            <Form layout='horizontal' className="user-info-edit-pwd-form" autoComplete="off">
                 <FormItem
                     label={Intl.get('common.password', '密码')}
-                    id="password1"
                     labelCol={labelCol}
-                    wrapperCol={wrapperCol}
-                    validateStatus={this.renderValidateStyle('password')}
-                    hasFeedback
-                    help={status.password.errors ? status.password.errors.join(',') : null}
+                    wrapperCol={{span: 20}}
                 >
-                    <Validator
-                        rules={[{validator: this.checkPass}]}
-                        trigger='onBlur'
-                    >
+                    {getFieldDecorator('password', {
+                        rules: [{
+                            validator: this.checkPass
+                        }],
+                        validateTrigger: 'onBlur'
+                    })(
                         <Input
                             name="password"
                             id="password1"
                             type="password"
                             autoComplete="off"
-                            value={formData.password}
-                            placeholder={Intl.get('common.password.compose.rule', '6-18位字符(由数字，字母，符号组成)')}
+                            placeholder={Intl.get('common.password.compose.rule', '6-18位数字、字母、符号的组合')}
                         />
-                    </Validator>
+                    )}
                 </FormItem>
-                {
-                    this.state.passBarShow ?
-                        (
-                            <div className="clearfix pass-strength-wrap">
-                                <div className="col-4">&nbsp;</div>
-                                <div className="col-20">
-                                    <PasswdStrengthBar passStrength={this.state.passStrength}/>
-                                </div>
-                            </div>
-                        ) :
-                        null
-                }
                 <FormItem
                     label={Intl.get('common.confirm.password', '确认密码')}
-                    id="password2"
                     labelCol={labelCol}
-                    wrapperCol={wrapperCol}
-                    validateStatus={this.renderValidateStyle('repassword')}
-                    hasFeedback
-                    help={status.repassword.errors ? status.repassword.errors.join(',') : null}
+                    wrapperCol={{span: 20}}
                 >
-                    <Validator
-                        rules={[
-                            {required: true,whitespace: true,message: Intl.get('common.password.unequal', '两次输入密码不一致！')},
-                            {validator: this.checkPass2}
-                        ]}
-                        trigger='onBlur'
-                    >
+
+                    {getFieldDecorator('repassword', {
+                        rules: [{
+                            validator: this.checkPass2
+                        }],
+                        validateTrigger: 'onBlur'
+                    })(
                         <Input
                             name="repassword"
-                            id="password2"
                             type="password"
-                            autoComplete="off"
-                            value={formData.repassword}
-                            placeholder={Intl.get('common.input.confirm.password', '请输入确认密码')}
-                            maxLength={18}
-                        />
-                    </Validator>
+                            placeholder={Intl.get('login.please_enter_new_password', '确认新密码')}
+                            data-tracename="确认新密码"/>
+                    )}
                 </FormItem>
-            </div>
+            </Form>
         );
     },
 
@@ -793,7 +723,7 @@ var UserDetailAddApp = createReactClass({
     },
 
     //渲染开通时间
-    renderApplyTime: function() {
+    renderApplyTime() {
         if(!this.hasApplyTimeBlock()) {
             return null;
         }
@@ -896,10 +826,16 @@ var UserDetailAddApp = createReactClass({
                     labelCol={labelCol}
                     wrapperCol={wrapperCol}
                 >
-                    <RadioGroup onChange={this.radioValueChange.bind(this , 'user_status')}
-                        value={formData.user_status}>
-                        <Radio key="1" value="1"><ReactIntl.FormattedMessage id="common.app.status.open" defaultMessage="开启" /></Radio>
-                        <Radio key="0" value="0"><ReactIntl.FormattedMessage id="common.app.status.close" defaultMessage="关闭" /></Radio>
+                    <RadioGroup
+                        onChange={this.radioValueChange.bind(this , 'user_status')}
+                        value={formData.user_status}
+                    >
+                        <Radio key="1" value="1">
+                            {Intl.get('common.app.status.open', '开启')}
+                        </Radio>
+                        <Radio key="0" value="0">
+                            {Intl.get('common.app.status.close', '关闭')}
+                        </Radio>
                     </RadioGroup>
                 </FormItem>
                 <FormItem
@@ -1207,7 +1143,8 @@ var UserDetailAddApp = createReactClass({
     },
 
     renderContent() {
-        const fixedHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA;
+        const fixedHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA -
+                LAYOUT_CONSTANTS.SELECT_USER_TIPS - LAYOUT_CONSTANTS.BOTTOM_DELTA;
         const selectUserCount = AppUserStore.getState().selectUserCount;
         // 管理员角色判断
         const isAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
@@ -1232,8 +1169,14 @@ var UserDetailAddApp = createReactClass({
                         {
                             this.state.multipleSubType === TAB_KEYS.CHANGE_PASSWORD ? (
                                 <DetailCard
-                                    content={this.renderApplyType()}
+                                    content={<GeminiScrollBar
+                                        style={{height: fixedHeight - 90}}
+                                        ref="gemini"
+                                    >
+                                        {this.renderChangePassword()}
+                                    </GeminiScrollBar>}
                                 />
+
                             ) : null
                         }
                     </TabPane>
@@ -1243,7 +1186,12 @@ var UserDetailAddApp = createReactClass({
                         {
                             this.state.multipleSubType === TAB_KEYS.GRANT_TYPE ? (
                                 <DetailCard
-                                    content={this.renderApplyType()}
+                                    content={<GeminiScrollBar
+                                        style={{height: fixedHeight - 90}}
+                                        ref="gemini"
+                                    >
+                                        {this.renderApplyType()}
+                                    </GeminiScrollBar>}
                                 />
                             ) : null
                         }
@@ -1254,7 +1202,12 @@ var UserDetailAddApp = createReactClass({
                         {
                             this.state.multipleSubType === TAB_KEYS.STATUS ? (
                                 <DetailCard
-                                    content={this.renderApplyStatus()}
+                                    content={<GeminiScrollBar
+                                        style={{height: fixedHeight - 90}}
+                                        ref="gemini"
+                                    >
+                                        {this.renderApplyStatus()}
+                                    </GeminiScrollBar>}
                                 />
                             ) : null
                         }
@@ -1265,7 +1218,12 @@ var UserDetailAddApp = createReactClass({
                         {
                             this.state.multipleSubType === TAB_KEYS.PERIOD ? (
                                 <DetailCard
-                                    content={this.renderApplyTime()}
+                                    content={<GeminiScrollBar
+                                        style={{height: fixedHeight - 90}}
+                                        ref="gemini"
+                                    >
+                                        {this.renderApplyTime()}
+                                    </GeminiScrollBar>}
                                 />
                             ) : null
                         }
@@ -1276,7 +1234,12 @@ var UserDetailAddApp = createReactClass({
                         {
                             this.state.multipleSubType === TAB_KEYS.CUSTOMER ? (
                                 <DetailCard
-                                    content={this.renderCustomer()}
+                                    content={<GeminiScrollBar
+                                        style={{height: fixedHeight - 90}}
+                                        ref="gemini"
+                                    >
+                                        {this.renderCustomer()}
+                                    </GeminiScrollBar>}
                                 />
                             ) : null
                         }
@@ -1288,7 +1251,7 @@ var UserDetailAddApp = createReactClass({
                             this.state.multipleSubType === TAB_KEYS.ROLES ? (
                                 <DetailCard
                                     content={<GeminiScrollBar
-                                        style={{height: fixedHeight - 40}}
+                                        style={{height: fixedHeight - 90}}
                                         ref="gemini"
                                     >
                                         {this.renderRolesBlock()}
@@ -1306,7 +1269,12 @@ var UserDetailAddApp = createReactClass({
                         {
                             this.state.multipleSubType === TAB_KEYS.DELAY ? (
                                 <DetailCard
-                                    content={this.renderDelayTime()}
+                                    content={<GeminiScrollBar
+                                        style={{height: fixedHeight - 90}}
+                                        ref="gemini"
+                                    >
+                                        {this.renderDelayTime()}
+                                    </GeminiScrollBar>}
                                 />
                             ) : null
                         }
@@ -1314,8 +1282,61 @@ var UserDetailAddApp = createReactClass({
                 );
             }
         } else if (isSales) {
+            if (hasPrivilege(commonPrivilegeConst.USER_APPLY_APPROVE)) {
+                tabPaneList.push(
+                    <TabPane
+                        tab={Intl.get('user.batch.apply.delay', '申请延期')}
+                        key={TAB_KEYS.DELAY}
+                    >
+                        {
+                            this.state.multipleSubType === TAB_KEYS.DELAY ? (
+                                <DetailCard
+                                    content={<GeminiScrollBar
+                                        style={{height: fixedHeight - 90}}
+                                        ref="gemini"
+                                    >
+                                        {this.renderDelayTime()}
+                                    </GeminiScrollBar>}
+                                />
+                            ) : null
+                        }
+                    </TabPane>
+                );
+                tabPaneList.push(
+                    <TabPane tab={Intl.get('common.app.status', '开通状态')} key='sales_grant_status'>
+                        {
+                            this.state.multipleSubType === 'sales_grant_status' ? (
+                                <DetailCard
+                                    content={<GeminiScrollBar
+                                        style={{height: fixedHeight - 90}}
+                                        ref="gemini"
+                                    >
+                                        {this.renderApplyStatus()}
+                                    </GeminiScrollBar>}
+                                />
+                            ) : null
+                        }
+                    </TabPane>
+                );
+                tabPaneList.push(
+                    <TabPane tab={Intl.get('common.edit.password', '修改密码')} key='sales_change_password'>
+                        {
+                            this.state.multipleSubType === 'sales_change_password' ? (
+                                <DetailCard
+                                    content={<GeminiScrollBar
+                                        style={{height: fixedHeight - 90}}
+                                        ref="gemini"
+                                    >
+                                        {this.renderChangePassword()}
+                                    </GeminiScrollBar>}
+                                />
 
-        }
+                            ) : null
+                        }
+                    </TabPane>
+                );
+            }}
+
         return (
             <div className="user-batch-change-content-wrap">
                 <div className="selected-number">
@@ -1333,7 +1354,7 @@ var UserDetailAddApp = createReactClass({
                         {tabPaneList}
                     </Tabs>
                 </div>
-                <div className="clearfix form_btns">
+                <div className="clearfix batch-change-btns">
                     <p className="pull-left">
                         {Intl.get('user.operator','操作人')}:
                         {this.state.accountHolder}
@@ -1344,14 +1365,18 @@ var UserDetailAddApp = createReactClass({
                         }
                     </div>
                     <div className="pull-right" data-tracename="批量变更">
-                        <RightPanelCancel onClick={this.closeRightPanel} data-tracename="点击取消按钮">
-                            <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" />
-                        </RightPanelCancel>
+                        <Button onClick={this.closeRightPanel} data-tracename="点击取消按钮">
+                            {Intl.get('common.cancel', '取消')}
+                        </Button>
                         {
-                            true || this.state.multipleSubType === 'grant_application' ? null : (
-                                <RightPanelSubmit onClick={this.handleSubmit} data-tracename="点击确定按钮">
-                                    <ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" />
-                                </RightPanelSubmit>
+                            this.state.multipleSubType === 'grant_application' ? null : (
+                                <Button
+                                    onClick={this.handleSubmit}
+                                    type="primary"
+                                    data-tracename="点击确定按钮"
+                                >
+                                    {Intl.get('common.sure', '确定')}
+                                </Button>
                             )
                         }
                     </div>
@@ -1375,4 +1400,6 @@ var UserDetailAddApp = createReactClass({
     }
 });
 
-module.exports = UserDetailAddApp;
+const UserBatchChange = Form.create()(UserDetailAddApp);
+
+module.exports = UserBatchChange;
