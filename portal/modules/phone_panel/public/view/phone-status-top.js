@@ -18,7 +18,7 @@ var ScheduleAction = require('MOD_DIR/crm/public/action/schedule-action');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 var basicOverviewAction = require('MOD_DIR/crm/public/action/basic-overview-actions');
 var AlertTimer = require('CMP_DIR/alert-timer');
-import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {myWorkEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 //挂断电话时推送过来的通话状态，phone：私有呼叫中心（目前有：eefung长沙、济南的电话系统），curtao_phone: 客套呼叫中心（目前有: eefung北京、合天的电话系统）, call_back:回访
 const HANG_UP_TYPES = [PHONERINGSTATUS.phone, PHONERINGSTATUS.curtao_phone, PHONERINGSTATUS.call_back];
 import {TIME_CALCULATE_CONSTS} from 'PUB_DIR/sources/utils/consts';
@@ -51,6 +51,10 @@ class phoneStatusTop extends React.Component {
 
     componentDidMount() {
         phoneAlertStore.listen(this.onStoreChange);
+        setTimeout(() => {
+            //拨打电话状态展示后，重新计算详情中的高度计算
+            phoneMsgEmitter.emit(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT);
+        });
     }
 
     onStoreChange = () => {
@@ -70,6 +74,11 @@ class phoneStatusTop extends React.Component {
             isAddingMoreProdctInfo: nextProps.isAddingMoreProdctInfo,
             isAddingPlanInfo: nextProps.isAddingPlanInfo,
             isCustomerDetailCall: nextProps.isCustomerDetailCall
+        }, () => {
+            //通话结束后，展示保存跟进记录的按钮，需重新计算详情的高度
+            if (_.includes(HANG_UP_TYPES, _.get(this.state, 'phonemsgObj.type'))){
+                phoneMsgEmitter.emit(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT);
+            }
         });
         //如果接听后，把状态isConnected 改为true
         if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
@@ -108,8 +117,10 @@ class phoneStatusTop extends React.Component {
     handleEditContent = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-update'), '点击编辑跟进记录按钮');
         phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ''});
-        this.setState({
-            showCancelBtn: true,
+        this.setState({showCancelBtn: true});
+        setTimeout(() => {
+            //点击编辑跟进记录按钮后，重新计算详情中的高度计算
+            phoneMsgEmitter.emit(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT);
         });
     };
 
@@ -131,8 +142,10 @@ class phoneStatusTop extends React.Component {
     handleTraceCancel = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.trace-content-container'), '取消保存跟进记录');
         phoneAlertAction.setEditStatus({isEdittingTrace: false, submittingTraceMsg: ''});
-        this.setState({
-            showCancelBtn: false
+        this.setState({showCancelBtn: false});
+        setTimeout(() => {
+            //取消保存跟进记录后，重新计算详情中的高度计算
+            phoneMsgEmitter.emit(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT);
         });
     };
     //提交跟进记录
@@ -171,6 +184,9 @@ class phoneStatusTop extends React.Component {
                 isConnected: false,
                 showAddFeedbackOrAddPlan: true,
                 showCancelBtn: false,
+            }, () => {
+                //保存跟进记录后，重新计算详情中的高度计算
+                phoneMsgEmitter.emit(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT);
             });
             if (window.location.pathname === '/home'){
                 //写了跟进记录后，对应的首页我的工作设为已完成

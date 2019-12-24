@@ -16,6 +16,8 @@ import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import {Button} from 'antd';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
+import {getDetailLayoutHeight} from '../../utils/crm-util';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 //高度常量
 var LAYOUT_CONSTANTS = {
@@ -29,12 +31,15 @@ var LAYOUT_CONSTANTS = {
 import Trace from 'LIB_DIR/trace';
 
 class Contacts extends React.Component {
-    state = {
-        getCallNumberError: '', // 获取座机号失败的信息
-        curCustomer: this.props.curCustomer,//当前查看详情的客户
-        windowHeight: $(window).height(),
-        ...ContactStore.getState()
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            getCallNumberError: '', // 获取座机号失败的信息
+            curCustomer: this.props.curCustomer,//当前查看详情的客户
+            layoutHeight: getDetailLayoutHeight(),
+            ...ContactStore.getState()
+        };
+    }
 
     onStoreChange = () => {
         this.setState(ContactStore.getState());
@@ -46,13 +51,15 @@ class Contacts extends React.Component {
             //isUseCustomerContacts是否要用客户里的联系人列表
             ContactAction.getContactList(this.props.curCustomer, this.props.isUseCustomerContacts, this.props.hideContactWay);
         }
-        $(window).on('resize', this.onStoreChange);
+        $(window).on('resize', this.resizeLayoutHeight);
+        // 监听到拨打电话状态展示区高度改变后，重新计算高度
+        phoneMsgEmitter.on(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT, this.resizeLayoutHeight);
     }
-
     componentWillReceiveProps(nextProps) {
         if (nextProps.isMerge || nextProps.curCustomer && nextProps.curCustomer.id !== this.props.curCustomer.id) {
             this.setState({
-                curCustomer: nextProps.curCustomer
+                curCustomer: nextProps.curCustomer,
+                layoutHeight: this.getLayoutHeight()
             });
             setTimeout(() => {
                 ContactAction.setInitData();
@@ -67,9 +74,12 @@ class Contacts extends React.Component {
         setTimeout(() => {
             ContactAction.setInitData();
         });
-        $(window).off('resize', this.onStoreChange);
+        $(window).off('resize', this.resizeLayoutHeight);
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT, this.resizeLayoutHeight);
     }
-
+    resizeLayoutHeight = () => {
+        this.setState({ layoutHeight: getDetailLayoutHeight() });
+    }
     showAddContactForm = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.crm-right-panel-addbtn .anticon-plus'), '添加联系人');
         ContactAction.showAddContactForm();
@@ -77,13 +87,7 @@ class Contacts extends React.Component {
     };
 
     render() {
-        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
-        let basicInfoHeight = parseInt($('.basic-info-contianer').outerHeight(true));
-        //减头部的客户基本信息高度
-        divHeight -= basicInfoHeight;
-        if ($('.phone-alert-modal-title').size()) {
-            divHeight -= $('.phone-alert-modal-title').outerHeight(true);
-        }
+        var divHeight = this.state.layoutHeight;
         //减添加联系人面版的高度
         if (this.state.isShowAddContactForm) {
             divHeight -= LAYOUT_CONSTANTS.ADD_CONTACT_HEIGHHT;

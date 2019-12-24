@@ -482,6 +482,9 @@ class PhonePanel extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-more-info-container'), '点击添加反馈按钮');
         this.setState({
             isAddingMoreProdctInfo: true,
+        }, () => {
+            //展开添加产品反馈面板后，重新计算详情中的高度
+            phoneMsgEmitter.emit(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT);
         });
     };
     //添加联系计划
@@ -506,6 +509,9 @@ class PhonePanel extends React.Component {
             isAddingMoreProdctInfo: false,
             isAddingAppFeedback: '',
             addAppFeedbackErrMsg: ''
+        }, () => {
+            //取消添加产品反馈后，重新计算详情中的高度
+            phoneMsgEmitter.emit(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT);
         });
     };
     //点击提交按钮
@@ -524,6 +530,9 @@ class PhonePanel extends React.Component {
                 this.setState({
                     isAddingAppFeedback: 'success',
                     addAppFeedbackErrMsg: ''
+                }, () => {
+                    //展开添加产品反馈面板后，重新计算详情中的高度
+                    phoneMsgEmitter.emit(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT);
                 });
             } else if (_.isString(result)) {
                 // 保存失败
