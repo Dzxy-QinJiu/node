@@ -624,15 +624,7 @@ class UserDetailBasic extends React.Component {
         //更新用户基本信息
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_USER_INFO, userObj);
     };
-
-    //修改组织成功
-    organizationChangeSuccess = ({ organization_id, organization_name }) => {
-        AppUserDetailAction.changeUserOrganization({
-            group_id: organization_id,
-            group_name: organization_name
-        });
-    };
-
+    
     userCustomerChangeSuccess = (customerObj) => {
         AppUserDetailAction.changeCustomer(customerObj);
         //更新用户客户信息
@@ -770,12 +762,7 @@ class UserDetailBasic extends React.Component {
                 {
                     isOplateUser() && !_.isEmpty(groupsInfo) ? (
                         <OrgCard
-                            user_id={userInfo.user_id}
-                            showBtn={true}
                             groupsInfo={groupsInfo}
-                            onModifySuccess={this.organizationChangeSuccess}
-                            userInfo={userInfo}
-                            sales_team={_.get(initialUser, 'sales_team', {})}
                         />
                     ) : null
                 }

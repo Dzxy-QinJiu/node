@@ -164,12 +164,6 @@ AppUserDetailStore.prototype.changeUserFieldSuccess = function(userObj) {
     $.extend(this.initialUser.user , userObj);
 };
 
-//修改用户组织
-AppUserDetailStore.prototype.changeUserOrganization = function(userObj) {
-    //覆盖用户信息
-    $.extend(this.initialUser.user , userObj);
-};
-
 //修改客户，以便于在界面上看到“销售阶段”和“销售”
 AppUserDetailStore.prototype.changeCustomer = function(customerObj) {
     this.customer_id = customerObj.customer_id;

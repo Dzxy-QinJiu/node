@@ -29,8 +29,6 @@ function AppUserDetailAction() {
         'changeUserFieldSuccess',
         //修改客户
         'changeCustomer',
-        //修改用户组织
-        'changeUserOrganization',
         //修改应用单个字段成功
         'changeAppFieldSuccess',
         'showAppDetail',
