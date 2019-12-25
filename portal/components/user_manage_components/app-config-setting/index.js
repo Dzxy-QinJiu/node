@@ -42,6 +42,7 @@ class AppConfigSetting extends React.Component {
                     }
                     <TabPane tab={Intl.get('crm.apply.user.separate.config', '分别配置')} key={CONFIG_TYPE.SEPARATE_CONFIG}>
                         {_.map(apps, app => {
+                            let formData = _.find(appsConfigData, data => data.client_id === app.app_id);
                             return (
                                 <div className="app-config-item">
                                     <div className="app-config-title">
@@ -50,7 +51,7 @@ class AppConfigSetting extends React.Component {
                                             logo={app ? app.client_logo : ''}
                                         />
                                     </div>
-                                    {this.renderAppConfigForm(app, appsConfigData)}
+                                    {this.renderAppConfigForm(app, formData)}
                                 </div>);
                         })}
                     </TabPane>
