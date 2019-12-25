@@ -3,15 +3,11 @@
 */
 @import "../../../../public/css/common-variables";
 
-@right_panel_width: 504px;
-@right_panel_content_width: 480px;
-@right_panel_bgcolor: #f5f5f5;
-@box_shadow_color: #cac8c8;
-@tab_active_color: #2196f3;
-@font-color: #5D5D5D;
-
 .user-batch-change-wrap {
   height: 100%;
+  .icon-close  {
+    color: #fff !important;
+  }
   .right-panel-modal-content {
     height: 100%;
     .user-batch-change-content-wrap {
@@ -37,7 +33,7 @@
                 padding: 8px 8px 8px 0!important;
               }
               .ant-tabs-tab-active {
-                color: @tab_active_color;
+                color: @hover-btn-color;
               }
             }
           }
@@ -71,7 +67,7 @@
               .app-role-permission {
                 .app-role-permission-role, .app-role-permission-permission {
                   .app-property-content {
-                    background-color: #ffffff;
+                    background-color: @content-zone-background;
                   }
                 }
               }
