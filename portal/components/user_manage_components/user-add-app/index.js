@@ -2,7 +2,8 @@
  * Created by hzl on 2019/12/18.
  * 添加产品 - 选择产品并配置以及设置角色权限
  */
-import { Form, Icon, Alert, Checkbox, Input, Button } from 'antd';
+require('./index.less');
+import { Form, Icon, Checkbox, Input, Button } from 'antd';
 const CheckboxGroup = Checkbox.Group;
 import { Carousel, CarouselItem } from 'react-bootstrap';
 import OperationSteps from '../operation-steps';
@@ -70,7 +71,7 @@ class UserAddApp extends React.Component {
         const appPropSettingsMap = this.state && this.state.appPropSettingsMap || {};
         //最终生成的数据
         const finalResult = {};
-        //根据默认属性生成配置(添加用户，添加应用)
+        //根据默认属性生成配置
         const createPropertySettingByDefaultSettings = () => {
             _.each(selectedApps , (currentApp) => {
                 //当前应用的id
@@ -318,11 +319,12 @@ class UserAddApp extends React.Component {
                             }))}
                             // todo defaultAppSettings
                             appsConfigData={this.state.selectedApps.map(x => ({
+                                user_type: USER_TYPE_VALUE_MAP.TRIAL_USER,
                                 client_id: x.app_id,
-                                begin_date: moment(),
-                                end_date: moment().add(0.5, 'm'),
+                                begin_date: DateSelectorUtils.getMilliseconds(defaultSelectedTime.start_time),
+                                end_date: DateSelectorUtils.getMilliseconds(defaultSelectedTime.start_time),
                                 number: 1,
-                                over_draft: 1,
+                                over_draft: '1',
                                 range: '0.5m',
                                 appStatus: 'true',
                                 terminals: x.terminals
@@ -354,15 +356,13 @@ class UserAddApp extends React.Component {
 
     // 渲染应用角色步骤
     renderRolesCarousel = () => {
-        const formData = this.state.formData;
-        const height = this.props.height - OperationSteps.height - OperationStepsFooter.height;
         return (
             <div className="app-role-config-container">
                 <UserAppConfig
                     defaultSettings={this.state.defaultSettings}
                     selectedApps={this.state.selectedApps}
                     onAppPropertyChange={this.onAppPropertyChange}
-                    height={height}
+                    height={this.props.height}
                     hideSingleApp={true}
                 />
             </div>
@@ -430,9 +430,9 @@ class UserAddApp extends React.Component {
 
     render() {
         return (
-            <div className="user-add-app-wrap">
-                <Form layout='horizontal'>
-                    <div className="add-app-container">
+            <div className="user-add-app-wrap" style={{height: this.props.height}}>
+                <Form layout='horizontal' style={{height: this.props.height}}>
+                    <div className="add-app-container" style={{height: this.props.height}}>
                         <OperationSteps
                             title={this.props.containerTitle}
                             current={this.state.step}
@@ -471,7 +471,7 @@ class UserAddApp extends React.Component {
                         <OperationStepsFooter
                             currentStep={this.state.step}
                             totalStep={2}
-                            onStepChange={this.turnStep}
+                            onStepChange={this.turnStep.bind(this)}
                             onFinish={this.onStepFinish}
                         >
                             {this.renderIndicator()}
@@ -486,7 +486,7 @@ class UserAddApp extends React.Component {
 function noop() {}
 
 UserAddApp.defaultProps = {
-    containerTitle: Intl.get('user.user.add', '添加用户'),
+    containerTitle: '',
     appList: [],
     handleFinish: noop,
 };

@@ -16,7 +16,6 @@ const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-import FieldMixin from '../../../../components/antd-form-fieldmixin';
 var AlertTimer = require('../../../../components/alert-timer');
 var AutosizeTextarea = require('../../../../components/autosize-textarea');
 var language = require('../../../../public/language/getLanguage');
@@ -27,8 +26,8 @@ import userManagePrivilege from '../privilege-const';
 import { isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
-// import BatchAddAppUser from 'CMP_DIR/user_manage_components/user-add-app';
-import BatchAddAppUser from './v2/batch-add-app-user';
+import BatchAddAppUser from 'CMP_DIR/user_manage_components/user-add-app';
+// import BatchAddAppUser from './v2/batch-add-app-user';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import DetailCard from 'CMP_DIR/detail-card';
 import {USER_TYPE_VALUE_MAP, USER_TYPE_TEXT_MAP} from 'PUB_DIR/sources/utils/consts';
@@ -52,7 +51,6 @@ const TAB_KEYS = {
     ROLES: 'grant_roles',// 权限设置
     DELAY: 'grant_delay',// 批量延期
 };
-
 
 var UserDetailAddApp = createReactClass({
     displayName: 'UserDetailAddApp',
@@ -367,7 +365,7 @@ var UserDetailAddApp = createReactClass({
         UserDetailAddAppAction.removeApp(app);
     },
 
-    customRadioValueChange: function(field, event) {
+    customRadioValueChange(field, event) {
         let value = _.get(event, 'target.value');
         UserDetailAddAppAction.customRadioValueChange({field, value});
     },
@@ -380,7 +378,7 @@ var UserDetailAddApp = createReactClass({
         return current && current.getTime() > moment(this.state.formData.end_time).toDate().getTime();
     },
 
-    radioValueChange: function(field, event) {
+    radioValueChange(field, event) {
         var value = event.target.value;
         UserDetailAddAppAction.radioValueChange({field, value});
     },
@@ -430,8 +428,6 @@ var UserDetailAddApp = createReactClass({
         $(window).off('resize' , this.onWindowResize);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.SELECTED_USER_ROW_CHANGE , this.checkSelectedBatchAppList);
     },
-
-    mixins: [FieldMixin],
 
     getInitialState: function() {
         return UserDetailAddAppStore.getState();
@@ -569,47 +565,6 @@ var UserDetailAddApp = createReactClass({
         if(this.refs.gemini) {
             this.refs.gemini.update();
         }
-    },
-
-    renderAppsBlock: function(belong) {
-        if(!this.hasApplyAppBlock()) {
-            return null;
-        }
-        var appNotSelected = this.state.app_list;
-        var formData = this.state.formData;
-        var app_selector_id = _.uniqueId('app_selector');
-        return (
-            <div className="ant-form-item">
-                <label className="col-4">
-                    {Intl.get('common.add.product', '添加产品')}
-                </label>
-                <div className="col-20">
-                    <div ref="app_selector_wrap" data-ref="app_selector_wrap" className={this.state.show_app_error ? 'app_selector_wrap permission-required' : 'app_selector_wrap'}>
-                        <AppSelector
-                            size={60}
-                            totalApps={appNotSelected}
-                            selectedApps={formData.selected_apps}
-                            onChange={this.selectedAppChange}
-                            container={this.refs.app_selector_wrap}
-                            showPermission={true}
-                            uniqueId={app_selector_id}
-                            onHeightChange={this.onScrollBarHeightChange}
-                        />
-                        {
-                            this.state.show_app_error && !formData.selected_apps.length ?
-                                (
-                                    <div className="has-error">
-                                        <span className="ant-form-explain">
-                                            {Intl.get('user.product.select', '请选择产品')}
-                                        </span>
-                                    </div>
-                                ) :
-                                null
-                        }
-                    </div>
-                </div>
-            </div>
-        );
     },
 
     //检验密码
@@ -1051,10 +1006,7 @@ var UserDetailAddApp = createReactClass({
         );
     },
 
-    renderCustomer: function() {
-        if(!this.hasCustomerBlock()) {
-            return null;
-        }
+    renderCustomer() {
         return (
             <div id={USER_DETAIL_ADD_APP_CUSTOMER_SELECT_WRAP}>
                 <FormItem
@@ -1142,6 +1094,17 @@ var UserDetailAddApp = createReactClass({
         UserDetailAddAppAction.rolesPermissionsChange({roles,permissions,rolesInfo});
     },
 
+    // 渲染开通产品
+    renderAddApp(height) {
+        return (
+            <BatchAddAppUser
+                appList={this.props.appList}
+                initialUser={this.props.initialUser}
+                height={height}
+            />
+        );
+    },
+
     renderContent() {
         const fixedHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA -
                 LAYOUT_CONSTANTS.SELECT_USER_TIPS - LAYOUT_CONSTANTS.BOTTOM_DELTA;
@@ -1158,7 +1121,7 @@ var UserDetailAddApp = createReactClass({
                         {
                             this.state.multipleSubType === TAB_KEYS.GRANT_APP ? (
                                 <DetailCard
-                                    content={ this.renderAppsBlock('inner')}
+                                    content={this.renderAddApp(fixedHeight - 90)}
                                 />
                             ) : null
                         }
