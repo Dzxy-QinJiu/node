@@ -23,7 +23,8 @@ function FilterAction() {
         'setUnexistedFiled',
         'setFilterClueUsername',
         'setSimilarFiled',
-        'setNotConnectedClues'
+        'setNotConnectedClues',
+        'setLeadFromLeadPool'
     );
     //获取负责人列表
     this.getTeamMemberList = function() {
