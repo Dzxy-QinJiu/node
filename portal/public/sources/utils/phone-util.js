@@ -83,3 +83,8 @@ exports.ReleaseButton = ({callClient, tip, phoneNumber}) => {
         return tip;
     }
 };
+
+//退出登录，session超时，触发电话系统的退出
+exports.logoutCallClient = () => {
+    callClient && callClient.logout();
+};
