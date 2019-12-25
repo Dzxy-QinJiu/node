@@ -180,6 +180,7 @@ export function getCallRecordChart(paramObj = {}) {
             },{
                 title: Intl.get('sales.home.phone.effective.time', '有效通话时长'),
                 width: col_lg_width,
+                align: 'right',
                 dataIndex: 'total_effective_time',
                 sorter: function(a, b) {
                     return a.total_effective_time - b.total_effective_time;
