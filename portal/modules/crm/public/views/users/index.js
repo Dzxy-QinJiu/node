@@ -13,7 +13,7 @@ import Spinner from 'CMP_DIR/spinner';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
-import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {scrollBarEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import PropTypes from 'prop-types';
 import userData from 'PUB_DIR/sources/user-data';
 import ApplyOpenAppPanel from 'MOD_DIR/app_user_manage/public/views/v2/apply-user';
@@ -27,6 +27,8 @@ import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 import {getApplyList} from 'MOD_DIR/user_apply/public/ajax/app-user-ajax';
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
+import { EventEmitter } from 'events';
+import {getDetailLayoutHeight} from '../../utils/crm-util';
 
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
@@ -39,8 +41,6 @@ const APPLY_TYPES = {
 };
 
 const LAYOUT = {
-    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
-    TOTAL_HEIGHT: 24 + 8,// 24:共xxx个的高度,8:共xxx个的下边距
     APPLY_FORM_HEIGHT: 198 + 10,//198:申请表单的高度,10:表单的上边距
     APPLY_FORM_SAVE_BTN_H: 34,//申请用户面板，保存取消按钮的高度
     APPLY_PANEL_PADDING: 12//申请面板的边距
@@ -102,16 +102,25 @@ class CustomerUsers extends React.Component {
         this.getCrmUserApplyAndPassList();
         //获取应用列表
         this.getAppList();
+        // 监听到拨打电话状态展示区高度改变后，重新计算高度
+        phoneMsgEmitter.on(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT, this.resizeLayoutHeight);
     }
 
     componentWillReceiveProps(nextProps) {
         let oldCustomerId = this.state.curCustomer.id;
         if (nextProps.curCustomer && nextProps.curCustomer.id !== oldCustomerId) {
-            this.setState({curCustomer: nextProps.curCustomer, lastUserId: '', ...this.getLayoutHeight()});
+            this.setState({ curCustomer: nextProps.curCustomer, lastUserId: '', ...this.getLayoutHeight() });
             setTimeout(() => {
                 this.getCrmUserApplyAndPassList();
             });
         }
+    }
+    componentWillUnmount() {
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT, this.resizeLayoutHeight);
+    }
+    // 重新设置用户列表展示区域的高度
+    resizeLayoutHeight = () => {
+        this.setState({ ...this.getLayoutHeight() });
     }
 
     //获取客户待审批和已开通的用户列表
@@ -529,13 +538,8 @@ class CustomerUsers extends React.Component {
         return rightPanelView;
     }
 
-    getLayoutHeight() {
-        let divHeight = $(window).height() - LAYOUT.TOP_NAV_HEIGHT - LAYOUT.TOTAL_HEIGHT;
-        //减头部的客户基本信息高度
-        divHeight -= parseInt($('.basic-info-contianer').outerHeight(true));
-        if ($('.phone-alert-modal-title').size()) {
-            divHeight -= $('.phone-alert-modal-title').outerHeight(true);
-        }
+    getLayoutHeight() { 
+        let divHeight = getDetailLayoutHeight(true);//true: 需要减去总数的高度
         let userListHeight = divHeight;
         //减去申请用户面板的高度
         if ($('.apply-user-form-container').size()) {

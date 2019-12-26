@@ -258,4 +258,29 @@ exports.releaseCustomerTip = function() {
     }
     return releaseTip;
 };
+// 获取详情中展示个面板内容的高度
+exports.getDetailLayoutHeight = (hasTotal) => {
+    const LAYOUT_CONSTANTS = {
+        TOP_NAV_HEIGHT: 44,//36：头部导航的高度，8：导航的下边距
+        TOTAL_HEIGHT: 32,// 24:共xxx个的高度,8:共xxx个的下边距
+        MARGIN_BOTTOM: 8, //下边距
+        BASIC_DEFAULT_HEIGHT: 57//基本信息默认收起时的高度
+    };
+    var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
+    // 减去总数的高度
+    if (hasTotal) {
+        divHeight -= LAYOUT_CONSTANTS.TOTAL_HEIGHT;
+    }
+    //减头部的客户基本信息高度
+    if ($('.basic-info-contianer').size()) {
+        divHeight -= parseInt($('.basic-info-contianer').outerHeight(true));
+    } else {//首次加载，头部基本信息还没有渲染完时，减默认收起的基本信息高度
+        divHeight -= LAYOUT_CONSTANTS.BASIC_DEFAULT_HEIGHT;
+    }
+    //减头通话状态展示及操作区高度
+    if ($('.phone-status-handle-wrap').size()) {
+        divHeight -= $('.phone-status-handle-wrap').outerHeight(true);
+    }
+    return divHeight;
+};
 

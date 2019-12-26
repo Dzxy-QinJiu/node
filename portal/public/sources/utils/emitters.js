@@ -25,6 +25,8 @@ exports.phoneMsgEmitter.OPEN_CLUE_PANEL = 'openCluePanel';
 exports.phoneMsgEmitter.CLOSE_CLUE_PANEL = 'closeCluePanel';
 //关闭拨打电话模态框emitter
 exports.phoneMsgEmitter.CLOSE_PHONE_MODAL = 'closePhoneModal';
+//拨打电话时，根据电话弹屏头部的高度变化重新计算详情的高度
+exports.phoneMsgEmitter.RESIZE_DETAIL_HEIGHT = 'resizeDetailHeight';
 //拨打电话emitter
 exports.audioMsgEmitter = new EventEmitter();
 //打开播放录音的面板emitter

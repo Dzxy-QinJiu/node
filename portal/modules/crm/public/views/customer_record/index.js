@@ -44,9 +44,10 @@ import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP];
 import {CALL_STATUS_MAP, AUTO_SIZE_MAP, CALL_TYPE_MAP, TRACE_NULL_TIP} from 'PUB_DIR/sources/utils/consts';
 const OVERVIEW_SHOW_COUNT = 5;//概览页展示跟进记录的条数
-import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {audioMsgEmitter, myWorkEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util'; //判断是否在蚁坊域
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {getDetailLayoutHeight} from '../../utils/crm-util';
 //除去固定的电话、拜访、其他以外的类型的缓存数据，获取后存起来，不用每次都取
 let extraTraceTypeList = [];
 class CustomerRecord extends React.Component {
@@ -65,6 +66,7 @@ class CustomerRecord extends React.Component {
         addRecordNullTip: '',//添加跟进记录内容为空的提示
         editRecordNullTip: '', //编辑跟进内容为空的提示
         extraTraceTypeList: [], //除去固定的电话、拜访、其他以外的类型
+        layoutHeight: getDetailLayoutHeight(),//根据记录展示区高度
         ...CustomerRecordStore.getState()
     };
 
@@ -98,8 +100,23 @@ class CustomerRecord extends React.Component {
             });
         });*/
         this.getAppList();
+        $(window).on('resize', this.resizeLayoutHeight);
+        // 监听到拨打电话状态展示区高度改变后，重新计算高度
+        phoneMsgEmitter.on(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT, this.resizeLayoutHeight);
+    }
+    
+    componentWillUnmount() {
+        CustomerRecordStore.unlisten(this.onStoreChange);
+        $(window).off('resize', this.resizeLayoutHeight);
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT, this.resizeLayoutHeight);
+        setTimeout(() => {
+            CustomerRecordActions.dismiss();
+        });
     }
 
+    resizeLayoutHeight = () => {
+        this.setState({ layoutHeight: getDetailLayoutHeight() });
+    }
     //获取某组织内跟进记录的类型（除去固定的电话、拜访、其他以外的类型）
     getExtraTraceType() {
         //未获取过额外跟进类型，需要获取一遍存起来，下次不用再取
@@ -230,13 +247,6 @@ class CustomerRecord extends React.Component {
                 this.getCustomerTraceStatistic();
             });
         }
-    }
-
-    componentWillUnmount() {
-        CustomerRecordStore.unlisten(this.onStoreChange);
-        setTimeout(() => {
-            CustomerRecordActions.dismiss();
-        });
     }
 
     handleChange = (event) => {
@@ -761,14 +771,7 @@ class CustomerRecord extends React.Component {
     };
 
     getRecordListShowHeight = () => {
-        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT -
-            LAYOUT_CONSTANTS.TIME_ADD_BTN_HEIGHT - LAYOUT_CONSTANTS.STATISTIC_TYPE_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
-        let basicInfoHeight = parseInt($('.basic-info-contianer').outerHeight(true));
-        //减头部的客户基本信息高度
-        divHeight -= basicInfoHeight;
-        if ($('.phone-alert-modal-title').size()) {
-            divHeight -= $('.phone-alert-modal-title').outerHeight(true);
-        }
+        let divHeight = this.state.layoutHeight - LAYOUT_CONSTANTS.TIME_ADD_BTN_HEIGHT - LAYOUT_CONSTANTS.STATISTIC_TYPE_HEIGHT;
         //减添加跟进记录面版的高度
         if (this.state.addRecordPanelShow) {
             divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
