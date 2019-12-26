@@ -492,6 +492,9 @@ class PhonePanel extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-plan-info-container'), '点击添加联系计划按钮');
         this.setState({
             isAddingPlanInfo: true,
+        }, () => {
+            //展开添加联系计划面板后，重新计算详情中的高度
+            phoneMsgEmitter.emit(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT);
         });
     };
     //关闭联系计划面板
@@ -554,6 +557,9 @@ class PhonePanel extends React.Component {
         }
         this.setState({
             isAddingPlanInfo: false
+        }, () => {
+            //取消添加联系计划后，重新计算详情中的高度
+            phoneMsgEmitter.emit(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT);
         });
     };
 
@@ -736,21 +742,23 @@ class PhonePanel extends React.Component {
         return (
             <div data-tracename="电话弹屏" id="phone-status-content">
                 <div className={AddMoreInfoCls} id="phone-alert-modal-inner">
-                    <PhoneStatusTop
-                        phoneAlertModalTitleCls={PhoneAlertModalTitleCls}
-                        phonemsgObj={phonemsgObj}
-                        handleAddProductFeedback={this.handleAddProductFeedback}
-                        isModalShown={this.state.isModalShown}
-                        contactNameObj={this.state.paramObj.call_params.contactNameObj}
-                        detailCustomerId={this.getDetailCustomerId()}//客户详情中打电话时，客户的id
-                        isAddingMoreProdctInfo={this.state.isAddingMoreProdctInfo}
-                        handleAddPlan={this.handleAddPlan}
-                        closeAddPlan={this.closeAddPlan} //手动控制关闭面板
-                        isAddingScheduleSuccess={this.state.isAddingScheduleSuccess}//检查自定义是否添加成功
-                        isAddingPlanInfo={this.state.isAddingPlanInfo}
-                        isCustomerDetailCall={this.isCustomerDetailCall(this.state.paramObj) || this.isPhoneMsgWithCustomerId(phonemsgObj)}
-                    />
-                    {this.renderMainContent()}
+                    <div className='phone-status-handle-wrap'>
+                        <PhoneStatusTop
+                            phoneAlertModalTitleCls={PhoneAlertModalTitleCls}
+                            phonemsgObj={phonemsgObj}
+                            handleAddProductFeedback={this.handleAddProductFeedback}
+                            isModalShown={this.state.isModalShown}
+                            contactNameObj={this.state.paramObj.call_params.contactNameObj}
+                            detailCustomerId={this.getDetailCustomerId()}//客户详情中打电话时，客户的id
+                            isAddingMoreProdctInfo={this.state.isAddingMoreProdctInfo}
+                            handleAddPlan={this.handleAddPlan}
+                            closeAddPlan={this.closeAddPlan} //手动控制关闭面板
+                            isAddingScheduleSuccess={this.state.isAddingScheduleSuccess}//检查自定义是否添加成功
+                            isAddingPlanInfo={this.state.isAddingPlanInfo}
+                            isCustomerDetailCall={this.isCustomerDetailCall(this.state.paramObj) || this.isPhoneMsgWithCustomerId(phonemsgObj)}
+                        />
+                        {this.renderMainContent()}
+                    </div>
                     {!this.isCustomerDetailCall(this.state.paramObj) ? //不是从客户详情中拨打的电话并且推送来的消息中有customer_id
                         //客户信息展示或者添加客户按钮
 

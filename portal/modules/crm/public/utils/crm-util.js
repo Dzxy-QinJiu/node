@@ -261,8 +261,8 @@ exports.releaseCustomerTip = function() {
 // 获取详情中展示个面板内容的高度
 exports.getDetailLayoutHeight = (hasTotal) => {
     const LAYOUT_CONSTANTS = {
-        TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
-        TOTAL_HEIGHT: 24 + 8,// 24:共xxx个的高度,8:共xxx个的下边距
+        TOP_NAV_HEIGHT: 44,//36：头部导航的高度，8：导航的下边距
+        TOTAL_HEIGHT: 32,// 24:共xxx个的高度,8:共xxx个的下边距
         MARGIN_BOTTOM: 8, //下边距
         BASIC_DEFAULT_HEIGHT: 57//基本信息默认收起时的高度
     };
@@ -278,8 +278,8 @@ exports.getDetailLayoutHeight = (hasTotal) => {
         divHeight -= LAYOUT_CONSTANTS.BASIC_DEFAULT_HEIGHT;
     }
     //减头通话状态展示及操作区高度
-    if ($('.phone-alert-modal-inner').size()) {
-        divHeight -= $('.phone-alert-modal-inner').outerHeight(true);
+    if ($('.phone-status-handle-wrap').size()) {
+        divHeight -= $('.phone-status-handle-wrap').outerHeight(true);
     }
     return divHeight;
 };
