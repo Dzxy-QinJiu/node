@@ -55,6 +55,7 @@ class RecommendCustomerRightPanel extends React.Component {
             batchPopoverVisible: false,//批量操作展示popover
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             canClickExtract: true,//防止用户连续点击批量提取
+            canClickMoreBatch: true,//防止用户连续点击换一批
             ...clueCustomerStore.getState()
         };
     }
@@ -121,6 +122,7 @@ class RecommendCustomerRightPanel extends React.Component {
         return conditionObj;
     };
     getRecommendClueLists = () => {
+        if(this.state.canClickMoreBatch === false) return;
         var conditionObj = this.getSearchCondition();
         //去掉为空的数据
         clueCustomerAction.getRecommendClueLists(conditionObj);
@@ -915,6 +917,8 @@ class RecommendCustomerRightPanel extends React.Component {
         let recommendCls = classNames('recommend-customer-top-nav-wrap', {
             'responsive-mini-btn': isWebMin
         });
+        let moreRotationClass = this.state.canClickMoreBatch ? 'iconfont icon-change-new' : 'iconfont icon-change-new change-new-icon-rotation';
+        let changeNewSpan = !this.state.canClickMoreBatch && 'change-new-span';
         return (
             <div className="recommend-clues-lists-container" data-tracename="推荐线索列表">
                 <RightPanel showFlag={true} className="recommend-customer-list">
@@ -934,13 +938,13 @@ class RecommendCustomerRightPanel extends React.Component {
                                                     {Intl.get('clue.customer.condition.change', '修改条件')}
                                                 </React.Fragment>}
                                         </Button>
-                                        <Button className="btn-item" data-tracename="点击换一批按钮"
+                                        <Button className="btn-item more-batch-btn" data-tracename="点击换一批按钮"
                                             title={Intl.get('clue.customer.refresh.list', '换一批')}
                                             onClick={this.handleClickRefreshBtn}>
                                             {isWebMin ? <span className="iconfont icon-change-new"></span> :
                                                 <React.Fragment>
-                                                    <span className="iconfont icon-change-new"></span>
-                                                    {Intl.get('clue.customer.refresh.list', '换一批')}
+                                                    <span className={moreRotationClass}></span>
+                                                    <span className={changeNewSpan}>{Intl.get('clue.customer.refresh.list', '换一批')}</span>
                                                 </React.Fragment>
                                             }
                                         </Button>
