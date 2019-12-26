@@ -26,7 +26,6 @@ module.exports = {
     entry: {
         login_curtao: ['./portal/components/Login-curtao/index'],
         login: ['./portal/components/Login/index'],
-        register: ['./portal/components/login-register/index'],
     },
     target: "node",
     output: {

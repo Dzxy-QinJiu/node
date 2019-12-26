@@ -18,6 +18,7 @@ import {getOrganizationInfo} from 'PUB_DIR/sources/utils/common-data-util';
 import {paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import history from 'PUB_DIR/sources/history';
 import SavedTips from 'CMP_DIR/saved-tips';
+import DifferentVersion from 'MOD_DIR/different_version/public';
 import privilegeConst_user_info from '../privilege-config';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
@@ -66,6 +67,7 @@ class UserInfo extends React.Component{
             versionName: '', // 版本信息
             endTime: '', // 到期时间
             changePhoneMsg: '',
+            showDifferentVersion: false,//是否显示版本信息面板
         };
     }
 
@@ -388,12 +390,19 @@ class UserInfo extends React.Component{
     // 处理版本升级
     handleVersionUpgrade = () => {
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            showDifferentVersion: this.triggerShowVersionInfo,
             continueFn: () => {
                 history.push('/leads');
             }
         });
     };
-
+    //显示/隐藏版本信息面板
+    triggerShowVersionInfo = () => {
+        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
+    };
+    handleContinueFn = (orderInfo) => {
+        history.push('/leads');
+    };
     saveEditLanguage = (saveObj, successFunc, errorFunc) => {
         UserInfoAjax.setUserLanguage(saveObj).then((result) => {
             if (result) {
@@ -441,7 +450,7 @@ class UserInfo extends React.Component{
             }
         }else if(currentVersion.company) {
             if(currentVersionType.trial) {//企业试用
-                /*return (
+                return (
                     <Popover
                         placement="right"
                         content={Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})}
@@ -454,8 +463,7 @@ class UserInfo extends React.Component{
                             {Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版')}
                         </Button>
                     </Popover>
-                );*/
-                return null;
+                );
             }else if(currentVersionType.formal && this.isManager()) {//企业正式并且是管理员
                 return (
                     <Popover
@@ -469,8 +477,7 @@ class UserInfo extends React.Component{
                         >
                             {Intl.get('payment.renewal', '续费')}
                         </Button>
-                    </Popover>
-                );
+                    </Popover>);
             }
         }
         return null;
@@ -820,6 +827,11 @@ class UserInfo extends React.Component{
                         ) : null
                     }
                 </div> : null}
+                <DifferentVersion
+                    showFlag={this.state.showDifferentVersion}
+                    closeVersion={this.triggerShowVersionInfo}
+                    continueFn={this.handleContinueFn}
+                />
             </div>
         );
     }

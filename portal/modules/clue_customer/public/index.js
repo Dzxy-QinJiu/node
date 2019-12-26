@@ -95,6 +95,7 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import ClueExtract from 'MOD_DIR/clue_pool/public';
 import MoreButton from 'CMP_DIR/more-btn';
+import DifferentVersion from 'MOD_DIR/different_version/public';
 import {subtracteGlobalClue, formatSalesmanList,isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -155,6 +156,7 @@ class ClueCustomer extends React.Component {
             filterInputWidth: 210,//筛选输入框的宽度
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             showRecommendTips: !_.get(websiteConfig,['oplateConsts','STORE_PERSONNAL_SETTING','NO_SHOW_RECOMMEND_CLUE_TIPS'],false),
+            showDifferentVersion: false,//是否显示版本信息面板
             //显示内容
             ...clueCustomerStore.getState()
         };
@@ -169,8 +171,6 @@ class ClueCustomer extends React.Component {
         this.getClueChannel();
         //获取线索分类
         this.getClueClassify();
-        //获取是否配置过线索推荐条件
-        this.getSettingCustomerRecomment();
         //获取已提取线索量
         this.getRecommendClueCount();
         this.getSalesmanList();
@@ -183,11 +183,22 @@ class ClueCustomer extends React.Component {
         clueEmitter.on(clueEmitter.FLY_CLUE_HASTRACE, this.flyClueHastrace);
         clueEmitter.on(clueEmitter.FLY_CLUE_HASTRANSFER, this.flyClueHastransfer);
         clueEmitter.on(clueEmitter.FLY_CLUE_INVALID, this.flyClueInvalid);
+        clueEmitter.on(clueEmitter.SHOW_RECOMMEND_PANEL, this.showClueRecommendTemplate);
 
         notificationEmitter.on(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
         //如果从url跳转到该页面，并且有add=true，则打开右侧面板
         if (query.add === 'true') {
             this.showAddForm();
+        }
+        //如果是进入线索推荐
+        if(_.get(this.props, 'history.action') === 'PUSH' && _.get(this.props, 'location.state.showRecommendCluePanel')) {
+            if(_.get(this.props, 'location.state.targetObj')) {
+                clueCustomerAction.saveSettingCustomerRecomment(_.get(this.props, 'location.state.targetObj', {})); 
+            }
+            this.showClueRecommendTemplate();
+        }else {
+            //获取是否配置过线索推荐条件
+            this.getSettingCustomerRecomment();
         }
         this.setFilterInputWidth();
         //响应式布局时动态计算filterinput的宽度
@@ -337,6 +348,11 @@ class ClueCustomer extends React.Component {
         //清空页面上的筛选条件
         clueFilterAction.setInitialData();
         clueCustomerAction.resetState();
+        //“这里可以提取线索”，只提示一次（登录后或者点击关闭）
+        const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+        if(this.state.showRecommendTips && !_.get(websiteConfig,['oplateConsts','STORE_PERSONNAL_SETTING','NO_SHOW_RECOMMEND_CLUE_TIPS'],false)) {
+            this.handleClickCloseClue();
+        }
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         clueEmitter.removeListener(clueEmitter.REMOVE_CLUE_ITEM, this.removeClueItem);
@@ -345,6 +361,7 @@ class ClueCustomer extends React.Component {
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_HASTRACE, this.flyClueHastrace);
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_HASTRANSFER, this.flyClueHastransfer);
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_INVALID, this.flyClueInvalid);
+        clueEmitter.removeListener(clueEmitter.SHOW_RECOMMEND_PANEL, this.showClueRecommendTemplate);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
         $(window).off('resize', this.resizeHandler);
     }
@@ -660,8 +677,15 @@ class ClueCustomer extends React.Component {
 
     //个人试用升级为正式版
     handleUpgradePersonalVersion = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {});
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            showDifferentVersion: this.triggerShowVersionInfo
+        });
     };
+    //显示/隐藏版本信息面板
+    triggerShowVersionInfo = () => {
+        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
+    };
+
 
     getExportClueTips = () => {
         let currentVersion = checkCurrentVersion();
@@ -3093,6 +3117,10 @@ class ClueCustomer extends React.Component {
                                 }
                             </RightPanel> : null
                     }
+                    <DifferentVersion
+                        showFlag={this.state.showDifferentVersion}
+                        closeVersion={this.triggerShowVersionInfo}
+                    />
                 </div>
             </RightContent>
         );

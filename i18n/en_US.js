@@ -338,7 +338,12 @@ var en_US = {
     'login.wechat.login.error': 'WeChat login failed',//微信登录失败
     'login.wechat.bind.error': 'WeChat binding failed',//微信绑定失败
     'login.wechat.bind.check.error': 'Check whether or not to bind WeChat is failed',//检查是否绑定微信出错了
+    'login.user.agreement': 'User agreement', //用户使用协议
+    'login.user.agreement.tip': 'Clicked {btn}, you agree to our {userAgreement}',//点击{btn}表示您已同意我们的{userAgreement}
+    'login.no.account.register.tip': 'No account, go to {register}',//没有账号，去{register}
 
+    'register.title.tip': 'Welcome to register',//欢迎注册客套
+    'register.slogan.tip': 'Sales acceleration, starting here ...',//销售加速，从这里开始...
     'register.set.company.id': 'Set up company ID',//设置公司标识
     'register.valid.phone': 'Phone number verification',//验证手机
     'register.fill.account': 'Set up account',//账号设置
@@ -347,7 +352,7 @@ var en_US = {
     'register.company.valid.tip': 'Please enter lowercase and middle line',//请输入小写字母和中划线组成的公司标识
     'register.company.only.error': 'Failed to validate company identifier',//公司标识唯一性验证失败
     'register.company.name.exist': 'Company identifier already exists',//公司标识已存在
-    'register.get.phone.captcha.code': 'Get SMS code',//获取短信验证码
+    'register.get.phone.captcha.code': 'Get SMS code',//获取验证码
     'register.company.name.fill': 'Please enter company name',//请输入公司名称
     'register.finished.button': 'Finish',//完成注册
     'register.phon.validat.tip': 'Please input the correct phone number, eg: 13877775555',//请输入正确的手机号, 格式如:13877775555
@@ -366,6 +371,10 @@ var en_US = {
     'register.wechat.bind.btn': 'Bind immediately', // 立即绑定
     'login.wechat.register.login.error': 'WeChat register login failed',//微信号注册登录失败
     'register.personal.title': 'Register for personal',//注册个人版
+    'register.user.agreement.tip': 'Read and agreed to {useragreement}',//已阅读并同意{userAgreement}
+    'register.user.agreement.curtao': 'User agreement',//《用户协议》
+    'register.user.agreement.valid.tip': 'Please read and agreed to "Curtao user agreement"',//请先阅读并同意《客套用户协议》
+    'register.to.login.tip': 'Existing account, go to {login}',//已有账号，去{login}
 
     //首页
     'home.page': 'Home page',//首页
@@ -3140,7 +3149,7 @@ var en_US = {
     'clue.customer.export.select.clue': 'Export selected leads',//导出选中的线索
     'lead.recommend.form.show.all.condition': 'Show all conditions',//展开全部条件
     'lead.recommend.form.hide.some.condition': 'Hide some condition',//收起部分条件
-    'boot.select.industry.count.tip': 'You can select {count} at most',//最多可选择{count}个行业
+    
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3741,8 +3750,8 @@ var en_US = {
     'clue.recommend.extract.num.limit': 'The number of leads extracted by your organization {timerange} has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
     'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} {timerange} and can extract up to {ableExtract} leads',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
     'clue.recommend.formal.extract.num.limit.tip': 'The {count} clause of this month has been extracted. If you need to continue to extract, please {addLeads}.',//本月{count}条已提取完毕，如需继续提取请{addLeads}
-    'clue.recommend.trial.extract.num.limit.tip': '{count} can be extracted again tomorrow. If necessary, {upgradedVersion} can be extracted immediately.',//明天可再提取{count}条，如需马上提取请{upgradedVersion}
-    'clue.recommend.company.trial.extract.num.limit.tip': 'You can extract {count} again tomorrow. If you need to extract it immediately, please contact our sales staff ({contact}) for upgrading',//明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级
+    'clue.recommend.trial.extract.num.limit.tip': 'The {count} bar has been extracted, if you want to continue extracting please {upgradedVersion}',//已提取{count}条，如需继续提取请{upgradedVersion}
+    'clue.recommend.company.trial.extract.num.limit.tip': '{count} bar has been extracted, if you want to continue extracting, please contact sales: {contact}',//已提取{count}条，如需继续提取请联系销售：{contact}
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
     'common.personal.contribution.score': 'Personal contribution score',//个人贡献分数
@@ -3768,6 +3777,7 @@ var en_US = {
     'crm.search.customer.name.no.found.tip': 'If there is no qualified customer, you can go to {customerpool} to see if there is one',//没有符合条件的客户，您可以去{customerpool}查看是否有该客户
     'batch.faild.count': 'The number of failed: {count}',//失败数{count}
     'batch.success.count': 'The number of successful: {count}',//成功数{count}
+    'clue.see.recommend': 'See recommendations',//查看推荐
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
     'clue.assignment.strategy.fail.to.get': 'Fail to fetch lead assignment strategy list',//获取线索分配策略列表失败
@@ -3846,8 +3856,13 @@ var en_US = {
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
-    'personal.welcome.use.curtao': 'Welcome to use the Curtao',//欢迎使用客套
+    'personal.welcome.use.curtao': 'Welcome to use the Curtao System, Complete the following guide to recommend accurate leads to customers',//欢迎试用客套系统，完成以下引导将向您推荐精准的线索客户
     'personal.open.success.tip': 'Congratulations! You have successfully opened the trial version. The rest of the trial period is {count} days',//恭喜您成功开通试用版，试用期剩余 {count} 天
+    'boot.complete.step.set.industry': 'Which industries do you focus on?',//您关注哪些行业的客户?
+    'boot.complete.step.set.area': 'Which geographic customers do you focus on?',//您关注哪个地域的客户?
+    'boot.complete.step.select.recommend.tip': 'Please select or enter a search',//请选择或输入搜索
+    'boot.select.industry.count.tip': 'Up to {count} industries can be selected',//最多可选择{count}个行业
+    'boot.not.found.industry.tip': 'No "{search}" related industries were found. You may be interested in the following industries',//没有搜索到 “{search}” 相关行业，您可能关心以下行业
     /*个人试用 --- end*/
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': 'Your probation period remains {time} days, whether {upgrade}？',//您的试用期剩余{time}天，是否{upgrade}
@@ -3856,10 +3871,22 @@ var en_US = {
     'organization.company.formal.expired.tip': 'Your account is about to expire, please contact our sales staff: {contact}',//您的账号即将到期，请联系我们的销售人员: {contact}
     /*组织到期提示 --- end*/
 
+    /*版本信息 --- start */
+    'versions.online.pay': 'Online Payment',//在线购买
+    'versions.connect.sale': 'contact our sales staff', //联系销售
+    'versions.personal.price': 'yuan/Month', // 元/月
+    'versions.pay.least.number': 'pieces minimum per order', //人起售
+    'versions.monthly.clues.recommend': 'item/month clues recommend', //{clues}条/月线索推荐
+    'versions.please.call.phone': 'please call{phone}', //请拨打
+    'versions.apply.try': 'experience{version}', //体验
+    'versions.compare.add.features': 'compare with {versionName}, add:', //比{versionName}增加以下功能:
+    /*版本信息 --- end */
+
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/
     'leave-feedback-title': 'Leave Feedback', //出差反馈
     'leave-feedback-visit-consumer': 'visit', //拜访了
     'leave-feedback-visit-record': 'Leave feedback record:', //拜访记录：
     /*销售出差反馈，弹窗给邮件抄送人 ---end*/
+
 };
 export default en_US;

@@ -8,7 +8,6 @@
 var React = require('react');
 var crypto = require('crypto');
 const PropTypes = require('prop-types');
-const classnames = require('classnames');
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../lib/websso';
 import {Icon} from 'antd';
 import classNames from 'classnames';
@@ -281,9 +280,14 @@ class LoginForm extends React.Component {
             }
         });
     };
-
+    openUserAgreement=(e) => {
+        window.open('/user/agreement');
+    }
+    toRegister=(e) => {
+        window.open('/register'); 
+    }
     render() {
-        const loginButtonClassName = classnames('login-button', {'not-allowed': this.state.loginButtonDisabled});
+        const loginButtonClassName = classNames('login-button', {'not-allowed': this.state.loginButtonDisabled});
 
         const hasWindow = this.props.hasWindow;
         let displayPwd = classNames('iconfont',{'icon-password-visible': this.state.passwordVisible,
@@ -314,6 +318,19 @@ class LoginForm extends React.Component {
                     </div>
                     {this.renderCaptchaBlock(hasWindow)}
                 </div>
+                <div className='login-user-agreement-tip'>
+                    <ReactIntl.FormattedMessage
+                        id='login.user.agreement.tip'
+                        defaultMessage='点击{btn}表示您已同意我们的{userAgreement}'
+                        values={{
+                            'btn': Intl.get('login.login', '登录'),
+                            'userAgreement': (
+                                <a onClick={this.openUserAgreement} data-tracename="点击《用户协议》">
+                                    {Intl.get('register.user.agreement.curtao', '《用户协议》')}
+                                </a>)
+                        }}
+                    />
+                </div>
                 <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? 'button' : 'submit'}
                     tabIndex="3"
                     disabled={this.state.loginButtonDisabled }
@@ -322,6 +339,18 @@ class LoginForm extends React.Component {
                     {hasWindow ? Intl.get('login.login', '登录') : null}
                     {this.state.logining ? <Icon type="loading"/> : null}
                 </button>
+                <div className='login-no-account-register-tip'>
+                    <ReactIntl.FormattedMessage
+                        id='login.no.account.register.tip'
+                        defaultMessage='没有账号，去{register}'
+                        values={{
+                            'register': (
+                                <a onClick={this.toRegister} data-tracename="点击注册">
+                                    {Intl.get('login.register', '注册')}
+                                </a>)
+                        }}
+                    />
+                </div>
             </form>
         );
     }
