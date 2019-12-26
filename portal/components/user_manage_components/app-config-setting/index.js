@@ -40,7 +40,14 @@ class AppConfigSetting extends React.Component {
                             </TabPane>
                         )
                     }
-                    <TabPane tab={Intl.get('crm.apply.user.separate.config', '分别配置')} key={CONFIG_TYPE.SEPARATE_CONFIG}>
+                    <TabPane
+                        tab={
+                            isHideUnifiedConfig ?
+                                Intl.get('menu.config', '配置') :
+                                Intl.get('crm.apply.user.separate.config', '分别配置')
+                        }
+                        key={CONFIG_TYPE.SEPARATE_CONFIG}
+                    >
                         {_.map(apps, app => {
                             let formData = _.find(appsConfigData, data => data.client_id === app.app_id);
                             return (
@@ -57,38 +64,6 @@ class AppConfigSetting extends React.Component {
                     </TabPane>
                 </Tabs>
             </div>);
-    }
-
-    onChangeUserType = (appsConfigData) => {
-
-    }
-
-    onCountChange = (appsConfigData) => {
-
-    }
-
-    onSelectDate = (appsConfigData) => {
-
-    }
-
-    onOverDraftChange = (appsConfigData) => {
-
-    }
-
-    onAppStatusChange = (appsConfigData) => {
-
-    }
-
-    onCheckTwoFactor = (appsConfigData) => {
-
-    }
-
-    onCheckMultiLogin = (appsConfigData) => {
-
-    }
-
-    onSelectTerminalChange = (appsConfigData) => {
-
     }
 
     renderAppConfigForm(app, appsConfigData) {
@@ -114,7 +89,7 @@ class AppConfigSetting extends React.Component {
                         >
                             <Radio.Group
                                 value={appsConfigData.user_type}
-                                onChange={this.onChangeUserType.bind(this, appsConfigData)}>
+                                onChange={this.props.onChangeUserType.bind(this, appsConfigData)}>
                                 {_.map(USER_TYPE_VALUE_MAP, (value, key) => {
                                     return (<Radio.Button value={value}>{USER_TYPE_TEXT_MAP[key]}</Radio.Button>);
                                 })
@@ -134,12 +109,12 @@ class AppConfigSetting extends React.Component {
                                 value={appsConfigData.number}
                                 min={1}
                                 max={999}
-                                onChange={this.onCountChange.bind(this, appsConfigData)}/>
+                                onChange={this.props.onCountChange.bind(this, appsConfigData)}/>
                         </FormItem>
                     ) : null
                 }
                 {
-                    this.props.isShowSelectedTime ? (
+                    false && this.props.isShowSelectedTime ? (
                         <FormItem
                             {...formItemLayout}
                             label={Intl.get('user.open.cycle', '开通周期')}
@@ -149,7 +124,7 @@ class AppConfigSetting extends React.Component {
                                 disableDateBeforeToday={true}
                                 endTimeEndOfDay={false}
                                 getEndTimeTip={ (date) => {return Intl.get('user.open.cycle.date.tip','将在{date}的0点过期',{'date': date});}}
-                                onSelect={this.onSelectDate.bind(this, appsConfigData)}
+                                onSelect={this.props.onSelectDate.bind(this, appsConfigData)}
                                 range={appsConfigData.range}
                                 start_time={appsConfigData.begin_date}
                                 end_time={appsConfigData.end_date}
@@ -173,7 +148,7 @@ class AppConfigSetting extends React.Component {
                             label={Intl.get('user.expire.select', '到期可选')}
                         >
                             <RadioGroup
-                                onChange={this.onOverDraftChange.bind(this, appsConfigData)}
+                                onChange={this.props.onOverDraftChange.bind(this, appsConfigData)}
                                 value={appsConfigData.over_draft ? appsConfigData.over_draft.toString() : '0'}>
                                 <Radio key="1" value="1">{Intl.get('user.status.stop', '停用')}</Radio>
                                 <Radio key="2" value="2">{Intl.get('user.status.degrade', '降级')}</Radio>
@@ -183,13 +158,13 @@ class AppConfigSetting extends React.Component {
                     ) : null
                 }
                 {
-                    this.props.isShowAppStatus ? (
+                    false && this.props.isShowAppStatus ? (
                         <FormItem
                             {...formItemLayout}
                             label={Intl.get('common.app.status', '开通状态')}
                         >
                             <RadioGroup
-                                onChange={this.onAppStatusChange.bind(this, appsConfigData)}
+                                onChange={this.props.onAppStatusChange.bind(this, appsConfigData)}
                                 value={appsConfigData.appStatus}
                             >
                                 <Radio key="false" value="false">{Intl.get('common.app.status.open', '开启')}</Radio>
@@ -205,13 +180,13 @@ class AppConfigSetting extends React.Component {
                             label={Intl.get('crm.186', '其他')}
                         >
                             <Checkbox
-                                onChange={this.onCheckTwoFactor.bind(this, appsConfigData)}
+                                onChange={this.props.onCheckTwoFactor.bind(this, appsConfigData)}
                                 checked={appsConfigData.is_two_factor === '1'}
                             >
                                 {Intl.get('user.two.step.certification', '二步认证')}
                             </Checkbox>
                             <Checkbox
-                                onChange={this.onCheckMultiLogin.bind(this, appsConfigData)}
+                                onChange={this.props.onCheckMultiLogin.bind(this, appsConfigData)}
                                 checked={appsConfigData.multilogin === '1'}
                             >
                                 {Intl.get('user.multi.login', '多人登录')}
@@ -226,7 +201,7 @@ class AppConfigSetting extends React.Component {
                         >
                             <CheckboxGroup
                                 options={terminalsOptions}
-                                onChange={this.onSelectTerminalChange.bind(this, appsConfigData)}
+                                onChange={this.props.onSelectTerminalChange.bind(this, appsConfigData)}
                                 value={checkedTerminals}
                             />
                         </FormItem>

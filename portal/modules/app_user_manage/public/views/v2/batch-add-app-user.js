@@ -649,7 +649,7 @@ const BatchAddAppUser = createReactClass({
             user_type = '正式用户';
         }
         //开通状态（开通）
-        const status = '1';
+        const status = 1;
         //选中的应用列表
         const selectedApps = this.state.selectedApps;
         //各个应用的配置
@@ -663,26 +663,33 @@ const BatchAddAppUser = createReactClass({
             const savedAppSetting = this.state.appsSetting[app_id];
             //应用id
             customAppSetting.client_id = app_id;
-            //角色
-            customAppSetting.roles = savedAppSetting.roles;
+            // 角色，注意：角色不是空时，才传角色字段
+            if (!_.isEmpty(savedAppSetting.roles)) {
+                customAppSetting.roles = savedAppSetting.roles;
+            }
+
             // 角色名称
-            customAppSetting.rolesInfo = savedAppSetting.rolesInfo;
-            //权限
-            customAppSetting.permissions = savedAppSetting.permissions;
+            // customAppSetting.rolesInfo = savedAppSetting.rolesInfo;
+            //权限，注意：权限不是空时，才传权限字段
+            if (!_.isEmpty(savedAppSetting.permissions)) {
+                customAppSetting.permissions = savedAppSetting.permissions;
+            }
+
             //开通状态
             customAppSetting.status = status;
             //到期停用
-            customAppSetting.over_draft = savedAppSetting.over_draft.value;
+            customAppSetting.over_draft = +savedAppSetting.over_draft.value;
             //开始时间
             customAppSetting.begin_date = savedAppSetting.time.start_time;
             //结束时间
             customAppSetting.end_date = savedAppSetting.time.end_time;
             // 多终端类型
-            if (savedAppSetting.terminals) {
-                customAppSetting.terminals = _.map(savedAppSetting.terminals.value, 'id');
+            let terminals = _.get(savedAppSetting.terminals, 'value');
+            if (!_.isEmpty(terminals)) {
+                customAppSetting.terminals = _.map(terminals, 'id');
             }
-            //正式、试用
-            customAppSetting.user_type = savedAppSetting.user_type.value;
+            //正式、试用（后端要求：类型使用tags字段）
+            customAppSetting.tags = savedAppSetting.user_type.value;
 
             //添加到列表中
             products.push(customAppSetting);
@@ -703,10 +710,11 @@ const BatchAddAppUser = createReactClass({
         });
         // 要提交的数据
         let submitData = [];
-        _.each(userIds, item => {
-            _.each(productionData, product => {
-                product.user_id = item;
-                submitData.push(product);
+        _.each(productionData, product => {
+            _.each(userIds, item => {
+                let newObj = _.cloneDeep(product);
+                newObj.user_id = item;
+                submitData.push(newObj);
             });
         });
         //调用action进行更新

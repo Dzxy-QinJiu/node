@@ -97,7 +97,7 @@ var AppUserRestApis = {
     //获取回复列表
     getReplyList: '/rest/base/v1/message/apply/comments',
     //管理员批量添加、修改应用
-    BATCH_GRANT_APPLICATION: '/rest/base/v1/user/batch/grant/application',
+    BATCH_GRANT_APPLICATION: '/rest/base/v1/user/batch/grants',
     //管理员批量延期
     BATCH_UPDATE_GRANT_DELAY: '/rest/base/v1/user/batch/grant/delay',
     //管理员批量修改开通时间

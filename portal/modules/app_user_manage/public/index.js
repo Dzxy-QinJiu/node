@@ -973,6 +973,7 @@ class AppUserManage extends React.Component {
             this.state.isGettingIntegrateType ||
             this.state.getItegrateTypeError ||
             this.state.isShowAddProductView);
+        
         return (
             <div>
                 <div className="app_user_manage_page table-btn-fix" data-tracename="用户管理">

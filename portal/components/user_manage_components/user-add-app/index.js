@@ -252,6 +252,11 @@ class UserAddApp extends React.Component {
                 configType: CONFIG_TYPE.UNIFIED_CONFIG
             });
         }
+        setTimeout(() => {
+            this.setState({
+                appPropSettingsMap: this.createPropertySettingData(this.state)
+            });
+        });
     }
 
     // 选择后的产品，再次删除的处理
@@ -279,6 +284,46 @@ class UserAddApp extends React.Component {
         this.setState({
             configType: configType
         });
+    }
+
+    handleFormItemEdit(field, appFormData, e) {
+        let value = null;
+        //处理多终端
+        if (field === 'terminals') {
+            let checkedValue = e;
+            let terminals = [];
+            if (!_.isEmpty(checkedValue)) {
+                _.each(checkedValue, checked => {
+                    if (checked) {
+                        let selectedTerminals = _.find(app.terminals, item => item.name === checked);
+                        terminals.push(selectedTerminals);
+                    }
+                });
+                value = terminals;
+            } else {
+                value = [];
+            }
+        } else {
+            if (e.target.type === 'checkbox') {
+                value = e.target.checked ? '1' : '0';
+            } else {
+                value = e.target.value;
+            }
+        }
+
+        if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
+            const appPropSettingsMap = this.state.appPropSettingsMap;
+            _.each(appPropSettingsMap, item => {
+                const formData = item || {};
+                formData[field].value = value;
+            });
+            this.setState({ appPropSettingsMap });
+        } else {
+            const appPropSettingsMap = this.state.appPropSettingsMap;
+            const formData = appPropSettingsMap[app.app_id] || {};
+            formData[field].value = value;
+            this.setState({ appPropSettingsMap });
+        }
     }
     
     renderAppConfig = () => {
@@ -332,6 +377,11 @@ class UserAddApp extends React.Component {
                             configType={this.state.configType}
                             changeConfigType={this.changeConfigType}
                             isShowAppStatus={true}
+                            onOverDraftChange={this.handleFormItemEdit.bind(this, 'over_draft')}
+                            onChangeUserType={this.handleFormItemEdit.bind(this, 'user_type')}
+                            onCheckTwoFactor={this.handleFormItemEdit.bind(this, 'is_two_factor')}
+                            onCheckMultiLogin={this.handleFormItemEdit.bind(this, 'multilogin')}
+                            onSelectTerminalChange={this.handleFormItemEdit.bind(this, 'terminals')}
                         />
                     </div>
                 </GeminiScrollBar>
@@ -489,6 +539,17 @@ UserAddApp.defaultProps = {
     containerTitle: '',
     appList: [],
     handleFinish: noop,
+    defaultSettings: {
+        user_type: USER_TYPE_VALUE_MAP.TRIAL_USER, // 用户类型
+        start_time: DateSelectorUtils.getMilliseconds(defaultSelectedTime.start_time), //开始时间
+        end_time: DateSelectorUtils.getMilliseconds(defaultSelectedTime.end_time), //结束时间
+        range: '0.5m', // 开通周期
+        over_draft: '1', // 到期状态，默认是停用
+        status: '1', // 开通状态
+        is_two_factor: '0', // 二步认证
+        multilogin: '0' // 多人登录
+    },
+    appsSetting: {},
 };
 
 UserAddApp.propTypes = {
@@ -496,6 +557,8 @@ UserAddApp.propTypes = {
     appList: PropTypes.array,
     handleFinish: PropTypes.func,
     height: PropTypes.number,
+    defaultSettings: PropTypes.Object,
+    appsSetting: PropTypes.Object,
 };
 
 export default UserAddApp;
