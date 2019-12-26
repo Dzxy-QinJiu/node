@@ -28,6 +28,7 @@ import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 import {getTimeStr} from 'PUB_DIR/sources/utils/common-method-util';
+import phoneUtil from '../utils/phone-util';
 
 // 获取弹窗通知的状态
 function getNotifyStatus() {
@@ -823,6 +824,12 @@ function getReloginTooltip(userObj) {
 function handleSessionExpired() {
     ajaxGlobal.handleSessionExpired();
 }
+// /logout退出登录后的处理
+function handleLogout(){
+    //退出登录后，退出容联电话系统的登录
+    phoneUtil.logoutCallClient();
+}
+
 //断开连接时，移出Emitter监听器
 function socketEmitterListener() {
     if (socketIo) {
@@ -836,6 +843,7 @@ function disconnectListener() {
         socketIo.off('mes', listenOnMessage);
         socketIo.off('offline', listenOnOffline);
         socketIo.off('sessionExpired', handleSessionExpired);
+        socketIo.off('logoutAccount', handleLogout);
         socketIo.off('batchOperate', batch.batchOperateListener);
         socketIo.off('disconnect', disconnectListener);
         socketIo.off('phonemsg', phoneEventListener);
@@ -864,6 +872,8 @@ function startSocketIo() {
         socketIo.on('offline', listenOnOffline);
         //监听session过期的消息
         socketIo.on('sessionExpired', handleSessionExpired);
+        // 监听退出登录的消息
+        socketIo.on('logoutAccount', handleLogout);
         //监听用户批量操作的消息
         socketIo.on('batchOperate', batch.batchOperateListener);
         //监听 disconnect

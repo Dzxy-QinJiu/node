@@ -7,6 +7,7 @@
 
 var UI_ERROR = require('../../lib/utils/request-error-util');
 import {Modal} from 'antd';
+import phoneUtil from './utils/phone-util';
 
 (function() {
     //socket的emitter
@@ -20,6 +21,8 @@ import {Modal} from 'antd';
     /*处理ajax时，session过期的问题*/
     function handel401Ajax() {
         sendMessage && sendMessage('session过期, globalError status: 401');
+        // session超时后，退出容联电话系统的登录
+        phoneUtil.logoutCallClient();
         //让socket断开连接
         socketEmitter.emit(socketEmitter.DISCONNECT);
         //session过期提示的添加
@@ -45,6 +48,8 @@ import {Modal} from 'antd';
      * @param tipContent
      */
     function handleReloginError(tipContent) {
+        // 登录踢出后，退出容联电话系统的登录
+        phoneUtil.logoutCallClient();
         //让socket断开连接
         socketEmitter.emit(socketEmitter.DISCONNECT);
         Modal.error({
