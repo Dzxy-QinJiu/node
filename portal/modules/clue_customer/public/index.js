@@ -865,6 +865,9 @@ class ClueCustomer extends React.Component {
         if (filterStoreData.notConnectedClues){
             queryRangeParam.push({name: 'no_answer_times', from: 1});
         }
+        if(filterStoreData.leadFromLeadPool){//筛选从线索池中提取的线索
+            queryRangeParam[0].name = 'extract_time';
+        }
         //查询线索列表的请求参数
         return {
             queryParam: {

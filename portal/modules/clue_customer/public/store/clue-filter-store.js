@@ -73,6 +73,8 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.notConnectedClues = '';
     //销售团队
     this.teamList = [];
+    //获取从线索池中提取的线索
+    this.leadFromLeadPool = false;
 };
 //获取未打通电话的线索
 ClueFilterStore.prototype.setNotConnectedClues = function(flag) {
@@ -80,6 +82,14 @@ ClueFilterStore.prototype.setNotConnectedClues = function(flag) {
         this.notConnectedClues = true;
     }else{
         this.notConnectedClues = '';
+    }
+};
+//获取从线索池中提取的线索
+ClueFilterStore.prototype.setLeadFromLeadPool = function(flag) {
+    if(flag){
+        this.leadFromLeadPool = true;
+    }else{
+        this.leadFromLeadPool = false;
     }
 };
 
