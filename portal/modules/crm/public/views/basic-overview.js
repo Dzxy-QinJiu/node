@@ -584,7 +584,7 @@ class BasicOverview extends React.Component {
                             titleDescr={this.renderPlatFormName(platformName)}
                         />
                     ) : null}
-                    {hasPrivilege(PRIVILEGE_MAP.CRM_CUSTOMER_SCORE_RECORD) && !this.props.disableEdit ? (
+                    {crmUtil.checkPrivilege([crmPrivilegeConst.CUSTOMER_ALL, crmPrivilegeConst.CRM_LIST_CUSTOMERS]) && !this.props.disableEdit && hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) ? (
                         <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
                             showUserDetail={this.props.showUserDetail}
                             customerUserSize={_.get(this.state.crmUserList, 'length', 0)}/>) : null
