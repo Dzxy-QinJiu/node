@@ -17,11 +17,11 @@ import classNames from 'classnames';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import { PrivilegeChecker } from 'CMP_DIR/privilege/checker';
 import orderPrivilegeConst from 'MOD_DIR/deal_manage/public/privilege-const';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {getDetailLayoutHeight} from '../../utils/crm-util';
 //高度常量
 const LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
-    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
-    MARGIN_BOTTOM: 8, //跟进记录页的下边距
     ADD_ORDER_HEIGHHT: 155,//添加订单面板的高度
     TOP_TOTAL_HEIGHT: 30//共xxx条的高度
 };
@@ -43,7 +43,11 @@ const APPLY_TYPES = {
 };
 
 class OrderIndex extends React.Component {
-    state = {...OrderStore.getState(), curCustomer: this.props.curCustomer};
+    state = {
+        ...OrderStore.getState(), 
+        curCustomer: this.props.curCustomer,
+        layoutHeight: getDetailLayoutHeight(),
+    };
 
     onChange = () => {
         this.setState(OrderStore.getState());
@@ -54,6 +58,19 @@ class OrderIndex extends React.Component {
         OrderAction.getAppList();
         this.getOrderList(this.props.curCustomer, this.props.isMerge || this.props.disableEdit);
         OrderAction.getSysStageList();
+        $(window).on('resize', this.resizeLayoutHeight);
+        // 监听到拨打电话状态展示区高度改变后，重新计算高度
+        phoneMsgEmitter.on(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT, this.resizeLayoutHeight);
+    }
+
+    componentWillUnmount() {
+        OrderStore.unlisten(this.onChange);
+        $(window).off('resize', this.resizeLayoutHeight);
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT, this.resizeLayoutHeight);
+    }
+
+    resizeLayoutHeight = () => {
+        this.setState({ layoutHeight: getDetailLayoutHeight() });
     }
 
     getOrderList = (curCustomer, isMerge) => {
@@ -80,10 +97,6 @@ class OrderIndex extends React.Component {
                 this.getOrderList(nextProps.curCustomer, nextProps.isMerge || nextProps.disableEdit);
             });
         }
-    }
-
-    componentWillUnmount() {
-        OrderStore.unlisten(this.onChange);
     }
 
     showForm = (id) => {
@@ -212,12 +225,7 @@ class OrderIndex extends React.Component {
     render() {
         const _this = this;
         const appList = this.state.appList;
-        let divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
-        //减头部的客户基本信息高度
-        divHeight -= parseInt($('.basic-info-contianer').outerHeight(true));
-        if ($('.phone-alert-modal-title').size()) {
-            divHeight -= $('.phone-alert-modal-title').outerHeight(true);
-        }
+        let divHeight = this.state.layoutHeight;
         //减添加订单面版的高度
         if (this.state.isShowAddContactForm) {
             divHeight -= LAYOUT_CONSTANTS.ADD_ORDER_HEIGHHT;

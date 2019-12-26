@@ -7,17 +7,31 @@ var React = require('react');
  */
 //滚动条
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-
+import {getDetailLayoutHeight} from '../../utils/crm-util';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 //高度常量
 const LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
-    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
-    MARGIN_BOTTOM: 8 ,//面板的下边距
-    TOP_TOTAL_HEIGHT: 30 //共xxx条的高度
 };
 class RightPanelScrollBar extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            layoutHeight: getDetailLayoutHeight(props.totalHeight)
+        };
+    }
+    componentDidMount() {
+        $(window).on('resize', this.resizeLayoutHeight);
+        // 监听到拨打电话状态展示区高度改变后，重新计算高度
+        phoneMsgEmitter.on(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT, this.resizeLayoutHeight);
+    }
+    componentWillUnmount() {
+        $(window).off('resize', this.resizeLayoutHeight);
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT, this.resizeLayoutHeight);
+    }
+
+    resizeLayoutHeight = () => {
+        this.setState({ layoutHeight: getDetailLayoutHeight(this.props.totalHeight) });
     }
 
     handleScrollBarBottom() {
@@ -27,19 +41,7 @@ class RightPanelScrollBar extends React.Component {
     }
 
     render() {
-        let divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
-        if (parseInt($('.basic-info-contianer').outerHeight(true))){
-            //减头部的客户基本信息高度
-            divHeight -= parseInt($('.basic-info-contianer').outerHeight(true));
-        }
-        if ($('.phone-alert-modal-title').size()) {
-            divHeight -= $('.phone-alert-modal-title').outerHeight(true);
-        }
-        // 减去条数的高度
-        if (this.props.totalHeight) {
-            divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
-        }
-      
+        let divHeight = this.state.layoutHeight;
         //合并面板，去掉客户选择框的高度
         if (this.props.isMerge) {
             divHeight = divHeight - LAYOUT_CONSTANTS.MERGE_SELECT_HEIGHT;

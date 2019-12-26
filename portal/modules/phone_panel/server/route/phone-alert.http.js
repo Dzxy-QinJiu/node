@@ -15,7 +15,8 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'CREATE_CUSTOMER_APP_FEEDBACK'
+            // 新改权限中没有对应的权限，暂时先注释旧权限，有对应的新权限后，方便查找替换
+            // 'CREATE_CUSTOMER_APP_FEEDBACK'
         ]
     }]
 };
