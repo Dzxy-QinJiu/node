@@ -1,4 +1,3 @@
-var React = require('react');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
@@ -9,18 +8,13 @@ const Validator = Validation.Validator;
 var language = require('../../../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('../../../../../components/user_manage_components/css/right-panel-es_VE.less');
-} else if (language.lan() === 'zh') {
-    require('../../../../../components/user_manage_components/css/right-panel-zh_CN.less');
-}
-
-//表单样式，表单项高度，输入框宽度等
-var language = require('../../../../../public/language/getLanguage');
-if (language.lan() === 'es' || language.lan() === 'en') {
+    // 表单样式，表单项高度，输入框宽度等
     require('../../../../../components/user_manage_components/css/form-basic-es_VE.less');
 } else if (language.lan() === 'zh') {
+    require('../../../../../components/user_manage_components/css/right-panel-zh_CN.less');
+    // 表单样式，表单项高度，输入框宽度等
     require('../../../../../components/user_manage_components/css/form-basic-zh_CN.less');
 }
-
 
 import {Carousel, CarouselItem} from 'react-bootstrap';
 import {RightPanelClose} from '../../../../../components/rightPanel';
@@ -321,6 +315,10 @@ const AddOrEditUser = createReactClass({
             customAppSetting.user_type = user_type;
             //多人登录
             customAppSetting.mutilogin = savedAppSetting.multilogin.value;
+            if (savedAppSetting.terminals) {
+                // 应用多终端选择
+                customAppSetting.terminals = _.map(savedAppSetting.terminals.value, 'id');
+            }
             //添加到列表中
             result.products.push(customAppSetting);
         });
@@ -762,9 +760,9 @@ const AddOrEditUser = createReactClass({
 
     onAppsChange(apps) {
         AppUserFormActions.setSelectedApps(apps);
-        //当只有一个应用的时候，需要把特殊设置的应用属性隐藏掉，
+        //当只有一个应用的时候，并且这个应用没有多终端类型时，需要把特殊设置的应用属性隐藏掉，
         // 这个时候，要把第三步的应用属性同步到通用配置属性上
-        if (apps.length === 1) {
+        if (apps.length === 1 && _.isEmpty(apps[0].terminals)) {
             //渲染是异步的，加setTimeout能够获取到最新的配置信息
             setTimeout(() => {
                 //将应用的特殊设置同步到全局设置
@@ -785,7 +783,6 @@ const AddOrEditUser = createReactClass({
             LAYOUT_CONSTANTS.APPS_CHOOSEN_TOPBAR;
         dynamicStyle && dynamicStyle.destroy();
         dynamicStyle = insertStyle(`.user-manage-adduser .search-icon-list-content{max-height:${height}px;overflow-y:auto;overflow-x:hidden;`);
-
         return (
             <div className="apps-carousel">
                 {
@@ -853,7 +850,6 @@ const AddOrEditUser = createReactClass({
                 onAppPropertyChange={this.onAppPropertyChange}
                 height={height}
                 hideSingleApp={true}
-
             />
         );
     },

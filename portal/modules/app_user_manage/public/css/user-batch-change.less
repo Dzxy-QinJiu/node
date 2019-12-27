@@ -1,0 +1,97 @@
+/**
+* 用户-批量变更界面改版
+*/
+@import "../../../../public/css/common-variables";
+
+.user-batch-change-wrap {
+  height: 100%;
+  .icon-close  {
+    color: #fff !important;
+  }
+  .right-panel-modal-content {
+    height: 100%;
+    .user-batch-change-content-wrap {
+      padding: 0 20px;
+      .selected-number{
+        font-size:14px;
+        .the-number{
+          color:#f4ba4a;
+          padding:5px;
+        }
+      }
+      // 内容区
+      .batch-change-content {
+        // tabs 样式
+        .ant-tabs {
+          .ant-tabs-bar {
+            margin-bottom: 8px;
+            .ant-tabs-nav {
+              color: @label-content-color;
+              .ant-tabs-tab {
+                margin-right: 8px;
+                font-size: 14px;
+                padding: 8px 8px 8px 0!important;
+              }
+              .ant-tabs-tab-active {
+                color: @hover-btn-color;
+              }
+            }
+          }
+        }
+        // 内容区
+        .detail-card-container {
+            .detail-card-content {
+              .ant-form-item-label {
+                label {
+                  font-size: 14px;
+                  font-weight: normal;
+                  color: @label-content-color;
+                }
+              }
+              // 单选框样式
+              .ant-radio-group {
+                .ant-radio-wrapper {
+                  .ant-radio + span {
+                    color: #5d5d5d;
+                    font-weight: normal;
+                  }
+                }
+              }
+              //所属客户样式
+              .customer_searchbox_wrap {
+                  .ant-select {
+                    width: 100%;
+                  }
+              }
+              // 权限设置样式
+              .app-role-permission {
+                .app-role-permission-role, .app-role-permission-permission {
+                  .app-property-content {
+                    background-color: @content-zone-background;
+                  }
+                }
+              }
+            }
+        }
+
+      }
+
+      // 操作区
+      .batch-change-btns{
+        position: absolute;
+        bottom: 0;
+        left: 21px;
+        right: 19px;
+        z-index: 1;
+        height: 54px;
+        border-top: 1px solid #d7dce0;
+        padding: 13px 0 0 0;
+        .pull-right {
+          .ant-btn-primary {
+            margin-left: 8px;
+          }
+        }
+      }
+    }
+  }
+}

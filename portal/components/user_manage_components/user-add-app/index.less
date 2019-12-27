@@ -1,0 +1,387 @@
+@right_panel_bgcolor: #f5f5f5;
+@btn-blue: #108ee9;
+@font-grey: #999999;
+@bd-lightgrey: #EBEBEB;
+@bg-lightblue: #EEF7FE;
+@bd-blue: #2497F4;
+@app-logo-width: 24px;
+@app-logo-mr: 7px;
+@app-pl: @app-logo-width + @app-logo-mr;
+@app-title-width: 150px;
+@user-name-width: 185px;
+@font-lightblue: #9FB5CC;
+@color: #4c8ec4;
+@item-height: 40px;
+@icon-grey: #8DA8C6;
+
+.titlecut() {
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  white-space: nowrap;
+  word-wrap: normal; //兼容ie8
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// 添加应用
+.user-add-app-wrap {
+  height: 100%;
+  .add-app-container {
+    height: 100%;
+    background: white; //布局样式
+    .operation-steps-footer {
+      border: none;
+      .btns {
+        .ant-btn {
+          background: @btn-blue;
+          border-color: @btn-blue;
+          color: #fff;
+        }
+        .form-submit-btn {
+          float: right;
+        }
+      }
+    }
+    .apply-app-user-config .app-config-wrap .user-type-radio-form-item.ant-form-item .ant-radio-group label {
+      padding: 0;
+    }
+    .app-config-wrap {
+      .ant-radio-group label {
+        text-align: center;
+      }
+      .ant-col-5 {
+        margin-top: -1px;
+      }
+      .ant-col-19 {
+        text-align: left;
+        input {
+          width: 100%;
+        }
+      }
+    }
+    .apply-app-user-config {
+      float: none;
+      .app-config-wrap {
+        float: none;
+        width: 100%;
+      }
+    }
+    .app-property-setting {
+      padding-left: 3px;
+      padding-top: 0;
+    }
+    .operation-steps {
+      position: static;
+      background: @right_panel_bgcolor;
+      height: 38px;
+      border: none;
+      .operation-steps-title {
+        margin-top: 6px;
+        color: black;
+        border: none;
+        padding: 0;
+      }
+    }
+    .carousel>.carousel-inner>.item {
+      padding: 30px 0 54px 0;
+    }
+    ul.list-unstyled {
+      margin: 0;
+      width: 100%;
+      border-bottom: 1px solid #eee;
+      li.operation-steps-action {
+        padding: 8px;
+        font-size: 14px;
+        color: #5a5e5f;
+        line-height: 22px;
+        position: relative;
+        width: initial;
+        &:after {
+          content: none;
+        }
+        .active-dot {
+          display: none;
+        }
+        span.active {
+          font-weight: bold;
+        }
+      }
+    }
+    .btn-bar {
+      text-align: right;
+      button {
+        margin-left: 5px;
+      }
+    }
+    .left-nav-container,
+    .add-app-content {
+      display: inline-block;
+      vertical-align: top;
+    }
+    .left-nav-container {
+      font-size: 14px;
+      color: @font-grey;
+    }
+    .add-app-content {
+      width: 345px;
+    }
+    .app-config-container {
+      overflow-x: hidden;
+      .ant-form-item {
+        margin-bottom: 3px;
+        padding-right: 5px;
+      }
+    }
+    .title-container {
+      overflow: hidden;
+      .logo-container {
+        float: left;
+        vertical-align: middle;
+        width: @app-logo-width;
+        height: @app-logo-width;
+        border-radius: 4px;
+        margin-right: @app-logo-mr;
+        overflow: hidden;
+        img {
+          width: 100%;
+          height: 100%;
+          vertical-align: top;
+        }
+        .no-user-logo-div {
+          height: 24px;
+          width: 24px;
+          line-height: 24px;
+          font-size: 16px;
+          border-radius: 4px;
+          display: block;
+          .icon-users-ico {
+            font-size: 16px;
+          }
+        }
+      }
+      p {
+        max-width: @app-title-width;
+        margin-right: 8px;
+        float: left;
+        font-size: 15px;
+        text-align: left;
+        .titlecut();
+      }
+      .icon-bar {
+        cursor: pointer;
+        float: right;
+        margin-right: 10px;
+        font-size: 15px;
+      }
+    }
+    .selected-app-container {
+      border: 1px solid @bd-lightgrey;
+      border-radius: 4px;
+      padding: 5px 0;
+      p.btn-text {
+        text-align: left;
+        font-size: 14px;
+        padding-left: 11px;
+        margin-top: 5px;
+      }
+      ul {
+        li {
+          padding: 2px 0 2px 11px;
+          margin: 3px 0;
+          &:hover {
+            background: @bg-lightblue;
+          }
+          .anticon {
+            cursor: pointer;
+            vertical-align: bottom;
+          }
+        }
+      }
+    }
+    .app-selector-container {
+      padding: 12px;
+      border: 1px solid @bd-blue;
+      border-radius: 4px;
+      .input-container {
+        margin-bottom: 12px;
+      }
+      .app-list-container {
+        text-align: left;
+        .ant-checkbox-wrapper {
+          display: block;
+          font-size: 14px;
+          line-height: 32px;
+          margin: 0 -12px;
+          padding: 0 12px;
+          &:hover {
+            background: @bg-lightblue;
+          }
+        }
+      }
+    }
+  }
+   .app-role-permission {
+    padding-left: 10px;
+    color: #666;
+    .anticon-info-circle.ant-alert-icon {
+      font-size: 12px;
+      top: 11px;
+      left: 15px;
+      position: absolute;
+    }
+    .ant-alert {
+      padding: 8px 18px 8px 38px;
+    }
+    .permission-group-item-container {
+      h4 {
+        margin-bottom: 10px;
+        font-size: 15px;
+        cursor: pointer;
+        i {
+          margin-right: 8px;
+        }
+      }
+    }
+    ul.permission-group-item-wrapper {
+      margin-top: -10px;
+      .permission-group-item-container {
+        border-bottom: 1px solid @bd-lightgrey;
+        .ant-checkbox-group {
+          padding-left: 22px;
+          margin-top: 7px;
+          label.ant-checkbox-wrapper {
+            margin-left: 0;
+            display: block;
+            line-height: 25px;
+            font-weight: initial;
+          }
+        }
+        h4 {
+          margin-bottom: 0;
+        }
+        .show-detail {
+          padding-top: 15px;
+        }
+        .hide-detail {
+          padding-top: 3px;
+          h4 {
+            line-height: 40px;
+          }
+        }
+      }
+    }
+    .load8 {
+      transform: scale(0.5, 0.5);
+      .loader8 {
+        border-left-color: #394144;
+      }
+    }
+    h3 {
+      padding: 10px;
+      font-size: 14px;
+      .anticon-reload {
+        margin: 0;
+      }
+    }
+    @bgcolor: #DEE7ED;
+    .no-data {
+      background: white;
+      padding: 2px 6px 2px 12px;
+    }
+
+    .app-property-content {
+      background: white;
+      .no-data {
+        background: white;
+      }
+      padding: 0;
+    }
+
+
+    .app-property-roles {
+      margin: 0;
+      @active: #4D96D1;
+      .iconfont {
+        float: right;
+        font-size: 16px;
+        cursor: pointer;
+        &:hover {
+          color: @active;
+          transform: scale(1.2, 1.2);
+        }
+        position:relative;
+        margin-right:11px;
+      }
+    }
+    .ant-alert {
+      margin-bottom: 0;
+      display: inline-block;
+    }
+    .ant-alert-error,
+    .ant-alert-info {
+      border-color: transparent;
+      background: transparent;
+    }
+    .anticon-reload {
+      cursor: pointer;
+      float: right;
+      margin: 11px 15px 0 0;
+    }
+    .app-role-permission-list {
+      padding: 10px 0 0 10px;
+    }
+    .app-role-permission-permission {
+      .app-role-permission-list {
+        padding: 0 0 4px 14px;
+      }
+    }
+    .rounded_item {
+      cursor: pointer;
+      display: inline-block;
+      vertical-align: top;
+      height: 22px;
+      border: 1px solid @bd-lightgrey;
+      border-radius: 4px;
+      color: #777;
+      line-height: 19px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      padding: 0 9px;
+      &.selected {
+        border-color: @bd-blue;
+        background-color: @bg-lightblue;
+        color: @bd-blue;
+      }
+      &.unselectable-item {
+        border-color: lighten(@color , 30%);
+        background-color: lighten(@color , 30%);
+        cursor: not-allowed;
+        color: #777;
+      }
+    }
+    .ant-tabs-content {
+      margin-top: -5px;
+    }
+    .ant-tabs-tabs-bar {
+      margin-top: 0px !important;
+    }
+    .ant-tabs-tab-inner {
+      padding: 8px 16px !important;
+    }
+    .ant-tabs-ink-bar {
+      background-color: #4d96d1;
+    }
+    .ant-tabs-tabs-bar {
+      border-bottom-color: #ccd6e5;
+    }
+    .app-role-permission-permission {
+      margin-top: 20px;
+    }
+  }
+
+  .app-role-permission.theme-b {
+    h3 {
+      border-bottom: 1px solid #777;
+    }
+  }
+}

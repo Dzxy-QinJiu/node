@@ -587,7 +587,7 @@ class ClueTraceList extends React.Component {
                                 </span>
                             ) : null
                         }
-                        {_.includes(PHONE_TYPES, item.type) ?
+                        {_.includes(PHONE_TYPES, item.type) && editCluePrivilege(this.props.curClue) ?
                             (<span className="phone-call-out-btn handle-btn-item" title={Intl.get('crm.click.call.phone', '点击拨打电话')}>
                                 <PhoneCallout
                                     phoneNumber={item.dst}

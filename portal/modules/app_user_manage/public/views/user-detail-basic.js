@@ -377,6 +377,13 @@ class UserDetailBasic extends React.Component {
             </StatusWrapper>
         );
     };
+
+    // 渲染終端类型
+    renderAppTerminals = (app) => {
+        // TODO code需要改成name
+        return _.map(app.terminals, 'name').join('、');
+    };
+
     renderAppInfo = (app) => {
         var start_time = moment(new Date(+app.start_time)).format(FORMAT);
         var end_time = moment(new Date(+app.end_time)).format(FORMAT);
@@ -422,6 +429,13 @@ class UserDetailBasic extends React.Component {
                         defaultMessage="开通状态" />：{this.renderStatus(app)}</span> */}
                     {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.two.step.certification"
                         defaultMessage="二步认证" />：{this.renderIsTwoFactor(app, true)}</span>}
+                    {
+                        app.terminals ? (
+                            <span>
+                                {Intl.get('common.terminals', '終端')}：{this.renderAppTerminals(app)}
+                            </span>
+                        ) : null
+                    }
                 </div>
             </div>
         );

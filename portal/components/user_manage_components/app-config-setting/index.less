@@ -1,0 +1,130 @@
+//申请用户时，各应用的配置
+.apply-app-user-config {
+  float: left;
+  width: 100%;
+  margin-bottom: 8px;
+  .app-config-wrap {
+    float: right;
+    background-color: #f5f5f5;
+    border-radius: 3px;
+    padding: 8px;
+    //邮箱格式的用户名，只能申请一个用户的提示样式
+    .only-one-user-tip {
+      float: left;
+      width: 100%;
+      padding-left: 67px;
+      color: #f04134;
+    }
+    //配置内容的样式
+    .ant-form-item-label label {
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 13px;
+      color: #999999;
+    }
+    .ant-input-number {
+      width: 100%;
+    }
+    //时间组件的修改
+    .user-opening-daterange {
+      width: 100%;
+      .range_wrap {
+        min-width: 70px;
+        padding: 4px;
+        z-index: auto;
+        .range_text {
+          margin: 0 4px;
+        }
+        .ant-dropdown-menu {
+          border: 1px solid #d2d3d5;
+        }
+      }
+
+      .date_text_wrap {
+        z-index: auto;
+        .line {
+          width: 8px;
+          margin: 0 6px;
+        }
+        .anticon-calendar, .anticon-question-circle-o {
+          display: none;
+        }
+      }
+      .bootstrap-datepicker-wrap {
+        left: -26px;
+        top: 28px;
+        .datepicker-inline {
+          z-index: 1;
+        }
+      }
+    }
+    .ant-form-item {
+      .ant-radio-group {
+        padding-top: 0;
+        label {
+          margin-bottom: 0;
+          line-height: 28px;
+        }
+      }
+      .ant-checkbox-wrapper{
+        font-weight: normal;
+      }
+    }
+    //应用配置中，用户类型的样式
+    .user-type-radio-form-item.ant-form-item {
+      .ant-radio-group {
+        padding-top: 0;
+        width: 100%;
+        label {
+          height: 26px;
+          width: 20%;
+          padding: 0 12px;
+          line-height: 24px;
+          font-size: 13px;
+          font-weight: normal;
+        }
+      }
+    }
+
+    //多个应用配置面板的样式
+    .app-config-tab-container {
+      .ant-tabs {
+        overflow: visible;
+      }
+      > .ant-tabs-card {
+        > .ant-tabs-bar {
+          margin-bottom: 4px;
+          border-color: transparent;
+          .ant-tabs-tab, .ant-tabs-tab-active {
+            border-color: transparent;
+            background: transparent;
+          }
+        }
+        > .ant-tabs-content {
+          float: left;
+          .app-config-item {
+            float: left;
+            width: 100%;
+            margin-bottom: 4px;
+            padding: 4px 4px 0 4px;
+            border: 1px solid #d9d9d9;
+            border-radius: 3px;
+            background-color: #ffffff;
+            .square-logo-tag {
+              margin-right: 0;
+              border: none;
+              .square-logo-tag-text {
+                max-width: 260px;
+              }
+            }
+            .app-config-content {
+              float: left;
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+    //end of .app-config-tab-container {
+  }
+}

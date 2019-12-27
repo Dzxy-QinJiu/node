@@ -302,7 +302,11 @@ var zh_CN = {
     'common.number.validate.tips': '请填写最多两位小数的数字',
     'common.app.android': '安卓版',
     'common.app.ios': 'IOS版',
+    'common.terminals.type': '终端类型',
+    'common.all.terminals': '所有终端',
+    'common.terminals': '终端',
     //公共部分--end
+    
     'login.login': '登录',
     'login.register': '注册',
     'login.service.error': '很抱歉,服务器出现了异常状况',
@@ -1901,6 +1905,7 @@ var zh_CN = {
     'crm.customer.pool.rule.release.setting': '释放设置',
     'crm.customer.pool.rule.own.visible': '自己释放的自己不可见',
     'crm.filter.extract.from.customer.pool': '从客户池中提取的客户',
+    'crm.filter.extract.from.lead.pool': '从线索池中提取的线索',
     'crm.basic.second.level.domain': '舆情平台域名',
     'crm.basic.plat.form.name': '舆情平台名称',
 

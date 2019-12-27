@@ -295,9 +295,12 @@ var en_US = {
     'common.call.owe.tips': 'Your telephone charge is overdue, please try it after topping up', // 您的电话号码已欠费，请充值后再试！
     'common.number.validate.tips': 'Please fill in at most two decimal places',//请填写最多两位小数的数字
     'common.app.android': 'Android', // 安卓版
-    'common.app.ios': 'IOS', // IOS版
-    
+    'common.app.ios': 'IOS', // IOS版   
+    'common.terminals.type': 'ype of terminal', // 终端类型
+    'common.all.terminals': 'All terminals', // 所有终端
+    'common.terminals': 'Terminal', // 终端
     //公共部分--end
+
     'login.login': 'Login',//登录
     'login.register': 'Register',//注册
     'login.service.error': 'Sorry for the abnormal condition of the server',//很抱歉,服务器出现了异常状况
@@ -1880,6 +1883,7 @@ var en_US = {
     'crm.customer.pool.rule.release.setting': 'Release the set',//释放设置
     'crm.customer.pool.rule.own.visible': 'The self released is invisible',//自己释放的自己不可见
     'crm.filter.extract.from.customer.pool': 'Customers extracted from the customer pool',//从客户池中提取的客户
+    'crm.filter.extract.from.lead.pool': 'Leads extracted from the lead pool',//从线索池中提取的线索
     'crm.basic.second.level.domain': 'Public opinion platform domain name',//舆情平台域名
     'crm.basic.plat.form.name': 'Public opinion platform name',//舆情平台名称
 

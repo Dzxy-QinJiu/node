@@ -2,11 +2,10 @@
  * 申请用户
  */
 //右侧面板样式，上一步、下一步，滑动布局等
-var React = require('react');
 var language = require('../../../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('../../../../../components/user_manage_components/css/right-panel-es_VE.less');
-}else if (language.lan() == 'zh'){
+}else if (language.lan() === 'zh'){
     require('../../../../../components/user_manage_components/css/right-panel-zh_CN.less');
 }
 import {Carousel,CarouselItem} from 'react-bootstrap';
@@ -44,7 +43,7 @@ class ApplyUser extends React.Component {
     turnStep = (direction) => {
         let step = this.state.step;
         if (direction === 'next') {
-            if (step == 0) {
+            if (step === 0) {
                 //检查是否至少选择了一个应用
                 if (!this.state.apps.length) {
                     this.setState({appValid: false});
@@ -75,6 +74,7 @@ class ApplyUser extends React.Component {
             return (
                 <OperationScrollBar className="basic-data-form-wrap">
                     <ApplyUserForm
+                        appList={this.props.appList}
                         apps={this.state.apps}
                         users={this.props.users}
                         customerId={this.props.customerId}
@@ -119,7 +119,9 @@ class ApplyUser extends React.Component {
                 {
                     !this.state.appValid ? (
                         <div className="has-error">
-                            <div className="ant-form-explain"><ReactIntl.FormattedMessage id="user.product.select.tip" defaultMessage="至少选择一个产品" /></div>
+                            <div className="ant-form-explain">
+                                {Intl.get('user.product.select.tip','至少选择一个产品')}
+                            </div>
                         </div>
                     ) : null
                 }
@@ -168,13 +170,23 @@ class ApplyUser extends React.Component {
                         onFinish={this.onStepFinish}
                         isSubmiting={this.state.isSubmiting}
                     >
-                        <span className="operator_person">{Intl.get('user.operator','操作人')}:{this.state.operator}</span>
+                        <span className="operator_person">
+                            {Intl.get('user.operator','操作人')}:{this.state.operator}
+                        </span>
                     </OperationStepsFooter>
                 </div>
             </div>
         );
     }
 }
+
+ApplyUser.propTypes = {
+    customerId: PropTypes.string,
+    cancelApply: PropTypes.func,
+    users: PropTypes.array,
+    appList: PropTypes.array,
+    emailData: PropTypes.obj,
+};
 
 export default ApplyUser;
 
