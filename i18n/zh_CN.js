@@ -302,6 +302,9 @@ var zh_CN = {
     'common.number.validate.tips': '请填写最多两位小数的数字',
     'common.app.android': '安卓版',
     'common.app.ios': 'IOS版',
+    'common.apply.try.success.tip': '稍后会有客户经理专门为您服务',
+    'common.apply.try.user.scales': '使用人数',
+    'common.lead.apply.try': '线索申请试用',
     //公共部分--end
     'login.login': '登录',
     'login.register': '注册',

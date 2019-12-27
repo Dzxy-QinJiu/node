@@ -2,13 +2,12 @@ import differentVersionAction from '../public/action/different-version-action';
 import differentVersionStore from '../public/store/different-version-store';
 import ColsLayout from 'CMP_DIR/cols-layout';
 import {paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
-import ApplyTry from 'MOD_DIR/apply_try/puiblic';
+import ApplyTry from 'MOD_DIR/apply_try/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import {COMPANY_PHONE} from 'PUB_DIR/sources/utils/consts';
 import {Button} from 'antd';
-
 
 require('./css/index.less');
 
@@ -20,6 +19,7 @@ export default class DifferentVersion extends React.PureComponent {
         wrapperWidth: document.body.clientWidth > 1536 ? document.body.clientWidth - 126 : 1410,
         showFlag: this.props.showFlag,
         maxHeight: 0,
+        versionKind: ''
     };
 
     resizeHandler = () => {
@@ -55,7 +55,7 @@ export default class DifferentVersion extends React.PureComponent {
     }
     componentDidMount() {
         differentVersionStore.listen(this.onChange);
-        differentVersionAction.getAllVersions();
+        differentVersionAction.getAllVersions(this.getVersionFunctionsById);
         $(window).on('resize', this.resizeHandler);
     }
     componentWillReceiveProps(nextProps) {
@@ -67,14 +67,20 @@ export default class DifferentVersion extends React.PureComponent {
         differentVersionStore.unlisten(this.onChange);
         $(window).off('resize', this.resizeHandler);
     }
+    getVersionFunctionsById = (idArr) => {
+        _.each(idArr, id => {
+            differentVersionAction.getVersionFunctionsById(id); 
+        });
+    }
     handlePayBtn = () => { //点击购买按钮
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
             continueFn: _.isFunction(this.props.continueFn) && this.props.continueFn  
         });
     }
-    handleApplyBtn = () => { //点击申请试用按钮
+    handleApplyBtn = (item) => { //点击申请试用按钮
         this.setState({
-            showApply: !this.state.showApply
+            showApply: !this.state.showApply,
+            versionKind: item.version_kind
         });
     }
     hideApply = () => { //关闭申请页面
@@ -110,9 +116,8 @@ export default class DifferentVersion extends React.PureComponent {
                             Intl.get('payment.renewal','续费') :
                             Intl.get('versions.online.pay','在线购买')
                     }</Button> : null}
-                    {/* TODO 后端接口没有做好，等待接口实现*/}
                     {versionItem.applyTry &&
-                        <Button type="primary" className='version-apply-try-btn' >{Intl.get('versions.apply.try','体验{version}',{version: versionItem.versionName})}</Button>}
+                        <Button type="primary" onClick={this.handleApplyBtn.bind(this,versionItem)} className='version-apply-try-btn' >{Intl.get('versions.apply.try','体验{version}',{version: versionItem.versionName})}</Button>}
                 </div>
                 
                 <div className='version-item-add-feature'>
@@ -147,15 +152,15 @@ export default class DifferentVersion extends React.PureComponent {
             <GeminiScrollbar>   
                 {this.state.errorMessage ?
                     <div>{this.state.errorMessage}</div> :
-                    <ColsLayout
+                    (<ColsLayout
                         commonData={this.renderVersionItem()}
                         width={this.state.wrapperWidth}
                         itemWidth={360}
                     >
                         <i className="iconfont icon-close-wide different-version-close" title={Intl.get('common.app.status.close', '关闭')} onClick={this.closeVersion}/>
-                    </ColsLayout>
+                    </ColsLayout>)
                 }
-                {this.state.showApply ? <ApplyTry hideApply={this.hideApply} destroyOnClose/> : null}
+                {this.state.showApply ? <ApplyTry hideApply={this.hideApply} destroyOnClose versionKind={this.state.versionKind}/> : null}
                 
             </GeminiScrollbar>
         </RightPanel>);

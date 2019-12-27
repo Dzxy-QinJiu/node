@@ -241,6 +241,27 @@ exports.getClueFulltext = function(queryObj) {
     });
     return Deferred.promise();
 };
+
+//申请试用的详情
+exports.getApplyTryData = function(id) {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/clue/apply_try',
+        dataType: 'json',
+        type: 'get',
+        data: {
+            id: id
+        },
+        success: (data) => {
+            Deferred.resolve(data);
+        },
+        error: (err) => {
+            Deferred.reject(err.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 //通过关键字获取线索列表
 let getClueListByKeywordAjax;
 exports.getClueListByKeyword = function(queryObj) {

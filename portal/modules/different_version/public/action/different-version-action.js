@@ -44,6 +44,7 @@ const data = {
             beginSale: 5,
             applyTry: true,
             type: '企业',
+            version_kind: 'starter',
             features: [
                 {
                     featureName: '呼叫中心',
@@ -76,6 +77,7 @@ const data = {
             recommendClues: 30000,
             beginSale: 10,
             type: '企业',
+            version_kind: 'professional',
             features: [
                 {
                     featureName: '用户管理',
@@ -130,6 +132,7 @@ const data = {
             recommendClues: 80000,
             beginSale: 20,
             type: '企业',
+            version_kind: 'enterprise',
             features: [
                 {
                     featureName: '用户管理',
@@ -169,14 +172,26 @@ const data = {
 
 function differentVersionAction() {
     //获取所有版本信息
-    this.getAllVersions = function() {
+    this.getAllVersions = function(callback) {
         this.dispatch({loading: false,error: false,result: data});
-
         // differentVersionAjax.getDifferentVersions().then(data => {
-        //     this.dispatch({loading: false,error: false,result: data.data});
+        //     let idArr = _.map(data.list, ele => {
+        //         return ele.id;
+        //     });
+        //     callback(idArr);
+        //     // this.dispatch({loading: false,error: false,result: data});
         // }, errData => {
-        //     this.dispatch({loading: false,error: true,result: errData});
+        //     // this.dispatch({loading: false,error: true,result: errData});
         // });
     };
+    // this.getVersionFunctionsById = function(id) {
+    //     differentVersionAjax.getVersionFunctionsById(id).then(data => {
+    //         console.log(data);
+    //         this.dispatch({data});
+    //     }, errData => {
+    //         this.dispatch({errData});
+    //     });
+    // };
 }
+
 export default alt.createActions(differentVersionAction);

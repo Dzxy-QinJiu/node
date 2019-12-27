@@ -296,6 +296,9 @@ var en_US = {
     'common.number.validate.tips': 'Please fill in at most two decimal places',//请填写最多两位小数的数字
     'common.app.android': 'Android', // 安卓版
     'common.app.ios': 'IOS', // IOS版
+    'common.apply.try.success.tip': 'An account manager will serve you later',//稍后会有客户经理专门为您服务
+    'common.apply.try.user.scales': 'Number of users',//使用人数
+    'common.lead.apply.try': 'lead apply try',//线索申请试用
     
     //公共部分--end
     'login.login': 'Login',//登录

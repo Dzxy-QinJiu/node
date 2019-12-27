@@ -184,7 +184,7 @@ class ClueCustomer extends React.Component {
         clueEmitter.on(clueEmitter.FLY_CLUE_HASTRANSFER, this.flyClueHastransfer);
         clueEmitter.on(clueEmitter.FLY_CLUE_INVALID, this.flyClueInvalid);
         clueEmitter.on(clueEmitter.SHOW_RECOMMEND_PANEL, this.showClueRecommendTemplate);
-
+        clueEmitter.on(clueEmitter.FLY_APPLY_UPGRADE, this.flyApplyUpgrade);
         notificationEmitter.on(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
         //如果从url跳转到该页面，并且有add=true，则打开右侧面板
         if (query.add === 'true') {
@@ -362,6 +362,7 @@ class ClueCustomer extends React.Component {
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_HASTRANSFER, this.flyClueHastransfer);
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_INVALID, this.flyClueInvalid);
         clueEmitter.removeListener(clueEmitter.SHOW_RECOMMEND_PANEL, this.showClueRecommendTemplate);
+        clueEmitter.removeListener(clueEmitter.FLY_APPLY_UPGRADE, this.flyApplyUpgrade);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
         $(window).off('resize', this.resizeHandler);
     }
@@ -412,6 +413,10 @@ class ClueCustomer extends React.Component {
         this.changeAddNumTab(ADD_SELECT_TYPE.INVALID_CLUE);
         // this.onAnimate(item, this.$invalidClue,startType);
     };
+    //申请试用的时候，线索页面添加tab
+    flyApplyUpgrade = () => {
+
+    }
 
     //有新线索时线索面板添加刷新提示
     showRefreshPrompt = (data) => {
@@ -1603,6 +1608,8 @@ class ClueCustomer extends React.Component {
                     let hasSimilarClue = _.get(salesClueItem, 'lead_similarity');
                     //有相似客户
                     let hasSimilarClient = _.get(salesClueItem, 'customer_similarity');
+                    //是否申请试用
+                    let hasApplyTry = _.get(salesClueItem, 'version_upgrade_label') === 'true';
                     let availability = _.get(salesClueItem, 'availability');
                     let status = _.get(salesClueItem, 'status');
                     //判断是否为无效客户
@@ -1632,6 +1639,11 @@ class ClueCustomer extends React.Component {
                                     <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.customer', '有相似客户')}
                                     </span> : null}
+                                {!isInvalidClients && hasApplyTry ?
+                                    <span className='clue-label intent-tag-style'>
+                                        {Intl.get('login.apply.trial','申请试用')} 
+                                    </span> : null}
+    
                             </div>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
                                 <ShearContent>

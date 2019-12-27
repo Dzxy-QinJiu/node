@@ -8,7 +8,16 @@ module.exports = {
         'handler': 'getAllVersions',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': []
+    },{
+        'method': 'get',
+        'path': '/rest/different_version/functions',
+        'handler': 'getVersionFunctionsById',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
     }]
 };
 

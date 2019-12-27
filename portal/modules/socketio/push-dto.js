@@ -106,6 +106,13 @@ exports.clueMsgToFrontend = function(clueMsg) {
         clue_list: _.get(clueMsg,'clue_list',[]),//线索id和name的列表
     };
 };
+//申请试用后的推送数据
+exports.applyTryMsgToFrontend = function(applyTryMsg) {
+    return {
+        lead: applyTryMsg.clue_list[0],
+        version_change_info: applyTryMsg.version_change_info
+    };
+};
 //申请审批数量变化后的数据
 exports.applyApproveMsgToFrontend = function(applyApproveMsg,memberId) {
     return {
