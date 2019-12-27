@@ -3,6 +3,7 @@
  * 批量添加产品，由于和已有用户，在详情中添加产品是一样的，
  * 暂时copy出一个文件，到时候抽取的
  */
+require('../../../../../components/user_manage_components/user-add-app/index.less');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 
@@ -539,16 +540,13 @@ const BatchAddAppUser = createReactClass({
 
     //渲染“应用设置”步骤
     renderRolesCarousel() {
-        const formData = this.state.formData;
-
-        const height = this.props.height - OperationSteps.height - OperationStepsFooter.height;
         return (
             <div className="app-role-config-container">
                 <UserAppConfig
                     defaultSettings={this.state.defaultSettings}
                     selectedApps={this.state.selectedApps}
                     onAppPropertyChange={this.onAppPropertyChange}
-                    height={height}
+                    height={this.props.height}
                     hideSingleApp={true}
                 />
             </div>
@@ -727,7 +725,7 @@ const BatchAddAppUser = createReactClass({
     //render函数
     render() {
         return (
-            <div className="user-manage-v2 user-detail-add-app-v2">
+            <div className="user-add-app-wrap">
                 <Form layout='horizontal'>
                     <div className="add-app-container" style={{ height: this.props.height }}>
                         <Validation ref="validation" onValidate={this.handleValidate}>

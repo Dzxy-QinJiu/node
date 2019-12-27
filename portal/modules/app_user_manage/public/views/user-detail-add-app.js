@@ -8,6 +8,7 @@ var passwdStrengthFile = require('CMP_DIR/password-strength-bar');
 var AppUserUtil = require('../util/app-user-util');
 var AppUserStore = require('../store/app-user-store');
 var UserDetailAddAppAction = require('../action/user-detail-add-app-actions');
+import UserDetailAddAppActions from '../action/v2/user-detail-add-app-actions';
 import UserDetailAddAppStore from '../store/user-detail-add-app-store';
 import DateSelector from '../../../../components/date-selector';
 var crypto = require('crypto');
@@ -69,6 +70,7 @@ var UserDetailAddApp = createReactClass({
 
     closeRightPanel() {
         this.props.closeRightPanel();
+        UserDetailAddAppActions.resetState();
         UserDetailAddAppAction.resetState();
     },
 
