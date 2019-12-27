@@ -41,11 +41,13 @@ class UserAddApp extends React.Component {
         }
         this.state = {
             appPropSettingsMap,
+            currentAppList: props.appList,
             step: 0, // //当前处在第一步 ， 用来控制上一步，下一步  Carousel使用
             stepDirection: 'next', // 一步还是下一步，Carousel使用
             selectedApps: [], //选中的应用列表的数组
             isShowAppSelector: true, //  默认在选择应用面板,
             selectedAppIds: [], // 选择应用id
+            defaultSettings: props.defaultSettings,
             formData: {
                 //正式、试用
                 user_type: USER_TYPE_VALUE_MAP.TRIAL_USER,
@@ -68,41 +70,43 @@ class UserAddApp extends React.Component {
         //修改的情况下会传appsSetting
         const appsSetting = props.appsSetting;
         //当前的各个应用的设置
-        const appPropSettingsMap = this.state && this.state.appPropSettingsMap || {};
+        const appPropSettingsMap = props && props.appPropSettingsMap || {};
         //最终生成的数据
         const finalResult = {};
-        //根据默认属性生成配置
         const createPropertySettingByDefaultSettings = () => {
-            _.each(selectedApps , (currentApp) => {
+            _.each(selectedApps, (currentApp) => {
                 //当前应用的id
                 const appId = currentApp.app_id;
-                let key = this.getAppSettingKey(currentApp.app_id, currentApp.user_id);
                 //当前应用的设置
-                const originAppSetting = appPropSettingsMap[key] || {};
+                const originAppSetting = appPropSettingsMap[appId] || {};
                 //检查角色、权限
                 function checkRolePermission() {
-                    if(!originAppSetting.roles) {
+                    if (!originAppSetting.roles) {
                         originAppSetting.roles = [];
                     }
-                    if(!originAppSetting.permissions) {
+                    if (!originAppSetting.permissions) {
                         originAppSetting.permissions = [];
                     }
                     //角色、权限，赋值，不会出现在全局设置里，直接设置
-                    if(defaultSettings.roles && _.isArray(defaultSettings.roles)) {
+                    if (defaultSettings.roles && _.isArray(defaultSettings.roles)) {
                         originAppSetting.roles = defaultSettings.roles;
                     }
-                    if(defaultSettings.permissions && _.isArray(defaultSettings.permissions)) {
+                    if (defaultSettings.permissions && _.isArray(defaultSettings.permissions)) {
                         originAppSetting.permissions = defaultSettings.permissions;
                     }
                 }
+                // 多终端类型，不会出现在默认配置中，是根据所选应用确定是否包含多终端类型
+                if (!_.isEmpty(currentApp.terminals)) {
+                    defaultSettings.terminals = currentApp.terminals;
+                }
                 //检查单个属性，如果没有重新设置值，用defaultSettings里的值，重新生成
                 function checkSingleProp(prop) {
-                    if(!originAppSetting[prop]) {
+                    if (!originAppSetting[prop]) {
                         originAppSetting[prop] = {
                             setted: false
                         };
                     }
-                    if(!originAppSetting[prop].setted) {
+                    if (!originAppSetting[prop].setted) {
                         // 若是多终端属性，则用选择当前应用的多终端的值
                         if (prop === 'terminals') {
                             originAppSetting[prop].value = currentApp.terminals;
@@ -113,12 +117,12 @@ class UserAddApp extends React.Component {
                 }
                 //检查时间,时间格式比较特殊
                 function checkTime() {
-                    if(!originAppSetting.time) {
+                    if (!originAppSetting.time) {
                         originAppSetting.time = {
                             setted: false
                         };
                     }
-                    if(!originAppSetting.time.setted) {
+                    if (!originAppSetting.time.setted) {
                         originAppSetting.time.start_time = defaultSettings.time.start_time;
                         originAppSetting.time.end_time = defaultSettings.time.end_time;
                         originAppSetting.time.range = defaultSettings.time.range;
@@ -128,17 +132,12 @@ class UserAddApp extends React.Component {
                 checkSingleProp('user_type');
                 //检查到期停用
                 checkSingleProp('over_draft');
-                //检查二步验证
-                checkSingleProp('is_two_factor');
                 //检查用户状态（启用、停用）
                 checkSingleProp('status');
-                //检查多人登录
-                checkSingleProp('multilogin');
-                // 判断当前选择的应用，是否有多终端类型
-                if ( !_.isEmpty(currentApp.terminals)) {
+                // 检查多终端类型
+                if (!_.isEmpty(currentApp.terminals)) {
                     checkSingleProp('terminals');
                 }
-
                 //检查角色、权限
                 checkRolePermission();
                 //检查时间
@@ -159,10 +158,9 @@ class UserAddApp extends React.Component {
 
     //当应用的个性设置改变的时候触发
     onAppPropertyChange(appsSetting) {
-        let newAppsSetting = _.get(this.state, 'appsSetting');
+        let newAppsSetting = _.get(this.state, 'appPropSettingsMap');
         _.each(newAppsSetting, (value, appId) => {
             value.roles = _.get(appsSetting[appId], 'roles', []);
-            value.rolesInfo = _.get(appsSetting[appId], 'rolesInfo', []);
             value.permissions = _.get(appsSetting[appId], 'permissions', []);
         });
     }
@@ -187,7 +185,7 @@ class UserAddApp extends React.Component {
     handleFinishSelectApp = () => {
         let selectedAppIds = this.state.selectedAppIds;
         //检验通过了，切换到下一步
-        const selectedApps = selectedAppIds.map(id => this.props.appList.find(x => x.app_id === id));
+        const selectedApps = selectedAppIds.map(id => this.state.currentAppList.find(x => x.app_id === id));
         this.setState({
             selectedApps: selectedApps,
             isShowAppSelector: false
@@ -195,10 +193,21 @@ class UserAddApp extends React.Component {
             this.handleSetConfigType(selectedAppIds, selectedApps);
         });
     }
-
-    // 应用搜索框
-    handleInputChange = () => {
-
+    handleInputChange(event) {
+        const keyWords = event.target.value;
+        setTimeout(() => {
+            this.filterApps(keyWords);
+        }, 100);
+    }
+    // 过滤产品
+    filterApps(keyWords) {
+        let currentAppList = this.props.appList;
+        let matchAppList = _.filter(currentAppList, item => _.includes(item.app_name, keyWords));
+        if (matchAppList) {
+            this.setState({
+                currentAppList: matchAppList
+            });
+        }
     }
 
     renderAppSelector = () => {
@@ -206,7 +215,7 @@ class UserAddApp extends React.Component {
             <div className="app-selector-container">
                 <div className="input-container">
                     <Input
-                        onChange={this.handleInputChange}
+                        onChange={this.handleInputChange.bind(this)}
                         placeHolder={Intl.get('user.detail.tip.searchApp', '输入关键字自动搜索')}
                     />
                 </div>
@@ -214,7 +223,7 @@ class UserAddApp extends React.Component {
                     <GeminiScrollBar>
                         <CheckboxGroup
                             defaultValue={this.state.selectedAppIds}
-                            options={this.props.appList.map(x => ({
+                            options={this.state.currentAppList.map(x => ({
                                 value: x.app_id,
                                 label: x.app_name
                             }))}
@@ -264,7 +273,7 @@ class UserAddApp extends React.Component {
         const removeAppId = app.app_id;
         let selectedAppIds = this.state.selectedAppIds;
         selectedAppIds = selectedAppIds.filter(x => x !== removeAppId);
-        const appList = this.props.appList;
+        const appList = this.state.currentAppList;
         const selectedApps = selectedAppIds.map(id => appList.find(x => x.app_id === id));
         this.setState({
             selectedAppIds: selectedAppIds,
@@ -286,7 +295,7 @@ class UserAddApp extends React.Component {
         });
     }
 
-    handleFormItemEdit(field, appFormData, e) {
+    handleFormItemEdit(field, app, appFormData, e) {
         let value = null;
         //处理多终端
         if (field === 'terminals') {
@@ -320,10 +329,30 @@ class UserAddApp extends React.Component {
             this.setState({ appPropSettingsMap });
         } else {
             const appPropSettingsMap = this.state.appPropSettingsMap;
-            const formData = appPropSettingsMap[app.app_id] || {};
+            const formData = appPropSettingsMap[appFormData.client_id] || {};
             formData[field].value = value;
             this.setState({ appPropSettingsMap });
         }
+    }
+
+    getAppConfigSetting() {
+        return _.map(this.state.selectedApps, app => {
+            let matchedApp = this.state.appPropSettingsMap[app.app_id];
+            let configInfo = {
+                begin_date: _.get(matchedApp, 'time.start_time' || moment()),
+                client_id: app.app_id,
+                end_date: _.get(matchedApp, 'time.end_time' || moment().add(0.5, 'm')),
+                range: _.get(matchedApp, 'range.end_time' || '0.5m'),
+                number: 1,
+                over_draft: +_.get(matchedApp, 'over_draft.value' || 1),
+                user_type: _.get(matchedApp, 'user_type.value', USER_TYPE_VALUE_MAP.TRIAL_USER),
+                status: _.get(matchedApp, 'status.value', 'true')
+            };
+            if (!_.isEmpty(app.terminals)) {
+                configInfo.terminals = _.get(matchedApp, 'terminals.value', app.terminals);
+            }
+            return configInfo;
+        });
     }
     
     renderAppConfig = () => {
@@ -362,23 +391,13 @@ class UserAddApp extends React.Component {
                                 client_logo: x.app_logo,
                                 ...x
                             }))}
-                            // todo defaultAppSettings
-                            appsConfigData={this.state.selectedApps.map(x => ({
-                                user_type: USER_TYPE_VALUE_MAP.TRIAL_USER,
-                                client_id: x.app_id,
-                                begin_date: DateSelectorUtils.getMilliseconds(defaultSelectedTime.start_time),
-                                end_date: DateSelectorUtils.getMilliseconds(defaultSelectedTime.start_time),
-                                number: 1,
-                                over_draft: '1',
-                                range: '0.5m',
-                                appStatus: 'true',
-                                terminals: x.terminals
-                            }))}
+                            appsConfigData={this.getAppConfigSetting()}
                             configType={this.state.configType}
                             changeConfigType={this.changeConfigType}
                             isShowAppStatus={true}
                             onOverDraftChange={this.handleFormItemEdit.bind(this, 'over_draft')}
                             onChangeUserType={this.handleFormItemEdit.bind(this, 'user_type')}
+                            onAppStatusChange={this.handleFormItemEdit.bind(this, 'status')}
                             onCheckTwoFactor={this.handleFormItemEdit.bind(this, 'is_two_factor')}
                             onCheckMultiLogin={this.handleFormItemEdit.bind(this, 'multilogin')}
                             onSelectTerminalChange={this.handleFormItemEdit.bind(this, 'terminals')}
@@ -411,7 +430,7 @@ class UserAddApp extends React.Component {
                 <UserAppConfig
                     defaultSettings={this.state.defaultSettings}
                     selectedApps={this.state.selectedApps}
-                    onAppPropertyChange={this.onAppPropertyChange}
+                    onAppPropertyChange={this.onAppPropertyChange.bind(this)}
                     height={this.props.height}
                     hideSingleApp={true}
                 />
@@ -470,8 +489,71 @@ class UserAddApp extends React.Component {
         });
     }
 
-    onStepFinish = () => {
+    getSubmitData() {
+        //选中的应用列表
+        const selectedApps = this.state.selectedApps;
+        //各个应用的配置
+        const products = [];
+        //遍历应用列表，添加应用配置
+        _.each(selectedApps, (appInfo) => {
+            const customAppSetting = {};
+            //应用id
+            const app_id = appInfo.app_id;
+            //存下来的配置对象
+            const savedAppSetting = this.state.appPropSettingsMap[app_id];
+            //应用id
+            customAppSetting.client_id = app_id;
+            // 角色，注意：角色不是空时，才传角色字段
+            if (!_.isEmpty(savedAppSetting.roles)) {
+                customAppSetting.roles = savedAppSetting.roles;
+            }
 
+            // 角色名称
+            // customAppSetting.rolesInfo = savedAppSetting.rolesInfo;
+            //权限，注意：权限不是空时，才传权限字段
+            if (!_.isEmpty(savedAppSetting.permissions)) {
+                customAppSetting.permissions = savedAppSetting.permissions;
+            }
+
+            //开通状态
+            customAppSetting.status = +savedAppSetting.status.value;
+            //到期停用
+            customAppSetting.over_draft = +savedAppSetting.over_draft.value;
+            //开始时间
+            customAppSetting.begin_date = savedAppSetting.time.start_time;
+            //结束时间
+            customAppSetting.end_date = savedAppSetting.time.end_time;
+            // 多终端类型
+            let terminals = _.get(savedAppSetting.terminals, 'value');
+            if (!_.isEmpty(terminals)) {
+                customAppSetting.terminals = _.map(terminals, 'id');
+            }
+            //正式、试用（后端要求：类型使用tags字段）
+            customAppSetting.tags = savedAppSetting.user_type.value;
+
+            //添加到列表中
+            products.push(customAppSetting);
+        });
+        return products;
+    }
+
+    onStepFinish = () => {
+    //获取提交数据
+        const productionData = this.getSubmitData();
+        var userList = this.props.initialUser;
+        var userIds = userList.map( (obj) => {
+            return obj.user.user_id;
+        });
+        // 要提交的数据
+        let submitData = [];
+        _.each(productionData, product => {
+            _.each(userIds, item => {
+                let newObj = _.cloneDeep(product);
+                newObj.user_id = item;
+                submitData.push(newObj);
+            });
+        });
+        this.props.handleSubmitData(submitData);
     }
 
     renderIndicator = () => {
@@ -538,12 +620,16 @@ function noop() {}
 UserAddApp.defaultProps = {
     containerTitle: '',
     appList: [],
-    handleFinish: noop,
+    handleSubmitData: noop,
     defaultSettings: {
         user_type: USER_TYPE_VALUE_MAP.TRIAL_USER, // 用户类型
-        start_time: DateSelectorUtils.getMilliseconds(defaultSelectedTime.start_time), //开始时间
-        end_time: DateSelectorUtils.getMilliseconds(defaultSelectedTime.end_time), //结束时间
-        range: '0.5m', // 开通周期
+        time: {
+            start_time: DateSelectorUtils.getMilliseconds(defaultSelectedTime.start_time),
+            //结束时间
+            end_time: DateSelectorUtils.getMilliseconds(defaultSelectedTime.end_time),
+            //开通周期
+            range: '0.5m',
+        },
         over_draft: '1', // 到期状态，默认是停用
         status: '1', // 开通状态
         is_two_factor: '0', // 二步认证
@@ -555,10 +641,11 @@ UserAddApp.defaultProps = {
 UserAddApp.propTypes = {
     containerTitle: PropTypes.string,
     appList: PropTypes.array,
-    handleFinish: PropTypes.func,
+    handleSubmitData: PropTypes.func,
     height: PropTypes.number,
     defaultSettings: PropTypes.Object,
     appsSetting: PropTypes.Object,
+    initialUser: PropTypes.Object,
 };
 
 export default UserAddApp;

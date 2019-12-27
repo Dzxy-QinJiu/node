@@ -654,7 +654,7 @@ const UserDetailAddApp = createReactClass({
                 <UserAppConfig
                     defaultSettings={this.state.defaultSettings}
                     selectedApps={this.state.selectedApps}
-                    onAppPropertyChange={this.onAppPropertyChange}
+                    onAppPropertyChange={this.onAppPropertyChange.bind(this)}
                     height={height}
                     hideSingleApp={true}
                 />

@@ -89,7 +89,7 @@ class AppConfigSetting extends React.Component {
                         >
                             <Radio.Group
                                 value={appsConfigData.user_type}
-                                onChange={this.props.onChangeUserType.bind(this, appsConfigData)}>
+                                onChange={this.props.onChangeUserType.bind(this, app,appsConfigData)}>
                                 {_.map(USER_TYPE_VALUE_MAP, (value, key) => {
                                     return (<Radio.Button value={value}>{USER_TYPE_TEXT_MAP[key]}</Radio.Button>);
                                 })
@@ -109,7 +109,7 @@ class AppConfigSetting extends React.Component {
                                 value={appsConfigData.number}
                                 min={1}
                                 max={999}
-                                onChange={this.props.onCountChange.bind(this, appsConfigData)}/>
+                                onChange={this.props.onCountChange.bind(this, app,appsConfigData)}/>
                         </FormItem>
                     ) : null
                 }
@@ -124,7 +124,7 @@ class AppConfigSetting extends React.Component {
                                 disableDateBeforeToday={true}
                                 endTimeEndOfDay={false}
                                 getEndTimeTip={ (date) => {return Intl.get('user.open.cycle.date.tip','将在{date}的0点过期',{'date': date});}}
-                                onSelect={this.props.onSelectDate.bind(this, appsConfigData)}
+                                onSelect={this.props.onSelectDate.bind(this, app, appsConfigData)}
                                 range={appsConfigData.range}
                                 start_time={appsConfigData.begin_date}
                                 end_time={appsConfigData.end_date}
@@ -148,7 +148,7 @@ class AppConfigSetting extends React.Component {
                             label={Intl.get('user.expire.select', '到期可选')}
                         >
                             <RadioGroup
-                                onChange={this.props.onOverDraftChange.bind(this, appsConfigData)}
+                                onChange={this.props.onOverDraftChange.bind(this, app,appsConfigData)}
                                 value={appsConfigData.over_draft ? appsConfigData.over_draft.toString() : '0'}>
                                 <Radio key="1" value="1">{Intl.get('user.status.stop', '停用')}</Radio>
                                 <Radio key="2" value="2">{Intl.get('user.status.degrade', '降级')}</Radio>
@@ -158,17 +158,17 @@ class AppConfigSetting extends React.Component {
                     ) : null
                 }
                 {
-                    false && this.props.isShowAppStatus ? (
+                    this.props.isShowAppStatus ? (
                         <FormItem
                             {...formItemLayout}
                             label={Intl.get('common.app.status', '开通状态')}
                         >
                             <RadioGroup
-                                onChange={this.props.onAppStatusChange.bind(this, appsConfigData)}
-                                value={appsConfigData.appStatus}
+                                onChange={this.props.onAppStatusChange.bind(this, app,appsConfigData)}
+                                value={appsConfigData.status}
                             >
-                                <Radio key="false" value="false">{Intl.get('common.app.status.open', '开启')}</Radio>
-                                <Radio key="true" value="true">{Intl.get('common.app.status.close', '关闭')}</Radio>
+                                <Radio key="1" value="1">{Intl.get('common.app.status.open', '开启')}</Radio>
+                                <Radio key="0" value="0">{Intl.get('common.app.status.close', '关闭')}</Radio>
                             </RadioGroup>
                         </FormItem>
                     ) : null
@@ -180,13 +180,13 @@ class AppConfigSetting extends React.Component {
                             label={Intl.get('crm.186', '其他')}
                         >
                             <Checkbox
-                                onChange={this.props.onCheckTwoFactor.bind(this, appsConfigData)}
+                                onChange={this.props.onCheckTwoFactor.bind(this, app, appsConfigData)}
                                 checked={appsConfigData.is_two_factor === '1'}
                             >
                                 {Intl.get('user.two.step.certification', '二步认证')}
                             </Checkbox>
                             <Checkbox
-                                onChange={this.props.onCheckMultiLogin.bind(this, appsConfigData)}
+                                onChange={this.props.onCheckMultiLogin.bind(this, app, appsConfigData)}
                                 checked={appsConfigData.multilogin === '1'}
                             >
                                 {Intl.get('user.multi.login', '多人登录')}
@@ -201,7 +201,7 @@ class AppConfigSetting extends React.Component {
                         >
                             <CheckboxGroup
                                 options={terminalsOptions}
-                                onChange={this.props.onSelectTerminalChange.bind(this, appsConfigData)}
+                                onChange={this.props.onSelectTerminalChange.bind(this, app, appsConfigData)}
                                 value={checkedTerminals}
                             />
                         </FormItem>
@@ -224,13 +224,24 @@ class AppConfigSetting extends React.Component {
     }
 }
 
+function noop() {
+
+}
+
 AppConfigSetting.defaultProps = {
     selectedApp: [],//选择的需要配置的应用列表
     appsConfigData: {},//应用配置的form数据列表
     configType: CONFIG_TYPE.UNIFIED_CONFIG, //配置类型，unified_config：统一配置，separate_config：分别配置
     //配置类型修改事件
-    changeConfigType: function() {
-    },
+    changeConfigType: noop,
+    onChangeUserType: noop,
+    onCountChange: noop,
+    onSelectDate: noop,
+    onOverDraftChange: noop,
+    onAppStatusChange: noop,
+    onCheckTwoFactor: noop,
+    onCheckMultiLogin: noop,
+    onSelectTerminalChange: noop,
     isShowUserType: true, // 是否显示用户类型，默认显示
     isShowAppNumber: false, // 是否显示产品数量，默认不显示
     isShowSelectedTime: true, // 是否显示开通时间，默认显示
@@ -250,6 +261,14 @@ AppConfigSetting.propTypes = {
     isShowExpiredSelect: PropTypes.boolean,
     isShowAppStatus: PropTypes.boolean,
     isShowOther: PropTypes.boolean,
+    onChangeUserType: PropTypes.func,
+    onCountChange: PropTypes.func,
+    onSelectDate: PropTypes.func,
+    onOverDraftChange: PropTypes.func,
+    onAppStatusChange: PropTypes.func,
+    onCheckTwoFactor: PropTypes.func,
+    onCheckMultiLogin: PropTypes.func,
+    onSelectTerminalChange: PropTypes.func,
 };
 
 export default AppConfigSetting;
