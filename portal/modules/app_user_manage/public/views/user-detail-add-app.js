@@ -28,7 +28,6 @@ import { isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 import BatchAddAppUser from 'CMP_DIR/user_manage_components/user-add-app';
-// import BatchAddAppUser from './v2/batch-add-app-user';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import DetailCard from 'CMP_DIR/detail-card';
 import {USER_TYPE_VALUE_MAP, USER_TYPE_TEXT_MAP} from 'PUB_DIR/sources/utils/consts';
