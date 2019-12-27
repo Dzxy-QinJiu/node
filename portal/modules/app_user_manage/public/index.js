@@ -890,6 +890,11 @@ class AppUserManage extends React.Component {
         </ButtonZones>);
     };
 
+    // 关闭批量变更面板
+    closeBatchChangePanel() {
+        AppUserAction.closeBatchChangePanel();
+    }
+
     render() {
         var currentView = AppUserUtil.getCurrentView();
         var rightPanelView = null;
@@ -897,14 +902,9 @@ class AppUserManage extends React.Component {
             switch (this.state.rightPanelType) {
                 case 'addOrEditUser':
                     rightPanelView = (
-                        <AddOrEditUser operation_type={this.state.appUserFormType}/>
-                    );
-                    break;
-                case 'batch':
-                    rightPanelView = (
-                        <div className="full_size wrap_padding">
-                            <UserDetailAddApp multiple={true} initialUser={this.state.selectedUserRows}/>
-                        </div>
+                        <AddOrEditUser 
+                            operation_type={this.state.appUserFormType}
+                        />
                     );
                     break;
                 case 'applyUser':
@@ -915,7 +915,8 @@ class AppUserManage extends React.Component {
                         return {
                             client_id: obj.app_id,
                             client_name: obj.app_name,
-                            client_image: obj.app_logo
+                            client_image: obj.app_logo,
+                            terminals: obj.terminals,
                         };
                     });
                     rightPanelView = (
@@ -965,13 +966,14 @@ class AppUserManage extends React.Component {
         }
         //是否显示“过滤”按钮
         const cls = classNames('app_user_manage_rightpanel white-space-nowrap right-panel', {
-            'detail-v3-panel': this.state.rightPanelType === 'detail'
+            'detail-v3-panel': this.state.rightPanelType === 'detail',
         });
         //用户列表中，如果集成类型还未获取回来或获取出错或还未配置集成类型时，不展示头部导航和按钮区
         let isHideTopNavBtn = AppUserUtil.getCurrentView() === 'user' && (
             this.state.isGettingIntegrateType ||
             this.state.getItegrateTypeError ||
             this.state.isShowAddProductView);
+        
         return (
             <div>
                 <div className="app_user_manage_page table-btn-fix" data-tracename="用户管理">
@@ -986,12 +988,27 @@ class AppUserManage extends React.Component {
                     </div>
 
                 </div>
-                <RightPanel className={cls}
-                    showFlag={this.state.isShowRightPanel}>
-                    {
-                        rightPanelView
-                    }
-                </RightPanel>
+                {
+                    this.state.isShowBatchChangePanel ? (
+                        <UserDetailAddApp
+                            multiple={true}
+                            initialUser={this.state.selectedUserRows}
+                            appList={this.state.appList}
+                            closeRightPanel={this.closeBatchChangePanel}
+                        />
+                    ) : null
+                }
+                {
+                    this.state.isShowRightPanel ? (
+                        <RightPanel className={cls}
+                            showFlag={this.state.isShowRightPanel}>
+                            {
+                                rightPanelView
+                            }
+                        </RightPanel>
+                    ) : null
+                }
+
                 <ImportUser
                     uploadActionName='users'
                     importType={Intl.get('sales.home.user', '用户')}

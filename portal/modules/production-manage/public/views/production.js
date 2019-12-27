@@ -745,6 +745,16 @@ class Production extends React.Component {
                 />
             </span>
         </div>);
+        let productTerminals = (<div className="product-detail-item">
+            <span className="product-detail-item-title">{Intl.get('common.terminals.type', '终端类型')}：</span>
+            <span className="product-detail-item-des">
+                <BasicEditInputField
+                    width={LAYOUT_CONST.EDIT_FIELD_WIDTH}
+                    hasEditPrivilege={false}
+                    value={_.map(this.props.info.terminals, 'name').join('、')}
+                />
+            </span>
+        </div>);
         //创建时间
         let foundTime = (<div className="product-detail-item">
             <span className="product-detail-item-title">{Intl.get('config.product.create_time', '创建时间')}：</span>
@@ -829,6 +839,11 @@ class Production extends React.Component {
                     <DetailCard content={priceUnit}/>
                     <DetailCard content={accessAddress}/>
                     <DetailCard content={productDescription}/>
+                    {
+                        this.props.info.terminals ? (
+                            <DetailCard content={productTerminals}/>
+                        ) : null
+                    }
                     <DetailCard content={foundTime}/>
                     <DetailCard
                         title={this.renderDetailTitle()}

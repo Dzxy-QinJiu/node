@@ -295,9 +295,12 @@ var en_US = {
     'common.call.owe.tips': 'Your telephone charge is overdue, please try it after topping up', // 您的电话号码已欠费，请充值后再试！
     'common.number.validate.tips': 'Please fill in at most two decimal places',//请填写最多两位小数的数字
     'common.app.android': 'Android', // 安卓版
-    'common.app.ios': 'IOS', // IOS版
-    
+    'common.app.ios': 'IOS', // IOS版   
+    'common.terminals.type': 'ype of terminal', // 终端类型
+    'common.all.terminals': 'All terminals', // 所有终端
+    'common.terminals': 'Terminal', // 终端
     //公共部分--end
+
     'login.login': 'Login',//登录
     'login.register': 'Register',//注册
     'login.service.error': 'Sorry for the abnormal condition of the server',//很抱歉,服务器出现了异常状况

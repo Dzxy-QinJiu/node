@@ -16,6 +16,8 @@ function UserLoginAnalysisAction() {
         'setSelectedAppId', // 设置应用的app
         'getUserLoginInfo', // 用户登录信息（时长、次数、首次和最后一次登录时间）
         'getUserLoginChartInfo', // 用户登录统计图中登录时长、登录频次
+        'setSelectedAppTerminals', // 设置选择应用的多终端类型
+        'setAppTerminalsType', // 设置选择多终端类型
     );
     // 获取单个用户的应用列表
     this.getSingleUserAppList = function(searchObj, selectedAppId, appLists){

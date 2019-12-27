@@ -17,6 +17,7 @@ SingleUserLogStore.prototype.logInitialState = function() {
     this.auditLogList = [];
     this.logListLoading = 'loading';
     this.listenScrollBottom = false;
+    this.appTerminalType = ''; // 应用终端类型，默认全部
     // 获取单个用户日志失败的错误提示
     this.getUserLogErrorMsg = '';
 };
@@ -25,6 +26,8 @@ SingleUserLogStore.prototype.resetState = function() {
     this.isLoading = true;
     this.userOwnAppArray = [];
     this.selectedLogAppId = '';
+    // 选择产品对应的终端类型
+    this.selectAppTerminals = [];
     this.searchName = '';
     this.defaultRange = 'week';
     // 默认显示审计日志（对应的是过滤掉心跳服务和角色权限），this.typeFilter = ''显示全部日志
@@ -59,7 +62,6 @@ SingleUserLogStore.prototype.changUserIdKeepSearch = function() {
     this.userOwnAppArray = [];
     this.selectedLogAppId = '';
     this.logInitialState();
-
 };
 
 // 获取单个用户审计日志的信息
@@ -92,11 +94,20 @@ SingleUserLogStore.prototype.getSingleUserAppList = function(obj) {
     } else {
         this.selectedLogAppId = obj.appId;
         this.userOwnAppArray = obj.appList;
+        if (obj.appId) {
+            let matchSelectApp = _.find(obj.appList, item => item.app_id === obj.appId);
+            if (matchSelectApp) {
+                this.selectAppTerminals = matchSelectApp.terminals || [];
+            }
+        }
     }
-
 };
 
 SingleUserLogStore.prototype.setSelectedAppId = function(appId){
+    let matchSelectApp = _.find(this.userOwnAppArray, item => item.app_id === appId);
+    if (matchSelectApp) {
+        this.selectAppTerminals = matchSelectApp.terminals || [];
+    }
     this.selectedLogAppId = appId;
     ShareObj.share_differ_user_keep_app_id = this.selectedLogAppId;
 };
@@ -111,6 +122,10 @@ SingleUserLogStore.prototype.changeSearchTime = function({startTime,endTime,rang
     this.startTime = startTime;
     this.endTime = endTime;
     this.defaultRange = range;
+};
+// 选择終端类型
+SingleUserLogStore.prototype.setAppTerminalsType = function(value) {
+    this.appTerminalType = value;
 };
 
 //使用alt导出store

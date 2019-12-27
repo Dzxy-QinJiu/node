@@ -1,4 +1,3 @@
-var React = require('react');
 require('./index.less');
 var Spinner = require('../../spinner');
 var Ajax = require('./ajax');

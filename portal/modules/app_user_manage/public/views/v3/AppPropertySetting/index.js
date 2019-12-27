@@ -1,7 +1,6 @@
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
-var React = require('react');
 var createReactClass = require('create-react-class');
 require('./index.less');
 import { Tooltip, Alert, Tabs } from 'antd';
@@ -15,7 +14,6 @@ import UserOverDraftField from 'CMP_DIR/user_manage_components/user-over-draftfi
 import UserTwoFactorField from 'CMP_DIR/user_manage_components/user-two-factorfield';
 import UserMultiLoginField from 'CMP_DIR/user_manage_components/user-multilogin-radiofield';
 import AppRolePermission from '../app-role-permission';
-import DetailCard from 'CMP_DIR/detail-card';
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import AppUserUtil from 'MOD_DIR/app_user_manage/public/util/app-user-util.js';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量

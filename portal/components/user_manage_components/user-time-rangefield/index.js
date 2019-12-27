@@ -34,7 +34,7 @@ const UserTimeRangeField = {
                 this.onTimeChange(start_time, end_time, range, app);
             } else {
                 const appPropSettingsMap = this.state.appPropSettingsMap;
-                const formData = appPropSettingsMap[config.appId].time;
+                const formData = _.get(appPropSettingsMap[config.appId], 'time') || {};
                 const globalTime = config.globalTime;
                 formData.start_time = start_time;
                 formData.end_time = end_time;
