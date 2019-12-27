@@ -6,7 +6,7 @@
 var clueCustomerAjax = require('../ajax/clue-customer-ajax');
 var clueTraceAjax = require('../ajax/clue-trace-ajax');
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
-import {handleSubmitClueItemData} from '../utils/clue-customer-utils';
+import {deleteEmptyProperty, handleSubmitClueItemData} from '../utils/clue-customer-utils';
 import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
 function ClueCustomerActions() {
     this.generateActions(
@@ -59,15 +59,20 @@ function ClueCustomerActions() {
         });
     };
     //获取个人客户推荐配置
-    this.getSettingCustomerRecomment = function() {
+    this.getSettingCustomerRecomment = function(callback) {
         clueCustomerAjax.getSettingCustomerRecomment().then((list) => {
+            var data = _.get(list,'[0]');
+            deleteEmptyProperty(data);
+            _.isFunction(callback) && callback(data);
             this.dispatch({list: list});
-        },(errorMsg) => {});
+        },(errorMsg) => {
+            _.isFunction(callback) && callback();
+        });
     };
     this.getRecommendClueLists = function(obj) {
         this.dispatch({loading: true, error: false});
-        clueCustomerAjax.getRecommendClueLists(obj).then((list) => {
-            this.dispatch({loading: false, error: false,list: list});
+        clueCustomerAjax.getRecommendClueLists(obj).then((data) => {
+            this.dispatch({loading: false, error: false,data: data});
         },(errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
