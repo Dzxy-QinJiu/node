@@ -749,12 +749,18 @@ class UserLoginAnalysis extends React.Component {
                                             }
                                         </span>
                                         {
+                                            /***
+                                         *  TODO 由于接口还没有实现，所以暂时隐藏 终端类型筛选
+                                         *  {
                                             this.state.showDetailMap[app.app_id] && _.get(this.state.selectAppTerminals, 'length') ? (
                                                 <span className="app-terminals-select">
                                                     {this.renderAppTerminalsType()}
                                                 </span>
                                             ) : null
                                         }
+                                         * */
+                                        }
+
                                     </div>
                                 )}
                                 content={
