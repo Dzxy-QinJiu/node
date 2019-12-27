@@ -335,6 +335,30 @@ class UserAddApp extends React.Component {
         }
     }
 
+    handleSelectDate( filed, app, appFormData, start_time, end_time, range,) {
+        if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
+            const appPropSettingsMap = this.state.appPropSettingsMap;
+            _.each(appPropSettingsMap, item => {
+                const formData = item || {};
+                formData[filed] = {
+                    start_time: start_time,
+                    end_time: end_time,
+                    range: range
+                };
+            });
+            this.setState({ appPropSettingsMap });
+        } else {
+            const appPropSettingsMap = this.state.appPropSettingsMap;
+            const formData = appPropSettingsMap[appFormData.client_id] || {};
+            formData[field] = {
+                start_time: start_time,
+                end_time: end_time,
+                range: range
+            };
+            this.setState({ appPropSettingsMap });
+        }
+    }
+
     getAppConfigSetting() {
         return _.map(this.state.selectedApps, app => {
             let matchedApp = this.state.appPropSettingsMap[app.app_id];
@@ -342,7 +366,7 @@ class UserAddApp extends React.Component {
                 begin_date: _.get(matchedApp, 'time.start_time' || moment()),
                 client_id: app.app_id,
                 end_date: _.get(matchedApp, 'time.end_time' || moment().add(0.5, 'm')),
-                range: _.get(matchedApp, 'range.end_time' || '0.5m'),
+                range: _.get(matchedApp, 'time.range' || '0.5m'),
                 number: 1,
                 over_draft: +_.get(matchedApp, 'over_draft.value' || 1),
                 user_type: _.get(matchedApp, 'user_type.value', USER_TYPE_VALUE_MAP.TRIAL_USER),
@@ -399,6 +423,7 @@ class UserAddApp extends React.Component {
                             onChangeUserType={this.handleFormItemEdit.bind(this, 'user_type')}
                             onAppStatusChange={this.handleFormItemEdit.bind(this, 'status')}
                             onCheckTwoFactor={this.handleFormItemEdit.bind(this, 'is_two_factor')}
+                            onSelectDate={this.handleSelectDate.bind(this, 'time')}
                             onCheckMultiLogin={this.handleFormItemEdit.bind(this, 'multilogin')}
                             onSelectTerminalChange={this.handleFormItemEdit.bind(this, 'terminals')}
                         />

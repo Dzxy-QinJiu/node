@@ -114,7 +114,7 @@ class AppConfigSetting extends React.Component {
                     ) : null
                 }
                 {
-                    false && this.props.isShowSelectedTime ? (
+                    this.props.isShowSelectedTime ? (
                         <FormItem
                             {...formItemLayout}
                             label={Intl.get('user.open.cycle', '开通周期')}
