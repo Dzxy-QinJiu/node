@@ -4,8 +4,8 @@ const restUtil = require('ant-auth-request').restUtil(restLogger);
 
 
 const differentVersionsRestApis = {
-    getAllVersions: 'http://10.20.1.185:9494/system/management/organizationversions',
-    getVersionFunctions: 'http://10.20.1.185:9494/system/management/organizationversion'
+    getAllVersions: '/system/management/organizationversions',
+    getVersionFunctions: '/system/management/organizationversion'
 };
 
 exports.urls = differentVersionsRestApis;

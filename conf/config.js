@@ -158,7 +158,7 @@ var config = {
     useSso: process.env.USESSO,//是否使用sso
     ssoUrl: process.env.SSO_URL || 'https://sso-dev.curtao.com',//正式：https://sso.curtao.com，测试：https://sso-dev.curtao.com
     storageKey: process.env.storageKey || 'ketao-storage',//在localstorage中存储的key
-    curtaoUrl: process.env.CURTAO_URL || '127.0.0.1:9191',//用来判断是否是curtao的环境,curtao的环境会展示新版登录注册界面
+    curtaoUrl: process.env.CURTAO_URL || 'csm.curtao.com',//用来判断是否是curtao的环境,curtao的环境会展示新版登录注册界面
     timeStamp: new Date().valueOf()//时间戳（解决文件缓存的问题）
 };
 
