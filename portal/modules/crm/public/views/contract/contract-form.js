@@ -292,7 +292,7 @@ class Contract extends React.Component {
                 reqData.category = this.state.contractType; // 合同类型
                 reqData.label = this.state.contractLabel; // 合同签约类型
                 reqData.user_id = UserData.getUserData().user_id || '';
-                reqData.user_name = UserData.getUserData().user_name || '';
+                reqData.user_name = UserData.getUserData().nick_name || '';
                 let products = _.cloneDeep(this.state.products); // 产品信息
                 let productTotalPrice = 0; // 产品信息中的总额；
                 _.each(products, (item) => {
