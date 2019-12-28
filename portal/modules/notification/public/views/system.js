@@ -705,7 +705,7 @@ class SystemNotification extends React.Component {
     };
 
     render() {
-        let containerHeight = $(window).height() - LAYOUT.SUMMARY_H - LAYOUT.TOP;
+        let containerHeight = $(window).height() - LAYOUT.SUMMARY_H - LAYOUT.TOP - 64;
         let customerOfCurUser = this.state.customerOfCurUser;
         let notifyTitle = this.state.isOpenPopUpNotify ?
             Intl.get('notification.pop.up.notify.title', '{status}弹窗通知', {status: Intl.get('common.app.status.close', '关闭')}) :
@@ -716,7 +716,7 @@ class SystemNotification extends React.Component {
         }
         return (
             <div className="notification_system" data-tracename="系统消息列表">
-                <TopNav>
+                <TopNav className="notification-header">
                     <div className="notification-type-select btn-item">
                         <SelectFullWidth
                             minWidth={60}

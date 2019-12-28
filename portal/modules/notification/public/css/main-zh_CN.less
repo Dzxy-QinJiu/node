@@ -34,8 +34,7 @@
     opacity: 0.6;
     cursor: pointer;
   }
-  //外层容器
-  .notification_content {
+  .ant-tabs {
     position: absolute;
     top: 0;
     left: 75px;
@@ -43,236 +42,253 @@
     height: 100%;
     width: 35%;
     background-color: #fff;
-    margin-top: @top_nav_height;
-    padding: 21px 10px 10px @container_padding;
-    .loader8 {
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: 0;
-      bottom: 0;
-    }
-    //全部标为已读
-    .mark-all-read {
-      margin-left: 15px;
-      font-size: 13px;
-      height: 30px;
-      border-radius: 3px;
-      float: left;
-    }
-    .notification_customer {
-      .mark-all-read {
-        margin-bottom: 15px;
-        margin-left: 20px;
+    padding: 10px 10px 10px 0;
+    .ant-tabs-bar {
+      padding-bottom: 18px;
+      .ant-tabs-nav-container {
+        padding-left: @container_padding;
       }
     }
-    .apply-notice-update {
-      float: left;
-      height: 30px;
-      line-height: 30px;
-      margin-left: 50px;
-      font-size: 14px;
-      color: #aaa;
+    .ant-tabs-content {
+      height: 100%;
+      //外层容器
+      .notification-content {
+        height: 100%;
+        .loader8 {
+          position: absolute;
+          top: 0;
+          right: 0;
+          left: 0;
+          bottom: 0;
+        }
+        //全部标为已读
+        .mark-all-read {
+          margin-left: 15px;
+          font-size: 13px;
+          height: 30px;
+          border-radius: 3px;
+          float: left;
+        }
+        .notification_customer {
+          .mark-all-read {
+            margin-bottom: 15px;
+            margin-left: 20px;
+          }
+        }
+        .apply-notice-update {
+          float: left;
+          height: 30px;
+          line-height: 30px;
+          margin-left: 50px;
+          font-size: 14px;
+          color: #aaa;
+        }
+
+        //消息列表
+        .message_list {
+          //单条消息
+          li {
+            border-bottom: 1px solid #f1f1f1;
+            padding: 10px 0 10px 20px;
+            //消息内容
+            .message_body {
+              line-height: 22px;
+              font-size: 14px;
+              color: #525252;
+              word-break: break-all;
+              white-space: normal;
+            }
+            .message-title {
+              color: #000;
+            }
+            // 备注
+            .message-comment {
+              color: #7D7C7C;
+            }
+            //消息时间
+            p {
+              margin-top: 5px;
+              font-size: 12px;
+              line-height: 18px;
+              color: #a0a0a0;
+            }
+          }
+        }
+        //错误提示
+        .ant-alert {
+          display: inline-block;
+          margin-left: 20px;
+        }
+        // 共多少条的样式
+        .notification_customer{
+          .summary_info {
+            position: fixed;
+            bottom: 20px;
+            margin-left: 20px;
+            font-size: 14px;
+          }
+          .ant-alert {
+            width: 98%;
+            margin-left: 20px;
+          }
+        }
+        //系统消息
+        .notification_system {
+          margin-top: 64px;
+          .notification-type-select {
+            float: left;
+            margin: 16px 16px 0 20px;
+          }
+          .notification-status-select {
+            margin-top: 16px;
+          }
+          .notify-setting {
+            text-align: right;
+            margin: 20px 24px;
+            .notify-text {
+              font-size: 14px;
+              color: #333333;
+              margin-right: 9px;
+            }
+          }
+          //刷新新系统消息的提示
+          .system-notice-update {
+            text-align: center;
+            font-size: 14px;
+          }
+
+          .system_message_list {
+            .select-li-item, li:hover {
+              background-color: #f8fdff;
+              .system-notice-content {
+                .notice-handled-set {
+                  color: #fff;
+                  background-color: #4E96D1;
+                }
+              }
+            }
+            li {
+              position: relative;
+              display: inline-block;
+              width: 100%;
+              border-bottom: 1px solid #f1f1f1;
+              padding: 15px 0 5px 20px;
+              font-size: 14px;
+              .system-notice-title {
+                .icon-login-failed, .icon-concern-customer-login,
+                .icon-deactivate-customer-login, .icon-remote-login ,
+                .icon-call-failed, .icon-pull-clue-failed{
+                  float: left;
+                  margin: -1px 5px 0 0;
+                  color: #F9B706;
+                  font-size: 14px;
+                }
+                .icon-arrow {
+                  color: #ced4d6;
+                }
+                .customer-name {
+                  clear: both;
+                  font-size: 16px;
+                  font-weight: bold;
+                  cursor: pointer;
+                }
+              }
+              .system-notice-type {
+                float: left;
+                margin-right: 10px;
+                padding-bottom: 5px;
+                font-size: 14px;
+                font-weight: bold;
+              }
+              .system-notice-content {
+                display: inline-block;
+                color: #7D7C7C;
+                > a {
+                  float: right;
+                  color: #8fd5f1;
+                  &:hover {
+                    color: #108ee9;
+                  }
+                }
+                .notice-split-line {
+                  float: right;
+                  padding: 0 5px;
+                  color: #8fd5f1;
+                }
+                .notice-handled-set {
+                  font-size: 14px;
+                  margin: 10px 0 20px;
+                  height: 24px;
+                  color: #108ee9;
+                  .anticon-loading {
+                    padding: 0 5px;
+                  }
+                }
+                .system-notice-item {
+                  > a {
+                    padding-right: 5px;
+                  }
+                  .system-notice-time {
+                    .login-count {
+                      color: #108ee9;
+                      padding: 0 2px;
+                    }
+                    .login-time {
+                      padding-left: 5px;
+                    }
+                  }
+                }
+                // 处理通知消息的样式
+                .handle-notice-tips {
+                  position: absolute;
+                  top: 40px;
+                  left: 120px;
+                  .ant-alert-success,  .ant-alert-error{
+                    background-color: #4E5C66;
+                    .ant-alert-message, .ant-alert-description, .ant-alert-close-icon .anticon-cross{
+                      color: #fff;
+                    }
+                  }
+                  .ant-alert-success {
+                    top: 20px;
+                    height: 40px;
+                  }
+                  .ant-alert-error {
+                    min-width: 200px;
+                    height: 70px;
+                  }
+                }
+              }
+              .system-notice-time {
+                color: #a0a0a0;
+              }
+            }
+          }
+          .summary_info {
+            position: fixed;
+            bottom: 20px;
+            margin-left: 20px;
+            font-size: 14px;
+          }
+          .right-pannel-default {
+            left: 39%;
+          }
+        }
+      }
     }
 
-    //消息列表
-    .message_list {
-      //单条消息
-      li {
-        border-bottom: 1px solid #f1f1f1;
-        padding: 10px 0 10px 20px;
-        //消息内容
-        .message_body {
-          line-height: 22px;
-          font-size: 14px;
-          color: #525252;
-          word-break: break-all;
-          white-space: normal;
-        }
-        .message-title {
-          color: #000;
-        }
-        // 备注
-        .message-comment {
-          color: #7D7C7C;
-        }
-        //消息时间
-        p {
-          margin-top: 5px;
-          font-size: 12px;
-          line-height: 18px;
-          color: #a0a0a0;
-        }
-      }
-    }
-    //错误提示
-    .ant-alert {
-      display: inline-block;
-      margin-left: 20px;
-    }
-    // 共多少条的样式
-    .notification_customer{
-      .summary_info {
-        position: fixed;
-        bottom: 20px;
-        margin-left: 20px;
-        font-size: 14px;
-      }
-      .ant-alert {
-        width: 98%;
-        margin-left: 20px;
-      }
-    }
   }
   #system-notice {
     .notification_system {
       .topNav {
         width: 35%;
-      }
-    }
-  }
-}
-
-//系统消息
-.notification_system {
-  margin-top: -15px;
-  .notification-type-select {
-    float: left;
-    margin: 16px 16px 0 20px;
-  }
-  .notification-status-select {
-    margin-top: 16px;
-  }
-  .notify-setting {
-    text-align: right;
-    margin: 20px 24px;
-    .notify-text {
-      font-size: 14px;
-      color: #333333;
-      margin-right: 9px;
-    }
-  }
-  //刷新新系统消息的提示
-  .system-notice-update {
-    text-align: center;
-    font-size: 14px;
-  }
-
-  .system_message_list {
-    .select-li-item, li:hover {
-      background-color: #f8fdff;
-      .system-notice-content {
-        .notice-handled-set {
-          color: #fff;
-          background-color: #4E96D1;
+        top: 64px;
+        &:before{
+          position:absolute;
+          left:20px;
         }
       }
     }
-    li {
-      position: relative;
-      display: inline-block;
-      width: 100%;
-      border-bottom: 1px solid #f1f1f1;
-      padding: 15px 0 5px 20px;
-      font-size: 14px;
-      .system-notice-title {
-        .icon-login-failed, .icon-concern-customer-login,
-        .icon-deactivate-customer-login, .icon-remote-login ,
-        .icon-call-failed, .icon-pull-clue-failed{
-          float: left;
-          margin: -1px 5px 0 0;
-          color: #F9B706;
-          font-size: 14px;
-        }
-        .icon-arrow {
-          color: #ced4d6;
-        }
-        .customer-name {
-          clear: both;
-          font-size: 16px;
-          font-weight: bold;
-          cursor: pointer;
-        }
-      }
-      .system-notice-type {
-        float: left;
-        margin-right: 10px;
-        padding-bottom: 5px;
-        font-size: 14px;
-        font-weight: bold;
-      }
-      .system-notice-content {
-        display: inline-block;
-        color: #7D7C7C;
-        > a {
-          float: right;
-          color: #8fd5f1;
-          &:hover {
-            color: #108ee9;
-          }
-        }
-        .notice-split-line {
-          float: right;
-          padding: 0 5px;
-          color: #8fd5f1;
-        }
-        .notice-handled-set {
-          font-size: 14px;
-          margin: 10px 0 20px;
-          height: 24px;
-          color: #108ee9;
-          .anticon-loading {
-            padding: 0 5px;
-          }
-        }
-        .system-notice-item {
-          > a {
-            padding-right: 5px;
-          }
-          .system-notice-time {
-            .login-count {
-              color: #108ee9;
-              padding: 0 2px;
-            }
-            .login-time {
-              padding-left: 5px;
-            }
-          }
-        }
-        // 处理通知消息的样式
-        .handle-notice-tips {
-          position: absolute;
-          top: 40px;
-          left: 120px;
-          .ant-alert-success,  .ant-alert-error{
-            background-color: #4E5C66;
-            .ant-alert-message, .ant-alert-description, .ant-alert-close-icon .anticon-cross{
-              color: #fff;
-            }
-          }
-          .ant-alert-success {
-            top: 20px;
-            height: 40px;
-          }
-          .ant-alert-error {
-            min-width: 200px;
-            height: 70px;
-          }
-        }
-      }
-      .system-notice-time {
-        color: #a0a0a0;
-      }
-    }
-  }
-  .summary_info {
-    position: fixed;
-    bottom: 20px;
-    margin-left: 20px;
-    font-size: 14px;
-  }
-  .right-pannel-default {
-    left: 39%;
   }
 }
 
