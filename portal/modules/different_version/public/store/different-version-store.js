@@ -5,6 +5,7 @@ class DifferentVersionStore {
         this.loading = true;
         this.versionData = [];
         this.errorMessage = null;
+        this.functions = [];
         this.bindActions(differentVersionAction);
     }
     getAllVersions(data) {
@@ -18,6 +19,9 @@ class DifferentVersionStore {
         }else{
             this.errorMessage = data.result;
         }
+    }
+    getVersionFunctionsById(data){
+        this.functions.push(data.functions);
     }
 }
 

@@ -288,6 +288,14 @@ module.exports = {
         passport: {
             needLogin: true
         },
+    },{
+        method: 'get',
+        path: '/rest/clue/apply_try',
+        handler: 'getApplyTryData',
+        passport: {
+            needLogin: true
+        },
+        privileges: [cluePrivilegeConst.BASE_QUERY_PERMISSION_ORGANIZATION]
     }
     ]
 };

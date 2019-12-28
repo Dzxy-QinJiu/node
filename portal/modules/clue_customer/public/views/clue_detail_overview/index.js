@@ -23,6 +23,7 @@ import Trace from 'LIB_DIR/trace';
 var className = require('classnames');
 var userData = require('PUB_DIR/sources/user-data');
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
+const clueCustomerUtils = require('../../utils/clue-customer-utils');
 
 import {
     SELECT_TYPE,
@@ -1161,6 +1162,36 @@ class ClueDetailOverview extends React.Component {
                 disableEdit={hasPrivilegeAddEditTrace}
             />);
     };
+    //渲染申请试用内容
+    renderApplyTryContent = () => {
+        console.log(clueCustomerUtils.VERSIONS);
+        const curClue = this.state.curClue;
+        let applyTryContent = <div className='clue-info-item-apply-try'>
+            <div className='clue-info-item-apply-try-content'>
+                <div className='clue-info-item-apply-try-content-title'>{Intl.get('common.company','公司')}</div>
+                <div className='clue-info-item-apply-try-content-value'>{curClue.applyTryCompany}</div>
+            </div>
+            <div className='clue-info-item-apply-try-content'>
+                <div className='clue-info-item-apply-try-content-title'>{Intl.get('common.apply.try.user.scales','使用人数')}</div>
+                <div className='clue-info-item-apply-try-content-value'>{curClue.applyTryUserScales}</div>
+            </div>
+            <div className='clue-info-item-apply-try-content'>
+                <div className='clue-info-item-apply-try-content-title'>{Intl.get('user.info.version','版本')}</div>
+                <div className='clue-info-item-apply-try-content-value'>{clueCustomerUtils.VERSIONS[curClue.applyTryKind]}</div>
+            </div>
+            <div className='clue-info-item-apply-try-content'>
+                <div className='clue-info-item-apply-try-content-title'>{Intl.get('common.login.time','时间')}</div>
+                <div className='clue-info-item-apply-try-content-value'>{moment(curClue.applyTryTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT)}</div>
+            </div>
+        </div>;
+        return (
+            <DetailCard 
+                title={`${Intl.get('login.apply.trial', '申请试用')}:`}
+                content={applyTryContent}
+                titleBottomBorderNone={false}
+            />
+        );
+    }
 
     //渲染关联账号的详情
     renderAppUserDetail = () => {
@@ -1807,6 +1838,7 @@ class ClueDetailOverview extends React.Component {
                     {this.renderAppUserDetail()}
                     {this.state.isShowAddCustomer ? this.renderAddCustomer() : null}
                     {this.renderTraceContent()}
+                    {this.state.curClue.version_upgrade_label === 'true' && this.renderApplyTryContent()}
                 </GeminiScrollbar>
             </div>
         );

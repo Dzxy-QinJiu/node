@@ -572,6 +572,30 @@ function crmOperatorAlertListener(data) {
         }
     }
 }
+//申请试用弹窗
+function applyUpgradeListener(data) {
+    let isOpenPopUpNotify = getNotifyStatus();
+    if (_.isObject(data)) {
+        const title = Intl.get('login.apply.trial','申请试用');
+        const lead = data.lead.name || '';
+        const version = data.version_change_info.new_version || '';
+        const time = getTimeStr(_.get(data.version_change_info,'apply_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+        const tipContent = time + ' ，' + lead + Intl.get('common.lead.apply.try','线索申请试用') + version;
+        if (canPopDesktop()) {
+            //桌面通知的展示
+            showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
+        }else{
+            if(!isOpenPopUpNotify) {
+                return;
+            }
+            notificationUtil.showNotification({
+                title: title,
+                content: tipContent,
+                closeWith: ['button']
+            });
+        }
+    }
+}
 //线索名可点击
 window.handleLeadClickCallback = function(lead_id) {
     phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
@@ -878,6 +902,7 @@ function disconnectListener() {
         socketIo.off('applyApprovemsg', applyApproveUnhandledListener);
         socketIo.off('applyVisitCustomerMsg', applyVisitCustomerListener);
         socketIo.off('crm_operator_alert_msg', crmOperatorAlertListener);
+        socketIo.off('apply_upgrade', applyUpgradeListener);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
     }
@@ -910,6 +935,8 @@ function startSocketIo() {
         socketIo.on('crm_operator_alert_msg', crmOperatorAlertListener);
         //监听销售的拜访反馈，推送给相应的抄送人
         socketIo.on('applyVisitCustomerMsg', applyVisitCustomerListener);
+        //监听申请试用
+        socketIo.on('apply_upgrade', applyUpgradeListener);
         //监听后端消息
         phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         //如果接受到主动断开的方法，调用socket的断开

@@ -1,7 +1,15 @@
 .apply-try-wrapper{
+    .right-panel-modal-content{
+        background-color: #fff !important;
+    }
+    .close-modal-btn{
+        color:#fff !important;
+    }
+    
     .apply-try-content{
         position: relative;
-
+        background:#fff;
+        height: 100%;
         .apply-try-header{
             background: #ccc;
             padding: 4px;
@@ -23,45 +31,47 @@
         }
 
         .apply-try-content-title{
-            font-size: 20px;
+            font-size: 16px;
             margin: 15px 0 20px 10px;
+            font-weight: 700;
         }
         .apply-try-content-componey{
             span{
-                margin: 0 10px;
-                font-size: 16px;
-                color: rgb(153, 153, 153);
+                margin: 10px;
+                font-size: 14px;
+                color: rgba(0, 0, 0, 0.65);
             }
             .apply-try-content-componey-input{
-                width: 360px;
-                border: 1px solid;
+                width: 360px !important;
             }
-            
         }
         .apply-try-content-useNumber-wrapper{
-            margin:10px 0;
+            margin:10px;
             span{
-                margin: 0 10px;
-                font-size: 16px;
-                color: rgb(153, 153, 153);
+                font-size: 14px;
             }
             .apply-try-content-useNumber{
-                font-size: 14px;
-                background: #fff;
-                border: 1px solid #aaa;
-                padding: 3px 10px;
-                margin: 0 5px;
+                margin: 0 8px 0;
             }
         }
-        .apply-try-content-apply-btn{
-            font-size: 14px;
-            background: #888;
-            border: 1px solid #888;
-            padding: 4px 40px;
-            font-weight: 700;
-            color: #fff;
-            margin: 12px 0 0 340px;
+        .apply-try-content-apply-btn-wrapper{
+            width: 100%;
+            text-align: center;
+            margin-top: 30px;
+            .apply-try-content-apply-btn{
+                font-size: 14px;
+                padding: 4px 40px;
+                font-weight: 700;
+                width:80%;
+                height: 35px;
+                background-color: rgb(239,164,77);
+                border: 0;
+            }
+            .active-try-content-apply-btn{
+                background-color: rgb(228,242,253);
+            }
         }
+        
     }
     .apply-try-success-wrapper{
         padding: 100px 0;
@@ -74,5 +84,10 @@
             font-size: 14px;
             color: #ccc;
         }
+    }
+    .apply-try-content-warning{
+        width: 100%;
+        text-align: center;
+        color: rgb(237,70,48);
     }
 }
