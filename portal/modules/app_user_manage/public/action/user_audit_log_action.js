@@ -17,7 +17,8 @@ function UserAuditLogAction() {
         'handleRefresh', //刷新用户审计日志
         'resetState',
         'handleFilterLogType', // 审计日志类型的过滤
-        'setTypeFilterValue' // 设置过滤字段的值
+        'setTypeFilterValue', // 设置过滤字段的值
+        'handleFilterAppTerminalType', // 筛选产品的多终端类型
     );
 
     //获取应用appID

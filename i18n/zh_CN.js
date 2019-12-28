@@ -302,7 +302,11 @@ var zh_CN = {
     'common.number.validate.tips': '请填写最多两位小数的数字',
     'common.app.android': '安卓版',
     'common.app.ios': 'IOS版',
+    'common.terminals.type': '终端类型',
+    'common.all.terminals': '所有终端',
+    'common.terminals': '终端',
     //公共部分--end
+    
     'login.login': '登录',
     'login.register': '注册',
     'login.service.error': '很抱歉,服务器出现了异常状况',

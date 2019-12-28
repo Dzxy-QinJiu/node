@@ -26,7 +26,8 @@ function SingleUserLogAction() {
         'getLogsBySearch', // 根据搜索内容显示日志信息
         'changUserIdKeepSearch', //  切换用户时，保持搜索框内容
         'resetLogState',
-        'toggleOperateDetail'//展开关闭操作详情
+        'toggleOperateDetail',//展开关闭操作详情
+        'setAppTerminalsType' // 选择終端类型
     ); 
 
     // 获取单个用户的应用列表
@@ -47,12 +48,20 @@ function SingleUserLogAction() {
             if (searchObj.search) {
                 getLogParam.search = searchObj.search;
             }
-
+            
             if (selectedAppId) { // 已选中应用
                 getLogParam.appid = selectedAppId;
+                // dispatch是为了能拿到应用列表，用来展示多终端类型
+                this.dispatch(
+                    {
+                        appId: selectedAppId,
+                        appList: appLists
+                    }
+                );
             } else { // 全部应用条件下查看
                 if (appLists.length) {
                     handleLogParams(this, getLogParam, appLists);
+                   
                 } else {
                     userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
                         if (_.isObject(result) && result.apps) {

@@ -1,5 +1,3 @@
-
-var React = require('react');
 var language = require('../../public/language/getLanguage');
 if (language.lan() == 'es' || language.lan() == 'en') {
     require('./app-selector-es_VE.less');

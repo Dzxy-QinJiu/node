@@ -165,9 +165,9 @@ UserDetailAddAppStore.prototype.submitAddApp = function(result) {
             this.submitResult = 'loading';
         } else {
             this.submitResult = 'success';
-            setTimeout(function() {
-                _this.resetState();
-                AppUserAction.closeRightPanel();
+            setTimeout( () => {
+                this.resetState();
+                AppUserAction.closeBatchChangePanel();
             } , 500);
         }
     }
