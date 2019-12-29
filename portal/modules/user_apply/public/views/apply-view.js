@@ -1,5 +1,3 @@
-var React = require('react');
-const PropTypes = require('prop-types');
 var AppUserUtil = require('../util/app-user-util');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var Spinner = require('../../../../components/spinner');
@@ -23,11 +21,13 @@ const session = storageUtil.session;
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
 class ApplyTabContent extends React.Component {
     constructor(props, context) {
         super(props, context);
         var state = this.getStoreData();
         state.applyId = props.applyId;
+        state.appList = [];
         this.state = state;
     }
 
@@ -61,6 +61,12 @@ class ApplyTabContent extends React.Component {
         });
     };
 
+    getAppList(){
+        getAppList(appList => {
+            this.setState({appList: appList});
+        });
+    }
+
     componentDidMount() {
         UserApplyStore.listen(this.onStoreChange);
         $(window).on('resize', this.onWindowResize);
@@ -74,6 +80,7 @@ class ApplyTabContent extends React.Component {
             this.fetchApplyList();
         }
         this.getUnreadReplyList();
+        this.getAppList();
         AppUserUtil.emitter.on('updateSelectedItem', this.updateSelectedItem);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED, this.pushDataListener);
         notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
@@ -571,6 +578,7 @@ class ApplyTabContent extends React.Component {
                         showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
                         applyListType={this.state.applyListType}
                         handleOpenApplyDetail={this.handleOpenApplyDetail}
+                        appList={this.state.appList}
                     />
                 )}
             </div>

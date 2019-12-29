@@ -147,6 +147,7 @@ const ApplyViewDetail = createReactClass({
         isHomeMyWork: PropTypes.bool,
         afterApprovedFunc: PropTypes.func,
         handleOpenApplyDetail: PropTypes.func,
+        appList: PropTypes.array,
     },
     displayName: 'ApplyViewDetail',
     mixins: [FieldMixin, UserNameTextField],
@@ -218,7 +219,7 @@ const ApplyViewDetail = createReactClass({
             if (_.includes(['1','2','3'], _.get(detailItem,'approval_state'))){
                 approval_state = _.get(detailItem,'approval_state');
             }
-            ApplyViewDetailActions.getApplyDetail(detailItem.id, applyData, approval_state);
+            ApplyViewDetailActions.getApplyDetail(detailItem.id, applyData, approval_state, this.props.appList);
             ApplyViewDetailActions.getNextCandidate({id: detailItem.id});
             //获取该审批所在节点的位置
             ApplyViewDetailActions.getApplyTaskNode({id: detailItem.id});
@@ -254,7 +255,7 @@ const ApplyViewDetail = createReactClass({
         var applyId = this.props.detailItem.id;
         if (applyId) {
             setTimeout(() => {
-                this.getApplyDetail(this.props.detailItem, this.props.applyData);
+                this.getApplyDetail(this.props.detailItem, this.props.applyData, this.props.appList);
                 ApplyViewDetailActions.setBottomDisplayType();
             });
         }
@@ -266,7 +267,7 @@ const ApplyViewDetail = createReactClass({
         this.getAllUserList();
         this.getNotSalesRoleUserList();
     },
-
+    
     componentWillUnmount() {
         var ApplyViewDetailStore = this.getApplyViewDetailStore();
         ApplyViewDetailStore.unlisten(this.onStoreChange);
@@ -1246,7 +1247,24 @@ const ApplyViewDetail = createReactClass({
             {
                 title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
-                className: 'apply-detail-th'
+                className: 'apply-detail-th',
+                render: (text, app, index) => {
+                    const custom_setting = appsSetting[app.app_id];
+                    let terminals = _.get(custom_setting, 'terminals.value');
+                    if (!_.isEmpty(terminals)) {
+                        _.map(terminals, 'name');
+                    }
+                    return (
+                        <div>
+                            <span>{text}</span>
+                            {
+                                !_.isEmpty(terminals) ? <span>
+                                    ({ _.map(terminals, 'name').join('、')})
+                                </span> : null
+                            }
+                        </div>
+                    );
+                }
             }];
         //数量
         if (!isExistUserApply && isOplateUser) {
@@ -1338,7 +1356,8 @@ const ApplyViewDetail = createReactClass({
                 });
             }
         }
-        return (<AntcTable dataSource={detailInfo.apps}
+        return (<AntcTable
+            dataSource={detailInfo.apps}
             bordered={true}
             pagination={false}
             columns={columns}/>);
@@ -1347,6 +1366,13 @@ const ApplyViewDetail = createReactClass({
     //渲染每个应用设置区域
     renderDetailForm(detailInfo) {
         let selectedApps = $.extend(true, [], detailInfo.apps), appsSetting = this.state.appsSetting;
+        let appList = this.props.appList;
+        _.each(selectedApps, app => {
+            let matchApp = _.find(appList, item => item.app_id === app.app_id);
+            if (matchApp && !_.isEmpty(matchApp.terminals)) {
+                app.terminals = matchApp.terminals;
+            }
+        });
         // 只展示当前用户的应用配置项
         if (this.state.curShowConfigUserId) {
             selectedApps = _.filter(selectedApps, app => app.user_id === this.state.curShowConfigUserId);
@@ -2491,6 +2517,11 @@ const ApplyViewDetail = createReactClass({
                                 //结束时间
                                 end_date: _.get(app_config, 'time.end_time'),
                             };
+                            // 多终端信息
+                            let terminals = _.get(app_config, 'terminals.value');
+                            if (!_.isEmpty(terminals)) {
+                                appObj.terminals = _.map(terminals, 'id');
+                            }
                             //已有用户申请没法指定个数
                             if (!isExistUserApply) {
                                 appObj.number = _.get(app_config, 'number.value');

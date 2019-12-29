@@ -233,7 +233,12 @@ const AppPropertySetting = createReactClass({
                         };
                     }
                     if(!originAppSetting[prop].setted) {
-                        originAppSetting[prop].value = appSettingConfig[prop];
+                        // 若是多终端属性，则用选择当前应用的多终端的值
+                        if (prop === 'terminals') {
+                            originAppSetting[prop].value = appSettingConfig.terminals;
+                        } else {
+                            originAppSetting[prop].value = defaultSettings[prop];
+                        }
                     }
                 }
                 //检查时间
@@ -265,6 +270,10 @@ const AppPropertySetting = createReactClass({
                 }
                 if(this.props.showMultiLogin) {
                     checkSingleProp('multilogin');
+                }
+                // 判断当前选择的应用，是否有多终端类型
+                if ( !_.isEmpty(currentApp.terminals)) {
+                    checkSingleProp('terminals');
                 }
                 checkRolePermission();
                 checkTime();
