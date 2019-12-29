@@ -25,10 +25,17 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
-    }, {//注册界面
+    }, {//用户协议
         'method': 'get',
         'path': '/user/agreement',
         'handler': 'showUserAgreementPage',
+        'passport': {
+            'needLogin': false
+        }
+    }, {//隐私政策
+        'method': 'get',
+        'path': '/privacy/policy',
+        'handler': 'showPrivacyPolicy',
         'passport': {
             'needLogin': false
         }
