@@ -531,3 +531,13 @@ exports.checkOnlyClueNamePhone = function(req, res) {
             res.status(500).json(err.message);
         });
 };
+
+//获取申请试用数据
+exports.getApplyTryData = function(req, res) {
+    clueCustomerService.getApplyTryData(req, res)
+        .on('success',function(data) {
+            res.status(200).json(data);
+        }).on('error',function(err) {
+            res.status(500).json(err.message);
+        });
+};

@@ -281,6 +281,20 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
     }
     this.handleClueData(clueData);
 };
+//申请试用的数据
+ClueCustomerStore.prototype.getApplyTryData = function(result) {
+    if(!result.error){
+        const applyTryData = result.result;
+        _.each(this.curClueLists, (clue) => {
+            if(clue.id === applyTryData.clueId){
+                clue.applyTryCompany = applyTryData.company;
+                clue.applyTryTime = applyTryData.create_time;
+                clue.applyTryUserScales = applyTryData.user_scales;
+                clue.applyTryKind = applyTryData.apply_version_info.kind;
+            }
+        });
+    }
+};
 //更新线索客户的一些属性
 ClueCustomerStore.prototype.updateClueProperty = function(updateObj) {
     var updateClue = _.find(this.curClueLists, clue => updateObj.id === clue.id);

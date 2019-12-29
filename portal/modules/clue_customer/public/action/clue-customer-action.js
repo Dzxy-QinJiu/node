@@ -151,6 +151,18 @@ function ClueCustomerActions() {
         }
 
     };
+    //处理申请详情的数据
+    this.getApplyTryData = function(ids) {
+        _.each(ids, ele => {
+            ele && clueCustomerAjax.getApplyTryData(ele.version_upgrade_id).then(result => {
+                console.log(result.apply_version_info);
+                result.clueId = ele.id;
+                this.dispatch({error: false,result: result});
+            },(error) => {
+                this.dispatch({error: error});
+            });
+        }); 
+    };
 
     //线索的全文搜索
     this.getClueFulltext = function(queryObj,callback) {
@@ -158,6 +170,17 @@ function ClueCustomerActions() {
         this.dispatch({error: false, loading: true
         });
         clueCustomerAjax.getClueFulltext(queryObj).then((result) => {
+            const ids = _.map(result.result,ele => {
+                if(ele['version_upgrade_id']){
+                    return {
+                        id: ele.id,
+                        version_upgrade_id: ele.version_upgrade_id
+                    };
+                }
+            });
+            if(ids.length > 0){
+                this.actions.getApplyTryData(ids);
+            }
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback,queryObj: queryObj});
         }, (errorMsg) => {
@@ -167,7 +190,10 @@ function ClueCustomerActions() {
                 errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索列表失败')
             });
         });
+        
     };
+    
+    
     this.getClueFulltextSelfHandle = function(queryObj,callback) {
         //是否是在全部状态下返回数据
         this.dispatch({error: false, loading: true

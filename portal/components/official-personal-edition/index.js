@@ -15,6 +15,7 @@ import {checkCurrentVersionType} from 'PUB_DIR/sources/utils/common-method-util'
 import { setUserData, getUserData } from 'PUB_DIR/sources/user-data';
 import history from 'PUB_DIR/sources/history';
 import { paymentEmitter } from 'OPLATE_EMITTER';
+import Trace from 'LIB_DIR/trace';
 
 const PERSONAL_VERSION_GOODS_TYPE = 'curtao_personal';
 
@@ -30,6 +31,7 @@ class OfficialPersonalEdition extends React.Component{
             listHeight: DEFAULT_HEIGHT,
             discountList: [],//商品折扣信息
             showCountDown: true,
+            leftTitle: _.get(this.props.paramObj,'leftTitle',''),
         };
     }
 
@@ -184,7 +186,11 @@ class OfficialPersonalEdition extends React.Component{
     };
 
     handleUpgradeEnterprise = () => {
-        console.log('点击升级企业版');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击升级为企业版');
+        if(_.isFunction(this.props.paramObj.showDifferentVersion)) {
+            this.props.paramObj.showDifferentVersion();
+            this.onClosePanel();
+        }
     };
 
     //处理提交的商品信息
