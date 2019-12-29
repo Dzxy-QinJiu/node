@@ -104,9 +104,14 @@
 <script src="/dll/dll.vendor.js?timestamp=<%= timeStamp %>"></script>
 <script src="/dll/dll.reactRel.js?timestamp=<%= timeStamp %>"></script>
 <script src="/resources/common.bundle.js?timestamp=<%= timeStamp %>"></script>
-<% // --- 注册界面 ---   %>
+<% if(isUserAgreement){ %>
+<% // --- 用户协议界面 ---   %>
 <script src="/resources/user_agreement.bundle.js?timestamp=<%= timeStamp %>"></script>
-<% // 注册页展示客服           %>
+<% } else { %>
+<% // --- 隐私政策界面 ---   %>
+<script src="/resources/privacy_policy.bundle.js?timestamp=<%= timeStamp %>"></script>
+<% }%>
+<% // 展示客服           %>
 <% show_custom_service = true %>
 <% showFooterContent = true %>
 <% include ../../common/public/tpl/common-footer.ejs %>

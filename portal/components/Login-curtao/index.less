@@ -19,7 +19,8 @@
         left:48%;
     }
     a.logo{
-        margin-left: 144px;
+        margin-left: 140px;
+        margin-bottom: 20px;
     }
 
     //登录、注册按钮
@@ -70,9 +71,13 @@
             border: none;
             padding: 0;
             margin: 0;
+            outline: none;
         }
-        .input-pwd{
-            padding-right: 26px;
+        .MuiFormLabel-root.Mui-focused{
+            color:#2196F3;
+        } 
+        .MuiInput-underline:after{
+            border-bottom: 2px solid #2196f3;
         }
         .input-item{
             position: relative;
@@ -83,13 +88,17 @@
                 cursor: pointer;
                 .handle-btn-item;
             }
-            .iconfont.icon-password-visible{
-                right: 2px;
-                font-size: 19px;
-            }
-            .iconfont.icon-password-invisible{
-                font-size: 15px;
-                bottom:6px;
+            // .iconfont.icon-password-visible{
+            //     right: 2px;
+            //     font-size: 19px;
+            // }
+            // .iconfont.icon-password-invisible{
+            //     font-size: 15px;
+            //     bottom:6px;
+            // }
+            .input-pwd {
+                outline: none;
+                border: none;
             }
         }
         .login-error-msg{
@@ -124,4 +133,7 @@
   .footer-content {
     color: #000000;
   }
+}
+::selection {
+    color: @font-color !important;
 }

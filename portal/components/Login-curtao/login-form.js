@@ -10,6 +10,7 @@ var crypto = require('crypto');
 const PropTypes = require('prop-types');
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../lib/websso';
 import {Icon} from 'antd';
+import {TextField} from '@material-ui/core';
 import classNames from 'classnames';
 //常量定义
 const CAPTCHA = '/captcha';
@@ -29,6 +30,8 @@ class LoginForm extends React.Component {
         password: '',
         //验证码
         captchaCode: this.props.captcha,
+        // 输入的验证码
+        inputCaptchaCode: '',
         //登录按钮是否可用
         loginButtonDisabled: true,
         //登录状态
@@ -42,7 +45,7 @@ class LoginForm extends React.Component {
             event.preventDefault();
             return false;
         }
-        var userName = _.trim(this.refs.username.value);
+        var userName = _.trim(this.state.username);
         if (!userName) {
             //用户名不能为空
             this.props.setErrorMsg(Intl.get('login.write.username', '请输入用户名'));
@@ -54,7 +57,7 @@ class LoginForm extends React.Component {
         //客户分析,第一次登录的时候，默认展示全部应用
         storageUtil.local.set('customer_analysis_stored_app_id', 'all');
         //获取输入的密码
-        var value = this.refs.password_input.value;
+        var value = this.state.password;
         if (!value) {
             //密码不能为空
             this.props.setErrorMsg(Intl.get('common.input.password', '请输入密码'));
@@ -62,7 +65,7 @@ class LoginForm extends React.Component {
             return false;
         }
         //需要输入验证码，但未输入验证码时
-        if (this.state.captchaCode && !this.refs.captcha_input.value) {
+        if (this.state.captchaCode && !this.state.inputCaptchaCode) {
             //验证码不能为空
             this.props.setErrorMsg(Intl.get('login.write.code', '请输入验证码'));
             //阻止缺省行为
@@ -92,8 +95,8 @@ class LoginForm extends React.Component {
             username: userName,
             password: newValue
         };
-        if(this.state.captchaCode && this.refs.captcha_input.value) {
-            submitObj.retcode = this.refs.captcha_input.value;
+        if(this.state.captchaCode && this.state.inputCaptchaCode) {
+            submitObj.retcode = this.state.inputCaptchaCode;
         }
         this.loginFunc('/login', submitObj);
         return false;
@@ -180,13 +183,30 @@ class LoginForm extends React.Component {
             passwordVisible: !this.state.passwordVisible 
         });
     };
-
+    changeInputCaptchaCode=(event) => {
+        this.setState({ inputCaptchaCode: event.target ? event.target.value : '' });
+    }
     renderCaptchaBlock = (hasWindow) => {
         return (this.state.captchaCode ? (<div className="input-item captcha_wrap clearfix">
-            <input placeholder={hasWindow ? Intl.get('common.captcha', '验证码') : null} type="text"
+            <TextField
+                required
+                fullWidth
+                ref="captcha_input"
+                className='captcha-input'
+                id="standard-basic"
+                label={hasWindow ? Intl.get('common.captcha', '验证码') : null}
+                color='primary'
+                autoComplete="retcode"
+                name="retcode" 
+                value={this.state.inputCaptchaCode}
+                onChange={this.changeInputCaptchaCode}
+                maxLength="4"
+                tabIndex="3"
+            />
+            {/* <input placeholder={hasWindow ? Intl.get('common.captcha', '验证码') : null} type="text"
                 name="retcode" autoComplete="off"
                 tabIndex="3"
-                ref="captcha_input" maxLength="4"/>
+                ref="captcha_input" /> */}
             <span className="login-captcha">
                 {this.renderCaptchaImg(hasWindow)}
             </span>
@@ -296,41 +316,52 @@ class LoginForm extends React.Component {
             <form action="/login" method="post" className="login-form" onSubmit={this.beforeSubmit} autoComplete="off">
                 <div className="input-area">
                     <div className="input-item">
-                        <input
-                            placeholder={hasWindow ? Intl.get('login.username.phone.email', '用户名/手机/邮箱') : null}
-                            type="text"
+                        <TextField
+                            required
+                            fullWidth
+                            id="standard-basic"
                             name="username"
-                            autoComplete="off" tabIndex="1"
-                            ref="username" value={this.state.username} onChange={this.userNameChange}
-                            onBlur={this.getLoginCaptcha}/>
+                            autoComplete="off" 
+                            tabIndex="1"
+                            ref="username"
+                            label={hasWindow ? Intl.get('login.username.phone.email', '用户名/手机/邮箱') : null}
+                            color='primary'
+                            value={this.state.username}
+                            onBlur={this.getLoginCaptcha}
+                            onChange={this.userNameChange}
+                        />
                     </div>
 
                     <div className="input-item">
                         <input type="password" className="password-hidden-input" name="password" id="hidedInput" ref="password"/>
-                        <input placeholder={hasWindow ? Intl.get('common.password', '密码') : null}
+                        <TextField
+                            required
+                            fullWidth
+                            id="password"
+                            name="password"
+                            type="password"
+                            tabIndex="2"
+                            label={hasWindow ? Intl.get('common.password', '密码') : null}
+                            autoComplete="off"
+                            ref="password_input"
+                            // logininput="password"
+                            className="input-pwd clearfix"
+                            color='primary'
+                            onChange={this.passwordChange}
+                            value={this.state.password}
+                        />
+                        {/* <input placeholder={hasWindow ? Intl.get('common.password', '密码') : null}
                             type={this.state.passwordVisible ? 'text' : 'password'} 
                             tabIndex="2"
                             ref="password_input"
                             logininput="password"
                             className="input-pwd"
                             onChange={this.passwordChange} value={this.state.password} autoComplete="new-password"/>
-                        <i className={displayPwd} onClick={this.showPassword}></i>
+                        <i className={displayPwd} onClick={this.showPassword}></i> */}
                     </div>
                     {this.renderCaptchaBlock(hasWindow)}
                 </div>
-                <div className='login-user-agreement-tip'>
-                    <ReactIntl.FormattedMessage
-                        id='login.user.agreement.tip'
-                        defaultMessage='点击{btn}表示您已同意我们的{userAgreement}'
-                        values={{
-                            'btn': Intl.get('login.login', '登录'),
-                            'userAgreement': (
-                                <a onClick={this.openUserAgreement} data-tracename="点击《用户协议》">
-                                    {Intl.get('register.user.agreement.curtao', '《用户协议》')}
-                                </a>)
-                        }}
-                    />
-                </div>
+               
                 <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? 'button' : 'submit'}
                     tabIndex="3"
                     disabled={this.state.loginButtonDisabled }

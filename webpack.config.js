@@ -31,7 +31,8 @@ var entry = function () {
         login: ['./portal/public/login'],
         login_curtao: ['./portal/public/login-curtao'],
         register: ['./portal/public/register'],
-        user_agreement: ['./portal/public/user-agreement']
+        user_agreement: ['./portal/public/user-agreement'],
+        privacy_policy: ['./portal/public/privacy-policy']
     };
     //开发模式下并且带test参数时打包测试文件
     if (webpackMode !== 'production' && process.argv.indexOf('test') !== -1) {

@@ -346,7 +346,7 @@ var en_US = {
     'login.wechat.bind.error': 'WeChat binding failed',//微信绑定失败
     'login.wechat.bind.check.error': 'Check whether or not to bind WeChat is failed',//检查是否绑定微信出错了
     'login.user.agreement': 'User agreement', //用户使用协议
-    'login.user.agreement.tip': 'Clicked {btn}, you agree to our {userAgreement}',//点击{btn}表示您已同意我们的{userAgreement}
+    'login.user.agreement.tip': 'Clicked {btn}, you agree to our {userAgreement} and {privacyPolicy}',//点击{btn}表示您已同意我们的{userAgreement}和{privacyPolicy}
     'login.no.account.register.tip': 'No account, go to {register}',//没有账号，去{register}
 
     'register.title.tip': 'Welcome to register',//欢迎注册客套
@@ -382,6 +382,8 @@ var en_US = {
     'register.user.agreement.curtao': 'User agreement',//《用户协议》
     'register.user.agreement.valid.tip': 'Please read and agreed to "Curtao user agreement"',//请先阅读并同意《客套用户协议》
     'register.to.login.tip': 'Existing account, go to {login}',//已有账号，去{login}
+    'register.phone.has.registed': 'The mobile number has been registered',//该手机号已被注册
+    'register.privacy.policy': 'Privacy policy',//隐私政策
 
     //首页
     'home.page': 'Home page',//首页

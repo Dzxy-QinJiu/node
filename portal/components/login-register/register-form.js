@@ -8,7 +8,8 @@ const PropTypes = require('prop-types');
 import Trace from '../../lib/trace';
 import {commonPhoneRegex} from '../../public/sources/utils/validate-util';
 import crypto from 'crypto';
-import {Form, Button, Input, Icon, Checkbox} from 'antd';
+import {Form, Input, Icon, Checkbox} from 'antd';
+import {TextField, Button} from '@material-ui/core';
 import classNames from 'classnames';
 const FormItem = Form.Item;
 let codeEffectiveInterval = null;
@@ -115,21 +116,17 @@ class RegisterForm extends React.Component {
     }
 
     renderCaptchaCode() {
-
         if (this.state.captchaCode) {
             return (
-                <span className="get-captcha-code">
+                <Button variant="contained">
                     {Intl.get('register.code.effective.time', '{second}秒后重试', {second: this.state.codeEffectiveTime})}
-                </span>);
+                </Button>);
         } else {
-            let cls = classNames('get-captcha-code', {
-                'active': hasInputPhone,//输入电话后，获取验证码的字体高亮
-            });
             return (
-                <span className={cls}>
+                <Button variant="contained" disabled={!hasInputPhone} className={hasInputPhone ? 'captcha-btn' : ''}>
                     {Intl.get('register.get.phone.captcha.code', '获取验证码')}
                     {this.state.isLoadingValidCode ? <Icon type="loading"/> : null}
-                </span>);
+                </Button>);
         }
     }
 
@@ -241,11 +238,15 @@ class RegisterForm extends React.Component {
     openUserAgreement = (e) => {
         window.open('/user/agreement');
     }
+    openPrivacyPolicy = (e) => {
+        window.open('/privacy/policy');
+    }
     toLogin = (e) => {
         window.location.href = '/login';
     }
     render() {
-        const {getFieldDecorator} = this.props.form;
+        const {getFieldDecorator, getFieldsValue} = this.props.form;
+        const values = getFieldsValue();
         return (
             <Form className='register-form' autocomplete="off">
                 <Input type="password" className='password-hidden-input' name="pwd"/>
@@ -254,7 +255,15 @@ class RegisterForm extends React.Component {
                         rules: [{validator: this.validatePhone}],
                         validateTrigger: 'onBlur'
                     })(
-                        <Input placeholder={Intl.get('user.phone', '手机号')}/>
+                        <TextField
+                            required
+                            fullWidth
+                            id="standard-basic"
+                            label={Intl.get('user.phone', '手机号')}
+                            color='primary'
+                            value={values.phone}
+                            autoComplete="phone"
+                        />
                     )}
                     {this.state.getCodeErrorMsg || this.state.validateCodeErrorMsg ?
                         <div className="register-error-tip">
@@ -266,8 +275,16 @@ class RegisterForm extends React.Component {
                         rules: [{validator: this.validateCode.bind(this)}],
                         validateTrigger: 'onBlur'
                     })(
-                        <Input className='captcha-code-input'
-                            placeholder={Intl.get('register.phone.code', '短信验证码')}/>
+                        <TextField
+                            required
+                            fullWidth
+                            className='captcha-input'
+                            id="standard-basic"
+                            label={Intl.get('register.phone.code', '短信验证码')}
+                            color='primary'
+                            autoComplete="code"
+                            value={values.code}
+                        />
                     )}
                     <div className="captcha-code-wrap" onClick={this.getValidateCode.bind(this)}>
                         {this.renderCaptchaCode()}
@@ -278,8 +295,16 @@ class RegisterForm extends React.Component {
                         rules: [{required: true, message: Intl.get('common.input.password', '请输入密码')}],
                         validateTrigger: 'onBlur'
                     })(
-                        <Input type='password' placeholder={Intl.get('common.password', '密码')}
-                            autocomplete="off"/>
+                        <TextField
+                            required
+                            fullWidth
+                            name="password"
+                            label={Intl.get('common.password', '密码')}
+                            type="password"
+                            id="password"
+                            autoComplete="pwd"
+                            values={values.pwd}
+                        />
                     )}
                 </FormItem>
                 <FormItem>
@@ -291,28 +316,47 @@ class RegisterForm extends React.Component {
                         }],
                         validateTrigger: 'onBlur'
                     })(
-                        <Input type='password' placeholder={Intl.get('common.confirm.password', '确认密码')}
-                            autocomplete="off"/>
+                        <TextField
+                            required
+                            fullWidth
+                            name="password"
+                            label={Intl.get('common.confirm.password', '确认密码')}
+                            type="password"
+                            id="password"
+                            autoComplete="rePwd"
+                            values={values.rePwd}
+                        />
                     )}
                 </FormItem>
                 <div className='register-user-agreement-tip'>
                     <ReactIntl.FormattedMessage
                         id='login.user.agreement.tip'
-                        defaultMessage='点击{btn}表示您已同意我们的{userAgreement}'
+                        defaultMessage='点击{btn}表示您已同意我们的{userAgreement}和{privacyPolicy}'
                         values={{
                             'btn': Intl.get('login.register', '注册'),
                             'userAgreement': (
                                 <a onClick={this.openUserAgreement} data-tracename="点击《用户协议》">
                                     {Intl.get('register.user.agreement.curtao', '《用户协议》')}
+                                </a>),
+                            'privacyPolicy': (
+                                <a onClick={this.openPrivacyPolicy} data-tracename="点击《用户协议》">
+                                 《{Intl.get('register.privacy.policy', '隐私政策')}》
                                 </a>)
                         }}
                     />
                 </div>
                 <FormItem>
-                    <Button onClick={this.submitFormData.bind(this)} data-tracename="点击注册"> 
-                        {Intl.get('login.register', '注册')}
-                        {this.state.isRegistering ? <Icon type="loading"/> : null}
-                    </Button>
+                    <div className='register-btn'>
+                        <Button 
+                            fullWidth
+                            variant="contained"
+                            onClick={this.submitFormData.bind(this)} 
+                            data-tracename="点击注册"
+                        > 
+                            {Intl.get('login.register', '注册')}
+                            {this.state.isRegistering ? <Icon type="loading"/> : null}
+                        </Button>
+                    </div>
                     <div className='register-to-login' data-tracename="点击登录"> 
                         <ReactIntl.FormattedMessage
                             id='register.to.login.tip'

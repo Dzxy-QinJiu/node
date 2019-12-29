@@ -353,7 +353,7 @@ var zh_CN = {
     'login.wechat.bind.check.error': '检查是否绑定微信出错了',
     'login.wechat.register.login.error': '微信号注册登录失败',
     'login.user.agreement': '用户使用协议',
-    'login.user.agreement.tip': '点击{btn}表示您已同意我们的{userAgreement}',
+    'login.user.agreement.tip': '点击{btn}表示您已同意我们的{userAgreement}和{privacyPolicy}',
     'login.no.account.register.tip': '没有账号，去{register}',
 
     'register.title.tip': '欢迎注册客套',
@@ -389,6 +389,8 @@ var zh_CN = {
     'register.user.agreement.curtao': '《用户协议》',
     'register.user.agreement.valid.tip': '请先阅读并同意《客套用户协议》',
     'register.to.login.tip': '已有账号，去{login}',
+    'register.phone.has.registed': '该手机号已被注册',
+    'register.privacy.policy': '隐私政策',
 
     //首页
     'menu.home.page': '首页',
