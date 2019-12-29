@@ -61,6 +61,8 @@ ClueCustomerStore.prototype.resetState = function() {
     this.isLoadingRecommendClue = true;
     this.getRecommendClueErrMsg = '';
     this.recommendClueLists = [];
+    this.saveRecommendClueLists = [];
+    this.hasExtraRecommendList = false;
 };
 ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
     if (result.loading) {
@@ -72,16 +74,27 @@ ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
         this.getRecommendClueErrMsg = result.errorMsg;
         this.recommendClueLists = [];
         this.canClickMoreBatch = true;
+        this.saveRecommendClueLists = [];
+        this.hasExtraRecommendList = false;
     } else {
         this.isLoadingRecommendClue = false;
         this.getRecommendClueErrMsg = '';
-        this.recommendClueLists = result.list;
+        this.recommendClueLists = _.get(result,'data.list');
+        this.saveRecommendClueLists = _.concat(this.saveRecommendClueLists, _.get(result,'data.list'));
+        if(_.get(this.saveRecommendClueLists,'length') < _.get(result,'data.total')){
+            this.hasExtraRecommendList = true;
+        }else{
+            this.hasExtraRecommendList = false;
+            this.saveRecommendClueLists = [];
+        }
         this.canClickMoreBatch = true;
     }
 };
 //保存查询条件
 ClueCustomerStore.prototype.saveSettingCustomerRecomment = function(result) {
     deleteEmptyProperty(result);
+    this.hasExtraRecommendList = false;
+    this.saveRecommendClueLists = [];
     this.settedCustomerRecommend.obj = result;
 };
 ClueCustomerStore.prototype.getSettingCustomerRecomment = function(result){

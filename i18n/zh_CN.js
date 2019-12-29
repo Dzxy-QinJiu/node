@@ -3715,6 +3715,8 @@ var zh_CN = {
     'clue.customer.last.year': '近一年',
     'clue.customer.close.filter.panel': '收起筛选',
     'clue.customer.not.connect.phone': '未打通电话的线索',
+    'clue.customer.input.industry': '请输入行业名称',
+    'clue.customer.add.industry.rule': '请输入1-10位的数字，字母或汉字(中间不能有空格)',
     'user.score.level.rule': '用户评分规则',
     'user.score.basic.score': '基础评分',
     'user.score.particate.in.score': '参与度评分',
