@@ -613,12 +613,15 @@ class ClueCustomer extends React.Component {
                         visible={!_.isNil(this.state.hasExtractCount) && !this.state.hasExtractCount && this.state.showRecommendTips}
                         overlayClassName="clue-recommend-tips explain-pop"
                     >
-                        <Button onClick={this.showClueRecommendTemplate} className="btn-item" data-tracename="点击线索推荐按钮">
-                            <i className="iconfont icon-clue-recommend"></i>
-                            <span className="clue-container">
-                                {Intl.get('clue.customer.clue.recommend', '线索推荐')}
-                            </span>
-                        </Button>
+                        {!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? 
+                            <Button onClick={this.showClueRecommendTemplate} className="btn-item" data-tracename="点击线索推荐按钮">
+                                <i className="iconfont icon-clue-recommend"></i>
+                                <span className="clue-container">
+                                    {Intl.get('clue.customer.clue.recommend', '线索推荐')}
+                                </span>
+                            </Button>
+                            : null}
+                        
                     </Popover>
                     : null}
             </div>
