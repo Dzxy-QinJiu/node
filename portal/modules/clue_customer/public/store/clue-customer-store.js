@@ -61,7 +61,6 @@ ClueCustomerStore.prototype.resetState = function() {
     this.isLoadingRecommendClue = true;
     this.getRecommendClueErrMsg = '';
     this.recommendClueLists = [];
-    this.saveRecommendClueLists = [];
     this.hasExtraRecommendList = false;
     this.sortvalues = [];
 };
@@ -75,19 +74,16 @@ ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
         this.getRecommendClueErrMsg = result.errorMsg;
         this.recommendClueLists = [];
         this.canClickMoreBatch = true;
-        this.saveRecommendClueLists = [];
         this.hasExtraRecommendList = false;
     } else {
         this.isLoadingRecommendClue = false;
         this.getRecommendClueErrMsg = '';
         this.recommendClueLists = _.get(result,'data.list');
-        this.saveRecommendClueLists = _.concat(this.saveRecommendClueLists, _.get(result,'data.list'));
-        if(_.get(this.saveRecommendClueLists,'length') < _.get(result,'data.total')){
+        if(_.get(result,'data.total') > 20){
             this.hasExtraRecommendList = true;
             this.sortvalues = _.get(_.last(_.get(result,'data.list')) ,'sortvalues');
         }else{
             this.hasExtraRecommendList = false;
-            this.saveRecommendClueLists = [];
             this.sortvalues = [];
         }
         this.canClickMoreBatch = true;
