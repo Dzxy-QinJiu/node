@@ -1192,6 +1192,7 @@ var en_US = {
     'notice.maintain': 'maintenance', // 维护
     'notice.fault': 'fault', // 故障
     'notice.system': 'system', // 系统
+    'notice.get.list.failed': 'Failed to get notice list', // 获取公告列表失败
     // 公告end
 
     //销售阶段start

@@ -79,7 +79,7 @@ exports.getUpgradeNoticeList = (queryObj) => {
         },
         error: (error, errorText) => {
             if (errorText !== 'abort') {
-                Deferred.reject(error && error.responseJSON || Intl.get('notification.system.notice.failed', '获取公告列表失败'));
+                Deferred.reject(error && error.responseJSON || Intl.get('notice.get.list.failed', '获取公告列表失败'));
             }
         }
     });

@@ -1193,6 +1193,7 @@ var zh_CN = {
     'notice.maintain': '维护',
     'notice.fault': '故障',
     'notice.system': '系统',
+    'notice.get.list.failed': '获取公告列表失败',
     // 公告end
     
     //销售阶段start
