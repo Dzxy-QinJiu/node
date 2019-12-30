@@ -597,7 +597,7 @@ class ClueCustomer extends React.Component {
     renderClueRecommend = () => {
         return (
             <div className="recomend-clue-customer-container pull-right">
-                {hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE) ?
+                {(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE) ) ?
                     <Popover
                         placement="bottom"
                         content={(
@@ -609,15 +609,12 @@ class ClueCustomer extends React.Component {
                         visible={!_.isNil(this.state.hasExtractCount) && !this.state.hasExtractCount && this.state.showRecommendTips}
                         overlayClassName="clue-recommend-tips explain-pop"
                     >
-                        {!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? 
-                            <Button onClick={this.showClueRecommendTemplate} className="btn-item" data-tracename="点击线索推荐按钮">
-                                <i className="iconfont icon-clue-recommend"></i>
-                                <span className="clue-container">
-                                    {Intl.get('clue.customer.clue.recommend', '线索推荐')}
-                                </span>
-                            </Button>
-                            : null}
-                        
+                        <Button onClick={this.showClueRecommendTemplate} className="btn-item" data-tracename="点击线索推荐按钮">
+                            <i className="iconfont icon-clue-recommend"></i>
+                            <span className="clue-container">
+                                {Intl.get('clue.customer.clue.recommend', '线索推荐')}
+                            </span>
+                        </Button>
                     </Popover>
                     : null}
             </div>
