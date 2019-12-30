@@ -132,7 +132,7 @@ class RecommendCustomerRightPanel extends React.Component {
         //去掉为空的数据
         if(this.state.hasExtraRecommendList){
             conditionObj = {
-                'sortvalues': [56.420723, 'company_base_info#81d47349098746b46ec71ac80a48cfae'],
+                sortvalues: this.state.lastSortValues,
                 ...conditionObj
             };
         }

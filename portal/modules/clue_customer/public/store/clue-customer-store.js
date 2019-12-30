@@ -63,6 +63,7 @@ ClueCustomerStore.prototype.resetState = function() {
     this.recommendClueLists = [];
     this.saveRecommendClueLists = [];
     this.hasExtraRecommendList = false;
+    this.lastSortValues = {};
 };
 ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
     if (result.loading) {
@@ -81,9 +82,11 @@ ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
         this.saveRecommendClueLists = _.concat(this.saveRecommendClueLists, _.get(result,'data.list'));
         if(_.get(this.saveRecommendClueLists,'length') < _.get(result,'data.total')){
             this.hasExtraRecommendList = true;
+            this.lastSortValues = _.last(this.recommendClueLists).sortvalues;
         }else{
             this.hasExtraRecommendList = false;
             this.saveRecommendClueLists = [];
+            this.lastSortValues = {};
         }
     }
 };
