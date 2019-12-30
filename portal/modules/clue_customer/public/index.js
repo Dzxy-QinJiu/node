@@ -196,9 +196,6 @@ class ClueCustomer extends React.Component {
                 clueCustomerAction.saveSettingCustomerRecomment(_.get(this.props, 'location.state.targetObj', {})); 
             }
             this.showClueRecommendTemplate();
-        }else {
-            //获取是否配置过线索推荐条件
-            this.getSettingCustomerRecomment();
         }
         this.setFilterInputWidth();
         //响应式布局时动态计算filterinput的宽度

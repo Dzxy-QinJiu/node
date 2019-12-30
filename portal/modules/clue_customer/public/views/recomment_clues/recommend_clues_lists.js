@@ -126,9 +126,9 @@ class RecommendCustomerRightPanel extends React.Component {
         conditionObj.load_size = this.state.pageSize;
         return conditionObj;
     };
-    getRecommendClueLists = () => {
+    getRecommendClueLists = (condition) => {
         if(this.state.canClickMoreBatch === false) return;
-        var conditionObj = this.getSearchCondition();
+        var conditionObj = this.getSearchCondition(condition);
         //去掉为空的数据
         if(this.state.hasExtraRecommendList){
             conditionObj = {
