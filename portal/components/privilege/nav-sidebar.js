@@ -4,9 +4,8 @@ var menuUtil = require('../../public/sources/utils/menu-util');
 var Logo = require('../Logo/index.js');
 var Avatar = require('../Avatar/index.js');
 var LogOut = require('../../modules/logout/views/index.js');
-var Popover = require('antd').Popover;
+import { Popover, Badge } from 'antd';
 var classNames = require('classnames');
-var React = require('react');
 var createReactClass = require('create-react-class');
 var _ = require('lodash');
 var UnreadMixin = require('./mixins/unread');
@@ -24,7 +23,6 @@ import {hasCalloutPrivilege, isCurtao, checkVersionAndType} from 'PUB_DIR/source
 import {phoneEmitter, notificationEmitter, userInfoEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
-
 const session = storageUtil.session;
 //需要加引导的模块
 const schedule_menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
@@ -138,7 +136,8 @@ var NavSidebar = createReactClass({
             // isReduceNavIcon: false,//是否展示缩小的图标(缩小浏览器时)
             // isReduceNavMargin: false, //是否展示小图标和图标间距
             isShowDialUpKeyboard: false,//是否展示拨号键盘的标识
-            ronglianNum: ''//正在拨打的容联的电话
+            ronglianNum: '',//正在拨打的容联的电话
+            isUnReadNoitce: false, // 是否有未读的公告，默认false
         };
     },
     propTypes: {
@@ -395,7 +394,11 @@ var NavSidebar = createReactClass({
         // });
         return (
             <div className="notification" onClick={this.toggleNotificationPanel}>
-                <i className={noticeCls} title={notification.name}/>
+                <Badge
+                    dot={this.state.isUnReadNoitce}
+                >
+                    <i className={noticeCls} title={notification.name}/>
+                </Badge>
             </div>
         );
     },

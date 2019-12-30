@@ -1184,8 +1184,17 @@ var zh_CN = {
     'notification.call.up.failed': '拨打电话失败',
     'notification.extract.clue.failed': '提取线索失败',
     'notification.system.count': '{count}次',
-
     //通知end
+    
+    // 公告start
+    'notice.upgrade.title': '升级通知',
+    'notice.upgrade.system': '公告消息',
+    'notice.upgrade.type.notice': '{type}公告',
+    'notice.maintain': '维护',
+    'notice.fault': '故障',
+    'notice.system': '系统',
+    // 公告end
+    
     //销售阶段start
     'sales.stage.change.sort': '变更顺序',
     'sales.stage.add.order.stage': '添加订单阶段',

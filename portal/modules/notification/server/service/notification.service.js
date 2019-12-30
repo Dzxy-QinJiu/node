@@ -18,13 +18,13 @@ var NotificationRestApis = {
     //将系统消息设为已处理
     handleSystemNotice: '/rest/base/v1/notice/customernotice/handle/:noticeId',
     //获取升级公告列表
-    getUpgradeNoticeList: 'http://10.20.1.202:8388/rest/open/application/records',
+    getUpgradeNoticeList: '/rest/base/v1/application/upgrade/notice',
 };
 exports.urls = NotificationRestApis;
 
 //获取升级公告列表
 exports.getUpgradeNoticeList = (req, res) => {
-    return restUtil.appAuthRest.get({
+    return restUtil.authRest.get({
         url: NotificationRestApis.getUpgradeNoticeList,
         req: req,
         res: res,
