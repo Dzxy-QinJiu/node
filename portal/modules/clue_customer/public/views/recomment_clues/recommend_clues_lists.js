@@ -63,6 +63,12 @@ class RecommendCustomerRightPanel extends React.Component {
     onStoreChange = () => {
         this.setState(clueCustomerStore.getState());
     };
+    getSettingCustomerRecomment = () => {
+        clueCustomerAction.getSettingCustomerRecomment((condition) => {
+            //获取推荐的线索
+            this.getRecommendClueLists(condition);
+        });
+    };
 
     componentDidMount() {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
@@ -77,8 +83,9 @@ class RecommendCustomerRightPanel extends React.Component {
         leadRecommendEmitter.on(leadRecommendEmitter.REFRESH_LEAD_LIST, this.handleClickRefreshBtn);
         leadRecommendEmitter.on(leadRecommendEmitter.CHANGE_LEAD_CONDITION, this.handleClickEditCondition);
         clueCustomerStore.listen(this.onStoreChange);
-        //获取推荐的线索
-        this.getRecommendClueLists();
+        //获取是否配置过线索推荐条件
+        this.getSettingCustomerRecomment();
+
     }
 
     //获取最多提取线索的数量以及已经提取多少线索
@@ -112,8 +119,8 @@ class RecommendCustomerRightPanel extends React.Component {
         }
         return (!settedCustomerRecommend.loading && !hasCondition) && !this.state.closeFocusCustomer;
     };
-    getSearchCondition = () => {
-        var conditionObj = _.cloneDeep(_.get(this, 'state.settedCustomerRecommend.obj'));
+    getSearchCondition = (condition) => {
+        var conditionObj = _.cloneDeep(condition || _.get(this, 'state.settedCustomerRecommend.obj'));
         //去掉一些不用的属性
         delete conditionObj.id;
         delete conditionObj.user_id;
@@ -121,9 +128,9 @@ class RecommendCustomerRightPanel extends React.Component {
         conditionObj.load_size = this.state.pageSize;
         return conditionObj;
     };
-    getRecommendClueLists = () => {
+    getRecommendClueLists = (condition) => {
         if(this.state.canClickMoreBatch === false) return;
-        var conditionObj = this.getSearchCondition();
+        var conditionObj = this.getSearchCondition(condition);
         //去掉为空的数据
         clueCustomerAction.getRecommendClueLists(conditionObj);
     }
@@ -443,6 +450,16 @@ class RecommendCustomerRightPanel extends React.Component {
                     );
                 }
             }, {
+                title: Intl.get('common.phone', '电话'),
+                dataIndex: 'telephones',
+                width: '300px',
+                render: (text, record, index) => {
+                    return (
+                        <span>{_.isArray(text) ? text.join('，') : null}
+                        </span>
+                    );
+                }
+            }, {
                 title: Intl.get('clue.customer.register.time', '注册时间'),
                 dataIndex: 'startTime',
                 width: '200px',
@@ -458,16 +475,6 @@ class RecommendCustomerRightPanel extends React.Component {
                 title: Intl.get('call.record.contacts', '联系人'),
                 dataIndex: 'legalPerson',
                 width: '300px',
-            }, {
-                title: Intl.get('common.phone', '电话'),
-                dataIndex: 'telephones',
-                width: '300px',
-                render: (text, record, index) => {
-                    return (
-                        <span>{_.isArray(text) ? text.join('，') : null}
-                        </span>
-                    );
-                }
             },{
                 title: Intl.get('common.operate', '操作'),
                 dataIndex: 'oprate_btn',

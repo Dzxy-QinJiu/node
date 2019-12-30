@@ -169,8 +169,6 @@ class ClueCustomer extends React.Component {
         this.getClueChannel();
         //获取线索分类
         this.getClueClassify();
-        //获取是否配置过线索推荐条件
-        this.getSettingCustomerRecomment();
         //获取已提取线索量
         this.getRecommendClueCount();
         this.getSalesmanList();
@@ -515,9 +513,7 @@ class ClueCustomer extends React.Component {
             console.log('获取线索分类出错了 ' + errorMsg);
         });
     };
-    getSettingCustomerRecomment = () => {
-        clueCustomerAction.getSettingCustomerRecomment();
-    };
+
 
     getRecommendClueCount = () => {
         let version = _.get(userData.getUserData(), 'organization.version', {});
