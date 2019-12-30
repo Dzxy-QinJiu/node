@@ -1249,17 +1249,23 @@ const ApplyViewDetail = createReactClass({
                 dataIndex: 'client_name',
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
-                    const custom_setting = appsSetting[app.app_id];
-                    let terminals = _.get(custom_setting, 'terminals.value');
+                    const terminals = _.get(app, 'terminals', []);
+                    let appTerminals = [];
                     if (!_.isEmpty(terminals)) {
-                        _.map(terminals, 'name');
+                        let matchApp = _.find(this.props.appList, item => item.app_id === app.app_id);
+                        _.each(terminals, id => {
+                            let matchTerminals = _.find(matchApp.terminals, item => item.id === id);
+                            if (matchTerminals) {
+                                appTerminals.push(matchTerminals);
+                            }
+                        });
                     }
                     return (
                         <div>
                             <span>{text}</span>
                             {
                                 !_.isEmpty(terminals) ? <span>
-                                    ({ _.map(terminals, 'name').join('、')})
+                                    ({ _.map(appTerminals, 'name').join('、')})
                                 </span> : null
                             }
                         </div>

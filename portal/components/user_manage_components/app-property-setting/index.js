@@ -237,7 +237,7 @@ const AppPropertySetting = createReactClass({
                         if (prop === 'terminals') {
                             originAppSetting[prop].value = appSettingConfig.terminals;
                         } else {
-                            originAppSetting[prop].value = defaultSettings[prop];
+                            originAppSetting[prop].value = appSettingConfig[prop];
                         }
                     }
                 }
