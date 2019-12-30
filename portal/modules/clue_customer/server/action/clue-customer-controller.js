@@ -448,8 +448,6 @@ exports.getRecommendClueLists = function(req, res) {
                     startTime: item.startTime || ''
                 });
             });
-            //按注册时间进行排序
-            result.list = _.sortBy(result.list, item => -item.startTime);
             res.status(200).json(result);
         }).on('error', function(err) {
             res.status(500).json(err && err.message);
