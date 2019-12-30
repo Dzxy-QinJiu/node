@@ -445,11 +445,10 @@ exports.getRecommendClueLists = function(req, res) {
                     name: item.name,
                     legalPerson: item.legalPerson,
                     telephones: item.telephones,
-                    startTime: item.startTime || ''
+                    startTime: item.startTime || '',
+                    sortvalues: item.sortvalues
                 });
             });
-            //按注册时间进行排序
-            result.list = _.sortBy(result.list, item => -item.startTime);
             res.status(200).json(result);
         }).on('error', function(err) {
             res.status(500).json(err && err.message);
