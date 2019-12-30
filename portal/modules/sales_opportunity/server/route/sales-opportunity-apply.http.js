@@ -29,13 +29,6 @@ module.exports = {
             },
         }, {
             method: 'get',
-            path: '/rest/sales_opportunity_apply/detail/byId',
-            handler: 'getSalesOpportunityApplyDetailById',
-            passport: {
-                needLogin: true
-            },
-        }, {
-            method: 'get',
             path: '/rest/get/sales_opportunity_apply/comment/list',
             handler: 'getSalesOpportunityApplyComments',
             passport: {

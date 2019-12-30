@@ -37,7 +37,7 @@ function ApplyViewDetailActions() {
         if (applyData){
             this.dispatch({loading: false, error: false, detail: applyData.detail, status: status});
         }else{
-            getApplyDetailById(queryObj, status).then((detail) => {
+            getApplyDetailById(queryObj).then((detail) => {
                 this.dispatch({loading: false, error: false, detail: detail, status: status});
             }, (errorMsg) => {
                 this.dispatch({loading: false, error: true, errorMsg: errorMsg});

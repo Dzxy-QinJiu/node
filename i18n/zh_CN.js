@@ -640,7 +640,7 @@ var zh_CN = {
     'user.apply.other.failed': '申请修改其他类型失败',
     'user.apply.status.failed': '申请修改开通状态失败',
     'user.get.user.detail.failed': '获取用户详情失败',
-    'user.get.apply.detail.failed': '获取申请单详情失败',
+    'user.get.apply.detail.failed': '获取申请审批详情失败',
     'user.no.more.data': '没有更多数据了',
     'user.select.role.include.auth': '选中的角色中已包含此权限',
     'user.curr.app.get.role.failed': '当前应用获取角色数据失败',

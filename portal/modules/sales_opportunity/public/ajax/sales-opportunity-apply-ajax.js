@@ -42,24 +42,6 @@ exports.getWorklistSalesOpportunityApplyList = function(queryObj) {
     });
     return Deferred.promise();
 };
-//根据申请的id获取申请的详情
-let getSalesOpportunityApplyDetailByIdAjax = null;
-exports.getSalesOpportunityApplyDetailById = function(queryObj) {
-    var Deferred = $.Deferred();
-    getSalesOpportunityApplyDetailByIdAjax && getSalesOpportunityApplyDetailByIdAjax.abort();
-    getSalesOpportunityApplyDetailByIdAjax = $.ajax({
-        url: '/rest/sales_opportunity_apply/detail/byId',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
 //获取回复列表
 let getSalesOpportunityApplyCommentListAjax = null;
 exports.getSalesOpportunityApplyCommentList = function(queryObj) {
