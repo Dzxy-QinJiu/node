@@ -1250,22 +1250,31 @@ const ApplyViewDetail = createReactClass({
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     const terminals = _.get(app, 'terminals', []);
-                    let appTerminals = [];
-                    if (!_.isEmpty(terminals)) {
-                        let matchApp = _.find(this.props.appList, item => item.app_id === app.app_id);
-                        _.each(terminals, id => {
-                            let matchTerminals = _.find(matchApp.terminals, item => item.id === id);
-                            if (matchTerminals) {
-                                appTerminals.push(matchTerminals);
-                            }
-                        });
+                    const custom_setting = appsSetting[app.app_id];
+                    let terminalsName = [];
+                    // 应用包含多终端信息
+                    let configTerminals = _.get(custom_setting, 'terminals.value');
+                    if (!_.isEmpty(configTerminals)) { // 待审批
+                        terminalsName = _.map(configTerminals, 'name');
+                    } else { // 通过、驳回、撤销
+                        if (!_.isEmpty(terminals)) {
+                            let appTerminals = [];
+                            let matchApp = _.find(this.props.appList, item => item.app_id === app.app_id);
+                            _.each(terminals, id => {
+                                let matchTerminals = _.find(matchApp.terminals, item => item.id === id);
+                                if (matchTerminals) {
+                                    appTerminals.push(matchTerminals);
+                                }
+                            });
+                            terminalsName = _.map(appTerminals, 'name');
+                        }
                     }
                     return (
                         <div>
                             <span>{text}</span>
                             {
-                                !_.isEmpty(terminals) ? <span>
-                                    ({ _.map(appTerminals, 'name').join('、')})
+                                !_.isEmpty(terminalsName) ? <span>
+                                    ({ terminalsName.join('、')})
                                 </span> : null
                             }
                         </div>
