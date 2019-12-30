@@ -483,6 +483,7 @@ class ApplyTabContent extends React.Component {
             afterApprovedFunc={this.afterFinishApplyWork}
             ApplyViewDetailStore={HistoricalApplyViewDetailStore}
             ApplyViewDetailAction={HistoricalApplyViewDetailAction}
+            appList={this.state.appList}
         />;
     };
 
