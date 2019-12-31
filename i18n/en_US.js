@@ -3874,7 +3874,7 @@ var en_US = {
     'boot.not.found.industry.tip': 'No "{search}" related industries were found. You may be interested in the following industries',//没有搜索到 “{search}” 相关行业，您可能关心以下行业
     /*个人试用 --- end*/
     /*组织到期提示 --- start*/
-    'organization.personal.trial.expired.tip': 'Your probation period remains {time} days, whether {upgrade}？',//您的试用期剩余{time}天，是否{upgrade}
+    'organization.personal.trial.expired.tip': 'Your probation period remains {time} days, whether {upgrade}？Contact us {contact}',//您的试用期剩余{time}天，是否{upgrade}? 联系我们请拨打{contact}
     'organization.company.trial.expired.tip': 'The rest of your probationary period {time} days, please contact our sales staff: {contact}',//您的试用期剩余{time}天，请联系我们的销售人员: {contact}
     'organization.personal.formal.expired.tip': 'Your account is about to expire, is it {renewal}?',//您的账号即将到期，是否{renewal}？
     'organization.company.formal.expired.tip': 'Your account is about to expire, please contact our sales staff: {contact}',//您的账号即将到期，请联系我们的销售人员: {contact}

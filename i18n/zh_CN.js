@@ -3924,7 +3924,7 @@ var zh_CN = {
     /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/
-    'organization.personal.trial.expired.tip': '您的试用期剩余{time}天，是否{upgrade}？',
+    'organization.personal.trial.expired.tip': '您的试用期剩余{time}天，是否{upgrade}？联系我们请拨打{contact}',
     'organization.company.trial.expired.tip': '您的试用期剩余{time}天，请联系我们的销售人员: {contact}',
     'organization.personal.formal.expired.tip': '您的账号即将到期，是否{renewal}？',
     'organization.company.formal.expired.tip': '您的账号即将到期，请联系我们的销售人员: {contact}',

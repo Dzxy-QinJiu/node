@@ -11,6 +11,7 @@ import { checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
 import { paymentEmitter } from 'PUB_DIR/sources/utils/emitters';
 import DifferentVersion from 'MOD_DIR/different_version/public';
 import history from 'PUB_DIR/sources/history';
+import {COMPANY_PHONE} from 'PUB_DIR/sources/utils/consts';
 
 
 const REMIND_DAYS = {
@@ -81,16 +82,17 @@ class OrganizationExipreTip extends React.PureComponent {
             if(versionAndType.personal || versionAndType.company) {
                 tip = <ReactIntl.FormattedMessage
                     id="organization.personal.trial.expired.tip"
-                    defaultMessage={'您的试用期剩余{time}天，是否{upgrade}？'}
+                    defaultMessage={'您的试用期剩余{time}天，是否{upgrade}？联系我们请拨打{contact}'}
                     values={{
                         'time': this.state.endTime,
-                        upgrade: <a data-tracename="点击组织到期，升级为正式版按钮" onClick={this.handleClickRenewal}>{Intl.get('user.info.version.upgrade', '升级为正式版')}</a>
+                        upgrade: <a data-tracename="点击组织到期，升级为正式版按钮" onClick={this.handleClickRenewal}>{Intl.get('user.info.version.upgrade', '升级为正式版')}</a>,
+                        contact: COMPANY_PHONE
                     }}
                 />;
             }else {
                 tip = Intl.get('organization.company.trial.expired.tip', '您的试用期剩余{time}天，请联系我们的销售人员: {contact}',{
                     time: this.state.endTime,
-                    contact: '400-6978-520'
+                    contact: COMPANY_PHONE
                 });
             }
         }else if(versionAndType.formal) {
@@ -103,7 +105,7 @@ class OrganizationExipreTip extends React.PureComponent {
                     }}
                 />;
             }else {
-                tip = Intl.get('organization.company.formal.expired.tip', '您的账号即将到期，请联系我们的销售人员: {contact}',{contact: '400-6978-520'});
+                tip = Intl.get('organization.company.formal.expired.tip', '您的账号即将到期，请联系我们的销售人员: {contact}',{contact: COMPANY_PHONE});
             }
         }
         return tip;
