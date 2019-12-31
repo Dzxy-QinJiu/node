@@ -14,6 +14,7 @@ const TAB_KEYS = {
 //顶部导航
 const SystemNotification = require('./views/system');
 import UpgradeNotice from './views/upgrade-notice';
+import {clickUpgradeNoiceEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 class Notification extends React.Component {
     constructor(props) {
@@ -24,6 +25,7 @@ class Notification extends React.Component {
     }
     componentDidMount() {
         $('body').css('overflow', 'hidden');
+        // 如果有新的公告信息，点击显示公告
     }
 
     componentWillUnmount() {
@@ -35,6 +37,7 @@ class Notification extends React.Component {
         let keyName = '通知';
         if (key === TAB_KEYS.UPGRADE_NOTICE) {
             keyName = '公告';
+            clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, {lastClickNoticeTime: moment().valueOf()});
         }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + keyName);
         this.setState({

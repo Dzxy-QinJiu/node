@@ -152,8 +152,11 @@ class PageFrame extends React.Component {
     }
 
     showNotificationPanel = () => {
+        // 显示通知面板时，红点消失
         this.setState({
             isShowNotificationPanel: true
+        }, () => {
+            
         });
     }
 
