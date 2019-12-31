@@ -335,12 +335,12 @@ class UserAddApp extends React.Component {
         }
     }
 
-    handleSelectDate( filed, app, appFormData, start_time, end_time, range,) {
+    handleSelectDate( field, appFormData, start_time, end_time, range,) {
         if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
             const appPropSettingsMap = this.state.appPropSettingsMap;
             _.each(appPropSettingsMap, item => {
                 const formData = item || {};
-                formData[filed] = {
+                formData[field] = {
                     start_time: start_time,
                     end_time: end_time,
                     range: range
@@ -473,24 +473,6 @@ class UserAddApp extends React.Component {
                     return;
                 } else {
                     this.clickTurnStep(direction);
-                    const { appPropSettingsMap } = this.state;
-                    //统一配置时将formData数据同步到appSettingMap中
-                    if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
-                        const { range, end_time, start_time } = this.state.formData;
-                        _.each(appPropSettingsMap, item => {
-                            item.time = {
-                                range,
-                                end_time,
-                                start_time
-                            };
-                        });
-                    }
-                    this.setState({
-                        appPropSettingsMap
-                    }, () => {
-                        //点击下一步时存储应用设置map
-                        // UserDetailAddAppActions.saveAppsSetting(this.state.appPropSettingsMap);
-                    });
                 }
             } else {
                 this.clickTurnStep(direction);
