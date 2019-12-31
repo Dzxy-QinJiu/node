@@ -517,16 +517,21 @@ class SalesHomePage extends React.Component {
                             {displayTime}
                         </div>
                     );
+                },
+                csvRenderTd: (call_date) => {
+                    return moment(call_date).format(DATE_TIME_FORMAT);
                 }
             },
             {
                 title: Intl.get('crm.41', '客户名'),
                 dataIndex: 'customer_name',
+                isSetCsvValueBlank: true,
                 width: FOUR_CHAR_WIDTH,
             },
             {
                 title: Intl.get('menu.trace', '跟进记录'),
                 dataIndex: 'remark',
+                isSetCsvValueBlank: true,
                 width: FOUR_CHAR_WIDTH,
             },
             {
