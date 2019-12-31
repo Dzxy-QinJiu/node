@@ -113,9 +113,7 @@ class UserLoginAnalysis extends React.Component {
         let lastLoginParams = this.getUserLastLoginParams(queryParams);
         let reqData = this.getUserLoginScoreParams(queryParams);
         let type = this.getUserLoginType();
-        // 增加多终端筛选
-        // 多终端类型 TODO 参数传值待定
-        let appTerminalType = queryParams && 'appTerminalType' in queryParams ? queryParams.appTerminalType : this.state.appTerminalType;
+        let appTerminalType = _.has(queryParams, 'appTerminalType') && queryParams.appTerminalType || this.state.appTerminalType;
         if (appTerminalType) {
             queryObj.terminal = appTerminalType;
             lastLoginParams.terminal = appTerminalType;

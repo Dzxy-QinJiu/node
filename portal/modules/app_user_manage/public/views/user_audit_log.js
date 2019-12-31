@@ -631,7 +631,7 @@ class LogView extends React.Component {
     }
 
     // 筛选终端类型
-    onSelectTerminalsUserType = (value) => {
+    onSelectTerminalsType = (value) => {
         UserAuditLogAction.handleFilterAppTerminalType();
         this.setState({
             appTerminalType: value
@@ -640,7 +640,7 @@ class LogView extends React.Component {
                 appTerminalType: value
             });
         });
-        Trace.traceEvent('用户审计日志', '多终端类型');
+        Trace.traceEvent('用户审计日志', '选择多终端类型');
     }
 
     // 渲染多终端类型
@@ -653,7 +653,8 @@ class LogView extends React.Component {
             <Select
                 className="select-app-terminal-type btn-item"
                 value={this.state.appTerminalType}
-                onChange={this.onSelectTerminalsUserType}
+                onChange={this.onSelectTerminalsType}
+
             >
                 {appTerminals}
             </Select>

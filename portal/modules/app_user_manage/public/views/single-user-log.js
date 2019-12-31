@@ -117,8 +117,7 @@ class SingleUserLog extends React.Component {
         if (log_type) {
             queryObj.log_type = log_type;
         }
-        // 多终端类型 TODO 参数传值待定
-        let appTerminalType = queryParams && 'appTerminalType' in queryParams ? queryParams.appTerminalType : this.state.appTerminalType;
+        let appTerminalType = _.has(queryParams, 'appTerminalType') && queryParams.appTerminalType || this.state.appTerminalType;
         if (appTerminalType) {
             queryObj.terminal = appTerminalType;
         }
@@ -209,7 +208,6 @@ class SingleUserLog extends React.Component {
     // 渲染多终端类型
     renderAppTerminalsType = () => {
         let selectAppTerminals = this.state.selectAppTerminals;
-        // TODO 由于现在后端返回的数据是code,没有返回name, 暂时使用code 展示，需要修改
         let appTerminals = _.map(selectAppTerminals, terminalType =>
             <Option key={terminalType.id} value={terminalType.code}> {terminalType.name} </Option>);
         appTerminals.unshift(<Option value="" id="">{Intl.get('common.all.terminals', '所有終端')}</Option>);
