@@ -92,7 +92,7 @@
   "devDependencies": {
     "alt": "0.17.9",
     "ant-ajax": "1.0.2",
-    "antc": "1.1.3",
+    "antc": "1.1.6",
     "antd": "2.13.0",
     "ant-react-catch-errors": "0.0.1",
     "autoprefixer": "8.3.0",

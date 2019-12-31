@@ -3914,13 +3914,15 @@ var zh_CN = {
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
-    'personal.welcome.use.curtao': '欢迎试用客套系统，完成以下引导将向您推荐精准的线索客户',
+    'personal.welcome.use.curtao': '欢迎使用客套，完成以下2步操作即可获取推荐线索',
     'personal.open.success.tip': '恭喜您成功开通试用版，试用期剩余 {count} 天',
     'boot.complete.step.set.industry': '您关注哪些行业的客户?',
     'boot.complete.step.set.area': '您关注哪个地域的客户?',
     'boot.complete.step.select.recommend.tip': '请选择或输入搜索',
     'boot.select.industry.count.tip': '最多可选择{count}个行业',
     'boot.not.found.industry.tip': '没有搜索到 “{search}” 相关行业，您可能关心以下行业',
+    'boot.select.industry': '请选择关注的行业',
+    'boot.select.area': '请选择关注的地域',
     /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/
