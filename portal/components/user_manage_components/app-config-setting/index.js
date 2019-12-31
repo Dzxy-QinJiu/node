@@ -124,7 +124,7 @@ class AppConfigSetting extends React.Component {
                                 disableDateBeforeToday={true}
                                 endTimeEndOfDay={false}
                                 getEndTimeTip={ (date) => {return Intl.get('user.open.cycle.date.tip','将在{date}的0点过期',{'date': date});}}
-                                onSelect={this.props.onSelectDate.bind(this, app, appsConfigData)}
+                                onSelect={this.props.onSelectDate.bind(this, appsConfigData)}
                                 range={appsConfigData.range}
                                 start_time={appsConfigData.begin_date}
                                 end_time={appsConfigData.end_date}
