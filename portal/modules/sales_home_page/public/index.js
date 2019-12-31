@@ -1,4 +1,5 @@
 require('./css/index.less');
+var salesHomeAjax = require('./ajax/sales-home-ajax');
 import callChart from 'MOD_DIR/analysis/public/charts/call';
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
@@ -6,6 +7,7 @@ const teamTreeEmitter = Emitters.teamTreeEmitter;
 var getDataAuthType = require('CMP_DIR/privilege/checker').getDataAuthType;
 import {Select, message, Alert, Button} from 'antd';
 import {AntcTable, AntcAnalysis, AntcCardContainer} from 'antc';
+import { others as commonFunc } from 'ant-utils';
 import { processTableChartCsvData } from 'antc/lib/components/analysis/utils';
 import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
@@ -61,6 +63,10 @@ const FIVE_CHAR_WIDTH = 105;
 //六字符表头宽度
 const SIX_CHAR_WIDTH = 120;
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+
+//回访统计请求参数缓存
+let returnVisitQueryArgCache = {};
+
 class SalesHomePage extends React.Component {
     constructor(props) {
         super(props);
@@ -325,6 +331,9 @@ class SalesHomePage extends React.Component {
         let filterObj = {
             call_back: 'true'
         };
+
+        returnVisitQueryArgCache = { paramsObj, filterObj };
+
         SalesHomeAction.getCallBackList(paramsObj, filterObj);
     };
 
@@ -691,6 +700,22 @@ class SalesHomePage extends React.Component {
             const dataSource = this.state.callBackRecord.dataList;
             const columns = this.getCallBackListColumn();
 
+            const exportData = function() {
+                let { paramsObj, filterObj } = returnVisitQueryArgCache;
+                paramsObj.params.page_size = 10000;
+
+                salesHomeAjax.getCallBackList(paramsObj, filterObj)
+                    .then(resData => {
+                        const result = _.get(resData, 'result', []);
+                        const csvFileName = title + '.csv';
+                        const csvData = processTableChartCsvData({}, {columns, dataSource: result});
+
+                        commonFunc.exportToCsv(csvFileName, csvData);
+                    });
+
+                return null;
+            };
+
             return (
                 <div>
                     <Spinner
@@ -700,8 +725,7 @@ class SalesHomePage extends React.Component {
                         <div className={tableClassnames} style={{height: this.getListBlockHeight()}}>
                             <AntcCardContainer
                                 title={title}
-                                csvFileName={title + '.csv'}
-                                exportData={processTableChartCsvData.bind(null, {}, {columns, dataSource})}
+                                exportData={exportData}
                             >
                                 <AntcTable
                                     dropLoad={dropLoadConfig}
