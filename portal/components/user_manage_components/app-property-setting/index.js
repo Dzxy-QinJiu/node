@@ -233,12 +233,7 @@ const AppPropertySetting = createReactClass({
                         };
                     }
                     if(!originAppSetting[prop].setted) {
-                        // 若是多终端属性，则用选择当前应用的多终端的值
-                        if (prop === 'terminals') {
-                            originAppSetting[prop].value = appSettingConfig.terminals;
-                        } else {
-                            originAppSetting[prop].value = appSettingConfig[prop];
-                        }
+                        originAppSetting[prop].value = appSettingConfig[prop];
                     }
                 }
                 //检查时间

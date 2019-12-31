@@ -42,7 +42,12 @@ var DefaultHeadIconImage = require('../../../common/public/image/default-head-ic
 var UserTypeConfigForm = require('./user-type-config-form');
 import Trace from 'LIB_DIR/trace';
 var moment = require('moment');
-import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount, isFinalTask, isApprovedByManager,timeShowFormat} from 'PUB_DIR/sources/utils/common-method-util';
+import {handleDiffTypeApply,getUserApplyFilterReplyList,
+    getApplyStatusTimeLineDesc,formatUsersmanList,
+    updateUnapprovedCount, isFinalTask,
+    isApprovedByManager,timeShowFormat,
+    applyAppConfigTerminal
+} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import ApplyHistory from 'CMP_DIR/apply-components/apply-history';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
@@ -1254,18 +1259,11 @@ const ApplyViewDetail = createReactClass({
                     let terminalsName = [];
                     // 应用包含多终端信息
                     let configTerminals = _.get(custom_setting, 'terminals.value');
-                    if (!_.isEmpty(configTerminals)) { // 待审批
+                    if (!_.isEmpty(configTerminals)) {
                         terminalsName = _.map(configTerminals, 'name');
-                    } else { // 通过、驳回、撤销
+                    } else {
                         if (!_.isEmpty(terminals)) {
-                            let appTerminals = [];
-                            let matchApp = _.find(this.props.appList, item => item.app_id === app.app_id);
-                            _.each(terminals, id => {
-                                let matchTerminals = _.find(matchApp.terminals, item => item.id === id);
-                                if (matchTerminals) {
-                                    appTerminals.push(matchTerminals);
-                                }
-                            });
+                            let appTerminals = applyAppConfigTerminal(terminals, app.app_id, this.props.appList);
                             terminalsName = _.map(appTerminals, 'name');
                         }
                     }

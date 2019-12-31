@@ -2,8 +2,7 @@ import ApplyViewDetailActions from '../action/historical-apply-view-detail-actio
 import { altAsyncUtil } from 'ant-utils';
 const { resultHandler } = altAsyncUtil;
 import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
-import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
-
+import {checkIfLeader, applyAppConfigTerminal} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyViewDetailStore {
     constructor() {
         this.resetState();
@@ -356,10 +355,6 @@ class ApplyViewDetailStore {
                     }
                 }
             }
-            // 申请的多终端信息
-            const terminals = _.get(appInfo, 'terminals', []);
-            let matchApp = _.find(appList, item => item.app_id === app_id);
-
             let appConfigObj = {
                 //开通个数
                 number: _.get(appInfo, 'number', 1),
@@ -376,15 +371,10 @@ class ApplyViewDetailStore {
                 //权限
                 permissions: appInfo.permissions || []
             };
-            let configTerminals = [];
-            if (!_.isEmpty(terminals) && matchApp && !_.isEmpty(matchApp.terminals)) {
-                _.each(terminals, id => {
-                    let matchTerminals = _.find(matchApp.terminals, item => item.id === id);
-                    if (matchTerminals) {
-                        configTerminals.push(matchTerminals);
-                    }
-                });
-                appConfigObj.terminals = configTerminals;
+            // 申请的多终端信息
+            const terminals = _.get(appInfo, 'terminals', []);
+            if (!_.isEmpty(terminals)) {
+                appConfigObj.terminals = applyAppConfigTerminal(terminals, app_id, appList);
             }
             //延期（多应用)时，需要分用户进行配置
             if(apply_type === APPLY_TYPES.DELAY){
