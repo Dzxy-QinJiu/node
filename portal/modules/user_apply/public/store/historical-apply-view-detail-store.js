@@ -359,7 +359,7 @@ class ApplyViewDetailStore {
                 //开通个数
                 number: _.get(appInfo, 'number', 1),
                 //到期停用
-                over_draft: _.get(appInfo, 'over_draft', '1'),
+                over_draft: _.toString( _.get(appInfo, 'over_draft', '1')),
                 //时间
                 time: {
                     start_time: start_time,
