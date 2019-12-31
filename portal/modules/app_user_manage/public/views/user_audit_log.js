@@ -27,6 +27,7 @@ import userData from 'PUB_DIR/sources/user-data';
 import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { RETRY_GET_APP } from '../util/consts';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
+import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
 
 // 用户类型的常量
 const USER_TYPE_OPTION = {

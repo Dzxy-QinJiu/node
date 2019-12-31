@@ -18,6 +18,7 @@ const TOP_PADDING = 40;//top padding for inputs（时间选择框和搜索框高
 const APP_SELECT_HEIGHT = 40; // 应用选择框的高度
 const BOTTOM_TOTAL_HEIGHT = 50; // 记录总条数的高度
 import { data as antUtilData } from 'ant-utils';
+import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
 
 class SingleUserLog extends React.Component {
     static defaultProps = {
@@ -199,7 +200,7 @@ class SingleUserLog extends React.Component {
     };
 
     // 筛选终端类型
-    onSelectTerminalsUserType = (value) => {
+    onSelectTerminalsType = (value) => {
         SingleUserLogAction.resetLogState();
         SingleUserLogAction.setAppTerminalsType(value);
         this.getSingleUserAuditLogList({appTerminalType: value, page: 1});
@@ -207,18 +208,11 @@ class SingleUserLog extends React.Component {
 
     // 渲染多终端类型
     renderAppTerminalsType = () => {
-        let selectAppTerminals = this.state.selectAppTerminals;
-        let appTerminals = _.map(selectAppTerminals, terminalType =>
-            <Option key={terminalType.id} value={terminalType.code}> {terminalType.name} </Option>);
-        appTerminals.unshift(<Option value="" id="">{Intl.get('common.all.terminals', '所有終端')}</Option>);
         return (
-            <SelectFullWidth
-                className="select-app-terminal-type"
-                value={this.state.appTerminalType}
-                onChange={this.onSelectTerminalsUserType}
-            >
-                {appTerminals}
-            </SelectFullWidth>
+            <SelectAppTerminal
+                selectAppTerminals={this.state.selectAppTerminals}
+                handleSelectedTerminal={this.onSelectTerminalsType.bind(this)}
+            />
         );
     };
 
