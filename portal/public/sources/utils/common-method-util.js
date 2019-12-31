@@ -1283,3 +1283,18 @@ exports.recordChangeTimeLineItem = (item) => {
 exports.timeShowFormat = (time,format) => {
     return time ? moment(time).format(format) : '';
 };
+
+// 申请产品，选择的多终端类型
+exports.applyAppConfigTerminal = (terminals, appId, appList) => {
+    let matchApp = _.find(appList, item => item.app_id === appId);
+    let configTerminals = [];
+    if (matchApp && !_.isEmpty(matchApp.terminals)) {
+        _.each(terminals, id => {
+            let matchTerminals = _.find(matchApp.terminals, item => item.id === id);
+            if (matchTerminals) {
+                configTerminals.push(matchTerminals);
+            }
+        });
+    }
+    return configTerminals;
+};
