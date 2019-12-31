@@ -10,8 +10,9 @@ import notificationAjax from '../ajax/notification-ajax';
 import LAYOUT from '../utils/layout';
 // 没有消息的提醒
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
-const PAGE_SIZE = 20; // 下拉加载的条数
+const PAGE_SIZE = 2; // 下拉加载的条数
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
+const CLIENTID = '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9';
 class UpgradeNotice extends React.Component {
     constructor(props) {
         super(props);
@@ -36,7 +37,7 @@ class UpgradeNotice extends React.Component {
 
     getUpgradeNoticeList = () => {
         let queryObj = {
-            application_id: '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9',
+            application_id: _.get(window, 'Oplate.clientId', CLIENTID),
             page_size: PAGE_SIZE,
             page_num: this.state.pageNum
         };
@@ -47,13 +48,7 @@ class UpgradeNotice extends React.Component {
             stateData.isLoading = false;
             stateData.errorMsg = '';
             if (result && _.isArray(result.list)) {
-                if (stateData.lastSystemNoticeId) {
-                    //下拉加载时
-                    stateData.noticeList = this.state.noticeList.concat(result.list);
-                } else {
-                    //首次获取数据时
-                    stateData.noticeList = result.list;
-                }
+                stateData.noticeList = stateData.noticeList.concat(result.list);
                 stateData.total = result.total || stateData.noticeList.length;
                 stateData.pageNum += 1;
             }
@@ -141,7 +136,7 @@ class UpgradeNotice extends React.Component {
     };
 
     render() {
-        let containerHeight = $(window).height() - LAYOUT.SUMMARY_H - 64;
+        let containerHeight = $(window).height() - LAYOUT.BOTTOM - LAYOUT.TAB_HEIGHT;
         return (
             <div className="notice-wrap" data-tracename="公告">
                 <div style={{height: containerHeight}}>
@@ -153,10 +148,11 @@ class UpgradeNotice extends React.Component {
                         {this.renderUpGradeNoticeList()}
                     </GeminiScrollbar>
                 </div>
-                {this.state.total ?
-                    <div className="summary_info">
-                        {Intl.get('common.total.data', '共{num}条数据', {num: this.state.total})}
-                    </div> : null
+                {
+                    this.state.total ?
+                        <div className="total">
+                            {Intl.get('common.total.data', '共{num}条数据', {num: this.state.total})}
+                        </div> : null
                 }
             </div>
         );
