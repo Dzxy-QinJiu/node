@@ -6,6 +6,7 @@ const teamTreeEmitter = Emitters.teamTreeEmitter;
 var getDataAuthType = require('CMP_DIR/privilege/checker').getDataAuthType;
 import {Select, message, Alert, Button} from 'antd';
 import {AntcTable, AntcAnalysis, AntcCardContainer} from 'antc';
+import { processTableChartCsvData } from 'antc/lib/components/analysis/utils';
 import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
 var RightContent = require('../../../components/privilege/right-content');
@@ -680,6 +681,11 @@ class SalesHomePage extends React.Component {
                 showNoMoreDataTip: showNoMoreDataTip(),
                 noMoreDataText: Intl.get('noMoreTip.visitBack', '没有更多回访记录了')
             };
+
+            const title = Intl.get('common.callback.analysis', '回访统计');
+            const dataSource = this.state.callBackRecord.dataList;
+            const columns = this.getCallBackListColumn();
+
             return (
                 <div>
                     <Spinner
@@ -688,12 +694,14 @@ class SalesHomePage extends React.Component {
                     <div className='sales-table-container'>
                         <div className={tableClassnames} style={{height: this.getListBlockHeight()}}>
                             <AntcCardContainer
-                                title={Intl.get('common.callback.analysis', '回访统计')}
+                                title={title}
+                                csvFileName={title + '.csv'}
+                                exportData={processTableChartCsvData.bind(null, {}, {columns, dataSource})}
                             >
                                 <AntcTable
                                     dropLoad={dropLoadConfig}
-                                    dataSource={this.state.callBackRecord.dataList}
-                                    columns={this.getCallBackListColumn()}
+                                    dataSource={dataSource}
+                                    columns={columns}
                                     pagination={false}
                                     util={{zoomInSortArea: true}}
                                     onChange={this.onCallBackTableChange}
