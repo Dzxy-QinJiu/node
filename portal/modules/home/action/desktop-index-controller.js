@@ -19,6 +19,7 @@ let _ = require('lodash');
 let moment = require('moment');
 const commonUtil = require('../../../lib/utils/common-utils');
 const authRouters = require('../../../lib/authRouters');
+let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
 /*
  * home page handler.
  */
@@ -33,6 +34,7 @@ exports.home = function(req, res) {
     let custom_service_lang = global.config.lang || 'zh_CN';
     custom_service_lang = custom_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
     let roles = _.map(user.role_infos, 'role_name') || [];
+    let backendIntl = new BackendIntl(req);
     res.render('home/tpl/desktop-index', {
         isFormal: global.config.isFormal,
         userid: user.user_id,
@@ -48,7 +50,8 @@ exports.home = function(req, res) {
         clientId: global.config.loginParams.clientId,
         useSso: global.config.useSso,
         isCurtao: isCurtao,
-        timeStamp: global.config.timeStamp
+        timeStamp: global.config.timeStamp,
+        loadingText: backendIntl.get('common.system.initial', '系统正在快速初始化，请耐心等待...')
     });
 };
 

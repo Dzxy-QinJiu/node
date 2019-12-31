@@ -180,6 +180,7 @@ var en_US = {
     'common.no.clue': 'There is no lead',//暂无线索
     'common.no.audit': 'There is no operation record',//暂无操作记录
     'common.no.call.record': 'There is no call record',//暂无通话记录
+    'common.system.initial': 'The system is being rapidly initialized, please be patient...',//系统正在快速初始化，请耐心等待...
 
     'common.yesno': 'whether',//是否
     'common.add.member': 'Add members',//添加成员

@@ -186,6 +186,7 @@ var zh_CN = {
     'common.no.audit': '暂无操作记录',
     'common.no.more.trace.record': '暂无跟进记录',
     'common.no.call.record': '暂无通话记录',
+    'common.system.initial': '系统正在快速初始化，请耐心等待...',
 
     'common.yesno': '是否',
     'common.add.member': '添加成员',

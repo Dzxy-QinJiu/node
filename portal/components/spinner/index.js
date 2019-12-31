@@ -14,7 +14,15 @@ class Spinner extends React.Component {
             var cls = classNames('load8',this.props.className);
             return (
                 <div className={cls}>
-                    <div className="loader8"></div>
+                    <div className="loader8-content">
+                        {this.props.content ? (
+                            <div className="loader8-inner">
+                                {this.props.content}
+                            </div>
+                        ) : null}
+                        <div className="loader8"></div>
+                        {this.props.loadingText ? (<div className="loader8-text">{this.props.loadingText}</div>) : null}
+                    </div>
                 </div>
             );
         }
