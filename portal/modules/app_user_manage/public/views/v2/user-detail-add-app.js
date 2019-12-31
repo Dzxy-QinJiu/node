@@ -31,11 +31,9 @@ const CheckboxGroup = Checkbox.Group;
 import UserAppConfig from '../v3/AppPropertySetting';
 import ApplyUserAppConfig from 'CMP_DIR/apply-user-app-config';
 import AppConfigForm from 'CMP_DIR/apply-user-app-config/app-config-form';
+import {CONFIG_TYPE} from 'PUB_DIR/sources/utils/consts';
+import {getConfigAppType} from 'PUB_DIR/sources/utils/common-method-util';
 
-const CONFIG_TYPE = {
-    UNIFIED_CONFIG: 'unified_config',//统一配置
-    SEPARATE_CONFIG: 'separate_config'//分别配置
-};
 function merge(obj1, obj2) {
     obj1 = obj1 || {};
     obj2 = obj2 || {};
@@ -324,6 +322,7 @@ const UserDetailAddApp = createReactClass({
         if (field === 'terminals') {
             let checkedValue = e;
             let terminals = [];
+            value = [];
             if (!_.isEmpty(checkedValue)) {
                 _.each(checkedValue, checked => {
                     if (checked) {
@@ -332,8 +331,6 @@ const UserDetailAddApp = createReactClass({
                     }
                 });
                 value = terminals;
-            } else {
-                value = [];
             }
         } else {
             if (e.target.type === 'checkbox') {
@@ -449,24 +446,11 @@ const UserDetailAddApp = createReactClass({
         const apps = selectedAppIds.map(id => this.state.rawApps.find(x => x.app_id === id));
         UserDetailAddAppActions.setSelectedApps(apps);
         // 若所选应用包括多终端类型，则直接显示分别配置界面
-        if (selectedAppIds.length > 1) {
-            if (_.find(apps, item => !_.isEmpty(item.terminals))) {
-                this.setState({
-                    configType: CONFIG_TYPE.SEPARATE_CONFIG
-                });
-            } else {
-                this.setState({
-                    configType: CONFIG_TYPE.UNIFIED_CONFIG
-                });
-            }
-        } else {
-            this.setState({
-                configType: CONFIG_TYPE.UNIFIED_CONFIG
-            });
-        }
+        let configType = getConfigAppType(selectedAppIds, apps);
         setTimeout(() => {
             this.setState({
-                appPropSettingsMap: this.createPropertySettingData(this.state)
+                appPropSettingsMap: this.createPropertySettingData(this.state),
+                configType: configType
             });
         });
         //当只有一个应用的时候，需要把特殊设置的应用属性隐藏掉，

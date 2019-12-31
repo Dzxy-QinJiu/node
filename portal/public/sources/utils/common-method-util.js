@@ -29,7 +29,8 @@ import {
     REALM_REMARK,
     INDICATOR_TOOLTIP,
     DIFF_STATUS_TAB,
-    RESPONSIVE_LAYOUT
+    RESPONSIVE_LAYOUT,
+    CONFIG_TYPE
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -1282,4 +1283,14 @@ exports.recordChangeTimeLineItem = (item) => {
 //展示时间的时候加上为空的判断
 exports.timeShowFormat = (time,format) => {
     return time ? moment(time).format(format) : '';
+};
+
+// 选择应用后，获取配置类型
+exports.getConfigAppType = (selectedAppIds, selectedAppList) => {
+    let configType = CONFIG_TYPE.UNIFIED_CONFIG;
+    let hasTerminals = _.find(selectedAppList, item => !_.isEmpty(item.terminals));
+    if (selectedAppIds.length > 1 && hasTerminals) {
+        configType = CONFIG_TYPE.SEPARATE_CONFIG;
+    }
+    return configType;
 };
