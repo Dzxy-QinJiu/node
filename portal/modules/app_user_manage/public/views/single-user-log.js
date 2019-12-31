@@ -210,7 +210,7 @@ class SingleUserLog extends React.Component {
     renderAppTerminalsType = () => {
         return (
             <SelectAppTerminal
-                selectAppTerminals={this.state.selectAppTerminals}
+                appTerminals={this.state.selectAppTerminals}
                 handleSelectedTerminal={this.onSelectTerminalsType.bind(this)}
             />
         );

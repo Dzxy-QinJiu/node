@@ -171,8 +171,7 @@ class LogView extends React.Component {
         if (endtime) {
             bodyObj.end_time = endtime;
         }
-        // 多终端类型 TODO 参数传值待定
-        let appTerminalType = _.get(queryParams, 'appTerminalType') || this.state.appTerminalType;
+        let appTerminalType = _.has(queryParams, 'appTerminalType') && queryParams.appTerminalType || this.state.appTerminalType;
         if (appTerminalType) {
             bodyObj.terminal = appTerminalType;
         }
@@ -646,19 +645,12 @@ class LogView extends React.Component {
 
     // 渲染多终端类型
     renderAppTerminalsType = () => {
-        let selectAppTerminals = this.state.selectAppTerminals;
-        let appTerminals = _.map(selectAppTerminals, terminalType =>
-            <Option key={terminalType.id} value={terminalType.code}> {terminalType.name} </Option>);
-        appTerminals.unshift(<Option value="" id="">{Intl.get('common.all.terminals', '所有終端')}</Option>);
         return (
-            <Select
-                className="select-app-terminal-type btn-item"
-                value={this.state.appTerminalType}
-                onChange={this.onSelectTerminalsType}
-
-            >
-                {appTerminals}
-            </Select>
+            <SelectAppTerminal
+                appTerminals={this.state.selectAppTerminals}
+                handleSelectedTerminal={this.onSelectTerminalsType.bind(this)}
+                className="btn-item"
+            />
         );
     }
 

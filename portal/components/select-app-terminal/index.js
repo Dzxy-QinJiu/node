@@ -4,13 +4,13 @@
 
 import SelectFullWidth from '../select-fullwidth';
 import { Component } from 'React';
+import classNames from 'classnames';
 
-class SelectAppTerminal extends Component {
-    constructor(prop) {
-        super(prop);
+class SelectAppTerminal extends React.Component {
+    constructor(props) {
+        super(props);
         this.state = {
             terminalType: '', // 终端类型
-            selectAppTerminals: props.selectAppTerminals
         };
     }
 
@@ -23,25 +23,34 @@ class SelectAppTerminal extends Component {
     };
     
     render() {
-        let selectAppTerminals = this.state.selectAppTerminals;
-        let appTerminals = _.map(selectAppTerminals, terminalType =>
+        let appTerminals = this.props.appTerminals;
+        let appTerminalsOptions = _.map(appTerminals, terminalType =>
             <Option key={terminalType.id} value={terminalType.code}> {terminalType.name} </Option>);
-        appTerminals.unshift(<Option value="" id="">{Intl.get('common.all.terminals', '所有終端')}</Option>);
+        appTerminalsOptions.unshift(<Option value="" id="">{Intl.get('common.all.terminals', '所有終端')}</Option>);
+        const cls = classNames('select-app-terminal-type', this.props.className);
         return (
             <SelectFullWidth
-                className="select-app-terminal-type"
+                className={cls}
                 value={this.state.terminalType}
                 onChange={this.onSelectTerminalsType}
             >
-                {appTerminals}
+                {appTerminalsOptions}
             </SelectFullWidth>
         );
     }
 }
 
+SelectAppTerminal.defaultProps = {
+    handleSelectedTerminal: function() {
+    },
+    appTerminals: [],
+    className: ''
+};
+
 SelectAppTerminal.propTypes = {
     handleSelectedTerminal: PropTypes.func,
-    selectAppTerminals: PropTypes.array
+    appTerminals: PropTypes.array,
+    className: PropTypes.string,
 };
 
 export default SelectAppTerminal;
