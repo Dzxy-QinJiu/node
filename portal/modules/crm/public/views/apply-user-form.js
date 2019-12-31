@@ -601,7 +601,8 @@ const ApplyUserForm = createReactClass({
 
     // 选择多终端类型
     onSelectTerminalChange(selectedApp, app, checkedValue) {
-        let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
+        let formData = this.state.formData;
+        let appFormData = _.find(formData.products, item => item.client_id === app.client_id);
         if (appFormData) {
             let terminals = [];
             if (!_.isEmpty(checkedValue)) {
@@ -616,7 +617,7 @@ const ApplyUserForm = createReactClass({
                 appFormData.terminals = [];
             }
         }
-        this.setState(this.state);
+        this.setState(formData);
     },
 
     renderAppConfigForm: function(appFormData, app) {
@@ -876,7 +877,7 @@ const ApplyUserForm = createReactClass({
         });
         // 若所选应用包括多终端类型，则直接显示分别配置界面
         let configType = getConfigAppType(appIds, apps);
-        
+
         //获取的应用默认配置列表
         let appDefaultConfigList = this.state.appDefaultConfigList || [];
         let num = 1;//申请用户的个数
