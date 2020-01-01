@@ -5,7 +5,6 @@ import './index.less';
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
 const LoginForm = require('./login-form');
-import RegisterForm from './register-form';
 import LoginLogo from '../login-logo';
 import {Alert, Tabs, Icon, Button} from 'antd';
 import {ssoLogin, callBackUrl} from '../../lib/websso';

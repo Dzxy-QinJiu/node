@@ -8,7 +8,7 @@ const PropTypes = require('prop-types');
 import Trace from '../../lib/trace';
 import {commonPhoneRegex} from '../../public/sources/utils/validate-util';
 import crypto from 'crypto';
-import {Form, Input, Icon, Checkbox} from 'antd';
+import {Form, Input, Icon} from 'antd';
 import {TextField, Button} from '@material-ui/core';
 import classNames from 'classnames';
 const FormItem = Form.Item;

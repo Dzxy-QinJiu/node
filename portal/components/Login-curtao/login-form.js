@@ -192,7 +192,7 @@ class LoginForm extends React.Component {
                 required
                 fullWidth
                 ref="captcha_input"
-                className='captcha-input'
+                className='login-input-wrap'
                 id="standard-basic"
                 label={hasWindow ? Intl.get('common.captcha', '验证码') : null}
                 color='primary'
@@ -314,6 +314,7 @@ class LoginForm extends React.Component {
             'icon-password-invisible': !this.state.passwordVisible},);
         return (
             <form action="/login" method="post" className="login-form" onSubmit={this.beforeSubmit} autoComplete="off">
+                <input type="password" className="password-hidden-input" name="password" id="hidedInput" ref="password"/>
                 <div className="input-area">
                     <div className="input-item">
                         <TextField
@@ -329,11 +330,10 @@ class LoginForm extends React.Component {
                             value={this.state.username}
                             onBlur={this.getLoginCaptcha}
                             onChange={this.userNameChange}
+                            className='login-input-wrap'
                         />
                     </div>
-
                     <div className="input-item">
-                        <input type="password" className="password-hidden-input" name="password" id="hidedInput" ref="password"/>
                         <TextField
                             required
                             fullWidth
@@ -345,7 +345,7 @@ class LoginForm extends React.Component {
                             autoComplete="off"
                             ref="password_input"
                             // logininput="password"
-                            className="input-pwd clearfix"
+                            className="login-input-wrap"
                             color='primary'
                             onChange={this.passwordChange}
                             value={this.state.password}
