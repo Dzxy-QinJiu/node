@@ -2,8 +2,7 @@ import ApplyViewDetailActions from '../action/historical-apply-view-detail-actio
 import { altAsyncUtil } from 'ant-utils';
 const { resultHandler } = altAsyncUtil;
 import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
-import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
-
+import {checkIfLeader, applyAppConfigTerminal} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyViewDetailStore {
     constructor() {
         this.resetState();
@@ -232,7 +231,8 @@ class ApplyViewDetailStore {
                     = obj.approvalState;
             }
             this.detailInfoObj.errorMsg = '';
-            this.createAppsSetting();
+            const appList = obj.appList;
+            this.createAppsSetting(appList);
             //用户的处理
             if (_.indexOf(APPLY_TYPES, info.type) !== -1) {//延期、禁用（多应用）
                 if (_.isArray(info.apps)) {
@@ -320,9 +320,9 @@ class ApplyViewDetailStore {
     }
 
     //生成应用的单独配置
-    createAppsSetting() {
+    createAppsSetting(appList) {
         //申请的应用列表
-        const apps = this.detailInfoObj.info.apps;
+        const apps = _.cloneDeep(this.detailInfoObj.info.apps);
         //申请类型
         let apply_type = _.get(this.detailInfoObj, 'info.type');
         _.each(apps, (appInfo) => {
@@ -359,7 +359,7 @@ class ApplyViewDetailStore {
                 //开通个数
                 number: _.get(appInfo, 'number', 1),
                 //到期停用
-                over_draft: _.get(appInfo, 'over_draft', '1'),
+                over_draft: _.toString( _.get(appInfo, 'over_draft', '1')),
                 //时间
                 time: {
                     start_time: start_time,
@@ -371,6 +371,11 @@ class ApplyViewDetailStore {
                 //权限
                 permissions: appInfo.permissions || []
             };
+            // 申请的多终端信息
+            const terminals = _.get(appInfo, 'terminals', []);
+            if (!_.isEmpty(terminals)) {
+                appConfigObj.terminals = applyAppConfigTerminal(terminals, app_id, appList);
+            }
             //延期（多应用)时，需要分用户进行配置
             if(apply_type === APPLY_TYPES.DELAY){
                 this.appsSetting[`${app_id}&&${appInfo.user_id}`] = appConfigObj;

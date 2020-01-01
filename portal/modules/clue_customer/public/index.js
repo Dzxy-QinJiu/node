@@ -597,7 +597,7 @@ class ClueCustomer extends React.Component {
     renderClueRecommend = () => {
         return (
             <div className="recomend-clue-customer-container pull-right">
-                {hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE) ?
+                {(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE) ) ?
                     <Popover
                         placement="bottom"
                         content={(
@@ -1706,7 +1706,7 @@ class ClueCustomer extends React.Component {
                                     okTitle={Intl.get('common.confirm', '确认')}
                                     cancelTitle={Intl.get('common.cancel', '取消')}
                                     isSaving={this.state.distributeLoading}
-                                    overlayContent={this.renderSalesBlock()}
+                                    overlayContent={this.renderSalesBlock(_.get(salesClueItem,'user_id',''))}
                                     handleSubmit={this.handleSubmitAssignSales.bind(this, salesClueItem)}
                                     unSelectDataTip={this.state.unSelectDataTip}
                                     clearSelectData={this.clearSelectSales}
@@ -1928,13 +1928,15 @@ class ClueCustomer extends React.Component {
         });
         return dataList;
     };
-    renderSalesBlock = () => {
+    renderSalesBlock = (user_id) => {
         var dataList = this.getSalesDataList();
         //按点击的次数进行排序
         dataList = _.sortBy(dataList,(item) => {return -item.clickCount;});
         //主管分配线索时，负责人是自己的不能分配给自己
         let userList = _.cloneDeep(dataList);
-        userList = _.filter(userList, user => !_.includes(_.get(user, 'value'), userData.getUserData().user_id));
+        if(user_id && user_id === userData.getUserData().user_id){
+            userList = _.filter(userList, user => !_.includes(_.get(user, 'value'), userData.getUserData().user_id));
+        }
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect

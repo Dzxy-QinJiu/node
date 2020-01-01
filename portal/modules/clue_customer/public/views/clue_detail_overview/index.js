@@ -316,7 +316,7 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
-    getSalesOptions = () => {
+    getSalesOptions = (user_id) => {
         var clueSalesIdList = getClueSalesList();
         _.forEach(this.props.salesManList,(sales) => {
             sales.clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(sales, 'user_info.user_id'));
@@ -325,7 +325,9 @@ class ClueDetailOverview extends React.Component {
         var dataList = _.sortBy(this.props.salesManList,(item) => {return -item.clickCount;});
         //主管分配线索时，负责人是自己的不能分配给自己
         let userList = _.cloneDeep(dataList);
-        userList = _.filter(userList, user => !_.isEqual(_.get(user, 'user_info.user_id'), userData.getUserData().user_id));
+        if(user_id && user_id === userData.getUserData().user_id){
+            userList = _.filter(userList, user => !_.isEqual(_.get(user, 'user_info.user_id'), userData.getUserData().user_id));
+        }
         return userList.map((sales, idx) => {
             let teamName = _.get(sales, 'user_groups[0].group_name') ? ` - ${sales.user_groups[0].group_name}` : '';
             let name = _.get(sales, 'user_info.nick_name', '') + teamName;
@@ -840,7 +842,7 @@ class ClueDetailOverview extends React.Component {
                         value={displayText}
                         field="user_id"
                         displayText={displayText}
-                        selectOptions={this.getSalesOptions()}
+                        selectOptions={this.getSalesOptions(curClue.user_id)}
                         onSelectChange={this.onSelectClueSales}
                         noDataTip={Intl.get('clue.handle.no.distribute.clue', '未分配')}
                     />

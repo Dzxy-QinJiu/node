@@ -266,6 +266,10 @@ const AppPropertySetting = createReactClass({
                 if(this.props.showMultiLogin) {
                     checkSingleProp('multilogin');
                 }
+                // 判断当前选择的应用，是否有多终端类型
+                if ( !_.isEmpty(currentApp.terminals)) {
+                    checkSingleProp('terminals');
+                }
                 checkRolePermission();
                 checkTime();
                 finalResult[key] = originAppSetting;
