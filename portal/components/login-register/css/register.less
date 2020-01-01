@@ -5,9 +5,10 @@
 @button-height: 48px;
 @blue-color: #2196f3;
 @margin: 24px;
+@font-family: 'Noto Sans CJK SC', 'Noto Sans CJK', 'Source Han Sans', source-han-sans-simplified-c, sans-serif !important;
 .register-wrap{
   height: 100vh;
-  font-family: 'Noto Sans CJK SC', 'Noto Sans CJK', 'Source Han Sans', source-han-sans-simplified-c, sans-serif !important;
+  font-family: @font-family;
   .logo{
     margin-top: 16px;
     margin-left: 16px;
@@ -60,7 +61,7 @@
       right: 0;
       margin: 0 auto;
       .form-title{
-        font-size: 18px;
+        font-size: 24px;
         font-weight: bold;
         color: #213340;
       }
@@ -69,6 +70,9 @@
         margin-top: 10px;
         .ant-form-item{
           margin-bottom: 20px;
+        }
+        .MuiFormLabel-root{
+          font-family: @font-family;
         }
         .MuiFormLabel-root.Mui-focused{
           color:#2196F3;
