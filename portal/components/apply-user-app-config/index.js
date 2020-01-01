@@ -9,10 +9,8 @@ require('./css/index.less');
 import SquareLogoTag from '../square-logo-tag';
 import {Tabs, Col} from 'antd';
 const TabPane = Tabs.TabPane;
-const CONFIG_TYPE = {
-    UNIFIED_CONFIG: 'unified_config',//统一配置
-    SEPARATE_CONFIG: 'separate_config'//分别配置
-};
+import { CONFIG_TYPE} from 'PUB_DIR/sources/utils/consts';
+
 class ApplyUserAppConfig extends React.Component {
     constructor(props) {
         super(props);

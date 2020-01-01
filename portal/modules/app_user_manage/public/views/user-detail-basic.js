@@ -380,7 +380,6 @@ class UserDetailBasic extends React.Component {
 
     // 渲染終端类型
     renderAppTerminals = (app) => {
-        // TODO code需要改成name
         return _.map(app.terminals, 'name').join('、');
     };
 

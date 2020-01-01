@@ -23,13 +23,11 @@ import AppConfigForm from 'CMP_DIR/apply-user-app-config/app-config-form';
 const UserApplyAction = require('MOD_DIR/app_user_manage/public/action/user-apply-actions');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
-import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {INTEGRATE_TYPES, CONFIG_TYPE} from 'PUB_DIR/sources/utils/consts';
+import {getConfigAppType} from 'PUB_DIR/sources/utils/common-method-util';
 import { getApplyActiveEmailTip ,TAB_KEYS} from '../utils/crm-util';
 import contactUtil from '../utils/contact-util';
-const CONFIG_TYPE = {
-    UNIFIED_CONFIG: 'unified_config',//统一配置
-    SEPARATE_CONFIG: 'separate_config'//分别配置
-};
+
 const ApplyUserForm = createReactClass({
     displayName: 'ApplyUserForm',
     mixins: [ValidateMixin, UserTimeRangeField],
@@ -603,7 +601,8 @@ const ApplyUserForm = createReactClass({
 
     // 选择多终端类型
     onSelectTerminalChange(selectedApp, app, checkedValue) {
-        let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
+        let formData = this.state.formData;
+        let appFormData = _.find(formData.products, item => item.client_id === app.client_id);
         if (appFormData) {
             let terminals = [];
             if (!_.isEmpty(checkedValue)) {
@@ -618,7 +617,7 @@ const ApplyUserForm = createReactClass({
                 appFormData.terminals = [];
             }
         }
-        this.setState(this.state);
+        this.setState(formData);
     },
 
     renderAppConfigForm: function(appFormData, app) {
@@ -874,26 +873,11 @@ const ApplyUserForm = createReactClass({
             let selectApp = _.find(this.props.appList, app => app.client_id === appId);
             if (selectApp) {
                 apps.push(selectApp);
-
             }
         });
         // 若所选应用包括多终端类型，则直接显示分别配置界面
-        if (appIds.length > 1) {
-            if (_.find(apps, item => !_.isEmpty(item.terminals))) {
-                this.setState({
-                    configType: CONFIG_TYPE.SEPARATE_CONFIG
-                });
-            } else {
-                this.setState({
-                    configType: CONFIG_TYPE.UNIFIED_CONFIG
-                });
-            }
+        let configType = getConfigAppType(appIds, apps);
 
-        } else {
-            this.setState({
-                configType: CONFIG_TYPE.UNIFIED_CONFIG
-            });
-        }
         //获取的应用默认配置列表
         let appDefaultConfigList = this.state.appDefaultConfigList || [];
         let num = 1;//申请用户的个数
@@ -926,7 +910,7 @@ const ApplyUserForm = createReactClass({
             this.getAppsDefaultConfig(newAddAppIds);
         }
         formData.selectAppIds = appIds;
-        this.setState({apps, formData});
+        this.setState({apps, formData, configType});
         this.setFormHeight();
     },
 
@@ -958,8 +942,8 @@ const ApplyUserForm = createReactClass({
                         title={app.client_name}
                     >
                         <SquareLogoTag
-                            name={app ? app.client_name : ''}
-                            logo={app ? app.client_logo : ''}
+                            name={_.get(app, 'client_name', '')}
+                            logo={_.get(app, 'client_logo', '')}
                         />
                     </Option>
                 );
@@ -968,7 +952,7 @@ const ApplyUserForm = createReactClass({
         return [];
     },
 
-    render: function() {
+    render() {
         let title = '';
         if (this.props.userType) {
             if (this.props.userType === Intl.get('common.trial.official', '正式用户')) {

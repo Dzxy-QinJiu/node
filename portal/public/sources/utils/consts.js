@@ -720,3 +720,9 @@ export const RESPONSIVE_LAYOUT = {
 export const DOMAIN_END = '.eagok.com';
 //线索推荐最多选取多少个行业
 export const MAXINDUSTRYCOUNT = 10;
+
+// 配置应用的类型
+export const CONFIG_TYPE = {
+    UNIFIED_CONFIG: 'unified_config',//统一配置
+    SEPARATE_CONFIG: 'separate_config'//分别配置
+};
