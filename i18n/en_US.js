@@ -3866,16 +3866,18 @@ var en_US = {
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
-    'personal.welcome.use.curtao': 'Welcome to use the Curtao System, Complete the following guide to recommend accurate leads to customers',//欢迎试用客套系统，完成以下引导将向您推荐精准的线索客户
+    'personal.welcome.use.curtao': 'Welcome to use the courtesy, complete the following 2 steps to get the recommended clues',//欢迎使用客套，完成以下2步操作即可获取推荐线索
     'personal.open.success.tip': 'Congratulations! You have successfully opened the trial version. The rest of the trial period is {count} days',//恭喜您成功开通试用版，试用期剩余 {count} 天
     'boot.complete.step.set.industry': 'Which industries do you focus on?',//您关注哪些行业的客户?
     'boot.complete.step.set.area': 'Which geographic customers do you focus on?',//您关注哪个地域的客户?
     'boot.complete.step.select.recommend.tip': 'Please select or enter a search',//请选择或输入搜索
     'boot.select.industry.count.tip': 'Up to {count} industries can be selected',//最多可选择{count}个行业
     'boot.not.found.industry.tip': 'No "{search}" related industries were found. You may be interested in the following industries',//没有搜索到 “{search}” 相关行业，您可能关心以下行业
+    'boot.select.industry': 'Please select the industry to focus on',//请选择关注的行业
+    'boot.select.area': 'Please select the area of concern',//请选择关注的地域
     /*个人试用 --- end*/
     /*组织到期提示 --- start*/
-    'organization.personal.trial.expired.tip': 'Your probation period remains {time} days, whether {upgrade}？',//您的试用期剩余{time}天，是否{upgrade}
+    'organization.personal.trial.expired.tip': 'Your probation period remains {time} days, whether {upgrade}？Contact us {contact}',//您的试用期剩余{time}天，是否{upgrade}? 联系我们请拨打{contact}
     'organization.company.trial.expired.tip': 'The rest of your probationary period {time} days, please contact our sales staff: {contact}',//您的试用期剩余{time}天，请联系我们的销售人员: {contact}
     'organization.personal.formal.expired.tip': 'Your account is about to expire, is it {renewal}?',//您的账号即将到期，是否{renewal}？
     'organization.company.formal.expired.tip': 'Your account is about to expire, please contact our sales staff: {contact}',//您的账号即将到期，请联系我们的销售人员: {contact}

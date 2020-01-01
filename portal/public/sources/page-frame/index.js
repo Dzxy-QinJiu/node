@@ -31,7 +31,7 @@ import{
     clueToCustomerPanelEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
-import {checkVersionAndType} from '../utils/common-method-util';
+import {getUserData} from '../../sources/user-data';
 
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
@@ -51,7 +51,7 @@ class PageFrame extends React.Component {
         isShowClueToCustomerPanel: false, // 是否显示线索转客户面板
         clueToCustomerPanelProps: {}, //线索转客户面板属性
         clueParamObj: $.extend(true, {}, emptyParamObj),
-        isShowBootCompletePanel: false,//是否显示首次引导设置推荐线索条件面板
+        isShowBootCompletePanel: !_.get(getUserData(), 'websiteConfig.personnel_setting.no_show_boot_complete_set_recommend', false),//是否显示首次引导设置推荐线索条件面板
         userDetailParamObj: $.extend(true, {}), // 用户详情组件相关的参数
         isShowPurchaseLeadsPanel: false,//是否展示购买线索量面板
         cluePaymentParamObj: {},

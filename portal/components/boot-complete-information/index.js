@@ -268,7 +268,7 @@ class BootCompleteInformation extends React.Component{
                         <div className='personal-complete-title-welcome'>
                             <img src={KefuImage}/>
                             <div className="personal-complete-title-dec">
-                                <div>{Intl.get('personal.welcome.use.curtao', '欢迎试用客套系统，完成以下引导将向您推荐精准的线索客户')}</div>
+                                <div>{Intl.get('personal.welcome.use.curtao', '欢迎使用客套，完成以下2步操作即可获取推荐线索')}</div>
                                 <ReactIntl.FormattedMessage
                                     id="personal.open.success.tip"
                                     defaultMessage={'恭喜您成功开通试用版，试用期剩余 {count} 天'}
@@ -494,13 +494,13 @@ class BootCompleteInformation extends React.Component{
     renderFirstStepBlock() {
         return (
             <div className="boot-complete-step-first-wrapper">
-                <div className="boot-complete-step-title">{Intl.get('boot.complete.step.set.industry', '您关注哪些行业的客户?')}</div>
+                {/*<div className="boot-complete-step-title">{Intl.get('boot.complete.step.set.industry', '您关注哪些行业的客户?')}</div>*/}
                 <div className="boot-complete-set-recommend-container">
                     <div className="boot-complete-set-recommend-wrapper">
                         {this.renderIndustriysBlock()}
                     </div>
                 </div>
-                <div className="btn-container">
+                <div className="btn-container clearfix">
                     {this.state.isShowMaxSelectedCountTip ? (
                         <span className="error-select-tip">{Intl.get('boot.select.industry.count.tip', '最多可选择{count}个行业', {count: MAX_SELECTED_COUNT})}</span>
                     ) : null}
@@ -515,7 +515,7 @@ class BootCompleteInformation extends React.Component{
         const areaData = this.state.stepData.areaData;
         return (
             <div className='boot-complete-step-second-wrapper'>
-                <div className="boot-complete-step-title">{Intl.get('boot.complete.step.set.area', '您关注哪个地域的客户?')}</div>
+                {/*<div className="boot-complete-step-title">{Intl.get('boot.complete.step.set.area', '您关注哪个地域的客户?')}</div>*/}
                 <AntcAreaSelection
                     labelCol="0"
                     wrapperCol="24"
@@ -529,7 +529,7 @@ class BootCompleteInformation extends React.Component{
                     hiddenCounty
                     updateLocation={this.updateLocation}
                 />
-                <div className="btn-container">
+                <div className="btn-container clearfix">
                     <SaveCancelButton
                         loading={this.state.isLoading}
                         saveErrorMsg={this.state.errMsg}
@@ -545,19 +545,36 @@ class BootCompleteInformation extends React.Component{
 
     renderContent() {
         const currentStep = this.state.currentStep;
+        const firstStepLabelCls = classNames({
+            'current-step': currentStep === STEPS_MAPS.SET_FIRST
+        });
+        const secondStepLabelCls = classNames({
+            'current-step': currentStep === STEPS_MAPS.SET_SECOND
+        });
         return (
             <div className="boot-complete-container">
                 {/*<div className='boot-complete-title'>
                     <i className="iconfont icon-huanying"/>
-                    {Intl.get('personal.welcome.use.curtao', '欢迎试用客套系统，完成以下引导将向您推荐精准的线索客户')}
+                    {Intl.get('personal.welcome.use.curtao', '欢迎使用客套，完成以下2步操作即可获取推荐线索')}
                 </div>*/}
                 <div className="boot-complete-content">
                     <div className="boot-complete-step-container">
-                        {currentStep === STEPS_MAPS.SET_FIRST ? (
-                            this.renderFirstStepBlock()
-                        ) : (
-                            this.renderSecondBlock()
-                        )}
+                        <div className='boot-complete-title'>
+                            <i className="iconfont icon-huanying"/>
+                            {Intl.get('personal.welcome.use.curtao', '欢迎使用客套，完成以下2步操作即可获取推荐线索')}
+                        </div>
+                        <div className="boot-complete-step-content">
+                            <div className="boot-complete-step-label">
+                                <span className={firstStepLabelCls}>①{Intl.get('boot.select.industry', '请选择关注的行业')}</span>
+                                <span className="step-omit">······</span>
+                                <span className={secondStepLabelCls}>②{Intl.get('boot.select.area', '请选择关注的地域')}</span>
+                            </div>
+                            {currentStep === STEPS_MAPS.SET_FIRST ? (
+                                this.renderFirstStepBlock()
+                            ) : (
+                                this.renderSecondBlock()
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

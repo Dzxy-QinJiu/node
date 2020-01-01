@@ -10,6 +10,7 @@
 @boot-complete: boot-complete;
 @personal-form-bg-color: #F1F4F8;
 @welcome-icon-color: #3DCBAE;
+@scroll-bar-color: #E3E8ED;
 .boot-complete-info-wrapper{
   .right-panel-modal-content{
     box-shadow: none;
@@ -64,7 +65,7 @@
 }
 
 .@{boot-complete}-container{
-  padding: 22px 24px;
+  //padding: 22px 24px;
   position: relative;
   width: 100%;
   height: 100%;
@@ -76,30 +77,56 @@
     display: block;
     background-color: #fff;
     border-radius: 4px;
+    margin-bottom: 10px;
     .icon-huanying{
       color: @welcome-icon-color;
       width: 16px;
       height: 16px;
-      margin: 0 8px;
+      margin-right: 8px;
     }
   }
   .@{boot-complete}-content{
     width: 100%;
     //margin-top: 10px;
-    height: calc(100vh - 44px);
+    //height: calc(100vh - 44px);
+    height: 100%;
     background: #fff;
     position: relative;
     border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     .@{boot-complete}-step-container{
-      width: 636px;
-      margin: 0 auto;
-      padding-top: 110px;
-      height: 100%;
-      overflow: hidden;
+      //width: 636px;
+      //margin: 0 auto;
+      //padding-top: 110px;
+      //height: 100%;
+      //overflow: hidden;
       .boot-complete-step-title{
         font-size: 20px;
         margin-bottom: 15px;
         color: @title-color;
+      }
+      .@{boot-complete}-step-label{
+        font-size: 18px;
+        color: @label-content-color;
+        margin-bottom: 12px;
+        .current-step{
+          color: @title-color;
+        }
+        .step-omit{
+          margin: 0 6px;
+        }
+      }
+    }
+    .@{boot-complete}-step-content{
+      width: 682px;
+      padding: 23px;
+      background: #fff;
+      box-shadow: 0 0 15px 0 @CLICK-BLUE;
+      border-radius: 4px;
+      .no-data-icon-tip-container{
+        height: auto;
       }
     }
     //步骤一
@@ -265,11 +292,40 @@
           .ant-tabs{
             position: relative;
           }
-          .address-prov{
-            .prov-nav-span{
-              height: auto;
+          label{
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            padding: 0 30px;
+            font-size: 16px;
+            margin-right: 8px;
+            line-height: 35px!important;
+            height: 35px;
+            margin-bottom: 8px;
+          }
+          .ant-tabs-content{
+            max-height: 234px;
+            /* 定义滚动条样式 */
+            &::-webkit-scrollbar {
+              width: 6px;
+              height: 6px;
+              background-color: @scroll-bar-color;
+            }
+
+            /*定义滚动条轨道 内阴影+圆角*/
+            &::-webkit-scrollbar-track {
+              box-shadow: inset 0 0 5px @scroll-bar-color;
+              border-radius: 10px;
+            }
+
+            /*定义滑块 内阴影+圆角*/
+            &::-webkit-scrollbar-thumb {
+              border-radius: 10px;
+              background-color: rgba(0, 0, 0, .2);
             }
           }
+        }
+        .input-arrow{
+          margin-bottom: 10px;
         }
       }
     }
@@ -284,10 +340,21 @@
       .button-cancel{
         float: left;
         margin-left: 0;
+        background-color: @btn-font-color;
+        color: #fff;
+        &:hover,&:focus,&:active{
+          background-color: #49a9ee;
+          border-color: #49a9ee;
+        }
       }
       span.save-error{
         line-height: 32px;
       }
+    }
+    //滚动条样式
+    .gm-scrollbar.-vertical{
+      background: #E3E8ED;
+      border-radius: 4px;
     }
   }
 }
