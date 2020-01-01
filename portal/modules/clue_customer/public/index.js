@@ -2231,8 +2231,8 @@ class ClueCustomer extends React.Component {
         if (this.state.isLoading) {
             return (
                 <div className="load-content">
-                    <Spinner />
-                    <p className="abnornal-status-tip">{Intl.get('common.sales.frontpage.loading', '加载中')}</p>
+                    <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
+                    {/*<p className="abnornal-status-tip">{Intl.get('common.sales.frontpage.loading', '加载中')}</p>*/}
                 </div>
             );
         } else if (this.state.clueCustomerErrMsg) {
