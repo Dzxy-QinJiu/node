@@ -2584,6 +2584,7 @@ var en_US = {
     'errorcode.172': 'Not your lead, cannot be merged into a customer',//不是您的线索，无法合并到客户
     'errorcode.173': 'Failed to turn lead to customer',//线索转为客户失败
     'errorcode.174': 'Failed to merge lead to customer',//线索合并到客户失败
+    'errorcode.175': 'Your own Leads cannot be assigned to you',//自己的线索不能分配给自己
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
     'user.user.info': 'information',//开通信息
