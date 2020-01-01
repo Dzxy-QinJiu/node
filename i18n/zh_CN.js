@@ -2622,6 +2622,7 @@ var zh_CN = {
     'errorcode.172': '不是您的线索，无法合并到客户',
     'errorcode.173': '线索转为客户失败',
     'errorcode.174': '线索合并到客户失败',
+    'errorcode.175': '自己的线索不能分配给自己',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',
