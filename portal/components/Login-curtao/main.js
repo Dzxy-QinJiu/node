@@ -9,12 +9,15 @@ import LoginLogo from '../login-logo';
 import {Alert, Tabs, Icon, Button} from 'antd';
 import {ssoLogin, callBackUrl} from '../../lib/websso';
 import SideBar from '../side-bar';
-
+import ForgotPassword from './forgot-password';
 const TabPane = Tabs.TabPane;
 var Spinner = require('../spinner');
 const USER_LANG_KEY = 'userLang';//存储用户语言环境的key
 import {storageUtil} from 'ant-utils';
-
+const VIEWS = {
+    LOGIN: 'login',
+    FORGOT_PASSWORD: 'forgot_password',
+};
 class LoginMain extends React.Component {
     constructor(props) {
         super(props);
@@ -25,6 +28,8 @@ class LoginMain extends React.Component {
             showUi: false,
             //验证码
             captcha: this.props.captchaCode || '',
+            // 当前展示的视图login：登录，forgot_password找回密码
+            currentView: VIEWS.LOGIN,
         };
 
         this.setErrorMsg = this.setErrorMsg.bind(this);
@@ -53,6 +58,11 @@ class LoginMain extends React.Component {
     setErrorMsg(errorMsg) {
         this.setState({errorMsg});
     }
+
+    changeView(view) {
+        this.setState({currentView: view});
+    }
+
     //检测是否已经sso登录
     ssoCheck(callback) {
         var lang = window.Oplate && window.Oplate.lang || 'zh_CN';
@@ -97,18 +107,29 @@ class LoginMain extends React.Component {
                         <div className="csm-form-wrap">
                             <div className="form-wrap">
                                 <LoginLogo/>
-                                <LoginForm
-                                    captcha={this.state.captcha}
-                                    hasWindow={hasWindow}
-                                    setErrorMsg={this.setErrorMsg}
-                                    {...this.props}
-                                />
+                                {this.state.currentView === VIEWS.LOGIN ? (
+                                    <LoginForm
+                                        captcha={this.state.captcha}
+                                        hasWindow={hasWindow}
+                                        setErrorMsg={this.setErrorMsg}
+                                        changeView={this.changeView.bind(this, VIEWS.FORGOT_PASSWORD)}
+                                        {...this.props}
+                                    />
+                                ) : null}
+                                {this.state.currentView === VIEWS.FORGOT_PASSWORD ? (
+                                    <ForgotPassword
+                                        hasWindow={hasWindow}
+                                        views={VIEWS}
+                                        changeView={this.changeView.bind(this, VIEWS.LOGIN)}
+                                        setErrorMsg={this.setErrorMsg}
+                                        {...this.props}
+                                    />
+                                ) : null}
                                 {this.state.errorMsg ?
                                     <div className="login-error-tip"><span className="iconfont icon-warn-icon"></span>{this.state.errorMsg}</div> : null}
                             </div>
                         </div>
-                    ) : null
-                    }
+                    ) : null }
                     <SideBar showChat={Oplate.isCurtao}></SideBar>
                 </div>
             );
