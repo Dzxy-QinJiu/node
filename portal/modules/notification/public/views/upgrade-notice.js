@@ -2,7 +2,7 @@
  * Created by hzl on 2019/12/28. 升级公告
  */
 require('../css/upgrade-notice.less');
-import {Alert, message } from 'antd';
+import {Alert} from 'antd';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 import Spinner from 'CMP_DIR/spinner';
@@ -10,7 +10,8 @@ import notificationAjax from '../ajax/notification-ajax';
 import LAYOUT from '../utils/layout';
 // 没有消息的提醒
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
-const PAGE_SIZE = 2; // 下拉加载的条数
+import {getUpgradeNoticeList} from 'PUB_DIR/sources/utils/common-data-util';
+const PAGE_SIZE = 10; // 下拉加载的条数
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 const CLIENTID = '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9';
 class UpgradeNotice extends React.Component {
@@ -27,7 +28,7 @@ class UpgradeNotice extends React.Component {
     }
 
     componentDidMount() {
-        this.getUpgradeNoticeList();
+        this.getNoticeList();
         $('body').css('overflow', 'hidden');
     }
 
@@ -35,14 +36,14 @@ class UpgradeNotice extends React.Component {
         $('body').css('overflow', 'hidden');
     }
 
-    getUpgradeNoticeList = () => {
+    getNoticeList = () => {
         let queryObj = {
             application_id: _.get(window, 'Oplate.clientId', CLIENTID),
             page_size: PAGE_SIZE,
             page_num: this.state.pageNum
         };
         this.setState({isLoading: true});
-        notificationAjax.getUpgradeNoticeList(queryObj).then(result => {
+        getUpgradeNoticeList(queryObj).then(result => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             let stateData = this.state;
             stateData.isLoading = false;
@@ -131,7 +132,7 @@ class UpgradeNotice extends React.Component {
     //下拉加载
     handleScrollBarBottom = () => {
         if (this.state.total > this.state.noticeList.length) {
-            this.getUpgradeNoticeList();
+            this.getNoticeList();
         }
     };
 

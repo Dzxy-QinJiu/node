@@ -15,6 +15,8 @@ const TAB_KEYS = {
 const SystemNotification = require('./views/system');
 import UpgradeNotice from './views/upgrade-notice';
 import {clickUpgradeNoiceEmitter} from 'PUB_DIR/sources/utils/emitters';
+import { storageUtil } from 'ant-utils';
+const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
 
 class Notification extends React.Component {
     constructor(props) {
@@ -37,7 +39,22 @@ class Notification extends React.Component {
         let keyName = '通知';
         if (key === TAB_KEYS.UPGRADE_NOTICE) {
             keyName = '公告';
-            clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, {lastClickNoticeTime: moment().valueOf()});
+            // 查看公告的时间
+            let showNoticeime = moment().valueOf();
+            ajax.send({
+                url: '/rest/base/v1/user/website/config/personnel',
+                type: 'post',
+                data: {
+                    show_notice_time: showNoticeime
+                }
+            })
+                .done(result => {
+                    websiteConfig.show_notice_time = showNoticeime;
+                    storageUtil.local.set('websiteConfig', JSON.stringify(websiteConfig));
+                })
+                .fail(err => {
+                    message.error(err);
+                });
         }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + keyName);
         this.setState({

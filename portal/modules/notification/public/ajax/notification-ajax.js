@@ -61,27 +61,3 @@ exports.clearUnreadNum = function(type) {
     });
     return Deferred.promise();
 };
-
-// 升级公告
-let upgradeNoticeAjax;
-exports.getUpgradeNoticeList = (queryObj) => {
-    if (upgradeNoticeAjax) {
-        upgradeNoticeAjax.abort();
-    }
-    const Deferred = $.Deferred();
-    upgradeNoticeAjax = $.ajax({
-        url: '/rest/get/upgrade/notice',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: (result) => {
-            Deferred.resolve(result);
-        },
-        error: (error, errorText) => {
-            if (errorText !== 'abort') {
-                Deferred.reject(error && error.responseJSON || Intl.get('notice.get.list.failed', '获取公告列表失败'));
-            }
-        }
-    });
-    return Deferred.promise();
-};

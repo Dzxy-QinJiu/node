@@ -1,4 +1,3 @@
-var React = require('react');
 var language = require('../../../public/language/getLanguage');
 import Trace from 'LIB_DIR/trace';
 import {renderRoutes} from 'react-router-config';
@@ -8,6 +7,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
     require('./index-es_VE.less');
 }
 require('./oplate');
+import {message} from 'antd';
 const LAYOUT_CONSTS = require('../../../lib/consts').LAYOUT;
 var LeftMenu = require('../../../components/privilege/nav-sidebar');
 import PhonePanel from 'MOD_DIR/phone_panel/public';
@@ -32,11 +32,17 @@ import{
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 import {checkVersionAndType} from '../utils/common-method-util';
-
+import {getUpgradeNoticeList} from '../utils/common-data-util';
+import ajax from 'ant-ajax';
+import { storageUtil } from 'ant-utils';
+const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+const CLIENTID = '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9';
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
     call_params: null//后端推送过来的通话状态相关的参数
 };
+// 请求公告列表的时间，定为1分钟
+const NOTICE_INTERVAL_TIME = 1000 * 60;
 
 class PageFrame extends React.Component {
     state = {
@@ -59,7 +65,37 @@ class PageFrame extends React.Component {
         personalPaymentParamObj: {},
     };
 
+    getLastNoticeTimer = null;
+
+    getLastUpgradeNoticeList() {
+        if(this.getLastNoticeTimer) clearInterval(this.getLastNoticeTimer);
+        this.getLastNoticeTimer = setInterval(() => {
+            getUpgradeNoticeList({
+                application_id: _.get(window, 'Oplate.clientId', CLIENTID),
+                page_size: 1,
+                page_num: 1
+            }).then((result) => {
+                let lastUpgradeTime = _.get(result, 'create_date', 0); // 最新发布公告的时间
+                ajax.send({
+                    url: '/rest/base/v1/user/website/config/personnel',
+                    type: 'post',
+                    data: {
+                        last_upgrade_notice_time: lastUpgradeTime
+                    }
+                })
+                    .done(result => {
+                        websiteConfig.last_upgrade_notice_time = lastUpgradeTime;
+                        storageUtil.local.set('websiteConfig', JSON.stringify(websiteConfig));
+                    })
+                    .fail(err => {
+                        message.error(err);
+                    });
+            });
+        }, NOTICE_INTERVAL_TIME);
+    }
+
     componentDidMount() {
+        this.getLastUpgradeNoticeList(); // 获取最新的升级公告
         this.setContentHeight();
         Trace.addEventListener(window, 'click', Trace.eventHandler);
         //打开拨打电话面板的事件监听
@@ -145,6 +181,10 @@ class PageFrame extends React.Component {
         clueToCustomerPanelEmitter.removeListener(clueToCustomerPanelEmitter.OPEN_PANEL, this.openClueToCustomerPanel);
         //取消监听线索转客户面板关闭事件
         clueToCustomerPanelEmitter.removeListener(clueToCustomerPanelEmitter.CLOSE_PANEL, this.closeClueToCustomerPanel);
+        //需清除定时获取最新公告的定时器，以防出现问题
+        this.getLastNoticeTimer && clearInterval(this.getLastNoticeTimer);
+        this.getLastNoticeTimer = null;
+        
         $(window).off('resize', this.resizeHandler);
         phoneUtil.unload(() => {
             console.log('成功登出电话系统!');
