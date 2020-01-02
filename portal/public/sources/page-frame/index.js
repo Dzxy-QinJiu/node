@@ -7,7 +7,6 @@ if (language.lan() === 'es' || language.lan() === 'en') {
     require('./index-es_VE.less');
 }
 require('./oplate');
-import {message} from 'antd';
 const LAYOUT_CONSTS = require('../../../lib/consts').LAYOUT;
 var LeftMenu = require('../../../components/privilege/nav-sidebar');
 import PhonePanel from 'MOD_DIR/phone_panel/public';
@@ -34,8 +33,8 @@ import{
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 import {checkVersionAndType} from '../utils/common-method-util';
 import {getUpgradeNoticeList} from '../utils/common-data-util';
+import {KETAO_ID} from '../utils/consts';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
-const CLIENTID = '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9';
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
     call_params: null//后端推送过来的通话状态相关的参数
@@ -71,13 +70,13 @@ class PageFrame extends React.Component {
         if(this.getLastNoticeTimer) clearInterval(this.getLastNoticeTimer);
         this.getLastNoticeTimer = setInterval(() => {
             getUpgradeNoticeList({
-                application_id: _.get(window, 'Oplate.clientId', CLIENTID),
+                application_id: _.get(window, 'Oplate.clientId', KETAO_ID),
                 page_size: 1,
                 page_num: 1
             }).then((result) => {
                 const websiteConfig = getLocalWebsiteConfig() || {};
                 let lastUpgradeTime = _.get(result, 'list[0].create_date', 0); // 最新发布公告的时间
-                let showNoticeTime = _.get(websiteConfig, 'show_notice_time');
+                let showNoticeTime = _.get(websiteConfig, 'show_notice_time', 0);
                 // 公告发布时间大于查看时间时，需要显示提示信息
                 if (lastUpgradeTime > showNoticeTime) {
                     clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, true);

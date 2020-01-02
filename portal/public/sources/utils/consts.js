@@ -720,3 +720,6 @@ export const RESPONSIVE_LAYOUT = {
 export const DOMAIN_END = '.eagok.com';
 //线索推荐最多选取多少个行业
 export const MAXINDUSTRYCOUNT = 10;
+
+// 客套产品的ID
+export const KETAO_ID = '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9';

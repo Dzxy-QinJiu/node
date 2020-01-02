@@ -11,6 +11,7 @@ import LAYOUT from '../utils/layout';
 // 没有消息的提醒
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
 import {getUpgradeNoticeList} from 'PUB_DIR/sources/utils/common-data-util';
+import {KETAO_ID} from 'PUB_DIR/sources/utils/consts';
 const PAGE_SIZE = 10; // 下拉加载的条数
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 const CLIENTID = '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9';
@@ -38,7 +39,7 @@ class UpgradeNotice extends React.Component {
 
     getNoticeList = () => {
         let queryObj = {
-            application_id: _.get(window, 'Oplate.clientId', CLIENTID),
+            application_id: _.get(window, 'Oplate.clientId', KETAO_ID),
             page_size: PAGE_SIZE,
             page_num: this.state.pageNum
         };
