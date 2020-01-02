@@ -18,6 +18,7 @@ import {clickUpgradeNoiceEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ajax from 'ant-ajax';
 import { storageUtil } from 'ant-utils';
 const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+import {setPersonWebConfig} from 'PUB_DIR/sources/utils/common-data-util';
 
 class Notification extends React.Component {
     constructor(props) {
@@ -27,6 +28,8 @@ class Notification extends React.Component {
         if (_.get(websiteConfig, 'last_upgrade_notice_time') > _.get(websiteConfig, 'show_notice_time')) {
             activeKey = TAB_KEYS.UPGRADE_NOTICE;
             clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, false);
+            
+            setPersonWebConfig({show_notice_time: moment().valueOf()});
         }
         this.state = {
             activeKey: activeKey
@@ -47,22 +50,7 @@ class Notification extends React.Component {
         if (key === TAB_KEYS.UPGRADE_NOTICE) {
             keyName = '公告';
             clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, false);
-            // 查看公告的时间
-            let showNoticeime = moment().valueOf();
-            ajax.send({
-                url: '/rest/base/v1/user/website/config/personnel',
-                type: 'post',
-                data: {
-                    show_notice_time: showNoticeime
-                }
-            })
-                .done(result => {
-                    websiteConfig.show_notice_time = showNoticeime;
-                    storageUtil.local.set('websiteConfig', JSON.stringify(websiteConfig));
-                })
-                .fail(err => {
-                    message.error(err);
-                });
+            setPersonWebConfig({show_notice_time: moment().valueOf()});
         }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + keyName);
         this.setState({

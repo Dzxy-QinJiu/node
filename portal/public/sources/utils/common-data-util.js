@@ -11,6 +11,7 @@ import {getCallClient, isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-
 import { INTEGRATE_TYPES } from 'PUB_DIR/sources/utils/consts';
 import CONSTS from 'LIB_DIR/consts';
 import publicPrivilegeConst from '../../privilege-const';
+import ajax from 'ant-ajax';
 const session = storageUtil.session;
 let appList = [];
 //oplate中的应用+客套中的产品列表
@@ -763,4 +764,22 @@ exports.getUpgradeNoticeList = (queryObj) => {
         }
     });
     return Deferred.promise();
+};
+
+// 设置个性化网站配置
+exports.setPersonWebConfig = (queryObj) => {
+    const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+    let key = _.get(_.keys(queryObj), '[0]');
+    ajax.send({
+        url: '/rest/base/v1/user/website/config/personnel',
+        type: 'post',
+        data: queryObj
+    })
+        .done(result => {
+            websiteConfig[key] = queryObj[key];
+            storageUtil.local.set('websiteConfig', JSON.stringify(websiteConfig));
+        })
+        .fail(err => {
+            message.error(err);
+        });
 };

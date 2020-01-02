@@ -33,8 +33,7 @@ import{
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 import {checkVersionAndType} from '../utils/common-method-util';
-import {getUpgradeNoticeList} from '../utils/common-data-util';
-import ajax from 'ant-ajax';
+import {getUpgradeNoticeList, setPersonWebConfig} from '../utils/common-data-util';
 import { storageUtil } from 'ant-utils';
 const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
 const CLIENTID = '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9';
@@ -82,20 +81,7 @@ class PageFrame extends React.Component {
                 if (lastUpgradeTime > showNoticeTime) {
                     clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, true);
                 }
-                ajax.send({
-                    url: '/rest/base/v1/user/website/config/personnel',
-                    type: 'post',
-                    data: {
-                        last_upgrade_notice_time: lastUpgradeTime
-                    }
-                })
-                    .done(result => {
-                        websiteConfig.last_upgrade_notice_time = lastUpgradeTime;
-                        storageUtil.local.set('websiteConfig', JSON.stringify(websiteConfig));
-                    })
-                    .fail(err => {
-                        message.error(err);
-                    });
+                setPersonWebConfig({last_upgrade_notice_time: lastUpgradeTime});
             });
         }, NOTICE_INTERVAL_TIME);
     }
