@@ -765,21 +765,3 @@ exports.getUpgradeNoticeList = (queryObj) => {
     });
     return Deferred.promise();
 };
-
-// 设置个性化网站配置
-exports.setPersonWebConfig = (queryObj) => {
-    const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
-    let key = _.get(_.keys(queryObj), '[0]');
-    ajax.send({
-        url: '/rest/base/v1/user/website/config/personnel',
-        type: 'post',
-        data: queryObj
-    })
-        .done(result => {
-            websiteConfig[key] = queryObj[key];
-            storageUtil.local.set('websiteConfig', JSON.stringify(websiteConfig));
-        })
-        .fail(err => {
-            message.error(err);
-        });
-};

@@ -15,10 +15,7 @@ const TAB_KEYS = {
 const SystemNotification = require('./views/system');
 import UpgradeNotice from './views/upgrade-notice';
 import {clickUpgradeNoiceEmitter} from 'PUB_DIR/sources/utils/emitters';
-import ajax from 'ant-ajax';
-import { storageUtil } from 'ant-utils';
-const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
-import {setPersonWebConfig} from 'PUB_DIR/sources/utils/common-data-util';
+const {setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 
 class Notification extends React.Component {
     constructor(props) {
@@ -27,16 +24,20 @@ class Notification extends React.Component {
         // 有新的公告时，点通知，需要显示公告tab项
         if (props.isUnReadNoitce) {
             activeKey = TAB_KEYS.UPGRADE_NOTICE;
-            clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, false);
-            setPersonWebConfig({show_notice_time: moment().valueOf()});
+            this.handleShowNoticeTab();
         }
         this.state = {
             activeKey: activeKey
         };
     }
+
+    handleShowNoticeTab() {
+        clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, false);
+        setWebsiteConfig({show_notice_time: moment().valueOf()});
+    }
+
     componentDidMount() {
         $('body').css('overflow', 'hidden');
-        // 如果有新的公告信息，点击显示公告
     }
 
     componentWillUnmount() {
@@ -48,8 +49,7 @@ class Notification extends React.Component {
         let keyName = '通知';
         if (key === TAB_KEYS.UPGRADE_NOTICE) {
             keyName = '公告';
-            clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, false);
-            setPersonWebConfig({show_notice_time: moment().valueOf()});
+            this.handleShowNoticeTab();
         }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + keyName);
         this.setState({

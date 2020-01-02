@@ -9,9 +9,6 @@ var classNames = require('classnames');
 var createReactClass = require('create-react-class');
 var _ = require('lodash');
 var UnreadMixin = require('./mixins/unread');
-var websiteConfig = require('../../lib/utils/websiteConfig');
-var setWebsiteConfigModuleRecord = websiteConfig.setWebsiteConfigModuleRecord;
-var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 let history = require('../../public/sources/history');
 import {NavLink} from 'react-router-dom';
 import ModalIntro from '../modal-intro';
@@ -24,13 +21,13 @@ import {phoneEmitter, notificationEmitter, userInfoEmitter, phoneMsgEmitter, cli
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 const session = storageUtil.session;
+const { setWebsiteConfigModuleRecord, getWebsiteConfig, getLocalWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
 //需要加引导的模块
 const schedule_menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
 //个人信息菜单部分距离底部的绝对高度18
 const USER_INFO_BOTTOM = 18;
 //单个菜单的最小高度
 const ONE_MENU_HEIGHT = 32;
-const websiteConfigInfo = JSON.parse(storageUtil.local.get('websiteConfig'));
 //拨号键盘图标的大小
 const DIAL_ICON_SIZE = {
     NORMAL_FONT: 24,//正常图标的字体大小
@@ -122,6 +119,7 @@ var NavSidebar = createReactClass({
     },
 
     getInitialState: function() {
+        const websiteConfig = getLocalWebsiteConfig() || {};
         return {
             menus: menuUtil.getFirstLevelMenus(),
             userInfoLogo: getUserInfoLogo(),
@@ -137,7 +135,7 @@ var NavSidebar = createReactClass({
             // isReduceNavMargin: false, //是否展示小图标和图标间距
             isShowDialUpKeyboard: false,//是否展示拨号键盘的标识
             ronglianNum: '',//正在拨打的容联的电话
-            isUnReadNoitce: _.get(websiteConfigInfo, 'last_upgrade_notice_time') > _.get(websiteConfigInfo, 'show_notice_time'), // 是否有未读的公告，默认false
+            isUnReadNoitce: _.get(websiteConfig, 'last_upgrade_notice_time') > _.get(websiteConfig, 'show_notice_time'), // 是否有未读的公告，默认false
         };
     },
     propTypes: {

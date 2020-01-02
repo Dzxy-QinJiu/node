@@ -33,9 +33,8 @@ import{
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 import {checkVersionAndType} from '../utils/common-method-util';
-import {getUpgradeNoticeList, setPersonWebConfig} from '../utils/common-data-util';
-import { storageUtil } from 'ant-utils';
-const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+import {getUpgradeNoticeList} from '../utils/common-data-util';
+const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const CLIENTID = '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9';
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
@@ -76,13 +75,13 @@ class PageFrame extends React.Component {
                 page_size: 1,
                 page_num: 1
             }).then((result) => {
+                const websiteConfig = getLocalWebsiteConfig() || {};
                 let lastUpgradeTime = _.get(result, 'list[0].create_date', 0); // 最新发布公告的时间
-                console.log('##############:',lastUpgradeTime);
                 let showNoticeTime = _.get(websiteConfig, 'show_notice_time');
                 // 公告发布时间大于查看时间时，需要显示提示信息
                 if (lastUpgradeTime > showNoticeTime) {
                     clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, true);
-                    setPersonWebConfig({last_upgrade_notice_time: lastUpgradeTime});
+                    setWebsiteConfig({last_upgrade_notice_time: lastUpgradeTime});
                 }
             });
         }, NOTICE_INTERVAL_TIME);
