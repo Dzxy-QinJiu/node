@@ -665,7 +665,7 @@ var en_VE = {
 
     'user.get.user.detail.failed': 'Fallo en conseguir detalles de usuario',//获取用户详情失败 
 
-    'user.get.apply.detail.failed': 'Fallo en conseguir los detalles del formulario de solicitud',//获取申请单详情失败 
+    'user.get.apply.detail.failed': 'Fallo en conseguir los detalles del formulario de solicitud',//获取申请审批详情失败
 
     'user.no.more.data': 'No hay más datos',//没有更多数据了 
 

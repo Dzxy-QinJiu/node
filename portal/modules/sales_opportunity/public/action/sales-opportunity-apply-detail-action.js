@@ -11,7 +11,7 @@ var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
-import {cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {cancelApplyApprove, getApplyDetailById} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import applyApproveAction from './sales-opportunity-apply-action';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
@@ -40,10 +40,10 @@ function ApplyViewDetailActions() {
         if (applyData){
             this.dispatch({loading: false, error: false, detail: applyData.detail, status: status});
         }else{
-            SalesOpportunityApplyAjax.getSalesOpportunityApplyDetailById(queryObj, status).then((detail) => {
+            getApplyDetailById(queryObj).then((detail) => {
                 this.dispatch({loading: false, error: false, detail: detail, status: status});
             }, (errorMsg) => {
-                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg });
             });
         }
 

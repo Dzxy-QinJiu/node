@@ -56,3 +56,12 @@ exports.getApplyTaskNode = function(req, res) {
             res: res
         }, req.query);
 };
+//根据审批的id获取审批的详情
+exports.getApplyDetailById = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: '/rest/base/v1/workflow/detail',
+            req: req,
+            res: res
+        }, req.query);
+};

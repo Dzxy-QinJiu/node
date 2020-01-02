@@ -54,7 +54,7 @@ exports.getApplyDetailById = function(queryObj) {
             Deferred.resolve(data);
         },
         error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+            Deferred.reject(errorMsg.responseJSON || Intl.get('user.get.apply.detail.failed', '获取申请审批详情失败'));
         }
     });
     return Deferred.promise();
