@@ -3828,6 +3828,7 @@ var en_US = {
 
     /*支付流程 --- start*/
     'personal.upgrade.to.official.version': 'Upgrade to the official version',//升级为正式版
+    'personal.official.version': 'Personal',//个人正式版
     'personal.upgrade.to.enterprise.edition': 'Upgrade to enterprise edition',//升级为企业版
     'personal.apply.trial.enterprise.edition': 'Apply for trial enterprise edition',//申请试用企业版
     'clues.extract.count.at.month': 'Extract {count} clues per month',//每月可提取 {count} 条线索
@@ -3882,7 +3883,7 @@ var en_US = {
     'boot.select.area': 'Please select the area of concern',//请选择关注的地域
     /*个人试用 --- end*/
     /*组织到期提示 --- start*/
-    'organization.personal.trial.expired.tip': 'Your probation period remains {time} days, whether {upgrade}？Contact us {contact}',//您的试用期剩余{time}天，是否{upgrade}? 联系我们请拨打{contact}
+    'organization.personal.trial.expired.tip': 'You have {time} days left in the trial period. {count} clues can be extracted every day. Will you upgrade to {upgrade} or {enterprise}?',//您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？
     'organization.company.trial.expired.tip': 'The rest of your probationary period {time} days, please contact our sales staff: {contact}',//您的试用期剩余{time}天，请联系我们的销售人员: {contact}
     'organization.personal.formal.expired.tip': 'Your account is about to expire, is it {renewal}?',//您的账号即将到期，是否{renewal}？
     'organization.company.formal.expired.tip': 'Your account is about to expire, please contact our sales staff: {contact}',//您的账号即将到期，请联系我们的销售人员: {contact}
