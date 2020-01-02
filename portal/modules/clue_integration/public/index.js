@@ -197,7 +197,7 @@ class ClueIntegration extends React.Component {
             >
                 <div className="integrate-clue-content-wrap">
                     {
-                        isLoading ? ( <Spinner/>) : (
+                        isLoading ? ( <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>) : (
                             <div className="integrate-clue-content">
                                 {this.renderClueIntegrationContent()}
                             </div>

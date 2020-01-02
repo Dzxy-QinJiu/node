@@ -1471,7 +1471,7 @@ class UserTabContent extends React.Component {
         }
         return (
             <div className="appuser-list-loading-wrap">
-                <Spinner />
+                <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
             </div>
         );
     };

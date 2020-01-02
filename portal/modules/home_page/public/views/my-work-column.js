@@ -1017,7 +1017,7 @@ class MyWorkColumn extends React.Component {
                         </span>
                     </div>);
                 return (<AntcDropdown content={distributeBtn} key={`antc-dropdwon${item.id}`}
-                                      datatraceContainer='我的工作线索分配按钮'
+                    datatraceContainer='我的工作线索分配按钮'
                     triggerEventStr='hover'
                     popupContainerId={`home-page-work${item.id}`}
                     overlayTitle={Intl.get('user.salesman', '销售人员')}
@@ -1141,7 +1141,7 @@ class MyWorkColumn extends React.Component {
     renderMyWorkList() {
         //等待效果的渲染
         if (this.state.loading && !this.state.load_id) {
-            return <Spinner/>;
+            return <Spinner className='home-loading'/>;
         } else {
             let workList = [];
             //有新工作，请刷新后再处理

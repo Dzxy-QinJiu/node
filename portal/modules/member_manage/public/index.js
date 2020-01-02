@@ -362,7 +362,7 @@ class MemberManage extends React.Component {
                             {
                                 this.state.loading && this.state.sortId === '' ? (
                                     <div>
-                                        <Spinner/>
+                                        <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
                                     </div>
                                 ) : (
                                     <div className='member-table-info'>
