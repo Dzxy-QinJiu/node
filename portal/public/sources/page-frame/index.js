@@ -28,7 +28,8 @@ import{
     audioMsgEmitter,
     userDetailEmitter,
     paymentEmitter,
-    clueToCustomerPanelEmitter
+    clueToCustomerPanelEmitter,
+    clickUpgradeNoiceEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 import {checkVersionAndType} from '../utils/common-method-util';
@@ -75,7 +76,12 @@ class PageFrame extends React.Component {
                 page_size: 1,
                 page_num: 1
             }).then((result) => {
-                let lastUpgradeTime = _.get(result, 'create_date', 0); // 最新发布公告的时间
+                let lastUpgradeTime = _.get(result, 'list[0].create_date', 0); // 最新发布公告的时间
+                let showNoticeTime = _.get(websiteConfig, 'show_notice_time');
+                // 公告发布时间大于查看时间时，需要显示提示信息
+                if (lastUpgradeTime > showNoticeTime) {
+                    clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, true);
+                }
                 ajax.send({
                     url: '/rest/base/v1/user/website/config/personnel',
                     type: 'post',
@@ -192,11 +198,8 @@ class PageFrame extends React.Component {
     }
 
     showNotificationPanel = () => {
-        // 显示通知面板时，红点消失
         this.setState({
             isShowNotificationPanel: true
-        }, () => {
-            
         });
     }
 

@@ -15,14 +15,21 @@ const TAB_KEYS = {
 const SystemNotification = require('./views/system');
 import UpgradeNotice from './views/upgrade-notice';
 import {clickUpgradeNoiceEmitter} from 'PUB_DIR/sources/utils/emitters';
+import ajax from 'ant-ajax';
 import { storageUtil } from 'ant-utils';
 const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
 
 class Notification extends React.Component {
     constructor(props) {
         super(props);
+        let activeKey = TAB_KEYS.SYSTEM;
+        // 最后一次升级时间大于点击查看公告的时间时，点通知，需要显示公告tab项
+        if (_.get(websiteConfig, 'last_upgrade_notice_time') > _.get(websiteConfig, 'show_notice_time')) {
+            activeKey = TAB_KEYS.UPGRADE_NOTICE;
+            clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, false);
+        }
         this.state = {
-            activeKey: TAB_KEYS.SYSTEM // 通知
+            activeKey: activeKey
         };
     }
     componentDidMount() {
@@ -39,6 +46,7 @@ class Notification extends React.Component {
         let keyName = '通知';
         if (key === TAB_KEYS.UPGRADE_NOTICE) {
             keyName = '公告';
+            clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, false);
             // 查看公告的时间
             let showNoticeime = moment().valueOf();
             ajax.send({
