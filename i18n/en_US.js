@@ -3881,6 +3881,7 @@ var en_US = {
     'boot.not.found.industry.tip': 'No "{search}" related industries were found. You may be interested in the following industries',//没有搜索到 “{search}” 相关行业，您可能关心以下行业
     'boot.select.industry': 'Please select the industry to focus on',//请选择关注的行业
     'boot.select.area': 'Please select the area of concern',//请选择关注的地域
+    'boot.input.industry': 'Please enter industries of concern',//请输入关注的行业
     /*个人试用 --- end*/
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': 'You have {time} days left in the trial period. {count} clues can be extracted every day. Will you upgrade to {upgrade} or {enterprise}?',//您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？

@@ -3930,6 +3930,7 @@ var zh_CN = {
     'boot.not.found.industry.tip': '没有搜索到 “{search}” 相关行业，您可能关心以下行业',
     'boot.select.industry': '请选择关注的行业',
     'boot.select.area': '请选择关注的地域',
+    'boot.input.industry': '请输入关注的行业',
     /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/
