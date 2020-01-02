@@ -11,7 +11,6 @@ import {getCallClient, isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-
 import { INTEGRATE_TYPES } from 'PUB_DIR/sources/utils/consts';
 import CONSTS from 'LIB_DIR/consts';
 import publicPrivilegeConst from '../../privilege-const';
-import ajax from 'ant-ajax';
 const session = storageUtil.session;
 let appList = [];
 //oplate中的应用+客套中的产品列表
