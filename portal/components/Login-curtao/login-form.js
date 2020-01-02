@@ -306,6 +306,11 @@ class LoginForm extends React.Component {
     toRegister=(e) => {
         window.open('/register'); 
     }
+    findPassword = (e) => {
+        if (_.isFunction(this.props.changeView)) {
+            this.props.changeView();
+        }
+    }
     render() {
         const loginButtonClassName = classNames('login-button', {'not-allowed': this.state.loginButtonDisabled});
 
@@ -370,17 +375,20 @@ class LoginForm extends React.Component {
                     {hasWindow ? Intl.get('login.login', '登录') : null}
                     {this.state.logining ? <Icon type="loading"/> : null}
                 </button>
-                <div className='login-no-account-register-tip'>
-                    <ReactIntl.FormattedMessage
-                        id='login.no.account.register.tip'
-                        defaultMessage='没有账号，去{register}'
-                        values={{
-                            'register': (
-                                <a onClick={this.toRegister} data-tracename="点击注册">
-                                    {Intl.get('login.register', '注册')}
-                                </a>)
-                        }}
-                    />
+                <div>
+                    <a className='login-find-password-tip' data-tracename="找回密码" onClick={this.findPassword}> {Intl.get('login.find.password', '找回密码')}</a>
+                    <span className='login-no-account-register-tip'>
+                        <ReactIntl.FormattedMessage
+                            id='login.no.account.register.tip'
+                            defaultMessage='没有账号，去{register}'
+                            values={{
+                                'register': (
+                                    <a onClick={this.toRegister} data-tracename="点击注册">
+                                        {Intl.get('login.register', '注册')}
+                                    </a>)
+                            }}
+                        />
+                    </span>
                 </div>
             </form>
         );

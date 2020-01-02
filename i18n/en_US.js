@@ -316,6 +316,7 @@ var en_US = {
     'login.dim.exchange': 'Unclear? Change another one',//看不清？点击换一张
     'login.username.phone.email': 'username/phone/email',//用户名/手机/邮箱
     'login.logout': 'Logout',//退出
+    'login.find.password': 'Retrieve password',//找回密码
     'login.forgot_password': 'Forgot your password?',//忘记密码
     'login.please_input_phone_or_email': 'Please enter your phone number or email',//请输入手机号或邮箱
     'login.incorrect_phone_or_email': 'Incorrect phone number or email',//手机号或邮箱格式不正确

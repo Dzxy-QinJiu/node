@@ -322,6 +322,7 @@ var zh_CN = {
     'login.dim.exchange': '看不清？点击换一张',
     'login.username.phone.email': '用户名/手机/邮箱',
     'login.logout': '退出',
+    'login.find.password': '找回密码',
     'login.forgot_password': '忘记密码',
     'login.please_input_phone_or_email': '请输入手机号或邮箱',
     'login.incorrect_phone_or_email': '手机号或邮箱格式不正确',
