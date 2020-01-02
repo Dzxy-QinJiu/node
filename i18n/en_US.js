@@ -3829,7 +3829,8 @@ var en_US = {
     /*支付流程 --- start*/
     'personal.upgrade.to.official.version': 'Upgrade to the official version',//升级为正式版
     'personal.upgrade.to.enterprise.edition': 'Upgrade to enterprise edition',//升级为企业版
-    'clues.extract.count.at.month': 'Lead recommendation can be extracted every month {count}',//线索推荐每月可提取{count}条
+    'personal.apply.trial.enterprise.edition': 'Apply for trial enterprise edition',//申请试用企业版
+    'clues.extract.count.at.month': 'Extract {count} clues per month',//每月可提取 {count} 条线索
     'goods.price.most.favorable': 'The most favorable',//最优惠
     'goods.immediate.payment': 'Immediate payment',//立即支付
     'goods.increase.clues': 'Increase the amount of leads',//增加线索量
@@ -3863,6 +3864,10 @@ var en_US = {
     'payment.get.payment.mode.faild': 'Failed to obtain payment channel',//获取支付渠道失败
     'payment.get.discount.faild': 'Failed to get item discount information',//获取商品折扣信息失败
     'payment.please.upgrade.company.version': 'Please first upgrade to the basic version of the above version, contact sales: {contact}',//请先升级到基础版以上版本，联系销售：{contact}
+    'payment.find.result': 'Checking payment results...',//正在查询支付结果...
+    'payment.upgrade.personal.version.success': 'You have been upgraded to the personal version, you can extract {count} clues every month!',//您已升级为个人正式版，每月可提取{count}线索啦！
+    'payment.contact.us': 'Contact us {contact}',//联系我们请拨打{contact}
+    'payment.add.leads.tip': 'If the quantity of clues is insufficient, {addBtn}',//如果线索量不够用，可另外{addBtn}
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/

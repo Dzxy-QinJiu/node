@@ -19,9 +19,11 @@ import {paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import history from 'PUB_DIR/sources/history';
 import SavedTips from 'CMP_DIR/saved-tips';
 import DifferentVersion from 'MOD_DIR/different_version/public';
+import ApplyTry from 'MOD_DIR/apply_try/public';
 import privilegeConst_user_info from '../privilege-config';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
+import { COMPANY_VERSION_KIND } from 'PUB_DIR/sources/utils/consts';
 const session = storageUtil.session;
 const CLOSE_TIP_TIME = 56;
 const langArray = [{key: 'zh_CN', val: '简体中文'},
@@ -827,11 +829,12 @@ class UserInfo extends React.Component{
                         ) : null
                     }
                 </div> : null}
-                <DifferentVersion
-                    showFlag={this.state.showDifferentVersion}
-                    closeVersion={this.triggerShowVersionInfo}
-                    continueFn={this.handleContinueFn}
-                />
+                {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
+                {/*<DifferentVersion*/}
+                {/*showFlag={this.state.showDifferentVersion}*/}
+                {/*closeVersion={this.triggerShowVersionInfo}*/}
+                {/*continueFn={this.handleContinueFn}*/}
+                {/*/>*/}
             </div>
         );
     }

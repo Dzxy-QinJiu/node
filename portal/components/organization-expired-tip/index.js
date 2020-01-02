@@ -10,8 +10,9 @@ import { getOrganizationInfo } from 'PUB_DIR/sources/utils/common-data-util';
 import { checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
 import { paymentEmitter } from 'PUB_DIR/sources/utils/emitters';
 import DifferentVersion from 'MOD_DIR/different_version/public';
+import ApplyTry from 'MOD_DIR/apply_try/public';
 import history from 'PUB_DIR/sources/history';
-import {COMPANY_PHONE} from 'PUB_DIR/sources/utils/consts';
+import {COMPANY_PHONE, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/utils/consts';
 
 
 const REMIND_DAYS = {
@@ -64,7 +65,10 @@ class OrganizationExipreTip extends React.PureComponent {
 
     handleClickRenewal = () => {
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
-            showDifferentVersion: this.triggerShowVersionInfo
+            showDifferentVersion: this.triggerShowVersionInfo,
+            continueFn: () => {
+                history.push('/leads');
+            }
         });
     };
     //显示/隐藏版本信息面板
@@ -121,12 +125,13 @@ class OrganizationExipreTip extends React.PureComponent {
                         closable
                         className="organization-expired-tip"
                     />
-                    <DifferentVersion
-                        showFlag={this.state.showDifferentVersion}
-                        closeVersion={this.triggerShowVersionInfo}
-                        continueFn={this.handleContinueFn}
+                    {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
+                    {/*<DifferentVersion*/}
+                    {/*showFlag={this.state.showDifferentVersion}*/}
+                    {/*closeVersion={this.triggerShowVersionInfo}*/}
+                    {/*continueFn={this.handleContinueFn}*/}
 
-                    />
+                    {/*/>*/}
                 </div>
             );
         }else {return null;}

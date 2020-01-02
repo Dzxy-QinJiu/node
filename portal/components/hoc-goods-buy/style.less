@@ -5,6 +5,7 @@
 */
 @import "../../public/css/common-variables";
 @hoc-goods-buy: hoc-goods-buy;
+@basic-style-color: #efa44d;
 .@{hoc-goods-buy}-wrapper{
   z-index: 1052;
   .right-panel-modal-content{
@@ -52,6 +53,26 @@
       a{
         color: @BUTTON-HOVER;
       }
+    }
+  }
+  //成功界面，增加线索量按钮样式
+  .increase-lead-wrapper{
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    padding: 0 25px;
+    .increase-lead-content{
+      padding: 10px;
+      background-color: #fef6eb;
+    }
+    .icon-huanying{
+      color: @basic-style-color;
+      margin-right: 10px;
+    }
+    .operate-increase-lead{
+      color: @basic-style-color;
     }
   }
 }
