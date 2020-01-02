@@ -31,13 +31,6 @@ exports.getWorklistMemberApplyList = function(req, res) {
     });
 };
 
-exports.getMemberApplyDetailById = function(req, res) {
-    MemberApplyService.getMemberApplyDetailById(req, res).on('success', function(data) {
-        res.status(200).json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
 exports.getMemberApplyComments = function(req, res) {
     MemberApplyService.getMemberApplyComments(req, res).on('success', function(data) {
         res.status(200).json(data);
