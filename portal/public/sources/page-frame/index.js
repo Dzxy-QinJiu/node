@@ -51,6 +51,7 @@ class PageFrame extends React.Component {
         audioPanelShow: false,//是否展示播放录音面板
         audioParamObj: {},
         isShowNotificationPanel: false, // 是否展示系统通知面板
+        isUnReadNoitce: false, // 是否有未读的公告
         rightContentHeight: 0,
         clueDetailPanelShow: false,
         isShowUserDetailPanel: false, // 是否显示用户详情界面
@@ -76,12 +77,13 @@ class PageFrame extends React.Component {
                 page_num: 1
             }).then((result) => {
                 let lastUpgradeTime = _.get(result, 'list[0].create_date', 0); // 最新发布公告的时间
+                console.log('##############:',lastUpgradeTime);
                 let showNoticeTime = _.get(websiteConfig, 'show_notice_time');
                 // 公告发布时间大于查看时间时，需要显示提示信息
                 if (lastUpgradeTime > showNoticeTime) {
                     clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, true);
+                    setPersonWebConfig({last_upgrade_notice_time: lastUpgradeTime});
                 }
-                setPersonWebConfig({last_upgrade_notice_time: lastUpgradeTime});
             });
         }, NOTICE_INTERVAL_TIME);
     }
@@ -285,9 +287,10 @@ class PageFrame extends React.Component {
         }
     };
 
-    toggleNotificationPanel = () => {
+    toggleNotificationPanel = (isUnReadNoitce) => {
         this.setState({
-            isShowNotificationPanel: !this.state.isShowNotificationPanel
+            isShowNotificationPanel: !this.state.isShowNotificationPanel,
+            isUnReadNoitce: isUnReadNoitce,
         }, () => {
             if (this.state.isShowNotificationPanel === false) {
                 this.setState({
@@ -368,7 +371,10 @@ class PageFrame extends React.Component {
                             />) : null}
                         {
                             this.state.isShowNotificationPanel ? (
-                                <Notification closeNotificationPanel={this.closeNotificationPanel}/>
+                                <Notification
+                                    closeNotificationPanel={this.closeNotificationPanel}
+                                    isUnReadNoitce={this.state.isUnReadNoitce}
+                                />
                             ) : null
                         }
                         {

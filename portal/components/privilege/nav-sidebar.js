@@ -386,7 +386,7 @@ var NavSidebar = createReactClass({
 
     toggleNotificationPanel(event) {
         event.stopPropagation();
-        this.props.toggleNotificationPanel();
+        this.props.toggleNotificationPanel(this.state.isUnReadNoitce);
     },
     //渲染通知菜单
     getNotificationBlock: function() {
