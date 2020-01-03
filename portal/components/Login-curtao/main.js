@@ -9,7 +9,7 @@ import LoginLogo from '../login-logo';
 import {Alert, Tabs, Icon, Button} from 'antd';
 import {ssoLogin, callBackUrl} from '../../lib/websso';
 import SideBar from '../side-bar';
-import ForgotPassword from './forgot-password';
+// import ForgotPassword from './forgot-password';
 const TabPane = Tabs.TabPane;
 var Spinner = require('../spinner');
 const USER_LANG_KEY = 'userLang';//存储用户语言环境的key
@@ -116,15 +116,15 @@ class LoginMain extends React.Component {
                                         {...this.props}
                                     />
                                 ) : null}
-                                {this.state.currentView === VIEWS.FORGOT_PASSWORD ? (
-                                    <ForgotPassword
-                                        hasWindow={hasWindow}
-                                        views={VIEWS}
-                                        changeView={this.changeView.bind(this, VIEWS.LOGIN)}
-                                        setErrorMsg={this.setErrorMsg}
-                                        {...this.props}
-                                    />
-                                ) : null}
+                                {/*{this.state.currentView === VIEWS.FORGOT_PASSWORD ? (*/}
+                                {/*    <ForgotPassword*/}
+                                {/*        hasWindow={hasWindow}*/}
+                                {/*        views={VIEWS}*/}
+                                {/*        changeView={this.changeView.bind(this, VIEWS.LOGIN)}*/}
+                                {/*        setErrorMsg={this.setErrorMsg}*/}
+                                {/*        {...this.props}*/}
+                                {/*    />*/}
+                                {/*) : null}*/}
                                 {this.state.errorMsg ?
                                     <div className="login-error-tip"><span className="iconfont icon-warn-icon"></span>{this.state.errorMsg}</div> : null}
                             </div>

@@ -209,6 +209,7 @@ class RecommendCustomerRightPanel extends React.Component {
 
     // 关闭提取线索界面
     closeRecommendCluePanel = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.recommend-clues-lists-container'), '点击推荐线索返回按钮');
         this.props.closeRecommendCluePanel();
     };
     handleClickRefreshBtn = () => {
@@ -596,6 +597,7 @@ class RecommendCustomerRightPanel extends React.Component {
         this.handleBatchAssignClues(submitObj);
     };
     handleSubmitAssignSalesBatch = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.recommend-customer-top-nav-wrap'), '点击批量提取线索按钮');
         if(!this.state.canClickExtract) return;
         //如果是选了修改全部
         let submitObj = this.handleBeforeSumitChangeSales(_.map(this.state.selectedRecommendClues,'id'));
@@ -713,7 +715,7 @@ class RecommendCustomerRightPanel extends React.Component {
             if(this.state.getRecommendClueErrMsg ){
                 return (<div className="errmsg-container">
                     <span className="errmsg-tip">{this.state.getRecommendClueErrMsg},</span>
-                    <a className="retry-btn" onClick={this.getRecommendClueLists}>
+                    <a className="retry-btn" onClick={this.getRecommendClueLists} data-tracename='点击请重试按钮'>
                         {Intl.get('user.info.retry', '请重试')}
                     </a>
                 </div>);
@@ -728,7 +730,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 id="clue.edit.condition.search"
                 defaultMessage={'请{changeCondition}再查看'}
                 values={{
-                    'changeCondition': <a onClick={this.handleClickEditCondition}>
+                    'changeCondition': <a onClick={this.handleClickEditCondition} data-tracename='点击修改条件'>
                         {Intl.get('clue.customer.condition.change', '修改条件')}
                     </a>
                 }}
@@ -738,7 +740,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     id='clue.has.extract.by.other'
                     defaultMessage={'符合条件的线索已被提取完成，请{changeCondition}再查看'}
                     values={{
-                        'changeCondition': <a onClick={this.handleClickEditCondition}>
+                        'changeCondition': <a onClick={this.handleClickEditCondition} data-tracename='符合条件的线索已被提取完成,点击修改条件'>
                             {Intl.get('clue.customer.condition.change', '修改条件')}
                         </a>
                     }}
@@ -887,7 +889,6 @@ class RecommendCustomerRightPanel extends React.Component {
                     <Button
                         title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
                         type="primary"
-                        data-tracename="点击批量提取线索按钮"
                         className='btn-item common-sale-batch-extract'
                         onClick={this.handleSubmitAssignSalesBatch}
                         disabled={this.state.batchExtractLoading}
@@ -952,7 +953,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 <RightPanel showFlag={true} className="recommend-customer-list">
                     <div className="recommend-clue-panel">
                         <TopNav>
-                            <div className={recommendCls}>
+                            <div className={recommendCls} data-tracename="推荐线索顶部topnav">
                                 <BackMainPage className="clue-back-btn" 
                                     handleBackClick={this.closeRecommendCluePanel}></BackMainPage>
                                 {hasSelectedClue ? null :

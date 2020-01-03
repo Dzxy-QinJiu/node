@@ -993,7 +993,7 @@ class ClueDetailOverview extends React.Component {
                         </FormItem
                         >
                         <div className="save-cancel-btn">
-                            <Button className="ant-btn-cancel"
+                            <Button className="ant-btn-cancel" data-tracename="取消保存无效原因"
                                 onClick={this.handleInvalidateCancelBtn.bind(this,salesClueItem)}
                             >{Intl.get('common.cancel', '取消')}</Button>
                             <Button type='primary'
@@ -1014,11 +1014,11 @@ class ClueDetailOverview extends React.Component {
         var isEditting = this.state.isInvaliding;
         return (
             <span className="invalid-confirm">
-                <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickValidBtn.bind(this, salesClueItem)}>
+                <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickValidBtn.bind(this, salesClueItem)} data-tracename="点击确认有效按钮">
                     {Intl.get('clue.customer.confirm.valid', '确认有效')}
                     {isEditting ? <Icon type="loading"/> : null}
                 </Button>
-                <Button onClick={this.cancelInvalidClue}>{Intl.get('common.cancel', '取消')}</Button>
+                <Button onClick={this.cancelInvalidClue} data-tracename="点击取消确认有效按钮">{Intl.get('common.cancel', '取消')}</Button>
             </span>
         );
     }
@@ -1044,9 +1044,9 @@ class ClueDetailOverview extends React.Component {
                 releaseTip = releaseClueTip();
             }
             return <div>
-                {associatedPrivilege ? <Button type="primary"
+                {associatedPrivilege ? <Button type="primary" data-tracename="点击转为客户按钮"
                     onClick={this.convertToCustomer.bind(this, curClue)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
-                <Button data-tracename="判定线索无效按钮" className='clue-inability-btn'
+                <Button data-tracename="点击判定线索无效按钮" className='clue-inability-btn'
                     onClick={this.showConfirmInvalid.bind(this, curClue)}>
                     {editCluePrivilege(curClue) ? <span className="can-edit">{Intl.get('clue.customer.set.invalid','标为无效')}</span> : <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
 
@@ -1621,8 +1621,8 @@ class ClueDetailOverview extends React.Component {
             if(hasPrivilege) {
                 return (
                     <div className="similar-title-name">
-                        <span onClick={isSimilarClue ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
-                        {!isSimilarClue && editCluePrivilege(this.state.curClue) ? <Button onClick={this.mergeToThisCustomer.bind(this, curClue, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
+                        <span data-tracename={isSimilarClue ? '打开线索详情' : '打开客户详情'} onClick={isSimilarClue ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
+                        {!isSimilarClue && editCluePrivilege(this.state.curClue) ? <Button onClick={this.mergeToThisCustomer.bind(this, curClue, listItem)} data-tracename='点击合并到此客户按钮'>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
                     </div>);
             } else {
                 return (
@@ -1695,7 +1695,7 @@ class ClueDetailOverview extends React.Component {
                             </div> : null}
                     </div>;
                 })}
-                {listMoreThanThree ? <div className="show-hide-tip" onClick={isSimilarClue ? this.handleToggleClueTip : this.handleToggleCustomerTip}>
+                {listMoreThanThree ? <div className="show-hide-tip" onClick={isSimilarClue ? this.handleToggleClueTip : this.handleToggleCustomerTip} data-tracename='点击收起或展开全部按钮'>
                     {moreListShowFlag ? Intl.get('crm.contact.way.hide', '收起') : Intl.get('notification.system.more', '展开全部')}</div> : null}
             </div>
         );
