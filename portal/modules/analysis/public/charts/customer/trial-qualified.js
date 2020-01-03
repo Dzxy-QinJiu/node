@@ -78,7 +78,7 @@ export function getCustomerTrialQualifiedChart() {
                 dataIndex: 'this_month_add_highest',
                 title: Intl.get('common.this.month.add.highest', '本月比历史最高净增'),
                 width: '20%',
-                render: trialQualifiedNumRender.bind(this, 'this_month_new_customer_ids'),
+                render: trialQualifiedNumRender.bind(this, 'this_month_add_highest_customer_ids'),
             }]);
 
             //表格数据
