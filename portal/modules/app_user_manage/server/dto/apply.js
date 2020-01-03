@@ -253,9 +253,6 @@ exports.toDetailDelayRestObject = function(obj) {
     if (detail.delay_time && detail.delay_time !== '-1') {
         result.delayTime = detail.delay_time || '';
     }
-    if (detail.delay && detail.delay !== '-1') {
-        result.delay = detail.delay || '';
-    }
     //增加特殊属性
     result = addProperties(result, obj);
     return result;

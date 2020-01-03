@@ -210,7 +210,7 @@ class DateSelector extends React.Component{
                     end_time = Utils.getDateStr(moment().add(14, 'days').endOf('day').valueOf());
                 } else if(/^\d+m$/.test(props.range)){
                     var num = props.range.replace(/m$/,'');
-                    end_time = Utils.getDateStr(moment().add(num , 'month').subtract(1, 'day').valueOf());
+                    end_time = Utils.getDateStr(moment().add(num , 'month').subtract(1, 'day').endOf('day').valueOf());
                 }
             }
         }
@@ -475,7 +475,6 @@ class DateSelector extends React.Component{
                 } else if(this.state.range === '0.5m') {
                     end_time = start_time_moment.add(14, 'days').endOf('day').format(DATE_FORMAT);
                 }else if(lastRangeRegex.test(this.state.range)) {
-                    console.log(this.state.range);
                     var result = lastRangeRegex.exec(this.state.range);
                     var unit = momentMap[result[2]];
                     end_time = start_time_moment.add(result[1],unit).format(DATE_FORMAT);
