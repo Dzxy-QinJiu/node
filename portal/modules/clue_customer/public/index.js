@@ -158,7 +158,6 @@ class ClueCustomer extends React.Component {
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             showRecommendTips: !_.get(websiteConfig, oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS,false),
             showDifferentVersion: false,//是否显示版本信息面板
-            personalTrialVisiable: false,//是否显示提示升级popover
             //显示内容
             ...clueCustomerStore.getState()
         };
@@ -712,7 +711,7 @@ class ClueCustomer extends React.Component {
         return(
             <div className="export-clue-customer-container pull-right">
                 {currentVersionType.trial ?
-                    (<Popover content={tips} trigger="click" visible={this.state.personalTrialVisiable} onVisibleChange={this.handlePersonalTrialVisiable} overlayClassName="explain-pop">
+                    (<Popover content={tips} trigger="click" overlayClassName="explain-pop">
                         <Button className="btn-item btn-disabled">
                             <i className="iconfont icon-export-clue"></i>
                             <span className="clue-container">
