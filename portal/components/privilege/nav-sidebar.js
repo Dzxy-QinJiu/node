@@ -712,7 +712,7 @@ var NavSidebar = createReactClass({
                                 <a className='iconfont icon-customer-service sidebar-bottom-icon' title={Intl.get('menu.online.consulting', '在线咨询')}/>
                             </div>) : null
                         }
-                        {this.getNotificationBlock()}
+                        {isCurtao() ? null : this.getNotificationBlock()}
                         {this.renderBackendConfigBlock()}
                         {this.getUserInfoBlock()}
                     </div>

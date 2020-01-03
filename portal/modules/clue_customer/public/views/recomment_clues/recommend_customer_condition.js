@@ -13,6 +13,7 @@ import {checkClueCondition, companyProperty, moneySize, staffSize,CLUE_CONDITION
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import Trace from 'LIB_DIR/trace';
 import {MAXINDUSTRYCOUNT} from 'PUB_DIR/sources/utils/consts';
+import {ipRegex} from 'PUB_DIR/sources/utils/validate-util';
 class RecommendCustomerCondition extends React.Component {
     constructor(props) {
         super(props);
@@ -150,8 +151,13 @@ class RecommendCustomerCondition extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             var hasSavedRecommendParams = this.state.hasSavedRecommendParams;
             hasSavedRecommendParams.name = _.trim(values.name);
-            if (!_.isEmpty(values.industrys)){
-                hasSavedRecommendParams.industrys = values.industrys;
+            // if (!_.isEmpty(values.industrys)){
+            //     hasSavedRecommendParams.industrys = values.industrys;
+            // }else{
+            //     delete hasSavedRecommendParams.industrys;
+            // }
+            if (values.industrys){
+                hasSavedRecommendParams.industrys = [_.trim(values.industrys)];
             }else{
                 delete hasSavedRecommendParams.industrys;
             }
@@ -278,6 +284,12 @@ class RecommendCustomerCondition extends React.Component {
         else{
             callback();
         }
+
+        // if (value && value.length > MAXINDUSTRYCOUNT) {
+        //     callback(new Error(Intl.get('boot.select.industry.count.tip', '最多可选择{count}个行业',{'count': MAXINDUSTRYCOUNT})));
+        // } else {
+        //     callback();
+        // }
     };
     render() {
         const { registerStartTime, registerEndTime, showOtherCondition} = this.state;
@@ -333,7 +345,7 @@ class RecommendCustomerCondition extends React.Component {
                         >
                             {
                                 getFieldDecorator('industrys',
-                                    {initialValue: _.get(hasSavedRecommendParams,'industrys',[]),
+                                    {initialValue: _.get(hasSavedRecommendParams,'industrys[0]',''),
                                         rules: [
                                             {
                                                 validator: this.validateIndustryCount,
@@ -341,7 +353,8 @@ class RecommendCustomerCondition extends React.Component {
                                         ],
                                     }
                                 )(
-                                    <Select
+                                    /*
+                                   * <Select
                                         mode="multiple"
                                         placeholder={Intl.get('crm.22', '请选择行业')}
                                         name="industrys"
@@ -354,7 +367,8 @@ class RecommendCustomerCondition extends React.Component {
                                                 return (<Option key={idx} value={item}>{item}</Option>);
                                             }))
                                         }
-                                    </Select>
+                                    </Select>*/
+                                    <Input placeholder={Intl.get('clue.customer.input.industry', '请输入行业名称')}/>
                                 )}
                         </FormItem>
                         <AntcAreaSelection labelCol="24" wrapperCol="24" width="100%"
@@ -488,5 +502,3 @@ RecommendCustomerCondition.propTypes = {
     hideFocusCustomerPanel: PropTypes.func,
 };
 export default Form.create()(RecommendCustomerCondition);
-
-

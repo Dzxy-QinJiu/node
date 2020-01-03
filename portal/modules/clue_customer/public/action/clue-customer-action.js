@@ -71,8 +71,8 @@ function ClueCustomerActions() {
     };
     this.getRecommendClueLists = function(obj) {
         this.dispatch({loading: true, error: false});
-        clueCustomerAjax.getRecommendClueLists(obj).then((list) => {
-            this.dispatch({loading: false, error: false,list: list});
+        clueCustomerAjax.getRecommendClueLists(obj).then((data) => {
+            this.dispatch({loading: false, error: false, data});
         },(errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
