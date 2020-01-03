@@ -63,6 +63,7 @@ ClueCustomerStore.prototype.resetState = function() {
     this.recommendClueLists = [];
     this.hasExtraRecommendList = false;
     this.sortvalues = [];
+    this.versionData = {};
 };
 ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
     if (result.loading) {
@@ -284,7 +285,7 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
 ClueCustomerStore.prototype.getApplyTryData = function(result) {
     if(!result.error){
         const applyTryData = result.result;
-        this.curClue.versionData = {
+        this.versionData = {
             applyTryCompany: applyTryData.company,
             applyTryTime: applyTryData.create_time,
             applyTryUserScales: applyTryData.user_scales,
