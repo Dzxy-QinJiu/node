@@ -22,7 +22,7 @@ class Notification extends React.Component {
         super(props);
         let activeKey = TAB_KEYS.SYSTEM;
         // 有新的公告时，点通知，需要显示公告tab项
-        if (props.isUnReadNoitce) {
+        if (props.isUnReadNotice) {
             activeKey = TAB_KEYS.UPGRADE_NOTICE;
             this.handleShowNoticeTab();
         }
@@ -98,7 +98,7 @@ class Notification extends React.Component {
 
 Notification.propTypes = {
     closeNotificationPanel: PropTypes.func,
-    isUnReadNoitce: PropTypes.bool,
+    isUnReadNotice: PropTypes.bool,
 };
 
 module.exports = Notification;

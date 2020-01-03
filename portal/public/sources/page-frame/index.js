@@ -31,9 +31,8 @@ import{
     clickUpgradeNoiceEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
-import {checkVersionAndType} from '../utils/common-method-util';
+import {checkVersionAndType, isShowUnReadNotice} from '../utils/common-method-util';
 import {getUpgradeNoticeList} from '../utils/common-data-util';
-import {KETAO_ID} from '../utils/consts';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
@@ -49,7 +48,7 @@ class PageFrame extends React.Component {
         audioPanelShow: false,//是否展示播放录音面板
         audioParamObj: {},
         isShowNotificationPanel: false, // 是否展示系统通知面板
-        isUnReadNoitce: false, // 是否有未读的公告
+        isUnReadNotice: isShowUnReadNotice(), // 是否有未读的公告
         rightContentHeight: 0,
         clueDetailPanelShow: false,
         isShowUserDetailPanel: false, // 是否显示用户详情界面
@@ -70,7 +69,7 @@ class PageFrame extends React.Component {
         if(this.getLastNoticeTimer) clearInterval(this.getLastNoticeTimer);
         this.getLastNoticeTimer = setInterval(() => {
             getUpgradeNoticeList({
-                application_id: _.get(window, 'Oplate.clientId', KETAO_ID),
+                application_id: _.get(window, 'Oplate.clientId'),
                 page_size: 1,
                 page_num: 1
             }).then((result) => {
@@ -285,10 +284,10 @@ class PageFrame extends React.Component {
         }
     };
 
-    toggleNotificationPanel = (isUnReadNoitce) => {
+    toggleNotificationPanel = (isUnReadNotice) => {
         this.setState({
             isShowNotificationPanel: !this.state.isShowNotificationPanel,
-            isUnReadNoitce: isUnReadNoitce,
+            isUnReadNotice: isUnReadNotice,
         }, () => {
             if (this.state.isShowNotificationPanel === false) {
                 this.setState({
@@ -371,7 +370,7 @@ class PageFrame extends React.Component {
                             this.state.isShowNotificationPanel ? (
                                 <Notification
                                     closeNotificationPanel={this.closeNotificationPanel}
-                                    isUnReadNoitce={this.state.isUnReadNoitce}
+                                    isUnReadNotice={this.state.isUnReadNotice}
                                 />
                             ) : null
                         }
