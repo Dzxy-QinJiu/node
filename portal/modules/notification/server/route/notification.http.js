@@ -60,5 +60,18 @@ module.exports = {
         },
         //需要权限
         'privileges': [privilegeConst_notification.CUSTOMER_NOTICE_MANAGE]
+    }, {
+        //http方法
+        'method': 'get',
+        //获取升级公告列表
+        'path': '/rest/get/upgrade/notice',
+        //action中的方法
+        'handler': 'getUpgradeNoticeList',
+        //是否需要登录
+        'passport': {
+            'needLogin': true
+        },
+        //需要权限
+        'privileges': [privilegeConst_notification.CUSTOMER_NOTICE_MANAGE]
     }]
 };

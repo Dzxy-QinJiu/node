@@ -44,6 +44,7 @@ import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply
 import ShearContent from 'CMP_DIR/shear-content';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import publicPrivilegeConst from 'PUB_DIR/privilege-const';
+const { getLocalWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -1285,6 +1286,12 @@ exports.timeShowFormat = (time,format) => {
     return time ? moment(time).format(format) : '';
 };
 
+// 是否显示公告未读信息
+exports.isShowUnReadNotice = () => {
+    const websiteConfig = getLocalWebsiteConfig() || {};
+    return _.get(websiteConfig, 'last_upgrade_notice_time', 0) > _.get(websiteConfig, 'show_notice_time', 0);
+};
+
 // 选择应用后，获取配置类型
 exports.getConfigAppType = (selectedAppIds, selectedAppList) => {
     let configType = CONFIG_TYPE.UNIFIED_CONFIG;
@@ -1308,5 +1315,4 @@ exports.applyAppConfigTerminal = (terminals, appId, appList) => {
         });
     }
     return configTerminals;
-
 };

@@ -1183,8 +1183,18 @@ var en_US = {
     'notification.call.up.failed': 'Failed to call out', // 拨打电话失败
     'notification.extract.clue.failed': 'Failed to extract lead', // 提取线索失败
     'notification.system.count': '{count} times', // {count}次
-
     //通知end
+
+    // 公告start
+    'notice.upgrade.title': 'Upgrade notice', // 升级通知
+    'notice.upgrade.system': 'announcement message', // 公告消息
+    'notice.upgrade.type.notice': '{type} notice', // {type}公告
+    'notice.maintain': 'maintenance', // 维护
+    'notice.fault': 'fault', // 故障
+    'notice.system': 'system', // 系统
+    'notice.get.list.failed': 'Failed to get notice list', // 获取公告列表失败
+    // 公告end
+
     //销售阶段start
     'sales.stage.change.sort': 'Change deal',//变更顺序
     'sales.stage.add.order.stage': 'Add deal stage', // 添加订单阶段
