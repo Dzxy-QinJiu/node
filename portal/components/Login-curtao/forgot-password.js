@@ -205,53 +205,6 @@ class ForgotPassword extends React.Component {
         this.setState({ newPassword });
     };
 
-    checkContactInfo = (callback) => {
-        let contactInfo = this.state.contactInfo;
-        let contactType = '';
-        let contactTypeName = '';
-
-        if (!contactInfo) {
-            this.props.setErrorMsg(Intl.get('login.please_input_phone_or_email', '请输入手机号或邮箱'));
-            return;
-        } else if (isPhone(contactInfo)) {
-            contactType = 'phone';
-            contactTypeName = Intl.get('common.phone', '手机');
-        } else if (isEmail(contactInfo)) {
-            contactType = 'email';
-            contactTypeName = Intl.get('common.email', '邮箱');
-        } else {
-            this.props.setErrorMsg(Intl.get('login.incorrect_phone_or_email', '手机号或邮箱格式不正确'));
-            return;
-        }
-
-        this.setState({ contactType, contactTypeName });
-
-        $.ajax({
-            url: '/check_contact_info_exists',
-            dataType: 'json',
-            data: {
-                contactType,
-                contactInfo,
-            },
-            success: (data) => {
-                if (!data) {
-                    this.props.setErrorMsg(Intl.get('login.no_account_of_phone_or_email', '系统中没有该{contactTypeName}对应的帐号', {contactTypeName}));
-                } else {
-                    const username = data.user_name;
-                    const userId = data.user_id;
-
-                    if (username) {
-                        this.setState({ username, userId });
-                        callback();
-                    }
-                }
-            },
-            error: () => {
-                this.props.setErrorMsg(Intl.get('login.check_contact_info_failure', '联系方式检查失败'));
-            }
-        });
-    };
-
     sendMsg = () => {
         const captcha = this.state.captchaCodeValue;
         const user_name = this.state.username;
@@ -260,16 +213,16 @@ class ForgotPassword extends React.Component {
         let contactTypeName = '';
 
         if (!contactInfo) {
-            this.props.setErrorMsg(Intl.get('login.please_input_phone_or_email', '请输入手机号或邮箱'));
+            this.props.setErrorMsg(Intl.get('user.input.phone', '请输入手机号'));
             return;
         } else if (isPhone(contactInfo)) {
             contactType = 'phone';
             contactTypeName = Intl.get('common.phone', '手机');
-        } else if (isEmail(contactInfo)) {
-            contactType = 'email';
-            contactTypeName = Intl.get('common.email', '邮箱');
+        // } else if (isEmail(contactInfo)) {
+        //     contactType = 'email';
+        //     contactTypeName = Intl.get('common.email', '邮箱');
         } else {
-            this.props.setErrorMsg(Intl.get('login.incorrect_phone_or_email', '手机号或邮箱格式不正确'));
+            this.props.setErrorMsg(Intl.get('register.phon.validat.tip', '请输入正确的手机号, 格式如：13877775555',));
             return;
         }
 
@@ -392,7 +345,7 @@ class ForgotPassword extends React.Component {
                                 name="contactInfo"
                                 autoComplete="off" 
                                 tabIndex="1"
-                                label={Intl.get('login.please_input_phone_or_email', '请输入手机号或邮箱')}
+                                label={Intl.get('user.input.phone', '请输入手机号')}
                                 color='primary'
                                 value={this.state.contactInfo}
                                 onChange={this.handleContactInfoChange.bind(this)}
@@ -446,9 +399,9 @@ class ForgotPassword extends React.Component {
                     <button className="login-button" type="button"
                         tabIndex="3"
                         onClick={this.sendMsg}
-                        data-tracename="点击发送手机/邮箱验证码按钮"
+                        data-tracename="点击发送短信验证码按钮"
                     >
-                        {hasWindow ? Intl.get('login.send_phone_or_email_verification_code', '发送手机/邮箱验证码') : null}
+                        {hasWindow ? Intl.get('login.send_phone_verification_code', '发送短信验证码') : null}
                     </button>
                 ) : null}
 

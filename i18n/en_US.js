@@ -334,6 +334,7 @@ var en_US = {
     'login.please_enter_contact_type_verification_code': 'Please enter {contactTypeName} verification code', //请输入{contactTypeName}验证码'
     'login.please_enter_new_password': 'Please enter new password',//请输入新密码
     'login.send_phone_or_email_verification_code': 'Send verification code to phone or email',//发送手机/邮箱验证码
+    'login.send_phone_verification_code': 'Send verification code to phone',//发送短信验证码
     'login.verify_phone_or_email_verification_code': 'Verify {contactTypeName} verification code',//验证{contactTypeName}验证码
     'login.return_to_login_page': 'Return to login page',//返回登录页
     'login.scan.qrcode.login': 'Scan login',//扫码登录
