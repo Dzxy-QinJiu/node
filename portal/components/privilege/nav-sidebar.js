@@ -402,6 +402,7 @@ var NavSidebar = createReactClass({
             <div className="notification" onClick={this.toggleNotificationPanel}>
                 <Badge
                     dot={this.state.isUnReadNotice}
+                    onClick={this.toggleNotificationPanel}
                 >
                     <i className={noticeCls} title={notification.name}/>
                 </Badge>
