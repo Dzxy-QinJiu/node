@@ -63,6 +63,7 @@ ClueCustomerStore.prototype.resetState = function() {
     this.recommendClueLists = [];
     this.hasExtraRecommendList = false;
     this.sortvalues = [];
+    this.versionData = {};
 };
 ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
     if (result.loading) {
@@ -284,14 +285,12 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
 ClueCustomerStore.prototype.getApplyTryData = function(result) {
     if(!result.error){
         const applyTryData = result.result;
-        _.each(this.curClueLists, (clue) => {
-            if(clue.id === applyTryData.clueId){
-                clue.applyTryCompany = applyTryData.company;
-                clue.applyTryTime = applyTryData.create_time;
-                clue.applyTryUserScales = applyTryData.user_scales;
-                clue.applyTryKind = applyTryData.apply_version_info.kind;
-            }
-        });
+        this.versionData = {
+            applyTryCompany: applyTryData.company,
+            applyTryTime: applyTryData.create_time,
+            applyTryUserScales: applyTryData.user_scales,
+            applyTryKind: applyTryData.apply_version_info.kind
+        };
     }
 };
 //更新线索客户的一些属性

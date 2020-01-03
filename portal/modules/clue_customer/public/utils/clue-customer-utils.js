@@ -485,7 +485,7 @@ export const checkClueCondition = (checkConditionItem,settedCondition) => {
 export const HASEXTRACTBYOTHERERRTIP = [Intl.get('errorcode.169', '该线索已被其他同事提取'),Intl.get('errorcode.170', '您选择的线索都已经被其他同事提取')];
 
 export const VERSIONS = {
-    'starter': '基础版',
-    'professional': '专业版',
-    'enterprise': '企业版'
+    'starter': Intl.get('versions.starter','基础版'),
+    'professional': Intl.get('versions.professional','专业版'),
+    'enterprise': Intl.get('versions.enterprise','企业版') 
 };

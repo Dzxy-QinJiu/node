@@ -72,6 +72,7 @@ import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import commonSalesHomePrivilegeConst from 'MOD_DIR/common_sales_home_page/public/privilege-const';
 import LocationSelectField from 'CMP_DIR/basic-edit-field-new/location-select';
 import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
+import ApplyTryCard from 'CMP_DIR/apply-try-card';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -96,7 +97,8 @@ class ClueDetailOverview extends React.Component {
         myTeamTree: [],//销售领导获取我所在团队及下级团队树
         phoneDuplicateWarning: [], //联系人电话重复时的提示
         isLoadingIndustryList: false,//正在加载
-        industryList: []//行业列表
+        industryList: [],//行业列表
+        versionData: {} //申请试用信息
     };
 
     componentDidMount() {
@@ -112,6 +114,11 @@ class ClueDetailOverview extends React.Component {
             if (!this.isHasTransferClue() && _.get(this.state, 'curClue.customer_similarity')){
                 this.getSimilarCustomerLists();
             }
+        }
+        //获取版本信息
+        const curClue = this.state.curClue;
+        if(curClue.version_upgrade_id){
+            clueCustomerAction.getApplyTryData(curClue.id,curClue.version_upgrade_id);
         }
         if (editClueItemIconPrivilege(this.state.curClue)) {
             this.getIndustryList();
@@ -143,7 +150,8 @@ class ClueDetailOverview extends React.Component {
     onClueCustomerStoreChange = () => {
         let curClue = _.cloneDeep(this.state.curClue);
         curClue.contacts = _.get(clueCustomerStore.getState(), 'curClue.contacts');
-        this.setState({curClue});
+        const versionData = _.get(clueCustomerStore.getState(),'versionData');
+        this.setState({curClue,versionData});
     };
     getSimilarClueLists = () => {
         let ids = _.reduce(_.get(this.state, 'curClue.similarity_lead_ids'), (result, id) => {
@@ -238,8 +246,9 @@ class ClueDetailOverview extends React.Component {
         //修改某些属性时，线索的id不变，但是需要更新一下curClue所以不加 nextProps.curClue.id !== this.props.curClue.id 这个判断了
         if (_.get(nextProps.curClue,'id')) {
             var diffClueId = _.get(nextProps,'curClue.id') !== _.get(this, 'props.curClue.id');
+            const curClue = $.extend(true, {}, nextProps.curClue);
             this.setState({
-                curClue: $.extend(true, {}, nextProps.curClue),
+                curClue
             },() => {
                 var curClue = nextProps.curClue;
                 if (diffClueId){
@@ -267,6 +276,11 @@ class ClueDetailOverview extends React.Component {
             this.setState({
                 divHeight: nextProps.divHeight,
             });
+        }
+        const nextClue = nextProps.curClue;
+        const nowClue = this.state.curClue;
+        if(nextClue.id !== nowClue.id && nextClue.version_upgrade_id){
+            clueCustomerAction.getApplyTryData(nextClue.id,nextClue.version_upgrade_id);
         }
     }
 
@@ -1162,36 +1176,6 @@ class ClueDetailOverview extends React.Component {
                 disableEdit={hasPrivilegeAddEditTrace}
             />);
     };
-    //渲染申请试用内容
-    renderApplyTryContent = () => {
-        console.log(clueCustomerUtils.VERSIONS);
-        const curClue = this.state.curClue;
-        let applyTryContent = <div className='clue-info-item-apply-try'>
-            <div className='clue-info-item-apply-try-content'>
-                <div className='clue-info-item-apply-try-content-title'>{Intl.get('common.company','公司')}</div>
-                <div className='clue-info-item-apply-try-content-value'>{curClue.applyTryCompany}</div>
-            </div>
-            <div className='clue-info-item-apply-try-content'>
-                <div className='clue-info-item-apply-try-content-title'>{Intl.get('common.apply.try.user.scales','使用人数')}</div>
-                <div className='clue-info-item-apply-try-content-value'>{curClue.applyTryUserScales}</div>
-            </div>
-            <div className='clue-info-item-apply-try-content'>
-                <div className='clue-info-item-apply-try-content-title'>{Intl.get('user.info.version','版本')}</div>
-                <div className='clue-info-item-apply-try-content-value'>{clueCustomerUtils.VERSIONS[curClue.applyTryKind]}</div>
-            </div>
-            <div className='clue-info-item-apply-try-content'>
-                <div className='clue-info-item-apply-try-content-title'>{Intl.get('common.login.time','时间')}</div>
-                <div className='clue-info-item-apply-try-content-value'>{moment(curClue.applyTryTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT)}</div>
-            </div>
-        </div>;
-        return (
-            <DetailCard 
-                title={`${Intl.get('login.apply.trial', '申请试用')}:`}
-                content={applyTryContent}
-                titleBottomBorderNone={false}
-            />
-        );
-    }
 
     //渲染关联账号的详情
     renderAppUserDetail = () => {
@@ -1838,7 +1822,7 @@ class ClueDetailOverview extends React.Component {
                     {this.renderAppUserDetail()}
                     {this.state.isShowAddCustomer ? this.renderAddCustomer() : null}
                     {this.renderTraceContent()}
-                    {this.state.curClue.version_upgrade_label === 'true' && this.renderApplyTryContent()}
+                    {curClue.version_upgrade_id && !$.isEmptyObject(this.state.versionData) ? <ApplyTryCard versionData={this.state.versionData}/> : null}
                 </GeminiScrollbar>
             </div>
         );
