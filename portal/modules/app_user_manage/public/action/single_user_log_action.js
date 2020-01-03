@@ -61,13 +61,14 @@ function SingleUserLogAction() {
                 );
             } else { // 全部应用条件下查看
                 if (appLists.length) {
+                    let appList = _.clone(appLists);
                     let ketaoId = _.get(window, 'Oplate.clientId'); // 客套id
-                    let ketaoApp = _.find(appLists, app => app.app_id === ketaoId);
+                    let ketaoApp = _.find(appList, app => app.app_id === ketaoId);
                     // 客套组织下，客套产品显示在最前面的处理
                     if (isKetaoOrganizaion() && ketaoApp) {
-                        appLists.unshift(_.get(_.remove(appLists, ketaoApp), '[0]'));
+                        appList.unshift(_.get(_.remove(appList, ketaoApp), '[0]'));
                     }
-                    handleLogParams(this, getLogParam, appLists);
+                    handleLogParams(this, getLogParam, appList);
                    
                 } else {
                     userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
