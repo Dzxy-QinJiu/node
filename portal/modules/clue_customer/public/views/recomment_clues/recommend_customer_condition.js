@@ -468,7 +468,7 @@ class RecommendCustomerCondition extends React.Component {
                             </FormItem>
                         </div>
                         <div className="submit-button-container">
-                            <div className='show-hide-tip' onClick={this.handleToggleOtherCondition}>
+                            <div className='show-hide-tip' onClick={this.handleToggleOtherCondition} data-tracename='点击展开或收起推荐线索的条件'>
                                 {show_tip}
                             </div>
                             <SaveCancelButton loading={this.state.isSaving}

@@ -597,7 +597,7 @@ class ClueAnalysisPanel extends React.Component {
     }
     render() {
         return (
-            <div className="clue-analysis-panel">
+            <div className="clue-analysis-panel" data-tracename='线索分析面版'>
                 <div className="date-picker-container">
                     <RightPanelClose onClick={this.closeClueAnalysisPanel}/>
                     <div className="date-picker-wrap">
