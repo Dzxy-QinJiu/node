@@ -428,29 +428,7 @@ class UserInfo extends React.Component{
         let currentVersionType = checkCurrentVersionType();
         //个人试用提示升级，正式提示续费
         //企业试用提示升级，正式提示续费
-        if(currentVersion.personal) {
-            if(currentVersionType.trial) {//个人试用
-                return (
-                    <Button
-                        className="user-version-upgrade"
-                        onClick={this.handleVersionUpgrade}
-                        data-tracename="点击升级为个人正式版按钮"
-                    >
-                        {Intl.get('user.info.version.upgrade', '升级为正式版')}
-                    </Button>
-                );
-            }else if(currentVersionType.formal) {//个人正式
-                return (
-                    <Button
-                        className="user-version-upgrade"
-                        onClick={this.handleVersionUpgrade}
-                        data-tracename="点击个人续费按钮"
-                    >
-                        {Intl.get('payment.renewal', '续费')}
-                    </Button>
-                );
-            }
-        }else if(currentVersion.company) {
+        if(currentVersion.company) {
             if(currentVersionType.trial) {//企业试用
                 return (
                     <Popover
@@ -484,6 +462,58 @@ class UserInfo extends React.Component{
         }
         return null;
     };
+    //个人版显示的按钮
+    renderPersonalBtnBlock = () => {
+        let currentVersion = checkCurrentVersion();
+        let currentVersionType = checkCurrentVersionType();
+        if(currentVersion.personal) {
+            if(currentVersionType.trial) {//个人试用
+                return (
+                    <div className='user-version-btn-wrapper'>
+                        <Button
+                            className="user-version-upgrade"
+                            onClick={this.handleVersionUpgrade}
+                            data-tracename="点击升级为个人正式版按钮"
+                            type='primary'
+                        >
+                            {Intl.get('payment.upgrade.personal.version', '升级个人正式版')}
+                        </Button>
+                        <Button
+                            className="user-version-upgrade"
+                            onClick={this.triggerShowVersionInfo}
+                            data-tracename="点击打开申请试用企业版"
+                            type='primary'
+                        >
+                            {Intl.get('personal.apply.trial.enterprise.edition', '申请试用企业版')}
+                        </Button>
+                    </div>
+                );
+            }else if(currentVersionType.formal) {//个人正式
+                return (
+                    <div className='user-version-btn-wrapper'>
+                        <Button
+                            className="user-version-upgrade"
+                            onClick={this.handleVersionUpgrade}
+                            data-tracename="点击个人续费按钮"
+                            type='primary'
+                        >
+                            {Intl.get('payment.renewal', '续费')}
+                        </Button>  
+                        <Button
+                            className="user-version-upgrade"
+                            onClick={this.triggerShowVersionInfo}
+                            data-tracename="点击打开申请试用企业版"
+                            type='primary'
+                        >
+                            {Intl.get('personal.apply.trial.enterprise.edition', '申请试用企业版')} 
+                        </Button>
+                    </div>
+                );
+            }
+        }else{
+            return null;
+        }
+    }
 
     setChangePhoneResult = () => {
         this.setState({
@@ -551,6 +581,7 @@ class UserInfo extends React.Component{
         } else {
             return (
                 <div className="user-info-div">
+                    {this.renderPersonalBtnBlock()}
                     <div className="user-info-item user-version">
                         <span className="user-info-item-title">
                             {Intl.get('user.info.version','版本')}：
