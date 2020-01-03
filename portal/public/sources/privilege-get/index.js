@@ -23,7 +23,7 @@ class PrivilegeGet extends React.Component {
         if (this.state.isLoading) {
             return (
                 <div className="PrivilegeGet">
-                    <Spinner className="loading-wrapper" content={<img src={logoSrc}/>} loadingText={Intl.get('common.system.initial', '系统正在快速初始化，请耐心等待...')}/>
+                    <Spinner className="loading-wrapper" content={<img src={logoSrc}/>} loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
                 </div>
             );
         } else if (this.state.errorTip && this.state.logoutTime > 0) {

@@ -51,7 +51,7 @@ exports.home = function(req, res) {
         useSso: global.config.useSso,
         isCurtao: isCurtao,
         timeStamp: global.config.timeStamp,
-        loadingText: backendIntl.get('common.system.initial', '系统正在快速初始化，请耐心等待...')
+        loadingText: backendIntl.get('common.sales.frontpage.loading', '加载中')
     });
 };
 
