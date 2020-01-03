@@ -640,7 +640,7 @@ var en_US = {
     'user.apply.other.failed': 'Failed to apply for changing other type',//申请修改其他类型失败
     'user.apply.status.failed': 'Failed to apply for changing open status',//申请修改开通状态失败
     'user.get.user.detail.failed': 'Failed to get user details',//获取用户详情失败
-    'user.get.apply.detail.failed': 'Failed to get application details',//获取申请单详情失败
+    'user.get.apply.detail.failed': 'Failed to get application details',//获取申请审批详情失败
     'user.no.more.data': 'No more data',//没有更多数据了
     'user.select.role.include.auth': 'Selected roles has already contained this privilege',//选中的角色中已包含此权限
     'user.curr.app.get.role.failed': 'This application gets role data failed',//当前应用获取角色数据失败
@@ -2594,6 +2594,7 @@ var en_US = {
     'errorcode.172': 'Not your lead, cannot be merged into a customer',//不是您的线索，无法合并到客户
     'errorcode.173': 'Failed to turn lead to customer',//线索转为客户失败
     'errorcode.174': 'Failed to merge lead to customer',//线索合并到客户失败
+    'errorcode.175': 'Your own Leads cannot be assigned to you',//自己的线索不能分配给自己
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
     'user.user.info': 'information',//开通信息

@@ -17,6 +17,7 @@ import {DATE_SELECT} from 'PUB_DIR/sources/utils/consts';
 const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
 import {getCertainTypeTooltip} from 'PUB_DIR/sources/utils/common-method-util';
 import history from 'PUB_DIR/sources/history';
+import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
 //日历热力图颜色
 const CALENDAR_COLOR = {
     BORDER: '#A2A2A2',
@@ -113,9 +114,7 @@ class UserLoginAnalysis extends React.Component {
         let lastLoginParams = this.getUserLastLoginParams(queryParams);
         let reqData = this.getUserLoginScoreParams(queryParams);
         let type = this.getUserLoginType();
-        // 增加多终端筛选
-        // 多终端类型 TODO 参数传值待定
-        let appTerminalType = queryParams && 'appTerminalType' in queryParams ? queryParams.appTerminalType : this.state.appTerminalType;
+        let appTerminalType = _.has(queryParams, 'appTerminalType') && queryParams.appTerminalType || this.state.appTerminalType;
         if (appTerminalType) {
             queryObj.terminal = appTerminalType;
             lastLoginParams.terminal = appTerminalType;
@@ -691,7 +690,7 @@ class UserLoginAnalysis extends React.Component {
     };
 
     // 筛选终端类型
-    onSelectTerminalsUserType = (value) => {
+    onSelectTerminalsType = (value) => {
         UserLoginAnalysisAction.resetState();
         UserLoginAnalysisAction.setAppTerminalsType(value);
         this.getUserAnalysisData({ appTerminalType: value });
@@ -699,19 +698,11 @@ class UserLoginAnalysis extends React.Component {
 
     // 渲染多终端类型
     renderAppTerminalsType = () => {
-        let selectAppTerminals = this.state.selectAppTerminals;
-        // TODO 由于现在后端返回的数据是code,没有返回name, 暂时使用code 展示，需要修改
-        let appTerminals = _.map(selectAppTerminals, terminalType =>
-            <Option key={terminalType.id} value={terminalType.code}> {terminalType.name} </Option>);
-        appTerminals.unshift(<Option value="" id="">{Intl.get('common.all.terminals', '所有終端')}</Option>);
         return (
-            <Select
-                className="select-app-terminal-type"
-                value={this.state.appTerminalType}
-                onChange={this.onSelectTerminalsUserType}
-            >
-                {appTerminals}
-            </Select>
+            <SelectAppTerminal
+                appTerminals={this.state.selectAppTerminals}
+                handleSelectedTerminal={this.onSelectTerminalsType.bind(this)}
+            />
         );
     };
 

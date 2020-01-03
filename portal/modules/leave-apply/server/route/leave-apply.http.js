@@ -29,13 +29,6 @@ module.exports = {
             },
         }, {
             method: 'get',
-            path: '/rest/apply_approve/detail/by/id',
-            handler: 'getLeaveApplyDetailById',
-            passport: {
-                needLogin: true
-            },
-        }, {
-            method: 'get',
             path: '/rest/get/apply_approve/comment/list',
             handler: 'getLeaveApplyComments',
             passport: {

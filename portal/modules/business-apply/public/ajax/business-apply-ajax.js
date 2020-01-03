@@ -77,24 +77,6 @@ exports.addBusinessApply = function(data) {
     });
     return Deferred.promise();
 };
-//根据申请的id获取申请的详情
-let getBusinessApplyDetailByIdAjax = null;
-exports.getBusinessApplyDetailById = function(queryObj) {
-    var Deferred = $.Deferred();
-    getBusinessApplyDetailByIdAjax && getBusinessApplyDetailByIdAjax.abort();
-    getBusinessApplyDetailByIdAjax = $.ajax({
-        url: '/rest/apply/detail/byId',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
 //获取回复列表
 let getBusinessApplyCommentListAjax = null;
 exports.getBusinessApplyCommentList = function(queryObj) {

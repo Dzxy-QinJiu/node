@@ -21,13 +21,6 @@ module.exports = {
             },
         }, {
             method: 'get',
-            path: '/rest/apply_approve/detail/by/id',
-            handler: 'getMemberApplyDetailById',
-            passport: {
-                needLogin: true
-            },
-        }, {
-            method: 'get',
             path: '/rest/get/apply_approve/comment/list',
             handler: 'getMemberApplyComments',
             passport: {

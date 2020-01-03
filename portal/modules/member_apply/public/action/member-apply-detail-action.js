@@ -37,7 +37,7 @@ function MemberApplyDetailActions() {
 
     //获取审批单详情
     this.getMemberApplyDetailById = function(queryObj, status) {
-        getApplyDetailById(queryObj, status).then((detail) => {
+        getApplyDetailById(queryObj).then((detail) => {
             this.dispatch({loading: false, error: false, detail: detail, status: status});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});

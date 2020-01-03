@@ -727,3 +727,9 @@ export const NOTICE_TYPE = {
     'fault-notice': Intl.get('notice.upgrade.type.notice', '{type}公告', {type: Intl.get('notice.fault', '故障')}),
     'system-notice': Intl.get('notice.upgrade.type.notice', '{type}公告', {type: Intl.get('notice.system', '系统')})
 };
+
+// 配置应用的类型
+export const CONFIG_TYPE = {
+    UNIFIED_CONFIG: 'unified_config',//统一配置
+    SEPARATE_CONFIG: 'separate_config'//分别配置
+};

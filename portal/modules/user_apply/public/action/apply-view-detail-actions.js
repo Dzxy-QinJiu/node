@@ -84,7 +84,7 @@ class ApplyViewDetailActions {
     }
 
     //获取审批单详情
-    getApplyDetail(id, applyData,approvalState) {
+    getApplyDetail(id, applyData,approvalState, appList) {
         //如果已获取了某个详情数据，针对从url中的申请id获取的详情数据
         if (applyData) {
             this.dispatch({loading: false, error: false, detail: applyData.detail});
@@ -94,7 +94,7 @@ class ApplyViewDetailActions {
             this.dispatch({loading: true, error: false});
             AppUserAjax.getApplyDetail(id).then((detail, apps) => {
                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,detail);
-                this.dispatch({loading: false, error: false, detail: detail,approvalState: approvalState});
+                this.dispatch({loading: false, error: false, detail: detail,approvalState: approvalState, appList: appList});
             }, (errorMsg) => {
                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID);
                 this.dispatch({loading: false, error: true, errorMsg: errorMsg});

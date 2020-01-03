@@ -8,7 +8,7 @@ const CheckboxGroup = Checkbox.Group;
 import { Carousel, CarouselItem } from 'react-bootstrap';
 import OperationSteps from '../operation-steps';
 import OperationStepsFooter from '../operation-steps-footer';
-import {USER_TYPE_VALUE_MAP} from 'PUB_DIR/sources/utils/consts';
+import {USER_TYPE_VALUE_MAP, CONFIG_TYPE} from 'PUB_DIR/sources/utils/consts';
 import DateSelectorUtils from '../../date-selector/utils';
 import GeminiScrollBar from '../../react-gemini-scrollbar';
 import AppConfigSetting from '../app-config-setting';
@@ -18,11 +18,7 @@ import DefaultUserLogoTitle from '../../default-user-logo-title';
 import UserAppConfig from '../../../modules/app_user_manage/public/views/v3/AppPropertySetting';
 // 开通时间，默认为半个月
 const defaultSelectedTime = DateSelectorUtils.getHalfAMonthTime();
-
-const CONFIG_TYPE = {
-    UNIFIED_CONFIG: 'unified_config',//统一配置
-    SEPARATE_CONFIG: 'separate_config'//分别配置
-};
+import {getConfigAppType} from 'PUB_DIR/sources/utils/common-method-util';
 
 //布局常量
 const LAYOUT_CONSTANTS = {
@@ -246,24 +242,11 @@ class UserAddApp extends React.Component {
     // 根据选中app的ids，设置配置界面
     handleSetConfigType(selectedAppIds, selectedApps) {
         // 若所选应用包括多终端类型，则直接显示分别配置界面
-        if (selectedAppIds.length > 1) {
-            if (_.find(selectedApps, item => !_.isEmpty(item.terminals))) {
-                this.setState({
-                    configType: CONFIG_TYPE.SEPARATE_CONFIG
-                });
-            } else {
-                this.setState({
-                    configType: CONFIG_TYPE.UNIFIED_CONFIG
-                });
-            }
-        } else {
-            this.setState({
-                configType: CONFIG_TYPE.UNIFIED_CONFIG
-            });
-        }
+        let configType = getConfigAppType(selectedAppIds, selectedApps);
         setTimeout(() => {
             this.setState({
-                appPropSettingsMap: this.createPropertySettingData(this.state)
+                appPropSettingsMap: this.createPropertySettingData(this.state),
+                configType: configType
             });
         });
     }
@@ -335,12 +318,12 @@ class UserAddApp extends React.Component {
         }
     }
 
-    handleSelectDate( filed, app, appFormData, start_time, end_time, range,) {
+    handleSelectDate( field, appFormData, start_time, end_time, range,) {
         if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
             const appPropSettingsMap = this.state.appPropSettingsMap;
             _.each(appPropSettingsMap, item => {
                 const formData = item || {};
-                formData[filed] = {
+                formData[field] = {
                     start_time: start_time,
                     end_time: end_time,
                     range: range
@@ -473,24 +456,6 @@ class UserAddApp extends React.Component {
                     return;
                 } else {
                     this.clickTurnStep(direction);
-                    const { appPropSettingsMap } = this.state;
-                    //统一配置时将formData数据同步到appSettingMap中
-                    if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
-                        const { range, end_time, start_time } = this.state.formData;
-                        _.each(appPropSettingsMap, item => {
-                            item.time = {
-                                range,
-                                end_time,
-                                start_time
-                            };
-                        });
-                    }
-                    this.setState({
-                        appPropSettingsMap
-                    }, () => {
-                        //点击下一步时存储应用设置map
-                        // UserDetailAddAppActions.saveAppsSetting(this.state.appPropSettingsMap);
-                    });
                 }
             } else {
                 this.clickTurnStep(direction);

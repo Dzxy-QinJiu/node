@@ -640,7 +640,7 @@ var zh_CN = {
     'user.apply.other.failed': '申请修改其他类型失败',
     'user.apply.status.failed': '申请修改开通状态失败',
     'user.get.user.detail.failed': '获取用户详情失败',
-    'user.get.apply.detail.failed': '获取申请单详情失败',
+    'user.get.apply.detail.failed': '获取申请审批详情失败',
     'user.no.more.data': '没有更多数据了',
     'user.select.role.include.auth': '选中的角色中已包含此权限',
     'user.curr.app.get.role.failed': '当前应用获取角色数据失败',
@@ -2632,6 +2632,7 @@ var zh_CN = {
     'errorcode.172': '不是您的线索，无法合并到客户',
     'errorcode.173': '线索转为客户失败',
     'errorcode.174': '线索合并到客户失败',
+    'errorcode.175': '自己的线索不能分配给自己',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',

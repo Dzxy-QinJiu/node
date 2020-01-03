@@ -10,7 +10,11 @@ var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
-import {getApplyStatusById,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {
+    getApplyStatusById,
+    cancelApplyApprove,
+    getApplyDetailById
+} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import applyApproveAction from './business-apply-action';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
@@ -36,10 +40,10 @@ function ApplyViewDetailActions() {
         if (applyData){
             this.dispatch({loading: false, error: false, detail: applyData.detail, status: status});
         }else{
-            BusinessApplyAjax.getBusinessApplyDetailById(queryObj).then((detail) => {
+            getApplyDetailById(queryObj).then((detail) => {
                 this.dispatch({loading: false, error: false, detail: detail, status: status});
             }, (errorMsg) => {
-                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('user.get.apply.detail.failed', '获取申请审批详情失败')});
             });
         }
 

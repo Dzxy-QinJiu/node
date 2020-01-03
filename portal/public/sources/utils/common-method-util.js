@@ -29,7 +29,8 @@ import {
     REALM_REMARK,
     INDICATOR_TOOLTIP,
     DIFF_STATUS_TAB,
-    RESPONSIVE_LAYOUT
+    RESPONSIVE_LAYOUT,
+    CONFIG_TYPE
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -1289,4 +1290,29 @@ exports.timeShowFormat = (time,format) => {
 exports.isShowUnReadNotice = () => {
     const websiteConfig = getLocalWebsiteConfig() || {};
     return _.get(websiteConfig, 'last_upgrade_notice_time', 0) > _.get(websiteConfig, 'show_notice_time', 0);
+};
+
+// 选择应用后，获取配置类型
+exports.getConfigAppType = (selectedAppIds, selectedAppList) => {
+    let configType = CONFIG_TYPE.UNIFIED_CONFIG;
+    let hasTerminals = _.find(selectedAppList, item => !_.isEmpty(item.terminals));
+    if (selectedAppIds.length > 1 && hasTerminals) {
+        configType = CONFIG_TYPE.SEPARATE_CONFIG;
+    }
+    return configType;
+};
+
+// 申请产品，选择的多终端类型
+exports.applyAppConfigTerminal = (terminals, appId, appList) => {
+    let matchApp = _.find(appList, item => item.app_id === appId);
+    let configTerminals = [];
+    if (matchApp && !_.isEmpty(matchApp.terminals)) {
+        _.each(terminals, id => {
+            let matchTerminals = _.find(matchApp.terminals, item => item.id === id);
+            if (matchTerminals) {
+                configTerminals.push(matchTerminals);
+            }
+        });
+    }
+    return configTerminals;
 };
