@@ -20,7 +20,6 @@ import NewDistributeCustomer from './view/new-distribute-customer';
 import {phoneMsgEmitter, userDetailEmitter,notificationEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
-import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import {getRelativeTime, getEmailActiveUrl} from 'PUB_DIR/sources/utils/common-method-util';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import Spinner from 'CMP_DIR/spinner';

@@ -9,7 +9,7 @@ import { Carousel, CarouselItem } from 'react-bootstrap';
 import OperationSteps from '../operation-steps';
 import OperationStepsFooter from '../operation-steps-footer';
 import {USER_TYPE_VALUE_MAP} from 'PUB_DIR/sources/utils/consts';
-import DateSelectorUtils from '../../date-selector/utils';
+import {getHalfAMonthTime,getMilliseconds,getMillisecondsYesterdayEnd} from 'CMP_DIR/date-selector/utils';
 import GeminiScrollBar from '../../react-gemini-scrollbar';
 import AppConfigSetting from '../app-config-setting';
 // import ApplyUserAppConfig from '../../apply-user-app-config';
@@ -17,7 +17,7 @@ import AppConfigForm from '../../apply-user-app-config/app-config-form';
 import DefaultUserLogoTitle from '../../default-user-logo-title';
 import UserAppConfig from '../../../modules/app_user_manage/public/views/v3/AppPropertySetting';
 // 开通时间，默认为半个月
-const defaultSelectedTime = DateSelectorUtils.getHalfAMonthTime();
+const defaultSelectedTime = getHalfAMonthTime();
 
 const CONFIG_TYPE = {
     UNIFIED_CONFIG: 'unified_config',//统一配置
@@ -51,8 +51,8 @@ class UserAddApp extends React.Component {
             formData: {
                 //正式、试用
                 user_type: USER_TYPE_VALUE_MAP.TRIAL_USER,
-                start_time: DateSelectorUtils.getMilliseconds(defaultSelectedTime.start_time), //开始时间
-                end_time: DateSelectorUtils.getMilliseconds(defaultSelectedTime.end_time), //结束时间
+                start_time: getMilliseconds(defaultSelectedTime.start_time), //开始时间
+                end_time: getMillisecondsYesterdayEnd(getMilliseconds(defaultSelectedTime.end_time)), //结束时间
                 range: '0.5m', // 开通周期
                 over_draft: '1', // 到期状态，默认是停用
                 is_two_factor: '0', // 二步认证
@@ -335,12 +335,12 @@ class UserAddApp extends React.Component {
         }
     }
 
-    handleSelectDate( filed, app, appFormData, start_time, end_time, range,) {
+    handleSelectDate( field, appFormData, start_time, end_time, range,) {
         if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
             const appPropSettingsMap = this.state.appPropSettingsMap;
             _.each(appPropSettingsMap, item => {
                 const formData = item || {};
-                formData[filed] = {
+                formData[field] = {
                     start_time: start_time,
                     end_time: end_time,
                     range: range
@@ -473,24 +473,6 @@ class UserAddApp extends React.Component {
                     return;
                 } else {
                     this.clickTurnStep(direction);
-                    const { appPropSettingsMap } = this.state;
-                    //统一配置时将formData数据同步到appSettingMap中
-                    if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
-                        const { range, end_time, start_time } = this.state.formData;
-                        _.each(appPropSettingsMap, item => {
-                            item.time = {
-                                range,
-                                end_time,
-                                start_time
-                            };
-                        });
-                    }
-                    this.setState({
-                        appPropSettingsMap
-                    }, () => {
-                        //点击下一步时存储应用设置map
-                        // UserDetailAddAppActions.saveAppsSetting(this.state.appPropSettingsMap);
-                    });
                 }
             } else {
                 this.clickTurnStep(direction);
@@ -649,9 +631,9 @@ UserAddApp.defaultProps = {
     defaultSettings: {
         user_type: USER_TYPE_VALUE_MAP.TRIAL_USER, // 用户类型
         time: {
-            start_time: DateSelectorUtils.getMilliseconds(defaultSelectedTime.start_time),
+            start_time: getMilliseconds(defaultSelectedTime.start_time),
             //结束时间
-            end_time: DateSelectorUtils.getMilliseconds(defaultSelectedTime.end_time),
+            end_time: getMillisecondsYesterdayEnd(getMilliseconds(defaultSelectedTime.end_time)),
             //开通周期
             range: '0.5m',
         },

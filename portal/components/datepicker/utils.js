@@ -93,13 +93,6 @@ exports.getOneWeekTime = function() {
         end_time: moment().add(7, 'days')
     };
 };
-//获取半个月时间
-exports.getHalfAMonthTime = function() {
-    return {
-        start_time: moment().format(MOMENT_DATE_FORMAT),
-        end_time: moment().add(15, 'days').format(MOMENT_DATE_FORMAT)
-    };
-};
 //获取月份时间
 exports.getMonthTime = function(num) {
     return {

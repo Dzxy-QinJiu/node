@@ -254,7 +254,7 @@ const ApplyUserForm = createReactClass({
         } else if (needSetDefault) {
             // 切换试用用户和正式用户的单选按钮时，如果各应用默认配置中没有该应用该类型的默认配置时，
             // 需要默认设置，试用->到期不变，正式：到期停用, 开通周期：半个月
-            app.end_date = app.begin_date + 15 * oplateConsts.ONE_DAY_TIME_RANGE;
+            app.end_date = moment(app.begin_date + (15 - 1) * oplateConsts.ONE_DAY_TIME_RANGE).endOf('day').valueOf();
             app.range = '0.5m';
             app.over_draft = userType === Intl.get('common.trial.official', '正式用户') ? OVER_DRAFT_TYPES.STOP_USE : OVER_DRAFT_TYPES.UN_CHANGED;
         }

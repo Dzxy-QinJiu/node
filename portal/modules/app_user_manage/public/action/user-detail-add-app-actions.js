@@ -120,9 +120,9 @@ function UserDetailAddAppActions() {
                 application_ids: selectedAppId
             };
             let timeObj = {};
-            if (obj.data.delay) {
-                timeObj.delay = obj.data.delay;
-                submitObj.delay = obj.data.delay;
+            if (obj.data.delay_time) {
+                timeObj.delay_time = obj.data.delay_time;
+                submitObj.delay_time = obj.data.delay_time;
             } else if (obj.data.end_date) {
                 timeObj.end_date = obj.data.end_date;
                 submitObj.end_date = obj.data.end_date;

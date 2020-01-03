@@ -20,11 +20,11 @@ const RadioGroup = Radio.Group;
 var AlertTimer = require('../../../../components/alert-timer');
 var AutosizeTextarea = require('../../../../components/autosize-textarea');
 var language = require('../../../../public/language/getLanguage');
-import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
+import { APPLY_TYPES, TIMERANGEUNIT } from 'PUB_DIR/sources/utils/consts';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 import userData from 'PUB_DIR/sources/user-data';
 import userManagePrivilege from '../privilege-const';
-import { isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
+import {isSalesRole, isCustomDelayType, getDelayTimeUnit} from 'PUB_DIR/sources/utils/common-method-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 import BatchAddAppUser from 'CMP_DIR/user_manage_components/user-add-app';
@@ -39,7 +39,6 @@ var labelCol = {span: 4};
 var wrapperCol = {span: 11};
 
 var CustomerSuggest = require('./customer_suggest/customer_suggest');
-const SELECT_CUSTOM_TIME_TYPE = 'custom';
 const USER_DETAIL_ADD_APP_CUSTOMER_SELECT_WRAP = 'user-detail-add-app-customer-suggest-wrap';
 const TAB_KEYS = {
     GRANT_APP: 'grant_application',// 开通产品
@@ -79,14 +78,6 @@ var UserDetailAddApp = createReactClass({
         return md5Hash.digest('hex');
     },
 
-    getDelayTimeMillis() {
-        //延期周期
-        var delayTimeRange = this.state.formData.delayTimeRange;
-        var delayTimeNumber = this.state.formData.delayTimeNumber;
-        var millis = moment.duration(+delayTimeNumber , delayTimeRange).valueOf();
-        return millis;
-    },
-
     handleSubmit(e) {
         e.preventDefault();
         var formData = this.state.formData || {};
@@ -112,11 +103,10 @@ var UserDetailAddApp = createReactClass({
             //添加申请延期块
             if(_this.state.multipleSubType === 'grant_delay') {
                 //向data中添加delay字段
-                if (formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
+                if (isCustomDelayType(formData.delayTimeRange)) {
                     result.end_date = formData.delayDeadlineTime;
                 } else {
-                    let delayMillis = _this.getDelayTimeMillis();
-                    result.delay = delayMillis;
+                    result.delay_time = getDelayTimeUnit(formData.delayTimeRange, formData.delayTimeNumber);
                 }
 
                 //向data中添加备注
@@ -300,30 +290,17 @@ var UserDetailAddApp = createReactClass({
             over_draft: Number(formData.over_draft),//到期是否停用
         };
         //向data中添加delay字段
-        if (formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
+        if (isCustomDelayType(formData.delayTimeRange)) {
             delayObj.end_date = formData.delayDeadlineTime;
         } else {
-            let delayMillis = this.getDelayTimeMillis();
-            delayObj.delay = delayMillis;
+            delayObj.delay_time = getDelayTimeUnit(formData.delayTimeRange, formData.delayTimeNumber);
         }
         //选中的用户
         //获取选择的用户及其应用相关的数据(多个应用)
         let appArr = _.map(this.getSelectedUserMultiAppData(), app => {
-            let delayDate = moment(app.end_date).valueOf();
-            if (delayObj.delay) {
-                //到期时间小于当前时间时，在当前时间基础上延期
-                if (delayDate < moment().valueOf()) {
-                    delayDate = moment().add(delayObj.delay, 'ms').valueOf();
-                } else {
-                    delayDate = moment(app.end_date).add(delayObj.delay, 'ms').valueOf();
-                }
-            } else {
-                delayDate = delayObj.end_date;
-            }
             return {
                 ...delayObj,
                 ...app,
-                end_date: delayDate
             };
         });
         submitObj.data = appArr;
@@ -853,7 +830,7 @@ var UserDetailAddApp = createReactClass({
 
     // 将延期时间设置为截止时间（具体到xx年xx月xx日）
     setDelayDeadlineTime(value) {
-        let timestamp = value && value.valueOf() || '';
+        let timestamp = value && value.endOf('day').valueOf() || '';
         UserDetailAddAppAction.setDelayDeadlineTime(timestamp);
     },
 
@@ -930,7 +907,8 @@ var UserDetailAddApp = createReactClass({
         var isSales = isSalesRole();
         var divWidth = (language.lan() === 'zh') ? '80px' : '74px';
         let label = '';
-        if (this.state.formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
+        var customDelay = isCustomDelayType(this.state.formData.delayTimeRange);
+        if (customDelay) {
             label = Intl.get('user.time.end', '到期时间');
         } else {
             label = Intl.get('common.delay.time', '延期时间');
@@ -944,7 +922,7 @@ var UserDetailAddApp = createReactClass({
                         labelCol={labelCol}
                         wrapperCol={{span: 20}}
                     >
-                        {this.state.formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE ? (
+                        {customDelay ? (
                             <DatePicker placeholder={Intl.get('my.app.change.expire.time.placeholder', '请选择到期时间')}
                                 onChange={this.setDelayDeadlineTime}
                                 disabledDate={this.disabledDate}
@@ -967,11 +945,11 @@ var UserDetailAddApp = createReactClass({
                             style={{width: divWidth}}
                             onChange={this.delayTimeRangeChange}
                         >
-                            <Option value="days"><ReactIntl.FormattedMessage id="common.time.unit.day" defaultMessage="天" /></Option>
-                            <Option value="weeks"><ReactIntl.FormattedMessage id="common.time.unit.week" defaultMessage="周" /></Option>
-                            <Option value="months"><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月" /></Option>
-                            <Option value="years"><ReactIntl.FormattedMessage id="common.time.unit.year" defaultMessage="年" /></Option>
-                            <Option value="custom"><ReactIntl.FormattedMessage id="user.time.custom" defaultMessage="自定义" /></Option>
+                            <Option value={TIMERANGEUNIT.DAY}><ReactIntl.FormattedMessage id="common.time.unit.day" defaultMessage="天" /></Option>
+                            <Option value={TIMERANGEUNIT.WEEK}><ReactIntl.FormattedMessage id="common.time.unit.week" defaultMessage="周" /></Option>
+                            <Option value={TIMERANGEUNIT.MONTH}><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月" /></Option>
+                            <Option value={TIMERANGEUNIT.YEAR}><ReactIntl.FormattedMessage id="common.time.unit.year" defaultMessage="年" /></Option>
+                            <Option value={TIMERANGEUNIT.CUSTOM}><ReactIntl.FormattedMessage id="user.time.custom" defaultMessage="自定义" /></Option>
                         </Select>
                     </FormItem>
                 </div>
