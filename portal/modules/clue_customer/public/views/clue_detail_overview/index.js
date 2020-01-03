@@ -1187,7 +1187,7 @@ class ClueDetailOverview extends React.Component {
         }
         return (
             <div className="associate-user-detail clue-detail-block">
-                <div className="clue-info-item">
+                <div className="clue-info-item associate-user-item">
                     <div className="clue-info-label">
                         {Intl.get('clue.associate.user', '关联账号')}
                     </div>
