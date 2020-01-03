@@ -597,7 +597,7 @@ class ClueCustomer extends React.Component {
     renderClueRecommend = () => {
         return (
             <div className="recomend-clue-customer-container pull-right">
-                {hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE) ?
+                {(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE) ) ?
                     <Popover
                         placement="bottom"
                         content={(
@@ -838,9 +838,9 @@ class ClueCustomer extends React.Component {
             let filterLabels = filterStoreData.filterLabels;
             if(!_.isEmpty(filterLabels)){
                 if(_.isEqual(filterLabels, SIMILAR_CLUE)) {
-                    typeFilter.lead_similarity = SIMILAR_CLUE;
+                    typeFilter.lead_similarity = Intl.get( 'clue.has.similar.clue','有相似线索');
                 }else if(_.isEqual(filterLabels, SIMILAR_CUSTOMER)) {
-                    typeFilter.customer_similarity = SIMILAR_CUSTOMER;
+                    typeFilter.customer_similarity = Intl.get( 'clue.has.similar.customer','有相似客户');
                 }
             }
 

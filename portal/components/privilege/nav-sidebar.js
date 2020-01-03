@@ -4,35 +4,29 @@ var menuUtil = require('../../public/sources/utils/menu-util');
 var Logo = require('../Logo/index.js');
 var Avatar = require('../Avatar/index.js');
 var LogOut = require('../../modules/logout/views/index.js');
-var Popover = require('antd').Popover;
+import { Popover, Badge } from 'antd';
 var classNames = require('classnames');
-var React = require('react');
 var createReactClass = require('create-react-class');
 var _ = require('lodash');
 var UnreadMixin = require('./mixins/unread');
-var websiteConfig = require('../../lib/utils/websiteConfig');
-var setWebsiteConfigModuleRecord = websiteConfig.setWebsiteConfigModuleRecord;
-var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 let history = require('../../public/sources/history');
 import {NavLink} from 'react-router-dom';
-import ModalIntro from '../modal-intro';
 import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES} from 'PUB_DIR/sources/utils/consts';
-import {hasCalloutPrivilege, isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
-import {phoneEmitter, notificationEmitter, userInfoEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {hasCalloutPrivilege, isCurtao, checkVersionAndType, isShowUnReadNotice} from 'PUB_DIR/sources/utils/common-method-util';
+import {phoneEmitter, notificationEmitter, userInfoEmitter, phoneMsgEmitter, clickUpgradeNoiceEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
-
 const session = storageUtil.session;
+const { setWebsiteConfigModuleRecord, getWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
 //需要加引导的模块
 const schedule_menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
 //个人信息菜单部分距离底部的绝对高度18
 const USER_INFO_BOTTOM = 18;
 //单个菜单的最小高度
 const ONE_MENU_HEIGHT = 32;
-
 //拨号键盘图标的大小
 const DIAL_ICON_SIZE = {
     NORMAL_FONT: 24,//正常图标的字体大小
@@ -138,7 +132,8 @@ var NavSidebar = createReactClass({
             // isReduceNavIcon: false,//是否展示缩小的图标(缩小浏览器时)
             // isReduceNavMargin: false, //是否展示小图标和图标间距
             isShowDialUpKeyboard: false,//是否展示拨号键盘的标识
-            ronglianNum: ''//正在拨打的容联的电话
+            ronglianNum: '',//正在拨打的容联的电话
+            isUnReadNotice: isShowUnReadNotice(), // 是否有未读的公告，默认false
         };
     },
     propTypes: {
@@ -192,6 +187,12 @@ var NavSidebar = createReactClass({
         }
     },
 
+    toggleUpgradeNotice(flag) {
+        this.setState({
+            isUnReadNotice: flag
+        });
+    },
+
     componentDidMount: function() {
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         //未读回复列表变化后触发
@@ -202,6 +203,8 @@ var NavSidebar = createReactClass({
         //正在拨打容联的电话
         phoneMsgEmitter.on(phoneMsgEmitter.OPEN_CLUE_PANEL, this.callingRonglianBtn);
         phoneMsgEmitter.on(phoneMsgEmitter.OPEN_PHONE_PANEL, this.callingRonglianBtn);
+        // 查看系统公告的触发
+        clickUpgradeNoiceEmitter.on(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, this.toggleUpgradeNotice);
         //获取用户审批的未读回复列表
         this.getHasUnreadReply();
         //获取其他类型的用户审批的未读回复列表
@@ -373,12 +376,13 @@ var NavSidebar = createReactClass({
         //正在拨打容联的电话
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_CLUE_PANEL, this.callingRonglianBtn);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.callingRonglianBtn);
+        clickUpgradeNoiceEmitter.removeListener(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, this.toggleUpgradeNotice);
     },
 
 
     toggleNotificationPanel(event) {
         event.stopPropagation();
-        this.props.toggleNotificationPanel();
+        this.props.toggleNotificationPanel(this.state.isUnReadNotice);
     },
     //渲染通知菜单
     getNotificationBlock: function() {
@@ -395,7 +399,12 @@ var NavSidebar = createReactClass({
         // });
         return (
             <div className="notification" onClick={this.toggleNotificationPanel}>
-                <i className={noticeCls} title={notification.name}/>
+                <Badge
+                    dot={this.state.isUnReadNotice}
+                    onClick={this.toggleNotificationPanel}
+                >
+                    <i className={noticeCls} title={notification.name}/>
+                </Badge>
             </div>
         );
     },
@@ -705,7 +714,7 @@ var NavSidebar = createReactClass({
                                 </div>
                             ) : null
                         }
-                        {isCurtao() ? null : this.getNotificationBlock()}
+                        {this.getNotificationBlock()}
                         {this.renderBackendConfigBlock()}
                         {this.getUserInfoBlock()}
                     </div>

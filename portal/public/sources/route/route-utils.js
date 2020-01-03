@@ -246,7 +246,6 @@ function filterCurtaoRoutes(routes) {
         'oplate_analysis',//分析
         'application_apply_management',//申请审批
         'application_apply_management1',//拜访申请
-        'notification',//通知
     ];
     //curtao域名下后台管理中不显示的菜单
     const filterBackgroundMenuIds = [

@@ -265,3 +265,8 @@ const leadRecommendEmitter = new EventEmitter();
 leadRecommendEmitter.REFRESH_LEAD_LIST = 'refresh_lead_list';//换一批
 leadRecommendEmitter.CHANGE_LEAD_CONDITION = 'change_lead_condition';//修改推荐线索的条件
 export { leadRecommendEmitter };
+
+// 点击查看公告事件
+const clickUpgradeNoiceEmitter = new EventEmitter();
+clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB = 'click_notice_tab'; // 点击公告tab
+export { clickUpgradeNoiceEmitter };

@@ -21,8 +21,8 @@ const UserAppTerminalCheckboxField = {
         const onChange = !config.isCustomSetting ? this.setField.bind(this , 'terminals') : (checkedValues) => {
             const appPropSettingsMap = this.state.appPropSettingsMap;
             let checkedTerminals = [];
-            // 选择待处理
             _.each(checkedValues, (checked) => {
+                
                 let matchApp = _.find(config.selectedApps.terminals, item => item.name === checked);
                 if (matchApp) {
                     checkedTerminals.push({id: matchApp.id, code: matchApp.code, name: matchApp.name});

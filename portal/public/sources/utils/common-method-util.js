@@ -29,20 +29,22 @@ import {
     REALM_REMARK,
     INDICATOR_TOOLTIP,
     DIFF_STATUS_TAB,
-    RESPONSIVE_LAYOUT
+    RESPONSIVE_LAYOUT,
+    CONFIG_TYPE
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
-var websiteConfig = require('../../../lib/utils/websiteConfig');
-var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 import {getMyTeamTreeAndFlattenList} from './common-data-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import ShearContent from 'CMP_DIR/shear-content';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import publicPrivilegeConst from 'PUB_DIR/privilege-const';
+import notificationPrivilege from 'MOD_DIR/notification/public/privilege-const';
+import useManagePrivilege from 'MOD_DIR/app_user_manage/public/privilege-const';
+const { getWebsiteConfig, getLocalWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -1282,6 +1284,27 @@ exports.recordChangeTimeLineItem = (item) => {
 //展示时间的时候加上为空的判断
 exports.timeShowFormat = (time,format) => {
     return time ? moment(time).format(format) : '';
+};
+
+// 是否显示公告未读信息
+exports.isShowUnReadNotice = () => {
+    const websiteConfig = getLocalWebsiteConfig() || {};
+    return _.get(websiteConfig, 'last_upgrade_notice_time', 0) > _.get(websiteConfig, 'show_notice_time', 0);
+};
+
+// 是否显示通知tab
+exports.isShowSystemTab = () => {
+    return Oplate.isCurtao !== 'true' && hasPrivilege(useManagePrivilege.USER_QUERY) && hasPrivilege(notificationPrivilege.CUSTOMER_NOTICE_MANAGE);
+};
+
+// 选择应用后，获取配置类型
+exports.getConfigAppType = (selectedAppIds, selectedAppList) => {
+    let configType = CONFIG_TYPE.UNIFIED_CONFIG;
+    let hasTerminals = _.find(selectedAppList, item => !_.isEmpty(item.terminals));
+    if (selectedAppIds.length > 1 && hasTerminals) {
+        configType = CONFIG_TYPE.SEPARATE_CONFIG;
+    }
+    return configType;
 };
 
 // 申请产品，选择的多终端类型

@@ -27,6 +27,7 @@ import userData from 'PUB_DIR/sources/user-data';
 import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { RETRY_GET_APP } from '../util/consts';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
+import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
 
 // 用户类型的常量
 const USER_TYPE_OPTION = {
@@ -170,8 +171,7 @@ class LogView extends React.Component {
         if (endtime) {
             bodyObj.end_time = endtime;
         }
-        // 多终端类型 TODO 参数传值待定
-        let appTerminalType = _.get(queryParams, 'appTerminalType') || this.state.appTerminalType;
+        let appTerminalType = _.has(queryParams, 'appTerminalType') && queryParams.appTerminalType || this.state.appTerminalType;
         if (appTerminalType) {
             bodyObj.terminal = appTerminalType;
         }
@@ -631,7 +631,7 @@ class LogView extends React.Component {
     }
 
     // 筛选终端类型
-    onSelectTerminalsUserType = (value) => {
+    onSelectTerminalsType = (value) => {
         UserAuditLogAction.handleFilterAppTerminalType();
         this.setState({
             appTerminalType: value
@@ -640,23 +640,17 @@ class LogView extends React.Component {
                 appTerminalType: value
             });
         });
-        Trace.traceEvent('用户审计日志', '多终端类型');
+        Trace.traceEvent('用户审计日志', '选择多终端类型');
     }
 
     // 渲染多终端类型
     renderAppTerminalsType = () => {
-        let selectAppTerminals = this.state.selectAppTerminals;
-        let appTerminals = _.map(selectAppTerminals, terminalType =>
-            <Option key={terminalType.id} value={terminalType.code}> {terminalType.name} </Option>);
-        appTerminals.unshift(<Option value="" id="">{Intl.get('common.all.terminals', '所有終端')}</Option>);
         return (
-            <Select
-                className="select-app-terminal-type btn-item"
-                value={this.state.appTerminalType}
-                onChange={this.onSelectTerminalsUserType}
-            >
-                {appTerminals}
-            </Select>
+            <SelectAppTerminal
+                appTerminals={this.state.selectAppTerminals}
+                handleSelectedTerminal={this.onSelectTerminalsType.bind(this)}
+                className="btn-item"
+            />
         );
     }
 

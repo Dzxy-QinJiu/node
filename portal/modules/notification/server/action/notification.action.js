@@ -8,6 +8,15 @@
 
 var NotificationService = require('../service/notification.service');
 
+// 升级公告
+exports.getUpgradeNoticeList = (req, res) => {
+    NotificationService.getUpgradeNoticeList(req, res).on('success', (data) => {
+        res.json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 //清除未读数
 exports.clearUnreadNum = function(req, res) {
     NotificationService.clearUnreadNum(req, res, req.params.type).on('success', function(data) {

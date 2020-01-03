@@ -720,3 +720,16 @@ export const RESPONSIVE_LAYOUT = {
 export const DOMAIN_END = '.eagok.com';
 //线索推荐最多选取多少个行业
 export const MAXINDUSTRYCOUNT = 10;
+
+export const NOTICE_TYPE = {
+    'upgrade-notice': Intl.get('notice.upgrade.title', '升级通知'),
+    'maintain-notice': Intl.get('notice.upgrade.type.notice', '{type}公告', {type: Intl.get('notice.maintain', '维护')}),
+    'fault-notice': Intl.get('notice.upgrade.type.notice', '{type}公告', {type: Intl.get('notice.fault', '故障')}),
+    'system-notice': Intl.get('notice.upgrade.type.notice', '{type}公告', {type: Intl.get('notice.system', '系统')})
+};
+
+// 配置应用的类型
+export const CONFIG_TYPE = {
+    UNIFIED_CONFIG: 'unified_config',//统一配置
+    SEPARATE_CONFIG: 'separate_config'//分别配置
+};

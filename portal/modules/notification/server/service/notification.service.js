@@ -16,9 +16,20 @@ var NotificationRestApis = {
     //获取系统消息列表(已处理)
     getHandledSystemNotices: '/rest/base/v1/notice/customernotice/history',
     //将系统消息设为已处理
-    handleSystemNotice: '/rest/base/v1/notice/customernotice/handle/:noticeId'
+    handleSystemNotice: '/rest/base/v1/notice/customernotice/handle/:noticeId',
+    //获取升级公告列表
+    getUpgradeNoticeList: '/rest/base/v1/application/upgrade/notice',
 };
 exports.urls = NotificationRestApis;
+
+//获取升级公告列表
+exports.getUpgradeNoticeList = (req, res) => {
+    return restUtil.authRest.get({
+        url: NotificationRestApis.getUpgradeNoticeList,
+        req: req,
+        res: res,
+    }, req.query);
+};
 
 //获取系统消息列表
 exports.getSystemNotices = function(req, res, queryObj) {

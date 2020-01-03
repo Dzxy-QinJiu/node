@@ -9,11 +9,8 @@ const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
 const CheckboxGroup = Checkbox.Group;
 const FormItem = Form.Item;
-import {USER_TYPE_VALUE_MAP, USER_TYPE_TEXT_MAP} from 'PUB_DIR/sources/utils/consts';
-const CONFIG_TYPE = {
-    UNIFIED_CONFIG: 'unified_config',//统一配置
-    SEPARATE_CONFIG: 'separate_config'//分别配置
-};
+import {USER_TYPE_VALUE_MAP, USER_TYPE_TEXT_MAP, CONFIG_TYPE} from 'PUB_DIR/sources/utils/consts';
+
 class AppConfigSetting extends React.Component {
     constructor(props) {
         super(props);
