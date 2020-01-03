@@ -16,10 +16,7 @@ const SystemNotification = require('./views/system');
 import UpgradeNotice from './views/upgrade-notice';
 import {clickUpgradeNoiceEmitter} from 'PUB_DIR/sources/utils/emitters';
 const {setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
-import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import notificationPrivilege from './privilege-const';
-import useManagePrivilege from 'MOD_DIR/app_user_manage/public/privilege-const';
+import {isShowSystemTab} from 'PUB_DIR/sources/utils/common-method-util';
 
 class Notification extends React.Component {
     constructor(props) {
@@ -28,7 +25,7 @@ class Notification extends React.Component {
         // 有新的公告时，点通知，需要显示公告tab项
         if (props.isUnReadNotice) {
             this.handleShowNoticeTab();
-        } else if(hasPrivilege(notificationPrivilege.CUSTOMER_NOTICE_MANAGE) && !isCurtao()){
+        } else if(isShowSystemTab()){
             activeKey = TAB_KEYS.SYSTEM;
         }
         this.state = {
@@ -72,7 +69,7 @@ class Notification extends React.Component {
                     onChange={this.changeActiveKey}
                 >
                     {
-                        !isCurtao() && hasPrivilege(useManagePrivilege.USER_QUERY) && hasPrivilege(notificationPrivilege.CUSTOMER_NOTICE_MANAGE) ? (
+                        isShowSystemTab() ? (
                             <TabPane
                                 tab={Intl.get('menu.notification', '通知')}
                                 key={TAB_KEYS.SYSTEM}
