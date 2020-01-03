@@ -88,6 +88,8 @@ const restApis = {
     checkOnlyClueNamePhone: clueBaseUrl + '/repeat/search',
     //获取线索最大提取量的数值（适用用户是今天的最大提取量，正式用户是本月的最大提取量）及已经提取了多少的数值
     getMaxLimitCountAndHasExtractedClue: 'rest/clue/v2/month/able/clues',
+    //获取申请试用的数据
+    getApplyTryData: '/rest/base/v1/realm/version/upgrade/apply'
 };
 
 //获取线索来源
@@ -628,4 +630,11 @@ exports.checkOnlyClueNamePhone = function(req, res) {
             req: req,
             res: res
         }, queryBody);
+};
+exports.getApplyTryData = function(req, res) {
+    return restUtil.authRest.get({
+        url: restApis.getApplyTryData,
+        req: req,
+        res: res
+    }, req.query);
 };

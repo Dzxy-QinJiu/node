@@ -328,7 +328,7 @@ class ProductionManage extends React.Component {
                     </div>
                     {
                         firstLoading ? <div className="firstLoading">
-                            <Spinner/>
+                            <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
                         </div> : null
                     }
                     <RightCardsContainer

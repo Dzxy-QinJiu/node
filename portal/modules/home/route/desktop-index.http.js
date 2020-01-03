@@ -92,6 +92,13 @@ module.exports = {
             'passport': {
                 'needLogin': false
             }
+        }, {
+            'method': 'get',
+            'path': '/rest/user/address/:phone',
+            'handler': 'getUserAreaData',
+            'passport': {
+                'needLogin': false
+            }
         }
         ];
         list.push(...(_.unionBy(getRoutesFromConfig(routers.routers), 'path')));

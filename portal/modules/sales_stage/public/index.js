@@ -277,7 +277,7 @@ class SalesStagePage extends React.Component {
                     <GeminiScrollBar style={{height: containerHeight}}>
                         {
                             this.state.loading ? (
-                                <Spinner/>
+                                <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
                             ) : null
                         }
                         {

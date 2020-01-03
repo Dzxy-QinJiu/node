@@ -26,7 +26,7 @@ class Bundle extends React.Component {
     }
 
     render() {
-        return this.state.mod ? this.props.children(this.state.mod) : <Spinner  className="bundle-isloading"/>;
+        return this.state.mod ? this.props.children(this.state.mod) : <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')} className="bundle-isloading"/>;
     }
 }
 

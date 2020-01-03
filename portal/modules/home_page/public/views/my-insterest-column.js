@@ -115,7 +115,7 @@ class MyInsterestColumn extends React.Component {
     renderNoticeList = () => {
         let systemNotices = this.state.systemNotices;
         if (this.state.isLoadingSystemNotices && !this.state.lastSystemNoticeId) {//等待状态
-            return <Spinner/>;
+            return <Spinner className='home-loading'/>;
         } else if (_.isArray(systemNotices) && systemNotices.length) {//系统消息列表
             let customerOfCurUser = this.state.customerOfCurUser;
             return (<div>

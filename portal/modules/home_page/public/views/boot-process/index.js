@@ -458,7 +458,7 @@ class BootProcess extends React.Component {
 
     renderContent() {
         if(this.state.loading) {
-            return <Spinner/>;
+            return <Spinner className='home-loading'/>;
         }else {
             let guideList = [];
             //引导列表的渲染

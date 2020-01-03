@@ -113,7 +113,7 @@ class CrmSchedule extends React.Component {
 
     deleteSchedule = (id) => {
         const reqData = {id: id};
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.item-wrapper .anticon-delete'), '删除联系计划');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.schedule-top-block'), '删除联系计划');
         ScheduleAction.deleteSchedule(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 ScheduleAction.afterDelSchedule(id);
@@ -218,7 +218,7 @@ class CrmSchedule extends React.Component {
                 {this.props.isMerge ? null : (
                     <span className="iconfont icon-add schedule-add-btn handle-btn-item"
                         title={Intl.get('crm.214', '添加联系计划')}
-                        onClick={this.addSchedule}/>)
+                        onClick={this.addSchedule} data-tracename='点击添加联系计划'/>)
                 }
             </div>);
     };
@@ -227,7 +227,7 @@ class CrmSchedule extends React.Component {
         return (
             <RightPanelScrollBar handleScrollBottom={this.handleScrollBarBottom}
                 listenScrollBottom={this.state.listenScrollBottom}>
-                <div className="schedule-top-block">
+                <div className="schedule-top-block" data-tracename="线索详情日程面板">
                     <span className="total-tip crm-detail-total-tip">
                         {!this.state.getScheduleListErrmsg ? this.state.total ? (
                             <ReactIntl.FormattedMessage
@@ -238,7 +238,7 @@ class CrmSchedule extends React.Component {
                     </span>
                     {this.props.isMerge || !editCluePrivilege(this.props.curClue) ? null : (
                         <Button className='crm-detail-add-btn'
-                            onClick={this.addSchedule.bind(this, '')}>
+                            onClick={this.addSchedule.bind(this, '')} data-tracename='点击添加联系计划'>
                             {Intl.get('crm.214', '添加联系计划')}
                         </Button>
                     )}

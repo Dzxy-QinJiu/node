@@ -240,43 +240,64 @@ class ForgotPassword extends React.Component {
             }
         });
     };
+    // 发送验证码的类型：是用手机号还是邮箱
+    getContactType = () => {
 
+    };
     sendMsg = () => {
-        this.checkContactInfo(() => {
-            const captcha = this.state.captchaCodeValue;
-            const user_name = this.state.username;
-            const send_type = this.state.contactType;
-    
-            if (!captcha) {
-                this.props.setErrorMsg(Intl.get('retry.input.captcha', '请输入验证码'));
-                return;
-            }
-    
-            $.ajax({
-                url: '/send_reset_password_msg',
-                dataType: 'json',
-                data: {
-                    user_name,
-                    captcha,
-                    send_type,
-                },
-                success: (data) => {
-                    if (!data) {
-                        this.props.setErrorMsg(Intl.get('login.message_sent_failure', '信息发送失败'));
-                    } else {
-                        this.changeView(VIEWS.VERIFY_AUTH_CODE);
-                        this.setState({successMsg: Intl.get('login.message_has_been_send', '信息已发送')});
-                    }
-                },
-                error: (errorObj) => {
-                    const errorMsg = errorObj && errorObj.responseJSON && errorObj.responseJSON.message;
+        // this.checkContactInfo(() => {
+        const captcha = this.state.captchaCodeValue;
+        const user_name = this.state.username;
+        let contactInfo = this.state.contactInfo;
+        let contactType = '';
+        let contactTypeName = '';
 
-                    if (errorMsg) {
-                        this.props.setErrorMsg(errorMsg);
-                    }
+        if (!contactInfo) {
+            this.props.setErrorMsg(Intl.get('login.please_input_phone_or_email', '请输入手机号或邮箱'));
+            return;
+        } else if (isPhone(contactInfo)) {
+            contactType = 'phone';
+            contactTypeName = Intl.get('common.phone', '手机');
+        } else if (isEmail(contactInfo)) {
+            contactType = 'email';
+            contactTypeName = Intl.get('common.email', '邮箱');
+        } else {
+            this.props.setErrorMsg(Intl.get('login.incorrect_phone_or_email', '手机号或邮箱格式不正确'));
+            return;
+        }
+
+        this.setState({ contactType, contactTypeName });
+    
+        if (!captcha) {
+            this.props.setErrorMsg(Intl.get('retry.input.captcha', '请输入验证码'));
+            return;
+        }
+    
+        $.ajax({
+            url: '/send_reset_password_msg',
+            dataType: 'json',
+            data: {
+                user_name,
+                captcha,
+                send_type: contactType,
+            },
+            success: (data) => {
+                if (!data) {
+                    this.props.setErrorMsg(Intl.get('login.message_sent_failure', '信息发送失败'));
+                } else {
+                    this.changeView(VIEWS.VERIFY_AUTH_CODE);
+                    this.setState({successMsg: Intl.get('login.message_has_been_send', '信息已发送')});
                 }
-            });
+            },
+            error: (errorObj) => {
+                const errorMsg = errorObj && errorObj.responseJSON && errorObj.responseJSON.message;
+
+                if (errorMsg) {
+                    this.props.setErrorMsg(errorMsg);
+                }
+            }
         });
+        // });
     };
 
     getTicket = () => {

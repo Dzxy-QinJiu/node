@@ -33,12 +33,15 @@ var batchOperate = require('PUB_DIR/sources/push/batch');
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {updateGuideMark, getMaxLimitExtractClueCount} from 'PUB_DIR/sources/utils/common-data-util';
-import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,isCommonSalesOrPersonnalVersion,HASEXTRACTBYOTHERERRTIP} from '../../utils/clue-customer-utils';
+import {checkClueCondition,ADD_INDUSTRY_ADDRESS_CLUE_CONDITION,SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,isCommonSalesOrPersonnalVersion,HASEXTRACTBYOTHERERRTIP} from '../../utils/clue-customer-utils';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 import {leadRecommendEmitter} from 'PUB_DIR/sources/utils/emitters';
+import DifferentVersion from 'MOD_DIR/different_version/public';
+import ApplyTry from 'MOD_DIR/apply_try/public';
+import {COMPANY_PHONE, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/utils/consts';
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -56,6 +59,7 @@ class RecommendCustomerRightPanel extends React.Component {
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             canClickExtract: true,//防止用户连续点击批量提取
             canClickMoreBatch: true,//防止用户连续点击换一批
+            showDifferentVersion: false,//是否显示版本信息面板
             ...clueCustomerStore.getState()
         };
     }
@@ -73,6 +77,7 @@ class RecommendCustomerRightPanel extends React.Component {
     componentDidMount() {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         paymentEmitter.on(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
+        paymentEmitter.on(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, this.handleUpdateClues);
         //因为AntcTable中没有数据提示的时候只能传字符串，提示中的click事件中传this进去会报错，这个方法只能暂时加到window上，卸载的时候把这个方法删掉
         window.handleClickRefreshBtn = function(event) {
             leadRecommendEmitter.emit(leadRecommendEmitter.REFRESH_LEAD_LIST);
@@ -110,13 +115,8 @@ class RecommendCustomerRightPanel extends React.Component {
     }
 
     isShowRecommendSettingPanel = () => {
-        var hasCondition = false;
         var settedCustomerRecommend = this.state.settedCustomerRecommend;
-        for (var key in settedCustomerRecommend.obj){
-            if (!_.isEmpty(settedCustomerRecommend.obj[key])){
-                hasCondition = true;
-            }
-        }
+        var hasCondition = checkClueCondition(ADD_INDUSTRY_ADDRESS_CLUE_CONDITION, _.get(settedCustomerRecommend,'obj'));
         return (!settedCustomerRecommend.loading && !hasCondition) && !this.state.closeFocusCustomer;
     };
     getSearchCondition = (condition) => {
@@ -132,6 +132,12 @@ class RecommendCustomerRightPanel extends React.Component {
         if(this.state.canClickMoreBatch === false) return;
         var conditionObj = this.getSearchCondition(condition);
         //去掉为空的数据
+        if(this.state.hasExtraRecommendList){
+            conditionObj = {
+                'sortvalues': this.state.sortvalues,
+                ...conditionObj
+            };
+        }
         clueCustomerAction.getRecommendClueLists(conditionObj);
     }
 
@@ -195,6 +201,7 @@ class RecommendCustomerRightPanel extends React.Component {
     componentWillUnmount() {
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         paymentEmitter.removeListener(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
+        paymentEmitter.removeListener(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, this.handleUpdateClues);
         delete window.handleClickRefreshBtn;
         delete window.handleClickEditCondition;
         leadRecommendEmitter.removeListener(leadRecommendEmitter.REFRESH_LEAD_LIST, this.handleClickRefreshBtn);
@@ -205,6 +212,7 @@ class RecommendCustomerRightPanel extends React.Component {
 
     // 关闭提取线索界面
     closeRecommendCluePanel = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.recommend-clues-lists-container'), '点击推荐线索返回按钮');
         this.props.closeRecommendCluePanel();
     };
     handleClickRefreshBtn = () => {
@@ -359,6 +367,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 this.getRecommendClueCount((count) => {
                     //如果获取出错了就不要校验数字了
                     if (_.isNumber(count) && (this.isTrialAccount() || this.isOfficalAccount()) && count >= this.state.maxLimitExtractNumber){
+                        // this.handleTrialAndFormal();
                         this.setState({
                             tablePopoverVisible: record.id,
                             singleExtractLoading: false,
@@ -437,7 +446,7 @@ class RecommendCustomerRightPanel extends React.Component {
         const column_width = '80px';
         let columns = [
             {
-                title: Intl.get('clue.customer.recommend.clue.lists', '推荐线索'),
+                title: Intl.get('clue.customer.clue.name.abbrev', '线索名'),
                 dataIndex: 'name',
                 width: '300px',
                 render: (text, record, index) => {
@@ -518,22 +527,27 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     //个人试用升级为正式版
     handleUpgradePersonalVersion = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL);
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            showDifferentVersion: this.triggerShowVersionInfo
+        });
+    };
+    //显示/隐藏版本信息面板
+    triggerShowVersionInfo = () => {
+        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
+    };
+    handleUpdateClues = (result) => {
+        let count = _.get(result, 'count', 0);
+        let maxLimitExtractNumber = this.state.maxLimitExtractNumber;
+        this.setState({
+            maxLimitExtractNumber: count + maxLimitExtractNumber,
+            getMaxLimitExtractNumberError: false,
+            tablePopoverVisible: '',
+            batchPopoverVisible: ''
+        });
     };
     //增加线索量
     handleClickAddClues = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL, {
-            updateCluesCount: (result) => {
-                let count = _.get(result, 'count', 0);
-                let maxLimitExtractNumber = this.state.maxLimitExtractNumber;
-                this.setState({
-                    maxLimitExtractNumber: count + maxLimitExtractNumber,
-                    getMaxLimitExtractNumberError: false,
-                    tablePopoverVisible: '',
-                    batchPopoverVisible: ''
-                });
-            }
-        });
+        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL);
     };
     //提取数为0时显示的提示信息
     hasNoExtractCountTip = (maxLimitTip) => {
@@ -546,14 +560,14 @@ class RecommendCustomerRightPanel extends React.Component {
             if(currentVersion.personal && this.isTrialAccount()) {//个人试用
                 maxLimitTip = <ReactIntl.FormattedMessage
                     id="clue.recommend.trial.extract.num.limit.tip"
-                    defaultMessage={'明天可再提取{count}条，如需马上提取请{upgradedVersion}'}
+                    defaultMessage={'已提取{count}条，如需继续提取请{upgradedVersion}'}
                     values={{
                         count: maxLimitExtractNumber,
                         upgradedVersion: <a onClick={this.handleUpgradePersonalVersion} data-tracename="点击个人升级为正式版按钮">{Intl.get('personal.upgrade.to.official.version', '升级为正式版')}</a>
                     }}
                 />;
             } else if(currentVersion.company && this.isTrialAccount()) {//企业试用
-                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',{count: maxLimitExtractNumber,contact: '400-6978-520'});
+                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '已提取{count}条，如需继续提取请联系销售：{contact}',{count: maxLimitExtractNumber,contact: COMPANY_PHONE});
             } else if(currentVersion.personal && this.isOfficalAccount()//个人正式版
                 || currentVersion.company && this.isOfficalAccount() && this.isManager()) { //或企业正式版管理员
                 maxLimitTip = <ReactIntl.FormattedMessage
@@ -568,6 +582,15 @@ class RecommendCustomerRightPanel extends React.Component {
         }
         return maxLimitTip;
     };
+    handleTrialAndFormal = () => {
+        const versionAndType = checkVersionAndType();
+        //如果是个人试用,直接显示购买个人版界面
+        if(versionAndType.isPersonalTrial) {
+            this.handleUpgradePersonalVersion();
+        }else if(versionAndType.formal) {//如果是正式，直接显示购买线索量界面
+            this.handleClickAddClues();
+        }
+    };
     batchAssignRecommendClues = (submitObj) => {
         this.setState({
             batchPopoverVisible: false,
@@ -576,6 +599,7 @@ class RecommendCustomerRightPanel extends React.Component {
         this.handleBatchAssignClues(submitObj);
     };
     handleSubmitAssignSalesBatch = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.recommend-customer-top-nav-wrap'), '点击批量提取线索按钮');
         if(!this.state.canClickExtract) return;
         //如果是选了修改全部
         let submitObj = this.handleBeforeSumitChangeSales(_.map(this.state.selectedRecommendClues,'id'));
@@ -604,6 +628,7 @@ class RecommendCustomerRightPanel extends React.Component {
                         //已经提取的数量和这次要提取数量之和大于最大限制的提取数
                         count + _.get(this, 'state.disabledCheckedClues.length') > this.state.maxLimitExtractNumber
                     ){
+                        // this.handleTrialAndFormal();
                         this.setState({
                             batchPopoverVisible: true,
                             singleExtractLoading: false,
@@ -692,7 +717,7 @@ class RecommendCustomerRightPanel extends React.Component {
             if(this.state.getRecommendClueErrMsg ){
                 return (<div className="errmsg-container">
                     <span className="errmsg-tip">{this.state.getRecommendClueErrMsg},</span>
-                    <a className="retry-btn" onClick={this.getRecommendClueLists}>
+                    <a className="retry-btn" onClick={this.getRecommendClueLists} data-tracename='点击请重试按钮'>
                         {Intl.get('user.info.retry', '请重试')}
                     </a>
                 </div>);
@@ -707,7 +732,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 id="clue.edit.condition.search"
                 defaultMessage={'请{changeCondition}再查看'}
                 values={{
-                    'changeCondition': <a onClick={this.handleClickEditCondition}>
+                    'changeCondition': <a onClick={this.handleClickEditCondition} data-tracename='点击修改条件'>
                         {Intl.get('clue.customer.condition.change', '修改条件')}
                     </a>
                 }}
@@ -717,7 +742,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     id='clue.has.extract.by.other'
                     defaultMessage={'符合条件的线索已被提取完成，请{changeCondition}再查看'}
                     values={{
-                        'changeCondition': <a onClick={this.handleClickEditCondition}>
+                        'changeCondition': <a onClick={this.handleClickEditCondition} data-tracename='符合条件的线索已被提取完成,点击修改条件'>
                             {Intl.get('clue.customer.condition.change', '修改条件')}
                         </a>
                     }}
@@ -866,7 +891,6 @@ class RecommendCustomerRightPanel extends React.Component {
                     <Button
                         title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
                         type="primary"
-                        data-tracename="点击批量提取线索按钮"
                         className='btn-item common-sale-batch-extract'
                         onClick={this.handleSubmitAssignSalesBatch}
                         disabled={this.state.batchExtractLoading}
@@ -931,7 +955,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 <RightPanel showFlag={true} className="recommend-customer-list">
                     <div className="recommend-clue-panel">
                         <TopNav>
-                            <div className={recommendCls}>
+                            <div className={recommendCls} data-tracename="推荐线索顶部topnav">
                                 <BackMainPage className="clue-back-btn" 
                                     handleBackClick={this.closeRecommendCluePanel}></BackMainPage>
                                 {hasSelectedClue ? null :
@@ -974,6 +998,11 @@ class RecommendCustomerRightPanel extends React.Component {
                         hideFocusCustomerPanel={this.hideFocusCustomerPanel}
                         saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
                     /> : null}
+                {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
+                {/*<DifferentVersion*/}
+                {/*showFlag={this.state.showDifferentVersion}*/}
+                {/*closeVersion={this.triggerShowVersionInfo}*/}
+                {/*/>*/}
             </div>
 
 

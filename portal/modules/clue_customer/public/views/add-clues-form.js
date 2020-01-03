@@ -378,7 +378,7 @@ class ClueAddForm extends React.Component {
                                 //如果返回的列表长度不为0，渲染某电话被其他线索占用的警告
                                 const renderWarningMessage = <span>
                                     <span>{Intl.get('clue.customer.phone.used.by.clue','该电话已被其他线索使用，')}</span>
-                                    <a href="javascript:void(0)" onClick={this.props.showRightPanel.bind(this, lead)} className="handle-btn-item">
+                                    <a href="javascript:void(0)" onClick={this.props.showRightPanel.bind(this, lead)} className="handle-btn-item" data-tracename="点击线索名查看线索详情">
                                         {_.get(lead, 'name')}
                                     </a>
                                 </span>;
@@ -718,8 +718,7 @@ class ClueAddForm extends React.Component {
                                         }
                                     </div>
                                     <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
-                                        disabled={this.state.isSaving} data-tracename="点击保存添加
-                                            线索按钮">
+                                        disabled={this.state.isSaving} data-tracename="点击保存添加线索按钮">
                                         {Intl.get('common.save', '保存')}
                                         {this.state.isSaving ? <Icon type="loading"/> : null}
                                     </Button>

@@ -232,7 +232,7 @@ class DealTable extends React.Component {
         let dealListObj = this.state.dealListObj;
         //初次获取数据时展示loading效果
         if (dealListObj.isLoading && (!_.get(dealListObj, 'list[0]'))) {
-            return (<Spinner />);
+            return (<Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')} />);
         } else if (_.get(dealListObj, 'list[0]')) {
             let tableHeight = getTableContainerHeight();
             return (

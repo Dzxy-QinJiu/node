@@ -1,5 +1,6 @@
 var React = require('react');
 require('./index.less');
+var logoSrc = require('../../../components/login-logo/curtao-logo.png');
 
 var Spinner = require('../../../components/spinner');
 
@@ -22,7 +23,7 @@ class PrivilegeGet extends React.Component {
         if (this.state.isLoading) {
             return (
                 <div className="PrivilegeGet">
-                    <Spinner />
+                    <Spinner className="loading-wrapper" content={<img src={logoSrc}/>} loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
                 </div>
             );
         } else if (this.state.errorTip && this.state.logoutTime > 0) {

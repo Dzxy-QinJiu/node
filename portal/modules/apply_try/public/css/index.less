@@ -1,0 +1,109 @@
+.apply-try-wrapper{
+    .right-panel-modal{
+        z-index: 1053;
+    }
+    .right-panel-modal-content{
+        background-color: #fff !important;
+    }
+    .close-modal-btn{
+        color:#fff !important;
+    }
+    
+    .apply-try-content{
+        position: relative;
+        background:#fff;
+        height: 100%;
+        .apply-try-header{
+            background: #ccc;
+            padding: 4px;
+
+            div{
+                display: inline-block;
+            }
+            .apply-try-header-title{
+                font-size: 13px;
+            }
+            .apply-try-header-close{
+                position: absolute;
+                font-weight: 700;
+                font-size: 16px;
+                right: 10px;
+                top: 0px;
+                cursor: pointer;
+            }
+        }
+
+        .apply-try-content-title{
+            font-size: 16px;
+            margin: 15px 0 20px 10px;
+            font-weight: 700;
+        }
+        .apply-try-content-componey{
+            .ant-form-item-required::before{
+                content:'';
+            }
+            .ant-form-item-required::after{
+                content:'';
+            }
+            span{
+                margin: 10px;
+                font-size: 14px;
+                color: rgba(0, 0, 0, 0.65);
+            }
+            .apply-try-content-componey-input{
+                width: 360px !important;
+            }
+        }
+        .apply-try-content-useNumber-wrapper{
+            margin:10px;
+            >span{
+                font-size: 14px;
+                color: #999;
+            }
+            .apply-try-content-useNumber{
+                margin: 0 8px 0;
+            }
+        }
+        .apply-try-content-apply-btn-wrapper{
+            width: 100%;
+            text-align: center;
+            margin-top: 30px;
+            .apply-try-content-apply-btn{
+                font-size: 14px;
+                padding: 4px 40px;
+                font-weight: 700;
+                width:80%;
+                height: 35px;
+                background-color: rgb(239,164,77);
+                border: 0;
+            }
+            .active-try-content-apply-btn{
+                background-color: rgb(228,242,253);
+            }
+        }
+        
+    }
+    .apply-try-success-wrapper{
+        padding: 100px 0;
+        text-align: center;
+
+        .apply-try-success-title{
+            font-size: 18px;
+        }
+        .apply-try-success-content{
+            font-size: 14px;
+            color: #ccc;
+        }
+    }
+    .apply-try-content-warning{
+        width: 100%;
+        text-align: center;
+        color: rgb(237,70,48);
+    }
+    .alert-timer{
+        position: relative;
+        width: 140px;
+        left: calc(50% - 70px);
+        margin-top: 30px;
+    }
+}

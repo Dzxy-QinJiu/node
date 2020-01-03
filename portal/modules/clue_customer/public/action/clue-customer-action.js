@@ -71,8 +71,8 @@ function ClueCustomerActions() {
     };
     this.getRecommendClueLists = function(obj) {
         this.dispatch({loading: true, error: false});
-        clueCustomerAjax.getRecommendClueLists(obj).then((list) => {
-            this.dispatch({loading: false, error: false,list: list});
+        clueCustomerAjax.getRecommendClueLists(obj).then((data) => {
+            this.dispatch({loading: false, error: false, data});
         },(errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
@@ -151,6 +151,15 @@ function ClueCustomerActions() {
         }
 
     };
+    //处理申请详情的数据
+    this.getApplyTryData = function(id, version_upgrade_id) {
+        clueCustomerAjax.getApplyTryData(version_upgrade_id).then(result => {
+            result.clueId = id;
+            this.dispatch({error: false,result: result});
+        },(error) => {
+            this.dispatch({error: error});
+        });
+    };
 
     //线索的全文搜索
     this.getClueFulltext = function(queryObj,callback) {
@@ -167,7 +176,10 @@ function ClueCustomerActions() {
                 errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索列表失败')
             });
         });
+        
     };
+    
+    
     this.getClueFulltextSelfHandle = function(queryObj,callback) {
         //是否是在全部状态下返回数据
         this.dispatch({error: false, loading: true

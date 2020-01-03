@@ -18,6 +18,45 @@ const _ = require('lodash');
 //登录后绑定微信的标识
 const bindWechatAfterLoginKey = 'isOnlyBindWechat';
 
+function renderUserAgreementPrivacyPolicy(req, res){
+    return function(isUserAgreement){
+        //优先使用环境变量中设置的语言
+        const registerLang = global.config.lang || req.query.lang || '';
+        //将当前的语言环境存入session中
+        if (req.session) {
+            req.session.lang = registerLang;
+            req.session.save();
+        }
+        let custom_service_lang = registerLang || 'zh_CN';
+        custom_service_lang = custom_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
+        let isCurtao = commonUtil.method.isCurtao(req);
+        const phone = '400-6978-520';
+        let backendIntl = new BackendIntl(req);
+        let company = isCurtao ? backendIntl.get('company.name.curtao', '© 客套智能科技 鲁ICP备18038856号') : backendIntl.get('company.name.eefung', '© 蚁坊软件 湘ICP备14007253号-1');
+        res.render('login/tpl/user-agreement', {
+            isFormal: global.config.isFormal,
+            isCurtao: isCurtao,
+            siteID: global.config.siteID,
+            lang: registerLang,
+            company: company,
+            hotline: backendIntl.get('companay.hotline', '服务热线: {phone}', {'phone': phone}),
+            timeStamp: global.config.timeStamp,
+            userid: '',
+            contact: '',
+            custom_service_lang,
+            isUserAgreement
+        });
+    };
+}
+// 用户协议界面
+exports.showUserAgreementPage = function(req, res){
+    renderUserAgreementPrivacyPolicy(req, res)(true);
+};
+// 隐私政策
+exports.showPrivacyPolicy = function(req, res){
+    renderUserAgreementPrivacyPolicy(req, res)();
+};
+
 
 //注册界面
 exports.showRegisterPage = function(req, res) {
@@ -340,8 +379,7 @@ exports.sendResetPasswordMsg = function(req, res) {
         const sendType = req.query.send_type;
         //发送信息
         DesktopLoginService.sendResetPasswordMsg(req, res, userName, sendType, operateCode).on('success', function(data) {
-            if (!data) data = '';
-            res.status(200).json(data);
+            res.status(200).json({user_id: _.get(data, 'user_id', '')});
         }).on('error', function(errorObj) {
             res.status(500).json(errorObj);
         });
