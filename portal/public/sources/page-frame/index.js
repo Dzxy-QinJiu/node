@@ -351,7 +351,7 @@ class PageFrame extends React.Component {
                         />
                     </div>
                     <div className="col-xs-10">
-                        <OrganizationExpiredTip/>
+                        {/* <OrganizationExpiredTip/> */}
                         {renderRoutes(this.props.route.routes)}
                         {this.state.phonePanelShow ? (
                             <PhonePanel
