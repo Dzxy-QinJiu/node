@@ -11,7 +11,6 @@ var _ = require('lodash');
 var UnreadMixin = require('./mixins/unread');
 let history = require('../../public/sources/history');
 import {NavLink} from 'react-router-dom';
-import ModalIntro from '../modal-intro';
 import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
@@ -21,7 +20,7 @@ import {phoneEmitter, notificationEmitter, userInfoEmitter, phoneMsgEmitter, cli
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 const session = storageUtil.session;
-const { setWebsiteConfigModuleRecord, getWebsiteConfig, getLocalWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
+const { setWebsiteConfigModuleRecord, getWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
 //需要加引导的模块
 const schedule_menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
 //个人信息菜单部分距离底部的绝对高度18
@@ -715,7 +714,7 @@ var NavSidebar = createReactClass({
                                 </div>
                             ) : null
                         }
-                        {isCurtao() ? null : this.getNotificationBlock()}
+                        {this.getNotificationBlock()}
                         {this.renderBackendConfigBlock()}
                         {this.getUserInfoBlock()}
                     </div>

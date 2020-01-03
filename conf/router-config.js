@@ -244,7 +244,7 @@ let routers = [
         shortName: 'menu.notification',//通知
         bottom: true,
         //有这个权限，才显示入口图标
-        showPrivileges: ['CUSTOMER_NOTICE_MANAGE']
+        showPrivileges: ['BASE_QUERY_PERMISSION_APPLICATION']
     },
     {
         id: 'BACKGROUND_MANAGEMENT',//唯一标识

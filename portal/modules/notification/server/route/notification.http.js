@@ -70,8 +70,6 @@ module.exports = {
         //是否需要登录
         'passport': {
             'needLogin': true
-        },
-        //需要权限
-        'privileges': [privilegeConst_notification.CUSTOMER_NOTICE_MANAGE]
+        }
     }]
 };
