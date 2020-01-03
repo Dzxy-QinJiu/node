@@ -66,7 +66,10 @@ function SingleUserLogAction() {
                     let ketaoApp = _.find(appList, app => app.app_id === ketaoId);
                     // 客套组织下，客套产品显示在最前面的处理
                     if (isKetaoOrganizaion() && ketaoApp) {
-                        appList.unshift(_.get(_.remove(appList, ketaoApp), '[0]'));
+                        // 先删除原数组中，客套元素，会改变原数组
+                        _.remove(appList, ketaoApp);
+                        // 将客套放到数组首部
+                        appList.unshift(ketaoApp);
                     }
                     handleLogParams(this, getLogParam, appList);
                    
