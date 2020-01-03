@@ -31,8 +31,7 @@ class Index extends React.Component {
                 version_kind: this.props.versionKind
             },() => {
                 this.setState({
-                    successFlag: !values.successFlag,
-                    showSuccess: true 
+                    successFlag: true
                 });
             },() => {
                 this.setState({
@@ -99,13 +98,11 @@ class Index extends React.Component {
         </div>;
     }
     renderApplyResult(){
-        if(this.state.showSuccess){
-            return <OperateSuccessTip
-                isShowBtn={false}
-                title={Intl.get('user.apply.success','申请成功')}
-                tip={Intl.get('common.apply.try.success.tip','稍后会有客户经理专门为您服务')}
-            />;
-        }
+        return <OperateSuccessTip
+            isShowBtn={false}
+            title={Intl.get('user.apply.success','申请成功')}
+            tip={Intl.get('common.apply.try.success.tip','稍后会有客户经理专门为您服务')}
+        />;
     }
     renderApplyTry(){
         return<RightPanelModal
