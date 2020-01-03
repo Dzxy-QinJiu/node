@@ -113,6 +113,11 @@ class ClueDetailOverview extends React.Component {
                 this.getSimilarCustomerLists();
             }
         }
+        //获取版本信息
+        const curClue = this.state.curClue;
+        if(curClue.version_upgrade_id){
+            clueCustomerAction.getApplyTryData(curClue.id,curClue.version_upgrade_id);
+        }
         if (editClueItemIconPrivilege(this.state.curClue)) {
             this.getIndustryList();
         }
@@ -143,6 +148,7 @@ class ClueDetailOverview extends React.Component {
     onClueCustomerStoreChange = () => {
         let curClue = _.cloneDeep(this.state.curClue);
         curClue.contacts = _.get(clueCustomerStore.getState(), 'curClue.contacts');
+        curClue.versionData = _.get(clueCustomerStore.getState(),'curClue.versionData');
         this.setState({curClue});
     };
     getSimilarClueLists = () => {
@@ -238,8 +244,12 @@ class ClueDetailOverview extends React.Component {
         //修改某些属性时，线索的id不变，但是需要更新一下curClue所以不加 nextProps.curClue.id !== this.props.curClue.id 这个判断了
         if (_.get(nextProps.curClue,'id')) {
             var diffClueId = _.get(nextProps,'curClue.id') !== _.get(this, 'props.curClue.id');
+            const curClue = $.extend(true, {}, nextProps.curClue);
+            if(this.state.curClue.versionData){ //若当前取到了申请试用的数据，则存下来
+                curClue.versionData = this.state.curClue.versionData;
+            }
             this.setState({
-                curClue: $.extend(true, {}, nextProps.curClue),
+                curClue
             },() => {
                 var curClue = nextProps.curClue;
                 if (diffClueId){
@@ -1164,24 +1174,26 @@ class ClueDetailOverview extends React.Component {
     };
     //渲染申请试用内容
     renderApplyTryContent = () => {
-        console.log(clueCustomerUtils.VERSIONS);
-        const curClue = this.state.curClue;
+        const versionData = _.get(this.state.curClue,'versionData');
+        if(!versionData){
+            return;
+        }
         let applyTryContent = <div className='clue-info-item-apply-try'>
             <div className='clue-info-item-apply-try-content'>
                 <div className='clue-info-item-apply-try-content-title'>{Intl.get('common.company','公司')}</div>
-                <div className='clue-info-item-apply-try-content-value'>{curClue.applyTryCompany}</div>
+                <div className='clue-info-item-apply-try-content-value'>{versionData.applyTryCompany}</div>
             </div>
             <div className='clue-info-item-apply-try-content'>
                 <div className='clue-info-item-apply-try-content-title'>{Intl.get('common.apply.try.user.scales','使用人数')}</div>
-                <div className='clue-info-item-apply-try-content-value'>{curClue.applyTryUserScales}</div>
+                <div className='clue-info-item-apply-try-content-value'>{versionData.applyTryUserScales}</div>
             </div>
             <div className='clue-info-item-apply-try-content'>
                 <div className='clue-info-item-apply-try-content-title'>{Intl.get('user.info.version','版本')}</div>
-                <div className='clue-info-item-apply-try-content-value'>{clueCustomerUtils.VERSIONS[curClue.applyTryKind]}</div>
+                <div className='clue-info-item-apply-try-content-value'>{clueCustomerUtils.VERSIONS[versionData.applyTryKind]}</div>
             </div>
             <div className='clue-info-item-apply-try-content'>
                 <div className='clue-info-item-apply-try-content-title'>{Intl.get('common.login.time','时间')}</div>
-                <div className='clue-info-item-apply-try-content-value'>{moment(curClue.applyTryTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT)}</div>
+                <div className='clue-info-item-apply-try-content-value'>{moment(versionData.applyTryTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT)}</div>
             </div>
         </div>;
         return (
@@ -1838,7 +1850,7 @@ class ClueDetailOverview extends React.Component {
                     {this.renderAppUserDetail()}
                     {this.state.isShowAddCustomer ? this.renderAddCustomer() : null}
                     {this.renderTraceContent()}
-                    {this.state.curClue.version_upgrade_label === 'true' && this.renderApplyTryContent()}
+                    {this.renderApplyTryContent()}
                 </GeminiScrollbar>
             </div>
         );
