@@ -1,5 +1,6 @@
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import {Input,Button,message,Form} from 'antd';
+import {Input,Button,Form} from 'antd';
+import AlertTimer from 'CMP_DIR/alert-timer';
 import applyTryAjax from './ajax/applyTryAjax';
 import {userScales} from './util/apply_try_const';
 import OperateSuccessTip from 'CMP_DIR/operate-success-tip';
@@ -10,31 +11,35 @@ class Index extends React.Component {
     state={
         successFlag: false,
         userScales: '',
-        company: '',
-        remark: '',
+        saveResult: ''
     }
 
     static propTypes = {
         hideApply: PropTypes.func,
         versionKind: PropTypes.string,
-        form: PropTypes.object
+        form: PropTypes.object,
+        isShowMadal: PropTypes.bool
     }
 
     handleApplyClick = () => {
-        (this.props.versionKind && this.state.company) &&
+        this.props.form.validateFields((err,values) => {
+            if(err) return;
+            (this.props.versionKind && values.company) &&
             applyTryAjax.postApplyTry({
-                company: this.state.company,
+                company: values.company,
                 user_scales: this.state.userScales,
-                remark: this.state.remark,
                 version_kind: this.props.versionKind
             },() => {
                 this.setState({
-                    successFlag: !this.state.successFlag,
+                    successFlag: !values.successFlag,
                     showSuccess: true 
                 });
             },() => {
-                message.error(Intl.get('common.apply.failed','申请失败'));
+                this.setState({
+                    saveResult: 'error'
+                });
             });
+        });
     }
 
     handleClose = () => {
@@ -45,33 +50,26 @@ class Index extends React.Component {
             userScales: value
         });
     }
-    setCompany = (e) => {
+    hideErrorMsg = () => {
         this.setState({
-            company: e.target.value
+            saveResult: ''
         });
     }
 
 
     renderApplyTryContent(){
         const { getFieldDecorator } = this.props.form;
+        const saveResult = this.state.saveResult;
         return <div className='apply-try-content'>
             {this.state.successFlag ? this.renderApplyResult() : (
                 <div className='apply-try-content-wrapper'>
                     <div className='apply-try-content-title'>{Intl.get('login.apply.trial','申请试用')}</div>
-                    <Form>
-                        <div className='apply-try-content-componey'>
-                            <Form.Item>
-                                <span>{Intl.get('register.company.nickname','公司名称')}</span>
-                                {getFieldDecorator('apply-try-content-componey-input', {
-                                    rules: [nameLengthRule],
-                                    validateTrigger: 'onBlur'
-                                })(
-                                    <Input id='apply-try-content-componey-input' 
-                                        className='apply-try-content-componey-input' 
-                                        onBlur={this.setCompany} />
-                                )}
-                            </Form.Item>
-                        </div>
+                    <Form layout="inline">
+                        <Form.Item label={Intl.get('register.company.nickname','公司名称')} className='apply-try-content-componey'>
+                            {getFieldDecorator('company', {
+                                rules: [nameLengthRule],
+                            })(<Input className='apply-try-content-componey-input'/>)}
+                        </Form.Item>
                         <div className='apply-try-content-useNumber-wrapper'>
                             <span>{Intl.get('common.apply.try.user.scales','使用人数')}</span>
                             {
@@ -83,9 +81,19 @@ class Index extends React.Component {
                             }
                         </div>
                         <div className='apply-try-content-apply-btn-wrapper'>
-                            <Button className='apply-try-content-apply-btn' type="primary" onClick={this.handleApplyClick}>{Intl.get('home.page.apply.type','申请')}</Button>
+                            <Button className='apply-try-content-apply-btn' 
+                                type="primary" 
+                                data-tracename='申请试用'
+                                onClick={this.handleApplyClick}>{Intl.get('home.page.apply.type','申请')}</Button>
                         </div>
                     </Form>
+                    {
+                        saveResult ? 
+                            <AlertTimer time={3000}
+                                message={Intl.get('common.apply.failed','申请失败')}
+                                type={saveResult} showIcon
+                                onHide={saveResult === 'error' && this.hideErrorMsg}/> : null
+                    }
                 </div>
             )}
         </div>;
@@ -104,6 +112,8 @@ class Index extends React.Component {
             content={this.renderApplyTryContent()}
             width='300'
             onClosePanel={this.handleClose}
+            dataTracename='申请试用界面'
+            isShowMadal={this.props.isShowMadal}
             isShowCloseBtn={true}/>;
     }
     render() {
@@ -112,4 +122,7 @@ class Index extends React.Component {
         </div>;
     }
 }
+Index.defaultProps = {
+    isShowMadal: true
+};
 export default Form.create()(Index);

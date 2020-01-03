@@ -3912,6 +3912,7 @@ var zh_CN = {
     'payment.get.payment.mode.faild': '获取支付渠道失败',
     'payment.get.discount.faild': '获取商品折扣信息失败',
     'payment.please.upgrade.company.version': '请先升级到基础版以上版本，联系销售：{contact}',
+    'payment.upgrade.personal.version': '升级个人正式版',
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
@@ -3939,9 +3940,13 @@ var zh_CN = {
     'versions.personal.price': '元/月',
     'versions.pay.least.number': '人起售',
     'versions.monthly.clues.recommend': '条/月线索推荐',
-    'versions.please.call.phone': '请拨打{phone}',
-    'versions.apply.try': '体验{version}',
+    'versions.please.call.phone': '联系我们：{phone}',
+    'versions.apply.try': '开始体验',
     'versions.compare.add.features': '比{versionName}增加以下功能:',
+    'versions.starter': '基础版',
+    'versions.professional': '专业版',
+    'versions.enterprise': '企业版',
+
     /*版本信息 --- end */
 
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/

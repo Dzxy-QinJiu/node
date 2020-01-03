@@ -1,4 +1,7 @@
 .apply-try-wrapper{
+    .right-panel-modal{
+        z-index: 1053;
+    }
     .right-panel-modal-content{
         background-color: #fff !important;
     }
@@ -36,6 +39,12 @@
             font-weight: 700;
         }
         .apply-try-content-componey{
+            .ant-form-item-required::before{
+                content:'';
+            }
+            .ant-form-item-required::after{
+                content:'';
+            }
             span{
                 margin: 10px;
                 font-size: 14px;
@@ -47,8 +56,9 @@
         }
         .apply-try-content-useNumber-wrapper{
             margin:10px;
-            span{
+            >span{
                 font-size: 14px;
+                color: #999;
             }
             .apply-try-content-useNumber{
                 margin: 0 8px 0;
@@ -89,5 +99,11 @@
         width: 100%;
         text-align: center;
         color: rgb(237,70,48);
+    }
+    .alert-timer{
+        position: relative;
+        width: 140px;
+        left: calc(50% - 70px);
+        margin-top: 30px;
     }
 }

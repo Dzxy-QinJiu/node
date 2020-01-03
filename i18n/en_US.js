@@ -3863,6 +3863,7 @@ var en_US = {
     'payment.get.payment.mode.faild': 'Failed to obtain payment channel',//获取支付渠道失败
     'payment.get.discount.faild': 'Failed to get item discount information',//获取商品折扣信息失败
     'payment.please.upgrade.company.version': 'Please first upgrade to the basic version of the above version, contact sales: {contact}',//请先升级到基础版以上版本，联系销售：{contact}
+    'payment.upgrade.personal.version': 'upgrade personal official version',//升级个人正式版
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
@@ -3889,9 +3890,12 @@ var en_US = {
     'versions.personal.price': 'yuan/Month', // 元/月
     'versions.pay.least.number': 'pieces minimum per order', //人起售
     'versions.monthly.clues.recommend': 'item/month clues recommend', //{clues}条/月线索推荐
-    'versions.please.call.phone': 'please call{phone}', //请拨打
-    'versions.apply.try': 'experience{version}', //体验
+    'versions.please.call.phone': 'Call us {phone}', //请拨打
+    'versions.apply.try': 'Start Experience', //开始体验
     'versions.compare.add.features': 'compare with {versionName}, add:', //比{versionName}增加以下功能:
+    'versions.starter': 'Starter', //基础版
+    'versions.professional': 'Professional',//专业版
+    'versions.enterprise': 'Enterprise',//企业版
     /*版本信息 --- end */
 
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/
