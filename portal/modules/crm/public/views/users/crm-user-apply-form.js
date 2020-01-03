@@ -110,9 +110,12 @@ class CrmUserApplyForm extends React.Component {
             type: APPLY_TYPES.DELAY
         };
         const paramItem = {};
-         //向data中添加delay字段
-        paramItem.delay_time = getDelayTimeUnit(formData.delayTimeRange, formData.delayTimeNumber);
-
+        if (isCustomDelayType(formData.delayTimeRange)) {
+            paramItem.end_date = formData.delayDeadlineTime;
+        } else {
+            //向data中添加delay字段
+            paramItem.delay_time = getDelayTimeUnit(formData.delayTimeRange, formData.delayTimeNumber);
+        }
         //向data中添加备注
         submitObj.remark = this.state.formData.remark.delayRemark;
         //到期是否停用
@@ -395,6 +398,7 @@ class CrmUserApplyForm extends React.Component {
                             <Option value={TIMERANGEUNIT.WEEK}>{Intl.get('common.time.unit.week', '周')}</Option>
                             <Option value={TIMERANGEUNIT.MONTH}>{Intl.get('common.time.unit.month', '月')}</Option>
                             <Option value={TIMERANGEUNIT.YEAR}>{Intl.get('common.time.unit.year', '年')}</Option>
+                            <Option value={TIMERANGEUNIT.CUSTOM}>{Intl.get('user.time.custom', '自定义')}</Option>
                         </Select>
                     </FormItem>
                 </div>

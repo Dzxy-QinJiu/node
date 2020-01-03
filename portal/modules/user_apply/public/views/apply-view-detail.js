@@ -1702,9 +1702,11 @@ const ApplyViewDetail = createReactClass({
         Trace.traceEvent(e, '保存修改延期时间');
         var formData = this.state.formData;
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
-        ApplyViewDetailActions.saveModifyDelayTime(getDelayTimeUnit(formData.delayTimeUnit,formData.delayTimeNumber));
-
-
+        if (isCustomDelayType(this.state.formData.delayTimeUnit)) {
+            ApplyViewDetailActions.saveModifyDelayTime(formData.end_date);
+        } else {
+            ApplyViewDetailActions.saveModifyDelayTime(getDelayTimeUnit(formData.delayTimeUnit,formData.delayTimeNumber));
+        }
     },
 
     cancelModifyDelayTime(e) {
@@ -1762,6 +1764,9 @@ const ApplyViewDetail = createReactClass({
                     <Option value="months"><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月"/></Option>
                     <Option value={TIMERANGEUNIT.YEAR}><ReactIntl.FormattedMessage id="common.time.unit.year"
                         defaultMessage="年"/></Option>
+                    <Option value={TIMERANGEUNIT.CUSTOM}><ReactIntl.FormattedMessage id="user.time.custom"
+                        defaultMessage="自定义"/></Option>
+
                 </Select>
                 <span style={{'marginLeft': '10px'}} className="iconfont icon-choose"
                     onClick={this.saveModifyDelayTime}></span>
@@ -1769,8 +1774,8 @@ const ApplyViewDetail = createReactClass({
                     onClick={this.cancelModifyDelayTime}></span>
             </div>
         ) : (customDelay ? null : <Tooltip title={Intl.get('user.apply.detail.change.delay.time', '修改延期时间')}>
-                <span className="iconfont icon-update" onClick={this.setDelayTimeModify}></span>
-            </Tooltip>
+            <span className="iconfont icon-update" onClick={this.setDelayTimeModify}></span>
+        </Tooltip>
         );
     },
 

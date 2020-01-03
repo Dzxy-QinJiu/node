@@ -949,6 +949,7 @@ var UserDetailAddApp = createReactClass({
                             <Option value={TIMERANGEUNIT.WEEK}><ReactIntl.FormattedMessage id="common.time.unit.week" defaultMessage="周" /></Option>
                             <Option value={TIMERANGEUNIT.MONTH}><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月" /></Option>
                             <Option value={TIMERANGEUNIT.YEAR}><ReactIntl.FormattedMessage id="common.time.unit.year" defaultMessage="年" /></Option>
+                            <Option value={TIMERANGEUNIT.CUSTOM}><ReactIntl.FormattedMessage id="user.time.custom" defaultMessage="自定义" /></Option>
                         </Select>
                     </FormItem>
                 </div>

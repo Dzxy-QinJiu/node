@@ -481,7 +481,12 @@ class ApplyViewDetailStore {
     saveModifyDelayTime(delay) {
         this.returnDelayTimeShow = false;
         this.isModifyDelayTime = false;
-        this.formData.delay_time = delay;
+        if (isCustomDelayType(this.formData.delayTimeUnit) ) {
+            this.formData.end_date = delay;
+            this.formData.delay_time = '';
+        } else {
+            this.formData.delay_time = delay;
+        }
     }
     // 取消修改的延迟时间
     cancelModifyDelayTime() {
