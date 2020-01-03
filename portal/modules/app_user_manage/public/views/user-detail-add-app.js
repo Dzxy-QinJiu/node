@@ -673,7 +673,7 @@ var UserDetailAddApp = createReactClass({
                         disableDateBeforeRange={true}
                         disableDateBeforeToday={true}
                         endTimeEndOfDay={false}
-                        getEndTimeTip={function(date){return Intl.get('user.open.cycle.date.tip','将在{date}的0点到期',{'date': date});}}
+                        getEndTimeTip={function(date){return Intl.get('user.open.cycle.date.tip','将在{date}的23:59:59到期',{'date': date});}}
                         range={formData.range}
                         onSelect={this.dateChange}>
                         <DateSelector.Option value="1w"><ReactIntl.FormattedMessage id="user.time.one.week" defaultMessage="1周" /></DateSelector.Option>
@@ -949,7 +949,6 @@ var UserDetailAddApp = createReactClass({
                             <Option value={TIMERANGEUNIT.WEEK}><ReactIntl.FormattedMessage id="common.time.unit.week" defaultMessage="周" /></Option>
                             <Option value={TIMERANGEUNIT.MONTH}><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月" /></Option>
                             <Option value={TIMERANGEUNIT.YEAR}><ReactIntl.FormattedMessage id="common.time.unit.year" defaultMessage="年" /></Option>
-                            <Option value={TIMERANGEUNIT.CUSTOM}><ReactIntl.FormattedMessage id="user.time.custom" defaultMessage="自定义" /></Option>
                         </Select>
                     </FormItem>
                 </div>

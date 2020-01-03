@@ -506,7 +506,7 @@ var en_US = {
     'user.no.related.organization': 'No relevant organization',//无相关组织
     'user.open.cycle': 'Open cycle',//开通周期
     'user.open.cycle.tips': 'The start time of the opening period cannot be less than today', // 开通周期的起始时间不能小于今天
-    'user.open.cycle.date.tip': 'Will expire in {date} 0 o\'clock',//将在{date}的0点过期
+    'user.open.cycle.date.tip': 'Will expire in {date} 23:59:59 o\'clock',//将在{date}的23:59:59过期
     'user.time.hour': 'Hours',//小时
     'user.time.minute': 'Minutes',//分
     'user.time.second': 'Seconds',//秒

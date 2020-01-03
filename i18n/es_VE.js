@@ -429,7 +429,7 @@ var en_VE = {
 
     'user.open.cycle': 'Periodo de apertura',//开通周期
 
-    'user.open.cycle.date.tip': 'Se expirará a las 0:00 del {date}',//将在{date}的0点过期
+    'user.open.cycle.date.tip': 'Se expirará a las 23:59:59 del {date}',//将在{date}的23:59:59过期
 
     'user.time.hour': 'Hora',//小时
 

@@ -1702,11 +1702,8 @@ const ApplyViewDetail = createReactClass({
         Trace.traceEvent(e, '保存修改延期时间');
         var formData = this.state.formData;
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
-        if (isCustomDelayType(this.state.formData.delayTimeUnit)) {
-            ApplyViewDetailActions.saveModifyDelayTime(formData.end_date);
-        } else {
-            ApplyViewDetailActions.saveModifyDelayTime(getDelayTimeUnit(formData.delayTimeUnit,formData.delayTimeNumber));
-        }
+        ApplyViewDetailActions.saveModifyDelayTime(getDelayTimeUnit(formData.delayTimeUnit,formData.delayTimeNumber));
+
 
     },
 
@@ -1735,9 +1732,10 @@ const ApplyViewDetail = createReactClass({
         if (!this.isUnApproved()) {
             return;
         }
+        var customDelay = isCustomDelayType(this.state.formData.delayTimeUnit);
         return this.state.isModifyDelayTime ? (
             <div className="modify-delay-time-style">
-                {isCustomDelayType(this.state.formData.delayTimeUnit) ? (
+                {customDelay ? (
                     <DatePicker placeholder="请选择到期时间"
                         onChange={this.setDelayDeadlineTime}
                         disabledDate={this.disabledDate}
@@ -1752,7 +1750,6 @@ const ApplyViewDetail = createReactClass({
                         min={1}
                     />
                 )}
-
                 <Select
                     value={this.state.formData.delayTimeUnit}
                     onChange={this.delayTimeUnitModify}
@@ -1765,16 +1762,13 @@ const ApplyViewDetail = createReactClass({
                     <Option value="months"><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月"/></Option>
                     <Option value={TIMERANGEUNIT.YEAR}><ReactIntl.FormattedMessage id="common.time.unit.year"
                         defaultMessage="年"/></Option>
-                    <Option value={TIMERANGEUNIT.CUSTOM}><ReactIntl.FormattedMessage id="user.time.custom"
-                        defaultMessage="自定义"/></Option>
                 </Select>
                 <span style={{'marginLeft': '10px'}} className="iconfont icon-choose"
                     onClick={this.saveModifyDelayTime}></span>
                 <span style={{'marginLeft': '10px'}} className="iconfont icon-close"
                     onClick={this.cancelModifyDelayTime}></span>
             </div>
-        ) : (
-            <Tooltip title={Intl.get('user.apply.detail.change.delay.time', '修改延期时间')}>
+        ) : (customDelay ? null : <Tooltip title={Intl.get('user.apply.detail.change.delay.time', '修改延期时间')}>
                 <span className="iconfont icon-update" onClick={this.setDelayTimeModify}></span>
             </Tooltip>
         );

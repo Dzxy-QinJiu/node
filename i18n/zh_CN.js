@@ -506,7 +506,7 @@ var zh_CN = {
     'user.no.related.organization': '无相关组织',
     'user.open.cycle': '开通周期',
     'user.open.cycle.tips': '开通周期的起始时间不能小于今天',
-    'user.open.cycle.date.tip': '将在{date}的0点过期',
+    'user.open.cycle.date.tip': '将在{date}的23:59:59过期',
     'user.time.hour': '小时',
     'user.time.minute': '分',
     'user.time.second': '秒',
