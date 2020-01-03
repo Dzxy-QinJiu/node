@@ -186,6 +186,7 @@ var zh_CN = {
     'common.no.audit': '暂无操作记录',
     'common.no.more.trace.record': '暂无跟进记录',
     'common.no.call.record': '暂无通话记录',
+    'common.system.initial': '系统正在快速初始化，请耐心等待...',
 
     'common.yesno': '是否',
     'common.add.member': '添加成员',
@@ -302,9 +303,13 @@ var zh_CN = {
     'common.number.validate.tips': '请填写最多两位小数的数字',
     'common.app.android': '安卓版',
     'common.app.ios': 'IOS版',
+    'common.apply.try.success.tip': '稍后会有客户经理专门为您服务',
+    'common.apply.try.user.scales': '使用人数',
+    'common.lead.apply.try': '线索申请试用',
     'common.terminals.type': '终端类型',
     'common.all.terminals': '所有终端',
     'common.terminals': '终端',
+
     //公共部分--end
     
     'login.login': '登录',
@@ -318,6 +323,7 @@ var zh_CN = {
     'login.dim.exchange': '看不清？点击换一张',
     'login.username.phone.email': '用户名/手机/邮箱',
     'login.logout': '退出',
+    'login.find.password': '找回密码',
     'login.forgot_password': '忘记密码',
     'login.please_input_phone_or_email': '请输入手机号或邮箱',
     'login.incorrect_phone_or_email': '手机号或邮箱格式不正确',
@@ -348,7 +354,12 @@ var zh_CN = {
     'login.wechat.bind.error': '微信绑定失败',
     'login.wechat.bind.check.error': '检查是否绑定微信出错了',
     'login.wechat.register.login.error': '微信号注册登录失败',
+    'login.user.agreement': '用户使用协议',
+    'login.user.agreement.tip': '点击{btn}表示您已同意我们的{userAgreement}和{privacyPolicy}',
+    'login.no.account.register.tip': '没有账号，去{register}',
 
+    'register.title.tip': '欢迎注册客套',
+    'register.slogan.tip': '销售加速，从这里开始 ...',
     'register.set.company.id': '设置公司标识',
     'register.valid.phone': '验证手机',
     'register.fill.account': '账号设置',
@@ -357,7 +368,7 @@ var zh_CN = {
     'register.company.valid.tip': '请输入小写字母和中划线组成的公司标识',
     'register.company.only.error': '公司标识唯一性验证失败',
     'register.company.name.exist': '公司标识已存在',
-    'register.get.phone.captcha.code': '获取短信验证码',
+    'register.get.phone.captcha.code': '获取验证码',
     'register.company.name.fill': '请输入公司名称',
     'register.finished.button': '完成注册',
     'register.phon.validat.tip': '请输入正确的手机号, 格式如：13877775555',
@@ -376,6 +387,12 @@ var zh_CN = {
     'register.wechat.bind.btn': '立即绑定',
     'register.wechat.register.btn': '注册并登录',
     'register.personal.title': '注册个人版',
+    'register.user.agreement.tip': '已阅读并同意{userAgreement}',
+    'register.user.agreement.curtao': '《用户协议》',
+    'register.user.agreement.valid.tip': '请先阅读并同意《客套用户协议》',
+    'register.to.login.tip': '已有账号，去{login}',
+    'register.phone.has.registed': '该手机号已被注册',
+    'register.privacy.policy': '隐私政策',
 
     //首页
     'menu.home.page': '首页',
@@ -3175,7 +3192,7 @@ var zh_CN = {
     'lead.recommend.change.condition': '再试试', 'clue.customer.export.select.clue': '导出选中的线索',
     'lead.recommend.form.show.all.condition': '展开全部条件',
     'lead.recommend.form.hide.some.condition': '收起部分条件',
-    'boot.select.industry.count.tip': '最多可选择{count}个行业',
+    
     //线索模块 end
     'common.memeber.all': '全部成员',
     'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3796,8 +3813,8 @@ var zh_CN = {
     'clue.recommend.extract.num.limit': '您所在组织{timerange}提取的线索数已达{maxLimit}条上限，请明天再来提取',
     'clue.recommend.has.extract': '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
     'clue.recommend.formal.extract.num.limit.tip': '本月{count}条已提取完毕，如需继续提取请{addClues}',
-    'clue.recommend.trial.extract.num.limit.tip': '明天可再提取{count}条，如需马上提取请{upgradedVersion}',
-    'clue.recommend.company.trial.extract.num.limit.tip': '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',
+    'clue.recommend.trial.extract.num.limit.tip': '已提取{count}条，如需继续提取请{upgradedVersion}',
+    'clue.recommend.company.trial.extract.num.limit.tip': '已提取{count}条，如需继续提取请联系销售：{contact}',
     'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',
     'common.personal.contribution.score': '个人贡献分数',
@@ -3829,6 +3846,7 @@ var zh_CN = {
     'crm.search.customer.name.no.found.tip': '没有符合条件的客户，您可以去{customerpool}查看是否有该客户',
     'batch.faild.count': '失败数: {count}',
     'batch.success.count': '成功数: {count}',
+    'clue.see.recommend': '查看推荐',
     // 线索分配策略
     'clue.assignment.strategy.add': '添加分配策略',
     'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',
@@ -3869,8 +3887,10 @@ var zh_CN = {
 
     /*支付流程 --- start*/
     'personal.upgrade.to.official.version': '升级为正式版',
+    'personal.official.version': '个人正式版',
     'personal.upgrade.to.enterprise.edition': '升级为企业版',
-    'clues.extract.count.at.month': '线索推荐每月可提取 {count} 条',
+    'personal.apply.trial.enterprise.edition': '申请试用企业版',
+    'clues.extract.count.at.month': '每月可提取 {count} 条线索',
     'goods.price.most.favorable': '最优惠',
     'goods.immediate.payment': '立即支付',
     'goods.increase.clues': '增加线索量',
@@ -3904,24 +3924,53 @@ var zh_CN = {
     'payment.get.payment.mode.faild': '获取支付渠道失败',
     'payment.get.discount.faild': '获取商品折扣信息失败',
     'payment.please.upgrade.company.version': '请先升级到基础版以上版本，联系销售：{contact}',
+    'payment.upgrade.personal.version': '升级个人正式版',
+    'payment.find.result': '正在查询支付结果...',
+    'payment.upgrade.personal.version.success': '您已升级为个人正式版，每月可提取{count}线索啦！',
+    'payment.contact.us': '联系我们请拨打{contact}',
+    'payment.add.leads.tip': '如果线索量不够用，可另外{addBtn}',
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
-    'personal.welcome.use.curtao': '欢迎使用客套',
+    'personal.welcome.use.curtao': '欢迎使用客套，完成以下2步操作即可获取推荐线索',
     'personal.open.success.tip': '恭喜您成功开通试用版，试用期剩余 {count} 天',
+    'boot.complete.step.set.industry': '您关注哪些行业的客户?',
+    'boot.complete.step.set.area': '您关注哪个地域的客户?',
+    'boot.complete.step.select.recommend.tip': '请选择或输入搜索',
+    'boot.select.industry.count.tip': '最多可选择{count}个行业',
+    'boot.not.found.industry.tip': '没有搜索到 “{search}” 相关行业，您可能关心以下行业',
+    'boot.select.industry': '请选择关注的行业',
+    'boot.select.area': '请选择关注的地域',
+    'boot.input.industry': '请输入关注的行业',
     /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/
-    'organization.personal.trial.expired.tip': '您的试用期剩余{time}天，是否{upgrade}？',
+    'organization.personal.trial.expired.tip': '您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？',
     'organization.company.trial.expired.tip': '您的试用期剩余{time}天，请联系我们的销售人员: {contact}',
     'organization.personal.formal.expired.tip': '您的账号即将到期，是否{renewal}？',
     'organization.company.formal.expired.tip': '您的账号即将到期，请联系我们的销售人员: {contact}',
     /*组织到期提示 --- end*/
+
+    /*版本信息 --- start */
+    'versions.online.pay': '在线购买',
+    'versions.connect.sale': '联系销售',
+    'versions.personal.price': '元/月',
+    'versions.pay.least.number': '人起售',
+    'versions.monthly.clues.recommend': '条/月线索推荐',
+    'versions.please.call.phone': '联系我们：{phone}',
+    'versions.apply.try': '开始体验',
+    'versions.compare.add.features': '比{versionName}增加以下功能:',
+    'versions.starter': '基础版',
+    'versions.professional': '专业版',
+    'versions.enterprise': '企业版',
+
+    /*版本信息 --- end */
 
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/
     'leave-feedback-title': '出差反馈',
     'leave-feedback-visit-consumer': '拜访了',
     'leave-feedback-visit-record': '拜访记录：',
     /*销售出差反馈，弹窗给邮件抄送人 ---end*/
+
 };
 export default zh_CN;

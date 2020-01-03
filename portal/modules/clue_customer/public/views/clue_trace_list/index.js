@@ -321,6 +321,7 @@ class ClueTraceList extends React.Component {
         ClueTraceAction.setDetailContent({value: '', cancelEdit: true});
     };
     onSelectFilterStatus = ({item, key, selectedKeys}) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.show-container'), `筛选跟进记录的类型为${key}`);
         this.setState({filterStatus: key});
         ClueTraceAction.dismiss();
         ClueTraceAction.setLoading();
@@ -349,6 +350,7 @@ class ClueTraceList extends React.Component {
             return (
                 <div className="trace-record-bottom">
                     <span className="more-customer-record"
+                        data-tracename='点击更多按钮'
                         onClick={this.turnToTraceRecordList}>
                         {Intl.get('crm.basic.more', '更多')}
                     </span>
@@ -417,7 +419,7 @@ class ClueTraceList extends React.Component {
     //渲染补充跟进记录的提示
     renderSupplementTip(item) {
         return this.props.disableEdit ? null : (
-            <span className="add-detail-tip" onClick={this.editDetailContent.bind(this, item)}>
+            <span className="add-detail-tip" onClick={this.editDetailContent.bind(this, item)} data-tracename='点击补充跟进内容按钮'>
                 {Intl.get('click.to.add.trace.detail', '请点击此处补充跟进内容')}
             </span>);
     }
@@ -624,10 +626,10 @@ class ClueTraceList extends React.Component {
         if(this.props.isOverViewPanel){
             if(this.state.customerRecord.length){
                 return (<span className="iconfont icon-add handle-btn-item" onClick={this.toggleAddRecordPanel.bind(this)}
-                    title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>);
+                    title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')} data-tracename="点击添加跟进记录按钮"/>);
             }else{
                 return(
-                    <a className="handle-btn-item no-data-device" onClick={this.toggleAddRecordPanel.bind(this)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</a>
+                    <a className="handle-btn-item no-data-device" onClick={this.toggleAddRecordPanel.bind(this)} data-tracename="点击添加跟进内容按钮">{Intl.get('clue.add.trace.content', '添加跟进内容')}</a>
                 );
             }
         }else{
@@ -699,7 +701,7 @@ class ClueTraceList extends React.Component {
         //是不是可以添加跟进
         let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit && editCluePrivilege(this.props.curClue);
         return (
-            <div className="clue-trace-container" data-tracename="跟进记录页面" id="clue-trace-container">
+            <div className="clue-trace-container" data-tracename="线索跟进记录页面" id="clue-trace-container">
                 <div className="top-hander-wrap">
                     {this.props.isOverViewPanel ? null : this.renderDatePicker()}
                     {hasAddRecordPrivilege ? this.tipRecordButton() : null}

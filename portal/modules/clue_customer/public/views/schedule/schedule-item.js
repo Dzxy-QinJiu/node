@@ -126,17 +126,17 @@ class ScheduleItem extends React.Component {
                                             </p>
                                         );
                                     })}
-                                    <span className='iconfont icon-close'
+                                    <span className='iconfont icon-close' data-tracename='关闭联系计划'
                                         title={Intl.get('common.app.status.close', '关闭')}
                                         onClick={this.toggleScheduleContact.bind(this, item, false)}/>
                                 </div>) : (
-                                <Button className='schedule-contact-btn'
+                                <Button className='schedule-contact-btn' data-tracename='点击联系线索按钮'
                                     onClick={this.toggleScheduleContact.bind(this, item, true)}
                                     size='small'>{Intl.get('clue.manage.contact.clue', '联系线索')}</Button>)
                                 : null}
                             {user_id === item.member_id ?
                                 <Button className='schedule-status-btn' onClick={this.handleItemStatus.bind(this, item)}
-                                    size='small'>
+                                    size='small' data-tracename={item.status === 'false' ? '点击标为已完成' : '点击标为未完成'}>
                                     {item.status === 'false' ? Intl.get('crm.schedule.set.compelete', '标为已完成') : Intl.get('crm.schedule.set.unfinished', '标为未完成')}
                                 </Button> : null}
                             <span className='right-handle-buttons'>

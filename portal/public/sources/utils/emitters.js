@@ -233,6 +233,8 @@ clueEmitter.FLY_CLUE_WILLTRACE = 'fly_clue_willtrace';//线索动态移动到待
 clueEmitter.FLY_CLUE_HASTRACE = 'fly_clue_hastrace';//线索动态移动到已跟进
 clueEmitter.FLY_CLUE_HASTRANSFER = 'fly_clue_hastransfer';//线索动态移动到已转化
 clueEmitter.FLY_CLUE_INVALID = 'fly_clue_invalid';//线索动态移动到无效中
+clueEmitter.SHOW_RECOMMEND_PANEL = 'show_recommend_panel';//显示线索推荐列表
+clueEmitter.FLY_APPLY_UPGRADE = 'fly_apply_upgrade';//申请试用后的推送
 //移动到
 export { clueEmitter };
 
@@ -259,6 +261,7 @@ const paymentEmitter = new EventEmitter();
 paymentEmitter.OPEN_ADD_CLUES_PANEL = 'open_add_clues_panel';//打开购买线索量的面板
 paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL = 'open_upgrade_personal_version_panel';//打开升级个人正式版的面板
 paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS = 'personal_good_payment_success';//个人版商品支付成功
+paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS = 'add_clues_payment_success';//购买线索量支付成功
 export { paymentEmitter };
 //线索推荐 换一批
 const leadRecommendEmitter = new EventEmitter();

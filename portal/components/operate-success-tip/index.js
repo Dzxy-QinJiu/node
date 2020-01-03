@@ -7,6 +7,7 @@
 import './style.less';
 import {Button} from 'antd';
 import CountDown from 'CMP_DIR/countdown';
+import Spinner from 'CMP_DIR/spinner';
 
 function loop() {}
 
@@ -19,22 +20,33 @@ class OperateSuccessTip extends React.Component {
         this.props.onCountDownComplete();
     };
 
+    renderCoutDownBlock = (seconds) => {
+        return <Spinner
+            className='loading-wrapper'
+            content={seconds}
+            loadingText={this.props.countDownMsg}
+        />;
+    };
+
     render() {
         return (
             <div className="operate-finished-wrapper" data-tracename="完成提示框">
-                <i className="iconfont icon-add-success" style={{color: this.props.iconColor}}/>
-                <div className="operate-finished-title">{this.props.title}</div>
                 {
                     this.props.showCountDown ? (
-                        <CountDown seconds={this.props.countDownSeconds} msg={this.props.countDownMsg} onComplete={this.onComplete}/>
+                        <CountDown seconds={this.props.countDownSeconds} msg={this.props.countDownMsg} onComplete={this.onComplete} renderContent={this.renderCoutDownBlock}/>
                     ) : (
                         <div>
+                            <i className="iconfont icon-add-success" style={{color: this.props.iconColor}}/>
+                            <div className="operate-finished-title">{this.props.title}</div>
                             <div className="operate-finished-tip">{this.props.tip}</div>
                             {this.props.isShowBtn ? (
                                 <div className="btn-wrapper">
                                     <Button type="primary" onClick={this.props.continueFn} data-tracename="点击继续操作按钮">{this.props.continueText}</Button>
                                     <Button onClick={this.props.goFn} data-tracename="点击其他操作按钮">{this.props.goText}</Button>
                                 </div>
+                            ) : null}
+                            {this.props.otherContent ? (
+                                <div className="operate-finished-other-wrapper">{this.props.otherContent}</div>
                             ) : null}
                         </div>
                     )
@@ -55,6 +67,7 @@ OperateSuccessTip.defaultProps = {
     showCountDown: false,//是否显示倒计时
     countDownSeconds: 10,//倒计时时间
     onCountDownComplete: loop,//倒计时完成回调函数
+    otherContent: null,//倒计时完成回调函数
 };
 OperateSuccessTip.propTypes = {
     title: PropTypes.oneOfType[PropTypes.string, PropTypes.element],
@@ -69,6 +82,7 @@ OperateSuccessTip.propTypes = {
     countDownMsg: PropTypes.string,
     countDownSeconds: PropTypes.number,
     onCountDownComplete: PropTypes.func,
+    otherContent: PropTypes.oneOfType[PropTypes.string, PropTypes.element],
 };
 
 module.exports = OperateSuccessTip;

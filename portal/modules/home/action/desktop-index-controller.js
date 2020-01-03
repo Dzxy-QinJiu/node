@@ -19,6 +19,7 @@ let _ = require('lodash');
 let moment = require('moment');
 const commonUtil = require('../../../lib/utils/common-utils');
 const authRouters = require('../../../lib/authRouters');
+let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
 /*
  * home page handler.
  */
@@ -33,6 +34,7 @@ exports.home = function(req, res) {
     let custom_service_lang = global.config.lang || 'zh_CN';
     custom_service_lang = custom_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
     let roles = _.map(user.role_infos, 'role_name') || [];
+    let backendIntl = new BackendIntl(req);
     res.render('home/tpl/desktop-index', {
         isFormal: global.config.isFormal,
         userid: user.user_id,
@@ -48,7 +50,8 @@ exports.home = function(req, res) {
         clientId: global.config.loginParams.clientId,
         useSso: global.config.useSso,
         isCurtao: isCurtao,
-        timeStamp: global.config.timeStamp
+        timeStamp: global.config.timeStamp,
+        loadingText: backendIntl.get('common.sales.frontpage.loading', '加载中')
     });
 };
 
@@ -100,6 +103,8 @@ exports.getUserData = function(req, res) {
                 user.isCommonSales = data.isCommonSales;//是否是普通销售
                 user.workFlowConfigs = data.workFlowConfigs;//配置过的流程列表
                 user.guideConfig = data.guideConfig;//引导流程
+                user.phone = data.phone;
+                user.websiteConfig = data.websiteConfig;//网站个性化
                 req.session.user.nickname = data.nick_name;
                 req.session.save(function() {
                     res.header('Content-Type', 'application/javascript');
@@ -175,4 +180,13 @@ exports.activeEmail = function(req, res) {
 exports.recordLog = function(req, res) {
     DesktopIndexService.recordLog(req, res, req.query.message);
     res.send('');
+};
+
+//根据手机号获取用户所在区域
+exports.getUserAreaData = function(req, res) {
+    DesktopIndexService.getUserAreaData(req, res).on('success', function(data) {
+        res.json(data);
+    }).on('error', function(err) {
+        res.json(err.message);
+    });
 };

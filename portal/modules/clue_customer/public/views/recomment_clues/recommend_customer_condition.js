@@ -9,7 +9,7 @@ var Option = Select.Option;
 const FormItem = Form.Item;
 import {AntcAreaSelection} from 'antc';
 require('../../css/recommend-customer-condition.less');
-import {companyProperty, moneySize,staffSize} from '../../utils/clue-customer-utils';
+import {checkClueCondition, companyProperty, moneySize, staffSize,CLUE_CONDITION} from '../../utils/clue-customer-utils';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import Trace from 'LIB_DIR/trace';
 import {MAXINDUSTRYCOUNT} from 'PUB_DIR/sources/utils/consts';
@@ -30,15 +30,7 @@ class RecommendCustomerCondition extends React.Component {
     }
     //除了行业或者地域是否还有选中的其他的筛选条件
     hasOtherCondition = (hasSavedRecommendParams) => {
-        var checkConditionItem = ['name','startTime','endTime','entTypes','staffnumMax','staffnumMin','capitalMin','capitalMax'];
-        var hasOtherCondition = false;
-        hasOtherCondition = _.some(checkConditionItem, key => {
-            //针对checkConditionItem中的不同的key，hasSavedRecommendParams[key]会有不同的类型，可能是数组，也可能是字符串（空字符串需要return false），也可能是数字（数字是0 需要return false）
-            if(hasSavedRecommendParams[key] || _.get(hasSavedRecommendParams[key],'[0]')) {
-                return true;
-            }
-        });
-        return hasOtherCondition;
+        return checkClueCondition(CLUE_CONDITION, hasSavedRecommendParams);
     };
 
     onStoreChange = () => {
@@ -275,9 +267,15 @@ class RecommendCustomerCondition extends React.Component {
         });
     };
     validateIndustryCount = (rule, value, callback) => {
-        if (value && value.length > MAXINDUSTRYCOUNT) {
-            callback(new Error(Intl.get('boot.select.industry.count.tip', '最多可选择{count}个行业',{'count': MAXINDUSTRYCOUNT})));
-        } else {
+        if (value) {
+            var industryReg = /^[\u4E00-\u9FA5A-Za-z0-9]{1,10}$/;
+            if (industryReg.test(value)) {
+                callback();
+            } else {
+                callback(new Error(Intl.get('clue.customer.add.industry.rule', '请输入1-10位的数字，字母或汉字(中间不能有空格)')));
+            }
+        }
+        else{
             callback();
         }
     };
@@ -367,6 +365,7 @@ class RecommendCustomerCondition extends React.Component {
                             cityName={hasSavedRecommendParams.city}
                             countyName={hasSavedRecommendParams.district}
                             updateLocation={this.updateLocation}
+                            hiddenCounty
                         />
                         <div className={cls}>
                             <FormItem
@@ -455,7 +454,7 @@ class RecommendCustomerCondition extends React.Component {
                             </FormItem>
                         </div>
                         <div className="submit-button-container">
-                            <div className='show-hide-tip' onClick={this.handleToggleOtherCondition}>
+                            <div className='show-hide-tip' onClick={this.handleToggleOtherCondition} data-tracename='点击展开或收起推荐线索的条件'>
                                 {show_tip}
                             </div>
                             <SaveCancelButton loading={this.state.isSaving}

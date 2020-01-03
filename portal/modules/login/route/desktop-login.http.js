@@ -18,16 +18,28 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
-    },
-    // {//注册界面
-    //     'method': 'get',
-    //     'path': '/register',
-    //     'handler': 'showRegisterPage',
-    //     'passport': {
-    //         'needLogin': false
-    //     }
-    // },
-    {
+    }, {//注册界面
+        'method': 'get',
+        'path': '/register',
+        'handler': 'showRegisterPage',
+        'passport': {
+            'needLogin': false
+        }
+    }, {//用户协议
+        'method': 'get',
+        'path': '/user/agreement',
+        'handler': 'showUserAgreementPage',
+        'passport': {
+            'needLogin': false
+        }
+    }, {//隐私政策
+        'method': 'get',
+        'path': '/privacy/policy',
+        'handler': 'showPrivacyPolicy',
+        'passport': {
+            'needLogin': false
+        }
+    }, {
         'method': 'get',
         'path': '/wechat_bind',
         'handler': 'showWechatBindPage',
@@ -192,6 +204,34 @@ module.exports = {
         'method': 'get',
         'path': '/session/userData',
         'handler': 'getSessionUserData',
+        'passport': {
+            'needLogin': false
+        }
+    },{//找回密码-检查系统中有没有手机或邮箱对应的账号
+        'method': 'get',
+        'path': '/check_contact_info_exists',
+        'handler': 'checkContactInfoExists',
+        'passport': {
+            'needLogin': false
+        }
+    },{//找回密码-发送手机/邮箱验证码
+        'method': 'get',
+        'path': '/send_reset_password_msg',
+        'handler': 'sendResetPasswordMsg',
+        'passport': {
+            'needLogin': false
+        }
+    },{//找回密码-身份验证
+        'method': 'get',
+        'path': '/get_reset_password_ticket',
+        'handler': 'getTicket',
+        'passport': {
+            'needLogin': false
+        }
+    },{//找回密码-重置密码
+        'method': 'get',
+        'path': '/reset_password_with_ticket',
+        'handler': 'resetPassword',
         'passport': {
             'needLogin': false
         }

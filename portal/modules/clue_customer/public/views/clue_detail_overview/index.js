@@ -23,6 +23,7 @@ import Trace from 'LIB_DIR/trace';
 var className = require('classnames');
 var userData = require('PUB_DIR/sources/user-data');
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
+const clueCustomerUtils = require('../../utils/clue-customer-utils');
 
 import {
     SELECT_TYPE,
@@ -71,6 +72,7 @@ import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import commonSalesHomePrivilegeConst from 'MOD_DIR/common_sales_home_page/public/privilege-const';
 import LocationSelectField from 'CMP_DIR/basic-edit-field-new/location-select';
 import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
+import ApplyTryCard from 'CMP_DIR/apply-try-card';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -95,7 +97,8 @@ class ClueDetailOverview extends React.Component {
         myTeamTree: [],//销售领导获取我所在团队及下级团队树
         phoneDuplicateWarning: [], //联系人电话重复时的提示
         isLoadingIndustryList: false,//正在加载
-        industryList: []//行业列表
+        industryList: [],//行业列表
+        versionData: {} //申请试用信息
     };
 
     componentDidMount() {
@@ -111,6 +114,11 @@ class ClueDetailOverview extends React.Component {
             if (!this.isHasTransferClue() && _.get(this.state, 'curClue.customer_similarity')){
                 this.getSimilarCustomerLists();
             }
+        }
+        //获取版本信息
+        const curClue = this.state.curClue;
+        if(curClue.version_upgrade_id){
+            clueCustomerAction.getApplyTryData(curClue.id,curClue.version_upgrade_id);
         }
         if (editClueItemIconPrivilege(this.state.curClue)) {
             this.getIndustryList();
@@ -142,7 +150,8 @@ class ClueDetailOverview extends React.Component {
     onClueCustomerStoreChange = () => {
         let curClue = _.cloneDeep(this.state.curClue);
         curClue.contacts = _.get(clueCustomerStore.getState(), 'curClue.contacts');
-        this.setState({curClue});
+        const versionData = _.get(clueCustomerStore.getState(),'versionData');
+        this.setState({curClue,versionData});
     };
     getSimilarClueLists = () => {
         let ids = _.reduce(_.get(this.state, 'curClue.similarity_lead_ids'), (result, id) => {
@@ -237,8 +246,9 @@ class ClueDetailOverview extends React.Component {
         //修改某些属性时，线索的id不变，但是需要更新一下curClue所以不加 nextProps.curClue.id !== this.props.curClue.id 这个判断了
         if (_.get(nextProps.curClue,'id')) {
             var diffClueId = _.get(nextProps,'curClue.id') !== _.get(this, 'props.curClue.id');
+            const curClue = $.extend(true, {}, nextProps.curClue);
             this.setState({
-                curClue: $.extend(true, {}, nextProps.curClue),
+                curClue
             },() => {
                 var curClue = nextProps.curClue;
                 if (diffClueId){
@@ -266,6 +276,11 @@ class ClueDetailOverview extends React.Component {
             this.setState({
                 divHeight: nextProps.divHeight,
             });
+        }
+        const nextClue = nextProps.curClue;
+        const nowClue = this.state.curClue;
+        if(nextClue.id !== nowClue.id && nextClue.version_upgrade_id){
+            clueCustomerAction.getApplyTryData(nextClue.id,nextClue.version_upgrade_id);
         }
     }
 
@@ -994,7 +1009,7 @@ class ClueDetailOverview extends React.Component {
                         </FormItem
                         >
                         <div className="save-cancel-btn">
-                            <Button className="ant-btn-cancel"
+                            <Button className="ant-btn-cancel" data-tracename="取消保存无效原因"
                                 onClick={this.handleInvalidateCancelBtn.bind(this,salesClueItem)}
                             >{Intl.get('common.cancel', '取消')}</Button>
                             <Button type='primary'
@@ -1015,11 +1030,11 @@ class ClueDetailOverview extends React.Component {
         var isEditting = this.state.isInvaliding;
         return (
             <span className="invalid-confirm">
-                <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickValidBtn.bind(this, salesClueItem)}>
+                <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickValidBtn.bind(this, salesClueItem)} data-tracename="点击确认有效按钮">
                     {Intl.get('clue.customer.confirm.valid', '确认有效')}
                     {isEditting ? <Icon type="loading"/> : null}
                 </Button>
-                <Button onClick={this.cancelInvalidClue}>{Intl.get('common.cancel', '取消')}</Button>
+                <Button onClick={this.cancelInvalidClue} data-tracename="点击取消确认有效按钮">{Intl.get('common.cancel', '取消')}</Button>
             </span>
         );
     }
@@ -1045,9 +1060,9 @@ class ClueDetailOverview extends React.Component {
                 releaseTip = releaseClueTip();
             }
             return <div>
-                {associatedPrivilege ? <Button type="primary"
+                {associatedPrivilege ? <Button type="primary" data-tracename="点击转为客户按钮"
                     onClick={this.convertToCustomer.bind(this, curClue)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
-                <Button data-tracename="判定线索无效按钮" className='clue-inability-btn'
+                <Button data-tracename="点击判定线索无效按钮" className='clue-inability-btn'
                     onClick={this.showConfirmInvalid.bind(this, curClue)}>
                     {editCluePrivilege(curClue) ? <span className="can-edit">{Intl.get('clue.customer.set.invalid','标为无效')}</span> : <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
 
@@ -1174,7 +1189,7 @@ class ClueDetailOverview extends React.Component {
         }
         return (
             <div className="associate-user-detail clue-detail-block">
-                <div className="clue-info-item">
+                <div className="clue-info-item associate-user-item">
                     <div className="clue-info-label">
                         {Intl.get('clue.associate.user', '关联账号')}
                     </div>
@@ -1592,8 +1607,8 @@ class ClueDetailOverview extends React.Component {
             if(hasPrivilege) {
                 return (
                     <div className="similar-title-name">
-                        <span onClick={isSimilarClue ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
-                        {!isSimilarClue && editCluePrivilege(this.state.curClue) ? <Button onClick={this.mergeToThisCustomer.bind(this, curClue, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
+                        <span data-tracename={isSimilarClue ? '打开线索详情' : '打开客户详情'} onClick={isSimilarClue ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
+                        {!isSimilarClue && editCluePrivilege(this.state.curClue) ? <Button onClick={this.mergeToThisCustomer.bind(this, curClue, listItem)} data-tracename='点击合并到此客户按钮'>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
                     </div>);
             } else {
                 return (
@@ -1666,7 +1681,7 @@ class ClueDetailOverview extends React.Component {
                             </div> : null}
                     </div>;
                 })}
-                {listMoreThanThree ? <div className="show-hide-tip" onClick={isSimilarClue ? this.handleToggleClueTip : this.handleToggleCustomerTip}>
+                {listMoreThanThree ? <div className="show-hide-tip" onClick={isSimilarClue ? this.handleToggleClueTip : this.handleToggleCustomerTip} data-tracename='点击收起或展开全部按钮'>
                     {moreListShowFlag ? Intl.get('crm.contact.way.hide', '收起') : Intl.get('notification.system.more', '展开全部')}</div> : null}
             </div>
         );
@@ -1809,6 +1824,7 @@ class ClueDetailOverview extends React.Component {
                     {this.renderAppUserDetail()}
                     {this.state.isShowAddCustomer ? this.renderAddCustomer() : null}
                     {this.renderTraceContent()}
+                    {curClue.version_upgrade_id && !$.isEmptyObject(this.state.versionData) ? <ApplyTryCard versionData={this.state.versionData}/> : null}
                 </GeminiScrollbar>
             </div>
         );

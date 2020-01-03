@@ -37,7 +37,7 @@ const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
 import queryString from 'query-string';
 import {removeSpacesAndEnter, getTableContainerHeight, getCertainTabsTitle} from 'PUB_DIR/sources/utils/common-method-util';
-import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+import {XLS_FILES_TYPE_RULES, COMPANY_PHONE, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
 import {
     SELECT_TYPE,
@@ -95,6 +95,8 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import ClueExtract from 'MOD_DIR/clue_pool/public';
 import MoreButton from 'CMP_DIR/more-btn';
+import DifferentVersion from 'MOD_DIR/different_version/public';
+import ApplyTry from 'MOD_DIR/apply_try/public';
 import {subtracteGlobalClue, formatSalesmanList,isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -121,7 +123,7 @@ class ClueCustomer extends React.Component {
     constructor(props) {
         super(props);
 
-        const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+        const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig')) || {};
         this.state = {
             clueAddFormShow: false,//
             rightPanelIsShow: rightPanelShow,//是否展示右侧客户详情
@@ -154,7 +156,8 @@ class ClueCustomer extends React.Component {
             cluePoolCondition: {},//线索池的搜索条件
             filterInputWidth: 210,//筛选输入框的宽度
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
-            showRecommendTips: !_.get(websiteConfig,['oplateConsts','STORE_PERSONNAL_SETTING','NO_SHOW_RECOMMEND_CLUE_TIPS'],false),
+            showRecommendTips: !_.get(websiteConfig, oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS,false),
+            showDifferentVersion: false,//是否显示版本信息面板
             //显示内容
             ...clueCustomerStore.getState()
         };
@@ -181,11 +184,19 @@ class ClueCustomer extends React.Component {
         clueEmitter.on(clueEmitter.FLY_CLUE_HASTRACE, this.flyClueHastrace);
         clueEmitter.on(clueEmitter.FLY_CLUE_HASTRANSFER, this.flyClueHastransfer);
         clueEmitter.on(clueEmitter.FLY_CLUE_INVALID, this.flyClueInvalid);
-
+        clueEmitter.on(clueEmitter.SHOW_RECOMMEND_PANEL, this.showClueRecommendTemplate);
+        clueEmitter.on(clueEmitter.FLY_APPLY_UPGRADE, this.flyApplyUpgrade);
         notificationEmitter.on(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
         //如果从url跳转到该页面，并且有add=true，则打开右侧面板
         if (query.add === 'true') {
             this.showAddForm();
+        }
+        //如果是进入线索推荐
+        if(_.get(this.props, 'history.action') === 'PUSH' && _.get(this.props, 'location.state.showRecommendCluePanel')) {
+            if(_.get(this.props, 'location.state.targetObj')) {
+                clueCustomerAction.saveSettingCustomerRecomment(_.get(this.props, 'location.state.targetObj', {})); 
+            }
+            this.showClueRecommendTemplate();
         }
         this.setFilterInputWidth();
         //响应式布局时动态计算filterinput的宽度
@@ -335,6 +346,11 @@ class ClueCustomer extends React.Component {
         //清空页面上的筛选条件
         clueFilterAction.setInitialData();
         clueCustomerAction.resetState();
+        //“这里可以提取线索”，只提示一次（登录后或者点击关闭）
+        const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+        if(this.state.showRecommendTips && !_.get(websiteConfig,['oplateConsts','STORE_PERSONNAL_SETTING','NO_SHOW_RECOMMEND_CLUE_TIPS'],false)) {
+            this.handleClickCloseClue();
+        }
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         clueEmitter.removeListener(clueEmitter.REMOVE_CLUE_ITEM, this.removeClueItem);
@@ -343,6 +359,8 @@ class ClueCustomer extends React.Component {
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_HASTRACE, this.flyClueHastrace);
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_HASTRANSFER, this.flyClueHastransfer);
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_INVALID, this.flyClueInvalid);
+        clueEmitter.removeListener(clueEmitter.SHOW_RECOMMEND_PANEL, this.showClueRecommendTemplate);
+        clueEmitter.removeListener(clueEmitter.FLY_APPLY_UPGRADE, this.flyApplyUpgrade);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
         $(window).off('resize', this.resizeHandler);
     }
@@ -393,6 +411,10 @@ class ClueCustomer extends React.Component {
         this.changeAddNumTab(ADD_SELECT_TYPE.INVALID_CLUE);
         // this.onAnimate(item, this.$invalidClue,startType);
     };
+    //申请试用的时候，线索页面添加tab
+    flyApplyUpgrade = () => {
+
+    }
 
     //有新线索时线索面板添加刷新提示
     showRefreshPrompt = (data) => {
@@ -527,24 +549,33 @@ class ClueCustomer extends React.Component {
         });
     };
 
-
-    //根据按钮选择导入或添加线索
-    handleButtonClick = (e) => {
-        if(e.key === 'add'){
+    handleMenuSelectClick = (e) => {
+        if(e.key === 'add') {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-anlysis-handle-btns'), '点击添加线索按钮');
             this.setState({
                 addType: e.key,//手动添加
                 clueAddFormShow: true
             });
-        }else if(e.key === 'import'){
+        }else if(e.key === 'import') {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-anlysis-handle-btns'), '点击导入线索按钮');
             this.setState({
                 addType: e.key,
                 clueImportTemplateFormShow: true
             });
+        } else if(e.key === 'export') {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-anlysis-handle-btns'), '点击下拉中的导出线索按钮');
+            this.showExportClueModal();
+        } else if(e.key === 'clue_pool') {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-anlysis-handle-btns'), '点击下拉中的线索池按钮');
+            this.showExtractCluePanel();
+        } else if(e.key === 'recommend') {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-anlysis-handle-btns'), '点击下拉中的线索推荐按钮');
+            this.showClueRecommendTemplate();
         }
     }
     //渲染导入线索或添加线索按钮
     renderAddBtn = () => {
-        let menu = (<Menu onClick = {this.handleButtonClick.bind(this)} >
+        let menu = (<Menu onClick = {this.handleMenuSelectClick.bind(this)} >
             <Menu.Item key="add" >
                 {Intl.get('crm.sales.manual_add.clue','手动添加')}
             </Menu.Item>
@@ -553,7 +584,7 @@ class ClueCustomer extends React.Component {
             </Menu.Item>
         </Menu>);
         return (
-            <div className="recomend-clue-customer-container">
+            <div className="add-import-clue-btn-container">
                 {
                     addCluePrivilege() ?
                         <Dropdown overlay={menu} overlayClassName="norm-add-dropdown" placement="bottomCenter">
@@ -603,7 +634,7 @@ class ClueCustomer extends React.Component {
                         content={(
                             <span className="clue-recommend-tips-container">
                                 {Intl.get('clue.customer.has.clue.can.extract', '您可以从这里提取线索哦')}
-                                <i className="iconfont icon-close-wide" title={Intl.get('common.app.status.close', '关闭')} onClick={this.handleClickCloseClue}/>
+                                <i data-tracename='关闭您可以从这里提取线索提示' className="iconfont icon-close-wide" title={Intl.get('common.app.status.close', '关闭')} onClick={this.handleClickCloseClue}/>
                             </span>
                         )}
                         visible={!_.isNil(this.state.hasExtractCount) && !this.state.hasExtractCount && this.state.showRecommendTips}
@@ -643,7 +674,7 @@ class ClueCustomer extends React.Component {
                     placement="bottom"
                     content={Intl.get('clue.pool.explain', '存放释放的线索')}
                     overlayClassName="explain-pop">
-                    <Button onClick={this.showExtractCluePanel} className="btn-item">
+                    <Button onClick={this.showExtractCluePanel} className="btn-item" data-tracename='点击线索池按钮'>
                         <i className="iconfont icon-clue-pool"></i>
                         <span className="clue-container">
                             {Intl.get('clue.pool','线索池')}
@@ -656,19 +687,30 @@ class ClueCustomer extends React.Component {
 
     //个人试用升级为正式版
     handleUpgradePersonalVersion = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {});
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            showDifferentVersion: this.triggerShowVersionInfo
+        });
     };
+    //显示/隐藏版本信息面板
+    triggerShowVersionInfo = () => {
+        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
+    };
+
 
     getExportClueTips = () => {
         let currentVersion = checkCurrentVersion();
         let currentVersionType = checkCurrentVersionType();
         let tips = '';
         if(currentVersion.personal && currentVersionType.trial) {//个人试用
-            tips = <a onClick={this.handleUpgradePersonalVersion}>{Intl.get('clue.customer.export.trial.user.tip', '请升级正式版')}</a>;
+            tips = <a onClick={this.handleUpgradePersonalVersion} data-tracename='点击请升级正式版按钮'>{Intl.get('clue.customer.export.trial.user.tip', '请升级正式版')}</a>;
         }else if(currentVersion.company && currentVersionType.trial){//企业试用
             tips = Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'});
         }
         return tips;
+    };
+
+    handlePersonalTrialVisiable = (visible) => {
+        this.setState({personalTrialVisiable: visible});
     };
 
     //渲染导出线索的按钮
@@ -678,15 +720,15 @@ class ClueCustomer extends React.Component {
         return(
             <div className="export-clue-customer-container pull-right">
                 {currentVersionType.trial ?
-                    (<Popover content={tips} overlayClassName="explain-pop">
-                        <Button disabled={true} className="btn-item btn-disabled">
+                    (<Popover content={tips} trigger="click" overlayClassName="explain-pop">
+                        <Button className="btn-item btn-disabled">
                             <i className="iconfont icon-export-clue"></i>
                             <span className="clue-container">
                                 {Intl.get('clue.export.clue.list','导出线索')}
                             </span>
                         </Button>
                     </Popover>) :
-                    (<Button onClick={this.showExportClueModal} className="btn-item">
+                    (<Button onClick={this.showExportClueModal} className="btn-item" data-tracename='点击导出线索按钮'>
                         <i className="iconfont icon-export-clue"></i>
                         <span className="clue-container">
                             {Intl.get('clue.export.clue.list','导出线索')}
@@ -968,7 +1010,7 @@ class ClueCustomer extends React.Component {
     errTipBlock = () => {
         //加载完成，出错的情况
         var errMsg = <span>{this.state.clueCustomerErrMsg}
-            <a onClick={this.getClueList}>
+            <a onClick={this.getClueList} data-tracename='点击请重试按钮'>
                 {Intl.get('user.info.retry', '请重试')}
             </a>
         </span>;
@@ -1157,7 +1199,7 @@ class ClueCustomer extends React.Component {
                         {this.state.submitTraceLoading ? <Icon type="loading"/> : null}
                     </Button>
                     <Button className='cancel-btn'
-                        size={btnSize}
+                        size={btnSize} data-tracename='点击取消保存跟进内容按钮'
                         onClick={this.handleCancelBtn}>{Intl.get('common.cancel', '取消')}</Button>
                 </div>
             </div>
@@ -1180,7 +1222,7 @@ class ClueCustomer extends React.Component {
                         </ShearContent>
                     </div>
                     : editCluePrivilege(salesClueItem) ?
-                        <span className='add-trace-content handle-btn-item'
+                        <span className='add-trace-content handle-btn-item' data-tracename='点击添加跟进内容'
                             onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</span>
                         : null}
 
@@ -1283,7 +1325,7 @@ class ClueCustomer extends React.Component {
         return(
             <span className="valid-or-invalid-container">
                 {avalibilityCluePrivilege() ? <span className="cancel-invalid" onClick={this.handleClickClueInvalid.bind(this, salesClueItem)}
-                    data-tracename="判定线索无效">
+                    data-tracename="点击判定线索无效">
                     {editCluePrivilege(salesClueItem) ? <span className="can-edit handle-btn-item">{Intl.get('clue.customer.set.invalid', '标为无效')}</span> : <span className="can-edit handle-btn-item"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
                 </span> : null}
             </span>
@@ -1414,11 +1456,11 @@ class ClueCustomer extends React.Component {
                 <div className="save-cancel-btn">
                     <Button type='primary' onClick={this.handleInvalidateBtn.bind(this, salesClueItem)}
                         size={invalidBtnSize}
-                        disabled={this.state.submitInvalidateLoading} data-tracename="保存无效原因">
+                        disabled={this.state.submitInvalidateLoading} data-tracename="保存线索无效原因">
                         {Intl.get('clue.confirm.clue.invalid', '确认无效')}
                         {this.state.submitInvalidateLoading ? <Icon type="loading"/> : null}
                     </Button>
-                    <Button className='cancel-btn'
+                    <Button className='cancel-btn' data-tracename="取消保存无效原因"
                         size={invalidBtnSize}
                         onClick={this.handleInvalidateCancelBtn}>{Intl.get('common.cancel', '取消')}</Button>
                 </div>
@@ -1431,11 +1473,11 @@ class ClueCustomer extends React.Component {
         let isEditting = this.state.isInvalidClue === salesClueItem.id && this.state.isInvaliding;
         return (
             <span className="invalid-confirm">
-                <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickClueValidBtn.bind(this, salesClueItem)}>
+                <Button data-tracename="点击确认线索有效按钮" className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickClueValidBtn.bind(this, salesClueItem)}>
                     {Intl.get('clue.customer.confirm.valid', '确认有效')}
                     {isEditting ? <Icon type="loading"/> : null}
                 </Button>
-                <Button onClick={this.cancelInvalidClue}>{Intl.get('common.cancel', '取消')}</Button>
+                <Button data-tracename="点击取消确认线索有效按钮" onClick={this.cancelInvalidClue}>{Intl.get('common.cancel', '取消')}</Button>
             </span>);
     }
     renderInvalidConfirm = (salesClueItem) => {
@@ -1451,6 +1493,7 @@ class ClueCustomer extends React.Component {
 
                     {associatedPrivilege ? (
                         <span
+                            data-tracename="点击转为客户按钮"
                             className="can-edit handle-btn-item"
                             style={{marginRight: 15}}
                             onClick={() => { clueToCustomerPanelEmitter.emit(clueToCustomerPanelEmitter.OPEN_PANEL, {clue: salesClueItem, afterConvert: this.afterTransferClueSuccess}); }}
@@ -1522,31 +1565,31 @@ class ClueCustomer extends React.Component {
         //如果选中了待我审批状态，就不展示已转化
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
         return <span className={clueStatusCls}>
-            {isCommonSalesOrPersonnalVersion() ? null : <span className={willDistCls}
+            {isCommonSalesOrPersonnalVersion() ? null : <span className={willDistCls} data-tracename='点击待分配tab'
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)}
                 title={getCertainTabsTitle(SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
                 <span ref={dom => {this.$willDistribute = dom;}} className="clue-status-num">{_.get(statics, 'willDistribute', 0)}</span>
                 <span className={willDistAddCls}> +1 </span>
             </span>}
             <span className={willTrace}
-                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_TRACE)}
+                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_TRACE)} data-tracename='点击待跟进tab'
                 title={getCertainTabsTitle(SELECT_TYPE.WILL_TRACE)}>{Intl.get('sales.home.will.trace', '待跟进')}
                 <span className="clue-status-num" ref={dom => {this.$willTrace = dom;}}>{_.get(statics, 'willTrace', 0)}</span>
                 <span className={willTraceAddCls}> +1 </span>
             </span>
-            <span className={hasTrace}
+            <span className={hasTrace} data-tracename='点击已跟进tab'
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRACE)}
                 title={getCertainTabsTitle(SELECT_TYPE.HAS_TRACE)}>{Intl.get('clue.customer.has.follow', '已跟进')}
                 <span className="clue-status-num" ref={dom => {this.$hasTrace = dom;}}>{_.get(statics, 'hasTrace', 0)}</span>
                 <span className={hasTraceAddCls}> +1 </span>
             </span>
-            {filterAllotNoTraced || isCommonSalesOrPersonnalVersion() ? null : <span className={hasTransfer}
+            {filterAllotNoTraced || isCommonSalesOrPersonnalVersion() ? null : <span className={hasTransfer} data-tracename='点击已转化tab'
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}
                 title={getCertainTabsTitle(SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
                 <span className="clue-status-num" ref={dom => {this.$hasTransfer = dom;}} >{_.get(statics, 'hasTransfer', 0)}</span>
                 <span className={hasTransferAddCls}> +1 </span>
             </span>}
-            {filterAllotNoTraced ? null : <span className={invalidClue}
+            {filterAllotNoTraced ? null : <span className={invalidClue} data-tracename='点击无效tab'
                 onClick={this.handleChangeSelectedType.bind(this, 'avaibility')}
                 title={getCertainTabsTitle('invalidClue')}>{Intl.get('sales.clue.is.enable', '无效')}
                 <span className="clue-status-num" ref={dom => {this.$invalidClue = dom;}} >{_.get(statics, 'invalidClue', 0)}</span>
@@ -1575,6 +1618,8 @@ class ClueCustomer extends React.Component {
                     let hasSimilarClue = _.get(salesClueItem, 'lead_similarity');
                     //有相似客户
                     let hasSimilarClient = _.get(salesClueItem, 'customer_similarity');
+                    //是否申请试用
+                    let hasApplyTry = _.get(salesClueItem, 'version_upgrade_label') === 'true';
                     let availability = _.get(salesClueItem, 'availability');
                     let status = _.get(salesClueItem, 'status');
                     //判断是否为无效客户
@@ -1604,6 +1649,11 @@ class ClueCustomer extends React.Component {
                                     <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.customer', '有相似客户')}
                                     </span> : null}
+                                {!isInvalidClients && hasApplyTry ?
+                                    <span className='clue-label intent-tag-style'>
+                                        {Intl.get('login.apply.trial','申请试用')} 
+                                    </span> : null}
+    
                             </div>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
                                 <ShearContent>
@@ -1673,7 +1723,7 @@ class ClueCustomer extends React.Component {
                                     type='lead'
                                     hidePhoneIcon={!editCluePrivilege(salesClueItem)}
                                 />
-                                {hasMoreIconPrivilege ? <i className="iconfont icon-more" onClick={this.showClueDetailOut.bind(this, salesClueItem)}/> : null}
+                                {hasMoreIconPrivilege ? <i className="iconfont icon-more" data-tracename='点击线索列表中多个联系人省略号打开线索详情' onClick={this.showClueDetailOut.bind(this, salesClueItem)}/> : null}
                             </div>
 
                         );
@@ -1682,7 +1732,10 @@ class ClueCustomer extends React.Component {
                     }
 
                 }
-            },{
+            }];
+        //如果是个人版，不需要加跟进人
+        if(!checkCurrentVersion().personal){
+            columns.push({
                 dataIndex: 'trace_person',
                 width: column_width,
                 render: (text, salesClueItem, index) => {
@@ -1717,21 +1770,22 @@ class ClueCustomer extends React.Component {
                     );
 
                 }
-            },{
-                dataIndex: 'trace_content',
-                width: '150px',
-                render: (text, salesClueItem, index) => {
-                    return(
-                        <div className="clue-foot" id="clue-foot" ref={dom => {this[`$origin_${DIFFREF.TRACE}_${salesClueItem.id}`] = dom;}}>
-                            {_.get(this,'state.isEdittingItem.id') === salesClueItem.id ? this.renderEditTraceContent(salesClueItem) :
-                                this.renderShowTraceContent(salesClueItem)
-                            }
-                        </div>
-                    );
-
-                }
-            }];
+            });
+        }
         columns.push({
+            dataIndex: 'trace_content',
+            width: '150px',
+            render: (text, salesClueItem, index) => {
+                return(
+                    <div className="clue-foot" id="clue-foot" ref={dom => {this[`$origin_${DIFFREF.TRACE}_${salesClueItem.id}`] = dom;}}>
+                        {_.get(this,'state.isEdittingItem.id') === salesClueItem.id ? this.renderEditTraceContent(salesClueItem) :
+                            this.renderShowTraceContent(salesClueItem)
+                        }
+                    </div>
+                );
+
+            }
+        },{
             dataIndex: 'assocaite_customer',
             className: 'invalid-td-clue',
             width: '170px',
@@ -2129,9 +2183,9 @@ class ClueCustomer extends React.Component {
     renderAddDataContent = () => {
         if (addCluePrivilege()) {
             return (
-                <div className="btn-containers">
+                <div className="btn-containers" data-tracename='没有线索的提示'>
                     <div>
-                        <Button type='primary' className='add-clue-btn' onClick={this.showClueAddForm}>{Intl.get('crm.sales.add.clue', '添加线索')}</Button>
+                        <Button type='primary' className='add-clue-btn' onClick={this.showClueAddForm} data-tracename='点击添加线索按钮'>{Intl.get('crm.sales.add.clue', '添加线索')}</Button>
                     </div>
                     <div>
                         {Intl.get('no.data.add.import.tip', '向客套中添加{type}',{type: Intl.get('crm.sales.clue', '线索')})}
@@ -2145,9 +2199,9 @@ class ClueCustomer extends React.Component {
     renderImportDataContent = () => {
         if (addCluePrivilege()) {
             return (
-                <div className="btn-containers">
+                <div className="btn-containers" data-tracename='没有线索的提示'>
                     <div>
-                        <Button className='import-btn' onClick={this.showImportClueTemplate}>{Intl.get('clue.manage.import.clue', '导入{type}',{type: Intl.get('crm.sales.clue', '线索')})}</Button>
+                        <Button className='import-btn' onClick={this.showImportClueTemplate} data-tracename='点击导入线索按钮'>{Intl.get('clue.manage.import.clue', '导入{type}',{type: Intl.get('crm.sales.clue', '线索')})}</Button>
                     </div>
                     <div>
                         {Intl.get('import.excel.data.ketao', '将excel中的{type}导入到客套中',{type: Intl.get('crm.sales.clue', '线索')})}
@@ -2172,6 +2226,7 @@ class ClueCustomer extends React.Component {
                         values={{
                             'cluepool': <a
                                 style={{textDecoration: 'underline'}}
+                                data-tracename='点击打开线索池'
                                 onClick={this.handleClickCluePool.bind(this)}>
                                 {Intl.get('clue.pool', '线索池')}</a>
                         }}
@@ -2198,8 +2253,7 @@ class ClueCustomer extends React.Component {
         if (this.state.isLoading) {
             return (
                 <div className="load-content">
-                    <Spinner />
-                    <p className="abnornal-status-tip">{Intl.get('common.sales.frontpage.loading', '加载中')}</p>
+                    <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
                 </div>
             );
         } else if (this.state.clueCustomerErrMsg) {
@@ -2526,7 +2580,7 @@ class ClueCustomer extends React.Component {
             return (
                 <span>
                     {Intl.get('crm.8', '已选择全部{count}项', { count: this.state.customersSize })}
-                    <a href="javascript:void(0)"
+                    <a href="javascript:void(0)" data-tracename="点击只选当前展示项"
                         onClick={this.clearSelectAllSearchResult}>{Intl.get('crm.10', '只选当前展示项')}</a>
                 </span>);
         } else {//只选择了当前页时，展示：已选当前页xxx项, <a>选择全部xxx项</a>
@@ -2536,7 +2590,7 @@ class ClueCustomer extends React.Component {
                     {/*在筛选条件下可 全选 ，没有筛选条件时，后端接口不支持选 全选*/}
                     {/*如果一页可以展示全，不再展示选择全部的提示*/}
                     {this.state.customersSize <= this.state.pageSize ? null : (
-                        <a href="javascript:void(0)" onClick={this.selectAllSearchResult}>
+                        <a href="javascript:void(0)" onClick={this.selectAllSearchResult} data-tracename="点击选择全部线索">
                             {Intl.get('crm.12', '选择全部{count}项', { count: this.state.customersSize })}
                         </a>)
                     }
@@ -2746,25 +2800,7 @@ class ClueCustomer extends React.Component {
         }
 
     };
-    handleMenuSelectClick = (e) => {
-        if(e.key === 'add') {
-            this.setState({
-                addType: e.key,//手动添加
-                clueAddFormShow: true
-            });
-        }else if(e.key === 'import') {
-            this.setState({
-                addType: e.key,
-                clueImportTemplateFormShow: true
-            });
-        } else if(e.key === 'export') {
-            this.showExportClueModal();
-        } else if(e.key === 'clue_pool') {
-            this.showExtractCluePanel();
-        } else if(e.key === 'recommend') {
-            this.showClueRecommendTemplate();
-        }
-    }
+
     topBarDropList = (isWebMin) => {
         return (<Menu onClick={this.handleMenuSelectClick.bind(this)}>
             {isWebMin && addCluePrivilege() ?
@@ -2825,19 +2861,19 @@ class ClueCustomer extends React.Component {
     //渲染有新线索，刷新页面提示
     getClueRefreshPrompt = () => {
         return (
-            <div className="new-clue-prompt">
+            <div className="new-clue-prompt" data-tracename="有新线索后的刷新提示">
                 <span className="iconfont icon-warn-icon"></span>
                 <div className="prompt-sentence">
                     <ReactIntl.FormattedMessage
                         id="clue.customer.refresh.tip"
                         defaultMessage={'有新线索，{refreshPage}查看'}
                         values={{
-                            'refreshPage': <a
+                            'refreshPage': <a data-tracename="点击刷新页面按钮"
                                 onClick={this.getClueList}>{Intl.get('clue.customer.refresh.page', '刷新页面')}</a>
                         }}
                     />
                 </div>
-                <span className="iconfont icon-close" onClick={this.closeRefreshPrompt}></span>
+                <span className="iconfont icon-close" onClick={this.closeRefreshPrompt} data-tracename="关闭刷新提示"></span>
             </div>
         );
     }
@@ -2932,7 +2968,7 @@ class ClueCustomer extends React.Component {
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索列表">
                     <TopNav>
-                        <div className="date-picker-wrap">
+                        <div className="date-picker-wrap" data-tracename="线索列表顶部topnav">
                             <div className="search-container">
                                 <div className="search-input-wrapper">
                                     <FilterInput
@@ -3091,6 +3127,11 @@ class ClueCustomer extends React.Component {
                                 }
                             </RightPanel> : null
                     }
+                    {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
+                    {/*<DifferentVersion
+                        showFlag={this.state.showDifferentVersion}
+                        closeVersion={this.triggerShowVersionInfo}
+                    />*/}
                 </div>
             </RightContent>
         );

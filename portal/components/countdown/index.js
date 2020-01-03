@@ -36,9 +36,13 @@ class CountDown extends React.Component{
     };
 
     render() {
+        let content = `${this.props.msg}${this.state.seconds}s`;
+        if(_.isFunction(this.props.renderContent)) {
+            content = this.props.renderContent(this.state.seconds);
+        }
         return (
             <div className="countdown-wrapper">
-                {`${this.props.msg}${this.state.seconds}s`}
+                {content}
             </div>
         );
     }
@@ -51,7 +55,8 @@ CountDown.defaultProps = {
 CountDown.propTypes = {
     msg: PropTypes.string,
     seconds: PropTypes.number,
-    onComplete: PropTypes.func
+    onComplete: PropTypes.func,
+    renderContent: PropTypes.func,
 };
 
 module.exports = CountDown;

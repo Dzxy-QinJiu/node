@@ -180,6 +180,7 @@ var en_US = {
     'common.no.clue': 'There is no lead',//暂无线索
     'common.no.audit': 'There is no operation record',//暂无操作记录
     'common.no.call.record': 'There is no call record',//暂无通话记录
+    'common.system.initial': 'The system is being rapidly initialized, please be patient...',//系统正在快速初始化，请耐心等待...
 
     'common.yesno': 'whether',//是否
     'common.add.member': 'Add members',//添加成员
@@ -295,10 +296,14 @@ var en_US = {
     'common.call.owe.tips': 'Your telephone charge is overdue, please try it after topping up', // 您的电话号码已欠费，请充值后再试！
     'common.number.validate.tips': 'Please fill in at most two decimal places',//请填写最多两位小数的数字
     'common.app.android': 'Android', // 安卓版
-    'common.app.ios': 'IOS', // IOS版   
+    'common.app.ios': 'IOS', // IOS版
+    'common.apply.try.success.tip': 'An account manager will serve you later',//稍后会有客户经理专门为您服务
+    'common.apply.try.user.scales': 'Number of users',//使用人数
+    'common.lead.apply.try': 'lead apply try',//线索申请试用
     'common.terminals.type': 'ype of terminal', // 终端类型
     'common.all.terminals': 'All terminals', // 所有终端
     'common.terminals': 'Terminal', // 终端
+    
     //公共部分--end
 
     'login.login': 'Login',//登录
@@ -312,6 +317,7 @@ var en_US = {
     'login.dim.exchange': 'Unclear? Change another one',//看不清？点击换一张
     'login.username.phone.email': 'username/phone/email',//用户名/手机/邮箱
     'login.logout': 'Logout',//退出
+    'login.find.password': 'Retrieve password',//找回密码
     'login.forgot_password': 'Forgot your password?',//忘记密码
     'login.please_input_phone_or_email': 'Please enter your phone number or email',//请输入手机号或邮箱
     'login.incorrect_phone_or_email': 'Incorrect phone number or email',//手机号或邮箱格式不正确
@@ -341,7 +347,12 @@ var en_US = {
     'login.wechat.login.error': 'WeChat login failed',//微信登录失败
     'login.wechat.bind.error': 'WeChat binding failed',//微信绑定失败
     'login.wechat.bind.check.error': 'Check whether or not to bind WeChat is failed',//检查是否绑定微信出错了
+    'login.user.agreement': 'User agreement', //用户使用协议
+    'login.user.agreement.tip': 'Clicked {btn}, you agree to our {userAgreement} and {privacyPolicy}',//点击{btn}表示您已同意我们的{userAgreement}和{privacyPolicy}
+    'login.no.account.register.tip': 'No account, go to {register}',//没有账号，去{register}
 
+    'register.title.tip': 'Welcome to register',//欢迎注册客套
+    'register.slogan.tip': 'Sales acceleration, starting here ...',//销售加速，从这里开始...
     'register.set.company.id': 'Set up company ID',//设置公司标识
     'register.valid.phone': 'Phone number verification',//验证手机
     'register.fill.account': 'Set up account',//账号设置
@@ -350,7 +361,7 @@ var en_US = {
     'register.company.valid.tip': 'Please enter lowercase and middle line',//请输入小写字母和中划线组成的公司标识
     'register.company.only.error': 'Failed to validate company identifier',//公司标识唯一性验证失败
     'register.company.name.exist': 'Company identifier already exists',//公司标识已存在
-    'register.get.phone.captcha.code': 'Get SMS code',//获取短信验证码
+    'register.get.phone.captcha.code': 'Get SMS code',//获取验证码
     'register.company.name.fill': 'Please enter company name',//请输入公司名称
     'register.finished.button': 'Finish',//完成注册
     'register.phon.validat.tip': 'Please input the correct phone number, eg: 13877775555',//请输入正确的手机号, 格式如:13877775555
@@ -369,6 +380,12 @@ var en_US = {
     'register.wechat.bind.btn': 'Bind immediately', // 立即绑定
     'login.wechat.register.login.error': 'WeChat register login failed',//微信号注册登录失败
     'register.personal.title': 'Register for personal',//注册个人版
+    'register.user.agreement.tip': 'Read and agreed to {useragreement}',//已阅读并同意{userAgreement}
+    'register.user.agreement.curtao': 'User agreement',//《用户协议》
+    'register.user.agreement.valid.tip': 'Please read and agreed to "Curtao user agreement"',//请先阅读并同意《客套用户协议》
+    'register.to.login.tip': 'Existing account, go to {login}',//已有账号，去{login}
+    'register.phone.has.registed': 'The mobile number has been registered',//该手机号已被注册
+    'register.privacy.policy': 'Privacy policy',//隐私政策
 
     //首页
     'home.page': 'Home page',//首页
@@ -3154,7 +3171,7 @@ var en_US = {
     'clue.customer.export.select.clue': 'Export selected leads',//导出选中的线索
     'lead.recommend.form.show.all.condition': 'Show all conditions',//展开全部条件
     'lead.recommend.form.hide.some.condition': 'Hide some condition',//收起部分条件
-    'boot.select.industry.count.tip': 'You can select {count} at most',//最多可选择{count}个行业
+    
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3755,8 +3772,8 @@ var en_US = {
     'clue.recommend.extract.num.limit': 'The number of leads extracted by your organization {timerange} has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
     'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} {timerange} and can extract up to {ableExtract} leads',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
     'clue.recommend.formal.extract.num.limit.tip': 'The {count} clause of this month has been extracted. If you need to continue to extract, please {addLeads}.',//本月{count}条已提取完毕，如需继续提取请{addLeads}
-    'clue.recommend.trial.extract.num.limit.tip': '{count} can be extracted again tomorrow. If necessary, {upgradedVersion} can be extracted immediately.',//明天可再提取{count}条，如需马上提取请{upgradedVersion}
-    'clue.recommend.company.trial.extract.num.limit.tip': 'You can extract {count} again tomorrow. If you need to extract it immediately, please contact our sales staff ({contact}) for upgrading',//明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级
+    'clue.recommend.trial.extract.num.limit.tip': 'The {count} bar has been extracted, if you want to continue extracting please {upgradedVersion}',//已提取{count}条，如需继续提取请{upgradedVersion}
+    'clue.recommend.company.trial.extract.num.limit.tip': '{count} bar has been extracted, if you want to continue extracting, please contact sales: {contact}',//已提取{count}条，如需继续提取请联系销售：{contact}
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
     'common.personal.contribution.score': 'Personal contribution score',//个人贡献分数
@@ -3782,6 +3799,7 @@ var en_US = {
     'crm.search.customer.name.no.found.tip': 'If there is no qualified customer, you can go to {customerpool} to see if there is one',//没有符合条件的客户，您可以去{customerpool}查看是否有该客户
     'batch.faild.count': 'The number of failed: {count}',//失败数{count}
     'batch.success.count': 'The number of successful: {count}',//成功数{count}
+    'clue.see.recommend': 'See recommendations',//查看推荐
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
     'clue.assignment.strategy.fail.to.get': 'Fail to fetch lead assignment strategy list',//获取线索分配策略列表失败
@@ -3822,8 +3840,10 @@ var en_US = {
 
     /*支付流程 --- start*/
     'personal.upgrade.to.official.version': 'Upgrade to the official version',//升级为正式版
+    'personal.official.version': 'Personal',//个人正式版
     'personal.upgrade.to.enterprise.edition': 'Upgrade to enterprise edition',//升级为企业版
-    'clues.extract.count.at.month': 'Lead recommendation can be extracted every month {count}',//线索推荐每月可提取{count}条
+    'personal.apply.trial.enterprise.edition': 'Apply for trial enterprise edition',//申请试用企业版
+    'clues.extract.count.at.month': 'Extract {count} clues per month',//每月可提取 {count} 条线索
     'goods.price.most.favorable': 'The most favorable',//最优惠
     'goods.immediate.payment': 'Immediate payment',//立即支付
     'goods.increase.clues': 'Increase the amount of leads',//增加线索量
@@ -3857,23 +3877,51 @@ var en_US = {
     'payment.get.payment.mode.faild': 'Failed to obtain payment channel',//获取支付渠道失败
     'payment.get.discount.faild': 'Failed to get item discount information',//获取商品折扣信息失败
     'payment.please.upgrade.company.version': 'Please first upgrade to the basic version of the above version, contact sales: {contact}',//请先升级到基础版以上版本，联系销售：{contact}
+    'payment.upgrade.personal.version': 'upgrade personal official version',//升级个人正式版
+    'payment.find.result': 'Checking payment results...',//正在查询支付结果...
+    'payment.upgrade.personal.version.success': 'You have been upgraded to the personal version, you can extract {count} clues every month!',//您已升级为个人正式版，每月可提取{count}线索啦！
+    'payment.contact.us': 'Contact us {contact}',//联系我们请拨打{contact}
+    'payment.add.leads.tip': 'If the quantity of clues is insufficient, {addBtn}',//如果线索量不够用，可另外{addBtn}
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
-    'personal.welcome.use.curtao': 'Welcome to use the Curtao',//欢迎使用客套
+    'personal.welcome.use.curtao': 'Welcome to use the courtesy, complete the following 2 steps to get the recommended clues',//欢迎使用客套，完成以下2步操作即可获取推荐线索
     'personal.open.success.tip': 'Congratulations! You have successfully opened the trial version. The rest of the trial period is {count} days',//恭喜您成功开通试用版，试用期剩余 {count} 天
+    'boot.complete.step.set.industry': 'Which industries do you focus on?',//您关注哪些行业的客户?
+    'boot.complete.step.set.area': 'Which geographic customers do you focus on?',//您关注哪个地域的客户?
+    'boot.complete.step.select.recommend.tip': 'Please select or enter a search',//请选择或输入搜索
+    'boot.select.industry.count.tip': 'Up to {count} industries can be selected',//最多可选择{count}个行业
+    'boot.not.found.industry.tip': 'No "{search}" related industries were found. You may be interested in the following industries',//没有搜索到 “{search}” 相关行业，您可能关心以下行业
+    'boot.select.industry': 'Please select the industry to focus on',//请选择关注的行业
+    'boot.select.area': 'Please select the area of concern',//请选择关注的地域
+    'boot.input.industry': 'Please enter industries of concern',//请输入关注的行业
     /*个人试用 --- end*/
     /*组织到期提示 --- start*/
-    'organization.personal.trial.expired.tip': 'Your probation period remains {time} days, whether {upgrade}？',//您的试用期剩余{time}天，是否{upgrade}
+    'organization.personal.trial.expired.tip': 'You have {time} days left in the trial period. {count} clues can be extracted every day. Will you upgrade to {upgrade} or {enterprise}?',//您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？
     'organization.company.trial.expired.tip': 'The rest of your probationary period {time} days, please contact our sales staff: {contact}',//您的试用期剩余{time}天，请联系我们的销售人员: {contact}
     'organization.personal.formal.expired.tip': 'Your account is about to expire, is it {renewal}?',//您的账号即将到期，是否{renewal}？
     'organization.company.formal.expired.tip': 'Your account is about to expire, please contact our sales staff: {contact}',//您的账号即将到期，请联系我们的销售人员: {contact}
     /*组织到期提示 --- end*/
+
+    /*版本信息 --- start */
+    'versions.online.pay': 'Online Payment',//在线购买
+    'versions.connect.sale': 'contact our sales staff', //联系销售
+    'versions.personal.price': 'yuan/Month', // 元/月
+    'versions.pay.least.number': 'pieces minimum per order', //人起售
+    'versions.monthly.clues.recommend': 'item/month clues recommend', //{clues}条/月线索推荐
+    'versions.please.call.phone': 'Call us {phone}', //请拨打
+    'versions.apply.try': 'Start Experience', //开始体验
+    'versions.compare.add.features': 'compare with {versionName}, add:', //比{versionName}增加以下功能:
+    'versions.starter': 'Starter', //基础版
+    'versions.professional': 'Professional',//专业版
+    'versions.enterprise': 'Enterprise',//企业版
+    /*版本信息 --- end */
 
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/
     'leave-feedback-title': 'Leave Feedback', //出差反馈
     'leave-feedback-visit-consumer': 'visit', //拜访了
     'leave-feedback-visit-record': 'Leave feedback record:', //拜访记录：
     /*销售出差反馈，弹窗给邮件抄送人 ---end*/
+
 };
 export default en_US;

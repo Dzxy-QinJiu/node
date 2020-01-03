@@ -445,12 +445,11 @@ exports.getRecommendClueLists = function(req, res) {
                     name: item.name,
                     legalPerson: item.legalPerson,
                     telephones: item.telephones,
-                    startTime: item.startTime || ''
+                    startTime: item.startTime || '',
+                    sortvalues: item.sortvalues
                 });
             });
-            //按注册时间进行排序
-            lists = _.sortBy(lists, item => -item.startTime);
-            res.status(200).json(lists);
+            res.status(200).json(result);
         }).on('error', function(err) {
             res.status(500).json(err && err.message);
         });
@@ -528,6 +527,16 @@ exports.checkOnlyClueNamePhone = function(req, res) {
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
+            res.status(500).json(err.message);
+        });
+};
+
+//获取申请试用数据
+exports.getApplyTryData = function(req, res) {
+    clueCustomerService.getApplyTryData(req, res)
+        .on('success',function(data) {
+            res.status(200).json(data);
+        }).on('error',function(err) {
             res.status(500).json(err.message);
         });
 };

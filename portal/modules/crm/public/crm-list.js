@@ -2302,7 +2302,7 @@ class Crm extends React.Component {
                 </div>
                 {!shouldTableShow ? (
                     <div className={tableLoadingClassName}>
-                        <Spinner />
+                        <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
                     </div>
                 ) : null}
                 <ImportCrmTemplate

@@ -152,7 +152,7 @@ class RecommendClues extends React.Component {
         } = this.state;
         if(step === EXTRACT_CLUE_STEPS.SET_RECOMMEND) {// 设置推荐客户
             if(loading) {
-                return <Spinner/>;
+                return <Spinner className='home-loading'/>;
             }
             return (
                 <RecommendCustomerCondition
@@ -165,7 +165,7 @@ class RecommendClues extends React.Component {
             if(loading) {
                 return (
                     <div className="load-content">
-                        <Spinner/>
+                        <Spinner className='home-loading'/>
                         <p className="loading-status-tip">{Intl.get('guide.extract.clue.loading', '获取线索中')}</p>
                     </div>
                 );

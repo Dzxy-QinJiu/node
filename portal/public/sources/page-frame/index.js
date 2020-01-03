@@ -13,7 +13,7 @@ import PhonePanel from 'MOD_DIR/phone_panel/public';
 import ClueDetailPanel from 'MOD_DIR/clue_detail_panel/public';
 import AudioPlayer from 'CMP_DIR/audioPlayer';
 import Notification from 'MOD_DIR/notification/public/index';
-import PersonalCompleteInformation from 'CMP_DIR/personal-complete-information';
+import BootCompleteInformation from 'CMP_DIR/boot-complete-information';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import PurchaseLeads from 'CMP_DIR/purchase-leads';
 import ClueToCustomerPanel from 'CMP_DIR/clue-to-customer-panel';
@@ -31,6 +31,7 @@ import{
     clickUpgradeNoiceEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
+import {getUserData} from '../../sources/user-data';
 import {checkVersionAndType, isShowUnReadNotice} from '../utils/common-method-util';
 import {getUpgradeNoticeList} from '../utils/common-data-util';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
@@ -55,7 +56,7 @@ class PageFrame extends React.Component {
         isShowClueToCustomerPanel: false, // 是否显示线索转客户面板
         clueToCustomerPanelProps: {}, //线索转客户面板属性
         clueParamObj: $.extend(true, {}, emptyParamObj),
-        isShowPersonalCompletePanel: false,//是否显示个人试用首次登录完善资料信息面板
+        isShowBootCompletePanel: !_.get(getUserData(), 'websiteConfig.personnel_setting.no_show_boot_complete_set_recommend', false),//是否显示首次引导设置推荐线索条件面板
         userDetailParamObj: $.extend(true, {}), // 用户详情组件相关的参数
         isShowPurchaseLeadsPanel: false,//是否展示购买线索量面板
         cluePaymentParamObj: {},
@@ -310,17 +311,16 @@ class PageFrame extends React.Component {
         this.closePhonePanel();
     };
 
-    showPersonalCompletePanel = (websitConfig) => {
-        let versionAndType = checkVersionAndType();
-        if(versionAndType.isPersonalTrial && !_.get(websitConfig,'no_show_personal_complete_info')) {
+    showBootCompletePanel = (websitConfig) => {
+        if(!_.get(websitConfig,'no_show_boot_complete_set_recommend')) {
             this.setState({
-                isShowPersonalCompletePanel: true
+                isShowBootCompletePanel: true
             });
         }
     };
 
-    closePersonalCompleteInfoPanel = () => {
-        this.setState({isShowPersonalCompletePanel: false});
+    closeBootCompleteInfoPanel = () => {
+        this.setState({isShowBootCompletePanel: false});
     };
 
     showPurchaseLeadsPanel = (paramObj) => {
@@ -346,7 +346,7 @@ class PageFrame extends React.Component {
                         <LeftMenu
                             toggleNotificationPanel={this.toggleNotificationPanel}
                             closeNotificationPanel={this.closeNotificationPanel}
-                            showPersonalCompletePanel={this.showPersonalCompletePanel}
+                            showBootCompletePanel={this.showBootCompletePanel}
                             isShowNotificationPanel={this.state.isShowNotificationPanel}
                         />
                     </div>
@@ -375,9 +375,9 @@ class PageFrame extends React.Component {
                             ) : null
                         }
                         {
-                            this.state.isShowPersonalCompletePanel ? (
-                                <PersonalCompleteInformation
-                                    hideRightPanel={this.closePersonalCompleteInfoPanel}
+                            this.state.isShowBootCompletePanel ? (
+                                <BootCompleteInformation
+                                    hideRightPanel={this.closeBootCompleteInfoPanel}
                                 />
                             ) : null
                         }

@@ -463,11 +463,11 @@ class ClueRightPanel extends React.Component {
                         {!_.isEmpty(this.state.isRemoveClue) ?
                             <div className="delete-modal">
                                 <div className="handle-btn">
-                                    <Button type='primary' onClick={this.handleConfirmDeleteClue}>
+                                    <Button type='primary' data-tracename="点击确认删除线索按钮" onClick={this.handleConfirmDeleteClue}>
                                         {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                         {this.state.isDeletingClue ? <Icon type="loading"/> : null}
                                     </Button>
-                                    <Button onClick={this.cancelDeleteClue}>{Intl.get('common.cancel', '取消')}</Button>
+                                    <Button onClick={this.cancelDeleteClue} data-tracename="点击取消确认删除线索按钮">{Intl.get('common.cancel', '取消')}</Button>
                                 </div>
                             </div>
                             : null}
