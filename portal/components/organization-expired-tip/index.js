@@ -10,8 +10,9 @@ import { getOrganizationInfo } from 'PUB_DIR/sources/utils/common-data-util';
 import { checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
 import { paymentEmitter } from 'PUB_DIR/sources/utils/emitters';
 import DifferentVersion from 'MOD_DIR/different_version/public';
+import ApplyTry from 'MOD_DIR/apply_try/public';
 import history from 'PUB_DIR/sources/history';
-import {COMPANY_PHONE} from 'PUB_DIR/sources/utils/consts';
+import {COMPANY_PHONE, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/utils/consts';
 
 
 const REMIND_DAYS = {
@@ -51,7 +52,8 @@ class OrganizationExipreTip extends React.PureComponent {
                     || (versionAndType.formal && expire_after_days <= REMIND_DAYS.FORMAL)) {
                     this.setState({
                         endTime: expire_after_days,
-                        visible: true
+                        visible: true,
+                        organization: result
                     });
                 }
             }
@@ -64,7 +66,10 @@ class OrganizationExipreTip extends React.PureComponent {
 
     handleClickRenewal = () => {
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
-            showDifferentVersion: this.triggerShowVersionInfo
+            showDifferentVersion: this.triggerShowVersionInfo,
+            continueFn: () => {
+                history.push('/leads');
+            }
         });
     };
     //显示/隐藏版本信息面板
@@ -79,14 +84,18 @@ class OrganizationExipreTip extends React.PureComponent {
         let versionAndType = checkVersionAndType();
         let tip = '';
         if(versionAndType.trial) {
-            if(versionAndType.personal || versionAndType.company) {
+            if(versionAndType.personal) {
+                let leadLimit = _.get(this.state.organization, 'version.lead_limit', '');
+                //lead_limit: "1000_1/M",("100_1/D")
+                let count = _.get(leadLimit.split('_'),'[0]',0);
                 tip = <ReactIntl.FormattedMessage
                     id="organization.personal.trial.expired.tip"
-                    defaultMessage={'您的试用期剩余{time}天，是否{upgrade}？联系我们请拨打{contact}'}
+                    defaultMessage={'您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？'}
                     values={{
-                        'time': this.state.endTime,
-                        upgrade: <a data-tracename="点击组织到期，升级为正式版按钮" onClick={this.handleClickRenewal}>{Intl.get('user.info.version.upgrade', '升级为正式版')}</a>,
-                        contact: COMPANY_PHONE
+                        time: this.state.endTime,
+                        count: count,
+                        upgrade: <a data-tracename="点击组织到期，个人正式版按钮" onClick={this.handleClickRenewal}>{Intl.get('personal.official.version', '个人正式版')}</a>,
+                        enterprise: <a data-tracename="点击组织到期，申请试用企业版按钮" onClick={this.triggerShowVersionInfo}>{Intl.get('personal.apply.trial.enterprise.edition', '申请试用企业版')}</a>,
                     }}
                 />;
             }else {
@@ -121,12 +130,13 @@ class OrganizationExipreTip extends React.PureComponent {
                         closable
                         className="organization-expired-tip"
                     />
-                    <DifferentVersion
-                        showFlag={this.state.showDifferentVersion}
-                        closeVersion={this.triggerShowVersionInfo}
-                        continueFn={this.handleContinueFn}
+                    {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
+                    {/*<DifferentVersion*/}
+                    {/*showFlag={this.state.showDifferentVersion}*/}
+                    {/*closeVersion={this.triggerShowVersionInfo}*/}
+                    {/*continueFn={this.handleContinueFn}*/}
 
-                    />
+                    {/*/>*/}
                 </div>
             );
         }else {return null;}

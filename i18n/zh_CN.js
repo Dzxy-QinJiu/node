@@ -323,6 +323,7 @@ var zh_CN = {
     'login.dim.exchange': '看不清？点击换一张',
     'login.username.phone.email': '用户名/手机/邮箱',
     'login.logout': '退出',
+    'login.find.password': '找回密码',
     'login.forgot_password': '忘记密码',
     'login.please_input_phone_or_email': '请输入手机号或邮箱',
     'login.incorrect_phone_or_email': '手机号或邮箱格式不正确',
@@ -3877,8 +3878,10 @@ var zh_CN = {
 
     /*支付流程 --- start*/
     'personal.upgrade.to.official.version': '升级为正式版',
+    'personal.official.version': '个人正式版',
     'personal.upgrade.to.enterprise.edition': '升级为企业版',
-    'clues.extract.count.at.month': '线索推荐每月可提取 {count} 条',
+    'personal.apply.trial.enterprise.edition': '申请试用企业版',
+    'clues.extract.count.at.month': '每月可提取 {count} 条线索',
     'goods.price.most.favorable': '最优惠',
     'goods.immediate.payment': '立即支付',
     'goods.increase.clues': '增加线索量',
@@ -3912,6 +3915,11 @@ var zh_CN = {
     'payment.get.payment.mode.faild': '获取支付渠道失败',
     'payment.get.discount.faild': '获取商品折扣信息失败',
     'payment.please.upgrade.company.version': '请先升级到基础版以上版本，联系销售：{contact}',
+    'payment.upgrade.personal.version': '升级个人正式版',
+    'payment.find.result': '正在查询支付结果...',
+    'payment.upgrade.personal.version.success': '您已升级为个人正式版，每月可提取{count}线索啦！',
+    'payment.contact.us': '联系我们请拨打{contact}',
+    'payment.add.leads.tip': '如果线索量不够用，可另外{addBtn}',
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
@@ -3924,10 +3932,11 @@ var zh_CN = {
     'boot.not.found.industry.tip': '没有搜索到 “{search}” 相关行业，您可能关心以下行业',
     'boot.select.industry': '请选择关注的行业',
     'boot.select.area': '请选择关注的地域',
+    'boot.input.industry': '请输入关注的行业',
     /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/
-    'organization.personal.trial.expired.tip': '您的试用期剩余{time}天，是否{upgrade}？联系我们请拨打{contact}',
+    'organization.personal.trial.expired.tip': '您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？',
     'organization.company.trial.expired.tip': '您的试用期剩余{time}天，请联系我们的销售人员: {contact}',
     'organization.personal.formal.expired.tip': '您的账号即将到期，是否{renewal}？',
     'organization.company.formal.expired.tip': '您的账号即将到期，请联系我们的销售人员: {contact}',
@@ -3939,9 +3948,13 @@ var zh_CN = {
     'versions.personal.price': '元/月',
     'versions.pay.least.number': '人起售',
     'versions.monthly.clues.recommend': '条/月线索推荐',
-    'versions.please.call.phone': '请拨打{phone}',
-    'versions.apply.try': '体验{version}',
+    'versions.please.call.phone': '联系我们：{phone}',
+    'versions.apply.try': '开始体验',
     'versions.compare.add.features': '比{versionName}增加以下功能:',
+    'versions.starter': '基础版',
+    'versions.professional': '专业版',
+    'versions.enterprise': '企业版',
+
     /*版本信息 --- end */
 
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/

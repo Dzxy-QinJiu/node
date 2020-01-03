@@ -398,7 +398,7 @@ exports.getUnhandledClueCountParams = function() {
                 name: 'source_time'
             }],
             query: {
-                status: '1',
+                status: '1,2',
                 availability: '0'
             },
         },

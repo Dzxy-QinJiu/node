@@ -61,6 +61,7 @@ class BootCompleteInformation extends React.Component{
             },
             isGetIndustrys: false,
             searchValue: '',
+            disableNextBtn: false,//是否禁用下一步按钮
         };
     }
 
@@ -68,7 +69,7 @@ class BootCompleteInformation extends React.Component{
 
     componentDidMount() {
         this.getAreaByPhone();
-        this.getRecommendCustomerIndustry();
+        // this.getRecommendCustomerIndustry();
     }
 
     getRecommendCustomerIndustry = () => {
@@ -120,11 +121,13 @@ class BootCompleteInformation extends React.Component{
         }
     };
 
-    setRecommends = () => {
+    setRecommends = (e) => {
+        e.preventDefault();
         this.setState({isLoading: true});
+        var _this = this;
         let recommendParams = {};
         let areaData = _.cloneDeep(this.state.stepData.areaData);
-        if(!_.isEmpty(this.state.stepData.industrys)) {
+        if(!_.isEmpty(this.state.stepData.industrys[0])) {
             recommendParams.industrys = this.state.stepData.industrys;
         }
         if(!_.isEmpty(areaData)) {
@@ -135,7 +138,7 @@ class BootCompleteInformation extends React.Component{
             }
             recommendParams = {...recommendParams,...areaData};
         }
-        var _this = this;
+
         setWebConfig(() => {
             this.hasSetWebConfigSuccess = true;
         });
@@ -157,10 +160,9 @@ class BootCompleteInformation extends React.Component{
             }
         });
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '保存推荐线索条件');
-
         function jumpLeadPage(targetObj) {
             setWebConfig();
-            
+
             //保存成功后跳转到推荐线索列表
             if(location.pathname.indexOf(ROUTE_CONSTS.LEADS) === -1) {
                 history.push('/' + ROUTE_CONSTS.LEADS, {
@@ -413,9 +415,33 @@ class BootCompleteInformation extends React.Component{
         this.setState({searchValue: searchValue, otherIndustries: []});
     };
 
+    validateIndustryCount = (rule, value, callback) => {
+        let disableNextBtn = false;
+        if (value) {
+            var industryReg = /^[\u4E00-\u9FA5A-Za-z0-9]{1,10}$/;
+            if (industryReg.test(value)) {
+                callback();
+            } else {
+                disableNextBtn = true;
+                callback(new Error(Intl.get('clue.customer.add.industry.rule', '请输入1-10位的数字，字母或汉字(中间不能有空格)')));
+            }
+        }
+        else{
+            callback();
+        }
+        this.setState({disableNextBtn: disableNextBtn});
+    };
+
+    handleIndustryChange = (e) => {
+        let {stepData} = this.state;
+        stepData.industrys = [_.trim(e.target.value)];
+        this.setState({stepData});
+    };
+
     //渲染行业
     renderIndustriysBlock() {
         let industryList = this.state.industryList;
+        let {getFieldDecorator} = this.props.form;
         //加载中的展示
         if (this.state.isGetIndustrys) {
             return (
@@ -424,7 +450,7 @@ class BootCompleteInformation extends React.Component{
                 </div>
             );
         }
-        else if (!industryList.length) {
+        /*else if (!industryList.length) {
             return (
                 <div className="no-data-wrapper">
                     <NoDataIconTip
@@ -432,13 +458,13 @@ class BootCompleteInformation extends React.Component{
                     />
                 </div>
             );
-        }
+        }*/
         else {
             const searchValue = this.state.searchValue;
             const otherIndustries = this.state.otherIndustries;
             return (
                 <div className="boot-recommend-industries-wrapper">
-                    <ul className="select-selection-wrapper clearfix">
+                    {/*<ul className="select-selection-wrapper clearfix">
                         {_.map(this.state.stepData.industrys, (item, index) => {
                             return (
                                 <li
@@ -452,19 +478,38 @@ class BootCompleteInformation extends React.Component{
                                 </li>
                             );
                         })}
-                    </ul>
-                    <Input
-                        placeholder={Intl.get('boot.complete.step.select.recommend.tip', '请选择或输入搜索')}
-                        value={searchValue}
-                        onChange={this.handleSearch}
-                        className='search-industry-input'
-                    />
+                    </ul>*/}
+                    <Form>
+                        <FormItem
+                            wrapperCol={{
+                                sm: {span: 24}
+                            }}
+                        >
+                            {
+                                getFieldDecorator('industrys',{
+                                    initialValue: _.get(this.state.stepData, 'industrys[0]',''),
+                                    rules: [{
+                                        validator: this.validateIndustryCount
+                                    }]
+                                })(
+                                    <Input
+                                        // placeholder={Intl.get('boot.complete.step.select.recommend.tip', '请选择或输入搜索')}
+                                        // value={searchValue}
+                                        // onChange={this.handleSearch}
+                                        onChange={this.handleIndustryChange}
+                                        className='search-industry-input'
+                                        placeholder={Intl.get('clue.customer.input.industry', '请输入行业名称')}
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </Form>
                     {_.get(otherIndustries,'length') ? (
                         <div className="recommend-not-found-tip">
                             {Intl.get('boot.not.found.industry.tip', '没有搜索到 “{search}” 相关行业，您可能关心以下行业', {search: searchValue})}
                         </div>
                     ) : null}
-                    <div style={{height: this.state.industryListHeight}}>
+                    {/*<div style={{height: this.state.industryListHeight}}>
                         <GeminiScrollBar>
                             <div className="recommend-industrys-container">
                                 <div className="recommend-industrys-content">
@@ -484,7 +529,7 @@ class BootCompleteInformation extends React.Component{
                                 </div>
                             </div>
                         </GeminiScrollBar>
-                    </div>
+                    </div>*/}
                 </div>
             );
         }
@@ -504,7 +549,7 @@ class BootCompleteInformation extends React.Component{
                     {this.state.isShowMaxSelectedCountTip ? (
                         <span className="error-select-tip">{Intl.get('boot.select.industry.count.tip', '最多可选择{count}个行业', {count: MAX_SELECTED_COUNT})}</span>
                     ) : null}
-                    <Button size="large" type='primary' className='btn-item pull-right' onClick={this.onReturnBack.bind(this, STEPS_MAPS.SET_SECOND)}>{Intl.get('user.user.add.next', '下一步')}</Button>
+                    <Button size="large" type='primary' className='pull-right' disabled={this.state.disableNextBtn} onClick={this.onReturnBack.bind(this, STEPS_MAPS.SET_SECOND)}>{Intl.get('user.user.add.next', '下一步')}</Button>
                 </div>
             </div>
         );
@@ -565,7 +610,7 @@ class BootCompleteInformation extends React.Component{
                         </div>
                         <div className="boot-complete-step-content">
                             <div className="boot-complete-step-label">
-                                <span className={firstStepLabelCls}>①{Intl.get('boot.select.industry', '请选择关注的行业')}</span>
+                                <span className={firstStepLabelCls}>①{Intl.get('boot.input.industry', '请输入关注的行业')}</span>
                                 <span className="step-omit">······</span>
                                 <span className={secondStepLabelCls}>②{Intl.get('boot.select.area', '请选择关注的地域')}</span>
                             </div>

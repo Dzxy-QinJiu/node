@@ -1,8 +1,10 @@
 /**
  * 找回密码
  */
-
+require('./css/forgot-password.less');
 var React = require('react');
+import { storageUtil } from 'ant-utils';
+import {TextField} from '@material-ui/core';
 import {isPhone, isEmail} from 'PUB_DIR/sources/utils/validate-util';
 var crypto = require('crypto');
 import { Steps } from 'antd';
@@ -22,7 +24,6 @@ const ERROR_MSGS = {
     ERROR_CAPTCHA: 'error-captcha'//刷新验证码失败
 };
 var base64_prefix = 'data:image/png;base64,';
-import { storageUtil } from 'ant-utils';
 
 class ForgotPassword extends React.Component {
     state = {
@@ -71,16 +72,26 @@ class ForgotPassword extends React.Component {
     renderCaptchaBlock = (hasWindow) => {
         const type = this.state.currentView === VIEWS.SEND_AUTH_CODE ? VIEWS.RESET_PASSWORD : '';
 
-        return (this.state.captchaCode ? (<div className="input-item captcha_wrap clearfix">
-            <input placeholder={hasWindow ? Intl.get('common.captcha', '验证码') : null} type="text"
-                name="retcode" autoComplete="off"
-                tabIndex="3"
-                onChange={this.handleCaptchaCodeValueChange}
-                ref="captcha_input" maxLength="4"/>
-            <img src={base64_prefix + this.state.captchaCode} width="120" height="40"
-                title={Intl.get('login.dim.exchange', '看不清？点击换一张')}
-                onClick={this.refreshCaptchaCode.bind(this, type)}/>
-        </div>) : null);
+        return (this.state.captchaCode ? (
+            <div className="input-item captcha_wrap clearfix">
+                <TextField
+                    required
+                    fullWidth
+                    className='login-input-wrap'
+                    id="standard-basic"
+                    label={hasWindow ? Intl.get('common.captcha', '验证码') : null}
+                    color='primary'
+                    autoComplete="off"
+                    name="retcode" 
+                    value={this.state.captchaCodeValue}
+                    onChange={this.handleCaptchaCodeValueChange}
+                    maxLength="4"
+                    tabIndex="2"
+                />
+                <img src={base64_prefix + this.state.captchaCode} width="120" height="40"
+                    title={Intl.get('login.dim.exchange', '看不清？点击换一张')}
+                    onClick={this.refreshCaptchaCode.bind(this, type)}/>
+            </div>) : null);
     };
 
     //渲染成功提示信息
@@ -240,12 +251,8 @@ class ForgotPassword extends React.Component {
             }
         });
     };
-    // 发送验证码的类型：是用手机号还是邮箱
-    getContactType = () => {
 
-    };
     sendMsg = () => {
-        // this.checkContactInfo(() => {
         const captcha = this.state.captchaCodeValue;
         const user_name = this.state.username;
         let contactInfo = this.state.contactInfo;
@@ -267,26 +274,26 @@ class ForgotPassword extends React.Component {
         }
 
         this.setState({ contactType, contactTypeName });
-    
+
         if (!captcha) {
             this.props.setErrorMsg(Intl.get('retry.input.captcha', '请输入验证码'));
             return;
         }
-    
+
         $.ajax({
             url: '/send_reset_password_msg',
             dataType: 'json',
             data: {
-                user_name,
+                user_name: contactInfo,
                 captcha,
                 send_type: contactType,
             },
             success: (data) => {
-                if (!data) {
-                    this.props.setErrorMsg(Intl.get('login.message_sent_failure', '信息发送失败'));
-                } else {
+                if (_.get(data, 'user_id')) {
                     this.changeView(VIEWS.VERIFY_AUTH_CODE);
-                    this.setState({successMsg: Intl.get('login.message_has_been_send', '信息已发送')});
+                    this.setState({ userId: data.user_id, username: contactInfo});
+                } else {
+                    this.props.setErrorMsg(Intl.get('login.message_sent_failure', '信息发送失败'));
                 }
             },
             error: (errorObj) => {
@@ -297,9 +304,7 @@ class ForgotPassword extends React.Component {
                 }
             }
         });
-        // });
     };
-
     getTicket = () => {
         const code = this.state.authCode;
         const user_id = this.state.userId;
@@ -352,7 +357,6 @@ class ForgotPassword extends React.Component {
             },
             success: (data) => {
                 if (!data) {
-                    this.changeView(VIEWS.DONE);
                     this.setState({successMsg: Intl.get('login.reset_password_success', '重置密码成功，请返回登录页用新密码登录')});
                 } else {
                     this.props.setErrorMsg(Intl.get('login.reset_password_failure', '重置密码失败'));
@@ -363,38 +367,75 @@ class ForgotPassword extends React.Component {
             }
         });
     };
-
+    returnLoginPage = (e) => {
+        if (_.isFunction(this.props.changeView)) {
+            this.props.changeView();
+        }
+    }
     render() {
         const hasWindow = this.props.hasWindow;
 
         return (
-            <form>
+            <form className='forgot-password-form'>
                 <Steps current={this.state.step}>
                     <Step title={Intl.get('login.fill_in_contact_info', '填写联系信息')} />
                     <Step title={Intl.get('login.verify_identity', '验证身份')} />
                     <Step title={Intl.get('login.set_new_password', '设置新密码')} />
-                    <Step title={Intl.get('user.user.add.finish', '完成')} />
                 </Steps>
-
-                {this.getSuccessMsgBlock()}
-
                 <div className="input-area">
-
                     {this.state.currentView === VIEWS.SEND_AUTH_CODE ? (
                         <div className="input-item">
-                            <input tabIndex="1" placeholder={Intl.get('login.please_input_phone_or_email', '请输入手机号或邮箱')} onChange={this.handleContactInfoChange.bind(this)} />
+                            <TextField
+                                required
+                                fullWidth
+                                id="standard-basic"
+                                name="contactInfo"
+                                autoComplete="off" 
+                                tabIndex="1"
+                                label={Intl.get('login.please_input_phone_or_email', '请输入手机号或邮箱')}
+                                color='primary'
+                                value={this.state.contactInfo}
+                                onChange={this.handleContactInfoChange.bind(this)}
+                                className='login-input-wrap'
+                            />
                         </div>
                     ) : null}
 
                     {this.state.currentView === VIEWS.VERIFY_AUTH_CODE ? (
                         <div className="input-item">
-                            <input tabIndex="1" placeholder={Intl.get('login.please_enter_contact_type_verification_code', '请输入{contactTypeName}验证码', {contactTypeName: this.state.contactTypeName})} onChange={this.handleAuthCodeChange} />
+                            <TextField
+                                required
+                                fullWidth
+                                id="standard-basic"
+                                name="authCode"
+                                autoComplete="off" 
+                                tabIndex="1"
+                                label={Intl.get('login.please_enter_contact_type_verification_code', '请输入{contactTypeName}验证码', {contactTypeName: this.state.contactTypeName})}
+                                color='primary'
+                                value={this.state.authCode}
+                                onChange={this.handleAuthCodeChange.bind(this)}
+                                className='login-input-wrap'
+                            />
                         </div>
                     ) : null}
 
                     {this.state.currentView === VIEWS.RESET_PASSWORD ? (
                         <div className="input-item">
-                            <input tabIndex="1" type="password" placeholder={Intl.get('login.please_enter_new_password', '请输入新密码')} onChange={this.handleNewPasswordChange} />
+                            <TextField
+                                required
+                                fullWidth
+                                id="password"
+                                name="newPassword"
+                                type="password"
+                                tabIndex="1"
+                                label={Intl.get('user.password.new.password', '新密码')}
+                                autoComplete="off"
+                                className="login-input-wrap"
+                                color='primary'
+                                disabled={this.state.successMsg}
+                                onChange={this.handleNewPasswordChange}
+                                value={this.state.newPassword}
+                            />
                         </div>
                     ) : null}
 
@@ -423,6 +464,7 @@ class ForgotPassword extends React.Component {
 
                 {this.state.currentView === VIEWS.RESET_PASSWORD ? (
                     <button className="login-button" type="button"
+                        disabled={this.state.successMsg}
                         tabIndex="3"
                         onClick={this.resetPassword}
                         data-tracename="点击重置密码按钮"
@@ -430,10 +472,10 @@ class ForgotPassword extends React.Component {
                         {hasWindow ? Intl.get('user.batch.password.reset', '重置密码') : null}
                     </button>
                 ) : null}
-
-                {this.state.currentView === VIEWS.DONE ? (
-                    <div tabIndex="1"></div>
-                ) : null}
+                <div className='forgot-password-tip'>
+                    {this.state.successMsg ? (<span className='success-msg'>{this.state.successMsg}</span>) : null}
+                    <a className='login-find-password-tip' data-tracename="返回登录页" onClick={this.returnLoginPage}> {Intl.get('login.return_to_login_page', '返回登录页')}</a>
+                </div>
             </form>
         );
     }
