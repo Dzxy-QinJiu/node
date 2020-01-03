@@ -1794,7 +1794,6 @@ class ClueDetailOverview extends React.Component {
     }
 
     render() {
-        console.log(this.state.versionData);
         var curClue = this.state.curClue;
         //所分配的销售
         var assignedSales = _.get(curClue, 'user_name');
