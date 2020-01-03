@@ -40,7 +40,8 @@ import BackMainPage from 'CMP_DIR/btn-back';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 import {leadRecommendEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DifferentVersion from 'MOD_DIR/different_version/public';
-import {COMPANY_PHONE} from 'PUB_DIR/sources/utils/consts';
+import ApplyTry from 'MOD_DIR/apply_try/public';
+import {COMPANY_PHONE, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/utils/consts';
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -76,6 +77,7 @@ class RecommendCustomerRightPanel extends React.Component {
     componentDidMount() {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         paymentEmitter.on(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
+        paymentEmitter.on(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, this.handleUpdateClues);
         //因为AntcTable中没有数据提示的时候只能传字符串，提示中的click事件中传this进去会报错，这个方法只能暂时加到window上，卸载的时候把这个方法删掉
         window.handleClickRefreshBtn = function(event) {
             leadRecommendEmitter.emit(leadRecommendEmitter.REFRESH_LEAD_LIST);
@@ -199,6 +201,7 @@ class RecommendCustomerRightPanel extends React.Component {
     componentWillUnmount() {
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         paymentEmitter.removeListener(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
+        paymentEmitter.removeListener(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, this.handleUpdateClues);
         delete window.handleClickRefreshBtn;
         delete window.handleClickEditCondition;
         leadRecommendEmitter.removeListener(leadRecommendEmitter.REFRESH_LEAD_LIST, this.handleClickRefreshBtn);
@@ -531,20 +534,19 @@ class RecommendCustomerRightPanel extends React.Component {
     triggerShowVersionInfo = () => {
         this.setState({showDifferentVersion: !this.state.showDifferentVersion});
     };
+    handleUpdateClues = (result) => {
+        let count = _.get(result, 'count', 0);
+        let maxLimitExtractNumber = this.state.maxLimitExtractNumber;
+        this.setState({
+            maxLimitExtractNumber: count + maxLimitExtractNumber,
+            getMaxLimitExtractNumberError: false,
+            tablePopoverVisible: '',
+            batchPopoverVisible: ''
+        });
+    };
     //增加线索量
     handleClickAddClues = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL, {
-            updateCluesCount: (result) => {
-                let count = _.get(result, 'count', 0);
-                let maxLimitExtractNumber = this.state.maxLimitExtractNumber;
-                this.setState({
-                    maxLimitExtractNumber: count + maxLimitExtractNumber,
-                    getMaxLimitExtractNumberError: false,
-                    tablePopoverVisible: '',
-                    batchPopoverVisible: ''
-                });
-            }
-        });
+        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL);
     };
     //提取数为0时显示的提示信息
     hasNoExtractCountTip = (maxLimitTip) => {
@@ -995,10 +997,11 @@ class RecommendCustomerRightPanel extends React.Component {
                         hideFocusCustomerPanel={this.hideFocusCustomerPanel}
                         saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
                     /> : null}
-                <DifferentVersion
-                    showFlag={this.state.showDifferentVersion}
-                    closeVersion={this.triggerShowVersionInfo}
-                />
+                {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
+                {/*<DifferentVersion*/}
+                {/*showFlag={this.state.showDifferentVersion}*/}
+                {/*closeVersion={this.triggerShowVersionInfo}*/}
+                {/*/>*/}
             </div>
 
 

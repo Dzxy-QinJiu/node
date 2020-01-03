@@ -16,6 +16,7 @@ import { setUserData, getUserData } from 'PUB_DIR/sources/user-data';
 import history from 'PUB_DIR/sources/history';
 import { paymentEmitter } from 'OPLATE_EMITTER';
 import Trace from 'LIB_DIR/trace';
+import { COMPANY_PHONE } from 'PUB_DIR/sources/utils/consts';
 
 const PERSONAL_VERSION_GOODS_TYPE = 'curtao_personal';
 
@@ -186,10 +187,10 @@ class OfficialPersonalEdition extends React.Component{
     };
 
     handleUpgradeEnterprise = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击升级为企业版');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击申请试用企业版');
         if(_.isFunction(this.props.paramObj.showDifferentVersion)) {
             this.props.paramObj.showDifferentVersion();
-            this.onClosePanel();
+            // this.onClosePanel();
         }
     };
 
@@ -202,16 +203,32 @@ class OfficialPersonalEdition extends React.Component{
         };
     };
 
+    //增加线索量
+    handleIncreaseLeads = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击增加线索量');
+        this.onClosePanel();
+        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL, {
+            continueFn: () => {
+                history.push('/leads');
+            }
+        });
+    };
+
     //支付成功回调
     onPaymentSuccess = (orderInfo) => {
         let _this = this;
         let currentVersionType = checkCurrentVersionType();
         let curOrderInfo = this.state.curOrderInfo;
-        let i18Id = 'payment.upgrade.version.success',i18Msg = '您已成功升级为正式版，{time} 到期';
-        if(currentVersionType.formal) {//正式
-            i18Id = 'payment.renewal.version.success';
-            i18Msg = '您已成功续费，{time} 到期';
-        }
+        let tipContent = (
+            <div>
+                {Intl.get('payment.upgrade.personal.version.success', '您已升级为个人正式版，每月可提取{count}线索啦！', {
+                    count: this.state.count
+                })}
+                <br/>
+                {Intl.get('payment.contact.us', '联系我们请拨打{contact}', {contact: COMPANY_PHONE})}
+            </div>
+        );
+
         //计算到期时间
         let endTime = _.get(this.organization, 'end_time', '');
         if(endTime) {
@@ -220,17 +237,21 @@ class OfficialPersonalEdition extends React.Component{
             endTime = moment();
         }
         endTime = endTime.add(_.get(curOrderInfo,'goods_num', 0), 'months').valueOf();
-        let operateSuccessTipProps = {
-            title: Intl.get('payment.success', '支付成功'),
-            tip: (
+        if(currentVersionType.formal) {//正式
+            tipContent = (
                 <ReactIntl.FormattedMessage
-                    id={i18Id}
-                    defaultMessage={i18Msg}
+                    id='payment.renewal.version.success'
+                    defaultMessage='您已成功续费，{time} 到期'
                     values={{
                         'time': <span className="operate-success-tip-tag">{moment(endTime).format(oplateConsts.DATE_FORMAT)}</span>
                     }}
                 />
-            ),
+            );
+        }
+
+        let operateSuccessTipProps = {
+            title: Intl.get('payment.success', '支付成功'),
+            tip: tipContent,
             continueText: Intl.get('clue.extract.clue', '提取线索'),
             goText: Intl.get('user.trade.record', '购买记录'),
             continueFn: () => {
@@ -245,7 +266,21 @@ class OfficialPersonalEdition extends React.Component{
                 });
                 _this.onClosePanel();
             },
-            countDownMsg: Intl.get('payment.upgrading', '正在升级...'),
+            otherContent: (
+                <div className="increase-lead-wrapper">
+                    <div className="increase-lead-content">
+                        <i className="iconfont icon-huanying"/>
+                        <ReactIntl.FormattedMessage
+                            id="payment.add.leads.tip"
+                            defaultMessage="如果线索量不够用，可另外{addBtn}'"
+                            values={{
+                                'addBtn': <a className="operate-increase-lead" onClick={this.handleIncreaseLeads}>{Intl.get('goods.increase.clues', '增加线索量')}</a>
+                            }}
+                        />
+                    </div>
+                </div>
+            ),
+            countDownMsg: Intl.get('payment.find.result', '正在查询支付结果...'),
             countDownSeconds: 6,
             onCountDownComplete: () => {
                 let organization = _.get(getUserData(),'organization', {});
@@ -336,8 +371,8 @@ OfficialPersonalEdition.propTypes = {
 };
 module.exports = HocGoodsBuy({
     leftTitle: Intl.get('personal.upgrade.to.official.version', '升级为正式版'),
-    rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
+    rightTitle: Intl.get('personal.apply.trial.enterprise.edition', '申请试用企业版'),
     i18nId: 'clues.extract.count.at.month',
-    i18nMessage: '线索推荐每月可提取 {count} 条',
+    i18nMessage: '每月可提取 {count} 条线索',
     dataTraceName: '升级个人正式版界面',
 })(OfficialPersonalEdition);

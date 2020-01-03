@@ -722,3 +722,6 @@ export const DOMAIN_END = '.eagok.com';
 export const MAXINDUSTRYCOUNT = 10;
 
 export const COMPANY_PHONE = '400-6978-520';
+
+//企业版kind
+export const COMPANY_VERSION_KIND = 'enterprise';

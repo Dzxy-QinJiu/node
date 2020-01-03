@@ -37,7 +37,7 @@ const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
 import queryString from 'query-string';
 import {removeSpacesAndEnter, getTableContainerHeight, getCertainTabsTitle} from 'PUB_DIR/sources/utils/common-method-util';
-import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+import {XLS_FILES_TYPE_RULES, COMPANY_PHONE, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
 import {
     SELECT_TYPE,
@@ -96,6 +96,7 @@ var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitte
 import ClueExtract from 'MOD_DIR/clue_pool/public';
 import MoreButton from 'CMP_DIR/more-btn';
 import DifferentVersion from 'MOD_DIR/different_version/public';
+import ApplyTry from 'MOD_DIR/apply_try/public';
 import {subtracteGlobalClue, formatSalesmanList,isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -699,6 +700,10 @@ class ClueCustomer extends React.Component {
         return tips;
     };
 
+    handlePersonalTrialVisiable = (visible) => {
+        this.setState({personalTrialVisiable: visible});
+    };
+
     //渲染导出线索的按钮
     renderExportClue = () => {
         let currentVersionType = checkCurrentVersionType();
@@ -706,8 +711,8 @@ class ClueCustomer extends React.Component {
         return(
             <div className="export-clue-customer-container pull-right">
                 {currentVersionType.trial ?
-                    (<Popover content={tips} overlayClassName="explain-pop">
-                        <Button disabled={true} className="btn-item btn-disabled">
+                    (<Popover content={tips} trigger="click" overlayClassName="explain-pop">
+                        <Button className="btn-item btn-disabled">
                             <i className="iconfont icon-export-clue"></i>
                             <span className="clue-container">
                                 {Intl.get('clue.export.clue.list','导出线索')}
@@ -3128,10 +3133,11 @@ class ClueCustomer extends React.Component {
                                 }
                             </RightPanel> : null
                     }
-                    <DifferentVersion
+                    {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
+                    {/*<DifferentVersion
                         showFlag={this.state.showDifferentVersion}
                         closeVersion={this.triggerShowVersionInfo}
-                    />
+                    />*/}
                 </div>
             </RightContent>
         );

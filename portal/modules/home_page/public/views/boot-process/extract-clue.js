@@ -20,7 +20,8 @@ import {getMaxLimitExtractClueCount} from 'PUB_DIR/sources/utils/common-data-uti
 import Trace from 'LIB_DIR/trace';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import DifferentVersion from 'MOD_DIR/different_version/public';
-import {COMPANY_PHONE} from 'PUB_DIR/sources/utils/consts';
+import ApplyTry from 'MOD_DIR/apply_try/public';
+import {COMPANY_PHONE, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/utils/consts';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 
 const LAYOUT_CONSTANCE = {
@@ -53,11 +54,13 @@ class ExtractClues extends React.Component {
     componentDidMount() {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         paymentEmitter.on(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
+        paymentEmitter.on(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, this.handleUpdateClues);
     }
 
     componentWillUnmount() {
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         paymentEmitter.removeListener(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
+        paymentEmitter.removeListener(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, this.handleUpdateClues);
     }
 
     batchExtractCluesLists = (taskInfo, taskParams) => {
@@ -414,19 +417,18 @@ class ExtractClues extends React.Component {
     triggerShowVersionInfo = () => {
         this.setState({showDifferentVersion: !this.state.showDifferentVersion});
     };
+    handleUpdateClues = (result) => {
+        let count = _.get(result, 'count', 0);
+        let maxLimitExtractNumber = this.state.maxLimitExtractNumber;
+        this.setState({
+            maxLimitExtractNumber: count + maxLimitExtractNumber,
+            getMaxLimitExtractNumberError: false,
+            batchPopoverVisible: false
+        });
+    };
     //增加线索量
     handleClickAddClues = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL, {
-            updateCluesCount: (result) => {
-                let count = _.get(result, 'count', 0);
-                let maxLimitExtractNumber = this.state.maxLimitExtractNumber;
-                this.setState({
-                    maxLimitExtractNumber: count + maxLimitExtractNumber,
-                    getMaxLimitExtractNumberError: false,
-                    batchPopoverVisible: false
-                });
-            }
-        });
+        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL);
     };
 
     renderRecommendLists = () => {
@@ -531,10 +533,11 @@ class ExtractClues extends React.Component {
                     <Button className="back-btn" data-tracename="点击返回上一步" onClick={this.props.handleBackClick}>{Intl.get('user.user.add.back', '上一步')}</Button>
                     {this.renderExtractOperator()}
                 </div>
-                <DifferentVersion
-                    showFlag={this.state.showDifferentVersion}
-                    closeVersion={this.triggerShowVersionInfo}
-                />
+                {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
+                {/*<DifferentVersion*/}
+                {/*showFlag={this.state.showDifferentVersion}*/}
+                {/*closeVersion={this.triggerShowVersionInfo}*/}
+                {/*/>*/}
             </div>
         );
     }

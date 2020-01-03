@@ -278,7 +278,7 @@ class RecommendCustomerCondition extends React.Component {
             if (industryReg.test(value)) {
                 callback();
             } else {
-                callback(new Error(Intl.get('clue.customer.add.industry.rule', '请输入1-10位的数字，字母或汉字')));
+                callback(new Error(Intl.get('clue.customer.add.industry.rule', '请输入1-10位的数字，字母或汉字(中间不能有空格)')));
             }
         }
         else{
@@ -379,6 +379,7 @@ class RecommendCustomerCondition extends React.Component {
                             cityName={hasSavedRecommendParams.city}
                             countyName={hasSavedRecommendParams.district}
                             updateLocation={this.updateLocation}
+                            hiddenCounty
                         />
                         <div className={cls}>
                             <FormItem

@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import HocGoodsBuy from 'CMP_DIR/hoc-goods-buy';
 import PayAjax from 'MOD_DIR/common/public/ajax/pay';
 import history from 'PUB_DIR/sources/history';
+import { paymentEmitter } from 'OPLATE_EMITTER';
 
 const CLUE_GOODS_LIST_MAP = [1,2,5];
 const AUTO_SETTING_KEY = 'autoSetting';
@@ -168,14 +169,16 @@ class PurchaseLeads extends React.Component{
                 });
                 _this.onClosePanel();
             },
-            countDownMsg: Intl.get('payment.upgrading', '正在升级...'),
+            countDownMsg: Intl.get('payment.find.result', '正在查询支付结果...'),
             countDownSeconds: 6,
             onCountDownComplete: () => {
+                let activeGoods = _this.state.activeGoods;
+                let clue_number = _.get(activeGoods, 'clue_number', 0);
+                const result = {count: clue_number};
+                paymentEmitter.emit(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, result);
                 //更新线索量信息
                 if (_.isFunction(_this.props.paramObj.updateCluesCount)) {
-                    let activeGoods = _this.state.activeGoods;
-                    let clue_number = _.get(activeGoods, 'clue_number', 0);
-                    _this.props.paramObj.updateCluesCount({count: clue_number});
+                    _this.props.paramObj.updateCluesCount(result);
                 }
                 _this.setState({
                     showCountDown: false,//关闭倒计时
