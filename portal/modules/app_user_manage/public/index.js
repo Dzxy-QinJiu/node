@@ -935,7 +935,7 @@ class AppUserManage extends React.Component {
         switch (currentView) {
             case 'user':
                 if (this.state.isGettingIntegrateType) {
-                    showView = (<Spinner />);
+                    showView = (<Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>);
                 } else if (this.state.getItegrateTypeError) {
                     showView = (<NoDataIntro noDataTip={Intl.get('user.list.get.failed', '获取用户列表失败')}/>);
                 } else if (this.state.isShowAddProductView) {

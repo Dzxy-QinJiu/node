@@ -445,7 +445,7 @@ class TeamDataColumn extends React.Component {
                         </Select>
                     </div>
                 </div>
-                {this.state.performanceLoading ? <Spinner/> : (
+                {this.state.performanceLoading ? <Spinner className='home-loading'/> : (
                     <div>
                         <div className='my-contact-performance my-data-title-data'>
                             <span
@@ -499,7 +499,7 @@ class TeamDataColumn extends React.Component {
                     </div>
                 </div>
                 {
-                    this.state.callTimeLoading ? <Spinner/> : (
+                    this.state.callTimeLoading ? <Spinner className='home-loading'/> : (
                         <div>
                             <div className='call-time-total my-data-title-data'>
                                 {time.timeDescr !== '0' ? (

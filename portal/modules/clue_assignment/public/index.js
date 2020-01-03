@@ -236,7 +236,7 @@ class ClueAssignment extends React.Component {
             >
                 <div className="clue-assignment-content" style={{height: height}}>
                     {
-                        _.get(this.state, 'isGetStrategyDetailLoading') && !this.state.lastId ? <Spinner/> : (
+                        _.get(this.state, 'isGetStrategyDetailLoading') && !this.state.lastId ? <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/> : (
                             <div className="clue-assignment-content">
                                 {this.renderLoadingAndErrAndNodataContent()}
                                 <div className="clue-assignment-right-panel">

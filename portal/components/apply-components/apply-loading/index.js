@@ -16,7 +16,7 @@ class ApplyLoading extends React.Component {
 
     render(){
         return (<div className="app_user_manage_detail apply-loading-container">
-            <Spinner/></div>);
+            <Spinner className='apply-loading'/></div>);
     }
 }
 ApplyLoading.defaultProps = {
