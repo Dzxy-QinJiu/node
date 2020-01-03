@@ -3,7 +3,6 @@
  */
 
 import SelectFullWidth from '../select-fullwidth';
-import { Component } from 'React';
 import classNames from 'classnames';
 
 class SelectAppTerminal extends React.Component {
