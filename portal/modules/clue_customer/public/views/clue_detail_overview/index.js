@@ -277,8 +277,10 @@ class ClueDetailOverview extends React.Component {
                 divHeight: nextProps.divHeight,
             });
         }
-        if(nextProps.curClue.version_upgrade_id){
-            clueCustomerAction.getApplyTryData(nextProps.curClue.id,nextProps.curClue.version_upgrade_id);
+        const nextClue = nextProps.curClue;
+        const nowClue = this.state.curClue;
+        if(nextClue.id !== nowClue.id && nextClue.version_upgrade_id){
+            clueCustomerAction.getApplyTryData(nextClue.id,nextClue.version_upgrade_id);
         }
     }
 
