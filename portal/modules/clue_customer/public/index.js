@@ -1717,7 +1717,10 @@ class ClueCustomer extends React.Component {
                     }
 
                 }
-            },{
+            }];
+        //如果是个人版，不需要加跟进人
+        if(!checkCurrentVersion().personal){
+            columns.push({
                 dataIndex: 'trace_person',
                 width: column_width,
                 render: (text, salesClueItem, index) => {
@@ -1752,21 +1755,22 @@ class ClueCustomer extends React.Component {
                     );
 
                 }
-            },{
-                dataIndex: 'trace_content',
-                width: '150px',
-                render: (text, salesClueItem, index) => {
-                    return(
-                        <div className="clue-foot" id="clue-foot" ref={dom => {this[`$origin_${DIFFREF.TRACE}_${salesClueItem.id}`] = dom;}}>
-                            {_.get(this,'state.isEdittingItem.id') === salesClueItem.id ? this.renderEditTraceContent(salesClueItem) :
-                                this.renderShowTraceContent(salesClueItem)
-                            }
-                        </div>
-                    );
-
-                }
-            }];
+            });
+        }
         columns.push({
+            dataIndex: 'trace_content',
+            width: '150px',
+            render: (text, salesClueItem, index) => {
+                return(
+                    <div className="clue-foot" id="clue-foot" ref={dom => {this[`$origin_${DIFFREF.TRACE}_${salesClueItem.id}`] = dom;}}>
+                        {_.get(this,'state.isEdittingItem.id') === salesClueItem.id ? this.renderEditTraceContent(salesClueItem) :
+                            this.renderShowTraceContent(salesClueItem)
+                        }
+                    </div>
+                );
+
+            }
+        },{
             dataIndex: 'assocaite_customer',
             className: 'invalid-td-clue',
             width: '170px',
