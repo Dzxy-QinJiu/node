@@ -1,7 +1,6 @@
 /**
  * Created by xiaojinfeng on  2016/1/14 10:25 .
  */
-var React = require('react');
 var createReactClass = require('create-react-class');
 var language = require('../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
@@ -10,22 +9,20 @@ if (language.lan() === 'es' || language.lan() === 'en') {
     require('./css/user-password-zh_CN.less');
 }
 import {Form, Icon, Input, Button, Col} from 'antd';
-
 const FormItem = Form.Item;
 var crypto = require('crypto');//用于密码md5SSSS
 var AlertTimer = require('../../../components/alert-timer');
-
 var UserInfoStore = require('../../user_info/public/store/user-info-store');
 var UserInfoAction = require('../../user_info/public/action/user-info-actions');
 var userInfoAjax = require('../../user_info/public/ajax/user-info-ajax');
 var passwdStrengthFile = require('../../../components/password-strength-bar');
 var PasswdStrengthBar = passwdStrengthFile.PassStrengthBar;
-
+import {getUserData} from 'PUB_DIR/sources/user-data';
 
 function getStateFromStore() {
     let stateData = UserInfoStore.getState();
     return {
-        userId: stateData.userInfo.id,
+        userId: _.get(getUserData(), 'user_id'),
         userInfoFormPwdShow: stateData.userInfoFormPwdShow,
         submitErrorMsg: stateData.submitErrorMsg,
         submitResult: stateData.submitResult
@@ -62,7 +59,6 @@ var UserPwdPage = createReactClass({
     componentDidMount: function() {
         $('body').css('overflow', 'hidden');
         UserInfoStore.listen(this.onChange);
-        UserInfoAction.getUserInfo();
     },
 
     componentWillUnmount: function() {
