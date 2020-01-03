@@ -16,15 +16,20 @@ const SystemNotification = require('./views/system');
 import UpgradeNotice from './views/upgrade-notice';
 import {clickUpgradeNoiceEmitter} from 'PUB_DIR/sources/utils/emitters';
 const {setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
+import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import notificationPrivilege from './privilege-const';
+import useManagePrivilege from 'MOD_DIR/app_user_manage/public/privilege-const';
 
 class Notification extends React.Component {
     constructor(props) {
         super(props);
-        let activeKey = TAB_KEYS.SYSTEM;
+        let activeKey = TAB_KEYS.UPGRADE_NOTICE;
         // 有新的公告时，点通知，需要显示公告tab项
         if (props.isUnReadNotice) {
-            activeKey = TAB_KEYS.UPGRADE_NOTICE;
             this.handleShowNoticeTab();
+        } else if(hasPrivilege(notificationPrivilege.CUSTOMER_NOTICE_MANAGE) && !isCurtao()){
+            activeKey = TAB_KEYS.SYSTEM;
         }
         this.state = {
             activeKey: activeKey
@@ -66,18 +71,22 @@ class Notification extends React.Component {
                     activeKey={this.state.activeKey}
                     onChange={this.changeActiveKey}
                 >
-                    <TabPane
-                        tab={Intl.get('menu.notification', '通知')}
-                        key={TAB_KEYS.SYSTEM}
-                    >
-                        {
-                            this.state.activeKey === TAB_KEYS.SYSTEM ?
-                                <div className="notification-content" id="system-notice">
-                                    <SystemNotification/>
-                                </div>
-                                : null
-                        }
-                    </TabPane>
+                    {
+                        !isCurtao() && hasPrivilege(useManagePrivilege.USER_QUERY) && hasPrivilege(notificationPrivilege.CUSTOMER_NOTICE_MANAGE) ? (
+                            <TabPane
+                                tab={Intl.get('menu.notification', '通知')}
+                                key={TAB_KEYS.SYSTEM}
+                            >
+                                {
+                                    this.state.activeKey === TAB_KEYS.SYSTEM ?
+                                        <div className="notification-content" id="system-notice">
+                                            <SystemNotification/>
+                                        </div>
+                                        : null
+                                }
+                            </TabPane>
+                        ) : null
+                    }
                     <TabPane
                         tab={Intl.get('rightpanel_notice','公告')}
                         key={TAB_KEYS.UPGRADE_NOTICE}

@@ -715,7 +715,7 @@ var NavSidebar = createReactClass({
                                 </div>
                             ) : null
                         }
-                        {isCurtao() ? null : this.getNotificationBlock()}
+                        {this.getNotificationBlock()}
                         {this.renderBackendConfigBlock()}
                         {this.getUserInfoBlock()}
                     </div>
