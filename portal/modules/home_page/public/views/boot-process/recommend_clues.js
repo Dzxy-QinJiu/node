@@ -72,8 +72,8 @@ class RecommendClues extends React.Component {
             settedCustomerRecommend: _.extend(settedCustomerRecommend, {loading: true})
         });
         clueCustomerAction.getSettingCustomerRecomment((condition) => {
-            let isShowRecommendSettingPanel = this.isShowRecommendSettingPanel({settedCustomerRecommend: {obj: condition}});
-            if(isShowRecommendSettingPanel) {
+            let isShowRecommendSettingPanel = this.isShowRecommendSettingPanel({obj: condition});
+            if(!isShowRecommendSettingPanel) {
                 this.setState({
                     step: EXTRACT_CLUE_STEPS.EXTRACT_CLUE
                 }, () => {
