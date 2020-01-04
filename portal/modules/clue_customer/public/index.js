@@ -161,6 +161,7 @@ class ClueCustomer extends React.Component {
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             showRecommendTips: !_.get(websiteConfig, oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS,false),
             showDifferentVersion: false,//是否显示版本信息面板
+            guideRecommendCondition: null,//引导设置的推荐线索的条件
             //显示内容
             ...clueCustomerStore.getState()
         };
@@ -603,9 +604,16 @@ class ClueCustomer extends React.Component {
             </div>
         );
     };
-    showClueRecommendTemplate = () => {
+    showClueRecommendTemplate = (param) => {
         this.setState({
-            isShowRecommendCluePanel: true
+            isShowRecommendCluePanel: true,
+            guideRecommendCondition: _.get(param, 'recommendCondition', null)
+        });
+    };
+    // 清空引导页传入的推荐线索条件
+    clearGuideRecomentCondition = () => {
+        this.setState({
+            guideRecommendCondition: null,
         });
     };
     closeRecommendCluePanel = () => {
@@ -3077,6 +3085,8 @@ class ClueCustomer extends React.Component {
                                     onClosePanel={this.closeRecommendCluePanel}
                                     content={(
                                         <RecommendClues
+                                            guideRecommendCondition={this.state.guideRecommendCondition}
+                                            clearGuideRecomentCondition={this.clearGuideRecomentCondition}
                                             showSuccessPage={false}
                                             onClosePanel={this.closeRecommendCluePanel}
                                         />

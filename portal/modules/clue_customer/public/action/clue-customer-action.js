@@ -60,15 +60,21 @@ function ClueCustomerActions() {
         });
     };
     //获取个人客户推荐配置
-    this.getSettingCustomerRecomment = function(callback) {
-        clueCustomerAjax.getSettingCustomerRecomment().then((list) => {
-            var data = _.get(list,'[0]');
-            deleteEmptyProperty(data);
-            _.isFunction(callback) && callback(data);
-            this.dispatch({list: list});
-        },(errorMsg) => {
-            _.isFunction(callback) && callback();
-        });
+    this.getSettingCustomerRecomment = function(condition, callback) {
+        //引导页设置了推荐条件后跳转过来时，用引导页设置的推荐条件
+        if(condition){
+            _.isFunction(callback) && callback(condition);
+            this.dispatch({list: [condition]});
+        } else {
+            clueCustomerAjax.getSettingCustomerRecomment().then((list) => {
+                var data = _.get(list,'[0]');
+                deleteEmptyProperty(data);
+                _.isFunction(callback) && callback(data);
+                this.dispatch({list: list});
+            },(errorMsg) => {
+                _.isFunction(callback) && callback();
+            });
+        }
     };
     this.getRecommendClueLists = function(obj) {
         this.dispatch({loading: true, error: false});

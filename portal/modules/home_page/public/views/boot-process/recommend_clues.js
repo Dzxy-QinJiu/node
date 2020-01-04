@@ -68,20 +68,26 @@ class RecommendClues extends React.Component {
     //获取个人线索推荐保存配置
     getSettingCustomerRecomment() {
         let settedCustomerRecommend = this.state.settedCustomerRecommend;
+        let guideRecommendCondition = this.props.guideRecommendCondition;
         this.setState({
             settedCustomerRecommend: _.extend(settedCustomerRecommend, {loading: true})
         });
-        clueCustomerAction.getSettingCustomerRecomment((condition) => {
+        clueCustomerAction.getSettingCustomerRecomment(guideRecommendCondition, (condition) => {
             let isShowRecommendSettingPanel = this.isShowRecommendSettingPanel({obj: condition});
-            if(!isShowRecommendSettingPanel) {
+            //引导页设置了推荐条件或已经设置过推荐条件时
+            if(guideRecommendCondition || !isShowRecommendSettingPanel) {
                 this.setState({
                     step: EXTRACT_CLUE_STEPS.EXTRACT_CLUE
                 }, () => {
                     //获取推荐的线索
                     this.getRecommendClueLists(condition);
+                    // 设置完引导页设置的推荐条件后，清空调用组件中存的数据
+                    if (guideRecommendCondition && _.isFunction(this.props.clearGuideRecomentCondition)) {
+                        this.props.clearGuideRecomentCondition();
+                    }
                 });
             }
-        });
+        });        
     }
 
     isShowRecommendSettingPanel = (settedCustomerRecommend) => {

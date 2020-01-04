@@ -156,7 +156,7 @@ class BootCompleteInformation extends React.Component{
                 });
             },
             error: (xhr) => {
-                jumpLeadPage();
+                jumpLeadPage({});
             }
         });
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '保存推荐线索条件');
@@ -169,8 +169,8 @@ class BootCompleteInformation extends React.Component{
                     showRecommendCluePanel: true,
                     targetObj: targetObj
                 });
-            }else { //如果在线索界面，不用跳转
-                clueEmitter.emit(clueEmitter.SHOW_RECOMMEND_PANEL);
+            }else { //如果在线索界面，不用跳转, 直接根据推荐条件打开推荐线索列表
+                clueEmitter.emit(clueEmitter.SHOW_RECOMMEND_PANEL, { recommendCondition: targetObj });
             }
             _.isFunction(_this.props.hideRightPanel) && _this.props.hideRightPanel();
         }
