@@ -97,6 +97,9 @@ import ClueExtract from 'MOD_DIR/clue_pool/public';
 import MoreButton from 'CMP_DIR/more-btn';
 import DifferentVersion from 'MOD_DIR/different_version/public';
 import ApplyTry from 'MOD_DIR/apply_try/public';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import RecommendClues from 'MOD_DIR/home_page/public/views/boot-process/recommend_clues';
+const EXTRACT_CLUE_STEPS = RecommendClues.EXTRACT_CLUE_STEPS;
 import {subtracteGlobalClue, formatSalesmanList,isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -3064,9 +3067,22 @@ class ClueCustomer extends React.Component {
                     }
                     {
                         this.state.isShowRecommendCluePanel ?
-                            <ClueRecommedLists
-                                closeRecommendCluePanel={this.closeRecommendCluePanel}
-                            />
+                            <React.Fragment>
+                                {/*<ClueRecommedLists
+                                    closeRecommendCluePanel={this.closeRecommendCluePanel}
+                                />*/}
+                                <RightPanelModal
+                                    isShowMadal
+                                    isShowCloseBtn
+                                    onClosePanel={this.closeRecommendCluePanel}
+                                    content={(
+                                        <RecommendClues
+                                            showSuccessPage={false}
+                                            onClosePanel={this.closeRecommendCluePanel}
+                                        />
+                                    )}
+                                />
+                            </React.Fragment>
                             : null
                     }
                     {this.state.clueAnalysisPanelShow ? <RightPanel
