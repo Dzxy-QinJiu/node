@@ -4,63 +4,78 @@
  * Created by tangmaoqin on 2019/08/01.
  */
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-import GuideAjax from 'MOD_DIR/common/public/ajax/guide';
-import {Checkbox, Button} from 'antd';
+import { Checkbox, Button, message, Popover } from 'antd';
+var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
+var clueCustomerStore = require('MOD_DIR/clue_customer/public/store/clue-customer-store');
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 var paymentEmitter = require('PUB_DIR/sources/utils/emitters').paymentEmitter;
 var batchOperate = require('PUB_DIR/sources/push/batch');
 import userData from 'PUB_DIR/sources/user-data';
+import Spinner from 'CMP_DIR/spinner';
+import NoDataIntro from 'CMP_DIR/no-data-intro';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
-import {SetLocalSalesClickCount} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
+import classNames from 'classnames';
+import {
+    SetLocalSalesClickCount,
+    isCommonSalesOrPersonnalVersion, getClueSalesList, getLocalSalesClickCount, HASEXTRACTBYOTHERERRTIP
+} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import { formatSalesmanList, checkCurrentVersionType, checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
-import {getMaxLimitExtractClueCount} from 'PUB_DIR/sources/utils/common-data-util';
+import { getMaxLimitExtractClueCount, updateGuideMark } from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
-import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import DifferentVersion from 'MOD_DIR/different_version/public';
 import ApplyTry from 'MOD_DIR/apply_try/public';
-import {COMPANY_PHONE, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/utils/consts';
+import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon } from 'PUB_DIR/sources/utils/consts';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 
 const LAYOUT_CONSTANCE = {
     TITLE_HEIGHT: 70,// 顶部标题区域高度
     PADDING_TOP: 24,// 距离顶部标题区域高度
-    BTN_PADDING: 45, //底部按钮区域高度
+    BTN_PADDING: 10, //底部按钮区域高度
 };
 
 class ExtractClues extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            singleExtractLoading: false, // 单个提取的loading
             batchExtractLoading: false,
             saveErrorMsg: '',
-            recommendClueLists: props.recommendClueLists,
-            selectedRecommendClues: [],
+            selectedRecommendClues: [],//选中状态的推荐线索
+            disabledCheckedClues: [],//禁用状态的线索,用于记录提取之前selected中的线索数量
             salesMan: '',
             salesManNames: '',
             unSelectDataTip: '', // 没有选择销售时的提示
             hasExtractCount: 0,//已经提取的推荐线索的数量
             maxLimitExtractNumber: 0,//该账号的最大提取线索数量（试用账号是今天的，正式账号是本月的）
             getMaxLimitExtractNumberError: false,//获取该账号的最大提取量出错
-            batchPopoverVisible: false,//批量操作展示popover
+            hasNoExtractCountTip: false,//批量操作展示popover
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             canClickExtract: true, //防止连续点击批量提取相同线索
             showDifferentVersion: false,//是否显示版本信息面板
+            ...clueCustomerStore.getState()
         };
     }
+
+    onStoreChange = () => {
+        this.setState(clueCustomerStore.getState());
+    };
 
     componentDidMount() {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         paymentEmitter.on(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
         paymentEmitter.on(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, this.handleUpdateClues);
+        clueCustomerStore.listen(this.onStoreChange);
     }
 
     componentWillUnmount() {
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         paymentEmitter.removeListener(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
         paymentEmitter.removeListener(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, this.handleUpdateClues);
+        clueCustomerStore.unlisten(this.onStoreChange);
+        clueCustomerAction.initialRecommendClues();
     }
 
     batchExtractCluesLists = (taskInfo, taskParams) => {
@@ -88,12 +103,69 @@ class ExtractClues extends React.Component {
             notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, {});
         }
 
+        var clueArr = _.map(tasks, 'taskDefine');
+        // 遍历每一个线索
+        _.each(clueArr, (clueItem) => {
+            var arr = _.split(clueItem,'_');
+            //如果当前线索是需要更新的线索，才更新
+            this.updateRecommendClueLists(arr[0]);
+        });
+        //不是引导且为列表空时
+        if (!this.props.showSuccessPage && _.isEmpty(this.state.recommendClueLists)) {
+            this.props.getRecommendClueLists();
+        }
+
         this.setState({
-            selectedRecommendClues: []
+            selectedRecommendClues: [],
+            disabledCheckedClues: []
         });
     };
+    //更新推荐线索列表,需要给已经提取成功的加上一个类名，界面相应的加上对应的不能处理的样式
+    updateRecommendClueLists = (updateClueId) => {
+        this.updateSelectedClueLists(updateClueId);
+        var disabledCheckedClues = this.state.disabledCheckedClues;
+        this.setState({
+            disabledCheckedClues: _.filter(disabledCheckedClues,item => item.id !== updateClueId)
+        });
+        clueCustomerAction.updateRecommendClueLists(updateClueId);
+    };
+    //更新选中的推荐线索
+    updateSelectedClueLists = (updateClueId) => {
+        var selectedRecommendClues = this.state.selectedRecommendClues;
+        this.setState({
+            selectedRecommendClues: _.filter(selectedRecommendClues,item => item.id !== updateClueId),
+        });
+    };
+    //标记线索已被其他人提取
+    remarkLeadExtractedByOther = (remarkLeadId) => {
+        this.updateSelectedClueLists(remarkLeadId);
+        clueCustomerAction.remarkLeadExtractedByOther(remarkLeadId);
+    };
 
-    //获取某个安全域已经提取多少推荐线索数量,
+    //处理被别人提取过的线索
+    handleLeadHasExtractedByOther = (hasExtractedLeadIds) => {
+        if(_.isArray(hasExtractedLeadIds)){
+            _.each(hasExtractedLeadIds, remarkId => {
+                this.remarkLeadExtractedByOther(remarkId);
+            });
+        }
+    };
+
+    // 获取待分配人员列表
+    getSalesDataList = () => {
+        let clueSalesIdList = getClueSalesList(CLUE_RECOMMEND_SELECTED_SALES);
+        //销售领导、域管理员,展示其所有（子）团队的成员列表
+        let dataList = _.map(formatSalesmanList(this.state.salesManList), salesman => {
+            let clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'value'));
+            return {
+                ...salesman,
+                clickCount
+            };
+        });
+        return dataList;
+    };
+
+    //获取最多提取线索的数量以及已经提取多少线索
     getRecommendClueCount(callback){
         this.setState({canClickExtract: false});
         getMaxLimitExtractClueCount().then((data) => {
@@ -112,98 +184,85 @@ class ExtractClues extends React.Component {
         );
     }
 
+
     handleBatchAssignClues = (submitObj) => {
+        if(this.state.batchExtractLoading) return;
         this.setState({
             batchExtractLoading: true,
             unSelectDataTip: '',
             saveErrorMsg: '',
             canClickExtract: false
         });
-        GuideAjax.batchExtractRecommendClues(submitObj).then((data) => {
-            this.setState({
-                batchExtractLoading: false,
-                canClickExtract: true
-            });
-            var taskId = _.get(data, 'batch_label','');
-            if (taskId){
-                //todo 到这一步，提取线索的引导就完成了，需要更新引导流程状态
-                this.props.afterSuccess();
-                //向任务列表id中添加taskId
-                batchOperate.addTaskIdToList(taskId);
-                //存储批量操作参数，后续更新时使用
-                var batchParams = _.cloneDeep(submitObj);
-                batchOperate.saveTaskParamByTaskId(taskId, batchParams, {
-                    showPop: true,
-                    urlPath: '/leads'
+        $.ajax({
+            url: '/rest/clue/batch/recommend/list',
+            type: 'post',
+            dateType: 'json',
+            data: submitObj,
+            success: (data) => {
+                this.setState({
+                    batchExtractLoading: false,
+                    canClickExtract: true
                 });
-                //立即在界面上显示推送通知
-                //界面上立即显示一个初始化推送
-                //批量操作参数
-                var totalSelectedSize = _.get(this,'state.selectedRecommendClues.length',0);
-                batchOperate.batchOperateListener({
-                    taskId: taskId,
-                    total: totalSelectedSize,
-                    running: totalSelectedSize,
-                    typeText: Intl.get('clue.extract.clue', '提取线索')
+                var taskId = _.get(data, 'batch_label','');
+                if (taskId){
+                    //todo 到这一步，提取线索的引导就完成了，需要更新引导流程状态
+                    // 更新引导流程
+                    this.upDateGuideMark();
+                    this.props.afterSuccess();
+                    //向任务列表id中添加taskId
+                    batchOperate.addTaskIdToList(taskId);
+                    //存储批量操作参数，后续更新时使用
+                    var batchParams = _.cloneDeep(submitObj);
+                    batchOperate.saveTaskParamByTaskId(taskId, batchParams, {
+                        showPop: true,
+                        urlPath: '/leads'
+                    });
+                    //总的被选中的线索数量
+                    var totalSelectedSize = _.get(this.state,'disabledCheckedClues.length',0);
+                    //已经被提取的线索
+                    var hasExtractedLeadIds = _.get(data,'picked',[]);
+                    var hasExtractedLeadCount = hasExtractedLeadIds.length;
+                    if(totalSelectedSize >= hasExtractedLeadCount){
+                        //去掉被提取的线索数量，因为这些不会有推送
+                        totalSelectedSize -= hasExtractedLeadCount;
+                    }
+                    //在这些数据上加一个特殊的标识
+                    if(hasExtractedLeadCount){
+                        this.handleLeadHasExtractedByOther(hasExtractedLeadIds);
+                    }
+                    //立即在界面上显示推送通知
+                    //界面上立即显示一个初始化推送
+                    //批量操作参数
+                    batchOperate.batchOperateListener({
+                        taskId: taskId,
+                        total: totalSelectedSize,
+                        running: totalSelectedSize,
+                        typeText: Intl.get('clue.extract.clue', '提取线索')
+                    });
+                    this.clearSelectSales();
+                    let batchSelectedSales = this.state.batchSelectedSales;
+                    SetLocalSalesClickCount(batchSelectedSales, CLUE_RECOMMEND_SELECTED_SALES);
+                }
+            },
+            error: (errorInfo) => {
+                var errTip = errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败');
+                this.setState({
+                    canClickExtract: true,
+                    batchExtractLoading: false,
+                    // saveErrorMsg: errTip,
+                    // unSelectDataTip: errTip
                 });
-                this.clearSelectSales();
-                let batchSelectedSales = this.state.batchSelectedSales;
-                SetLocalSalesClickCount(batchSelectedSales, CLUE_RECOMMEND_SELECTED_SALES);
+                //如果提取失败的原因是因为被提取过，将该推荐线索设置不可点击并且前面加提示
+                if(_.includes(HASEXTRACTBYOTHERERRTIP, errTip)){
+                    this.handleLeadHasExtractedByOther(submitObj.companyIds);
+                    if (this['changeSales']) {
+                        //隐藏批量变更销售面板
+                        this['changeSales'].handleCancel();
+                    }
+                }
+                message.error(errTip);
             }
-        }, (errorMsg) => {
-            this.setState({
-                canClickExtract: true,
-                batchExtractLoading: false,
-                saveErrorMsg: errorMsg || Intl.get('clue.extract.failed', '提取失败'),
-                unSelectDataTip: errorMsg || Intl.get('clue.extract.failed', '提取失败')
-            });
         });
-    };
-
-    dealData = (obj) => {
-        let str = '';
-        // 所属行业
-        let industry = _.get(obj, 'industry', '');
-        // 省份
-        let province = _.get(obj, 'province', '');
-        // 处理人员规模
-        let staffnum = '';
-        let staffnumMin = _.get(obj, 'staffnumMin', '');
-        let staffnumMax = _.get(obj, 'staffnumMax', '');
-        if(staffnumMin && staffnumMax) {
-            staffnum = Intl.get('clue.customer.condition.staff.range', '{min}-{max}人', {min: staffnumMin, max: staffnumMax});
-        }else {
-            // 以下
-            if(!staffnumMin && staffnumMax) {
-                staffnum = Intl.get('clue.customer.condition.staff.size', '{num}人以下', {num: staffnumMax});
-            }
-            // 以上
-            if(staffnumMin && !staffnumMax) {
-                staffnum = Intl.get('clue.customer.staff.over.num', '{num}人以上', {num: staffnumMin});
-            }
-        }
-
-        // 资金规模
-        let capital = _.get(obj, 'capital', '');
-        // 企业性质
-        let entType = _.get(obj, 'entType', '');
-
-        if(industry && !_.isEqual(industry, '-')) {
-            str += industry + ' / ';
-        }
-        if(province && !_.isEqual(province, '-')) {
-            str += province + ' / ';
-        }
-        if(staffnum) {
-            str += staffnum + ' / ';
-        }
-        if(capital && !_.isEqual(capital, '-')) {
-            str += Intl.get('crm.149', '{num}万',{num: (capital / 10000)}) + ' / ';
-        }
-        if(entType && !_.isEqual(entType, '-')) {
-            str += entType;
-        }
-        return str;
     };
 
     // 判断是否为普通销售
@@ -231,8 +290,9 @@ class ExtractClues extends React.Component {
     };
 
     renderSalesBlock = () => {
-        let dataList = formatSalesmanList(this.props.salesManList);
-
+        let dataList = this.getSalesDataList();
+        //按点击的次数进行排序
+        dataList = _.sortBy(dataList,(item) => {return -item.clickCount;});
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect
@@ -294,7 +354,10 @@ class ExtractClues extends React.Component {
         var maxLimitExtractNumber = this.state.maxLimitExtractNumber;
         var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
         let versionAndType = checkVersionAndType();
-        let maxLimitTip = Intl.get('clue.recommend.has.extract', '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',{hasExtract: this.state.hasExtractCount, ableExtract: ableExtract, timerange: this.getTimeRangeText()});
+        const i18Obj = {hasExtract: this.state.hasExtractCount, ableExtract: ableExtract, timerange: this.getTimeRangeText()};
+        let maxLimitTip = versionAndType.isCompanyFormal ?
+            Intl.get('clue.recommend.has.extract', '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索', i18Obj)
+            : Intl.get('clue.recommend.has.extract.count', '{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索', i18Obj);
         if(!ableExtract){
             //个人版试用提示升级,正式提示增加线索量
             //企业版试用提示升级,正式（管理员）提示增加线索量
@@ -337,7 +400,7 @@ class ExtractClues extends React.Component {
     };
     batchAssignRecommendClues = (submitObj) => {
         this.setState({
-            batchPopoverVisible: false,
+            hasNoExtractCountTip: false,
             batchSelectedSales: _.cloneDeep(this.state.salesMan) //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
         });
         this.handleBatchAssignClues(submitObj);
@@ -345,9 +408,7 @@ class ExtractClues extends React.Component {
     handleSubmitAssignSalesBatch = () => {
         if(!this.state.canClickExtract) return;
         let selectedIds = _.map(this.state.selectedRecommendClues,'id');
-        if(_.isEmpty(selectedIds)) {
-            return;
-        }
+        if(_.isEmpty(selectedIds)) {return;}
         //如果是选了修改全部
         let submitObj = this.handleBeforeSubmitChangeSales(selectedIds);
         if (_.isEmpty(submitObj)){
@@ -355,6 +416,14 @@ class ExtractClues extends React.Component {
         }else{
             //批量提取之前要验证一下可以再提取多少条的数量，如果提取的总量比今日上限多，就提示还能再提取几条
             //如果获取提取总量失败了,就不校验数字了
+            //点击批量提取后把select的check选中状态都取消，并且加上disabled的样式
+            this.setState({
+                disabledCheckedClues: this.state.selectedRecommendClues
+            },() => {
+                this.setState({
+                    selectedRecommendClues: [],
+                });
+            });
             if(this.state.getMaxLimitExtractNumberError){
                 this.batchAssignRecommendClues(submitObj);
             }else{
@@ -366,12 +435,17 @@ class ExtractClues extends React.Component {
                         //是试用账号或者正式账号
                         (currentVersionType.trial || currentVersionType.formal) &&
                         //已经提取的数量和这次要提取数量之和大于最大限制的提取数
-                        count + _.get(this, 'state.selectedRecommendClues.length') > this.state.maxLimitExtractNumber
+                        count + _.get(this, 'state.disabledCheckedClues.length') > this.state.maxLimitExtractNumber
                     ){
                         this.setState({
-                            batchPopoverVisible: true,
-                            canClickExtract: true
+                            hasNoExtractCountTip: true,
+                            canClickExtract: true,
+                            disabledCheckedClues: []
                         });
+                        if (this['changeSales']) {
+                            //隐藏批量变更销售面板
+                            this['changeSales'].handleCancel();
+                        }
                     }else{
                         this.batchAssignRecommendClues(submitObj);
                     }
@@ -397,6 +471,29 @@ class ExtractClues extends React.Component {
         });
     };
 
+    // 全选/反选
+    handleCheckAllChange = (e) => {
+        let canExtractClues = [];
+        let isCheckAll = this.isCheckAll();
+        if(!isCheckAll) {
+            canExtractClues = _.filter(this.state.recommendClueLists, item => {
+                return !this.getDisabledClue(item);
+            });
+        }
+        this.setState({selectedRecommendClues: canExtractClues});
+        Trace.traceEvent(e, '点击选中/取消选中全部线索');
+    };
+    isCheckAll = () => {
+        let canExtractClues = _.filter(this.state.recommendClueLists, item => {
+            return !this.getDisabledClue(item);
+        });
+        return canExtractClues.length > 0 && canExtractClues.length === this.state.selectedRecommendClues.length;
+    };
+    //是否选中
+    hasChecked = (record) => {
+        return _.find(this.state.selectedRecommendClues, item => item.id === record.id);
+    };
+
     handleUpdatePersonalVersion = (result) => {
         //需要更新最大线索量
         let lead_limit = _.get(result, 'version.lead_limit', '');
@@ -404,7 +501,8 @@ class ExtractClues extends React.Component {
         this.setState({
             maxLimitExtractNumber: +clue_number,
             getMaxLimitExtractNumberError: false,
-            batchPopoverVisible: false
+            hasNoExtractCountTip: false,
+            disabledCheckedClues: []
         });
     };
     //个人试用升级为正式版
@@ -423,7 +521,8 @@ class ExtractClues extends React.Component {
         this.setState({
             maxLimitExtractNumber: count + maxLimitExtractNumber,
             getMaxLimitExtractNumberError: false,
-            batchPopoverVisible: false
+            hasNoExtractCountTip: false,
+            disabledCheckedClues: []
         });
     };
     //增加线索量
@@ -431,44 +530,284 @@ class ExtractClues extends React.Component {
         paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL);
     };
 
-    renderRecommendLists = () => {
-        let {recommendClueLists} = this.state;
-        return (
-            <div className="extract-clue-panel-container">
-                {
-                    _.map(recommendClueLists, item => {
-                        let str = this.dealData(item);
-
-                        return (
-                            <div className="extract-clue-item">
-                                <Checkbox onChange={this.handleCheckChange.bind(this, item)}/>
-                                <div className="extract-clue-text-wrapper">
-                                    <div className="extract-clue-text__name" title={item.name}>{item.name}</div>
-                                    <div className="extract-clue-text__filters">{str}</div>
-                                </div>
-                            </div>
-                        );
-                    })
-                }
-            </div>
-        );
+    //该线索前的checkbox不可用
+    getDisabledClue = (record) => {
+        // 有hasExtracted属性是已经成功提取了的,有hasExtractedByOther属性是已经被别人提取了的
+        return record.hasExtracted || _.find(this.state.disabledCheckedClues,item => item.id === record.id) || record.hasExtractedByOther;
+    };
+    setInvalidClassName = (record) => {
+        var cls = '';
+        if(record.hasExtracted){
+            cls += ' has-extracted-row';
+        }
+        if(record.hasExtractedByOther){
+            cls += ' has-extracted-by-other-row';
+        }
+        return cls;
     };
 
+    upDateGuideMark = () => {
+        updateGuideMark(BOOT_PROCESS_KEYS.EXTRACT_CLUE);
+    };
+
+    handleExtractRecommendClues = (reqData) => {
+        //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
+        let salesMan = _.cloneDeep(this.state.salesMan);
+        var leadId = _.get(reqData,'companyIds[0]');
+        $.ajax({
+            url: '/rest/clue/extract/recommend/clue',
+            dataType: 'json',
+            type: 'post',
+            data: reqData,
+            success: (data) => {
+                this.setState({
+                    singleExtractLoading: false,
+                    canClickExtract: true
+                });
+                if (data){
+                    if (this['changeSales' + leadId]) {
+                        //隐藏批量变更销售面板
+                        this['changeSales' + leadId].handleCancel();
+                    }
+                    // 更新引导流程
+                    this.upDateGuideMark();
+                    //提取成功后，把该线索在列表中删除
+                    message.success(Intl.get('clue.extract.success', '提取成功'));
+                    this.clearSelectSales();
+                    SetLocalSalesClickCount(salesMan, CLUE_RECOMMEND_SELECTED_SALES);
+                    this.updateRecommendClueLists(leadId);
+                    //线索提取完后，会到待分配状态中
+                }else{
+                    message.error(Intl.get('clue.extract.failed', '提取失败'));
+                }
+            },
+            error: (errorInfo) => {
+                this.setState({
+                    singleExtractLoading: false,
+                    canClickExtract: true
+                });
+                var errTip = errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败');
+                //如果提取失败的原因是因为被提取过，将该推荐线索设置不可点击并且前面加提示
+                if(_.includes(HASEXTRACTBYOTHERERRTIP, errTip)){
+                    this.handleLeadHasExtractedByOther(reqData.companyIds);
+                    if (this['changeSales' + leadId]) {
+                        //隐藏批量变更销售面板
+                        this['changeSales' + leadId].handleCancel();
+                    }
+                }
+                message.error(errTip);
+            }
+        });
+
+    };
+    extractRecommendCluesSingele = (record) => {
+        this.setState({
+            hasNoExtractCountTip: false
+        });
+        let submitObj = this.handleBeforeSubmitChangeSales([record.id]);
+        this.handleExtractRecommendClues(submitObj);
+    };
+    //单个提取线索
+    handleExtractClueAssignToSale = (record, flag) => {
+        //如果这条线索已经提取过了或正在提取，就不能再点击提取了
+        if(record.hasExtracted || record.hasExtractedByOther || this.state.singleExtractLoading){
+            return;
+        }
+        if (!this.state.salesMan && flag) {
+            clueCustomerAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
+        } else {
+            this.setState({
+                singleExtractLoading: true
+            });
+            //提取线索前，先发请求获取还能提取的线索数量
+            //如果获取能提取的总量出错了就不用发请求了获取已经提取的线索量，直接提取就可以，后端有校验
+            if(this.state.getMaxLimitExtractNumberError){
+                this.extractRecommendCluesSingele(record);
+            }else{
+                this.getRecommendClueCount((count) => {
+                    let currentVersionType = checkCurrentVersionType();
+                    //如果获取出错了就不要校验数字了
+                    if (_.isNumber(count) &&
+                        //是试用账号或者正式账号
+                        (currentVersionType.trial || currentVersionType.formal) &&
+                        count >= this.state.maxLimitExtractNumber
+                    ){
+                        this.setState({
+                            hasNoExtractCountTip: true,
+                            singleExtractLoading: false,
+                            canClickExtract: true
+                        });
+                        if (this['changeSales' + record.id]) {
+                            //隐藏批量变更销售面板
+                            this['changeSales' + record.id].handleCancel();
+                        }
+                    }else{
+                        this.extractRecommendCluesSingele(record);
+                    }
+                });
+            }
+        }
+    };
+    //渲染单项中的提取按钮
+    extractClueOperator = (record) => {
+        // 提取线索分配给相关的销售人员的权限
+        let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
+        if (hasAssignedPrivilege) {
+            return (
+                <AntcDropdown
+                    isDropdownAble={record.hasExtracted}
+                    datatraceContainer='线索推荐页面单个提取'
+                    ref={assignSale => this['changeSales' + record.id] = assignSale}
+                    content={
+                        <span
+                            data-tracename="点击提取按钮"
+                            className="assign-btn"
+                        >
+                            {extractIcon}
+                        </span>}
+                    overlayTitle={Intl.get('user.salesman', '销售人员')}
+                    okTitle={Intl.get('common.confirm', '确认')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
+                    isSaving={this.state.singleExtractLoading}
+                    overlayContent={this.renderSalesBlock()}
+                    handleSubmit={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege)}
+                    unSelectDataTip={this.state.unSelectDataTip}
+                    clearSelectData={this.clearSelectSales}
+                    btnAtTop={false}
+                />
+            );
+        } else {
+            return (
+                <span
+                    onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege)}
+                    data-tracename='单个提取推荐线索'
+                >
+                    {extractIcon}
+                </span>
+            );
+        }
+    };
+
+    renderRecommendLists = () => {
+        let {
+            recommendClueLists,
+            settedCustomerRecommend,
+            isLoadingRecommendClue,
+            getRecommendClueErrMsg
+        } = this.state;
+        if(settedCustomerRecommend.loading || isLoadingRecommendClue) {
+            return (
+                <div className="load-content">
+                    <Spinner className='home-loading' loadingText={Intl.get('guide.extract.clue.loading', '获取线索中')}/>
+                </div>
+            );
+        }else if(getRecommendClueErrMsg && getRecommendClueErrMsg !== Intl.get('errorcode.168', '符合条件的线索已被提取完成，请修改条件再查看')) {
+            return (
+                <div className="errmsg-container">
+                    <span className="errmsg-tip">{getRecommendClueErrMsg},</span>
+                    <a className="retry-btn" data-tracename="点击重新获取推荐线索按钮" onClick={this.getRecommendLists}>
+                        {Intl.get('user.info.retry', '请重试')}
+                    </a>
+                </div>
+            );
+        }else if(!_.get(recommendClueLists,'[0]')) {
+            return (
+                <NoDataIntro
+                    noDataAndAddBtnTip={Intl.get('clue.no.data.during.range.and.status', '没有符合条件的线索')}
+                    renderAddAndImportBtns={this.renderBackBtn}
+                    showAddBtn
+                />
+            );
+        }else {
+            return (
+                <div className="extract-clue-panel-container">
+                    {
+                        _.map(recommendClueLists, item => {
+                            const cls = 'extract-clue-item' + this.setInvalidClassName(item);
+                            return (
+                                <div className={cls}>
+                                    <Checkbox checked={this.hasChecked(item)} disabled={this.getDisabledClue(item)} onChange={this.handleCheckChange.bind(this, item)}/>
+                                    <div className="extract-clue-text-wrapper" title={item.hasExtractedByOther ? Intl.get('errorcode.169', '该线索已被提取') : ''}>
+                                        <div className="extract-clue-text__name">
+                                            {item.hasExtractedByOther ? <i className='iconfont icon-warning-tip'/> : null}
+                                            <span>{item.name}</span>
+                                        </div>
+                                        <div className="extract-clue-text__filters">
+                                            <div className="extract-clue-text-item">
+                                                <span className="extract-clue-text-label">{Intl.get('clue.customer.register.time', '注册时间')}：</span>
+                                                <span> {item.startTime ? moment(item.startTime).format(oplateConsts.DATE_FORMAT) : null}</span>
+                                            </div>
+                                            <div className="extract-clue-text-item">
+                                                <span className="extract-clue-text-label">{Intl.get('call.record.contacts', '联系人')}</span>：
+                                                <span>{item.legalPerson}</span>
+                                            </div>
+                                            <div className="extract-clue-text-item">
+                                                <span className="extract-clue-text-label">{Intl.get('common.phone', '电话')}</span>：
+                                                <span>{item.telephones}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="single-extract-clue">
+                                        {item.hasExtracted ? Intl.get('common.has.been.extracted', '已提取') : (
+                                            <div className="handle-btn-item">
+                                                {this.extractClueOperator(item)}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })
+                    }
+                    {this.renderMoreDataBlock()}
+                </div>
+            );
+        }
+    };
+
+    renderMoreDataBlock = () => {
+        let recommendList = this.state.recommendClueLists;
+        let moreDataTip = null;
+        if(recommendList.length >= this.state.pageSize) {
+            moreDataTip = (
+                <div>
+                    {Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以')}
+                    <a onClick={this.getRecommendLists}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
+                </div>
+            );
+        }else {
+            moreDataTip = (
+                <div>
+                    {Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以')}
+                    <a onClick={this.props.handleBackClick}>{Intl.get('clue.customer.condition.change', '修改条件')}</a>
+                    {Intl.get('lead.recommend.change.condition', '再试试')}
+                </div>
+            );
+        }
+        return <NoMoreDataTip
+            fontSize="12"
+            message={moreDataTip}
+            show={() => {
+                return recommendList.length;
+            }}
+        />;
+    };
+
+    //渲染批量提取的按钮
     renderExtractOperator = () => {
         let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
         if(hasAssignedPrivilege) {
             return (
-                <div className="button-container">
-                    <Button className="button-cancel" onClick={this.props.onClosePanel}>{Intl.get('common.cancel', '取消')}</Button>
+                <div>
                     <AntcDropdown
                         datatraceContainer='首页批量立即提取线索'
-                        ref="changeSales"
+                        ref={ref => this['changeSales'] = ref}
                         content={
                             <Button
                                 type="primary"
-                                className="button-save"
+                                className="button-save btn-item"
                             >
-                                {Intl.get('guide.extract.clue.now', '立即提取')}
+                                <span className="iconfont icon-extract"/>
+                                {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
                             </Button>}
                         overlayTitle={Intl.get('user.salesman', '销售人员')}
                         okTitle={Intl.get('common.confirm', '确认')}
@@ -486,18 +825,31 @@ class ExtractClues extends React.Component {
             );
         }else {
             return (
-                <SaveCancelButton
-                    loading={this.state.batchExtractLoading}
-                    saveErrorMsg={this.state.saveErrorMsg}
-                    okBtnText={Intl.get('guide.extract.clue.now', '立即提取')}
-                    handleSubmit={(e) => {
-                        Trace.traceEvent(e, '点击立即提取线索按钮');
-                        this.handleSubmitAssignSalesBatch();
-                    }}
-                    handleCancel={this.props.onClosePanel}
-                />
+                <Button
+                    title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                    type="primary"
+                    data-tracename="点击批量提取线索按钮"
+                    className='btn-item common-sale-batch-extract'
+                    onClick={this.handleSubmitAssignSalesBatch}
+                    disabled={this.state.batchExtractLoading}
+                >
+                    <span className="iconfont icon-extract"/>
+                    {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                </Button>
             );
         }
+    };
+
+    getRecommendLists = () => {
+        if(this.state.canClickMoreBatch) {
+            this.props.getRecommendClueLists();
+        }
+    };
+
+    //是否禁用全选按钮
+    disabledCheckAll = () => {
+        //列表为空，或者请求数据，或者提取线索中（单个和批量）
+        return !this.state.recommendClueLists.length || this.state.isLoadingRecommendClue || this.state.singleExtractLoading || this.state.batchExtractLoading;
     };
 
     render() {
@@ -506,32 +858,60 @@ class ExtractClues extends React.Component {
             - LAYOUT_CONSTANCE.TITLE_HEIGHT
             - LAYOUT_CONSTANCE.BTN_PADDING;
 
-        let batchPopoverVisible = this.state.batchPopoverVisible;
+        let hasNoExtractCountTip = this.state.hasNoExtractCountTip;
 
         let unextractClueTipEl = $('.unextract-clue-tip');
-        if(batchPopoverVisible && unextractClueTipEl.length) {
+        if(unextractClueTipEl.length) {
             divHeight -= unextractClueTipEl.height();
         }
 
+        const hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length') || _.get(this, 'state.disabledCheckedClues.length');
+        let moreRotationClass = classNames('iconfont icon-change-new', {
+            'change-new-icon-rotation': !this.state.canClickMoreBatch
+        });
         return (
             <div className="extract-clues-wrapper" data-tracename="批量提取线索操作面板">
                 <div className="extract-clues-title-wrapper">
                     <div className="extract-clues-title">
-                        <span>{Intl.get('clue.extract.clue', '提取线索')}</span>
-                        <a className="float-r" style={{fontWeight: 400}} href="javascript:void(0);" data-tracename="点击换一批按钮" onClick={this.props.getRecommendClueLists}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
+                        <span>{Intl.get('clue.customer.clue.recommend', '线索推荐')}</span>
+                        <div className="extract-clues-btn-container">
+                            {
+                                hasSelectedClue ? this.renderExtractOperator() : (
+                                    <React.Fragment>
+                                        <Button
+                                            className="btn-item"
+                                            data-tracename="点击修改推荐条件"
+                                            title={Intl.get('clue.customer.condition.change', '修改条件')}
+                                            onClick={this.props.handleBackClick}
+                                        >
+                                            <span className="iconfont icon-modify-condition"/>
+                                            {Intl.get('clue.customer.condition.change', '修改条件')}
+                                        </Button>
+                                        <Button
+                                            className="btn-item more-batch-btn"
+                                            data-tracename="点击换一批按钮"
+                                            title={Intl.get('clue.customer.refresh.list', '换一批')}
+                                            onClick={this.getRecommendLists}
+                                        >
+                                            <span className={moreRotationClass}/>
+                                            <span>{Intl.get('clue.customer.refresh.list', '换一批')}</span>
+                                        </Button>
+                                    </React.Fragment>
+                                )
+                            }
+                        </div>
                     </div>
                 </div>
-                <div className="unextract-clue-tip" style={{display: batchPopoverVisible ? 'block' : 'none'}}>
-                    {this.hasNoExtractCountTip()}
+                <div className="unextract-clue-tip clearfix">
+                    <Checkbox checked={this.isCheckAll()} onChange={this.handleCheckAllChange} disabled={this.disabledCheckAll()}>{Intl.get('common.all.select', '全选')}</Checkbox>
+                    <span className="no-extract-count-tip" style={{display: hasNoExtractCountTip ? 'block' : 'none'}}>
+                        {this.hasNoExtractCountTip()}
+                    </span>
                 </div>
                 <div className="extract-clues-content" style={{height: divHeight}}>
                     <GeminiScrollbar>
                         {this.renderRecommendLists()}
                     </GeminiScrollbar>
-                </div>
-                <div className="extract-btn-wrapper">
-                    <Button className="back-btn" data-tracename="点击返回上一步" onClick={this.props.handleBackClick}>{Intl.get('user.user.add.back', '上一步')}</Button>
-                    {this.renderExtractOperator()}
                 </div>
                 {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
                 {/*<DifferentVersion*/}
@@ -560,6 +940,7 @@ ExtractClues.propTypes = {
     getRecommendClueLists: PropTypes.func,
     afterSuccess: PropTypes.func,
     salesManList: PropTypes.array,
+    showSuccessPage: PropTypes.bool,
 };
 
 export default ExtractClues;

@@ -2606,8 +2606,8 @@ var en_US = {
     'errorcode.166': 'The number has been used, you can not be bound to the current account', // 该手机号已被使用，不能绑定到当前账号
     'errorcode.167': 'The number has been bound to the other account, please login first original account unbundling', // 该手机号已被绑定到其他账号，请先登录原账号解绑
     'errorcode.168': 'The leads under this query condition have been extracted, please modify the query conditions and check again',//符合条件的线索已被提取完成，请修改条件再查看
-    'errorcode.169': 'The company information has been extracted',//该线索已被其他同事提取
-    'errorcode.170': 'The leads you selected have already been picked up by others',//您选择的线索都已经被其他同事提取
+    'errorcode.169': 'The company information has been extracted',//该线索已被提取
+    'errorcode.170': 'The leads you selected have already been extracted',//您选择的线索都已经被提取
     'errorcode.171': 'Not your lead, cannot be turned into a customer',//不是您的线索，无法转为客户
     'errorcode.172': 'Not your lead, cannot be merged into a customer',//不是您的线索，无法合并到客户
     'errorcode.173': 'Failed to turn lead to customer',//线索转为客户失败
@@ -2903,6 +2903,8 @@ var en_US = {
     'common.sales.data.no.data': 'No such information',//暂无此类信息
     'common.batch.sales.target': 'Change team sales goals in bulk',//设置团队销售目标
     'common.batch.self.sales.target': 'Change personal sales goals in bulk',//批量设置个人销售目标
+    'common.has.been.extracted': 'Already extracted',//已提取
+
     //缺失补充start
     'user.third.thirdapp.platform.reuqired': 'Please select or fill in the application platform',//请选择或填写应用平台
     'call.record.top.failed': 'Failed to get TOP10 call duration',//获取通话时长TOP10失败
@@ -3801,6 +3803,7 @@ var en_US = {
     'batch.faild.count': 'The number of failed: {count}',//失败数{count}
     'batch.success.count': 'The number of successful: {count}',//成功数{count}
     'clue.see.recommend': 'See recommendations',//查看推荐
+    'clue.recommend.has.extract.count': '{timerange} has extracted {hasExtract} bars, and at most {ableExtract} bars',//{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
     'clue.assignment.strategy.fail.to.get': 'Fail to fetch lead assignment strategy list',//获取线索分配策略列表失败
