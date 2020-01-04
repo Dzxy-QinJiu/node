@@ -3709,6 +3709,8 @@ var en_US = {
     'clue.customer.last.year': 'Last year',//近一年
     'clue.customer.close.filter.panel': 'Close filter panel',//收起筛选
     'clue.customer.not.connect.phone': 'Not connected leads',//未打通电话的线索
+    'clue.customer.input.industry': 'Please enter industry name',//请输入行业名称
+    'clue.customer.add.industry.rule': 'Please enter 1-10 digits, letters or Chinese characters (no Spaces in the middle)',//请输入1-10位的数字，字母或汉字(中间不能有空格)
     'user.score.level.rule': 'User rating rules',//用户评分规则
     'user.score.basic.score': 'Basic rating',//基础评分
     'user.score.particate.in.score': 'Participation score',//参与度评分
@@ -3880,7 +3882,7 @@ var en_US = {
     'payment.please.upgrade.company.version': 'Please first upgrade to the basic version of the above version, contact sales: {contact}',//请先升级到基础版以上版本，联系销售：{contact}
     'payment.upgrade.personal.version': 'upgrade personal official version',//升级个人正式版
     'payment.find.result': 'Checking payment results...',//正在查询支付结果...
-    'payment.upgrade.personal.version.success': 'You have been upgraded to the personal version, you can extract {count} clues every month!',//您已升级为个人正式版，每月可提取{count}线索啦！
+    'payment.upgrade.personal.version.success': 'You have been upgraded to the personal version, you can extract {count} clues every month!',//您已升级为个人正式版，每月可提取{count}条线索啦！
     'payment.contact.us': 'Contact us {contact}',//联系我们请拨打{contact}
     'payment.add.leads.tip': 'If the quantity of clues is insufficient, {addBtn}',//如果线索量不够用，可另外{addBtn}
     /*支付流程 --- end*/
