@@ -58,11 +58,7 @@ ClueCustomerStore.prototype.resetState = function() {
     //所有线索的数量
     this.allClueCount = 0;
     //推荐线索的列表及相关状态
-    this.isLoadingRecommendClue = true;
-    this.getRecommendClueErrMsg = '';
-    this.recommendClueLists = [];
-    this.hasExtraRecommendList = false;
-    this.sortvalues = [];
+    this.initialRecommendClues();
 };
 ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
     if (result.loading) {
@@ -587,6 +583,14 @@ ClueCustomerStore.prototype.afterTranferClueSuccess = function(data) {
 //更新线索列表
 ClueCustomerStore.prototype.updateClueCustomers = function(data) {
     this.curClueLists = data;
+};
+//初始化推荐线索相关的
+ClueCustomerStore.prototype.initialRecommendClues = function() {
+    this.isLoadingRecommendClue = true;
+    this.getRecommendClueErrMsg = '';
+    this.recommendClueLists = [];
+    this.hasExtraRecommendList = false;
+    this.sortvalues = [];
 };
 
 //添加跟进记录时，修改客户最新的跟进记录时，更新列表中的最后联系

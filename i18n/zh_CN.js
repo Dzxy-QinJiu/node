@@ -2632,8 +2632,8 @@ var zh_CN = {
     'errorcode.166': '该手机号已被使用，不能绑定到当前账号',
     'errorcode.167': '该手机号已被绑定到其他账号，请先登录原账号解绑',
     'errorcode.168': '符合条件的线索已被提取完成，请修改条件再查看',
-    'errorcode.169': '该线索已被其他同事提取',
-    'errorcode.170': '您选择的线索都已经被其他同事提取',
+    'errorcode.169': '该线索已被提取',
+    'errorcode.170': '您选择的线索都已经被提取',
     'errorcode.171': '不是您的线索，无法转为客户',
     'errorcode.172': '不是您的线索，无法合并到客户',
     'errorcode.173': '线索转为客户失败',
@@ -2933,6 +2933,7 @@ var zh_CN = {
     'common.sales.frontpage.loading': '加载中',
     'common.sales.data.err': '出错啦',
     'common.sales.data.no.data': '暂无此类信息',
+    'common.has.been.extracted': '已提取',
 
     //缺失补充start
     'user.third.thirdapp.platform.reuqired': '请选择或填写应用平台',
@@ -3837,6 +3838,7 @@ var zh_CN = {
     'batch.faild.count': '失败数: {count}',
     'batch.success.count': '成功数: {count}',
     'clue.see.recommend': '查看推荐',
+    'clue.recommend.has.extract.count': '{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
     // 线索分配策略
     'clue.assignment.strategy.add': '添加分配策略',
     'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',

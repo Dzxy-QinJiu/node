@@ -347,7 +347,7 @@ class RecommendCustomerRightPanel extends React.Component {
         this.handleExtractRecommendClues(submitObj);
     };
     // 单个提取线索
-    handleExtractClueAssignToSale(record, flag, isDetailExtract) {
+    handleExtractClueAssignToSale(record, flag) {
         //如果这条线索已经提取过了或正在提取，就不能再点击提取了
         if(record.hasExtracted || record.hasExtractedByOther || this.state.singleExtractLoading){
             return;
@@ -451,7 +451,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 render: (text, record, index) => {
                     var hasExtractedByOther = record.hasExtractedByOther;
                     return (
-                        <span className='recommend-lead-name' title={hasExtractedByOther ? Intl.get('errorcode.169', '该线索已被其他同事提取') : ''}>
+                        <span className='recommend-lead-name' title={hasExtractedByOther ? Intl.get('errorcode.169', '该线索已被提取') : ''}>
                             {hasExtractedByOther ? <i className='iconfont icon-warning-tip'></i> : null}
                             {text}
                         </span>
