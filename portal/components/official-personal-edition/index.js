@@ -221,7 +221,7 @@ class OfficialPersonalEdition extends React.Component{
         let curOrderInfo = this.state.curOrderInfo;
         let tipContent = (
             <div>
-                {Intl.get('payment.upgrade.personal.version.success', '您已升级为个人正式版，每月可提取{count}线索啦！', {
+                {Intl.get('payment.upgrade.personal.version.success', '您已升级为个人正式版，每月可提取{count}条线索啦！', {
                     count: this.state.count
                 })}
                 <br/>
