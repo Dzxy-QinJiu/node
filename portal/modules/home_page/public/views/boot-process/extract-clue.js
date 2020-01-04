@@ -474,13 +474,20 @@ class ExtractClues extends React.Component {
     // 全选/反选
     handleCheckAllChange = (e) => {
         let canExtractClues = [];
-        if(!this.state.selectedRecommendClues.length) {
+        let isCheckAll = this.isCheckAll();
+        if(!isCheckAll) {
             canExtractClues = _.filter(this.state.recommendClueLists, item => {
                 return !this.getDisabledClue(item);
             });
         }
         this.setState({selectedRecommendClues: canExtractClues});
         Trace.traceEvent(e, '点击选中/取消选中全部线索');
+    };
+    isCheckAll = () => {
+        let canExtractClues = _.filter(this.state.recommendClueLists, item => {
+            return !this.getDisabledClue(item);
+        });
+        return canExtractClues.length > 0 && canExtractClues.length === this.state.selectedRecommendClues.length;
     };
     //是否选中
     hasChecked = (record) => {
@@ -895,8 +902,8 @@ class ExtractClues extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className="unextract-clue-tip">
-                    <Checkbox onChange={this.handleCheckAllChange} disabled={this.disabledCheckAll()}>{Intl.get('common.all.select', '全选')}</Checkbox>
+                <div className="unextract-clue-tip clearfix">
+                    <Checkbox checked={this.isCheckAll()} onChange={this.handleCheckAllChange} disabled={this.disabledCheckAll()}>{Intl.get('common.all.select', '全选')}</Checkbox>
                     <span className="no-extract-count-tip" style={{display: hasNoExtractCountTip ? 'block' : 'none'}}>
                         {this.hasNoExtractCountTip()}
                     </span>
