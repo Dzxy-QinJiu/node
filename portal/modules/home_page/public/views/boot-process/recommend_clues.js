@@ -146,17 +146,6 @@ class RecommendClues extends React.Component {
         });
     };
 
-    renderBackBtn = () => {
-        return (
-            <Button
-                type='primary'
-                className='back-btn'
-                data-tracename="点击修改推荐条件"
-                onClick={this.changeFilter}
-            >{Intl.get('clue.customer.condition.change', '修改条件')}</Button>
-        );
-    };
-
     renderStepBlock = () => {
         let {
             step,
