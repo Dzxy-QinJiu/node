@@ -40,7 +40,7 @@ import RecommendClues from './boot-process/recommend_clues';
 import userData from 'PUB_DIR/sources/user-data';
 import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
-import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
+import {formatSalesmanList, subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 import clueAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
@@ -1123,6 +1123,7 @@ class MyWorkColumn extends React.Component {
 
     filterMyWork(myWorkList, item) {
         //过滤掉已处理的工作
+        var targetObj = _.find(myWorkList, work => work.id === item.id);
         myWorkList = _.filter(myWorkList, work => work.id !== item.id);
         //已处理的工作就是之前记录的正在处理的工作，将正在处理的工作置空
         let handlingWork = this.state.handlingWork;
@@ -1134,6 +1135,11 @@ class MyWorkColumn extends React.Component {
         //如果当前展示的工作个数小于一页获取的数据，并且小于总工作数时需要继续加载一页数据，以防处理完工作后下面的工作没有及时补上来
         if (workListLength < 20 && workListLength < this.state.totalCount) {
             this.getMyWorkList();
+        }
+        //如果是处理的线索，处理完后线索左边的数字要减一
+        var leadId = _.get(targetObj,'lead.id','');
+        if(leadId){
+            subtracteGlobalClue({id: leadId});
         }
     }
 

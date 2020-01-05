@@ -94,7 +94,7 @@ export const isCommonSalesOrPersonnalVersion = () => {
 //分配线索的权限
 export const assignSalesPrivilege = (curClue) => {
     let user = userData.getUserData();
-    return (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DISTRIBUTE_SELF) || (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DISTRIBUTE_ALL) && !isCommonSalesOrPersonnalVersion())) && editCluePrivilege(curClue);
+    return (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DISTRIBUTE_SELF) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DISTRIBUTE_ALL)) && !isCommonSalesOrPersonnalVersion() && editCluePrivilege(curClue);
 };
 //渲染释放线索的权限
 export const freedCluePrivilege = () => {
