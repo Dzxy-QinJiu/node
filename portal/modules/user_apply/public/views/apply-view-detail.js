@@ -1761,7 +1761,7 @@ const ApplyViewDetail = createReactClass({
                         defaultMessage="天"/></Option>
                     <Option value={TIMERANGEUNIT.WEEK}><ReactIntl.FormattedMessage id="common.time.unit.week"
                         defaultMessage="周"/></Option>
-                    <Option value="months"><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月"/></Option>
+                    <Option value={TIMERANGEUNIT.MONTH}><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月"/></Option>
                     <Option value={TIMERANGEUNIT.YEAR}><ReactIntl.FormattedMessage id="common.time.unit.year"
                         defaultMessage="年"/></Option>
                     <Option value={TIMERANGEUNIT.CUSTOM}><ReactIntl.FormattedMessage id="user.time.custom"
@@ -1773,10 +1773,10 @@ const ApplyViewDetail = createReactClass({
                 <span style={{'marginLeft': '10px'}} className="iconfont icon-close"
                     onClick={this.cancelModifyDelayTime}></span>
             </div>
-        ) : (customDelay ? null : <Tooltip title={Intl.get('user.apply.detail.change.delay.time', '修改延期时间')}>
+        ) : <Tooltip title={Intl.get('user.apply.detail.change.delay.time', '修改延期时间')}>
             <span className="iconfont icon-update" onClick={this.setDelayTimeModify}></span>
         </Tooltip>
-        );
+        ;
     },
 
     //显示客户详情

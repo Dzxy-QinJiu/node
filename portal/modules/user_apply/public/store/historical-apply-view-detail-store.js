@@ -3,6 +3,7 @@ import { altAsyncUtil } from 'ant-utils';
 const { resultHandler } = altAsyncUtil;
 import { APPLY_TYPES, TIMERANGEUNIT, WEEKDAYS} from 'PUB_DIR/sources/utils/consts';
 import {checkIfLeader, isCustomDelayType} from 'PUB_DIR/sources/utils/common-method-util';
+import {getDelayDisplayTime} from '../util/app-user-util';
 class ApplyViewDetailStore {
     constructor() {
         this.resetState();
@@ -153,29 +154,6 @@ class ApplyViewDetailStore {
             this.app_list = result.list;
         }
     }
-
-    //获取延期的显示时间
-    getDelayDisplayTime(delay) {
-        //是否有年
-        var isYear = _.indexOf(delay, TIMERANGEUNIT.YEAR) > -1;
-        var isMonth = _.indexOf(delay, TIMERANGEUNIT.MONTH) > -1;
-        var isDay = _.indexOf(delay, TIMERANGEUNIT.DAY) > -1;
-        if (isYear) {
-            this.formData.delayTimeNumber = _.replace(delay, TIMERANGEUNIT.YEAR, '');
-            this.formData.delayTimeUnit = TIMERANGEUNIT.YEAR;
-        } else if (isMonth) {
-            this.formData.delayTimeNumber = _.replace(delay, TIMERANGEUNIT.MONTH, '');
-            this.formData.delayTimeUnit = TIMERANGEUNIT.MONTH;
-        } else if (isDay) {
-            this.formData.delayTimeNumber = _.replace(delay, TIMERANGEUNIT.DAY, '');
-            this.formData.delayTimeUnit = TIMERANGEUNIT.DAY;
-            if(this.formData.delayTimeNumber % WEEKDAYS === 0){
-                this.formData.delayTimeNumber = this.formData.delayTimeNumber / WEEKDAYS;
-                this.formData.delayTimeUnit = TIMERANGEUNIT.WEEK;
-            }
-
-        }
-    }
     setHistoryApplyStatus(){
         this.sameHistoryApplyLists = {
             //三种状态,loading,error,''
@@ -245,7 +223,7 @@ class ApplyViewDetailStore {
                 if (this.detailInfoObj.info.delayTime) { // 同步修改时间
                     delayTime = this.detailInfoObj.info.delayTime;
                     this.formData.delay_time = delayTime;
-                    this.getDelayDisplayTime(delayTime);
+                    getDelayDisplayTime(delayTime, this.formData);
                 } else { // 到期时间，点开修改同步到自定义
                     this.formData.delayTimeUnit = TIMERANGEUNIT.CUSTOM;
                     this.formData.end_date = this.detailInfoObj.info.end_date;
@@ -255,7 +233,7 @@ class ApplyViewDetailStore {
                     const delayTime = info.apps[0].delayTime;
                     info.delayTime = delayTime;
                     this.formData.delay_time = delayTime;
-                    this.getDelayDisplayTime(delayTime);
+                    getDelayDisplayTime(delayTime, this.formData);
                 } else { // 到期时间，点开修改同步到自定义
                     this.formData.delayTimeUnit = TIMERANGEUNIT.CUSTOM;
                     this.formData.end_date = info.apps[0].end_date;
@@ -497,7 +475,7 @@ class ApplyViewDetailStore {
         if (this.detailInfoObj.info.delayTime) {
             delayTime = this.detailInfoObj.info.delayTime;
             this.formData.delay_time = delayTime;
-            this.getDelayDisplayTime(delayTime);
+            getDelayDisplayTime(delayTime, this.formData);
         } else {
             this.formData.delayTimeUnit = TIMERANGEUNIT.CUSTOM;
             this.formData.end_date = this.detailInfoObj.info.end_date;

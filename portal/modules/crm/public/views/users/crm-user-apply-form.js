@@ -138,9 +138,8 @@ class CrmUserApplyForm extends React.Component {
                 delete item.begin_date;
             }
             return {
-                ...paramItem,
-                ...x
-
+                ...x,
+                ...paramItem
             };
         });
 
