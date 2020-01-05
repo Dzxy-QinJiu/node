@@ -55,6 +55,9 @@ class ApplyViewDetailActions {
             'setRolesNotSettingModalDialog',
             //没有设置角色，仍然提交
             'rolesNotSettingContinueSubmit',
+            // 显示应用配置面板
+            'showAppConfigPanel',
+            'showAppConfigRightPanle',
             // 应用配置取消时
             'handleCancel',
             // 应用配置保存成功时

@@ -38,14 +38,16 @@ import PasswordSetting from 'CMP_DIR/password-setting';
 /*在审批界面显示用户的右侧面板结束*/
 //默认头像图片
 var DefaultHeadIconImage = require('../../../common/public/image/default-head-icon.png');
+// 应用的默认配置
+var UserTypeConfigForm = require('./user-type-config-form');
 import Trace from 'LIB_DIR/trace';
 var moment = require('moment');
 import {handleDiffTypeApply,getUserApplyFilterReplyList,
-		getApplyStatusTimeLineDesc,formatUsersmanList,
-		updateUnapprovedCount, isFinalTask,
-		isApprovedByManager,timeShowFormat,
-		isCustomDelayType, getDelayTimeUnit,
-		applyAppConfigTerminal
+    getApplyStatusTimeLineDesc,formatUsersmanList,
+    updateUnapprovedCount, isFinalTask,
+    isApprovedByManager,timeShowFormat,
+    isCustomDelayType, getDelayTimeUnit,
+    applyAppConfigTerminal
 } from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import ApplyHistory from 'CMP_DIR/apply-components/apply-history';
@@ -1098,6 +1100,23 @@ const ApplyViewDetail = createReactClass({
         //是否是uem的用户
         var isUem = !this.state.isOplateUser;
         return isUem && _.get(this, 'state.detailInfoObj.info.type') === CONSTANTS.APPLY_USER && this.showPassWordPrivilege();
+    },
+
+    // 应用app的配置面板
+    showAppConfigPanel(app, userType) {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
+        ApplyViewDetailActions.showAppConfigPanel(app);
+        appConfig.user_type = (userType === '1' ? Intl.get('common.trial.official', '正式用户') : Intl.get('common.trial.user', '试用用户'));
+        appConfig.config_name = (userType === '1' ? Intl.get('common.trial.official', '正式用户') : Intl.get('common.trial.user', '试用用户'));
+        var appDefaultInfo = this.state.appDefaultInfo;
+        let appId = _.map(appDefaultInfo, 'client_id');
+        let index = _.indexOf(appId, app.app_id);
+        if (index !== -1 && appDefaultInfo[index].id !== '') {
+            appConfig.id = appDefaultInfo[index].id;
+        }
+        this.setState({
+            appConfig: appConfig
+        });
     },
 
     // 渲染备注
@@ -2638,6 +2657,26 @@ const ApplyViewDetail = createReactClass({
         ApplyViewDetailActions.cancelSendApproval();
     },
 
+    // 申请应用的配置界面
+    showAppConfigRightPanle() {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
+        ApplyViewDetailActions.showAppConfigRightPanle();
+    },
+
+    // 应用配置取消保存
+    handleCancel() {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
+        ApplyViewDetailActions.handleCancel();
+    },
+
+    // 应用配置保存成功时
+    handleSaveAppConfig(appId) {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
+        ApplyViewDetailActions.handleSaveAppConfig();
+        this.getApplyDetail(this.props.detailItem);
+        //this.getAppConfigExtra( appId ,appConfig.user_type);
+    },
+    
     // 假设没有默认配置，默认配置成功
     getAppConfigExtra(client_id, user_type) {
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
@@ -2720,6 +2759,23 @@ const ApplyViewDetail = createReactClass({
                 }
                 {this.renderApplyApproveStatus()}
                 {this.renderCancelApplyApprove()}
+                {this.state.showRightPanel ?
+                    <RightPanel
+                        className="apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
+                        showFlag={this.state.showRightPanel}>
+                        {
+                            this.state.rightPanelAppConfig ?
+                                <UserTypeConfigForm
+                                    togglePageChange={this.showAppConfigRightPanle}
+                                    addUserTypeConfigInfoShow={true}
+                                    appId={this.state.rightPanelAppConfig.app_id}
+                                    appName={this.state.rightPanelAppConfig.app_name}
+                                    item={this.state.appConfig}
+                                    handleCancel={this.handleCancel}
+                                    handleSaveAppConfig={this.handleSaveAppConfig}
+                                /> : null
+                        }
+                    </RightPanel> : null}
                 {/*该客户下的用户列表*/}
                 {
                     this.state.isShowCustomerUserListPanel ?

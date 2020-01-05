@@ -31,8 +31,12 @@ class ApplyViewDetailStore {
         };
         //是否显示右侧面板
         this.showRightPanel = false;
+        //右侧面板显示用户详情的userId
+        this.rightPanelUserId = '';
         //右侧面板显示客户详情的customerId
         this.rightPanelCustomerId = '';
+        // 右侧面板显示应用appId为空
+        this.rightPanelAppConfig = ''; 
         // 配置界面的编辑
         this.addUserTypeConfigInfoShow = false;
         //底部显示类型  btn 按钮   formtext 文字
@@ -415,22 +419,46 @@ class ApplyViewDetailStore {
     }
     //显示用户详情右侧面板
     showUserDetail(userId) {
+        //是否显示右侧面板
+        this.showRightPanel = true;
+        //右侧面板显示用户详情的userId
+        this.rightPanelUserId = userId;
         //客户id为空
         this.rightPanelCustomerId = '';
+        // 应用appId为空
+        this.rightPanelAppConfig = '';
     }
     //显示客户详情右侧面板
     showCustomerDetail(customerId) {
+        //是否显示右侧面板
+        this.showRightPanel = true;
         //右侧面板显示用户详情的customerId
         this.rightPanelCustomerId = customerId;
+        //用户id为空
+        this.rightPanelUserId = '';
+        // 应用appId为空
+        this.rightPanelAppConfig = '';
+    }
+    // 显示应用没有默认的权限和角色的右侧面板
+    showAppConfigPanel(app) {
+        //是否显示右侧面板
+        this.showRightPanel = true;
+        this.rightPanelAppConfig = app;
+        //右侧面板显示用户详情的customerId为空
+        this.rightPanelCustomerId = '';
+        //用户id为空
+        this.rightPanelUserId = '';
     }
     // 应用配置取消保存
     handleCancel() {
         this.showRightPanel = false;
+        this.rightPanelAppConfig = '';
         this.addUserTypeConfigInfoShow = false;
     }
     // 应用配置保存成功时
     handleSaveAppConfig() {
         this.showRightPanel = false;
+        this.rightPanelAppConfig = '';
         this.addUserTypeConfigInfoShow = false;
     }
     showAppConfigRightPanle() {
@@ -440,6 +468,8 @@ class ApplyViewDetailStore {
     closeRightPanel() {
         //是否显示右侧面板
         this.showRightPanel = false;
+        //右侧面板显示用户详情的userId
+        this.rightPanelUserId = '';
         //右侧面板显示客户详情的userId
         this.rightPanelCustomerId = '';
     }
