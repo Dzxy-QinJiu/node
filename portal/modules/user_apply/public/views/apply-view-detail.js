@@ -31,7 +31,7 @@ import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters
 import {RightPanel} from '../../../../components/rightPanel';
 import {getPassStrenth, PassStrengthBar, passwordRegex} from 'CMP_DIR/password-strength-bar';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import {APPLY_TYPES, userTypeList, TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_TYPES, userTypeList, TOP_NAV_HEIGHT, TIMERANGEUNIT, WEEKDAYS} from 'PUB_DIR/sources/utils/consts';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import PasswordSetting from 'CMP_DIR/password-setting';
@@ -46,6 +46,7 @@ import {handleDiffTypeApply,getUserApplyFilterReplyList,
     getApplyStatusTimeLineDesc,formatUsersmanList,
     updateUnapprovedCount, isFinalTask,
     isApprovedByManager,timeShowFormat,
+    isCustomDelayType, getDelayTimeUnit,
     applyAppConfigTerminal
 } from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
@@ -74,7 +75,7 @@ var appConfig = {
     //默认已选中的权限列表
     permissions: [],
     //默认开通周期毫秒数 半个月
-    valid_period: 1209600000
+    valid_period: 14 * 24 * 60 * 60 * 1000
 };
 
 //常量定义
@@ -98,7 +99,6 @@ var CONSTANTS = {
     // 详单的高度（当底部无批注内容时）
     DETAIL_NO_COMMENT_HEIGHT: 55
 };
-const SELECT_CUSTOM_TIME_TYPE = 'custom';
 
 //获取查看申请详情的路径,回复,审批，驳回中需要添加
 function getApplyDetailUrl(detailInfo) {
@@ -110,31 +110,16 @@ function getApplyDetailUrl(detailInfo) {
 }
 
 //获取延期时间
-function getDelayDisplayTime(delay) {
-    //年毫秒数
-    var YEAR_MILLIS = 365 * 24 * 60 * 60 * 1000;
-    //月毫秒数
-    var MONTH_MILLIS = 30 * 24 * 60 * 60 * 1000;
-    //周毫秒数
-    var WEEK_MILLIS = 7 * 24 * 60 * 60 * 1000;
-    //天毫秒数
-    var DAY_MILLIS = 24 * 60 * 60 * 1000;
-    //计算年
-    var years = Math.floor(delay / YEAR_MILLIS);
-    var left_millis = delay - years * YEAR_MILLIS;
-    //计算月
-    var months = Math.floor(left_millis / MONTH_MILLIS);
-    left_millis = left_millis - months * MONTH_MILLIS;
-    //计算周
-    var weeks = Math.floor(left_millis / WEEK_MILLIS);
-    left_millis = left_millis - weeks * WEEK_MILLIS;
-    //计算天
-    var days = Math.floor(left_millis / DAY_MILLIS);
+function getDelayDisplayTime(delayUnit, delayNumber) {
+    var isYear = _.indexOf(delayUnit, TIMERANGEUNIT.YEAR) > -1;
+    var isMonth = _.indexOf(delayUnit, TIMERANGEUNIT.MONTH) > -1;
+    var isWeek = _.indexOf(delayUnit, TIMERANGEUNIT.WEEK) > -1;
+    var isDay = _.indexOf(delayUnit, TIMERANGEUNIT.DAY) > -1;
     //按情况显示
-    return `${years ? years + Intl.get('common.time.unit.year', '年') : ''}
-            ${months ? months + Intl.get('user.apply.detail.delay.month.show', '个月') : ''}
-            ${weeks ? weeks + Intl.get('common.time.unit.week', '周') : ''}
-            ${days ? days + Intl.get('common.time.unit.day', '天') : ''}`;
+    return `${isYear ? delayNumber + Intl.get('common.time.unit.year', '年') : ''}
+            ${isMonth ? delayNumber + Intl.get('user.apply.detail.delay.month.show', '个月') : ''}
+            ${isWeek ? delayNumber + Intl.get('common.time.unit.week', '周') : ''}
+            ${isDay ? delayNumber + Intl.get('common.time.unit.day', '天') : ''}`;
 }
 
 const APPLY_LIST_WIDTH = 421;
@@ -1774,28 +1759,19 @@ const ApplyViewDetail = createReactClass({
     //保存修改的延迟时间
     saveModifyDelayTime(e) {
         Trace.traceEvent(e, '保存修改延期时间');
+        var formData = this.state.formData;
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
-        if (this.state.formData.delayTimeUnit === SELECT_CUSTOM_TIME_TYPE) {
-            ApplyViewDetailActions.saveModifyDelayTime(this.state.formData.end_date);
+        if (isCustomDelayType(this.state.formData.delayTimeUnit)) {
+            ApplyViewDetailActions.saveModifyDelayTime(formData.end_date);
         } else {
-            ApplyViewDetailActions.saveModifyDelayTime(this.getDelayTimeMillis());
+            ApplyViewDetailActions.saveModifyDelayTime(getDelayTimeUnit(formData.delayTimeUnit,formData.delayTimeNumber));
         }
-
     },
 
     cancelModifyDelayTime(e) {
         Trace.traceEvent(e, '取消修改延期时间');
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.cancelModifyDelayTime();
-    },
-
-    // 获取修改后的时间
-    getDelayTimeMillis: function() {
-        //延期周期
-        var delayTimeUnit = this.state.formData.delayTimeUnit;
-        var delayTimeNumber = this.state.formData.delayTimeNumber;
-        var millis = moment.duration(+delayTimeNumber, delayTimeUnit).valueOf();
-        return millis;
     },
 
     // 将延期时间设置为截止时间（具体到xx年xx月xx日）
@@ -1817,9 +1793,10 @@ const ApplyViewDetail = createReactClass({
         if (!this.isUnApproved()) {
             return;
         }
+        var customDelay = isCustomDelayType(this.state.formData.delayTimeUnit);
         return this.state.isModifyDelayTime ? (
             <div className="modify-delay-time-style">
-                {this.state.formData.delayTimeUnit === SELECT_CUSTOM_TIME_TYPE ? (
+                {customDelay ? (
                     <DatePicker placeholder="请选择到期时间"
                         onChange={this.setDelayDeadlineTime}
                         disabledDate={this.disabledDate}
@@ -1834,32 +1811,31 @@ const ApplyViewDetail = createReactClass({
                         min={1}
                     />
                 )}
-
                 <Select
                     value={this.state.formData.delayTimeUnit}
                     onChange={this.delayTimeUnitModify}
                     className="select-modify-unit"
                 >
-                    <Option value="days"><ReactIntl.FormattedMessage id="common.time.unit.day"
+                    <Option value={TIMERANGEUNIT.DAY}><ReactIntl.FormattedMessage id="common.time.unit.day"
                         defaultMessage="天"/></Option>
-                    <Option value="weeks"><ReactIntl.FormattedMessage id="common.time.unit.week"
+                    <Option value={TIMERANGEUNIT.WEEK}><ReactIntl.FormattedMessage id="common.time.unit.week"
                         defaultMessage="周"/></Option>
-                    <Option value="months"><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月"/></Option>
-                    <Option value="years"><ReactIntl.FormattedMessage id="common.time.unit.year"
+                    <Option value={TIMERANGEUNIT.MONTH}><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月"/></Option>
+                    <Option value={TIMERANGEUNIT.YEAR}><ReactIntl.FormattedMessage id="common.time.unit.year"
                         defaultMessage="年"/></Option>
-                    <Option value="custom"><ReactIntl.FormattedMessage id="user.time.custom"
+                    <Option value={TIMERANGEUNIT.CUSTOM}><ReactIntl.FormattedMessage id="user.time.custom"
                         defaultMessage="自定义"/></Option>
+
                 </Select>
                 <span style={{'marginLeft': '10px'}} className="iconfont icon-choose"
                     onClick={this.saveModifyDelayTime}></span>
                 <span style={{'marginLeft': '10px'}} className="iconfont icon-close"
                     onClick={this.cancelModifyDelayTime}></span>
             </div>
-        ) : (
-            <Tooltip title={Intl.get('user.apply.detail.change.delay.time', '修改延期时间')}>
-                <span className="iconfont icon-update" onClick={this.setDelayTimeModify}></span>
-            </Tooltip>
-        );
+        ) : <Tooltip title={Intl.get('user.apply.detail.change.delay.time', '修改延期时间')}>
+            <span className="iconfont icon-update" onClick={this.setDelayTimeModify}></span>
+        </Tooltip>
+        ;
     },
 
     //显示客户详情
@@ -1998,7 +1974,7 @@ const ApplyViewDetail = createReactClass({
     // 渲染延期时间前的标题
     renderApplyDelayName() {
         let delayName = '';
-        if (this.state.formData.delayTimeUnit === SELECT_CUSTOM_TIME_TYPE) {
+        if (isCustomDelayType(this.state.formData.delayTimeUnit)) {
             delayName = Intl.get('user.time.end', '到期时间');
         } else {
             delayName = Intl.get('common.delay.time', '延期时间');
@@ -2008,10 +1984,11 @@ const ApplyViewDetail = createReactClass({
 
     renderApplyDelayModifyTime() {
         let delayTime;
-        if (this.state.formData.delayTimeUnit === SELECT_CUSTOM_TIME_TYPE) {
+        var formData = this.state.formData;
+        if (isCustomDelayType(this.state.formData.delayTimeUnit)) {
             delayTime = moment(new Date(+this.state.formData.end_date)).format(oplateConsts.DATE_FORMAT);
         } else {
-            delayTime = getDelayDisplayTime(this.getDelayTimeMillis());
+            delayTime = getDelayDisplayTime(formData.delayTimeUnit,formData.delayTimeNumber);
         }
         return delayTime;
     },
@@ -2446,11 +2423,11 @@ const ApplyViewDetail = createReactClass({
                         item.user_type = changedUserType;
                     }
                     //延期时间为：自定义的到期时间时
-                    if (_.get(this.state, 'formData.delayTimeUnit') === 'custom') {
+                    if (isCustomDelayType(_.get(this.state, 'formData.delayTimeUnit'))) {
                         item.end_date = _.get(this.state, 'formData.end_date');
                     } else {//延期时间为：延期 n天、周、月等时
-                        item.delay = _.get(this.state, 'formData.delay_time');
-                        item.end_date = moment(x.end_date).subtract(x.delay, 'ms').add(item.delay, 'ms').valueOf();
+                        item.delay_time = _.get(this.state, 'formData.delay_time');
+
                     }
                     let appConfig = this.appsSetting[`${item.client_id}&&${item.user_id}`];
                     //角色、权限，如果修改了用户类型，需要传设置的角色、权限
@@ -2606,7 +2583,7 @@ const ApplyViewDetail = createReactClass({
                 }
                 // 延期时间(需要修改到期时间的字段)
                 if (detailInfo.type === 'apply_grant_delay') {
-                    if (this.state.formData.delayTimeUnit === SELECT_CUSTOM_TIME_TYPE) {
+                    if (isCustomDelayType(this.state.formData.delayTimeUnit)) {
                         obj.end_date = this.state.formData.end_date;
                     } else {
                         obj.delay_time = this.state.formData.delay_time;
@@ -2699,7 +2676,7 @@ const ApplyViewDetail = createReactClass({
         this.getApplyDetail(this.props.detailItem);
         //this.getAppConfigExtra( appId ,appConfig.user_type);
     },
-
+    
     // 假设没有默认配置，默认配置成功
     getAppConfigExtra(client_id, user_type) {
         var ApplyViewDetailActions = this.getApplyViewDetailAction();

@@ -11,8 +11,8 @@ import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
-const SELECT_CUSTOM_TIME_TYPE = 'custom';
-import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
+import { APPLY_TYPES ,TIMERANGEUNIT} from 'PUB_DIR/sources/utils/consts';
+import {getDelayTimeUnit, isCustomDelayType} from 'PUB_DIR/sources/utils/common-method-util';
 import { getApplyActiveEmailTip } from '../../utils/crm-util';
 const UNCHANGED_TYPE = 'unchanged';//保持不变的用户类型
 class CrmUserApplyForm extends React.Component {
@@ -27,9 +27,9 @@ class CrmUserApplyForm extends React.Component {
                 //延迟时间输入框，默认是1
                 delayTimeNumber: 1,
                 //延期时间范围，默认是天
-                delayTimeRange: 'days',
+                delayTimeRange: TIMERANGEUNIT.DAY,
                 // 到期时间(选择到期时间)
-                delayDeadlineTime: moment().add('days', 1).valueOf(),
+                delayDeadlineTime: moment().endOf('day').valueOf(),
                 user_type: UNCHANGED_TYPE,
                 //到期不变
                 over_draft: '0',
@@ -65,7 +65,7 @@ class CrmUserApplyForm extends React.Component {
 
     // 将延期时间设置为截止时间（具体到xx年xx月xx日）
     setDelayDeadlineTime(value) {
-        let timestamp = value && value.valueOf() || '';
+        let timestamp = value && value.endOf('day').valueOf() || '';
         let formData = this.state.formData;
         formData.delayDeadlineTime = timestamp;
         this.setState({ formData: formData });
@@ -103,14 +103,6 @@ class CrmUserApplyForm extends React.Component {
         this.setState({formData});
     }
 
-    getDelayTimeMillis() {
-        //延期周期
-        const delayTimeRange = this.state.formData.delayTimeRange;
-        const delayTimeNumber = this.state.formData.delayTimeNumber;
-        const millis = moment.duration(+delayTimeNumber, delayTimeRange).valueOf();
-        return millis;
-    }
-
     //申请延期的数据处理
     getDelayData() {
         let formData = this.state.formData;
@@ -118,12 +110,11 @@ class CrmUserApplyForm extends React.Component {
             type: APPLY_TYPES.DELAY
         };
         const paramItem = {};
-        //向data中添加delay字段
-        let delayMillis = this.getDelayTimeMillis();
-        if (formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
+        if (isCustomDelayType(formData.delayTimeRange)) {
             paramItem.end_date = formData.delayDeadlineTime;
         } else {
-            paramItem.delay = delayMillis;
+            //向data中添加delay字段
+            paramItem.delay_time = getDelayTimeUnit(formData.delayTimeRange, formData.delayTimeNumber);
         }
         //向data中添加备注
         submitObj.remark = this.state.formData.remark.delayRemark;
@@ -141,24 +132,17 @@ class CrmUserApplyForm extends React.Component {
         //添加邮箱使用的字段, 客户名 用户名 添加应用名 用户id
 
         submitObj.data = this.getSelectedUserMultiAppData().map(x => {
-            let delayDate = moment(x.end_date).valueOf();
-            if (delayMillis) {
-                //到期时间小于当前时间时，在当前时间基础上延期
-                if (delayDate < moment().valueOf()) {
-                    delayDate = moment().add(delayMillis, 'ms').valueOf();
-                } else {
-                    delayDate = moment(x.end_date).add(delayMillis, 'ms').valueOf();
-                }
-            }
-            else {
-                delayDate = paramItem.end_date;
+            const item = x;
+            if(paramItem.delay_time){
+                delete item.end_date;
+                delete item.begin_date;
             }
             return {
-                ...paramItem,
                 ...x,
-                end_date: delayDate
+                ...paramItem
             };
         });
+
         return submitObj;
     }
 
@@ -368,7 +352,8 @@ class CrmUserApplyForm extends React.Component {
         let divWidth = (language.lan() === 'zh') ? '80px' : '74px';
         let label = '';
         let formData = this.state.formData;
-        if (formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
+        var customDelayType = isCustomDelayType(formData.delayTimeRange);
+        if (customDelayType) {
             label = Intl.get('user.time.end', '到期时间');
         } else {
             label = Intl.get('common.delay.time', '延期时间');
@@ -385,7 +370,7 @@ class CrmUserApplyForm extends React.Component {
                         label={label}
                         {...formItemLayout}
                     >
-                        {formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE ? (
+                        {customDelayType ? (
                             <DatePicker placeholder={Intl.get('my.app.change.expire.time.placeholder', '请选择到期时间')}
                                 onChange={this.setDelayDeadlineTime.bind(this)}
                                 disabledDate={this.setDisabledDate}
@@ -408,11 +393,11 @@ class CrmUserApplyForm extends React.Component {
                             style={{ width: divWidth }}
                             onChange={this.delayTimeRangeChange.bind(this)}
                         >
-                            <Option value="days">{Intl.get('common.time.unit.day', '天')}</Option>
-                            <Option value="weeks">{Intl.get('common.time.unit.week', '周')}</Option>
-                            <Option value="months">{Intl.get('common.time.unit.month', '月')}</Option>
-                            <Option value="years">{Intl.get('common.time.unit.year', '年')}</Option>
-                            <Option value="custom">{Intl.get('user.time.custom', '自定义')}</Option>
+                            <Option value={TIMERANGEUNIT.DAY}>{Intl.get('common.time.unit.day', '天')}</Option>
+                            <Option value={TIMERANGEUNIT.WEEK}>{Intl.get('common.time.unit.week', '周')}</Option>
+                            <Option value={TIMERANGEUNIT.MONTH}>{Intl.get('common.time.unit.month', '月')}</Option>
+                            <Option value={TIMERANGEUNIT.YEAR}>{Intl.get('common.time.unit.year', '年')}</Option>
+                            <Option value={TIMERANGEUNIT.CUSTOM}>{Intl.get('user.time.custom', '自定义')}</Option>
                         </Select>
                     </FormItem>
                 </div>

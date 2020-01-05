@@ -205,12 +205,12 @@ class DateSelector extends React.Component{
                 end_time = Utils.getDateStr(props.end_time);
             } else {
                 if(props.range === '1w') {
-                    end_time = Utils.getDateStr(moment().add(7 , 'days').toDate().getTime());
+                    end_time = Utils.getDateStr(moment().add(6, 'days').endOf('day').valueOf());
                 } else if(props.range === '0.5m') {
-                    end_time = Utils.getDateStr(moment().add(15 , 'days').toDate().getTime());
+                    end_time = Utils.getDateStr(moment().add(14, 'days').endOf('day').valueOf());
                 } else if(/^\d+m$/.test(props.range)){
                     var num = props.range.replace(/m$/,'');
-                    end_time = Utils.getDateStr(moment().add(num , 'month').toDate().getTime());
+                    end_time = Utils.getDateStr(moment().add(num , 'month').subtract(1, 'day').endOf('day').valueOf());
                 }
             }
         }
@@ -273,11 +273,7 @@ class DateSelector extends React.Component{
             const start_time_millis = Utils.getMilliseconds(start_time) + '';
             let end_time_millis = '0';
             if(range !== 'forever') {
-                if(this.props.endTimeEndOfDay) {
-                    end_time_millis = Utils.getMilliseconds(end_time,true) + '';
-                } else {
-                    end_time_millis = Utils.getMilliseconds(end_time) + '';
-                }
+                end_time_millis = Utils.getMilliseconds(end_time,true) + '';
             }
             this.props.onSelect(start_time_millis,end_time_millis,range,label);
         }
@@ -308,12 +304,12 @@ class DateSelector extends React.Component{
             let end_time;
             //结束时间判断，特殊处理1周
             if(calculateRange === '1w') {
-                end_time = start_time_moment.add(7 , 'days').format(DATE_FORMAT);
+                end_time = start_time_moment.add(6, 'days').endOf('day').format(DATE_FORMAT);
             } else if(calculateRange === '0.5m') {
-                end_time = start_time_moment.add(15 , 'days').format(DATE_FORMAT);
+                end_time = start_time_moment.add(14, 'days').endOf('day').format(DATE_FORMAT);
             } else if(/^\d+m$/.test(calculateRange)) {
                 var num = calculateRange.replace(/m$/,'');
-                end_time = start_time_moment.add(num , 'month').format(DATE_FORMAT);
+                end_time = start_time_moment.add(num , 'month').subtract(1, 'days').endOf('day').format(DATE_FORMAT);
             }
             //隐藏日历
             const showCalendar = false;
@@ -475,9 +471,9 @@ class DateSelector extends React.Component{
                 }
             } else {
                 if(this.state.range === '1w') {
-                    end_time = start_time_moment.add(7 , 'days').format(DATE_FORMAT);
+                    end_time = start_time_moment.add(6 , 'days').endOf('day').format(DATE_FORMAT);
                 } else if(this.state.range === '0.5m') {
-                    end_time = start_time_moment.add(15, 'days').format(DATE_FORMAT);
+                    end_time = start_time_moment.add(14, 'days').endOf('day').format(DATE_FORMAT);
                 }else if(lastRangeRegex.test(this.state.range)) {
                     var result = lastRangeRegex.exec(this.state.range);
                     var unit = momentMap[result[2]];
@@ -485,7 +481,7 @@ class DateSelector extends React.Component{
                 }else if(this.state.range !== 'forever'){
                     if(/^\d+m$/.test(this.state.range)) {
                         var num = this.state.range.replace(/m$/ , '');
-                        end_time = start_time_moment.add(num , 'month').format(DATE_FORMAT);
+                        end_time = start_time_moment.add(num , 'month').subtract(1, 'days').endOf('day').format(DATE_FORMAT);
                     }
                 }
             }
@@ -511,9 +507,9 @@ class DateSelector extends React.Component{
                 }
             } else {
                 if(this.state.range === '1w') {
-                    start_time = end_time_moment.subtract(7 , 'days').format(DATE_FORMAT);
+                    start_time = end_time_moment.subtract(6 , 'days').startOf('day').format(DATE_FORMAT);
                 } else if(this.state.range === '0.5m') {
-                    start_time = end_time_moment.subtract(15 , 'days').format(DATE_FORMAT);
+                    start_time = end_time_moment.subtract(14 , 'days').startOf('day').format(DATE_FORMAT);
                 } else if(lastRangeRegex.test(this.state.range)) {
                     var result = lastRangeRegex.exec(this.state.range);
                     var unit = momentMap[result[2]];
@@ -521,7 +517,7 @@ class DateSelector extends React.Component{
                 }else if(this.state.range !== 'forever'){
                     if(/^\d+m$/.test(this.state.range)) {
                         var num = this.state.range.replace(/m$/ , '');
-                        start_time = end_time_moment.subtract(num , 'month').format(DATE_FORMAT);
+                        start_time = end_time_moment.subtract(num , 'month').add(1,'day').startOf('day').format(DATE_FORMAT);
                     }
                 }
             }

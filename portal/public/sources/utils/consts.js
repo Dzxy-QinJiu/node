@@ -736,3 +736,11 @@ export const CONFIG_TYPE = {
     UNIFIED_CONFIG: 'unified_config',//统一配置
     SEPARATE_CONFIG: 'separate_config'//分别配置
 };
+export const WEEKDAYS = 7;
+export const TIMERANGEUNIT = {
+    DAY: 'D',
+    WEEK: 'W',
+    MONTH: 'M',
+    YEAR: 'Y',
+    CUSTOM: 'custom'
+};

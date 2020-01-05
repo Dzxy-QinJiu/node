@@ -1,8 +1,7 @@
 import AppUserFormActions from '../../action/v2/app-user-form-actions';
 import AppUserUtil from '../../util/app-user-util';
 import UserData from '../../../../../public/sources/user-data';
-import DateSelectorUtils from '../../../../../components/date-selector/utils';
-
+import {getHalfAMonthTime,getMilliseconds, getMillisecondsYesterdayEnd} from 'CMP_DIR/date-selector/utils';
 class AppUserFormStore {
     constructor(){
         this.resetState();
@@ -23,7 +22,7 @@ class AppUserFormStore {
         //第三步应用的特殊配置，保存在这个map里
         this.appsSetting = {};
         //时间
-        var timeObj = DateSelectorUtils.getHalfAMonthTime();
+        var timeObj = getHalfAMonthTime();
         //表单数据
         this.formData = {
             //用户名
@@ -53,9 +52,9 @@ class AppUserFormStore {
             //正式、试用
             user_type: AppUserUtil.USER_TYPE_VALUE_MAP.TRIAL_USER,
             //开始时间
-            start_time: DateSelectorUtils.getMilliseconds(timeObj.start_time),
+            start_time: getMilliseconds(timeObj.start_time),
             //结束时间
-            end_time: DateSelectorUtils.getMilliseconds(timeObj.end_time),
+            end_time: getMillisecondsYesterdayEnd(getMilliseconds(timeObj.end_time)),
             //多人登录
             multilogin: '0',
             //开通周期 默认选中半个月

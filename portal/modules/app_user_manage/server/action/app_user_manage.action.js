@@ -175,7 +175,6 @@ exports.submitApply = function(req, res) {
     var user_name = req.body.user_name || '';
     var nick_name = req.body.nick_name || '';
     var products = req.body.products;
-    var delay = req.body.delay_time || '';
     var notice_url = req.body.notice_url || '';
     var password = req.body.password || '';
     if (password) {

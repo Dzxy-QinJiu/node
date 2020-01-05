@@ -3,7 +3,7 @@ import AppUserPanelSwitchAction from '../../action/app-user-panelswitch-actions'
 import AppUserDetailAction from '../../action/app-user-detail-actions';
 import UserData from '../../../../../public/sources/user-data';
 import AppUserDetailStore from '../../store/app-user-detail-store';
-import DateSelectorUtils from '../../../../../components/date-selector/utils';
+import {getHalfAMonthTime,getMilliseconds,getMillisecondsYesterdayEnd} from 'CMP_DIR/date-selector/utils';
 import AppUserUtils from '../../util/app-user-util';
 var AppUserAjax = require('../../ajax/app-user-ajax');
 
@@ -26,15 +26,15 @@ class UserDetailAddAppStore {
         //第三步应用的特殊配置，保存在这个map里
         this.appsSetting = {};
         //时间
-        var timeObj = DateSelectorUtils.getHalfAMonthTime();
+        var timeObj = getHalfAMonthTime();
         //表单数据
         this.formData = {
             //正式、试用
             user_type: AppUserUtils.USER_TYPE_VALUE_MAP.TRIAL_USER,
             //开始时间
-            start_time: DateSelectorUtils.getMilliseconds(timeObj.start_time),
+            start_time: getMilliseconds(timeObj.start_time),
             //结束时间
-            end_time: DateSelectorUtils.getMilliseconds(timeObj.end_time),
+            end_time: getMillisecondsYesterdayEnd(getMilliseconds(timeObj.end_time)),
             //开通周期
             range: '0.5m',
             //到期停用
@@ -52,9 +52,9 @@ class UserDetailAddAppStore {
             //多人登录
             multilogin: '0',
             time: {
-                start_time: DateSelectorUtils.getMilliseconds(timeObj.start_time),
+                start_time: getMilliseconds(timeObj.start_time),
                 //结束时间
-                end_time: DateSelectorUtils.getMilliseconds(timeObj.end_time),
+                end_time: getMillisecondsYesterdayEnd(getMilliseconds(timeObj.end_time)),
                 //开通周期
                 range: '0.5m',
             }
