@@ -17,7 +17,6 @@ import BasicInfo from './basic_info';
 import BasicOverview from './basic-overview';
 import CustomerUsers from './users';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import contactUtil from '../utils/contact-util';
 const RightPanel = rightPanelUtil.RightPanel;
 import {isOpenCash, isCurtao, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';

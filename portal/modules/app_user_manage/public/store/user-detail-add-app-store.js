@@ -2,8 +2,8 @@ var AppUserUtil = require('../util/app-user-util');
 import UserDetailAddAppActions from '../action/user-detail-add-app-actions';
 var userData = require('../../../../public/sources/user-data');
 var AppUserAction = require('../action/app-user-actions');
-var DateSelectorUtils = require('../../../../components/date-selector/utils');
-
+import {getHalfAMonthTime, getMilliseconds, getMillisecondsYesterdayEnd} from 'CMP_DIR/date-selector/utils';
+import { TIMERANGEUNIT } from 'PUB_DIR/sources/utils/consts';
 //用户详情添加应用的store
 function UserDetailAddAppStore() {
     //初始化state数据
@@ -46,7 +46,7 @@ UserDetailAddAppStore.prototype.resetState = function() {
         repassword: {}
     };
 
-    var timeObj = DateSelectorUtils.getHalfAMonthTime();
+    var timeObj = getHalfAMonthTime();
 
     //表单数据
     this.formData = {
@@ -57,9 +57,9 @@ UserDetailAddAppStore.prototype.resetState = function() {
         //开通周期
         range: '0.5m',
         //开通时间
-        start_time: DateSelectorUtils.getMilliseconds(timeObj.start_time),
+        start_time: getMilliseconds(timeObj.start_time),
         //到期时间
-        end_time: DateSelectorUtils.getMilliseconds(timeObj.end_time),
+        end_time: getMillisecondsYesterdayEnd(getMilliseconds(timeObj.end_time)),
         //到期不变
         over_draft: '0',
         //账号状态
@@ -87,9 +87,9 @@ UserDetailAddAppStore.prototype.resetState = function() {
         //延迟时间输入框，默认是1
         delayTimeNumber: 1,
         //延期时间范围，默认是天
-        delayTimeRange: 'days',
+        delayTimeRange: TIMERANGEUNIT.DAY,
         // 到期时间(选择到期时间)
-        delayDeadlineTime: moment().add(1, 'days').valueOf(),
+        delayDeadlineTime: moment().endOf('day').valueOf(),
         //销售申请的备注
         remark: {
             //延期备注

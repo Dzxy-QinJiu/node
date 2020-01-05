@@ -1,8 +1,9 @@
 import ApplyViewDetailActions from '../action/historical-apply-view-detail-actions';
 import { altAsyncUtil } from 'ant-utils';
 const { resultHandler } = altAsyncUtil;
-import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
-import {checkIfLeader, applyAppConfigTerminal} from 'PUB_DIR/sources/utils/common-method-util';
+import { APPLY_TYPES, TIMERANGEUNIT, WEEKDAYS} from 'PUB_DIR/sources/utils/consts';
+import {checkIfLeader, isCustomDelayType, applyAppConfigTerminal} from 'PUB_DIR/sources/utils/common-method-util';
+import {getDelayDisplayTime} from '../util/app-user-util';
 class ApplyViewDetailStore {
     constructor() {
         this.resetState();
@@ -30,12 +31,8 @@ class ApplyViewDetailStore {
         };
         //是否显示右侧面板
         this.showRightPanel = false;
-        //右侧面板显示用户详情的userId
-        this.rightPanelUserId = '';
         //右侧面板显示客户详情的customerId
         this.rightPanelCustomerId = '';
-        // 右侧面板显示应用appId为空
-        this.rightPanelAppConfig = '';
         // 配置界面的编辑
         this.addUserTypeConfigInfoShow = false;
         //底部显示类型  btn 按钮   formtext 文字
@@ -52,9 +49,9 @@ class ApplyViewDetailStore {
             //延迟时间，默认数字是1
             delayTimeNumber: 1,
             //延期时间的单位，默认是天
-            delayTimeUnit: 'days',
+            delayTimeUnit: TIMERANGEUNIT.DAY,
             // 到期时间(选择到期时间)
-            end_date: moment().add('days', 1).valueOf(),
+            end_date: moment().endOf('day').valueOf(),
             // 延期时间
             delay_time: '',
             //审批修改密码
@@ -157,37 +154,6 @@ class ApplyViewDetailStore {
             this.app_list = result.list;
         }
     }
-
-    //获取延期的显示时间
-    getDelayDisplayTime(delay) {
-        var YEAR_MILLIS = 365 * 24 * 60 * 60 * 1000;
-        var MONTH_MILLIS = 30 * 24 * 60 * 60 * 1000;
-        var WEEK_MILLIS = 7 * 24 * 60 * 60 * 1000;
-        var DAY_MILLIS = 24 * 60 * 60 * 1000;
-        var years = Math.floor(delay / YEAR_MILLIS);
-        var left_millis = delay - years * YEAR_MILLIS;
-        var months = Math.floor(left_millis / MONTH_MILLIS);
-        left_millis = left_millis - months * MONTH_MILLIS;
-        var weeks = Math.floor(left_millis / WEEK_MILLIS);
-        left_millis = left_millis - weeks * WEEK_MILLIS;
-        var days = Math.floor(left_millis / DAY_MILLIS);
-        if (years !== 0 && months === 0 && weeks === 0 && days === 0) {
-            this.formData.delayTimeNumber = years;
-            this.formData.delayTimeUnit = 'years';
-        } else if (years === 0 && months !== 0 && weeks === 0 && days === 0) {
-            this.formData.delayTimeNumber = months;
-            this.formData.delayTimeUnit = 'months';
-        } else if (years === 0 && months === 0 && weeks !== 0 && days === 0) {
-            this.formData.delayTimeNumber = weeks;
-            this.formData.delayTimeUnit = 'weeks';
-        } else if (years === 0 && months === 0 && weeks === 0 && days !== 0) {
-            this.formData.delayTimeNumber = days;
-            this.formData.delayTimeUnit = 'days';
-        } else {
-            this.formData.delayTimeNumber = 365 * years + 30 * months + 7 * weeks + days;
-            this.formData.delayTimeUnit = 'days';
-        }
-    }
     setHistoryApplyStatus(){
         this.sameHistoryApplyLists = {
             //三种状态,loading,error,''
@@ -258,19 +224,19 @@ class ApplyViewDetailStore {
                 if (this.detailInfoObj.info.delayTime) { // 同步修改时间
                     delayTime = this.detailInfoObj.info.delayTime;
                     this.formData.delay_time = delayTime;
-                    this.getDelayDisplayTime(delayTime);
+                    getDelayDisplayTime(delayTime, this.formData);
                 } else { // 到期时间，点开修改同步到自定义
-                    this.formData.delayTimeUnit = 'custom';
+                    this.formData.delayTimeUnit = TIMERANGEUNIT.CUSTOM;
                     this.formData.end_date = this.detailInfoObj.info.end_date;
                 }
             } else if (this.detailInfoObj.info.type === APPLY_TYPES.DELAY) {//延期（多应用）
-                if (_.get(info.apps, '0.delay')) { // 同步修改时间
-                    const delayTime = info.apps[0].delay;
+                if (_.get(info.apps, '0.delayTime')) { // 同步修改时间
+                    const delayTime = info.apps[0].delayTime;
                     info.delayTime = delayTime;
                     this.formData.delay_time = delayTime;
-                    this.getDelayDisplayTime(delayTime);
+                    getDelayDisplayTime(delayTime, this.formData);
                 } else { // 到期时间，点开修改同步到自定义
-                    this.formData.delayTimeUnit = 'custom';
+                    this.formData.delayTimeUnit = TIMERANGEUNIT.CUSTOM;
                     this.formData.end_date = info.apps[0].end_date;
                 }
             }
@@ -313,7 +279,6 @@ class ApplyViewDetailStore {
         } else {
             //正常情况
             sameHistoryApplyLists.result = '';
-            //过滤掉没有回复的申请历史
             sameHistoryApplyLists.list = _.get(resultObj,'data.list');
             sameHistoryApplyLists.errorMsg = '';
         }
@@ -450,46 +415,22 @@ class ApplyViewDetailStore {
     }
     //显示用户详情右侧面板
     showUserDetail(userId) {
-        //是否显示右侧面板
-        this.showRightPanel = true;
-        //右侧面板显示用户详情的userId
-        this.rightPanelUserId = userId;
         //客户id为空
         this.rightPanelCustomerId = '';
-        // 应用appId为空
-        this.rightPanelAppConfig = '';
     }
     //显示客户详情右侧面板
     showCustomerDetail(customerId) {
-        //是否显示右侧面板
-        this.showRightPanel = true;
         //右侧面板显示用户详情的customerId
         this.rightPanelCustomerId = customerId;
-        //用户id为空
-        this.rightPanelUserId = '';
-        // 应用appId为空
-        this.rightPanelAppConfig = '';
-    }
-    // 显示应用没有默认的权限和角色的右侧面板
-    showAppConfigPanel(app) {
-        //是否显示右侧面板
-        this.showRightPanel = true;
-        this.rightPanelAppConfig = app;
-        //右侧面板显示用户详情的customerId为空
-        this.rightPanelCustomerId = '';
-        //用户id为空
-        this.rightPanelUserId = '';
     }
     // 应用配置取消保存
     handleCancel() {
         this.showRightPanel = false;
-        this.rightPanelAppConfig = '';
         this.addUserTypeConfigInfoShow = false;
     }
     // 应用配置保存成功时
     handleSaveAppConfig() {
         this.showRightPanel = false;
-        this.rightPanelAppConfig = '';
         this.addUserTypeConfigInfoShow = false;
     }
     showAppConfigRightPanle() {
@@ -499,8 +440,6 @@ class ApplyViewDetailStore {
     closeRightPanel() {
         //是否显示右侧面板
         this.showRightPanel = false;
-        //右侧面板显示用户详情的userId
-        this.rightPanelUserId = '';
         //右侧面板显示客户详情的userId
         this.rightPanelCustomerId = '';
     }
@@ -526,13 +465,11 @@ class ApplyViewDetailStore {
     saveModifyDelayTime(delay) {
         this.returnDelayTimeShow = false;
         this.isModifyDelayTime = false;
-        if (this.formData.delayTimeUnit !== 'custom') {
-            this.formData.delay_time = delay;
-            // 当时间单位为天、周、月、年时，默认end_date一个具体的值（默认显示当前时间的第二天）
-            this.formData.end_date = moment().add('days', 1).valueOf();
-        } else {
+        if (isCustomDelayType(this.formData.delayTimeUnit) ) {
             this.formData.end_date = delay;
             this.formData.delay_time = '';
+        } else {
+            this.formData.delay_time = delay;
         }
 
     }
@@ -544,10 +481,9 @@ class ApplyViewDetailStore {
         if (this.detailInfoObj.info.delayTime) {
             delayTime = this.detailInfoObj.info.delayTime;
             this.formData.delay_time = delayTime;
-            this.formData.end_date = moment().add('days', 1).valueOf();
-            this.getDelayDisplayTime(delayTime);
+            getDelayDisplayTime(delayTime, this.formData);
         } else {
-            this.formData.delayTimeUnit = 'custom';
+            this.formData.delayTimeUnit = TIMERANGEUNIT.CUSTOM;
             this.formData.end_date = this.detailInfoObj.info.end_date;
             this.formData.delay_time = '';
         }

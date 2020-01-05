@@ -1,3 +1,5 @@
+import {TIMERANGEUNIT, WEEKDAYS} from 'PUB_DIR/sources/utils/consts';
+
 var EventEmitter = require('events');
 var CryptoJS = require('crypto-js');
 var UserData = require('../../../../public/sources/user-data').getUserData();
@@ -52,4 +54,27 @@ exports.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM = {
 exports.encryptPassword = function(text) {
     var ciphertext = CryptoJS.AES.encrypt(text , 'apply_change_password');
     return ciphertext.toString();
+};
+exports.getDelayDisplayTime = function(delay,FormData) {
+    //是否有年
+    var isYear = _.indexOf(delay, TIMERANGEUNIT.YEAR) > -1;
+    var isMonth = _.indexOf(delay, TIMERANGEUNIT.MONTH) > -1;
+    var isDay = _.indexOf(delay, TIMERANGEUNIT.DAY) > -1;
+    if (isYear) {
+        FormData.delayTimeNumber = _.replace(delay, TIMERANGEUNIT.YEAR, '');
+        FormData.delayTimeUnit = TIMERANGEUNIT.YEAR;
+    } else if (isMonth) {
+        FormData.delayTimeNumber = _.replace(delay, TIMERANGEUNIT.MONTH, '');
+        FormData.delayTimeUnit = TIMERANGEUNIT.MONTH;
+    } else if (isDay) {
+        FormData.delayTimeNumber = _.replace(delay, TIMERANGEUNIT.DAY, '');
+        FormData.delayTimeUnit = TIMERANGEUNIT.DAY;
+        if(FormData.delayTimeNumber % WEEKDAYS === 0){
+            FormData.delayTimeNumber = FormData.delayTimeNumber / WEEKDAYS;
+            FormData.delayTimeUnit = TIMERANGEUNIT.WEEK;
+        }
+    }else{
+        FormData.delayTimeNumber = 1;
+        FormData.delayTimeUnit = TIMERANGEUNIT.DAY;
+    }
 };

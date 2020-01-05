@@ -13,9 +13,7 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 // 根据权限，判断获取团队和成员时所传字段的值
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
-import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {
-    selectMenuList,
     APPLY_APPROVE_TYPES,
     DOCUMENT_TYPE,
     INTEGRATE_TYPES,
@@ -30,6 +28,8 @@ import {
     INDICATOR_TOOLTIP,
     DIFF_STATUS_TAB,
     RESPONSIVE_LAYOUT,
+    TIMERANGEUNIT,
+    WEEKDAYS,
     CONFIG_TYPE
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
@@ -1320,4 +1320,18 @@ exports.applyAppConfigTerminal = (terminals, appId, appList) => {
         });
     }
     return configTerminals;
+};
+//获取延期时间
+exports.getDelayTimeUnit = (delayTimeRange, delayTimeNumber) => {
+    //延期周期
+    let delayUnit = `${delayTimeNumber}${delayTimeRange}`;
+    //如果是选择了周，要把周换成天
+    if(delayTimeRange === TIMERANGEUNIT.WEEK){
+        delayUnit = `${delayTimeNumber * WEEKDAYS}${TIMERANGEUNIT.DAY}`;
+    }
+    return delayUnit;
+};
+//是否是自定义的延期类型
+exports.isCustomDelayType = (type) => {
+    return type === TIMERANGEUNIT.CUSTOM;
 };

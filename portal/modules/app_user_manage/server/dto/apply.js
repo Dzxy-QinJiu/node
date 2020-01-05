@@ -250,8 +250,8 @@ exports.toDetailDelayRestObject = function(obj) {
         // 到期时间
         result.end_date = detail.end_date || '';
     }
-    if (detail.delay && detail.delay !== '-1') {
-        result.delayTime = detail.delay || '';
+    if (detail.delay_time && detail.delay_time !== '-1') {
+        result.delayTime = detail.delay_time || '';
     }
     //增加特殊属性
     result = addProperties(result, obj);
@@ -404,16 +404,16 @@ exports.toDetailMultiAppRestObject = function(obj, APPLY_TYPES){
         }));
         //延期（多应用）
         if(detail.type === APPLY_TYPES.DELAY_MULTI_APP){
-            if (_.get(apps, '0.delay')) {
-                result.delayTime = apps[0].delay;
+            if (_.get(apps, '0.delay_time')) {
+                result.delayTime = apps[0].delay_time;
             }
             // 到期时间
             if (_.get(apps, '0.end_date')) {
                 result.end_date = _.get(apps, '0.end_date', '');
             }
             //延期时间
-            if (_.get(apps, '0.delay') && _.get(apps, '0.delay') !== '-1') {
-                result.delayTime = _.get(apps, '0.delay', '');
+            if (_.get(apps, '0.delay_time') && _.get(apps, '0.delay_time') !== '-1') {
+                result.delayTime = _.get(apps, '0.delay_time', '');
             }
         } else if(detail.type === APPLY_TYPES.DISABLE_MULTI_APP){//禁用（多应用）
             result.status = _.get(apps, '0.status');

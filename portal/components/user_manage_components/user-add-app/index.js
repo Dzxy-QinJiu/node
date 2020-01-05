@@ -9,15 +9,13 @@ import { Carousel, CarouselItem } from 'react-bootstrap';
 import OperationSteps from '../operation-steps';
 import OperationStepsFooter from '../operation-steps-footer';
 import {USER_TYPE_VALUE_MAP, CONFIG_TYPE} from 'PUB_DIR/sources/utils/consts';
-import DateSelectorUtils from '../../date-selector/utils';
+import {getHalfAMonthTime,getMilliseconds,getMillisecondsYesterdayEnd} from 'CMP_DIR/date-selector/utils';
 import GeminiScrollBar from '../../react-gemini-scrollbar';
 import AppConfigSetting from '../app-config-setting';
 // import ApplyUserAppConfig from '../../apply-user-app-config';
 import AppConfigForm from '../../apply-user-app-config/app-config-form';
 import DefaultUserLogoTitle from '../../default-user-logo-title';
 import UserAppConfig from '../../../modules/app_user_manage/public/views/v3/AppPropertySetting';
-// 开通时间，默认为半个月
-const defaultSelectedTime = DateSelectorUtils.getHalfAMonthTime();
 import {getConfigAppType} from 'PUB_DIR/sources/utils/common-method-util';
 
 //布局常量
@@ -35,6 +33,8 @@ class UserAddApp extends React.Component {
         if(!_.isEmpty(appPropSettingsMap)) {
             this.onAppPropertyChange(appPropSettingsMap);
         }
+        // 开通时间，默认为半个月
+        const defaultSelectedTime = getHalfAMonthTime();
         this.state = {
             appPropSettingsMap,
             currentAppList: props.appList,
@@ -47,8 +47,8 @@ class UserAddApp extends React.Component {
             formData: {
                 //正式、试用
                 user_type: USER_TYPE_VALUE_MAP.TRIAL_USER,
-                start_time: DateSelectorUtils.getMilliseconds(defaultSelectedTime.start_time), //开始时间
-                end_time: DateSelectorUtils.getMilliseconds(defaultSelectedTime.end_time), //结束时间
+                start_time: getMilliseconds(defaultSelectedTime.start_time), //开始时间
+                end_time: getMillisecondsYesterdayEnd(getMilliseconds(defaultSelectedTime.end_time)), //结束时间
                 range: '0.5m', // 开通周期
                 over_draft: '1', // 到期状态，默认是停用
                 is_two_factor: '0', // 二步认证
@@ -614,9 +614,9 @@ UserAddApp.defaultProps = {
     defaultSettings: {
         user_type: USER_TYPE_VALUE_MAP.TRIAL_USER, // 用户类型
         time: {
-            start_time: DateSelectorUtils.getMilliseconds(defaultSelectedTime.start_time),
+            start_time: getMilliseconds(getHalfAMonthTime().start_time),
             //结束时间
-            end_time: DateSelectorUtils.getMilliseconds(defaultSelectedTime.end_time),
+            end_time: getMillisecondsYesterdayEnd(getMilliseconds(getHalfAMonthTime().end_time)),
             //开通周期
             range: '0.5m',
         },
