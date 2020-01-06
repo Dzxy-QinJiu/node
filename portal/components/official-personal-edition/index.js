@@ -23,6 +23,40 @@ const PERSONAL_VERSION_GOODS_TYPE = 'curtao_personal';
 //默认商品区域高度
 const DEFAULT_HEIGHT = 150;
 
+//个人版功能详情
+const PERSONAL_EDITION_DETAILS = {
+    versionId: '1',
+    iconImg: require('../../modules/different_version/public/img/version-personal@2x.png'),
+    versionName: Intl.get('personal.official.version', '个人正式版'),
+    features: [
+        {
+            featureName: Intl.get('versions.personal.feature.crm', 'CRM功能'),
+            featureChildren: [
+                {featureChildName: Intl.get('versions.feature.lead.management', '线索管理')},
+                {featureChildName: Intl.get('clue.pool', '线索池')},
+                {featureChildName: Intl.get('menu.crm', '客户管理')},
+                {featureChildName: Intl.get('crm.customer.pool', '客户池')},
+                {featureChildName: Intl.get('call.record.contacts', '联系人')},
+                {featureChildName: Intl.get('menu.trace', '跟进记录')},
+                {featureChildName: Intl.get('versions.feature.data.import', '数据导入')},
+                {featureChildName: Intl.get('deal.manage', '订单管理')},
+                {featureChildName: Intl.get('menu.salesstage', '销售阶段管理')},
+                {featureChildName: Intl.get('versions.feature.visit.record', '拜访跟进记录')},
+                {featureChildName: Intl.get('versions.feature.rechecking', '查重')}
+            ]
+        },{
+            featureName: Intl.get('versions.feature.basic', '基础功能'),
+            featureChildren: [
+                {featureChildName: Intl.get('versions.feature.office.management', '职务管理')},
+                {featureChildName: Intl.get('config.manage.industry.manage', '行业管理')},
+                {featureChildName: Intl.get('config.manage.competing.product', '竞品管理')},
+                {featureChildName: Intl.get('menu.shortName.schedule', '日程')},
+                {featureChildName: Intl.get('config.product.manage', '产品管理')}
+            ]
+        }
+    ],
+};
+
 class OfficialPersonalEdition extends React.Component{
 
     constructor(props) {
@@ -33,6 +67,7 @@ class OfficialPersonalEdition extends React.Component{
             discountList: [],//商品折扣信息
             showCountDown: true,
             leftTitle: _.get(this.props.paramObj,'leftTitle',''),
+            isBasicExpanded: false,//是否展示个人版基本信息其余项不折叠
         };
     }
 
@@ -161,12 +196,14 @@ class OfficialPersonalEdition extends React.Component{
             });
 
             //动态计算商品滚动区域高度
-            if(newState.list.length > 4) {
+            /*if(newState.list.length > 4) {
                 let row = Math.ceil(newState.list.length / 4);
                 let height = row * DEFAULT_HEIGHT;
                 let maxScrollHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT - LAYOUT_CONSTS.DESC_HEIGHT - LAYOUT_CONSTS.BOTTOM_HEIGHT;
                 newState.listHeight = height > maxScrollHeight ? maxScrollHeight : height;
-            }
+            }*/
+
+            newState.listHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT;
 
             newState.activeGoods = newState.list[0];
             let leadLimit = _.get(originalList,'related_info.lead_limit', '');
@@ -180,10 +217,6 @@ class OfficialPersonalEdition extends React.Component{
     //获取商品对应的折扣信息
     dealDiscountList = (goodsId, result) => {
         return _.filter(result, item => item.goods_id === goodsId);
-    };
-
-    onClosePanel =() => {
-        this.props.onClosePanel && this.props.onClosePanel();
     };
 
     handleUpgradeEnterprise = () => {
@@ -330,9 +363,62 @@ class OfficialPersonalEdition extends React.Component{
         });
     };
 
+    //展开、收起个人版基本信息的处理
+    toggleBasicInfo = () => {
+        this.setState({isBasicExpanded: !this.state.isBasicExpanded});
+    };
+
     render() {
+        //个人版基本信息展开、收起
+        let isBasicExpanded = this.state.isBasicExpanded;
+        const basicInfoClassName = classNames('iconfont', {
+            'icon-tree-up-arrow': isBasicExpanded,
+            'icon-tree-down-arrow': !isBasicExpanded
+        });
         return (
             <Row gutter={4} className="official-goods-content">
+                <Col>
+                    <div className="personal-edition-desc-container">
+                        <div className="personal-edition-desc-title">
+                            <div className="version-item-name">
+                                <img className='version-item-img' src={PERSONAL_EDITION_DETAILS.iconImg}/>
+                                <span className='version-item-type'>{PERSONAL_EDITION_DETAILS.versionName}</span>
+                            </div>
+                            <div className="version-item-clues-recommend">
+                                <span className="version-item-clues-recommend-number">{this.state.count}</span>
+                                {Intl.get('versions.monthly.clues.recommend', '条/月线索推荐')}
+                                <span
+                                    title={isBasicExpanded ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('crm.basic.detail.show', '展开详情')}
+                                    data-tracename={isBasicExpanded ? '收起详情' : '展开详情'}
+                                    onClick={this.toggleBasicInfo}
+                                    className="version-item-btn handle-btn-item"
+                                >
+                                    {Intl.get('common.details', '详情')}
+                                    <i className={basicInfoClassName}/>
+                                </span>
+                            </div>
+                        </div>
+                        <div className="personal-edition-desc-content" style={{display: isBasicExpanded ? 'block' : 'none'}}>
+                            {_.map(PERSONAL_EDITION_DETAILS.features, (feature, index) => {
+                                return (
+                                    <div className='version-item-feature-item' key={index}>
+                                        <h4 className='version-item-feature-item-title'>{feature.featureName}</h4>
+                                        <Row className='version-item-feature-item-children'>
+                                            {feature.featureChildren && _.map(feature.featureChildren, (featureChild,index) => {
+                                                return (
+                                                    <Col span={8} className='version-item-feature-item-child' key={index}>
+                                                        <i className='iconfont icon-versions-feature-item'/>&nbsp;
+                                                        {featureChild.featureChildName}
+                                                    </Col>
+                                                );
+                                            })}
+                                        </Row>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </Col>
                 {this.state.list.map((item, index) => {
                     const cls = classNames('goods-item',{
                         'goods-item-active': item.number === this.state.activeGoods.number
@@ -375,4 +461,6 @@ module.exports = HocGoodsBuy({
     i18nId: 'clues.extract.count.at.month',
     i18nMessage: '每月可提取 {count} 条线索',
     dataTraceName: '升级个人正式版界面',
+    classNames: 'personal-edition-right-panel-modal',
+    notShowGoodsDesc: true,//不显示推荐线索提取量的信息
 })(OfficialPersonalEdition);
