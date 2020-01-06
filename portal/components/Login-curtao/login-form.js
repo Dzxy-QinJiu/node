@@ -203,10 +203,6 @@ class LoginForm extends React.Component {
                 maxLength="4"
                 tabIndex="3"
             />
-            {/* <input placeholder={hasWindow ? Intl.get('common.captcha', '验证码') : null} type="text"
-                name="retcode" autoComplete="off"
-                tabIndex="3"
-                ref="captcha_input" /> */}
             <span className="login-captcha">
                 {this.renderCaptchaImg(hasWindow)}
             </span>
@@ -217,12 +213,11 @@ class LoginForm extends React.Component {
     renderCaptchaImg = (hasWindow) => {
         if (hasWindow && window.Oplate && window.Oplate.useSso) {
             return (
-                <img ref="captcha_img" src={ this.state.captchaCode} width="120" height="40"
+                <img ref="captcha_img" src={ this.state.captchaCode}
                     title={Intl.get('login.dim.exchange', '看不清？点击换一张')}
                     onClick={this.refreshCaptchaCode}/> );
         } else {
-            return ( <img src={base64_prefix + this.state.captchaCode} width="120"
-                height="40"
+            return ( <img src={base64_prefix + this.state.captchaCode} 
                 title={Intl.get('login.dim.exchange', '看不清？点击换一张')}
                 onClick={this.refreshCaptchaCode}/>);
         }
@@ -303,14 +298,6 @@ class LoginForm extends React.Component {
     openUserAgreement=(e) => {
         window.open('/user/agreement');
     }
-    toRegister=(e) => {
-        window.open('/register'); 
-    }
-    findPassword = (e) => {
-        if (_.isFunction(this.props.changeView)) {
-            this.props.changeView();
-        }
-    }
     render() {
         const loginButtonClassName = classNames('login-button', {'not-allowed': this.state.loginButtonDisabled});
 
@@ -336,6 +323,7 @@ class LoginForm extends React.Component {
                             onBlur={this.getLoginCaptcha}
                             onChange={this.userNameChange}
                             className='login-input-wrap'
+                            autofocus="autofocus"
                         />
                     </div>
                     <div className="input-item">
@@ -344,25 +332,17 @@ class LoginForm extends React.Component {
                             fullWidth
                             id="password"
                             name="password"
-                            type="password"
+                            type={this.state.passwordVisible ? 'text' : 'password'} 
                             tabIndex="2"
                             label={hasWindow ? Intl.get('common.password', '密码') : null}
                             autoComplete="off"
                             ref="password_input"
-                            // logininput="password"
                             className="login-input-wrap"
                             color='primary'
                             onChange={this.passwordChange}
                             value={this.state.password}
                         />
-                        {/* <input placeholder={hasWindow ? Intl.get('common.password', '密码') : null}
-                            type={this.state.passwordVisible ? 'text' : 'password'} 
-                            tabIndex="2"
-                            ref="password_input"
-                            logininput="password"
-                            className="input-pwd"
-                            onChange={this.passwordChange} value={this.state.password} autoComplete="new-password"/>
-                        <i className={displayPwd} onClick={this.showPassword}></i> */}
+                        <i className={displayPwd} onClick={this.showPassword}></i>
                     </div>
                     {this.renderCaptchaBlock(hasWindow)}
                 </div>
@@ -375,21 +355,6 @@ class LoginForm extends React.Component {
                     {hasWindow ? Intl.get('login.login', '登录') : null}
                     {this.state.logining ? <Icon type="loading"/> : null}
                 </button>
-                <div>
-                    <a className='login-find-password-tip' data-tracename="找回密码" onClick={this.findPassword}> {Intl.get('login.find.password', '找回密码')}</a>
-                    <span className='login-no-account-register-tip'>
-                        <ReactIntl.FormattedMessage
-                            id='login.no.account.register.tip'
-                            defaultMessage='没有账号，去{register}'
-                            values={{
-                                'register': (
-                                    <a onClick={this.toRegister} data-tracename="点击注册">
-                                        {Intl.get('login.register', '注册')}
-                                    </a>)
-                            }}
-                        />
-                    </span>
-                </div>
             </form>
         );
     }

@@ -11,17 +11,24 @@
     input:-webkit-autofill {
         box-shadow: inset 0 0 0 1000px #fff;
     }
+
     //去掉自动填充用户名的背景色ff
     input{
-        filter: none !important
+        filter: none !important;
+        font-size: 18px;
     }
-            //登录按钮
+    //登录按钮
     .login-button {
-        font-size: 16px;
+        font-size: 20px;
+        color: #ffffff;
         cursor: pointer;
         .anticon-loading{
             margin-left:10px;
         }
+    }
+    //链接的颜色设置
+    a{
+        color:#2196F3;
     }
 
     .not-allowed {
@@ -50,10 +57,9 @@
     }
     .login-captcha{
         position: absolute;
-        top: 0;
+        bottom: 3px;
         right: 0;
         display: inline-block;
-        float: right;
     }
     .input-area .captcha_wrap {
         text-align: left;
@@ -61,14 +67,14 @@
     }
 
     .input-area .captcha_wrap input {
-        width: 148px;
+        width: 280px;
         float: left;
     }
 
     .input-area .captcha_wrap img {
         float: right;
-        width: 120px;
-        height: 38px;
+        width: 84px;
+        height: 32px;
         border-radius: 2px;
         cursor: pointer;
     }

@@ -59,6 +59,9 @@
         left: 0;
         right: 0;
         margin: 0 auto;
+        .login-logo-wrap{
+            text-align: center;
+        }
         .form-title{
           font-size: 16px;
           font-weight: bold;
@@ -76,9 +79,11 @@
         }
         .MuiFormLabel-root{
             font-family: @font-family;
+            color:#999999;
         }
+        // 输入框label内容颜色设置，
         .MuiFormLabel-root.Mui-focused{
-            color:#2196F3;
+            color:#999999;
         } 
         .MuiInput-underline:after{
             border-bottom: 2px solid #2196f3;
@@ -92,14 +97,16 @@
                 cursor: pointer;
                 .handle-btn-item;
             }
-            // .iconfont.icon-password-visible{
-            //     right: 2px;
-            //     font-size: 19px;
-            // }
-            // .iconfont.icon-password-invisible{
-            //     font-size: 15px;
-            //     bottom:6px;
-            // }
+            .iconfont.icon-password-visible{
+                right: 2px;
+                font-size: 16px;
+                bottom: 6px;
+            }
+            .iconfont.icon-password-invisible{
+                font-size: 11px;
+                bottom: 6px;
+                right: 2px;
+            }
             .login-input-wrap {
                 outline: none;
                 border: none;
@@ -115,6 +122,7 @@
         line-height: 22px;
         font-size: 14px;
         color: #ee5b44;
+        margin-bottom: 8px;
     }
     .login-error-tip{
         margin-top: 0;
@@ -138,7 +146,7 @@
 }
 #footer {
   .footer-content {
-    color: #000000;
+    color: #999999;
   }
 }
 ::selection {
