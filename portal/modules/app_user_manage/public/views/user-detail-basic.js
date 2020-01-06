@@ -429,7 +429,7 @@ class UserDetailBasic extends React.Component {
                     {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.two.step.certification"
                         defaultMessage="二步认证" />：{this.renderIsTwoFactor(app, true)}</span>}
                     {
-                        app.terminals ? (
+                        !_.isEmpty(app.terminals) ? (
                             <span>
                                 {Intl.get('common.terminals', '終端')}：{this.renderAppTerminals(app)}
                             </span>
