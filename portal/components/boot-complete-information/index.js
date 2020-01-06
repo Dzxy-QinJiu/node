@@ -156,7 +156,11 @@ class BootCompleteInformation extends React.Component{
                 });
             },
             error: (xhr) => {
-                jumpLeadPage({});
+                // jumpLeadPage({});
+                this.setState({
+                    isLoading: false,
+                    errMsg: Intl.get('boot.set.recommend.clue.faild', '设置失败，请重试一次')
+                });
             }
         });
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '保存推荐线索条件');

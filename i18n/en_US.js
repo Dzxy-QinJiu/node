@@ -3902,6 +3902,7 @@ var en_US = {
     'boot.select.industry': 'Please select the industry to focus on',//请选择关注的行业
     'boot.select.area': 'Please select the area of concern',//请选择关注的地域
     'boot.input.industry': 'Please enter industries of concern',//请输入关注的行业
+    'boot.set.recommend.clue.faild': 'Setup failed. Please try again',//设置失败，请重试一次
     /*个人试用 --- end*/
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': 'You have {time} days left in the trial period. {count} clues can be extracted every day. Will you upgrade to {upgrade} or {enterprise}?',//您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？
