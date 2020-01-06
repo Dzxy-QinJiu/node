@@ -62,19 +62,20 @@ class Index extends React.Component {
         return <div className='apply-try-content'>
             {this.state.successFlag ? this.renderApplyResult() : (
                 <div className='apply-try-content-wrapper'>
-                    <div className='apply-try-content-title'>{Intl.get('login.apply.trial','申请试用')}</div>
+                    <div className='apply-try-content-title'>{Intl.get('personal.apply.trial.enterprise.edition','申请试用企业版')}</div>
                     <Form layout="inline">
                         <Form.Item label={Intl.get('register.company.nickname','公司名称')} className='apply-try-content-componey'>
                             {getFieldDecorator('company', {
                                 rules: [nameLengthRule],
                             })(<Input className='apply-try-content-componey-input'/>)}
                         </Form.Item>
-                        <div className='apply-try-content-useNumber-wrapper'>
+                        <div className='apply-try-content-use-number-wrapper'>
                             <span>{Intl.get('common.apply.try.user.scales','使用人数')}</span>
                             {
                                 _.map(userScales,item => {
-                                    return <Button className='apply-try-content-useNumber' 
-                                        type={this.state.userScales === item.value ? 'primary' : ''} 
+                                    let btnClass = 'apply-try-content-use-number';
+                                    this.state.userScales === item.value ? btnClass += ' active-number' : '';
+                                    return <Button className={btnClass} 
                                         onClick={this.setUserScales.bind(this,item.value)}>{item.value}</Button>;
                                 })
                             }
