@@ -8,6 +8,7 @@ import './style.less';
 import { Col, Row, InputNumber } from 'antd';
 import classNames from 'classnames';
 import HocGoodsBuy from 'CMP_DIR/hoc-goods-buy';
+const LAYOUT_CONSTS = HocGoodsBuy.LAYOUT_CONSTS;
 import PayAjax from 'MOD_DIR/common/public/ajax/pay';
 import history from 'PUB_DIR/sources/history';
 import { paymentEmitter } from 'OPLATE_EMITTER';
@@ -101,13 +102,10 @@ class PurchaseLeads extends React.Component{
             });
             newState.activeGoods = newState.list[0];
             newState.count = _.get(originalList,'number', 0);
+            newState.listHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT - LAYOUT_CONSTS.DESC_HEIGHT;
         }
         this.setState(newState);
     }
-
-    onClosePanel =() => {
-        this.props.onClosePanel && this.props.onClosePanel();
-    };
 
     handleUpgradeEnterprise = () => {
         console.log('点击升级企业版');

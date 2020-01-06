@@ -4,35 +4,7 @@
  * Created by tangmaoqin on 2019/10/24.
 */
 @import "../../public/css/common-variables";
-@goods-name-bg-color: #FAFAFA;
-@goods-item-border-color: #2196F3;
-@goods-name-hover-bg-color: #F1F8FE;
 
-/*.official-personal-wrapper{
-  .right-panel-modal-content{
-    background-color: #fff;
-    .right-panel-modal-title{
-      border: none;
-      margin-bottom: 0;
-    }
-  }
-  .official-personal-title-wrapper{
-    color: @title-color;
-    .official-personal-title-btn{
-      color: @operate-btn-color;
-      cursor: pointer;
-      float: right;
-    }
-  }
-  .goods-container{
-    padding: 0 24px;
-  }
-
-  .order-submit-btn{
-    margin-top: 24px;
-    width: 100%;
-  }
-}*/
 //版本商品信息样式
 .official-goods-content{
   .goods-item{
@@ -42,13 +14,17 @@
     border-radius:4px;
     cursor: pointer;
     position: relative;
-    margin-top: 6px;
+    margin-bottom: 6px;
     .goods-name{
       height: 48px;
       line-height: 48px;
       font-size: 16px;
       color: @label-content-color;
       background-color: @goods-name-bg-color;
+      margin-left: 1px;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      margin-right: 1px;
     }
     .goods-info{
       height: 90px;
@@ -85,41 +61,96 @@
         color: @goods-item-border-color;
       }
       .goods-price-wrapper{
-        color: @goods-item-border-color;
+        color: @version-basic-color;
       }
       .goods-average{
         color: @title-color;
       }
     }
   }
-}
 
-
-/*
-.goods-desc{
-  height: 48px;
-  line-height: 48px;
-  background-color: @mouse-enter-zone-background;
-  border-radius:4px;
-  margin-bottom: 24px;
-  .icon-clue-recommend{
-    width: 48px;
-    height: 48px;
-    text-align: center;
-    line-height: 48px;
-    font-size: 32px;
-    border-radius: 0!important;
-    color: #fff;
-    margin-right: 16px;
-    float: left;
-    background-color: @BORDER-BLUE;
-  }
-  .clue-extract-count-wrapper{
-    font-size: 16px;
-    color: @title-color;
-    .clue-extract-count{
-      color: @BORDER-BLUE;
-      font-size: 20px;
+  //个人版基本信息样式
+  .personal-edition-desc-container{
+    padding: 24px;
+    background-color: #F8F9FB;
+    border-radius:4px;
+    margin-bottom: 24px;
+    .personal-edition-desc-title{
+      color: @title-color;
+      .version-item-name{
+        margin-bottom: 10px;
+        .version-item-img{
+          width: 24px;
+          height: 24px;
+        }
+        .version-item-type{
+          margin-left: 9px;
+          font-size: 20px;
+          vertical-align: middle;
+        }
+      }
+      .version-item-clues-recommend{
+        font-size: 16px;
+      }
+      .version-item-clues-recommend-number{
+        color: @version-basic-color;
+        margin-right: 3px;
+      }
+      .version-item-btn{
+        font-size: 14px;
+        float: right;
+        cursor: pointer;
+        user-select: none;
+        .iconfont{
+          font-size: 14px;
+        }
+      }
+    }
+    //内容样式
+    .personal-edition-desc-content{
+      user-select: none;
+      .version-item-feature-item{
+        .version-item-feature-item-title{
+          position: relative;
+          margin: 16px 0 13px;
+          font-size: 14px;
+          &:after{
+            content: '';
+            position: absolute;   /*定位背景横线的位置*/
+            top: 50%;
+            right: 0;
+            background: @CLICK-BLUE;   /*背景横线颜色*/
+            opacity: 0.2;
+            width: 80%;            /*单侧横线的长度*/
+            height: 1px;
+          }
+        }
+        .version-item-feature-item-children{
+          color: @label-content-color;
+          font-size: 14px;
+        }
+      }
+    }
+    .icon-versions-feature-item{
+      color: @version-basic-color;
     }
   }
-}*/
+}
+
+//个人版right-panel-modal样式
+.personal-edition-right-panel-modal{
+  //改写点击按钮样式
+  .order-submit-btn{
+    margin-bottom: 30px;
+    .ant-btn{
+      color: #fff;
+      background-color: @version-basic-color;
+      border-color: @version-basic-color;
+      &:hover, &:active, &:focus{
+        color: #fff;
+        background-color: darken(@version-basic-color, 6.5%);
+        border-color: darken(@version-basic-color, 6.5%);
+      }
+    }
+  }
+}
