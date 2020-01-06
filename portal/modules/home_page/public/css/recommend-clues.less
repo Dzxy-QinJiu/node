@@ -58,14 +58,14 @@
       padding: 0 24px;
       background-color: #ffffff;
       border-bottom: 1px solid #dedfe1;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 800;
       height: 70px;
     }
     .extract-clues-title{
       overflow: hidden;
       padding-top: 20px;
-      line-height: 30px;
+      line-height: 32px;
     }
     .extract-clues-btn-container{
       float: right;
@@ -75,9 +75,6 @@
         margin-right: 0 !important;
         float: right;
         position: relative;
-        height: 30px;
-        line-height: 30px;
-        font-size: 14px;
         .iconfont {
           margin-right: 0.5em;
         }
@@ -107,6 +104,15 @@
         margin-top: 3px;
         margin-bottom: 0;
       }
+      .check-all{
+        font-size: 14px;
+        color: @title-color;
+        font-weight: normal;
+        vertical-align: middle;
+        .ant-checkbox{
+          vertical-align: middle;
+        }
+      }
     }
     // 中间内容
     .extract-clues-content{
@@ -120,9 +126,30 @@
           margin-bottom: 8px;
           border-radius: 4px;
           transition: all .3s linear;
+          &:hover{
+            box-shadow: 0 3px 10px -5px #213340;
+          }
+          &.has-extracted-row, &.has-extracted-row:hover{
+            color: @label-content-color!important;
+            box-shadow: none;
+            .extract-clue-text-wrapper{
+              color: @label-content-color
+            }
+            .iconfont.icon-extract{
+              color: @label-content-color;
+              cursor: not-allowed;
+            }
+          }
+          &.has-extracted-by-other-row, &.has-extracted-by-other-row:hover{
+            .iconfont.icon-extract{
+              color: @label-content-color;
+              cursor: not-allowed;
+            }
+          }
           .extract-clue-text-wrapper{
             width: 85%;
             color: @title-color;
+            padding-right: 3px;
             .extract-clue-text__name{
               font-size: 16px;
               font-weight:400;
@@ -146,26 +173,6 @@
             .iconfont.icon-warning-tip{
               color: @import_data_warn_color;
               margin-right: 6px;
-            }
-          }
-          &:hover{
-            box-shadow: 0 3px 10px -5px #213340;
-          }
-          &.has-extracted-row, &.has-extracted-row:hover{
-            color: @label-content-color!important;
-            box-shadow: none;
-            .extract-clue-text-wrapper{
-              color: @label-content-color
-            }
-            .iconfont.icon-extract{
-              color: @label-content-color;
-              cursor: not-allowed;
-            }
-          }
-          &.has-extracted-by-other-row, &.has-extracted-by-other-row:hover{
-            .iconfont.icon-extract{
-              color: @label-content-color;
-              cursor: not-allowed;
             }
           }
         }
