@@ -35,6 +35,8 @@ class ForgotPassword extends React.Component {
         password: '',
         //新密码
         newPassword: '',
+        // 确认密码
+        rePassword: '',
         //成功信息
         successMsg: '',
         //验证码
@@ -205,6 +207,11 @@ class ForgotPassword extends React.Component {
         this.setState({ newPassword });
     };
 
+    handleRePasswordChange = (e) => {
+        let rePassword = _.trim(e.target.value);
+        this.setState({ rePassword });
+    }
+
     sendMsg = () => {
         const captcha = this.state.captchaCodeValue;
         const user_name = this.state.username;
@@ -291,15 +298,14 @@ class ForgotPassword extends React.Component {
         const ticket = this.state.ticket;
         const user_id = this.state.userId;
         let new_password = this.state.newPassword;
-        //做md5
-        var md5Hash = crypto.createHash('md5');
-        md5Hash.update(new_password);
-        new_password = md5Hash.digest('hex');
-
+        let rePassword = this.state.rePassword;
         if (!new_password) {
             return;
         }
-
+        //md5加密
+        var md5Hash = crypto.createHash('md5');
+        md5Hash.update(new_password);
+        new_password = md5Hash.digest('hex');
         $.ajax({
             url: '/reset_password_with_ticket',
             dataType: 'json',
@@ -391,7 +397,25 @@ class ForgotPassword extends React.Component {
                             />
                         </div>
                     ) : null}
-
+                    {/*  <React.Fragment>
+                             <div className="input-item">
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="password"
+                                    name="rePassword"
+                                    type="password"
+                                    tabIndex="1"
+                                    label={Intl.get('common.confirm.password', '确认密码')}
+                                    autoComplete="off"
+                                    className="login-input-wrap"
+                                    color='primary'
+                                    disabled={this.state.successMsg}
+                                    onChange={this.handleRePasswordChange}
+                                    value={this.state.rePassword}
+                                />
+                            </div>
+                        </React.Fragment> */}
                     {this.renderCaptchaBlock(hasWindow)}
                 </div>
 
@@ -409,9 +433,9 @@ class ForgotPassword extends React.Component {
                     <button className="login-button" type="button"
                         tabIndex="3"
                         onClick={this.getTicket}
-                        data-tracename={'点击验证' + this.state.contactTypeName + '验证码按钮'}
+                        data-tracename={'点击验证按钮'}
                     >
-                        {hasWindow ? Intl.get('login.verify_phone_or_email_verification_code', '验证{contactTypeName}验证码', {contactTypeName: this.state.contactTypeName}) : null}
+                        {hasWindow ? Intl.get('login.verify.btn', '验证') : null}
                     </button>
                 ) : null}
 
