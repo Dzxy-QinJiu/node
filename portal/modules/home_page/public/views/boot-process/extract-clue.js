@@ -249,6 +249,8 @@ class ExtractClues extends React.Component {
                 this.setState({
                     canClickExtract: true,
                     batchExtractLoading: false,
+                    disabledCheckedClues: [],
+                    selectedRecommendClues: _.get(this.state,'disabledCheckedClues', [])
                     // saveErrorMsg: errTip,
                     // unSelectDataTip: errTip
                 });
@@ -572,7 +574,7 @@ class ExtractClues extends React.Component {
                     // 更新引导流程
                     this.upDateGuideMark();
                     //提取成功后，把该线索在列表中删除
-                    message.success(Intl.get('clue.extract.success', '提取成功'));
+                    // message.success(Intl.get('clue.extract.success', '提取成功'));
                     this.clearSelectSales();
                     SetLocalSalesClickCount(salesMan, CLUE_RECOMMEND_SELECTED_SALES);
                     this.updateRecommendClueLists(leadId);
@@ -914,7 +916,7 @@ class ExtractClues extends React.Component {
                     </div>
                 </div>
                 <div className="unextract-clue-tip clearfix">
-                    <Checkbox checked={this.isCheckAll()} onChange={this.handleCheckAllChange} disabled={this.disabledCheckAll()}>{Intl.get('common.all.select', '全选')}</Checkbox>
+                    <Checkbox className="check-all" checked={this.isCheckAll()} onChange={this.handleCheckAllChange} disabled={this.disabledCheckAll()}>{Intl.get('common.all.select', '全选')}</Checkbox>
                     <span className="no-extract-count-tip" style={{display: hasNoExtractCountTip ? 'block' : 'none'}}>
                         {this.hasNoExtractCountTip()}
                     </span>
