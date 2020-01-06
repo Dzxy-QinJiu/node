@@ -159,7 +159,7 @@ class BootCompleteInformation extends React.Component{
                 // jumpLeadPage({});
                 this.setState({
                     isLoading: false,
-                    errMsg: xhr.responseJSON || Intl.get('common.save.failed', '保存失败')
+                    errMsg: Intl.get('boot.set.recommend.clue.faild', '设置失败，请重试一次')
                 });
             }
         });

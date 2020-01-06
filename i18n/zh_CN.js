@@ -3948,6 +3948,7 @@ var zh_CN = {
     'boot.select.industry': '请选择关注的行业',
     'boot.select.area': '请选择关注的地域',
     'boot.input.industry': '请输入关注的行业',
+    'boot.set.recommend.clue.faild': '设置失败，请重试一次',
     /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/
