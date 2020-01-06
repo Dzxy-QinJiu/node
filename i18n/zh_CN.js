@@ -3922,6 +3922,7 @@ var zh_CN = {
     'payment.again.create.order.faild': '生成订单失败，{retry}',
     'payment.renewal': '续费',
     'payment.please.contact.our.sale': '请联系我们的销售人员进行升级，联系方式：{contact}',
+    'payment.please.contact.our.sale.renewal': '请联系我们的销售人员，联系方式：{contact}',
     'payment.upgrading': '正在升级...',
     'payment.countdown.default.msg': '倒计时中...',
     'payment.upgrade.version.success': '您已成功升级为正式版，{time} 到期',

@@ -3876,6 +3876,7 @@ var en_US = {
     'payment.again.create.order.faild': 'Failed to generate deal, {retry}',//生成订单失败，{retry}
     'payment.renewal': 'renewal',//续费
     'payment.please.contact.our.sale': 'Please contact our sales staff for upgrade. Contact: {contact}',//请联系我们的销售人员进行升级，联系方式：{contact}
+    'payment.please.contact.our.sale.renewal': 'Please contact our sales staff. Contact: {contact}',//请联系我们的销售人员，联系方式：{contact}
     'payment.upgrading': 'Upgrading...',//正在升级...
     'payment.countdown.default.msg': 'Countdown...',//倒计时中...
     'payment.upgrade.version.success': 'You have successfully upgraded to the official version, {time} expires',//您已成功升级为正式版，{time} 到期
