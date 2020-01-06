@@ -13,7 +13,7 @@ class Index extends React.Component {
         successFlag: false,
         userScales: '',
         saveResult: '',
-        canClick: true,
+        notShowLoading: true,
     }
 
     static propTypes = {
@@ -24,11 +24,12 @@ class Index extends React.Component {
     }
 
     handleApplyClick = () => {
-        this.setState({
-            canClick: false
-        });
         this.props.form.validateFields((err,values) => {
             if(err) return;
+            if(!this.state.notShowLoading) return;
+            this.setState({
+                notShowLoading: false
+            });
             (this.props.versionKind && values.company) &&
             applyTryAjax.postApplyTry({
                 company: values.company,
@@ -37,12 +38,12 @@ class Index extends React.Component {
             },() => {
                 this.setState({
                     successFlag: true,
-                    canClick: true
+                    notShowLoading: true
                 });
             },() => {
                 this.setState({
                     saveResult: 'error',
-                    canClick: true
+                    notShowLoading: true
                 });
             });
         });
@@ -70,31 +71,30 @@ class Index extends React.Component {
             {this.state.successFlag ? this.renderApplyResult() : (
                 <div className='apply-try-content-wrapper'>
                     <div className='apply-try-content-title'>{Intl.get('login.apply.trial','申请试用')}</div>
-                    {this.state.canClick ? 
-                        <Form layout="inline">
-                            <Form.Item label={Intl.get('register.company.nickname','公司名称')} className='apply-try-content-componey'>
-                                {getFieldDecorator('company', {
-                                    rules: [nameLengthRule],
-                                })(<Input className='apply-try-content-componey-input'/>)}
-                            </Form.Item>
-                            <div className='apply-try-content-useNumber-wrapper'>
-                                <span>{Intl.get('common.apply.try.user.scales','使用人数')}</span>
-                                {
-                                    _.map(userScales,item => {
-                                        return <Button className='apply-try-content-useNumber' 
-                                            type={this.state.userScales === item.value ? 'primary' : ''} 
-                                            onClick={this.setUserScales.bind(this,item.value)}>{item.value}</Button>;
-                                    })
-                                }
-                            </div>
-                            <div className='apply-try-content-apply-btn-wrapper'>
-                                <Button className='apply-try-content-apply-btn' 
-                                    type="primary" 
-                                    data-tracename='申请试用'
-                                    onClick={this.handleApplyClick}>{Intl.get('home.page.apply.type','申请')}</Button>
-                            </div>
-                        </Form> : <Spinner/>
-                    }
+                    <Form layout="inline">
+                        <Form.Item label={Intl.get('register.company.nickname','公司名称')} className='apply-try-content-componey'>
+                            {getFieldDecorator('company', {
+                                rules: [nameLengthRule],
+                            })(<Input className='apply-try-content-componey-input'/>)}
+                        </Form.Item>
+                        <div className='apply-try-content-useNumber-wrapper'>
+                            <span>{Intl.get('common.apply.try.user.scales','使用人数')}</span>
+                            {
+                                _.map(userScales,item => {
+                                    return <Button className='apply-try-content-useNumber' 
+                                        type={this.state.userScales === item.value ? 'primary' : ''} 
+                                        onClick={this.setUserScales.bind(this,item.value)}>{item.value}</Button>;
+                                })
+                            }
+                        </div>
+                        <div className='apply-try-content-apply-btn-wrapper'>
+                            <Button className='apply-try-content-apply-btn' 
+                                type="primary" 
+                                data-tracename='申请试用'
+                                loading={!this.state.notShowLoading}
+                                onClick={this.handleApplyClick}>{Intl.get('home.page.apply.type','申请')}</Button>
+                        </div>
+                    </Form>
                     {
                         saveResult ? 
                             <AlertTimer time={3000}
