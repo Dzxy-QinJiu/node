@@ -69,12 +69,13 @@ class Index extends React.Component {
                                 rules: [nameLengthRule],
                             })(<Input className='apply-try-content-componey-input'/>)}
                         </Form.Item>
-                        <div className='apply-try-content-useNumber-wrapper'>
+                        <div className='apply-try-content-use-number-wrapper'>
                             <span>{Intl.get('common.apply.try.user.scales','使用人数')}</span>
                             {
                                 _.map(userScales,item => {
-                                    return <Button className='apply-try-content-useNumber' 
-                                        type={this.state.userScales === item.value ? 'primary' : ''} 
+                                    let btnClass = 'apply-try-content-use-number';
+                                    this.state.userScales === item.value ? btnClass += ' active-number' : '';
+                                    return <Button className={btnClass} 
                                         onClick={this.setUserScales.bind(this,item.value)}>{item.value}</Button>;
                                 })
                             }
