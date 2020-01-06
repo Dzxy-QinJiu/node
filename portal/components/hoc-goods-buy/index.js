@@ -122,9 +122,13 @@ const HOCGoodsBuy = (options = {}) => {
                 });
             };
 
-            handlClickClose = () => {
+            onClosePanel = (type) => {
+                if(type === 'onPaymentPageClose') {//支付页面关闭时，应退回商品界面，不应直接关闭
+                    this.setState({showPaymentMode: false, curOrderInfo: {}});
+                    return false;
+                }
                 Trace.traceEvent(ReactDOM.findDOMNode(this), '关闭商品界面');
-                this.onClosePanel();
+                this.props.onClosePanel && this.props.onClosePanel();
             };
 
             renderContent = () => {
@@ -149,35 +153,38 @@ const HOCGoodsBuy = (options = {}) => {
                     const listHeight = this.state.listHeight || $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT - LAYOUT_CONSTS.DESC_HEIGHT - LAYOUT_CONSTS.BOTTOM_HEIGHT;
                     return (
                         <div className="goods-container">
-                            <div className="goods-desc">
-                                <i className="iconfont icon-clue-recommend"/>
-                                <span className="clue-extract-count-wrapper">
-                                    <ReactIntl.FormattedMessage
-                                        id={options.i18nId}
-                                        defaultMessage={options.i18nMessage}
-                                        values={{
-                                            'count': <span className="clue-extract-count">{this.state.count}</span>
-                                        }}
-                                    />
-                                </span>
-                            </div>
+                            {_.get(options,'notShowGoodsDesc') ? null : (
+                                <div className="goods-desc">
+                                    <i className="iconfont icon-clue-recommend"/>
+                                    <span className="clue-extract-count-wrapper">
+                                        <ReactIntl.FormattedMessage
+                                            id={options.i18nId}
+                                            defaultMessage={options.i18nMessage}
+                                            values={{
+                                                'count': <span className="clue-extract-count">{this.state.count}</span>
+                                            }}
+                                        />
+                                    </span>
+                                </div>
+                            )}
                             <div style={{height: listHeight}}>
                                 <GeminiScrollbar
+                                    ref="scrollBar"
                                     handleScrollBottom={this.handleScrollBarBottom}
                                     listenScrollBottom={this.state.listenScrollBottom}
                                 >
                                     <div className="goods-content">
                                         {super.render()}
                                     </div>
+                                    {
+                                        this.state.isGetGoodsLoading ? null : (
+                                            <div className="order-submit-btn">
+                                                <Button disabled={this.state.isCreateOrdering} loading={this.state.isCreateOrdering} type="primary" size="large" onClick={this.handlePlaceOrder}>{Intl.get('goods.immediate.payment', '立即支付')}</Button>
+                                            </div>
+                                        )
+                                    }
                                 </GeminiScrollbar>
                             </div>
-                            {
-                                this.state.isGetGoodsLoading ? null : (
-                                    <div className="order-submit-btn">
-                                        <Button disabled={this.state.isCreateOrdering} loading={this.state.isCreateOrdering} type="primary" size="large" onClick={this.handlePlaceOrder}>{Intl.get('goods.immediate.payment', '立即支付')}</Button>
-                                    </div>
-                                )
-                            }
                         </div>
                     );
                 }
@@ -228,13 +235,14 @@ const HOCGoodsBuy = (options = {}) => {
                         content = this.renderContent();
                     }
 
+                    const cls = 'hoc-goods-buy-wrapper ' + _.get(options, 'classNames', '');
                     return (
                         <RightPanelModal
-                            className="hoc-goods-buy-wrapper"
+                            className={cls}
                             isShowMadal={true}
                             isShowCloseBtn={this.state.isShowCloseBtn}
                             title={title}
-                            onClosePanel={this.handlClickClose}
+                            onClosePanel={this.onClosePanel}
                             content={content}
                             dataTracename={options.dataTraceName}
                         />
@@ -245,7 +253,7 @@ const HOCGoodsBuy = (options = {}) => {
                         curOrderInfo={this.state.curOrderInfo}
                         dealSubmitGoodInfo={this.dealSubmitGoodInfo}
                         onPaymentSuccess={this.onPaymentSuccess}
-                        onClosePanel={this.onClosePanel}
+                        onClosePanel={this.onClosePanel.bind(this, 'onPaymentPageClose')}
                     />;
                 }
             }

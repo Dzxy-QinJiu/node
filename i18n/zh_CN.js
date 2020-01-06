@@ -3969,7 +3969,13 @@ var zh_CN = {
     'versions.starter': '基础版',
     'versions.professional': '专业版',
     'versions.enterprise': '企业版',
-
+    'versions.personal.feature.crm': 'CRM功能',
+    'versions.feature.basic': '基础功能',
+    'versions.feature.lead.management': '线索管理',
+    'versions.feature.visit.record': '拜访跟进记录',
+    'versions.feature.data.import': '数据导入',
+    'versions.feature.office.management': '职务管理',
+    'versions.feature.rechecking': '查重',
     /*版本信息 --- end */
 
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/
