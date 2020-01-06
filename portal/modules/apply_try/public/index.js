@@ -5,13 +5,15 @@ import applyTryAjax from './ajax/applyTryAjax';
 import {userScales} from './util/apply_try_const';
 import OperateSuccessTip from 'CMP_DIR/operate-success-tip';
 import { nameLengthRule } from 'PUB_DIR/sources/utils/validate-util';
+const Spinner = require('CMP_DIR/spinner');
 require('./css/index.less');
 
 class Index extends React.Component {
     state={
         successFlag: false,
         userScales: '',
-        saveResult: ''
+        saveResult: '',
+        notShowLoading: true,
     }
 
     static propTypes = {
@@ -24,6 +26,10 @@ class Index extends React.Component {
     handleApplyClick = () => {
         this.props.form.validateFields((err,values) => {
             if(err) return;
+            if(!this.state.notShowLoading) return;
+            this.setState({
+                notShowLoading: false
+            });
             (this.props.versionKind && values.company) &&
             applyTryAjax.postApplyTry({
                 company: values.company,
@@ -31,11 +37,13 @@ class Index extends React.Component {
                 version_kind: this.props.versionKind
             },() => {
                 this.setState({
-                    successFlag: true
+                    successFlag: true,
+                    notShowLoading: true
                 });
             },() => {
                 this.setState({
-                    saveResult: 'error'
+                    saveResult: 'error',
+                    notShowLoading: true
                 });
             });
         });
@@ -84,6 +92,7 @@ class Index extends React.Component {
                             <Button className='apply-try-content-apply-btn' 
                                 type="primary" 
                                 data-tracename='申请试用'
+                                loading={!this.state.notShowLoading}
                                 onClick={this.handleApplyClick}>{Intl.get('home.page.apply.type','申请')}</Button>
                         </div>
                     </Form>
