@@ -201,7 +201,7 @@ exports.editAppUser = function(user,succCallback,errCallback) {
     //用于兼容新旧输入组件
     if(user.id){
         userData.user_id = user.id;
-        delete userData.id
+        delete userData.id;
     }
     $.ajax({
         url: '/rest/appuser',
@@ -211,11 +211,11 @@ exports.editAppUser = function(user,succCallback,errCallback) {
         data: JSON.stringify(userData),
         timeout: 180 * 1000,
         success: function(newUser) {
-            _.isFunction(succCallback)?succCallback():null;
+            _.isFunction(succCallback) ? succCallback() : null;
             Deferred.resolve(newUser);
         },
         error: function(xhr) {
-            _.isFunction(errCallback)?errCallback():null;
+            _.isFunction(errCallback) ? errCallback() : null;
             Deferred.reject(xhr.responseJSON || Intl.get('errorcode.17','修改用户失败'));
         }
     });
@@ -428,7 +428,8 @@ exports.editAppField = function(data) {
         url: '/rest/user/appdetail',
         type: 'put',
         dataType: 'json',
-        data: data,
+        contentType: 'application/json',
+        data: JSON.stringify(data),
         success: function(result) {
             //操作成功返回true
             if(result === true) {

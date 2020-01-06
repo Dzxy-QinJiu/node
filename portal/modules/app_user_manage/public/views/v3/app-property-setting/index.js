@@ -350,7 +350,7 @@ const AppPropertySetting = createReactClass({
         if (currentApp.app_id !== app_id) {
             return null;
         }
-        const defaultSettings = this.props.defaultSettings;
+        const defaultSettings = this.props.appsSetting[app_id];
         var currentAppInfo = this.state.appPropSettingsMap[currentApp.app_id] || {};
         var selectedRoles = currentAppInfo.roles || [];
         var selectedPermissions = currentAppInfo.permissions || [];
