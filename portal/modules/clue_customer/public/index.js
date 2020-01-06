@@ -732,7 +732,7 @@ class ClueCustomer extends React.Component {
             <div className="export-clue-customer-container pull-right">
                 {currentVersionType.trial ?
                     (<Popover content={tips} trigger="click" overlayClassName="explain-pop">
-                        <Button className="btn-item btn-disabled">
+                        <Button className="btn-item">
                             <i className="iconfont icon-export-clue"></i>
                             <span className="clue-container">
                                 {Intl.get('clue.export.clue.list','导出线索')}

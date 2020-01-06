@@ -107,7 +107,7 @@ function phoneEventChannelListener(data) {
 *
 * 处理线索后消息监听器*/
 function clueUnhandledNumListener(data) {
-    //pushLogger.debug('后端推送的分配线索的数据:' + JSON.stringify(data));
+    pushLogger.debug('后端推送的待我处理线索的数据:' + JSON.stringify(data));
     //将查询结果返给浏览器
     var cluemsgObj = JSON.parse(data) || {};
     //将数据推送到浏览器

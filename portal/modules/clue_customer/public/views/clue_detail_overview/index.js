@@ -1121,7 +1121,7 @@ class ClueDetailOverview extends React.Component {
             return (
                 <div className="clue-info-item">
                     <div className="clue-info-label">
-                        {Intl.get('clue.customer.associate.customer', '关联客户')}：
+                        {Intl.get('clue.customer.associate.customer', '关联客户')}
                     </div>
                     <div className="clue-info-detail">
                         <CustomerSuggest
@@ -1172,7 +1172,7 @@ class ClueDetailOverview extends React.Component {
         let noTraceData = _.isEmpty(_.get(curClue, 'customer_traces'));
         return (
             <DetailCard
-                title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
+                title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}`}
                 titleBottomBorderNone={noTraceData}
                 content={this.renderTraceList()}
                 disableEdit={hasPrivilegeAddEditTrace}
@@ -1321,7 +1321,7 @@ class ClueDetailOverview extends React.Component {
                     </div>
                     <div className="basic-info-industry clue-info-item">
                         <span className="clue-info-label">
-                            {Intl.get('common.industry', '行业')}:
+                            {Intl.get('common.industry', '行业')}
                         </span>
                         <div className="clue-info-detail">
                             <BasicEditSelectField
