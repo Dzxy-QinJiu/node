@@ -1660,7 +1660,7 @@ class ClueCustomer extends React.Component {
                                     <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.customer', '有相似客户')}
                                     </span> : null}
-                                {!isInvalidClients && hasApplyTry ?
+                                {hasApplyTry ?
                                     <span className='clue-label intent-tag-style'>
                                         {Intl.get('login.apply.trial','申请试用')} 
                                     </span> : null}
