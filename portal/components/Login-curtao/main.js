@@ -5,7 +5,7 @@ import './index.less';
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
 const LoginForm = require('./login-form');
-import LoginLogo from '../login-logo';
+import ketaoLogoSrc from './image/ketao-logo.svg';
 import {Alert, Tabs, Icon, Button} from 'antd';
 import {ssoLogin, callBackUrl} from '../../lib/websso';
 import SideBar from '../side-bar';
@@ -60,7 +60,7 @@ class LoginMain extends React.Component {
     }
 
     changeView(view) {
-        this.setState({currentView: view});
+        this.setState({currentView: view, errorMsg: ''});
     }
 
     //检测是否已经sso登录
@@ -91,7 +91,9 @@ class LoginMain extends React.Component {
             });
         }
     }
-
+    toRegister=(e) => {
+        window.open('/register'); 
+    }
     render() {
         //如果是初次渲染不展示表单;
         //如果有错误信息，则不显示loading状态
@@ -106,7 +108,9 @@ class LoginMain extends React.Component {
                     {hasWindow ? (
                         <div className="csm-form-wrap">
                             <div className="form-wrap">
-                                <LoginLogo/>
+                                <div className='login-logo-wrap'>
+                                    <img src={ketaoLogoSrc}/>
+                                </div>
                                 {this.state.currentView === VIEWS.LOGIN ? (
                                     <LoginForm
                                         captcha={this.state.captcha}
@@ -120,13 +124,29 @@ class LoginMain extends React.Component {
                                     <ForgotPassword
                                         hasWindow={hasWindow}
                                         views={VIEWS}
-                                        changeView={this.changeView.bind(this, VIEWS.LOGIN)}
                                         setErrorMsg={this.setErrorMsg}
+                                        changeView={this.changeView.bind(this, VIEWS.LOGIN)}
                                         {...this.props}
                                     />
                                 ) : null}
                                 {this.state.errorMsg ?
                                     <div className="login-error-tip"><span className="iconfont icon-warn-icon"></span>{this.state.errorMsg}</div> : null}
+                                {this.state.currentView === VIEWS.LOGIN ? (
+                                    <div>
+                                        <a className='login-find-password-tip' data-tracename="点击忘记密码" onClick={this.changeView.bind(this,VIEWS.FORGOT_PASSWORD)}> {Intl.get('login.forgot_password', '忘记密码')}</a>
+                                        <span className='login-no-account-register-tip'>
+                                            <ReactIntl.FormattedMessage
+                                                id='login.no.account.register.tip'
+                                                defaultMessage='没有账号，去{register}'
+                                                values={{
+                                                    'register': (
+                                                        <a onClick={this.toRegister} data-tracename="点击注册">
+                                                            {Intl.get('login.register', '注册')}
+                                                        </a>)
+                                                }}
+                                            />
+                                        </span>
+                                    </div>) : null}
                             </div>
                         </div>
                     ) : null }
