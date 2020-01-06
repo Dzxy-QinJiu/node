@@ -448,7 +448,7 @@ class UserInfo extends React.Component{
                 return (
                     <Popover
                         placement="right"
-                        content={Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})}
+                        content={Intl.get('payment.please.contact.our.sale.renewal', '请联系我们的销售人员，联系方式：{contact}', {contact: '400-6978-520'})}
                         trigger='click'
                     >
                         <Button
