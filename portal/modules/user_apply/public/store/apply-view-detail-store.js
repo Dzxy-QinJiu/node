@@ -232,11 +232,11 @@ class ApplyViewDetailStore {
                     this.formData.end_date = this.detailInfoObj.info.end_date;
                 }
             } else if (this.detailInfoObj.info.type === APPLY_TYPES.DELAY) {//延期（多应用）
-                if (_.get(info.apps, '0.delayTime')) { // 同步修改时间
-                    const delayTime = info.apps[0].delayTime;
-                    info.delayTime = delayTime;
-                    this.formData.delay_time = delayTime;
-                    getDelayDisplayTime(delayTime, this.formData);
+                var delay_time = _.get(info.apps, '0.delay_time');
+                if (delay_time) { // 同步修改时间
+                    info.delayTime = delay_time;
+                    this.formData.delay_time = delay_time;
+                    getDelayDisplayTime(delay_time, this.formData);
                 } else { // 到期时间，点开修改同步到自定义
                     this.formData.delayTimeUnit = TIMERANGEUNIT.CUSTOM;
                     this.formData.end_date = info.apps[0].end_date;
