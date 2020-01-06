@@ -60,7 +60,11 @@ const UserTwoFactorField = {
         
         if (config.showCheckbox) {
             return (
-                <Checkbox checked={currentValue === '1'} onChange={onChange}>{Intl.get('user.two.step.certification', '二步认证')}</Checkbox>
+                <Checkbox
+                    checked={currentValue === '1'}
+                    onChange={onChange}>
+                    {Intl.get('user.two.step.certification', '二步认证')}
+                </Checkbox>
             );
         }
         return (
@@ -69,8 +73,10 @@ const UserTwoFactorField = {
                 labelCol={{span: 0}}
                 wrapperCol={{span: 24}}
             >
-                <RadioGroup onChange={onChange}
-                    value={currentValue}>
+                <RadioGroup
+                    onChange={onChange}
+                    value={currentValue}
+                >
                     <Radio key="1" value="1"><ReactIntl.FormattedMessage id="common.app.status.open" defaultMessage="开启" /></Radio>
                     <Radio key="0" value="0"><ReactIntl.FormattedMessage id="common.app.status.close" defaultMessage="关闭" /></Radio>
                 </RadioGroup>

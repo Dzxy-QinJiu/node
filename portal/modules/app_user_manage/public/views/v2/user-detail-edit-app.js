@@ -93,7 +93,7 @@ const UserDetailEditApp = createReactClass({
             create_time: this.props.appInfo.create_time
         };
         //开通状态
-        changeAppInfo.status = appData.status.value;
+        changeAppInfo.is_disabled = appData.status.value;
         //到期停用
         changeAppInfo.over_draft = appData.over_draft.value;
         //开始时间
@@ -101,11 +101,11 @@ const UserDetailEditApp = createReactClass({
         //结束时间
         changeAppInfo.end_time = appData.time.end_time;
         //两步验证
-        changeAppInfo.is_two_factor = +appData.is_two_factor.value;
+        changeAppInfo.is_two_factor = appData.is_two_factor.value || '0';
         //正式、试用
         changeAppInfo.user_type = appData.user_type.value;
-        //多次登录(平台部的单词拼错了)
-        changeAppInfo.mutilogin = +appData.multilogin.value;
+        //多次登录
+        changeAppInfo.multilogin = appData.multilogin.value || '0';
         // 多终端状态
         changeAppInfo.terminals = appData.terminals.value;
         //角色

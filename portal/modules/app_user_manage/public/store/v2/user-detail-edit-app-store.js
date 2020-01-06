@@ -57,10 +57,10 @@ class UserDetailEditAppStore {
 
         this.appSettingConfig[appInfo.app_id] = {
             //用户类型
-            user_type: 'user_type' in appInfo ? appInfo.user_type : '',
-            over_draft: 'over_draft' in appInfo ? appInfo.over_draft : '1',
-            is_two_factor: 'is_two_factor' in appInfo ? appInfo.is_two_factor + '' : '',
-            multilogin: 'multilogin' in appInfo ? appInfo.multilogin + '' : '',
+            user_type: _.get(appInfo, 'user_type', ''),
+            over_draft: _.toString(appInfo.over_draft, 1),
+            is_two_factor: _.toString(appInfo.is_two_factor),
+            multilogin: _.toString(appInfo.multilogin),
             time: {
                 start_time: start_time,
                 end_time: end_time,
@@ -68,7 +68,7 @@ class UserDetailEditAppStore {
             },
             // 多终端类型
             terminals: _.get(appInfo, 'terminals', []),
-            status: 'is_disabled' in appInfo ? appInfo.is_disabled + '' : '',
+            status: _.toString(appInfo.is_disabled),
             roles: _.isArray(appInfo.roles) ? appInfo.roles : [],
             permissions: _.isArray(appInfo.permissions) ? appInfo.permissions : []
         };
