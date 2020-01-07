@@ -162,6 +162,7 @@ class ClueCustomer extends React.Component {
             showRecommendTips: !_.get(websiteConfig, oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS,false),
             showDifferentVersion: false,//是否显示版本信息面板
             guideRecommendCondition: null,//引导设置的推荐线索的条件
+            exportVisible: false,//导出线索显示popover
             //显示内容
             ...clueCustomerStore.getState()
         };
@@ -567,6 +568,10 @@ class ClueCustomer extends React.Component {
                 clueImportTemplateFormShow: true
             });
         } else if(e.key === 'export') {
+            let currentVersionType = checkCurrentVersionType();
+            if(currentVersionType.trial) {
+                return false;
+            }
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-anlysis-handle-btns'), '点击下拉中的导出线索按钮');
             this.showExportClueModal();
         } else if(e.key === 'clue_pool') {
@@ -731,7 +736,7 @@ class ClueCustomer extends React.Component {
         return(
             <div className="export-clue-customer-container pull-right">
                 {currentVersionType.trial ?
-                    (<Popover content={tips} trigger="click" overlayClassName="explain-pop">
+                    (<Popover content={tips} trigger="click" visible={this.state.exportVisible} onVisibleChange={this.handleVisibleChange.bind(this, currentVersionType)} overlayClassName="explain-pop">
                         <Button className="btn-item">
                             <i className="iconfont icon-export-clue"></i>
                             <span className="clue-container">
@@ -2812,7 +2817,20 @@ class ClueCustomer extends React.Component {
 
     };
 
+    handleVisibleChange = (currentVersionType, visible) => {
+        if(currentVersionType.trial && checkCurrentVersion().personal) {//是个人试用，直接展示购买界面
+            this.setState({exportVisible: visible}, () => {
+                this.handleUpgradePersonalVersion();
+            });
+        }else {
+            this.setState({exportVisible: visible});
+        }
+    };
+
     topBarDropList = (isWebMin) => {
+        let currentVersionType = checkCurrentVersionType();
+        let tips = this.getExportClueTips();
+        let exportText = Intl.get('clue.export.clue.list','导出线索');
         return (<Menu onClick={this.handleMenuSelectClick.bind(this)}>
             {isWebMin && addCluePrivilege() ?
                 <Menu.Item key="add" >
@@ -2825,7 +2843,11 @@ class ClueCustomer extends React.Component {
                 </Menu.Item>
                 : null}
             <Menu.Item key="export" >
-                {Intl.get('clue.export.clue.list','导出线索')}
+                {currentVersionType.trial ? (
+                    <Popover placement="left" content={tips} trigger="click" visible={this.state.exportVisible} onVisibleChange={this.handleVisibleChange.bind(this, currentVersionType)} overlayClassName="explain-pop">
+                        {exportText}
+                    </Popover>
+                ) : exportText}
             </Menu.Item>
             {freedCluePrivilege() ?
                 <Menu.Item key="clue_pool">
