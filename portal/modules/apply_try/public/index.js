@@ -20,7 +20,8 @@ class Index extends React.Component {
         hideApply: PropTypes.func,
         versionKind: PropTypes.string,
         form: PropTypes.object,
-        isShowMadal: PropTypes.bool
+        isShowMadal: PropTypes.bool,
+        versionKindName: PropTypes.string
     }
 
     handleApplyClick = () => {
@@ -34,7 +35,8 @@ class Index extends React.Component {
             applyTryAjax.postApplyTry({
                 company: values.company,
                 user_scales: this.state.userScales,
-                version_kind: this.props.versionKind
+                version_kind: this.props.versionKind,
+                version_kind_name: this.props.versionKindName
             },() => {
                 this.setState({
                     successFlag: true,
@@ -130,6 +132,9 @@ class Index extends React.Component {
     }
 }
 Index.defaultProps = {
-    isShowMadal: true
+    isShowMadal: true,
+    versionKindName: Intl.get('versions.enterprise','企业版'),
+    versionKind: 'enterprise',
+    hideApply: function(){}
 };
 export default Form.create()(Index);
