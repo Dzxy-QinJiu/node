@@ -123,6 +123,8 @@ class Index extends React.Component {
 }
 Index.defaultProps = {
     isShowMadal: true,
-    versionKindName: '企业版'
+    versionKindName: Intl.get('versions.enterprise','企业版'),
+    versionKind: 'enterprise',
+    hideApply: function(){}
 };
 export default Form.create()(Index);
