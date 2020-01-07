@@ -65,7 +65,7 @@ exports.getUserInfo = function(req, res, userId) {
     //获取网站个性化设置
     let getWebsiteConfig = getDataPromise(req, res, userInfoRestApis.getWebsiteConfig);
     // 获取用户的公告信息
-    let getUserNotice = promiseList.push(getDataPromise(req, res, userInfoRestApis.getUserNotice, '', noticeQueryObj));
+    let getUserNotice = getDataPromise(req, res, userInfoRestApis.getUserNotice, '', noticeQueryObj);
     let promiseList = [getUserBasicInfo, getUserRole, getUserGuideCOnfigs, getWebsiteConfig, getUserNotice];
     let userPrivileges = getPrivileges(req);
     //是否有获取所有团队数据的权限
@@ -95,7 +95,7 @@ exports.getUserInfo = function(req, res, userId) {
             //网站个性化
             userData.websiteConfig = _.get(resultList, '[3].successData', {});
             // 升级公告
-            userData.upgradeNoice = _.get(resultList, '[4].successData', {});
+            userData.upgradeNotice = _.get(resultList, '[4].successData', []);
             //是否是普通销售
             if (hasGetAllTeamPrivilege) {//管理员或运营人员，肯定不是普通销售
                 userData.isCommonSales = false;

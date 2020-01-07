@@ -75,12 +75,12 @@ class PageFrame extends React.Component {
                 page_num: 1
             }).then((result) => {
                 const websiteConfig = getLocalWebsiteConfig() || {};
-                let lastUpgradeTime = _.get(result, 'list[0].create_date', 0); // 最新发布公告的时间
+                let lastUpgradeNoticeTime = _.get(result, 'list[0].create_date', 0); // 最新发布公告的时间
                 let showNoticeTime = _.get(websiteConfig, 'show_notice_time', 0);
+                setWebsiteConfig({last_upgrade_notice_time: lastUpgradeNoticeTime});
                 // 公告发布时间大于查看时间时，需要显示提示信息
-                if (lastUpgradeTime > showNoticeTime) {
+                if (lastUpgradeNoticeTime > showNoticeTime) {
                     clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, true);
-                    setWebsiteConfig({last_upgrade_notice_time: lastUpgradeTime});
                 }
             });
         }, NOTICE_INTERVAL_TIME);
