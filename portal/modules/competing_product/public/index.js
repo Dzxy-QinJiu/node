@@ -227,6 +227,7 @@ class CometingProduct extends React.Component {
         const { getFieldDecorator } = this.props.form;
         const name = Intl.get('crm.competing.products', '竞品');
         const addErrMsg = this.state.addErrMsg;
+        let isLoading = (this.state.isAddloading === 0);
         return (
             <div className='condition-operator'>
                 <div className='pull-left'>
@@ -244,20 +245,14 @@ class CometingProduct extends React.Component {
                                     placeholder={Intl.get('competing.product.add.placeholder', '添加竞品')}
                                     onPressEnter={this.handleSubmit}
                                     onFocus={this.resetCompetingProductFlags}
+                                    addonAfter={
+                                        isLoading ?
+                                            <Icon type="loading" style={{marginLeft: 12}}/> :
+                                            <Icon type="plus" onClick={this.handleSubmit}/>
+                                    }
                                 />
                             )}
                         </FormItem>
-                        <Button
-                            className='add-btn'
-                            onClick={this.handleSubmit}
-                            disabled={this.state.isAddloading === 0}
-                        >
-                            <Icon type="plus" />
-                            {
-                                this.state.isAddloading === 0 ?
-                                    <Icon type="loading" style={{marginLeft: 12}}/> : null
-                            }
-                        </Button>
                     </Form>
                     {
                         addErrMsg ? (
