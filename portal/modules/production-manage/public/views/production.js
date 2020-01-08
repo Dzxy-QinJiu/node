@@ -30,7 +30,7 @@ import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import AddIpForm from './add-ip-form';
 import productionAjax from '../ajax/production-ajax';
 import production_manager_privilegeConfig from '../privilege-config';
-
+import userManagePrivilege from 'MOD_DIR/app_user_manage/public/privilege-const';
 const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
     TITLE_H: 94,//标题的高度
@@ -845,11 +845,16 @@ class Production extends React.Component {
                         ) : null
                     }
                     <DetailCard content={foundTime}/>
-                    <DetailCard
-                        title={this.renderDetailTitle()}
-                        content={this.renderDetailIpList()}
-                        className='ip-filter-card-container'
-                    />
+                    {
+                        hasPrivilege(userManagePrivilege.USER_QUERY) && _.get( this.props.info,'integration_id') ? (
+                            <DetailCard
+                                title={this.renderDetailTitle()}
+                                content={this.renderDetailIpList()}
+                                className='ip-filter-card-container' 
+                            />
+                        ) : null
+                    }
+
                     {_.isEqual(_.get(this.state, 'integrateType'), INTEGRATE_TYPES.UEM) ?
                         <div className="product-card-with-switch">
                             <DetailCard
