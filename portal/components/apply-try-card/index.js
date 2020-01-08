@@ -16,6 +16,10 @@ export default class ApplyTryCard extends Component {
                 <div className='clue-info-item-apply-try-content-value'>{versionData.applyTryCompany}</div>
             </div>
             <div className='clue-info-item-apply-try-content'>
+                <div className='clue-info-item-apply-try-content-title'>{Intl.get('common.name','姓名')}</div>
+                <div className='clue-info-item-apply-try-content-value'>{versionData.applyTryName}</div>
+            </div>
+            <div className='clue-info-item-apply-try-content'>
                 <div className='clue-info-item-apply-try-content-title'>{Intl.get('common.apply.try.user.scales','使用人数')}</div>
                 <div className='clue-info-item-apply-try-content-value'>{versionData.applyTryUserScales}</div>
             </div>

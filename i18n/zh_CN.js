@@ -3978,6 +3978,10 @@ var zh_CN = {
     'versions.feature.data.import': '数据导入',
     'versions.feature.office.management': '职务管理',
     'versions.feature.rechecking': '查重',
+    'versions.less.than.five': '小于5人',
+    'versions.between.six.and.ten': '6-10人',
+    'versions.between.eleven.and.twenty': '11-20人',
+    'versions.more.than.twenty': '大于20人',
     /*版本信息 --- end */
 
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/

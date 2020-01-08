@@ -1,5 +1,5 @@
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import {Input,Button,Form} from 'antd';
+import {Input,Button,Form,Radio} from 'antd';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import applyTryAjax from './ajax/applyTryAjax';
 import {userScales} from './util/apply_try_const';
@@ -28,15 +28,17 @@ class Index extends React.Component {
         this.props.form.validateFields((err,values) => {
             if(err) return;
             if(!this.state.notShowLoading) return;
+            const user_scales = _.filter(userScales, ele => ele.key === values.userScales)[0].value;
             this.setState({
                 notShowLoading: false
             });
             (this.props.versionKind && values.company) &&
             applyTryAjax.postApplyTry({
                 company: values.company,
-                user_scales: this.state.userScales,
+                user_scales: user_scales,
                 version_kind: this.props.versionKind,
-                version_kind_name: this.props.versionKindName
+                version_kind_name: this.props.versionKindName,
+                applicant_name: values.name,
             },() => {
                 this.setState({
                     successFlag: true,
@@ -54,42 +56,47 @@ class Index extends React.Component {
     handleClose = () => {
         this.props.hideApply();
     }
-    setUserScales = (value) => {
-        this.setState({
-            userScales: value
-        });
-    }
     hideErrorMsg = () => {
         this.setState({
             saveResult: ''
         });
     }
 
-
     renderApplyTryContent(){
         const { getFieldDecorator } = this.props.form;
         const saveResult = this.state.saveResult;
+        const formLayout = {
+            labelCol: {
+                sm: {span: 4},
+            },
+            wrapperCol: {
+                sm: {span: 20},
+            },
+        };
         return <div className='apply-try-content'>
             {this.state.successFlag ? this.renderApplyResult() : (
                 <div className='apply-try-content-wrapper'>
                     <div className='apply-try-content-title'>{Intl.get('personal.apply.trial.enterprise.edition','申请试用企业版')}</div>
-                    <Form layout="inline">
-                        <Form.Item label={Intl.get('register.company.nickname','公司名称')} className='apply-try-content-componey'>
+                    <Form>
+                        <Form.Item label={Intl.get('register.company.nickname','公司名称')} className='apply-try-content-componey' {...formLayout} require>
                             {getFieldDecorator('company', {
                                 rules: [nameLengthRule],
                             })(<Input className='apply-try-content-componey-input'/>)}
                         </Form.Item>
-                        <div className='apply-try-content-use-number-wrapper'>
-                            <span>{Intl.get('common.apply.try.user.scales','使用人数')}</span>
-                            {
-                                _.map(userScales,item => {
-                                    let btnClass = 'apply-try-content-use-number';
-                                    this.state.userScales === item.value ? btnClass += ' active-number' : '';
-                                    return <Button className={btnClass} 
-                                        onClick={this.setUserScales.bind(this,item.value)}>{item.value}</Button>;
-                                })
-                            }
-                        </div>
+                        <Form.Item label={Intl.get('common.name','姓名')} className='apply-try-content-componey' {...formLayout}>
+                            {getFieldDecorator('name', {})(<Input className='apply-try-content-componey-input'/>)}
+                        </Form.Item> 
+                        <Form.Item label={Intl.get('common.apply.try.user.scales','使用人数')} {...formLayout} require>
+                            {getFieldDecorator('userScales', {
+                                initialValue: userScales[0].key
+                            })(<Radio.Group className='apply-try-content-user-scales-wrapper'>
+                                {
+                                    _.map(userScales, item => {
+                                        return <Radio.Button value={item.key}>{item.value}</Radio.Button>;
+                                    })
+                                }
+                            </Radio.Group>)}
+                        </Form.Item>                       
                         <div className='apply-try-content-apply-btn-wrapper'>
                             <Button className='apply-try-content-apply-btn' 
                                 type="primary" 
