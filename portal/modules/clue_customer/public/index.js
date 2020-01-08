@@ -58,6 +58,7 @@ import {
     SIMILAR_CUSTOMER,
     NEED_MY_HANDLE,
     isCommonSalesOrPersonnalVersion,
+    isSalesOrPersonnalVersion,
     freedCluePrivilege,
     deleteCluePrivilege,
     deleteClueIconPrivilege,
@@ -1576,7 +1577,7 @@ class ClueCustomer extends React.Component {
         //如果选中了待我审批状态，就不展示已转化
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
         return <span className={clueStatusCls}>
-            {isCommonSalesOrPersonnalVersion() ? null : <span className={willDistCls} data-tracename='点击待分配tab'
+            {isSalesOrPersonnalVersion() ? null : <span className={willDistCls} data-tracename='点击待分配tab'
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)}
                 title={getCertainTabsTitle(SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
                 <span ref={dom => {this.$willDistribute = dom;}} className="clue-status-num">{_.get(statics, 'willDistribute', 0)}</span>
