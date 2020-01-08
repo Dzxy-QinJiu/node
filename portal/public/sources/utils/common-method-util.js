@@ -960,7 +960,7 @@ exports.getTableContainerHeight = function() {
         LAYOUT_CONSTANTS.SUMMARY;
 };
 function isSalesRole() {
-    return !(userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN));
+    return userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SECRETARY) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER);
 }
 exports.isSalesRole = isSalesRole;
 exports.subtracteGlobalClue = function(clueItem,callback) {
