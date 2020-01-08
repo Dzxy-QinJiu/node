@@ -42,9 +42,11 @@ class RegRulesView extends React.Component {
         super(props);
         var applyRulesAndSetting = _.cloneDeep(this.props.applyTypeData.applyRulesAndSetting);
         var notify_configs = _.cloneDeep(this.props.applyTypeData.notify_configs);
+        var customiz_user_range = _.cloneDeep(this.props.applyTypeData.customiz_user_range);
         this.state = {
             applyRulesAndSetting: applyRulesAndSetting,
             notify_configs: notify_configs || {},
+            customiz_user_range: customiz_user_range || [],
             addNodePanelFlow: '',
             addCCNodePanelFlow: '',//添加抄送人的流程类型
             showAddConditionPanel: false,
@@ -414,27 +416,22 @@ class RegRulesView extends React.Component {
             link.removeClass('active');
         }
     };
-    handleDownLoadBPMN = () => {
-        var viewer = this.state.bpmnModeler;
-        var downloadSvgLink = $('#js-download-svg');
-        var downloadLink = $('#js-download-diagram');
-        viewer.saveXML({format: true}, (err, xml) => {
-            this.setEncoded(downloadLink, 'diagram.bpmn', err ? null : xml);
-        });
-    };
     handleSavedBPMNFlow = () => {
         var viewer = this.state.bpmnModeler, applyRulesAndSetting = this.state.applyRulesAndSetting;
         viewer.saveXML({format: true}, (err, xml) => {
             applyRulesAndSetting.bpmnJson = xml;
             var applyId = _.get(this, 'props.applyTypeData.id');
             //表单的内容不需要提交
-            applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId, applyRulesAndSetting, (result) => {
-
+            var submitObj = {
+                customiz_user_range: this.state.customiz_user_range,
+                applyRulesAndSetting: applyRulesAndSetting
+            };
+            applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId, submitObj, (result) => {
                 if(_.isString(result)){
                     message.error(result);
                 }else{
                     message.success('保存成功');
-                    this.props.updateRegRulesView(applyRulesAndSetting);
+                    this.props.updateRegRulesView(submitObj);
                 }
 
             });
@@ -479,7 +476,7 @@ class RegRulesView extends React.Component {
 
     };
     handleSubmitApproveApply = () => {
-        var applyRulesAndSetting = this.state.applyRulesAndSetting, notify_configs = this.state.notify_configs;
+        var applyRulesAndSetting = this.state.applyRulesAndSetting;
         //需要在最后加上最后一个节点,需要先判断之前是不是有结束节点
         var defaultBpmnNode = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
         var previousNode = _.last(defaultBpmnNode);
@@ -587,7 +584,14 @@ class RegRulesView extends React.Component {
                         newNodeObj['conditionTotalRule'] += '  && ' + _.get(item, 'conditionRule');
                         newNodeObj['conditionTotalRuleDsc'] += '并且' + _.get(item, 'conditionRuleDsc');
                     }
-
+                    //如果是单独划分出一批人，需要单独把这些人传过去
+                    var customiz_user_range = this.state.customiz_user_range;
+                    if(item === 'userSearch_limit'){
+                        customiz_user_range.push({
+                            'range_key': _.get(item,'userRange'),
+                            'range_users': _.get(item,'userRangeRoute')
+                        });
+                    }
                 });
 
             }
@@ -647,12 +651,12 @@ class RegRulesView extends React.Component {
         var applyRulesAndSetting = this.state.applyRulesAndSetting;
         var applyApproveRules = _.get(applyRulesAndSetting, 'applyApproveRules');
         //要在默认流程那里加一个网关,只限于在第一次添加网关的时候
-        var defalutBpmnNode = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
-        var firstNode = _.get(defalutBpmnNode, '[0]');
-        if (!data.updateConditionFlowKey) {
+        var defaultBpmnNode = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
+        var firstNode = _.get(defaultBpmnNode, '[0]');
+        if (!data.updateConditionFlowKey && firstNode.type !== 'ExclusiveGateway') {
             firstNode['previous'] = 'Gateway_1_1';
-            var secondNode = _.get(defalutBpmnNode, '[1]');
-            defalutBpmnNode.splice(0, 0, {
+            var secondNode = _.get(defaultBpmnNode, '[1]');
+            defaultBpmnNode.splice(0, 0, {
                 name: 'Gateway_1_1',
                 id: 'Gateway_1_1',
                 type: 'ExclusiveGateway',
@@ -839,11 +843,19 @@ class RegRulesView extends React.Component {
     };
     //点击保存流程，如果没有修改流程节点，只需要走修改流程的接口，如果修改了节点，需要走重布的接口
     handleSubmitWorkflow = () => {
-        if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), _.get(this.state, 'applyRulesAndSetting.applyApproveRules'))){
-            this.handleSubmitCCApply();
-        }else{
-            this.handleSubmitApproveApply();
-        }
+        // if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), _.get(this.state, 'applyRulesAndSetting.applyApproveRules'))){
+        //     this.handleSubmitCCApply();
+        // }else{
+        this.handleSubmitApproveApply();
+        // }
+    };
+    handleDownLoadBPMN = () => {
+        var viewer = this.state.bpmnModeler;
+        var downloadSvgLink = $('#js-download-svg');
+        var downloadLink = $('#js-download-diagram');
+        viewer.saveXML({format: true}, (err, xml) => {
+            this.setEncoded(downloadLink, 'diagram.bpmn', err ? null : xml);
+        });
     };
     render = () => {
         var hasErrTip = this.state.titleRequiredMsg;
@@ -1007,6 +1019,14 @@ class RegRulesView extends React.Component {
                         <div className="containers" id="bpmn-container" ref="content">
                             <div className="canvas" id="canvas" ref="canvas"></div>
                             <div className="properties-panel-parent" id="js-properties-panel"></div>
+                            <ul className="buttons">
+                                <li>
+                                    <a id="js-download-diagram" href title="download BPMN diagram"
+                                        onClick={this.handleDownLoadBPMN}>
+                                        下载BPMN
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </GeminiScrollbar>
