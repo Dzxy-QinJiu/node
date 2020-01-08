@@ -25,8 +25,8 @@ function getCharts() {
         salesProductivityChart.getContactChart('customer'),
         //联系线索统计
         salesProductivityChart.getContactChart('lead'),
-        //客户经理业绩排名
-        salesProductivityChart.getCustomerManagerPerformanceRankingChart(),
+        //客户经理业绩排名， 由于排名算法有问题，暂时下线
+        // salesProductivityChart.getCustomerManagerPerformanceRankingChart(),
         //销售经理业绩排名
         salesProductivityChart.getSalesManagerPerformanceRankingChart(),
         //出差拜访频率统计
