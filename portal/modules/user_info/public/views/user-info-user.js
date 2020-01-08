@@ -70,6 +70,7 @@ class UserInfo extends React.Component{
             endTime: '', // 到期时间
             changePhoneMsg: '',
             showDifferentVersion: false,//是否显示版本信息面板
+            applyTryShowMadal: true,//申请试用界面显示遮罩层
         };
     }
 
@@ -391,6 +392,9 @@ class UserInfo extends React.Component{
     };
     // 处理版本升级
     handleVersionUpgrade = () => {
+        this.setState({
+            applyTryShowMadal: false
+        });
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
             showDifferentVersion: this.triggerShowVersionInfo,
             continueFn: () => {
@@ -402,6 +406,13 @@ class UserInfo extends React.Component{
     triggerShowVersionInfo = () => {
         this.setState({showDifferentVersion: !this.state.showDifferentVersion});
     };
+    //直接点击申请试用按钮
+    clickApplyTryBtn = () => {
+        this.setState({
+            showDifferentVersion: !this.state.showDifferentVersion, 
+            applyTryShowMadal: true
+        });
+    }
     handleContinueFn = (orderInfo) => {
         history.push('/leads');
     };
@@ -480,7 +491,7 @@ class UserInfo extends React.Component{
                         </Button>
                         <Button
                             className="user-version-upgrade"
-                            onClick={this.triggerShowVersionInfo}
+                            onClick={this.clickApplyTryBtn}
                             data-tracename="点击打开申请试用企业版"
                             type='primary'
                         >
@@ -501,7 +512,7 @@ class UserInfo extends React.Component{
                         </Button>  
                         <Button
                             className="user-version-upgrade"
-                            onClick={this.triggerShowVersionInfo}
+                            onClick={this.clickApplyTryBtn}
                             data-tracename="点击打开申请试用企业版"
                             type='primary'
                         >
@@ -860,7 +871,7 @@ class UserInfo extends React.Component{
                         ) : null
                     }
                 </div> : null}
-                {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
+                {this.state.showDifferentVersion ? (<ApplyTry isShowMadal={this.state.applyTryShowMadal} hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
                 {/*<DifferentVersion*/}
                 {/*showFlag={this.state.showDifferentVersion}*/}
                 {/*closeVersion={this.triggerShowVersionInfo}*/}
