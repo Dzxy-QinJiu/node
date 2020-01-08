@@ -7,7 +7,7 @@ import { storageUtil } from 'ant-utils';
 const local = storageUtil.local;
 import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
-import { checkCurrentVersion, checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
+import { checkCurrentVersion, checkVersionAndType, isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
 export const checkClueName = function(rule, value, callback) {
     value = _.trim(value);
@@ -91,6 +91,11 @@ export const editCluePrivilege = function(clueItem) {
 export const isCommonSalesOrPersonnalVersion = () => {
     return userData.getUserData().isCommonSales || checkVersionAndType().personal;
 };
+// 判断是否为销售或者是个人版本
+export const isSalesOrPersonnalVersion = () => {
+    return isSalesRole() || checkVersionAndType().personal;
+};
+
 //分配线索的权限
 export const assignSalesPrivilege = (curClue) => {
     let user = userData.getUserData();
