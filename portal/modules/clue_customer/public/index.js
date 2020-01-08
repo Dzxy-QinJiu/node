@@ -592,7 +592,7 @@ class ClueCustomer extends React.Component {
                 {
                     addCluePrivilege() ?
                         <Dropdown overlay={menu} overlayClassName="norm-add-dropdown" placement="bottomCenter">
-                            <Button className="ant-btn ant-btn-primary manual-add-btn">
+                            <Button className="ant-btn manual-add-btn">
                                 <Icon type="plus" className="add-btn"/>
                                 {(this.state.addType === 'start') ? (Intl.get('crm.sales.add.clue', '添加线索')) : (
                                     (this.state.addType === 'add') ? Intl.get('crm.sales.manual_add.clue', '手动添加') :
@@ -651,7 +651,7 @@ class ClueCustomer extends React.Component {
                         visible={!_.isNil(this.state.hasExtractCount) && !this.state.hasExtractCount && this.state.showRecommendTips}
                         overlayClassName="clue-recommend-tips explain-pop"
                     >
-                        <Button onClick={this.showClueRecommendTemplate} className="btn-item" data-tracename="点击线索推荐按钮">
+                        <Button onClick={this.showClueRecommendTemplate} className="btn-item ant-btn-primary" data-tracename="点击线索推荐按钮">
                             <i className="iconfont icon-clue-recommend"></i>
                             <span className="clue-container">
                                 {Intl.get('clue.customer.clue.recommend', '线索推荐')}
