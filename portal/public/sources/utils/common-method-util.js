@@ -401,7 +401,7 @@ exports.getUnhandledClueCountParams = function() {
                 name: 'source_time'
             }],
             query: {
-                status: isCommonSalesOrPersonnalVersion() ? '1,2' : '0,1,2',
+                status: isCommonSalesOrPersonnalVersion() ? '1,2' : '0,1,2',//如果是普通销售或者是个人版，要取待跟进和已跟进状态的线索，如果是销售领导还要加上待分配的状态
                 availability: '0'
             },
         },
