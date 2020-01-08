@@ -601,9 +601,10 @@ function applyUpgradeCompleteListener(data) {
     let isOpenPopUpNotify = getNotifyStatus();
     if (_.isObject(data) && _.get(data.version_change_info,'upgrade_type') === 'trade') {
         const title = Intl.get('payment.personal.upgrade.notice','个人用户升级通知');
-        const lead = data.lead.app_user_info.name || '';
+        const lead = data.lead.name || '';
+        const user = data.lead.app_user_info.name || '';
         const time = getTimeStr(_.get(data.version_change_info,'apply_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        const tipContent = time + ' ，' + lead + Intl.get('payment.personal.upgrade','付费升级为个人正式用户');
+        const tipContent = time + ' ，' + Intl.get('payment.personal.upgrade','用户{user}（线索{lead}）付费升级为个人正式用户',{lead,user});
         if (canPopDesktop()) {
             //桌面通知的展示
             showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);

@@ -3936,7 +3936,7 @@ var zh_CN = {
     'payment.contact.us': '联系我们请拨打{contact}',
     'payment.add.leads.tip': '如果线索量不够用，可另外{addBtn}',
     'payment.personal.upgrade.notice': '个人用户升级通知',
-    'payment.personal.upgrade': '付费升级为个人正式用户',
+    'payment.personal.upgrade': '用户{user}（线索{lead}）付费升级为个人正式用户',
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
