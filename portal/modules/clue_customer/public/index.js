@@ -2278,7 +2278,9 @@ class ClueCustomer extends React.Component {
         }
         else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueLists.length) {
             //总的线索不存在并且没有筛选条件时
-            var showAddBtn = !this.state.allClueCount && this.hasNoFilterCondition() && addCluePrivilege();
+            //如果当前选中的是待跟进且待跟进没有数值的时候,也要展示添加的引导
+            var statics = this.state.agg_list;
+            var showAddBtn = (!this.state.allClueCount || (this.isWillTraceStatusTabActive() && _.get(statics, 'willTrace', 0) === 0)) && this.hasNoFilterCondition() && addCluePrivilege();
             return (
                 <NoDataAddAndImportIntro
                     renderOtherOperation={this.renderOtherOperation}
