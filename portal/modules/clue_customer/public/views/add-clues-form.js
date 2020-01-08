@@ -26,7 +26,7 @@ import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 require('../css/add-clues-info.less');
 import DynamicAddDelContact from 'CMP_DIR/dynamic-add-del-contacts';
 import Trace from 'LIB_DIR/trace';
-import {renderClueNameMsg} from 'PUB_DIR/sources/utils/common-method-util';
+import {renderClueNameMsg, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 import userData from 'PUB_DIR/sources/user-data';
 const DIFCONTACTWAY = {
@@ -192,9 +192,9 @@ class ClueAddForm extends React.Component {
             let addRoute = _.find(routes, (route) => route.handler === 'addSalesClue');
             this.setState({isSaving: true, saveMsg: '', saveResult: ''});
             //添加线索的时候，如果是管理员添加不需要加字段
-            //如果是普通销售添加，字段加上user_id user_name team_id team_name
+            //如果是销售添加，字段加上user_id user_name team_id team_name
             //如果是个人版本，字段加上user_id user_name
-            if(isCommonSalesOrPersonnalVersion()){
+            if(isCommonSalesOrPersonnalVersion() || isSalesRole()){
                 var userDataInfo = userData.getUserData();
                 var user_id = userDataInfo.user_id;
                 var user_name = userDataInfo.user_name;

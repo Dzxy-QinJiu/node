@@ -41,6 +41,7 @@ import {getMyTeamTreeAndFlattenList} from './common-data-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import ShearContent from 'CMP_DIR/shear-content';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import publicPrivilegeConst from 'PUB_DIR/privilege-const';
 import notificationPrivilege from 'MOD_DIR/notification/public/privilege-const';
 import useManagePrivilege from 'MOD_DIR/app_user_manage/public/privilege-const';
@@ -400,7 +401,7 @@ exports.getUnhandledClueCountParams = function() {
                 name: 'source_time'
             }],
             query: {
-                status: '1,2',
+                status: isCommonSalesOrPersonnalVersion() ? '1,2' : '0,1,2',
                 availability: '0'
             },
         },
