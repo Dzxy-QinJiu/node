@@ -41,7 +41,10 @@ import {getMyTeamTreeAndFlattenList} from './common-data-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import ShearContent from 'CMP_DIR/shear-content';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
-import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {
+    isCommonSalesOrPersonnalVersion,
+    isSalesOrPersonnalVersion
+} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import publicPrivilegeConst from 'PUB_DIR/privilege-const';
 import notificationPrivilege from 'MOD_DIR/notification/public/privilege-const';
 import useManagePrivilege from 'MOD_DIR/app_user_manage/public/privilege-const';
@@ -401,7 +404,7 @@ exports.getUnhandledClueCountParams = function() {
                 name: 'source_time'
             }],
             query: {
-                status: isCommonSalesOrPersonnalVersion() ? '1,2' : '0,1,2',//如果是普通销售或者是个人版，要取待跟进和已跟进状态的线索，如果是销售领导还要加上待分配的状态
+                status: isSalesOrPersonnalVersion() ? '1,2' : '0,1,2',//如果是普通销售或者是个人版，要取待跟进和已跟进状态的线索，如果是销售领导还要加上待分配的状态
                 availability: '0'
             },
         },
