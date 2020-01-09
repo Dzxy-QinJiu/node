@@ -385,8 +385,13 @@ class OfficialPersonalEdition extends React.Component{
                                 <span className='version-item-type'>{PERSONAL_EDITION_DETAILS.versionName}</span>
                             </div>
                             <div className="version-item-clues-recommend">
-                                <span className="version-item-clues-recommend-number">{this.state.count}</span>
-                                {Intl.get('versions.monthly.clues.recommend', '条/月线索推荐')}
+                                <ReactIntl.FormattedMessage
+                                    id='clues.extract.count.at.month'
+                                    defaultMessage='每月可提取 {count} 条线索'
+                                    values={{
+                                        count: <span className="version-item-clues-recommend-number">{this.state.count}</span>
+                                    }}
+                                />
                                 <span
                                     title={isBasicExpanded ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('crm.basic.detail.show', '展开详情')}
                                     data-tracename={isBasicExpanded ? '收起详情' : '展开详情'}
