@@ -8,9 +8,11 @@ import {hasCalloutPrivilege, checkVersionAndType} from 'PUB_DIR/sources/utils/co
 import {showDisabledCallTip, handleCallOutResult, getOrganizationCallFee}from 'PUB_DIR/sources/utils/common-data-util';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
+import { paymentEmitter } from 'OPLATE_EMITTER';
 var classNames = require('classnames');
 require('./index.less');
 import Trace from 'LIB_DIR/trace';
+import { COMPANY_VERSION_KIND } from 'PUB_DIR/sources/utils/consts';
 class PhoneCallout extends React.Component {
     constructor(props) {
         super(props);
@@ -54,6 +56,11 @@ class PhoneCallout extends React.Component {
     handleVisibleChange = (phoneNumber, contactName,visible) => {
         //如果是个人版，需要提示升级为基础版以上才能拨打号码
         let versionAndType = checkVersionAndType();
+        if(versionAndType.personal) {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)), '个人版点击电话按钮');
+            paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {versionKind: COMPANY_VERSION_KIND});
+            return;
+        }
         if (visible && hasCalloutPrivilege() && !versionAndType.personal){// 显示，并且能拨打电话，以及不是个人版时
             if (!this.state.ableClickPhoneIcon){
                 return;
