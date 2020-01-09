@@ -97,7 +97,7 @@ function notifyChannelListener(data) {
  * 拨打电话消息监听器
  * */
 function phoneEventChannelListener(data) {
-    pushLogger.debug('后端推送的拨打电话的数据:' + JSON.stringify(data));
+    // pushLogger.debug('后端推送的拨打电话的数据:' + JSON.stringify(data));
     // 将查询结果返给浏览器
     var phonemsgObj = JSON.parse(data) || {};
     //将数据推送到浏览器
@@ -117,6 +117,9 @@ function clueUnhandledNumListener(data) {
         });
     }else if (cluemsgObj.type === 'apply_upgrade_complete') {
         //升级完成
+        _.each(cluemsgObj.user_ids, user_id => {
+            emitMsgBySocket(user_id, 'apply_upgrade_complete', pushDto.applyTryMsgToFrontend(cluemsgObj));
+        });
     }else{
         emitMsgBySocket(cluemsgObj && cluemsgObj.user_id, 'cluemsg', pushDto.clueMsgToFrontend(cluemsgObj));
     }
