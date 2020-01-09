@@ -432,6 +432,16 @@ ClueCustomerStore.prototype.afterAddSalesClue = function(updateObj) {
     }
 
 };
+//有新提取或者分配的线索后的提示
+ClueCustomerStore.prototype.afterNewExtract = function(newClues){
+    var newClues = this.processForList(newClues);
+    this.curClueLists = _.concat(newClues,this.curClueLists);
+    var count = this.agg_list['willTrace'] || 0;
+    var newClueCount = _.get(newClues,'length');
+    this.agg_list['willTrace'] = count + newClueCount;
+    this.allClueCount += newClueCount;
+    this.customersSize += newClueCount;
+};
 
 ClueCustomerStore.prototype.setSalesMan = function(salesObj) {
     this.salesMan = salesObj.salesMan;

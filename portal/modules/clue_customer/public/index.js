@@ -162,6 +162,7 @@ class ClueCustomer extends React.Component {
             showRecommendTips: !_.get(websiteConfig, oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS,false),
             showDifferentVersion: false,//是否显示版本信息面板
             guideRecommendCondition: null,//引导设置的推荐线索的条件
+            filterClueStatus: clueFilterStore.getState().filterClueStatus,//线索选中的状态
             //显示内容
             ...clueCustomerStore.getState()
         };
@@ -206,7 +207,10 @@ class ClueCustomer extends React.Component {
         //响应式布局时动态计算filterinput的宽度
         $(window).on('resize', this.resizeHandler);
     }
-
+    getFilterStatus = () => {
+        var filterClueStatus = this.state.filterClueStatus;
+        return getClueStatusValue(filterClueStatus);
+    };
     resizeHandler = () => {
         clearTimeout(this.scrollTimer);
         this.scrollTimer = setTimeout(() => {
@@ -421,33 +425,40 @@ class ClueCustomer extends React.Component {
     }
 
     //有新线索时线索面板添加刷新提示
-    showRefreshPrompt = (data) => {
+    showRefreshPrompt = (data,isExtractByMe) => {
         if(!_.isEmpty(data) && _.isObject(data)) {
-            //如果当前无线索，直接展示刷新提示
-            if(_.isEmpty(this.state.curClueLists)) {
-                this.setState({
-                    isShowRefreshPrompt: true
-                });
-            } else {
+            //该线索是否是自己提取的
+            if(isExtractByMe){
                 let clue_list = _.get(data, 'clue_list', []);
-                _.map(clue_list, clue => {
-                    //判断是否推送的线索为当前tab下的线索
-                    let status = clue.status;
-                    //线索类型
-                    let typeFilter = this.getFilterStatus();
-                    if(_.isEqual(status, typeFilter.status)) {
-                        //如果当前已经展示了刷新提示，不做操作
-                        if(!_.get(this.state, 'isShowRefreshPrompt')) {
-                            this.setState({
-                                isShowRefreshPrompt: true
-                            });
+                clueCustomerAction.afterNewExtract(clue_list);
+                clueFilterAction.setFilterType(SELECT_TYPE.WILL_TRACE);
+            }else{
+                //如果当前无线索，直接展示刷新提示
+                if(_.isEmpty(this.state.curClueLists)) {
+                    this.setState({
+                        isShowRefreshPrompt: true
+                    });
+                } else {
+                    let clue_list = _.get(data, 'clue_list', []);
+                    _.map(clue_list, clue => {
+                        //判断是否推送的线索为当前tab下的线索
+                        let status = clue.status;
+                        //线索类型
+                        let typeFilter = this.getFilterStatus();
+                        if(_.isEqual(status, typeFilter.status)) {
+                            //如果当前已经展示了刷新提示，不做操作
+                            if(!_.get(this.state, 'isShowRefreshPrompt')) {
+                                this.setState({
+                                    isShowRefreshPrompt: true
+                                });
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
-        }
-    }
 
+        }
+    };
     //展示右侧面板
     showClueDetailOut = (item) => {
         rightPanelShow = true;
@@ -498,7 +509,11 @@ class ClueCustomer extends React.Component {
     }
 
     onStoreChange = () => {
-        this.setState(clueCustomerStore.getState());
+        this.setState({
+            filterClueStatus: clueFilterStore.getState().filterClueStatus,
+            ...clueCustomerStore.getState()
+        }
+        );
     };
 
     getClueSource = () => {
@@ -619,9 +634,6 @@ class ClueCustomer extends React.Component {
     closeRecommendCluePanel = () => {
         this.setState({
             isShowRecommendCluePanel: false
-        },() => {
-            //重新刷新一下线索列表,防止提取线索后页面不刷新的问题
-            this.getClueList();
         });
     }
     handleClickCloseClue = () => {
@@ -797,10 +809,7 @@ class ClueCustomer extends React.Component {
             selectAllMatched: false
         });
     };
-    getFilterStatus = () => {
-        var filterClueStatus = clueFilterStore.getState().filterClueStatus;
-        return getClueStatusValue(filterClueStatus);
-    };
+
     //是否有筛选过滤条件
     hasNoFilterCondition = () => {
         var filterStoreData = clueFilterStore.getState();
@@ -2739,8 +2748,7 @@ class ClueCustomer extends React.Component {
     renderBatchChangeClues = () => {
         //只有有批量变更权限并且不是普通销售的时候，才展示批量分配
         let showBatchChange = ((hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_SELF)) && !isCommonSalesOrPersonnalVersion()) && this.editCluePrivilege();
-        let filterClueStatus = clueFilterStore.getState().filterClueStatus;
-        let curStatus = getClueStatusValue(filterClueStatus);
+        let curStatus = this.getFilterStatus();
         //除了运营不能释放线索，管理员、销售都可以释放
         let roleRule = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
         let filterStore = clueFilterStore.getState();

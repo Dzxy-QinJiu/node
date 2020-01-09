@@ -744,3 +744,8 @@ export const TIMERANGEUNIT = {
     YEAR: 'Y',
     CUSTOM: 'custom'
 };
+export const CLUEMESSAGETYPE = {
+    BASE_EXTRACT_ALLOT: 'base_extract_allot',//推荐线索提取的类型
+    POOL_EXTRACT_ALLOT: 'pool_extract_allot'//线索池提取的线索类型
+};
+export const CLUEEXTRACTTYPE = [CLUEMESSAGETYPE.BASE_EXTRACT_ALLOT,CLUEMESSAGETYPE.POOL_EXTRACT_ALLOT];

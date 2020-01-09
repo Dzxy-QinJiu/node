@@ -15,7 +15,7 @@ var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsg
 var phoneEmitter = require('../../../public/sources/utils/emitters').phoneEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import {SYSTEM_NOTICE_TYPE_MAP, KETAO_SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY,CALL_TYPES} from '../utils/consts';
+import {SYSTEM_NOTICE_TYPE_MAP, KETAO_SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY,CALL_TYPES,CLUEEXTRACTTYPE} from '../utils/consts';
 import logoSrc from './notification.png';
 import userData from '../user-data';
 import Trace from 'LIB_DIR/trace';
@@ -176,6 +176,10 @@ window.closeAllNoty = function() {
 window.openAllClues = function(){
     history.push('/leads', {refreshClueList: true});
 };
+//是自己提取的线索不用发右侧的通知
+function isExtractByMe(data) {
+    return _.includes(CLUEEXTRACTTYPE, _.get(data,'type')) && _.get(data,'operator_id','') === userData.getUserData().user_id;
+}
 //处理线索的数据
 function clueUnhandledListener(data) {
     let isOpenPopUpNotify = getNotifyStatus();
@@ -187,79 +191,83 @@ function clueUnhandledListener(data) {
         }
         notificationEmitter.emit(notificationEmitter.UPDATED_HANDLE_CLUE, data);
         //线索面板刷新提示
-        notificationEmitter.emit(notificationEmitter.UPDATE_CLUE, data);
-        var clueArr = _.get(data, 'clue_list',[]);
-        var title = Intl.get('clue.has.distribute.clue','您有新的线索'),tipContent = '';
-        if (canPopDesktop()) {
-            _.each(clueArr, (clueItem) => {
-                tipContent += _.get(clueItem, 'name','') + '\n';
-            });
-            //桌面通知的展示
-            showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
-        } else {//系统弹出通知
-            if (!isOpenPopUpNotify) {
-                return;
-            }
-            clueTotalCount++;
-            var clueHtml = '',titleHtml = '';
-            titleHtml += '<p class="clue-title">' + '<span class="title-tip">' + title + '</span>';
-            _.each(clueArr, (clueItem) => {
-                clueHtml += 
-                '<p class="clue-item" title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(_.get(clueItem,'id','')) + ')\'>' + 
-                    '<span class=\'clue-item-name\'>' + _.get(clueItem,'name','') + '</span>' + 
-                    '<span class=\'clue-detail\'>' + 
-                        Intl.get('call.record.show.customer.detail', '查看详情') + 
-                        '<i class=\'great-than\'>&gt;</i>' + 
-                    '</span>' + 
-                '</p>';
-            });
-            tipContent = `<div>${clueHtml}</div>`;
-            var largerText = 0;
-            notificationUtil.showNotification({
-                title: titleHtml,
-                content: tipContent,
-                type: 'clue',
-                closeWith: ['button'],
-                maxVisible: CLUE_MAX_NUM,//最多展示几个线索的提醒
-                callback: { // 关闭的时候
-                    onClose: () => {
-                        //关闭之后，队列中还有几个未展示的提醒
-                        clueTotalCount > 0 && clueTotalCount--;
-                        var addtionClueCount = clueTotalCount - CLUE_MAX_NUM;//还未展示的线索提醒的数量
-                        if (addtionClueCount === 0){
-                            hasAddCloseBtn = false;
-                            $('#noty-quene-tip-container').remove();
-                        }else if(addtionClueCount > 0 && hasAddCloseBtn){
-                            var queueNum = $('#queue-num');
-                            if (queueNum) {
-                                queueNum.text(addtionClueCount);
+        notificationEmitter.emit(notificationEmitter.UPDATE_CLUE, data, isExtractByMe(data));
+        //如果是自己提取的线索，不展示右边弹窗提示
+        if(!isExtractByMe(data)){
+            var clueArr = _.get(data, 'clue_list',[]);
+            var title = Intl.get('clue.has.distribute.clue','您有新的线索'),tipContent = '';
+            if (canPopDesktop()) {
+                _.each(clueArr, (clueItem) => {
+                    tipContent += _.get(clueItem, 'name','') + '\n';
+                });
+                //桌面通知的展示
+                showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
+            } else {//系统弹出通知
+                if (!isOpenPopUpNotify) {
+                    return;
+                }
+                clueTotalCount++;
+                var clueHtml = '',titleHtml = '';
+                titleHtml += '<p class="clue-title">' + '<span class="title-tip">' + title + '</span>';
+                _.each(clueArr, (clueItem) => {
+                    clueHtml +=
+                        '<p class="clue-item" title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(_.get(clueItem,'id','')) + ')\'>' +
+                        '<span class=\'clue-item-name\'>' + _.get(clueItem,'name','') + '</span>' +
+                        '<span class=\'clue-detail\'>' +
+                        Intl.get('call.record.show.customer.detail', '查看详情') +
+                        '<i class=\'great-than\'>&gt;</i>' +
+                        '</span>' +
+                        '</p>';
+                });
+                tipContent = `<div>${clueHtml}</div>`;
+                var largerText = 0;
+                notificationUtil.showNotification({
+                    title: titleHtml,
+                    content: tipContent,
+                    type: 'clue',
+                    closeWith: ['button'],
+                    maxVisible: CLUE_MAX_NUM,//最多展示几个线索的提醒
+                    callback: { // 关闭的时候
+                        onClose: () => {
+                            //关闭之后，队列中还有几个未展示的提醒
+                            clueTotalCount > 0 && clueTotalCount--;
+                            var addtionClueCount = clueTotalCount - CLUE_MAX_NUM;//还未展示的线索提醒的数量
+                            if (addtionClueCount === 0){
+                                hasAddCloseBtn = false;
+                                $('#noty-quene-tip-container').remove();
+                            }else if(addtionClueCount > 0 && hasAddCloseBtn){
+                                var queueNum = $('#queue-num');
+                                if (queueNum) {
+                                    queueNum.text(addtionClueCount);
+                                }
                             }
                         }
-                    }
-                },
-            });
+                    },
+                });
 
-        }
-    }
-    //如果总共的数量超过3个，就需要展示关闭所有的按钮
-    //最好不要用noty的 queue的length来展示，因为如果有其他类型的，这个计数也许不准
-    var showNum = clueTotalCount - CLUE_MAX_NUM;
-    if (showNum > 0) {
-        var ulHtml = $('#noty_topRight_layout_container');
-        if (!hasAddCloseBtn) {
-            hasAddCloseBtn = true;
-            ulHtml.before(`<p id="noty-quene-tip-container">
+            }
+            //如果总共的数量超过3个，就需要展示关闭所有的按钮
+            //最好不要用noty的 queue的length来展示，因为如果有其他类型的，这个计数也许不准
+            var showNum = clueTotalCount - CLUE_MAX_NUM;
+            if (showNum > 0) {
+                var ulHtml = $('#noty_topRight_layout_container');
+                if (!hasAddCloseBtn) {
+                    hasAddCloseBtn = true;
+                    ulHtml.before(`<p id="noty-quene-tip-container">
             <span class="iconfont icon-warn-icon"></span>
 ${Intl.get('clue.show.no.show.tip', '还有{num}个新线索未展示 ', {num: `<span id="queue-num">${showNum}</span>`})}<a href="#" class="handle-btn-item" onclick='openAllClues()'>
 ${Intl.get('clue.customer.noty.all.list', '查看全部')}</a><a href="#" class="handle-btn-item" onclick='closeAllNoty()'>
 ${Intl.get('clue.close.all.noty', '关闭全部')}</a></p>`);
-        } else {
-            var queueNum = $('#queue-num');
-            if (queueNum) {
-                queueNum.text(showNum);
+                } else {
+                    var queueNum = $('#queue-num');
+                    if (queueNum) {
+                        queueNum.text(showNum);
+                    }
+                }
             }
         }
     }
+
 }
 
 //处理释放客户的数据
