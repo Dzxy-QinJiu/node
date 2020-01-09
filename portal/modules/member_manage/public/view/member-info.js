@@ -196,7 +196,6 @@ class MemberInfo extends React.Component {
         let curRole = _.find(roleList, role => role.roleId === member.role);
         let roleObj = {roleIds: [_.get(curRole, 'roleId')], roleNames: [_.get(curRole, 'roleName')]};
         if (_.isFunction(this.props.afterEditRoleSuccess)) {
-            this.props.afterEditRoleSuccess(member);
             MemberManageAction.updateMemberRoles(roleObj);
         } else {
             this.props.changeMemberFieldSuccess({...member, roleNames: _.get(roleObj, 'roleNames')});
