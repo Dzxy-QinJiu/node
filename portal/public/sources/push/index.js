@@ -608,6 +608,30 @@ function applyUpgradeListener(data) {
         }
     }
 }
+//升级完成弹窗
+function applyUpgradeCompleteListener(data) {
+    let isOpenPopUpNotify = getNotifyStatus();
+    if (_.isObject(data) && _.get(data.version_change_info,'upgrade_type') === 'trade') {
+        const title = Intl.get('payment.personal.upgrade.notice','个人用户升级通知');
+        const lead = data.lead.name || '';
+        const user = data.lead.app_user_info.name || '';
+        const time = getTimeStr(_.get(data.version_change_info,'apply_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+        const tipContent = time + ' ，' + Intl.get('payment.personal.upgrade','用户{user}（线索{lead}）付费升级为个人正式用户',{lead,user});
+        if (canPopDesktop()) {
+            //桌面通知的展示
+            showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
+        }else{
+            if(!isOpenPopUpNotify) {
+                return;
+            }
+            notificationUtil.showNotification({
+                title: title,
+                content: tipContent,
+                closeWith: ['button']
+            });
+        }
+    }
+}
 //线索名可点击
 window.handleLeadClickCallback = function(lead_id) {
     phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
@@ -915,6 +939,7 @@ function disconnectListener() {
         socketIo.off('applyVisitCustomerMsg', applyVisitCustomerListener);
         socketIo.off('crm_operator_alert_msg', crmOperatorAlertListener);
         socketIo.off('apply_upgrade', applyUpgradeListener);
+        socketIo.off('apply_upgrade_complete', applyUpgradeCompleteListener);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
     }
@@ -949,6 +974,8 @@ function startSocketIo() {
         socketIo.on('applyVisitCustomerMsg', applyVisitCustomerListener);
         //监听申请试用
         socketIo.on('apply_upgrade', applyUpgradeListener);
+        //监听升级成功
+        socketIo.on('apply_upgrade_complete', applyUpgradeCompleteListener);
         //监听后端消息
         phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         //如果接受到主动断开的方法，调用socket的断开
