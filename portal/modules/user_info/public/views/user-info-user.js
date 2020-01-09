@@ -19,7 +19,6 @@ import {paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import history from 'PUB_DIR/sources/history';
 import SavedTips from 'CMP_DIR/saved-tips';
 import DifferentVersion from 'MOD_DIR/different_version/public';
-import ApplyTry from 'MOD_DIR/apply_try/public';
 import privilegeConst_user_info from '../privilege-config';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
@@ -70,7 +69,6 @@ class UserInfo extends React.Component{
             endTime: '', // 到期时间
             changePhoneMsg: '',
             showDifferentVersion: false,//是否显示版本信息面板
-            applyTryShowMadal: true,//申请试用界面显示遮罩层
         };
     }
 
@@ -403,16 +401,9 @@ class UserInfo extends React.Component{
         });
     };
     //显示/隐藏版本信息面板
-    triggerShowVersionInfo = () => {
-        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
+    triggerShowVersionInfo = (isShowMadal = true) => {
+        paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {isShowMadal, versionKind: COMPANY_VERSION_KIND});
     };
-    //直接点击申请试用按钮
-    clickApplyTryBtn = () => {
-        this.setState({
-            showDifferentVersion: !this.state.showDifferentVersion, 
-            applyTryShowMadal: true
-        });
-    }
     handleContinueFn = (orderInfo) => {
         history.push('/leads');
     };
@@ -491,7 +482,7 @@ class UserInfo extends React.Component{
                         </Button>
                         <Button
                             className="user-version-upgrade"
-                            onClick={this.clickApplyTryBtn}
+                            onClick={this.triggerShowVersionInfo}
                             data-tracename="点击打开申请试用企业版"
                             type='primary'
                         >
@@ -512,7 +503,7 @@ class UserInfo extends React.Component{
                         </Button>  
                         <Button
                             className="user-version-upgrade"
-                            onClick={this.clickApplyTryBtn}
+                            onClick={this.triggerShowVersionInfo}
                             data-tracename="点击打开申请试用企业版"
                             type='primary'
                         >
@@ -871,7 +862,6 @@ class UserInfo extends React.Component{
                         ) : null
                     }
                 </div> : null}
-                {this.state.showDifferentVersion ? (<ApplyTry isShowMadal={this.state.applyTryShowMadal} hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
                 {/*<DifferentVersion*/}
                 {/*showFlag={this.state.showDifferentVersion}*/}
                 {/*closeVersion={this.triggerShowVersionInfo}*/}

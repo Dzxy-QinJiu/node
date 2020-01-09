@@ -289,7 +289,7 @@ class BasicPaymentMode extends React.Component {
         return (
             <RightPanelModal
                 className="payment-mode-wrapper"
-                isShowMadal={true}
+                isShowMadal={this.props.isShowMadal}
                 isShowCloseBtn={this.props.isShowCloseBtn}
                 onClosePanel={this.handleClickClose}
                 title={title}
@@ -308,6 +308,7 @@ BasicPaymentMode.defaultProps = {
     ],//支付渠道，【支付宝，微信，...】
     curOrderInfo: {},//当前订单信息
     isShowCloseBtn: true,//是否显示关闭按钮
+    isShowMadal: true,
     onPaymentSuccess: function() {},
     dealSubmitGoodInfo: function() {},
     onClosePanel: function() {},
@@ -316,6 +317,7 @@ BasicPaymentMode.propTypes = {
     payModeList: PropTypes.array,
     curOrderInfo: PropTypes.object,
     isShowCloseBtn: PropTypes.bool,
+    isShowMadal: PropTypes.bool,
     onPaymentSuccess: PropTypes.func,
     dealSubmitGoodInfo: PropTypes.func,
     onClosePanel: PropTypes.func,

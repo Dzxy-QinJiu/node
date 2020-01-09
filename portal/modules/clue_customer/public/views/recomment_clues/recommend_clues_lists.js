@@ -40,7 +40,6 @@ import BackMainPage from 'CMP_DIR/btn-back';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 import {leadRecommendEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DifferentVersion from 'MOD_DIR/different_version/public';
-import ApplyTry from 'MOD_DIR/apply_try/public';
 import {COMPANY_PHONE, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/utils/consts';
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
@@ -59,7 +58,6 @@ class RecommendCustomerRightPanel extends React.Component {
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             canClickExtract: true,//防止用户连续点击批量提取
             canClickMoreBatch: true,//防止用户连续点击换一批
-            showDifferentVersion: false,//是否显示版本信息面板
             ...clueCustomerStore.getState()
         };
     }
@@ -532,8 +530,8 @@ class RecommendCustomerRightPanel extends React.Component {
         });
     };
     //显示/隐藏版本信息面板
-    triggerShowVersionInfo = () => {
-        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
+    triggerShowVersionInfo = (isShowMadal = true) => {
+        paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {isShowMadal, versionKind: COMPANY_VERSION_KIND});
     };
     handleUpdateClues = (result) => {
         let count = _.get(result, 'count', 0);
@@ -998,7 +996,6 @@ class RecommendCustomerRightPanel extends React.Component {
                         hideFocusCustomerPanel={this.hideFocusCustomerPanel}
                         saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
                     /> : null}
-                {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
                 {/*<DifferentVersion*/}
                 {/*showFlag={this.state.showDifferentVersion}*/}
                 {/*closeVersion={this.triggerShowVersionInfo}*/}

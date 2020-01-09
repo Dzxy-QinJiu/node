@@ -97,7 +97,6 @@ var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitte
 import ClueExtract from 'MOD_DIR/clue_pool/public';
 import MoreButton from 'CMP_DIR/more-btn';
 import DifferentVersion from 'MOD_DIR/different_version/public';
-import ApplyTry from 'MOD_DIR/apply_try/public';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import RecommendClues from 'MOD_DIR/home_page/public/views/boot-process/recommend_clues';
 const EXTRACT_CLUE_STEPS = RecommendClues.EXTRACT_CLUE_STEPS;
@@ -161,7 +160,6 @@ class ClueCustomer extends React.Component {
             filterInputWidth: 210,//筛选输入框的宽度
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             showRecommendTips: !_.get(websiteConfig, oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS,false),
-            showDifferentVersion: false,//是否显示版本信息面板
             guideRecommendCondition: null,//引导设置的推荐线索的条件
             exportVisible: false,//导出线索显示popover
             //显示内容
@@ -709,8 +707,8 @@ class ClueCustomer extends React.Component {
         });
     };
     //显示/隐藏版本信息面板
-    triggerShowVersionInfo = () => {
-        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
+    triggerShowVersionInfo = (isShowMadal = true) => {
+        paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {isShowMadal, versionKind: COMPANY_VERSION_KIND});
     };
 
 
@@ -3180,7 +3178,6 @@ class ClueCustomer extends React.Component {
                                 }
                             </RightPanel> : null
                     }
-                    {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
                     {/*<DifferentVersion
                         showFlag={this.state.showDifferentVersion}
                         closeVersion={this.triggerShowVersionInfo}
