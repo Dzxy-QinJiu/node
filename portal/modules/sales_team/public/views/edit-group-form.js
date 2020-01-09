@@ -19,7 +19,7 @@ import Trace from 'LIB_DIR/trace';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 import salesTeamAjax from '../ajax/sales-team-ajax';
 import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
-
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 function noop() {
 }
 
@@ -135,6 +135,7 @@ var SalesTeamForm = createReactClass({
                         formData.isTeamSaving = false;
                         this.setState({formData: formData});
                         if (result.saveResult === 'success') {
+                            getMyTeamTreeAndFlattenList(null, true);
                             //保存成功后的处理
                             const salesTeam = this.props.salesTeam;
                             if (salesTeam && salesTeam.isEditGroup) {
@@ -167,6 +168,7 @@ var SalesTeamForm = createReactClass({
                         this.setState({formData: formData});
                         //添加成功后的处理
                         if (result.saveResult === 'success') {
+                            getMyTeamTreeAndFlattenList(null, true);
                             if (this.props.isAddRoot) {
                                 //添加根组织时的处理
                                 this.props.cancelSalesTeamForm();
