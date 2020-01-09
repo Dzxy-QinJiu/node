@@ -84,7 +84,9 @@ class Index extends React.Component {
                             })(<Input className='apply-try-content-componey-input'/>)}
                         </Form.Item>
                         <Form.Item label={Intl.get('common.name','姓名')} className='apply-try-content-componey' {...formLayout}>
-                            {getFieldDecorator('name', {})(<Input className='apply-try-content-componey-input'/>)}
+                            {getFieldDecorator('name', {
+                                rules: [nameLengthRule],
+                            })(<Input className='apply-try-content-componey-input'/>)}
                         </Form.Item> 
                         <Form.Item label={Intl.get('common.apply.try.user.scales','使用人数')} {...formLayout} require>
                             {getFieldDecorator('userScales', {
