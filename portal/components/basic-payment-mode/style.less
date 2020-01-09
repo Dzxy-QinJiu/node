@@ -5,14 +5,24 @@
 */
 @import "../../public/css/common-variables";
 @qrcode-bg-color: #F8F9FB;
-
+.payment-mode-wrapper{
+  .right-panel-modal-content{
+    background-color: #fff;
+    .right-panel-modal-title{
+      margin-bottom: 0;
+      border-bottom: none;
+      padding-bottom: 0;
+      font-size: 16px;
+    }
+  }
+}
 .basic-payment-mode-container{
-  padding: 16px 24px;
+  padding: 10px 24px 24px;
   //交易商品样式
   .order-info-container{
-    background-color: #fff;
+    background-color: @qrcode-bg-color;
     padding: 12px;
-    margin-bottom: 13px;
+    margin-bottom: 8px;
     .order-info-content{
       .order-info-item{
         font-size: 14px;
@@ -24,6 +34,7 @@
         .order-info-item--content{
           color: @title-color;
           vertical-align: middle;
+          font-weight: bold;
         }
       }
     }
@@ -32,8 +43,8 @@
   //支付二维码样式
   @basic-payment-qrcode: basic-payment-qrcode;
   .@{basic-payment-qrcode}-container{
-    background-color: #fff;
-    padding: 15px;
+    background-color: @qrcode-bg-color;
+    padding: 15px 15px 0;
     &.second-payment-mode{
       .ant-tabs-nav{
         width: 100%;
@@ -43,13 +54,24 @@
         }
       }
     }
+    .ant-tabs-bar{
+      margin-bottom: 0;
+    }
+    .@{basic-payment-qrcode}-wrapper{
+      text-align: center;
+      margin: 32px 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     .@{basic-payment-qrcode}-content{
       width: 128px;
       min-height: 128px;
-      margin: 24px auto;
+      //margin: 24px auto;
       padding: 16px;
       position: relative;
-      background-color: @qrcode-bg-color;
+      background-color: #fff;
       .@{basic-payment-qrcode}-box{
         width: 96px;
         height: 96px;
@@ -61,7 +83,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: @qrcode-bg-color;
+        background-color: #fff;
         opacity: 0.95;
         color: @title-color;
         font-size: 12px;
@@ -74,6 +96,15 @@
           font-size: 16px;
           color: @import_data_warn_color;
         }
+      }
+    }
+    .basic-payment-price{
+      font-size: 24px;
+      font-weight: 400;
+      color: @version-basic-color;
+      margin-left: 15px;
+      .basic-payment-num{
+        font-size: 32px;
       }
     }
     .qrcode-loading{

@@ -264,11 +264,14 @@ class BasicPaymentMode extends React.Component {
                             this.props.payModeList.map(mode => {
                                 return (
                                     <TabPane tab={mode.name} disabled={this.state.qrCodeUrlLoading} key={mode.type}>
-                                        <div className="basic-payment-qrcode-content">
-                                            <div className="basic-payment-qrcode-box" id="basic-payment-qrcode-box">
-                                                {this.state.payMode === mode.type && !this.state.qrCodeUrlLoading ? this.renderPayContent() : null}
+                                        <div className="basic-payment-qrcode-wrapper">
+                                            <div className="basic-payment-qrcode-content">
+                                                <div className="basic-payment-qrcode-box" id="basic-payment-qrcode-box">
+                                                    {this.state.payMode === mode.type && !this.state.qrCodeUrlLoading ? this.renderPayContent() : null}
+                                                </div>
+                                                {this.renderLoadingAndErrMsgBlock()}
                                             </div>
-                                            {this.renderLoadingAndErrMsgBlock()}
+                                            <div className="basic-payment-price">￥<span className="basic-payment-num">{curOrderInfo.total_fee}</span></div>
                                         </div>
                                     </TabPane>
                                 );

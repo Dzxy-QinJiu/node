@@ -77,7 +77,7 @@
     display: block;
     background-color: #fff;
     border-radius: 4px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     .icon-huanying{
       color: @welcome-icon-color;
       width: 16px;
@@ -108,9 +108,9 @@
         color: @title-color;
       }
       .@{boot-complete}-step-label{
-        font-size: 18px;
+        font-size: 20px;
         color: @label-content-color;
-        margin-bottom: 12px;
+        margin-bottom: 16px;
         .current-step{
           color: @title-color;
         }
@@ -118,15 +118,27 @@
           margin: 0 6px;
         }
       }
+      .ant-input{
+        margin-bottom: 0!important;
+        height: 48px;
+        font-size: 16px!important;
+      }
+      .ant-form-explain{
+        font-size: 14px;
+      }
     }
     .@{boot-complete}-step-content{
       width: 682px;
-      padding: 23px;
+      padding: 24px;
       background: #fff;
       box-shadow: 0 0 15px 0 @CLICK-BLUE;
       border-radius: 4px;
       .no-data-icon-tip-container{
         height: auto;
+      }
+      .ant-form .ant-form-item{
+        padding-right: 0;
+        margin-bottom: 0;
       }
     }
     //步骤一
@@ -289,6 +301,9 @@
         .area-selector-container{
           display: block!important;
           margin-top: 5px;
+          .address-prov{
+            margin-bottom: 16px;
+          }
           .ant-tabs{
             position: relative;
           }
@@ -298,9 +313,12 @@
             padding: 0 30px;
             font-size: 16px;
             margin-right: 8px;
-            line-height: 35px!important;
-            height: 35px;
+            line-height: 40px!important;
+            height: 40px;
             margin-bottom: 8px;
+          }
+          .ant-tabs-tab{
+            font-size: 16px;
           }
           .ant-tabs-content{
             max-height: 234px;
@@ -327,15 +345,19 @@
         .input-arrow{
           margin-bottom: 10px;
         }
+        .ant-input{
+          margin-bottom: 16px;
+        }
       }
     }
     //按钮样式
     .btn-container{
       .ant-btn{
         font-size: 16px;
-        height: 32px;
+        height: 48px;
         min-width: 96px;
         margin: 0!important;
+        padding: 0 47px;
       }
       .button-cancel{
         float: left;
