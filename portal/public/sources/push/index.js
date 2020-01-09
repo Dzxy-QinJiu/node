@@ -176,7 +176,7 @@ window.closeAllNoty = function() {
 window.openAllClues = function(){
     history.push('/leads', {refreshClueList: true});
 };
-//是自己提取的线索不用发右侧的通知
+//是自己提取的线索
 function isExtractByMe(data) {
     return _.includes(CLUEEXTRACTTYPE, _.get(data,'type')) && _.get(data,'operator_id','') === userData.getUserData().user_id;
 }
