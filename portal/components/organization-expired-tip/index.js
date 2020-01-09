@@ -21,7 +21,7 @@ const REMIND_DAYS = {
 class OrganizationExipreTip extends React.PureComponent {
 
     state = {
-        visible: true,
+        visible: false,
         endTime: 0,
     };
 
