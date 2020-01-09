@@ -218,7 +218,7 @@ var userInfoRestApis = {
     getOrganizationInfoById: '/rest/base/v1/realm/organization',
     getGuideConfig: '/rest/base/v1/user/member/guide',
     getAreaByPhone: baseUrl + '/rest/es/v2/es/phone_location/:phone',
-    getWebsiteConfig: '/rest/base/v1/user/website/config',
+    getWebsiteConfig: '/rest/base/v1/user/website/config'
 };
 
 exports.getPrivileges = getPrivileges;
