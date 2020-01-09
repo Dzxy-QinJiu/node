@@ -1288,7 +1288,7 @@ exports.timeShowFormat = (time,format) => {
 
 // 是否显示公告未读信息
 exports.isShowUnReadNotice = () => {
-    const websiteConfig = _.get(userData.getUserData(), 'websiteConfig.personnel_setting');
+    const websiteConfig = getLocalWebsiteConfig() || {};
     return _.get(websiteConfig, 'last_upgrade_notice_time', 0) > _.get(websiteConfig, 'show_notice_time', 0);
 };
 

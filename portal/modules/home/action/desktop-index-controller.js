@@ -104,10 +104,6 @@ exports.getUserData = function(req, res) {
                 user.workFlowConfigs = data.workFlowConfigs;//配置过的流程列表
                 user.guideConfig = data.guideConfig;//引导流程
                 user.phone = data.phone;
-                // 最近一次升级公告的时间
-                const lastUpgradeNoticeTime = _.get(data, 'upgradeNotice.list[0].create_date', 0);
-                let personnelSetting = _.get(data, 'websiteConfig.personnel_setting'); // 网址个性化
-                personnelSetting.last_upgrade_notice_time = lastUpgradeNoticeTime;
                 user.websiteConfig = data.websiteConfig;
                 req.session.user.nickname = data.nick_name;
                 req.session.save(function() {

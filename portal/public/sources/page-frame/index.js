@@ -64,30 +64,35 @@ class PageFrame extends React.Component {
         personalPaymentParamObj: {},
     };
 
+    getLastUpgradeNoticeList() {
+        getUpgradeNoticeList({
+            application_id: _.get(window, 'Oplate.clientId'),
+            page_size: 1,
+            page_num: 1
+        }).then((result) => {
+            const websiteConfig = getLocalWebsiteConfig() || {};
+            let lastUpgradeNoticeTime = _.get(result, 'list[0].create_date', 0); // 最新发布公告的时间
+            let showNoticeTime = _.get(websiteConfig, 'show_notice_time', 0);
+            setWebsiteConfig({last_upgrade_notice_time: lastUpgradeNoticeTime});
+            // 公告发布时间大于查看时间时，需要显示提示信息
+            if (lastUpgradeNoticeTime > showNoticeTime) {
+                clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, true);
+            }
+        });
+    }
+
     getLastNoticeTimer = null;
 
-    getLastUpgradeNoticeList() {
+    pollingGetNotice() {
         if(this.getLastNoticeTimer) clearInterval(this.getLastNoticeTimer);
         this.getLastNoticeTimer = setInterval(() => {
-            getUpgradeNoticeList({
-                application_id: _.get(window, 'Oplate.clientId'),
-                page_size: 1,
-                page_num: 1
-            }).then((result) => {
-                const websiteConfig = getLocalWebsiteConfig() || {};
-                let lastUpgradeNoticeTime = _.get(result, 'list[0].create_date', 0); // 最新发布公告的时间
-                let showNoticeTime = _.get(websiteConfig, 'show_notice_time', 0);
-                setWebsiteConfig({last_upgrade_notice_time: lastUpgradeNoticeTime});
-                // 公告发布时间大于查看时间时，需要显示提示信息
-                if (lastUpgradeNoticeTime > showNoticeTime) {
-                    clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, true);
-                }
-            });
+            this.getLastUpgradeNoticeList();
         }, NOTICE_INTERVAL_TIME);
     }
 
     componentDidMount() {
-        this.getLastUpgradeNoticeList(); // 获取最新的升级公告
+        this.getLastUpgradeNoticeList();
+        this.pollingGetNotice(); // 轮询获取公告信息
         this.setContentHeight();
         Trace.addEventListener(window, 'click', Trace.eventHandler);
         //打开拨打电话面板的事件监听

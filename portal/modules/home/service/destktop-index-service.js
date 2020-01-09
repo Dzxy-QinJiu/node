@@ -51,11 +51,6 @@ exports.getUserInfo = function(req, res, userId) {
     var emitter = new EventEmitter();
     //with_extentions:去掉额外信息的获取，只取基本信息，这样速度快
     var queryObj = {with_extentions: false};
-    // 获取用户公告参数
-    const noticeQueryObj = {
-        application_id: _.get(global.config, 'loginParams.clientId'),
-        page_size: 1,
-        page_num: 1};
     //获取登录用户的基本信息
     let getUserBasicInfo = getDataPromise(req, res, userInfoRestApis.getUserInfo, {userId: userId}, queryObj);
     //获取登录用户的角色信息
@@ -64,9 +59,7 @@ exports.getUserInfo = function(req, res, userId) {
     let getUserGuideCOnfigs = getDataPromise(req, res, userInfoRestApis.getGuideConfig);
     //获取网站个性化设置
     let getWebsiteConfig = getDataPromise(req, res, userInfoRestApis.getWebsiteConfig);
-    // 获取用户的公告信息
-    let getUserNotice = getDataPromise(req, res, userInfoRestApis.getUserNotice, '', noticeQueryObj);
-    let promiseList = [getUserBasicInfo, getUserRole, getUserGuideCOnfigs, getWebsiteConfig, getUserNotice];
+    let promiseList = [getUserBasicInfo, getUserRole, getUserGuideCOnfigs, getWebsiteConfig];
     let userPrivileges = getPrivileges(req);
     //是否有获取所有团队数据的权限
     let hasGetAllTeamPrivilege = userPrivileges.indexOf(publicPrivilegeConst.GET_TEAM_LIST_ALL) !== -1;
@@ -94,22 +87,20 @@ exports.getUserInfo = function(req, res, userId) {
             userData.guideConfig = _.get(resultList,'[2].successData',[]);
             //网站个性化
             userData.websiteConfig = _.get(resultList, '[3].successData', {});
-            // 升级公告
-            userData.upgradeNotice = _.get(resultList, '[4].successData', []);
             //是否是普通销售
             if (hasGetAllTeamPrivilege) {//管理员或运营人员，肯定不是普通销售
                 userData.isCommonSales = false;
                 //已经配置过的流程
                 if(hasWorkFlowPrivilege){
-                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[5].successData', []));
+                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[4].successData', []));
                 }
 
             } else {//普通销售、销售主管、销售总监等，通过我所在的团队及下级团队来判断是否是普通销售
-                let teamTreeList = _.get(resultList, '[5].successData', []);
+                let teamTreeList = _.get(resultList, '[4].successData', []);
                 userData.isCommonSales = getIsCommonSalesByTeams(userData.user_id, teamTreeList);
                 //已经配置过的流程
                 if(hasWorkFlowPrivilege){
-                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[6].successData', []));
+                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[5].successData', []));
                 }
             }
             emitter.emit('success', userData);
@@ -228,7 +219,6 @@ var userInfoRestApis = {
     getGuideConfig: '/rest/base/v1/user/member/guide',
     getAreaByPhone: baseUrl + '/rest/es/v2/es/phone_location/:phone',
     getWebsiteConfig: '/rest/base/v1/user/website/config',
-    getUserNotice: '/rest/base/v1/application/upgrade/notice',
 };
 
 exports.getPrivileges = getPrivileges;
