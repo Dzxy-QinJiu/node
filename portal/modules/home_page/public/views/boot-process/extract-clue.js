@@ -785,14 +785,14 @@ class ExtractClues extends React.Component {
             moreDataTip = (
                 <div>
                     {Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以')}
-                    <a onClick={this.getRecommendLists}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
+                    <a data-tracename="点击换一批按钮" onClick={this.getRecommendLists}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
                 </div>
             );
         }else {
             moreDataTip = (
                 <div>
                     {Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以')}
-                    <a onClick={this.props.handleBackClick}>{Intl.get('clue.customer.condition.change', '修改条件')}</a>
+                    <a data-tracename="点击修改推荐条件" onClick={this.props.handleBackClick}>{Intl.get('clue.customer.condition.change', '修改条件')}</a>
                     {Intl.get('lead.recommend.change.condition', '再试试')}
                 </div>
             );
@@ -813,7 +813,7 @@ class ExtractClues extends React.Component {
             return (
                 <div>
                     <AntcDropdown
-                        datatraceContainer='首页批量立即提取线索'
+                        datatraceContainer='批量提取线索'
                         ref={ref => this['changeSales'] = ref}
                         content={
                             <Button
@@ -884,7 +884,7 @@ class ExtractClues extends React.Component {
             'change-new-icon-rotation': !this.state.canClickMoreBatch
         });
         return (
-            <div className="extract-clues-wrapper" data-tracename="批量提取线索操作面板">
+            <div className="extract-clues-wrapper" data-tracename="线索推荐操作面板">
                 <div className="extract-clues-title-wrapper">
                     <div className="extract-clues-title">
                         <span>{Intl.get('clue.customer.clue.recommend', '线索推荐')}</span>

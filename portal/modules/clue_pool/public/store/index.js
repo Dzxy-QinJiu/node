@@ -146,7 +146,7 @@ class CluePoolStore {
     setCurrentClueId(id) {
         if (id) {
             this.currentId = id;
-            let curClue = _.find(this.curClueLists, clue => {
+            let curClue = _.find(this.curClueList, clue => {
                 return clue.id === id;
             });
             if (curClue) {

@@ -207,6 +207,7 @@ class CRMAddForm extends React.Component {
             formData.app_user_ids = PropsFormData.app_user_ids;
         }
 
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '保存新建客户的信息');
         //去除表单数据中值为空的项
         commonMethodUtil.removeEmptyItem(formData, true);
         function afterAddCustomer(result, _this) {
@@ -275,12 +276,23 @@ class CRMAddForm extends React.Component {
             let contact = _.get(this.state.formData.contacts,'[0]');
             if(contact) {
                 let curContactRef = this[`form${contact.uid}Ref`];
-                let phone = curContactRef.state.formData.phone;
+                let curContactFormData = curContactRef.state.formData;
+                let phone = curContactFormData.phone;
                 if(phone) {
                     let phoneValue = curContactRef.props.form.getFieldValue('phone' + phone[0].id);
-                    if(!phoneValue) {
-                        curContactRef.props.form.setFieldsValue({
-                            ['phone' + phone[0].id]: result.tel
+                    let tels = _.get(result, 'tel', '').split(';');
+                    if(!phoneValue && tels.length > 0) {
+                        _.each(tels, (tel, index) => {
+                            if(index === 0) {
+                                phone[0].value = tel;
+                            }else {
+                                phone.push({id: uuid(), value: tel});
+                            }
+                        });
+                        curContactRef.setState({formData: curContactFormData}, () => {
+                            curContactRef.props.form.setFieldsValue({
+                                ['phone' + phone[0].id]: _.get(tels,'[0]','')
+                            });
                         });
                     }
                 }

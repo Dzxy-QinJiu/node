@@ -119,12 +119,12 @@ class ClueExtract extends React.Component {
         if (!tasks.length) {
             return;
         }
-        let curClueLists = this.state.cluePoolList;
+        let curClueList = this.state.cluePoolList;
         let clueArr = _.map(tasks, 'taskDefine');
         // 遍历每一个线索
         _.each(clueArr, (clueId) => {
             //如果当前线索是需要更新的线索，才更新
-            let target = _.find(curClueLists, item => item.id === clueId);
+            let target = _.find(curClueList, item => item.id === clueId);
             if (target) {
                 this.updateItem(target);
             }

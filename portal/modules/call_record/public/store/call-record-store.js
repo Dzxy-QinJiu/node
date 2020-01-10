@@ -149,7 +149,17 @@ SalesCallRecordStore.prototype.getRecommendPhoneList = function(result) {
                 } );
             }
             if(result.searchInputVal){//将输入项作为下拉选项中的第一项
-                list.unshift({key: result.searchInputVal, value: 0});
+                let searchObj = {key: result.searchInputVal, value: 0};
+                //输入项在推荐列表里已存在，需过滤掉
+                list = _.filter(list, item => {
+                    if(item.key === result.searchInputVal) {
+                        searchObj.value = item.value;
+                        return false;
+                    }
+                    return true;
+                });
+
+                list.unshift(searchObj);
             }
             this.recommendList.list = list;
         }
