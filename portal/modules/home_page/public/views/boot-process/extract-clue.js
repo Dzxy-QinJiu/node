@@ -26,7 +26,6 @@ import { formatSalesmanList, checkCurrentVersionType, checkVersionAndType } from
 import { getMaxLimitExtractClueCount, updateGuideMark } from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
 import DifferentVersion from 'MOD_DIR/different_version/public';
-import ApplyTry from 'MOD_DIR/apply_try/public';
 import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon } from 'PUB_DIR/sources/utils/consts';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 
@@ -510,12 +509,14 @@ class ExtractClues extends React.Component {
     //个人试用升级为正式版
     handleUpgradePersonalVersion = () => {
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            isShowModal: false,//是否显示个人版界面遮罩层
+            isShowLeadModal: false,//是否显示购买线索量遮罩层
             showDifferentVersion: this.triggerShowVersionInfo
         });
     };
     //显示/隐藏版本信息面板
-    triggerShowVersionInfo = () => {
-        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
+    triggerShowVersionInfo = (isShowModal = true) => {
+        paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {isShowModal, versionKind: COMPANY_VERSION_KIND});
     };
     handleUpdateClues = (result) => {
         let count = _.get(result, 'count', 0);
@@ -529,7 +530,7 @@ class ExtractClues extends React.Component {
     };
     //增加线索量
     handleClickAddClues = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL);
+        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL, {isShowModal: false});
     };
 
     //该线索前的checkbox不可用
@@ -926,7 +927,6 @@ class ExtractClues extends React.Component {
                         {this.renderRecommendLists()}
                     </GeminiScrollbar>
                 </div>
-                {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
                 {/*<DifferentVersion*/}
                 {/*showFlag={this.state.showDifferentVersion}*/}
                 {/*closeVersion={this.triggerShowVersionInfo}*/}

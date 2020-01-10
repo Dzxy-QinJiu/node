@@ -235,7 +235,7 @@ const HOCGoodsBuy = (options = {}) => {
                     return (
                         <RightPanelModal
                             className={cls}
-                            isShowMadal={true}
+                            isShowMadal={_.get(this.props.paramObj, 'isShowModal', true)}
                             isShowCloseBtn={this.state.isShowCloseBtn}
                             title={title}
                             onClosePanel={this.onClosePanel}
@@ -245,6 +245,7 @@ const HOCGoodsBuy = (options = {}) => {
                     );
                 }else {
                     return <BasicPaymentMode
+                        isShowModal={_.get(this.props.paramObj, 'isShowModal', true)}
                         payModeList={this.state.payModeList}
                         curOrderInfo={this.state.curOrderInfo}
                         dealSubmitGoodInfo={this.dealSubmitGoodInfo}
