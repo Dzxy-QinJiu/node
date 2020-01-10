@@ -1241,6 +1241,7 @@ const MemberList = createReactClass({
                         updateMemberStatus={this.updateMemberStatus}
                         afterEditTeamSuccess={this.afterEditTeamSuccess}
                         afterEditPositionSuccess={this.afterEditPositionSuccess}
+                        afterEditRoleSuccess={() => {}}
                         isGetMemberDetailLoading={this.state.isGetMemberDetailLoading}
                         roleList={this.props.roleList}
                     />) : null}
