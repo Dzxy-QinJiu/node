@@ -992,14 +992,14 @@ class ClueCustomer extends React.Component {
         //没有选中的线索，再根据radio的选择不同导出该筛选条件下或者是全部的线索
         var reqData = {};
         if(this.hasSelectedClues()){
-            reqData = _.cloneDeep(this.getClueSearchCondition(true, true));
+            reqData = this.getClueSearchCondition(true, true);
             //然后再在query中加id字段
             var selectCluesIds = _.map(_.get(this, 'state.selectedClues'),'id');
             reqData.bodyParam.query.id = selectCluesIds.join(',');
         }else{
             var isGetAll = this.state.exportRange === 'all';
-            reqData = isGetAll ? _.cloneDeep(this.getClueSearchCondition(true, true)) : _.cloneDeep(this.getClueSearchCondition(true,false));
-            //线索的状态不作为筛选的条件
+            reqData = isGetAll ? this.getClueSearchCondition(true, true) : this.getClueSearchCondition(true,false);
+            //线索的状态和线索是否有效不作为导出线索的限制条件
             reqData.bodyParam.query.status = '';
             delete reqData.bodyParam.query.availability;
         }
