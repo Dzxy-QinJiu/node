@@ -35,25 +35,14 @@
 
         .apply-try-content-title{
             font-size: 16px;
-            margin: 15px 0 20px 25px;
-            height: 28px;
-            font-weight: 600;
+            margin: 25px 0 25px 24px;
+            height: 16px;
+            font-weight: bold;
+            color: #333;
         }
         .apply-try-content-componey{
-            margin-left: 22px;
-            .ant-form-item-required::before{
-                content:'';
-            }
             .ant-form-item-required::after{
                 content:'';
-            }
-            span{
-                margin: 10px;
-                font-size: 14px;
-                color: rgba(0, 0, 0, 0.65);
-            }
-            .apply-try-content-componey-input{
-                width: 360px !important;
             }
             .ant-form-item-label{
                 font-size:14px;
@@ -61,30 +50,51 @@
                 font-weight: 500;
             }
         }
-        .apply-try-content-use-number-wrapper{
-            margin:10px 10px 10px 25px;
-            >span{
-                width:56px;
-                height:13px;
-                font-size:14px;
-                color: #999;
-                font-weight: 500;
-            }
-            .apply-try-content-use-number{
-                margin: 0 2px 0;
-                width: 87px;
-                font-size: 14px;
-            }
-            .apply-try-content-use-number:first-of-type{
-                margin: 0 2px 0 12px !important;
-                font-size: 14px;
-            }
-            .active-number{
-                border:1px solid rgba(33,150,243,1);
-                background:rgba(228,242,254,1);
-                color:rgba(33,150,243,1);
+        .ant-form-item{
+            margin-left: 13px;
+            .ant-form-item-label{
+                label::after{
+                    content:''
+                }
             }
         }
+        .ant-form-item-control-wrapper{
+            .ant-form-item-control {
+                input{
+                    width: 368px;
+                }
+            }
+            
+        }
+        .ant-radio-button-wrapper{
+            border-radius: 4px;
+            margin: 0 0 0 4px;
+            border: 1px solid #d9d9d9;
+            width: 89px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 400;
+            padding: 0;
+            &::before{
+                width: 0;
+            }
+            &.ant-radio-button-wrapper-checked{
+                border-color:#108ee9;
+                background-color: #E4F2FE;
+                border-left: 0;
+            }
+            &.ant-radio-button-wrapper-checked::before{
+                width: 0;
+            }
+            &:first-of-type{
+                margin: 0;
+                border-left: 1px solid #d9d9d9 !important;
+            }
+            &:first-of-type.ant-radio-button-wrapper-checked{
+                border-left: 1px solid #108ee9 !important;
+            }
+        }
+
         .apply-try-content-apply-btn-wrapper{
             width: 100%;
             text-align: center;
@@ -92,34 +102,13 @@
             .apply-try-content-apply-btn{
                 font-size: 20px;
                 padding: 4px 40px;
-                font-weight: 700;
-                width:90%;
+                width:91%;
                 height: 48px;
-                background-color: rgb(239,164,77);
+                background-color: #EFA246;
                 border: 0;
-            }
-            .active-try-content-apply-btn{
-                background-color: rgb(228,242,253);
             }
         }
         
-    }
-    .apply-try-success-wrapper{
-        padding: 100px 0;
-        text-align: center;
-
-        .apply-try-success-title{
-            font-size: 18px;
-        }
-        .apply-try-success-content{
-            font-size: 14px;
-            color: #ccc;
-        }
-    }
-    .apply-try-content-warning{
-        width: 100%;
-        text-align: center;
-        color: rgb(237,70,48);
     }
     .alert-timer{
         position: relative;
