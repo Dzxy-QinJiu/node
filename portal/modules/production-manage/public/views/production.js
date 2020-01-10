@@ -846,7 +846,7 @@ class Production extends React.Component {
                     }
                     <DetailCard content={foundTime}/>
                     {
-                        hasPrivilege(userManagePrivilege.USER_QUERY) ? (
+                        hasPrivilege(userManagePrivilege.USER_QUERY) && _.get(this.props.info,'integration_type') ? (
                             <DetailCard
                                 title={this.renderDetailTitle()}
                                 content={this.renderDetailIpList()}
