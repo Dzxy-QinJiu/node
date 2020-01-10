@@ -164,6 +164,8 @@ class ClueCustomer extends React.Component {
             showDifferentVersion: false,//是否显示版本信息面板
             guideRecommendCondition: null,//引导设置的推荐线索的条件
             exportVisible: false,//导出线索显示popover
+            dropList: [],//无效原因下拉框内容
+            visibleDrop: false,//是否显示无效原因下拉框
             //显示内容
             ...clueCustomerStore.getState()
         };
@@ -1393,6 +1395,11 @@ class ClueCustomer extends React.Component {
             return;
         }
         let invalidReason = _.trim(this.state.submitReason);
+        let dropList = this.state.dropList;
+        if(_.indexOf(dropList,invalidReason) < 0){ //将值存储入无效下拉框内
+            dropList.push(invalidReason);
+            this.setState({dropList});
+        }
         if (!invalidReason) {
             this.setState({
                 submitInvalidateClueMsg: Intl.get('clue.invalid.reason.not.empty', '无效原因不能为空')
@@ -1443,6 +1450,21 @@ class ClueCustomer extends React.Component {
         }
     };
 
+    onClickMenu = ({item}) => {
+        this.setState({
+            submitReason: item.props.value,
+            visibleDrop: false
+        });
+        if (this['invalidateClueChange']) {
+            this['invalidateClueChange'].focus();
+        }
+    }
+    handleDropDownVisibleChange = (flag) => {
+        this.setState({
+            visibleDrop: flag
+        });
+    }
+
     //渲染确认无效输入框
     renderInvalidInput = (salesClueItem) => {
         //点击增加按钮 补充跟进记录
@@ -1452,6 +1474,9 @@ class ClueCustomer extends React.Component {
             });
         };
         let invalidBtnSize = !_.get(this.state, 'showFilterList') ? 'default' : 'small';
+        let menu = <Menu onClick={this.onClickMenu}>{this.state.dropList.map((item, idx) => {
+            return (<Menu.Item key={idx} value={item}>{item}</Menu.Item>);
+        })}</Menu>;
         return (
             <div className="edit-invalid-trace-content">
                 {this.state.submitInvalidateClueMsg ? (
@@ -1465,11 +1490,15 @@ class ClueCustomer extends React.Component {
                         />
                     </div>
                 ) : null}
-                <TextArea ref={invalidateClueChange => this['invalidateClueChange' + salesClueItem.id] = invalidateClueChange}
-                    onScroll={event => event.stopPropagation()}
-                    placeholder={Intl.get('clue.describe.invalid.reason', '请描述一下无效原因')}
-                    onChange={this.handleInvalidateInputChange}
-                />
+                <Dropdown overlay={menu} trigger={['click']} onVisibleChange={this.handleDropDownVisibleChange}
+                    visible={this.state.visibleDrop}>
+                    <TextArea ref={invalidateClueChange => this['invalidateClueChange' + salesClueItem.id] = invalidateClueChange}
+                        onScroll={event => event.stopPropagation()}
+                        placeholder={Intl.get('clue.describe.invalid.reason', '请描述一下无效原因')}
+                        onChange={this.handleInvalidateInputChange}
+                        value={this.state.submitReason}
+                    />
+                </Dropdown>
                 <div className="save-cancel-btn">
                     <Button type='primary' onClick={this.handleInvalidateBtn.bind(this, salesClueItem)}
                         size={invalidBtnSize}
