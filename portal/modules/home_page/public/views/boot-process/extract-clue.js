@@ -812,7 +812,7 @@ class ExtractClues extends React.Component {
             return (
                 <div>
                     <AntcDropdown
-                        datatraceContainer='批量立即提取线索'
+                        datatraceContainer='批量提取线索'
                         ref={ref => this['changeSales'] = ref}
                         content={
                             <Button
