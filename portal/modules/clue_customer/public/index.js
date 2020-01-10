@@ -58,6 +58,7 @@ import {
     SIMILAR_CUSTOMER,
     NEED_MY_HANDLE,
     isCommonSalesOrPersonnalVersion,
+    isSalesOrPersonnalVersion,
     freedCluePrivilege,
     deleteCluePrivilege,
     deleteClueIconPrivilege,
@@ -162,6 +163,7 @@ class ClueCustomer extends React.Component {
             showRecommendTips: !_.get(websiteConfig, oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS,false),
             showDifferentVersion: false,//是否显示版本信息面板
             guideRecommendCondition: null,//引导设置的推荐线索的条件
+            exportVisible: false,//导出线索显示popover
             //显示内容
             ...clueCustomerStore.getState()
         };
@@ -567,6 +569,10 @@ class ClueCustomer extends React.Component {
                 clueImportTemplateFormShow: true
             });
         } else if(e.key === 'export') {
+            let currentVersionType = checkCurrentVersionType();
+            if(currentVersionType.trial) {
+                return false;
+            }
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-anlysis-handle-btns'), '点击下拉中的导出线索按钮');
             this.showExportClueModal();
         } else if(e.key === 'clue_pool') {
@@ -592,7 +598,7 @@ class ClueCustomer extends React.Component {
                 {
                     addCluePrivilege() ?
                         <Dropdown overlay={menu} overlayClassName="norm-add-dropdown" placement="bottomCenter">
-                            <Button className="ant-btn ant-btn-primary manual-add-btn">
+                            <Button className="ant-btn manual-add-btn">
                                 <Icon type="plus" className="add-btn"/>
                                 {(this.state.addType === 'start') ? (Intl.get('crm.sales.add.clue', '添加线索')) : (
                                     (this.state.addType === 'add') ? Intl.get('crm.sales.manual_add.clue', '手动添加') :
@@ -651,7 +657,7 @@ class ClueCustomer extends React.Component {
                         visible={!_.isNil(this.state.hasExtractCount) && !this.state.hasExtractCount && this.state.showRecommendTips}
                         overlayClassName="clue-recommend-tips explain-pop"
                     >
-                        <Button onClick={this.showClueRecommendTemplate} className="btn-item" data-tracename="点击线索推荐按钮">
+                        <Button onClick={this.showClueRecommendTemplate} className="btn-item ant-btn-primary" data-tracename="点击线索推荐按钮">
                             <i className="iconfont icon-clue-recommend"></i>
                             <span className="clue-container">
                                 {Intl.get('clue.customer.clue.recommend', '线索推荐')}
@@ -731,7 +737,7 @@ class ClueCustomer extends React.Component {
         return(
             <div className="export-clue-customer-container pull-right">
                 {currentVersionType.trial ?
-                    (<Popover content={tips} trigger="click" overlayClassName="explain-pop">
+                    (<Popover content={tips} trigger="click" visible={this.state.exportVisible} onVisibleChange={this.handleVisibleChange.bind(this, currentVersionType)} overlayClassName="explain-pop">
                         <Button className="btn-item">
                             <i className="iconfont icon-export-clue"></i>
                             <span className="clue-container">
@@ -986,13 +992,16 @@ class ClueCustomer extends React.Component {
         //没有选中的线索，再根据radio的选择不同导出该筛选条件下或者是全部的线索
         var reqData = {};
         if(this.hasSelectedClues()){
-            reqData = _.cloneDeep(this.getClueSearchCondition(true, true));
+            reqData = this.getClueSearchCondition(true, true);
             //然后再在query中加id字段
             var selectCluesIds = _.map(_.get(this, 'state.selectedClues'),'id');
             reqData.bodyParam.query.id = selectCluesIds.join(',');
         }else{
             var isGetAll = this.state.exportRange === 'all';
             reqData = isGetAll ? this.getClueSearchCondition(true, true) : this.getClueSearchCondition(true,false);
+            //线索的状态和线索是否有效不作为导出线索的限制条件
+            reqData.bodyParam.query.status = '';
+            delete reqData.bodyParam.query.availability;
         }
         const params = {
             page_size: 10000,
@@ -1576,7 +1585,7 @@ class ClueCustomer extends React.Component {
         //如果选中了待我审批状态，就不展示已转化
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
         return <span className={clueStatusCls}>
-            {isCommonSalesOrPersonnalVersion() ? null : <span className={willDistCls} data-tracename='点击待分配tab'
+            {isSalesOrPersonnalVersion() ? null : <span className={willDistCls} data-tracename='点击待分配tab'
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)}
                 title={getCertainTabsTitle(SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
                 <span ref={dom => {this.$willDistribute = dom;}} className="clue-status-num">{_.get(statics, 'willDistribute', 0)}</span>
@@ -2277,8 +2286,12 @@ class ClueCustomer extends React.Component {
             );
         }
         else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueLists.length) {
-            //总的线索不存在并且没有筛选条件时
-            var showAddBtn = !this.state.allClueCount && this.hasNoFilterCondition() && addCluePrivilege();
+            var statics = this.state.agg_list;
+            var showAddBtn = (
+                !this.state.allClueCount //总的线索不存在
+                || (this.isWillTraceStatusTabActive() && _.get(statics, 'willTrace', 0) === 0)) //如果当前选中的是待跟进且待跟进没有数值的时候
+                && this.hasNoFilterCondition() //没有筛选条件
+                && addCluePrivilege();//有添加线索的权限
             return (
                 <NoDataAddAndImportIntro
                     renderOtherOperation={this.renderOtherOperation}
@@ -2812,7 +2825,20 @@ class ClueCustomer extends React.Component {
 
     };
 
+    handleVisibleChange = (currentVersionType, visible) => {
+        if(currentVersionType.trial && checkCurrentVersion().personal) {//是个人试用，直接展示购买界面
+            this.setState({exportVisible: visible}, () => {
+                this.handleUpgradePersonalVersion();
+            });
+        }else {
+            this.setState({exportVisible: visible});
+        }
+    };
+
     topBarDropList = (isWebMin) => {
+        let currentVersionType = checkCurrentVersionType();
+        let tips = this.getExportClueTips();
+        let exportText = Intl.get('clue.export.clue.list','导出线索');
         return (<Menu onClick={this.handleMenuSelectClick.bind(this)}>
             {isWebMin && addCluePrivilege() ?
                 <Menu.Item key="add" >
@@ -2825,7 +2851,11 @@ class ClueCustomer extends React.Component {
                 </Menu.Item>
                 : null}
             <Menu.Item key="export" >
-                {Intl.get('clue.export.clue.list','导出线索')}
+                {currentVersionType.trial ? (
+                    <Popover placement="left" content={tips} trigger="click" visible={this.state.exportVisible} onVisibleChange={this.handleVisibleChange.bind(this, currentVersionType)} overlayClassName="explain-pop">
+                        {exportText}
+                    </Popover>
+                ) : exportText}
             </Menu.Item>
             {freedCluePrivilege() ?
                 <Menu.Item key="clue_pool">

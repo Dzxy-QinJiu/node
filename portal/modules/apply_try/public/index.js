@@ -13,7 +13,7 @@ class Index extends React.Component {
         successFlag: false,
         userScales: '',
         saveResult: '',
-        notShowLoading: true,
+        showLoading: false,
     }
 
     static propTypes = {
@@ -30,7 +30,7 @@ class Index extends React.Component {
             if(!this.state.notShowLoading) return;
             const user_scales = _.filter(userScales, ele => ele.key === values.userScales)[0].value;
             this.setState({
-                notShowLoading: false
+                showLoading: true
             });
             (this.props.versionKind && values.company) &&
             applyTryAjax.postApplyTry({
@@ -42,12 +42,12 @@ class Index extends React.Component {
             },() => {
                 this.setState({
                     successFlag: true,
-                    notShowLoading: true
+                    showLoading: false
                 });
             },() => {
                 this.setState({
                     saveResult: 'error',
-                    notShowLoading: true
+                    showLoading: false
                 });
             });
         });
@@ -103,7 +103,7 @@ class Index extends React.Component {
                             <Button className='apply-try-content-apply-btn' 
                                 type="primary" 
                                 data-tracename='申请试用'
-                                loading={!this.state.notShowLoading}
+                                loading={this.state.showLoading}
                                 onClick={this.handleApplyClick}>{Intl.get('home.page.apply.type','申请')}</Button>
                         </div>
                     </Form>

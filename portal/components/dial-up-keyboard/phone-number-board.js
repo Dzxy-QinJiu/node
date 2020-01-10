@@ -4,8 +4,8 @@
  * Created by wangliping on 2019/4/18.
  */
 require('./phone-number-board.less');
-import {Button, Popover, Input, Icon, message} from 'antd';
-import {handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
+import {Button, Input, Icon, message} from 'antd';
+import {handleCallOutResult, getOrganizationCallFee}from 'PUB_DIR/sources/utils/common-data-util';
 import {isTelephone} from 'PUB_DIR/sources/utils/validate-util';
 //拨号键对应的数组
 const phoneNumArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
@@ -85,14 +85,25 @@ class PhoneNumberBoard extends React.Component {
     dialPhoneNumber = () => {
         let phoneNumber = this.state.inputNumber;
         if (phoneNumber && !Oplate.isCalling) {
-            //先去掉电话号码的验证
-            // if (isTelephone(phoneNumber)) {
-            handleCallOutResult({
-                phoneNumber: phoneNumber,//拨打的电话
+            getOrganizationCallFee().then((result) => {
+                let callFee = _.get(result, 'call_fee', 0); // 当前话费
+                let accountBalance = _.get(result, 'account_balance', 0);
+                // 当前话费大于等于组织余额时，标识已经欠费
+                if (callFee >= accountBalance) {
+                    message.warn(Intl.get('common.call.owe.tips', '您的电话号码已欠费，请充值后再试！'));
+                } else {
+                    //先去掉电话号码的验证
+                    // if (isTelephone(phoneNumber)) {
+                    handleCallOutResult({
+                        phoneNumber: phoneNumber,//拨打的电话
+                    });
+                    // } else {
+                    //     message.error(Intl.get('phone.call.error.tip', '电话号码错误！'));
+                    // }
+                }
+            }, () => {
+                message.error(Intl.get('crm.call.phone.failed', '拨打失败'));
             });
-            // } else {
-            //     message.error(Intl.get('phone.call.error.tip', '电话号码错误！'));
-            // }
         }
     };
     hangUpPhone = (callClient) => {
@@ -133,8 +144,14 @@ class PhoneNumberBoard extends React.Component {
                             </Button>);
                     })}
                 </div>
-                <Button type='primary' className={phoneBtnWrap} onClick={isRonglianCalling && callClient.needShowAnswerView() ? this.hangUpPhone.bind(this, callClient) : this.dialPhoneNumber}>
-                    <i className={phonePopIcon}/></Button>
+                <Button
+                    type='primary'
+                    className={phoneBtnWrap}
+                    onClick={isRonglianCalling && callClient.needShowAnswerView() ?
+                        this.hangUpPhone.bind(this, callClient) : this.dialPhoneNumber}
+                >
+                    <i className={phonePopIcon}/>
+                </Button>
             </div>);
     }
 }

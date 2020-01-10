@@ -3890,6 +3890,8 @@ var en_US = {
     'payment.upgrade.personal.version.success': 'You have been upgraded to the personal version, you can extract {count} clues every month!',//您已升级为个人正式版，每月可提取{count}条线索啦！
     'payment.contact.us': 'Contact us {contact}',//联系我们请拨打{contact}
     'payment.add.leads.tip': 'If the quantity of clues is insufficient, {addBtn}',//如果线索量不够用，可另外{addBtn}
+    'payment.personal.upgrade.notice': 'Personal upgrade notice',//个人用户升级通知
+    'payment.personal.upgrade': 'User {user} (lead {lead}) paid to upgrade to official version',//用户{user}（线索{lead}）付费升级为个人正式用户
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/

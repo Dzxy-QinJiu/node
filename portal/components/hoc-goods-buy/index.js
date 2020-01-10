@@ -176,13 +176,9 @@ const HOCGoodsBuy = (options = {}) => {
                                     <div className="goods-content">
                                         {super.render()}
                                     </div>
-                                    {
-                                        this.state.isGetGoodsLoading ? null : (
-                                            <div className="order-submit-btn">
-                                                <Button disabled={this.state.isCreateOrdering} loading={this.state.isCreateOrdering} type="primary" size="large" onClick={this.handlePlaceOrder}>{Intl.get('goods.immediate.payment', '立即支付')}</Button>
-                                            </div>
-                                        )
-                                    }
+                                    <div className="order-submit-btn">
+                                        <Button disabled={this.state.isCreateOrdering} loading={this.state.isCreateOrdering} type="primary" size="large" onClick={this.handlePlaceOrder}>{Intl.get('goods.immediate.payment', '立即支付')}</Button>
+                                    </div>
                                 </GeminiScrollbar>
                             </div>
                         </div>

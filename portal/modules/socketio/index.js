@@ -117,6 +117,9 @@ function clueUnhandledNumListener(data) {
         });
     }else if (cluemsgObj.type === 'apply_upgrade_complete') {
         //升级完成
+        _.each(cluemsgObj.user_ids, user_id => {
+            emitMsgBySocket(user_id, 'apply_upgrade_complete', pushDto.applyTryMsgToFrontend(cluemsgObj));
+        });
     }else{
         emitMsgBySocket(cluemsgObj && cluemsgObj.user_id, 'cluemsg', pushDto.clueMsgToFrontend(cluemsgObj));
     }

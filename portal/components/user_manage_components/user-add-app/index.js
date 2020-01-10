@@ -12,8 +12,6 @@ import {USER_TYPE_VALUE_MAP, CONFIG_TYPE} from 'PUB_DIR/sources/utils/consts';
 import {getHalfAMonthTime,getMilliseconds,getMillisecondsYesterdayEnd} from 'CMP_DIR/date-selector/utils';
 import GeminiScrollBar from '../../react-gemini-scrollbar';
 import AppConfigSetting from '../app-config-setting';
-// import ApplyUserAppConfig from '../../apply-user-app-config';
-import AppConfigForm from '../../apply-user-app-config/app-config-form';
 import DefaultUserLogoTitle from '../../default-user-logo-title';
 import UserAppConfig from '../../../modules/app_user_manage/public/views/v3/AppPropertySetting';
 import {getConfigAppType} from 'PUB_DIR/sources/utils/common-method-util';
@@ -44,6 +42,7 @@ class UserAddApp extends React.Component {
             isShowAppSelector: true, //  默认在选择应用面板,
             selectedAppIds: [], // 选择应用id
             defaultSettings: props.defaultSettings,
+            searchValue: '', // 应用搜索框的值，默认为空
             formData: {
                 //正式、试用
                 user_type: USER_TYPE_VALUE_MAP.TRIAL_USER,
@@ -180,20 +179,25 @@ class UserAddApp extends React.Component {
     // 选择应用界面，点击确认按钮
     handleFinishSelectApp = () => {
         let selectedAppIds = this.state.selectedAppIds;
+        let appList = this.props.appList;
         //检验通过了，切换到下一步
-        const selectedApps = selectedAppIds.map(id => this.state.currentAppList.find(x => x.app_id === id));
+        const selectedApps = selectedAppIds.map(id => appList.find(x => x.app_id === id));
         this.setState({
             selectedApps: selectedApps,
-            isShowAppSelector: false
+            isShowAppSelector: false,
+            currentAppList: appList,
+            searchValue: '',
         }, () => {
             this.handleSetConfigType(selectedAppIds, selectedApps);
         });
     }
     handleInputChange(event) {
         const keyWords = event.target.value;
-        setTimeout(() => {
+        this.setState({
+            searchValue: keyWords
+        }, () => {
             this.filterApps(keyWords);
-        }, 100);
+        });
     }
     // 过滤产品
     filterApps(keyWords) {
@@ -211,6 +215,7 @@ class UserAddApp extends React.Component {
             <div className="app-selector-container">
                 <div className="input-container">
                     <Input
+                        value={this.state.searchValue}
                         onChange={this.handleInputChange.bind(this)}
                         placeHolder={Intl.get('user.detail.tip.searchApp', '输入关键字自动搜索')}
                     />
