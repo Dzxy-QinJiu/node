@@ -1455,8 +1455,8 @@ class ClueCustomer extends React.Component {
             submitReason: item.props.value,
             visibleDrop: false
         });
-        if (this['invalidateClueChange']) {
-            this['invalidateClueChange'].focus();
+        if (this['invalidateClueChange' + this.state.isInvalidateItem.id]) {
+            this['invalidateClueChange' + this.state.isInvalidateItem.id].focus();
         }
     }
     handleDropDownVisibleChange = (flag) => {
