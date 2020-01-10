@@ -247,7 +247,7 @@ class CometingProduct extends React.Component {
                                     onFocus={this.resetCompetingProductFlags}
                                     addonAfter={
                                         isLoading ?
-                                            <Icon type="loading" style={{marginLeft: 12}}/> :
+                                            <Icon type="loading"/> :
                                             <Icon type="plus" onClick={this.handleSubmit}/>
                                     }
                                 />
