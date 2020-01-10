@@ -162,7 +162,7 @@ class PurchaseLeads extends React.Component{
                 _this.onClosePanel();
             },
             goFn: () => {
-                history.push('/user-preference',{
+                history.push('/user-preference/info',{
                     show_pay_record: true
                 });
                 _this.onClosePanel();
