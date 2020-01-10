@@ -285,7 +285,8 @@ ClueCustomerStore.prototype.getApplyTryData = function(result) {
             applyTryCompany: applyTryData.company,
             applyTryTime: applyTryData.create_time,
             applyTryUserScales: applyTryData.user_scales,
-            applyTryKind: applyTryData.apply_version_info.kind
+            applyTryKind: applyTryData.apply_version_info.kind,
+            applyTryName: applyTryData.applicant_name
         };
     }
 };
