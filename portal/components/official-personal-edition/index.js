@@ -78,7 +78,6 @@ class OfficialPersonalEdition extends React.Component{
             this.organization = result;
         });
         this.getPayModeAndGoodsList();
-        this.onPaymentSuccess()
     }
 
     //获取支付渠道和商品列表
