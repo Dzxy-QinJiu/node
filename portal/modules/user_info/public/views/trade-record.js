@@ -103,12 +103,13 @@ class TradeRecord extends React.Component {
             width: '20%',
             render: (text, record) => {
                 let type = _.get(text, 'type');
+                let name = _.get(text, 'name');
+                let num = _.get(record, 'goods_num');
+                let unit = type && _.has(TRACE_UNIT, type) ? TRACE_UNIT[type] : '';
+                let detail = name + num + unit;
                 return (
                     <div className="order-detail">
-                        {_.get(text, 'name')}{_.get(record, 'goods_num')}
-                        {
-                            type && _.has(TRACE_UNIT, type) ? TRACE_UNIT[type] : ''
-                        }
+                        {detail}
                     </div>
                 );
             }
