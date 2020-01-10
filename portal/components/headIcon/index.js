@@ -102,28 +102,28 @@ class HeadIcon extends React.Component {
                             onMouseEnter={this.handleMouseEnter}
                             onMouseLeave={this.handleMouseLeave}
                         >
-                            {
-                                this.state.isChangeImageFlag ? (
-                                    <div
-                                        className="upload-img-container"
-                                        title={Intl.get('common.image.upload.size','请上传小于100KB的图片')}
-                                    >
-                                        <div className="change-img-container">
+                            <div className="upload-img-container">
+                                <div className="change-img-container">
+                                    {
+                                        this.state.isChangeImageFlag ? (
                                             <span>
                                                 {Intl.get('common.upload.img.change','更改')}
                                             </span>
-                                            <input
-                                                className="upload-img-select"
-                                                type="file"
-                                                name="imgUpload"
-                                                data-tracename="上传头像"
-                                                onChange={this.uploadImg}
-                                                accept="image/*"
-                                            />
-                                        </div>
-                                    </div>
-                                ) : this.renderHeadImg(headIcon)
-                            }
+                                        ) : (
+                                            this.renderHeadImg(headIcon)
+                                        )
+                                    }
+                                    <input
+                                        title={Intl.get('common.image.upload.size','请上传小于100KB的图片')}
+                                        className="upload-img-select"
+                                        type="file"
+                                        name="imgUpload"
+                                        data-tracename="上传头像"
+                                        onChange={this.uploadImg}
+                                        accept="image/*"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     ) : (
                         <div className="cirle-image">
@@ -150,4 +150,3 @@ HeadIcon.propTypes = {
 };
 
 module.exports = HeadIcon;
-
