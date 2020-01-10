@@ -71,8 +71,8 @@ class OrganizationExipreTip extends React.PureComponent {
         });
     };
     //显示/隐藏版本信息面板
-    triggerShowVersionInfo = (isShowMadal = true) => {
-        paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {isShowMadal, versionKind: COMPANY_VERSION_KIND});
+    triggerShowVersionInfo = (isShowModal = true) => {
+        paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {isShowModal, versionKind: COMPANY_VERSION_KIND});
     };
     handleContinueFn = (orderInfo) => {
         history.push('/leads');

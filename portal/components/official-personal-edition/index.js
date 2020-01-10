@@ -78,6 +78,7 @@ class OfficialPersonalEdition extends React.Component{
             this.organization = result;
         });
         this.getPayModeAndGoodsList();
+        this.onPaymentSuccess()
     }
 
     //获取支付渠道和商品列表
@@ -241,7 +242,7 @@ class OfficialPersonalEdition extends React.Component{
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击增加线索量');
         this.onClosePanel();
         paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL, {
-            isShowMadal: _.get(this.props.paramObj, 'isShowLeadMadal', true),
+            isShowModal: _.get(this.props.paramObj, 'isShowLeadModal', true),
             continueFn: () => {
                 history.push('/leads');
             }
