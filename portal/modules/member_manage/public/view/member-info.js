@@ -96,12 +96,6 @@ class MemberInfo extends React.Component {
             this.getUserData(this.state.memberInfo);
             this.getPositionList(); // 获取职务列表
         });
-        let userBasicDetail = this.state.userBasicDetail;
-        if (userBasicDetail.id) {
-            //获取用户的详情
-            MemberManageAction.setUserLoading(true);
-            MemberInfoAction.getCurUserById(userBasicDetail);
-        }
     }
 
     getPositionList = () => {
