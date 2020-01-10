@@ -27,7 +27,7 @@ class Index extends React.Component {
     handleApplyClick = () => {
         this.props.form.validateFields((err,values) => {
             if(err) return;
-            if(!this.state.notShowLoading) return;
+            if(this.state.showLoading) return;
             const user_scales = _.filter(userScales, ele => ele.key === values.userScales)[0].value;
             this.setState({
                 showLoading: true
