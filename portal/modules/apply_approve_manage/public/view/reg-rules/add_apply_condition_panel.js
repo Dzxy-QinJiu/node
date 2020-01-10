@@ -94,6 +94,11 @@ class AddApplyConditionPanel extends React.Component {
         var target = _.find(CONDITION_KEYS, item => item.value.indexOf(conditionType) > -1);
         return target;
     };
+    hasAddThisTypeCondition = (type) => {
+        var diffConditionLists = this.state.diffConditionLists;
+        var limitRules = _.get(diffConditionLists, 'limitRules');
+        return _.find(limitRules, limit => limit.limitType === type);
+    };
     getDiffTypeComponents = () => {
         var applySaveForm = this.state.applySaveForm;
         var applyType = _.get(this, 'props.applyTypeData.type');
@@ -108,30 +113,33 @@ class AddApplyConditionPanel extends React.Component {
             descriptionTip = Intl.get('user.duration', '时长');
             showInnerCondition = true;
         } else if (isShowMoneyRange) {
-            componentType = ALL_COMPONENTS.TIMEPERIOD;
-            descriptionTip = Intl.get('user.duration', '时长');
-            showInnerCondition = true;
+            // componentType = ALL_COMPONENTS.TIMEPERIOD;
+            // descriptionTip = Intl.get('user.duration', '时长');
+            // showInnerCondition = true;
         }
+        console.log(showInnerCondition);
         //保存的已经添加的表单，是个数组
         //任何流程都要展示选一批人这个筛选条件
         var menus = <Menu>{
             //如果是内置的出差流程或者是请假流程，要加上时长的判断
-            showInnerCondition ? <Menu.Item>
-                <a onClick={this.handleAddConditionType.bind(this, componentType)}>{descriptionTip}</a>
-            </Menu.Item> :
+            showInnerCondition ?
+                this.hasAddThisTypeCondition(componentType + '_limit') ? null : <Menu.Item>
+                    <a onClick={this.handleAddConditionType.bind(this, componentType)}>{descriptionTip}</a>
+                </Menu.Item> :
                 _.map(applySaveForm, (item) => {
                     var component_type = item.subComponentType || item.component_type;
                     var target = this.getConditionRelate(component_type);
-                    if (target) {
+                    if (target && !this.hasAddThisTypeCondition(_.get(target,'value'))) {
                         return <Menu.Item>
                             <a onClick={this.handleAddConditionType.bind(this, component_type)}>{_.get(target, 'name')}</a>
                         </Menu.Item>;
                     }
                 })
         }
-        <Menu.Item>
+        {this.hasAddThisTypeCondition(ALL_COMPONENTS.USERSEARCH + '_limit') ? null : <Menu.Item>
             <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.USERSEARCH)}>{Intl.get('apply.approve.select.one.batch.person', '选择一批人')}</a>
-        </Menu.Item>
+        </Menu.Item> }
+
         </Menu>;
         return menus;
     };
@@ -147,13 +155,14 @@ class AddApplyConditionPanel extends React.Component {
     };
     deleteConditionType = (deleteType) => {
         var diffConditionLists = this.state.diffConditionLists;
-        var limitRules = _.filter(_.get(diffConditionLists, 'limitRules'), (item) => item.type !== deleteType);
+        var limitRules = _.filter(_.get(diffConditionLists, 'limitRules'), (item) => item.limitType !== deleteType);
         //如果所有条件都删除完了，要展示添加的提示
-        if (_.get(limitRules, 'length')) {
+        if (!_.get(limitRules, 'length')) {
             this.setState({
                 showAddConditionForm: false
             });
         }
+        diffConditionLists.limitRules = limitRules;
         this.setState({
             diffConditionLists
         });
@@ -332,7 +341,10 @@ class AddApplyConditionPanel extends React.Component {
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('condition_qualifily')(
-                                            _this.state.showAddConditionForm ? _this.renderDiffTypeConditions() : _this.renderDiffCondition()
+                                            <div>
+                                                {_this.state.showAddConditionForm ? _this.renderDiffTypeConditions() : null}
+                                                {_this.renderDiffCondition()}
+                                            </div>
                                         )}
                                     </FormItem>
                                     <div className="submit-button-container">
