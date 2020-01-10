@@ -15,7 +15,7 @@ import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES} from 'PUB_DIR/sources/utils/consts';
-import {hasCalloutPrivilege, isCurtao, checkVersionAndType, isShowUnReadNotice} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasCalloutPrivilege, isCurtao, checkVersionAndType, isShowUnReadNotice, isShowSystemTab} from 'PUB_DIR/sources/utils/common-method-util';
 import {phoneEmitter, notificationEmitter, userInfoEmitter, phoneMsgEmitter, clickUpgradeNoiceEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
@@ -384,6 +384,24 @@ var NavSidebar = createReactClass({
         event.stopPropagation();
         this.props.toggleNotificationPanel(this.state.isUnReadNotice);
     },
+
+    handleClickNoticeSubMenu(noticeType, event) {
+        event.stopPropagation();
+        notificationEmitter.emit(notificationEmitter.CLICK_SYSTEM_NOTICE, noticeType);
+        if (noticeType === 'notice') {
+            this.toggleUpgradeNotice(false);
+        }
+    },
+    
+    renderNoticeSubMenu() {
+        return (
+            <div>
+                <a onClick={this.handleClickNoticeSubMenu.bind(this, 'system')}>{Intl.get('menu.notification', '通知')}</a>
+                <a onClick={this.handleClickNoticeSubMenu.bind(this, 'notice')}>{Intl.get('rightpanel_notice','公告')}</a>
+            </div>
+        );
+    },
+
     //渲染通知菜单
     getNotificationBlock: function() {
         let notification = menuUtil.getMenuById(MENU.NOTE);
@@ -403,7 +421,21 @@ var NavSidebar = createReactClass({
                     dot={this.state.isUnReadNotice}
                     onClick={this.toggleNotificationPanel}
                 >
-                    <i className={noticeCls} title={notification.name}/>
+                    {
+                        isShowSystemTab() ? (
+                            <Popover
+                                content={this.renderNoticeSubMenu()}
+                                trigger="hover"
+                                placement="rightBottom"
+                                overlayClassName="nav-sidebar-notification"
+                            >
+                                <i className={noticeCls} title={notification.name}/>
+                            </Popover>
+                        ) : (
+                            <i className={noticeCls} title={notification.name}/>
+                        )
+                    }
+
                 </Badge>
             </div>
         );

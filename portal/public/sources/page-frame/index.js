@@ -194,9 +194,13 @@ class PageFrame extends React.Component {
         });
     }
 
-    showNotificationPanel = () => {
+    showNotificationPanel = (type) => {
         this.setState({
             isShowNotificationPanel: true
+        }, () => {
+            if (type) {
+                notificationEmitter.emit(notificationEmitter.CLICK_SUBMENU_NOTICE_TYPE, type);
+            }
         });
     }
 
