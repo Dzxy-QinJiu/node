@@ -253,7 +253,7 @@ class CustomerRecycleBin extends React.Component {
                     customerList: customerList || [],
                     totalSize: totalSize > 0 ? totalSize : 0
                 });
-                if(totalSize > 20 && customerList.length < 20){ //当线索总数大于20，但当前展示不足20时
+                if(totalSize > 20 && customerList.length < 20){ //当客户总数大于20，但当前展示不足20时
                     this.getRecycleBinCustomers();
                 }
             },
@@ -282,7 +282,7 @@ class CustomerRecycleBin extends React.Component {
                     customerList: customerList || [],
                     totalSize: totalSize > 0 ? totalSize : 0
                 });
-                if(totalSize > 20 && customerList.length < 20){ //当线索总数大于20，但当前展示不足20时
+                if(totalSize > 20 && customerList.length < 20){ //当客户总数大于20，但当前展示不足20时
                     this.getRecycleBinCustomers();
                 }
             },
