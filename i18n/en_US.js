@@ -3933,6 +3933,10 @@ var en_US = {
     'versions.feature.data.import': 'Data import',//数据导入
     'versions.feature.office.management': 'Office management',//职务管理
     'versions.feature.rechecking': 'rechecking',//查重
+    'versions.less.than.five': 'less than 5',//小于5人
+    'versions.between.six.and.ten': '6-10',//6-10人
+    'versions.between.eleven.and.twenty': '11-20',//11-20人
+    'versions.more.than.twenty': 'more than 20',//大于20人
     /*版本信息 --- end */
 
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/

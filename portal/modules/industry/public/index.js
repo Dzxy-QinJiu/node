@@ -179,6 +179,7 @@ class Industry extends React.Component {
         const { getFieldDecorator } = this.props.form;
         const name = Intl.get('common.industry', '行业');
         const addErrMsg = this.state.addErrMsg;
+        let isLoading = (this.state.isAddloading === 0);
         return (
             <div className='condition-operator'>
                 <div className='pull-left'>
@@ -196,20 +197,14 @@ class Industry extends React.Component {
                                     placeholder={Intl.get('crm.basic.add.industry', '添加行业')}
                                     onPressEnter={this.handleSubmit}
                                     onFocus={this.resetIndustryFlags}
+                                    addonAfter={
+                                        isLoading ?
+                                            <Icon type="loading"/> :
+                                            <Icon type="plus" onClick={this.handleSubmit}/>
+                                    }
                                 />
                             )}
                         </FormItem>
-                        <Button
-                            className='add-btn'
-                            onClick={this.handleSubmit}
-                            disabled={this.state.isAddloading === 0}
-                        >
-                            <Icon type="plus" />
-                            {
-                                this.state.isAddloading === 0 ?
-                                    <Icon type="loading" style={{marginLeft: 12}}/> : null
-                            }
-                        </Button>
                     </Form>
                     {
                         addErrMsg ? (
