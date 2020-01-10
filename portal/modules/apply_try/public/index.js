@@ -20,7 +20,7 @@ class Index extends React.Component {
         hideApply: PropTypes.func,
         versionKind: PropTypes.string,
         form: PropTypes.object,
-        isShowMadal: PropTypes.bool,
+        isShowModal: PropTypes.bool,
         versionKindName: PropTypes.string
     }
 
@@ -131,7 +131,7 @@ class Index extends React.Component {
             width='300'
             onClosePanel={this.handleClose}
             dataTracename='申请试用界面'
-            isShowMadal={this.props.isShowMadal}
+            isShowMadal={this.props.isShowModal}
             isShowCloseBtn={true}/>;
     }
     render() {
@@ -141,7 +141,7 @@ class Index extends React.Component {
     }
 }
 Index.defaultProps = {
-    isShowMadal: true,
+    isShowModal: true,
     versionKindName: Intl.get('versions.enterprise','企业版'),
     versionKind: 'enterprise',
     hideApply: function(){}

@@ -222,7 +222,7 @@ class OfficialPersonalEdition extends React.Component{
     handleUpgradeEnterprise = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击申请试用企业版');
         if(_.isFunction(this.props.paramObj.showDifferentVersion)) {
-            this.props.paramObj.showDifferentVersion();
+            this.props.paramObj.showDifferentVersion(false);
             // this.onClosePanel();
         }
     };
@@ -241,6 +241,7 @@ class OfficialPersonalEdition extends React.Component{
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击增加线索量');
         this.onClosePanel();
         paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL, {
+            isShowModal: _.get(this.props.paramObj, 'isShowLeadModal', true),
             continueFn: () => {
                 history.push('/leads');
             }
