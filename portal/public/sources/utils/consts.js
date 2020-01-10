@@ -744,8 +744,22 @@ export const TIMERANGEUNIT = {
     YEAR: 'Y',
     CUSTOM: 'custom'
 };
+
+// 交易类型
+export const TRACE_TYPE = {
+    PERSONAL: 'curtao_personal', // 个人版
+    CLUE: 'clue', // 线索
+};
+
+// 交易需要显示的单位
+export const TRACE_UNIT = {
+    [TRACE_TYPE.PERSONAL]: Intl.get('user.apply.detail.delay.month.show', '个月'), // 个人版
+    [TRACE_TYPE.CLUE]: Intl.get('clues.leads.part', '份'), // 线索
+};
+
 export const CLUE_MESSAGE_TYPE = {
     BASE_EXTRACT_ALLOT: 'base_extract_allot',//推荐线索提取的类型
     POOL_EXTRACT_ALLOT: 'pool_extract_allot'//线索池提取的线索类型
 };
 export const CLUE_EXTRACT_TYPE = [CLUE_MESSAGE_TYPE.BASE_EXTRACT_ALLOT,CLUE_MESSAGE_TYPE.POOL_EXTRACT_ALLOT];
+
