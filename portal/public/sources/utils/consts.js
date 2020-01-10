@@ -744,3 +744,15 @@ export const TIMERANGEUNIT = {
     YEAR: 'Y',
     CUSTOM: 'custom'
 };
+
+// 交易类型
+export const TRACE_TYPE = {
+    PERSONAL: 'curtao_personal', // 个人版
+    CLUE: 'clue', // 线索
+};
+
+// 交易需要显示的单位
+export const TRACE_UNIT = {
+    [TRACE_TYPE.PERSONAL]: Intl.get('user.apply.detail.delay.month.show', '个月'), // 个人版
+    [TRACE_TYPE.CLUE]: Intl.get('clues.leads.part', '份'), // 线索
+};

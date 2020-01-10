@@ -8,6 +8,7 @@ import { AntcTable } from 'antc';
 import Spinner from 'CMP_DIR/spinner';
 import userInfoAjax from '../ajax/user-info-ajax';
 import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
+import {TRACE_UNIT} from 'PUB_DIR/sources/utils/consts';
 import NoData from 'CMP_DIR/no-data';
 import LoadDataError from 'CMP_DIR/load-data-error';
 
@@ -101,9 +102,13 @@ class TradeRecord extends React.Component {
             dataIndex: 'goods',
             width: '20%',
             render: (text, record) => {
+                let type = _.get(text, 'type');
                 return (
                     <div className="order-detail">
-                        {_.get(text, 'name')} * {_.get(record, 'goods_num')}
+                        {_.get(text, 'name')}{_.get(record, 'goods_num')}
+                        {
+                            type && _.has(TRACE_UNIT, type) ? TRACE_UNIT[type] : ''
+                        }
                     </div>
                 );
             }
