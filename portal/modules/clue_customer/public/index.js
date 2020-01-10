@@ -998,7 +998,10 @@ class ClueCustomer extends React.Component {
             reqData.bodyParam.query.id = selectCluesIds.join(',');
         }else{
             var isGetAll = this.state.exportRange === 'all';
-            reqData = isGetAll ? this.getClueSearchCondition(true, true) : this.getClueSearchCondition(true,false);
+            reqData = isGetAll ? _.cloneDeep(this.getClueSearchCondition(true, true)) : _.cloneDeep(this.getClueSearchCondition(true,false));
+            //线索的状态不作为筛选的条件
+            reqData.bodyParam.query.status = '';
+            delete reqData.bodyParam.query.availability;
         }
         const params = {
             page_size: 10000,

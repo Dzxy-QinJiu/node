@@ -294,7 +294,7 @@ class ClueFilterPanel extends React.Component {
                     } else {
                         FilterAction.setFilterClueClassify( _.get(item,'data'));
                     }
-                }else if (item.groupId === 'clue_province'){
+                }else if (item.groupId === 'province'){
                     //线索地域
                     var provinceList = _.get(item,'data');
                     _.forEach(provinceList,(item) => {
