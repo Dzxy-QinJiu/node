@@ -319,6 +319,49 @@ class CurtaoAnalysis extends React.Component {
         );
     }
 
+    //获取默认应用id
+    getDefaultAppId(arg = {}) {
+        let defaultAppId = [];
+
+        //上次选中的应用id
+        const storedAppId = storageUtil.local.get(STORED_APP_ID_KEY);
+
+        //当前页是否只能选择单个产品
+        const isCanOnlySelectSingleApp = this.state.currentPage.isCanOnlySelectSingleApp;
+
+        if (storedAppId) {
+            if (storedAppId === 'all') {
+                if (isCanOnlySelectSingleApp) {
+                    defaultAppId = [_.get(Store.appList, '[1].app_id')];
+                } else {
+                    defaultAppId = [storedAppId];
+                }
+            } else {
+                defaultAppId = storedAppId.split(',');
+
+                defaultAppId = _.filter(defaultAppId, id => {
+                    return _.find(Store.appList, app => app.app_id === id);
+                });
+
+                if (_.isEmpty(defaultAppId)) {
+                    defaultAppId = [_.get(Store.appList, '[1].app_id')];
+                }
+            }
+        } else {
+            if (isCanOnlySelectSingleApp) {
+                defaultAppId = [_.get(Store.appList, '[1].app_id')];
+            } else {
+                defaultAppId = ['all'];
+            }
+        }
+
+        if (arg.returnString) {
+            defaultAppId = defaultAppId.join(',');
+        }
+
+        return defaultAppId;
+    }
+
     //处理二级菜单点击事件
     handleMenuClick(menuIndex, groupIndex, pageIndex) {
         const group = _.get(this.state.groups, '[' + groupIndex + ']');
@@ -355,22 +398,7 @@ class CurtaoAnalysis extends React.Component {
             adjustConditions = conditions => {
                 deleteCallDeviceTypeCondition(conditions);
 
-                let defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY);
-
-                //当前页是否只能选择单个产品
-                const isCanOnlySelectSingleApp = this.state.currentPage.isCanOnlySelectSingleApp;
-        
-                if (defaultAppId) {
-                    if (isCanOnlySelectSingleApp && defaultAppId === 'all') {
-                        defaultAppId = [_.get(Store.appList, '[1].app_id')];
-                    }
-                } else {
-                    if (isCanOnlySelectSingleApp) {
-                        defaultAppId = _.get(Store.appList, '[1].app_id');
-                    } else {
-                        defaultAppId = 'all';
-                    }
-                }
+                const defaultAppId = this.getDefaultAppId({returnString: true});
 
                 const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
                 _.set(appIdCondition, 'value', defaultAppId);
@@ -522,9 +550,6 @@ class CurtaoAnalysis extends React.Component {
     }
 
     render() {
-        //当前页是否只能选择单个产品
-        const isCanOnlySelectSingleApp = this.state.currentPage.isCanOnlySelectSingleApp;
-
         let appList = _.cloneDeep(Store.appList);
         //产品选择模式
         let appSelectMode = 'multiple';
@@ -537,23 +562,7 @@ class CurtaoAnalysis extends React.Component {
             appSelectMode = '';
         }
 
-        const storedAppId = storageUtil.local.get(STORED_APP_ID_KEY);
-
-        let defaultAppId;
-
-        if (storedAppId) {
-            defaultAppId = storedAppId.split(',');
-
-            if (isCanOnlySelectSingleApp && storedAppId === 'all') {
-                defaultAppId = [_.get(Store.appList, '[1].app_id')];
-            }
-        } else {
-            if (isCanOnlySelectSingleApp) {
-                defaultAppId = [_.get(Store.appList, '[1].app_id')];
-            } else {
-                defaultAppId = ['all'];
-            }
-        }
+        const defaultAppId = this.getDefaultAppId();
 
         return (
             <div className='curtao-analysis'>
