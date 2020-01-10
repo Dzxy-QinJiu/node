@@ -83,7 +83,7 @@ exports.CONDITION_KEYS = [
     {name: Intl.get('apply.condition.item.money', '金额'), value: 'money'},
     {name: Intl.get('apply.approve.select.one.batch.person', '选择一批人'), value: ALL_COMPONENTS.USERSEARCH + '_limit'
         ,conditionRule: function(item) {
-            item['conditionRule'] = '${user_range===' + item['userRangeRoute'] + '}';
+            item['conditionRule'] = '${user_range==\"' + item['userRangeRoute'] + '\"}';
             item['conditionPerson'] = item['userRange'];
             item['conditionRuleDsc'] = item['userRangeDsc'].join(',');
         }},

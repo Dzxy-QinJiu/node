@@ -39,7 +39,7 @@ class AddApplyConditionPanel extends React.Component {
                 limitRules: [],
             } : _.cloneDeep(this.props.updateConditionObj),//添加的条件审批数据
             applySaveForm: _.get(this, 'props.applyTypeData.customiz_form', []),
-            userList: [],//用户列表
+            userList: this.props.userList,//用户列表
             setting_users: {
                 selectUser: '',//选中的成员
                 showSelectUser: ''
@@ -48,37 +48,14 @@ class AddApplyConditionPanel extends React.Component {
     }
 
     componentDidMount() {
-        //获取用户列表
-        this.getUserList();
+
     }
-    getUserList = () => {
-        $.ajax({
-            url: '/rest/user',
-            dataType: 'json',
-            type: 'get',
-            data: {cur_page: 1},
-            success: (userListObj) => {
-                var rolesList = _.get(userListObj, 'roles');
-                _.forEach(rolesList, item => {
-                    var roleName = item.role_name;
-                    var target = _.find(ROLES_SETTING, levelItem => levelItem.name === roleName);
-                    if (target){
-                        item.save_role_value = target.value;
-                    }
-                });
-                this.setState({
-                    userList: _.get(userListObj, 'data'),
-                    roleList: _.filter(rolesList, item => item.save_role_value)//暂时把销售角色先去掉
-                });
-            },
-            error: (xhr, textStatus) => {
-                this.setState({
-                    roleList: [],
-                    userList: []
-                });
-            }
+    componentWillReceiveProps(nextProps, nextContext) {
+        this.setState({
+            userList: nextProps.userList
         });
-    };
+    }
+
 
     handleAddConditionType = (conditionType) => {
         var diffConditionLists = this.state.diffConditionLists;
@@ -264,7 +241,9 @@ class AddApplyConditionPanel extends React.Component {
                                             onClick={this.deleteConditionType.bind(this, limitType)}></i>
                                     </div>
                                     <div className="condition-type-content">
-                                        <Select showSearch mode="multiple"
+                                        <Select
+                                            defaultValue={_.get(value, 'userRange')}
+                                            showSearch mode="multiple"
                                             onChange={this.handleChangeSelectUser.bind(this, limitType, 'userRange',index)}
                                             filterOption={(input, option) => ignoreCase(input, option)}>
                                             {_.map(this.state.userList, (item,index) => {
@@ -378,7 +357,9 @@ AddApplyConditionPanel.defaultProps = {
     },
     applyTypeData: {},
     updateConditionObj: {},
-    updateConditionFlowKey: ''
+    updateConditionFlowKey: '',
+    userList: [],
+    roleList: []
 
 };
 AddApplyConditionPanel.propTypes = {
@@ -388,5 +369,7 @@ AddApplyConditionPanel.propTypes = {
     updateConditionObj: PropTypes.object,
     updateConditionFlowKey: PropTypes.string,
     form: PropTypes.object,
+    roleList: PropTypes.array,
+    userList: PropTypes.array,
 };
 export default Form.create()(AddApplyConditionPanel);

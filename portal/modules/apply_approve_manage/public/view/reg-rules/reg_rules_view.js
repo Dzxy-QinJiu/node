@@ -33,7 +33,7 @@ import {
     isVisitApplyFlow,
     isDomainApplyFlow,
     CC_SETTINGT_TYPE,
-    isUserApplyFlow
+    isUserApplyFlow, ROLES_SETTING
 } from '../../utils/apply-approve-utils';
 import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveManageStore from '../../store/apply_approve_manage_store';
@@ -83,10 +83,8 @@ class RegRulesView extends React.Component {
 
         });
         this.createBpmnTool(bpmnModeler);
-
         ApplyApproveManageStore.listen(this.onStoreChange);
     }
-
     componentWillUnmount() {
         ApplyApproveManageStore.unlisten(this.onStoreChange);
     }
@@ -424,7 +422,7 @@ class RegRulesView extends React.Component {
             //表单的内容不需要提交
             var submitObj = {
                 customiz_user_range: this.state.customiz_user_range,
-                applyRulesAndSetting: applyRulesAndSetting
+                ...applyRulesAndSetting
             };
             applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId, submitObj, (result) => {
                 if(_.isString(result)){
@@ -585,13 +583,17 @@ class RegRulesView extends React.Component {
                         newNodeObj['conditionTotalRuleDsc'] += '并且' + _.get(item, 'conditionRuleDsc');
                     }
                     //如果是单独划分出一批人，需要单独把这些人传过去
-                    var customiz_user_range = this.state.customiz_user_range;
-                    if(item === 'userSearch_limit'){
+                    var customiz_user_range = [];
+                    if(item.limitType === 'userSearch_limit'){
                         customiz_user_range.push({
-                            'range_key': _.get(item,'userRange'),
-                            'range_users': _.get(item,'userRangeRoute')
+                            'range_key': _.get(item,'userRangeRoute'),
+                            'range_users': _.get(item,'userRange')
                         });
+
                     }
+                    this.setState({
+                        customiz_user_range: customiz_user_range
+                    });
                 });
 
             }
@@ -713,6 +715,14 @@ class RegRulesView extends React.Component {
         if (deleteKey) {
             var applyRulesAndSetting = _.get(this, 'state.applyRulesAndSetting');
             var applyApproveRules = _.get(applyRulesAndSetting, 'applyApproveRules');
+            //删除这个流程之前要把设置的划定一批人也删除掉
+            var limitRoutes = _.map(_.get(applyApproveRules[deleteKey],'conditionRuleLists.limitRules',[]),'userRangeRoute');
+            var customiz_user_range = this.state.customiz_user_range;
+            if(_.get(limitRoutes,'[0]')){
+                _.forEach(limitRoutes,routeKey => {
+                    customiz_user_range = _.filter(customiz_user_range, range => range.range_key !== routeKey);
+                });
+            }
             delete applyApproveRules[deleteKey];
             var flowLength = 0;
             for (var key in applyApproveRules) {
@@ -726,7 +736,7 @@ class RegRulesView extends React.Component {
                 var firstNode = _.get(defalutBpmnNode, '[0]');
                 delete firstNode.previous;
             }
-            this.setState({applyRulesAndSetting, confirmDeleteItem: ''});
+            this.setState({applyRulesAndSetting, confirmDeleteItem: '',customiz_user_range: customiz_user_range});
         }
 
     };
@@ -1069,6 +1079,8 @@ class RegRulesView extends React.Component {
                             applyTypeData={this.props.applyTypeData}
                             updateConditionObj={this.state.updateConditionObj}
                             updateConditionFlowKey={this.state.updateConditionFlowKey}
+                            roleList={this.state.roleList}
+                            userList={this.state.userList}
                         />
                     </div>
                     : null}
