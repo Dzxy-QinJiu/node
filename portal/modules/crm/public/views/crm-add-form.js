@@ -207,6 +207,7 @@ class CRMAddForm extends React.Component {
             formData.app_user_ids = PropsFormData.app_user_ids;
         }
 
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '保存新建客户的信息');
         //去除表单数据中值为空的项
         commonMethodUtil.removeEmptyItem(formData, true);
         function afterAddCustomer(result, _this) {

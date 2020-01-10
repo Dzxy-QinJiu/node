@@ -138,7 +138,7 @@ const HOCGoodsBuy = (options = {}) => {
                     return (
                         <div className="errmsg-container">
                             <span className="errmsg-tip">{this.state.errMsg},</span>
-                            <a className="retry-btn" data-tracename="点击重新获取线索量商品按钮" onClick={this.retryGetGoodsList}>
+                            <a className="retry-btn" data-tracename="点击重新获取商品按钮" onClick={this.retryGetGoodsList}>
                                 {Intl.get('user.info.retry', '请重试')}
                             </a>
                         </div>
