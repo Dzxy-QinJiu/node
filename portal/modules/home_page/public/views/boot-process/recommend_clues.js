@@ -127,11 +127,15 @@ class RecommendClues extends React.Component {
         });
     };
 
-    // 返回上一步，重新设置条件
-    changeFilter = () => {
-        this.setState({
-            step: EXTRACT_CLUE_STEPS.SET_RECOMMEND
-        });
+    // 设置当前显示，修改条件或者是推荐列表展示
+    setCurrentStep = (step) => {
+        if(step === EXTRACT_CLUE_STEPS.EXTRACT_CLUE) {
+            this.handleContinueExtractClue();
+        }else {
+            this.setState({
+                step: step
+            });
+        }
     };
 
     afterSuccess = () => {
@@ -146,7 +150,7 @@ class RecommendClues extends React.Component {
     //继续提取
     handleContinueExtractClue = () => {
         this.setState({
-            step: EXTRACT_CLUE_STEPS.SET_RECOMMEND
+            step: EXTRACT_CLUE_STEPS.EXTRACT_CLUE
         }, () => {
             this.getRecommendClueLists();
         });
@@ -163,7 +167,7 @@ class RecommendClues extends React.Component {
             }
             return (
                 <RecommendCustomerCondition
-                    hideFocusCustomerPanel={this.props.onClosePanel}
+                    hideFocusCustomerPanel={this.setCurrentStep.bind(this, EXTRACT_CLUE_STEPS.EXTRACT_CLUE)}
                     hasSavedRecommendParams={this.state.settedCustomerRecommend.obj}
                     saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
                 />
@@ -173,7 +177,7 @@ class RecommendClues extends React.Component {
                 <ExtractClues
                     hasShowBackBtn
                     salesManList={this.state.salesManList}
-                    handleBackClick={this.changeFilter}
+                    handleBackClick={this.setCurrentStep.bind(this, EXTRACT_CLUE_STEPS.SET_RECOMMEND)}
                     getRecommendClueLists={this.getRecommendClueLists}
                     afterSuccess={this.afterSuccess}
                     onClosePanel={this.props.onClosePanel}
@@ -214,6 +218,8 @@ RecommendClues.propTypes = {
     afterSuccess: PropTypes.func,
     currentStep: PropTypes.string,
     showSuccessPage: PropTypes.bool,
+    guideRecommendCondition: PropTypes.object,
+    clearGuideRecomentCondition: PropTypes.func
 };
 RecommendClues.EXTRACT_CLUE_STEPS = EXTRACT_CLUE_STEPS;
 export default RecommendClues;
