@@ -163,7 +163,7 @@ class BootCompleteInformation extends React.Component{
                 });
             }
         });
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '保存推荐线索条件');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '保存推荐线索条件 ' + this.getFormattedCondition(recommendParams));
         function jumpLeadPage(targetObj) {
             setWebConfig();
 
@@ -188,6 +188,26 @@ class BootCompleteInformation extends React.Component{
             }
         }
     };
+
+    getFormattedCondition(condition) {
+        //行业
+        let industries = _.get(condition, 'industrys') ?
+            `行业: ${(condition => {
+                return _.reduce(condition.industrys, (result, indus) => {
+                    return result + `、${indus}`;
+                });
+            })(condition)} ` : '';
+        //地域
+        let region = _.get(condition, 'province') || _.get(condition, 'district') || _.get(condition, 'city') ?
+            `地域: ${(condition => {
+                let region = condition.province;
+                let city = _.get(condition, 'city') ? `/${condition.city}` : '';
+                let district = _.get(condition, 'district') ? `/${condition.district}` : '';
+                return `${region}${city}${district}`;
+            })(condition)} ` : '';
+
+        return `${industries}${region}`;
+    }
 
     handleSubmit = () => {
         if(this.state.isLoading) return false;
