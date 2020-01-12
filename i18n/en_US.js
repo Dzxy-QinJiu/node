@@ -299,7 +299,7 @@ var en_US = {
     'common.app.ios': 'IOS', // IOS版
     'common.apply.try.success.tip': 'An account manager will serve you later',//稍后会有客户经理专门为您服务
     'common.apply.try.user.scales': 'Number of users',//使用人数
-    'common.lead.apply.try': 'lead apply try',//线索申请试用
+    'common.lead.apply.try': 'User {user} (lead {lead}) apply try',//线索申请试用
     'common.terminals.type': 'ype of terminal', // 终端类型
     'common.all.terminals': 'All terminals', // 所有终端
     'common.terminals': 'Terminal', // 终端

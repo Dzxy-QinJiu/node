@@ -305,7 +305,7 @@ var zh_CN = {
     'common.app.ios': 'IOS版',
     'common.apply.try.success.tip': '稍后会有客户经理专门为您服务',
     'common.apply.try.user.scales': '使用人数',
-    'common.lead.apply.try': '线索申请试用',
+    'common.lead.apply.try': '用户{user}（线索：{lead}）申请试用',
     'common.terminals.type': '终端类型',
     'common.all.terminals': '所有终端',
     'common.terminals': '终端',
