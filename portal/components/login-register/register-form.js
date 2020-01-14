@@ -8,8 +8,8 @@ const PropTypes = require('prop-types');
 import Trace from '../../lib/trace';
 import {commonPhoneRegex} from '../../public/sources/utils/validate-util';
 import crypto from 'crypto';
-import {Form, Input, Icon} from 'antd';
-import {TextField, Button} from '@material-ui/core';
+import {Form, Input, Icon, Button} from 'antd';
+import {TextField} from '@material-ui/core';
 import classNames from 'classnames';
 const FormItem = Form.Item;
 let codeEffectiveInterval = null;
@@ -118,12 +118,12 @@ class RegisterForm extends React.Component {
     renderCaptchaCode() {
         if (this.state.captchaCode) {
             return (
-                <Button variant="contained">
+                <Button>
                     {Intl.get('register.code.effective.time', '{second}秒后重试', {second: this.state.codeEffectiveTime})}
                 </Button>);
         } else {
             return (
-                <Button variant="contained" disabled={!hasInputPhone} className={hasInputPhone ? 'captcha-btn' : ''}>
+                <Button disabled={!hasInputPhone} className={hasInputPhone ? 'captcha-btn' : ''}>
                     {Intl.get('register.get.phone.captcha.code', '获取验证码')}
                     {this.state.isLoadingValidCode ? <Icon type="loading"/> : null}
                 </Button>);
@@ -248,7 +248,7 @@ class RegisterForm extends React.Component {
         const {getFieldDecorator, getFieldsValue} = this.props.form;
         const values = getFieldsValue();
         return (
-            <Form className='register-form' autocomplete="off">
+            <Form className='register-form' autoComplete="off">
                 <Input type="password" className='password-hidden-input' name="pwd"/>
                 <FormItem>
                     {getFieldDecorator('phone', {
@@ -262,7 +262,7 @@ class RegisterForm extends React.Component {
                             label={Intl.get('user.phone', '手机号')}
                             color='primary'
                             value={values.phone}
-                            autoComplete="phone"
+                            autoComplete="off"
                         />
                     )}
                     {this.state.getCodeErrorMsg || this.state.validateCodeErrorMsg ?
@@ -282,7 +282,7 @@ class RegisterForm extends React.Component {
                             id="standard-basic"
                             label={Intl.get('register.phone.code', '短信验证码')}
                             color='primary'
-                            autoComplete="code"
+                            autoComplete="off"
                             value={values.code}
                         />
                     )}
@@ -302,7 +302,7 @@ class RegisterForm extends React.Component {
                             label={Intl.get('common.password', '密码')}
                             type="password"
                             id="password"
-                            autoComplete="pwd"
+                            autoComplete="off"
                             values={values.pwd}
                         />
                     )}
@@ -323,7 +323,7 @@ class RegisterForm extends React.Component {
                             label={Intl.get('common.confirm.password', '确认密码')}
                             type="password"
                             id="password"
-                            autoComplete="rePwd"
+                            autoComplete="off"
                             values={values.rePwd}
                         />
                     )}
