@@ -531,7 +531,7 @@ exports.getVertificationCode = function(req, res) {
 //注册个人账号
 exports.registerAccount = function(req, res) {
     DesktopLoginService.registerAccount(req, res).on('success', function(data) {
-        if (data) {//注册成功后延时2s（es组织初始化需要时间）后自动登录
+        if (data) {//注册成功后延时5s（5s后才能确保es组织初始化完成）后自动登录
             setTimeout(function() {
                 var username = req.body.phone;
                 var password = req.body.pwd;
@@ -543,7 +543,7 @@ exports.registerAccount = function(req, res) {
                     .on('error', function(errorObj) {
                         res.status(500).json(errorObj && errorObj.message);
                     });
-            }, 2000);
+            }, 5000);
         } else {
             res.status(200).json(data);
         }
