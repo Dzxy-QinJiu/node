@@ -8,6 +8,11 @@ export default class ApplyTryCard extends Component {
     state = {
         versionData: this.props.versionData,
     }
+    componentWillReceiveProps(nextProps){
+        this.setState({
+            versionData: nextProps.versionData
+        });
+    }
     renderApplyTryContent = () => {
         const versionData = _.get(this.state,'versionData');
         let applyTryContent = <div className='clue-info-item-apply-try'>
