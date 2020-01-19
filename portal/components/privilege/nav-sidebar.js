@@ -118,6 +118,7 @@ var NavSidebar = createReactClass({
     },
 
     getInitialState: function() {
+        let isUnReadNotice = isShowUnReadNotice();
         return {
             menus: menuUtil.getFirstLevelMenus(),
             userInfoLogo: getUserInfoLogo(),
@@ -133,7 +134,8 @@ var NavSidebar = createReactClass({
             // isReduceNavMargin: false, //是否展示小图标和图标间距
             isShowDialUpKeyboard: false,//是否展示拨号键盘的标识
             ronglianNum: '',//正在拨打的容联的电话
-            isUnReadNotice: isShowUnReadNotice(), // 是否有未读的公告，默认false
+            isUnReadNotice: isUnReadNotice, // 是否有未读的公告，默认false
+            noticeSubMenuSelectedType: isUnReadNotice ? 'notice' : 'system', // 通知二级子菜单选中的类型
         };
     },
     propTypes: {
@@ -193,6 +195,12 @@ var NavSidebar = createReactClass({
         });
     },
 
+    clickSystemPanelTabsType(type) {
+        this.setState({
+            noticeSubMenuSelectedType: type
+        });
+    },
+
     componentDidMount: function() {
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         //未读回复列表变化后触发
@@ -205,6 +213,8 @@ var NavSidebar = createReactClass({
         phoneMsgEmitter.on(phoneMsgEmitter.OPEN_PHONE_PANEL, this.callingRonglianBtn);
         // 查看系统公告的触发
         clickUpgradeNoiceEmitter.on(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, this.toggleUpgradeNotice);
+        // 点击通知面板上tabs类型的触发
+        notificationEmitter.on(notificationEmitter.CLICK_NOTICE_TABS_TYPE, this.clickSystemPanelTabsType);
         //获取用户审批的未读回复列表
         this.getHasUnreadReply();
         //获取其他类型的用户审批的未读回复列表
@@ -377,6 +387,7 @@ var NavSidebar = createReactClass({
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_CLUE_PANEL, this.callingRonglianBtn);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.callingRonglianBtn);
         clickUpgradeNoiceEmitter.removeListener(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, this.toggleUpgradeNotice);
+        notificationEmitter.removeListener(notificationEmitter.CLICK_NOTICE_TABS_TYPE, this.clickSystemPanelTabsType);
     },
 
 
@@ -388,16 +399,31 @@ var NavSidebar = createReactClass({
     handleClickNoticeSubMenu(noticeType, event) {
         event.stopPropagation();
         notificationEmitter.emit(notificationEmitter.CLICK_SYSTEM_NOTICE, noticeType);
+        this.setState({
+            noticeSubMenuSelectedType: noticeType
+        });
         if (noticeType === 'notice') {
             this.toggleUpgradeNotice(false);
         }
     },
     
     renderNoticeSubMenu() {
+        let isUnReadNotice = this.state.isUnReadNotice;
+        let noticeSubMenuSelectedType = this.state.noticeSubMenuSelectedType;
+        let systemCls = classNames({
+            'active': noticeSubMenuSelectedType === 'system',
+        });
+        let upgradeNotice = classNames({
+            'active': isUnReadNotice || noticeSubMenuSelectedType === 'notice',
+        });
         return (
             <div>
-                <a onClick={this.handleClickNoticeSubMenu.bind(this, 'system')}>{Intl.get('menu.notification', '通知')}</a>
-                <a onClick={this.handleClickNoticeSubMenu.bind(this, 'notice')}>{Intl.get('rightpanel_notice','公告')}</a>
+                <a onClick={this.handleClickNoticeSubMenu.bind(this, 'system')} className={systemCls}>
+                    {Intl.get('menu.notification', '通知')}
+                </a>
+                <a onClick={this.handleClickNoticeSubMenu.bind(this, 'notice')} className={upgradeNotice}>
+                    {Intl.get('rightpanel_notice','公告')}
+                </a>
             </div>
         );
     },
