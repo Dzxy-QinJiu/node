@@ -78,7 +78,16 @@ class OfficialPersonalEdition extends React.Component{
             this.organization = result;
         });
         this.getPayModeAndGoodsList();
+        this.handleResize();
     }
+
+    //处理窗口变化
+    handleResize = () => {
+        let listHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT;
+        this.setState({
+            listHeight
+        });
+    };
 
     //获取支付渠道和商品列表
     getPayModeAndGoodsList() {
@@ -202,8 +211,6 @@ class OfficialPersonalEdition extends React.Component{
                 let maxScrollHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT - LAYOUT_CONSTS.DESC_HEIGHT - LAYOUT_CONSTS.BOTTOM_HEIGHT;
                 newState.listHeight = height > maxScrollHeight ? maxScrollHeight : height;
             }*/
-
-            newState.listHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT;
 
             newState.activeGoods = newState.list[0];
             let leadLimit = _.get(originalList,'related_info.lead_limit', '');

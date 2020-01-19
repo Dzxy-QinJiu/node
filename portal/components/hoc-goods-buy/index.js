@@ -71,6 +71,16 @@ const HOCGoodsBuy = (options = {}) => {
                 };
             }
 
+            componentDidMount() {
+                super.componentDidMount();
+                $(window).on('resize', this.handleResize);
+            }
+
+            componentWillUnMount() {
+                super.componentWillUnMount();
+                $(window).off('resize', this.handleResize);
+            }
+
             //下拉加载
             handleScrollBarBottom = () => {
                 var currListLength = _.isArray(this.state.list) ? this.state.list.length : 0;
