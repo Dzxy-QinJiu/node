@@ -6,13 +6,14 @@
 
 let callcenter = require('callcenter-sdk-client');
 let CallcenterClient = callcenter.client;
-import {Button} from 'antd';
+import {Button, message} from 'antd';
 import commonMethodUtil from './common-method-util';
 import {phoneEmitter} from './emitters';
 // import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 let callClient;
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {PHONE_NOT_SETTING_TIP} from './consts';
+import {getOrganizationCallFee} from './common-data-util';
 //初始化
 exports.initPhone = function(user) {
     let org = commonMethodUtil.getOrganization();
@@ -87,4 +88,26 @@ exports.ReleaseButton = ({callClient, tip, phoneNumber}) => {
 //退出登录，session超时，触发电话系统的退出
 exports.logoutCallClient = () => {
     callClient && callClient.logout();
+};
+
+// 只有容联电话系统拨打电话时，才会检查是否还有话费,其他直接拨打
+exports.handleBeforeCallOutCheck = (callback) => {
+    // 判断是否是容联电话
+    console.log('callClient.needShowAnswerView():',callClient.needShowAnswerView());
+    if (callClient && callClient.needShowAnswerView()) {
+        getOrganizationCallFee().then((result) => {
+            let callFee = _.get(result, 'call_fee', 0); // 当前话费
+            let accountBalance = _.get(result, 'account_balance', 0);
+            // 当前话费大于等于组织余额时，标识已经欠费
+            if (callFee >= accountBalance) {
+                message.warn(Intl.get('common.call.owe.tips', '您的电话号码已欠费，请充值后再试！'));
+            } else {
+                _.isFunction(callback) && callback();
+            }
+        }, () => {
+            message.error(Intl.get('crm.call.phone.failed', '拨打失败'));
+        });
+    } else {
+        _.isFunction(callback) && callback();
+    }
 };
