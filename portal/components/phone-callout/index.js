@@ -5,8 +5,8 @@
  */
 import {Popover, message} from 'antd';
 import {hasCalloutPrivilege, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
-import {showDisabledCallTip, handleCallOutResult, getOrganizationCallFee}from 'PUB_DIR/sources/utils/common-data-util';
-import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
+import {showDisabledCallTip, handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
+import {isRongLianPhoneSystem, handleBeforeCallOutCheck} from 'PUB_DIR/sources/utils/phone-util';
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
 import { paymentEmitter } from 'OPLATE_EMITTER';
 var classNames = require('classnames');
@@ -26,32 +26,23 @@ class PhoneCallout extends React.Component {
 
     // 自动拨号
     handleClickCallOut = (phoneNumber, contactName) => {
-        getOrganizationCallFee().then((result) => {
-            let callFee = _.get(result, 'call_fee', 0); // 当前话费
-            let accountBalance = _.get(result, 'account_balance', 0);
-            // 当前话费大于等于组织余额时，标识已经欠费
-            if (callFee >= accountBalance) {
-                message.warn(Intl.get('common.call.owe.tips', '您的电话号码已欠费，请充值后再试！'));
-            } else {
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-active-call-records-ico'), '拨打电话');
-                handleCallOutResult({
-                    contactName: contactName,//联系人姓名
-                    phoneNumber: phoneNumber,//拨打的电话
-                    id: this.props.id,
-                    type: this.props.type
-                },() => {
-                    this.setState({
-                        ableClickPhoneIcon: true
-                    });
-                    //如果是在线索里拨打的电话，要展示线索的详情
-                    _.isFunction(this.props.showClueDetailPanel) && this.props.showClueDetailPanel();
-                    //拨打电话成功后的回调处理
-                    _.isFunction(this.props.onCallSuccess) && this.props.onCallSuccess();
+        handleBeforeCallOutCheck( () => {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-active-call-records-ico'), '拨打电话');
+            handleCallOutResult({
+                contactName: contactName,//联系人姓名
+                phoneNumber: phoneNumber,//拨打的电话
+                id: this.props.id,
+                type: this.props.type
+            },() => {
+                this.setState({
+                    ableClickPhoneIcon: true
                 });
-            }
-        }, () => {
-            message.error(Intl.get('crm.call.phone.failed', '拨打失败'));
-        });
+                //如果是在线索里拨打的电话，要展示线索的详情
+                _.isFunction(this.props.showClueDetailPanel) && this.props.showClueDetailPanel();
+                //拨打电话成功后的回调处理
+                _.isFunction(this.props.onCallSuccess) && this.props.onCallSuccess();
+            });
+        } );
     };
     handleVisibleChange = (phoneNumber, contactName,visible) => {
         //如果是个人版，需要提示升级为基础版以上才能拨打号码
