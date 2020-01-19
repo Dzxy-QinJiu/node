@@ -198,11 +198,12 @@ class ClueAddForm extends React.Component {
                 var userDataInfo = userData.getUserData();
                 var user_id = userDataInfo.user_id;
                 var user_name = userDataInfo.user_name;
+                var nick_name = userDataInfo.nick_name;
                 var team_id = userDataInfo.team_id;
                 var team_name = userDataInfo.team_name;
                 if(user_id && user_name){
                     submitObj.user_id = user_id;
-                    submitObj.user_name = user_name;
+                    submitObj.user_name = nick_name;
                 }
                 if(team_id && team_name){
                     submitObj.team_id = team_id;
