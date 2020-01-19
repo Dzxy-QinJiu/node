@@ -15,7 +15,7 @@ var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsg
 var phoneEmitter = require('../../../public/sources/utils/emitters').phoneEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import {SYSTEM_NOTICE_TYPE_MAP, KETAO_SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY,CALL_TYPES,CLUE_EXTRACT_TYPE} from '../utils/consts';
+import {SYSTEM_NOTICE_TYPE_MAP, KETAO_SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY,CALL_TYPES,CLUE_HIDE_NOTICE_TYPE} from '../utils/consts';
 import logoSrc from './notification.png';
 import userData from '../user-data';
 import Trace from 'LIB_DIR/trace';
@@ -179,7 +179,7 @@ window.openAllClues = function(){
 //是自己提取的线索
 function isExtractByMe(data) {
     //如果是推荐线索提取的类型或者是线索池提取的类型
-    const extractType = _.includes(CLUE_EXTRACT_TYPE, _.get(data,'type'));
+    const extractType = _.includes(CLUE_HIDE_NOTICE_TYPE, _.get(data,'type'));
     //并且是登录人操作的
     const isOperatedByMe = _.get(data,'operator_id','') === userData.getUserData().user_id;
     return extractType && isOperatedByMe;
