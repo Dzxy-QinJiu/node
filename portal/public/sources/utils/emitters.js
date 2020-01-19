@@ -84,6 +84,8 @@ exports.notificationEmitter.SYSTEM_NOTICE_UPDATED = 'systemNoticeUpdated';
 exports.notificationEmitter.CLICK_SYSTEM_NOTICE = 'clickSystemNotice';
 // 点击通知subMenu的类型
 exports.notificationEmitter.CLICK_SUBMENU_NOTICE_TYPE = 'clickSubMenuNoticeType';
+// 点击通知的tabs类型
+exports.notificationEmitter.CLICK_NOTICE_TABS_TYPE = 'clickNoticeTabsType';
 //用户批量推送的emitter
 exports.batchPushEmitter = new EventEmitter();
 //用户管理批量-所属客户
