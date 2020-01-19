@@ -93,7 +93,6 @@ exports.logoutCallClient = () => {
 // 只有容联电话系统拨打电话时，才会检查是否还有话费,其他直接拨打
 exports.handleBeforeCallOutCheck = (callback) => {
     // 判断是否是容联电话
-    console.log('callClient.needShowAnswerView():',callClient.needShowAnswerView());
     if (callClient && callClient.needShowAnswerView()) {
         getOrganizationCallFee().then((result) => {
             let callFee = _.get(result, 'call_fee', 0); // 当前话费
