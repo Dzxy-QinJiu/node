@@ -164,7 +164,7 @@ class ClueCustomer extends React.Component {
             showDifferentVersion: false,//是否显示版本信息面板
             guideRecommendCondition: null,//引导设置的推荐线索的条件
             exportVisible: false,//导出线索显示popover
-            dropList: [],//无效原因下拉框内容
+            dropList: storageUtil.local.get('uselessDropList') || [],//无效原因下拉框内容
             visibleDrop: false,//是否显示无效原因下拉框
             //显示内容
             ...clueCustomerStore.getState()
@@ -1397,7 +1397,11 @@ class ClueCustomer extends React.Component {
         let invalidReason = _.trim(this.state.submitReason);
         let dropList = this.state.dropList;
         if(_.indexOf(dropList,invalidReason) < 0){ //将值存储入无效下拉框内
-            dropList.push(invalidReason);
+            dropList.unshift(invalidReason);
+            if(dropList.length > 10) {
+                dropList.pop();
+            }
+            storageUtil.local.set('uselessDropList', dropList);
             this.setState({dropList});
         }
         if (!invalidReason) {
