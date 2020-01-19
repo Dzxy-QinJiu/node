@@ -574,28 +574,7 @@ class RegRulesView extends React.Component {
             //如果流程不是默认流程并且流程上没有节点，在添加这个节点的时候需要加上条件
             if (applyFlow !== FLOW_TYPES.DEFAULTFLOW && !bpmnNodeFlow.length) {
                 var limitRules = _.get(applyRulesAndSetting, `applyApproveRules.${applyFlow}.conditionRuleLists.limitRules`, []);
-                _.forEach(limitRules, (item, index) => {
-                    if (index === 0) {
-                        newNodeObj['conditionTotalRule'] = _.get(item, 'conditionRule');
-                        newNodeObj['conditionTotalRuleDsc'] = _.get(item, 'conditionRuleDsc');
-                    } else {
-                        newNodeObj['conditionTotalRule'] += '  && ' + _.get(item, 'conditionRule');
-                        newNodeObj['conditionTotalRuleDsc'] += '并且' + _.get(item, 'conditionRuleDsc');
-                    }
-                    //如果是单独划分出一批人，需要单独把这些人传过去
-                    var customiz_user_range = [];
-                    if(item.limitType === 'userSearch_limit'){
-                        customiz_user_range.push({
-                            'range_key': _.get(item,'userRangeRoute'),
-                            'range_users': _.get(item,'userRange')
-                        });
-
-                    }
-                    this.setState({
-                        customiz_user_range: customiz_user_range
-                    });
-                });
-
+                this.updateCustomizeNode(limitRules,newNodeObj);
             }
         } else {
             //如果是第一个节点
@@ -629,23 +608,27 @@ class RegRulesView extends React.Component {
         bpmnNodeFlow.push(newNodeObj);
 
     };
-    handleOtherCheckChange = (e) => {
-        var applyRulesAndSetting = _.get(this, 'state.applyRulesAndSetting');
-        applyRulesAndSetting.mergeSameApprover = e.target.checked;
-        this.setState({
-            applyRulesAndSetting: applyRulesAndSetting
-        });
-    };
-    handleCancelCheckChange = (e) => {
-        var applyRulesAndSetting = _.get(this, 'state.applyRulesAndSetting');
-        applyRulesAndSetting.cancelAfterApprove = e.target.checked;
-        this.setState({
-            applyRulesAndSetting: applyRulesAndSetting
-        });
-    };
-    handleAddConditionProcess = () => {
-        this.setState({
-            showAddConditionPanel: true
+    updateCustomizeNode = (limitRules,newNodeObj) => {
+        _.forEach(limitRules, (item, index) => {
+            if (index === 0) {
+                newNodeObj['conditionTotalRule'] = _.get(item, 'conditionRule');
+                newNodeObj['conditionTotalRuleDsc'] = _.get(item, 'conditionRuleDsc');
+            } else {
+                newNodeObj['conditionTotalRule'] += '  && ' + _.get(item, 'conditionRule');
+                newNodeObj['conditionTotalRuleDsc'] += '并且' + _.get(item, 'conditionRuleDsc');
+            }
+            //如果是单独划分出一批人，需要单独把这些人传过去
+            var customiz_user_range = [];
+            if(item.limitType === 'userSearch_limit'){
+                customiz_user_range.push({
+                    'range_key': _.get(item,'userRangeRoute'),
+                    'range_users': _.get(item,'userRange')
+                });
+
+            }
+            this.setState({
+                customiz_user_range: customiz_user_range
+            });
         });
     };
     saveAddApprovCondition = (data) => {
@@ -677,17 +660,7 @@ class RegRulesView extends React.Component {
             applyApproveRules[flowKey]['conditionRuleLists'] = data;
             var limitRules = _.get(data, 'limitRules', []);
             var firstNode = _.get(applyApproveRules[flowKey], 'bpmnNode[0]',{});
-            _.forEach(limitRules, (item, index) => {
-                if (index === 0) {
-                    firstNode['conditionTotalRule'] = _.get(item, 'conditionRule');
-                    firstNode['conditionTotalRuleDsc'] = _.get(item, 'conditionRuleDsc');
-                } else {
-                    firstNode['conditionTotalRule'] += '  && ' + _.get(item, 'conditionRule');
-                    firstNode['conditionTotalRuleDsc'] += '并且' + _.get(item, 'conditionRuleDsc');
-                }
-            });
-
-
+            this.updateCustomizeNode(limitRules,firstNode);
         } else {
             applyApproveRules[`condition_${initialValue}`] = {
                 bpmnNode: [],
@@ -698,6 +671,25 @@ class RegRulesView extends React.Component {
 
         this.setState({
             applyRulesAndSetting
+        });
+    };
+    handleOtherCheckChange = (e) => {
+        var applyRulesAndSetting = _.get(this, 'state.applyRulesAndSetting');
+        applyRulesAndSetting.mergeSameApprover = e.target.checked;
+        this.setState({
+            applyRulesAndSetting: applyRulesAndSetting
+        });
+    };
+    handleCancelCheckChange = (e) => {
+        var applyRulesAndSetting = _.get(this, 'state.applyRulesAndSetting');
+        applyRulesAndSetting.cancelAfterApprove = e.target.checked;
+        this.setState({
+            applyRulesAndSetting: applyRulesAndSetting
+        });
+    };
+    handleAddConditionProcess = () => {
+        this.setState({
+            showAddConditionPanel: true
         });
     };
     handleDeleteConditionItem = (key) => {
