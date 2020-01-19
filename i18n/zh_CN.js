@@ -3588,6 +3588,7 @@ var zh_CN = {
     'apply.time.distinct.am': '区分上下午',
     'apply.form.has.edit.components': '您有组件还是编辑状态',
     'apply.my.self.setting.work.flow': '拜访申请',
+    'apply.my.selft.co.trace.workflow': '联合跟进申请',
     'apply.domain.application.work.flow': '舆情平台申请',
     'apply.domain.descriptipn.reg': '域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间',
     'apply.domain.plat.name.reg': '平台名称长度在1到32个字符之间(英文数字算一个字符，其他字符一个算2个字符)',

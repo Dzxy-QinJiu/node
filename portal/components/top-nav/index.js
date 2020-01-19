@@ -319,7 +319,7 @@ TopNav.MenuList = class extends React.Component {
                             });
                             // 2019/09/27 暂时改为:鼠标悬停显示解释信息
                             let isExplainShowActiveUserFlag = menu.id === 'active_user_list';
-
+                            //todo customName是自定义流程tab上描述默认是用的语言包的，但是自定义流程的需要展示保存到后端的description，自定义流程统一之后这个会修改一下
                             var liContent = (<NavLink to={menu.routePath}
                                 activeClassName="active"
                                 ref={(element) => this.navLinks = element}>
@@ -331,7 +331,7 @@ TopNav.MenuList = class extends React.Component {
                                         >
                                             {menu.name}
                                         </Popover>
-                                    ) : (menu.name)
+                                    ) : (menu.customName || menu.name)
                                 }
                                 {/**2019/09/27 todo 这样展示不好，待设计在进行调整，先注释掉*/}
                                 {/*{*/}

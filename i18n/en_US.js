@@ -3564,6 +3564,7 @@ var en_US = {
     'apply.time.distinct.am': 'Distinguish between afternoon and afternoon',//区分上下午
     'apply.form.has.edit.components': 'Do you have a component or edit state?',//您有组件还是编辑状态
     'apply.my.self.setting.work.flow': 'Visit apply',//拜访申请
+    'apply.my.selft.co.trace.workflow': 'Joint follow-up application',//联合跟进申请
     'apply.domain.application.work.flow': 'Domain name application',//舆情平台申请
     'apply.domain.descriptipn.reg': 'The domain name description can only contain letters, numbers, underscores (cannot begin or end with a dash), and is between 1 and 32 in length.',//域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间
     'apply.domain.plat.name.reg': 'Platform name length is between 1 and 32 characters (English characters count as one character, and other characters count as 2 characters)',//平台名称长度在1到32个字符之间(英文数字算一个字符，其他字符一个算2个字符)
