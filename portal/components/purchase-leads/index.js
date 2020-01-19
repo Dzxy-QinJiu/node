@@ -30,7 +30,16 @@ class PurchaseLeads extends React.Component{
 
     componentDidMount() {
         this.getPayModeAndGoodsList();
+        this.handleResize();
     }
+
+    //处理窗口变化
+    handleResize = () => {
+        let listHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT - LAYOUT_CONSTS.DESC_HEIGHT;
+        this.setState({
+            listHeight
+        });
+    };
 
     //获取支付渠道和商品列表
     getPayModeAndGoodsList() {
@@ -102,7 +111,6 @@ class PurchaseLeads extends React.Component{
             });
             newState.activeGoods = newState.list[0];
             newState.count = _.get(originalList,'number', 0);
-            newState.listHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT - LAYOUT_CONSTS.DESC_HEIGHT;
         }
         this.setState(newState);
     }
