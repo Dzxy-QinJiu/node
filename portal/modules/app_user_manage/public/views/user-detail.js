@@ -38,6 +38,7 @@ import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters
 import classNames from 'classnames';
 import userManagePrivilege from '../privilege-const';
 import publicPrivilege from 'PUB_DIR/privilege-const';
+import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 const EDIT_PASSWORD_WIDTH = 260;
 //当前面板z-index
 let thisPanelZIndex;
@@ -338,6 +339,18 @@ class UserDetail extends React.Component {
         let userInfo = {data: _.get(this.state.initialUser, 'user')};
         // 用户详情的应用列表中，包含多终端信息，在用户分析和操作记录中，显示多终端信息
         let appLists = _.get(this.state.initialUser, 'apps', []);
+        let ketaoAppList = _.clone(appLists);
+        // 客套组织下，客套产品显示在最前面的处理
+        if (isKetaoOrganizaion()) {
+            let ketaoId = _.get(window, 'Oplate.clientId'); // 客套id
+            let ketaoApp = _.find(ketaoAppList, app => app.app_id === ketaoId);
+            if (ketaoApp) {
+                // 先删除原数组中，客套元素，会改变原数组
+                _.remove(ketaoAppList, ketaoApp);
+                // 将客套放到数组首部
+                ketaoAppList.unshift(ketaoApp);
+            }
+        }
         let loading = this.state.isLoading;
         let errorMsg = this.state.getDetailErrorMsg;
         //内容区高度        
@@ -417,7 +430,7 @@ class UserDetail extends React.Component {
                                     height={contentHeight}
                                     userId={this.props.userId}
                                     selectedAppId={this.props.selectedAppId}
-                                    appLists={appLists}
+                                    appLists={ketaoAppList}
                                 />
                             </div> : null
                     }
@@ -432,7 +445,7 @@ class UserDetail extends React.Component {
                             height={contentHeight}
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
-                            appLists={appLists}
+                            appLists={ketaoAppList}
                             operatorRecordDateSelectTime={this.props.operatorRecordDateSelectTime}
                         />
                     </div> : null}
