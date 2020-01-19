@@ -712,7 +712,7 @@ class ExtractClues extends React.Component {
         if(settedCustomerRecommend.loading || isLoadingRecommendClue) {
             return (
                 <div className="load-content">
-                    <Spinner className='home-loading' loadingText={Intl.get('guide.extract.clue.loading', '获取线索中')}/>
+                    <Spinner className='home-loading'/>
                 </div>
             );
         }else if(getRecommendClueErrMsg && getRecommendClueErrMsg !== Intl.get('errorcode.168', '符合条件的线索已被提取完成，请修改条件再查看')) {
