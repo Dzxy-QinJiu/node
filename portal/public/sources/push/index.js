@@ -588,11 +588,12 @@ function crmOperatorAlertListener(data) {
 function applyUpgradeListener(data) {
     let isOpenPopUpNotify = getNotifyStatus();
     if (_.isObject(data)) {
-        const title = Intl.get('login.apply.trial','申请试用');
-        const lead = data.lead.name || '';
-        const version = data.version_change_info.new_version || '';
+        const title = Intl.get('versions.apply.try.enterprise','申请企业试用');
+        const lead = _.get(data, 'lead.name', '');
+        const user = _.get(data, 'lead.app_user_info[0].name', '');
+        const version = _.get(data, 'version_change_info.new_version', '');
         const time = getTimeStr(_.get(data.version_change_info,'apply_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        const tipContent = time + ' ，' + lead + Intl.get('common.lead.apply.try','线索申请试用') + version;
+        const tipContent = time + ' ，' + Intl.get('common.lead.apply.try','用户{user}（线索：{lead}）申请试用',{user,lead}) + version;
         if (canPopDesktop()) {
             //桌面通知的展示
             showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
@@ -612,9 +613,9 @@ function applyUpgradeListener(data) {
 function applyUpgradeCompleteListener(data) {
     let isOpenPopUpNotify = getNotifyStatus();
     if (_.isObject(data) && _.get(data.version_change_info,'upgrade_type') === 'trade') {
-        const title = Intl.get('payment.personal.upgrade.notice','个人用户升级通知');
-        const lead = data.lead.name || '';
-        const user = data.lead.app_user_info.name || '';
+        const title = Intl.get('payment.personal.upgrade.notice','个人用户升级');
+        const lead = _.get(data, 'lead.name', '');
+        const user = _.get(data, 'lead.app_user_info[0].name', '');
         const time = getTimeStr(_.get(data.version_change_info,'apply_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
         const tipContent = time + ' ，' + Intl.get('payment.personal.upgrade','用户{user}（线索{lead}）付费升级为个人正式用户',{lead,user});
         if (canPopDesktop()) {

@@ -305,7 +305,7 @@ var zh_CN = {
     'common.app.ios': 'IOS版',
     'common.apply.try.success.tip': '稍后会有客户经理专门为您服务',
     'common.apply.try.user.scales': '使用人数',
-    'common.lead.apply.try': '线索申请试用',
+    'common.lead.apply.try': '用户{user}（线索：{lead}）申请试用',
     'common.terminals.type': '终端类型',
     'common.all.terminals': '所有终端',
     'common.terminals': '终端',
@@ -3936,7 +3936,7 @@ var zh_CN = {
     'payment.upgrade.personal.version.success': '您已升级为个人正式版，每月可提取{count}条线索啦！',
     'payment.contact.us': '联系我们请拨打{contact}',
     'payment.add.leads.tip': '如果线索量不够用，可另外{addBtn}',
-    'payment.personal.upgrade.notice': '个人用户升级通知',
+    'payment.personal.upgrade.notice': '个人用户升级',
     'payment.personal.upgrade': '用户{user}（线索{lead}）付费升级为个人正式用户',
     /*支付流程 --- end*/
 
@@ -3984,6 +3984,7 @@ var zh_CN = {
     'versions.between.six.and.ten': '6-10人',
     'versions.between.eleven.and.twenty': '11-20人',
     'versions.more.than.twenty': '大于20人',
+    'versions.apply.try.enterprise': '申请企业试用',
     /*版本信息 --- end */
 
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/
