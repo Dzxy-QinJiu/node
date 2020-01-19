@@ -55,6 +55,7 @@ class Notification extends React.Component {
             keyName = '公告';
             this.handleShowNoticeTab();
         }
+        notificationEmitter.emit(notificationEmitter.CLICK_NOTICE_TABS_TYPE, key);
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + keyName);
         this.setState({
             activeKey: key
