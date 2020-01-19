@@ -588,7 +588,7 @@ function crmOperatorAlertListener(data) {
 function applyUpgradeListener(data) {
     let isOpenPopUpNotify = getNotifyStatus();
     if (_.isObject(data)) {
-        const title = Intl.get('login.apply.trial','申请试用');
+        const title = Intl.get('versions.apply.try.enterprise','申请企业试用');
         const lead = _.get(data, 'lead.name', '');
         const user = _.get(data, 'lead.app_user_info[0].name', '');
         const version = _.get(data, 'version_change_info.new_version', '');
@@ -613,7 +613,7 @@ function applyUpgradeListener(data) {
 function applyUpgradeCompleteListener(data) {
     let isOpenPopUpNotify = getNotifyStatus();
     if (_.isObject(data) && _.get(data.version_change_info,'upgrade_type') === 'trade') {
-        const title = Intl.get('payment.personal.upgrade.notice','个人用户升级通知');
+        const title = Intl.get('payment.personal.upgrade.notice','个人用户升级');
         const lead = _.get(data, 'lead.name', '');
         const user = _.get(data, 'lead.app_user_info[0].name', '');
         const time = getTimeStr(_.get(data.version_change_info,'apply_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
