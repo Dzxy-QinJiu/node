@@ -124,14 +124,22 @@ exports.relateClueAndCustomer = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
-// 处理导入线索模板文件
+// 管理员或销售领导导入线索模板文件
 exports.getClueTemplate = function(req, res) {
+    //普通销售用一个模板，销售领导和管理员用一个模板
     var filePath = path.resolve(__dirname, '../../tpl/clue_temp.xls');
     let backendIntl = new BackendIntl(req);
     let filename = backendIntl.get('crm.sales.clue', '线索') + '.xls';
     res.download(filePath, filename);
 };
-
+//普通销售下载的导入线索的模板
+exports.getClueTemplateCommonSales = function(req, res) {
+    //普通销售用一个模板，销售领导和管理员用一个模板
+    var filePath = path.resolve(__dirname, '../../tpl/clue_temp_common_sales.xls');
+    let backendIntl = new BackendIntl(req);
+    let filename = backendIntl.get('crm.sales.clue', '线索') + '.xls';
+    res.download(filePath, filename);
+};
 exports.uploadClues = function(req, res) {
     var form = new multiparty.Form();
     //开始处理上传请求
