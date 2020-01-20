@@ -614,8 +614,12 @@ class RegRulesView extends React.Component {
                 newNodeObj['conditionTotalRule'] = _.get(item, 'conditionRule');
                 newNodeObj['conditionTotalRuleDsc'] = _.get(item, 'conditionRuleDsc');
             } else {
-                newNodeObj['conditionTotalRule'] += '  && ' + _.get(item, 'conditionRule');
+                //如果是有两个条件或者多个条件的时候
+                //如果有多个条件的时候，需要用类似于这样的展示方式增加条件${user_range=="b0292bef-a1f8-4ce5-80d2-1a0f58a67ba1" && condition&gt;3.0}
+                newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '}', '');
+                newNodeObj['conditionTotalRule'] += '  \&& ' + _.replace( _.get(item, 'conditionRule'), '${', '');
                 newNodeObj['conditionTotalRuleDsc'] += '并且' + _.get(item, 'conditionRuleDsc');
+
             }
             //如果是单独划分出一批人，需要单独把这些人传过去
             var customiz_user_range = [];

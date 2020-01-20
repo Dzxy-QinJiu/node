@@ -3583,7 +3583,6 @@ var en_US = {
     'apply.cc.node.infor.type': 'method to informe',//通知方式
     'apply.cc.node.email': 'mail',//邮件
     'apply.cc.node.socket.noty': 'System popup',//系统弹窗
-    'apply.approve.select.one.batch.person': 'Choose a group of people',//选择一批人
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司

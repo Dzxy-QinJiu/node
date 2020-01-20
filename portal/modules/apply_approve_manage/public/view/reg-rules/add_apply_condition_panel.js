@@ -94,9 +94,9 @@ class AddApplyConditionPanel extends React.Component {
             // descriptionTip = Intl.get('user.duration', '时长');
             // showInnerCondition = true;
         }
-        console.log(showInnerCondition);
         //保存的已经添加的表单，是个数组
         //任何流程都要展示选一批人这个筛选条件
+        var saveForm = false;
         var menus = <Menu>{
             //如果是内置的出差流程或者是请假流程，要加上时长的判断
             showInnerCondition ?
@@ -110,25 +110,36 @@ class AddApplyConditionPanel extends React.Component {
                         return <Menu.Item>
                             <a onClick={this.handleAddConditionType.bind(this, component_type)}>{_.get(target, 'name')}</a>
                         </Menu.Item>;
+                    }else{
+                        saveForm = true;
                     }
                 })
         }
         {this.hasAddThisTypeCondition(ALL_COMPONENTS.USERSEARCH + '_limit') ? null : <Menu.Item>
-            <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.USERSEARCH)}>{Intl.get('apply.approve.select.one.batch.person', '选择一批人')}</a>
+            <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.USERSEARCH)}>{Intl.get('user.apply.presenter', '申请人')}</a>
         </Menu.Item> }
-
         </Menu>;
-        return menus;
+        //是否还有menuitem展示
+        var hasNoMenuItem = ((showInnerCondition && this.hasAddThisTypeCondition(componentType + '_limit')) || (!showInnerCondition && saveForm)) && this.hasAddThisTypeCondition(ALL_COMPONENTS.USERSEARCH + '_limit');
+        return {menus: menus,
+            hasNoMenuItem: hasNoMenuItem
+        };
     };
     renderDiffCondition = () => {
-        var menus = this.getDiffTypeComponents();
-        return (
-            <Dropdown overlay={menus}>
-                <a className="ant-dropdown-link" href="#">
-                    {Intl.get('apply.add.apply.condition', '添加条件')}
-                </a>
-            </Dropdown>
-        );
+        var menusObj = this.getDiffTypeComponents();
+        //如果这个menu中没有子元素就不需要再展示添加条件了
+        if (menusObj.hasNoMenuItem) {
+            return null;
+        } else {
+            return (
+                <Dropdown overlay={menusObj.menus}>
+                    <a className="ant-dropdown-link" href="#">
+                        {Intl.get('apply.add.apply.condition', '添加条件')}
+                    </a>
+                </Dropdown>
+            );
+        }
+
     };
     deleteConditionType = (deleteType) => {
         var diffConditionLists = this.state.diffConditionLists;

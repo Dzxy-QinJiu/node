@@ -3607,7 +3607,6 @@ var zh_CN = {
     'apply.cc.node.infor.type': '通知方式',
     'apply.cc.node.email': '邮件',
     'apply.cc.node.socket.noty': '系统弹窗',
-    'apply.approve.select.one.batch.person': '选择一批人',
     /*自定义流程 end*/
     'app.user.manage.role.name': '角色名称',
     'app.user.manage.organaization.name': '所在单位或公司',
