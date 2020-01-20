@@ -126,14 +126,11 @@ const DIFFREF = {
 class ClueCustomer extends React.Component {
     constructor(props) {
         super(props);
-        const uselessDropList = storageUtil.local.get('uselessDropList') || [];
+        const uselessDropList = storageUtil.local.get('uselessDropList') || {};
         const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig')) || {};
-        let dropList = {};
-        if(uselessDropList.length > 0){
-            let temp = _.filter(uselessDropList, item => {return item.id === userData.getUserData().user_id;})[0];
-            dropList = temp ? temp : {id: userData.getUserData().user_id, list: []};
-        }else{
-            dropList = {id: userData.getUserData().user_id, list: []};
+        let dropList = [];
+        if(uselessDropList[userData.getUserData().user_id]){
+            dropList = uselessDropList[userData.getUserData().user_id];
         }
         this.state = {
             clueAddFormShow: false,//
@@ -172,7 +169,6 @@ class ClueCustomer extends React.Component {
             guideRecommendCondition: null,//引导设置的推荐线索的条件
             exportVisible: false,//导出线索显示popover
             dropList: dropList,//无效原因下拉框内容
-            uselessDropList: uselessDropList,//所有下拉框内容
             visibleDrop: false,//是否显示无效原因下拉框
             //显示内容
             ...clueCustomerStore.getState()
@@ -1399,17 +1395,8 @@ class ClueCustomer extends React.Component {
     };
     //将当前列表存入localStorage
     setDropToLocal = (list) => {
-        const uselessDropList = this.state.uselessDropList;
-        let flag = true;
-        _.each(uselessDropList, item => {
-            if(item.id === userData.getUserData().user_id){
-                item = list;
-                flag = false;
-            }
-        });
-        if(flag){
-            uselessDropList.push(list);
-        }
+        const uselessDropList = storageUtil.local.get('uselessDropList') || {};
+        uselessDropList[userData.getUserData().user_id] = list;
         storageUtil.local.set('uselessDropList', uselessDropList);
     }
     //确认无效处理
@@ -1418,21 +1405,22 @@ class ClueCustomer extends React.Component {
             return;
         }
         let invalidReason = _.trim(this.state.submitReason);
-        let dropList = this.state.dropList;
-        let list = dropList.list;
-        const index = _.indexOf(list,invalidReason);
-        if(index < 0){ //将值存储入无效下拉框内
-            list.unshift(invalidReason);
-            if(list.length > 10) {
-                list.pop();
+        if(invalidReason){ //将失效数据存入localStorage
+            let dropList = this.state.dropList;
+            const index = _.indexOf(dropList,invalidReason);
+            if(index < 0){ //将值存储入无效下拉框内
+                dropList.unshift(invalidReason);
+                if(dropList.length > 10) {
+                    dropList.pop();
+                }
+                this.setDropToLocal(dropList);
+                this.setState({dropList});
+            }else{
+                dropList.splice(index,1);
+                dropList.unshift(invalidReason);
+                this.setDropToLocal(dropList);
+                this.setState({dropList});
             }
-            this.setDropToLocal(dropList);
-            this.setState({dropList});
-        }else{
-            list.splice(index,1);
-            list.unshift(invalidReason);
-            this.setDropToLocal(dropList);
-            this.setState({dropList});
         }
         if (!invalidReason) {
             this.setState({
@@ -1509,7 +1497,7 @@ class ClueCustomer extends React.Component {
         };
         let invalidBtnSize = !_.get(this.state, 'showFilterList') ? 'default' : 'small';
         let menu = <Menu onClick={this.onClickMenu}>{
-            _.map(this.state.dropList.list, (item, idx) => {
+            _.map(this.state.dropList, (item, idx) => {
                 return (<Menu.Item key={idx} value={item}>{item}</Menu.Item>);
             })}</Menu>;
         return (
