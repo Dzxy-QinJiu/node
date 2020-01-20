@@ -988,15 +988,15 @@ exports.subtracteGlobalClue = function(clueItem,callback) {
 // 是否开通呼叫中心
 exports.isOpenCaller = () => {
     let organization = getOrganization();
-    let productsMap = JSON.parse(_.get(Oplate,'productsMap', '{}'));
-    return _.includes(_.get(organization,'grant_products', []), _.get(productsMap, 'caller', ''));
+    let productsIdMap = JSON.parse(_.get(Oplate,'productsIdMap', '{}'));
+    return _.includes(_.get(organization,'grant_products', []), _.get(productsIdMap, 'caller', ''));
 };
 
 // 是否开通营收中心
 exports.isOpenCash = () => {
     let organization = getOrganization();
-    let productsMap = JSON.parse(_.get(Oplate,'productsMap', '{}'));
-    return _.includes(_.get(organization,'grant_products', []), _.get(productsMap, 'cash', ''));
+    let productsIdMap = JSON.parse(_.get(Oplate,'productsIdMap', '{}'));
+    return _.includes(_.get(organization,'grant_products', []), _.get(productsIdMap, 'cash', ''));
 };
 //是否是csm.curtao.com域名访问的
 exports.isCurtao = () => {
