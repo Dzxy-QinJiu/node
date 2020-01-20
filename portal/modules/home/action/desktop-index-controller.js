@@ -52,7 +52,7 @@ exports.home = function(req, res) {
         isCurtao: isCurtao,
         timeStamp: global.config.timeStamp,
         loadingText: backendIntl.get('common.sales.frontpage.loading', '加载中'),
-        productClientId: JSON.stringify({
+        productsMap: JSON.stringify({
             cash: global.config.cashClientId,
             caller: global.config.callerClientId,
         })
