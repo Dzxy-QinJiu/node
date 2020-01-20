@@ -3983,9 +3983,9 @@ var zh_CN = {
     'versions.feature.office.management': '职务管理',
     'versions.feature.rechecking': '查重',
     'versions.less.than.five': '小于5人',
-    'versions.between.six.and.ten': '6-10人',
-    'versions.between.eleven.and.twenty': '11-20人',
-    'versions.more.than.twenty': '大于20人',
+    'versions.between.five.and.fifty': '5-50人',
+    'versions.between.fifty.one.and.one.hundred.fifty': '51-150人',
+    'versions.more.than.one.hundred.fifty': '大于150人',
     'versions.apply.try.enterprise': '申请企业试用',
     /*版本信息 --- end */
 
