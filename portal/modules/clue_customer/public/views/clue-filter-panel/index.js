@@ -36,9 +36,6 @@ let otherFilterArray = [
     },{
         name: Intl.get('crm.filter.extract.from.lead.pool','从线索池中提取的线索'),
         value: EXTRACT_TIME
-    },{
-        name: Intl.get('crm.filter.lead.apply.try.enterprise','申请企业试用的线索'),
-        value: APPLY_TRY_LEAD
     }
 ];
 class ClueFilterPanel extends React.Component {
@@ -52,8 +49,11 @@ class ClueFilterPanel extends React.Component {
             customCommonFilter: [],
             ...clueFilterStore.getState(),
         };
-        if(!isCurtao()){//在客套域下，才可以筛选申请试用的线索
-            otherFilterArray = _.filter(otherFilterArray, item => item.value !== APPLY_TRY_LEAD);
+        if(isCurtao()){//在客套域下，才可以筛选申请试用的线索
+            otherFilterArray.push({
+                name: Intl.get('crm.filter.lead.apply.try.enterprise','申请企业试用的线索'),
+                value: APPLY_TRY_LEAD
+            });
         }
     }
 
