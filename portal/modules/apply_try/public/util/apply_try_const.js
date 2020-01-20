@@ -5,14 +5,14 @@ exports.userScales = [
     },
     {
         key: 'secondLevel',
-        value: Intl.get('versions.between.six.and.ten','6-10人')
+        value: Intl.get('versions.between.five.and.fifty','5-50人')
     },
     {
         key: 'thirdLevel',
-        value: Intl.get('versions.between.eleven.and.twenty','11-20人')
+        value: Intl.get('versions.between.fifty.one.and.one.hundred.fifty','51-150人')
     },
     {
         key: 'forthLevel',
-        value: Intl.get('versions.more.than.twenty','20人以上')
+        value: Intl.get('versions.more.than.one.hundred.fifty','150人以上')
     }
 ];
