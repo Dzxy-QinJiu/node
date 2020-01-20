@@ -51,7 +51,11 @@ exports.home = function(req, res) {
         useSso: global.config.useSso,
         isCurtao: isCurtao,
         timeStamp: global.config.timeStamp,
-        loadingText: backendIntl.get('common.sales.frontpage.loading', '加载中')
+        loadingText: backendIntl.get('common.sales.frontpage.loading', '加载中'),
+        productsIdMap: JSON.stringify({
+            cash: global.config.cashClientId,
+            caller: global.config.callerClientId,
+        })
     });
 };
 

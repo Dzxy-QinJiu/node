@@ -159,7 +159,9 @@ var config = {
     ssoUrl: process.env.SSO_URL || 'https://sso-dev.curtao.com',//正式：https://sso.curtao.com，测试：https://sso-dev.curtao.com
     storageKey: process.env.storageKey || 'ketao-storage',//在localstorage中存储的key
     curtaoUrl: process.env.CURTAO_URL || 'csm.curtao.com',//用来判断是否是curtao的环境,curtao的环境会展示新版登录注册界面
-    timeStamp: new Date().valueOf()//时间戳（解决文件缓存的问题）
+    timeStamp: new Date().valueOf(),//时间戳（解决文件缓存的问题）
+    cashClientId: process.env.CASH_CLIENT_ID || '34pj27enfq347ahnfii2SyHi54yv4wO8Qz0kMp6Ow7F',//营收中心应用id
+    callerClientId: process.env.CALLER_CLIENT_ID || '34pj27enfq348ma67fo1PzXi4eNV4EOcik0gldrFHuR',//呼叫中心应用id
 };
 
 config.nockUrl = config.proxy.protocal + config.proxy.host + ':' + config.proxy.port;
