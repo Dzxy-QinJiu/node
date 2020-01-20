@@ -125,8 +125,12 @@ const DIFFREF = {
 class ClueCustomer extends React.Component {
     constructor(props) {
         super(props);
-
+        const uselessDropList = storageUtil.local.get('uselessDropList') || {};
         const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig')) || {};
+        let dropList = [];
+        if(uselessDropList[userData.getUserData().user_id]){
+            dropList = uselessDropList[userData.getUserData().user_id];
+        }
         this.state = {
             clueAddFormShow: false,//
             rightPanelIsShow: rightPanelShow,//是否展示右侧客户详情
@@ -162,6 +166,8 @@ class ClueCustomer extends React.Component {
             showRecommendTips: !_.get(websiteConfig, oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS,false),
             guideRecommendCondition: null,//引导设置的推荐线索的条件
             exportVisible: false,//导出线索显示popover
+            dropList: dropList,//无效原因下拉框内容
+            visibleDrop: false,//是否显示无效原因下拉框
             filterClueStatus: clueFilterStore.getState().filterClueStatus,//线索选中的状态
             //显示内容
             ...clueCustomerStore.getState()
@@ -1397,12 +1403,25 @@ class ClueCustomer extends React.Component {
             submitReason: e.target.value
         });
     };
+    //将当前列表存入localStorage
+    setDropToLocal = (list) => {
+        const uselessDropList = storageUtil.local.get('uselessDropList') || {};
+        uselessDropList[userData.getUserData().user_id] = list;
+        storageUtil.local.set('uselessDropList', uselessDropList);
+    }
     //确认无效处理
     handleInvalidateBtn = (item, callback) => {
         if (this.state.submitInvalidateLoading) {
             return;
         }
         let invalidReason = _.trim(this.state.submitReason);
+        if(invalidReason){ //将失效数据存入localStorage
+            let dropList = this.state.dropList;
+            dropList = _.filter(dropList, item => item !== invalidReason);
+            dropList.unshift(invalidReason);
+            this.setDropToLocal(dropList);
+            this.setState({dropList});
+        }
         if (!invalidReason) {
             this.setState({
                 submitInvalidateClueMsg: Intl.get('clue.invalid.reason.not.empty', '无效原因不能为空')
@@ -1453,6 +1472,21 @@ class ClueCustomer extends React.Component {
         }
     };
 
+    onClickMenu = ({item}) => {
+        this.setState({
+            submitReason: item.props.value,
+            visibleDrop: false
+        });
+        if (this['invalidateClueChange' + this.state.isInvalidateItem.id]) {
+            this['invalidateClueChange' + this.state.isInvalidateItem.id].focus();
+        }
+    }
+    handleDropDownVisibleChange = (flag) => {
+        this.setState({
+            visibleDrop: flag
+        });
+    }
+
     //渲染确认无效输入框
     renderInvalidInput = (salesClueItem) => {
         //点击增加按钮 补充跟进记录
@@ -1462,6 +1496,10 @@ class ClueCustomer extends React.Component {
             });
         };
         let invalidBtnSize = !_.get(this.state, 'showFilterList') ? 'default' : 'small';
+        let menu = <Menu onClick={this.onClickMenu}>{
+            _.map(this.state.dropList, (item, idx) => {
+                return (<Menu.Item key={idx} value={item}>{item}</Menu.Item>);
+            })}</Menu>;
         return (
             <div className="edit-invalid-trace-content">
                 {this.state.submitInvalidateClueMsg ? (
@@ -1475,11 +1513,15 @@ class ClueCustomer extends React.Component {
                         />
                     </div>
                 ) : null}
-                <TextArea ref={invalidateClueChange => this['invalidateClueChange' + salesClueItem.id] = invalidateClueChange}
-                    onScroll={event => event.stopPropagation()}
-                    placeholder={Intl.get('clue.describe.invalid.reason', '请描述一下无效原因')}
-                    onChange={this.handleInvalidateInputChange}
-                />
+                <Dropdown overlay={menu} trigger={['click']} onVisibleChange={this.handleDropDownVisibleChange}
+                    visible={this.state.visibleDrop}>
+                    <TextArea ref={invalidateClueChange => this['invalidateClueChange' + salesClueItem.id] = invalidateClueChange}
+                        onScroll={event => event.stopPropagation()}
+                        placeholder={Intl.get('clue.describe.invalid.reason', '请描述一下无效原因')}
+                        onChange={this.handleInvalidateInputChange}
+                        value={this.state.submitReason}
+                    />
+                </Dropdown>
                 <div className="save-cancel-btn">
                     <Button type='primary' onClick={this.handleInvalidateBtn.bind(this, salesClueItem)}
                         size={invalidBtnSize}
