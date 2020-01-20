@@ -309,7 +309,7 @@ module.exports = [{
         'needLogin': true
     },
     'privileges': [
-        privilegeConst_common.CALLSYSTEM_CONFIG_MANAGE
+        privilegeConst_common.BASE_OPERATE_PERMISSION
     ]
 }, {
     'method': 'delete',

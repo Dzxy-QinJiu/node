@@ -15,7 +15,15 @@ var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsg
 var phoneEmitter = require('../../../public/sources/utils/emitters').phoneEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import {SYSTEM_NOTICE_TYPE_MAP, KETAO_SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY,CALL_TYPES,CLUE_HIDE_NOTICE_TYPE} from '../utils/consts';
+import {
+    SYSTEM_NOTICE_TYPE_MAP,
+    KETAO_SYSTEM_NOTICE_TYPE_MAP,
+    SYSTEM_NOTICE_TYPES,
+    APPLY_APPROVE_TYPES,
+    DIFF_APPLY_TYPE_UNREAD_REPLY,
+    CALL_TYPES,
+    CLUE_HIDE_NOTICE_TYPE
+} from '../utils/consts';
 import logoSrc from './notification.png';
 import userData from '../user-data';
 import Trace from 'LIB_DIR/trace';
@@ -176,8 +184,8 @@ window.closeAllNoty = function() {
 window.openAllClues = function(){
     history.push('/leads', {refreshClueList: true});
 };
-//是自己提取的线索
-function isExtractByMe(data) {
+//是自己提取的线索或者是自己添加的线索
+function isExtractOrAddByMe(data) {
     //如果是推荐线索提取的类型或者是线索池提取的类型
     const extractType = _.includes(CLUE_HIDE_NOTICE_TYPE, _.get(data,'type'));
     //并且是登录人操作的
@@ -195,9 +203,9 @@ function clueUnhandledListener(data) {
         }
         notificationEmitter.emit(notificationEmitter.UPDATED_HANDLE_CLUE, data);
         //线索面板刷新提示
-        notificationEmitter.emit(notificationEmitter.UPDATE_CLUE, data, isExtractByMe(data));
+        notificationEmitter.emit(notificationEmitter.UPDATE_CLUE, data, isExtractOrAddByMe(data));
         //如果是自己提取的线索，不展示右边弹窗提示
-        if(!isExtractByMe(data)){
+        if(!isExtractOrAddByMe(data)){
             var clueArr = _.get(data, 'clue_list',[]);
             var title = Intl.get('clue.has.distribute.clue','您有新的线索'),tipContent = '';
             if (canPopDesktop()) {
