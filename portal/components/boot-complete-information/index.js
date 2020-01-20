@@ -192,36 +192,6 @@ class BootCompleteInformation extends React.Component{
         }
     };
 
-    getFormattedCondition(condition) {
-        //行业
-        let industries = '';
-        if(_.get(condition, 'industrys')) {
-            industries = '行业: ';
-            let str = _.reduce(condition.industrys, (result, indus) => {
-                return result + `、${indus}`;
-            });
-            industries += str;
-        }
-        //地域
-        let region = '';
-        if(_.get(condition, 'province')
-            || _.get(condition, 'district')
-            || _.get(condition, 'city')
-        ) {
-            region = '地域: ';
-            let areas = [condition.province];
-            if(_.get(condition, 'city')) {
-                areas.push(condition.city);
-            }
-            if(_.get(condition, 'district')) {
-                areas.push(condition.district);
-            }
-            region += areas.join('/');
-        }
-
-        return `${industries}${region}`;
-    }
-
     handleSubmit = () => {
         if(this.state.isLoading) return false;
         this.props.form.validateFields((error, values) => {
