@@ -1407,20 +1407,10 @@ class ClueCustomer extends React.Component {
         let invalidReason = _.trim(this.state.submitReason);
         if(invalidReason){ //将失效数据存入localStorage
             let dropList = this.state.dropList;
-            const index = _.indexOf(dropList,invalidReason);
-            if(index < 0){ //将值存储入无效下拉框内
-                dropList.unshift(invalidReason);
-                if(dropList.length > 10) {
-                    dropList.pop();
-                }
-                this.setDropToLocal(dropList);
-                this.setState({dropList});
-            }else{
-                dropList.splice(index,1);
-                dropList.unshift(invalidReason);
-                this.setDropToLocal(dropList);
-                this.setState({dropList});
-            }
+            dropList = _.filter(dropList, item => item !== invalidReason);
+            dropList.unshift(invalidReason);
+            this.setDropToLocal(dropList);
+            this.setState({dropList});
         }
         if (!invalidReason) {
             this.setState({
