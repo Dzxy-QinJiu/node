@@ -347,11 +347,20 @@ function listenSystemNotice(notice) {
             tipContent += Intl.get('notification.system.on', '在') + notice.content.current_location;
         }
         if (notice.user_name) {
-            //用账号xxx
-            tipContent += Intl.get('notification.system.use.account', '用账号') + notice.user_name;
+            if (isOffsetLogin) {
+                //用账号xxx
+                tipContent += Intl.get('notification.system.use.account', '用账号') + notice.user_name;
+            } else {
+                //的账号xxx
+                tipContent = Intl.get('notification.system.who.account', '{who}的账号', {who: tipContent}) + notice.user_name;
+            }
+            // 提取线索失败
+            if (isPullClueFailed) {
+                tipContent += Intl.get('notification.extract.clue.failed', '提取线索失败');
+            }
         }
-        // 客套组织不显示，登录的应用名称
-        if (!isKetaoOrganizaion() && notice.app_name) {
+        // 登录的应用名称
+        if (notice.app_name) {
             //登录了 xxx (应用)
             tipContent += (isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name;
         }
@@ -366,7 +375,10 @@ function listenSystemNotice(notice) {
         }
         // 提取线索失败
         if (isPullClueFailed) {
-            tipContent += _.get(notice, 'content.operate_detail',Intl.get('notification.extract.clue.failed', '提取线索失败'));
+            let failedTips = _.get(notice, 'content.operate_detail');
+            if (failedTips) {
+                tipContent += `，${Intl.get('notification.extract.clue.failed.because', '原因')}：${failedTips}`;
+            }
         }
         //标签页不可见时，有桌面通知，并且允许弹出桌面通知时
         if (canPopDesktop()) {
