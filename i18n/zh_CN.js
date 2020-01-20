@@ -1935,6 +1935,7 @@ var zh_CN = {
     'crm.customer.pool.rule.own.visible': '自己释放的自己不可见',
     'crm.filter.extract.from.customer.pool': '从客户池中提取的客户',
     'crm.filter.extract.from.lead.pool': '从线索池中提取的线索',
+    'crm.filter.lead.apply.try.enterprise': '申请企业试用的线索',
     'crm.basic.second.level.domain': '舆情平台域名',
     'crm.basic.plat.form.name': '舆情平台名称',
 

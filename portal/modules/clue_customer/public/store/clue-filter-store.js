@@ -75,6 +75,8 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.teamList = [];
     //获取从线索池中提取的线索
     this.leadFromLeadPool = false;
+    //获取申请试用企业版的线索
+    this.appliedTryLead = false;
 };
 //获取未打通电话的线索
 ClueFilterStore.prototype.setNotConnectedClues = function(flag) {
@@ -90,6 +92,14 @@ ClueFilterStore.prototype.setLeadFromLeadPool = function(flag) {
         this.leadFromLeadPool = true;
     }else{
         this.leadFromLeadPool = false;
+    }
+};
+//获取申请试用企业版的线索
+ClueFilterStore.prototype.setAppliedTryLead = function(flag) {
+    if(flag){
+        this.appliedTryLead = true;
+    }else{
+        this.appliedTryLead = false;
     }
 };
 
