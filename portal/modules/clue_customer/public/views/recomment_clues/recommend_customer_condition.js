@@ -12,8 +12,9 @@ require('../../css/recommend-customer-condition.less');
 import {checkClueCondition, companyProperty, moneySize, staffSize,CLUE_CONDITION} from '../../utils/clue-customer-utils';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import Trace from 'LIB_DIR/trace';
-import {MAXINDUSTRYCOUNT} from 'PUB_DIR/sources/utils/consts';
+import {MAXINDUSTRYCOUNT, RECOMMEND_CLUE_FILTERS} from 'PUB_DIR/sources/utils/consts';
 import {ipRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {getFormattedCondition} from 'PUB_DIR/sources/utils/common-method-util';
 class RecommendCustomerCondition extends React.Component {
     constructor(props) {
         super(props);
@@ -211,7 +212,8 @@ class RecommendCustomerCondition extends React.Component {
                 saveMsg: '',
                 saveResult: ''
             });
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div.submit-button-container'), '保存线索推荐查询条件 ' + this.getFormattedCondition(hasSavedRecommendParams));
+            let traceStr = getFormattedCondition(hasSavedRecommendParams, RECOMMEND_CLUE_FILTERS);
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div.submit-button-container'), '保存线索推荐查询条件 ' + traceStr);
             var errTip = Intl.get('crm.154', '添加失败');
             $.ajax({
                 url: '/rest/clue/recommend/condition',

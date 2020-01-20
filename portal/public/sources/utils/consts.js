@@ -4,6 +4,7 @@
 
 import {regex} from 'ant-utils';
 import {Button} from 'antd';
+import { moneySize, staffSize } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 //用户类型的下拉选项
 export const userTypeList = [
     {name: Intl.get('user.online.all.type', '全部类型'), value: ''},
@@ -763,3 +764,77 @@ export const CLUE_MESSAGE_TYPE = {
 };
 export const CLUE_EXTRACT_TYPE = [CLUE_MESSAGE_TYPE.BASE_EXTRACT_ALLOT,CLUE_MESSAGE_TYPE.POOL_EXTRACT_ALLOT];
 
+export const RECOMMEND_CLUE_FILTERS = [{
+    key: 'industrys',
+    label: '行业',
+    separator: '、',
+}, {
+    key: 'area',
+    processValue: (formData) => {
+        let region = '';
+        if(_.get(formData, 'province')
+            || _.get(formData, 'district')
+            || _.get(formData, 'city')
+        ) {
+            region = '地域: ';
+            let areas = [formData.province];
+            if(_.get(formData, 'city')) {
+                areas.push(formData.city);
+            }
+            if(_.get(formData, 'district')) {
+                areas.push(formData.district);
+            }
+            region += areas.join('/');
+        }
+        return region;
+    }
+}, {
+    key: 'name',
+    label: '公司名'
+}, {
+    key: 'capital',
+    label: '资本规模',
+    processValue: (formData) => {
+        let capitalScale = '';
+        if(_.get(formData, 'capitalMax') || _.get(formData, 'capitalMin')) {
+            let scale = '';
+            if (formData.capitalMin) {
+                let item = _.find(moneySize, item => _.isEqual(item.capitalMin, formData.capitalMin));
+                scale = item.name;
+            } else {
+                let item = _.find(moneySize, item => _.isEqual(item.capitalMax, formData.capitalMax));
+                scale = item.name;
+            }
+            capitalScale += scale;
+        }else { capitalScale += '全部'; }
+        return capitalScale;
+    }
+}, {
+    key: 'staffnum',
+    label: '人员规模',
+    processValue: (formData) => {
+        let stuffScale = '';
+        if(_.get(formData, 'staffnumMax') || _.get(formData, 'staffnumMin')) {
+            let scale = '';
+            if (formData.staffnumMin) {
+                let item = _.find(staffSize, item => _.isEqual(item.staffnumMin, formData.staffnumMin));
+                scale = item.name;
+            } else {
+                let item = _.find(staffSize, item => _.isEqual(item.staffnumMax, formData.staffnumMax));
+                scale = item.name;
+            }
+            stuffScale += scale;
+        }else { stuffScale += '全部'; }
+        return stuffScale;
+    }
+}, {
+    key: 'startTime',
+    label: '注册时间',
+    processValue: formData => {
+        return formData.startTime ? `${moment(formData.startTime).format(oplateConsts.DATE_FORMAT)} - ${moment(formData.endTime).format(oplateConsts.DATE_FORMAT)}` : '';
+    }
+}, {
+    key: 'entTypes',
+    label: '性质',
+    separator: '、',
+}];

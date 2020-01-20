@@ -12,7 +12,7 @@ const FormItem = Form.Item;
 import { nameLengthRule, validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
+import {getOrganization, getFormattedCondition} from 'PUB_DIR/sources/utils/common-method-util';
 import userData from 'PUB_DIR/sources/user-data';
 import history from 'PUB_DIR/sources/history';
 import ajax from 'ant-ajax';
@@ -23,7 +23,7 @@ import Spinner from 'CMP_DIR/spinner';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import classNames from 'classnames';
 import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
-import {MAXINDUSTRYCOUNT as MAX_SELECTED_COUNT} from 'PUB_DIR/sources/utils/consts';
+import {MAXINDUSTRYCOUNT as MAX_SELECTED_COUNT, RECOMMEND_CLUE_FILTERS} from 'PUB_DIR/sources/utils/consts';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
 
 const LAYOUT = {
@@ -163,7 +163,10 @@ class BootCompleteInformation extends React.Component{
                 });
             }
         });
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '保存推荐线索条件 ' + this.getFormattedCondition(recommendParams));
+        let fields = _.filter(RECOMMEND_CLUE_FILTERS, item => {
+            return _.includes(['industrys', 'area'],item.key);
+        });
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '保存推荐线索条件 ' + getFormattedCondition(recommendParams, fields));
         function jumpLeadPage(targetObj) {
             setWebConfig();
 
@@ -191,20 +194,30 @@ class BootCompleteInformation extends React.Component{
 
     getFormattedCondition(condition) {
         //行业
-        let industries = _.get(condition, 'industrys') ?
-            `行业: ${(condition => {
-                return _.reduce(condition.industrys, (result, indus) => {
-                    return result + `、${indus}`;
-                });
-            })(condition)} ` : '';
+        let industries = '';
+        if(_.get(condition, 'industrys')) {
+            industries = '行业: ';
+            let str = _.reduce(condition.industrys, (result, indus) => {
+                return result + `、${indus}`;
+            });
+            industries += str;
+        }
         //地域
-        let region = _.get(condition, 'province') || _.get(condition, 'district') || _.get(condition, 'city') ?
-            `地域: ${(condition => {
-                let region = condition.province;
-                let city = _.get(condition, 'city') ? `/${condition.city}` : '';
-                let district = _.get(condition, 'district') ? `/${condition.district}` : '';
-                return `${region}${city}${district}`;
-            })(condition)} ` : '';
+        let region = '';
+        if(_.get(condition, 'province')
+            || _.get(condition, 'district')
+            || _.get(condition, 'city')
+        ) {
+            region = '地域: ';
+            let areas = [condition.province];
+            if(_.get(condition, 'city')) {
+                areas.push(condition.city);
+            }
+            if(_.get(condition, 'district')) {
+                areas.push(condition.district);
+            }
+            region += areas.join('/');
+        }
 
         return `${industries}${region}`;
     }

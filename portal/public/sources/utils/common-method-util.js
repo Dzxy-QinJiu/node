@@ -1339,3 +1339,41 @@ exports.getDelayTimeUnit = (delayTimeRange, delayTimeNumber) => {
 exports.isCustomDelayType = (type) => {
     return type === TIMERANGEUNIT.CUSTOM;
 };
+/***
+ * 获取表单填写情况的聚合信息
+ * @param formData 表单数据
+ * @param fields  需要聚合的字段数组
+ [{
+    key: 'startTime', //字段名
+    label: '注册时间', // 表单标签的文本
+    processValue: condition => {
+        return condition.startTime ? `${moment(condition.startTime).format(oplateConsts.DATE_FORMAT)} - ${moment(condition.endTime).format(oplateConsts.DATE_FORMAT)}` : '';
+    }
+ }]
+ * @returns {string} 聚合后的字符串
+ */
+exports.getFormattedCondition = (formData, fields) => {
+    let result = [];
+    _.each(fields, filed => {
+        let label = _.get(filed,'label', '');
+        label = label ? `${label}: ` : '';
+        let value = _.get(formData, filed.key, '');
+
+        if(_.get(filed, 'separator')) {//如果有分隔符
+            let data = _.get(formData, filed.key, []);
+            value = _.join(data, filed.separator) || '';
+        }
+
+        if(_.isFunction(filed.processValue)) {//有处理函数
+            value = filed.processValue(formData) || '';
+        }
+
+        if(value) {
+            label += value;
+
+            result.push(label);
+        }
+    });
+
+    return _.filter(result, item => item).join(' ');
+};
