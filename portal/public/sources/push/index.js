@@ -339,8 +339,12 @@ function listenSystemNotice(notice) {
             tipContent += Intl.get('notification.system.on', '在') + notice.content.current_location;
         }
         if (notice.user_name) {
-            //用账号xxx
-            tipContent += Intl.get('notification.system.who.account', '的账号') + notice.user_name;
+            if (isOffsetLogin) {
+                //用账号xxx
+                tipContent += Intl.get('notification.system.use.account', '用账号') + notice.user_name;
+            }
+            //的账号xxx
+            tipContent = Intl.get('notification.system.who.account', '{who}的账号', {who: tipContent}) + notice.user_name;
             // 提取线索失败
             if (isPullClueFailed) {
                 tipContent += Intl.get('notification.extract.clue.failed', '提取线索失败');

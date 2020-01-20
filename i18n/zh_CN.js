@@ -1203,7 +1203,7 @@ var zh_CN = {
     'notification.call.up.failed': '拨打电话失败',
     'notification.extract.clue.failed': '提取线索失败',
     'notification.system.count': '{count}次',
-    'notification.system.who.account': '的账号',
+    'notification.system.who.account': '{who}的账号',
     'notification.extract.clue.failed.becanse': '原因',
     //通知end
     

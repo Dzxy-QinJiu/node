@@ -1202,7 +1202,7 @@ var en_US = {
     'notification.call.up.failed': 'Failed to call out', // 拨打电话失败
     'notification.extract.clue.failed': 'Failed to extract lead', // 提取线索失败
     'notification.system.count': '{count} times', // {count}次
-    'notification.system.who.account': 'account', // 的账号
+    'notification.system.who.account': '{who} account', //{who} 的账号
     'notification.extract.clue.failed.becanse': 'becanse', // 原因
     //通知end
 
