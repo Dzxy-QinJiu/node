@@ -3575,6 +3575,16 @@ var en_US = {
     'apply.approve.set.approver': 'Assgin approver',//指定审批人
     'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
     'apply.select.cc.person.type': 'Please select the type of cc person',//请选择抄送人类型
+    'apply.condition.node.all.higher.level': 'All superiors',//所有上级
+    'apply.set.team.secretry': 'Team secretary',//团队秘书
+    'apply.set.team.user': 'team member',//团队成员
+    'apply.set.cc.node.secretry': 'Team Secretary',//所属团队秘书
+    'apply.set.cc.node.higher.secretry': 'All superior team secretaries',//所有上级团队秘书
+    'apply.set.cc.node.all.secretry': 'Secretary of the team and all superior teams',//所属团队及所有上级团队秘书
+    'apply.set.cc.node.all.team.user': 'All superior team members',//所有上级团队成员
+    'apply.cc.node.infor.type': 'method to informe',//通知方式
+    'apply.cc.node.email': 'mail',//邮件
+    'apply.cc.node.socket.noty': 'System popup',//系统弹窗
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司

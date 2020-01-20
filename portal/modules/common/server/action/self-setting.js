@@ -63,6 +63,10 @@ exports.saveSelfSettingWorkFlowRules = function(req, res) {
                 file: [fs.createReadStream(filePath)],
             };
             formData.applyApproveRules = JSON.stringify(formData.applyApproveRules);
+            if(_.isArray(formData.customiz_user_range)){
+                formData.customiz_user_range = JSON.stringify(formData.customiz_user_range);
+            }
+
             ApplyApproveManageService.saveSelfSettingWorkFlowRules(req, res, formData).on('success', function(data) {
                 fs.unlinkSync(filePath);
                 res.status(200).json(data);
