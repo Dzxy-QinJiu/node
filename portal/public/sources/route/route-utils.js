@@ -178,10 +178,14 @@ function dealCommonSaleRoute(routes, isCommonSales) {
 function filterCertainRoutes(routes, item) {
     //在路由中删掉这个流程
     //application_apply_management 是父路由的id
-    var target = _.find(routes, item => item.id === 'application_apply_management');
+    var target = getApplicationApplyManagement(routes);
     if (target && _.isArray(target.routes)) {
         target.routes = _.filter(target.routes, subMenuItem => subMenuItem.id !== item.id);
     }
+}
+//获取自定义申请审批
+function getApplicationApplyManagement(routes) {
+    return _.find(routes, item => item.id === 'application_apply_management');
 }
 /*
  * 过滤流程配置路由
@@ -214,11 +218,27 @@ function dealWorkFlowConfigRoute(userRoutes, workFlowConfigList) {
         id: 'my_domain_apply_management',//路由配置中路由id
         configType: SELF_SETTING_FLOW.DOMAINAPPLY//获取后端返回的申请流程配置中流程的类型
     }];
+
     _.forEach(REPORTANDDOUCMENTMAP, item => {
         //只有配置过流程的才展示舆情平台申请的tab
+        //加上配置过的自定义流程在后端所存的描述描述
+        var configTarget = _.find(workFlowConfigList, config => config.type === item.configType);
+        if(configTarget){
+            item['customName'] = _.get(configTarget,'description');
+        }
         if (!workFlowConfigList || _.indexOf(_.map(workFlowConfigList, 'type'), item.configType) < 0
         ) {
             filterCertainRoutes(userRoutes, item);
+        }
+        //找到自定义的流程
+        var target = getApplicationApplyManagement(userRoutes);
+        //找到自定义流程下面的子路由，给子路由加上'customName'字段，这个字段是后端所存储的流程的描述
+        //todo 这个主要是因为现在路由子菜单的渲染是跟据语言包的key来确定的，等之后统一成一种类型后，会去掉
+        if (target && _.isArray(target.routes)) {
+            var subTarget = _.find(target.routes, subMenuItem => subMenuItem.id === item.id);
+            if(subTarget){
+                subTarget['customName'] = item['customName'];
+            }
         }
     });
 }
