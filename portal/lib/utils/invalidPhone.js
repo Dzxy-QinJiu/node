@@ -12,10 +12,22 @@ exports.getInvalidPhone = function(onSuccess, onError) {
     const arg = {
         url: route.path,
         type: route.method,
+        query: {
+            sort_field: 'time',//排序字段,默认：创建时间
+            order: 'descend',//默认：倒序
+            page_size: 1000
+        }
     };
     ajax(arg).then(result => {
         if (_.isFunction(onSuccess)) {
-            onSuccess(result);
+            let list = _.isArray(result.list) ? result.list : [];
+            list = _.chain(list)
+                .map(item => {
+                    return _.get(item, 'number');
+                })
+                .filter(item => item)
+                .value();
+            onSuccess({result: list});
         }
     }, err => {
         if (_.isFunction(onError)) {
