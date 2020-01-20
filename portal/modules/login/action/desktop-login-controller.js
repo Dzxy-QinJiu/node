@@ -249,7 +249,7 @@ function loginSuccess(req, res) {
                     version: _.get(data, 'version', {}),
                     endTime: _.get(data, 'end_time', ''),
                     expireAfterDays: _.get(data, 'expire_after_days'),
-                    grant_products: _.get(data, 'grant_products', []),
+                    grantProducts: _.get(data, 'grant_products', []),
                 };
                 req.session.save(() => {
                     //ajax请求返回sussess
