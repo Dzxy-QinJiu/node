@@ -1203,7 +1203,7 @@ var en_US = {
     'notification.extract.clue.failed': 'Failed to extract lead', // 提取线索失败
     'notification.system.count': '{count} times', // {count}次
     'notification.system.who.account': '{who} account', //{who} 的账号
-    'notification.extract.clue.failed.becanse': 'becanse', // 原因
+    'notification.extract.clue.failed.because': 'because', // 原因
     //通知end
 
     // 公告start

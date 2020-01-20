@@ -342,9 +342,10 @@ function listenSystemNotice(notice) {
             if (isOffsetLogin) {
                 //用账号xxx
                 tipContent += Intl.get('notification.system.use.account', '用账号') + notice.user_name;
+            } else {
+                //的账号xxx
+                tipContent = Intl.get('notification.system.who.account', '{who}的账号', {who: tipContent}) + notice.user_name;
             }
-            //的账号xxx
-            tipContent = Intl.get('notification.system.who.account', '{who}的账号', {who: tipContent}) + notice.user_name;
             // 提取线索失败
             if (isPullClueFailed) {
                 tipContent += Intl.get('notification.extract.clue.failed', '提取线索失败');
@@ -368,7 +369,7 @@ function listenSystemNotice(notice) {
         if (isPullClueFailed) {
             let failedTips = _.get(notice, 'content.operate_detail');
             if (failedTips) {
-                tipContent += `，${Intl.get('notification.extract.clue.failed.becanse', '原因')}：${failedTips}`;
+                tipContent += `，${Intl.get('notification.extract.clue.failed.because', '原因')}：${failedTips}`;
             }
         }
         //标签页不可见时，有桌面通知，并且允许弹出桌面通知时
