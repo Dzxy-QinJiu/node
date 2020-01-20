@@ -40,7 +40,7 @@ class AudioPlayer extends React.Component {
                     <i className="iconfont icon-close close-panel" onClick={this.props.closeAudioPlayContainer}
                         data-tracename="关闭播放录音"></i>
                     {/*如果获取无效电话出错或者没有上报的权限，不要显示上报电话区域*/}
-                    {this.props.getInvalidPhoneErrMsg || !hasPrivilege(privilegeConst_common.CALLSYSTEM_CONFIG_MANAGE) ? null :
+                    {this.props.getInvalidPhoneErrMsg || !hasPrivilege(privilegeConst_common.BASE_OPERATE_PERMISSION) ? null :
                         <div className="report-wrap">
                             <span className="report-tip">
                                 {Intl.get('call.record.customer.phone', '这是一个客服电话')}

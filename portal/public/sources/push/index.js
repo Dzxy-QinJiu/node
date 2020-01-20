@@ -22,8 +22,7 @@ import {
     APPLY_APPROVE_TYPES,
     DIFF_APPLY_TYPE_UNREAD_REPLY,
     CALL_TYPES,
-    CLUE_HIDE_NOTICE_TYPE,
-    CLUE_MESSAGE_TYPE
+    CLUE_HIDE_NOTICE_TYPE
 } from '../utils/consts';
 import logoSrc from './notification.png';
 import userData from '../user-data';
