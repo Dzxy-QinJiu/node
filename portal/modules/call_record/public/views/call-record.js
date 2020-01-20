@@ -122,7 +122,7 @@ class CallRecord extends React.Component {
         $('body').css('overflow', 'hidden');
         CallRecordStore.listen(this.onStoreChange);
         //获取无效电话号码列表
-        /*getInvalidPhone((data) => {
+        getInvalidPhone((data) => {
             this.setState({
                 invalidPhoneLists: data.result,
                 getInvalidPhoneErrMsg: ''
@@ -132,7 +132,7 @@ class CallRecord extends React.Component {
                 invalidPhoneLists: [],
                 getInvalidPhoneErrMsg: errMsg || Intl.get('call.record.get.invalid.phone.lists', '获取无效电话列表失败')
             });
-        });*/
+        });
         this.getCallListByAjax();
         this.getCallRecommendList();
         this.changeTableHeight();
@@ -516,7 +516,7 @@ class CallRecord extends React.Component {
         //给本条记录加上标识
         item.playSelected = true;
         var playItemAddr = commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type);
-        var isShowReportButton = true;//_.indexOf(this.state.invalidPhoneLists, item.dst) === -1;
+        var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, item.dst) === -1;
         audioMsgEmitter.emit(audioMsgEmitter.OPEN_AUDIO_PANEL, {
             playingItemAddr: playItemAddr,
             getInvalidPhoneErrMsg: this.state.getInvalidPhoneErrMsg,
