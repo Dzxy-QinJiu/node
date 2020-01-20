@@ -12,8 +12,9 @@ require('../../css/recommend-customer-condition.less');
 import {checkClueCondition, companyProperty, moneySize, staffSize,CLUE_CONDITION} from '../../utils/clue-customer-utils';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import Trace from 'LIB_DIR/trace';
-import {MAXINDUSTRYCOUNT} from 'PUB_DIR/sources/utils/consts';
+import {MAXINDUSTRYCOUNT, RECOMMEND_CLUE_FILTERS} from 'PUB_DIR/sources/utils/consts';
 import {ipRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {getFormattedCondition} from 'PUB_DIR/sources/utils/common-method-util';
 class RecommendCustomerCondition extends React.Component {
     constructor(props) {
         super(props);
@@ -87,65 +88,6 @@ class RecommendCustomerCondition extends React.Component {
         });
     };
 
-    getFormattedCondition = (condition) => {
-        //关键词
-        let name = _.get(condition, 'name') ? `关键词: ${condition.name} ` : '';
-        //资本规模
-        let capitalScale = _.get(condition, 'capitalMax') || _.get(condition, 'capitalMin') ?
-            `资本规模: ${(condition => {
-                let scale = '';
-                if (condition.capitalMin) {
-                    let item = _.find(moneySize, item => _.isEqual(item.capitalMin, condition.capitalMin));
-                    scale = item.name;
-                } else {
-                    let item = _.find(moneySize, item => _.isEqual(item.capitalMax, condition.capitalMax));
-                    scale = item.name;
-                }
-                return scale;
-            })(condition)} ` : '资本规模: 全部 ';
-        //地域
-        let region = _.get(condition, 'province') || _.get(condition, 'district') || _.get(condition, 'city') ?
-            `地域: ${(condition => {
-                let region = condition.province;
-                let city = _.get(condition, 'city') ? `/${condition.city}` : '';
-                let district = _.get(condition, 'district') ? `/${condition.district}` : '';
-                return `${region}${city}${district}`;
-            })(condition)} ` : '';
-        //人员规模
-        let stuffScale = _.get(condition, 'staffnumMax') || _.get(condition, 'staffnumMin') ?
-            `人员规模: ${(condition => {
-                let scale = '';
-                if (condition.staffnumMin) {
-                    let item = _.find(staffSize, item => _.isEqual(item.staffnumMin, condition.staffnumMin));
-                    scale = item.name;
-                } else {
-                    let item = _.find(staffSize, item => _.isEqual(item.staffnumMax, condition.staffnumMax));
-                    scale = item.name;
-                }
-                return scale;
-            })(condition)} ` : '人员规模: 全部 ';
-        //注册时间
-        let time = _.get(condition, 'startTime') ?
-            `注册时间: ${(condition => {
-                return `${moment(condition.startTime).format(oplateConsts.DATE_FORMAT)} - ${moment(condition.endTime).format(oplateConsts.DATE_FORMAT)}`;
-            })(condition)} ` : '';
-        //行业
-        let industries = _.get(condition, 'industrys') ?
-            `行业: ${(condition => {
-                return _.reduce(condition.industrys, (result, indus) => {
-                    return result + `、${indus}`;
-                });
-            })(condition)} ` : '';
-        //性质
-        let entTypes = _.get(condition, 'entTypes') ?
-            `性质: ${(condition => {
-                return _.reduce(condition.entTypes, (result, type) => {
-                    return result + `、${type}`;
-                });
-            })(condition)} ` : '';
-        return `${name}${time}${industries}${region}${stuffScale}${capitalScale}${entTypes}`;
-    };
-
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
@@ -211,7 +153,8 @@ class RecommendCustomerCondition extends React.Component {
                 saveMsg: '',
                 saveResult: ''
             });
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div.submit-button-container'), '保存线索推荐查询条件 ' + this.getFormattedCondition(hasSavedRecommendParams));
+            let traceStr = getFormattedCondition(hasSavedRecommendParams, RECOMMEND_CLUE_FILTERS);
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div.submit-button-container'), '保存线索推荐查询条件 ' + traceStr);
             var errTip = Intl.get('crm.154', '添加失败');
             $.ajax({
                 url: '/rest/clue/recommend/condition',
