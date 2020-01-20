@@ -8,12 +8,21 @@ export default class ApplyTryCard extends Component {
     state = {
         versionData: this.props.versionData,
     }
+    componentWillReceiveProps(nextProps){
+        this.setState({
+            versionData: nextProps.versionData
+        });
+    }
     renderApplyTryContent = () => {
         const versionData = _.get(this.state,'versionData');
         let applyTryContent = <div className='clue-info-item-apply-try'>
             <div className='clue-info-item-apply-try-content'>
                 <div className='clue-info-item-apply-try-content-title'>{Intl.get('common.company','公司')}</div>
                 <div className='clue-info-item-apply-try-content-value'>{versionData.applyTryCompany}</div>
+            </div>
+            <div className='clue-info-item-apply-try-content'>
+                <div className='clue-info-item-apply-try-content-title'>{Intl.get('common.name','姓名')}</div>
+                <div className='clue-info-item-apply-try-content-value'>{versionData.applyTryName}</div>
             </div>
             <div className='clue-info-item-apply-try-content'>
                 <div className='clue-info-item-apply-try-content-title'>{Intl.get('common.apply.try.user.scales','使用人数')}</div>

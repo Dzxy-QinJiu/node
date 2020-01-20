@@ -19,6 +19,7 @@ import PurchaseLeads from 'CMP_DIR/purchase-leads';
 import ClueToCustomerPanel from 'CMP_DIR/clue-to-customer-panel';
 import OfficialPersonalEdition from 'CMP_DIR/official-personal-edition';
 import OrganizationExpiredTip from 'CMP_DIR/organization-expired-tip';
+import ApplyTry from 'MOD_DIR/apply_try/public';
 import{
     myWorkEmitter,
     notificationEmitter,
@@ -62,6 +63,8 @@ class PageFrame extends React.Component {
         cluePaymentParamObj: {},
         isShowPersonalVersionPanel: false,//是否展示升级个人正式版面板
         personalPaymentParamObj: {},
+        isShowApplyTryPanel: false,//是否展示申请试用的面板
+        applyTryParamObj: {},
     };
 
     getLastUpgradeNoticeList() {
@@ -120,6 +123,8 @@ class PageFrame extends React.Component {
         clueToCustomerPanelEmitter.on(clueToCustomerPanelEmitter.OPEN_PANEL, this.openClueToCustomerPanel);
         //监听线索转客户面板关闭事件
         clueToCustomerPanelEmitter.on(clueToCustomerPanelEmitter.CLOSE_PANEL, this.closeClueToCustomerPanel);
+        //监听申请试用面板打开事件
+        paymentEmitter.on(paymentEmitter.OPEN_APPLY_TRY_PANEL, this.showApplyTryPanel);
 
         $(window).on('resize', this.resizeHandler);
     }
@@ -178,6 +183,7 @@ class PageFrame extends React.Component {
         clueToCustomerPanelEmitter.removeListener(clueToCustomerPanelEmitter.OPEN_PANEL, this.openClueToCustomerPanel);
         //取消监听线索转客户面板关闭事件
         clueToCustomerPanelEmitter.removeListener(clueToCustomerPanelEmitter.CLOSE_PANEL, this.closeClueToCustomerPanel);
+        paymentEmitter.removeListener(paymentEmitter.OPEN_APPLY_TRY_PANEL, this.showApplyTryPanel);
         //需清除定时获取最新公告的定时器，以防出现问题
         this.getLastNoticeTimer && clearInterval(this.getLastNoticeTimer);
         this.getLastNoticeTimer = null;
@@ -188,9 +194,13 @@ class PageFrame extends React.Component {
         });
     }
 
-    showNotificationPanel = () => {
+    showNotificationPanel = (type) => {
         this.setState({
             isShowNotificationPanel: true
+        }, () => {
+            if (type) {
+                notificationEmitter.emit(notificationEmitter.CLICK_SUBMENU_NOTICE_TYPE, type);
+            }
         });
     }
 
@@ -342,6 +352,13 @@ class PageFrame extends React.Component {
         this.setState({isShowPersonalVersionPanel: false, personalPaymentParamObj: {}});
     };
 
+    showApplyTryPanel = (paramObj) => {
+        this.setState({isShowApplyTryPanel: true, applyTryParamObj: $.extend(this.state.applyTryParamObj, paramObj)});
+    };
+    closeApplyTryPanel = () => {
+        this.setState({isShowApplyTryPanel: false, applyTryParamObj: {}});
+    };
+
     render() {
         var audioParamObj = this.state.audioParamObj;
         return (
@@ -417,6 +434,11 @@ class PageFrame extends React.Component {
                                     paramObj={this.state.personalPaymentParamObj}
                                     onClosePanel={this.closePersonalVersionPanel}
                                 />
+                            ) : null
+                        }
+                        {
+                            this.state.isShowApplyTryPanel ? (
+                                <ApplyTry hideApply={this.closeApplyTryPanel} {...this.state.applyTryParamObj}/>
                             ) : null
                         }
                     </div>

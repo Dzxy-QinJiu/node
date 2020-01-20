@@ -4,6 +4,8 @@
  * Created by zhangshujuan on 2018/1/11.
  */
 import {Icon} from 'antd';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import privilegeConst_common from 'MOD_DIR/common/public/privilege-const';
 var AlertTimer = require('CMP_DIR/alert-timer');
 require('./index.less');
 class AudioPlayer extends React.Component {
@@ -37,8 +39,8 @@ class AudioPlayer extends React.Component {
                     </audio>
                     <i className="iconfont icon-close close-panel" onClick={this.props.closeAudioPlayContainer}
                         data-tracename="关闭播放录音"></i>
-                    {/*如果获取无效电话出错时，不要显示上报电话区域*/}
-                    {this.props.getInvalidPhoneErrMsg ? null :
+                    {/*如果获取无效电话出错或者没有上报的权限，不要显示上报电话区域*/}
+                    {this.props.getInvalidPhoneErrMsg || !hasPrivilege(privilegeConst_common.BASE_OPERATE_PERMISSION) ? null :
                         <div className="report-wrap">
                             <span className="report-tip">
                                 {Intl.get('call.record.customer.phone', '这是一个客服电话')}
@@ -57,7 +59,8 @@ class AudioPlayer extends React.Component {
                                 type='error' showIcon
                                 onHide={this.props.hideErrTooltip}/>) : null
                             }
-                        </div>}
+                        </div>
+                    }
 
                 </div>
             </div>

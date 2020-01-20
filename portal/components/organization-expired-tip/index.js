@@ -10,7 +10,6 @@ import { getOrganizationInfo } from 'PUB_DIR/sources/utils/common-data-util';
 import { checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
 import { paymentEmitter } from 'PUB_DIR/sources/utils/emitters';
 import DifferentVersion from 'MOD_DIR/different_version/public';
-import ApplyTry from 'MOD_DIR/apply_try/public';
 import history from 'PUB_DIR/sources/history';
 import {COMPANY_PHONE, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/utils/consts';
 
@@ -24,7 +23,6 @@ class OrganizationExipreTip extends React.PureComponent {
     state = {
         visible: false,
         endTime: 0,
-        showDifferentVersion: false,//是否显示版本信息面板
     };
 
     componentDidMount() {
@@ -73,8 +71,8 @@ class OrganizationExipreTip extends React.PureComponent {
         });
     };
     //显示/隐藏版本信息面板
-    triggerShowVersionInfo = () => {
-        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
+    triggerShowVersionInfo = (isShowModal = true) => {
+        paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {isShowModal, versionKind: COMPANY_VERSION_KIND});
     };
     handleContinueFn = (orderInfo) => {
         history.push('/leads');
@@ -130,7 +128,6 @@ class OrganizationExipreTip extends React.PureComponent {
                         closable
                         className="organization-expired-tip"
                     />
-                    {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
                     {/*<DifferentVersion*/}
                     {/*showFlag={this.state.showDifferentVersion}*/}
                     {/*closeVersion={this.triggerShowVersionInfo}*/}

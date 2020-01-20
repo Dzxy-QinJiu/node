@@ -43,6 +43,18 @@ var client = null;
 //存储用户id对应的socketId、token的对象
 var socketStore = {};
 var ioServer = null;
+const CLUE_MESSAGE_TYPE = {
+    MANUL_NEW_DISTRIBUTION: 'manual_new_distribution',//手动分配线索
+    RULE_AUTO_DISTRIBUTION: 'rule_auto_distribution',//自动分配线索
+    ADD_CUSTOMER_CLUE: 'addCustomerClue',//添加线索
+    BASE_EXTRACT_ALLOT: 'base_extract_allot',//推荐线索提取的类型
+    POOL_EXTRACT_ALLOT: 'pool_extract_allot'//线索池提取的线索类型
+};
+const CLUE_ADD_TYPE = [CLUE_MESSAGE_TYPE.MANUL_NEW_DISTRIBUTION,
+    CLUE_MESSAGE_TYPE.RULE_AUTO_DISTRIBUTION,
+    CLUE_MESSAGE_TYPE.ADD_CUSTOMER_CLUE,
+    CLUE_MESSAGE_TYPE.BASE_EXTRACT_ALLOT,
+    CLUE_MESSAGE_TYPE.POOL_EXTRACT_ALLOT];
 /*
  * 为socket请求设置sessionId.
  * @param  ioServer  socket.io 的server
@@ -97,7 +109,7 @@ function notifyChannelListener(data) {
  * 拨打电话消息监听器
  * */
 function phoneEventChannelListener(data) {
-    pushLogger.debug('后端推送的拨打电话的数据:' + JSON.stringify(data));
+    // pushLogger.debug('后端推送的拨打电话的数据:' + JSON.stringify(data));
     // 将查询结果返给浏览器
     var phonemsgObj = JSON.parse(data) || {};
     //将数据推送到浏览器
@@ -120,7 +132,7 @@ function clueUnhandledNumListener(data) {
         _.each(cluemsgObj.user_ids, user_id => {
             emitMsgBySocket(user_id, 'apply_upgrade_complete', pushDto.applyTryMsgToFrontend(cluemsgObj));
         });
-    }else{
+    }else if (_.indexOf(CLUE_ADD_TYPE,cluemsgObj.type) > -1){
         emitMsgBySocket(cluemsgObj && cluemsgObj.user_id, 'cluemsg', pushDto.clueMsgToFrontend(cluemsgObj));
     }
 }

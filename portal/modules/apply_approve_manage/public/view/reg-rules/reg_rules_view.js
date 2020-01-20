@@ -33,7 +33,7 @@ import {
     isVisitApplyFlow,
     isDomainApplyFlow,
     CC_SETTINGT_TYPE,
-    isUserApplyFlow
+    isUserApplyFlow, ROLES_SETTING
 } from '../../utils/apply-approve-utils';
 import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveManageStore from '../../store/apply_approve_manage_store';
@@ -42,9 +42,11 @@ class RegRulesView extends React.Component {
         super(props);
         var applyRulesAndSetting = _.cloneDeep(this.props.applyTypeData.applyRulesAndSetting);
         var notify_configs = _.cloneDeep(this.props.applyTypeData.notify_configs);
+        var customiz_user_range = _.cloneDeep(this.props.applyTypeData.customiz_user_range);
         this.state = {
             applyRulesAndSetting: applyRulesAndSetting,
             notify_configs: notify_configs || {},
+            customiz_user_range: customiz_user_range || [],
             addNodePanelFlow: '',
             addCCNodePanelFlow: '',//添加抄送人的流程类型
             showAddConditionPanel: false,
@@ -81,10 +83,8 @@ class RegRulesView extends React.Component {
 
         });
         this.createBpmnTool(bpmnModeler);
-
         ApplyApproveManageStore.listen(this.onStoreChange);
     }
-
     componentWillUnmount() {
         ApplyApproveManageStore.unlisten(this.onStoreChange);
     }
@@ -414,27 +414,22 @@ class RegRulesView extends React.Component {
             link.removeClass('active');
         }
     };
-    handleDownLoadBPMN = () => {
-        var viewer = this.state.bpmnModeler;
-        var downloadSvgLink = $('#js-download-svg');
-        var downloadLink = $('#js-download-diagram');
-        viewer.saveXML({format: true}, (err, xml) => {
-            this.setEncoded(downloadLink, 'diagram.bpmn', err ? null : xml);
-        });
-    };
     handleSavedBPMNFlow = () => {
         var viewer = this.state.bpmnModeler, applyRulesAndSetting = this.state.applyRulesAndSetting;
         viewer.saveXML({format: true}, (err, xml) => {
             applyRulesAndSetting.bpmnJson = xml;
             var applyId = _.get(this, 'props.applyTypeData.id');
             //表单的内容不需要提交
-            applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId, applyRulesAndSetting, (result) => {
-
+            var submitObj = {
+                customiz_user_range: this.state.customiz_user_range,
+                ...applyRulesAndSetting
+            };
+            applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId, submitObj, (result) => {
                 if(_.isString(result)){
                     message.error(result);
                 }else{
                     message.success('保存成功');
-                    this.props.updateRegRulesView(applyRulesAndSetting);
+                    this.props.updateRegRulesView(submitObj);
                 }
 
             });
@@ -479,7 +474,7 @@ class RegRulesView extends React.Component {
 
     };
     handleSubmitApproveApply = () => {
-        var applyRulesAndSetting = this.state.applyRulesAndSetting, notify_configs = this.state.notify_configs;
+        var applyRulesAndSetting = this.state.applyRulesAndSetting;
         //需要在最后加上最后一个节点,需要先判断之前是不是有结束节点
         var defaultBpmnNode = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
         var previousNode = _.last(defaultBpmnNode);
@@ -579,17 +574,7 @@ class RegRulesView extends React.Component {
             //如果流程不是默认流程并且流程上没有节点，在添加这个节点的时候需要加上条件
             if (applyFlow !== FLOW_TYPES.DEFAULTFLOW && !bpmnNodeFlow.length) {
                 var limitRules = _.get(applyRulesAndSetting, `applyApproveRules.${applyFlow}.conditionRuleLists.limitRules`, []);
-                _.forEach(limitRules, (item, index) => {
-                    if (index === 0) {
-                        newNodeObj['conditionTotalRule'] = _.get(item, 'conditionRule');
-                        newNodeObj['conditionTotalRuleDsc'] = _.get(item, 'conditionRuleDsc');
-                    } else {
-                        newNodeObj['conditionTotalRule'] += '  && ' + _.get(item, 'conditionRule');
-                        newNodeObj['conditionTotalRuleDsc'] += '并且' + _.get(item, 'conditionRuleDsc');
-                    }
-
-                });
-
+                this.updateCustomizeNode(limitRules,newNodeObj);
             }
         } else {
             //如果是第一个节点
@@ -623,6 +608,75 @@ class RegRulesView extends React.Component {
         bpmnNodeFlow.push(newNodeObj);
 
     };
+    updateCustomizeNode = (limitRules,newNodeObj) => {
+        _.forEach(limitRules, (item, index) => {
+            if (index === 0) {
+                newNodeObj['conditionTotalRule'] = _.get(item, 'conditionRule');
+                newNodeObj['conditionTotalRuleDsc'] = _.get(item, 'conditionRuleDsc');
+            } else {
+                //如果是有两个条件或者多个条件的时候
+                //如果有多个条件的时候，需要用类似于这样的展示方式增加条件${user_range=="b0292bef-a1f8-4ce5-80d2-1a0f58a67ba1" && condition&gt;3.0}
+                newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '}', '');
+                newNodeObj['conditionTotalRule'] += '  \&& ' + _.replace( _.get(item, 'conditionRule'), '${', '');
+                newNodeObj['conditionTotalRuleDsc'] += '并且' + _.get(item, 'conditionRuleDsc');
+
+            }
+            //如果是单独划分出一批人，需要单独把这些人传过去
+            var customiz_user_range = [];
+            if(item.limitType === 'userSearch_limit'){
+                customiz_user_range.push({
+                    'range_key': _.get(item,'userRangeRoute'),
+                    'range_users': _.get(item,'userRange')
+                });
+
+            }
+            this.setState({
+                customiz_user_range: customiz_user_range
+            });
+        });
+    };
+    saveAddApprovCondition = (data) => {
+        //再原来默认的流程上加上一个网关，然后把添加的条件改成节点，有利于画图
+        var applyRulesAndSetting = this.state.applyRulesAndSetting;
+        var applyApproveRules = _.get(applyRulesAndSetting, 'applyApproveRules');
+        //要在默认流程那里加一个网关,只限于在第一次添加网关的时候
+        var defaultBpmnNode = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
+        var firstNode = _.get(defaultBpmnNode, '[0]');
+        if (!data.updateConditionFlowKey && firstNode.type !== 'ExclusiveGateway') {
+            firstNode['previous'] = 'Gateway_1_1';
+            var secondNode = _.get(defaultBpmnNode, '[1]');
+            defaultBpmnNode.splice(0, 0, {
+                name: 'Gateway_1_1',
+                id: 'Gateway_1_1',
+                type: 'ExclusiveGateway',
+                next: 'UserTask_1_2',
+                flowIndex: '1_1'
+            });
+        }
+        var initialValue = 1;
+        for (var key in applyApproveRules) {
+            initialValue++;
+        }
+        //还需要把节点上的条件改一下
+        if (data.updateConditionFlowKey) {
+            var flowKey = data.updateConditionFlowKey;
+            delete data.updateConditionFlowKey;
+            applyApproveRules[flowKey]['conditionRuleLists'] = data;
+            var limitRules = _.get(data, 'limitRules', []);
+            var firstNode = _.get(applyApproveRules[flowKey], 'bpmnNode[0]',{});
+            this.updateCustomizeNode(limitRules,firstNode);
+        } else {
+            applyApproveRules[`condition_${initialValue}`] = {
+                bpmnNode: [],
+                conditionRuleLists: data,
+                ccPerson: []
+            };
+        }
+
+        this.setState({
+            applyRulesAndSetting
+        });
+    };
     handleOtherCheckChange = (e) => {
         var applyRulesAndSetting = _.get(this, 'state.applyRulesAndSetting');
         applyRulesAndSetting.mergeSameApprover = e.target.checked;
@@ -642,58 +696,6 @@ class RegRulesView extends React.Component {
             showAddConditionPanel: true
         });
     };
-    saveAddApprovCondition = (data) => {
-        //再原来默认的流程上加上一个网关，然后把添加的条件改成节点，有利于画图
-        var applyRulesAndSetting = this.state.applyRulesAndSetting;
-        var applyApproveRules = _.get(applyRulesAndSetting, 'applyApproveRules');
-        //要在默认流程那里加一个网关,只限于在第一次添加网关的时候
-        var defalutBpmnNode = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
-        var firstNode = _.get(defalutBpmnNode, '[0]');
-        if (!data.updateConditionFlowKey) {
-            firstNode['previous'] = 'Gateway_1_1';
-            var secondNode = _.get(defalutBpmnNode, '[1]');
-            defalutBpmnNode.splice(0, 0, {
-                name: 'Gateway_1_1',
-                id: 'Gateway_1_1',
-                type: 'ExclusiveGateway',
-                next: 'UserTask_1_2',
-                flowIndex: '1_1'
-            });
-        }
-        var initialValue = 1;
-        for (var key in applyApproveRules) {
-            initialValue++;
-        }
-        //还需要把节点上的条件改一下
-        if (data.updateConditionFlowKey) {
-            var flowKey = data.updateConditionFlowKey;
-            delete data.updateConditionFlowKey;
-            applyApproveRules[flowKey]['conditionRuleLists'] = data;
-            var limitRules = _.get(data, 'limitRules', []);
-            var firstNode = _.get(applyApproveRules[flowKey], 'bpmnNode[0]',{});
-            _.forEach(limitRules, (item, index) => {
-                if (index === 0) {
-                    firstNode['conditionTotalRule'] = _.get(item, 'conditionRule');
-                    firstNode['conditionTotalRuleDsc'] = _.get(item, 'conditionRuleDsc');
-                } else {
-                    firstNode['conditionTotalRule'] += '  && ' + _.get(item, 'conditionRule');
-                    firstNode['conditionTotalRuleDsc'] += '并且' + _.get(item, 'conditionRuleDsc');
-                }
-            });
-
-
-        } else {
-            applyApproveRules[`condition_${initialValue}`] = {
-                bpmnNode: [],
-                conditionRuleLists: data,
-                ccPerson: []
-            };
-        }
-
-        this.setState({
-            applyRulesAndSetting
-        });
-    };
     handleDeleteConditionItem = (key) => {
         this.setState({
             confirmDeleteItem: key
@@ -709,6 +711,14 @@ class RegRulesView extends React.Component {
         if (deleteKey) {
             var applyRulesAndSetting = _.get(this, 'state.applyRulesAndSetting');
             var applyApproveRules = _.get(applyRulesAndSetting, 'applyApproveRules');
+            //删除这个流程之前要把设置的划定一批人也删除掉
+            var limitRoutes = _.map(_.get(applyApproveRules[deleteKey],'conditionRuleLists.limitRules',[]),'userRangeRoute');
+            var customiz_user_range = this.state.customiz_user_range;
+            if(_.get(limitRoutes,'[0]')){
+                _.forEach(limitRoutes,routeKey => {
+                    customiz_user_range = _.filter(customiz_user_range, range => range.range_key !== routeKey);
+                });
+            }
             delete applyApproveRules[deleteKey];
             var flowLength = 0;
             for (var key in applyApproveRules) {
@@ -722,7 +732,7 @@ class RegRulesView extends React.Component {
                 var firstNode = _.get(defalutBpmnNode, '[0]');
                 delete firstNode.previous;
             }
-            this.setState({applyRulesAndSetting, confirmDeleteItem: ''});
+            this.setState({applyRulesAndSetting, confirmDeleteItem: '',customiz_user_range: customiz_user_range});
         }
 
     };
@@ -839,11 +849,19 @@ class RegRulesView extends React.Component {
     };
     //点击保存流程，如果没有修改流程节点，只需要走修改流程的接口，如果修改了节点，需要走重布的接口
     handleSubmitWorkflow = () => {
-        if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), _.get(this.state, 'applyRulesAndSetting.applyApproveRules'))){
-            this.handleSubmitCCApply();
-        }else{
-            this.handleSubmitApproveApply();
-        }
+        // if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), _.get(this.state, 'applyRulesAndSetting.applyApproveRules'))){
+        //     this.handleSubmitCCApply();
+        // }else{
+        this.handleSubmitApproveApply();
+        // }
+    };
+    handleDownLoadBPMN = () => {
+        var viewer = this.state.bpmnModeler;
+        var downloadSvgLink = $('#js-download-svg');
+        var downloadLink = $('#js-download-diagram');
+        viewer.saveXML({format: true}, (err, xml) => {
+            this.setEncoded(downloadLink, 'diagram.bpmn', err ? null : xml);
+        });
     };
     render = () => {
         var hasErrTip = this.state.titleRequiredMsg;
@@ -1007,6 +1025,14 @@ class RegRulesView extends React.Component {
                         <div className="containers" id="bpmn-container" ref="content">
                             <div className="canvas" id="canvas" ref="canvas"></div>
                             <div className="properties-panel-parent" id="js-properties-panel"></div>
+                            <ul className="buttons">
+                                <li>
+                                    <a id="js-download-diagram" href title="download BPMN diagram"
+                                        onClick={this.handleDownLoadBPMN}>
+                                        下载BPMN
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </GeminiScrollbar>
@@ -1049,6 +1075,8 @@ class RegRulesView extends React.Component {
                             applyTypeData={this.props.applyTypeData}
                             updateConditionObj={this.state.updateConditionObj}
                             updateConditionFlowKey={this.state.updateConditionFlowKey}
+                            roleList={this.state.roleList}
+                            userList={this.state.userList}
                         />
                     </div>
                     : null}

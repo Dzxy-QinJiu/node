@@ -24,9 +24,11 @@ import {
     isBussinessTripFlow,
     isLeaveFlow,
     isSalesOpportunityFlow,
-    CONDITION_LIMITE
+    CONDITION_LIMITE, ADDAPPLYFORMCOMPONENTS, ROLES_SETTING
 } from '../../utils/apply-approve-utils';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 require('../../style/add_apply_condition_panel.less');
+var uuid = require('uuid/v4');
 class AddApplyConditionPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -37,11 +39,23 @@ class AddApplyConditionPanel extends React.Component {
                 limitRules: [],
             } : _.cloneDeep(this.props.updateConditionObj),//添加的条件审批数据
             applySaveForm: _.get(this, 'props.applyTypeData.customiz_form', []),
+            userList: this.props.userList,//用户列表
+            setting_users: {
+                selectUser: '',//选中的成员
+                showSelectUser: ''
+            },
         };
     }
 
     componentDidMount() {
+
     }
+    componentWillReceiveProps(nextProps, nextContext) {
+        this.setState({
+            userList: nextProps.userList
+        });
+    }
+
 
     handleAddConditionType = (conditionType) => {
         var diffConditionLists = this.state.diffConditionLists;
@@ -57,6 +71,11 @@ class AddApplyConditionPanel extends React.Component {
         var target = _.find(CONDITION_KEYS, item => item.value.indexOf(conditionType) > -1);
         return target;
     };
+    hasAddThisTypeCondition = (type) => {
+        var diffConditionLists = this.state.diffConditionLists;
+        var limitRules = _.get(diffConditionLists, 'limitRules');
+        return _.find(limitRules, limit => limit.limitType === type);
+    };
     getDiffTypeComponents = () => {
         var applySaveForm = this.state.applySaveForm;
         var applyType = _.get(this, 'props.applyTypeData.type');
@@ -64,55 +83,74 @@ class AddApplyConditionPanel extends React.Component {
         var isShowTimeRange = isBussinessTripFlow(applyType) || isLeaveFlow(applyType);
         //如果是销售机会申请，需要展示金额这个条件
         var isShowMoneyRange = isSalesOpportunityFlow(applyType);
+
         var componentType = '', descriptionTip = '', showInnerCondition = false;
         if (isShowTimeRange) {
             componentType = ALL_COMPONENTS.TIMEPERIOD;
             descriptionTip = Intl.get('user.duration', '时长');
             showInnerCondition = true;
         } else if (isShowMoneyRange) {
-            componentType = ALL_COMPONENTS.TIMEPERIOD;
-            descriptionTip = Intl.get('user.duration', '时长');
-            showInnerCondition = true;
+            // componentType = ALL_COMPONENTS.TIMEPERIOD;
+            // descriptionTip = Intl.get('user.duration', '时长');
+            // showInnerCondition = true;
         }
         //保存的已经添加的表单，是个数组
+        //任何流程都要展示选一批人这个筛选条件
+        var saveForm = false;
         var menus = <Menu>{
             //如果是内置的出差流程或者是请假流程，要加上时长的判断
-            showInnerCondition ? <Menu.Item>
-                <a onClick={this.handleAddConditionType.bind(this, componentType)}>{descriptionTip}</a>
-            </Menu.Item> :
+            showInnerCondition ?
+                this.hasAddThisTypeCondition(componentType + '_limit') ? null : <Menu.Item>
+                    <a onClick={this.handleAddConditionType.bind(this, componentType)}>{descriptionTip}</a>
+                </Menu.Item> :
                 _.map(applySaveForm, (item) => {
                     var component_type = item.subComponentType || item.component_type;
                     var target = this.getConditionRelate(component_type);
-                    if (target) {
+                    if (target && !this.hasAddThisTypeCondition(_.get(target,'value'))) {
                         return <Menu.Item>
                             <a onClick={this.handleAddConditionType.bind(this, component_type)}>{_.get(target, 'name')}</a>
                         </Menu.Item>;
+                    }else{
+                        saveForm = true;
                     }
-
                 })
-
-        }</Menu>;
-        return menus;
+        }
+        {this.hasAddThisTypeCondition(ALL_COMPONENTS.USERSEARCH + '_limit') ? null : <Menu.Item>
+            <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.USERSEARCH)}>{Intl.get('user.apply.presenter', '申请人')}</a>
+        </Menu.Item> }
+        </Menu>;
+        //是否还有menuitem展示
+        var hasNoMenuItem = ((showInnerCondition && this.hasAddThisTypeCondition(componentType + '_limit')) || (!showInnerCondition && saveForm)) && this.hasAddThisTypeCondition(ALL_COMPONENTS.USERSEARCH + '_limit');
+        return {menus: menus,
+            hasNoMenuItem: hasNoMenuItem
+        };
     };
     renderDiffCondition = () => {
-        var menus = this.getDiffTypeComponents();
-        return (
-            <Dropdown overlay={menus}>
-                <a className="ant-dropdown-link" href="#">
-                    {Intl.get('apply.add.apply.condition', '添加条件')}
-                </a>
-            </Dropdown>
-        );
+        var menusObj = this.getDiffTypeComponents();
+        //如果这个menu中没有子元素就不需要再展示添加条件了
+        if (menusObj.hasNoMenuItem) {
+            return null;
+        } else {
+            return (
+                <Dropdown overlay={menusObj.menus}>
+                    <a className="ant-dropdown-link" href="#">
+                        {Intl.get('apply.add.apply.condition', '添加条件')}
+                    </a>
+                </Dropdown>
+            );
+        }
+
     };
     deleteConditionType = (deleteType) => {
         var diffConditionLists = this.state.diffConditionLists;
-        var limitRules = _.filter(_.get(diffConditionLists, 'limitRules'), (item) => item.type !== deleteType);
+        var limitRules = _.filter(_.get(diffConditionLists, 'limitRules'), (item) => item.limitType !== deleteType);
         //如果所有条件都删除完了，要展示添加的提示
-        if (_.get(limitRules, 'length')) {
+        if (!_.get(limitRules, 'length')) {
             this.setState({
                 showAddConditionForm: false
             });
         }
+        diffConditionLists.limitRules = limitRules;
         this.setState({
             diffConditionLists
         });
@@ -130,7 +168,25 @@ class AddApplyConditionPanel extends React.Component {
                 diffConditionLists
             });
         }
-
+    };
+    handleChangeSelectUser = (key, subKey, index, userId) => {
+        var diffConditionLists = this.state.diffConditionLists;
+        var limitRules = _.get(diffConditionLists, 'limitRules');
+        var target = _.find(limitRules, limit => limit.limitType === key);
+        if (target) {
+            //每个路径都要随机出一个数字作为路径的名称
+            target[subKey + 'Route'] = uuid();
+            target[subKey] = userId;
+            var subKeyDsc = [];
+            _.forEach(userId,id => {
+                var targetObj = _.find(this.state.userList,item => item.userId === id);
+                subKeyDsc.push(_.get(targetObj,'nickName'));
+            });
+            target[subKey + 'Dsc'] = subKeyDsc;
+            this.setState({
+                diffConditionLists
+            });
+        }
     };
     handleRangeInputChange = (key, subKey, Dsc, e) => {
         var diffConditionLists = this.state.diffConditionLists;
@@ -155,12 +211,13 @@ class AddApplyConditionPanel extends React.Component {
     getDiffConditionType = () => {
 
     };
+
     renderDiffTypeConditions = () => {
         var diffConditionLists = this.state.diffConditionLists;
         var limitRules = _.get(diffConditionLists, 'limitRules', []);
         return (
             <div className="condition_list_type">
-                {_.map(limitRules, (value) => {
+                {_.map(limitRules, (value,index) => {
                     var limitType = value.limitType;
                     var target = this.getConditionRelate(limitType);
                     switch (limitType) {
@@ -186,7 +243,29 @@ class AddApplyConditionPanel extends React.Component {
                                         addonAfter={Intl.get('common.time.unit.day', '天')}/>
                                 </div>
                             </div>);
+                        case ALL_COMPONENTS.USERSEARCH + '_limit':
+                            return (
+                                <div className="condition-type-container user-condition-container">
+                                    <div className="condition-type-title">
+                                        {_.get(target, 'name')}
+                                        <i className="iconfont icon-delete handle-btn-item"
+                                            onClick={this.deleteConditionType.bind(this, limitType)}></i>
+                                    </div>
+                                    <div className="condition-type-content">
+                                        <Select
+                                            defaultValue={_.get(value, 'userRange')}
+                                            showSearch mode="multiple"
+                                            onChange={this.handleChangeSelectUser.bind(this, limitType, 'userRange',index)}
+                                            filterOption={(input, option) => ignoreCase(input, option)}>
+                                            {_.map(this.state.userList, (item,index) => {
+                                                return <Option value={item.userId} key={index}>{item.nickName}</Option>;
+                                            })}
+                                        </Select>
+                                    </div>
+                                </div>
+                            );
                     }
+
                 })}
             </div>
         );
@@ -252,7 +331,10 @@ class AddApplyConditionPanel extends React.Component {
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('condition_qualifily')(
-                                            _this.state.showAddConditionForm ? _this.renderDiffTypeConditions() : _this.renderDiffCondition()
+                                            <div>
+                                                {_this.state.showAddConditionForm ? _this.renderDiffTypeConditions() : null}
+                                                {_this.renderDiffCondition()}
+                                            </div>
                                         )}
                                     </FormItem>
                                     <div className="submit-button-container">
@@ -286,7 +368,9 @@ AddApplyConditionPanel.defaultProps = {
     },
     applyTypeData: {},
     updateConditionObj: {},
-    updateConditionFlowKey: ''
+    updateConditionFlowKey: '',
+    userList: [],
+    roleList: []
 
 };
 AddApplyConditionPanel.propTypes = {
@@ -296,5 +380,7 @@ AddApplyConditionPanel.propTypes = {
     updateConditionObj: PropTypes.object,
     updateConditionFlowKey: PropTypes.string,
     form: PropTypes.object,
+    roleList: PropTypes.array,
+    userList: PropTypes.array,
 };
 export default Form.create()(AddApplyConditionPanel);

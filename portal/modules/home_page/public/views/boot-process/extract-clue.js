@@ -26,7 +26,6 @@ import { formatSalesmanList, checkCurrentVersionType, checkVersionAndType } from
 import { getMaxLimitExtractClueCount, updateGuideMark } from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
 import DifferentVersion from 'MOD_DIR/different_version/public';
-import ApplyTry from 'MOD_DIR/apply_try/public';
 import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon } from 'PUB_DIR/sources/utils/consts';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 
@@ -510,12 +509,14 @@ class ExtractClues extends React.Component {
     //个人试用升级为正式版
     handleUpgradePersonalVersion = () => {
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            isShowModal: false,//是否显示个人版界面遮罩层
+            isShowLeadModal: false,//是否显示购买线索量遮罩层
             showDifferentVersion: this.triggerShowVersionInfo
         });
     };
     //显示/隐藏版本信息面板
-    triggerShowVersionInfo = () => {
-        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
+    triggerShowVersionInfo = (isShowModal = true) => {
+        paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {isShowModal, versionKind: COMPANY_VERSION_KIND});
     };
     handleUpdateClues = (result) => {
         let count = _.get(result, 'count', 0);
@@ -529,7 +530,7 @@ class ExtractClues extends React.Component {
     };
     //增加线索量
     handleClickAddClues = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL);
+        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL, {isShowModal: false});
     };
 
     //该线索前的checkbox不可用
@@ -711,7 +712,7 @@ class ExtractClues extends React.Component {
         if(settedCustomerRecommend.loading || isLoadingRecommendClue) {
             return (
                 <div className="load-content">
-                    <Spinner className='home-loading' loadingText={Intl.get('guide.extract.clue.loading', '获取线索中')}/>
+                    <Spinner className='home-loading'/>
                 </div>
             );
         }else if(getRecommendClueErrMsg && getRecommendClueErrMsg !== Intl.get('errorcode.168', '符合条件的线索已被提取完成，请修改条件再查看')) {
@@ -784,14 +785,14 @@ class ExtractClues extends React.Component {
             moreDataTip = (
                 <div>
                     {Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以')}
-                    <a onClick={this.getRecommendLists}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
+                    <a data-tracename="点击换一批按钮" onClick={this.getRecommendLists}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
                 </div>
             );
         }else {
             moreDataTip = (
                 <div>
                     {Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以')}
-                    <a onClick={this.props.handleBackClick}>{Intl.get('clue.customer.condition.change', '修改条件')}</a>
+                    <a data-tracename="点击修改推荐条件" onClick={this.props.handleBackClick}>{Intl.get('clue.customer.condition.change', '修改条件')}</a>
                     {Intl.get('lead.recommend.change.condition', '再试试')}
                 </div>
             );
@@ -812,7 +813,7 @@ class ExtractClues extends React.Component {
             return (
                 <div>
                     <AntcDropdown
-                        datatraceContainer='首页批量立即提取线索'
+                        datatraceContainer='批量提取线索'
                         ref={ref => this['changeSales'] = ref}
                         content={
                             <Button
@@ -883,7 +884,7 @@ class ExtractClues extends React.Component {
             'change-new-icon-rotation': !this.state.canClickMoreBatch
         });
         return (
-            <div className="extract-clues-wrapper" data-tracename="批量提取线索操作面板">
+            <div className="extract-clues-wrapper" data-tracename="线索推荐操作面板">
                 <div className="extract-clues-title-wrapper">
                     <div className="extract-clues-title">
                         <span>{Intl.get('clue.customer.clue.recommend', '线索推荐')}</span>
@@ -926,7 +927,6 @@ class ExtractClues extends React.Component {
                         {this.renderRecommendLists()}
                     </GeminiScrollbar>
                 </div>
-                {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
                 {/*<DifferentVersion*/}
                 {/*showFlag={this.state.showDifferentVersion}*/}
                 {/*closeVersion={this.triggerShowVersionInfo}*/}

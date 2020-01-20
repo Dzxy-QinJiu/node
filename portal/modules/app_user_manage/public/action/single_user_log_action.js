@@ -4,7 +4,6 @@
 var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 const LogAnalysisUtil = require('./log-analysis-util');
-import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 
 function handleLogParams(_this, getLogParam, userOwnAppList) {
     getLogParam.appid = LogAnalysisUtil.handleSelectAppId(userOwnAppList);
@@ -61,17 +60,7 @@ function SingleUserLogAction() {
                 );
             } else { // 全部应用条件下查看
                 if (appLists.length) {
-                    let appList = _.clone(appLists);
-                    let ketaoId = _.get(window, 'Oplate.clientId'); // 客套id
-                    let ketaoApp = _.find(appList, app => app.app_id === ketaoId);
-                    // 客套组织下，客套产品显示在最前面的处理
-                    if (isKetaoOrganizaion() && ketaoApp) {
-                        // 先删除原数组中，客套元素，会改变原数组
-                        _.remove(appList, ketaoApp);
-                        // 将客套放到数组首部
-                        appList.unshift(ketaoApp);
-                    }
-                    handleLogParams(this, getLogParam, appList);
+                    handleLogParams(this, getLogParam, appLists);
                    
                 } else {
                     userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {

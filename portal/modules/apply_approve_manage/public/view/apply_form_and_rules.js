@@ -420,9 +420,11 @@ class ApplyFormAndRules extends React.Component {
         //userData上的属性也修改
         var targetItem = this.updateUserData();
         if (targetItem) {
-            targetItem.applyRulesAndSetting = updateRules;
+            targetItem.applyRulesAndSetting = updateRules.applyRulesAndSetting;
+            targetItem.customiz_user_range = updateRules.customiz_user_range;
             var applyTypeData = this.state.applyTypeData;
-            applyTypeData.applyRulesAndSetting = updateRules;
+            applyTypeData.applyRulesAndSetting = updateRules.applyRulesAndSetting;
+            applyTypeData.customiz_user_range = updateRules.customiz_user_range;
             this.setState({
                 applyTypeData: applyTypeData
             });

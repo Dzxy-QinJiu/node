@@ -5,7 +5,7 @@
  */
 import 'babel-polyfill';
 var rightPanelShow = false;
-import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
+import {clueSourceArray, accessChannelArray, clueClassifyArray, CLUE_MESSAGE_TYPE} from 'PUB_DIR/sources/utils/consts';
 var clueCustomerStore = require('./store/clue-customer-store');
 var clueFilterStore = require('./store/clue-filter-store');
 var clueCustomerAction = require('./action/clue-customer-action');
@@ -97,7 +97,6 @@ var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitte
 import ClueExtract from 'MOD_DIR/clue_pool/public';
 import MoreButton from 'CMP_DIR/more-btn';
 import DifferentVersion from 'MOD_DIR/different_version/public';
-import ApplyTry from 'MOD_DIR/apply_try/public';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import RecommendClues from 'MOD_DIR/home_page/public/views/boot-process/recommend_clues';
 const EXTRACT_CLUE_STEPS = RecommendClues.EXTRACT_CLUE_STEPS;
@@ -165,11 +164,11 @@ class ClueCustomer extends React.Component {
             filterInputWidth: 210,//筛选输入框的宽度
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             showRecommendTips: !_.get(websiteConfig, oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS,false),
-            showDifferentVersion: false,//是否显示版本信息面板
             guideRecommendCondition: null,//引导设置的推荐线索的条件
             exportVisible: false,//导出线索显示popover
             dropList: dropList,//无效原因下拉框内容
             visibleDrop: false,//是否显示无效原因下拉框
+            filterClueStatus: clueFilterStore.getState().filterClueStatus,//线索选中的状态
             //显示内容
             ...clueCustomerStore.getState()
         };
@@ -214,7 +213,9 @@ class ClueCustomer extends React.Component {
         //响应式布局时动态计算filterinput的宽度
         $(window).on('resize', this.resizeHandler);
     }
-
+    getFilterStatus = () => {
+        return getClueStatusValue(this.state.filterClueStatus);
+    };
     resizeHandler = () => {
         clearTimeout(this.scrollTimer);
         this.scrollTimer = setTimeout(() => {
@@ -325,12 +326,12 @@ class ClueCustomer extends React.Component {
         if (!tasks.length) {
             return;
         }
-        var curClueLists = this.state.curClueLists;
+        var curClueList = this.state.curClueList;
         var clueArr = _.map(tasks, 'taskDefine');
         //遍历每一个客户
         _.each(clueArr, (clueId) => {
             //如果当前客户是需要更新的客户，才更新
-            var target = _.find(curClueLists, item => item.id === clueId);
+            var target = _.find(curClueList, item => item.id === clueId);
             if (target) {
                 clueCustomerAction.updateClueItemAfterAssign({
                     item: target,
@@ -378,7 +379,7 @@ class ClueCustomer extends React.Component {
     }
     //动画收起某个元素后再有飞出效果
     animateHideItem = (updateItem,callback) => {
-        const index = _.findIndex(this.state.curClueLists, item => item.id === updateItem.id);
+        const index = _.findIndex(this.state.curClueList, item => item.id === updateItem.id);
         var jqueryDom = $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ') td');
         jqueryDom.animate({height: '1px !important',padding: '0 !important'},HIDE_CLUE_TIME,'linear',() => {
             // _.isFunction(callback) && callback();
@@ -429,33 +430,42 @@ class ClueCustomer extends React.Component {
     }
 
     //有新线索时线索面板添加刷新提示
-    showRefreshPrompt = (data) => {
+    showRefreshPrompt = (data,isExtractOrAddByMe) => {
         if(!_.isEmpty(data) && _.isObject(data)) {
-            //如果当前无线索，直接展示刷新提示
-            if(_.isEmpty(this.state.curClueLists)) {
-                this.setState({
-                    isShowRefreshPrompt: true
-                });
-            } else {
-                let clue_list = _.get(data, 'clue_list', []);
-                _.map(clue_list, clue => {
-                    //判断是否推送的线索为当前tab下的线索
-                    let status = clue.status;
-                    //线索类型
-                    let typeFilter = this.getFilterStatus();
-                    if(_.isEqual(status, typeFilter.status)) {
-                        //如果当前已经展示了刷新提示，不做操作
-                        if(!_.get(this.state, 'isShowRefreshPrompt')) {
-                            this.setState({
-                                isShowRefreshPrompt: true
-                            });
+            //该线索是自己提取的或者是我添加的
+            if(isExtractOrAddByMe){
+                if(_.get(data,'type') !== CLUE_MESSAGE_TYPE.ADD_CUSTOMER_CLUE){//如果是我自己添加的，不需要再添加了，因为在添加线索完成后，会有添加线索，不能在推送这里添加因为管理员也可以添加线索但是没有推送
+                    let clue_list = _.get(data, 'clue_list', []);
+                    clueCustomerAction.afterNewExtract(clue_list);
+                    clueFilterAction.setFilterType(SELECT_TYPE.WILL_TRACE);
+                }
+            }else{
+                //如果当前无线索，直接展示刷新提示
+                if(_.isEmpty(this.state.curClueList)) {
+                    this.setState({
+                        isShowRefreshPrompt: true
+                    });
+                } else {
+                    let clue_list = _.get(data, 'clue_list', []);
+                    _.each(clue_list, clue => {
+                        //判断是否推送的线索为当前tab下的线索
+                        let status = clue.status;
+                        //线索类型
+                        let typeFilter = this.getFilterStatus();
+                        if(_.isEqual(status, typeFilter.status)) {
+                            //如果当前已经展示了刷新提示，不做操作
+                            if(!_.get(this.state, 'isShowRefreshPrompt')) {
+                                this.setState({
+                                    isShowRefreshPrompt: true
+                                });
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
-        }
-    }
 
+        }
+    };
     //展示右侧面板
     showClueDetailOut = (item) => {
         rightPanelShow = true;
@@ -506,7 +516,10 @@ class ClueCustomer extends React.Component {
     }
 
     onStoreChange = () => {
-        this.setState(clueCustomerStore.getState());
+        this.setState({
+            filterClueStatus: clueFilterStore.getState().filterClueStatus,
+            ...clueCustomerStore.getState()
+        });
     };
 
     getClueSource = () => {
@@ -631,9 +644,6 @@ class ClueCustomer extends React.Component {
     closeRecommendCluePanel = () => {
         this.setState({
             isShowRecommendCluePanel: false
-        },() => {
-            //重新刷新一下线索列表,防止提取线索后页面不刷新的问题
-            this.getClueList();
         });
     }
     handleClickCloseClue = () => {
@@ -715,8 +725,8 @@ class ClueCustomer extends React.Component {
         });
     };
     //显示/隐藏版本信息面板
-    triggerShowVersionInfo = () => {
-        this.setState({showDifferentVersion: !this.state.showDifferentVersion});
+    triggerShowVersionInfo = (isShowModal = true) => {
+        paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {isShowModal, versionKind: COMPANY_VERSION_KIND});
     };
 
 
@@ -809,10 +819,7 @@ class ClueCustomer extends React.Component {
             selectAllMatched: false
         });
     };
-    getFilterStatus = () => {
-        var filterClueStatus = clueFilterStore.getState().filterClueStatus;
-        return getClueStatusValue(filterClueStatus);
-    };
+
     //是否有筛选过滤条件
     hasNoFilterCondition = () => {
         var filterStoreData = clueFilterStore.getState();
@@ -998,13 +1005,16 @@ class ClueCustomer extends React.Component {
         //没有选中的线索，再根据radio的选择不同导出该筛选条件下或者是全部的线索
         var reqData = {};
         if(this.hasSelectedClues()){
-            reqData = _.cloneDeep(this.getClueSearchCondition(true, true));
+            reqData = this.getClueSearchCondition(true, true);
             //然后再在query中加id字段
             var selectCluesIds = _.map(_.get(this, 'state.selectedClues'),'id');
             reqData.bodyParam.query.id = selectCluesIds.join(',');
         }else{
             var isGetAll = this.state.exportRange === 'all';
             reqData = isGetAll ? this.getClueSearchCondition(true, true) : this.getClueSearchCondition(true,false);
+            //线索的状态和线索是否有效不作为导出线索的限制条件
+            reqData.bodyParam.query.status = '';
+            delete reqData.bodyParam.query.availability;
         }
         const params = {
             page_size: 10000,
@@ -1145,7 +1155,7 @@ class ClueCustomer extends React.Component {
                         submitTraceErrMsg: Intl.get('common.save.failed', '保存失败')
                     });
                 } else {
-                    var clueItem = _.find(this.state.curClueLists, clueItem => clueItem.id === item.id);
+                    var clueItem = _.find(this.state.curClueList, clueItem => clueItem.id === item.id);
                     var userId = userData.getUserData().user_id || '';
                     var userName = userData.getUserData().nick_name;
                     var addTime = moment().valueOf();
@@ -1909,7 +1919,7 @@ class ClueCustomer extends React.Component {
 
     //在列表中隐藏当前操作的线索
     hideCurClue = (clue) => {
-        const index = _.findIndex(this.state.curClueLists, item => item.id === clue.id);
+        const index = _.findIndex(this.state.curClueList, item => item.id === clue.id);
         
         $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ')').slideToggle(2000);
     };
@@ -1952,7 +1962,7 @@ class ClueCustomer extends React.Component {
                 type: 'checkbox',
                 selectedRowKeys: _.map(this.state.selectedClues, 'id'),
                 onSelect: (record, selected, selectedRows) => {
-                    if (selectedRows.length !== _.get(this, 'state.curClueLists.length')) {
+                    if (selectedRows.length !== _.get(this, 'state.curClueList.length')) {
                         this.state.selectAllMatched = false;
                     }
                     this.setState({
@@ -1994,7 +2004,7 @@ class ClueCustomer extends React.Component {
         }
     };
     renderClueCustomerLists = () => {
-        var customerList = this.state.curClueLists;
+        var customerList = this.state.curClueList;
         var rowSelection = this.getRowSelection();
         function rowKey(record, index) {
             return record.id;
@@ -2165,7 +2175,7 @@ class ClueCustomer extends React.Component {
                 SetLocalSalesClickCount(this.state.batchSelectedSales);
             }
             this.setState({
-                curClueLists: this.state.curClueLists
+                curClueList: this.state.curClueList
             });
 
         }
@@ -2219,7 +2229,7 @@ class ClueCustomer extends React.Component {
     };
 
     renderClueCustomerBlock = () => {
-        if (this.state.curClueLists.length) {
+        if (this.state.curClueList.length) {
             return (
                 <div id="clue-content-block" className="clue-content-block" ref="clueCustomerList">
                     <div className="clue-customer-list" id="area">
@@ -2324,7 +2334,7 @@ class ClueCustomer extends React.Component {
                 </div>
             );
         }
-        else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueLists.length) {
+        else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueList.length) {
             var statics = this.state.agg_list;
             var showAddBtn = (
                 !this.state.allClueCount //总的线索不存在
@@ -2624,7 +2634,7 @@ class ClueCustomer extends React.Component {
     };
     selectAllSearchResult = () => {
         this.setState({
-            selectedClues: this.state.curClueLists.slice(),
+            selectedClues: this.state.curClueList.slice(),
             selectAllMatched: true,
         });
     };
@@ -2680,12 +2690,12 @@ class ClueCustomer extends React.Component {
         if (!tasks.length) {
             return;
         }
-        var curClueLists = this.state.curClueLists;
+        var curClueList = this.state.curClueList;
         var clueArr = _.map(tasks, 'taskDefine');
         //遍历每一个线索
         _.each(clueArr, (clueId) => {
             //如果当前线索是需要更新的线索，才更新
-            var target = _.find(curClueLists, item => item.id === clueId);
+            var target = _.find(curClueList, item => item.id === clueId);
             if (target) {
                 clueCustomerAction.updateClueItemAfterAssign({
                     item: target,
@@ -2787,8 +2797,7 @@ class ClueCustomer extends React.Component {
     renderBatchChangeClues = () => {
         //只有有批量变更权限并且不是普通销售的时候，才展示批量分配
         let showBatchChange = ((hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_SELF)) && !isCommonSalesOrPersonnalVersion()) && this.editCluePrivilege();
-        let filterClueStatus = clueFilterStore.getState().filterClueStatus;
-        let curStatus = getClueStatusValue(filterClueStatus);
+        let curStatus = this.getFilterStatus();
         //除了运营不能释放线索，管理员、销售都可以释放
         let roleRule = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
         let filterStore = clueFilterStore.getState();
@@ -3222,7 +3231,6 @@ class ClueCustomer extends React.Component {
                                 }
                             </RightPanel> : null
                     }
-                    {this.state.showDifferentVersion ? (<ApplyTry hideApply={this.triggerShowVersionInfo} versionKind={COMPANY_VERSION_KIND}/>) : null}
                     {/*<DifferentVersion
                         showFlag={this.state.showDifferentVersion}
                         closeVersion={this.triggerShowVersionInfo}

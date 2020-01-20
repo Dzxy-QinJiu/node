@@ -113,18 +113,17 @@ function SalesTeamAction() {
     };
 
     this.saveDeleteGroup = function(groupId) {
-        var _this = this;
-        SalesTeamAjax.deleteGroup(groupId).then(function(data) {
-            //_this.actions.getSalesTeamList();
+        SalesTeamAjax.deleteGroup(groupId).then( (data) => {
             if (data) {
+                this.actions.getSalesTeamList();
                 //刷新添加时展示的不属于任何团队的成员列表
-                _this.actions.getMemberList();
-                _this.dispatch({success: true, groupId: groupId});
+                this.actions.getMemberList();
+                this.dispatch({success: true, groupId: groupId});
             } else {
-                _this.dispatch({success: false, errorMsg: Intl.get('sales.team.del.team.failed', '删除团队失败')});
+                this.dispatch({success: false, errorMsg: Intl.get('sales.team.del.team.failed', '删除团队失败')});
             }
-        }, function(errorMsg) {
-            _this.dispatch({success: false, errorMsg: errorMsg || Intl.get('sales.team.del.team.failed', '删除团队失败')});
+        }, (errorMsg) => {
+            this.dispatch({success: false, errorMsg: errorMsg || Intl.get('sales.team.del.team.failed', '删除团队失败')});
         });
     };
     //保存添加的团队

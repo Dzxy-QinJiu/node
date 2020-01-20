@@ -14,7 +14,7 @@ const TAB_KEYS = {
 //顶部导航
 const SystemNotification = require('./views/system');
 import UpgradeNotice from './views/upgrade-notice';
-import {clickUpgradeNoiceEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {clickUpgradeNoiceEmitter, notificationEmitter} from 'PUB_DIR/sources/utils/emitters';
 const {setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 import {isShowSystemTab} from 'PUB_DIR/sources/utils/common-method-util';
 
@@ -40,10 +40,12 @@ class Notification extends React.Component {
 
     componentDidMount() {
         $('body').css('overflow', 'hidden');
+        notificationEmitter.on(notificationEmitter.CLICK_SUBMENU_NOTICE_TYPE, this.changeActiveKey);
     }
 
     componentWillUnmount() {
         $('body').css('overflow', 'hidden');
+        notificationEmitter.removeListener(notificationEmitter.CLICK_SUBMENU_NOTICE_TYPE, this.changeActiveKey);
     }
 
     //切换tab时的处理
@@ -53,6 +55,7 @@ class Notification extends React.Component {
             keyName = '公告';
             this.handleShowNoticeTab();
         }
+        notificationEmitter.emit(notificationEmitter.CLICK_NOTICE_TABS_TYPE, key);
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + keyName);
         this.setState({
             activeKey: key

@@ -82,6 +82,10 @@ exports.notificationEmitter.DIFF_APPLY_UNREAD_REPLY = 'diffApplyUnreadReply';
 exports.notificationEmitter.SYSTEM_NOTICE_UPDATED = 'systemNoticeUpdated';
 // 点击系统通知框的emitter
 exports.notificationEmitter.CLICK_SYSTEM_NOTICE = 'clickSystemNotice';
+// 点击通知subMenu的类型
+exports.notificationEmitter.CLICK_SUBMENU_NOTICE_TYPE = 'clickSubMenuNoticeType';
+// 点击通知的tabs类型
+exports.notificationEmitter.CLICK_NOTICE_TABS_TYPE = 'clickNoticeTabsType';
 //用户批量推送的emitter
 exports.batchPushEmitter = new EventEmitter();
 //用户管理批量-所属客户
@@ -262,6 +266,7 @@ paymentEmitter.OPEN_ADD_CLUES_PANEL = 'open_add_clues_panel';//打开购买线�
 paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL = 'open_upgrade_personal_version_panel';//打开升级个人正式版的面板
 paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS = 'personal_good_payment_success';//个人版商品支付成功
 paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS = 'add_clues_payment_success';//购买线索量支付成功
+paymentEmitter.OPEN_APPLY_TRY_PANEL = 'open_apply_try_panel';//打开申请试用面板
 export { paymentEmitter };
 //线索推荐 换一批
 const leadRecommendEmitter = new EventEmitter();

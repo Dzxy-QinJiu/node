@@ -104,6 +104,8 @@ exports.clueMsgToFrontend = function(clueMsg) {
         message_type: 'unhandleClue',//线索的类型
         member_id: clueMsg.user_id,//分配给谁的线索
         clue_list: _.get(clueMsg,'clue_list',[]),//线索id和name的列表
+        type: _.get(clueMsg,'type',''),//推送的类型
+        operator_id: _.get(clueMsg,'operator_id',''),//线索池提取人的id
     };
 };
 //申请试用后的推送数据

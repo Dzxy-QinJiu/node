@@ -41,8 +41,8 @@ class OperateSuccessTip extends React.Component {
                             <div className="operate-finished-tip">{this.props.tip}</div>
                             {this.props.isShowBtn ? (
                                 <div className="btn-wrapper">
-                                    <Button type="primary" onClick={this.props.continueFn} data-tracename="点击继续操作按钮">{this.props.continueText}</Button>
-                                    <Button onClick={this.props.goFn} data-tracename="点击其他操作按钮">{this.props.goText}</Button>
+                                    <Button type="primary" onClick={this.props.continueFn} data-tracename={`点击${this.props.continueText}按钮`}>{this.props.continueText}</Button>
+                                    <Button onClick={this.props.goFn} data-tracename={`点击${this.props.goText}按钮`}>{this.props.goText}</Button>
                                 </div>
                             ) : null}
                             {this.props.otherContent ? (

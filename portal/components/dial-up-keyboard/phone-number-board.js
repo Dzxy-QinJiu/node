@@ -4,7 +4,7 @@
  * Created by wangliping on 2019/4/18.
  */
 require('./phone-number-board.less');
-import {Button, Popover, Input, Icon, message} from 'antd';
+import {Button, Input, Icon} from 'antd';
 import {handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
 import {isTelephone} from 'PUB_DIR/sources/utils/validate-util';
 //拨号键对应的数组
@@ -14,7 +14,7 @@ let cursorSelection = {
     start: 0,//电话输入框的光标所在开始位置（选中内容的开始位置）
     end: 0 //电话输入框的光标所在结束位置（选中内容的结束位置）
 };
-import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
+import {getCallClient, handleBeforeCallOutCheck} from 'PUB_DIR/sources/utils/phone-util';
 var classNames = require('classnames');
 class PhoneNumberBoard extends React.Component {
     constructor(props) {
@@ -85,14 +85,16 @@ class PhoneNumberBoard extends React.Component {
     dialPhoneNumber = () => {
         let phoneNumber = this.state.inputNumber;
         if (phoneNumber && !Oplate.isCalling) {
-            //先去掉电话号码的验证
-            // if (isTelephone(phoneNumber)) {
-            handleCallOutResult({
-                phoneNumber: phoneNumber,//拨打的电话
-            });
-            // } else {
-            //     message.error(Intl.get('phone.call.error.tip', '电话号码错误！'));
-            // }
+            handleBeforeCallOutCheck( () => {
+                //先去掉电话号码的验证
+                // if (isTelephone(phoneNumber)) {
+                handleCallOutResult({
+                    phoneNumber: phoneNumber,//拨打的电话
+                });
+                // } else {
+                //     message.error(Intl.get('phone.call.error.tip', '电话号码错误！'));
+                // }
+            } );
         }
     };
     hangUpPhone = (callClient) => {
@@ -133,8 +135,14 @@ class PhoneNumberBoard extends React.Component {
                             </Button>);
                     })}
                 </div>
-                <Button type='primary' className={phoneBtnWrap} onClick={isRonglianCalling && callClient.needShowAnswerView() ? this.hangUpPhone.bind(this, callClient) : this.dialPhoneNumber}>
-                    <i className={phonePopIcon}/></Button>
+                <Button
+                    type='primary'
+                    className={phoneBtnWrap}
+                    onClick={isRonglianCalling && callClient.needShowAnswerView() ?
+                        this.hangUpPhone.bind(this, callClient) : this.dialPhoneNumber}
+                >
+                    <i className={phonePopIcon}/>
+                </Button>
             </div>);
     }
 }

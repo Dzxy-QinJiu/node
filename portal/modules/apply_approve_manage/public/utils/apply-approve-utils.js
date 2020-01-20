@@ -80,7 +80,15 @@ exports.CONDITION_KEYS = [
             item['conditionRuleDsc'] = item['rangeLimitDsc'] + item['rangeNumberDsc'];
         }
     },
-    {name: Intl.get('apply.condition.item.money', '金额'), value: 'money'}
+    {name: Intl.get('apply.condition.item.money', '金额'), value: 'money'},
+    {name: Intl.get('user.apply.presenter', '申请人'), value: ALL_COMPONENTS.USERSEARCH + '_limit'
+        ,conditionRule: function(item) {
+            //1）不能用item.conditionRule去赋值，之前可能不存在此属性
+            // 2）${user_range==""} 和后端约定的指定那些人审批，走特定的流程，流程的key值是userRangeRoute，字段是user_range
+            item['conditionRule'] = '${user_range==\"' + item['userRangeRoute'] + '\"}';
+            item['conditionPerson'] = item['userRange'];
+            item['conditionRuleDsc'] = item['userRangeDsc'].join(',');
+        }},
 ];
 exports.FLOW_TYPES = {
     DEFAULTFLOW: 'defaultFlow'

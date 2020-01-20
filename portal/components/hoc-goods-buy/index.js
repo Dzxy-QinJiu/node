@@ -71,6 +71,16 @@ const HOCGoodsBuy = (options = {}) => {
                 };
             }
 
+            componentDidMount() {
+                super.componentDidMount();
+                $(window).on('resize', this.handleResize);
+            }
+
+            componentWillUnMount() {
+                super.componentWillUnMount();
+                $(window).off('resize', this.handleResize);
+            }
+
             //下拉加载
             handleScrollBarBottom = () => {
                 var currListLength = _.isArray(this.state.list) ? this.state.list.length : 0;
@@ -138,7 +148,7 @@ const HOCGoodsBuy = (options = {}) => {
                     return (
                         <div className="errmsg-container">
                             <span className="errmsg-tip">{this.state.errMsg},</span>
-                            <a className="retry-btn" data-tracename="点击重新获取线索量商品按钮" onClick={this.retryGetGoodsList}>
+                            <a className="retry-btn" data-tracename="点击重新获取商品按钮" onClick={this.retryGetGoodsList}>
                                 {Intl.get('user.info.retry', '请重试')}
                             </a>
                         </div>
@@ -235,7 +245,7 @@ const HOCGoodsBuy = (options = {}) => {
                     return (
                         <RightPanelModal
                             className={cls}
-                            isShowMadal={true}
+                            isShowMadal={_.get(this.props.paramObj, 'isShowModal', true)}
                             isShowCloseBtn={this.state.isShowCloseBtn}
                             title={title}
                             onClosePanel={this.onClosePanel}
@@ -245,6 +255,7 @@ const HOCGoodsBuy = (options = {}) => {
                     );
                 }else {
                     return <BasicPaymentMode
+                        isShowModal={_.get(this.props.paramObj, 'isShowModal', true)}
                         payModeList={this.state.payModeList}
                         curOrderInfo={this.state.curOrderInfo}
                         dealSubmitGoodInfo={this.dealSubmitGoodInfo}

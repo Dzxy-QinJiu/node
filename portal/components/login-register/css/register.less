@@ -25,7 +25,7 @@
       position: relative;
       height: 50%;
       width: 100%;
-      .logo, .register-slogan-tip{
+      .register-logo, .register-slogan-tip{
         position: absolute;
         top: 0;
         bottom: 0;
@@ -33,14 +33,17 @@
         right: 0;
         margin: auto;
       }
-      .logo{
-        width: 96px;
+      .register-logo{
+        width: 106px;
+        height: 28px;
       }
       .register-slogan-tip{
-        width: 200px; 
-        height: 24px;
+        width: 260px;
+        height: 23px;
+        line-height: 23px;
+        font-size: 23px;
+        text-align: center;
         color: #ffffff;
-        font-size: 18px;
       }
     }
     
@@ -106,13 +109,15 @@
         .captcha-code-wrap{
           position: absolute;
           float: right;
-          top: 4px;
+          top: 10px;
           right: 0;
           font-size: 14px;
           button{
+            padding: 0 13px;
             font-size: 14px;
             color: #cccccc;
             background-color: #f5f5f5;
+            border-color: #f5f5f5;
           }
           button.captcha-btn{
             background-color: #2196F3;
@@ -120,7 +125,9 @@
             color: #ffffff;
           }
           .captcha-input{
-            padding-right: 120px;
+            input{
+              padding-right: 120px;
+            }
           }
           .get-captcha-code{
             cursor: pointer;
@@ -134,17 +141,26 @@
         }
         .register-user-agreement-tip{
           font-size: 12px;
-          margin-bottom: 4px;
+          margin-bottom: 6px;
           >span{
               color: #999;
           }
         }
         .register-btn{
           button{
-            color: #ffffff;
-            background-color: #EFA246;
+            width: 100%;
+            height: 46px;
+            line-height: 43px;
             border-color: #EFA246;
+            background-color: #EFA246;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffffff;
+            box-shadow:0px 12px 12px 0px rgba(239,162,70,0.24);
           }
+        }
+        a{
+          color: #2196F3;
         }
         //注册错误提示
         .register-error-tip {
@@ -160,7 +176,10 @@
       }
       .register-to-login{
         float: right;
-        font-size: 14px;
+        height: 20px;
+        line-height: 20px;
+        margin-top: 32px;
+        font-size: 16px;
         >span{
           color: #999;
         }

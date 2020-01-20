@@ -13,6 +13,7 @@ import {
     ADD_INDUSTRY_ADDRESS_CLUE_CONDITION,
     checkClueCondition
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import Trace from 'LIB_DIR/trace';
 
 // 提取线索的步骤
 const EXTRACT_CLUE_STEPS = {
@@ -149,11 +150,17 @@ class RecommendClues extends React.Component {
 
     //继续提取
     handleContinueExtractClue = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '继续提取推荐线索');
         this.setState({
             step: EXTRACT_CLUE_STEPS.EXTRACT_CLUE
         }, () => {
             this.getRecommendClueLists();
         });
+    };
+
+    handleClosePanel = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '关闭推荐线索面板');
+        _.isFunction(this.props.onClosePanel) && this.props.onClosePanel();
     };
 
     renderStepBlock = () => {
@@ -180,7 +187,7 @@ class RecommendClues extends React.Component {
                     handleBackClick={this.setCurrentStep.bind(this, EXTRACT_CLUE_STEPS.SET_RECOMMEND)}
                     getRecommendClueLists={this.getRecommendClueLists}
                     afterSuccess={this.afterSuccess}
-                    onClosePanel={this.props.onClosePanel}
+                    onClosePanel={this.handleClosePanel}
                     showSuccessPage={this.props.showSuccessPage}
                 />
             );

@@ -299,7 +299,7 @@ var en_US = {
     'common.app.ios': 'IOS', // IOS版
     'common.apply.try.success.tip': 'An account manager will serve you later',//稍后会有客户经理专门为您服务
     'common.apply.try.user.scales': 'Number of users',//使用人数
-    'common.lead.apply.try': 'lead apply try',//线索申请试用
+    'common.lead.apply.try': 'User {user} (lead {lead}) apply try',//用户{user}（线索{lead}）申请试用
     'common.terminals.type': 'ype of terminal', // 终端类型
     'common.all.terminals': 'All terminals', // 所有终端
     'common.terminals': 'Terminal', // 终端
@@ -1202,6 +1202,8 @@ var en_US = {
     'notification.call.up.failed': 'Failed to call out', // 拨打电话失败
     'notification.extract.clue.failed': 'Failed to extract lead', // 提取线索失败
     'notification.system.count': '{count} times', // {count}次
+    'notification.system.who.account': '{who} account', //{who} 的账号
+    'notification.extract.clue.failed.because': 'because', // 原因
     //通知end
 
     // 公告start
@@ -3573,6 +3575,16 @@ var en_US = {
     'apply.approve.set.approver': 'Assgin approver',//指定审批人
     'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
     'apply.select.cc.person.type': 'Please select the type of cc person',//请选择抄送人类型
+    'apply.condition.node.all.higher.level': 'All superiors',//所有上级
+    'apply.set.team.secretry': 'Team secretary',//团队秘书
+    'apply.set.team.user': 'team member',//团队成员
+    'apply.set.cc.node.secretry': 'Team Secretary',//所属团队秘书
+    'apply.set.cc.node.higher.secretry': 'All superior team secretaries',//所有上级团队秘书
+    'apply.set.cc.node.all.secretry': 'Secretary of the team and all superior teams',//所属团队及所有上级团队秘书
+    'apply.set.cc.node.all.team.user': 'All superior team members',//所有上级团队成员
+    'apply.cc.node.infor.type': 'method to informe',//通知方式
+    'apply.cc.node.email': 'mail',//邮件
+    'apply.cc.node.socket.noty': 'System popup',//系统弹窗
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
@@ -3890,7 +3902,7 @@ var en_US = {
     'payment.upgrade.personal.version.success': 'You have been upgraded to the personal version, you can extract {count} clues every month!',//您已升级为个人正式版，每月可提取{count}条线索啦！
     'payment.contact.us': 'Contact us {contact}',//联系我们请拨打{contact}
     'payment.add.leads.tip': 'If the quantity of clues is insufficient, {addBtn}',//如果线索量不够用，可另外{addBtn}
-    'payment.personal.upgrade.notice': 'Personal upgrade notice',//个人用户升级通知
+    'payment.personal.upgrade.notice': 'Personal version upgrade',//个人用户升级
     'payment.personal.upgrade': 'User {user} (lead {lead}) paid to upgrade to official version',//用户{user}（线索{lead}）付费升级为个人正式用户
     /*支付流程 --- end*/
 
@@ -3933,6 +3945,11 @@ var en_US = {
     'versions.feature.data.import': 'Data import',//数据导入
     'versions.feature.office.management': 'Office management',//职务管理
     'versions.feature.rechecking': 'rechecking',//查重
+    'versions.less.than.five': 'less than 5',//小于5人
+    'versions.between.five.and.fifty': '5-50',//5-50人
+    'versions.between.fifty.one.and.one.hundred.fifty': '51-150',//51-150人
+    'versions.more.than.one.hundred.fifty': 'more than 150',//大于150人
+    'versions.apply.try.enterprise': 'Apply try enterprise',//申请企业试用
     /*版本信息 --- end */
 
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/

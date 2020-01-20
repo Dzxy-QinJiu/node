@@ -15,7 +15,7 @@ var Spinner = require('../spinner');
 const USER_LANG_KEY = 'userLang';//存储用户语言环境的key
 import {storageUtil} from 'ant-utils';
 
-const logoSrc = require('./image/wihte-logo.png');
+const logoSrc = require('./image/curtao_logo_white.svg');
 const FOMR_HEIGHT = {
     COMMON_H: 300,//只有用户名、密码时，登录表单的容器高度
     CAPTCHA_H: 48,//验证码输入框的高度
@@ -69,7 +69,7 @@ class RegisterPage extends React.Component {
             <div className="register-wrap" data-tracename="个人注册页面">
                 <div className="register-image-container">
                     <div className='register-left-content-style'>
-                        <Logo logoSrc={logoSrc} fontSize='24px' size='32px'/>
+                        <img src={logoSrc} className='register-logo' />
                     </div>
                     <div className='register-left-content-style'>
                         <span className='register-slogan-tip'>{Intl.get('register.slogan.tip', '销售加速，从这里开始...')}</span>

@@ -15,7 +15,15 @@ var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsg
 var phoneEmitter = require('../../../public/sources/utils/emitters').phoneEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import {SYSTEM_NOTICE_TYPE_MAP, KETAO_SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY,CALL_TYPES} from '../utils/consts';
+import {
+    SYSTEM_NOTICE_TYPE_MAP,
+    KETAO_SYSTEM_NOTICE_TYPE_MAP,
+    SYSTEM_NOTICE_TYPES,
+    APPLY_APPROVE_TYPES,
+    DIFF_APPLY_TYPE_UNREAD_REPLY,
+    CALL_TYPES,
+    CLUE_HIDE_NOTICE_TYPE
+} from '../utils/consts';
 import logoSrc from './notification.png';
 import userData from '../user-data';
 import Trace from 'LIB_DIR/trace';
@@ -176,6 +184,14 @@ window.closeAllNoty = function() {
 window.openAllClues = function(){
     history.push('/leads', {refreshClueList: true});
 };
+//是自己提取的线索或者是自己添加的线索
+function isExtractOrAddByMe(data) {
+    //如果是推荐线索提取的类型或者是线索池提取的类型
+    const extractType = _.includes(CLUE_HIDE_NOTICE_TYPE, _.get(data,'type'));
+    //并且是登录人操作的
+    const isOperatedByMe = _.get(data,'operator_id','') === userData.getUserData().user_id;
+    return extractType && isOperatedByMe;
+}
 //处理线索的数据
 function clueUnhandledListener(data) {
     let isOpenPopUpNotify = getNotifyStatus();
@@ -187,79 +203,83 @@ function clueUnhandledListener(data) {
         }
         notificationEmitter.emit(notificationEmitter.UPDATED_HANDLE_CLUE, data);
         //线索面板刷新提示
-        notificationEmitter.emit(notificationEmitter.UPDATE_CLUE, data);
-        var clueArr = _.get(data, 'clue_list',[]);
-        var title = Intl.get('clue.has.distribute.clue','您有新的线索'),tipContent = '';
-        if (canPopDesktop()) {
-            _.each(clueArr, (clueItem) => {
-                tipContent += _.get(clueItem, 'name','') + '\n';
-            });
-            //桌面通知的展示
-            showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
-        } else {//系统弹出通知
-            if (!isOpenPopUpNotify) {
-                return;
-            }
-            clueTotalCount++;
-            var clueHtml = '',titleHtml = '';
-            titleHtml += '<p class="clue-title">' + '<span class="title-tip">' + title + '</span>';
-            _.each(clueArr, (clueItem) => {
-                clueHtml += 
-                '<p class="clue-item" title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(_.get(clueItem,'id','')) + ')\'>' + 
-                    '<span class=\'clue-item-name\'>' + _.get(clueItem,'name','') + '</span>' + 
-                    '<span class=\'clue-detail\'>' + 
-                        Intl.get('call.record.show.customer.detail', '查看详情') + 
-                        '<i class=\'great-than\'>&gt;</i>' + 
-                    '</span>' + 
-                '</p>';
-            });
-            tipContent = `<div>${clueHtml}</div>`;
-            var largerText = 0;
-            notificationUtil.showNotification({
-                title: titleHtml,
-                content: tipContent,
-                type: 'clue',
-                closeWith: ['button'],
-                maxVisible: CLUE_MAX_NUM,//最多展示几个线索的提醒
-                callback: { // 关闭的时候
-                    onClose: () => {
-                        //关闭之后，队列中还有几个未展示的提醒
-                        clueTotalCount > 0 && clueTotalCount--;
-                        var addtionClueCount = clueTotalCount - CLUE_MAX_NUM;//还未展示的线索提醒的数量
-                        if (addtionClueCount === 0){
-                            hasAddCloseBtn = false;
-                            $('#noty-quene-tip-container').remove();
-                        }else if(addtionClueCount > 0 && hasAddCloseBtn){
-                            var queueNum = $('#queue-num');
-                            if (queueNum) {
-                                queueNum.text(addtionClueCount);
+        notificationEmitter.emit(notificationEmitter.UPDATE_CLUE, data, isExtractOrAddByMe(data));
+        //如果是自己提取的线索，不展示右边弹窗提示
+        if(!isExtractOrAddByMe(data)){
+            var clueArr = _.get(data, 'clue_list',[]);
+            var title = Intl.get('clue.has.distribute.clue','您有新的线索'),tipContent = '';
+            if (canPopDesktop()) {
+                _.each(clueArr, (clueItem) => {
+                    tipContent += _.get(clueItem, 'name','') + '\n';
+                });
+                //桌面通知的展示
+                showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
+            } else {//系统弹出通知
+                if (!isOpenPopUpNotify) {
+                    return;
+                }
+                clueTotalCount++;
+                var clueHtml = '',titleHtml = '';
+                titleHtml += '<p class="clue-title">' + '<span class="title-tip">' + title + '</span>';
+                _.each(clueArr, (clueItem) => {
+                    clueHtml +=
+                        '<p class="clue-item" title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(_.get(clueItem,'id','')) + ')\'>' +
+                        '<span class=\'clue-item-name\'>' + _.get(clueItem,'name','') + '</span>' +
+                        '<span class=\'clue-detail\'>' +
+                        Intl.get('call.record.show.customer.detail', '查看详情') +
+                        '<i class=\'great-than\'>&gt;</i>' +
+                        '</span>' +
+                        '</p>';
+                });
+                tipContent = `<div>${clueHtml}</div>`;
+                var largerText = 0;
+                notificationUtil.showNotification({
+                    title: titleHtml,
+                    content: tipContent,
+                    type: 'clue',
+                    closeWith: ['button'],
+                    maxVisible: CLUE_MAX_NUM,//最多展示几个线索的提醒
+                    callback: { // 关闭的时候
+                        onClose: () => {
+                            //关闭之后，队列中还有几个未展示的提醒
+                            clueTotalCount > 0 && clueTotalCount--;
+                            var addtionClueCount = clueTotalCount - CLUE_MAX_NUM;//还未展示的线索提醒的数量
+                            if (addtionClueCount === 0){
+                                hasAddCloseBtn = false;
+                                $('#noty-quene-tip-container').remove();
+                            }else if(addtionClueCount > 0 && hasAddCloseBtn){
+                                var queueNum = $('#queue-num');
+                                if (queueNum) {
+                                    queueNum.text(addtionClueCount);
+                                }
                             }
                         }
-                    }
-                },
-            });
+                    },
+                });
 
-        }
-    }
-    //如果总共的数量超过3个，就需要展示关闭所有的按钮
-    //最好不要用noty的 queue的length来展示，因为如果有其他类型的，这个计数也许不准
-    var showNum = clueTotalCount - CLUE_MAX_NUM;
-    if (showNum > 0) {
-        var ulHtml = $('#noty_topRight_layout_container');
-        if (!hasAddCloseBtn) {
-            hasAddCloseBtn = true;
-            ulHtml.before(`<p id="noty-quene-tip-container">
+            }
+            //如果总共的数量超过3个，就需要展示关闭所有的按钮
+            //最好不要用noty的 queue的length来展示，因为如果有其他类型的，这个计数也许不准
+            var showNum = clueTotalCount - CLUE_MAX_NUM;
+            if (showNum > 0) {
+                var ulHtml = $('#noty_topRight_layout_container');
+                if (!hasAddCloseBtn) {
+                    hasAddCloseBtn = true;
+                    ulHtml.before(`<p id="noty-quene-tip-container">
             <span class="iconfont icon-warn-icon"></span>
 ${Intl.get('clue.show.no.show.tip', '还有{num}个新线索未展示 ', {num: `<span id="queue-num">${showNum}</span>`})}<a href="#" class="handle-btn-item" onclick='openAllClues()'>
 ${Intl.get('clue.customer.noty.all.list', '查看全部')}</a><a href="#" class="handle-btn-item" onclick='closeAllNoty()'>
 ${Intl.get('clue.close.all.noty', '关闭全部')}</a></p>`);
-        } else {
-            var queueNum = $('#queue-num');
-            if (queueNum) {
-                queueNum.text(showNum);
+                } else {
+                    var queueNum = $('#queue-num');
+                    if (queueNum) {
+                        queueNum.text(showNum);
+                    }
+                }
             }
         }
     }
+
 }
 
 //处理释放客户的数据
@@ -327,11 +347,20 @@ function listenSystemNotice(notice) {
             tipContent += Intl.get('notification.system.on', '在') + notice.content.current_location;
         }
         if (notice.user_name) {
-            //用账号xxx
-            tipContent += Intl.get('notification.system.use.account', '用账号') + notice.user_name;
+            if (isOffsetLogin) {
+                //用账号xxx
+                tipContent += Intl.get('notification.system.use.account', '用账号') + notice.user_name;
+            } else {
+                //的账号xxx
+                tipContent = Intl.get('notification.system.who.account', '{who}的账号', {who: tipContent}) + notice.user_name;
+            }
+            // 提取线索失败
+            if (isPullClueFailed) {
+                tipContent += Intl.get('notification.extract.clue.failed', '提取线索失败');
+            }
         }
-        // 客套组织不显示，登录的应用名称
-        if (!isKetaoOrganizaion() && notice.app_name) {
+        // 登录的应用名称
+        if (notice.app_name) {
             //登录了 xxx (应用)
             tipContent += (isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name;
         }
@@ -346,7 +375,10 @@ function listenSystemNotice(notice) {
         }
         // 提取线索失败
         if (isPullClueFailed) {
-            tipContent += _.get(notice, 'content.operate_detail',Intl.get('notification.extract.clue.failed', '提取线索失败'));
+            let failedTips = _.get(notice, 'content.operate_detail');
+            if (failedTips) {
+                tipContent += `，${Intl.get('notification.extract.clue.failed.because', '原因')}：${failedTips}`;
+            }
         }
         //标签页不可见时，有桌面通知，并且允许弹出桌面通知时
         if (canPopDesktop()) {
@@ -576,11 +608,12 @@ function crmOperatorAlertListener(data) {
 function applyUpgradeListener(data) {
     let isOpenPopUpNotify = getNotifyStatus();
     if (_.isObject(data)) {
-        const title = Intl.get('login.apply.trial','申请试用');
-        const lead = data.lead.name || '';
-        const version = data.version_change_info.new_version || '';
+        const title = Intl.get('versions.apply.try.enterprise','申请企业试用');
+        const lead = _.get(data, 'lead.name', '');
+        const user = _.get(data, 'lead.app_user_info[0].name', '');
+        const version = _.get(data, 'version_change_info.new_version', '');
         const time = getTimeStr(_.get(data.version_change_info,'apply_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        const tipContent = time + ' ，' + lead + Intl.get('common.lead.apply.try','线索申请试用') + version;
+        const tipContent = time + ' ，' + Intl.get('common.lead.apply.try','用户{user}（线索：{lead}）申请试用',{user,lead}) + version;
         if (canPopDesktop()) {
             //桌面通知的展示
             showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
@@ -600,9 +633,9 @@ function applyUpgradeListener(data) {
 function applyUpgradeCompleteListener(data) {
     let isOpenPopUpNotify = getNotifyStatus();
     if (_.isObject(data) && _.get(data.version_change_info,'upgrade_type') === 'trade') {
-        const title = Intl.get('payment.personal.upgrade.notice','个人用户升级通知');
-        const lead = data.lead.name || '';
-        const user = data.lead.app_user_info.name || '';
+        const title = Intl.get('payment.personal.upgrade.notice','个人用户升级');
+        const lead = _.get(data, 'lead.name', '');
+        const user = _.get(data, 'lead.app_user_info[0].name', '');
         const time = getTimeStr(_.get(data.version_change_info,'apply_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
         const tipContent = time + ' ，' + Intl.get('payment.personal.upgrade','用户{user}（线索{lead}）付费升级为个人正式用户',{lead,user});
         if (canPopDesktop()) {

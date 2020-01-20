@@ -78,7 +78,16 @@ class OfficialPersonalEdition extends React.Component{
             this.organization = result;
         });
         this.getPayModeAndGoodsList();
+        this.handleResize();
     }
+
+    //处理窗口变化
+    handleResize = () => {
+        let listHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT;
+        this.setState({
+            listHeight
+        });
+    };
 
     //获取支付渠道和商品列表
     getPayModeAndGoodsList() {
@@ -203,8 +212,6 @@ class OfficialPersonalEdition extends React.Component{
                 newState.listHeight = height > maxScrollHeight ? maxScrollHeight : height;
             }*/
 
-            newState.listHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT;
-
             newState.activeGoods = newState.list[0];
             let leadLimit = _.get(originalList,'related_info.lead_limit', '');
             //lead_limit: "1000_1/M"
@@ -222,7 +229,7 @@ class OfficialPersonalEdition extends React.Component{
     handleUpgradeEnterprise = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击申请试用企业版');
         if(_.isFunction(this.props.paramObj.showDifferentVersion)) {
-            this.props.paramObj.showDifferentVersion();
+            this.props.paramObj.showDifferentVersion(false);
             // this.onClosePanel();
         }
     };
@@ -241,6 +248,7 @@ class OfficialPersonalEdition extends React.Component{
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击增加线索量');
         this.onClosePanel();
         paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL, {
+            isShowModal: _.get(this.props.paramObj, 'isShowLeadModal', true),
             continueFn: () => {
                 history.push('/leads');
             }
@@ -294,7 +302,7 @@ class OfficialPersonalEdition extends React.Component{
                 _this.onClosePanel();
             },
             goFn: () => {
-                history.push('/user-preference',{
+                history.push('/user-preference/info',{
                     show_pay_record: true
                 });
                 _this.onClosePanel();
