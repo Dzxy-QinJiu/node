@@ -5,7 +5,7 @@
  */
 import 'babel-polyfill';
 var rightPanelShow = false;
-import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
+import {clueSourceArray, accessChannelArray, clueClassifyArray, CLUE_MESSAGE_TYPE} from 'PUB_DIR/sources/utils/consts';
 var clueCustomerStore = require('./store/clue-customer-store');
 var clueFilterStore = require('./store/clue-filter-store');
 var clueCustomerAction = require('./action/clue-customer-action');
@@ -424,13 +424,15 @@ class ClueCustomer extends React.Component {
     }
 
     //有新线索时线索面板添加刷新提示
-    showRefreshPrompt = (data,isExtractByMe) => {
+    showRefreshPrompt = (data,isExtractOrAddByMe) => {
         if(!_.isEmpty(data) && _.isObject(data)) {
-            //该线索是自己提取的
-            if(isExtractByMe){
-                let clue_list = _.get(data, 'clue_list', []);
-                clueCustomerAction.afterNewExtract(clue_list);
-                clueFilterAction.setFilterType(SELECT_TYPE.WILL_TRACE);
+            //该线索是自己提取的或者是我添加的
+            if(isExtractOrAddByMe){
+                if(_.get(data,'type') !== CLUE_MESSAGE_TYPE.ADD_CUSTOMER_CLUE){//如果是我自己添加的，不需要再添加了，因为在添加线索完成后，会有添加线索，不能在推送这里添加因为管理员也可以添加线索但是没有推送
+                    let clue_list = _.get(data, 'clue_list', []);
+                    clueCustomerAction.afterNewExtract(clue_list);
+                    clueFilterAction.setFilterType(SELECT_TYPE.WILL_TRACE);
+                }
             }else{
                 //如果当前无线索，直接展示刷新提示
                 if(_.isEmpty(this.state.curClueList)) {
