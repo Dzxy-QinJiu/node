@@ -24,8 +24,6 @@ import PhoneCallout from 'CMP_DIR/phone-callout';
 var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
-//获取无效电话的列表  设置某个电话为无效电话
-import {getInvalidPhone, addInvalidPhone} from 'LIB_DIR/utils/invalidPhone';
 //电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型）
 const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP];
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
@@ -40,14 +38,8 @@ import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 const OVERVIEW_SHOW_COUNT = 3; //在概览中显示最近三条跟进
 class ClueTraceList extends React.Component {
     state = {
-        playingItemAddr: '',//正在播放的那条记录的地址
         leadId: this.props.curClue.id,
         addRecordPanelShow: false,//是否展示添加跟进记录面板
-        invalidPhoneLists: [],//无效电话列表
-        getInvalidPhoneErrMsg: '',//获取无效电话失败后的信息
-        playingItemPhone: '',//正在听的录音所属的电话号码
-        isAddingInvalidPhone: false,//正在添加无效电话
-        addingInvalidPhoneErrMsg: '',//添加无效电话出错的情况
         // filterType: '',//跟进类型的过滤
         filterStatus: '',//通话状态的过滤
         addRecordNullTip: '',//添加跟进记录内容为空的提示
@@ -61,18 +53,6 @@ class ClueTraceList extends React.Component {
 
     componentDidMount() {
         ClueTraceStore.listen(this.onStoreChange);
-        //获取无效电话号码列表
-        getInvalidPhone((data) => {
-            this.setState({
-                invalidPhoneLists: data.result,
-                getInvalidPhoneErrMsg: ''
-            });
-        },(errMsg) => {
-            this.setState({
-                invalidPhoneLists: [],
-                getInvalidPhoneErrMsg: errMsg || Intl.get('call.record.get.invalid.phone.lists', '获取无效电话列表失败')
-            });
-        });
         setTimeout(() => {//此处不加setTimeout，调用action方法时会报Dispatch错误
             //获取线索的跟进记录
             this.getClueTraceList();
@@ -85,8 +65,6 @@ class ClueTraceList extends React.Component {
         var oldLeadId = this.props.curClue.id || '';
         if (nextLeadId !== oldLeadId && nextLeadId) {
             this.setState({
-                playingItemAddr: '',
-                playingItemPhone: '',
                 leadId: nextLeadId
             });
             setTimeout(() => {//此处不加setTimeout，下面调用action中dismiss方法时会报Dispatch错误
@@ -150,33 +128,6 @@ class ClueTraceList extends React.Component {
             //         this.props.refreshSrollbar();
             //     });
             // }
-        });
-    };
-    //上报客服电话
-    handleAddInvalidPhone = () => {
-        var curPhone = this.state.playingItemPhone;
-        if (!curPhone) {
-            return;
-        }
-        this.setState({
-            isAddingInvalidPhone: true
-        });
-        addInvalidPhone({'number': curPhone}, () => {
-            this.state.invalidPhoneLists.push(curPhone);
-            this.setState({
-                isAddingInvalidPhone: false,
-                invalidPhoneLists: this.state.invalidPhoneLists,
-                addingInvalidPhoneErrMsg: ''
-            });
-            //上报成功后，不展示上报按钮
-            audioMsgEmitter.emit(audioMsgEmitter.HIDE_REPORT_BTN, {
-                isShowReportButton: false
-            });
-        }, (errMsg) => {
-            this.setState({
-                isAddingInvalidPhone: false,
-                addingInvalidPhoneErrMsg: errMsg || Intl.get('fail.report.phone.err.tip', '上报无效电话失败！')
-            });
         });
     };
 
@@ -466,23 +417,13 @@ class ClueTraceList extends React.Component {
         }
         //给本条记录加上标识
         item.playSelected = true;
-        var playItemAddr = commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type);
-        var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, item.dst) === -1;
         audioMsgEmitter.emit(audioMsgEmitter.OPEN_AUDIO_PANEL, {
-            playingItemAddr: playItemAddr,
-            getInvalidPhoneErrMsg: this.state.getInvalidPhoneErrMsg,
-            addingInvalidPhoneErrMsg: this.state.addingInvalidPhoneErrMsg,
-            isAddingInvalidPhone: this.state.isAddingInvalidPhone,
-            isShowReportButton: isShowReportButton,
+            curPlayItem: item,
             closeAudioPlayContainer: this.closeAudioPlayContainer,
-            handleAddInvalidPhone: this.handleAddInvalidPhone,
-            hideErrTooltip: this.hideErrTooltip,
         });
 
         this.setState({
             customerRecord: this.state.customerRecord,
-            playingItemAddr: playItemAddr,
-            playingItemPhone: item.dst //正在播放的录音所属的电话号码
         }, () => {
             var audio = $('#audio')[0];
             if (audio) {
@@ -494,12 +435,6 @@ class ClueTraceList extends React.Component {
                     audio.play();
                 }
             }
-        });
-    };
-    //提示框隐藏后的处理
-    hideErrTooltip = () => {
-        this.setState({
-            addingInvalidPhoneErrMsg: ''
         });
     };
 
@@ -515,8 +450,6 @@ class ClueTraceList extends React.Component {
         }
         this.setState({
             customerRecord: this.state.customerRecord,
-            playingItemAddr: '',
-            playingItemPhone: ''
         });
     };
     //标记线索无效或者有效
