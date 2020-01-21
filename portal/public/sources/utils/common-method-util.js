@@ -49,6 +49,9 @@ import publicPrivilegeConst from 'PUB_DIR/privilege-const';
 import notificationPrivilege from 'MOD_DIR/notification/public/privilege-const';
 import useManagePrivilege from 'MOD_DIR/app_user_manage/public/privilege-const';
 const { getWebsiteConfig, getLocalWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
+//缓存在sessionStorage中的我能查看的团队
+const MY_TEAM_TREE_KEY = 'my_team_tree';
+import {setUserData} from '../user-data';
 
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -1339,3 +1342,69 @@ exports.getDelayTimeUnit = (delayTimeRange, delayTimeNumber) => {
 exports.isCustomDelayType = (type) => {
     return type === TIMERANGEUNIT.CUSTOM;
 };
+
+/**
+ * 添加、修改、删除团队（部门）信息后，修改缓存中的数据
+ * 注意：部门和团队说的是一回事，由于原来的变量名是根据team命名的
+ * 参数说明：
+ * teamTreeList 已有的团队信息
+ *  modifyData 修改的数据
+ *  flag 是添加、修改、删除的标志
+ * */
+function saveTraversingTeamTree(teamTreeList, modifyData, flag) {
+    if (flag === 'create') { // 添加
+        let isRootTeam = _.get(modifyData, 'root_group');
+        if (isRootTeam) { // 添加的是根团队（根部门）
+            teamTreeList.push(modifyData);
+            //保存到userData中
+            setUserData(MY_TEAM_TREE_KEY, teamTreeList);
+        } else { // 添加子团队（子部门）
+            _.find(teamTreeList, team => {
+                let childGroups = _.get(team, 'child_groups');
+                if (_.get(team, 'group_id') === _.get(modifyData, 'parent_group')) {
+                    if (childGroups) {
+                        childGroups.push(modifyData);
+                    } else {
+                        childGroups = [modifyData];
+                    }
+                } else {
+                    if (childGroups) {
+                        saveTraversingTeamTree(childGroups, modifyData, flag);
+                    }
+                }
+            });
+            //保存到userData中
+            setUserData(MY_TEAM_TREE_KEY, teamTreeList);
+        }
+    } else if (flag === 'edit') {
+        if (!_.isEmpty(teamTreeList)) {
+            _.find(teamTreeList, team => {
+                if (_.get(team, 'group_id') === _.get(modifyData, 'group_id')) {
+                    team.group_name = _.get(modifyData, 'group_name');
+                } else {
+                    if (team.child_groups) {
+                        saveTraversingTeamTree(team.child_groups, modifyData, flag);
+                    }
+                }
+            });
+            //保存到userData中
+            setUserData(MY_TEAM_TREE_KEY, teamTreeList);
+        }
+    } else if (flag === 'delete') {
+        if (!_.isEmpty(teamTreeList)) {
+            _.find(teamTreeList, team => {
+                if (_.get(team, 'group_id') === _.get(modifyData, 'group_id')) {
+                    _.remove(teamTreeList, team);
+                } else {
+                    let childGroups = _.get(team, 'child_groups');
+                    if (childGroups) {
+                        saveTraversingTeamTree(childGroups, modifyData, flag);
+                    }
+                }
+            });
+            //保存到userData中
+            setUserData(MY_TEAM_TREE_KEY, teamTreeList);
+        }
+    }
+}
+exports.saveTraversingTeamTree = saveTraversingTeamTree;
