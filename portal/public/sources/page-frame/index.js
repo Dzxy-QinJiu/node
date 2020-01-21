@@ -11,7 +11,7 @@ const LAYOUT_CONSTS = require('../../../lib/consts').LAYOUT;
 var LeftMenu = require('../../../components/privilege/nav-sidebar');
 import PhonePanel from 'MOD_DIR/phone_panel/public';
 import ClueDetailPanel from 'MOD_DIR/clue_detail_panel/public';
-import AudioPlayer from 'CMP_DIR/audioPlayer';
+import AudioReportFunction from 'CMP_DIR/audio-report-function';
 import Notification from 'MOD_DIR/notification/public/index';
 import BootCompleteInformation from 'CMP_DIR/boot-complete-information';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
@@ -444,15 +444,9 @@ class PageFrame extends React.Component {
                     </div>
                 </div>
                 {this.state.audioPanelShow && audioParamObj ? (
-                    <AudioPlayer
-                        playingItemAddr={audioParamObj.playingItemAddr}
-                        getInvalidPhoneErrMsg={audioParamObj.getInvalidPhoneErrMsg}
-                        addingInvalidPhoneErrMsg={audioParamObj.addingInvalidPhoneErrMsg}
-                        isAddingInvalidPhone={audioParamObj.isAddingInvalidPhone}
-                        isShowReportButton={audioParamObj.isShowReportButton}
-                        closeAudioPlayContainer={this.closeAudioPanel}
-                        handleAddInvalidPhone={audioParamObj.handleAddInvalidPhone}
-                        hideErrTooltip={audioParamObj.hideErrTooltip}
+                    <AudioReportFunction
+                        curPlayItem={audioParamObj.curPlayItem}
+                        closeAudioPanel={this.closeAudioPanel}
                     />
                 ) : null}
             </div>

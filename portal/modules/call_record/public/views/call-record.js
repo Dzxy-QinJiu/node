@@ -28,8 +28,6 @@ import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import PhoneAddToCustomerForm from 'CMP_DIR/phone-add-to-customer-form';
 import RefreshButton from 'CMP_DIR/refresh-button';
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
-//获取无效电话的列表  设置某个电话为无效电话
-import {getInvalidPhone,addInvalidPhone} from 'LIB_DIR/utils/invalidPhone';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import ShearContent from 'CMP_DIR/shear-content';
@@ -106,15 +104,9 @@ class CallRecord extends React.Component {
             currentId: '', // 查看右侧详情的id
             callType: '', // 通话类型
             selectValue: '',
-            playingItemAddr: '',//正在播放的那条记录的地址
             showRightPanel: false,
             seletedRecordId: '',//当前点击的记录id
             showTextEdit: {}, //展示跟进记录的编辑框
-            invalidPhoneLists: [],//无效电话列表
-            getInvalidPhoneErrMsg: '',//获取无效电话失败后的信息
-            playingItemPhone: '',//正在听的录音所属的电话号码
-            isAddingInvalidPhone: false,//正在添加无效电话
-            addingInvalidPhoneErrMsg: '',//添加无效电话出错的情况
         };
     }
 
@@ -503,37 +495,12 @@ class CallRecord extends React.Component {
         }
         //给本条记录加上标识
         item.playSelected = true;
-        var playItemAddr = commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type);
-        //一开始隐藏掉上报按钮，通过获取电话是否已上报，判断显示按钮
-        if(!_.includes(this.state.invalidPhoneLists, item.dst)) {
-            getInvalidPhone({number: item.dst}, (data) => {
-                if(!_.get(data, 'total')) {//没有上报过时，显示上报按钮
-                    audioMsgEmitter.emit(audioMsgEmitter.TRIGGER_SHOW_REPORT_BTN, {
-                        isShowReportButton: true
-                    });
-                }else {
-                    let invalidPhoneLists = this.state.invalidPhoneLists;
-                    invalidPhoneLists.push(item.dst);
-                    this.setState({
-                        invalidPhoneLists
-                    });
-                }
-            });
-        }
         audioMsgEmitter.emit(audioMsgEmitter.OPEN_AUDIO_PANEL, {
-            playingItemAddr: playItemAddr,
-            getInvalidPhoneErrMsg: this.state.getInvalidPhoneErrMsg,
-            addingInvalidPhoneErrMsg: this.state.addingInvalidPhoneErrMsg,
-            isAddingInvalidPhone: this.state.isAddingInvalidPhone,
-            isShowReportButton: false,
+            curPlayItem: item,
             closeAudioPlayContainer: this.closeAudioPlayContainer,
-            handleAddInvalidPhone: this.handleAddInvalidPhone,
-            hideErrTooltip: this.hideErrTooltip,
         });
         this.setState({
             callRecord: this.state.callRecord,
-            playingItemAddr: playItemAddr,
-            playingItemPhone: item.dst//正在播放的录音所属的电话号码
         }, () => {
             var audio = $('#audio')[0];
             if (audio) {
@@ -919,46 +886,9 @@ class CallRecord extends React.Component {
         }
         this.setState({
             callRecord: this.state.callRecord,
-            playingItemAddr: '',
-            playingItemPhone: ''
         });
         //隐藏播放窗口
         $('.audio-play-container').animate({ height: '0' }).css('border', '0');
-    };
-
-    //上报客服电话
-    handleAddInvalidPhone = () => {
-        var curPhone = this.state.playingItemPhone;
-        if (!curPhone){
-            return;
-        }
-        this.setState({
-            isAddingInvalidPhone: true
-        });
-        addInvalidPhone({'number': curPhone},() => {
-            this.state.invalidPhoneLists.push(curPhone);
-            this.setState({
-                isAddingInvalidPhone: false,
-                invalidPhoneLists: this.state.invalidPhoneLists,
-                addingInvalidPhoneErrMsg: ''
-            });
-            //是否隐藏上报按钮
-            audioMsgEmitter.emit(audioMsgEmitter.TRIGGER_SHOW_REPORT_BTN, {
-                isShowReportButton: false
-            });
-        },(errMsg) => {
-            this.setState({
-                isAddingInvalidPhone: false,
-                addingInvalidPhoneErrMsg: errMsg || Intl.get('fail.report.phone.err.tip', '上报无效电话失败！')
-            });
-        });
-    };
-
-    //提示框隐藏后的处理
-    hideErrTooltip = () => {
-        this.setState({
-            addingInvalidPhoneErrMsg: ''
-        });
     };
 
     render() {
