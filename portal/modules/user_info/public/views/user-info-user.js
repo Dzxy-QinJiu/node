@@ -427,7 +427,7 @@ class UserInfo extends React.Component{
         let currentVersionType = checkCurrentVersionType();
         //个人试用提示升级，正式提示续费
         //企业试用提示升级，正式提示续费
-        if(currentVersionType.formal){ //个人正式版出现续费button
+        if(currentVersion.personal && currentVersionType.formal){ //个人正式版出现续费button
             return <Button
                 className="user-version-upgrade"
                 data-tracename="点击个人正式版续费"
