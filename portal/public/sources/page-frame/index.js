@@ -11,7 +11,7 @@ const LAYOUT_CONSTS = require('../../../lib/consts').LAYOUT;
 var LeftMenu = require('../../../components/privilege/nav-sidebar');
 import PhonePanel from 'MOD_DIR/phone_panel/public';
 import ClueDetailPanel from 'MOD_DIR/clue_detail_panel/public';
-import AudioPlayer from 'CMP_DIR/audioPlayer';
+import AudioReportFunction from 'CMP_DIR/audio-report-function';
 import Notification from 'MOD_DIR/notification/public/index';
 import BootCompleteInformation from 'CMP_DIR/boot-complete-information';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
@@ -107,8 +107,6 @@ class PageFrame extends React.Component {
         phoneMsgEmitter.on(phoneMsgEmitter.CLOSE_CLUE_PANEL, this.closeCluePanel);
         //打开播放录音面板的事件监听
         audioMsgEmitter.on(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
-        //隐藏上报客服电话的按钮
-        audioMsgEmitter.on(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
         // 点击系统通知框的的触发
         notificationEmitter.on(notificationEmitter.CLICK_SYSTEM_NOTICE, this.showNotificationPanel);
         // 打开用户详情面板的事件监听
@@ -171,7 +169,6 @@ class PageFrame extends React.Component {
         //关闭拨打电话面板的事件监听
         phoneMsgEmitter.removeListener(phoneMsgEmitter.CLOSE_CLUE_PANEL, this.closeCluePanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
-        audioMsgEmitter.removeListener(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
         notificationEmitter.removeListener(notificationEmitter.CLICK_SYSTEM_NOTICE, this.showNotificationPanel);
         // 打开用户详情面板的事件监听
         userDetailEmitter.removeListener(userDetailEmitter.OPEN_USER_DETAIL, this.openUserDetailPanel);
@@ -207,12 +204,6 @@ class PageFrame extends React.Component {
 
     openAudioPanel = (audioParamObj) => {
         this.setState({audioPanelShow: true, audioParamObj: $.extend(this.state.audioParamObj, audioParamObj)});
-    };
-
-    hideReportBtn = (btnShowFlag) => {
-        let audioParamObj = this.state.audioParamObj;
-        audioParamObj.isShowReportButton = btnShowFlag.isShowReportButton;
-        this.setState({audioParamObj});
     };
 
     openPhonePanel = (paramObj) => {
@@ -444,15 +435,9 @@ class PageFrame extends React.Component {
                     </div>
                 </div>
                 {this.state.audioPanelShow && audioParamObj ? (
-                    <AudioPlayer
-                        playingItemAddr={audioParamObj.playingItemAddr}
-                        getInvalidPhoneErrMsg={audioParamObj.getInvalidPhoneErrMsg}
-                        addingInvalidPhoneErrMsg={audioParamObj.addingInvalidPhoneErrMsg}
-                        isAddingInvalidPhone={audioParamObj.isAddingInvalidPhone}
-                        isShowReportButton={audioParamObj.isShowReportButton}
-                        closeAudioPlayContainer={this.closeAudioPanel}
-                        handleAddInvalidPhone={audioParamObj.handleAddInvalidPhone}
-                        hideErrTooltip={audioParamObj.hideErrTooltip}
+                    <AudioReportFunction
+                        curPlayItem={audioParamObj.curPlayItem}
+                        closeAudioPanel={this.closeAudioPanel}
                     />
                 ) : null}
             </div>
