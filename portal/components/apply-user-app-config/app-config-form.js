@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2018/5/31.
  */
+require('./css/app-config-from.less');
 import {USER_TYPE_VALUE_MAP, USER_TYPE_TEXT_MAP} from 'PUB_DIR/sources/utils/consts';
 import {Form, Radio, InputNumber, Checkbox} from 'antd';
 const RadioGroup = Radio.Group;
@@ -103,6 +103,7 @@ class AppConfigForm extends React.Component {
                         <FormItem
                             {...formItemLayout}
                             label={Intl.get('common.terminals.type', '终端类型')}
+                            className="app-terminals-item"
                         >
                             <CheckboxGroup
                                 options={terminalsOptions}
