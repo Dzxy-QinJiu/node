@@ -411,7 +411,7 @@ var NavSidebar = createReactClass({
         let isUnReadNotice = this.state.isUnReadNotice;
         let noticeSubMenuSelectedType = this.state.noticeSubMenuSelectedType;
         let systemCls = classNames({
-            'active': noticeSubMenuSelectedType === 'system',
+            'active': !isUnReadNotice && noticeSubMenuSelectedType === 'system',
         });
         let upgradeNotice = classNames({
             'active': isUnReadNotice || noticeSubMenuSelectedType === 'notice',
