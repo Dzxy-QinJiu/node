@@ -230,7 +230,7 @@ class AddApplyConditionPanel extends React.Component {
                                 </div>
                                 <div className="condition-type-content">
                                     <Select
-                                        defaultValue={_.get(value, 'rangeLimit')}
+                                        value={_.get(value, 'rangeLimit')}
                                         onChange={this.handleChangeRangeLimit.bind(this, limitType, 'rangeLimit', 'inverseCondition', CONDITION_LIMITE)}
                                     >
                                         {_.map(CONDITION_LIMITE, (item, index) => {
@@ -238,7 +238,7 @@ class AddApplyConditionPanel extends React.Component {
                                         })}
                                     </Select>
                                     <Input
-                                        defaultValue={_.get(value, 'rangeNumber')}
+                                        value={_.get(value, 'rangeNumber')}
                                         onChange={this.handleRangeInputChange.bind(this, limitType, 'rangeNumber', Intl.get('common.time.unit.day', '天'))}
                                         addonAfter={Intl.get('common.time.unit.day', '天')}/>
                                 </div>
@@ -251,12 +251,15 @@ class AddApplyConditionPanel extends React.Component {
                                         <i className="iconfont icon-delete handle-btn-item"
                                             onClick={this.deleteConditionType.bind(this, limitType)}></i>
                                     </div>
-                                    <div className="condition-type-content">
+                                    <div className="condition-type-content user-range-content">
                                         <Select
-                                            defaultValue={_.get(value, 'userRange')}
-                                            showSearch mode="multiple"
+                                            value={_.get(value, 'userRange')}
+                                            showSearch
+                                            mode="multiple"
                                             onChange={this.handleChangeSelectUser.bind(this, limitType, 'userRange',index)}
-                                            filterOption={(input, option) => ignoreCase(input, option)}>
+                                            filterOption={(input, option) => ignoreCase(input, option)}
+                                            getPopupContainer={() => document.getElementById('add_apply_condition')}
+                                        >
                                             {_.map(this.state.userList, (item,index) => {
                                                 return <Option value={item.userId} key={index}>{item.nickName}</Option>;
                                             })}
