@@ -87,18 +87,6 @@ class CustomerRecord extends React.Component {
             //获取客户跟踪记录列表
             this.getCustomerTraceList();
         });
-        //获取无效电话号码列表
-        getInvalidPhone((data) => {
-            this.setState({
-                invalidPhoneLists: data.result,
-                getInvalidPhoneErrMsg: ''
-            });
-        }, (errMsg) => {
-            this.setState({
-                invalidPhoneLists: [],
-                getInvalidPhoneErrMsg: errMsg || Intl.get('call.record.get.invalid.phone.lists', '获取无效电话列表失败')
-            });
-        });
         this.getAppList();
         $(window).on('resize', this.resizeLayoutHeight);
         // 监听到拨打电话状态展示区高度改变后，重新计算高度
@@ -480,13 +468,28 @@ class CustomerRecord extends React.Component {
         //给本条记录加上标识
         item.playSelected = true;
         var playItemAddr = commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type);
-        var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, item.dst) === -1;
+        //一开始隐藏掉上报按钮，通过获取电话是否已上报，判断显示按钮
+        if(_.indexOf(this.state.invalidPhoneLists, item.dst) === -1) {
+            getInvalidPhone({number: item.dst}, (data) => {
+                if(!_.get(data, 'total')) {//没有上报过时，显示上报按钮
+                    audioMsgEmitter.emit(audioMsgEmitter.HIDE_REPORT_BTN, {
+                        isShowReportButton: true
+                    });
+                }else {
+                    let invalidPhoneLists = this.state.invalidPhoneLists;
+                    invalidPhoneLists.push(item.dst);
+                    this.setState({
+                        invalidPhoneLists
+                    });
+                }
+            });
+        }
         audioMsgEmitter.emit(audioMsgEmitter.OPEN_AUDIO_PANEL, {
             playingItemAddr: playItemAddr,
             getInvalidPhoneErrMsg: this.state.getInvalidPhoneErrMsg,
             addingInvalidPhoneErrMsg: this.state.addingInvalidPhoneErrMsg,
             isAddingInvalidPhone: this.state.isAddingInvalidPhone,
-            isShowReportButton: isShowReportButton,
+            isShowReportButton: false,
             closeAudioPlayContainer: this.closeAudioPlayContainer,
             handleAddInvalidPhone: this.handleAddInvalidPhone,
             hideErrTooltip: this.hideErrTooltip,

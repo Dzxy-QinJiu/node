@@ -7,16 +7,12 @@ import routeList from '../../modules/common/route';
 import ajax from '../../modules/common/ajax';
 
 //获取无效电话
-exports.getInvalidPhone = function(onSuccess, onError) {
+exports.getInvalidPhone = function(query, onSuccess, onError) {
     const route = _.find(routeList, route => route.handler === 'getInvalidPhone');
     const arg = {
         url: route.path,
         type: route.method,
-        query: {
-            sort_field: 'time',//排序字段,默认：创建时间
-            order: 'descend',//默认：倒序
-            page_size: 1000
-        }
+        query: query
     };
     ajax(arg).then(result => {
         if (_.isFunction(onSuccess)) {
@@ -27,7 +23,7 @@ exports.getInvalidPhone = function(onSuccess, onError) {
                 })
                 .filter(item => item)
                 .value();
-            onSuccess({result: list});
+            onSuccess({result: list, total: _.get(result,'total', 0)});
         }
     }, err => {
         if (_.isFunction(onError)) {
