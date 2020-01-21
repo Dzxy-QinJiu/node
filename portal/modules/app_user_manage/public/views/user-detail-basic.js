@@ -430,8 +430,13 @@ class UserDetailBasic extends React.Component {
                         defaultMessage="二步认证" />：{this.renderIsTwoFactor(app, true)}</span>}
                     {
                         !_.isEmpty(app.terminals) ? (
-                            <span>
-                                {Intl.get('common.terminals', '終端')}：{this.renderAppTerminals(app)}
+                            <span className="app-terminals">
+                                <span>
+                                    {Intl.get('common.terminals', '終端')}：
+                                </span>
+                                <span className="terminal-content">
+                                    {this.renderAppTerminals(app) }
+                                </span>
                             </span>
                         ) : null
                     }
