@@ -45,9 +45,9 @@ class PhoneCallout extends React.Component {
         } );
     };
     handleVisibleChange = (phoneNumber, contactName,visible) => {
-        //如果是个人版，需要提示升级为基础版以上才能拨打号码
+        //如果是个人试用版，需要提示升级为基础版以上才能拨打号码
         let versionAndType = checkVersionAndType();
-        if(versionAndType.personal) {
+        if(versionAndType.isPersonalTrial) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)), '个人版点击电话按钮');
             paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {versionKind: COMPANY_VERSION_KIND});
             return;
@@ -77,8 +77,8 @@ class PhoneCallout extends React.Component {
         var contentTip = showDisabledCallTip();
         //如果是个人正式版，需要提示升级为企业版才能拨打号码
         let versionAndType = checkVersionAndType();
-        if(versionAndType.personal) {
-            contentTip = Intl.get('payment.please.upgrade.company.version', '请先升级到基础版以上版本，联系销售：{contact}',{contact: '400-6978-520'});
+        if(versionAndType.isPersonalFormal) {
+            contentTip = Intl.get('payment.please.contact.our.sale.renewal','请联系我们的销售人员，联系方式：{contact}',{contact: '400-6978-520'});
         }
         var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
         var contactName = this.props.contactName;
