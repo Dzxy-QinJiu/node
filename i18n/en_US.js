@@ -1915,6 +1915,7 @@ var en_US = {
     'crm.customer.pool.rule.own.visible': 'The self released is invisible',//自己释放的自己不可见
     'crm.filter.extract.from.customer.pool': 'Customers extracted from the customer pool',//从客户池中提取的客户
     'crm.filter.extract.from.lead.pool': 'Leads extracted from the lead pool',//从线索池中提取的线索
+    'crm.filter.lead.apply.try.enterprise': 'Leads applied try enterprise version',//申请企业试用的线索
     'crm.basic.second.level.domain': 'Public opinion platform domain name',//舆情平台域名
     'crm.basic.plat.form.name': 'Public opinion platform name',//舆情平台名称
 

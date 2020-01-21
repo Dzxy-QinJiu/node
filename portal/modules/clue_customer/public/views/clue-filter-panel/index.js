@@ -11,7 +11,7 @@ var FilterAction = require('../../action/filter-action');
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
-import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,NOT_CONNECTED,EXTRACT_TIME, sourceClassifyArray, NEED_MY_HANDLE, isCommonSalesOrPersonnalVersion } from '../../utils/clue-customer-utils';
+import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,NOT_CONNECTED,EXTRACT_TIME, sourceClassifyArray, NEED_MY_HANDLE, isCommonSalesOrPersonnalVersion, APPLY_TRY_LEAD } from '../../utils/clue-customer-utils';
 import {getClueUnhandledPrivilege, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
@@ -19,6 +19,7 @@ import userData from 'PUB_DIR/sources/user-data';
 import { DatePicker } from 'antd';
 const { RangePicker } = DatePicker;
 import {checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 let otherFilterArray = [
     {
         name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
@@ -48,6 +49,12 @@ class ClueFilterPanel extends React.Component {
             customCommonFilter: [],
             ...clueFilterStore.getState(),
         };
+        if(isCurtao()){//在客套域下，才可以筛选申请试用的线索
+            otherFilterArray.push({
+                name: Intl.get('crm.filter.lead.apply.try.enterprise','申请企业试用的线索'),
+                value: APPLY_TRY_LEAD
+            });
+        }
     }
 
     onStoreChange = () => {
@@ -313,6 +320,7 @@ class ClueFilterPanel extends React.Component {
                         FilterAction.setSimilarFiled(SIMILAR_CUSTOMER);
                         FilterAction.setNotConnectedClues();
                         FilterAction.setLeadFromLeadPool();
+                        FilterAction.setAppliedTryLead();
                     }else if(item.value === SIMILAR_CLUE){
                         FilterAction.setExistedFiled();
                         FilterAction.setUnexistedFiled();
@@ -320,6 +328,7 @@ class ClueFilterPanel extends React.Component {
                         FilterAction.setSimilarFiled(SIMILAR_CLUE);
                         FilterAction.setNotConnectedClues();
                         FilterAction.setLeadFromLeadPool();
+                        FilterAction.setAppliedTryLead();
                     }else if (item.value === SELECT_TYPE.WAIT_ME_HANDLE){
                         //如果筛选的是待我处理的线索
                         FilterAction.setExistedFiled();
@@ -332,6 +341,7 @@ class ClueFilterPanel extends React.Component {
                         }
                         FilterAction.setNotConnectedClues();
                         FilterAction.setLeadFromLeadPool();
+                        FilterAction.setAppliedTryLead();
                     }else if (item.value === NOT_CONNECTED){
                         FilterAction.setNotConnectedClues(true);
                         FilterAction.setExistedFiled();
@@ -339,6 +349,7 @@ class ClueFilterPanel extends React.Component {
                         FilterAction.setFilterClueAllotNoTrace();
                         FilterAction.setSimilarFiled();
                         FilterAction.setLeadFromLeadPool();
+                        FilterAction.setAppliedTryLead();
                     }else if(item.value === EXTRACT_TIME){//从线索池中提取的线索
                         FilterAction.setExistedFiled();
                         FilterAction.setUnexistedFiled();
@@ -346,6 +357,15 @@ class ClueFilterPanel extends React.Component {
                         FilterAction.setSimilarFiled();
                         FilterAction.setNotConnectedClues();
                         FilterAction.setLeadFromLeadPool(EXTRACT_TIME);
+                        FilterAction.setAppliedTryLead();
+                    }else if(item.value === APPLY_TRY_LEAD){ //申请试用企业版的线索
+                        FilterAction.setExistedFiled();
+                        FilterAction.setUnexistedFiled();
+                        FilterAction.setFilterClueAllotNoTrace();
+                        FilterAction.setSimilarFiled();
+                        FilterAction.setNotConnectedClues();
+                        FilterAction.setLeadFromLeadPool();
+                        FilterAction.setAppliedTryLead(APPLY_TRY_LEAD);
                     }
                 }else if (item.groupId === 'user_name'){
                     FilterAction.setFilterClueUsername( _.get(item,'data'));
