@@ -414,6 +414,7 @@ export const COMMON_OTHER_ITEM = 'otherSelectedItem';
 export const SIMILAR_CUSTOMER = 'similarCustomer';
 export const SIMILAR_CLUE = 'similarClue';
 export const EXTRACT_TIME = 'getLeadFromLeadPool';
+export const APPLY_TRY_LEAD = 'applyTryEnterprise';
 export const clueStatusTabNum = [{
     numName: 'invalidClue',
     status: 'invalidClue',
