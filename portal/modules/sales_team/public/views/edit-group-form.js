@@ -13,7 +13,6 @@ import Trace from 'LIB_DIR/trace';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 import salesTeamAjax from '../ajax/sales-team-ajax';
 import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import {saveTraversingTeamTree} from 'PUB_DIR/sources/utils/common-method-util';
 import {getUserData} from 'PUB_DIR/sources/user-data';
 function noop() {
@@ -137,7 +136,6 @@ var SalesTeamForm = createReactClass({
                             if (editGroupData.group_id) {
                                 saveTraversingTeamTree(teamTreeList, editGroupData, 'edit');
                             }
-                            // getMyTeamTreeAndFlattenList(null, true);
                             //保存成功后的处理
                             const salesTeam = this.props.salesTeam;
                             if (salesTeam && salesTeam.isEditGroup) {
@@ -171,7 +169,6 @@ var SalesTeamForm = createReactClass({
                         //添加成功后的处理
                         if (result.saveResult === 'success') {
                             saveTraversingTeamTree(teamTreeList, addTeam, 'create');
-                            // getMyTeamTreeAndFlattenList(null, true);
                             if (this.props.isAddRoot) {
                                 //添加根组织时的处理
                                 this.props.cancelSalesTeamForm();

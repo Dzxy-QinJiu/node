@@ -120,8 +120,6 @@ function SalesTeamAction() {
                 // 缓存的团队数据
                 let teamTreeList = getUserData().my_team_tree || [];
                 saveTraversingTeamTree(teamTreeList, {group_id: groupId}, 'delete');
-                // 删除成功的处理
-                // this.actions.getSalesTeamList();
                 //刷新添加时展示的不属于任何团队的成员列表
                 this.actions.getMemberList();
                 this.dispatch({success: true, groupId: groupId});

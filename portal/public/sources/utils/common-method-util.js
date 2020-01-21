@@ -1356,55 +1356,36 @@ function saveTraversingTeamTree(teamTreeList, modifyData, flag) {
         let isRootTeam = _.get(modifyData, 'root_group');
         if (isRootTeam) { // 添加的是根团队（根部门）
             teamTreeList.push(modifyData);
-            //保存到userData中
-            setUserData(MY_TEAM_TREE_KEY, teamTreeList);
         } else { // 添加子团队（子部门）
             _.find(teamTreeList, team => {
-                let childGroups = _.get(team, 'child_groups');
+                let childGroups = _.get(team, 'child_groups', []);
                 if (_.get(team, 'group_id') === _.get(modifyData, 'parent_group')) {
-                    if (childGroups) {
-                        childGroups.push(modifyData);
-                    } else {
-                        childGroups = [modifyData];
-                    }
+                    childGroups.push(modifyData);
                 } else {
                     if (childGroups) {
                         saveTraversingTeamTree(childGroups, modifyData, flag);
                     }
                 }
             });
-            //保存到userData中
-            setUserData(MY_TEAM_TREE_KEY, teamTreeList);
         }
-    } else if (flag === 'edit') {
+    } else {
         if (!_.isEmpty(teamTreeList)) {
             _.find(teamTreeList, team => {
                 if (_.get(team, 'group_id') === _.get(modifyData, 'group_id')) {
-                    team.group_name = _.get(modifyData, 'group_name');
+                    if (flag === 'edit') {
+                        team.group_name = _.get(modifyData, 'group_name');
+                    } else if (flag === 'delete'){
+                        _.remove(teamTreeList, team);
+                    }
                 } else {
                     if (team.child_groups) {
                         saveTraversingTeamTree(team.child_groups, modifyData, flag);
                     }
                 }
             });
-            //保存到userData中
-            setUserData(MY_TEAM_TREE_KEY, teamTreeList);
-        }
-    } else if (flag === 'delete') {
-        if (!_.isEmpty(teamTreeList)) {
-            _.find(teamTreeList, team => {
-                if (_.get(team, 'group_id') === _.get(modifyData, 'group_id')) {
-                    _.remove(teamTreeList, team);
-                } else {
-                    let childGroups = _.get(team, 'child_groups');
-                    if (childGroups) {
-                        saveTraversingTeamTree(childGroups, modifyData, flag);
-                    }
-                }
-            });
-            //保存到userData中
-            setUserData(MY_TEAM_TREE_KEY, teamTreeList);
         }
     }
+    //保存到userData中
+    setUserData(MY_TEAM_TREE_KEY, teamTreeList);
 }
 exports.saveTraversingTeamTree = saveTraversingTeamTree;
