@@ -909,7 +909,7 @@ class ClueCustomer extends React.Component {
                     typeFilter.customer_similarity = Intl.get( 'clue.has.similar.customer','有相似客户');
                 }
             }
-            if(filterStoreData.appliedTryLead){
+            if(filterStoreData.appliedTryLead){ //筛选申请试用企业版的线索
                 typeFilter.version_upgrade_label = 'true';
             }
 
