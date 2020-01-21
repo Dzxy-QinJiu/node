@@ -68,6 +68,7 @@ const HOCGoodsBuy = (options = {}) => {
                     activeGoods: {},//当前选中的商品
                     payModeList: [],//支付渠道,如支付宝，微信
                     isShowCloseBtn: true,//是否显示关闭按钮
+                    showRightTitle: true,//是否展示右侧内容
                 };
             }
 
@@ -210,7 +211,7 @@ const HOCGoodsBuy = (options = {}) => {
                             <div className="hoc-goods-buy-title-wrapper" id="hoc-goods-buy-title-wrapper">
                                 <span>{this.state.leftTitle || options.leftTitle}</span>
                                 {
-                                    options.rightTitle ? (
+                                    options.rightTitle && this.state.showRightTitle ? (
                                         <React.Fragment>
                                             {/*<Popover
                                             placement="left"

@@ -11,7 +11,7 @@ const LAYOUT_CONSTS = HocGoodsBuy.LAYOUT_CONSTS;
 import {Row, Col} from 'antd';
 import PayAjax from 'MOD_DIR/common/public/ajax/pay';
 import { getOrganizationInfo } from 'PUB_DIR/sources/utils/common-data-util';
-import {checkCurrentVersionType} from 'PUB_DIR/sources/utils/common-method-util';
+import { checkCurrentVersionType, checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
 import { setUserData, getUserData } from 'PUB_DIR/sources/user-data';
 import history from 'PUB_DIR/sources/history';
 import { paymentEmitter } from 'OPLATE_EMITTER';
@@ -79,8 +79,16 @@ class OfficialPersonalEdition extends React.Component{
         });
         this.getPayModeAndGoodsList();
         this.handleResize();
+        this.judgeShowRightTitle();
     }
 
+    //个人正式不显示申请试用企业版入口
+    judgeShowRightTitle = () => {
+        let versionAndType = checkVersionAndType();
+        this.setState({
+            showRightTitle: !versionAndType.isPersonalFormal
+        });
+    }
     //处理窗口变化
     handleResize = () => {
         let listHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT;

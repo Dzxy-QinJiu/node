@@ -427,6 +427,15 @@ class UserInfo extends React.Component{
         let currentVersionType = checkCurrentVersionType();
         //个人试用提示升级，正式提示续费
         //企业试用提示升级，正式提示续费
+        if(currentVersion.personal && currentVersionType.formal){ //个人正式版出现续费button
+            return <Button
+                className="user-version-upgrade"
+                data-tracename="点击个人正式版续费"
+                onClick={this.handleVersionUpgrade}
+            >
+                {Intl.get('payment.renewal', '续费')}
+            </Button>;
+        }
         if(currentVersion.company) {
             if(currentVersionType.trial) {//企业试用
                 return (
@@ -484,27 +493,6 @@ class UserInfo extends React.Component{
                             type='primary'
                         >
                             {Intl.get('personal.apply.trial.enterprise.edition', '申请试用企业版')}
-                        </Button>
-                    </div>
-                );
-            }else if(currentVersionType.formal) {//个人正式
-                return (
-                    <div className='user-version-btn-wrapper'>
-                        <Button
-                            className="user-version-upgrade"
-                            onClick={this.handleVersionUpgrade}
-                            data-tracename="点击个人续费按钮"
-                            type='primary'
-                        >
-                            {Intl.get('payment.renewal', '续费')}
-                        </Button>  
-                        <Button
-                            className="user-version-upgrade"
-                            onClick={this.triggerShowVersionInfo}
-                            data-tracename="点击打开申请试用企业版"
-                            type='primary'
-                        >
-                            {Intl.get('personal.apply.trial.enterprise.edition', '申请试用企业版')} 
                         </Button>
                     </div>
                 );
