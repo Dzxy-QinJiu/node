@@ -505,10 +505,10 @@ class CallRecord extends React.Component {
         item.playSelected = true;
         var playItemAddr = commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type);
         //一开始隐藏掉上报按钮，通过获取电话是否已上报，判断显示按钮
-        if(_.indexOf(this.state.invalidPhoneLists, item.dst) === -1) {
+        if(!_.includes(this.state.invalidPhoneLists, item.dst)) {
             getInvalidPhone({number: item.dst}, (data) => {
                 if(!_.get(data, 'total')) {//没有上报过时，显示上报按钮
-                    audioMsgEmitter.emit(audioMsgEmitter.HIDE_REPORT_BTN, {
+                    audioMsgEmitter.emit(audioMsgEmitter.TRIGGER_SHOW_REPORT_BTN, {
                         isShowReportButton: true
                     });
                 }else {
@@ -943,7 +943,7 @@ class CallRecord extends React.Component {
                 addingInvalidPhoneErrMsg: ''
             });
             //是否隐藏上报按钮
-            audioMsgEmitter.emit(audioMsgEmitter.HIDE_REPORT_BTN, {
+            audioMsgEmitter.emit(audioMsgEmitter.TRIGGER_SHOW_REPORT_BTN, {
                 isShowReportButton: false
             });
         },(errMsg) => {
