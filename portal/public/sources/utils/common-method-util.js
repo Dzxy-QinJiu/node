@@ -457,12 +457,8 @@ exports.getTimeStr = function(d, format) {
     return moment(new Date(d)).format(format || oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
 };
 exports.getApplyTopicText = function(obj) {
-    if (obj.topic === APPLY_APPROVE_TYPES.CUSTOMER_VISIT) {
-        return Intl.get('leave.apply.add.leave.apply', '出差申请');
-    } else if (obj.topic === APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES) {
+    if (obj.topic === APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES) {
         return _.get(obj, 'detail.customer.name');
-    } else if (obj.topic === APPLY_APPROVE_TYPES.PERSONAL_LEAVE) {
-        return Intl.get('leave.apply.leave.application', '请假申请');
     } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1) {
         return Intl.get('apply.approve.specific.report', '{customer}客户的{reporttype}', {
             customer: _.get(obj, 'detail.customer.name'),
@@ -470,12 +466,8 @@ exports.getApplyTopicText = function(obj) {
         });
     } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1) {
         return getDocumentReportTypeText(DOCUMENT_TYPE, _.get(obj, 'detail.document_type'));
-    } else if (obj.topic === APPLY_APPROVE_TYPES.MEMBER_INVITE) {
-        return Intl.get('member.application', '成员申请');
-    }else if (obj.workflow_type === SELF_SETTING_FLOW.VISITAPPLY){
-        return SELF_SETTING_FLOW.VISITAPPLYTOPIC;
-    }else if (obj.workflow_type === SELF_SETTING_FLOW.DOMAINAPPLY){
-        return SELF_SETTING_FLOW.DOMAINAPPLYTOPIC;
+    } else {
+        return _.get(obj, 'configDescription','');
     }
 };
 function getDocumentReportTypeText(AllTypeList, specificType) {
