@@ -332,6 +332,7 @@ var en_US = {
     'login.verify_identity': 'Verify identity',//验证身份
     'login.set_new_password': 'Set new password',//设置新密码
     'login.please_enter_contact_type_verification_code': 'Please enter {contactTypeName} verification code', //请输入{contactTypeName}验证码'
+    'login.input.phone.code': 'Please enter SMS verification code',//请输入短信验证码
     'login.please_enter_new_password': 'Please enter new password',//请输入新密码
     'login.send_phone_or_email_verification_code': 'Send verification code to phone or email',//发送手机/邮箱验证码
     'login.send_phone_verification_code': 'Send verification code to phone',//发送短信验证码

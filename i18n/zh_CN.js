@@ -338,6 +338,7 @@ var zh_CN = {
     'login.verify_identity': '验证身份',
     'login.set_new_password': '设置新密码',
     'login.please_enter_contact_type_verification_code': '请输入{contactTypeName}验证码',
+    'login.input.phone.code': '请输入短信验证码',
     'login.please_enter_new_password': '请输入新密码',
     'login.send_phone_or_email_verification_code': '发送手机/邮箱验证码',
     'login.send_phone_verification_code': '发送短信验证码',

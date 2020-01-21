@@ -21,7 +21,6 @@ const VIEWS = {
 class LoginMain extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
             errorMsg: this.props.loginErrorMsg,
             //展示界面
@@ -30,6 +29,8 @@ class LoginMain extends React.Component {
             captcha: this.props.captchaCode || '',
             // 当前展示的视图login：登录，forgot_password找回密码
             currentView: VIEWS.LOGIN,
+            // 记录登录界面输入的用户名，找回密码时，手机号自动填充时使用
+            userName: '',
         };
 
         this.setErrorMsg = this.setErrorMsg.bind(this);
@@ -94,6 +95,11 @@ class LoginMain extends React.Component {
     toRegister=(e) => {
         window.open('/register'); 
     }
+    userNameChange = (userName) => {
+        this.setState({
+            userName
+        });
+    }
     render() {
         //如果是初次渲染不展示表单;
         //如果有错误信息，则不显示loading状态
@@ -117,6 +123,7 @@ class LoginMain extends React.Component {
                                         hasWindow={hasWindow}
                                         setErrorMsg={this.setErrorMsg}
                                         changeView={this.changeView.bind(this, VIEWS.FORGOT_PASSWORD)}
+                                        userNameChange={this.userNameChange}
                                         {...this.props}
                                     />
                                 ) : null}
@@ -124,7 +131,7 @@ class LoginMain extends React.Component {
                                     <ForgotPassword
                                         hasWindow={hasWindow}
                                         views={VIEWS}
-                                        setErrorMsg={this.setErrorMsg}
+                                        userName={this.state.userName}
                                         changeView={this.changeView.bind(this, VIEWS.LOGIN)}
                                         {...this.props}
                                     />
