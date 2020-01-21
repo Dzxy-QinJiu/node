@@ -35,7 +35,7 @@ class LeftTree extends React.Component {
     };
 
     addGroup = (item) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-add handle-btn-item'),'添加子部门');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-add .handle-btn-item'),'添加子部门');
         SalesTeamAction.addGroup(item);
     };
 

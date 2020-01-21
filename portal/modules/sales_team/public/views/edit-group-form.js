@@ -4,22 +4,17 @@ const Validator = Validation.Validator;
 /**
  * Created by xiaojinfeng on 2016/04/19.
  */
-
-var Form = require('antd').Form;
-var Input = require('antd').Input;
-var Select = require('antd').Select;
-var Button = require('antd').Button;
+import {Form, Input,Select, } from 'antd';
 var FormItem = Form.Item;
 var classNames = require('classnames');
-var AlertTimer = require('../../../../components/alert-timer');
-var Icon = require('antd').Icon;
 var SalesTeamActions = require('../action/sales-team-actions');
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import Trace from 'LIB_DIR/trace';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 import salesTeamAjax from '../ajax/sales-team-ajax';
 import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
+import {saveTraversingTeamTree} from 'PUB_DIR/sources/utils/common-method-util';
+import {getUserData} from 'PUB_DIR/sources/user-data';
 function noop() {
 }
 
@@ -110,6 +105,8 @@ var SalesTeamForm = createReactClass({
             if (!valid || this.state.checkNameExist || this.state.checkNameError) {
                 return;
             } else {
+                // 缓存的团队数据
+                let teamTreeList = getUserData().my_team_tree || [];
                 Trace.traceEvent(e,'保存添加或编辑团队的修改');
                 let formData = this.state.formData;
                 if (formData.isEditGroup) { // 编辑部门或是组织
@@ -135,7 +132,10 @@ var SalesTeamForm = createReactClass({
                         formData.isTeamSaving = false;
                         this.setState({formData: formData});
                         if (result.saveResult === 'success') {
-                            getMyTeamTreeAndFlattenList(null, true);
+                            // 修改部门信息
+                            if (editGroupData.group_id) {
+                                saveTraversingTeamTree(teamTreeList, editGroupData, 'edit');
+                            }
                             //保存成功后的处理
                             const salesTeam = this.props.salesTeam;
                             if (salesTeam && salesTeam.isEditGroup) {
@@ -168,7 +168,7 @@ var SalesTeamForm = createReactClass({
                         this.setState({formData: formData});
                         //添加成功后的处理
                         if (result.saveResult === 'success') {
-                            getMyTeamTreeAndFlattenList(null, true);
+                            saveTraversingTeamTree(teamTreeList, addTeam, 'create');
                             if (this.props.isAddRoot) {
                                 //添加根组织时的处理
                                 this.props.cancelSalesTeamForm();
