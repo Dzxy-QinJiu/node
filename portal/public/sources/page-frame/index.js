@@ -107,8 +107,6 @@ class PageFrame extends React.Component {
         phoneMsgEmitter.on(phoneMsgEmitter.CLOSE_CLUE_PANEL, this.closeCluePanel);
         //打开播放录音面板的事件监听
         audioMsgEmitter.on(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
-        //隐藏上报客服电话的按钮
-        audioMsgEmitter.on(audioMsgEmitter.TRIGGER_SHOW_REPORT_BTN, this.triggerShowReportBtn);
         // 点击系统通知框的的触发
         notificationEmitter.on(notificationEmitter.CLICK_SYSTEM_NOTICE, this.showNotificationPanel);
         // 打开用户详情面板的事件监听
@@ -171,7 +169,6 @@ class PageFrame extends React.Component {
         //关闭拨打电话面板的事件监听
         phoneMsgEmitter.removeListener(phoneMsgEmitter.CLOSE_CLUE_PANEL, this.closeCluePanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
-        audioMsgEmitter.removeListener(audioMsgEmitter.TRIGGER_SHOW_REPORT_BTN, this.triggerShowReportBtn);
         notificationEmitter.removeListener(notificationEmitter.CLICK_SYSTEM_NOTICE, this.showNotificationPanel);
         // 打开用户详情面板的事件监听
         userDetailEmitter.removeListener(userDetailEmitter.OPEN_USER_DETAIL, this.openUserDetailPanel);
@@ -207,12 +204,6 @@ class PageFrame extends React.Component {
 
     openAudioPanel = (audioParamObj) => {
         this.setState({audioPanelShow: true, audioParamObj: $.extend(this.state.audioParamObj, audioParamObj)});
-    };
-
-    triggerShowReportBtn = (btnShowFlag) => {
-        let audioParamObj = this.state.audioParamObj;
-        audioParamObj.isShowReportButton = btnShowFlag.isShowReportButton;
-        this.setState({audioParamObj});
     };
 
     openPhonePanel = (paramObj) => {

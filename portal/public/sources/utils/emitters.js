@@ -33,8 +33,6 @@ exports.audioMsgEmitter = new EventEmitter();
 exports.audioMsgEmitter.OPEN_AUDIO_PANEL = 'openAudioPanel';
 //关闭播放录音的面板emitter
 exports.audioMsgEmitter.CLOSE_AUDIO_PANEL = 'closeAudioPanel';
-//显示/隐藏上报客服电话按钮
-exports.audioMsgEmitter.TRIGGER_SHOW_REPORT_BTN = 'triggerShowReportBtn';
 //日程管理界面emitter
 exports.scheduleManagementEmitter = new EventEmitter();
 exports.scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE = 'setUpdateScrollBarTrue';
