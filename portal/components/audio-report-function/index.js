@@ -9,7 +9,7 @@ import { addInvalidPhone, getInvalidPhone } from 'LIB_DIR/utils/invalidPhone';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
-const INVALID_PHONE_KEY = 'invalid_phone_lists';
+const INVALID_PHONE_KEY = 'invalid_phone_list';
 
 class AudioReportFunction extends React.Component{
     constructor(props) {
@@ -46,25 +46,30 @@ class AudioReportFunction extends React.Component{
         return commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type);
     };
 
-    getInvalidPhoneLists = () => {
-        let invalidPhoneLists = session.get(INVALID_PHONE_KEY);
-        return invalidPhoneLists ? JSON.parse(invalidPhoneLists) : [];
+    getInvalidPhoneList = () => {
+        let invalidPhoneList = session.get(INVALID_PHONE_KEY);
+        return invalidPhoneList ? JSON.parse(invalidPhoneList) : [];
+    };
+
+    setInvalidPhoneList = (phone) => {
+        let invalidPhoneList = this.getInvalidPhoneList();
+        invalidPhoneList.push(phone);
+        session.set(INVALID_PHONE_KEY, JSON.stringify(_.uniq(invalidPhoneList)));
     };
 
     getInvalidPhone = () => {
         let item = this.state.curPlayItem;
         let playItemAddr = this.getPlayItemAddr(item);
-        let invalidPhoneLists = this.getInvalidPhoneLists();
+        let invalidPhoneList = this.getInvalidPhoneList();
         //一开始隐藏掉上报按钮，通过获取电话是否已上报，判断显示按钮
-        if(!_.includes(invalidPhoneLists, item.dst)) {
+        if(!_.includes(invalidPhoneList, item.dst)) {
             getInvalidPhone({number: item.dst}, (data) => {
                 if(!_.get(data, 'total')) {//没有上报过时，显示上报按钮
                     this.setState({
                         isShowReportButton: true,
                     });
                 }else {
-                    invalidPhoneLists.push(item.dst);
-                    session.set(INVALID_PHONE_KEY, JSON.stringify(invalidPhoneLists));
+                    this.setInvalidPhoneList(item.dst);
                 }
             }, () => {
                 this.setState({
@@ -88,9 +93,7 @@ class AudioReportFunction extends React.Component{
             isAddingInvalidPhone: true
         });
         addInvalidPhone({'number': curPhone},() => {
-            let invalidPhoneLists = this.getInvalidPhoneLists();
-            invalidPhoneLists.push(curPhone);
-            session.set(INVALID_PHONE_KEY, JSON.stringify(_.uniq(invalidPhoneLists)));
+            this.setInvalidPhoneList(curPhone);
             this.setState({
                 isShowReportButton: false,
                 isAddingInvalidPhone: false,
