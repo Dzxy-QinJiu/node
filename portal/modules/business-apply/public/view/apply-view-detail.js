@@ -1,3 +1,5 @@
+import AlertTimer from 'CMP_DIR/alert-timer';
+
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -20,7 +22,7 @@ import ApplyDetailCustomer from 'CMP_DIR/apply-components/apply-detail-customer'
 import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
-import {APPLY_LIST_LAYOUT_CONSTANTS,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
+import {AM_AND_PM, APPLY_LIST_LAYOUT_CONSTANTS, DELAY_TIME_RANGE, TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 import {
     getApplyTopicText,
     getApplyResultDscr,
@@ -38,6 +40,7 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_APPROVE_TYPES, APPLY_FINISH_STATUS,LEAVE_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import {disabledDate, calculateSelectType} from 'PUB_DIR/sources/utils/common-method-util';
+import {calculateTotalTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 import classNames from 'classnames';
 
 class ApplyViewDetail extends React.Component {
@@ -49,6 +52,7 @@ class ApplyViewDetail extends React.Component {
             showBackoutConfirmType: '',//操作的确认框类型
             usersManList: [],//成员列表
             customerUpdate: {id: '',index: ''},//修改拜访时间的客户
+            isEdittingTotalTime: false,//是否编辑总的请假时间
             ...applyBusinessDetailStore.getState()
         };
     }
@@ -195,6 +199,7 @@ class ApplyViewDetail extends React.Component {
             this.getBusinessApplyDetailData(nextProps.detailItem);
             this.setState({
                 showBackoutConfirmType: '',
+                isEdittingTotalTime: false,
                 customerUpdate: {id: '',index: ''}
             });
         }
@@ -312,18 +317,9 @@ class ApplyViewDetail extends React.Component {
         });
         //去掉数组中的重复元素
         customersAdds = _.uniq(customersAdds);
-        var leaveRange = handleTimeRange(_.get(detail, 'apply_time[0].start',''),_.get(detail, 'apply_time[0].end',''));
-        if (_.get(detail,'days')){
-            leaveRange += ' ' + Intl.get('apply.approve.total.days','共{X}天',{X: _.get(detail,'days')});
-        }
-        if (!leaveRange){
-            var begin_time = moment(detail.begin_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-            var end_time = moment(detail.end_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        }
-
         var showApplyInfo = [{
             label: Intl.get('common.login.time', '时间'),
-            text: leaveRange ? leaveRange : (begin_time + ' - ' + end_time)
+            text: this.state.isEdittingTotalTime ? this.renderEditLeaveTotalTime(detail) : this.renderTextLeaveTotalTime(detail)
         }, {
             label: Intl.get('user.info.login.address', '地点'),
             text: customersAdds.join('，')
@@ -365,6 +361,68 @@ class ApplyViewDetail extends React.Component {
             detailInfoObj: this.state.detailInfoObj
         });
     };
+    onBeginTimeTotalChange = (value) => {
+        var applyTime = _.get(this, 'state.detailInfoObj.info.detail.apply_time[0]');
+        if (value) {
+            var start = _.get(applyTime, 'start');
+            var updateStart = moment(value).format(oplateConsts.DATE_FORMAT) + '_' + start.split('_')[1];
+            applyTime.start = updateStart;
+        } else {
+            applyTime.start = '';
+        }
+        this.setState({
+            detailInfoObj: this.state.detailInfoObj
+        },() => {
+            this.validateTotalTimeRange();
+        });
+    };
+    onEndTimeTotalChange = (value) => {
+        var applyTime = _.get(this, 'state.detailInfoObj.info.detail.apply_time[0]');
+        if (value) {
+            var end = _.get(applyTime, 'end');
+            var updateEnd = moment(value).format(oplateConsts.DATE_FORMAT) + '_' + end.split('_')[1];
+            applyTime.end = updateEnd;
+        } else {
+            applyTime.end = '';
+        }
+        this.setState({
+            detailInfoObj: this.state.detailInfoObj
+        },() => {
+            this.validateTotalTimeRange();
+        });
+    };
+    getTimeFormData = () => {
+        var applyTime = _.get(this, 'state.detailInfoObj.info.detail.apply_time[0]');
+        var startTime = applyTime.start;
+        var startArr = startTime.split('_');
+        var endTime = applyTime.end;
+        var endArr = endTime.split('_');
+        return {
+            begin_time: _.get(startArr,'[0]'),
+            begin_type: _.get(startArr,'[1]'),
+            end_time: _.get(endArr,'[0]'),
+            end_type: _.get(endArr,'[1]'),
+        };
+    };
+    validateTotalTimeRange = () => {
+        var formData = this.getTimeFormData();
+        const begin_time = formData.begin_time;
+        const endTime = formData.end_time;
+        var errMsg = '';
+        if (endTime && begin_time) {
+            if (formData.begin_type && formData.end_type){
+                if (moment(endTime).isBefore(begin_time)) {
+                    errMsg = Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间');
+                } else if (moment(endTime).isSame(begin_time,'day') && formData.begin_type === AM_AND_PM.PM && formData.end_type === AM_AND_PM.AM){
+                    //是同一天的时候，不能开始时间选下午，结束时间选上午
+                    errMsg = Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间');
+                }
+            }
+        }
+        this.setState({
+            totalTimeEditErrTip: errMsg
+        });
+    };
     getEditCustomers = () => {
         var updateCustomerId = _.get(this,'state.customerUpdate.id');
         var updateCustomerIndex = _.get(this,'state.customerUpdate.index');
@@ -397,6 +455,30 @@ class ApplyViewDetail extends React.Component {
             detailInfoObj: this.state.detailInfoObj
         });
     };
+    handleChangeTotalEndType = (value) => {
+        var applyTime = _.get(this, 'state.detailInfoObj.info.detail.apply_time[0]');
+        if (applyTime){
+            var end = _.get(applyTime,'end');
+            applyTime.end = end.split('_')[0] + '_' + value;
+        }
+        this.setState({
+            detailInfoObj: this.state.detailInfoObj
+        },() => {
+            this.validateTotalTimeRange();
+        });
+    };
+    handleChangeTotalStartType = (value) => {
+        var applyTime = _.get(this, 'state.detailInfoObj.info.detail.apply_time[0]');
+        if (applyTime){
+            var start = _.get(applyTime,'start');
+            applyTime.start = start.split('_')[0] + '_' + value;
+        }
+        this.setState({
+            detailInfoObj: this.state.detailInfoObj
+        },() => {
+            this.validateTotalTimeRange();
+        });
+    };
     handleChangeStartType = (value) => {
         var updateCustomers = this.getEditCustomers();
         if (updateCustomers){
@@ -408,7 +490,92 @@ class ApplyViewDetail extends React.Component {
             detailInfoObj: this.state.detailInfoObj
         });
     };
+    renderEditLeaveTotalTime = (detail) => {
+        var applyTime = _.get(detail,'apply_time[0]');
+        var visit_start_time = '',visit_start_type = '',visit_end_time = '',visit_end_type = '';
+        if (applyTime){
+            var rangeObj = this.calculateStartAndEndRange(applyTime);
+            visit_start_time = rangeObj.visit_start_time;
+            visit_start_type = rangeObj.visit_start_type;
+            visit_end_time = rangeObj.visit_end_time;
+            visit_end_type = rangeObj.visit_end_type;
+        }
+        var applyObj = this.calculateStartAndEndRange(applyTime);
+        var start = _.get(applyTime, 'start'),end = _.get(applyTime, 'end');
+        var initialStartTime = moment(_.get(start.split('_'),'[0]')).valueOf();
+        var initialEndTime = moment(_.get(end.split('_'),'[0]')).valueOf();
+        var initialRangeObj = {initial_visit_start_time: applyObj.visit_start_time,
+            initial_visit_start_type: this.transferAmAndPm(applyObj.visit_start_type),
+            initial_visit_end_time: applyObj.visit_end_time,
+            initial_visit_end_type: this.transferAmAndPm(applyObj.visit_end_type)};
+        var start_type_select = calculateSelectType(visit_start_time, initialRangeObj);
+        var end_type_select = calculateSelectType(visit_end_time, initialRangeObj);
+        var startValue = this.transferAmAndPm(visit_start_type);
+        var endValue = this.transferAmAndPm(visit_end_type);
+        const disabledDate = function(current) {
+            //不允许选择大于当前天的日期
+            return current && current.valueOf() < moment().startOf('day');
+        };
+        return (
+            <div className='total-business-range-edit'>
+                <DatePicker
+                    onChange={this.onBeginTimeTotalChange}
+                    value={visit_start_time ? moment(visit_start_time) : ''}
+                    disabledDate={disabledDate}
+                />
+                <Select
+                    onChange={this.handleChangeTotalStartType}
+                    value={startValue}
+                >
+                    {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
+                        LEAVE_TIME_RANGE.map((item, idx) => {
 
+                            return (<Option key={idx} value={item.value}>{item.name}</Option>);
+                        }) : null
+                    }
+                </Select>
+                <DatePicker
+                    onChange={this.onEndTimeTotalChange}
+                    value={visit_end_time ? moment(visit_end_time) : ''}
+                    disabledDate={disabledDate}
+                />
+                <Select
+                    onChange={this.handleChangeTotalEndType}
+                    value={endValue}
+                >
+                    {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
+                        LEAVE_TIME_RANGE.map((item, idx) => {
+                            return (<Option key={idx} value={item.value}>{item.name}</Option>);
+                        }) : null
+                    }
+                </Select>
+                <span>
+                    {this.state.isEditting ? <Icon type="loading"/> : <span>
+                        <span className="iconfont icon-choose" onClick={this.saveChangeCustomerTotalRange}></span>
+                        <span className="iconfont icon-close" onClick={this.cancelChangeCustomerTotalRange}></span>
+                    </span>}
+                </span>
+                {this.state.totalTimeEditErrTip ? <Alert
+                    message={this.state.totalTimeEditErrTip}
+                    type='error' showIcon
+                    onHide={this.hideSaveTooltip}/> : null}
+
+            </div>
+        );
+
+    };
+    hideSaveTooltip = () => {
+        this.setState({
+            totalTimeEditErrTip: ''
+        });
+    };
+    cancelChangeCustomerTotalRange = () => {
+        this.setState({
+            isEdittingTotalTime: false,
+            detailInfoObj: this.state.beforeEditDetailInfoObj,
+            beforeEditDetailInfoObj: {},
+        });
+    };
     renderEditVisitRange = (record) => {
         var visitObj = record.visit_time;
         var visit_start_time = '',visit_start_type = '',visit_end_time = '',visit_end_type = '';
@@ -475,6 +642,35 @@ class ApplyViewDetail extends React.Component {
             </div>
         );
     };
+    saveChangeCustomerTotalRange = () => {
+        var applyObj = _.get(this, 'state.detailInfoObj.info', {});
+        var apply_time = _.get(applyObj, 'detail.apply_time[0]');
+        var submitObj = {
+            applyId: _.get(applyObj, 'id'),
+            apply_time: apply_time
+        };
+        this.setState({isEditting: true});
+        $.ajax({
+            url: '/rest/update/customer/visit/range',
+            type: 'put',
+            dataType: 'json',
+            data: submitObj,
+            success: (result) => {
+                applyObj.detail.days = calculateTotalTimeRange(this.getTimeFormData());
+                this.setState({
+                    isEditting: false,
+                    isEdittingTotalTime: false,
+                    detailInfoObj: this.state.detailInfoObj
+                });
+            },
+            error: (xhr) => {
+                this.setState({
+                    isEditting: false,
+                });
+                message.error(xhr.responseJSON || Intl.get('common.edit.failed', '修改失败'));
+            }
+        });
+    };
     saveChangeCustomerVisistRange = () => {
         var applyObj = _.get(this, 'state.detailInfoObj.info', {});
         var submitObj = {
@@ -537,12 +733,38 @@ class ApplyViewDetail extends React.Component {
             visit_end_time = rangeObj.visit_end_time;
             visit_end_type = rangeObj.visit_end_type;
         }
-        var editPriviliege = userData.getUserData().user_id === _.get(this, 'state.detailInfoObj.info.applicant.user_id');
+        var editPriviliege = this.getEditVisitTimePrivilege();
         return (
             <span>{visit_start_time}{visit_start_type}{Intl.get('common.time.connector', '至')}{visit_end_time}{visit_end_type}
-                {editPriviliege ? <i className="iconfont icon-update" onClick={this.handleEditVisit.bind(this, record.id, index)}></i> : null}
+                {editPriviliege && !this.state.isEdittingTotalTime ? <i className="iconfont icon-update" onClick={this.handleEditVisit.bind(this, record.id, index)}></i> : null}
             </span>
         );
+    };
+    getEditVisitTimePrivilege = () => {
+        return userData.getUserData().user_id === _.get(this, 'state.detailInfoObj.info.applicant.user_id');
+    };
+    renderTextLeaveTotalTime = (detail) => {
+        var leaveRange = handleTimeRange(_.get(detail, 'apply_time[0].start',''),_.get(detail, 'apply_time[0].end',''));
+        if (_.get(detail,'days')){
+            leaveRange += ' ' + Intl.get('apply.approve.total.days','共{X}天',{X: _.get(detail,'days')});
+        }
+        if (!leaveRange){
+            var begin_time = moment(detail.begin_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+            var end_time = moment(detail.end_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+        }
+        var editPriviliege = this.getEditVisitTimePrivilege();
+        return (
+            <span className='total-business-text'>
+                {leaveRange ? leaveRange : (begin_time + ' - ' + end_time)}
+                {editPriviliege && !_.get(this.state.customerUpdate,'id') ? <i className="iconfont icon-update" onClick={this.handleEditTotalVisitTime}></i> : null}
+            </span>
+        );
+    };
+    handleEditTotalVisitTime = () => {
+        this.setState({
+            isEdittingTotalTime: true,
+            beforeEditDetailInfoObj: _.cloneDeep(this.state.detailInfoObj)
+        });
     };
 
     renderBusinessCustomerDetail(detailInfo) {
@@ -576,7 +798,6 @@ class ApplyViewDetail extends React.Component {
                             {record.visit_time ?
                                 <span>
                                     {isEditCustomer ? _this.renderEditVisitRange(record) : _this.renderShowVisitRange(record,index)}
-
                                 </span> : null}
                         </span>
                     );
