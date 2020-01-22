@@ -95,7 +95,8 @@ class PageFrame extends React.Component {
 
     componentDidMount() {
         this.getLastUpgradeNoticeList();
-        this.pollingGetNotice(); // 轮询获取公告信息
+        // 影响了session不超时，暂时隐藏获取公告轮询的操作
+        // this.pollingGetNotice(); // 轮询获取公告信息
         this.setContentHeight();
         Trace.addEventListener(window, 'click', Trace.eventHandler);
         //打开拨打电话面板的事件监听
