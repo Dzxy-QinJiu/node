@@ -749,7 +749,7 @@ var CrmBatchChange = createReactClass({
         return(
             <Menu onClick={this.handleMenuClick} defaultSelectedKeys={[BATCH_OPERATE_TYPE.CHANGE_TAG]}>
                 {_.map(BATCH_MENU_TYPE, item => {
-                    if (item.key === BATCH_OPERATE_TYPE.CHANGE_SALES && isCommonSalesOrPersonnalVersion()) return null;
+                    if (_.indexOf([BATCH_OPERATE_TYPE.CHANGE_SALES, BATCH_OPERATE_TYPE.CHANGE_SECOND_SALES], item.key) !== -1 && isCommonSalesOrPersonnalVersion()) return null;
                     return (<Menu.Item key={item.key}>{item.value}</Menu.Item>);
                 })}
             </Menu>
