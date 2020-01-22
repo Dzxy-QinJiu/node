@@ -460,7 +460,6 @@ class Crm extends React.Component {
         CrmStore.batchChangeSalesman({ taskInfo, taskParams, curCustomers });
         this.delayRenderBatchUpdate();
     };
-
     //批量变更标签的处理,调用store进行数据更新
     batchChangeTags = (taskInfo, taskParams) => {
         var curCustomers = this.state.originCustomerList;
@@ -1237,40 +1236,44 @@ class Crm extends React.Component {
     }
     //渲染响应式布局下的批量操作的选项
     batchTopBarDropList = (isMinWeb) => {
+        let hasBatchUpdatePrivilege = hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL);
         return (<Menu onClick={this.handleBatchMenuSelectClick.bind(this)}>
-            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
-                <Menu.Item key="changeTag">
-                    {Intl.get('crm.19', '变更标签')}
-                </Menu.Item> : null
-            }
-            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
-                <Menu.Item key="changeIndustry">
-                    {Intl.get('crm.20', '变更行业')}
-                </Menu.Item> : null
-            }
-            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
-                <Menu.Item key="changeTerritory">
-                    {Intl.get('crm.21', '变更地域')}
-                </Menu.Item> : null
-            }
-            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) && !isCommonSalesOrPersonnalVersion() ?
-                <Menu.Item key="changeSales">
-                    {Intl.get('crm.103', '变更负责人')}
-                </Menu.Item> : null
-            }
-            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
-                <Menu.Item key="changeAdministrativeLevel">
-                    {Intl.get('crm.administrative.level.change', '变更行政级别')}
-                </Menu.Item> : null
-            }
-            {hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
-                <Menu.Item key="add">
-                    {Intl.get('crm.214', '添加联系计划')}
-                </Menu.Item> : null}
-            {hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
-                <Menu.Item key="merge">
-                    {Intl.get('crm.0', '合并客户')}
-                </Menu.Item> : null}
+            {hasBatchUpdatePrivilege ? (
+                <React.Fragment>
+                    {isMinWeb ? (
+                        <React.Fragment>
+                            <Menu.Item key="changeTag">
+                                {Intl.get('crm.19', '变更标签')}
+                            </Menu.Item>
+                            <Menu.Item key="changeIndustry">
+                                {Intl.get('crm.20', '变更行业')}
+                            </Menu.Item>
+                            <Menu.Item key="changeTerritory">
+                                {Intl.get('crm.21', '变更地域')}
+                            </Menu.Item>
+                            {!isCommonSalesOrPersonnalVersion() ? (
+                                <React.Fragment>
+                                    <Menu.Item key="changeSales">
+                                        {Intl.get('crm.103', '变更负责人')}
+                                    </Menu.Item>
+                                    <Menu.Item key="changeSecondSales">
+                                        {Intl.get('crm.batch.second.user', '变更联合跟进人')}
+                                    </Menu.Item>
+                                </React.Fragment>
+                            ) : null}
+                            <Menu.Item key="changeAdministrativeLevel">
+                                {Intl.get('crm.administrative.level.change', '变更行政级别')}
+                            </Menu.Item>
+                        </React.Fragment>
+                    ) : null}
+                    <Menu.Item key="add">
+                        {Intl.get('crm.214', '添加联系计划')}
+                    </Menu.Item>
+                    <Menu.Item key="merge">
+                        {Intl.get('crm.0', '合并客户')}
+                    </Menu.Item>
+                </React.Fragment>        
+            ) : null}
             {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null :
                 <Menu.Item key="release">
                     {Intl.get('crm.customer.release', '释放')}
