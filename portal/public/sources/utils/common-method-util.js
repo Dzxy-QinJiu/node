@@ -1382,7 +1382,9 @@ function saveTraversingTeamTree(teamTreeList, modifyData, flag) {
     //保存到userData中
     setUserData(MY_TEAM_TREE_KEY, teamTreeList);
 }
+
 exports.saveTraversingTeamTree = saveTraversingTeamTree;
+
 /***
  * 获取表单填写情况的聚合信息
  * @param formData 表单数据
@@ -1421,5 +1423,3 @@ exports.getFormattedCondition = (formData, fields) => {
 
     return _.filter(result, item => item).join(' ');
 };
-
-

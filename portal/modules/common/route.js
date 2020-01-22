@@ -299,7 +299,7 @@ module.exports = [{
         'needLogin': true
     },
     'privileges': [
-        privilegeConst_common.CALLSYSTEM_CONFIG_MANAGE
+        privilegeConst_common.BASE_QUERY_PERMISSION_ORGANIZATION
     ]
 }, {
     'method': 'post',//增加无效电话
