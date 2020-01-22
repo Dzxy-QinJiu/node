@@ -1,5 +1,5 @@
 /**
- * 添加用户的action
+ * 批量变更用户action
  */
 //用户管理的ajax
 var AppUserAjax = require('../ajax/app-user-ajax');

@@ -8,7 +8,6 @@ var passwdStrengthFile = require('CMP_DIR/password-strength-bar');
 var AppUserUtil = require('../util/app-user-util');
 var AppUserStore = require('../store/app-user-store');
 var UserDetailAddAppAction = require('../action/user-detail-add-app-actions');
-import UserDetailAddAppActions from '../action/v2/user-detail-add-app-actions';
 import UserDetailAddAppStore from '../store/user-detail-add-app-store';
 import DateSelector from '../../../../components/date-selector';
 var crypto = require('crypto');
@@ -51,8 +50,8 @@ const TAB_KEYS = {
     DELAY: 'grant_delay',// 批量延期
 };
 
-var UserDetailAddApp = createReactClass({
-    displayName: 'UserDetailAddApp',
+var BatchChangUser = createReactClass({
+    displayName: 'BatchChangUser',
     propTypes: {
         initialUser: PropTypes.object,
         appList: PropTypes.array,
@@ -68,7 +67,6 @@ var UserDetailAddApp = createReactClass({
 
     closeRightPanel() {
         this.props.closeRightPanel();
-        UserDetailAddAppActions.resetState();
         UserDetailAddAppAction.resetState();
     },
 
@@ -1351,6 +1349,4 @@ var UserDetailAddApp = createReactClass({
     }
 });
 
-const UserBatchChange = Form.create()(UserDetailAddApp);
-
-module.exports = UserBatchChange;
+module.exports = Form.create()(BatchChangUser);
