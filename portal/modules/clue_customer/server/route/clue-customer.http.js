@@ -94,7 +94,7 @@ module.exports = {
         },
     }, {
         method: 'get',
-        path: '/rest/clue/download_template',
+        path: '/rest/clue/download_template/:isCommonSales',
         handler: 'getClueTemplate',
         passport: {
             'needLogin': true
