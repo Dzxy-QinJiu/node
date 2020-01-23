@@ -839,3 +839,15 @@ export const RECOMMEND_CLUE_FILTERS = [{
     label: '性质',
     separator: '、',
 }];
+
+// 用户标签的key
+export const USER_LABEL_KEY = {
+    QUALIFY: 1, // 合格
+    HISTORY_QUALIFY: 2, // 曾经合格
+};
+
+// 用户标签
+export const USER_LABEL = {
+    [USER_LABEL_KEY.QUALIFY]: Intl.get('common.qualified', '合格'), 
+    [USER_LABEL_KEY.HISTORY_QUALIFY]: Intl.get('common.history.qualified', '曾经合格'), 
+};
