@@ -755,7 +755,7 @@ class ApplyViewDetail extends React.Component {
         //是这个人申请的，并且该申请审批的状态还是ongoing状态
         return userData.getUserData().user_id === _.get(this, 'state.detailInfoObj.info.applicant.user_id') && _.get(this.state.detailInfoObj,'info.status') === 'ongoing';
     };
-    //是否展示确认提示
+    //是否展示确认提示，如果请假总时间只有半天及请假的开始和结束时间一样的话，提示先修改请假总时间
     isShowPopTip = () => {
         var detail = _.get(this.state.detailInfoObj,'info.detail');
         var detailStart = _.get(detail, 'apply_time[0].start',''), detailEnd = _.get(detail, 'apply_time[0].end','');
