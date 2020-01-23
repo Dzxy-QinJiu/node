@@ -128,14 +128,9 @@ exports.relateClueAndCustomer = function(req, res) {
 exports.getClueTemplate = function(req, res) {
     //普通销售用一个模板，销售领导和管理员用一个模板
     var filePath = path.resolve(__dirname, '../../tpl/clue_temp.xls');
-    let backendIntl = new BackendIntl(req);
-    let filename = backendIntl.get('crm.sales.clue', '线索') + '.xls';
-    res.download(filePath, filename);
-};
-//普通销售下载的导入线索的模板
-exports.getClueTemplateCommonSales = function(req, res) {
-    //普通销售用一个模板，销售领导和管理员用一个模板
-    var filePath = path.resolve(__dirname, '../../tpl/clue_temp_common_sales.xls');
+    if(req.params.isCommonSales === 'true'){
+        filePath = path.resolve(__dirname, '../../tpl/clue_temp_common_sales.xls');
+    }
     let backendIntl = new BackendIntl(req);
     let filename = backendIntl.get('crm.sales.clue', '线索') + '.xls';
     res.download(filePath, filename);

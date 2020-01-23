@@ -3012,7 +3012,7 @@ class ClueCustomer extends React.Component {
             opacity: this.state.isVisible ? 1 : 0
         };
         //普通销售或者个人注册线索用
-        var downLoadClueTemplate = isCommonSalesOrPersonnalVersion() ? '/rest/clue/download_template/common_sales' : '/rest/clue/download_template';
+        var isCommonSale = isCommonSalesOrPersonnalVersion();//是否是普通销售
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索列表">
@@ -3087,7 +3087,7 @@ class ClueCustomer extends React.Component {
                     <ClueImportRightDetail
                         importType={Intl.get('crm.sales.clue', '线索')}
                         uploadActionName='clues'
-                        templateHref= {downLoadClueTemplate}
+                        templateHref={`/rest/clue/download_template/${isCommonSale}`}
                         uploadHref='/rest/clue/upload'
                         previewList={this.state.previewList}
                         getItemPrevList={this.getCluePrevList}

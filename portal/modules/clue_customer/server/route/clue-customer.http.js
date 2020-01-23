@@ -94,20 +94,12 @@ module.exports = {
         },
     }, {
         method: 'get',
-        path: '/rest/clue/download_template',
+        path: '/rest/clue/download_template/:isCommonSales',
         handler: 'getClueTemplate',
         passport: {
             'needLogin': true
         }
     }, {
-        method: 'get',
-        path: '/rest/clue/download_template/common_sales',
-        handler: 'getClueTemplateCommonSales',
-        passport: {
-            'needLogin': true
-        }
-    }
-        , {
         method: 'post',
         path: '/rest/clue/upload',
         handler: 'uploadClues',
