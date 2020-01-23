@@ -9,7 +9,7 @@ var applyBusinessDetailStore = require('../store/apply-business-detail-store');
 var ApplyViewDetailActions = require('../action/apply-view-detail-action');
 var BusinessApplyActions = require('../action/business-apply-action');
 import Trace from 'LIB_DIR/trace';
-import {Alert, Icon, Input, Row, Col, Button,Steps,message,DatePicker,Select} from 'antd';
+import {Alert, Icon, Input, Row, Col, Button,Steps,message,DatePicker,Select, Popover} from 'antd';
 const Step = Steps.Step;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -306,13 +306,20 @@ class ApplyViewDetail extends React.Component {
     renderDetailApplyBlock(detailInfo) {
         var detail = detailInfo.detail || {};
         var applicant = detailInfo.applicant || {};
-        var customers = _.get(detail, 'customers', []);
+        var customers = _.get(detail, 'customers', []), previousProvince = '';
         //展示客户的地址，只展示到县区就可以，不用展示到街道
         var customersAdds = [];
         _.forEach(detail.customers, (item) => {
             if (!_.isEmpty(item)){
-                var showAddr = _.get(item,'province','') + _.get(item,'city','');
+                var provinceMsg = _.get(item,'province','');
+                var showAddr = '';
+                if(previousProvince === provinceMsg){//如果和上次的省一致，展示的时候不展示相同的省
+                    showAddr = _.get(item,'city','');
+                }else{
+                    showAddr = _.get(item,'province','') + _.get(item,'city','');
+                }
                 customersAdds.push(showAddr);
+                previousProvince = _.get(item,'province','');//记录一下上个地点的省份名称
             }
         });
         //去掉数组中的重复元素
@@ -736,15 +743,27 @@ class ApplyViewDetail extends React.Component {
         var editPriviliege = this.getEditVisitTimePrivilege();
         return (
             <span>{visit_start_time}{visit_start_type}{Intl.get('common.time.connector', '至')}{visit_end_time}{visit_end_type}
-                {editPriviliege && !this.state.isEdittingTotalTime ? <i className="iconfont icon-update" onClick={this.handleEditVisit.bind(this, record.id, index)}></i> : null}
+                {editPriviliege && !this.state.isEdittingTotalTime ?
+                    this.isShowPopTip() ? <Popover content={Intl.get('apply.business.change.time.range', '请先修改总出差时间')}>
+                        <i className='iconfont icon-update'></i>
+                    </Popover> :
+                        <i className="iconfont icon-update" onClick={this.handleEditVisit.bind(this, record.id, index)}></i> : null}
             </span>
         );
     };
     getEditVisitTimePrivilege = () => {
-        return userData.getUserData().user_id === _.get(this, 'state.detailInfoObj.info.applicant.user_id');
+        //是这个人申请的，并且该申请审批的状态还是ongoing状态
+        return userData.getUserData().user_id === _.get(this, 'state.detailInfoObj.info.applicant.user_id') && _.get(this.state.detailInfoObj,'info.status') === 'ongoing';
+    };
+    //是否展示确认提示
+    isShowPopTip = () => {
+        var detail = _.get(this.state.detailInfoObj,'info.detail');
+        var detailStart = _.get(detail, 'apply_time[0].start',''), detailEnd = _.get(detail, 'apply_time[0].end','');
+        return detailStart && detailEnd && detailStart === detailEnd;
     };
     renderTextLeaveTotalTime = (detail) => {
-        var leaveRange = handleTimeRange(_.get(detail, 'apply_time[0].start',''),_.get(detail, 'apply_time[0].end',''));
+        var detailStart = _.get(detail, 'apply_time[0].start',''), detailEnd = _.get(detail, 'apply_time[0].end','');
+        var leaveRange = handleTimeRange(detailStart,detailEnd);
         if (_.get(detail,'days')){
             leaveRange += ' ' + Intl.get('apply.approve.total.days','共{X}天',{X: _.get(detail,'days')});
         }
@@ -753,6 +772,7 @@ class ApplyViewDetail extends React.Component {
             var end_time = moment(detail.end_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
         }
         var editPriviliege = this.getEditVisitTimePrivilege();
+
         return (
             <span className='total-business-text'>
                 {leaveRange ? leaveRange : (begin_time + ' - ' + end_time)}
