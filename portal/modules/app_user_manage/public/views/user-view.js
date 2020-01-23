@@ -19,7 +19,7 @@ import UserDetailEditAppAction from '../action/v2/user-detail-edit-app-actions';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import language from 'PUB_DIR/language/getLanguage';
 import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/add-clues-form';
-import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
+import {clueSourceArray, accessChannelArray, clueClassifyArray, USER_LABEL_KEY, USER_LABEL} from 'PUB_DIR/sources/utils/consts';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from 'PUB_DIR/sources/utils/validate-util';
 import {isOplateUser, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
@@ -476,11 +476,11 @@ class UserTabContent extends React.Component {
                             app.contract_tag === 'renew' ? Intl.get('contract.163', '续约') : '';
 
                         let qualifyLabel = _.get(app, 'qualify_label');
-                        let qualifyTag = qualifyLabel === 1 ? Intl.get('common.qualified', '合格') :
-                            qualifyLabel === 2 ? Intl.get('common.history.qualified', '曾经合格') : '';
+                        let isQualify = qualifyLabel === USER_LABEL_KEY.QUALIFY; // 是否合格
+                        let isHistoryQualify = qualifyLabel === USER_LABEL_KEY.HISTORY_QUALIFY; // 是否曾经合格
                         let qualifyCls = classNames({
-                            'qualified-tag-style': qualifyLabel === 1,
-                            'history-qualified-tag-style': qualifyLabel === 2,
+                            'qualified-tag-style': isQualify,
+                            'history-qualified-tag-style': isHistoryQualify,
                         });
 
                         return (
@@ -490,8 +490,8 @@ class UserTabContent extends React.Component {
                                         <i className="iconfont icon-warn-icon unnormal-login"
                                             title={Intl.get('user.login.abnormal', '异常登录')}></i> : null}
                                     {
-                                        qualifyTag ? (
-                                            <Tag className={qualifyCls}>{qualifyTag}</Tag>
+                                        isQualify || isHistoryQualify ? (
+                                            <Tag className={qualifyCls}>{USER_LABEL[qualifyLabel]}</Tag>
                                         ) : null
                                     }
                                     {user_name}
