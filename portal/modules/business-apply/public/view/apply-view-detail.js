@@ -306,30 +306,19 @@ class ApplyViewDetail extends React.Component {
     renderDetailApplyBlock(detailInfo) {
         var detail = detailInfo.detail || {};
         var applicant = detailInfo.applicant || {};
-        var customers = _.get(detail, 'customers', []), previousProvince = '';
         //展示客户的地址，只展示到县区就可以，不用展示到街道
         var customersAdds = [];
-        _.forEach(detail.customers, (item) => {
-            if (!_.isEmpty(item)){
-                var provinceMsg = _.get(item,'province','');
-                var showAddr = '';
-                if(previousProvince === provinceMsg){//如果和上次的省一致，展示的时候不展示相同的省
-                    showAddr = _.get(item,'city','');
-                }else{
-                    showAddr = _.get(item,'province','') + _.get(item,'city','');
-                }
-                customersAdds.push(showAddr);
-                previousProvince = _.get(item,'province','');//记录一下上个地点的省份名称
-            }
+        var customersGroupByProvince = _.groupBy(_.get(detail, 'customers', []), 'province');//所有客户按省进行分组
+        _.forEach(customersGroupByProvince, (value, key) => {
+            var cityList = _.map(_.uniqBy(value, 'city'), 'city');//取出对应的市，然后进行去重
+            customersAdds.push(key + cityList.join('，'));
         });
-        //去掉数组中的重复元素
-        customersAdds = _.uniq(customersAdds);
         var showApplyInfo = [{
             label: Intl.get('common.login.time', '时间'),
             text: this.state.isEdittingTotalTime ? this.renderEditLeaveTotalTime(detail) : this.renderTextLeaveTotalTime(detail)
         }, {
             label: Intl.get('user.info.login.address', '地点'),
-            text: customersAdds.join('，')
+            text: customersAdds.join('；')
         }, {
             label: Intl.get('leave.apply.for.application', '人员'),
             text: applicant.nick_name,
