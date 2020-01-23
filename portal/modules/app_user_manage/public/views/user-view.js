@@ -19,7 +19,7 @@ import UserDetailEditAppAction from '../action/v2/user-detail-edit-app-actions';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import language from 'PUB_DIR/language/getLanguage';
 import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/add-clues-form';
-import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
+import {clueSourceArray, accessChannelArray, clueClassifyArray, USER_LABEL_KEY, USER_LABEL} from 'PUB_DIR/sources/utils/consts';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from 'PUB_DIR/sources/utils/validate-util';
 import {isOplateUser, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
@@ -474,15 +474,25 @@ class UserTabContent extends React.Component {
                         let app = _.isArray(rowData.apps) && rowData.apps[0] ? rowData.apps[0] : {};
                         let contract_tag = app.contract_tag === 'new' ? Intl.get('contract.162', '新签约') :
                             app.contract_tag === 'renew' ? Intl.get('contract.163', '续约') : '';
+
+                        let qualifyLabel = _.get(app, 'qualify_label');
+                        let isQualify = qualifyLabel === USER_LABEL_KEY.QUALIFY; // 是否合格
+                        let isHistoryQualify = qualifyLabel === USER_LABEL_KEY.HISTORY_QUALIFY; // 是否曾经合格
+                        let qualifyCls = classNames({
+                            'qualified-tag-style': isQualify,
+                            'history-qualified-tag-style': isHistoryQualify,
+                        });
+
                         return (
                             <div>
                                 <div title={user_name}>
                                     {hasPrivilege(userManagePrivilege.USER_QUERY) && isShown ?
                                         <i className="iconfont icon-warn-icon unnormal-login"
                                             title={Intl.get('user.login.abnormal', '异常登录')}></i> : null}
-                                    {rowData.apps[0].qualify_label === 1 ? (
-                                        <Tag className="qualified-tag-style">
-                                            {Intl.get('common.qualified', '合格')}</Tag>) : null
+                                    {
+                                        isQualify || isHistoryQualify ? (
+                                            <Tag className={qualifyCls}>{USER_LABEL[qualifyLabel]}</Tag>
+                                        ) : null
                                     }
                                     {user_name}
                                     <input type="hidden" className="hidden_user_id" value={user_id}/>
@@ -1072,16 +1082,35 @@ class UserTabContent extends React.Component {
                         <dd>
                             <ul data-tracename="用户标签筛选">
                                 <li onClick={this.toggleSearchField.bind(this, 'tag_all', '')}
-                                    className={this.getFilterFieldClass('tag_all', '')} data-tracename="全部"><ReactIntl.FormattedMessage
-                                        id="common.all" defaultMessage="全部"/></li>
+                                    className={this.getFilterFieldClass('tag_all', '')} data-tracename="全部"
+                                >
+                                    {Intl.get('common.all', '全部')}
+                                </li>
                                 <li onClick={this.toggleSearchField.bind(this, 'create_tag', 'register')}
-                                    className={this.getFilterFieldClass('create_tag', 'register')} data-tracename="自注册">{Intl.get('oplate.user.register.self', '自注册')}</li>
+                                    className={this.getFilterFieldClass('create_tag', 'register')} data-tracename="自注册"
+                                >
+                                    {Intl.get('oplate.user.register.self', '自注册')}
+                                </li>
+                                <li onClick={this.toggleSearchField.bind(this, 'qualify_label', '2')}
+                                    className={this.getFilterFieldClass('qualify_label', '2')} data-tracename="曾经合格"
+                                >
+                                    {Intl.get('common.history.qualified', '曾经合格')}
+                                </li>
                                 <li onClick={this.toggleSearchField.bind(this, 'qualify_label', '1')}
-                                    className={this.getFilterFieldClass('qualify_label', '1')} data-tracename="合格">{Intl.get('common.qualified', '合格')}</li>
+                                    className={this.getFilterFieldClass('qualify_label', '1')} data-tracename="合格"
+                                >
+                                    {Intl.get('common.qualified', '合格')}
+                                </li>
                                 <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'new')}
-                                    className={this.getFilterFieldClass('contract_tag', 'new')} data-tracename="新签约">{Intl.get('contract.162', '新签约')}</li>
+                                    className={this.getFilterFieldClass('contract_tag', 'new')} data-tracename="新签约"
+                                >
+                                    {Intl.get('contract.162', '新签约')}
+                                </li>
                                 <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'renew')}
-                                    className={this.getFilterFieldClass('contract_tag', 'renew')} data-tracename="缴约">{Intl.get('contract.163', '续约')}</li>
+                                    className={this.getFilterFieldClass('contract_tag', 'renew')} data-tracename="缴约"
+                                >
+                                    {Intl.get('contract.163', '续约')}
+                                </li>
                             </ul>
                         </dd>
                     </dl>

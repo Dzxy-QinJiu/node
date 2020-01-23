@@ -731,14 +731,19 @@
     }
     .ant-table{
       td{
-        //合格标签的样式
-        .ant-tag.qualified-tag-style {
+        //曾经合格、合格标签的样式
+        .ant-tag.qualified-tag-style, .ant-tag.history-qualified-tag-style{
           float: right;
           margin-right: 0;
           margin-left: 4px;
           padding: 0 5px;
-          background-color: #00a854;
           color: #fff;
+        }
+        .ant-tag.qualified-tag-style {
+          background-color: #00a854;
+        }
+        .ant-tag.history-qualified-tag-style {
+          background-color: #85c6a6;
         }
         //自注册、新签、续约 标签样式
         .user-list-tags {
