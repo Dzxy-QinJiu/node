@@ -311,7 +311,7 @@ class ApplyViewDetail extends React.Component {
         var customersGroupByProvince = _.groupBy(_.get(detail, 'customers', []), 'province');//所有客户按省进行分组
         _.forEach(customersGroupByProvince, (value, key) => {
             var cityList = _.map(_.uniqBy(value, 'city'), 'city');//取出对应的市，然后进行去重
-            customersAdds.push(key + cityList.join('，'));
+            customersAdds.push(key + cityList.join('、'));
         });
         var showApplyInfo = [{
             label: Intl.get('common.login.time', '时间'),
@@ -729,10 +729,10 @@ class ApplyViewDetail extends React.Component {
             visit_end_time = rangeObj.visit_end_time;
             visit_end_type = rangeObj.visit_end_type;
         }
-        var editPriviliege = this.getEditVisitTimePrivilege();
+        var canEditTime = this.canEditBusinessTime();
         return (
             <span>{visit_start_time}{visit_start_type}{Intl.get('common.time.connector', '至')}{visit_end_time}{visit_end_type}
-                {editPriviliege && !this.state.isEdittingTotalTime ?
+                {canEditTime && !this.state.isEdittingTotalTime ?
                     this.isShowPopTip() ? <Popover content={Intl.get('apply.business.change.time.range', '请先修改总出差时间')}>
                         <i className='iconfont icon-update'></i>
                     </Popover> :
@@ -740,7 +740,8 @@ class ApplyViewDetail extends React.Component {
             </span>
         );
     };
-    getEditVisitTimePrivilege = () => {
+    //是否可以编辑出差时间
+    canEditBusinessTime = () => {
         //是这个人申请的，并且该申请审批的状态还是ongoing状态
         return userData.getUserData().user_id === _.get(this, 'state.detailInfoObj.info.applicant.user_id') && _.get(this.state.detailInfoObj,'info.status') === 'ongoing';
     };
@@ -760,12 +761,11 @@ class ApplyViewDetail extends React.Component {
             var begin_time = moment(detail.begin_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
             var end_time = moment(detail.end_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
         }
-        var editPriviliege = this.getEditVisitTimePrivilege();
-
+        var canEditTime = this.canEditBusinessTime();
         return (
             <span className='total-business-text'>
                 {leaveRange ? leaveRange : (begin_time + ' - ' + end_time)}
-                {editPriviliege && !_.get(this.state.customerUpdate,'id') ? <i className="iconfont icon-update" onClick={this.handleEditTotalVisitTime}></i> : null}
+                {canEditTime && !_.get(this.state.customerUpdate,'id') ? <i className="iconfont icon-update" onClick={this.handleEditTotalVisitTime}></i> : null}
             </span>
         );
     };
