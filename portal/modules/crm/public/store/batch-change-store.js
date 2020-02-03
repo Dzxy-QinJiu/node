@@ -1,3 +1,5 @@
+import { func } from 'prop-types';
+
 var BatchChangeActions = require('../action/batch-change-actions');
 let userData = require('../../../../public/sources/user-data');
 
@@ -20,6 +22,7 @@ function BatchChangeStore() {
 //重置客户批量变更数据
 BatchChangeStore.prototype.resetState = function() {
     this.sales_man = '';//普通销售：userId，非普通销售（销售领导及运营人员）：userId&&teamId
+    this.second_user = '';//联合跟进人id，非普通销售（销售领导及管理员）：userId&&teamId
     this.tags = [];
     this.currentTab = 'changeTag';
     this.isLoading = false;
@@ -60,6 +63,11 @@ BatchChangeStore.prototype.getALLUserList = function(result) {
 
 BatchChangeStore.prototype.setSalesMan = function(sales_man) {
     this.sales_man = sales_man;
+    //去掉未选销售的提示
+    this.unSelectDataTip = '';
+};
+BatchChangeStore.prototype.setSecondUser = function(user) {
+    this.second_user = user;
     //去掉未选销售的提示
     this.unSelectDataTip = '';
 };
