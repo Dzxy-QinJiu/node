@@ -1218,6 +1218,7 @@ class Crm extends React.Component {
         || e.key === 'changeIndustry'
         || e.key === 'changeTerritory'
         || e.key === 'changeSales'
+        || e.key === 'changeSecondSales'
         || e.key === 'changeAdministrativeLevel'){
             this.refs.batchChange.handleMenuClick(e);
         } else if(e.key === 'add') {
@@ -1236,42 +1237,43 @@ class Crm extends React.Component {
     }
 //渲染响应式布局下的批量操作的选项
 batchTopBarDropList = (isMinWeb) => {
+    let hasUpdatePrivilege = hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL);
     return (<Menu onClick={this.handleBatchMenuSelectClick.bind(this)}>
-        {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
+        {isMinWeb && hasUpdatePrivilege ?
             <Menu.Item key="changeTag">
                 {Intl.get('crm.19', '变更标签')}
             </Menu.Item> : null
         }
-        {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
+        {isMinWeb && hasUpdatePrivilege ?
             <Menu.Item key="changeIndustry">
                 {Intl.get('crm.20', '变更行业')}
             </Menu.Item> : null
         }
-        {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
+        {isMinWeb && hasUpdatePrivilege ?
             <Menu.Item key="changeTerritory">
                 {Intl.get('crm.21', '变更地域')}
             </Menu.Item> : null
         }
-        {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) && !isCommonSalesOrPersonnalVersion() ?
+        {isMinWeb && hasUpdatePrivilege && !isCommonSalesOrPersonnalVersion() ?
             <Menu.Item key="changeSales">
                 {Intl.get('crm.103', '变更负责人')}
             </Menu.Item> : null
         }
-        {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) && !isCommonSalesOrPersonnalVersion() ?
+        {isMinWeb && hasUpdatePrivilege && !isCommonSalesOrPersonnalVersion() ?
             <Menu.Item key="changeSecondSales">
                 {Intl.get('crm.batch.second.user', '变更联合跟进人')}
             </Menu.Item> : null
         }
-        {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
+        {isMinWeb && hasUpdatePrivilege ?
             <Menu.Item key="changeAdministrativeLevel">
                 {Intl.get('crm.administrative.level.change', '变更行政级别')}
             </Menu.Item> : null
         }
-        {hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
+        {hasUpdatePrivilege ?
             <Menu.Item key="add">
                 {Intl.get('crm.214', '添加联系计划')}
             </Menu.Item> : null}
-        {hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
+        {hasUpdatePrivilege ?
             <Menu.Item key="merge">
                 {Intl.get('crm.0', '合并客户')}
             </Menu.Item> : null}
