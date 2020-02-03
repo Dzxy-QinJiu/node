@@ -13,6 +13,7 @@ var notificationUtil = require('./notification');
 var socketEmitter = require('../../../public/sources/utils/emitters').socketEmitter;
 var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsgEmitter;
 var phoneEmitter = require('../../../public/sources/utils/emitters').phoneEmitter;
+var clueEmitter = require('../../../public/sources/utils/emitters').clueEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 import {
@@ -627,6 +628,7 @@ function applyUpgradeListener(data) {
                 closeWith: ['button']
             });
         }
+        clueEmitter.emit(clueEmitter.UPDATE_APPLY_UPGRADE,data);
     }
 }
 //升级完成弹窗

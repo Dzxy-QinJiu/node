@@ -280,13 +280,13 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
 //申请试用的数据
 ClueCustomerStore.prototype.getApplyTryData = function(result) {
     if(!result.error){
-        const applyTryData = result.result;
+        const applyTryData = _.get(result,'result');
         this.versionData = {
-            applyTryCompany: applyTryData.company,
-            applyTryTime: applyTryData.create_time,
-            applyTryUserScales: applyTryData.user_scales,
-            applyTryKind: applyTryData.apply_version_info.kind,
-            applyTryName: applyTryData.applicant_name
+            applyTryCompany: _.get(applyTryData,'company'),
+            applyTryTime: _.get(applyTryData,'create_time'),
+            applyTryUserScales: _.get(applyTryData,'user_scales'),
+            applyTryKind: _.get(applyTryData,'apply_version_info.kind'),
+            applyTryName: _.get(applyTryData,'applicant_name')
         };
     }
 };
