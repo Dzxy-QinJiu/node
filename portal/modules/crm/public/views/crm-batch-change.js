@@ -41,11 +41,11 @@ const BATCH_OPERATE_TYPE = {
     ADD_SCHEDULE_LISTS: 'addScheduleLists',
 };
 const BATCH_MENU_TYPE = [
+    {key: 'changeSales', value: Intl.get('crm.6', '负责人')},
+    {key: 'changeSecondSales', value: Intl.get('crm.second.sales', '联合跟进人')},
     {key: 'changeTag', value: Intl.get('common.tag', '标签')},
     {key: 'changeIndustry', value: Intl.get('common.industry', '行业')},
     {key: 'changeTerritory', value: Intl.get('crm.96', '地域')},
-    {key: 'changeSales', value: Intl.get('crm.6', '负责人')},
-    {key: 'changeSecondSales', value: Intl.get('crm.second.sales', '联合跟进人')},
     {key: 'changeAdministrativeLevel', value: Intl.get('crm.administrative.level', '行政级别')}
 ];
 
@@ -747,7 +747,7 @@ var CrmBatchChange = createReactClass({
 
     getBatchChangeMenus() {
         return(
-            <Menu onClick={this.handleMenuClick} defaultSelectedKeys={[BATCH_OPERATE_TYPE.CHANGE_TAG]}>
+            <Menu onClick={this.handleMenuClick} defaultSelectedKeys={[BATCH_OPERATE_TYPE.CHANGE_SALES]}>
                 {_.map(BATCH_MENU_TYPE, item => {
                     if (_.indexOf([BATCH_OPERATE_TYPE.CHANGE_SALES, BATCH_OPERATE_TYPE.CHANGE_SECOND_SALES], item.key) !== -1 && isCommonSalesOrPersonnalVersion()) return null;
                     return (<Menu.Item key={item.key}>{item.value}</Menu.Item>);
