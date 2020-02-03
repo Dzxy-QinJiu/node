@@ -1842,12 +1842,13 @@ var en_US = {
     'crm.contact.sex.none': 'No sex set',//未设置性别
     'crm.contact.hobby.add': 'Add hobby',//添加爱好
     'crm.contact.hobby.none': 'No hobby add',//未添加爱好
-    'crm.second.sales': 'Second Sales',//联合跟进人
-    'crm.select.second.sales': 'Please seletct second sales',//请选择联合跟进人
-    'crm.no.second.sales': 'No second sales',//暂无联合跟进人
-    'crm.set.second.sales': 'Set second sales',//设置联合跟进人
+    'crm.second.sales': 'Partner',//联合跟进人
+    'crm.select.second.sales': 'Please seletct partner',//请选择联合跟进人
+    'crm.no.second.sales': 'No partner',//暂无联合跟进人
+    'crm.filter.no.second.sales': 'No qualified partner',//暂无符合条件的联合跟进人
+    'crm.set.second.sales': 'Set partner',//设置联合跟进人
     'crm.second.sale.delete': '{user} will be deleted after save', //保存后，联合跟进人{user}将删除
-    'crm.already.sale.error': '{user} has already been sales, cannot set to second sales',//{user}已是负责人，不能再设置联合跟进人
+    'crm.already.sale.error': '{user} has already been sales, cannot set to partner',//{user}已是负责人，不能再设置联合跟进人
     'crm.apply.active.email.tip': 'Your mailbox is not activated. Please {activeEmail} first',//您的邮箱未激活，请先{aciveEmail}
     'crm.this.week.contact': 'Customers contacted this week',//本周联系过的客户
     'crm.record.unupload.phone': 'Unuploaded voice recordings, unable to play',//未上传通话录音，无法播放
@@ -1949,6 +1950,7 @@ var en_US = {
     'crm.batch.change.customer.pending': 'The batch operation was not completed last time, please try again later',//上次批量操作未完成，请稍后再试
     'crm.search.customer.detail.customer.pool': 'Customer has been deleted or has been released to {customerpool}',//客户已被删除或已被释放到{customerpool}
     'crm.search.customer.no.customer.pool.dash': 'The customer has been deleted or has been released to the customer pool, please go to {recycle} or {customerpool}',//客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看
+    'crm.batch.second.user': 'Change partner',//变更联合跟进人
     // 客户管理end
 
     //客户分析 start

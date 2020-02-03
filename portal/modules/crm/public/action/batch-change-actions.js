@@ -12,7 +12,8 @@ function BatchChangeAction() {
         'clearSelectedTag',
         'administrativeLevelChange',
         'setUnSelectDataTip',
-        'locationChange'
+        'locationChange',
+        'setSecondUser'
     );
 
     this.getSalesManList = function(cb) {

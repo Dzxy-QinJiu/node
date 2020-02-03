@@ -27,6 +27,8 @@ var CrmAction = require('../action/crm-actions');
 const BATCH_OPERATE_TYPE = {
     CHANGE_SALES: 'changeSales',//变更销售人员
     USER: 'user',//变更销售人员url中传的type
+    CHANGE_SECOND_SALES: 'changeSecondSales',//变更联合跟进人
+    ASSERT_USER: 'assert_user',//变更联合跟进人url中传的type
     CHANGE_TAG: 'changeTag',//更新标签
     CHANGE_LABEL: 'change_label',//更新标签url中传的type
     ADD_TAG: 'addTag',//添加标签
@@ -39,10 +41,11 @@ const BATCH_OPERATE_TYPE = {
     ADD_SCHEDULE_LISTS: 'addScheduleLists',
 };
 const BATCH_MENU_TYPE = [
+    {key: 'changeSales', value: Intl.get('crm.6', '负责人')},
+    {key: 'changeSecondSales', value: Intl.get('crm.second.sales', '联合跟进人')},
     {key: 'changeTag', value: Intl.get('common.tag', '标签')},
     {key: 'changeIndustry', value: Intl.get('common.industry', '行业')},
     {key: 'changeTerritory', value: Intl.get('crm.96', '地域')},
-    {key: 'changeSales', value: Intl.get('crm.6', '负责人')},
     {key: 'changeAdministrativeLevel', value: Intl.get('crm.administrative.level', '行政级别')}
 ];
 
@@ -101,6 +104,11 @@ var CrmBatchChange = createReactClass({
         BatchChangeActions.setSalesMan(sales_man);
     },
 
+    onSecondUserChange: function(user) {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.change-second-user'), '选择联合跟进人');
+        BatchChangeActions.setSecondUser(user);
+    },
+ 
     getSalesBatchParams: function(sales_man) {
         let salesId = '', teamId = '', salesName = '', teamName = '';
         //客户所属销售团队的修改
@@ -216,6 +224,21 @@ var CrmBatchChange = createReactClass({
         });
 
     },
+
+    /**
+     * 批量变更联合跟进人
+     * @param transferType: assert_user
+     * @param title: 变更联合跟进人
+     */
+    doChangeSecondUser: function(transferType, title) {
+        if (!this.state.second_user) {
+            BatchChangeActions.setUnSelectDataTip(Intl.get('crm.select.second.sales', '请选择联合跟进人'));
+            return;
+        }
+        BatchChangeActions.setLoadingState(true);
+        this.batchSubmitData(transferType, title, this.state.second_user);
+    },
+
 
     addTag: function(e) {
         if (e.keyCode !== 13) return;
@@ -497,6 +520,9 @@ var CrmBatchChange = createReactClass({
             case BATCH_OPERATE_TYPE.CHANGE_SALES:
                 this.doTransfer(BATCH_OPERATE_TYPE.USER, Intl.get('crm.103', '变更负责人'));
                 break;
+            case BATCH_OPERATE_TYPE.CHANGE_SECOND_SALES:
+                this.doChangeSecondUser(BATCH_OPERATE_TYPE.ASSERT_USER, Intl.get('crm.batch.second.user', '变更联合跟进人'));
+                break;
             case BATCH_OPERATE_TYPE.CHANGE_TAG:
                 this.doChangeTag(BATCH_OPERATE_TYPE.CHANGE_LABEL, Intl.get('crm.206', '更新标签'));
                 break;
@@ -587,7 +613,23 @@ var CrmBatchChange = createReactClass({
                     placeholder={Intl.get('contract.63', '请选择负责人')}
                     value={this.state.sales_man}
                     onChange={this.onSalesmanChange}
-                    notFoundContent={dataList.length ? Intl.get('contract.64', '暂无负责人') : Intl.get('crm.search.no.owner', '无相关负责人')}
+                    notFoundContent={dataList.length ? Intl.get('crm.search.no.owner', '无相关负责人') : Intl.get('contract.64', '暂无负责人') }
+                    dataList={dataList}
+                />
+            </div>
+        );
+    },
+    // 变更联合跟进人
+    renderSecondSalesBlock: function() {
+        //获取销售所在团队的成员列表
+        let dataList = formatSalesmanList(this.state.salesManList);
+        return (
+            <div className="op-pane change-second-user">
+                <AlwaysShowSelect
+                    placeholder={Intl.get('crm.select.second.sales', '请选择联合跟进人')}
+                    value={this.state.second_user}
+                    onChange={this.onSecondUserChange}
+                    notFoundContent={dataList.length ? Intl.get('crm.no.second.sales', '暂无符合条件的联合跟进人') : Intl.get('crm.no.second.sales', '暂无联合跟进人')}
                     dataList={dataList}
                 />
             </div>
@@ -677,7 +719,9 @@ var CrmBatchChange = createReactClass({
     clearSelectSales: function() {
         BatchChangeActions.setSalesMan('');
     },
-
+    clearSelectSecondUser: function() {
+        BatchChangeActions.setSecondUser('');
+    },
     clearSelectLocation: function() {
         BatchChangeActions.locationChange('');
     },
@@ -703,9 +747,9 @@ var CrmBatchChange = createReactClass({
 
     getBatchChangeMenus() {
         return(
-            <Menu onClick={this.handleMenuClick} defaultSelectedKeys={[BATCH_OPERATE_TYPE.CHANGE_TAG]}>
+            <Menu onClick={this.handleMenuClick} defaultSelectedKeys={[BATCH_OPERATE_TYPE.CHANGE_SALES]}>
                 {_.map(BATCH_MENU_TYPE, item => {
-                    if (item.key === BATCH_OPERATE_TYPE.CHANGE_SALES && isCommonSalesOrPersonnalVersion()) return null;
+                    if (_.indexOf([BATCH_OPERATE_TYPE.CHANGE_SALES, BATCH_OPERATE_TYPE.CHANGE_SECOND_SALES], item.key) !== -1 && isCommonSalesOrPersonnalVersion()) return null;
                     return (<Menu.Item key={item.key}>{item.value}</Menu.Item>);
                 })}
             </Menu>
@@ -836,6 +880,24 @@ var CrmBatchChange = createReactClass({
                             cancelTitle={Intl.get('common.cancel', '取消')}
                             unSelectDataTip={this.state.unSelectDataTip}
                             clearSelectData={this.clearSelectSales}
+                            showDropDownContent={this.showDropDownContent}
+                            isShowDropDownContent={isShowDropDownContent}
+                        />
+                    ) : null
+                }
+                {
+                    this.state.currentTab === BATCH_OPERATE_TYPE.CHANGE_SECOND_SALES && isShowDropDownContent ? (
+                        <AntcDropdown
+                            datatraceContainer='客户批量变更联合跟进人'
+                            content={changeBtns.btn}
+                            overlayTitle={Intl.get('crm.second.sales', '联合跟进人')}
+                            isSaving={this.state.isLoading}
+                            overlayContent={this.renderSecondSalesBlock()}
+                            handleSubmit={this.handleSubmit}
+                            okTitle={Intl.get('crm.32', '变更')}
+                            cancelTitle={Intl.get('common.cancel', '取消')}
+                            unSelectDataTip={this.state.unSelectDataTip}
+                            clearSelectData={this.clearSelectSecondUser}
                             showDropDownContent={this.showDropDownContent}
                             isShowDropDownContent={isShowDropDownContent}
                         />

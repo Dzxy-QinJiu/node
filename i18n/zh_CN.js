@@ -1971,6 +1971,7 @@ var zh_CN = {
     'crm.batch.change.customer.pending': '上次批量操作未完成，请稍后再试',
     'crm.search.customer.detail.customer.pool': '客户已被删除或已被释放到{customerpool}',
     'crm.search.customer.no.customer.pool.dash': '客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看',
+    'crm.batch.second.user': '变更联合跟进人',
     // 客户管理end
 
     // 客户分析start
