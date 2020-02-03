@@ -236,7 +236,7 @@ clueEmitter.FLY_CLUE_HASTRACE = 'fly_clue_hastrace';//线索动态移动到已�
 clueEmitter.FLY_CLUE_HASTRANSFER = 'fly_clue_hastransfer';//线索动态移动到已转化
 clueEmitter.FLY_CLUE_INVALID = 'fly_clue_invalid';//线索动态移动到无效中
 clueEmitter.SHOW_RECOMMEND_PANEL = 'show_recommend_panel';//显示线索推荐列表
-clueEmitter.FLY_APPLY_UPGRADE = 'fly_apply_upgrade';//申请试用后的推送
+clueEmitter.UPDATE_APPLY_UPGRADE = 'update_apply_upgrade';//申请试用后的推送，更新数据
 //移动到
 export { clueEmitter };
 

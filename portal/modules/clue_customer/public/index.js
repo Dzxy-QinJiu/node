@@ -190,7 +190,7 @@ class ClueCustomer extends React.Component {
         clueEmitter.on(clueEmitter.FLY_CLUE_HASTRANSFER, this.flyClueHastransfer);
         clueEmitter.on(clueEmitter.FLY_CLUE_INVALID, this.flyClueInvalid);
         clueEmitter.on(clueEmitter.SHOW_RECOMMEND_PANEL, this.showClueRecommendTemplate);
-        clueEmitter.on(clueEmitter.FLY_APPLY_UPGRADE, this.flyApplyUpgrade);
+        clueEmitter.on(clueEmitter.UPDATE_APPLY_UPGRADE, this.updateVersionData);
         notificationEmitter.on(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
         //如果从url跳转到该页面，并且有add=true，则打开右侧面板
         if (query.add === 'true') {
@@ -367,9 +367,28 @@ class ClueCustomer extends React.Component {
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_HASTRANSFER, this.flyClueHastransfer);
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_INVALID, this.flyClueInvalid);
         clueEmitter.removeListener(clueEmitter.SHOW_RECOMMEND_PANEL, this.showClueRecommendTemplate);
-        clueEmitter.removeListener(clueEmitter.FLY_APPLY_UPGRADE, this.flyApplyUpgrade);
+        clueEmitter.removeListener(clueEmitter.UPDATE_APPLY_UPGRADE, this.updateVersionData);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
         $(window).off('resize', this.resizeHandler);
+    }
+    updateVersionData = data => {
+        const versionData = _.get(data,'version_change_info.version_change_detail');
+        const id = _.get(data,'lead.id');
+        const version_upgrade_id = _.get(data,'version_change_info.version_change_detail.id');
+        const curClueList = this.state.curClueList;
+        const curClue = this.state.curClue;
+        if(curClue && curClue.id === id){ //若当前打开了线索详情，并且当前线索申请试用了企业版
+            clueCustomerAction.getApplyTryData(id,version_upgrade_id,versionData);
+        }
+        _.each(curClueList, item => { //修改列表中的标签
+            if(item.id === id){
+                item.version_upgrade_label = 'true';
+                item.version_upgrade_id = version_upgrade_id;
+            }
+        });
+        this.setState({
+            curClueList
+        });
     }
     //动画收起某个元素后再有飞出效果
     animateHideItem = (updateItem,callback) => {
@@ -418,10 +437,6 @@ class ClueCustomer extends React.Component {
         this.changeAddNumTab(ADD_SELECT_TYPE.INVALID_CLUE);
         // this.onAnimate(item, this.$invalidClue,startType);
     };
-    //申请试用的时候，线索页面添加tab
-    flyApplyUpgrade = () => {
-
-    }
 
     //有新线索时线索面板添加刷新提示
     showRefreshPrompt = (data,isExtractOrAddByMe) => {

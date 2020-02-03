@@ -160,13 +160,17 @@ function ClueCustomerActions() {
 
     };
     //处理申请详情的数据
-    this.getApplyTryData = function(id, version_upgrade_id) {
-        clueCustomerAjax.getApplyTryData(version_upgrade_id).then(result => {
-            result.clueId = id;
-            this.dispatch({error: false,result: result});
-        },(error) => {
-            this.dispatch({error: error});
-        });
+    this.getApplyTryData = function(id, version_upgrade_id,version_data) {
+        if(version_data){
+            this.dispatch({error: false, result: version_data});
+        }else{
+            clueCustomerAjax.getApplyTryData(version_upgrade_id).then(result => {
+                result.clueId = id;
+                this.dispatch({error: false,result: result});
+            },(error) => {
+                this.dispatch({error: error});
+            }); 
+        }
     };
 
     //线索的全文搜索
