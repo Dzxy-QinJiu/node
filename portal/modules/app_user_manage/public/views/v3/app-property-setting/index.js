@@ -22,7 +22,7 @@ import UserOverDraftField from 'CMP_DIR/user_manage_components/user-over-draftfi
 import UserTwoFactorField from 'CMP_DIR/user_manage_components/user-two-factorfield';
 import UserMultiLoginField from 'CMP_DIR/user_manage_components/user-multilogin-radiofield';
 import UserAppTerminalCheckboxField from 'CMP_DIR/user_manage_components/user-app-terminal-checkboxfield';
-import AppRolePermission from '../app-role-permission';
+import AppRolePermission from 'CMP_DIR/user_manage_components/app-role-permission';
 import DetailCard from 'CMP_DIR/detail-card';
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import AppUserUtil from 'MOD_DIR/app_user_manage/public/util/app-user-util.js';
