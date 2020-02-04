@@ -849,17 +849,16 @@ class RegRulesView extends React.Component {
     };
     //点击保存流程，如果没有修改流程节点，只需要走修改流程的接口，如果修改了节点，需要走重布的接口
     handleSubmitWorkflow = () => {
-        //点击保存之前对节点数量进行校验，
-        //如果有节点选中了指定下一节点审批人（assignNextNodeApprover： true）需要校验是否有下一个节点
-        var applyApproveRulesNodes = _.get(this.state, 'applyRulesAndSetting.applyApproveRules'),showAddNextNodeTip = false;//是否展示要添加下一节点的提示
-        _.mapKeys(applyApproveRulesNodes, (value, key) => {
+        //点击保存之前对节点数量进行校验，如果有节点选中了指定下一节点审批人（assignNextNodeApprover： true）需要校验是否有下一个节点
+        var applyApproveRulesNodes = _.get(this.state, 'applyRulesAndSetting.applyApproveRules');//所保存的节点
+        var showAddNextNodeTip = false;//是否展示要添加下一节点的提示
+        _.each(applyApproveRulesNodes, (value, key) => {
             var bpmnNode = _.get(value,'bpmnNode',[]);
-            _.each(bpmnNode, (item,index) => {
+            showAddNextNodeTip = _.some(bpmnNode, (item,index) => {
                 //该节点设置了指定下一节点审批人并且下一节点没有添加审批人
-                if (item['assignNextNodeApprover'] === true && !_.get(bpmnNode, `[${index + 1}]`, '')) {
-                    showAddNextNodeTip = true;
-                }
+                return item['assignNextNodeApprover'] === true && !_.get(bpmnNode, `[${index + 1}]`);
             });
+
         });
         if(showAddNextNodeTip){
             message.warning(Intl.get('apply.please.add.assign.node', '流程不完整，需添加“指定审批人审批节点”'));
