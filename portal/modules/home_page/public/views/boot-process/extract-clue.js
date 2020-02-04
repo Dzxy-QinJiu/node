@@ -783,18 +783,18 @@ class ExtractClues extends React.Component {
         let moreDataTip = null;
         if(recommendList.length >= this.state.pageSize) {
             moreDataTip = (
-                <div>
+                <span>
                     {Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以')}
                     <a data-tracename="点击换一批按钮" onClick={this.getRecommendLists}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
-                </div>
+                </span>
             );
         }else {
             moreDataTip = (
-                <div>
+                <span>
                     {Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以')}
                     <a data-tracename="点击修改推荐条件" onClick={this.props.handleBackClick}>{Intl.get('clue.customer.condition.change', '修改条件')}</a>
                     {Intl.get('lead.recommend.change.condition', '再试试')}
-                </div>
+                </span>
             );
         }
         return <NoMoreDataTip
