@@ -193,12 +193,16 @@ class PageFrame extends React.Component {
     }
 
     showNotificationPanel = (type) => {
+        let noticeType = type;
+        // 从通知的二级菜单点击，类型是字符串类型，从系统弹窗点击类型是数字
+        // 判断type的类型，是数字时，则表明是从弹窗处点击的，需要显示通知
+        if (_.isNumber(type)) {
+            noticeType = 'system';
+        }
         this.setState({
             isShowNotificationPanel: true
         }, () => {
-            if (type) {
-                notificationEmitter.emit(notificationEmitter.CLICK_SUBMENU_NOTICE_TYPE, type);
-            }
+            notificationEmitter.emit(notificationEmitter.CLICK_SUBMENU_NOTICE_TYPE, noticeType);
         });
     }
 
