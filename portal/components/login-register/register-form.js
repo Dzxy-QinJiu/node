@@ -7,6 +7,7 @@ require('./css/register.less');
 const PropTypes = require('prop-types');
 import Trace from '../../lib/trace';
 import {commonPhoneRegex} from '../../public/sources/utils/validate-util';
+import { passwordRegex } from 'CMP_DIR/password-strength-bar';
 import crypto from 'crypto';
 import {Form, Input, Icon, Button} from 'antd';
 import {TextField} from '@material-ui/core';
@@ -222,7 +223,13 @@ class RegisterForm extends React.Component {
             callback(Intl.get('retry.input.captcha', '请输入验证码'));
         }
     }
-
+    checkPass = (rule, value, callback) => {
+        if (value && value.match(passwordRegex)) {
+            callback();
+        } else {
+            callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
+        }
+    };
     checkPass2 = (rule, value, callback) => {
         if (value && value !== this.props.form.getFieldValue('pwd')) {
             callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
@@ -292,7 +299,9 @@ class RegisterForm extends React.Component {
                 </FormItem>
                 <FormItem>
                     {getFieldDecorator('pwd', {
-                        rules: [{required: true, message: Intl.get('common.input.password', '请输入密码')}],
+                        rules: [{required: true, message: Intl.get('common.input.password', '请输入密码')}, {
+                            validator: this.checkPass
+                        }],
                         validateTrigger: 'onBlur'
                     })(
                         <TextField

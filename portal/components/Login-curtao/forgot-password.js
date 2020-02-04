@@ -5,6 +5,7 @@ require('./css/forgot-password.less');
 var React = require('react');
 import { TextField } from '@material-ui/core';
 import { isPhone, commonPhoneRegex } from 'PUB_DIR/sources/utils/validate-util';
+import { passwordRegex } from 'CMP_DIR/password-strength-bar';
 var crypto = require('crypto');
 import { Steps, Form } from 'antd';
 const Step = Steps.Step;
@@ -348,6 +349,13 @@ class ForgotPassword extends React.Component {
                 </button>
             </React.Fragment>);
     }
+    checkPass = (rule, value, callback) => {
+        if (value && value.match(passwordRegex)) {
+            callback();
+        } else {
+            callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
+        }
+    };
     // 渲染重置密码视图
     renderResetPasswordView() {
         const hasWindow = this.props.hasWindow;
@@ -358,7 +366,9 @@ class ForgotPassword extends React.Component {
                 <input type="password" className="password-hidden-input" name="password" id="hidedInput" />
                 <FormItem className='input-item'>
                     {getFieldDecorator('newPassword', {
-                        rules: [{ required: true, message: Intl.get('common.input.password', '请输入密码') }],
+                        rules: [{ required: true, message: Intl.get('common.input.password', '请输入密码') }, {
+                            validator: this.checkPass
+                        }],
                         validateTrigger: 'onBlur'
                     })(
                         <TextField
@@ -379,7 +389,7 @@ class ForgotPassword extends React.Component {
                 <FormItem className='input-item'>
                     {getFieldDecorator('rePassword', {
                         rules: [{
-                            required: true, message: Intl.get('common.password.unequal', '两次输入密码不一致')
+                            required: true, message: Intl.get('common.input.confirm.password', '请输入确认密码')
                         }, {
                             validator: this.checkPass2
                         }],
