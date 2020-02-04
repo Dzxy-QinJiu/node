@@ -85,6 +85,7 @@ function getConfigJson(req) {
         '11462': {'httpCode': 500, 'message': backendIntl.get('errorcode.different.realm', '安全域不一致')},
         //在其他应用已退出
         '11473': {'httpCode': 500, 'message': backendIntl.get('errorcode.36', '在其他应用已退出')},
+        '19401': {'httpCode': 500, 'message': backendIntl.get('errorcode.36', '在其他应用已退出')},
         '11476': {'httpCode': 500, 'message': backendIntl.get('errorcode.42', '你的账号已被停用，请联系管理员')},
         //绑定微信时报的错
         '11520': {'httpCode': 500, 'message': backendIntl.get('errorcode.invalid.wechat', '无效的微信账号')},
