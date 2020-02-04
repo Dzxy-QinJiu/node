@@ -13,7 +13,7 @@ import {getHalfAMonthTime,getMilliseconds,getMillisecondsYesterdayEnd} from 'CMP
 import GeminiScrollBar from '../../react-gemini-scrollbar';
 import AppConfigSetting from '../app-config-setting';
 import DefaultUserLogoTitle from '../../default-user-logo-title';
-import UserAppConfig from '../../../modules/app_user_manage/public/views/v3/AppPropertySetting';
+import UserAppConfig from '../../../modules/app_user_manage/public/views/v3/app-property-setting';
 import {getConfigAppType} from 'PUB_DIR/sources/utils/common-method-util';
 
 //布局常量

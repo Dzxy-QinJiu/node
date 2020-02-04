@@ -11,7 +11,8 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }
 
 require('PUB_DIR/css/antd-vertical-tabs.css');
-import { Tooltip, Alert } from 'antd';
+import { Tooltip, Tabs } from 'antd';
+const TabPane = Tabs.TabPane;
 import classNames from 'classnames';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import UserTypeRadioField from 'CMP_DIR/user_manage_components/user-type-radiofield';
@@ -103,7 +104,8 @@ const AppPropertySetting = createReactClass({
             //不显示用户类型错误
             show_user_type_error: false,
             //切换当前应用的loading
-            changeCurrentAppLoading: false
+            changeCurrentAppLoading: false,
+            activeKey: ''
         };
     },
 
@@ -298,7 +300,7 @@ const AppPropertySetting = createReactClass({
             || !this.compareEquals(nextProps.appsSetting, this.props.appsSetting)
         ) {
             const appPropSettingsMap = this.createPropertySettingData(nextProps);
-            this.setState({ appPropSettingsMap });
+            this.setState({ appPropSettingsMap, activeKey: '' });
         }
     },
 
@@ -362,11 +364,15 @@ const AppPropertySetting = createReactClass({
                     <div className="app-property-content basic-data-form app-property-other-property"
                         style={{ display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 ? 'none' : 'block' }}
                     >
-                        <div className="form-item">
-                            <div className="form-item-label form-title">
-                                {Intl.get('appEdit.basicConig', '基本配置')}
-                            </div>                       
-                        </div>
+                        {
+                            this.props.isSingleAppEdit ? (
+                                <div className="form-item">
+                                    <div className="form-item-label form-title">
+                                        {Intl.get('appEdit.basicConig', '基本配置')}
+                                    </div>
+                                </div>
+                            ) : null
+                        }
                         {this.props.showUserNumber ? (
                             <div className="form-item">
                                 <div className="form-item-label"><ReactIntl.FormattedMessage id="user.batch.open.count" defaultMessage="开通个数" /></div>
@@ -396,30 +402,38 @@ const AppPropertySetting = createReactClass({
                                 </div>
                             </div>
                         ) : null}
-                        <div className="form-item">
-                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.open.cycle" defaultMessage="开通周期" /></div>
-                            <div className="form-item-content">
-                                {this.renderUserTimeRangeBlock({
-                                    isCustomSetting: true,
-                                    appId: currentApp.app_id,
-                                    globalTime: defaultSettings.time,
-                                    //过期重新计算（开始时间变为从当前时间起算）
-                                    expiredRecalculate: true,
-                                })}
-                            </div>
-                        </div>
-                        <div className="form-item">
-                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.expire.select" defaultMessage="到期可选" /></div>
-                            <div className="form-item-content">
-                                {
-                                    this.renderUserOverDraftBlock({
-                                        isCustomSetting: true,
-                                        appId: currentApp.app_id,
-                                        globalOverDraft: defaultSettings.over_draft
-                                    })
-                                }
-                            </div>
-                        </div>                        
+                        {
+                            this.props.isSingleAppEdit ? (
+                                <div className="form-item">
+                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.open.cycle" defaultMessage="开通周期" /></div>
+                                    <div className="form-item-content">
+                                        {this.renderUserTimeRangeBlock({
+                                            isCustomSetting: true,
+                                            appId: currentApp.app_id,
+                                            globalTime: defaultSettings.time,
+                                            //过期重新计算（开始时间变为从当前时间起算）
+                                            expiredRecalculate: true,
+                                        })}
+                                    </div>
+                                </div>
+                            ) : null
+                        }
+                        {
+                            this.props.isSingleAppEdit ? (
+                                <div className="form-item">
+                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.expire.select" defaultMessage="到期可选" /></div>
+                                    <div className="form-item-content">
+                                        {
+                                            this.renderUserOverDraftBlock({
+                                                isCustomSetting: true,
+                                                appId: currentApp.app_id,
+                                                globalOverDraft: defaultSettings.over_draft
+                                            })
+                                        }
+                                    </div>
+                                </div>
+                            ) : null
+                        }
                         {this.props.isSingleAppEdit ? (
                             <div className="form-item">
                                 <div className="form-item-label"><ReactIntl.FormattedMessage id="common.app.status" defaultMessage="开通状态" /></div>
@@ -434,31 +448,33 @@ const AppPropertySetting = createReactClass({
                                 </div>
                             </div>
                         ) : null}
-                        {                            
-                            !Oplate.hideSomeItem && <div className="form-item">
-                                <div className="form-item-label">{Intl.get('crm.186', '其他')}</div>
-                                <div className="form-item-content">
-                                    {
-                                        this.props.showMultiLogin ? this.renderMultiLoginRadioBlock({
-                                            isCustomSetting: true,
-                                            appId: currentApp.app_id,
-                                            globalMultiLogin: defaultSettings.multilogin,
-                                            showCheckbox: true
-                                        }) : null
-                                    }
-                                    {
-                                        this.props.showIsTwoFactor ? this.renderUserTwoFactorBlock({
-                                            isCustomSetting: true,
-                                            appId: currentApp.app_id,
-                                            globalTwoFactor: defaultSettings.is_two_factor,
-                                            showCheckbox: true
-                                        }) : null
-                                    }
+                        {
+                            this.props.isSingleAppEdit ? (
+                                !Oplate.hideSomeItem && <div className="form-item">
+                                    <div className="form-item-label">{Intl.get('crm.186', '其他')}</div>
+                                    <div className="form-item-content">
+                                        {
+                                            this.props.showMultiLogin ? this.renderMultiLoginRadioBlock({
+                                                isCustomSetting: true,
+                                                appId: currentApp.app_id,
+                                                globalMultiLogin: defaultSettings.multilogin,
+                                                showCheckbox: true
+                                            }) : null
+                                        }
+                                        {
+                                            this.props.showIsTwoFactor ? this.renderUserTwoFactorBlock({
+                                                isCustomSetting: true,
+                                                appId: currentApp.app_id,
+                                                globalTwoFactor: defaultSettings.is_two_factor,
+                                                showCheckbox: true
+                                            }) : null
+                                        }
+                                    </div>
                                 </div>
-                            </div>
+                            ) : null
                         }
                         {
-                            isShowAppTerminals ? (
+                            this.props.isSingleAppEdit && isShowAppTerminals ? (
                                 <div className="form-item">
                                     <div className="form-item-label">{Intl.get('common.terminals', '终端')}</div>
                                     <div className="form-item-content">
@@ -476,21 +492,19 @@ const AppPropertySetting = createReactClass({
                             ) : null
                         }
                     </div>
-                    {
-                        this.props.appSelectRoleError && !selectedRoles.length ? (
-                            <div className="select-no-role">
-                                <Alert message={this.props.appSelectRoleError} showIcon type="error" />
-                            </div>
-                        ) : null
-                    }
-                    <AppRolePermission
-                        app_id={currentApp.app_id}
-                        selectedRoles={selectedRoles}
-                        selectedPermissions={selectedPermissions}
-                        onRolesPermissionSelect={this.onRolesPermissionSelect}
-                        updateScrollBar={this.updateScrollBar}
-                        appInfo={this.props.appInfo}
-                    />                    
+                    <div className="app-property-custom-settings">
+                        {
+                            this.state.activeKey === app_id || !this.state.activeKey ?
+                                <AppRolePermission
+                                    app_id={currentApp.app_id}
+                                    selectedRoles={selectedRoles}
+                                    selectedPermissions={selectedPermissions}
+                                    onRolesPermissionSelect={this.onRolesPermissionSelect.bind(this, app_id)}
+                                    updateScrollBar={this.updateScrollBar}
+                                    appInfo={this.props.appInfo}
+                                /> : null
+                        }
+                    </div>
                 </div>
             </div>
         );
@@ -516,6 +530,12 @@ const AppPropertySetting = createReactClass({
         );
     },
 
+    handleTabChange(activeKey) {
+        this.setState({
+            activeKey
+        });
+    },
+
     render() {
         let height = this.props.height;
         if (height !== 'auto') {
@@ -532,14 +552,42 @@ const AppPropertySetting = createReactClass({
         } 
         return (
             <div className={cls}>
-                <div className="app-property-container">
-                    <GeminiScrollBar style={{ height: height }} ref="gemini" className="app-property-content">
-                        {
-                            this.props.selectedApps.map((app, index) => {
-                                return (
-                                    <DetailCard
-                                        key={index}
-                                        title={(
+                {
+                    this.props.isSingleAppEdit ? (
+                        <div className="app-property-container">
+                            <GeminiScrollBar style={{ height: height }} ref="gemini" className="app-property-content">
+                                {
+                                    this.props.selectedApps.map((app, index) => {
+                                        return (
+                                            <DetailCard
+                                                key={index}
+                                                title={(
+                                                    <div className="title-container clearfix">
+                                                        <span className="logo-container" title={app.app_name}>
+                                                            <DefaultUserLogoTitle
+                                                                nickName={app.app_name}
+                                                                userLogo={app.app_logo}
+                                                            />
+                                                        </span>
+                                                        <p title={app.app_name}>{app.app_name}</p>
+                                                    </div>
+                                                )}
+                                                content={this.renderTabContent(app.app_id)}
+                                            />
+                                        );
+                                    })
+                                }
+                            </GeminiScrollBar>
+                        </div>
+                    ) : (
+                        <div className="app-property-container-v3">
+                            <Tabs
+                                tabPosition='left'
+                                onChange={this.handleTabChange}
+                            >
+                                {
+                                    this.props.selectedApps.map((app, index) => (
+                                        <TabPane tab={
                                             <div className="title-container clearfix">
                                                 <span className="logo-container" title={app.app_name}>
                                                     <DefaultUserLogoTitle
@@ -549,14 +597,20 @@ const AppPropertySetting = createReactClass({
                                                 </span>
                                                 <p title={app.app_name}>{app.app_name}</p>
                                             </div>
-                                        )} 
-                                        content={this.renderTabContent(app.app_id)}
-                                    />
-                                );
-                            })
-                        }
-                    </GeminiScrollBar>
-                </div>
+                                        }
+                                        key={app.app_id}
+                                        >
+                                            <GeminiScrollBar style={{ height: height }} ref="gemini" className="app-property-content">
+                                                {this.renderTabContent(app.app_id)}
+                                            </GeminiScrollBar>
+                                        </TabPane>
+                                    ))
+                                }
+                            </Tabs>
+                        </div>
+                    )
+                }
+
             </div>
         );
     },
