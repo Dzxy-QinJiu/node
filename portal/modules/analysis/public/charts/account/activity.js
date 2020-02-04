@@ -36,6 +36,12 @@ export function getActivityChart(type, title) {
                 //去掉query参数中的公共interval，以免引起迷惑
                 delete arg.query.interval;
             }
+
+            //活跃类型参数里的员工类型实际上是用户属性，只是通过活跃类型参数传过来的，在实际向接口提交之前，需要把它赋给用户类型参数
+            if (arg.query.active_type === 'internal') {
+                arg.query.type = arg.query.active_type;
+                delete arg.query.active_type;
+            }
         },
         processData: (data, chart) => {
             const intervalCondition = _.find(chart.conditions, item => item.name === 'param_interval');
