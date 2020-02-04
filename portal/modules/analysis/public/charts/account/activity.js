@@ -69,11 +69,23 @@ export function getActivityChart(type, title) {
                 {value: 'monthly', name: Intl.get('operation.report.month.active', '月活')}],
             activeButton: 'daily',
             conditionName: 'param_interval',
+            selectors: [{
+                options: [
+                    {name: Intl.get('common.all', '全部'), value: 'all'},
+                    {name: Intl.get('user.type.employee', '员工'), value: 'internal'},
+                    {name: Intl.get('analysis.exclude.ip.staff': '排除配置ip和员工',), value: 'valid'},
+                ],
+                activeOption: 'all',
+                conditionName: 'active_type',
+            }],
         },
         conditions: [{
             name: 'param_interval',
             value: 'daily',
             type: 'params',
+        }, {
+            name: 'active_type',
+            value: 'all',
         }],
         option: {
             tooltip: {

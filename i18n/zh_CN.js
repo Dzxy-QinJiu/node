@@ -3135,6 +3135,7 @@ var zh_CN = {
     'analysis.assigned.clue.number': '分配线索数',
     'analysis.extracting.cue.number': '提取线索数',
     'analysis.follow-up.leads': '跟进线索数',
+    'analysis.exclude.ip.staff': '排除配置ip和员工',
     'common.font.the': '第',
     'common.weeks': '周',
     'clue.add.contacts.tip': '添加联系方式',
