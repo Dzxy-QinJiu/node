@@ -858,8 +858,8 @@ class RegRulesView extends React.Component {
                 //该节点设置了指定下一节点审批人并且下一节点没有添加审批人
                 return item['assignNextNodeApprover'] === true && !_.get(bpmnNode, `[${index + 1}]`);
             });
-
         });
+        
         if(showAddNextNodeTip){
             message.warning(Intl.get('apply.please.add.assign.node', '流程不完整，需添加“指定审批人审批节点”'));
         }else{
