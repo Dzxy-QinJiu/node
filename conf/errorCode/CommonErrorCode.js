@@ -63,9 +63,11 @@ function getConfigJson(req) {
         '11000': {'httpCode': 500, 'message': backendIntl.get('errorcode.35', '很抱歉，服务器出现了异常状况')},
         //auth2报的非法请求
         '11001': {'httpCode': 500, 'message': ERROR_TIP.ILLEGAL_REQUEST},
-
+        //auth2报的缺少必要参数
+        '11002': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
         '11011': {'httpCode': 500, 'message': backendIntl.get('errorcode.37', 'Token不存在')},
         '11012': {'httpCode': 500, 'message': backendIntl.get('errorcode.38', 'Token过期')},
+        '11032': {'httpCode': 500, 'message': backendIntl.get('errorcode.send.message.limit', '一分钟内不能重复发送')},
         '11041': {'httpCode': 500, 'message': backendIntl.get('errorcode.39', '用户名或密码错误')},
         '11043': {'httpCode': 500, 'message': backendIntl.get('errorcode.40', '用户授权已过期')},
         //用户没有该应用权限，用户不存在
