@@ -326,7 +326,7 @@ var en_US = {
     'login.message_sent_failure': 'Fail to sent message',//信息发送失败
     'login.message_has_been_send': 'Message has been send',//信息已发送
     'login.authentication_failure': 'Authentication failure',//身份验证失败
-    'login.reset_password_success': 'Reset password successfully, please back to login page and login with new password',//重置密码成功，请返回登录页用新密码登录
+    'login.reset_password_success': 'Password reset succeeded',//重置密码成功
     'login.reset_password_failure': 'Fail reset password',//重置密码失败
     'login.fill_in_contact_info': 'Fill in contact info.',//填写联系信息
     'login.verify_identity': 'Verify identity',//验证身份

@@ -332,7 +332,7 @@ var zh_CN = {
     'login.message_sent_failure': '信息发送失败',
     'login.message_has_been_send': '信息已发送',
     'login.authentication_failure': '身份验证失败',
-    'login.reset_password_success': '重置密码成功，请返回登录页用新密码登录',
+    'login.reset_password_success': '重置密码成功',
     'login.reset_password_failure': '重置密码失败',
     'login.fill_in_contact_info': '填写联系信息',
     'login.verify_identity': '验证身份',

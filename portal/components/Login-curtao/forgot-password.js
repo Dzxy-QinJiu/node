@@ -154,6 +154,8 @@ class ForgotPassword extends React.Component {
                     }
                 },
                 error: (errorObj) => {
+                    // 发送短信验证码失败后，刷新图片验证码
+                    this.refreshCaptchaCode();
                     this.setState({
                         errorMsg: _.get(errorObj, 'responseJSON.message', Intl.get('login.message_sent_failure', '信息发送失败'))
                     });
@@ -209,7 +211,7 @@ class ForgotPassword extends React.Component {
                 },
                 success: (data) => {
                     if (!data) {
-                        this.setState({ successMsg: Intl.get('login.reset_password_success', '重置密码成功，请返回登录页用新密码登录') });
+                        this.setState({ successMsg: Intl.get('login.reset_password_success', '重置密码成功') });
                     } else {
                         this.setState({ errorMsg: Intl.get('login.reset_password_failure', '重置密码失败') });
                     }
@@ -428,14 +430,25 @@ class ForgotPassword extends React.Component {
                     {TextFieldView}
                 </div>
                 <div className='forgot-password-tip'>
-                    {this.state.successMsg ? (<span className='success-msg'>{this.state.successMsg}</span>) : null}
+                    {this.state.successMsg ? (
+                        <React.Fragment>
+                            <span className='success-msg'>{this.state.successMsg}，</span>
+                            <a className='find-password-retry-login' data-tracename="重新登录" onClick={this.returnLoginPage}>
+                                {Intl.get('retry.login.again', '重新登录')}
+                            </a>
+                        </React.Fragment>
+                    ) : null}
                     {this.state.errorMsg ? (
                         <div className="login-error-tip">
                             <span className="iconfont icon-warn-icon"></span>
                             {this.state.errorMsg}
                         </div>
                     ) : null}
-                    <a className='login-find-password-tip' data-tracename="返回登录页" onClick={this.returnLoginPage}> {Intl.get('login.return_to_login_page', '返回登录页')}</a>
+                    {this.state.successMsg ? null : (
+                        <a className='login-find-password-tip' data-tracename="返回登录页" onClick={this.returnLoginPage}>
+                            {Intl.get('login.return_to_login_page', '返回登录页')}
+                        </a>
+                    )}
                 </div>
             </Form>
         );
