@@ -319,7 +319,7 @@ class RegisterForm extends React.Component {
                 <FormItem>
                     {getFieldDecorator('rePwd', {
                         rules: [{
-                            required: true, message: Intl.get('common.password.unequal', '两次输入密码不一致')
+                            required: true, message: Intl.get('common.input.confirm.password', '请输入确认密码')
                         }, {
                             validator: this.checkPass2
                         }],
