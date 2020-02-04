@@ -3612,6 +3612,7 @@ var zh_CN = {
     'apply.cc.node.email': '邮件',
     'apply.cc.node.socket.noty': '系统弹窗',
     'apply.business.change.time.range': '请先修改总出差时间',
+    'apply.please.add.assign.node': '流程不完整，需添加“指定审批人审批节点”',
     /*自定义流程 end*/
     'app.user.manage.role.name': '角色名称',
     'app.user.manage.organaization.name': '所在单位或公司',
