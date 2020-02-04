@@ -326,12 +326,13 @@ var en_US = {
     'login.message_sent_failure': 'Fail to sent message',//信息发送失败
     'login.message_has_been_send': 'Message has been send',//信息已发送
     'login.authentication_failure': 'Authentication failure',//身份验证失败
-    'login.reset_password_success': 'Reset password successfully, please back to login page and login with new password',//重置密码成功，请返回登录页用新密码登录
+    'login.reset_password_success': 'Password reset succeeded',//重置密码成功
     'login.reset_password_failure': 'Fail reset password',//重置密码失败
     'login.fill_in_contact_info': 'Fill in contact info.',//填写联系信息
     'login.verify_identity': 'Verify identity',//验证身份
     'login.set_new_password': 'Set new password',//设置新密码
     'login.please_enter_contact_type_verification_code': 'Please enter {contactTypeName} verification code', //请输入{contactTypeName}验证码'
+    'login.input.phone.code': 'Please enter SMS verification code',//请输入短信验证码
     'login.please_enter_new_password': 'Please enter new password',//请输入新密码
     'login.send_phone_or_email_verification_code': 'Send verification code to phone or email',//发送手机/邮箱验证码
     'login.send_phone_verification_code': 'Send verification code to phone',//发送短信验证码
@@ -2619,6 +2620,9 @@ var en_US = {
     'errorcode.173': 'Failed to turn lead to customer',//线索转为客户失败
     'errorcode.174': 'Failed to merge lead to customer',//线索合并到客户失败
     'errorcode.175': 'Your own Leads cannot be assigned to you',//自己的线索不能分配给自己
+    'errorcode.send.message.limit': 'Cannot send again in one minute',//一分钟内不能重复发送
+    'errorcode.phone.unbind.account.tip': 'This mobile number is not bound to an account, please change another mobile number and try again',//此手机号未绑定账号，请换其他手机号再试
+
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
     'user.user.info': 'information',//开通信息

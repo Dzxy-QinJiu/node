@@ -163,13 +163,18 @@ class LoginForm extends React.Component {
             } else {
                 this.refs.username.focus();
             }
+            _.isFunction(this.props.userNameChange) && this.props.userNameChange(userName);
         });
     };
 
     userNameChange = (evt) => {
+        let userName = _.trim(evt.target.value);
         this.setState({
-            username: evt.target.value
-        }, () => this.props.setErrorMsg(''));
+            username: userName
+        }, () => {
+            _.isFunction(this.props.setErrorMsg) && this.props.setErrorMsg('');
+            _.isFunction(this.props.userNameChange) && this.props.userNameChange(userName);
+        });
     };
 
     passwordChange = (evt) => {
@@ -363,6 +368,7 @@ LoginForm.propTypes = {
     username: PropTypes.string,
     captcha: PropTypes.string,
     setErrorMsg: PropTypes.func,
+    userNameChange: PropTypes.func,
     hasWindow: PropTypes.bool
 };
 module.exports = LoginForm;
