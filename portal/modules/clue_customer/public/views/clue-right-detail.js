@@ -43,7 +43,7 @@ import clueCustomerAjax from '../ajax/clue-customer-ajax';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 var clueCustomerAction = require('../action/clue-customer-action');
-import {handleSubmitClueItemData, SELECT_TYPE, editCluePrivilege, deleteClueIconPrivilege, editClueItemIconPrivilege} from '../utils/clue-customer-utils';
+import {handleSubmitClueItemData, SELECT_TYPE, editCluePrivilege,deleteCluePrivilege, deleteClueIconPrivilege, editClueItemIconPrivilege} from '../utils/clue-customer-utils';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import cluePoolAjax from 'MOD_DIR/clue_pool/public/ajax';
 import userData from 'PUB_DIR/sources/user-data';
@@ -380,7 +380,7 @@ class ClueRightPanel extends React.Component {
                                     />
                                 </div>
                             </div>
-                            {deleteClueIconPrivilege(curClue) ?
+                            {deleteCluePrivilege(curClue) ?
                                 <div className="remove-clue">
                                     <i className="iconfont icon-delete handle-btn-item"
                                         onClick={this.handleRemoveClue.bind(this, curClue)} data-tracename="点击删除线索按钮"></i>
