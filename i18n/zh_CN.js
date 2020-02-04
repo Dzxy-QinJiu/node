@@ -2653,6 +2653,8 @@ var zh_CN = {
     'errorcode.173': '线索转为客户失败',
     'errorcode.174': '线索合并到客户失败',
     'errorcode.175': '自己的线索不能分配给自己',
+    'errorcode.send.message.limit': '一分钟内不重复发送',
+    'errorcode.phone.unbind.account.tip': '此手机号未绑定账号，请换其他手机号再试',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',

@@ -2615,6 +2615,9 @@ var en_US = {
     'errorcode.173': 'Failed to turn lead to customer',//线索转为客户失败
     'errorcode.174': 'Failed to merge lead to customer',//线索合并到客户失败
     'errorcode.175': 'Your own Leads cannot be assigned to you',//自己的线索不能分配给自己
+    'errorcode.send.message.limit': 'Cannot send again in one minute',//一分钟内不能重复发送
+    'errorcode.phone.unbind.account.tip': 'This mobile number is not bound to an account, please change another mobile number and try again',//此手机号未绑定账号，请换其他手机号再试
+
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
     'user.user.info': 'information',//开通信息

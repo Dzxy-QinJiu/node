@@ -156,9 +156,12 @@ class ForgotPassword extends React.Component {
                 error: (errorObj) => {
                     // 发送短信验证码失败后，刷新图片验证码
                     this.refreshCaptchaCode();
-                    this.setState({
-                        errorMsg: _.get(errorObj, 'responseJSON.message', Intl.get('login.message_sent_failure', '信息发送失败'))
-                    });
+                    let errorMsg = _.get(errorObj, 'responseJSON.message', Intl.get('login.message_sent_failure', '信息发送失败'));
+                    //用户名或密码错误是用户不存在时的错误码对应的描述，由于登录时也用的相同的错误码，登录时不能明确提示‘用户不存在’所以用了‘用户名或密码错误’的描述
+                    if (errorMsg === Intl.get('errorcode.39', '用户名或密码错误')) {
+                        errorMsg = Intl.get('errorcode.phone.unbind.account.tip', '此手机号未绑定账号，请换其他手机号再试',);
+                    }
+                    this.setState({ errorMsg });
                 }
             });
         });
