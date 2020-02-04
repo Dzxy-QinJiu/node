@@ -22,7 +22,7 @@ const ERROR_MSGS = {
 };
 var base64_prefix = 'data:image/png;base64,';
 let getCaptchaCodeAJax = null;
-// 记录上一次验证通过的电话（避免每次验证通过后，同一号码回多次获取验证码，每次获取的session_id和验证码都不同无法通过验证）
+// 记录上一次验证通过的电话（避免每次验证通过后，同一号码会多次获取验证码，每次获取的session_id和验证码都不同无法通过验证）
 let lastValidPhone = '';
 class ForgotPassword extends React.Component {
     state = {
@@ -44,7 +44,7 @@ class ForgotPassword extends React.Component {
 
     componentDidMount() {
         //切换视图后，手机号输入框自动获取焦点
-        const firstInput = $('input')[0];
+        const firstInput = $('.forgot-password-form input')[0];
         if (firstInput) firstInput.focus();
         // 如果登录页有输入的电话，则默认为找回密码所用的电话
         if (isPhone(this.props.userName)) {
@@ -123,7 +123,7 @@ class ForgotPassword extends React.Component {
         const step = viewIndex > -1 ? viewIndex : 0;
         this.setState({ currentView: view, step, captchaCode: '', successMsg: '', errorMsg: '' }, () => {
             // 重置密码界面，由于前面有避免自动填充的隐藏密码框，所以获取焦点的输入框应该是input[1]
-            const firstInput = view === VIEWS.RESET_PASSWORD ? $('input')[1] : $('input')[0];
+            const firstInput = view === VIEWS.RESET_PASSWORD ? $('.forgot-password-form input')[1] : $('.forgot-password-form input')[0];
             if (firstInput) firstInput.focus();
             // 如果是第一部发送短信验证码的视图，需要根据输入框中的phone获取图片验证码
             if (view === VIEWS.SEND_AUTH_CODE) {
