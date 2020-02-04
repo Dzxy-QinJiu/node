@@ -21,7 +21,7 @@ const ERROR_MSGS = {
 };
 var base64_prefix = 'data:image/png;base64,';
 let getCaptchaCodeAJax = null;
-// 记录上一次验证通过的电话（避免同一号码重复获取验证码）
+// 记录上一次验证通过的电话（避免每次验证通过后，同一号码回多次获取验证码，每次获取的session_id和验证码都不同无法通过验证）
 let lastValidPhone = '';
 class ForgotPassword extends React.Component {
     state = {
