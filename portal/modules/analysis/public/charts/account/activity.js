@@ -36,6 +36,12 @@ export function getActivityChart(type, title) {
                 //去掉query参数中的公共interval，以免引起迷惑
                 delete arg.query.interval;
             }
+
+            //活跃类型参数里的员工类型实际上是用户属性，只是通过活跃类型参数传过来的，在实际向接口提交之前，需要把它赋给用户类型参数
+            if (arg.query.active_type === 'internal') {
+                arg.query.type = arg.query.active_type;
+                delete arg.query.active_type;
+            }
         },
         processData: (data, chart) => {
             const intervalCondition = _.find(chart.conditions, item => item.name === 'param_interval');
@@ -69,11 +75,23 @@ export function getActivityChart(type, title) {
                 {value: 'monthly', name: Intl.get('operation.report.month.active', '月活')}],
             activeButton: 'daily',
             conditionName: 'param_interval',
+            selectors: [{
+                options: [
+                    {name: Intl.get('common.all', '全部'), value: 'all'},
+                    {name: Intl.get('user.type.employee', '员工'), value: 'internal'},
+                    {name: Intl.get('analysis.exclude.ip.staff': '排除配置ip和员工',), value: 'valid'},
+                ],
+                activeOption: 'all',
+                conditionName: 'active_type',
+            }],
         },
         conditions: [{
             name: 'param_interval',
             value: 'daily',
             type: 'params',
+        }, {
+            name: 'active_type',
+            value: 'all',
         }],
         option: {
             tooltip: {
