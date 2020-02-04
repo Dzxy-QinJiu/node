@@ -1868,7 +1868,7 @@ class ClueCustomer extends React.Component {
                                     </a>
                                 </Popconfirm>
                             </div> : null}
-                            {deleteClueIconPrivilege(salesClueItem) ?
+                            {deleteCluePrivilege(salesClueItem) ?
                                 <Popconfirm placement="topRight" onConfirm={this.deleteClue.bind(this, salesClueItem)}
                                     title={Intl.get('clue.customer.delete', '删除后无法恢复，您确定要删除吗？')}>
                                     <a className="order-btn-class delete-btn handle-btn-item"
