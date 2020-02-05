@@ -61,7 +61,6 @@ import {
     isSalesOrPersonnalVersion,
     freedCluePrivilege,
     deleteCluePrivilege,
-    deleteClueIconPrivilege,
     avalibilityCluePrivilege,
     transferClueToCustomerIconPrivilege,
     addCluePrivilege,

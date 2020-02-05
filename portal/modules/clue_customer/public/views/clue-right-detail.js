@@ -43,7 +43,7 @@ import clueCustomerAjax from '../ajax/clue-customer-ajax';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 var clueCustomerAction = require('../action/clue-customer-action');
-import {handleSubmitClueItemData, SELECT_TYPE, editCluePrivilege,deleteCluePrivilege, deleteClueIconPrivilege, editClueItemIconPrivilege} from '../utils/clue-customer-utils';
+import {handleSubmitClueItemData, SELECT_TYPE,deleteCluePrivilege, editClueItemIconPrivilege} from '../utils/clue-customer-utils';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import cluePoolAjax from 'MOD_DIR/clue_pool/public/ajax';
 import userData from 'PUB_DIR/sources/user-data';
