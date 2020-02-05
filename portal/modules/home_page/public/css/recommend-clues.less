@@ -98,14 +98,22 @@
     .unextract-clue-tip{
       color: @has-invalid-color;
       padding: 15px 24px 3px;
-      font-size: 12px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       .customer-btn{
         height: 24px;
         color: @will-distribute-color;
       }
+      .has-extracted-count{
+        color: @BORDER-BLUE;
+        margin: 2px;
+      }
       .no-extract-count-tip{
-        float: right;
         padding: 0;
+        flex: 1;
+        text-align: right;
       }
       .ant-checkbox-wrapper{
         margin-top: 3px;
@@ -116,6 +124,8 @@
         color: @title-color;
         font-weight: normal;
         vertical-align: middle;
+        width: 60px;
+        margin: 0;
         .ant-checkbox, .ant-checkbox+span{
           vertical-align: middle;
         }

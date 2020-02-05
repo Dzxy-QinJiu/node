@@ -3860,6 +3860,7 @@ var zh_CN = {
     'batch.success.count': '成功数: {count}',
     'clue.see.recommend': '查看推荐',
     'clue.recommend.has.extract.count': '{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
+    'clue.recommend.has.extracted.count': '{timerange}已提取{hasExtract}条线索',
     // 线索分配策略
     'clue.assignment.strategy.add': '添加分配策略',
     'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',
