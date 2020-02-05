@@ -3112,6 +3112,7 @@ var zh_CN = {
     'clue.add.access.channel': '添加接入渠道',
     'clue.add.clue.classfify': '添加线索分类',
     'clue.add.clue.describe': '添加线索描述',
+    'clue.add.clue.name': '添加线索名称',
     'clue.no.clue.describe': '未添加线索描述',
     'clue.add.clue.placeholder': '请填写线索描述',
     'clue.unknown.access.channel': '未知接入渠道',
