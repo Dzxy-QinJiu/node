@@ -9,7 +9,7 @@ let appUtils = require('../util/appUtils');
 //定义url
 var urls = {
     //登录
-    login: '/auth2/authc/login',
+    login: '/rest/open/resource/member/login',//登录改用业务接口，不再直接调用auth2的接口'/auth2/authc/login',因为客套个人注册的账号到期只是组织到期，账号本身还可以登录auth2，但组织信息获取不到，导致到期的账号登录后会被踢出的问题,调业务的接口会先检查组织到没到期，到期后直接不让登录
     //获取验证码
     getLoginCaptcha: '/auth2/authc/captcha/get',
     //刷新验证码
@@ -69,7 +69,7 @@ exports.urls = urls;
  */
 exports.login = function(req, res, username, password, captchaCode) {
     var formData = getLoginFormData(username, password, captchaCode);
-    return restUtil.appAuthRest.post(
+    return restUtil.baseRest.post(
         {
             url: urls.login,
             req: req,
