@@ -34,8 +34,6 @@ import {INTEGRATE_TYPES, PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 import CustomerStageCard from './basic_info/customer-stage-card';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 import crmPrivilegeConst from '../privilege-const';
-import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
-const EDIT_FEILD_WIDTH = 60;
 class BasicOverview extends React.Component {
     constructor(props) {
         super(props);
@@ -613,19 +611,8 @@ class BasicOverview extends React.Component {
                     {
                         _.get(basicData, 'source_classify') ?
                             <div className="tag-card-container detail-card-container">
-                                <div className="detail-card-title detail-card-source-classify">
-                                    {`${Intl.get('crm.clue.client.source', '获客方式')}:`}
-                                </div>
-                                <div className="detail-card-source-classify">
-                                    <BasicEditSelectField
-                                        width={EDIT_FEILD_WIDTH}
-                                        hasEditPrivilege={false}
-                                        displayText={this.getSourceClassify(basicData.source_classify)}
-                                        onSelectChange={this.onSelectSourceClassify}
-                                        field="source_classify"
-                                        noDataTip={Intl.get('common.unknown', '未知')}
-                                    />
-                                </div>
+                                <span className='detail-card-source-classify'>{`${Intl.get('crm.clue.client.source', '获客方式')}:`}</span>
+                                <span className='detail-card-source-classify'>{this.getSourceClassify(basicData.source_classify)}</span>
                             </div> : null
                     }
 
