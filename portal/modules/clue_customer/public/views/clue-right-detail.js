@@ -372,10 +372,11 @@ class ClueRightPanel extends React.Component {
                                 <div className="clue-name-title">
                                     <BasicEditInputField
                                         hasEditPrivilege={editClueItemIconPrivilege(curClue)}
+                                        showEditText={editClueItemIconPrivilege(curClue) && !curClue.name}
                                         id={curClue.id}
                                         saveEditInput={this.saveEditBasicInfo.bind(this, 'name')}
                                         value={curClue.name}
-                                        noDataTip={Intl.get('clue.add.clue.name', '添加线索名称')}
+                                        noDataTip={Intl.get('clue.no.clue.name', '未添加线索名称')}
                                         addDataTip={Intl.get('clue.add.clue.name', '添加线索名称')}
                                         field='name'
                                         placeholder={Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')}

@@ -3095,6 +3095,7 @@ var en_US = {
     'clue.no.clue.describe': 'Not added lead description', //未添加线索描述
     'clue.add.clue.describe': 'Add lead description',//添加线索描述
     'clue.add.clue.name': 'Add clue name',//添加线索名称
+    'clue.no.clue.name': 'No added clue name',//未添加线索名称
     'clue.add.clue.placeholder': 'Please fill in lead description',//请填写线索描述
     'clue.unknown.access.channel': 'unknown access channel',//未知接入渠道
     'clue.add.clue.time': 'Added to',//添加于
