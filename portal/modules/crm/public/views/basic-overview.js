@@ -610,11 +610,10 @@ class BasicOverview extends React.Component {
                     />
                     {
                         _.get(basicData, 'source_classify') ?
-                            <TagCard title={`${Intl.get('crm.clue.client.source', '获客方式')}:`}
-                                tags={this.getSourceClassify(basicData.source_classify)}
-                                data={basicData}
-                                enableEdit={false}
-                            /> : null
+                            <div className="tag-card-container detail-card-container">
+                                <span className='detail-card-source-classify'>{`${Intl.get('crm.clue.client.source', '获客方式')}:`}</span>
+                                <span className='detail-card-source-classify'>{this.getSourceClassify(basicData.source_classify)}</span>
+                            </div> : null
                     }
 
                     {this.renderUnComplateScheduleList()}
