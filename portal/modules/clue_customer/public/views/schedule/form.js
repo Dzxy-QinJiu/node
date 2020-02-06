@@ -27,6 +27,7 @@ const SCHEDULE_TYPES = [
     {name: Intl.get('common.others', '其他'), value: 'other', iconCls: 'icon-trace-other'}
 ];
 
+// eslint-disable-next-line react/prefer-es6-class
 var CrmAlertForm = createReactClass({
     displayName: 'CrmAlertForm',
     mixins: [ValidateMixin],
@@ -43,7 +44,7 @@ var CrmAlertForm = createReactClass({
     },
     getInitialState: function() {
         var formData = this.getInitialFormData();
-        var selectedAlertTimeRange = 'not_remind';
+        var selectedAlertTimeRange = TIME_TYPE_CONSTS.AHEAD_5_MIN;
         return {
             formData: formData,
             isLoading: false,
@@ -54,6 +55,7 @@ var CrmAlertForm = createReactClass({
             selectedAlertTimeRange: selectedAlertTimeRange,//选中的提醒时间的类型
             isSelectFullday: true,//是否已经选择了全天
             hideCustomerRequiredTip: false,
+            showDefaultStartTime: false, // 全天为‘否’时，默认展示开始时间=现在时间+7分钟，提醒框内默认为‘提前五分钟’
         };
     },
 
@@ -95,7 +97,7 @@ var CrmAlertForm = createReactClass({
             formData.end_time = TimeStampUtil.getTodayTimeStamp().end_time;
             //并未选中全天这种状态
             if (!this.state.isSelectFullday) {
-                selectedAlertTimeRange = 'not_remind';
+                selectedAlertTimeRange = TIME_TYPE_CONSTS.AHEAD_5_MIN;
             }
         } else {
             //是否选中全天的状态
@@ -137,7 +139,21 @@ var CrmAlertForm = createReactClass({
         let formData = this.state.formData;
         formData.start_time = newTime;
         formData.end_time = moment(newTime).add(TIME_CALCULATE_CONSTS.ONE, 'm').valueOf();
-        this.setState({formData});
+        let selectedAlertTimeRange = this.state.selectedAlertTimeRange;
+        //如果选择时间比当前时间多五分钟以上，默认提醒时间设置为提前五分钟提醒
+        let timeInterval = Math.floor((newTime - moment().valueOf()) / (1000 * 60));
+        if(selectedAlertTimeRange === TIME_TYPE_CONSTS.AHEAD_5_MIN && timeInterval <= 5){
+            selectedAlertTimeRange = TIME_TYPE_CONSTS.NOT_REMIND;
+        } else if(timeInterval > 5){
+            selectedAlertTimeRange = TIME_TYPE_CONSTS.AHEAD_5_MIN;
+        }
+        this.setState({
+            formData,
+            showDefaultStartTime: false,
+            selectedAlertTimeRange
+        },() => {
+            this.refs.validation.forceValidate(['starttime']);
+        });
         Trace.traceEvent(ReactDOM.findDOMNode(this), '修改开始时间');
 
     },
@@ -332,12 +348,20 @@ var CrmAlertForm = createReactClass({
             message.warn(Intl.get('crm.alert.finish.longer', '结束时间必须要大于开始时间'));
             return;
         }
-
+        this.refs.validation.forceValidate(['starttime'],(valid) => {
+            if(valid){
+                this.handleSubmit(submitObj);
+            }else {
+                this.setState({
+                    selectedAlertTimeRange: TIME_TYPE_CONSTS.NOT_REMIND
+                });
+            }
+        });
         // if(this.props.isAddToDoClicked && !submitObj.customer_id){
         //     this.refs.validation.forceValidate(['customer']);
         //     return;
         // }
-        this.handleSubmit(submitObj);
+
     },
 
     handleSave: function(e) {
@@ -409,7 +433,7 @@ var CrmAlertForm = createReactClass({
         }
         this.setState({
             selectedTimeRange: value,
-            selectedAlertTimeRange: 'not_remind',//为防止由整天的类型切换到几个小时后的类型时，下拉框中没有对应的类型的情况
+            selectedAlertTimeRange: TIME_TYPE_CONSTS.NOT_REMIND,//为防止由整天的类型切换到几个小时后的类型时，下拉框中没有对应的类型的情况
             formData: formData,
             isSelectFullday: isSelectFullday
         });
@@ -505,13 +529,53 @@ var CrmAlertForm = createReactClass({
     //是否选中全天
     onChangeSelectFullday: function(checked) {
         let formData = this.state.formData;
+        let showDefaultStartTime = false;
+        let selectedAlertTimeRange = TIME_TYPE_CONSTS.NOT_REMIND;
         if (!checked){
-            formData.start_time = moment().valueOf();
+            formData.start_time = moment().valueOf() + 420000;
+            showDefaultStartTime = true;
+            selectedAlertTimeRange = TIME_TYPE_CONSTS.AHEAD_5_MIN;
         }
         this.setState({
             isSelectFullday: checked,
-            formData: formData
+            formData: formData,
+            showDefaultStartTime,
+            selectedAlertTimeRange
         });
+    },
+    checkStartTime: function(rule,value,callback) {
+        const now_time = moment().valueOf();
+        const start_time = _.get(this,'state.formData.start_time');
+        const time_range = this.state.selectedAlertTimeRange;
+        let alert_time = 0;
+        switch(time_range) {
+            case TIME_TYPE_CONSTS.AHEAD_5_MIN:
+                alert_time = moment(start_time).subtract(TIME_CALCULATE_CONSTS.FIVE, 'm').valueOf();
+                break;
+            case TIME_TYPE_CONSTS.AHEAD_10_MIN:
+                alert_time = moment(start_time).subtract(TIME_CALCULATE_CONSTS.TEN, 'm').valueOf();
+                break;
+            case TIME_TYPE_CONSTS.AHEAD_15_MIN:
+                alert_time = moment(start_time).subtract(TIME_CALCULATE_CONSTS.FIFTeen, 'm').valueOf();
+                break;
+            case TIME_TYPE_CONSTS.AHEAD_30_MIN:
+                alert_time = moment(start_time).subtract(TIME_CALCULATE_CONSTS.THIRTY, 'm').valueOf();
+                break;
+            case TIME_TYPE_CONSTS.AHEAD_1_H:
+                alert_time = moment(start_time).subtract(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
+                break;
+        }
+        if(!this.state.isSelectFullday){
+            if(start_time <= now_time){ // 当前时间大于开始时间
+                callback(new Error(Intl.get('schedule.tip.over.start.time','开始时间已过期，请重新设置开始时间')) );
+            } else if(alert_time && alert_time <= now_time){ //当前时间大于提醒时间
+                callback(new Error(Intl.get('schedule.tip.over.alert.time','提醒时间已过期，请重新设置开始时间')) );
+            } else {
+                callback();
+            }
+        }else {
+            callback();
+        }
     },
 
     //改变提醒时间的类型
@@ -520,7 +584,7 @@ var CrmAlertForm = createReactClass({
         this.setState({
             selectedAlertTimeRange: value,
         });
-        if (value !== 'not_remind') {
+        if (value !== TIME_TYPE_CONSTS.NOT_REMIND) {
             let formData = this.state.formData;
             formData.socketio_notice = true;
             this.setState({formData});
@@ -654,32 +718,38 @@ var CrmAlertForm = createReactClass({
                             <FormItem
                                 {...formItemLayout}
                                 label={Intl.get('crm.schedule.begin.time', '开始')}
+                                required
+                                validateStatus={this.getValidateStatus('starttime')}
+                                help={this.getHelpMessage('starttime')}
                             >
-                                <div>
-                                    <BootstrapDatepicker
-                                        className="begin-date-input"
-                                        type="input"
-                                        options={{
-                                            format: 'yyyy-mm-dd',
-                                            startDate: moment().startOf('day').format(DATE_FORMAT)
-                                        }}
-                                        value={moment(formData.start_time).format(DATE_FORMAT)}
-                                        onChange={this.onScheduleDateChange}
-                                    />
-                                    {this.state.isSelectFullday ? null :
-                                        <TimePicker
-                                            value={moment(scheduleStartTime, HOUR_MUNITE_FORMAT)}
-                                            format={HOUR_MUNITE_FORMAT}
-                                            onChange={this.onScheduleStartTimeChange}
+                                <Validator
+                                    rules={[{validator: this.checkStartTime}]}
+                                    trigger='onChange'
+                                >
+                                    <div
+                                        name='starttime'
+                                        field='starttime'
+                                        value=''>
+                                        <BootstrapDatepicker
+                                            className="begin-date-input"
+                                            type="input"
+                                            options={{
+                                                format: 'yyyy-mm-dd',
+                                                startDate: moment().startOf('day').format(DATE_FORMAT)
+                                            }}
+                                            value={moment(formData.start_time).format(DATE_FORMAT)}
+                                            onChange={this.onScheduleDateChange}
                                         />
-                                        // <DateFormatSpinnerInput
-                                        //     className="schedule-time-input"
-                                        //     dateFormat="HH:mm"
-                                        //     value={formData.start_time}
-                                        //     onChange={this.onScheduleStartTimeChange}
-                                        // />
-                                    }
-                                </div>
+                                        {this.state.isSelectFullday ? null :
+                                            <TimePicker
+                                                value={moment(scheduleStartTime, HOUR_MUNITE_FORMAT)}
+                                                format={HOUR_MUNITE_FORMAT}
+                                                onChange={this.onScheduleStartTimeChange} 
+                                            />  
+                                        }
+                                    </div>
+                                </Validator>
+                                
                             </FormItem>
                             {this.state.isSelectFullday ? null :
                                 <FormItem
