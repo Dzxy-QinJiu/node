@@ -119,8 +119,10 @@ class CustomerPoolRule extends React.Component{
             let defaultChecked = this.state.defaultChecked;
             if(_.isEmpty(this.state.defaultRuleConfig)) {
                 let organizationId = _.get(userData.getUserData(), 'organization.id');
-                defaultRuleConfig = _.find(customerPoolConfigs, config => config.id === organizationId);
-                customerPoolConfigs = _.filter(customerPoolConfigs, config => config.id !== organizationId);
+                //默认客户池规则id
+                let defaultRuleConfigId = organizationId + '_customerpool_config';
+                defaultRuleConfig = _.find(customerPoolConfigs, config => config.id === defaultRuleConfigId || config.team_id === organizationId);
+                customerPoolConfigs = _.filter(customerPoolConfigs, config => config.id !== defaultRuleConfigId && config.team_id !== organizationId);
                 defaultChecked = !_.get(defaultRuleConfig,'show_my_customers', undefined);
             }
             let total = _.get(res,'total', 0);
