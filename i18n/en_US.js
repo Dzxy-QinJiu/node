@@ -2821,6 +2821,8 @@ var en_US = {
     'schedule.back.to.today': 'Today',//今
     'schedule.no.item': 'No data',//无待办
     'schedule.phone.connect': 'By phone',//电联
+    'schedule.tip.over.start.time': 'Start time has expired, please set the start time again',//开始时间已过期，请重新设置开始时间
+    'schedule.tip.over.alert.time': 'Remind time has expired, please set the start time again',//提醒时间已过期，请重新设置开始时间
     'call.record.get.invalid.phone.lists': 'Failed to get invalid phone lists!',//获取无效电话列表失败
     'call.record.customer.phone': 'This is an invalid phone',//这是一个客服电话。
     'call.record.report': 'Report',//上报
