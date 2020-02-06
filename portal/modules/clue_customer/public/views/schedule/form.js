@@ -140,6 +140,7 @@ var CrmAlertForm = createReactClass({
         formData.start_time = newTime;
         formData.end_time = moment(newTime).add(TIME_CALCULATE_CONSTS.ONE, 'm').valueOf();
         let selectedAlertTimeRange = this.state.selectedAlertTimeRange;
+        //如果选择时间比当前时间多五分钟以上，默认提醒时间设置为提前五分钟提醒
         let timeInterval = Math.floor((newTime - moment().valueOf()) / (1000 * 60));
         if(selectedAlertTimeRange === TIME_TYPE_CONSTS.AHEAD_5_MIN && timeInterval <= 5){
             selectedAlertTimeRange = TIME_TYPE_CONSTS.NOT_REMIND;
