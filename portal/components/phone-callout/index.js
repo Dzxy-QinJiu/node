@@ -12,7 +12,7 @@ import { paymentEmitter } from 'OPLATE_EMITTER';
 var classNames = require('classnames');
 require('./index.less');
 import Trace from 'LIB_DIR/trace';
-import { COMPANY_VERSION_KIND } from 'PUB_DIR/sources/utils/consts';
+import { COMPANY_VERSION_KIND, COMPANY_PHONE } from 'PUB_DIR/sources/utils/consts';
 class PhoneCallout extends React.Component {
     constructor(props) {
         super(props);
@@ -50,7 +50,6 @@ class PhoneCallout extends React.Component {
         if(versionAndType.isPersonalTrial) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)), '个人版点击电话按钮');
             paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {versionKind: COMPANY_VERSION_KIND});
-            return;
         }
         if (visible && hasCalloutPrivilege() && !versionAndType.personal){// 显示，并且能拨打电话，以及不是个人版时
             if (!this.state.ableClickPhoneIcon){
@@ -77,8 +76,10 @@ class PhoneCallout extends React.Component {
         var contentTip = showDisabledCallTip();
         //如果是个人正式版，需要提示升级为企业版才能拨打号码
         let versionAndType = checkVersionAndType();
-        if(versionAndType.isPersonalFormal) {
-            contentTip = Intl.get('payment.please.contact.our.sale.renewal','请联系我们的销售人员，联系方式：{contact}',{contact: '400-6978-520'});
+        if(versionAndType.isPersonalFormal) {//个人正式
+            contentTip = Intl.get('payment.please.contact.our.sale.upgrade','请联系我们的销售人员进行升级，联系方式：{contact}',{contact: COMPANY_PHONE});
+        }else if(versionAndType.isPersonalTrial) {//个人试用
+            contentTip = Intl.get('personal.upgrade.company.trial.tip', '开通企业试用后，可体验拨打电话功能');
         }
         var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
         var contactName = this.props.contactName;
