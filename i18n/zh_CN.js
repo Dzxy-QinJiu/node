@@ -3826,7 +3826,9 @@ var zh_CN = {
     'clue.recommend.has.extract': '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
     'clue.recommend.formal.extract.num.limit.tip': '本月{count}条已提取完毕，如需继续提取请{addClues}',
     'clue.recommend.trial.extract.num.limit.tip': '已提取{count}条，如需继续提取请{upgradedVersion}',
-    'clue.recommend.company.trial.extract.num.limit.tip': '已提取{count}条，如需继续提取请联系销售：{contact}',
+    'clue.recommend.company.trial.extract.num.limit.tip': '已提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}',
+    'clue.recommend.company.formal.sales.extract.num.limit.tip': '本月{count}条已提取完毕，如需继续提取请联系管理员',
+
     'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',
     'common.personal.contribution.score': '个人贡献分数',
@@ -3904,6 +3906,7 @@ var zh_CN = {
     'personal.official.version': '个人正式版',
     'personal.upgrade.to.enterprise.edition': '升级为企业版',
     'personal.apply.trial.enterprise.edition': '申请试用企业版',
+    'common.upgrade': '升级',
     'clues.extract.count.at.month': '每月可提取 {count} 条线索',
     'goods.price.most.favorable': '最优惠',
     'goods.immediate.payment': '立即支付',
@@ -3930,8 +3933,9 @@ var zh_CN = {
     'payment.order.timeout': '订单超时，{retry}',
     'payment.again.create.order.faild': '生成订单失败，{retry}',
     'payment.renewal': '续费',
-    'payment.please.contact.our.sale': '请联系我们的销售人员进行升级，联系方式：{contact}',
-    'payment.please.contact.our.sale.renewal': '请联系我们的销售人员，联系方式：{contact}',
+    'payment.please.contact.our.sale.upgrade': '请联系我们的销售人员进行升级，联系方式：{contact}',
+    'payment.please.contact.our.sale': '请联系我们的销售人员，联系方式：{contact}',
+    'payment.please.contact.our.sale.renewal': '请联系我们的销售人员进行续费，联系方式：{contact}',
     'payment.upgrading': '正在升级...',
     'payment.countdown.default.msg': '倒计时中...',
     'payment.upgrade.version.success': '您已成功升级为正式版，{time} 到期',
@@ -3960,13 +3964,14 @@ var zh_CN = {
     'boot.select.area': '请选择关注的地域',
     'boot.input.industry': '请输入关注的行业',
     'boot.set.recommend.clue.faild': '设置失败，请重试一次',
+    'personal.upgrade.company.trial.tip': '开通企业试用后，可体验拨打电话功能',
     /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': '您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？',
-    'organization.company.trial.expired.tip': '您的试用期剩余{time}天，请联系我们的销售人员: {contact}',
+    'organization.company.trial.expired.tip': '您的试用期还剩{time}天，继续使用请联系我们的销售人员: {contact}',
     'organization.personal.formal.expired.tip': '您的账号即将到期，是否{renewal}？',
-    'organization.company.formal.expired.tip': '您的账号即将到期，请联系我们的销售人员: {contact}',
+    'organization.company.formal.expired.tip': '您的账号即将到期，继续使用请联系我们的销售人员: {contact}',
     /*组织到期提示 --- end*/
 
     /*版本信息 --- start */

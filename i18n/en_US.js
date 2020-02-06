@@ -3788,7 +3788,9 @@ var en_US = {
     'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} {timerange} and can extract up to {ableExtract} leads',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
     'clue.recommend.formal.extract.num.limit.tip': 'The {count} clause of this month has been extracted. If you need to continue to extract, please {addLeads}.',//本月{count}条已提取完毕，如需继续提取请{addLeads}
     'clue.recommend.trial.extract.num.limit.tip': 'The {count} bar has been extracted, if you want to continue extracting please {upgradedVersion}',//已提取{count}条，如需继续提取请{upgradedVersion}
-    'clue.recommend.company.trial.extract.num.limit.tip': '{count} bar has been extracted, if you want to continue extracting, please contact sales: {contact}',//已提取{count}条，如需继续提取请联系销售：{contact}
+    'clue.recommend.company.trial.extract.num.limit.tip': '{count} bar has been extracted, if you need to continue extracting, please contact our sales staff to upgrade, contact information: {contact}',//已提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}
+    'clue.recommend.company.formal.sales.extract.num.limit.tip': '{count} has been extracted this month, please contact the administrator if you want to continue extracting',//本月{count}条已提取完毕，如需继续提取请联系管理员
+
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
     'common.personal.contribution.score': 'Personal contribution score',//个人贡献分数
@@ -3860,6 +3862,7 @@ var en_US = {
     'personal.official.version': 'Personal',//个人正式版
     'personal.upgrade.to.enterprise.edition': 'Upgrade to enterprise edition',//升级为企业版
     'personal.apply.trial.enterprise.edition': 'Apply for trial enterprise edition',//申请试用企业版
+    'common.upgrade': 'Upgrade',//升级
     'clues.extract.count.at.month': 'Extract {count} clues per month',//每月可提取 {count} 条线索
     'goods.price.most.favorable': 'The most favorable',//最优惠
     'goods.immediate.payment': 'Immediate payment',//立即支付
@@ -3886,8 +3889,9 @@ var en_US = {
     'payment.order.timeout': 'Deal timeout, {retry}',//订单超时，{retry}
     'payment.again.create.order.faild': 'Failed to generate deal, {retry}',//生成订单失败，{retry}
     'payment.renewal': 'renewal',//续费
-    'payment.please.contact.our.sale': 'Please contact our sales staff for upgrade. Contact: {contact}',//请联系我们的销售人员进行升级，联系方式：{contact}
-    'payment.please.contact.our.sale.renewal': 'Please contact our sales staff. Contact: {contact}',//请联系我们的销售人员，联系方式：{contact}
+    'payment.please.contact.our.sale.upgrade': 'Please contact our sales staff for upgrade. Contact: {contact}',//请联系我们的销售人员进行升级，联系方式：{contact}
+    'payment.please.contact.our.sale': 'Please contact our sales staff. Contact: {contact}',//请联系我们的销售人员，联系方式：{contact}
+    'payment.please.contact.our.sale.renewal': 'Please contact our sales staff for renewal. Contact: {contact}',//请联系我们的销售人员进行续费，联系方式：{contact}
     'payment.upgrading': 'Upgrading...',//正在升级...
     'payment.countdown.default.msg': 'Countdown...',//倒计时中...
     'payment.upgrade.version.success': 'You have successfully upgraded to the official version, {time} expires',//您已成功升级为正式版，{time} 到期
@@ -3916,12 +3920,13 @@ var en_US = {
     'boot.select.area': 'Please select the area of concern',//请选择关注的地域
     'boot.input.industry': 'Please enter industries of concern',//请输入关注的行业
     'boot.set.recommend.clue.faild': 'Setup failed. Please try again',//设置失败，请重试一次
+    'personal.upgrade.company.trial.tip': 'Open enterprise trial, you can experience the call function',//开通企业试用后，可体验拨打电话功能
     /*个人试用 --- end*/
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': 'You have {time} days left in the trial period. {count} clues can be extracted every day. Will you upgrade to {upgrade} or {enterprise}?',//您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？
-    'organization.company.trial.expired.tip': 'The rest of your probationary period {time} days, please contact our sales staff: {contact}',//您的试用期剩余{time}天，请联系我们的销售人员: {contact}
+    'organization.company.trial.expired.tip': 'You have {time} days left in the trial period, please contact our sales staff: {contact}',//您的试用期还剩{time}天，继续使用请联系我们的销售人员: {contact}
     'organization.personal.formal.expired.tip': 'Your account is about to expire, is it {renewal}?',//您的账号即将到期，是否{renewal}？
-    'organization.company.formal.expired.tip': 'Your account is about to expire, please contact our sales staff: {contact}',//您的账号即将到期，请联系我们的销售人员: {contact}
+    'organization.company.formal.expired.tip': 'Your account is about to expire, please continue to use our sales staff: {contact}',//您的账号即将到期，继续使用请联系我们的销售人员: {contact}
     /*组织到期提示 --- end*/
 
     /*版本信息 --- start */

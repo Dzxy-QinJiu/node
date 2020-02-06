@@ -97,7 +97,7 @@ class OrganizationExipreTip extends React.PureComponent {
                     }}
                 />;
             }else {
-                tip = Intl.get('organization.company.trial.expired.tip', '您的试用期剩余{time}天，请联系我们的销售人员: {contact}',{
+                tip = Intl.get('organization.company.trial.expired.tip', '您的试用期还剩{time}天，继续使用请联系我们的销售人员: {contact}',{
                     time: this.state.endTime,
                     contact: COMPANY_PHONE
                 });
@@ -112,7 +112,7 @@ class OrganizationExipreTip extends React.PureComponent {
                     }}
                 />;
             }else {
-                tip = Intl.get('organization.company.formal.expired.tip', '您的账号即将到期，请联系我们的销售人员: {contact}',{contact: COMPANY_PHONE});
+                tip = Intl.get('organization.company.formal.expired.tip', '您的账号即将到期，继续使用请联系我们的销售人员: {contact}',{contact: COMPANY_PHONE});
             }
         }
         return tip;
