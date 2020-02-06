@@ -2,6 +2,8 @@ import AppUserFormActions from '../../action/v2/app-user-form-actions';
 import AppUserUtil from '../../util/app-user-util';
 import UserData from '../../../../../public/sources/user-data';
 import {getHalfAMonthTime,getMilliseconds, getMillisecondsYesterdayEnd} from 'CMP_DIR/date-selector/utils';
+import commonAppAjax from 'MOD_DIR/common/public/ajax/app';
+import DateSelectorPicker from 'CMP_DIR/date-selector/utils';
 class AppUserFormStore {
     constructor(){
         this.resetState();
@@ -21,6 +23,7 @@ class AppUserFormStore {
         this.currentRealmAppsResult = 'loading';
         //第三步应用的特殊配置，保存在这个map里
         this.appsSetting = {};
+        this.appsDefaultSetting = {}; // 应用的默认配置
         //时间
         var timeObj = getHalfAMonthTime();
         //表单数据
@@ -141,6 +144,34 @@ class AppUserFormStore {
         this.selectedApps = apps;
         if(_.isArray(this.selectedApps) && this.selectedApps[0]) {
             this.isSelectedAppsError = false;
+            let appIds = _.map(apps, 'app_id');
+            _.each(appIds, appId => {
+                commonAppAjax.getAppsDefaultConfigAjax().sendRequest({
+                    client_id: appId,
+                    with_addition: false
+                }).success((dataList) => {
+                    const formData = this.formData;
+                    let userType = _.get(formData, 'user_type');
+                    
+                    if (!_.isEmpty(dataList)) {
+                        //找到该应用对应用户类型的配置信息
+                        let defaultConfig = _.find(dataList, data => data.client_id === appId && userType === data.user_type);
+                        if (defaultConfig) {
+                            this.appsDefaultSetting[appId] = {
+                                time: {
+                                    start_time: DateSelectorPicker.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT)),
+                                    end_time: DateSelectorPicker.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT)) + defaultConfig.valid_period,
+                                    range: DateSelectorPicker.getDateRange(defaultConfig.valid_period),
+                                },
+                                over_draft: defaultConfig.over_draft,
+                                is_two_factor: defaultConfig.is_two_factor,
+                                multilogin: defaultConfig.mutilogin
+                            };
+                        }
+                    }
+                });
+            });
+
         } else {
             this.isSelectedAppsError = true;
         }

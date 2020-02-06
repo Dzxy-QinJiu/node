@@ -845,6 +845,7 @@ const AddOrEditUser = createReactClass({
         const height = $(window).height() - OperationSteps.height - OperationStepsFooter.height;
         return (
             <AppPropertySetting
+                appsDefaultSetting={this.state.appsDefaultSetting}
                 defaultSettings={defaultSettings}
                 selectedApps={this.state.selectedApps}
                 onAppPropertyChange={this.onAppPropertyChange}
