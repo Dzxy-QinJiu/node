@@ -751,7 +751,7 @@ class ClueCustomer extends React.Component {
         if(currentVersion.personal && currentVersionType.trial) {//个人试用
             tips = <a onClick={this.handleUpgradePersonalVersion} data-tracename='点击请升级正式版按钮'>{Intl.get('clue.customer.export.trial.user.tip', '请升级正式版')}</a>;
         }else if(currentVersion.company && currentVersionType.trial){//企业试用
-            tips = Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'});
+            tips = Intl.get('payment.please.contact.our.sale.upgrade', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: COMPANY_PHONE});
         }
         return tips;
     };

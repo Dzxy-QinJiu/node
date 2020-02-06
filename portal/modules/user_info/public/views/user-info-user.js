@@ -22,7 +22,7 @@ import DifferentVersion from 'MOD_DIR/different_version/public';
 import privilegeConst_user_info from '../privilege-config';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
-import { COMPANY_VERSION_KIND } from 'PUB_DIR/sources/utils/consts';
+import { COMPANY_VERSION_KIND, COMPANY_PHONE } from 'PUB_DIR/sources/utils/consts';
 const session = storageUtil.session;
 const CLOSE_TIP_TIME = 56;
 const langArray = [{key: 'zh_CN', val: '简体中文'},
@@ -441,14 +441,14 @@ class UserInfo extends React.Component{
                 return (
                     <Popover
                         placement="right"
-                        content={Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})}
+                        content={Intl.get('payment.please.contact.our.sale.upgrade', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: COMPANY_PHONE})}
                         trigger='click'
                     >
                         <Button
                             className="user-version-upgrade"
                             data-tracename="点击升级为企业版按钮"
                         >
-                            {Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版')}
+                            {Intl.get('common.upgrade', '升级')}
                         </Button>
                     </Popover>
                 );
@@ -456,7 +456,7 @@ class UserInfo extends React.Component{
                 return (
                     <Popover
                         placement="right"
-                        content={Intl.get('payment.please.contact.our.sale.renewal', '请联系我们的销售人员，联系方式：{contact}', {contact: '400-6978-520'})}
+                        content={Intl.get('payment.please.contact.our.sale.renewal', '请联系我们的销售人员进行续费，联系方式：{contact}', {contact: COMPANY_PHONE})}
                         trigger='click'
                     >
                         <Button

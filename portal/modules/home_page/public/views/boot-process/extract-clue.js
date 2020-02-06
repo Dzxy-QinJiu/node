@@ -277,7 +277,10 @@ class ExtractClues extends React.Component {
     isManager = () => {
         return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN); // 返回true，说明是管理员，否则是销售或运营
     };
-
+    // 是否是管理员或者运营人员
+    isManagerOrOperation = () => {
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+    };
     clearSelectSales = () => {
         this.setState({
             salesMan: '',
@@ -388,7 +391,7 @@ class ExtractClues extends React.Component {
             } else if(versionAndType.isCompanyTrial) {//企业试用
                 maxLimitTip = <ReactIntl.FormattedMessage
                     id="clue.recommend.company.trial.extract.num.limit.tip"
-                    defaultMessage={'已提取{count}条，如需继续提取请联系销售：{contact}'}
+                    defaultMessage={'已提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}'}
                     values={{
                         count: <span className="has-extracted-count">{maxLimitExtractNumber}</span>,
                         contact: COMPANY_PHONE
@@ -408,6 +411,14 @@ class ExtractClues extends React.Component {
                                 {Intl.get('goods.increase.clues', '增加线索量')}
                             </Button>
                         )
+                    }}
+                />;
+            }else if(versionAndType.isCompanyFormal && !this.isManagerOrOperation()) {//企业正式版销售（除了管理员和运营人员）
+                maxLimitTip = <ReactIntl.FormattedMessage
+                    id="clue.recommend.company.formal.sales.extract.num.limit.tip"
+                    defaultMessage={'本月{count}条已提取完毕，如需继续提取请联系管理员'}
+                    values={{
+                        count: <span className="has-extracted-count">{maxLimitExtractNumber}</span>
                     }}
                 />;
             }

@@ -215,7 +215,7 @@ const HOCGoodsBuy = (options = {}) => {
                                         <React.Fragment>
                                             {/*<Popover
                                             placement="left"
-                                            content={Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})}
+                                            content={Intl.get('payment.please.contact.our.sale.upgrade', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})}
                                             trigger="hover"
                                             getPopupContainer={() => {
                                                 return document.getElementById('hoc-goods-buy-title-wrapper');

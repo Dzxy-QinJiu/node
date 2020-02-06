@@ -565,7 +565,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     }}
                 />;
             } else if(currentVersion.company && this.isTrialAccount()) {//企业试用
-                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '已提取{count}条，如需继续提取请联系销售：{contact}',{count: maxLimitExtractNumber,contact: COMPANY_PHONE});
+                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '已提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}',{count: maxLimitExtractNumber,contact: COMPANY_PHONE});
             } else if(currentVersion.personal && this.isOfficalAccount()//个人正式版
                 || currentVersion.company && this.isOfficalAccount() && this.isManager()) { //或企业正式版管理员
                 maxLimitTip = <ReactIntl.FormattedMessage
