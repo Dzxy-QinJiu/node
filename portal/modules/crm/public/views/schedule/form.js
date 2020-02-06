@@ -447,6 +447,10 @@ var CrmAlertForm = createReactClass({
         this.refs.validation.forceValidate(['starttime'],(valid) => {
             if(valid){
                 this.handleSubmit(submitObj);
+            }else {
+                this.setState({
+                    selectedAlertTimeRange: 'not_remind'
+                });
             }
         });
     },
