@@ -1,4 +1,4 @@
-const RecentUserAction = require("../action/recent-user-action");
+const RecentUserAction = require('../action/recent-user-action');
 import {altAsyncUtil} from 'ant-utils';
 const {resultHandler} = altAsyncUtil;
 
@@ -23,6 +23,19 @@ class RecentUserStore {
         }
         this.memberList.data = memberList;
     });
+
+    getSelectedTeamSalesMembers = (data) => {
+        let memberList = [];
+        if (_.isArray(data) && data.length) {
+            _.each(data, (item) => {
+                if (item.status) {
+                    memberList.push({name: item.nickName, id: item.userId, user_name: item.userName});
+                }
+            });
+        }
+        this.memberList.data = memberList;
+    };
+    
 }
 
 export default alt.createStore(RecentUserStore , 'RecentUserStore');
