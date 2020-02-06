@@ -50,7 +50,6 @@ class PhoneCallout extends React.Component {
         if(versionAndType.isPersonalTrial) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)), '个人版点击电话按钮');
             paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {versionKind: COMPANY_VERSION_KIND});
-            // return;
         }
         if (visible && hasCalloutPrivilege() && !versionAndType.personal){// 显示，并且能拨打电话，以及不是个人版时
             if (!this.state.ableClickPhoneIcon){
