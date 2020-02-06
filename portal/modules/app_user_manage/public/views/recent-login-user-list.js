@@ -197,6 +197,7 @@ class RecentLoginUsers extends React.Component {
         }
         //销售成员筛选
         if (this.state.selectedSalesId && this.state.selectedSalesId !== ALL_MEMBER_VALUE) {
+            delete paramObj.team_ids;
             paramObj.sales_id = this.state.selectedSalesId;
         }
         if (this.state.filter_type) {
