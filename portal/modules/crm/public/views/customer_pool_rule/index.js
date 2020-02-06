@@ -118,11 +118,8 @@ class CustomerPoolRule extends React.Component{
             let defaultRuleConfig = this.state.defaultRuleConfig;
             let defaultChecked = this.state.defaultChecked;
             if(_.isEmpty(this.state.defaultRuleConfig)) {
-                let organizationId = _.get(userData.getUserData(), 'organization.id');
-                //默认客户池规则id
-                let defaultRuleConfigId = organizationId + '_customerpool_config';
-                defaultRuleConfig = _.find(customerPoolConfigs, config => config.id === defaultRuleConfigId || config.team_id === organizationId);
-                customerPoolConfigs = _.filter(customerPoolConfigs, config => config.id !== defaultRuleConfigId && config.team_id !== organizationId);
+                defaultRuleConfig = _.find(customerPoolConfigs, config => this.isDefaultRuleConfig(config));
+                customerPoolConfigs = _.filter(customerPoolConfigs, config => !this.isDefaultRuleConfig(config));
                 defaultChecked = !_.get(defaultRuleConfig,'show_my_customers', undefined);
             }
             let total = _.get(res,'total', 0);
@@ -143,6 +140,14 @@ class CustomerPoolRule extends React.Component{
             });
         });
     }
+
+    //是否是默认客户池配置
+    isDefaultRuleConfig = (config) => {
+        let organizationId = _.get(userData.getUserData(), 'organization.id');
+        //默认客户池规则id
+        let defaultRuleConfigId = organizationId + '_customerpool_config';
+        return config.id === defaultRuleConfigId || config.team_id === organizationId;
+    };
 
     closeRightPanel = () => {
         this.props.closeRightPanel();
