@@ -2859,6 +2859,8 @@ var zh_CN = {
     'schedule.back.to.today': '今',
     'schedule.no.item': '无待办',
     'schedule.phone.connect': '电联',
+    'schedule.tip.over.start.time': '开始时间已过期，请重新设置开始时间',
+    'schedule.tip.over.alert.time': '提醒时间已过期，请重新设置开始时间',
     'call.record.get.invalid.phone.lists': '获取无效电话列表失败',
     'call.record.customer.phone': '这是一个客服电话',
     'call.record.report': '上报',
