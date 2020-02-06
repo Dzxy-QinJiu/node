@@ -1,0 +1,45 @@
+.apply_approve_content_wrap {
+  color: #506470;
+  //左侧的tab页面
+  .apply_approve_list_wrap {
+    float: left;
+    width: 420px;
+    min-height: 300px;
+
+    .apply_approve_list_tab {
+      padding: 15px;
+      border-bottom: 1px solid #e1e9eb;
+      border-right: 1px solid #e1e9eb;
+      overflow: hidden;
+      ul{
+        overflow: hidden;
+        float: left;
+        li.apply_type_item {
+          float: left;
+          width: 80px;
+          font-size: 16px;
+          text-align: center;
+          cursor: pointer;
+
+          &.active-tab {
+            color: #2196f3;
+            border-bottom: 4px solid #2196f3;
+            padding-bottom: 5px;
+          }
+        }
+      }
+      .add_apply_type_icon{
+        cursor: pointer;
+        float: right;
+      }
+
+    }
+  }
+
+  //右侧申请审批详情
+  .apply_approve_detail_wrap {
+    float: left;
+    color: #5d5d5d;
+    background-color: #f5f6f8;
+  }
+}

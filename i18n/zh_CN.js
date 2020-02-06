@@ -3965,6 +3965,12 @@ var zh_CN = {
     'boot.set.recommend.clue.faild': '设置失败，请重试一次',
     /*个人试用 --- end*/
 
+    /*自定义申请审批列表 --- start*/
+    'apply.approve.list.start.by.me': '我申请的',
+    'apply.approve.list.approved.by.me': '我审批的',
+    'apply.approve.list.approved.by.team': '团队申请',
+    /*自定义申请审批列表 --- end*/
+
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': '您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？',
     'organization.company.trial.expired.tip': '您的试用期剩余{time}天，请联系我们的销售人员: {contact}',
