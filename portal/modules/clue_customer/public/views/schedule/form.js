@@ -142,7 +142,7 @@ var CrmAlertForm = createReactClass({
         let selectedAlertTimeRange = this.state.selectedAlertTimeRange;
         let timeInterval = Math.floor((newTime - moment().valueOf()) / (1000 * 60));
         if(selectedAlertTimeRange === TIME_TYPE_CONSTS.AHEAD_5_MIN && timeInterval <= 5){
-            selectedAlertTimeRange = 'not_remind';
+            selectedAlertTimeRange = TIME_TYPE_CONSTS.NOT_REMIND;
         } else if(timeInterval > 5){
             selectedAlertTimeRange = TIME_TYPE_CONSTS.AHEAD_5_MIN;
         }
@@ -352,7 +352,7 @@ var CrmAlertForm = createReactClass({
                 this.handleSubmit(submitObj);
             }else {
                 this.setState({
-                    selectedAlertTimeRange: 'not_remind'
+                    selectedAlertTimeRange: TIME_TYPE_CONSTS.NOT_REMIND
                 });
             }
         });
@@ -432,7 +432,7 @@ var CrmAlertForm = createReactClass({
         }
         this.setState({
             selectedTimeRange: value,
-            selectedAlertTimeRange: 'not_remind',//为防止由整天的类型切换到几个小时后的类型时，下拉框中没有对应的类型的情况
+            selectedAlertTimeRange: TIME_TYPE_CONSTS.NOT_REMIND,//为防止由整天的类型切换到几个小时后的类型时，下拉框中没有对应的类型的情况
             formData: formData,
             isSelectFullday: isSelectFullday
         });
@@ -529,7 +529,7 @@ var CrmAlertForm = createReactClass({
     onChangeSelectFullday: function(checked) {
         let formData = this.state.formData;
         let showDefaultStartTime = false;
-        let selectedAlertTimeRange = 'not_remind';
+        let selectedAlertTimeRange = TIME_TYPE_CONSTS.NOT_REMIND;
         if (!checked){
             formData.start_time = moment().valueOf() + 420000;
             showDefaultStartTime = true;
@@ -583,7 +583,7 @@ var CrmAlertForm = createReactClass({
         this.setState({
             selectedAlertTimeRange: value,
         });
-        if (value !== 'not_remind') {
+        if (value !== TIME_TYPE_CONSTS.NOT_REMIND) {
             let formData = this.state.formData;
             formData.socketio_notice = true;
             this.setState({formData});

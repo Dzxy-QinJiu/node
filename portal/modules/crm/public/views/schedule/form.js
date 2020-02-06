@@ -173,7 +173,7 @@ var CrmAlertForm = createReactClass({
         let timeInterval = Math.floor((newTime - now_time) / (1000 * 60));
         let selectedAlertTimeRange = this.state.selectedAlertTimeRange;
         if(selectedAlertTimeRange === TIME_TYPE_CONSTS.AHEAD_5_MIN && timeInterval <= 5){
-            selectedAlertTimeRange = 'not_remind';
+            selectedAlertTimeRange = TIME_TYPE_CONSTS.NOT_REMIND;
         } else if(timeInterval > 5){
             selectedAlertTimeRange = TIME_TYPE_CONSTS.AHEAD_5_MIN;
         }
@@ -449,7 +449,7 @@ var CrmAlertForm = createReactClass({
                 this.handleSubmit(submitObj);
             }else {
                 this.setState({
-                    selectedAlertTimeRange: 'not_remind'
+                    selectedAlertTimeRange: TIME_TYPE_CONSTS.NOT_REMIND
                 });
             }
         });
@@ -526,7 +526,7 @@ var CrmAlertForm = createReactClass({
             //默认选中全天
             isSelectFullday = true;
             //如果自定义时间，默认提醒为不提醒
-            selectedAlertTimeRange = 'not_remind';
+            selectedAlertTimeRange = TIME_TYPE_CONSTS.NOT_REMIND;
         }
         this.setState({
             selectedTimeRange: value,
@@ -627,7 +627,7 @@ var CrmAlertForm = createReactClass({
     onChangeSelectFullday: function(checked) {
         let formData = this.state.formData;
         let showDefaultStartTime = false;
-        let selectedAlertTimeRange = 'not_remind';
+        let selectedAlertTimeRange = TIME_TYPE_CONSTS.NOT_REMIND;
         if (!checked){
             formData.start_time = moment().valueOf() + 420000;
             showDefaultStartTime = true;
@@ -684,7 +684,7 @@ var CrmAlertForm = createReactClass({
         this.setState({
             selectedAlertTimeRange: value,
         });
-        if (value !== 'not_remind') {
+        if (value !== TIME_TYPE_CONSTS.NOT_REMIND) {
             let formData = this.state.formData;
             formData.socketio_notice = true;
             this.setState({formData});
