@@ -59,8 +59,8 @@ class AppUserFormStore {
             multilogin: '0',
             //开通周期 默认选中半个月
             range: '0.5m',
-            //到期停用
-            over_draft: '1',
+            //到期停用，默认不变， '0':不变，'1': 停用，'2': 降级
+            over_draft: '0',
             //二步认证
             is_two_factor: '0',
             //备注
