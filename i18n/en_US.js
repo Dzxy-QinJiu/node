@@ -3124,6 +3124,8 @@ var en_US = {
     'analysis.extracting.cue.number': 'extracting cue number',//提取线索数
     'analysis.follow-up.leads': 'follow-up leads',//跟进线索数
     'analysis.exclude.ip.staff': 'Exclude configuration IP and staff',//排除配置ip和员工
+    'analysis.on.payroll.staff': 'staff on the payroll',//在职员工
+    'analysis.all.staff': 'all staff',//全部员工
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
