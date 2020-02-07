@@ -52,7 +52,6 @@
         align-items: center;//上下居中
         //justify-content: center;//左右居中
     }
-
     .form-wrap {
         position: absolute;
         width: 384px;
@@ -99,12 +98,12 @@
             }
             .iconfont.icon-password-visible{
                 right: 2px;
-                font-size: 16px;
-                bottom: 6px;
+                font-size: 15px;
+                bottom: 8px;
             }
             .iconfont.icon-password-invisible{
-                font-size: 11px;
-                bottom: 6px;
+                font-size: 8px;
+                bottom: 8px;
                 right: 2px;
             }
             .login-input-wrap {
@@ -151,4 +150,17 @@
 }
 ::selection {
     color: @font-color !important;
+}
+@media (max-width: 500px) {
+    .csm-form-wrap{
+        .form-wrap {
+            width: 264px;
+        }
+    }
+    #footer {
+        .footer-content {
+          padding: 14px 0;
+          font-size: 10px;
+        }
+    }
 }
