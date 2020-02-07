@@ -41,8 +41,8 @@ exports.scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE = 'setUpdateScroll
 exports.addCustomerEmitter = new EventEmitter();
 exports.addCustomerEmitter.SEND_ADD_CUSTOMER = 'sendAddCustomer';
 //客户管理界面emitter
-exports.crmManagementEmitter = new EventEmitter();
-exports.crmManagementEmitter.OPEN_VIEW_PANEL = 'open_view_panel';//打开客户界面的其他视图如客户池或者回收站
+exports.crmEmitter = new EventEmitter();
+exports.crmEmitter.OPEN_VIEW_PANEL = 'open_view_panel';//打开客户界面的其他视图如客户池或者回收站
 //用户信息emitter
 exports.userInfoEmitter = new EventEmitter();
 exports.userInfoEmitter.CHANGE_USER_LOGO = 'changeUserInfoLogo';

@@ -23,7 +23,7 @@ import {isOpenCash, isCurtao, isSalesRole} from 'PUB_DIR/sources/utils/common-me
 import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 let history = require('../../../../public/sources/history');
 import crmPrivilegeConst from '../privilege-const';
-import {phoneMsgEmitter, userDetailEmitter, crmManagementEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneMsgEmitter, userDetailEmitter, crmEmitter} from 'PUB_DIR/sources/utils/emitters';
 //路由常量
 const ROUTE_CONSTS = {
     ACCOUNTS: 'accounts'//客户管理
@@ -304,7 +304,7 @@ class CrmRightPanel extends React.Component {
                 paramsObj: paramsObj
             });
         }else {//如果在客户界面，不用跳转
-            crmManagementEmitter.emit(crmManagementEmitter.OPEN_VIEW_PANEL, paramsObj);
+            crmEmitter.emit(crmEmitter.OPEN_VIEW_PANEL, paramsObj);
         }
     };
     render() {
