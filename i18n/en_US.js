@@ -3121,6 +3121,9 @@ var en_US = {
     'analysis.assigned.clue.number': 'assigned lead number',//分配线索数
     'analysis.extracting.cue.number': 'extracting cue number',//提取线索数
     'analysis.follow-up.leads': 'follow-up leads',//跟进线索数
+    'analysis.call.record.statistics': 'call record statistics',//通话记录统计
+    'analysis.how.filter.114': 'How to filter 114 etc?',//如何过滤114等?
+    'analysis.contact.admin.set.call.center.rule': 'Please contact admin, set rules in the call center.',//请联系管理员，到呼叫中心设置规则
     'analysis.exclude.ip.staff': 'Exclude configuration IP and staff',//排除配置ip和员工
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
