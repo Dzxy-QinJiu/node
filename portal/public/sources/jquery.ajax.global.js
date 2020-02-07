@@ -12,7 +12,8 @@ import phoneUtil from './utils/phone-util';
 (function() {
     //socket的emitter
     var socketEmitter = require('./utils/emitters').socketEmitter;
-    const SessionTimeoutModal = require('../../components/Login/session-timeout-modal/index');
+    const isCurtao = require('./utils/common-method-util').isCurtao;
+    let SessionTimeoutModal = isCurtao() ? require('../../components/Login-curtao/session-timeout-modal/index') : require('../../components/Login/session-timeout-modal/index');
     const Translate = require('../intl/i18nTemplate');
     var history = require('./history');
     const Router = require('react-router-dom').Router;
@@ -31,7 +32,7 @@ import phoneUtil from './utils/phone-util';
             return;
         } else {
             $('body').append('<div id="session-timeout-modal"></div>');
-            ReactDOM.render(<Translate Template={<Router history={history}><SessionTimeoutModal/></Router>}/>, $('#session-timeout-modal')[0]);
+            ReactDOM.render(<Translate Template={<Router history={history}><SessionTimeoutModal /></Router>}/>, $('#session-timeout-modal')[0]);
         }
     }
 
