@@ -21,7 +21,6 @@ export function getCallRecordChart(paramObj = {}) {
             value: false 
         }],
         processData: (data, chart, analysisInstance, chartIndex) => {
-            _.set(chart, 'cardContainer.props.subTitle', renderFilter114(analysisInstance, chartIndex));
             _.set(chart, 'cardContainer.props.refreshData', refreshData.bind(null, analysisInstance, chartIndex));
 
             let callInfoList = _.get(data, '[0].result');
@@ -227,37 +226,8 @@ export function getCallRecordChart(paramObj = {}) {
         return columns;
     }
 
-    function renderFilter114(analysisInstance, chartIndex) {
-        return (
-            <div className="filter-114-wrap">
-                <Checkbox onChange={onFilter114Change.bind(null, analysisInstance, chartIndex)}>
-                    {Intl.get('call.analysis.filter.114', '过滤掉114')}
-                </Checkbox>
-            </div>
-        );
-    }
 
     function refreshData(analysisInstance, chartIndex) {
-        analysisInstance.getData(chartIndex);
-    }
-
-    function onFilter114Change(analysisInstance, chartIndex, e) {
-        const checked = e.target.checked;
-
-        let charts = analysisInstance.state.charts;
-
-        let chart = charts[chartIndex];
-
-        let condition = _.find(chart.conditions, item => item.name === 'filter_phone');
-
-        if (!condition) return;
-
-        if (checked) {
-            condition.value = true;
-        } else {
-            condition.value = false;
-        }
-
         analysisInstance.getData(chartIndex);
     }
 }
