@@ -11,6 +11,20 @@ export function getSalesManagerPerformanceRankingChart() {
         layout: { sm: 24 },
         height: 'auto',
         url: '/rest/analysis/contract/contract/v2/:data_type/performance/order/sales-manager',
+        conditions: [{
+            name: 'working_status',
+            value: 'on',
+        }],
+        cardContainer: {
+            selectors: [{
+                options: [
+                    {name: Intl.get('analysis.on.payroll.staff', '在职员工'), value: 'on'},
+                    {name: Intl.get('analysis.all.staff', '全部员工'), value: 'all'},
+                ],
+                activeOption: 'on',
+                conditionName: 'working_status',
+            }],
+        },
         processData: data => {
             _.each(data, item => {
                 item.performance = calc.mul(item.performance, 100);
