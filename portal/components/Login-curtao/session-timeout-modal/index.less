@@ -54,6 +54,7 @@
       line-height: 20px;
       height: 20px;
       color: @blue-tip-color;
+      white-space: nowrap;//缩小宽度后，不折行得设置
     }
     .session-timeout-form {
       button, .ant-input {
@@ -96,12 +97,12 @@
         }
         .iconfont.icon-password-visible{
             right: 2px;
-            font-size: 13px;
-            bottom: 3px;
+            font-size: 14px;
+            bottom: 0;
         }
         .iconfont.icon-password-invisible{
-            font-size: 9px;
-            bottom: 3px;
+            font-size: 8px;
+            bottom: 0;
             right: 2px;
         }
       }
@@ -159,6 +160,18 @@
     color: #999999;
     span{
       margin-right: 12px;
+    }
+  }
+}
+@media (max-width: 500px) {
+  #session-timeout-modal {
+    .session-timeout-wrap {
+      .session-timeout-content {
+        width: 264px;
+      }
+    }
+    .footer {
+      font-size: 10px;
     }
   }
 }
