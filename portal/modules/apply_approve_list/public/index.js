@@ -8,13 +8,13 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 require('./css/index.less');
 import {APPLY_APPROVE_TAB_TYPES, APPLY_TYPE, APPLY_LIST_LAYOUT_CONSTANTS} from './utils/apply_approve_utils';
 import classNames from 'classnames';
-import {Dropdown, Menu} from 'antd';
+import {Dropdown, Menu, Alert} from 'antd';
 import userData from 'PUB_DIR/sources/user-data';
-
-import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_APPROVE_TYPES, DOCUMENT_TYPE, REPORT_TYPE} from 'PUB_DIR/sources/utils/consts';
 import AddSalesOpportunityApply from 'MOD_DIR/sales_opportunity/public/view/add-sales-opportunity-apply';
 import AddBusinessApply from 'MOD_DIR/business-apply/public/view/add-business-apply';
 import AddLeaveApply from 'MOD_DIR/leave-apply/public/view/add-leave-apply';
+import AddDocumentWriteOrReportSendApplyPanel from 'CMP_DIR/add-send-document-template';
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
@@ -46,7 +46,11 @@ class ApplyApproveList extends React.Component {
                 }, {
                     approval_state: '0',
                     id: '4bd6b7ae-89f1-42b8-93af-20c63afd1e33',
-                    message: {sales_team_name: '济南平台部', email_user_names: 'fasdfsaf', email_app_names: '无非画画、爱仕达撒所多多非凡哥',},
+                    message: {
+                        sales_team_name: '济南平台部',
+                        email_user_names: 'fasdfsaf',
+                        email_app_names: '无非画画、爱仕达撒所多多非凡哥',
+                    },
                     message_type: 'apply',
                     produce_date: 1580982988617,
                     producer: {email: 'tangmaoqin@eefung.com', nick_name: 'xiaoshoueefung', role: 'sales',},
@@ -109,7 +113,7 @@ class ApplyApproveList extends React.Component {
         return (
             <Menu>
                 {_.map(workFlowList, (item, index) => {
-                    if (item.type === APPLY_APPROVE_TYPES.USERAPPLY) {
+                    if (_.indexOf([APPLY_APPROVE_TYPES.USERAPPLY, APPLY_APPROVE_TYPES.MEMBER_INVITE],item.type) > -1 ) {
                         return null;
                     }
                     return (
@@ -211,42 +215,42 @@ class ApplyApproveList extends React.Component {
         let noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0;
         let tipMsg = '';
 
-        if(this.state.applyListObj.loadingResult === 'error'){
+        if (this.state.applyListObj.loadingResult === 'error') {
             let retry = (
                 <span>
                     {this.state.applyListObj.errorMsg}，<a href="javascript:void(0)"
-                        onClick={this.retryFetchApplyList}>{Intl.get('common.retry','重试')}</a>
+                        onClick={this.retryFetchApplyList}>{Intl.get('common.retry', '重试')}</a>
                 </span>
             );
             return (
                 <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
                     <Alert message={retry} type="error" showIcon={true}/>
                 </div>);
-        }else if(noData){
-            if( this.state.searchKeyword !== ''){
+        } else if (noData) {
+            if (this.state.searchKeyword !== '') {
                 tipMsg = (
                     <span>
-                        {Intl.get('user.apply.no.match.retry','暂无符合查询条件的用户申请')}<span>,</span>
+                        {Intl.get('user.apply.no.match.retry', '暂无符合查询条件的用户申请')}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                            {Intl.get('common.get.again','重新获取')}
+                            {Intl.get('common.get.again', '重新获取')}
                         </a>
                     </span>
                 );
-            }else if(this.state.isCheckUnreadApplyList){
+            } else if (this.state.isCheckUnreadApplyList) {
                 tipMsg = (
                     <span>
-                        {Intl.get('user.apply.no.unread','已无未读回复的申请')}<span>,</span>
+                        {Intl.get('user.apply.no.unread', '已无未读回复的申请')}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                            {Intl.get('common.get.again','重新获取')}
+                            {Intl.get('common.get.again', '重新获取')}
                         </a>
                     </span>
                 );
-            }else{
+            } else {
                 tipMsg = (
                     <span>
-                        {Intl.get('user.apply.no.apply','还没有需要审批的用户申请')}<span>,</span>
+                        {Intl.get('user.apply.no.apply', '还没有需要审批的用户申请')}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                            {Intl.get('common.get.again','重新获取')}
+                            {Intl.get('common.get.again', '重新获取')}
                         </a>
                     </span>
                 );
@@ -328,7 +332,33 @@ class ApplyApproveList extends React.Component {
             case APPLY_APPROVE_TYPES.BUSSINESSTRIP:
                 return <AddBusinessApply hideBusinessApplyAddForm={this.closeAddApplyForm}/>;
             case APPLY_APPROVE_TYPES.LEAVE:
-                return <AddLeaveApply/>;
+                return <AddLeaveApply hideLeaveApplyAddForm={this.closeAddApplyForm}/>;
+            case APPLY_APPROVE_TYPES.DOCUMENTWRITING:
+                return <AddDocumentWriteOrReportSendApplyPanel
+                    titleType={Intl.get('apply.approve.document.write', '文件撰写申请')}
+                    hideApplyAddForm={this.closeAddApplyForm}
+                    applyType={DOCUMENT_TYPE}
+                    applyAjaxType={APPLY_APPROVE_TYPES.DOCUMENT}
+                    // afterAddApplySuccess = {DocumentWriteApplyAction.afterAddApplySuccess}
+                    addType='document_type'
+                    selectTip={Intl.get('apply.approve.write.select.at.least.one.type', '请选择至少一个文件类型')}
+                    selectPlaceholder={Intl.get('apply.approve.document.select.type', '请选择文件报告类型')}
+                    applyLabel={Intl.get('apply.approve.document.write.type', '文件类型')}
+                    remarkPlaceholder={Intl.get('apply.approve.report.remark', '请填写{type}备注', {type: Intl.get('apply.approve.document.writing', '文件撰写')})}
+                />;
+            case APPLY_APPROVE_TYPES.OPINIONREPORT:
+                return <AddDocumentWriteOrReportSendApplyPanel
+                    titleType={Intl.get('apply.approve.report.send', '舆情报告申请')}
+                    applyType={REPORT_TYPE}
+                    applyAjaxType={APPLY_APPROVE_TYPES.REPORT}
+                    // afterAddApplySuccess = {ReportSendApplyAction.afterAddApplySuccess}
+                    hideApplyAddForm={this.closeAddApplyForm}
+                    addType='report_type'
+                    selectTip={Intl.get('leave.apply.select.at.least.one.type', '请选择至少一个舆情报告类型')}
+                    selectPlaceholder={Intl.get('apply.approve.report.select.type', '请选择舆情报告类型')}
+                    applyLabel={Intl.get('common.type', '类型')}
+                    remarkPlaceholder={Intl.get('apply.approve.report.remark', '请填写{type}备注', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')})}
+                />;
         }
     };
 
