@@ -5,6 +5,7 @@ let CrmList = require('./crm-list');
 import Trace from 'LIB_DIR/trace';
 import CustomerRecycleBin from './views/customer-recycle-bin';
 import CustomerPool from './views/customer-pool';
+import {crmEmitter} from 'OPLATE_EMITTER';
 //各视图类型常量
 const VIEW_TYPE = {
     CUSTOMER: 'customer',//客户列表视图
@@ -19,26 +20,28 @@ class CrmIndex extends React.Component {
     };
 
     componentDidMount() {
-        this.historyJumpCrm(this.props);
+        crmEmitter.on(crmEmitter.OPEN_VIEW_PANEL, this.handelCrmViewChange);
+        if(_.get(this.props, 'history.action') === 'PUSH') {
+            let paramsObj = _.get(this.props, 'location.state.paramsObj');
+            if (paramsObj) {
+                this.handelCrmViewChange(paramsObj);
+            }
+        }
         $('body').css('overflow', 'hidden');
     }
 
     componentWillUnmount() {
+        crmEmitter.removeListener(crmEmitter.OPEN_VIEW_PANEL, this.handelCrmViewChange);
         $('body').css('overflow', 'auto');
     }
-    componentWillReceiveProps(nextProps) {
-        this.historyJumpCrm(nextProps);
-    }
-    historyJumpCrm = (Props) => {
-        if (_.get(Props,'history.action') === 'PUSH' ){
-            //跳转到客户池
-            if (_.get(Props,'location.state.showCustomerPool')){
-                this.showCustomerPool(_.get(Props,'location.state.condition'));
-            }
-            //跳转到客户回收站
-            if (_.get(Props,'location.state.showCustomerRecycle')){
-                this.showCustomerRecycleBin(_.get(Props,'location.state.condition'));
-            }
+    handelCrmViewChange = (paramsObj) => {
+        //显示客户池
+        if (_.get(paramsObj,'showCustomerPool')){
+            this.showCustomerPool(_.get(paramsObj,'condition'));
+        }
+        //显示客户回收站
+        if (_.get(paramsObj,'showCustomerRecycle')){
+            this.showCustomerRecycleBin(_.get(paramsObj,'condition'));
         }
     }
 

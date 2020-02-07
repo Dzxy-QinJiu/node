@@ -23,7 +23,11 @@ import {isOpenCash, isCurtao, isSalesRole} from 'PUB_DIR/sources/utils/common-me
 import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 let history = require('../../../../public/sources/history');
 import crmPrivilegeConst from '../privilege-const';
-import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneMsgEmitter, userDetailEmitter, crmEmitter} from 'PUB_DIR/sources/utils/emitters';
+//路由常量
+const ROUTE_CONSTS = {
+    ACCOUNTS: 'accounts'//客户管理
+};
 
 class CrmRightPanel extends React.Component {
     state = {
@@ -275,16 +279,33 @@ class CrmRightPanel extends React.Component {
     }
     handleClickCustomerPool = () => {
         //跳转到客户界面的客户池
-        history.push('/accounts', {showCustomerPool: true, condition: {name: _.get(this, 'props.currentName')}});
+        let paramsObj = {
+            showCustomerPool: true,
+            condition: {
+                name: _.get(this, 'props.currentName')
+            }
+        };
+        this.historyJumpCrm(paramsObj);
     }
     handleClickCustomerRecycle = () => {
         //跳转到客户界面的回收站
-        history.push('/accounts', {
-            showCustomerRecycle: true, condition: {
+        let paramsObj = {
+            showCustomerRecycle: true,
+            condition: {
                 field: 'name',
                 value: _.get(this, 'props.currentName')
             }
-        });
+        };
+        this.historyJumpCrm(paramsObj);
+    };
+    historyJumpCrm = (paramsObj) => {
+        if(location.pathname.indexOf(ROUTE_CONSTS.ACCOUNTS) === -1) {
+            history.push('/' + ROUTE_CONSTS.ACCOUNTS, {
+                paramsObj: paramsObj
+            });
+        }else {//如果在客户界面，不用跳转
+            crmEmitter.emit(crmEmitter.OPEN_VIEW_PANEL, paramsObj);
+        }
     };
     render() {
 
