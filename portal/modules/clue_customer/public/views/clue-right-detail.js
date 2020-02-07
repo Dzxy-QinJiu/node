@@ -26,6 +26,7 @@ var noop = function() {
 };
 import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
+import classNames from 'classnames';
 const DYNAMICHEIGHT = {
     LAYOUT: 117,
     HAS_PHONE_PANEL: 225,
@@ -358,6 +359,10 @@ class ClueRightPanel extends React.Component {
         }
         //是否隐藏联系方式（线索池中不展示联系方式）
         let hideContactWay = this.isCluePool();
+        var showEditText = editClueItemIconPrivilege(curClue) && !curClue.name;
+        var clueNameCls = classNames('clue-name-title',{
+            'is-edit-type': showEditText
+        });
         return (
             <div
                 className={cls}
@@ -369,10 +374,10 @@ class ClueRightPanel extends React.Component {
                                 {
                                     curClue.clue_type === ClUE_POOL ? null : renderClueStatus(curClue)
                                 }
-                                <div className="clue-name-title">
+                                <div className={clueNameCls}>
                                     <BasicEditInputField
                                         hasEditPrivilege={editClueItemIconPrivilege(curClue)}
-                                        showEditText={editClueItemIconPrivilege(curClue) && !curClue.name}
+                                        showEditText={showEditText}
                                         id={curClue.id}
                                         saveEditInput={this.saveEditBasicInfo.bind(this, 'name')}
                                         value={curClue.name}

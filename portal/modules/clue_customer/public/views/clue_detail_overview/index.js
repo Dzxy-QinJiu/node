@@ -1246,14 +1246,14 @@ class ClueDetailOverview extends React.Component {
                         <div className="clue-info-detail">
                             <BasicEditInputField
                                 width={EDIT_FEILD_WIDTH}
-                                hasEditPrivilege={hasPrivilegeEdit }
+                                hasEditPrivilege={hasPrivilegeEdit}
                                 id={curClue.id}
                                 saveEditInput={this.saveEditBasicInfo.bind(this, 'source')}
                                 value={curClue.source}
                                 field='source'
                                 type='textarea'
                                 row={3}
-                                noDataTip={Intl.get('clue.no.clue.describe', '未添加线索描述')}
+                                noDataTip={Intl.get('clue.list.no.clue.name', '无线索名')}
                                 addDataTip={Intl.get('clue.add.clue.describe', '添加线索描述')}
                                 placeholder={Intl.get('clue.add.clue.placeholder', '请填写线索描述')}
                             />

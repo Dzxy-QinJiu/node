@@ -3092,7 +3092,6 @@ var en_US = {
     'clue.no.access.channel': 'Not added access channel', //未添加接入渠道
     'clue.add.access.channel': 'Add access channel',//添加接入渠道
     'clue.add.clue.classfify': 'Add lead classify',//添加线索分类
-    'clue.no.clue.describe': 'Not added lead description', //未添加线索描述
     'clue.add.clue.describe': 'Add lead description',//添加线索描述
     'clue.add.clue.name': 'Add clue name',//添加线索名称
     'clue.no.clue.name': 'No added clue name',//未添加线索名称
@@ -3107,7 +3106,7 @@ var en_US = {
     'clue.has.no.handle': 'Not processed yet',//暂未处理
     'clue.set.invalid': 'Invalid judgment',//判定无效
     'clue.cancel.set.invalid': 'Cancel invalid',//改为有效
-    'clue.list.no.clue.name': 'No clue name yet',//暂无线索名
+    'clue.list.no.clue.name': 'No clue name',//无线索名
     'analysis.sales.weekly.report': 'Sales weekly report',//销售周报
     'analysis.sales.monthly.report': 'Sales monthly report',//销售月报
     'analysis.business.visit.frequency.statistics': 'Analysis business visit frequency statistics', //出差拜访频率统计
