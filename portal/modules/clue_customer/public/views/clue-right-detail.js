@@ -66,6 +66,7 @@ class ClueRightPanel extends React.Component {
             relatedCustomer: {},//与线索相关联的客户
             isDeletingClue: false,//正在删除线索
             tabsContainerHeight: 'auto',
+            isClueNameEditFlag: '',//线索名的状态
         };
     }
 
@@ -247,6 +248,9 @@ class ClueRightPanel extends React.Component {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
                 clueCustomerAction.afterEditCustomerDetail(saveObj);
+                this.setState({
+                    isClueNameEditFlag: 'text'
+                });
             } else {
                 if (_.isFunction(errorFunc)) errorFunc();
             }
@@ -348,7 +352,11 @@ class ClueRightPanel extends React.Component {
         }
         return baseHeight;
     };
-
+    setEditNameFlag = (displayType) => {
+        this.setState({
+            isClueNameEditFlag: displayType
+        });
+    };
 
     render() {
         let curClue = _.get(this.state, 'curClue');
@@ -359,9 +367,13 @@ class ClueRightPanel extends React.Component {
         }
         //是否隐藏联系方式（线索池中不展示联系方式）
         let hideContactWay = this.isCluePool();
-        var showEditText = editClueItemIconPrivilege(curClue) && !curClue.name;
+        var showEditText = editClueItemIconPrivilege(curClue) && !curClue.name && !this.state.isClueNameEditFlag;//输入框初始的时候是否是编辑状态
+        var isEditType = this.state.isClueNameEditFlag === 'edit' || showEditText;//输入框是否是编辑状态
         var clueNameCls = classNames('clue-name-title',{
-            'is-edit-type': showEditText
+            'is-edit-type': isEditType
+        });
+        var clueWrapCls = classNames('clue-name-wrap',{
+            'is-edit-type': isEditType
         });
         return (
             <div
@@ -370,25 +382,26 @@ class ClueRightPanel extends React.Component {
                 {this.state.getClueDetailErrMsg ? <div className="no-data-tip">{this.state.getClueDetailErrMsg}</div> :
                     <div className="clue-detail-wrap" data-tracename="线索详情">
                         <div className="clue-basic-info-container">
-                            <div className="clue-name-wrap">
+                            <div className={clueWrapCls}>
                                 {
-                                    curClue.clue_type === ClUE_POOL ? null : renderClueStatus(curClue)
+                                    curClue.clue_type === ClUE_POOL || isEditType ? null : renderClueStatus(curClue)
                                 }
                                 <div className={clueNameCls}>
                                     <BasicEditInputField
+                                        onDisplayTypeChange={this.setEditNameFlag}
                                         hasEditPrivilege={editClueItemIconPrivilege(curClue)}
                                         showEditText={showEditText}
                                         id={curClue.id}
                                         saveEditInput={this.saveEditBasicInfo.bind(this, 'name')}
                                         value={curClue.name}
-                                        noDataTip={Intl.get('clue.no.clue.name', '未添加线索名称')}
-                                        addDataTip={Intl.get('clue.add.clue.name', '添加线索名称')}
+                                        noDataTip={Intl.get('clue.list.no.clue.name', '无线索名')}
+                                        addDataTip={Intl.get('clue.list.no.clue.name', '无线索名')}
                                         field='name'
                                         placeholder={Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')}
                                     />
                                 </div>
                             </div>
-                            {deleteCluePrivilege(curClue) ?
+                            {deleteCluePrivilege(curClue) && !isEditType ?
                                 <div className="remove-clue">
                                     <i className="iconfont icon-delete handle-btn-item"
                                         onClick={this.handleRemoveClue.bind(this, curClue)} data-tracename="点击删除线索按钮"></i>

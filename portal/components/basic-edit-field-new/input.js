@@ -50,7 +50,7 @@ const BasicEditField = createReactClass({
         cancelBtnText: PropTypes.string,
         showPasswordStrength: PropTypes.bool,
         textCut: PropTypes.bool,
-        showEditText: PropTypes.bool,
+        showEditText: PropTypes.bool
     },
     getDefaultProps: function() {
         return {
@@ -146,9 +146,6 @@ const BasicEditField = createReactClass({
         if(nextProps.displayType && nextProps.displayType !== this.state.displayType){
             this.setState({displayType: nextProps.displayType});
         }
-        this.setState({
-            showEditText: nextProps.showEditText
-        });
     },
 
     setEditable: function(e) {
@@ -237,7 +234,8 @@ const BasicEditField = createReactClass({
             formData: formData,
             status: status,
             displayType: 'text',
-            submitErrorMsg: ''
+            submitErrorMsg: '',
+            showEditText: false
         });
         if (_.isFunction(this.props.onDisplayTypeChange)) this.props.onDisplayTypeChange('text');
         if (_.isFunction(this.props.cancelEditInput)) this.props.cancelEditInput();
@@ -285,7 +283,7 @@ const BasicEditField = createReactClass({
             'editing': this.state.displayType === 'edit'
         });
         var textBlock = null;
-        var showEditText = this.state.showEditText && !this.state.value;//直接展示编辑状态
+        var showEditText = this.state.showEditText;
         if (this.state.displayType === 'text' && !showEditText) {
 
             var displayText = this.props.type === 'password' ? Intl.get('user.password.tip', '保密中') : this.state.value;
@@ -370,7 +368,6 @@ const BasicEditField = createReactClass({
                             handleCancel={this.handleCancel}
                             okBtnText={this.props.okBtnText}
                             cancelBtnText={this.props.cancelBtnText}
-                            hideCancelBtns={showEditText}
                         /> : null}
                 </Form>
             </div>
