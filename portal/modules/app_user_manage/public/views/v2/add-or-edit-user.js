@@ -760,6 +760,8 @@ const AddOrEditUser = createReactClass({
 
     onAppsChange(apps) {
         AppUserFormActions.setSelectedApps(apps);
+        // 获取所选应用的默认配置信息
+        AppUserFormActions.getSelectedAppsDefault(apps);
         //当只有一个应用的时候，并且这个应用没有多终端类型时，需要把特殊设置的应用属性隐藏掉，
         // 这个时候，要把第三步的应用属性同步到通用配置属性上
         if (apps.length === 1 && _.isEmpty(apps[0].terminals)) {
