@@ -49,7 +49,8 @@ const BasicEditField = createReactClass({
         okBtnText: PropTypes.string,
         cancelBtnText: PropTypes.string,
         showPasswordStrength: PropTypes.bool,
-        textCut: PropTypes.bool
+        textCut: PropTypes.bool,
+        showEditText: PropTypes.bool
     },
     getDefaultProps: function() {
         return {
@@ -99,7 +100,8 @@ const BasicEditField = createReactClass({
             //展示内容后面跟的提示信息
             afterTextTip: '',
             //超过3行是否截断
-            textCut: false
+            textCut: false,
+            showEditText: false//是否展示成编辑状态
         };
     },
 
@@ -124,7 +126,8 @@ const BasicEditField = createReactClass({
             passStrength: {
                 passBarShow: false
             },
-            setRandomInputId: uuid()
+            setRandomInputId: uuid(),
+            showEditText: this.props.showEditText
         };
     },
     componentWillReceiveProps: function(nextProps) {
@@ -231,7 +234,8 @@ const BasicEditField = createReactClass({
             formData: formData,
             status: status,
             displayType: 'text',
-            submitErrorMsg: ''
+            submitErrorMsg: '',
+            showEditText: false
         });
         if (_.isFunction(this.props.onDisplayTypeChange)) this.props.onDisplayTypeChange('text');
         if (_.isFunction(this.props.cancelEditInput)) this.props.cancelEditInput();
@@ -279,7 +283,8 @@ const BasicEditField = createReactClass({
             'editing': this.state.displayType === 'edit'
         });
         var textBlock = null;
-        if (this.state.displayType === 'text') {
+        var showEditText = this.state.showEditText;
+        if (this.state.displayType === 'text' && !showEditText) {
 
             var displayText = this.props.type === 'password' ? Intl.get('user.password.tip', '保密中') : this.state.value;
             //如果是数字类型，展示时，千分位加，分隔的处理
@@ -311,14 +316,14 @@ const BasicEditField = createReactClass({
                 textBlock = (
                     <span className="inline-block basic-info-text no-data-descr">
                         {this.props.hasEditPrivilege ? (
-                            <a onClick={this.setEditable.bind(this)} className="handle-btn-item">{this.props.addDataTip}</a>) :<span className="no-data-descr-nodata">{this.props.noDataTip}</span>}
+                            <a onClick={this.setEditable.bind(this)} className="handle-btn-item">{this.props.addDataTip}</a>) : <span className="no-data-descr-nodata">{this.props.noDataTip}</span>}
 
                     </span>
                 );
             }
         }
 
-        var inputBlock = this.state.displayType === 'edit' ? (
+        var inputBlock = this.state.displayType === 'edit' || showEditText ? (
             <div className="inputWrap" ref="inputWrap">
                 <Form layout='horizontal' autoComplete="off" style={{width: this.props.width || '100%'}}>
                     <input type="password" style={{display: 'none'}} name="input" autoComplete="off"/>

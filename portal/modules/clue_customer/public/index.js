@@ -1725,8 +1725,9 @@ class ClueCustomer extends React.Component {
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>
                                 <span className="clue-name-item">
                                     {isShowNewIcon ? <i className="icon-new-clue"></i> : null}
-                                    {salesClueItem.name}</span>
+                                    {salesClueItem.name || <span className='no-clue-name'>{Intl.get('clue.list.no.clue.name', '无线索名')}</span>}
 
+                                </span>
                                 {!isInvalidClients && hasSimilarClue ?
                                     <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.clue', '有相似线索')}
