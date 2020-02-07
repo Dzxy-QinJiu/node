@@ -1246,7 +1246,7 @@ class ClueDetailOverview extends React.Component {
                         <div className="clue-info-detail">
                             <BasicEditInputField
                                 width={EDIT_FEILD_WIDTH}
-                                hasEditPrivilege={hasPrivilegeEdit }
+                                hasEditPrivilege={hasPrivilegeEdit}
                                 id={curClue.id}
                                 saveEditInput={this.saveEditBasicInfo.bind(this, 'source')}
                                 value={curClue.source}

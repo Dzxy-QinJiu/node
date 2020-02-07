@@ -63,10 +63,14 @@
     .clue-basic-info-container{
       width: 100%;
       background-color: #ffffff;
-      padding: 20px 16px 20px 24px;
+      padding: 20px 24px 20px 24px;
       overflow: hidden;
       .clue-name-wrap{
+        width: calc(100% - 50px);
         float: left;
+        &.is-edit-type{
+          width: 100%;
+        }
         //线索的阶段
         .clue-stage{
           float: left;
@@ -97,7 +101,10 @@
         }
         .clue-name-title{
           float: left;
-          width: 360px;
+          width: 330px;
+          .basic-edit-field form .ant-form-item .ant-input{
+            margin-left: 0;
+          }
           .basic-edit-field-input.basic-edit-field{
             font-size: 16px;
             font-weight: bold;
@@ -106,11 +113,21 @@
               width:325px;
               color: #222222;
               line-height: 23px;
+              &.no-data-descr{
+                color:#ccc;
+              }
             }
           }
           .basic-edit-field-input.basic-edit-field.editing{
             top:8px;
           }
+          &.is-edit-type{
+             width: 100%;
+            .basic-edit-field-input.basic-edit-field{
+              border-right:none;
+            }
+          }
+
         }
       }
 
