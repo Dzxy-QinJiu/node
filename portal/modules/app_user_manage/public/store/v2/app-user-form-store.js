@@ -2,6 +2,7 @@ import AppUserFormActions from '../../action/v2/app-user-form-actions';
 import AppUserUtil from '../../util/app-user-util';
 import UserData from '../../../../../public/sources/user-data';
 import {getHalfAMonthTime,getMilliseconds, getMillisecondsYesterdayEnd} from 'CMP_DIR/date-selector/utils';
+import DateSelectorPicker from 'CMP_DIR/date-selector/utils';
 class AppUserFormStore {
     constructor(){
         this.resetState();
@@ -21,6 +22,7 @@ class AppUserFormStore {
         this.currentRealmAppsResult = 'loading';
         //第三步应用的特殊配置，保存在这个map里
         this.appsSetting = {};
+        this.appsDefaultSetting = {}; // 应用的默认配置
         //时间
         var timeObj = getHalfAMonthTime();
         //表单数据
@@ -59,8 +61,8 @@ class AppUserFormStore {
             multilogin: '0',
             //开通周期 默认选中半个月
             range: '0.5m',
-            //到期停用
-            over_draft: '1',
+            //到期停用，默认不变， '0':不变，'1': 停用，'2': 降级
+            over_draft: '0',
             //二步认证
             is_two_factor: '0',
             //备注
@@ -145,6 +147,33 @@ class AppUserFormStore {
             this.isSelectedAppsError = true;
         }
     }
+    // 获取所选应用的默认配置信息
+    getSelectedAppsDefault(appsDefaultConfig) {
+        if (!_.isEmpty(appsDefaultConfig)) {
+            let appIds = _.get(appsDefaultConfig, 'appIds');
+            let dataList = _.get(appsDefaultConfig, 'dataList'); // 应用的默认配置
+            _.each(appIds, appId => {
+                const formData = this.formData;
+                let userType = _.get(formData, 'user_type');
+                //找到该应用对应用户类型的配置信息
+                let defaultConfig = _.find(dataList, data => data.client_id === appId && userType === data.user_type);
+                if (defaultConfig) {
+                    this.appsDefaultSetting[appId] = {
+                        time: {
+                            start_time: DateSelectorPicker.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT)),
+                            end_time: DateSelectorPicker.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT)) + defaultConfig.valid_period,
+                            range: DateSelectorPicker.getDateRange(defaultConfig.valid_period),
+                        },
+                        over_draft: defaultConfig.over_draft,
+                        is_two_factor: defaultConfig.is_two_factor,
+                        multilogin: defaultConfig.mutilogin
+                    };
+                }
+            });
+
+        }
+    }
+    
     //显示选中的应用错误
     showSelectedAppsError() {
         this.isSelectedAppsError = true;
