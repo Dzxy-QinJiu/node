@@ -1423,3 +1423,49 @@ exports.getFormattedCondition = (formData, fields) => {
 
     return _.filter(result, item => item).join(' ');
 };
+
+/**
+ * 返回团队以及子团队中所有启用的成员
+ * 参数说明：
+ * selectedTeam 选择的全部信息
+ *  memberList 全部成员
+ *  selectedMember 每次递归调用后存储的数据
+ * */
+function traversingSelectTeamTreeAllMember(selectedTeam, memberList, selectedMember) {
+    let selectedTeamMember = selectedMember;
+    _.each(selectedTeam, team => {
+        let ownerId = _.get(team, 'owner_id'); // 负责人
+        let managerIds = _.get(team, 'manager_ids'); // 舆情秘书
+        let userIds = _.get(team, 'user_ids'); // 成员
+        let teamAllMember = [];
+        if (ownerId) {
+            teamAllMember.push(ownerId);
+        }
+        if (managerIds) {
+            teamAllMember = _.concat(teamAllMember, managerIds);
+        }
+        if (userIds) {
+            teamAllMember = _.concat(teamAllMember, userIds);
+        }
+        if (!_.isEmpty(teamAllMember)) {
+            _.each(teamAllMember, (id) => {
+                let matchMember = _.find(memberList, member => id === member.user_id);
+                if (_.get(matchMember, 'status')) {
+                    selectedTeamMember.push({
+                        name: matchMember.nick_name,
+                        id: matchMember.user_id,
+                        user_name: matchMember.user_name
+                    });
+                }
+            });
+        }
+
+        let childGroups = _.get(team, 'child_groups');
+        if (childGroups) {
+            traversingSelectTeamTreeAllMember(childGroups, memberList, selectedTeamMember);
+        }
+    });
+    return selectedTeamMember;
+}
+
+exports.traversingSelectTeamTreeAllMember = traversingSelectTeamTreeAllMember;

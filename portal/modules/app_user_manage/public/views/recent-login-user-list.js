@@ -474,16 +474,17 @@ class RecentLoginUsers extends React.Component {
     // 修改所选中的团队
     onTeamChange(team_ids) {
         if (team_ids) {
-            // 选取团队后，获取选择团队下的成员
-            RecentUserAction.getSelectedTeamSalesMembers(team_ids);
+            //跟据实际选中的id，获取包含下级团队的已选团队的列表teamTotalArr
+            let teamTotalArr = _.union(teamTotalArr, traversingSelectTeamTree(this.props.teamTreeList, team_ids));
+            RecentUserAction.getSelectedTeamSalesMembers(teamTotalArr);
             // 若是选中成员后，再次切换团队，则需要将成员显示为选中团队下全部成员
             if (this.state.selectedSalesId) {
                 this.setState({
                     selectedSalesId: ALL_MEMBER_VALUE
                 });
             }
-        } else {
-            RecentUserAction.getSaleMemberList(commonMethodUtil.getParamByPrivilege());
+        } else { // 切换到全部团队的情况
+            RecentUserAction.getSelectedTeamSalesMembers();
         }
 
         this.setState({ team_ids: team_ids, lastUserId: '' });
