@@ -3,11 +3,46 @@
  */
 
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
-import { Checkbox } from 'antd';
+import { Checkbox, Popover } from 'antd';
+const { isAdminRole, isManagerOrOpRole } = require('PUB_DIR/sources/utils/common-method-util');
 
 export function getCallRecordChart(paramObj = {}) {
+    let title = Intl.get('analysis.call.record.statistics', '通话记录统计');
+
+    const isAdmin = isAdminRole();
+    const isManagerOrOp = isManagerOrOpRole();
+
+    if (isAdmin || isManagerOrOp) {
+        const onClickTip = function() {
+            if (!isAdmin) return;
+
+            window.open('https://caller.curtao.com/manage/rules');
+        };
+
+        const tip = <span style={{fontSize: 13, cursor: 'pointer'}} onClick={onClickTip}>{Intl.get('analysis.how.filter.114', '如何过滤114等?')}</span>;
+
+        title = (
+            <span>
+                {title}
+
+                (
+
+                {isAdmin ? tip : (
+                    <Popover
+                        content={Intl.get('analysis.contact.admin.set.call.center.rule', '请联系管理员，到呼叫中心设置规则')}
+                        trigger="click"
+                    >
+                        {tip}
+                    </Popover>
+                )}
+
+                )
+            </span>
+        );
+    }
+
     return {
-        title: '通话记录统计',
+        title,
         layout: {sm: 24},
         height: 'auto',
         chartType: 'table',
@@ -16,10 +51,6 @@ export function getCallRecordChart(paramObj = {}) {
             '/rest/base/v1/group/team/available/statistic'
         ],
         ajaxInstanceFlag: 'getCallRecordStatistics',
-        conditions: [{
-            name: 'filter_phone',
-            value: false 
-        }],
         processData: (data, chart, analysisInstance, chartIndex) => {
             _.set(chart, 'cardContainer.props.refreshData', refreshData.bind(null, analysisInstance, chartIndex));
 
@@ -225,7 +256,6 @@ export function getCallRecordChart(paramObj = {}) {
 
         return columns;
     }
-
 
     function refreshData(analysisInstance, chartIndex) {
         analysisInstance.getData(chartIndex);
