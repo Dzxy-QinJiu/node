@@ -23,7 +23,7 @@ import {SearchInput} from 'antc';
 
 var Option = Select.Option;
 var classNames = require('classnames');
-import UserDetailAddApp from './views/user-detail-add-app';
+import BatchChangeUser from './views/batch-change-user';
 
 var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
 var ShareObj = require('./util/app-id-share-util');
@@ -990,7 +990,7 @@ class AppUserManage extends React.Component {
                 </div>
                 {
                     this.state.isShowBatchChangePanel ? (
-                        <UserDetailAddApp
+                        <BatchChangeUser
                             multiple={true}
                             initialUser={this.state.selectedUserRows}
                             appList={this.state.appList}
