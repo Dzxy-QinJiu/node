@@ -1,29 +1,32 @@
+@import "../../../../public/css/common-variables";
+@font-color: #999999;
 .apply_approve_content_wrap {
   color: #506470;
   //左侧的tab页面
   .apply_approve_list_wrap {
     float: left;
-    width: 420px;
+    width: 336px;
     min-height: 300px;
-
+    border-right: 1px solid #e1e9eb;
+    //申请审批列表
     .apply_approve_list_tab {
       padding: 15px;
       border-bottom: 1px solid #e1e9eb;
-      border-right: 1px solid #e1e9eb;
       overflow: hidden;
       ul{
         overflow: hidden;
         float: left;
         li.apply_type_item {
           float: left;
-          width: 80px;
+          width: 64px;
           font-size: 16px;
           text-align: center;
           cursor: pointer;
-
+          color: #999;
+          margin-right: 17px;
           &.active-tab {
-            color: #2196f3;
-            border-bottom: 4px solid #2196f3;
+            color: @BORDER-BLUE;
+            border-bottom: 4px solid @BORDER-BLUE;
             padding-bottom: 5px;
           }
         }
@@ -31,8 +34,89 @@
       .add_apply_type_icon{
         cursor: pointer;
         float: right;
+        .iconfont{
+          color: @FILTER-BUTTON;
+          &.icon-plus{
+            margin-right: 17px;
+          }
+        }
       }
 
+    }
+    .app_user_manage_apply_list_wrap{
+      //加载列表的loading状态
+      .load8 {
+        transform: scale(0.5, 0.5);
+        .loader8 {
+          border-left-color: #394144;
+        }
+      }
+      .app_user_manage_apply_list{
+        li {
+          cursor: pointer;
+          padding: 16px;
+          border-left: 3px solid transparent;
+          border-bottom: 1px solid #E5E5E5;
+          &:hover{
+            background-color: @current-item-color;
+          }
+          &.current {
+            background-color: @current-item-color;
+            border-left: 3px solid @apply-active-color;
+            dt span {
+              color: @title-color;
+            }
+          }
+          em, dt {
+            font-weight: normal;
+            font-style: normal;
+          }
+          dt {
+            line-height: 18px;
+            padding-bottom: 12px;
+            span {
+              font-size: 16px;
+              color: #333;
+            }
+            //未读回复的标识
+            span.icon-apply-message-tip {
+              padding-left: 5px;
+              color: @reply-message-tip-color;
+            }
+            em {
+              float: right;
+              font-size: 12px;
+              color: @approval-pending-color;
+              &.processed {
+                color: @font-color;
+              }
+            }
+          }
+          dd {
+            font-size: 14px;
+            line-height: 16px;
+            padding-bottom: 10px;
+            color: @font-color;
+            &:last-child{
+              padding-bottom: 0;
+            }
+            & > span {
+              float: left;
+              max-width: 65%;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+            }
+            em {
+              float: right;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              font-size: 12px;
+            }
+          }
+        }
+      }
     }
   }
 
