@@ -84,7 +84,9 @@ function getConfigJson(req) {
         //获取是否绑定微信时报的错
         '11462': {'httpCode': 500, 'message': backendIntl.get('errorcode.different.realm', '安全域不一致')},
         //在其他应用已退出
+        //auth2报的错
         '11473': {'httpCode': 500, 'message': backendIntl.get('errorcode.36', '在其他应用已退出')},
+        //客套业务接口报的错
         '19401': {'httpCode': 500, 'message': backendIntl.get('errorcode.36', '在其他应用已退出')},
         '11476': {'httpCode': 500, 'message': backendIntl.get('errorcode.42', '你的账号已被停用，请联系管理员')},
         //绑定微信时报的错
