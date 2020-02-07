@@ -961,6 +961,17 @@ function isSalesRole() {
     return userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SECRETARY) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER);
 }
 exports.isSalesRole = isSalesRole;
+
+//是否管理员
+exports.isAdminRole = function() {
+    return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
+};
+
+//是否主管或运营人员
+exports.isManagerOrOpRole = function() {
+    return userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER);
+};
+
 exports.subtracteGlobalClue = function(clueItem,callback) {
     if (Oplate && Oplate.unread) {
         var unHandleClueLists = Oplate.unread['unhandleClueList'];
