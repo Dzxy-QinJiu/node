@@ -1,6 +1,8 @@
 import AppUserAjax from '../../ajax/app-user-ajax';
 import AppUserUtil from '../../util/app-user-util';
 import batchOperate from '../../../../../public/sources/push/batch';
+import commonAppAjax from 'MOD_DIR/common/public/ajax/app';
+
 class AppUserFormActions {
     constructor() {
         this.generateActions(
@@ -71,6 +73,21 @@ class AppUserFormActions {
         } , (errorMsg) => {
             this.dispatch({error: true , errorMsg: errorMsg});
         });
+    }
+
+    // 获取所选应用的默认配置信息
+    getSelectedAppsDefault(apps) {
+        let appIds = _.map(apps, 'app_id');
+        if (!_.isEmpty(appIds)) {
+            commonAppAjax.getAppsDefaultConfigAjax().sendRequest({
+                client_id: appIds.join(','),
+                with_addition: false
+            }).success((dataList) => {
+                if (!_.isEmpty(dataList)) {
+                    this.dispatch({appIds: appIds, dataList: dataList});
+                }
+            });
+        }
     }
 }
 

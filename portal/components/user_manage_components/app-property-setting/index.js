@@ -42,6 +42,8 @@ const AppPropertySetting = createReactClass({
     propTypes: {
         //默认配置(添加需要传-添加用户，添加单个应用)
         defaultSettings: PropTypes.object,
+        // 应用默认配置
+        appsDefaultSetting: PropTypes.object,
         //选中的应用列表
         selectedApps: PropTypes.array,
         //应用的自定义配置，修改的时候需要传(修改单个应用，审批界面，修改申请单)
@@ -124,6 +126,8 @@ const AppPropertySetting = createReactClass({
                 //当前应用的id
                 const appId = currentApp.app_id;
                 let key = this.getAppSettingKey(currentApp.app_id, currentApp.user_id);
+                // 应用的默认配置
+                const appsDefaultSetting = props.appsDefaultSetting[appId];
                 //当前应用的设置
                 const originAppSetting = appPropSettingsMap[key] || {};
                 //检查角色、权限
@@ -142,7 +146,7 @@ const AppPropertySetting = createReactClass({
                         originAppSetting.permissions = defaultSettings.permissions;
                     }
                 }
-                //检查单个属性，如果没有重新设置值，用defaultSettings里的值，重新生成
+                //检查单个属性，如果应用有单个默认配置，则用应用的默认配置，如果没有重新设置值，用defaultSettings里的值，重新生成
                 function checkSingleProp(prop) {
                     if(!originAppSetting[prop]) {
                         originAppSetting[prop] = {
@@ -154,7 +158,7 @@ const AppPropertySetting = createReactClass({
                         if (prop === 'terminals') {
                             originAppSetting[prop].value = currentApp.terminals;
                         } else {
-                            originAppSetting[prop].value = defaultSettings[prop];
+                            originAppSetting[prop].value = appsDefaultSetting && appsDefaultSetting[prop] || defaultSettings[prop];
                         }
                     }
                 }
@@ -166,9 +170,9 @@ const AppPropertySetting = createReactClass({
                         };
                     }
                     if(!originAppSetting.time.setted) {
-                        originAppSetting.time.start_time = defaultSettings.time.start_time;
-                        originAppSetting.time.end_time = defaultSettings.time.end_time;
-                        originAppSetting.time.range = defaultSettings.time.range;
+                        originAppSetting.time.start_time = _.get(appsDefaultSetting, 'time.start_time') || defaultSettings.time.start_time;
+                        originAppSetting.time.end_time = _.get(appsDefaultSetting, 'time.end_time') || defaultSettings.time.end_time;
+                        originAppSetting.time.range = _.get(appsDefaultSetting, 'time.range') || defaultSettings.time.range;
                     }
                 }
                 //检查用户类型
@@ -310,6 +314,7 @@ const AppPropertySetting = createReactClass({
         if(!this.compareEquals(nextProps.selectedApps,this.props.selectedApps)
             || !this.compareEquals(nextProps.defaultSettings,this.props.defaultSettings)
             || !this.compareEquals(nextProps.appsSetting,this.props.appsSetting)
+            || !_.isEmpty(nextProps.appsDefaultSetting)
         ) {
             const appPropSettingsMap = this.createPropertySettingData(nextProps);
             this.setState({appPropSettingsMap});
@@ -363,7 +368,9 @@ const AppPropertySetting = createReactClass({
         if(currentApp.app_id !== app_id) {
             return null;
         }
-        const defaultSettings = this.props.defaultSettings;
+        let defaultSettings = this.props.defaultSettings;
+        // 应用的默认配置
+        const appsDefaultSetting = this.props.appsDefaultSetting[app_id];
         let key = this.getAppSettingKey(currentApp.app_id, currentApp.user_id);
         var currentAppInfo = this.state.appPropSettingsMap[key] || {};
         var selectedRoles = currentAppInfo.roles || [];
@@ -376,7 +383,7 @@ const AppPropertySetting = createReactClass({
                         this.props.isMultiUser ? null : (
                             <div
                                 className="app-property-content basic-data-form app-property-other-property"
-                                style={{display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 && !isShowAppTerminals ? 'none' : 'block'}}
+                                style={{display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 && _.isEmpty(appsDefaultSetting) && !isShowAppTerminals ? 'none' : 'block'}}
                             >
                                 {this.props.showUserNumber ? (
                                     <div className="form-item">
