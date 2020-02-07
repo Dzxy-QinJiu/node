@@ -57,7 +57,9 @@ class ForgotPassword extends React.Component {
             }
         }
     }
-
+    componentWillUnmount() {
+        lastValidPhone = '';
+    }
     //获取验证码
     getLoginCaptcha = (phone) => {
         if (!phone) {
@@ -441,27 +443,27 @@ class ForgotPassword extends React.Component {
                 </Steps>
                 <div className="input-area">
                     {TextFieldView}
-                </div>
-                <div className='forgot-password-tip'>
-                    {this.state.successMsg ? (
-                        <React.Fragment>
-                            <span className='success-msg'>{this.state.successMsg}，</span>
-                            <a className='find-password-retry-login' data-tracename="重新登录" onClick={this.returnLoginPage}>
-                                {Intl.get('retry.login.again', '重新登录')}
+                    <div className='forgot-password-tip'>
+                        {this.state.successMsg ? (
+                            <React.Fragment>
+                                <span className='success-msg'>{this.state.successMsg}，</span>
+                                <a className='find-password-retry-login' data-tracename="重新登录" onClick={this.returnLoginPage}>
+                                    {Intl.get('retry.login.again', '重新登录')}
+                                </a>
+                            </React.Fragment>
+                        ) : null}
+                        {this.state.errorMsg ? (
+                            <div className="login-error-tip">
+                                <span className="iconfont icon-warn-icon"></span>
+                                {this.state.errorMsg}
+                            </div>
+                        ) : null}
+                        {this.state.successMsg ? null : (
+                            <a className='login-find-password-tip' data-tracename="返回登录页" onClick={this.returnLoginPage}>
+                                {Intl.get('login.return_to_login_page', '返回登录页')}
                             </a>
-                        </React.Fragment>
-                    ) : null}
-                    {this.state.errorMsg ? (
-                        <div className="login-error-tip">
-                            <span className="iconfont icon-warn-icon"></span>
-                            {this.state.errorMsg}
-                        </div>
-                    ) : null}
-                    {this.state.successMsg ? null : (
-                        <a className='login-find-password-tip' data-tracename="返回登录页" onClick={this.returnLoginPage}>
-                            {Intl.get('login.return_to_login_page', '返回登录页')}
-                        </a>
-                    )}
+                        )}
+                    </div>
                 </div>
             </Form>
         );

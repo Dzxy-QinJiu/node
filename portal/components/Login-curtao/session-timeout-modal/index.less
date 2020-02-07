@@ -1,0 +1,164 @@
+@import '../../../public/sources/page-frame/index-zh_CN.less';
+@white-color: #ffffff;
+@font-color: #333333;
+@blue-tip-color: #2196F3;
+@error-tip-color: #ee5b44;
+#session-timeout-modal {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: @white-color;
+  z-index: 100000;
+  .logo {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    margin: 0;
+  }
+  .session-timeout-wrap {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+  .session-timeout-content {
+    position: relative;
+    width: 384px;
+    height: auto;
+    height: auto;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    .avatar {
+      img {
+        border: 1px solid @blue-tip-color;
+      }
+    }
+    .text-align-center {
+      text-align: center;
+    }
+    .user-info-name, .login-width-other, .login-find-password-tip {
+      height: 20px;
+      line-height: 20px;
+    }
+    .user-info-name{
+      margin-top: 18px;
+      margin-bottom: 40px;
+      font-size: 16px;
+      font-weight: bold;
+      color: @font-color;
+    }
+    .retry-login-tip {
+      line-height: 20px;
+      height: 20px;
+      color: @blue-tip-color;
+    }
+    .session-timeout-form {
+      button, .ant-input {
+        width: 100%;
+        border: none;
+        font-size: 16px;
+      }
+      button{
+        height: 48px;
+        line-height: 48px;
+        border-radius: 3px;
+        font-size: 20px;
+        background-color: @blue-tip-color;
+      }
+      .ant-input {
+        height: 30px;
+        line-height: 30px;
+        padding: 0 15px 0 0; 
+        border-bottom: 1px solid @font-color;
+        border-radius: 0;
+        color: @font-color;
+        outline: none;
+        &:hover {
+          border-bottom: 1px solid @blue-tip-color;
+        }
+        &:focus { 
+          outline:none;
+          box-shadow: none;
+          border-bottom: 1px solid @blue-tip-color;
+        }
+      }
+      .ant-form-item {
+        margin-bottom: 24px;
+        .iconfont{
+          position: absolute;
+          bottom:4px;
+          right:0px;
+          cursor: pointer;
+          .handle-btn-item;
+        }
+        .iconfont.icon-password-visible{
+            right: 2px;
+            font-size: 13px;
+            bottom: 3px;
+        }
+        .iconfont.icon-password-invisible{
+            font-size: 9px;
+            bottom: 3px;
+            right: 2px;
+        }
+      }
+      .captcha-input{
+        padding-right: 140px;
+      }
+      .captcha-wrap{
+        position: absolute;
+        float: right;
+        right: 0;
+        top: -13px;
+        width: 120px;
+        height: 40px;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      .login-error-tip{
+        height: 20px;
+        line-height: 20px;
+        margin-top: 4px;
+        margin-bottom: 4px;
+        font-size: 14px;
+        color: @error-tip-color;
+      }
+      .login-find-password-tip, .login-width-other {
+        margin-top: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        color: @blue-tip-color;
+        &:hover {
+          color: @blue-tip-color;
+        }
+      }
+      .login-find-password-tip{
+        float: left;
+      }
+      .login-width-other {
+        float: right;
+      }
+    }
+  }
+
+ .footer {
+    font-size: 12px;
+    white-space: nowrap;
+    padding: 14px 20px;
+    line-height: 30px;
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    bottom: 0;
+    right: 0;
+    font-family: 'Noto Sans CJK SC', 'Noto Sans CJK', 'Source Han Sans', source-han-sans-simplified-c, sans-serif !important;
+    color: #999999;
+    span{
+      margin-right: 12px;
+    }
+  }
+}
