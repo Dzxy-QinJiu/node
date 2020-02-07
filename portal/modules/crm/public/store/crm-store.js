@@ -77,10 +77,8 @@ CrmStore.prototype.updateCurrentCustomerRemark = function(submitObj) {
     let customer = _.find(this.curCustomers, (customer) => {
         return customer.id === submitObj.customer_id;
     });
-    if (customer && _.isArray(customer.customer_traces) && customer.customer_traces.length) {
-        customer.customer_traces[0].remark = submitObj.remark;
-    }
-    if (customer && submitObj.last_contact_time) {
+    if(customer) {
+        customer.customer_trace = submitObj.remark;
         customer.last_contact_time = submitObj.last_contact_time;
     }
 },
@@ -233,11 +231,7 @@ CrmStore.prototype.updateCustomerLastContact = function(traceObj) {
         let updateTraceCustomer = _.find(this.curCustomers, customer => customer.id === traceObj.customer_id);
         if (updateTraceCustomer) {
             updateTraceCustomer.last_contact_time = traceObj.time;
-            if (_.get(updateTraceCustomer, 'customer_trces[0]')) {
-                updateTraceCustomer.customer_traces[0].remark = traceObj.remark;
-            } else {
-                updateTraceCustomer.customer_traces = [{remark: traceObj.remark}];
-            }
+            updateTraceCustomer.customer_trace = traceObj.remark;
         }
     }
 };
@@ -285,29 +279,29 @@ CrmStore.prototype.processForList = function(curCustomers) {
         curCustomer.dynamic = curCustomer.customer_dynamic_dto ? curCustomer.customer_dynamic_dto.message : '';
         curCustomer.start_time = curCustomer.start_time ? moment(curCustomer.start_time).format(oplateConsts.DATE_FORMAT) : '';
         curCustomer.last_contact_time = curCustomer.last_contact_time ? moment(curCustomer.last_contact_time).format(oplateConsts.DATE_FORMAT) : '';
+
         let traceArray = curCustomer.customer_traces;
         if (_.isArray(traceArray)) {
-            curCustomer.trace = traceArray[0].remark ? traceArray[0].remark : '';
+            curCustomer.customer_trace = _.get(traceArray, '[0].remark', curCustomer.customer_trace);
         }
         //默认联系人（后端处理后，放入联系人列表中）
-        if (_.isArray(curCustomer.contacts) && curCustomer.contacts[0]) {
-            let contact = curCustomer.contacts[0];
-            curCustomer.contact = contact.name;
+        if (_.isArray(curCustomer.contacts) && curCustomer.contacts[0] || _.isArray(curCustomer.phones)) {
+            let contact = _.get(curCustomer, 'contacts[0]');
+            curCustomer.contact_name = _.get(contact,'name', curCustomer.contact_name);
             curCustomer.contact_way = '';
-            if (_.isArray(contact.phone)) {
-                contact.phone.forEach(function(phone) {
-                    if (phone) {
-                        curCustomer.contact_way += addHyphenToPhoneNumber(phone) + '\n';
-                    }
-                });
-            }
+            let phones = _.get(contact, 'phone', curCustomer.phones);
+            _.each(phones, function(phone) {
+                if (phone) {
+                    curCustomer.contact_way += addHyphenToPhoneNumber(phone) + '\n';
+                }
+            });
         }
         let cop = curCustomer.sales_opportunities;
         if (_.isArray(cop) && cop[0]) {
             //通过销售阶段进行筛选时,展示筛选条件中销售阶段高的订单
             //没有销售阶段的筛选时，展示订单列表中销售阶段高的订单
             //以上条件判断改到后端处理完后，放到入订单列表中
-            curCustomer.order = cop[0].sale_stages || '';
+            curCustomer.sales_stage = cop[0].sale_stages || curCustomer.sales_stage;
         }
     }
     return list;

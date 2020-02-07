@@ -557,7 +557,6 @@ class Crm extends React.Component {
                 customer_params: {
                     currentId: this.state.currentId,
                     refreshCustomerList: this.refreshCustomerList,
-                    curCustomer: {...this.state.curCustomer, isCrmListPage: true},
                     ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
                     updateCustomerDefContact: CrmAction.updateCustomerDefContact,
                     updateCustomerLastContact: CrmAction.updateCustomerLastContact,
@@ -929,6 +928,7 @@ class Crm extends React.Component {
         let params = {
             data: JSON.stringify(conditionParams),
             queryObj: JSON.stringify(queryObjParams),
+            getSimpleCrm: true,//获取精简的客户列表信息
         };
         //时间范围
         if (_.get(rangParams, '[0].from') || _.get(rangParams, '[0].to') || _.get(rangParams, 'length') > 1) {
@@ -2046,7 +2046,7 @@ batchTopBarDropList = (isMinWeb) => {
             {
                 title: this.renderContactConcernTop(),
                 width: column_width,
-                dataIndex: 'contact',
+                dataIndex: 'contact_name',
                 className: 'has-filter customer-contact-th',
             },
             {
@@ -2061,7 +2061,7 @@ batchTopBarDropList = (isMinWeb) => {
             {
                 title: Intl.get('user.apply.detail.order', '订单'),
                 width: column_width,
-                dataIndex: 'order',
+                dataIndex: 'sales_stage',
                 className: 'has-filter'
             },
             {
@@ -2081,8 +2081,8 @@ batchTopBarDropList = (isMinWeb) => {
                     let time = record.last_contact_time ? record.last_contact_time : '';
                     let last_contact = '';
                     //舆情秘书不展示跟进记录
-                    if (!hasSecretaryAuth && record.trace) {
-                        last_contact = record.trace;
+                    if (!hasSecretaryAuth && record.customer_trace) {
+                        last_contact = record.customer_trace;
                     }
                     return (
                         <span>

@@ -287,7 +287,7 @@ class BasicData extends React.Component {
         let basicData = this.state.basicData;
         //重复客户，回收站，客户池不能有释放按钮
         const isNotShowRelease = _.includes(VIEW_MAPS, basicData.customer_type);
-        const isAllowPath = pathname === '/home' || pathname === '/crm';
+        const isAllowPath = pathname === '/home' || pathname === '/accounts';
         //（在首页或者客户列表里），以及不是运营人员
         return isAllowPath && !isNotShowRelease && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
     };
