@@ -68,10 +68,10 @@ class RegisterPage extends React.Component {
         return (
             <div className="register-wrap" data-tracename="个人注册页面">
                 <div className="register-image-container">
-                    <div className='register-left-content-style'>
+                    <div className='register-left-content-style register-logo-wrap'>
                         <img src={logoSrc} className='register-logo' />
                     </div>
-                    <div className='register-left-content-style'>
+                    <div className='register-left-content-style register-slogan'>
                         <span className='register-slogan-tip'>{Intl.get('register.slogan.tip', '销售加速，从这里开始...')}</span>
                     </div>
                 </div>
