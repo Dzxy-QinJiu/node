@@ -348,15 +348,20 @@ var CrmAlertForm = createReactClass({
             message.warn(Intl.get('crm.alert.finish.longer', '结束时间必须要大于开始时间'));
             return;
         }
-        this.refs.validation.forceValidate(['starttime'],(valid) => {
-            if(valid){
-                this.handleSubmit(submitObj);
-            }else {
-                this.setState({
-                    selectedAlertTimeRange: TIME_TYPE_CONSTS.NOT_REMIND
-                });
-            }
-        });
+        if(this.state.selectedTimeRange !== 'custom'){//如果没有选择自定义时间，则直接提交
+            this.handleSubmit(submitObj);
+        }else{
+            this.refs.validation.forceValidate(['starttime'],(valid) => {
+                if(valid){
+                    this.handleSubmit(submitObj);
+                }else {
+                    this.setState({
+                        selectedAlertTimeRange: TIME_TYPE_CONSTS.NOT_REMIND
+                    });
+                }
+            });
+        }
+        
         // if(this.props.isAddToDoClicked && !submitObj.customer_id){
         //     this.refs.validation.forceValidate(['customer']);
         //     return;
