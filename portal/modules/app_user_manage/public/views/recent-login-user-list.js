@@ -66,6 +66,7 @@ class RecentLoginUsers extends React.Component {
             filter_type: '', // 是否过期，默认（全部）
             team_ids: '', //默认选中的团队(全部)
             selectedSalesId: [ALL_MEMBER_VALUE],
+            selectedTeamIds: [], // 所选团队以及下级团队id
         };
     }
 
@@ -186,17 +187,11 @@ class RecentLoginUsers extends React.Component {
         }
         //团队筛选的处理
         if (this.state.team_ids) {
-            let selectTeamId = this.state.team_ids;
-            //实际要传到后端的团队,默认是选中的团队
-            let totalRequestTeams = [selectTeamId];
-            //跟据实际选中的id，获取包含下级团队的已选团队的列表teamTotalArr
-            let teamTotalArr = _.union(teamTotalArr, traversingSelectTeamTree(this.props.teamTreeList, selectTeamId));
-            //跟据包含下级团队的所有团队详细的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
-            totalRequestTeams = _.union(totalRequestTeams, getRequestTeamIds(teamTotalArr));
-            paramObj.team_ids = totalRequestTeams.join(',');
+            paramObj.team_ids = this.state.selectedTeamIds.join(',');
         }
         //销售成员筛选
         if (this.state.selectedSalesId && this.state.selectedSalesId !== ALL_MEMBER_VALUE) {
+            delete paramObj.team_ids;
             paramObj.sales_id = this.state.selectedSalesId;
         }
         if (this.state.filter_type) {
@@ -472,7 +467,24 @@ class RecentLoginUsers extends React.Component {
 
     // 修改所选中的团队
     onTeamChange(team_ids) {
-        this.setState({ team_ids: team_ids, lastUserId: '' });
+        let selectedTeamIds = [team_ids];
+        if (team_ids) {
+            //跟据实际选中的id，获取包含下级团队的已选团队的列表teamTotalArr
+            let teamTotalArr = _.union([], traversingSelectTeamTree(this.props.teamTreeList, team_ids));
+            //跟据包含下级团队的所有团队详细的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
+            selectedTeamIds = _.union(selectedTeamIds, getRequestTeamIds(teamTotalArr));
+            RecentUserAction.getSelectedTeamSalesMembers({selectedTeamIds: selectedTeamIds, teamLists: _.get(this.props, 'teamlists', [])} );
+            // 若是选中成员后，再次切换团队，则需要将成员显示为选中团队下全部成员
+            if (this.state.selectedSalesId) {
+                this.setState({
+                    selectedSalesId: ALL_MEMBER_VALUE
+                });
+            }
+        } else { // 切换到全部团队的情况
+            RecentUserAction.getSelectedTeamSalesMembers();
+        }
+
+        this.setState({ team_ids: team_ids, lastUserId: '', selectedTeamIds: selectedTeamIds});
         setTimeout(() => this.getRecentLoginUsers());
     }
 
