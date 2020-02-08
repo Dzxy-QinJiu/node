@@ -1434,3 +1434,34 @@ exports.getFormattedCondition = (formData, fields) => {
 
     return _.filter(result, item => item).join(' ');
 };
+/**
+ * 返回团队以及子团队中所有启用的成员
+ * 参数说明：
+ * selectedTeam 选择的所选团队ids以及团队全部信息
+ *  memberList 全部成员
+ * */
+exports.selectedTeamTreeAllMember = (selectedTeam, memberList) => {
+    let selectedTeamMember = [];
+    let selectedTeamIds = _.get(selectedTeam, 'selectedTeamIds'); // 所选团队的id
+    let teamLists = _.get(selectedTeam, 'teamLists'); // 所有团队成员
+    // 筛选出所选择的团队以及下级团队的成员信息
+    let selectedTeamArray = _.filter(teamLists, team => _.indexOf(selectedTeamIds, team.group_id) !== -1);
+    _.each(selectedTeamArray, team => {
+        let ownerId = _.get(team, 'owner_id'); // 负责人
+        let managerIds = _.get(team, 'manager_ids'); // 舆情秘书
+        let userIds = _.get(team, 'user_ids'); // 成员
+        let selectedTeamMemberIds = ownerId ? _.concat(ownerId, managerIds, userIds) : _.concat(managerIds, userIds);
+        // 每个团队，遍历一次成员数据，是为了成员的显示顺序和团队对应起来
+        // 比如：选择销售部，需要显示销售总监（迟洲振），再显示子团队的成员信息
+        _.each(memberList, member => {
+            if (_.get(member, 'status') && _.indexOf(selectedTeamMemberIds, member.user_id) !== -1) {
+                selectedTeamMember.push({
+                    name: member.nick_name,
+                    id: member.user_id,
+                    user_name: member.user_name
+                });
+            }
+        });
+    });
+    return selectedTeamMember;
+};
