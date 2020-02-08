@@ -1433,35 +1433,22 @@ exports.selectedTeamTreeAllMember = (selectedTeam, memberList) => {
     let selectedTeamMember = [];
     let selectedTeamIds = _.get(selectedTeam, 'selectedTeamIds'); // 所选团队的id
     let teamLists = _.get(selectedTeam, 'teamLists'); // 所有团队成员
-    _.each(selectedTeamIds, teamId => {
-        let matchTeam = _.find(teamLists, team => teamId === team.group_id);
-        if (matchTeam) {
-            let ownerId = _.get(matchTeam, 'owner_id'); // 负责人
-            let managerIds = _.get(matchTeam, 'manager_ids'); // 舆情秘书
-            let userIds = _.get(matchTeam, 'user_ids'); // 成员
-            let memberIds = [];
-            if (ownerId) {
-                memberIds.push(ownerId);
-            }
-            if (!_.isEmpty(managerIds)) {
-                memberIds = _.concat(memberIds, managerIds);
-            }
-            if (!_.isEmpty(userIds)) {
-                memberIds = _.concat(memberIds, userIds);
-            }
-            if (!_.isEmpty(memberIds)) {
-                _.each(memberIds, (id) => {
-                    let matchMember = _.find(memberList, member => id === member.user_id);
-                    if (_.get(matchMember, 'status')) {
-                        selectedTeamMember.push({
-                            name: matchMember.nick_name,
-                            id: matchMember.user_id,
-                            user_name: matchMember.user_name
-                        });
-                    }
+    // 筛选出所选择的团队以及下级团队的成员信息
+    let selectedTeamArray = _.filter(teamLists, team => _.indexOf(selectedTeamIds, team.group_id) !== -1);
+    _.each(selectedTeamArray, team => {
+        let ownerId = _.get(team, 'owner_id'); // 负责人
+        let managerIds = _.get(team, 'manager_ids'); // 舆情秘书
+        let userIds = _.get(team, 'user_ids'); // 成员
+        let selectedTeamMemberIds = ownerId ? _.concat(ownerId, managerIds, userIds) : _.concat(managerIds, userIds);
+        _.each(memberList, member => {
+            if (_.get(member, 'status') && _.indexOf(selectedTeamMemberIds, member.user_id) !== -1) {
+                selectedTeamMember.push({
+                    name: member.nick_name,
+                    id: member.user_id,
+                    user_name: member.user_name
                 });
             }
-        }
+        });
     });
     return selectedTeamMember;
 };
