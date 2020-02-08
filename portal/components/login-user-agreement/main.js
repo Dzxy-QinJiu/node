@@ -13,23 +13,36 @@ var Spinner = require('../spinner');
 const USER_LANG_KEY = 'userLang';//存储用户语言环境的key
 import { storageUtil } from 'ant-utils';
 import GeminiScrollbar from '../react-gemini-scrollbar';
-
+const LAYOUT_CONST = {
+    TITLE_HEIGHT: 96,//标题的高度
+    MARGAIN: 108,//上下边距的和54+54
+};
 class UserAgreementPage extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            contentHeight: this.getContentHeight(),
+        };
     }
 
     componentDidMount() {
         Trace.addEventListener(window, 'click', Trace.eventHandler);
+        $(window).on('resize', this.onWindowResize);
     }
-
+    onWindowResize = () => {
+        this.setState({ contentHeight: this.getContentHeight() });
+    }
+    getContentHeight() {
+        return $(window).height() - LAYOUT_CONST.MARGAIN - LAYOUT_CONST.TITLE_HEIGHT;
+    }
     componentWillUnmount() {
         Trace.detachEventListener(window, 'click', Trace.eventHandler);
+        $(window).off('resize', this.onWindowResize);
     }
 
     render() {
         const hasWindow = !(typeof window === 'undefined');
-        const contentHeight = $(window).height() - 108 - 96;
+        const contentHeight = this.state.contentHeight;
         return (
             <div className="user-agreement-wrap" data-tracename="用户协议">
                 <div className="user-agreement-title">

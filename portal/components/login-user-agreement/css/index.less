@@ -4,6 +4,8 @@
 @font-color: #333;
 @blue-color: #2196f3;
 @user-agree-width: 912px;
+@user-agree-width-middle: 600px;
+@user-agree-width-small: 300px;
 body{
   margin: 0;
 }
@@ -55,5 +57,30 @@ body{
 #footer {
   .footer-content {
     color: #000000;
+  }
+}
+
+@media (max-width: 1024px) {
+  .user-agreement-wrap{
+    .user-agreement-title{
+      width: @user-agree-width-middle + 96;
+    }
+    .user-agreement-content{
+      width: @user-agree-width-middle;
+    }
+  }
+}
+@media (max-width: 720px) {
+  .user-agreement-wrap{
+    .user-agreement-title{
+      width: @user-agree-width-small + 96;
+    }
+    .user-agreement-content{
+      width: @user-agree-width-small;
+    }
+  }
+  #footer .footer-content {
+    font-size: 10px;
+    padding: 14px 0 !important;
   }
 }
