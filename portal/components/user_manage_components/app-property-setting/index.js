@@ -69,6 +69,7 @@ const AppPropertySetting = createReactClass({
     getDefaultProps() {
         return {
             defaultSettings: {},
+            appsDefaultSetting: {},
             selectedApps: [],
             appsSetting: {},
             onAppPropertyChange: function() {},
