@@ -1423,49 +1423,45 @@ exports.getFormattedCondition = (formData, fields) => {
 
     return _.filter(result, item => item).join(' ');
 };
-
 /**
  * 返回团队以及子团队中所有启用的成员
  * 参数说明：
- * selectedTeam 选择的全部信息
+ * selectedTeam 选择的所选团队ids以及团队全部信息
  *  memberList 全部成员
- *  selectedMember 每次递归调用后存储的数据
  * */
-function traversingSelectTeamTreeAllMember(selectedTeam, memberList, selectedMember) {
-    let selectedTeamMember = selectedMember;
-    _.each(selectedTeam, team => {
-        let ownerId = _.get(team, 'owner_id'); // 负责人
-        let managerIds = _.get(team, 'manager_ids'); // 舆情秘书
-        let userIds = _.get(team, 'user_ids'); // 成员
-        let teamAllMember = [];
-        if (ownerId) {
-            teamAllMember.push(ownerId);
-        }
-        if (managerIds) {
-            teamAllMember = _.concat(teamAllMember, managerIds);
-        }
-        if (userIds) {
-            teamAllMember = _.concat(teamAllMember, userIds);
-        }
-        if (!_.isEmpty(teamAllMember)) {
-            _.each(teamAllMember, (id) => {
-                let matchMember = _.find(memberList, member => id === member.user_id);
-                if (_.get(matchMember, 'status')) {
-                    selectedTeamMember.push({
-                        name: matchMember.nick_name,
-                        id: matchMember.user_id,
-                        user_name: matchMember.user_name
-                    });
-                }
-            });
-        }
-
-        let childGroups = _.get(team, 'child_groups');
-        if (childGroups) {
-            traversingSelectTeamTreeAllMember(childGroups, memberList, selectedTeamMember);
+exports.selectedTeamTreeAllMember = (selectedTeam, memberList) => {
+    let selectedTeamMember = [];
+    let selectedTeamIds = _.get(selectedTeam, 'selectedTeamIds'); // 所选团队的id
+    let teamLists = _.get(selectedTeam, 'teamLists'); // 所有团队成员
+    _.each(selectedTeamIds, teamId => {
+        let matchTeam = _.find(teamLists, team => teamId === team.group_id);
+        if (matchTeam) {
+            let ownerId = _.get(matchTeam, 'owner_id'); // 负责人
+            let managerIds = _.get(matchTeam, 'manager_ids'); // 舆情秘书
+            let userIds = _.get(matchTeam, 'user_ids'); // 成员
+            let memberIds = [];
+            if (ownerId) {
+                memberIds.push(ownerId);
+            }
+            if (!_.isEmpty(managerIds)) {
+                memberIds = _.concat(memberIds, managerIds);
+            }
+            if (!_.isEmpty(userIds)) {
+                memberIds = _.concat(memberIds, userIds);
+            }
+            if (!_.isEmpty(memberIds)) {
+                _.each(memberIds, (id) => {
+                    let matchMember = _.find(memberList, member => id === member.user_id);
+                    if (_.get(matchMember, 'status')) {
+                        selectedTeamMember.push({
+                            name: matchMember.nick_name,
+                            id: matchMember.user_id,
+                            user_name: matchMember.user_name
+                        });
+                    }
+                });
+            }
         }
     });
     return selectedTeamMember;
-}
-
-exports.traversingSelectTeamTreeAllMember = traversingSelectTeamTreeAllMember;
+};

@@ -182,7 +182,7 @@ function AppUserAction() {
                 this.dispatch({loading: false, teamList: data.teamList, teamTreeList: data.teamTreeList});
                 if (_.isFunction(cb)) cb(data.teamList);
             }
-        });
+        }, false, true);
     };
 
     this.getRealmList = function() {

@@ -1,7 +1,7 @@
 const RecentUserAction = require('../action/recent-user-action');
 import {altAsyncUtil} from 'ant-utils';
 const {resultHandler} = altAsyncUtil;
-import { traversingSelectTeamTreeAllMember } from 'PUB_DIR/sources/utils/common-method-util';
+import { selectedTeamTreeAllMember } from 'PUB_DIR/sources/utils/common-method-util';
 class RecentUserStore {
     constructor() {
         this.allMemberList = []; // 所有团队下的成员
@@ -13,7 +13,7 @@ class RecentUserStore {
         };
         this.bindActions(RecentUserAction);
     }
-    getSaleMemberList = resultHandler('memberList', function({data, paramsObj}) {
+    getSaleMemberList = resultHandler('memberList', ({data, paramsObj}) => {
         let memberList = [];
         if (_.isArray(data) && data.length) {
             this.allMemberList = data;
@@ -21,7 +21,7 @@ class RecentUserStore {
         }
     });
 
-    getMemberList = (data) => {
+    getMemberList(data){
         let memberList = [];
         _.each(data, (item) => {
             if (item.status) {
@@ -29,14 +29,14 @@ class RecentUserStore {
             }
         });
         this.memberList.data = memberList;
-    };
+    }
 
     getSelectedTeamSalesMembers = (selectedTeam) => {
         let memberList = _.clone(this.allMemberList); // 所有团队下的成员
         if (_.isEmpty(selectedTeam)) {
             this.getMemberList(memberList);
         } else {
-            this.memberList.data = traversingSelectTeamTreeAllMember(selectedTeam, memberList, []);
+            this.memberList.data = selectedTeamTreeAllMember(selectedTeam, memberList);
         }
     };
     
