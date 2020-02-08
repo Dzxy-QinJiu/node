@@ -3,7 +3,7 @@
  * 版权所有 (c) 2015-2019 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2019/11/14.
  */
-require('./css/index.less');
+require('../login-user-agreement/css/index.less');
 var React = require('react');
 const classnames = require('classnames');
 import LoginLogo from '../login-logo';
@@ -13,23 +13,36 @@ var Spinner = require('../spinner');
 const USER_LANG_KEY = 'userLang';//存储用户语言环境的key
 import { storageUtil } from 'ant-utils';
 import GeminiScrollbar from '../react-gemini-scrollbar';
-
+const LAYOUT_CONST = {
+    TITLE_HEIGHT: 96,//标题的高度
+    MARGAIN: 108,//上下边距的和54+54
+};
 class PrivacyPolicyPage extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            contentHeight: this.getContentHeight(),
+        };
     }
 
     componentDidMount() {
         Trace.addEventListener(window, 'click', Trace.eventHandler);
+        $(window).on('resize', this.onWindowResize);
     }
-
+    onWindowResize = () => {
+        this.setState({ contentHeight: this.getContentHeight() });
+    }
+    getContentHeight() {
+        return $(window).height() - LAYOUT_CONST.MARGAIN - LAYOUT_CONST.TITLE_HEIGHT;
+    }
     componentWillUnmount() {
         Trace.detachEventListener(window, 'click', Trace.eventHandler);
+        $(window).off('resize', this.onWindowResize);
     }
 
     render() {
         const hasWindow = !(typeof window === 'undefined');
-        const contentHeight = $(window).height() - 108 - 96;
+        const contentHeight = this.state.contentHeight;
         return (
             <div className="user-agreement-wrap" data-tracename="隐私政策">
                 <div className="user-agreement-title">
