@@ -1440,6 +1440,8 @@ exports.selectedTeamTreeAllMember = (selectedTeam, memberList) => {
         let managerIds = _.get(team, 'manager_ids'); // 舆情秘书
         let userIds = _.get(team, 'user_ids'); // 成员
         let selectedTeamMemberIds = ownerId ? _.concat(ownerId, managerIds, userIds) : _.concat(managerIds, userIds);
+        // 每个团队，遍历一次成员数据，是为了成员的显示顺序和团队对应起来
+        // 比如：选择销售部，需要显示销售总监（迟洲振），再显示子团队的成员信息
         _.each(memberList, member => {
             if (_.get(member, 'status') && _.indexOf(selectedTeamMemberIds, member.user_id) !== -1) {
                 selectedTeamMember.push({
