@@ -127,7 +127,7 @@ const AppPropertySetting = createReactClass({
                 const appId = currentApp.app_id;
                 let key = this.getAppSettingKey(currentApp.app_id, currentApp.user_id);
                 // 应用的默认配置
-                const appsDefaultSetting = props.appsDefaultSetting[appId];
+                const appsDefaultSetting = _.get(props,`appsDefaultSetting[${appId}]`,{});
                 //当前应用的设置
                 const originAppSetting = appPropSettingsMap[key] || {};
                 //检查角色、权限
@@ -370,8 +370,8 @@ const AppPropertySetting = createReactClass({
         }
         let defaultSettings = this.props.defaultSettings;
         // 应用的默认配置
-        const appsDefaultSetting = this.props.appsDefaultSetting[app_id];
-        let key = this.getAppSettingKey(currentApp.app_id, currentApp.user_id);
+        const appsDefaultSetting = _.get(this,`props.appsDefaultSetting[${app_id}]`,{});
+        let key = this.getAppSettingKey(_.get(currentApp,'app_id'),_.get(currentApp,'user_id'));
         var currentAppInfo = this.state.appPropSettingsMap[key] || {};
         var selectedRoles = currentAppInfo.roles || [];
         var selectedPermissions = currentAppInfo.permissions || [];
