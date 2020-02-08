@@ -444,15 +444,20 @@ var CrmAlertForm = createReactClass({
                 return;
             }
         }
-        this.refs.validation.forceValidate(['starttime'],(valid) => {
-            if(valid){
-                this.handleSubmit(submitObj);
-            }else {
-                this.setState({
-                    selectedAlertTimeRange: TIME_TYPE_CONSTS.NOT_REMIND
-                });
-            }
-        });
+        if(this.state.selectedTimeRange !== 'custom'){
+            this.handleSubmit(submitObj);
+        }else{
+            this.refs.validation.forceValidate(['starttime'],(valid) => {
+                if(valid){
+                    this.handleSubmit(submitObj);
+                }else {
+                    this.setState({
+                        selectedAlertTimeRange: TIME_TYPE_CONSTS.NOT_REMIND
+                    });
+                }
+            });
+        }
+        
     },
 
     handleSave: function(e) {
