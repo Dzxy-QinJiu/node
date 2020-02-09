@@ -161,7 +161,10 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
         this.curClueList = this.processForList(list);
         this.customersSize = data ? data.total : 0;
         //把线索详情中电话，邮箱，微信，qq里的空值删掉
-        _.forEach(this.curClueList, (clueItem) => {
+        _.forEach(this.curClueList, (clueItem,index) => {
+            if(index === 0){
+                clueItem.name = '';
+            }
             if (_.isArray(clueItem.contacts) && clueItem.contacts.length) {
                 _.forEach(clueItem.contacts, (contactItem) => {
                     _.forEach(clueContactType, (item) => {

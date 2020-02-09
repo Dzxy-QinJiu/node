@@ -347,6 +347,7 @@ class ClueCustomer extends React.Component {
         //在列表中删除线索
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
         if (filterAllotNoTraced) {
+            this.handleSelectedClue(item);
             //需要在列表中删除
             clueCustomerAction.deleteClueById(item);
         }
@@ -1199,6 +1200,7 @@ class ClueCustomer extends React.Component {
                     });
                     //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
                     setTimeout(() => {
+                        this.handleSelectedClue(item);
                         clueCustomerAction.afterAddClueTrace(item);
                     },FLOW_FLY_TIME);
                 }
@@ -1359,6 +1361,7 @@ class ClueCustomer extends React.Component {
                 }
                 setTimeout(() => {
                     _.isFunction(callback) && callback(updateValue);
+                    this.handleSelectedClue(item);
                     clueCustomerAction.deleteClueById(item);
                     //标记为有效的时候，在其他类型上加上相应的数字
                     clueCustomerAction.updateClueTabNum(item.status);
@@ -1479,6 +1482,7 @@ class ClueCustomer extends React.Component {
                     });
                     _.isFunction(callback) && callback(updateAvailability);
                     setTimeout(() => {
+                        this.handleSelectedClue(item);
                         clueCustomerAction.deleteClueById(item);
                         subtracteGlobalClue(item);
                         clueCustomerAction.updateClueTabNum('invalidClue');
@@ -1620,6 +1624,7 @@ class ClueCustomer extends React.Component {
             if (errorMsg) {
                 message.error(errorMsg);
             } else {
+                this.handleSelectedClue(curDeleteClue);
                 subtracteGlobalClue(curDeleteClue);
             }
         });
@@ -2130,7 +2135,14 @@ class ClueCustomer extends React.Component {
     isWillTraceStatusTabActive = () => {
         var clueCustomerTypeFilter = this.getFilterStatus();
         return clueCustomerTypeFilter.status === SELECT_TYPE.WILL_TRACE;
-    }
+    };
+    //不同类别处理完线索后，处理页面上以选中线索的数组
+    handleSelectedClue = (item) => {
+        var selectedClueList = _.filter(this.state.selectedClues, selectItem => selectItem.id !== item.id);
+        this.setState({
+            selectedClues: selectedClueList
+        });
+    };
     //单个及批量修改跟进人完成后的处理
     afterHandleAssignSalesBatch = (feedbackObj,submitObj,item) => {
         let clue_id = _.get(submitObj,'customer_id','');//线索的id，可能是一个，也可能是多个
@@ -2153,6 +2165,7 @@ class ClueCustomer extends React.Component {
                     //增加动态效果
                     this.flyClueWilltrace(item,DIFFREF.ASSIGN);
                     setTimeout(() => {
+                        this.handleSelectedClue(item);
                         clueCustomerAction.afterAssignSales(clue_id);
                     }, FLOW_FLY_TIME);
                 }
@@ -2804,6 +2817,7 @@ class ClueCustomer extends React.Component {
         clueCustomerAction.releaseClue(clue.id, () => {
             this.setState({isReleasingCustomer: false});
             clueCustomerAction.afterReleaseClue(clue.id);
+            this.handleSelectedClue(clue);
             subtracteGlobalClue(clue);
         }, errorMsg => {
             this.setState({isReleasingCustomer: false});
@@ -2882,6 +2896,7 @@ class ClueCustomer extends React.Component {
         if(this.isWillDistributeStatusTabActive() || this.isWillTraceStatusTabActive()){
             this.flyClueHastrace(this.state.curClue,DIFFREF.TRACE);
             setTimeout(() => {
+                this.handleSelectedClue(this.state.curClue);
                 clueCustomerAction.afterAddClueTrace(this.state.curClue);
                 clueCustomerAction.updateCustomerLastContact(traceObj);
             },FLOW_FLY_TIME);
