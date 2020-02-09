@@ -59,7 +59,7 @@ class Contacts extends React.Component {
         if (nextProps.isMerge || nextProps.curCustomer && nextProps.curCustomer.id !== this.props.curCustomer.id) {
             this.setState({
                 curCustomer: nextProps.curCustomer,
-                layoutHeight: this.getLayoutHeight()
+                layoutHeight: getDetailLayoutHeight()
             });
             setTimeout(() => {
                 ContactAction.setInitData();

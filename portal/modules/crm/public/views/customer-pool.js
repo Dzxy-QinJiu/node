@@ -354,7 +354,6 @@ class CustomerPool extends React.Component {
             if (curCustomer) {
                 phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                     customer_params: {
-                        currentId: this.state.currentId,
                         curCustomer: {...curCustomer, customer_type: CRM_VIEW_TYPES.CRM_POOL},
                         hideRightPanel: this.colseRightPanel,
                         disableEdit: true,//是否是客户回收站中打开的客户详情(禁止编辑、添加客户信息)

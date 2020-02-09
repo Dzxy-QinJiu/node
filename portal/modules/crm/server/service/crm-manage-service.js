@@ -13,8 +13,10 @@ var crmRestApis = {
     list: '/rest/customer/v2/customer/all',
     //我可以查看的客户列表（已分配销售的客户）
     // query: '/rest/customer/v2/customer/range',
-    //获取所有的客户列表（包括：未分配给销售的客户）
+    //获取所有的客户列表（包括：未分配给销售的客户）全量信息
     managerQuery: '/rest/customer/v3/customer/range/:type/:page_size/:page_num/:sort_field/:sort_order',
+    //获取所有的客户列表（精简信息）
+    managerQuerySimple: '/rest/customer/v3/customer/range/simple/:type/:page_size/:page_num/:sort_field/:sort_order',
     //获取回收站中的客户列表
     getRecycleBinCustomers: '/rest/customer/v3/customer_bak/range/customer_bak/:type/:page_size',
     //恢复回收站中的客户
@@ -330,6 +332,7 @@ exports.queryCustomer = function(req, res) {
     } else if (id || customer_clue_id) { // 根据客户的id,或者线索的id查询客户详情
         let type = req.body.hasManageAuth ? 'manager' : 'user';
         //.replace(':page_num',req.params.pageNum)改为图数据库后翻页需要
+        //由于精简方式查询信息不完整， 所以这里按全量方式查询客户详情
         url = crmRestApis.managerQuery.replace(':type', type).replace(':page_size', req.params.pageSize)
             .replace(':page_num',req.params.pageNum)
             .replace(':sort_field', req.params.sortField)
@@ -341,7 +344,9 @@ exports.queryCustomer = function(req, res) {
         }
     } else { // 客户列表
         let type = req.body.hasManageAuth ? 'manager' : 'user';
-        url = crmRestApis.managerQuery.replace(':type', type).replace(':page_size', req.params.pageSize)
+        //判断是否获取精简客户列表信息（simple）
+        let managerQueryUrl = req.body.getSimpleCrm ? crmRestApis.managerQuerySimple : crmRestApis.managerQuery;
+        url = managerQueryUrl.replace(':type', type).replace(':page_size', req.params.pageSize)
             .replace(':page_num',req.params.pageNum).replace(':sort_field', req.params.sortField)
             .replace(':sort_order',req.params.sortOrder);
         let query = req.body.queryObj ? JSON.parse(req.body.queryObj) : {};
