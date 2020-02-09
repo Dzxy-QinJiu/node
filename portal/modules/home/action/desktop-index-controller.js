@@ -55,7 +55,8 @@ exports.home = function(req, res) {
         productsIdMap: JSON.stringify({
             cash: global.config.cashClientId,
             caller: global.config.callerClientId,
-        })
+        }),
+        ssoUrl: global.config.ssoUrl
     });
 };
 
