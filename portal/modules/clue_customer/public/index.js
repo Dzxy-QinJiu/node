@@ -2136,7 +2136,7 @@ class ClueCustomer extends React.Component {
         var clueCustomerTypeFilter = this.getFilterStatus();
         return clueCustomerTypeFilter.status === SELECT_TYPE.WILL_TRACE;
     };
-    //不同类别处理完线索后，处理页面上以选中线索的数组
+    //不同类别处理完线索后，处理页面上已选中线索的数组
     handleSelectedClue = (item) => {
         var selectedClueList = _.filter(this.state.selectedClues, selectItem => selectItem.id !== item.id);
         this.setState({
