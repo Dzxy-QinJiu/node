@@ -3975,6 +3975,8 @@ var en_US = {
     'versions.between.fifty.one.and.one.hundred.fifty': '51-150',//51-150人
     'versions.more.than.one.hundred.fifty': 'more than 150',//大于150人
     'versions.apply.try.enterprise': 'Apply try enterprise',//申请企业试用
+    'versions.company.trail': 'Company trail',//企业试用
+    'versions.personal.trail': 'Personal trail',//个人试用
     /*版本信息 --- end */
 
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/
