@@ -283,11 +283,11 @@ class ClueRightPanel extends React.Component {
                     isRemoveClue: {},
                 });
                 var curClue = this.state.curClue;
-                subtracteGlobalClue(curClue, (flag) => {
-                    if(flag){
-                        clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
-                    }
-                });
+                // subtracteGlobalClue(curClue, (flag) => {
+                //     if(flag){
+                //         clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
+                //     }
+                // });
                 _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel(e);
             }
         });

@@ -511,11 +511,11 @@ class ClueDetailOverview extends React.Component {
 
                     if (_.isFunction(successFunc)) successFunc();
                     if (submitObj.user_id !== userData.getUserData().user_id) {
-                        subtracteGlobalClue(curClue, (flag) => {
-                            if(flag){
-                                clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
-                            }
-                        });
+                        // subtracteGlobalClue(curClue, (flag) => {
+                        //     if(flag){
+                        //         clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
+                        //     }
+                        // });
                     }
                     this.setState({
                         clickAssigenedBtn: false
@@ -912,7 +912,7 @@ class ClueDetailOverview extends React.Component {
                 myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
             }
             clueCustomerAction.afterReleaseClue(curClue.id);
-            subtracteGlobalClue(curClue);
+            // subtracteGlobalClue(curClue);
             //需要关闭面板
             _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel();
         }, errorMsg => {
@@ -972,7 +972,7 @@ class ClueDetailOverview extends React.Component {
                             type: 'other',
                             showAdd: false
                         };
-                        subtracteGlobalClue(item);
+                        // subtracteGlobalClue(item);
                         ClueTraceAction.addClueTraceWithoutAjax(newTrace);
                         this.props.updateClueProperty({
                             availability: updateAvailability

@@ -1136,11 +1136,11 @@ class MyWorkColumn extends React.Component {
         if (workListLength < 20 && workListLength < this.state.totalCount) {
             this.getMyWorkList();
         }
-        //如果是处理的线索，处理完后线索左边的数字要减一
-        var leadId = _.get(targetObj,'lead.id','');
-        if(leadId){
-            subtracteGlobalClue({id: leadId});
-        }
+        // //如果是处理的线索，处理完后线索左边的数字要减一
+        // var leadId = _.get(targetObj,'lead.id','');
+        // if(leadId){
+        //     subtracteGlobalClue({id: leadId});
+        // }
     }
 
 

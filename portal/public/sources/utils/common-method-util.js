@@ -977,7 +977,7 @@ exports.subtracteGlobalClue = function(clueItem,callback) {
         var unHandleClueLists = Oplate.unread['unhandleClueList'];
         var targetObj = _.find(unHandleClueLists,item => item.id === clueItem.id);
         if (targetObj){
-            Oplate.unread['unhandleClue'] -= 1;
+            // Oplate.unread['unhandleClue'] -= 1;
             Oplate.unread['unhandleClueList'] = _.filter(unHandleClueLists,item => item.id !== clueItem.id);
             if (timeoutFunc) {
                 clearTimeout(timeoutFunc);
