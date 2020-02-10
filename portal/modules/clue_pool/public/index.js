@@ -609,6 +609,13 @@ class ClueExtract extends React.Component {
         return !this.state.isLoading &&
             this.state.cluePoolList.length >= 20 && !this.state.listenScrollBottom;
     };
+    //不同类别处理完线索后，处理页面上已选中线索的数组
+    filterRemovedClueInSelectedList = (item) => {
+        var selectedClueList = _.filter(this.state.selectedClues, selectItem => selectItem.id !== item.id);
+        this.setState({
+            selectedClues: selectedClueList
+        });
+    };
 
     // 单个提取线索
     handleExtractClueAssignToSale(record, flag, isDetailExtract) {
@@ -639,6 +646,7 @@ class ClueExtract extends React.Component {
                 });
                 if (result.code === 0) { // 提取成功
                     cluePoolAction.updateCluePoolList(id);
+                    this.filterRemovedClueInSelectedList(record);
                     SetLocalSalesClickCount(salesMan);
                     message.success(Intl.get('clue.extract.success', '提取成功'));
                     if (isDetailExtract) { // 详情中，提取成功后，关闭右侧面板
