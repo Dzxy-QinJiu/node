@@ -525,6 +525,7 @@ class RecentLoginUsers extends React.Component {
     };
     renderRecentLoginHeader(){
         let appOptions = this.getAppOptions();
+        let memberList = this.state.memberList.data; // 成员数据
         return (
             <div className="recent_login_header-wrap">
                 <ButtonZones>
@@ -545,24 +546,29 @@ class RecentLoginUsers extends React.Component {
                             </DatePicker>
                         </div>
                         {/**
-                         * 团队筛选框
+                         * 团队筛选框 由于teamlists团队数据中，包括全部团队数据，所以需要判断是否大于>2
                          * */}
-                        <div className="inline-block recent-login-filter-type-select btn-item">
-                            <SelectFullWidth
-                                value={this.state.team_ids}
-                                onChange={this.onTeamChange.bind(this)}
-                            >
-                                {
-                                    _.map(this.state.teamlists, (teamItem, index) => {
-                                        return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
-                                    })
-                                }
-                            </SelectFullWidth>
-                        </div>
+                        {
+                            this.state.teamlists.length > 2 ? (
+                                <div className="inline-block recent-login-filter-type-select btn-item">
+                                    <SelectFullWidth
+                                        value={this.state.team_ids}
+                                        onChange={this.onTeamChange.bind(this)}
+                                    >
+                                        {
+                                            _.map(this.state.teamlists, (teamItem, index) => {
+                                                return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
+                                            })
+                                        }
+                                    </SelectFullWidth>
+                                </div>
+                            ) : null
+                        }
+
                         {/**
                          * 成员筛选框
                          * */}
-                        {this.renderTeamMembersSelect()}
+                        {memberList.length > 1 ? this.renderTeamMembersSelect() : null}
                         {/**
                          * 应用筛选框
                          * */}
