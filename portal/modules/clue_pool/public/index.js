@@ -610,7 +610,7 @@ class ClueExtract extends React.Component {
             this.state.cluePoolList.length >= 20 && !this.state.listenScrollBottom;
     };
     //不同类别处理完线索后，处理页面上已选中线索的数组
-    handleSelectedClue = (item) => {
+    filterremovedClueInSelectedList = (item) => {
         var selectedClueList = _.filter(this.state.selectedClues, selectItem => selectItem.id !== item.id);
         this.setState({
             selectedClues: selectedClueList
@@ -646,7 +646,7 @@ class ClueExtract extends React.Component {
                 });
                 if (result.code === 0) { // 提取成功
                     cluePoolAction.updateCluePoolList(id);
-                    this.handleSelectedClue(record);
+                    this.filterremovedClueInSelectedList(record);
                     SetLocalSalesClickCount(salesMan);
                     message.success(Intl.get('clue.extract.success', '提取成功'));
                     if (isDetailExtract) { // 详情中，提取成功后，关闭右侧面板
