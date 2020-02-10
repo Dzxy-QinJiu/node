@@ -77,8 +77,16 @@ class UserInfo extends React.Component{
         this.getWechatIsBind();
         this.getSendTime();
         getOrganizationInfo().then( (result) => {
+            let versionName = _.get(result,'version.type');
+            if(checkCurrentVersionType().trial){
+                if(checkCurrentVersion().personal){
+                    versionName = Intl.get('versions.personal.trail','个人试用');
+                }else if (checkCurrentVersion().company){
+                    versionName = Intl.get('versions.company.trail','企业试用');
+                }
+            }
             this.setState({
-                versionName: _.get(result, 'version.type'),
+                versionName,
                 endTime: _.get(result, 'end_time')
             });
         });
@@ -448,7 +456,7 @@ class UserInfo extends React.Component{
                             className="user-version-upgrade"
                             data-tracename="点击升级为企业版按钮"
                         >
-                            {Intl.get('common.upgrade', '升级')}
+                            {Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
                         </Button>
                     </Popover>
                 );
