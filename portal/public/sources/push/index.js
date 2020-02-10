@@ -14,6 +14,7 @@ var socketEmitter = require('../../../public/sources/utils/emitters').socketEmit
 var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsgEmitter;
 var phoneEmitter = require('../../../public/sources/utils/emitters').phoneEmitter;
 var clueEmitter = require('../../../public/sources/utils/emitters').clueEmitter;
+var userDetailEmitter = require('../../../public/sources/utils/emitters').userDetailEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 import {
@@ -611,10 +612,12 @@ function applyUpgradeListener(data) {
     if (_.isObject(data)) {
         const title = Intl.get('versions.apply.try.enterprise','申请企业试用');
         const lead = _.get(data, 'lead.name', '');
+        const leadLink = '<a href="javascript:void(0)" onclick="handleLeadClickCallback(\'' + _.get(data, 'lead.id', '') + '\')">' + lead + '</a>';
         const user = _.get(data, 'lead.app_user_info[0].name', '');
+        const userLink = '<a href="javascript:void(0)" onclick="handleUserClickCallback(\'' + _.get(data, 'lead.app_user_info[0].id', '') + '\')">' + user + '</a>';
         const version = _.get(data, 'version_change_info.new_version', '');
         const time = getTimeStr(_.get(data.version_change_info,'apply_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        const tipContent = time + ' ，' + Intl.get('common.lead.apply.try','用户{user}（线索：{lead}）申请试用',{user,lead}) + version;
+        const tipContent = time + ' ，' + Intl.get('common.lead.apply.try','用户{user}（线索：{lead}）申请试用',{user: userLink,lead: leadLink}) + version;
         if (canPopDesktop()) {
             //桌面通知的展示
             showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
@@ -655,6 +658,12 @@ function applyUpgradeCompleteListener(data) {
         }
     }
 }
+//用户名可点击
+window.handleUserClickCallback = function(user_id){
+    userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL,{
+        userId: user_id
+    });
+};
 //线索名可点击
 window.handleLeadClickCallback = function(lead_id) {
     phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
