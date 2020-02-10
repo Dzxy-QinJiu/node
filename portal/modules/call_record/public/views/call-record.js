@@ -11,6 +11,7 @@ import { AntcTable } from 'antc';
 const Option = Select.Option;
 import { AntcDatePicker as DatePicker } from 'antc';
 import { FormattedMessage, defineMessages, injectIntl } from 'react-intl';
+import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import CallAddCustomerForm from './call-add-customer-form'; // 添加客户
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import userData from 'PUB_DIR/sources/user-data';
@@ -107,12 +108,15 @@ class CallRecord extends React.Component {
             showRightPanel: false,
             seletedRecordId: '',//当前点击的记录id
             showTextEdit: {}, //展示跟进记录的编辑框
+            isShowEffectiveTimeAndCount: false, // 是否展示有效通话时长和有效接通数
         };
     }
 
     componentDidMount() {
         $('body').css('overflow', 'hidden');
         CallRecordStore.listen(this.onStoreChange);
+        // 获取组织电话系统配置
+        this.getCallSystemConfig();
         this.getCallListByAjax();
         this.getCallRecommendList();
         this.changeTableHeight();
@@ -890,6 +894,14 @@ class CallRecord extends React.Component {
         //隐藏播放窗口
         $('.audio-play-container').animate({ height: '0' }).css('border', '0');
     };
+    
+    // 获取组织电话系统配置
+    getCallSystemConfig() {
+        getCallSystemConfig().then(config => {
+            let isShowEffectiveTimeAndCount = _.get(config,'filter_114',false) || _.get(config,'filter_customerservice_number',false);
+            this.setState({ isShowEffectiveTimeAndCount });
+        });
+    }
 
     render() {
         return (<RightContent>
@@ -964,6 +976,7 @@ class CallRecord extends React.Component {
                     >
                         <CallRecordAnalyis
                             closeCallAnalysisPanel={this.closeCallAnalysisPanel}
+                            isShowEffectiveTimeAndCount={this.state.isShowEffectiveTimeAndCount}
                         />
                     </RightPanel>
                 ) : null}
