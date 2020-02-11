@@ -520,7 +520,14 @@ exports.getOrganization = function(req, res) {
         res.status(500).json(errorObj && errorObj.message);
     });
 };
-
+// 检查电话是否已经被注册过
+exports.checkPhoneIsRegisted = function(req, res) {
+    DesktopLoginService.checkPhoneIsRegisted(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
+};
 //获取短信验证码
 exports.getVertificationCode = function(req, res) {
     DesktopLoginService.getVertificationCode(req, res).on('success', function(data) {

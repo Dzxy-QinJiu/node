@@ -373,7 +373,6 @@ var en_US = {
     'register.code.effective.time': '{second} seconds later, try again.',//{second}秒后重试
     'register.get.code.fill.in': 'Please get SMS verification code',//请获取验证码
     'register.error.tip': 'Failed to regist',//注册失败
-    'register.phon.has.registed': 'The phone number has been registered',//该手机号已被注册
     'register.code.validate.error': 'Verification error of SMS verification code',//短信验证码验证错误
     'register.phone.code': 'SMS verification code',//短信验证码
     'register.company.nickname': 'Company nickname',//公司名称
@@ -389,6 +388,7 @@ var en_US = {
     'register.to.login.tip': 'Existing account, go to {login}',//已有账号，去{login}
     'register.phone.has.registed': 'The mobile number has been registered',//该手机号已被注册
     'register.privacy.policy': 'Privacy policy',//隐私政策
+    'register.phone.has.registed.to.login': 'Mobile number has been registered, go to {login}',//该手机号已被注册, 去{login}
 
     //首页
     'home.page': 'Home page',//首页

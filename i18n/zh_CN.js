@@ -380,7 +380,6 @@ var zh_CN = {
     'register.code.effective.time': '{second}秒后重试',
     'register.get.code.fill.in': '请获取验证码',
     'register.error.tip': '注册失败',
-    'register.phon.has.registed': '该手机号已被注册',
     'register.code.validate.error': '短信验证码验证错误',
     'register.phone.code': '短信验证码',
     'register.company.nickname': '公司名称',
@@ -396,6 +395,7 @@ var zh_CN = {
     'register.to.login.tip': '已有账号，去{login}',
     'register.phone.has.registed': '该手机号已被注册',
     'register.privacy.policy': '隐私政策',
+    'register.phone.has.registed.to.login': '该手机号已被注册, 去 {login}',
 
     //首页
     'menu.home.page': '首页',

@@ -109,7 +109,14 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
-    }, {
+    }, {// 检查电话是否已经被注册过
+        'method': 'get',
+        'path': '/phone/registed/check',
+        'handler': 'checkPhoneIsRegisted',
+        'passport': {
+            'needLogin': false
+        }
+    },{
         'method': 'get',
         'path': '/phone/validate_code',
         'handler': 'getVertificationCode',
