@@ -18,7 +18,7 @@ var ClueAnalysisAction = require('../../action/clue-analysis-action');
 import userData from 'PUB_DIR/sources/user-data';
 import { DatePicker } from 'antd';
 const { RangePicker } = DatePicker;
-import {checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {checkVersionAndType,isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 let otherFilterArray = [
     {
@@ -49,7 +49,7 @@ class ClueFilterPanel extends React.Component {
             customCommonFilter: [],
             ...clueFilterStore.getState(),
         };
-        if(isCurtao()){//在客套域下，才可以筛选申请试用的线索
+        if(isKetaoOrganizaion()){//在客套组织下，才可以筛选申请试用的线索
             otherFilterArray.push({
                 name: Intl.get('crm.filter.lead.apply.try.enterprise','申请企业试用的线索'),
                 value: APPLY_TRY_LEAD
