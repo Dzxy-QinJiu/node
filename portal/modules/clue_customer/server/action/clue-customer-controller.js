@@ -442,7 +442,7 @@ exports.getSimilarCustomerLists = function(req, res) {
 exports.getRecommendClueLists = function(req, res) {
     clueCustomerService.getRecommendClueLists(req, res)
         .on('success', function(data) {
-            var result = {list: [],total: _.get(data,'total',0)};
+            var result = {list: [],total: _.get(data,'total',0), listId: _.get(data,'id','')};
             _.forEach(_.get(data,'list',[]), item => {
                 result.list.push({id: item.id,
                     name: item.name,
