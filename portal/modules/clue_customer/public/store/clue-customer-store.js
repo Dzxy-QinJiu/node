@@ -76,6 +76,7 @@ ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
         this.isLoadingRecommendClue = false;
         this.getRecommendClueErrMsg = '';
         this.recommendClueLists = _.get(result,'data.list');
+        this.recommendClueListId = _.get(result,'data.listId');
         if(_.get(result,'data.total') > 20){
             this.hasExtraRecommendList = true;
             this.sortvalues = _.get(_.last(_.get(result,'data.list')) ,'sortvalues');
@@ -601,6 +602,7 @@ ClueCustomerStore.prototype.initialRecommendClues = function() {
     this.recommendClueLists = [];
     this.hasExtraRecommendList = false;
     this.sortvalues = [];
+    this.recommendClueListId = '';
 };
 
 //添加跟进记录时，修改客户最新的跟进记录时，更新列表中的最后联系

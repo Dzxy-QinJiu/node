@@ -316,6 +316,7 @@ class ExtractClues extends React.Component {
 
     // 批量提取，发请求前的参数处理
     handleBeforeSubmitChangeSales = (itemId) => {
+        let list_id = this.state.recommendClueListId;
         if(isCommonSalesOrPersonnalVersion()) {// 普通销售或者个人版
             let saleLoginData = userData.getUserData();
             let submitObj = {
@@ -324,6 +325,9 @@ class ExtractClues extends React.Component {
                 'sales_team_id': saleLoginData.team_id,
                 'sales_team': saleLoginData.team_name,
             };
+            if(list_id) {
+                submitObj.list_id = list_id;
+            }
             if(_.isArray(itemId)) {
                 submitObj.companyIds = itemId;
             }
@@ -346,6 +350,9 @@ class ExtractClues extends React.Component {
                     sales_team = _.trim(nameArray[1]) || '';//团队的名字
                 }
                 let submitObj = {user_id, user_name, sales_team_id, sales_team};
+                if(list_id) {
+                    submitObj.list_id = list_id;
+                }
                 if (itemId){
                     submitObj.companyIds = itemId;
                 }
