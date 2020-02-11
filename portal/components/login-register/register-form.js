@@ -62,6 +62,7 @@ class RegisterForm extends React.Component {
         const form = this.props.form;
         form.validateFields((err, values) => {
             if (err) return;
+            if (this.state.phoneIsRegisted) return;
             let formData = {
                 phone: values.phone,
                 code: values.code,
