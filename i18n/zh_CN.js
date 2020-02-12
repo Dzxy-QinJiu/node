@@ -309,7 +309,7 @@ var zh_CN = {
     'common.terminals.type': '终端类型',
     'common.all.terminals': '所有终端',
     'common.terminals': '终端',
-
+    'common.period': '。',
     //公共部分--end
     
     'login.login': '登录',
@@ -2907,7 +2907,8 @@ var zh_CN = {
     'clue.customer.search.by.name': '根据线索名搜索',
     'clue.customer.fillin.clue.name': '请填写线索名称',
     'clue.customer.register.user': '注册用户',
-    'clue.customer.phone.used.by.clue': '该电话已被其他线索使用，',
+    'clue.customer.phone.used.by.clue': '该电话已被其他线索使用，查看',
+    'clue.customer.phone.still.add.phone': ' 仍用此电话？',
     'clue.customer,add,schedule,success': '联系计划已添加',
     'clue,customer.add.schedule.error': '联系计划添加失败',
     'batch.failed.add.schedule': '{customerName}添加联系计划失败',
