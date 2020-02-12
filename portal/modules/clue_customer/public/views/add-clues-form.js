@@ -379,8 +379,18 @@ class ClueAddForm extends React.Component {
                                 //如果返回的列表长度不为0，渲染某电话被其他线索占用的警告
                                 const renderWarningMessage = <span>
                                     <span>{Intl.get('clue.customer.phone.used.by.clue','该电话已被其他线索使用，')}</span>
-                                    <a href="javascript:void(0)" onClick={this.props.showRightPanel.bind(this, lead)} className="handle-btn-item" data-tracename="点击线索名查看线索详情">
+                                    <a href="javascript:void(0)" 
+                                        onClick={this.props.showRightPanel.bind(this, lead)} 
+                                        className="handle-btn-item" 
+                                        data-tracename="点击线索名查看线索详情">
                                         {_.get(lead, 'name')}
+                                    </a>
+                                    <span>{Intl.get('common.period','。')}</span>
+                                    <a href="javascript:void(0)" 
+                                        onClick={this.handleDuplicatePhoneMsg.bind(this,key,false,'')} 
+                                        className="handle-btn-item" 
+                                        data-tracename="隐藏电话已被其他线索使用的警告">
+                                        {Intl.get('clue.customer.phone.still.add.phone',' 仍用此电话？')}
                                     </a>
                                 </span>;
                                 this.handleDuplicatePhoneMsg(key, true, renderWarningMessage);
