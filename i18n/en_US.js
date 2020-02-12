@@ -389,6 +389,7 @@ var en_US = {
     'register.phone.has.registed': 'The mobile number has been registered',//该手机号已被注册
     'register.privacy.policy': 'Privacy policy',//隐私政策
     'register.phone.has.registed.to.login': 'Mobile number has been registered, go to {login}',//该手机号已被注册, 去{login}
+    'register.password.strength.tip': 'Password strength is too weak, please change the password',//密码强度太弱，请更换密码
 
     //首页
     'home.page': 'Home page',//首页

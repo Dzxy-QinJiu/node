@@ -7,9 +7,9 @@ require('./css/register.less');
 const PropTypes = require('prop-types');
 import Trace from '../../lib/trace';
 import {commonPhoneRegex} from '../../public/sources/utils/validate-util';
-import { passwordRegex } from 'CMP_DIR/password-strength-bar';
+import { passwordRegex, PassStrengthBar, getPassStrenth} from 'CMP_DIR/password-strength-bar';
 import crypto from 'crypto';
-import {Form, Input, Icon, Button} from 'antd';
+import {Form, Input, Icon, Button, Col} from 'antd';
 import {TextField} from '@material-ui/core';
 import classNames from 'classnames';
 const FormItem = Form.Item;
@@ -32,6 +32,8 @@ class RegisterForm extends React.Component {
             phoneIsPassValid: false,//手机号是否通过验证（手机号规则验证和是否已被注册过的验证）
             phoneIsRegisted: false,//手机号是否被注册过
             isCheckingRegistedPhone: '',//记录正在验证的是否被注册过的电话
+            passBarShow: false,//密码强度条是否展示
+            passStrength: '',//密码强度
             formData: {
                 phone: '',//手机号
                 code: '',//短信验证码
@@ -258,11 +260,31 @@ class RegisterForm extends React.Component {
     }
     checkPass = (rule, value, callback) => {
         if (value && value.match(passwordRegex)) {
-            callback();
+            let rePassWord = this.props.form.getFieldValue('rePwd');
+            //密码强度的校验
+            //获取密码强度及是否展示
+            var passStrengthObj = getPassStrenth(value);
+            this.setState({
+                passBarShow: passStrengthObj.passBarShow,
+                passStrength: passStrengthObj.passStrength
+            });
+            // 不允许设置弱密码
+            if (passStrengthObj.passStrength === 'L') {
+                callback(Intl.get('register.password.strength.tip', '密码强度太弱，请更换密码'));
+            } else if (rePassWord && value !== rePassWord ) {// 输入确认密码后再判断是否一致
+                callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
+            } else {
+                callback();
+            }
         } else {
+            this.setState({
+                passBarShow: false,
+                passStrength: ''
+            });
             callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
         }
     };
+   
     checkPass2 = (rule, value, callback) => {
         if (value && value !== this.props.form.getFieldValue('pwd')) {
             callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
@@ -292,8 +314,7 @@ class RegisterForm extends React.Component {
                 <Input type="password" className='password-hidden-input' name="pwd"/>
                 <FormItem>
                     {getFieldDecorator('phone', {
-                        rules: [{validator: this.validatePhone}],
-                        validateTrigger: 'onBlur'
+                        rules: [{validator: this.validatePhone}]
                     })(
                         <TextField
                             required
@@ -319,8 +340,7 @@ class RegisterForm extends React.Component {
                 </FormItem>
                 <FormItem>
                     {getFieldDecorator('code', {
-                        rules: [{validator: this.validateCode.bind(this)}],
-                        validateTrigger: 'onBlur'
+                        rules: [{validator: this.validateCode.bind(this)}]
                     })(
                         <TextField
                             required
@@ -343,10 +363,7 @@ class RegisterForm extends React.Component {
                 </FormItem>
                 <FormItem>
                     {getFieldDecorator('pwd', {
-                        rules: [{required: true, message: Intl.get('common.input.password', '请输入密码')}, {
-                            validator: this.checkPass
-                        }],
-                        validateTrigger: 'onBlur'
+                        rules: [{validator: this.checkPass.bind(this)}]
                     })(
                         <TextField
                             required
@@ -360,14 +377,17 @@ class RegisterForm extends React.Component {
                         />
                     )}
                 </FormItem>
+                <Col span="24" className='password-strength-wrap'>
+                    {this.state.passBarShow ?
+                        (<PassStrengthBar passStrength={this.state.passStrength}/>) : null}
+                </Col>
                 <FormItem>
                     {getFieldDecorator('rePwd', {
                         rules: [{
                             required: true, message: Intl.get('common.input.confirm.password', '请输入确认密码')
                         }, {
                             validator: this.checkPass2
-                        }],
-                        validateTrigger: 'onBlur'
+                        }]
                     })(
                         <TextField
                             required

@@ -396,6 +396,7 @@ var zh_CN = {
     'register.phone.has.registed': '该手机号已被注册',
     'register.privacy.policy': '隐私政策',
     'register.phone.has.registed.to.login': '该手机号已被注册, 去 {login}',
+    'register.password.strength.tip': '密码强度太弱，请更换密码',
 
     //首页
     'menu.home.page': '首页',
