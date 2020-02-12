@@ -77,6 +77,10 @@ export function getCallRecordChart(paramObj = {}) {
                     callInfo.average_time = _.toInteger(callInfo.average_time);
                 });
 
+                //合计列
+                const sumRow = getSumRow(callInfoList);
+                callInfoList.push(sumRow);
+
                 return callInfoList;
             } else {
                 return [];
@@ -255,6 +259,25 @@ export function getCallRecordChart(paramObj = {}) {
         }
 
         return columns;
+    }
+
+    //获取合计列
+    function getSumRow(data) {
+        const columns = getColumns();
+        let sumRow = {
+            name: Intl.get('common.summation', '合计')
+        };
+
+        _.each(columns, column => {
+            const field = column.dataIndex;
+
+            if (field !== 'name' && !_.endsWith(field, '_rate')) {
+                const sum = _.sumBy(data, field);
+                sumRow[field] = sum;
+            }
+        });
+
+        return sumRow;
     }
 
     function refreshData(analysisInstance, chartIndex) {
