@@ -34,6 +34,8 @@ var urls = {
     loginByQRCode: '/auth2/authc/scan_code/login',
     //根据公司标识获取公司
     getCompanyByName: '/rest/open/resource/organization',
+    //检查手机号是否被注册过
+    checkPhoneIsRegisted: '/rest/open/resource/invite/check',
     //获取短信验证码
     getVertificationCode: '/rest/open/resource/verificationcode',
     //注册个人账号
@@ -404,6 +406,17 @@ exports.getCompanyByName = function(req, res) {
             res: res,
         }, req.query);
 };
+
+// 检查电话是否已经被注册过
+exports.checkPhoneIsRegisted = function(req, res) {
+    return restUtil.baseRest.get(
+        {
+            url: urls.checkPhoneIsRegisted,
+            req: req,
+            res: res,
+        }, req.query);
+};
+
 //获取短信验证码
 exports.getVertificationCode = function(req, res) {
     return restUtil.baseRest.get(
