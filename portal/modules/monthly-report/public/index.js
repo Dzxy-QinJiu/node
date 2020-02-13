@@ -3,6 +3,7 @@ import { ORGANIZATION_TYPE } from 'PUB_DIR/sources/utils/consts';
 var React = require('react');
 require('./style.less');
 import {AntcAnalysis} from 'antc';
+import workflowChart from 'MOD_DIR/analysis/public/charts/workflow';
 import {Row, Col, Select, DatePicker} from 'antd';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import ajax from 'ant-ajax';
@@ -315,12 +316,18 @@ class MonthlyReport extends React.Component {
     };
 
     getCharts = () => {
-
         let conditions = [{
             name: 'statistics_type',
             value: 'user'
         }];
+
         let charts = [];
+
+        charts.push(workflowChart.getOffdutyChart({
+            type: 'personal_leave',
+            title: '请假统计'
+        }));
+
         // 开通呼叫中心
         if(commonMethodUtil.isOpenCaller()) {
             charts.push(
