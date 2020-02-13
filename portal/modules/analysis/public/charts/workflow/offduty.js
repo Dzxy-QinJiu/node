@@ -32,6 +32,60 @@ export function getOffdutyChart(paramObj) {
             width: '10%',
         }];
 
+        if (type === 'personal_leave') {
+            columns.push({
+                title: '请假时间',
+                dataIndex: 'nickname',
+                width: '10%',
+            }, {
+                title: '请假天数',
+                dataIndex: 'offduty_time',
+                width: '10%',
+            }, {
+                title: '请假类型',
+                dataIndex: 'leave_type',
+                width: '10%',
+            }, {
+                title: '请假事由',
+                dataIndex: 'reason',
+                width: '10%',
+            });
+        }
+
+        //出差
+        if (type === 'customer_visit') {
+            columns.push({
+                title: '出差时间',
+                dataIndex: 'nickname',
+                width: '10%',
+            }, {
+                title: '出差天数',
+                dataIndex: 'offduty_time',
+                width: '10%',
+            }, {
+                title: '出差地点',
+                dataIndex: 'address',
+                width: '10%',
+            });
+        }
+
+        //外出
+        if (type === 'businesstrip_awhile') {
+            columns.push({
+                title: '外出日期',
+                dataIndex: 'k',
+                width: '10%',
+            }, {
+                title: '外出时间段',
+                dataIndex: 'k',
+                width: '10%',
+            }, {
+                title: '外出地点',
+                dataIndex: 'address',
+                width: '10%',
+            });
+        }
+
         return columns;
     }
 }
