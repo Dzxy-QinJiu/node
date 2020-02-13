@@ -28,6 +28,7 @@ const UNREADCOUNT = [{//待分配或待跟进线索数的数据
         APPLY_APPROVE_TYPES.UNHANDLEMEMBERINIVTE,//成员申请的待我审批数
         APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,//拜访申请的待我审批数
         APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY,//舆情平台申请的待我审批数
+        APPLY_APPROVE_TYPES.UNHANDLEMEBUSINESSTRIPAWHILEAPPLY,//外出申请的待我审批数
     ],
     cls: 'apply_icon_container',
     style: 'applyApproveUnhandledStyle',

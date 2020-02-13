@@ -63,6 +63,7 @@ exports.notificationEmitter.APPLY_UPDATED_REPORT_SEND = 'applyUpdatedReportSend'
 exports.notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE = 'applyUpdatedDocumentWrite';
 exports.notificationEmitter.APPLY_UPDATED_VISIT = 'applyUpdatedVisit';
 exports.notificationEmitter.APPLY_UPDATED_DOMAIN = 'applyUpdatedDomain';
+exports.notificationEmitter.APPLY_UPDATED_BUSINESS_WHILE = 'applyUpdateBusinessWhile';
 //未处理的线索数量
 exports.notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT = 'showUnhandledClueCount';
 //更新待我处理的数据

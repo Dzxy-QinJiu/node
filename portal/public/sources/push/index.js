@@ -172,6 +172,10 @@ function applyApproveUnhandledListener(data) {
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_DOMAIN, data);
                 break;
+            case APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE:
+                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEBUSINESSTRIPAWHILEAPPLY, true);
+                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_BUSINESS_WHILE, data);
+                break;
         }
     }
 
@@ -1079,6 +1083,10 @@ function getMessageCount(callback) {
                 case 'my_domain_apply_management'://路由配置中路由的id
                     getUnapproveApplyLists(SELF_SETTING_FLOW.DOMAINAPPLY,APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY);//获取拜访申请的待我审批数
                     break;
+                case 'my_business_while_apply_management'://路由配置中路由的id
+                    getUnapproveApplyLists(APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE,APPLY_APPROVE_TYPES.UNHANDLEMEBUSINESSTRIPAWHILEAPPLY);//获取外出申请的待我审批数
+                    break;
+
             }
         });
     }

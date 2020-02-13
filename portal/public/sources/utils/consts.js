@@ -82,7 +82,9 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLEMEMBERINIVTE: 'unhandleMemberInivte', // 未处理的成员申请数量
     UNHANDLEMEVISISTAPPLY: 'unhandleVisitApply', // 未处理的拜访申请数量
     UNHANDLEMEDOMAINAPPLY: 'unhandleDomainApply', // 未处理的舆情平台申请数量
+    UNHANDLEMEBUSINESSTRIPAWHILEAPPLY: 'unhandleBusinesstripAwhileApply', // 未处理的外出申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
+    BUSINESSTRIPAWHILE: 'businesstrip_awhile',//外出申请
 };
 // 系统消息对应的通知类型
 export const SYSTEM_NOTICE_TYPES = {

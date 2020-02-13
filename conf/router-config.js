@@ -196,6 +196,13 @@ let routers = [
             //有这个权限，才显示入口图标
             showPrivileges: ['BUSINESS_TRIP_APPLY_APPROVE']
         }, {
+            id: 'MY_BUSINESS_WHILE_APPLY_MANAGEMENT',
+            name: 'apply.leave.while.application.work.flow',//申请
+            routePath: '/apply/business-while',
+            component: `${MODULE_PATH}business-while/public`,
+            //有这个权限，才显示入口图标
+            showPrivileges: ['MEMBER_REPORT_APPLY_APPROVE']
+        }, {
             id: 'LEAVE_APPLY_MANAGEMENT',
             name: 'leave.apply.leave.application',//请假申请
             routePath: '/apply/leave',

@@ -29,7 +29,10 @@ Oplate.unread = {
     //成员审批未读数
     unhandleMemberInivte: 0,
     //拜访审批未读数
-    unhandleVisitApply: 0
+    unhandleVisitApply: 0,
+    //外出申请的待审批数
+    unhandleBusinesstripAwhileApply: 0
+
 };
 
 Oplate.isCalling = false; //是否正在打电话，如果正在打电话，不可以继续打

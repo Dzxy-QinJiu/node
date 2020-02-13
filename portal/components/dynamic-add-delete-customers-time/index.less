@@ -1,0 +1,89 @@
+//动态添加、删除联系人及联系方式的组件样式
+.add-delete-customers-time{
+  overflow: hidden;
+  .contact-wrap{
+    overflow: hidden;
+    background: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    .add-apply-time{
+      .ant-calendar-picker {
+        width: 44%!important;
+        .ant-calendar-picker-icon{
+          display: none;
+        }
+      };
+      .ant-select{
+        width: 17%!important;
+        .ant-select-selection{
+          border-left: none;
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+
+      };
+      .apply-range{
+        float: left;
+        width: 12%;
+        text-align: center;
+        color:#ccc;
+      }
+    }
+    .customer-name-item{
+      margin-bottom: 13px;
+      //.ant-form-item-control-wrapper{
+      //  width: 90%;
+      //}
+      //.customer-name-item .ant-form-item-control-wrapper{
+      //  width: 75%;
+      //}
+      .iconfont.icon-delete.disabled{
+        color: transparent;
+      }
+    }
+
+    i.iconfont.icon-delete{
+      margin-right:10px;
+      color:#999;
+      position: absolute;
+      top:0;
+    }
+
+    .contact-way-buttons{
+      float: left;
+      color:#8EABC6;
+      font-size: 14px;
+      margin-left: 5px;
+      cursor: pointer;
+      .clue-minus-button{
+        float: left;
+      }
+      .clue-plus-button{
+        float: left;
+        margin-left:6px;
+      }
+    }
+  }
+  .contact-wrap:last-child{
+    margin-bottom: 0;
+  }
+  .add-customer{
+    background: #fff;
+    text-align: right;
+    color:#8EAAC5;
+    cursor: pointer;
+    padding-right: 40px;
+    font-size: 14px;
+    padding-bottom: 10px;
+  }
+  .form-item-label.visit-end-time{
+    .ant-form-item-control-wrapper{
+      overflow: hidden;
+      .ant-calendar-picker{
+        float: left;
+        width: 50%!important;
+      }
+    }
+    //float: left;
+  }
+}
