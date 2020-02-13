@@ -5,9 +5,9 @@ require('./css/forgot-password.less');
 var React = require('react');
 import { TextField } from '@material-ui/core';
 import { isPhone, commonPhoneRegex } from 'PUB_DIR/sources/utils/validate-util';
-import { passwordRegex } from 'CMP_DIR/password-strength-bar';
+import { passwordRegex, PassStrengthBar, getPassStrenth} from 'CMP_DIR/password-strength-bar';
 var crypto = require('crypto');
-import { Steps, Form } from 'antd';
+import { Steps, Form, Col } from 'antd';
 const Step = Steps.Step;
 const FormItem = Form.Item;
 const VIEWS = {
@@ -40,6 +40,8 @@ class ForgotPassword extends React.Component {
         step: 0,
         //凭证
         ticket: '',
+        passBarShow: false,//密码强度条是否展示
+        passStrength: '',//密码强度
     };
 
     componentDidMount() {
@@ -353,10 +355,30 @@ class ForgotPassword extends React.Component {
     }
     checkPass = (rule, value, callback) => {
         if (value && value.match(passwordRegex)) {
-            callback();
+            let rePassWord = this.props.form.getFieldValue('rePassword');
+            //密码强度的校验
+            //获取密码强度及是否展示
+            var passStrengthObj = getPassStrenth(value);
+            this.setState({
+                passBarShow: passStrengthObj.passBarShow,
+                passStrength: passStrengthObj.passStrength
+            });
+            // 不允许设置弱密码
+            if (passStrengthObj.passStrength === 'L') {
+                callback(Intl.get('register.password.strength.tip', '密码强度太弱，请更换密码'));
+            } else if (rePassWord && value !== rePassWord ) {// 输入确认密码后再判断是否一致
+                callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
+            } else {
+                callback();
+            }
         } else {
+            this.setState({
+                passBarShow: false,
+                passStrength: ''
+            });
             callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
         }
+
     };
     // 渲染重置密码视图
     renderResetPasswordView() {
@@ -368,10 +390,9 @@ class ForgotPassword extends React.Component {
                 <input type="password" className="password-hidden-input" name="password" id="hidedInput" />
                 <FormItem className='input-item'>
                     {getFieldDecorator('newPassword', {
-                        rules: [{ required: true, message: Intl.get('common.input.password', '请输入密码') }, {
+                        rules: [{
                             validator: this.checkPass
-                        }],
-                        validateTrigger: 'onBlur'
+                        }]
                     })(
                         <TextField
                             fullWidth
@@ -388,14 +409,17 @@ class ForgotPassword extends React.Component {
                         />
                     )}
                 </FormItem>
+                <Col span="24" className='password-strength-wrap'>
+                    {this.state.passBarShow ?
+                        (<PassStrengthBar passStrength={this.state.passStrength}/>) : null}
+                </Col>
                 <FormItem className='input-item'>
                     {getFieldDecorator('rePassword', {
                         rules: [{
                             required: true, message: Intl.get('common.input.confirm.password', '请输入确认密码')
                         }, {
                             validator: this.checkPass2
-                        }],
-                        validateTrigger: 'onBlur'
+                        }]
                     })(
                         <TextField
                             fullWidth
