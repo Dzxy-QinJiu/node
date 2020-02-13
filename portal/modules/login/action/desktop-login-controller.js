@@ -391,9 +391,7 @@ exports.sendResetPasswordMsg = function(req, res) {
 
 //获取凭证
 exports.getTicket = function(req, res) {
-    const user_id = req.query.user_id;
-    const code = req.query.code;
-    DesktopLoginService.getTicket(req, res, user_id, code).on('success', function(data) {
+    DesktopLoginService.getTicket(req, res).on('success', function(data) {
         if (!data) data = '';
         res.status(200).json(data);
     }).on('error', function(errorObj) {

@@ -319,18 +319,15 @@ exports.sendResetPasswordMsg = function(req, res, user_name, send_type, operate_
  * 获取凭证
  *
  */
-exports.getTicket = function(req, res, user_id, code) {
+exports.getTicket = function(req, res) {
     const url = urls.getTicket;
-
     return restUtil.appAuthRest.post(
         {
             url: url,
             req: req,
             res: res,
-            form: {
-                user_id,
-                code,
-            }
+            headers: { session_id: req.sessionID },
+            form: req.query,
         }, null);
 };
 
