@@ -565,6 +565,16 @@ exports.validatePhoneCode = function(req, res) {
         res.status(500).json(errorObj && errorObj.message);
     });
 };
+
+//注册，短信验证码验证失败三次后获取图片验证码
+exports.getRegisterCaptchaCode = function(req, res) {
+    DesktopLoginService.getRegisterCaptchaCode(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
+};
+
 //web点击微信登录时（登录后绑定微信时），二维码页面的展示
 exports.wechatLoginPage = function(req, res) {
     let stateData = req.sessionID;

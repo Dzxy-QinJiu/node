@@ -17,6 +17,7 @@ let codeEffectiveInterval = null;
 //验证码的有效时间：60s
 const CODE_EFFECTIVE_TIME = 60;
 const CODE_INTERVAL_TIME = 1000;
+let getVerifyErrorCaptchaCodeAJax = null;
 class RegisterForm extends React.Component {
     constructor(props) {
         super(props);
@@ -34,6 +35,7 @@ class RegisterForm extends React.Component {
             isCheckingRegistedPhone: '',//记录正在验证的是否被注册过的电话
             passBarShow: false,//密码强度条是否展示
             passStrength: '',//密码强度
+            verifyErrorCaptchaCode: '',//验证短信验证码出错三次后获取的短信验证码
             formData: {
                 phone: '',//手机号
                 code: '',//短信验证码
@@ -64,63 +66,103 @@ class RegisterForm extends React.Component {
         const form = this.props.form;
         form.validateFields((err, values) => {
             if (err) return;
+            // 电话已经注册过
             if (this.state.phoneIsRegisted) return;
-            let formData = {
-                phone: values.phone,
-                code: values.code,
-                referrer: this.getWebReferrer()
-            };
-            Trace.traceEvent(e, '个人注册手机号:' + formData.phone);
-            let md5Hash = crypto.createHash('md5');
-            md5Hash.update(values.pwd);
-            formData.pwd = md5Hash.digest('hex');
-            this.setState({registerErrorMsg: '', isRegistering: true});
-            $.ajax({
-                url: '/account/register',
-                dataType: 'json',
-                type: 'post',
-                data: formData,
-                success: data => {
-                    if (data) {
-                        this.setState({registerErrorMsg: '', isRegistering: false});
-                        window.location.href = '/';
-                    } else {
-                        this.setState({registerErrorMsg: Intl.get('register.error.tip', '注册失败'), isRegistering: false});
+            this.validatePhoneCode(values, () => {
+                let formData = {
+                    phone: values.phone,
+                    code: values.code,
+                    referrer: this.getWebReferrer()
+                };
+                Trace.traceEvent(e, '个人注册手机号:' + formData.phone);
+                let md5Hash = crypto.createHash('md5');
+                md5Hash.update(values.pwd);
+                formData.pwd = md5Hash.digest('hex');
+                this.setState({registerErrorMsg: '', isRegistering: true});
+                $.ajax({
+                    url: '/account/register',
+                    dataType: 'json',
+                    type: 'post',
+                    data: formData,
+                    success: data => {
+                        if (data) {
+                            this.setState({registerErrorMsg: '', isRegistering: false});
+                            window.location.href = '/';
+                        } else {
+                            this.setState({registerErrorMsg: Intl.get('register.error.tip', '注册失败'), isRegistering: false});
+                        }
+                    },
+                    error: xhr => {
+                        this.setState({
+                            registerErrorMsg: xhr.responseJSON || Intl.get('register.error.tip', '注册失败'),
+                            isRegistering: false
+                        });
                     }
-                },
-                error: xhr => {
-                    this.setState({
-                        registerErrorMsg: xhr.responseJSON || Intl.get('register.error.tip', '注册失败'),
-                        isRegistering: false
-                    });
-                }
+                });
             });
         });
     }
 
     //验证码是否输入正确的验证
-    validatePhoneCode(phone, code, successFunc) {
+    validatePhoneCode = (values, successFunc) => {
+        let queryObj = {
+            phone: values.phone,
+            code: values.code, // 短信验证码
+        };
+        // 图片验证码
+        if(values.verifyErrorCaptchaCode){
+            queryObj.captcha = values.verifyErrorCaptchaCode;
+        }
         $.ajax({
             url: '/phone/code/validate',
             dataType: 'json',
             type: 'get',
-            data: {phone, code},
+            data: queryObj,
             success: data => {
                 if (data) {
                     if (_.isFunction(successFunc)) successFunc();
                 } else {
-                    this.setState({validateCodeErrorMsg: Intl.get('errorcode.43', '验证码错误'), getCodeErrorMsg: ''});
+                    this.setState({registerErrorMsg: Intl.get('login.fogot.password.phone.code.error', '短信验证码错误')});
                 }
             },
             error: xhr => {
+                let errorMsg = _.get(xhr, 'responseJSON');
+                // 手机验证码验证失败三次后或图片验证码输错后，会报图片验证码错误
+                if(errorMsg === Intl.get('login.fogot.password.picture.code.error', '图片验证码错误')){
+                    this.getVerifyErrorCaptchaCode(values.phone);
+                    // 没有图片验证码时，说明是手机验证码验证失败三次后，此时需提示'短信验证码错误'
+                    if(!values.captcha){
+                        errorMsg = Intl.get('login.fogot.password.phone.code.error', '短信验证码错误');
+                    }
+                }
                 this.setState({
-                    validateCodeErrorMsg: Intl.get('register.code.validate.error', '短信验证码验证错误'),
-                    getCodeErrorMsg: ''
+                    registerErrorMsg: _.get(xhr, 'responseJSON', Intl.get('register.error.tip', '注册失败'))
                 });
             }
         });
     }
-
+    // 短信验证码验证失败三次后获取图片验证码
+    getVerifyErrorCaptchaCode = (phone, isRefresh) => {
+        if (getVerifyErrorCaptchaCodeAJax) getVerifyErrorCaptchaCodeAJax.abort();
+        getVerifyErrorCaptchaCodeAJax = $.ajax({
+            url: '/register/captchaCode',
+            dataType: 'json',
+            data: { phone },
+            success: (data) => {
+                this.setState({
+                    verifyErrorCaptchaCode: data
+                });
+            },
+            error: (xhr) => {
+                let errorMsg = _.get(xhr, 'responseJSON', Intl.get('retry.failed.get.code', '获取验证码错误'));
+                if (isRefresh) {
+                    this.setState({ registerErrorMsg: errorMsg, verifyErrorCaptchaCode: errorMsg });
+                } else {
+                    this.setState({ registerErrorMsg: errorMsg });
+                }
+            }
+        });
+    }
     renderCaptchaCode() {
         if (this.state.captchaCode) {
             return (
@@ -230,6 +272,7 @@ class RegisterForm extends React.Component {
         this.setState({
             phoneIsPassValid: false,
             phoneIsRegisted: false,
+            registerErrorMsg: ''
         });
     }
 
@@ -306,6 +349,11 @@ class RegisterForm extends React.Component {
     toLogin = (e) => {
         window.location.href = '/login';
     }
+    clearErrorMsg = () => {
+        this.setState({
+            registerErrorMsg: ''
+        });
+    }
     render() {
         const {getFieldDecorator, getFieldsValue} = this.props.form;
         const values = getFieldsValue();
@@ -351,6 +399,7 @@ class RegisterForm extends React.Component {
                             color='primary'
                             autoComplete="off"
                             value={values.code}
+                            onChange={this.clearErrorMsg}
                         />
                     )}
                     <div className="captcha-code-wrap" onClick={this.getValidateCode.bind(this)}>
@@ -361,6 +410,28 @@ class RegisterForm extends React.Component {
                             {this.state.getCodeErrorMsg || this.state.validateCodeErrorMsg}
                         </div> : null}
                 </FormItem>
+                {this.state.verifyErrorCaptchaCode ? (
+                    <FormItem className='input-item forgot_password_captcha_wrap'>
+                        {getFieldDecorator('verifyErrorCaptchaCode', {
+                            rules: [{ required: true, message: Intl.get('retry.input.captcha', '请输入验证码') }]
+                        })(
+                            <TextField
+                                fullWidth
+                                className='captcha-input login-input-wrap'
+                                id="standard-basic"
+                                label={Intl.get('common.captcha', '验证码')}
+                                color='primary'
+                                autoComplete="off"
+                                maxLength="4"
+                                onChange={this.clearErrorMsg}
+                                value={values.verifyErrorCaptchaCode}
+                            />
+                        )}
+                        <img src={base64_prefix + this.state.verifyErrorCaptchaCode} width="120" height="40"
+                            title={Intl.get('login.dim.exchange', '看不清？点击换一张')}
+                            onClick={this.getVerifyErrorCaptchaCode.bind(this, valuse.phone, true)} />
+                    </FormItem>) : null
+                }
                 <FormItem>
                     {getFieldDecorator('pwd', {
                         rules: [{validator: this.checkPass.bind(this)}]

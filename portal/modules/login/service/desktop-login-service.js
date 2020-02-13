@@ -41,7 +41,9 @@ var urls = {
     //注册个人账号
     registerAccount: '/rest/open/resource/organization/personal',
     //短信验证码的验证
-    validatePhoneCode: 'rest/open/resource/verificationcode/check',
+    validatePhoneCode: '/rest/open/resource/verificationcode/check',
+    //注册，短信验证码验证失败三次后获取图片验证码
+    getRegisterCaptchaCode: '/rest/open/resource/verificationcode/check/captcha',
     //检查微信是否已绑定客套账号
     checkWechatIsBindUrl: '/auth2/authc/social/check',
     //通过微信的unionId登录
@@ -441,6 +443,20 @@ exports.validatePhoneCode = function(req, res) {
             res: res,
         }, req.query);
 };
+//注册，短信验证码验证失败三次后获取图片验证码
+exports.getRegisterCaptchaCode = function(req, res) {
+    return restUtil.baseRest.get(
+        {
+            url: urls.getRegisterCaptchaCode,
+            req: req,
+            res: res,
+        }, {
+            phone: req.query.phone,
+            width: captcha.width,
+            height: captcha.height
+        });
+};
+
 //微信登录页面
 exports.wechatLoginPage = function(req, res) {
     let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect?appid=' + appUtils.WECHAT_APPID

@@ -38,6 +38,7 @@ function getConfigJson(req) {
         '10123': {'httpCode': 500, 'message': backendIntl.get('errorcode.14', '原始密码错误')},
         '10124': {'httpCode': 500, 'message': backendIntl.get('errorcode.138', '座席号已存在！')},
         '10126': {'httpCode': 500, 'message': backendIntl.get('errorcode.167', '该手机号已被绑定到其他账号，请先登录原账号解绑')},
+        '10127': {'httpCode': 500, 'message': backendIntl.get('login.fogot.password.picture.code.error', '图片验证码错误')},
         /**用户**/
         '10202': {'httpCode': 500, 'message': backendIntl.get('errorcode.15', '添加用户失败')},
         '10203': {'httpCode': 500, 'message': backendIntl.get('errorcode.16', '获取用户失败')},
