@@ -8,6 +8,8 @@ export function getOffdutyChart(paramObj) {
     return {
         title,
         chartType: 'table',
+        layout: { sm: 24 },
+        height: 'auto',
         url: '/rest/base/v1/workflow/offduty/statistics',
         conditions: [{
             name: 'type',
@@ -22,10 +24,12 @@ export function getOffdutyChart(paramObj) {
     function getColumns(type) {
         let columns = [{
             title: '团队',
-            dataIndex: 'team_name'
+            dataIndex: 'team_name',
+            width: '10%',
         }, {
             title: '销售',
-            dataIndex: 'nickname'
+            dataIndex: 'nickname',
+            width: '10%',
         }];
 
         return columns;
