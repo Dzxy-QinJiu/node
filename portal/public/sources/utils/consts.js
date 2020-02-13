@@ -853,3 +853,9 @@ export const USER_LABEL = {
     [USER_LABEL_KEY.QUALIFY]: Intl.get('common.qualified', '合格'), 
     [USER_LABEL_KEY.HISTORY_QUALIFY]: Intl.get('common.history.qualified', '曾经合格'), 
 };
+
+// 上下午英文简写与其中文名的映射
+export const MERIDIEM = {
+    AM: '上午',
+    PM: '下午'
+};

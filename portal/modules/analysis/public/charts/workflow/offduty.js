@@ -2,7 +2,7 @@
  * 请假、出差、外出统计
  */
 
-import { LEAVE_TYPE_MAP } from 'PUB_DIR/sources/utils/consts';
+import { LEAVE_TYPE_MAP, MERIDIEM } from 'PUB_DIR/sources/utils/consts';
 
 export function getOffdutyChart(paramObj) {
     const { type, title } = paramObj;
@@ -38,7 +38,7 @@ export function getOffdutyChart(paramObj) {
         if (type === 'personal_leave') {
             columns.push({
                 title: '请假时间',
-                dataIndex: 'nickname',
+                dataIndex: 'leave_time',
                 width: '10%',
             }, {
                 title: '请假天数',
@@ -59,7 +59,7 @@ export function getOffdutyChart(paramObj) {
         if (type === 'customer_visit') {
             columns.push({
                 title: '出差时间',
-                dataIndex: 'nickname',
+                dataIndex: 'leave_time',
                 width: '10%',
             }, {
                 title: '出差天数',
@@ -96,9 +96,22 @@ export function getOffdutyChart(paramObj) {
         _.each(data, item => {
             item.offduty_time += '天';
             item.leave_type = LEAVE_TYPE_MAP[item.leave_type];
-
+            item.leave_time = getLeaveTime(item.start_time, item.end_time);
         });
 
         return data;
+    }
+
+    function getLeaveTime(startTime, endTime) {
+        const reg = /_([A-Z]+)/;
+        const replacer = (match, part) => MERIDIEM[part];
+
+        let leaveTime = startTime.replace(reg, replacer);
+
+        if (endTime !== startTime) {
+            leaveTime += '至' + endTime.replace(reg, replacer);
+        }
+
+        return leaveTime;
     }
 }
