@@ -145,7 +145,7 @@ export function getCallRecordChart(paramObj = {}) {
             render: function(text, record, index){
                 return (
                     <span>
-                        {TimeUtil.getFormatTime(text)}
+                        {_.isNumber(text) ? TimeUtil.getFormatTime(text) : null}
                     </span>
                 );
             }
@@ -243,7 +243,7 @@ export function getCallRecordChart(paramObj = {}) {
                 render: function(text, record, index){
                     return (
                         <span>
-                            {TimeUtil.getFormatTime(text)}
+                            {_.isNumber(text) ? TimeUtil.getFormatTime(text) : null}
                         </span>
                     );
                 }
@@ -271,7 +271,7 @@ export function getCallRecordChart(paramObj = {}) {
         _.each(columns, column => {
             const field = column.dataIndex;
 
-            if (field !== 'name' && !_.endsWith(field, '_rate')) {
+            if (field !== 'name' && !_.endsWith(field, '_rate') && !_.startsWith(field, 'average_') && !_.startsWith(field, 'per_capita_')) {
                 const sum = _.sumBy(data, field);
                 sumRow[field] = sum;
             }
