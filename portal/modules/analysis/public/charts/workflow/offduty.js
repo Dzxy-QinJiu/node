@@ -2,6 +2,8 @@
  * 请假、出差、外出统计
  */
 
+import { LEAVE_TYPE_MAP } from 'PUB_DIR/sources/utils/consts';
+
 export function getOffdutyChart(paramObj) {
     const { type, title } = paramObj;
 
@@ -16,6 +18,7 @@ export function getOffdutyChart(paramObj) {
             value: type
         }],
         dataField: 'list',
+        processData: processDataFunc.bind(null, type),
         option: {
             columns: getColumns(type)
         },
@@ -87,5 +90,15 @@ export function getOffdutyChart(paramObj) {
         }
 
         return columns;
+    }
+
+    function processDataFunc(type, data) {
+        _.each(data, item => {
+            item.offduty_time += '天';
+            item.leave_type = LEAVE_TYPE_MAP[item.leave_type];
+
+        });
+
+        return data;
     }
 }

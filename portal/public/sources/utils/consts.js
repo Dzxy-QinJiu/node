@@ -398,6 +398,8 @@ export const LEAVE_TYPE = [{
 },{
     name: Intl.get('crm.186', '其他'), value: 'other_leave'
 }];
+//请假类型数组的对象形式
+export const LEAVE_TYPE_MAP = _.chain(LEAVE_TYPE).keyBy('value').mapValues('name').value();
 export const DELAY_TIME_RANGE = {
     SUCCESS_RANGE: 1600,
     ERROR_RANGE: 3000,
