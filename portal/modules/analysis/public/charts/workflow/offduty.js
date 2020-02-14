@@ -2,12 +2,12 @@
  * 请假、出差、外出统计
  */
 
-import { LEAVE_TYPE_MAP, MERIDIEM } from 'PUB_DIR/sources/utils/consts';
+import { LEAVE_TYPE_MAP, MERIDIEM, OFFDUTY_TYPE } from 'PUB_DIR/sources/utils/consts';
 
 const TYPE_TITLE_MAP = {
-    personal_leave: Intl.get('analysis.leave.statistics', '请假统计'),
-    customer_visit: Intl.get('analysis.travel.statistics', '出差统计'),
-    businesstrip_awhile: Intl.get('analysis.outgoing.statistics', '外出统计')
+    [OFFDUTY_TYPE.LEAVE]: Intl.get('analysis.leave.statistics', '请假统计'),
+    [OFFDUTY_TYPE.VISIT]: Intl.get('analysis.travel.statistics', '出差统计'),
+    [OFFDUTY_TYPE.GO_OUT]: Intl.get('analysis.outgoing.statistics', '外出统计')
 };
 
 export function getOffdutyChart(paramObj) {
@@ -41,7 +41,7 @@ export function getOffdutyChart(paramObj) {
             width: '20%',
         }];
 
-        if (type === 'personal_leave') {
+        if (type === OFFDUTY_TYPE.LEAVE) {
             columns.push({
                 title: Intl.get('leave.apply.leave.time', '请假时间'),
                 dataIndex: 'leave_time',
@@ -62,7 +62,7 @@ export function getOffdutyChart(paramObj) {
         }
 
         //出差
-        if (type === 'customer_visit') {
+        if (type === OFFDUTY_TYPE.VISIT) {
             columns.push({
                 title: Intl.get('leave.apply.for.leave.time', '出差时间'),
                 dataIndex: 'leave_time',
@@ -79,7 +79,7 @@ export function getOffdutyChart(paramObj) {
         }
 
         //外出
-        if (type === 'businesstrip_awhile') {
+        if (type === OFFDUTY_TYPE.GO_OUT) {
             columns.push({
                 title: Intl.get('analysis.date.of.departure', '外出日期'),
                 dataIndex: 'go_out_date',
@@ -100,11 +100,11 @@ export function getOffdutyChart(paramObj) {
 
     function processDataFunc(type, data) {
         _.each(data, item => {
-            if (type === 'personal_leave') {
+            if (type === OFFDUTY_TYPE.LEAVE) {
                 item.leave_type = LEAVE_TYPE_MAP[item.leave_type];
             }
 
-            if (type === 'businesstrip_awhile') {
+            if (type === OFFDUTY_TYPE.GO_OUT) {
                 item.go_out_date = item.start_time.split(' ')[0];
                 item.go_out_time = getGoOutTime(item.start_time, item.end_time);
             } else {

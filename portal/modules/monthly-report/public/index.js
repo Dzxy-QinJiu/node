@@ -1,4 +1,4 @@
-import { ORGANIZATION_TYPE } from 'PUB_DIR/sources/utils/consts';
+import { ORGANIZATION_TYPE , OFFDUTY_TYPE } from 'PUB_DIR/sources/utils/consts';
 
 var React = require('react');
 require('./style.less');
@@ -409,13 +409,13 @@ class MonthlyReport extends React.Component {
 
         charts.push(
             workflowChart.getOffdutyChart({
-                type: 'personal_leave',
+                type: OFFDUTY_TYPE.LEAVE,
             }),
             workflowChart.getOffdutyChart({
-                type: 'customer_visit',
+                type: OFFDUTY_TYPE.VISIT,
             }),
             workflowChart.getOffdutyChart({
-                type: 'businesstrip_awhile',
+                type: OFFDUTY_TYPE.GO_OUT,
             })
         );
 

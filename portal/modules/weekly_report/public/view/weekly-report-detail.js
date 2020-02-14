@@ -22,7 +22,7 @@ var userData = require('PUB_DIR/sources/user-data');
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {isOpenCaller, isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
-import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
+import {PRIVILEGE_MAP, OFFDUTY_TYPE} from 'PUB_DIR/sources/utils/consts';
 
 const isCommonSales = userData.getUserData().isCommonSales;
 import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
@@ -614,13 +614,13 @@ class WeeklyReportDetail extends React.Component {
     renderOffdutyCharts() {
         const charts = [
             workflowChart.getOffdutyChart({
-                type: 'personal_leave',
+                type: OFFDUTY_TYPE.LEAVE,
             }),
             workflowChart.getOffdutyChart({
-                type: 'customer_visit',
+                type: OFFDUTY_TYPE.VISIT,
             }),
             workflowChart.getOffdutyChart({
-                type: 'businesstrip_awhile',
+                type: OFFDUTY_TYPE.GO_OUT,
             })
         ];
 

@@ -859,3 +859,10 @@ export const MERIDIEM = {
     AM: Intl.get('apply.approve.leave.am', '上午'),
     PM: Intl.get('apply.approve.leave.pm', '下午')
 };
+
+// 不在岗类型
+export const OFFDUTY_TYPE = {
+    LEAVE: 'personal_leave', //请假
+    VISIT: 'customer_visit', //出差
+    GO_OUT: 'businesstrip_awhile' //外出
+};
