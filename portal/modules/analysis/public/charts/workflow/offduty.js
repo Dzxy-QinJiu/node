@@ -5,9 +5,9 @@
 import { LEAVE_TYPE_MAP, MERIDIEM } from 'PUB_DIR/sources/utils/consts';
 
 const TYPE_TITLE_MAP = {
-    personal_leave: '请假统计',
-    customer_visit: '出差统计',
-    businesstrip_awhile: '外出统计'
+    personal_leave: Intl.get('analysis.leave.statistics', '请假统计'),
+    customer_visit: Intl.get('analysis.travel.statistics', '出差统计'),
+    businesstrip_awhile: Intl.get('analysis.outgoing.statistics', '外出统计')
 };
 
 export function getOffdutyChart(paramObj) {
@@ -32,30 +32,30 @@ export function getOffdutyChart(paramObj) {
 
     function getColumns(type) {
         let columns = [{
-            title: '团队',
+            title: Intl.get('user.user.team', '团队'),
             dataIndex: 'team_name',
             width: '20%',
         }, {
-            title: '销售',
+            title: Intl.get('sales.home.sales', '销售'),
             dataIndex: 'nickname',
             width: '20%',
         }];
 
         if (type === 'personal_leave') {
             columns.push({
-                title: '请假时间',
+                title: Intl.get('leave.apply.leave.time', '请假时间'),
                 dataIndex: 'leave_time',
                 width: '20%',
             }, {
-                title: '请假天数',
+                title: Intl.get('analysis.days.off', '请假天数'),
                 dataIndex: 'offduty_time',
                 width: '13.33%',
             }, {
-                title: '请假类型',
+                title: Intl.get('leave.apply.leave.type', '请假类型'),
                 dataIndex: 'leave_type',
                 width: '13.33%',
             }, {
-                title: '请假事由',
+                title: Intl.get('analysis.excuse.for.leave', '请假事由'),
                 dataIndex: 'reason',
                 width: '13.33%',
             });
@@ -64,15 +64,15 @@ export function getOffdutyChart(paramObj) {
         //出差
         if (type === 'customer_visit') {
             columns.push({
-                title: '出差时间',
+                title: Intl.get('leave.apply.for.leave.time', '出差时间'),
                 dataIndex: 'leave_time',
                 width: '20%',
             }, {
-                title: '出差天数',
+                title: Intl.get('common.number.of.travel.day', '出差天数'),
                 dataIndex: 'offduty_time',
                 width: '20%',
             }, {
-                title: '出差地点',
+                title: Intl.get('leave.apply.for.city.address', '出差地点'),
                 dataIndex: 'address',
                 width: '20%',
             });
@@ -81,15 +81,15 @@ export function getOffdutyChart(paramObj) {
         //外出
         if (type === 'businesstrip_awhile') {
             columns.push({
-                title: '外出日期',
+                title: Intl.get('analysis.date.of.departure', '外出日期'),
                 dataIndex: 'go_out_date',
                 width: '20%',
             }, {
-                title: '外出时间段',
+                title: Intl.get('analysis.out.time', '外出时间段'),
                 dataIndex: 'go_out_time',
                 width: '20%',
             }, {
-                title: '外出地点',
+                title: Intl.get('analysis.out.place', '外出地点'),
                 dataIndex: 'address',
                 width: '20%',
             });
@@ -109,7 +109,7 @@ export function getOffdutyChart(paramObj) {
                 item.go_out_time = getGoOutTime(item.start_time, item.end_time);
             } else {
                 item.leave_time = getLeaveTime(item.start_time, item.end_time);
-                item.offduty_time += '天';
+                item.offduty_time += Intl.get('common.time.unit.day', '天');
             }
         });
 

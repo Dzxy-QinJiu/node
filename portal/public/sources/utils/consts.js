@@ -856,6 +856,6 @@ export const USER_LABEL = {
 
 // 上下午英文简写与其中文名的映射
 export const MERIDIEM = {
-    AM: '上午',
-    PM: '下午'
+    AM: Intl.get('apply.approve.leave.am', '上午'),
+    PM: Intl.get('apply.approve.leave.pm', '下午')
 };
