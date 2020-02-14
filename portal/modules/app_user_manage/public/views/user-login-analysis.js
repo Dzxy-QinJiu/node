@@ -438,7 +438,7 @@ class UserLoginAnalysis extends React.Component {
     //获取块配置
     getPieces(data) {
         //去零、去重、按从小到大排序后的数值数组
-        const numArr = _.chain(data).map('sum').filter(it => it > 0).uniq().sort().value();
+        const numArr = _.chain(data).map('sum').filter(it => it > 0).uniq().sortBy().value();
         //颜色数组
         const colorArr = CALENDAR_COLOR.CONTENT;
         //块配置数组
