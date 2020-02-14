@@ -19,78 +19,80 @@ import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
 import Trace from 'LIB_DIR/trace';
+import ApplyApproveListStoreActions from '../public/action/apply_approve_list_action';
+import ApplyApproveListStore from '../public/store/apply_approve_list_store';
 import UserApplyActions from 'MOD_DIR/user_apply/public/action/user-apply-actions';
 
 class ApplyApproveList extends React.Component {
     state = {
         activeApplyTab: APPLY_TYPE.APPLY_BY_ME,
         addApplyFormPanel: '',//添加的申请审批的表单类型
-        //todo 测试数据
-        applyListObj: {
-            loadingResult: '',
-            list: [
-                {
-                    approval_state: '0',
-                    id: '52360bd9-ad7e-41d6-b5a9-dc28459064ef',
-                    message: {sales_team_name: '部门1'},
-                    message_type: 'apply',
-                    produce_date: 1581040690072,
-                    producer: {email: 'liwenjun@eefung.coom', nick_name: 'salesman001', role: 'sales'},
-                    realm: '36mvh13nka',
-                    topic: '用户延期申请',
-                    presenter: 'salesman001',
-                    time: 1581040690072,
-                    approval_time: '',
-                    customer_name: '山东开创信息有限公司',
-                    isConsumed: 'false'
-                }, {
-                    approval_state: '0',
-                    id: '4bd6b7ae-89f1-42b8-93af-20c63afd1e33',
-                    message: {
-                        sales_team_name: '济南平台部',
-                        email_user_names: 'fasdfsaf',
-                        email_app_names: '无非画画、爱仕达撒所多多非凡哥',
-                    },
-                    message_type: 'apply',
-                    produce_date: 1580982988617,
-                    producer: {email: 'tangmaoqin@eefung.com', nick_name: 'xiaoshoueefung', role: 'sales',},
-                    realm: '36mvh13nka',
-                    topic: '试用用户申请',
-                    presenter: 'xiaoshoueefung',
-                    time: 1580982988617,
-                    approval_time: '',
-                    order_id: 'apply_new_users',
-                    customer_id: 'ad08980292460795eba3d3a5f2d78dbe_36mvh13nka_c4a457d04b824b0b911394a715e9bc1e',
-                    customer_name: '三道律泽（宁夏）知识产权有限公司',
-                    isConsumed: 'false',
-                }
-            ]//申请审批列表
-        },
-        selectedDetailItem: {
-            approval_state: '0',
-            id: '52360bd9-ad7e-41d6-b5a9-dc28459064ef',
-            message: {sales_team_name: '部门1'},
-            message_type: 'apply',
-            produce_date: 1581040690072,
-            producer: {email: 'liwenjun@eefung.coom', nick_name: 'salesman001', role: 'sales'},
-            realm: '36mvh13nka',
-            topic: '用户延期申请',
-            presenter: 'salesman001',
-            time: 1581040690072,
-            approval_time: '',
-            customer_name: '山东开创信息有限公司',
-            isConsumed: 'false'
-        }
+        ...ApplyApproveListStore.getState()
 
     };
 
     onStoreChange = () => {
+        this.setState(ApplyApproveListStore.getState());
     };
 
+
     componentDidMount() {
-
+        ApplyApproveListStore.listen(this.onStoreChange);
+        //如果存在url传过来的申请applyId
+        if (this.state.applyId) {//从邮件中点击链接进来时，只查看该邮件所对应的申请
+            ApplyApproveListStoreActions.getApplyById(this.state.applyId);
+            //是通过点击未处理的审批数量跳转过来的
+        } else {
+            this.fetchApplyList();
+        }
+        this.getUnreadReplyList();
+        this.getAppList();
     }
-
+    componentWillUnmount() {
+        ApplyApproveListStore.unlisten(this.onStoreChange);
+    }
+    retryFetchApplyList = (e) => {
+        if (this.state.applyListObj.errorMsg) {
+            Trace.traceEvent(e, '点击了重试');
+        } else {
+            Trace.traceEvent(e, '点击了重新获取');
+        }
+        setTimeout(() => this.fetchApplyList());
+    };
+    //下拉加载
+    handleScrollBarBottom = () => {
+        this.fetchApplyList();
+    };
+    //获取申请审批列表
+    fetchApplyList = () => {
+        // let approval_state = UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? 'pass' : this.state.applyListType;
+        let sort_field = 'produce_date';//全部类型、待审批下按申请时间倒序排
+        //[已通过、已驳回、已审批、已撤销
+        let approvedTypes = ['pass', 'reject', 'true', 'cancel'];
+        //已审批过的按审批时间倒序排
+        // if (approvedTypes.indexOf(approval_state) !== -1) {
+        //     sort_field = 'consume_date';
+        // }
+        ApplyApproveListStoreActions.getApplyList({
+            id: this.state.lastApplyId,
+            page_size: this.state.pageSize,
+            // keyword: this.state.searchKeyword,
+            isUnreadApply: this.state.isCheckUnreadApplyList,
+            // approval_state: approval_state,
+            sort_field: sort_field,
+            order: 'descend'
+        }, (count) => {
+            //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
+            // if (this.state.applyListType === 'false') {
+            //     //触发更新待审批数
+            //     commonMethodUtil.updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+            //     // 解决通过或驳回操作失败（后台其实是成功）后的状态更新
+            //     if(this.state.dealApplyError === 'error'){
+            //         UserApplyActions.updateDealApplyError('success');
+            //     }
+            // }
+        });
+    };
     handleChangeApplyActiveTab = (activeTab) => {
         this.setState({
             activeApplyTab: activeTab
