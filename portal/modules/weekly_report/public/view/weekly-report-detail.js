@@ -628,13 +628,15 @@ class WeeklyReportDetail extends React.Component {
         ];
 
         return (
-            <AntcAnalysis
-                charts={charts}
-                conditions={this.getConditions()}
-                emitterConfigList={this.getEmitters()}
-                isGetDataOnMount={true}
-                style={{padding: 0, clear: 'both'}}
-            />
+            <div style={{clear: 'both'}}>
+                <AntcAnalysis
+                    charts={charts}
+                    conditions={this.getConditions()}
+                    emitterConfigList={this.getEmitters()}
+                    isGetDataOnMount={true}
+                    style={{padding: 0}}
+                />
+            </div>
         );
     }
 
