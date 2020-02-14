@@ -42,6 +42,8 @@ class ForgotPassword extends React.Component {
         ticket: '',
         passBarShow: false,//密码强度条是否展示
         passStrength: '',//密码强度
+        verifyErrorCaptchaCode: '',//验证短信验证码出错三次后获取的短信验证码
+        sendMsgPhone: '',//发送短信验证码的手机号，获取图片验证码时需要
     };
 
     componentDidMount() {
@@ -62,8 +64,8 @@ class ForgotPassword extends React.Component {
     componentWillUnmount() {
         lastValidPhone = '';
     }
-    //获取验证码
-    getLoginCaptcha = (phone) => {
+    //获取验证码，isVerifyCode：验证短信验证码出错三次后获取短信验证码
+    getLoginCaptcha = (phone, isVerifyError) => {
         if (!phone) {
             return;
         }
@@ -76,11 +78,17 @@ class ForgotPassword extends React.Component {
                 type: VIEWS.RESET_PASSWORD,
             },
             success: (data) => {
-                // 记录最后一次获取验证码的电话
-                lastValidPhone = phone;
-                this.setState({
-                    captchaCode: data
-                });
+                if (isVerifyError) {//验证短信验证码出错三次后获取的图片验证码
+                    this.setState({
+                        verifyErrorCaptchaCode: data
+                    });
+                } else {//第一步获取短信验证码前的图片验证码
+                    // 记录最后一次获取验证码的电话
+                    lastValidPhone = phone;
+                    this.setState({
+                        captchaCode: data
+                    });
+                }
             },
             error: () => {
                 this.setState({ errorMsg: ERROR_MSGS.NO_SERVICE });
@@ -88,9 +96,9 @@ class ForgotPassword extends React.Component {
         });
     };
 
-    //刷新验证码
-    refreshCaptchaCode = () => {
-        var phone = this.props.form.getFieldValue('phone');
+    //刷新验证码，isVerifyCode：验证短信验证码出错三次后刷新短信验证码
+    refreshCaptchaCode = (e, isVerifyError) => {
+        var phone = isVerifyError ? this.state.sendMsgPhone : this.props.form.getFieldValue('phone');
         if (!phone) {
             return;
         }
@@ -103,16 +111,28 @@ class ForgotPassword extends React.Component {
                 type: VIEWS.RESET_PASSWORD,
             },
             success: function(data) {
-                // 记录最后一次获取验证码的电话
-                lastValidPhone = phone;
-                _this.setState({
-                    captchaCode: data
-                });
+                if (isVerifyError) {//验证短信验证码出错三次后获取的图片验证码
+                    _this.setState({
+                        verifyErrorCaptchaCode: data
+                    });
+                } else {//第一步获取短信验证码前的图片验证码
+                    // 记录最后一次获取验证码的电话
+                    lastValidPhone = phone;
+                    _this.setState({
+                        captchaCode: data
+                    });
+                }
             },
             error: function() {
-                _this.setState({
-                    captchaCode: ERROR_MSGS.ERROR_CAPTCHA
-                });
+                if (isVerifyError) {//验证短信验证码出错三次后获取的图片验证码失败
+                    this.setState({
+                        verifyErrorCaptchaCode: ERROR_MSGS.ERROR_CAPTCHA
+                    });
+                } else {//第一步获取短信验证码前的图片验证码失败
+                    _this.setState({
+                        captchaCode: ERROR_MSGS.ERROR_CAPTCHA
+                    });
+                }
             }
         });
     };
@@ -151,7 +171,7 @@ class ForgotPassword extends React.Component {
                 success: (data) => {
                     if (_.get(data, 'user_id')) {
                         this.changeView(VIEWS.VERIFY_AUTH_CODE);
-                        this.setState({ userId: data.user_id });
+                        this.setState({ userId: data.user_id, sendMsgPhone: _.get(values, 'phone', '')});
                     } else {
                         this.setState({
                             errorMsg: Intl.get('login.message_sent_failure', '信息发送失败')
@@ -175,14 +195,19 @@ class ForgotPassword extends React.Component {
         e && e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (err) return;
-            const user_id = this.state.userId;
+            let submitObj = {
+                user_id: this.state.userId,
+                code: _.get(values, 'phoneCode'),
+            };
+            let captchaCode = values.verifyErrorCaptchaCode;
+            // 验证失败三次后，需要输入图片验证码的情况
+            if(captchaCode){
+                submitObj.captcha = captchaCode;
+            }
             $.ajax({
                 url: '/get_reset_password_ticket',
                 dataType: 'json',
-                data: {
-                    user_id,
-                    code: _.get(values, 'phoneCode'),
-                },
+                data: submitObj,
                 success: (data) => {
                     if (!data) {
                         this.setState({ errorMsg: Intl.get('errorcode.5', '验证失败') });
@@ -191,8 +216,22 @@ class ForgotPassword extends React.Component {
                         this.changeView(VIEWS.RESET_PASSWORD);
                     }
                 },
-                error: () => {
-                    this.setState({ errorMsg: Intl.get('errorcode.5', '验证失败') });
+                error: (xhr) => {
+                    let errorMsg = _.get(xhr, 'responseJSON', Intl.get('errorcode.5', '验证失败'));
+                    // 验证失败三次后需要图片验证码的错误时, 图片验证码输入错误时, 都需要获取图片验证码
+                    if(errorMsg === 'verification_code_error_and_need_captcha' || errorMsg === Intl.get('errorcode.43', '验证码错误')){
+                        //获取图片验证码
+                        this.getLoginCaptcha(this.state.sendMsgPhone, true);
+                    }
+                    // 一个手机号只要验证失败三次后，不管是否重新发送了短信验证码，验证时不输图片验证码都会报验证码错误
+                    if(errorMsg === Intl.get('errorcode.43', '验证码错误')){
+                        if(captchaCode){
+                            errorMsg = Intl.get('login.fogot.password.picture.code.error', '图片验证码错误');
+                        } else {//重新发送短信验证码验证没有输入图片验证码时
+                            errorMsg = Intl.get('errorcode.5', '验证失败');
+                        }
+                    }
+                    this.setState({ errorMsg });
                 }
             });
         });
@@ -345,6 +384,29 @@ class ForgotPassword extends React.Component {
                         />
                     )}
                 </FormItem>
+                {this.state.verifyErrorCaptchaCode ? (
+                    <FormItem className='input-item forgot_password_captcha_wrap'>
+                        {getFieldDecorator('verifyErrorCaptchaCode', {
+                            rules: [{ required: true, message: Intl.get('retry.input.captcha', '请输入验证码') }],
+                            validateTrigger: 'onBlur'
+                        })(
+                            <TextField
+                                fullWidth
+                                className='captcha-input login-input-wrap'
+                                id="standard-basic"
+                                label={hasWindow ? Intl.get('common.captcha', '验证码') : null}
+                                color='primary'
+                                autoComplete="off"
+                                maxLength="4"
+                                onChange={this.clearErrorMsg}
+                                value={values.verifyErrorCaptchaCode}
+                            />
+                        )}
+                        <img src={base64_prefix + this.state.verifyErrorCaptchaCode} width="120" height="40"
+                            title={Intl.get('login.dim.exchange', '看不清？点击换一张')}
+                            onClick={this.refreshCaptchaCode.bind(this, true)} />
+                    </FormItem>) : null
+                }
                 <button className="login-button"
                     onClick={this.getTicket}
                     data-tracename={'点击验证按钮'}

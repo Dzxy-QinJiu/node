@@ -353,6 +353,9 @@ var en_US = {
     'login.user.agreement': 'User agreement', //用户使用协议
     'login.user.agreement.tip': 'Clicked {btn}, you agree to our {userAgreement} and {privacyPolicy}',//点击{btn}表示您已同意我们的{userAgreement}和{privacyPolicy}
     'login.no.account.register.tip': 'No account, go to {register}',//没有账号，去{register}
+    'login.fogot.password.picture.code.error': 'Picture verification code error',//图片验证码错误
+    'login.fogot.password.phone.code.error': 'SMS verification code error',//短信验证码错误
+    'login.fogot.password.phone.code.expired': 'SMS verification code expired',//短信验证码已过期
 
     'register.title.tip': 'Welcome to register',//欢迎注册客套
     'register.slogan.tip': 'Sales acceleration, starting here ...',//销售加速，从这里开始...

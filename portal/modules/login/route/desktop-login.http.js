@@ -130,6 +130,13 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
+    }, {//注册，短信验证码验证失败三次后获取图片验证码
+        'method': 'get',
+        'path': '/register/captchaCode',
+        'handler': 'getRegisterCaptchaCode',
+        'passport': {
+            'needLogin': false
+        }
     }, {
         'method': 'post',
         'path': '/account/register',

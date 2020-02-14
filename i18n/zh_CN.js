@@ -360,7 +360,10 @@ var zh_CN = {
     'login.user.agreement': '用户使用协议',
     'login.user.agreement.tip': '点击{btn}表示您已同意我们的{userAgreement}和{privacyPolicy}',
     'login.no.account.register.tip': '没有账号，去{register}',
-
+    'login.fogot.password.picture.code.error': '图片验证码错误',
+    'login.fogot.password.phone.code.error': '短信验证码错误',
+    'login.fogot.password.phone.code.expired': '短信验证码已过期',
+    
     'register.title.tip': '欢迎注册客套',
     'register.slogan.tip': '销售加速，从这里开始 ...',
     'register.set.company.id': '设置公司标识',
