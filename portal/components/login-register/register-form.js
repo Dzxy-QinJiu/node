@@ -18,6 +18,7 @@ let codeEffectiveInterval = null;
 const CODE_EFFECTIVE_TIME = 60;
 const CODE_INTERVAL_TIME = 1000;
 let getVerifyErrorCaptchaCodeAJax = null;
+var base64_prefix = 'data:image/png;base64,';
 class RegisterForm extends React.Component {
     constructor(props) {
         super(props);
@@ -123,6 +124,7 @@ class RegisterForm extends React.Component {
                     if (_.isFunction(successFunc)) successFunc();
                 } else {
                     this.setState({registerErrorMsg: Intl.get('login.fogot.password.phone.code.error', '短信验证码错误')});
+                    this.getVerifyErrorCaptchaCode(values.phone);
                 }
             },
             error: xhr => {
@@ -150,7 +152,7 @@ class RegisterForm extends React.Component {
             data: { phone },
             success: (data) => {
                 this.setState({
-                    verifyErrorCaptchaCode: data
+                    verifyErrorCaptchaCode: _.get(data, 'captcha', '')
                 });
             },
             error: (xhr) => {
@@ -411,7 +413,7 @@ class RegisterForm extends React.Component {
                         </div> : null}
                 </FormItem>
                 {this.state.verifyErrorCaptchaCode ? (
-                    <FormItem className='input-item forgot_password_captcha_wrap'>
+                    <FormItem className='input-item register_captcha_wrap'>
                         {getFieldDecorator('verifyErrorCaptchaCode', {
                             rules: [{ required: true, message: Intl.get('retry.input.captcha', '请输入验证码') }]
                         })(
@@ -427,9 +429,9 @@ class RegisterForm extends React.Component {
                                 value={values.verifyErrorCaptchaCode}
                             />
                         )}
-                        <img src={base64_prefix + this.state.verifyErrorCaptchaCode} width="120" height="40"
+                        <img src={base64_prefix + this.state.verifyErrorCaptchaCode}
                             title={Intl.get('login.dim.exchange', '看不清？点击换一张')}
-                            onClick={this.getVerifyErrorCaptchaCode.bind(this, valuse.phone, true)} />
+                            onClick={this.getVerifyErrorCaptchaCode.bind(this, values.phone, true)} />
                     </FormItem>) : null
                 }
                 <FormItem>
