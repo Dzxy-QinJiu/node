@@ -94,11 +94,17 @@ export function getOffdutyChart(paramObj) {
 
     function processDataFunc(type, data) {
         _.each(data, item => {
-            item.offduty_time += '天';
-            item.leave_type = LEAVE_TYPE_MAP[item.leave_type];
-            item.leave_time = getLeaveTime(item.start_time, item.end_time);
-            item.go_out_date = item.start_time.split(' ')[0];
-            item.go_out_time = getGoOutTime(item.start_time, item.end_time);
+            if (type === 'personal_leave') {
+                item.leave_type = LEAVE_TYPE_MAP[item.leave_type];
+            }
+
+            if (type === 'businesstrip_awhile') {
+                item.go_out_date = item.start_time.split(' ')[0];
+                item.go_out_time = getGoOutTime(item.start_time, item.end_time);
+            } else {
+                item.leave_time = getLeaveTime(item.start_time, item.end_time);
+                item.offduty_time += '天';
+            }
         });
 
         return data;
