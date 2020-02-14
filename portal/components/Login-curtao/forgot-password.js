@@ -125,7 +125,7 @@ class ForgotPassword extends React.Component {
             },
             error: function() {
                 if (isVerifyError) {//验证短信验证码出错三次后获取的图片验证码失败
-                    this.setState({
+                    _this.setState({
                         verifyErrorCaptchaCode: ERROR_MSGS.ERROR_CAPTCHA
                     });
                 } else {//第一步获取短信验证码前的图片验证码失败
