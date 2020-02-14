@@ -6,16 +6,23 @@
  */
 require('./index.less');
 import classNames from 'classnames';
+import { isResponsiveDisplay } from 'PUB_DIR/sources/utils/common-method-util';
+
 class RightPanelModal extends React.Component {
     render() {
+        let {isWebMin} = isResponsiveDisplay();
         let panelClass = classNames('right-panel-modal', this.props.className, {
-            'show-modal': this.props.isShowMadal
+            'show-modal': this.props.isShowMadal,
+            'right-panel-modal-mobile': isWebMin
         });
         return (
             <div className={panelClass} data-tracename={this.props.dataTracename || ''}>
-                {this.props.isShowCloseBtn ? (
+                {this.props.isShowCloseBtn && !isWebMin ? (
                     <span className="iconfont icon-close close-modal-btn" onClick={this.props.onClosePanel} style={this.props.width ? {right: this.props.width} : null}/>) : null}
                 <div className="right-panel-modal-content" style={this.props.width ? {width: this.props.width} : null}>
+                    {this.props.isShowCloseBtn && isWebMin ? (
+                        <span className="iconfont icon-close mobile-close-btn" onClick={this.props.onClosePanel}/>
+                    ) : null}
                     {this.props.title ? (
                         <div className="right-panel-modal-title">
                             {this.props.title}
