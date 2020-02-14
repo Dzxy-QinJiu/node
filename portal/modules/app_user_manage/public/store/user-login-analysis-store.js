@@ -177,7 +177,8 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
                 if (completeDurationList.length && completeDurationList.length < 365) {
                     const endDate = completeDurationList[completeDurationList.length - 1].date;
                     completeDurationList = Array.from({length: 365}, (x, idx) => {
-                        const startDate = moment(endDate).subtract(1, 'years');
+                        /// 比如：从 2020/2/14先前推，2019/2/15是这一年的开头，需要加1计算开始时间
+                        const startDate = moment(endDate).subtract(1, 'years').add(1, 'day');
                         const dayItem = {
                             date: startDate.add(idx, 'days').valueOf(),
                             sum: 0
