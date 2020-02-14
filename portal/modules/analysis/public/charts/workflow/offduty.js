@@ -109,6 +109,7 @@ export function getOffdutyChart(paramObj) {
                 item.go_out_time = getGoOutTime(item.start_time, item.end_time);
             } else {
                 item.leave_time = getLeaveTime(item.start_time, item.end_time);
+                item.offduty_time = _.toNumber(item.offduty_time);
                 item.offduty_time += Intl.get('common.time.unit.day', '天');
             }
         });
