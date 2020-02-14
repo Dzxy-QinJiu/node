@@ -22,7 +22,7 @@ import {
     SetLocalSalesClickCount,
     isCommonSalesOrPersonnalVersion, getClueSalesList, getLocalSalesClickCount, HASEXTRACTBYOTHERERRTIP
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import { formatSalesmanList, checkCurrentVersionType, checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
+import { formatSalesmanList, checkCurrentVersionType, checkVersionAndType, isResponsiveDisplay } from 'PUB_DIR/sources/utils/common-method-util';
 import { getMaxLimitExtractClueCount, updateGuideMark } from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
 import DifferentVersion from 'MOD_DIR/different_version/public';
@@ -841,7 +841,7 @@ class ExtractClues extends React.Component {
     };
 
     //渲染批量提取的按钮
-    renderExtractOperator = () => {
+    renderExtractOperator = (isWebMin) => {
         let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
         if(hasAssignedPrivilege) {
             return (
@@ -855,7 +855,7 @@ class ExtractClues extends React.Component {
                                 className="button-save btn-item"
                             >
                                 <span className="iconfont icon-extract"/>
-                                {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                                {isWebMin ? null : Intl.get('clue.pool.batch.extract.clue', '批量提取')}
                             </Button>}
                         overlayTitle={Intl.get('user.salesman', '销售人员')}
                         okTitle={Intl.get('common.confirm', '确认')}
@@ -882,7 +882,7 @@ class ExtractClues extends React.Component {
                     disabled={this.state.batchExtractLoading}
                 >
                     <span className="iconfont icon-extract"/>
-                    {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                    {isWebMin ? null : Intl.get('clue.pool.batch.extract.clue', '批量提取')}
                 </Button>
             );
         }
@@ -900,12 +900,41 @@ class ExtractClues extends React.Component {
         return !this.state.recommendClueLists.length || this.state.isLoadingRecommendClue || this.state.singleExtractLoading || this.state.batchExtractLoading;
     };
 
+    renderBtnClock = (isWebMin) => {
+        let moreRotationClass = classNames('iconfont icon-change-new', {
+            'change-new-icon-rotation': !this.state.canClickMoreBatch
+        });
+        return (
+            <React.Fragment>
+                <Button
+                    className="btn-item"
+                    data-tracename="点击修改推荐条件"
+                    title={Intl.get('clue.customer.condition.change', '修改条件')}
+                    onClick={this.props.handleBackClick}
+                >
+                    <span className="iconfont icon-modify-condition"/>
+                    {isWebMin ? null : Intl.get('clue.customer.condition.change', '修改条件')}
+                </Button>
+                <Button
+                    className="btn-item more-batch-btn"
+                    data-tracename="点击换一批按钮"
+                    title={Intl.get('clue.customer.refresh.list', '换一批')}
+                    onClick={this.getRecommendLists}
+                >
+                    <span className={moreRotationClass}/>
+                    <span>{isWebMin ? null : Intl.get('clue.customer.refresh.list', '换一批')}</span>
+                </Button>
+            </React.Fragment>
+        );
+    };
+
     render() {
         let divHeight = $(window).height()
             - LAYOUT_CONSTANCE.PADDING_TOP
             - LAYOUT_CONSTANCE.TITLE_HEIGHT
             - LAYOUT_CONSTANCE.BTN_PADDING;
 
+        let {isWebMin} = isResponsiveDisplay();
         let hasNoExtractCountTip = this.state.hasNoExtractCountTip;
 
         let unextractClueTipEl = $('.unextract-clue-tip');
@@ -914,9 +943,7 @@ class ExtractClues extends React.Component {
         }
 
         const hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length') || _.get(this, 'state.disabledCheckedClues.length');
-        let moreRotationClass = classNames('iconfont icon-change-new', {
-            'change-new-icon-rotation': !this.state.canClickMoreBatch
-        });
+
         return (
             <div className="extract-clues-wrapper" data-tracename="线索推荐操作面板">
                 <div className="extract-clues-title-wrapper">
@@ -924,28 +951,7 @@ class ExtractClues extends React.Component {
                         <span>{Intl.get('clue.customer.clue.recommend', '线索推荐')}</span>
                         <div className="extract-clues-btn-container">
                             {
-                                hasSelectedClue ? this.renderExtractOperator() : (
-                                    <React.Fragment>
-                                        <Button
-                                            className="btn-item"
-                                            data-tracename="点击修改推荐条件"
-                                            title={Intl.get('clue.customer.condition.change', '修改条件')}
-                                            onClick={this.props.handleBackClick}
-                                        >
-                                            <span className="iconfont icon-modify-condition"/>
-                                            {Intl.get('clue.customer.condition.change', '修改条件')}
-                                        </Button>
-                                        <Button
-                                            className="btn-item more-batch-btn"
-                                            data-tracename="点击换一批按钮"
-                                            title={Intl.get('clue.customer.refresh.list', '换一批')}
-                                            onClick={this.getRecommendLists}
-                                        >
-                                            <span className={moreRotationClass}/>
-                                            <span>{Intl.get('clue.customer.refresh.list', '换一批')}</span>
-                                        </Button>
-                                    </React.Fragment>
-                                )
+                                hasSelectedClue ? this.renderExtractOperator(isWebMin) : this.renderBtnClock(isWebMin)
                             }
                         </div>
                     </div>

@@ -239,6 +239,11 @@
     display: inline-block !important;
     margin-right: 0.2em !important;
   }
+  .no-more-data-tip{
+    .ant-alert{
+      padding: 8px;
+    }
+  }
 }
 
 
@@ -248,5 +253,30 @@
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+//手机端头部样式适配
+.right-panel-modal.right-panel-modal-mobile{
+  .extract-clue-container{
+    //设置推荐条件头部养样式
+    //推荐线索列表头部样式
+    .recommend-top-title, .extract-clues-title-wrapper{
+      padding-left: 48px;
+      text-align: center;
+    }
+    .extract-clues-title-wrapper{
+      .extract-clues-btn-container{
+        .btn-item{
+          width: 32px;
+          height: 32px;
+          padding: 0;
+          min-width: unset;
+          .iconfont{
+            margin-right: 0;
+          }
+        }
+      }
+    }
   }
 }
