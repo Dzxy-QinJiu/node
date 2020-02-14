@@ -541,13 +541,15 @@ class MonthlyReport extends React.Component {
                                 </span>
                             </div>
 
-                            <AntcAnalysis
-                                charts={this.getCharts()}
-                                conditions={this.getConditions(selectedTeamId)}
-                                emitterConfigList={this.getEmitters()}
-                                isGetDataOnMount={true}
-                                isUseScrollBar={true}
-                            />
+                            {selectedTeamId ? (
+                                <AntcAnalysis
+                                    charts={this.getCharts()}
+                                    conditions={this.getConditions(selectedTeamId)}
+                                    emitterConfigList={this.getEmitters()}
+                                    isGetDataOnMount={true}
+                                    isUseScrollBar={true}
+                                />
+                            ) : null}
                         </Col>
                     </Row>
                 </div>
