@@ -69,37 +69,48 @@ class RegisterForm extends React.Component {
             if (err) return;
             // 电话已经注册过
             if (this.state.phoneIsRegisted) return;
-            this.validatePhoneCode(values, () => {
-                let formData = {
-                    phone: values.phone,
-                    code: values.code,
-                    referrer: this.getWebReferrer()
-                };
-                Trace.traceEvent(e, '个人注册手机号:' + formData.phone);
-                let md5Hash = crypto.createHash('md5');
-                md5Hash.update(values.pwd);
-                formData.pwd = md5Hash.digest('hex');
-                this.setState({registerErrorMsg: '', isRegistering: true});
-                $.ajax({
-                    url: '/account/register',
-                    dataType: 'json',
-                    type: 'post',
-                    data: formData,
-                    success: data => {
-                        if (data) {
-                            this.setState({registerErrorMsg: '', isRegistering: false});
-                            window.location.href = '/';
-                        } else {
-                            this.setState({registerErrorMsg: Intl.get('register.error.tip', '注册失败'), isRegistering: false});
-                        }
-                    },
-                    error: xhr => {
-                        this.setState({
-                            registerErrorMsg: xhr.responseJSON || Intl.get('register.error.tip', '注册失败'),
-                            isRegistering: false
-                        });
+            let formData = {
+                phone: values.phone,
+                code: values.code,
+                referrer: this.getWebReferrer()
+            };
+                // 图片验证码
+            if(values.verifyErrorCaptchaCode){
+                formData.captcha = values.verifyErrorCaptchaCode;
+            }
+            Trace.traceEvent(e, '个人注册手机号:' + formData.phone);
+            let md5Hash = crypto.createHash('md5');
+            md5Hash.update(values.pwd);
+            formData.pwd = md5Hash.digest('hex');
+            this.setState({registerErrorMsg: '', isRegistering: true});
+            $.ajax({
+                url: '/account/register',
+                dataType: 'json',
+                type: 'post',
+                data: formData,
+                success: data => {
+                    if (data) {
+                        this.setState({registerErrorMsg: '', isRegistering: false});
+                        window.location.href = '/';
+                    } else {
+                        this.setState({registerErrorMsg: Intl.get('register.error.tip', '注册失败'), isRegistering: false});
                     }
-                });
+                },
+                error: xhr => {
+                    let errorMsg = _.get(xhr, 'responseJSON', Intl.get('register.error.tip', '注册失败'));
+                    // 手机验证码验证失败三次后或图片验证码输错后，会报图片验证码错误
+                    if(errorMsg === Intl.get('login.fogot.password.picture.code.error', '图片验证码错误')){
+                        this.getVerifyErrorCaptchaCode(values.phone);
+                        // 没有图片验证码时，说明是手机验证码验证失败三次后，此时需提示'短信验证码错误'
+                        if(!formData.captcha){
+                            errorMsg = Intl.get('login.fogot.password.phone.code.error', '短信验证码错误');
+                        }
+                    }
+                    this.setState({
+                        registerErrorMsg: errorMsg,
+                        isRegistering: false
+                    });
+                }
             });
         });
     }
