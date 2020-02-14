@@ -123,7 +123,7 @@ export function getOffdutyChart(paramObj) {
         let leaveTime = startTime.replace(reg, replacer);
 
         if (endTime !== startTime) {
-            leaveTime += '至' + endTime.replace(reg, replacer);
+            leaveTime += Intl.get('analysis.to', '至') + endTime.replace(reg, replacer);
         }
 
         return leaveTime;
