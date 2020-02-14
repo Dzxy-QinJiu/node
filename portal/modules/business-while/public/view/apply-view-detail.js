@@ -31,7 +31,7 @@ import {
     handleDiffTypeApply,
     formatUsersmanList,
     updateUnapprovedCount,
-    timeShowFormat, disabledTime, setSecondZero
+    timeShowFormat, disabledTime, getTimeWithSecondZero
 } from 'PUB_DIR/sources/utils/common-method-util';
 import {handleTimeRange, getAllUserList, calculateTotalTimeInterval} from 'PUB_DIR/sources/utils/common-data-util';
 let userData = require('PUB_DIR/sources/user-data');
@@ -133,8 +133,8 @@ class ApplyViewDetail extends React.Component {
                 //将待我审批的申请转审后
                 if (isShowApproveBtn){
                     //待审批数字减一
-                    var count = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEMEBUSINESSTRIPAWHILEAPPLY] - 1;
-                    updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEMEBUSINESSTRIPAWHILEAPPLY,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+                    var count = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY] - 1;
+                    updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
                     //隐藏通过、驳回按钮
                     ApplyViewDetailActions.showOrHideApprovalBtns(false);
                     //调用父组件的方法进行转成完成后的其他处理
@@ -335,7 +335,7 @@ class ApplyViewDetail extends React.Component {
         });
     };
     onBeginTimeCustomerChange = (value) => {
-        value = setSecondZero(value);
+        value = getTimeWithSecondZero(value);
         var updateCustomers = this.getEditCustomers();
         if (updateCustomers){
             if (value){
@@ -349,7 +349,7 @@ class ApplyViewDetail extends React.Component {
         });
     };
     onBeginTimeTotalChange = (value) => {
-        value = setSecondZero(value);
+        value = getTimeWithSecondZero(value);
         var applyTime = _.get(this, 'state.detailInfoObj.info.detail.apply_time[0]');
         if (value) {
             applyTime.start = moment(value).format(oplateConsts.DATE_TIME_FORMAT);
@@ -363,7 +363,7 @@ class ApplyViewDetail extends React.Component {
         });
     };
     onEndTimeTotalChange = (value) => {
-        value = setSecondZero(value);
+        value = getTimeWithSecondZero(value);
         var applyTime = _.get(this, 'state.detailInfoObj.info.detail.apply_time[0]');
         if (value) {
             applyTime.end = moment(value).format(oplateConsts.DATE_TIME_FORMAT);
@@ -407,7 +407,7 @@ class ApplyViewDetail extends React.Component {
         return updateCustomers;
     };
     onEndTimeCustomerChange = (value) => {
-        value = setSecondZero(value);
+        value = getTimeWithSecondZero(value);
         var updateCustomers = this.getEditCustomers();
         if (updateCustomers){
             if (value){

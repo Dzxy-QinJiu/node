@@ -16,7 +16,7 @@ ApplyViewDetailStore.prototype.setInitState = function() {
     this.selectedDetailItem = {};
     //审批的详情数据
     this.detailInfoObj = {
-        // "" loading error
+        // "": 成功获取数据 loading：正在获取数据中 error：获取数据失败
         loadingResult: 'loading',
         //获取的详情信息
         info: {},

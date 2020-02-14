@@ -14,7 +14,7 @@ function BusinessApplyStore() {
     this.bindActions(BusinessApplyAction);
 }
 BusinessApplyStore.prototype.setInitState = function() {
-    this.sort_field = 'create_time';//排序字段
+    this.sortField = 'create_time';//排序字段
     this.status = '';//请假申请的状态
     this.order = 'descend';
     this.page_size = 20;
@@ -89,6 +89,7 @@ BusinessApplyStore.prototype.clearData = function() {
     this.selectedDetailItem = {};
     this.selectedDetailItemIdx = -1;
     this.listenScrollBottom = false;
+    this.totalSize = 0;
 };
 BusinessApplyStore.prototype.getAllApplyList = function(obj) {
     if (obj.loading) {
@@ -175,10 +176,7 @@ BusinessApplyStore.prototype.afterTransferApplySuccess = function(targetId) {
             this.applyListObj.list.splice(targetIndex,1);
             this.totalSize -= 1;
         }else{
-            this.applyListObj.list = [];
-            this.selectedDetailItem = {};
-            this.selectedDetailItemIdx = -1;
-            this.totalSize = 0;
+            this.clearData();
         }
     }else if (targetIndex > 0){
         this.selectedDetailItem = _.get(this,`applyListObj.list[${targetIndex - 1}]`);

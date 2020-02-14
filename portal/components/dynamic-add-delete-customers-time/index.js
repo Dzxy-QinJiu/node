@@ -12,8 +12,7 @@ import {Form, Input,DatePicker, Select} from 'antd';
 const FormItem = Form.Item;
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import {AntcAreaSelection} from 'antc';
-import {LEAVE_TIME_RANGE,AM_AND_PM} from 'PUB_DIR/sources/utils/consts';
-import {disabledDate,disabledTime,setSecondZero} from 'PUB_DIR/sources/utils/common-method-util';
+import {disabledDate,disabledTime,getTimeWithSecondZero} from 'PUB_DIR/sources/utils/common-method-util';
 
 class DynamicAddDelCustomers extends React.Component {
     constructor(props) {
@@ -160,7 +159,7 @@ class DynamicAddDelCustomers extends React.Component {
         let customers = this.state.customers;
         _.each(customers, (item, index) => {
             if (item.key === key) {
-                item.visit_start_time = startValue ? setSecondZero(startValue) : '';
+                item.visit_start_time = startValue ? getTimeWithSecondZero(startValue) : '';
                 //如果开始时间比结束时间晚，修改结束时间
                 if (item.visit_start_time > item.visit_end_time){
                     item.visit_end_time = item.visit_start_time;
@@ -198,7 +197,7 @@ class DynamicAddDelCustomers extends React.Component {
         let customers = this.state.customers;
         _.each(customers, (item, index) => {
             if (item.key === key) {
-                item.visit_end_time = endValue ? setSecondZero(endValue) : '';
+                item.visit_end_time = endValue ? getTimeWithSecondZero(endValue) : '';
                 //如果开始时间比结束时间晚，修改开始时间
                 if (item.visit_start_time > item.visit_end_time){
                     item.visit_start_time = item.visit_end_time;

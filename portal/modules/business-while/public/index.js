@@ -47,7 +47,7 @@ class BusinessApplyManagement extends React.Component {
         BusinessApplyStore.listen(this.onStoreChange);
         if(_.get(this.props,'location.state.clickUnhandleNum')){
             this.menuClick({key: 'ongoing'});
-        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEMEBUSINESSTRIPAWHILEAPPLY]){
+        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY]){
             this.menuClick({key: 'all'});
         }else{
             //不区分角色，都获取全部的申请列表
@@ -90,7 +90,7 @@ class BusinessApplyManagement extends React.Component {
 
     getQueryParams() {
         var params = {
-            sort_field: this.state.sort_field,//排序字段
+            sort_field: this.state.sortField,//排序字段
             order: this.state.order,
             page_size: this.state.page_size,
             id: this.state.lastApplyId, //用于下拉加载的id
@@ -113,7 +113,7 @@ class BusinessApplyManagement extends React.Component {
             //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
             if (this.state.applyListType === 'ongoing') {
                 //触发更新待审批数
-                commonMethodUtil.updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEMEBUSINESSTRIPAWHILEAPPLY,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+                commonMethodUtil.updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
             }
         });
     };

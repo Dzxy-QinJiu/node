@@ -55,7 +55,7 @@ const unhandleApplyNumObj = [
         cls: 'apply_domain-name_ico',
         style: 'unhandleDomainNumSyle'
     }, {
-        name: APPLY_APPROVE_TYPES.UNHANDLEMEBUSINESSTRIPAWHILEAPPLY,
+        name: APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY,
         cls: 'apply_business-while_ico',
         style: 'unhandleBusinessWhileNumSyle'
     }];

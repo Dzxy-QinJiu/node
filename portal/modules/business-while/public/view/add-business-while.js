@@ -21,7 +21,7 @@ var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 var user = require('../../../../public/sources/user-data').getUserData();
 const DEFAULTTIMETYPE = 'day';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
-import {getStartEndTimeOfDiffRange, setSecondZero} from 'PUB_DIR/sources/utils/common-method-util';
+import {getStartEndTimeOfDiffRange, getTimeWithSecondZero} from 'PUB_DIR/sources/utils/common-method-util';
 import {calculateTotalTimeInterval, calculateRangeType} from 'PUB_DIR/sources/utils/common-data-util';
 
 var BusinessApplyAction = require('../action/business-apply-action');
@@ -66,7 +66,7 @@ class AddBusinessWhile extends React.Component {
     };
     onBeginTimeChange = (date, dateString) => {
         var formData = this.state.formData;
-        formData.begin_time = setSecondZero(date);
+        formData.begin_time = getTimeWithSecondZero(date);
         this.setState({
             formData: formData
         }, () => {
@@ -78,7 +78,7 @@ class AddBusinessWhile extends React.Component {
     };
     onEndTimeChange = (date, dateString) => {
         var formData = this.state.formData;
-        formData.end_time = setSecondZero(date);
+        formData.end_time = getTimeWithSecondZero(date);
         this.setState({
             formData: formData
         }, () => {

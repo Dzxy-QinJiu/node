@@ -173,7 +173,7 @@ function applyApproveUnhandledListener(data) {
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_DOMAIN, data);
                 break;
             case APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE:
-                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEBUSINESSTRIPAWHILEAPPLY, true);
+                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_BUSINESS_WHILE, data);
                 break;
         }
@@ -1058,7 +1058,7 @@ function getMessageCount(callback) {
         _.forEach(applyTypeList, routeItem => {
             switch (routeItem.id) {
                 case 'sales_bussiness_apply_management':
-                    getUnapproveApplyLists(APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES,APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES);//获取销售机会待我审批数量;
+                    getUnapproveApplyLists(APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES, APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES);//获取销售机会待我审批数量;
                     break;
                 case 'app_user_manage_apply':
                     if(hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION)){
@@ -1072,19 +1072,19 @@ function getMessageCount(callback) {
                     getUnapproveApplyLists(APPLY_APPROVE_TYPES.LEAVE, APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE);//获取请假申请待我审批数量
                     break;
                 case 'reportsend_apply_management':
-                    getUnapproveReportDocumentSendApply(APPLY_APPROVE_TYPES.OPINIONREPORT,APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND);//获取舆情报送待我审批数量
+                    getUnapproveReportDocumentSendApply(APPLY_APPROVE_TYPES.OPINIONREPORT, APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND);//获取舆情报送待我审批数量
                     break;
                 case 'documentwriting_apply_management':
-                    getUnapproveReportDocumentSendApply(APPLY_APPROVE_TYPES.DOCUMENTWRITING,APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE);//获取文件撰写的待我审批数
+                    getUnapproveReportDocumentSendApply(APPLY_APPROVE_TYPES.DOCUMENTWRITING, APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE);//获取文件撰写的待我审批数
                     break;
                 case 'my_leave_apply_management'://路由配置中路由的id
-                    getUnapproveApplyLists(SELF_SETTING_FLOW.VISITAPPLY,APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY);//获取拜访申请的待我审批数
+                    getUnapproveApplyLists(SELF_SETTING_FLOW.VISITAPPLY, APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY);//获取拜访申请的待我审批数
                     break;
                 case 'my_domain_apply_management'://路由配置中路由的id
-                    getUnapproveApplyLists(SELF_SETTING_FLOW.DOMAINAPPLY,APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY);//获取拜访申请的待我审批数
+                    getUnapproveApplyLists(SELF_SETTING_FLOW.DOMAINAPPLY, APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY);//获取拜访申请的待我审批数
                     break;
                 case 'my_business_while_apply_management'://路由配置中路由的id
-                    getUnapproveApplyLists(APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE,APPLY_APPROVE_TYPES.UNHANDLEMEBUSINESSTRIPAWHILEAPPLY);//获取外出申请的待我审批数
+                    getUnapproveApplyLists(APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE, APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY);//获取外出申请的待我审批数
                     break;
 
             }

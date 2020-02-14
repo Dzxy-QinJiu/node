@@ -405,10 +405,9 @@ exports.calculateTotalTimeRange = (formData) => {
     }
     return timeRange;
 };
-//计算时间间隔
+//计算时间间隔,就是有开始和结束时间的时间戳，计算时间间隔试X小时X分钟
 exports.calculateTotalTimeInterval = (formData) => {
     var beginTime = formData.begin_time, endTime = formData.end_time;
-    var timeRange = '';
     var totalTime = endTime - beginTime;
     //分毫秒数
     var MINITE_MILLIS = 1 * 60 * 1000;

@@ -7,7 +7,7 @@ var BusinessApplyAjax = require('../ajax/business-apply-ajax');
 import LeaveApplyUtil from '../utils/leave-apply-utils';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
-var timeout = 1000;//1秒后刷新未读数
+var TIMEOUT = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {
@@ -79,14 +79,14 @@ function ApplyViewDetailActions() {
             //更新选中的申请单类型
             LeaveApplyUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
             if (Oplate && Oplate.unread) {
-                Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEMEBUSINESSTRIPAWHILEAPPLY] -= 1;
+                Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY] -= 1;
                 if (timeoutFunc) {
                     clearTimeout(timeoutFunc);
                 }
                 timeoutFunc = setTimeout(function() {
                     //触发展示的组件待审批数的刷新
                     notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
-                }, timeout);
+                }, TIMEOUT);
             }
         }, (errorMsg) => {
             //更新选中的申请单类型

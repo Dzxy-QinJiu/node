@@ -82,7 +82,7 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLEMEMBERINIVTE: 'unhandleMemberInivte', // 未处理的成员申请数量
     UNHANDLEMEVISISTAPPLY: 'unhandleVisitApply', // 未处理的拜访申请数量
     UNHANDLEMEDOMAINAPPLY: 'unhandleDomainApply', // 未处理的舆情平台申请数量
-    UNHANDLEMEBUSINESSTRIPAWHILEAPPLY: 'unhandleBusinesstripAwhileApply', // 未处理的外出申请数量
+    UNHANDLE_BUSINESSTRIP_AWHILE_APPLY: 'unhandleBusinesstripAwhileApply', // 未处理的外出申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
     BUSINESSTRIPAWHILE: 'businesstrip_awhile',//外出申请
 };
