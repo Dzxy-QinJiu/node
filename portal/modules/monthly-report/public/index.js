@@ -1,8 +1,9 @@
-import { ORGANIZATION_TYPE } from 'PUB_DIR/sources/utils/consts';
+import { ORGANIZATION_TYPE , OFFDUTY_TYPE } from 'PUB_DIR/sources/utils/consts';
 
 var React = require('react');
 require('./style.less');
 import {AntcAnalysis} from 'antc';
+import workflowChart from 'MOD_DIR/analysis/public/charts/workflow';
 import {Row, Col, Select, DatePicker} from 'antd';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import ajax from 'ant-ajax';
@@ -315,12 +316,13 @@ class MonthlyReport extends React.Component {
     };
 
     getCharts = () => {
-
         let conditions = [{
             name: 'statistics_type',
             value: 'user'
         }];
+
         let charts = [];
+
         // 开通呼叫中心
         if(commonMethodUtil.isOpenCaller()) {
             charts.push(
@@ -404,6 +406,19 @@ class MonthlyReport extends React.Component {
                 columns: this.getTrialQualifiedColumns(),
             },
         });
+
+        charts.push(
+            workflowChart.getOffdutyChart({
+                type: OFFDUTY_TYPE.LEAVE,
+            }),
+            workflowChart.getOffdutyChart({
+                type: OFFDUTY_TYPE.VISIT,
+            }),
+            workflowChart.getOffdutyChart({
+                type: OFFDUTY_TYPE.GO_OUT,
+            })
+        );
+
         return charts;
     };
 
@@ -471,7 +486,7 @@ class MonthlyReport extends React.Component {
                     defaultValue={moment()}
                     onChange={this.onDateChange}
                     allowClear={false}
-                    disabledDate={current => current && current > moment()}
+                    disabledDate={current => current && current.isAfter(moment().endOf('month'))}
                     className="btn-item"
                 />
             </div>
@@ -526,13 +541,15 @@ class MonthlyReport extends React.Component {
                                 </span>
                             </div>
 
-                            <AntcAnalysis
-                                charts={this.getCharts()}
-                                conditions={this.getConditions(selectedTeamId)}
-                                emitterConfigList={this.getEmitters()}
-                                isGetDataOnMount={true}
-                                isUseScrollBar={true}
-                            />
+                            {selectedTeamId ? (
+                                <AntcAnalysis
+                                    charts={this.getCharts()}
+                                    conditions={this.getConditions(selectedTeamId)}
+                                    emitterConfigList={this.getEmitters()}
+                                    isGetDataOnMount={true}
+                                    isUseScrollBar={true}
+                                />
+                            ) : null}
                         </Col>
                     </Row>
                 </div>

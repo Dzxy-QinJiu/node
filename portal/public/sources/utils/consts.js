@@ -400,6 +400,8 @@ export const LEAVE_TYPE = [{
 },{
     name: Intl.get('crm.186', '其他'), value: 'other_leave'
 }];
+//请假类型数组的对象形式
+export const LEAVE_TYPE_MAP = _.chain(LEAVE_TYPE).keyBy('value').mapValues('name').value();
 export const DELAY_TIME_RANGE = {
     SUCCESS_RANGE: 1600,
     ERROR_RANGE: 3000,
@@ -852,4 +854,17 @@ export const USER_LABEL_KEY = {
 export const USER_LABEL = {
     [USER_LABEL_KEY.QUALIFY]: Intl.get('common.qualified', '合格'), 
     [USER_LABEL_KEY.HISTORY_QUALIFY]: Intl.get('common.history.qualified', '曾经合格'), 
+};
+
+// 上下午英文简写与其中文名的映射
+export const MERIDIEM = {
+    AM: Intl.get('apply.approve.leave.am', '上午'),
+    PM: Intl.get('apply.approve.leave.pm', '下午')
+};
+
+// 不在岗类型
+export const OFFDUTY_TYPE = {
+    LEAVE: 'personal_leave', //请假
+    VISIT: 'customer_visit', //出差
+    GO_OUT: 'businesstrip_awhile' //外出
 };

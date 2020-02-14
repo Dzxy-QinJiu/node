@@ -3132,6 +3132,15 @@ var en_US = {
     'analysis.exclude.ip.staff': 'Exclude configuration IP and staff',//排除配置ip和员工
     'analysis.on.payroll.staff': 'staff on the payroll',//在职员工
     'analysis.all.staff': 'all staff',//全部员工
+    'analysis.travel.statistics': 'travel statistics',//出差统计
+    'analysis.excuse.for.leave': 'excuse for leave',//请假事由
+    'analysis.days.off': 'days off',//请假天数
+    'analysis.leave.statistics': 'leave statistics',//请假统计
+    'analysis.out.place': 'out place',//外出地点
+    'analysis.date.of.departure': 'date of departure',//外出日期
+    'analysis.out.time': 'out time',//外出时间段
+    'analysis.outgoing.statistics': 'outgoing statistics',//外出统计
+    'analysis.to': 'to',//至
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
