@@ -13,7 +13,14 @@ export const APPLY_APPROVE_TAB_TYPES = [{
     value: APPLY_TYPE.APPLY_BY_TEAM,
     name: Intl.get('apply.approve.list.approved.by.team', '团队申请')
 }];
-exports.APPLY_LIST_LAYOUT_CONSTANTS = {
+export const APPLY_LIST_LAYOUT_CONSTANTS = {
     TOP_DELTA: 64,
-    BOTTOM_DELTA: 80
+    BOTTOM_DELTA: 80,
+    APPLY_LIST_WIDTH: 336
+};
+export const getApplyListDivHeight = function() {
+    if ($(window).width() < Oplate.layout['screen-md']) {
+        return 'auto';
+    }
+    return $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
 };

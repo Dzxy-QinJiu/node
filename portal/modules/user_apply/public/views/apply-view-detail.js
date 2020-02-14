@@ -54,6 +54,7 @@ import ApplyHistory from 'CMP_DIR/apply-components/apply-history';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {getAllUserList,getNotSalesRoleUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import CustomerLabel from 'CMP_DIR/customer_label';
+import {getApplyListDivHeight} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 //表单默认配置
 var appConfig = {
     //默认没id，用id区分增加和修改类型，有id是修改，没id是增加
@@ -311,21 +312,9 @@ const ApplyViewDetail = createReactClass({
         });
     },
 
-    getApplyListDivHeight: function() {
-        if (!this.props.isHomeMyWork && $(window).width() < Oplate.layout['screen-md']) {
-            return 'auto';
-        }
-        let height = $(window).height() - AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
-        //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
-        if (!this.props.isHomeMyWork) {
-            height -= AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
-        }
-        return height;
-    },
-
     renderApplyDetailLoading() {
         if (this.state.detailInfoObj.loading) {
-            var height = this.getApplyListDivHeight();
+            var height = getApplyListDivHeight();
             if (height !== 'auto') {
                 height += 60;
             }
@@ -342,10 +331,7 @@ const ApplyViewDetail = createReactClass({
 
     renderApplyDetailError() {
         if (!this.state.detailInfoObj.loading && this.state.detailInfoObj.errorMsg) {
-            var height = this.getApplyListDivHeight();
-            if (height !== 'auto') {
-                height += 60;
-            }
+            var height = getApplyListDivHeight();
             var retry = (
                 <span>
                     {this.state.detailInfoObj.errorMsg}，<a href="javascript:void(0)"
@@ -368,10 +354,7 @@ const ApplyViewDetail = createReactClass({
 
     renderApplyDetailNodata() {
         if (this.props.showNoData) {
-            var height = this.getApplyListDivHeight();
-            if (height !== 'auto') {
-                height += 60;
-            }
+            var height = getApplyListDivHeight();
             return (
                 <div className="app_user_manage_detail app_user_manage_detail_error" style={{height: height}}>
                     <Alert
@@ -391,14 +374,8 @@ const ApplyViewDetail = createReactClass({
         if (!this.props.isHomeMyWork && $(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
         }
-        let height = $(window).height() -
-            AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.TOP_DELTA -
-            AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.BOTTOM_DELTA;
-        //不是首页打开的申请详情时（申请审批列表），需要减去头部导航的高度
-        if (!this.props.isHomeMyWork){
-            height -= AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.TOP_DELTA;
-        }
-        return height;
+        console.log();
+        return getApplyListDivHeight();
     },
 
     //回复列表滚动到最后
@@ -2743,13 +2720,13 @@ const ApplyViewDetail = createReactClass({
         });
         let customerOfCurUser = this.state.customerOfCurUser;
         let detailWrapWidth = this.props.isHomeMyWork ? '100%' : $('.user_apply_page').width() - APPLY_LIST_WIDTH;
-        let divHeight = $(window).height();
-        //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
-        if (!this.props.isHomeMyWork) {
-            divHeight -= TOP_NAV_HEIGHT;
-        }
+        // let divHeight = $(window).height();
+        // //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
+        // if (!this.props.isHomeMyWork) {
+        //     divHeight -= TOP_NAV_HEIGHT;
+        // }
         return (
-            <div className={cls} data-tracename="审批详情界面" style={{'width': detailWrapWidth, 'height': divHeight}}>
+            <div className={cls} data-tracename="审批详情界面">
                 {this.renderApplyDetailLoading()}
                 {this.renderApplyDetailError()}
                 {this.renderApplyDetailNodata()}

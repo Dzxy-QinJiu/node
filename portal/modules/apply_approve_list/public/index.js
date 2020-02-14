@@ -6,11 +6,16 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
  * Created by zhangshujuan on 2020/02/06.
  */
 require('./css/index.less');
-import {APPLY_APPROVE_TAB_TYPES, APPLY_TYPE, APPLY_LIST_LAYOUT_CONSTANTS} from './utils/apply_approve_utils';
+import {APPLY_APPROVE_TAB_TYPES, APPLY_TYPE, APPLY_LIST_LAYOUT_CONSTANTS, getApplyListDivHeight} from './utils/apply_approve_utils';
 import classNames from 'classnames';
 import {Dropdown, Menu, Alert} from 'antd';
 import userData from 'PUB_DIR/sources/user-data';
-import {APPLY_APPROVE_TYPES, DOCUMENT_TYPE, REPORT_TYPE} from 'PUB_DIR/sources/utils/consts';
+import {
+    APPLY_APPROVE_TYPES,
+    DIFF_APPLY_TYPE_UNREAD_REPLY,
+    DOCUMENT_TYPE,
+    REPORT_TYPE
+} from 'PUB_DIR/sources/utils/consts';
 import AddSalesOpportunityApply from 'MOD_DIR/sales_opportunity/public/view/add-sales-opportunity-apply';
 import AddBusinessApply from 'MOD_DIR/business-apply/public/view/add-business-apply';
 import AddLeaveApply from 'MOD_DIR/leave-apply/public/view/add-leave-apply';
@@ -19,10 +24,12 @@ import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
 import Trace from 'LIB_DIR/trace';
-import ApplyApproveListStoreActions from '../public/action/apply_approve_list_action';
+import UserApplyActions from '../public/action/apply_approve_list_action';
 import ApplyApproveListStore from '../public/store/apply_approve_list_store';
-import UserApplyActions from 'MOD_DIR/user_apply/public/action/user-apply-actions';
-
+import UserApplyViewDetailWrap from 'MOD_DIR/user_apply/public/views/apply-view-detail-wrap';
+import {storageUtil} from 'ant-utils';
+const session = storageUtil.session;
+import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
 class ApplyApproveList extends React.Component {
     state = {
         activeApplyTab: APPLY_TYPE.APPLY_BY_ME,
@@ -40,7 +47,7 @@ class ApplyApproveList extends React.Component {
         ApplyApproveListStore.listen(this.onStoreChange);
         //如果存在url传过来的申请applyId
         if (this.state.applyId) {//从邮件中点击链接进来时，只查看该邮件所对应的申请
-            ApplyApproveListStoreActions.getApplyById(this.state.applyId);
+            UserApplyActions.getApplyById(this.state.applyId);
             //是通过点击未处理的审批数量跳转过来的
         } else {
             this.fetchApplyList();
@@ -51,6 +58,23 @@ class ApplyApproveList extends React.Component {
     componentWillUnmount() {
         ApplyApproveListStore.unlisten(this.onStoreChange);
     }
+    getAppList(){
+        getAppList(appList => {
+            this.setState({appList: appList});
+        });
+    }
+    //从sessionStorage中获取该用户未读的回复列表
+    getUnreadReplyList = () => {
+        const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
+        let unreadReplyList = session.get(APPLY_UNREAD_REPLY);
+        if (unreadReplyList) {
+            this.refreshUnreadReplyList(JSON.parse(unreadReplyList) || []);
+        }
+    };
+    //刷新未读回复的列表
+    refreshUnreadReplyList = (unreadReplyList) => {
+        UserApplyActions.refreshUnreadReplyList(unreadReplyList);
+    };
     retryFetchApplyList = (e) => {
         if (this.state.applyListObj.errorMsg) {
             Trace.traceEvent(e, '点击了重试');
@@ -73,7 +97,7 @@ class ApplyApproveList extends React.Component {
         // if (approvedTypes.indexOf(approval_state) !== -1) {
         //     sort_field = 'consume_date';
         // }
-        ApplyApproveListStoreActions.getApplyList({
+        UserApplyActions.getApplyList({
             id: this.state.lastApplyId,
             page_size: this.state.pageSize,
             // keyword: this.state.searchKeyword,
@@ -107,7 +131,7 @@ class ApplyApproveList extends React.Component {
     //点击展示详情
     clickShowDetail = (obj, idx) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.list-unstyled'), '查看申请详情');
-        // UserApplyActions.setSelectedDetailItem({obj, idx});
+        UserApplyActions.setSelectedDetailItem({obj, idx});
     };
     getAddApplyTypeMenu = () => {
         let user = userData.getUserData();
@@ -115,6 +139,7 @@ class ApplyApproveList extends React.Component {
         return (
             <Menu>
                 {_.map(workFlowList, (item, index) => {
+                    //用户申请和成员申请暂时不展示
                     if (_.indexOf([APPLY_APPROVE_TYPES.USERAPPLY, APPLY_APPROVE_TYPES.MEMBER_INVITE],item.type) > -1 ) {
                         return null;
                     }
@@ -206,13 +231,6 @@ class ApplyApproveList extends React.Component {
             </div>
         );
     };
-    getApplyListDivHeight = () => {
-        if ($(window).width() < Oplate.layout['screen-md']) {
-            return 'auto';
-        }
-        var height = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
-        return height;
-    };
     renderApplyListError = () => {
         let noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0;
         let tipMsg = '';
@@ -279,7 +297,7 @@ class ApplyApproveList extends React.Component {
                 'overflow-y': 'hidden'
             });
             //计算列表高度
-            applyListHeight = this.getApplyListDivHeight();
+            applyListHeight = getApplyListDivHeight();
         }
         return <div className='app_user_manage_apply_list_wrap'>
             {this.renderApplyListError()}
@@ -312,13 +330,48 @@ class ApplyApproveList extends React.Component {
             }
         </div>;
     };
-    //申请审批的详情
+    handleOpenApplyDetail = (applyItem) => {
+        this.setState({
+            showHistoricalItem: applyItem
+        });
+    };
+    hideHistoricalApplyItem = () => {
+        this.setState({
+            showHistoricalItem: {}
+        });
+    };
+    //当前展示的详情是否是有未读回复的详情
+    getIsUnreadDetail = () => {
+        let selectApplyId = this.state.selectedDetailItem ? this.state.selectedDetailItem.id : '';
+        if (selectApplyId) {
+            return _.some(this.state.unreadReplyList, unreadReply => unreadReply.apply_id === selectApplyId);
+        } else {
+            return false;
+        }
+    };
+    //申请审批的详情，不同类型的申请申请，展示不同的详情
     renderApplyListDetail = () => {
-        return (
-            <div className='apply_approve_detail_wrap'>
+        //申请详情数据
+        var applyDetail = {detail: this.getFirstApplyItem(), apps: this.state.allApps};
+        var selectedDetailItem = this.state.selectedDetailItem;
+        var applyDetailContent = null;
+        //todo 不同的审批类型展示不同的右侧详情
+        switch (_.get(selectedDetailItem,'message_type')) {
+            case 'apply':
+                applyDetailContent = <UserApplyViewDetailWrap
+                    applyData={this.state.applyId ? applyDetail : null}
+                    detailItem={this.state.selectedDetailItem}
+                    isUnreadDetail={this.getIsUnreadDetail()}
+                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                    applyListType={this.state.applyListType}
+                    handleOpenApplyDetail={this.handleOpenApplyDetail}
+                    appList={this.state.appList}
+                />;
+                break;
+        }
+        return applyDetailContent;
 
-            </div>
-        );
+
     };
     closeAddApplyForm = () => {
         this.setState({
@@ -363,12 +416,25 @@ class ApplyApproveList extends React.Component {
                 />;
         }
     };
+    getFirstApplyItem = () => {
+        return _.get(this.state.applyListObj,'list[0]');
+    };
 
     render() {
+        //展示右侧申请审批的详情
+        var noShowApplyDetail = !this.getFirstApplyItem();
+        let detailWrapWidth = $('.user_apply_page').width() - APPLY_LIST_LAYOUT_CONSTANTS.APPLY_LIST_WIDTH;
+        let divHeight = $(window).height();
+        // //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
+        // if (!this.props.isHomeMyWork) {
+        //     divHeight -= TOP_NAV_HEIGHT;
+        // }
         return (
-            <div className='apply_approve_content_wrap'>
+            <div className='apply_approve_content_wrap user_apply_page'>
                 {this.renderApplyListTab()}
-                {this.renderApplyListDetail()}
+                {noShowApplyDetail ? null : <div className='apply_approve_detail_wrap' style={{'width': detailWrapWidth, 'height': divHeight}}>
+                    {this.renderApplyListDetail()}
+                </div>}
                 {this.renderAddApplyForm()}
             </div>
         );
