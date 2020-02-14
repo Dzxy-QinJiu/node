@@ -76,11 +76,11 @@ export function getOffdutyChart(paramObj) {
         if (type === 'businesstrip_awhile') {
             columns.push({
                 title: '外出日期',
-                dataIndex: 'k',
+                dataIndex: 'go_out_date',
                 width: '10%',
             }, {
                 title: '外出时间段',
-                dataIndex: 'k',
+                dataIndex: 'go_out_time',
                 width: '10%',
             }, {
                 title: '外出地点',
@@ -97,6 +97,8 @@ export function getOffdutyChart(paramObj) {
             item.offduty_time += '天';
             item.leave_type = LEAVE_TYPE_MAP[item.leave_type];
             item.leave_time = getLeaveTime(item.start_time, item.end_time);
+            item.go_out_date = item.start_time.split(' ')[0];
+            item.go_out_time = getGoOutTime(item.start_time, item.end_time);
         });
 
         return data;
@@ -113,5 +115,13 @@ export function getOffdutyChart(paramObj) {
         }
 
         return leaveTime;
+    }
+
+    function getGoOutTime(startTime, endTime) {
+        const getHourMinute = fullTime => fullTime.split(' ')[1].substr(0, 5);
+
+        const goOutTime = getHourMinute(startTime) + '-' + getHourMinute(endTime);
+
+        return goOutTime;
     }
 }
