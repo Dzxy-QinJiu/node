@@ -12,6 +12,7 @@ import {AntcTable, AntcCardContainer, AntcAttendanceRemarks, AntcAnalysis} from 
 import {Alert, Button, Popconfirm, message} from 'antd';
 import {dateSelectorEmitter, teamTreeEmitter} from 'PUB_DIR/sources/utils/emitters';
 import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
+import workflowChart from 'MOD_DIR/analysis/public/charts/workflow';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 var classNames = require('classnames');
@@ -610,6 +611,33 @@ class WeeklyReportDetail extends React.Component {
         );
     }
 
+    renderOffdutyCharts() {
+        const charts = [
+            workflowChart.getOffdutyChart({
+                type: 'personal_leave',
+                title: '请假统计'
+            }),
+            workflowChart.getOffdutyChart({
+                type: 'customer_visit',
+                title: '出差统计'
+            }),
+            workflowChart.getOffdutyChart({
+                type: 'businesstrip_awhile',
+                title: '外出统计'
+            })
+        ];
+
+        return (
+            <AntcAnalysis
+                charts={charts}
+                conditions={this.getConditions()}
+                emitterConfigList={this.getEmitters()}
+                isGetDataOnMount={true}
+                style={{padding: 0, clear: 'both'}}
+            />
+        );
+    }
+
     render() {
         var divHeight = this.getReportDetailDivHeight();
         return (
@@ -652,6 +680,8 @@ class WeeklyReportDetail extends React.Component {
                                     {this.renderDiffTypeTable('repaymentInfo')}
                                 </AntcCardContainer>
                             </div>) : null}
+
+                        {this.renderOffdutyCharts()}
                     </GeminiScrollbar>
                 </div>
             </div>
