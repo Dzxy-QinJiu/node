@@ -486,7 +486,7 @@ class MonthlyReport extends React.Component {
                     defaultValue={moment()}
                     onChange={this.onDateChange}
                     allowClear={false}
-                    disabledDate={current => current && current > moment()}
+                    disabledDate={current => current && current.isAfter(moment().endOf('month'))}
                     className="btn-item"
                 />
             </div>
