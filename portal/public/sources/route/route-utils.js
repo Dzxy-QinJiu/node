@@ -20,6 +20,7 @@ import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply
 import {isCurtao, isOrganizationEefung, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 import privilegeConst_user_info from '../../../modules/user_info/public/privilege-config';
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 //如果访问/，跳转到左侧导航菜单的第一个路由
 class FirstIndexRoute extends React.Component {
     //当组件即将加载的时候，跳转到第一个路由
@@ -217,6 +218,9 @@ function dealWorkFlowConfigRoute(userRoutes, workFlowConfigList) {
     }, {
         id: 'my_domain_apply_management',//路由配置中路由id
         configType: SELF_SETTING_FLOW.DOMAINAPPLY//获取后端返回的申请流程配置中流程的类型
+    }, {
+        id: 'my_business_while_apply_management',//路由配置中路由id
+        configType: APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE//获取后端返回的外出申请流程配置中流程的类型
     }];
 
     _.forEach(REPORTANDDOUCMENTMAP, item => {

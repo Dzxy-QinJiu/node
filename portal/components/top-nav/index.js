@@ -54,6 +54,10 @@ const unhandleApplyNumObj = [
         name: APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY,
         cls: 'apply_domain-name_ico',
         style: 'unhandleDomainNumSyle'
+    }, {
+        name: APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY,
+        cls: 'apply_business-while_ico',
+        style: 'unhandleBusinessWhileNumSyle'
     }];
 
 //顶部导航外层div
@@ -217,6 +221,14 @@ class TopNav extends React.Component {
             }
             //点击到数字上，进行跳转
             history.push('/apply/domain-name');
+        });
+        $('.topNav').on('click', '.apply_business-while_ico', function(e) {
+            //如果点击到a标签上，不做处理
+            if ($(e.target).is('a')) {
+                return;
+            }
+            //点击到数字上，进行跳转
+            history.push('/apply/business-while');
         });
 
 

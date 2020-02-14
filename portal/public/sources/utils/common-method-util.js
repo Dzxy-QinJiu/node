@@ -873,6 +873,13 @@ exports.disabledDate = function(startTime, endTime, value){
     }
     return value.valueOf() < moment(startTime).startOf('day').valueOf() || value.valueOf() > moment(endTime).endOf('day').valueOf();
 };
+//时间选择组件中禁用时间的范围
+exports.disabledTime = function(startTime, endTime){
+    var startHour = moment(startTime).get('hour'),endHour = moment(endTime).get('hour');
+    return {
+        disabledHours: () => _.concat(_.range(0,startHour), _.range(endHour + 1, 24))
+    };
+};
 exports.calculateSelectType = function(selectTime, rangeObj){
     var selectTypeArr = LEAVE_TIME_RANGE;
     if (!selectTime){
@@ -1464,4 +1471,8 @@ exports.selectedTeamTreeAllMember = (selectedTeam, memberList) => {
         });
     });
     return selectedTeamMember;
+};
+//把时间戳的秒数都统一改成0秒
+exports.getTimeWithSecondZero = function(value) {
+    return moment(value).set('second', 0).valueOf();
 };

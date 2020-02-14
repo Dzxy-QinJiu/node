@@ -22,24 +22,6 @@ exports.getAllApplyList = function(queryObj) {
     });
     return Deferred.promise();
 };
-//获取自己的申请列表
-let getSelfApplyListAjax = null;
-exports.getSelfApplyList = function() {
-    var Deferred = $.Deferred();
-    getSelfApplyListAjax && getSelfApplyListAjax.abort();
-    getSelfApplyListAjax = $.ajax({
-        url: '/rest/get/self/business_apply/list',
-        dataType: 'json',
-        type: 'get',
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
 //获取待我审批的申请列表
 let getWorklistBusinessApplyListAjax = null;
 exports.getWorklistBusinessApplyList = function() {
