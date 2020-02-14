@@ -28,30 +28,30 @@ export function getOffdutyChart(paramObj) {
         let columns = [{
             title: '团队',
             dataIndex: 'team_name',
-            width: '10%',
+            width: '20%',
         }, {
             title: '销售',
             dataIndex: 'nickname',
-            width: '10%',
+            width: '20%',
         }];
 
         if (type === 'personal_leave') {
             columns.push({
                 title: '请假时间',
                 dataIndex: 'leave_time',
-                width: '10%',
+                width: '20%',
             }, {
                 title: '请假天数',
                 dataIndex: 'offduty_time',
-                width: '10%',
+                width: '13.33%',
             }, {
                 title: '请假类型',
                 dataIndex: 'leave_type',
-                width: '10%',
+                width: '13.33%',
             }, {
                 title: '请假事由',
                 dataIndex: 'reason',
-                width: '10%',
+                width: '13.33%',
             });
         }
 
@@ -60,15 +60,15 @@ export function getOffdutyChart(paramObj) {
             columns.push({
                 title: '出差时间',
                 dataIndex: 'leave_time',
-                width: '10%',
+                width: '20%',
             }, {
                 title: '出差天数',
                 dataIndex: 'offduty_time',
-                width: '10%',
+                width: '20%',
             }, {
                 title: '出差地点',
                 dataIndex: 'address',
-                width: '10%',
+                width: '20%',
             });
         }
 
@@ -77,15 +77,15 @@ export function getOffdutyChart(paramObj) {
             columns.push({
                 title: '外出日期',
                 dataIndex: 'go_out_date',
-                width: '10%',
+                width: '20%',
             }, {
                 title: '外出时间段',
                 dataIndex: 'go_out_time',
-                width: '10%',
+                width: '20%',
             }, {
                 title: '外出地点',
                 dataIndex: 'address',
-                width: '10%',
+                width: '20%',
             });
         }
 
