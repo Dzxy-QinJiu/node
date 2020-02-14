@@ -5,6 +5,7 @@
 @button-height: 48px;
 @blue-color: #2196f3;
 @margin: 24px;
+@border-radius: 3px;
 @font-family: 'Noto Sans CJK SC', 'Noto Sans CJK', 'Source Han Sans', source-han-sans-simplified-c, sans-serif !important;
 .register-wrap{
   height: 100vh;
@@ -87,6 +88,20 @@
           color: @font-color;
           font-size: 14px;
         }
+        .register_captcha_wrap{
+          input{
+            padding-right: 130px;
+          }
+          img {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 120px;
+            height: 40px;
+            border-radius: @border-radius;
+            cursor: pointer;
+          }
+        } 
         //隐藏的密码框
         .password-hidden-input{
           width: 0;
