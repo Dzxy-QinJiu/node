@@ -2231,6 +2231,7 @@ var en_US = {
     'contract.purchase.contract.type.other': 'Other', // 其他,
     'contract.start.time.greater.than.end.time.warning': 'The start time cannot be greater than the end time', // 起始时间不能大于结束时间,
     'contract.end.time.less.than.start.time.warning': 'The end time cannot be less than the start time', // 结束时间不能小于起始时间,
+    'business.trip.go.out.cannot.over.day': 'Do not cross the day',//外出时长不可以跨天
     'contract.introTip': 'Drag fields to the row,columns and filters\' zone', //"拖动字段到行、列、筛选条件"
     'contract.analysis.error.tip': 'Please fill in the name of the analysis table', // 请填写分析表名称
     'contract.analysis.title.placeholder': 'New analysis,enter title again', // 新的分析，请再次输入标题
@@ -3134,6 +3135,15 @@ var en_US = {
     'analysis.exclude.ip.staff': 'Exclude configuration IP and staff',//排除配置ip和员工
     'analysis.on.payroll.staff': 'staff on the payroll',//在职员工
     'analysis.all.staff': 'all staff',//全部员工
+    'analysis.travel.statistics': 'travel statistics',//出差统计
+    'analysis.excuse.for.leave': 'excuse for leave',//请假事由
+    'analysis.days.off': 'days off',//请假天数
+    'analysis.leave.statistics': 'leave statistics',//请假统计
+    'analysis.out.place': 'out place',//外出地点
+    'analysis.date.of.departure': 'date of departure',//外出日期
+    'analysis.out.time': 'out time',//外出时间段
+    'analysis.outgoing.statistics': 'outgoing statistics',//外出统计
+    'analysis.to': 'to',//至
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
@@ -3363,6 +3373,7 @@ var en_US = {
     'apply.approver.confirm.task.done': 'Confirm the task done',//确认任务完成
     'failed.get.reply.comment': 'Failed to get comment lists',//获取回复列表失败
     'apply.approve.upload.no.container.space': 'Please do not has space in your file name!',//文件名称中不要含有空格！
+    'apply.total.business.while.time': 'A total of {totalTime}',//共{totalTime}
     'failed.delete.apply.load.approve': 'Failed to delete files',//删除文件失败！
     'click.ctrl.upload.mutil.file': 'You can upload multiple files at the same time, only upload {office}, {image}, text files and {compact}. {filetypes} should not exceed 10M!',//可同时上传多个文件，只能上传{office}，{image}，文本文件和{compact}，{filetypes}不要超过10M！
     'upload.files.total.file.size': 'The size of total files',//文件总大小
@@ -3476,6 +3487,8 @@ var en_US = {
     'apply.detail.show.password': 'Show password',//显示密码
     'apply.detail.hide.password': 'Hide password',//隐藏密码
     'bussiness.trip.time.range': 'Visit time',//拜访时间
+    'business.while.trip.time.range': 'Out time',//外出时间
+    'business.while.trip.go.out': 'Out',//外出
     'business.leave.time.range': 'Bussiness range',//出差时长
     'clue.batch.select.clues': 'Has selected {num} leads',//已选择{num}个线索
     'clue.batch.assign.sales': 'Assign in batch',//批量分配
@@ -3589,6 +3602,8 @@ var en_US = {
     'apply.form.has.edit.components': 'Do you have a component or edit state?',//您有组件还是编辑状态
     'apply.my.self.setting.work.flow': 'Visit apply',//拜访申请
     'apply.domain.application.work.flow': 'Domain name application',//舆情平台申请
+    'apply.leave.while.application.work.flow': 'Out of office application',//外出申请
+    'apply.went.out.while.range': 'Time out',//外出时长
     'apply.domain.descriptipn.reg': 'The domain name description can only contain letters, numbers, underscores (cannot begin or end with a dash), and is between 1 and 32 in length.',//域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间
     'apply.domain.plat.name.reg': 'Platform name length is between 1 and 32 characters (English characters count as one character, and other characters count as 2 characters)',//平台名称长度在1到32个字符之间(英文数字算一个字符，其他字符一个算2个字符)
     'apply.domain.at.least.one.item': 'Platform domain name, platform name, organization administrator, should write at least one!',//平台域名，平台名称，组织管理员，至少应写一项!

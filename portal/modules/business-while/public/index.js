@@ -9,7 +9,7 @@ var BusinessApplyAction = require('./action/business-apply-action');
 var BusinessDetailApplyAction = require('./action/apply-view-detail-action');
 require('./css/index.less');
 import {Alert} from 'antd';
-import AddBusinessApplyPanel from './view/add-business-apply';
+import AddBusinessWhileApplyPanel from './view/add-business-while';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 var Spinner = require('CMP_DIR/spinner');
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
@@ -47,14 +47,14 @@ class BusinessApplyManagement extends React.Component {
         BusinessApplyStore.listen(this.onStoreChange);
         if(_.get(this.props,'location.state.clickUnhandleNum')){
             this.menuClick({key: 'ongoing'});
-        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT]){
+        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY]){
             this.menuClick({key: 'all'});
         }else{
             //不区分角色，都获取全部的申请列表
             this.getAllBusinessApplyList();
         }
         LeaveApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
-        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_CUSTOMER_VISIT, this.pushDataListener);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_BUSINESS_WHILE, this.pushDataListener);
         this.getUnreadReplyList();
         notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
@@ -90,11 +90,11 @@ class BusinessApplyManagement extends React.Component {
 
     getQueryParams() {
         var params = {
-            sort_field: this.state.sort_field,//排序字段
+            sort_field: this.state.sortField,//排序字段
             order: this.state.order,
             page_size: this.state.page_size,
             id: this.state.lastApplyId, //用于下拉加载的id
-            type: APPLY_APPROVE_TYPES.CUSTOMER_VISIT,
+            type: APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE,
             comment_unread: this.state.isCheckUnreadApplyList,
         };
         //如果是选择的全部类型，不需要传status这个参数
@@ -113,21 +113,16 @@ class BusinessApplyManagement extends React.Component {
             //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
             if (this.state.applyListType === 'ongoing') {
                 //触发更新待审批数
-                commonMethodUtil.updateUnapprovedCount('unhandleCustomerVisit','SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+                commonMethodUtil.updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
             }
         });
     };
-
-    //获取由自己审批的请假申请
-    getWorklistBusinessApplyList() {
-        BusinessApplyAction.getWorklistBusinessApplyList();
-    }
 
     componentWillUnmount() {
         BusinessApplyStore.unlisten(this.onStoreChange);
         BusinessApplyAction.setInitState();
         LeaveApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
-        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_CUSTOMER_VISIT, this.pushDataListener);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_BUSINESS_WHILE, this.pushDataListener);
         notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
 
@@ -191,7 +186,7 @@ class BusinessApplyManagement extends React.Component {
             );
             var noDataMsg = (
                 <span>
-                    {Intl.get('leave.apply.no.filter.leave.list', '暂无符合查询条件的出差申请')}
+                    {Intl.get('self.setting.has.no.apply', '暂无符合条件的申请')}
                     <span>,</span>
                     <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
                         {Intl.get('common.get.again', '重新获取')}
@@ -363,7 +358,7 @@ class BusinessApplyManagement extends React.Component {
                 </div>
                 {this.state.showAddApplyPanel ?
                     <div className={addPanelWrap}>
-                        <AddBusinessApplyPanel
+                        <AddBusinessWhileApplyPanel
                             hideBusinessApplyAddForm={this.hideBusinessApplyAddForm}
                             getAllApplyList={this.getAllBusinessApplyList}
                         />

@@ -12,6 +12,7 @@ import {AntcTable, AntcCardContainer, AntcAttendanceRemarks, AntcAnalysis} from 
 import {Alert, Button, Popconfirm, message} from 'antd';
 import {dateSelectorEmitter, teamTreeEmitter} from 'PUB_DIR/sources/utils/emitters';
 import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
+import workflowChart from 'MOD_DIR/analysis/public/charts/workflow';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 var classNames = require('classnames');
@@ -21,7 +22,7 @@ var userData = require('PUB_DIR/sources/user-data');
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {isOpenCaller, isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
-import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
+import {PRIVILEGE_MAP, OFFDUTY_TYPE} from 'PUB_DIR/sources/utils/consts';
 
 const isCommonSales = userData.getUserData().isCommonSales;
 import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
@@ -610,6 +611,32 @@ class WeeklyReportDetail extends React.Component {
         );
     }
 
+    renderOffdutyCharts() {
+        const charts = [
+            workflowChart.getOffdutyChart({
+                type: OFFDUTY_TYPE.LEAVE,
+            }),
+            workflowChart.getOffdutyChart({
+                type: OFFDUTY_TYPE.VISIT,
+            }),
+            workflowChart.getOffdutyChart({
+                type: OFFDUTY_TYPE.GO_OUT,
+            })
+        ];
+
+        return (
+            <div style={{clear: 'both'}}>
+                <AntcAnalysis
+                    charts={charts}
+                    conditions={this.getConditions()}
+                    emitterConfigList={this.getEmitters()}
+                    isGetDataOnMount={true}
+                    style={{padding: 0}}
+                />
+            </div>
+        );
+    }
+
     render() {
         var divHeight = this.getReportDetailDivHeight();
         return (
@@ -652,6 +679,8 @@ class WeeklyReportDetail extends React.Component {
                                     {this.renderDiffTypeTable('repaymentInfo')}
                                 </AntcCardContainer>
                             </div>) : null}
+
+                        {this.renderOffdutyCharts()}
                     </GeminiScrollbar>
                 </div>
             </div>
