@@ -410,15 +410,12 @@ class MonthlyReport extends React.Component {
         charts.push(
             workflowChart.getOffdutyChart({
                 type: 'personal_leave',
-                title: '请假统计'
             }),
             workflowChart.getOffdutyChart({
                 type: 'customer_visit',
-                title: '出差统计'
             }),
             workflowChart.getOffdutyChart({
                 type: 'businesstrip_awhile',
-                title: '外出统计'
             })
         );
 

@@ -4,11 +4,17 @@
 
 import { LEAVE_TYPE_MAP, MERIDIEM } from 'PUB_DIR/sources/utils/consts';
 
+const TYPE_TITLE_MAP = {
+    personal_leave: '请假统计',
+    customer_visit: '出差统计',
+    businesstrip_awhile: '外出统计'
+};
+
 export function getOffdutyChart(paramObj) {
-    const { type, title } = paramObj;
+    const { type } = paramObj;
 
     return {
-        title,
+        title: TYPE_TITLE_MAP[type],
         chartType: 'table',
         layout: { sm: 24 },
         height: 'auto',
