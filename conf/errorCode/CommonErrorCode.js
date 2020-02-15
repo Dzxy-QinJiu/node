@@ -79,7 +79,8 @@ function getConfigJson(req) {
         //SSO未登录
         '11051': {'httpCode': 500, 'message': backendIntl.get('errorcode.11', '登录失败,请刷新后重试')},
         '11053': {'httpCode': 500, 'message': backendIntl.get('errorcode.login.failed', '登录失败')},
-        '11107': {'httpCode': 500, 'message': backendIntl.get('errorcode.43', '验证码错误')},
+        //登录、找回密码时，图片验证码输错
+        '11107': {'httpCode': 500, 'message': backendIntl.get('login.fogot.password.picture.code.error', '图片验证码错误')},
         //用户不存在
         '11413': {'httpCode': 500, 'message': backendIntl.get('errorcode.39', '用户名或密码错误')},
         //用户密码错误
@@ -94,11 +95,11 @@ function getConfigJson(req) {
         '11476': {'httpCode': 500, 'message': backendIntl.get('errorcode.42', '你的账号已被停用，请联系管理员')},
         //找回密码时，发送短信验证码之前获取操作码错误对应的错误码
         '11479': {'httpCode': 500, 'message': backendIntl.get('register.code.get.error', '获取短信验证码失败')},
-        //找回密码时，短信验证码验证错误
+        //找回密码时，前三次短信验证码验证错误
         '11481': {'httpCode': 500, 'message': backendIntl.get('login.fogot.password.phone.code.error', '短信验证码错误')},
         //找回密码时，短信验证码验证时过期的错误码
         '11482': {'httpCode': 500, 'message': backendIntl.get('login.fogot.password.phone.code.expired', '短信验证码已过期')},
-        //找回密码时，auth2验证短信验证码接口三次出错后需要图片验证码时报的错误码
+        //找回密码时，第四次及以后短信验证码验证错误且需要输入图片验证码时验，或者短信验证码错误四次之后图片验证码输对了短信验证码没输对的时候报的错
         '11483': {'httpCode': 500, 'message': 'verification_code_error_and_need_captcha'},
         //绑定微信时报的错
         '11520': {'httpCode': 500, 'message': backendIntl.get('errorcode.invalid.wechat', '无效的微信账号')},

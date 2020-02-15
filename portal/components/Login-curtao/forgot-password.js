@@ -218,17 +218,16 @@ class ForgotPassword extends React.Component {
                 },
                 error: (xhr) => {
                     let errorMsg = _.get(xhr, 'responseJSON', Intl.get('errorcode.5', '验证失败'));
-                    // 验证失败三次后需要图片验证码的错误时, 图片验证码输入错误时, 都需要获取图片验证码
-                    if(errorMsg === 'verification_code_error_and_need_captcha' || errorMsg === Intl.get('errorcode.43', '验证码错误')){
-                        //获取图片验证码
+                    // 短信验证码错误第四次需要输入图片验证码时、四次之后图片验证码输对了短信验证码输错时，或图片验证码错误时
+                    if(errorMsg === 'verification_code_error_and_need_captcha' || errorMsg === Intl.get('login.fogot.password.picture.code.error', '图片验证码错误')){
                         this.getLoginCaptcha(this.state.sendMsgPhone, true);
-                    }
-                    // 一个手机号只要验证失败三次后，不管是否重新发送了短信验证码，验证时不输图片验证码都会报验证码错误
-                    if(errorMsg === Intl.get('errorcode.43', '验证码错误')){
-                        if(captchaCode){
-                            errorMsg = Intl.get('login.fogot.password.picture.code.error', '图片验证码错误');
-                        } else {//重新发送短信验证码验证没有输入图片验证码时
-                            errorMsg = Intl.get('errorcode.5', '验证失败');
+                        // 短信验证码错误第四次需要输入图片验证码时、四次之后图片验证码输对了短信验证码输错时，提示短信验证码错误
+                        if(errorMsg === 'verification_code_error_and_need_captcha'){
+                            errorMsg = Intl.get('login.fogot.password.phone.code.error', '短信验证码错误');
+                        }
+                        //短信验证错误三次后，重新发送短信验证码，再验证没有输入图片验证码时也会报图片验证码错误
+                        if(errorMsg === Intl.get('login.fogot.password.picture.code.error', '图片验证码错误') && !submitObj.captcha){
+                            errorMsg = Intl.get('login.fogot.password.phone.code.error', '短信验证码错误');
                         }
                     }
                     this.setState({ errorMsg });
@@ -369,7 +368,6 @@ class ForgotPassword extends React.Component {
                 <FormItem className='input-item' key='phoneCode'>
                     {getFieldDecorator('phoneCode', {
                         rules: [{ required: true, message: Intl.get('login.input.phone.code', '请输入短信验证码', ) }],
-                        validateTrigger: 'onBlur'
                     })(
                         <TextField
                             fullWidth
@@ -388,7 +386,6 @@ class ForgotPassword extends React.Component {
                     <FormItem className='input-item forgot_password_captcha_wrap'>
                         {getFieldDecorator('verifyErrorCaptchaCode', {
                             rules: [{ required: true, message: Intl.get('retry.input.captcha', '请输入验证码') }],
-                            validateTrigger: 'onBlur'
                         })(
                             <TextField
                                 fullWidth
@@ -449,7 +446,7 @@ class ForgotPassword extends React.Component {
         const values = getFieldsValue();
         return (
             <React.Fragment>
-                <input type="password" className="password-hidden-input" name="password" id="hidedInput" />
+                <input type="password" className="password-hidden-input" id="hidedInput" autoComplete='on' />
                 <FormItem className='input-item'>
                     {getFieldDecorator('newPassword', {
                         rules: [{
