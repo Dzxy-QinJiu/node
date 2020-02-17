@@ -36,6 +36,9 @@ export function getAllChanceChart(specifyColumns) {
                     dataIndex: 'total',
                     width: '20%',
                 }, {
+                    title: '通过数',
+                    dataIndex: 'pass',
+                }, {
                     title: '成交数',
                     dataIndex: 'deal',
                     width: '20%',
