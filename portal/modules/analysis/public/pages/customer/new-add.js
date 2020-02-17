@@ -35,7 +35,7 @@ function getCharts(paramObj) {
         customerChart.getCustomerIndustryChart(paramObj),
         //新开客户转化率统计
         customerChart.getNewCustomerConvertRateChart(paramObj),
-        //销售新开客户数统计
+        //销售新增客户数统计
         customerChart.getSalesNewOpenChart(paramObj),
     ];
 }
