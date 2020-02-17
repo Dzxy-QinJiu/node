@@ -436,8 +436,8 @@ class ExtractClues extends React.Component {
             }
             return (
                 <ReactIntl.FormattedMessage
-                    id="clue.recommend.has.extract.count"
-                    defaultMessage={'{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索'}
+                    id={i18Obj.id}
+                    defaultMessage={i18Obj.name}
                     values={i18Obj}
                 />
             );
