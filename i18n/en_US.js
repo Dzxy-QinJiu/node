@@ -1991,7 +1991,7 @@ var en_US = {
     'oplate_customer_analysis.cityCount': 'city count', //'地市总数',
     'oplate_customer_analysis.allLabel': 'all label',//'全部标签',
     'oplate_customer_analysis.allIndustries': 'all industries',//'全部行业',
-    'oplate_customer_analysis.salesNewCustomerCount': 'Statistic of new customers created by sales', //'销售新开客户数统计',
+    'oplate_customer_analysis.salesNewCustomerCount': 'Statistic of new customers created by sales', //'销售新增客户数统计',
     'oplate_customer_analysis.newCustomerCount': 'Count of new customers created by sales', //'新开客户数',
     'analysis.new.open.account.number': 'New open account number',//新开帐号数
     'oplate_customer_analysis.tatolNewCustomerCount': 'Total count of new customer', //'新开账号数总数',

@@ -2012,7 +2012,7 @@ var zh_CN = {
     'oplate_customer_analysis.cityCount': '地市总数',
     'oplate_customer_analysis.allLabel': '全部标签',
     'oplate_customer_analysis.allIndustries': '全部行业',
-    'oplate_customer_analysis.salesNewCustomerCount': '销售新开客户数统计',
+    'oplate_customer_analysis.salesNewCustomerCount': '销售新增客户数统计',
     'oplate_customer_analysis.newCustomerCount': '新开客户数',
     'analysis.new.open.account.number': '新开帐号数',
     'oplate_customer_analysis.tatolNewCustomerCount': '新开账号数总数',

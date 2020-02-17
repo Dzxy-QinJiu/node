@@ -1,11 +1,11 @@
 /**
- * 销售新开客户数统计
+ * 销售新增客户数统计
  */
 import Store from '../../store';
 
 export function getSalesNewOpenChart(paramObj = {}) {
     return {
-        title: Intl.get('oplate_customer_analysis.salesNewCustomerCount', '销售新开客户数统计'),
+        title: Intl.get('oplate_customer_analysis.salesNewCustomerCount', '销售新增客户数统计'),
         url: '/rest/analysis/customer/v2/statistic/:auth_type/customer/user/new',
         chartType: 'table',
         option: {
@@ -31,7 +31,7 @@ export function getSalesNewOpenChart(paramObj = {}) {
                     width: 80
                 },
                 {
-                    title: Intl.get('oplate_customer_analysis.newCustomerCount', '新开客户数'),
+                    title: Intl.get('common.number.of.new.customers', '新增客户数'),
                     dataIndex: 'newly_customer',
                     align: 'right',
                     width: 80
