@@ -71,7 +71,7 @@ export function getSalesBehaviorChart(paramObj = {}) {
                     width: 110
                 },
                 {
-                    title: Intl.get('oplate_customer_analysis.newCustomerCount', '新开客户数'),
+                    title: Intl.get('analysis.new.open.account.number', '新开帐号数'),
                     dataIndex: 'customer_new_num',
                     width: 80
                 },
