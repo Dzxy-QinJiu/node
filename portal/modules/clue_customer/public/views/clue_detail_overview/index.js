@@ -1600,14 +1600,15 @@ class ClueDetailOverview extends React.Component {
         let hasPrivilege = (isCommonSalesOrPersonnalVersion() && isMyClientsOrClues)
                             || this.isMyTeamOrChildUser(_.get(listItem, 'sales_team_id'))
                             || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+        let clueName = listItem.name || <span className='no-clue-name'>{isSimilarClue ? Intl.get('clue.list.no.clue.name', '无线索名') : Intl.get('clue.list.no.crm.name', '无客户名')}</span>;
         //如果在线索池中，相似客户相似线索都不能点击查看，只能展示
         if(_.isEqual(curClue.clue_type,'clue_pool')){
-            return (<span>{listItem.name}</span>);
+            return (<span>{clueName}</span>);
         } else {
             if(hasPrivilege) {
                 return (
                     <div className="similar-title-name">
-                        <span data-tracename={isSimilarClue ? '打开线索详情' : '打开客户详情'} onClick={isSimilarClue ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
+                        <span data-tracename={isSimilarClue ? '打开线索详情' : '打开客户详情'} onClick={isSimilarClue ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{clueName}</span>
                         {!isSimilarClue && editCluePrivilege(this.state.curClue) ? <Button onClick={this.mergeToThisCustomer.bind(this, curClue, listItem)} data-tracename='点击合并到此客户按钮'>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
                     </div>);
             } else {
@@ -1617,12 +1618,12 @@ class ClueDetailOverview extends React.Component {
                         overlayClassName="client-invalid-popover"
                         content={warningContent}
                         trigger="click">
-                        <span>{listItem.name}</span> :
+                        <span>{clueName}</span> :
                     </Popover>
                 );
             }
         }
-    }
+    };
 
     renderSimilarLists = (listType) => {
         var isSimilarClue = listType === 'clue';

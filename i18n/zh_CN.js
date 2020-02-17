@@ -3134,6 +3134,7 @@ var zh_CN = {
     'clue.set.invalid': '判定无效',
     'clue.cancel.set.invalid': '改为有效',
     'clue.list.no.clue.name': '无线索名',
+    'clue.list.no.crm.name': '无客户名',
     'analysis.sales.weekly.report': '销售周报',
     'analysis.sales.monthly.report': '销售月报',
     'analysis.business.visit.frequency.statistics': '出差拜访频率统计',

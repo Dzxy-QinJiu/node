@@ -3115,6 +3115,7 @@ var en_US = {
     'clue.set.invalid': 'Invalid judgment',//判定无效
     'clue.cancel.set.invalid': 'Cancel invalid',//改为有效
     'clue.list.no.clue.name': 'No clue name',//无线索名
+    'clue.list.no.crm.name': 'No customer name',//无客户名
     'analysis.sales.weekly.report': 'Sales weekly report',//销售周报
     'analysis.sales.monthly.report': 'Sales monthly report',//销售月报
     'analysis.business.visit.frequency.statistics': 'Analysis business visit frequency statistics', //出差拜访频率统计
