@@ -369,9 +369,6 @@ class ExtractClues extends React.Component {
         var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
         let versionAndType = checkVersionAndType();
         const i18Obj = {hasExtract: <span className="has-extracted-count">{this.state.hasExtractCount}</span>, ableExtract: ableExtract, timerange: this.getTimeRangeText()};
-        /*let maxLimitTip = versionAndType.isCompanyFormal ?
-            Intl.get('clue.recommend.has.extract', '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索', i18Obj)
-            : Intl.get('clue.recommend.has.extract.count', '{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索', i18Obj);*/
         let maxLimitTip = <ReactIntl.FormattedMessage
             id="clue.recommend.has.extracted.count"
             defaultMessage={'{timerange}已提取{hasExtract}条线索'}
@@ -429,6 +426,21 @@ class ExtractClues extends React.Component {
                     }}
                 />;
             }
+        }else if(this.state.hasNoExtractCountTip) {
+            if(versionAndType.isCompanyFormal) {
+                i18Obj.id = 'clue.recommend.has.extract';
+                i18Obj.name = '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索';
+            }else {
+                i18Obj.id = 'clue.recommend.has.extract.count';
+                i18Obj.name = '{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索';
+            }
+            return (
+                <ReactIntl.FormattedMessage
+                    id={i18Obj.id}
+                    defaultMessage={i18Obj.name}
+                    values={i18Obj}
+                />
+            );
         }
         return maxLimitTip;
     };
