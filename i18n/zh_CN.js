@@ -3512,6 +3512,8 @@ var zh_CN = {
     'business.while.trip.time.range': '外出时间',
     'business.while.trip.go.out': '外出',
     'business.leave.time.range': '出差时长',
+    'business.change.total.time': '请修改时间再添加',
+    'business.leave.time.no.overlay': '外出时间不要重复',
     'clue.batch.select.clues': '已选择{num}个线索',
     'clue.batch.assign.sales': '批量分配',
     'clue.export.trace.msg': '{traceman}于{tracetime}添加',
