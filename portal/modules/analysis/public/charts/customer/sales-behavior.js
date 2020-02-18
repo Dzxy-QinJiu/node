@@ -9,6 +9,7 @@ export function getSalesBehaviorChart(paramObj = {}) {
         layout: {sm: 24},
         height: 'auto',
         url: '/rest/analysis/callrecord/v1/sales_comprehensive/statistics',
+        ajaxInstanceFlag: 'sales_behavior',
         dataField: 'list',
         conditions: [{
             name: 'filter_phone',
