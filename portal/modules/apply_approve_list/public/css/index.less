@@ -44,6 +44,7 @@
       }
 
     }
+    //左侧列表
     .app_user_manage_apply_list_wrap{
       //加载列表的loading状态
       .load8 {
@@ -118,6 +119,11 @@
           }
         }
       }
+      .summary_info {
+        font-size: 14px;
+        color: @font-color;
+        margin: 16px;
+      }
     }
   }
 
@@ -126,5 +132,23 @@
     float: left;
     color: #5d5d5d;
     background-color: #f5f6f8;
+  }
+}
+//添加不同类型的审批样式
+.add-apply-type-list,.add-search-or-filter-type-list{
+  .ant-dropdown-menu-item a{
+    font-size: 14px;
+    color:#333;
+    .iconfont{
+      color:#8DA8C5;
+      margin-right: 8px;
+    }
+    &:hover{
+      color:#2196F3;
+      .iconfont{
+        color:#2196F3;
+      }
+    }
+
   }
 }

@@ -6,7 +6,7 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
  * Created by zhangshujuan on 2020/02/06.
  */
 require('./css/index.less');
-import {APPLY_APPROVE_TAB_TYPES, APPLY_TYPE, APPLY_LIST_LAYOUT_CONSTANTS, getApplyListDivHeight} from './utils/apply_approve_utils';
+import {APPLY_APPROVE_TAB_TYPES, APPLY_TYPE, APPLY_LIST_LAYOUT_CONSTANTS, getApplyListDivHeight,FILTER,SEARCH} from './utils/apply_approve_utils';
 import classNames from 'classnames';
 import {Dropdown, Menu, Alert} from 'antd';
 import userData from 'PUB_DIR/sources/user-data';
@@ -34,6 +34,7 @@ class ApplyApproveList extends React.Component {
     state = {
         activeApplyTab: APPLY_TYPE.APPLY_BY_ME,
         addApplyFormPanel: '',//添加的申请审批的表单类型
+        filterOrSearchType: '',//添加筛选或者搜索的类型
         ...ApplyApproveListStore.getState()
 
     };
@@ -133,11 +134,40 @@ class ApplyApproveList extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.list-unstyled'), '查看申请详情');
         UserApplyActions.setSelectedDetailItem({obj, idx});
     };
+    openFilterOrSearch = (value) => {
+        this.setState({
+            filterOrSearchType: value
+        });
+    };
+    getAddFilterAndSearchMenu = () => {
+        var filterAndSearchList = [{
+            name: Intl.get('common.filter', '筛选'),
+            value: FILTER,
+            iconCls: 'icon-filter1'
+        },{
+            name: Intl.get('common.search', '搜索'),
+            iconCls: 'icon-search',
+            value: SEARCH
+        }];
+        return (
+            <Menu className='add-search-or-filter-type-list'>
+                {_.map(filterAndSearchList, (item, index) => {
+                    return (
+                        <Menu.Item key={index}>
+                            <a onClick={this.openFilterOrSearch.bind(this, item.value)}>
+                                <i className={'iconfont ' + _.get(item,'iconCls')}></i>
+                                {_.get(item, 'name')}</a>
+                        </Menu.Item>
+                    );
+                })}
+            </Menu>
+        );
+    };
     getAddApplyTypeMenu = () => {
         let user = userData.getUserData();
         var workFlowList = _.get(user, 'workFlowConfigs', []);
         return (
-            <Menu>
+            <Menu className='add-apply-type-list'>
                 {_.map(workFlowList, (item, index) => {
                     //用户申请和成员申请暂时不展示
                     if (_.indexOf([APPLY_APPROVE_TYPES.USERAPPLY, APPLY_APPROVE_TYPES.MEMBER_INVITE],item.type) > -1 ) {
@@ -146,7 +176,6 @@ class ApplyApproveList extends React.Component {
                     return (
                         <Menu.Item key={index}>
                             <a onClick={this.openAddApplyForm.bind(this, item)}>
-                                {Intl.get('common.add', '添加')}
                                 {_.get(item, 'description')}</a>
                         </Menu.Item>
                     );
@@ -222,7 +251,7 @@ class ApplyApproveList extends React.Component {
                         <Dropdown overlay={this.getAddApplyTypeMenu()} trigger={['click']}>
                             <i className='iconfont icon-plus'></i>
                         </Dropdown>
-                        <Dropdown overlay={this.getAddApplyTypeMenu()} trigger={['click']}>
+                        <Dropdown overlay={this.getAddFilterAndSearchMenu()} trigger={['click']}>
                             <i className='iconfont icon-other'></i>
                         </Dropdown>
                     </div>
@@ -280,6 +309,28 @@ class ApplyApproveList extends React.Component {
             </div>;
         }
     };
+    //渲染刷新提示或者筛选或者过滤提示
+    renderRefreshTip = () => {
+
+    };
+    renderFilterSearch = () => {
+        var filterOrSearchType = this.state.filterOrSearchType;
+        if(filterOrSearchType){
+            return (
+                <div className='filter-and-search-container'>
+                    <i className='iconfont icon-close-tips' onClick={this.closeSearchOrFilterPanel}></i>
+                </div>
+            );
+        }else{
+            return null;
+        }
+
+    };
+    closeSearchOrFilterPanel = () => {
+        this.setState({
+            filterOrSearchType: ''
+        });
+    };
     //左侧申请审批标题列表
     renderApplyTitleLists = () => {
         //列表高度
@@ -300,6 +351,8 @@ class ApplyApproveList extends React.Component {
             applyListHeight = getApplyListDivHeight();
         }
         return <div className='app_user_manage_apply_list_wrap'>
+            {this.renderFilterSearch()}
+            {this.renderRefreshTip()}
             {this.renderApplyListError()}
             {
                 this.state.applyListObj.loadingResult === 'loading' && !this.state.lastApplyId ? (
@@ -366,6 +419,7 @@ class ApplyApproveList extends React.Component {
                     applyListType={this.state.applyListType}
                     handleOpenApplyDetail={this.handleOpenApplyDetail}
                     appList={this.state.appList}
+                    height={$(window).height()}
                 />;
                 break;
         }
@@ -419,6 +473,7 @@ class ApplyApproveList extends React.Component {
     getFirstApplyItem = () => {
         return _.get(this.state.applyListObj,'list[0]');
     };
+
 
     render() {
         //展示右侧申请审批的详情
