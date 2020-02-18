@@ -742,7 +742,7 @@ class MyWorkColumn extends React.Component {
 
     getApplyRemark(item, tag) {
         let remark = '';
-        let type = this.getApplyType(_.get(item, `[${tag}].apply_type`, ''));
+        let type = _.get(item,`[${tag}].apply_type_name`) || this.getApplyType(_.get(item, `[${tag}].apply_type`, ''));
         switch (_.get(item, `[${tag}].opinion`, '')) {
             case APPLY_STATUS.ONGOING://待审批
                 remark = _.get(item, `[${tag}].applicant`, '') + ' ' + type;
@@ -1327,7 +1327,7 @@ class MyWorkColumn extends React.Component {
             const applyInfo = {
                 id: _.get(work, 'apply.id'),
                 approval_state: '0',
-                topic: this.getApplyType(_.get(work, 'apply.apply_type', ''))
+                topic: _.get(work,'apply.apply_type_name') || this.getApplyType(_.get(work, 'apply.apply_type', ''))
             };
             switch (_.get(work, 'apply.apply_type')) {
                 case SELF_SETTING_FLOW.VISITAPPLY: //拜访申请
