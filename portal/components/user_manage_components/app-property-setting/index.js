@@ -24,6 +24,10 @@ import UserTwoFactorField from '../user-two-factorfield';
 import UserMultiLoginField from '../user-multilogin-radiofield';
 import UserAppTerminalCheckboxField from '../user-app-terminal-checkboxfield';
 import AppRolePermission from '../app-role-permission';
+import DetailCard from '../../detail-card';
+import DefaultUserLogoTitle from '../../default-user-logo-title';
+import AppUserUtil from 'MOD_DIR/app_user_manage/public/util/app-user-util.js';
+const LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 
 const AppPropertySetting = createReactClass({
     displayName: 'AppPropertySetting',
@@ -61,7 +65,8 @@ const AppPropertySetting = createReactClass({
         //显示多人登录
         showMultiLogin: PropTypes.bool,
         appSelectRoleError: PropTypes.string,
-        height: PropTypes.number
+        height: PropTypes.number,
+        hideAppBasicInfo: PropTypes.bool, // 隐藏应用的基本配置信息
     },
 
     getDefaultProps() {
@@ -82,6 +87,7 @@ const AppPropertySetting = createReactClass({
             showMultiLogin: true,
             //是否时多用户的应用设置
             isMultiUser: false,
+            hideAppBasicInfo: false, // 隐藏应用的基本配置信息
         };
     },
 
@@ -376,8 +382,17 @@ const AppPropertySetting = createReactClass({
                         this.props.isMultiUser ? null : (
                             <div
                                 className="app-property-content basic-data-form app-property-other-property"
-                                style={{display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 && !isShowAppTerminals ? 'none' : 'block'}}
+                                style={{display: this.props.hideAppBasicInfo || this.props.hideSingleApp && this.props.selectedApps.length <= 1 && !isShowAppTerminals ? 'none' : 'block'}}
                             >
+                                {
+                                    this.props.isSingleAppEdit ? (
+                                        <div className="form-item">
+                                            <div className="form-item-label form-title">
+                                                {Intl.get('appEdit.basicConig', '基本配置')}
+                                            </div>
+                                        </div>
+                                    ) : null
+                                }
                                 {this.props.showUserNumber ? (
                                     <div className="form-item">
                                         <div className="form-item-label">
@@ -558,7 +573,9 @@ const AppPropertySetting = createReactClass({
 
     render() {
         let height = this.props.height;
-        if(height !== 'auto') {
+        if (this.props.isSingleAppEdit || this.props.hideAppBasicInfo) {
+            height = height - LAYOUT_CONSTANTS.BTN_PADDING - LAYOUT_CONSTANTS.BOTTOM_PADDING;//减去底部按钮的padding
+        } else if(height !== 'auto'){
             height -= 20;//减去上面的padding
         }
         //class名字
@@ -572,33 +589,64 @@ const AppPropertySetting = createReactClass({
         }
         return (
             <div className={cls}>
-                <div className="app-property-container">
-                    <Tabs
-                        tabPosition="left"
-                        onChange={this.currentTabChange}
-                        style={{height: height}}
-                    >
-                        {
-                            this.props.selectedApps.map((app) => {
-                                return (
-                                    <TabPane
-                                        tab={this.renderTabToolTip(app.app_name)}
-                                        key={this.getAppSettingKey(app.app_id, app.user_id)}
-                                    >
-                                        <GeminiScrollBar
-                                            style={{height: height}}
-                                            ref="gemini"
-                                            className="app-property-content"
-                                        >
-                                            {this.renderTabContent(app.app_id)}
-                                        </GeminiScrollBar>
-                                    </TabPane>
-                                );
-                            })
-                        }
-                    </Tabs>
+                {
+                    this.props.isSingleAppEdit ? (
+                        <div className="app-property-container">
+                            <GeminiScrollBar style={{ height: height }} ref="gemini" className="app-property-content">
+                                {
+                                    this.props.selectedApps.map((app, index) => {
+                                        return (
+                                            <DetailCard
+                                                key={index}
+                                                title={(
+                                                    <div className="title-container clearfix">
+                                                        <span className="logo-container" title={app.app_name}>
+                                                            <DefaultUserLogoTitle
+                                                                nickName={app.app_name}
+                                                                userLogo={app.app_logo}
+                                                            />
+                                                        </span>
+                                                        <p title={app.app_name}>{app.app_name}</p>
+                                                    </div>
+                                                )}
+                                                content={this.renderTabContent(app.app_id)}
+                                            />
+                                        );
+                                    })
+                                }
+                            </GeminiScrollBar>
+                        </div>
+                    ) : (
+                        <div className="app-property-container">
+                            <Tabs
+                                tabPosition="left"
+                                onChange={this.currentTabChange}
+                                style={{height: height}}
+                            >
+                                {
+                                    this.props.selectedApps.map((app) => {
+                                        return (
+                                            <TabPane
+                                                tab={this.renderTabToolTip(app.app_name)}
+                                                key={this.getAppSettingKey(app.app_id, app.user_id)}
+                                            >
+                                                <GeminiScrollBar
+                                                    style={{height: height}}
+                                                    ref="gemini"
+                                                    className="app-property-content"
+                                                >
+                                                    {this.renderTabContent(app.app_id)}
+                                                </GeminiScrollBar>
+                                            </TabPane>
+                                        );
+                                    })
+                                }
+                            </Tabs>
 
-                </div>
+                        </div>
+                    )
+                }
+
             </div>
         );
     },

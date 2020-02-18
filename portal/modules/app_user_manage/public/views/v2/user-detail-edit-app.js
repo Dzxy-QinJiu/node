@@ -5,7 +5,7 @@ var createReactClass = require('create-react-class');
 import AppUserPanelSwitchAction from '../../action/app-user-panelswitch-actions';
 import UserDetailEditAppActions from '../../action/v2/user-detail-edit-app-actions';
 import UserDetailEditAppStore from '../../store/v2/user-detail-edit-app-store';
-import AppPropertySetting from '../v3/app-property-setting';
+import AppPropertySetting from 'CMP_DIR/user_manage_components/app-property-setting';
 import {Tabs, Icon, Alert} from 'antd';
 import AlertTimer from '../../../../../components/alert-timer';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';

@@ -28,7 +28,7 @@ import insertStyle from '../../../../../components/insert-style';
 const GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 const DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 const CheckboxGroup = Checkbox.Group;
-import UserAppConfig from '../v3/app-property-setting';
+import UserAppConfig from 'CMP_DIR/user_manage_components/app-property-setting';
 import ApplyUserAppConfig from 'CMP_DIR/apply-user-app-config';
 import AppConfigForm from 'CMP_DIR/apply-user-app-config/app-config-form';
 import {CONFIG_TYPE} from 'PUB_DIR/sources/utils/consts';
@@ -641,6 +641,7 @@ const UserDetailAddApp = createReactClass({
                     onAppPropertyChange={this.onAppPropertyChange.bind(this)}
                     height={height}
                     hideSingleApp={true}
+                    hideAppBasicInfo={true}
                 />
             </div>
         );
