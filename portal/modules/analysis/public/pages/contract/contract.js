@@ -5,6 +5,7 @@
 import { contractChart } from 'ant-chart-collection';
 import {CONTRACT_MENUS} from '../../consts';
 import { isSales } from '../../utils';
+import store from '../../store';
 import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 
 module.exports = {
@@ -19,8 +20,8 @@ module.exports = {
 
 function getCharts() {
     return [
-        //新增合同毛利团队分布
-        contractChart.getContractNewChart(),
+        //新增合同毛利分布
+        contractChart.getContractNewChart({store}),
         //近3个月新增合同周趋势图
         contractChart.getTrendChart({
             title: Intl.get('contract.147', '近3个月新增合同周趋势图'),
