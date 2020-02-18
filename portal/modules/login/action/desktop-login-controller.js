@@ -380,7 +380,8 @@ exports.sendResetPasswordMsg = function(req, res) {
         const sendType = req.query.send_type;
         //发送信息
         DesktopLoginService.sendResetPasswordMsg(req, res, userName, sendType, operateCode).on('success', function(data) {
-            res.status(200).json({user_id: _.get(data, 'user_id', '')});
+            if (!data) data = true;
+            res.status(200).json(data);
         }).on('error', function(errorObj) {
             res.status(500).json(errorObj);
         });
