@@ -742,6 +742,7 @@ class MyWorkColumn extends React.Component {
 
     getApplyRemark(item, tag) {
         let remark = '';
+        //businesstrip_awhile domainName visitapply 类型的申请会返回apply_type_name字段，展示申请类型的描述，其他类型用原来的映射
         let type = _.get(item,`[${tag}].apply_type_name`) || this.getApplyType(_.get(item, `[${tag}].apply_type`, ''));
         switch (_.get(item, `[${tag}].opinion`, '')) {
             case APPLY_STATUS.ONGOING://待审批
@@ -1327,6 +1328,7 @@ class MyWorkColumn extends React.Component {
             const applyInfo = {
                 id: _.get(work, 'apply.id'),
                 approval_state: '0',
+                //businesstrip_awhile domainName visitapply 类型的申请会返回apply_type_name字段，展示申请类型的描述，其他类型用原来的映射
                 topic: _.get(work,'apply.apply_type_name') || this.getApplyType(_.get(work, 'apply.apply_type', ''))
             };
             switch (_.get(work, 'apply.apply_type')) {
