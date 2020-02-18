@@ -880,12 +880,12 @@ exports.disabledHour = function(startTime, endTime){
 };
 //禁用的分钟数量
 exports.disabledMinute = function(startTime, endTime, selectTime){
-    var startMinute = moment(startTime).get('minute'),endMinute = moment(endTime).get('minute');
-    var startHour = moment(startTime).get('hour'),endHour = moment(endTime).get('hour'), currentHour = moment(selectTime).get('hour');
+    const startMoment = moment(startTime),endMoment = moment(endTime);
+    var startHour = startMoment.get('hour'),endHour = endMoment.get('hour'), currentHour = moment(selectTime).get('hour');
     if(currentHour === startHour){
-        return _.range(0, startMinute);
+        return _.range(0, startMoment.get('minute'));
     }else if(currentHour === endHour){
-        return _.range(endMinute + 1, 60);
+        return _.range(endMoment.get('minute') + 1, 60);
     }else{
         return [];
     }
@@ -896,11 +896,11 @@ exports.calculateSelectType = function(selectTime, rangeObj){
         selectTypeArr = selectTypeArr.push({name: '', value: ''});
     }else{
         //如果和开始的时间是同一天并且开始的类型是PM
-        if (moment(selectTime).isSame(rangeObj.initial_visit_start_time, 'day') && rangeObj.initial_visit_start_type === AM_AND_PM.PM){
+        if (moment(selectTime).isSame(rangeObj.initialVisitStartTime, 'day') && rangeObj.initial_visit_start_type === AM_AND_PM.PM){
             selectTypeArr = LEAVE_TIME_RANGE.slice(1,2);
         }
         //如果和结束的时间是同一天并且结束的类型是AM
-        if (moment(selectTime).isSame(rangeObj.initial_visit_end_time, 'day') && rangeObj.initial_visit_end_type === AM_AND_PM.AM){
+        if (moment(selectTime).isSame(rangeObj.initialVisitEndTime, 'day') && rangeObj.initial_visit_end_type === AM_AND_PM.AM){
             selectTypeArr = LEAVE_TIME_RANGE.slice(0,1);
         }
     }
@@ -1489,27 +1489,26 @@ exports.getTimeWithSecondZero = function(value) {
 //计算一下各个外出客户的时长是否小于总外出时长及各个外出客户的时长是否有重复
 exports.checkCustomerTotalLeaveTime = function(startTime,endTime,customers,isAdd) {
     var totalRange = endTime - startTime;
-    var customerSelectRange = 0, isOverRide = false;//isOverRide 是否时间有重复 customerSelectRange 各个客户外出时间总和
-    _.forEach(customers,(customerItem,index) => {
+    var customerSelectRange = 0, //customerSelectRange 各个客户外出时间总和
+        isOverRide = false;//isOverRide 是否时间有重复
+    _.each(customers, (customerItem,index) => {
         var startTime = customerItem.visit_start_time;
         var endTime = customerItem.visit_end_time;
-        for (var i = 0; i < _.get(customers, 'length'); i++) {
-            var start = _.get(customers,`[${i}].visit_start_time`);
-            var end = _.get(customers,`[${i}].visit_end_time`);
-            if (i !== index && (_.inRange(startTime, start, end) || _.inRange(endTime, start, end))) {
-                isOverRide = true;
-                return;
-            }
-        }
+        isOverRide = _.some(customers,(item,customerIndex) => {
+            var start = _.get(item,'visit_start_time');
+            var end = _.get(item,'visit_end_time');
+            return customerIndex !== index && (_.inRange(startTime, start, end) || _.inRange(endTime, start, end));
+        });
     });
     if(isOverRide){
         return {
             errTip: Intl.get('business.leave.time.no.overlay', '外出时间不要重复')
         };
     }else if(isAdd){
-        _.forEach(customers, customerItem => {
-            customerSelectRange += (customerItem.visit_end_time - customerItem.visit_start_time);
-        });
+        customerSelectRange = _.reduce(customers, (customerSelectRange, customerItem) => {
+            return customerSelectRange + (customerItem.visit_end_time - customerItem.visit_start_time);
+        },customerSelectRange);
+
         if(customerSelectRange === totalRange){
             return {
                 errTip: Intl.get('business.change.total.time', '请修改时间再添加')

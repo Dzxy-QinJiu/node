@@ -310,7 +310,7 @@ class ApplyViewDetail extends React.Component {
         var customersAdds = [];
         var customersGroupByProvince = _.groupBy(_.get(detail, 'customers', []), 'province');//所有客户按省进行分组
         _.forEach(customersGroupByProvince, (value, key) => {
-            var cityList = _.map(_.uniqBy(value, 'city'), 'city');//取出对应的市，然后进行去重
+            var cityList = _.chain(value).map('city').uniq().value();//取出对应的市，然后进行去重
             customersAdds.push(key + cityList.join('、'));
         });
         var showApplyInfo = [{

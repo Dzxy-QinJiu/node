@@ -354,8 +354,8 @@ class AddBusinessWhile extends React.Component {
                                         addAssignedCustomer={this.addAssignedCustomer}
                                         form={this.props.form}
                                         handleCustomersChange={this.handleCustomersChange}
-                                        initial_visit_start_time={formData.begin_time}
-                                        initial_visit_end_time={formData.end_time}
+                                        initialVisitStartTime={formData.begin_time}
+                                        initialVisitEndTime={formData.end_time}
                                         isRequired={false}
                                     />
                                     <div className="submit-button-container">

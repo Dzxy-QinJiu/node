@@ -19,14 +19,14 @@ class DynamicAddDelCustomers extends React.Component {
         super(props);
         var timeRange = this.getInitialTimeRange();
         this.state = {
-            initial_visit_start_time: this.props.initial_visit_start_time,
-            initial_visit_end_time: this.props.initial_visit_end_time,
+            initialVisitStartTime: this.props.initialVisitStartTime,
+            initialVisitEndTime: this.props.initialVisitEndTime,
             customers: [{...timeRange,key: 0}]
         };
     }
     getInitialTimeRange = () => {
-        var visit_start_time = this.props.initial_visit_start_time || moment().valueOf();
-        var visit_end_time = this.props.initial_visit_end_time || moment().valueOf();
+        var visit_start_time = this.props.initialVisitStartTime || moment().valueOf();
+        var visit_end_time = this.props.initialVisitEndTime || moment().valueOf();
         return {
             visit_start_time: visit_start_time,//拜访开始时间
             visit_end_time: visit_end_time,//拜访结束时间
@@ -34,19 +34,19 @@ class DynamicAddDelCustomers extends React.Component {
     };
     componentWillReceiveProps(nextProps) {
         var customers = this.state.customers;
-        if (nextProps.initial_visit_start_time && nextProps.initial_visit_start_time !== this.props.initial_visit_start_time){
+        if (nextProps.initialVisitStartTime && nextProps.initialVisitStartTime !== this.props.initialVisitStartTime){
             _.forEach(customers, (customerItem) => {
-                customerItem.visit_start_time = nextProps.initial_visit_start_time;
+                customerItem.visit_start_time = nextProps.initialVisitStartTime;
             });
         }
-        if (nextProps.initial_visit_end_time && nextProps.initial_visit_end_time !== this.props.initial_visit_end_time){
+        if (nextProps.initialVisitEndTime && nextProps.initialVisitEndTime !== this.props.initialVisitEndTime){
             _.forEach(customers, (customerItem) => {
-                customerItem.visit_end_time = nextProps.initial_visit_end_time;
+                customerItem.visit_end_time = nextProps.initialVisitEndTime;
             });
         }
         this.setState({
-            initial_visit_start_time: nextProps.initial_visit_start_time,
-            initial_visit_end_time: nextProps.initial_visit_end_time,
+            initialVisitStartTime: nextProps.initialVisitStartTime,
+            initialVisitEndTime: nextProps.initialVisitEndTime,
             customers: customers
         });
     }
@@ -181,8 +181,8 @@ class DynamicAddDelCustomers extends React.Component {
     };
     checkItemStartAndEndTime = (item) => {
         const {form} = this.props;
-        var initialStartTime = this.state.initial_visit_start_time;
-        var initialEndTime = this.state.initial_visit_end_time;
+        var initialStartTime = this.state.initialVisitStartTime;
+        var initialEndTime = this.state.initialVisitEndTime;
         //如果开始时间早于总的开始时间或者晚于总结束时间
         if(item.visit_start_time < initialStartTime ){
             item.visit_start_time = initialStartTime;
@@ -253,8 +253,8 @@ class DynamicAddDelCustomers extends React.Component {
         };
         let customers = this.state.customers;
         let curCustomer = _.find(customers, (item) => {return item.key === key;}) || {};
-        var initialStartTime = this.state.initial_visit_start_time;
-        var initialEndTime = this.state.initial_visit_end_time;
+        var initialStartTime = this.state.initialVisitStartTime;
+        var initialEndTime = this.state.initialVisitEndTime;
 
         return (
             <div className="contact-wrap" key={key}>
@@ -367,8 +367,9 @@ class DynamicAddDelCustomers extends React.Component {
             initialValue: [0]
         });
         const customer_keys = getFieldValue('customer_keys');
+        const {initialVisitStartTime, initialVisitEndTime,customers} = this.state;
         //点击添加客户的时候，要算一下已有客户的外出时长是否和总的外出时长的时间相等了，如果相等，就不可以再添加客户了，让他修改外出时长后再添加客户
-        const canAddCustomer = checkCustomerTotalLeaveTime(this.state.initial_visit_start_time,this.state.initial_visit_end_time,this.state.customers,true);
+        const canAddCustomer = checkCustomerTotalLeaveTime(initialVisitStartTime,initialVisitEndTime,customers,true);
         return (
             <div className="add-delete-customers-time">
                 <div className="customer-warp">
@@ -395,8 +396,8 @@ DynamicAddDelCustomers.propTypes = {
     form: PropTypes.object,
     addAssignedCustomer: PropTypes.func,
     handleCustomersChange: PropTypes.func,
-    initial_visit_start_time: PropTypes.string,
-    initial_visit_end_time: PropTypes.string,
+    initialVisitStartTime: PropTypes.string,
+    initialVisitEndTime: PropTypes.string,
     isRequired: PropTypes.boolean//是否客户是必填项
 
 };
@@ -408,8 +409,8 @@ DynamicAddDelCustomers.defaultProps = {
     handleCustomersChange: function() {
         
     },
-    initial_visit_start_time: '',
-    initial_visit_end_time: '',
+    initialVisitStartTime: '',
+    initialVisitEndTime: '',
     isRequired: true
 
 };
