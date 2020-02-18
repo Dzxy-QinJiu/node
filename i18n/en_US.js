@@ -3493,6 +3493,7 @@ var en_US = {
     'business.leave.time.range': 'Bussiness range',//出差时长
     'business.change.total.time': 'Please modify the time before adding',//请修改时间再添加
     'business.leave.time.no.overlay': 'Do not repeat time',//外出时间不要重复
+    'business.leave.time.is.required': 'Out of area is required',//外出地域是必填项
     'clue.batch.select.clues': 'Has selected {num} leads',//已选择{num}个线索
     'clue.batch.assign.sales': 'Assign in batch',//批量分配
     'clue.export.trace.msg': '{traceman} added in {tracetime}',//{traceman}于{tracetime}添加

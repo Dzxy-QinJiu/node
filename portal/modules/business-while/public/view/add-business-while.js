@@ -140,7 +140,7 @@ class AddBusinessWhile extends React.Component {
                     address: customerItem.address || '',
                     remarks: customerItem.remarks || '',
                 };
-                if(!customerItem.province && !customerItem.city && !customerItem.county && !customerItem.address){
+                if(!customerItem.province && !customerItem.city && !customerItem.county){
                     hasNoAddress = true;
                 }
                 //传入每个客户的外出时间
@@ -159,7 +159,7 @@ class AddBusinessWhile extends React.Component {
             });
             //外出的地址是必填项
             if(hasNoAddress){
-                this.setResultData('外出地址是必填项', 'error');
+                this.setResultData(Intl.get('business.leave.time.is.required', '外出地域是必填项'), 'error');
                 return;
             }
             //校验外出的时间
@@ -359,22 +359,21 @@ class AddBusinessWhile extends React.Component {
                                         isRequired={false}
                                     />
                                     <div className="submit-button-container">
+                                        <Button className="cancel-btn" onClick={this.hideBusinessApplyAddForm}
+                                            data-tracename="点击取消添加外出申请按钮">
+                                            {Intl.get('common.cancel', '取消')}
+                                        </Button>
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
                                             disabled={this.state.isSaving} data-tracename="点击保存添加
                                             外出申请">
                                             {Intl.get('common.save', '保存')}
                                             {this.state.isSaving ? <Icon type="loading"/> : null}
                                         </Button>
-                                        <Button className="cancel-btn" onClick={this.hideBusinessApplyAddForm}
-                                            data-tracename="点击取消添加外出申请按钮">
-                                            {Intl.get('common.cancel', '取消')}
-                                        </Button>
                                         <div className="indicator">
                                             {saveResult ?
                                                 (
                                                     <AlertTimer
-                                                        // time={saveResult === 'error' ? DELAY_TIME_RANGE.ERROR_RANGE : DELAY_TIME_RANGE.SUCCESS_RANGE}
-                                                        time={300000}
+                                                        time={saveResult === 'error' ? DELAY_TIME_RANGE.ERROR_RANGE : DELAY_TIME_RANGE.SUCCESS_RANGE}
                                                         message={this.state.saveMsg}
                                                         type={saveResult} showIcon
                                                         onHide={this.hideSaveTooltip}/>
