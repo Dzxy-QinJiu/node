@@ -1,6 +1,6 @@
 var React = require('react');
 require('./css/index.less');
-import { Tag, Modal, message, Button, Icon, Dropdown, Menu, Popconfirm, Popover} from 'antd';
+import { Tag, Modal, message, Button, Icon, Dropdown, Menu, Popconfirm, Popover, Input} from 'antd';
 import { AntcTable } from 'antc';
 var RightContent = require('../../../components/privilege/right-content');
 var FilterBlock = require('../../../components/filter-block');
@@ -52,6 +52,7 @@ import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 const batchOperate = require('PUB_DIR/sources/push/batch');
 import batchAjax from './ajax/batch-change-ajax';
 import CustomerLabel from 'CMP_DIR/customer_label';
+import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import crmPrivilegeConst from './privilege-const';
@@ -154,6 +155,9 @@ class Crm extends React.Component {
             customerOfCurUser: {},//当前展示用户所属客户的详情
             addType: 'start',//添加按钮的初始显示内容
             isReleasingCustomer: false,//正在释放客户
+            releaseReason: '',//释放理由
+            unFillReasonTip: '',//没有填写释放理由
+            isShowMoreButton: true,//显示更多按钮
         };
     };
 
@@ -1103,7 +1107,11 @@ class Crm extends React.Component {
         crmAjax.checkCrmUpdateUserByCustomerId(customerId).then((res) => {
             if(res) {
                 this.setState({isReleasingCustomer: true});
-                crmAjax.releaseCustomer({id: customerId}).then(result => {
+                let reqData = {id: customerId};
+                if(this.state.releaseReason) {
+                    reqData.reason = this.state.releaseReason;
+                }
+                crmAjax.releaseCustomer(reqData).then(result => {
                     this.setState({isReleasingCustomer: false});
                     CrmAction.afterReleaseCustomer(customerId);
                 }, (errorMsg) => {
@@ -1125,6 +1133,10 @@ class Crm extends React.Component {
             query_param: {},
             update_param: {release_customer: true}
         };
+        //添加释放理由
+        if(this.state.releaseReason) {
+            condition.update_param.reason = this.state.releaseReason;
+        }
         //选中全部搜索结果时，将搜索条件传给后端
         //后端会将符合这个条件的客户释放
         if (this.state.selectAllMatched) {
@@ -1227,7 +1239,9 @@ class Crm extends React.Component {
         } else if(e.key === 'merge') {
             this.showMergePanel();
         } else if(e.key === 'release') {
-            this.batchReleaseCustomer();
+            this.setState({
+                isShowMoreButton: false
+            });
         }
     }
     //是否是普通销售
@@ -1295,10 +1309,12 @@ batchTopBarDropList = (isMinWeb) => {
             'hide-change-schedule': isWebMiddle
         });
         if (this.state.selectedCustomer.length) {
-            var releaseTip = '';
-            if(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
-                releaseTip = crmUtil.releaseCustomerTip();
-            }
+            let content = (
+                <Button className='btn-item handle-btn-item' title={Intl.get('crm.customer.release.pool', '释放到客户池')}>
+                    <span className="iconfont icon-release-client"></span>
+                    {Intl.get('crm.customer.release', '释放')}
+                </Button>
+            );
             //选择客户后，展示合并和批量变更、释放的按钮
             return (<div className={batchChangeCls}>
                 {/*不渲染CrmBatchChange无法用ref获取到里面的方法，在这里用css处理隐藏批量操作*/}
@@ -1328,20 +1344,21 @@ batchTopBarDropList = (isMinWeb) => {
                             </Button>
                         </PrivilegeChecker>
                         {/*除了运营不能释放客户，管理员、销售都可以释放*/}
-                        {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
-                            <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseCustomer}
-                                title={releaseTip}>
-                                <Button className='btn-item handle-btn-item' title={Intl.get('crm.customer.release.pool', '释放到客户池')}>
-                                    <span className="iconfont icon-release-client"></span>
-                                    {Intl.get('crm.customer.release', '释放')}
-                                </Button>
-                            </Popconfirm>
-                        )}
+                        {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : this.renderReleaseReasonBlock(content, this.batchReleaseCustomer)}
                     </React.Fragment>
                     : (
-                        <MoreButton
-                            topBarDropList={this.batchTopBarDropList.bind(this, isWebMin)}
-                        />)
+                        <React.Fragment>
+                            {this.state.isShowMoreButton ? <MoreButton
+                                topBarDropList={this.batchTopBarDropList.bind(this, isWebMin)}
+                            /> :
+                                this.renderReleaseReasonBlock((
+                                    <Button className='more-btn'>
+                                        <i className="iconfont icon-more"/>
+                                    </Button>
+                                ), this.batchReleaseCustomer, 'moreBtn')
+                            }
+                        </React.Fragment>
+                    )
                 }
             </div>);
         } else {
@@ -1972,6 +1989,77 @@ batchTopBarDropList = (isMinWeb) => {
         }
     }
 
+    showDropDownContent(type) {
+        if(type === 'moreBtn') {
+            this.setState({
+                isShowMoreButton: true
+            });
+        }
+    }
+
+    clearReleaseReason = () => {
+        this.setState({
+            releaseReason: '',
+            unFillReasonTip: '',
+            isShowMoreButton: true
+        });
+    };
+
+    onReasonChange = (e) => {
+        this.setState({releaseReason: _.get(e, 'target.value', '')});
+    };
+
+    renderReleaseCustomerBlock = (releaseTip) => {
+        return (
+            <div className="release-customer-container">
+                <div className="release-customer-tip">
+                    <Icon type="exclamation-circle" style={{color: '#ffbf00', marginRight: '10'}}/>
+                    <span>{releaseTip}</span>
+                </div>
+                <Input.TextArea
+                    placeholder={Intl.get('crm.customer.release.reason', '请填写释放理由')}
+                    value={this.state.releaseReason}
+                    onChange={this.onReasonChange}
+                />
+            </div>
+        );
+    };
+
+    renderReleaseReasonBlock = (content,callback, type) => {
+        let releaseTip = '';
+        if(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+            releaseTip = crmUtil.releaseCustomerTip();
+        }
+        const handleSubmit = () => {
+            if(!this.state.releaseReason) {
+                this.setState({
+                    unFillReasonTip: Intl.get('crm.customer.release.reason', '请填写释放理由')
+                });
+                return;
+            }
+            callback();
+        };
+        let isShowDropDownContent = type === 'moreBtn' ? !this.state.isShowMoreButton : false;
+        return (
+            <AntcDropdown
+                datatraceContainer='释放客户'
+                overlayClassName="release-reason-wrapper"
+                btnAtTop={false}
+                content={content}
+                overlayTitle={Intl.get('crm.customer.release.customer', '释放客户')}
+                isSaving={this.state.isReleasingCustomer}
+                overlayContent={this.renderReleaseCustomerBlock(releaseTip)}
+                handleSubmit={handleSubmit}
+                okTitle={Intl.get('common.confirm', '确认')}
+                cancelTitle={Intl.get('common.cancel', '取消')}
+                unSelectDataTip={this.state.unFillReasonTip}
+                clearSelectData={this.clearReleaseReason}
+                showDropDownContent={this.showDropDownContent.bind(this, type)}
+                isShowDropDownContent={isShowDropDownContent}
+            />
+        );
+    };
+
     render() {
         var _this = this;
         //只有有批量变更和合并客户的权限时，才展示选择框的处理
@@ -2125,10 +2213,12 @@ batchTopBarDropList = (isMinWeb) => {
                     const canDeleteOnPreviewList = isPreview && isRepeat;
                     //是否显示删除按钮
                     const isDeleteBtnShow = canDeleteOnCrmList || canDeleteOnPreviewList;
-                    var releaseTip = '';
-                    if(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
-                        releaseTip = crmUtil.releaseCustomerTip();
-                    }
+                    const content = (
+                        <a className='release-customer'
+                            title={Intl.get('crm.customer.release', '释放')}>
+                            <i className="iconfont icon-release handle-btn-item"/>
+                        </a>
+                    );
                     return (
                         <span>
                             <span className="cus-op" data-tracename="删除客户">
@@ -2149,15 +2239,7 @@ batchTopBarDropList = (isMinWeb) => {
                                         </Popconfirm>
                                 ) : null}
                             </span>
-                            {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
-                                <Popconfirm placement="topRight" onConfirm={this.releaseCustomer.bind(this, record.id)}
-                                    title={releaseTip}>
-                                    <a className='release-customer'
-                                        title={Intl.get('crm.customer.release', '释放')}>
-                                        <i className="iconfont icon-release handle-btn-item"/>
-                                    </a>
-                                </Popconfirm>)
-                            }
+                            {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : this.renderReleaseReasonBlock(content, this.releaseCustomer.bind(this, record.id))}
                         </span>
                     );
                 }

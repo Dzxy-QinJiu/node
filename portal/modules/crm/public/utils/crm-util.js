@@ -252,7 +252,7 @@ exports.checkPrivilege = function(list) {
 
 //释放客户的提示
 exports.releaseCustomerTip = function() {
-    let releaseTip = Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确定要释放吗？');
+    let releaseTip = Intl.get('crm.customer.release.tip', '释放后其他人可以查看和提取。');
     if(checkVersionAndType().personal) {//个人版
         releaseTip = Intl.get('crm.customer.personal.release.confirm.tip', '释放后可以再从客户池提取');
     }

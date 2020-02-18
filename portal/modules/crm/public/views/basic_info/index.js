@@ -6,7 +6,7 @@ var CrmOverviewActions = require('../../action/basic-overview-actions');
 var SalesTeamStore = require('../../../../sales_team/public/store/sales-team-store');
 var PrivilegeChecker = require('../../../../../components/privilege/checker').PrivilegeChecker;
 let hasPrivilege = require('../../../../../components/privilege/checker').hasPrivilege;
-import { Tag, Dropdown, Menu, message, Popconfirm } from 'antd';
+import { Tag, Dropdown, Menu, message, Popconfirm, Icon, Input } from 'antd';
 var history = require('../../../../../public/sources/history');
 let NameTextareaField = require('./name-textarea-field');
 let CrmAction = require('../../action/crm-actions');
@@ -14,6 +14,7 @@ let CrmRepeatAction = require('../../action/customer-repeat-action');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import LocationSelectField from 'CMP_DIR/basic-edit-field-new/location-select';
+import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import crmUtil from '../../utils/crm-util';
 import CrmBasicAjax from '../../ajax/index';
 import userData from 'PUB_DIR/sources/user-data';
@@ -45,7 +46,10 @@ class BasicData extends React.Component {
         industryList: [],
         isCustomerLabelLoading: false,
         customerLabelList: customerLabelList,
-        isSavingCustomerLabel: false
+        isSavingCustomerLabel: false,
+        isReleasingCustomer: false,//正在释放客户
+        releaseReason: '',//释放理由
+        unFillReasonTip: '',//没有填写释放理由
     };
 
     onChange = () => {
@@ -260,7 +264,11 @@ class BasicData extends React.Component {
         CrmBasicAjax.checkCrmUpdateUserByCustomerId(basicData.id).then((res) => {
             if(res) {
                 this.setState({isReleasingCustomer: true});
-                CrmBasicAjax.releaseCustomer({id: basicData.id}).then(result => {
+                let reqData = {id: basicData.id};
+                if(this.state.releaseReason) {
+                    reqData.reason = this.state.releaseReason;
+                }
+                CrmBasicAjax.releaseCustomer(reqData).then(result => {
                     this.setState({isReleasingCustomer: false});
                     //释放完客户后，需要将首页对应的工作设为已完成
                     if (window.location.pathname === '/home') {
@@ -475,6 +483,43 @@ class BasicData extends React.Component {
             </Menu>);
     }
 
+    clearReleaseReason = () => {
+        this.setState({
+            releaseReason: '',
+            unFillReasonTip: '',
+        });
+    };
+
+    onReasonChange = (e) => {
+        this.setState({releaseReason: _.get(e, 'target.value', '')});
+    };
+
+    renderReleaseCustomerBlock = (releaseTip) => {
+        return (
+            <div className="release-customer-container">
+                <div className="release-customer-tip">
+                    <Icon type="exclamation-circle" style={{color: '#ffbf00', marginRight: '10'}}/>
+                    <span>{releaseTip}</span>
+                </div>
+                <Input.TextArea
+                    placeholder={Intl.get('crm.customer.release.reason', '请填写释放理由')}
+                    value={this.state.releaseReason}
+                    onChange={this.onReasonChange}
+                />
+            </div>
+        );
+    };
+
+    handleSubmitRelease = () => {
+        if(!this.state.releaseReason) {
+            this.setState({
+                unFillReasonTip: Intl.get('crm.customer.release.reason', '请填写释放理由')
+            });
+            return false;
+        }
+        this.releaseCustomer();
+    };
+
     render() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         //是否是关注客户的标识
@@ -545,11 +590,22 @@ class BasicData extends React.Component {
                                     onClick={this.handleFocusCustomer.bind(this, basicData)}
                                 />)}
                             {isShowRelease ? (
-                                <Popconfirm placement="bottomRight" onConfirm={this.releaseCustomer}
-                                    title={releaseTip}>
-                                    <span className='iconfont icon-release handle-btn-item'
-                                        title={Intl.get('crm.customer.release', '释放')}/>
-                                </Popconfirm>
+                                <AntcDropdown
+                                    datatraceContainer='释放客户'
+                                    btnAtTop={false}
+                                    placement="bottomRight"
+                                    content={(
+                                        <span className='iconfont icon-release handle-btn-item' title={Intl.get('crm.customer.release', '释放')}/>
+                                    )}
+                                    overlayTitle={Intl.get('crm.customer.release.customer', '释放客户')}
+                                    isSaving={this.state.isReleasingCustomer}
+                                    overlayContent={this.renderReleaseCustomerBlock(releaseTip)}
+                                    handleSubmit={this.handleSubmitRelease}
+                                    okTitle={Intl.get('common.confirm', '确认')}
+                                    cancelTitle={Intl.get('common.cancel', '取消')}
+                                    unSelectDataTip={this.state.unFillReasonTip}
+                                    clearSelectData={this.clearReleaseReason}
+                                />
                             ) : null}
                         </div>
                     </div>
