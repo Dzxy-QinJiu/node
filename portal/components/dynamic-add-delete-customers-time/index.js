@@ -64,17 +64,6 @@ class DynamicAddDelCustomers extends React.Component {
         this.setState({customers});
         this.props.handleCustomersChange(customers);
     };
-    //添加新客户的默认时间
-    getNewAddCustomerTimeRange = () => {
-        var visit_start_time = this.state.initial_visit_start_time;
-        var visit_end_time = this.state.initial_visit_end_time;
-        //去掉之前几个客户选过的时间
-
-        return {
-            visit_start_time: visit_start_time,//拜访开始时间
-            visit_end_time: visit_end_time,//拜访结束时间
-        };
-    };
     // 添加客户
     handleAddCustomer = () => {
         const {form} = this.props;
