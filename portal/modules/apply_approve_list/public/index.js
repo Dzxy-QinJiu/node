@@ -30,6 +30,8 @@ import UserApplyViewDetailWrap from 'MOD_DIR/user_apply/public/views/apply-view-
 import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
 import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
+import {SearchInput} from 'antc';
+import UserData from '../../../public/sources/user-data';
 class ApplyApproveList extends React.Component {
     state = {
         activeApplyTab: APPLY_TYPE.APPLY_BY_ME,
@@ -313,11 +315,94 @@ class ApplyApproveList extends React.Component {
     renderRefreshTip = () => {
 
     };
+    changeSearchInputValue = (value) => {
+        value = _.trim(value) || '';
+        if (_.trim(value) !== _.trim(this.state.searchKeyword)) {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.pull-right'), '根据申请人/客户名/用户名搜索');
+            UserApplyActions.changeSearchInputValue(value);
+            setTimeout(() => this.fetchApplyList());
+        }
+    };
+    //渲染搜索的界面
+    renderSearchPanel = () => {
+        return <div className="apply-search-wrap btn-item">
+            <SearchInput
+                type="input"
+                autocomplete="off"
+                className="form-control"
+                searchPlaceHolder={Intl.get('user.apply.search.placeholder', '申请人/客户名/用户名')}
+                searchEvent={this.changeSearchInputValue}
+            />
+        </div>;
+    };
+    getApplyListType = () => {
+        switch (this.state.applyListType) {
+            case 'all':
+                return Intl.get('user.apply.all', '全部申请');
+            case 'false':
+                return Intl.get('leave.apply.my.worklist.apply', '待我审批');
+            case 'pass':
+                return Intl.get('user.apply.pass', '已通过');
+            case 'reject':
+                return Intl.get('user.apply.reject', '已驳回');
+            case 'true':
+                return Intl.get('user.apply.applied', '已审批');
+            case 'cancel':
+                return Intl.get('user.apply.backout', '已撤销');
+        }
+    };
+    //渲染筛选的界面
+    renderFilterPanel = () => {
+        var allStatusList = [{
+            name: Intl.get('user.online.all.status', '全部状态'),
+            value: ''
+        },{
+            name: Intl.get(''),
+            value: 'ongoing'
+        }];
+        var allTypeList = [];
+        // 筛选菜单
+        var menuList = (
+            <Menu onClick={this.menuClick} className="apply-filter-menu-list">
+                <Menu.Item key="all">
+                    <a href="javascript:void(0)">{Intl.get('user.apply.all', '全部申请')}</a>
+                </Menu.Item>
+                <Menu.Item key="false">
+                    <a href="javascript:void(0)">{Intl.get('leave.apply.my.worklist.apply', '待我审批')}</a>
+                </Menu.Item>
+                <Menu.Item key="pass">
+                    <a href="javascript:void(0)">{Intl.get('user.apply.pass', '已通过')}</a>
+                </Menu.Item>
+                <Menu.Item key="reject">
+                    <a href="javascript:void(0)">{Intl.get('user.apply.reject', '已驳回')}</a>
+                </Menu.Item>
+                <Menu.Item key="cancel">
+                    <a href="javascript:void(0)">{Intl.get('user.apply.backout', '已撤销')}</a>
+                </Menu.Item>
+            </Menu>
+        );
+        return (
+            <div className="apply-type-filter btn-item" id="apply-type-container">
+                {
+                    UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? null : (
+                        <Dropdown overlay={menuList} placement="bottomLeft"
+                            getPopupContainer={() => document.getElementById('apply-type-container')}>
+                            <span className="apply-type-filter-btn">
+                                {this.getApplyListType()}
+                                <span className="iconfont icon-arrow-down"/>
+                            </span>
+                        </Dropdown>
+                    )
+                }
+            </div>
+        );
+    };
     renderFilterSearch = () => {
         var filterOrSearchType = this.state.filterOrSearchType;
         if(filterOrSearchType){
             return (
                 <div className='filter-and-search-container'>
+                    {filterOrSearchType === SEARCH ? this.renderSearchPanel() : this.renderFilterPanel()}
                     <i className='iconfont icon-close-tips' onClick={this.closeSearchOrFilterPanel}></i>
                 </div>
             );
