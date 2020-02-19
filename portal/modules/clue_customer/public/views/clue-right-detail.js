@@ -390,7 +390,7 @@ class ClueRightPanel extends React.Component {
                                     <BasicEditInputField
                                         onDisplayTypeChange={this.setEditNameFlag}
                                         hasEditPrivilege={editClueItemIconPrivilege(curClue)}
-                                        showEditText={showEditText}
+                                        displayType={showEditText ? 'edit' : 'text'}
                                         id={curClue.id}
                                         saveEditInput={this.saveEditBasicInfo.bind(this, 'name')}
                                         value={curClue.name}
