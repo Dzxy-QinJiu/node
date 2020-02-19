@@ -24,9 +24,9 @@ class DynamicAddDelCustomers extends React.Component {
         };
     }
     getInitialTimeRange = () => {
-        var visit_start_time = this.props.initial_visit_start_time || moment().valueOf();
+        var visit_start_time = this.props.initialVisitStartTime || moment().valueOf();
         var visit_start_type = this.props.initial_visit_start_type || AM_AND_PM.AM;
-        var visit_end_time = this.props.initial_visit_end_time || moment().valueOf();
+        var visit_end_time = this.props.initialVisitEndTime || moment().valueOf();
         var visit_end_type = this.props.initial_visit_end_type || AM_AND_PM.PM;
         var start_type_select = this.calculateSelectType(visit_start_time);
         var end_type_select = this.calculateSelectType(visit_end_time);
@@ -41,15 +41,15 @@ class DynamicAddDelCustomers extends React.Component {
     };
     componentWillReceiveProps(nextProps) {
         var customers = this.state.customers;
-        if (nextProps.initial_visit_start_time && nextProps.initial_visit_start_time !== this.props.initial_visit_start_time){
+        if (nextProps.initialVisitStartTime && nextProps.initialVisitStartTime !== this.props.initialVisitStartTime){
             _.forEach(customers, (customerItem) => {
-                customerItem.visit_start_time = nextProps.initial_visit_start_time;
+                customerItem.visit_start_time = nextProps.initialVisitStartTime;
                 customerItem.start_type_select = this.calculateSelectType(customerItem.visit_start_time, nextProps);
             });
         }
-        if (nextProps.initial_visit_end_time && nextProps.initial_visit_end_time !== this.props.initial_visit_end_time){
+        if (nextProps.initialVisitEndTime && nextProps.initialVisitEndTime !== this.props.initialVisitEndTime){
             _.forEach(customers, (customerItem) => {
-                customerItem.visit_end_time = nextProps.initial_visit_end_time;
+                customerItem.visit_end_time = nextProps.initialVisitEndTime;
                 customerItem.end_type_select = this.calculateSelectType(customerItem.visit_end_time, nextProps);
             });
         }
@@ -306,11 +306,11 @@ class DynamicAddDelCustomers extends React.Component {
         var props = nextProps || this.props;
         var selectTypeArr = LEAVE_TIME_RANGE;
         //如果和开始的时间是同一天并且开始的类型是PM
-        if (moment(selectTime).isSame(props.initial_visit_start_time, 'day') && props.initial_visit_start_type === AM_AND_PM.PM){
+        if (moment(selectTime).isSame(props.initialVisitStartTime, 'day') && props.initial_visit_start_type === AM_AND_PM.PM){
             selectTypeArr = LEAVE_TIME_RANGE.slice(1,2);
         }
         //如果和结束的时间是同一天并且结束的类型是AM
-        if (moment(selectTime).isSame(props.initial_visit_end_time, 'day') && props.initial_visit_end_type === AM_AND_PM.AM){
+        if (moment(selectTime).isSame(props.initialVisitEndTime, 'day') && props.initial_visit_end_type === AM_AND_PM.AM){
             selectTypeArr = LEAVE_TIME_RANGE.slice(0,1);
         }
         return selectTypeArr;
@@ -335,8 +335,8 @@ class DynamicAddDelCustomers extends React.Component {
         };
         let customers = this.state.customers;
         let curCustomer = _.find(customers, (item) => {return item.key === key;}) || {};
-        var initialStartTime = this.props.initial_visit_start_time;
-        var initialEndTime = this.props.initial_visit_end_time;
+        var initialStartTime = this.props.initialVisitStartTime;
+        var initialEndTime = this.props.initialVisitEndTime;
 
         return (
             <div className="contact-wrap" key={key}>
@@ -479,8 +479,8 @@ DynamicAddDelCustomers.propTypes = {
     form: PropTypes.object,
     addAssignedCustomer: PropTypes.func,
     handleCustomersChange: PropTypes.func,
-    initial_visit_start_time: PropTypes.string,
-    initial_visit_end_time: PropTypes.string,
+    initialVisitStartTime: PropTypes.string,
+    initialVisitEndTime: PropTypes.string,
     initial_visit_start_type: PropTypes.string,
     initial_visit_end_type: PropTypes.string,
     isRequired: PropTypes.boolean//是否客户是必填项
@@ -494,8 +494,8 @@ DynamicAddDelCustomers.defaultProps = {
     handleCustomersChange: function() {
         
     },
-    initial_visit_start_time: '',
-    initial_visit_end_time: '',
+    initialVisitStartTime: '',
+    initialVisitEndTime: '',
     initial_visit_start_type: '',
     initial_visit_end_type: '',
     isRequired: true

@@ -21,7 +21,11 @@ var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 var user = require('../../../../public/sources/user-data').getUserData();
 const DEFAULTTIMETYPE = 'day';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
-import {getStartEndTimeOfDiffRange, getTimeWithSecondZero} from 'PUB_DIR/sources/utils/common-method-util';
+import {
+    checkCustomerTotalLeaveTime,
+    getStartEndTimeOfDiffRange,
+    getTimeWithSecondZero
+} from 'PUB_DIR/sources/utils/common-method-util';
 import {calculateTotalTimeInterval, calculateRangeType} from 'PUB_DIR/sources/utils/common-data-util';
 
 var BusinessApplyAction = require('../action/business-apply-action');
@@ -125,6 +129,7 @@ class AddBusinessWhile extends React.Component {
                 start: moment(values.begin_time).format(oplateConsts.DATE_TIME_FORMAT),
                 end: moment(values.end_time).format(oplateConsts.DATE_TIME_FORMAT)
             }];
+            var hasNoAddress = false;
             _.forEach(formData.customers, (customerItem, index) => {
                 var submitCustomerItem = {
                     name: customerItem.name || '',
@@ -135,6 +140,9 @@ class AddBusinessWhile extends React.Component {
                     address: customerItem.address || '',
                     remarks: customerItem.remarks || '',
                 };
+                if(!customerItem.province && !customerItem.city && !customerItem.county){
+                    hasNoAddress = true;
+                }
                 //传入每个客户的外出时间
                 if (customerItem.visit_start_time && customerItem.visit_end_time) {
                     submitCustomerItem.visit_time = {
@@ -149,6 +157,18 @@ class AddBusinessWhile extends React.Component {
                 }
                 submitObj.customers.push(submitCustomerItem);
             });
+            //外出的地址是必填项
+            if(hasNoAddress){
+                this.setResultData(Intl.get('business.leave.time.is.required', '外出地域是必填项'), 'error');
+                return;
+            }
+            //校验外出的时间
+            const checkCustomerTimeBeforeSubmit = checkCustomerTotalLeaveTime(values.begin_time,values.end_time,formData.customers);
+            if(_.get(checkCustomerTimeBeforeSubmit,'errTip')){
+                this.setResultData(_.get(checkCustomerTimeBeforeSubmit,'errTip'), 'error');
+                return;
+            }
+
             this.setState({
                 isSaving: true,
                 saveMsg: '',
@@ -287,7 +307,7 @@ class AddBusinessWhile extends React.Component {
                                             initialValue: moment(formData.begin_time)
                                         })(
                                             <DatePicker
-                                                showTime
+                                                showTime={{format: oplateConsts.HOUR_MUNITE_FORMAT }}
                                                 type='time'
                                                 format={oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT}
                                                 onChange={this.onBeginTimeChange}
@@ -308,7 +328,7 @@ class AddBusinessWhile extends React.Component {
                                             initialValue: moment(formData.end_time)
                                         })(
                                             <DatePicker
-                                                showTime
+                                                showTime={{format: oplateConsts.HOUR_MUNITE_FORMAT }}
                                                 type='time'
                                                 format={oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT}
                                                 onChange={this.onEndTimeChange}
@@ -334,20 +354,20 @@ class AddBusinessWhile extends React.Component {
                                         addAssignedCustomer={this.addAssignedCustomer}
                                         form={this.props.form}
                                         handleCustomersChange={this.handleCustomersChange}
-                                        initial_visit_start_time={formData.begin_time}
-                                        initial_visit_end_time={formData.end_time}
+                                        initialVisitStartTime={formData.begin_time}
+                                        initialVisitEndTime={formData.end_time}
                                         isRequired={false}
                                     />
                                     <div className="submit-button-container">
+                                        <Button className="cancel-btn" onClick={this.hideBusinessApplyAddForm}
+                                            data-tracename="点击取消添加外出申请按钮">
+                                            {Intl.get('common.cancel', '取消')}
+                                        </Button>
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
                                             disabled={this.state.isSaving} data-tracename="点击保存添加
                                             外出申请">
                                             {Intl.get('common.save', '保存')}
                                             {this.state.isSaving ? <Icon type="loading"/> : null}
-                                        </Button>
-                                        <Button className="cancel-btn" onClick={this.hideBusinessApplyAddForm}
-                                            data-tracename="点击取消添加外出申请按钮">
-                                            {Intl.get('common.cancel', '取消')}
                                         </Button>
                                         <div className="indicator">
                                             {saveResult ?

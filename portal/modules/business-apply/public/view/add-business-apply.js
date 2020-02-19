@@ -390,9 +390,9 @@ class AddBusinessApply extends React.Component {
                                         addAssignedCustomer={this.addAssignedCustomer}
                                         form={this.props.form}
                                         handleCustomersChange={this.handleCustomersChange}
-                                        initial_visit_start_time={formData.begin_time}
+                                        initialVisitStartTime={formData.begin_time}
                                         initial_visit_start_type={formData.begin_type}
-                                        initial_visit_end_time={formData.end_time}
+                                        initialVisitEndTime={formData.end_time}
                                         initial_visit_end_type={formData.end_type}
                                         isRequired={false}
                                     />

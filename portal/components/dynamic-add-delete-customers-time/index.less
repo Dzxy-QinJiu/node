@@ -7,9 +7,10 @@
     padding: 10px;
     margin-bottom: 10px;
     .add-apply-time{
-      .ant-calendar-picker {
-        width: 44%!important;
-        .ant-calendar-picker-icon{
+      .ant-time-picker {
+        float: left;
+        width: 40%;
+        .ant-time-picker-icon{
           display: none;
         }
       };
@@ -24,9 +25,21 @@
       };
       .apply-range{
         float: left;
-        width: 12%;
+        width: 20%;
         text-align: center;
         color:#ccc;
+      }
+    }
+    .area-selector{
+      .ant-form-item{
+          .ant-form-item-label label:before{
+            display: inline-block;
+            margin-right: 4px;
+            content: "*";
+            line-height: 1;
+            font-size: 12px;
+            color: #f04134;
+          }
       }
     }
     .customer-name-item{

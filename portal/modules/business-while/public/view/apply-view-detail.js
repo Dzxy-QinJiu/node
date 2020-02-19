@@ -308,8 +308,10 @@ class ApplyViewDetail extends React.Component {
         var applicant = detailInfo.applicant || {};
         //展示客户的地址，只展示到县区就可以，不用展示到街道
         var customersAdds = [];
-        _.forEach(_.get(detail, 'customers', []), (value, key) => {
-            customersAdds.push(_.get(value,'province') + _.get(value,'city') + _.get(value,'county') + _.get(value,'address'));
+        var customersGroupByProvince = _.groupBy(_.get(detail, 'customers', []), 'province');//所有客户按省进行分组
+        _.forEach(customersGroupByProvince, (value, key) => {
+            var cityList = _.chain(value).map('city').uniq().value();//取出对应的市，然后进行去重
+            customersAdds.push(key + cityList.join('、'));
         });
         var showApplyInfo = [{
             label: Intl.get('common.login.time', '时间'),

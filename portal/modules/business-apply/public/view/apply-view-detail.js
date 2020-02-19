@@ -500,9 +500,9 @@ class ApplyViewDetail extends React.Component {
         var start = _.get(applyTime, 'start'),end = _.get(applyTime, 'end');
         var initialStartTime = moment(_.get(start.split('_'),'[0]')).valueOf();
         var initialEndTime = moment(_.get(end.split('_'),'[0]')).valueOf();
-        var initialRangeObj = {initial_visit_start_time: applyObj.visit_start_time,
+        var initialRangeObj = {initialVisitStartTime: applyObj.visit_start_time,
             initial_visit_start_type: this.transferAmAndPm(applyObj.visit_start_type),
-            initial_visit_end_time: applyObj.visit_end_time,
+            initialVisitEndTime: applyObj.visit_end_time,
             initial_visit_end_type: this.transferAmAndPm(applyObj.visit_end_type)};
         var start_type_select = calculateSelectType(visit_start_time, initialRangeObj);
         var end_type_select = calculateSelectType(visit_end_time, initialRangeObj);
@@ -587,9 +587,9 @@ class ApplyViewDetail extends React.Component {
         var start = _.get(applyTime, 'start'),end = _.get(applyTime, 'end');
         var initialStartTime = moment(_.get(start.split('_'),'[0]')).valueOf();
         var initialEndTime = moment(_.get(end.split('_'),'[0]')).valueOf();
-        var initialRangeObj = {initial_visit_start_time: applyObj.visit_start_time,
+        var initialRangeObj = {initialVisitStartTime: applyObj.visit_start_time,
             initial_visit_start_type: this.transferAmAndPm(applyObj.visit_start_type),
-            initial_visit_end_time: applyObj.visit_end_time,
+            initialVisitEndTime: applyObj.visit_end_time,
             initial_visit_end_type: this.transferAmAndPm(applyObj.visit_end_type)};
         var start_type_select = calculateSelectType(visit_start_time, initialRangeObj);
         var end_type_select = calculateSelectType(visit_end_time, initialRangeObj);

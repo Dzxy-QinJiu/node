@@ -8,23 +8,25 @@ var React = require('react');
 require('./index.less');
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {Form, Input,DatePicker, Select} from 'antd';
+import {Form, Input, Select,TimePicker, Popover} from 'antd';
 const FormItem = Form.Item;
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import {AntcAreaSelection} from 'antc';
-import {disabledDate,disabledTime,getTimeWithSecondZero} from 'PUB_DIR/sources/utils/common-method-util';
+import {disabledHour,getTimeWithSecondZero,disabledMinute,checkCustomerTotalLeaveTime} from 'PUB_DIR/sources/utils/common-method-util';
 
 class DynamicAddDelCustomers extends React.Component {
     constructor(props) {
         super(props);
         var timeRange = this.getInitialTimeRange();
         this.state = {
+            initialVisitStartTime: this.props.initialVisitStartTime,
+            initialVisitEndTime: this.props.initialVisitEndTime,
             customers: [{...timeRange,key: 0}]
         };
     }
     getInitialTimeRange = () => {
-        var visit_start_time = this.props.initial_visit_start_time || moment().valueOf();
-        var visit_end_time = this.props.initial_visit_end_time || moment().valueOf();
+        var visit_start_time = this.props.initialVisitStartTime || moment().valueOf();
+        var visit_end_time = this.props.initialVisitEndTime || moment().valueOf();
         return {
             visit_start_time: visit_start_time,//拜访开始时间
             visit_end_time: visit_end_time,//拜访结束时间
@@ -32,16 +34,21 @@ class DynamicAddDelCustomers extends React.Component {
     };
     componentWillReceiveProps(nextProps) {
         var customers = this.state.customers;
-        if (nextProps.initial_visit_start_time && nextProps.initial_visit_start_time !== this.props.initial_visit_start_time){
+        if (nextProps.initialVisitStartTime && nextProps.initialVisitStartTime !== this.props.initialVisitStartTime){
             _.forEach(customers, (customerItem) => {
-                customerItem.visit_start_time = nextProps.initial_visit_start_time;
+                customerItem.visit_start_time = nextProps.initialVisitStartTime;
             });
         }
-        if (nextProps.initial_visit_end_time && nextProps.initial_visit_end_time !== this.props.initial_visit_end_time){
+        if (nextProps.initialVisitEndTime && nextProps.initialVisitEndTime !== this.props.initialVisitEndTime){
             _.forEach(customers, (customerItem) => {
-                customerItem.visit_end_time = nextProps.initial_visit_end_time;
+                customerItem.visit_end_time = nextProps.initialVisitEndTime;
             });
         }
+        this.setState({
+            initialVisitStartTime: nextProps.initialVisitStartTime,
+            initialVisitEndTime: nextProps.initialVisitEndTime,
+            customers: customers
+        });
     }
 
     // 删除客户
@@ -57,7 +64,6 @@ class DynamicAddDelCustomers extends React.Component {
         this.setState({customers});
         this.props.handleCustomersChange(customers);
     };
-
     // 添加客户
     handleAddCustomer = () => {
         const {form} = this.props;
@@ -175,8 +181,8 @@ class DynamicAddDelCustomers extends React.Component {
     };
     checkItemStartAndEndTime = (item) => {
         const {form} = this.props;
-        var initialStartTime = this.props.initial_visit_start_time;
-        var initialEndTime = this.props.initial_visit_end_time;
+        var initialStartTime = this.state.initialVisitStartTime;
+        var initialEndTime = this.state.initialVisitEndTime;
         //如果开始时间早于总的开始时间或者晚于总结束时间
         if(item.visit_start_time < initialStartTime ){
             item.visit_start_time = initialStartTime;
@@ -227,6 +233,7 @@ class DynamicAddDelCustomers extends React.Component {
             'customers': customers
         });
     };
+
     renderDiffCustomers(key, index, customer_keys) {
         var _this = this;
         const size = customer_keys.length;
@@ -246,8 +253,8 @@ class DynamicAddDelCustomers extends React.Component {
         };
         let customers = this.state.customers;
         let curCustomer = _.find(customers, (item) => {return item.key === key;}) || {};
-        var initialStartTime = this.props.initial_visit_start_time;
-        var initialEndTime = this.props.initial_visit_end_time;
+        var initialStartTime = this.state.initialVisitStartTime;
+        var initialEndTime = this.state.initialVisitEndTime;
 
         return (
             <div className="contact-wrap" key={key}>
@@ -285,28 +292,28 @@ class DynamicAddDelCustomers extends React.Component {
                 >
                     {getFieldDecorator(`customers[${key}].visit_start_time`,{
                         initialValue: moment(curCustomer.visit_start_time) })(
-                        <DatePicker
-                            showTime={{ defaultValue: moment(curCustomer.visit_start_time, oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) }}
+                        <TimePicker
+                            showTime={{format: oplateConsts.HOUR_MUNITE_FORMAT}}
                             type='time'
-                            format={oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT}
+                            format={oplateConsts.HOUR_MUNITE_FORMAT}
                             onChange={this.onVisitBeginTimeChange.bind(this, key)}
                             value={curCustomer.visit_start_time ? moment(curCustomer.visit_start_time) : moment()}
-                            disabledDate={disabledDate.bind(this, initialStartTime, initialEndTime)}
-                            disabledTime={disabledTime.bind(this, initialStartTime, initialEndTime)}
+                            disabledHours={disabledHour.bind(this,initialStartTime, initialEndTime)}
+                            disabledMinutes={disabledMinute.bind(this,initialStartTime, initialEndTime,curCustomer.visit_start_time)}
                         />
 
                     )}
                     <span className="apply-range">{Intl.get('common.time.connector', '至')}</span>
                     {getFieldDecorator(`customers[${key}].visit_end_time`,{
                         initialValue: moment(curCustomer.visit_end_time)})(
-                        <DatePicker
-                            showTime={{ defaultValue: moment(curCustomer.visit_end_time, oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) }}
+                        <TimePicker
+                            showTime={{format: oplateConsts.HOUR_MUNITE_FORMAT }}
                             type='time'
-                            format={oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT}
+                            format={oplateConsts.HOUR_MUNITE_FORMAT}
                             onChange={this.onVisitEndTimeChange.bind(this, key)}
                             value={curCustomer.visit_end_time ? moment(curCustomer.visit_end_time) : moment()}
-                            disabledDate={disabledDate.bind(this, initialStartTime, initialEndTime)}
-                            disabledTime={disabledTime.bind(this, initialStartTime, initialEndTime)}
+                            disabledHours={disabledHour.bind(this,initialStartTime, initialEndTime)}
+                            disabledMinutes={disabledMinute.bind(this,initialStartTime, initialEndTime,curCustomer.visit_end_time)}
                         />
                     )}
                 </FormItem>
@@ -325,7 +332,9 @@ class DynamicAddDelCustomers extends React.Component {
                     label={Intl.get('common.address', '地址')}
                     {...formItemLayout}
                 >
-                    {getFieldDecorator(`customers[${key}].address`, {initialValue: curCustomer.address})(
+                    {getFieldDecorator(`customers[${key}].address`, {initialValue: curCustomer.address,
+                        rules: [{required: true, message: Intl.get('contract.224', '请输入地址')}]
+                    })(
                         <Input
                             placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
                             onChange={this.setSelectedAddr.bind(this, key)}
@@ -358,6 +367,9 @@ class DynamicAddDelCustomers extends React.Component {
             initialValue: [0]
         });
         const customer_keys = getFieldValue('customer_keys');
+        const {initialVisitStartTime, initialVisitEndTime,customers} = this.state;
+        //点击添加客户的时候，要算一下已有客户的外出时长是否和总的外出时长的时间相等了，如果相等，就不可以再添加客户了，让他修改外出时长后再添加客户
+        const canAddCustomer = checkCustomerTotalLeaveTime(initialVisitStartTime,initialVisitEndTime,customers,true);
         return (
             <div className="add-delete-customers-time">
                 <div className="customer-warp">
@@ -365,8 +377,18 @@ class DynamicAddDelCustomers extends React.Component {
                         return this.renderDiffCustomers(key, index, customer_keys);
                     })}
                 </div>
-                <div className="add-customer"
-                    onClick={this.handleAddCustomer}>{Intl.get('crm.3', '添加客户')}</div>
+                {_.get(canAddCustomer,'errTip') ?
+                    <div className="add-customer">
+                        <Popover
+                            placement="topLeft"
+                            overlayClassName="client-invalid-popover"
+                            content={canAddCustomer.errTip}
+                            trigger="click"
+                        >{Intl.get('crm.3', '添加客户')}
+                        </Popover></div> :
+                    <div className="add-customer"
+                        onClick={this.handleAddCustomer}>{Intl.get('crm.3', '添加客户')}</div>
+                }
             </div>);
     }
 }
@@ -374,8 +396,8 @@ DynamicAddDelCustomers.propTypes = {
     form: PropTypes.object,
     addAssignedCustomer: PropTypes.func,
     handleCustomersChange: PropTypes.func,
-    initial_visit_start_time: PropTypes.string,
-    initial_visit_end_time: PropTypes.string,
+    initialVisitStartTime: PropTypes.string,
+    initialVisitEndTime: PropTypes.string,
     isRequired: PropTypes.boolean//是否客户是必填项
 
 };
@@ -387,8 +409,8 @@ DynamicAddDelCustomers.defaultProps = {
     handleCustomersChange: function() {
         
     },
-    initial_visit_start_time: '',
-    initial_visit_end_time: '',
+    initialVisitStartTime: '',
+    initialVisitEndTime: '',
     isRequired: true
 
 };
