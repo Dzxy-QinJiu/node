@@ -199,12 +199,14 @@ class WeeklyReport extends React.Component {
                         <Col span={21}>
                             <div className='weekly-report-content clearfix'>
                                 <div className='col-md-12 weekly-report-detail-wrap'>
-                                    <WeeklyReportDetail
-                                        selectedItem={{teamId: this.state.selectedTeamId, nYear: this.state.nYear, nWeek: this.state.nWeek}}
-                                        selectedTeamName={this.state.selectedTeamName}
-                                        memberList={this.state.memberList}
-                                        teamList={this.state.teamList.list}
-                                    />
+                                    {this.state.selectedTeamId ? (
+                                        <WeeklyReportDetail
+                                            selectedItem={{teamId: this.state.selectedTeamId, nYear: this.state.nYear, nWeek: this.state.nWeek}}
+                                            selectedTeamName={this.state.selectedTeamName}
+                                            memberList={this.state.memberList}
+                                            teamList={this.state.teamList.list}
+                                        />
+                                    ) : null}
                                 </div>
                             </div>
                         </Col>
