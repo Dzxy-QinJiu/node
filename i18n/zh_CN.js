@@ -1470,6 +1470,7 @@ var zh_CN = {
     'reply.reject.tip.content': '{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'reply.cancel.tip.content': '{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'user.apply.new.refresh.tip': '有新申请，点此刷新',
+    'apply.list.new.refresh.tip': '有新申请，{refresh}查看',
     'user.apply.no.new.refresh.tip': '无新申请',
     'user.apply.last.follow.date': '最新跟进日期',
     'user.apply.approve.no.comment': '暂无申请历史！',

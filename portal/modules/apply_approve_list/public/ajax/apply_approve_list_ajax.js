@@ -24,7 +24,29 @@ exports.getApplyList = function(obj) {
     });
     return Deferred.promise();
 };
-
+/**
+ * 获取我发起的审批列表
+ */
+var applyListStartSelfAjax;
+exports.getApplyListStartSelf = function(obj) {
+    var Deferred = $.Deferred();
+    applyListStartSelfAjax && applyListStartSelfAjax.abort();
+    applyListStartSelfAjax = $.ajax({
+        url: '/rest/apply_list/start/self',
+        dataType: 'json',
+        type: 'get',
+        data: obj,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(data,textStatus) {
+            if(textStatus !== 'abort') {
+                Deferred.reject(data && data.message || Intl.get('common.get.user.apply.failed', '获取用户审批列表失败'));
+            }
+        }
+    });
+    return Deferred.promise();
+};
 /**
  * 获取申请详情
  */

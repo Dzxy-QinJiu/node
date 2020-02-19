@@ -58,8 +58,11 @@ var AppUserRestApis = {
     editAppUser: '/rest/base/v1/user/:user_id/detail',
     //修改用户所属客户
     editAppUserCustomer: '/rest/base/v1/user/belong/customer',
-    //获取用户审批列表
-    getApplyList: '/rest/base/v1/message/applylist',
+    //todo 获取用户审批列表
+    // getApplyList: '/rest/base/v1/message/applylist',
+    getApplyList: 'http://10.20.1.185:8391/rest/base/v1/workflow/applylist',
+    //todo 我申请的
+    getApplyListStartSelf: 'http://10.20.1.185:8391/rest/base/v1/workflow/applylist/self',
     //获取有未读回复的申请列表
     getUnreadApplyList: '/rest/base/v1/message/applylist/comment/unread',
     //获取未读回复列表(用户来标识未读回复的申请)
@@ -78,14 +81,16 @@ var AppUserRestApis = {
     getCustomerUsers: '/rest/base/v1/user/customer/users',
     //批量用户延期
     batchDelayUser: '/rest/base/v1/user/batch/grant/delay',
-    //修改密码
-    changePassword: '/rest/base/v1/user/apply/user_password',
+    //todo 修改密码
+    // changePassword: '/rest/base/v1/user/apply/user_password',
+    changePassword: 'http://10.20.1.185:8391/rest/base/v1/workflow/user/change',
     //用户申请修改其他类型
     applyChangeOther: '/rest/base/v1/user/apply/else',
     //审批用户延期
     approveDelayUser: '/rest/base/v1/user/approve_delay',
-    //审批修改密码
-    submitApplyChangePassword: '/rest/base/v1/user/approve_password',
+    //todo 审批修改密码
+    // submitApplyChangePassword: '/rest/base/v1/user/approve_password',
+    submitApplyChangePassword: 'http://10.20.1.185:8391/rest/base/v1/workflow/user/change/approve',
     //审批其他类型的修改
     submitApplyChangeOther: '/rest/base/v1/user/approve/sthelse',
     //审批开通状态
@@ -361,7 +366,53 @@ exports.getApplyList = function(req, res, obj) {
     });
 };
 
-
+/**
+ * 获取我申请的申请列表*/
+exports.getApplyListStartSelf = function(req, res){
+    var obj = req.query;
+    let url = AppUserRestApis.getApplyListStartSelf;
+    //todo 获取有未读回复的申请列表
+    if (obj.isUnreadApply === 'true') {
+        obj = {id: obj.id, page_size: obj.page_size};
+        url = AppUserRestApis.getUnreadApplyList;
+    } else {
+        delete obj.isUnreadApply;
+    }
+    //如果
+    return restUtil.authRest.get({
+        url: url,
+        req: req,
+        res: res
+    }, obj, {
+        success: function(eventEmitter, data) {
+            //todo 处理数据
+            // if (data && data.list && data.list.length) {
+            //     var applyList = applyDto.toRestObject(data.list || []);
+            //     data.list = applyList;
+            // }
+            //如果是根据客户id查询申请列表的时候，还需要格外查询这些申请的回复列表
+            if (obj.customer_id){
+                var emitter = new EventEmitter();
+                var promiseList = [];
+                _.forEach(data.list, item => {
+                    promiseList.push(getReplyItem(req, res, _.get(item, 'id')));
+                });
+                Promise.all(promiseList).then((dataList) => {
+                    _.forEach(data.list, (item,index) => {
+                        var replyList = _.filter(dataList[index], item => !_.get(item,'approve_status',''));
+                        item['replyLists'] = replyList;
+                    });
+                    eventEmitter.emit('success', data);
+                }).catch((err) => {
+                    emitter.emit('error', err);
+                });
+                return emitter;
+            }else{
+                eventEmitter.emit('success', data);
+            }
+        }
+    });
+};
 
 //获取未读回复列表
 exports.getUnreadReplyList = function(req, res) {
@@ -762,7 +813,7 @@ exports.submitApply = function(req, res, requestObj) {
         delete requestObj.products;
         delete requestObj.nick_name;
         delete requestObj.password;
-    } else if (requestObj.type === 'apply_pwd_change') {
+    } else if (requestObj.type === 'apply_pwd_change') {//修改密码审批
         applyUrl = AppUserRestApis.submitApplyChangePassword;
         delete requestObj.user_name;
         delete requestObj.products;
@@ -868,12 +919,12 @@ exports.batchDelayUser = function(req, res, requestObj) {
 };
 
 //销售申请修改密码
-exports.applyChangePassword = function(req, res, requestObj) {
+exports.applyChangePassword = function(req, res) {
     return restUtil.authRest.post({
         url: AppUserRestApis.changePassword,
         req: req,
         res: res
-    }, requestObj);
+    }, req.body);
 };
 
 //申请修改其他类型

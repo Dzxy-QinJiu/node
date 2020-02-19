@@ -6,9 +6,16 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
  * Created by zhangshujuan on 2020/02/06.
  */
 require('./css/index.less');
-import {APPLY_APPROVE_TAB_TYPES, APPLY_TYPE, APPLY_LIST_LAYOUT_CONSTANTS, getApplyListDivHeight,FILTER,SEARCH} from './utils/apply_approve_utils';
+import {
+    APPLY_APPROVE_TAB_TYPES,
+    APPLY_TYPE,
+    APPLY_LIST_LAYOUT_CONSTANTS,
+    getApplyListDivHeight,
+    FILTER,
+    SEARCH
+} from './utils/apply_approve_utils';
 import classNames from 'classnames';
-import {Dropdown, Menu, Alert} from 'antd';
+import {Dropdown, Menu, Alert, Select} from 'antd';
 import userData from 'PUB_DIR/sources/user-data';
 import {
     APPLY_APPROVE_TYPES,
@@ -28,15 +35,21 @@ import UserApplyActions from '../public/action/apply_approve_list_action';
 import ApplyApproveListStore from '../public/store/apply_approve_list_store';
 import UserApplyViewDetailWrap from 'MOD_DIR/user_apply/public/views/apply-view-detail-wrap';
 import {storageUtil} from 'ant-utils';
+
 const session = storageUtil.session;
 import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
 import {SearchInput} from 'antc';
 import UserData from '../../../public/sources/user-data';
+import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
+
 class ApplyApproveList extends React.Component {
     state = {
         activeApplyTab: APPLY_TYPE.APPLY_BY_ME,
         addApplyFormPanel: '',//添加的申请审批的表单类型
         filterOrSearchType: '',//添加筛选或者搜索的类型
+        selectedApplyStatus: '',//选中的筛选审批的状态
+        selectedApplyType: '',//选中的筛选审批的类型
+        showRefreshTip: false,//展示刷新列表的提示
         ...ApplyApproveListStore.getState()
 
     };
@@ -58,14 +71,17 @@ class ApplyApproveList extends React.Component {
         this.getUnreadReplyList();
         this.getAppList();
     }
+
     componentWillUnmount() {
         ApplyApproveListStore.unlisten(this.onStoreChange);
     }
-    getAppList(){
+
+    getAppList() {
         getAppList(appList => {
             this.setState({appList: appList});
         });
     }
+
     //从sessionStorage中获取该用户未读的回复列表
     getUnreadReplyList = () => {
         const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
@@ -100,7 +116,7 @@ class ApplyApproveList extends React.Component {
         // if (approvedTypes.indexOf(approval_state) !== -1) {
         //     sort_field = 'consume_date';
         // }
-        UserApplyActions.getApplyList({
+        var submitObj = {
             id: this.state.lastApplyId,
             page_size: this.state.pageSize,
             // keyword: this.state.searchKeyword,
@@ -108,17 +124,37 @@ class ApplyApproveList extends React.Component {
             // approval_state: approval_state,
             sort_field: sort_field,
             order: 'descend'
-        }, (count) => {
-            //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
-            // if (this.state.applyListType === 'false') {
-            //     //触发更新待审批数
-            //     commonMethodUtil.updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
-            //     // 解决通过或驳回操作失败（后台其实是成功）后的状态更新
-            //     if(this.state.dealApplyError === 'error'){
-            //         UserApplyActions.updateDealApplyError('success');
-            //     }
-            // }
-        });
+        };
+        if(this.state.activeApplyTab === APPLY_TYPE.APPLY_BY_ME){
+            UserApplyActions.getApplyListStartSelf(submitObj, (count) => {
+                //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
+                // if (this.state.applyListType === 'false') {
+                //     //触发更新待审批数
+                //     commonMethodUtil.updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+                //     // 解决通过或驳回操作失败（后台其实是成功）后的状态更新
+                //     if(this.state.dealApplyError === 'error'){
+                //         UserApplyActions.updateDealApplyError('success');
+                //     }
+                // }
+            });
+
+        }else {
+            UserApplyActions.getApplyList(submitObj, (count) => {
+                //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
+                // if (this.state.applyListType === 'false') {
+                //     //触发更新待审批数
+                //     commonMethodUtil.updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+                //     // 解决通过或驳回操作失败（后台其实是成功）后的状态更新
+                //     if(this.state.dealApplyError === 'error'){
+                //         UserApplyActions.updateDealApplyError('success');
+                //     }
+                // }
+            });
+        }
+
+
+
+
     };
     handleChangeApplyActiveTab = (activeTab) => {
         this.setState({
@@ -146,7 +182,7 @@ class ApplyApproveList extends React.Component {
             name: Intl.get('common.filter', '筛选'),
             value: FILTER,
             iconCls: 'icon-filter1'
-        },{
+        }, {
             name: Intl.get('common.search', '搜索'),
             iconCls: 'icon-search',
             value: SEARCH
@@ -157,7 +193,7 @@ class ApplyApproveList extends React.Component {
                     return (
                         <Menu.Item key={index}>
                             <a onClick={this.openFilterOrSearch.bind(this, item.value)}>
-                                <i className={'iconfont ' + _.get(item,'iconCls')}></i>
+                                <i className={'iconfont ' + _.get(item, 'iconCls')}></i>
                                 {_.get(item, 'name')}</a>
                         </Menu.Item>
                     );
@@ -165,14 +201,17 @@ class ApplyApproveList extends React.Component {
             </Menu>
         );
     };
-    getAddApplyTypeMenu = () => {
+    getWorkFlowList = () => {
         let user = userData.getUserData();
-        var workFlowList = _.get(user, 'workFlowConfigs', []);
+        return _.get(user, 'workFlowConfigs', []);
+    };
+    getAddApplyTypeMenu = () => {
+        var workFlowList = this.getWorkFlowList();
         return (
             <Menu className='add-apply-type-list'>
                 {_.map(workFlowList, (item, index) => {
                     //用户申请和成员申请暂时不展示
-                    if (_.indexOf([APPLY_APPROVE_TYPES.USERAPPLY, APPLY_APPROVE_TYPES.MEMBER_INVITE],item.type) > -1 ) {
+                    if (_.indexOf([APPLY_APPROVE_TYPES.USERAPPLY, APPLY_APPROVE_TYPES.MEMBER_INVITE], item.type) > -1) {
                         return null;
                     }
                     return (
@@ -197,35 +236,21 @@ class ApplyApproveList extends React.Component {
         return (
             <ul className="list-unstyled app_user_manage_apply_list">
                 {
-                    this.state.applyListObj.list.map((obj, i) => {
-                        var btnClass = classNames({
-                            processed: obj.isConsumed === 'true'
-                        });
-                        var currentClass = classNames({
-                            current: obj.id === this.state.selectedDetailItem.id && i === this.state.selectedDetailItemIdx
-                        });
+                    _.map(this.state.applyListObj.list,(obj, index) => {
+                        let unreadReplyList = this.state.unreadReplyList;
                         //是否有未读回复
                         let hasUnreadReply = _.find(unreadReplyList, unreadReply => unreadReply.apply_id === obj.id);
                         return (
-                            <li key={obj.id} className={currentClass}
-                                onClick={this.clickShowDetail.bind(this, obj, i)}
-                            >
-                                <dl>
-                                    <dt>
-                                        <span>{obj.topic || Intl.get('user.apply.id', '账号申请')}</span>
-                                        {hasUnreadReply ? <span className="iconfont icon-apply-message-tip"
-                                            title={Intl.get('user.apply.unread.reply', '有未读回复')}/> : null}
-                                        <em className={btnClass}>{commonMethodUtil.getUserApplyStateText(obj)}</em>
-                                    </dt>
-                                    <dd className="clearfix" title={obj.customer_name}>
-                                        <span>{obj.customer_name}</span>
-                                    </dd>
-                                    <dd className="clearfix">
-                                        <span>{Intl.get('user.apply.presenter', '申请人')}:{obj.presenter}</span>
-                                        <em>{this.getTimeStr(obj.time, oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}</em>
-                                    </dd>
-                                </dl>
-                            </li>
+                            <ApplyListItem
+                                key={index}
+                                obj={obj}
+                                index= {index}
+                                clickShowDetail={this.clickShowDetail}
+                                processedStatus='ongoing'
+                                selectedDetailItem={this.state.selectedDetailItem}
+                                selectedDetailItemIdx={this.state.selectedDetailItemIdx}
+                                hasUnreadReply={hasUnreadReply}
+                            />
                         );
                     })
                 }
@@ -311,9 +336,25 @@ class ApplyApproveList extends React.Component {
             </div>;
         }
     };
-    //渲染刷新提示或者筛选或者过滤提示
+    //渲染刷新提示
     renderRefreshTip = () => {
-
+        if(this.state.showRefreshTip){
+            return (
+                <div className='refresh-tip-panel'>
+                    <span className="iconfont icon-warn-icon"></span>
+                    <ReactIntl.FormattedMessage
+                        id="apply.list.new.refresh.tip"
+                        defaultMessage={'有新申请，{refresh}查看'}
+                        values={{
+                            'refresh': <a data-tracename="点击刷新页面按钮"
+                                onClick={this.fetchApplyList}>{Intl.get('clue.customer.refresh.page', '刷新页面')}</a>
+                        }}
+                    />
+                </div>
+            );
+        }else{
+            return null;
+        }
     };
     changeSearchInputValue = (value) => {
         value = _.trim(value) || '';
@@ -351,62 +392,83 @@ class ApplyApproveList extends React.Component {
                 return Intl.get('user.apply.backout', '已撤销');
         }
     };
+    handleChangeSelectedApplyStatus = (value) => {
+        this.setState({
+            selectedApplyStatus: value
+        });
+    };
+    handleChangeSelectedApplyType = (value) => {
+        this.setState({
+            selectedApplyType: value
+        });
+    };
     //渲染筛选的界面
     renderFilterPanel = () => {
         var allStatusList = [{
             name: Intl.get('user.online.all.status', '全部状态'),
             value: ''
-        },{
-            name: Intl.get(''),
+        }, {
+            name: Intl.get('leave.apply.my.worklist.apply', '待我审批'),
             value: 'ongoing'
+        }, {
+            name: Intl.get('user.apply.pass', '已通过'),
+            value: 'pass'
+        }, {
+            name: Intl.get('user.apply.reject', '已驳回'),
+            value: 'reject'
+        }, {
+            name: Intl.get('user.apply.backout', '已撤销'),
+            value: 'cancel'
         }];
-        var allTypeList = [];
-        // 筛选菜单
-        var menuList = (
-            <Menu onClick={this.menuClick} className="apply-filter-menu-list">
-                <Menu.Item key="all">
-                    <a href="javascript:void(0)">{Intl.get('user.apply.all', '全部申请')}</a>
-                </Menu.Item>
-                <Menu.Item key="false">
-                    <a href="javascript:void(0)">{Intl.get('leave.apply.my.worklist.apply', '待我审批')}</a>
-                </Menu.Item>
-                <Menu.Item key="pass">
-                    <a href="javascript:void(0)">{Intl.get('user.apply.pass', '已通过')}</a>
-                </Menu.Item>
-                <Menu.Item key="reject">
-                    <a href="javascript:void(0)">{Intl.get('user.apply.reject', '已驳回')}</a>
-                </Menu.Item>
-                <Menu.Item key="cancel">
-                    <a href="javascript:void(0)">{Intl.get('user.apply.backout', '已撤销')}</a>
-                </Menu.Item>
-            </Menu>
-        );
+        var allTypeList = [{
+            name: Intl.get('oplate_customer_analysis.type.all', '全部类型'),
+            value: ''
+        }];
+        var workFlowList = this.getWorkFlowList();
+        _.each(workFlowList, (workItem) => {
+            allTypeList.push({
+                name: _.get(workItem, 'description'),
+                value: _.get(workItem, 'type')
+            });
+        });
+
         return (
             <div className="apply-type-filter btn-item" id="apply-type-container">
                 {
                     UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? null : (
-                        <Dropdown overlay={menuList} placement="bottomLeft"
-                            getPopupContainer={() => document.getElementById('apply-type-container')}>
-                            <span className="apply-type-filter-btn">
-                                {this.getApplyListType()}
-                                <span className="iconfont icon-arrow-down"/>
-                            </span>
-                        </Dropdown>
+                        <Select
+                            className='apply-status-select'
+                            value={this.state.selectedApplyStatus}
+                            onChange={this.handleChangeSelectedApplyStatus}
+                        >
+                            {_.map(allStatusList, item => {
+                                return <Option value={_.get(item, 'value')}>{_.get(item, 'name')}</Option>;
+                            })}
+                        </Select>
                     )
                 }
+                <Select
+                    className='apply-type-select'
+                    value={this.state.selectedApplyType}
+                    onChange={this.handleChangeSelectedApplyType}
+                >
+                    {_.map(allTypeList, item => {
+                        return <Option value={_.get(item, 'value')}>{_.get(item, 'name')}</Option>;
+                    })}
+                </Select>
             </div>
         );
     };
     renderFilterSearch = () => {
         var filterOrSearchType = this.state.filterOrSearchType;
-        if(filterOrSearchType){
+        if (filterOrSearchType) {
             return (
                 <div className='filter-and-search-container'>
                     {filterOrSearchType === SEARCH ? this.renderSearchPanel() : this.renderFilterPanel()}
                     <i className='iconfont icon-close-tips' onClick={this.closeSearchOrFilterPanel}></i>
                 </div>
             );
-        }else{
+        } else {
             return null;
         }
 
@@ -434,6 +496,10 @@ class ApplyApproveList extends React.Component {
             });
             //计算列表高度
             applyListHeight = getApplyListDivHeight();
+            //如果展示筛选或者搜索，或者刷新的提示，滚动条区域的高度要再减少提示区域的高度
+            if(this.state.showRefreshTip || this.state.filterOrSearchType){
+                applyListHeight -= APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
+            }
         }
         return <div className='app_user_manage_apply_list_wrap'>
             {this.renderFilterSearch()}
@@ -494,7 +560,7 @@ class ApplyApproveList extends React.Component {
         var selectedDetailItem = this.state.selectedDetailItem;
         var applyDetailContent = null;
         //todo 不同的审批类型展示不同的右侧详情
-        switch (_.get(selectedDetailItem,'message_type')) {
+        switch (_.get(selectedDetailItem, 'message_type')) {
             case 'apply':
                 applyDetailContent = <UserApplyViewDetailWrap
                     applyData={this.state.applyId ? applyDetail : null}
@@ -556,7 +622,7 @@ class ApplyApproveList extends React.Component {
         }
     };
     getFirstApplyItem = () => {
-        return _.get(this.state.applyListObj,'list[0]');
+        return _.get(this.state.applyListObj, 'list[0]');
     };
 
 
@@ -572,9 +638,10 @@ class ApplyApproveList extends React.Component {
         return (
             <div className='apply_approve_content_wrap user_apply_page'>
                 {this.renderApplyListTab()}
-                {noShowApplyDetail ? null : <div className='apply_approve_detail_wrap' style={{'width': detailWrapWidth, 'height': divHeight}}>
-                    {this.renderApplyListDetail()}
-                </div>}
+                {noShowApplyDetail ? null :
+                    <div className='apply_approve_detail_wrap' style={{'width': detailWrapWidth, 'height': divHeight}}>
+                        {this.renderApplyListDetail()}
+                    </div>}
                 {this.renderAddApplyForm()}
             </div>
         );

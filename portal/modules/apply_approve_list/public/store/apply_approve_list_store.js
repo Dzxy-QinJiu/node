@@ -92,6 +92,44 @@ UserApplyStore.prototype.clearData = function() {
     this.selectedDetailItemIdx = -1;
     this.listenScrollBottom = false;
 };
+
+//获取由我发起的申请
+UserApplyStore.prototype.getApplyListStartSelf = function(obj){
+    if (obj.loading) {
+        this.applyListObj.loadingResult = 'loading';
+        this.applyListObj.errorMsg = '';
+    } else if (obj.error) {
+        this.applyListObj.loadingResult = 'error';
+        this.applyListObj.errorMsg = obj.errorMsg;
+        if (!this.lastApplyId) {
+            this.clearData();
+        }
+    } else {
+        this.applyListObj.loadingResult = '';
+        this.applyListObj.errorMsg = '';
+        this.totalSize = obj.data.total;
+        let applyList = obj.data.list;
+        if (_.isArray(applyList) && applyList.length) {
+            if (this.lastApplyId) {//下拉加载数据时
+                this.applyListObj.list = this.applyListObj.list.concat(applyList);
+            } else {//首次获取数据时
+                this.applyListObj.list = applyList;
+                this.selectedDetailItem = applyList[0];
+                this.selectedDetailItemIdx = 0;
+            }
+            this.lastApplyId = this.applyListObj.list.length ? _.last(this.applyListObj.list).id : '';
+            this.listenScrollBottom = this.applyListObj.list.length < this.totalSize;
+        } else if (!this.lastApplyId) {//获取第一页就没有数据时
+            this.clearData();
+            //获取的未读回复列表为空时，清除sessionStore中存的未读回复的申请
+            if (this.isCheckUnreadApplyList) {
+                this.clearUnreadReply();
+            }
+        } else {//下拉加载取得数据为空时需要取消下拉加载得处理（以防后端得total数据与真实获取得数据列表不一致时，一直触发下拉加载取数据得死循环问题）
+            this.listenScrollBottom = false;
+        }
+    }
+};
 //获取申请列表
 UserApplyStore.prototype.getApplyList = function(obj) {
     if (obj.loading) {
