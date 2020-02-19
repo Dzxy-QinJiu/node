@@ -3,7 +3,7 @@ var _ = require('lodash');
 exports.toRestObject = function(list) {
     var result = [];
     list = list || [];
-    list.forEach(function(item) {
+    list.forEach((item) => {
         result.push({
             ...item,
             topic: item.topic,
@@ -11,9 +11,9 @@ exports.toRestObject = function(list) {
             time: item.produce_date,
             approval_time: item.consume_date || '',
             id: item.id,
-            order_id: item.message.order_id,
-            customer_id: item.message.customer_id,
-            customer_name: item.message.customer_name,
+            order_id: _.get(item,'message.order_id',''),
+            customer_id: _.get(item,'message.customer_id',''),
+            customer_name: _.get(item,'message.customer_name',''),
             isConsumed: (item.approval_state !== 'false') + '',
             approval_state: transferApprovalStateToNumber(item.approval_state)
         });

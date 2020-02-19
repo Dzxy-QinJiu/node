@@ -452,11 +452,10 @@ exports.applyChangePassword = function(data) {
     $.ajax({
         url: '/rest/user/apply/password',
         type: 'post',
-        dataType: 'json',
         data: data,
         success: function(result) {
-            //操作成功返回true
-            if(result === true) {
+            //操作成功返回申请对象
+            if(_.get(result,'id')) {
                 Deferred.resolve(result);
             } else {
                 Deferred.reject(ERROR_MSG);

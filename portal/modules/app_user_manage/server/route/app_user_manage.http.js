@@ -4,6 +4,7 @@
 import appUserPrivilegeConst from '../../public/privilege-const';
 import crmPrivilegeConst from '../../../crm/public/privilege-const';
 import commonPrivilegeConst from '../../../common/public/privilege-const';
+
 module.exports = {
     module: 'app_user_manage/server/action/app_user_manage.action',
     routes: [{
@@ -112,6 +113,17 @@ module.exports = {
         'method': 'get',
         'path': '/rest/appuser/apply_list',
         'handler': 'getApplyList',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': [
+            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批列表
+        ]
+    },
+    {//todo 权限的修改
+        'method': 'get',
+        'path': '/rest/apply_list/start/self',
+        'handler': 'getApplyListStartSelf',
         'passport': {
             'needLogin': true
         },
