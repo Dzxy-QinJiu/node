@@ -587,10 +587,6 @@ class UserDetail extends React.Component {
                 </TabPane>
             );
         }
-
-        let rightPanelCls = classNames('apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel', {
-            'notification-system-user': this.props.isNotificationOpenUserDetail
-        });
         // 在操作记录界面，有时间选择组件，为了解决时间组件显示不全的问题，增加样式控制
         let tabcls = classNames({
             'single-log-tabs': this.state.activeKey === '3' && !this.state.isChangingActiveKey
@@ -617,6 +613,9 @@ class UserDetail extends React.Component {
         );
     }
     render() {
+        let rightPanelCls = classNames('user-detail-panel-wrap', {
+            'notification-system-user': this.props.isNotificationOpenUserDetail
+        });
         return (
             <RightPanelModal
                 className="user-detail-panel-wrap"
