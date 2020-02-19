@@ -58,12 +58,25 @@ export function getCallRecordChart(paramObj = {}) {
             const teamInfoList = _.get(data, '[1]');
 
             if (_.isArray(callInfoList) && _.isArray(teamInfoList)) {
+                const sumRowName = Intl.get('common.summation', '合计');
+
+                //合计列
+                let sumRow = _.get(data, '[0].total');
+                sumRow.name = sumRowName;
+                callInfoList.push(sumRow);
+
                 _.each(callInfoList, callInfo => {
                     const teamName = _.get(callInfo, 'name');
 
                     if (teamName) {
-                        const corrTeamInfo = _.find(teamInfoList, teamInfo => teamInfo.team_name === teamName);
-                        const availableUserNum = _.get(corrTeamInfo, 'available.user', 1);
+                        let availableUserNum;
+
+                        if (teamName === sumRowName) {
+                            availableUserNum = _.sumBy(teamInfoList, 'available.user');
+                        } else {
+                            const corrTeamInfo = _.find(teamInfoList, teamInfo => teamInfo.team_name === teamName);
+                            availableUserNum = _.get(corrTeamInfo, 'available.user', 1);
+                        }
 
                         if (availableUserNum) {
                             callInfo.per_capita_duration = _.toInteger(callInfo.total_time / availableUserNum);
@@ -76,10 +89,6 @@ export function getCallRecordChart(paramObj = {}) {
                     //日均时长转换为整数
                     callInfo.average_time = _.toInteger(callInfo.average_time);
                 });
-
-                //合计列
-                const sumRow = getSumRow(callInfoList);
-                callInfoList.push(sumRow);
 
                 return callInfoList;
             } else {
@@ -259,25 +268,6 @@ export function getCallRecordChart(paramObj = {}) {
         }
 
         return columns;
-    }
-
-    //获取合计列
-    function getSumRow(data) {
-        const columns = getColumns();
-        let sumRow = {
-            name: Intl.get('common.summation', '合计')
-        };
-
-        _.each(columns, column => {
-            const field = column.dataIndex;
-
-            if (field !== 'name' && !_.endsWith(field, '_rate') && !_.startsWith(field, 'average_') && !_.startsWith(field, 'per_capita_')) {
-                const sum = _.sumBy(data, field);
-                sumRow[field] = sum;
-            }
-        });
-
-        return sumRow;
     }
 
     function refreshData(analysisInstance, chartIndex) {
