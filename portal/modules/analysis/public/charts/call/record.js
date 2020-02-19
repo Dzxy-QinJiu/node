@@ -62,8 +62,11 @@ export function getCallRecordChart(paramObj = {}) {
 
                 //合计列
                 let sumRow = _.get(data, '[0].total');
-                sumRow.name = sumRowName;
-                callInfoList.push(sumRow);
+
+                if (sumRow) {
+                    sumRow.name = sumRowName;
+                    callInfoList.push(sumRow);
+                }
 
                 _.each(callInfoList, callInfo => {
                     const teamName = _.get(callInfo, 'name');
