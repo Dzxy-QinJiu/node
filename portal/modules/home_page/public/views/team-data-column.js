@@ -626,6 +626,10 @@ class TeamDataColumn extends React.Component {
                 if(column.dataIndex === 'customer_name') {
                     column.width = TABLE_CONSTS.COLUMN_WIDTH_150;
                 }else {
+                    if(column.dataIndex === 'contract_amount') {
+                        column.title = Intl.get('contract.25', '合同额') + '(' + Intl.get('contract.160', '单位') + ': ' + Intl.get('contract.82', '元') + ')';
+                    }
+
                     column.width = TABLE_CONSTS.COLUMN_WIDTH_100;
                 }
             });
