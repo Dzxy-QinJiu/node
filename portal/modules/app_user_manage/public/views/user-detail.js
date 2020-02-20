@@ -593,17 +593,20 @@ class UserDetail extends React.Component {
         });
         return (
             <div className="user-detail-content-wrap" ref='topWrap'>
-                <Tabs
-                    defaultActiveKey="1"
-                    onChange={this.changeTab}
-                    activeKey={this.state.activeKey}
-                    className={tabcls}
-                >
-                    {tabPaneList}
-                </Tabs>
+                <div ref='wrap'>
+                    <Tabs
+                        defaultActiveKey="1"
+                        onChange={this.changeTab}
+                        activeKey={this.state.activeKey}
+                        className={tabcls}
+                    >
+                        {tabPaneList}
+                    </Tabs>
+                </div>
+
                 {
                     moveView ? (
-                        <div className="full_size app_user_full_size_item">
+                        <div className="app_user_full_size_item">
                             {moveView}
                         </div>
                     ) : null
@@ -618,7 +621,7 @@ class UserDetail extends React.Component {
         });
         return (
             <RightPanelModal
-                className="user-detail-panel-wrap"
+                className={rightPanelCls}
                 isShowMadal={false}
                 isShowCloseBtn={true}
                 onClosePanel={this.closeRightPanel}

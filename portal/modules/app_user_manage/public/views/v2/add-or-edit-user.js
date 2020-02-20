@@ -48,6 +48,7 @@ import UserNameTextFieldUtil from 'CMP_DIR/user_manage_components/user-name-text
 import AppUserAjax from '../../ajax/app-user-ajax';
 import AppUserStore from '../../store/app-user-store';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
+require('../../css/add-user.less');
 //动态添加的样式
 var dynamicStyle;
 var tempSuggestNames = [];

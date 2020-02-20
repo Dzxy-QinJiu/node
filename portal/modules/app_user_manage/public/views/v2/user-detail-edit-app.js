@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 import {isEqualArray} from 'LIB_DIR/func';
 import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
-
+require('../../css/edit-app.less');
 //记录上下留白布局
 const LAYOUT = {
     TAB_TOP_HEIGHT: 66,

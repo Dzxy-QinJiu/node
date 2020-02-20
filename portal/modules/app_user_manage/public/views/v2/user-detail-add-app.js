@@ -33,7 +33,7 @@ import ApplyUserAppConfig from 'CMP_DIR/apply-user-app-config';
 import AppConfigForm from 'CMP_DIR/apply-user-app-config/app-config-form';
 import {CONFIG_TYPE} from 'PUB_DIR/sources/utils/consts';
 import {getConfigAppType} from 'PUB_DIR/sources/utils/common-method-util';
-
+require('../../css/add-app.less');
 function merge(obj1, obj2) {
     obj1 = obj1 || {};
     obj2 = obj2 || {};

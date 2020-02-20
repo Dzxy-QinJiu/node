@@ -1,0 +1,50 @@
+@import '../../../../public/css/common-variables';
+@import './user-common-variales';
+.user-detail-edit-app-v2 {
+  background: #e6edef;
+  &.move_left {
+    background: transparent !important;
+  }
+  padding-top: 18px;
+  .user-multilogin-radiofield-block {
+    display: inline-block;
+    margin-top: 6px;
+  }
+  .basic-data-form {
+    background: white;
+    .font-bold {
+      font-weight: 600;
+    }
+    &.app-property-content {
+      background: white;
+      padding: 0;
+      .ant-select {
+        width: 318px !important;
+      }
+      .ant-radio-group {
+        label {
+          margin-bottom: 0;
+        }
+      }
+    }
+    .form-item-label {
+      width: 75px;
+      padding: 0;
+      color: @font-grey;
+      vertical-align: middle;
+      &.form-title {
+        color: @font-black;
+      }
+    }
+    .form-item-content {
+      padding: 3px 0 3px 10px;
+    }
+  }
+  h4 {
+    font-size: 15px;
+    cursor: pointer;
+    i {
+      margin-right: 8px;
+    }
+  }
+}
