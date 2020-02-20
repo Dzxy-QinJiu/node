@@ -34,7 +34,7 @@ import Trace from 'LIB_DIR/trace';
  *  {dial: false}//拨号
  *  {perfact_organization：false}//完善组织（管理员）
  *  {add_customer: false}//添加客户（管理员、销售）
- *  {extract_clue：false}//提取线索（管理员、销售、运营）
+ *  {extract_clue：false}//提取线索（管理员、销售）
  */
 //引导流程
 const BOOT_PROCESS_KEYS_MAP = {
@@ -468,6 +468,10 @@ class BootProcess extends React.Component {
                         //TODO 是否已有专属号码，有就不显示，没有显示(default)
                         let hasExclusive = _.get(userData.getUserData(), 'hasExcluesiveNumber');
                         if(hasExclusive === 'false') {// 没有专属号码时，是default显示拨号流程
+                            guideList.push(this.renderGuideCard(item, index));
+                        }
+                    }else if(item.key === BOOT_PROCESS_KEYS_MAP.extract_clue.key) {
+                        if(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {//运营人员没有提取线索的引导
                             guideList.push(this.renderGuideCard(item, index));
                         }
                     }else {

@@ -52,6 +52,7 @@ import CRMAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import CustomerRecordActions from 'MOD_DIR/crm/public/action/customer-record-action';
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -1204,8 +1205,10 @@ class MyWorkColumn extends React.Component {
                 <div className="btn-containers">
                     <Button type='primary' className='import-btn'
                         onClick={this.showAddSchedulePanel}>{Intl.get('home.page.add.schedule', '添加日程')}</Button>
-                    <Button className='add-clue-btn'
-                        onClick={this.showRecommendCluePanel}>{Intl.get('clue.customer.recommend.clue.lists', '推荐线索')}</Button>
+                    {!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE) ? (
+                        <Button className='add-clue-btn'
+                            onClick={this.showRecommendCluePanel}>{Intl.get('clue.customer.recommend.clue.lists', '推荐线索')}</Button>
+                    ) : null}
                 </div>
             );
         } else {
