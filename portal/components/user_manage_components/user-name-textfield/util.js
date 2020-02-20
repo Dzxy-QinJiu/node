@@ -30,10 +30,10 @@ function showUserDetail(user_id) {
 
 function clickUserName(user_id, username_block) {
     var text = Intl.get('user.user.check', '查看该用户');
-    var a = `<a href='javascript:void(0)' id='app_user_name_exist_view'>${text}</a>`;
+    var a = `<a href='javascript:void(0)' id='app_user_name_exist_view' className="handle-btn-item">${text}</a>`;
     const $explain = $('.ant-form-explain', username_block);
     $explain.html(
-        Intl.get('user.user.exist.check.tip', '用户已存在，是否{check}?', {'check': a})
+        Intl.get('user.user.exist.check.tip', '用户已存在，{check}?', {'check': a})
     );
     $('#app_user_name_exist_view').click((e) => {
         e.preventDefault();

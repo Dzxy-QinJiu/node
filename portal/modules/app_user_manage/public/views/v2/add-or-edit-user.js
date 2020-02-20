@@ -515,11 +515,14 @@ const AddOrEditUser = createReactClass({
         return (
             <div className="suggest-name-tips">
                 <ReactIntl.FormattedMessage
-                    id="user.exist.name.check.user"
-                    defaultMessage={'用户名已存在，是否查询{check}'}
+                    id="user.user.exist.check.tip"
+                    defaultMessage={'用户名已存在，用户已存在，{check}?'}
                     values={{
-                        'check': <a href='javascript:void(0)' onClick={this.handleClickShowUserDetail}>
-                            {Intl.get('user.exisit.the.name', '该用户')}
+                        'check': <a href='javascript:void(0)'
+                            onClick={this.handleClickShowUserDetail}
+                            className="handle-btn-item"
+                        >
+                            {Intl.get('user.user.check', '查看该用户')}
                         </a>
                     }}
                 />
