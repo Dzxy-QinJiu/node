@@ -2,16 +2,9 @@
 @import './user-common-variales';
 
 .user-detail-add-app-v2 {
-  background: #e6edef;
-  &.move_left {
-    background: transparent !important;
-  }
   .btn-return.btn-text {
     float: right;
-    position: absolute;
-    right: 20px;
-    top: 10px;
-    z-index: 9;
+    padding-top: 10px;
   }
   .add-app-container {
     background: white; //布局样式
@@ -20,6 +13,7 @@
       border: none;
       .btns {
         .ant-btn {
+          float: inherit;
           background: @btn-blue;
           border-color: @btn-blue;
           color: #fff;
@@ -62,6 +56,7 @@
       padding-top: 0;
     }
     .operation-steps {
+      position: inherit;
       background: @right_panel_bgcolor;
       height: 38px;
       border: none;
@@ -74,7 +69,7 @@
     }
     .carousel>.carousel-inner>.item {
       height: 100vh;
-      padding: 95px 0 54px 0;
+      padding: 16px 10px 54px 10px;
     }
     ul.list-unstyled {
       margin: 0;
@@ -168,5 +163,5 @@
         }
       }
     }
-  } //基本信息
+  }
 }

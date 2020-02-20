@@ -1,11 +1,13 @@
 @import '../../../../public/css/common-variables';
 @import './user-common-variales';
 .user-detail-edit-app-v2 {
-  background: #e6edef;
-  &.move_left {
-    background: transparent !important;
+  .single-app-edit {
+    .app-property-container {
+      .detail-card-content {
+        padding-left: 20px;
+      }
+    }
   }
-  padding-top: 18px;
   .user-multilogin-radiofield-block {
     display: inline-block;
     margin-top: 6px;
@@ -18,9 +20,6 @@
     &.app-property-content {
       background: white;
       padding: 0;
-      .ant-select {
-        width: 318px !important;
-      }
       .ant-radio-group {
         label {
           margin-bottom: 0;
@@ -28,10 +27,12 @@
       }
     }
     .form-item-label {
-      width: 75px;
+      width: 55px;
       padding: 0;
-      color: @font-grey;
+      font-size: 13px;
       vertical-align: middle;
+      text-align: right;
+      color: @font-grey;
       &.form-title {
         color: @font-black;
       }
@@ -43,6 +44,7 @@
   h4 {
     font-size: 15px;
     cursor: pointer;
+    margin: 10px 0;
     i {
       margin-right: 8px;
     }

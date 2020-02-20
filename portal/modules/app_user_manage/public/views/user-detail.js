@@ -592,26 +592,23 @@ class UserDetail extends React.Component {
             'single-log-tabs': this.state.activeKey === '3' && !this.state.isChangingActiveKey
         });
         return (
-            <div className="user-detail-content-wrap" ref='topWrap'>
-                <div ref='wrap'>
-                    <Tabs
-                        defaultActiveKey="1"
-                        onChange={this.changeTab}
-                        activeKey={this.state.activeKey}
-                        className={tabcls}
-                    >
-                        {tabPaneList}
-                    </Tabs>
-                </div>
-
+            <div className="user-detail-content-wrap" >
                 {
                     moveView ? (
                         <div className="app_user_full_size_item">
                             {moveView}
                         </div>
-                    ) : null
+                    ) : (
+                        <Tabs
+                            defaultActiveKey="1"
+                            onChange={this.changeTab}
+                            activeKey={this.state.activeKey}
+                            className={tabcls}
+                        >
+                            {tabPaneList}
+                        </Tabs>
+                    )
                 }
-
             </div>
         );
     }

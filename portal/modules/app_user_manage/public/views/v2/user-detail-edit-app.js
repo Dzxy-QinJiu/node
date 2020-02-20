@@ -247,7 +247,7 @@ const UserDetailEditApp = createReactClass({
     render() {
         const height = this.props.height + LAYOUT_CONSTANTS.BTN_PADDING;//减去底部按钮的padding;
         return (
-            <div className="user-manage-v2 user-detail-edit-app-v2" style={{height}}>
+            <div className="user-detail-edit-app-v2" style={{height}}>
                 <h4 onClick={this.cancel}>
                     <Icon type="left"/>{Intl.get('user.user.product.set','产品设置')}
                 </h4>

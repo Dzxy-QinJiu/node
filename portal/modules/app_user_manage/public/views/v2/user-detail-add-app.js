@@ -820,7 +820,7 @@ const UserDetailAddApp = createReactClass({
     //render函数
     render() {
         return (
-            <div className="user-manage-v2 user-detail-add-app-v2">
+            <div className="user-detail-add-app-v2">
                 <span className="btn-return btn-text" onClick={this.cancel}>{Intl.get('user.detail.return', '返回基本信息')}</span>
                 <Form layout='horizontal'>
                     <div className="add-app-container" style={{ height: this.props.height }}>
