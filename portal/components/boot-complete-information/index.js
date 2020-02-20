@@ -174,10 +174,11 @@ class BootCompleteInformation extends React.Component{
             if(location.pathname.indexOf(ROUTE_CONSTS.LEADS) === -1) {
                 history.push('/' + ROUTE_CONSTS.LEADS, {
                     showRecommendCluePanel: true,
-                    targetObj: targetObj
+                    targetObj: targetObj,
+                    isGuideSetting: true
                 });
             }else { //如果在线索界面，不用跳转, 直接根据推荐条件打开推荐线索列表
-                clueEmitter.emit(clueEmitter.SHOW_RECOMMEND_PANEL, { recommendCondition: targetObj });
+                clueEmitter.emit(clueEmitter.SHOW_RECOMMEND_PANEL, { isGuideSetting: true });
             }
             _.isFunction(_this.props.hideRightPanel) && _this.props.hideRightPanel();
         }
