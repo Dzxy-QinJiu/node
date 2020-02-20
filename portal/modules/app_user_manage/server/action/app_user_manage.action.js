@@ -247,8 +247,7 @@ exports.editApp = function(req, res) {
 
 //申请用户
 exports.applyUser = function(req, res) {
-    const requestObj = JSON.parse(req.body.reqData);
-    AppUserService.applyUser(req, res, requestObj).on('success', function(data) {
+    AppUserService.applyUser(req, res).on('success', function(data) {
         res.json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

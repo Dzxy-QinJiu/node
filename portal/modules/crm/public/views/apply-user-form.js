@@ -472,17 +472,37 @@ const ApplyUserForm = createReactClass({
             }
         });
     },
-
+    calcDescartes: function(array,submitData) {
+        if (array.length < 2) return array[0] || [];
+        return [].reduce.call(array, function(col, set) {
+            var res = [];
+            col.forEach(function(c) {
+                set.forEach(function(s) {
+                    res.push({
+                        'user_id': c,
+                        'tags': [submitData.tag],
+                        'remark': submitData.remark,
+                        ...s});
+                });
+            });
+            return res;
+        });
+    },
     applyUserFromUserList: function(submitData) {
-        submitData.user_ids = JSON.stringify(submitData.user_ids);
         submitData.user_names = JSON.stringify(submitData.user_names);
         //看从emailData中传过来的有数据，就放到submitData中 email_customer_names email_user_names
         if (_.isObject(this.props.emailData)) {
             _.extend(submitData, this.props.emailData);
         }
-        UserApplyAction.applyUser(submitData, result => {
+        var newSubmitObj = {
+            customer_id: submitData.customer_id
+        };
+        delete submitData.customer_id;
+        //users_or_grants 是跟据user_ids 和 原来参数中的 products 做笛卡尔积后获取的总数量
+        newSubmitObj['users_or_grants'] = this.calcDescartes([submitData.user_ids,JSON.parse(submitData.products)],submitData);
+        UserApplyAction.applyUser(newSubmitObj, result => {
             this.setState({isLoading: false});
-            if (result === true) {
+            if (_.get(result,'id')) {
                 this.setState({
                     isLoading: false,
                     applyErrorMsg: ''

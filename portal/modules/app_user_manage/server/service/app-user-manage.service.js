@@ -75,8 +75,10 @@ var AppUserRestApis = {
     submitNewApply: '/rest/base/v1/user/approve_users',
     //审批申请单（已有用户）
     submitExistApply: '/rest/base/v1/user/approve_grants',
-    // 申请用户
-    applyUser: '/rest/base/v1/user/apply_grants',
+    //todo 申请用户
+    // applyUser: '/rest/base/v1/user/apply_grants',
+    // todo 开通新应用
+    applyUser: 'http://10.20.1.185:8391/rest/base/v1/workflow/newgrant',
     //获取客户对应的用户列表
     getCustomerUsers: '/rest/base/v1/user/customer/users',
     //批量用户延期
@@ -901,12 +903,12 @@ exports.checkUserExist = function(req, res, field, value) {
 };
 
 //申请用户
-exports.applyUser = function(req, res, requestObj) {
+exports.applyUser = function(req, res) {
     return restUtil.authRest.post({
         url: AppUserRestApis.applyUser,
         req: req,
         res: res
-    }, requestObj);
+    }, JSON.parse(req.body.reqData));
 };
 
 //批量用户延期

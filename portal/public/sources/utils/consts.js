@@ -87,6 +87,7 @@ export const APPLY_APPROVE_TYPES = {
     BUSINESSTRIPAWHILE: 'businesstrip_awhile',//外出申请
     BUSSINESSTRIP: 'businesstrip',//出差
     USERAPPLY: 'userapply',//用户申请
+    USER_OR_GRANT: 'user_or_grant',//改版后用户审批的类型
 };
 // 系统消息对应的通知类型
 export const SYSTEM_NOTICE_TYPES = {

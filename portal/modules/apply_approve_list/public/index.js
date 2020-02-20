@@ -12,7 +12,8 @@ import {
     APPLY_LIST_LAYOUT_CONSTANTS,
     getApplyListDivHeight,
     FILTER,
-    SEARCH
+    SEARCH,
+    UnitOldAndNewUserInfo
 } from './utils/apply_approve_utils';
 import classNames from 'classnames';
 import {Dropdown, Menu, Alert, Select} from 'antd';
@@ -34,6 +35,8 @@ import Trace from 'LIB_DIR/trace';
 import UserApplyActions from '../public/action/apply_approve_list_action';
 import ApplyApproveListStore from '../public/store/apply_approve_list_store';
 import UserApplyViewDetailWrap from 'MOD_DIR/user_apply/public/views/apply-view-detail-wrap';
+import BusinessWhileDetail from 'MOD_DIR/business-while/public/view/apply-view-detail';
+import BusinessOpportunity from 'MOD_DIR/sales_opportunity/public/view/apply-view-detail';
 import {storageUtil} from 'ant-utils';
 
 const session = storageUtil.session;
@@ -560,11 +563,11 @@ class ApplyApproveList extends React.Component {
         var selectedDetailItem = this.state.selectedDetailItem;
         var applyDetailContent = null;
         //todo 不同的审批类型展示不同的右侧详情
-        switch (_.get(selectedDetailItem, 'message_type')) {
-            case 'apply':
+        switch (_.get(selectedDetailItem, 'workflow_type')) {
+            case APPLY_APPROVE_TYPES.USER_OR_GRANT:
                 applyDetailContent = <UserApplyViewDetailWrap
                     applyData={this.state.applyId ? applyDetail : null}
-                    detailItem={this.state.selectedDetailItem}
+                    detailItem={UnitOldAndNewUserInfo(this.state.selectedDetailItem)}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
                     applyListType={this.state.applyListType}
@@ -573,6 +576,27 @@ class ApplyApproveList extends React.Component {
                     height={$(window).height()}
                 />;
                 break;
+            case APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE:
+                applyDetailContent = <BusinessWhileDetail
+                    detailItem={this.state.selectedDetailItem}
+                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                    applyListType={this.state.applyListType}
+                    applyData={this.state.applyId ? applyDetail : null}
+                    isUnreadDetail={this.getIsUnreadDetail()}
+                    appList={this.state.appList}
+                    height={$(window).height()}
+                />;
+                break;
+            case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES:
+                applyDetailContent = <BusinessOpportunity
+                    detailItem={this.state.selectedDetailItem}
+                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                    applyListType={this.state.applyListType}
+                    applyData={this.state.applyId ? applyDetail : null}
+                    isUnreadDetail={this.getIsUnreadDetail()}
+                    appList={this.state.appList}
+                    height={$(window).height()}
+                />;
         }
         return applyDetailContent;
 

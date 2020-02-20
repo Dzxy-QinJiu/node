@@ -502,7 +502,9 @@ module.exports = [{
 }, {
     //申请延期（多应用
     'method': 'post',
-    'path': '/rest/base/v1/user/grants/update/apply',
+    //todo 修改
+    // 'path': '/rest/base/v1/user/grants/update/apply',
+    'path': '/rest/base/v1/workflow/grant/change',
     'handler': 'applyDelayMultiApp',
     'passport': {
         'needLogin': true

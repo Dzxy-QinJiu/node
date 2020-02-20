@@ -2,6 +2,7 @@ import UserAjax from '../ajax/apply_approve_list_ajax';
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 let userData = require('PUB_DIR/sources/user-data');
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
+import {getApplyDetailById} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 /**
  * 用户审批界面使用的action
  */
@@ -75,6 +76,15 @@ function UserApplyActions() {
         }, function(errorMsg) {
             _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
+        // if (applyData){
+        //     this.dispatch({loading: false, error: false, detail: applyData.detail, status: status});
+        // }else{
+        getApplyDetailById(queryObj).then((detail) => {
+            this.dispatch({loading: false, error: false, detail: detail, status: status});
+        }, (errorMsg) => {
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+        });
+        // }
     };
     //申请用户
     this.applyUser = function(obj, cb) {

@@ -7,6 +7,7 @@ import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
 import {updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyDetailById} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 class ApplyViewDetailActions {
     constructor() {
@@ -84,20 +85,14 @@ class ApplyViewDetailActions {
     }
 
     //获取审批单详情
-    getApplyDetail(id, applyData,approvalState, appList) {
-        //如果已获取了某个详情数据，针对从url中的申请id获取的详情数据
-        if (applyData) {
-            this.dispatch({loading: false, error: false, detail: applyData.detail});
-            AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID,_.get(applyData,'detail',''));
-
-        } else {
-            this.dispatch({loading: true, error: false});
-            AppUserAjax.getApplyDetail(id).then((detail, apps) => {
-                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID,detail);
-                this.dispatch({loading: false, error: false, detail: detail,approvalState: approvalState, appList: appList});
+    getApplyDetail(queryObj, status, applyData) {
+        if (applyData){
+            this.dispatch({loading: false, error: false, detail: applyData.detail, status: status});
+        }else{
+            getApplyDetailById(queryObj).then((detail) => {
+                this.dispatch({loading: false, error: false, detail: detail, status: status});
             }, (errorMsg) => {
-                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID);
-                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('user.get.apply.detail.failed', '获取申请审批详情失败')});
             });
         }
     }

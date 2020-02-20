@@ -213,7 +213,7 @@ const ApplyViewDetail = createReactClass({
             if (_.includes(['1','2','3'], _.get(detailItem,'approval_state'))){
                 approval_state = _.get(detailItem,'approval_state');
             }
-            ApplyViewDetailActions.getApplyDetail(detailItem.id, applyData, approval_state, this.props.appList);
+            ApplyViewDetailActions.getApplyDetail({id: detailItem.id}, approval_state, applyData, this.props.appList);
             ApplyViewDetailActions.getNextCandidate({id: detailItem.id});
             //获取该审批所在节点的位置
             ApplyViewDetailActions.getApplyTaskNode({id: detailItem.id});
