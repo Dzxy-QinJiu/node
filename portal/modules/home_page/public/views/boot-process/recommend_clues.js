@@ -73,7 +73,7 @@ class RecommendClues extends React.Component {
         this.setState({
             settedCustomerRecommend: _.extend(settedCustomerRecommend, {loading: true})
         });
-        clueCustomerAction.getSettingCustomerRecomment(guideRecommendCondition, (condition) => {
+        clueCustomerAction.getSettingCustomerRecomment(_.get(settedCustomerRecommend,'obj'), (condition) => {
             let isShowRecommendSettingPanel = this.isShowRecommendSettingPanel({obj: condition});
             //引导页设置了推荐条件或已经设置过推荐条件时
             if(guideRecommendCondition || !isShowRecommendSettingPanel) {

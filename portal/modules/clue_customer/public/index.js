@@ -65,6 +65,7 @@ import {
     transferClueToCustomerIconPrivilege,
     addCluePrivilege,
     releaseClueTip,
+    hasRecommendPrivilege
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -206,7 +207,7 @@ class ClueCustomer extends React.Component {
             if(_.get(this.props, 'location.state.targetObj')) {
                 clueCustomerAction.saveSettingCustomerRecomment(_.get(this.props, 'location.state.targetObj', {})); 
             }
-            this.showClueRecommendTemplate();
+            this.showClueRecommendTemplate({isGuideSetting: true});
         }
         this.setFilterInputWidth();
         //响应式布局时动态计算filterinput的宽度
@@ -647,13 +648,13 @@ class ClueCustomer extends React.Component {
     showClueRecommendTemplate = (param) => {
         this.setState({
             isShowRecommendCluePanel: true,
-            guideRecommendCondition: _.get(param, 'recommendCondition', null)
+            guideRecommendCondition: _.get(param, 'isGuideSetting')
         });
     };
     // 清空引导页传入的推荐线索条件
     clearGuideRecomentCondition = () => {
         this.setState({
-            guideRecommendCondition: null,
+            guideRecommendCondition: false,
         });
     };
     closeRecommendCluePanel = () => {
@@ -676,7 +677,7 @@ class ClueCustomer extends React.Component {
     renderClueRecommend = () => {
         return (
             <div className="recomend-clue-customer-container pull-right">
-                {(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE) ) ?
+                {hasRecommendPrivilege() ?
                     <Popover
                         placement="bottom"
                         content={(
@@ -2388,18 +2389,22 @@ class ClueCustomer extends React.Component {
         }
     };
     renderOtherOperation = () => {
-        return (
-            <div className="intro-recommend-list">
-                <ReactIntl.FormattedMessage
-                    id="import.excel.no.data"
-                    defaultMessage={'试下客套给您{recommend}的功能'}
-                    values={{
-                        'recommend': <a onClick={this.showClueRecommendTemplate} data-tracename="点击推荐线索">
-                            {Intl.get('import.recommend.clue.lists', '推荐线索')}
-                        </a>
-                    }}/>
-            </div>
-        );
+        if(hasRecommendPrivilege()) {
+            return (
+                <div className="intro-recommend-list">
+                    <ReactIntl.FormattedMessage
+                        id="import.excel.no.data"
+                        defaultMessage={'试下客套给您{recommend}的功能'}
+                        values={{
+                            'recommend': <a onClick={this.showClueRecommendTemplate} data-tracename="点击推荐线索">
+                                {Intl.get('import.recommend.clue.lists', '推荐线索')}
+                            </a>
+                        }}/>
+                </div>
+            );
+        }else {
+            return null;
+        }
     };
 
     //点击展开线索分析面板
@@ -2942,7 +2947,7 @@ class ClueCustomer extends React.Component {
                 <Menu.Item key="clue_pool">
                     {Intl.get('clue.pool', '线索池')}
                 </Menu.Item> : null}
-            {hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE) ?
+            {hasRecommendPrivilege() ?
                 <Menu.Item key="recommend">
                     {Intl.get('clue.customer.clue.recommend', '线索推荐')}
                 </Menu.Item> : null}

@@ -495,3 +495,8 @@ export const VERSIONS = {
     'professional': Intl.get('versions.professional','专业版'),
     'enterprise': Intl.get('versions.enterprise','企业版') 
 };
+
+//是否有推荐线索的权限
+export const hasRecommendPrivilege = () => {
+    return !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE);
+};
