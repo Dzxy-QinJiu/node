@@ -154,7 +154,9 @@ class CustomerPoolRule extends React.Component{
     };
 
     addRule = () => {
-        this.setState({isAddFormShow: true});
+        this.setState({isAddFormShow: true}, () => {
+            GeminiScrollbar.scrollTo(this.refs.scrolltoTop, 0);
+        });
     };
     hideAddRule = () => {
         this.setState({isAddFormShow: false});
@@ -452,7 +454,7 @@ class CustomerPoolRule extends React.Component{
         });
 
         return (
-            <div className="customer-rules-wrapper" style={{height: contentHeight}}>
+            <div className="customer-rules-wrapper" style={{height: contentHeight}} ref="scrolltoTop">
                 <GeminiScrollbar
                     handleScrollBottom={this.handleScrollBottom}
                     listenScrollBottom={this.state.listenScrollBottom}
