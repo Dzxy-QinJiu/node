@@ -541,7 +541,7 @@ class MonthlyReport extends React.Component {
                                 </span>
                             </div>
 
-                            {selectedTeamId ? (
+                            {isCommonSales || selectedTeamId ? (
                                 <AntcAnalysis
                                     charts={this.getCharts()}
                                     conditions={this.getConditions(selectedTeamId)}
