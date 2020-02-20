@@ -8,6 +8,8 @@ import {dateSelectorEmitter, teamTreeEmitter} from 'PUB_DIR/sources/utils/emitte
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import WeeklyReportAction from './action/weekly-report-actions';
 import WeeklyReportStore from './store/weekly-report-store';
+var userData = require('PUB_DIR/sources/user-data');
+const isCommonSales = userData.getUserData().isCommonSales;
 
 require('./css/index.less');
 var WeekReportUtil = require('./utils/weekly-report-utils');
@@ -199,7 +201,7 @@ class WeeklyReport extends React.Component {
                         <Col span={21}>
                             <div className='weekly-report-content clearfix'>
                                 <div className='col-md-12 weekly-report-detail-wrap'>
-                                    {this.state.selectedTeamId ? (
+                                    {isCommonSales || this.state.selectedTeamId ? (
                                         <WeeklyReportDetail
                                             selectedItem={{teamId: this.state.selectedTeamId, nYear: this.state.nYear, nWeek: this.state.nWeek}}
                                             selectedTeamName={this.state.selectedTeamName}
