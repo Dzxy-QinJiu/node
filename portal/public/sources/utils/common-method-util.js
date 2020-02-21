@@ -466,6 +466,8 @@ exports.getApplyTopicText = function(obj) {
         });
     } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1) {
         return getDocumentReportTypeText(DOCUMENT_TYPE, _.get(obj, 'detail.document_type'));
+    } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.VISITAPPLY) !== -1) {
+        return _.get(obj, 'detail.customers[0].name') || _.get(obj, 'configDescription','');
     } else {
         return _.get(obj, 'configDescription','');
     }
