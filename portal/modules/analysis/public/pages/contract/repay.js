@@ -21,9 +21,9 @@ function getCharts() {
         //        contractChart.getContractRepayTypeChart(),
         //团队或个人回款毛利统计
         contractChart.getRepayChart(),
-        //近3个月回款周趋势图
+        //近3个月回款毛利周趋势图
         contractChart.getTrendChart({
-            title: Intl.get('contract.146', '近3个月回款周趋势图'),
+            title: Intl.get('contract.146', '近3个月回款毛利周趋势图'),
             type: 'repay'
         }),
         //业绩同比增长情况

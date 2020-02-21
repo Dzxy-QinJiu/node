@@ -656,7 +656,7 @@ class WeeklyReportDetail extends React.Component {
                             </div>
                         ) : null}
                         <div className="customer-stage-info-wrap">
-                            <AntcCardContainer title={Intl.get('weekly.report.customer.stage', '客户阶段')}>
+                            <AntcCardContainer title={Intl.get('crm.order.stage', '订单阶段')}>
                                 {this.renderDiffTypeTable('customerStageInfo')}
                             </AntcCardContainer>
                         </div>
