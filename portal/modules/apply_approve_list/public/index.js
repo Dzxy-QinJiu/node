@@ -214,7 +214,7 @@ class ApplyApproveList extends React.Component {
             <Menu className='add-apply-type-list'>
                 {_.map(workFlowList, (item, index) => {
                     //用户申请和成员申请暂时不展示
-                    if (_.indexOf([APPLY_APPROVE_TYPES.USERAPPLY, APPLY_APPROVE_TYPES.MEMBER_INVITE], item.type) > -1) {
+                    if (_.indexOf([APPLY_APPROVE_TYPES.USERAPPLY, APPLY_APPROVE_TYPES.MEMBER_INVITE, APPLY_APPROVE_TYPES.USER_OR_GRANT], item.type) > -1) {
                         return null;
                     }
                     return (
@@ -611,13 +611,13 @@ class ApplyApproveList extends React.Component {
         var addApplyFormPanel = this.state.addApplyFormPanel;
         let addApplyPanel = null;
         switch (addApplyFormPanel) {
-            case APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES:
+            case APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES://销售机会申请
                 return <AddSalesOpportunityApply hideSalesOpportunityApplyAddForm={this.closeAddApplyForm}/>;
-            case APPLY_APPROVE_TYPES.BUSSINESSTRIP:
+            case APPLY_APPROVE_TYPES.BUSSINESSTRIP://出差申请
                 return <AddBusinessApply hideBusinessApplyAddForm={this.closeAddApplyForm}/>;
-            case APPLY_APPROVE_TYPES.LEAVE:
+            case APPLY_APPROVE_TYPES.LEAVE://请假申请
                 return <AddLeaveApply hideLeaveApplyAddForm={this.closeAddApplyForm}/>;
-            case APPLY_APPROVE_TYPES.DOCUMENTWRITING:
+            case APPLY_APPROVE_TYPES.DOCUMENTWRITING://舆情报送和文件撰写申请
                 return <AddDocumentWriteOrReportSendApplyPanel
                     titleType={Intl.get('apply.approve.document.write', '文件撰写申请')}
                     hideApplyAddForm={this.closeAddApplyForm}
