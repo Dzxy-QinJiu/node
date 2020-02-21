@@ -15,7 +15,7 @@ import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES} from 'PUB_DIR/sources/utils/consts';
-import {hasCalloutPrivilege, isCurtao, checkVersionAndType, isShowUnReadNotice, isShowSystemTab} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasCalloutPrivilege, isCurtao, checkVersionAndType, isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 import {phoneEmitter, notificationEmitter, userInfoEmitter, phoneMsgEmitter, clickUpgradeNoiceEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
@@ -429,7 +429,7 @@ var NavSidebar = createReactClass({
     },
 
     //渲染通知菜单
-    getNotificationBlock: function() {
+    getNotificationBlock: function(trigger) {
         let notification = menuUtil.getMenuById(MENU.NOTE);
         if (!notification) {
             return null;
@@ -451,7 +451,7 @@ var NavSidebar = createReactClass({
                         isShowSystemTab() ? (
                             <Popover
                                 content={this.renderNoticeSubMenu()}
-                                trigger="hover"
+                                trigger={trigger}
                                 placement="rightBottom"
                                 overlayClassName="nav-sidebar-notification"
                             >
@@ -499,7 +499,7 @@ var NavSidebar = createReactClass({
     },
 
     //后台管理配置模块
-    renderBackendConfigBlock: function() {
+    renderBackendConfigBlock: function(trigger) {
         let backendConfigMenu = menuUtil.getMenuById(MENU.BACK_CONFIG);
         if (!backendConfigMenu || !backendConfigMenu.routes) {
             return null;
@@ -520,7 +520,7 @@ var NavSidebar = createReactClass({
             <div className={wrapperCls}>
                 <Popover
                     content={this.renderSubMenuLinks(backendConfigMenu.routes)}
-                    trigger="hover"
+                    trigger={trigger}
                     placement="rightBottom"
                     overlayClassName="nav-sidebar-backend-config"
                 >
@@ -533,7 +533,7 @@ var NavSidebar = createReactClass({
     },
 
     //侧边导航左下个人信息
-    getUserInfoBlock: function() {
+    getUserInfoBlock: function(trigger) {
         //个人资料部分
         let userInfoLinkList = menuUtil.getMenuById(MENU.USER_INFO);
         if (!userInfoLinkList || !userInfoLinkList.routes) {
@@ -543,7 +543,7 @@ var NavSidebar = createReactClass({
             <div className="sidebar-userinfo">
                 <Popover
                     content={this.renderSubMenuLinks(userInfoLinkList.routes, true)}
-                    trigger="hover"
+                    trigger={trigger}
                     placement="rightBottom"
                     overlayClassName="nav-sidebar-userinfo"
                 >
@@ -649,11 +649,12 @@ var NavSidebar = createReactClass({
         return this.state.isReduceNavIcon || this.state.isReduceNavMargin;
     },
     disableClickBlock(cls = '', text) {
+        const trigger = this.getTriggerType();
         return (
             <Popover
                 placement='right'
                 content={Intl.get('payment.please.upgrade.company.version', '请先升级到基础版以上版本，联系销售：{contact}',{contact: '400-6978-520'})}
-                trigger="hover"
+                trigger={trigger}
             >
                 <a className={`${cls} disable-link`}>{text}</a>
             </Popover>
@@ -704,7 +705,7 @@ var NavSidebar = createReactClass({
     },
 
     //生成拨号按钮
-    renderDailCallBlock() {
+    renderDailCallBlock(trigger) {
         if(this.state.isShowDialUpKeyboard) {
             const iconCls = classNames('iconfont', 'sidebar-bottom-icon', {
                 'icon-nav-dial-up': !this.state.ronglianNum,
@@ -731,7 +732,16 @@ var NavSidebar = createReactClass({
         return null;
     },
 
+    getTriggerType: function() {
+        const { isWebMin } = isResponsiveDisplay();
+        let trigger = 'hover';
+        if(isWebMin) {
+            trigger = 'click';
+        }
+        return trigger;
+    },
     render: function() {
+        const trigger = this.getTriggerType();
         return (
             <nav className="navbar" onClick={this.closeNotificationPanel}>
                 <div className="container">
@@ -748,7 +758,7 @@ var NavSidebar = createReactClass({
                             </ul>
                             <Popover
                                 content={this.getNavbarLists()}
-                                trigger="hover"
+                                trigger={trigger}
                                 placement="rightTop"
                                 overlayClassName="nav-sidebar-lists"
                             >
@@ -770,9 +780,9 @@ var NavSidebar = createReactClass({
                                 <a className='iconfont icon-customer-service sidebar-bottom-icon' title={Intl.get('menu.online.consulting', '在线咨询')}/>
                             </div>) : null
                         }
-                        {this.getNotificationBlock()}
-                        {this.renderBackendConfigBlock()}
-                        {this.getUserInfoBlock()}
+                        {this.getNotificationBlock(trigger)}
+                        {this.renderBackendConfigBlock(trigger)}
+                        {this.getUserInfoBlock(trigger)}
                     </div>
                 </div>
                 {/*暂时将引导的功能都去掉*/}
