@@ -2134,7 +2134,7 @@ var en_US = {
     'contract.143': 'The amount of the new added repayment', //新增回款额
     'contract.144': 'Team distribution of the new added contract gross profit', //新增合同毛利团队分布
     'contract.145': 'Team distribution of the new added repayment', //新增回款额团队分布
-    'contract.146': 'Trend of the repayment', //近3个月回款周趋势图
+    'contract.146': 'Trend of the repayment', //近3个月回款毛利周趋势图
     'contract.147': 'Trend of the new added contract', //近3个月新增合同周趋势图
     'contract.148': 'The amount of the new added cost', //新增费用额
     'contract.149': 'Team distribution of the new added cost', //新增费用额团队分布
@@ -3149,6 +3149,7 @@ var en_US = {
     'analysis.outgoing.statistics': 'outgoing statistics',//外出统计
     'analysis.to': 'to',//至
     'analysis.extended.account.number': 'extended account number',//延期帐号数
+    'analysis.monthly.turnover.rate': 'monthly turnover rate',//月流失率
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
