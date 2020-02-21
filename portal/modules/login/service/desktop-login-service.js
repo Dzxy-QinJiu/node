@@ -337,7 +337,7 @@ exports.getTicket = function(req, res) {
  * 重置密码
  *
  */
-exports.resetPassword = function(req, res, user_id, ticket, new_password) {
+exports.resetPassword = function(req, res) {
     const url = urls.resetPassword;
 
     return restUtil.appAuthRest.post(
@@ -345,11 +345,7 @@ exports.resetPassword = function(req, res, user_id, ticket, new_password) {
             url: url,
             req: req,
             res: res,
-            form: {
-                user_id,
-                ticket,
-                new_password,
-            }
+            form: req.query
         }, null);
 };
 

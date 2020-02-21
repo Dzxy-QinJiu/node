@@ -402,10 +402,7 @@ exports.getTicket = function(req, res) {
 
 //重置密码
 exports.resetPassword = function(req, res) {
-    const user_id = req.query.user_id;
-    const ticket = req.query.ticket;
-    const new_password = req.query.new_password;
-    DesktopLoginService.resetPassword(req, res, user_id, ticket, new_password).on('success', function(data) {
+    DesktopLoginService.resetPassword(req, res).on('success', function(data) {
         if (!data) data = '';
         res.status(200).json(data);
     }).on('error', function(errorObj) {
