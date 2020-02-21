@@ -159,7 +159,10 @@ class RegisterForm extends React.Component {
         });
     }
     // 短信验证码验证失败三次后获取图片验证码
-    getVerifyErrorCaptchaCode = (phone, isRefresh) => {
+    getVerifyErrorCaptchaCode = (phone, isRefresh, e) => {
+        if(isRefresh){
+            Trace.traceEvent(e, '刷新图片验证码');
+        }
         if (getVerifyErrorCaptchaCodeAJax) getVerifyErrorCaptchaCodeAJax.abort();
         getVerifyErrorCaptchaCodeAJax = $.ajax({
             url: '/register/captchaCode',
@@ -220,10 +223,12 @@ class RegisterForm extends React.Component {
     }
 
     //获取短信验证码
-    getValidateCode() {
+    getValidateCode(e) {
         if (this.state.captchaCode || this.state.isLoadingValidCode) return;
         let phone = _.trim(this.props.form.getFieldValue('phone'));
         if (phone && commonPhoneRegex.test(phone)) {
+            // 获取输入手机号的短信验证码
+            Trace.traceEvent(e, '获取短信验证码，手机号:' + phone);
             this.setState({isLoadingValidCode: true, validateCodeErrorMsg: '', getCodeErrorMsg: ''});
             $.ajax({
                 url: '/phone/validate_code',
@@ -267,9 +272,11 @@ class RegisterForm extends React.Component {
             });
         }
     }
-    checkPhoneRegisted = () => {
+    checkPhoneRegisted = (e) => {
         let phone = this.props.form.getFieldValue('phone');
         if (phone && commonPhoneRegex.test(phone)) {
+            // 填写电话失去焦点验证电话前，将电话上传到matomo上记录
+            Trace.traceEvent(e, '输入手机号:' + phone);
             if (phone === this.state.isCheckingRegistedPhone) return;
             this.setState({isCheckingRegistedPhone: phone});
             $.ajax({
