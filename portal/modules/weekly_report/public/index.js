@@ -9,7 +9,6 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import WeeklyReportAction from './action/weekly-report-actions';
 import WeeklyReportStore from './store/weekly-report-store';
 var userData = require('PUB_DIR/sources/user-data');
-const isCommonSales = userData.getUserData().isCommonSales;
 
 require('./css/index.less');
 var WeekReportUtil = require('./utils/weekly-report-utils');
@@ -187,6 +186,8 @@ class WeeklyReport extends React.Component {
             });
             //计算列表高度
         }
+
+        const isCommonSales = userData.getUserData().isCommonSales;
 
         return (
             <div className='weekly-report-container' data-tracename='销售周报'>
