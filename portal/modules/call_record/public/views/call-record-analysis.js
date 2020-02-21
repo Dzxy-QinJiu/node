@@ -34,6 +34,8 @@ const LITERAL_CONSTANT = {
 
 const FIRSR_SELECT_DATA = [LITERAL_CONSTANT.TEAM, LITERAL_CONSTANT.MEMBER];
 
+const DEFAULT_TIME_RANGE = 'day';
+
 class CallRecordAnalyis extends React.Component {
     static propTypes = {
         closeCallAnalysisPanel: PropTypes.func
@@ -105,11 +107,11 @@ class CallRecordAnalyis extends React.Component {
         return [
             {
                 name: 'start_time',
-                value: this.state.start_time,
+                value: moment().startOf(DEFAULT_TIME_RANGE).valueOf(),
             },
             {
                 name: 'end_time',
-                value: this.state.end_time,
+                value: moment().endOf(DEFAULT_TIME_RANGE).valueOf(),
             },
             {
                 name: 'team_ids',
@@ -344,7 +346,7 @@ class CallRecordAnalyis extends React.Component {
                             <span className="btn-item">
                                 <AntcDatePicker
                                     disableDateAfterToday={true}
-                                    range="day"
+                                    range={DEFAULT_TIME_RANGE}
                                     selectedTimeFormat="int"
                                     onSelect={this.onSelectDate}>
                                     <AntcDatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</AntcDatePicker.Option>
