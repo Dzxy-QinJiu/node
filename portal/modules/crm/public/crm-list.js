@@ -30,6 +30,7 @@ import ajax from 'MOD_DIR/common/ajax';
 import crmAjax from './ajax/index';
 import Trace from 'LIB_DIR/trace';
 import crmUtil from './utils/crm-util';
+const { UNKNOWN, UNKNOWN_KEY} = crmUtil;
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
@@ -75,8 +76,6 @@ var LAYOUT_CONSTANTS = {
     WIDTH_WITHOUT_INPUT: 193//topnav中除了输入框以外的宽度
 };
 var rightPanelShow = false;
-let UNKNOWN = Intl.get('user.unknown', '未知');
-const UNKNOWN_KEY = 'unknown';
 //具备舆情秘书权限
 const hasSecretaryAuth = userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
 
@@ -623,7 +622,7 @@ class Crm extends React.Component {
         }
         let term_fields = [];//需精确匹配的字段
         //未知行业,未知地域,未知销售阶段（未展示），未知联系方式(未展示)等处理
-        let unexist = [];//存放未知行业、未知地域的数组
+        let unexist = [];//存放未知行业、未知地域、未知行政级别的数组
         let exist = [];
         if (condition.industry && condition.industry.length) {
             //未知行业的处理
@@ -650,6 +649,11 @@ class Crm extends React.Component {
             //需精确匹配
             term_fields.push('province');
 
+        }
+        //未知行政级别的处理
+        if (_.get(condition, 'administrative_level') === UNKNOWN) {
+            unexist.push('administrative_level');
+            delete condition.administrative_level;
         }
         //阶段标签的处理
         if (condition.customer_label) {

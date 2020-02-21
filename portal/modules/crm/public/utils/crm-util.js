@@ -130,6 +130,9 @@ exports.getCrmLabelCls = function(customer_label) {
     return customerLabelCls;
 };
 
+exports.UNKNOWN = Intl.get('user.unknown', '未知');
+exports.UNKNOWN_KEY = 'unknown';
+
 //行政级别
 exports.administrativeLevels = [{id: '0',level: Intl.get('crm.Administrative.level.0', '部委级')},
     {id: '1',level: Intl.get('crm.Administrative.level.1', '省部级')},
