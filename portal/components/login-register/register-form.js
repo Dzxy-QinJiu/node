@@ -272,11 +272,9 @@ class RegisterForm extends React.Component {
             });
         }
     }
-    checkPhoneRegisted = (e) => {
+    checkPhoneRegisted = () => {
         let phone = this.props.form.getFieldValue('phone');
         if (phone && commonPhoneRegex.test(phone)) {
-            // 填写电话失去焦点验证电话前，将电话上传到matomo上记录
-            Trace.traceEvent(e, '输入手机号:' + phone);
             if (phone === this.state.isCheckingRegistedPhone) return;
             this.setState({isCheckingRegistedPhone: phone});
             $.ajax({
@@ -315,6 +313,8 @@ class RegisterForm extends React.Component {
             if (commonPhoneRegex.test(phone)) {
                 //电话验证通过即可点击获取短信验证码
                 phoneIsPassValid = true;
+                // 电话通过验证后，将电话上传到matomo上记录
+                Trace.traceEvent('个人注册页面', '输入手机号:' + phone);
                 callback();
             } else {
                 phoneIsPassValid = false;
