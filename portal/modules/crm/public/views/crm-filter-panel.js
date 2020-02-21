@@ -454,11 +454,14 @@ class CrmFilterPanel extends React.Component {
             advancedData.splice(advancedData.length - 1, 0, {
                 groupName: Intl.get('crm.administrative.level', '行政级别'),
                 groupId: 'administrative_level',
-                data: _.map(filterLevelArray, x => ({
-                    name: x.level,
-                    value: x.id,
-                    selected: x.id && _.indexOf(selectedLevel, x.id) !== -1
-                }))
+                singleSelect: true,
+                data: [{id: 'unknown',level: Intl.get('user.unknown', '未知')}]
+                    .concat(filterLevelArray)
+                    .map(x => ({
+                        name: x.level,
+                        value: x.id,
+                        selected: x.id && _.indexOf(selectedLevel, x.id) !== -1
+                    }))
             });
         }
         if(!isCurtao()){
