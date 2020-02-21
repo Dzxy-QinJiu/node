@@ -1878,6 +1878,7 @@ var en_US = {
     'crm.customer.release.pool': 'Release to customer pool',//释放到客户池
     'crm.customer.delete': 'After deletion, the customer can be found in the recycle bin. Are you sure you want to delete it?',//删除后，可以在回收站中找回该客户，您确定要删除吗？
     'crm.customer.release.confirm.tip': 'After release to the customer pool, other people can also view and extract. Are you sure you want to release it?',//释放到客户池后，其他人也可以查看、提取，您确定要释放吗？
+    'crm.customer.release.tip': 'After release, others can view and extract.',//释放后其他人可以查看和提取。
     'crm.customer.personal.release.confirm.tip': 'After release, it can be extracted from the customer pool',//释放后可以再从客户池提取
     'crm.customer.release.failed': 'Customer Release Failed',//释放客户失败
     'crm.customer.pool.failed': 'Failure to get customer pool customer',//获取客户池客户失败
@@ -1890,6 +1891,7 @@ var en_US = {
     'crm.customer.extract.limit.tip': 'Up to 20 customers at a time',//一次最多提取20个客户
     'crm.customer.release.push.tip': 'The customer {customerName} is released to the customer pool by {operatorName}',//客户{customerName}被{operatorName}释放到了客户池
     'crm.customer.batch.release.push.tip': '{customerName}, etc. {count} customers are released to the customer pool by {operatorName}',//{customerName}等{count}个客户被{operatorName}释放到了客户池
+    'crm.customer.release.reason': 'Please fill in the reason for release',//请填写释放理由
 
     'crm.customer.rule.name': 'Rules set',//规则设置
     'crm.add.customer.pool.rule': 'Add rules',//添加规则
