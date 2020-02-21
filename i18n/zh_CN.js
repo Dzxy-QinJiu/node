@@ -3165,6 +3165,7 @@ var zh_CN = {
     'analysis.out.time': '外出时间段',
     'analysis.outgoing.statistics': '外出统计',
     'analysis.to': '至',
+    'analysis.extended.account.number': '延期帐号数',
     'common.font.the': '第',
     'common.weeks': '周',
     'clue.add.contacts.tip': '添加联系方式',
