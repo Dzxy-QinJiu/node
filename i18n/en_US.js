@@ -3215,6 +3215,7 @@ var en_US = {
     'clue.customer.export.select.clue': 'Export selected leads',//导出选中的线索
     'lead.recommend.form.show.all.condition': 'Show all conditions',//展开全部条件
     'lead.recommend.form.hide.some.condition': 'Hide some condition',//收起部分条件
+    'lead.associate.customer.detail': 'View associated customers',//查看关联客户
     
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
