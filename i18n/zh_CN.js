@@ -3229,6 +3229,7 @@ var zh_CN = {
     'lead.recommend.change.condition': '再试试', 'clue.customer.export.select.clue': '导出选中的线索',
     'lead.recommend.form.show.all.condition': '展开全部条件',
     'lead.recommend.form.hide.some.condition': '收起部分条件',
+    'lead.associate.customer.detail': '查看关联客户',
     
     //线索模块 end
     'common.memeber.all': '全部成员',

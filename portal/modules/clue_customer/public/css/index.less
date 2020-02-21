@@ -116,16 +116,6 @@
       .iconfont {
         margin-right: 0.5em;
       }
-      .more-btn {
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        margin-right: @filter_area_margin_top;
-        color: #8da8c5;
-        .iconfont {
-          margin-right: 0;
-        }
-      }
       .recomend-clue-customer-container,.add-import-clue-btn-container {
         display: inline-block;
       }
@@ -135,6 +125,16 @@
         .iconfont {
           margin-right: 0.5em;
         }
+      }
+    }
+    .more-btn {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      margin-right: @filter_area_margin_top;
+      color: #8da8c5;
+      .iconfont {
+        margin-right: 0;
       }
     }
   }
@@ -349,6 +349,20 @@
               }
             }
           }
+          .more-btn{
+            border: none;
+            color: @CLICK-BLUE;
+            background: none;
+            cursor: pointer;
+            margin-right: 15px;
+            width: 24px;
+            height: 24px;
+            text-align: center;
+            &:hover,&:focus,&:active{
+              background: none;
+              color: @BUTTON-HOVER;
+            }
+          }
         }
         //线索顶部标题
         .clue-top-title {
@@ -358,6 +372,12 @@
             font-size: 14px;
             font-weight: bold;
             padding: 4px;
+          }
+          .clue-name-wrapper{
+            display: flex;
+            .clue-name {
+              flex: 1;
+            }
           }
           .clue-name {
             cursor: pointer;
@@ -672,5 +692,108 @@
 .clue-export-modal .ant-modal-body{
   .modal-tip{
     margin-top: 5px;
+  }
+}
+
+@media screen and (max-width: 720px){
+  .clue_customer_content{
+    .date-picker-wrap{
+      .search-container{
+        .clue-list-selected-tip{
+          font-size: 12px;
+          padding-left: 0;
+        }
+      }
+
+    }
+    .clue-content-container{
+      .content-container{
+        //tab栏样式
+        .clue-status-wrap{
+          width: calc(100% - 152px);
+          overflow: scroll;
+          .clue-status-container{
+            white-space: nowrap;
+          }
+        }
+        //table样式
+        .clue-customer-list {
+          //分页器样式
+          .ant-pagination {
+            //总数
+            .ant-pagination-total-text {
+              display: none;
+            }
+            .ant-pagination-item{
+              min-width: 22px;
+              height: 22px;
+              line-height: 22px;
+            }
+            .ant-pagination-jump-next,
+            .ant-pagination-jump-prev,
+            .ant-pagination-next,
+            .ant-pagination-prev{
+              min-width: 22px;
+              height: 22px;
+              line-height: 22px;
+            }
+            .ant-pagination-prev .ant-pagination-item-link:after,
+            .ant-pagination-next .ant-pagination-item-link:after{
+              height: 22px;
+              line-height: 22px;
+            }
+          }
+        }
+      }
+    }
+    .more-btn{
+      margin-right: 0;
+    }
+  }
+
+  #app .ant-table td.ant-table-selection-column, #app .ant-table th.ant-table-selection-column{
+    width: 24px;
+    min-width: 24px;
+  }
+  //table中的checkbox按钮样式
+  #app .ant-table td.ant-table-selection-column{
+    display: inline-block;
+    padding: 13px 25px 0 10px;
+  }
+  //去掉选中后的背景色
+  .ant-table-tbody > tr:hover > td{
+    background: none;
+  }
+
+  .clue-top-title{
+    .more-btn{
+      margin-right: 0!important;
+    }
+    .contact-container{
+      text-align: right;
+      .phone-callout-container .icon-active-call-records-ico{
+        visibility: visible!important;
+      }
+      .recent-contacter-detail.has-more-icon{
+        min-width: auto!important;
+        width: auto;
+      }
+    }
+    .clue-bottom-wrapper{
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      .handle-and-trace{
+        margin-left: 10px;
+      }
+    }
+    .clue-foot, .invalid-td-clue{
+      width: 100%;
+    }
+    .invalid-td-clue .edit-invalid-trace-content, .clue-foot .edit-trace-content{
+      padding-top: 0px!important;
+      padding-right: 0!important;
+    }
   }
 }

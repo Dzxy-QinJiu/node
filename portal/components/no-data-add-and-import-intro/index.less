@@ -28,7 +28,7 @@
       padding: 26px;
       border-right: 1px solid #DEDFE2;
       .add-data-tip {
-        float: right;
+        float: left;
         padding-top: 24px;
         .btn-containers > div {
           text-align: left;
@@ -40,7 +40,7 @@
       .add-data-background {
         height: 144px;
         width: 144px;
-        float: right;
+        float: left;
         margin-right: 24px;
         background: transparent url("../../static/images/add-data.png") 0 0;
       }
@@ -91,6 +91,52 @@
     &:hover {
       background-color: @BUTTON-HOVER;
       border-color: @BUTTON-HOVER;
+    }
+  }
+}
+
+@media screen and (max-width: 990px){
+  .no-data-add-and-import-intro-wrap{
+    padding-top: 150px;
+    .no-data-container-warp{
+      max-width: 800px;
+      width: auto;
+      display: flex;
+      .add-data-wrap, .import-data-wrap{
+        width: auto;
+        max-width: 440px;
+        display: flex;
+        justify-content: center;
+        flex-flow: wrap;
+        .btn-containers > div{
+          text-align: center!important;
+        }
+      }
+      .import-data-wrap .import-data-background, .add-data-wrap .add-data-background{
+        margin-left: 24px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 720px){
+  .no-data-add-and-import-intro-wrap{
+    padding-top: 0;
+    .no-data-container-warp{
+      display: block;
+      .add-data-wrap{
+        border-right: none;
+        border-bottom: 1px solid #DEDFE2;
+      }
+      .add-data-wrap, .import-data-wrap {
+        padding: 20px;
+      }
+      .import-data-wrap .import-data-background, .add-data-wrap .add-data-background{
+        margin: 0;
+      }
+    }
+    .add-other-operation{
+      margin: 15px auto;
     }
   }
 }
