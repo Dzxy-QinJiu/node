@@ -2,7 +2,7 @@ var React = require('react');
 const PropTypes = require('prop-types');
 var FilterStore = require('../store/filter-store');
 var FilterAction = require('../action/filter-actions');
-import { administrativeLevels, CUSTOMER_TAGS } from '../utils/crm-util';
+import { administrativeLevels, CUSTOMER_TAGS, UNKNOWN } from '../utils/crm-util';
 import userData from 'PUB_DIR/sources/user-data';
 import { FilterList } from 'CMP_DIR/filter';
 import {
@@ -321,7 +321,7 @@ class CrmFilterPanel extends React.Component {
         const currentStage = this.state.condition.sales_opportunities[0].sale_stages || '';
         const selectedStages = currentStage.split(',');
         const stageArray = STAGE_OPTIONS.concat(this.state.stageList);
-        const industryArray = [Intl.get('user.unknown', '未知')].concat(this.state.industryList);
+        const industryArray = [UNKNOWN].concat(this.state.industryList);
         const commonData = _.drop(otherFilterArray).map(x => {
             x.readOnly = true;
             x.groupId = COMMON_OTHER_ITEM;
@@ -425,7 +425,7 @@ class CrmFilterPanel extends React.Component {
                 groupName: Intl.get('crm.96', '地域'),
                 groupId: 'province',
                 singleSelect: true,
-                data: [Intl.get('user.unknown', '未知')]
+                data: [UNKNOWN]
                     .concat(this.state.provinceList)
                     .map(x => ({
                         name: x,
@@ -455,7 +455,7 @@ class CrmFilterPanel extends React.Component {
                 groupName: Intl.get('crm.administrative.level', '行政级别'),
                 groupId: 'administrative_level',
                 singleSelect: true,
-                data: [{id: 'unknown',level: Intl.get('user.unknown', '未知')}]
+                data: [{id: UNKNOWN,level: UNKNOWN}]
                     .concat(filterLevelArray)
                     .map(x => ({
                         name: x.level,

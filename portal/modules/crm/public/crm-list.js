@@ -30,6 +30,7 @@ import ajax from 'MOD_DIR/common/ajax';
 import crmAjax from './ajax/index';
 import Trace from 'LIB_DIR/trace';
 import crmUtil from './utils/crm-util';
+const { UNKNOWN, UNKNOWN_KEY} = crmUtil;
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
@@ -74,8 +75,6 @@ var LAYOUT_CONSTANTS = {
     WIDTH_WITHOUT_INPUT: 193//topnav中除了输入框以外的宽度
 };
 var rightPanelShow = false;
-let UNKNOWN = Intl.get('user.unknown', '未知');
-const UNKNOWN_KEY = 'unknown';
 //具备舆情秘书权限
 const hasSecretaryAuth = userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
 
@@ -648,11 +647,9 @@ class Crm extends React.Component {
 
         }
         //未知行政级别的处理
-        if (condition.administrative_level) {
-            if (condition.administrative_level === UNKNOWN_KEY) {
-                unexist.push('administrative_level');
-                delete condition.administrative_level;
-            }
+        if (_.get(condition, 'administrative_level') === UNKNOWN) {
+            unexist.push('administrative_level');
+            delete condition.administrative_level;
         }
         //阶段标签的处理
         if (condition.customer_label) {
