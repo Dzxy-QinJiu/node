@@ -169,9 +169,9 @@ class ForgotPassword extends React.Component {
                     send_type: 'phone',
                 },
                 success: (data) => {
-                    if (_.get(data, 'user_id')) {
+                    if (data) {
                         this.changeView(VIEWS.VERIFY_AUTH_CODE);
-                        this.setState({ userId: data.user_id, sendMsgPhone: _.get(values, 'phone', '')});
+                        this.setState({sendMsgPhone: _.get(values, 'phone', '')});
                     } else {
                         this.setState({
                             errorMsg: Intl.get('login.message_sent_failure', '信息发送失败')
@@ -196,7 +196,7 @@ class ForgotPassword extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (err) return;
             let submitObj = {
-                user_id: this.state.userId,
+                user_name: this.state.sendMsgPhone,
                 code: _.get(values, 'phoneCode'),
             };
             let captchaCode = values.verifyErrorCaptchaCode;
@@ -241,7 +241,6 @@ class ForgotPassword extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (err) return;
             const ticket = this.state.ticket;
-            const user_id = this.state.userId;
             let new_password = _.get(values, 'newPassword');
             //md5加密
             var md5Hash = crypto.createHash('md5');
@@ -251,7 +250,7 @@ class ForgotPassword extends React.Component {
                 url: '/reset_password_with_ticket',
                 dataType: 'json',
                 data: {
-                    user_id,
+                    user_name: this.state.sendMsgPhone,
                     ticket,
                     new_password,
                 },
