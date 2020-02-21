@@ -3146,6 +3146,7 @@ var en_US = {
     'analysis.out.time': 'out time',//外出时间段
     'analysis.outgoing.statistics': 'outgoing statistics',//外出统计
     'analysis.to': 'to',//至
+    'analysis.extended.account.number': 'extended account number',//延期帐号数
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
