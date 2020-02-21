@@ -498,7 +498,7 @@ class BasicData extends React.Component {
         return (
             <div className="release-customer-container">
                 <div className="release-customer-tip">
-                    <Icon type="exclamation-circle" style={{color: '#ffbf00', marginRight: '10'}}/>
+                    <Icon type="exclamation-circle"/>
                     <span>{releaseTip}</span>
                 </div>
                 <Input.TextArea
