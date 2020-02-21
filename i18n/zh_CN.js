@@ -1899,6 +1899,7 @@ var zh_CN = {
     'crm.customer.release': '释放',
     'crm.customer.release.pool': '释放到客户池',
     'crm.customer.release.confirm.tip': '释放到客户池后，其他人也可以查看、提取，您确定要释放吗？',
+    'crm.customer.release.tip': '释放后其他人可以查看和提取。',
     'crm.customer.personal.release.confirm.tip': '释放后可以再从客户池提取',
     'crm.customer.release.failed': '释放客户失败',
     'crm.customer.pool.failed': '获取客户池客户失败',
@@ -1911,6 +1912,7 @@ var zh_CN = {
     'crm.customer.extract.limit.tip': '一次最多提取20个客户',
     'crm.customer.release.push.tip': '客户 {customerName} 被 {operatorName} 释放到了客户池',
     'crm.customer.batch.release.push.tip': '{customerName} 等{count}个客户被 {operatorName} 释放到了客户池',
+    'crm.customer.release.reason': '请填写释放理由',
 
     'crm.pool.single.extract.tip': '您确定要提取此客户吗？',
     'crm.pool.batch.extract.tip': '您确定要提取选中的客户吗？',

@@ -587,7 +587,7 @@ exports.releaseCustomer = function(req, res) {
             url: crmRestApis.releaseCustomer.replace(':id',req.body.id),
             req: req,
             res: res,
-        });
+        }, req.body);
 };
 
 //获取客户池中的客户
