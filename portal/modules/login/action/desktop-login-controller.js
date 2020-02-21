@@ -380,7 +380,8 @@ exports.sendResetPasswordMsg = function(req, res) {
         const sendType = req.query.send_type;
         //发送信息
         DesktopLoginService.sendResetPasswordMsg(req, res, userName, sendType, operateCode).on('success', function(data) {
-            res.status(200).json({user_id: _.get(data, 'user_id', '')});
+            if (!data) data = true;
+            res.status(200).json(data);
         }).on('error', function(errorObj) {
             res.status(500).json(errorObj);
         });
@@ -401,10 +402,7 @@ exports.getTicket = function(req, res) {
 
 //重置密码
 exports.resetPassword = function(req, res) {
-    const user_id = req.query.user_id;
-    const ticket = req.query.ticket;
-    const new_password = req.query.new_password;
-    DesktopLoginService.resetPassword(req, res, user_id, ticket, new_password).on('success', function(data) {
+    DesktopLoginService.resetPassword(req, res).on('success', function(data) {
         if (!data) data = '';
         res.status(200).json(data);
     }).on('error', function(errorObj) {
