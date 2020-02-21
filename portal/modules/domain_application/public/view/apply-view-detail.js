@@ -805,17 +805,9 @@ class ApplyViewDetail extends React.Component {
             return null;
         }
         let customerOfCurUser = this.state.customerOfCurUser || {};
-        let divHeight = $(window).height();
-        //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
-        if (!this.props.isHomeMyWork) {
-            divHeight -= TOP_NAV_HEIGHT;
-        }
-
-        const detailWrapCls = classNames('leave_manage_apply_detail_wrap', {
-            'col-md-8': !this.props.isHomeMyWork
-        });
+        const detailWrapCls = classNames('leave_manage_apply_detail_wrap');
         return (
-            <div className={detailWrapCls} style={{'height': divHeight}} data-tracename="审批详情界面">
+            <div className={detailWrapCls} style={{'width': this.props.width, 'height': this.props.height}} data-tracename="审批详情界面">
                 <ApplyDetailStatus
                     showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
                     showErrTip={this.state.detailInfoObj.loadingResult === 'error'}
@@ -854,7 +846,9 @@ ApplyViewDetail.defaultProps = {
     isHomeMyWork: false,//是否是首页我的工作中打开的详情
     afterApprovedFunc: function(){
 
-    }
+    },
+    width: '100%',
+    height: '100%',
 
 };
 ApplyViewDetail.propTypes = {
@@ -864,6 +858,8 @@ ApplyViewDetail.propTypes = {
     isUnreadDetail: PropTypes.bool,
     applyData: PropTypes.object,
     isHomeMyWork: PropTypes.bool,
-    afterApprovedFunc: PropTypes.func
+    afterApprovedFunc: PropTypes.func,
+    width: PropTypes.string,
+    height: PropTypes.string
 };
 module.exports = ApplyViewDetail;

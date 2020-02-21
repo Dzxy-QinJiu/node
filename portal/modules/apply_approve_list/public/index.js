@@ -25,9 +25,20 @@ import {
     REPORT_TYPE
 } from 'PUB_DIR/sources/utils/consts';
 import AddSalesOpportunityApply from 'MOD_DIR/sales_opportunity/public/view/add-sales-opportunity-apply';
+import BusinessOpportunity from 'MOD_DIR/sales_opportunity/public/view/apply-view-detail';
 import AddBusinessApply from 'MOD_DIR/business-apply/public/view/add-business-apply';
+import BusinessDetail from 'MOD_DIR/business-apply/public/view/apply-view-detail';
 import AddLeaveApply from 'MOD_DIR/leave-apply/public/view/add-leave-apply';
+import LeaveDetail from 'MOD_DIR/leave-apply/public/view/apply-view-detail';
 import AddDocumentWriteOrReportSendApplyPanel from 'CMP_DIR/add-send-document-template';
+import DocumentDetail from 'MOD_DIR/document_write/public/view/apply-view-detail';
+import ReportDetail from 'MOD_DIR/report_send/public/view/apply-view-detail';
+import AddBusinessWhileApply from 'MOD_DIR/business-while/public/view/add-business-while';
+import BusinessWhileDetail from 'MOD_DIR/business-while/public/view/apply-view-detail';
+import AddDomainApply from 'MOD_DIR/domain_application/public/view/add-apply';
+import DomainDetail from 'MOD_DIR/domain_application/public/view/apply-view-detail';
+import AddVisitApply from 'MOD_DIR/self_setting/public/view/add-apply';
+import VisitDetail from 'MOD_DIR/self_setting/public/view/apply-view-detail';
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
@@ -35,8 +46,8 @@ import Trace from 'LIB_DIR/trace';
 import UserApplyActions from '../public/action/apply_approve_list_action';
 import ApplyApproveListStore from '../public/store/apply_approve_list_store';
 import UserApplyViewDetailWrap from 'MOD_DIR/user_apply/public/views/apply-view-detail-wrap';
-import BusinessWhileDetail from 'MOD_DIR/business-while/public/view/apply-view-detail';
-import BusinessOpportunity from 'MOD_DIR/sales_opportunity/public/view/apply-view-detail';
+
+
 import {storageUtil} from 'ant-utils';
 
 const session = storageUtil.session;
@@ -112,7 +123,6 @@ class ApplyApproveList extends React.Component {
     //获取申请审批列表
     fetchApplyList = () => {
         // let approval_state = UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? 'pass' : this.state.applyListType;
-        let sort_field = 'produce_date';//全部类型、待审批下按申请时间倒序排
         //[已通过、已驳回、已审批、已撤销
         let approvedTypes = ['pass', 'reject', 'true', 'cancel'];
         //已审批过的按审批时间倒序排
@@ -125,10 +135,10 @@ class ApplyApproveList extends React.Component {
             // keyword: this.state.searchKeyword,
             isUnreadApply: this.state.isCheckUnreadApplyList,
             // approval_state: approval_state,
-            sort_field: sort_field,
+            sort_field: 'create_time',
             order: 'descend'
         };
-        if(this.state.activeApplyTab === APPLY_TYPE.APPLY_BY_ME){
+        if (this.state.activeApplyTab === APPLY_TYPE.APPLY_BY_ME) {
             UserApplyActions.getApplyListStartSelf(submitObj, (count) => {
                 //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
                 // if (this.state.applyListType === 'false') {
@@ -141,7 +151,7 @@ class ApplyApproveList extends React.Component {
                 // }
             });
 
-        }else {
+        } else {
             UserApplyActions.getApplyList(submitObj, (count) => {
                 //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
                 // if (this.state.applyListType === 'false') {
@@ -154,8 +164,6 @@ class ApplyApproveList extends React.Component {
                 // }
             });
         }
-
-
 
 
     };
@@ -239,7 +247,7 @@ class ApplyApproveList extends React.Component {
         return (
             <ul className="list-unstyled app_user_manage_apply_list">
                 {
-                    _.map(this.state.applyListObj.list,(obj, index) => {
+                    _.map(this.state.applyListObj.list, (obj, index) => {
                         let unreadReplyList = this.state.unreadReplyList;
                         //是否有未读回复
                         let hasUnreadReply = _.find(unreadReplyList, unreadReply => unreadReply.apply_id === obj.id);
@@ -247,7 +255,7 @@ class ApplyApproveList extends React.Component {
                             <ApplyListItem
                                 key={index}
                                 obj={obj}
-                                index= {index}
+                                index={index}
                                 clickShowDetail={this.clickShowDetail}
                                 processedStatus='ongoing'
                                 selectedDetailItem={this.state.selectedDetailItem}
@@ -341,7 +349,7 @@ class ApplyApproveList extends React.Component {
     };
     //渲染刷新提示
     renderRefreshTip = () => {
-        if(this.state.showRefreshTip){
+        if (this.state.showRefreshTip) {
             return (
                 <div className='refresh-tip-panel'>
                     <span className="iconfont icon-warn-icon"></span>
@@ -355,7 +363,7 @@ class ApplyApproveList extends React.Component {
                     />
                 </div>
             );
-        }else{
+        } else {
             return null;
         }
     };
@@ -500,7 +508,7 @@ class ApplyApproveList extends React.Component {
             //计算列表高度
             applyListHeight = getApplyListDivHeight();
             //如果展示筛选或者搜索，或者刷新的提示，滚动条区域的高度要再减少提示区域的高度
-            if(this.state.showRefreshTip || this.state.filterOrSearchType){
+            if (this.state.showRefreshTip || this.state.filterOrSearchType) {
                 applyListHeight -= APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
             }
         }
@@ -564,7 +572,7 @@ class ApplyApproveList extends React.Component {
         var applyDetailContent = null;
         //todo 不同的审批类型展示不同的右侧详情
         switch (_.get(selectedDetailItem, 'workflow_type')) {
-            case APPLY_APPROVE_TYPES.USER_OR_GRANT:
+            case APPLY_APPROVE_TYPES.USER_OR_GRANT://用户申请
                 applyDetailContent = <UserApplyViewDetailWrap
                     applyData={this.state.applyId ? applyDetail : null}
                     detailItem={UnitOldAndNewUserInfo(this.state.selectedDetailItem)}
@@ -576,61 +584,97 @@ class ApplyApproveList extends React.Component {
                     height={$(window).height()}
                 />;
                 break;
-            case APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE:
-                applyDetailContent = <BusinessWhileDetail
+            case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES://销售机会
+                applyDetailContent = <BusinessOpportunity
                     detailItem={this.state.selectedDetailItem}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
                     applyListType={this.state.applyListType}
-                    applyData={this.state.applyId ? applyDetail : null}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     appList={this.state.appList}
                     height={$(window).height()}
                 />;
                 break;
-            case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES:
-                applyDetailContent = <BusinessOpportunity
+            case APPLY_APPROVE_TYPES.BUSSINESSTRIP://出差申请
+                applyDetailContent = <BusinessDetail
                     detailItem={this.state.selectedDetailItem}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
                     applyListType={this.state.applyListType}
-                    applyData={this.state.applyId ? applyDetail : null}
                     isUnreadDetail={this.getIsUnreadDetail()}
-                    appList={this.state.appList}
                     height={$(window).height()}
                 />;
+                break;
+            case APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE://外出申请
+                applyDetailContent = <BusinessWhileDetail
+                    detailItem={this.state.selectedDetailItem}
+                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                    applyListType={this.state.applyListType}
+                    isUnreadDetail={this.getIsUnreadDetail()}
+                    height={$(window).height()}
+                />;
+                break;
+            case APPLY_APPROVE_TYPES.LEAVE://请假申请
+                applyDetailContent = <LeaveDetail
+                    detailItem={this.state.selectedDetailItem}
+                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                    applyListType={this.state.applyListType}
+                    isUnreadDetail={this.getIsUnreadDetail()}
+                    height={$(window).height()}
+                />;
+                break;
+            case APPLY_APPROVE_TYPES.OPINIONREPORT://舆情报告
+                applyDetailContent = <ReportDetail
+                    detailItem={this.state.selectedDetailItem}
+                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                    applyListType={this.state.applyListType}
+                    isUnreadDetail={this.getIsUnreadDetail()}
+                    height={$(window).height()}
+                />;
+                break;
+            case APPLY_APPROVE_TYPES.DOCUMENTWRITING://文件撰写
+                applyDetailContent = <DocumentDetail
+                    detailItem={this.state.selectedDetailItem}
+                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                    applyListType={this.state.applyListType}
+                    isUnreadDetail={this.getIsUnreadDetail()}
+                    height={$(window).height()}
+                />;
+                break;
+            //联合跟进申请和拜访申请
+            case APPLY_APPROVE_TYPES.VISITAPPLY:
+                applyDetailContent = <VisitDetail
+                    detailItem={this.state.selectedDetailItem}
+                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                    applyListType={this.state.applyListType}
+                    isUnreadDetail={this.getIsUnreadDetail()}
+                    height={$(window).height()}
+                />;
+                break;
+            case APPLY_APPROVE_TYPES.DOMAINAPPLY://舆情平台申请
+                applyDetailContent = <DomainDetail
+                    detailItem={this.state.selectedDetailItem}
+                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                    applyListType={this.state.applyListType}
+                    isUnreadDetail={this.getIsUnreadDetail()}
+                    height={$(window).height()}
+                />;
+                break;
         }
         return applyDetailContent;
-
-
-    };
-    closeAddApplyForm = () => {
-        this.setState({
-            addApplyFormPanel: ''
-        });
     };
     renderAddApplyForm = () => {
         var addApplyFormPanel = this.state.addApplyFormPanel;
-        let addApplyPanel = null;
         switch (addApplyFormPanel) {
             case APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES://销售机会申请
                 return <AddSalesOpportunityApply hideSalesOpportunityApplyAddForm={this.closeAddApplyForm}/>;
             case APPLY_APPROVE_TYPES.BUSSINESSTRIP://出差申请
                 return <AddBusinessApply hideBusinessApplyAddForm={this.closeAddApplyForm}/>;
+            case APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE://外出申请
+                return <AddBusinessWhileApply
+                    hideBusinessApplyAddForm={this.closeAddApplyForm}
+                />;
             case APPLY_APPROVE_TYPES.LEAVE://请假申请
                 return <AddLeaveApply hideLeaveApplyAddForm={this.closeAddApplyForm}/>;
-            case APPLY_APPROVE_TYPES.DOCUMENTWRITING://舆情报送和文件撰写申请
-                return <AddDocumentWriteOrReportSendApplyPanel
-                    titleType={Intl.get('apply.approve.document.write', '文件撰写申请')}
-                    hideApplyAddForm={this.closeAddApplyForm}
-                    applyType={DOCUMENT_TYPE}
-                    applyAjaxType={APPLY_APPROVE_TYPES.DOCUMENT}
-                    // afterAddApplySuccess = {DocumentWriteApplyAction.afterAddApplySuccess}
-                    addType='document_type'
-                    selectTip={Intl.get('apply.approve.write.select.at.least.one.type', '请选择至少一个文件类型')}
-                    selectPlaceholder={Intl.get('apply.approve.document.select.type', '请选择文件报告类型')}
-                    applyLabel={Intl.get('apply.approve.document.write.type', '文件类型')}
-                    remarkPlaceholder={Intl.get('apply.approve.report.remark', '请填写{type}备注', {type: Intl.get('apply.approve.document.writing', '文件撰写')})}
-                />;
-            case APPLY_APPROVE_TYPES.OPINIONREPORT:
+            case APPLY_APPROVE_TYPES.OPINIONREPORT://舆情报告
                 return <AddDocumentWriteOrReportSendApplyPanel
                     titleType={Intl.get('apply.approve.report.send', '舆情报告申请')}
                     applyType={REPORT_TYPE}
@@ -643,7 +687,37 @@ class ApplyApproveList extends React.Component {
                     applyLabel={Intl.get('common.type', '类型')}
                     remarkPlaceholder={Intl.get('apply.approve.report.remark', '请填写{type}备注', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')})}
                 />;
+            case APPLY_APPROVE_TYPES.DOCUMENTWRITING://文件撰写申请
+                return <AddDocumentWriteOrReportSendApplyPanel
+                    titleType={Intl.get('apply.approve.document.write', '文件撰写申请')}
+                    hideApplyAddForm={this.closeAddApplyForm}
+                    applyType={DOCUMENT_TYPE}
+                    applyAjaxType={APPLY_APPROVE_TYPES.DOCUMENT}
+                    // afterAddApplySuccess = {DocumentWriteApplyAction.afterAddApplySuccess}
+                    addType='document_type'
+                    selectTip={Intl.get('apply.approve.write.select.at.least.one.type', '请选择至少一个文件类型')}
+                    selectPlaceholder={Intl.get('apply.approve.document.select.type', '请选择文件报告类型')}
+                    applyLabel={Intl.get('apply.approve.document.write.type', '文件类型')}
+                    remarkPlaceholder={Intl.get('apply.approve.report.remark', '请填写{type}备注', {type: Intl.get('apply.approve.document.writing', '文件撰写')})}
+                />;
+                //联合跟进申请和拜访申请
+            case APPLY_APPROVE_TYPES.VISITAPPLY:
+                return (
+                    <AddVisitApply
+                        hideLeaveApplyAddForm={this.closeAddApplyForm}
+                    />
+                );
+            case APPLY_APPROVE_TYPES.DOMAINAPPLY://舆情平台申请
+                return <AddDomainApply
+                    hideLeaveApplyAddForm={this.closeAddApplyForm}
+                />;
+
         }
+    };
+    closeAddApplyForm = () => {
+        this.setState({
+            addApplyFormPanel: ''
+        });
     };
     getFirstApplyItem = () => {
         return _.get(this.state.applyListObj, 'list[0]');

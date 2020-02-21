@@ -1098,7 +1098,7 @@ class ApplyViewDetail extends React.Component {
             'col-md-8': !this.props.isHomeMyWork
         });
         return (
-            <div className={detailWrapCls} style={{'height': divHeight}} data-tracename="出差审批详情界面">
+            <div className={detailWrapCls} style={{'height': this.props.height,'width': this.props.width}} data-tracename="出差审批详情界面">
                 <ApplyDetailStatus
                     showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
                     showErrTip={this.state.detailInfoObj.loadingResult === 'error'}
@@ -1136,7 +1136,9 @@ ApplyViewDetail.defaultProps = {
     applyData: {},
     isHomeMyWork: false,//是否是首页我的工作中打开的详情
     afterApprovedFunc: function() {//审批完后的外部处理方法
-    }
+    },
+    height: '100%',
+    width: '100%'
 };
 ApplyViewDetail.propTypes = {
     detailItem: PropTypes.string,
@@ -1145,6 +1147,8 @@ ApplyViewDetail.propTypes = {
     isUnreadDetail: PropTypes.bool,
     applyData: PropTypes.object,
     isHomeMyWork: PropTypes.bool,
-    afterApprovedFunc: PropTypes.func
+    afterApprovedFunc: PropTypes.func,
+    height: PropTypes.string,
+    width: PropTypes.string,
 };
 module.exports = ApplyViewDetail;

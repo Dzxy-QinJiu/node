@@ -26,7 +26,7 @@ import classNames from 'classnames';
 import leaveStore from '../store/leave-apply-store';
 import LeaveApplyAction from '../action/leave-apply-action';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
-class AddLeaveApply extends React.Component {
+class AddApply extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -272,12 +272,12 @@ class AddLeaveApply extends React.Component {
         );
     }
 }
-AddLeaveApply.defaultProps = {
+AddApply.defaultProps = {
     hideLeaveApplyAddForm: function() {
     },
 };
-AddLeaveApply.propTypes = {
+AddApply.propTypes = {
     hideLeaveApplyAddForm: PropTypes.func,
     form: PropTypes.object,
 };
-export default Form.create()(AddLeaveApply);
+export default Form.create()(AddApply);
