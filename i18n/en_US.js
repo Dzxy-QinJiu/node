@@ -514,7 +514,7 @@ var en_US = {
     //xxx已存在
     'user.exist.tip': '{name} already exists',//{name}已存在
     'user.user.exist.tip': 'The username already exists',//用户已存在The username already exists
-    'user.user.exist.check.tip': 'The username already exists, whether to {check}',//'用户已存在，是否{check}',
+    'user.user.exist.check.tip': 'The username already exists,{check}',//'用户已存在，{check}',
     'user.user.check': 'check this user',//查看该用户
     'user.username.write.tip': 'Please enter the username',//请填写用户名
     'user.username.write.email.tip': 'Please enter the email as username',//请填写正确的邮箱作为用户名

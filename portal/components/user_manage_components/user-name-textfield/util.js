@@ -15,17 +15,25 @@ const language = require('../../../public/language/getLanguage');
 let userInfo = [];
 let userExistTimeout = null;
 let checkUserExistIntervalTime = 500;//检查用户是否存在的间隔时间
+import { userDetailEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 function checkUserExistAjax(obj) {
     return Ajax.checkUserName(obj);
 }
 
+function showUserDetail(user_id) {
+    // 触发用户详情界面
+    userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL,{
+        userId: user_id
+    });
+}
+
 function clickUserName(user_id, username_block) {
     var text = Intl.get('user.user.check', '查看该用户');
-    var a = `<a href='javascript:void(0)' id='app_user_name_exist_view'>${text}</a>`;
+    var a = `<a href='javascript:void(0)' id='app_user_name_exist_view' className="handle-btn-item">${text}</a>`;
     const $explain = $('.ant-form-explain', username_block);
     $explain.html(
-        Intl.get('user.user.exist.check.tip', '用户已存在，是否{check}?', {'check': a})
+        Intl.get('user.user.exist.check.tip', '用户已存在，{check}?', {'check': a})
     );
     $('#app_user_name_exist_view').click((e) => {
         e.preventDefault();
@@ -34,21 +42,12 @@ function clickUserName(user_id, username_block) {
             //清除表单内容
             AppUserFormActions.resetState();
             //展示详情
-            AppUserActions.showUserDetail({
-                user: {
-                    user_id: user_id
-                }
-            });
+            showUserDetail(user_id);
         } else {
-            history.push('/users', {});
             //清除表单内容
             AppUserFormActions.resetState();
             //展示详情
-            AppUserActions.showUserDetail({
-                user: {
-                    user_id: user_id
-                }
-            });
+            showUserDetail(user_id);
         }
     });
 }
