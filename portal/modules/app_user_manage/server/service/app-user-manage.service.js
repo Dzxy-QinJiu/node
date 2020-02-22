@@ -979,7 +979,31 @@ exports.checkUserName = function(req, res, obj) {
         url: AppUserRestApis.checkUserName,
         req: req,
         res: res
-    }, obj);
+    }, obj, {
+        success: (eventEmitter, data) => {
+            if (_.isEmpty(data)) {
+                eventEmitter.emit('success', data);
+            } else {
+                let queryObj = {
+                    keyword: _.toLower(data[0].name),
+                    page_size: 1,
+                };
+                let url = AppUserRestApis.getUsers;
+                // 查看用户列表，判断已存在的用户，是不是属于他的用户，属于他的用户，才有权查看详情
+                getUsersList(req, res, queryObj, url).then((userList) => {
+                    // userList为空，说明存在的用户，不是他的用户
+                    if (_.isEmpty(_.get(userList, 'data'))) {
+                        data[0].isBelongOtherUser = true;
+                        eventEmitter.emit('success', data);
+                    } else {
+                        eventEmitter.emit('success', data);
+                    }
+                }).catch((errorMsg) => {
+                    eventEmitter.emit('success', data);
+                });
+            }
+        }
+    });
 };
 
 //  添加一个用户时，提示用户名信息
