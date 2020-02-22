@@ -30,7 +30,7 @@ function showUserDetail(user_id) {
 
 function clickUserName(user_id, username_block) {
     var text = Intl.get('user.user.check', '查看该用户');
-    var a = `<a href='javascript:void(0)' id='app_user_name_exist_view' className="handle-btn-item">${text}</a>`;
+    var a = `<a href='javascript:void(0)' id='app_user_name_exist_view' class="handle-btn-item">${text}</a>`;
     const $explain = $('.ant-form-explain', username_block);
     $explain.html(
         Intl.get('user.user.exist.check.tip', '用户已存在，{check}?', {'check': a})
@@ -52,6 +52,14 @@ function clickUserName(user_id, username_block) {
     });
 }
 
+function checkUserNameTips(callback, userId, username_block, isBelongOtherUser = false) {
+    callback(Intl.get('user.user.exist.tip', '用户已存在'));
+    // 属于其他人用户，只提示
+    if (!isBelongOtherUser) {
+        clickUserName(userId, username_block);
+    }
+}
+
 exports.checkUserExist = function(rule, obj, callback, number, username_block) {
     clearTimeout(userExistTimeout);
     userExistTimeout = setTimeout(() => {
@@ -64,11 +72,13 @@ exports.checkUserExist = function(rule, obj, callback, number, username_block) {
                 // 第二种情况：不同客户下，不通过，有多个用户名前缀相同时（提示用户名已存在）,有一个相同时，(提示用户名已存在，并且可以查看同名的用户详情信息)
                 let customerIdArray = _.map(result, 'customer_id');
                 let index = _.indexOf(customerIdArray, obj.customer_id);
+                let userId = _.get(result, '[0].id');
+                // 已存在的用户名是否属于其他用户
+                let isBelongOtherUser = _.get(result, '[0].isBelongOtherUser');
                 if (index !== -1) { // 有相同的customer_id
                     if (result.length === 1) { // 重复的用户数只有一个
                         if (number === 1) { // 申请的用户数为1， 不通过
-                            callback(Intl.get('user.user.exist.tip', '用户已存在'));
-                            clickUserName(result[0].id, username_block);
+                            checkUserNameTips(callback, userId, username_block, isBelongOtherUser);
                         } else { // 申请的用户数为多个，通过
                             callback();
                         }
@@ -78,8 +88,7 @@ exports.checkUserExist = function(rule, obj, callback, number, username_block) {
 
                 } else { // 没有相同的customer_id
                     if (result.length === 1) {
-                        callback(Intl.get('user.user.exist.tip', '用户已存在'));
-                        clickUserName(result[0].id, username_block);
+                        checkUserNameTips(callback, userId, username_block, isBelongOtherUser);
                     } else {
                         callback(Intl.get('user.user.exist.tip', '用户已存在')); // 申请多个用户时
                     }
