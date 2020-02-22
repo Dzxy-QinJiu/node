@@ -514,7 +514,7 @@ var zh_CN = {
     //xxx已存在
     'user.exist.tip': '{name}已存在',
     'user.user.exist.tip': '用户已存在',
-    'user.user.exist.check.tip': '用户已存在，是否{check}',
+    'user.user.exist.check.tip': '用户已存在，{check}',
     'user.user.check': '查看该用户',
     'user.username.write.tip': '请填写用户名',
     'user.username.write.email.tip': '请填写正确的邮箱作为用户名',
