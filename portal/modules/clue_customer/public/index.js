@@ -2488,7 +2488,10 @@ class ClueCustomer extends React.Component {
             type: 'get',
             async: false,
             success: (data) => {
-                this.getClueList();
+                // 导入的线索，存入数据库，有一定的延迟
+                setTimeout( () => {
+                    this.getClueList();
+                }, 2000);
                 _.isFunction(successCallback) && successCallback();
             },
             error: (errorMsg) => {
