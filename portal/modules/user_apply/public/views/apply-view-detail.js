@@ -2485,13 +2485,17 @@ const ApplyViewDetail = createReactClass({
                 var isExistUserApply = this.isExistUserApply();
                 let applyMaxNumber = this.getApplyMaxUserNumber();
                 let changeMaxNumber = this.getChangeMaxUserNumber();
+                // 申请的应用
+                let appList = detailInfo.apps;
+                const applyAppIds = _.map(appList, 'client_id');
                 //选中的应用，添加到提交参数中
                 if (isUem){
                     products = _.get(this,'state.detailInfoObj.info.apps');
                 }else{
                     _.each(this.appsSetting, function(app_config, app_id) {
                         //app_id含有&&时，是多应用申请时的产品配置信息，不做处理，避免出现多种未知应用
-                        if (app_id.indexOf('&&') === -1) {
+                        // 判断是否都是申请的应用
+                        if (app_id.indexOf('&&') === -1 && _.includes(applyAppIds, app_id)) {
                             //当前应用配置
                             var appObj = {
                                 //应用id
@@ -2514,13 +2518,12 @@ const ApplyViewDetail = createReactClass({
                             }
                             //已有用户申请没法指定个数
                             if (!isExistUserApply) {
-                                appObj.number = _.get(app_config, 'number.value');
+                                appObj.number = _.get(app_config, 'number.value', 1);
                             }
                             products.push(appObj);
                         }
                     });
                 }
-                var appList = detailInfo.apps;
                 //如果是开通用户，需要先检查是否有角色设置，如果没有角色设置，给出一个警告
                 //如果已经有这个警告了，就是继续提交的逻辑，就跳过此判断
                 if (
