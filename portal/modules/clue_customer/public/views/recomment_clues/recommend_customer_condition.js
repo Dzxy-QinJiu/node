@@ -323,6 +323,7 @@ class RecommendCustomerCondition extends React.Component {
                             countyName={hasSavedRecommendParams.district}
                             updateLocation={this.updateLocation}
                             hiddenCounty
+                            showAllBtn
                         />
                         <div className={cls}>
                             <FormItem

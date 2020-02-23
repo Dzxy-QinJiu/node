@@ -579,7 +579,9 @@ class BootCompleteInformation extends React.Component{
                     cityName={areaData.city}
                     countyName={areaData.district}
                     isAlwayShow={false}
+                    tabType="line"
                     hiddenCounty
+                    showAllBtn
                     updateLocation={this.updateLocation}
                 />
                 <div className="btn-container clearfix">
