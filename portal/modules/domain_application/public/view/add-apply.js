@@ -30,7 +30,7 @@ var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import CustomerAjax from '../../../common/public/ajax/customer';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 const PAGE_SIZE = 1000;
-class AddLeaveApply extends React.Component {
+class AddApply extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -336,12 +336,12 @@ class AddLeaveApply extends React.Component {
         );
     }
 }
-AddLeaveApply.defaultProps = {
+AddApply.defaultProps = {
     hideLeaveApplyAddForm: function() {
     },
 };
-AddLeaveApply.propTypes = {
+AddApply.propTypes = {
     hideLeaveApplyAddForm: PropTypes.func,
     form: PropTypes.object,
 };
-export default Form.create()(AddLeaveApply);
+export default Form.create()(AddApply);

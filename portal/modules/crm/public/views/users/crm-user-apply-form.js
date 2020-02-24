@@ -214,7 +214,7 @@ class CrmUserApplyForm extends React.Component {
             email_app_names: _.uniq(email_app_names).join('、'),
             email_user_names: _.uniq(email_user_names).join('、'),
             application_ids: JSON.stringify(selectedAppId),
-            user_ids: JSON.stringify(user_ids)
+            user_ids: user_ids
         };
     }
 
@@ -280,7 +280,10 @@ class CrmUserApplyForm extends React.Component {
     submitEditPasswordData() {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请修改密码)');
         const selectedUserAppData = this.getSelectedUserAppData();
+        //todo 修改修改密码
         const submitObj = {
+            apply_type: APPLY_TYPES.APPLY_PWD_CHANGE,
+            customer_id: _.get(this.props.crmUserList,'[0].customer.customer_id'),
             user_ids: selectedUserAppData.user_ids,
             remark: this.state.formData.remark.passwordRemark
         };

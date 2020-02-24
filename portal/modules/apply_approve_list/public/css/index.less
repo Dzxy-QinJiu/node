@@ -1,0 +1,152 @@
+@import "../../../../public/css/common-variables";
+
+@font-color: #999999;
+.apply_approve_content_wrap {
+  color: #506470;
+  overflow: hidden;
+  //左侧的tab页面
+  .apply_approve_list_wrap {
+    float: left;
+    width: 336px;
+    min-height: 300px;
+    border-right: 1px solid #e1e9eb;
+    //申请审批列表
+    .apply_approve_list_tab {
+      padding: 15px;
+      border-bottom: 1px solid #e1e9eb;
+      overflow: hidden;
+
+      ul {
+        overflow: hidden;
+        float: left;
+
+        li.apply_type_item {
+          float: left;
+          width: 64px;
+          font-size: 16px;
+          text-align: center;
+          cursor: pointer;
+          color: #999;
+          margin-right: 17px;
+
+          &.active-tab {
+            color: @BORDER-BLUE;
+            border-bottom: 4px solid @BORDER-BLUE;
+            padding-bottom: 5px;
+          }
+        }
+      }
+
+      .add_apply_type_icon {
+        cursor: pointer;
+        float: right;
+
+        .iconfont {
+          color: @FILTER-BUTTON;
+
+          &.icon-plus {
+            margin-right: 17px;
+          }
+        }
+      }
+
+    }
+
+    //左侧列表内容区域
+    .app_user_manage_apply_list_wrap {
+      //加载列表的loading状态
+      .load8 {
+        transform: scale(0.5, 0.5);
+
+        .loader8 {
+          border-left-color: #394144;
+        }
+      }
+
+      //搜索和筛选区域
+      .filter-and-search-container, .refresh-tip-panel {
+        height: 48px;
+        line-height: 32px;
+        padding: 8px 16px;
+        overflow: hidden;
+        //搜索框
+        .apply-search-wrap {
+          float: left;
+          width: 272px;
+          .search-input-container {
+            height: @btn-height;
+            padding: 0;
+            .search-input {
+              height: 30px;
+              line-height: 30px;
+              border: none;
+              outline: none;
+            }
+          }
+        }
+
+        //筛选框
+        .apply-type-filter {
+          .apply-status-select {
+            width: 100px;
+            margin-right: 8px;
+          }
+
+          .apply-type-select {
+            width: 164px;
+          }
+
+        }
+
+        .iconfont.icon-close-tips {
+          cursor: pointer;
+          color: #ccc;
+          float: right;
+        }
+      }
+      .refresh-tip-panel {
+        font-size: 14px;
+        color: #333;
+        .iconfont.icon-warn-icon{
+          color:@reply-message-tip-color;
+          margin-right: 4px;
+        }
+      }
+
+      .summary_info {
+        font-size: 14px;
+        color: @font-color;
+        margin: 16px;
+      }
+    }
+  }
+
+  //右侧申请审批详情
+  .apply_approve_detail_wrap {
+    float: left;
+    color: #5d5d5d;
+    background-color: #f5f6f8;
+  }
+}
+
+//添加不同类型的审批样式
+.add-apply-type-list, .add-search-or-filter-type-list {
+  .ant-dropdown-menu-item a {
+    font-size: 14px;
+    color: #333;
+
+    .iconfont {
+      color: #8DA8C5;
+      margin-right: 8px;
+    }
+
+    &:hover {
+      color: #2196F3;
+
+      .iconfont {
+        color: #2196F3;
+      }
+    }
+
+  }
+}

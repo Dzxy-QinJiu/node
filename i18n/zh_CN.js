@@ -1474,6 +1474,7 @@ var zh_CN = {
     'reply.reject.tip.content': '{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'reply.cancel.tip.content': '{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'user.apply.new.refresh.tip': '有新申请，点此刷新',
+    'apply.list.new.refresh.tip': '有新申请，{refresh}查看',
     'user.apply.no.new.refresh.tip': '无新申请',
     'user.apply.last.follow.date': '最新跟进日期',
     'user.apply.approve.no.comment': '暂无申请历史！',
@@ -4008,6 +4009,12 @@ var zh_CN = {
     'boot.set.recommend.clue.faild': '设置失败，请重试一次',
     'personal.upgrade.company.trial.tip': '开通企业试用后，可体验拨打电话功能',
     /*个人试用 --- end*/
+
+    /*自定义申请审批列表 --- start*/
+    'apply.approve.list.start.by.me': '我申请的',
+    'apply.approve.list.approved.by.me': '我审批的',
+    'apply.approve.list.approved.by.team': '团队申请',
+    /*自定义申请审批列表 --- end*/
 
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': '您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？',

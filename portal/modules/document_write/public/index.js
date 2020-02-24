@@ -360,7 +360,6 @@ class DocumentWriteApplyManagement extends React.Component {
                             detailItem={this.state.selectedDetailItem}
                             showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
                             applyListType={this.state.applyListType}
-                            applyData={this.state.applyId ? applyDetail : null}
                             isUnreadDetail={this.getIsUnreadDetail()}
                         />
                     )}

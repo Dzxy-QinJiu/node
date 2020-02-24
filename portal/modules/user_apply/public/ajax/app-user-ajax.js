@@ -25,32 +25,6 @@ exports.getApplyList = function(obj) {
     return Deferred.promise();
 };
 
-/**
- * 获取申请详情
- */
-var applyDetailAjax;
-exports.getApplyDetail = function(id) {
-    var type = 'user';
-    if (hasPrivilege(AUTHS.GETALL)) {
-        type = 'manager';
-    }
-    var Deferred = $.Deferred();
-    applyDetailAjax && applyDetailAjax.abort();
-    applyDetailAjax = $.ajax({
-        url: '/rest/appuser/apply/' + id + '/' + type,
-        dataType: 'json',
-        type: 'get',
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(xhr,textStatus) {
-            if(textStatus !== 'abort') {
-                Deferred.reject(xhr && xhr.responseJSON || Intl.get('user.apply.detail.get.failed', '获取申请详情失败'));
-            }
-        }
-    });
-    return Deferred.promise();
-};
 
 
 /**

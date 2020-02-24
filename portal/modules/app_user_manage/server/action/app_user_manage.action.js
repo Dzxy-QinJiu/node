@@ -131,6 +131,14 @@ exports.getApplyList = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+exports.getApplyListStartSelf = function(req, res) {
+    AppUserService.getApplyListStartSelf(req, res).on('success', function(data) {
+        res.json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 
 //获取未读回复列表
 exports.getUnreadReplyList = function(req, res) {
@@ -239,8 +247,7 @@ exports.editApp = function(req, res) {
 
 //申请用户
 exports.applyUser = function(req, res) {
-    const requestObj = JSON.parse(req.body.reqData);
-    AppUserService.applyUser(req, res, requestObj).on('success', function(data) {
+    AppUserService.applyUser(req, res).on('success', function(data) {
         res.json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -267,7 +274,7 @@ exports.editAppDetail = function(req, res) {
 
 //申请修改密码
 exports.applyChangePassword = function(req, res) {
-    AppUserService.applyChangePassword(req, res, req.body).on('success', function(data) {
+    AppUserService.applyChangePassword(req, res).on('success', function(data) {
         res.json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

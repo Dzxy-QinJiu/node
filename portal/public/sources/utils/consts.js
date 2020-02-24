@@ -85,6 +85,9 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLE_BUSINESSTRIP_AWHILE_APPLY: 'unhandleBusinesstripAwhileApply', // 未处理的外出申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
     BUSINESSTRIPAWHILE: 'businesstrip_awhile',//外出申请
+    BUSSINESSTRIP: 'businesstrip',//出差
+    USERAPPLY: 'userapply',//用户申请
+    USER_OR_GRANT: 'user_or_grant',//改版后用户审批的类型
 };
 // 系统消息对应的通知类型
 export const SYSTEM_NOTICE_TYPES = {

@@ -7,7 +7,7 @@ var LeaveApplyAction = require('./action/leave-apply-action');
 var LeaveApplyStore = require('./store/leave-apply-store');
 var LeaveApplyDetailAction = require('./action/leave-apply-detail-action');
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-components/apply-dropdown-and-add-btn';
-import AddLeaveApplyPanel from './view/add-leave-apply';
+import AddLeaveApplyPanel from './view/add-apply';
 import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES,APPLY_TYPE_STATUS_CONST} from 'PUB_DIR/sources/utils/consts';
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
@@ -361,7 +361,6 @@ class LeaveApplyManagement extends React.Component {
                             detailItem={this.state.selectedDetailItem}
                             showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
                             applyListType={this.state.applyListType}
-                            applyData={this.state.applyId ? applyDetail : null}
                             isUnreadDetail={this.getIsUnreadDetail()}
                         />
                     )}
