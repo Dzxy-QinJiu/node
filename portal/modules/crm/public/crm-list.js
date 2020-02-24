@@ -309,9 +309,11 @@ class Crm extends React.Component {
         //字符串类型的排序字段，key需要在字段后面加上.row
         //设置了关注客户置顶后的处理
         if (this.state.isConcernCustomerTop) {
-            sort_and_orders = [
-                {key: customerSortMap['interest_member_ids'], value: 'ascend'}
-            ];
+            let data = JSON.parse(params.data);
+            if(_.isEmpty(data.interest_member_ids)) {
+                data.interest_member_ids = [crmUtil.getMyUserId()];
+            }
+            params.data = JSON.stringify(data);
         }
         //如果常用筛选选中了从客户池中提取的客户
         if(_.get(filterStoreCondition,'otherSelectedItem') === OTHER_FILTER_ITEMS.EXTRACT_TIME) {
@@ -1955,7 +1957,7 @@ batchTopBarDropList = (isMinWeb) => {
             'icon-interested': this.state.isConcernCustomerTop,
             'icon-uninterested': !this.state.isConcernCustomerTop
         });
-        let title = this.state.isConcernCustomerTop ? Intl.get('crm.concern.top.cancel', '取消关注客户置顶') : Intl.get('crm.concern.top.set', '设置关注客户置顶');
+        let title = this.state.isConcernCustomerTop ? Intl.get('crm.see.concern.slef.cancel', '取消查看我关注的客户') : Intl.get('crm.see.concern.slef', '查看我关注的客户');
         return (
             <span>
                 <span className={interestClassName} title={title}
@@ -2115,7 +2117,7 @@ batchTopBarDropList = (isMinWeb) => {
                     var isInterested = _.isArray(record.interest_member_ids) && _.indexOf(record.interest_member_ids, crmUtil.getMyUserId()) > -1;
                     var interestClassName = 'iconfont focus-customer';
                     interestClassName += (isInterested ? ' icon-interested' : ' icon-uninterested');
-                    var title = (isInterested === 'true' ? Intl.get('crm.customer.uninterested', '取消关注') : Intl.get('crm.customer.interested', '添加关注'));
+                    var title = (_.toString(isInterested) === 'true' ? Intl.get('crm.customer.uninterested', '取消关注') : Intl.get('crm.customer.interested', '添加关注'));
                     return (
                         <span>
                             <div className={className}>

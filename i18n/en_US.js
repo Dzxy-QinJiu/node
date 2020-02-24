@@ -1822,6 +1822,8 @@ var en_US = {
     'crm.score.history.title': 'Historical score',//历史分数
     'crm.concern.top.set': 'Concerned customers on the top',//将关注的客户置顶
     'crm.concern.top.cancel': 'Concerned customers not on the top',//取消关注客户置顶
+    'crm.see.concern.slef': 'Check out the clients I follow',//查看我关注的客户
+    'crm.see.concern.slef.cancel': 'Uncheck my customers',//取消查看我关注的客户
     'crm.add.to.exist.customer': 'Add to existing customers',//添加到已有客户
     'crm.select.add.contact': 'Please select or fill contact name',//请选择或输入联系人名称
     'crm.contact.name.add': 'Add name',//添加联系人姓名
