@@ -235,7 +235,6 @@ class MyWorkColumn extends React.Component {
                 myWorkList = _.concat(myWorkList, _.get(result, 'list', []));
             } else {//首次加载
                 myWorkList = _.get(result, 'list', []);
-                console.log(myWorkList);
             }
             let totalCount = _.get(result, 'total', 0);
             let listenScrollBottom = false;
@@ -360,6 +359,8 @@ class MyWorkColumn extends React.Component {
         } else if (item.type === WORK_TYPES.APPLY && _.get(item, 'apply.apply_type') === APPLY_APPROVE_TYPES.PERSONAL_LEAVE) {
             //请假申请
             workObj = {name: Intl.get('leave.apply.leave.application', '请假申请')};
+        } else if (item.workObj) {
+            workObj = item.workObj;
         }
         //客户阶段标签
         const customer_label = workObj.tag;
@@ -841,6 +842,8 @@ class MyWorkColumn extends React.Component {
                 tagDescr = Intl.get('common.visit', '拜访');
                 remark = this.getVisitTip(item);
                 break;
+            default:
+                tagDescr = tag;
         }
         return (
             // 对于拜访类型的工作，后端tags字段会返回['APPLY', 'customer_visit']
@@ -1200,7 +1203,12 @@ class MyWorkColumn extends React.Component {
     }
 
     renderCheckReportNotice(workList) {
-        let item = {};
+        let item = {
+            id: 'report-notice',
+            tags: ['工作通知']
+        };
+
+        item.workObj = { name: '如何汇总和查看销售日常工作？' };
 
         workList.push(this.renderWorkCard(item));
     }
