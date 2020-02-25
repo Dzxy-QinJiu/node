@@ -1238,8 +1238,7 @@ function getClueUnreadNum(data, callback){
         data: data,
         success: data => {
             var messages = {
-                'unhandleClue': 0,
-                // 'unhandleClueList': []
+                'unhandleClue': 0
             };
             var value = data.total;
             if (typeof value === 'number' && value > 0) {
