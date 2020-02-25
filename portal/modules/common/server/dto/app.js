@@ -8,6 +8,7 @@ function App(obj) {
     this.app_name = obj.name || '';
     this.app_logo = obj.full_image || '';
     this.terminals = obj.terminals || [];
+    this.status = _.get(obj, 'status', 1); // 应用的状态，默认是启用状态（接口约定：停用一定会返回值）
 }
 
 exports.App = App;

@@ -133,7 +133,7 @@ class AppUserFormStore {
         if(!_.isArray(resultList) || !resultList[0]) {
             resultList = [];
         }
-        this.currentRealmApps = resultList;
+        this.currentRealmApps = _.filter(resultList, app => app.status);
     }
     setSelectedOrganization(organization) {
         this.organization = organization;
