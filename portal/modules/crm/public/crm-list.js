@@ -2147,7 +2147,8 @@ batchTopBarDropList = (isMinWeb) => {
                 title: Intl.get('crm.5', '联系方式'),
                 width: '130px',
                 dataIndex: 'contact_way',
-                className: 'column-contact-way  table-data-align-right',
+                className: 'column-contact-way',
+                align: 'left',
                 render: (text, record, index) => {
                     return this.getContactList(text, record, index);
                 }
