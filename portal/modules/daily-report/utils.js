@@ -1,5 +1,6 @@
 import ajax from 'ant-ajax';
 import { message } from 'antd';
+import { detailPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const SITE_CONGFIG_KEY = 'is_no_longer_show_check_report_notice';
 
@@ -28,4 +29,9 @@ export function getIsNoLongerShowCheckReportNotice() {
 //设置是否显示查看报告的工作通知
 export function setIsNoLongerShowCheckReportNotice() {
     setWebsiteConfig(SITE_CONGFIG_KEY, true);
+}
+
+//显示报告面板
+export function showReportPanel() {
+    detailPanelEmitter.emit(detailPanelEmitter.SHOW);
 }

@@ -13,7 +13,8 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
 import myWorkAjax from '../ajax';
 import CrmScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
-import { getReportList, getIsNoLongerShowCheckReportNotice, setIsNoLongerShowCheckReportNotice } from 'MOD_DIR/daily-report/utils';
+import { getReportList, getIsNoLongerShowCheckReportNotice, setIsNoLongerShowCheckReportNotice, showReportPanel } from 'MOD_DIR/daily-report/utils';
+import ReportPanel from 'MOD_DIR/daily-report/panel';
 import DetailCard from 'CMP_DIR/detail-card';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import Spinner from 'CMP_DIR/spinner';
@@ -1215,7 +1216,7 @@ class MyWorkColumn extends React.Component {
             id: REPORT_NOTICE_ITEM_ID,
             tags: ['工作通知'],
             btnConf: {
-                handleFunc: this.handleMyWork,
+                handleFunc: showReportPanel,
                 btnDesc: '点击查看'
             }
         };
@@ -1340,6 +1341,8 @@ class MyWorkColumn extends React.Component {
                     handleScheduleAdd={this.afterAddSchedule}
                 />
                 {this.renderExtractClue()}
+
+                <ReportPanel />
             </div>);
     }
 
