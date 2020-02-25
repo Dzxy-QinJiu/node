@@ -12,7 +12,6 @@ import ajax from 'ant-ajax';
 import { TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
-import { subtracteGlobalClue } from 'PUB_DIR/sources/utils/common-method-util';
 import CustomerList from './customer-list';
 import CustomerSearch from './customer-search';
 import CustomerMerge from './customer-merge';
@@ -189,7 +188,6 @@ class ClueToCustomerPanel extends React.Component {
             showCustomerDetail();
         }
 
-        // subtracteGlobalClue(this.props.clue);
 
         //执行外部传入的回调
         this.props.afterConvert(this.props.clue);

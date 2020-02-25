@@ -21,8 +21,6 @@ var className = require('classnames');
 import {AVALIBILITYSTATUS, SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {TIME_CALCULATE_CONSTS} from 'PUB_DIR/sources/utils/consts';
-import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
-import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 class phoneStatusTop extends React.Component {
     constructor(props) {
         super(props);
@@ -101,15 +99,7 @@ class phoneStatusTop extends React.Component {
         if ((showClueModal) && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
             this.setInitialData(phonemsgObj);
         }
-        var curClue = _.isEmpty(nextProps.curClue) ? this.state.curClue : nextProps.curClue;
-        //如果电话已经接通，并且是待我审批的线索，需要把待我处理左侧数字减一
-        if (phonemsgObj.billsec > 0) {
-            // subtracteGlobalClue(curClue, (flag) => {
-            //     if(flag){
-            //         clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
-            //     }
-            // });
-        }
+
 
     }
 

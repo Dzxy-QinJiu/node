@@ -23,7 +23,7 @@ import {RightPanel} from '../../../../components/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {SELECT_TYPE, AVALIBILITYSTATUS} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import {renderClueStatus, subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
+import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 import commonSalesHomePrivilegeConst from '../privilege-const';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
@@ -110,7 +110,6 @@ class SalesClueItem extends React.Component {
                 submitTraceErrMsg: Intl.get('cluecustomer.content.not.empty', '跟进内容不能为空')
             });
         } else {
-            // subtracteGlobalClue(item);
             var submitObj = {
                 'lead_id': item.id,
                 'remark': textareVal,

@@ -105,7 +105,7 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
  * @param data 消息数据
  */
 function notifyChannelListener(data) {
-    // pushLogger.debug('后端推送的消息数据:' + data);
+    pushLogger.debug('后端推送的消息数据:' + data);
     // 将查询结果返给浏览器
     let messageObj = JSON.parse(data);
     if (messageObj.consumers && messageObj.consumers.length > 0) {
@@ -173,7 +173,7 @@ function applyApproveNumListener(data) {
  *
  * 日程管理提醒的消息监听器*/
 function scheduleAlertListener(data) {
-    // pushLogger.debug('日程管理的消息推送：' + JSON.stringify(data));
+    pushLogger.debug('日程管理的消息推送：' + JSON.stringify(data));
     // 将查询结果返给浏览器
     let scheduleAlertObj = data || {};
     //将数据推送到浏览器
@@ -197,7 +197,7 @@ function crmOperatorListener(data) {
  * TODO 登录接口改为auth2后，就不再推送登录踢出的消息了，之后业务端修改后推过来的数据由于没有token导致无法使用此方式进行处理，待有解决方案后再处理
  */
 function offlineChannelListener(data) {
-    // pushLogger.debug('后端推送的登录踢出的数据:' + JSON.stringify(data));
+    pushLogger.debug('后端推送的登录踢出的数据:' + JSON.stringify(data));
     // 将查询结果返给浏览器
     var userObj = data || {};
     if (userObj.user_id) {
@@ -365,7 +365,7 @@ module.exports.startSocketio = function(nodeServer) {
                 });
                 //将当前用户应用的socket、token保存到内存中
                 socketStore[session.user.userid] = socketArray;
-                // pushLogger.debug('用户信息 %s', JSON.stringify(session.user));
+                pushLogger.debug('用户信息 %s', JSON.stringify(session.user));
             } else {
                 var sid = socket.request && socket.request.sessionId;
                 if (err) {
@@ -418,7 +418,7 @@ function socketEmitter(Obj, emitterChannel,loggerType) {
     let user = Obj && Obj.user;
     let sessionId = Obj && Obj.sessionId;
     if (user && sessionId) {
-        // pushLogger.debug((user && user.nickname) + loggerType);
+        pushLogger.debug((user && user.nickname) + loggerType);
         var userId = user ? user.userid : '';
         if (userId) {
             //找到消息接收者对应的socket，将数据推送到浏览器

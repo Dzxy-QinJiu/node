@@ -82,14 +82,7 @@ function updateUnreadByPushMessage(type, isAdd, isAddLists) {
         //待我处理的线索，会在后端推送总的待我处理的线索数量及所处理的具体的线索
         if(type === 'unhandleClue' && !_.isEmpty(isAdd)){
             //把待我处理的线索的数量更新一下
-
             Oplate.unread['unhandleClue'] = _.get(isAdd,'pending_num',0);
-            //把待我处理的线索列表更新一下
-
-            // Oplate.unread['unhandleClueList'] = _.concat(Oplate.unread['unhandleClueList'], isAddLists);
-
-
-
         }
         if (timeoutFunc) {
             clearTimeout(timeoutFunc);
@@ -1257,9 +1250,6 @@ function getClueUnreadNum(data, callback){
                     messages['unhandleClue'] = num;
                 }
             }
-            // if (_.isArray(_.get(data, 'result'))){
-            //     messages['unhandleClueList'] = _.get(data, 'result');
-            // }
             //更新全局中存的未处理的线索数
             updateGlobalUnreadStorage(messages);
             if (typeof callback === 'function') {

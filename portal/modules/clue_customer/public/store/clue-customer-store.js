@@ -16,7 +16,6 @@ import {
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
 const clueContactType = ['phone', 'qq', 'weChat', 'email'];
-import {subtracteGlobalClue, formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 function ClueCustomerStore() {
     //初始化state数据
     this.resetState();
@@ -631,14 +630,6 @@ ClueCustomerStore.prototype.getAllSalesUserList = function(list) {
 ClueCustomerStore.prototype.updateClueItemAfterAssign = function(updateObj) {
     var item = _.get(updateObj,'item'),submitObj = _.get(updateObj,'submitObj'),isWillDistribute = _.get(updateObj,'isWillDistribute');
     let sale_id = _.get(submitObj,'sale_id',''), team_id = _.get(submitObj,'team_id',''), sale_name = _.get(submitObj,'sale_name',''), team_name = _.get(submitObj,'team_name','');
-    //member_id是跟进销售的id
-    // subtracteGlobalClue(item, (flag) => {
-    //     var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
-    //     if (flag && filterAllotNoTraced) {
-    //         //需要在列表中删除
-    //         this.deleteClueById(item);
-    //     }
-    // });
     if (!isWillDistribute){
         item.user_name = sale_name;
         item.user_id = sale_id;
