@@ -48,13 +48,26 @@ const CLUE_MESSAGE_TYPE = {
     RULE_AUTO_DISTRIBUTION: 'rule_auto_distribution',//自动分配线索
     ADD_CUSTOMER_CLUE: 'addCustomerClue',//添加线索
     BASE_EXTRACT_ALLOT: 'base_extract_allot',//推荐线索提取的类型
-    POOL_EXTRACT_ALLOT: 'pool_extract_allot'//线索池提取的线索类型
+    POOL_EXTRACT_ALLOT: 'pool_extract_allot',//线索池提取的线索类型
+    INVAILID: 'invaild',//线索标为无效
+    RELEASR_LEAD_POOL: 'release_lead_pool',// 线索释放到线索池
+    LEAD_DELETE: 'lead_delete',// 线索删除
+    BEEN_TRACED: 'been_traced',// 待我处理被处理(比如填写了跟进记录或者)
+    LEAD_CREATE_CUSTOMER: 'lead_create_customer',//线索转为客户
+    LEAD_MERGE_CUSTOMER: 'lead_merge_customer'//线索合并到客户
 };
 const CLUE_ADD_TYPE = [CLUE_MESSAGE_TYPE.MANUL_NEW_DISTRIBUTION,
     CLUE_MESSAGE_TYPE.RULE_AUTO_DISTRIBUTION,
     CLUE_MESSAGE_TYPE.ADD_CUSTOMER_CLUE,
     CLUE_MESSAGE_TYPE.BASE_EXTRACT_ALLOT,
-    CLUE_MESSAGE_TYPE.POOL_EXTRACT_ALLOT];
+    CLUE_MESSAGE_TYPE.POOL_EXTRACT_ALLOT,
+    CLUE_MESSAGE_TYPE.INVAILID,
+    CLUE_MESSAGE_TYPE.RELEASR_LEAD_POOL,
+    CLUE_MESSAGE_TYPE.LEAD_DELETE,
+    CLUE_MESSAGE_TYPE.BEEN_TRACED,
+    CLUE_MESSAGE_TYPE.LEAD_CREATE_CUSTOMER,
+    CLUE_MESSAGE_TYPE.LEAD_MERGE_CUSTOMER
+];
 /*
  * 为socket请求设置sessionId.
  * @param  ioServer  socket.io 的server
@@ -92,7 +105,7 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
  * @param data 消息数据
  */
 function notifyChannelListener(data) {
-    pushLogger.debug('后端推送的消息数据:' + data);
+    // pushLogger.debug('后端推送的消息数据:' + data);
     // 将查询结果返给浏览器
     let messageObj = JSON.parse(data);
     if (messageObj.consumers && messageObj.consumers.length > 0) {
@@ -160,7 +173,7 @@ function applyApproveNumListener(data) {
  *
  * 日程管理提醒的消息监听器*/
 function scheduleAlertListener(data) {
-    pushLogger.debug('日程管理的消息推送：' + JSON.stringify(data));
+    // pushLogger.debug('日程管理的消息推送：' + JSON.stringify(data));
     // 将查询结果返给浏览器
     let scheduleAlertObj = data || {};
     //将数据推送到浏览器
@@ -184,7 +197,7 @@ function crmOperatorListener(data) {
  * TODO 登录接口改为auth2后，就不再推送登录踢出的消息了，之后业务端修改后推过来的数据由于没有token导致无法使用此方式进行处理，待有解决方案后再处理
  */
 function offlineChannelListener(data) {
-    pushLogger.debug('后端推送的登录踢出的数据:' + JSON.stringify(data));
+    // pushLogger.debug('后端推送的登录踢出的数据:' + JSON.stringify(data));
     // 将查询结果返给浏览器
     var userObj = data || {};
     if (userObj.user_id) {
@@ -352,7 +365,7 @@ module.exports.startSocketio = function(nodeServer) {
                 });
                 //将当前用户应用的socket、token保存到内存中
                 socketStore[session.user.userid] = socketArray;
-                pushLogger.debug('用户信息 %s', JSON.stringify(session.user));
+                // pushLogger.debug('用户信息 %s', JSON.stringify(session.user));
             } else {
                 var sid = socket.request && socket.request.sessionId;
                 if (err) {
@@ -405,7 +418,7 @@ function socketEmitter(Obj, emitterChannel,loggerType) {
     let user = Obj && Obj.user;
     let sessionId = Obj && Obj.sessionId;
     if (user && sessionId) {
-        pushLogger.debug((user && user.nickname) + loggerType);
+        // pushLogger.debug((user && user.nickname) + loggerType);
         var userId = user ? user.userid : '';
         if (userId) {
             //找到消息接收者对应的socket，将数据推送到浏览器

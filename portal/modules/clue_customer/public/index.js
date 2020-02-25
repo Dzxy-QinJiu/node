@@ -1167,7 +1167,7 @@ class ClueCustomer extends React.Component {
             return;
         }
         var value = _.get(item, 'customer_traces[0].remark', '');
-        subtracteGlobalClue(item);
+        // subtracteGlobalClue(item);
         //获取填写的保存跟进记录的内容
         var textareVal = _.trim(this.state.submitContent);
         if (!textareVal) {
@@ -1508,7 +1508,7 @@ class ClueCustomer extends React.Component {
                     setTimeout(() => {
                         this.handleSelectedClue(item);
                         clueCustomerAction.deleteClueById(item);
-                        subtracteGlobalClue(item);
+                        // subtracteGlobalClue(item);
                         clueCustomerAction.updateClueTabNum('invalidClue');
                     },FLOW_FLY_TIME);
 
@@ -1650,7 +1650,7 @@ class ClueCustomer extends React.Component {
                 message.error(errorMsg);
             } else {
                 this.handleSelectedClue(curDeleteClue);
-                subtracteGlobalClue(curDeleteClue);
+                // subtracteGlobalClue(curDeleteClue);
             }
         });
     }
@@ -2365,7 +2365,7 @@ class ClueCustomer extends React.Component {
             if (item){
                 //有item的是单个修改跟进人
                 clueCustomerAction.updateClueItemAfterAssign({item: item,submitObj: submitObj,isWillDistribute: isWillDistribute});
-                subtracteGlobalClue(item);
+                // subtracteGlobalClue(item);
                 if (this['changesale' + clue_id]) {
                     //隐藏批量变更销售面板
                     this['changesale' + clue_id].handleCancel();
@@ -2407,7 +2407,7 @@ class ClueCustomer extends React.Component {
                         running: totalSelectedSize,
                         typeText: Intl.get('clue.batch.change.trace.man', '变更跟进人')
                     });
-                    subtracteGlobalClue({id: clue_id});
+                    // subtracteGlobalClue({id: clue_id});
                     if (isWillDistribute) {
                         clueCustomerAction.afterAssignSales(clue_id);
                     }
@@ -3034,7 +3034,7 @@ class ClueCustomer extends React.Component {
             this.setState({isReleasingCustomer: false});
             clueCustomerAction.afterReleaseClue(clue.id);
             this.handleSelectedClue(clue);
-            subtracteGlobalClue(clue);
+            // subtracteGlobalClue(clue);
         }, errorMsg => {
             this.setState({isReleasingCustomer: false});
             message.error(errorMsg);

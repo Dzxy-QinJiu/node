@@ -230,12 +230,12 @@ class ClueDetailPanel extends React.Component {
     //只要打过电话，在关闭电话面板或者是有新电话打进来的时候，就要把该线索在待我处理列表中去掉
     deleteFromWaitMeHandleLists = (callback) => {
         var deleteClue = this.state.deleteFromWaitMeHandleClue;
-        subtracteGlobalClue(deleteClue, (flag) => {
-            if(flag){
-                clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM, deleteClue);
-                _.isFunction(callback) && callback();
-            }
-        });
+        // subtracteGlobalClue(deleteClue, (flag) => {
+        //     if(flag){
+        //         clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM, deleteClue);
+        //         _.isFunction(callback) && callback();
+        //     }
+        // });
     };
     setInitialData(phonemsgObj) {
         var phoneNum = '';

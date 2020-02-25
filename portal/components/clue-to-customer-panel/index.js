@@ -189,7 +189,7 @@ class ClueToCustomerPanel extends React.Component {
             showCustomerDetail();
         }
 
-        subtracteGlobalClue(this.props.clue);
+        // subtracteGlobalClue(this.props.clue);
 
         //执行外部传入的回调
         this.props.afterConvert(this.props.clue);

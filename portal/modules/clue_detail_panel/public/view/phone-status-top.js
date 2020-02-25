@@ -104,11 +104,11 @@ class phoneStatusTop extends React.Component {
         var curClue = _.isEmpty(nextProps.curClue) ? this.state.curClue : nextProps.curClue;
         //如果电话已经接通，并且是待我审批的线索，需要把待我处理左侧数字减一
         if (phonemsgObj.billsec > 0) {
-            subtracteGlobalClue(curClue, (flag) => {
-                if(flag){
-                    clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
-                }
-            });
+            // subtracteGlobalClue(curClue, (flag) => {
+            //     if(flag){
+            //         clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
+            //     }
+            // });
         }
 
     }

@@ -110,7 +110,7 @@ class SalesClueItem extends React.Component {
                 submitTraceErrMsg: Intl.get('cluecustomer.content.not.empty', '跟进内容不能为空')
             });
         } else {
-            subtracteGlobalClue(item);
+            // subtracteGlobalClue(item);
             var submitObj = {
                 'lead_id': item.id,
                 'remark': textareVal,
