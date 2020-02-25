@@ -208,7 +208,6 @@ function clueUnhandledListener(data) {
     if (_.isObject(data)) {
         if (getClueUnhandledPrivilege()){
             var clueList = _.get(data, 'clue_list',[]);
-            console.log(data);
             updateUnreadByPushMessage('unhandleClue', data);
             notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, data);
         }
