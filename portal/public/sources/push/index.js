@@ -79,8 +79,10 @@ function updateUnreadByPushMessage(type, isAdd, isAddLists) {
         } else {
             Oplate.unread[type] = isAdd ? 1 : 0;
         }
-        if(type === 'unhandleClue' && _.isArray(isAddLists) && _.isArray(_.get(Oplate,'unread.unhandleClueList'))){
-            Oplate.unread['unhandleClueList'] = _.concat(Oplate.unread['unhandleClueList'], isAddLists);
+        //待我处理的线索，会在后端推送总的待我处理的线索数量及所处理的具体的线索
+        if(type === 'unhandleClue' && !_.isEmpty(isAdd)){
+            //把待我处理的线索的数量更新一下
+            Oplate.unread['unhandleClue'] = _.get(isAdd,'pending_num',0);
         }
         if (timeoutFunc) {
             clearTimeout(timeoutFunc);
@@ -204,14 +206,18 @@ function clueUnhandledListener(data) {
     if (_.isObject(data)) {
         if (getClueUnhandledPrivilege()){
             var clueList = _.get(data, 'clue_list',[]);
-            updateUnreadByPushMessage('unhandleClue', clueList.length, clueList);
+            updateUnreadByPushMessage('unhandleClue', data);
             notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, data);
         }
-        notificationEmitter.emit(notificationEmitter.UPDATED_HANDLE_CLUE, data);
-        //线索面板刷新提示
-        notificationEmitter.emit(notificationEmitter.UPDATE_CLUE, data, isExtractOrAddByMe(data));
-        //如果是自己提取的线索，不展示右边弹窗提示
-        if(!isExtractOrAddByMe(data)){
+        //线索是转入还是转出 IN 转入  OUT 转出
+        var clueIn = _.get(data,'number_change_direction') === 'IN';
+        if(clueIn){
+            notificationEmitter.emit(notificationEmitter.UPDATED_HANDLE_CLUE, data);
+            //线索面板刷新提示
+            notificationEmitter.emit(notificationEmitter.UPDATE_CLUE, data, isExtractOrAddByMe(data));
+        }
+        //不是自己提取的线索，且是转入线索的时候才展示右边的弹窗
+        if(!isExtractOrAddByMe(data) && clueIn){
             var clueArr = _.get(data, 'clue_list',[]);
             var title = Intl.get('clue.has.distribute.clue','您有新的线索'),tipContent = '';
             if (canPopDesktop()) {
@@ -1232,8 +1238,7 @@ function getClueUnreadNum(data, callback){
         data: data,
         success: data => {
             var messages = {
-                'unhandleClue': 0,
-                'unhandleClueList': []
+                'unhandleClue': 0
             };
             var value = data.total;
             if (typeof value === 'number' && value > 0) {
@@ -1243,9 +1248,6 @@ function getClueUnreadNum(data, callback){
                 if (!isNaN(num) && num > 0) {
                     messages['unhandleClue'] = num;
                 }
-            }
-            if (_.isArray(_.get(data, 'result'))){
-                messages['unhandleClueList'] = _.get(data, 'result');
             }
             //更新全局中存的未处理的线索数
             updateGlobalUnreadStorage(messages);

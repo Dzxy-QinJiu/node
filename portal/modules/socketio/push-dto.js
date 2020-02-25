@@ -106,6 +106,8 @@ exports.clueMsgToFrontend = function(clueMsg) {
         clue_list: _.get(clueMsg,'clue_list',[]),//线索id和name的列表
         type: _.get(clueMsg,'type',''),//推送的类型
         operator_id: _.get(clueMsg,'operator_id',''),//线索池提取人的id
+        pending_num: _.get(clueMsg,'pending_num',''),//待我处理的线索总数量
+        number_change_direction: _.get(clueMsg,'number_change_direction','')//转入或者转出线索
     };
 };
 //申请试用后的推送数据
