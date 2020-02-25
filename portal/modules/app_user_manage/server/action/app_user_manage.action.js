@@ -138,6 +138,14 @@ exports.getApplyListStartSelf = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+exports.getApplyListApproveSelf = function(req, res) {
+    AppUserService.getApplyListApproveSelf(req, res).on('success', function(data) {
+        res.json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 
 
 //获取未读回复列表
@@ -273,17 +281,8 @@ exports.editAppDetail = function(req, res) {
 };
 
 //申请修改密码
-exports.applyChangePassword = function(req, res) {
-    AppUserService.applyChangePassword(req, res).on('success', function(data) {
-        res.json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
-
-//申请修改其他类型
-exports.applyChangeOther = function(req, res) {
-    AppUserService.applyChangeOther(req, res, req.body).on('success', function(data) {
+exports.applyChangePasswordAndOther = function(req, res) {
+    AppUserService.applyChangePasswordAndOther(req, res).on('success', function(data) {
         res.json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -291,10 +290,9 @@ exports.applyChangeOther = function(req, res) {
 };
 
 //获取申请单的回复列表
-exports.getReplyList = function(req, res) {
-    //申请单id
-    var apply_id = req.params.apply_id;
-    AppUserService.getReplyList(req, res, apply_id).on('success', function(data) {
+exports.getApplyComments = function(req, res) {
+
+    AppUserService.getApplyComments(req, res).on('success', function(data) {
         res.json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -302,18 +300,23 @@ exports.getReplyList = function(req, res) {
 };
 
 //添加回复
-exports.addReply = function(req, res) {
-    //申请单id
-    var apply_id = req.body.apply_id;
-    //回复内容
-    var comment = req.body.comment;
-    //详情url
-    var notice_url = req.body.notice_url;
-    //提交给后台的数据
-    var submitObj = {apply_id, comment, notice_url};
+exports.addApplyComments = function(req, res) {
     //添加一条回复
-    AppUserService.addReply(req, res, submitObj).on('success', function(data) {
-        res.json(data);
+    AppUserService.addApplyComments(req, res).on('success', function(replyData) {
+        if (_.isObject(replyData)) {
+            //创建回复数据，直接添加到store的回复数组后面
+            let replyTime = replyData.comment_time ? replyData.comment_time : moment().valueOf();
+            let replyItem = {
+                user_id: replyData.user_id || '',
+                user_name: replyData.user_name || '',
+                comment: replyData.comment || '',
+                comment_time: replyTime,
+                nick_name: replyData.nick_name || ''
+            };
+            res.status(200).json(replyItem);
+        }else{
+            res.status(200).json({});
+        }
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });

@@ -9,8 +9,9 @@ import {getApplyDetailById} from 'PUB_DIR/sources/utils/apply-common-data-utils'
 function UserApplyActions() {
     this.generateActions(
         'setLastApplyId', //设置当前展示列表中最后一个id
-        'changeApplyListType',//更改筛选类型
         'changeSearchInputValue',//修改搜索框的值
+        'changeApplyStatus',//修改申请审批的状态
+        'changeApplyType',//修改申请审批的类型
         'setSelectedDetailItem',//设置当前要查看详情的申请
         'setShowUpdateTip',//设置是否展示更新提示
         'getApplyById',//根据id获取申请（实际是获取申请的详情）
@@ -58,6 +59,16 @@ function UserApplyActions() {
     this.getApplyListStartSelf = function(obj, callback) {
         this.dispatch({loading: true, error: false});
         UserAjax.getApplyListStartSelf(obj).then((result) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({loading: false, error: false, data: result });
+        }, (errorMsg) => {
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+        });
+    };
+    //获取待我审批的申请列表
+    this.getApplyListApproveByMe = function(obj, callback) {
+        this.dispatch({loading: true, error: false});
+        UserAjax.getApplyListApproveByMe(obj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({loading: false, error: false, data: result });
         }, (errorMsg) => {

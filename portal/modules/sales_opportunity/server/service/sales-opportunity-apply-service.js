@@ -17,8 +17,6 @@ var restApis = {
     approveSalesOpportunityApplyPassOrReject: '/rest/base/v1/workflow/businessopportunities/approve',
     //获取申请的状态
     getApplyStatusById: '/rest/base/v1/workflow/status',
-    //获取批注和添加批注
-    getOrAddApplyComments: '/rest/base/v1/workflow/comments',
 };
 exports.restUrls = restApis;
 //获取所有的销售机会申请
@@ -48,24 +46,7 @@ exports.addSalesOpportunityApply = function(req, res) {
             res: res
         }, req.body);
 };
-//获取审批意见
-exports.getSalesOpportunityApplyComments = function(req, res) {
-    return restUtil.authRest.get(
-        {
-            url: restApis.getOrAddApplyComments,
-            req: req,
-            res: res
-        }, req.query);
-};
-//添加审批意见
-exports.addSalesOpportunityApplyComments = function(req, res) {
-    return restUtil.authRest.post(
-        {
-            url: restApis.getOrAddApplyComments,
-            req: req,
-            res: res
-        }, req.body);
-};
+
 //批准或驳回审批
 exports.approveSalesOpportunityApplyPassOrReject = function(req, res) {
     return restUtil.authRest.post(

@@ -42,20 +42,6 @@ module.exports = {
                 needLogin: true
             },
         }, {
-            method: 'get',
-            path: '/rest/get/apply/comment/list',
-            handler: 'getApplyComments',
-            passport: {
-                needLogin: true
-            },
-        }, {
-            method: 'post',
-            path: '/rest/add/apply/comment',
-            handler: 'addApplyComments',
-            passport: {
-                needLogin: true
-            },
-        }, {
             method: 'post',
             path: '/rest/business_trip/submitApply',
             handler: 'approveApplyPassOrReject',

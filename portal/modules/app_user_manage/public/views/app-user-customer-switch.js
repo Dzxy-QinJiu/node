@@ -265,32 +265,11 @@ class AppUserCustomerSwitch extends React.Component {
         });
     };
 
-    //获取邮箱使用的字段
-    getEmailDatas = () => {
-        var selectedRows = this.state.selectedCustomerUserRows;
-
-        var email_customer_names = [];
-        var email_user_names = [];
-
-        if(!_.isArray(selectedRows)) {
-            selectedRows = [];
-        }
-        _.each(selectedRows , (obj) => {
-            email_customer_names.push(obj.customer && obj.customer.customer_name || '');
-            email_user_names.push(obj.user && obj.user.user_name || '');
-        });
-        return {
-            email_customer_names: email_customer_names.join('、'),
-            email_user_names: email_user_names.join('、')
-        };
-    };
-
     render() {
         if (dynamicStyle) {
             dynamicStyle.destroy();
             dynamicStyle = null;
         }
-        var emailData = this.getEmailDatas();
         return (
             <div>
                 <div className="app_user_manage_page">
@@ -329,7 +308,6 @@ class AppUserCustomerSwitch extends React.Component {
                         users={this.state.selectedCustomerUserRows}
                         customerId={this.props.params.customerId}
                         cancelApply={this.hideRightPanel}
-                        emailData={emailData}
                     />
                 </RightPanel>
             </div>

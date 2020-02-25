@@ -59,43 +59,6 @@ exports.addBusinessApply = function(data) {
     });
     return Deferred.promise();
 };
-//获取回复列表
-let getBusinessApplyCommentListAjax = null;
-exports.getBusinessApplyCommentList = function(queryObj) {
-    var Deferred = $.Deferred();
-    getBusinessApplyCommentListAjax && getBusinessApplyCommentListAjax.abort();
-    getBusinessApplyCommentListAjax = $.ajax({
-        url: '/rest/get/apply/comment/list',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-//添加审批回复
-let addBusinessApplyCommentsAjax = null;
-exports.addBusinessApplyComments = function(data) {
-    var Deferred = $.Deferred();
-    addBusinessApplyCommentsAjax && addBusinessApplyCommentsAjax.abort();
-    addBusinessApplyCommentsAjax = $.ajax({
-        url: '/rest/add/apply/comment',
-        dataType: 'json',
-        type: 'post',
-        data: data,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
 //通过或者驳回申请
 let approveApplyPassOrRejectAjax = null;
 exports.approveApplyPassOrReject = function(obj) {

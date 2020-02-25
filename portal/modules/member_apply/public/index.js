@@ -67,8 +67,8 @@ class MemberApply extends React.Component {
             type: APPLY_APPROVE_TYPES.MEMBER_INVITE
         };
         //如果是选择的全部类型，不需要传status这个参数
-        if (this.state.applyListType !== 'all') {
-            params.status = this.state.applyListType;
+        if (this.state.selectedApplyStatus !== 'all') {
+            params.status = this.state.selectedApplyStatus;
         }
         //去除查询条件中值为空的项
         commonMethodUtil.removeEmptyItem(params);
@@ -94,7 +94,7 @@ class MemberApply extends React.Component {
         var queryObj = this.getQueryParams();
         MemberApplyAction.getAllMemberApplyList(queryObj,(count) => {
             //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
-            if (this.state.applyListType === 'ongoing') {
+            if (this.state.selectedApplyStatus === 'ongoing') {
                 //触发更新待审批数
                 commonMethodUtil.updateUnapprovedCount('unhandlePersonalMember','SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
             }
@@ -133,7 +133,7 @@ class MemberApply extends React.Component {
     };
 
     getApplyListType = () => {
-        switch (this.state.applyListType) {
+        switch (this.state.selectedApplyStatus) {
             case 'all':
                 return Intl.get('user.apply.all', '全部申请');
             case 'ongoing':
@@ -166,7 +166,7 @@ class MemberApply extends React.Component {
         setTimeout(() => this.getAllMemberApplyList());
     };
     renderApplyListError = () => {
-        var noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType !== '';
+        var noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.selectedApplyStatus !== '';
         if (this.state.applyListObj.loadingResult === 'error' || noData) {
             var retry = (
                 <span>
@@ -211,8 +211,8 @@ class MemberApply extends React.Component {
 
     render() {
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
-        var applyListType = this.state.applyListType;
-        var applyType = commonMethodUtil.getApplyStatusDscr(applyListType);
+        var selectedApplyStatus = this.state.selectedApplyStatus;
+        var applyType = commonMethodUtil.getApplyStatusDscr(selectedApplyStatus);
         var noShowApplyDetail = this.state.applyListObj.list.length === 0;
         //申请详情数据
         var applyDetail = null;
@@ -229,7 +229,7 @@ class MemberApply extends React.Component {
                             menuList={selectMenuList}
                             refreshPage={this.refreshPage}
                             showUpdateTip={this.state.showUpdateTip}
-                            showRefreshIcon={applyListType === APPLY_TYPE_STATUS_CONST.ALL || applyListType === APPLY_TYPE_STATUS_CONST.ONGOING}
+                            showRefreshIcon={selectedApplyStatus === APPLY_TYPE_STATUS_CONST.ALL || selectedApplyStatus === APPLY_TYPE_STATUS_CONST.ONGOING}
                         />
                         {this.renderApplyListError()}
                         {this.state.applyListObj.loadingResult === 'loading' && !this.state.lastApplyId ? (
@@ -278,7 +278,7 @@ class MemberApply extends React.Component {
                         <ApplyViewDetail
                             detailItem={this.state.selectedDetailItem}
                             showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                            applyListType={this.state.applyListType}
+                            selectedApplyStatus={this.state.selectedApplyStatus}
                         />
                     )}
                 </div>

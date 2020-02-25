@@ -7,7 +7,7 @@ const stageUrl = '/rest/customer/v2/salesopportunity/term/sale_stages';
 const sysStageUrl = '/rest/customer/v2/salestage';
 //todo 新添加的用户审批
 // const applyUserUrl = '/rest/base/v1/user/apply_users';
-const applyUserUrl = 'http://10.20.1.185:8391/rest/base/v1/workflow/newuser';
+const applyUserUrl = '/rest/base/v1/workflow/newuser';
 const queryCustomerUrl = '/rest/customer/v2/customer/query';
 //添加销售线索
 const addSalesClueUrl = '/rest/clue/v2/add';

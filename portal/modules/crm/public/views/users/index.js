@@ -29,6 +29,7 @@ import {getApplyList} from 'MOD_DIR/user_apply/public/ajax/app-user-ajax';
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import { EventEmitter } from 'events';
 import {getDetailLayoutHeight} from '../../utils/crm-util';
+import {UnitOldAndNewUserInfo} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
@@ -139,7 +140,10 @@ class CustomerUsers extends React.Component {
             })
         ];
         Promise.all(promiseList).then((result) => {
-            let userApplyList = _.get(result, '[0].list', []);
+            let userApplyList = [];
+            _.forEach(_.get(result, '[0].list', []), item => {
+                userApplyList.push(UnitOldAndNewUserInfo(item));
+            });
             let userList = _.get(result, '[1]', []);
             this.setState({
                 userApplyList
@@ -368,24 +372,6 @@ class CustomerUsers extends React.Component {
         });
     }
 
-    //发邮件使用的参数
-    getEmailData(checkedUsers) {
-        let email_customer_names = [];
-        let email_user_names = [];
-
-        if (!_.isArray(checkedUsers)) {
-            checkedUsers = [];
-        }
-        _.each(checkedUsers, (obj) => {
-            email_customer_names.push(obj.customer && obj.customer.customer_name || '');
-            email_user_names.push(obj.user && obj.user.user_name || '');
-        });
-        return {
-            email_customer_names: email_customer_names.join('、'),
-            email_user_names: email_user_names.join('、')
-        };
-    }
-
     //申请新用户时，根据返回的状态信息渲染带Popover的button和不带Popover的button
     renderApplyButton = () => {
         let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
@@ -523,15 +509,12 @@ class CustomerUsers extends React.Component {
         if (this.state.applyType === APPLY_TYPES.OPEN_APP) {
             let checkedUsers = _.filter(this.state.crmUserList, userObj => userObj.user && userObj.user.checked);
             if (_.isArray(checkedUsers) && checkedUsers.length) {
-                //发邮件使用的数据
-                let emailData = this.getEmailData(checkedUsers);
                 rightPanelView = (
                     <ApplyOpenAppPanel
                         appList={this.state.appList}
                         users={checkedUsers}
                         customerId={this.props.curCustomer.id}
                         cancelApply={this.closeRightPanel.bind(this)}
-                        emailData={emailData}
                     />
                 );
             }
@@ -553,8 +536,6 @@ class CustomerUsers extends React.Component {
     renderUserApplyForm() {
         //有选择用户时，是已有用户开通新用户；无选择的应用时，是开通新用户
         let checkedUsers = _.filter(this.state.crmUserList, userObj => userObj.user && userObj.user.checked);
-        //发邮件使用的数据
-        let emailData = this.getEmailData(checkedUsers);
         return (
             <ApplyUserForm
                 applyFrom="crmUserList"
@@ -564,7 +545,6 @@ class CustomerUsers extends React.Component {
                 customerName={this.props.curCustomer.name}
                 customerId={this.props.curCustomer.id}
                 cancelApply={this.closeRightPanel.bind(this)}
-                emailData={emailData}
                 maxHeight={this.state.applyFormMaxHeight}
                 afterAddApplySuccess={this.afterAddApplySuccess}
             />
@@ -721,30 +701,12 @@ class CustomerUsers extends React.Component {
     renderUserApplyList(userApplyList) {
         return userApplyList.map((userObj, index) => {
             let user = _.isObject(userObj) ? userObj.message : {};
-            let userNameText = `${_.get(user, 'email_user_names', '')}(${_.get(user, 'nick_name', '')})`;
-            let apps = _.get(user, 'products', '');
+            let userNameText = `${_.get(user, 'user_name', '')}(${_.get(user, 'nick_name', '')})`;
+            let apps = _.get(user,'users_or_grants[0]') || JSON.parse(_.get(user, 'products', ''));
             //如果是已有用户申请试用和正式时，不显示
             if(_.get(user,'type') === APPLY_CONSTANTS.EXIST_APPLY_FORMAL
                 || _.get(user,'type') === APPLY_CONSTANTS.EXIST_APPLY_TRIAL) {
                 return null;
-            }
-            //处理产品应用信息
-            if(apps) {
-                try {
-                    apps = JSON.parse(apps);
-                    let appsName = _.get(user,'email_app_names', '').split('、');
-                    _.each(appsName, (name, index) => {
-                        if(apps[index]) {
-                            apps[index].client_name = name;
-                            apps[index].tag = _.get(user, 'tag', '');
-                            apps[index].type = _.get(user, 'type', '');
-                        }
-                    });
-                }catch (e) {
-                    apps = [];
-                }
-            }else {
-                apps = [];
             }
             return (
                 <div className="crm-user-item crm-user-apply-item" key={index}>

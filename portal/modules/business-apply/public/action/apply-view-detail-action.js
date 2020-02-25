@@ -13,7 +13,9 @@ import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {
     getApplyStatusById,
     cancelApplyApprove,
-    getApplyDetailById
+    getApplyDetailById,
+    getApplyCommentList,
+    addApplyComments
 } from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import applyApproveAction from './business-apply-action';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
@@ -52,7 +54,7 @@ function ApplyViewDetailActions() {
     //获取回复列表
     this.getBusinessApplyCommentList = function(queryObj) {
         this.dispatch({loading: true, error: false});
-        BusinessApplyAjax.getBusinessApplyCommentList(queryObj).then((list) => {
+        getApplyCommentList(queryObj).then((list) => {
             //清除未读回复列表中已读的回复
             applyApproveAction.clearUnreadReply(queryObj.id);
             this.dispatch({loading: false, error: false, list: list});
@@ -63,19 +65,8 @@ function ApplyViewDetailActions() {
     //添加回复
     this.addBusinessApplyComments = function(obj) {
         this.dispatch({loading: true, error: false});
-        BusinessApplyAjax.addBusinessApplyComments(obj).then((replyData) => {
-            if (_.isObject(replyData)) {
-                //创建回复数据，直接添加到store的回复数组后面
-                let replyTime = replyData.comment_time ? replyData.comment_time : moment().valueOf();
-                let replyItem = {
-                    user_id: replyData.user_id || '',
-                    user_name: replyData.user_name || '',
-                    nick_name: replyData.nick_name || '',
-                    comment: replyData.comment || '',
-                    comment_time: replyTime
-                };
-                this.dispatch({loading: false, error: false, reply: replyItem});
-            }
+        addApplyComments(obj).then((replyData) => {
+            this.dispatch({loading: false, error: false, reply: replyData});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });

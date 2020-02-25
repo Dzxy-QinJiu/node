@@ -26,27 +26,6 @@ exports.getApplyList = function(obj) {
 };
 
 
-
-/**
- * 获取申请的回复列表
- */
-exports.getReplyList = function(id) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/appuser/replylist/' + id,
-        dataType: 'json',
-        type: 'get',
-        timeout: 180 * 1000,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get('user.apply.reply.get.list.failed', '回复列表获取失败'));
-        }
-    });
-    return Deferred.promise();
-};
-
 /**
  * 提交审批
  */
@@ -86,25 +65,6 @@ exports.applyUser = function(data) {
         },
         error: function(xhr) {
             Deferred.reject(xhr.responseJSON || Intl.get('common.apply.failed', '申请失败'));
-        }
-    });
-    return Deferred.promise();
-};
-
-//添加回复
-exports.addReply = function(data) {
-    const ERROR_MSG = Intl.get('user.apply.reply.error', '添加回复失败');
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/appuser/add_reply',
-        type: 'post',
-        dataType: 'json',
-        data: data,
-        success: function(result) {
-            Deferred.resolve(result);
-        },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || ERROR_MSG);
         }
     });
     return Deferred.promise();

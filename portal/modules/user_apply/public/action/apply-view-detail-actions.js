@@ -7,7 +7,7 @@ import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
 import {updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
-import {getApplyDetailById} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {addApplyComments, getApplyCommentList, getApplyDetailById} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import {UnitOldAndNewUserDetail} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 class ApplyViewDetailActions {
@@ -72,7 +72,8 @@ class ApplyViewDetailActions {
             'setNextCandidateName',//下一节点审批人的名字
             'setNextCandidate',
             'showOrHideApprovalBtns',
-            'setHistoryApplyStatus'
+            'setHistoryApplyStatus',
+            'setDetailInfoObjAfterAdd'
         );
     }
 
@@ -119,7 +120,7 @@ class ApplyViewDetailActions {
     //获取回复列表
     getReplyList(id) {
         this.dispatch({loading: true, error: false, list: [], errorMsg: ''});
-        AppUserAjax.getReplyList(id).then((list) => {
+        getApplyCommentList({id: id}).then((list) => {
             this.dispatch({loading: false, error: false, list: list, errorMsg: ''});
             //清除未读回复列表中已读的回复
             UserApplyAction.clearUnreadReply(id);
@@ -173,21 +174,11 @@ class ApplyViewDetailActions {
     //添加回复
     addReply(obj) {
         this.dispatch({loading: true, error: false});
-        AppUserAjax.addReply(obj).then((replyData) => {
+        addApplyComments(obj).then((replyData) => {
             if (_.isObject(replyData)) {
-                //创建回复数据，直接添加到store的回复数组后面
-                let userData = UserData.getUserData();
-                let replyTime = replyData.comment_time ? moment(replyData.comment_time) : moment();
-                let replyItem = {
-                    user_id: replyData.user_id || '',
-                    user_name: replyData.nick_name || '',
-                    user_logo: userData.user_logo || '',
-                    message: replyData.comment || '',
-                    date: replyTime.format(oplateConsts.DATE_TIME_FORMAT)
-                };
                 //滚动条定位到最后
                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM);
-                this.dispatch({loading: false, error: false, reply: replyItem});
+                this.dispatch({loading: false, error: false, reply: replyData});
             }
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});

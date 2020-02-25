@@ -16,7 +16,7 @@ class ApplyViewDetailStore {
         //审批的详情数据
         this.detailInfoObj = {
             // "" loading error
-            loading: false,
+            loadingResult: 'loading',
             //获取的详情信息
             info: {},
             //错误信息
@@ -176,15 +176,15 @@ class ApplyViewDetailStore {
         };
 
         if (obj.loading) {
-            this.detailInfoObj.loading = true;
+            this.detailInfoObj.loadingResult = 'loading';
             this.detailInfoObj.info = {};
             return;
         } else if (obj.error) {
-            this.detailInfoObj.loading = false;
+            this.detailInfoObj.loadingResult = 'error';
             this.detailInfoObj.info = {};
             this.detailInfoObj.errorMsg = obj.errorMsg;
         } else {
-            this.detailInfoObj.loading = false;
+            this.detailInfoObj.loadingResult = '';
             const info = obj.detail;
             _.each(info.apps || [], (app) => {
                 app.app_id = app.client_id;
@@ -247,6 +247,28 @@ class ApplyViewDetailStore {
 
         }
     }
+    setDetailInfoObjAfterAdd(detailObj) {
+        delete detailObj.afterAddReplySuccess;
+        this.detailInfoObj = {
+            // "" loading error
+            loadingResult: '',
+            //获取的详情信息
+            info: detailObj,
+            //错误信息
+            errorMsg: ''
+        };
+        this.replyListInfo = {
+            //三种状态,loading,error,''
+            result: '',
+            //列表数组
+            list: [],
+            //服务端错误信息
+            errorMsg: ''
+        };
+        //下一节点负责人的列表
+        this.candidateList = [];
+
+    };
     hideApprovalBtns() {
         this.selectedDetailItem.showApproveBtn = false;
         this.selectedDetailItem.showCancelBtn = false;

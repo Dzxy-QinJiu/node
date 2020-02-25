@@ -13,7 +13,8 @@ import {
     getApplyListDivHeight,
     FILTER,
     SEARCH,
-    UnitOldAndNewUserInfo
+    UnitOldAndNewUserInfo,
+    ALL
 } from './utils/apply_approve_utils';
 import classNames from 'classnames';
 import {Dropdown, Menu, Alert, Select} from 'antd';
@@ -61,9 +62,9 @@ class ApplyApproveList extends React.Component {
         activeApplyTab: APPLY_TYPE.APPLY_BY_ME,
         addApplyFormPanel: '',//添加的申请审批的表单类型
         filterOrSearchType: '',//添加筛选或者搜索的类型
-        selectedApplyStatus: '',//选中的筛选审批的状态
-        selectedApplyType: '',//选中的筛选审批的类型
         showRefreshTip: false,//展示刷新列表的提示
+        type: '',//申请审批的类型
+        status: '',//申请审批的状态
         ...ApplyApproveListStore.getState()
 
     };
@@ -122,7 +123,7 @@ class ApplyApproveList extends React.Component {
     };
     //获取申请审批列表
     fetchApplyList = () => {
-        // let approval_state = UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? 'pass' : this.state.applyListType;
+        // let approval_state = UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? 'pass' : this.state.selectedApplyStatus;
         //[已通过、已驳回、已审批、已撤销
         let approvedTypes = ['pass', 'reject', 'true', 'cancel'];
         //已审批过的按审批时间倒序排
@@ -132,16 +133,21 @@ class ApplyApproveList extends React.Component {
         var submitObj = {
             id: this.state.lastApplyId,
             page_size: this.state.pageSize,
-            // keyword: this.state.searchKeyword,
+            keyword: this.state.searchKeyword,
             isUnreadApply: this.state.isCheckUnreadApplyList,
-            // approval_state: approval_state,
             sort_field: 'create_time',
             order: 'descend'
         };
+        if(this.state.selectedApplyStatus !== ALL){
+            submitObj.status = this.state.selectedApplyStatus;
+        }
+        if(this.state.selectedApplyType !== ALL){
+            submitObj.type = this.state.selectedApplyType;
+        }
         if (this.state.activeApplyTab === APPLY_TYPE.APPLY_BY_ME) {
             UserApplyActions.getApplyListStartSelf(submitObj, (count) => {
                 //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
-                // if (this.state.applyListType === 'false') {
+                // if (this.state.selectedApplyStatus === 'false') {
                 //     //触发更新待审批数
                 //     commonMethodUtil.updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
                 //     // 解决通过或驳回操作失败（后台其实是成功）后的状态更新
@@ -151,10 +157,10 @@ class ApplyApproveList extends React.Component {
                 // }
             });
 
-        } else {
+        } else if(this.state.activeApplyTab === APPLY_TYPE.APPROVE_BY_ME) {//获取待我审批的及我审批过的申请
             UserApplyActions.getApplyList(submitObj, (count) => {
                 //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
-                // if (this.state.applyListType === 'false') {
+                // if (this.state.selectedApplyStatus === 'false') {
                 //     //触发更新待审批数
                 //     commonMethodUtil.updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
                 //     // 解决通过或驳回操作失败（后台其实是成功）后的状态更新
@@ -163,6 +169,8 @@ class ApplyApproveList extends React.Component {
                 //     }
                 // }
             });
+        }else{
+
         }
 
 
@@ -170,6 +178,8 @@ class ApplyApproveList extends React.Component {
     handleChangeApplyActiveTab = (activeTab) => {
         this.setState({
             activeApplyTab: activeTab
+        },() => {
+            this.fetchApplyList();
         });
     };
     //打开添加申请的面板
@@ -388,7 +398,7 @@ class ApplyApproveList extends React.Component {
         </div>;
     };
     getApplyListType = () => {
-        switch (this.state.applyListType) {
+        switch (this.state.selectedApplyStatus) {
             case 'all':
                 return Intl.get('user.apply.all', '全部申请');
             case 'false':
@@ -404,20 +414,18 @@ class ApplyApproveList extends React.Component {
         }
     };
     handleChangeSelectedApplyStatus = (value) => {
-        this.setState({
-            selectedApplyStatus: value
-        });
+        UserApplyActions.changeApplyStatus(value);
+        setTimeout(() => this.fetchApplyList());
     };
     handleChangeSelectedApplyType = (value) => {
-        this.setState({
-            selectedApplyType: value
-        });
+        UserApplyActions.changeApplyType(value);
+        setTimeout(() => this.fetchApplyList());
     };
     //渲染筛选的界面
     renderFilterPanel = () => {
         var allStatusList = [{
             name: Intl.get('user.online.all.status', '全部状态'),
-            value: ''
+            value: ALL
         }, {
             name: Intl.get('leave.apply.my.worklist.apply', '待我审批'),
             value: 'ongoing'
@@ -433,7 +441,7 @@ class ApplyApproveList extends React.Component {
         }];
         var allTypeList = [{
             name: Intl.get('oplate_customer_analysis.type.all', '全部类型'),
-            value: ''
+            value: ALL
         }];
         var workFlowList = this.getWorkFlowList();
         _.each(workFlowList, (workItem) => {
@@ -572,13 +580,13 @@ class ApplyApproveList extends React.Component {
         var applyDetailContent = null;
         //todo 不同的审批类型展示不同的右侧详情
         switch (_.get(selectedDetailItem, 'workflow_type')) {
-            case APPLY_APPROVE_TYPES.USER_OR_GRANT://用户申请
+            case APPLY_APPROVE_TYPES.USER_OR_GRANT://新的用户申请
                 applyDetailContent = <UserApplyViewDetailWrap
                     applyData={this.state.applyId ? applyDetail : null}
                     detailItem={UnitOldAndNewUserInfo(this.state.selectedDetailItem)}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    applyListType={this.state.applyListType}
+                    selectedApplyStatus={this.state.selectedApplyStatus}
                     handleOpenApplyDetail={this.handleOpenApplyDetail}
                     appList={this.state.appList}
                     height={$(window).height()}
@@ -586,55 +594,61 @@ class ApplyApproveList extends React.Component {
                 break;
             case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES://销售机会
                 applyDetailContent = <BusinessOpportunity
+                    applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    applyListType={this.state.applyListType}
+                    selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     appList={this.state.appList}
                     height={$(window).height()}
                 />;
                 break;
-            case APPLY_APPROVE_TYPES.BUSSINESSTRIP://出差申请
+            case APPLY_APPROVE_TYPES.CUSTOMER_VISIT://出差申请
                 applyDetailContent = <BusinessDetail
+                    applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    applyListType={this.state.applyListType}
+                    selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     height={$(window).height()}
                 />;
                 break;
             case APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE://外出申请
                 applyDetailContent = <BusinessWhileDetail
+                    applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    applyListType={this.state.applyListType}
+                    selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     height={$(window).height()}
                 />;
                 break;
-            case APPLY_APPROVE_TYPES.LEAVE://请假申请
+            case APPLY_APPROVE_TYPES.PERSONAL_LEAVE://请假申请
                 applyDetailContent = <LeaveDetail
+                    applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    applyListType={this.state.applyListType}
+                    selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     height={$(window).height()}
                 />;
                 break;
             case APPLY_APPROVE_TYPES.OPINIONREPORT://舆情报告
                 applyDetailContent = <ReportDetail
+                    applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    applyListType={this.state.applyListType}
+                    selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     height={$(window).height()}
                 />;
                 break;
             case APPLY_APPROVE_TYPES.DOCUMENTWRITING://文件撰写
                 applyDetailContent = <DocumentDetail
+                    applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    applyListType={this.state.applyListType}
+                    selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     height={$(window).height()}
                 />;
@@ -642,22 +656,37 @@ class ApplyApproveList extends React.Component {
             //联合跟进申请和拜访申请
             case APPLY_APPROVE_TYPES.VISITAPPLY:
                 applyDetailContent = <VisitDetail
+                    applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    applyListType={this.state.applyListType}
+                    selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     height={$(window).height()}
                 />;
                 break;
             case APPLY_APPROVE_TYPES.DOMAINAPPLY://舆情平台申请
                 applyDetailContent = <DomainDetail
+                    applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    applyListType={this.state.applyListType}
+                    selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     height={$(window).height()}
                 />;
                 break;
+        }
+        //如果是旧版的用户审批
+        if(_.get(selectedDetailItem, 'message_type') === APPLY_APPROVE_TYPES.USERAPPLY){
+            applyDetailContent = <UserApplyViewDetailWrap
+                applyData={this.state.applyId ? applyDetail : null}
+                detailItem={this.state.selectedDetailItem}
+                isUnreadDetail={this.getIsUnreadDetail()}
+                showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                selectedApplyStatus={this.state.selectedApplyStatus}
+                handleOpenApplyDetail={this.handleOpenApplyDetail}
+                appList={this.state.appList}
+                height={$(window).height()}
+            />;
         }
         return applyDetailContent;
     };

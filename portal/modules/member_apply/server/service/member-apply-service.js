@@ -15,8 +15,6 @@ var restApis = {
     approveMemberApplyPassOrReject: '/rest/base/v1/workflow/memberinvite/approve',
     //获取申请的状态
     getApplyStatusById: '/rest/base/v1/workflow/status',
-    //获取批注和添加批注
-    getOrAddApplyComments: '/rest/base/v1/workflow/comments',
     // 修改申请成员信息（姓名、邮箱）唯一性验证
     checkOnlyInviteMember: '/rest/base/v1/user/member/:key/:value/unique'
 };
@@ -39,24 +37,7 @@ exports.getWorklistMemberApplyList = function(req, res) {
             res: res
         }, req.query);
 };
-//获取审批意见
-exports.getMemberApplyComments = function(req, res) {
-    return restUtil.authRest.get(
-        {
-            url: restApis.getOrAddApplyComments,
-            req: req,
-            res: res
-        }, req.query);
-};
-//添加审批意见
-exports.addMemberApplyComments = function(req, res) {
-    return restUtil.authRest.post(
-        {
-            url: restApis.getOrAddApplyComments,
-            req: req,
-            res: res
-        }, req.body);
-};
+
 //批准或驳回审批
 exports.approveMemberApplyPassOrReject = function(req, res) {
     return restUtil.authRest.post(

@@ -28,20 +28,6 @@ module.exports = {
                 needLogin: true
             },
         }, {
-            method: 'get',
-            path: '/rest/get/sales_opportunity_apply/comment/list',
-            handler: 'getSalesOpportunityApplyComments',
-            passport: {
-                needLogin: true
-            },
-        }, {
-            method: 'post',
-            path: '/rest/add/sales_opportunity_apply/comment',
-            handler: 'addSalesOpportunityApplyComments',
-            passport: {
-                needLogin: true
-            },
-        }, {
             method: 'post',
             path: '/rest/sales_opportunity_apply/submitApply',
             handler: 'approveSalesOpportunityApplyPassOrReject',

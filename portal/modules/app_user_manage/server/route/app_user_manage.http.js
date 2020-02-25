@@ -130,7 +130,17 @@ module.exports = {
         'privileges': [
             commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批列表
         ]
-    },
+    }, {//todo 权限的修改
+            'method': 'get',
+            'path': '/rest/apply_list/approve/self',
+            'handler': 'getApplyListApproveSelf',
+            'passport': {
+                'needLogin': true
+            },
+            'privileges': [
+                commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批列表
+            ]
+        },
     {
         'method': 'get',
         'path': '/rest/appuser/unread_reply',
@@ -215,32 +225,26 @@ module.exports = {
     }, {
         'method': 'post',
         'path': '/rest/user/apply/password',
-        'handler': 'applyChangePassword',
+        'handler': 'applyChangePasswordAndOther',
         'passport': {
             'needLogin': true
         }
     }, {
-        'method': 'post',
-        'path': '/rest/user/apply/other',
-        'handler': 'applyChangeOther',
-        'passport': {
-            'needLogin': true
+            method: 'get',
+            path: '/rest/get/apply/comment/list',
+            handler: 'getApplyComments',
+            passport: {
+                needLogin: true
+            },
+        }, {
+            method: 'post',
+            path: '/rest/add/apply/comment',
+            handler: 'addApplyComments',
+            passport: {
+                needLogin: true
+            },
         }
-    }, {
-        'method': 'get',
-        'path': '/rest/appuser/replylist/:apply_id',
-        'handler': 'getReplyList',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
-        'method': 'post',
-        'path': '/rest/appuser/add_reply',
-        'handler': 'addReply',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
+    , {
         'method': 'get',
         'path': '/rest/get_team_lists',
         'handler': 'getteamlists',

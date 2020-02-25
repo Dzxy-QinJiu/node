@@ -38,7 +38,7 @@ DocumentWriteApplyStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待我审批)
-    this.applyListType = 'ongoing';
+    this.selectedApplyStatus = 'ongoing';
     //是否显示更新数据提示
     this.showUpdateTip = false;
     //是否查看未读回复的申请列表
@@ -131,7 +131,7 @@ DocumentWriteApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
     this.selectedDetailItemIdx = idx;
 };
 DocumentWriteApplyStore.prototype.changeApplyListType = function(type) {
-    this.applyListType = type;
+    this.selectedApplyStatus = type;
     this.lastApplyId = '';
     this.showUpdateTip = false;
     this.isCheckUnreadApplyList = false;

@@ -65,7 +65,7 @@ exports.getApplyCommentList = function(queryObj) {
     var Deferred = $.Deferred();
     getApplyCommentListAjax && getApplyCommentListAjax.abort();
     getApplyCommentListAjax = $.ajax({
-        url: '/rest/get/apply_approve/comment/list',
+        url: '/rest/get/apply/comment/list',
         type: 'get',
         data: queryObj,
         success: function(data) {
@@ -83,7 +83,7 @@ exports.addApplyComments = function(data) {
     var Deferred = $.Deferred();
     addApplyCommentsAjax && addApplyCommentsAjax.abort();
     addApplyCommentsAjax = $.ajax({
-        url: '/rest/add/apply_approve/comment',
+        url: '/rest/add/apply/comment',
         dataType: 'json',
         type: 'post',
         data: data,

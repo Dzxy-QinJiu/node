@@ -56,13 +56,29 @@ export const getStatusNum = function(state) {
 export const UnitOldAndNewUserInfo = function(userInfo) {
     //0 代表待审批 1代表已通过，2代表已驳回，3 代表已撤销
     var oldUserInfo = {
+        approval_state: getStatusNum(_.get(userInfo,'status')),
         id: _.get(userInfo,'id'),
         producer: _.get(userInfo,'applicant'),
         presenter: _.get(userInfo,'applicant.nick_name'),
-        approval_state: getStatusNum(_.get(userInfo,'status')),
+        message: {
+            sales_team_name: "济南平台部",
+            user_name: "wyeruiyweiuree",
+            sales_opportunity: "apply_new_users",
+            remark: "qweqweqw",
+            type: "apply_user_trial",
+            products: JSON.stringify(_.get(userInfo,'detail.user_grants_apply',[])),
+            sales_name: "cs-test00",
+            nick_name: _.get(userInfo,'applicant.nick_name'),
+            producer_team: "销售部-测试",
+            tag: _.get(userInfo,'user_type'),
+            customer_name: _.get(userInfo,'customer_name'),
+            customer_id: _.get(userInfo,'customer_id'),
+            order_id: _.get(userInfo,'order_id')},
+        message_type: "apply",
         customer_name: _.get(userInfo,'detail.customers[0].name'),
         topic: _.get(userInfo,''),
         approval_person: _.get(userInfo,''),
+        isConsumed: _.get(userInfo,'isConsumed'),
     };
     return oldUserInfo;
 };
@@ -75,13 +91,15 @@ export const UnitOldAndNewUserDetail = function(detail) {
         presenter_id: _.get(detail,'applicant.user_id'),
         customer_name: _.get(detail,'detail.customer_name'),
         customer_id: _.get(detail,'detail.customer_id'),
-        user_names: _.map(_.get(detail,'detail.user_grants_apply',[]),'user_name'),
+        user_names: [_.get(detail,'detail.user_name','')],
+        nick_names: [_.get(detail,'detail.nickname','')],
+        // user_names: _.map(_.get(detail,'detail.user_grants_apply',[]),'user_name'),
         user_ids: _.map(_.get(detail,'detail.user_grants_apply',[]),'user_id'),
         comment: _.get(detail,'remarks',''),
         approval_comment: '',
-        approval_state: '1',
+        approval_state: getStatusNum(_.get(detail,'status')),
         approval_person: '张淑娟',
-        time: 1582094471651,
+        time: _.get(detail,'create_time'),
         approval_time: 1582096984760,
         id: _.get(detail,'id'),
         isConsumed: 'true',
@@ -90,6 +108,7 @@ export const UnitOldAndNewUserDetail = function(detail) {
         last_contact_time: 1581326993094,
         immutable_labels: _.get(detail,'detail.immutable'),
         customer_label: _.get(detail,'detail.customer_label'),
-        apps: _.get(detail,'detail.user_grants_apply'),
+        apps: _.get(detail,'detail.user_grants_apply',[]),
     };
 };
+export const ALL = 'all';

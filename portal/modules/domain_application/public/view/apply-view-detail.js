@@ -130,7 +130,7 @@ class ApplyViewDetail extends React.Component {
                     this.addNextCandidate.handleCancel();
                 }
                 //转出成功后，如果左边选中的是待审批的列表，在待审批列表中把这条记录删掉
-                if (this.props.applyListType === 'ongoing'){
+                if (this.props.selectedApplyStatus === 'ongoing'){
                     LeaveApplyActions.afterTransferApplySuccess(submitObj.id);
                 }else{
                     message.success(Intl.get('apply.approve.transfer.success','转出申请成功'));
@@ -840,7 +840,7 @@ class ApplyViewDetail extends React.Component {
 ApplyViewDetail.defaultProps = {
     detailItem: {},
     showNoData: false,
-    applyListType: '',
+    selectedApplyStatus: '',
     isUnreadDetail: false,
     applyData: {},
     isHomeMyWork: false,//是否是首页我的工作中打开的详情
@@ -854,7 +854,7 @@ ApplyViewDetail.defaultProps = {
 ApplyViewDetail.propTypes = {
     detailItem: PropTypes.string,
     showNoData: PropTypes.bool,
-    applyListType: PropTypes.string,
+    selectedApplyStatus: PropTypes.string,
     isUnreadDetail: PropTypes.bool,
     applyData: PropTypes.object,
     isHomeMyWork: PropTypes.bool,

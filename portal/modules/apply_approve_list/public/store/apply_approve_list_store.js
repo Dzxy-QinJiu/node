@@ -3,6 +3,7 @@ import {notificationEmitter} from '../../../../public/sources/utils/emitters';
 import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
 import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
+import {ALL} from '../utils/apply_approve_utils';
 //用户审批界面使用的store
 function UserApplyStore() {
     //初始化state数据
@@ -34,8 +35,10 @@ UserApplyStore.prototype.resetState = function() {
     this.oldSearchKeyword = '';
     //默认不显示输入框
     this.searchInputShow = false;
-    //筛选类别 all(全部) pass(已通过) reject(已驳回)  false(待审批)
-    this.applyListType = 'all';
+    //筛选状态 all(全部) pass(已通过) reject(已驳回)  ongoing(待审批)
+    this.selectedApplyStatus = ALL;
+    //筛选审批类型
+    this.selectedApplyType = ALL;
     //是否显示更新数据提示
     this.showUpdateTip = false;
     // 下拉加载
@@ -197,11 +200,17 @@ UserApplyStore.prototype.setLastApplyId = function(applyId) {
 };
 
 //更改用户审批筛选类型
-UserApplyStore.prototype.changeApplyListType = function(type) {
-    this.applyListType = type;
+UserApplyStore.prototype.changeApplyStatus = function(type) {
+    this.selectedApplyStatus = type;
     this.lastApplyId = '';
     this.showUpdateTip = false;
     this.isCheckUnreadApplyList = false;
+};
+//修改查询申请审批的类型
+UserApplyStore.prototype.changeApplyType = function(type){
+    this.selectedApplyType = type;
+    this.lastApplyId = '';
+    this.showUpdateTip = false;
 };
 
 //输入框的值改变
@@ -210,6 +219,7 @@ UserApplyStore.prototype.changeSearchInputValue = function(value) {
     this.lastApplyId = '';
     this.showUpdateTip = false;
 };
+
 
 //设置当前要查看详情的申请
 UserApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {

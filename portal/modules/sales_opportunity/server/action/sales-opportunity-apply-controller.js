@@ -37,20 +37,6 @@ exports.addSalesOpportunityApply = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-exports.getSalesOpportunityApplyComments = function(req, res) {
-    SalesOpportunityApplyService.getSalesOpportunityApplyComments(req, res).on('success', function(data) {
-        res.status(200).json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
-exports.addSalesOpportunityApplyComments = function(req, res) {
-    SalesOpportunityApplyService.addSalesOpportunityApplyComments(req, res).on('success', function(data) {
-        res.status(200).json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
 exports.approveSalesOpportunityApplyPassOrReject = function(req, res) {
     SalesOpportunityApplyService.approveSalesOpportunityApplyPassOrReject(req, res).on('success', function(data) {
         res.status(200).json(data);

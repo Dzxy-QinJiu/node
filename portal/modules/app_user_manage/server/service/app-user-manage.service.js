@@ -60,9 +60,15 @@ var AppUserRestApis = {
     editAppUserCustomer: '/rest/base/v1/user/belong/customer',
     //todo 获取用户审批列表
     // getApplyList: '/rest/base/v1/message/applylist',
-    getApplyList: 'http://10.20.1.185:8391/rest/base/v1/workflow/applylist',
+    getApplyList: '/rest/base/v1/workflow/applylist',
     //todo 我申请的
-    getApplyListStartSelf: 'http://10.20.1.185:8391/rest/base/v1/workflow/applylist/self',
+    getApplyListStartSelf: '/rest/base/v1/workflow/applylist/self',
+    // todo 待我审批的
+    getApplyListWillApprovedByMe: '/rest/base/v1/workflow/worklist',
+    //todo 我审批过的
+    getApplyListApprovedByMe: '/rest/base/v1/workflow/applylist/self/approved',
+    //todo 获取或者添加回复列表
+    getOrAddApplyComments: '/rest/base/v1/workflow/comments',
     //获取有未读回复的申请列表
     getUnreadApplyList: '/rest/base/v1/message/applylist/comment/unread',
     //获取未读回复列表(用户来标识未读回复的申请)
@@ -78,31 +84,25 @@ var AppUserRestApis = {
     //todo 申请用户
     // applyUser: '/rest/base/v1/user/apply_grants',
     // todo 开通新应用
-    applyUser: 'http://10.20.1.185:8391/rest/base/v1/workflow/newgrant',
+    applyUser: '/rest/base/v1/workflow/newgrant',
     //获取客户对应的用户列表
     getCustomerUsers: '/rest/base/v1/user/customer/users',
     //批量用户延期
     batchDelayUser: '/rest/base/v1/user/batch/grant/delay',
-    //todo 修改密码
+    //todo 修改密码和其他类型申请
     // changePassword: '/rest/base/v1/user/apply/user_password',
-    changePassword: 'http://10.20.1.185:8391/rest/base/v1/workflow/user/change',
-    //用户申请修改其他类型
-    applyChangeOther: '/rest/base/v1/user/apply/else',
+    applyChangePasswordAndOther: '/rest/base/v1/workflow/user/change',
     //审批用户延期
     approveDelayUser: '/rest/base/v1/user/approve_delay',
     //todo 审批修改密码
     // submitApplyChangePassword: '/rest/base/v1/user/approve_password',
-    submitApplyChangePassword: 'http://10.20.1.185:8391/rest/base/v1/workflow/user/change/approve',
+    submitApplyChangePassword: '/rest/base/v1/workflow/user/change/approve',
     //审批其他类型的修改
     submitApplyChangeOther: '/rest/base/v1/user/approve/sthelse',
     //审批开通状态
     submitApplyGrantStatus: '/rest/base/v1/user/approve_status',
     //编辑用户应用单个字段
     editAppDetail: '/rest/base/v1/user/grantdetail',
-    //添加一条回复
-    addReply: '/rest/base/v1/message/apply/comment',
-    //获取回复列表
-    getReplyList: '/rest/base/v1/message/apply/comments',
     //管理员批量添加、修改应用
     BATCH_GRANT_APPLICATION: '/rest/base/v1/user/batch/grants',
     //管理员批量延期
@@ -367,7 +367,6 @@ exports.getApplyList = function(req, res, obj) {
         }
     });
 };
-
 /**
  * 获取我申请的申请列表*/
 exports.getApplyListStartSelf = function(req, res){
@@ -380,7 +379,20 @@ exports.getApplyListStartSelf = function(req, res){
     } else {
         delete obj.isUnreadApply;
     }
-    //如果
+    //如果有传类型
+    if(obj.type){
+        url += `?type=${obj.type}`;
+        if(obj.status){
+            url += `&status=${obj.status}`;
+
+        }
+    } else{
+        if(obj.status){
+            url += `?status=${obj.status}`;
+        }
+    };
+    delete obj.status;
+    delete obj.type;
     return restUtil.authRest.get({
         url: url,
         req: req,
@@ -414,6 +426,57 @@ exports.getApplyListStartSelf = function(req, res){
             }
         }
     });
+};
+/*
+* 获取待我审批的及我审批过的申请列表
+* */
+//获取我审批过的申请
+function getApplyListApprovedByMe(req, res) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.put({
+            url: AppUserRestApis.getApplyListApprovedByMe,
+            req: req,
+            res: res
+        }, req.query, {
+            success: (emitter, data) => {
+                resolve(data);
+            },
+            error: (eventEmitter, errorDesc) => {
+                reject(errorDesc);
+            }
+        });
+    });
+};
+//获取待我审批的申请
+function getApplyListWillApprovedByMe(req, res) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.put({
+            url: AppUserRestApis.getApplyListWillApprovedByMe,
+            req: req,
+            res: res
+        }, req.query, {
+            success: (emitter, data) => {
+                resolve(data);
+            },
+            error: (eventEmitter, errorDesc) => {
+                reject(errorDesc);
+            }
+        });
+    });
+};
+exports.getApplyListApproveSelf = function(req, res){
+    var obj = req.query;
+
+    // //todo 获取有未读回复的申请列表
+    // if (obj.isUnreadApply === 'true') {
+    //     obj = {id: obj.id, page_size: obj.page_size};
+    //     url = AppUserRestApis.getUnreadApplyList;
+    // } else {
+    //     delete obj.isUnreadApply;
+    // }
+    //获取待我审批的列表及我审批过的申请
+    var promiseList = [getApplyListApprovedByMe(req, res),getApplyListWillApprovedByMe(req, res)];
+
 };
 
 //获取未读回复列表
@@ -920,22 +983,13 @@ exports.batchDelayUser = function(req, res, requestObj) {
     }, requestObj);
 };
 
-//销售申请修改密码
-exports.applyChangePassword = function(req, res) {
+//销售申请修改密码和其他申请
+exports.applyChangePasswordAndOther = function(req, res) {
     return restUtil.authRest.post({
-        url: AppUserRestApis.changePassword,
+        url: AppUserRestApis.applyChangePasswordAndOther,
         req: req,
         res: res
     }, req.body);
-};
-
-//申请修改其他类型
-exports.applyChangeOther = function(req, res, requestObj) {
-    return restUtil.authRest.post({
-        url: AppUserRestApis.applyChangeOther,
-        req: req,
-        res: res
-    }, requestObj);
 };
 
 //编辑用户应用单个字段
@@ -962,32 +1016,15 @@ exports.editAppDetail = function(req, res, requestObj) {
         res: res
     }, requestObj);
 };
-
-//针对一个用户申请，添加一条回复
-exports.addReply = function(req, res, postData) {
-    return restUtil.authRest.post({
-        url: AppUserRestApis.addReply,
-        req: req,
-        res: res
-    }, postData);
-};
-function getReplyItem(req, res, apply_id) {
+function getReplyItem(req, res) {
     return new Promise((resolve, reject) => {
         return restUtil.authRest.get({
-            url: AppUserRestApis.getReplyList,
+            url: AppUserRestApis.getOrAddApplyComments,
             req: req,
             res: res
-        }, {
-            apply_id: apply_id,
-            page_size: 1000
-        }, {
+        }, req.query, {
             success: function(eventEmitter, data) {
-                var list = [];
-                //处理数据
-                if (data && data.list && data.list.length) {
-                    list = replyDto.toRestObject(data.list);
-                }
-                resolve(list);
+                resolve(data);
             },
             error: function(eventEmitter, errorDesc) {
                 reject(errorDesc);
@@ -996,9 +1033,9 @@ function getReplyItem(req, res, apply_id) {
     });
 }
 //获取一个申请单的回复列表
-exports.getReplyList = function(req, res, apply_id) {
+exports.getApplyComments = function(req, res) {
     var emitter = new EventEmitter();
-    let promiseList = [getReplyItem(req, res, apply_id)];
+    let promiseList = [getReplyItem(req, res, req.params.apply_id)];
     Promise.all(promiseList).then((dataList) => {
         var result = dataList[0] ? dataList[0] : [];
         emitter.emit('success', result);
@@ -1006,6 +1043,15 @@ exports.getReplyList = function(req, res, apply_id) {
         emitter.emit('error', err);
     });
     return emitter;
+};
+//添加审批意见
+exports.addApplyComments = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: AppUserRestApis.getOrAddApplyComments,
+            req: req,
+            res: res
+        }, req.body);
 };
 
 //获取团队信息

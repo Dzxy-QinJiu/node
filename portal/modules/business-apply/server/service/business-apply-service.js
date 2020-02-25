@@ -73,24 +73,7 @@ exports.getApplyDetailById = function(req, res) {
             res: res
         }, req.query);
 };
-//获取审批意见
-exports.getApplyComments = function(req, res) {
-    return restUtil.authRest.get(
-        {
-            url: restApis.getOrAddApplyComments,
-            req: req,
-            res: res
-        }, req.query);
-};
-//添加审批意见
-exports.addApplyComments = function(req, res) {
-    return restUtil.authRest.post(
-        {
-            url: restApis.getOrAddApplyComments,
-            req: req,
-            res: res
-        }, req.body);
-};
+
 //批准或驳回审批
 exports.approveApplyPassOrReject = function(req, res) {
     return restUtil.authRest.post(

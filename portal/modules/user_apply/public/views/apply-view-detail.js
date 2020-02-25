@@ -1,3 +1,6 @@
+import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
+
+
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
@@ -31,6 +34,7 @@ import {getPassStrenth, PassStrengthBar, passwordRegex} from 'CMP_DIR/password-s
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {APPLY_TYPES, userTypeList, TOP_NAV_HEIGHT, TIMERANGEUNIT, WEEKDAYS} from 'PUB_DIR/sources/utils/consts';
 import ModalDialog from 'CMP_DIR/ModalDialog';
+import ApplyDetailRemarks from 'CMP_DIR/apply-components/apply-detail-remarks';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import PasswordSetting from 'CMP_DIR/password-setting';
 /*在审批界面显示用户的右侧面板结束*/
@@ -127,13 +131,14 @@ import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 import {APPLY_LIST_LAYOUT_CONSTANTS} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+import {UnitOldAndNewUserInfo} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 const ApplyViewDetail = createReactClass({
     propTypes: {
         detailItem: PropTypes.object,
         applyData: PropTypes.object,
         showNoData: PropTypes.bool,
         isUnreadDetail: PropTypes.bool,
-        applyListType: PropTypes.object,
+        selectedApplyStatus: PropTypes.object,
         isHomeMyWork: PropTypes.bool,
         afterApprovedFunc: PropTypes.func,
         handleOpenApplyDetail: PropTypes.func,
@@ -293,79 +298,50 @@ const ApplyViewDetail = createReactClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.detailItem.id && !_.isEqual(nextProps.detailItem, this.props.detailItem)) {
-            this.appsSetting = {};
-            if (nextProps.detailItem.id !== _.get(this, 'props.detailItem.id')) {
-                this.setState({
-                    showBackoutConfirmType: '',
-                    curEditExpireDateAppIdr: '',
-                    updateDelayTime: ''
-                });
-            }
-            if ((!this.state.applyResult.submitResult && !this.state.backApplyResult.submitResult) || nextProps.detailItem.id !== this.props.detailItem.id) {
-                this.getApplyDetail(nextProps.detailItem);
-                //关闭右侧详情
-                phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
-                //触发关闭用户详情面板
-                userDetailEmitter.emit(userDetailEmitter.CLOSE_USER_DETAIL);
-            }
+        var thisPropsId = this.props.detailItem.id;
+        var nextPropsId = nextProps.detailItem.id;
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
+        if (_.get(nextProps,'detailItem.afterAddReplySuccess')){
+            setTimeout(() => {
+                ApplyViewDetailActions.setDetailInfoObjAfterAdd(nextProps.detailItem);
+                this.getNextCandidate(_.get(nextProps, 'detailItem.id',''));
+            });
+        }else if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
+            this.getApplyDetail(nextProps.detailItem);
+            //关闭右侧详情
+            phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
+            //触发关闭用户详情面板
+            userDetailEmitter.emit(userDetailEmitter.CLOSE_USER_DETAIL);
+            this.setState({
+                showBackoutConfirmType: '',
+                curEditExpireDateAppIdr: '',
+                updateDelayTime: ''
+            });
         }
+
+        // if (nextProps.detailItem.id && !_.isEqual(nextProps.detailItem, this.props.detailItem)) {
+        //     this.appsSetting = {};
+        //     if (nextProps.detailItem.id !== _.get(this, 'props.detailItem.id')) {
+        //         this.setState({
+        //             showBackoutConfirmType: '',
+        //             curEditExpireDateAppIdr: '',
+        //             updateDelayTime: ''
+        //         });
+        //     }
+        //     if ((!this.state.applyResult.submitResult && !this.state.backApplyResult.submitResult) || nextProps.detailItem.id !== this.props.detailItem.id) {
+        //         this.getApplyDetail(nextProps.detailItem);
+        //
+        //     }
+        // }
         this.setState({
             isHomeMyWork: nextProps.isHomeMyWork
         });
     },
 
-    renderApplyDetailLoading() {
-        if (this.state.detailInfoObj.loading) {
-            var height = this.getApplyDetailHeight();
-            return (<div className="app_user_manage_detail app_user_manage_detail_loading" style={{height: height}}>
-                <Spinner/></div>);
-        }
-        return null;
-    },
 
     retryFetchDetail(e) {
         Trace.traceEvent(e, '点击了重试');
         this.getApplyDetail(this.props.detailItem);
-    },
-
-    renderApplyDetailError() {
-        if (!this.state.detailInfoObj.loading && this.state.detailInfoObj.errorMsg) {
-            var height = this.getApplyDetailHeight();
-            var retry = (
-                <span>
-                    {this.state.detailInfoObj.errorMsg}，<a href="javascript:void(0)"
-                        onClick={this.retryFetchDetail}><ReactIntl.FormattedMessage
-                            id="common.retry" defaultMessage="重试"/></a>
-                </span>
-            );
-            return (
-                <div className="app_user_manage_detail app_user_manage_detail_error" style={{height: height}}>
-                    <Alert
-                        message={retry}
-                        type="error"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        }
-        return null;
-    },
-
-    renderApplyDetailNodata() {
-        if (this.props.showNoData) {
-            var height = this.getApplyDetailHeight();
-            return (
-                <div className="app_user_manage_detail app_user_manage_detail_error" style={{height: height}}>
-                    <Alert
-                        message={Intl.get('common.no.data', '暂无数据')}
-                        type="info"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        }
-        return null;
     },
 
     //获取详情高度
@@ -411,62 +387,6 @@ const ApplyViewDetail = createReactClass({
         if (event.target.failCount < 3) {
             event.target.src = DefaultHeadIconImage;
         }
-    },
-
-    //渲染回复列表
-    renderReplyList() {
-        let replyListInfo = this.state.replyListInfo;
-        if (replyListInfo.result === 'loading') {
-            return (
-                <div className="reply-loading-wrap">
-                    <Icon type="loading"/>
-                    <span className="reply-loading-text">
-                        {Intl.get('user.apply.reply.loading', '正在努力加载回复列表 ......')}
-                    </span>
-                </div>);
-        }
-        if (replyListInfo.result === 'error') {
-            var message = (
-                <span>{replyListInfo.errorMsg}，<Icon type="reload" onClick={this.refreshReplyList}
-                    title={Intl.get('common.get.again', '重新获取')}/></span>);
-            return (<Alert message={message} type="error" showIcon={true}/>);
-        }
-        let replyList = _.cloneDeep(replyListInfo.list);
-        if (_.isArray(replyList) && replyList.length) {
-            //过滤掉点击通过，驳回或撤销按钮后的回复消息
-            replyList = _.filter(replyList, item => !_.get(item,'approve_status'));
-            {/*<Icon type="reload" onClick={this.refreshReplyList} className="pull-right"*/
-            }
-            {/*title={Intl.get("common.get.again", "重新获取")}/>*/
-            }
-            return (
-                <ul>
-                    {replyList.map((replyItem, index) => {
-                        return (
-                            <li key={index} className="apply-info-label">
-                                <span className="user-info-label">{replyItem.user_name}:</span>
-                                <span className="user-info-text">{replyItem.message}</span>
-                                <span className="user-info-label reply-date-text">{replyItem.date}</span>
-                            </li>);
-                    })}
-                </ul>);
-        } else {
-            return null;
-        }
-    },
-
-    //渲染刷新回复列表的提示
-    renderRefreshReplyTip: function() {
-        return (<span className="refresh-reply-data-tip">
-            <ReactIntl.FormattedMessage
-                id="user.apply.refresh.reply.tip"
-                defaultMessage={'有新回复，点此{refreshTip}'}
-                values={{
-                    'refreshTip': <a
-                        onClick={this.refreshReplyList}>{Intl.get('common.refresh', '刷新')}</a>
-                }}
-            />
-        </span>);
     },
     //审批状态
     renderApplyStatus: function() {
@@ -530,9 +450,15 @@ const ApplyViewDetail = createReactClass({
         );
     },
     renderSameCustomerHistoricalApply(){
+        var sameHistoryApplyLists = this.state.sameHistoryApplyLists;
+        //todo 申请审批的历史
+        var newHistoryLists = [];
+        _.forEach(sameHistoryApplyLists, item => {
+            newHistoryLists.push(UnitOldAndNewUserInfo(item));
+        });
         return (
             <ApplyHistory
-                sameHistoryApplyLists={this.state.sameHistoryApplyLists}
+                sameHistoryApplyLists={sameHistoryApplyLists}
                 handleOpenApplyDetail={this.props.handleOpenApplyDetail}
             />
         );
@@ -541,7 +467,7 @@ const ApplyViewDetail = createReactClass({
     renderApplyDetailInfo() {
         var detailInfo = this.state.detailInfoObj.info;
         //如果没有详情数据，不渲染
-        if (this.state.detailInfoObj.loading || _.isEmpty(this.state.detailInfoObj)) {
+        if (this.state.detailInfoObj.loadingResult || _.isEmpty(this.state.detailInfoObj)) {
             return;
         }
         //是否启用滚动条
@@ -587,25 +513,15 @@ const ApplyViewDetail = createReactClass({
                                 {this.renderComment()}
                             </div>) : null}
                             {this.renderApplyStatus()}
-                            <div className="apply-detail-reply-list apply-detail-info">
-                                <div className="reply-icon-block">
-                                    <span className="iconfont icon-apply-message-tip"/>
-                                </div>
-                                <div className="reply-info-block apply-info-block">
-                                    <div className="reply-list-container apply-info-content">
-                                        {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
-                                        {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderReplyList() : null}
-                                        {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? (
-                                            <Input addonAfter={(
-                                                <a onClick={this.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
-                                            value={this.state.formData.comment}
-                                            onChange={this.commentInputChange}
-                                            placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}/>
-                                        ) : null}
-                                        {this.renderReplyFormResult()}
-                                    </div>
-                                </div>
-                            </div>
+                            <ApplyDetailRemarks
+                                detailInfo={detailInfo}
+                                replyListInfo={this.state.replyListInfo}
+                                replyFormInfo={this.state.replyFormInfo}
+                                refreshReplyList={this.refreshReplyList}
+                                addReply={this.addReply}
+                                commentInputChange={this.commentInputChange}
+                                isUnreadDetail={this.props.isUnreadDetail}
+                            />
                             {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderSameCustomerHistoricalApply() : null}
                         </GeminiScrollbar>
                     )}
@@ -836,7 +752,7 @@ const ApplyViewDetail = createReactClass({
             if (_.isArray(detailInfo.user_ids) && detailInfo.user_ids.length) {
                 return (
                     <div className="apply-info-label">
-                        <span className="user-info-label">{Intl.get('crm.detail.user', '用户')}:</span>
+                        <span className="user-info-label">{Intl.get('crm.detail.user', '用户')}</span>
                         <span className="user-info-text">
                             {
                                 detailInfo.user_ids.map((id, idx) => {
@@ -2004,9 +1920,8 @@ const ApplyViewDetail = createReactClass({
         }
         //构造提交数据
         var submitData = {
-            apply_id: this.props.detailItem.id,
-            comment: _.trim(this.state.formData.comment),
-            notice_url: getApplyDetailUrl(this.state.detailInfoObj.info)
+            id: this.props.detailItem.id,
+            comment: _.trim(this.state.formData.comment)
         };
         if (!submitData.comment) {
             ApplyViewDetailActions.showReplyCommentEmptyError();
@@ -2014,22 +1929,6 @@ const ApplyViewDetail = createReactClass({
         }
         //提交数据
         ApplyViewDetailActions.addReply(submitData);
-    },
-
-    //渲染回复表单loading,success,error
-    renderReplyFormResult: function() {
-        var replyFormInfo = this.state.replyFormInfo;
-        if (replyFormInfo.result === 'loading') {
-            return <Icon type="loading"/>;
-        }
-        if (replyFormInfo.result === 'error') {
-            return <Alert
-                message={replyFormInfo.errorMsg}
-                type="error"
-                showIcon={true}
-            />;
-        }
-        return null;
     },
 
     //备注 输入框改变时候触发
@@ -2234,7 +2133,7 @@ const ApplyViewDetail = createReactClass({
                     this.addNextCandidate.handleCancel();
                 }
                 //转出成功后，如果左边选中的是待审批的列表，在待审批列表中把这条记录删掉
-                if (this.props.applyListType === 'false') {
+                if (this.props.selectedApplyStatus === 'ongoing') {
                     UserApplyAction.afterTransferApplySuccess(submitObj.id);
                 } else {
                     message.success(Intl.get('apply.approve.transfer.success', '转出申请成功'));
@@ -2716,13 +2615,14 @@ const ApplyViewDetail = createReactClass({
         let customerOfCurUser = this.state.customerOfCurUser;
         return (
             <div className={cls} data-tracename="审批详情界面" style={{'width': this.props.width, 'height': this.props.height}}>
-                {this.renderApplyDetailLoading()}
-                {this.renderApplyDetailError()}
-                {this.renderApplyDetailNodata()}
-                {
-                    !this.state.detailInfoObj.loading ?
-                        this.renderApplyDetailInfo() : null
-                }
+                <ApplyDetailStatus
+                    showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
+                    showErrTip={this.state.detailInfoObj.loadingResult === 'error'}
+                    errMsg={this.state.detailInfoObj.errorMsg}
+                    retryFetchDetail={this.retryFetchDetail}
+                    showNoData={this.props.showNoData}
+                />
+                {this.renderApplyDetailInfo()}
                 {this.renderApplyApproveStatus()}
                 {this.renderCancelApplyApprove()}
                 {this.state.showRightPanel ?

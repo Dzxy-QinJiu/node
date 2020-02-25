@@ -20,20 +20,6 @@ module.exports = {
                 needLogin: true
             },
         }, {
-            method: 'get',
-            path: '/rest/get/apply_approve/comment/list',
-            handler: 'getMemberApplyComments',
-            passport: {
-                needLogin: true
-            },
-        }, {
-            method: 'post',
-            path: '/rest/add/apply_approve/comment',
-            handler: 'addMemberApplyComments',
-            passport: {
-                needLogin: true
-            },
-        }, {
             method: 'post',
             path: '/rest/member_apply/submitApply',
             handler: 'approveMemberApplyPassOrReject',

@@ -35,7 +35,7 @@ UserApplyStore.prototype.resetState = function() {
     //默认不显示输入框
     this.searchInputShow = false;
     //筛选类别 all(全部) pass(已通过) reject(已驳回)  false(待审批)
-    this.applyListType = 'all';
+    this.selectedApplyStatus = 'all';
     //是否显示更新数据提示
     this.showUpdateTip = false;
     // 下拉加载
@@ -160,7 +160,7 @@ UserApplyStore.prototype.setLastApplyId = function(applyId) {
 
 //更改用户审批筛选类型
 UserApplyStore.prototype.changeApplyListType = function(type) {
-    this.applyListType = type;
+    this.selectedApplyStatus = type;
     this.lastApplyId = '';
     this.showUpdateTip = false;
     this.isCheckUnreadApplyList = false;

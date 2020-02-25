@@ -34,7 +34,7 @@ exports.getMyUserApplyWorkList = function(req, res) {
     return restUtil.authRest.get(
         {
             //todo url: '/rest/base/v1/message/applylist/worklist',
-            url: 'http: http://10.20.1.185:8391/rest/base/v1/workflow/worklist',
+            url: '/rest/base/v1/workflow/worklist',
             req: req,
             res: res
         }, req.query);
