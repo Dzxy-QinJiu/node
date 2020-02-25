@@ -95,6 +95,8 @@ const DISTRIBUTEAUTHS = {
     'DISTRIBUTESELF': 'CLUECUSTOMER_DISTRIBUTE_USER'
 };
 
+const REPORT_NOTICE_ITEM_ID = 'report-notice';
+
 class MyWorkColumn extends React.Component {
     constructor(props) {
         super(props);
@@ -899,7 +901,10 @@ class MyWorkColumn extends React.Component {
                 clickTip = Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('home.page.apply.type', '申请')});
             }
         }
-        let hoverCls = classNames('my-work-item-hover', {'hide-my-work-item-hover': _.isEqual(_.get(this.state, 'isEditingItem.id'), _.get(item, 'id'))});
+        let hoverCls = classNames('my-work-item-hover', {
+            'hide-my-work-item-hover': _.isEqual(_.get(this.state, 'isEditingItem.id'), _.get(item, 'id')),
+            'show-my-work-item-hover': _.isEqual(REPORT_NOTICE_ITEM_ID, _.get(item, 'id'))
+        });
         return (
             <div className='my-work-card-container'>
                 <div className={contentCls} id={`home-page-work${item.id}`}>
@@ -1207,7 +1212,7 @@ class MyWorkColumn extends React.Component {
 
     renderCheckReportNotice(workList) {
         let item = {
-            id: 'report-notice',
+            id: REPORT_NOTICE_ITEM_ID,
             tags: ['工作通知'],
             btnConf: {
                 handleFunc: this.handleMyWork,
