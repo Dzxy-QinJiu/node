@@ -13,7 +13,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
 import myWorkAjax from '../ajax';
 import CrmScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
-import { getReportList, getIsShowCheckReportNotice, setIsShowCheckReportNotice } from 'MOD_DIR/daily-report/utils';
+import { getReportList, getIsNoLongerShowCheckReportNotice, setIsNoLongerShowCheckReportNotice } from 'MOD_DIR/daily-report/utils';
 import DetailCard from 'CMP_DIR/detail-card';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import Spinner from 'CMP_DIR/spinner';
@@ -235,6 +235,7 @@ class MyWorkColumn extends React.Component {
                 myWorkList = _.concat(myWorkList, _.get(result, 'list', []));
             } else {//首次加载
                 myWorkList = _.get(result, 'list', []);
+                console.log(myWorkList);
             }
             let totalCount = _.get(result, 'total', 0);
             let listenScrollBottom = false;
@@ -1168,10 +1169,15 @@ class MyWorkColumn extends React.Component {
                         />
                     </div>);
             }
+
+            const isShowCheckReportNotice = !getIsNoLongerShowCheckReportNotice();
+
             //没数据时的渲染,
             if (_.isEmpty(this.state.myWorkList)) {
+                if (isShowCheckReportNotice) {
+                    this.renderCheckReportNotice(workList);
                 //需判断是否还有引导流程,没有时才显示无数据
-                if (_.isEmpty(this.state.guideConfig)) {
+                } else if (_.isEmpty(this.state.guideConfig)) {
                     workList.push(
                         <NoDataIntro
                             noDataAndAddBtnTip={Intl.get('home.page.no.work.tip', '暂无工作')}
@@ -1181,12 +1187,22 @@ class MyWorkColumn extends React.Component {
                         />);
                 }
             } else {//工作列表的渲染
+                if (isShowCheckReportNotice) {
+                    this.renderCheckReportNotice(workList);
+                }
+
                 _.each(this.state.myWorkList, (item, index) => {
                     workList.push(this.renderWorkCard(item, index));
                 });
             }
             return workList;
         }
+    }
+
+    renderCheckReportNotice(workList) {
+        let item = {};
+
+        workList.push(this.renderWorkCard(item));
     }
 
     showAddSchedulePanel = (event) => {
