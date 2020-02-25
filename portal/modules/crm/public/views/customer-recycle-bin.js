@@ -324,6 +324,7 @@ class CustomerRecycleBin extends React.Component {
                 width: 130,
                 dataIndex: 'contact_way',
                 className: 'column-contact-way has-filter',
+                align: 'left',
                 render: (text, record, index) => {
                     return _.map(record.contact_way, item => {
                         if (item) {
