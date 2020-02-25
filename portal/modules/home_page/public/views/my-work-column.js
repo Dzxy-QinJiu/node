@@ -1061,6 +1061,7 @@ class MyWorkColumn extends React.Component {
                     btnDesc = Intl.get('home.page.my.work.visit.finished', '我已拜访');
                 } else if(item.btnConf) {
                     ({ handleFunc, btnTitle, btnDesc } = item.btnConf);
+                    btnCls += ' approval-btn';
                 } else {//其他的展示对号已完成的按钮
                     handleFunc = this.handleMyWork;
                     btnTitle = Intl.get('home.page.my.work.finished', '点击设为已完成');
@@ -1210,8 +1211,7 @@ class MyWorkColumn extends React.Component {
             tags: ['工作通知'],
             btnConf: {
                 handleFunc: this.handleMyWork,
-                btnTitle: Intl.get('home.page.my.work.finished', '点击'),
-                btnDesc: (<i className="iconfont icon-select-member"/>),
+                btnDesc: '点击查看'
             }
         };
 
