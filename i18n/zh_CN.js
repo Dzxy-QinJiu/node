@@ -1841,6 +1841,8 @@ var zh_CN = {
     'crm.score.history.title': '历史分数',
     'crm.concern.top.set': '设置关注客户置顶',
     'crm.concern.top.cancel': '取消关注客户置顶',
+    'crm.see.concern.slef': '查看我关注的客户',
+    'crm.see.concern.slef.cancel': '取消查看我关注的客户',
     'crm.add.to.exist.customer': '添加到已有客户',
     'crm.select.add.contact': '请选择或输入联系人名称',
     'crm.fill.contact.name': '请输入联系人名称',
