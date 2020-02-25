@@ -9,7 +9,7 @@ class ReportPanel extends React.Component {
         return (
             <div>
                 <Detail
-                    title={this.props.modelState.detailTitle}
+                    title="k"
                     content={this.getDetailContent()}
                 />
             </div>
