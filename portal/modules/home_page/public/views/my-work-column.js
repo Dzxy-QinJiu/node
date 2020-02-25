@@ -1059,6 +1059,8 @@ class MyWorkColumn extends React.Component {
                     btnCls += ' ant-btn ant-btn-primary visit-btn';
                     handleFunc = this.addVisitTrace;
                     btnDesc = Intl.get('home.page.my.work.visit.finished', '我已拜访');
+                } else if(item.btnConf) {
+                    ({ handleFunc, btnTitle, btnDesc } = item.btnConf);
                 } else {//其他的展示对号已完成的按钮
                     handleFunc = this.handleMyWork;
                     btnTitle = Intl.get('home.page.my.work.finished', '点击设为已完成');
@@ -1205,7 +1207,12 @@ class MyWorkColumn extends React.Component {
     renderCheckReportNotice(workList) {
         let item = {
             id: 'report-notice',
-            tags: ['工作通知']
+            tags: ['工作通知'],
+            btnConf: {
+                handleFunc: this.handleMyWork,
+                btnTitle: Intl.get('home.page.my.work.finished', '点击'),
+                btnDesc: (<i className="iconfont icon-select-member"/>),
+            }
         };
 
         item.workObj = { name: '如何汇总和查看销售日常工作？' };
