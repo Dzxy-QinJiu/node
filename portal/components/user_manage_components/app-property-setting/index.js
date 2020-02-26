@@ -67,6 +67,7 @@ const AppPropertySetting = createReactClass({
         appSelectRoleError: PropTypes.string,
         height: PropTypes.number,
         hideAppBasicInfo: PropTypes.bool, // 隐藏应用的基本配置信息
+        isShowOther: PropTypes.bool,
     },
 
     getDefaultProps() {
@@ -88,6 +89,7 @@ const AppPropertySetting = createReactClass({
             //是否时多用户的应用设置
             isMultiUser: false,
             hideAppBasicInfo: false, // 隐藏应用的基本配置信息
+            isShowOther: true, // 是否显示其他项，默认展示
         };
     },
 
@@ -381,7 +383,7 @@ const AppPropertySetting = createReactClass({
                     {//多用户的应用设置时，只需要更改角色、权限，其他选项不需要更改
                         this.props.isMultiUser ? null : (
                             <div
-                                className="app-property-content basic-data-form app-property-other-property"
+                                className="basic-data-form app-property-other-property"
                                 style={{display: this.props.hideAppBasicInfo || this.props.hideSingleApp && this.props.selectedApps.length <= 1 && !isShowAppTerminals ? 'none' : 'block'}}
                             >
                                 {
@@ -454,23 +456,6 @@ const AppPropertySetting = createReactClass({
                                         }
                                     </div>
                                 </div>
-                                {
-                                    this.props.showIsTwoFactor ? (
-                                        !Oplate.hideSomeItem && <div className="form-item">
-                                            <div className="form-item-label">
-                                                <ReactIntl.FormattedMessage id="user.two.step.certification" defaultMessage="二步认证" />
-                                            </div>
-                                            <div className="form-item-content">
-                                                {
-                                                    this.renderUserTwoFactorBlock({
-                                                        isCustomSetting: true,
-                                                        appId: currentApp.app_id,
-                                                        globalTwoFactor: defaultSettings.is_two_factor
-                                                    })
-                                                }
-                                            </div>
-                                        </div>) : null
-                                }
                                 {this.props.isSingleAppEdit ? (
                                     <div className="form-item">
                                         <div className="form-item-label">
@@ -487,23 +472,6 @@ const AppPropertySetting = createReactClass({
                                         </div>
                                     </div>
                                 ) : null}
-                                {
-                                    this.props.showMultiLogin ? (
-                                        !Oplate.hideSomeItem && <div className="form-item">
-                                            <div className="form-item-label">
-                                                <ReactIntl.FormattedMessage id="user.multi.login" defaultMessage="多人登录" />
-                                            </div>
-                                            <div className="form-item-content">
-                                                {
-                                                    this.renderMultiLoginRadioBlock({
-                                                        isCustomSetting: true,
-                                                        appId: currentApp.app_id,
-                                                        globalMultiLogin: defaultSettings.multilogin
-                                                    })
-                                                }
-                                            </div>
-                                        </div>) : null
-                                }
                                 {
                                     isShowAppTerminals ? (
                                         <div className="form-item">
@@ -522,7 +490,29 @@ const AppPropertySetting = createReactClass({
                                         </div>
                                     ) : null
                                 }
-
+                                {
+                                    this.props.isShowOther && !Oplate.hideSomeItem && <div className="form-item">
+                                        <div className="form-item-label">{Intl.get('crm.186', '其他')}</div>
+                                        <div className="form-item-content">
+                                            {
+                                                this.props.showMultiLogin ? this.renderMultiLoginRadioBlock({
+                                                    isCustomSetting: true,
+                                                    appId: currentApp.app_id,
+                                                    globalMultiLogin: defaultSettings.multilogin,
+                                                    showCheckbox: true
+                                                }) : null
+                                            }
+                                            {
+                                                this.props.showIsTwoFactor ? this.renderUserTwoFactorBlock({
+                                                    isCustomSetting: true,
+                                                    appId: currentApp.app_id,
+                                                    globalTwoFactor: defaultSettings.is_two_factor,
+                                                    showCheckbox: true
+                                                }) : null
+                                            }
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         )
                     }
