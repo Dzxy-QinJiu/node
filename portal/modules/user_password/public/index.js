@@ -18,6 +18,7 @@ var userInfoAjax = require('../../user_info/public/ajax/user-info-ajax');
 var passwdStrengthFile = require('../../../components/password-strength-bar');
 var PasswdStrengthBar = passwdStrengthFile.PassStrengthBar;
 import {getUserData} from 'PUB_DIR/sources/user-data';
+import { checkPassword } from 'PUB_DIR/sources/utils/validate-util';
 
 function getStateFromStore() {
     let stateData = UserInfoStore.getState();
@@ -68,29 +69,12 @@ var UserPwdPage = createReactClass({
     },
 
     checkPass(rule, value, callback) {
-        if (!value) {//rules中有require：true的验证，所以此处不要验证输入内容为空的情况（避免与reuqire:true重复）
-            callback();
-        } else if (value.match(passwdStrengthFile.passwordRegex)) {
-            //获取密码强度及是否展示
-            var passStrengthObj = passwdStrengthFile.getPassStrenth(value);
-            this.setState({
-                passBarShow: passStrengthObj.passBarShow,
-                passStrength: passStrengthObj.passStrength
-            });
-            if (this.props.form.getFieldValue('newPasswd') === this.props.form.getFieldValue('passwd')) {
-                this.setState({
-                    passBarShow: false
-                });
-                callback(Intl.get('user.password.same.password','新密码和原始密码相同'));
-            }
-            callback();
-        } else {
-            this.setState({
-                passBarShow: false,
-                passStrength: 'L'
-            });
-            callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
-        }
+        let { getFieldValue } = this.props.form;
+        // 确认密码
+        let rePassWord = getFieldValue('rePasswd');
+        // 原密码
+        let oldPassword = getFieldValue('passwd');
+        checkPassword(this, value, callback, rePassWord, oldPassword);
     },
 
     checkPass2(rule, value, callback) {
@@ -183,8 +167,7 @@ var UserPwdPage = createReactClass({
                                     rules: [{
                                         required: true,
                                         message: Intl.get('user.password.input.initial.password', '输入原密码')
-                                    }],
-                                    validateTrigger: 'onBlur'
+                                    }]
                                 })(
                                     <Input type="password" autoComplete="off"
                                         placeholder={Intl.get('user.password.input.initial.password', '输入原密码')}
@@ -192,18 +175,15 @@ var UserPwdPage = createReactClass({
                                 )}
                             </FormItem>
                             <FormItem
+                                className='new-password-item'
                                 label={Intl.get('user.password.new.password', '新密码')}
                                 labelCol={{span: 5}}
                                 wrapperCol={{span: 15}}
                             >
                                 {getFieldDecorator('newPasswd', {
                                     rules: [{
-                                        required: true,
-                                        message: Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符')
-                                    }, {
                                         validator: this.checkPass
-                                    }],
-                                    validateTrigger: 'onBlur'
+                                    }]
                                 })(
                                     <Input type="password" autoComplete="off"
                                         placeholder={Intl.get('common.password.compose.rule', '6-18位数字、字母、符号的组合')}
@@ -219,14 +199,12 @@ var UserPwdPage = createReactClass({
                                 labelCol={{span: 5}}
                                 wrapperCol={{span: 15}}
                             >
-
                                 {getFieldDecorator('rePasswd', {
                                     rules: [{
-                                        required: true, message: Intl.get('common.password.unequal', '两次输入密码不一致')
+                                        required: true, message: Intl.get('common.input.confirm.password', '请输入确认密码')
                                     }, {
                                         validator: this.checkPass2
-                                    }],
-                                    validateTrigger: 'onBlur'
+                                    }]
                                 })(
                                     <Input type="password"
                                         placeholder={Intl.get('login.please_enter_new_password', '确认新密码')}

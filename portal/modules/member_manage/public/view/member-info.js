@@ -2,9 +2,8 @@
  * Created by wangliping on 2016/11/8.
  */
 require('../css/member-info.less');
-import {Icon, Select, Popconfirm, message, Tabs, Switch} from 'antd';
+import {Icon, Select, Popconfirm, message, Tabs, Switch, Col} from 'antd';
 const TabPane = Tabs.TabPane;
-import {getPassStrenth, passwordRegex} from 'CMP_DIR/password-strength-bar';
 var Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var HeadIcon = require('../../../../components/headIcon');
@@ -18,7 +17,7 @@ import MemberInfoAction from '../action/member-info-action';
 import Trace from 'LIB_DIR/trace';
 const UserData = require('PUB_DIR/sources/user-data');
 import RadioCard from './radio-card';
-import {checkPhone, checkQQ, validatorNameRuleRegex, getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
+import {checkPhone, checkQQ, validatorNameRuleRegex, getNumberValidateRule, checkPassword} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
@@ -31,6 +30,7 @@ import MemberRecord from './member-record';
 import { storageUtil } from 'ant-utils';
 import ajax from 'ant-ajax';
 import memberManagePrivilege from '../privilege-const';
+import {PasswdStrengthBar} from 'CMP_DIR/password-strength-bar';
 
 const TAB_KEYS = {
     BASIC_INFO_TAB: '1',//基本信息
@@ -236,7 +236,7 @@ class MemberInfo extends React.Component {
     }
 
     onPasswordValueChange = () => {
-        const confirmPassword = this.refs.confirmPassword;
+        const confirmPassword = this.confirmPassWordRef;
         if (confirmPassword && confirmPassword.state.formData.input) {
             confirmPassword.refs.validation.forceValidate();
         }
@@ -244,29 +244,18 @@ class MemberInfo extends React.Component {
 
     onConfirmPasswordDisplayTypeChange = () => {
         this.setState({isPasswordInputShow: false});
-        this.refs.password.setState({displayType: 'text'});
+        this.passwordRef.setState({displayType: 'text'});
     };
 
     //对密码 进行校验
     checkPass = (rule, value, callback) => {
-        if (value && value.match(passwordRegex)) {
-            let passStrength = getPassStrenth(value);
-            this.refs.password.setState({passStrength: passStrength});
-            callback();
-        } else {
-            this.refs.password.setState({
-                passStrength: {
-                    passBarShow: false,
-                    passStrength: 'L'
-                }
-            });
-            callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
-        }
+        let rePassWord = this.confirmPassWordRef.state.formData.input;
+        checkPassword(this.passwordRef, value, callback, rePassWord);
     };
 
     //对确认密码 进行校验
     checkRePass = (rule, value, callback) => {
-        if (value && value === this.refs.password.state.formData.input) {
+        if (value && value === this.passwordRef.state.formData.input) {
             callback();
         } else {
             callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
@@ -889,7 +878,7 @@ class MemberInfo extends React.Component {
                             {Intl.get('user.password.new.password', '新密码')}
                         </span>
                         <BasicEditInputField
-                            ref="password"
+                            ref={ref => this.passwordRef = ref}
                             width={EDIT_PASSWORD_WIDTH}
                             id={memberInfo.id}
                             field="password"
@@ -904,19 +893,25 @@ class MemberInfo extends React.Component {
                             onValueChange={this.onPasswordValueChange}
                         />
                     </div>
+                    <Col span="23">
+                        {this.state.passBarShow ?
+                            (<PasswdStrengthBar passStrength={this.state.passStrength}/>) : null}
+                    </Col>
                     <div className="basic-info-item">
                         <span className="basic-info-label">
                             {Intl.get('common.confirm.password', '确认密码')}
                         </span>
                         <BasicEditInputField
-                            ref="confirmPassword"
+                            ref={ref => this.confirmPassWordRef = ref}
                             width={EDIT_PASSWORD_WIDTH}
                             id={memberInfo.id}
                             displayType="edit"
                             field="password"
                             type="password"
                             placeholder={Intl.get('common.input.confirm.password', '请输入确认密码')}
-                            validators={[{validator: this.checkRePass}]}
+                            validators={[{
+                                required: true, message: Intl.get('common.input.confirm.password', '请输入确认密码')
+                            }, {validator: this.checkRePass}]}
                             onDisplayTypeChange={this.onConfirmPasswordDisplayTypeChange}
                             saveEditInput={this.saveEditMemberInfo.bind(this, 'password')}
                         />

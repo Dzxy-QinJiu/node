@@ -29,7 +29,8 @@ import {hasPrivilege, PrivilegeChecker} from '../../../../components/privilege/c
 require('../css/main.less');
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from '../../../../components/rightPanel';
-import {getPassStrenth, PassStrengthBar, passwordRegex} from 'CMP_DIR/password-strength-bar';
+import { PassStrengthBar } from 'CMP_DIR/password-strength-bar';
+import { checkPassword } from 'PUB_DIR/sources/utils/validate-util';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {APPLY_TYPES, userTypeList, TOP_NAV_HEIGHT, TIMERANGEUNIT, WEEKDAYS} from 'PUB_DIR/sources/utils/consts';
 import ModalDialog from 'CMP_DIR/ModalDialog';
@@ -1854,24 +1855,8 @@ const ApplyViewDetail = createReactClass({
 
     //密码的验证
     checkPassword: function(rule, value, callback) {
-        if (value && value.match(passwordRegex)) {
-            var passStrength = getPassStrenth(value);
-            this.setState({
-                passStrength: passStrength
-            });
-            if (this.state.formData.confirmPassword) {
-                this.refs.validation.forceValidate(['confirmPassword']);
-            }
-            callback();
-        } else {
-            this.setState({
-                passStrength: {
-                    passBarShow: false,
-                    passStrength: 'L'
-                }
-            });
-            callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
-        }
+        let rePassWord = this.state.formData.confirmPassword;
+        checkPassword(this, value, callback, rePassWord);
     },
 
     //渲染密码区域
@@ -1899,8 +1884,8 @@ const ApplyViewDetail = createReactClass({
                     </Validator>
                 </FormItem>
                 {
-                    this.state.passStrength.passBarShow ? (
-                        <PassStrengthBar passStrength={this.state.passStrength.passStrength}/>) : null
+                    this.state.passBarShow ? (
+                        <PassStrengthBar passStrength={this.state.passStrength}/>) : null
                 }
             </div>
         );
@@ -1919,9 +1904,7 @@ const ApplyViewDetail = createReactClass({
                 help={status.confirmPassword.errors ? status.confirmPassword.errors.join(',') : null}
             >
                 <Validator rules={[{
-                    required: true,
-                    whitespace: true,
-                    message: Intl.get('common.password.unequal', '两次输入密码不一致！')
+                    required: true, message: Intl.get('common.input.confirm.password', '请输入确认密码')
                 }, {validator: this.checkConfirmPassword}]}
                 >
                     <Input

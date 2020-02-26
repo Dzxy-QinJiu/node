@@ -121,9 +121,9 @@ const BasicEditField = createReactClass({
             value: value,
             submitErrorMsg: '',
             //密码强度
-            passStrength: {
-                passBarShow: false
-            },
+            passStrength: '',
+            //是否展示密码强度条
+            passBarShow: false,
             setRandomInputId: uuid()
         };
     },
@@ -151,9 +151,8 @@ const BasicEditField = createReactClass({
         this.setState({
             displayType: 'edit',
             formData: formData,
-            passStrength: {
-                passBarShow: false
-            }
+            passStrength: '',
+            passBarShow: false
         }, function() {
 
             var dom = $('input[type="text"],input[type="password"],textarea', this.refs.inputWrap)[0];
@@ -368,8 +367,10 @@ const BasicEditField = createReactClass({
             </div>
         ) : null;
 
-        var passwordStrengthBlock = this.props.showPasswordStrength && this.state.displayType === 'edit' && this.state.formData.input && this.state.passStrength.passBarShow ? (
-            <PassStrengthBar passStrength={this.state.passStrength.passStrength}/>
+        var passwordStrengthBlock = this.props.showPasswordStrength && this.state.displayType === 'edit' && this.state.formData.input && this.state.passBarShow ? (
+            <div style={{ width: this.props.width || '100%'}} className='password-strength-bar'>
+                <PassStrengthBar passStrength={this.state.passStrength} />
+            </div>
         ) : null;
 
         return (

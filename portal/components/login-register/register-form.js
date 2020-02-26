@@ -6,8 +6,8 @@
 require('./css/register.less');
 const PropTypes = require('prop-types');
 import Trace from '../../lib/trace';
-import {commonPhoneRegex} from '../../public/sources/utils/validate-util';
-import { passwordRegex, PassStrengthBar, getPassStrenth} from 'CMP_DIR/password-strength-bar';
+import {commonPhoneRegex, checkPassword} from '../../public/sources/utils/validate-util';
+import {PassStrengthBar} from 'CMP_DIR/password-strength-bar';
 import crypto from 'crypto';
 import {Form, Input, Icon, Button, Col} from 'antd';
 import {TextField} from '@material-ui/core';
@@ -339,30 +339,8 @@ class RegisterForm extends React.Component {
         }
     }
     checkPass = (rule, value, callback) => {
-        if (value && value.match(passwordRegex)) {
-            let rePassWord = this.props.form.getFieldValue('rePwd');
-            //密码强度的校验
-            //获取密码强度及是否展示
-            var passStrengthObj = getPassStrenth(value);
-            this.setState({
-                passBarShow: passStrengthObj.passBarShow,
-                passStrength: passStrengthObj.passStrength
-            });
-            // 不允许设置弱密码
-            if (passStrengthObj.passStrength === 'L') {
-                callback(Intl.get('register.password.strength.tip', '密码强度太弱，请更换密码'));
-            } else if (rePassWord && value !== rePassWord ) {// 输入确认密码后再判断是否一致
-                callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
-            } else {
-                callback();
-            }
-        } else {
-            this.setState({
-                passBarShow: false,
-                passStrength: ''
-            });
-            callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
-        }
+        let rePassWord = this.props.form.getFieldValue('rePwd');
+        checkPassword(this, value, callback, rePassWord);
     };
    
     checkPass2 = (rule, value, callback) => {
