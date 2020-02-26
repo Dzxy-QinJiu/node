@@ -8,35 +8,21 @@ import GeminiScrollBar from '../react-gemini-scrollbar';
 import adaptiveHeightHoc from '../adaptive-height-hoc';
 import ReactResizeDetector from 'react-resize-detector';
 import { Tabs } from 'antd';
-import {detailPanelEmitter} from 'PUB_DIR/sources/utils/emitters';
+import { detailPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
 const { TabPane } = Tabs;
 const uuidv4 = require('uuid/v4');
 
 class Detail extends React.Component {
-    state = {
-        isShow: false
-    }
-
-    componentDidMount() {
-        detailPanelEmitter.on(detailPanelEmitter.SHOW, this.show);
-    }
-
-    componentWillUnmount() {
-        detailPanelEmitter.removeListener(detailPanelEmitter.SHOW, this.show);
-    }
-
     render() {
         return (
             <div>
-                {this.state.isShow ? (
-                    <RightPanelModal
-                        className="detail-component"
-                        isShowCloseBtn={true}
-                        onClosePanel={this.hide}
-                        title={this.props.title}
-                        content={this.renderDetailContent()}
-                    />
-                ) : null}
+                <RightPanelModal
+                    className="detail-component"
+                    isShowCloseBtn={true}
+                    onClosePanel={this.hide}
+                    title={this.props.title}
+                    content={this.renderDetailContent()}
+                />
             </div>
         );
     }
@@ -76,16 +62,8 @@ class Detail extends React.Component {
         this[gemiBarRefName].update();
     }
 
-    show = () => {
-        this.setState({
-            isShow: true
-        });
-    }
-
     hide = () => {
-        this.setState({
-            isShow: false
-        });
+        detailPanelEmitter.emit(detailPanelEmitter.HIDE);
     }
 }
 
