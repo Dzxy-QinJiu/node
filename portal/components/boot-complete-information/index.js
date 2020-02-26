@@ -12,7 +12,7 @@ const FormItem = Form.Item;
 import { nameLengthRule, validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-import {getOrganization, getFormattedCondition} from 'PUB_DIR/sources/utils/common-method-util';
+import {getOrganization, getFormattedCondition, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 import userData from 'PUB_DIR/sources/user-data';
 import history from 'PUB_DIR/sources/history';
 import ajax from 'ant-ajax';
@@ -28,6 +28,7 @@ var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-custo
 
 const LAYOUT = {
     LEFT_SIDEBAR_WIDTH: 75, // 左侧菜单栏宽度
+    BOTTOM_HEIGHT: 102,//底部高度
 };
 const STEPS_MAPS = {
     SET_FIRST: 'FIRST',//第一步
@@ -361,7 +362,21 @@ class BootCompleteInformation extends React.Component{
         areaData.province = addressObj.provName || '';
         areaData.city = addressObj.cityName || '';
         areaData.district = addressObj.countyName || '';
+        this.setTabContentHeight();
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '选择地域');
+    };
+
+    setTabContentHeight = () => {
+        const { isWebMin } = isResponsiveDisplay();
+        if(isWebMin) {
+            let tabContentEl = $('.boot-complete-step-second-wrapper .ant-tabs-content');
+            if(tabContentEl.length) {
+                let height = $(window).height()
+                    - tabContentEl.offset().top
+                    - LAYOUT.BOTTOM_HEIGHT;
+                tabContentEl.height(height);
+            }
+        }
     };
 
     onReturnBack = (step) => {
@@ -369,7 +384,11 @@ class BootCompleteInformation extends React.Component{
             [STEPS_MAPS.SET_FIRST]: '上一步',
             [STEPS_MAPS.SET_SECOND]: '下一步'
         };
-        this.setState({currentStep: step});
+        this.setState({currentStep: step}, () => {
+            if(step === STEPS_MAPS.SET_SECOND) {
+                this.setTabContentHeight();
+            }
+        });
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击' + operate[step]);
     };
 
