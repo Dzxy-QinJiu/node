@@ -1939,6 +1939,7 @@ batchTopBarDropList = (isMinWeb) => {
 
     handleFocusCustomerTop(e) {
         let isConcernCustomer = !this.state.isConcernCustomer;
+        Trace.traceEvent(ReactDOM.findDOMNode(this), isConcernCustomer ? '查看我关注的客户' : '取消查看我关注的客户');
         CrmAction.setConcernCustomer(isConcernCustomer);
         setTimeout(() => {
             this.search();
