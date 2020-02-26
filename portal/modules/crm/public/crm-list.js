@@ -123,7 +123,7 @@ class Crm extends React.Component {
             customersSize: CrmStore.getCustomersLength(),
             pageSize: crmStoreData.pageSize,
             pageNum: crmStoreData.pageNum,
-            isConcernCustomerTop: crmStoreData.isConcernCustomerTop,//关注客户是否置顶
+            isConcernCustomer: crmStoreData.isConcernCustomer,//是否关注我的客户
             curPageCustomers: list,//将后端返回的数据转为界面列表所需的数据
             originCustomerList: originCustomerList,//后端返回的客户数据
             rightPanelIsShow: rightPanelShow,
@@ -307,14 +307,6 @@ class Crm extends React.Component {
         const customerSortMap = crmUtil.CUSOTMER_SORT_MAP;
         let sort_and_orders = [];
         //字符串类型的排序字段，key需要在字段后面加上.row
-        //设置了关注客户置顶后的处理
-        if (this.state.isConcernCustomerTop) {
-            let data = JSON.parse(params.data);
-            if(_.isEmpty(data.interest_member_ids)) {
-                data.interest_member_ids = [crmUtil.getMyUserId()];
-            }
-            params.data = JSON.stringify(data);
-        }
         //如果常用筛选选中了从客户池中提取的客户
         if(_.get(filterStoreCondition,'otherSelectedItem') === OTHER_FILTER_ITEMS.EXTRACT_TIME) {
             sort_and_orders.push({
@@ -934,6 +926,12 @@ class Crm extends React.Component {
         const rangParams = (this.props.params && this.props.params.rangParams) || this.state.rangParams;
         const conditionParams = (this.props.params && this.props.params.condition) || condition;
         const queryObjParams = $.extend({}, (this.props.params && this.props.params.queryObj));
+        //设置了关注我的客户后的处理
+        if (this.state.isConcernCustomer) {
+            if(_.isEmpty(conditionParams.interest_member_ids)) {
+                conditionParams.interest_member_ids = [crmUtil.getMyUserId()];
+            }
+        }
         //组合接口所需的数据结构
         let params = {
             data: JSON.stringify(conditionParams),
@@ -1940,24 +1938,20 @@ batchTopBarDropList = (isMinWeb) => {
     }
 
     handleFocusCustomerTop(e) {
-        let isConcernCustomerTop = !this.state.isConcernCustomerTop;
-        CrmAction.setConcernCustomerTop(isConcernCustomerTop);
+        let isConcernCustomer = !this.state.isConcernCustomer;
+        CrmAction.setConcernCustomer(isConcernCustomer);
         setTimeout(() => {
             this.search();
         });
-        //关注客户置顶标识修改后保存到个人配置上
-        let personnelObj = {};
-        personnelObj[oplateConsts.STORE_PERSONNAL_SETTING.CONCERN_CUSTOMER_TOP_FLAG] = isConcernCustomerTop;
-        setWebsiteConfig(personnelObj);
     }
 
     //渲染带关注客户置顶图标的联系人列标题
     renderContactConcernTop() {
         let interestClassName = classNames('iconfont concern-customer-top-icon', {
-            'icon-interested': this.state.isConcernCustomerTop,
-            'icon-uninterested': !this.state.isConcernCustomerTop
+            'icon-interested': this.state.isConcernCustomer,
+            'icon-uninterested': !this.state.isConcernCustomer
         });
-        let title = this.state.isConcernCustomerTop ? Intl.get('crm.see.concern.slef.cancel', '取消查看我关注的客户') : Intl.get('crm.see.concern.slef', '查看我关注的客户');
+        let title = this.state.isConcernCustomer ? Intl.get('crm.see.concern.slef.cancel', '取消查看我关注的客户') : Intl.get('crm.see.concern.slef', '查看我关注的客户');
         return (
             <span>
                 <span className={interestClassName} title={title}
