@@ -45,7 +45,8 @@ exports.getAppList = function(cb) {
                         app_id: app.app_id,
                         app_name: app.app_name,
                         app_logo: app.app_logo,
-                        terminals: app.terminals // 多终端类型
+                        terminals: app.terminals, // 多终端类型
+                        status: app.status // 应用的启停用状态
                     };
                 });
             }

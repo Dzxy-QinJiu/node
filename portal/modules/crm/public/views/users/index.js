@@ -205,8 +205,9 @@ class CustomerUsers extends React.Component {
 
     getAppList() {
         commonDataUtil.getAppList(appList => {
+            let ableAppList = _.filter(appList, app => app.status);
             this.setState({
-                appList: _.map(appList, app => {
+                appList: _.map(ableAppList, app => {
                     return {
                         client_id: app.app_id,
                         client_name: app.app_name,
