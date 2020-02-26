@@ -2629,7 +2629,8 @@ var en_US = {
     'errorcode.172': 'Not your lead, cannot be merged into a customer',//不是您的线索，无法合并到客户
     'errorcode.173': 'Failed to turn lead to customer',//线索转为客户失败
     'errorcode.174': 'Failed to merge lead to customer',//线索合并到客户失败
-    'errorcode.175': 'Your own Leads cannot be assigned to you',//自己的线索不能分配给自己
+    'errorcode.175': 'Your own Leads cannot be assigned to you',//操作失败
+    'errorcode.176': 'If the operation fails, the customer may be rolled out, released, or deleted',//操作失败，客户可能被转出、释放或删除
     'errorcode.send.message.limit': 'Cannot send again in one minute',//一分钟内不能重复发送
     'errorcode.phone.unbind.account.tip': 'This mobile number is not bound to an account, please change another mobile number and try again',//此手机号未绑定账号，请换其他手机号再试
 
