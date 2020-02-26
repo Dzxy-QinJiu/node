@@ -154,6 +154,7 @@ function getConfigJson(req) {
         '14012': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
         //团队管理员才有权限处理
         '14013': {'httpCode': 500, 'message': backendIntl.get('errorcode.68', '没有权限')},
+        '14021': {'httpCode': 500, 'message': backendIntl.get('errorcode.176', '操作失败，客户可能被转出、释放或删除')},
         '14101': {'httpCode': 500, 'message': backendIntl.get('errorcode.73', '添加联系人失败')},
         '14102': {'httpCode': 500, 'message': backendIntl.get('errorcode.74', '客户不存在')},
         '14103': {'httpCode': 500, 'message': backendIntl.get('errorcode.71', '电话号码已存在')},
