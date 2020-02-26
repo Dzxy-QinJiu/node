@@ -56,8 +56,8 @@ CrmStore.prototype.setInitialState = function() {
         loading: false,
         errorMsg: ''
     };
-    //关注客户是否置顶的标识
-    this.isConcernCustomerTop = getConcernCustomerTopFlag();
+    //是否关注我的客户
+    this.isConcernCustomer = false;
 };
 
 //获取当前用户是否设置了关注客户置顶
@@ -68,9 +68,9 @@ function getConcernCustomerTopFlag() {
     return _.get(personnel_setting, oplateConsts.STORE_PERSONNAL_SETTING.CONCERN_CUSTOMER_TOP_FLAG, false);
 }
 
-//关注客户是否置顶的设置
-CrmStore.prototype.setConcernCustomerTop = function(flag) {
-    this.isConcernCustomerTop = flag;
+//是否关注我的客户
+CrmStore.prototype.setConcernCustomer = function(flag) {
+    this.isConcernCustomer = flag;
 },
 
 CrmStore.prototype.updateCurrentCustomerRemark = function(submitObj) {
