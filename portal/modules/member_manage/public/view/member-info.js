@@ -306,7 +306,19 @@ class MemberInfo extends React.Component {
         memberInfo.image = this.props.memberInfo.image;
         this.setState({memberInfo, showSaveIconTip: false});
     };
-
+    // 保存修改的密码
+    saveEditPassword = (type, saveObj, successFunc, errorFunc) => {
+        if(_.get(this, 'passwordRef.refs.validation')){
+            // 密码验证通过后才能调用保存密码的方法(不能设置弱密码)
+            this.passwordRef.refs.validation.validate(valid => {
+                if (!valid) {
+                    this.confirmPassWordRef.setState({loading: false});
+                    return;
+                }
+                this.saveEditMemberInfo(type, saveObj, successFunc, errorFunc);
+            });
+        }
+    }
     //保存修改的成员信息
     saveEditMemberInfo = (type, saveObj, successFunc, errorFunc) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存成员${type}的修改`);
@@ -913,7 +925,7 @@ class MemberInfo extends React.Component {
                                 required: true, message: Intl.get('common.input.confirm.password', '请输入确认密码')
                             }, {validator: this.checkRePass}]}
                             onDisplayTypeChange={this.onConfirmPasswordDisplayTypeChange}
-                            saveEditInput={this.saveEditMemberInfo.bind(this, 'password')}
+                            saveEditInput={this.saveEditPassword.bind(this, 'password')}
                         />
                     </div>
                 </div>
