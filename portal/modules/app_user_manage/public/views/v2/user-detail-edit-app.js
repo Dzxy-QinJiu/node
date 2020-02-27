@@ -5,7 +5,7 @@ var createReactClass = require('create-react-class');
 import AppUserPanelSwitchAction from '../../action/app-user-panelswitch-actions';
 import UserDetailEditAppActions from '../../action/v2/user-detail-edit-app-actions';
 import UserDetailEditAppStore from '../../store/v2/user-detail-edit-app-store';
-import AppPropertySetting from '../v3/app-property-setting';
+import AppPropertySetting from 'CMP_DIR/user_manage_components/app-property-setting';
 import {Tabs, Icon, Alert} from 'antd';
 import AlertTimer from '../../../../../components/alert-timer';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 import {isEqualArray} from 'LIB_DIR/func';
 import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
-
+require('../../css/edit-app.less');
 //记录上下留白布局
 const LAYOUT = {
     TAB_TOP_HEIGHT: 66,
@@ -247,7 +247,7 @@ const UserDetailEditApp = createReactClass({
     render() {
         const height = this.props.height + LAYOUT_CONSTANTS.BTN_PADDING;//减去底部按钮的padding;
         return (
-            <div className="user-manage-v2 user-detail-edit-app-v2" style={{height}}>
+            <div className="user-detail-edit-app-v2" style={{height}}>
                 <h4 onClick={this.cancel}>
                     <Icon type="left"/>{Intl.get('user.user.product.set','产品设置')}
                 </h4>

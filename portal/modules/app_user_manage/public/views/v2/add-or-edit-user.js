@@ -49,6 +49,7 @@ import AppUserAjax from '../../ajax/app-user-ajax';
 import AppUserStore from '../../store/app-user-store';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import { userDetailEmitter } from 'PUB_DIR/sources/utils/emitters';
+require('../../css/add-user.less');
 //动态添加的样式
 var dynamicStyle;
 var tempSuggestNames = [];
