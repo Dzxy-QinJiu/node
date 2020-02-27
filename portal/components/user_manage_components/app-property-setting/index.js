@@ -394,8 +394,13 @@ const AppPropertySetting = createReactClass({
         let terminals = defaultSettings.terminals;
         let multilogin = defaultSettings.multilogin;
         let isTwoFactor = defaultSettings.is_two_factor;
-        if (!_.isEmpty()) {
-
+        if (!_.isEmpty(appsDefaultSetting)) {
+            time = appsDefaultSetting.time;
+            overDraft = appsDefaultSetting.over_draft;
+            status = appsDefaultSetting.status;
+            terminals = _.get(appsDefaultSetting, 'terminals' || terminals);
+            multilogin = appsDefaultSetting.multilogin;
+            isTwoFactor = appsDefaultSetting.is_two_factor;
         }
         return (
             <div className={this.state.changeCurrentAppLoading ? 'app-property-container-content change-current-app-loading' : 'app-property-container-content'}>
