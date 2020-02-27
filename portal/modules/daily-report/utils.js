@@ -9,7 +9,7 @@ export function getReportList(callback) {
     if (!_.isFunction(callback)) return;
 
     ajax.send({
-        url: '/user/data.js'
+        url: '/rest/customer/v3/dailyreport/templates'
     })
         .done(result => {
             result = _.get(localStorage, 'daily-report.report-list');
