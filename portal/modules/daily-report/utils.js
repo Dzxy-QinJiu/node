@@ -35,3 +35,8 @@ export function setIsNoLongerShowCheckReportNotice() {
 export function showReportPanel() {
     detailPanelEmitter.emit(detailPanelEmitter.SHOW);
 }
+
+//隐藏报告面板
+export function hideReportPanel() {
+    detailPanelEmitter.emit(detailPanelEmitter.HIDE);
+}

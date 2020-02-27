@@ -4,6 +4,7 @@
 
 import { Button } from 'antd';
 import { VIEW_TYPE } from './consts';
+import { hideReportPanel } from './utils';
 
 class SetRule extends React.Component {
     state = {
@@ -20,7 +21,7 @@ class SetRule extends React.Component {
                     上一步
                 </Button>
                 <Button
-                    onClick={() => { this.props.changeView(VIEW_TYPE.ADD_TPL); }}
+                    onClick={() => { hideReportPanel(); }}
                 >
                     保存
                 </Button>
