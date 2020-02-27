@@ -32,8 +32,6 @@ var urls = {
     getLoginQRCode: '/auth2/authc/scan_code/screen_code',
     //通过扫码登录
     loginByQRCode: '/auth2/authc/scan_code/login',
-    //根据公司标识获取公司
-    getCompanyByName: '/rest/open/resource/organization',
     //检查手机号是否被注册过
     checkPhoneIsRegisted: '/rest/open/resource/invite/check',
     //获取短信验证码
@@ -390,16 +388,6 @@ exports.loginByQRCode = function(req, res, qrcode) {
                 emitter.emit('error', data);
             }
         });
-};
-
-//根据公司名获取公司
-exports.getCompanyByName = function(req, res) {
-    return restUtil.baseRest.get(
-        {
-            url: urls.getCompanyByName,
-            req: req,
-            res: res,
-        }, req.query);
 };
 
 // 检查电话是否已经被注册过
