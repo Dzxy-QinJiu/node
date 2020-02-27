@@ -42,7 +42,7 @@ class ReportPanel extends React.Component {
             case VIEW_TYPE.SET_RULE:
             case VIEW_TYPE.REPORT_LIST:
             case VIEW_TYPE.REPORT_DETAIL:
-            case VIEW_TYPE.FILL_IN_REPORT:
+            case VIEW_TYPE.REPORT_FORM:
         }
     }
 
