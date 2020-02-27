@@ -15,9 +15,19 @@ class EditTpl extends React.Component {
             <div>
                 编辑模板
                 <Button
-                    onClick={() => { this.props.changeView(VIEW_TYPE.EDIT_TPL); }}
+                    onClick={() => { this.props.changeView(VIEW_TYPE.ADD_TPL); }}
                 >
-                    下一步
+                    取消
+                </Button>
+                <Button
+                    onClick={() => { this.props.changeView(VIEW_TYPE.PREVIEW_TPL); }}
+                >
+                    预览
+                </Button>
+                <Button
+                    onClick={() => { this.props.changeView(VIEW_TYPE.ADD_TPL); }}
+                >
+                    保存
                 </Button>
             </div>
         );
