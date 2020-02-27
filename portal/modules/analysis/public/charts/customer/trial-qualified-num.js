@@ -36,15 +36,15 @@ export function getCustomerTrialQualifiedNumChart() {
 
             //本月个数
             let thisMonthNum = _.sumBy(data, 'this_month.total');
+
+            //历史最高
+            let highestNum = _.sumBy(data, 'highest.total');
             //本月比历史最高净增
-            let thisMonthAddHighestNum = _.sumBy(data, 'this_month_add_highest.total');
+            let thisMonthAddHighestNum = thisMonthNum - highestNum;
             
             if (thisMonthAddHighestNum < 0) {
                 _.set(option, 'xAxis[0].data[1]', Intl.get('common.this.month.reduce.highest', '本月比历史最高减少'));
             }
-
-            //历史最高
-            let highestNum = _.sumBy(data, 'highest.total');
 
             //本月比历史最高净增数辅助值默认为历史最高个数
             let thisMonthAddHighestNumAssist = highestNum;
