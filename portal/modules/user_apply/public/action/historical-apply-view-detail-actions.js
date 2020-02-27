@@ -1,5 +1,4 @@
 import AppUserAjax from '../ajax/app-user-ajax';
-import UserAjax from '../../../common/public/ajax/user';
 import AppUserUtil from '../util/app-user-util';
 import UserData from '../../../../public/sources/user-data';
 import UserApplyAction from './user-apply-actions';
@@ -74,15 +73,6 @@ class ApplyViewDetailActions {
         );
     }
 
-    //获取用户头像
-    getUserLogo(user_id) {
-        UserAjax.getUserByIdAjax().resolvePath({
-            user_id: user_id
-        }).sendRequest().success((userInfo) => {
-            this.dispatch(userInfo);
-        }).error();
-    }
-
     //获取审批单详情
     getApplyDetail(id, applyData,approvalState, appList) {
         //如果已获取了某个详情数据，针对从url中的申请id获取的详情数据
@@ -124,12 +114,6 @@ class ApplyViewDetailActions {
             this.dispatch({loading: false, error: false, list: list, errorMsg: ''});
             //清除未读回复列表中已读的回复
             UserApplyAction.clearUnreadReply(id);
-            //针对reply中的user_id，排重
-            var user_ids = _.chain(list).map('user_id').uniq().value();
-            //针对每一个user_id，获取用户信息
-            _.each(user_ids, (user_id) => {
-                this.actions.getUserLogo(user_id);
-            });
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, list: [], errorMsg: errorMsg});
         });

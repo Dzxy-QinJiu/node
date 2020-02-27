@@ -581,19 +581,6 @@ class ApplyViewDetailStore {
             };
         }
     }
-    //获取成员信息，使用其中的logo属性
-    getUserLogo(userInfo) {
-        //获取到reply列表
-        var list = this.replyListInfo.list;
-        //已经获取的用户id
-        var target_user_id = userInfo.user_id;
-        //遍历reply列表，找到user_id与获取user_id相同的，赋予user_logo
-        _.each(list, (reply) => {
-            if (reply.user_id === target_user_id) {
-                reply.user_logo = userInfo.user_logo;
-            }
-        });
-    }
 
     getNextCandidate(result) {
         if (result.error) {
