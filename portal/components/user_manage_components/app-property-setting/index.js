@@ -377,6 +377,18 @@ const AppPropertySetting = createReactClass({
         var selectedRoles = currentAppInfo.roles || [];
         var selectedPermissions = currentAppInfo.permissions || [];
         let isShowAppTerminals = !_.isEmpty(currentAppInfo.terminals);
+
+        let number = defaultSettings.number;
+        let userType = defaultSettings.user_type;
+        let time = defaultSettings.time;
+        let overDraft = defaultSettings.over_draft;
+        let status = defaultSettings.status;
+        let terminals = defaultSettings.terminals;
+        let multilogin = defaultSettings.multilogin;
+        let isTwoFactor = defaultSettings.is_two_factor;
+        if (!_.isEmpty()) {
+
+        }
         return (
             <div className={this.state.changeCurrentAppLoading ? 'app-property-container-content change-current-app-loading' : 'app-property-container-content'}>
                 <div className="app-property-custom-settings">
@@ -405,7 +417,7 @@ const AppPropertySetting = createReactClass({
                                                 this.renderUserCountNumberField({
                                                     isCustomSetting: true,
                                                     appId: currentApp.app_id,
-                                                    globalNumber: defaultSettings.number
+                                                    globalNumber: number
                                                 })
                                             }
 
@@ -422,7 +434,7 @@ const AppPropertySetting = createReactClass({
                                                 this.renderUserTypeRadioBlock({
                                                     isCustomSetting: true,
                                                     appId: currentApp.app_id,
-                                                    globalUserType: defaultSettings.user_type
+                                                    globalUserType: userType
                                                 })
                                             }
                                         </div>
@@ -436,7 +448,7 @@ const AppPropertySetting = createReactClass({
                                         {this.renderUserTimeRangeBlock({
                                             isCustomSetting: true,
                                             appId: currentApp.app_id,
-                                            globalTime: defaultSettings.time,
+                                            globalTime: time,
                                             //过期重新计算（开始时间变为从当前时间起算）
                                             expiredRecalculate: true,
                                         })}
@@ -451,7 +463,7 @@ const AppPropertySetting = createReactClass({
                                             this.renderUserOverDraftBlock({
                                                 isCustomSetting: true,
                                                 appId: currentApp.app_id,
-                                                globalOverDraft: defaultSettings.over_draft
+                                                globalOverDraft: overDraft
                                             })
                                         }
                                     </div>
@@ -466,7 +478,7 @@ const AppPropertySetting = createReactClass({
                                                 this.renderUserStatusRadioBlock({
                                                     isCustomSetting: true,
                                                     appId: currentApp.app_id,
-                                                    globalStatus: defaultSettings.status
+                                                    globalStatus: status
                                                 })
                                             }
                                         </div>
@@ -481,7 +493,7 @@ const AppPropertySetting = createReactClass({
                                                     this.renderUserAppTerminalCheckboxBlock({
                                                         isCustomSetting: true,
                                                         appId: currentApp.app_id,
-                                                        globalTerminals: defaultSettings.terminals,
+                                                        globalTerminals: terminals,
                                                         appAllTerminals: currentAppInfo.terminals.value,
                                                         selectedApps: currentApp
                                                     })
@@ -498,7 +510,7 @@ const AppPropertySetting = createReactClass({
                                                 this.props.showMultiLogin ? this.renderMultiLoginRadioBlock({
                                                     isCustomSetting: true,
                                                     appId: currentApp.app_id,
-                                                    globalMultiLogin: defaultSettings.multilogin,
+                                                    globalMultiLogin: multilogin,
                                                     showCheckbox: true
                                                 }) : null
                                             }
@@ -506,7 +518,7 @@ const AppPropertySetting = createReactClass({
                                                 this.props.showIsTwoFactor ? this.renderUserTwoFactorBlock({
                                                     isCustomSetting: true,
                                                     appId: currentApp.app_id,
-                                                    globalTwoFactor: defaultSettings.is_two_factor,
+                                                    globalTwoFactor: isTwoFactor,
                                                     showCheckbox: true
                                                 }) : null
                                             }
