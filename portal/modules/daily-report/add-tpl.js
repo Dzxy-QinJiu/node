@@ -2,8 +2,10 @@
  * 添加汇报模板
  */
 
-import { Button } from 'antd';
+import { Button, Steps } from 'antd';
 import { VIEW_TYPE } from './consts';
+
+const { Step } = Steps;
 
 class AddTpl extends React.Component {
     state = {
@@ -14,6 +16,10 @@ class AddTpl extends React.Component {
         return (
             <div>
                 两步即可实现汇总和查看销售日常工作情况
+                <Steps current={0}>
+                    <Step title="1. 选择模板" />
+                    <Step title="2. 设置规则" />
+                </Steps>
                 <Button
                     onClick={() => { this.props.changeView(VIEW_TYPE.ADD_NEW_TPL); }}
                 >
