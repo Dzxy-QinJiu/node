@@ -15,6 +15,16 @@ class AddTpl extends React.Component {
             <div>
                 两步即可实现汇总和查看销售日常工作情况
                 <Button
+                    onClick={() => { this.props.changeView(VIEW_TYPE.ADD_NEW_TPL); }}
+                >
+                    添加新模板
+                </Button>
+                <Button
+                    onClick={() => { this.props.changeView(VIEW_TYPE.EDIT_TPL); }}
+                >
+                    编辑模板
+                </Button>
+                <Button
                     onClick={() => { this.props.changeView(VIEW_TYPE.SET_RULE); }}
                 >
                     下一步
