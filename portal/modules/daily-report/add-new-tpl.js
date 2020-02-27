@@ -1,11 +1,11 @@
 /**
- * 报告列表
+ * 添加模板
  */
 
 import { Button } from 'antd';
 import { VIEW_TYPE } from './consts';
 
-class ReportList extends React.Component {
+class AddNewTpl extends React.Component {
     state = {
         currentView: VIEW_TYPE.ADD_TPL,
     }
@@ -13,7 +13,7 @@ class ReportList extends React.Component {
     render() {
         return (
             <div>
-                报告列表
+                添加模板
                 <Button
                     onClick={() => { this.props.changeView(VIEW_TYPE.ADD_TPL); }}
                 >
@@ -34,4 +34,4 @@ class ReportList extends React.Component {
     }
 }
 
-export default ReportList;
+export default AddNewTpl;
