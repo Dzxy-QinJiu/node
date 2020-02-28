@@ -47,6 +47,7 @@ class RecommendClues extends React.Component {
 
     componentWillUnmount = () => {
         clueCustomerStore.unlisten(this.onStoreChange);
+        clueCustomerAction.initialRecommendClues();
     };
 
     // 判断是否为普通销售
@@ -112,6 +113,13 @@ class RecommendClues extends React.Component {
         if(this.state.hasExtraRecommendList){
             conditionObj = {
                 'sortvalues': this.state.sortvalues,
+                ...conditionObj
+            };
+        }
+        //是否选择复工企业或者上市企业
+        if(this.state.feature) {
+            conditionObj = {
+                'feature': this.state.feature,
                 ...conditionObj
             };
         }

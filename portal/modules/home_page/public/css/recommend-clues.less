@@ -61,18 +61,52 @@
       top: calc(50% - 86px);
     }
     // 头部样式
+    .extract-clues-title-container{
+      background-color: #ffffff;
+      border-bottom:1px solid #dedfe1;
+    }
     .extract-clues-title-wrapper{
       padding: 0 24px;
       background-color: #ffffff;
-      border-bottom: 1px solid #dedfe1;
+      //border-bottom: 1px solid #dedfe1;
       font-size: 16px;
       font-weight: 800;
-      height: 70px;
+      //min-height: 70px;
     }
     .extract-clues-title{
       overflow: hidden;
       padding-top: 20px;
       line-height: 32px;
+    }
+    //热门选项样式
+    .extract-hot-wrapper{
+      font-weight: normal;
+      margin: 10px 0 16px 24px;
+      .extract-hot-title{
+        font-size: 14px;
+        color: #999;
+      }
+      .extract-hot-btn-container{
+        display: inline-block;
+        .hot-btn-item{
+          color: #EFA246;
+          font-size: 12px;
+          padding: 3px 6px;
+          border: 1px solid @border-color;
+          border-radius:2px;
+          margin-right: 5px;
+          cursor: pointer;
+          transition: all 0.3s linear;
+          &:hover{
+            border-color: @version-basic-color;
+          }
+          &.hot-active{
+            background: @version-basic-color;
+            color: #fff;
+            border-color: @version-basic-color;
+          }
+        }
+      }
     }
     .extract-clues-btn-container{
       float: right;
