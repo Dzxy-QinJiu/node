@@ -2,7 +2,7 @@
  * 添加汇报模板
  */
 
-import { Button, Steps } from 'antd';
+import { Button, Steps, Radio } from 'antd';
 import { VIEW_TYPE } from './consts';
 
 const { Step } = Steps;
@@ -20,16 +20,17 @@ class AddTpl extends React.Component {
                     <Step title="1. 选择模板" />
                     <Step title="2. 设置规则" />
                 </Steps>
-                <Button
+                <Radio.Group onChange={this.onChange} value={this.state.value}>
+                    <Radio value={1}>
+                        <a href="javascript:void:0" onClick={() => { this.props.changeView(VIEW_TYPE.EDIT_TPL); }}>销售经理日报</a>
+                    </Radio>
+                </Radio.Group>
+                <br/>
+                <div
                     onClick={() => { this.props.changeView(VIEW_TYPE.ADD_NEW_TPL); }}
                 >
                     添加新模板
-                </Button>
-                <Button
-                    onClick={() => { this.props.changeView(VIEW_TYPE.EDIT_TPL); }}
-                >
-                    编辑模板
-                </Button>
+                </div>
                 <Button
                     onClick={() => { this.props.changeView(VIEW_TYPE.SET_RULE); }}
                 >
