@@ -6,6 +6,7 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
  * Created by zhangshujuan on 2020/02/06.
  */
 require('./css/index.less');
+var insertStyle = require('CMP_DIR/insert-style');
 import {
     APPLY_APPROVE_TAB_TYPES,
     APPLY_TYPE,
@@ -14,7 +15,9 @@ import {
     FILTER,
     SEARCH,
     UnitOldAndNewUserInfo,
-    ALL
+    ALL,
+    UNREPLY,
+    getAllUnhandleApplyCount
 } from './utils/apply_approve_utils';
 import classNames from 'classnames';
 import {Dropdown, Menu, Alert, Select} from 'antd';
@@ -57,6 +60,8 @@ import {SearchInput} from 'antc';
 import UserData from '../../../public/sources/user-data';
 import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
 
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+
 class ApplyApproveList extends React.Component {
     state = {
         activeApplyTab: APPLY_TYPE.APPLY_BY_ME,
@@ -83,11 +88,27 @@ class ApplyApproveList extends React.Component {
         } else {
             this.fetchApplyList();
         }
-        this.getUnreadReplyList();
+        // this.getUnreadReplyList();
+        //获取我的申请中的未读回复
+        this.getMyUnreadReplyList();
+        //获取团队申请中的未读回复
+        this.getTeamUnreadReplyList();
         this.getAppList();
+        this.showUnhandleApplyTip();
+        notificationEmitter.on(notificationEmitter.MY_UNREAD_REPLY, this.refreshMyUnreadReplyList);
+        notificationEmitter.on(notificationEmitter.TEAM_UNREAD_REPLY, this.refreshTeamUnreadReplyList);
+        notificationEmitter.on(notificationEmitter.CLEAR_UNREAD_REPLY, this.clearUnreadReplyList);
+
+    }
+
+    componentWillUpdate() {
+        this.showUnhandleApplyTip();
     }
 
     componentWillUnmount() {
+        notificationEmitter.removeListener(notificationEmitter.MY_UNREAD_REPLY, this.refreshMyUnreadReplyList);
+        notificationEmitter.removeListener(notificationEmitter.TEAM_UNREAD_REPLY, this.refreshTeamUnreadReplyList);
+        notificationEmitter.removeListener(notificationEmitter.CLEAR_UNREAD_REPLY, this.clearUnreadReplyList);
         ApplyApproveListStore.unlisten(this.onStoreChange);
     }
 
@@ -97,18 +118,38 @@ class ApplyApproveList extends React.Component {
         });
     }
 
+    clearUnreadReplyList = (applyId) => {
+        UserApplyActions.clearUnreadReply(applyId);
+    };
+
     //从sessionStorage中获取该用户未读的回复列表
-    getUnreadReplyList = () => {
-        const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
-        let unreadReplyList = session.get(APPLY_UNREAD_REPLY);
+    getMyUnreadReplyList = () => {
+        const MY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.MY_UNREAD_REPLY;
+        let unreadReplyList = session.get(MY_UNREAD_REPLY);
         if (unreadReplyList) {
-            this.refreshUnreadReplyList(JSON.parse(unreadReplyList) || []);
+            this.refreshMyUnreadReplyList(JSON.parse(unreadReplyList) || []);
+        }
+    };
+    //从sessionStorage中获取该用户未读的回复列表
+    getTeamUnreadReplyList = () => {
+        const TEAM_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.TEAM_UNREAD_REPLY;
+        let unreadReplyList = session.get(TEAM_UNREAD_REPLY);
+        if (unreadReplyList) {
+            this.refreshTeamUnreadReplyList(JSON.parse(unreadReplyList) || []);
         }
     };
     //刷新未读回复的列表
-    refreshUnreadReplyList = (unreadReplyList) => {
-        UserApplyActions.refreshUnreadReplyList(unreadReplyList);
+    // refreshUnreadReplyList = (unreadReplyList) => {
+    //     UserApplyActions.refreshUnreadReplyList(unreadReplyList);
+    // };
+    refreshMyUnreadReplyList = (unreadReplyList) => {
+        UserApplyActions.refreshMyUnreadReplyList(unreadReplyList);
     };
+    refreshTeamUnreadReplyList = (unreadReplyList) => {
+        UserApplyActions.refreshTeamUnreadReplyList(unreadReplyList);
+    };
+
+
     retryFetchApplyList = (e) => {
         if (this.state.applyListObj.errorMsg) {
             Trace.traceEvent(e, '点击了重试');
@@ -123,25 +164,18 @@ class ApplyApproveList extends React.Component {
     };
     //获取申请审批列表
     fetchApplyList = () => {
-        // let approval_state = UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? 'pass' : this.state.selectedApplyStatus;
-        //[已通过、已驳回、已审批、已撤销
-        let approvedTypes = ['pass', 'reject', 'true', 'cancel'];
-        //已审批过的按审批时间倒序排
-        // if (approvedTypes.indexOf(approval_state) !== -1) {
-        //     sort_field = 'consume_date';
-        // }
         var submitObj = {
             id: this.state.lastApplyId,
             page_size: this.state.pageSize,
             keyword: this.state.searchKeyword,
-            isUnreadApply: this.state.isCheckUnreadApplyList,
+            comment_unread: this.state.isCheckUnreadApplyList,
             sort_field: 'create_time',
             order: 'descend'
         };
-        if(this.state.selectedApplyStatus !== ALL){
+        if (this.state.selectedApplyStatus !== ALL) {
             submitObj.status = this.state.selectedApplyStatus;
         }
-        if(this.state.selectedApplyType !== ALL){
+        if (this.state.selectedApplyType !== ALL) {
             submitObj.type = this.state.selectedApplyType;
         }
         if (this.state.activeApplyTab === APPLY_TYPE.APPLY_BY_ME) {
@@ -157,8 +191,11 @@ class ApplyApproveList extends React.Component {
                 // }
             });
 
-        } else if(this.state.activeApplyTab === APPLY_TYPE.APPROVE_BY_ME) {//获取待我审批的及我审批过的申请
-            UserApplyActions.getApplyList(submitObj, (count) => {
+        } else if (this.state.activeApplyTab === APPLY_TYPE.APPROVE_BY_ME) {//获取待我审批的及我审批过的申请
+            if (!submitObj.id) {
+                delete submitObj.id;
+            }
+            UserApplyActions.getMyApplyLists(submitObj, (count) => {
                 //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
                 // if (this.state.selectedApplyStatus === 'false') {
                 //     //触发更新待审批数
@@ -169,16 +206,36 @@ class ApplyApproveList extends React.Component {
                 //     }
                 // }
             });
-        }else{
-
+        } else {
+            UserApplyActions.getAllApplyLists(submitObj, (count) => {
+                //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
+                // if (this.state.selectedApplyStatus === 'false') {
+                //     //触发更新待审批数
+                //     commonMethodUtil.updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+                //     // 解决通过或驳回操作失败（后台其实是成功）后的状态更新
+                //     if(this.state.dealApplyError === 'error'){
+                //         UserApplyActions.updateDealApplyError('success');
+                //     }
+                // }
+            });
         }
 
 
     };
     handleChangeApplyActiveTab = (activeTab) => {
-        this.setState({
-            activeApplyTab: activeTab
-        },() => {
+        if (activeTab !== this.state.activeApplyTab) {
+            this.setState({
+                activeApplyTab: activeTab,
+                filterOrSearchType: ''
+            }, () => {
+                this.clearDataBeforeGetApplyList();
+            });
+        }
+    };
+    //在获取数据前先把之前的数据置空一下
+    clearDataBeforeGetApplyList = () => {
+        UserApplyActions.resetState();
+        setTimeout(() => {
             this.fetchApplyList();
         });
     };
@@ -196,25 +253,52 @@ class ApplyApproveList extends React.Component {
     openFilterOrSearch = (value) => {
         this.setState({
             filterOrSearchType: value
+        }, () => {
+            //如果是选中的有未读回复的
+            if (value === UNREPLY) {
+                UserApplyActions.setIsCheckUnreadApplyList(true);
+                setTimeout(() => {
+                    this.fetchApplyList();
+                });
+            }
         });
+    };
+    isActiveTabMyApproveList = () => {
+        return this.state.activeApplyTab === APPLY_TYPE.APPROVE_BY_ME;
     };
     getAddFilterAndSearchMenu = () => {
         var filterAndSearchList = [{
             name: Intl.get('common.filter', '筛选'),
             value: FILTER,
             iconCls: 'icon-filter1'
-        }, {
-            name: Intl.get('common.search', '搜索'),
-            iconCls: 'icon-search',
-            value: SEARCH
         }];
+        //如果有未读回复列表的时候，这个未读回复的样式才是激活状态，才可以点击
+        //我审批的申请这个tab，没有筛选status、根据关键词筛选和根据未读回复筛选
+        var unreplyLiCls = '';
+        if (!this.isActiveTabMyApproveList()) {
+            filterAndSearchList.push({
+                name: Intl.get('common.search', '搜索'),
+                iconCls: 'icon-search',
+                value: SEARCH
+            });
+            var unreadReplyList = this.getUnreadReplyList();
+            unreplyLiCls = _.get(unreadReplyList, 'length') > 0 ? 'active-unreply' : 'inactive-unreply';
+            filterAndSearchList.push({
+                name: Intl.get('apply.list.has.unreply', '未读回复'),
+                iconCls: 'icon-apply-message-tip',
+                value: UNREPLY
+            });
+        }
         return (
             <Menu className='add-search-or-filter-type-list'>
                 {_.map(filterAndSearchList, (item, index) => {
+                    //带有未读回复的没有数值的时候，不允许点击
+                    var canClick = unreplyLiCls.indexOf('inactive-unreply') < 0;//是否可以点击带未读回复的下拉选项
                     return (
-                        <Menu.Item key={index}>
-                            <a onClick={this.openFilterOrSearch.bind(this, item.value)}>
-                                <i className={'iconfont ' + _.get(item, 'iconCls')}></i>
+                        <Menu.Item key={index} className={item.value === UNREPLY ? unreplyLiCls : ''}>
+                            <a onClick={canClick ? this.openFilterOrSearch.bind(this, item.value) : () => {
+                            }}>
+                                <i className={'iconfont ' + _.get(item, 'iconCls', '')}></i>
                                 {_.get(item, 'name')}</a>
                         </Menu.Item>
                     );
@@ -253,14 +337,14 @@ class ApplyApproveList extends React.Component {
         return moment(new Date(d)).format(format || oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
     };
     renderApplyList = () => {
-        let unreadReplyList = this.state.unreadReplyList;
         return (
             <ul className="list-unstyled app_user_manage_apply_list">
                 {
                     _.map(this.state.applyListObj.list, (obj, index) => {
-                        let unreadReplyList = this.state.unreadReplyList;
+                        //不同tab下的获取的未读回复的列表是不一样的
+                        var unreadReplyList = this.getUnreadReplyList();
                         //是否有未读回复
-                        let hasUnreadReply = _.find(unreadReplyList, unreadReply => unreadReply.apply_id === obj.id);
+                        let hasUnreadReply = _.find(unreadReplyList, unreadReply => unreadReply.id === obj.id);
                         return (
                             <ApplyListItem
                                 key={index}
@@ -278,19 +362,65 @@ class ApplyApproveList extends React.Component {
             </ul>
         );
     };
+    showUnhandleApplyTip = () => {
+        const {unreadMyReplyList, unreadTeamReplyList} = this.state;
+        var unreadMyReplyCount = _.get(unreadMyReplyList, 'length'),
+            unreadTeamReplyCount = _.get(unreadTeamReplyList, 'length'),
+            unreadMyApproveCount = getAllUnhandleApplyCount();
+        _.each(APPLY_APPROVE_TAB_TYPES, (item) => {
+            var val = _.get(item, 'value');
+            if (APPLY_TYPE.APPLY_BY_ME === val && unreadMyReplyCount > 0) {
+                this.renderUnhandleNum(val, unreadMyReplyCount, false);
+            }
+            if (APPLY_TYPE.APPLY_BY_TEAM === val && unreadTeamReplyCount > 0) {
+                this.renderUnhandleNum(val, unreadTeamReplyCount, false);
+            }
+            if (APPLY_TYPE.APPROVE_BY_ME === val && unreadMyApproveCount > 0) {
+                this.renderUnhandleNum(val, unreadMyApproveCount, true);
+            }
+        });
+    };
+    renderUnhandleNum = (val, count, showNum) => {
+
+        var style = `unhandle${val}NumStyle`, cls = `${val}_container`;
+        if (this[style]) {
+            this[style].destroy();
+            this[style] = null;
+        }
+        var styleText = '';
+        //设置数字
+        if (count > 0) {
+            if (showNum) {
+                var len = (count + '').length;
+                if (len >= 3) {
+                    styleText = `.${cls}:before{content:\'99+\';display:block;padding:0 2px 0 2px;}`;
+                } else {
+                    styleText = `.${cls}:before{content:'${count}';display:block}`;
+                }
+            } else {
+                styleText = `.${cls}:before{content:\'\';display:block;padding:0 2px 0 2px;}`;
+            }
+        } else {
+            styleText = `.${cls}:before{content:\'\';display:none}`;
+        }
+        //展示数字
+        this[style] = insertStyle(styleText);
+    };
     //左侧申请审批不同类型列表
     renderApplyListTab = () => {
-        var activeApplyTab = this.state.activeApplyTab;
+        const {activeApplyTab} = this.state;
         return (
             <div className='apply_approve_list_wrap'>
                 <div className='apply_approve_list_tab'>
                     <ul>
                         {_.map(APPLY_APPROVE_TAB_TYPES, item => {
-                            var cls = classNames('apply_type_item', {
+                            var val = _.get(item, 'value', '');
+                            var cls = classNames(`apply_type_item ${val}_container`, {
                                 'active-tab': activeApplyTab === _.get(item, 'value', '')
                             });
+                            //只有我的审批上加红色数字
                             return <li className={cls}
-                                onClick={this.handleChangeApplyActiveTab.bind(this, _.get(item, 'value', ''))}>
+                                onClick={this.handleChangeApplyActiveTab.bind(this, val)}>
                                 {_.get(item, 'name', '')}
                             </li>;
                         })}
@@ -368,7 +498,7 @@ class ApplyApproveList extends React.Component {
                         defaultMessage={'有新申请，{refresh}查看'}
                         values={{
                             'refresh': <a data-tracename="点击刷新页面按钮"
-                                onClick={this.fetchApplyList}>{Intl.get('clue.customer.refresh.page', '刷新页面')}</a>
+                                onClick={this.clearDataBeforeGetApplyList}>{Intl.get('clue.customer.refresh.page', '刷新页面')}</a>
                         }}
                     />
                 </div>
@@ -444,17 +574,32 @@ class ApplyApproveList extends React.Component {
             value: ALL
         }];
         var workFlowList = this.getWorkFlowList();
+
         _.each(workFlowList, (workItem) => {
-            allTypeList.push({
-                name: _.get(workItem, 'description'),
-                value: _.get(workItem, 'type')
-            });
+            //有几种特殊的类型，添加的时候的type和详情中的type的值不一样，后期这里会改掉
+            var type = _.get(workItem, 'type');
+            if (_.indexOf([APPLY_APPROVE_TYPES.USERAPPLY, APPLY_APPROVE_TYPES.MEMBER_INVITE], type) === -1) {
+                if (type === APPLY_APPROVE_TYPES.OPINIONREPORT) {
+                    type = APPLY_APPROVE_TYPES.OPINION_REPORT;
+                }
+                if (type === APPLY_APPROVE_TYPES.DOCUMENTWRITING) {
+                    type = APPLY_APPROVE_TYPES.DOCUMENT_WRITING;
+                }
+                if (type === APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES) {
+                    type = APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES;
+                }
+                allTypeList.push({
+                    name: _.get(workItem, 'description'),
+                    value: type
+                });
+            }
+
         });
 
         return (
             <div className="apply-type-filter btn-item" id="apply-type-container">
                 {
-                    UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? null : (
+                    UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) || this.isActiveTabMyApproveList() ? null : (
                         <Select
                             className='apply-status-select'
                             value={this.state.selectedApplyStatus}
@@ -480,7 +625,10 @@ class ApplyApproveList extends React.Component {
     };
     renderFilterSearch = () => {
         var filterOrSearchType = this.state.filterOrSearchType;
-        if (filterOrSearchType) {
+        if (!filterOrSearchType) {
+            return null;
+        }
+        if (filterOrSearchType !== UNREPLY) {
             return (
                 <div className='filter-and-search-container'>
                     {filterOrSearchType === SEARCH ? this.renderSearchPanel() : this.renderFilterPanel()}
@@ -488,13 +636,18 @@ class ApplyApproveList extends React.Component {
                 </div>
             );
         } else {
-            return null;
+            return <div className='filter-and-search-container return-back' onClick={this.closeSearchOrFilterPanel}>
+                <i className='iconfont icon-left-arrow'></i>
+                {Intl.get('apply.list.return.back', '返回')}
+            </div>;
         }
 
     };
     closeSearchOrFilterPanel = () => {
         this.setState({
             filterOrSearchType: ''
+        }, () => {
+            this.clearDataBeforeGetApplyList();
         });
     };
     //左侧申请审批标题列表
@@ -563,11 +716,20 @@ class ApplyApproveList extends React.Component {
             showHistoricalItem: {}
         });
     };
+    afterTransferApplySuccess = (id) => {
+        UserApplyActions.afterTransferApplySuccess(id);
+    };
+    getUnreadReplyList = () => {
+        const {activeApplyTab, unreadMyReplyList, unreadTeamReplyList} = this.state;
+        return activeApplyTab === APPLY_TYPE.APPLY_BY_ME ? unreadMyReplyList : unreadTeamReplyList;
+    };
     //当前展示的详情是否是有未读回复的详情
     getIsUnreadDetail = () => {
-        let selectApplyId = this.state.selectedDetailItem ? this.state.selectedDetailItem.id : '';
+        const {selectedDetailItem} = this.state;
+        let selectApplyId = _.get(selectedDetailItem, 'id');
+        var unreadReplyList = this.getUnreadReplyList();
         if (selectApplyId) {
-            return _.some(this.state.unreadReplyList, unreadReply => unreadReply.apply_id === selectApplyId);
+            return _.some(unreadReplyList, unreadReply => unreadReply.id === selectApplyId);
         } else {
             return false;
         }
@@ -590,6 +752,7 @@ class ApplyApproveList extends React.Component {
                     handleOpenApplyDetail={this.handleOpenApplyDetail}
                     appList={this.state.appList}
                     height={$(window).height()}
+                    afterTransferApplySuccess={this.afterTransferApplySuccess}
                 />;
                 break;
             case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES://销售机会
@@ -601,6 +764,7 @@ class ApplyApproveList extends React.Component {
                     isUnreadDetail={this.getIsUnreadDetail()}
                     appList={this.state.appList}
                     height={$(window).height()}
+                    afterTransferApplySuccess={this.afterTransferApplySuccess}
                 />;
                 break;
             case APPLY_APPROVE_TYPES.CUSTOMER_VISIT://出差申请
@@ -611,6 +775,7 @@ class ApplyApproveList extends React.Component {
                     selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     height={$(window).height()}
+                    afterTransferApplySuccess={this.afterTransferApplySuccess}
                 />;
                 break;
             case APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE://外出申请
@@ -621,6 +786,7 @@ class ApplyApproveList extends React.Component {
                     selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     height={$(window).height()}
+                    afterTransferApplySuccess={this.afterTransferApplySuccess}
                 />;
                 break;
             case APPLY_APPROVE_TYPES.PERSONAL_LEAVE://请假申请
@@ -631,9 +797,10 @@ class ApplyApproveList extends React.Component {
                     selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     height={$(window).height()}
+                    afterTransferApplySuccess={this.afterTransferApplySuccess}
                 />;
                 break;
-            case APPLY_APPROVE_TYPES.OPINIONREPORT://舆情报告
+            case APPLY_APPROVE_TYPES.OPINION_REPORT://舆情报告
                 applyDetailContent = <ReportDetail
                     applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
@@ -641,9 +808,10 @@ class ApplyApproveList extends React.Component {
                     selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     height={$(window).height()}
+                    afterTransferApplySuccess={this.afterTransferApplySuccess}
                 />;
                 break;
-            case APPLY_APPROVE_TYPES.DOCUMENTWRITING://文件撰写
+            case APPLY_APPROVE_TYPES.DOCUMENT_WRITING://文件撰写
                 applyDetailContent = <DocumentDetail
                     applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
@@ -651,6 +819,7 @@ class ApplyApproveList extends React.Component {
                     selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     height={$(window).height()}
+                    afterTransferApplySuccess={this.afterTransferApplySuccess}
                 />;
                 break;
             //联合跟进申请和拜访申请
@@ -662,6 +831,7 @@ class ApplyApproveList extends React.Component {
                     selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     height={$(window).height()}
+                    afterTransferApplySuccess={this.afterTransferApplySuccess}
                 />;
                 break;
             case APPLY_APPROVE_TYPES.DOMAINAPPLY://舆情平台申请
@@ -672,11 +842,12 @@ class ApplyApproveList extends React.Component {
                     selectedApplyStatus={this.state.selectedApplyStatus}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     height={$(window).height()}
+                    afterTransferApplySuccess={this.afterTransferApplySuccess}
                 />;
                 break;
         }
         //如果是旧版的用户审批
-        if(_.get(selectedDetailItem, 'message_type') === APPLY_APPROVE_TYPES.USERAPPLY){
+        if (_.get(selectedDetailItem, 'message_type') === APPLY_APPROVE_TYPES.USERAPPLY) {
             applyDetailContent = <UserApplyViewDetailWrap
                 applyData={this.state.applyId ? applyDetail : null}
                 detailItem={this.state.selectedDetailItem}
@@ -686,6 +857,7 @@ class ApplyApproveList extends React.Component {
                 handleOpenApplyDetail={this.handleOpenApplyDetail}
                 appList={this.state.appList}
                 height={$(window).height()}
+                afterTransferApplySuccess={this.afterTransferApplySuccess}
             />;
         }
         return applyDetailContent;
@@ -708,7 +880,6 @@ class ApplyApproveList extends React.Component {
                     titleType={Intl.get('apply.approve.report.send', '舆情报告申请')}
                     applyType={REPORT_TYPE}
                     applyAjaxType={APPLY_APPROVE_TYPES.REPORT}
-                    // afterAddApplySuccess = {ReportSendApplyAction.afterAddApplySuccess}
                     hideApplyAddForm={this.closeAddApplyForm}
                     addType='report_type'
                     selectTip={Intl.get('leave.apply.select.at.least.one.type', '请选择至少一个舆情报告类型')}
@@ -722,14 +893,13 @@ class ApplyApproveList extends React.Component {
                     hideApplyAddForm={this.closeAddApplyForm}
                     applyType={DOCUMENT_TYPE}
                     applyAjaxType={APPLY_APPROVE_TYPES.DOCUMENT}
-                    // afterAddApplySuccess = {DocumentWriteApplyAction.afterAddApplySuccess}
                     addType='document_type'
                     selectTip={Intl.get('apply.approve.write.select.at.least.one.type', '请选择至少一个文件类型')}
                     selectPlaceholder={Intl.get('apply.approve.document.select.type', '请选择文件报告类型')}
                     applyLabel={Intl.get('apply.approve.document.write.type', '文件类型')}
                     remarkPlaceholder={Intl.get('apply.approve.report.remark', '请填写{type}备注', {type: Intl.get('apply.approve.document.writing', '文件撰写')})}
                 />;
-                //联合跟进申请和拜访申请
+            //联合跟进申请和拜访申请
             case APPLY_APPROVE_TYPES.VISITAPPLY:
                 return (
                     <AddVisitApply
@@ -743,9 +913,18 @@ class ApplyApproveList extends React.Component {
 
         }
     };
-    closeAddApplyForm = () => {
+    closeAddApplyForm = (result) => {
         this.setState({
             addApplyFormPanel: ''
+        }, () => {
+            //看一下当前选中的tab是不是我申请的或者我团队的列表
+            if (_.indexOf([APPLY_TYPE.APPLY_BY_TEAM, APPLY_TYPE.APPLY_BY_ME], this.state.activeApplyTab) > -1) {
+                //立刻获取有时候会获取不到
+                setTimeout(() => {
+                    UserApplyActions.afterAddApplySuccess(result);
+                }, 1000);
+
+            }
         });
     };
     getFirstApplyItem = () => {

@@ -65,8 +65,8 @@ class AddBusinessWhile extends React.Component {
     }
 
 
-    hideBusinessApplyAddForm = () => {
-        this.props.hideBusinessApplyAddForm();
+    hideBusinessApplyAddForm = (data) => {
+        this.props.hideBusinessApplyAddForm(data);
     };
     onBeginTimeChange = (date, dateString) => {
         var formData = this.state.formData;
@@ -184,11 +184,10 @@ class AddBusinessWhile extends React.Component {
                     if (data) {
                         //添加成功
                         this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                        this.hideBusinessApplyAddForm();
+                        this.hideBusinessApplyAddForm(data);
                         //添加完后的处理
                         data.afterAddReplySuccess = true;
                         data.showCancelBtn = true;
-                        BusinessApplyAction.afterAddApplySuccess(data);
                     } else {
                         this.setResultData(errTip, 'error');
                     }

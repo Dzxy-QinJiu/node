@@ -49,7 +49,6 @@ class LeaveApplyManagement extends React.Component {
             this.getAllLeaveApplyList();
         }
         LeaveApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
-        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_LEAVE, this.pushDataListener);
         this.getUnreadReplyList();
         notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
@@ -127,8 +126,6 @@ class LeaveApplyManagement extends React.Component {
         LeaveApplyStore.unlisten(this.onStoreChange);
         LeaveApplyAction.setInitState();
         LeaveApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
-        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_LEAVE, this.pushDataListener);
-        notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
 
     showAddApplyPanel = () => {

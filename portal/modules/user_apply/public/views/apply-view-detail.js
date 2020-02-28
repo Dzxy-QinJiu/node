@@ -44,12 +44,13 @@ var DefaultHeadIconImage = require('../../../common/public/image/default-head-ic
 var UserTypeConfigForm = require('./user-type-config-form');
 import Trace from 'LIB_DIR/trace';
 var moment = require('moment');
-import {handleDiffTypeApply,getUserApplyFilterReplyList,
-    getApplyStatusTimeLineDesc,formatUsersmanList,
+import {
+    handleDiffTypeApply, getUserApplyFilterReplyList,
+    getApplyStatusTimeLineDesc, formatUsersmanList,
     updateUnapprovedCount, isFinalTask,
-    isApprovedByManager,timeShowFormat,
+    isApprovedByManager, timeShowFormat,
     isCustomDelayType, getDelayTimeUnit,
-    applyAppConfigTerminal
+    applyAppConfigTerminal, getApplyTopicText, getApplyResultDscr, isCiviwRealm
 } from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import ApplyHistory from 'CMP_DIR/apply-components/apply-history';
@@ -132,6 +133,7 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 import {APPLY_LIST_LAYOUT_CONSTANTS} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import {UnitOldAndNewUserInfo} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
 const ApplyViewDetail = createReactClass({
     propTypes: {
         detailItem: PropTypes.object,
@@ -489,7 +491,8 @@ const ApplyViewDetail = createReactClass({
             <div>
                 <div className="apply-detail-title">
                     <span className="apply-type-tip">
-                        {this.props.detailItem.topic || Intl.get('user.apply.id', '账号申请')}
+                        {/*{this.props.detailItem.topic || Intl.get('user.apply.id', '账号申请')}*/}
+                        {getApplyTopicText(detailInfo)}
                     </span>
                     {this.renderDetailBottom()}
                 </div>
@@ -1939,8 +1942,9 @@ const ApplyViewDetail = createReactClass({
         }
         this.setField('comment', event);
         var val = _.trim(event.target.value);
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
+        ApplyViewDetailActions.setApplyFormDataComment(val);
         if (val) {
-            var ApplyViewDetailActions = this.getApplyViewDetailAction();
             ApplyViewDetailActions.hideReplyCommentEmptyError();
         }
     },
@@ -2035,15 +2039,15 @@ const ApplyViewDetail = createReactClass({
         return time ? moment(time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : '';
     },
     clickApprovalFormBtn(approval) {
-        if (approval === '1') {
+        if (approval === 'pass') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击通过按钮');
-        } else if (approval === '2') {
+        } else if (approval === 'reject') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击驳回按钮');
-        } else if (approval === '3') {
+        } else if (approval === 'cancel') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击撤销申请按钮');
         }
         //用户申请时，选择了手动设置密码时，未输入密码，不能通过
-        if (this.showPassWordPrivilege() && this.settingPasswordManuWithNoValue() && approval === '1'){
+        if (this.showPassWordPrivilege() && this.settingPasswordManuWithNoValue() && approval === 'pass'){
             this.setState({
                 showWariningTip: true
             });
@@ -2134,7 +2138,7 @@ const ApplyViewDetail = createReactClass({
                 }
                 //转出成功后，如果左边选中的是待审批的列表，在待审批列表中把这条记录删掉
                 if (this.props.selectedApplyStatus === 'ongoing') {
-                    UserApplyAction.afterTransferApplySuccess(submitObj.id);
+                    this.props.afterTransferApplySuccess(submitObj.id);
                 } else {
                     message.success(Intl.get('apply.approve.transfer.success', '转出申请成功'));
                 }
@@ -2209,38 +2213,42 @@ const ApplyViewDetail = createReactClass({
         var isShowApproveBtn = detailInfoObj.showApproveBtn || this.props.isHomeMyWork;
         //是否审批
         let isConsumed = !this.isUnApproved();
-
+        var userName = _.last(_.get(detailInfoObj, 'approve_details')) ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name : '' : '';
+        var approvalDes = getApplyResultDscr(detailInfoObj);
+        var renderAssigenedContext = null;
+        var showApproveBtn = detailInfoObj.showApproveBtn || this.props.isHomeMyWork;
+        //渲染分配的按钮
+        if (_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'distributeSalesToVisit') > -1 && showApproveBtn){
+            //分配给普通销售
+            renderAssigenedContext = this.renderAssigenedContext;
+        }else if(_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'assignNextNodeApprover') > -1 && showApproveBtn){
+            if (isCiviwRealm()){
+                //如果是识微域，直接点通过就可以，不需要手动选择分配销售总经理
+                renderAssigenedContext = null;
+            }else{
+                //如果是不是识微域,需要选择所分配给的销售总经理
+                renderAssigenedContext = this.renderCandidatedContext;
+            }
+        }
+        var addApplyNextCandidate = null;
+        if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn || this.state.isLeader) && detailInfoObj.status === 'ongoing'){
+            addApplyNextCandidate = this.renderAddApplyNextCandidate;
+        }
         return (
-            <div className="approval_block pull-right">
-                <Row className="approval_person clearfix">
-                    <Col>
-                        {isConsumed ? null : (<div className="pull-right">
-                            {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) && showBackoutApply ?
-                                <Button type="primary" className="btn-primary-sure" size="small"
-                                    onClick={this.clickApprovalFormBtn.bind(this, '3')}>
-                                    {Intl.get('user.apply.detail.backout', '撤销申请')}
-                                </Button>
-                                : null}
-                            {isShowApproveBtn ? (
-                                <Button className="reject-btn btn-primary-sure"
-                                    onClick={this.clickApprovalFormBtn.bind(this, '2')}>
-                                    <i className='iconfont icon-reject'></i>
-                                    {Intl.get('common.apply.reject', '驳回')}
-                                </Button>) : null}
-                            {isShowApproveBtn ? (
-                                <Button className="agree-btn btn-primary-sure"
-                                    onClick={this.clickApprovalFormBtn.bind(this, '1')}>
-                                    <i className='iconfont icon-agree'></i>
-                                    {Intl.get('user.apply.detail.button.pass', '通过')}
-                                </Button>) : null}
-
-                            {/*如果是管理员或者我是待审批人或者我是待审批人的上级领导，我都可以把申请进行转出*/}
-                            {(isShowApproveBtn || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || this.state.isLeader) && detailInfoObj.approval_state === '0' ? this.renderAddApplyNextCandidate() : null}
-                        </div>)}
-                    </Col>
-                </Row>
-            </div>);
+            <ApplyDetailBottom
+                create_time={detailInfoObj.create_time}
+                applicantText={_.get(detailInfoObj, 'applicant.nick_name','') + Intl.get('crm.109', '申请')}
+                isConsumed={isConsumed}
+                update_time={detailInfoObj.update_time}
+                approvalText={userName + approvalDes}
+                showApproveBtn={detailInfoObj.showApproveBtn}
+                showCancelBtn={detailInfoObj.showCancelBtn}
+                submitApprovalForm={this.clickApprovalFormBtn}
+                renderAssigenedContext={renderAssigenedContext}
+                addApplyNextCandidate={addApplyNextCandidate}
+            />);
     },
+
 
     // 用户名重名时
     renderDuplicationName(errorMsg) {

@@ -6,6 +6,10 @@ import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
 import {ALL} from '../utils/apply_approve_utils';
 //用户审批界面使用的store
 function UserApplyStore() {
+    //我的有未读回复的列表
+    this.unreadMyReplyList = [];
+    //团队有回复的列表
+    this.unreadTeamReplyList = [];
     //初始化state数据
     this.resetState();
     //绑定action
@@ -45,8 +49,8 @@ UserApplyStore.prototype.resetState = function() {
     this.listenScrollBottom = true;
     //记录所有apps
     this.allApps = [];
-    //有未读回复的列表
-    this.unreadReplyList = [];
+    // //有未读回复的列表
+    //     // this.unreadReplyList = [];
     //处理申请操作失败
     this.dealApplyError = 'success';
     //是否查看未读回复的申请列表
@@ -57,36 +61,78 @@ UserApplyStore.prototype.resetState = function() {
 //设置是否查看未读回复的申请列表
 UserApplyStore.prototype.setIsCheckUnreadApplyList = function(flag) {
     this.isCheckUnreadApplyList = flag;
+    if(flag){
+        this.searchKeyword = '';
+        this.lastApplyId = '';
+        this.showUpdateTip = false;
+        this.selectedApplyStatus = ALL;
+        this.selectedApplyType = ALL;
+    }
 };
 //刷新未读回复列表;
-UserApplyStore.prototype.refreshUnreadReplyList = function(unreadReplyList) {
-    this.unreadReplyList = _.isArray(unreadReplyList) ? unreadReplyList : [];
+// UserApplyStore.prototype.refreshUnreadReplyList = function(unreadReplyList) {
+//     this.unreadReplyList = _.isArray(unreadReplyList) ? unreadReplyList : [];
+// };
+UserApplyStore.prototype.refreshMyUnreadReplyList = function(unreadReplyList) {
+    this.unreadMyReplyList = _.isArray(unreadReplyList) ? unreadReplyList : [];
 };
+UserApplyStore.prototype.refreshTeamUnreadReplyList = function(unreadReplyList) {
+    this.unreadTeamReplyList = _.isArray(unreadReplyList) ? unreadReplyList : [];
+};
+
+
 /**
  * 清除未读回复申请列表中已读的回复
  * @param applyId：有值时只清除applyId对应的申请，不传时，清除当前登录用户所有的未读回复申请列表
  */
 UserApplyStore.prototype.clearUnreadReply = function(applyId) {
-    const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
+    const MY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.MY_UNREAD_REPLY;
+    const TEAM_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.TEAM_UNREAD_REPLY;
     //获取sessionStorage中该用户的未读回复列表
-    let unreadReplyList = session.get(APPLY_UNREAD_REPLY);
-    if (unreadReplyList) {
-        let applyUnreadReplyList = JSON.parse(unreadReplyList) || [];
+    let unreadMyReplyList = session.get(MY_UNREAD_REPLY);
+    let unreadTeamReplyList = session.get(TEAM_UNREAD_REPLY);
+    if (unreadMyReplyList) {
+        let applyUnreadReplyList = JSON.parse(unreadMyReplyList) || [];
         //清除某条申请
         if (applyId) {
-            applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id !== applyId);
+            applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.id !== applyId);
         }
-        this.unreadReplyList = applyUnreadReplyList;
-        session.set(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyList));
+        this.unreadMyReplyList = applyUnreadReplyList;
+        session.set(MY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyList));
         //加延时是为了，避免循环dispatch报错：Cannot dispatch in the middle of a dispatch
         setTimeout(() => {
-            notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, applyUnreadReplyList);
+            notificationEmitter.emit(notificationEmitter.MY_UNREAD_REPLY, applyUnreadReplyList);
+        });
+    }
+    if (unreadTeamReplyList) {
+        let applyUnreadReplyList = JSON.parse(unreadTeamReplyList) || [];
+        //清除某条申请
+        if (applyId) {
+            applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.id !== applyId);
+        }
+        this.unreadTeamReplyList = applyUnreadReplyList;
+        session.set(TEAM_UNREAD_REPLY, JSON.stringify(applyUnreadReplyList));
+        //加延时是为了，避免循环dispatch报错：Cannot dispatch in the middle of a dispatch
+        setTimeout(() => {
+            notificationEmitter.emit(notificationEmitter.TEAM_UNREAD_REPLY, applyUnreadReplyList);
         });
     }
 };
 //是否显示更新数据提示,flag:true/false
 UserApplyStore.prototype.setShowUpdateTip = function(flag) {
     this.showUpdateTip = flag;
+};
+//获取由我发起的申请
+UserApplyStore.prototype.getApplyListStartSelf = function(obj){
+    this.handleApplyLists(obj);
+};
+//获取所有申请列表
+UserApplyStore.prototype.getAllApplyLists = function(obj) {
+    this.handleApplyLists(obj);
+};
+//获取我的申请列表
+UserApplyStore.prototype.getMyApplyLists = function(obj) {
+    this.handleApplyLists(obj);
 };
 //清空数据
 UserApplyStore.prototype.clearData = function() {
@@ -95,81 +141,44 @@ UserApplyStore.prototype.clearData = function() {
     this.selectedDetailItemIdx = -1;
     this.listenScrollBottom = false;
 };
+UserApplyStore.prototype.handleApplyLists = function(obj){
+    if (obj.loading) {
+        this.applyListObj.loadingResult = 'loading';
+        this.applyListObj.errorMsg = '';
+    } else if (obj.error) {
+        this.applyListObj.loadingResult = 'error';
+        this.applyListObj.errorMsg = obj.errorMsg;
+        if (!this.lastApplyId) {
+            this.clearData();
+        }
+    } else {
+        this.applyListObj.loadingResult = '';
+        this.applyListObj.errorMsg = '';
+        this.totalSize = obj.data.total;
+        let applyList = obj.data.list;
+        if (_.isArray(applyList) && applyList.length) {
+            if (this.lastApplyId) {//下拉加载数据时
+                this.applyListObj.list = this.applyListObj.list.concat(applyList);
+            } else {//首次获取数据时
+                this.applyListObj.list = applyList;
+                this.selectedDetailItem = applyList[0];
+                this.selectedDetailItemIdx = 0;
+            }
+            this.lastApplyId = this.applyListObj.list.length ? _.last(this.applyListObj.list).id : '';
+            this.listenScrollBottom = this.applyListObj.list.length < this.totalSize;
+        } else if (!this.lastApplyId) {//获取第一页就没有数据时
+            this.clearData();
+            //获取的未读回复列表为空时，清除sessionStore中存的未读回复的申请
+            if (this.isCheckUnreadApplyList) {
+                this.clearUnreadReply();
+            }
+        } else {//下拉加载取得数据为空时需要取消下拉加载得处理（以防后端得total数据与真实获取得数据列表不一致时，一直触发下拉加载取数据得死循环问题）
+            this.listenScrollBottom = false;
+        }
+    }
+};
 
-//获取由我发起的申请
-UserApplyStore.prototype.getApplyListStartSelf = function(obj){
-    if (obj.loading) {
-        this.applyListObj.loadingResult = 'loading';
-        this.applyListObj.errorMsg = '';
-    } else if (obj.error) {
-        this.applyListObj.loadingResult = 'error';
-        this.applyListObj.errorMsg = obj.errorMsg;
-        if (!this.lastApplyId) {
-            this.clearData();
-        }
-    } else {
-        this.applyListObj.loadingResult = '';
-        this.applyListObj.errorMsg = '';
-        this.totalSize = obj.data.total;
-        let applyList = obj.data.list;
-        if (_.isArray(applyList) && applyList.length) {
-            if (this.lastApplyId) {//下拉加载数据时
-                this.applyListObj.list = this.applyListObj.list.concat(applyList);
-            } else {//首次获取数据时
-                this.applyListObj.list = applyList;
-                this.selectedDetailItem = applyList[0];
-                this.selectedDetailItemIdx = 0;
-            }
-            this.lastApplyId = this.applyListObj.list.length ? _.last(this.applyListObj.list).id : '';
-            this.listenScrollBottom = this.applyListObj.list.length < this.totalSize;
-        } else if (!this.lastApplyId) {//获取第一页就没有数据时
-            this.clearData();
-            //获取的未读回复列表为空时，清除sessionStore中存的未读回复的申请
-            if (this.isCheckUnreadApplyList) {
-                this.clearUnreadReply();
-            }
-        } else {//下拉加载取得数据为空时需要取消下拉加载得处理（以防后端得total数据与真实获取得数据列表不一致时，一直触发下拉加载取数据得死循环问题）
-            this.listenScrollBottom = false;
-        }
-    }
-};
-//获取申请列表
-UserApplyStore.prototype.getApplyList = function(obj) {
-    if (obj.loading) {
-        this.applyListObj.loadingResult = 'loading';
-        this.applyListObj.errorMsg = '';
-    } else if (obj.error) {
-        this.applyListObj.loadingResult = 'error';
-        this.applyListObj.errorMsg = obj.errorMsg;
-        if (!this.lastApplyId) {
-            this.clearData();
-        }
-    } else {
-        this.applyListObj.loadingResult = '';
-        this.applyListObj.errorMsg = '';
-        this.totalSize = obj.data.total;
-        let applyList = obj.data.list;
-        if (_.isArray(applyList) && applyList.length) {
-            if (this.lastApplyId) {//下拉加载数据时
-                this.applyListObj.list = this.applyListObj.list.concat(applyList);
-            } else {//首次获取数据时
-                this.applyListObj.list = applyList;
-                this.selectedDetailItem = applyList[0];
-                this.selectedDetailItemIdx = 0;
-            }
-            this.lastApplyId = this.applyListObj.list.length ? _.last(this.applyListObj.list).id : '';
-            this.listenScrollBottom = this.applyListObj.list.length < this.totalSize;
-        } else if (!this.lastApplyId) {//获取第一页就没有数据时
-            this.clearData();
-            //获取的未读回复列表为空时，清除sessionStore中存的未读回复的申请
-            if (this.isCheckUnreadApplyList) {
-                this.clearUnreadReply();
-            }
-        } else {//下拉加载取得数据为空时需要取消下拉加载得处理（以防后端得total数据与真实获取得数据列表不一致时，一直触发下拉加载取数据得死循环问题）
-            this.listenScrollBottom = false;
-        }
-    }
-};
+
 
 //根据id获取申请（通过邮件中的链接查看申请时）
 UserApplyStore.prototype.getApplyById = function(obj) {
@@ -199,6 +208,12 @@ UserApplyStore.prototype.setLastApplyId = function(applyId) {
     this.listenScrollBottom = true;
 };
 
+UserApplyStore.prototype.afterAddApplySuccess = function(item) {
+    this.applyListObj.list.unshift(item);
+    this.selectedDetailItem = item;
+    this.selectedDetailItemIdx = 0;
+    this.totalSize++;
+};
 //更改用户审批筛选类型
 UserApplyStore.prototype.changeApplyStatus = function(type) {
     this.selectedApplyStatus = type;
@@ -210,6 +225,7 @@ UserApplyStore.prototype.changeApplyStatus = function(type) {
 UserApplyStore.prototype.changeApplyType = function(type){
     this.selectedApplyType = type;
     this.lastApplyId = '';
+    this.isCheckUnreadApplyList = false;
     this.showUpdateTip = false;
 };
 
@@ -218,6 +234,7 @@ UserApplyStore.prototype.changeSearchInputValue = function(value) {
     this.searchKeyword = value;
     this.lastApplyId = '';
     this.showUpdateTip = false;
+    this.isCheckUnreadApplyList = false;
 };
 
 

@@ -52,8 +52,6 @@ function ApplyViewDetailActions() {
     this.getBusinessApplyCommentList = function(queryObj) {
         this.dispatch({loading: true, error: false});
         getApplyCommentList(queryObj).then((list) => {
-            //清除未读回复列表中已读的回复
-            applyApproveAction.clearUnreadReply(queryObj.id);
             this.dispatch({loading: false, error: false, list: list});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('failed.get.reply.comment', '获取回复列表失败')});

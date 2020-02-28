@@ -1,10 +1,12 @@
 import {Button} from 'antd';
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 
 export const APPLY_TYPE = {
     APPLY_BY_ME: 'apply_by_me',
     APPROVE_BY_ME: 'approve_by_me',
     APPLY_BY_TEAM: 'apply_by_team',
 };
+
 export const APPLY_APPROVE_TAB_TYPES = [{
     value: APPLY_TYPE.APPLY_BY_ME,
     name: Intl.get('apply.approve.list.start.by.me', '我申请的')
@@ -34,6 +36,7 @@ export const transferBtnContent = function() {
 };
 export const SEARCH = 'search';
 export const FILTER = 'filter';
+export const UNREPLY = 'unreply';
 export const getStatusNum = function(state) {
     let statusNum = '';
     switch (state) {
@@ -61,20 +64,19 @@ export const UnitOldAndNewUserInfo = function(userInfo) {
         producer: _.get(userInfo,'applicant'),
         presenter: _.get(userInfo,'applicant.nick_name'),
         message: {
-            sales_team_name: "济南平台部",
-            user_name: "wyeruiyweiuree",
-            sales_opportunity: "apply_new_users",
-            remark: "qweqweqw",
-            type: "apply_user_trial",
+            sales_team_name: '济南平台部',
+            user_name: _.get(userInfo,'detail.user_name'),
+            remark: _.get(userInfo,'remark'),
+            type: _.get(userInfo,'detail.user_apply_type'),
             products: JSON.stringify(_.get(userInfo,'detail.user_grants_apply',[])),
-            sales_name: "cs-test00",
-            nick_name: _.get(userInfo,'applicant.nick_name'),
-            producer_team: "销售部-测试",
+            sales_name: 'cs-test00',
+            nick_name: _.get(userInfo,'detail.nickname'),
+            producer_team: '销售部-测试',
             tag: _.get(userInfo,'user_type'),
             customer_name: _.get(userInfo,'customer_name'),
             customer_id: _.get(userInfo,'customer_id'),
             order_id: _.get(userInfo,'order_id')},
-        message_type: "apply",
+        message_type: _.get(userInfo,'workflow_type'),
         customer_name: _.get(userInfo,'detail.customers[0].name'),
         topic: _.get(userInfo,''),
         approval_person: _.get(userInfo,''),
@@ -112,3 +114,9 @@ export const UnitOldAndNewUserDetail = function(detail) {
     };
 };
 export const ALL = 'all';
+export const addShowCancelBtn = function(list) {
+
+};
+export const getAllUnhandleApplyCount = () => {
+    return Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEAPPLY];
+};

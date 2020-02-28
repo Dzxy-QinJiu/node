@@ -41,14 +41,6 @@ module.exports = {
         'privileges': [privilegeConst_common.USERAPPLY_BASE_PERMISSION]
     }, {
         'method': 'get',
-        'path': '/rest/get/userapply/worklist',
-        'handler': 'getMyUserApplyWorkList',
-        'passport': {
-            'needLogin': true
-        },
-        'privileges': [privilegeConst_common.USERAPPLY_BASE_PERMISSION]
-    }, {
-        'method': 'get',
         'path': '/rest/get/myapproved/apply/list',
         'handler': 'getApplyListApprovedByMe',
         'passport': {

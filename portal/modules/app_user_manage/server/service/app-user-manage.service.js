@@ -69,10 +69,10 @@ var AppUserRestApis = {
     getApplyListApprovedByMe: '/rest/base/v1/workflow/applylist/self/approved',
     //todo 获取或者添加回复列表
     getOrAddApplyComments: '/rest/base/v1/workflow/comments',
-    //获取有未读回复的申请列表
-    getUnreadApplyList: '/rest/base/v1/message/applylist/comment/unread',
+    //todo 获取我审批的申请(包含我审批过的和待我审批的)
+    getMyApplyLists: '/rest/base/v1/workflow/work/approved/list',
     //获取未读回复列表(用户来标识未读回复的申请)
-    getUnreadReplyList: '/rest/base/v1/message/applycomment/unread/notices',
+    // getUnreadReplyList: '/rest/base/v1/message/applycomment/unread/notices',
     //获取工作流未读回复列表
     getWorkFlowUnreadReplyList: 'rest/base/v1/workflow/comments/notice/unread',
     //获取申请单详情
@@ -195,6 +195,7 @@ exports.getRecentLoginUsers = function(req, res, queryObj) {
             res: res
         }, queryObj);
 };
+
 
 // 获取用户列表
 function getUsersList(req, res, obj, requestUrl) {
@@ -325,25 +326,17 @@ exports.batchUpdate = function(req, res, field, data, application_ids) {
  */
 exports.getApplyList = function(req, res, obj) {
     let url = AppUserRestApis.getApplyList;
-    //获取有未读回复的申请列表
-    if (obj.isUnreadApply === 'true') {
-        obj = {id: obj.id, page_size: obj.page_size};
-        url = AppUserRestApis.getUnreadApplyList;
-    } else {
-        delete obj.isUnreadApply;
-    }
-    //如果
     return restUtil.authRest.get({
         url: url,
         req: req,
         res: res
     }, obj, {
         success: function(eventEmitter, data) {
-            //处理数据
-            if (data && data.list && data.list.length) {
-                var applyList = applyDto.toRestObject(data.list || []);
-                data.list = applyList;
-            }
+            //todo  处理数据
+            // if (data && data.list && data.list.length) {
+            //     // var applyList = applyDto.toRestObject(data.list || []);
+            //     data.list = applyList;
+            // }
             //如果是根据客户id查询申请列表的时候，还需要格外查询这些申请的回复列表
             if (obj.customer_id){
                 var emitter = new EventEmitter();
@@ -367,18 +360,19 @@ exports.getApplyList = function(req, res, obj) {
         }
     });
 };
+//获取我的申请审批
+exports.getMyApplyLists = function(req, res){
+    return restUtil.authRest.get({
+        url: AppUserRestApis.getMyApplyLists,
+        req: req,
+        res: res
+    }, req.query);
+};
 /**
  * 获取我申请的申请列表*/
 exports.getApplyListStartSelf = function(req, res){
     var obj = req.query;
     let url = AppUserRestApis.getApplyListStartSelf;
-    //todo 获取有未读回复的申请列表
-    if (obj.isUnreadApply === 'true') {
-        obj = {id: obj.id, page_size: obj.page_size};
-        url = AppUserRestApis.getUnreadApplyList;
-    } else {
-        delete obj.isUnreadApply;
-    }
     //如果有传类型
     if(obj.type){
         url += `?type=${obj.type}`;
@@ -390,7 +384,7 @@ exports.getApplyListStartSelf = function(req, res){
         if(obj.status){
             url += `?status=${obj.status}`;
         }
-    };
+    }
     delete obj.status;
     delete obj.type;
     return restUtil.authRest.get({
@@ -446,56 +440,34 @@ function getApplyListApprovedByMe(req, res) {
             }
         });
     });
-};
+}
 //获取待我审批的申请
-function getApplyListWillApprovedByMe(req, res) {
-    return new Promise((resolve, reject) => {
-        return restUtil.authRest.put({
-            url: AppUserRestApis.getApplyListWillApprovedByMe,
-            req: req,
-            res: res
-        }, req.query, {
-            success: (emitter, data) => {
-                resolve(data);
-            },
-            error: (eventEmitter, errorDesc) => {
-                reject(errorDesc);
-            }
-        });
-    });
-};
-exports.getApplyListApproveSelf = function(req, res){
-    var obj = req.query;
-
-    // //todo 获取有未读回复的申请列表
-    // if (obj.isUnreadApply === 'true') {
-    //     obj = {id: obj.id, page_size: obj.page_size};
-    //     url = AppUserRestApis.getUnreadApplyList;
-    // } else {
-    //     delete obj.isUnreadApply;
-    // }
-    //获取待我审批的列表及我审批过的申请
-    var promiseList = [getApplyListApprovedByMe(req, res),getApplyListWillApprovedByMe(req, res)];
-
-};
-
-//获取未读回复列表
-exports.getUnreadReplyList = function(req, res) {
+exports.getApplyListWillApprovedByMe = function(req, res) {
     return restUtil.authRest.get({
-        url: AppUserRestApis.getUnreadReplyList,
+        url: AppUserRestApis.getApplyListWillApprovedByMe,
         req: req,
         res: res
-    }, req.query, {
-        success: (eventEmitter, data) => {
-            //处理数据
-            let replyList = _.get(data, 'list[0]') ? data.list : [];
-            data.list = _.map(replyList, reply => {
-                return applyDto.unreadReplyToFrontend(reply);
-            });
-            eventEmitter.emit('success', data);
-        }
-    });
+    }, req.query);
+
 };
+
+// //获取未读回复列表
+// exports.getUnreadReplyList = function(req, res) {
+//     return restUtil.authRest.get({
+//         url: AppUserRestApis.getUnreadReplyList,
+//         req: req,
+//         res: res
+//     }, req.query, {
+//         success: (eventEmitter, data) => {
+//             //处理数据
+//             let replyList = _.get(data, 'list[0]') ? data.list : [];
+//             data.list = _.map(replyList, reply => {
+//                 return applyDto.unreadReplyToFrontend(reply);
+//             });
+//             eventEmitter.emit('success', data);
+//         }
+//     });
+// };
 //获取工作流未读回复列表
 exports.getWorkFlowUnreadReplyList = function(req, res) {
     return restUtil.authRest.get({
@@ -1016,13 +988,13 @@ exports.editAppDetail = function(req, res, requestObj) {
         res: res
     }, requestObj);
 };
-function getReplyItem(req, res) {
+function getReplyItem(req, res, id) {
     return new Promise((resolve, reject) => {
         return restUtil.authRest.get({
             url: AppUserRestApis.getOrAddApplyComments,
             req: req,
             res: res
-        }, req.query, {
+        }, {id: id}, {
             success: function(eventEmitter, data) {
                 resolve(data);
             },
@@ -1035,7 +1007,7 @@ function getReplyItem(req, res) {
 //获取一个申请单的回复列表
 exports.getApplyComments = function(req, res) {
     var emitter = new EventEmitter();
-    let promiseList = [getReplyItem(req, res, req.params.apply_id)];
+    let promiseList = [getReplyItem(req, res, req.query.id)];
     Promise.all(promiseList).then((dataList) => {
         var result = dataList[0] ? dataList[0] : [];
         emitter.emit('success', result);

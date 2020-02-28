@@ -40,6 +40,7 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_APPROVE_TYPES,APPLY_FINISH_STATUS,ASSIGN_TYPE,TOP_NAV_HEIGHT,APPLY_LIST_LAYOUT_CONSTANTS,LEAVE_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import {ALL_COMPONENTS, SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import {transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import classNames from 'classnames';
 import salesOpportunityApplyAjax from 'MOD_DIR/sales_opportunity/public/ajax/sales-opportunity-apply-ajax';
 class ApplyViewDetail extends React.Component {
@@ -131,7 +132,7 @@ class ApplyViewDetail extends React.Component {
                 }
                 //转出成功后，如果左边选中的是待审批的列表，在待审批列表中把这条记录删掉
                 if (this.props.selectedApplyStatus === 'ongoing'){
-                    LeaveApplyActions.afterTransferApplySuccess(submitObj.id);
+                    this.props.afterTransferApplySuccess(submitObj.id);
                 }else{
                     message.success(Intl.get('apply.approve.transfer.success','转出申请成功'));
                 }
@@ -525,7 +526,7 @@ class ApplyViewDetail extends React.Component {
                 datatraceContainer='域名申请分配按钮'
                 ref={AssignSales => this.assignSales = AssignSales}
                 content={<Button
-                    className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('clue.customer.distribute', '分配')}</Button>}
+                    className='assign-btn btn-primary-sure'size="small">{Intl.get('clue.customer.distribute', '分配')}</Button>}
                 overlayTitle={Intl.get('user.salesman', '销售人员')}
                 okTitle={Intl.get('common.confirm', '确认')}
                 cancelTitle={Intl.get('common.cancel', '取消')}

@@ -14,8 +14,6 @@ var restApis = {
     applylistBussinessTrip: '/rest/base/v1/workflow/businesstrip/worklist',
     //添加出差申请
     addBusinessApply: '/rest/base/v1/workflow/businesstrip',
-    //获取申请列表
-    getOrAddApplyComments: '/rest/base/v1/workflow/comments',
     //通过或者驳回申请
     approveApplyPassOrReject: '/rest/base/v1/workflow/businesstrip/approve',
     //获取申请的状态

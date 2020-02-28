@@ -1462,6 +1462,7 @@ var zh_CN = {
     'user.apply.approve': '用户申请审批',
     'user.apply.approve.count': '有{approveCount}条审批消息',
     'user.apply.unread.reply': '有未读回复',
+    'apply.list.has.unreply': '未读回复',
     'user.apply.no.unread.reply': '无未读回复',
     'user.apply.refresh.reply.tip': '有新回复，点此{refreshTip}',
     'user.apply.unread.reply.check': '有未读回复的申请，{check}',
@@ -1479,6 +1480,7 @@ var zh_CN = {
     'user.apply.last.follow.date': '最新跟进日期',
     'user.apply.approve.no.comment': '暂无申请历史！',
     'user.apply.has.been.opened': '已开通{count}个',
+    'apply.list.return.back': '返回',
     // 用户审批end
 
     // 在线用户start

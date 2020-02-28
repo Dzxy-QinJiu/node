@@ -17,14 +17,13 @@ class ApplyDetailBottom extends React.Component {
                 {
                     this.props.showApproveBtn || assigenedContext ? (
                         <div className="pass-and-reject-wrap">
-                            {assigenedContext ? assigenedContext : <Button
-                                type="primary" className="btn-primary-sure" size="small" disabled={this.props.disabled}
+                            {assigenedContext ? assigenedContext : <Button className="agree-btn btn-primary-sure" disabled={this.props.disabled}
                                 onClick={this.props.submitApprovalForm.bind(this, 'pass')}>
-                                {this.props.passText}
+                                <i className='iconfont icon-agree'></i>{this.props.passText}
                             </Button>}
-                            <Button type="primary" className="btn-primary-sure" size="small"
+                            <Button className="reject-btn btn-primary-sure"
                                 onClick={this.props.submitApprovalForm.bind(this, 'reject')}>
-                                {this.props.rejectText}
+                                <i className='iconfont icon-reject'></i>{this.props.rejectText}
                             </Button>
                         </div>
                     ) : null
@@ -37,13 +36,13 @@ class ApplyDetailBottom extends React.Component {
         var showPassOrAssignedContext = this.props.showApproveBtn || assigenedContext;
         return <div className="pull-right">
             {this.props.showCancelBtn ?
-                <Button type="primary" className="btn-primary-sure" size="small"
+                <Button className="btn-primary-sure" size="small"
                     onClick={this.props.submitApprovalForm.bind(this, 'cancel')}>
                     {Intl.get('user.apply.detail.backout', '撤销申请')}
                 </Button> : null}
             {showPassOrAssignedContext ? this.renderPassOrAssignedContext() : null}
         </div>;
-    }
+    };
 
     render() {
         return (

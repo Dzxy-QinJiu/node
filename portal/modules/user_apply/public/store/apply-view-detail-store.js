@@ -97,7 +97,8 @@ class ApplyViewDetailStore {
             //三种状态,loading,error,success,''
             result: '',
             //服务端错误信息
-            errorMsg: ''
+            errorMsg: '',
+            comment: ''
         };
         // 是否显示没有设置角色的弹框(管理员批准的时候，
         // 如果是创建正式、创建试用、已有用户申请开通新应用正式、已有用户申请开通新应用试用，
@@ -268,7 +269,7 @@ class ApplyViewDetailStore {
         //下一节点负责人的列表
         this.candidateList = [];
 
-    };
+    }
     hideApprovalBtns() {
         this.selectedDetailItem.showApproveBtn = false;
         this.selectedDetailItem.showCancelBtn = false;
@@ -390,6 +391,9 @@ class ApplyViewDetailStore {
         } else {
             this.detailBottomDisplayType = 'btn';
         }
+    }
+    setApplyFormDataComment(comment) {
+        this.replyFormInfo.comment = comment;
     }
     //提交审批
     submitApply(obj) {
@@ -590,7 +594,7 @@ class ApplyViewDetailStore {
             var replyItem = resultObj.reply;
             this.replyListInfo.list.push(replyItem);
             //输入框清空
-            this.formData.comment = '';
+            replyFormInfo.comment = '';
         }
     }
     //恢复添加回复表单到默认状态

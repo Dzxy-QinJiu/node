@@ -23,25 +23,7 @@ exports.getAllSalesOpportunityApplyList = function(queryObj) {
     });
     return Deferred.promise();
 };
-//获取待我审批的申请列表
-let getWorklistSalesOpportunityApplyListAjax = null;
-exports.getWorklistSalesOpportunityApplyList = function(queryObj) {
-    var Deferred = $.Deferred();
-    getWorklistSalesOpportunityApplyListAjax && getWorklistSalesOpportunityApplyListAjax.abort();
-    getWorklistSalesOpportunityApplyListAjax = $.ajax({
-        url: '/rest/get/worklist/sales_opportunity_apply/list',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
+
 //通过或者驳回申请
 let approveSalesOpportunityApplyPassOrRejectAjax = null;
 exports.approveSalesOpportunityApplyPassOrReject = function(obj) {

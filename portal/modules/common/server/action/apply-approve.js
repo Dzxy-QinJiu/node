@@ -42,20 +42,6 @@ exports.getApplyTaskNode = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-
-exports.getMyUserApplyWorkList = function(req, res) {
-    ApplyApproveService.getMyUserApplyWorkList(req, res).on('success', function(data) {
-        var result = {list: [],total: 0};
-        if (data && data.list && data.list.length) {
-            var applyList = applyDto.toRestObject(data.list || []);
-            result.list = applyList;
-            result.total = applyList.length;
-        }
-        res.status(200).json(result);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
 exports.getApplyDetailById = function(req, res) {
     ApplyApproveService.getApplyDetailById(req, res).on('success', function(data) {
         res.status(200).json(data);

@@ -22,6 +22,7 @@
 
         li.apply_type_item {
           float: left;
+          position: relative;
           width: 64px;
           font-size: 16px;
           text-align: center;
@@ -103,6 +104,16 @@
           color: #ccc;
           float: right;
         }
+      };
+      //有未读回复的返回按钮
+      .filter-and-search-container.return-back{
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        cursor: pointer;
+        color: #8DA8C5;
+        padding: 0;
+        font-size: 14px;
       }
       .refresh-tip-panel {
         font-size: 14px;
@@ -131,22 +142,60 @@
 
 //添加不同类型的审批样式
 .add-apply-type-list, .add-search-or-filter-type-list {
-  .ant-dropdown-menu-item a {
-    font-size: 14px;
-    color: #333;
-
-    .iconfont {
-      color: #8DA8C5;
-      margin-right: 8px;
-    }
-
-    &:hover {
-      color: #2196F3;
-
-      .iconfont {
-        color: #2196F3;
+  .ant-dropdown-menu-item{
+    //带未读回复的提示
+      &.active-unreply a, &.active-unreply a:hover{
+        color: #EFA246;
+        .iconfont {
+          color: #EFA246;
+        }
       }
-    }
+      &.inactive-unreply a,&.inactive-unreply a:hover{
+        color:#ccc;
+        .iconfont {
+          color: #ccc;
+        }
+      }
 
+    a {
+      font-size: 14px;
+      color: #333;
+      .iconfont {
+        color: #8DA8C5;
+        margin-right: 8px;
+      }
+      &:hover {
+        color: #2196F3;
+        .iconfont {
+          color: #2196F3;
+        }
+      }
+
+    }
   }
+};
+.apply_by_me_container:before,.approve_by_me_container:before,.apply_by_team_container:before {
+  pointer-events:auto;
+  cursor: pointer;
+  position: absolute;
+  right: -10px;
+  top: 0px;
+  min-width: 14px;
+  height: 14px;
+  overflow: hidden;
+  background: @import_data_error_color;
+  border-radius: 8px;
+  color: #fff;
+  line-height: 14px;
+  font-size: 10px;
+  text-align: center;
+  z-index: 1000;
+}
+.apply_by_me_container:before,.apply_by_team_container:before{
+  background: @will-distribute-color;
+  height: 7px;
+  width: 7px;
+  min-width: 0;
+  right: -4px;
+
 }

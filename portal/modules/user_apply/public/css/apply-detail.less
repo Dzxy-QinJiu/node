@@ -7,65 +7,6 @@
   color: #5d5d5d;
   position: relative;
   background-color: @current-item-color;
-  //详情头部标题
-  .apply-detail-title {
-    height: 64px;
-    padding: 24px;
-    line-height: 16px;
-    .apply-type-tip {
-      font-size: 16px;
-      color: @title-color;
-    }
-    //通过，驳回或者转审的按钮
-    .approval_block {
-      overflow: hidden;
-      margin-top: -8px;
-      .ant-form-item-control textarea {
-        resize: none;
-      }
-      .approval_text {
-        padding-top: 15px;
-        padding-bottom: 0;
-        line-height: 24px;
-        font-size: 16px;
-        color: #506470;
-      }
-      .ant-btn{
-        font-size: 14px;
-        height: 32px;
-        line-height: 30px;
-        width: 88px;
-        margin-left: 8px;
-        .iconfont{
-          margin-right: 7px;
-        }
-        //同意按钮
-        &.agree-btn{
-          color:#fff;
-          background: @agree-btn-background;
-          border:1px solid @agree-btn-background;
-        }
-        //驳回按钮
-        &.reject-btn{
-          color:#fff;
-          background:@confirm-delete-background;
-          border:1px solid @confirm-delete-background;
-        }
-        //转审按钮
-        &.assign-btn{
-          color: #8DA8C5;
-          border: 1px solid #ccc;
-        }
-      }
-
-    }
-    .order-id {
-      float: right;
-      font-size: 14px;
-      color: @font-color;
-    }
-  }
-
   .apply-detail-content {
     padding: 0 24px;
   }

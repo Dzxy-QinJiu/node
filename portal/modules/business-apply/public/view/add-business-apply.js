@@ -20,7 +20,6 @@ const DEFAULTTIMETYPE = 'day';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
 import {calculateTotalTimeRange, calculateRangeType} from 'PUB_DIR/sources/utils/common-data-util';
-var BusinessApplyAction = require('../action/business-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
 import {DELAY_TIME_RANGE,LEAVE_TIME_RANGE,AM_AND_PM} from 'PUB_DIR/sources/utils/consts';
@@ -60,8 +59,8 @@ class AddBusinessApply extends React.Component {
     }
 
 
-    hideBusinessApplyAddForm = () => {
-        this.props.hideBusinessApplyAddForm();
+    hideBusinessApplyAddForm = (data) => {
+        this.props.hideBusinessApplyAddForm(data);
     };
     onBeginTimeChange = (date, dateString) => {
         var formData = this.state.formData;
@@ -192,11 +191,10 @@ class AddBusinessApply extends React.Component {
                     if (data){
                         //添加成功
                         this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                        this.hideBusinessApplyAddForm();
+                        this.hideBusinessApplyAddForm(data);
                         //添加完后的处理
                         data.afterAddReplySuccess = true;
                         data.showCancelBtn = true;
-                        BusinessApplyAction.afterAddApplySuccess(data);
                     }else{
                         this.setResultData(errTip, 'error');
                     }

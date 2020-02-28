@@ -43,6 +43,7 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import {transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import classNames from 'classnames';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
@@ -125,7 +126,7 @@ class ApplyViewDetail extends React.Component {
                 }
                 //转出成功后，如果左边选中的是待审批的列表，在待审批列表中把这条记录删掉
                 if (this.props.selectedApplyStatus === 'ongoing'){
-                    LeaveApplyActions.afterTransferApplySuccess(submitObj.id);
+                    this.props.afterTransferApplySuccess(submitObj.id);
                 }else{
                     message.success(Intl.get('apply.approve.transfer.success','转出申请成功'));
                 }

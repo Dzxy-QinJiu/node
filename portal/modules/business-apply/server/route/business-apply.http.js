@@ -21,13 +21,6 @@ module.exports = {
                 needLogin: true
             },
         }, {
-            method: 'get',
-            path: '/rest/get/worklist/business_apply/list',
-            handler: 'getWorklistBusinessApplyList',
-            passport: {
-                needLogin: true
-            },
-        }, {
             method: 'post',
             path: '/rest/add/apply/list',
             handler: 'addBusinessApply',

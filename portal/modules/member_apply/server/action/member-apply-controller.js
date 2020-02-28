@@ -22,14 +22,6 @@ function handleNodata(data) {
     }
     return data;
 }
-exports.getWorklistMemberApplyList = function(req, res) {
-    MemberApplyService.getWorklistMemberApplyList(req, res).on('success', function(data) {
-        data = handleNodata(data);
-        res.status(200).json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
 
 exports.getMemberApplyComments = function(req, res) {
     MemberApplyService.getMemberApplyComments(req, res).on('success', function(data) {

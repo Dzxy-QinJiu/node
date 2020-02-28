@@ -18,18 +18,7 @@ const UNREADCOUNT = [{//待分配或待跟进线索数的数据
     style: 'clueUnhandledStyle',
     showNum: true
 }, {//待处理申请审批数的数据
-    name: [
-        APPLY_APPROVE_TYPES.UNHANDLE_USER_APPLY,//用户申请待审批数
-        APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT,//出差申请待我审批数
-        APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,//请假申请的待我审批数
-        APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,//销售机会的待我审批数
-        APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND,//舆情报送的待我审批数
-        APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE,//文件撰写的待我审批数
-        APPLY_APPROVE_TYPES.UNHANDLEMEMBERINIVTE,//成员申请的待我审批数
-        APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,//拜访申请的待我审批数
-        APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY,//舆情平台申请的待我审批数
-        APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY,//外出申请的待我审批数
-    ],
+    name: APPLY_APPROVE_TYPES.UNHANDLEAPPLY,
     cls: 'apply_icon_container',
     style: 'applyApproveUnhandledStyle',
     showNum: false

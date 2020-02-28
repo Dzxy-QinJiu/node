@@ -88,11 +88,10 @@ class AddApply extends React.Component {
                 if (!_.isString(result)) {
                     //添加成功
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                    this.hideLeaveApplyAddForm();
+                    this.hideLeaveApplyAddForm(result);
                     //添加完后的处理
                     result.afterAddReplySuccess = true;
                     result.showCancelBtn = true;
-                    LeaveApplyAction.afterAddApplySuccess(result);
                 } else {
                     this.setResultData(result, 'error');
                 }
@@ -115,8 +114,8 @@ class AddApply extends React.Component {
             saveResult: ''
         });
     };
-    hideLeaveApplyAddForm = () => {
-        this.props.hideLeaveApplyAddForm();
+    hideLeaveApplyAddForm = (result) => {
+        this.props.hideLeaveApplyAddForm(result);
     };
     checkCustomerName = (rule, value, callback) => {
         value = _.trim(_.get(this.state, 'formData.customer.id'));

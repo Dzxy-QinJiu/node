@@ -39,6 +39,7 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {nameLengthRule, nameRegex, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
 import PasswordSetting from 'CMP_DIR/password-setting';
+import {transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 const formItemLayout = {
     labelCol: {span: 3},
     wrapperCol: {span: 16}

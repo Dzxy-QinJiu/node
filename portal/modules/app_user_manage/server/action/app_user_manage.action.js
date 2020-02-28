@@ -131,6 +131,19 @@ exports.getApplyList = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+exports.getMyApplyLists = function(req, res) {
+    AppUserService.getMyApplyLists(req, res).on('success', function(data) {
+        var result = {list: [],total: 0};
+        if(_.isArray(data)){
+            result.list = data;
+            result.total = data.length;
+        }
+        res.status(200).json(result);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
 exports.getApplyListStartSelf = function(req, res) {
     AppUserService.getApplyListStartSelf(req, res).on('success', function(data) {
         res.json(data);
@@ -138,24 +151,18 @@ exports.getApplyListStartSelf = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-exports.getApplyListApproveSelf = function(req, res) {
-    AppUserService.getApplyListApproveSelf(req, res).on('success', function(data) {
-        res.json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
 
 
 
-//获取未读回复列表
-exports.getUnreadReplyList = function(req, res) {
-    AppUserService.getUnreadReplyList(req, res).on('success', function(data) {
-        res.status(200).json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
+
+// //获取未读回复列表
+// exports.getUnreadReplyList = function(req, res) {
+//     AppUserService.getUnreadReplyList(req, res).on('success', function(data) {
+//         res.status(200).json(data);
+//     }).on('error', function(codeMessage) {
+//         res.status(500).json(codeMessage && codeMessage.message);
+//     });
+// };
 //获取工作流的未读回复列表
 exports.getWorkFlowUnreadReplyList = function(req, res) {
     AppUserService.getWorkFlowUnreadReplyList(req, res).on('success', function(data) {
@@ -164,7 +171,23 @@ exports.getWorkFlowUnreadReplyList = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-
+function handleNodata(data) {
+    if (!data){
+        data = {
+            list: [],
+            total: 0
+        };
+    }
+    return data;
+}
+exports.getApplyListWillApprovedByMe = function(req, res) {
+    AppUserService.getApplyListWillApprovedByMe(req, res).on('success', function(data) {
+        data = handleNodata(data);
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
 //获取申请详情
 exports.getApplyDetail = function(req, res, next) {
     //申请单id

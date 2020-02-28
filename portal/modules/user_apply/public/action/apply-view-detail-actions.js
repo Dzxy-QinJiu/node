@@ -73,7 +73,8 @@ class ApplyViewDetailActions {
             'setNextCandidate',
             'showOrHideApprovalBtns',
             'setHistoryApplyStatus',
-            'setDetailInfoObjAfterAdd'
+            'setDetailInfoObjAfterAdd',
+            'setApplyFormDataComment',
         );
     }
 
@@ -122,8 +123,6 @@ class ApplyViewDetailActions {
         this.dispatch({loading: true, error: false, list: [], errorMsg: ''});
         getApplyCommentList({id: id}).then((list) => {
             this.dispatch({loading: false, error: false, list: list, errorMsg: ''});
-            //清除未读回复列表中已读的回复
-            UserApplyAction.clearUnreadReply(id);
             //针对reply中的user_id，排重
             var user_ids = _.chain(list).map('user_id').uniq().value();
             //针对每一个user_id，获取用户信息

@@ -42,7 +42,7 @@ import {APPLY_APPROVE_TYPES, APPLY_FINISH_STATUS,LEAVE_TIME_RANGE} from 'PUB_DIR
 import {disabledDate, calculateSelectType} from 'PUB_DIR/sources/utils/common-method-util';
 import {calculateTotalTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 import classNames from 'classnames';
-
+import {transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -126,7 +126,7 @@ class ApplyViewDetail extends React.Component {
                 }
                 //转出成功后，如果左边选中的是待审批的列表，在待审批列表中把这条记录删掉
                 if (this.props.selectedApplyStatus === 'ongoing'){
-                    BusinessApplyActions.afterTransferApplySuccess(submitObj.id);
+                    this.props.afterTransferApplySuccess(submitObj.id);
                 }else{
                     message.success(Intl.get('apply.approve.transfer.success','转出申请成功'));
                 }

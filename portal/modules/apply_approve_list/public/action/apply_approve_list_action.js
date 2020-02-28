@@ -8,6 +8,7 @@ import {getApplyDetailById} from 'PUB_DIR/sources/utils/apply-common-data-utils'
  */
 function UserApplyActions() {
     this.generateActions(
+        'resetState',//切换tab的时候清除数据
         'setLastApplyId', //设置当前展示列表中最后一个id
         'changeSearchInputValue',//修改搜索框的值
         'changeApplyStatus',//修改申请审批的状态
@@ -15,67 +16,85 @@ function UserApplyActions() {
         'setSelectedDetailItem',//设置当前要查看详情的申请
         'setShowUpdateTip',//设置是否展示更新提示
         'getApplyById',//根据id获取申请（实际是获取申请的详情）
-        'refreshUnreadReplyList',//刷新未读回复列表
+        // 'refreshUnreadReplyList',//刷新未读回复列表
+        'refreshMyUnreadReplyList',//刷新未读回复列表
+        'refreshTeamUnreadReplyList',//刷新未读回复列表
         'clearUnreadReply',//清除未读回复列表中已读的回复
         'updateDealApplyError',//更新处理申请错误的状态
         'setIsCheckUnreadApplyList',//设置是否查看有未读回复的申请列表
         'backApplySuccess',
-        'afterTransferApplySuccess'
+        'afterTransferApplySuccess',//转审成功后的处理
+        'afterAddApplySuccess'//添加申请审批成功后的处理
     );
-    //获取申请列表
-    this.getApplyList = function(obj, callback) {
-        this.dispatch({loading: true, error: false});
-        if (_.includes(['all','false'], obj.approval_state)){
-            ApplyApproveAjax.getMyUserApplyWorkList().sendRequest({keyword: obj.keyword}).success((workList) => {
-                //如果是待我审批的列表，不需要在发获取全部列表的请求了
-                if (obj.approval_state && obj.approval_state === 'false') {
-                    //需要对全部列表都加一个可以审批的属性
-                    workList.total = workList.list.length;
-                    _.forEach(workList.list, (workItem) => {
-                        workItem.showApproveBtn = true;
-                        //如果是我申请的，除了可以审批之外，我也可以撤回
-                        if (_.get(workItem, 'applicant.user_id') === userData.getUserData().user_id) {
-                            workItem.showCancelBtn = true;
-                        }
-                    });
-                    this.dispatch({error: false, loading: false, data: workList});
-                    _.isFunction(callback) && callback(workList.total);
-                    return;
-                }
-                getDiffTypeApplyList(this,obj,workList.list);
-            }).error(xhr => {
-                this.dispatch({
-                    error: true,
-                    loading: false,
-                    errorMsg: xhr.responseJSON || Intl.get('apply.failed.get.my.worklist.application', '获取待我审批的{type}申请失败', {type: Intl.get('crm.detail.user', '用户')})
-                });
-            }
-            );
-        }else{
-            getDiffTypeApplyList(this,obj);
-        }
-    };
+    // //获取申请列表
+    // this.getApplyList = function(obj, callback) {
+    //     this.dispatch({loading: true, error: false});
+    //     if (_.includes(['all','false'], obj.approval_state)){
+    //         ApplyApproveAjax.getMyUserApplyWorkList().sendRequest({keyword: obj.keyword}).success((workList) => {
+    //             //如果是待我审批的列表，不需要在发获取全部列表的请求了
+    //             if (obj.approval_state && obj.approval_state === 'false') {
+    //                 //需要对全部列表都加一个可以审批的属性
+    //                 workList.total = workList.list.length;
+    //                 _.forEach(workList.list, (workItem) => {
+    //                     workItem.showApproveBtn = true;
+    //                     //如果是我申请的，除了可以审批之外，我也可以撤回
+    //                     if (_.get(workItem, 'applicant.user_id') === userData.getUserData().user_id) {
+    //                         workItem.showCancelBtn = true;
+    //                     }
+    //                 });
+    //                 this.dispatch({error: false, loading: false, data: workList});
+    //                 _.isFunction(callback) && callback(workList.total);
+    //                 return;
+    //             }
+    //             getDiffTypeApplyList(this,obj,workList.list);
+    //         }).error(xhr => {
+    //             this.dispatch({
+    //                 error: true,
+    //                 loading: false,
+    //                 errorMsg: xhr.responseJSON || Intl.get('apply.failed.get.my.worklist.application', '获取待我审批的{type}申请失败', {type: Intl.get('crm.detail.user', '用户')})
+    //             });
+    //         }
+    //         );
+    //     }else{
+    //         getDiffTypeApplyList(this,obj);
+    //     }
+    // };
+
+
+
+
+
     //获取由我发起的申请列表
-    this.getApplyListStartSelf = function(obj, callback) {
+    this.getApplyListStartSelf = function(obj) {
         this.dispatch({loading: true, error: false});
         UserAjax.getApplyListStartSelf(obj).then((result) => {
-            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({loading: false, error: false, data: result });
-        }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
-    };
-    //获取待我审批的申请列表
-    this.getApplyListApproveByMe = function(obj, callback) {
-        this.dispatch({loading: true, error: false});
-        UserAjax.getApplyListApproveByMe(obj).then((result) => {
-            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({loading: false, error: false, data: result });
-        }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
-    };
 
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({loading: false, error: false, data: result });
+        }, (errorMsg) => {
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+        });
+    };
+    //获取我的申请列表
+    this.getMyApplyLists = function(obj) {
+        this.dispatch({loading: true, error: false});
+        UserAjax.getMyApplyLists(obj).then((result) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({loading: false, error: false, data: result });
+        }, (errorMsg) => {
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+        });
+    };
+    //获取所有申请列表
+    this.getAllApplyLists = function(obj) {
+        this.dispatch({loading: true, error: false});
+        UserAjax.getAllApplyLists(obj).then((result) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({loading: false, error: false, data: result });
+        }, (errorMsg) => {
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+        });
+    };
     //根据id获取申请
     this.getApplyById = function(applyId) {
         this.dispatch({loading: true, error: false});
@@ -90,7 +109,7 @@ function UserApplyActions() {
         // if (applyData){
         //     this.dispatch({loading: false, error: false, detail: applyData.detail, status: status});
         // }else{
-        getApplyDetailById(queryObj).then((detail) => {
+        getApplyDetailById({id: applyId}).then((detail) => {
             this.dispatch({loading: false, error: false, detail: detail, status: status});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});

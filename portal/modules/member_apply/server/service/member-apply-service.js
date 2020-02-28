@@ -9,8 +9,6 @@ var _ = require('lodash');
 var restApis = {
     //查询所有的成员申请
     allWorkFlowApplyList: '/rest/base/v1/workflow/applylist',
-    //查询由当前账号审批的成员申请
-    applylistWorkFlowWorkList: '/rest/base/v1/workflow/worklist',
     //通过或者驳回申请
     approveMemberApplyPassOrReject: '/rest/base/v1/workflow/memberinvite/approve',
     //获取申请的状态
@@ -24,15 +22,6 @@ exports.getAllMemberApplyList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: restApis.allWorkFlowApplyList,
-            req: req,
-            res: res
-        }, req.query);
-};
-//查询由当前账号审批的成员申请
-exports.getWorklistMemberApplyList = function(req, res) {
-    return restUtil.authRest.get(
-        {
-            url: restApis.applylistWorkFlowWorkList,
             req: req,
             res: res
         }, req.query);

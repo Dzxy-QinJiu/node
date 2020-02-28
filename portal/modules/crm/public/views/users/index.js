@@ -30,6 +30,7 @@ import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import { EventEmitter } from 'events';
 import {getDetailLayoutHeight} from '../../utils/crm-util';
 import {UnitOldAndNewUserInfo} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
@@ -130,7 +131,8 @@ class CustomerUsers extends React.Component {
         let promiseList = [
             getApplyList({
                 customer_id: this.state.curCustomer.id,
-                approval_state: 'false',
+                status: 'ongoing',
+                type: APPLY_APPROVE_TYPES.USER_OR_GRANT,
                 page_size: 100
             }),
             crmAjax.getCrmUserList({
@@ -689,11 +691,22 @@ class CustomerUsers extends React.Component {
         const isExistUserApply = this.isExistUserApply(app);
         let isOplateUser = this.state.isOplateUser;
         let appName = app && app.client_name || '';
+        var userType = '';
+        if(isOplateUser){
+            _.each(app.tags,(tagItem, index) => {
+                if(index > 0){
+                    userType += '、';
+                }
+                userType += USER_TYPE_MAP[tagItem];
+            });
+        }else{
+            userType = app.tags.join('、');
+        }
         return (
             <span>
                 <span className="crm-user-app-logo-font">{appName.substr(0, 1)}</span>
                 <span className="user-app-name">{appName || ''}</span>
-                <span className="user-app-type">{isOplateUser ? USER_TYPE_MAP[app.tag] : app.tag}</span>
+                <span className="user-app-type">{userType}</span>
                 {!isExistUserApply && isOplateUser ? <span className="user-app-number">{app.number}</span> : null}
             </span>);
     }

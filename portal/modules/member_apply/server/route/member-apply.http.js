@@ -13,13 +13,6 @@ module.exports = {
                 needLogin: true
             },
         }, {
-            method: 'get',
-            path: '/rest/get/worklist/apply_approve/list',
-            handler: 'getWorklistMemberApplyList',
-            passport: {
-                needLogin: true
-            },
-        }, {
             method: 'post',
             path: '/rest/member_apply/submitApply',
             handler: 'approveMemberApplyPassOrReject',

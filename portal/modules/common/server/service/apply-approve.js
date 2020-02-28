@@ -29,16 +29,6 @@ exports.addUserApplyNewCandidate = function(req, res) {
             res: res
         }, req.body);
 };
-//待我审批的用户列表
-exports.getMyUserApplyWorkList = function(req, res) {
-    return restUtil.authRest.get(
-        {
-            //todo url: '/rest/base/v1/message/applylist/worklist',
-            url: '/rest/base/v1/workflow/worklist',
-            req: req,
-            res: res
-        }, req.query);
-};
 //我审批过的申请列表
 exports.getApplyListApprovedByMe = function(req, res) {
     return restUtil.authRest.get(

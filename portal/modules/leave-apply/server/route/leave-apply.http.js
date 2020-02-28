@@ -14,13 +14,6 @@ module.exports = {
                 needLogin: true
             },
         }, {
-            method: 'get',
-            path: '/rest/get/worklist/apply_approve/list',
-            handler: 'getWorklistLeaveApplyList',
-            passport: {
-                needLogin: true
-            },
-        }, {
             method: 'post',
             path: '/rest/add/leave_apply/list',
             handler: 'addLeaveApply',
