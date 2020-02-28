@@ -602,6 +602,7 @@ ClueCustomerStore.prototype.initialRecommendClues = function() {
     this.hasExtraRecommendList = false;
     this.sortvalues = [];
     this.recommendClueListId = '';
+    this.feature = '';
 };
 
 //添加跟进记录时，修改客户最新的跟进记录时，更新列表中的最后联系
@@ -640,6 +641,11 @@ ClueCustomerStore.prototype.updateClueItemAfterAssign = function(updateObj) {
         }
     }
     this.updateClueCustomers(this.curClueList);
+};
+//热门选项
+ClueCustomerStore.prototype.setHotSource = function(value) {
+    this.feature = value;
+    this.sortvalues = [];
 };
 
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');
