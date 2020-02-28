@@ -19,11 +19,12 @@ function UserById(obj) {
     this.user_name = obj.user_name || '';
     this.nick_name = obj.nick_name || '';
     this.user_logo = obj.user_logo || '';
-    this.create_date = _.get(obj, 'user_client[0].create_date', '');
+    this.create_date = _.get(obj, 'create_date', '');
     this.team_name = obj.team_name || '';
     this.team_id = obj.team_id || '';
     this.email_enable = obj.email_enable || false;
     this.email = obj.email || '';
+    this.role_name = _.get(obj, 'roles[0].role_name', ''); // 角色
 }
 
 exports.UserById = UserById;
