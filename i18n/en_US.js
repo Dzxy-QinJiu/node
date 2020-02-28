@@ -3873,6 +3873,9 @@ var en_US = {
     'clue.see.recommend': 'See recommendations',//查看推荐
     'clue.recommend.has.extract.count': '{timerange} has extracted {hasExtract} bars, and at most {ableExtract} bars',//{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
     'clue.recommend.has.extracted.count': '{timerange} has extracted {hasExtract} clues',//{timerange}已提取{hasExtract}条线索
+    'clue.recommend.hot.name': 'hot',//热门
+    'clue.recommend.return.to.work': 'The enterprise has been restarted',//已复工企业
+    'clue.recommend.listed': 'Listed companies',//上市企业
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
     'clue.assignment.strategy.fail.to.get': 'Fail to fetch lead assignment strategy list',//获取线索分配策略列表失败

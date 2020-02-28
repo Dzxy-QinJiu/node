@@ -47,7 +47,8 @@ function ClueCustomerActions() {
         'setPageNum',
         'remarkLeadExtractedByOther',//给被别人提取过的线索加一个标识
         'initialRecommendClues',//初始化推荐线索相关条件及状态
-        'afterNewExtract'//提取推荐线索后
+        'afterNewExtract',//提取推荐线索后
+        'setHotSource',//设置热门选项
     );
     //获取销售列表
     this.getSalesManList = function(cb) {

@@ -35,6 +35,14 @@ const LAYOUT_CONSTANCE = {
     BTN_PADDING: 10, //底部按钮区域高度
 };
 
+const HOT_SELECTORS = [{
+    name: Intl.get('clue.recommend.return.to.work', '已复工企业'),
+    value: '复工'
+},{
+    name: Intl.get('clue.recommend.listed', '上市企业'),
+    value: '上市'
+}];
+
 class ExtractClues extends React.Component {
     constructor(props) {
         super(props);
@@ -75,7 +83,6 @@ class ExtractClues extends React.Component {
         paymentEmitter.removeListener(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
         paymentEmitter.removeListener(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, this.handleUpdateClues);
         clueCustomerStore.unlisten(this.onStoreChange);
-        clueCustomerAction.initialRecommendClues();
     }
 
     batchExtractCluesLists = (taskInfo, taskParams) => {
@@ -803,7 +810,7 @@ class ExtractClues extends React.Component {
                                             </div>
                                             <div className="extract-clue-text-item">
                                                 <span className="extract-clue-text-label">{Intl.get('common.phone', '电话')}</span>：
-                                                <span>{item.telephones}</span>
+                                                <span>{_.get(item.telephones, '[0]')}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -940,11 +947,28 @@ class ExtractClues extends React.Component {
         );
     };
 
+    //热门选项点击处理事件
+    handleClickHotBtn = (key) => {
+        if(!this.state.canClickMoreBatch) { return false; }
+        let hot_source = '';
+        if(key !== this.state.feature) {
+            hot_source = key;
+        }
+        clueCustomerAction.setHotSource(hot_source);
+        setTimeout(() => {
+            this.getRecommendLists();
+        });
+    };
+
     render() {
         let divHeight = $(window).height()
             - LAYOUT_CONSTANCE.PADDING_TOP
-            - LAYOUT_CONSTANCE.TITLE_HEIGHT
             - LAYOUT_CONSTANCE.BTN_PADDING;
+
+        let extractClueTipEl = $('.extract-clues-title-container');
+        if(extractClueTipEl.length) {
+            divHeight -= extractClueTipEl.outerHeight(true);
+        }
 
         let {isWebMin} = isResponsiveDisplay();
         let hasNoExtractCountTip = this.state.hasNoExtractCountTip;
@@ -958,13 +982,28 @@ class ExtractClues extends React.Component {
 
         return (
             <div className="extract-clues-wrapper" data-tracename="线索推荐操作面板">
-                <div className="extract-clues-title-wrapper">
-                    <div className="extract-clues-title">
-                        <span>{Intl.get('clue.customer.clue.recommend', '线索推荐')}</span>
-                        <div className="extract-clues-btn-container">
-                            {
-                                hasSelectedClue ? this.renderExtractOperator(isWebMin) : this.renderBtnClock(isWebMin)
-                            }
+                <div className="extract-clues-title-container">
+                    <div className="extract-clues-title-wrapper">
+                        <div className="extract-clues-title">
+                            <span>{Intl.get('clue.customer.clue.recommend', '线索推荐')}</span>
+                            <div className="extract-clues-btn-container">
+                                {
+                                    hasSelectedClue ? this.renderExtractOperator(isWebMin) : this.renderBtnClock(isWebMin)
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div className="extract-hot-wrapper">
+                        <span className="extract-hot-title">{Intl.get('clue.recommend.hot.name', '热门')}：</span>
+                        <div className='extract-hot-btn-container'>
+                            {_.map(HOT_SELECTORS, hotItem => {
+                                let cls = classNames('hot-btn-item', {
+                                    'hot-active': this.state.feature === hotItem.value
+                                });
+                                return (
+                                    <span className={cls} onClick={this.handleClickHotBtn.bind(this, hotItem.value)}>{hotItem.name}</span>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
