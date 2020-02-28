@@ -31,7 +31,7 @@ import BatchAddAppUser from 'CMP_DIR/user_manage_components/user-add-app';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import DetailCard from 'CMP_DIR/detail-card';
 import {USER_TYPE_VALUE_MAP, USER_TYPE_TEXT_MAP} from 'PUB_DIR/sources/utils/consts';
-import { checkPassword } from 'PUB_DIR/sources/utils/validate-util';
+import { checkPassword, checkConfirmPassword } from 'PUB_DIR/sources/utils/validate-util';
 import { PassStrengthBar } from 'CMP_DIR/password-strength-bar';
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
@@ -543,22 +543,24 @@ var UserDetailAddApp = createReactClass({
         }
     },
 
-    //检验密码
+    //验证密码
     checkPass: function(rule, value, callback) {
-        let rePassWord = this.props.form.getFieldValue('repassword');
-        checkPassword(this, value, callback, rePassWord);
+        let { getFieldValue, validateFields } = this.props.form;
+        let rePassWord = getFieldValue('repassword');
+        checkPassword(this, value, callback, rePassWord, () => {
+            // 如果密码验证通过后，需要强制刷新下确认密码的验证，以防密码不一致的提示没有去掉
+            validateFields(['repassword'], {force: true});
+        });
     },
-
+    
+    //验证确认密码
     checkPass2(rule, value, callback) {
-        if(value) {
-            if (value !== this.props.form.getFieldValue('password')) {
-                callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
-            } else {
-                callback();
-            }
-        } else {
-            callback(Intl.get('common.input.confirm.password', '请输入确认密码'));
-        }
+        let { getFieldValue, validateFields } = this.props.form;
+        let password = getFieldValue('password');
+        checkConfirmPassword(value, callback, password, () => {
+            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
+            validateFields(['password'], {force: true});
+        });
     },
 
     //渲染修改密码

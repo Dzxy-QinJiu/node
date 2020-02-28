@@ -38,7 +38,7 @@ import classNames from 'classnames';
 import userManagePrivilege from '../privilege-const';
 import publicPrivilege from 'PUB_DIR/privilege-const';
 import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
-import { checkPassword } from 'PUB_DIR/sources/utils/validate-util';
+import { checkPassword, checkConfirmPassword } from 'PUB_DIR/sources/utils/validate-util';
 const EDIT_PASSWORD_WIDTH = 260;
 //当前面板z-index
 let thisPanelZIndex;
@@ -270,16 +270,24 @@ class UserDetail extends React.Component {
     //对密码 进行校验
     checkPass = (rule, value, callback) => {
         let rePassWord = this.confirmPasswordRef.state.formData.input;
-        checkPassword(this.passwordRef, value, callback, rePassWord);
+        checkPassword(this.passwordRef, value, callback, rePassWord, () => {
+            // 如果密码验证通过后，需要强制刷新下确认密码的验证，以防密码不一致的提示没有去掉
+            if (_.get(this, 'confirmPassWordRef.refs.validation')) {
+                // 密码、确认密码在input组件中的key都是用的input    
+                this.confirmPassWordRef.refs.validation.forceValidate(['input']);
+            }
+        });
     };
 
     //对确认密码 进行校验
     checkRePass = (rule, value, callback) => {
-        if (value && value === this.passwordRef.state.formData.input) {
-            callback();
-        } else {
-            callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
-        }
+        let password = _.get(this, 'passwordRef.state.formData.input');
+        checkConfirmPassword(value, callback, password, () => {
+            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
+            if(_.get(this, 'passwordRef.refs.validation')){
+                this.passwordRef.refs.validation.forceValidate(['input']);
+            } 
+        });
     };
 
     //处理用户信息修改的方法,组件用
@@ -543,9 +551,7 @@ class UserDetail extends React.Component {
                                                                     field="password"
                                                                     type="password"
                                                                     placeholder={Intl.get('common.input.confirm.password', '请输入确认密码')}
-                                                                    validators={[{
-                                                                        required: true, message: Intl.get('common.input.confirm.password', '请输入确认密码')
-                                                                    }, {validator: this.checkRePass}]}
+                                                                    validators={[{validator: this.checkRePass}]}
                                                                     onDisplayTypeChange={this.onConfirmPasswordDisplayTypeChange}
                                                                     saveEditInput={this.saveEditUserPassword}
                                                                 />

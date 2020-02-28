@@ -4,7 +4,7 @@
 require('./css/forgot-password.less');
 var React = require('react');
 import { TextField } from '@material-ui/core';
-import { isPhone, commonPhoneRegex, checkPassword } from 'PUB_DIR/sources/utils/validate-util';
+import { isPhone, commonPhoneRegex, checkPassword, checkConfirmPassword } from 'PUB_DIR/sources/utils/validate-util';
 import { PassStrengthBar } from 'CMP_DIR/password-strength-bar';
 var crypto = require('crypto');
 import { Steps, Form, Col } from 'antd';
@@ -290,13 +290,24 @@ class ForgotPassword extends React.Component {
         }
     }
 
+    checkPass = (rule, value, callback) => {
+        let { getFieldValue, validateFields } = this.props.form;
+        let rePassWord = getFieldValue('rePassword');
+        checkPassword(this, value, callback, rePassWord, () => {
+            // 如果密码验证通过后，需要强制刷新下确认密码的验证，以防密码不一致的提示没有去掉
+            validateFields(['rePassword'], {force: true});
+        });
+    };
+   
     checkPass2 = (rule, value, callback) => {
-        if (value && value !== this.props.form.getFieldValue('newPassword')) {
-            callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
-        } else {
-            callback();
-        }
+        let { getFieldValue, validateFields } = this.props.form;
+        let password = getFieldValue('newPassword');
+        checkConfirmPassword(value, callback, password, () => {
+            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
+            validateFields(['newPassword'], {force: true});
+        });
     }
+
     clearErrorMsg = () => {
         this.setState({
             errorMsg: ''
@@ -411,10 +422,7 @@ class ForgotPassword extends React.Component {
                 </button>
             </React.Fragment>);
     }
-    checkPass = (rule, value, callback) => {
-        let rePassWord = this.props.form.getFieldValue('rePassword');
-        checkPassword(this, value, callback, rePassWord);
-    };
+   
     // 渲染重置密码视图
     renderResetPasswordView() {
         const hasWindow = this.props.hasWindow;

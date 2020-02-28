@@ -224,9 +224,10 @@ export const validatorNameRuleRegex = (length, name) => {
  * @param value 当前输入的密码
  * @param callback antd验证方法中用户来传错误提示的回调方法
  * @param rePassWord 确认密码，用来判断输入的密码和确认密码是否一致
+ * @param refreshRepasswordValidate  刷新确认密码的验证（以防密码改成跟确认密码一致时，确认密码还提示不一致）
  * @param oldPassword 原始密码， 需要输入原始密码时，用来判断新输入的密码与原始密码是否一致
  **/
-export const checkPassword = (_this, value, callback, rePassWord, oldPassword) => {
+export const checkPassword = (_this, value, callback, rePassWord, refreshRepasswordValidate, oldPassword) => {
     if (value && value.match(passwordRegex)) {
         //密码强度的校验
         //获取密码强度及是否展示
@@ -243,6 +244,10 @@ export const checkPassword = (_this, value, callback, rePassWord, oldPassword) =
         } else if (rePassWord && value !== rePassWord ) {// 输入确认密码后再判断是否一致
             callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
         } else {
+            // 确认密码存在时，刷新确认密码的验证（以防密码改成跟确认密码一致时，确认密码还提示不一致）
+            if(rePassWord && _.isFunction(refreshRepasswordValidate)){
+                refreshRepasswordValidate();
+            }
             callback();
         }
     } else {
@@ -251,5 +256,28 @@ export const checkPassword = (_this, value, callback, rePassWord, oldPassword) =
             passStrength: ''
         });
         callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
+    }
+};
+
+/**
+ * 确认密码的验证
+ * @param value 当前输入的确认密码
+ * @param callback antd验证方法中用户来传错误提示的回调方法
+ * @param passWord 密码，用来判断输入的确认密码和密码是否一致
+ * @param refreshPasswordValidate  刷新密码的验证（以防密码改成跟确认密码一致时，密码还提示不一致）
+ **/
+export const checkConfirmPassword = (value, callback, password, refreshPasswordValidate) => {
+    if(value) {
+        if (value !== password) {
+            callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
+        } else {
+            // 密码存在时，刷新密码的验证（以防密码改成跟确认密码一致时，密码还提示不一致）
+            if(password && _.isFunction(refreshPasswordValidate)){
+                refreshPasswordValidate();
+            }
+            callback();
+        }
+    } else {
+        callback(Intl.get('common.input.confirm.password', '请输入确认密码'));
     }
 };

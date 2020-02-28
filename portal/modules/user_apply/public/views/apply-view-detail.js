@@ -30,7 +30,7 @@ require('../css/main.less');
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from '../../../../components/rightPanel';
 import { PassStrengthBar } from 'CMP_DIR/password-strength-bar';
-import { checkPassword } from 'PUB_DIR/sources/utils/validate-util';
+import { checkPassword, checkConfirmPassword } from 'PUB_DIR/sources/utils/validate-util';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {APPLY_TYPES, userTypeList, TOP_NAV_HEIGHT, TIMERANGEUNIT, WEEKDAYS} from 'PUB_DIR/sources/utils/consts';
 import ModalDialog from 'CMP_DIR/ModalDialog';
@@ -1855,8 +1855,11 @@ const ApplyViewDetail = createReactClass({
 
     //密码的验证
     checkPassword: function(rule, value, callback) {
-        let rePassWord = this.state.formData.confirmPassword;
-        checkPassword(this, value, callback, rePassWord);
+        let rePassWord = _.get(this, 'state.formData.confirmPassword');
+        checkPassword(this, value, callback, rePassWord, () => {
+            // 如果密码验证通过后，需要强制刷新下确认密码的验证，以防密码不一致的提示没有去掉
+            this.refs.validation.forceValidate(['confirmPassword']);
+        });
     },
 
     //渲染密码区域
@@ -1903,10 +1906,7 @@ const ApplyViewDetail = createReactClass({
                 validateStatus={this.renderValidateStyle('confirmPassword')}
                 help={status.confirmPassword.errors ? status.confirmPassword.errors.join(',') : null}
             >
-                <Validator rules={[{
-                    required: true, message: Intl.get('common.input.confirm.password', '请输入确认密码')
-                }, {validator: this.checkConfirmPassword}]}
-                >
+                <Validator rules={[{validator: this.checkConfirmPassword}]}>
                     <Input
                         name="confirmPassword"
                         type="password"
@@ -1922,11 +1922,11 @@ const ApplyViewDetail = createReactClass({
 
     //确认密码验证
     checkConfirmPassword: function(rule, value, callback) {
-        if (value && value !== this.state.formData.apply_detail_password) {
-            callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
-        } else {
-            callback();
-        }
+        let password = _.get(this, 'state.formData.apply_detail_password');
+        checkConfirmPassword(value, callback, password, () => {
+            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
+            this.refs.validation.forceValidate(['apply_detail_password']);
+        });
     },
 
     //延期，修改应用状态，修改密码，渲染“所属客户”

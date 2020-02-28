@@ -6,7 +6,7 @@
 require('./css/register.less');
 const PropTypes = require('prop-types');
 import Trace from '../../lib/trace';
-import {commonPhoneRegex, checkPassword} from '../../public/sources/utils/validate-util';
+import {commonPhoneRegex, checkPassword, checkConfirmPassword} from '../../public/sources/utils/validate-util';
 import {PassStrengthBar} from 'CMP_DIR/password-strength-bar';
 import crypto from 'crypto';
 import {Form, Input, Icon, Button, Col} from 'antd';
@@ -338,18 +338,25 @@ class RegisterForm extends React.Component {
             callback(Intl.get('retry.input.captcha', '请输入验证码'));
         }
     }
+
     checkPass = (rule, value, callback) => {
-        let rePassWord = this.props.form.getFieldValue('rePwd');
-        checkPassword(this, value, callback, rePassWord);
+        let { getFieldValue, validateFields } = this.props.form;
+        let rePassWord = getFieldValue('rePwd');
+        checkPassword(this, value, callback, rePassWord, () => {
+            // 如果密码验证通过后，需要强制刷新下确认密码的验证，以防密码不一致的提示没有去掉
+            validateFields(['rePwd'], {force: true});
+        });
     };
    
     checkPass2 = (rule, value, callback) => {
-        if (value && value !== this.props.form.getFieldValue('pwd')) {
-            callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
-        } else {
-            callback();
-        }
+        let { getFieldValue, validateFields } = this.props.form;
+        let password = getFieldValue('pwd');
+        checkConfirmPassword(value, callback, password, () => {
+            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
+            validateFields(['pwd'], {force: true});
+        });
     }
+
     // onChangeUserAgreement = (e) => {
     //     this.setState({
     //         checkedUserAgreement: e.target.checked,
@@ -470,8 +477,6 @@ class RegisterForm extends React.Component {
                 <FormItem>
                     {getFieldDecorator('rePwd', {
                         rules: [{
-                            required: true, message: Intl.get('common.input.confirm.password', '请输入确认密码')
-                        }, {
                             validator: this.checkPass2
                         }]
                     })(

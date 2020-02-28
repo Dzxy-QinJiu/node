@@ -18,8 +18,7 @@ var userInfoAjax = require('../../user_info/public/ajax/user-info-ajax');
 var passwdStrengthFile = require('../../../components/password-strength-bar');
 var PasswdStrengthBar = passwdStrengthFile.PassStrengthBar;
 import {getUserData} from 'PUB_DIR/sources/user-data';
-import { checkPassword } from 'PUB_DIR/sources/utils/validate-util';
-
+import { checkPassword, checkConfirmPassword } from 'PUB_DIR/sources/utils/validate-util';
 function getStateFromStore() {
     let stateData = UserInfoStore.getState();
     return {
@@ -69,20 +68,24 @@ var UserPwdPage = createReactClass({
     },
 
     checkPass(rule, value, callback) {
-        let { getFieldValue } = this.props.form;
+        let { getFieldValue, validateFields } = this.props.form;
         // 确认密码
         let rePassWord = getFieldValue('rePasswd');
         // 原密码
         let oldPassword = getFieldValue('passwd');
-        checkPassword(this, value, callback, rePassWord, oldPassword);
+        checkPassword(this, value, callback, rePassWord, () => {
+            // 如果密码验证通过后，需要强制刷新下确认密码的验证，以防密码不一致的提示没有去掉
+            validateFields(['rePasswd'], {force: true});
+        }, oldPassword);
     },
 
     checkPass2(rule, value, callback) {
-        if (value && value !== this.props.form.getFieldValue('newPasswd')) {
-            callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
-        } else {
-            callback();
-        }
+        let { getFieldValue, validateFields } = this.props.form;
+        let password = getFieldValue('newPasswd');
+        checkConfirmPassword(value, callback, password, () => {
+            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
+            validateFields(['newPasswd'], {force: true});
+        });
     },
 
     checkUserInfoPwd(rule, value, callback) {
@@ -201,8 +204,6 @@ var UserPwdPage = createReactClass({
                             >
                                 {getFieldDecorator('rePasswd', {
                                     rules: [{
-                                        required: true, message: Intl.get('common.input.confirm.password', '请输入确认密码')
-                                    }, {
                                         validator: this.checkPass2
                                     }]
                                 })(
