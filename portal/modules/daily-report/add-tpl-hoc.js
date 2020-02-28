@@ -4,13 +4,14 @@
 
 import { Steps, Button } from 'antd';
 import { VIEW_TYPE } from './consts';
+import { hideReportPanel } from './utils';
 
 const { Step } = Steps;
 
 export default function(WrappedComponent) {
     return class extends React.Component {
         render() {
-            const { currentStep } = this.props;
+            const { updateState, currentStep } = this.props;
 
             return (
                 <div>
@@ -24,7 +25,7 @@ export default function(WrappedComponent) {
                     <div>
                         {currentStep === 2 ? (
                             <Button
-                                onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL, currentStep: 1 }); }}
+                                onClick={() => { updateState({ currentView: VIEW_TYPE.ADD_TPL, currentStep: 1 }); }}
                             >
                             上一步
                             </Button>
@@ -40,7 +41,7 @@ export default function(WrappedComponent) {
 
                         {currentStep === 1 ? (
                             <Button
-                                onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.SET_RULE, currentStep: 2 }); }}
+                                onClick={() => { updateState({ currentView: VIEW_TYPE.SET_RULE, currentStep: 2 }); }}
                             >
                             下一步
                             </Button>
