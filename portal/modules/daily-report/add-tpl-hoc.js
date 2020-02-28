@@ -3,6 +3,7 @@
  */
 
 import { Steps, Button } from 'antd';
+import { VIEW_TYPE } from './consts';
 
 const { Step } = Steps;
 
