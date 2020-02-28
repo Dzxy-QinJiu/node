@@ -69,24 +69,6 @@ exports.getProductions = function(query) {
     return Deferred.promise();
 };
 
-//获取当前用户的详细信息
-exports.getCurUserById = function(userId) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/user/id/' + userId,
-        dataType: 'json',
-        type: 'get',
-        success: function(userObj) {
-            Deferred.resolve(userObj);
-        },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-
-
 //添加
 exports.addProduction = function(production) {
     var Deferred = $.Deferred();

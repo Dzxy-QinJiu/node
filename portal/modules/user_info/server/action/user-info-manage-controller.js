@@ -6,12 +6,11 @@ var userInfoManageServic = require('../service/user-info-manage-service');
 var oldPwd = '88881234';
 
 //获取用户信息
-exports.getUserInfo = function(req, res) {
-    var userId = req.params.user_id;
-    userInfoManageServic.getUserInfo(req, res, userId)
-        .on('success', function(data) {
+exports.getUserInfo = (req, res) => {
+    userInfoManageServic.getUserInfo(req, res)
+        .on('success', (data) => {
             res.status(200).json(data);
-        }).on('error', function(codeMessage) {
+        }).on('error', (codeMessage) => {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };

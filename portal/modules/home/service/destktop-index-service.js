@@ -46,13 +46,11 @@ function getDataPromise(req, res, url, pathParams, queryObj) {
 }
 
 //获取用户信息
-exports.getUserInfo = function(req, res, userId) {
+exports.getUserInfo = function(req, res) {
     let user = auth.getUser(req);
     var emitter = new EventEmitter();
-    //with_extentions:去掉额外信息的获取，只取基本信息，这样速度快
-    var queryObj = {with_extentions: false};
     //获取登录用户的基本信息
-    let getUserBasicInfo = getDataPromise(req, res, userInfoRestApis.getUserInfo, {userId: userId}, queryObj);
+    let getUserBasicInfo = getDataPromise(req, res, userInfoRestApis.getUserInfo);
     //获取登录用户的角色信息
     let getUserRole = getDataPromise(req, res, userInfoRestApis.getMemberRoles);
     //获取登录用户的引导流程
@@ -209,7 +207,7 @@ exports.getUserAreaData = function(req, res) {
 };
 var baseUrl = 'http://dataservice.curtao.com';
 var userInfoRestApis = {
-    getUserInfo: '/rest/base/v1/user/id',
+    getUserInfo: '/rest/base/v1/user/member/self', // 登录用户信息
     getMemberRoles: '/rest/base/v1/user/member/roles',
     activeEmail: '/rest/base/v1/user/email/confirm',
     getUserLanguage: '/rest/base/v1/user/member/language/setting',

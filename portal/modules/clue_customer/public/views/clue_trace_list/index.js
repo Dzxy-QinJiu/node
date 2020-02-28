@@ -188,8 +188,8 @@ class ClueTraceList extends React.Component {
     //渲染顶部增加记录的teaxare框
     renderAddRecordPanel = () => {
         const formItemLayout = {
-            labelCol: {span: 4},
-            wrapperCol: {span: 20},
+            labelCol: {span: 5},
+            wrapperCol: {span: 19},
             colon: false
         };
         return (

@@ -23,10 +23,10 @@ class NoDataIntro extends React.Component {
             <div className="no-data-add-and-import-intro">
                 <div className="no-data-container-warp">
                     <div className="add-data-wrap">
+                        <span className="add-data-background"></span>
                         <div className="add-data-tip">
                             {this.props.renderAddDataContent()}
                         </div>
-                        <span className="add-data-background"></span>
                     </div>
                     <div className="import-data-wrap">
                         <span className="import-data-background"></span>

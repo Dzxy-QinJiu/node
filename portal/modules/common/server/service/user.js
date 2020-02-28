@@ -7,7 +7,7 @@ var restUtil = require('ant-auth-request').restUtil(restLogger);
 let userDto = require('../dto/user');
 var _ = require('lodash');
 let getUserListByRoleUrl = '/rest/base/v1/user/byrole';
-let getUserInfoById = '/rest/base/v1/user/id/:user_id';
+let getUserInfoById = '/rest/base/v1/user/memberinfo/:member_id';
 const getEnableMemberListByRoleId = '/rest/base/v1/user';
 //根据角色，获取成员列表
 exports.getUserListByRole = function(req, res, queryParams) {
@@ -30,7 +30,7 @@ exports.getUserListByRole = function(req, res, queryParams) {
 //根据成员id，获取成员信息
 exports.getUserById = function(req,res,userId) {
     return restUtil.authRest.get({
-        url: getUserInfoById.replace(':user_id',userId),
+        url: getUserInfoById.replace(':member_id',userId),
         req: req,
         res: res
     }, {}, {

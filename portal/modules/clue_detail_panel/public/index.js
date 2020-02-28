@@ -3,7 +3,6 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/6/14.
  */
-import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 var React = require('react');
 require('./css/index.less');
 require('./css/phone-status.less');
@@ -227,16 +226,7 @@ class ClueDetailPanel extends React.Component {
             });
         }
     }
-    //只要打过电话，在关闭电话面板或者是有新电话打进来的时候，就要把该线索在待我处理列表中去掉
-    deleteFromWaitMeHandleLists = (callback) => {
-        var deleteClue = this.state.deleteFromWaitMeHandleClue;
-        subtracteGlobalClue(deleteClue, (flag) => {
-            if(flag){
-                clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM, deleteClue);
-                _.isFunction(callback) && callback();
-            }
-        });
-    };
+
     setInitialData(phonemsgObj) {
         var phoneNum = '';
         if (phonemsgObj.call_type === 'IN') {
@@ -529,8 +519,7 @@ class ClueDetailPanel extends React.Component {
         phoneRecordObj.callid = '';
         phoneRecordObj.received_time = '';//通话时间
         phoneAlertAction.setInitialState();
-        //调用在待我处理列表中删除线索的方法
-        this.deleteFromWaitMeHandleLists();
+
     }
 
     //获取详情中打电话时的线索id

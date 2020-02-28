@@ -24,11 +24,11 @@ var tabNameList = {
 var noop = function() {
 
 };
-import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 import classNames from 'classnames';
 const DYNAMICHEIGHT = {
-    LAYOUT: 117,
+    // LAYOUT: 117,//
+    LAYOUT: 50,//
     HAS_PHONE_PANEL: 225,
     PHONE_PANEL_HAS_CUSTOMER_SCHEDULE: 235,
     PHONE_PANEL_HAS_TRACE_FINISHED: 65
@@ -282,12 +282,7 @@ class ClueRightPanel extends React.Component {
                 this.setState({
                     isRemoveClue: {},
                 });
-                var curClue = this.state.curClue;
-                subtracteGlobalClue(curClue, (flag) => {
-                    if(flag){
-                        clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
-                    }
-                });
+
                 _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel(e);
             }
         });
@@ -338,6 +333,11 @@ class ClueRightPanel extends React.Component {
 
     getCluePanelHeight = () => {
         let baseHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
+        //title处的高度
+        const titleEl = $('.clue-basic-info-container');
+        if(titleEl.length) {
+            baseHeight -= titleEl.outerHeight(true);
+        }
         //如果有电话跟进面板
         if(_.get(this.props, 'hasPhonePanel')) {
             baseHeight -= DYNAMICHEIGHT.HAS_PHONE_PANEL;
@@ -373,7 +373,8 @@ class ClueRightPanel extends React.Component {
             'is-edit-type': isEditType
         });
         var clueWrapCls = classNames('clue-name-wrap',{
-            'is-edit-type': isEditType
+            'is-edit-type': isEditType,
+            'no-delete-btn': !deleteCluePrivilege(curClue)
         });
         return (
             <div

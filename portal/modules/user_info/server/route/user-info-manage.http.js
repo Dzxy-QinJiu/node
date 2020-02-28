@@ -15,7 +15,7 @@ module.exports = {
     module: 'user_info/server/action/user-info-manage-controller',
     routes: [{
         'method': 'get',
-        'path': '/rest/user_info/:user_id',
+        'path': '/rest/user_info',
         'handler': 'getUserInfo',
         'passport': {
             'needLogin': true

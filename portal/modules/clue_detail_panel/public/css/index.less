@@ -188,3 +188,88 @@
     }
   }
 }
+
+//手机端样式
+@media screen and (max-width: 720px){
+  .clue-right-panel.right-pannel-default{
+    width: 100% !important;
+    //关闭按钮样式
+    .icon-close{
+      color: @icon-close-background-color;
+      position: absolute;
+      top: 22px;
+      left: 24px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: unset;
+    }
+    //内容样式
+    .right-panel-content{
+      width: 100% !important;
+      //头部样式
+      .clue-name-wrap{
+        width: auto;
+        margin-top: 30px;
+        margin-left: -28px;
+        &.no-delete-btn, &.is-edit-type{
+          margin-top: 0;
+          margin-left: 0;
+        }
+        .clue-stage{
+          padding: 0 3px;
+          border-radius: 2px;
+        }
+        .clue-name-title{
+          overflow: hidden;
+          width: auto;
+          float: unset;
+          .basic-edit-field-input.basic-edit-field{
+            border: none;
+          }
+          .basic-info-text{
+            width: auto!important;
+          }
+        }
+      }
+      //删除按钮样式
+      .remove-clue{
+        position: absolute;
+        right: 24px;
+      }
+      //基本信息样式
+      .clue-detail-container{
+        .basic-edit-field form{
+          width: calc(100% - 80px)!important;
+        }
+        .clue-info-detail .basic-edit-field .basic-info-text{
+          max-width: calc(100% - 80px)!important;;
+        }
+        //地域样式
+        .location-edit-field{
+          width: 100%;
+          .area-selector{
+            width: 100%!important;
+          }
+        }
+        //填写无效原因
+        .invalid-valid-container{
+          .btn-container{
+            width: 100%;
+            text-align: right;
+            .confirm-invalidate-item{
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+  .clue_customer_rightpanel {
+    .clue-detail-wrap{
+      width: 100% !important;
+      .clue-basic-info-container{
+        padding-left: 56px;
+      }
+    }
+  }
+}
