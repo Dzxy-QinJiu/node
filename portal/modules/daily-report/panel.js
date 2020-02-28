@@ -17,6 +17,7 @@ import AddNewTpl from './add-new-tpl';
 class ReportPanel extends React.Component {
     state = {
         currentView: VIEW_TYPE.ADD_TPL,
+        currentStep: 1,
     }
 
     render() {
@@ -38,7 +39,8 @@ class ReportPanel extends React.Component {
 
     getDetailContent() {
         const props = {
-            changeView: this.changeView,
+            updateState: this.updateState,
+            ...this.state
         };
 
         switch(this.state.currentView) {
@@ -53,8 +55,8 @@ class ReportPanel extends React.Component {
         }
     }
 
-    changeView = currentView => {
-        this.setState({ currentView });
+    updateState = newState => {
+        this.setState(newState);
     }
 }
 

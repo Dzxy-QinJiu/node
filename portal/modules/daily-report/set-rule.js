@@ -16,7 +16,7 @@ class SetRule extends React.Component {
             <div>
                 设置规则
                 <Button
-                    onClick={() => { this.props.changeView(VIEW_TYPE.ADD_TPL); }}
+                    onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL }); }}
                 >
                     上一步
                 </Button>

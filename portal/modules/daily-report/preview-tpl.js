@@ -15,7 +15,7 @@ class PreviewTpl extends React.Component {
             <div>
                 预览模板
                 <Button
-                    onClick={() => { this.props.changeView(VIEW_TYPE.EDIT_TPL); }}
+                    onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.EDIT_TPL }); }}
                 >
                     返回
                 </Button>

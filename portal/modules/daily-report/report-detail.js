@@ -15,17 +15,17 @@ class ReportDetail extends React.Component {
             <div>
                 报告详情
                 <Button
-                    onClick={() => { this.props.changeView(VIEW_TYPE.ADD_TPL); }}
+                    onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL }); }}
                 >
                     取消
                 </Button>
                 <Button
-                    onClick={() => { this.props.changeView(VIEW_TYPE.PREVIEW_TPL); }}
+                    onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.PREVIEW_TPL }); }}
                 >
                     预览
                 </Button>
                 <Button
-                    onClick={() => { this.props.changeView(VIEW_TYPE.ADD_TPL); }}
+                    onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL }); }}
                 >
                     保存
                 </Button>
