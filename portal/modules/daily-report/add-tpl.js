@@ -32,7 +32,7 @@ class AddTpl extends React.Component {
                     添加新模板
                 </div>
                 <Button
-                    onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.SET_RULE }); }}
+                    onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.SET_RULE, currentStep: 2 }); }}
                 >
                     下一步
                 </Button>
