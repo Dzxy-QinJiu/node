@@ -10,9 +10,11 @@ const { Step } = Steps;
 export default function(WrappedComponent) {
     return class extends React.Component {
         render() {
+            const { currentStep } = this.props;
+
             return (
                 <div>
-                    <Steps current={this.props.currentStep}>
+                    <Steps current={currentStep}>
                         <Step title="1. 选择模板" />
                         <Step title="2. 设置规则" />
                     </Steps>
@@ -20,21 +22,29 @@ export default function(WrappedComponent) {
                         <WrappedComponent {...this.props} />
                     </div>
                     <div>
-                        <Button
-                            onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL, currentStep: 1 }); }}
-                        >
+                        {currentStep === 2 ? (
+                            <Button
+                                onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL, currentStep: 1 }); }}
+                            >
                             上一步
-                        </Button>
-                        <Button
-                            onClick={() => { hideReportPanel(); }}
-                        >
+                            </Button>
+                        ) : null}
+
+                        {currentStep === 2 ? (
+                            <Button
+                                onClick={() => { hideReportPanel(); }}
+                            >
                             保存
-                        </Button>
-                        <Button
-                            onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.SET_RULE, currentStep: 2 }); }}
-                        >
+                            </Button>
+                        ) : null}
+
+                        {currentStep === 1 ? (
+                            <Button
+                                onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.SET_RULE, currentStep: 2 }); }}
+                            >
                             下一步
-                        </Button>
+                            </Button>
+                        ) : null}
                     </div>
                 </div>
             );
