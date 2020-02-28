@@ -118,10 +118,7 @@ class RecommendClues extends React.Component {
         }
         //是否选择复工企业或者上市企业
         if(this.state.feature) {
-            conditionObj = {
-                'feature': this.state.feature,
-                ...conditionObj
-            };
+            conditionObj.feature = this.state.feature;
         }
         clueCustomerAction.getRecommendClueLists(conditionObj);
     };
