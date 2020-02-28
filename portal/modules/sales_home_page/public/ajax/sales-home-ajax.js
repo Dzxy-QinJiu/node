@@ -216,23 +216,7 @@ exports.getExpireUser = function(queryObj) {
     });
     return Deferred.promise();
 };
-//获取用户信息
-exports.getUserInfo = function(userId) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/user_info/' + userId,
-        dataType: 'json',
-        type: 'get',
-        success: function(usrInfo) {
-            Deferred.resolve(usrInfo);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    })
-    ;
-    return Deferred.promise();
-};
+
 exports.activeUserEmail = function(bodyObj) {
     var Deferred = $.Deferred();
     $.ajax({

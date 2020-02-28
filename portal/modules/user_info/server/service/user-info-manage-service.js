@@ -11,7 +11,7 @@ var _ = require('lodash');
 var auth = require('../../../../lib/utils/auth');
 
 var userInfoRestApis = {
-    getUserInfo: '/rest/base/v1/user/id',
+    getUserInfo: '/rest/base/v1/user/member/self', // 获取成员自身信息
     getLogList: '/rest/analysis/auditlog/v1/login/:user_name/drop_down_load',
     editUserInfo: '/rest/base/v1/user/baseinfo',
     setUserLanguage: '/rest/base/v1/user/member/language/setting',
@@ -27,14 +27,14 @@ var userInfoRestApis = {
 
 exports.urls = userInfoRestApis;
 
-exports.getUserInfo = function(req, res, userId) {
+exports.getUserInfo = (req, res) => {
     return restUtil.authRest.get(
         {
-            url: userInfoRestApis.getUserInfo + '/' + userId,
+            url: userInfoRestApis.getUserInfo,
             req: req,
             res: res
         }, {}, {
-            success: function(eventEmitter, data) {
+            success: (eventEmitter, data) => {
                 //处理数据
                 if (data) {
                     var roles = data.roles;

@@ -67,9 +67,8 @@ function resolveResult(hasPrivilege, resolve) {
 //获取用户信息
 function getUserInfo() {
     return new Promise((resolve, reject) => {
-        let user_id = userData.getUserData().user_id;
         $.ajax({
-            url: '/rest/user_info/' + user_id,
+            url: '/rest/user_info',
             dataType: 'json',
             type: 'get',
             success: function(data) {
