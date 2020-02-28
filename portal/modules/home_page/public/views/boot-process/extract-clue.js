@@ -810,7 +810,7 @@ class ExtractClues extends React.Component {
                                             </div>
                                             <div className="extract-clue-text-item">
                                                 <span className="extract-clue-text-label">{Intl.get('common.phone', '电话')}</span>：
-                                                <span>{item.telephones}</span>
+                                                <span>{_.get(item.telephones, '[0]')}</span>
                                             </div>
                                         </div>
                                     </div>
