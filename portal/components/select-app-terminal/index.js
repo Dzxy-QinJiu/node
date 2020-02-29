@@ -4,6 +4,7 @@
 
 import SelectFullWidth from '../select-fullwidth';
 import classNames from 'classnames';
+import { operatorRecordEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 class SelectAppTerminal extends React.Component {
     constructor(props) {
@@ -11,6 +12,20 @@ class SelectAppTerminal extends React.Component {
         this.state = {
             terminalType: '', // 终端类型
         };
+    }
+
+    changeTerminalType = (type) => {
+        this.setState({
+            terminalType: type
+        });
+    }
+
+    componentDidMount() {
+        operatorRecordEmitter.on(operatorRecordEmitter.CHANGE_SELECTED_APP, this.changeTerminalType);
+    }
+
+    componentWillUnmount() {
+        operatorRecordEmitter.removeListener(operatorRecordEmitter.CHANGE_SELECTED_APP, this.changeTerminalType);
     }
 
     // 筛选终端类型

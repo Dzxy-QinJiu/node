@@ -280,3 +280,8 @@ export { leadRecommendEmitter };
 const clickUpgradeNoiceEmitter = new EventEmitter();
 clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB = 'click_notice_tab'; // 点击公告tab
 export { clickUpgradeNoiceEmitter };
+
+// 操作记录中，切换应用事件
+const operatorRecordEmitter = new EventEmitter();
+operatorRecordEmitter.CHANGE_SELECTED_APP = 'change_selected_app'; // 切换应用
+export { operatorRecordEmitter };

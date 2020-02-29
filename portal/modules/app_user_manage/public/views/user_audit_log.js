@@ -24,7 +24,7 @@ var getLocalWebsiteConfig = websiteConfig.getLocalWebsiteConfig;
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 import userData from 'PUB_DIR/sources/user-data';
-import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { phoneMsgEmitter, operatorRecordEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { RETRY_GET_APP } from '../util/consts';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
@@ -224,6 +224,7 @@ class LogView extends React.Component {
         UserAuditLogAction.setUserLogSelectedAppId(app_id);
         Trace.traceEvent('用户审计日志', '点击筛选菜单中的应用');
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
+        operatorRecordEmitter.emit(operatorRecordEmitter.CHANGE_SELECTED_APP, '');
         this.setState({
             appTerminalType: '',
         }, () => {

@@ -19,7 +19,7 @@ const APP_SELECT_HEIGHT = 40; // 应用选择框的高度
 const BOTTOM_TOTAL_HEIGHT = 50; // 记录总条数的高度
 import { data as antUtilData } from 'ant-utils';
 import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
-
+import { operatorRecordEmitter } from 'PUB_DIR/sources/utils/emitters';
 class SingleUserLog extends React.Component {
     static defaultProps = {
         userId: '1'
@@ -118,11 +118,10 @@ class SingleUserLog extends React.Component {
         if (log_type) {
             queryObj.log_type = log_type;
         }
-        let appTerminalType = _.has(queryParams, 'appTerminalType') && queryParams.appTerminalType || this.state.appTerminalType;
+        let appTerminalType = _.has(queryParams, 'appTerminalType') ? queryParams.appTerminalType : this.state.appTerminalType;
         if (appTerminalType) {
             queryObj.terminal = appTerminalType;
         }
-
         SingleUserLogAction.getSingleAuditLogList(queryObj);
     };
 
@@ -167,9 +166,11 @@ class SingleUserLog extends React.Component {
     onSelectedAppChange = (appid) => {
         SingleUserLogAction.resetLogState();
         SingleUserLogAction.setSelectedAppId(appid);
+        operatorRecordEmitter.emit(operatorRecordEmitter.CHANGE_SELECTED_APP, '');
         this.getSingleUserAuditLogList({
             appid: appid,
-            page: 1
+            page: 1,
+            appTerminalType: ''
         });
     };
     // 应用下拉框的选择
