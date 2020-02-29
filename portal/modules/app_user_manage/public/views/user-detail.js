@@ -30,7 +30,6 @@ var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 const WHEEL_DELAY = 10;//滚轮事件延时
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import UserStatusSwitch from './user-status-switch';
-import { getPassStrenth, passwordRegex } from 'CMP_DIR/password-strength-bar';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {RightPanel} from 'CMP_DIR/rightPanel';
@@ -39,6 +38,7 @@ import classNames from 'classnames';
 import userManagePrivilege from '../privilege-const';
 import publicPrivilege from 'PUB_DIR/privilege-const';
 import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
+import { checkPassword, checkConfirmPassword } from 'PUB_DIR/sources/utils/validate-util';
 const EDIT_PASSWORD_WIDTH = 260;
 //当前面板z-index
 let thisPanelZIndex;
@@ -269,28 +269,25 @@ class UserDetail extends React.Component {
 
     //对密码 进行校验
     checkPass = (rule, value, callback) => {
-        if (value && value.match(passwordRegex)) {
-            let passStrength = getPassStrenth(value);
-            this.passwordRef.setState({ passStrength: passStrength });
-            callback();
-        } else {
-            this.passwordRef.setState({
-                passStrength: {
-                    passBarShow: false,
-                    passStrength: 'L'
-                }
-            });
-            callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
-        }
+        let rePassWord = this.confirmPasswordRef.state.formData.input;
+        checkPassword(this.passwordRef, value, callback, rePassWord, () => {
+            // 如果密码验证通过后，需要强制刷新下确认密码的验证，以防密码不一致的提示没有去掉
+            if (_.get(this, 'confirmPassWordRef.refs.validation')) {
+                // 密码、确认密码在input组件中的key都是用的input    
+                this.confirmPassWordRef.refs.validation.forceValidate(['input']);
+            }
+        });
     };
 
     //对确认密码 进行校验
     checkRePass = (rule, value, callback) => {
-        if (value && value === this.passwordRef.state.formData.input) {
-            callback();
-        } else {
-            callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
-        }
+        let password = _.get(this, 'passwordRef.state.formData.input');
+        checkConfirmPassword(value, callback, password, () => {
+            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
+            if(_.get(this, 'passwordRef.refs.validation')){
+                this.passwordRef.refs.validation.forceValidate(['input']);
+            } 
+        });
     };
 
     //处理用户信息修改的方法,组件用
@@ -323,15 +320,18 @@ class UserDetail extends React.Component {
     };
 
     saveEditUserPassword = (saveObj, successFunc, errorFunc) => {
-        AppUserAjax.editAppUser(saveObj).then((result) => {
-            if (result) {
-                if (_.isFunction(successFunc)) successFunc();
-                this.onConfirmPasswordDisplayTypeChange();
-            } else {
-                if (_.isFunction(errorFunc)) errorFunc();
-            }
-        }, (errorMsg) => {
-            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+        this.passwordRef.refs.validation.validate(valid => {
+            if (!valid) return;
+            AppUserAjax.editAppUser(saveObj).then((result) => {
+                if (result) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    this.onConfirmPasswordDisplayTypeChange();
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc();
+                }
+            }, (errorMsg) => {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+            }); 
         });
     };
 

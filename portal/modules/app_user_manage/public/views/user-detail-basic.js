@@ -16,7 +16,6 @@ var AlertTimer = require('CMP_DIR/alert-timer');
 var AppUserUtil = require('../util/app-user-util');
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var measureText = require('PUB_DIR/sources/utils/measure-text');
-import { getPassStrenth, passwordRegex } from 'CMP_DIR/password-strength-bar';
 var UserDetailFieldSwitch = require('./user-detail-field-switch');
 var language = require('PUB_DIR/language/getLanguage');
 var AppUserAjax = require('../ajax/app-user-ajax');
@@ -647,47 +646,6 @@ class UserDetailBasic extends React.Component {
         AppUserDetailAction.changeCustomer(customerObj);
         //更新用户客户信息
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_CUSTOMER_INFO, customerObj);
-    };
-
-    onPasswordDisplayTypeChange = (type) => {
-        if (type === 'edit') {
-            this.setState({ isConfirmPasswordShow: true });
-        } else {
-            this.setState({ isConfirmPasswordShow: false });
-        }
-    };
-
-    onPasswordValueChange = () => {
-        const confirmPassword = this.refs.confirmPassword;
-        if (confirmPassword && confirmPassword.state.formData.input) {
-            confirmPassword.refs.validation.forceValidate();
-        }
-    };
-
-    //对密码 进行校验
-    checkPass = (rule, value, callback) => {
-        if (value && value.match(passwordRegex)) {
-            let passStrength = getPassStrenth(value);
-            this.refs.password.setState({ passStrength: passStrength });
-            callback();
-        } else {
-            this.refs.password.setState({
-                passStrength: {
-                    passBarShow: false,
-                    passStrength: 'L'
-                }
-            });
-            callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
-        }
-    };
-
-    //对确认密码 进行校验
-    checkRePass = (rule, value, callback) => {
-        if (value && value === this.refs.password.state.formData.input) {
-            callback();
-        } else {
-            callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
-        }
     };
 
     renderUserStatus = (user, useIcon = false) => {
