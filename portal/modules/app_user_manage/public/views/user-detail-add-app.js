@@ -12,7 +12,7 @@ import UserDetailAddAppActions from '../action/v2/user-detail-add-app-actions';
 import UserDetailAddAppStore from '../store/user-detail-add-app-store';
 import DateSelector from '../../../../components/date-selector';
 var crypto = require('crypto');
-import { Tabs, Form, Input, InputNumber, Select, DatePicker, Radio, Icon, Alert, Button} from 'antd';
+import { Tabs, Form, Input, InputNumber, Select, DatePicker, Radio, Icon, Alert, Button, Col, Row} from 'antd';
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -31,6 +31,8 @@ import BatchAddAppUser from 'CMP_DIR/user_manage_components/user-add-app';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import DetailCard from 'CMP_DIR/detail-card';
 import {USER_TYPE_VALUE_MAP, USER_TYPE_TEXT_MAP} from 'PUB_DIR/sources/utils/consts';
+import { checkPassword, checkConfirmPassword } from 'PUB_DIR/sources/utils/validate-util';
+import { PassStrengthBar } from 'CMP_DIR/password-strength-bar';
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
 LAYOUT_CONSTANTS.SELECT_USER_TIPS = 20;
@@ -234,14 +236,10 @@ var UserDetailAddApp = createReactClass({
         }
         //修改密码要验证表单再提交
         if(this.hasChangePassword()) {
-            submit();
-            // var validation = this.refs.validation;
-            // validation.validate(valid => {
-            //     if (!valid) {
-            //         return;
-            //     }
-            //
-            // });
+            this.props.form.validateFields((error, values) => {
+                if(error) return;
+                submit();
+            });
         } else if (this.hasDelayTimeBlock()) {//批量延期
             if (isSales) {//销售，延期申请
                 this.delayApply();
@@ -545,69 +543,68 @@ var UserDetailAddApp = createReactClass({
         }
     },
 
-    //检验密码
+    //验证密码
     checkPass: function(rule, value, callback) {
-        if (value && value.match(passwdStrengthFile.passwordRegex)) {
-            //获取密码强度及是否展示
-            const passStrengthObj = passwdStrengthFile.getPassStrenth(value);
-            this.setState({
-                passBarShow: passStrengthObj.passBarShow,
-                passStrength: passStrengthObj.passStrength
-            });
-            callback();
-        } else {
-            this.setState({
-                passBarShow: false,
-                passStrength: 'L'
-            });
-            callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
-        }
+        let { getFieldValue, validateFields } = this.props.form;
+        let rePassWord = getFieldValue('repassword');
+        checkPassword(this, value, callback, rePassWord, () => {
+            // 如果密码验证通过后，需要强制刷新下确认密码的验证，以防密码不一致的提示没有去掉
+            validateFields(['repassword'], {force: true});
+        });
     },
-
+    
+    //验证确认密码
     checkPass2(rule, value, callback) {
-        if (value && value !== this.props.form.getFieldValue('repassword')) {
-            callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
-        } else {
-            callback();
-        }
+        let { getFieldValue, validateFields } = this.props.form;
+        let password = getFieldValue('password');
+        checkConfirmPassword(value, callback, password, () => {
+            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
+            validateFields(['password'], {force: true});
+        });
     },
 
     //渲染修改密码
     renderChangePassword() {
         const {getFieldDecorator} = this.props.form;
+        const formItemLayout = {
+            labelCol: {span: 5},
+            wrapperCol: {span: 19},
+        };
         return (
             <Form layout='horizontal' className="user-info-edit-pwd-form" autoComplete="off">
                 <FormItem
                     label={Intl.get('common.password', '密码')}
-                    labelCol={labelCol}
-                    wrapperCol={{span: 20}}
+                    {...formItemLayout}
                 >
                     {getFieldDecorator('password', {
                         rules: [{
                             validator: this.checkPass
                         }],
-                        validateTrigger: 'onBlur'
                     })(
                         <Input
                             name="password"
-                            id="password1"
                             type="password"
                             autoComplete="off"
                             placeholder={Intl.get('common.password.compose.rule', '6-18位数字、字母、符号的组合')}
                         />
                     )}
                 </FormItem>
+                {/* 由于有正在抽取样式的分支，以免冲突样式暂时先放js文件中 */}
+                <Row style={{margin: '-10px 0 6px 0'}}>
+                    <Col span="5"/>
+                    <Col span="18">
+                        {this.state.passBarShow ?
+                            (<PassStrengthBar passStrength={this.state.passStrength}/>) : null}
+                    </Col>
+                </Row>
                 <FormItem
                     label={Intl.get('common.confirm.password', '确认密码')}
-                    labelCol={labelCol}
-                    wrapperCol={{span: 20}}
+                    {...formItemLayout}
                 >
-
                     {getFieldDecorator('repassword', {
                         rules: [{
                             validator: this.checkPass2
                         }],
-                        validateTrigger: 'onBlur'
                     })(
                         <Input
                             name="repassword"

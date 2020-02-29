@@ -80,9 +80,9 @@ class ApplyViewDetailStore {
             confirmPassword: {}
         };
         //密码强度
-        this.passStrength = {
-            passBarShow: false
-        };
+        this.passStrength = '';
+        // 是否展示密码强度条
+        this.passBarShow = false;
         //回复列表
         this.replyListInfo = {
             //三种状态,loading,error,''

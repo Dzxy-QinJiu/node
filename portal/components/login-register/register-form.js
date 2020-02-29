@@ -6,8 +6,8 @@
 require('./css/register.less');
 const PropTypes = require('prop-types');
 import Trace from '../../lib/trace';
-import {commonPhoneRegex} from '../../public/sources/utils/validate-util';
-import { passwordRegex, PassStrengthBar, getPassStrenth} from 'CMP_DIR/password-strength-bar';
+import {commonPhoneRegex, checkPassword, checkConfirmPassword} from '../../public/sources/utils/validate-util';
+import {PassStrengthBar} from 'CMP_DIR/password-strength-bar';
 import crypto from 'crypto';
 import {Form, Input, Icon, Button, Col} from 'antd';
 import {TextField} from '@material-ui/core';
@@ -338,40 +338,25 @@ class RegisterForm extends React.Component {
             callback(Intl.get('retry.input.captcha', '请输入验证码'));
         }
     }
+
     checkPass = (rule, value, callback) => {
-        if (value && value.match(passwordRegex)) {
-            let rePassWord = this.props.form.getFieldValue('rePwd');
-            //密码强度的校验
-            //获取密码强度及是否展示
-            var passStrengthObj = getPassStrenth(value);
-            this.setState({
-                passBarShow: passStrengthObj.passBarShow,
-                passStrength: passStrengthObj.passStrength
-            });
-            // 不允许设置弱密码
-            if (passStrengthObj.passStrength === 'L') {
-                callback(Intl.get('register.password.strength.tip', '密码强度太弱，请更换密码'));
-            } else if (rePassWord && value !== rePassWord ) {// 输入确认密码后再判断是否一致
-                callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
-            } else {
-                callback();
-            }
-        } else {
-            this.setState({
-                passBarShow: false,
-                passStrength: ''
-            });
-            callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
-        }
+        let { getFieldValue, validateFields } = this.props.form;
+        let rePassWord = getFieldValue('rePwd');
+        checkPassword(this, value, callback, rePassWord, () => {
+            // 如果密码验证通过后，需要强制刷新下确认密码的验证，以防密码不一致的提示没有去掉
+            validateFields(['rePwd'], {force: true});
+        });
     };
    
     checkPass2 = (rule, value, callback) => {
-        if (value && value !== this.props.form.getFieldValue('pwd')) {
-            callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
-        } else {
-            callback();
-        }
+        let { getFieldValue, validateFields } = this.props.form;
+        let password = getFieldValue('pwd');
+        checkConfirmPassword(value, callback, password, () => {
+            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
+            validateFields(['pwd'], {force: true});
+        });
     }
+
     // onChangeUserAgreement = (e) => {
     //     this.setState({
     //         checkedUserAgreement: e.target.checked,
@@ -492,8 +477,6 @@ class RegisterForm extends React.Component {
                 <FormItem>
                     {getFieldDecorator('rePwd', {
                         rules: [{
-                            required: true, message: Intl.get('common.input.confirm.password', '请输入确认密码')
-                        }, {
                             validator: this.checkPass2
                         }]
                     })(
