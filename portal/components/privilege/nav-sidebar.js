@@ -21,6 +21,7 @@ import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 const session = storageUtil.session;
 const { setWebsiteConfigModuleRecord, getWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
+import WinningClue from '../winning-clue';
 //需要加引导的模块
 const schedule_menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
 //个人信息菜单部分距离底部的绝对高度18
@@ -732,6 +733,14 @@ var NavSidebar = createReactClass({
         return null;
     },
 
+    renderWinningClueBlock() {
+        return (
+            <div className="winning-clue ">
+                <WinningClue />
+            </div>
+        );
+    },
+
     getTriggerType: function() {
         const { isWebMin } = isResponsiveDisplay();
         let trigger = 'hover';
@@ -742,6 +751,7 @@ var NavSidebar = createReactClass({
     },
     render: function() {
         const trigger = this.getTriggerType();
+        const versionAndType = checkVersionAndType();
         return (
             <nav className="navbar" onClick={this.closeNotificationPanel}>
                 <div className="container">
@@ -774,6 +784,12 @@ var NavSidebar = createReactClass({
                     <div className="sidebar-user" ref={(element) => {
                         this.userInfo = element;
                     }}>
+                        {/**  个人试用版、企业试用版，显示写跟进，赢线索 **/}
+                        {
+                            versionAndType.isPersonalTrial || versionAndType.isCompanyTrial ? (
+                                this.renderWinningClueBlock()
+                            ) : null
+                        }
                         {this.renderDailCallBlock()}
                         {isCurtao() ? (
                             <div className='customer-service-navicon' onClick={this.onChatClick}>

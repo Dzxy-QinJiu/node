@@ -27,6 +27,7 @@ import { getMaxLimitExtractClueCount, updateGuideMark } from 'PUB_DIR/sources/ut
 import Trace from 'LIB_DIR/trace';
 import DifferentVersion from 'MOD_DIR/different_version/public';
 import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon } from 'PUB_DIR/sources/utils/consts';
+import WinningClue from 'CMP_DIR/winning-clue';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 
 const LAYOUT_CONSTANCE = {
@@ -977,7 +978,7 @@ class ExtractClues extends React.Component {
         if(unextractClueTipEl.length) {
             divHeight -= unextractClueTipEl.height();
         }
-
+        const versionAndType = checkVersionAndType();
         const hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length') || _.get(this, 'state.disabledCheckedClues.length');
 
         return (
@@ -1012,6 +1013,19 @@ class ExtractClues extends React.Component {
                     <span className="no-extract-count-tip">
                         {this.hasNoExtractCountTip()}
                     </span>
+                    {/**  个人试用版、企业试用版，显示写跟进，赢线索 **/}
+                    {
+                        versionAndType.isPersonalTrial || versionAndType.isCompanyTrial ? (
+                            <span className="winning-clue-tips">
+                                <WinningClue
+                                    placement="bottomRight"
+                                    trigger="click"
+                                    isShowText={true}
+                                />
+                            </span>
+                        ) : null
+                    }
+
                 </div>
                 <div className="extract-clues-content" style={{height: divHeight}}>
                     <GeminiScrollbar>
