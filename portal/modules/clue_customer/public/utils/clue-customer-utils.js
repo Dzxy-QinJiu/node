@@ -148,8 +148,7 @@ export const AVALIBILITYSTATUS = {
     AVALIBILITY: '0',//有效线索
     INAVALIBILITY: '1'//无效线索
 };
-//带我处理
-export const NEED_MY_HANDLE = '0';
+
 //是否是运营人员
 export const isOperation = function(){
     return userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);

@@ -246,15 +246,6 @@ ClueCustomerStore.prototype.setLoadingFalse = function() {
     this.isLoading = false;
     this.firstLogin = false;
 },
-ClueCustomerStore.prototype.getClueFulltextSelfHandle = function(clueData) {
-    //获取有待我处理条件的线索
-    if(!clueData.loading && !clueData.error){
-        var cloneQuery = _.cloneDeep(clueData.queryObj);
-        cloneQuery.self_no_traced = true;
-        this.queryObj = cloneQuery;
-    }
-    this.handleClueData(clueData);
-},
 ClueCustomerStore.prototype.updateRecommendClueLists = function(extractClues) {
     //需要给已经提取成功的加上一个类名，界面相应的加上对应的不能处理的样式
     var targetObj = _.find(this.recommendClueLists, item => item.id === extractClues);

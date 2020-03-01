@@ -17,14 +17,6 @@ module.exports = {
             'needLogin': true
         }
     }, {
-        //导出线索
-        'method': 'post',
-        'path': '/rest/customer/v2/customer/range/selfHandle/clue/export/:page_size/:sort_field/:order/:type',
-        'handler': 'exportClueFulltextSelfHandle',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
         method: 'get',
         path: '/rest/sales_clue/source',
         handler: 'getClueSource',
@@ -145,13 +137,6 @@ module.exports = {
         method: 'post',
         path: '/rest/get/clue/fulltext/:page_size/:page_num/:sort_field/:order/:type',
         handler: 'getClueFulltext',
-        passport: {
-            'needLogin': true
-        }
-    }, {
-        method: 'post',
-        path: '/rest/get/clue/selfhandle/fulltext/:page_size/:page_num/:sort_field/:order/:type',
-        handler: 'getClueFulltextSelfHandle',
         passport: {
             'needLogin': true
         }

@@ -48,12 +48,8 @@ const restApis = {
     getClueTrendStatics: '/rest/analysis/customer/v2/:type/clue/trend/statistic',
     //线索的全文搜索
     getClueFulltext: clueBaseUrl + '/query/lead/range/fulltext/:type/:page_size/:page_num/:sort_field/:order',
-    //有待我处理筛选项时的全文搜索
-    getClueFullTextWithSelfHandle: clueBaseUrl + '/query/self_no_traced/range/fulltext/:type/:page_size/:page_num/:sort_field/:order',
     //导出线索的全文搜索
     exportClueFulltext: clueBaseUrl + '/query/lead/range/fulltext/:type/:page_size/:sort_field/:order',
-    //导出有待我处理筛选项时的全文搜索
-    exportClueFullTextWithSelfHandle: clueBaseUrl + '/query/self_no_traced/range/fulltext/:type/:page_size/:sort_field/:order',
     //获取线索的动态
     getClueDynamic: clueBaseUrl + '/dynamic/:clue_id/:page_size',
     //根据线索的id查询线索的详情
@@ -316,8 +312,9 @@ function handleClueParams(req, clueUrl) {
     }
     var url = clueUrl.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':page_num',req.params.page_num).replace(':order',req.params.order);
     var queryParams = _.get(reqBody,'queryParam',{});
+    url += `?self_pending=${queryParams.self_pending}`;
     if (queryParams.statistics_fields){
-        url += `?statistics_fields=${queryParams.statistics_fields}`;
+        url += `&statistics_fields=${queryParams.statistics_fields}`;
         if (queryParams.keyword){
             var keyword = encodeURI(queryParams.keyword);
             url += `&keyword=${keyword}`;
@@ -469,22 +466,10 @@ exports.getClueFulltext = function(req, res) {
     var obj = handleClueParams(req, restApis.getClueFulltext);
     return getExistTypeClueLists(req, res, obj);
 };
-//线索有待我处理筛选项时的全文搜索
-exports.getClueFulltextSelfHandle = function(req, res) {
-    var obj = handleClueParams(req, restApis.getClueFullTextWithSelfHandle);
-    //待我处理的，不要查已转化的线索
-    return getExistTypeClueLists(req, res, obj, true);
-};
 //线索全文搜索
 exports.exportClueFulltext = function(req, res) {
     var obj = handleClueParams(req, restApis.exportClueFulltext);
     return getExistTypeClueLists(req, res, obj);
-};
-//线索有待我处理筛选项时的全文搜索
-exports.exportClueFulltextSelfHandle = function(req, res) {
-    var obj = handleClueParams(req, restApis.exportClueFullTextWithSelfHandle);
-    //待我处理的，不要查已转化的线索
-    return getExistTypeClueLists(req, res, obj, true);
 };
 //获取动态列表
 exports.getDynamicList = function(req, res) {

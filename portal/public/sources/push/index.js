@@ -1232,7 +1232,7 @@ function getClueUnreadNum(data, callback){
         type = 'manager';
     }
     $.ajax({
-        url: '/rest/get/clue/selfhandle/fulltext/100/1/source_time/descend/' + type,
+        url: '/rest/get/clue/fulltext/100/1/source_time/descend/' + type,
         dataType: 'json',
         type: 'post',
         data: data,
