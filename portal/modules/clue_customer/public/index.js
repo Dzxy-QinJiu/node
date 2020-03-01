@@ -284,7 +284,7 @@ class ClueCustomer extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps, 'history.action') === 'PUSH' && _.get(nextProps, 'location.state.clickUnhandleNum')) {
             var filterStoreData = clueFilterStore.getState();
-            var checkAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理
+            var checkAllotNoTraced = this.isSelfHandleFilter();//待我处理
             var checkedAdvance = false;//在高级筛选中是否有其他的选中项
             var checkOtherData = _.get(this, 'filterPanel.filterList.props.advancedData', []);//线索状态
             if (filterStoreData.filterClueAvailability === '1') {
@@ -361,8 +361,7 @@ class ClueCustomer extends React.Component {
     };
     removeClueItem = (item) => {
         //在列表中删除线索
-        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
-        if (filterAllotNoTraced) {
+        if (this.isSelfHandleFilter()) {
             this.handleSelectedClue(item);
             //需要在列表中删除
             clueCustomerAction.deleteClueById(item);
@@ -783,7 +782,7 @@ class ClueCustomer extends React.Component {
         let tips = this.getExportClueTips();
         return(
             <div className="export-clue-customer-container pull-right">
-                {currentVersionType.trial && false ?
+                {currentVersionType.trial ?
                     (<Popover content={tips} trigger="click" visible={this.state.exportVisible} onVisibleChange={this.handleVisibleChange.bind(this, currentVersionType)} overlayClassName="explain-pop">
                         <Button className="btn-item">
                             <i className="iconfont icon-export-clue"></i>
@@ -1009,9 +1008,6 @@ class ClueCustomer extends React.Component {
         clueCustomerAction.getClueFulltext(queryObj,(isSelfHandleFlag) => {
             this.handleFirstLoginData(isSelfHandleFlag);
         });
-
-
-
     };
     handleFirstLoginData = (flag) => {
         if (flag === 'filterAllotNoTraced'){
@@ -1044,8 +1040,20 @@ class ClueCustomer extends React.Component {
             var isGetAll = this.state.exportRange === 'all';
             reqData = isGetAll ? this.getClueSearchCondition(true, true) : this.getClueSearchCondition(true,false);
             //线索的状态和线索是否有效不作为导出线索的限制条件
-            reqData.bodyParam.query.status = '';
             delete reqData.bodyParam.query.availability;
+            var status = _.cloneDeep(ADD_SELECT_TYPE);
+            delete status.INVALID_CLUE;
+            if(isSalesOrPersonnalVersion()){
+                delete status.WILL_DISTRIBUTE;
+            }
+            if(this.isSelfHandleFilter() || isCommonSalesOrPersonnalVersion() ){
+                delete status.HAS_TRANSFER;
+            }
+            if(this.isSelfHandleFilter()){
+                reqData.bodyParam.query.availability = '0';
+            }
+            reqData.bodyParam.query.status = _.map(status);
+
         }
         const params = {
             page_size: 10000,
@@ -1487,7 +1495,7 @@ class ClueCustomer extends React.Component {
                     });
                 } else {
                     //待我审批状态中没有无效的tab，不展示动画
-                    let filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
+                    let filterAllotNoTraced = this.isSelfHandleFilter();
                     if(!filterAllotNoTraced) {
                         this.flyClueInvalid(item,DIFFREF.TRASFERINVALID);
                     }
@@ -1669,7 +1677,7 @@ class ClueCustomer extends React.Component {
             'has-refresh-tip': _.get(this.state, 'isShowRefreshPrompt')
         });
         //如果选中了待我审批状态，就不展示已转化
-        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
+        var filterAllotNoTraced = this.isSelfHandleFilter();
         return <span className={clueStatusCls}>
             <span className="clue-status-container">
                 {isSalesOrPersonnalVersion() ? null : <span className={willDistCls} data-tracename='点击待分配tab'
@@ -2969,9 +2977,7 @@ class ClueCustomer extends React.Component {
         if (this.state.selectAllMatched) {
             let queryObj = this.getClueSearchCondition();
             condition.query_param = queryObj.bodyParam;
-            let filterStoreData = clueFilterStore.getState();
-            let filterAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理的线索
-            if (filterAllotNoTraced) {
+            if (this.isSelfHandleFilter()) {
                 //获取有待我处理条件的线索
                 condition.self_no_traced = true;
             }
