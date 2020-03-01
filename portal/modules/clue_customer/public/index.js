@@ -56,7 +56,6 @@ import {
     ADD_SELECT_TYPE,
     SIMILAR_CLUE,
     SIMILAR_CUSTOMER,
-    NEED_MY_HANDLE,
     isCommonSalesOrPersonnalVersion,
     isSalesOrPersonnalVersion,
     freedCluePrivilege,
@@ -278,14 +277,14 @@ class ClueCustomer extends React.Component {
     getUnhandledClue = () => {
         //现在只有普通销售有未读数
         clueFilterAction.setTimeType('all');
-        clueFilterAction.setFilterClueAllotNoTrace(NEED_MY_HANDLE);
+        clueFilterAction.setFilterClueAllotNoTrace(true);
         this.filterPanel.filterList.setDefaultFilterSetting();
     };
 
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps, 'history.action') === 'PUSH' && _.get(nextProps, 'location.state.clickUnhandleNum')) {
             var filterStoreData = clueFilterStore.getState();
-            var checkAllotNoTraced = filterStoreData.filterAllotNoTraced === NEED_MY_HANDLE;//待我处理
+            var checkAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理
             var checkedAdvance = false;//在高级筛选中是否有其他的选中项
             var checkOtherData = _.get(this, 'filterPanel.filterList.props.advancedData', []);//线索状态
             if (filterStoreData.filterClueAvailability === '1') {
@@ -976,7 +975,7 @@ class ClueCustomer extends React.Component {
             queryParam: {
                 keyword: isGetAllClue ? '' : _.trim(this.state.keyword),
                 statistics_fields: 'status,availability',
-                self_pending: !!this.isSelfHandleFilter()
+                self_pending: this.isSelfHandleFilter()
             },
             bodyParam: {
                 query: {
