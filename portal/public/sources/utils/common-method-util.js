@@ -411,6 +411,9 @@ exports.getUnhandledClueCountParams = function() {
                 availability: '0'
             },
         },
+        queryParam: {
+            self_pending: true
+        },
     };
 };
 //获取不同时间范围的开始和结束时间

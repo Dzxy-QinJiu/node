@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/8/27.
  */
 var FilterAction = require('../action/filter-action');
-import {SELECT_TYPE, CLUE_DIFF_TYPE, AVALIBILITYSTATUS, clueStartTime, NEED_MY_HANDLE,isSalesOrPersonnalVersion} from '../utils/clue-customer-utils';
+import {SELECT_TYPE, CLUE_DIFF_TYPE, AVALIBILITYSTATUS, clueStartTime,isSalesOrPersonnalVersion} from '../utils/clue-customer-utils';
 import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 function ClueFilterStore() {
     this.setInitialData();
@@ -68,7 +68,7 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.filterLabels = '';
     //如果是销售领导或者销售角色或者运营 默认选中 待我处理 进行筛选  这个功能暂时隐藏
     //this.filterAllotNoTraced = getClueUnhandledPrivilege() ? '0' : '';
-    this.filterAllotNoTraced = '';
+    this.filterAllotNoTraced = false;//是否是待我处理的线索
     //未打通电话的线索
     this.notConnectedClues = '';
     //销售团队
@@ -202,10 +202,14 @@ ClueFilterStore.prototype.setFilterClueAvailbility = function() {
 
 };
 ClueFilterStore.prototype.setFilterClueAllotNoTrace = function(updateTrace) {
-    this.filterAllotNoTraced = updateTrace || '';
+    if(updateTrace){
+        this.filterAllotNoTraced = updateTrace;
+    }else{
+        this.filterAllotNoTraced = false;
+    }
     // 在当前筛选类型是“无效”的情况下点击“待我跟进”的筛选项时，因为“带我跟进”的筛选项下没有“无效”的tab
     // 此时将tab默认展示为“待跟进”，将无效的字段状态设置为有效
-    if(_.isEqual(updateTrace, NEED_MY_HANDLE) && _.isEqual(this.filterClueAvailability, AVALIBILITYSTATUS.INAVALIBILITY)) {
+    if(_.isEqual(updateTrace, true) && _.isEqual(this.filterClueAvailability, AVALIBILITYSTATUS.INAVALIBILITY)) {
         this.filterClueStatus = this.setInitialFilterClueStatus();
         this.filterClueAvailability = AVALIBILITYSTATUS.AVALIBILITY;
     }

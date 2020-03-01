@@ -56,7 +56,6 @@ import {
     ADD_SELECT_TYPE,
     SIMILAR_CLUE,
     SIMILAR_CUSTOMER,
-    NEED_MY_HANDLE,
     isCommonSalesOrPersonnalVersion,
     isSalesOrPersonnalVersion,
     freedCluePrivilege,
@@ -278,14 +277,14 @@ class ClueCustomer extends React.Component {
     getUnhandledClue = () => {
         //现在只有普通销售有未读数
         clueFilterAction.setTimeType('all');
-        clueFilterAction.setFilterClueAllotNoTrace(NEED_MY_HANDLE);
+        clueFilterAction.setFilterClueAllotNoTrace(true);
         this.filterPanel.filterList.setDefaultFilterSetting();
     };
 
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps, 'history.action') === 'PUSH' && _.get(nextProps, 'location.state.clickUnhandleNum')) {
             var filterStoreData = clueFilterStore.getState();
-            var checkAllotNoTraced = filterStoreData.filterAllotNoTraced === NEED_MY_HANDLE;//待我处理
+            var checkAllotNoTraced = this.isSelfHandleFilter();//待我处理
             var checkedAdvance = false;//在高级筛选中是否有其他的选中项
             var checkOtherData = _.get(this, 'filterPanel.filterList.props.advancedData', []);//线索状态
             if (filterStoreData.filterClueAvailability === '1') {
@@ -362,8 +361,7 @@ class ClueCustomer extends React.Component {
     };
     removeClueItem = (item) => {
         //在列表中删除线索
-        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
-        if (filterAllotNoTraced) {
+        if (this.isSelfHandleFilter()) {
             this.handleSelectedClue(item);
             //需要在列表中删除
             clueCustomerAction.deleteClueById(item);
@@ -975,7 +973,8 @@ class ClueCustomer extends React.Component {
         return {
             queryParam: {
                 keyword: isGetAllClue ? '' : _.trim(this.state.keyword),
-                statistics_fields: 'status,availability'
+                statistics_fields: 'status,availability',
+                self_pending: this.isSelfHandleFilter()
             },
             bodyParam: {
                 query: {
@@ -1005,17 +1004,10 @@ class ClueCustomer extends React.Component {
         }
         //跟据类型筛选
         const queryObj = this.getClueSearchCondition();
-        if (this.isSelfHandleFilter()){
-            clueCustomerAction.getClueFulltextSelfHandle(queryObj,(isSelfHandleFlag) => {
-                this.handleFirstLoginData(isSelfHandleFlag);
-            });
-        }else{
-            //取全部线索列表
-            clueCustomerAction.getClueFulltext(queryObj,(isSelfHandleFlag) => {
-                this.handleFirstLoginData(isSelfHandleFlag);
-            });
-
-        }
+        //取全部线索列表
+        clueCustomerAction.getClueFulltext(queryObj,(isSelfHandleFlag) => {
+            this.handleFirstLoginData(isSelfHandleFlag);
+        });
     };
     handleFirstLoginData = (flag) => {
         if (flag === 'filterAllotNoTraced'){
@@ -1058,9 +1050,6 @@ class ClueCustomer extends React.Component {
             type: type,
         };
         var route = '/rest/customer/v2/customer/range/clue/export/:page_size/:sort_field/:order/:type';
-        if(this.isSelfHandleFilter()){
-            route = '/rest/customer/v2/customer/range/selfHandle/clue/export/:page_size/:sort_field/:order/:type';
-        }
         const url = route.replace(pathParamRegex, function($0, $1) {
             return params[$1];
         });
@@ -1494,7 +1483,7 @@ class ClueCustomer extends React.Component {
                     });
                 } else {
                     //待我审批状态中没有无效的tab，不展示动画
-                    let filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
+                    let filterAllotNoTraced = this.isSelfHandleFilter();
                     if(!filterAllotNoTraced) {
                         this.flyClueInvalid(item,DIFFREF.TRASFERINVALID);
                     }
@@ -1676,7 +1665,7 @@ class ClueCustomer extends React.Component {
             'has-refresh-tip': _.get(this.state, 'isShowRefreshPrompt')
         });
         //如果选中了待我审批状态，就不展示已转化
-        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
+        var filterAllotNoTraced = this.isSelfHandleFilter();
         return <span className={clueStatusCls}>
             <span className="clue-status-container">
                 {isSalesOrPersonnalVersion() ? null : <span className={willDistCls} data-tracename='点击待分配tab'
@@ -2976,9 +2965,7 @@ class ClueCustomer extends React.Component {
         if (this.state.selectAllMatched) {
             let queryObj = this.getClueSearchCondition();
             condition.query_param = queryObj.bodyParam;
-            let filterStoreData = clueFilterStore.getState();
-            let filterAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理的线索
-            if (filterAllotNoTraced) {
+            if (this.isSelfHandleFilter()) {
                 //获取有待我处理条件的线索
                 condition.self_no_traced = true;
             }

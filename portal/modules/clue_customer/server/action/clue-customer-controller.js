@@ -220,15 +220,6 @@ exports.getClueDetailByIdBelongTome = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
-exports.getClueFulltextSelfHandle = function(req, res) {
-    clueCustomerService.getClueFulltextSelfHandle(req, res)
-        .on('success', function(data) {
-            res.status(200).json(data);
-        })
-        .on('error', function(err) {
-            res.status(500).json(err && err.message);
-        });
-};
 
 //获取线索动态
 exports.getDynamicList = function(req, res) {
@@ -315,14 +306,6 @@ function getClueListColumns(backendIntl) {
 //导出数据
 exports.exportClueFulltext = function(req, res) {
     clueCustomerService.exportClueFulltext(req, res).on('success', result => {
-        let backendIntl = new BackendIntl(req);
-        doExport(result, backendIntl,res);
-    }).on('error', codeMessage => {
-        res.status(500).json(codeMessage);
-    });
-};
-exports.exportClueFulltextSelfHandle = function(req, res) {
-    clueCustomerService.exportClueFulltextSelfHandle(req, res).on('success', result => {
         let backendIntl = new BackendIntl(req);
         doExport(result, backendIntl,res);
     }).on('error', codeMessage => {

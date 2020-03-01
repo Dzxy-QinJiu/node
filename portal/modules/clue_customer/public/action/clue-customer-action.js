@@ -191,23 +191,6 @@ function ClueCustomerActions() {
         });
         
     };
-    
-    
-    this.getClueFulltextSelfHandle = function(queryObj,callback) {
-        //是否是在全部状态下返回数据
-        this.dispatch({error: false, loading: true
-        });
-        clueCustomerAjax.getClueFulltextSelfHandle(queryObj).then((result) => {
-            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback,queryObj: queryObj});
-        }, (errorMsg) => {
-            this.dispatch({
-                error: true,
-                loading: false,
-                errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索列表失败')
-            });
-        });
-    };
     // 获取所有成员
     this.getAllSalesUserList = function(cb) {
         getAllSalesUserList((allUserList) => {
