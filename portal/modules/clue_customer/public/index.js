@@ -784,7 +784,7 @@ class ClueCustomer extends React.Component {
         let tips = this.getExportClueTips();
         return(
             <div className="export-clue-customer-container pull-right">
-                {currentVersionType.trial ?
+                {currentVersionType.trial && false ?
                     (<Popover content={tips} trigger="click" visible={this.state.exportVisible} onVisibleChange={this.handleVisibleChange.bind(this, currentVersionType)} overlayClassName="explain-pop">
                         <Button className="btn-item">
                             <i className="iconfont icon-export-clue"></i>
@@ -975,7 +975,8 @@ class ClueCustomer extends React.Component {
         return {
             queryParam: {
                 keyword: isGetAllClue ? '' : _.trim(this.state.keyword),
-                statistics_fields: 'status,availability'
+                statistics_fields: 'status,availability',
+                self_pending: !!this.isSelfHandleFilter()
             },
             bodyParam: {
                 query: {
@@ -1005,17 +1006,13 @@ class ClueCustomer extends React.Component {
         }
         //跟据类型筛选
         const queryObj = this.getClueSearchCondition();
-        if (this.isSelfHandleFilter()){
-            clueCustomerAction.getClueFulltextSelfHandle(queryObj,(isSelfHandleFlag) => {
-                this.handleFirstLoginData(isSelfHandleFlag);
-            });
-        }else{
-            //取全部线索列表
-            clueCustomerAction.getClueFulltext(queryObj,(isSelfHandleFlag) => {
-                this.handleFirstLoginData(isSelfHandleFlag);
-            });
+        //取全部线索列表
+        clueCustomerAction.getClueFulltext(queryObj,(isSelfHandleFlag) => {
+            this.handleFirstLoginData(isSelfHandleFlag);
+        });
 
-        }
+
+
     };
     handleFirstLoginData = (flag) => {
         if (flag === 'filterAllotNoTraced'){
@@ -1058,9 +1055,6 @@ class ClueCustomer extends React.Component {
             type: type,
         };
         var route = '/rest/customer/v2/customer/range/clue/export/:page_size/:sort_field/:order/:type';
-        if(this.isSelfHandleFilter()){
-            route = '/rest/customer/v2/customer/range/selfHandle/clue/export/:page_size/:sort_field/:order/:type';
-        }
         const url = route.replace(pathParamRegex, function($0, $1) {
             return params[$1];
         });
