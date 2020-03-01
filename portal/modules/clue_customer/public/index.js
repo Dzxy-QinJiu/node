@@ -1040,20 +1040,8 @@ class ClueCustomer extends React.Component {
             var isGetAll = this.state.exportRange === 'all';
             reqData = isGetAll ? this.getClueSearchCondition(true, true) : this.getClueSearchCondition(true,false);
             //线索的状态和线索是否有效不作为导出线索的限制条件
+            reqData.bodyParam.query.status = '';
             delete reqData.bodyParam.query.availability;
-            var status = _.cloneDeep(ADD_SELECT_TYPE);
-            delete status.INVALID_CLUE;
-            if(isSalesOrPersonnalVersion()){
-                delete status.WILL_DISTRIBUTE;
-            }
-            if(this.isSelfHandleFilter() || isCommonSalesOrPersonnalVersion() ){
-                delete status.HAS_TRANSFER;
-            }
-            if(this.isSelfHandleFilter()){
-                reqData.bodyParam.query.availability = '0';
-            }
-            reqData.bodyParam.query.status = _.map(status);
-
         }
         const params = {
             page_size: 10000,
