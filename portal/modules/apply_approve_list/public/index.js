@@ -59,7 +59,7 @@ import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
 import {SearchInput} from 'antc';
 import UserData from '../../../public/sources/user-data';
 import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
-
+import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 
 class ApplyApproveList extends React.Component {
@@ -293,11 +293,11 @@ class ApplyApproveList extends React.Component {
             <Menu className='add-search-or-filter-type-list'>
                 {_.map(filterAndSearchList, (item, index) => {
                     //带有未读回复的没有数值的时候，不允许点击
-                    var canClick = unreplyLiCls.indexOf('inactive-unreply') < 0;//是否可以点击带未读回复的下拉选项
+                    var replyType = item.value === UNREPLY;
+                    var cannotClick = unreplyLiCls.indexOf('inactive-unreply') > -1 && replyType;//是否可以点击带未读回复的下拉选项
                     return (
-                        <Menu.Item key={index} className={item.value === UNREPLY ? unreplyLiCls : ''}>
-                            <a onClick={canClick ? this.openFilterOrSearch.bind(this, item.value) : () => {
-                            }}>
+                        <Menu.Item key={index} className={replyType ? unreplyLiCls : ''}>
+                            <a onClick={cannotClick ? () => {} : this.openFilterOrSearch.bind(this, item.value)}>
                                 <i className={'iconfont ' + _.get(item, 'iconCls', '')}></i>
                                 {_.get(item, 'name')}</a>
                         </Menu.Item>
@@ -418,11 +418,17 @@ class ApplyApproveList extends React.Component {
                             var cls = classNames(`apply_type_item ${val}_container`, {
                                 'active-tab': activeApplyTab === _.get(item, 'value', '')
                             });
-                            //只有我的审批上加红色数字
-                            return <li className={cls}
-                                onClick={this.handleChangeApplyActiveTab.bind(this, val)}>
-                                {_.get(item, 'name', '')}
-                            </li>;
+                            //如果是普通销售或者是个人版，不需要展示团队这个tab
+                            if(item === APPLY_TYPE.APPLY_BY_TEAM && isCommonSalesOrPersonnalVersion()){
+                                return null;
+                            }else{
+                                //只有我的审批上加红色数字
+                                return <li className={cls}
+                                    onClick={this.handleChangeApplyActiveTab.bind(this, val)}>
+                                    {_.get(item, 'name', '')}
+                                </li>;
+                            }
+
                         })}
                     </ul>
                     <div className='add_apply_type_icon'>

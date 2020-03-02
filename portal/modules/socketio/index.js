@@ -28,7 +28,7 @@ const scheduleNoticeChannel = 'com.antfact.ketao.schedule';
 const applyUnreadReplyChannel = 'com.antfact.ketao.apply.comment';
 //线索添加或分配后推送频道
 const clueUnhandledNum = 'com.antfact.ketao.clue.notice';
-//出差，销售机会和请假申请
+//申请审批消息推送
 const applyApproveChannel = 'com.antfact.curtao.workflow.notice';
 //客户操作的推送通道
 const crmOperatorChannel = 'com.curtao.customer.operator.message.notice.channel';
@@ -138,7 +138,7 @@ function clueUnhandledNumListener(data) {
 }
 /*处理申请审批消息监听器*/
 function applyApproveNumListener(data) {
-    // pushLogger.debug('后端推送的申请审批的数据:' + JSON.stringify(data));
+    pushLogger.debug('后端推送的申请审批的数据:' + JSON.stringify(data));
     //将查询结果返给浏览器
     var applyApprovesgObj = data || {};
     if (_.isArray(applyApprovesgObj.consumers) && _.get(applyApprovesgObj,'consumers[0]')) {
