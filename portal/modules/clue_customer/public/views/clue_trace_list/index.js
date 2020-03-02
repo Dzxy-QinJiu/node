@@ -3,7 +3,6 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/6/10.
  */
-var React = require('react');
 require('../../css/clue_trace_list.less');
 var ClueTraceStore = require('../../store/clue-trace-store');
 var ClueTraceAction = require('../../action/clue-trace-action');
@@ -35,6 +34,9 @@ var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {SELECT_TYPE, AVALIBILITYSTATUS, editCluePrivilege} from '../../utils/clue-customer-utils';
 import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
+import { checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
+
+import AddTraceContentSuccessTips from '../add-trace-success-tips';
 const OVERVIEW_SHOW_COUNT = 3; //在概览中显示最近三条跟进
 class ClueTraceList extends React.Component {
     state = {
@@ -44,6 +46,7 @@ class ClueTraceList extends React.Component {
         filterStatus: '',//通话状态的过滤
         addRecordNullTip: '',//添加跟进记录内容为空的提示
         editRecordNullTip: '', //编辑跟进内容为空的提示
+        isShowRewardClueTips: false, // 是否显示赢线索的提示，默认不显示
         ...ClueTraceStore.getState(),
     };
 
@@ -236,6 +239,9 @@ class ClueTraceList extends React.Component {
                     remark: addcontent,
                 };
                 ClueTraceAction.addClueTrace(queryObj, (customer_trace) => {
+                    this.setState({
+                        isShowRewardClueTips: true
+                    });
                     //更新列表中的最后联系
                     _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(customer_trace);
                     //首页我的工作中，添加跟进后，需要将首页的相关工作去掉
@@ -340,6 +346,21 @@ class ClueTraceList extends React.Component {
         }
         return divHeight;
     };
+
+    renderWinningClueTips = () => {
+        let hide = () => {
+            this.setState({
+                isShowRewardClueTips: false,
+            });
+        };
+        return (
+            <AddTraceContentSuccessTips
+                onHide={hide}
+                time={3000}
+            />
+        );
+    };
+
     renderAddDetail = (item) => {
         //补充跟进记录
         return (
@@ -505,6 +526,7 @@ class ClueTraceList extends React.Component {
             'icon-selected': item.playSelected,
             'icon-play-disable': !is_record_upload
         });
+        const versionAndType = checkVersionAndType();
         return (
             <div className={classNames('trace-item-content', {'day-split-line': hasSplitLine})}>
                 <p className="item-detail-tip">
@@ -516,6 +538,13 @@ class ClueTraceList extends React.Component {
                     <div className="item-detail-content" id={item.id}>
                         {item.showAdd ? this.renderAddDetail(item) : this.renderRecordShowContent(item)}
                     </div>
+                    {
+                        (versionAndType.isPersonalTrial || versionAndType.isCompanyTrial) && this.state.isShowRewardClueTips ? (
+                            <div className="winning-clue-tips">
+                                {this.renderWinningClueTips()}
+                            </div>
+                        ) : null
+                    }
                     <div className="item-bottom-content">
                         {item.billsec === 0 ? (/*未接听*/
                             <span className="call-un-answer">

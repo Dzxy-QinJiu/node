@@ -961,6 +961,21 @@ class ExtractClues extends React.Component {
         });
     };
 
+    renderWinningClueTips() {
+        const versionAndType = checkVersionAndType();
+        if (this.state.hasNoExtractCountTip && ( versionAndType.isPersonalTrial || versionAndType.isCompanyTrial)) {
+            return (
+                <span className="winning-clue-tips">
+                    <WinningClue
+                        placement="bottomRight"
+                        trigger="click"
+                        isShowText={true}
+                    />
+                </span>
+            );
+        }
+    }
+
     render() {
         let divHeight = $(window).height()
             - LAYOUT_CONSTANCE.PADDING_TOP
@@ -978,7 +993,7 @@ class ExtractClues extends React.Component {
         if(unextractClueTipEl.length) {
             divHeight -= unextractClueTipEl.height();
         }
-        const versionAndType = checkVersionAndType();
+
         const hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length') || _.get(this, 'state.disabledCheckedClues.length');
 
         return (
@@ -1011,21 +1026,9 @@ class ExtractClues extends React.Component {
                 <div className="unextract-clue-tip clearfix">
                     <Checkbox className="check-all" checked={this.isCheckAll()} onChange={this.handleCheckAllChange} disabled={this.disabledCheckAll()}>{Intl.get('common.all.select', '全选')}</Checkbox>
                     <span className="no-extract-count-tip">
+                        {this.renderWinningClueTips()}
                         {this.hasNoExtractCountTip()}
                     </span>
-                    {/**  个人试用版、企业试用版，显示写跟进，赢线索 **/}
-                    {
-                        versionAndType.isPersonalTrial || versionAndType.isCompanyTrial ? (
-                            <span className="winning-clue-tips">
-                                <WinningClue
-                                    placement="bottomRight"
-                                    trigger="click"
-                                    isShowText={true}
-                                />
-                            </span>
-                        ) : null
-                    }
-
                 </div>
                 <div className="extract-clues-content" style={{height: divHeight}}>
                     <GeminiScrollbar>
