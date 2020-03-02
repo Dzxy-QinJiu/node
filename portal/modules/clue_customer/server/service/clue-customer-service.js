@@ -312,16 +312,17 @@ function handleClueParams(req, clueUrl) {
     }
     var url = clueUrl.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':page_num',req.params.page_num).replace(':order',req.params.order);
     var queryParams = _.get(reqBody,'queryParam',{});
-    url += `?self_pending=${queryParams.self_pending}`;
+    var self_pending = _.get(queryParams,'self_pending',false);
+    url += `?self_pending=${self_pending}`;
     if (queryParams.statistics_fields){
         url += `&statistics_fields=${queryParams.statistics_fields}`;
-        if (queryParams.keyword){
-            var keyword = encodeURI(queryParams.keyword);
-            url += `&keyword=${keyword}`;
-        }
-        if (queryParams.id){
-            url += `&id=${queryParams.id}`;
-        }
+    }
+    if (queryParams.keyword){
+        var keyword = encodeURI(queryParams.keyword);
+        url += `&keyword=${keyword}`;
+    }
+    if (queryParams.id){
+        url += `&id=${queryParams.id}`;
     }
     var bodyParams = _.get(reqBody,'bodyParam');
     var exist_fields = _.get(bodyParams,'exist_fields',[]);
@@ -505,6 +506,7 @@ exports.getClueDetailById = function(req, res) {
 };
 //根据线索id获取属于我的线索
 exports.getClueDetailByIdBelongTome = function(req, res){
+    //这里之所以用导出的这个接口，是因为获取线索的接口返回的数据不止包括线索列表还有统计数据，数据比较多
     var obj = handleClueParams(req, restApis.exportClueFulltext);
     let emitter = new EventEmitter();
     let promiseList = [getTypeClueLists(req, res, obj)];

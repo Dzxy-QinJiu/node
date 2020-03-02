@@ -6,7 +6,7 @@ exports.getClueDetailById = function(leadId) {
     if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
         type = 'manager';
     }
-    var url = '/rest/clue/detail/belongTome/1/1/source_time/descend/' + type;
+    var url = '/rest/clue/detail/belongTome/1/source_time/descend/' + type;
     var Deferred = $.Deferred();
     var queryObj = {
         bodyParam: {

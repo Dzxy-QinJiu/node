@@ -64,8 +64,6 @@ class ClueDetailPanel extends React.Component {
             hasPhonePanel: false,//是否有电话面板，用于线索面板计算高度
             phonePanelHasCustomerSchedule: false,//是否正在编辑自定义事件，用于线索面板计算高度
             phonePanelFinishTrace: false,//电话面板是否完成跟进,用于线索面板计算高度
-            //要从待我处理的线索列表删掉的线索，是在打过电话，再关闭线索详情或者来了新的电话消息后删掉
-            deleteFromWaitMeHandleClue: {}
         };
     }
 
@@ -117,12 +115,6 @@ class ClueDetailPanel extends React.Component {
             //记录一下拨打电话的时间及通话的id
             phoneRecordObj.callid = phonemsgObj.callid;
             phoneRecordObj.received_time = phonemsgObj.recevied_time;
-            //只要打过电话，就不在待我处理列表中了
-            var curClue = _.get(this.state, 'clueInfoArr[0]') || _.get(this.props, 'paramObj.clue_params.curClue',{});
-            this.setState({
-                deleteFromWaitMeHandleClue: curClue
-            });
-
         }
 
         //增加打开客户详情面板的事件监听
@@ -165,11 +157,6 @@ class ClueDetailPanel extends React.Component {
                 paramObj: paramObj,
                 hasPhonePanel: false
             });
-            this.deleteFromWaitMeHandleLists(() => {
-                this.setState({
-                    deleteFromWaitMeHandleClue: {}
-                });
-            });
         } else {
             //如果未切换线索，只把线索详情赋值
             // let paramObj = this.state.paramObj;
@@ -198,21 +185,6 @@ class ClueDetailPanel extends React.Component {
                     // 我认为：上次通话不管是否结束，只要来了新的电话，都需要清空数据，所以去掉了，需测试后再确定
                     if ($modal && $modal.length > 0 && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
                         this.setInitialData(phonemsgObj);
-                    }
-                    if(phonemsgObj.type === PHONERINGSTATUS.ALERT){
-                        this.deleteFromWaitMeHandleLists(() => {
-                            var curClue = _.get(this.state, 'clueInfoArr[0]') || _.get(nextProps, 'paramObj.clue_params.curClue',{});
-                            //只要打过电话，就算处理过线索了
-                            this.setState({
-                                deleteFromWaitMeHandleClue: curClue
-                            });
-                        });
-                    }else{
-                        var curClue = _.get(this.state, 'clueInfoArr[0]') || _.get(nextProps, 'paramObj.clue_params.curClue',{});
-                        //只要打过电话，就算处理过线索了
-                        this.setState({
-                            deleteFromWaitMeHandleClue: curClue
-                        });
                     }
                     paramObj.call_params = _.cloneDeep(_.get(nextProps, 'paramObj.call_params', null));
                 }
@@ -348,7 +320,7 @@ class ClueDetailPanel extends React.Component {
             //根据线索id获取线索详情失败
             return (
                 <span className="failed-to-get-customer">
-                    {Intl.get('crm.phone.failed.get.customer', '查询此号码对应的线索信息失败')}
+                    {Intl.get('crm.phone.failed.get.clue', '查询此号码对应的线索信息失败')}
                     <a onClick={this.retryGetCustomer} data-tracename="点击重试按钮">
                         {Intl.get('user.info.retry', '请重试')}
                     </a>

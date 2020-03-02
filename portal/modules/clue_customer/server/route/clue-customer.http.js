@@ -170,7 +170,7 @@ module.exports = {
         }
     }, {
         method: 'post',
-        path: '/rest/clue/detail/belongTome/:page_size/:page_num/:sort_field/:order/:type',
+        path: '/rest/clue/detail/belongTome/:page_size/:sort_field/:order/:type',
         handler: 'getClueDetailByIdBelongTome',
         passport: {
             'needLogin': true
