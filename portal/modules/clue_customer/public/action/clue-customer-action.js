@@ -64,7 +64,7 @@ function ClueCustomerActions() {
     //获取个人客户推荐配置
     this.getSettingCustomerRecomment = function(condition, callback) {
         //引导页设置了推荐条件后跳转过来时，用引导页设置的推荐条件
-        if(condition){
+        if(!_.isEmpty(condition)){
             _.isFunction(callback) && callback(condition);
             this.dispatch({list: [condition]});
         } else {
