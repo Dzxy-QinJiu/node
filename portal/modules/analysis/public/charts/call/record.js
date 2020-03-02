@@ -8,6 +8,7 @@ const { isAdminRole, isManagerOrOpRole } = require('PUB_DIR/sources/utils/common
 
 export function getCallRecordChart(paramObj = {}) {
     let title = Intl.get('analysis.call.record.statistics', '通话记录统计');
+    const csvFileName = title;
 
     const isAdmin = isAdminRole();
     const isManagerOrOp = isManagerOrOpRole();
@@ -43,6 +44,7 @@ export function getCallRecordChart(paramObj = {}) {
 
     return {
         title,
+        csvFileName,
         layout: {sm: 24},
         height: 'auto',
         chartType: 'table',
