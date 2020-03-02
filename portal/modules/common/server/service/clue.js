@@ -8,9 +8,8 @@ const restUtil = require('ant-auth-request').restUtil(restLogger);
 exports.getRewardedCluesCount = (req, res) => {
     return restUtil.authRest.get(
         {
-            // TODO url 需要替换
-            url: '/rest/base/v1/rewarded/clue',
+            url: '/rest/base/v1/user/memberaward/lead',
             req: req,
             res: res
-        }, null);
+        }, req.query);
 };

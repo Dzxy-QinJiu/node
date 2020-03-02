@@ -137,6 +137,7 @@ var NavSidebar = createReactClass({
             ronglianNum: '',//正在拨打的容联的电话
             isUnReadNotice: isUnReadNotice, // 是否有未读的公告，默认false
             noticeSubMenuSelectedType: isUnReadNotice ? 'notice' : 'system', // 通知二级子菜单选中的类型
+            isShowWinningClueContent: false, // 是否显示领线索内容
         };
     },
     propTypes: {
@@ -733,11 +734,42 @@ var NavSidebar = createReactClass({
         return null;
     },
 
+    handleClickCloseWinningClue(){
+        this.setState({
+            isShowWinningClueContent: false
+        });
+    },
+
+    handleVisibleChange(visible) {
+        this.setState({
+            isShowWinningClueContent: visible
+        }, () => {
+
+        });
+    },
+
+    renderWinningContent() {
+        return (
+            <WinningClue
+                isNavBar={true}
+                handleClickClose={this.handleClickCloseWinningClue.bind(this)}
+            />
+        );
+    },
+
     renderWinningClueBlock() {
         return (
-            <div className="winning-clue ">
-                <WinningClue />
-            </div>
+            <Popover
+                content={ this.renderWinningContent() }
+                placement= "right"
+                visible={this.state.isShowWinningClueContent}
+                onVisibleChange={this.handleVisibleChange}
+                overlayClassName="nav-sidebar-winning-clue"
+            >
+                <div className="winning-clue">
+                    <img className="gift-logo" src="../../static/images/gift.png" />
+                </div>
+            </Popover>
         );
     },
 

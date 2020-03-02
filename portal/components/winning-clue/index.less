@@ -1,68 +1,48 @@
-.winning-clue-popover {
-  margin-left: 0 !important;
-  padding-left: 0 !important;
-  background: #fff;
-  border:1px solid rgba(204,204,204,1);
-  box-shadow:0 8px 16px 0 rgba(0, 0, 0, 0.5);
-  border-radius:4px;
-  padding-top: 0;
-  .ant-popover-content {
-    width:330px;
-    height:212px;
-    .ant-popover-arrow {
-      display: none;
+.winning-clue-container {
+  background-color: #fff;
+  .title {
+    background: transparent url("../../static/images/gift-bg.png") 0 0;
+    display: flex;
+    align-items: center;
+    height:48px;
+    font-size:16px;
+    font-weight:500;
+    color: #fff;
+    line-height:18px;
+    padding-left: 24px;
+    .icon-close {
+      cursor: pointer;
+      font-size: 12px;
+      position: absolute;
+      right: 10px;
+      top: 6px;
     }
-    .ant-popover-inner {
-      height: 100%;
-      .ant-popover-title {
-        background: transparent url("../../static/images/gift-bg.png") 0 0;
-        display: flex;
-        align-items: center;
-        height:48px;
-        font-size:16px;
-        font-weight:500;
-        color: #fff;
-        line-height:18px;
-        padding-left: 24px;
-        .winning-clue-title {
-          width: 100%;
-          cursor: pointer;
-          .icon-close {
-            font-size: 12px;
-            position: absolute;
-            right: 10px;
-            top: 6px;
-          }
-        }
+  }
+  .content-container {
+    padding: 24px 5px 5px 24px;
+    .content {
+      margin-bottom: 20px;
+      font-size:14px;
+      .number {
+        color: #EFA246;
+        padding: 0 2px;
       }
-      .ant-popover-inner-content {
-        color: #333;
-        font-size: 14px;
-        line-height:18px;
-        .winning-clue-container {
-          margin-top: 16px;
-          .content {
-            margin-bottom: 20px;
-            font-size:14px;
-            .number {
-              color: #EFA246;
-              padding: 0 2px;
-            }
-          }
-          .tips {
-            margin-bottom: 20px;
-            .number {
-              color: #2196F3;
-              padding: 0 2px;
-            }
-          }
-          .owner {
-            font-size: 12px;
-            color: #ccc;
-            text-align: right;
-          }
-        }
+    }
+    .tips {
+      margin-bottom: 16px;
+      .number {
+        color: #2196F3;
+        padding: 0 2px;
       }
+      .extract-clue {
+        color: #2196F3;
+        cursor: pointer;
+      }
+    }
+    .owner {
+      font-size: 12px;
+      color: #ccc;
+      text-align: right;
     }
   }
 }

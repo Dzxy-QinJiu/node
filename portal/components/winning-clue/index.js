@@ -2,7 +2,7 @@
  * Created by hzl on 2020/2/29.
  */
 
-import { Popover, Button} from 'antd';
+import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 require('./index.less');
 
 class WinningClue extends React.Component{
@@ -10,15 +10,20 @@ class WinningClue extends React.Component{
         super(props);
         this.state = {
             count: 0,
-            visible: false,
         };
     }
 
     getRewardedCluesCount = () => {
+        const data = {
+            award_type: 'lead_followup',
+            start: moment().startOf('day').valueOf(),
+            end: moment().endOf('day').valueOf(),
+        };
         $.ajax({
             url: '/rest/rewarded/clues/count',
             type: 'get',
             dateType: 'json',
+            data: data,
             success: (count) => {
                 this.setState({count});
             },
@@ -28,80 +33,71 @@ class WinningClue extends React.Component{
     componentDidMount() {
         this.getRewardedCluesCount(); // 获取已奖励的线索数量
     }
+    
+    handleClickExtractClue = () => {
+        clueEmitter.emit(clueEmitter.SHOW_RECOMMEND_PANEL);
+    }
 
     handleClickClose = () => {
-        this.setState({
-            visible: false,
-        });
+        this.props.handleClickClose(false);
     }
 
-    renderPopoverTitle = () => {
+    renderContent = () => {
+        let count = this.state.count;
         return (
-            <div className="winning-clue-title">
-                <span>写跟进，领线索</span>
-                <i className='iconfont icon-close' onClick={this.handleClickClose} />
-            </div>
+            <React.Fragment>
+                <div className="title">
+                    <span>写跟进，领线索</span>
+                    <i className='iconfont icon-close' />
+                </div>
+                <div className="content-container">
+                    <div className="content">
+                        <ol>
+                            <li>1.每跟进一条线索， 线索提取量 <span className="number">+2</span></li>
+                            <li>2.每天最多可获得<span className="number">80</span>条线索提取量 </li>
+                            <li>3.活动截止时间为3月31日</li>
+                        </ol>
+                    </div>
+                    <div className="tips">
+                        {
+                            count && this.props.isNavBar ? (
+                                <span>
+                                今日已获得<span className="number">{count}</span>条线索，去
+                                    <span onClick={this.handleClickExtractClue} className="extract-clue">
+                                     提取线索
+                                    </span>
+                                </span>
+                            ) : (
+                                <span>
+                                今日已获得<span className="number">{count}</span>条，快去跟进你的线索吧
+                                </span>
+                            )
+                        }
+                    </div>
+                    <div className="owner">以上活动解释权为客套智能科技有限公司</div>
+                </div>
+            </React.Fragment>
         );
     }
-
-    renderPopoverContent = () => {
-        return (
-            <div className="winning-clue-container">
-                <div className="content">
-                    <ol>
-                        <li>1.每跟进一条线索， 线索提取量 <span className="number">+2</span></li>
-                        <li>2.每天最多可获得<span className="number">80</span>条线索提取量 </li>
-                        <li>3.活动截止时间为3月31日</li>
-                    </ol>
-                </div>
-                <div className="tips">
-                    今日已获得<span className="number">{this.state.count}</span>条，快去跟进你的线索吧！
-                </div>
-                <div className="owner">以上活动解释权为客套智能科技有限公司</div>
-            </div>
-        );
-    }
-
-    handleVisibleChange = (visible) => {
-        this.setState({visible});
-    }
-
     render() {
         return (
-            <Popover
-                title={this.renderPopoverTitle()}
-                content={this.renderPopoverContent()}
-                placement={this.props.placement}
-                trigger={this.props.trigger}
-                visible={this.state.visible}
-                onVisibleChange={this.handleVisibleChange}
-                overlayClassName="winning-clue-popover"
-            >
-                {
-                    this.props.isShowText ? (
-                        <Button>
-                            <i className='iconfont icon-gift' />
-                            <span className="text">领线索</span>
-                        </Button>
-                    ) : (
-                        <i className='iconfont icon-gift'/>
-                    )
-                }
-            </Popover>
+            <div className="winning-clue-container">
+                {this.renderContent()}
+            </div>
         );
+
+
     }
 }
 
 WinningClue.defaultProps = {
-    placement: 'right',
-    trigger: 'hover',
-    isShowText: false
+    isNavBar: false,
+    handleClickClose: () => {}
 };
 
 WinningClue.propTypes = {
-    placement: PropTypes.string,
-    trigger: PropTypes.string,
-    isShowText: PropTypes.bool
+    isNavBar: PropTypes.bool,
+    handleClickClose: PropTypes.func,
 };
 
 export default WinningClue;
