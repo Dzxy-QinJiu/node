@@ -310,6 +310,8 @@ var zh_CN = {
     'common.all.terminals': '所有终端',
     'common.terminals': '终端',
     'common.period': '。',
+    'common.have': '有',
+    'common.nothing': '无',
     //公共部分--end
     
     'login.login': '登录',
@@ -1981,6 +1983,7 @@ var zh_CN = {
     'crm.search.customer.detail.customer.pool': '客户已被删除或已被释放到{customerpool}',
     'crm.search.customer.no.customer.pool.dash': '客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看',
     'crm.batch.second.user': '变更联合跟进人',
+    'crm.has.contain.join.user': '是否有联合跟进人',
     // 客户管理end
 
     // 客户分析start
