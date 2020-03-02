@@ -75,6 +75,7 @@ class BootCompleteInformation extends React.Component{
     }
 
     componentWillUnmount() {
+        //恢复框架右侧区域内容显示
         $('.col-xs-10').css('display', 'block');
     }
 
@@ -110,12 +111,17 @@ class BootCompleteInformation extends React.Component{
         });
     };
 
+    //设置引导内容区域高度
     setContentHeight = () => {
         const { isWebMin } = isResponsiveDisplay();
+        //在手机端的时候才设置，由于样式文件里是height:100%
+        //在safari浏览器里，高度按100%计算会有问题
         if(isWebMin) {
             const contentEl = $('.boot-complete-content');
             if (contentEl.length) {
+                //设置框架右侧区域内容隐藏，不要出现滚动条
                 $('.col-xs-10').css('display', 'none');
+                //这里取窗口的高度赋值
                 contentEl.height($(window).height());
             }
         }
