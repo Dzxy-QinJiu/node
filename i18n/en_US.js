@@ -2744,6 +2744,7 @@ var en_US = {
     'crm.phone.failed.add.trace': 'Failed to add trace record',//添加跟进记录失败
     'crm.phone.success.add.trace': 'Add trace record successfully!',//添加跟进记录成功
     'crm.phone.failed.get.customer': 'Failed to query the customer connectting to this phone number',//查询此号码对应的客户信息失败
+    'crm.phone.failed.get.clue': 'Failed to query the clue connectting to this phone number',//查询此号码对应的线索信息失败
     'call.record.show.customer.detail': 'See details',//查看详情
     'call.record.customer.source': 'Source',//来源
     'call.record.no.response.customer': 'This number does not have a corresponding {type}',//此号码无对应客户
