@@ -379,9 +379,9 @@ class ExtractClues extends React.Component {
         });
     }
 
-    handleClickCloseWinningClue = () => {
+    handleClickCloseWinningClue = (flag) => {
         this.setState({
-            isShowWiningClue: false
+            isShowWiningClue: flag
         });
     }
 
@@ -1053,8 +1053,7 @@ class ExtractClues extends React.Component {
                             this.state.isShowWiningClue ? (
                                 <div className="extract-clue-panel-container">
                                     <WinningClue
-                                        isShowText={true}
-                                        
+                                        handleClickClose={this.handleClickCloseWinningClue}
                                     />
                                 </div>
                             ) : null
