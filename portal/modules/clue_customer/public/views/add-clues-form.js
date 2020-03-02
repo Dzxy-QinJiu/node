@@ -206,8 +206,8 @@ class ClueAddForm extends React.Component {
                     submitObj.user_name = nick_name;
                 }
                 if(team_id && team_name){
-                    submitObj.team_id = team_id;
-                    submitObj.team_name = team_name;
+                    submitObj.sales_team_id = team_id;
+                    submitObj.sales_team = team_name;
                 }
             }
             ajax({
