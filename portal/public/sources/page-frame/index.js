@@ -394,13 +394,6 @@ class PageFrame extends React.Component {
                             ) : null
                         }
                         {
-                            this.state.isShowBootCompletePanel ? (
-                                <BootCompleteInformation
-                                    hideRightPanel={this.closeBootCompleteInfoPanel}
-                                />
-                            ) : null
-                        }
-                        {
                             this.state.isShowUserDetailPanel ? (
                                 <UserDetail
                                     {...this.state.userDetailParamObj}
@@ -440,6 +433,13 @@ class PageFrame extends React.Component {
                         }
                     </div>
                 </div>
+                {
+                    this.state.isShowBootCompletePanel ? (
+                        <BootCompleteInformation
+                            hideRightPanel={this.closeBootCompleteInfoPanel}
+                        />
+                    ) : null
+                }
                 {this.state.audioPanelShow && audioParamObj ? (
                     <AudioReportFunction
                         curPlayItem={audioParamObj.curPlayItem}

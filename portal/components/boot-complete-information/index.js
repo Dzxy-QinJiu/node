@@ -69,8 +69,13 @@ class BootCompleteInformation extends React.Component{
     hasSetWebConfigSuccess = false;
 
     componentDidMount() {
+        this.setContentHeight();
         this.getAreaByPhone();
         // this.getRecommendCustomerIndustry();
+    }
+
+    componentWillUnmount() {
+        $('.col-xs-10').css('display', 'block');
     }
 
     getRecommendCustomerIndustry = () => {
@@ -103,6 +108,17 @@ class BootCompleteInformation extends React.Component{
                 this.setState({isGetIndustrys: false});
             }
         });
+    };
+
+    setContentHeight = () => {
+        const { isWebMin } = isResponsiveDisplay();
+        if(isWebMin) {
+            const contentEl = $('.boot-complete-content');
+            if (contentEl.length) {
+                $('.col-xs-10').css('display', 'none');
+                contentEl.height($(window).height());
+            }
+        }
     };
 
     getAreaByPhone = () => {
