@@ -415,7 +415,6 @@ class ExtractClues extends React.Component {
             //企业版试用提示升级,正式（管理员）提示增加线索量
             if( versionAndType.isPersonalTrial) {//个人试用
                 maxLimitTip = <div>
-                    {this.renderWinningClueBtn()}
                     <ReactIntl.FormattedMessage
                         id="clue.recommend.trial.extract.num.limit.tip"
                         defaultMessage={'已提取{count}条，如需继续提取请{upgradedVersion}'}
@@ -430,10 +429,10 @@ class ExtractClues extends React.Component {
                             )
                         }}
                     />
+                    {this.renderWinningClueBtn()}
                 </div>;
             } else if(versionAndType.isCompanyTrial) {//企业试用
                 maxLimitTip = <div>
-                    {this.renderWinningClueBtn()}
                     <ReactIntl.FormattedMessage
                         id="clue.recommend.company.trial.extract.num.limit.tip"
                         defaultMessage={'已提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}'}
@@ -442,6 +441,7 @@ class ExtractClues extends React.Component {
                             contact: COMPANY_PHONE
                         }}
                     />
+                    {this.renderWinningClueBtn()}
                 </div>;
             } else if(versionAndType.isPersonalFormal//个人正式版
                 || versionAndType.isCompanyFormal && this.isManager()) { //或企业正式版管理员
