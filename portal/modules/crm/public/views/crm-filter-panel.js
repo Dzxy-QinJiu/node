@@ -463,6 +463,17 @@ class CrmFilterPanel extends React.Component {
                         selected: x.id && _.indexOf(selectedLevel, x.id) !== -1
                     }))
             });
+            advancedData.unshift({
+                groupName: Intl.get('crm.has.contain.join.user', '是否有联合跟进人'),
+                groupId: 'contain_join_user',
+                singleSelect: true,
+                data: _.map([{name: Intl.get('common.have', '有'), value: 'true'},
+                    {name: Intl.get('common.nothing', '无'), value: 'false'}], x => ({
+                    name: x.name,
+                    value: x.value,
+                    selected: x.value && x.value === _.get(this.state, 'condition.contain_join_user', '')
+                }))
+            });
         }
         if(!isCurtao()){
             advancedData.unshift({
