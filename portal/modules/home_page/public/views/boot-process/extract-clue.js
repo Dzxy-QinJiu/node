@@ -7,8 +7,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import { Checkbox, Button, message, Popover } from 'antd';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
 var clueCustomerStore = require('MOD_DIR/clue_customer/public/store/clue-customer-store');
-var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import {batchPushEmitter, notificationEmitter, showWiningClueEmitter} from 'PUB_DIR/sources/utils/emitters';
 var paymentEmitter = require('PUB_DIR/sources/utils/emitters').paymentEmitter;
 var batchOperate = require('PUB_DIR/sources/push/batch');
 import userData from 'PUB_DIR/sources/user-data';
@@ -376,6 +375,8 @@ class ExtractClues extends React.Component {
     handleClickWinningClue = () => {
         this.setState({
             isShowWiningClue: true
+        }, () => {
+            showWiningClueEmitter.emit(showWiningClueEmitter.SHOW_WINNING_CLUE);
         });
     }
 

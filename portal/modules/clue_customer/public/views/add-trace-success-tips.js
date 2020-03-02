@@ -38,9 +38,11 @@ class AddTraceContentSuccessTips extends React.Component {
                 {
                     this.state.show ? (
                         <div className="content">
-                            <i className='iconfont icon-gift'/>
-                            <span>太棒了 ，跟进成功！线索提取量</span>
-                            <span className="number">+2</span>
+                            <img className="gift-logo" src="../../../../static/images/gift.png" />
+                            <span className="tips">
+                                太棒了 ，跟进成功！线索提取量
+                                <span className="number">+2</span>
+                            </span>
                         </div>
                     ) : null
                 }
