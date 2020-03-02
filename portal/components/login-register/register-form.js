@@ -19,7 +19,6 @@ const CODE_EFFECTIVE_TIME = 60;
 const CODE_INTERVAL_TIME = 1000;
 let getVerifyErrorCaptchaCodeAJax = null;
 var base64_prefix = 'data:image/png;base64,';
-let phoneIsPassValid = false;//电话规则验证是否通过
 class RegisterForm extends React.Component {
     constructor(props) {
         super(props);
@@ -33,6 +32,7 @@ class RegisterForm extends React.Component {
             validateNameOnlyMsg: '',//验证公司标识唯一性的提示
             registerErrorMsg: '',//注册的错误提示
             phoneIsRegisted: false,//手机号是否被注册过
+            phoneIsPassValid: false, //手机号验证是否通过
             isCheckingRegistedPhone: '',//记录正在验证的是否被注册过的电话
             passBarShow: false,//密码强度条是否展示
             passStrength: '',//密码强度
@@ -47,8 +47,8 @@ class RegisterForm extends React.Component {
     }
    
     componentWillUnmount() {
-        //组件注销前，将电话是否通过验证的标识恢复默认值
-        phoneIsPassValid = false;
+        //组件注销前，将电话是否通过验证\是否注册过的标识恢复默认值
+        this.setState({phoneIsPassValid: false, phoneIsRegisted: false});
     }
     //获取网页的来源
     getWebReferrer() {
@@ -191,7 +191,7 @@ class RegisterForm extends React.Component {
                 </Button>);
         } else {
             // 电话通过验证 并且 电话未被注册时，按钮才可用
-            let btnEnable = phoneIsPassValid && !this.state.phoneIsRegisted;
+            let btnEnable = this.state.phoneIsPassValid && !this.state.phoneIsRegisted;
             return (
                 <Button disabled={!btnEnable} className={btnEnable ? 'captcha-btn' : ''}>
                     {Intl.get('register.get.phone.captcha.code', '获取验证码')}
@@ -299,9 +299,16 @@ class RegisterForm extends React.Component {
             });
         }
     }
-    onPhoneChange = () => {
+    onPhoneChange = (e) => {
+        let phone = e.target.value;
+        let phoneIsPassValid = false;
+        if (phone && commonPhoneRegex.test(phone)) {
+            //电话验证通过即可点击获取短信验证码
+            phoneIsPassValid = true;
+        }
         // 修改电话后，将电话已被注册的提示去掉，将获取短信验证码的按钮设为不可用
         this.setState({
+            phoneIsPassValid,
             phoneIsRegisted: false,
             registerErrorMsg: ''
         });
@@ -311,17 +318,13 @@ class RegisterForm extends React.Component {
         let phone = _.trim(value);
         if (phone) {
             if (commonPhoneRegex.test(phone)) {
-                //电话验证通过即可点击获取短信验证码
-                phoneIsPassValid = true;
                 // 电话通过验证后，将电话上传到matomo上记录
                 Trace.traceEvent('个人注册页面', '输入手机号:' + phone);
                 callback();
             } else {
-                phoneIsPassValid = false;
                 callback(Intl.get('register.phon.validat.tip', '请输入正确的手机号, 格式如:13877775555'));
             }
         } else {
-            phoneIsPassValid = false;
             callback(Intl.get('user.input.phone', '请输入手机号'));
         }
     }
@@ -384,7 +387,8 @@ class RegisterForm extends React.Component {
                 <Input type="password" className='password-hidden-input' name="pwd"/>
                 <FormItem>
                     {getFieldDecorator('phone', {
-                        rules: [{validator: this.validatePhone}]
+                        rules: [{validator: this.validatePhone}],
+                        validateTrigger: 'onBlur'
                     })(
                         <TextField
                             required
@@ -398,7 +402,7 @@ class RegisterForm extends React.Component {
                             autoComplete="off"
                         />
                     )}
-                    {this.state.phoneIsRegisted ? (<div className="register-error-tip">
+                    {this.state.phoneIsRegisted && this.state.phoneIsPassValid ? (<div className="register-error-tip">
                         <ReactIntl.FormattedMessage
                             id="register.phone.has.registed.to.login"
                             defaultMessage='该手机号已被注册, 去 {login}'
