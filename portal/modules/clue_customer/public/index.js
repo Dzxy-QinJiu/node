@@ -108,8 +108,6 @@ var LAYOUT_CONSTANTS = {
     MIN_WIDTH_NEED_CAL: 405,//需要计算输入框时的断点
     WIDTH_WITHOUT_INPUT: 185//topnav中除了输入框以外的宽度
 };
-import RecommendCluesForm from './views/recomment_clues/recommend_clues_form';
-import ClueRecommedLists from './views/recomment_clues/recommend_clues_lists';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import { clueEmitter, notificationEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { parabola } from 'PUB_DIR/sources/utils/parabola';
@@ -3519,9 +3517,6 @@ class ClueCustomer extends React.Component {
                     {
                         this.state.isShowRecommendCluePanel ?
                             <React.Fragment>
-                                {/*<ClueRecommedLists
-                                    closeRecommendCluePanel={this.closeRecommendCluePanel}
-                                />*/}
                                 <RightPanelModal
                                     isShowMadal
                                     isShowCloseBtn
