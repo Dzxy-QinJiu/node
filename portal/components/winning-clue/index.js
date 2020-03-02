@@ -2,7 +2,7 @@
  * Created by hzl on 2020/2/29.
  */
 
-import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { showWiningClueEmitter, clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 require('./index.less');
 
 class WinningClue extends React.Component{
@@ -31,9 +31,14 @@ class WinningClue extends React.Component{
     }
 
     componentDidMount() {
-        this.getRewardedCluesCount(); // 获取已奖励的线索数量
+        showWiningClueEmitter.on(showWiningClueEmitter.SHOW_WINNING_CLUE, this.getRewardedCluesCount); // 获取已奖励的线索数量
     }
-    
+
+    componentWillUnmount() {
+        showWiningClueEmitter.removeListener(showWiningClueEmitter.SHOW_WINNING_CLUE, this.getRewardedCluesCount);
+    }
+
+
     handleClickExtractClue = () => {
         clueEmitter.emit(clueEmitter.SHOW_RECOMMEND_PANEL);
     }
@@ -48,7 +53,7 @@ class WinningClue extends React.Component{
             <React.Fragment>
                 <div className="title">
                     <span>写跟进，领线索</span>
-                    <i className='iconfont icon-close' />
+                    <i className='iconfont icon-close' onClick={this.handleClickClose}/>
                 </div>
                 <div className="content-container">
                     <div className="content">

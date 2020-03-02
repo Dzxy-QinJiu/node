@@ -280,3 +280,8 @@ export { leadRecommendEmitter };
 const clickUpgradeNoiceEmitter = new EventEmitter();
 clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB = 'click_notice_tab'; // 点击公告tab
 export { clickUpgradeNoiceEmitter };
+
+// 主导航的领线索，显示内容区的事件
+const showWiningClueEmitter = new EventEmitter();
+showWiningClueEmitter.SHOW_WINNING_CLUE = 'show_winning_clue'; //
+export { showWiningClueEmitter };

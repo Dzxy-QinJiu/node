@@ -16,7 +16,8 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {hasCalloutPrivilege, isCurtao, checkVersionAndType, isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
-import {phoneEmitter, notificationEmitter, userInfoEmitter, phoneMsgEmitter, clickUpgradeNoiceEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneEmitter, notificationEmitter, userInfoEmitter,
+    phoneMsgEmitter, clickUpgradeNoiceEmitter, showWiningClueEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 const session = storageUtil.session;
@@ -734,9 +735,9 @@ var NavSidebar = createReactClass({
         return null;
     },
 
-    handleClickCloseWinningClue(){
+    handleClickCloseWinningClue(flag){
         this.setState({
-            isShowWinningClueContent: false
+            isShowWinningClueContent: flag
         });
     },
 
@@ -744,7 +745,9 @@ var NavSidebar = createReactClass({
         this.setState({
             isShowWinningClueContent: visible
         }, () => {
-
+            if (visible) {
+                showWiningClueEmitter.emit(showWiningClueEmitter.SHOW_WINNING_CLUE);
+            }
         });
     },
 
@@ -752,7 +755,7 @@ var NavSidebar = createReactClass({
         return (
             <WinningClue
                 isNavBar={true}
-                handleClickClose={this.handleClickCloseWinningClue.bind(this)}
+                handleClickClose={this.handleClickCloseWinningClue}
             />
         );
     },
