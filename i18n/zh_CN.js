@@ -2784,6 +2784,7 @@ var zh_CN = {
     'crm.phone.failed.add.trace': '添加跟进记录失败',
     'crm.phone.success.add.trace': '添加跟进记录成功',
     'crm.phone.failed.get.customer': '查询此号码对应的客户信息失败',
+    'crm.phone.failed.get.clue': '查询此号码对应的线索信息失败',
     'call.record.show.customer.detail': '查看详情',
     'call.record.customer.source': '来源',
     'call.record.no.response.customer': '此号码无对应{type}',
