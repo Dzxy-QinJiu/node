@@ -18,7 +18,6 @@ class SetRule extends React.Component {
 
         return (
             <div>
-                设置规则
                 <Form onSubmit={this.handleSubmit}>
                     {renderFormItem('谁可填写', 'name', {})}
                 </Form>

@@ -20,7 +20,7 @@ export default function(WrappedComponent) {
                         <Step title="2. 设置规则" />
                     </Steps>
                     <div>
-                        <WrappedComponent {...this.props} />
+                        <WrappedComponent {...this.props} ref={elm => this.wrappedComponent = elm} />
                     </div>
                     <div>
                         {currentStep === 2 ? (
@@ -33,7 +33,7 @@ export default function(WrappedComponent) {
 
                         {currentStep === 2 ? (
                             <Button
-                                onClick={() => { hideReportPanel(); }}
+                                onClick={this.save.bind(this)}
                             >
                             保存
                             </Button>
@@ -49,6 +49,15 @@ export default function(WrappedComponent) {
                     </div>
                 </div>
             );
+        }
+
+        save() {
+            this.wrappedComponent.validateFields((err, values) => {
+                if (!err) {
+                    console.log(values);
+                    //hideReportPanel()
+                }
+            });
         }
     };
 }
