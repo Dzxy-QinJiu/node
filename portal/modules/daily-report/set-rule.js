@@ -21,7 +21,11 @@ class SetRule extends React.Component {
     }
 
     render() {
-        const renderFormItem = renderFormItemFunc.bind(this, {});
+        const { tplList, selectedTpl } = this.props;
+
+        const formData = _.find(tplList, tpl => tpl.id === selectedTpl) || {};
+
+        const renderFormItem = renderFormItemFunc.bind(this, formData);
 
         return (
             <div>
