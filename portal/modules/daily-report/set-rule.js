@@ -30,6 +30,7 @@ class SetRule extends React.Component {
                         type: 'select',
                         options: _.map(this.props.teamList, item => ({name: item.group_name, value: item.group_id})),
                         elementProps: {
+                            mode: 'multiple',
                             placeholder: '请选择团队'
                         },
                         fieldDecoratorOption: {
