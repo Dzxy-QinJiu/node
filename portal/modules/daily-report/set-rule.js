@@ -37,13 +37,6 @@ class SetRule extends React.Component {
                         }
                     })}
 
-                    {renderFormItem.call(this, '是否提醒填写', 'remind', {
-                        type: 'switch',
-                        fieldDecoratorOption: {
-                            valuePropName: 'checked',
-                        }
-                    })}
-
                     {renderFormItem.call(this, '是否开启', 'status', {
                         type: 'switch',
                         fieldDecoratorOption: {
