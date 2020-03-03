@@ -546,7 +546,7 @@ class RegRulesView extends React.Component {
         //新加节点的数据,要把原来最后一个节点的next加上，先判断之前的数据结构中是不是有结束节点
         var applyFlow = this.state.addNodePanelFlow;
         var applyRulesAndSetting = this.state.applyRulesAndSetting;
-        var applyFlowObj = _.get(applyRulesAndSetting, `applyApproveRules.${applyFlow}`, {});
+        var applyFlowObj = _.get(applyRulesAndSetting, ['applyApproveRules',applyFlow], {});
         var bpmnNodeFlow = _.get(applyFlowObj, 'bpmnNode', []);
         var defaultBpmnNode = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
         //如果是默认流程
@@ -860,7 +860,7 @@ class RegRulesView extends React.Component {
                 return;
             }
             var bpmnNode = _.get(value,'bpmnNode',[]);
-            if(!_.get(bpmnNode,'length')){//如果bpmnNode没有值，提示要加上审批人节点
+            if(_.isEmpty(bpmnNode,'length')){//如果bpmnNode没有值，提示要加上审批人节点
                 showAddApproveNodeTip = true;
             }
             showAddNextNodeTip = _.some(bpmnNode, (item,index) => {
