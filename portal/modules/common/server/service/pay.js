@@ -54,7 +54,19 @@ exports.getOrderStatus = function(req,res) {
         url: urls.getOrderStatus,
         req: req,
         res: res
-    }, req.query);
+    }, req.query, {
+        success: function(emitter , status) {
+            // 返回状态值：（0：待付款，1：付款成功，-1：超时关闭）
+            // 0：待付款（不用管）
+            // -1：超时关闭（后台关闭订单，需重新生成订单）
+            if(_.toString(status) === '1') {//付款成功
+                restLogger.info('sessionID: ' + req.sessionID + ',支付成功,支付方式：%s', req.query.type);
+            }else if(_.toString(status) === '-1') {//超时关闭
+                restLogger.info('sessionID: ' + req.sessionID + ',订单超时,支付方式：%s', req.query.type);
+            }
+            emitter.emit('success' , status);
+        }
+    });
 };
 
 //获取支付渠道信息
@@ -76,7 +88,7 @@ exports.getGoodsDiscountList = function(req,res) {
 };
 
 // 获取组织的通话费用
-exports.getOrganizationCallFee = (req, res) =>{
+exports.getOrganizationCallFee = (req, res) => {
     return restUtil.authRest.get({
         url: urls.getOrganizationCallFee,
         req: req,
