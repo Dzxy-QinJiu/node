@@ -4,6 +4,22 @@ import { detailPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const SITE_CONGFIG_KEY = 'is_no_longer_show_check_report_notice';
 
+//获取模板列表
+export function getTplList(callback) {
+    if (!_.isFunction(callback)) return;
+
+    ajax.send({
+        url: '/rest/customer/v3/dailyreport/templates'
+    })
+        .done(result => {
+            callback(result);
+        })
+        .fail(err => {
+            message.error(err);
+            callback();
+        });
+}
+
 //获取报告列表
 export function getReportList(callback) {
     if (!_.isFunction(callback)) return;

@@ -18,6 +18,7 @@ class ReportPanel extends React.Component {
     state = {
         currentView: VIEW_TYPE.ADD_TPL,
         currentStep: 1,
+        tplList: [],
         selectedTpl: '',
     }
 
