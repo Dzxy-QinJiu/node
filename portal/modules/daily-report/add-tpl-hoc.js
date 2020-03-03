@@ -2,7 +2,7 @@
  * 添加汇报模板高价组件
  */
 
-import { Steps, Button } from 'antd';
+import { Steps, Button, message } from 'antd';
 import { VIEW_TYPE } from './consts';
 import { hideReportPanel } from './utils';
 
@@ -41,7 +41,7 @@ export default function(WrappedComponent) {
 
                         {currentStep === 1 ? (
                             <Button
-                                onClick={() => { updateState({ currentView: VIEW_TYPE.SET_RULE, currentStep: 2 }); }}
+                                onClick={this.next.bind(this)}
                             >
                             下一步
                             </Button>
@@ -49,6 +49,15 @@ export default function(WrappedComponent) {
                     </div>
                 </div>
             );
+        }
+
+        next() {
+            if (!this.props.selectedTpl) {
+                message.warning('请选择模板');
+                return;
+            }
+
+            this.props.updateState({ currentView: VIEW_TYPE.SET_RULE, currentStep: 2 });
         }
 
         save() {
