@@ -26,7 +26,7 @@ class SetRule extends React.Component {
         return (
             <div>
                 <Form onSubmit={this.handleSubmit}>
-                    {renderFormItem('谁可填写', 'name', {
+                    {renderFormItem('谁可填写', 'sales_team_ids', {
                         type: 'select',
                         options: _.map(this.props.teamList, item => ({name: item.group_name, value: item.group_id})),
                         elementProps: {
