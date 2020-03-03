@@ -3638,6 +3638,7 @@ var en_US = {
     'apply.cc.node.socket.noty': 'System popup',//系统弹窗
     'apply.business.change.time.range': 'Please edit total business time first',//请先修改总出差时间
     'apply.please.add.assign.node': 'The process is incomplete, you need to add the "appointed approver approval node"',//流程不完整，需添加“指定审批人审批节点”
+    'apply.please.add.approve.node': 'The process is incomplete, you need to add the approver node',//流程不完整，需添加审批人节点
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
