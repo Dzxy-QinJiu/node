@@ -1,25 +1,57 @@
 var _ = require('lodash');
-//用户审批列表转换
-exports.toRestObject = function(list) {
-    var result = [];
-    list = list || [];
-    list.forEach((item) => {
-        result.push({
-            ...item,
-            topic: item.topic,
-            presenter: item.producer ? item.producer.nick_name : '',
-            time: item.produce_date,
-            approval_time: item.consume_date || '',
-            id: item.id,
-            order_id: _.get(item,'message.order_id',''),
-            customer_id: _.get(item,'message.customer_id',''),
-            customer_name: _.get(item,'message.customer_name',''),
-            isConsumed: (item.approval_state !== 'false') + '',
-            approval_state: transferApprovalStateToNumber(item.approval_state)
-        });
-    });
-    return result;
+//用户审批列表转换（旧版数据）
+exports.toRestObject = function(item) {
+    return {
+        ...item,
+        topic: item.topic,
+        presenter: item.producer ? item.producer.nick_name : '',
+        time: item.produce_date,
+        approval_time: item.consume_date || '',
+        id: item.id,
+        order_id: _.get(item, 'message.order_id', ''),
+        customer_id: _.get(item, 'message.customer_id', ''),
+        customer_name: _.get(item, 'message.customer_name', ''),
+        isConsumed: (item.approval_state !== 'false') + '',
+        approval_state: transferApprovalStateToNumber(item.approval_state)
+    };
 };
+//用户审批列表转换（新版数据）todo 待完善一些字段
+exports.toRestObjectNewUserApply = function(item) {
+    return {
+        ...item,
+        topic: _.get(item, 'topic', ''),//todo 2222
+        presenter: _.get(item, 'applicant.nick_name', ''),
+        time: _.get(item, 'time', ''),//todo 222
+        approval_time: _.get(item, 'consume_date', ''),//todo 22
+        id: _.get(item, 'id'),
+        order_id: _.get(item, 'order_id', ''),//todo 222
+        customer_id: _.get(item, 'detail.customer_id', ''),//todo 222
+        customer_name: _.get(item, 'detail.customer_name', ''),
+        isConsumed: (item.status !== 'ongoing') + '',//todo 33
+        approval_state: getStatusNum(_.get(item, 'status')),
+        message_type: _.get(item, 'workflow_type'),
+        producer: _.get(item, 'applicant'),//todo 22
+        message: {//todo
+            sales_team_name: '',
+            user_name: _.get(item, 'detail.user_name'),
+            remark: _.get(item, 'remark'),
+            type: _.get(item, 'detail.user_apply_type'),
+            products: JSON.stringify(_.get(item, 'detail.user_grants_apply', [])),
+            sales_name: '',
+            nick_name: _.get(item, 'detail.nickname'),
+            producer_team: '',
+            tag: _.get(item, 'user_type'),
+            customer_name: _.get(item, 'detail.customer_name'),
+            customer_id: _.get(item, 'detail.customer_id'),
+            order_id: _.get(item, 'order_id')
+        },
+        approval_person: _.get(item, ''),
+        produce_date: '',
+        replyLists: []
+    };
+};
+
+
 //未读回复的数据
 exports.unreadReplyToFrontend = function(unreadReply) {
     return {
@@ -40,12 +72,12 @@ exports.unreadWorkFlowReplyToFrontend = function(unreadReply) {
     };
 };
 
-//将approvalState转换成数字
+//将approvalState转换成数字(旧版的申请审批)
 function transferApprovalStateToNumber(approval_state) {
     //审批状态
     var result_approval_state = '';
     switch (approval_state) {
-    //全部和未审批都是0
+        //全部和未审批都是0
         case 'all':
         case 'false':
             result_approval_state = '0';
@@ -65,6 +97,88 @@ function transferApprovalStateToNumber(approval_state) {
     }
     return result_approval_state;
 }
+
+//更改状态为数字(新版的申请审批)
+function getStatusNum(state) {
+    let statusNum = '';
+    switch (state) {
+        case 'ongoing':
+            statusNum = '0';
+            break;
+        case 'pass':
+            statusNum = '1';
+            break;
+        case 'reject':
+            statusNum = '2';
+            break;
+        case 'cancel':
+            statusNum = '3';
+            break;
+    }
+    return statusNum;
+}
+/**
+ * 增加特殊属性，用于在列表中展示数据，详情中不需要这些数据
+ * @param detail  新数据对象
+ * @param preData  原始数据
+ */
+function addPropertiesNewApply(detail, preData) {
+    if (detail && preData) {
+        //审批单内容
+        var serverResult = preData || {};
+        detail.id = _.get(serverResult,'id');
+        detail.isConsumed = serverResult.status !== 'ongoing';
+        detail.order_id = serverResult.order_id;//todo 应该是没有用的一个字段，页面上没有使用
+        detail.presenter = _.get(serverResult,'applicant.nick_name');
+        detail.time = serverResult.create_time;
+        detail.topic = _.get(serverResult,'detail.user_apply_name');
+    }
+    return detail;
+}
+//用户审批详情转换（新版的用户申请）
+exports.toDetailRestObjectNewUserApply = function(detail){
+    var userType = _.get(detail,'detail.user_apply_type');
+    var obj = {
+        type: userType,
+        sales_name: _.get(detail,'detail.customer_sales_name'),
+        customer_name: _.get(detail,'detail.customer_name'),
+        customer_id: _.get(detail,'detail.customer_id'),
+        presenter_id: _.get(detail,'applicant.user_id'),
+        user_names: _.get(detail,'detail.user_name','') ? [_.get(detail,'detail.user_name','')] : [],
+        user_ids: _.get(detail,'detail.user_id',) ? [_.get(detail,'detail.user_id')] : [],
+        nick_names: [_.get(detail,'detail.nickname','')],
+        apps: _.get(detail,'detail.user_grants_apply',[]),
+        sales_team_name: _.get(detail,'detail.customer_sales_team'),
+        comment: _.get(detail,'remarks',''),
+        approval_comment: _.get(detail,'approval_comment',''),
+        approval_state: getStatusNum(_.get(detail,'status')),
+        approval_person: _.get(detail,'approval_person',''),//审批人
+        time: _.get(detail,'create_time'),//申请时间
+        approval_time: _.get(detail,'approval_time',''),//审批时间
+        last_contact_time: _.get(detail,'last_call_back_time',''),//最后联系时间
+
+
+
+
+
+        // id: _.get(detail,'id'),
+        // isConsumed: '',
+        presenter: _.get(detail,'applicant.nick_name'),//
+        // topic: _.get(detail,'detail.user_apply_name'),
+        // last_contact_time: '',
+        immutable_labels: _.get(detail,'detail.immutable'),
+        customer_label: _.get(detail,'detail.customer_label'),
+
+    };
+    //账号类型
+    obj.account_type = userType === 'apply_user_official' || userType === 'apply_app_official' ? '1' : '0';
+    if (userType === 'apply_user' || userType === 'apply_app') {
+        obj.tag = _.get(detail, 'tag', '');
+    }
+    //增加一些特殊属性
+    obj = addPropertiesNewApply(obj, detail);
+    return obj;
+};
 
 //用户审批详情转换
 exports.toDetailRestObject = function(obj) {
@@ -157,8 +271,8 @@ exports.toDetailRestObject = function(obj) {
     result.apps = products;
     //账号类型
     result.account_type = detail.type === 'apply_user_official' || detail.type === 'apply_app_official' ? '1' : '0';
-    if (detail.type === 'apply_user' || detail.type === 'apply_app'){
-        result.tag = _.get(detail,'tag','');
+    if (detail.type === 'apply_user' || detail.type === 'apply_app') {
+        result.tag = _.get(detail, 'tag', '');
     }
     //销售团队名称
     result.sales_team_name = detail.sales_team_name || '';
@@ -375,7 +489,7 @@ exports.toDetailStatusRestObject = function(obj) {
     return result;
 };
 //延期、禁用（多应用）
-exports.toDetailMultiAppRestObject = function(obj, APPLY_TYPES){
+exports.toDetailMultiAppRestObject = function(obj, APPLY_TYPES) {
     //审批单内容
     var serverResult = obj || {};
     //申请单详情
@@ -403,7 +517,7 @@ exports.toDetailMultiAppRestObject = function(obj, APPLY_TYPES){
             app_name: app.client_name
         }));
         //延期（多应用）
-        if(detail.type === APPLY_TYPES.DELAY_MULTI_APP){
+        if (detail.type === APPLY_TYPES.DELAY_MULTI_APP) {
             if (_.get(apps, '0.delay_time')) {
                 result.delayTime = apps[0].delay_time;
             }
@@ -415,7 +529,7 @@ exports.toDetailMultiAppRestObject = function(obj, APPLY_TYPES){
             if (_.get(apps, '0.delay_time') && _.get(apps, '0.delay_time') !== '-1') {
                 result.delayTime = _.get(apps, '0.delay_time', '');
             }
-        } else if(detail.type === APPLY_TYPES.DISABLE_MULTI_APP){//禁用（多应用）
+        } else if (detail.type === APPLY_TYPES.DISABLE_MULTI_APP) {//禁用（多应用）
             result.status = _.get(apps, '0.status');
         }
     }
@@ -435,7 +549,6 @@ exports.toDetailMultiAppRestObject = function(obj, APPLY_TYPES){
     result = addProperties(result, obj);
     return result;
 };
-
 
 
 /**
@@ -458,6 +571,8 @@ function addProperties(detail, preData) {
     }
     return detail;
 }
+
+
 //角色实体
 exports.Role = function(obj, with_permission_ids) {
     this.role_id = obj.role_id || '';

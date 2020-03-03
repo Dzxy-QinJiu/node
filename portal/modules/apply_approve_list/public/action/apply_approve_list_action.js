@@ -3,6 +3,7 @@ var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scro
 let userData = require('PUB_DIR/sources/user-data');
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {getApplyDetailById} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {addCancelBtnPrivliege} from '../utils/apply_approve_utils';
 /**
  * 用户审批界面使用的action
  */
@@ -64,11 +65,13 @@ function UserApplyActions() {
 
 
 
+
+
     //获取由我发起的申请列表
     this.getApplyListStartSelf = function(obj) {
         this.dispatch({loading: true, error: false});
         UserAjax.getApplyListStartSelf(obj).then((result) => {
-
+            addCancelBtnPrivliege(result.list);
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({loading: false, error: false, data: result });
         }, (errorMsg) => {

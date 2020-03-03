@@ -113,10 +113,10 @@ class AddReportSendApply extends React.Component {
                     if(data){
                         //添加成功
                         this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                        this.hideApplyAddForm(data);
                         //添加完后的处理
                         data.afterAddReplySuccess = true;
                         data.showCancelBtn = true;
+                        this.hideApplyAddForm(data);
                         _.isFunction(this.props.afterAddApplySuccess) && this.props.afterAddApplySuccess(data);
                     }else{
                         this.setResultData(errTip, 'error');

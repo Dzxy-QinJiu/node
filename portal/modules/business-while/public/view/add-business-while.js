@@ -184,10 +184,11 @@ class AddBusinessWhile extends React.Component {
                     if (data) {
                         //添加成功
                         this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                        this.hideBusinessApplyAddForm(data);
                         //添加完后的处理
                         data.afterAddReplySuccess = true;
                         data.showCancelBtn = true;
+                        this.hideBusinessApplyAddForm(data);
+
                     } else {
                         this.setResultData(errTip, 'error');
                     }

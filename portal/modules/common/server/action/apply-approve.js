@@ -42,10 +42,10 @@ exports.getApplyTaskNode = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-exports.getApplyDetailById = function(req, res) {
-    ApplyApproveService.getApplyDetailById(req, res).on('success', function(data) {
-        res.status(200).json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
+// exports.getApplyDetailById = function(req, res) {
+//     ApplyApproveService.getApplyDetailById(req, res).on('success', function(data) {
+//         res.status(200).json(data);
+//     }).on('error', function(codeMessage) {
+//         res.status(500).json(codeMessage && codeMessage.message);
+//     });
+// };

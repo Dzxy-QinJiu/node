@@ -1,5 +1,6 @@
 import {Button} from 'antd';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import userData from 'PUB_DIR/sources/user-data';
 
 export const APPLY_TYPE = {
     APPLY_BY_ME: 'apply_by_me',
@@ -114,9 +115,16 @@ export const UnitOldAndNewUserDetail = function(detail) {
     };
 };
 export const ALL = 'all';
-export const addShowCancelBtn = function(list) {
 
-};
 export const getAllUnhandleApplyCount = () => {
     return Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEAPPLY];
+};
+//对数据进行处理
+export const addCancelBtnPrivliege = (worklist) => {
+    _.forEach(worklist, (workItem) => {
+        //如果是我申请的，除了可以审批之外，我也可以撤回
+        if (_.get(workItem, 'applicant.user_id') === userData.getUserData().user_id) {
+            workItem.showCancelBtn = true;
+        }
+    });
 };

@@ -189,16 +189,10 @@ exports.getApplyListWillApprovedByMe = function(req, res) {
     });
 };
 //获取申请详情
-exports.getApplyDetail = function(req, res, next) {
-    //申请单id
-    var apply_id = req.params.apply_id;
-    if (apply_id === 'unread') {
-        next();
-        return;
-    }
+exports.getApplyDetail = function(req, res) {
     //获取申请单详情
-    AppUserService.getApplyDetail(req, res, apply_id).on('success', function(data) {
-        res.json(data);
+    AppUserService.getApplyDetail(req, res).on('success', function(data) {
+        res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });

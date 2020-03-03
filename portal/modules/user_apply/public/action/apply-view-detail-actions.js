@@ -8,7 +8,6 @@ import {updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 import {addApplyComments, getApplyCommentList, getApplyDetailById} from 'PUB_DIR/sources/utils/apply-common-data-utils';
-import {UnitOldAndNewUserDetail} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 class ApplyViewDetailActions {
     constructor() {
@@ -95,7 +94,7 @@ class ApplyViewDetailActions {
         }else{
             getApplyDetailById(queryObj).then((detail) => {
                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,detail);
-                this.dispatch({loading: false, error: false, detail: UnitOldAndNewUserDetail(detail), status: status});
+                this.dispatch({loading: false, error: false, detail: detail, status: status});
             }, (errorMsg) => {
                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID);
                 this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('user.get.apply.detail.failed', '获取申请审批详情失败')});

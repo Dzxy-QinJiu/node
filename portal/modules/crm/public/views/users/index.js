@@ -29,7 +29,6 @@ import {getApplyList} from 'MOD_DIR/user_apply/public/ajax/app-user-ajax';
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import { EventEmitter } from 'events';
 import {getDetailLayoutHeight} from '../../utils/crm-util';
-import {UnitOldAndNewUserInfo} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 
 const PAGE_SIZE = 20;
@@ -142,10 +141,7 @@ class CustomerUsers extends React.Component {
             })
         ];
         Promise.all(promiseList).then((result) => {
-            let userApplyList = [];
-            _.forEach(_.get(result, '[0].list', []), item => {
-                userApplyList.push(UnitOldAndNewUserInfo(item));
-            });
+            let userApplyList = _.get(result, '[0].list', []);
             let userList = _.get(result, '[1]', []);
             this.setState({
                 userApplyList

@@ -79,10 +79,10 @@ class AddApply extends React.Component {
                 if (!_.isString(result)){
                     //添加成功
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                    this.hideLeaveApplyAddForm(result);
                     //添加完后的处理
                     result.afterAddReplySuccess = true;
                     result.showCancelBtn = true;
+                    this.hideLeaveApplyAddForm(result);
                 }else{
                     this.setResultData(result, 'error');
                 }

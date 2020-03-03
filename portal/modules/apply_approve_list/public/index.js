@@ -88,7 +88,6 @@ class ApplyApproveList extends React.Component {
         } else {
             this.fetchApplyList();
         }
-        // this.getUnreadReplyList();
         //获取我的申请中的未读回复
         this.getMyUnreadReplyList();
         //获取团队申请中的未读回复
@@ -751,7 +750,7 @@ class ApplyApproveList extends React.Component {
             case APPLY_APPROVE_TYPES.USER_OR_GRANT://新的用户申请
                 applyDetailContent = <UserApplyViewDetailWrap
                     applyData={this.state.applyId ? applyDetail : null}
-                    detailItem={UnitOldAndNewUserInfo(this.state.selectedDetailItem)}
+                    detailItem={this.state.selectedDetailItem}
                     isUnreadDetail={this.getIsUnreadDetail()}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
                     selectedApplyStatus={this.state.selectedApplyStatus}

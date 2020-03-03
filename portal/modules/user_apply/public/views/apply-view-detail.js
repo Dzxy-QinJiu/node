@@ -132,7 +132,6 @@ import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 import {APPLY_LIST_LAYOUT_CONSTANTS} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
-import {UnitOldAndNewUserInfo} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
 const ApplyViewDetail = createReactClass({
     propTypes: {
@@ -146,7 +145,8 @@ const ApplyViewDetail = createReactClass({
         handleOpenApplyDetail: PropTypes.func,
         appList: PropTypes.array,
         width: PropTypes.string,
-        height: PropTypes.string
+        height: PropTypes.string,
+        afterTransferApplySuccess: PropTypes.func
     },
     displayName: 'ApplyViewDetail',
     mixins: [FieldMixin, UserNameTextField],
@@ -168,6 +168,9 @@ const ApplyViewDetail = createReactClass({
             },
             width: '100%',
             height: '100%',
+            afterTransferApplySuccess: function() {
+                
+            }
         };
     },
 
@@ -453,11 +456,6 @@ const ApplyViewDetail = createReactClass({
     },
     renderSameCustomerHistoricalApply(){
         var sameHistoryApplyLists = this.state.sameHistoryApplyLists;
-        //todo 申请审批的历史
-        var newHistoryLists = [];
-        _.forEach(sameHistoryApplyLists, item => {
-            newHistoryLists.push(UnitOldAndNewUserInfo(item));
-        });
         return (
             <ApplyHistory
                 sameHistoryApplyLists={sameHistoryApplyLists}
@@ -491,8 +489,7 @@ const ApplyViewDetail = createReactClass({
             <div>
                 <div className="apply-detail-title">
                     <span className="apply-type-tip">
-                        {/*{this.props.detailItem.topic || Intl.get('user.apply.id', '账号申请')}*/}
-                        {getApplyTopicText(detailInfo)}
+                        {_.get(this.props.detailItem,'detail.user_apply_name') || Intl.get('user.apply.id', '账号申请')}
                     </span>
                     {this.renderDetailBottom()}
                 </div>

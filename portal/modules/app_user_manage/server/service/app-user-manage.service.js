@@ -75,8 +75,8 @@ var AppUserRestApis = {
     // getUnreadReplyList: '/rest/base/v1/message/applycomment/unread/notices',
     //获取工作流未读回复列表
     getWorkFlowUnreadReplyList: 'rest/base/v1/workflow/comments/notice/unread',
-    //获取申请单详情
-    getApplyDetail: '/rest/base/v1/message/apply/:apply_id',
+    //todo 获取申请单详情
+    getApplyDetail: '/rest/base/v1/workflow/detail',
     //审批申请单（新创建用户）
     submitNewApply: '/rest/base/v1/user/approve_users',
     //审批申请单（已有用户）
@@ -321,8 +321,22 @@ exports.batchUpdate = function(req, res, field, data, application_ids) {
         res: res,
     }, userObj);
 };
+function handleUserApplyData(list){
+    let userApplyList = [];
+    _.forEach(list, item => {
+        //如果是
+        if(_.get(item,'message_type') === 'apply'){//如果是旧版的用户申请审批
+            userApplyList.push(applyDto.toRestObject(item));
+        }else if(_.get(item,'workflow_type') === 'user_or_grant'){
+            userApplyList.push(applyDto.toRestObjectNewUserApply(item));
+        }else{//其他类型的数据可以不用动
+            userApplyList.push(item);
+        }
+    });
+    return userApplyList;
+}
 /**
- * 获取申请列表
+ * 获取所有申请列表（对应页面上的团队申请的列表）
  */
 exports.getApplyList = function(req, res, obj) {
     let url = AppUserRestApis.getApplyList;
@@ -332,12 +346,12 @@ exports.getApplyList = function(req, res, obj) {
         res: res
     }, obj, {
         success: function(eventEmitter, data) {
-            //todo  处理数据
-            // if (data && data.list && data.list.length) {
-            //     // var applyList = applyDto.toRestObject(data.list || []);
-            //     data.list = applyList;
-            // }
-            //如果是根据客户id查询申请列表的时候，还需要格外查询这些申请的回复列表
+            // todo  处理数据
+            if (data && data.list && data.list.length) {
+                var applyList = handleUserApplyData(data.list || []);
+                data.list = applyList;
+            }
+            //todo 如果是根据客户id查询申请列表的时候，还需要格外查询这些申请的回复列表
             if (obj.customer_id){
                 var emitter = new EventEmitter();
                 var promiseList = [];
@@ -366,7 +380,16 @@ exports.getMyApplyLists = function(req, res){
         url: AppUserRestApis.getMyApplyLists,
         req: req,
         res: res
-    }, req.query);
+    }, req.query,{
+        success: function(eventEmitter, data) {
+            // todo  处理数据
+            if (data && data.list && data.list.length) {
+                var applyList = handleUserApplyData(data.list || []);
+                data.list = applyList;
+            }
+            eventEmitter.emit('success', data);
+        }
+    });
 };
 /**
  * 获取我申请的申请列表*/
@@ -393,11 +416,11 @@ exports.getApplyListStartSelf = function(req, res){
         res: res
     }, obj, {
         success: function(eventEmitter, data) {
-            //todo 处理数据
-            // if (data && data.list && data.list.length) {
-            //     var applyList = applyDto.toRestObject(data.list || []);
-            //     data.list = applyList;
-            // }
+            //todo 处理数据，只处理用户申请审批的数据，其他类型的数据不需要处理
+            if (data && data.list && data.list.length) {
+                var applyList = handleUserApplyData(data.list || []);
+                data.list = applyList;
+            }
             //如果是根据客户id查询申请列表的时候，还需要格外查询这些申请的回复列表
             if (obj.customer_id){
                 var emitter = new EventEmitter();
@@ -528,9 +551,9 @@ exports.getCustomerUsers = function(req, res, obj) {
 };
 
 //获取申请单详情
-exports.getApplyDetail = function(req, res, apply_id) {
+exports.getApplyDetail = function(req, res) {
     var emitter = new EventEmitter();
-    getApplyBasicDetail(req, res, apply_id).then((applyBasicDetail) => {
+    getApplyBasicDetail(req, res).then((applyBasicDetail) => {
         //延期（多应用）
         if (applyBasicDetail.type === CONSTANTS.DELAY_MULTI_APP) {
             let user_type = _.get(applyBasicDetail, 'apps[0].user_type');
@@ -677,32 +700,56 @@ function getAppExtraPermissionNames(applyBasicDetail, appPermissionList) {
 
 
 // 获取用户详情的基本信息
-function getApplyBasicDetail(req, res, apply_id) {
-    let obj = {
-        with_addition: 'true' // 附加字段，true时，获取额应用对应的名称
-    };
+function getApplyBasicDetail(req, res) {
     return new Promise((resolve, reject) => {
         return restUtil.authRest.get({
-            url: AppUserRestApis.getApplyDetail.replace(':apply_id', apply_id),
+            url: AppUserRestApis.getApplyDetail,
             req: req,
             res: res
-        }, obj, {
+        }, req.query, {
             success: function(eventEmitter, data) {
-                if (data && data.message && !_.isEmpty(data.message)) {
+                var newUserApply = _.get(data,'workflow_type') === 'user_or_grant';
+                if (!_.isEmpty(_.get(data,'message',{})) || newUserApply) {//如果是旧版的用户审批或者是新版的用户审批
                     var detailObj;
-                    if (data.message.type === CONSTANTS.APPLY_GRANT_DELAY) { // 延期
-                        detailObj = applyDto.toDetailDelayRestObject(data);
-                    } else if (data.message.type === CONSTANTS.APPLY_PWD_CHANGE ||// 更改密码
-                        data.message.type === CONSTANTS.APPLY_GRANT_OTHER_CHANGE) {// 更改其他信息
-                        detailObj = applyDto.toDetailChangePwdOtherRestObject(data);
-                    } else if (data.message.type === CONSTANTS.APPLY_GRANT_STATUS_CHANGE) { // 更改状态
-                        detailObj = applyDto.toDetailStatusRestObject(data);
-                    } else if (data.message.type === CONSTANTS.DELAY_MULTI_APP ||// 延期（多应用）
-                        data.message.type === CONSTANTS.DISABLE_MULTI_APP) { //更改状态(多应用)
-                        detailObj = applyDto.toDetailMultiAppRestObject(data, CONSTANTS);
+                    var oldMessageType = _.get(data,'message.type',''), //旧版的用户审批的申请type
+                        newMessageType = _.get(data,'detail.user_apply_type','');//新版的用户审批的申请type
+                    var types = [oldMessageType, newMessageType];
+                    if (_.includes(types, CONSTANTS.APPLY_GRANT_DELAY)) { // 延期
+                        if(newUserApply){
+                            detailObj = data;
+                        }else{
+                            detailObj = applyDto.toDetailDelayRestObject(data);
+                        }
+
+                    } else if (_.includes(types, CONSTANTS.APPLY_PWD_CHANGE) ||// 更改密码
+                        _.includes(types, CONSTANTS.APPLY_GRANT_OTHER_CHANGE)){// 更改其他信息
+                        if(newUserApply){
+                            detailObj = data;
+                        }else{
+                            detailObj = applyDto.toDetailChangePwdOtherRestObject(data);
+                        }
+                    } else if (_.includes(types, CONSTANTS.APPLY_GRANT_STATUS_CHANGE)) { // 更改状态
+                        if(newUserApply){
+                            detailObj = data;
+                        }else{
+                            detailObj = applyDto.toDetailStatusRestObject(data);
+                        }
+                    } else if (_.includes(types, CONSTANTS.DELAY_MULTI_APP) ||// 延期（多应用）
+                        _.includes(types, CONSTANTS.DISABLE_MULTI_APP)) { //更改状态(多应用)
+                        if(newUserApply){
+                            detailObj = data;
+                        }else{
+                            detailObj = applyDto.toDetailMultiAppRestObject(data, CONSTANTS);
+                        }
                     } else {
-                        detailObj = applyDto.toDetailRestObject(data); // 待审批、已审批、已驳回（用户申请应用）
+                        if(newUserApply){
+                            detailObj = applyDto.toDetailRestObjectNewUserApply(data);
+                        }else{
+                            detailObj = applyDto.toDetailRestObject(data); // 待审批、已审批、已驳回（用户申请应用）
+                        }
+
                     }
+                    //todo 是是是
                     if (detailObj && detailObj.customer_id) {
                         getQueryCustomerById(req, res, detailObj.customer_id).then((result) => {
                             if (_.isArray(result.result) && result.result.length) {
@@ -719,6 +766,8 @@ function getApplyBasicDetail(req, res, apply_id) {
                     } else {
                         resolve(detailObj);
                     }
+                }else if(!_.isEmpty(data)){//其他类型的申请审批详情
+                    resolve(data);
                 }
             },
             error: function(eventEmitter, errorDesc) {

@@ -159,7 +159,7 @@ module.exports = {
         },
     }, {
         'method': 'get',
-        'path': '/rest/appuser/apply/:apply_id/:type',
+        'path': '/rest/apply_approve/detail/by/id',
         'handler': 'getApplyDetail',
         'passport': {
             'needLogin': true
