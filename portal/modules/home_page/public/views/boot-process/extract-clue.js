@@ -1052,7 +1052,7 @@ class ExtractClues extends React.Component {
                     <GeminiScrollbar>
                         {
                             this.state.isShowWiningClue ? (
-                                <div className="extract-clue-panel-container">
+                                <div className="winning-clue-tips">
                                     <WinningClue
                                         handleClickClose={this.handleClickCloseWinningClue}
                                     />
