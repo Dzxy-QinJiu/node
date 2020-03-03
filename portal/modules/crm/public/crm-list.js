@@ -1153,6 +1153,10 @@ class Crm extends React.Component {
         this.setState({isReleasingCustomer: true});
         batchAjax.doBatch('release_pool', condition).then((taskId) => {
             this.setState({isReleasingCustomer: false});
+            if(this['releaseRef']) {
+                //隐藏批量释放面板
+                this['releaseRef'].handleCancel();
+            }
             //批量操作参数
             var is_select_all = this.state.selectAllMatched;
             //全部记录的个数
@@ -1177,6 +1181,10 @@ class Crm extends React.Component {
             });
         }, (errorMsg) => {
             this.setState({isReleasingCustomer: false});
+            if(this['releaseRef']) {
+                //隐藏批量释放面板
+                this['releaseRef'].handleCancel();
+            }
             message.error(errorMsg);
         });
     };
@@ -1348,7 +1356,7 @@ batchTopBarDropList = (isMinWeb) => {
                             </Button>
                         </PrivilegeChecker>
                         {/*除了运营不能释放客户，管理员、销售都可以释放*/}
-                        {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : this.renderReleaseReasonBlock(content, this.batchReleaseCustomer)}
+                        {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : this.renderReleaseReasonBlock(content, this.batchReleaseCustomer, 'batch')}
                     </React.Fragment>
                     : (
                         <React.Fragment>
@@ -2032,7 +2040,7 @@ batchTopBarDropList = (isMinWeb) => {
             releaseTip = crmUtil.releaseCustomerTip();
         }
         const handleSubmit = () => {
-            if(!this.state.releaseReason) {
+            if(!_.trim(this.state.releaseReason)) {
                 this.setState({
                     unFillReasonTip: Intl.get('crm.customer.release.reason', '请填写释放理由')
                 });
@@ -2046,6 +2054,9 @@ batchTopBarDropList = (isMinWeb) => {
                 datatraceContainer='释放客户'
                 overlayClassName="release-reason-wrapper"
                 btnAtTop={false}
+                ref={ref => { if(_.includes(['moreBtn', 'batch'], type)) {
+                    this['releaseRef'] = ref;
+                }}}
                 content={content}
                 overlayTitle={Intl.get('crm.customer.release.customer', '释放客户')}
                 isSaving={this.state.isReleasingCustomer}
