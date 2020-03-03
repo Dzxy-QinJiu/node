@@ -48,7 +48,8 @@ import {handleDiffTypeApply,getUserApplyFilterReplyList,
     updateUnapprovedCount, isFinalTask,
     isApprovedByManager,timeShowFormat,
     isCustomDelayType, getDelayTimeUnit,
-    applyAppConfigTerminal
+    applyAppConfigTerminal,
+    approveAppConfigTerminal
 } from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import ApplyHistory from 'CMP_DIR/apply-components/apply-history';
@@ -1234,25 +1235,42 @@ const ApplyViewDetail = createReactClass({
         const appsSetting = this.appsSetting;
         const isExistUserApply = this.isExistUserApply();
         const isOplateUser = this.state.isOplateUser;
+        const approvalState = _.get(this.state.detailInfoObj, 'info.approval_state');
         let columns = [
             {
                 title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
-                    const terminals = _.get(app, 'terminals', []);
-                    const custom_setting = appsSetting[app.app_id];
                     let terminalsName = [];
+                    const custom_setting = appsSetting[app.app_id];
                     // 应用包含多终端信息
                     let configTerminals = _.get(custom_setting, 'terminals.value');
-                    if (!_.isEmpty(configTerminals)) {
-                        terminalsName = _.map(configTerminals, 'name');
+
+                    if (approvalState === '0') { // 待审批
+                        /// 应用的默认终端信息
+                        let appDefaultTerminal = approveAppConfigTerminal(app.app_id, this.props.appList);
+
+                        if (!_.isEmpty(configTerminals)) { // 修改配置后，在界面上显示的信息
+                            terminalsName = _.map(configTerminals, 'name');
+                        } else {
+                            if (!_.isEmpty(appDefaultTerminal)) {
+                                terminalsName = _.map(appDefaultTerminal, 'name');
+                            }
+                        }
                     } else {
-                        if (!_.isEmpty(terminals)) {
-                            let appTerminals = applyAppConfigTerminal(terminals, app.app_id, this.props.appList);
-                            terminalsName = _.map(appTerminals, 'name');
+                        const terminals = _.get(app, 'terminals', []);
+
+                        if (!_.isEmpty(configTerminals)) {
+                            terminalsName = _.map(configTerminals, 'name');
+                        } else {
+                            if (!_.isEmpty(terminals)) {
+                                let appTerminals = applyAppConfigTerminal(terminals, app.app_id, this.props.appList);
+                                terminalsName = _.map(appTerminals, 'name');
+                            }
                         }
                     }
+
                     return (
                         <div>
                             <span>{text}</span>

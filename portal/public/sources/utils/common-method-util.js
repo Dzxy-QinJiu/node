@@ -1336,6 +1336,17 @@ exports.applyAppConfigTerminal = (terminals, appId, appList) => {
     }
     return configTerminals;
 };
+
+// 审批时，根据申请的应用，显示对应的多终端信息
+exports.approveAppConfigTerminal = (appId, appList) => {
+    let matchApp = _.find(appList, item => item.app_id === appId);
+    let configTerminals = [];
+    if (matchApp && !_.isEmpty(matchApp.terminals)) {
+        configTerminals = matchApp.terminals;
+    }
+    return configTerminals;
+};
+
 //获取延期时间
 exports.getDelayTimeUnit = (delayTimeRange, delayTimeNumber) => {
     //延期周期
