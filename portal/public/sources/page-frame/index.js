@@ -34,7 +34,7 @@ import{
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 import {getUserData} from '../../sources/user-data';
 import {checkVersionAndType, isShowUnReadNotice} from '../utils/common-method-util';
-import {getUpgradeNoticeList} from '../utils/common-data-util';
+import {getUpgradeNoticeList, getRewardedCluesCount} from '../utils/common-data-util';
 import { hasRecommendPrivilege } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const emptyParamObj = {
@@ -66,7 +66,16 @@ class PageFrame extends React.Component {
         personalPaymentParamObj: {},
         isShowApplyTryPanel: false,//是否展示申请试用的面板
         applyTryParamObj: {},
+        rewardClueCount: 0,
     };
+
+    getRewardedCluesCount() {
+        getRewardedCluesCount().then( (count) => {
+            this.setState({
+                rewardClueCount: count
+            });
+        } );
+    }
 
     getLastUpgradeNoticeList() {
         getUpgradeNoticeList({
@@ -95,6 +104,7 @@ class PageFrame extends React.Component {
     }
 
     componentDidMount() {
+        this.getRewardedCluesCount();
         this.getLastUpgradeNoticeList();
         // 影响了session不超时，暂时隐藏获取公告轮询的操作
         // this.pollingGetNotice(); // 轮询获取公告信息
@@ -367,6 +377,7 @@ class PageFrame extends React.Component {
                             closeNotificationPanel={this.closeNotificationPanel}
                             showBootCompletePanel={this.showBootCompletePanel}
                             isShowNotificationPanel={this.state.isShowNotificationPanel}
+                            rewardClueCount={this.state.rewardClueCount}
                         />
                     </div>
                     <div className="col-xs-10">

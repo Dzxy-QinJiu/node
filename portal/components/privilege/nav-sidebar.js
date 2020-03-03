@@ -146,7 +146,8 @@ var NavSidebar = createReactClass({
         toggleNotificationPanel: PropTypes.func,
         closeNotificationPanel: PropTypes.func,
         showBootCompletePanel: PropTypes.func,
-        isShowNotificationPanel: PropTypes.bool
+        isShowNotificationPanel: PropTypes.bool,
+        rewardClueCount: PropTypes.number,
     },
 
     changeUserInfoLogo: function(userLogoInfo) {
@@ -757,6 +758,7 @@ var NavSidebar = createReactClass({
             <WinningClue
                 isNavBar={true}
                 handleClickClose={this.handleClickCloseWinningClue}
+                count={this.props.rewardClueCount}
             />
         );
     },

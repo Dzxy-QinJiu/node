@@ -3,31 +3,22 @@
  */
 
 import { showWiningClueEmitter, clueEmitter } from 'PUB_DIR/sources/utils/emitters';
+import {getRewardedCluesCount} from 'PUB_DIR/sources/utils/common-data-util';
 require('./index.less');
-
 class WinningClue extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            count: 0,
+            count: props.count || 0,
         };
     }
 
     getRewardedCluesCount = () => {
-        const data = {
-            award_type: 'lead_followup',
-            start: moment().startOf('day').valueOf(),
-            end: moment().endOf('day').valueOf(),
-        };
-        $.ajax({
-            url: '/rest/rewarded/clues/count',
-            type: 'get',
-            dateType: 'json',
-            data: data,
-            success: (count) => {
-                this.setState({count});
-            },
-        });
+        getRewardedCluesCount().then( (count) => {
+            this.setState({
+                count: count
+            });
+        } );
     }
 
     componentDidMount() {
@@ -96,6 +87,7 @@ class WinningClue extends React.Component{
 }
 
 WinningClue.defaultProps = {
+    count: 0,
     isNavBar: false,
     handleClickClose: () => {}
 };
@@ -103,6 +95,7 @@ WinningClue.defaultProps = {
 WinningClue.propTypes = {
     isNavBar: PropTypes.bool,
     handleClickClose: PropTypes.func,
+    count: PropTypes.number
 };
 
 export default WinningClue;
