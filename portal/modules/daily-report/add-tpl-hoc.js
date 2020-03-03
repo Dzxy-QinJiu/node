@@ -4,7 +4,7 @@
 
 import { Steps, Button, message } from 'antd';
 import { VIEW_TYPE } from './consts';
-import { hideReportPanel } from './utils';
+import { hideReportPanel, saveTpl } from './utils';
 
 const { Step } = Steps;
 
@@ -64,6 +64,13 @@ export default function(WrappedComponent) {
             this.wrappedComponent.validateFields((err, values) => {
                 if (!err) {
                     console.log(values);
+                    _.each(values, (value, key) => {
+                        if (_.isUndefined(value)) delete values[key];
+                    });
+
+                    values.id = this.props.selectedTpl;
+
+                    saveTpl(values, result => {});
                     //hideReportPanel()
                 }
             });

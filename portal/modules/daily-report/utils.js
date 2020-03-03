@@ -59,12 +59,13 @@ export function getTplList(callback) {
 }
 
 //保存模板
-export function saveTpl(callback) {
+export function saveTpl(data, callback) {
     if (!_.isFunction(callback)) return;
 
     ajax.send({
         url: TPL_URL,
-        type: 'post'
+        type: 'post',
+        data
     })
         .done(result => {
             callback(result);
