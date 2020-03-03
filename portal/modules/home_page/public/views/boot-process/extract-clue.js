@@ -35,13 +35,13 @@ const LAYOUT_CONSTANCE = {
     BTN_PADDING: 10, //底部按钮区域高度
 };
 
-const HOT_SELECTORS = [{
+const HOT_SELECTORS = [/*{
     name: Intl.get('clue.recommend.return.to.work', '已复工企业'),
     value: '复工'
-},{
-    name: Intl.get('clue.recommend.listed', '上市企业'),
-    value: '上市'
-}];
+},*/{
+        name: Intl.get('clue.recommend.listed', '上市企业'),
+        value: '上市'
+    }];
 
 class ExtractClues extends React.Component {
     constructor(props) {
@@ -951,9 +951,12 @@ class ExtractClues extends React.Component {
     handleClickHotBtn = (key) => {
         if(!this.state.canClickMoreBatch) { return false; }
         let hot_source = '';
+        let traceTip = `取消选中${key}`;
         if(key !== this.state.feature) {
             hot_source = key;
+            traceTip = `选中${key}`;
         }
+        Trace.traceEvent(ReactDOM.findDOMNode(this), `点击${traceTip}按钮`);
         clueCustomerAction.setHotSource(hot_source);
         setTimeout(() => {
             this.getRecommendLists();
