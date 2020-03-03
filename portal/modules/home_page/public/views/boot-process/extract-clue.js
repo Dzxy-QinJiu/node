@@ -951,9 +951,12 @@ class ExtractClues extends React.Component {
     handleClickHotBtn = (key) => {
         if(!this.state.canClickMoreBatch) { return false; }
         let hot_source = '';
+        let traceTip = `取消选中${key}`;
         if(key !== this.state.feature) {
             hot_source = key;
+            traceTip = `选中${key}`;
         }
+        Trace.traceEvent(ReactDOM.findDOMNode(this), `点击${traceTip}按钮`);
         clueCustomerAction.setHotSource(hot_source);
         setTimeout(() => {
             this.getRecommendLists();
