@@ -100,7 +100,7 @@ import DifferentVersion from 'MOD_DIR/different_version/public';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import RecommendClues from 'MOD_DIR/home_page/public/views/boot-process/recommend_clues';
 const EXTRACT_CLUE_STEPS = RecommendClues.EXTRACT_CLUE_STEPS;
-import { formatSalesmanList, isResponsiveDisplay, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import { formatSalesmanList, isResponsiveDisplay, isShowWinningClue} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
@@ -3449,7 +3449,6 @@ class ClueCustomer extends React.Component {
         //普通销售或者个人注册线索用
         var isCommonSale = isCommonSalesOrPersonnalVersion();//是否是普通销售
         let {isWebMin} = isResponsiveDisplay();
-        const versionAndType = checkVersionAndType();
 
         return (
             <RightContent>
@@ -3507,7 +3506,7 @@ class ClueCustomer extends React.Component {
                             {this.renderLoadingAndErrAndNodataContent()}
                         </div>
                         {
-                            (versionAndType.isPersonalTrial || versionAndType.isCompanyTrial) && this.state.isShowRewardClueTips ? (
+                            isShowWinningClue() && this.state.isShowRewardClueTips ? (
                                 <div className="winning-clue-tips">
                                     {this.renderWinningClueTips()}
                                 </div>

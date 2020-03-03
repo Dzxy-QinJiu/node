@@ -34,7 +34,7 @@ var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {SELECT_TYPE, AVALIBILITYSTATUS, editCluePrivilege} from '../../utils/clue-customer-utils';
 import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
-import { checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
+import { isShowWinningClue } from 'PUB_DIR/sources/utils/common-method-util';
 
 import AddTraceContentSuccessTips from '../add-trace-success-tips';
 const OVERVIEW_SHOW_COUNT = 3; //在概览中显示最近三条跟进
@@ -526,7 +526,6 @@ class ClueTraceList extends React.Component {
             'icon-selected': item.playSelected,
             'icon-play-disable': !is_record_upload
         });
-        const versionAndType = checkVersionAndType();
         return (
             <div className={classNames('trace-item-content', {'day-split-line': hasSplitLine})}>
                 <p className="item-detail-tip">
@@ -539,7 +538,7 @@ class ClueTraceList extends React.Component {
                         {item.showAdd ? this.renderAddDetail(item) : this.renderRecordShowContent(item)}
                     </div>
                     {
-                        (versionAndType.isPersonalTrial || versionAndType.isCompanyTrial) && this.state.isShowRewardClueTips ? (
+                        isShowWinningClue() && this.state.isShowRewardClueTips ? (
                             <div className="winning-clue-tips">
                                 {this.renderWinningClueTips()}
                             </div>

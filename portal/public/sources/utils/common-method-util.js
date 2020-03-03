@@ -981,10 +981,12 @@ function isSalesRole() {
 }
 exports.isSalesRole = isSalesRole;
 
-//是否管理员
-exports.isAdminRole = function() {
+function isAdminRole() {
     return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
-};
+}
+
+//是否管理员
+exports.isAdminRole = isAdminRole;
 
 //是否主管或运营人员
 exports.isManagerOrOpRole = function() {
@@ -1212,8 +1214,8 @@ function checkCurrentVersionType() {
 }
 exports.checkCurrentVersionType = checkCurrentVersionType;
 
-//返回版本信息及类型
-exports.checkVersionAndType = function() {
+
+function checkVersionAndType() {
     let version = checkCurrentVersion();
     let type = checkCurrentVersionType();
     return {
@@ -1224,7 +1226,10 @@ exports.checkVersionAndType = function() {
         isCompanyTrial: version.company && type.trial,
         isCompanyFormal: version.company && type.formal,
     };
-};
+}
+
+//返回版本信息及类型
+exports.checkVersionAndType = checkVersionAndType;
 
 //获取日程打电话时需要的类型（customer/lead）和id
 exports.getScheduleCallTypeId = function(scheduleItem) {
@@ -1498,4 +1503,11 @@ exports.checkCustomerTotalLeaveTime = function(startTime,endTime,customers,isAdd
             };
         }
     }
+};
+
+// 是否显示赢线索活动
+// 判断依据：角色：销售人员、管理员，版本：个人试用、企业试用
+exports.isShowWinningClue = () => {
+    const versionAndType = checkVersionAndType();
+    return (isSalesRole() || isAdminRole()) && (versionAndType.isPersonalTrial || versionAndType.isCompanyTrial);
 };

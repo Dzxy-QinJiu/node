@@ -15,7 +15,8 @@ import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES} from 'PUB_DIR/sources/utils/consts';
-import {hasCalloutPrivilege, isCurtao, checkVersionAndType, isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasCalloutPrivilege, isCurtao, checkVersionAndType, 
+    isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay,isShowWinningClue} from 'PUB_DIR/sources/utils/common-method-util';
 import {phoneEmitter, notificationEmitter, userInfoEmitter,
     phoneMsgEmitter, clickUpgradeNoiceEmitter, showWiningClueEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
@@ -786,7 +787,6 @@ var NavSidebar = createReactClass({
     },
     render: function() {
         const trigger = this.getTriggerType();
-        const versionAndType = checkVersionAndType();
         return (
             <nav className="navbar" onClick={this.closeNotificationPanel}>
                 <div className="container">
@@ -819,9 +819,9 @@ var NavSidebar = createReactClass({
                     <div className="sidebar-user" ref={(element) => {
                         this.userInfo = element;
                     }}>
-                        {/**  个人试用版、企业试用版，显示写跟进，赢线索 **/}
+                        {/**  版本：个人试用版、企业试用版，角色：管理员、销售角色 是并的关系 显示写跟进，赢线索 **/}
                         {
-                            versionAndType.isPersonalTrial || versionAndType.isCompanyTrial ? (
+                            isShowWinningClue() ? (
                                 this.renderWinningClueBlock()
                             ) : null
                         }
