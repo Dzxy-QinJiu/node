@@ -2054,7 +2054,7 @@ batchTopBarDropList = (isMinWeb) => {
                 datatraceContainer='释放客户'
                 overlayClassName="release-reason-wrapper"
                 btnAtTop={false}
-                ref={ref => { if(type === 'moreBtn' || type === 'batch') {
+                ref={ref => { if(_.includes(['moreBtn', 'batch'], type)) {
                     this['releaseRef'] = ref;
                 }}}
                 content={content}
