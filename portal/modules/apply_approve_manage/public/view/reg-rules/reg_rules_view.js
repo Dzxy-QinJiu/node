@@ -860,7 +860,7 @@ class RegRulesView extends React.Component {
                 return;
             }
             var bpmnNode = _.get(value,'bpmnNode',[]);
-            if(_.isEmpty(bpmnNode,'length')){//如果bpmnNode没有值，提示要加上审批人节点
+            if(_.isEmpty(bpmnNode)){//如果bpmnNode没有值，提示要加上审批人节点
                 showAddApproveNodeTip = true;
             }
             showAddNextNodeTip = _.some(bpmnNode, (item,index) => {
