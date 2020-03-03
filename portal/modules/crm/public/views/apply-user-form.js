@@ -24,7 +24,6 @@ const UserApplyAction = require('MOD_DIR/app_user_manage/public/action/user-appl
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {INTEGRATE_TYPES, CONFIG_TYPE} from 'PUB_DIR/sources/utils/consts';
-import {getConfigAppType} from 'PUB_DIR/sources/utils/common-method-util';
 import { getApplyActiveEmailTip ,TAB_KEYS} from '../utils/crm-util';
 import contactUtil from '../utils/contact-util';
 
@@ -239,11 +238,7 @@ const ApplyUserForm = createReactClass({
         //找到该应用对应用户类型的配置信息
         let defaultConfig = _.find(appDefaultConfigList, data => data.client_id === app.client_id && userType === data.user_type);
         app.begin_date = DateSelectorPicker.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT));
-        // 查找该应用的应用列表是否有多终端信息
-        let appTerminals = _.find(this.props.appList, data => data.client_id === app.client_id && !_.isEmpty(data.terminals));
-        if (appTerminals) {
-            app.terminals = appTerminals.terminals;
-        }
+
         if (defaultConfig) {
             //应用默认设置中的开通周期、到期可选项
             app.end_date = app.begin_date + defaultConfig.valid_period;
@@ -400,21 +395,13 @@ const ApplyUserForm = createReactClass({
                             begin_date: appFormData.begin_date,
                             end_date: appFormData.end_date,
                             over_draft: appFormData.over_draft,
-                            terminals: _.map(appFormData.terminals, 'id') || [],
                         };
                     });
                 } else {//分别配置
                     submitData.products.forEach(app => {
-                        let terminals = app.terminals;
-                        if ( !_.isEmpty(terminals)) {
-                            app.terminals = _.map(terminals, 'id');
-                        }
                         delete app.range;
                         delete app.onlyOneUserTip;
                     });
-                }
-                if (_.isEmpty(submitData.products.terminals)) {
-                    delete submitData.products.terminals;
                 }
                 submitData.products = JSON.stringify(submitData.products);
                 //添加申请邮件中用的应用名
@@ -599,27 +586,6 @@ const ApplyUserForm = createReactClass({
         this.setFormHeight();
     },
 
-    // 选择多终端类型
-    onSelectTerminalChange(selectedApp, app, checkedValue) {
-        let formData = this.state.formData;
-        let appFormData = _.find(formData.products, item => item.client_id === app.client_id);
-        if (appFormData) {
-            let terminals = [];
-            if (!_.isEmpty(checkedValue)) {
-                _.each(checkedValue, checked => {
-                    if (checked) {
-                        let selectedTerminals = _.find(selectedApp.terminals, item => item.name === checked);
-                        terminals.push(selectedTerminals);
-                    }
-                });
-                appFormData.terminals = terminals;
-            } else {
-                appFormData.terminals = [];
-            }
-        }
-        this.setState(formData);
-    },
-
     renderAppConfigForm: function(appFormData, app) {
         const timePickerConfig = {
             isCustomSetting: true,
@@ -636,8 +602,6 @@ const ApplyUserForm = createReactClass({
             onOverDraftChange={this.onOverDraftChange}
             needEndTimeOnly={!isOplateUser}
             hideExpiredSelect={!isOplateUser}
-            isShowTerminals={!_.isEmpty(app.terminals)}
-            onSelectTerminalChange={this.onSelectTerminalChange}
         />);
     },
 
@@ -875,9 +839,6 @@ const ApplyUserForm = createReactClass({
                 apps.push(selectApp);
             }
         });
-        // 若所选应用包括多终端类型，则直接显示分别配置界面
-        let configType = getConfigAppType(appIds, apps);
-
         //获取的应用默认配置列表
         let appDefaultConfigList = this.state.appDefaultConfigList || [];
         let num = 1;//申请用户的个数
@@ -910,7 +871,7 @@ const ApplyUserForm = createReactClass({
             this.getAppsDefaultConfig(newAddAppIds);
         }
         formData.selectAppIds = appIds;
-        this.setState({apps, formData, configType});
+        this.setState({apps, formData});
         this.setFormHeight();
     },
 
