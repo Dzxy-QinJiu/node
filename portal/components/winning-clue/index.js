@@ -4,6 +4,11 @@
 
 import { showWiningClueEmitter, clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 import {getRewardedCluesCount} from 'PUB_DIR/sources/utils/common-data-util';
+import history from 'PUB_DIR/sources/history';
+
+const ROUTE_CONSTS = {
+    LEADS: 'leads'//线索
+};
 require('./index.less');
 class WinningClue extends React.Component{
     constructor(props) {
@@ -31,7 +36,13 @@ class WinningClue extends React.Component{
 
 
     handleClickExtractClue = () => {
-        clueEmitter.emit(clueEmitter.SHOW_RECOMMEND_PANEL);
+        if(location.pathname.indexOf(ROUTE_CONSTS.LEADS) === -1) {
+            history.push('/' + ROUTE_CONSTS.LEADS, {
+                showRecommendCluePanel: true
+            });
+        }else { //如果在线索界面，不用跳转, 直接根据推荐条件打开推荐线索列表
+            clueEmitter.emit(clueEmitter.SHOW_RECOMMEND_PANEL);
+        }
     }
 
     handleClickClose = () => {
