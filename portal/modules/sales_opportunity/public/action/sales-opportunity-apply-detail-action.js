@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/28.
  */
 var SalesOpportunityApplyAjax = require('../ajax/sales-opportunity-apply-ajax');
-var SalesOpportunityApplyUtils = require('../utils/sales-oppotunity-utils');
+var SalesOpportunityApplyUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import {message} from 'antd';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法

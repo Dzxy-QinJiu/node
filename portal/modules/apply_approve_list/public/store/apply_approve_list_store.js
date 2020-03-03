@@ -57,7 +57,22 @@ UserApplyStore.prototype.resetState = function() {
     this.isCheckUnreadApplyList = false;
 
 };
-
+UserApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
+    var allApplyArr = this.applyListObj.list;
+    this.selectedDetailItem.status = updateItem.status;
+    var targetObj = _.find(allApplyArr,(item) => {
+        return item.id === updateItem.id;
+    });
+    if (targetObj){
+        targetObj.status = updateItem.status;
+    }
+};
+//审批完后更改状态
+UserApplyStore.prototype.changeApplyAgreeStatus = function(message) {
+    this.selectedDetailItem.status = message.agree;
+    this.selectedDetailItem.approve_details = message.approve_details;
+    this.selectedDetailItem.update_time = message.update_time;
+};
 //设置是否查看未读回复的申请列表
 UserApplyStore.prototype.setIsCheckUnreadApplyList = function(flag) {
     this.isCheckUnreadApplyList = flag;

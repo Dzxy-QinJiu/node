@@ -167,6 +167,8 @@ DocumentWriteApplyDetailStore.prototype.cancelApplyApprove = function(resultObj)
     }else{
         this.backApplyResult.submitResult = 'success';
         this.backApplyResult.errorMsg = '';
+        this.hideCancelBtns();
+        this.showOrHideApprovalBtns();
     }
 };
 DocumentWriteApplyDetailStore.prototype.hideCancelBtns = function() {

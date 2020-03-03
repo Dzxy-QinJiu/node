@@ -127,7 +127,7 @@ exports.applyUser = function(data) {
 };
 
 // 撤销申请
-exports.saleBackoutApply = function(obj) {
+exports.cancelApplyApprove = function(obj) {
     const ERROR_MSG = Intl.get('user.apply.detail.backout.error', '撤销申请失败');
     var Deferred = $.Deferred();
     $.ajax({

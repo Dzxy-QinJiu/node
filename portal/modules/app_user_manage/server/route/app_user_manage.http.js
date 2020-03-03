@@ -111,6 +111,13 @@ module.exports = {
         'privileges': [
             commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批列表
         ]
+    }, {
+        method: 'post',
+        path: '/rest/cancel/apply/approve',
+        handler: 'cancelApplyApprove',
+        passport: {
+            needLogin: true
+        },
     },{
         method: 'get',
         path: '/rest/get/worklist/approve/by/me',
@@ -246,7 +253,7 @@ module.exports = {
     }, {
         'method': 'put',
         'path': '/rest/appuser/backout_apply',
-        'handler': 'saleBackoutApply',
+        'handler': 'cancelApplyApprove',
         'passport': {
             'needLogin': true
         }

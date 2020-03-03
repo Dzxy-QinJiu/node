@@ -270,6 +270,10 @@ class ApplyViewDetailStore {
         this.candidateList = [];
 
     }
+    hideCancelBtns() {
+        this.selectedDetailItem.showCancelBtn = false;
+        this.detailInfoObj.info.showCancelBtn = false;
+    }
     hideApprovalBtns() {
         this.selectedDetailItem.showApproveBtn = false;
         this.selectedDetailItem.showCancelBtn = false;
@@ -278,7 +282,7 @@ class ApplyViewDetailStore {
         this.selectedDetailItem.showApproveBtn = flag;
         this.detailInfoObj.info.showApproveBtn = flag;
     }
-    saleBackoutApply(resultObj){
+    cancelApplyApprove(resultObj){
         if (resultObj.loading){
             this.backApplyResult.submitResult = 'loading';
             this.backApplyResult.errorMsg = '';
@@ -288,6 +292,8 @@ class ApplyViewDetailStore {
         }else{
             this.backApplyResult.submitResult = 'success';
             this.backApplyResult.errorMsg = '';
+            this.hideApprovalBtns();
+            this.showOrHideApprovalBtns();
         }
     }
     getHistoryApplyListsByCustomerId(resultObj){

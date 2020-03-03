@@ -180,6 +180,8 @@ ReportSendApplyDetailStore.prototype.cancelApplyApprove = function(resultObj) {
     }else{
         this.backApplyResult.submitResult = 'success';
         this.backApplyResult.errorMsg = '';
+        this.hideCancelBtns();
+        this.showOrHideApprovalBtns();
     }
 };
 ReportSendApplyDetailStore.prototype.hideCancelBtns = function() {

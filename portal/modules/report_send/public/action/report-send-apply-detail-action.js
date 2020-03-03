@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/28.
  */
 var ReportSendApplyAjax = require('../ajax/report-send-apply-ajax');
-var ReportSendUtils = require('../utils/report-send-utils');
+var ReportSendUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数

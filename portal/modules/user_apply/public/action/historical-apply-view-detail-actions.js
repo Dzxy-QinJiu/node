@@ -1,13 +1,14 @@
 import AppUserAjax from '../ajax/app-user-ajax';
 import UserAjax from '../../../common/public/ajax/user';
 import AppUserUtil from '../util/app-user-util';
+import ApplyApproveUtil from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import UserData from '../../../../public/sources/user-data';
 import UserApplyAction from './user-apply-actions';
 import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
 import {updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
-import {addApplyComments, getApplyCommentList, getApplyDetailById} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {addApplyComments, getApplyCommentList, getApplyDetailById,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 class ApplyViewDetailActions {
     constructor() {
@@ -147,10 +148,7 @@ class ApplyViewDetailActions {
                 callback();
             }
             //更新选中的申请单类型
-            AppUserUtil.emitter.emit('updateSelectedItem', {
-                id: obj.message_id,
-                approval: obj.approval || obj.approval_state, //多用户延期、禁用申请时传的是approval_state,其他申请审批时是approval
-                status: 'success'});
+            ApplyApproveUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
             //刷新用户审批未处理数
             if (Oplate && Oplate.unread) {
                 var count = Oplate.unread.approve - 1;
@@ -159,7 +157,7 @@ class ApplyViewDetailActions {
 
         }, (errorMsg) => {
             //更新选中的申请单类型
-            AppUserUtil.emitter.emit('updateSelectedItem', {status: 'error'});
+            ApplyApproveUtil.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     }
@@ -179,13 +177,13 @@ class ApplyViewDetailActions {
     }
 
     // 撤销申请
-    saleBackoutApply(obj) {
+    cancelApplyApprove(obj) {
         var errTip = Intl.get('user.apply.detail.backout.error', '撤销申请失败');
         this.dispatch({loading: true, error: false});
-        AppUserAjax.saleBackoutApply(obj).then((data) => {
+        cancelApplyApprove(obj).then((data) => {
             if (data) {
                 this.dispatch({loading: false, error: false});
-                AppUserUtil.emitter.emit('updateSelectedItem', {id: obj.apply_id, approval: '3', status: 'success'});
+                ApplyApproveUtil.emitter.emit('updateSelectedItem', {id: obj.id, cancel: true, status: 'success'});
                 //刷新用户审批未处理数(左侧导航中待审批数)
                 if (Oplate && Oplate.unread) {
                     var count = Oplate.unread.approve - 1;
@@ -193,12 +191,12 @@ class ApplyViewDetailActions {
                 }
             }else{
                 this.dispatch({loading: false, error: true, errorMsg: errTip});
-                AppUserUtil.emitter.emit('updateSelectedItem', {status: 'error'});
+                ApplyApproveUtil.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
             }
         }, (errorMsg) => {
             var errMsg = errorMsg || errTip;
             this.dispatch({loading: false, error: true, errorMsg: errMsg});
-            AppUserUtil.emitter.emit('updateSelectedItem', {status: 'error'});
+            ApplyApproveUtil.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
             this.dispatch(errorMsg);
         });
     }
@@ -224,7 +222,7 @@ class ApplyViewDetailActions {
 
     transferNextCandidate(queryObj, callback) {
         this.dispatch({loading: true, error: false});
-        ApplyApproveAjax.transferUserApplyNextCandidate().sendRequest(queryObj).success((data) => {
+        ApplyApproveAjax.transferNextCandidate().sendRequest(queryObj).success((data) => {
             if (data) {
                 this.dispatch({loading: false, error: false});
                 _.isFunction(callback) && callback(true);

@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/18.
  */
 var BusinessApplyAjax = require('../ajax/business-apply-ajax');
-import LeaveApplyUtil from '../utils/leave-apply-utils';
+import LeaveApplyUtil from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数

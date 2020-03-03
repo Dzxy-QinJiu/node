@@ -167,6 +167,8 @@ MemberApplyDetailStore.prototype.cancelApplyApprove = function(resultObj) {
     }else{
         this.backApplyResult.submitResult = 'success';
         this.backApplyResult.errorMsg = '';
+        this.hideCancelBtns();
+        this.showOrHideApprovalBtns();
     }
 };
 MemberApplyDetailStore.prototype.hideCancelBtns = function() {

@@ -36,8 +36,7 @@ class ApplyDetailBottom extends React.Component {
         var showPassOrAssignedContext = this.props.showApproveBtn || assigenedContext;
         return <div className="pull-right">
             {this.props.showCancelBtn ?
-                <Button className="btn-primary-sure" size="small"
-                    onClick={this.props.submitApprovalForm.bind(this, 'cancel')}>
+                <Button onClick={this.props.submitApprovalForm.bind(this, 'cancel')}>
                     {Intl.get('user.apply.detail.backout', '撤销申请')}
                 </Button> : null}
             {showPassOrAssignedContext ? this.renderPassOrAssignedContext() : null}

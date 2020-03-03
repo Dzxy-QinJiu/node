@@ -49,13 +49,6 @@ module.exports = {
                 needLogin: true
             },
         }, {
-            method: 'post',
-            path: '/rest/cancel/apply/approve',
-            handler: 'cancelApplyApprove',
-            passport: {
-                needLogin: true
-            },
-        }, {
             method: 'put',
             path: '/rest/update/customer/visit/range',
             handler: 'updateVisitCustomerTime',

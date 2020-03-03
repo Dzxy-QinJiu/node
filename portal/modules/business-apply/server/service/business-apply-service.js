@@ -18,8 +18,6 @@ var restApis = {
     approveApplyPassOrReject: '/rest/base/v1/workflow/businesstrip/approve',
     //获取申请的状态
     getApplyStatusById: '/rest/base/v1/workflow/status',
-    //撤销申请审批
-    cancelApplyApprove: '/rest/base/v1/workflow/cancel',
     //修改出差申请的拜访时间
     updateVisitCustomerTime: '/rest/base/v1/workflow/businesstrip/:id'
 
@@ -90,14 +88,7 @@ exports.getApplyStatusById = function(req, res) {
             res: res
         }, req.query);
 };
-// 撤销申请
-exports.cancelApplyApprove = function(req, res) {
-    return restUtil.authRest.post({
-        url: restApis.cancelApplyApprove,
-        req: req,
-        res: res
-    }, req.body);
-};
+
 //修改拜访客户的实际
 exports.updateVisitCustomerTime = function(req, res) {
     let bodyData = req.body;

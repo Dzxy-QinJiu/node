@@ -6,7 +6,6 @@
 var trans = $.ajaxTrans();
 trans.register('candidateList', {url: '/rest/get/apply/next/candidate', type: 'get'});
 trans.register('transferNextCandidate', {url: '/rest/add/apply/new/candidate', type: 'post'});
-trans.register('transferUserApplyNextCandidate', {url: '/rest/add/userapply/new/candidate', type: 'post'});
 trans.register('getApplyListApprovedByMe', {url: '/rest/get/myapproved/apply/list', type: 'get'});
 trans.register('getApplyTaskNode', {url: '/rest/get/apply/node', type: 'get'});
 
@@ -17,10 +16,6 @@ exports.getNextCandidate = function(reqParams) {
 };
 exports.transferNextCandidate = function(reqParams) {
     return trans.getAjax('transferNextCandidate', reqParams);
-};
-//转出用户申请的审批
-exports.transferUserApplyNextCandidate = function(reqParams) {
-    return trans.getAjax('transferUserApplyNextCandidate', reqParams);
 };
 
 exports.getApplyListApprovedByMe = function(reqParams) {

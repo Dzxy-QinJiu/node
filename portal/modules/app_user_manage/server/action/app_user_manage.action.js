@@ -197,7 +197,13 @@ exports.getApplyDetail = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-
+exports.cancelApplyApprove = function(req, res) {
+    AppUserService.cancelApplyApprove(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
 //提交审批
 exports.submitApply = function(req, res) {
 
@@ -349,8 +355,8 @@ exports.getteamlists = function(req, res) {
 };
 
 // 撤销申请
-exports.saleBackoutApply = function(req, res) {
-    AppUserService.saleBackoutApply(req, res, req.body).on('success', function(data) {
+exports.cancelApplyApprove = function(req, res) {
+    AppUserService.cancelApplyApprove(req, res, req.body).on('success', function(data) {
         res.json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

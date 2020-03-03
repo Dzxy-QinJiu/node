@@ -122,9 +122,20 @@ export const getAllUnhandleApplyCount = () => {
 //对数据进行处理
 export const addCancelBtnPrivliege = (worklist) => {
     _.forEach(worklist, (workItem) => {
-        //如果是我申请的，除了可以审批之外，我也可以撤回
-        if (_.get(workItem, 'applicant.user_id') === userData.getUserData().user_id) {
-            workItem.showCancelBtn = true;
+        if(workItem.status === 'ongoing'){
+            //如果是我申请的，除了可以审批之外，我也可以撤回
+            if (_.get(workItem, 'applicant.user_id') === userData.getUserData().user_id) {
+                workItem.showCancelBtn = true;
+            }
+            var unhandleApplyList = Oplate.unread['unhandleApplyList'];
+            var targetObj = _.find(unhandleApplyList, list => list.id === workItem.id);
+            if(targetObj){
+                workItem.showApproveBtn = true;
+            }
         }
+
     });
 };
+var EventEmitter = require('events');
+//暴露一个emitter，做自定义事件
+exports.emitter = new EventEmitter();

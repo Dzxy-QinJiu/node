@@ -70,26 +70,3 @@ exports.applyUser = function(data) {
     return Deferred.promise();
 };
 
-// 撤销申请
-exports.saleBackoutApply = function(obj) {
-    const ERROR_MSG = Intl.get('user.apply.detail.backout.error', '撤销申请失败');
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/appuser/backout_apply',
-        type: 'put',
-        dataType: 'json',
-        data: obj,
-        success: function(result) {
-            //操作成功返回true
-            if(result === true) {
-                Deferred.resolve(result);
-            } else {
-                Deferred.reject(ERROR_MSG);
-            }
-        },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || ERROR_MSG);
-        }
-    });
-    return Deferred.promise();
-};

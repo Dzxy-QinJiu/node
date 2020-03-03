@@ -60,8 +60,10 @@ import {SearchInput} from 'antc';
 import UserData from '../../../public/sources/user-data';
 import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import HistoricalApplyViewDetailStore from 'MOD_DIR/user_apply/public/store/historical-apply-view-detail-store';
+import HistoricalApplyViewDetailAction from 'MOD_DIR/user_apply/public/action/historical-apply-view-detail-actions';
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-
+var ApplyApproveUtils = require('./utils/apply_approve_utils');
 class ApplyApproveList extends React.Component {
     state = {
         activeApplyTab: APPLY_TYPE.APPLY_BY_ME,
@@ -97,8 +99,21 @@ class ApplyApproveList extends React.Component {
         notificationEmitter.on(notificationEmitter.MY_UNREAD_REPLY, this.refreshMyUnreadReplyList);
         notificationEmitter.on(notificationEmitter.TEAM_UNREAD_REPLY, this.refreshTeamUnreadReplyList);
         notificationEmitter.on(notificationEmitter.CLEAR_UNREAD_REPLY, this.clearUnreadReplyList);
-
+        ApplyApproveUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
     }
+    updateSelectedItem = (message) => {
+        if(message && message.status === 'success'){
+            //通过或者驳回申请后改变申请的状态
+            if (message.agree) {
+                message.approve_details = [{user_name: userData.getUserData().user_name, status: message.agree,nick_name: userData.getUserData().nick_name,comment_time: moment().valueOf()}];
+                message.update_time = moment().valueOf();
+                UserApplyActions.changeApplyAgreeStatus(message);
+            }else if (message.cancel){
+                //撤销的申请成功后改变状态
+                UserApplyActions.updateAllApplyItemStatus({id: message.id, status: 'cancel'});
+            }
+        }
+    };
 
     componentWillUpdate() {
         this.showUnhandleApplyTip();
@@ -108,6 +123,7 @@ class ApplyApproveList extends React.Component {
         notificationEmitter.removeListener(notificationEmitter.MY_UNREAD_REPLY, this.refreshMyUnreadReplyList);
         notificationEmitter.removeListener(notificationEmitter.TEAM_UNREAD_REPLY, this.refreshTeamUnreadReplyList);
         notificationEmitter.removeListener(notificationEmitter.CLEAR_UNREAD_REPLY, this.clearUnreadReplyList);
+        ApplyApproveUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
         ApplyApproveListStore.unlisten(this.onStoreChange);
     }
 
@@ -721,6 +737,18 @@ class ApplyApproveList extends React.Component {
             showHistoricalItem: {}
         });
     };
+    //todo 申请审批查看详情
+    renderHistoricalContent = () => {
+        // return <ApplyViewDetailWrap
+        //     isHomeMyWork={true}
+        //     detailItem={this.state.showHistoricalItem}
+        //     selectedApplyStatus='false'//待审批状态
+        //     afterApprovedFunc={this.afterFinishApplyWork}
+        //     ApplyViewDetailStore={HistoricalApplyViewDetailStore}
+        //     ApplyViewDetailAction={HistoricalApplyViewDetailAction}
+        //     appList={this.state.appList}
+        // />;
+    };
     afterTransferApplySuccess = (id) => {
         UserApplyActions.afterTransferApplySuccess(id);
     };
@@ -923,7 +951,7 @@ class ApplyApproveList extends React.Component {
             addApplyFormPanel: ''
         }, () => {
             //看一下当前选中的tab是不是我申请的或者我团队的列表
-            if (_.indexOf([APPLY_TYPE.APPLY_BY_TEAM, APPLY_TYPE.APPLY_BY_ME], this.state.activeApplyTab) > -1) {
+            if (_.indexOf([APPLY_TYPE.APPLY_BY_TEAM, APPLY_TYPE.APPLY_BY_ME], this.state.activeApplyTab) > -1 && _.get(result,'id')) {
                 //立刻获取有时候会获取不到
                 setTimeout(() => {
                     UserApplyActions.afterAddApplySuccess(result);

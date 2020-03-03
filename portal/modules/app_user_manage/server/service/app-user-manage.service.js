@@ -122,7 +122,7 @@ var AppUserRestApis = {
     //获取团队列表
     getteamlists: '/rest/base/v1/group/myteam',
     // 撤销申请
-    saleBackoutApply: '/rest/base/v1/message/apply/cancel',
+    cancelApplyApprove: '/rest/base/v1/workflow/cancel',
     // 获取应用的默认配置信息（待审批）
     getAppExtraConfigInfo: '/rest/base/v1/application/extra/grantinfos',
     // 获取应用的角色名称（已通过）
@@ -1084,15 +1084,6 @@ exports.getteamlists = function(req, res) {
     }, {});
 };
 
-// 撤销申请
-exports.saleBackoutApply = function(req, res, obj) {
-    return restUtil.authRest.put({
-        url: AppUserRestApis.saleBackoutApply,
-        req: req,
-        res: res
-    }, obj);
-};
-
 // 判断审批的用户名的合法性
 exports.checkUserName = function(req, res, obj) {
     return restUtil.authRest.get({
@@ -1163,4 +1154,12 @@ exports.confirmUploadUser = function(req, res) {
             req: req,
             res: res
         }, JSON.parse(obj));
+};
+// 撤销申请
+exports.cancelApplyApprove = function(req, res) {
+    return restUtil.authRest.post({
+        url: AppUserRestApis.cancelApplyApprove,
+        req: req,
+        res: res
+    }, req.body);
 };

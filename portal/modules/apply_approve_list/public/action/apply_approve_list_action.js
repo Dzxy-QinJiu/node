@@ -25,7 +25,9 @@ function UserApplyActions() {
         'setIsCheckUnreadApplyList',//设置是否查看有未读回复的申请列表
         'backApplySuccess',
         'afterTransferApplySuccess',//转审成功后的处理
-        'afterAddApplySuccess'//添加申请审批成功后的处理
+        'afterAddApplySuccess',//添加申请审批成功后的处理
+        'changeApplyAgreeStatus',//审批完后更改审批的状态
+        'updateAllApplyItemStatus'
     );
     // //获取申请列表
     // this.getApplyList = function(obj, callback) {
@@ -82,6 +84,7 @@ function UserApplyActions() {
     this.getMyApplyLists = function(obj) {
         this.dispatch({loading: true, error: false});
         UserAjax.getMyApplyLists(obj).then((result) => {
+            addCancelBtnPrivliege(result.list);
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({loading: false, error: false, data: result });
         }, (errorMsg) => {
@@ -92,6 +95,7 @@ function UserApplyActions() {
     this.getAllApplyLists = function(obj) {
         this.dispatch({loading: true, error: false});
         UserAjax.getAllApplyLists(obj).then((result) => {
+            addCancelBtnPrivliege(result.list);
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({loading: false, error: false, data: result });
         }, (errorMsg) => {
