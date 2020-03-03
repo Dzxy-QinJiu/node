@@ -546,7 +546,8 @@ class RegRulesView extends React.Component {
         //新加节点的数据,要把原来最后一个节点的next加上，先判断之前的数据结构中是不是有结束节点
         var applyFlow = this.state.addNodePanelFlow;
         var applyRulesAndSetting = this.state.applyRulesAndSetting;
-        var bpmnNodeFlow = _.get(applyRulesAndSetting, `applyApproveRules.${applyFlow}.bpmnNode`, []);
+        var applyFlowObj = _.get(applyRulesAndSetting, ['applyApproveRules',applyFlow], {});
+        var bpmnNodeFlow = _.get(applyFlowObj, 'bpmnNode', []);
         var defaultBpmnNode = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
         //如果是默认流程
         var previousNode = _.last(bpmnNodeFlow);
@@ -606,7 +607,8 @@ class RegRulesView extends React.Component {
             newNodeObj[key] = data[key];
         }
         bpmnNodeFlow.push(newNodeObj);
-
+        //为了避免bpmnNodeFlow在condition中没有值的情况，在这里重新设置一下
+        applyFlowObj['bpmnNode'] = bpmnNodeFlow;
     };
     updateCustomizeNode = (limitRules,newNodeObj) => {
         _.forEach(limitRules, (item, index) => {
@@ -851,17 +853,27 @@ class RegRulesView extends React.Component {
     handleSubmitWorkflow = () => {
         //点击保存之前对节点数量进行校验，如果有节点选中了指定下一节点审批人（assignNextNodeApprover： true）需要校验是否有下一个节点
         var applyApproveRulesNodes = _.get(this.state, 'applyRulesAndSetting.applyApproveRules');//所保存的节点
-        var showAddNextNodeTip = false;//是否展示要添加下一节点的提示
+        var showAddNextNodeTip = false, //是否展示要添加下一节点的提示
+            showAddApproveNodeTip = false;//是否展示添加审批人节点的提示
         _.each(applyApproveRulesNodes, (value, key) => {
+            if(showAddNextNodeTip || showAddApproveNodeTip){
+                return;
+            }
             var bpmnNode = _.get(value,'bpmnNode',[]);
+            if(_.isEmpty(bpmnNode)){//如果bpmnNode没有值，提示要加上审批人节点
+                showAddApproveNodeTip = true;
+            }
             showAddNextNodeTip = _.some(bpmnNode, (item,index) => {
                 //该节点设置了指定下一节点审批人并且下一节点没有添加审批人
-                return item['assignNextNodeApprover'] === true && !_.get(bpmnNode, `[${index + 1}]`);
+                return item['assignNextNodeApprover'] + '' === 'true' && _.get(bpmnNode, `[${index + 1}].type`) !== 'UserTask';
             });
+
         });
         
         if(showAddNextNodeTip){
             message.warning(Intl.get('apply.please.add.assign.node', '流程不完整，需添加“指定审批人审批节点”'));
+        }else if(showAddApproveNodeTip){
+            message.warning(Intl.get('apply.please.add.approve.node', '流程不完整，需添加审批人节点'));
         }else{
             if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
                 this.handleSubmitCCApply();
