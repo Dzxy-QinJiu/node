@@ -35,13 +35,13 @@ const LAYOUT_CONSTANCE = {
     BTN_PADDING: 10, //底部按钮区域高度
 };
 
-const HOT_SELECTORS = [{
+const HOT_SELECTORS = [/*{
     name: Intl.get('clue.recommend.return.to.work', '已复工企业'),
     value: '复工'
-},{
-    name: Intl.get('clue.recommend.listed', '上市企业'),
-    value: '上市'
-}];
+},*/{
+        name: Intl.get('clue.recommend.listed', '上市企业'),
+        value: '上市'
+    }];
 
 class ExtractClues extends React.Component {
     constructor(props) {
