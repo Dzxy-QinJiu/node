@@ -94,8 +94,6 @@ class WinningClue extends React.Component{
                 {this.renderContent()}
             </div>
         );
-
-
     }
 }
 
