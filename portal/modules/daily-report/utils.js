@@ -1,5 +1,5 @@
 import ajax from 'ant-ajax';
-import { message } from 'antd';
+import { message, Button } from 'antd';
 import { detailPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const SITE_CONGFIG_KEY = 'is_no_longer_show_check_report_notice';
@@ -77,4 +77,25 @@ export function saveTpl(data, callback) {
             message.error(err);
             callback();
         });
+}
+
+//渲染按钮区域
+export function renderButtonZoneFunc(buttons) {
+    return (
+        <div>
+            {_.map(buttons, item => {
+                if (item.hide) {
+                    return null;
+                } else {
+                    return (
+                        <Button
+                            onClick={item.func}
+                        >
+                            {item.name}
+                        </Button>
+                    );
+                }
+            })}
+        </div>
+    );
 }
