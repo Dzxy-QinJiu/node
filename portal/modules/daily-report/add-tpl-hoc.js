@@ -68,9 +68,13 @@ export default function(WrappedComponent) {
                         if (_.isUndefined(value)) delete values[key];
                     });
 
-                    values.id = this.props.selectedTpl;
+                    const { tplList, selectedTpl } = this.props;
 
-                    saveTpl(values, result => {});
+                    const tplData = _.find(tplList, tpl => tpl.id === selectedTpl) || {};
+
+                    const postData = _.extend({}, tplData, values);
+
+                    saveTpl(postData, result => {});
                     //hideReportPanel()
                 }
             });

@@ -70,6 +70,7 @@ export function saveTpl(data, callback) {
         data
     })
         .done(result => {
+            message.success('保存模板成功');
             callback(result);
         })
         .fail(err => {
