@@ -283,7 +283,7 @@
         overflow: hidden;
         background-color: @bg-white;
         @hover-color: @icon-blue;
-        .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon {
+        .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon, .winning-clue{
             text-align: center;
             cursor: pointer;
             .iconfont{
@@ -321,6 +321,13 @@
             >.iconfont:before{
                 content: "\E733";
                 color: @icon-blue;
+            }
+        }
+        .winning-clue {
+            margin: 8px 0 12px 0;
+            .gift-logo {
+                width: 28px;
+                height: 28px;
             }
         }
         // 通知图标
@@ -405,6 +412,7 @@
     }
 }
 
+.nav-sidebar-winning-clue,
 .nav-sidebar-notification,
 .nav-sidebar-backend-config {
     margin-left: 0 !important;
@@ -447,6 +455,22 @@
     }
     .pad em {
         padding: 0 3px;
+    }
+}
+// 领线索样式
+.nav-sidebar-winning-clue {
+    width:330px;
+    height:212px;
+    border:1px solid @sub-content-font-color;
+    box-shadow:0 8px 16px 0 rgba(0, 0, 0, 0.5);
+    border-radius:4px;
+    padding-left: 0;
+    .ant-popover-content {
+        padding: 0;
+        margin-left: -16px !important;
+    }
+    .ant-popover-inner-content {
+       padding: 0;
     }
 }
 

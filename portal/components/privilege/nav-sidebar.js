@@ -14,13 +14,17 @@ import {NavLink} from 'react-router-dom';
 import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
-import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES} from 'PUB_DIR/sources/utils/consts';
-import {hasCalloutPrivilege, isCurtao, checkVersionAndType, isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
-import {phoneEmitter, notificationEmitter, userInfoEmitter, phoneMsgEmitter, clickUpgradeNoiceEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES, GIFT_LOGO} from 'PUB_DIR/sources/utils/consts';
+import {hasCalloutPrivilege, isCurtao, checkVersionAndType, 
+    isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay,isShowWinningClue} from 'PUB_DIR/sources/utils/common-method-util';
+import {phoneEmitter, notificationEmitter, userInfoEmitter,
+    phoneMsgEmitter, clickUpgradeNoiceEmitter, showWiningClueEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 const session = storageUtil.session;
 const { setWebsiteConfigModuleRecord, getWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
+import WinningClue from '../winning-clue';
+
 //需要加引导的模块
 const schedule_menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
 //个人信息菜单部分距离底部的绝对高度18
@@ -136,13 +140,15 @@ var NavSidebar = createReactClass({
             ronglianNum: '',//正在拨打的容联的电话
             isUnReadNotice: isUnReadNotice, // 是否有未读的公告，默认false
             noticeSubMenuSelectedType: isUnReadNotice ? 'notice' : 'system', // 通知二级子菜单选中的类型
+            isShowWinningClueContent: false, // 是否显示领线索内容
         };
     },
     propTypes: {
         toggleNotificationPanel: PropTypes.func,
         closeNotificationPanel: PropTypes.func,
         showBootCompletePanel: PropTypes.func,
-        isShowNotificationPanel: PropTypes.bool
+        isShowNotificationPanel: PropTypes.bool,
+        rewardClueCount: PropTypes.number,
     },
 
     changeUserInfoLogo: function(userLogoInfo) {
@@ -732,6 +738,48 @@ var NavSidebar = createReactClass({
         return null;
     },
 
+    handleClickCloseWinningClue(flag){
+        this.setState({
+            isShowWinningClueContent: flag
+        });
+    },
+
+    handleVisibleChange(visible) {
+        this.setState({
+            isShowWinningClueContent: visible
+        }, () => {
+            if (visible) {
+                showWiningClueEmitter.emit(showWiningClueEmitter.SHOW_WINNING_CLUE);
+            }
+        });
+    },
+
+    renderWinningContent() {
+        return (
+            <WinningClue
+                isNavBar={true}
+                handleClickClose={this.handleClickCloseWinningClue}
+                count={this.props.rewardClueCount}
+            />
+        );
+    },
+
+    renderWinningClueBlock() {
+        return (
+            <Popover
+                content={ this.renderWinningContent() }
+                placement= "right"
+                visible={this.state.isShowWinningClueContent}
+                onVisibleChange={this.handleVisibleChange}
+                overlayClassName="nav-sidebar-winning-clue"
+            >
+                <div className="winning-clue">
+                    <img className="gift-logo" src={GIFT_LOGO} />
+                </div>
+            </Popover>
+        );
+    },
+
     getTriggerType: function() {
         const { isWebMin } = isResponsiveDisplay();
         let trigger = 'hover';
@@ -774,6 +822,12 @@ var NavSidebar = createReactClass({
                     <div className="sidebar-user" ref={(element) => {
                         this.userInfo = element;
                     }}>
+                        {/**  版本：个人试用版、企业试用版，角色：管理员、销售角色 是并的关系 显示写跟进，赢线索 **/}
+                        {
+                            isShowWinningClue() ? (
+                                this.renderWinningClueBlock()
+                            ) : null
+                        }
                         {this.renderDailCallBlock()}
                         {isCurtao() ? (
                             <div className='customer-service-navicon' onClick={this.onChatClick}>

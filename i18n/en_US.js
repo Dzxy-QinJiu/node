@@ -304,6 +304,7 @@ var en_US = {
     'common.all.terminals': 'All terminals', // 所有终端
     'common.terminals': 'Terminal', // 终端
     'common.period': '.',//。
+	'common.company.owner': 'The authority to interpret the above activities belongs to Shandong Ketao Intelligent Technology Co., Ltd', // 以上活动解释权归山东客套智能科技有限公司
     'common.have': 'have',//有
     'common.nothing': 'nothing',//无
     //公共部分--end

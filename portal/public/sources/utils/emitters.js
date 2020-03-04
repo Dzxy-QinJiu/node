@@ -285,3 +285,8 @@ export { clickUpgradeNoiceEmitter };
 const operatorRecordEmitter = new EventEmitter();
 operatorRecordEmitter.CHANGE_SELECTED_APP = 'change_selected_app'; // 切换应用
 export { operatorRecordEmitter };
+
+// 主导航的领线索，显示内容区的事件
+const showWiningClueEmitter = new EventEmitter();
+showWiningClueEmitter.SHOW_WINNING_CLUE = 'show_winning_clue'; //
+export { showWiningClueEmitter };

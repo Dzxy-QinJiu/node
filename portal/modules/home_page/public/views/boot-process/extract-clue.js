@@ -7,8 +7,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import { Checkbox, Button, message, Popover } from 'antd';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
 var clueCustomerStore = require('MOD_DIR/clue_customer/public/store/clue-customer-store');
-var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import {batchPushEmitter, notificationEmitter, showWiningClueEmitter} from 'PUB_DIR/sources/utils/emitters';
 var paymentEmitter = require('PUB_DIR/sources/utils/emitters').paymentEmitter;
 var batchOperate = require('PUB_DIR/sources/push/batch');
 import userData from 'PUB_DIR/sources/user-data';
@@ -25,8 +24,8 @@ import {
 import { formatSalesmanList, checkCurrentVersionType, checkVersionAndType, isResponsiveDisplay } from 'PUB_DIR/sources/utils/common-method-util';
 import { getMaxLimitExtractClueCount, updateGuideMark } from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
-import DifferentVersion from 'MOD_DIR/different_version/public';
-import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon } from 'PUB_DIR/sources/utils/consts';
+import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon, GIFT_LOGO} from 'PUB_DIR/sources/utils/consts';
+import WinningClue from 'CMP_DIR/winning-clue';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 
 const LAYOUT_CONSTANCE = {
@@ -62,6 +61,7 @@ class ExtractClues extends React.Component {
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             canClickExtract: true, //防止连续点击批量提取相同线索
             showDifferentVersion: false,//是否显示版本信息面板
+            isShowWiningClue: false, // 是否显示领线索活动界面
             ...clueCustomerStore.getState()
         };
     }
@@ -370,6 +370,35 @@ class ExtractClues extends React.Component {
     getTimeRangeText = () => {
         return checkCurrentVersionType().trial ? Intl.get('user.time.today', '今天') : Intl.get('common.this.month', '本月');
     };
+
+    handleClickWinningClue = () => {
+        this.setState({
+            isShowWiningClue: true
+        }, () => {
+            GeminiScrollbar.scrollTo(this.refs.scrolltoTop, 0);
+            showWiningClueEmitter.emit(showWiningClueEmitter.SHOW_WINNING_CLUE);
+        });
+    }
+
+    handleClickCloseWinningClue = (flag) => {
+        this.setState({
+            isShowWiningClue: flag
+        });
+    }
+
+    renderWinningClueBtn = () => {
+        return (
+            <Button
+                className="winning-clue-btn"
+                data-tracename="点击领线索按钮"
+                onClick={this.handleClickWinningClue}
+            >
+                <img className="gift-logo" src={GIFT_LOGO} />
+                <span className="text">领线索</span>
+            </Button>
+        );
+    }
+
     //提取数为0时显示的提示信息
     hasNoExtractCountTip = () => {
         var maxLimitExtractNumber = this.state.maxLimitExtractNumber;
@@ -384,30 +413,36 @@ class ExtractClues extends React.Component {
         if(!ableExtract && this.state.hasNoExtractCountTip){
             //个人版试用提示升级,正式提示增加线索量
             //企业版试用提示升级,正式（管理员）提示增加线索量
-            if(versionAndType.isPersonalTrial) {//个人试用
-                maxLimitTip = <ReactIntl.FormattedMessage
-                    id="clue.recommend.trial.extract.num.limit.tip"
-                    defaultMessage={'已提取{count}条，如需继续提取请{upgradedVersion}'}
-                    values={{
-                        count: <span className="has-extracted-count">{maxLimitExtractNumber}</span>,
-                        upgradedVersion: (
-                            <Button className="customer-btn" data-tracename="点击个人升级为正式版按钮"
-                                title={Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
-                                onClick={this.handleUpgradePersonalVersion}>
-                                {Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
-                            </Button>
-                        )
-                    }}
-                />;
+            if( versionAndType.isPersonalTrial) {//个人试用
+                maxLimitTip = <div>
+                    <ReactIntl.FormattedMessage
+                        id="clue.recommend.trial.extract.num.limit.tip"
+                        defaultMessage={'已提取{count}条，如需继续提取请{upgradedVersion}'}
+                        values={{
+                            count: <span className="has-extracted-count">{maxLimitExtractNumber}</span>,
+                            upgradedVersion: (
+                                <Button className="customer-btn" data-tracename="点击个人升级为正式版按钮"
+                                    title={Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
+                                    onClick={this.handleUpgradePersonalVersion}>
+                                    {Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
+                                </Button>
+                            )
+                        }}
+                    />
+                    {this.renderWinningClueBtn()}
+                </div>;
             } else if(versionAndType.isCompanyTrial) {//企业试用
-                maxLimitTip = <ReactIntl.FormattedMessage
-                    id="clue.recommend.company.trial.extract.num.limit.tip"
-                    defaultMessage={'已提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}'}
-                    values={{
-                        count: <span className="has-extracted-count">{maxLimitExtractNumber}</span>,
-                        contact: COMPANY_PHONE
-                    }}
-                />;
+                maxLimitTip = <div>
+                    <ReactIntl.FormattedMessage
+                        id="clue.recommend.company.trial.extract.num.limit.tip"
+                        defaultMessage={'已提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}'}
+                        values={{
+                            count: <span className="has-extracted-count">{maxLimitExtractNumber}</span>,
+                            contact: COMPANY_PHONE
+                        }}
+                    />
+                    {this.renderWinningClueBtn()}
+                </div>;
             } else if(versionAndType.isPersonalFormal//个人正式版
                 || versionAndType.isCompanyFormal && this.isManager()) { //或企业正式版管理员
                 maxLimitTip = <ReactIntl.FormattedMessage
@@ -1016,8 +1051,17 @@ class ExtractClues extends React.Component {
                         {this.hasNoExtractCountTip()}
                     </span>
                 </div>
-                <div className="extract-clues-content" style={{height: divHeight}}>
+                <div className="extract-clues-content" style={{height: divHeight}} ref="scrolltoTop">
                     <GeminiScrollbar>
+                        {
+                            this.state.isShowWiningClue ? (
+                                <div className="winning-clue-tips">
+                                    <WinningClue
+                                        handleClickClose={this.handleClickCloseWinningClue}
+                                    />
+                                </div>
+                            ) : null
+                        }
                         {this.renderRecommendLists()}
                     </GeminiScrollbar>
                 </div>

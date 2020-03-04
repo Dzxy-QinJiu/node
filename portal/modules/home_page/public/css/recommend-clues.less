@@ -137,6 +137,24 @@
         height: 24px;
         color: @will-distribute-color;
       }
+      // 赢线索的提示
+      .winning-clue-btn {
+        width: 72px;
+        height:24px;
+        border:1px solid @sub-content-font-color;
+        border-radius:4px;
+        margin-left: 5px;
+        .gift-logo {
+          width: 14px;
+          margin-left: -8px;
+        }
+        .text {
+          margin-left: 5px;
+          color: @confirm-delete-background;
+          font-size: 12px;
+          vertical-align: middle;
+        }
+      }
       .has-extracted-count{
         color: @BORDER-BLUE;
         margin: 2px;
@@ -224,11 +242,20 @@
             }
           }
         }
+
         .no-more-data-tip{
             .anticon{
               position: static;
               margin-right: 4px;
             }
+        }
+      }
+      .winning-clue-tips {
+        padding: 5px 24px;
+        .winning-clue-container {
+          border:1px solid rgba(204,204,204,1);
+          border-radius:4px;
+          position: relative;
         }
       }
     }

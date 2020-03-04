@@ -5,6 +5,8 @@
 import {regex} from 'ant-utils';
 import {Button} from 'antd';
 import { moneySize, staffSize } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import giftLogo from '../../../static/images/gift.png';
+export const GIFT_LOGO = giftLogo;
 //用户类型的下拉选项
 export const userTypeList = [
     {name: Intl.get('user.online.all.type', '全部类型'), value: ''},
@@ -868,3 +870,5 @@ export const OFFDUTY_TYPE = {
     VISIT: 'customer_visit', //出差
     GO_OUT: 'businesstrip_awhile' //外出
 };
+
+export const DISAPPEAR_DELAY_TIME = 3000;
