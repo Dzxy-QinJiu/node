@@ -3,8 +3,6 @@
  */
 
 import { Form } from 'antd';
-import { VIEW_TYPE } from './consts';
-import { hideReportPanel } from './utils';
 import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
 import { getMyTeamTreeAndFlattenList } from 'PUB_DIR/sources/utils/common-data-util';
 import addTplHoc from './add-tpl-hoc';
