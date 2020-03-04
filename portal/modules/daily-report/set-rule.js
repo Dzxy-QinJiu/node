@@ -46,6 +46,7 @@ class SetRule extends React.Component {
                         type: 'switch',
                         fieldDecoratorOption: {
                             valuePropName: 'checked',
+                            initialValue: formData.status === 'on' ? true : false,
                         }
                     })}
 

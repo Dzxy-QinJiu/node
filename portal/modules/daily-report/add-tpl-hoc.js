@@ -68,12 +68,19 @@ export default function(WrappedComponent) {
                         if (_.isUndefined(value)) delete values[key];
                     });
 
+                    if (values.status === true) {
+                        values.status = 'on';
+                    } else if (values.status === false) {
+                        values.status = 'off';
+                    }
+
                     const { tplList, selectedTpl } = this.props;
 
                     const tplData = _.find(tplList, tpl => tpl.id === selectedTpl) || {};
 
                     const postData = _.extend({}, tplData, values);
 
+                    console.log(postData);//return
                     saveTpl(postData, result => {});
                     //hideReportPanel()
                 }
