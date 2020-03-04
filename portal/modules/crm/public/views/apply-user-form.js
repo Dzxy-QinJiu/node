@@ -593,7 +593,6 @@ const ApplyUserForm = createReactClass({
         };
         var isOplateUser = this.state.isOplateUser;
         return (<AppConfigForm
-            selectedApp={app}
             appFormData={appFormData}
             needApplyNum={(this.state.applyFrom === 'order' || this.isApplyNewUsers()) && isOplateUser}
             timePickerConfig={timePickerConfig}

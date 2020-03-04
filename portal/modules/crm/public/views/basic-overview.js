@@ -128,7 +128,6 @@ class BasicOverview extends React.Component {
                     client_id: app.app_id,
                     client_name: app.app_name,
                     client_logo: app.app_logo,
-                    terminals: app.terminals
                 };
             })
             });
