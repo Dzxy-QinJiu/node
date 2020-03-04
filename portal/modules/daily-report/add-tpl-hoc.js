@@ -4,7 +4,7 @@
 
 import { Steps, Button, message } from 'antd';
 import { VIEW_TYPE } from './consts';
-import { hideReportPanel, saveTpl } from './utils';
+import { hideReportPanel, saveTpl, renderButtonZoneFunc } from './utils';
 
 const { Step } = Steps;
 
@@ -12,6 +12,7 @@ export default function(WrappedComponent) {
     return class extends React.Component {
         render() {
             const { updateState, currentStep } = this.props;
+            const renderButtonZone = renderButtonZoneFunc.bind(this);
 
             return (
                 <div>
@@ -21,31 +22,19 @@ export default function(WrappedComponent) {
                     </Steps>
                     <div>
                         <WrappedComponent {...this.props} ref={elm => this.wrappedComponent = elm} />
-                    </div>
-                    <div>
-                        {currentStep === 2 ? (
-                            <Button
-                                onClick={() => { updateState({ currentView: VIEW_TYPE.ADD_TPL, currentStep: 1 }); }}
-                            >
-                            上一步
-                            </Button>
-                        ) : null}
-
-                        {currentStep === 2 ? (
-                            <Button
-                                onClick={this.save.bind(this)}
-                            >
-                            保存
-                            </Button>
-                        ) : null}
-
-                        {currentStep === 1 ? (
-                            <Button
-                                onClick={this.next.bind(this)}
-                            >
-                            下一步
-                            </Button>
-                        ) : null}
+                        {renderButtonZone([{
+                            hide: currentStep !== 2,
+                            func: () => { updateState({ currentView: VIEW_TYPE.ADD_TPL, currentStep: 1 }); },
+                            name: '上一步',
+                        }, {
+                            hide: currentStep !== 2,
+                            func: this.save.bind(this),
+                            name: '保存',
+                        }, {
+                            hide: currentStep !== 1,
+                            func: this.next.bind(this),
+                            name: '下一步',
+                        }])}
                     </div>
                 </div>
             );
