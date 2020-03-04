@@ -1509,5 +1509,5 @@ exports.checkCustomerTotalLeaveTime = function(startTime,endTime,customers,isAdd
 // 判断依据：角色：销售人员、管理员，版本：个人试用、企业试用
 exports.isShowWinningClue = () => {
     const versionAndType = checkVersionAndType();
-    return (isSalesRole() || isAdminRole()) && (versionAndType.isPersonalTrial || versionAndType.isCompanyTrial);
+    return versionAndType.isPersonalTrial || (isSalesRole() || isAdminRole()) && versionAndType.isCompanyTrial;
 };

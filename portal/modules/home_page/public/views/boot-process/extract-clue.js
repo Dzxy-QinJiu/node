@@ -376,6 +376,7 @@ class ExtractClues extends React.Component {
         this.setState({
             isShowWiningClue: true
         }, () => {
+            GeminiScrollbar.scrollTo(this.refs.scrolltoTop, 0);
             showWiningClueEmitter.emit(showWiningClueEmitter.SHOW_WINNING_CLUE);
         });
     }
@@ -1048,7 +1049,7 @@ class ExtractClues extends React.Component {
                         {this.hasNoExtractCountTip()}
                     </span>
                 </div>
-                <div className="extract-clues-content" style={{height: divHeight}}>
+                <div className="extract-clues-content" style={{height: divHeight}} ref="scrolltoTop">
                     <GeminiScrollbar>
                         {
                             this.state.isShowWiningClue ? (
