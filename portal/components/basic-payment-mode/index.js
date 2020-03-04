@@ -9,6 +9,7 @@ import { message, Tabs } from 'antd';
 const TabPane = Tabs.TabPane;
 import classNames from 'classnames';
 import Spinner from 'CMP_DIR/spinner';
+import CountDown from 'CMP_DIR/countdown';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import PayAjax from 'MOD_DIR/common/public/ajax/pay';
 import QrCode from 'qrcode.react';
@@ -26,6 +27,8 @@ class BasicPaymentMode extends React.Component {
         super(props);
 
         this.generatePayMode(props.payModeList);
+
+        this.handleOrderTimeLog(props.curOrderInfo);
 
         this.state = {
             curOrderInfo: this.generateOrder(props.curOrderInfo),
@@ -69,6 +72,13 @@ class BasicPaymentMode extends React.Component {
         return curOrderInfo;
     }
 
+    handleOrderTimeLog = (order) => {
+        let timeExpire = _.get(order, 'time_expire', 0);
+        let orderTime = _.get(order, 'time_stamp', 0);
+        const log = `${_.get(order, 'type','')}订单有效时间：` + moment(orderTime).add(timeExpire, 'minutes').format(oplateConsts.DATE_TIME_FORMAT);
+        console.log(log);
+    };
+
     //查询订单支付状态
     queryOrderStatus() {
         if(this.queryStatusTimer) clearInterval(this.queryStatusTimer);
@@ -86,19 +96,7 @@ class BasicPaymentMode extends React.Component {
                     _.isFunction(this.props.onPaymentSuccess) && this.props.onPaymentSuccess(this.state.curOrderInfo);
                 }else if(_.toString(status) === '-1') {//超时关闭
                     clearInterval(this.queryStatusTimer);
-                    Trace.traceEvent(ReactDOM.findDOMNode(this), '订单超时');
-                    this.setState({
-                        payStatus: PAY_STATUS.TIMEOUT,
-                        qrCodeErrMsg: (
-                            <ReactIntl.FormattedMessage
-                                id="payment.order.timeout"
-                                defaultMessage={'订单超时，{retry}'}
-                                values={{
-                                    'retry': <a className="retry-btn" data-tracename="点击重新生成订单按钮" onClick={this.againCreateOrder}>{Intl.get('payment.again.create.order', '重新生成')}</a>
-                                }}
-                            />
-                        )
-                    });
+                    this.handleOrderTimeout();
                 }
             });
         }, QUERY_STATUS_TIME);
@@ -144,6 +142,7 @@ class BasicPaymentMode extends React.Component {
                     ...res
                 })
             }, () => {
+                this.handleOrderTimeLog({type: res.type, time_expire: _.get(res, 'time_expire'), time_stamp: moment().valueOf()});
                 this.queryOrderStatus();
             });
         }, () => {
@@ -180,7 +179,9 @@ class BasicPaymentMode extends React.Component {
                 curOrderInfo: this.generateOrder(res),
                 payStatus: PAY_STATUS.UNPAID
             }, () => {
-                this.queryOrderStatus();
+                this.handleOrderTimeLog(res);//打印订单有效时间
+                this.queryOrderStatus();//查询订单状态
+                this.countDownRef.resetTime();//需要重新开始倒计时
             });
         }, () => {
             this.setState({
@@ -198,7 +199,24 @@ class BasicPaymentMode extends React.Component {
         });
     };
 
-    handleClickClose = (e) => {
+    //订单超时处理
+    handleOrderTimeout = () => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '订单超时');
+        this.setState({
+            payStatus: PAY_STATUS.TIMEOUT,
+            qrCodeErrMsg: (
+                <ReactIntl.FormattedMessage
+                    id="payment.order.timeout"
+                    defaultMessage={'订单超时，{retry}'}
+                    values={{
+                        'retry': <a className="retry-btn" data-tracename="点击重新生成订单按钮" onClick={this.againCreateOrder}>{Intl.get('payment.again.create.order', '重新生成')}</a>
+                    }}
+                />
+            )
+        });
+    };
+
+    handleClickClose = () => {
         Trace.traceEvent(e, '关闭订单支付界面');
         this.props.onClosePanel();
     };
@@ -235,11 +253,25 @@ class BasicPaymentMode extends React.Component {
         }
     }
 
+    //渲染倒计时
+    renderCountDownBlock = (time) => {
+        let second = parseInt(time % 60); //秒
+        let minute = parseInt(time / 60); //分
+        return (
+            <div className="count-down-content">
+                <i className="iconfont icon-alarm-clock"/>：
+                <span className="count-down-time">{minute}</span>{Intl.get('user.time.minute', '分')}
+                <span className="count-down-time">{second}</span>{Intl.get('user.time.second', '秒')}
+            </div>
+        );
+    };
+
     renderContent() {
         const qrCls = classNames('basic-payment-qrcode-container',{
             'second-payment-mode': this.props.payModeList.length <= 2
         });
         const curOrderInfo = this.state.curOrderInfo;
+        let timeExpire = _.get(curOrderInfo,'time_expire', 0) * 60;
         return (
             <div className="basic-payment-mode-container">
                 <div className="order-info-container">
@@ -255,6 +287,15 @@ class BasicPaymentMode extends React.Component {
                         <div className="order-info-item">
                             <span className="order-info-title">{Intl.get('payment.goods.trade.time', '下单时间')}：</span>
                             <span className="order-info-item--content">{moment(curOrderInfo.time_stamp).format(oplateConsts.DATE_TIME_FORMAT)}</span>
+                        </div>
+                        <div className="order-info-item">
+                            {timeExpire > 0 ? (
+                                <CountDown
+                                    ref={(ref => this.countDownRef = ref)}
+                                    seconds={timeExpire}
+                                    renderContent={this.renderCountDownBlock}
+                                />
+                            ) : null}
                         </div>
                     </div>
                 </div>
