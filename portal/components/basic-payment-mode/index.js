@@ -28,8 +28,6 @@ class BasicPaymentMode extends React.Component {
 
         this.generatePayMode(props.payModeList);
 
-        this.handleOrderTimeLog(props.curOrderInfo);
-
         this.state = {
             curOrderInfo: this.generateOrder(props.curOrderInfo),
             payMode: props.curOrderInfo.type,
@@ -71,13 +69,6 @@ class BasicPaymentMode extends React.Component {
         curOrderInfo[`${orderInfo.type}_qrUrl`] = _.get(orderInfo,'code_url','');
         return curOrderInfo;
     }
-
-    handleOrderTimeLog = (order) => {
-        let timeExpire = _.get(order, 'time_expire', 0);
-        let orderTime = _.get(order, 'time_stamp', 0);
-        const log = `${_.get(order, 'type','')}订单有效时间：` + moment(orderTime).add(timeExpire, 'minutes').format(oplateConsts.DATE_TIME_FORMAT);
-        console.log(log);
-    };
 
     //查询订单支付状态
     queryOrderStatus() {
@@ -142,7 +133,6 @@ class BasicPaymentMode extends React.Component {
                     ...res
                 })
             }, () => {
-                this.handleOrderTimeLog({type: res.type, time_expire: _.get(res, 'time_expire'), time_stamp: moment().valueOf()});
                 this.queryOrderStatus();
             });
         }, () => {
@@ -179,7 +169,6 @@ class BasicPaymentMode extends React.Component {
                 curOrderInfo: this.generateOrder(res),
                 payStatus: PAY_STATUS.UNPAID
             }, () => {
-                this.handleOrderTimeLog(res);//打印订单有效时间
                 this.queryOrderStatus();//查询订单状态
                 this.countDownRef.resetTime();//需要重新开始倒计时
             });
@@ -288,15 +277,15 @@ class BasicPaymentMode extends React.Component {
                             <span className="order-info-title">{Intl.get('payment.goods.trade.time', '下单时间')}：</span>
                             <span className="order-info-item--content">{moment(curOrderInfo.time_stamp).format(oplateConsts.DATE_TIME_FORMAT)}</span>
                         </div>
-                        <div className="order-info-item">
-                            {timeExpire > 0 ? (
+                        {timeExpire > 0 ? (
+                            <div className="order-info-item">
                                 <CountDown
                                     ref={(ref => this.countDownRef = ref)}
                                     seconds={timeExpire}
                                     renderContent={this.renderCountDownBlock}
                                 />
-                            ) : null}
-                        </div>
+                            </div>
+                        ) : null}
                     </div>
                 </div>
                 <div className={qrCls}>

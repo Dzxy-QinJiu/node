@@ -31,7 +31,7 @@ class CountDown extends React.Component{
         });
     };
 
-    //暂停计时
+    //暂停计时 todo 以防将来使用
     pause = () => {
         clearInterval(this.timer);
     };
