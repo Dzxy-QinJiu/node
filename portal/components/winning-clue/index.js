@@ -81,7 +81,7 @@ class WinningClue extends React.Component{
                             )
                         }
                     </div>
-                    <div className="owner">以上活动解释权为客套智能科技有限公司</div>
+                    <div className="owner">以上活动解释权归山东客套智能科技有限公司</div>
                 </div>
             </React.Fragment>
         );
