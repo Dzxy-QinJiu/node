@@ -11,14 +11,19 @@ class PreviewTpl extends React.Component {
     }
 
     render() {
+        const { tplList, clickedTpl } = this.props;
+        const tpl = _.find(tplList, item => item.id === selectedTpl) || {};
+
         return (
             <div>
                 预览模板
-                <Button
-                    onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.EDIT_TPL }); }}
-                >
-                    返回
-                </Button>
+                <div>
+                    <Button
+                        onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL }); }}
+                    >
+                        返回
+                    </Button>
+                </div>
             </div>
         );
     }
