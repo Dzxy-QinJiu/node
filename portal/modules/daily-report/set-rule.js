@@ -2,7 +2,7 @@
  * 设置规则
  */
 
-import { Form, Button } from 'antd';
+import { Form } from 'antd';
 import { VIEW_TYPE } from './consts';
 import { hideReportPanel } from './utils';
 import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
@@ -29,7 +29,7 @@ class SetRule extends React.Component {
 
         return (
             <div>
-                <Form onSubmit={this.handleSubmit}>
+                <Form>
                     {renderFormItem('谁可填写', 'sales_team_ids', {
                         type: 'select',
                         options: _.map(this.props.teamList, item => ({name: item.group_name, value: item.group_id})),
