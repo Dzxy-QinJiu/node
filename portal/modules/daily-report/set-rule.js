@@ -50,6 +50,16 @@ class SetRule extends React.Component {
                         }
                     })}
 
+                    {renderFormItem('统计周期', 'statistic_interval', {
+                        type: 'select',
+                        options: [{
+                            name: '按日',
+                            value: 'day'
+                        }, {
+                            name: '按周',
+                            value: 'week'
+                        }],
+                    })}
                 </Form>
             </div>
         );
