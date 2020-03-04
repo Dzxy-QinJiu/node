@@ -3,7 +3,9 @@ import { message } from 'antd';
 import { detailPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const SITE_CONGFIG_KEY = 'is_no_longer_show_check_report_notice';
-const TPL_URL = '/rest/customer/v3/dailyreport/templates';
+const DR_URL = '/rest/customer/v3/dailyreport';
+const TPL_LIST_URL = DR_URL + '/templates';
+const TPL_URL = DR_URL + '/template';
 
 //获取报告列表
 export function getReportList(callback) {
@@ -47,7 +49,7 @@ export function getTplList(callback) {
     if (!_.isFunction(callback)) return;
 
     ajax.send({
-        url: TPL_URL
+        url: TPL_LIST_URL
     })
         .done(result => {
             callback(result);
