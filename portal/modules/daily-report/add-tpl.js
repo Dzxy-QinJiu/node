@@ -28,11 +28,6 @@ class AddTpl extends React.Component {
                         </Radio>
                     ))}
                 </Radio.Group>
-                <div
-                    onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.ADD_NEW_TPL }); }}
-                >
-                    添加新模板
-                </div>
             </div>
         );
     }
