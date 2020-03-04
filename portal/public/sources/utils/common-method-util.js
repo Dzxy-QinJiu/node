@@ -1506,8 +1506,8 @@ exports.checkCustomerTotalLeaveTime = function(startTime,endTime,customers,isAdd
 };
 
 // 是否显示赢线索活动
-// 判断依据：角色：销售人员、管理员，版本：个人试用、企业试用
+// 判断依据：试用（个人和企业）并且不是运营角色
 exports.isShowWinningClue = () => {
     const versionAndType = checkVersionAndType();
-    return versionAndType.isPersonalTrial || (isSalesRole() || isAdminRole()) && versionAndType.isCompanyTrial;
+    return versionAndType.trial && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
 };

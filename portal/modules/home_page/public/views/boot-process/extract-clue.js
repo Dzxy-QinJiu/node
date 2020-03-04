@@ -24,8 +24,7 @@ import {
 import { formatSalesmanList, checkCurrentVersionType, checkVersionAndType, isResponsiveDisplay } from 'PUB_DIR/sources/utils/common-method-util';
 import { getMaxLimitExtractClueCount, updateGuideMark } from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
-import DifferentVersion from 'MOD_DIR/different_version/public';
-import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon } from 'PUB_DIR/sources/utils/consts';
+import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon, GIFT_LOGO} from 'PUB_DIR/sources/utils/consts';
 import WinningClue from 'CMP_DIR/winning-clue';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 
@@ -394,7 +393,7 @@ class ExtractClues extends React.Component {
                 data-tracename="点击领线索按钮"
                 onClick={this.handleClickWinningClue}
             >
-                <img className="gift-logo" src="../../../../../static/images/gift.png" />
+                <img className="gift-logo" src={GIFT_LOGO} />
                 <span className="text">领线索</span>
             </Button>
         );

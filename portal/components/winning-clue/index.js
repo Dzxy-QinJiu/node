@@ -14,7 +14,7 @@ class WinningClue extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            count: props.count || 0,
+            count: _.get(props, 'count', 0),
         };
     }
 
@@ -81,7 +81,9 @@ class WinningClue extends React.Component{
                             )
                         }
                     </div>
-                    <div className="owner">以上活动解释权归山东客套智能科技有限公司</div>
+                    <div className="owner">
+                        {Intl.get('common.company.owner', '以上活动解释权归山东客套智能科技有限公司')}
+                    </div>
                 </div>
             </React.Fragment>
         );

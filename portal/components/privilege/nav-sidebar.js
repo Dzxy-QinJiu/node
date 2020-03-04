@@ -14,7 +14,7 @@ import {NavLink} from 'react-router-dom';
 import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
-import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES, GIFT_LOGO} from 'PUB_DIR/sources/utils/consts';
 import {hasCalloutPrivilege, isCurtao, checkVersionAndType, 
     isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay,isShowWinningClue} from 'PUB_DIR/sources/utils/common-method-util';
 import {phoneEmitter, notificationEmitter, userInfoEmitter,
@@ -24,6 +24,7 @@ import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 const session = storageUtil.session;
 const { setWebsiteConfigModuleRecord, getWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
 import WinningClue from '../winning-clue';
+
 //需要加引导的模块
 const schedule_menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
 //个人信息菜单部分距离底部的绝对高度18
@@ -773,7 +774,7 @@ var NavSidebar = createReactClass({
                 overlayClassName="nav-sidebar-winning-clue"
             >
                 <div className="winning-clue">
-                    <img className="gift-logo" src="../../static/images/gift.png" />
+                    <img className="gift-logo" src={GIFT_LOGO} />
                 </div>
             </Popover>
         );

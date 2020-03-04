@@ -5,7 +5,7 @@
  */
 import 'babel-polyfill';
 var rightPanelShow = false;
-import {clueSourceArray, accessChannelArray, clueClassifyArray, CLUE_MESSAGE_TYPE} from 'PUB_DIR/sources/utils/consts';
+import {clueSourceArray, accessChannelArray, clueClassifyArray, CLUE_MESSAGE_TYPE, DISAPPEAR_DELAY_TIME} from 'PUB_DIR/sources/utils/consts';
 var clueCustomerStore = require('./store/clue-customer-store');
 var clueFilterStore = require('./store/clue-filter-store');
 var clueCustomerAction = require('./action/clue-customer-action');
@@ -3425,7 +3425,7 @@ class ClueCustomer extends React.Component {
         return (
             <AddTraceContentSuccessTips
                 onHide={hide}
-                time={3000}
+                time={DISAPPEAR_DELAY_TIME}
             />
         );
     };

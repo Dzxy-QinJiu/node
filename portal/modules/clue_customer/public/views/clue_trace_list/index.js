@@ -35,7 +35,7 @@ var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notification
 import {SELECT_TYPE, AVALIBILITYSTATUS, editCluePrivilege} from '../../utils/clue-customer-utils';
 import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 import { isShowWinningClue } from 'PUB_DIR/sources/utils/common-method-util';
-
+import { DISAPPEAR_DELAY_TIME } from 'PUB_DIR/sources/utils/consts';
 import AddTraceContentSuccessTips from '../add-trace-success-tips';
 const OVERVIEW_SHOW_COUNT = 3; //在概览中显示最近三条跟进
 class ClueTraceList extends React.Component {
@@ -356,7 +356,7 @@ class ClueTraceList extends React.Component {
         return (
             <AddTraceContentSuccessTips
                 onHide={hide}
-                time={3000}
+                time={DISAPPEAR_DELAY_TIME}
             />
         );
     };
