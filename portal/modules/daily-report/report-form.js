@@ -1,37 +1,27 @@
 /**
- * 填写报告
+ * 报告表单
  */
 
-import { Button } from 'antd';
-import { VIEW_TYPE } from './consts';
+import { Form } from 'antd';
+import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
 
 class ReportForm extends React.Component {
-    state = {
-        currentView: VIEW_TYPE.ADD_TPL,
-    }
-
     render() {
+        const { tplList, clickedTpl } = this.props;
+        const tpl = _.find(tplList, item => item.id === clickedTpl) || {};
+        const renderFormItem = renderFormItemFunc.bind(this, {});
+
         return (
             <div>
-                填写报告
-                <Button
-                    onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL }); }}
-                >
-                    取消
-                </Button>
-                <Button
-                    onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.PREVIEW_TPL }); }}
-                >
-                    预览
-                </Button>
-                <Button
-                    onClick={() => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL }); }}
-                >
-                    保存
-                </Button>
+                <Form>
+                    {_.map(tpl.items, item => {
+                        let type = 'inputNumber';
+                        return renderFormItem(item.name, item.id, { type });
+                    })}
+                </Form>
             </div>
         );
     }
 }
 
-export default ReportForm;
+export default Form.create()(ReportForm);
