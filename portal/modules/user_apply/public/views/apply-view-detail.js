@@ -126,7 +126,7 @@ function getDelayDisplayTime(delayUnit, delayNumber) {
 
 const APPLY_LIST_WIDTH = 421;
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
-import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {INTEGRATE_TYPES, APPROVE_STATUS} from 'PUB_DIR/sources/utils/consts';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 const ApplyViewDetail = createReactClass({
@@ -1140,11 +1140,60 @@ const ApplyViewDetail = createReactClass({
     },
     //渲染延期多应用的table
     renderMultiAppDelayTable(user) {
+        const appsSetting = this.appsSetting;
+        const detailInfo = this.state.detailInfoObj.info;
+        const approvalState = _.get(detailInfo, 'approval_state');
+        const applyType = _.get(detailInfo, 'info.type');
+
         let columns = [
             {
                 title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
-                className: 'apply-detail-th'
+                className: 'apply-detail-th',
+                render: (text, app, index) => {
+                    let terminalsName = [];
+                    const custom_setting = appsSetting[app.app_id];
+                    // 应用包含多终端信息
+                    let configTerminals = _.get(custom_setting, 'terminals.value');
+                    const terminals = _.get(app, 'terminals', []);
+                    if (approvalState === APPROVE_STATUS.ONGOING) { // 待审批
+                        // 延期并且停用前有多终端信息，则多终端信息和停用前保持一直
+                        if (applyType === APPLY_TYPES.DELAY && !_.isEmpty(terminals)) {
+                            let appTerminals = applyAppConfigTerminal(terminals, app.app_id, this.props.appList);
+                            terminalsName = _.map(appTerminals, 'name');
+                        } else { // 延期前，应用有默认多终端信息的情况
+                            /// 应用的默认终端信息
+                            let appDefaultTerminal = approveAppConfigTerminal(app.app_id, this.props.appList);
+                            if (!_.isEmpty(configTerminals)) { // 修改配置后，在界面上显示的信息
+                                terminalsName = _.map(configTerminals, 'name');
+                            } else {
+                                if (!_.isEmpty(appDefaultTerminal)) {
+                                    terminalsName = _.map(appDefaultTerminal, 'name');
+                                }
+                            }
+                        }
+                    } else {
+                        if (!_.isEmpty(configTerminals)) {
+                            terminalsName = _.map(configTerminals, 'name');
+                        } else {
+                            if (!_.isEmpty(terminals)) {
+                                let appTerminals = applyAppConfigTerminal(terminals, app.app_id, this.props.appList);
+                                terminalsName = _.map(appTerminals, 'name');
+                            }
+                        }
+                    }
+
+                    return (
+                        <div>
+                            <span>{text}</span>
+                            {
+                                !_.isEmpty(terminalsName) ? <span>
+                                    ({ terminalsName.join('、')})
+                                </span> : null
+                            }
+                        </div>
+                    );
+                }
             }, {
                 title: Intl.get('user.time.end', '到期时间'),
                 dataIndex: 'start_time',

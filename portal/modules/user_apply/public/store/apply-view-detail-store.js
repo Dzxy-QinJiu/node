@@ -1,7 +1,7 @@
 import ApplyViewDetailActions from '../action/apply-view-detail-actions';
 import { altAsyncUtil } from 'ant-utils';
 const { resultHandler } = altAsyncUtil;
-import { APPLY_TYPES, TIMERANGEUNIT, WEEKDAYS} from 'PUB_DIR/sources/utils/consts';
+import { APPLY_TYPES, TIMERANGEUNIT, WEEKDAYS, APPROVE_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {getDelayDisplayTime} from '../util/app-user-util';
 import {checkIfLeader, isCustomDelayType, applyAppConfigTerminal, approveAppConfigTerminal} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyViewDetailStore {
@@ -351,16 +351,21 @@ class ApplyViewDetailStore {
                  *  管理员审批界面上，若申请的账号是包含多终端信息的，则需要展示出应用对应的全部多终端状态，在审批时可以修改开通多终端
                  * */
             }
+            // 申请的多终端信息
+            const terminals = _.get(appInfo, 'terminals', []);
 
             // 待审批，需要根据应用的多终端信息展示全部的多终端信息
-            if (approvalState === '0') {
-                let appDefaultTerminal = approveAppConfigTerminal(app_id, appList);
-                if (!_.isEmpty(appDefaultTerminal)) {
-                    appConfigObj.terminals = appDefaultTerminal;
+            if (approvalState === APPROVE_STATUS.ONGOING) {
+                // 延期并且停用前有多终端信息，则多终端信息和停用前保持一直
+                if (apply_type === APPLY_TYPES.DELAY && !_.isEmpty(terminals)) {
+                    appConfigObj.terminals = applyAppConfigTerminal(terminals, app_id, appList);
+                } else { // 申请新用户、延期前，应用有默认多终端信息的情况
+                    let appDefaultTerminal = approveAppConfigTerminal(app_id, appList);
+                    if (!_.isEmpty(appDefaultTerminal)) {
+                        appConfigObj.terminals = appDefaultTerminal;
+                    }
                 }
             } else {
-                // 申请的多终端信息
-                const terminals = _.get(appInfo, 'terminals', []);
                 if (!_.isEmpty(terminals)) {
                     appConfigObj.terminals = applyAppConfigTerminal(terminals, app_id, appList);
                 }
