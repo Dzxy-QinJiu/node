@@ -1,0 +1,51 @@
+@import "../../public/css/common-variables.less";
+
+.winning-clue-container {
+  background-color: @content-zone-background;
+  .title {
+    background: transparent url("../../static/images/gift-bg.png") 0 0;
+    display: flex;
+    align-items: center;
+    height:48px;
+    font-size:16px;
+    font-weight:500;
+    color: @content-zone-background;
+    line-height:18px;
+    padding-left: 24px;
+    .icon-close {
+      cursor: pointer;
+      font-size: 12px;
+      position: absolute;
+      right: 10px;
+      top: 6px;
+    }
+  }
+  .content-container {
+    padding: 24px 9px 9px 24px;
+    color: @content-font-color;
+    font-size:14px;
+    .content {
+      margin-bottom: 20px;
+      .number {
+        color: @version-basic-color;
+        padding: 0 2px;
+      }
+    }
+    .tips {
+      margin-bottom: 16px;
+      .number {
+        color: @goods-item-border-color;
+        padding: 0 2px;
+      }
+      .extract-clue {
+        color: @goods-item-border-color;
+        cursor: pointer;
+      }
+    }
+    .owner {
+      font-size: 12px;
+      color: @sub-content-font-color;
+      text-align: right;
+    }
+  }
+}

@@ -1,0 +1,27 @@
+@import "../../../../public/css/common-variables";
+.tips-wrap {
+  width:282px;
+  height:40px;
+  background-color: @content-zone-background;;
+  border:1px solid @border-color;
+  box-shadow:0 8px 16px 0 rgba(0, 0, 0, 0.3);
+  opacity:0.9;
+  border-radius:4px;
+  .content {
+    color: @content-font-color;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 8px;
+    .gift-logo {
+      width: 16px;
+    }
+    .tips {
+      vertical-align: middle;
+      padding: 0 6px;
+      .number {
+        color: @version-basic-color;
+        padding: 0 4px;
+      }
+    }
+  }
+}

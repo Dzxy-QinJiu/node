@@ -5,7 +5,7 @@
  */
 import 'babel-polyfill';
 var rightPanelShow = false;
-import {clueSourceArray, accessChannelArray, clueClassifyArray, CLUE_MESSAGE_TYPE} from 'PUB_DIR/sources/utils/consts';
+import {clueSourceArray, accessChannelArray, clueClassifyArray, CLUE_MESSAGE_TYPE, DISAPPEAR_DELAY_TIME} from 'PUB_DIR/sources/utils/consts';
 var clueCustomerStore = require('./store/clue-customer-store');
 var clueFilterStore = require('./store/clue-filter-store');
 var clueCustomerAction = require('./action/clue-customer-action');
@@ -99,7 +99,7 @@ import DifferentVersion from 'MOD_DIR/different_version/public';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import RecommendClues from 'MOD_DIR/home_page/public/views/boot-process/recommend_clues';
 const EXTRACT_CLUE_STEPS = RecommendClues.EXTRACT_CLUE_STEPS;
-import { formatSalesmanList, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
+import { formatSalesmanList, isResponsiveDisplay, isShowWinningClue} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
@@ -114,6 +114,7 @@ import { parabola } from 'PUB_DIR/sources/utils/parabola';
 import { storageUtil } from 'ant-utils';
 import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import AddTraceContentSuccessTips from './views/add-trace-success-tips';
 const DIFFREF = {
     ASSIGN: 'assign',//分配
     TRACE: 'trace', //跟进
@@ -183,7 +184,7 @@ class ClueCustomer extends React.Component {
             ...clueCustomerStore.getState(),
             showBatchRelease: false,//在手机端时，是否释放线索的确认框
             showBatchDistribute: false,//在手机端时，是否显示分配的dropdown
-
+            isShowRewardClueTips: false, // 是否显示赢线索的提示，默认不显示
         };
     }
 
@@ -1200,8 +1201,11 @@ class ClueCustomer extends React.Component {
                         submitTraceLoading: false,
                         submitTraceErrMsg: '',
                         isEdittingItem: {},
-                        currentMoreBtnStatus: ''
+                        currentMoreBtnStatus: '',
+                        isShowRewardClueTips: true
                     });
+                    // 填写跟进记录成功后，个人试用版、企业试用版增加提示信息
+
                     //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
                     setTimeout(() => {
                         this.handleSelectedClue(item);
@@ -3397,6 +3401,20 @@ class ClueCustomer extends React.Component {
         });
     }
 
+    renderWinningClueTips = () => {
+        let hide = () => {
+            this.setState({
+                isShowRewardClueTips: false,
+            });
+        };
+        return (
+            <AddTraceContentSuccessTips
+                onHide={hide}
+                time={DISAPPEAR_DELAY_TIME}
+            />
+        );
+    };
+
     render() {
         var isFirstLoading = this.isFirstLoading();
         var cls = classNames('right-panel-modal',
@@ -3416,6 +3434,7 @@ class ClueCustomer extends React.Component {
         //普通销售或者个人注册线索用
         var isCommonSale = isCommonSalesOrPersonnalVersion();//是否是普通销售
         let {isWebMin} = isResponsiveDisplay();
+
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索列表">
@@ -3465,11 +3484,19 @@ class ClueCustomer extends React.Component {
                                 toggleList={this.toggleList.bind(this)}
                             />
                         </div>
+                        
                         <div className={contentClassName}>
                             {_.get(this.state, 'isShowRefreshPrompt') ? this.getClueRefreshPrompt() : null}
                             {this.state.allClueCount ? this.getClueTypeTab() : null}
                             {this.renderLoadingAndErrAndNodataContent()}
                         </div>
+                        {
+                            isShowWinningClue() && this.state.isShowRewardClueTips ? (
+                                <div className="winning-clue-tips">
+                                    {this.renderWinningClueTips()}
+                                </div>
+                            ) : null
+                        }
                         <div className="customer-item-ball" style={animateStyle} ></div>
                     </div>
                     {this.state.clueAddFormShow ?

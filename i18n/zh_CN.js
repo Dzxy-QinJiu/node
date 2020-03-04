@@ -310,6 +310,7 @@ var zh_CN = {
     'common.all.terminals': '所有终端',
     'common.terminals': '终端',
     'common.period': '。',
+    'common.company.owner': '以上活动解释权归山东客套智能科技有限公司',
     'common.have': '有',
     'common.nothing': '无',
     //公共部分--end

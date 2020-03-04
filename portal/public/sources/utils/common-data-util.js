@@ -784,3 +784,23 @@ exports.getUpgradeNoticeList = (queryObj) => {
     });
     return Deferred.promise();
 };
+
+// 获取填写跟进记录赢的线索量
+exports.getRewardedCluesCount = () => {
+    const Deferred = $.Deferred();
+    const data = {
+        award_type: 'lead_followup',
+        start: moment().startOf('day').valueOf(),
+        end: moment().endOf('day').valueOf(),
+    };
+    $.ajax({
+        url: '/rest/rewarded/clues/count',
+        type: 'get',
+        dateType: 'json',
+        data: data,
+        success: (count) => {
+            Deferred.resolve(count);
+        },
+    });
+    return Deferred.promise();
+};
