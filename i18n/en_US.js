@@ -304,6 +304,8 @@ var en_US = {
     'common.all.terminals': 'All terminals', // 所有终端
     'common.terminals': 'Terminal', // 终端
     'common.period': '.',//。
+    'common.have': 'have',//有
+    'common.nothing': 'nothing',//无
     //公共部分--end
 
     'login.login': 'Login',//登录
@@ -1960,6 +1962,7 @@ var en_US = {
     'crm.search.customer.detail.customer.pool': 'Customer has been deleted or has been released to {customerpool}',//客户已被删除或已被释放到{customerpool}
     'crm.search.customer.no.customer.pool.dash': 'The customer has been deleted or has been released to the customer pool, please go to {recycle} or {customerpool}',//客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看
     'crm.batch.second.user': 'Change partner',//变更联合跟进人
+    'crm.has.contain.join.user': 'Is there a joint follow-up person',//是否有联合跟进人
     // 客户管理end
 
     //客户分析 start
