@@ -310,7 +310,7 @@ var zh_CN = {
     'common.all.terminals': '所有终端',
     'common.terminals': '终端',
     'common.period': '。',
-	'common.company.owner': '以上活动解释权归山东客套智能科技有限公司',
+    'common.company.owner': '以上活动解释权归山东客套智能科技有限公司',
     'common.have': '有',
     'common.nothing': '无',
     //公共部分--end
@@ -4019,6 +4019,8 @@ var zh_CN = {
     'boot.input.industry': '请输入关注的行业',
     'boot.set.recommend.clue.faild': '设置失败，请重试一次',
     'personal.upgrade.company.trial.tip': '开通企业试用后，可体验拨打电话功能',
+    'boot.personal.trial.welcome.tip': '欢迎试用客套个人版，试用期 {time} 天，每天可免费提取 {count} 条线索',
+    'boot.company.trial.welcome.tip': '欢迎试用客套，试用期 {time} 天，每人每天可免费提取 {count} 条线索',
     /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/
