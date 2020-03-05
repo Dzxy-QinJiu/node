@@ -4,6 +4,7 @@
 
 import { Form } from 'antd';
 import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
+import { VIEW_TYPE } from './consts';
 import { renderButtonZoneFunc } from './utils';
 
 class ReportForm extends React.Component {
