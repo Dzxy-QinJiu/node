@@ -97,11 +97,27 @@
     align-items: center;
     justify-content: center;
     .@{boot-complete}-step-container{
-      //width: 636px;
-      //margin: 0 auto;
-      //padding-top: 110px;
-      //height: 100%;
-      //overflow: hidden;
+      &.boot-trail-welcome-wrapper{
+        box-shadow: 0 0 15px 0 @CLICK-BLUE;
+        .@{boot-complete}-title{
+          height: auto;
+          line-height: unset;
+          padding: 24px;
+          font-size: 16px;
+          color: #0e77ca;
+          background: @select-btn-color;
+          margin-bottom: 0;
+          border-radius: unset;
+        }
+        .@{boot-complete}-step-content{
+          box-shadow: unset;
+        }
+        .boot-trial-welcome-tip{
+          .boot-trial-welcome-text{
+
+          }
+        }
+      }
       .boot-complete-step-title{
         font-size: 20px;
         margin-bottom: 15px;
