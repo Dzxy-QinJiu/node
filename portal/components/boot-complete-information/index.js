@@ -666,11 +666,14 @@ class BootCompleteInformation extends React.Component{
                     })}</span>
                 );
             }
-            // todo 暂时注释掉 等设计出来需要调整
-            // tip = (<div className="boot-trial-welcome-tip">{content}</div>);
-            tip = content;
+            tip = (<div className="boot-trial-welcome-tip">{content}</div>);
         }else {
-            tip = Intl.get('personal.welcome.use.curtao', '欢迎使用客套，完成以下2步操作即可获取推荐线索');
+            tip = (
+                <React.Fragment>
+                    <i className="iconfont icon-huanying"/>
+                    {Intl.get('personal.welcome.use.curtao', '欢迎使用客套，完成以下2步操作即可获取推荐线索')}
+                </React.Fragment>
+            );
         }
         return tip;
     }
@@ -685,7 +688,7 @@ class BootCompleteInformation extends React.Component{
             'current-step': currentStep === STEPS_MAPS.SET_SECOND
         });
         const stepWrapperCls = classNames('boot-complete-step-container', {
-            // 'boot-trail-welcome-wrapper': versionAndType.trial
+            'boot-trail-welcome-wrapper': versionAndType.trial
         });
         return (
             <div className="boot-complete-container">
@@ -696,7 +699,6 @@ class BootCompleteInformation extends React.Component{
                 <div className="boot-complete-content">
                     <div className={stepWrapperCls}>
                         <div className="boot-complete-title">
-                            <i className="iconfont icon-huanying"/>
                             {this.renderWelcomeBlock()}
                         </div>
                         <div className="boot-complete-step-content">
