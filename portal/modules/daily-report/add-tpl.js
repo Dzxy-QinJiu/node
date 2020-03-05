@@ -24,7 +24,7 @@ class AddTpl extends React.Component {
                 <Radio.Group onChange={ e => { updateState({ selectedTpl: e.target.value }); } } value={selectedTpl}>
                     {_.map(this.props.tplList, tpl => (
                         <Radio value={tpl.id}>
-                            <a href="javascript:void(0)" onClick={() => { updateState({ currentView: VIEW_TYPE.PREVIEW_TPL, clickedTpl: tpl.id }); }}>{tpl.name}</a>
+                            <a href="javascript:void(0)" onClick={() => { updateState({ currentView: VIEW_TYPE.REPORT_FORM, clickedTpl: tpl.id }); }}>{tpl.name}</a>
                         </Radio>
                     ))}
                 </Radio.Group>
