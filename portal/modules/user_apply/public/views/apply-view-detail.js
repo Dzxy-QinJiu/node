@@ -569,8 +569,6 @@ const ApplyViewDetail = createReactClass({
         if (this.state.detailInfoObj.loading || _.isEmpty(this.state.detailInfoObj)) {
             return;
         }
-        //是否启用滚动条
-        let GeminiScrollbarEnabled = false;
         //详情高度
         let applyDetailHeight = 'auto';
         //判断是否屏蔽窗口的滚动条
