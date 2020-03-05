@@ -28,6 +28,27 @@ export function hideReportPanel() {
     detailPanelEmitter.emit(detailPanelEmitter.HIDE);
 }
 
+//渲染按钮区域
+export function renderButtonZoneFunc(buttons) {
+    return (
+        <div className="btn-zone">
+            {_.map(buttons, item => {
+                if (item.hide) {
+                    return null;
+                } else {
+                    return (
+                        <Button
+                            onClick={item.func}
+                        >
+                            {item.name}
+                        </Button>
+                    );
+                }
+            })}
+        </div>
+    );
+}
+
 //获取模板列表
 export function getTplList(callback) {
     if (!_.isFunction(callback)) return;
@@ -63,27 +84,6 @@ export function saveTpl(data, callback) {
             message.error(err);
             callback();
         });
-}
-
-//渲染按钮区域
-export function renderButtonZoneFunc(buttons) {
-    return (
-        <div className="btn-zone">
-            {_.map(buttons, item => {
-                if (item.hide) {
-                    return null;
-                } else {
-                    return (
-                        <Button
-                            onClick={item.func}
-                        >
-                            {item.name}
-                        </Button>
-                    );
-                }
-            })}
-        </div>
-    );
 }
 
 //获取报告列表
