@@ -569,8 +569,6 @@ const ApplyViewDetail = createReactClass({
         if (this.state.detailInfoObj.loading || _.isEmpty(this.state.detailInfoObj)) {
             return;
         }
-        //是否启用滚动条
-        let GeminiScrollbarEnabled = false;
         //详情高度
         let applyDetailHeight = 'auto';
         //判断是否屏蔽窗口的滚动条
@@ -586,11 +584,6 @@ const ApplyViewDetail = createReactClass({
             //     }
             //
             // }
-            //启用滚动条
-            GeminiScrollbarEnabled = true;
-        }
-        if (this.state.applyIsExpanded) {
-            GeminiScrollbarEnabled = false;
         }
         let selectedDetailItem = this.state.selectedDetailItem;
         return (
@@ -602,47 +595,42 @@ const ApplyViewDetail = createReactClass({
                     {this.renderDetailBottom()}
                 </div>
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
-                    <PrivilegeChecker check='USER_APPLY_APPROVE'>
-                        {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
-                    </PrivilegeChecker>
-                    {this.state.applyIsExpanded ? null : (
-                        <GeminiScrollbar enabled={GeminiScrollbarEnabled} ref="gemini">
-                            {this.renderDetailCustomerBlock(detailInfo)}
-                            <div className="apply-detail-user apply-detail-info">
-                                <div className="user-icon-block">
-                                    <span className="iconfont icon-user"/>
-                                </div>
-                                {this.renderDetailCenter(detailInfo)}
+                    <GeminiScrollbar ref="gemini">
+                        {this.renderDetailCustomerBlock(detailInfo)}
+                        <div className="apply-detail-user apply-detail-info">
+                            <div className="user-icon-block">
+                                <span className="iconfont icon-user"/>
                             </div>
-                            {detailInfo.comment ? (<div className="apply-detail-common apply-detail-info">
-                                <div className="common-icon-block">
-                                    <span className="iconfont icon-common"/>
-                                </div>
-                                {this.renderComment()}
-                            </div>) : null}
-                            {this.renderApplyStatus()}
-                            <div className="apply-detail-reply-list apply-detail-info">
-                                <div className="reply-icon-block">
-                                    <span className="iconfont icon-apply-message-tip"/>
-                                </div>
-                                <div className="reply-info-block apply-info-block">
-                                    <div className="reply-list-container apply-info-content">
-                                        {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
-                                        {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderReplyList() : null}
-                                        {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? (
-                                            <Input addonAfter={(
-                                                <a onClick={this.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
-                                            value={this.state.formData.comment}
-                                            onChange={this.commentInputChange}
-                                            placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}/>
-                                        ) : null}
-                                        {this.renderReplyFormResult()}
-                                    </div>
+                            {this.renderDetailCenter(detailInfo)}
+                        </div>
+                        {detailInfo.comment ? (<div className="apply-detail-common apply-detail-info">
+                            <div className="common-icon-block">
+                                <span className="iconfont icon-common"/>
+                            </div>
+                            {this.renderComment()}
+                        </div>) : null}
+                        {this.renderApplyStatus()}
+                        <div className="apply-detail-reply-list apply-detail-info">
+                            <div className="reply-icon-block">
+                                <span className="iconfont icon-apply-message-tip"/>
+                            </div>
+                            <div className="reply-info-block apply-info-block">
+                                <div className="reply-list-container apply-info-content">
+                                    {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
+                                    {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderReplyList() : null}
+                                    {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? (
+                                        <Input addonAfter={(
+                                            <a onClick={this.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
+                                        value={this.state.formData.comment}
+                                        onChange={this.commentInputChange}
+                                        placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}/>
+                                    ) : null}
+                                    {this.renderReplyFormResult()}
                                 </div>
                             </div>
-                            {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderSameCustomerHistoricalApply() : null}
-                        </GeminiScrollbar>
-                    )}
+                        </div>
+                        {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderSameCustomerHistoricalApply() : null}
+                    </GeminiScrollbar>
                 </div>
             </div>
         );
@@ -850,7 +838,7 @@ const ApplyViewDetail = createReactClass({
         return this.hasApprovalPrivilege() && this.isUnApproved() && (_.get(this, 'state.detailInfoObj.info.showApproveBtn') || this.props.isHomeMyWork) && isFinalTask(this.state.applyNode);
     },
     notShowIcon(){
-        return !this.isUnApproved() || !hasPrivilege('USER_APPLY_APPROVE') || !this.state.isOplateUser || !isFinalTask(this.state.applyNode) || !(_.get(this, 'state.detailInfoObj.info.showApproveBtn') || this.props.isHomeMyWork);
+        return !this.isUnApproved() || !hasPrivilege(commonPrivilegeConst.USER_APPLY_APPROVE) || !this.state.isOplateUser || !isFinalTask(this.state.applyNode) || !(_.get(this, 'state.detailInfoObj.info.showApproveBtn') || this.props.isHomeMyWork);
     },
     //选择了手动设置密码时，未输入密码，不能通过
     settingPasswordManuWithNoValue: function() {
@@ -1403,9 +1391,6 @@ const ApplyViewDetail = createReactClass({
         return (
             <div className="apply_custom_setting_wrap"
                 style={{display: this.state.applyIsExpanded ? 'block' : 'none'}}>
-                <div className="apply_detail_operate clearfix">
-                    {this.renderDetailOperateBtn()}
-                </div>
                 <AppProperty {...appComponentProps}
                     isOplateUser={this.state.isOplateUser}
                 />
@@ -1424,9 +1409,6 @@ const ApplyViewDetail = createReactClass({
 
     //渲染用户申请
     renderApplyUser: function(detailInfo) {
-        if (this.state.applyIsExpanded) {
-            return null;
-        }
         // 判断是否显示权限项
         let permissionNameIndex = 'false';
         let appsLen = (detailInfo.apps && detailInfo.apps.length) || 0;
@@ -1451,15 +1433,25 @@ const ApplyViewDetail = createReactClass({
                         <div className="apply_detail_operate clearfix">
                             {this.renderDetailOperateBtn()}
                         </div>
-                        {/** 不显示角色和权限的情况：
-                         detailInfo.approval_state === '0' &&  !hasPrivilege("BASE_QUERY_PERMISSION_APPLICATION") 销售人员待审批的情况
-                         detailInfo.approval_state === '2'表示是已驳回的应用，
-                         detailInfo.approval_state === '3'表示是已撤销的应用，
-                         */}
-                        {detailInfo.approval_state === '0' && !hasPrivilege(commonPrivilegeConst.BASE_QUERY_PERMISSION_APPLICATION) ||
-                        detailInfo.approval_state === '2' ||
-                        detailInfo.approval_state === '3' ?
-                            this.renderAppTable() : this.renderAppTableRolePermission()
+                        {
+                            this.state.applyIsExpanded ? (
+                                <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
+                                    {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
+                                </PrivilegeChecker>
+                            ) : (
+                                <React.Fragment>
+                                    {/** 不显示角色和权限的情况：
+                                     detailInfo.approval_state === '0' &&  !hasPrivilege("BASE_QUERY_PERMISSION_APPLICATION") 销售人员待审批的情况
+                                     detailInfo.approval_state === '2'表示是已驳回的应用，
+                                     detailInfo.approval_state === '3'表示是已撤销的应用，
+                                     */}
+                                    {detailInfo.approval_state === '0' && !hasPrivilege(commonPrivilegeConst.BASE_QUERY_PERMISSION_APPLICATION) ||
+                                    detailInfo.approval_state === '2' ||
+                                    detailInfo.approval_state === '3' ?
+                                        this.renderAppTable() : this.renderAppTableRolePermission()
+                                    }
+                                </React.Fragment>
+                            )
                         }
                     </div>
                 </div>
@@ -1721,7 +1713,17 @@ const ApplyViewDetail = createReactClass({
                                         </div>
                                     ) : null}
                                     {this.renderApplyDetailSingleUserName(user)}
-                                    {this.renderMultiAppDelayTable(user)}
+                                    {
+                                        this.state.applyIsExpanded ? (
+                                            <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
+                                                {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
+                                            </PrivilegeChecker>
+                                        ) : (
+                                            <React.Fragment>
+                                                {this.renderMultiAppDelayTable(user)}
+                                            </React.Fragment>
+                                        )
+                                    }
                                 </div>);
                         })
                     }
