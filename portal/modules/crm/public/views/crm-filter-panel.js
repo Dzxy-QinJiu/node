@@ -476,7 +476,8 @@ class CrmFilterPanel extends React.Component {
             });
         }
         if(!isCurtao()){
-            advancedData.unshift({
+            let customerLabelIndex = _.findIndex(advancedData, item => item.groupId === 'customer_label');
+            advancedData.splice(customerLabelIndex + 1, 0, {
                 groupName: Intl.get('crm.order.stage', '订单阶段'),
                 groupId: 'sales_opportunities',
                 singleSelect: true,
