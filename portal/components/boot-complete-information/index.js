@@ -384,21 +384,29 @@ class BootCompleteInformation extends React.Component{
         areaData.province = addressObj.provName || '';
         areaData.city = addressObj.cityName || '';
         areaData.district = addressObj.countyName || '';
-        this.setTabContentHeight();
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '选择地域');
     };
 
     setTabContentHeight = () => {
         const { isWebMin } = isResponsiveDisplay();
         if(isWebMin) {
-            let tabContentEl = $('.boot-complete-step-second-wrapper .ant-tabs-content');
-            if(tabContentEl.length) {
-                let height = $(window).height()
-                    - tabContentEl.offset().top
-                    - LAYOUT.BOTTOM_HEIGHT;
-                tabContentEl.height(height);
-            }
+            //延迟300ms设置tab高度，防止手机端第一步设置行业时，输入框处于focus状态，影响window的高度获取
+            setTimeout(function() {
+                let tabContentEl = $('.boot-complete-step-second-wrapper .ant-tabs-content');
+                if(tabContentEl.length) {
+                    let height = $(window).height()
+                        - tabContentEl.offset().top
+                        - LAYOUT.BOTTOM_HEIGHT;
+                    tabContentEl.height(height);
+                }
+            }, 300);
         }
+    };
+
+    isSetTabsContentHeight = () => {
+        const { isWebMin } = isResponsiveDisplay();
+        //手机端才需要手动设置，其他情况由组件自行设置tab高度
+        return !isWebMin;
     };
 
     onReturnBack = (step) => {
@@ -624,6 +632,7 @@ class BootCompleteInformation extends React.Component{
                     hiddenCounty
                     showAllBtn
                     updateLocation={this.updateLocation}
+                    isSetTabsContentHeight={this.isSetTabsContentHeight}
                 />
                 <div className="btn-container clearfix">
                     <SaveCancelButton
