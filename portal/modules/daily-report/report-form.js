@@ -9,8 +9,7 @@ import { renderButtonZoneFunc } from './utils';
 
 class ReportForm extends React.Component {
     render() {
-        const { tplList, clickedTpl } = this.props;
-        const tpl = _.find(tplList, item => item.id === clickedTpl) || {};
+        const tpl = this.props.clickedTpl;
         const renderFormItem = renderFormItemFunc.bind(this, {});
         const renderButtonZone = renderButtonZoneFunc.bind(this);
 

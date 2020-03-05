@@ -21,7 +21,7 @@ class ReportPanel extends React.Component {
         teamList: [],
         tplList: [],
         selectedTpl: '',
-        clickedTpl: this.props.clickedTpl || '',
+        clickedTpl: this.props.clickedTpl || {},
     }
 
     render() {

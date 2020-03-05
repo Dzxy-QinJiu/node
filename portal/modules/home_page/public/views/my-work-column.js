@@ -1236,7 +1236,7 @@ class MyWorkColumn extends React.Component {
         let item3 = _.cloneDeep(item2);
         item3.btnConf.handleFunc = showReportPanel.bind(null, {
             currentView: VIEW_TYPE.REPORT_FORM,
-            clickedTpl: tpl.id
+            clickedTpl: tpl
         });
         item3.btnConf.btnDesc = '填写';
 
