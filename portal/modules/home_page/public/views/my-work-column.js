@@ -13,7 +13,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
 import myWorkAjax from '../ajax';
 import CrmScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
-import { getReportList, getIsNoLongerShowCheckReportNotice, setIsNoLongerShowCheckReportNotice, showReportPanel } from 'MOD_DIR/daily-report/utils';
+import { getTplList, getIsNoLongerShowCheckReportNotice, setIsNoLongerShowCheckReportNotice, showReportPanel } from 'MOD_DIR/daily-report/utils';
 import DetailCard from 'CMP_DIR/detail-card';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import Spinner from 'CMP_DIR/spinner';
@@ -124,7 +124,7 @@ class MyWorkColumn extends React.Component {
     }
 
     componentDidMount() {
-        getReportList(reportList => { this.setState({reportList}); });
+        getTplList(tplList => { this.setState({tplList}); });
         this.getUserList();
         this.getGuideConfig();
         this.getMyWorkList();
