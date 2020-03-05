@@ -1759,8 +1759,8 @@ const ApplyViewDetail = createReactClass({
         const isUnApproved = this.isUnApproved();
         //把apps数据根据user_id重组
         let users = this.getDetailInfoUserCount(detailInfo);
-        //修改后的用户类型，如果没有说明未修改用户类型，不用设置角色、权限
-        let changedUserType = this.showConfigOfDelayApply(detailInfo);
+        // //修改后的用户类型，如果没有说明未修改用户类型，不用设置角色、权限
+        // let changedUserType = this.showConfigOfDelayApply(detailInfo);
         var userCount = _.get(users,'length');
         return (
             <div className="user-info-block apply-info-block">
@@ -1782,11 +1782,9 @@ const ApplyViewDetail = createReactClass({
                         _.map(users, (user, idx) => {
                             return (
                                 <div className="col-12 apply_detail_apps delay_detail_apps" key={idx}>
-                                    {changedUserType ? (
-                                        <div className="apply_detail_operate clearfix">
-                                            {this.renderDetailOperateBtn(user.user_id)}
-                                        </div>
-                                    ) : null}
+                                    <div className="apply_detail_operate clearfix">
+                                        {this.renderDetailOperateBtn(user.user_id)}
+                                    </div>
                                     {this.renderApplyDetailSingleUserName(user)}
                                     {this.renderMultiAppDelayTable(user)}
                                 </div>);
@@ -2069,10 +2067,7 @@ const ApplyViewDetail = createReactClass({
         //不展示配置按钮的情况
         if (_.includes([APPLY_TYPES.APPLY_PWD_CHANGE,APPLY_TYPES.APPLY_STH_ELSE,APPLY_TYPES.APPLY_GRANT_DELAY,APPLY_TYPES.APPLY_GRANT_STATUS_CHANGE,APPLY_TYPES.DISABLE], detailInfo.type)){
             return true;
-        }else if(_.includes([APPLY_TYPES.DELAY], detailInfo.type)){
-            //延期申请类型不加配置按钮的情况
-            return !this.showConfigOfDelayApply(detailInfo) || this.notShowIcon();
-        }else{
+        } else{
             return this.notShowIcon();
         }
     },
