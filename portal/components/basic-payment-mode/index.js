@@ -205,7 +205,7 @@ class BasicPaymentMode extends React.Component {
         });
     };
 
-    handleClickClose = () => {
+    handleClickClose = (e) => {
         Trace.traceEvent(e, '关闭订单支付界面');
         this.props.onClosePanel();
     };
