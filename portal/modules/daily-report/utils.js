@@ -52,6 +52,8 @@ export function getTplList(callback) {
         url: TPL_LIST_URL
     })
         .done(result => {
+            result = _.unionBy(result, 'name');
+            result = _.filter(result, item => item.name);
             callback(result);
         })
         .fail(err => {

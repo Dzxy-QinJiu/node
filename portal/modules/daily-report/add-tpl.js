@@ -10,8 +10,6 @@ import addTplHoc from './add-tpl-hoc';
 class AddTpl extends React.Component {
     componentDidMount() {
         getTplList(result => {
-            result = _.unionBy(result, 'name');
-            result = _.filter(result, item => item.name);
             this.props.updateState({ tplList: result });
         });
     }
