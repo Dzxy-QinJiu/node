@@ -1197,6 +1197,9 @@ class ClueCustomer extends React.Component {
                         clueItem.customer_traces[0].nick_name = userName;
                         clueItem.customer_traces[0].add_time = addTime;
                     }
+                    if (isShowWinningClue()) {
+                        Trace.traceEvent(ReactDOM.findDOMNode(this), '线索列表>填写跟进赢得2条线索');
+                    }
                     this.setState({
                         submitTraceLoading: false,
                         submitTraceErrMsg: '',
