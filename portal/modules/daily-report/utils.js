@@ -8,22 +8,6 @@ const TPL_LIST_URL = DR_URL + '/templates';
 const TPL_URL = DR_URL + '/template';
 const REPORT_URL = DR_URL + '/report';
 
-//获取报告列表
-export function getReportList(callback) {
-    if (!_.isFunction(callback)) return;
-
-    ajax.send({
-        url: REPORT_URL
-    })
-        .done(result => {
-            callback(result);
-        })
-        .fail(err => {
-            message.error(err);
-            callback();
-        });
-}
-
 //获取是否不再显示查看报告的工作通知
 export function getIsNoLongerShowCheckReportNotice() {
     return _.get(getLocalWebsiteConfig(), SITE_CONGFIG_KEY);
@@ -100,4 +84,39 @@ export function renderButtonZoneFunc(buttons) {
             })}
         </div>
     );
+}
+
+//获取报告列表
+export function getReportList(callback) {
+    if (!_.isFunction(callback)) return;
+
+    ajax.send({
+        url: REPORT_URL
+    })
+        .done(result => {
+            callback(result);
+        })
+        .fail(err => {
+            message.error(err);
+            callback();
+        });
+}
+
+//保存报告
+export function saveReport(data, callback) {
+    if (!_.isFunction(callback)) return;
+
+    ajax.send({
+        url: REPORT_URL,
+        type: 'post',
+        data
+    })
+        .done(result => {
+            message.success('保存报告成功');
+            callback(result);
+        })
+        .fail(err => {
+            message.error(err);
+            callback();
+        });
 }
