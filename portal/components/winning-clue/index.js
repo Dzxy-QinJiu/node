@@ -5,7 +5,7 @@
 import { showWiningClueEmitter, clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 import {getRewardedCluesCount} from 'PUB_DIR/sources/utils/common-data-util';
 import history from 'PUB_DIR/sources/history';
-
+import Trace from 'LIB_DIR/trace';
 const ROUTE_CONSTS = {
     LEADS: 'leads'//线索
 };
@@ -36,6 +36,7 @@ class WinningClue extends React.Component{
 
 
     handleClickExtractClue = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.content-container .tips'), '点击去提取');
         if(location.pathname.indexOf(ROUTE_CONSTS.LEADS) === -1) {
             history.push('/' + ROUTE_CONSTS.LEADS, {
                 showRecommendCluePanel: true
@@ -46,6 +47,7 @@ class WinningClue extends React.Component{
     }
 
     handleClickClose = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.title .icon-close'), '点击关闭领线索');
         this.props.handleClickClose(false);
     }
 
@@ -89,8 +91,12 @@ class WinningClue extends React.Component{
         );
     }
     render() {
+        let tracename = '领线索活动';
+        if (_.has(this.props, 'count')) { // 菜单中查看
+            tracename = '菜单中查看活动';
+        }
         return (
-            <div className="winning-clue-container">
+            <div className="winning-clue-container" data-tracename={tracename}>
                 {this.renderContent()}
             </div>
         );

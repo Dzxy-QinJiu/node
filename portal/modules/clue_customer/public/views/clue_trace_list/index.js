@@ -239,6 +239,9 @@ class ClueTraceList extends React.Component {
                     remark: addcontent,
                 };
                 ClueTraceAction.addClueTrace(queryObj, (customer_trace) => {
+                    if (isShowWinningClue()) {
+                        Trace.traceEvent(ReactDOM.findDOMNode(this), '填写跟进赢得2条线索');
+                    }
                     this.setState({
                         isShowRewardClueTips: true
                     });
