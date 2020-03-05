@@ -586,8 +586,6 @@ const ApplyViewDetail = createReactClass({
             //     }
             //
             // }
-            //启用滚动条
-            GeminiScrollbarEnabled = true;
         }
         let selectedDetailItem = this.state.selectedDetailItem;
         return (
@@ -599,7 +597,7 @@ const ApplyViewDetail = createReactClass({
                     {this.renderDetailBottom()}
                 </div>
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
-                    <GeminiScrollbar enabled={GeminiScrollbarEnabled} ref="gemini">
+                    <GeminiScrollbar ref="gemini">
                         {this.renderDetailCustomerBlock(detailInfo)}
                         <div className="apply-detail-user apply-detail-info">
                             <div className="user-icon-block">
@@ -842,7 +840,7 @@ const ApplyViewDetail = createReactClass({
         return this.hasApprovalPrivilege() && this.isUnApproved() && (_.get(this, 'state.detailInfoObj.info.showApproveBtn') || this.props.isHomeMyWork) && isFinalTask(this.state.applyNode);
     },
     notShowIcon(){
-        return !this.isUnApproved() || !hasPrivilege('USER_APPLY_APPROVE') || !this.state.isOplateUser || !isFinalTask(this.state.applyNode) || !(_.get(this, 'state.detailInfoObj.info.showApproveBtn') || this.props.isHomeMyWork);
+        return !this.isUnApproved() || !hasPrivilege(commonPrivilegeConst.USER_APPLY_APPROVE) || !this.state.isOplateUser || !isFinalTask(this.state.applyNode) || !(_.get(this, 'state.detailInfoObj.info.showApproveBtn') || this.props.isHomeMyWork);
     },
     //选择了手动设置密码时，未输入密码，不能通过
     settingPasswordManuWithNoValue: function() {
@@ -1439,7 +1437,7 @@ const ApplyViewDetail = createReactClass({
                         </div>
                         {
                             this.state.applyIsExpanded ? (
-                                <PrivilegeChecker check='USER_APPLY_APPROVE'>
+                                <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
                                     {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
                                 </PrivilegeChecker>
                             ) : (
@@ -1719,7 +1717,7 @@ const ApplyViewDetail = createReactClass({
                                     {this.renderApplyDetailSingleUserName(user)}
                                     {
                                         this.state.applyIsExpanded ? (
-                                            <PrivilegeChecker check='USER_APPLY_APPROVE'>
+                                            <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
                                                 {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
                                             </PrivilegeChecker>
                                         ) : (
