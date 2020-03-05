@@ -468,7 +468,7 @@ class PageFrame extends React.Component {
                         }
                         {
                             this.state.isShowDetailPanel ? (
-                                <ReportPanel />
+                                <ReportPanel {...this.state.detailPanelProps} />
                             ) : null
                         }
                     </div>

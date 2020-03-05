@@ -16,12 +16,12 @@ import AddNewTpl from './add-new-tpl';
 
 class ReportPanel extends React.Component {
     state = {
-        currentView: VIEW_TYPE.ADD_TPL,
+        currentView: this.props.currentView || VIEW_TYPE.ADD_TPL,
         currentStep: 1,
         teamList: [],
         tplList: [],
         selectedTpl: '',
-        clickedTpl: '',
+        clickedTpl: this.props.clickedTpl || '',
     }
 
     render() {

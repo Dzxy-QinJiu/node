@@ -14,6 +14,7 @@ import {getColumnHeight} from './common-util';
 import myWorkAjax from '../ajax';
 import CrmScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
 import { getTplList, getIsNoLongerShowCheckReportNotice, setIsNoLongerShowCheckReportNotice, showReportPanel } from 'MOD_DIR/daily-report/utils';
+import { VIEW_TYPE } from 'MOD_DIR/daily-report/consts';
 import DetailCard from 'CMP_DIR/detail-card';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import Spinner from 'CMP_DIR/spinner';
@@ -1224,14 +1225,19 @@ class MyWorkColumn extends React.Component {
 
         workList.push(this.renderWorkCard(item));
 
+        const tpl = _.get(this.state.tplList, '[0]', {});
+
         let item2 = _.cloneDeep(item);
-        item2.workObj = { name: _.get(this.state.tplList, '[0].name') };
+        item2.workObj = { name: tpl.name };
         item2.btnConf.handleFunc = showReportPanel;
 
         workList.push(this.renderWorkCard(item2));
 
         let item3 = _.cloneDeep(item2);
-        item3.btnConf.handleFunc = showReportPanel;
+        item3.btnConf.handleFunc = showReportPanel.bind(null, {
+            currentView: VIEW_TYPE.REPORT_FORM,
+            clickedTpl: tpl.id
+        });
         item3.btnConf.btnDesc = '填写';
 
         workList.push(this.renderWorkCard(item3));

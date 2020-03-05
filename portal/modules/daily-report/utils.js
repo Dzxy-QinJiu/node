@@ -35,8 +35,8 @@ export function setIsNoLongerShowCheckReportNotice() {
 }
 
 //显示报告面板
-export function showReportPanel() {
-    detailPanelEmitter.emit(detailPanelEmitter.SHOW);
+export function showReportPanel(props) {
+    detailPanelEmitter.emit(detailPanelEmitter.SHOW, props);
 }
 
 //隐藏报告面板
