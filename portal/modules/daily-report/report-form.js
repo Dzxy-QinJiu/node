@@ -5,9 +5,15 @@
 import { Form } from 'antd';
 import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
 import { VIEW_TYPE } from './consts';
-import { renderButtonZoneFunc, hideReportPanel } from './utils';
+import { renderButtonZoneFunc, hideReportPanel, getTplValues } from './utils';
 
 class ReportForm extends React.Component {
+    componentDidMount() {
+        getTplValues(result => {
+            this.props.updateState({ tplValues: result });
+        });
+    }
+
     render() {
         const { updateState, clickedTpl, isPreview } = this.props;
         const renderFormItem = renderFormItemFunc.bind(this, {});

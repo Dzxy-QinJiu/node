@@ -23,6 +23,7 @@ class ReportPanel extends React.Component {
         reportList: [],
         selectedTpl: '',
         clickedTpl: this.props.clickedTpl || {},
+        tplValues: {},
         isPreview: false,
     }
 

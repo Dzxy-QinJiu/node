@@ -86,6 +86,22 @@ export function saveTpl(data, callback) {
         });
 }
 
+//获取模板数值
+export function getTplValues(callback) {
+    if (!_.isFunction(callback)) return;
+
+    ajax.send({
+        url: TPL_URL + '/values'
+    })
+        .done(result => {
+            callback(result);
+        })
+        .fail(err => {
+            message.error(err);
+            callback();
+        });
+}
+
 //获取报告列表
 export function getReportList(callback) {
     if (!_.isFunction(callback)) return;
