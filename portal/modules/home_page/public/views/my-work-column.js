@@ -1223,6 +1223,18 @@ class MyWorkColumn extends React.Component {
         item.workObj = { name: '如何汇总和查看销售日常工作？' };
 
         workList.push(this.renderWorkCard(item));
+
+        let item2 = _.cloneDeep(item);
+        item2.workObj = { name: _.get(this.state.tplList, '[0].name') };
+        item2.btnConf.handleFunc = showReportPanel;
+
+        workList.push(this.renderWorkCard(item2));
+
+        let item3 = _.cloneDeep(item2);
+        item3.btnConf.handleFunc = showReportPanel;
+        item3.btnConf.btnDesc = '填写';
+
+        workList.push(this.renderWorkCard(item3));
     }
 
     showAddSchedulePanel = (event) => {
