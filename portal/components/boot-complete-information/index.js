@@ -12,7 +12,7 @@ const FormItem = Form.Item;
 import { nameLengthRule, validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-import {getOrganization, getFormattedCondition, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
+import {getOrganization, getFormattedCondition, isResponsiveDisplay, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import userData from 'PUB_DIR/sources/user-data';
 import history from 'PUB_DIR/sources/history';
 import ajax from 'ant-ajax';
@@ -639,13 +639,53 @@ class BootCompleteInformation extends React.Component{
         );
     }
 
+    //渲染欢迎语
+    renderWelcomeBlock() {
+        let tip = null;
+        const versionAndType = checkVersionAndType();
+        if(versionAndType.trial) {
+            const organization = getOrganization();
+            const version = _.get(organization, 'version', {});
+            const leadLimit = _.get(version, 'lead_limit', '');
+            const time = _.get(version, 'available_days', 0);
+            //lead_limit: "1000_1/D/p"
+            const count = _.get(leadLimit.split('_'),'[0]',0);
+            let content = null;
+            if(versionAndType.isPersonalTrial) {//个人试用,欢迎试用客套个人版，试用期3天，每人每天可免费提取20条线索
+                content = (
+                    <span className="boot-trial-welcome-text">{Intl.get('boot.personal.trial.welcome.tip', '欢迎试用客套个人版，试用期 {time} 天，每天可免费提取 {count} 条线索', {
+                        time,
+                        count
+                    })}</span>
+                );
+            }else if(versionAndType.isCompanyTrial) {//企业试用,欢迎试用客套，试用期3天，每人每天可免费提取20条线索
+                content = (
+                    <span className="boot-trial-welcome-text">{Intl.get('boot.company.trial.welcome.tip', '欢迎试用客套，试用期 {time} 天，每人每天可免费提取 {count} 条线索', {
+                        time,
+                        count
+                    })}</span>
+                );
+            }
+            // todo 暂时注释掉 等设计出来需要调整
+            // tip = (<div className="boot-trial-welcome-tip">{content}</div>);
+            tip = content;
+        }else {
+            tip = Intl.get('personal.welcome.use.curtao', '欢迎使用客套，完成以下2步操作即可获取推荐线索');
+        }
+        return tip;
+    }
+
     renderContent() {
         const currentStep = this.state.currentStep;
+        const versionAndType = checkVersionAndType();
         const firstStepLabelCls = classNames({
             'current-step': currentStep === STEPS_MAPS.SET_FIRST
         });
         const secondStepLabelCls = classNames({
             'current-step': currentStep === STEPS_MAPS.SET_SECOND
+        });
+        const stepWrapperCls = classNames('boot-complete-step-container', {
+            // 'boot-trail-welcome-wrapper': versionAndType.trial
         });
         return (
             <div className="boot-complete-container">
@@ -654,10 +694,10 @@ class BootCompleteInformation extends React.Component{
                     {Intl.get('personal.welcome.use.curtao', '欢迎使用客套，完成以下2步操作即可获取推荐线索')}
                 </div>*/}
                 <div className="boot-complete-content">
-                    <div className="boot-complete-step-container">
-                        <div className='boot-complete-title'>
+                    <div className={stepWrapperCls}>
+                        <div className="boot-complete-title">
                             <i className="iconfont icon-huanying"/>
-                            {Intl.get('personal.welcome.use.curtao', '欢迎使用客套，完成以下2步操作即可获取推荐线索')}
+                            {this.renderWelcomeBlock()}
                         </div>
                         <div className="boot-complete-step-content">
                             <div className="boot-complete-step-label">
