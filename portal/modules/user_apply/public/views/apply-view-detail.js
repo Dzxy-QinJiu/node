@@ -2475,6 +2475,11 @@ const ApplyViewDetail = createReactClass({
 
                     }
                     let appConfig = this.appsSetting[`${item.client_id}&&${item.user_id}`];
+                    // 延期的多终端字段
+                    if (appConfig && _.get(appConfig, 'terminals.setted')) {
+                        let terminals = _.get(appConfig, 'terminals.value');
+                        item.terminals = _.map(terminals, 'id');
+                    }
                     //角色、权限，如果修改了用户类型，需要传设置的角色、权限
                     if (appConfig && changedUserType) {
                         item.roles = _.map(appConfig.roles, roleId => {
