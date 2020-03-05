@@ -47,7 +47,7 @@ class WinningClue extends React.Component{
     }
 
     handleClickClose = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-close'), '点击关闭领线索');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.title .icon-close'), '点击关闭领线索');
         this.props.handleClickClose(false);
     }
 
