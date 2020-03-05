@@ -6,16 +6,16 @@ const SITE_CONGFIG_KEY = 'is_no_longer_show_check_report_notice';
 const DR_URL = '/rest/customer/v3/dailyreport';
 const TPL_LIST_URL = DR_URL + '/templates';
 const TPL_URL = DR_URL + '/template';
+const REPORT_URL = DR_URL + '/report';
 
 //获取报告列表
 export function getReportList(callback) {
     if (!_.isFunction(callback)) return;
 
     ajax.send({
-        url: TPL_URL
+        url: REPORT_URL
     })
         .done(result => {
-            result = _.get(localStorage, 'daily-report.report-list');
             callback(result);
         })
         .fail(err => {
