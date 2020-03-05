@@ -1143,7 +1143,7 @@ const ApplyViewDetail = createReactClass({
         const appsSetting = this.appsSetting;
         const detailInfo = this.state.detailInfoObj.info;
         const approvalState = _.get(detailInfo, 'approval_state');
-        const applyType = _.get(detailInfo, 'info.type');
+        const applyType = _.get(detailInfo, 'type');
 
         let columns = [
             {
