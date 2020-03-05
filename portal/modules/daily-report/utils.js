@@ -68,7 +68,7 @@ export function saveTpl(data, callback) {
 //渲染按钮区域
 export function renderButtonZoneFunc(buttons) {
     return (
-        <div>
+        <div className="btn-zone">
             {_.map(buttons, item => {
                 if (item.hide) {
                     return null;

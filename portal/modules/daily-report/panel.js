@@ -2,6 +2,7 @@
  * 销售报告右侧面板
  */
 
+require('./style.less');
 import { VIEW_TYPE } from './consts';
 import Detail from 'CMP_DIR/detail';
 import AddTpl from './add-tpl';
@@ -27,7 +28,7 @@ class ReportPanel extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="daily-report-panel">
                 <Detail
                     title={this.getDetailTitle()}
                     content={this.getDetailContent()}
