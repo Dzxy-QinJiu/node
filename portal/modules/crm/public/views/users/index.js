@@ -715,34 +715,36 @@ class CustomerUsers extends React.Component {
             let user = _.isObject(userObj) ? userObj.message : {};
             let userNameText = `${_.get(user, 'user_name', '')}(${_.get(user, 'nick_name', '')})`;
             let apps = _.get(user,'users_or_grants[0]') || JSON.parse(_.get(user, 'products', ''));
-            //如果是已有用户申请试用和正式时，不显示
-            if(_.get(user,'type') === APPLY_CONSTANTS.EXIST_APPLY_FORMAL
-                || _.get(user,'type') === APPLY_CONSTANTS.EXIST_APPLY_TRIAL) {
-                return null;
-            }
-            return (
-                <div className="crm-user-item crm-user-apply-item" key={index}>
-                    <div className="crm-user-name user-apply-name">
-                        <span
-                            className="user-name-text"
-                            title={userNameText}
-                        >
-                            {userNameText}
-                        </span>
-                        <span className="user-apply-state">
-                            <span className="apply-left-bracket">[</span>{Intl.get('user.apply.false', '待审批')}<span className="apply-right-bracket">]</span>
-                        </span>
-                    </div>
-                    <div className="crm-user-apps-container no-checkbox-apps-container user-apply-apps-container">
-                        <div className="crm-user-apps">
-                            <div className="apps-top-title">
-                                <label>{this.renderApplyTitle(apps[0])}</label>
+            //只展示新申请的试用用户或者是签约用户
+            if(_.includes([APPLY_CONSTANTS.APPLY_USER_OFFICIAL, APPLY_CONSTANTS.APPLY_USER_TRIAL, APPLY_CONSTANTS.APPLY_USER],_.get(user,'type'))){
+                return (
+                    <div className="crm-user-item crm-user-apply-item" key={index}>
+                        <div className="crm-user-name user-apply-name">
+                            <span
+                                className="user-name-text"
+                                title={userNameText}
+                            >
+                                {userNameText}
+                            </span>
+                            <span className="user-apply-state">
+                                <span className="apply-left-bracket">[</span>{Intl.get('user.apply.false', '待审批')}<span
+                                    className="apply-right-bracket">]</span>
+                            </span>
+                        </div>
+                        <div className="crm-user-apps-container no-checkbox-apps-container user-apply-apps-container">
+                            <div className="crm-user-apps">
+                                <div className="apps-top-title">
+                                    <label>{this.renderApplyTitle(apps[0])}</label>
+                                </div>
+                                {this.getUserApplyOptions(apps)}
                             </div>
-                            {this.getUserApplyOptions(apps)}
                         </div>
                     </div>
-                </div>
-            );
+                );
+            }else{
+                return null;
+            }
+
         });
     }
 
