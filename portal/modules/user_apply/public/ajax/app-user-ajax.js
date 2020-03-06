@@ -33,7 +33,7 @@ exports.submitApply = function(obj) {
     var Deferred = $.Deferred();
     var submitData = $.extend(true,{}, obj);
     $.ajax({
-        url: '/rest/appuser/apply/' + obj.message_id,
+        url: '/rest/appuser/apply',
         dataType: 'json',
         type: 'post',
         data: submitData,
@@ -49,7 +49,7 @@ exports.submitApply = function(obj) {
 };
 
 //延期、停用提交审批
-exports.submitMultiAppApply = params => ajaxPro('submitMultiAppApply', params);
+// exports.submitMultiAppApply = params => ajaxPro('submitMultiAppApply', params);
 
 //申请用户
 exports.applyUser = function(data) {

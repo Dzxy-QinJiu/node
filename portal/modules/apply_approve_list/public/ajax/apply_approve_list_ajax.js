@@ -81,32 +81,6 @@ exports.getAllApplyLists = function(obj) {
 
 
 
-
-/**
- * 提交审批
- */
-exports.submitApply = function(obj) {
-    var Deferred = $.Deferred();
-    var submitData = $.extend(true,{}, obj);
-    $.ajax({
-        url: '/rest/appuser/apply/' + obj.message_id,
-        dataType: 'json',
-        type: 'post',
-        data: submitData,
-        timeout: 180 * 1000,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get('user.apply.detail.send.result.error', '申请结果发送失败'));
-        }
-    });
-    return Deferred.promise();
-};
-
-//延期、停用提交审批
-exports.submitMultiAppApply = params => ajaxPro('submitMultiAppApply', params);
-
 //申请用户
 exports.applyUser = function(data) {
     data = {reqData: JSON.stringify(data)};

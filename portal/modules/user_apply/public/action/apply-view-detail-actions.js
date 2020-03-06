@@ -1,7 +1,7 @@
 import AppUserAjax from '../ajax/app-user-ajax';
 import UserAjax from '../../../common/public/ajax/user';
 import AppUserUtil from '../util/app-user-util';
-import ApplyApproveUtil from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+var ApplyApproveUtil = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import UserData from '../../../../public/sources/user-data';
 import UserApplyAction from './user-apply-actions';
 import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
@@ -140,14 +140,16 @@ class ApplyViewDetailActions {
         this.dispatch({loading: true, error: false});
         let promise = null;
         //延期、停用审批用新接口
-        if (_.includes(APPLY_MULTI_TYPE_VALUES, type)) {
-            promise = AppUserAjax.submitMultiAppApply({
-                data: obj
-            });
-        }
-        else {
-            promise = AppUserAjax.submitApply(obj);
-        }
+        // if (_.includes(APPLY_MULTI_TYPE_VALUES, type)) {
+        //     promise = AppUserAjax.submitMultiAppApply({
+        //         data: obj
+        //     });
+        // }
+        // else {
+        //     promise = AppUserAjax.submitApply(obj);
+        // }
+        //前端调用一个接口，后端再根据类型区分不同的接口
+        promise = AppUserAjax.submitApply(obj);
         promise.then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
             if (_.isFunction(callback)) {

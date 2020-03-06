@@ -696,7 +696,10 @@ class CustomerUsers extends React.Component {
                 userType += USER_TYPE_MAP[tagItem];
             });
         }else{
-            userType = app.tags.join('、');
+            if(_.isArray(app.tags)){
+                userType = app.tags.join('、');
+            }
+
         }
         return (
             <span>

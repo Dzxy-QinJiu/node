@@ -441,7 +441,7 @@ const ApplyUserForm = createReactClass({
                         if(!_.get(item,'terminals.length')){
                             item.terminals = null;
                         }
-                    })
+                    });
                     this.applyUserFromOder(submitData);
                 } else {
                     delete submitData.selectAppIds;//去掉用于验证的数据
@@ -478,7 +478,6 @@ const ApplyUserForm = createReactClass({
                     res.push({
                         'user_id': c,
                         'tags': [submitData.tag],
-                        'remark': submitData.remark,
                         ...s});
                 });
             });
@@ -488,7 +487,8 @@ const ApplyUserForm = createReactClass({
     applyUserFromUserList: function(submitData) {
         submitData.user_names = JSON.stringify(submitData.user_names);
         var newSubmitObj = {
-            customer_id: submitData.customer_id
+            customer_id: submitData.customer_id,
+            remark: submitData.remark
         };
         delete submitData.customer_id;
         //users_or_grants 是跟据user_ids 和 原来参数中的 products 做笛卡尔积后获取的总数量

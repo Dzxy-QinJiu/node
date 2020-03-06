@@ -1500,18 +1500,23 @@ const ApplyViewDetail = createReactClass({
             </div>
         );
     },
-    //禁用、其他类型的表格渲染
+    //禁用、其他类型的表格渲染(新版的用户审批不需要展示产品相关了)
     renderOtherStatusTable: function(user) {
         let columns = [
             {
-                title: Intl.get('common.product','产品'),
+                title: Intl.get('common.product', '产品'),
                 dataIndex: 'client_name',
                 className: 'apply-detail-th'
             }];
-        return (<AntcTable dataSource={user.apps}
-            bordered={true}
-            pagination={false}
-            columns={columns}/>);
+        if (_.get(user, ['apps', '0', 'client_name'])) {
+            return (<AntcTable dataSource={user.apps}
+                bordered={true}
+                pagination={false}
+                columns={columns}/>);
+        } else {
+            return null;
+        }
+
     },
     renderApplyAppNames: function(detailInfo) {
         return (<div className="apply-info-label">
@@ -2225,7 +2230,7 @@ const ApplyViewDetail = createReactClass({
             }
         }
         var addApplyNextCandidate = null;
-        if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || showApproveBtn || this.state.isLeader) && (detailInfoObj.status === 'ongoing' || detailInfoObj.approval_state === '0')){
+        if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || showApproveBtn || this.state.isLeader) && (detailInfoObj.status === 'ongoing' || detailInfoObj.approval_state === '0')){//todo 审批后还有问题
             addApplyNextCandidate = this.renderAddApplyNextCandidate;
         }
         return (
@@ -2284,38 +2289,50 @@ const ApplyViewDetail = createReactClass({
         //修改的用户类型，如果存在，说明修改过用户类型，需要把角色权限传过去，如果不存在，未修改用户类型，不需要把用户类型、角色、权限传过去
         let changedUserType = _.get(this.state.detailInfoObj, 'info.changedUserType');
         if (apps.length > 0) {
-            obj.data = JSON.stringify(
-                apps.map(x => {
-                    let item = _.pick(x, 'client_id', 'client_name', 'user_id',
-                        'user_name', 'nickname', 'begin_date', 'over_draft');
-                    //如果修改了用户类型，需要把修改后的用户类型传过去
-                    if (changedUserType) {
-                        item.user_type = changedUserType;
-                    }
-                    //延期时间为：自定义的到期时间时
-                    if (isCustomDelayType(_.get(this.state, 'formData.delayTimeUnit'))) {
-                        item.end_date = _.get(this.state, 'formData.end_date');
-                    } else {//延期时间为：延期 n天、周、月等时
-                        item.delay_time = _.get(this.state, 'formData.delay_time');
+            obj.users_or_grants = apps.map(x => {
+                let item = _.pick(x, 'client_id', 'client_name', 'user_id',
+                    'user_name', 'nickname', 'begin_date', 'over_draft');
+                //如果修改了用户类型，需要把修改后的用户类型传过去
+                if (changedUserType) {
+                    item.user_type = changedUserType;
+                }
+                //延期时间为：自定义的到期时间时
+                if (isCustomDelayType(_.get(this.state, 'formData.delayTimeUnit'))) {
+                    item.end_date = _.get(this.state, 'formData.end_date');
+                } else {//延期时间为：延期 n天、周、月等时
+                    item.delay_time = _.get(this.state, 'formData.delay_time');
 
-                    }
-                    let appConfig = this.appsSetting[`${item.client_id}&&${item.user_id}`];
-                    //角色、权限，如果修改了用户类型，需要传设置的角色、权限
-                    if (appConfig && changedUserType) {
-                        item.roles = _.map(appConfig.roles, roleId => {
-                            return {role_id: roleId};
-                        });
-                        item.permissions = _.map(appConfig.permissions, permissionId => {
-                            return {permission_id: permissionId};
-                        });
-                    }
-                    return item;
-                })
-            );
+                }
+                let appConfig = this.appsSetting[`${item.client_id}&&${item.user_id}`];
+                //角色、权限，如果修改了用户类型，需要传设置的角色、权限
+                if (appConfig && changedUserType) {
+                    item.roles = _.map(appConfig.roles, roleId => {
+                        return {role_id: roleId};
+                    });
+                    item.permissions = _.map(appConfig.permissions, permissionId => {
+                        return {permission_id: permissionId};
+                    });
+                }
+                return item;
+            });
         }
         return obj;
     },
-
+    calcDescartes: function(array) {
+        if (array.length < 2) return array[0] || [];
+        return [].reduce.call(array, function(col, set) {
+            var res = [];
+            col.forEach(function(c) {
+                set.forEach(function(s) {
+                    res.push({
+                        'user_id': c,
+                        ...s});
+                });
+            });
+            return res;
+        });
+    },
+    //通过或者驳回申请
     passOrRejectApplyApprove(approval) {
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
         const state = this.state;
@@ -2335,14 +2352,20 @@ const ApplyViewDetail = createReactClass({
             let obj = {};
             //多用户延期、禁用
             if (detailInfo.type === APPLY_TYPES.DELAY || detailInfo.type === APPLY_TYPES.DISABLE) {
-                //准备提交的数据（多用户禁用的情况下审批时只需要传message_id、approval）
+                //准备提交的数据
                 obj = {
-                    approval_state: approval_state + '',
-                    message_id: this.props.detailItem.id
+                    agree: approval_state + '',
+                    id: this.props.detailItem.id,
+                    //审批类型
+                    type: detailInfo.type
                 };
                 //多用户申请延期时，需要提交的数据处理
                 if (detailInfo.type === APPLY_TYPES.DELAY) {
                     obj = this.getMultiDelaySubmitData(obj);
+                }
+                //禁用申请的时候
+                if(detailInfo.type === APPLY_TYPES.DISABLE){
+                    obj.users_or_grants = _.get(this,'state.detailInfoObj.info.apps');
                 }
             } else {
                 //左侧选中的申请单
@@ -2371,9 +2394,13 @@ const ApplyViewDetail = createReactClass({
                                 //应用id
                                 client_id: app_id,
                                 //角色
-                                roles: app_config.roles,
+                                apply_roles: _.map(app_config.roles,roleId => {
+                                    return {role_id: roleId};
+                                }),
                                 //权限
-                                permissions: app_config.permissions,
+                                apply_permissions: _.map(app_config.permissions,permissionId => {
+                                    return {permission_id: permissionId};
+                                }),
                                 //到期停用
                                 over_draft: _.get(app_config, 'over_draft.value'),
                                 //开始时间
@@ -2405,7 +2432,7 @@ const ApplyViewDetail = createReactClass({
                 ) {
                     //遍历每个应用，找到没有设置角色的应用
                     var rolesNotSetAppNames = _.chain(products).filter((obj) => {
-                        return obj.roles.length === 0;
+                        return _.get(obj,'apply_roles.length') === 0;
                     }).map('client_id').map((app_id) => {
                         var appInfo = _.find(appList, (appObj) => appObj.app_id === app_id);
                         return appInfo && appInfo.app_name || '';
@@ -2441,14 +2468,14 @@ const ApplyViewDetail = createReactClass({
                 }
                 //准备提交数据
                 obj = {
-                    approval: approval_state + '',
-                    comment: this.state.formData.comment,
-                    message_id: this.props.detailItem.id,
-                    products: JSON.stringify(products),
+                    agree: approval_state + '',
+                    // comment: this.state.formData.comment,
+                    id: this.props.detailItem.id,
+                    users_or_grants: products,
                     //审批类型
                     type: detailInfo.type,
                     //从邮件转到界面的链接地址
-                    notice_url: getApplyDetailUrl(this.state.detailInfoObj.info),
+                    // notice_url: getApplyDetailUrl(this.state.detailInfoObj.info),
                 };
                 //如果手动设置了密码
                 if (!this.state.checkStatus && this.state.passwordValue){
@@ -2466,8 +2493,10 @@ const ApplyViewDetail = createReactClass({
                 if (detailInfo.type === 'apply_pwd_change') {
                     obj.password = AppUserUtil.encryptPassword(this.state.formData.apply_detail_password);
                 }
-                //如果是已有用户选择开通，则不提交user_name和number
-                if (!isExistUserApply) {
+                if (isExistUserApply) {//如果是已有用户选择开通，则不提交user_name和number
+                    //如果是已有用户开通授权，授权信息的数据是用用户数量和开通授权的应用数量做笛卡尔积求得，但是界面展示暂时是跟据旧数据展示的，界面上只展示应用
+                    obj.users_or_grants = this.calcDescartes([_.get(detailInfo,'user_ids',[]),products]);
+                }else{
                     obj.user_name = _.trim(this.state.formData.user_name);
                     obj.nick_name = this.state.formData.nick_name;
                 }

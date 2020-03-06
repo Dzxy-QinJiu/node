@@ -21,8 +21,8 @@ var CONSTANTS = {
     EXIST_APPLY_TRIAL: 'apply_app_trial', //已有用户开通试用
     EXIST_APPLY_FORMAL: 'apply_app_official', //已有用户开通正式
     APPLY_GRANT_DELAY: 'apply_grant_delay',// 延期
-    APPLY_PWD_CHANGE: 'apply_pwd_change',// 修改开通状态
-    APPLY_GRANT_STATUS_CHANGE: 'apply_grant_status_change', // 修改密码
+    APPLY_PWD_CHANGE: 'apply_pwd_change',// 修改密码
+    APPLY_GRANT_STATUS_CHANGE: 'apply_grant_status_change', // 修改开通状态
     APPLY_GRANT_OTHER_CHANGE: 'apply_sth_else', // 修改其他类型
     DELAY_MULTI_APP: 'apply_grant_delay_multiapp',//延期（多应用）
     DISABLE_MULTI_APP: 'apply_grant_status_change_multiapp',//修改开通状态（多应用）
@@ -77,13 +77,13 @@ var AppUserRestApis = {
     getWorkFlowUnreadReplyList: 'rest/base/v1/workflow/comments/notice/unread',
     //todo 获取申请单详情
     getApplyDetail: '/rest/base/v1/workflow/detail',
-    //审批申请单（新创建用户）
-    submitNewApply: '/rest/base/v1/user/approve_users',
-    //审批申请单（已有用户）
-    submitExistApply: '/rest/base/v1/user/approve_grants',
+    //审批申请单（创建新用户审批）
+    submitApplyNewUser: '/rest/base/v1/workflow/newuser/approve',
+    //审批申请单（已有用户开通应用审批）
+    submitExistApply: 'rest/base/v1/workflow/newgrant/approve',
     //todo 申请用户
     // applyUser: '/rest/base/v1/user/apply_grants',
-    // todo 开通新应用
+    // todo 开通新应用授权
     applyUser: '/rest/base/v1/workflow/newgrant',
     //获取客户对应的用户列表
     getCustomerUsers: '/rest/base/v1/user/customer/users',
@@ -92,13 +92,13 @@ var AppUserRestApis = {
     //todo 修改密码和其他类型申请
     // changePassword: '/rest/base/v1/user/apply/user_password',
     applyChangePasswordAndOther: '/rest/base/v1/workflow/user/change',
-    //审批用户延期
-    approveDelayUser: '/rest/base/v1/user/approve_delay',
-    //todo 审批修改密码
+    //todo 审批修改密码和其他类型的申请审批
     // submitApplyChangePassword: '/rest/base/v1/user/approve_password',
-    submitApplyChangePassword: '/rest/base/v1/workflow/user/change/approve',
+    submitApplyChangePasswordOrOther: '/rest/base/v1/workflow/user/change/approve',
+    //延期和启用停用审批
+    submitApplyDelayMultiApp: '/rest/base/v1/workflow/grant/change/approve',
     //审批其他类型的修改
-    submitApplyChangeOther: '/rest/base/v1/user/approve/sthelse',
+    // submitApplyChangeOther: '/rest/base/v1/user/approve/sthelse',
     //审批开通状态
     submitApplyGrantStatus: '/rest/base/v1/user/approve_status',
     //编辑用户应用单个字段
@@ -338,8 +338,9 @@ function handleUserApplyData(list){
 /**
  * 获取所有申请列表（对应页面上的团队申请的列表）
  */
-exports.getApplyList = function(req, res, obj) {
+exports.getApplyList = function(req, res) {
     let url = AppUserRestApis.getApplyList;
+    let obj = req.query;
     return restUtil.authRest.get({
         url: url,
         req: req,
@@ -714,21 +715,16 @@ function getApplyBasicDetail(req, res) {
                     var oldMessageType = _.get(data,'message.type',''), //旧版的用户审批的申请type
                         newMessageType = _.get(data,'detail.user_apply_type','');//新版的用户审批的申请type
                     var types = [oldMessageType, newMessageType];
-                    if (_.includes(types, CONSTANTS.APPLY_GRANT_DELAY)) { // 延期
-                        if(newUserApply){
-                            detailObj = data;
-                        }else{
-                            detailObj = applyDto.toDetailDelayRestObject(data);
-                        }
-
+                    if (_.includes(types, CONSTANTS.APPLY_GRANT_DELAY)) { // 延期（新数据没有这种类型了，旧数据可能有）
+                        detailObj = applyDto.toDetailDelayRestObject(data);
                     } else if (_.includes(types, CONSTANTS.APPLY_PWD_CHANGE) ||// 更改密码
                         _.includes(types, CONSTANTS.APPLY_GRANT_OTHER_CHANGE)){// 更改其他信息
                         if(newUserApply){
-                            detailObj = data;
+                            detailObj = applyDto.toDetailRestObjectNewUserApply(data, CONSTANTS);
                         }else{
                             detailObj = applyDto.toDetailChangePwdOtherRestObject(data);
                         }
-                    } else if (_.includes(types, CONSTANTS.APPLY_GRANT_STATUS_CHANGE)) { // 更改状态
+                    } else if (_.includes(types, CONSTANTS.APPLY_GRANT_STATUS_CHANGE)) { // 更改状态(todo 暂时还没有这种类型)
                         if(newUserApply){
                             detailObj = data;
                         }else{
@@ -737,17 +733,16 @@ function getApplyBasicDetail(req, res) {
                     } else if (_.includes(types, CONSTANTS.DELAY_MULTI_APP) ||// 延期（多应用）
                         _.includes(types, CONSTANTS.DISABLE_MULTI_APP)) { //更改状态(多应用)
                         if(newUserApply){
-                            detailObj = data;
+                            detailObj = applyDto.toDetailRestObjectNewUserApply(data, CONSTANTS);
                         }else{
                             detailObj = applyDto.toDetailMultiAppRestObject(data, CONSTANTS);
                         }
                     } else {
                         if(newUserApply){
-                            detailObj = applyDto.toDetailRestObjectNewUserApply(data);
+                            detailObj = applyDto.toDetailRestObjectNewUserApply(data, CONSTANTS);
                         }else{
                             detailObj = applyDto.toDetailRestObject(data); // 待审批、已审批、已驳回（用户申请应用）
                         }
-
                     }
                     //todo 是是是
                     if (detailObj && detailObj.customer_id) {
@@ -889,50 +884,57 @@ function getAppPermissionNames(req, res, obj) {
 }
 
 //审批申请单
-exports.submitApply = function(req, res, requestObj) {
+exports.submitApply = function(req, res) {
+    var requestObj = req.body;
     //审批提交地址
     var applyUrl;
     //如果有用户名，是新申请
-    if (requestObj.type === 'apply_grant_delay') {
-        applyUrl = AppUserRestApis.approveDelayUser;
-        delete requestObj.user_name;
-        delete requestObj.products;
-        delete requestObj.nick_name;
-        delete requestObj.password;
-    } else if (requestObj.type === 'apply_pwd_change') {//修改密码审批
-        applyUrl = AppUserRestApis.submitApplyChangePassword;
-        delete requestObj.user_name;
-        delete requestObj.products;
-        delete requestObj.nick_name;
-        delete requestObj.delay;
-        delete requestObj.end_date;
-    } else if (requestObj.type === 'apply_sth_else') {
-        applyUrl = AppUserRestApis.submitApplyChangeOther;
+    // if (requestObj.type === 'apply_grant_delay') {
+    //     applyUrl = AppUserRestApis.approveDelayUser;
+    //     delete requestObj.user_name;
+    //     delete requestObj.products;
+    //     delete requestObj.nick_name;
+    //     delete requestObj.password;
+    // } else
+    if (_.includes([CONSTANTS.APPLY_PWD_CHANGE,CONSTANTS.APPLY_GRANT_OTHER_CHANGE],requestObj.type)) {//审批密码和其他变更的审批 {id:'',agree:'pass'}
+        applyUrl = AppUserRestApis.submitApplyChangePasswordOrOther;
         delete requestObj.user_name;
         delete requestObj.products;
         delete requestObj.nick_name;
         delete requestObj.delay;
         delete requestObj.end_date;
-        delete requestObj.password;
-    } else if (requestObj.type === 'apply_grant_status_change') {
-        applyUrl = AppUserRestApis.submitApplyGrantStatus;
-        delete requestObj.user_name;
-        delete requestObj.products;
-        delete requestObj.nick_name;
-        delete requestObj.delay;
-        delete requestObj.end_date;
-        delete requestObj.password;
-    } else {
+    }
+    // else if (requestObj.type === CONSTANTS.APPLY_GRANT_OTHER_CHANGE) {//用户其他信息变更审批 {id:'',agree:'pass'}
+    //     applyUrl = AppUserRestApis.submitApplyChangeOther;
+    //     delete requestObj.user_name;
+    //     delete requestObj.products;
+    //     delete requestObj.nick_name;
+    //     delete requestObj.delay;
+    //     delete requestObj.end_date;
+    //     delete requestObj.password;
+    // }
+    // else if (requestObj.type === 'apply_grant_status_change') {
+    //     applyUrl = AppUserRestApis.submitApplyGrantStatus;
+    //     delete requestObj.user_name;
+    //     delete requestObj.products;
+    //     delete requestObj.nick_name;
+    //     delete requestObj.delay;
+    //     delete requestObj.end_date;
+    //     delete requestObj.password;
+    // }
+    else if(_.includes([CONSTANTS.DELAY_MULTI_APP ,CONSTANTS.DISABLE_MULTI_APP], requestObj.type)){//延期申请及启用和停用{id:'',agree:'pass',users_or_grants:[]}
+        applyUrl = AppUserRestApis.submitApplyDelayMultiApp;
+    }else{
         delete requestObj.delay;
         delete requestObj.end_date;
         //如果是申请新用户（试用、签约）的审批，不用删除密码
         if (!_.includes([CONSTANTS.APPLY_USER_OFFICIAL,CONSTANTS.APPLY_USER_TRIAL,CONSTANTS.APPLY_USER], requestObj.type)){
             delete requestObj.password;
         }
-        if (requestObj.user_name) {
-            applyUrl = AppUserRestApis.submitNewApply;
+        if (requestObj.user_name) {//创建新用户申请
+            applyUrl = AppUserRestApis.submitApplyNewUser;
         } else {
-            //没有用户名，是已有用户申请
+            //没有用户名，是已有用户申请 {id:'',agree:'pass',users_or_grants: []}
             applyUrl = AppUserRestApis.submitExistApply;
             delete requestObj.user_name;
             delete requestObj.nick_name;

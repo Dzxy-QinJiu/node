@@ -510,13 +510,15 @@ module.exports = [{
         'needLogin': true
     },
     privileges: [privilegeConst_common.USER_APPLY_APPROVE]
-}, {
-    //审批（多应用
-    'method': 'post',
-    'path': '/rest/base/v1/user/grants/update/approve',
-    'handler': 'submitMultiAppApply',
-    'passport': {
-        'needLogin': true
-    },
-    privileges: [privilegeConst_common.USER_APPLY_APPROVE]
-}];
+}
+// , {
+//     //审批（多应用
+//     'method': 'post',
+//     'path': '/rest/base/v1/user/grants/update/approve',
+//     'handler': 'submitMultiAppApply',
+//     'passport': {
+//         'needLogin': true
+//     },
+//     privileges: [privilegeConst_common.USER_APPLY_APPROVE]
+// }
+];

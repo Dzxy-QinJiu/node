@@ -176,7 +176,7 @@ module.exports = {
         ]
     }, {
         'method': 'post',
-        'path': '/rest/appuser/apply/:apply_id',
+        'path': '/rest/appuser/apply',
         'handler': 'submitApply',
         'passport': {
             'needLogin': true

@@ -33,12 +33,12 @@ exports.toRestObjectNewUserApply = function(item) {
         producer: _.get(item, 'applicant'),//todo 22
         message: {//todo
             sales_team_name: '',
-            user_name: _.get(item, 'detail.user_name'),
+            user_name: _.get(item, 'detail.user_name') || _.chain(item).get('detail.user_grants_apply').map('user_name').uniq(),
             remark: _.get(item, 'remark'),
             type: _.get(item, 'detail.user_apply_type'),
             products: JSON.stringify(_.get(item, 'detail.user_grants_apply', [])),
             sales_name: '',
-            nick_name: _.get(item, 'detail.nickname'),
+            nick_name: _.get(item, 'detail.nickname') || _.chain(item).get('detail.user_grants_apply').map('nickname').uniq(),
             producer_team: '',
             tag: _.get(item, 'user_type'),
             customer_name: _.get(item, 'detail.customer_name'),
@@ -135,8 +135,9 @@ function addPropertiesNewApply(detail, preData) {
     }
     return detail;
 }
+
 //用户审批详情转换（新版的用户申请）
-exports.toDetailRestObjectNewUserApply = function(detail){
+exports.toDetailRestObjectNewUserApply = function(detail, APPLY_TYPES){
     var userType = _.get(detail,'detail.user_apply_type');
     var obj = {
         type: userType,
@@ -144,9 +145,6 @@ exports.toDetailRestObjectNewUserApply = function(detail){
         customer_name: _.get(detail,'detail.customer_name'),
         customer_id: _.get(detail,'detail.customer_id'),
         presenter_id: _.get(detail,'applicant.user_id'),
-        user_names: _.get(detail,'detail.user_name','') ? [_.get(detail,'detail.user_name','')] : [],
-        user_ids: _.get(detail,'detail.user_id',) ? [_.get(detail,'detail.user_id')] : [],
-        nick_names: [_.get(detail,'detail.nickname','')],
         apps: _.get(detail,'detail.user_grants_apply',[]),
         sales_team_name: _.get(detail,'detail.customer_sales_team'),
         comment: _.get(detail,'remarks',''),
@@ -156,11 +154,6 @@ exports.toDetailRestObjectNewUserApply = function(detail){
         time: _.get(detail,'create_time'),//申请时间
         approval_time: _.get(detail,'approval_time',''),//审批时间
         last_contact_time: _.get(detail,'last_call_back_time',''),//最后联系时间
-
-
-
-
-
         // id: _.get(detail,'id'),
         // isConsumed: '',
         presenter: _.get(detail,'applicant.nick_name'),//
@@ -168,21 +161,198 @@ exports.toDetailRestObjectNewUserApply = function(detail){
         // last_contact_time: '',
         immutable_labels: _.get(detail,'detail.immutable'),
         customer_label: _.get(detail,'detail.customer_label'),
-
     };
-    //账号类型
-    obj.account_type = userType === 'apply_user_official' || userType === 'apply_app_official' ? '1' : '0';
-    if (userType === 'apply_user' || userType === 'apply_app') {
-        obj.tag = _.get(detail, 'tag', '');
+    //各种类型特殊的属性
+    if(userType === APPLY_TYPES.DISABLE_MULTI_APP){//禁用（多应用）
+        obj.status = _.get(obj, ['apps','0','status']);
+    }else if(userType === APPLY_TYPES.DELAY_MULTI_APP){ //延期（多应用）
+        let apps = _.get(obj,'apps');
+        if (_.get(apps, '0.delay_time')) {
+            obj.delayTime = apps[0].delay_time;
+        }
+        // 到期时间
+        if (_.get(apps, '0.end_date')) {
+            obj.end_date = _.get(apps, '0.end_date', '');
+        }
+        //延期时间
+        if (_.get(apps, '0.delay_time') && _.get(apps, '0.delay_time') !== '-1') {
+            obj.delayTime = _.get(apps, '0.delay_time', '');
+        }
+    }else if(_.includes([APPLY_TYPES.APPLY_PWD_CHANGE, APPLY_TYPES.APPLY_GRANT_OTHER_CHANGE],userType)){//修改密码及其他申请
+        //修改密码申请和其他申请的user_id,user_name,nick_name
+        //用户名
+        obj.user_names = _.chain(detail).get('detail.user_grants_apply').map('user_name').uniq();
+        //用户id
+        obj.user_ids = _.chain(detail).get('detail.user_grants_apply').map('user_id').uniq();
+    }else {
+        if(_.includes([APPLY_TYPES.EXIST_APPLY_TRIAL, APPLY_TYPES.EXIST_APPLY_FORMAL],userType)){//已有用户申请新应用
+            obj.user_names = _.chain(detail).get('detail.user_grants_apply').map('user_name').uniq();
+            //用户id
+            obj.user_ids = _.chain(detail).get('detail.user_grants_apply').map('user_id').uniq();
+            obj.nick_names = _.chain(detail).get('detail.user_grants_apply').map('nickname').uniq();
+            //应用的列表要进行去重，因为已有用户在申请应用授权的时候所传参数和之前的不一样，例如之前3个账号申请2个应用，apps数字就直传2个应用就可以了，现在改版后的新数据apps要用笛卡尔积进行计算，就是3*2个数据
+            //为了和现有界面保持一致，需要对apps中的数据进行去重
+            var apps = [],user_grants_apply = _.get(detail,'detail.user_grants_apply',[]);
+            if(_.get(user_grants_apply,'[0]')){
+                apps = _.unionBy(user_grants_apply, 'client_id');
+            }
+            obj.apps = apps;
+        }else if(_.includes([APPLY_TYPES.APPLY_USER_OFFICIAL, APPLY_TYPES.APPLY_USER_TRIAL],userType)){//新申请用户,在未申请之前是没有user_idd ,审批通过后在detail字段下
+            if(_.get(detail,'detail.user_names[0]','')){
+                obj.user_names = _.get(detail,'detail.user_names','');//审批过后，如果有用户名在user_names中，比如有多个用户名的时候，都在这个数组中
+            }else if(_.get(detail,'detail.user_name','')){
+                obj.user_names = [_.get(detail,'detail.user_name','')];//在审批之前，用户名在user_name中
+            }else{
+                obj.user_names = [];
+            }
+
+            //用户id
+            obj.user_ids = _.get(detail,'detail.user_ids[0]',) ? _.get(detail,'detail.user_ids') : [];
+            obj.nick_names = _.get(detail,'detail.nickname',) ? [_.get(detail,'detail.nickname')] : [];
+        }
+        //账号类型
+        obj.account_type = userType === 'apply_user_official' || userType === 'apply_app_official' ? '1' : '0';
+        if (userType === 'apply_user' || userType === 'apply_app') {
+            obj.tag = _.get(detail, 'tag', '');
+        }
+
     }
+
+
+
+
+
     //增加一些特殊属性
     obj = addPropertiesNewApply(obj, detail);
     return obj;
 };
 
+//延期、禁用（多应用）
+exports.toDetailMultiAppRestObject = function(obj, APPLY_TYPES) {
+    //审批单内容
+    var serverResult = obj || {};
+    //申请单详情
+    var detail = serverResult.message || {};
+    //转换之后的数据
+    var result = {};
+    //申请类型， 延期、禁用（多应用）
+    result.type = detail.type || '';
+    //销售名称
+    result.sales_name = detail.sales_name || '';
+    //销售团队名称
+    result.sales_team_name = detail.sales_team_name || '';
+    //客户名
+    result.customer_name = detail.customer_name || '';
+    //客户id
+    result.customer_id = detail.customer_ids || '';
+
+    let apps = [];
+    if (detail.apply_param) {
+        apps = detail.apply_param && (JSON.parse(detail.apply_param) || []);
+        //应用
+        result.apps = apps.map(app => ({
+            ...app,
+            app_id: app.client_id,
+            app_name: app.client_name
+        }));
+        //延期（多应用）
+        if (detail.type === APPLY_TYPES.DELAY_MULTI_APP) {
+            if (_.get(apps, '0.delay_time')) {
+                result.delayTime = apps[0].delay_time;
+            }
+            // 到期时间
+            if (_.get(apps, '0.end_date')) {
+                result.end_date = _.get(apps, '0.end_date', '');
+            }
+            //延期时间
+            if (_.get(apps, '0.delay_time') && _.get(apps, '0.delay_time') !== '-1') {
+                result.delayTime = _.get(apps, '0.delay_time', '');
+            }
+        } else if (detail.type === APPLY_TYPES.DISABLE_MULTI_APP) {//禁用（多应用）
+            result.status = _.get(apps, '0.status');
+        }
+    }
+    //申请时候的备注
+    result.comment = detail.remark || '';
+    // 申请人id
+    result.presenter_id = serverResult.producer.user_id;
+    //审批备注
+    result.approval_comment = serverResult.approval_comment || '';
+    //审批状态
+    result.approval_state = 'approval_state' in serverResult ? transferApprovalStateToNumber(serverResult.approval_state) : '';
+    //审批人
+    result.approval_person = serverResult.approval_person || '';
+    //审批时间
+    result.approval_time = serverResult.consume_date || '';
+    //增加特殊属性
+    result = addProperties(result, obj);
+    return result;
+};
+//销售申请修改密码(其他类型)详情转换
+exports.toDetailChangePwdOtherRestObject = function(obj) {
+    //审批单内容
+    var serverResult = obj || {};
+    //申请单详情
+    var detail = serverResult.message || {};
+    //转换之后的数据
+    var result = {};
+    //申请类型 apply_user_official
+    result.type = detail.type || '';
+    //销售名称
+    result.sales_name = detail.sales_name || '';
+    //销售团队名称
+    result.sales_team_name = detail.sales_team_name || '';
+    // 申请人id
+    result.presenter_id = serverResult.producer.user_id;
+
+
+    //客户数据
+    transformCustomerInfo(detail, result);
+    //用户名
+    var user_names = [];
+    try {
+        user_names = detail.user_name.split(/、/g);
+    } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(JSON.stringify(e));
+    }
+    var user_ids = [];
+    try {
+        user_ids = JSON.parse(detail.user_ids);
+    } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(JSON.stringify(e));
+    }
+    //用户名
+    result.user_names = user_names;
+    //用户id
+    result.user_ids = user_ids;
+    //申请时候的备注
+    result.comment = detail.remark || '';
+    //审批备注
+    result.approval_comment = serverResult.approval_comment || '';
+    //审批状态
+    result.approval_state = 'approval_state' in serverResult ? transferApprovalStateToNumber(serverResult.approval_state) : '';
+    //审批人
+    result.approval_person = serverResult.approval_person || '';
+    //申请时间
+    result.time = serverResult.produce_date || '';
+    //审批时间
+    result.approval_time = serverResult.consume_date || '';
+    //增加特殊属性
+    result = addProperties(result, obj);
+
+
+
+    //其他类型申请的应用数据
+    if (detail.type === 'apply_sth_else') {
+        result.apps = detail.app_list ? JSON.parse(detail.app_list) : [];
+    }
+
+    return result;
+};
 //用户审批详情转换
 exports.toDetailRestObject = function(obj) {
-
     //审批单内容
     var serverResult = obj || {};
     //申请单详情
@@ -226,7 +396,7 @@ exports.toDetailRestObject = function(obj) {
 
         result.user_names = [detail.user_name || ''];
         //新增用户审批通过后增加id字段
-        if (detail.type === 'apply_user_trial' || detail.type === 'apply_user_official' || detail.type === 'apply_app') {
+        if (detail.type === 'apply_user_trial' || detail.type === 'apply_user_official' || detail.type === 'apply_app') {//apply_app之后也没有了
             var user_ids = [];
             try {
                 user_ids = JSON.parse(detail.user_ids);
@@ -372,63 +542,6 @@ exports.toDetailDelayRestObject = function(obj) {
     return result;
 };
 
-//销售申请修改密码(其他类型)详情转换
-exports.toDetailChangePwdOtherRestObject = function(obj) {
-    //审批单内容
-    var serverResult = obj || {};
-    //申请单详情
-    var detail = serverResult.message || {};
-    //转换之后的数据
-    var result = {};
-    //申请类型 apply_user_official
-    result.type = detail.type || '';
-    //销售名称
-    result.sales_name = detail.sales_name || '';
-    //销售团队名称
-    result.sales_team_name = detail.sales_team_name || '';
-    // 申请人id
-    result.presenter_id = serverResult.producer.user_id;
-    //客户数据
-    transformCustomerInfo(detail, result);
-    //用户名
-    var user_names = [];
-    try {
-        user_names = detail.user_name.split(/、/g);
-    } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log(JSON.stringify(e));
-    }
-    var user_ids = [];
-    try {
-        user_ids = JSON.parse(detail.user_ids);
-    } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log(JSON.stringify(e));
-    }
-    //用户名
-    result.user_names = user_names;
-    //用户id
-    result.user_ids = user_ids;
-    //申请时候的备注
-    result.comment = detail.remark || '';
-    //审批备注
-    result.approval_comment = serverResult.approval_comment || '';
-    //审批状态
-    result.approval_state = 'approval_state' in serverResult ? transferApprovalStateToNumber(serverResult.approval_state) : '';
-    //审批人
-    result.approval_person = serverResult.approval_person || '';
-    //申请时间
-    result.time = serverResult.produce_date || '';
-    //审批时间
-    result.approval_time = serverResult.consume_date || '';
-    //增加特殊属性
-    result = addProperties(result, obj);
-    //其他类型申请的应用数据
-    if (detail.type === 'apply_sth_else') {
-        result.apps = detail.app_list ? JSON.parse(detail.app_list) : [];
-    }
-    return result;
-};
 
 //销售申请修改应用状态详情转换
 exports.toDetailStatusRestObject = function(obj) {
@@ -472,7 +585,7 @@ exports.toDetailStatusRestObject = function(obj) {
     result.user_ids = user_ids;
     //申请时候的备注
     result.comment = detail.remark || '';
-    //应用名
+    //todo 应用名（新数据没处理这个字段）
     result.app_name = detail.application_name || '';
     //审批备注
     result.approval_comment = serverResult.approval_comment || '';
@@ -488,67 +601,7 @@ exports.toDetailStatusRestObject = function(obj) {
     result = addProperties(result, obj);
     return result;
 };
-//延期、禁用（多应用）
-exports.toDetailMultiAppRestObject = function(obj, APPLY_TYPES) {
-    //审批单内容
-    var serverResult = obj || {};
-    //申请单详情
-    var detail = serverResult.message || {};
-    //转换之后的数据
-    var result = {};
-    //申请类型， 延期、禁用（多应用）
-    result.type = detail.type || '';
-    //销售名称
-    result.sales_name = detail.sales_name || '';
-    //销售团队名称
-    result.sales_team_name = detail.sales_team_name || '';
-    //客户名
-    result.customer_name = detail.customer_name || '';
-    //客户id
-    result.customer_id = detail.customer_ids || '';
 
-    let apps = [];
-    if (detail.apply_param) {
-        apps = detail.apply_param && (JSON.parse(detail.apply_param) || []);
-        //应用
-        result.apps = apps.map(app => ({
-            ...app,
-            app_id: app.client_id,
-            app_name: app.client_name
-        }));
-        //延期（多应用）
-        if (detail.type === APPLY_TYPES.DELAY_MULTI_APP) {
-            if (_.get(apps, '0.delay_time')) {
-                result.delayTime = apps[0].delay_time;
-            }
-            // 到期时间
-            if (_.get(apps, '0.end_date')) {
-                result.end_date = _.get(apps, '0.end_date', '');
-            }
-            //延期时间
-            if (_.get(apps, '0.delay_time') && _.get(apps, '0.delay_time') !== '-1') {
-                result.delayTime = _.get(apps, '0.delay_time', '');
-            }
-        } else if (detail.type === APPLY_TYPES.DISABLE_MULTI_APP) {//禁用（多应用）
-            result.status = _.get(apps, '0.status');
-        }
-    }
-    //申请时候的备注
-    result.comment = detail.remark || '';
-    // 申请人id
-    result.presenter_id = serverResult.producer.user_id;
-    //审批备注
-    result.approval_comment = serverResult.approval_comment || '';
-    //审批状态
-    result.approval_state = 'approval_state' in serverResult ? transferApprovalStateToNumber(serverResult.approval_state) : '';
-    //审批人
-    result.approval_person = serverResult.approval_person || '';
-    //审批时间
-    result.approval_time = serverResult.consume_date || '';
-    //增加特殊属性
-    result = addProperties(result, obj);
-    return result;
-};
 
 
 /**

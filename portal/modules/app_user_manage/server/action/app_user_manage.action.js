@@ -125,7 +125,7 @@ exports.getCustomerUsers = function(req, res) {
 
 //获取用户申请列表
 exports.getApplyList = function(req, res) {
-    AppUserService.getApplyList(req, res, req.query).on('success', function(data) {
+    AppUserService.getApplyList(req, res).on('success', function(data) {
         res.json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -207,46 +207,46 @@ exports.cancelApplyApprove = function(req, res) {
 //提交审批
 exports.submitApply = function(req, res) {
 
-    var message_id = req.params.apply_id;
-    var approval_state = req.body.approval;
-    var approval_comment = req.body.comment;
-
-    var user_name = req.body.user_name || '';
-    var nick_name = req.body.nick_name || '';
-    var products = req.body.products;
-    var notice_url = req.body.notice_url || '';
-    var password = req.body.password || '';
-    if (password) {
-        var bytes = CryptoJS.AES.decrypt(password, 'apply_change_password');
-        password = bytes.toString(CryptoJS.enc.Utf8);
-    }
-    if (req.body.passwordObvious){
-        password = req.body.passwordObvious;
-    }
-    //申请类型
-    var type = req.body.type || '';
-
-    var requestObj = {
-        type: type,
-        message_id: message_id,
-        approval_state: approval_state,
-        approval_comment: approval_comment,
-        user_name: user_name,
-        nick_name: nick_name,
-        products: products,
-        notice_url: notice_url,
-        password: password
-    };
-
-    if (req.body.delay_time) {
-        requestObj.delay = req.body.delay_time || '';
-    }
-    if (req.body.end_date) {
-        requestObj.end_date = req.body.end_date || '';
-    }
+    // var message_id = req.params.apply_id;
+    // var approval_state = req.body.approval;
+    // var approval_comment = req.body.comment;
+    //
+    // var user_name = req.body.user_name || '';
+    // var nick_name = req.body.nick_name || '';
+    // var products = req.body.products;
+    // var notice_url = req.body.notice_url || '';
+    // var password = req.body.password || '';
+    // if (password) {
+    //     var bytes = CryptoJS.AES.decrypt(password, 'apply_change_password');
+    //     password = bytes.toString(CryptoJS.enc.Utf8);
+    // }
+    // if (req.body.passwordObvious){
+    //     password = req.body.passwordObvious;
+    // }
+    // //申请类型
+    // var type = req.body.type || '';
+    //
+    // var requestObj = {
+    //     type: type,
+    //     message_id: message_id,
+    //     approval_state: approval_state,
+    //     approval_comment: approval_comment,
+    //     user_name: user_name,
+    //     nick_name: nick_name,
+    //     products: products,
+    //     notice_url: notice_url,
+    //     password: password
+    // };
+    //
+    // if (req.body.delay_time) {
+    //     requestObj.delay = req.body.delay_time || '';
+    // }
+    // if (req.body.end_date) {
+    //     requestObj.end_date = req.body.end_date || '';
+    // }
 
     //发请求进行审批
-    AppUserService.submitApply(req, res, requestObj).on('success', function(data) {
+    AppUserService.submitApply(req, res).on('success', function(data) {
         if (data === true) {
             res.json(data);
         } else {

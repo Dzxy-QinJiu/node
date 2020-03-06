@@ -147,7 +147,7 @@ UserApplyStore.prototype.getAllApplyLists = function(obj) {
 };
 //获取我的申请列表
 UserApplyStore.prototype.getMyApplyLists = function(obj) {
-    this.handleApplyLists(obj);
+    this.handleApplyLists(obj,true);
 };
 //清空数据
 UserApplyStore.prototype.clearData = function() {
@@ -156,7 +156,7 @@ UserApplyStore.prototype.clearData = function() {
     this.selectedDetailItemIdx = -1;
     this.listenScrollBottom = false;
 };
-UserApplyStore.prototype.handleApplyLists = function(obj){
+UserApplyStore.prototype.handleApplyLists = function(obj,flag){
     if (obj.loading) {
         this.applyListObj.loadingResult = 'loading';
         this.applyListObj.errorMsg = '';
@@ -169,7 +169,7 @@ UserApplyStore.prototype.handleApplyLists = function(obj){
     } else {
         this.applyListObj.loadingResult = '';
         this.applyListObj.errorMsg = '';
-        this.totalSize = obj.data.total;
+        this.totalSize = obj.data.total;//todo 我的审批的总值是不对的
         let applyList = obj.data.list;
         if (_.isArray(applyList) && applyList.length) {
             if (this.lastApplyId) {//下拉加载数据时
@@ -180,7 +180,18 @@ UserApplyStore.prototype.handleApplyLists = function(obj){
                 this.selectedDetailItemIdx = 0;
             }
             this.lastApplyId = this.applyListObj.list.length ? _.last(this.applyListObj.list).id : '';
-            this.listenScrollBottom = this.applyListObj.list.length < this.totalSize;
+            //如果是我的审批，listenScrollBottom要一直保持是true
+            if(flag){
+                if(_.get(applyList,'length') < this.pageSize){
+                    this.listenScrollBottom = false;
+                }else{
+                    this.listenScrollBottom = true;
+                }
+
+            }else{
+                this.listenScrollBottom = this.applyListObj.list.length < this.totalSize;
+            }
+
         } else if (!this.lastApplyId) {//获取第一页就没有数据时
             this.clearData();
             //获取的未读回复列表为空时，清除sessionStore中存的未读回复的申请
