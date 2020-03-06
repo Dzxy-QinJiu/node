@@ -731,14 +731,11 @@ const ApplyViewDetail = createReactClass({
             return null;
         }
         if (this.state.applyIsExpanded) {
-            if (user_id) { // 申请延期的情况
-                if (user_id === this.state.curShowConfigUserId) {
-                    return this.renderAppSettingReturnBtn();
-                } else {
-                    return this.renderAppSettingBtn(user_id);
-                }
+            if (user_id && user_id !== this.state.curShowConfigUserId) { // 申请延期的情况
+                return this.renderAppSettingBtn(user_id);
+            } else {
+                return this.renderAppSettingReturnBtn();
             }
-            return this.renderAppSettingReturnBtn();
         }
         return this.renderAppSettingBtn(user_id);
     },
