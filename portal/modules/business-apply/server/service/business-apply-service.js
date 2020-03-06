@@ -14,14 +14,10 @@ var restApis = {
     applylistBussinessTrip: '/rest/base/v1/workflow/businesstrip/worklist',
     //添加出差申请
     addBusinessApply: '/rest/base/v1/workflow/businesstrip',
-    //获取申请列表
-    getOrAddApplyComments: '/rest/base/v1/workflow/comments',
     //通过或者驳回申请
     approveApplyPassOrReject: '/rest/base/v1/workflow/businesstrip/approve',
     //获取申请的状态
     getApplyStatusById: '/rest/base/v1/workflow/status',
-    //撤销申请审批
-    cancelApplyApprove: '/rest/base/v1/workflow/cancel',
     //修改出差申请的拜访时间
     updateVisitCustomerTime: '/rest/base/v1/workflow/businesstrip/:id'
 
@@ -73,24 +69,7 @@ exports.getApplyDetailById = function(req, res) {
             res: res
         }, req.query);
 };
-//获取审批意见
-exports.getApplyComments = function(req, res) {
-    return restUtil.authRest.get(
-        {
-            url: restApis.getOrAddApplyComments,
-            req: req,
-            res: res
-        }, req.query);
-};
-//添加审批意见
-exports.addApplyComments = function(req, res) {
-    return restUtil.authRest.post(
-        {
-            url: restApis.getOrAddApplyComments,
-            req: req,
-            res: res
-        }, req.body);
-};
+
 //批准或驳回审批
 exports.approveApplyPassOrReject = function(req, res) {
     return restUtil.authRest.post(
@@ -109,14 +88,7 @@ exports.getApplyStatusById = function(req, res) {
             res: res
         }, req.query);
 };
-// 撤销申请
-exports.cancelApplyApprove = function(req, res) {
-    return restUtil.authRest.post({
-        url: restApis.cancelApplyApprove,
-        req: req,
-        res: res
-    }, req.body);
-};
+
 //修改拜访客户的实际
 exports.updateVisitCustomerTime = function(req, res) {
     let bodyData = req.body;

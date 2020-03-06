@@ -24,25 +24,19 @@ module.exports = {
         },
         'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
 
-    }, {
-        method: 'get',
-        path: '/rest/apply_approve/detail/by/id',
-        handler: 'getApplyDetailById',
-        passport: {
-            needLogin: true
-        },
-    }, {
+    },
+    //     {
+    //     method: 'get',
+    //     path: '/rest/apply_approve/detail/by/id',
+    //     handler: 'getApplyDetailById',
+    //     passport: {
+    //         needLogin: true
+    //     },
+    // },
+    {
         'method': 'post',
         'path': '/rest/add/userapply/new/candidate',
         'handler': 'addUserApplyNewCandidate',
-        'passport': {
-            'needLogin': true
-        },
-        'privileges': [privilegeConst_common.USERAPPLY_BASE_PERMISSION]
-    }, {
-        'method': 'get',
-        'path': '/rest/get/userapply/worklist',
-        'handler': 'getMyUserApplyWorkList',
         'passport': {
             'needLogin': true
         },

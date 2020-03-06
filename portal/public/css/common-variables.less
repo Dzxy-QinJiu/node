@@ -143,7 +143,6 @@
 @text-color: #313330;
 @reply-message-tip-color: #f7a43e;
 @approval-pending-color: #f68a4a;
-@text-color: #313330;
 @apply-detail-bg-color: #ffffff;
 @apply-top-height: 64px; //头部的高度
 @apply-list-color: #506470;
@@ -183,6 +182,8 @@
 // 确认删除的背景色
 @confirm-delete-background: #EB5E57;
 
+//通过按钮的背景色
+@agree-btn-background:#28AF6A;
 // 内容区背景色
 @content-zone-background: #FFFFFF;
 
@@ -216,3 +217,62 @@
 @goods-name-bg-color: #FAFAFA;
 @goods-item-border-color: #2196F3;
 @goods-name-hover-bg-color: #F1F8FE;
+//详情头部标题
+.apply-detail-title {
+  @font-color: #999;
+  height: 64px;
+  padding: 24px;
+  line-height: 16px;
+  .apply-type-tip {
+    font-size: 16px;
+    color: @title-color;
+  }
+  //通过，驳回或者转审的按钮
+  .approval_block {
+    overflow: hidden;
+    margin-top: -8px;
+    .ant-form-item-control textarea {
+      resize: none;
+    }
+    .approval_text {
+      padding-top: 15px;
+      padding-bottom: 0;
+      line-height: 24px;
+      font-size: 16px;
+      color: #506470;
+    }
+    .ant-btn{
+      font-size: 14px;
+      height: 32px;
+      line-height: 30px;
+      width: 88px;
+      margin-left: 8px;
+      .iconfont{
+        margin-right: 7px;
+      }
+      //同意按钮
+      &.agree-btn{
+        color:#fff;
+        background: @agree-btn-background;
+        border:1px solid @agree-btn-background;
+      }
+      //驳回按钮
+      &.reject-btn{
+        color:#fff;
+        background:@confirm-delete-background;
+        border:1px solid @confirm-delete-background;
+      }
+      //转审按钮
+      &.assign-btn{
+        color: #8DA8C5;
+        border: 1px solid #ccc;
+      }
+    }
+
+  }
+  .order-id {
+    float: right;
+    font-size: 14px;
+    color: @font-color;
+  }
+}

@@ -4,14 +4,14 @@
  * Created by zhangshujuan on 2018/9/28.
  */
 var SalesOpportunityApplyAjax = require('../ajax/sales-opportunity-apply-ajax');
-var SalesOpportunityApplyUtils = require('../utils/sales-oppotunity-utils');
+var SalesOpportunityApplyUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import {message} from 'antd';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
-import {cancelApplyApprove, getApplyDetailById} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {cancelApplyApprove, getApplyDetailById,getApplyCommentList,addApplyComments} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import applyApproveAction from './sales-opportunity-apply-action';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
@@ -51,9 +51,7 @@ function ApplyViewDetailActions() {
     //获取回复列表
     this.getSalesOpportunityApplyCommentList = function(queryObj) {
         this.dispatch({loading: true, error: false});
-        SalesOpportunityApplyAjax.getSalesOpportunityApplyCommentList(queryObj).then((list) => {
-            //清除未读回复列表中已读的回复
-            applyApproveAction.clearUnreadReply(queryObj.id);
+        getApplyCommentList(queryObj).then((list) => {
             this.dispatch({loading: false, error: false, list: list});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('failed.get.reply.comment', '获取回复列表失败')});
@@ -62,19 +60,8 @@ function ApplyViewDetailActions() {
     //添加回复
     this.addSalesOpportunityApplyComments = function(obj) {
         this.dispatch({loading: true, error: false});
-        SalesOpportunityApplyAjax.addSalesOpportunityApplyComments(obj).then((replyData) => {
-            if (_.isObject(replyData)) {
-                //创建回复数据，直接添加到store的回复数组后面
-                let replyTime = replyData.comment_time ? replyData.comment_time : moment().valueOf();
-                let replyItem = {
-                    user_id: replyData.user_id || '',
-                    user_name: replyData.user_name || '',
-                    nick_name: replyData.nick_name || '',
-                    comment: replyData.comment || '',
-                    comment_time: replyTime
-                };
-                this.dispatch({loading: false, error: false, reply: replyItem});
-            }
+        addApplyComments(obj).then((replyData) => {
+            this.dispatch({loading: false, error: false, reply: replyItem});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });

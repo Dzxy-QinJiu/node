@@ -460,16 +460,17 @@ exports.getTimeStr = function(d, format) {
     return moment(new Date(d)).format(format || oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
 };
 exports.getApplyTopicText = function(obj) {
-    if (obj.topic === APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES) {
+    var workFlow = _.get(obj,'workflow_type','');
+    if (_.get(obj,'topic') === APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES) {
         return _.get(obj, 'detail.customer.name');
-    } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1) {
+    } else if (workFlow.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1) {
         return Intl.get('apply.approve.specific.report', '{customer}客户的{reporttype}', {
             customer: _.get(obj, 'detail.customer.name'),
             reporttype: getDocumentReportTypeDes(REPORT_TYPE, _.get(obj, 'detail.report_type'))
         });
-    } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1) {
+    } else if (workFlow.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1) {
         return getDocumentReportTypeText(DOCUMENT_TYPE, _.get(obj, 'detail.document_type'));
-    } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.VISITAPPLY) !== -1) {
+    } else if (workFlow.indexOf(APPLY_APPROVE_TYPES.VISITAPPLY) !== -1) {
         return _.get(obj, 'detail.customers[0].name') || _.get(obj, 'configDescription','');
     } else {
         return _.get(obj, 'configDescription','');
@@ -738,8 +739,8 @@ exports.afterGetExtendUserInfo = (data, that, isShowPhoneSet) => {
         }, true);
     }
 };
-exports.getApplyListTypeDes = (applyListType) => {
-    switch (applyListType) {
+exports.getApplyListTypeDes = (selectedApplyStatus) => {
+    switch (selectedApplyStatus) {
         case 'all':
             return Intl.get('user.apply.all', '全部申请');
         case 'ongoing':

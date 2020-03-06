@@ -173,75 +173,7 @@ let routers = [
         name: 'crm.109',//申请
         routePath: '/apply',
         shortName: 'crm.109',//申请
-        subMenu: [{
-            id: 'APP_USER_MANAGE_APPLY',
-            name: 'menu.appuser.apply',//用户申请
-            routePath: '/apply/users',
-            component: `${MODULE_PATH}user_apply/public`,
-            //有这个权限，才显示入口图标
-            showPrivileges: ['USERAPPLY_BASE_PERMISSION']
-
-        }, {
-            id: 'SALES_BUSSINESS_APPLY_MANAGEMENT',
-            name: 'leave.apply.sales.oppotunity',//机会申请
-            routePath: '/apply/opportunities',
-            component: `${MODULE_PATH}sales_opportunity/public`,
-            //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_BUSINESSOPPO_APPLY_APPROVE']
-        }, {
-            id: 'BUSSINESS_APPLY_MANAGEMENT',
-            name: 'leave.apply.add.leave.apply',//出差申请
-            routePath: '/apply/business',
-            component: `${MODULE_PATH}business-apply/public`,
-            //有这个权限，才显示入口图标
-            showPrivileges: ['BUSINESS_TRIP_APPLY_APPROVE']
-        }, {
-            id: 'MY_BUSINESS_WHILE_APPLY_MANAGEMENT',
-            name: 'apply.leave.while.application.work.flow',//申请
-            routePath: '/apply/business-while',
-            component: `${MODULE_PATH}business-while/public`,
-            //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_REPORT_APPLY_APPROVE']
-        }, {
-            id: 'LEAVE_APPLY_MANAGEMENT',
-            name: 'leave.apply.leave.application',//请假申请
-            routePath: '/apply/leave',
-            component: `${MODULE_PATH}leave-apply/public`,
-            //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_LEAVE_APPLY_APPROVE']
-        }, {
-            id: 'REPORTSEND_APPLY_MANAGEMENT',
-            name: 'apply.approve.lyrical.report',//舆情报告
-            routePath: '/apply/reports',
-            component: `${MODULE_PATH}report_send/public`,
-            //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_REPORT_APPLY_APPROVE']
-        }, {
-            id: 'DOCUMENTWRITING_APPLY_MANAGEMENT',
-            name: 'apply.approve.document.writing',//文件撰写
-            routePath: '/apply/documents',
-            component: `${MODULE_PATH}document_write/public`,
-            //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_REPORT_APPLY_APPROVE']
-        },
-        {
-            //todo 待修改的！！！！！！
-            id: 'MY_LEAVE_APPLY_MANAGEMENT',
-            name: 'apply.my.self.setting.work.flow',//拜访申请
-            routePath: '/apply/visits',
-            component: `${MODULE_PATH}self_setting/public`,
-            //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_REPORT_APPLY_APPROVE']
-        }, {
-            //todo 待修改的！！！！！！
-            id: 'MY_DOMAIN_APPLY_MANAGEMENT',
-            name: 'apply.domain.application.work.flow',//申请
-            routePath: '/apply/domain-name',
-            component: `${MODULE_PATH}domain_application/public`,
-            //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_REPORT_APPLY_APPROVE']
-        }
-        ]
+        component: `${MODULE_PATH}apply_approve_list/public`,
     },
     {
         id: 'NOTIFICATION',//唯一标识 - 通知

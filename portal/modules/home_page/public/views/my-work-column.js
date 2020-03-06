@@ -1335,7 +1335,7 @@ class MyWorkColumn extends React.Component {
                         <VisitApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
@@ -1344,7 +1344,7 @@ class MyWorkColumn extends React.Component {
                         <OpportunityApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
@@ -1353,7 +1353,7 @@ class MyWorkColumn extends React.Component {
                         <CustomerVisitApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
@@ -1362,7 +1362,7 @@ class MyWorkColumn extends React.Component {
                         <LeaveApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
@@ -1371,7 +1371,7 @@ class MyWorkColumn extends React.Component {
                         <ReportApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
@@ -1380,7 +1380,7 @@ class MyWorkColumn extends React.Component {
                         <DocumentApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
@@ -1389,7 +1389,7 @@ class MyWorkColumn extends React.Component {
                         <DomainApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
@@ -1398,7 +1398,7 @@ class MyWorkColumn extends React.Component {
                         <UserApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;

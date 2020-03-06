@@ -14,30 +14,9 @@ module.exports = {
                 needLogin: true
             },
         }, {
-            method: 'get',
-            path: '/rest/get/worklist/sales_opportunity_apply/list',
-            handler: 'getWorklistSalesOpportunityApplyList',
-            passport: {
-                needLogin: true
-            },
-        }, {
             method: 'post',
             path: '/rest/add/sales_opportunity_apply/list',
             handler: 'addSalesOpportunityApply',
-            passport: {
-                needLogin: true
-            },
-        }, {
-            method: 'get',
-            path: '/rest/get/sales_opportunity_apply/comment/list',
-            handler: 'getSalesOpportunityApplyComments',
-            passport: {
-                needLogin: true
-            },
-        }, {
-            method: 'post',
-            path: '/rest/add/sales_opportunity_apply/comment',
-            handler: 'addSalesOpportunityApplyComments',
             passport: {
                 needLogin: true
             },

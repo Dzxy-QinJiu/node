@@ -107,7 +107,8 @@ class CrmUserApplyForm extends React.Component {
     getDelayData() {
         let formData = this.state.formData;
         let submitObj = {
-            type: APPLY_TYPES.DELAY
+            apply_type: APPLY_TYPES.DELAY,
+            customer_id: _.get(this.props.crmUserList,'[0].customer.customer_id'),
         };
         const paramItem = {};
         if (isCustomDelayType(formData.delayTimeRange)) {
@@ -125,13 +126,7 @@ class CrmUserApplyForm extends React.Component {
             paramItem.user_type = formData.user_type;
         }
 
-        /* 构造发邮件数据
-         申请审批的，需要传入用户名，客户，应用名，发邮件时候使用
-         向后端传递email_customer_names,email_app_names,email_user_names，发邮件使用
-         */
-        //添加邮箱使用的字段, 客户名 用户名 添加应用名 用户id
-
-        submitObj.data = this.getSelectedUserMultiAppData().map(x => {
+        submitObj.users_or_grants = this.getSelectedUserMultiAppData().map(x => {
             const item = x;
             if(paramItem.delay_time){
                 delete item.end_date;
@@ -153,7 +148,7 @@ class CrmUserApplyForm extends React.Component {
         //销售提交申请延期
         this.setState({ isApplying: true });
         AppUserAjax.applyDelayMultiApp({
-            usePromise: true,
+            // usePromise: true,
             data: submitObj
         }).then((result) => {
             if (result) {
@@ -192,29 +187,21 @@ class CrmUserApplyForm extends React.Component {
     getSelectedUserAppData() {
         let selectedUsers = this.getSelectedUsers();
         //客户名 用户名 添加应用名 用户id
-        let email_customer_names = [], email_user_names = [], email_app_names = [], selectedAppId = [], user_ids = [];
+        let selectedAppId = [], user_ids = [];
         _.each(selectedUsers, (obj) => {
-            let customer_name = obj.customer.customer_name;
-            email_customer_names.push(customer_name);
-            let user_name = obj.user.user_name;
-            email_user_names.push(user_name);
             user_ids.push(obj.user.user_id);
             //选择的应用
             if (obj && _.isArray(obj.apps) && obj.apps.length) {
                 _.each(obj.apps, app => {
                     if (app.checked) {
-                        email_app_names.push(app.app_name);
                         selectedAppId.push(app.app_id);
                     }
                 });
             }
         });
         return {
-            email_customer_names: _.uniq(email_customer_names).join('、'),
-            email_app_names: _.uniq(email_app_names).join('、'),
-            email_user_names: _.uniq(email_user_names).join('、'),
             application_ids: JSON.stringify(selectedAppId),
-            user_ids: JSON.stringify(user_ids)
+            user_ids: user_ids
         };
     }
 
@@ -244,7 +231,7 @@ class CrmUserApplyForm extends React.Component {
     // 申请停用
     submitStopUseData() {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请停用)');
-        const data = this.getSelectedUserMultiAppData().map(x => {
+        const users_or_grants = this.getSelectedUserMultiAppData().map(x => {
             const item = x;
             delete item.end_date;
             delete item.begin_date;
@@ -254,15 +241,16 @@ class CrmUserApplyForm extends React.Component {
             };
         });
         const submitObj = {
-            type: APPLY_TYPES.DISABLE,
+            apply_type: APPLY_TYPES.DISABLE,
+            customer_id: _.get(this.props.crmUserList,'[0].customer.customer_id'),
             remark: this.state.formData.remark.statusRemark,
-            data
+            users_or_grants
         };
 
         this.setState({ isApplying: true });
         //调用申请修改开通状态
         AppUserAjax.applyDelayMultiApp({
-            usePromise: true,
+            // usePromise: true,
             data: submitObj
         }).then((result) => {
             this.setState({ isApplying: false });
@@ -280,13 +268,16 @@ class CrmUserApplyForm extends React.Component {
     submitEditPasswordData() {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请修改密码)');
         const selectedUserAppData = this.getSelectedUserAppData();
+        //todo 修改修改密码
         const submitObj = {
+            apply_type: APPLY_TYPES.APPLY_PWD_CHANGE,
+            customer_id: _.get(this.props.crmUserList,'[0].customer.customer_id'),
             user_ids: selectedUserAppData.user_ids,
             remark: this.state.formData.remark.passwordRemark
         };
         this.setState({ isApplying: true });
         //调用修改密码
-        AppUserAjax.applyChangePassword(submitObj).then((result) => {
+        AppUserAjax.applyChangePasswordAndOther(submitObj).then((result) => {
             this.setState({ isApplying: false });
             if (result) {
                 this.props.closeApplyPanel();
@@ -309,13 +300,15 @@ class CrmUserApplyForm extends React.Component {
         });
         let userIds = _.map(selectedUserAppData, 'user_id');
         const submitObj = {
-            user_ids: JSON.stringify(userIds),
+            apply_type: APPLY_TYPES.APPLY_STH_ELSE,
+            customer_id: _.get(this.props.crmUserList,'[0].customer.customer_id'),
+            user_ids: userIds,
             remark: this.state.formData.remark.otherRemark,
-            app_list: JSON.stringify(apps)
+            users_or_grants: apps
         };
         this.setState({ isApplying: true });
         //调用修改其他类型的申请
-        AppUserAjax.applyChangeOther(submitObj).then((result) => {
+        AppUserAjax.applyChangePasswordAndOther(submitObj).then((result) => {
             this.setState({ isApplying: false });
             if (result) {
                 this.props.closeApplyPanel();

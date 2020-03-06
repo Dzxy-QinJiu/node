@@ -14,30 +14,9 @@ module.exports = {
                 needLogin: true
             },
         }, {
-            method: 'get',
-            path: '/rest/get/worklist/apply_approve/list',
-            handler: 'getWorklistLeaveApplyList',
-            passport: {
-                needLogin: true
-            },
-        }, {
             method: 'post',
             path: '/rest/add/leave_apply/list',
             handler: 'addLeaveApply',
-            passport: {
-                needLogin: true
-            },
-        }, {
-            method: 'get',
-            path: '/rest/get/apply_approve/comment/list',
-            handler: 'getLeaveApplyComments',
-            passport: {
-                needLogin: true
-            },
-        }, {
-            method: 'post',
-            path: '/rest/add/apply_approve/comment',
-            handler: 'addLeaveApplyComments',
             passport: {
                 needLogin: true
             },

@@ -446,41 +446,16 @@ exports.editAppField = function(data) {
 };
 
 //申请修改密码
-exports.applyChangePassword = function(data) {
+exports.applyChangePasswordAndOther = function(data) {
     const ERROR_MSG = Intl.get('user.apply.password.failed', '申请修改密码失败');
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/apply/password',
         type: 'post',
-        dataType: 'json',
         data: data,
         success: function(result) {
-            //操作成功返回true
-            if(result === true) {
-                Deferred.resolve(result);
-            } else {
-                Deferred.reject(ERROR_MSG);
-            }
-        },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || ERROR_MSG);
-        }
-    });
-    return Deferred.promise();
-};
-
-//申请其他类型的修改
-exports.applyChangeOther = function(data) {
-    const ERROR_MSG = Intl.get('user.apply.other.failed', '申请修改其他类型失败');
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/user/apply/other',
-        type: 'post',
-        dataType: 'json',
-        data: data,
-        success: function(result) {
-            //操作成功返回true
-            if(result === true) {
+            //操作成功返回申请对象
+            if(_.get(result,'id')) {
                 Deferred.resolve(result);
             } else {
                 Deferred.reject(ERROR_MSG);

@@ -6,7 +6,7 @@
 import {Input, Icon, Alert} from 'antd';
 require('./index.less');
 import {getApplyResultDscr,getReportSendApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
-import {APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_FINISH_STATUS,USERAPPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 const UserData = require('PUB_DIR/sources/user-data');
 class ApplyDetailRemarks extends React.Component {
     constructor(props) {
@@ -92,7 +92,7 @@ class ApplyDetailRemarks extends React.Component {
     }
     getApplyFinishedStatus = () => {
         let detailInfo = this.state.detailInfo;
-        return _.includes(APPLY_FINISH_STATUS, detailInfo.status);
+        return _.includes(APPLY_FINISH_STATUS, detailInfo.status) || _.includes(USERAPPLY_FINISH_STATUS, detailInfo.approval_state);
     };
     //渲染刷新回复列表的提示
     renderRefreshReplyTip = () => {
@@ -119,7 +119,7 @@ class ApplyDetailRemarks extends React.Component {
                     <div className="reply-list-container apply-info-content">
                         {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
                         {this.renderReplyList()}
-                        {/*已经通过和驳回的申请，不能再添加回复了*/}
+                        {/*已经通过和驳回还有已撤销的申请，不能再添加回复了*/}
                         {this.getApplyFinishedStatus() ?
                             null :
                             <Input addonAfter={(

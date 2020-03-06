@@ -159,7 +159,7 @@ function UserDetailAddAppActions() {
                 application_ids: selectedAppId
             };
             //调用修改密码
-            AppUserAjax.applyChangePassword(submitObj).then(function(newAppObj) {
+            AppUserAjax.applyChangePasswordAndOther(submitObj).then(function(newAppObj) {
                 _this.dispatch({error: false, app: newAppObj});
             }, function(errorMsg) {
                 _this.dispatch({error: true, errorMsg: errorMsg});

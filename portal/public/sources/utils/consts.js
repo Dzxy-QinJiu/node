@@ -76,17 +76,12 @@ export const APPLY_APPROVE_TYPES = {
     DOCUMENT: 'document',//文件撰写的类型
     VISITAPPLY: 'visitapply',//拜访申请
     DOMAINAPPLY: 'domainName',//安全域申请
-    UNHANDLECUSTOMERVISIT: 'unhandleCustomerVisit',//未处理的出差申请数量
-    UNHANDLEBUSINESSOPPORTUNITIES: 'unhandleBusinessOpportunities',//未处理的销售机会申请数量
-    UNHANDLEPERSONALLEAVE: 'unhandlePersonalLeave',//未处理的请假申请数量
-    UNHANDLEREPORTSEND: 'unhandleReportSend',//未处理的请假申请数量
-    UNHANDLEDOCUMENTWRITE: 'unhandleDocumentWrite',//未处理的请假申请数量
-    UNHANDLEMEMBERINIVTE: 'unhandleMemberInivte', // 未处理的成员申请数量
-    UNHANDLEMEVISISTAPPLY: 'unhandleVisitApply', // 未处理的拜访申请数量
-    UNHANDLEMEDOMAINAPPLY: 'unhandleDomainApply', // 未处理的舆情平台申请数量
-    UNHANDLE_BUSINESSTRIP_AWHILE_APPLY: 'unhandleBusinesstripAwhileApply', // 未处理的外出申请数量
-    UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
     BUSINESSTRIPAWHILE: 'businesstrip_awhile',//外出申请
+    BUSSINESSTRIP: 'businesstrip',//出差
+    USERAPPLY: 'userapply',//用户申请
+    USER_OR_GRANT: 'user_or_grant',//改版后用户审批的类型
+    UNHANDLEAPPLY: 'unhandleApply'//未处理的申请审批
+
 };
 // 系统消息对应的通知类型
 export const SYSTEM_NOTICE_TYPES = {
@@ -481,6 +476,7 @@ export const ORGANIZATION_TYPE = {
     KETAO: '34pj27enfq' // 客套
 };
 export const APPLY_FINISH_STATUS = ['pass', 'reject', 'cancel'];
+export const USERAPPLY_FINISH_STATUS = ['1', '2', '3'];
 export const APPLY_USER_STATUS = {
     CANCELED_USER_APPLY: '3',//已撤销
     PASSED_USER_APPLY: '1',//已通过
@@ -509,8 +505,11 @@ export const CSV_FILES_TYPE_RULES = [
 ];
 export const FINAL_TASK = 'final_task';
 export const DIFF_APPLY_TYPE_UNREAD_REPLY = {
-    APPLY_UNREAD_REPLY: 'apply_unread_reply',
-    DIFF_APPLY_UNREAD_REPLY: 'diff_apply_unread_reply'
+    // APPLY_UNREAD_REPLY: 'apply_unread_reply',
+    // DIFF_APPLY_UNREAD_REPLY: 'diff_apply_unread_reply',
+    MY_UNREAD_REPLY: 'my_team_unread_reply',
+    TEAM_UNREAD_REPLY: 'team_unread_reply',
+    UNHANDLEAPPLYLIST: 'unhandleApplyList'//待我处理的审批数量
 };
 
 // 用户分析中，时间选择类型

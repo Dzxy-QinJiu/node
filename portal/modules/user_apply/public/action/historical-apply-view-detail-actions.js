@@ -1,11 +1,13 @@
 import AppUserAjax from '../ajax/app-user-ajax';
 import AppUserUtil from '../util/app-user-util';
+import ApplyApproveUtil from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import UserData from '../../../../public/sources/user-data';
 import UserApplyAction from './user-apply-actions';
 import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
 import {updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
+import {addApplyComments, getApplyCommentList, getApplyDetailById,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 class ApplyViewDetailActions {
     constructor() {
@@ -74,20 +76,14 @@ class ApplyViewDetailActions {
     }
 
     //获取审批单详情
-    getApplyDetail(id, applyData,approvalState, appList) {
-        //如果已获取了某个详情数据，针对从url中的申请id获取的详情数据
-        if (applyData) {
-            this.dispatch({loading: false, error: false, detail: applyData.detail});
-            AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID,_.get(applyData,'detail',''));
-
-        } else {
-            this.dispatch({loading: true, error: false});
-            AppUserAjax.getApplyDetail(id).then((detail, apps) => {
-                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID,detail);
-                this.dispatch({loading: false, error: false, detail: detail,approvalState: approvalState, appList: appList});
+    getApplyDetail(queryObj, status, applyData) {
+        if (applyData){
+            this.dispatch({loading: false, error: false, detail: applyData.detail, status: status});
+        }else{
+            getApplyDetailById(queryObj).then((detail) => {
+                this.dispatch({loading: false, error: false, detail: detail, status: status});
             }, (errorMsg) => {
-                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID);
-                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('user.get.apply.detail.failed', '获取申请审批详情失败')});
             });
         }
     }
@@ -110,10 +106,8 @@ class ApplyViewDetailActions {
     //获取回复列表
     getReplyList(id) {
         this.dispatch({loading: true, error: false, list: [], errorMsg: ''});
-        AppUserAjax.getReplyList(id).then((list) => {
+        getApplyCommentList({id: id}).then((list) => {
             this.dispatch({loading: false, error: false, list: list, errorMsg: ''});
-            //清除未读回复列表中已读的回复
-            UserApplyAction.clearUnreadReply(id);
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, list: [], errorMsg: errorMsg});
         });
@@ -138,10 +132,7 @@ class ApplyViewDetailActions {
                 callback();
             }
             //更新选中的申请单类型
-            AppUserUtil.emitter.emit('updateSelectedItem', {
-                id: obj.message_id,
-                approval: obj.approval || obj.approval_state, //多用户延期、禁用申请时传的是approval_state,其他申请审批时是approval
-                status: 'success'});
+            ApplyApproveUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
             //刷新用户审批未处理数
             if (Oplate && Oplate.unread) {
                 var count = Oplate.unread.approve - 1;
@@ -150,7 +141,7 @@ class ApplyViewDetailActions {
 
         }, (errorMsg) => {
             //更新选中的申请单类型
-            AppUserUtil.emitter.emit('updateSelectedItem', {status: 'error'});
+            ApplyApproveUtil.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     }
@@ -158,21 +149,11 @@ class ApplyViewDetailActions {
     //添加回复
     addReply(obj) {
         this.dispatch({loading: true, error: false});
-        AppUserAjax.addReply(obj).then((replyData) => {
+        addApplyComments(obj).then((replyData) => {
             if (_.isObject(replyData)) {
-                //创建回复数据，直接添加到store的回复数组后面
-                let userData = UserData.getUserData();
-                let replyTime = replyData.comment_time ? moment(replyData.comment_time) : moment();
-                let replyItem = {
-                    user_id: replyData.user_id || '',
-                    user_name: replyData.nick_name || '',
-                    user_logo: userData.user_logo || '',
-                    message: replyData.comment || '',
-                    date: replyTime.format(oplateConsts.DATE_TIME_FORMAT)
-                };
                 //滚动条定位到最后
                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM);
-                this.dispatch({loading: false, error: false, reply: replyItem});
+                this.dispatch({loading: false, error: false, reply: replyData});
             }
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
@@ -180,13 +161,13 @@ class ApplyViewDetailActions {
     }
 
     // 撤销申请
-    saleBackoutApply(obj) {
+    cancelApplyApprove(obj) {
         var errTip = Intl.get('user.apply.detail.backout.error', '撤销申请失败');
         this.dispatch({loading: true, error: false});
-        AppUserAjax.saleBackoutApply(obj).then((data) => {
+        cancelApplyApprove(obj).then((data) => {
             if (data) {
                 this.dispatch({loading: false, error: false});
-                AppUserUtil.emitter.emit('updateSelectedItem', {id: obj.apply_id, approval: '3', status: 'success'});
+                ApplyApproveUtil.emitter.emit('updateSelectedItem', {id: obj.id, cancel: true, status: 'success'});
                 //刷新用户审批未处理数(左侧导航中待审批数)
                 if (Oplate && Oplate.unread) {
                     var count = Oplate.unread.approve - 1;
@@ -194,12 +175,12 @@ class ApplyViewDetailActions {
                 }
             }else{
                 this.dispatch({loading: false, error: true, errorMsg: errTip});
-                AppUserUtil.emitter.emit('updateSelectedItem', {status: 'error'});
+                ApplyApproveUtil.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
             }
         }, (errorMsg) => {
             var errMsg = errorMsg || errTip;
             this.dispatch({loading: false, error: true, errorMsg: errMsg});
-            AppUserUtil.emitter.emit('updateSelectedItem', {status: 'error'});
+            ApplyApproveUtil.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
             this.dispatch(errorMsg);
         });
     }
@@ -225,7 +206,7 @@ class ApplyViewDetailActions {
 
     transferNextCandidate(queryObj, callback) {
         this.dispatch({loading: true, error: false});
-        ApplyApproveAjax.transferUserApplyNextCandidate().sendRequest(queryObj).success((data) => {
+        ApplyApproveAjax.transferNextCandidate().sendRequest(queryObj).success((data) => {
             if (data) {
                 this.dispatch({loading: false, error: false});
                 _.isFunction(callback) && callback(true);

@@ -27,7 +27,7 @@ function BusinessApplyActions() {
         'setShowUpdateTip',
         'setIsCheckUnreadApplyList',
         'refreshUnreadReplyList',//刷新未读回复列表
-        'clearUnreadReply'
+        ''
     );
     this.getAllApplyList = function(queryObj,callback) {
         //需要先获取待审批列表，成功后获取全部列表

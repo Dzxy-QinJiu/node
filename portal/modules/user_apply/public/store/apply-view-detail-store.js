@@ -16,7 +16,7 @@ class ApplyViewDetailStore {
         //审批的详情数据
         this.detailInfoObj = {
             // "" loading error
-            loading: false,
+            loadingResult: 'loading',
             //获取的详情信息
             info: {},
             //错误信息
@@ -97,7 +97,8 @@ class ApplyViewDetailStore {
             //三种状态,loading,error,success,''
             result: '',
             //服务端错误信息
-            errorMsg: ''
+            errorMsg: '',
+            comment: ''
         };
         // 是否显示没有设置角色的弹框(管理员批准的时候，
         // 如果是创建正式、创建试用、已有用户申请开通新应用正式、已有用户申请开通新应用试用，
@@ -176,15 +177,15 @@ class ApplyViewDetailStore {
         };
 
         if (obj.loading) {
-            this.detailInfoObj.loading = true;
+            this.detailInfoObj.loadingResult = 'loading';
             this.detailInfoObj.info = {};
             return;
         } else if (obj.error) {
-            this.detailInfoObj.loading = false;
+            this.detailInfoObj.loadingResult = 'error';
             this.detailInfoObj.info = {};
             this.detailInfoObj.errorMsg = obj.errorMsg;
         } else {
-            this.detailInfoObj.loading = false;
+            this.detailInfoObj.loadingResult = '';
             const info = obj.detail;
             _.each(info.apps || [], (app) => {
                 app.app_id = app.client_id;
@@ -247,6 +248,32 @@ class ApplyViewDetailStore {
 
         }
     }
+    setDetailInfoObjAfterAdd(detailObj) {
+        delete detailObj.afterAddReplySuccess;
+        this.detailInfoObj = {
+            // "" loading error
+            loadingResult: '',
+            //获取的详情信息
+            info: detailObj,
+            //错误信息
+            errorMsg: ''
+        };
+        this.replyListInfo = {
+            //三种状态,loading,error,''
+            result: '',
+            //列表数组
+            list: [],
+            //服务端错误信息
+            errorMsg: ''
+        };
+        //下一节点负责人的列表
+        this.candidateList = [];
+
+    }
+    hideCancelBtns() {
+        this.selectedDetailItem.showCancelBtn = false;
+        this.detailInfoObj.info.showCancelBtn = false;
+    }
     hideApprovalBtns() {
         this.selectedDetailItem.showApproveBtn = false;
         this.selectedDetailItem.showCancelBtn = false;
@@ -255,7 +282,7 @@ class ApplyViewDetailStore {
         this.selectedDetailItem.showApproveBtn = flag;
         this.detailInfoObj.info.showApproveBtn = flag;
     }
-    saleBackoutApply(resultObj){
+    cancelApplyApprove(resultObj){
         if (resultObj.loading){
             this.backApplyResult.submitResult = 'loading';
             this.backApplyResult.errorMsg = '';
@@ -265,6 +292,8 @@ class ApplyViewDetailStore {
         }else{
             this.backApplyResult.submitResult = 'success';
             this.backApplyResult.errorMsg = '';
+            this.hideApprovalBtns();
+            this.showOrHideApprovalBtns();
         }
     }
     getHistoryApplyListsByCustomerId(resultObj){
@@ -368,6 +397,9 @@ class ApplyViewDetailStore {
         } else {
             this.detailBottomDisplayType = 'btn';
         }
+    }
+    setApplyFormDataComment(comment) {
+        this.replyFormInfo.comment = comment;
     }
     //提交审批
     submitApply(obj) {
@@ -568,7 +600,7 @@ class ApplyViewDetailStore {
             var replyItem = resultObj.reply;
             this.replyListInfo.list.push(replyItem);
             //输入框清空
-            this.formData.comment = '';
+            replyFormInfo.comment = '';
         }
     }
     //恢复添加回复表单到默认状态

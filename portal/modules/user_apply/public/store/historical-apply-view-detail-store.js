@@ -257,7 +257,7 @@ class ApplyViewDetailStore {
         this.selectedDetailItem.showApproveBtn = flag;
         this.detailInfoObj.info.showApproveBtn = flag;
     }
-    saleBackoutApply(resultObj){
+    cancelApplyApprove(resultObj){
         if (resultObj.loading){
             this.backApplyResult.submitResult = 'loading';
             this.backApplyResult.errorMsg = '';

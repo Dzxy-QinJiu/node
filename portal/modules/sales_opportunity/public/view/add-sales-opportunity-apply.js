@@ -57,8 +57,8 @@ class AddSalesOpportunityApply extends React.Component {
             $('.add-leave-apply-form-wrap form .require-item label').addClass('ant-form-item-required');
         }
     }
-    hideSalesOpportunityApplyAddForm = () => {
-        this.props.hideSalesOpportunityApplyAddForm();
+    hideSalesOpportunityApplyAddForm = (data) => {
+        this.props.hideSalesOpportunityApplyAddForm(data);
     };
     //去掉保存后提示信息
     hideSaveTooltip = () => {
@@ -111,11 +111,10 @@ class AddSalesOpportunityApply extends React.Component {
                     if (data){
                         //添加成功
                         this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                        this.hideSalesOpportunityApplyAddForm();
                         //添加完后的处理
                         data.afterAddReplySuccess = true;
                         data.showCancelBtn = true;
-                        SalesOpportunityApplyAction.afterAddApplySuccess(data);
+                        this.hideSalesOpportunityApplyAddForm(data);
                     }else{
                         this.setResultData(errTip, 'error');
                     }

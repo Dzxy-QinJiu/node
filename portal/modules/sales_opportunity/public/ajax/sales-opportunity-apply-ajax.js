@@ -23,62 +23,7 @@ exports.getAllSalesOpportunityApplyList = function(queryObj) {
     });
     return Deferred.promise();
 };
-//获取待我审批的申请列表
-let getWorklistSalesOpportunityApplyListAjax = null;
-exports.getWorklistSalesOpportunityApplyList = function(queryObj) {
-    var Deferred = $.Deferred();
-    getWorklistSalesOpportunityApplyListAjax && getWorklistSalesOpportunityApplyListAjax.abort();
-    getWorklistSalesOpportunityApplyListAjax = $.ajax({
-        url: '/rest/get/worklist/sales_opportunity_apply/list',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-//获取回复列表
-let getSalesOpportunityApplyCommentListAjax = null;
-exports.getSalesOpportunityApplyCommentList = function(queryObj) {
-    var Deferred = $.Deferred();
-    getSalesOpportunityApplyCommentListAjax && getSalesOpportunityApplyCommentListAjax.abort();
-    getSalesOpportunityApplyCommentListAjax = $.ajax({
-        url: '/rest/get/sales_opportunity_apply/comment/list',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-//添加审批回复
-let addSalesOpportunityApplyCommentsAjax = null;
-exports.addSalesOpportunityApplyComments = function(data) {
-    var Deferred = $.Deferred();
-    addSalesOpportunityApplyCommentsAjax && addSalesOpportunityApplyCommentsAjax.abort();
-    addSalesOpportunityApplyCommentsAjax = $.ajax({
-        url: '/rest/add/sales_opportunity_apply/comment',
-        dataType: 'json',
-        type: 'post',
-        data: data,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
+
 //通过或者驳回申请
 let approveSalesOpportunityApplyPassOrRejectAjax = null;
 exports.approveSalesOpportunityApplyPassOrReject = function(obj) {

@@ -47,6 +47,7 @@ var timeoutFunc;//定时方法
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {uniteFileSize} from 'PUB_DIR/sources/utils/common-method-util';
 import classNames from 'classnames';
+import {transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -128,8 +129,8 @@ class ApplyViewDetail extends React.Component {
                     this.addNextCandidate.handleCancel();
                 }
                 //转出成功后，如果左边选中的是待审批的列表，在待审批列表中把这条记录删掉
-                if (this.props.applyListType === 'ongoing'){
-                    ReportSendApplyAction.afterTransferApplySuccess(submitObj.id);
+                if (this.props.selectedApplyStatus === 'ongoing'){
+                    this.props.afterTransferApplySuccess(submitObj.id);
                 }else{
                     message.success(Intl.get('apply.approve.transfer.success','转出申请成功'));
                 }
@@ -170,8 +171,7 @@ class ApplyViewDetail extends React.Component {
                 <AntcDropdown
                     datatraceContainer='舆情报送申请转审按钮'
                     ref={AssignSales => this.addNextCandidate = AssignSales}
-                    content={<Button
-                        className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('apply.view.transfer.candidate','转审')}</Button>}
+                    content={transferBtnContent()}
                     overlayTitle={Intl.get('apply.will.approve.apply.item','待审批人')}
                     okTitle={Intl.get('common.confirm', '确认')}
                     cancelTitle={Intl.get('common.cancel', '取消')}
@@ -738,16 +738,9 @@ class ApplyViewDetail extends React.Component {
             return null;
         }
         let customerOfCurUser = this.state.customerOfCurUser || {};
-        let divHeight = $(window).height();
-        //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
-        if (!this.props.isHomeMyWork) {
-            divHeight -= TOP_NAV_HEIGHT;
-        }
-        const detailWrapCls = classNames('leave_manage_apply_detail_wrap', {
-            'col-md-8': !this.props.isHomeMyWork
-        });
+        const detailWrapCls = classNames('leave_manage_apply_detail_wrap');
         return (
-            <div className={detailWrapCls} style={{'height': divHeight}} data-tracename="舆情报送审批详情界面">
+            <div className={detailWrapCls} style={{'width': this.props.width, 'height': this.props.height}} data-tracename="舆情报送审批详情界面">
                 <ApplyDetailStatus
                     showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
                     showErrTip={this.state.detailInfoObj.loadingResult === 'error'}
@@ -780,20 +773,24 @@ class ApplyViewDetail extends React.Component {
 ApplyViewDetail.defaultProps = {
     detailItem: {},
     showNoData: false,
-    applyListType: '',
+    selectedApplyStatus: '',
     isUnreadDetail: false,
     applyData: {},
     isHomeMyWork: false,//是否是首页我的工作中打开的详情
     afterApprovedFunc: function() {//审批完后的外部处理方法
-    }
+    },
+    width: '100%',
+    height: '100%',
 };
 ApplyViewDetail.propTypes = {
     detailItem: PropTypes.object,
-    applyListType: PropTypes.string,
+    selectedApplyStatus: PropTypes.string,
     showNoData: PropTypes.bool,
     isUnreadDetail: PropTypes.bool,
     applyData: PropTypes.object,
     isHomeMyWork: PropTypes.bool,
-    afterApprovedFunc: PropTypes.func
+    afterApprovedFunc: PropTypes.func,
+    width: PropTypes.string,
+    height: PropTypes.string
 };
 module.exports = ApplyViewDetail;

@@ -1,289 +1,877 @@
 @import "../../../../public/css/common-variables";
 @pd-l: 13px;
 @font-grey: #A1A1A1;
-.apply_manage_wrap{
-  .app_user_manage_apply_detail_wrap {
-    float: left;
-    .app-property-setting {
-      .app-property-container-content {
-        margin-right: 12px;
+@font-color: #999999;
+//申请详情
+.app_user_manage_apply_detail_wrap {
+  color: #5d5d5d;
+  position: relative;
+  background-color: @current-item-color;
+  .apply-detail-content {
+    padding: 0 24px;
+  }
+
+  //客户、用户、备注、回复信息
+  .apply-detail-info {
+    background-color: @apply-detail-bg-color;
+    margin-bottom: 10px;
+    padding: 0 10px;
+
+    .reply-icon-block {
+      z-index: 2;
+    }
+
+    .customer-icon-block, .user-icon-block, .common-icon-block, .reply-icon-block {
+      float: left;
+      width: 50px;
+      height: 60px;
+      padding-left: 8px;
+      padding-top: 15px;
+
+      .icon-customer, .icon-user, .icon-common, .icon-apply-message-tip {
+        color: #9faaac;
       }
-    }
-  }
-  .app_user_manage_apply_update{
-    font-size:@form_font_size14;
-    color:#aaa;
-    text-align:center;
-    margin-top:6px;
-    a{
-      color:#4d96d1;
-    }
-  }
-  .apply-change-password-style{
-    .ant-pwd-strength{
-      margin-top:-20px;
-    }
-  }
-  .apply_detail_operate{
-    height:30px;
-    overflow:hidden;
-    color:#4c8dc3;
-    .btn-icon-return, .btn-icon-role-auth{
-      cursor:pointer;
-      float:right;
-      padding-right: 6px;
-      padding-top: 4px;
-    }
-  }
-  .apply_detail_margin{
-    margin:0 20px 0 29px;
-  }
-  .apply_detail_simple{
-    padding:50px 0 0 30px;
-    .modify-delay-time-style {
-      margin-top: -6px;
-      .ant-input-number {
-        border-radius: 3px;
-        height: 30px;
-        vertical-align: middle;
-        .ant-input-number-input-wrap {
-            height: 28px;
-            overflow: hidden;
-        }
+
+      .icon-customer {
+        font-size: 18px;
       }
-      .select-modify-unit {
-        width: 70px;
-        margin-left: 5px;
+
+      .icon-user {
+        font-size: 20px;
       }
-    }
-  }
-  .apply_detail_uuid{
-    overflow:hidden;
-    height: 53px;
-    line-height: 53px;
-    border-bottom:1px solid #ced6da;
-    font-size:14px;
-    color:#5c5d5d;
-    span.last-contact-time{
-      margin-left: 20px;
-    }
-    span.order{
-      float:right;
-    }
-  }
-  .customer-list-tags{
-    margin-left: 4px;
-  }
-  .customer-label {
-    margin-left: 4px;
-    margin-right: 0;
-    padding: 0 5px;
-    height: 20px;
-    line-height: 19px;
-    font-size: 12px;
-    color: @tag-font-color;
-  }
-  .user-info-block {
-    &.apply-info-block {
-      .apply-info-label {
-        .user-info-label.label-fix {
-          line-height: 20px!important;
-        }
-        .edit-fix {
-          margin-top: -3px;
-        }
-      }
-      .delay-days-title {
-        font-size: 15px;
-        color: @font-grey;
-        .delay-days-bar {
-          color: #5c5d5d;
-        }
-      }
-      .user-item-container {
-        margin-top: 10px;
-      }
-      .username-container {
+
+      .icon-common {
         font-size: 14px;
-        span.nickname {
-          color: @font-grey;
+      }
+    }
+
+    .apply-info-block {
+      position: relative;
+      width: 100%;
+      padding-left: 50px;
+      z-index: 0;
+
+      .apply-info-content {
+        padding: 16px 10px 16px 16px;
+        border-left: 1px solid @bordercolor;
+
+        .apply-info-label {
+          margin-top: 4px;
+          font-size: 14px;
+          color: #9f9fa1;
+
+          .user-info-label {
+            padding-right: 6px;
+          }
+
+          .user-info-text {
+            color: @text-color;
+          }
         }
-        .username {
+      }
+    }
+
+    .apply-info-label {
+      margin-top: 4px;
+      font-size: 14px;
+      color: #9f9fa1;
+
+      .user-info-label {
+        padding-right: 6px;
+      }
+
+      .user-info-text {
+        color: @text-color;
+      }
+    }
+
+    //客户信息
+    .customer-info-block {
+      .customer-name {
+        padding-bottom: 6px;
+
+        a {
+          font-size: 14px;
+          color: @title-color;
+          text-decoration: none;
+        }
+
+        .icon-arrow-right {
+          padding-left: 4px;
+          font-size: 14px;
+          font-weight: normal;
+        }
+      }
+    }
+
+    //用户信息
+    .user-info-block {
+      .user-info-text {
+        //a {
+        //  color: @text-color;
+        //}
+
+        .icon-update {
           cursor: pointer;
         }
-      }
-    }    
-  }
-  //延期
-  .delay_detail_apps{
-    .apply_detail_operate{
-      top: 0 !important;
-    }
-  }
 
-  //表格头部样式
-  .apply_detail_apps{
-    th.apply-detail-th{
-      background: #f0f4f5 !important;
-    }
-    .apply-detail-th.number-align-right{
-      text-align: right;
-    }
-  }
-  .apply-detail-config-form {
-    .app-role-permission .app-property-roles,.app-role-permission-permission {
-        float: left;
-        width: 100%;
-        .rounded_item{
+        .user-nick-name {
+          color: @font-color;
+        }
+      }
+
+      //用户名
+      .edit-name-label {
+        display: inline-block;
+        line-height: 26px;
+      }
+
+      .edit-name-wrap {
+        display: inline-block;
+        vertical-align: top;
+      }
+
+      .user-name-wrap {
+        display: inline-block;
+        width: 260px;
+
+        form {
           float: left;
-          display: block;
+          width: 200px;
+
+          .ant-form-item {
+            margin-bottom: 0;
+          }
         }
+
+        .save-buttons {
+          float: left;
+          margin-top: 4px;
+        }
+      }
+
+      //密码
+      .password-label {
+        float: left;
+        line-height: 32px;
+      }
+
+      .apply-repassword-container {
+        padding-left: 37px;
+      }
+
+      .apply-change-password-style {
+        input {
+          height: 24px;
+          line-height: 24px;
+        }
+      }
+
+      //延期、到期时间
+      .delay-time-wrap {
+        .user-info-label {
+          float: left;
+          line-height: 26px;
+        }
+
+        .user-info-text {
+          display: inline-block;
+          line-height: 26px;
+
+          .modify-delay-time-style {
+            input {
+              height: 26px;
+            }
+
+            .ant-select-selection--single {
+              height: 28px;
+            }
+
+            .select-modify-unit {
+              width: 70px;
+            }
+          }
+        }
+      }
+
+      .icon-choose, .icon-close {
+        margin-left: 10px;
+        cursor: pointer;
+      }
+
+      .icon-choose {
+        color: #4dbe50;
+      }
+
+      .icon-close {
+        color: #b50e0a;
+        font-size: 14px;
+      }
+
+      //应用
+      .apply_detail_apps {
+        position: relative;
+        padding-top: 10px;
+
+        table {
+          border-color: @bordercolor;
+          margin-bottom: 0;
+        }
+
+        tr {
+          background-color: #fff;
+        }
+
+        .apply-detail-head {
+          background-color: transparent;
+        }
+      }
+
+      .apply_detail_operate {
+        position: absolute;
+        top: -16px;
+        right: 0;
+      }
+    }
+
+    //备注
+    .common-info-block {
+      .apply-info-label {
+        margin-top: 0;
+      }
     }
   }
 
-  .apply_detail_desp, .apply_detail_apps{
-    padding:0;
-    
-    .applist-container {
-      background: white;
-      li {
-        line-height: 36px;
-        padding-left: @pd-l;
-        padding-right: @pd-l;
-        font-size: 13px;
-        .time-bar {
+  //回复列表外层容器
+  .apply-detail-reply-list {
+    //position: relative;
+    //float: left;
+    //width: 100%;
+    .reply-info-block {
+      .reply-list-container {
+        li {
+          margin-bottom: 6px;
+          word-break: break-all;
+          overflow: hidden;
+        }
+
+        //回复
+        .ant-input-group-wrapper {
+          margin-top: 4px;
+        }
+
+        .ant-input-group-addon {
+          padding: 4px 14px;
+          background-color: #fff;
+        }
+      }
+
+      .apply-info-label {
+        margin-top: 0;
+
+        .reply-date-text {
           float: right;
-          color: #999999
+          padding-right: 0;
         }
       }
-      
-    }
-  }
-  .apply_detail_desp{
-    padding-right:40px;
-    margin-top:-@label_padding_top;
-    color:#5c5d5d;
-  }
-  .apply_detail_desp dt{
-    font-weight:normal;
-  }
-  .apply_detail_desp dd{
-    padding-right:35px;
-    white-space:normal;
-    word-break:break-all;
-  }
-  .apply_detail_desp dt, .apply_detail_desp dd{
-    font-size:@form_font_size14;
-    line-height:@line_height14;
-  }
-  .no-user-logo-div{
-    @size:36px;
-    width:@size;
-    height:@size;
-    line-height:@size - 2px;
-    font-size:24px;
-  }
-  .apply_detail_apps > table{
-    border-color:#ced6da;
-    tr td:nth-child(1), td:nth-child(2), td:nth-child(3), td:nth-child(4){
-      border-right:1px dashed @table_dashed_color
-    }
 
-    .apply-detail-head > th{
-      text-align:center;
-      border:1px dashed @table_dashed_color;
-    }
-
-    .apply-app-name, .desp_time{
-      max-width: 200px;
-    }
-
-    td{
-      text-align:left;
-      vertical-align:middle;
-      color:#5d5d5d;
-      font-size:@form_font_size14;
-      border:none;
-      max-width: 100px;
-    }
-    .apply-app-numbers{
-      text-align:right;
-    }
-    img{
-      width:36px;
-      height:36px;
-      border-radius:50%;
-    }
-  }
-  td.desp_time{
-    font-size:12px;
-  }
-  h3 .anticon-reload{
-    margin-right:20px;
-  }
-  .app-property-custom-settings{
-    padding-bottom:20px;
-  }
-  .app-property-setting{
-    padding-top:0;
-  }
-  .icon-update{
-    margin-left:20px;
-  }
-  .user-name-edit-block{
-    .user-name-wrap{
-      display:table;
-      width:100%;
-      input[type=text]{
-        height:24px;
+      .refresh-reply-data-tip {
+        display: inline-block;
+        width: 100%;
+        line-height: 27px;
+        text-align: center;
       }
-      input[type=text], .distance{
-        display:table-cell;
+
+      //loading外层容器
+      .reply-loading-wrap {
+        display: block;
+        text-align: center;
+        margin: 0 0 0 8px;
+        font-size: 18px;
+      }
+
+      //loading文字容器
+      .reply-loading-text {
+        font-size: 12px;
+        margin: 0 0 0 10px;
+      }
+
+      //提示容器
+      .ant-alert {
+        display: inline-block;
+      }
+
+      //刷新样式
+      .anticon-reload {
+        cursor: pointer;
+
+        &.pull-right {
+          margin: 10px 10px 0 0;
+          font-size: 14px;
+        }
       }
     }
-    .distance{
-      padding-left:10px;
-    }
-    .distance:nth-child(3){
-      padding-left:0px;
-    }
-    .iconfont{
-      cursor:pointer;
+  }
+
+  //申请用户的各应用配置面板
+  .apply_custom_setting_wrap {
+    background-color: @apply-detail-bg-color;
+
+    .apply_detail_operate {
+      width: 100%;
+      padding-right: 10px;
     }
   }
-  .approval_person{
-    .anticon-loading{
-      color:#444;
-      font-size:16px;
-      margin:0 5px 0 0;
-      vertical-align:middle;
-    }
-    .alert-timer{
-      float:left;
-    }
-    .ant-alert{
-      display:inline-block;
-      vertical-align:top;
-      padding-top:6px;
-      padding-bottom:6px;
-      margin:0 5px 0 0;
+
+  .modal-backdrop, .modal {
+    position: absolute;
+  }
+
+  .modal-dialog .modal-content {
+    box-shadow: none !important;
+  }
+
+  .apply-change-password-style {
+    width: 230px;
+    display: inline-block;
+    vertical-align: bottom;
+
+    .ant-form-item {
+      margin-bottom: 0;
     }
   }
-  .roles-notset-btn-continue{
-    margin:0 20px 0 0;
-  }
-  // 撤销申请
-  .backout-apply {
-    .modal-content {
-      background-color: #fff ;
+
+  .ant-form-horizontal {
+    dt {
+      padding-top: 10px !important;
     }
   }
-  .historical-apply-detail{
-    position: relative;
-    overflow: hidden;
-    >.iconfont.icon-close{
+
+  .approval {
+    text-align: center;
+    color: #4d96d1;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #748fa0;
+    padding: 10px 0;
+    margin: 16px 33px 19px 38px;
+    line-height: 22px;
+    cursor: pointer;
+  }
+
+
+  .btn-primary-sure {
+    margin-left: 10px;
+  }
+
+  .modal-content {
+    box-shadow: none;
+  }
+
+  .approval_loading {
+    p {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      font-size: 16px;
+    }
+  }
+
+  .approval_result {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 2;
+    background: #fff;
+
+    .approval_result_wrap {
+      width: 300px;
+      height: 227px;
       position: absolute;
-      left: -10px;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      margin: auto;
+      text-align: center;
+      padding: 8px 0 0 0;
+      z-index: 10;
+
+      .bgimg {
+        width: 80px;
+        height: 83px;
+        margin: 0 auto;
+        background: transparent url("../images/approval_success.png") 0 0;
+      }
+
+      .bgimg.error {
+        background: transparent url("../images/approval_error.png") 0 0;
+      }
+
+      p {
+        line-height: 28px;
+        color: #b8bdc0;
+        font-size: 20px;
+        margin-top: 23px;
+        margin-bottom: 27px;
+      }
+
+      .ant-btn-ghost {
+        color: #b8bdc0;
+
+        &:hover {
+          color: #57c5f7;
+        }
+      }
+
+      .re_send {
+        margin-right: 23px;
+        color: #57c5f7;
+
+        &:hover {
+          color: darken(#57c5f7, 20%);
+        }
+      }
     }
+  }
+
+  .single_user_log_select_time, .single_user_log_select_app {
+    display: inline-block;
+    padding: 10px 0;
+    vertical-align: middle;
+  }
+
+  // 单个用户审计日志的搜素框样式
+  .single_user_log_search_content {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    right: 0;
+
+    .search-input-container {
+      .search-input {
+        height: @input_height;
+      }
+    }
+  }
+
+  .single_user_log_information {
+    margin-bottom: 15px;
+    margin-right: 20px;
+    padding: 8px 0 2px 10px;
+    background: #dce4e7;
+  }
+
+  .single_user_log_time_operation {
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .single_user_log_other_information {
+    font-size: 14px;
+  }
+
+  .single_user_log_detail {
+    padding-right: 20px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+
+  .user_audit_log_select_app .ant-select-selection--single,
+  .single_user_log_select_app .ant-select-selection--single {
+    height: @input_height;
+    font-size: @form_font_size;
+    line-height: @line_height30;
+  }
+
+  .user_audit_log_select_app .ant-select-selection__rendered,
+  .single_user_log_select_app .ant-select-selection__rendered {
+    line-height: @line_height30;
+  }
+
+  .right-panel-audit-log-style {
+    .load8 {
+      transform: scale(0.5, 0.5);
+
+      .loader8 {
+        border-left-color: #394144;
+      }
+    }
+
+    .call_chart {
+      position: relative;
+      height: 214px;
+      margin: 0 20px 20px 20px;
+    }
+
+    .ant-alert-error, .ant-alert-message, .ant-alert-info {
+      display: inline-block;
+    }
+
+    .alert-wrap {
+      text-align: center;
+    }
+
+    .alert-wrap:first-child {
+      margin-top: 20px;
+      position: absolute;
+      width: 100%;
+    }
+
+    .total_summary {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .no-more-data-tip {
+      .ant-alert-info {
+        margin-right: 20px;
+        display: block;
+      }
+    }
+  }
+}
+
+.app_user_manage_apply_detail_wrap {
+  float: left;
+
+  .app-property-setting {
+    .app-property-container-content {
+      margin-right: 12px;
+    }
+  }
+}
+
+.app_user_manage_apply_update {
+  font-size: @form_font_size14;
+  color: #aaa;
+  text-align: center;
+  margin-top: 6px;
+
+  a {
+    color: #4d96d1;
+  }
+}
+
+.apply-change-password-style {
+  .ant-pwd-strength {
+    margin-top: -20px;
+  }
+}
+
+.apply_detail_operate {
+  height: 30px;
+  overflow: hidden;
+  color: #4c8dc3;
+
+  .btn-icon-return, .btn-icon-role-auth {
+    cursor: pointer;
+    float: right;
+    padding-right: 6px;
+    padding-top: 4px;
+  }
+}
+
+.apply_detail_margin {
+  margin: 0 20px 0 29px;
+}
+
+.apply_detail_simple {
+  padding: 50px 0 0 30px;
+
+  .modify-delay-time-style {
+    margin-top: -6px;
+
+    .ant-input-number {
+      border-radius: 3px;
+      height: 30px;
+      vertical-align: middle;
+
+      .ant-input-number-input-wrap {
+        height: 28px;
+        overflow: hidden;
+      }
+    }
+
+    .select-modify-unit {
+      width: 70px;
+      margin-left: 5px;
+    }
+  }
+}
+
+.apply_detail_uuid {
+  overflow: hidden;
+  height: 53px;
+  line-height: 53px;
+  border-bottom: 1px solid #ced6da;
+  font-size: 14px;
+  color: #5c5d5d;
+
+  span.last-contact-time {
+    margin-left: 20px;
+  }
+
+  span.order {
+    float: right;
+  }
+}
+
+.customer-list-tags {
+  margin-left: 4px;
+}
+
+.customer-label {
+  margin-left: 4px;
+  margin-right: 0;
+  padding: 0 5px;
+  height: 20px;
+  line-height: 19px;
+  font-size: 12px;
+  color: @tag-font-color;
+}
+
+.user-info-block {
+  &.apply-info-block {
+    .apply-info-label {
+      .user-info-label.label-fix {
+        line-height: 20px !important;
+      }
+
+      .edit-fix {
+        margin-top: -3px;
+      }
+    }
+
+    .delay-days-title {
+      font-size: 15px;
+      color: @font-grey;
+
+      .delay-days-bar {
+        color: #5c5d5d;
+      }
+    }
+
+    .user-item-container {
+      margin-top: 10px;
+    }
+
+    .username-container {
+      font-size: 14px;
+
+      span.nickname {
+        color: @font-grey;
+      }
+
+      .username {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+//延期
+.delay_detail_apps {
+  .apply_detail_operate {
+    top: 0 !important;
+  }
+}
+
+//表格头部样式
+.apply_detail_apps {
+  th.apply-detail-th {
+    background: #f0f4f5 !important;
+  }
+
+  .apply-detail-th.number-align-right {
+    text-align: right;
+  }
+}
+
+.apply-detail-config-form {
+  .app-role-permission .app-property-roles, .app-role-permission-permission {
+    float: left;
+    width: 100%;
+
+    .rounded_item {
+      float: left;
+      display: block;
+    }
+  }
+}
+
+.apply_detail_desp, .apply_detail_apps {
+  padding: 0;
+
+  .applist-container {
+    background: white;
+
+    li {
+      line-height: 36px;
+      padding-left: @pd-l;
+      padding-right: @pd-l;
+      font-size: 13px;
+
+      .time-bar {
+        float: right;
+        color: #999999
+      }
+    }
+
+  }
+}
+
+.apply_detail_desp {
+  padding-right: 40px;
+  margin-top: -@label_padding_top;
+  color: #5c5d5d;
+}
+
+.apply_detail_desp dt {
+  font-weight: normal;
+}
+
+.apply_detail_desp dd {
+  padding-right: 35px;
+  white-space: normal;
+  word-break: break-all;
+}
+
+.apply_detail_desp dt, .apply_detail_desp dd {
+  font-size: @form_font_size14;
+  line-height: @line_height14;
+}
+
+.no-user-logo-div {
+  @size: 36px;
+  width: @size;
+  height: @size;
+  line-height: @size - 2px;
+  font-size: 24px;
+}
+
+.apply_detail_apps > table {
+  border-color: #ced6da;
+
+  tr td:nth-child(1), td:nth-child(2), td:nth-child(3), td:nth-child(4) {
+    border-right: 1px dashed @table_dashed_color
+  }
+
+  .apply-detail-head > th {
+    text-align: center;
+    border: 1px dashed @table_dashed_color;
+  }
+
+  .apply-app-name, .desp_time {
+    max-width: 200px;
+  }
+
+  td {
+    text-align: left;
+    vertical-align: middle;
+    color: #5d5d5d;
+    font-size: @form_font_size14;
+    border: none;
+    max-width: 100px;
+  }
+
+  .apply-app-numbers {
+    text-align: right;
+  }
+
+  img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+  }
+}
+
+td.desp_time {
+  font-size: 12px;
+}
+
+h3 .anticon-reload {
+  margin-right: 20px;
+}
+
+.app-property-custom-settings {
+  padding-bottom: 20px;
+}
+
+.app-property-setting {
+  padding-top: 0;
+}
+
+.icon-update {
+  margin-left: 20px;
+}
+
+.user-name-edit-block {
+  .user-name-wrap {
+    display: table;
+    width: 100%;
+
+    input[type=text] {
+      height: 24px;
+    }
+
+    input[type=text], .distance {
+      display: table-cell;
+    }
+  }
+
+  .distance {
+    padding-left: 10px;
+  }
+
+  .distance:nth-child(3) {
+    padding-left: 0px;
+  }
+
+  .iconfont {
+    cursor: pointer;
+  }
+}
+
+.approval_person {
+  .anticon-loading {
+    color: #444;
+    font-size: 16px;
+    margin: 0 5px 0 0;
+    vertical-align: middle;
+  }
+
+  .alert-timer {
+    float: left;
+  }
+
+  .ant-alert {
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    margin: 0 5px 0 0;
+  }
+}
+
+.roles-notset-btn-continue {
+  margin: 0 20px 0 0;
+}
+
+// 撤销申请
+.backout-apply {
+  .modal-content {
+    background-color: #fff;
+  }
+}
+
+.historical-apply-detail {
+  position: relative;
+  overflow: hidden;
+
+  > .iconfont.icon-close {
+    position: absolute;
+    left: -10px;
   }
 }

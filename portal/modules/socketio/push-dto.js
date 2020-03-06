@@ -93,8 +93,8 @@ exports.unreadReplyToFrontend = function(unreadReply) {
     return {
         member_id: unreadReply.member_id,//谁的未读回复
         create_time: unreadReply.create_time,//回复时间
-        id: unreadReply.id,//回复的id
-        apply_id: unreadReply.apply_id,//有未读回复的申请id
+        comment_id: unreadReply.id,//回复的id
+        id: unreadReply.apply_id,//有未读回复的申请id
         type: unreadReply.type || '',//未读回复的类型
     };
 };

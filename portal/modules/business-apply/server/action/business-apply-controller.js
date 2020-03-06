@@ -52,20 +52,6 @@ exports.getApplyDetailById = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-exports.getApplyComments = function(req, res) {
-    BusinessApplyService.getApplyComments(req, res).on('success', function(data) {
-        res.status(200).json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
-exports.addApplyComments = function(req, res) {
-    BusinessApplyService.addApplyComments(req, res).on('success', function(data) {
-        res.status(200).json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
 exports.approveApplyPassOrReject = function(req, res) {
     BusinessApplyService.approveApplyPassOrReject(req, res).on('success', function(data) {
         res.status(200).json(data);
@@ -75,13 +61,6 @@ exports.approveApplyPassOrReject = function(req, res) {
 };
 exports.getApplyStatusById = function(req, res) {
     BusinessApplyService.getApplyStatusById(req, res).on('success', function(data) {
-        res.status(200).json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
-exports.cancelApplyApprove = function(req, res) {
-    BusinessApplyService.cancelApplyApprove(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
