@@ -1,9 +1,9 @@
 import ApplyViewDetailActions from '../action/apply-view-detail-actions';
 import { altAsyncUtil } from 'ant-utils';
 const { resultHandler } = altAsyncUtil;
-import { APPLY_TYPES, TIMERANGEUNIT, WEEKDAYS} from 'PUB_DIR/sources/utils/consts';
+import { APPLY_TYPES, TIMERANGEUNIT, WEEKDAYS, APPROVE_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {getDelayDisplayTime} from '../util/app-user-util';
-import {checkIfLeader, isCustomDelayType, applyAppConfigTerminal} from 'PUB_DIR/sources/utils/common-method-util';
+import {checkIfLeader, isCustomDelayType, applyAppConfigTerminal, approveAppConfigTerminal} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyViewDetailStore {
     constructor() {
         this.resetState();
@@ -292,6 +292,9 @@ class ApplyViewDetailStore {
         const apps = _.cloneDeep(this.detailInfoObj.info.apps);
         //申请类型
         let apply_type = _.get(this.detailInfoObj, 'info.type');
+        // 申请的状态（待审批 0 、已通过1 、已驳回 2 、已撤销3）
+        const approvalState = _.get(this.detailInfoObj, 'info.approval_state');
+
         _.each(apps, (appInfo) => {
             const app_id = appInfo.app_id;
             const tags = appInfo.tags || [];
@@ -337,12 +340,38 @@ class ApplyViewDetailStore {
                 //权限
                 permissions: appInfo.permissions || [],
             };
+            {
+                /**
+                 * 账号申请规则：
+                 * 1.销售在申请新账号的时候，不显示多终端的选择
+                 * 2. 销售在申请账号延期的时候，不显示多终端的选择，默认跟停用前的终端选择一致，
+                 *    如果停用的状态下没有选中任何终端，则默认选上所有终端
+                 *
+                 *  审批规则：
+                 *  管理员审批界面上，若申请的账号是包含多终端信息的，则需要展示出应用对应的全部多终端状态，在审批时可以修改开通多终端
+                 * */
+            }
             // 申请的多终端信息
             const terminals = _.get(appInfo, 'terminals', []);
-            if (!_.isEmpty(terminals)) {
-                appConfigObj.terminals = applyAppConfigTerminal(terminals, app_id, appList);
+
+            // 待审批，需要根据应用的多终端信息展示全部的多终端信息
+            if (approvalState === APPROVE_STATUS.ONGOING) {
+                // 延期并且停用前有多终端信息，则多终端信息和停用前保持一直
+                if (apply_type === APPLY_TYPES.DELAY && !_.isEmpty(terminals)) {
+                    appConfigObj.terminals = applyAppConfigTerminal(terminals, app_id, appList);
+                } else { // 申请新用户、延期前，应用有默认多终端信息的情况
+                    let appDefaultTerminal = approveAppConfigTerminal(app_id, appList);
+                    if (!_.isEmpty(appDefaultTerminal)) {
+                        appConfigObj.terminals = appDefaultTerminal;
+                    }
+                }
+            } else {
+                if (!_.isEmpty(terminals)) {
+                    appConfigObj.terminals = applyAppConfigTerminal(terminals, app_id, appList);
+                }
             }
-            //延期（多应用)时，需要分用户进行配置
+
+            //延期（多应用（针对同时延期多个用户）)时，需要分用户进行配置
             if(apply_type === APPLY_TYPES.DELAY){
                 this.appsSetting[`${app_id}&&${appInfo.user_id}`] = appConfigObj;
             } else {

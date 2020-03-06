@@ -699,6 +699,13 @@ function getAppsUserRolesType(req, res, applyBasicDetail, emitter) {
                         if (_.get(app, 'permissions[0]')) {
                             permissionIds = permissionIds.concat(app.permissions);
                         }
+                        // 多终端信息
+                        if (applyBasicDetail.type === CONSTANTS.DELAY_MULTI_APP && applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_FALSE) {
+                            if (!_.isEmpty( app.terminals)) {
+                                curApp.terminals = _.map(app.terminals, 'id');
+                            }
+                        }
+
                         curApp.user_type = app.user_type;
                         curApp.roles = app.roles || [];
                         curApp.permissions = app.permissions || [];
