@@ -1433,12 +1433,11 @@ const ApplyViewDetail = createReactClass({
                         <div className="apply_detail_operate clearfix">
                             {this.renderDetailOperateBtn()}
                         </div>
+                        <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
+                            {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
+                        </PrivilegeChecker>
                         {
-                            this.state.applyIsExpanded ? (
-                                <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
-                                    {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
-                                </PrivilegeChecker>
-                            ) : (
+                            this.state.applyIsExpanded ? null : (
                                 <React.Fragment>
                                     {/** 不显示角色和权限的情况：
                                      detailInfo.approval_state === '0' &&  !hasPrivilege("BASE_QUERY_PERMISSION_APPLICATION") 销售人员待审批的情况
@@ -1713,12 +1712,11 @@ const ApplyViewDetail = createReactClass({
                                         </div>
                                     ) : null}
                                     {this.renderApplyDetailSingleUserName(user)}
+                                    <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
+                                        {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
+                                    </PrivilegeChecker>
                                     {
-                                        this.state.applyIsExpanded ? (
-                                            <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
-                                                {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
-                                            </PrivilegeChecker>
-                                        ) : (
+                                        this.state.applyIsExpanded ? null : (
                                             <React.Fragment>
                                                 {this.renderMultiAppDelayTable(user)}
                                             </React.Fragment>
