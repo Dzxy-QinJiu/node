@@ -215,8 +215,14 @@ exports.toDetailRestObjectNewUserApply = function(detail, APPLY_TYPES){
         if (userType === 'apply_user' || userType === 'apply_app') {
             obj.tag = _.get(detail, 'tag', '');
         }
-
     }
+    //把应用中角色的字段apply_roles改成roles字段
+    _.forEach(obj.apps,item => {
+        item.roles = _.map(item.apply_roles,'role_id');
+        item.rolesNames = _.map(item.apply_roles,'role_name');
+        item.permissions = _.map(item.apply_permissions,'permission_id');
+        item.permissionsNames = _.map(item.apply_permissions,'permission_name');
+    });
 
 
 

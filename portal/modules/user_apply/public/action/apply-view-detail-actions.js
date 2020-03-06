@@ -139,15 +139,6 @@ class ApplyViewDetailActions {
     submitApply(obj, type, callback) {
         this.dispatch({loading: true, error: false});
         let promise = null;
-        //延期、停用审批用新接口
-        // if (_.includes(APPLY_MULTI_TYPE_VALUES, type)) {
-        //     promise = AppUserAjax.submitMultiAppApply({
-        //         data: obj
-        //     });
-        // }
-        // else {
-        //     promise = AppUserAjax.submitApply(obj);
-        // }
         //前端调用一个接口，后端再根据类型区分不同的接口
         promise = AppUserAjax.submitApply(obj);
         promise.then((data) => {

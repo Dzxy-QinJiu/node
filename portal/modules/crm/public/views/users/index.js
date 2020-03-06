@@ -744,7 +744,6 @@ class CustomerUsers extends React.Component {
             }else{
                 return null;
             }
-
         });
     }
 
