@@ -705,26 +705,57 @@ const ApplyViewDetail = createReactClass({
         });
     },
 
+    renderAppSettingBtn(userId) {
+        return (
+            <Tooltip title={Intl.get('user.apply.detail.show.role.auth.title', '查看详细内容')}>
+                <div className="btn-icon-role-auth" onClick={this.toggleApplyExpanded.bind(this, true, userId)}
+                    data-tracename="点击申请详情中的配置按钮">
+                    <span className="iconfont icon-role-auth-config"></span>
+                </div>
+            </Tooltip>
+        );
+    },
+
+    renderAppSettingReturnBtn() {
+        return (
+            <Tooltip title={Intl.get('user.apply.detail.expanded.title', '返回缩略内容')}>
+                <div className="btn-icon-return" onClick={this.toggleApplyExpanded.bind(this, false)}>
+                    <span className="iconfont icon-return" data-tracename="查看应用详细内容"></span>
+                </div>
+            </Tooltip>
+        );
+    },
+
     renderDetailOperateBtn(user_id) {
         if (this.notShowIcon()) {
             return null;
         }
         if (this.state.applyIsExpanded) {
+            if (user_id) { // 申请延期的情况
+                if (user_id === this.state.curShowConfigUserId) {
+                    return (
+                        <React.Fragment>
+                            {this.renderAppSettingReturnBtn()}
+                        </React.Fragment>
+                    );
+                } else {
+                    return (
+                        <React.Fragment>
+                            {this.renderAppSettingBtn(user_id)}
+                        </React.Fragment>
+                    );
+                }
+            }
             return (
-                <Tooltip title={Intl.get('user.apply.detail.expanded.title', '返回缩略内容')}>
-                    <div className="btn-icon-return" onClick={this.toggleApplyExpanded.bind(this, false)}>
-                        <span className="iconfont icon-return" data-tracename="查看应用详细内容"></span>
-                    </div>
-                </Tooltip>
+                <React.Fragment>
+                    {this.renderAppSettingReturnBtn()}
+                </React.Fragment>
             );
         }
         return (
-            <Tooltip title={Intl.get('user.apply.detail.show.role.auth.title', '查看详细内容')}>
-                <div className="btn-icon-role-auth" onClick={this.toggleApplyExpanded.bind(this, true, user_id)}
-                    data-tracename="点击申请详情中的配置按钮">
-                    <span className="iconfont icon-role-auth-config"></span>
-                </div>
-            </Tooltip>
+            <React.Fragment>
+                {this.renderAppSettingBtn(user_id)}
+            </React.Fragment>
         );
     },
 
@@ -1351,7 +1382,7 @@ const ApplyViewDetail = createReactClass({
     },
 
     //渲染每个应用设置区域
-    renderDetailForm(detailInfo) {
+    renderDetailForm(detailInfo, userId) {
         let selectedApps = $.extend(true, [], detailInfo.apps), appsSetting = this.state.appsSetting;
         let appList = this.props.appList;
         _.each(selectedApps, app => {
@@ -1387,10 +1418,14 @@ const ApplyViewDetail = createReactClass({
         if (this.isExistUserApply()) {
             appComponentProps.showUserNumber = false;
         }
+        let isShowAppSetting = this.state.applyIsExpanded;
+        if (userId) { // 审批延期的配置界面
+            isShowAppSetting = isShowAppSetting && this.state.curShowConfigUserId === userId;
+        }
 
         return (
             <div className="apply_custom_setting_wrap"
-                style={{display: this.state.applyIsExpanded ? 'block' : 'none'}}>
+                style={{display: isShowAppSetting ? 'block' : 'none'}}>
                 <AppProperty {...appComponentProps}
                     isOplateUser={this.state.isOplateUser}
                 />
@@ -1713,10 +1748,10 @@ const ApplyViewDetail = createReactClass({
                                     ) : null}
                                     {this.renderApplyDetailSingleUserName(user)}
                                     <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
-                                        {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
+                                        {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo, user.user_id)}
                                     </PrivilegeChecker>
                                     {
-                                        this.state.applyIsExpanded ? null : (
+                                        this.state.applyIsExpanded && this.state.curShowConfigUserId === user.user_id ? null : (
                                             <React.Fragment>
                                                 {this.renderMultiAppDelayTable(user)}
                                             </React.Fragment>
