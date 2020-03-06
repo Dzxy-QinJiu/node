@@ -1399,6 +1399,9 @@ const ApplyViewDetail = createReactClass({
         if (height !== 'auto') {
             height = height - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.ORDER_DIV_HEIGHT - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.OPERATION_BTN_HEIGHT;
         }
+        if (userId) { // 延期审批的情况，由于没有应用的基本配置信息，需要减去应用的配置高度
+            height = height - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.APP_BASIC_HEIGHT;
+        }
         if (!this.isUnApproved()) {
             return null;
         }
@@ -1752,9 +1755,9 @@ const ApplyViewDetail = createReactClass({
                                     </PrivilegeChecker>
                                     {
                                         this.state.applyIsExpanded && this.state.curShowConfigUserId === user.user_id ? null : (
-                                            <React.Fragment>
+                                            <div className="multi-user-delay-table">
                                                 {this.renderMultiAppDelayTable(user)}
-                                            </React.Fragment>
+                                            </div>
                                         )
                                     }
                                 </div>);
@@ -2820,4 +2823,3 @@ const ApplyViewDetail = createReactClass({
     },
 });
 export default ApplyViewDetail;
-

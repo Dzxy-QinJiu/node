@@ -46,7 +46,9 @@ exports.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM = {
     //订单号高度
     ORDER_DIV_HEIGHT: 47,
     //返回按钮高度
-    OPERATION_BTN_HEIGHT: 47
+    OPERATION_BTN_HEIGHT: 47,
+    // 应用配置界面的基本信息配置高度
+    APP_BASIC_HEIGHT: 240,
 };
 
 
