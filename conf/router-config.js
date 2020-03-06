@@ -139,12 +139,11 @@ let routers = [
                     //销售经理日报
                     {
                         id: 'SALES_MANAGER_DAILY_REPORT',
-                        name: 'common.individual.report',
+                        name: 'analysis.sales.manager.daily.report',
                         routePath: '/analysis/report/daily-report',
                         component: `${MODULE_PATH}daily-report`,
                         showPrivileges: [
-                            'CRM_CONTRACT_SALES_REPORTS_MANAGER',
-                            'CRM_CONTRACT_SALES_REPORTS_COMMON'
+                            'CRM_DAIY_REPORT'
                         ]
                     },
                 ],
