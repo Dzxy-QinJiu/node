@@ -2,6 +2,7 @@
  * 报告列表
  */
 
+import { AntcTable } from 'antc';
 import { getReportList } from './utils';
 
 class ReportList extends React.Component {
@@ -14,7 +15,10 @@ class ReportList extends React.Component {
     render() {
         return (
             <div>
-                报告列表
+                <AntcTable
+                    columns={[]}
+                    dataSource={[]}
+                />
             </div>
         );
     }
