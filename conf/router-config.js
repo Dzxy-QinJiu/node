@@ -143,7 +143,7 @@ let routers = [
                         routePath: '/analysis/report/daily-report',
                         component: `${MODULE_PATH}daily-report`,
                         showPrivileges: [
-                            'CRM_DAIY_REPORT'
+                            'CRM_DAILY_REPORT'
                         ]
                     },
                 ],
