@@ -39,10 +39,6 @@ class ReportForm extends React.Component {
                         hide: isPreview,
                         func: this.save.bind(this),
                         name: '保存',
-                    }, {
-                        hide: isPreview,
-                        func: this.submit.bind(this),
-                        name: '提交',
                     }])}
                 </Form>
             </div>
@@ -63,41 +59,14 @@ class ReportForm extends React.Component {
                     values.status = 'off';
                 }
 
-                const { tplList, selectedTpl } = this.props;
+                const { reportList, selectedReport } = this.props;
 
-                const tplData = _.find(tplList, tpl => tpl.id === selectedTpl) || {};
+                const reportData = _.find(reportList, report => report.id === selectedReport) || {};
 
-                const postData = _.extend({}, tplData, values);
-
-                console.log(postData);//return
-                saveTpl(postData, result => {});
-                //hideReportPanel()
-            }
-        });
-    }
-
-    submit() {
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log(values);
-                _.each(values, (value, key) => {
-                    if (_.isUndefined(value)) delete values[key];
-                });
-
-                if (values.status === true) {
-                    values.status = 'on';
-                } else if (values.status === false) {
-                    values.status = 'off';
-                }
-
-                const { tplList, selectedTpl } = this.props;
-
-                const tplData = _.find(tplList, tpl => tpl.id === selectedTpl) || {};
-
-                const postData = _.extend({}, tplData, values);
+                const postData = _.extend({}, reportData, values);
 
                 console.log(postData);//return
-                saveTpl(postData, result => {});
+                saveReport(postData, result => {});
                 //hideReportPanel()
             }
         });
