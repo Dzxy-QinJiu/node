@@ -277,8 +277,8 @@ exports.editApp = function(req, res) {
 };
 
 //申请用户
-exports.applyUser = function(req, res) {
-    AppUserService.applyUser(req, res).on('success', function(data) {
+exports.applyNewgrant = function(req, res) {
+    AppUserService.applyNewgrant(req, res).on('success', function(data) {
         res.json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

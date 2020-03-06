@@ -402,8 +402,8 @@ exports.delayTime = function(data) {
     return Deferred.promise();
 };
 
-//申请用户
-exports.applyUser = function(data) {
+//开通应用
+exports.applyNewGrant = function(data) {
     data = {reqData: JSON.stringify(data)};
     var Deferred = $.Deferred();
     $.ajax({

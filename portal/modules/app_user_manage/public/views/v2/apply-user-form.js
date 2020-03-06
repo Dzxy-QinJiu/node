@@ -209,7 +209,7 @@ const ApplyUserForm = createReactClass({
                 submitData.user_ids = JSON.stringify(submitData.user_ids);
                 submitData.user_names = JSON.stringify(submitData.user_names);
                 submitData.products = JSON.stringify(submitData.products);
-                UserApplyAction.applyUser(submitData, result => {
+                UserApplyAction.applyNewGrant(submitData, result => {
                     this.setState({isLoading: false});
                     if (result === true) {
                         message.success(Intl.get('user.apply.success', '申请成功'));

@@ -80,11 +80,9 @@ var AppUserRestApis = {
     //审批申请单（创建新用户审批）
     submitApplyNewUser: '/rest/base/v1/workflow/newuser/approve',
     //审批申请单（已有用户开通应用审批）
-    submitExistApply: 'rest/base/v1/workflow/newgrant/approve',
-    //todo 申请用户
-    // applyUser: '/rest/base/v1/user/apply_grants',
-    // todo 开通新应用授权
-    applyUser: '/rest/base/v1/workflow/newgrant',
+    submitExistApply: '/rest/base/v1/workflow/newgrant/approve',
+    //开通新应用授权
+    applyNewgrant: '/rest/base/v1/workflow/newgrant',
     //获取客户对应的用户列表
     getCustomerUsers: '/rest/base/v1/user/customer/users',
     //批量用户延期
@@ -989,9 +987,9 @@ exports.checkUserExist = function(req, res, field, value) {
 };
 
 //申请用户
-exports.applyUser = function(req, res) {
+exports.applyNewgrant = function(req, res) {
     return restUtil.authRest.post({
-        url: AppUserRestApis.applyUser,
+        url: AppUserRestApis.applyNewgrant,
         req: req,
         res: res
     }, JSON.parse(req.body.reqData));

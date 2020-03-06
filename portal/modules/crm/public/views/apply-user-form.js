@@ -484,6 +484,7 @@ const ApplyUserForm = createReactClass({
             return res;
         });
     },
+    //开通新应用
     applyUserFromUserList: function(submitData) {
         submitData.user_names = JSON.stringify(submitData.user_names);
         var newSubmitObj = {
@@ -493,7 +494,7 @@ const ApplyUserForm = createReactClass({
         delete submitData.customer_id;
         //users_or_grants 是跟据user_ids 和 原来参数中的 products 做笛卡尔积后获取的总数量
         newSubmitObj['users_or_grants'] = this.calcDescartes([submitData.user_ids,JSON.parse(submitData.products)],submitData);
-        UserApplyAction.applyUser(newSubmitObj, result => {
+        UserApplyAction.applyNewGrant(newSubmitObj, result => {
             this.setState({isLoading: false});
             if (_.get(result,'id')) {
                 this.setState({

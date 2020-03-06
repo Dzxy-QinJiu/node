@@ -123,14 +123,7 @@ function UserApplyActions() {
         });
         // }
     };
-    //申请用户
-    this.applyUser = function(obj, cb) {
-        UserAjax.applyUser(obj).then(function(data) {
-            cb(data);
-        }, function(errorMsg) {
-            cb(errorMsg);
-        });
-    };
+
 }
 function getDiffTypeApplyList(that,queryObj,workListArr) {
     UserAjax.getApplyList(queryObj).then((data) => {

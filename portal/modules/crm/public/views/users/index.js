@@ -609,9 +609,7 @@ class CustomerUsers extends React.Component {
     //申请用户成功，变为待审批状态
     afterAddApplySuccess =(result) => {
         let userApplyList = this.state.userApplyList;
-        userApplyList.unshift({
-            message: result
-        });
+        userApplyList.unshift(result);
         this.setState({userApplyList});
     };
 
@@ -715,8 +713,8 @@ class CustomerUsers extends React.Component {
     renderUserApplyList(userApplyList) {
         return userApplyList.map((userObj, index) => {
             let user = _.isObject(userObj) ? userObj.message : {};
-            if(_.isObject(_.get(userObj,'detail'))){
-                user = _.get(userObj,'detail');
+            if(_.isEmpty(user)){
+                user = userObj.detail;
             }
             var nickName = _.get(user, 'nick_name', '') || _.get(user, 'nickname', '');
             let userNameText = `${_.get(user, 'user_name', '')}(${nickName})`;

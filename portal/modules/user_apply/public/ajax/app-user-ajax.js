@@ -51,22 +51,4 @@ exports.submitApply = function(obj) {
 //延期、停用提交审批
 // exports.submitMultiAppApply = params => ajaxPro('submitMultiAppApply', params);
 
-//申请用户
-exports.applyUser = function(data) {
-    data = {reqData: JSON.stringify(data)};
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/base/v1/user/apply_grants',
-        type: 'post',
-        dataType: 'json',
-        data: data,
-        success: function(result) {
-            Deferred.resolve(result);
-        },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get('common.apply.failed', '申请失败'));
-        }
-    });
-    return Deferred.promise();
-};
 

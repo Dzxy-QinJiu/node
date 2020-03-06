@@ -204,7 +204,7 @@ module.exports = {
     }, {
         'method': 'post',
         'path': '/rest/base/v1/user/apply_grants',
-        'handler': 'applyUser',
+        'handler': 'applyNewgrant',
         'passport': {
             'needLogin': true
         }
