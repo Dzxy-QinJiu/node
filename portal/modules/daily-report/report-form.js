@@ -15,16 +15,24 @@ class ReportForm extends React.Component {
     }
 
     render() {
-        const { updateState, clickedTpl, isPreview } = this.props;
         const renderFormItem = renderFormItemFunc.bind(this, {});
         const renderButtonZone = renderButtonZoneFunc.bind(this);
+
+        const { updateState, clickedTpl, isPreview } = this.props;
+        const items = clickedTpl.items;
+        const editableFields = ['other'];
+        const editableItems = _.filter(items, item => _.includes(editableFields, item.id));
+        const unEditableItems = _.filter(items, item => !_.includes(editableFields, item.id));
 
         return (
             <div>
                 <Form>
-                    {_.map(clickedTpl.items, item => {
-                        let type = 'inputNumber';
-                        return renderFormItem(item.name, item.id, { type });
+                    {_.map(unEditableItems, item => {
+                        return renderFormItem(item.name, item.id, { type: 'text' });
+                    })}
+
+                    {_.map(editableItems, item => {
+                        return renderFormItem(item.name, item.id, { type: 'textarea' });
                     })}
 
                     {renderButtonZone([{
