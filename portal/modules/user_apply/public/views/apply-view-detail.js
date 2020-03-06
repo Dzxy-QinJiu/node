@@ -705,27 +705,39 @@ const ApplyViewDetail = createReactClass({
         });
     },
 
-    renderDetailOperateBtn(user_id) {
-        if (this.notShowIcon()) {
-            return null;
-        }
-        if (this.state.applyIsExpanded) {
-            return (
-                <Tooltip title={Intl.get('user.apply.detail.expanded.title', '返回缩略内容')}>
-                    <div className="btn-icon-return" onClick={this.toggleApplyExpanded.bind(this, false)}>
-                        <span className="iconfont icon-return" data-tracename="查看应用详细内容"></span>
-                    </div>
-                </Tooltip>
-            );
-        }
+    renderAppSettingBtn(userId) {
         return (
             <Tooltip title={Intl.get('user.apply.detail.show.role.auth.title', '查看详细内容')}>
-                <div className="btn-icon-role-auth" onClick={this.toggleApplyExpanded.bind(this, true, user_id)}
+                <div className="btn-icon-role-auth" onClick={this.toggleApplyExpanded.bind(this, true, userId)}
                     data-tracename="点击申请详情中的配置按钮">
                     <span className="iconfont icon-role-auth-config"></span>
                 </div>
             </Tooltip>
         );
+    },
+
+    renderAppSettingReturnBtn() {
+        return (
+            <Tooltip title={Intl.get('user.apply.detail.expanded.title', '返回缩略内容')}>
+                <div className="btn-icon-return" onClick={this.toggleApplyExpanded.bind(this, false)}>
+                    <span className="iconfont icon-return" data-tracename="查看应用详细内容"></span>
+                </div>
+            </Tooltip>
+        );
+    },
+
+    renderDetailOperateBtn(user_id) {
+        if (this.notShowIcon()) {
+            return null;
+        }
+        if (this.state.applyIsExpanded) {
+            if (user_id && user_id !== this.state.curShowConfigUserId) { // 申请延期的情况
+                return this.renderAppSettingBtn(user_id);
+            } else {
+                return this.renderAppSettingReturnBtn();
+            }
+        }
+        return this.renderAppSettingBtn(user_id);
     },
 
     //是否是已有用户开通试用
@@ -1351,7 +1363,7 @@ const ApplyViewDetail = createReactClass({
     },
 
     //渲染每个应用设置区域
-    renderDetailForm(detailInfo) {
+    renderDetailForm(detailInfo, userId) {
         let selectedApps = $.extend(true, [], detailInfo.apps), appsSetting = this.state.appsSetting;
         let appList = this.props.appList;
         _.each(selectedApps, app => {
@@ -1367,6 +1379,9 @@ const ApplyViewDetail = createReactClass({
         let height = this.getApplyDetailHeight();
         if (height !== 'auto') {
             height = height - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.ORDER_DIV_HEIGHT - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.OPERATION_BTN_HEIGHT;
+        }
+        if (userId) { // 延期审批的情况，由于没有应用的基本配置信息，需要减去应用的配置高度
+            height = height - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.APP_BASIC_HEIGHT;
         }
         if (!this.isUnApproved()) {
             return null;
@@ -1387,10 +1402,14 @@ const ApplyViewDetail = createReactClass({
         if (this.isExistUserApply()) {
             appComponentProps.showUserNumber = false;
         }
+        let isShowAppSetting = this.state.applyIsExpanded;
+        if (userId) { // 审批延期的配置界面
+            isShowAppSetting = isShowAppSetting && this.state.curShowConfigUserId === userId;
+        }
 
         return (
             <div className="apply_custom_setting_wrap"
-                style={{display: this.state.applyIsExpanded ? 'block' : 'none'}}>
+                style={{display: isShowAppSetting ? 'block' : 'none'}}>
                 <AppProperty {...appComponentProps}
                     isOplateUser={this.state.isOplateUser}
                 />
@@ -1713,13 +1732,13 @@ const ApplyViewDetail = createReactClass({
                                     ) : null}
                                     {this.renderApplyDetailSingleUserName(user)}
                                     <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
-                                        {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
+                                        {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo, user.user_id)}
                                     </PrivilegeChecker>
                                     {
-                                        this.state.applyIsExpanded ? null : (
-                                            <React.Fragment>
+                                        this.state.applyIsExpanded && this.state.curShowConfigUserId === user.user_id ? null : (
+                                            <div className="multi-user-delay-table">
                                                 {this.renderMultiAppDelayTable(user)}
-                                            </React.Fragment>
+                                            </div>
                                         )
                                     }
                                 </div>);
@@ -2785,4 +2804,3 @@ const ApplyViewDetail = createReactClass({
     },
 });
 export default ApplyViewDetail;
-
