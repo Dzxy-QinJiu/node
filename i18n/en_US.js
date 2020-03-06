@@ -3150,6 +3150,7 @@ var en_US = {
     'analysis.to': 'to',//至
     'analysis.extended.account.number': 'extended account number',//延期帐号数
     'analysis.monthly.turnover.rate': 'monthly turnover rate',//月流失率
+    'analysis.sales.manager.daily.report': 'sales manager daily report',//销售经理日报
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
