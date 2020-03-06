@@ -733,30 +733,14 @@ const ApplyViewDetail = createReactClass({
         if (this.state.applyIsExpanded) {
             if (user_id) { // 申请延期的情况
                 if (user_id === this.state.curShowConfigUserId) {
-                    return (
-                        <React.Fragment>
-                            {this.renderAppSettingReturnBtn()}
-                        </React.Fragment>
-                    );
+                    return this.renderAppSettingReturnBtn();
                 } else {
-                    return (
-                        <React.Fragment>
-                            {this.renderAppSettingBtn(user_id)}
-                        </React.Fragment>
-                    );
+                    return this.renderAppSettingBtn(user_id);
                 }
             }
-            return (
-                <React.Fragment>
-                    {this.renderAppSettingReturnBtn()}
-                </React.Fragment>
-            );
+            return this.renderAppSettingReturnBtn();
         }
-        return (
-            <React.Fragment>
-                {this.renderAppSettingBtn(user_id)}
-            </React.Fragment>
-        );
+        return this.renderAppSettingBtn(user_id);
     },
 
     //是否是已有用户开通试用
