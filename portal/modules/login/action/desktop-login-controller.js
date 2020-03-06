@@ -17,7 +17,24 @@ let WXBizDataCrypt = require('../lib/WXBizDataCrypt');
 const _ = require('lodash');
 //登录后绑定微信的标识
 const bindWechatAfterLoginKey = 'isOnlyBindWechat';
-
+// 公司和备案号信息
+function getCompanyRecordNum(isCurtao, backendIntl){
+    // curtao域名下的信息
+    let obj = {
+        company: backendIntl.get('company.name.curtao', '客套智能科技'),
+        // 官网的链接
+        companyLink: 'https://www.curtao.com/',
+        // 备案号
+        recordNum: '鲁ICP备18038856号'
+    };
+    //eefung域名下的信息
+    if(!isCurtao){
+        obj.company = backendIntl.get('company.name.eefung', '蚁坊软件');
+        obj.companyLink = 'https://www.eefung.com/';
+        obj.recordNum = '湘ICP备14007253号-1';
+    }
+    return obj;
+}
 function renderUserAgreementPrivacyPolicy(req, res){
     return function(isUserAgreement){
         //优先使用环境变量中设置的语言
@@ -32,13 +49,13 @@ function renderUserAgreementPrivacyPolicy(req, res){
         let isCurtao = commonUtil.method.isCurtao(req);
         const phone = '400-6978-520';
         let backendIntl = new BackendIntl(req);
-        let company = isCurtao ? backendIntl.get('company.name.curtao', '© 客套智能科技 鲁ICP备18038856号') : backendIntl.get('company.name.eefung', '© 蚁坊软件 湘ICP备14007253号-1');
+        let companyInfo = getCompanyRecordNum(isCurtao, backendIntl);
         res.render('login/tpl/user-agreement', {
             isFormal: global.config.isFormal,
             isCurtao: isCurtao,
             siteID: global.config.siteID,
             lang: registerLang,
-            company: company,
+            ...companyInfo,
             hotline: backendIntl.get('companay.hotline', '服务热线: {phone}', {'phone': phone}),
             timeStamp: global.config.timeStamp,
             userid: '',
@@ -72,13 +89,13 @@ exports.showRegisterPage = function(req, res) {
     let isCurtao = commonUtil.method.isCurtao(req);
     const phone = '400-6978-520';
     let backendIntl = new BackendIntl(req);
-    let company = isCurtao ? backendIntl.get('company.name.curtao', '© 客套智能科技 鲁ICP备18038856号') : backendIntl.get('company.name.eefung', '© 蚁坊软件 湘ICP备14007253号-1');
+    let companyInfo = getCompanyRecordNum(isCurtao, backendIntl);
     res.render('login/tpl/register', {
         isFormal: global.config.isFormal,
         isCurtao: isCurtao,
         siteID: global.config.siteID,
         lang: registerLang,
-        company: company,
+        ...companyInfo,
         hotline: backendIntl.get('companay.hotline', '服务热线: {phone}', {'phone': phone}),
         timeStamp: global.config.timeStamp,
         userid: '',
@@ -151,13 +168,13 @@ function showLoginOrBindWechatPage(req, res) {
             }
             let custom_service_lang = loginLang || 'zh_CN';
             custom_service_lang = custom_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
-            let company = isCurtao ? backendIntl.get('company.name.curtao', '© 客套智能科技 鲁ICP备18038856号') : backendIntl.get('company.name.eefung', '© 蚁坊软件 湘ICP备14007253号-1');
+            let companyInfo = getCompanyRecordNum(isCurtao, backendIntl);
             res.render('login/tpl/desktop-login', {
                 loginErrorMsg: obj.loginErrorMsg,
                 username: obj.username,
                 captchaCode: obj.captchaCode || '',
                 isFormal: global.config.isFormal,
-                company: company,
+                ...companyInfo,
                 hotline: backendIntl.get('companay.hotline', '服务热线: {phone}', {'phone': phone}),
                 // contact: backendIntl.get('company.qq', '企业QQ: {qq}', {'qq': qq}),
                 contact: '',
