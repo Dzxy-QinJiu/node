@@ -141,7 +141,8 @@ class CustomerUsers extends React.Component {
             })
         ];
         Promise.all(promiseList).then((result) => {
-            let userApplyList = _.get(result, '[0].list', []);
+            var applyTypes = [APPLY_CONSTANTS.APPLY_USER_OFFICIAL, APPLY_CONSTANTS.APPLY_USER_TRIAL, APPLY_CONSTANTS.APPLY_USER];
+            let userApplyList = _.filter(_.get(result, '[0].list', []), item => _.includes(applyTypes, _.get(item,'detail.user_apply_type')));
             let userList = _.get(result, '[1]', []);
             this.setState({
                 userApplyList
@@ -714,37 +715,37 @@ class CustomerUsers extends React.Component {
     renderUserApplyList(userApplyList) {
         return userApplyList.map((userObj, index) => {
             let user = _.isObject(userObj) ? userObj.message : {};
-            let userNameText = `${_.get(user, 'user_name', '')}(${_.get(user, 'nick_name', '')})`;
-            let apps = _.get(user,'users_or_grants[0]') || JSON.parse(_.get(user, 'products', ''));
+            if(_.isObject(_.get(userObj,'detail'))){
+                user = _.get(userObj,'detail');
+            }
+            var nickName = _.get(user, 'nick_name', '') || _.get(user, 'nickname', '');
+            let userNameText = `${_.get(user, 'user_name', '')}(${nickName})`;
+            let apps = _.get(user,'user_grants_apply') || JSON.parse(_.get(user, 'products', ''));
             //只展示新申请的试用用户或者是签约用户
-            if(_.includes([APPLY_CONSTANTS.APPLY_USER_OFFICIAL, APPLY_CONSTANTS.APPLY_USER_TRIAL, APPLY_CONSTANTS.APPLY_USER],_.get(user,'type'))){
-                return (
-                    <div className="crm-user-item crm-user-apply-item" key={index}>
-                        <div className="crm-user-name user-apply-name">
-                            <span
-                                className="user-name-text"
-                                title={userNameText}
-                            >
-                                {userNameText}
-                            </span>
-                            <span className="user-apply-state">
-                                <span className="apply-left-bracket">[</span>{Intl.get('user.apply.false', '待审批')}<span
-                                    className="apply-right-bracket">]</span>
-                            </span>
-                        </div>
-                        <div className="crm-user-apps-container no-checkbox-apps-container user-apply-apps-container">
-                            <div className="crm-user-apps">
-                                <div className="apps-top-title">
-                                    <label>{this.renderApplyTitle(apps[0])}</label>
-                                </div>
-                                {this.getUserApplyOptions(apps)}
+            return (
+                <div className="crm-user-item crm-user-apply-item" key={index}>
+                    <div className="crm-user-name user-apply-name">
+                        <span
+                            className="user-name-text"
+                            title={userNameText}
+                        >
+                            {userNameText}
+                        </span>
+                        <span className="user-apply-state">
+                            <span className="apply-left-bracket">[</span>{Intl.get('user.apply.false', '待审批')}<span
+                                className="apply-right-bracket">]</span>
+                        </span>
+                    </div>
+                    <div className="crm-user-apps-container no-checkbox-apps-container user-apply-apps-container">
+                        <div className="crm-user-apps">
+                            <div className="apps-top-title">
+                                <label>{this.renderApplyTitle(apps[0])}</label>
                             </div>
+                            {this.getUserApplyOptions(apps)}
                         </div>
                     </div>
-                );
-            }else{
-                return null;
-            }
+                </div>
+            );
         });
     }
 

@@ -251,6 +251,7 @@ const INNER_SETTING_FLOW = {
     LEAVE: 'leave',//请假
     BUSINESSOPPORTUNITIES: 'businessopportunities',//销售机会
     USERAPPLY: 'userapply',//用户申请
+    NEWUSERAPPLY: 'user_or_grant'
 
 };
 const SELF_SETTING_FLOW = {
@@ -389,7 +390,7 @@ exports.isLeaveFlow = function(itemType) {
 };
 //是用户申请流程
 exports.isUserApplyFlow = function(itemType) {
-    return itemType === INNER_SETTING_FLOW.USERAPPLY;
+    return itemType === INNER_SETTING_FLOW.USERAPPLY || itemType === INNER_SETTING_FLOW.NEWUSERAPPLY;
 };
 //是否展示该节点
 exports.isShowCCNode = (item) => {

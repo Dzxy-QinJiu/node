@@ -438,7 +438,7 @@ const ApplyUserForm = createReactClass({
                     submitData.user_type = submitData.tag;
                     delete submitData.tag;
                     _.forEach(submitData.users_or_grants,item => {
-                        if(!_.get(item,'terminals.length')){
+                        if(!_.get(item,'terminals.length')){//终端是必传参数
                             item.terminals = null;
                         }
                     });
@@ -450,7 +450,7 @@ const ApplyUserForm = createReactClass({
             }
         });
     },
-
+    //申请新用户
     applyUserFromOder: function(submitData) {
         submitData.user_name = _.trim(submitData.user_name);
         OrderAction.applyUser(submitData, {}, result => {
@@ -459,7 +459,7 @@ const ApplyUserForm = createReactClass({
                     isLoading: false,
                     applyErrorMsg: ''
                 });
-                this.props.afterAddApplySuccess(submitData);
+                this.props.afterAddApplySuccess(result);
                 this.handleCancel();
             } else {
                 this.setState({

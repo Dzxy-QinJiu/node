@@ -5,8 +5,7 @@ const orderUrl = '/rest/customer/v3/salesopportunity';
 const stageUrl = '/rest/customer/v2/salesopportunity/term/sale_stages';
 //获取系统设置的销售阶段
 const sysStageUrl = '/rest/customer/v2/salestage';
-//todo 新添加的用户审批
-// const applyUserUrl = '/rest/base/v1/user/apply_users';
+//新添加的用户审批
 const applyUserUrl = '/rest/base/v1/workflow/newuser';
 const queryCustomerUrl = '/rest/customer/v2/customer/query';
 //添加销售线索

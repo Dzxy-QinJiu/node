@@ -503,36 +503,15 @@ const ApplyViewDetail = createReactClass({
                             {this.renderComment()}
                         </div>) : null}
                         {this.renderApplyStatus()}
-                        <div className="apply-detail-reply-list apply-detail-info">
-                            <div className="reply-icon-block">
-                                <span className="iconfont icon-apply-message-tip"/>
-                            </div>
-                            <div className="reply-info-block apply-info-block">
-                                <div className="reply-list-container apply-info-content">
-                                    {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
-                                    {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderReplyList() : null}
-                                    {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? (
-                                        <Input addonAfter={(
-                                            <a onClick={this.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
-                                        value={this.state.formData.comment}
-                                        onChange={this.commentInputChange}
-                                        placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}/>
-                                    ) : null}
-                                    {this.renderReplyFormResult()}
-                                </div>
-                                {this.renderComment()}
-                            </div>) : null}
-                            {this.renderApplyStatus()}
-                            <ApplyDetailRemarks
-                                detailInfo={detailInfo}
-                                replyListInfo={this.state.replyListInfo}
-                                replyFormInfo={this.state.replyFormInfo}
-                                refreshReplyList={this.refreshReplyList}
-                                addReply={this.addReply}
-                                commentInputChange={this.commentInputChange}
-                                isUnreadDetail={this.props.isUnreadDetail}
-                            />
-                        </div>
+                        <ApplyDetailRemarks
+                            detailInfo={detailInfo}
+                            replyListInfo={this.state.replyListInfo}
+                            replyFormInfo={this.state.replyFormInfo}
+                            refreshReplyList={this.refreshReplyList}
+                            addReply={this.addReply}
+                            commentInputChange={this.commentInputChange}
+                            isUnreadDetail={this.props.isUnreadDetail}
+                        />
                         {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderSameCustomerHistoricalApply() : null}
                     </GeminiScrollbar>
                 </div>
