@@ -671,6 +671,7 @@ class ClueCustomer extends React.Component {
         });
     };
     closeRecommendCluePanel = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '关闭推荐线索面板');
         this.setState({
             isShowRecommendCluePanel: false
         });

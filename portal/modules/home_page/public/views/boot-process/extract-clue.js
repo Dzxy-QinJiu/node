@@ -58,6 +58,7 @@ class ExtractClues extends React.Component {
             maxLimitExtractNumber: 0,//该账号的最大提取线索数量（试用账号是今天的，正式账号是本月的）
             getMaxLimitExtractNumberError: false,//获取该账号的最大提取量出错
             hasNoExtractCountTip: false,//批量操作展示popover
+            disableExtract: false,//是否还能提取
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             canClickExtract: true, //防止连续点击批量提取相同线索
             showDifferentVersion: false,//是否显示版本信息面板
@@ -136,7 +137,9 @@ class ExtractClues extends React.Component {
         hasExtractCount++;
         this.setState({
             disabledCheckedClues: _.filter(disabledCheckedClues,item => item.id !== updateClueId),
-            hasExtractCount: hasExtractCount
+            hasExtractCount: hasExtractCount,
+            //判断是否还能提取
+            disableExtract: !this.isExtractedCount(hasExtractCount).ableExtract
         });
         clueCustomerAction.updateRecommendClueLists(updateClueId);
     };
@@ -182,11 +185,13 @@ class ExtractClues extends React.Component {
             this.setState({canClickExtract: false});
         }
         getMaxLimitExtractClueCount().then((data) => {
+            let disableExtract = !(data.maxCount - data.hasExtractedCount);
             this.setState({
                 hasExtractCount: data.hasExtractedCount,
                 maxLimitExtractNumber: data.maxCount,
+                disableExtract
             });
-            _.isFunction(callback) && callback(data.hasExtractedCount);
+            _.isFunction(callback) && callback(data.hasExtractedCount, disableExtract);
         }, (error) => {
             _.isFunction(callback) && callback('error');
         }
@@ -399,27 +404,51 @@ class ExtractClues extends React.Component {
         );
     }
 
+    getSelectedClues = () => {
+        return _.isEmpty(this.state.selectedRecommendClues) ? this.state.disabledCheckedClues : this.state.selectedRecommendClues;//选中的线索
+    };
+
+    // 可提取数为0时，或者选中的个数等于可提取数时
+    isExtractedCount(hasExtractCount) {
+        let selectedRecommendClues = this.getSelectedClues();
+        let selectedClueLength = _.get(selectedRecommendClues, 'length',0);
+        let maxLimitExtractNumber = this.state.maxLimitExtractNumber;
+        hasExtractCount = hasExtractCount || this.state.hasExtractCount;
+        //可提取数
+        let ableExtract = maxLimitExtractNumber > hasExtractCount ? maxLimitExtractNumber - hasExtractCount : 0;
+        //选中的个数等于可提取数时
+        let isExtractedEqual = _.isEqual(selectedClueLength, ableExtract);
+
+        return {
+            ableExtract,
+            isExtractedEqual
+        };
+    }
+
     //提取数为0时显示的提示信息
     hasNoExtractCountTip = () => {
+        let selectedRecommendClues = this.getSelectedClues();//选中的线索
+        let selectedClueLength = _.get(selectedRecommendClues, 'length',0);
         var maxLimitExtractNumber = this.state.maxLimitExtractNumber;
         var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
         let versionAndType = checkVersionAndType();
-        const i18Obj = {hasExtract: <span className="has-extracted-count">{this.state.hasExtractCount}</span>, ableExtract: ableExtract, timerange: this.getTimeRangeText()};
+        const i18Obj = {hasExtract: <span className="has-extracted-count">{this.state.hasExtractCount}</span>, ableExtract: <span className="has-extracted-count">{ableExtract}</span>, timerange: this.getTimeRangeText()};
         let maxLimitTip = <ReactIntl.FormattedMessage
-            id="clue.recommend.has.extracted.count"
-            defaultMessage={'{timerange}已提取{hasExtract}条线索'}
+            id="clue.recommend.default.tip"
+            defaultMessage={'{timerange}还可提取{ableExtract}条线索'}
             values={i18Obj}
         />;
-        if(!ableExtract && this.state.hasNoExtractCountTip){
+        // if(!ableExtract && this.state.hasNoExtractCountTip){
+        if(this.state.disableExtract){
             //个人版试用提示升级,正式提示增加线索量
             //企业版试用提示升级,正式（管理员）提示增加线索量
             if( versionAndType.isPersonalTrial) {//个人试用
                 maxLimitTip = <div>
                     <ReactIntl.FormattedMessage
                         id="clue.recommend.trial.extract.num.limit.tip"
-                        defaultMessage={'已提取{count}条，如需继续提取请{upgradedVersion}'}
+                        defaultMessage={'还可提取{count}条，如需继续提取请{upgradedVersion}'}
                         values={{
-                            count: <span className="has-extracted-count">{maxLimitExtractNumber}</span>,
+                            count: <span className="has-extracted-count">{ableExtract}</span>,
                             upgradedVersion: (
                                 <Button className="customer-btn" data-tracename="点击个人升级为正式版按钮"
                                     title={Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
@@ -435,9 +464,9 @@ class ExtractClues extends React.Component {
                 maxLimitTip = <div>
                     <ReactIntl.FormattedMessage
                         id="clue.recommend.company.trial.extract.num.limit.tip"
-                        defaultMessage={'已提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}'}
+                        defaultMessage={'还可提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}'}
                         values={{
-                            count: <span className="has-extracted-count">{maxLimitExtractNumber}</span>,
+                            count: <span className="has-extracted-count">{ableExtract}</span>,
                             contact: COMPANY_PHONE
                         }}
                     />
@@ -468,19 +497,31 @@ class ExtractClues extends React.Component {
                     }}
                 />;
             }
-        }else if(this.state.hasNoExtractCountTip) {
-            if(versionAndType.isCompanyFormal) {
+        }else if(this.state.hasNoExtractCountTip) {//超限时
+            /*if(versionAndType.isCompanyFormal) {
                 i18Obj.id = 'clue.recommend.has.extract';
                 i18Obj.name = '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索';
             }else {
                 i18Obj.id = 'clue.recommend.has.extract.count';
                 i18Obj.name = '{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索';
-            }
+            }*/
             return (
                 <ReactIntl.FormattedMessage
-                    id={i18Obj.id}
-                    defaultMessage={i18Obj.name}
+                    id="clue.extract.count.has.been.exceed"
+                    defaultMessage="已超过可提取数"
                     values={i18Obj}
+                />
+            );
+        }else if(selectedClueLength > 0) {
+            ableExtract = ableExtract - selectedClueLength;
+            return (
+                <ReactIntl.FormattedMessage
+                    id="clue.recommend.selected.extract.tip"
+                    defaultMessage="已选中{count}条，还可提取{ableExtract}条线索"
+                    values={{
+                        count: <span className="has-extracted-count">{selectedClueLength}</span>,
+                        ableExtract: <span className="has-extracted-count">{ableExtract}</span>
+                    }}
                 />
             );
         }
@@ -515,7 +556,7 @@ class ExtractClues extends React.Component {
             if(this.state.getMaxLimitExtractNumberError){
                 this.batchAssignRecommendClues(submitObj);
             }else{
-                this.getRecommendClueCount((count) => {
+                this.getRecommendClueCount((count, disableExtract) => {
                     let currentVersionType = checkCurrentVersionType();
                     if (
                         //获取已经提取的线索失败了就不校验了 获取失败count返回的是字符串‘error’
@@ -528,7 +569,8 @@ class ExtractClues extends React.Component {
                         this.setState({
                             hasNoExtractCountTip: true,
                             canClickExtract: true,
-                            disabledCheckedClues: []
+                            disabledCheckedClues: [],
+                            selectedRecommendClues: disableExtract ? [] : this.state.disabledCheckedClues
                         });
                         if (this['changeSales']) {
                             //隐藏批量变更销售面板
@@ -555,7 +597,8 @@ class ExtractClues extends React.Component {
             });
         }
         this.setState({
-            selectedRecommendClues
+            selectedRecommendClues,
+            hasNoExtractCountTip: false
         });
     };
 
@@ -567,8 +610,12 @@ class ExtractClues extends React.Component {
             canExtractClues = _.filter(this.state.recommendClueLists, item => {
                 return !this.getDisabledClue(item);
             });
+            let { ableExtract } = this.isExtractedCount();
+            if(canExtractClues.length > ableExtract) {//全选时，不能超过可提取数
+                canExtractClues = _.slice(canExtractClues, 0, ableExtract);
+            }
         }
-        this.setState({selectedRecommendClues: canExtractClues});
+        this.setState({selectedRecommendClues: canExtractClues, hasNoExtractCountTip: false});
         Trace.traceEvent(e, '点击选中/取消选中全部线索');
     };
     isCheckAll = () => {
@@ -579,7 +626,7 @@ class ExtractClues extends React.Component {
     };
     //是否选中
     hasChecked = (record) => {
-        return _.find(this.state.selectedRecommendClues, item => item.id === record.id);
+        return _.find(this.getSelectedClues(), item => item.id === record.id);
     };
 
     handleUpdatePersonalVersion = (result) => {
@@ -590,7 +637,8 @@ class ExtractClues extends React.Component {
             maxLimitExtractNumber: +clue_number,
             getMaxLimitExtractNumberError: false,
             hasNoExtractCountTip: false,
-            disabledCheckedClues: []
+            disabledCheckedClues: [],
+            disableExtract: false
         });
     };
     //个人试用升级为正式版
@@ -612,7 +660,8 @@ class ExtractClues extends React.Component {
             maxLimitExtractNumber: count + maxLimitExtractNumber,
             getMaxLimitExtractNumberError: false,
             hasNoExtractCountTip: false,
-            disabledCheckedClues: []
+            disabledCheckedClues: [],
+            disableExtract: false
         });
     };
     //增加线索量
@@ -623,8 +672,24 @@ class ExtractClues extends React.Component {
     //该线索前的checkbox不可用
     getDisabledClue = (record) => {
         // 有hasExtracted属性是已经成功提取了的,有hasExtractedByOther属性是已经被别人提取了的
-        return record.hasExtracted || _.find(this.state.disabledCheckedClues,item => item.id === record.id) || record.hasExtractedByOther;
+        let hasExtractedOrOther = record.hasExtracted || _.find(this.state.disabledCheckedClues,item => item.id === record.id) || record.hasExtractedByOther;
+
+        const selectedRecommendClues = this.state.selectedRecommendClues;
+        const { ableExtract, isExtractedEqual } = this.isExtractedCount();
+        const isSelected = _.find(selectedRecommendClues, selectedItem => selectedItem.id === _.get(record,'id'));
+        //不是选中的，且（已提取和其他情况，或者可提取数为0，或者选中个数与可提取数相等）
+        return !isSelected && (hasExtractedOrOther || !ableExtract || isExtractedEqual);
     };
+
+    //点击线索名，选中checkbox
+    handleClickClueName = (item) => {
+        if(this.getDisabledClue(item)) {//如果被禁用了，点击后无效
+            return false;
+        }
+        let isSelected = _.find(this.state.selectedRecommendClues, clueItem => clueItem.id === item.id);
+        this.handleCheckChange(item,{target: {checked: !isSelected}});
+    };
+
     setInvalidClassName = (record) => {
         var cls = '';
         if(record.hasExtracted){
@@ -830,7 +895,7 @@ class ExtractClues extends React.Component {
                                 <div className={cls}>
                                     <Checkbox checked={this.hasChecked(item)} disabled={this.getDisabledClue(item)} onChange={this.handleCheckChange.bind(this, item)}/>
                                     <div className="extract-clue-text-wrapper" title={item.hasExtractedByOther ? Intl.get('errorcode.169', '该线索已被提取') : ''}>
-                                        <div className="extract-clue-text__name">
+                                        <div className="extract-clue-text__name" onClick={this.handleClickClueName.bind(this, item)}>
                                             {item.hasExtractedByOther ? <i className='iconfont icon-warning-tip'/> : null}
                                             <span>{item.name}</span>
                                         </div>
@@ -851,7 +916,7 @@ class ExtractClues extends React.Component {
                                     </div>
                                     <div className="single-extract-clue">
                                         {item.hasExtracted ? Intl.get('common.has.been.extracted', '已提取') : (
-                                            <div className="handle-btn-item">
+                                            this.getDisabledClue(item) ? null : <div className="handle-btn-item">
                                                 {this.extractClueOperator(item)}
                                             </div>
                                         )}
@@ -950,8 +1015,9 @@ class ExtractClues extends React.Component {
 
     //是否禁用全选按钮
     disabledCheckAll = () => {
-        //列表为空，或者请求数据，或者提取线索中（单个和批量）
-        return !this.state.recommendClueLists.length || this.state.isLoadingRecommendClue || this.state.singleExtractLoading || this.state.batchExtractLoading;
+        //列表为空，或者请求数据，或者提取线索中（单个和批量）,或者可提取数为0
+        const { ableExtract } = this.isExtractedCount();
+        return !this.state.recommendClueLists.length || this.state.isLoadingRecommendClue || this.state.singleExtractLoading || this.state.batchExtractLoading || !ableExtract;
     };
 
     renderBtnClock = (isWebMin) => {
