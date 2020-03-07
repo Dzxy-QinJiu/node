@@ -3847,9 +3847,12 @@ var en_US = {
     'clue.recommend.extract.num.limit': 'The number of leads extracted by your organization {timerange} has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
     'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} {timerange} and can extract up to {ableExtract} leads',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
     'clue.recommend.formal.extract.num.limit.tip': 'The {count} clause of this month has been extracted. If you need to continue to extract, please {addLeads}.',//本月{count}条已提取完毕，如需继续提取请{addLeads}
-    'clue.recommend.trial.extract.num.limit.tip': 'The {count} bar has been extracted, if you want to continue extracting please {upgradedVersion}',//已提取{count}条，如需继续提取请{upgradedVersion}
-    'clue.recommend.company.trial.extract.num.limit.tip': '{count} bar has been extracted, if you need to continue extracting, please contact our sales staff to upgrade, contact information: {contact}',//已提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}
+    'clue.recommend.trial.extract.num.limit.tip': '{count} can also be extracted, if need to continue to extract please {upgradedVersion}',//还可提取{count}条，如需继续提取请{upgradedVersion}
+    'clue.recommend.company.trial.extract.num.limit.tip': '{count} can also be extracted, if you need to continue to extract, please contact our sales staff to upgrade, contact: {contact}',//还可提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}
     'clue.recommend.company.formal.sales.extract.num.limit.tip': '{count} has been extracted this month, please contact the administrator if you want to continue extracting',//本月{count}条已提取完毕，如需继续提取请联系管理员
+    'clue.recommend.default.tip': '{timerange} can also extract {ableExtract} clues',//{timerange}还可提取{ableExtract}条线索
+    'clue.recommend.selected.extract.tip': 'The {count} bar has been selected, and the {ableExtract} bar can be extracted',//已选中{count}条，还可提取{ableExtract}条线索
+    'clue.extract.count.has.been.exceed': 'The extractable number has been exceeded',//已超过可提取数
 
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
