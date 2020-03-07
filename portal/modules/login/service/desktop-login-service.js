@@ -77,8 +77,7 @@ exports.login = function(req, res, username, password, captchaCode) {
             req: req,
             res: res,
             headers: {
-                session_id: req.sessionID,
-                terminal_device: 'website'
+                session_id: req.sessionID
             },
             //后端要求用form的post提交
             form: formData
