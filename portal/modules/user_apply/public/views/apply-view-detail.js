@@ -48,7 +48,8 @@ import {handleDiffTypeApply,getUserApplyFilterReplyList,
     updateUnapprovedCount, isFinalTask,
     isApprovedByManager,timeShowFormat,
     isCustomDelayType, getDelayTimeUnit,
-    applyAppConfigTerminal
+    applyAppConfigTerminal,
+    approveAppConfigTerminal
 } from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import ApplyHistory from 'CMP_DIR/apply-components/apply-history';
@@ -125,7 +126,7 @@ function getDelayDisplayTime(delayUnit, delayNumber) {
 
 const APPLY_LIST_WIDTH = 421;
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
-import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {INTEGRATE_TYPES, APPROVE_STATUS} from 'PUB_DIR/sources/utils/consts';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 const ApplyViewDetail = createReactClass({
@@ -1137,13 +1138,48 @@ const ApplyViewDetail = createReactClass({
             return null;
         }
     },
+
+    // 获取应用终端名称
+    getAppTerminalName(custom_setting, terminals, appId) {
+        let terminalsName = [];
+        // 应用包含多终端信息
+        let configTerminals = _.get(custom_setting, 'terminals.value');
+        if (!_.isEmpty(configTerminals)) {
+            terminalsName = _.map(configTerminals, 'name');
+        } else  if (!_.isEmpty(terminals)) {
+            let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
+            terminalsName = _.map(appTerminals, 'name');
+        } else {
+            let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
+            terminalsName = _.map(appTerminals, 'name');
+        }
+        return terminalsName;
+    },
+
     //渲染延期多应用的table
     renderMultiAppDelayTable(user) {
+        const appsSetting = this.appsSetting;
         let columns = [
             {
                 title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
-                className: 'apply-detail-th'
+                className: 'apply-detail-th',
+                render: (text, app, index) => {
+                    const appId = app.app_id;
+                    const terminals = _.get(app, 'terminals', []);
+                    const custom_setting = appsSetting[`${appId}&&${app.user_id}`];
+                    let terminalsName = this.getAppTerminalName(custom_setting, terminals, appId);
+                    return (
+                        <div>
+                            <span>{text}</span>
+                            {
+                                !_.isEmpty(terminalsName) ? <span>
+                                    ({ terminalsName.join('、')})
+                                </span> : null
+                            }
+                        </div>
+                    );
+                }
             }, {
                 title: Intl.get('user.time.end', '到期时间'),
                 dataIndex: 'start_time',
@@ -1234,25 +1270,19 @@ const ApplyViewDetail = createReactClass({
         const appsSetting = this.appsSetting;
         const isExistUserApply = this.isExistUserApply();
         const isOplateUser = this.state.isOplateUser;
+        const approvalState = _.get(this.state.detailInfoObj, 'info.approval_state');
         let columns = [
             {
                 title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
+                    const appId = app.app_id;
                     const terminals = _.get(app, 'terminals', []);
-                    const custom_setting = appsSetting[app.app_id];
-                    let terminalsName = [];
+                    const custom_setting = appsSetting[appId];
                     // 应用包含多终端信息
                     let configTerminals = _.get(custom_setting, 'terminals.value');
-                    if (!_.isEmpty(configTerminals)) {
-                        terminalsName = _.map(configTerminals, 'name');
-                    } else {
-                        if (!_.isEmpty(terminals)) {
-                            let appTerminals = applyAppConfigTerminal(terminals, app.app_id, this.props.appList);
-                            terminalsName = _.map(appTerminals, 'name');
-                        }
-                    }
+                    let terminalsName = this.getAppTerminalName(custom_setting, terminals, appId);
                     return (
                         <div>
                             <span>{text}</span>
@@ -1702,8 +1732,8 @@ const ApplyViewDetail = createReactClass({
         const isUnApproved = this.isUnApproved();
         //把apps数据根据user_id重组
         let users = this.getDetailInfoUserCount(detailInfo);
-        //修改后的用户类型，如果没有说明未修改用户类型，不用设置角色、权限
-        let changedUserType = this.showConfigOfDelayApply(detailInfo);
+        // //修改后的用户类型，如果没有说明未修改用户类型，不用设置角色、权限
+        // let changedUserType = this.showConfigOfDelayApply(detailInfo);
         var userCount = _.get(users,'length');
         return (
             <div className="user-info-block apply-info-block">
@@ -1725,11 +1755,9 @@ const ApplyViewDetail = createReactClass({
                         _.map(users, (user, idx) => {
                             return (
                                 <div className="col-12 apply_detail_apps delay_detail_apps" key={idx}>
-                                    {changedUserType ? (
-                                        <div className="apply_detail_operate clearfix">
-                                            {this.renderDetailOperateBtn(user.user_id)}
-                                        </div>
-                                    ) : null}
+                                    <div className="apply_detail_operate clearfix">
+                                        {this.renderDetailOperateBtn(user.user_id)}
+                                    </div>
                                     {this.renderApplyDetailSingleUserName(user)}
                                     <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
                                         {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo, user.user_id)}
@@ -2021,10 +2049,7 @@ const ApplyViewDetail = createReactClass({
         //不展示配置按钮的情况
         if (_.includes([APPLY_TYPES.APPLY_PWD_CHANGE,APPLY_TYPES.APPLY_STH_ELSE,APPLY_TYPES.APPLY_GRANT_DELAY,APPLY_TYPES.APPLY_GRANT_STATUS_CHANGE,APPLY_TYPES.DISABLE], detailInfo.type)){
             return true;
-        }else if(_.includes([APPLY_TYPES.DELAY], detailInfo.type)){
-            //延期申请类型不加配置按钮的情况
-            return !this.showConfigOfDelayApply(detailInfo) || this.notShowIcon();
-        }else{
+        } else{
             return this.notShowIcon();
         }
     },
@@ -2432,6 +2457,11 @@ const ApplyViewDetail = createReactClass({
 
                     }
                     let appConfig = this.appsSetting[`${item.client_id}&&${item.user_id}`];
+                    // 延期的多终端字段
+                    if (appConfig && _.get(appConfig, 'terminals.setted')) {
+                        let terminals = _.get(appConfig, 'terminals.value');
+                        item.terminals = _.map(terminals, 'id');
+                    }
                     //角色、权限，如果修改了用户类型，需要传设置的角色、权限
                     if (appConfig && changedUserType) {
                         item.roles = _.map(appConfig.roles, roleId => {
