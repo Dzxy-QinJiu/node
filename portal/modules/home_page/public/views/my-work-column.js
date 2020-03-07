@@ -38,7 +38,7 @@ import {getTimeStrFromNow, getFutureTimeStr} from 'PUB_DIR/sources/utils/time-fo
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import RecommendClues from './boot-process/recommend_clues';
 import userData from 'PUB_DIR/sources/user-data';
-import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
+import {getAllSalesUserList, getAppList} from 'PUB_DIR/sources/utils/common-data-util';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
 import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 import clueAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
@@ -117,10 +117,12 @@ class MyWorkColumn extends React.Component {
             showTraceRecord: false, //是否展示最近三条记录
             currentRecord: {},//跟进内容对象: value: 跟进的值, validateStatus: 验证状态 'success'/'error', errorMsg: 验证错误信息
             currentSelectRecordId: '',//当前从单选框中选择的跟进记录id
+            appList: [], // 应用列表
         };
     }
 
     componentDidMount() {
+        this.getAppList()
         this.getUserList();
         this.getGuideConfig();
         this.getMyWorkList();
@@ -158,6 +160,12 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.removeListener(notificationEmitter.UPDATED_HANDLE_CLUE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_DOMAIN, this.updateRefreshMyWork);
+    }
+
+    getAppList(){
+        getAppList(appList => {
+            this.setState({appList: appList});
+        });
     }
 
     // 获取销售人员
@@ -1400,6 +1408,7 @@ class MyWorkColumn extends React.Component {
                             detailItem={applyInfo}
                             applyListType='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
+                            appList={this.state.appList}
                         />);
                     break;
             }
