@@ -1138,51 +1138,37 @@ const ApplyViewDetail = createReactClass({
             return null;
         }
     },
+
+    // 获取应用终端名称
+    getAppTerminalName(custom_setting, terminals, appId) {
+        let terminalsName = [];
+        // 应用包含多终端信息
+        let configTerminals = _.get(custom_setting, 'terminals.value');
+        if (!_.isEmpty(configTerminals)) {
+            terminalsName = _.map(configTerminals, 'name');
+        } else  if (!_.isEmpty(terminals)) {
+            let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
+            terminalsName = _.map(appTerminals, 'name');
+        } else {
+            let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
+            terminalsName = _.map(appTerminals, 'name');
+        }
+        return terminalsName;
+    },
+
     //渲染延期多应用的table
     renderMultiAppDelayTable(user) {
         const appsSetting = this.appsSetting;
-        const detailInfo = this.state.detailInfoObj.info;
-        const approvalState = _.get(detailInfo, 'approval_state');
-        const applyType = _.get(detailInfo, 'type');
-
         let columns = [
             {
                 title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
-                    let terminalsName = [];
-                    const custom_setting = appsSetting[app.app_id];
-                    // 应用包含多终端信息
-                    let configTerminals = _.get(custom_setting, 'terminals.value');
+                    const appId = app.app_id;
                     const terminals = _.get(app, 'terminals', []);
-                    if (approvalState === APPROVE_STATUS.ONGOING) { // 待审批
-                        // 延期并且停用前有多终端信息，则多终端信息和停用前保持一直
-                        if (applyType === APPLY_TYPES.DELAY && !_.isEmpty(terminals)) {
-                            let appTerminals = applyAppConfigTerminal(terminals, app.app_id, this.props.appList);
-                            terminalsName = _.map(appTerminals, 'name');
-                        } else { // 延期前，应用有默认多终端信息的情况
-                            /// 应用的默认终端信息
-                            let appDefaultTerminal = approveAppConfigTerminal(app.app_id, this.props.appList);
-                            if (!_.isEmpty(configTerminals)) { // 修改配置后，在界面上显示的信息
-                                terminalsName = _.map(configTerminals, 'name');
-                            } else {
-                                if (!_.isEmpty(appDefaultTerminal)) {
-                                    terminalsName = _.map(appDefaultTerminal, 'name');
-                                }
-                            }
-                        }
-                    } else {
-                        if (!_.isEmpty(configTerminals)) {
-                            terminalsName = _.map(configTerminals, 'name');
-                        } else {
-                            if (!_.isEmpty(terminals)) {
-                                let appTerminals = applyAppConfigTerminal(terminals, app.app_id, this.props.appList);
-                                terminalsName = _.map(appTerminals, 'name');
-                            }
-                        }
-                    }
-
+                    const custom_setting = appsSetting[`${appId}&&${app.user_id}`];
+                    let terminalsName = this.getAppTerminalName(custom_setting, terminals, appId);
                     return (
                         <div>
                             <span>{text}</span>
@@ -1291,35 +1277,12 @@ const ApplyViewDetail = createReactClass({
                 dataIndex: 'client_name',
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
-                    let terminalsName = [];
-                    const custom_setting = appsSetting[app.app_id];
+                    const appId = app.app_id;
+                    const terminals = _.get(app, 'terminals', []);
+                    const custom_setting = appsSetting[appId];
                     // 应用包含多终端信息
                     let configTerminals = _.get(custom_setting, 'terminals.value');
-
-                    if (approvalState === '0') { // 待审批
-                        /// 应用的默认终端信息
-                        let appDefaultTerminal = approveAppConfigTerminal(app.app_id, this.props.appList);
-
-                        if (!_.isEmpty(configTerminals)) { // 修改配置后，在界面上显示的信息
-                            terminalsName = _.map(configTerminals, 'name');
-                        } else {
-                            if (!_.isEmpty(appDefaultTerminal)) {
-                                terminalsName = _.map(appDefaultTerminal, 'name');
-                            }
-                        }
-                    } else {
-                        const terminals = _.get(app, 'terminals', []);
-
-                        if (!_.isEmpty(configTerminals)) {
-                            terminalsName = _.map(configTerminals, 'name');
-                        } else {
-                            if (!_.isEmpty(terminals)) {
-                                let appTerminals = applyAppConfigTerminal(terminals, app.app_id, this.props.appList);
-                                terminalsName = _.map(appTerminals, 'name');
-                            }
-                        }
-                    }
-
+                    let terminalsName = this.getAppTerminalName(custom_setting, terminals, appId);
                     return (
                         <div>
                             <span>{text}</span>

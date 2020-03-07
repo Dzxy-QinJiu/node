@@ -292,8 +292,6 @@ class ApplyViewDetailStore {
         const apps = _.cloneDeep(this.detailInfoObj.info.apps);
         //申请类型
         let apply_type = _.get(this.detailInfoObj, 'info.type');
-        // 申请的状态（待审批 0 、已通过1 、已驳回 2 、已撤销3）
-        const approvalState = _.get(this.detailInfoObj, 'info.approval_state');
 
         _.each(apps, (appInfo) => {
             const app_id = appInfo.app_id;
@@ -353,24 +351,14 @@ class ApplyViewDetailStore {
             }
             // 申请的多终端信息
             const terminals = _.get(appInfo, 'terminals', []);
-
-            // 待审批，需要根据应用的多终端信息展示全部的多终端信息
-            if (approvalState === APPROVE_STATUS.ONGOING) {
-                // 延期并且停用前有多终端信息，则多终端信息和停用前保持一直
-                if (apply_type === APPLY_TYPES.DELAY && !_.isEmpty(terminals)) {
-                    appConfigObj.terminals = applyAppConfigTerminal(terminals, app_id, appList);
-                } else { // 申请新用户、延期前，应用有默认多终端信息的情况
-                    let appDefaultTerminal = approveAppConfigTerminal(app_id, appList);
-                    if (!_.isEmpty(appDefaultTerminal)) {
-                        appConfigObj.terminals = appDefaultTerminal;
-                    }
-                }
-            } else {
-                if (!_.isEmpty(terminals)) {
-                    appConfigObj.terminals = applyAppConfigTerminal(terminals, app_id, appList);
+            if (!_.isEmpty(terminals)) {
+                appConfigObj.terminals = applyAppConfigTerminal(terminals, app_id, appList);
+            } else { // 申请新用户、延期前没有多终端信息，应用有默认多终端信息的情况
+                let appDefaultTerminal = approveAppConfigTerminal(app_id, appList);
+                if (!_.isEmpty(appDefaultTerminal)) {
+                    appConfigObj.terminals = appDefaultTerminal;
                 }
             }
-
             //延期（多应用（针对同时延期多个用户）)时，需要分用户进行配置
             if(apply_type === APPLY_TYPES.DELAY){
                 this.appsSetting[`${app_id}&&${appInfo.user_id}`] = appConfigObj;

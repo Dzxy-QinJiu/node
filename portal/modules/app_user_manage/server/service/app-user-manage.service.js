@@ -133,7 +133,7 @@ var AppUserRestApis = {
     // 上传用户的预览接口
     uploadUser: '/rest/base/v1/user/import/preview',
     // 确认上传用户
-    confirmUploadUser: 'rest/base/v1/user/import'
+    confirmUploadUser: 'rest/base/v1/user/import',
 };
 
 exports.urls = AppUserRestApis;
@@ -444,15 +444,9 @@ exports.getApplyDetail = function(req, res, apply_id) {
     var emitter = new EventEmitter();
     getApplyBasicDetail(req, res, apply_id).then((applyBasicDetail) => {
         //延期（多应用）
+        // 延期申请需要配置多终端信息
         if (applyBasicDetail.type === CONSTANTS.DELAY_MULTI_APP) {
-            let user_type = _.get(applyBasicDetail, 'apps[0].user_type');
-            //修改的用户类型，界面上用来判断是否修改用户类型
-            applyBasicDetail.changedUserType = user_type;
-            // 待审批，并且修改了用户类型时
-            if (applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_FALSE && user_type) {
-                // 获取各应用此用户类型的默认配置（角色、权限）
-                getAppUserTypeDefaultConfig(req, res, applyBasicDetail, user_type, emitter);
-            } else if (applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_FALSE ||//待审批，未修改用户类型时
+           if (applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_FALSE ||//待审批，未修改用户类型时
                 applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_PASS) {//通过时
                 // 获取此用户在各应用的角色和用户类型
                 getAppsUserRolesType(req, res, applyBasicDetail, emitter);
@@ -700,12 +694,9 @@ function getAppsUserRolesType(req, res, applyBasicDetail, emitter) {
                             permissionIds = permissionIds.concat(app.permissions);
                         }
                         // 多终端信息
-                        if (applyBasicDetail.type === CONSTANTS.DELAY_MULTI_APP && applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_FALSE) {
-                            if (!_.isEmpty( app.terminals)) {
-                                curApp.terminals = _.map(app.terminals, 'id');
-                            }
+                        if (!_.isEmpty( app.terminals)) {
+                            curApp.terminals = _.map(app.terminals, 'id');
                         }
-
                         curApp.user_type = app.user_type;
                         curApp.roles = app.roles || [];
                         curApp.permissions = app.permissions || [];
