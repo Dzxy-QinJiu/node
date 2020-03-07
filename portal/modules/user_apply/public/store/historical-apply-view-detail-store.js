@@ -1,8 +1,8 @@
 import ApplyViewDetailActions from '../action/historical-apply-view-detail-actions';
 import { altAsyncUtil } from 'ant-utils';
 const { resultHandler } = altAsyncUtil;
-import { APPLY_TYPES, TIMERANGEUNIT, WEEKDAYS} from 'PUB_DIR/sources/utils/consts';
-import {checkIfLeader, isCustomDelayType, applyAppConfigTerminal} from 'PUB_DIR/sources/utils/common-method-util';
+import { APPLY_TYPES, TIMERANGEUNIT, WEEKDAYS, APPROVE_STATUS} from 'PUB_DIR/sources/utils/consts';
+import {checkIfLeader, isCustomDelayType, applyAppConfigTerminal, approveAppConfigTerminal} from 'PUB_DIR/sources/utils/common-method-util';
 import {getDelayDisplayTime} from '../util/app-user-util';
 class ApplyViewDetailStore {
     constructor() {
@@ -344,6 +344,11 @@ class ApplyViewDetailStore {
             const terminals = _.get(appInfo, 'terminals', []);
             if (!_.isEmpty(terminals)) {
                 appConfigObj.terminals = applyAppConfigTerminal(terminals, app_id, appList);
+            } else { // 申请新用户、延期前没有多终端信息，应用有默认多终端信息的情况
+                let appDefaultTerminal = approveAppConfigTerminal(app_id, appList);
+                if (!_.isEmpty(appDefaultTerminal)) {
+                    appConfigObj.terminals = appDefaultTerminal;
+                }
             }
             //延期（多应用)时，需要分用户进行配置
             if(apply_type === APPLY_TYPES.DELAY){

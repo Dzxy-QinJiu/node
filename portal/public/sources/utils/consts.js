@@ -388,6 +388,14 @@ export const APPLY_TYPES = {
     APPLY_GRANT_STATUS_CHANGE: 'apply_grant_status_change'//申请开通状态
 };
 
+//  审批状态
+export const APPROVE_STATUS = {
+    ONGOING: '0', // 待审批
+    PASS: '1', // 已通过
+    REJECT: '2', // 已驳回
+    CANCEl: '3' // 已撤销
+};
+
 //多应用申请审批类型
 export const APPLY_MULTI_TYPE_VALUES = [
     APPLY_TYPES.DELAY, APPLY_TYPES.DISABLE

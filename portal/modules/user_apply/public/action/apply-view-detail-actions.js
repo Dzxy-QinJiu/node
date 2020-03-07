@@ -6,6 +6,7 @@ import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
 import {updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
+import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 class ApplyViewDetailActions {
     constructor() {
@@ -82,13 +83,26 @@ class ApplyViewDetailActions {
 
         } else {
             this.dispatch({loading: true, error: false});
-            AppUserAjax.getApplyDetail(id).then((detail, apps) => {
-                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,detail);
-                this.dispatch({loading: false, error: false, detail: detail,approvalState: approvalState, appList: appList});
-            }, (errorMsg) => {
-                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID);
-                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-            });
+            if (_.isEmpty(appList)) {
+                getAppList(appList => {
+                    AppUserAjax.getApplyDetail(id).then((detail, apps) => {
+                        AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,detail);
+                        this.dispatch({loading: false, error: false, detail: detail,approvalState: approvalState, appList: appList});
+                    }, (errorMsg) => {
+                        AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID);
+                        this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+                    });
+                });
+            } else {
+                AppUserAjax.getApplyDetail(id).then((detail, apps) => {
+                    AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,detail);
+                    this.dispatch({loading: false, error: false, detail: detail,approvalState: approvalState, appList: appList});
+                }, (errorMsg) => {
+                    AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID);
+                    this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+                });
+            }
+
         }
     }
     //在审批详情中得到客户的id，然后根据客户的id获取历史申请审批

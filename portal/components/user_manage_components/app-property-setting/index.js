@@ -374,14 +374,36 @@ const AppPropertySetting = createReactClass({
         const appsDefaultSetting = _.get(this,`props.appsDefaultSetting[${app_id}]`,{});
         let key = this.getAppSettingKey(_.get(currentApp,'app_id'),_.get(currentApp,'user_id'));
         var currentAppInfo = this.state.appPropSettingsMap[key] || {};
+        let appId = currentApp.app_id;
         var selectedRoles = currentAppInfo.roles || [];
         var selectedPermissions = currentAppInfo.permissions || [];
         let isShowAppTerminals = !_.isEmpty(currentAppInfo.terminals);
+        // 多终端
+        if (this.props.isMultiUser) {
+            appId = `${currentApp.app_id}&&${currentApp.user_id}`;
+        }
         return (
             <div className={this.state.changeCurrentAppLoading ? 'app-property-container-content change-current-app-loading' : 'app-property-container-content'}>
                 <div className="app-property-custom-settings">
                     {//多用户的应用设置时，只需要更改角色、权限，其他选项不需要更改
-                        this.props.isMultiUser ? null : (
+                        this.props.isMultiUser ? (
+                            isShowAppTerminals ? (
+                                <div className="form-item">
+                                    <div className="form-item-label">{Intl.get('common.terminals', '终端')}</div>
+                                    <div className="form-item-content">
+                                        {
+                                            this.renderUserAppTerminalCheckboxBlock({
+                                                isCustomSetting: true,
+                                                appId: appId,
+                                                globalTerminals: _.get(defaultSettings, 'terminals',[]),
+                                                appAllTerminals: currentAppInfo.terminals.value,
+                                                selectedApps: currentApp
+                                            })
+                                        }
+                                    </div>
+                                </div>
+                            ) : null
+                        ) : (
                             <div
                                 className="app-property-content basic-data-form app-property-other-property"
                                 style={{display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 && _.isEmpty(appsDefaultSetting) && !isShowAppTerminals ? 'none' : 'block'}}

@@ -74,7 +74,6 @@ class ApplyUser extends React.Component {
             return (
                 <OperationScrollBar className="basic-data-form-wrap">
                     <ApplyUserForm
-                        appList={this.props.appList}
                         apps={this.state.apps}
                         users={this.props.users}
                         customerId={this.props.customerId}
