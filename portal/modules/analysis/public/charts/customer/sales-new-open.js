@@ -22,7 +22,7 @@ export function getSalesNewOpenChart(paramObj = {}) {
                             },
                         };
                     },
-                    width: 100
+                    width: 80
                 },
                 {
                     title: Intl.get('user.salesman', '销售人员'),
@@ -34,19 +34,19 @@ export function getSalesNewOpenChart(paramObj = {}) {
                     title: Intl.get('common.number.of.new.customers', '新增客户数'),
                     dataIndex: 'newly_customer',
                     align: 'right',
-                    width: 80
+                    width: 90
                 },
                 {
                     title: Intl.get('common.number.of.new.user.customer', '开通了用户的客户数'),
                     dataIndex: 'tatol_newly_users',
                     align: 'right',
-                    width: 80
+                    width: 135
                 },
                 {
                     title: Intl.get('oplate_customer_analysis.customerLoginCount', '登录过的客户数'),
                     dataIndex: 'customer_login',
                     align: 'right',
-                    width: 80
+                    width: 120
                 }
             ],
         },

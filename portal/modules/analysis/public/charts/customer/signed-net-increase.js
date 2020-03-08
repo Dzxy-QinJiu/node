@@ -26,20 +26,24 @@ export function getSignedCustomerNetIncreaseChart(paramObj = {}) {
                     title: Intl.get('crm.contract.new.sign', '新签'),
                     dataIndex: 'new_customers',
                     width: '25%',
+                    align: 'right',
                     render: clickableCellRender.bind(null, conditions, 'new')
                 }, {
                     title: Intl.get('common.reflux', '回流'),
                     dataIndex: 'reflux_customers',
                     width: '25%',
+                    align: 'right',
                     render: clickableCellRender.bind(null, conditions, 'reflux')
                 }, {
                     title: Intl.get('contract.171', '流失'),
                     dataIndex: 'churn_customers',
                     width: '25%',
+                    align: 'right',
                     render: clickableCellRender.bind(null, conditions, 'churn')
                 }, {
                     title: Intl.get('common.net.increase', '净增'),
                     dataIndex: 'net_new_customers',
+                    align: 'right',
                     width: '25%',
                 }],
             };

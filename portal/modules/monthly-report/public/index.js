@@ -141,6 +141,7 @@ class MonthlyReport extends React.Component {
             {
                 title: Intl.get('common.ranking', '排名'),
                 dataIndex: 'rank',
+                align: 'right',
                 width: 50,
             },
             {
@@ -153,33 +154,39 @@ class MonthlyReport extends React.Component {
                 dataIndex: 'assessment_index',
                 sorter: (a, b) => a.assessment_index - b.assessment_index,
                 render: this.numberRender,
+                align: 'right',
                 width: 95,
             },
             {
                 title: `${Intl.get('sales.home.average.duration', '日均时长')}(${Intl.get('user.time.second', '秒')})`,
                 dataIndex: 'average_time',
                 render: this.numberRender,
+                align: 'right',
                 width: 100,
             },
             {
                 title: Intl.get('sales.home.average.connected', '日均接通数'),
                 dataIndex: 'average_num',
                 render: this.numberRender,
+                align: 'right',
                 width: 90,
             },
             {
                 title: `${Intl.get('sales.home.total.duration', '总时长')}(${Intl.get('user.time.second', '秒')})`,
                 dataIndex: 'total_time',
+                align: 'right',
                 width: num_col_width,
             },
             {
                 title: Intl.get('sales.home.total.connected', '总接通数'),
                 dataIndex: 'total_callout_success',
+                align: 'right',
                 width: num_col_width,
             },
             {
                 title: Intl.get('weekly.report.assessment.days', '考核天数',),
                 dataIndex: 'real_work_day',
+                align: 'right',
                 width: num_col_width,
             },
             {
@@ -250,11 +257,13 @@ class MonthlyReport extends React.Component {
             {
                 title: `${Intl.get('sales.home.total.duration', '总时长')}(${Intl.get('user.time.second', '秒')})`,
                 dataIndex: 'total_time',
+                align: 'right',
                 width: '10%',
             },
             {
                 title: Intl.get('sales.home.total.connected', '总接通数'),
                 dataIndex: 'total_num',
+                align: 'right',
                 width: '10%',
             },
             {
@@ -262,11 +271,13 @@ class MonthlyReport extends React.Component {
                 dataIndex: 'charged_duration',
                 render: this.numberRender,
                 sorter: (a, b) => a.charged_duration - b.charged_duration,
+                align: 'right',
                 width: '10%',
             },
             {
                 title: `${Intl.get('common.call.charge', '话费')}(${Intl.get('contract.82', '元')})`,
                 dataIndex: 'call_charge',
+                align: 'right',
                 width: '10%',
             },
         ];
@@ -277,11 +288,13 @@ class MonthlyReport extends React.Component {
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 dataIndex: 'total_effective',
                 key: 'total_effective',
+                align: 'right',
                 width: '10%',
             }, {
                 title: `${Intl.get('sales.home.phone.effective.time', '有效通话时长')}(${Intl.get('user.time.second', '秒')})`,
                 dataIndex: 'total_effective_time',
                 key: 'total_effective_time',
+                align: 'right',
                 width: '10%',
             });
         }
@@ -299,17 +312,20 @@ class MonthlyReport extends React.Component {
             {
                 title: Intl.get('common.this.month.qualified.customers.num', '本月合格客户数'),
                 dataIndex: 'this_month_total',
+                align: 'right',
                 width: '10%',
             },
             {
                 title: Intl.get('common.history.highest.qualified.customers.num', '历史最高合格客户数'),
                 dataIndex: 'highest_total',
+                align: 'right',
                 width: '10%',
             },
             {
                 title: Intl.get('common.net.increase.qualified.customers.num', '净增合格客户数'),
                 dataIndex: 'this_month_add_highest_total',
                 sorter: (a, b) => a.this_month_add_highest_total - b.this_month_add_highest_total,
+                align: 'right',
                 width: '10%',
             },
         ];

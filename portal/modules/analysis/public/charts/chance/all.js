@@ -34,16 +34,20 @@ export function getAllChanceChart(specifyColumns) {
                 }, {
                     title: '提交数',
                     dataIndex: 'total',
+                    align: 'right',
                     width: '20%',
                 }, {
                     title: '通过数',
+                    align: 'right',
                     dataIndex: 'pass',
                 }, {
                     title: '成交数',
+                    align: 'right',
                     dataIndex: 'deal',
                     width: '20%',
                 }, {
                     title: '转化率',
+                    align: 'right',
                     dataIndex: 'deal_rate',
                     showAsPercent: true,
                     width: '20%',

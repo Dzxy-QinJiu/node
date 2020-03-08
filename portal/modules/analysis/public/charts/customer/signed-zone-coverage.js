@@ -23,11 +23,13 @@ export function getSignedCustomerZoneCoverageChart(paramObj = {}) {
             }, {
                 title: '省级客户数',
                 dataIndex: 'province_customer',
+                align: 'right',
                 width: '15%',
             }, {
                 title: '省级占有率',
                 dataIndex: 'province_percent',
                 showAsPercent: true,
+                align: 'right',
                 width: '15%',
             }, {
                 title: '市级客户数',
@@ -37,15 +39,18 @@ export function getSignedCustomerZoneCoverageChart(paramObj = {}) {
                 title: '市级占有率',
                 dataIndex: 'city_percent',
                 showAsPercent: true,
+                align: 'right',
                 width: '15%',
             }, {
                 title: '县级客户数',
                 dataIndex: 'county_customer',
+                align: 'right',
                 width: '15%',
             }, {
                 title: '县级占有率',
                 dataIndex: 'county_percent',
                 showAsPercent: true,
+                align: 'right',
                 width: '15%',
             }],
         },

@@ -59,32 +59,38 @@ export function getSalesManagerPerformanceRankingChart() {
                     title: Intl.get('contract.29', '回款毛利'),
                     dataIndex: 'gross_profit',
                     sorter: sorter.bind(null, 'gross_profit'),
+                    align: 'right',
                     width: '10%',
                 }, {
                     title: Intl.get('common.oppertunity.number', '机会数量'),
                     dataIndex: 'opportunity_count',
                     sorter: sorter.bind(null, 'opportunity_count'),
+                    align: 'right',
                     width: '10%',
                 }, {
                     title: Intl.get('common.deal.number', '成交数'),
                     dataIndex: 'deal_count',
                     sorter: sorter.bind(null, 'deal_count'),
+                    align: 'right',
                     width: '10%',
                 }, {
                     title: Intl.get('common.deal.rate', '成交率'),
                     dataIndex: 'deal_rate',
                     showAsPercent: true,
                     sorter: sorter.bind(null, 'deal_rate'),
+                    align: 'right',
                     width: '10%',
                 }, {
                     title: Intl.get('common.total.points', '总分'),
                     dataIndex: 'performance',
                     sorter: sorter.bind(null, 'performance'),
+                    align: 'right',
                     width: '10%',
                 }, {
                     title: Intl.get('common.rank', '名次'),
                     dataIndex: 'order',
                     sorter: sorter.bind(null, 'order'),
+                    align: 'right',
                     width: '10%',
                 }
             ],

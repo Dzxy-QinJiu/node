@@ -44,14 +44,17 @@ export function getNewChanceChart(chartType = 'table') {
                 {
                     title: '提交数',
                     dataIndex: 'total',
+                    align: 'right',
                     width: '20%',
                 }, {
                     title: '成交数',
                     dataIndex: 'deal',
+                    align: 'right',
                     width: '20%',
                 }, {
                     title: '成交率',
                     dataIndex: 'deal_rate',
+                    align: 'right',
                     width: '20%',
                     render: text => {
                         text = (text * 100).toFixed(2) + '%';

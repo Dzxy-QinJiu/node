@@ -42,18 +42,22 @@ export function getContactChart(type) {
                 width: '10%',
             }, {
                 title: contactNumColumnTitle,
+                align: 'right',
                 dataIndex: 'trace_num',
                 width: '10%',
             }, {
                 title: Intl.get('analysis.number.of.remarked.trace', '跟进记录数'),
+                align: 'right',
                 dataIndex: 'remarked_trace_num',
                 width: '10%',
             }, {
                 title: Intl.get('common.number.of.calls.made', '接通数'),
+                align: 'right',
                 dataIndex: 'answer_phone_num',
                 width: '10%',
             }, {
                 title: Intl.get('common.number.of.calls.not.connected', '未接通数'),
+                align: 'right',
                 dataIndex: 'no_answer_phone_num',
                 width: '10%',
             }]

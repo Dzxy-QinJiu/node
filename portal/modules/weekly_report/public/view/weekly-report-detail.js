@@ -115,9 +115,11 @@ class WeeklyReportDetail extends React.Component {
             dataIndex: 'date',
         }, {
             title: Intl.get('weekly.report.contract.account', '合同金额'),
+            align: 'right',
             dataIndex: 'amount',
         }, {
             title: Intl.get('contract.109', '毛利'),
+            align: 'right',
             dataIndex: 'grossProfit',
         }];
         return columns;
@@ -136,9 +138,11 @@ class WeeklyReportDetail extends React.Component {
             dataIndex: 'date',
         }, {
             title: Intl.get('weekly.report.repayment.account', '回款金额'),
+            align: 'right',
             dataIndex: 'amount',
         }, {
             title: Intl.get('contract.109', '毛利'),
+            align: 'right',
             dataIndex: 'grossProfit',
         }];
         return columns;
@@ -522,7 +526,7 @@ class WeeklyReportDetail extends React.Component {
                     dataSource={data.list}
                     columns={columns}
                     pagination={false}
-                    bordered
+                    tableType='data'
                 />
             );
         }
@@ -639,6 +643,7 @@ class WeeklyReportDetail extends React.Component {
 
     render() {
         var divHeight = this.getReportDetailDivHeight();
+        let cardType = 'chartCard';
         return (
             <div className="weekly-report-detail-container">
                 <h4 className="total-title">
@@ -650,32 +655,32 @@ class WeeklyReportDetail extends React.Component {
                         {/*开通呼叫中心*/}
                         {isOpenCaller() ? (
                             <div className="call-info-wrap">
-                                <AntcCardContainer title={Intl.get('weekly.report.call.statics', '电话统计')}>
+                                <AntcCardContainer type={cardType} title={Intl.get('weekly.report.call.statics', '电话统计')}>
                                     {this.renderDiffTypeTable('callInfo')}
                                 </AntcCardContainer>
                             </div>
                         ) : null}
                         <div className="customer-stage-info-wrap">
-                            <AntcCardContainer title={Intl.get('crm.order.stage', '订单阶段')}>
+                            <AntcCardContainer type={cardType} title={Intl.get('crm.order.stage', '订单阶段')}>
                                 {this.renderDiffTypeTable('customerStageInfo')}
                             </AntcCardContainer>
                         </div>
                         <div className="region-overlay-info-wrap">
-                            <AntcCardContainer title={Intl.get('weekly.report.region.overlay', '区域覆盖情况')}>
+                            <AntcCardContainer type={cardType} title={Intl.get('weekly.report.region.overlay', '区域覆盖情况')}>
                                 {this.renderDiffTypeTable('regionOverlay')}
                             </AntcCardContainer>
                         </div>
                         {/*开通营收中心*/}
                         {isOpenCash() ? (
                             <div className="contract-info-wrap">
-                                <AntcCardContainer title={Intl.get('weekly.report.contract', '合同情况')}>
+                                <AntcCardContainer type={cardType} title={Intl.get('weekly.report.contract', '合同情况')}>
                                     {this.renderDiffTypeTable('contactInfo')}
                                 </AntcCardContainer>
                             </div>) : null}
                         {/*开通营收中心*/}
                         {isOpenCash() ? (
                             <div className="repayment-info-wrap">
-                                <AntcCardContainer title={Intl.get('weekly.report.repayment', '回款情况')}>
+                                <AntcCardContainer type={cardType} title={Intl.get('weekly.report.repayment', '回款情况')}>
                                     {this.renderDiffTypeTable('repaymentInfo')}
                                 </AntcCardContainer>
                             </div>) : null}

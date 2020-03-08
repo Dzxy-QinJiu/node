@@ -59,51 +59,61 @@ export function getSalesBehaviorChart(paramObj = {}) {
                 {
                     title: Intl.get('contract.169', '客户数'),
                     dataIndex: 'customer_num',
+                    align: 'right',
                     width: 50
                 },
                 {
                     title: Intl.get('common.number.of.unremarked.customer', '填写跟进记录客户数'),
                     dataIndex: 'customer_remark_num',
+                    align: 'right',
                     width: 100
                 },
                 {
                     title: Intl.get('common.number.of.remarked.customer', '未填写跟进记录客户数'),
                     dataIndex: 'customer_no_remark_num',
+                    align: 'right',
                     width: 110
                 },
                 {
                     title: Intl.get('analysis.new.open.account.number', '新开帐号数'),
                     dataIndex: 'customer_new_num',
+                    align: 'right',
                     width: 65
                 },
                 {
                     title: Intl.get('analysis.extended.account.number', '延期帐号数'),
                     dataIndex: 'extended_user_num',
+                    align: 'right',
                     width: 65
                 },
                 {
                     title: Intl.get('common.number.of.trial.qualified.customer', '试用合格客户数'),
                     dataIndex: 'customer_qualify_num',
+                    align: 'right',
                     width: 80
                 },
                 {
                     title: Intl.get('common.number.of.travel.day', '出差天数'),
                     dataIndex: 'business_days',
+                    align: 'right',
                     width: 55
                 },
                 {
                     title: Intl.get('common.number.of.customers.visited', '拜访客户数'),
                     dataIndex: 'customer_visit_num',
+                    align: 'right',
                     width: 65
                 },
                 {
                     title: Intl.get('common.daily.duration.of.calls', '日均电话时长') + '(' + Intl.get('user.time.second', '秒') + ')',
                     dataIndex: 'average_billsec',
+                    align: 'right',
                     width: 90
                 },
                 {
                     title: Intl.get('common.daily.number.of.calls', '日均电话数'),
                     dataIndex: 'average_total',
+                    align: 'right',
                     width: 65
                 }
             ],

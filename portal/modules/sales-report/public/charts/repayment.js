@@ -44,10 +44,12 @@ export const repaymentChart = {
         }, {
             title: Intl.get('weekly.report.repayment.account', '回款金额'),
             dataIndex: 'amount',
+            align: 'right',
             width: '20%'
         }, {
             title: Intl.get('contract.109', '毛利'),
             dataIndex: 'grossProfit',
+            align: 'right',
             width: '20%'
         }],
     },

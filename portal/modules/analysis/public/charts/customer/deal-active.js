@@ -71,6 +71,7 @@ export function getCustomerDealActiveChart(title = '', stages = []) {
                 {
                     title: '活跃客户数',
                     dataIndex: 'count',
+                    align: 'right',
                     width: '50%'
                 },
             ],
