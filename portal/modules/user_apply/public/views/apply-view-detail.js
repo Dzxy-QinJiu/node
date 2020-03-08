@@ -1759,11 +1759,12 @@ const ApplyViewDetail = createReactClass({
                                         {this.renderDetailOperateBtn(user.user_id)}
                                     </div>
                                     {this.renderApplyDetailSingleUserName(user)}
-                                    <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
-                                        {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo, user.user_id)}
-                                    </PrivilegeChecker>
                                     {
-                                        this.state.applyIsExpanded && this.state.curShowConfigUserId === user.user_id ? null : (
+                                        this.state.applyIsExpanded && this.state.curShowConfigUserId === user.user_id ? (
+                                            <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
+                                                {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo, user.user_id)}
+                                            </PrivilegeChecker>
+                                        ) : (
                                             <div className="multi-user-delay-table">
                                                 {this.renderMultiAppDelayTable(user)}
                                             </div>
@@ -2462,14 +2463,25 @@ const ApplyViewDetail = createReactClass({
                         let terminals = _.get(appConfig, 'terminals.value');
                         item.terminals = _.map(terminals, 'id');
                     }
-                    //角色、权限，如果修改了用户类型，需要传设置的角色、权限
-                    if (appConfig && changedUserType) {
-                        item.roles = _.map(appConfig.roles, roleId => {
-                            return {role_id: roleId};
-                        });
-                        item.permissions = _.map(appConfig.permissions, permissionId => {
-                            return {permission_id: permissionId};
-                        });
+                    //角色、权限，如果修改了角色权限，需要传设置的角色、权限
+                    if (appConfig && (!_.isEqual(appConfig.roles, x.roles) || !_.isEqual(appConfig.permissions, x.permissions))) {
+                        // 传空数组，是为了在node端判断是否做了修改
+                        if (_.isEmpty(appConfig.roles)) { // 把角色置空的情况
+                            item.roles = [];
+                        } else {
+                            item.roles = _.map(appConfig.roles, roleId => {
+                                return {role_id: roleId};
+                            });
+                        }
+
+                        if (_.isEmpty(appConfig.permissions)) { // 把权限置空的情况
+                            item.permissions = [];
+                        } else {
+                            item.permissions = _.map(appConfig.permissions, permissionId => {
+                                return {permission_id: permissionId};
+                            });
+                        }
+
                     }
                     return item;
                 })
