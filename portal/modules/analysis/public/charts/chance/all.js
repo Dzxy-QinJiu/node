@@ -26,11 +26,11 @@ export function getAllChanceChart(specifyColumns) {
                 {
                     title: '团队',
                     dataIndex: TEAM_FIELD,
-                    width: '20%',
+                    width: '15%',
                 }, {
                     title: '成员',
                     dataIndex: 'nick_name',
-                    width: '20%',
+                    width: '15%',
                 }, {
                     title: '提交数',
                     dataIndex: 'total',
@@ -40,6 +40,7 @@ export function getAllChanceChart(specifyColumns) {
                     title: '通过数',
                     align: 'right',
                     dataIndex: 'pass',
+                    width: '10%',
                 }, {
                     title: '成交数',
                     align: 'right',
