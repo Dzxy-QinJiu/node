@@ -110,7 +110,8 @@ class RecommendClues extends React.Component {
         if(this.state.canClickMoreBatch === false) return;
         var conditionObj = this.getSearchCondition(condition);
         let lastItem = _.last(this.state.recommendClueLists);
-        //去掉为空的数据
+        //去掉为空的数
+        //todo 暂时注释掉，之后可能需要用到
         // if(this.state.hasExtraRecommendList){
         //     conditionObj = {
         //         'sortvalues': this.state.sortvalues,
