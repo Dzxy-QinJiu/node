@@ -5,6 +5,7 @@ var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-custo
 var clueCustomerStore = require('MOD_DIR/clue_customer/public/store/clue-customer-store');
 import Spinner from 'CMP_DIR/spinner';
 import ExtractClues from './extract-clue';
+const ANOTHER_BATCH = ExtractClues.ANOTHER_BATCH;
 import OperateSuccessTip from 'CMP_DIR/operate-success-tip';
 import { Button } from 'antd';
 import userData from 'PUB_DIR/sources/user-data';
@@ -122,7 +123,7 @@ class RecommendClues extends React.Component {
         if(this.state.feature) {
             conditionObj.feature = this.state.feature;
         }
-        if(_.isEqual(type, 'change') && !_.isNil(lastItem.ranking)) {//点击换一批时，才加这个ranking参数
+        if(_.isEqual(type, ANOTHER_BATCH) && !_.isNil(_.get(lastItem,'ranking'))) {//点击换一批时，才加这个ranking参数
             conditionObj.ranking = _.get(lastItem, 'ranking') + 1;
         }
         clueCustomerAction.getRecommendClueLists(conditionObj);
