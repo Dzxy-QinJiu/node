@@ -353,7 +353,7 @@ class ClueTraceList extends React.Component {
     renderWinningClueTips = () => {
         let hide = () => {
             this.setState({
-                isShowRewardClueTips: false,
+                newAddClueId: '',
             });
         };
         return (
