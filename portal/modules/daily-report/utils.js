@@ -103,11 +103,19 @@ export function getTplValues(callback) {
 }
 
 //获取报告列表
-export function getReportList(callback) {
+export function getReportList(callback, query) {
     if (!_.isFunction(callback)) return;
 
+    if (!query) {
+        query = {
+            start_time: moment().startOf('day').valueOf(),
+            end_time: moment().valueOf(),
+        };
+    }
+
     ajax.send({
-        url: REPORT_URL
+        url: REPORT_URL,
+        query
     })
         .done(result => {
             callback(result);

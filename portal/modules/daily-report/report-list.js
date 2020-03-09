@@ -2,22 +2,89 @@
  * 报告列表
  */
 
-import { AntcTable } from 'antc';
-import { getReportList } from './utils';
+import { AntcAnalysis } from 'antc';
+import { dateSelectorEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 class ReportList extends React.Component {
-    componentDidMount() {
-        getReportList(result => {
-            //            this.props.updateState({ reportList: result });
-        });
-    }
+    //获取查询条件
+    getConditions = () => {
+        return [
+            {
+                name: 'start_time',
+                value: moment().startOf('day').valueOf(),
+            },
+            {
+                name: 'end_time',
+                value: moment().valueOf(),
+            },
+        ];
+    };
+
+    //获取事件触发器
+    getEmitters = () => {
+        return [
+            {
+                emitter: dateSelectorEmitter,
+                event: dateSelectorEmitter.SELECT_DATE,
+                callbackArgs: [{
+                    name: 'start_time',
+                }, {
+                    name: 'end_time',
+                }],
+            },
+        ];
+    };
+
+    //获取图表列表
+    getCharts = () => {
+        return [
+            {
+                chartType: 'table',
+                layout: {sm: 24},
+                url: '/rest/customer/v3/dailyreport/report',
+                dataField: 'daily_reports',
+                //                argCallback: (arg) => {
+                //                },
+                //                processData: data => {
+                //                },
+                option: {
+                    columns: [
+                        {
+                            title: Intl.get('common.definition', '名称'),
+                            dataIndex: 'name',
+                            width: 80,
+                        },
+                        {
+                            title: Intl.get('effective.customer.number', '有效客户数'),
+                            dataIndex: 'valid',
+                        },
+                        {
+                            title: Intl.get('active.customer.number', '活跃客户数'),
+                            dataIndex: 'active',
+                        },
+                        {
+                            title: Intl.get('inactive.customer.number', '不活跃客户数'),
+                            dataIndex: 'unactive',
+                        },
+                        {
+                            title: Intl.get('effective.customer.activity.rate', '有效客户活跃率'),
+                            dataIndex: 'active_rate',
+                        },
+                    ],
+                },
+            },
+        ];
+    };
 
     render() {
         return (
             <div>
-                <AntcTable
-                    columns={[]}
-                    dataSource={[]}
+                <AntcAnalysis
+                    charts={this.getCharts()}
+                    conditions={this.getConditions()}
+                    emitterConfigList={this.getEmitters()}
+                    isGetDataOnMount={true}
+                    forceUpdate={true}
                 />
             </div>
         );
