@@ -529,7 +529,8 @@ class ClueTraceList extends React.Component {
             'icon-selected': item.playSelected,
             'icon-play-disable': !is_record_upload
         });
-        let isExistedRecord = _.get(this.state.customerRecord, 'length') > 1;
+        const isFristAddRecord = _.get(this.state.customerRecord, 'length') === 1;
+        const isShowRewardClueTips = isShowWinningClue() && this.state.newAddClueId === item.id && isFristAddRecord;
         return (
             <div className={classNames('trace-item-content', {'day-split-line': hasSplitLine})}>
                 <p className="item-detail-tip">
@@ -542,7 +543,7 @@ class ClueTraceList extends React.Component {
                         {item.showAdd ? this.renderAddDetail(item) : this.renderRecordShowContent(item)}
                     </div>
                     {
-                        isShowWinningClue() && this.state.newAddClueId === item.id && !isExistedRecord ? (
+                        isShowRewardClueTips ? (
                             <div className="winning-clue-tips">
                                 {this.renderWinningClueTips()}
                             </div>
