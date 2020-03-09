@@ -174,8 +174,9 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
                     });
                 }
                 let completeDurationList = durationArray;
-                if (completeDurationList.length && completeDurationList.length < 365) {
-                    const endDate = completeDurationList[completeDurationList.length - 1].date;
+                if (completeDurationList.length) {
+                    // 最后的时间点是今天
+                    const endDate = moment().startOf('day').valueOf();
                     completeDurationList = Array.from({length: 365}, (x, idx) => {
                         /// 比如：从 2020/2/14先前推，2019/2/15是这一年的开头，需要加1计算开始时间
                         const startDate = moment(endDate).subtract(1, 'years').add(1, 'day');
