@@ -9,17 +9,19 @@ import { renderButtonZoneFunc, hideReportPanel, getTplValues, saveReport } from 
 
 class ReportForm extends React.Component {
     componentDidMount() {
-        getTplValues(result => {
-            this.props.updateState({ tplValues: result });
-        });
+        if (!this.props.isPreview) {
+            getTplValues(result => {
+                this.props.updateState({ tplValues: result });
+            });
+        }
     }
 
     render() {
         const renderFormItem = renderFormItemFunc.bind(this, {});
         const renderButtonZone = renderButtonZoneFunc.bind(this);
 
-        const { updateState, clickedTpl, isPreview } = this.props;
-        const items = clickedTpl.items;
+        const { updateState, clickedTpl, isPreview, tplValues } = this.props;
+        const items = isPreview ? clickedTpl.items : tplValues;
         const editableFields = ['other'];
         const editableItems = _.filter(items, item => _.includes(editableFields, item.id));
         const unEditableItems = _.filter(items, item => !_.includes(editableFields, item.id));
