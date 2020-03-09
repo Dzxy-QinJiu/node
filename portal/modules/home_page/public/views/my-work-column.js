@@ -125,7 +125,10 @@ class MyWorkColumn extends React.Component {
     }
 
     componentDidMount() {
-        getTplList(tplList => { this.setState({tplList}); });
+        getTplList({
+            callback: tplList => { this.setState({tplList}); },
+            query: { status: 'on' }
+        });
         this.getUserList();
         this.getGuideConfig();
         this.getMyWorkList();

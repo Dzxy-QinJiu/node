@@ -50,11 +50,14 @@ export function renderButtonZoneFunc(buttons) {
 }
 
 //获取模板列表
-export function getTplList(callback) {
+export function getTplList(paramObj) {
+    const { callback, query = {} } = paramObj;
+
     if (!_.isFunction(callback)) return;
 
     ajax.send({
-        url: TPL_LIST_URL
+        url: TPL_LIST_URL,
+        query
     })
         .done(result => {
             result = _.unionBy(result, 'name');

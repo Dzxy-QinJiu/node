@@ -9,8 +9,8 @@ import addTplHoc from './add-tpl-hoc';
 
 class AddTpl extends React.Component {
     componentDidMount() {
-        getTplList(result => {
-            this.props.updateState({ tplList: result });
+        getTplList({
+            callback: result => this.props.updateState({ tplList: result })
         });
     }
 
