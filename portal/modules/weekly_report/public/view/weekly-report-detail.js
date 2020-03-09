@@ -643,7 +643,7 @@ class WeeklyReportDetail extends React.Component {
 
     render() {
         var divHeight = this.getReportDetailDivHeight();
-        let cardType = 'chartCard';
+        let cardType = 'chart-card';
         return (
             <div className="weekly-report-detail-container">
                 <h4 className="total-title">

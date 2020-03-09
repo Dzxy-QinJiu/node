@@ -48,73 +48,73 @@ export function getSalesBehaviorChart(paramObj = {}) {
                     title: Intl.get('user.user.team', '团队'),
                     dataIndex: 'sales_team',
                     isSetCsvValueBlank: true,
-                    width: 50
+                    width: 80
                 },
                 {
                     title: Intl.get('user.salesman', '销售人员'),
                     dataIndex: 'nick_name',
                     isSetCsvValueBlank: true,
-                    width: 55
+                    width: 80
                 },
                 {
                     title: Intl.get('contract.169', '客户数'),
                     dataIndex: 'customer_num',
                     align: 'right',
-                    width: 50
+                    width: 60
                 },
                 {
                     title: Intl.get('common.number.of.unremarked.customer', '填写跟进记录客户数'),
                     dataIndex: 'customer_remark_num',
                     align: 'right',
-                    width: 100
+                    width: 145
                 },
                 {
                     title: Intl.get('common.number.of.remarked.customer', '未填写跟进记录客户数'),
                     dataIndex: 'customer_no_remark_num',
                     align: 'right',
-                    width: 110
+                    width: 160
                 },
                 {
                     title: Intl.get('analysis.new.open.account.number', '新开帐号数'),
                     dataIndex: 'customer_new_num',
                     align: 'right',
-                    width: 65
+                    width: 90
                 },
                 {
                     title: Intl.get('analysis.extended.account.number', '延期帐号数'),
                     dataIndex: 'extended_user_num',
                     align: 'right',
-                    width: 65
+                    width: 90
                 },
                 {
                     title: Intl.get('common.number.of.trial.qualified.customer', '试用合格客户数'),
                     dataIndex: 'customer_qualify_num',
                     align: 'right',
-                    width: 80
+                    width: 120
                 },
                 {
                     title: Intl.get('common.number.of.travel.day', '出差天数'),
                     dataIndex: 'business_days',
                     align: 'right',
-                    width: 55
+                    width: 75
                 },
                 {
                     title: Intl.get('common.number.of.customers.visited', '拜访客户数'),
                     dataIndex: 'customer_visit_num',
                     align: 'right',
-                    width: 65
+                    width: 90
                 },
                 {
                     title: Intl.get('common.daily.duration.of.calls', '日均电话时长') + '(' + Intl.get('user.time.second', '秒') + ')',
                     dataIndex: 'average_billsec',
                     align: 'right',
-                    width: 90
+                    width: 126
                 },
                 {
                     title: Intl.get('common.daily.number.of.calls', '日均电话数'),
                     dataIndex: 'average_total',
                     align: 'right',
-                    width: 65
+                    width: 95
                 }
             ],
         }

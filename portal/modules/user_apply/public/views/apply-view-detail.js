@@ -1179,7 +1179,7 @@ const ApplyViewDetail = createReactClass({
             });
         }
         return (<AntcTable dataSource={user.apps}
-            bordered={true}
+            tableType='data'
             pagination={false}
             columns={columns}/>);
     },
@@ -1189,7 +1189,7 @@ const ApplyViewDetail = createReactClass({
         const detailInfo = this.state.detailInfoObj.info;
 
         return (<AntcTable dataSource={detailInfo.apps}
-            bordered={true}
+            tableType='data'
             pagination={false}
             columns={this.getTableColunms()}/>);
 
@@ -1258,6 +1258,7 @@ const ApplyViewDetail = createReactClass({
             columns.push({
                 title: Intl.get('common.app.count', '数量'),
                 dataIndex: 'number',
+                align: 'right',
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     //获取开通个数
@@ -1345,7 +1346,7 @@ const ApplyViewDetail = createReactClass({
         }
         return (<AntcTable
             dataSource={detailInfo.apps}
-            bordered={true}
+            tableType='data'
             pagination={false}
             columns={columns}/>);
     },
@@ -1619,7 +1620,7 @@ const ApplyViewDetail = createReactClass({
                 className: 'apply-detail-th'
             }];
         return (<AntcTable dataSource={user.apps}
-            bordered={true}
+            tableType='data'
             pagination={false}
             columns={columns}/>);
     },

@@ -23,7 +23,7 @@ export const callVolumeChart = {
             sorter: (a, b) => a.assessment_index - b.assessment_index,
             render: numberRender,
             align: 'right',
-            width: 90,
+            width: 100,
         },
         {
             title: `${Intl.get('sales.home.average.duration', '日均时长')}(${Intl.get('user.time.second', '秒')})`,
@@ -49,7 +49,7 @@ export const callVolumeChart = {
             title: Intl.get('sales.home.total.connected', '总接通数'),
             dataIndex: 'total_callout_success',
             align: 'right',
-            width: 90,
+            width: 80,
         },
         {
             title: Intl.get('weekly.report.attendance.remarks', '出勤备注'),

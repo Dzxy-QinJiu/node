@@ -142,7 +142,7 @@ class MonthlyReport extends React.Component {
                 title: Intl.get('common.ranking', '排名'),
                 dataIndex: 'rank',
                 align: 'right',
-                width: 50,
+                width: 55,
             },
             {
                 title: Intl.get('sales.home.sales', '销售'),
