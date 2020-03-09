@@ -1,4 +1,4 @@
-import {Row, Col} from 'antd';
+import { AntcDatePicker } from 'antc';
 
 class ReportFilter extends React.Component {
     state = {
@@ -14,14 +14,13 @@ class ReportFilter extends React.Component {
 
     render() {
         return (
-            <div className="sales-report" data-tracename='销售日报'>
-                <div className="report-content">
-                    <Row>
-                        <Col span={3}>
-                        </Col>
-                    </Row>
-                </div>
-            </div>
+            <AntcDatePicker
+                disableDateAfterToday={true}
+                range='day'
+                onSelect={this.onDateChange}
+                selectedTimeFormat='int'
+                className="btn-item"
+            />
         );
     }
 }
