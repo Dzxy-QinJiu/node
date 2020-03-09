@@ -50,25 +50,13 @@ class ReportList extends React.Component {
                 option: {
                     columns: [
                         {
-                            title: Intl.get('common.definition', '名称'),
-                            dataIndex: 'name',
+                            title: '团队',
+                            dataIndex: 'sales_team',
                             width: 80,
                         },
                         {
-                            title: Intl.get('effective.customer.number', '有效客户数'),
-                            dataIndex: 'valid',
-                        },
-                        {
-                            title: Intl.get('active.customer.number', '活跃客户数'),
-                            dataIndex: 'active',
-                        },
-                        {
-                            title: Intl.get('inactive.customer.number', '不活跃客户数'),
-                            dataIndex: 'unactive',
-                        },
-                        {
-                            title: Intl.get('effective.customer.activity.rate', '有效客户活跃率'),
-                            dataIndex: 'active_rate',
+                            title: '销售',
+                            dataIndex: 'nickname',
                         },
                     ],
                 },
