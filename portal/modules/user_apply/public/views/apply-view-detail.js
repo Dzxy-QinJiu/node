@@ -1259,6 +1259,7 @@ const ApplyViewDetail = createReactClass({
                 title: Intl.get('common.app.count', '数量'),
                 dataIndex: 'number',
                 align: 'right',
+                width: 50,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     //获取开通个数
