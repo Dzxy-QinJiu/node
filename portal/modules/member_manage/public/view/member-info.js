@@ -2,7 +2,7 @@
  * Created by wangliping on 2016/11/8.
  */
 require('../css/member-info.less');
-import {Icon, Select, Popconfirm, message, Tabs, Switch, Col} from 'antd';
+import {Icon, Select, Popconfirm, message, Tabs, Col} from 'antd';
 const TabPane = Tabs.TabPane;
 var Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
@@ -27,11 +27,10 @@ import Spinner from 'CMP_DIR/spinner';
 import { StatusWrapper } from 'antc';
 import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 import MemberRecord from './member-record';
-import { storageUtil } from 'ant-utils';
-import ajax from 'ant-ajax';
 import memberManagePrivilege from '../privilege-const';
 import {PasswdStrengthBar} from 'CMP_DIR/password-strength-bar';
-
+import {checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+const {setWebsiteConfig, getLocalWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const TAB_KEYS = {
     BASIC_INFO_TAB: '1',//基本信息
     LOG_TAB: '2',//操作日志
@@ -40,7 +39,7 @@ const TAB_KEYS = {
 const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 352;
 const EDIT_PASSWORD_WIDTH = 340;
 
-const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+const websiteConfig = getLocalWebsiteConfig() || {};
 
 class MemberInfo extends React.Component {
 
@@ -853,21 +852,13 @@ class MemberInfo extends React.Component {
 
     //不再提示可以打电话的提示
     handleClickNoCallTip = () => {
-        ajax.send({
-            url: '/rest/base/v1/user/website/config/personnel',
-            type: 'post',
-            data: {
-                no_show_call_tips: true
-            }
-        })
-            .done(result => {
-                this.setState({
-                    isShowCallTip: false
-                });
-            })
-            .fail(err => {
-                message.error(err);
+        setWebsiteConfig({no_show_call_tips: true}, () => {
+            this.setState({
+                isShowCallTip: false
             });
+        }, (err) => {
+            message.error(err);
+        });
     }
 
     // 添加成员成功后的提示信息
@@ -962,12 +953,14 @@ class MemberInfo extends React.Component {
             let isSales = _.find(roleNames, roleName => roleName && roleName.indexOf(Intl.get('sales.home.sales', '销售')) !== -1);
             // 开通营收中心并且有销售目标的权限
             let showSalesGoalPrivilege = isSales && hasPrivilege(memberManagePrivilege.USER_MANAGE_ADD_SALES_GOAL);
+            // 只有企业试用用户、在添加完成员之后返回详情界面才显示打电话的提示
+            const isShowCallTip = checkVersionAndType().isCompanyTrial && this.props.isContinueAddButtonShow && this.state.isShowCallTip;
             return (
                 <div className="member-detail-basic-container" style={{height: this.getContainerHeight()}}>
                     <GeminiScrollbar>
                         <div className="member-detail-basic-content">
                             {
-                                this.props.isContinueAddButtonShow && this.state.isShowCallTip ? (
+                                isShowCallTip ? (
                                     <DetailCard
                                         content={this.renderAddMemberSuccessTips()}
                                         className='member-info-success-tips-card-container'
