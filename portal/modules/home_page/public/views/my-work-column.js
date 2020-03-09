@@ -1232,7 +1232,6 @@ class MyWorkColumn extends React.Component {
 
         let item2 = _.cloneDeep(item);
         item2.workObj = { name: tpl.name };
-        item2.btnConf.handleFunc = showReportPanel;
         item2.btnConf.handleFunc = showReportPanel.bind(null, {
             currentView: VIEW_TYPE.REPORT_LIST,
         });
