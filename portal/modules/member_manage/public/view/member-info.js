@@ -39,8 +39,6 @@ const TAB_KEYS = {
 const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 352;
 const EDIT_PASSWORD_WIDTH = 340;
 
-const websiteConfig = getLocalWebsiteConfig() || {};
-
 class MemberInfo extends React.Component {
 
     state = {
@@ -57,7 +55,7 @@ class MemberInfo extends React.Component {
         errorMsg: this.props.errorMsg,
         salesRoleList: [], // 职务列表
         //是否显示拨打电话的提示
-        isShowCallTip: !_.get(websiteConfig, 'no_show_call_tips'),
+        isShowCallTip: !_.get(getLocalWebsiteConfig(), 'no_show_call_tips'),
         ...MemberInfoStore.getState(),
     };
 
