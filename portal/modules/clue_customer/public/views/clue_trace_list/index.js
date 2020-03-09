@@ -46,7 +46,7 @@ class ClueTraceList extends React.Component {
         filterStatus: '',//通话状态的过滤
         addRecordNullTip: '',//添加跟进记录内容为空的提示
         editRecordNullTip: '', //编辑跟进内容为空的提示
-        isShowRewardClueTips: false, // 是否显示赢线索的提示，默认不显示
+        newAddClueId: '', // 新添加跟进内容的id
         ...ClueTraceStore.getState(),
     };
 
@@ -243,7 +243,7 @@ class ClueTraceList extends React.Component {
                         Trace.traceEvent(ReactDOM.findDOMNode(this), '填写跟进赢得2条线索');
                     }
                     this.setState({
-                        isShowRewardClueTips: true
+                        newAddClueId: customer_trace.id,
                     });
                     //更新列表中的最后联系
                     _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(customer_trace);
@@ -529,6 +529,7 @@ class ClueTraceList extends React.Component {
             'icon-selected': item.playSelected,
             'icon-play-disable': !is_record_upload
         });
+        let isExistedRecord = _.get(this.state.customerRecord, 'length') > 1;
         return (
             <div className={classNames('trace-item-content', {'day-split-line': hasSplitLine})}>
                 <p className="item-detail-tip">
@@ -541,7 +542,7 @@ class ClueTraceList extends React.Component {
                         {item.showAdd ? this.renderAddDetail(item) : this.renderRecordShowContent(item)}
                     </div>
                     {
-                        isShowWinningClue() && this.state.isShowRewardClueTips ? (
+                        isShowWinningClue() && this.state.newAddClueId === item.id && !isExistedRecord ? (
                             <div className="winning-clue-tips">
                                 {this.renderWinningClueTips()}
                             </div>
