@@ -8,7 +8,7 @@ import { getReportList } from './utils';
 class ReportList extends React.Component {
     componentDidMount() {
         getReportList(result => {
-            this.props.updateState({ reportList: result });
+            //            this.props.updateState({ reportList: result });
         });
     }
 
