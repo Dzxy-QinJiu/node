@@ -106,19 +106,23 @@ class RecommendClues extends React.Component {
         conditionObj.load_size = this.state.pageSize;
         return conditionObj;
     };
-    getRecommendClueLists = (condition) => {
+    getRecommendClueLists = (condition, type) => {
         if(this.state.canClickMoreBatch === false) return;
         var conditionObj = this.getSearchCondition(condition);
+        let lastItem = _.last(this.state.recommendClueLists);
         //去掉为空的数据
-        if(this.state.hasExtraRecommendList){
-            conditionObj = {
-                'sortvalues': this.state.sortvalues,
-                ...conditionObj
-            };
-        }
+        // if(this.state.hasExtraRecommendList){
+        //     conditionObj = {
+        //         'sortvalues': this.state.sortvalues,
+        //         ...conditionObj
+        //     };
+        // }
         //是否选择复工企业或者上市企业
         if(this.state.feature) {
             conditionObj.feature = this.state.feature;
+        }
+        if(_.isEqual(type, 'change') && !_.isNil(lastItem.ranking)) {//点击换一批时，才加这个ranking参数
+            conditionObj.ranking = _.get(lastItem, 'ranking') + 1;
         }
         clueCustomerAction.getRecommendClueLists(conditionObj);
     };
