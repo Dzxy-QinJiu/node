@@ -5,7 +5,7 @@
 import { Form } from 'antd';
 import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
 import { VIEW_TYPE } from './consts';
-import { renderButtonZoneFunc, hideReportPanel, getTplValues } from './utils';
+import { renderButtonZoneFunc, hideReportPanel, getTplValues, saveReport } from './utils';
 
 class ReportForm extends React.Component {
     componentDidMount() {
@@ -56,22 +56,13 @@ class ReportForm extends React.Component {
     save() {
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log(values);
                 _.each(values, (value, key) => {
                     if (_.isUndefined(value)) delete values[key];
                 });
 
-                if (values.status === true) {
-                    values.status = 'on';
-                } else if (values.status === false) {
-                    values.status = 'off';
-                }
+                const { clickedTpl } = this.props;
 
-                const { reportList, selectedReport } = this.props;
-
-                const reportData = _.find(reportList, report => report.id === selectedReport) || {};
-
-                const postData = _.extend({}, reportData, values);
+                const postData = _.extend({}, clickedTpl, values);
 
                 console.log(postData);//return
                 saveReport(postData, result => {});
