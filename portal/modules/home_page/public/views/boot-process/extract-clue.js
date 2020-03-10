@@ -1096,6 +1096,5 @@ ExtractClues.propTypes = {
     salesManList: PropTypes.array,
     showSuccessPage: PropTypes.bool,
 };
-
 ExtractClues.ANOTHER_BATCH = ANOTHER_BATCH;
 export default ExtractClues;
