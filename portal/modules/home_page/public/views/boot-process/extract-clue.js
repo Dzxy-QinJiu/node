@@ -34,6 +34,9 @@ const LAYOUT_CONSTANCE = {
     BTN_PADDING: 10, //底部按钮区域高度
 };
 
+//换一批
+const ANOTHER_BATCH = 'anotherBatch';
+
 const HOT_SELECTORS = [/*{
     name: Intl.get('clue.recommend.return.to.work', '已复工企业'),
     value: '复工'
@@ -873,7 +876,7 @@ class ExtractClues extends React.Component {
             moreDataTip = (
                 <span>
                     {Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以')}
-                    <a data-tracename="点击换一批按钮" onClick={this.getRecommendLists}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
+                    <a data-tracename="点击换一批按钮" onClick={this.getRecommendLists.bind(this,ANOTHER_BATCH)}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
                 </span>
             );
         }else {
@@ -942,9 +945,9 @@ class ExtractClues extends React.Component {
         }
     };
 
-    getRecommendLists = () => {
+    getRecommendLists = (type) => {
         if(this.state.canClickMoreBatch) {
-            this.props.getRecommendClueLists();
+            this.props.getRecommendClueLists(null, type);
         }
     };
 
@@ -973,7 +976,7 @@ class ExtractClues extends React.Component {
                     className="btn-item more-batch-btn"
                     data-tracename="点击换一批按钮"
                     title={Intl.get('clue.customer.refresh.list', '换一批')}
-                    onClick={this.getRecommendLists}
+                    onClick={this.getRecommendLists.bind(this, ANOTHER_BATCH)}
                 >
                     <span className={moreRotationClass}/>
                     <span>{isWebMin ? null : Intl.get('clue.customer.refresh.list', '换一批')}</span>
@@ -1094,4 +1097,5 @@ ExtractClues.propTypes = {
     showSuccessPage: PropTypes.bool,
 };
 
+ExtractClues.ANOTHER_BATCH = ANOTHER_BATCH;
 export default ExtractClues;
