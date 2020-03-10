@@ -27,7 +27,6 @@ class ReportLeftMenu extends React.Component {
         var category = getCategory();
         //获取当前界面的子模块
         var subMenus = menuUtil.getSubMenus(category);
-        console.log(MoreButton);
 
         return (
             <div className='report-left-menu'>
@@ -40,15 +39,18 @@ class ReportLeftMenu extends React.Component {
                             >
                                 {menuItem.name}
                             </NavLink>
-                            <MoreButton
-                                topBarDropList={() => (
-                                    <Menu onClick={this.onOpMenuClick}>
-                                        <Menu.Item>
-                                            {Intl.get('clue.add.trace.content', '添加跟进内容')}
-                                        </Menu.Item>
-                                    </Menu>
-                                )}
-                            />
+                            {menuItem.routePath === '/analysis/report/daily-report' ? (
+
+                                <MoreButton
+                                    topBarDropList={() => (
+                                        <Menu onClick={this.onOpMenuClick}>
+                                            <Menu.Item>
+                                                {Intl.get('clue.add.trace.content', '添加跟进内容')}
+                                            </Menu.Item>
+                                        </Menu>
+                                    )}
+                                />
+                            ) : null }
                         </li>
                     ))}
                 </ul>
