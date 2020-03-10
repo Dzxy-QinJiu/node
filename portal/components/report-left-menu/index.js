@@ -39,13 +39,13 @@ class ReportLeftMenu extends React.Component {
                             >
                                 {menuItem.name}
                             </NavLink>
-                            {menuItem.routePath === '/analysis/report/daily-report' ? (
 
+                            {menuItem.routePath === '/analysis/report/daily-report' ? (
                                 <MoreButton
                                     topBarDropList={() => (
                                         <Menu onClick={this.onOpMenuClick}>
-                                            <Menu.Item>
-                                                {Intl.get('clue.add.trace.content', '添加跟进内容')}
+                                            <Menu.Item key="status">
+                                                状态
                                             </Menu.Item>
                                         </Menu>
                                     )}
@@ -57,7 +57,10 @@ class ReportLeftMenu extends React.Component {
             </div>
         );
     }
-    onOpMenuClick = () => {}
+
+    onOpMenuClick = (e) => {
+        console.log(e.key);
+    }
 }
 
 export default ReportLeftMenu;
