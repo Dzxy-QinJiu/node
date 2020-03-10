@@ -513,7 +513,7 @@ class RegisterForm extends React.Component {
                         }}
                     />
                 </div>
-                <FormItem>
+                <FormItem className='register-btn-form-item'>
                     <div className='register-btn'>
                         <Button 
                             fullWidth
