@@ -10,7 +10,7 @@ import {Row, Col} from 'antd';
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 
-export default function(ReportContent, ReportFilter) {
+export default function(ReportContent, ReportFilter, processLeftMenu) {
     return class extends React.Component {
         render() {
             return (
@@ -23,7 +23,7 @@ export default function(ReportContent, ReportFilter) {
                     <div className="report-content">
                         <Row>
                             <Col span={3}>
-                                <ReportLeftMenu/>
+                                <ReportLeftMenu processMenu={processLeftMenu} />
                             </Col>
                             <Col span={21} >
                                 <ReportContent {...this.props} />
