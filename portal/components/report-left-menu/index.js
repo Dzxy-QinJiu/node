@@ -4,6 +4,8 @@
 
 require('./style.less');
 import {NavLink} from 'react-router-dom';
+import { Menu } from 'antd';
+const MoreButton = require('CMP_DIR/more-btn');
 
 const menuUtil = require('PUB_DIR/sources/utils/menu-util');
 
@@ -25,6 +27,7 @@ class ReportLeftMenu extends React.Component {
         var category = getCategory();
         //获取当前界面的子模块
         var subMenus = menuUtil.getSubMenus(category);
+        console.log(MoreButton);
 
         return (
             <div className='report-left-menu'>
@@ -37,12 +40,22 @@ class ReportLeftMenu extends React.Component {
                             >
                                 {menuItem.name}
                             </NavLink>
+                            <MoreButton
+                                topBarDropList={() => (
+                                    <Menu onClick={this.onOpMenuClick}>
+                                        <Menu.Item>
+                                            {Intl.get('clue.add.trace.content', '添加跟进内容')}
+                                        </Menu.Item>
+                                    </Menu>
+                                )}
+                            />
                         </li>
                     ))}
                 </ul>
             </div>
         );
     }
+    onOpMenuClick = () => {}
 }
 
 export default ReportLeftMenu;
