@@ -1,6 +1,4 @@
-var React = require('react');
-import {Button, message, Select, Icon, Menu, Dropdown, Popconfirm} from 'antd';
-
+import {Button, message, Select, Menu, Dropdown, Popconfirm} from 'antd';
 const Option = Select.Option;
 const ModalDialog = require('../../../../../components/ModalDialog');
 const Spinner = require('../../../../../components/spinner');
@@ -598,25 +596,17 @@ class OrderItem extends React.Component {
             </div>);
     };
 
-    toggleOrderDetail = () => {
-        let isExpandDetail = this.state.isExpandDetail;
-        this.setState({isExpandDetail: !isExpandDetail});
+    toggleOrderDetail = (isExpandDetail) => {
+        this.setState({isExpandDetail});
     };
 
     renderOrderTitle = () => {
-        let isExpandDetail = this.state.isExpandDetail;
         const order = this.state.formData;
-        const expandIconClassName = classNames('iconfont order-expand-icon', {
-            'icon-up-twoline handle-btn-item': isExpandDetail,
-            'icon-down-twoline handle-btn-item': !isExpandDetail
-        });
         return (
             <span className="order-item-title">
                 {order.oppo_status ? (
                     <span>
                         {this.renderOrderStatus(order.oppo_status)}
-                        <span className={expandIconClassName} onClick={this.toggleOrderDetail}
-                            title={isExpandDetail ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('crm.basic.detail.show', '展开详情')}/>
                     </span>) : (
                     <span>
                         {this.state.curOrderCloseStatus === ORDER_STATUS.LOSE ? this.renderLoseOrderForm(order) :
@@ -688,10 +678,14 @@ class OrderItem extends React.Component {
         });
         return (
             <div>
-                <DetailCard title={this.renderOrderTitle()}
+                <DetailCard
+                    title={this.renderOrderTitle()}
                     content={this.renderOrderContent()}
                     bottom={this.renderOrderBottom()}
-                    className={containerClassName}/>
+                    className={containerClassName}
+                    isShowToggleBtn={true}
+                    handleToggleDetail={this.toggleOrderDetail.bind(this)}
+                />
                 {this.state.isShowApplyUserForm ? (
                     <ApplyUserForm
                         userType={this.state.applyType}
