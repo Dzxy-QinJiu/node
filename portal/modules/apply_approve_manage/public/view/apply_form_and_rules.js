@@ -1,3 +1,5 @@
+import AddApplyConditionPanel from 'MOD_DIR/apply_approve_manage/public/view/reg-rules/add_apply_condition_panel';
+
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -31,6 +33,7 @@ let userData = require('PUB_DIR/sources/user-data');
 var uuid = require('uuid/v4');
 import ApplyApproveManageStore from '../store/apply_approve_manage_store';
 import Spinner from 'CMP_DIR/spinner';
+import {getMyTeamTreeAndFlattenList, getTeamTreeMemberLists} from 'PUB_DIR/sources/utils/common-data-util';
 class ApplyFormAndRules extends React.Component {
     constructor(props) {
         super(props);
@@ -41,6 +44,7 @@ class ApplyFormAndRules extends React.Component {
             applyTypeData: {},//编辑某个审批的相关数据
             roleList: [],
             userList: [],
+            teamList: [],
             ...ApplyApproveManageStore.getState()
         };
     }
@@ -53,8 +57,18 @@ class ApplyFormAndRules extends React.Component {
         ApplyApproveManageStore.listen(this.onStoreChange);
         //获取用户列表
         this.getUserList();
+        //获取所有团队列表
+        this.getTeamList();
         //请求展示内容
         this.getSelfSettingWorkFlow(this.props.applyTypeId);
+    };
+    //获取团队列表
+    getTeamList = () => {
+        getMyTeamTreeAndFlattenList(data => {
+            this.setState({
+                teamList: data.teamList || []
+            });
+        });
     };
     getUserList = () => {
         $.ajax({
@@ -413,6 +427,7 @@ class ApplyFormAndRules extends React.Component {
                 updateRegRulesView={this.updateRegRulesView}
                 roleList={this.state.roleList}
                 userList={this.state.userList}
+                teamList={this.state.teamList}
             />
         );
     };
@@ -422,9 +437,11 @@ class ApplyFormAndRules extends React.Component {
         if (targetItem) {
             targetItem.applyRulesAndSetting = updateRules.applyRulesAndSetting;
             targetItem.customiz_user_range = updateRules.customiz_user_range;
+            targetItem.customiz_team_range = updateRules.customiz_team_range;
             var applyTypeData = this.state.applyTypeData;
             applyTypeData.applyRulesAndSetting = updateRules.applyRulesAndSetting;
             applyTypeData.customiz_user_range = updateRules.customiz_user_range;
+            applyTypeData.customiz_team_range = updateRules.customiz_team_range;
             this.setState({
                 applyTypeData: applyTypeData
             });

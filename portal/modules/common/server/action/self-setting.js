@@ -66,6 +66,9 @@ exports.saveSelfSettingWorkFlowRules = function(req, res) {
             if(_.isArray(formData.customiz_user_range)){
                 formData.customiz_user_range = JSON.stringify(formData.customiz_user_range);
             }
+            if(_.isArray(formData.customiz_team_range)){
+                formData.customiz_team_range = JSON.stringify(formData.customiz_team_range);
+            }
 
             ApplyApproveManageService.saveSelfSettingWorkFlowRules(req, res, formData).on('success', function(data) {
                 fs.unlinkSync(filePath);

@@ -30,8 +30,10 @@ export const ALL_COMPONENTS = {
     DATETIME: 'datetime',//日期或者日期加时间
     PRODUCTION: 'prodution',//产品
     CUSTOMERSEARCH: 'customerSearch',//客户的搜索
-    TIMEPERIOD: 'timeperiod',
-    USERSEARCH: 'userSearch'
+    TIMEPERIOD: 'timeperiod',//时间
+    USERSEARCH: 'userSearch',//成员申请
+    TEAMSEARCH: 'teamSearch'//团队申请
+
 };
 export const ALL_COMPONENTS_TYPE = {
     TEXTAREA: 'textarea',
@@ -69,7 +71,12 @@ exports.applyComponentsType = [{
 }, {
     name: ALL_COMPONENTS.USERSEARCH,
     component: SelectOption
-}];
+}
+// , {
+//     name: ALL_COMPONENTS.TEAMSEARCH,
+//     component: SelectOption
+// }
+];
 exports.CONDITION_KEYS = [
     {
         name: Intl.get('user.duration', '时长'),
@@ -88,6 +95,15 @@ exports.CONDITION_KEYS = [
             item['conditionRule'] = '${user_range==\"' + item['userRangeRoute'] + '\"}';
             item['conditionPerson'] = item['userRange'];
             item['conditionRuleDsc'] = item['userRangeDsc'].join(',');
+        }},
+
+    {name: Intl.get('user.apply.team', '申请团队'), value: ALL_COMPONENTS.TEAMSEARCH + '_limit'
+        ,conditionRule: function(item) {
+            //1）不能用item.conditionRule去赋值，之前可能不存在此属性
+            // 2）${team_range==""} 和后端约定的指定那些人审批，走特定的流程，流程的key值是teamRangeRoute，字段是team_range
+            item['conditionRule'] = '${team_range==\"' + item['teamRangeRoute'] + '\"}';
+            item['conditionPerson'] = item['teamRange'];
+            item['conditionRuleDsc'] = item['teamRangeDsc'].join(',');
         }},
 ];
 exports.FLOW_TYPES = {
@@ -242,7 +258,18 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'key': 'managers',
         component: SelectOption,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
-    }
+    },
+    // {
+    //     'rulename': Intl.get('apply.approve.team.select', '团队选择'), 'iconfontCls': 'icon-fuwu',
+    //     'component_type': ALL_COMPONENTS.TEAMSEARCH,
+    //     'type': 'option',
+    //     'placeholder': Intl.get('team.position.select.team', '请选择团队'),
+    //     'notshowInList': true,
+    //     'default_value': [],
+    //     'key': 'managers',
+    //     component: SelectOption,
+    //     is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
+    // }
 ];
 
 //内置审批流程
@@ -346,19 +373,20 @@ exports.CONDITION_LIMITE = [{
     value: '>',
     inverseCondition: '<='
 }
+    , {
+    name: Intl.get('apply.add.condition.larger.and.equal', '大于等于'),
+    value: '>=',
+    inverseCondition: '<'
+}, {
+    name: Intl.get('apply.add.condition.less', '小于'),
+    value: '<',
+    inverseCondition: '>='
+}, {
+    name: Intl.get('apply.add.condition.less.and.equal', '小于等于'),
+    value: '<=',
+    inverseCondition: '>'
+}
 // , {
-//     name: Intl.get('apply.add.condition.larger.and.equal', '大于等于'),
-//     value: '>=',
-//     inverseCondition: '<'
-// }, {
-//     name: Intl.get('apply.add.condition.less', '小于'),
-//     value: '<',
-//     inverseCondition: '>='
-// }, {
-//     name: Intl.get('apply.add.condition.less.and.equal', '小于等于'),
-//     value: '<=',
-//     inverseCondition: '>'
-// }, {
 //     name: Intl.get('apply.add.condition.equal', '等于'),
 //     value: '===',
 //     inverseCondition: '!=='

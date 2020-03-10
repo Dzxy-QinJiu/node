@@ -849,6 +849,7 @@ var zh_CN = {
     'user.position.input.name.search': '输入组织名称搜索',
     'user.position.number.tips': '请输入座席号',
     'user.position.select.user': '请选择用户',
+    'team.position.select.team': '请选择团队',
     /*用户管理模块-end*/
     'my.app.no.app': '暂无应用',
     'my.app.change.expire.time.placeholder': '请选择到期时间',
@@ -1414,6 +1415,7 @@ var zh_CN = {
     'user.apply.change.status.false': '申请禁用应用',
     'user.apply.change.status.true': '申请启用应用',
     'user.apply.presenter': '申请人',
+    'user.apply.team': '申请团队',
     'user.apply.id': '账号申请',
     'user.apply.no.match.retry': '暂无符合查询条件的用户申请',
     'user.apply.no.unread': '已无未读回复的申请',
@@ -3629,7 +3631,6 @@ var zh_CN = {
     'apply.add.condition.less.and.equal': '小于等于',
     'apply.add.condition.equal': '等于',
     'apply.add.condition.within': '介于',
-    'apply.condition.meet.rule': '满足条件',
     'apply.condition.apply.approve': '审批流程',
     'apply.condition.item.add.cc': '抄送人',
     'apply.condition.item.money': '金额',
@@ -3817,6 +3818,7 @@ var zh_CN = {
     'user.score.total.days': '总天数',
     'user.score.choose.interval': '请选择周期',
     'apply.approve.user.select': '用户选择',
+    'apply.approve.team.select': '团队选择',
     // 引导流程
     'guide.add.customer.title': '添加您的客户',
     'guide.add.customer.des': '添加客户后，可以轻松跟进您的客户',
