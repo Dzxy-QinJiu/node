@@ -56,14 +56,22 @@
     right: 0;
     width: 60%;
     height: 100%;
-    display: flex;
-    align-items: center;
     .form-wrap{
       position: absolute;
-      width: 384px;
+      top: 0;
       left: 0;
       right: 0;
-      margin: 0 auto;
+      .register-scroll-bar{
+        .gm-scroll-view{
+          display: flex;
+          align-items: center;
+        }
+      }
+      .register-content-continer{
+        width: 384px;
+        margin: auto;
+      }
+
       .form-title{
         font-size: 24px;
         font-weight: bold;
@@ -74,6 +82,9 @@
         margin-top: 10px;
         .ant-form-item{
           margin-bottom: 20px;
+        }
+        .ant-form-item.register-btn-form-item{
+          margin-bottom: 0;
         }
         .MuiFormLabel-root{
           font-family: @font-family;
@@ -201,7 +212,7 @@
         float: right;
         height: 20px;
         line-height: 20px;
-        margin-top: 32px;
+        margin-top: 20px;
         font-size: 16px;
         >span{
           color: #999;
@@ -251,7 +262,11 @@
     }
     .register-form-wrap{
       width: 100%;
+      display: flex;
+      align-items: center;
       .form-wrap{
+        bottom: 0;
+        margin: auto;
         .register-to-login{
           float: left;
         }
@@ -282,20 +297,22 @@
     
     .register-form-wrap {
       .form-wrap{
-        width: 264px;
-        .register-form{
-          .register-user-agreement-tip {
-            font-size: 10px;
-          }
-           //密码强度条样式设置 
-          .password-strength-wrap{
-            .ant-pwd-strength-item{
-              width: 80px !important;
+        .register-content-continer{
+          width: 264px;
+          .register-form{
+            .register-user-agreement-tip {
+              font-size: 10px;
+            }
+            //密码强度条样式设置 
+            .password-strength-wrap{
+              .ant-pwd-strength-item{
+                width: 80px !important;
+              }
             }
           }
-        }
-        .register-to-login{
-          margin-top: 17px;
+          .register-to-login{
+            margin-top: 17px;
+          }
         }
       }
     }
