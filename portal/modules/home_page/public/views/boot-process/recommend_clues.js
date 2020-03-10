@@ -5,6 +5,7 @@ var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-custo
 var clueCustomerStore = require('MOD_DIR/clue_customer/public/store/clue-customer-store');
 import Spinner from 'CMP_DIR/spinner';
 import ExtractClues from './extract-clue';
+const ANOTHER_BATCH = ExtractClues.ANOTHER_BATCH;
 import OperateSuccessTip from 'CMP_DIR/operate-success-tip';
 import { Button } from 'antd';
 import userData from 'PUB_DIR/sources/user-data';
@@ -106,19 +107,24 @@ class RecommendClues extends React.Component {
         conditionObj.load_size = this.state.pageSize;
         return conditionObj;
     };
-    getRecommendClueLists = (condition) => {
+    getRecommendClueLists = (condition, type) => {
         if(this.state.canClickMoreBatch === false) return;
         var conditionObj = this.getSearchCondition(condition);
-        //去掉为空的数据
-        if(this.state.hasExtraRecommendList){
-            conditionObj = {
-                'sortvalues': this.state.sortvalues,
-                ...conditionObj
-            };
-        }
+        let lastItem = _.last(this.state.recommendClueLists);
+        //去掉为空的数
+        //todo 暂时注释掉，之后可能需要用到
+        // if(this.state.hasExtraRecommendList){
+        //     conditionObj = {
+        //         'sortvalues': this.state.sortvalues,
+        //         ...conditionObj
+        //     };
+        // }
         //是否选择复工企业或者上市企业
         if(this.state.feature) {
             conditionObj.feature = this.state.feature;
+        }
+        if(_.isEqual(type, ANOTHER_BATCH) && !_.isNil(_.get(lastItem,'ranking'))) {//点击换一批时，才加这个ranking参数
+            conditionObj.ranking = _.get(lastItem, 'ranking') + 1;
         }
         clueCustomerAction.getRecommendClueLists(conditionObj);
     };

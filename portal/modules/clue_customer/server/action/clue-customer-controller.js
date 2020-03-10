@@ -432,7 +432,8 @@ exports.getRecommendClueLists = function(req, res) {
                     legalPerson: item.legalPerson,
                     telephones: item.telephones,
                     startTime: item.startTime || '',
-                    sortvalues: item.sortvalues
+                    sortvalues: item.sortvalues,
+                    ranking: item.ranking
                 });
             });
             res.status(200).json(result);
