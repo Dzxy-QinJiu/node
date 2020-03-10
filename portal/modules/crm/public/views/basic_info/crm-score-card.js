@@ -255,7 +255,9 @@ class CrmScoreCard extends React.Component {
 
     render() {
         let content = null;
+        let titleBottomBorderNone = true;
         if (this.state.isExpandDetail) {
+            titleBottomBorderNone = false;
             content = this.renderScoreDetail();
         }
         const crmScoreCardCls = classNames('crm-score-card-container', {
@@ -266,6 +268,7 @@ class CrmScoreCard extends React.Component {
                 className={crmScoreCardCls}
                 title={this.renderScoreTitle()}
                 content={content}
+                titleBottomBorderNone={titleBottomBorderNone}
                 isShowToggleBtn={true}
                 handleToggleDetail={this.toggleScoreDetail.bind(this)}
             />
