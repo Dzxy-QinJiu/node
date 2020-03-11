@@ -41,6 +41,7 @@ class ReportList extends React.Component {
             {
                 chartType: 'table',
                 layout: {sm: 24},
+                height: 'auto',
                 url: '/rest/customer/v3/dailyreport/report',
                 dataField: 'daily_reports',
                 processData: data => {
@@ -94,6 +95,7 @@ class ReportList extends React.Component {
                     emitterConfigList={this.getEmitters()}
                     isGetDataOnMount={true}
                     forceUpdate={true}
+                    isUseScrollBar={true}
                 />
             </div>
         );
