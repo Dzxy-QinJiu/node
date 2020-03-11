@@ -17,8 +17,8 @@ export default function(WrappedComponent) {
             return (
                 <div>
                     <Steps current={currentStep}>
-                        <Step title="1. 选择模板" />
-                        <Step title="2. 设置规则" />
+                        <Step title="选择模板" />
+                        <Step title="设置规则" />
                     </Steps>
                     <div>
                         <WrappedComponent {...this.props} ref={elm => this.wrappedComponent = elm} />
