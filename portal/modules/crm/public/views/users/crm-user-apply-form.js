@@ -132,10 +132,9 @@ class CrmUserApplyForm extends React.Component {
         //添加邮箱使用的字段, 客户名 用户名 添加应用名 用户id
 
         submitObj.data = this.getSelectedUserMultiAppData().map(x => {
-            const item = x;
             if(paramItem.delay_time){
-                delete item.end_date;
-                delete item.begin_date;
+                delete x.end_date;
+                delete x.begin_date;
             }
             return {
                 ...x,
