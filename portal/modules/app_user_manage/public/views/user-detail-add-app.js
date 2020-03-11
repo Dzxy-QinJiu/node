@@ -296,9 +296,14 @@ var UserDetailAddApp = createReactClass({
         //选中的用户
         //获取选择的用户及其应用相关的数据(多个应用)
         let appArr = _.map(this.getSelectedUserMultiAppData(), app => {
+            if(delayObj.delay_time){
+                delete app.end_date;
+                delete app.begin_date;
+            }
             return {
-                ...delayObj,
                 ...app,
+                ...delayObj,
+
             };
         });
         submitObj.data = appArr;
