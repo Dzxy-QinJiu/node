@@ -2838,6 +2838,7 @@ var zh_CN = {
     'failed.update.customer.detail': '更新线索客户信息失败',
     'clue.customer.distribute': '分配',
     'clue.customer.add.trace.content': '请填写跟进内容',
+    'clue.customer.other.contact_way': '其他联系方式',
     'failed.to.distribute.cluecustomer': '分配线索客户失败',
     'crm.alert.topic': '标题',
     'crm.contact.time': '联系时间',
