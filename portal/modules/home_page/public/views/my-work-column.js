@@ -1224,7 +1224,7 @@ class MyWorkColumn extends React.Component {
             }
         };
 
-        item.workObj = { name: '如何汇总和查看销售日常工作？' };
+        item.workObj = { name: '启用报告可以汇总销售日常工作' };
 
         workList.push(this.renderWorkCard(item));
 

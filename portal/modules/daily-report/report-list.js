@@ -43,10 +43,30 @@ class ReportList extends React.Component {
                 layout: {sm: 24},
                 url: '/rest/customer/v3/dailyreport/report',
                 dataField: 'daily_reports',
-                //                argCallback: (arg) => {
-                //                },
-                //                processData: data => {
-                //                },
+                processData: data => {
+                    _.each(data, item => {
+                        _.each(item.item_values, obj => {
+                            const { name, value } = obj;
+    
+                            item[name] = value;
+                        });
+                    });
+
+                    return data;
+                },
+                processOption: (option, chart) => {
+                    const firstDataItem = _.first(chart.data);
+                    if (firstDataItem) {
+                        _.each(firstDataItem.item_values, obj => {
+                            const { name } = obj;
+
+                            option.columns.push({
+                                title: name,
+                                dataIndex: name,
+                            });
+                        });
+                    }
+                },
                 option: {
                     columns: [
                         {
