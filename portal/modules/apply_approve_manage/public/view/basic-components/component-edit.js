@@ -183,7 +183,7 @@ class componentEdit extends React.Component {
 
                     </div>
                     : null}
-                {_.get(formItem,'component_type') === ALL_COMPONENTS.TIMEPERIOD ?
+                {_.get(formItem,'component_type') === ALL_COMPONENTS.TIME_PERIOD ?
                     <div className="component-row required">
                         <span className="label-components">{_.get(formItem,'unitLabel')}</span>
                         <span className="text-components">

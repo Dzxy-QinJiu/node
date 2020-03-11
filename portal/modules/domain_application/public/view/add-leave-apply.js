@@ -302,7 +302,7 @@ class AddLeaveApply extends React.Component {
                                                     }else{
                                                         return <ApplyComponent {...propertyObj} form={this.props.form}/>;
                                                     }
-                                                } else if (target.component_type === ALL_COMPONENTS.USERSEARCH) {
+                                                } else if (target.component_type === ALL_COMPONENTS.USER_SEARCH) {
                                                     //如果是下拉框，需要在选完客户后把客户对应的用户传进去
                                                     propertyObj.select_arr = this.state.crmUserList;
                                                     return <ApplyComponent {...propertyObj} form={this.props.form} handleOptionChange={this.handleOptionChange} selectOptionValue={this.state.selectOptionValue}/>;

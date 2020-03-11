@@ -30,9 +30,9 @@ export const ALL_COMPONENTS = {
     DATETIME: 'datetime',//日期或者日期加时间
     PRODUCTION: 'prodution',//产品
     CUSTOMERSEARCH: 'customerSearch',//客户的搜索
-    TIMEPERIOD: 'timeperiod',//时间
-    USERSEARCH: 'userSearch',//成员申请
-    TEAMSEARCH: 'teamSearch'//团队申请
+    TIME_PERIOD: 'timePeriod',//时间
+    USER_SEARCH: 'userSearch',//成员
+    TEAM_SEARCH: 'teamSearch'//团队
 
 };
 export const ALL_COMPONENTS_TYPE = {
@@ -66,21 +66,17 @@ exports.applyComponentsType = [{
     name: ALL_COMPONENTS.CUSTOMERSEARCH,
     component: CustomerSuggest
 }, {
-    name: ALL_COMPONENTS.TIMEPERIOD,
+    name: ALL_COMPONENTS.TIME_PERIOD,
     component: TimePeriod
 }, {
-    name: ALL_COMPONENTS.USERSEARCH,
+    name: ALL_COMPONENTS.USER_SEARCH,
     component: SelectOption
 }
-// , {
-//     name: ALL_COMPONENTS.TEAMSEARCH,
-//     component: SelectOption
-// }
 ];
 exports.CONDITION_KEYS = [
     {
         name: Intl.get('user.duration', '时长'),
-        value: ALL_COMPONENTS.TIMEPERIOD + '_limit',
+        value: ALL_COMPONENTS.TIME_PERIOD + '_limit',
         conditionRule: function(item) {
             item['conditionRule'] = '${condition' + item['rangeLimit'] + parseFloat(item['rangeNumber']).toFixed(1) + '}';
             item['conditionInverseRule'] = item['inverseCondition'] + item['rangeNumber'];
@@ -88,7 +84,7 @@ exports.CONDITION_KEYS = [
         }
     },
     {name: Intl.get('apply.condition.item.money', '金额'), value: 'money'},
-    {name: Intl.get('user.apply.presenter', '申请人'), value: ALL_COMPONENTS.USERSEARCH + '_limit'
+    {name: Intl.get('user.apply.presenter', '申请人'), value: ALL_COMPONENTS.USER_SEARCH + '_limit'
         ,conditionRule: function(item) {
             //1）不能用item.conditionRule去赋值，之前可能不存在此属性
             // 2）${user_range==""} 和后端约定的指定那些人审批，走特定的流程，流程的key值是userRangeRoute，字段是user_range
@@ -97,7 +93,8 @@ exports.CONDITION_KEYS = [
             item['conditionRuleDsc'] = item['userRangeDsc'].join(',');
         }},
 
-    {name: Intl.get('user.apply.team', '申请人所属团队'), value: ALL_COMPONENTS.TEAMSEARCH + '_limit'
+    {name: Intl.get('user.apply.team', '申请人所属团队'),
+        value: ALL_COMPONENTS.TEAM_SEARCH + '_limit'
         ,conditionRule: function(item) {
             //1）不能用item.conditionRule去赋值，之前可能不存在此属性
             // 2）${team_range==""} 和后端约定的指定那些人审批，走特定的流程，流程的key值是teamRangeRoute，字段是team_range
@@ -225,7 +222,7 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         }],
         'unitMsg': Intl.get('apply.time.distinct.am', '区分上下午'),
         'selected_value': '1day',
-        'component_type': ALL_COMPONENTS.TIMEPERIOD,
+        'component_type': ALL_COMPONENTS.TIME_PERIOD,
         component: TimePeriod,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
@@ -250,7 +247,7 @@ exports.ADDAPPLYFORMCOMPONENTS = [
     },
     {
         'rulename': Intl.get('apply.approve.user.select', '用户选择'), 'iconfontCls': 'icon-fuwu',
-        'component_type': ALL_COMPONENTS.USERSEARCH,
+        'component_type': ALL_COMPONENTS.USER_SEARCH,
         'type': 'option',
         'placeholder': Intl.get('user.position.select.user', '请选择用户'),
         'notshowInList': true,
@@ -258,18 +255,7 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'key': 'managers',
         component: SelectOption,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
-    },
-    // {
-    //     'rulename': Intl.get('apply.approve.team.select', '团队选择'), 'iconfontCls': 'icon-fuwu',
-    //     'component_type': ALL_COMPONENTS.TEAMSEARCH,
-    //     'type': 'option',
-    //     'placeholder': Intl.get('team.position.select.team', '请选择团队'),
-    //     'notshowInList': true,
-    //     'default_value': [],
-    //     'key': 'managers',
-    //     component: SelectOption,
-    //     is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
-    // }
+    }
 ];
 
 //内置审批流程

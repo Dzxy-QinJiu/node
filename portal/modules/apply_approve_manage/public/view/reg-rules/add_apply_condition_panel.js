@@ -93,11 +93,11 @@ class AddApplyConditionPanel extends React.Component {
 
         var componentType = '', descriptionTip = '', showInnerCondition = false;
         if (isShowTimeRange) {
-            componentType = ALL_COMPONENTS.TIMEPERIOD;
+            componentType = ALL_COMPONENTS.TIME_PERIOD;
             descriptionTip = Intl.get('user.duration', '时长');
             showInnerCondition = true;
         } else if (isShowMoneyRange) {
-            // componentType = ALL_COMPONENTS.TIMEPERIOD;
+            // componentType = ALL_COMPONENTS.TIME_PERIOD;
             // descriptionTip = Intl.get('user.duration', '时长');
             // showInnerCondition = true;
         }
@@ -123,16 +123,16 @@ class AddApplyConditionPanel extends React.Component {
                 })
         }
         {/*申请人这个选项是所有申请审批中都要加的*/}
-        {this.hasAddThisTypeCondition(ALL_COMPONENTS.USERSEARCH + '_limit') ? null : <Menu.Item>
-            <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.USERSEARCH)}>{Intl.get('user.apply.presenter', '申请人')}</a>
+        {this.hasAddThisTypeCondition(ALL_COMPONENTS.USER_SEARCH + '_limit') ? null : <Menu.Item>
+            <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.USER_SEARCH)}>{Intl.get('user.apply.presenter', '申请人')}</a>
         </Menu.Item>}
         {/*团队申请的选项也是所有申请审批都要加的*/}
-        {this.hasAddThisTypeCondition(ALL_COMPONENTS.TEAMSEARCH + '_limit') ? null : <Menu.Item>
-            <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.TEAMSEARCH)}>{Intl.get('user.apply.team', '申请人所属团队')}</a>
+        {this.hasAddThisTypeCondition(ALL_COMPONENTS.TEAM_SEARCH + '_limit') ? null : <Menu.Item>
+            <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.TEAM_SEARCH)}>{Intl.get('user.apply.team', '申请人所属团队')}</a>
         </Menu.Item>}
         </Menu>;
         //是否还有menuitem展示
-        var hasNoMenuItem = ((showInnerCondition && this.hasAddThisTypeCondition(componentType + '_limit')) || (!showInnerCondition && saveForm)) && this.hasAddThisTypeCondition(ALL_COMPONENTS.USERSEARCH + '_limit');
+        var hasNoMenuItem = ((showInnerCondition && this.hasAddThisTypeCondition(componentType + '_limit')) || (!showInnerCondition && saveForm)) && this.hasAddThisTypeCondition(ALL_COMPONENTS.USER_SEARCH + '_limit');
         return {
             menus: menus,
             hasNoMenuItem: hasNoMenuItem
@@ -257,7 +257,7 @@ class AddApplyConditionPanel extends React.Component {
                     var limitType = value.limitType;
                     var target = this.getConditionRelate(limitType);
                     switch (limitType) {
-                        case ALL_COMPONENTS.TIMEPERIOD + '_limit':
+                        case ALL_COMPONENTS.TIME_PERIOD + '_limit':
                             return (<div className="condition-type-container range-condition-container">
                                 <div className="condition-type-title">
                                     {_.get(target, 'name')}
@@ -279,7 +279,7 @@ class AddApplyConditionPanel extends React.Component {
                                         addonAfter={Intl.get('common.time.unit.day', '天')}/>
                                 </div>
                             </div>);
-                        case ALL_COMPONENTS.USERSEARCH + '_limit':
+                        case ALL_COMPONENTS.USER_SEARCH + '_limit':
                             return (
                                 <div className="condition-type-container user-condition-container">
                                     <div className="condition-type-title">
@@ -303,7 +303,7 @@ class AddApplyConditionPanel extends React.Component {
                                     </div>
                                 </div>
                             );
-                        case ALL_COMPONENTS.TEAMSEARCH + '_limit':
+                        case ALL_COMPONENTS.TEAM_SEARCH + '_limit':
                             return (
                                 <div className="condition-type-container user-condition-container">
                                     <div className="condition-type-title">

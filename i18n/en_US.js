@@ -1407,7 +1407,7 @@ var en_US = {
     'user.apply.change.status.false': 'disable application', // 申请禁用应用
     'user.apply.change.status.true': 'enable application', // 申请启用应用
     'user.apply.presenter': 'presenter', // 申请人
-    'user.apply.team': 'teamer',//申请人所属团队
+    'user.apply.team': 'The team of applicant',//申请人所属团队
     'user.apply.id': 'Account apply', // 账号申请
     'user.apply.no.match.retry': 'no match apply list', // 暂无符合查询条件的用户申请
     'user.apply.no.apply': 'User applications that do not yet need to be approved',//还没有需要审批的用户申请

@@ -380,7 +380,7 @@ class ApplyViewDetail extends React.Component {
                             label: _.get(item,'title'),
                             text: customerText
                         });
-                    }else if(item.component_type === ALL_COMPONENTS.USERSEARCH){
+                    }else if(item.component_type === ALL_COMPONENTS.USER_SEARCH){
                         var userText = <a href="javascript:void(0)"
                             onClick={this.handleShowUserDetail.bind(this, _.get(showItem,'[0].id'))}
                             data-tracename="查看用户详情"
@@ -391,7 +391,7 @@ class ApplyViewDetail extends React.Component {
                             label: _.get(item,'title'),
                             text: userText
                         });
-                    }else if (item.component_type === ALL_COMPONENTS.TIMEPERIOD ){
+                    }else if (item.component_type === ALL_COMPONENTS.TIME_PERIOD ){
                         var starttime = '', endtime = '';
                         if (item.selected_value !== '0.5day'){
                             starttime = moment(parseInt(showItem.begin_time)).format(oplateConsts.DATE_FORMAT);
