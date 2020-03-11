@@ -49,7 +49,7 @@ function getClueDiffType(backendIntl) {
             value: '3',
         }];
 }
-const contactWays = ['phone','qq','email','weChat'];
+
 //获取线索来源
 exports.getClueSource = function(req, res) {
     clueCustomerService.getClueSource(req, res)
@@ -285,8 +285,23 @@ function getClueListColumns(backendIntl) {
             title: backendIntl.get('crm.sales.clue.descr', '线索描述'),
             dataIndex: 'source',
         },{
-            title: backendIntl.get('crm.5', '联系方式'),
-            dataIndex: 'contacts',
+            title: backendIntl.get('call.record.contacts', '联系人'),
+            dataIndex: 'contacts_name',
+        },{
+            title: backendIntl.get('common.phone', '电话'),
+            dataIndex: 'contacts_phone',
+        },{
+            title: backendIntl.get('common.email', '邮箱'),
+            dataIndex: 'contacts_email',
+        },{
+            title: 'QQ',
+            dataIndex: 'contacts_qq',
+        },{
+            title: backendIntl.get('crm.58', '微信'),
+            dataIndex: 'contacts_wechat',
+        },{
+            title: backendIntl.get('clue.customer.other.contact_way', '其他联系方式'),
+            dataIndex: 'contacts_otherways',
         },{
             title: backendIntl.get('clue.customer.associate.customer', '关联客户'),
             dataIndex: 'customer_name'
@@ -344,19 +359,46 @@ function doExport(data, backendIntl, res) {
                 });
                 value = _.get(targetObj,'name') || value;
             }
-            if (column.dataIndex === 'contacts' && _.isArray(value)){
-                var contactDes = '';
-                _.forEach(value, (contactItem) => {
-                    contactDes = contactDes + ' ' + _.get(contactItem,'name','');
-                    _.forEach(contactWays, (way) => {
-                        if (_.isArray(contactItem[way])){
-                            _.forEach(contactItem[way], (wayItem) => {
-                                contactDes = contactDes + ' ' + wayItem;
-                            });
-                        }
-                    });
-                });
-                value = contactDes;
+            if (_.isString(column.dataIndex) && column.dataIndex.indexOf('contacts') > -1){
+                value = item['contacts'];
+                if(_.isArray(value)){
+                    var firstContact = _.get(value,'[0]'),otherContactArr = value.slice(1), contactDes = '';
+                    switch (column.dataIndex) {
+                        case 'contacts_name':
+                            contactDes += _.get(firstContact,'name','');
+                            break;
+                        case 'contacts_phone':
+                            contactDes += _.get(firstContact,'phone',[]).join('；');
+                            break;
+                        case 'contacts_email':
+                            contactDes += _.get(firstContact,'email',[]).join('；');
+                            break;
+                        case 'contacts_qq':
+                            contactDes += _.get(firstContact,'qq',[]).join('；');
+                            break;
+                        case 'contacts_wechat':
+                            contactDes += _.get(firstContact,'weChat',[]).join('；');
+                            break;
+                        case 'contacts_otherways':
+                            if (_.get(otherContactArr, '[0]')) {
+                                _.forEach(otherContactArr, (contactItem, index) => {
+                                    if(index !== 0){
+                                        contactDes += '；';
+                                    }
+                                    contactDes += _.get(contactItem, 'name', '') ? backendIntl.get('call.record.contacts', '联系人') + '：' + _.get(contactItem, 'name', '') + ' ' : '';
+                                    contactDes += _.get(contactItem, 'phone[0]', '') ? backendIntl.get('common.phone', '电话') + '：' + _.get(contactItem, 'phone', []).join('，') + ' ' : '';
+                                    contactDes += _.get(contactItem, 'email[0]', '') ? backendIntl.get('common.email', '邮箱') + '：' + _.get(contactItem, 'email', []).join('，') + ' ' : '';
+                                    contactDes += _.get(contactItem, 'qq[0]', '') ? 'QQ' + '：' + _.get(contactItem, 'qq', []).join('，') + ' ' : '';
+                                    contactDes += _.get(contactItem, 'weChat[0]', '') ? backendIntl.get('crm.58', '微信') + '：' + _.get(contactItem, 'weChat', []).join('，') + ' ' : '';
+
+                                });
+                            }
+                            break;
+
+                    }
+                    value = contactDes;
+                }
+
             }
             if (column.dataIndex === 'customer_traces' && _.isArray(value)){
                 var traceAddTime = _.get(value, '[0].call_date');//跟进时间
