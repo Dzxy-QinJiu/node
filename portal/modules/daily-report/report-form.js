@@ -21,7 +21,7 @@ class ReportForm extends React.Component {
         const renderButtonZone = renderButtonZoneFunc.bind(this);
 
         const { updateState, clickedTpl, isPreview, tplValues } = this.props;
-        const items = isPreview ? clickedTpl.items : tplValues;
+        const items = isPreview ? clickedTpl.items : tplValues.items;
         const editableFields = ['other'];
         const editableItems = _.filter(items, item => _.includes(editableFields, item.id));
         const unEditableItems = _.filter(items, item => !_.includes(editableFields, item.id));
