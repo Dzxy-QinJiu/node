@@ -128,7 +128,7 @@ class AddApplyConditionPanel extends React.Component {
         </Menu.Item>}
         {/*团队申请的选项也是所有申请审批都要加的*/}
         {this.hasAddThisTypeCondition(ALL_COMPONENTS.TEAMSEARCH + '_limit') ? null : <Menu.Item>
-            <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.TEAMSEARCH)}>{Intl.get('user.apply.team', '申请团队')}</a>
+            <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.TEAMSEARCH)}>{Intl.get('user.apply.team', '申请人所属团队')}</a>
         </Menu.Item>}
         </Menu>;
         //是否还有menuitem展示
@@ -184,12 +184,13 @@ class AddApplyConditionPanel extends React.Component {
     };
     //选中用户
     handleChangeSelectUser = (key, subKey, index, userId) => {
+        userId = userId.sort();
         var diffConditionLists = this.state.diffConditionLists;
         var limitRules = _.get(diffConditionLists, 'limitRules');
         var target = _.find(limitRules, limit => limit.limitType === key);
         if (target) {
-            //每个路径都要随机出一个数字作为路径的名称
-            target[subKey + 'Route'] = uuid();
+            //todo 每个路径都要随机出一个数字作为路径的名称
+            target[subKey + 'Route'] = userId.join('');
             target[subKey] = userId;
             var subKeyDsc = [];
             _.forEach(userId, id => {
@@ -203,16 +204,17 @@ class AddApplyConditionPanel extends React.Component {
         }
     };
     //选中团队
-    handleChangeSelectTeam = (key, subKey, index, userId) => {
+    handleChangeSelectTeam = (key, subKey, index, teamId) => {
+        teamId = teamId.sort();
         var diffConditionLists = this.state.diffConditionLists;
         var limitRules = _.get(diffConditionLists, 'limitRules');
         var target = _.find(limitRules, limit => limit.limitType === key);
         if (target) {
-            //每个路径都要随机出一个数字作为路径的名称
-            target[subKey + 'Route'] = uuid();
-            target[subKey] = userId;
+            //todo 每个路径都要随机出一个数字作为路径的名称
+            target[subKey + 'Route'] = teamId.join('');
+            target[subKey] = teamId;
             var subKeyDsc = [];
-            _.forEach(userId, id => {
+            _.forEach(teamId, id => {
                 var targetObj = _.find(this.state.teamList, item => item.group_id === id);
                 subKeyDsc.push(_.get(targetObj, 'group_name'));
             });

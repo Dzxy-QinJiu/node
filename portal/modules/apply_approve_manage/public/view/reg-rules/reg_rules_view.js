@@ -425,8 +425,8 @@ class RegRulesView extends React.Component {
             var applyId = _.get(this, 'props.applyTypeData.id');
             //表单的内容不需要提交
             var submitObj = {
-                customiz_user_range: this.state.customiz_user_range,
-                customiz_team_range: this.state.customiz_team_range,
+                customiz_user_range: JSON.stringify(this.state.customiz_user_range),
+                customiz_team_range: JSON.stringify(this.state.customiz_team_range),
                 ...applyRulesAndSetting
             };
             applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId, submitObj, (result) => {
@@ -434,7 +434,11 @@ class RegRulesView extends React.Component {
                     message.error(result);
                 }else{
                     message.success('保存成功');
-                    this.props.updateRegRulesView(submitObj);
+                    this.props.updateRegRulesView({
+                        ...submitObj,
+                        customiz_user_range: JSON.parse(submitObj.customiz_user_range),
+                        customiz_team_range: JSON.parse(submitObj.customiz_team_range),
+                    });
                 }
 
             });
@@ -580,7 +584,7 @@ class RegRulesView extends React.Component {
             //如果流程不是默认流程并且流程上没有节点，在添加这个节点的时候需要加上条件
             if (applyFlow !== FLOW_TYPES.DEFAULTFLOW && !bpmnNodeFlow.length) {
                 var limitRules = _.get(applyRulesAndSetting, `applyApproveRules.${applyFlow}.conditionRuleLists.limitRules`, []);
-                this.updateCustomizeNode(limitRules,newNodeObj,applyFlow);
+                this.updateCustomizeNode(limitRules,newNodeObj);
             }
         } else {
             //如果是第一个节点
@@ -616,7 +620,7 @@ class RegRulesView extends React.Component {
         applyFlowObj['bpmnNode'] = bpmnNodeFlow;
     };
     //
-    updateCustomizeNode = (limitRules,newNodeObj,flowKey) => {
+    updateCustomizeNode = (limitRules,newNodeObj) => {
         //limitRules是流程所加的限制条件
         _.forEach(limitRules, (item, index) => {
             if (index === 0) {
@@ -629,31 +633,9 @@ class RegRulesView extends React.Component {
                 newNodeObj['conditionTotalRule'] += '  \&& ' + _.replace( _.get(item, 'conditionRule'), '${', '');
                 newNodeObj['conditionTotalRuleDsc'] += '并且' + _.get(item, 'conditionRuleDsc');
             }
-            //如果是单独划分出一批人，需要单独把这些人传过去
-            if(item.limitType === `${ALL_COMPONENTS.USERSEARCH}_limit`){
-                var customiz_user_range = [];
-                customiz_user_range.push({
-                    'range_key': _.get(item,'userRangeRoute'),
-                    'range_users': _.get(item,'userRange')
-                });
-                this.setState({
-                    customiz_user_range: customiz_user_range
-                });
-            }
-            //如果是单独划分出一些团队，把组织相关的人和key单独传到后端
-            if(item.limitType === `${ALL_COMPONENTS.TEAMSEARCH}_limit`){
-                var customiz_team_range = [];
-                customiz_team_range.push({
-                    'range_key': _.get(item,'teamRangeRoute'),
-                    'range_teams': _.get(item,'teamRange')
-                });
-                this.setState({
-                    customiz_team_range: customiz_team_range
-                });
-            }
         });
         //修改节点上的条件及
-        this.addDefaultUserOrTeamCondition(limitRules,newNodeObj,flowKey);
+        // this.addDefaultUserOrTeamCondition(limitRules,newNodeObj,flowKey);
 
     };
     saveAddApprovCondition = (data) => {
@@ -685,7 +667,7 @@ class RegRulesView extends React.Component {
             applyApproveRules[flowKey]['conditionRuleLists'] = data;
             var limitRules = _.get(data, 'limitRules', []);
             var firstNode = _.get(applyApproveRules[flowKey], 'bpmnNode[0]',{});
-            this.updateCustomizeNode(limitRules,firstNode,flowKey);
+            this.updateCustomizeNode(limitRules,firstNode);
         } else {
             applyApproveRules[`condition_${initialValue}`] = {
                 bpmnNode: [],
@@ -704,6 +686,7 @@ class RegRulesView extends React.Component {
     addDefaultUserOrTeamCondition = () => {
         //如果这几个条件中，有一个有userRange 或者有teamRange，并且当前这个条件中没有设置团队或者用户，需要加上团队或者用户字段为none
         var applyApproveRules = _.get(this.state.applyRulesAndSetting,'applyApproveRules',{});
+        var customiz_user_range = [], customiz_team_range = [];
         _.forEach(applyApproveRules,(value,flowKey) => {
             if(flowKey === 'defaultFlow'){
                 //默认流程不做处理
@@ -715,28 +698,51 @@ class RegRulesView extends React.Component {
                     otherLimitList = otherLimitList.concat(_.get(applyApproveRules[key],'conditionRuleLists.limitRules',[]));
                 }
             }
-            var limitRules = _.get(value,'conditionRuleLists.limitRules'), newNodeObj = _.get(limitRules,'[0]');
+            var limitRules = _.get(value,'conditionRuleLists.limitRules'), newNodeObj = _.get(value,'bpmnNode[0]');
             var hasUserLimitBeside = _.find(otherLimitList,item => _.get(item,'limitType') === `${ALL_COMPONENTS.USERSEARCH}_limit`);//除该条件外其他条件是否有userRange
             var hasTeamLimitBeside = _.find(otherLimitList,item => _.get(item,'limitType') === `${ALL_COMPONENTS.TEAMSEARCH}_limit`);//除该条件外其他条件是否有teamRange
             var hasUserLimit = _.find(limitRules,item => _.get(item,'limitType') === `${ALL_COMPONENTS.USERSEARCH}_limit`);//该是否有用户申请
             var hasTeamLimit = _.find(limitRules,item => _.get(item,'limitType') === `${ALL_COMPONENTS.TEAMSEARCH}_limit`);//是否有团队申请
+
+            _.forEach(limitRules, item => {
+                //如果是单独划分出一批人，需要单独把这些人传过去
+                if(item.limitType === `${ALL_COMPONENTS.USERSEARCH}_limit`){
+                    customiz_user_range.push({
+                        'range_key': _.get(item,'userRangeRoute'),
+                        'range_users': _.get(item,'userRange')
+                    });
+
+                }
+                //如果是单独划分出一些团队，把组织相关的人和key单独传到后端
+                if(item.limitType === `${ALL_COMPONENTS.TEAMSEARCH}_limit`){
+                    customiz_team_range.push({
+                        'range_key': _.get(item,'teamRangeRoute'),
+                        'range_teams': _.get(item,'teamRange')
+                    });
+                }
+            });
+
             if(!_.isEmpty(newNodeObj)){
                 //加上该属性
-                if(hasUserLimitBeside && !hasUserLimit && _.isString(newNodeObj['conditionRule']) && newNodeObj['conditionRule'].indexOf('none') === -1){
-                    newNodeObj['conditionRule'] = _.replace(newNodeObj['conditionRule'], '}', '');
-                    newNodeObj['conditionRule'] += '  \&& user_range == "none"}';
+                if(hasUserLimitBeside && !hasUserLimit && _.isString(newNodeObj['conditionTotalRule']) && newNodeObj['conditionTotalRule'].indexOf('none') === -1){
+                    newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionRule'], '}', '');
+                    newNodeObj['conditionTotalRule'] += '  \&& user_range == "none"}';
                 }
-                if(hasTeamLimitBeside && !hasTeamLimit && _.isString(newNodeObj['conditionRule']) && newNodeObj['conditionRule'].indexOf('none') === -1){
-                    newNodeObj['conditionRule'] = _.replace(newNodeObj['conditionRule'], '}', '');
-                    newNodeObj['conditionRule'] += '  \&& team_range == "none"}';
+                if(hasTeamLimitBeside && !hasTeamLimit && _.isString(newNodeObj['conditionTotalRule']) && newNodeObj['conditionTotalRule'].indexOf('none') === -1){
+                    newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '}', '');
+                    newNodeObj['conditionTotalRule'] += '  \&& team_range == "none"}';
                 }
-                if(!hasUserLimitBeside && !hasUserLimit && _.isString(newNodeObj['conditionRule']) && newNodeObj['conditionRule'].indexOf('none') > -1){
-                    newNodeObj['conditionRule'].replace('  \&& user_range == "none"','');
+                if(!hasUserLimitBeside && !hasUserLimit && _.isString(newNodeObj['conditionTotalRule']) && newNodeObj['conditionTotalRule'].indexOf('none') > -1){
+                    newNodeObj['conditionTotalRule'].replace('  \&& user_range == "none"','');
                 }
-                if(!hasTeamLimitBeside && !hasTeamLimit && _.isString(newNodeObj['conditionRule']) && newNodeObj['conditionRule'].indexOf('none') > -1){
-                    newNodeObj['conditionRule'].replace('  \&& team_range == "none"','');
+                if(!hasTeamLimitBeside && !hasTeamLimit && _.isString(newNodeObj['conditionTotalRule']) && newNodeObj['conditionTotalRule'].indexOf('none') > -1){
+                    newNodeObj['conditionTotalRule'].replace('  \&& team_range == "none"','');
                 }
             }
+        });
+        this.setState({
+            customiz_user_range: _.uniqBy(customiz_user_range, 'range_key'),
+            customiz_team_range: _.uniqBy(customiz_team_range, 'range_key')
         });
 
     };
@@ -777,7 +783,7 @@ class RegRulesView extends React.Component {
             //删除这个流程之前要把设置的划定一批人也删除掉
             var limitRoutes = _.map(_.get(applyApproveRules[deleteKey],'conditionRuleLists.limitRules',[]),'userRangeRoute');
             var customiz_user_range = this.state.customiz_user_range;
-            if(_.get(limitRoutes,'[0]')){
+            if(_.get(limitRoutes,'length')){
                 _.forEach(limitRoutes,routeKey => {
                     customiz_user_range = _.filter(customiz_user_range, range => range.range_key !== routeKey);
                 });
@@ -785,7 +791,7 @@ class RegRulesView extends React.Component {
             //删除这个流程之前要把设置的团队也删除
             var teamLimitRoutes = _.map(_.get(applyApproveRules[deleteKey],'conditionRuleLists.limitRules',[]),'teamRangeRoute');
             var customiz_team_range = this.state.customiz_team_range;
-            if(_.get(teamLimitRoutes,'[0]')){
+            if(_.get(teamLimitRoutes,'length')){
                 _.forEach(teamLimitRoutes,routeKey => {
                     customiz_team_range = _.filter(customiz_team_range, range => range.range_key !== routeKey);
                 });
@@ -945,7 +951,7 @@ class RegRulesView extends React.Component {
             message.warning(Intl.get('apply.please.add.approve.node', '流程不完整，需添加审批人节点'));
         }else{
             //在提交的时候，把用户或者团队为非的情况也加上
-            // this.addDefaultUserOrTeamCondition();
+            this.addDefaultUserOrTeamCondition();
             if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
                 this.handleSubmitCCApply();
             }else{

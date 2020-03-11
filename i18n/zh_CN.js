@@ -1415,7 +1415,7 @@ var zh_CN = {
     'user.apply.change.status.false': '申请禁用应用',
     'user.apply.change.status.true': '申请启用应用',
     'user.apply.presenter': '申请人',
-    'user.apply.team': '申请团队',
+    'user.apply.team': '申请人所属团队',
     'user.apply.id': '账号申请',
     'user.apply.no.match.retry': '暂无符合查询条件的用户申请',
     'user.apply.no.unread': '已无未读回复的申请',

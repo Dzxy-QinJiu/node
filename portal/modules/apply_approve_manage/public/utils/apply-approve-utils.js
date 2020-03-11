@@ -97,7 +97,7 @@ exports.CONDITION_KEYS = [
             item['conditionRuleDsc'] = item['userRangeDsc'].join(',');
         }},
 
-    {name: Intl.get('user.apply.team', '申请团队'), value: ALL_COMPONENTS.TEAMSEARCH + '_limit'
+    {name: Intl.get('user.apply.team', '申请人所属团队'), value: ALL_COMPONENTS.TEAMSEARCH + '_limit'
         ,conditionRule: function(item) {
             //1）不能用item.conditionRule去赋值，之前可能不存在此属性
             // 2）${team_range==""} 和后端约定的指定那些人审批，走特定的流程，流程的key值是teamRangeRoute，字段是team_range
@@ -385,12 +385,12 @@ exports.CONDITION_LIMITE = [{
     name: Intl.get('apply.add.condition.less.and.equal', '小于等于'),
     value: '<=',
     inverseCondition: '>'
-}
-// , {
-//     name: Intl.get('apply.add.condition.equal', '等于'),
-//     value: '===',
-//     inverseCondition: '!=='
-// }, {
+}, {
+    name: Intl.get('apply.add.condition.equal', '等于'),
+    value: '==',
+    inverseCondition: '!='
+},
+// {
 //     name: Intl.get('apply.add.condition.within', '介于'),
 //     value: '',
 // }
