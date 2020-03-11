@@ -2799,6 +2799,7 @@ var en_US = {
     'failed.update.customer.detail': 'Failed to update lead customer information',//更新线索客户信息失败
     'clue.customer.distribute': 'distribution',//分配
     'clue.customer.add.trace.content': 'Please fill in follow-up content',//请填写跟进内容
+    'clue.customer.other.contact_way': 'Other contact way',//其他联系方式
     'failed.to.distribute.cluecustomer': 'Failed to distribute lead customers',//分配线索客户失败
     'crm.alert.topic': 'Title',//标题
     'crm.contact.time': 'Contact time',//联系时间
