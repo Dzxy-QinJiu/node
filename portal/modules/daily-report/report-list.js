@@ -47,7 +47,7 @@ class ReportList extends React.Component {
                     _.each(data, item => {
                         _.each(item.item_values, obj => {
                             const { name, value } = obj;
-    
+
                             item[name] = value;
                         });
                     });
@@ -77,6 +77,7 @@ class ReportList extends React.Component {
                         {
                             title: '销售',
                             dataIndex: 'nickname',
+                            width: 80,
                         },
                     ],
                 },
