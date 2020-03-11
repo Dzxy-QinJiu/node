@@ -14,10 +14,12 @@ const TabPane = Tabs.TabPane;
 var Spinner = require('../spinner');
 const USER_LANG_KEY = 'userLang';//存储用户语言环境的key
 import {storageUtil} from 'ant-utils';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 const VIEWS = {
     LOGIN: 'login',
     FORGOT_PASSWORD: 'forgot_password',
 };
+const COPY_RIGHT_HEIGHT = 46;//底部公司版权信息高度
 class LoginMain extends React.Component {
     constructor(props) {
         super(props);
@@ -31,6 +33,8 @@ class LoginMain extends React.Component {
             currentView: VIEWS.LOGIN,
             // 记录登录界面输入的用户名，找回密码时，手机号自动填充时使用
             userName: '',
+            //表单展示区域的高度
+            formWrapHeight: this.getFormWrapHeight(),
         };
 
         this.setErrorMsg = this.setErrorMsg.bind(this);
@@ -50,10 +54,20 @@ class LoginMain extends React.Component {
             this.show();
         }
         Trace.addEventListener(window, 'click', Trace.eventHandler);
+        $(window).on('resize', this.onWindowResize);
     }
 
     componentWillUnmount() {
         Trace.detachEventListener(window, 'click', Trace.eventHandler);
+        $(window).on('resize', this.onWindowResize);
+    }
+
+    onWindowResize = () => {
+        this.setState({formWrapHeight: this.getFormWrapHeight()});
+    }
+
+    getFormWrapHeight = () => {
+        return $('body').height() - COPY_RIGHT_HEIGHT;
     }
 
     setErrorMsg(errorMsg) {
@@ -112,49 +126,51 @@ class LoginMain extends React.Component {
             return (
                 <div className="login-wrap" data-tracename="登录界面">
                     {hasWindow ? (
-                        <div className="csm-form-wrap">
-                            <div className="form-wrap">
-                                <div className='login-logo-wrap'>
-                                    <img src={ketaoLogoSrc}/>
+                        <div className="csm-form-wrap" style={{height: this.state.formWrapHeight}}>
+                            <GeminiScrollbar className='login-scroll-bar'>
+                                <div className="form-wrap">
+                                    <div className='login-logo-wrap'>
+                                        <img src={ketaoLogoSrc}/>
+                                    </div>
+                                    {this.state.currentView === VIEWS.LOGIN ? (
+                                        <LoginForm
+                                            captcha={this.state.captcha}
+                                            hasWindow={hasWindow}
+                                            setErrorMsg={this.setErrorMsg}
+                                            changeView={this.changeView.bind(this, VIEWS.FORGOT_PASSWORD)}
+                                            userNameChange={this.userNameChange}
+                                            {...this.props}
+                                        />
+                                    ) : null}
+                                    {this.state.currentView === VIEWS.FORGOT_PASSWORD ? (
+                                        <ForgotPassword
+                                            hasWindow={hasWindow}
+                                            views={VIEWS}
+                                            userName={this.state.userName}
+                                            changeView={this.changeView.bind(this, VIEWS.LOGIN)}
+                                            {...this.props}
+                                        />
+                                    ) : null}
+                                    {this.state.errorMsg ?
+                                        <div className="login-error-tip"><span className="iconfont icon-warn-icon"></span>{this.state.errorMsg}</div> : null}
+                                    {this.state.currentView === VIEWS.LOGIN ? (
+                                        <div>
+                                            <a className='login-find-password-tip' data-tracename="点击忘记密码" onClick={this.changeView.bind(this,VIEWS.FORGOT_PASSWORD)}> {Intl.get('login.forgot_password', '忘记密码')}</a>
+                                            <span className='login-no-account-register-tip'>
+                                                <ReactIntl.FormattedMessage
+                                                    id='login.no.account.register.tip'
+                                                    defaultMessage='没有账号，去{register}'
+                                                    values={{
+                                                        'register': (
+                                                            <a onClick={this.toRegister} data-tracename="点击注册">
+                                                                {Intl.get('login.register', '注册')}
+                                                            </a>)
+                                                    }}
+                                                />
+                                            </span>
+                                        </div>) : null}
                                 </div>
-                                {this.state.currentView === VIEWS.LOGIN ? (
-                                    <LoginForm
-                                        captcha={this.state.captcha}
-                                        hasWindow={hasWindow}
-                                        setErrorMsg={this.setErrorMsg}
-                                        changeView={this.changeView.bind(this, VIEWS.FORGOT_PASSWORD)}
-                                        userNameChange={this.userNameChange}
-                                        {...this.props}
-                                    />
-                                ) : null}
-                                {this.state.currentView === VIEWS.FORGOT_PASSWORD ? (
-                                    <ForgotPassword
-                                        hasWindow={hasWindow}
-                                        views={VIEWS}
-                                        userName={this.state.userName}
-                                        changeView={this.changeView.bind(this, VIEWS.LOGIN)}
-                                        {...this.props}
-                                    />
-                                ) : null}
-                                {this.state.errorMsg ?
-                                    <div className="login-error-tip"><span className="iconfont icon-warn-icon"></span>{this.state.errorMsg}</div> : null}
-                                {this.state.currentView === VIEWS.LOGIN ? (
-                                    <div>
-                                        <a className='login-find-password-tip' data-tracename="点击忘记密码" onClick={this.changeView.bind(this,VIEWS.FORGOT_PASSWORD)}> {Intl.get('login.forgot_password', '忘记密码')}</a>
-                                        <span className='login-no-account-register-tip'>
-                                            <ReactIntl.FormattedMessage
-                                                id='login.no.account.register.tip'
-                                                defaultMessage='没有账号，去{register}'
-                                                values={{
-                                                    'register': (
-                                                        <a onClick={this.toRegister} data-tracename="点击注册">
-                                                            {Intl.get('login.register', '注册')}
-                                                        </a>)
-                                                }}
-                                            />
-                                        </span>
-                                    </div>) : null}
-                            </div>
+                            </GeminiScrollbar>
                         </div>
                     ) : null }
                     <SideBar showChat={Oplate.isCurtao}></SideBar>

@@ -17,7 +17,7 @@ import {storageUtil} from 'ant-utils';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 const logoSrc = require('./image/curtao_logo_white.svg');
 const LAYOUT = {
-    COPY_RIGHT_HEIGHT: 50,//底部公司版权信息高度
+    COPY_RIGHT_HEIGHT: 46,//底部公司版权信息高度
     SLOGON_HEIGHT: 48//缩小屏幕后slogon在头部展示时的高度
 };
 //注册步骤
