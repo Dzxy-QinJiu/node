@@ -19,7 +19,10 @@ const VIEWS = {
     LOGIN: 'login',
     FORGOT_PASSWORD: 'forgot_password',
 };
-const COPY_RIGHT_HEIGHT = 46;//底部公司版权信息高度
+const LAYOUT = {
+    COPY_RIGHT_HEIGHT: 46,//底部公司版权信息高度
+    SHOW_COPY_RIGHT_HEIGHT: 480,//高度大于400时，才展示版权信息
+};
 class LoginMain extends React.Component {
     constructor(props) {
         super(props);
@@ -67,7 +70,12 @@ class LoginMain extends React.Component {
     }
 
     getFormWrapHeight = () => {
-        return $('body').height() - COPY_RIGHT_HEIGHT;
+        let formWrapHeight = $('body').height();
+        // 高度大于400才展示版权信息
+        if ($('body').height() > LAYOUT.SHOW_COPY_RIGHT_HEIGHT) {
+            formWrapHeight -= LAYOUT.COPY_RIGHT_HEIGHT;
+        }
+        return formWrapHeight;
     }
 
     setErrorMsg(errorMsg) {
