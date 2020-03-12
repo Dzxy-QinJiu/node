@@ -20,22 +20,22 @@ export default function(WrappedComponent) {
                         <Step title="选择模板" />
                         <Step title="设置规则" />
                     </Steps>
-                    <div>
+                    <div className="add-tpl-content">
                         <WrappedComponent {...this.props} ref={elm => this.wrappedComponent = elm} />
-                        {renderButtonZone([{
-                            hide: currentStep !== 2,
-                            func: () => { updateState({ currentView: VIEW_TYPE.ADD_TPL, currentStep: 1 }); },
-                            name: '上一步',
-                        }, {
-                            hide: currentStep !== 2,
-                            func: this.save.bind(this),
-                            name: '保存',
-                        }, {
-                            hide: currentStep !== 1,
-                            func: this.next.bind(this),
-                            name: '下一步',
-                        }])}
                     </div>
+                    {renderButtonZone([{
+                        hide: currentStep !== 2,
+                        func: () => { updateState({ currentView: VIEW_TYPE.ADD_TPL, currentStep: 1 }); },
+                        name: '上一步',
+                    }, {
+                        hide: currentStep !== 2,
+                        func: this.save.bind(this),
+                        name: '保存',
+                    }, {
+                        hide: currentStep !== 1,
+                        func: this.next.bind(this),
+                        name: '下一步',
+                    }])}
                 </div>
             );
         }
