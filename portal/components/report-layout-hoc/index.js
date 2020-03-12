@@ -10,14 +10,14 @@ import {Row, Col} from 'antd';
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 
-export default function(ReportContent, ReportFilter) {
+export default function(ReportContent, ReportFilter, option = {}) {
     return class extends React.Component {
         render() {
             return (
                 <div className="report-layout">
                     <ButtonZones>
                         <div className="btn-item-container">
-                            <ReportFilter {...this.props} />
+                            <ReportFilter {...option.filterProps} />
                         </div>
                     </ButtonZones>
                     <div className="report-content">
