@@ -114,7 +114,7 @@ class UserLoginAnalysis extends React.Component {
         let lastLoginParams = this.getUserLastLoginParams(queryParams);
         let reqData = this.getUserLoginScoreParams(queryParams);
         let type = this.getUserLoginType();
-        let appTerminalType = _.has(queryParams, 'appTerminalType') && queryParams.appTerminalType || this.state.appTerminalType;
+        let appTerminalType = _.has(queryParams, 'appTerminalType') ? queryParams.appTerminalType : this.state.appTerminalType;
         if (appTerminalType) {
             queryObj.terminal = appTerminalType;
             lastLoginParams.terminal = appTerminalType;
@@ -398,7 +398,7 @@ class UserLoginAnalysis extends React.Component {
                 </div>
             );
         }
-        const radioValue = [{ value: 'LoginFrequency', name: '次数' }, { value: 'loginDuration', name: '时长' }];
+        const radioValue = [ { value: 'loginDuration', name: '时长' }, { value: 'LoginFrequency', name: '次数' }];
         if (_.isArray(loginChartInfo.loginDuration) || _.isArray(loginChartInfo.loginCount)) {
             return (
                 <div className="login-chart">
@@ -420,17 +420,17 @@ class UserLoginAnalysis extends React.Component {
                     ) : (
                         <CardContainer
                             radioValue={radioValue}
-                            dateRange={this.state.selectValueMap[app.app_id] || 'LoginFrequency'}
+                            dateRange={this.state.selectValueMap[app.app_id] || 'loginDuration'}
                             onDateRangeChange={this.handleSelectRadio.bind(this, app)}
                             title=''
                         >
                             <div className="duration-chart">
                                 {
-                                    this.state.selectValueMap[app.app_id] === 'loginDuration' ?
-                                        // 时长
-                                        this.renderChart(loginChartInfo.loginDuration, this.durationTooltip) :
+                                    this.state.selectValueMap[app.app_id] === 'LoginFrequency' ?
                                         // 次数
-                                        this.renderChart(loginChartInfo.loginCount, this.chartFrequencyTooltip)
+                                        this.renderChart(loginChartInfo.loginCount, this.chartFrequencyTooltip) :
+                                        // 时长
+                                        this.renderChart(loginChartInfo.loginDuration, this.durationTooltip)
                                 }
                             </div>
                         </CardContainer>
