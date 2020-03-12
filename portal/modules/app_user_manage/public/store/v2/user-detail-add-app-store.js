@@ -101,7 +101,7 @@ class UserDetailAddAppStore {
             var selected_map = _.groupBy(existApps, 'app_id');
             //去掉用户已经拥有的应用
             this.currentRealmApps = _.filter(resultList, function(app) {
-                if (!selected_map[app.app_id]) {
+                if (!selected_map[app.app_id] && app.status) {
                     return true;
                 }
             });

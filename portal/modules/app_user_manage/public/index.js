@@ -926,6 +926,11 @@ class AppUserManage extends React.Component {
     render() {
         var currentView = AppUserUtil.getCurrentView();
         var rightPanelView = null;
+        let appList = _.cloneDeep(this.state.appList);
+        if ( this.state.isShowBatchChangePanel || this.state.rightPanelType === 'applyUser') {
+            appList = _.filter(appList, item => item.status);
+        }
+
         if (this.state.isShowRightPanel) {
             switch (this.state.rightPanelType) {
                 case 'addOrEditUser':
@@ -939,7 +944,7 @@ class AppUserManage extends React.Component {
                     //发邮件使用的数据
                     var emailData = this.getEmailData();
                     //应用列表
-                    var appListTransform = this.state.appList.map((obj) => {
+                    let appListTransform = _.map(appList, obj => {
                         return {
                             client_id: obj.app_id,
                             client_name: obj.app_name,
@@ -1020,7 +1025,7 @@ class AppUserManage extends React.Component {
                         <UserDetailAddApp
                             multiple={true}
                             initialUser={this.state.selectedUserRows}
-                            appList={this.state.appList}
+                            appList={appList}
                             closeRightPanel={this.closeBatchChangePanel}
                         />
                     ) : null
