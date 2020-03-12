@@ -39,9 +39,15 @@ class ReportList extends React.Component {
     getCharts = () => {
         return [
             {
+                title: '销售经理日报',
                 chartType: 'table',
                 layout: {sm: 24},
                 height: 'auto',
+                cardContainer: {
+                    props: {
+                        isShowExportBtnWhenMouseEnter: false
+                    },
+                },
                 url: '/rest/customer/v3/dailyreport/report',
                 dataField: 'daily_reports',
                 processData: data => {
