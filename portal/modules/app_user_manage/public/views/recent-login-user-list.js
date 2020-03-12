@@ -11,7 +11,7 @@ import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
 import { AntcDatePicker as DatePicker } from 'antc';
 import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
 import { RightPanel } from 'CMP_DIR/rightPanel';
-import { topNavEmitter, operatorRecordEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { topNavEmitter, selectedAppEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { scrollBarEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { userTypeList, filterTypeList } from 'PUB_DIR/sources/utils/consts';
 import {
@@ -280,7 +280,7 @@ class RecentLoginUsers extends React.Component {
         var obj = {};
         obj[configKey] = app_id;
         let selectedAppTerminals = approveAppConfigTerminal(app_id, this.props.appList);
-        operatorRecordEmitter.emit(operatorRecordEmitter.CHANGE_SELECTED_APP, '');
+        selectedAppEmitter.emit(selectedAppEmitter.CHANGE_SELECTED_APP, '');
         //设置当前选中应用
         this.setState({
             selectedAppId: app_id,

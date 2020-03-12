@@ -19,7 +19,7 @@ const APP_SELECT_HEIGHT = 40; // 应用选择框的高度
 const BOTTOM_TOTAL_HEIGHT = 50; // 记录总条数的高度
 import { data as antUtilData } from 'ant-utils';
 import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
-import { operatorRecordEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { selectedAppEmitter } from 'PUB_DIR/sources/utils/emitters';
 class SingleUserLog extends React.Component {
     static defaultProps = {
         userId: '1'
@@ -166,7 +166,7 @@ class SingleUserLog extends React.Component {
     onSelectedAppChange = (appid) => {
         SingleUserLogAction.resetLogState();
         SingleUserLogAction.setSelectedAppId(appid);
-        operatorRecordEmitter.emit(operatorRecordEmitter.CHANGE_SELECTED_APP, '');
+        selectedAppEmitter.emit(selectedAppEmitter.CHANGE_SELECTED_APP, '');
         this.getSingleUserAuditLogList({
             appid: appid,
             page: 1,
