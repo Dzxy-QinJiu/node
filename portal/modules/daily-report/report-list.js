@@ -103,6 +103,7 @@ class ReportList extends React.Component {
                     isGetDataOnMount={true}
                     forceUpdate={true}
                     isUseScrollBar={true}
+                    style={{marginRight: 0}}
                 />
             </div>
         );
