@@ -79,10 +79,16 @@ class ReportList extends React.Component {
                         _.each(firstDataItem.item_values, obj => {
                             const { name } = obj;
 
-                            columns.push({
+                            let column = {
                                 title: name,
                                 dataIndex: name,
-                            });
+                            };
+
+                            if (name === '其他') {
+                                column.isSetCsvValueBlank = true;
+                            }
+
+                            columns.push(column);
                         });
                     }
                 },
