@@ -11,8 +11,7 @@ import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
 import { AntcDatePicker as DatePicker } from 'antc';
 import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
 import { RightPanel } from 'CMP_DIR/rightPanel';
-import { topNavEmitter, selectedAppEmitter } from 'PUB_DIR/sources/utils/emitters';
-import { scrollBarEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { topNavEmitter, selectedAppEmitter, scrollBarEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { userTypeList, filterTypeList } from 'PUB_DIR/sources/utils/consts';
 import {
     getUserByFromUserList,

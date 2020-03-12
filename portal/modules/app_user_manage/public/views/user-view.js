@@ -129,8 +129,12 @@ class UserTabContent extends React.Component {
             //按照角色过滤
             role_id: _.get(obj, 'role_id', this.state.filterRoles.selectedRole),
             //这种是从客户界面点击申请新应用、或是查看客户的用户
-            customer_id: this.state.customer_id || ''
+            customer_id: this.state.customer_id || '',
+            terminal_id: _.get(obj, 'terminal_id', this.state.terminal_id), // 多终端产品
         };
+        if (_.isEmpty(ajaxObj.terminal_id)) {
+            delete ajaxObj.terminal_id;
+        }
         var filterFieldMap = this.state.filterFieldMap;
         ajaxObj = $.extend(true, ajaxObj, filterFieldMap);
         if(!isOplateUser()) {
