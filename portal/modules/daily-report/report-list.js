@@ -3,12 +3,20 @@
  */
 
 import { AntcAnalysis } from 'antc';
-import { dateSelectorEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { teamTreeEmitter, dateSelectorEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 class ReportList extends React.Component {
     //获取查询条件
     getConditions = () => {
         return [
+            {
+                name: 'team_ids',
+                value: '',
+            },
+            {
+                name: 'member_ids',
+                value: '',
+            },
             {
                 name: 'start_time',
                 value: moment().startOf('day').valueOf(),
@@ -32,6 +40,22 @@ class ReportList extends React.Component {
                     name: 'end_time',
                 }],
             },
+            {
+                emitter: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_TEAM,
+                callbackArgs: [{
+                    name: 'team_ids',
+                    exclusive: 'member_ids',
+                }],
+            },
+            {
+                emitter: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_MEMBER,
+                callbackArgs: [{
+                    name: 'member_ids',
+                    exclusive: 'team_ids',
+                }],
+            }
         ];
     };
 
