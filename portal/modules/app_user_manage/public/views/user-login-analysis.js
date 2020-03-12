@@ -9,7 +9,7 @@ import StatusWrapper from 'CMP_DIR/status-wrapper';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import { AntcChart } from 'antc';
-import { Progress, Tooltip, Icon, Alert, Select, Popover } from 'antd';
+import { Progress, Tooltip, Icon, Alert, Select, Popover, Checkbox } from 'antd';
 const Option = Select.Option;
 import PropTypes from 'prop-types';
 import {DATE_SELECT} from 'PUB_DIR/sources/utils/consts';
@@ -402,6 +402,14 @@ class UserLoginAnalysis extends React.Component {
         if (_.isArray(loginChartInfo.loginDuration) || _.isArray(loginChartInfo.loginCount)) {
             return (
                 <div className="login-chart">
+                    <div className="filter-ip">
+                        <Checkbox
+                            checked={this.state.filterIpCheckMap[app.app_id]}
+                            onChange={this.handleFilterIp.bind(this, app)}
+                        >
+                            {Intl.get('user.login.analysis.filter.config.ip', '过滤配置IP')}
+                        </Checkbox>
+                    </div>
                     {Oplate.hideSomeItem ? (
                         <div className="duration-chart">
                             {loginChartInfo.count ? (
@@ -574,6 +582,29 @@ class UserLoginAnalysis extends React.Component {
         });
     };
 
+    handleFilterIp = (app, e) => {
+        let checked = e.target.checked;
+        let timeType = _.get(this.state.appUserDataMap, [app.app_id, 'timeType'], 'six_month');
+        let starttime = moment().subtract(6, 'month').valueOf();
+        if (timeType === 'month') {
+            starttime = moment().subtract(1, 'month').valueOf();
+        } else if(timeType === 'week') {
+            starttime = moment().subtract(1, 'week').valueOf();
+        }
+        let queryObj = this.getUserLastLoginParams({appid: app.app_id, starttime: starttime});
+        // 接口约定：过滤IP，传2，不过滤的话，可以不传参数
+        if (checked) { // 选择过滤IP
+            queryObj.lan = 2;
+        }
+        const { filterIpCheckMap } = this.state;
+        filterIpCheckMap[app.app_id] = checked;
+        this.setState({
+            filterIpCheckMap
+        }, () => {
+            UserLoginAnalysisAction.getUserLoginChartInfo(queryObj);
+        });
+    };
+
     showAppDetail = (app, isShow) => {
         const showDetailMap = this.state.showDetailMap;
         showDetailMap[app.app_id] = isShow;
@@ -595,9 +626,14 @@ class UserLoginAnalysis extends React.Component {
         let queryObj = this.getUserLastLoginParams({appid: app.app_id, starttime: starttime});
         let type = this.getUserLoginType();
         let reqData = {...queryObj, timeType: value};
+        let chartReqData = _.cloneDeep(reqData);
         // 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
         UserLoginAnalysisAction.getLoginUserActiveStatistics(reqData, type);
-        UserLoginAnalysisAction.getUserLoginChartInfo(reqData);
+        let isCheckedFilterIp = this.state.filterIpCheckMap[app.app_id]; // 过滤IP是否选中的状态
+        if (isCheckedFilterIp) {
+            chartReqData.lan = 2;
+        }
+        UserLoginAnalysisAction.getUserLoginChartInfo(chartReqData);
     };
     // 渲染时间选择框
     renderTimeSelect = (app) => {
@@ -686,6 +722,7 @@ class UserLoginAnalysis extends React.Component {
         selectValue: 'LoginFrequency',
         selectValueMap: {},
         showDetailMap: {},//是否展示app详情的map
+        filterIpCheckMap: {}, // 过滤IP
         ...this.getStateData()
     };
 

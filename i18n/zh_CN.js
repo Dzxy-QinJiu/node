@@ -762,6 +762,7 @@ var zh_CN = {
     'user.login.last.month': '近一月',
     'user.login.last.week': '近一周',
     'user.login.last.title': '{title} 的活跃统计',
+    'user.login.analysis.filter.config.ip': '过滤配置IP',
     'user.login.last.failed': '获取用户最近登录统计信息失败',
     'user.login.analysis.user': '用户分析',
     'user.login.analysis.signed': '签约用户分析',
