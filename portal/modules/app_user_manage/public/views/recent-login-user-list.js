@@ -11,7 +11,7 @@ import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
 import { AntcDatePicker as DatePicker } from 'antc';
 import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
 import { RightPanel } from 'CMP_DIR/rightPanel';
-import { topNavEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { topNavEmitter, operatorRecordEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { scrollBarEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { userTypeList, filterTypeList } from 'PUB_DIR/sources/utils/consts';
 import {
@@ -27,7 +27,8 @@ import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
 import { storageUtil } from 'ant-utils';
 import PropTypes from 'prop-types';
-import { traversingSelectTeamTree, getRequestTeamIds } from 'PUB_DIR/sources/utils/common-method-util';
+import { traversingSelectTeamTree, getRequestTeamIds,
+    approveAppConfigTerminal} from 'PUB_DIR/sources/utils/common-method-util';
 import RecentUserStore from '../store/recent-user-store';
 const RecentUserAction = require('../action/recent-user-action');
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
@@ -43,15 +44,18 @@ import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import { AntcTable } from 'antc';
 import { userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import userManagePrivilege from '../privilege-const';
+import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
 
 class RecentLoginUsers extends React.Component {
     constructor(props) {
         super(props);
         let timeRange = this.getTodayTimeRange();
         var teamlists = this.concatTeamList(this.props);
+        const selectedAppInfo = this.getSelectedAppObj(this.props);
         this.state = {
             ...RecentUserStore.getState(),
-            selectedAppId: this.getSelectedAppId(this.props),
+            selectedAppId: _.get(selectedAppInfo, 'selectedAppId'),
+            selectedAppTerminals: _.get(selectedAppInfo, 'selectedAppTerminals'),
             teamlists: teamlists,
             start_time: timeRange.start_time,
             end_time: timeRange.end_time,
@@ -67,6 +71,7 @@ class RecentLoginUsers extends React.Component {
             team_ids: '', //默认选中的团队(全部)
             selectedSalesId: [ALL_MEMBER_VALUE],
             selectedTeamIds: [], // 所选团队以及下级团队id
+            terminal_id: '', // 默认选中全部终端类型
         };
     }
 
@@ -120,7 +125,7 @@ class RecentLoginUsers extends React.Component {
         $('.recent-login-users-table-wrap .current_row').removeClass('current_row');
     }
 
-    getSelectedAppId(props) {
+    getSelectedAppObj(props) {
         var selectedAppId = '';
         //上次手动选中的appid
         let websitConfig = JSON.parse(storageUtil.local.get(WEBSITE_CONFIG));
@@ -135,7 +140,9 @@ class RecentLoginUsers extends React.Component {
             //如果上面两种情况都没有，就用应用列表中第一个
             selectedAppId = props.appList[0] ? props.appList[0].app_id : '';
         }
-        return selectedAppId;
+        let selectedAppTerminals = approveAppConfigTerminal(selectedAppId, props.appList);
+
+        return {selectedAppId, selectedAppTerminals};
     }
     concatTeamList(props){
         var teamList = [{group_id: '', group_name: Intl.get('user.list.all.teamlist', '全部团队')}];
@@ -147,7 +154,8 @@ class RecentLoginUsers extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         let oldAppId = this.state.selectedAppId;
-        let newAppId = this.getSelectedAppId(nextProps);
+        let selectedAppInfo = this.getSelectedAppObj(nextProps);
+        let newAppId = _.get(selectedAppInfo, 'selectedAppId');
         if (oldAppId !== newAppId) {
             this.setState({ selectedAppId: newAppId },
                 () => {
@@ -201,6 +209,10 @@ class RecentLoginUsers extends React.Component {
             } else if (this.state.filter_type === '0') {
                 paramObj.start_date = this.state.end_time;
             }
+        }
+        // 多终端参数
+        if (this.state.terminal_id) {
+            paramObj.terminal_id = this.state.terminal_id;
         }
         return paramObj;
     }
@@ -267,10 +279,14 @@ class RecentLoginUsers extends React.Component {
         var configKey = RECENT_LOGIN_USER_SELECTED_APP_ID;
         var obj = {};
         obj[configKey] = app_id;
+        let selectedAppTerminals = approveAppConfigTerminal(app_id, this.props.appList);
+        operatorRecordEmitter.emit(operatorRecordEmitter.CHANGE_SELECTED_APP, '');
         //设置当前选中应用
         this.setState({
             selectedAppId: app_id,
             lastUserId: '',
+            selectedAppTerminals: selectedAppTerminals,
+            terminal_id: ''
         }, () => {
             setWebsiteConfig(obj);
             this.getRecentLoginUsers();
@@ -523,6 +539,29 @@ class RecentLoginUsers extends React.Component {
             </div>
         );
     };
+
+    // 筛选终端类型
+    onSelectTerminalsType = (value) => {
+        this.setState({
+            terminal_id: value,
+            lastUserId: ''
+        }, () => {
+            this.getRecentLoginUsers();
+        });
+    }
+
+    // 渲染多终端类型
+    renderAppTerminalsType = () => {
+        return (
+            <SelectAppTerminal
+                appTerminals={this.state.selectedAppTerminals}
+                handleSelectedTerminal={this.onSelectTerminalsType.bind(this)}
+                className="btn-item"
+                isNeedTerminalId={true}
+            />
+        );
+    }
+
     renderRecentLoginHeader(){
         let appOptions = this.getAppOptions();
         let memberList = this.state.memberList.data; // 成员数据
@@ -585,6 +624,11 @@ class RecentLoginUsers extends React.Component {
                                 {appOptions}
                             </SelectFullWidth>
                         </div>
+                        {
+                            _.get(this.state.selectedAppTerminals, 'length') ? (
+                                this.renderAppTerminalsType()
+                            ) : null
+                        }
                         {/**
                          * 用户类型筛选框
                          * */}

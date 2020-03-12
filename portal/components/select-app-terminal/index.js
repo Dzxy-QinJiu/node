@@ -39,7 +39,10 @@ class SelectAppTerminal extends React.Component {
     render() {
         let appTerminals = this.props.appTerminals;
         let appTerminalsOptions = _.map(appTerminals, terminalType =>
-            <Option key={terminalType.id} value={terminalType.code}> {terminalType.name} </Option>);
+            <Option
+                key={terminalType.id}
+                value={ this.props.isNeedTerminalId ? terminalType.id : terminalType.code}
+            > {terminalType.name} </Option>);
         appTerminalsOptions.unshift(<Option value="" id="">{Intl.get('common.all.terminals', '所有終端')}</Option>);
         const cls = classNames('select-app-terminal-type', this.props.className);
         return (
@@ -58,13 +61,15 @@ SelectAppTerminal.defaultProps = {
     handleSelectedTerminal: function() {
     },
     appTerminals: [],
-    className: ''
+    className: '',
+    isNeedTerminalId: false, // 是否需要多终端的id
 };
 
 SelectAppTerminal.propTypes = {
     handleSelectedTerminal: PropTypes.func,
     appTerminals: PropTypes.array,
     className: PropTypes.string,
+    isNeedTerminalId: PropTypes.bool,
 };
 
 export default SelectAppTerminal;
