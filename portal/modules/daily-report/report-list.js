@@ -57,11 +57,23 @@ class ReportList extends React.Component {
                 },
                 processOption: (option, chart) => {
                     const firstDataItem = _.first(chart.data);
+
                     if (firstDataItem) {
+                        const { nickname, item_values } = firstDataItem;
+                        const { columns } = option;
+
+                        if (nickname) {
+                            columns.push({
+                                title: '销售',
+                                dataIndex: 'nickname',
+                                width: 80,
+                            });
+                        }
+
                         _.each(firstDataItem.item_values, obj => {
                             const { name } = obj;
 
-                            option.columns.push({
+                            columns.push({
                                 title: name,
                                 dataIndex: name,
                             });
@@ -73,11 +85,6 @@ class ReportList extends React.Component {
                         {
                             title: '团队',
                             dataIndex: 'sales_team',
-                            width: 80,
-                        },
-                        {
-                            title: '销售',
-                            dataIndex: 'nickname',
                             width: 80,
                         },
                     ],
