@@ -250,7 +250,7 @@ class userScore extends React.Component {
             if (result){
                 message.success(Intl.get('common.save.success', '保存成功'));
                 //如果保存成功，会有回调
-                userScoreAction.updateUserEngagement(this.state.userEngagementFormData);
+                userScoreAction.updateUserEngagement(userEngagementFormData);
                 this.setState({
                     userEngagementFormData
                 });
