@@ -115,7 +115,7 @@ class UserLoginAnalysis extends React.Component {
         let lastLoginParams = this.getUserLastLoginParams(queryParams);
         let reqData = this.getUserLoginScoreParams(queryParams);
         let type = this.getUserLoginType();
-        let appTerminalType = _.has(queryParams, 'appTerminalType') ? queryParams.appTerminalType : this.state.appTerminalType;
+        let appTerminalType = _.has(queryParams, 'appTerminalType') ? queryParams.appTerminalType : this.state.appTerminalType[queryParams.appid];
         if (appTerminalType) {
             queryObj.terminal = appTerminalType;
             lastLoginParams.terminal = appTerminalType;
@@ -603,8 +603,12 @@ class UserLoginAnalysis extends React.Component {
         const showDetailMap = this.state.showDetailMap;
         showDetailMap[appId] = isShow;
         let selectAppTerminals = this.state.selectAppTerminals;
-        selectedAppEmitter.emit(selectedAppEmitter.CHANGE_SELECTED_APP, '');
+        const selectTerminalType = this.state.selectTerminalType;
+        selectTerminalType[appId] = '';
         if (isShow) {
+            if (selectTerminalType[appId] === '') {
+                selectedAppEmitter.emit(selectedAppEmitter.CHANGE_SELECTED_APP, '');
+            }
             let matchSelectApp = _.find(this.props.appLists, item => item.app_id === appId);
             if (matchSelectApp) {
                 selectAppTerminals[appId] = matchSelectApp.terminals || [];
@@ -615,7 +619,8 @@ class UserLoginAnalysis extends React.Component {
         }
         this.setState({
             showDetailMap,
-            selectAppTerminals
+            selectAppTerminals,
+            selectTerminalType
         });
     };
     handleSelectDate = (app, value) => {
@@ -726,19 +731,25 @@ class UserLoginAnalysis extends React.Component {
         showDetailMap: {},//是否展示app详情的map
         filterIpCheckMap: {}, // 过滤IP
         selectAppTerminals: {},
+        selectTerminalType: {},
         ...this.getStateData()
     };
 
     // 筛选终端类型
     onSelectTerminalsType = (appId, value) => {
-        UserLoginAnalysisAction.setAppTerminalsType(value);
+        const selectTerminalType = this.state.selectTerminalType;
+        selectTerminalType[appId] = value;
         this.getUserAnalysisData({ appid: appId, appTerminalType: value });
+        this.setState({
+            selectTerminalType
+        });
     };
 
     // 渲染多终端类型
     renderAppTerminalsType = (app) => {
         return (
             <SelectAppTerminal
+                terminalType={this.state.selectTerminalType[app.app_id]}
                 appTerminals={this.state.selectAppTerminals[app.app_id]}
                 handleSelectedTerminal={this.onSelectTerminalsType.bind(this, app.app_id)}
             />

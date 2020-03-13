@@ -81,14 +81,6 @@ UserLoginAnalysisStore.prototype.getSingleUserAppList = function({appId,appList}
     }
 };
 
-UserLoginAnalysisStore.prototype.setAppTerminalsType = function(type){
-    this.appTerminalType = type;
-};
-
-UserLoginAnalysisStore.prototype.setSelectedAppId = function(appId){
-    this.selectedLogAppId = appId;
-    ShareObj.share_differ_user_keep_app_id = this.selectedLogAppId;
-};
 UserLoginAnalysisStore.prototype.getUserScoreIndicator = function(result){
     this.userIndicator = _.get(result,'list',[]);
 };
