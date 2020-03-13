@@ -699,7 +699,7 @@ class userScore extends React.Component {
         userScoreAction.saveUserScoreLists(userScoreFormData, () => {
             message.success(Intl.get('common.save.success', '保存成功'));
             //如果保存成功，会有回调
-            userScoreAction.updateUserRule(this.state.userScoreFormData);
+            userScoreAction.updateUserRule(userScoreFormData);
             this.setState({
                 isEditUserBasicRule: false
             });
@@ -725,7 +725,7 @@ class userScore extends React.Component {
         userScoreAction.saveUserEngagementRule(userEngagementFormData, () => {
             message.success(Intl.get('common.save.success', '保存成功'));
             //如果保存成功，会有回调
-            userScoreAction.updateUserEngagement(this.state.userEngagementFormData);
+            userScoreAction.updateUserEngagement(userEngagementFormData);
             this.setState({
                 isEditUserEngagementRule: false
             });
