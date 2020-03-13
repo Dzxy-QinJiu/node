@@ -725,6 +725,7 @@ class SalesHomePage extends React.Component {
                             <AntcCardContainer
                                 title={title}
                                 exportData={exportData}
+                                type='table-card'
                             >
                                 <AntcTable
                                     dropLoad={dropLoadConfig}
@@ -734,6 +735,7 @@ class SalesHomePage extends React.Component {
                                     util={{zoomInSortArea: true}}
                                     onChange={this.onCallBackTableChange}
                                     scroll={{y: 400}}
+                                    tableType='data'
                                 />
                             </AntcCardContainer>
                         </div>

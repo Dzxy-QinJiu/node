@@ -23,10 +23,12 @@ export function getClueRetrievalChart() {
             }, {
                 title: Intl.get('analysis.extracting.cue.number', '提取线索数'),
                 dataIndex: 'count',
+                align: 'right',
                 width: '10%',
             }, {
                 title: Intl.get('analysis.follow-up.leads', '跟进线索数'),
                 dataIndex: 'traced_count',
+                align: 'right',
                 width: '10%',
             }]
         },

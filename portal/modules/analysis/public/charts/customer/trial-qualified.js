@@ -62,20 +62,24 @@ export function getCustomerTrialQualifiedChart() {
             columns = columns.concat([{
                 title: lastMonth + Intl.get('common.time.unit.month', '月'),
                 dataIndex: 'last_month',
+                align: 'right',
                 width: '10%',
                 render: trialQualifiedNumRender.bind(this, 'last_month_customer_ids'),
             }, {
                 title: thisMonth + Intl.get('common.time.unit.month', '月'),
                 dataIndex: 'this_month',
+                align: 'right',
                 width: '10%',
                 render: trialQualifiedNumRender.bind(this, 'this_month_customer_ids'),
             }, {
                 dataIndex: 'highest',
+                align: 'right',
                 title: Intl.get('common.history.highest', '历史最高'),
                 width: '10%',
                 render: trialQualifiedNumRender.bind(this, CUSTOMER_IDS_FIELD),
             }, {
                 dataIndex: 'this_month_add_highest',
+                align: 'right',
                 title: Intl.get('common.this.month.add.highest', '本月比历史最高净增'),
                 width: '20%',
                 render: trialQualifiedNumRender.bind(this, 'this_month_add_highest_customer_ids'),

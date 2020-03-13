@@ -416,50 +416,58 @@ class CustomerAnalysis extends React.Component {
         const statisticsColumns = [{
             dataIndex: 'last_month',
             title: Intl.get('user.time.prev.month', '上月'),
-            width: '10%',
+            width: 50,
+            align: 'right',
             render: this.customerNumRender.bind(this, 'last_month_customer_ids'),
         }, {
             dataIndex: 'this_month',
             title: Intl.get('common.this.month', '本月'),
-            width: '10%',
+            width: 50,
+            align: 'right',
             render: this.customerNumRender.bind(this, 'this_month_customer_ids'),
         }, {
             dataIndex: 'this_month_new',
             title: Intl.get('common.this.month.new', '本月新增'),
-            width: '10%',
+            width: 75,
+            align: 'right',
             render: this.customerNumRender.bind(this, 'this_month_new_customer_ids'),
         }, {
             dataIndex: 'this_month_lose',
             title: Intl.get('common.this.month.lose', '本月流失'),
-            width: '10%',
+            width: 75,
+            align: 'right',
             render: this.customerNumRender.bind(this, 'this_month_lose_customer_ids'),
         }, {
             dataIndex: 'this_month_back',
             title: Intl.get('common.this.month.back', '本月回流'),
-            width: '10%',
+            width: 75,
+            align: 'right',
             render: this.customerNumRender.bind(this, 'this_month_back_customer_ids'),
         }, {
             dataIndex: 'this_month_add',
             title: Intl.get('common.this.month.add', '本月比上月净增'),
-            width: '15%',
+            width: 116,
+            align: 'right',
         }, {
             dataIndex: 'highest',
             title: Intl.get('common.history.highest', '历史最高'),
-            width: '10%',
+            width: 75,
+            align: 'right',
             render: (text, record) => {
                 return <span title={record.highest_date}>{text}</span>;
             },
         }, {
             dataIndex: 'this_month_add_highest',
             title: Intl.get('common.this.month.add.highest', '本月比历史最高净增'),
-            width: '20%',
+            width: 152,
+            align: 'right',
         }];
 
         //表格列
         let columns = _.cloneDeep(statisticsColumns);
         columns.unshift({
             title: '团队',
-            width: '10%',
+            width: 80,
             dataIndex: 'team_name',
         });
 
@@ -811,20 +819,28 @@ class CustomerAnalysis extends React.Component {
                     {
                         title: Intl.get('effective.customer.number', '有效客户数'),
                         dataIndex: 'valid',
+                        align: 'right',
+                        width: 90
                     },
                     {
                         title: Intl.get('active.customer.number', '活跃客户数'),
                         dataIndex: 'active',
+                        align: 'right',
+                        width: 90,
                         render: this.customerNumRender.bind(this, 'active_list')
                     },
                     {
                         title: Intl.get('inactive.customer.number', '不活跃客户数'),
                         dataIndex: 'unactive',
+                        align: 'right',
+                        width: 100,
                         render: this.customerNumRender.bind(this, 'unactive_list')
                     },
                     {
                         title: Intl.get('effective.customer.activity.rate', '有效客户活跃率'),
                         dataIndex: 'active_rate',
+                        align: 'right',
+                        width: 125
                     },
                 ],
             },
@@ -1023,11 +1039,13 @@ class CustomerAnalysis extends React.Component {
                         title: Intl.get('crm.146', '日期'),
                         dataIndex: 'time',
                         key: 'time',
-                        width: 100
+                        width: 105
                     }, {
                         title: Intl.get('sales.stage.message', '信息'),
                         dataIndex: '信息',
                         key: 'info',
+                        width: 50,
+                        align: 'right',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
@@ -1038,6 +1056,8 @@ class CustomerAnalysis extends React.Component {
                         title: Intl.get('sales.stage.intention', '意向'),
                         dataIndex: '意向',
                         key: 'intention',
+                        width: 50,
+                        align: 'right',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
@@ -1048,6 +1068,8 @@ class CustomerAnalysis extends React.Component {
                         title: Intl.get('common.trial', '试用'),
                         dataIndex: '试用',
                         key: 'trial',
+                        width: 50,
+                        align: 'right',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
@@ -1058,6 +1080,8 @@ class CustomerAnalysis extends React.Component {
                         title: Intl.get('common.trial.qualified', '试用合格'),
                         dataIndex: '试用合格',
                         key: 'trial.qualified',
+                        width: 80,
+                        align: 'right',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
@@ -1068,7 +1092,8 @@ class CustomerAnalysis extends React.Component {
                         title: Intl.get('common.trial.unqualified', '试用不合格'),
                         dataIndex: '试用不合格',
                         key: 'unqualified',
-                        width: 100,
+                        width: 90,
+                        align: 'right',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
@@ -1079,6 +1104,8 @@ class CustomerAnalysis extends React.Component {
                         title: Intl.get('sales.stage.signed', '签约'),
                         dataIndex: '签约',
                         key: 'signed',
+                        width: 50,
+                        align: 'right',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
@@ -1089,6 +1116,8 @@ class CustomerAnalysis extends React.Component {
                         title: Intl.get('sales.stage.lost', '流失'),
                         dataIndex: '流失',
                         key: '流失',
+                        width: 50,
+                        align: 'right',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
@@ -1098,7 +1127,8 @@ class CustomerAnalysis extends React.Component {
                     }, {
                         title: Intl.get('sales.home.sales', '销售'),
                         dataIndex: 'memberName',
-                        key: 'memberName'
+                        key: 'memberName',
+                        width: 60,
                     }, {
                         title: Intl.get('common.belong.team', '所属团队'),
                         dataIndex: 'salesTeam',

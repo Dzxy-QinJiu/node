@@ -13,18 +13,22 @@ export function getRenewalCustomerGrossProfitChart(paramObj = {}) {
             columns: [{
                 title: '客户个数',
                 dataIndex: 'count',
+                align: 'right',
                 width: '20%',
             }, {
                 title: '续约前合同毛利',
                 dataIndex: 'before',
+                align: 'right',
                 width: '20%',
             }, {
                 title: '续约后合同毛利',
                 dataIndex: 'after',
+                align: 'right',
                 width: '20%',
             }, {
                 title: '续约金额增长率',
                 dataIndex: 'percent',
+                align: 'right',
                 showAsPercent: true,
                 width: '20%',
             }],

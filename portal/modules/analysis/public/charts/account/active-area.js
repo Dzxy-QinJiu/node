@@ -36,7 +36,7 @@ export function getActiveAreaChart(type = 'all') {
             option: {
                 columns: [
                     {title: Intl.get('crm.96', '地域'), dataIndex: 'name', key: 'name'},
-                    {title: Intl.get('operation.report.user.count', '用户数'), dataIndex: 'value', key: 'value', className: 'text-align-right'}
+                    {title: Intl.get('operation.report.user.count', '用户数'), align: 'right', dataIndex: 'value', key: 'value', className: 'text-align-right'}
                 ],
                 pagination: {
                     pageSize: 12,
@@ -51,7 +51,7 @@ export function getActiveAreaChart(type = 'all') {
                 options: [
                     {name: Intl.get('common.all', '全部'), value: 'all'},
                     {name: Intl.get('user.type.employee', '员工'), value: 'internal'},
-                    {name: Intl.get('analysis.exclude.ip.staff': '排除配置ip和员工',), value: 'valid'},
+                    {name: Intl.get('analysis.exclude.ip.staff', '排除配置ip和员工',), value: 'valid'},
                 ],
                 activeOption: 'all',
                 conditionName: 'active_type',

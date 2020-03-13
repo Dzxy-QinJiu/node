@@ -128,6 +128,7 @@ export function getCallRecordChart(paramObj = {}) {
         }, {
             title: Intl.get('sales.home.total.duration', '总时长'),
             width: col_width,
+            align: 'right',
             dataIndex: 'total_time',
             sorter: function(a, b) {
                 return a.total_time - b.total_time;
@@ -143,6 +144,7 @@ export function getCallRecordChart(paramObj = {}) {
         }, {
             title: Intl.get('sales.home.total.connected', '总接通数'),
             width: col_width,
+            align: 'right',
             dataIndex: 'total_callout_success',
             sorter: function(a, b) {
                 return a.total_callout_success - b.total_callout_success;
@@ -151,6 +153,7 @@ export function getCallRecordChart(paramObj = {}) {
         }, {
             title: Intl.get('sales.home.average.duration', '日均时长'),
             width: col_width,
+            align: 'right',
             dataIndex: 'average_time',
             sorter: function(a, b) {
                 return a.average_time - b.average_time;
@@ -165,7 +168,8 @@ export function getCallRecordChart(paramObj = {}) {
             }
         }, {
             title: Intl.get('sales.home.average.connected', '日均接通数'),
-            width: col_lg_width,
+            width: col_width,
+            align: 'right',
             dataIndex: 'average_num',
             sorter: function(a, b) {
                 return a.average_num - b.average_num;
@@ -174,6 +178,7 @@ export function getCallRecordChart(paramObj = {}) {
         }, {
             title: Intl.get('sales.home.phone.callin', '呼入次数'),
             width: col_width,
+            align: 'right',
             dataIndex: 'total_callin',
             sorter: function(a, b) {
                 return a.total_callin - b.total_callin;
@@ -182,6 +187,7 @@ export function getCallRecordChart(paramObj = {}) {
         }, {
             title: Intl.get('sales.home.phone.callin.success', '成功呼入'),
             width: col_width,
+            align: 'right',
             dataIndex: 'total_callin_success',
             sorter: function(a, b) {
                 return a.total_callin_success - b.total_callin_success;
@@ -189,7 +195,8 @@ export function getCallRecordChart(paramObj = {}) {
             className: 'has-filter'
         }, {
             title: Intl.get('sales.home.phone.callin.rate', '呼入接通率'),
-            width: col_lg_width,
+            width: col_width,
+            align: 'right',
             dataIndex: 'callin_rate',
             showAsPercent: true,
             sorter: function(a, b) {
@@ -199,6 +206,7 @@ export function getCallRecordChart(paramObj = {}) {
         }, {
             title: Intl.get('sales.home.phone.callout', '呼出次数'),
             width: col_width,
+            align: 'right',
             dataIndex: 'total_callout',
             sorter: function(a, b) {
                 return a.total_callout - b.total_callout;
@@ -206,7 +214,8 @@ export function getCallRecordChart(paramObj = {}) {
             className: 'has-filter'
         }, {
             title: Intl.get('sales.home.phone.callout.rate', '呼出接通率'),
-            width: col_lg_width,
+            width: col_width,
+            align: 'right',
             dataIndex: 'callout_rate',
             showAsPercent: true,
             sorter: function(a, b) {
@@ -219,7 +228,8 @@ export function getCallRecordChart(paramObj = {}) {
         if ( paramObj.Store.isShowEffectiveTimeAndCount ){
             columns.push({
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
-                width: col_lg_width,
+                width: col_width,
+                align: 'right',
                 dataIndex: 'total_effective',
                 sorter: function(a, b) {
                     return a.total_effective - b.total_effective;
@@ -263,7 +273,7 @@ export function getCallRecordChart(paramObj = {}) {
                 }
             }, {
                 title: Intl.get('call.record.average.connected', '人均接通数'),
-                width: col_lg_width,
+                width: col_width,
                 align: 'right',
                 dataIndex: 'per_capita_number',
                 sorter: function(a, b) {

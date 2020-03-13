@@ -21,19 +21,22 @@ export function getCustomerEffectiveChart() {
                 {
                     title: Intl.get('common.definition', '名称'),
                     dataIndex: 'name',
-                    width: 80,
+                    width: 100,
                 },
                 {
                     title: Intl.get('effective.customer.number', '有效客户数'),
                     dataIndex: 'valid',
+                    align: 'right',
                 },
                 {
                     title: Intl.get('active.customer.number', '活跃客户数'),
                     dataIndex: 'active',
+                    align: 'right',
                 },
                 {
                     title: Intl.get('effective.customer.activity.rate', '有效客户活跃率'),
                     dataIndex: 'active_rate',
+                    align: 'right',
                     showAsPercent: true
                 },
             ],

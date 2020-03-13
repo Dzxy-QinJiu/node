@@ -60,6 +60,7 @@ export function getCustomerStageChangeChart() {
                 }, {
                     title: Intl.get('sales.stage.message', '信息'),
                     dataIndex: '信息',
+                    align: 'right',
                     render: (text, item, index) => {
                         return (
                             <span className="customer-stage-number">{text}</span>
@@ -68,6 +69,7 @@ export function getCustomerStageChangeChart() {
                 }, {
                     title: Intl.get('sales.stage.intention', '意向'),
                     dataIndex: '意向',
+                    align: 'right',
                     render: (text, item, index) => {
                         return (
                             <span className="customer-stage-number">{text}</span>
@@ -76,6 +78,7 @@ export function getCustomerStageChangeChart() {
                 }, {
                     title: Intl.get('common.trial', '试用'),
                     dataIndex: '试用',
+                    align: 'right',
                     render: (text, item, index) => {
                         return (
                             <span className="customer-stage-number">{text}</span>
@@ -84,6 +87,7 @@ export function getCustomerStageChangeChart() {
                 }, {
                     title: Intl.get('common.trial.qualified', '试用合格'),
                     dataIndex: '试用合格',
+                    align: 'right',
                     render: (text, item, index) => {
                         return (
                             <span className="customer-stage-number">{text}</span>
@@ -92,6 +96,7 @@ export function getCustomerStageChangeChart() {
                 }, {
                     title: Intl.get('common.trial.unqualified', '试用不合格'),
                     dataIndex: '试用不合格',
+                    align: 'right',
                     render: (text, item, index) => {
                         return (
                             <span className="customer-stage-number">{text}</span>
@@ -100,6 +105,7 @@ export function getCustomerStageChangeChart() {
                 }, {
                     title: Intl.get('sales.stage.signed', '签约'),
                     dataIndex: '签约',
+                    align: 'right',
                     render: (text, item, index) => {
                         return (
                             <span className="customer-stage-number">{text}</span>
@@ -108,6 +114,7 @@ export function getCustomerStageChangeChart() {
                 }, {
                     title: Intl.get('sales.stage.lost', '流失'),
                     dataIndex: '流失',
+                    align: 'right',
                     render: (text, item, index) => {
                         return (
                             <span className="customer-stage-number">{text}</span>
