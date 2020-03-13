@@ -111,6 +111,7 @@ class ReportList extends React.Component {
 
                             if (name === '其他') {
                                 column.isSetCsvValueBlank = true;
+                                column.align = 'left';
                             }
 
                             columns.push(column);
@@ -132,7 +133,7 @@ class ReportList extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="report-list">
                 <AntcAnalysis
                     charts={this.getCharts()}
                     conditions={this.getConditions()}
