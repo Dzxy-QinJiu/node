@@ -32,7 +32,7 @@ function ApplyViewDetailActions() {
         'setNextCandidate',
         'showOrHideApprovalBtns',
         'setApplyCandate',
-        'setGroupId',
+        'setSalesMan',
     );
 
     //获取审批单详情
