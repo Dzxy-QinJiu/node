@@ -278,8 +278,8 @@ LeaveApplyDetailStore.prototype.setNextCandidateIds = function(candidateId) {
 LeaveApplyDetailStore.prototype.setApplyCandate = function(selectUserId) {
     this.detailInfoObj.info.assigned_candidate_users = selectUserId;
 };
-LeaveApplyDetailStore.prototype.setGroupId = function(groupId) {
-    this.detailInfoObj.info.group_id = groupId;
+LeaveApplyDetailStore.prototype.setSalesMan = function(selectSales) {
+    this.detailInfoObj.info.user_ids = selectSales;
 };
 LeaveApplyDetailStore.prototype.transferNextCandidate = function(result) {
     if (result.loading) {
