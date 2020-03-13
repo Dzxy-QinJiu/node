@@ -55,6 +55,7 @@ import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply
 import CustomerRecordActions from 'MOD_DIR/crm/public/action/customer-record-action';
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import history from 'PUB_DIR/sources/history';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -1238,9 +1239,9 @@ class MyWorkColumn extends React.Component {
                 });
                 item.btnConf.btnDesc = '填写';
             } else {
-                item.btnConf.handleFunc = showReportPanel.bind(null, {
-                    currentView: VIEW_TYPE.REPORT_LIST,
-                });
+                item.btnConf.handleFunc = () => {
+                    history.push('analysis/report/daily-report');
+                };
             }
         }
 
