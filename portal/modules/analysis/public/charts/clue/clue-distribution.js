@@ -23,10 +23,12 @@ export function getClueDistributionChart() {
             }, {
                 title: Intl.get('analysis.assigned.clue.number', '分配线索数'),
                 dataIndex: 'count',
+                align: 'right',
                 width: '10%',
             }, {
                 title: Intl.get('analysis.follow-up.leads', '跟进线索数'),
                 dataIndex: 'traced_count',
+                align: 'right',
                 width: '10%',
             }]
         },

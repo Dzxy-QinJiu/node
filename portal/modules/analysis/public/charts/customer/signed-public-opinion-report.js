@@ -38,6 +38,7 @@ export function getSignedCustomerPublicOpinionReportChart() {
             }, {
                 title: Intl.get('common.report.num', '报送数量'),
                 dataIndex: 'report_num',
+                align: 'right',
                 sorter: (a, b) => a.report_num - b.report_num,
                 width: '50%',
             }],

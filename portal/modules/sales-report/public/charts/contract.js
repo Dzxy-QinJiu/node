@@ -44,10 +44,12 @@ export const contractChart = {
         }, {
             title: Intl.get('weekly.report.contract.account', '合同金额'),
             dataIndex: 'amount',
+            align: 'right',
             width: '20%'
         }, {
             title: Intl.get('contract.109', '毛利'),
             dataIndex: 'grossProfit',
+            align: 'right',
             width: '20%'
         }],
     },

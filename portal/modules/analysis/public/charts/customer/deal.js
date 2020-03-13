@@ -15,14 +15,17 @@ export function getCustomerDealChart() {
             columns: [{
                 title: '联系客户数',
                 dataIndex: 'total',
+                align: 'right',
                 width: '25%',
             }, {
                 title: '成交数',
                 dataIndex: 'deal',
+                align: 'right',
                 width: '25%',
             }, {
                 title: '未成交数',
                 dataIndex: 'no_deal',
+                align: 'right',
                 width: '25%',
             }, {
                 title: '成交率',

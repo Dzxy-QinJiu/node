@@ -129,9 +129,9 @@
 
   //表格头部样式
   .apply_detail_apps{
-    th.apply-detail-th{
-      background: #f0f4f5 !important;
-    }
+    // th.apply-detail-th{
+    //   background: #f0f4f5 !important;
+    // }
     .apply-detail-th.number-align-right{
       text-align: right;
     }
@@ -190,31 +190,31 @@
     font-size:24px;
   }
   .apply_detail_apps > table{
-    border-color:#ced6da;
-    tr td:nth-child(1), td:nth-child(2), td:nth-child(3), td:nth-child(4){
-      border-right:1px dashed @table_dashed_color
-    }
+    // border-color:#ced6da;
+    // tr td:nth-child(1), td:nth-child(2), td:nth-child(3), td:nth-child(4){
+    //   border-right:1px dashed @table_dashed_color
+    // }
 
-    .apply-detail-head > th{
-      text-align:center;
-      border:1px dashed @table_dashed_color;
-    }
+    // .apply-detail-head > th{
+    //   text-align:center;
+    //   border:1px dashed @table_dashed_color;
+    // }
 
     .apply-app-name, .desp_time{
       max-width: 200px;
     }
 
-    td{
-      text-align:left;
-      vertical-align:middle;
-      color:#5d5d5d;
-      font-size:@form_font_size14;
-      border:none;
-      max-width: 100px;
-    }
-    .apply-app-numbers{
-      text-align:right;
-    }
+    // td{
+    //   text-align:left;
+    //   vertical-align:middle;
+    //   color:#5d5d5d;
+    //   font-size:@form_font_size14;
+    //   border:none;
+    //   max-width: 100px;
+    // }
+    // .apply-app-numbers{
+    //   text-align:right;
+    // }
     img{
       width:36px;
       height:36px;
@@ -229,6 +229,17 @@
   }
   .app-property-custom-settings{
     padding-bottom:20px;
+    .app-property-content {
+      padding-bottom: 10px;
+      margin-top: 0;
+      .form-item {
+        display: flex;
+        height: 40px;
+        .form-item-label {
+          text-align: end;
+        }
+      }
+    }
   }
   .app-property-setting{
     padding-top:0;

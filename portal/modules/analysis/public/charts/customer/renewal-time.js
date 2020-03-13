@@ -39,19 +39,28 @@ export function getRenewalCustomerTimeChart(paramObj = {}) {
                     }, {
                         title: '到期客户数',
                         dataIndex: 'due_num',
+                        align: 'right',
                         width: 90
                     }, {
                         title: '当月续签',
                         dataIndex: 'month0',
-                        width: 80
+                        align: 'right',
+                        width: 75
                     }
                 ];
 
                 for (let i = 1; i < 13; i++) {
+                    let columnWidth = 85;
+                    if (i === 12) {
+                        columnWidth = 100;
+                    } else if (i > 9) {
+                        columnWidth = 90;
+                    } 
                     columns.push({
                         title: `延期${i}个月`,
                         dataIndex: `month${i}`,
-                        width: i > 9 ? 90 : 80
+                        align: 'right',
+                        width: columnWidth
                     });
                 }
 

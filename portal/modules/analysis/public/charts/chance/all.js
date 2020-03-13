@@ -5,6 +5,7 @@
 const TEAM_FIELD = 'sales_team';
 
 export function getAllChanceChart(specifyColumns) {
+    let columnWidth = 80;
     return {
         title: '机会转化率统计',
         chartType: 'table',
@@ -26,27 +27,32 @@ export function getAllChanceChart(specifyColumns) {
                 {
                     title: '团队',
                     dataIndex: TEAM_FIELD,
-                    width: '20%',
+                    width: columnWidth,
                 }, {
                     title: '成员',
                     dataIndex: 'nick_name',
-                    width: '20%',
+                    width: columnWidth,
                 }, {
                     title: '提交数',
                     dataIndex: 'total',
-                    width: '20%',
+                    align: 'right',
+                    width: columnWidth,
                 }, {
                     title: '通过数',
+                    align: 'right',
                     dataIndex: 'pass',
+                    width: columnWidth,
                 }, {
                     title: '成交数',
+                    align: 'right',
                     dataIndex: 'deal',
-                    width: '20%',
+                    width: columnWidth,
                 }, {
                     title: '转化率',
+                    align: 'right',
                     dataIndex: 'deal_rate',
                     showAsPercent: true,
-                    width: '20%',
+                    width: columnWidth,
                 }
             ],
         },

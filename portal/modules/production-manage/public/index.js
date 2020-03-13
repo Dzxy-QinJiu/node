@@ -202,7 +202,8 @@ class ProductionManage extends React.Component {
                     showOnCard: true
                 },
                 showDelete: production.integration_type ? false : true,//集成的产品不可以删除，自己加的普通产品可以删
-                leftFlagDesc: this.getProductFlagDesc(production)
+                leftFlagDesc: this.getProductFlagDesc(production),
+                status: _.get(production, 'status', 1) // 产品中，没有状态，默认为启用
             };
         });
 
@@ -346,6 +347,7 @@ class ProductionManage extends React.Component {
                         showAddBtn={this.hasNoFilterCondition()}
                         deleteItem={this.deleteItem}
                         cardContainerHeight={cardContainerHeight}
+                        type="production"
                     >
                         {this.state.formShow ?
                             <Production

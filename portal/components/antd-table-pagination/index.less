@@ -1,204 +1,206 @@
 #app {
-  .ant-table table {
-    table-layout: fixed;
-  }
-  
-  .ant-table th {
-    background:transparent;
-    color:#636768;
-    padding: 9px !important;
-  }
-  
-  .ant-table td {
-    border-bottom:none;
-    color:#75797c;
-    word-break: break-all;
-    max-width: 260px;
-  }
-  
-  .ant-table th.no-wrap,
-  .ant-table td.no-wrap {
-    width: 1% !important;
-    white-space: nowrap;
-  }
-  
-  .ant-table td,.ant-table th {
-    border-right:1px dashed #edf1f2 !important;
-  }
-
-  //将复选框列的边框隐藏
-  .ant-table td.ant-table-selection-column,
-  .ant-table th.ant-table-selection-column {
-      border-right: none!important;
-  }
-  .ant-table td:last-child,.ant-table th:last-child {
-    border-right:none !important;
-  }
-  
-  .ant-table tbody tr:nth-child(2n) {
-    background:#f8f9fb;
-  }
-  
-  .ant-table tbody tr:nth-child(2n+1) {
-    background:#fff;
-  }
-  
-  .ant-table .ant-checkbox-inner {
-    width:18px;
-    height:18px;
-  }
-  
-  .ant-table .ant-checkbox-checked .ant-checkbox-inner {
-    border-color:#4d96d1;
-    background-color:#4d96d1;
-  }
-  
-  .ant-table th,.ant-table-body {
-    border-bottom:2px solid #eef0ef;
-  }
-  
-  .ant-pagination-item,.ant-pagination-prev, .ant-pagination-next {
-    border-color:transparent;
-  }
-  
-  .ant-pagination-item-active,.ant-pagination-item:hover,.ant-pagination-prev:hover, .ant-pagination-next:hover {
-    background:#fff;
-    border-color:#9da8ac;
-  }
-  
-  .ant-pagination-item-active a, .ant-pagination-item-active:hover a,.ant-pagination-item a,.ant-pagination-item:hover a,.ant-pagination-prev a, .ant-pagination-next a,.ant-pagination-prev:hover a, .ant-pagination-next:hover a{
-    color:#8e8e8e;
-  }
-  
-  .ant-pagination-disabled a,.ant-pagination-disabled:hover a{
-    color:#e0e0e0;
-  }
-  
-  .ant-pagination-disabled:hover {
-    border-color:transparent;
-  }
-  
-  .ant-pagination-jump-next,.ant-pagination-jump-prev {
-    color:#e2e2e2;
-  }
-  
-  .ant-pagination-jump-prev:hover:after, .ant-pagination-jump-next:hover:after {
-    color:#8e8e8e;
-  }
-  
-  .ant-table thead tr:hover {
-    background:transparent;
-  }
-  
-  .ant-table .ant-checkbox-checked .ant-checkbox-inner:after {
-    left: 6px;
-    top: 3px;
-  }
-  
-  .ant-table th {
-    &.ant-table-column-sort {
-      color: #F4BA4A !important;
-      border-bottom: 2px solid #F4BA4A !important;
-      cursor:pointer;
-      background: #fff;
+  .antc-table{
+    .ant-table table {
+      table-layout: fixed;
     }
-    .anticon-filter {
-      border-style: solid;
-      border-color: transparent;
-      border-width: 5px 10px 10px 5px;
+    
+    .ant-table th {
+      background:transparent;
+      color:#636768;
+      padding: 9px !important;
     }
-  }
+    
+    .ant-table td {
+      border-bottom:none;
+      color:#75797c;
+      word-break: break-all;
+      max-width: 260px;
+    }
+    
+    .ant-table th.no-wrap,
+    .ant-table td.no-wrap {
+      width: 1% !important;
+      white-space: nowrap;
+    }
+    
+    .ant-table td,.ant-table th {
+      border-right:1px dashed #edf1f2 !important;
+    }
   
-  .ant-table {
-    .has-filter {
-      cursor:pointer;
+    //将复选框列的边框隐藏
+    .ant-table td.ant-table-selection-column,
+    .ant-table th.ant-table-selection-column {
+        border-right: none!important;
     }
-    .filter-active {
+    .ant-table td:last-child,.ant-table th:last-child {
+      border-right:none !important;
+    }
+    
+    .ant-table tbody tr:nth-child(2n) {
+      background:#f8f9fb;
+    }
+    
+    .ant-table tbody tr:nth-child(2n+1) {
+      background:#fff;
+    }
+    
+    .ant-table .ant-checkbox-inner {
+      width:18px;
+      height:18px;
+    }
+    
+    .ant-table .ant-checkbox-checked .ant-checkbox-inner {
+      border-color:#4d96d1;
+      background-color:#4d96d1;
+    }
+    
+    .ant-table th,.ant-table-body {
+      border-bottom:2px solid #eef0ef;
+    }
+    
+    .ant-pagination-item,.ant-pagination-prev, .ant-pagination-next {
+      border-color:transparent;
+    }
+    
+    .ant-pagination-item-active,.ant-pagination-item:hover,.ant-pagination-prev:hover, .ant-pagination-next:hover {
+      background:#fff;
+      border-color:#9da8ac;
+    }
+    
+    .ant-pagination-item-active a, .ant-pagination-item-active:hover a,.ant-pagination-item a,.ant-pagination-item:hover a,.ant-pagination-prev a, .ant-pagination-next a,.ant-pagination-prev:hover a, .ant-pagination-next:hover a{
+      color:#8e8e8e;
+    }
+    
+    .ant-pagination-disabled a,.ant-pagination-disabled:hover a{
+      color:#e0e0e0;
+    }
+    
+    .ant-pagination-disabled:hover {
+      border-color:transparent;
+    }
+    
+    .ant-pagination-jump-next,.ant-pagination-jump-prev {
+      color:#e2e2e2;
+    }
+    
+    .ant-pagination-jump-prev:hover:after, .ant-pagination-jump-next:hover:after {
+      color:#8e8e8e;
+    }
+    
+    .ant-table thead tr:hover {
+      background:transparent;
+    }
+    
+    .ant-table .ant-checkbox-checked .ant-checkbox-inner:after {
+      left: 6px;
+      top: 3px;
+    }
+    
+    .ant-table th {
+      &.ant-table-column-sort {
+        color: #F4BA4A !important;
+        border-bottom: 2px solid #F4BA4A !important;
+        cursor:pointer;
+        background: #fff;
+      }
       .anticon-filter {
-        color: #108ee9;
+        border-style: solid;
+        border-color: transparent;
+        border-width: 5px 10px 10px 5px;
       }
     }
-  }
-  
-  .ant-table-filter-dropdown {
-    min-width: 215px;
-    .custom-filter-input {
-      display: inline-block;
-      vertical-align: middle;
-      margin-left: 15px;
-      padding: 2px 5px;
-      border: 1px solid #d9d9d9;
-      border-radius: 4px;
+    
+    .ant-table {
+      .has-filter {
+        cursor:pointer;
+      }
+      .filter-active {
+        .anticon-filter {
+          color: #108ee9;
+        }
+      }
     }
-    .ant-table-filter-dropdown-btns {
-      display: inline-block;
-      border: none;
-      vertical-align: middle;
-      padding: 15px;
+    
+    .ant-table-filter-dropdown {
+      min-width: 215px;
+      .custom-filter-input {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 15px;
+        padding: 2px 5px;
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+      }
+      .ant-table-filter-dropdown-btns {
+        display: inline-block;
+        border: none;
+        vertical-align: middle;
+        padding: 15px;
+      }
     }
-  }
-  
-  .splice-table {
-      .handle-empty {
-          .ant-table-empty {
-              margin: 0;
-          }
-          .ant-table-body {
-              height: auto;
-              border-bottom: none;
-          }
-          .ant-table-placeholder {
-              display: none;
-          }
-      }
-      @thead-height: 52px;
-      .hide-tbody {
-          height: @thead-height !important;
-          overflow: hidden;
-          th {
-              height: @thead-height;
-          }
-          .ant-table-tbody {
-              display: table-row-group !important;
-          }
-      }
-      .custom-thead {
-          &:extend(.hide-tbody);
-          &:extend(.handle-empty);
-          table {
-              overflow: hidden;
-          }
-      }
-      .custom-thead-filter {
-          &:extend(.hide-tbody);
-          &:extend(.handle-empty);
-      }
-      .custom-tfoot {
-          &:extend(.hide-tbody);
-          &:extend(.handle-empty);
-          border-top: 2px solid #eef0ef;
-          position: relative;
-          .info-title {
-              position: absolute;
-              font-size: 14px;
-              font-weight: bold;
-              top: 50%;
-              margin-top: -11px;
-          }
-      }
-      .custom-tbody {
-          table {
-              margin-top: -@thead-height;
-          }
-          .ant-table-header {
-              display: none;
-          }
-          .ant-table-thead {
-              th {
-                  height: @thead-height;
-              }
-              display: table-header-group !important;
-          }
-      }
+    
+    .splice-table {
+        .handle-empty {
+            .ant-table-empty {
+                margin: 0;
+            }
+            .ant-table-body {
+                height: auto;
+                border-bottom: none;
+            }
+            .ant-table-placeholder {
+                display: none;
+            }
+        }
+        @thead-height: 52px;
+        .hide-tbody {
+            height: @thead-height !important;
+            overflow: hidden;
+            th {
+                height: @thead-height;
+            }
+            .ant-table-tbody {
+                display: table-row-group !important;
+            }
+        }
+        .custom-thead {
+            &:extend(.hide-tbody);
+            &:extend(.handle-empty);
+            table {
+                overflow: hidden;
+            }
+        }
+        .custom-thead-filter {
+            &:extend(.hide-tbody);
+            &:extend(.handle-empty);
+        }
+        .custom-tfoot {
+            &:extend(.hide-tbody);
+            &:extend(.handle-empty);
+            border-top: 2px solid #eef0ef;
+            position: relative;
+            .info-title {
+                position: absolute;
+                font-size: 14px;
+                font-weight: bold;
+                top: 50%;
+                margin-top: -11px;
+            }
+        }
+        .custom-tbody {
+            table {
+                margin-top: -@thead-height;
+            }
+            .ant-table-header {
+                display: none;
+            }
+            .ant-table-thead {
+                th {
+                    height: @thead-height;
+                }
+                display: table-header-group !important;
+            }
+        }
+    }
   }
 }

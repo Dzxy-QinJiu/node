@@ -162,47 +162,55 @@ class OPLATE_CUSTOMER_ANALYSIS extends React.Component {
         const statisticsColumns = [{
             dataIndex: 'last_month',
             title: '上月',
-            width: '10%',
+            width: 50,
+            align: 'right',
             render: this.trialQualifiedNumRender.bind(this, 'last_month_customer_ids'),
         }, {
             dataIndex: 'this_month',
             title: '本月',
-            width: '10%',
+            width: 50,
+            align: 'right',
             render: this.trialQualifiedNumRender.bind(this, 'this_month_customer_ids'),
         }, {
             dataIndex: 'this_month_new',
             title: '本月新增',
-            width: '10%',
+            width: 75,
+            align: 'right',
             render: this.trialQualifiedNumRender.bind(this, 'this_month_new_customer_ids'),
         }, {
             dataIndex: 'this_month_lose',
             title: '本月流失',
-            width: '10%',
+            width: 75,
+            align: 'right',
             render: this.trialQualifiedNumRender.bind(this, 'this_month_lose_customer_ids'),
         }, {
             dataIndex: 'this_month_back',
             title: '本月回流',
-            width: '10%',
+            width: 75,
+            align: 'right',
             render: this.trialQualifiedNumRender.bind(this, 'this_month_back_customer_ids'),
         }, {
             dataIndex: 'this_month_add',
             title: '本月比上月净增',
-            width: '15%',
+            width: 116,
+            align: 'right',
         }, {
             dataIndex: 'highest',
             title: '历史最高',
-            width: '10%',
+            width: 75,
+            align: 'right',
         }, {
             dataIndex: 'this_month_add_highest',
             title: '本月比历史最高净增',
-            width: '20%',
+            width: 152,
+            align: 'right',
         }];
 
         //表格列
         let columns = _.cloneDeep(statisticsColumns);
         columns.unshift({
             title: '团队',
-            width: '10%',
+            width: 80,
             dataIndex: 'team_name',
         });
 

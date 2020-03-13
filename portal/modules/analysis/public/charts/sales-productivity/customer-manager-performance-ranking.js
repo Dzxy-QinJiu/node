@@ -46,24 +46,29 @@ export function getCustomerManagerPerformanceRankingChart() {
             }, {
                 title: Intl.get('common.gross.margin.score.of.newly.signed.refund', '新签回款毛利分数'),
                 dataIndex: 'new_gross_profit_performance',
+                align: 'right',
                 width: '10%',
             }, {
                 title: Intl.get('common.personal.contribution.score', '个人贡献分数'),
                 dataIndex: 'contribution_performance',
+                align: 'right',
                 width: '10%',
             }, {
                 title: Intl.get('common.collection.of.gross.profit.margin.score', '回款毛利率分数'),
                 dataIndex: 'gross_profit_rate_performance',
+                align: 'right',
                 width: '10%',
             }, {
                 title: Intl.get('common.total.points', '总分'),
                 dataIndex: 'performance',
                 sorter: sorter.bind(null, 'performance'),
+                align: 'right',
                 width: '10%',
             }, {
                 title: Intl.get('common.rank', '名次'),
                 dataIndex: 'order',
                 sorter: sorter.bind(null, 'order'),
+                align: 'right',
                 width: '10%',
             }],
         },
@@ -100,6 +105,7 @@ function onRankingRowClick(record) {
         {
             title: Intl.get('common.the.numerical', '数值'),
             dataIndex: 'value',
+            align: 'right',
             width: '10%'
         },
     ];
@@ -126,34 +132,43 @@ function getPerformanceDetailContent(result) {
     const newGrossProfitColumns = [{
         title: Intl.get('common.personal.newly.signed.gross.profit', '个人新签回款毛利') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'new_repayment_gross_profit',
+        align: 'right',
     }, {
         title: Intl.get('common.maximum.gross.margin.of.newly.signed.payment', '新签回款毛利最大值') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'max',
+        align: 'right',
     }];
 
     const contributionColumns = [{
         title: Intl.get('common.personal.collection.gross.profit', '个人回款毛利') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'repayment_gross_profit',
+        align: 'right',
     }, {
         title: Intl.get('common.lost.contract.amount', '流失合同金额') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'churn_amount',
+        align: 'right',
     }, {
         title: Intl.get('common.personal.sales.expenses', '个人销售费用') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'cost',
+        align: 'right',
     }, {
         title: Intl.get('common.maximum.personal.contribution', '个人贡献最大值') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'max',
+        align: 'right',
     }];
 
     const grossProfitRateColumns = [{
         title: Intl.get('common.personal.collection', '个人回款') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'repayment_amount',
+        align: 'right',
     }, {
         title: Intl.get('common.personal.collection.gross.profit', '个人回款毛利') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'repayment_gross_profit',
+        align: 'right',
     }, {
         title: Intl.get('common.the.maximum.gross.profit.rate', '回款毛利率最大值') + '（%）',
         dataIndex: 'max',
+        align: 'right',
     }];
 
     return (
@@ -245,6 +260,7 @@ function showMetricsDetail(metricsKey, metricsTitle) {
             }, {
                 dataIndex: 'cost',
                 title: Intl.get('contract.133', '费用'),
+                align: 'right',
                 render: amountValueRender
             }, {
                 dataIndex: 'type',
@@ -272,18 +288,22 @@ function showMetricsDetail(metricsKey, metricsTitle) {
             }, {
                 dataIndex: 'contract_amount',
                 title: Intl.get('contract.25', '合同额'),
+                align: 'right',
                 render: amountValueRender
             }, {
                 dataIndex: 'gross_profit',
                 title: Intl.get('contract.27', '合同毛利'),
+                align: 'right',
                 render: amountValueRender
             }, {
                 dataIndex: 'total_amount',
                 title: Intl.get('contract.28', '回款额'),
+                align: 'right',
                 render: amountValueRender
             }, {
                 dataIndex: 'total_gross_profit',
                 title: Intl.get('contract.29', '回款毛利'),
+                align: 'right',
                 render: amountValueRender
             }, {
                 dataIndex: 'label',

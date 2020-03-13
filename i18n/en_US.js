@@ -760,6 +760,7 @@ var en_US = {
     'user.login.last.month': 'The latest a month', // 近一月
     'user.login.last.week': 'The latest a week', // 近一周
     'user.login.last.title': 'Active statistics of {title}', // {title}的活跃统计
+    'user.login.analysis.filter.config.ip': 'Filter configuration IP', // 过滤配置IP
     'user.login.last.failed': 'Failed to get user recent login statistic', // 获取用户最近登录统计信息失败
     'user.login.analysis.user': 'Users analysis',//用户分析
     'user.login.analysis.signed': 'Signed users analysis',//签约用户分析
