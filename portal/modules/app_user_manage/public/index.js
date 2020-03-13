@@ -37,7 +37,7 @@ import {RETRY_GET_APP} from './util/consts';
 import Trace from 'LIB_DIR/trace';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {getIntegrationConfig, getProductList, uniqueObjectOfArray} from 'PUB_DIR/sources/utils/common-data-util';
-import {isOplateUser, isSalesRole, approveAppConfigTerminal} from 'PUB_DIR/sources/utils/common-method-util';
+import {isOplateUser, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';

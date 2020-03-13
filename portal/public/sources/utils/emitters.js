@@ -290,3 +290,8 @@ export { selectedAppEmitter };
 const showWiningClueEmitter = new EventEmitter();
 showWiningClueEmitter.SHOW_WINNING_CLUE = 'show_winning_clue'; //
 export { showWiningClueEmitter };
+
+// 多终端筛选
+const terminalsSelectorEmitter = new EventEmitter();
+terminalsSelectorEmitter.SELECT_TERMINAL = 'select_terminal'; //
+export { terminalsSelectorEmitter };
