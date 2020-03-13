@@ -129,4 +129,91 @@ exports.deleteCustomerPoolConfig = function(reqData) {
     return Deferred.promise();
 };
 
+//获取自动释放配置
+exports.getCrpAutoReleaseConfigs = function(queryObj) {
+    let url = '/rest/customer_pool/configs/autorelease';
+    let isFirst = true;
+    _.each(queryObj, (value, key) => {
+        if (isFirst) {
+            url += `?${key}=${value}`;
+            isFirst = false;
+        } else {
+            url += `&${key}=${value}`;
+        }
+    });
+    var Deferred = $.Deferred();
+    $.ajax({
+        url,
+        dataType: 'json',
+        type: 'get',
+        data: {},
+        success: function(added) {
+            Deferred.resolve(added);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+//新增自动释放配置
+let addCrpAutoReleaseConfigAjax = null;
+exports.addCrpAutoReleaseConfig = function(reqData) {
+    var Deferred = $.Deferred();
+    addCrpAutoReleaseConfigAjax && addCrpAutoReleaseConfigAjax.abort();
+    addCrpAutoReleaseConfigAjax = $.ajax({
+        url: '/rest/customer_pool/config/autorelease',
+        dataType: 'json',
+        type: 'post',
+        data: reqData,
+        success: function(added) {
+            Deferred.resolve(added);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+//修改自动释放配置
+let updateCrpAutoReleaseConfigAjax = null;
+exports.updateCrpAutoReleaseConfig = function(reqData) {
+    var Deferred = $.Deferred();
+    updateCrpAutoReleaseConfigAjax && updateCrpAutoReleaseConfigAjax.abort();
+    updateCrpAutoReleaseConfigAjax = $.ajax({
+        url: '/rest/customer_pool/config/autorelease',
+        dataType: 'json',
+        type: 'put',
+        data: reqData,
+        success: function(added) {
+            Deferred.resolve(added);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+//删除自动释放配置
+let deleteCrpAutoReleaseConfigAjax = null;
+exports.deleteCrpAutoReleaseConfig = function(reqData) {
+    var Deferred = $.Deferred();
+    deleteCrpAutoReleaseConfigAjax && deleteCrpAutoReleaseConfigAjax.abort();
+    deleteCrpAutoReleaseConfigAjax = $.ajax({
+        url: '/rest/customer_pool/config/autorelease/' + reqData.id,
+        dataType: 'json',
+        type: 'delete',
+        data: {},
+        success: function(added) {
+            Deferred.resolve(added);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
 

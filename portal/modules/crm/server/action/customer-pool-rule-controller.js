@@ -78,3 +78,39 @@ exports.deleteCustomerPoolConfig = function(req, res) {
             res.status(500).json(err.message);
         });
 };
+
+//获取自动释放配置信息
+exports.getCrpAutoReleaseConfigs = function(req, res) {
+    cprService.getCrpAutoReleaseConfigs(req, res).on('success', function(data) {
+        res.json(data);
+    }).on('error', function(err) {
+        res.status(500).json(err.message);
+    });
+};
+
+//新增自动释放配置
+exports.addCrpAutoReleaseConfig = function(req, res) {
+    cprService.addCrpAutoReleaseConfig(req, res).on('success', function(data) {
+        res.json(data);
+    }).on('error', function(err) {
+        res.status(500).json(err.message);
+    });
+};
+
+//修改自动释放配置
+exports.updateCrpAutoReleaseConfig = function(req, res) {
+    cprService.updateCrpAutoReleaseConfig(req, res).on('success', function(data) {
+        res.json(data);
+    }).on('error', function(err) {
+        res.status(500).json(err.message);
+    });
+};
+
+//删除自动释放配置
+exports.deleteCrpAutoReleaseConfig = function(req, res) {
+    cprService.deleteCrpAutoReleaseConfig(req, res).on('success', function(data) {
+        res.json(data);
+    }).on('error', function(err) {
+        res.status(500).json(err.message);
+    });
+};

@@ -218,12 +218,12 @@ class CustomerPoolRuleForm extends React.Component{
                             onConfirm={this.handleDelete}
                         >
                             <i
-                                className="iconfont icon-delete"
+                                className="iconfont icon-delete handle-btn-item"
                                 title={Intl.get('common.delete', '删除')}
                             />
                         </Popconfirm>
                         <i
-                            className="iconfont icon-edit-btn"
+                            className="iconfont icon-edit-btn handle-btn-item"
                             title={Intl.get('common.edit', '编辑')}
                             onClick={this.handleEdit}
                         />

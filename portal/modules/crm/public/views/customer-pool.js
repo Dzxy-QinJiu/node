@@ -162,6 +162,8 @@ class CustomerPool extends React.Component {
                             filterParams.contact_end = moment().valueOf() - DAY_TIME.FIFTEEN_DAY;
                         } else if (val === 'thirty_uncontact') {
                             filterParams.contact_end = moment().valueOf() - DAY_TIME.THIRTY_DAY;
+                        }else if(val === 'followup') {//需联合跟进
+                            filterParams.followup = true;
                         }
                     } else {//高级筛选
                         filterParams[key] = val;
@@ -413,6 +415,10 @@ class CustomerPool extends React.Component {
                     //线索、转出、已回访标签不可操作的标签，在immutable_labels属性中，和普通标签一起展示
                     if (_.isArray(record.immutable_labels) && record.immutable_labels.length) {
                         tagsArray = record.immutable_labels.concat(tagsArray);
+                    }
+                    //是否为联合跟进类型，加上"需联合跟进"标签
+                    if(_.has(record, 'followup') && _.get(record, 'followup')) {
+                        tagsArray.push(Intl.get('crm.pool.need.joint.followup', '需联合跟进'));
                     }
                     var tags = tagsArray.map(function(tag, index) {
                         return (<Tag key={index}>{tag}</Tag>);

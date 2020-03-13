@@ -16,6 +16,14 @@ var cprRestApis = {
     updateCustomerPoolConfig: '/customerpool/resource/config',
     // 删除客户池配置
     deleteCustomerPoolConfigById: '/customerpool/resource/config/:id',
+    // 获取自动释放配置
+    getCrpAutoReleaseConfigs: '/customerpool/resource/configs/autorelease',
+    // 新增自动释放配置
+    addCrpAutoReleaseConfig: '/customerpool/resource/config/autorelease',
+    // 修改自动释放配置
+    updateCrpAutoReleaseConfig: '/customerpool/resource/config/autorelease',
+    // 删除自动释放配置
+    deleteCrpAutoReleaseConfig: '/customerpool/resource/config/autorelease/:id',
 };
 exports.urls = cprRestApis;
 
@@ -76,6 +84,46 @@ exports.deleteCustomerPoolConfig = function(req, res) {
     return restUtil.authRest.del(
         {
             url: cprRestApis.deleteCustomerPoolConfigById.replace(':id', req.params.id),
+            req: req,
+            res: res
+        }, null);
+};
+
+//获取自动释放配置
+exports.getCrpAutoReleaseConfigs = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: cprRestApis.getCrpAutoReleaseConfigs,
+            req: req,
+            res: res
+        }, req.query);
+};
+
+//新增自动释放配置
+exports.addCrpAutoReleaseConfig = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: cprRestApis.addCrpAutoReleaseConfig,
+            req: req,
+            res: res
+        }, req.body);
+};
+
+//修改自动释放配置
+exports.updateCrpAutoReleaseConfig = function(req, res) {
+    return restUtil.authRest.put(
+        {
+            url: cprRestApis.updateCrpAutoReleaseConfig,
+            req: req,
+            res: res
+        }, req.body);
+};
+
+//删除自动释放配置
+exports.deleteCrpAutoReleaseConfig = function(req, res) {
+    return restUtil.authRest.del(
+        {
+            url: cprRestApis.deleteCrpAutoReleaseConfig.replace(':id', req.params.id),
             req: req,
             res: res
         }, null);
