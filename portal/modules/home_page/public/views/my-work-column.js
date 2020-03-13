@@ -1226,9 +1226,14 @@ class MyWorkColumn extends React.Component {
         };
 
         const tpl = _.get(this.state.tplList, '[0]', {});
+        const { isCommonSales } = userData.getUserData();
 
         if (_.isEmpty(tpl)) {
-            item.workObj = { name: '启用报告可以汇总销售日常工作' };
+            if (!isCommonSales) {
+                item.workObj = { name: '启用报告可以汇总销售日常工作' };
+
+                workList.push(this.renderWorkCard(item));
+            }
         } else {
             item.workObj = { name: tpl.name };
 
@@ -1243,9 +1248,9 @@ class MyWorkColumn extends React.Component {
                     history.push('analysis/report/daily-report');
                 };
             }
-        }
 
-        workList.push(this.renderWorkCard(item));
+            workList.push(this.renderWorkCard(item));
+        }
     }
 
     showAddSchedulePanel = (event) => {
