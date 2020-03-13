@@ -843,6 +843,7 @@ var en_US = {
     'user.position.input.name.search': 'Search for organization', // 输入组织名称搜索
     'user.position.number.tips': 'Plese enter phone order', // 请输入座席号
     'user.position.select.user': 'Please select user', // 请选择用户
+    'team.position.select.team': 'Please select team',//请选择团队
     'user.third.thirdapp.consts.sina': 'Sina Weibo',//新浪微博',
     'user.third.thirdapp.consts.tencent': 'Tencent Weibo',//腾讯微博',
     'user.permission.show': 'spread particular permission', //'展开具体权限',
@@ -1406,6 +1407,7 @@ var en_US = {
     'user.apply.change.status.false': 'disable application', // 申请禁用应用
     'user.apply.change.status.true': 'enable application', // 申请启用应用
     'user.apply.presenter': 'presenter', // 申请人
+    'user.apply.team': 'The team of applicant',//申请人所属团队
     'user.apply.id': 'Account apply', // 账号申请
     'user.apply.no.match.retry': 'no match apply list', // 暂无符合查询条件的用户申请
     'user.apply.no.apply': 'User applications that do not yet need to be approved',//还没有需要审批的用户申请
@@ -3607,7 +3609,6 @@ var en_US = {
     'apply.add.condition.less.and.equal': 'Less than or equal to',//小于等于
     'apply.add.condition.equal': 'equal',//等于
     'apply.add.condition.within': 'Between',//介于
-    'apply.condition.meet.rule': 'To meet the conditions',//满足条件
     'apply.condition.apply.approve': 'Approval Process',//审批流程
     'apply.condition.item.add.cc': 'Cc',//抄送人
     'apply.condition.item.money': 'Amount',//金额
@@ -3795,6 +3796,7 @@ var en_US = {
     'user.score.total.days': 'Total number of days',//总天数
     'user.score.choose.interval': 'Please select the period',//请选择周期
     'apply.approve.user.select': 'User select',//用户选择
+    'apply.approve.team.select': 'Team select',//团队选择
     // 引导流程
     'guide.add.customer.title': 'Add your customer',//添加您的客户
     'guide.add.customer.des': 'After adding customers, you can easily follow up with your customers',//添加客户后，可以轻松跟进您的客户
