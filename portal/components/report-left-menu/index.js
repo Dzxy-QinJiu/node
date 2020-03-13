@@ -4,7 +4,8 @@
 
 require('./style.less');
 import {NavLink} from 'react-router-dom';
-import { getTplList } from 'MOD_DIR/daily-report/utils';
+import { getTplList, showReportPanel } from 'MOD_DIR/daily-report/utils';
+import { VIEW_TYPE } from 'MOD_DIR/daily-report/consts';
 
 const menuUtil = require('PUB_DIR/sources/utils/menu-util');
 
@@ -45,10 +46,16 @@ class ReportLeftMenu extends React.Component {
         });
     }
 
+    configReport() {
+        showReportPanel({
+            currentView: VIEW_TYPE.REPORT_LIST,
+        });
+    }
+
     render() {
         return (
             <div className='report-left-menu'>
-                <span>配置报告</span>
+                <span onClick={this.configReport}>配置报告</span>
                 <ul>
                     {_.map(this.state.subMenus, menuItem => (
                         <li>
