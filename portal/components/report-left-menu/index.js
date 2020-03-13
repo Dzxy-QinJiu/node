@@ -5,6 +5,7 @@
 require('./style.less');
 import {NavLink} from 'react-router-dom';
 import { getTplList, showReportPanel } from 'MOD_DIR/daily-report/utils';
+import userData from 'PUB_DIR/sources/user-data';
 
 const menuUtil = require('PUB_DIR/sources/utils/menu-util');
 
@@ -46,6 +47,8 @@ class ReportLeftMenu extends React.Component {
     }
 
     render() {
+        const { isCommonSales } = userData.getUserData();
+
         return (
             <div className='report-left-menu'>
                 <ul>
@@ -60,7 +63,10 @@ class ReportLeftMenu extends React.Component {
                         </li>
                     ))}
                 </ul>
-                <div onClick={showReportPanel} style={{marginTop: 100, fontSize: 12, textAlign: 'center', cursor: 'pointer'}}><i className="iconfont icon-nav-setting sidebar-bottom-icon"></i> 报告管理</div>
+
+                {isCommonSales ? null : (
+                    <div onClick={showReportPanel} style={{marginTop: 100, fontSize: 12, textAlign: 'center', cursor: 'pointer'}}><i className="iconfont icon-nav-setting sidebar-bottom-icon"></i> 报告管理</div>
+                )}
             </div>
         );
     }
