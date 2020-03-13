@@ -24,6 +24,7 @@ import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 const session = storageUtil.session;
 const { setWebsiteConfigModuleRecord, getWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
 import WinningClue from '../winning-clue';
+import Trace from 'LIB_DIR/trace';
 
 //需要加引导的模块
 const schedule_menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
@@ -745,6 +746,11 @@ var NavSidebar = createReactClass({
     },
 
     handleVisibleChange(visible) {
+        if (visible) {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.winning-clue'), '菜单中查看领线索活动');
+        } else {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.winning-clue'), '菜单中取消查看领线索活动');
+        }
         this.setState({
             isShowWinningClueContent: visible
         }, () => {
