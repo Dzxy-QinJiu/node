@@ -52,7 +52,6 @@ export default function(WrappedComponent) {
         save() {
             this.wrappedComponent.validateFields((err, values) => {
                 if (!err) {
-                    console.log(values);
                     _.each(values, (value, key) => {
                         if (_.isUndefined(value)) delete values[key];
                     });
@@ -69,7 +68,6 @@ export default function(WrappedComponent) {
 
                     const postData = _.extend({}, tplData, values);
 
-                    console.log(postData);//return
                     saveTpl(postData, result => {});
                     //hideReportPanel()
                 }
