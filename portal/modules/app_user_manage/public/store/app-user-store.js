@@ -6,6 +6,7 @@ var hasPrivilege = require('../../../../components/privilege/checker').hasPrivil
 import { storageUtil } from 'ant-utils';
 import { packageTry } from 'LIB_DIR/func';
 import publicPrivilege from 'PUB_DIR/privilege-const';
+import {approveAppConfigTerminal} from 'PUB_DIR/sources/utils/common-method-util';
 //app用户的store
 function AppUserStore() {
     this.resetState();
@@ -99,6 +100,8 @@ AppUserStore.prototype.resetState = function() {
     //键值对存储结构 user_type=xxx   outdate=xxx   user_status=xxx customer_unknown=xxx
     this.uemFilterFieldMap = {};
     this.isShowBatchChangePanel = false; // 是否显示批量变更面板，默认不显示
+    this.selectedAppTerminals = []; // 选择应用的多终端信息
+    this.terminal_id = ''; // 默认选中全部终端类型
 };
 //恢复初始值
 AppUserStore.prototype.setInitialData = function() {
@@ -221,8 +224,18 @@ AppUserStore.prototype.setLastUserId = function(userId) {
     //切换分页的时候，清除刚才选中的行
     this.clearSelectedRows();
 };
+// 设置选中的多终端信息
+AppUserStore.prototype.setSelectedAppTerminals = function(terminalId) {
+    this.terminal_id = terminalId;
+    this.lastUserId = '';
+    //切换应用的时候，清除刚才选中的行
+    this.clearSelectedRows();
+};
+
 //设置选中的appid
-AppUserStore.prototype.setSelectedAppId = function(appId) {
+AppUserStore.prototype.setSelectedAppId = function(appInfoObj) {
+    let appList = _.get(appInfoObj, 'appList');
+    let appId = _.get(appInfoObj, 'appId');
     var oldSelectedAppId = this.selectedAppId;
     this.selectedAppId = appId;
     ShareObj.app_id = this.selectedAppId;
@@ -232,7 +245,13 @@ AppUserStore.prototype.setSelectedAppId = function(appId) {
         let obj = AppUserUtil.getLocalStorageObj('logViewAppId',this.selectedAppId );
         storageUtil.local.set(AppUserUtil.saveSelectAppKeyUserId, JSON.stringify(obj));
     }
+
+    if (!_.isEmpty(appList)) {
+        this.selectedAppTerminals = approveAppConfigTerminal(appId, appList);
+    }
+
     this.lastUserId = '';
+    this.terminal_id = '';
     //切换应用的时候，清除刚才选中的行
     this.clearSelectedRows();
     //如果是切换到全部应用，则清除筛选条件

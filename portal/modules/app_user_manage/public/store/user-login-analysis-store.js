@@ -6,7 +6,7 @@ function UserLoginAnalysisStore(){
     this.selectedLogAppId = '';
     this.userIndicator = [];
     // 选择产品对应的终端类型
-    this.selectAppTerminals = [];
+    this.selectAppTerminals = {};
     this.appTerminalType = ''; // 应用终端类型，默认全部
     this.userEngagementScore = [];
     this.userBasicScore = [];
@@ -74,26 +74,13 @@ UserLoginAnalysisStore.prototype.getSingleUserAppList = function({appId,appList}
         let selectedAppId = this.selectedLogAppId || appList[0].app_id;
         let matchSelectApp = _.find(appList, item => item.app_id === selectedAppId);
         if (matchSelectApp) {
-            this.selectAppTerminals = matchSelectApp.terminals || [];
+            this.selectAppTerminals = {
+                [selectedAppId]: matchSelectApp.terminals || []
+            };
         }
     }
 };
 
-UserLoginAnalysisStore.prototype.setSelectedAppTerminals = function(appId){
-    let matchSelectApp = _.find(this.userOwnAppArray, item => item.app_id === appId);
-    if (matchSelectApp) {
-        this.selectAppTerminals = matchSelectApp.terminals || [];
-    }
-};
-
-UserLoginAnalysisStore.prototype.setAppTerminalsType = function(type){
-    this.appTerminalType = type;
-};
-
-UserLoginAnalysisStore.prototype.setSelectedAppId = function(appId){
-    this.selectedLogAppId = appId;
-    ShareObj.share_differ_user_keep_app_id = this.selectedLogAppId;
-};
 UserLoginAnalysisStore.prototype.getUserScoreIndicator = function(result){
     this.userIndicator = _.get(result,'list',[]);
 };

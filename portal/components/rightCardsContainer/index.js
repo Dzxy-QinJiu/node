@@ -2,7 +2,6 @@
  * Created by wangliping on 2016/1/6.
  */
 
-var React = require('react');
 var language = require('../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./rightCardsContainer-es_VE.less');
