@@ -57,7 +57,7 @@
   "rules": {
     /**react**/
     //防止在React组件定义中丢失props验证
-    "react/prop-types": 0,
+    "react/prop-types": 2,
     "react/no-string-refs": 1,
     "react/no-find-dom-node": 0,
     //防止在React组件定义中丢失displayName
