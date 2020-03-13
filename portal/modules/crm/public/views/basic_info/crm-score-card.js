@@ -8,7 +8,6 @@ import DetailCard from 'CMP_DIR/detail-card';
 import { AntcDatePicker as DatePicker } from 'antc';
 import classNames from 'classnames';
 import crmAjax from '../../ajax';
-import crmAction from '../../action/crm-actions';
 import {AntcChart} from 'antc';
 import {Tag,Popover, Icon} from 'antd';
 import history from 'PUB_DIR/sources/history';
@@ -124,12 +123,12 @@ class CrmScoreCard extends React.Component {
         });
     }
 
-    toggleScoreDetail(e) {
-        Trace.traceEvent(e, this.state.isExpandDetail ? '收起客户分数详情' : '展开客户分数详情');
+    toggleScoreDetail(isExpandDetail) {
         //展开历史分数时，重置时间并重新获取数据
         if (!this.state.isExpandDetail) {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)), '展开客户分数详情');
             this.setState({
-                isExpandDetail: !this.state.isExpandDetail,
+                isExpandDetail: isExpandDetail,
                 timeType: 'year',
                 startTime: moment().startOf('year').valueOf(),//默认展示今年的历史趋势
                 endTime: moment().valueOf()
@@ -137,7 +136,8 @@ class CrmScoreCard extends React.Component {
                 this.getHistoryScoreList();
             });
         } else {//收起历史分数
-            this.setState({isExpandDetail: !this.state.isExpandDetail});
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)), '收起客户分数详情');
+            this.setState({isExpandDetail});
         }
     }
 
@@ -237,11 +237,6 @@ class CrmScoreCard extends React.Component {
 
     renderScoreTitle() {
         const customerScore = this.state.customerScore;
-        const expandIconCls = classNames('iconfont', {
-            'icon-down-twoline handle-btn-item': !this.state.isExpandDetail,
-            'icon-up-twoline handle-btn-item': this.state.isExpandDetail,
-        });
-        const expandIconTip = this.state.isExpandDetail ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('crm.basic.detail.show', '展开详情');
         return (
             <div className="crm-score-title">
                 <span className="crm-score-label">{Intl.get('crm.score.label', '客户评分')}:</span>
@@ -250,24 +245,34 @@ class CrmScoreCard extends React.Component {
                         {Intl.get('crm.score.text', '{score}分', {score: customerScore})}
                         <Popover 
                             content={this.scoreExplain()}
-                            trigger='click'
                             placement="right">
                             <Icon type="question-circle-o"></Icon>
                         </Popover>
                     </span> : ''}
                 </span>
-                <span className={expandIconCls} title={ expandIconTip}
-                    onClick={this.toggleScoreDetail.bind(this)}/>
             </div>);
     }
 
     render() {
+        let content = null;
+        let titleBottomBorderNone = true;
         if (this.state.isExpandDetail) {
-            return (<DetailCard className="crm-score-card-container" title={this.renderScoreTitle()}
-                content={this.renderScoreDetail()}/>);
-        } else {
-            return (<DetailCard className="crm-score-card-container" content={this.renderScoreTitle()}/>);
+            titleBottomBorderNone = false;
+            content = this.renderScoreDetail();
         }
+        const crmScoreCardCls = classNames('crm-score-card-container', {
+            'default-score-card-container': !this.state.isExpandDetail
+        });
+        return (
+            <DetailCard
+                className={crmScoreCardCls}
+                title={this.renderScoreTitle()}
+                content={content}
+                titleBottomBorderNone={titleBottomBorderNone}
+                isShowToggleBtn={true}
+                handleToggleDetail={this.toggleScoreDetail.bind(this)}
+            />
+        );
     }
 }
 CrmScoreCard.propTypes = {

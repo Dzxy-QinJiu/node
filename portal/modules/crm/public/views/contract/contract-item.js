@@ -1,4 +1,3 @@
-var React = require('react');
 import DetailCard from 'CMP_DIR/detail-card';
 import { AntcTable, AntcValidity } from 'antc';
 import { num as antUtilsNum } from 'ant-utils';
@@ -36,13 +35,13 @@ class ContractItem extends React.Component {
         }
     }
 
-    toggleContractDetail = (event) => {
+    toggleContractDetail = (isExpandDetail) => {
         let formData = this.state.formData;
-        formData.isShowAllContractInfo = !formData.isShowAllContractInfo;
+        formData.isShowAllContractInfo = isExpandDetail;
         if (formData.isShowAllContractInfo) {
-            Trace.traceEvent(event, '点击展开详情');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击展开详情');
         } else {
-            Trace.traceEvent(event, '点击收起详情');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击收起详情');
         }
         this.setState({formData});
     };
@@ -96,14 +95,6 @@ class ContractItem extends React.Component {
             'contract-review': contract.stage === '审核',
             'contract-filed': contract.stage === '归档'
         });
-        let contractClass = classNames('iconfont',{
-            'icon-down-twoline handle-btn-item': !contract.isShowAllContractInfo,
-            'icon-up-twoline handle-btn-item': contract.isShowAllContractInfo
-
-        });
-        let contractTitle = contract.isShowAllContractInfo ? Intl.get('crm.basic.detail.hide', '收起详情') :
-            Intl.get('crm.basic.detail.show', '展开详情');
-
         return (
             <div className='contract-title'>
                 {contract.stage === '待审' && !contract.num ? (
@@ -139,7 +130,6 @@ class ContractItem extends React.Component {
                         )
                     }
                 </span>
-                <span className={contractClass} title={contractTitle} onClick={this.toggleContractDetail}/>
             </div>
         );
     };
@@ -431,6 +421,9 @@ class ContractItem extends React.Component {
                 content={this.renderContractContent()}
                 bottom={this.renderContractBottom()}
                 className={containerClassName}
+                isShowToggleBtn={true}
+                isExpandDetail={contract.isShowAllContractInfo}
+                handleToggleDetail={this.toggleContractDetail.bind(this)}
             />
         );
     }

@@ -165,7 +165,7 @@ ContactStore.prototype.toggleDefaultContact = function(contact) {
     curContact.contact.def_contancts = 'true';
 };
 //展开、收起联系方式
-ContactStore.prototype.toggleContactWay = function(contact) {
-    contact.isExpanded = !contact.isExpanded;
+ContactStore.prototype.toggleContactWay = function(contactData) {
+    contactData.contact.isExpanded = contactData.isExpanded;
 };
 module.exports = alt.createStore(ContactStore, 'ContactStore');

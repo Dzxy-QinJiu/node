@@ -727,18 +727,7 @@ class UserLoginAnalysis extends React.Component {
                                             />
                                         </span>
                                         <p title={app.app_name}>{app.app_name}</p>
-                                        <span className="btn-bar">
-                                            {
-                                                this.state.showDetailMap[app.app_id] ?
-                                                    <span
-                                                        className="iconfont icon-up-twoline handle-btn-item"
-                                                        onClick={this.showAppDetail.bind(this, app, false)}
-                                                    ></span> :
-                                                    <span
-                                                        className="iconfont icon-down-twoline handle-btn-item"
-                                                        onClick={this.showAppDetail.bind(this, app, true)}></span>
-                                            }
-                                        </span>
+
                                         {
                                             /***
                                          *  TODO 由于接口还没有实现，所以暂时隐藏 终端类型筛选
@@ -781,6 +770,9 @@ class UserLoginAnalysis extends React.Component {
                                             </div>
                                         </StatusWrapper>) : null
                                 }
+                                isShowToggleBtn={true}
+                                isExpandDetail={this.state.showDetailMap[app.app_id]}
+                                handleToggleDetail={this.showAppDetail.bind(this, app)}
                             />
                         );
                     })
