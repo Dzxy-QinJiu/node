@@ -214,6 +214,7 @@
         height: 20px;
         line-height: 20px;
         margin-top: 20px;
+        margin-bottom: 10px;
         font-size: 16px;
         >span{
           color: #999;
@@ -266,6 +267,7 @@
       display: flex;
       align-items: center;
       .form-wrap{
+        top: auto;
         bottom: 0;
         margin: auto;
         .register-to-login{
@@ -320,5 +322,11 @@
  }
  #footer .footer-content {
     font-size: 10px;
+  }
+}
+
+@media (max-height: 620px) {
+  #footer {
+    display: none;
   }
 }

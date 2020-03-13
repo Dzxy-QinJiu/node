@@ -18,7 +18,9 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 const logoSrc = require('./image/curtao_logo_white.svg');
 const LAYOUT = {
     COPY_RIGHT_HEIGHT: 46,//底部公司版权信息高度
-    SLOGON_HEIGHT: 48//缩小屏幕后slogon在头部展示时的高度
+    SLOGON_HEIGHT: 48,//缩小屏幕后slogon在头部展示时的高度
+    SHOW_COPPY_RIGHT_HEIGHT: 620, //高度大于600时才展示版权信息
+    SHOW_SLOGON_TOP_WIDTH: 720,//宽度大于720时，slogon在顶部展示
 };
 //注册步骤
 const REGISTER_STEPS = {
@@ -51,9 +53,13 @@ class RegisterPage extends React.Component {
     }
     getFormWrapHeight() {
         // 减去底部版权信息的高度
-        let formWrapHeight = $('body').height() - LAYOUT.COPY_RIGHT_HEIGHT;
-        // slogon在头部展示时，去掉slgon的高度
-        if ($('body').width() < 720) {
+        let formWrapHeight = $('body').height();
+        // 高度大于600才展示版权信息
+        if ($('body').height() > LAYOUT.SHOW_COPPY_RIGHT_HEIGHT) {
+            formWrapHeight -= -LAYOUT.COPY_RIGHT_HEIGHT;
+        }
+        // 宽度小于720时，slogon在头部展示，去掉slgon的高度
+        if ($('body').width() < LAYOUT.SHOW_SLOGON_TOP_WIDTH) {
             formWrapHeight -= LAYOUT.SLOGON_HEIGHT;
         }
         return formWrapHeight;
