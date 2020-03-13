@@ -18,6 +18,7 @@ const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util')
 import {getCertainTypeTooltip} from 'PUB_DIR/sources/utils/common-method-util';
 import history from 'PUB_DIR/sources/history';
 import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
+import {selectedAppEmitter } from 'PUB_DIR/sources/utils/emitters';
 //日历热力图颜色
 const CALENDAR_COLOR = {
     BORDER: '#A2A2A2',
@@ -125,14 +126,6 @@ class UserLoginAnalysis extends React.Component {
         UserLoginAnalysisAction.getLoginUserActiveStatistics(lastLoginParams, type);
         UserLoginAnalysisAction.getUserLoginChartInfo(lastLoginParams);
         UserLoginAnalysisAction.getLoginUserScore(reqData, type);
-    };
-
-    // 选择应用
-    onSelectedAppChange = (appid) => {
-        UserLoginAnalysisAction.resetState();
-        UserLoginAnalysisAction.setSelectedAppId(appid);
-        // 获取用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录次数统计）
-        this.getUserAnalysisData({ appid: appid });
     };
 
     renderLoginFirstLastTime = (loginLast, loginFirst) => {
@@ -606,14 +599,23 @@ class UserLoginAnalysis extends React.Component {
     };
 
     showAppDetail = (app, isShow) => {
+        let appId = _.get(app, 'app_id');
         const showDetailMap = this.state.showDetailMap;
-        showDetailMap[app.app_id] = isShow;
+        showDetailMap[appId] = isShow;
+        let selectAppTerminals = this.state.selectAppTerminals;
+        selectedAppEmitter.emit(selectedAppEmitter.CHANGE_SELECTED_APP, '');
         if (isShow) {
-            UserLoginAnalysisAction.setSelectedAppTerminals(app.app_id);
-            this.getUserAnalysisData({ appid: app.app_id });
+            let matchSelectApp = _.find(this.props.appLists, item => item.app_id === appId);
+            if (matchSelectApp) {
+                selectAppTerminals[appId] = matchSelectApp.terminals || [];
+            }
+            this.getUserAnalysisData({ appid: appId, appTerminalType: '' });
+        } else {
+            selectAppTerminals[appId] =  [];
         }
         this.setState({
-            showDetailMap
+            showDetailMap,
+            selectAppTerminals
         });
     };
     handleSelectDate = (app, value) => {
@@ -723,22 +725,22 @@ class UserLoginAnalysis extends React.Component {
         selectValueMap: {},
         showDetailMap: {},//是否展示app详情的map
         filterIpCheckMap: {}, // 过滤IP
+        selectAppTerminals: {},
         ...this.getStateData()
     };
 
     // 筛选终端类型
-    onSelectTerminalsType = (value) => {
-        UserLoginAnalysisAction.resetState();
+    onSelectTerminalsType = (appId, value) => {
         UserLoginAnalysisAction.setAppTerminalsType(value);
-        this.getUserAnalysisData({ appTerminalType: value });
+        this.getUserAnalysisData({ appid: appId, appTerminalType: value });
     };
 
     // 渲染多终端类型
-    renderAppTerminalsType = () => {
+    renderAppTerminalsType = (app) => {
         return (
             <SelectAppTerminal
-                appTerminals={this.state.selectAppTerminals}
-                handleSelectedTerminal={this.onSelectTerminalsType.bind(this)}
+                appTerminals={this.state.selectAppTerminals[app.app_id]}
+                handleSelectedTerminal={this.onSelectTerminalsType.bind(this, app.app_id)}
             />
         );
     };
@@ -776,19 +778,13 @@ class UserLoginAnalysis extends React.Component {
                                                         onClick={this.showAppDetail.bind(this, app, true)}></span>
                                             }
                                         </span>
-                                        {
-                                            /***
-                                         *  TODO 由于接口还没有实现，所以暂时隐藏 终端类型筛选
-                                         *  {
-                                            this.state.showDetailMap[app.app_id] && _.get(this.state.selectAppTerminals, 'length') ? (
+                                         {
+                                            this.state.showDetailMap[app.app_id] && _.get(this.state.selectAppTerminals[app.app_id], 'length') ? (
                                                 <span className="app-terminals-select">
-                                                    {this.renderAppTerminalsType()}
+                                                    {this.renderAppTerminalsType(app)}
                                                 </span>
                                             ) : null
                                         }
-                                         * */
-                                        }
-
                                     </div>
                                 )}
                                 content={
