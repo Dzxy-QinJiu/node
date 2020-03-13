@@ -3317,7 +3317,9 @@ var en_US = {
     'clue.check.only.clue.phone': 'Failed to check only lead phone',//线索电话唯一性校验失败
     'leave.apply.apartment.apply': 'Supervisor',//上级主管
     'leave.apply.general.apply': 'Distribution sales',//分配销售
+    'apply.approve.distribute.team': 'Distribution team',//分配团队
     'leave.apply.select.assigned.sales': 'Please select the sales to be assigned',//请选择要分配的销售
+    'apply.approve.select.assigned.team': 'Please select the team to be assigned',//请选择要分配的团队
     'schedule.expired.call.time.at': 'at',//于
     'schedule.expired.call.in.phone.num': 'dial your phone number',//拨打过您的电话
     'config.integrated.clue.manage': 'Lead integration',//线索同步
@@ -3423,6 +3425,7 @@ var en_US = {
     'apply.will.select.transfer.approver': 'Please select the person to be approved to be transferred to',//请选择要转给的待审批人
     'apply.will.approve.apply.item': 'Pending person',//待审批人
     'apply.no.relate.user': 'No related members',//无相关成员
+    'apply.no.relate.team': 'No related teams',//无相关团队
     'apply.approve.transfer.failed': 'Failed to transfer apply',//转出申请失败
     'apply.approve.transfer.success': 'Transfer out the application successfully',//转出申请成功
     'apply.approve.upload.empty.file': 'Do not upload empty files!',//不可上传空文件！

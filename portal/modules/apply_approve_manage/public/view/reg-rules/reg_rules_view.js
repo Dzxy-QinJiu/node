@@ -161,9 +161,9 @@ class RegRulesView extends React.Component {
             elem.distributeSales = false;
         }
         if (isVisitApplyFlow(_.get(this, 'props.applyTypeData.type'))) {
-            elem.distributeSalesToVisit = true;
+            elem.releaseCustomerToTeamPool = true;
         } else {
-            elem.distributeSalesToVisit = false;
+            elem.releaseCustomerToTeamPool = false;
         }
         if (isDomainApplyFlow(_.get(this, 'props.applyTypeData.type'))) {
             elem.customerSLDUpdate = true;
@@ -389,8 +389,9 @@ class RegRulesView extends React.Component {
                             {item.assignNextNodeApprover + '' === 'true' ?
                                 <span
                                     className="addition-text">{Intl.get('apply.add.approver.distribute', '指定下一审批人')}</span> : null}
-                            {item.distributeSales + '' === 'true' || item.distributeSalesToVisit + '' === 'true' ? <span
+                            {item.distributeSales + '' === 'true' ? <span
                                 className="addition-text">{Intl.get('leave.apply.general.apply', '分配销售')}</span> : null}
+                            {item.releaseCustomerToTeamPool + '' === 'true' ? Intl.get('apply.approve.distribute.team', '分配团队') : null}
                             <span className="connet-bar"></span>
                         </div>
                     );

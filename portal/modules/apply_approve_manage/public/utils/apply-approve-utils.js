@@ -406,7 +406,7 @@ exports.isShowCCNode = (item) => {
     }
     return showFlag;
 };
-exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked', 'adminApproveChecked', 'submitFiles', 'assignNextNodeApprover', 'distributeSales', 'distributeSalesToVisit', 'customerSLDUpdate'];
+exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked', 'adminApproveChecked', 'submitFiles', 'assignNextNodeApprover', 'distributeSales', 'releaseCustomerToTeamPool', 'customerSLDUpdate'];
 export const checkDomainName = function(rule, value, callback) {
     value = _.trim(value);
     if (value) {
