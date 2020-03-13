@@ -121,7 +121,8 @@ export function getReportList(callback, query) {
         query
     })
         .done(result => {
-            callback(result);
+            const list = _.get(result, 'daily_reports', []);
+            callback(list);
         })
         .fail(err => {
             message.error(err);

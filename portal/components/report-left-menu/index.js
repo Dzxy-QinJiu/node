@@ -48,6 +48,7 @@ class ReportLeftMenu extends React.Component {
     render() {
         return (
             <div className='report-left-menu'>
+                <span>配置报告</span>
                 <ul>
                     {_.map(this.state.subMenus, menuItem => (
                         <li>

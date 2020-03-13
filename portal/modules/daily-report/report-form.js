@@ -5,13 +5,14 @@
 import { Form } from 'antd';
 import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
 import { VIEW_TYPE } from './consts';
-import { renderButtonZoneFunc, hideReportPanel, getTplValues, saveReport } from './utils';
+import { renderButtonZoneFunc, hideReportPanel, getReportList, saveReport } from './utils';
 
 class ReportForm extends React.Component {
     componentDidMount() {
         if (!this.props.isPreview) {
-            getTplValues(result => {
-                this.props.updateState({ tplValues: result });
+            getReportList(list => {
+                const tplValues = _.first(list) || {};
+                this.props.updateState({ tplValues });
             });
         }
     }
