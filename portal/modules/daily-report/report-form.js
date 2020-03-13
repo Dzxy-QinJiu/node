@@ -69,7 +69,7 @@ class ReportForm extends React.Component {
                     } else {
                         let field = _.find(itemValues, item => item.name === key);
 
-                        if (field) field.value = value;
+                        if (field) field.value_str = value;
                     }
                 });
 
