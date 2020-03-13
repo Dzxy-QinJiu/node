@@ -1227,6 +1227,8 @@ class MyWorkColumn extends React.Component {
         const tpl = _.get(this.state.tplList, '[0]', {});
 
         if (_.isEmpty(tpl)) {
+            item.workObj = { name: '启用报告可以汇总销售日常工作' };
+        } else {
             item.workObj = { name: tpl.name };
 
             if (userData.getUserData().isCommonSales) {
@@ -1240,8 +1242,6 @@ class MyWorkColumn extends React.Component {
                     currentView: VIEW_TYPE.REPORT_LIST,
                 });
             }
-        } else {
-            item.workObj = { name: '启用报告可以汇总销售日常工作' };
         }
 
         workList.push(this.renderWorkCard(item));
