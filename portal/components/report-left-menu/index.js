@@ -48,7 +48,6 @@ class ReportLeftMenu extends React.Component {
     render() {
         return (
             <div className='report-left-menu'>
-                <span onClick={showReportPanel}>配置报告</span>
                 <ul>
                     {_.map(this.state.subMenus, menuItem => (
                         <li>
@@ -61,6 +60,7 @@ class ReportLeftMenu extends React.Component {
                         </li>
                     ))}
                 </ul>
+                <div onClick={showReportPanel} style={{marginTop: 100, fontSize: 12, textAlign: 'center', cursor: 'pointer'}}><i className="iconfont icon-nav-setting sidebar-bottom-icon"></i> 报告管理</div>
             </div>
         );
     }
