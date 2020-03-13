@@ -58,17 +58,22 @@ class ReportForm extends React.Component {
 
     save() {
         this.props.form.validateFields((err, values) => {
+            console.log(values,3);
             if (!err) {
+                let { tplValues } = this.props;
+                let itemValues = _.get(tplValues, 'item_values');
+
                 _.each(values, (value, key) => {
-                    if (_.isUndefined(value)) delete values[key];
+                    if (_.isUndefined(value)) {
+                        delete values[key];
+                    } else {
+                        let field = _.find(itemValues, item => item.name === key);
+
+                        if (field) field.value = value;
+                    }
                 });
 
-                const { clickedTpl } = this.props;
-
-                const postData = _.extend({}, clickedTpl, values);
-
-                console.log(postData);//return
-                saveReport(postData, result => {});
+                saveReport(tplValues, result => {});
                 //hideReportPanel()
             }
         });
