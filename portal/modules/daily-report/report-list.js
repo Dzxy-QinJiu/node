@@ -106,6 +106,7 @@ class ReportList extends React.Component {
                             let column = {
                                 title: name,
                                 dataIndex: name,
+                                width: 130,
                                 align: 'right'
                             };
 
