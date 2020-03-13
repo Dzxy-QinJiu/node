@@ -77,9 +77,9 @@ class ReportList extends React.Component {
                 processData: data => {
                     _.each(data, item => {
                         _.each(item.item_values, obj => {
-                            const { name, value } = obj;
+                            const { name, value, value_str } = obj;
 
-                            item[name] = value;
+                            item[name] = value_str || value;
                         });
                     });
 
@@ -106,6 +106,7 @@ class ReportList extends React.Component {
                             let column = {
                                 title: name,
                                 dataIndex: name,
+                                align: 'right'
                             };
 
                             if (name === '其他') {
