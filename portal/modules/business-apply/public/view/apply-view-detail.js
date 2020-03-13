@@ -813,6 +813,10 @@ class ApplyViewDetail extends React.Component {
                 }
 
             }, {
+                title: Intl.get('common.address', '地址'),
+                dataIndex: 'address',
+                className: 'apply-remarks apply-detail-th'
+            }, {
                 title: Intl.get('common.remark', '备注'),
                 dataIndex: 'remarks',
                 className: 'apply-remarks apply-detail-th'
