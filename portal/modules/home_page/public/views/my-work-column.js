@@ -1224,28 +1224,27 @@ class MyWorkColumn extends React.Component {
             }
         };
 
-        item.workObj = { name: '启用报告可以汇总销售日常工作' };
-
-        workList.push(this.renderWorkCard(item));
-
         const tpl = _.get(this.state.tplList, '[0]', {});
 
-        let item2 = _.cloneDeep(item);
-        item2.workObj = { name: tpl.name };
-        item2.btnConf.handleFunc = showReportPanel.bind(null, {
-            currentView: VIEW_TYPE.REPORT_LIST,
-        });
+        if (_.isEmpty(tpl)) {
+            item.workObj = { name: tpl.name };
 
-        workList.push(this.renderWorkCard(item2));
+            if (userData.getUserData().isCommonSales) {
+                item.btnConf.handleFunc = showReportPanel.bind(null, {
+                    currentView: VIEW_TYPE.REPORT_FORM,
+                    clickedTpl: tpl
+                });
+                item.btnConf.btnDesc = '填写';
+            } else {
+                item.btnConf.handleFunc = showReportPanel.bind(null, {
+                    currentView: VIEW_TYPE.REPORT_LIST,
+                });
+            }
+        } else {
+            item.workObj = { name: '启用报告可以汇总销售日常工作' };
+        }
 
-        let item3 = _.cloneDeep(item2);
-        item3.btnConf.handleFunc = showReportPanel.bind(null, {
-            currentView: VIEW_TYPE.REPORT_FORM,
-            clickedTpl: tpl
-        });
-        item3.btnConf.btnDesc = '填写';
-
-        workList.push(this.renderWorkCard(item3));
+        workList.push(this.renderWorkCard(item));
     }
 
     showAddSchedulePanel = (event) => {
