@@ -445,7 +445,7 @@ class CRMAddForm extends React.Component {
         return (
             <Form layout="horizontal" className="crm-add-form" id="crm-add-form" style={{height: formHeight}}>
                 <GeminiScrollbar>
-                    <div className="add-info-title">
+                    <div className="add-info-title" onClick={this.toggleBasicInfo}>
                         <span className="iconfont icon-detail-list"/>
                         {Intl.get('user.user.basic', '基本信息')}
                         <div className="add-info-buttons">
@@ -453,7 +453,6 @@ class CRMAddForm extends React.Component {
                                 className={basicInfoClassName}
                                 data-tracename={isBasicExpanded ? '收起详情' : '展开详情'}
                                 title={isBasicExpanded ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('crm.basic.detail.show', '展开详情')}
-                                onClick={this.toggleBasicInfo}
                             />
                         </div>
                     </div>
@@ -573,7 +572,7 @@ class CRMAddForm extends React.Component {
                         </div>
                     </div>
 
-                    <div className="add-info-title contact-info-title">
+                    <div className="add-info-title contact-info-title" onClick={this.toggleContactWay}>
                         <span className="iconfont icon-contact-head"/>
                         {Intl.get('call.record.contacts', '联系人')}
                         <div className="add-info-buttons">
@@ -581,7 +580,6 @@ class CRMAddForm extends React.Component {
                                 className={contactWayClassName}
                                 data-tracename={isContactWayExpanded ? '收起详情' : '展开详情'}
                                 title={isContactWayExpanded ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('crm.basic.detail.show', '展开详情')}
-                                onClick={this.toggleContactWay}
                             />
                         </div>
                     </div>

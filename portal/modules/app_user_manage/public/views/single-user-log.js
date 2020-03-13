@@ -290,13 +290,15 @@ class SingleUserLog extends React.Component {
         return (
             <dl>
                 <dd>
-                    <p>
+                    <p
+                        className="toggle-click-block"
+                        onClick={this.toggleOperateDetail.bind(this, item)}
+                    >
                         {item.operate}
                         {item.operate_detail ? (
                             <span
                                 className={operateClass}
                                 title={operateTitle}
-                                onClick={this.toggleOperateDetail.bind(this, item)}
                             />) : null}
                     </p>
                 </dd>

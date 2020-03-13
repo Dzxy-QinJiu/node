@@ -25,9 +25,9 @@
     position: absolute;
     top: 45%;
     left: 30%;
+    font-size: 14px;
     .errmsg-tip{
       color:@error_tips_color;
-      font-size: 14px;
       a{
         color: @BUTTON-HOVER;
       }
@@ -199,7 +199,10 @@
             color: @label-content-color!important;
             box-shadow: none;
             .extract-clue-text-wrapper{
-              color: @label-content-color
+              color: @label-content-color;
+              .extract-clue-text__name{
+                cursor: unset;
+              }
             }
             .iconfont.icon-extract{
               color: @label-content-color;
@@ -210,6 +213,11 @@
             .iconfont.icon-extract{
               color: @label-content-color;
               cursor: not-allowed;
+            }
+            .extract-clue-text-wrapper {
+              .extract-clue-text__name {
+                cursor: unset;
+              }
             }
           }
           .extract-clue-text-wrapper{
@@ -223,6 +231,7 @@
               //overflow: hidden;
               //white-space: nowrap;
               margin-top: -3px;
+              cursor: pointer;
             }
             .extract-clue-text__filters{
               margin-top: 10px;
@@ -300,6 +309,31 @@
   .no-more-data-tip{
     .ant-alert{
       padding: 8px;
+    }
+  }
+}
+
+//提示通知样式
+.extract-notification-wrapper{
+  .ant-notification-notice-content{
+    padding-right: 10px;
+    padding-top: 5px;
+    .ant-notification-notice-message{
+      font-size: 16px;
+      font-weight: bold;
+      display: none;
+    }
+    .ant-notification-notice-description{
+      font-size: 14px;
+      color: @title-color;
+      .has-extracted-count{
+        color: @BORDER-BLUE;
+        margin: 2px;
+      }
+      .icon-warn-icon{
+        color: #ffbf00;
+        margin-right: 5px;
+      }
     }
   }
 }
