@@ -71,14 +71,14 @@ class WinningClue extends React.Component{
                         {
                             count && this.props.isNavBar ? (
                                 <span>
-                                今日已获得<span className="number">{count}</span>条线索，去
+                                今天已获得<span className="number">{count}</span>条线索，去
                                     <span onClick={this.handleClickExtractClue} className="extract-clue">
                                      提取线索
                                     </span>
                                 </span>
                             ) : (
                                 <span>
-                                今日已获得<span className="number">{count}</span>条，快去跟进你的线索吧
+                                今天已获得<span className="number">{count}</span>条，快去跟进你的线索吧
                                 </span>
                             )
                         }
