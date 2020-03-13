@@ -25,9 +25,9 @@
     position: absolute;
     top: 45%;
     left: 30%;
+    font-size: 14px;
     .errmsg-tip{
       color:@error_tips_color;
-      font-size: 14px;
       a{
         color: @BUTTON-HOVER;
       }
@@ -309,6 +309,31 @@
   .no-more-data-tip{
     .ant-alert{
       padding: 8px;
+    }
+  }
+}
+
+//提示通知样式
+.extract-notification-wrapper{
+  .ant-notification-notice-content{
+    padding-right: 10px;
+    padding-top: 5px;
+    .ant-notification-notice-message{
+      font-size: 16px;
+      font-weight: bold;
+      display: none;
+    }
+    .ant-notification-notice-description{
+      font-size: 14px;
+      color: @title-color;
+      .has-extracted-count{
+        color: @BORDER-BLUE;
+        margin: 2px;
+      }
+      .icon-warn-icon{
+        color: #ffbf00;
+        margin-right: 5px;
+      }
     }
   }
 }

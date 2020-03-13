@@ -4027,6 +4027,7 @@ var zh_CN = {
     'personal.upgrade.company.trial.tip': '开通企业试用后，可体验拨打电话功能',
     'boot.personal.trial.welcome.tip': '欢迎试用客套个人版，试用期 {time} 天，每天可免费提取 {count} 条线索',
     'boot.company.trial.welcome.tip': '欢迎试用客套，试用期 {time} 天，每人每天可免费提取 {count} 条线索',
+    'boot.please.input.industry.placeholder': '请输入关注的行业，如互联网、服务业等',
     /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/

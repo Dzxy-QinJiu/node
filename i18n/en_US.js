@@ -3992,6 +3992,7 @@ var en_US = {
     'personal.upgrade.company.trial.tip': 'Open enterprise trial, you can experience the call function',//开通企业试用后，可体验拨打电话功能
     'boot.personal.trial.welcome.tip': 'Welcome to try out the Curtao personal version, the trial period {time} days, every day can extract {count} clues free',//欢迎试用客套个人版，试用期{time}天，每天可免费提取{count}条线索
     'boot.company.trial.welcome.tip': 'Welcome to try out the Curtao, the trial period {time} days, each day can extract {count} clues free',//欢迎试用客套，试用期{time}天，每人每天可免费提取{count}条线索
+    'boot.please.input.industry.placeholder': 'Please enter the industry of interest, such as Internet, service, etc',//请输入关注的行业，如互联网、服务业等
     /*个人试用 --- end*/
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': 'You have {time} days left in the trial period. {count} clues can be extracted every day. Will you upgrade to {upgrade} or {enterprise}?',//您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？
