@@ -128,6 +128,15 @@ import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
+const COLUMN_WIDTH = {
+    PRODUCT: 200,//产品
+    NUM: 50,//数量
+    TIME_INTERNAL: 190,//周期
+    DUE_TIME: 130,//到期时间
+    USER_TYPE: 80,//用户类型
+    ROLE: 120,//角色
+    PRIVILEGE: 120,//权限
+};
 const ApplyViewDetail = createReactClass({
     propTypes: {
         detailItem: PropTypes.object,
@@ -1131,10 +1140,12 @@ const ApplyViewDetail = createReactClass({
             {
                 title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
+                width: COLUMN_WIDTH.PRODUCT,
                 className: 'apply-detail-th'
             }, {
                 title: Intl.get('user.time.end', '到期时间'),
                 dataIndex: 'start_time',
+                width: COLUMN_WIDTH.DUE_TIME,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     //如果有应用的特殊配置，使用特殊配置
@@ -1148,6 +1159,7 @@ const ApplyViewDetail = createReactClass({
             }, {
                 title: Intl.get('user.user.type', '用户类型'),
                 dataIndex: 'user_type',
+                width: COLUMN_WIDTH.USER_TYPE,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     let userType = app.user_type;//此处是后端穿过来的用户类型（正式用户、试用用户、training）
@@ -1165,6 +1177,7 @@ const ApplyViewDetail = createReactClass({
             columns.push({
                 title: Intl.get('user.apply.detail.table.role', '角色'),
                 dataIndex: 'rolesNames',
+                width: COLUMN_WIDTH.ROLE,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     let rolesNames = app.rolesNames;
@@ -1179,7 +1192,9 @@ const ApplyViewDetail = createReactClass({
             });
         }
         return (<AntcTable dataSource={user.apps}
+            isSmallSize={true}
             tableType='data'
+            bordered={true}
             pagination={false}
             columns={columns}/>);
     },
@@ -1189,7 +1204,9 @@ const ApplyViewDetail = createReactClass({
         const detailInfo = this.state.detailInfoObj.info;
 
         return (<AntcTable dataSource={detailInfo.apps}
+            isSmallSize={true}
             tableType='data'
+            bordered={true}
             pagination={false}
             columns={this.getTableColunms()}/>);
 
@@ -1226,6 +1243,7 @@ const ApplyViewDetail = createReactClass({
             {
                 title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
+                width: COLUMN_WIDTH.PRODUCT,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     const terminals = _.get(app, 'terminals', []);
@@ -1259,7 +1277,7 @@ const ApplyViewDetail = createReactClass({
                 title: Intl.get('common.app.count', '数量'),
                 dataIndex: 'number',
                 align: 'right',
-                width: 50,
+                width: COLUMN_WIDTH.NUM,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     //获取开通个数
@@ -1281,6 +1299,7 @@ const ApplyViewDetail = createReactClass({
             title: isOplateUser ? Intl.get('user.apply.detail.table.time', '周期') : Intl.get('user.time.end', '到期时间'),
             dataIndex: 'start_time',
             className: 'apply-detail-th',
+            width: isOplateUser ? COLUMN_WIDTH.TIME_INTERNAL : COLUMN_WIDTH.DUE_TIME,
             render: (text, app, index) => {
                 //如果有应用的特殊配置，使用特殊配置
                 //没有特殊配置，使用申请单的配置
@@ -1313,6 +1332,7 @@ const ApplyViewDetail = createReactClass({
             columns.push({
                 title: Intl.get('user.apply.detail.table.role', '角色'),
                 dataIndex: 'roleNames',
+                width: COLUMN_WIDTH.ROLE,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     let rolesNames = app.rolesNames;
@@ -1329,6 +1349,7 @@ const ApplyViewDetail = createReactClass({
                 columns.push({
                     title: Intl.get('common.app.auth', '权限'),
                     dataIndex: 'permissionsNames',
+                    width: COLUMN_WIDTH.PRIVILEGE,
                     className: 'apply-detail-th',
                     render: (text, app, index) => {
                         const custom_setting = appsSetting[app.app_id];
@@ -1347,7 +1368,9 @@ const ApplyViewDetail = createReactClass({
         }
         return (<AntcTable
             dataSource={detailInfo.apps}
+            isSmallSize={true}
             tableType='data'
+            bordered={true}
             pagination={false}
             columns={columns}/>);
     },
@@ -1618,10 +1641,13 @@ const ApplyViewDetail = createReactClass({
             {
                 title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
+                width: COLUMN_WIDTH.PRODUCT,
                 className: 'apply-detail-th'
             }];
         return (<AntcTable dataSource={user.apps}
+            isSmallSize={true}
             tableType='data'
+            bordered={true}
             pagination={false}
             columns={columns}/>);
     },
