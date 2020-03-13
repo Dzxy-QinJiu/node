@@ -172,11 +172,19 @@ class CustomerPoolReleaseRuleForm extends React.Component {
     };
 
     renderRuleForm = () => {
-        const formItemLayout = {
-            labelCol: { span: 6 },
-            wrapperCol: { span: 18 }
-        };
         const isDefaultRuleConfig = this.props.isDefaultRuleConfig(this.props.curRule);
+        const formItemLayout = {
+            labelCol: { span: isDefaultRuleConfig ? 5 : 6 },
+            wrapperCol: { span: isDefaultRuleConfig ? 19 : 18 }
+        };
+
+        const defaultFormLayout = {
+            wrapperCol: { span: 24 },
+            colon: false,
+        };
+
+        const ruleNameFormLayout = isDefaultRuleConfig ? defaultFormLayout : {...formItemLayout, label: Intl.get('crm.customer.pool.rule.form.name', '规则名称')};
+
         const formData = this.state.formData;
         const { getFieldDecorator } = this.props.form;
         const visibleTeamOptions = _.map(this.props.visibleTeamList, team => (
@@ -186,89 +194,94 @@ class CustomerPoolReleaseRuleForm extends React.Component {
         const statusText = formData.auto_release ? Intl.get('common.enabled', '启用') : Intl.get('common.not.enabled', '未启用');
         const curInterval = _.find(INTERVAL_KEYS, item => item.value === formData.interval);
         const noFollowUpTimeText = _.get(formData,'auto_release_period', '') + curInterval.name;
+        const cls = classNames({
+            'default-edit-form-content': isDefaultRuleConfig && this.props.isEdit
+        });
 
         return (
             <Form>
-                <FormItem {...formItemLayout} label={Intl.get('crm.customer.pool.rule.form.name', '规则名称')}>
+                <FormItem {...ruleNameFormLayout}>
                     <div className="rule-form-title-wrapper">
                         <span className="rule-form-label">{Intl.get('crm.pool.release.rules.name', '{name}释放规则', {name: _.get(formData,'team_name', '')})}</span>
                         {this.renderBtnBlock(isDefaultRuleConfig)}
                     </div>
                 </FormItem>
-                <FormItem {...formItemLayout} label={Intl.get('sales.process.suitable.objects', '适用范围')}>
-                    {this.props.isEdit && !isDefaultRuleConfig ? (
-                        <React.Fragment>
-                            {
-                                getFieldDecorator('team_id', {
-                                    initialValue: formData.team_id,
-                                    rules: [
-                                        {required: true, message: Intl.get('crm.pool.select.team.placeholder', '选择适用团队')},
-                                    ],
-                                })(
+                <div className={cls}>
+                    <FormItem {...formItemLayout} label={Intl.get('sales.process.suitable.objects', '适用范围')}>
+                        {this.props.isEdit && !isDefaultRuleConfig ? (
+                            <React.Fragment>
+                                {
+                                    getFieldDecorator('team_id', {
+                                        initialValue: formData.team_id,
+                                        rules: [
+                                            {required: true, message: Intl.get('crm.pool.select.team.placeholder', '选择适用团队')},
+                                        ],
+                                    })(
+                                        <Select
+                                            showSearch
+                                            optionFilterProp="children"
+                                            placeholder={Intl.get('crm.pool.select.team.placeholder', '选择适用团队')}
+                                            onChange={this.handleSelectTeam}
+                                        >
+                                            {visibleTeamOptions}
+                                        </Select>
+                                    )
+                                }
+                            </React.Fragment>
+                        ) : (
+                            <span className="customer-info-text">{isDefaultRuleConfig ? Intl.get('user.list.all.teamlist', '全部团队') : _.get(formData,'team_name', '')}</span>
+                        )}
+                    </FormItem>
+                    <FormItem {...formItemLayout} label={Intl.get('crm.pool.release.rule.non.followup.time', '未跟进时长')}>
+                        {this.props.isEdit ? (
+                            <React.Fragment>
+                                <Col span={7}>
+                                    <FormItem className="auto-release-period-item">
+                                        {
+                                            getFieldDecorator('auto_release_period', {
+                                                initialValue: formData.auto_release_period,
+                                                rules: [
+                                                    {required: true, message: Intl.get('contract.44', '不能为空')}
+                                                ],
+                                            })(
+                                                <InputNumber min={1}/>
+                                            )
+                                        }
+                                    </FormItem>
+                                </Col>
+                                <Col span={4}>
                                     <Select
-                                        showSearch
-                                        optionFilterProp="children"
-                                        placeholder={Intl.get('crm.pool.select.team.placeholder', '选择适用团队')}
-                                        onChange={this.handleSelectTeam}
+                                        value={formData.interval}
+                                        onChange={this.handleSelectInterval}
                                     >
-                                        {visibleTeamOptions}
+                                        {INTERVAL_KEYS.map(item => (<Option key={item.value} value={item.value}>{item.name}</Option>))}
                                     </Select>
-                                )
-                            }
-                        </React.Fragment>
-                    ) : (
-                        <span className="customer-info-text">{isDefaultRuleConfig ? Intl.get('user.list.all.teamlist', '全部团队') : _.get(formData,'team_name', '')}</span>
-                    )}
-                </FormItem>
-                <FormItem {...formItemLayout} label={Intl.get('crm.pool.release.rule.non.followup.time', '未跟进时长')}>
-                    {this.props.isEdit ? (
-                        <React.Fragment>
-                            <Col span={7}>
-                                <FormItem className="auto-release-period-item">
-                                    {
-                                        getFieldDecorator('auto_release_period', {
-                                            initialValue: formData.auto_release_period,
-                                            rules: [
-                                                {required: true, message: Intl.get('contract.44', '不能为空')}
-                                            ],
-                                        })(
-                                            <InputNumber min={1}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                            <Col span={4}>
-                                <Select
-                                    value={formData.interval}
-                                    onChange={this.handleSelectInterval}
-                                >
-                                    {INTERVAL_KEYS.map(item => (<Option key={item.value} value={item.value}>{item.name}</Option>))}
-                                </Select>
-                            </Col>
-                        </React.Fragment>
-                    ) : (
-                        <span className="customer-info-text">{noFollowUpTimeText}</span>
-                    )}
-                </FormItem>
-                <FormItem {...formItemLayout} label={Intl.get('common.status', '状态')}>
-                    {this.props.isEdit ? (
-                        <React.Fragment>
-                            {
-                                getFieldDecorator('auto_release', {
-                                    initialValue: formData.auto_release,
-                                    valuePropName: 'checked'
-                                })(
-                                    <Switch
-                                        checkedChildren={Intl.get('common.enabled', '启用')}
-                                        unCheckedChildren={Intl.get('common.not.enabled', '未启用')}
-                                    />
-                                )
-                            }
-                        </React.Fragment>
-                    ) : (
-                        <span className="customer-info-text">{statusText}</span>
-                    )}
-                </FormItem>
+                                </Col>
+                            </React.Fragment>
+                        ) : (
+                            <span className="customer-info-text">{noFollowUpTimeText}</span>
+                        )}
+                    </FormItem>
+                    <FormItem {...formItemLayout} label={Intl.get('common.status', '状态')}>
+                        {this.props.isEdit ? (
+                            <React.Fragment>
+                                {
+                                    getFieldDecorator('auto_release', {
+                                        initialValue: formData.auto_release,
+                                        valuePropName: 'checked'
+                                    })(
+                                        <Switch
+                                            checkedChildren={Intl.get('common.enabled', '启用')}
+                                            unCheckedChildren={Intl.get('common.not.enabled', '未启用')}
+                                        />
+                                    )
+                                }
+                            </React.Fragment>
+                        ) : (
+                            <span className="customer-info-text">{statusText}</span>
+                        )}
+                    </FormItem>
+                </div>
             </Form>
         );
     };

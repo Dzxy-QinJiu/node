@@ -252,9 +252,7 @@ class CustomerPoolReleaseRule extends React.Component {
 
         if(this.state.isLoading) {
             return <Spinner/>;
-        }else if(this.state.errMsg && !releaseRuleConfigsLength) {
-            return <NoDataIconTip tipContent={Intl.get(this.state.errMsg)}/>;
-        }else if(releaseRuleConfigsLength) {
+        } if(releaseRuleConfigsLength) {
             return (
                 <div className="customer-rules-content">
                     {
