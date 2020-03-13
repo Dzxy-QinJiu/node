@@ -14,10 +14,6 @@ const otherFilterArray = [
     {
         name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', {day: 30}),
         value: 'thirty_uncontact'
-    },
-    {
-        name: Intl.get('crm.pool.need.joint.followup', '需联合跟进'),
-        value: 'followup'
     }
 ];
 //合格标签的筛选
