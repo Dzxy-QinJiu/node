@@ -32,6 +32,7 @@ function ApplyViewDetailActions() {
         'setNextCandidate',
         'showOrHideApprovalBtns',
         'setApplyCandate',
+        'setSalesMan',
         'setGroupId',
     );
 
