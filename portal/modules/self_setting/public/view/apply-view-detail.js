@@ -32,7 +32,7 @@ import {
     formatSalesmanList,
     timeShowFormat,
 } from 'PUB_DIR/sources/utils/common-method-util';
-import {handleTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
+import {getMyTeamTreeAndFlattenList, handleTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
@@ -49,6 +49,7 @@ class ApplyViewDetail extends React.Component {
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
             showBackoutConfirmType: '',//操作的确认框类型
+            teamList: [],//团队列表
             salesManList: [],//销售列表
             usersManList: [],//成员列表
             ...LeaveApplyDetailStore.getState()
@@ -69,9 +70,15 @@ class ApplyViewDetail extends React.Component {
         }else if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem, this.props.applyData);
         }
+        this.getGroupList();
         this.getSalesManList();
         this.getAllUserList();
     }
+    getGroupList = () => {
+        getMyTeamTreeAndFlattenList((res) => {
+            this.setState({teamList: res.teamList});
+        });
+    };
     getSalesManList = () => {
         salesOpportunityApplyAjax.getSalesManList().then(data => {
             this.setState({
@@ -609,7 +616,7 @@ class ApplyViewDetail extends React.Component {
         var showApproveBtn = detailInfoObj.showApproveBtn || this.props.isHomeMyWork;
         var renderAssigenedContext = null;
         //渲染分配的按钮
-        if (_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'distributeSalesToVisit') > -1 && showApproveBtn){
+        if (_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'releaseCustomerToTeamPool') > -1 && showApproveBtn){
             //分配给团队
             renderAssigenedContext = this.renderAssigenedTeamContext;
         }else if(_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'distributeSalesToVisit') > -1 && showApproveBtn){
