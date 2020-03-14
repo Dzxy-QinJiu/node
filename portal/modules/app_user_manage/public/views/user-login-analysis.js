@@ -777,14 +777,25 @@ class UserLoginAnalysis extends React.Component {
                                             />
                                         </span>
                                         <p title={app.app_name}>{app.app_name}</p>
-
                                         {
                                             this.state.showDetailMap[app.app_id] && _.get(this.state.selectAppTerminals[app.app_id], 'length') ? (
-                                                <span className="app-terminals-select">
+                                                <div className="app-terminals-select">
                                                     {this.renderAppTerminalsType(app)}
-                                                </span>
+                                                </div>
                                             ) : null
                                         }
+                                        <span className="btn-bar">
+                                            {
+                                                this.state.showDetailMap[app.app_id] ?
+                                                    <span
+                                                        className="iconfont icon-up-twoline handle-btn-item"
+                                                        onClick={this.showAppDetail.bind(this, app, false)}
+                                                    ></span> :
+                                                    <span
+                                                        className="iconfont icon-down-twoline handle-btn-item"
+                                                        onClick={this.showAppDetail.bind(this, app, true)}></span>
+                                            }
+                                        </span>
                                     </div>
                                 )}
                                 content={
@@ -814,9 +825,6 @@ class UserLoginAnalysis extends React.Component {
                                             </div>
                                         </StatusWrapper>) : null
                                 }
-                                isShowToggleBtn={true}
-                                isExpandDetail={this.state.showDetailMap[app.app_id]}
-                                handleToggleDetail={this.showAppDetail.bind(this, app)}
                             />
                         );
                     })
