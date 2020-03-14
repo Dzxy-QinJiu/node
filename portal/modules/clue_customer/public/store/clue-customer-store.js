@@ -16,7 +16,6 @@ import {
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
 const clueContactType = ['phone', 'qq', 'weChat', 'email'];
-import {subtracteGlobalClue, formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 function ClueCustomerStore() {
     //初始化state数据
     this.resetState();
@@ -246,15 +245,6 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
 ClueCustomerStore.prototype.setLoadingFalse = function() {
     this.isLoading = false;
     this.firstLogin = false;
-},
-ClueCustomerStore.prototype.getClueFulltextSelfHandle = function(clueData) {
-    //获取有待我处理条件的线索
-    if(!clueData.loading && !clueData.error){
-        var cloneQuery = _.cloneDeep(clueData.queryObj);
-        cloneQuery.self_no_traced = true;
-        this.queryObj = cloneQuery;
-    }
-    this.handleClueData(clueData);
 },
 ClueCustomerStore.prototype.updateRecommendClueLists = function(extractClues) {
     //需要给已经提取成功的加上一个类名，界面相应的加上对应的不能处理的样式
@@ -603,6 +593,7 @@ ClueCustomerStore.prototype.initialRecommendClues = function() {
     this.hasExtraRecommendList = false;
     this.sortvalues = [];
     this.recommendClueListId = '';
+    this.feature = '';
 };
 
 //添加跟进记录时，修改客户最新的跟进记录时，更新列表中的最后联系
@@ -631,14 +622,6 @@ ClueCustomerStore.prototype.getAllSalesUserList = function(list) {
 ClueCustomerStore.prototype.updateClueItemAfterAssign = function(updateObj) {
     var item = _.get(updateObj,'item'),submitObj = _.get(updateObj,'submitObj'),isWillDistribute = _.get(updateObj,'isWillDistribute');
     let sale_id = _.get(submitObj,'sale_id',''), team_id = _.get(submitObj,'team_id',''), sale_name = _.get(submitObj,'sale_name',''), team_name = _.get(submitObj,'team_name','');
-    //member_id是跟进销售的id
-    subtracteGlobalClue(item, (flag) => {
-        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
-        if (flag && filterAllotNoTraced) {
-            //需要在列表中删除
-            this.deleteClueById(item);
-        }
-    });
     if (!isWillDistribute){
         item.user_name = sale_name;
         item.user_id = sale_id;
@@ -649,6 +632,11 @@ ClueCustomerStore.prototype.updateClueItemAfterAssign = function(updateObj) {
         }
     }
     this.updateClueCustomers(this.curClueList);
+};
+//热门选项
+ClueCustomerStore.prototype.setHotSource = function(value) {
+    this.feature = value;
+    this.sortvalues = [];
 };
 
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');

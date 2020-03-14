@@ -96,7 +96,8 @@ function AppUserAction() {
         //用户生成线索客户后，更新apps中的clue_created属性
         'updateUserAppsInfo',
         //恢复初始化数据
-        'resetState'
+        'resetState',
+        'setSelectedAppTerminals', // 设置选中的多终端id
     );
 
     //关闭右侧面板

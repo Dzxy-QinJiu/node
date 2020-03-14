@@ -292,35 +292,6 @@ exports.getClueListByKeyword = function(queryObj) {
     });
     return Deferred.promise();
 };
-//有待我处理筛选项是获取全文搜索的线索
-var getClueFulltextSelfHandleAjax;
-exports.getClueFulltextSelfHandle = function(queryObj) {
-    var pageSize = queryObj.pageSize;
-    delete queryObj.pageSize;
-    var sorter = queryObj.sorter ? queryObj.sorter : {field: 'source_time', order: 'descend'};
-    delete queryObj.sorter;
-    var type = 'user';
-    if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
-        type = 'manager';
-    }
-    var pageNum = queryObj.pageNum;
-    delete queryObj.pageNum;
-    var url = '/rest/get/clue/selfhandle/fulltext/' + pageSize + '/' + pageNum + '/' + sorter.field + '/' + sorter.order + '/' + type;
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: url ,
-        dataType: 'json',
-        type: 'post',
-        data: queryObj,
-        success: function(list) {
-            Deferred.resolve(list);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
 //线索关联
 exports.setClueAssociatedCustomer = function(submitObj) {
     var Deferred = $.Deferred();

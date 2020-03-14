@@ -311,7 +311,7 @@ class RecommendCustomerCondition extends React.Component {
                                             }))
                                         }
                                     </Select>*/
-                                    <Input placeholder={Intl.get('boot.input.industry', '请输入关注的行业')}/>
+                                    <Input placeholder={Intl.get('boot.please.input.industry.placeholder', '请输入关注的行业，如互联网、服务业等')}/>
                                 )}
                         </FormItem>
                         <AntcAreaSelection labelCol="24" wrapperCol="24" width="100%"

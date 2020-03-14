@@ -133,7 +133,7 @@ var AppUserRestApis = {
     // 上传用户的预览接口
     uploadUser: '/rest/base/v1/user/import/preview',
     // 确认上传用户
-    confirmUploadUser: 'rest/base/v1/user/import'
+    confirmUploadUser: 'rest/base/v1/user/import',
 };
 
 exports.urls = AppUserRestApis;
@@ -444,15 +444,9 @@ exports.getApplyDetail = function(req, res, apply_id) {
     var emitter = new EventEmitter();
     getApplyBasicDetail(req, res, apply_id).then((applyBasicDetail) => {
         //延期（多应用）
+        // 延期申请需要配置多终端信息
         if (applyBasicDetail.type === CONSTANTS.DELAY_MULTI_APP) {
-            let user_type = _.get(applyBasicDetail, 'apps[0].user_type');
-            //修改的用户类型，界面上用来判断是否修改用户类型
-            applyBasicDetail.changedUserType = user_type;
-            // 待审批，并且修改了用户类型时
-            if (applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_FALSE && user_type) {
-                // 获取各应用此用户类型的默认配置（角色、权限）
-                getAppUserTypeDefaultConfig(req, res, applyBasicDetail, user_type, emitter);
-            } else if (applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_FALSE ||//待审批，未修改用户类型时
+            if (applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_FALSE ||//待审批
                 applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_PASS) {//通过时
                 // 获取此用户在各应用的角色和用户类型
                 getAppsUserRolesType(req, res, applyBasicDetail, emitter);
@@ -679,6 +673,15 @@ function getAppRoleNames(req, res, obj) {
 function getAppsUserRolesType(req, res, applyBasicDetail, emitter) {
     //从应用列表中根据user_id去重后，获取去重后的所有user_id
     let userIds = _.uniqBy(applyBasicDetail.apps,'user_id').map(app => app.user_id);
+    let isApproved = applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_PASS; // 是否是已通过
+    let isChangeUserType = false; // 延期时，是否修改了用户类型, 默认false
+    let user_type = _.get(applyBasicDetail, 'apps[0].user_type');
+    if (user_type) {
+        isChangeUserType = true;
+        //修改的用户类型，界面上用来判断是否修改用户类型
+        applyBasicDetail.changedUserType = user_type;
+    }
+
     if (_.get(userIds, '[0]')) {
         let promiseList = [];
         _.each(userIds, userId => {
@@ -693,20 +696,37 @@ function getAppsUserRolesType(req, res, applyBasicDetail, emitter) {
                     //根据client_id和user_id，找到该用户下的此应用，更新角色、权限、用户类型
                     let curApp = _.find(applyBasicDetail.apps, item => item.client_id === app.app_id && item.user_id === _.get(userDetail, 'user.user_id') );
                     if (curApp) {
-                        if (_.get(app, 'roles[0]')) {
-                            roleIds = roleIds.concat(app.roles);
+                        if (isChangeUserType && !isApproved) { // 修改了延期的用户类型，并且是待审批状态
+                            // 用户详情中的多终端信息
+                            if (!_.isEmpty( app.terminals)) {
+                                curApp.terminals = _.map(app.terminals, 'id');
+                            }
+                        } else {
+                            if (_.get(app, 'roles[0]')) {
+                                roleIds = roleIds.concat(app.roles);
+                            }
+                            if (_.get(app, 'permissions[0]')) {
+                                permissionIds = permissionIds.concat(app.permissions);
+                            }
+                            // 多终端信息
+                            if (!_.isEmpty( app.terminals)) {
+                                curApp.terminals = _.map(app.terminals, 'id');
+                            }
+                            curApp.user_type = app.user_type;
+                            curApp.roles = app.roles || [];
+                            curApp.permissions = app.permissions || [];
                         }
-                        if (_.get(app, 'permissions[0]')) {
-                            permissionIds = permissionIds.concat(app.permissions);
-                        }
-                        curApp.user_type = app.user_type;
-                        curApp.roles = app.roles || [];
-                        curApp.permissions = app.permissions || [];
                     }
                 });
             });
-            //根据角色id、权限id,获取角色在各应用上的角色名、权限名
-            getRolePrivilegeNameById(req, res, applyBasicDetail, emitter, roleIds, permissionIds);
+            if (isChangeUserType && !isApproved) { // 延期时，若修改了用户类型，并且是待审批状态
+                // 获取各应用此用户类型的默认配置（角色、权限）
+                getAppUserTypeDefaultConfig(req, res, applyBasicDetail, user_type, emitter);
+            } else {
+                //根据角色id、权限id,获取角色在各应用上的角色名、权限名
+                getRolePrivilegeNameById(req, res, applyBasicDetail, emitter, roleIds, permissionIds);
+            }
+
         }).catch(errorMsg => {
             emitter.emit('success', applyBasicDetail);
         });

@@ -22,11 +22,26 @@ class CountDown extends React.Component{
         this.timer = null;
     }
 
+    //重置计时
+    resetTime = (seconds) => {
+        this.timer && clearInterval(this.timer);
+        this.timer = null;
+        this.setState({seconds: seconds || this.props.seconds}, () => {
+            this.tick();
+        });
+    };
+
+    //暂停计时 todo 以防将来使用
+    pause = () => {
+        clearInterval(this.timer);
+    };
+
+    //开始计时
     tick = () => {
         this.timer = setInterval(() => {
             let seconds = this.state.seconds;
             seconds -= 1;
-            if(seconds > 0) {
+            if(seconds >= 0) {
                 this.setState({seconds});
             }else {
                 clearInterval(this.timer);

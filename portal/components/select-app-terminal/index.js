@@ -4,13 +4,28 @@
 
 import SelectFullWidth from '../select-fullwidth';
 import classNames from 'classnames';
+import { selectedAppEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 class SelectAppTerminal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            terminalType: '', // 终端类型
+            terminalType: _.get(props, 'terminalType', ''), // 终端类型
         };
+    }
+
+    changeTerminalType = (type) => {
+        this.setState({
+            terminalType: type
+        });
+    }
+
+    componentDidMount() {
+        selectedAppEmitter.on(selectedAppEmitter.CHANGE_SELECTED_APP, this.changeTerminalType);
+    }
+
+    componentWillUnmount() {
+        selectedAppEmitter.removeListener(selectedAppEmitter.CHANGE_SELECTED_APP, this.changeTerminalType);
     }
 
     // 筛选终端类型
@@ -23,14 +38,18 @@ class SelectAppTerminal extends React.Component {
     
     render() {
         let appTerminals = this.props.appTerminals;
+        let terminalType = this.props.terminalType || this.state.terminalType;
         let appTerminalsOptions = _.map(appTerminals, terminalType =>
-            <Option key={terminalType.id} value={terminalType.code}> {terminalType.name} </Option>);
+            <Option
+                key={terminalType.id}
+                value={ this.props.isNeedTerminalId ? terminalType.id : terminalType.code}
+            > {terminalType.name} </Option>);
         appTerminalsOptions.unshift(<Option value="" id="">{Intl.get('common.all.terminals', '所有終端')}</Option>);
         const cls = classNames('select-app-terminal-type', this.props.className);
         return (
             <SelectFullWidth
                 className={cls}
-                value={this.state.terminalType}
+                value={terminalType}
                 onChange={this.onSelectTerminalsType}
             >
                 {appTerminalsOptions}
@@ -43,13 +62,17 @@ SelectAppTerminal.defaultProps = {
     handleSelectedTerminal: function() {
     },
     appTerminals: [],
-    className: ''
+    className: '',
+    isNeedTerminalId: false, // 是否需要多终端的id
+    terminalType: '', // 所选择终端的类型
 };
 
 SelectAppTerminal.propTypes = {
     handleSelectedTerminal: PropTypes.func,
     appTerminals: PropTypes.array,
     className: PropTypes.string,
+    isNeedTerminalId: PropTypes.bool,
+    terminalType: PropTypes.string,
 };
 
 export default SelectAppTerminal;

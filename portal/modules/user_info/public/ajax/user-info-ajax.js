@@ -1,8 +1,8 @@
 //获取用户信息
-exports.getUserInfo = function(userId) {
-    var Deferred = $.Deferred();
+exports.getUserInfo = () => {
+    const Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/user_info/' + userId,
+        url: '/rest/user_info',
         dataType: 'json',
         type: 'get',
         success: function(usrInfo) {

@@ -8,11 +8,13 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import {Form, Input, Menu, Dropdown, Select, DatePicker, Button, Icon, Radio, Checkbox, InputNumber} from 'antd';
+
 const RadioGroup = Radio.Group;
 var Option = Select.Option;
 const FormItem = Form.Item;
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
+
 const FORMLAYOUT = {
     PADDINGTOTAL: 60
 };
@@ -27,8 +29,10 @@ import {
     CONDITION_LIMITE, ADDAPPLYFORMCOMPONENTS, ROLES_SETTING
 } from '../../utils/apply-approve-utils';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
+
 require('../../style/add_apply_condition_panel.less');
 var uuid = require('uuid/v4');
+
 class AddApplyConditionPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -40,6 +44,7 @@ class AddApplyConditionPanel extends React.Component {
             } : _.cloneDeep(this.props.updateConditionObj),//添加的条件审批数据
             applySaveForm: _.get(this, 'props.applyTypeData.customiz_form', []),
             userList: this.props.userList,//用户列表
+            teamList: this.props.teamList,//团队列表
             setting_users: {
                 selectUser: '',//选中的成员
                 showSelectUser: ''
@@ -50,9 +55,11 @@ class AddApplyConditionPanel extends React.Component {
     componentDidMount() {
 
     }
+
     componentWillReceiveProps(nextProps, nextContext) {
         this.setState({
-            userList: nextProps.userList
+            userList: nextProps.userList,
+            teamList: nextProps.teamList,
         });
     }
 
@@ -86,11 +93,11 @@ class AddApplyConditionPanel extends React.Component {
 
         var componentType = '', descriptionTip = '', showInnerCondition = false;
         if (isShowTimeRange) {
-            componentType = ALL_COMPONENTS.TIMEPERIOD;
+            componentType = ALL_COMPONENTS.TIME_PERIOD;
             descriptionTip = Intl.get('user.duration', '时长');
             showInnerCondition = true;
         } else if (isShowMoneyRange) {
-            // componentType = ALL_COMPONENTS.TIMEPERIOD;
+            // componentType = ALL_COMPONENTS.TIME_PERIOD;
             // descriptionTip = Intl.get('user.duration', '时长');
             // showInnerCondition = true;
         }
@@ -106,22 +113,28 @@ class AddApplyConditionPanel extends React.Component {
                 _.map(applySaveForm, (item) => {
                     var component_type = item.subComponentType || item.component_type;
                     var target = this.getConditionRelate(component_type);
-                    if (target && !this.hasAddThisTypeCondition(_.get(target,'value'))) {
+                    if (target && !this.hasAddThisTypeCondition(_.get(target, 'value'))) {
                         return <Menu.Item>
                             <a onClick={this.handleAddConditionType.bind(this, component_type)}>{_.get(target, 'name')}</a>
                         </Menu.Item>;
-                    }else{
+                    } else {
                         saveForm = true;
                     }
                 })
         }
-        {this.hasAddThisTypeCondition(ALL_COMPONENTS.USERSEARCH + '_limit') ? null : <Menu.Item>
-            <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.USERSEARCH)}>{Intl.get('user.apply.presenter', '申请人')}</a>
-        </Menu.Item> }
+        {/*申请人这个选项是所有申请审批中都要加的*/}
+        {this.hasAddThisTypeCondition(ALL_COMPONENTS.USER_SEARCH + '_limit') ? null : <Menu.Item>
+            <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.USER_SEARCH)}>{Intl.get('user.apply.presenter', '申请人')}</a>
+        </Menu.Item>}
+        {/*团队申请的选项也是所有申请审批都要加的*/}
+        {this.hasAddThisTypeCondition(ALL_COMPONENTS.TEAM_SEARCH + '_limit') ? null : <Menu.Item>
+            <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.TEAM_SEARCH)}>{Intl.get('user.apply.team', '申请人所属团队')}</a>
+        </Menu.Item>}
         </Menu>;
         //是否还有menuitem展示
-        var hasNoMenuItem = ((showInnerCondition && this.hasAddThisTypeCondition(componentType + '_limit')) || (!showInnerCondition && saveForm)) && this.hasAddThisTypeCondition(ALL_COMPONENTS.USERSEARCH + '_limit');
-        return {menus: menus,
+        var hasNoMenuItem = ((showInnerCondition && this.hasAddThisTypeCondition(componentType + '_limit')) || (!showInnerCondition && saveForm)) && this.hasAddThisTypeCondition(ALL_COMPONENTS.USER_SEARCH + '_limit');
+        return {
+            menus: menus,
             hasNoMenuItem: hasNoMenuItem
         };
     };
@@ -169,18 +182,41 @@ class AddApplyConditionPanel extends React.Component {
             });
         }
     };
+    //选中用户
     handleChangeSelectUser = (key, subKey, index, userId) => {
+        userId = userId.sort();
         var diffConditionLists = this.state.diffConditionLists;
         var limitRules = _.get(diffConditionLists, 'limitRules');
         var target = _.find(limitRules, limit => limit.limitType === key);
         if (target) {
-            //每个路径都要随机出一个数字作为路径的名称
-            target[subKey + 'Route'] = uuid();
+            //todo 每个路径都要随机出一个数字作为路径的名称
+            target[subKey + 'Route'] = userId.join('');
             target[subKey] = userId;
             var subKeyDsc = [];
-            _.forEach(userId,id => {
-                var targetObj = _.find(this.state.userList,item => item.userId === id);
-                subKeyDsc.push(_.get(targetObj,'nickName'));
+            _.forEach(userId, id => {
+                var targetObj = _.find(this.state.userList, item => item.userId === id);
+                subKeyDsc.push(_.get(targetObj, 'nickName'));
+            });
+            target[subKey + 'Dsc'] = subKeyDsc;
+            this.setState({
+                diffConditionLists
+            });
+        }
+    };
+    //选中团队
+    handleChangeSelectTeam = (key, subKey, index, teamId) => {
+        teamId = teamId.sort();
+        var diffConditionLists = this.state.diffConditionLists;
+        var limitRules = _.get(diffConditionLists, 'limitRules');
+        var target = _.find(limitRules, limit => limit.limitType === key);
+        if (target) {
+            //todo 每个路径都要随机出一个数字作为路径的名称
+            target[subKey + 'Route'] = teamId.join('');
+            target[subKey] = teamId;
+            var subKeyDsc = [];
+            _.forEach(teamId, id => {
+                var targetObj = _.find(this.state.teamList, item => item.group_id === id);
+                subKeyDsc.push(_.get(targetObj, 'group_name'));
             });
             target[subKey + 'Dsc'] = subKeyDsc;
             this.setState({
@@ -217,11 +253,11 @@ class AddApplyConditionPanel extends React.Component {
         var limitRules = _.get(diffConditionLists, 'limitRules', []);
         return (
             <div className="condition_list_type">
-                {_.map(limitRules, (value,index) => {
+                {_.map(limitRules, (value, index) => {
                     var limitType = value.limitType;
                     var target = this.getConditionRelate(limitType);
                     switch (limitType) {
-                        case ALL_COMPONENTS.TIMEPERIOD + '_limit':
+                        case ALL_COMPONENTS.TIME_PERIOD + '_limit':
                             return (<div className="condition-type-container range-condition-container">
                                 <div className="condition-type-title">
                                     {_.get(target, 'name')}
@@ -243,7 +279,7 @@ class AddApplyConditionPanel extends React.Component {
                                         addonAfter={Intl.get('common.time.unit.day', '天')}/>
                                 </div>
                             </div>);
-                        case ALL_COMPONENTS.USERSEARCH + '_limit':
+                        case ALL_COMPONENTS.USER_SEARCH + '_limit':
                             return (
                                 <div className="condition-type-container user-condition-container">
                                     <div className="condition-type-title">
@@ -256,12 +292,36 @@ class AddApplyConditionPanel extends React.Component {
                                             value={_.get(value, 'userRange')}
                                             showSearch
                                             mode="multiple"
-                                            onChange={this.handleChangeSelectUser.bind(this, limitType, 'userRange',index)}
+                                            onChange={this.handleChangeSelectUser.bind(this, limitType, 'userRange', index)}
                                             filterOption={(input, option) => ignoreCase(input, option)}
                                             getPopupContainer={() => document.getElementById('add_apply_condition')}
                                         >
-                                            {_.map(this.state.userList, (item,index) => {
+                                            {_.map(this.state.userList, (item, index) => {
                                                 return <Option value={item.userId} key={index}>{item.nickName}</Option>;
+                                            })}
+                                        </Select>
+                                    </div>
+                                </div>
+                            );
+                        case ALL_COMPONENTS.TEAM_SEARCH + '_limit':
+                            return (
+                                <div className="condition-type-container user-condition-container">
+                                    <div className="condition-type-title">
+                                        {_.get(target, 'name')}
+                                        <i className="iconfont icon-delete handle-btn-item"
+                                            onClick={this.deleteConditionType.bind(this, limitType)}></i>
+                                    </div>
+                                    <div className="condition-type-content user-range-content">
+                                        <Select
+                                            value={_.get(value, 'teamRange')}
+                                            showSearch
+                                            mode="multiple"
+                                            onChange={this.handleChangeSelectTeam.bind(this, limitType, 'teamRange', index)}
+                                            filterOption={(input, option) => ignoreCase(input, option)}
+                                            getPopupContainer={() => document.getElementById('add_apply_condition')}
+                                        >
+                                            {_.map(this.state.teamList, (item, index) => {
+                                                return <Option value={item.group_id} key={index}>{item.group_name}</Option>;
                                             })}
                                         </Select>
                                     </div>
@@ -280,7 +340,7 @@ class AddApplyConditionPanel extends React.Component {
             var submitObj = _.cloneDeep(this.state.diffConditionLists);
             _.forEach(_.get(submitObj, 'limitRules'), (item) => {
                 var target = this.getConditionRelate(item.limitType);
-                target.conditionRule(item);
+                target.conditionRule(item);//生成随机的流程的key和对应的userIds的数组
             });
             if (this.props.updateConditionFlowKey) {
                 submitObj.updateConditionFlowKey = this.props.updateConditionFlowKey;
@@ -362,6 +422,7 @@ class AddApplyConditionPanel extends React.Component {
         );
     }
 }
+
 AddApplyConditionPanel.defaultProps = {
     hideRightPanel: function() {
 
@@ -373,7 +434,8 @@ AddApplyConditionPanel.defaultProps = {
     updateConditionObj: {},
     updateConditionFlowKey: '',
     userList: [],
-    roleList: []
+    roleList: [],
+    teamList: [],
 
 };
 AddApplyConditionPanel.propTypes = {
@@ -385,5 +447,6 @@ AddApplyConditionPanel.propTypes = {
     form: PropTypes.object,
     roleList: PropTypes.array,
     userList: PropTypes.array,
+    teamList: PropTypes.array,
 };
 export default Form.create()(AddApplyConditionPanel);

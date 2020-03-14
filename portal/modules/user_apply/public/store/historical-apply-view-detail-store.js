@@ -1,8 +1,8 @@
 import ApplyViewDetailActions from '../action/historical-apply-view-detail-actions';
 import { altAsyncUtil } from 'ant-utils';
 const { resultHandler } = altAsyncUtil;
-import { APPLY_TYPES, TIMERANGEUNIT, WEEKDAYS} from 'PUB_DIR/sources/utils/consts';
-import {checkIfLeader, isCustomDelayType, applyAppConfigTerminal} from 'PUB_DIR/sources/utils/common-method-util';
+import { APPLY_TYPES, TIMERANGEUNIT, WEEKDAYS, APPROVE_STATUS} from 'PUB_DIR/sources/utils/consts';
+import {checkIfLeader, isCustomDelayType, applyAppConfigTerminal, approveAppConfigTerminal} from 'PUB_DIR/sources/utils/common-method-util';
 import {getDelayDisplayTime} from '../util/app-user-util';
 class ApplyViewDetailStore {
     constructor() {
@@ -344,6 +344,11 @@ class ApplyViewDetailStore {
             const terminals = _.get(appInfo, 'terminals', []);
             if (!_.isEmpty(terminals)) {
                 appConfigObj.terminals = applyAppConfigTerminal(terminals, app_id, appList);
+            } else { // 申请新用户、延期前没有多终端信息，应用有默认多终端信息的情况
+                let appDefaultTerminal = approveAppConfigTerminal(app_id, appList);
+                if (!_.isEmpty(appDefaultTerminal)) {
+                    appConfigObj.terminals = appDefaultTerminal;
+                }
             }
             //延期（多应用)时，需要分用户进行配置
             if(apply_type === APPLY_TYPES.DELAY){
@@ -597,20 +602,7 @@ class ApplyViewDetailStore {
             };
         }
     }
-    //获取成员信息，使用其中的logo属性
-    getUserLogo(userInfo) {
-        //获取到reply列表
-        var list = this.replyListInfo.list;
-        //已经获取的用户id
-        var target_user_id = userInfo.user_id;
-        //遍历reply列表，找到user_id与获取user_id相同的，赋予user_logo
-        _.each(list, (reply) => {
-            if (reply.user_id === target_user_id) {
-                reply.user_logo = userInfo.user_logo;
-            }
-        });
-    }
-
+    
     getNextCandidate(result) {
         if (result.error) {
             this.candidateList = [];

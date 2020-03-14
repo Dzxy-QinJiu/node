@@ -38,7 +38,6 @@ export function getCustomerCoverageChart() {
         chartType: 'table',
         option: {
             pagination: false,
-            bordered: true,
             columns: [
                 {
                     title: Intl.get('common.definition', '名称'),

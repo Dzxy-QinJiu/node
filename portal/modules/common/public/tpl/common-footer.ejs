@@ -5,11 +5,9 @@
         color: #ffffff;
         font-family: 'Noto Sans CJK SC', 'Noto Sans CJK', 'Source Han Sans', source-han-sans-simplified-c, sans-serif !important;
     }
-
     #footer .footer-content {
         white-space: nowrap;
-        padding: 14px 20px;
-        line-height: 30px;
+        padding: 8px 16px;
         overflow: hidden;
         position: absolute;
         width: 100%;
@@ -17,22 +15,30 @@
         bottom: 0;
         right: 0;
     }
-
-    #footer .footer-content span {
-        margin-right: 12px;
+    #footer span, #footer a {
+        line-height: 30px;
+        margin-right: 4px;
     }
+     #footer a {
+        color: #ffffff;
+        text-decoration: none;
+     }
 </style>
 <div id='footer' class="footer">
     <div class="footer-content">
-                <span>
-                    <%= company %>
-                </span>
+         ©
+         <a href='<%= companyLink %>'>
+            <%= company %>
+        </a>
+        <a href='http://www.beian.miit.gov.cn/'>
+            <%= recordNum %>
+        </a>
         <span>
-                    <%= hotline %>
-                </span>
+            <%= hotline %>
+        </span>
         <span>
-                    <%= contact %>
-                </span>
+            <%= contact %>
+        </span>
     </div>
 </div>
 <% } %>
@@ -55,8 +61,8 @@
 </style>
 <% } %>
 </body>
-<% if((isCurtao && custom_service_lang) || show_custom_service) { %>
-<!-- custome service(baidu 商桥的客服) -->
+<% if(isCurtao && show_custom_service) { %>
+<!-- 百度商桥的客服、市场部的百度流量统计所需的百度脚本代码 -->
 <script>
     var _hmt = _hmt || [];
     (function() {

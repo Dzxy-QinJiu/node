@@ -411,6 +411,9 @@ exports.getUnhandledClueCountParams = function() {
                 availability: '0'
             },
         },
+        queryParam: {
+            self_pending: true
+        },
     };
 };
 //获取不同时间范围的开始和结束时间
@@ -981,33 +984,16 @@ function isSalesRole() {
 }
 exports.isSalesRole = isSalesRole;
 
-//是否管理员
-exports.isAdminRole = function() {
+function isAdminRole() {
     return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
-};
+}
+
+//是否管理员
+exports.isAdminRole = isAdminRole;
 
 //是否主管或运营人员
 exports.isManagerOrOpRole = function() {
     return userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER);
-};
-
-exports.subtracteGlobalClue = function(clueItem,callback) {
-    if (Oplate && Oplate.unread) {
-        var unHandleClueLists = Oplate.unread['unhandleClueList'];
-        var targetObj = _.find(unHandleClueLists,item => item.id === clueItem.id);
-        if (targetObj){
-            Oplate.unread['unhandleClue'] -= 1;
-            Oplate.unread['unhandleClueList'] = _.filter(unHandleClueLists,item => item.id !== clueItem.id);
-            if (timeoutFunc) {
-                clearTimeout(timeoutFunc);
-            }
-            timeoutFunc = setTimeout(function() {
-                //触发展示的组件待处理线索数的刷新
-                notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-            }, timeout);
-            _.isFunction(callback) && callback(true);
-        }
-    }
 };
 
 // 是否开通呼叫中心
@@ -1231,8 +1217,8 @@ function checkCurrentVersionType() {
 }
 exports.checkCurrentVersionType = checkCurrentVersionType;
 
-//返回版本信息及类型
-exports.checkVersionAndType = function() {
+
+function checkVersionAndType() {
     let version = checkCurrentVersion();
     let type = checkCurrentVersionType();
     return {
@@ -1243,7 +1229,10 @@ exports.checkVersionAndType = function() {
         isCompanyTrial: version.company && type.trial,
         isCompanyFormal: version.company && type.formal,
     };
-};
+}
+
+//返回版本信息及类型
+exports.checkVersionAndType = checkVersionAndType;
 
 //获取日程打电话时需要的类型（customer/lead）和id
 exports.getScheduleCallTypeId = function(scheduleItem) {
@@ -1352,6 +1341,17 @@ exports.applyAppConfigTerminal = (terminals, appId, appList) => {
     }
     return configTerminals;
 };
+
+// 审批时，根据申请的应用，显示对应的多终端信息
+exports.approveAppConfigTerminal = (appId, appList) => {
+    let matchApp = _.find(appList, item => item.app_id === appId);
+    let configTerminals = [];
+    if (matchApp && !_.isEmpty(matchApp.terminals)) {
+        configTerminals = matchApp.terminals;
+    }
+    return configTerminals;
+};
+
 //获取延期时间
 exports.getDelayTimeUnit = (delayTimeRange, delayTimeNumber) => {
     //延期周期
@@ -1517,4 +1517,11 @@ exports.checkCustomerTotalLeaveTime = function(startTime,endTime,customers,isAdd
             };
         }
     }
+};
+
+// 是否显示赢线索活动
+// 判断依据：试用（个人和企业）并且不是运营角色
+exports.isShowWinningClue = () => {
+    const versionAndType = checkVersionAndType();
+    return versionAndType.trial && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
 };

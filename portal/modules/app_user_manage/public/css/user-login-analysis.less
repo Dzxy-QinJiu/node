@@ -2,6 +2,11 @@
 * 用户分析样式
 */
 .user-analysis-panel {
+  .detail-card-container {
+    .title-container {
+      overflow: inherit;
+    }
+  }
   .load8 {
     transform: scale(0.5, 0.5);
     height: 36px;
@@ -37,7 +42,6 @@
     }
     // 用户登录信息
     .login-info {
-      height: 86px;
       .login-stress{
         font-weight:bold;
         padding-left: 5px;
@@ -46,6 +50,16 @@
     }
     // 登录次数、时长
     .login-chart {
+      position: relative;
+      .filter-ip {
+        padding-top: 2px;
+        position: absolute;
+        right: 0;
+        .ant-checkbox-wrapper>span{
+          font-weight: 400;
+          color: #000000a6;
+        }
+      }
       .box-container {
         background-color: #E6EDEF;
         .box-title {
@@ -67,7 +81,11 @@
         }
       }
       .duration-chart {
-        height:186px;
+        height: 126px;
+        .analysis-chart {
+          position: relative;
+          top: 10px;
+        }
       }
     }
     .alert-tip {

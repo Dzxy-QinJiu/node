@@ -12,7 +12,7 @@ const FormItem = Form.Item;
 import { nameLengthRule, validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-import {getOrganization, getFormattedCondition} from 'PUB_DIR/sources/utils/common-method-util';
+import {getOrganization, getFormattedCondition, isResponsiveDisplay, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import userData from 'PUB_DIR/sources/user-data';
 import history from 'PUB_DIR/sources/history';
 import ajax from 'ant-ajax';
@@ -28,6 +28,7 @@ var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-custo
 
 const LAYOUT = {
     LEFT_SIDEBAR_WIDTH: 75, // 左侧菜单栏宽度
+    BOTTOM_HEIGHT: 102,//底部高度
 };
 const STEPS_MAPS = {
     SET_FIRST: 'FIRST',//第一步
@@ -68,8 +69,14 @@ class BootCompleteInformation extends React.Component{
     hasSetWebConfigSuccess = false;
 
     componentDidMount() {
+        this.setContentHeight();
         this.getAreaByPhone();
         // this.getRecommendCustomerIndustry();
+    }
+
+    componentWillUnmount() {
+        //恢复框架右侧区域内容显示
+        $('.col-xs-10').css('display', 'block');
     }
 
     getRecommendCustomerIndustry = () => {
@@ -102,6 +109,22 @@ class BootCompleteInformation extends React.Component{
                 this.setState({isGetIndustrys: false});
             }
         });
+    };
+
+    //设置引导内容区域高度
+    setContentHeight = () => {
+        const { isWebMin } = isResponsiveDisplay();
+        //在手机端的时候才设置，由于样式文件里是height:100%
+        //在safari浏览器里，高度按100%计算会有问题
+        if(isWebMin) {
+            const contentEl = $('.boot-complete-content');
+            if (contentEl.length) {
+                //设置框架右侧区域内容隐藏，不要出现滚动条
+                $('.col-xs-10').css('display', 'none');
+                //这里取窗口的高度赋值
+                contentEl.height($(window).height());
+            }
+        }
     };
 
     getAreaByPhone = () => {
@@ -364,12 +387,38 @@ class BootCompleteInformation extends React.Component{
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '选择地域');
     };
 
+    setTabContentHeight = () => {
+        const { isWebMin } = isResponsiveDisplay();
+        if(isWebMin) {
+            //延迟300ms设置tab高度，防止手机端第一步设置行业时，输入框处于focus状态，影响window的高度获取
+            setTimeout(function() {
+                let tabContentEl = $('.boot-complete-step-second-wrapper .ant-tabs-content');
+                if(tabContentEl.length) {
+                    let height = $(window).height()
+                        - tabContentEl.offset().top
+                        - LAYOUT.BOTTOM_HEIGHT;
+                    tabContentEl.height(height);
+                }
+            }, 300);
+        }
+    };
+
+    isSetTabsContentHeight = () => {
+        const { isWebMin } = isResponsiveDisplay();
+        //手机端才需要手动设置，其他情况由组件自行设置tab高度
+        return !isWebMin;
+    };
+
     onReturnBack = (step) => {
         const operate = {
             [STEPS_MAPS.SET_FIRST]: '上一步',
             [STEPS_MAPS.SET_SECOND]: '下一步'
         };
-        this.setState({currentStep: step});
+        this.setState({currentStep: step}, () => {
+            if(step === STEPS_MAPS.SET_SECOND) {
+                this.setTabContentHeight();
+            }
+        });
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击' + operate[step]);
     };
 
@@ -506,7 +555,7 @@ class BootCompleteInformation extends React.Component{
                                         // onChange={this.handleSearch}
                                         onChange={this.handleIndustryChange}
                                         className='search-industry-input'
-                                        placeholder={Intl.get('clue.customer.input.industry', '请输入行业名称')}
+                                        placeholder={Intl.get('boot.please.input.industry.placeholder', '请输入关注的行业，如互联网、服务业等')}
                                     />
                                 )
                             }
@@ -583,6 +632,7 @@ class BootCompleteInformation extends React.Component{
                     hiddenCounty
                     showAllBtn
                     updateLocation={this.updateLocation}
+                    isSetTabsContentHeight={this.isSetTabsContentHeight}
                 />
                 <div className="btn-container clearfix">
                     <SaveCancelButton
@@ -598,13 +648,56 @@ class BootCompleteInformation extends React.Component{
         );
     }
 
+    //渲染欢迎语
+    renderWelcomeBlock() {
+        let tip = null;
+        const versionAndType = checkVersionAndType();
+        if(versionAndType.trial) {
+            const organization = getOrganization();
+            const version = _.get(organization, 'version', {});
+            const leadLimit = _.get(version, 'lead_limit', '');
+            const time = _.get(version, 'available_days', 0);
+            //lead_limit: "1000_1/D/p"
+            const count = _.get(leadLimit.split('_'),'[0]',0);
+            let content = null;
+            if(versionAndType.isPersonalTrial) {//个人试用,欢迎试用客套个人版，试用期3天，每人每天可免费提取20条线索
+                content = (
+                    <span className="boot-trial-welcome-text">{Intl.get('boot.personal.trial.welcome.tip', '欢迎试用客套个人版，试用期 {time} 天，每天可免费提取 {count} 条线索', {
+                        time,
+                        count
+                    })}</span>
+                );
+            }else if(versionAndType.isCompanyTrial) {//企业试用,欢迎试用客套，试用期3天，每人每天可免费提取20条线索
+                content = (
+                    <span className="boot-trial-welcome-text">{Intl.get('boot.company.trial.welcome.tip', '欢迎试用客套，试用期 {time} 天，每人每天可免费提取 {count} 条线索', {
+                        time,
+                        count
+                    })}</span>
+                );
+            }
+            tip = (<div className="boot-trial-welcome-tip">{content}</div>);
+        }else {
+            tip = (
+                <React.Fragment>
+                    <i className="iconfont icon-huanying"/>
+                    {Intl.get('personal.welcome.use.curtao', '欢迎使用客套，完成以下2步操作即可获取推荐线索')}
+                </React.Fragment>
+            );
+        }
+        return tip;
+    }
+
     renderContent() {
         const currentStep = this.state.currentStep;
+        const versionAndType = checkVersionAndType();
         const firstStepLabelCls = classNames({
             'current-step': currentStep === STEPS_MAPS.SET_FIRST
         });
         const secondStepLabelCls = classNames({
             'current-step': currentStep === STEPS_MAPS.SET_SECOND
+        });
+        const stepWrapperCls = classNames('boot-complete-step-container', {
+            'boot-trail-welcome-wrapper': versionAndType.trial
         });
         return (
             <div className="boot-complete-container">
@@ -613,10 +706,9 @@ class BootCompleteInformation extends React.Component{
                     {Intl.get('personal.welcome.use.curtao', '欢迎使用客套，完成以下2步操作即可获取推荐线索')}
                 </div>*/}
                 <div className="boot-complete-content">
-                    <div className="boot-complete-step-container">
-                        <div className='boot-complete-title'>
-                            <i className="iconfont icon-huanying"/>
-                            {Intl.get('personal.welcome.use.curtao', '欢迎使用客套，完成以下2步操作即可获取推荐线索')}
+                    <div className={stepWrapperCls}>
+                        <div className="boot-complete-title">
+                            {this.renderWelcomeBlock()}
                         </div>
                         <div className="boot-complete-step-content">
                             <div className="boot-complete-step-label">

@@ -97,11 +97,28 @@
     align-items: center;
     justify-content: center;
     .@{boot-complete}-step-container{
-      //width: 636px;
-      //margin: 0 auto;
-      //padding-top: 110px;
-      //height: 100%;
-      //overflow: hidden;
+      &.boot-trail-welcome-wrapper{
+        box-shadow: 0 0 15px 0 @CLICK-BLUE;
+        .@{boot-complete}-title{
+          height: auto;
+          line-height: unset;
+          padding: 16px 24px;
+          font-size: 16px;
+          color: @BORDER-BLUE;
+          background: transparent url("../../static/images/boot-title-bg.png") no-repeat;
+          background-size: 100% 120%;
+          margin-bottom: 0;
+          border-radius: unset;
+        }
+        .@{boot-complete}-step-content{
+          box-shadow: unset;
+        }
+        .boot-trial-welcome-tip{
+          .boot-trial-welcome-text{
+
+          }
+        }
+      }
       .boot-complete-step-title{
         font-size: 20px;
         margin-bottom: 15px;
@@ -421,7 +438,6 @@
         .area-selector{
           .area-selector-container{
             .ant-tabs-content{
-              height: calc(100vh - 281px)!important;
               max-height: unset;
               border: none;
               padding-left: 0;

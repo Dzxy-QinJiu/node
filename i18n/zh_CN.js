@@ -310,6 +310,9 @@ var zh_CN = {
     'common.all.terminals': '所有终端',
     'common.terminals': '终端',
     'common.period': '。',
+    'common.company.owner': '以上活动解释权归山东客套智能科技有限公司',
+    'common.have': '有',
+    'common.nothing': '无',
     //公共部分--end
     
     'login.login': '登录',
@@ -759,6 +762,7 @@ var zh_CN = {
     'user.login.last.month': '近一月',
     'user.login.last.week': '近一周',
     'user.login.last.title': '{title} 的活跃统计',
+    'user.login.analysis.filter.config.ip': '过滤配置IP',
     'user.login.last.failed': '获取用户最近登录统计信息失败',
     'user.login.analysis.user': '用户分析',
     'user.login.analysis.signed': '签约用户分析',
@@ -846,6 +850,7 @@ var zh_CN = {
     'user.position.input.name.search': '输入组织名称搜索',
     'user.position.number.tips': '请输入座席号',
     'user.position.select.user': '请选择用户',
+    'team.position.select.team': '请选择团队',
     /*用户管理模块-end*/
     'my.app.no.app': '暂无应用',
     'my.app.change.expire.time.placeholder': '请选择到期时间',
@@ -1411,6 +1416,7 @@ var zh_CN = {
     'user.apply.change.status.false': '申请禁用应用',
     'user.apply.change.status.true': '申请启用应用',
     'user.apply.presenter': '申请人',
+    'user.apply.team': '申请人所属团队',
     'user.apply.id': '账号申请',
     'user.apply.no.match.retry': '暂无符合查询条件的用户申请',
     'user.apply.no.unread': '已无未读回复的申请',
@@ -1841,6 +1847,8 @@ var zh_CN = {
     'crm.score.history.title': '历史分数',
     'crm.concern.top.set': '设置关注客户置顶',
     'crm.concern.top.cancel': '取消关注客户置顶',
+    'crm.see.concern.slef': '查看我关注的客户',
+    'crm.see.concern.slef.cancel': '取消查看我关注的客户',
     'crm.add.to.exist.customer': '添加到已有客户',
     'crm.select.add.contact': '请选择或输入联系人名称',
     'crm.fill.contact.name': '请输入联系人名称',
@@ -1979,6 +1987,7 @@ var zh_CN = {
     'crm.search.customer.detail.customer.pool': '客户已被删除或已被释放到{customerpool}',
     'crm.search.customer.no.customer.pool.dash': '客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看',
     'crm.batch.second.user': '变更联合跟进人',
+    'crm.has.contain.join.user': '是否有联合跟进人',
     // 客户管理end
 
     // 客户分析start
@@ -2665,6 +2674,7 @@ var zh_CN = {
     'errorcode.173': '线索转为客户失败',
     'errorcode.174': '线索合并到客户失败',
     'errorcode.175': '自己的线索不能分配给自己',
+    'errorcode.176': '操作失败，客户可能被转出、释放或删除',
     'errorcode.send.message.limit': '一分钟内不重复发送',
     'errorcode.phone.unbind.account.tip': '此手机号未绑定账号，请换其他手机号再试',
     //遗漏部分
@@ -2706,8 +2716,8 @@ var zh_CN = {
     'user.open.account': '开户账号',
     'user.add.only.one': '用户名是邮箱格式时，只能添加1个用户',
     'common.search': '搜索',
-    'company.name.curtao': '© 客套智能科技 鲁ICP备18038856号',
-    'company.name.eefung': '© 蚁坊软件 湘ICP备14007253号-1',
+    'company.name.curtao': '客套智能科技',
+    'company.name.eefung': '蚁坊软件',
     'companay.hotline': '服务热线: {phone}',
     'company.qq': '企业QQ: {qq}',
     'login.fail.login': '登录服务暂时不可用，请稍后重试',
@@ -2781,6 +2791,7 @@ var zh_CN = {
     'crm.phone.failed.add.trace': '添加跟进记录失败',
     'crm.phone.success.add.trace': '添加跟进记录成功',
     'crm.phone.failed.get.customer': '查询此号码对应的客户信息失败',
+    'crm.phone.failed.get.clue': '查询此号码对应的线索信息失败',
     'call.record.show.customer.detail': '查看详情',
     'call.record.customer.source': '来源',
     'call.record.no.response.customer': '此号码无对应{type}',
@@ -2830,6 +2841,7 @@ var zh_CN = {
     'failed.update.customer.detail': '更新线索客户信息失败',
     'clue.customer.distribute': '分配',
     'clue.customer.add.trace.content': '请填写跟进内容',
+    'clue.customer.other.contact_way': '其他联系方式',
     'failed.to.distribute.cluecustomer': '分配线索客户失败',
     'crm.alert.topic': '标题',
     'crm.contact.time': '联系时间',
@@ -3622,7 +3634,6 @@ var zh_CN = {
     'apply.add.condition.less.and.equal': '小于等于',
     'apply.add.condition.equal': '等于',
     'apply.add.condition.within': '介于',
-    'apply.condition.meet.rule': '满足条件',
     'apply.condition.apply.approve': '审批流程',
     'apply.condition.item.add.cc': '抄送人',
     'apply.condition.item.money': '金额',
@@ -3657,6 +3668,7 @@ var zh_CN = {
     'apply.cc.node.socket.noty': '系统弹窗',
     'apply.business.change.time.range': '请先修改总出差时间',
     'apply.please.add.assign.node': '流程不完整，需添加“指定审批人审批节点”',
+    'apply.please.add.approve.node': '流程不完整，需添加审批人节点',
     /*自定义流程 end*/
     'app.user.manage.role.name': '角色名称',
     'app.user.manage.organaization.name': '所在单位或公司',
@@ -3809,6 +3821,7 @@ var zh_CN = {
     'user.score.total.days': '总天数',
     'user.score.choose.interval': '请选择周期',
     'apply.approve.user.select': '用户选择',
+    'apply.approve.team.select': '团队选择',
     // 引导流程
     'guide.add.customer.title': '添加您的客户',
     'guide.add.customer.des': '添加客户后，可以轻松跟进您的客户',
@@ -3868,9 +3881,12 @@ var zh_CN = {
     'clue.recommend.extract.num.limit': '您所在组织{timerange}提取的线索数已达{maxLimit}条上限，请明天再来提取',
     'clue.recommend.has.extract': '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
     'clue.recommend.formal.extract.num.limit.tip': '本月{count}条已提取完毕，如需继续提取请{addClues}',
-    'clue.recommend.trial.extract.num.limit.tip': '已提取{count}条，如需继续提取请{upgradedVersion}',
-    'clue.recommend.company.trial.extract.num.limit.tip': '已提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}',
+    'clue.recommend.trial.extract.num.limit.tip': '还可提取{count}条，如需继续提取请{upgradedVersion}',
+    'clue.recommend.company.trial.extract.num.limit.tip': '还可提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}',
     'clue.recommend.company.formal.sales.extract.num.limit.tip': '本月{count}条已提取完毕，如需继续提取请联系管理员',
+    'clue.recommend.default.tip': '{timerange}还可提取{ableExtract}条线索',
+    'clue.recommend.selected.extract.tip': '已选中{count}条，还可提取{ableExtract}条线索',
+    'clue.extract.count.has.been.exceed': '已超过可提取数',
 
     'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',
@@ -3906,6 +3922,9 @@ var zh_CN = {
     'clue.see.recommend': '查看推荐',
     'clue.recommend.has.extract.count': '{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
     'clue.recommend.has.extracted.count': '{timerange}已提取{hasExtract}条线索',
+    'clue.recommend.hot.name': '热门',
+    'clue.recommend.return.to.work': '已复工企业',
+    'clue.recommend.listed': '上市企业',
     // 线索分配策略
     'clue.assignment.strategy.add': '添加分配策略',
     'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',
@@ -4008,6 +4027,9 @@ var zh_CN = {
     'boot.input.industry': '请输入关注的行业',
     'boot.set.recommend.clue.faild': '设置失败，请重试一次',
     'personal.upgrade.company.trial.tip': '开通企业试用后，可体验拨打电话功能',
+    'boot.personal.trial.welcome.tip': '欢迎试用客套个人版，试用期 {time} 天，每天可免费提取 {count} 条线索',
+    'boot.company.trial.welcome.tip': '欢迎试用客套，试用期 {time} 天，每人每天可免费提取 {count} 条线索',
+    'boot.please.input.industry.placeholder': '请输入关注的行业，如互联网、服务业等',
     /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/

@@ -794,6 +794,7 @@
     //申请用户的各应用配置面板
     .apply_custom_setting_wrap {
       background-color: @apply-detail-bg-color;
+      margin-top: 10px;
       .apply_detail_operate {
         width: 100%;
         padding-right: 10px;
@@ -1011,6 +1012,47 @@
   }
   .button-zones {
     position: inherit;
+  }
+}
+
+.my-work-detail-panel {
+  .app_user_manage_apply_detail_wrap {
+    .delay_detail_apps {
+      .apply_detail_operate {
+        cursor: pointer;
+        top: 2px !important;
+      }
+    }
+    .app-property-custom-settings{
+      .app-property-content {
+        padding-bottom: 10px;
+        margin-top: 0;
+        .form-item {
+          display: flex;
+          height: 40px;
+          .form-item-label {
+            text-align: end;
+            width: 60px;
+            padding: 14px 10px 0 0;
+          }
+          .form-item-content {
+            padding-left: 0;
+            .user-time-rangefield-block {
+              .user-opening-daterange {
+                .range_wrap {
+                  min-width: 70px ;
+                  padding: 8px 4px;
+                }
+                .date_text_wrap {
+                  padding: 8px 3px;
+                }
+              }
+
+            }
+          }
+        }
+      }
+    }
   }
 }
 

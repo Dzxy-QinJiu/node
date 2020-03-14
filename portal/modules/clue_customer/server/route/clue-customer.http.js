@@ -17,14 +17,6 @@ module.exports = {
             'needLogin': true
         }
     }, {
-        //导出线索
-        'method': 'post',
-        'path': '/rest/customer/v2/customer/range/selfHandle/clue/export/:page_size/:sort_field/:order/:type',
-        'handler': 'exportClueFulltextSelfHandle',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
         method: 'get',
         path: '/rest/sales_clue/source',
         handler: 'getClueSource',
@@ -149,13 +141,6 @@ module.exports = {
             'needLogin': true
         }
     }, {
-        method: 'post',
-        path: '/rest/get/clue/selfhandle/fulltext/:page_size/:page_num/:sort_field/:order/:type',
-        handler: 'getClueFulltextSelfHandle',
-        passport: {
-            'needLogin': true
-        }
-    }, {
         method: 'get',
         path: '/rest/clue_dynamic/:clue_id/:page_size',
         handler: 'getDynamicList',
@@ -185,7 +170,7 @@ module.exports = {
         }
     }, {
         method: 'post',
-        path: '/rest/clue/detail/belongTome/:page_size/:page_num/:sort_field/:order/:type',
+        path: '/rest/clue/detail/belongTome/:page_size/:sort_field/:order/:type',
         handler: 'getClueDetailByIdBelongTome',
         passport: {
             'needLogin': true

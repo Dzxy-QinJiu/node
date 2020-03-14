@@ -49,8 +49,13 @@
         }
         .user-agreement-wrap .isloading {
             position: absolute;
-            top: 45%;
-            left: 48%;
+            height: 70px;
+            width: 70px;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            margin: auto;
         }
         .load8 .loader8 {
             margin: auto;
@@ -111,7 +116,7 @@
 <% // --- 隐私政策界面 ---   %>
 <script src="/resources/privacy_policy.bundle.js?timestamp=<%= timeStamp %>"></script>
 <% }%>
-<% // 展示客服           %>
-<% show_custom_service = true %>
+<% // 用户协议、隐私政策不展示客服           %>
+<% show_custom_service = false %>
 <% showFooterContent = true %>
 <% include ../../common/public/tpl/common-footer.ejs %>

@@ -23,7 +23,7 @@ class OperateSuccessTip extends React.Component {
     renderCoutDownBlock = (seconds) => {
         return <Spinner
             className='loading-wrapper'
-            content={seconds}
+            content={_.toString(seconds)}
             loadingText={this.props.countDownMsg}
         />;
     };

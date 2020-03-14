@@ -405,7 +405,6 @@ class CustomerRepeat extends React.Component {
                     ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
                     updateCustomerDefContact: CustomerRepeatAction.updateCustomerDefContact,
                     hideRightPanel: this.hideRightPanel,
-                    isUseCustomerContacts: true//联系人用客户对象上的contacts,不用再通过接口获取
                 }
             });
         }

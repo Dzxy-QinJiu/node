@@ -47,7 +47,8 @@ function ClueCustomerActions() {
         'setPageNum',
         'remarkLeadExtractedByOther',//给被别人提取过的线索加一个标识
         'initialRecommendClues',//初始化推荐线索相关条件及状态
-        'afterNewExtract'//提取推荐线索后
+        'afterNewExtract',//提取推荐线索后
+        'setHotSource',//设置热门选项
     );
     //获取销售列表
     this.getSalesManList = function(cb) {
@@ -63,7 +64,7 @@ function ClueCustomerActions() {
     //获取个人客户推荐配置
     this.getSettingCustomerRecomment = function(condition, callback) {
         //引导页设置了推荐条件后跳转过来时，用引导页设置的推荐条件
-        if(condition){
+        if(!_.isEmpty(condition)){
             _.isFunction(callback) && callback(condition);
             this.dispatch({list: [condition]});
         } else {
@@ -189,23 +190,6 @@ function ClueCustomerActions() {
             });
         });
         
-    };
-    
-    
-    this.getClueFulltextSelfHandle = function(queryObj,callback) {
-        //是否是在全部状态下返回数据
-        this.dispatch({error: false, loading: true
-        });
-        clueCustomerAjax.getClueFulltextSelfHandle(queryObj).then((result) => {
-            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback,queryObj: queryObj});
-        }, (errorMsg) => {
-            this.dispatch({
-                error: true,
-                loading: false,
-                errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索列表失败')
-            });
-        });
     };
     // 获取所有成员
     this.getAllSalesUserList = function(cb) {

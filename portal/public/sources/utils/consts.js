@@ -5,6 +5,8 @@
 import {regex} from 'ant-utils';
 import {Button} from 'antd';
 import { moneySize, staffSize } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import giftLogo from '../../../static/images/gift.png';
+export const GIFT_LOGO = giftLogo;
 //用户类型的下拉选项
 export const userTypeList = [
     {name: Intl.get('user.online.all.type', '全部类型'), value: ''},
@@ -384,6 +386,14 @@ export const APPLY_TYPES = {
     APPLY_STH_ELSE: 'apply_sth_else',//其他类型
     APPLY_GRANT_DELAY: 'apply_grant_delay',//延期申请
     APPLY_GRANT_STATUS_CHANGE: 'apply_grant_status_change'//申请开通状态
+};
+
+//  审批状态
+export const APPROVE_STATUS = {
+    ONGOING: '0', // 待审批
+    PASS: '1', // 已通过
+    REJECT: '2', // 已驳回
+    CANCEl: '3' // 已撤销
 };
 
 //多应用申请审批类型
@@ -868,3 +878,5 @@ export const OFFDUTY_TYPE = {
     VISIT: 'customer_visit', //出差
     GO_OUT: 'businesstrip_awhile' //外出
 };
+
+export const DISAPPEAR_DELAY_TIME = 3000;

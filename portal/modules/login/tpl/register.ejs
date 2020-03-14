@@ -52,8 +52,13 @@
         }
         .register-wrap .isloading {
             position: absolute;
-            top: 45%;
-            left: 48%;
+            height: 70px;
+            width: 70px;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            margin: auto;
         }
         .load8 .loader8 {
             margin: auto;
@@ -109,7 +114,6 @@
 <script src="/resources/common.bundle.js?timestamp=<%= timeStamp %>"></script>
 <% // --- 注册界面 ---   %>
 <script src="/resources/register.bundle.js?timestamp=<%= timeStamp %>"></script>
-<% // 注册页展示客服           %>
 <% show_custom_service = true %>
 <% showFooterContent = true %>
 <% include ../../common/public/tpl/common-footer.ejs %>

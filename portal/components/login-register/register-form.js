@@ -6,8 +6,8 @@
 require('./css/register.less');
 const PropTypes = require('prop-types');
 import Trace from '../../lib/trace';
-import {commonPhoneRegex} from '../../public/sources/utils/validate-util';
-import { passwordRegex, PassStrengthBar, getPassStrenth} from 'CMP_DIR/password-strength-bar';
+import {commonPhoneRegex, checkPassword, checkConfirmPassword} from '../../public/sources/utils/validate-util';
+import {PassStrengthBar} from 'CMP_DIR/password-strength-bar';
 import crypto from 'crypto';
 import {Form, Input, Icon, Button, Col} from 'antd';
 import {TextField} from '@material-ui/core';
@@ -19,7 +19,6 @@ const CODE_EFFECTIVE_TIME = 60;
 const CODE_INTERVAL_TIME = 1000;
 let getVerifyErrorCaptchaCodeAJax = null;
 var base64_prefix = 'data:image/png;base64,';
-let phoneIsPassValid = false;//电话规则验证是否通过
 class RegisterForm extends React.Component {
     constructor(props) {
         super(props);
@@ -33,6 +32,7 @@ class RegisterForm extends React.Component {
             validateNameOnlyMsg: '',//验证公司标识唯一性的提示
             registerErrorMsg: '',//注册的错误提示
             phoneIsRegisted: false,//手机号是否被注册过
+            phoneIsPassValid: false, //手机号验证是否通过
             isCheckingRegistedPhone: '',//记录正在验证的是否被注册过的电话
             passBarShow: false,//密码强度条是否展示
             passStrength: '',//密码强度
@@ -47,8 +47,8 @@ class RegisterForm extends React.Component {
     }
    
     componentWillUnmount() {
-        //组件注销前，将电话是否通过验证的标识恢复默认值
-        phoneIsPassValid = false;
+        //组件注销前，将电话是否通过验证\是否注册过的标识恢复默认值
+        this.setState({phoneIsPassValid: false, phoneIsRegisted: false});
     }
     //获取网页的来源
     getWebReferrer() {
@@ -191,7 +191,7 @@ class RegisterForm extends React.Component {
                 </Button>);
         } else {
             // 电话通过验证 并且 电话未被注册时，按钮才可用
-            let btnEnable = phoneIsPassValid && !this.state.phoneIsRegisted;
+            let btnEnable = this.state.phoneIsPassValid && !this.state.phoneIsRegisted;
             return (
                 <Button disabled={!btnEnable} className={btnEnable ? 'captcha-btn' : ''}>
                     {Intl.get('register.get.phone.captcha.code', '获取验证码')}
@@ -299,9 +299,16 @@ class RegisterForm extends React.Component {
             });
         }
     }
-    onPhoneChange = () => {
+    onPhoneChange = (e) => {
+        let phone = e.target.value;
+        let phoneIsPassValid = false;
+        if (phone && commonPhoneRegex.test(phone)) {
+            //电话验证通过即可点击获取短信验证码
+            phoneIsPassValid = true;
+        }
         // 修改电话后，将电话已被注册的提示去掉，将获取短信验证码的按钮设为不可用
         this.setState({
+            phoneIsPassValid,
             phoneIsRegisted: false,
             registerErrorMsg: ''
         });
@@ -311,17 +318,13 @@ class RegisterForm extends React.Component {
         let phone = _.trim(value);
         if (phone) {
             if (commonPhoneRegex.test(phone)) {
-                //电话验证通过即可点击获取短信验证码
-                phoneIsPassValid = true;
                 // 电话通过验证后，将电话上传到matomo上记录
                 Trace.traceEvent('个人注册页面', '输入手机号:' + phone);
                 callback();
             } else {
-                phoneIsPassValid = false;
                 callback(Intl.get('register.phon.validat.tip', '请输入正确的手机号, 格式如:13877775555'));
             }
         } else {
-            phoneIsPassValid = false;
             callback(Intl.get('user.input.phone', '请输入手机号'));
         }
     }
@@ -338,40 +341,25 @@ class RegisterForm extends React.Component {
             callback(Intl.get('retry.input.captcha', '请输入验证码'));
         }
     }
+
     checkPass = (rule, value, callback) => {
-        if (value && value.match(passwordRegex)) {
-            let rePassWord = this.props.form.getFieldValue('rePwd');
-            //密码强度的校验
-            //获取密码强度及是否展示
-            var passStrengthObj = getPassStrenth(value);
-            this.setState({
-                passBarShow: passStrengthObj.passBarShow,
-                passStrength: passStrengthObj.passStrength
-            });
-            // 不允许设置弱密码
-            if (passStrengthObj.passStrength === 'L') {
-                callback(Intl.get('register.password.strength.tip', '密码强度太弱，请更换密码'));
-            } else if (rePassWord && value !== rePassWord ) {// 输入确认密码后再判断是否一致
-                callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
-            } else {
-                callback();
-            }
-        } else {
-            this.setState({
-                passBarShow: false,
-                passStrength: ''
-            });
-            callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
-        }
+        let { getFieldValue, validateFields } = this.props.form;
+        let rePassWord = getFieldValue('rePwd');
+        checkPassword(this, value, callback, rePassWord, () => {
+            // 如果密码验证通过后，需要强制刷新下确认密码的验证，以防密码不一致的提示没有去掉
+            validateFields(['rePwd'], {force: true});
+        });
     };
    
     checkPass2 = (rule, value, callback) => {
-        if (value && value !== this.props.form.getFieldValue('pwd')) {
-            callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
-        } else {
-            callback();
-        }
+        let { getFieldValue, validateFields } = this.props.form;
+        let password = getFieldValue('pwd');
+        checkConfirmPassword(value, callback, password, () => {
+            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
+            validateFields(['pwd'], {force: true});
+        });
     }
+
     // onChangeUserAgreement = (e) => {
     //     this.setState({
     //         checkedUserAgreement: e.target.checked,
@@ -399,7 +387,8 @@ class RegisterForm extends React.Component {
                 <Input type="password" className='password-hidden-input' name="pwd"/>
                 <FormItem>
                     {getFieldDecorator('phone', {
-                        rules: [{validator: this.validatePhone}]
+                        rules: [{validator: this.validatePhone}],
+                        validateTrigger: 'onBlur'
                     })(
                         <TextField
                             required
@@ -413,7 +402,7 @@ class RegisterForm extends React.Component {
                             autoComplete="off"
                         />
                     )}
-                    {this.state.phoneIsRegisted ? (<div className="register-error-tip">
+                    {this.state.phoneIsRegisted && this.state.phoneIsPassValid ? (<div className="register-error-tip">
                         <ReactIntl.FormattedMessage
                             id="register.phone.has.registed.to.login"
                             defaultMessage='该手机号已被注册, 去 {login}'
@@ -492,8 +481,6 @@ class RegisterForm extends React.Component {
                 <FormItem>
                     {getFieldDecorator('rePwd', {
                         rules: [{
-                            required: true, message: Intl.get('common.input.confirm.password', '请输入确认密码')
-                        }, {
                             validator: this.checkPass2
                         }]
                     })(
@@ -526,7 +513,7 @@ class RegisterForm extends React.Component {
                         }}
                     />
                 </div>
-                <FormItem>
+                <FormItem className='register-btn-form-item'>
                     <div className='register-btn'>
                         <Button 
                             fullWidth

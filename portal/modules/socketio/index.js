@@ -48,13 +48,26 @@ const CLUE_MESSAGE_TYPE = {
     RULE_AUTO_DISTRIBUTION: 'rule_auto_distribution',//自动分配线索
     ADD_CUSTOMER_CLUE: 'addCustomerClue',//添加线索
     BASE_EXTRACT_ALLOT: 'base_extract_allot',//推荐线索提取的类型
-    POOL_EXTRACT_ALLOT: 'pool_extract_allot'//线索池提取的线索类型
+    POOL_EXTRACT_ALLOT: 'pool_extract_allot',//线索池提取的线索类型
+    INVAILID: 'invaild',//线索标为无效
+    RELEASR_LEAD_POOL: 'release_lead_pool',// 线索释放到线索池
+    LEAD_DELETE: 'lead_delete',// 线索删除
+    BEEN_TRACED: 'been_traced',// 待我处理被处理(比如填写了跟进记录或者)
+    LEAD_CREATE_CUSTOMER: 'lead_create_customer',//线索转为客户
+    LEAD_MERGE_CUSTOMER: 'lead_merge_customer'//线索合并到客户
 };
 const CLUE_ADD_TYPE = [CLUE_MESSAGE_TYPE.MANUL_NEW_DISTRIBUTION,
     CLUE_MESSAGE_TYPE.RULE_AUTO_DISTRIBUTION,
     CLUE_MESSAGE_TYPE.ADD_CUSTOMER_CLUE,
     CLUE_MESSAGE_TYPE.BASE_EXTRACT_ALLOT,
-    CLUE_MESSAGE_TYPE.POOL_EXTRACT_ALLOT];
+    CLUE_MESSAGE_TYPE.POOL_EXTRACT_ALLOT,
+    CLUE_MESSAGE_TYPE.INVAILID,
+    CLUE_MESSAGE_TYPE.RELEASR_LEAD_POOL,
+    CLUE_MESSAGE_TYPE.LEAD_DELETE,
+    CLUE_MESSAGE_TYPE.BEEN_TRACED,
+    CLUE_MESSAGE_TYPE.LEAD_CREATE_CUSTOMER,
+    CLUE_MESSAGE_TYPE.LEAD_MERGE_CUSTOMER
+];
 /*
  * 为socket请求设置sessionId.
  * @param  ioServer  socket.io 的server

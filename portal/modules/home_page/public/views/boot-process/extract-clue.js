@@ -4,11 +4,10 @@
  * Created by tangmaoqin on 2019/08/01.
  */
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import { Checkbox, Button, message, Popover } from 'antd';
+import { Checkbox, Button, message, Popover, notification } from 'antd';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
 var clueCustomerStore = require('MOD_DIR/clue_customer/public/store/clue-customer-store');
-var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import {batchPushEmitter, notificationEmitter, showWiningClueEmitter} from 'PUB_DIR/sources/utils/emitters';
 var paymentEmitter = require('PUB_DIR/sources/utils/emitters').paymentEmitter;
 var batchOperate = require('PUB_DIR/sources/push/batch');
 import userData from 'PUB_DIR/sources/user-data';
@@ -25,8 +24,8 @@ import {
 import { formatSalesmanList, checkCurrentVersionType, checkVersionAndType, isResponsiveDisplay } from 'PUB_DIR/sources/utils/common-method-util';
 import { getMaxLimitExtractClueCount, updateGuideMark } from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
-import DifferentVersion from 'MOD_DIR/different_version/public';
-import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon } from 'PUB_DIR/sources/utils/consts';
+import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon, GIFT_LOGO} from 'PUB_DIR/sources/utils/consts';
+import WinningClue from 'CMP_DIR/winning-clue';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 
 const LAYOUT_CONSTANCE = {
@@ -34,6 +33,17 @@ const LAYOUT_CONSTANCE = {
     PADDING_TOP: 24,// 距离顶部标题区域高度
     BTN_PADDING: 10, //底部按钮区域高度
 };
+
+//换一批
+const ANOTHER_BATCH = 'anotherBatch';
+
+const HOT_SELECTORS = [/*{
+    name: Intl.get('clue.recommend.return.to.work', '已复工企业'),
+    value: '复工'
+},*/{
+        name: Intl.get('clue.recommend.listed', '上市企业'),
+        value: '上市'
+    }];
 
 class ExtractClues extends React.Component {
     constructor(props) {
@@ -51,9 +61,11 @@ class ExtractClues extends React.Component {
             maxLimitExtractNumber: 0,//该账号的最大提取线索数量（试用账号是今天的，正式账号是本月的）
             getMaxLimitExtractNumberError: false,//获取该账号的最大提取量出错
             hasNoExtractCountTip: false,//批量操作展示popover
+            disableExtract: false,//是否还能提取
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             canClickExtract: true, //防止连续点击批量提取相同线索
             showDifferentVersion: false,//是否显示版本信息面板
+            isShowWiningClue: false, // 是否显示领线索活动界面
             ...clueCustomerStore.getState()
         };
     }
@@ -75,7 +87,6 @@ class ExtractClues extends React.Component {
         paymentEmitter.removeListener(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
         paymentEmitter.removeListener(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, this.handleUpdateClues);
         clueCustomerStore.unlisten(this.onStoreChange);
-        clueCustomerAction.initialRecommendClues();
     }
 
     batchExtractCluesLists = (taskInfo, taskParams) => {
@@ -129,7 +140,9 @@ class ExtractClues extends React.Component {
         hasExtractCount++;
         this.setState({
             disabledCheckedClues: _.filter(disabledCheckedClues,item => item.id !== updateClueId),
-            hasExtractCount: hasExtractCount
+            hasExtractCount: hasExtractCount,
+            //判断是否还能提取
+            disableExtract: !this.isExtractedCount(hasExtractCount).ableExtract
         });
         clueCustomerAction.updateRecommendClueLists(updateClueId);
     };
@@ -175,11 +188,13 @@ class ExtractClues extends React.Component {
             this.setState({canClickExtract: false});
         }
         getMaxLimitExtractClueCount().then((data) => {
+            let disableExtract = !(data.maxCount - data.hasExtractedCount);
             this.setState({
                 hasExtractCount: data.hasExtractedCount,
                 maxLimitExtractNumber: data.maxCount,
+                disableExtract
             });
-            _.isFunction(callback) && callback(data.hasExtractedCount);
+            _.isFunction(callback) && callback(data.hasExtractedCount, disableExtract);
         }, (error) => {
             _.isFunction(callback) && callback('error');
         }
@@ -363,87 +378,143 @@ class ExtractClues extends React.Component {
     getTimeRangeText = () => {
         return checkCurrentVersionType().trial ? Intl.get('user.time.today', '今天') : Intl.get('common.this.month', '本月');
     };
+
+    handleClickWinningClue = () => {
+        this.setState({
+            isShowWiningClue: true
+        }, () => {
+            GeminiScrollbar.scrollTo(this.refs.scrolltoTop, 0);
+            showWiningClueEmitter.emit(showWiningClueEmitter.SHOW_WINNING_CLUE);
+        });
+    }
+
+    handleClickCloseWinningClue = (flag) => {
+        this.setState({
+            isShowWiningClue: flag
+        });
+    }
+
+    renderWinningClueBtn = () => {
+        return (
+            <Button
+                className="winning-clue-btn"
+                data-tracename="点击领线索按钮"
+                onClick={this.handleClickWinningClue}
+            >
+                <img className="gift-logo" src={GIFT_LOGO} />
+                <span className="text">领线索</span>
+            </Button>
+        );
+    }
+
+    getSelectedClues = () => {
+        return _.isEmpty(this.state.selectedRecommendClues) ? this.state.disabledCheckedClues : this.state.selectedRecommendClues;//选中的线索
+    };
+
+    // 可提取数为0时，或者选中的个数等于可提取数时
+    isExtractedCount(hasExtractCount) {
+        let selectedRecommendClues = this.getSelectedClues();
+        let selectedClueLength = _.get(selectedRecommendClues, 'length',0);
+        let maxLimitExtractNumber = this.state.maxLimitExtractNumber;
+        hasExtractCount = hasExtractCount || this.state.hasExtractCount;
+        //可提取数
+        let ableExtract = maxLimitExtractNumber > hasExtractCount ? maxLimitExtractNumber - hasExtractCount : 0;
+        //选中的个数等于可提取数时
+        let isExtractedEqual = _.isEqual(selectedClueLength, ableExtract);
+
+        return {
+            ableExtract,
+            isExtractedEqual
+        };
+    }
+
     //提取数为0时显示的提示信息
     hasNoExtractCountTip = () => {
         var maxLimitExtractNumber = this.state.maxLimitExtractNumber;
         var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
         let versionAndType = checkVersionAndType();
-        const i18Obj = {hasExtract: <span className="has-extracted-count">{this.state.hasExtractCount}</span>, ableExtract: ableExtract, timerange: this.getTimeRangeText()};
+        const i18Obj = {hasExtract: <span className="has-extracted-count">{this.state.hasExtractCount}</span>, ableExtract: <span className="has-extracted-count">{ableExtract}</span>, timerange: this.getTimeRangeText()};
         let maxLimitTip = <ReactIntl.FormattedMessage
-            id="clue.recommend.has.extracted.count"
-            defaultMessage={'{timerange}已提取{hasExtract}条线索'}
+            id="clue.recommend.default.tip"
+            defaultMessage={'{timerange}还可提取{ableExtract}条线索'}
             values={i18Obj}
         />;
-        if(!ableExtract && this.state.hasNoExtractCountTip){
-            //个人版试用提示升级,正式提示增加线索量
-            //企业版试用提示升级,正式（管理员）提示增加线索量
-            if(versionAndType.isPersonalTrial) {//个人试用
-                maxLimitTip = <ReactIntl.FormattedMessage
-                    id="clue.recommend.trial.extract.num.limit.tip"
-                    defaultMessage={'已提取{count}条，如需继续提取请{upgradedVersion}'}
-                    values={{
-                        count: <span className="has-extracted-count">{maxLimitExtractNumber}</span>,
-                        upgradedVersion: (
-                            <Button className="customer-btn" data-tracename="点击个人升级为正式版按钮"
-                                title={Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
-                                onClick={this.handleUpgradePersonalVersion}>
-                                {Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
-                            </Button>
-                        )
-                    }}
-                />;
-            } else if(versionAndType.isCompanyTrial) {//企业试用
-                maxLimitTip = <ReactIntl.FormattedMessage
-                    id="clue.recommend.company.trial.extract.num.limit.tip"
-                    defaultMessage={'已提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}'}
-                    values={{
-                        count: <span className="has-extracted-count">{maxLimitExtractNumber}</span>,
-                        contact: COMPANY_PHONE
-                    }}
-                />;
-            } else if(versionAndType.isPersonalFormal//个人正式版
-                || versionAndType.isCompanyFormal && this.isManager()) { //或企业正式版管理员
-                maxLimitTip = <ReactIntl.FormattedMessage
-                    id="clue.recommend.formal.extract.num.limit.tip"
-                    defaultMessage={'本月{count}条已提取完毕，如需继续提取请{addClues}'}
-                    values={{
-                        count: <span className="has-extracted-count">{maxLimitExtractNumber}</span>,
-                        addClues: (
-                            <Button className="customer-btn" data-tracename="点击增加线索量"
-                                title={Intl.get('goods.increase.clues', '增加线索量')}
-                                onClick={this.handleClickAddClues}>
-                                {Intl.get('goods.increase.clues', '增加线索量')}
-                            </Button>
-                        )
-                    }}
-                />;
-            }else if(versionAndType.isCompanyFormal && !this.isManagerOrOperation()) {//企业正式版销售（除了管理员和运营人员）
-                maxLimitTip = <ReactIntl.FormattedMessage
-                    id="clue.recommend.company.formal.sales.extract.num.limit.tip"
-                    defaultMessage={'本月{count}条已提取完毕，如需继续提取请联系管理员'}
-                    values={{
-                        count: <span className="has-extracted-count">{maxLimitExtractNumber}</span>
-                    }}
-                />;
-            }
-        }else if(this.state.hasNoExtractCountTip) {
-            if(versionAndType.isCompanyFormal) {
-                i18Obj.id = 'clue.recommend.has.extract';
-                i18Obj.name = '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索';
-            }else {
-                i18Obj.id = 'clue.recommend.has.extract.count';
-                i18Obj.name = '{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索';
-            }
-            return (
-                <ReactIntl.FormattedMessage
-                    id={i18Obj.id}
-                    defaultMessage={i18Obj.name}
-                    values={i18Obj}
-                />
+        if(versionAndType.isPersonalTrial || versionAndType.isCompanyTrial) {//个人试用/企业试用,展示领取线索按钮
+            maxLimitTip = (
+                <React.Fragment>
+                    <ReactIntl.FormattedMessage
+                        id="clue.recommend.default.tip"
+                        defaultMessage={'{timerange}还可提取{ableExtract}条线索'}
+                        values={i18Obj}
+                    />
+                    {this.renderWinningClueBtn()}
+                </React.Fragment>
             );
         }
         return maxLimitTip;
     };
+    //超限时的事件处理
+    handleExtractLimit = (disableExtract) => {
+        var maxLimitExtractNumber = this.state.maxLimitExtractNumber;
+        var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
+        let versionAndType = checkVersionAndType();
+        const i18Obj = {hasExtract: <span className="has-extracted-count">{this.state.hasExtractCount}</span>, ableExtract: <span className="has-extracted-count">{ableExtract}</span>, timerange: this.getTimeRangeText()};
+        let maxLimitTip = null;
+
+        /***
+         * 超限下的处理
+         * 个人试用：直接滑出付费界面
+         * 个人正式、企业正式管理员：直接滑出增加线索量界面
+         * 企业试用、企业正式销售，展示notification弹框
+         *
+         * 选中个数超过可提取数时
+         * 个人版和企业正式管理员：直接弹出付费或者购买线索量界面
+         * 企业试用和企业正式销售，展示notification弹框
+        */
+        if(versionAndType.isPersonalTrial) {//个人试用
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '点击个人升级为正式版按钮');
+            this.handleUpgradePersonalVersion();
+        }else if(versionAndType.isPersonalFormal//个人正式版
+            || versionAndType.isCompanyFormal && this.isManager()) { //或企业正式版管理员
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '点击增加线索量按钮');
+            this.handleClickAddClues();
+        }else if(disableExtract && versionAndType.isCompanyTrial) {//超限时，企业试用
+            maxLimitTip = <ReactIntl.FormattedMessage
+                id="clue.recommend.company.trial.extract.num.limit.tip"
+                defaultMessage={'还可提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}'}
+                values={{
+                    count: <span className="has-extracted-count">{ableExtract}</span>,
+                    contact: COMPANY_PHONE
+                }}
+            />;
+        } else if(disableExtract && versionAndType.isCompanyFormal && !this.isManagerOrOperation()) {//超限时，企业正式版销售（除了管理员和运营人员）
+            maxLimitTip = <ReactIntl.FormattedMessage
+                id="clue.recommend.company.formal.sales.extract.num.limit.tip"
+                defaultMessage={'本月{count}条已提取完毕，如需继续提取请联系管理员'}
+                values={{
+                    count: <span className="has-extracted-count">{maxLimitExtractNumber}</span>
+                }}
+            />;
+        }else {//选中个数超过可提取数时
+            maxLimitTip = <ReactIntl.FormattedMessage
+                id="clue.recommend.has.extract.count"
+                defaultMessage="{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索"
+                values={i18Obj}
+            />;
+        }
+
+        if(maxLimitTip) {
+            notification.open({
+                key: Date.now(),
+                description: (<div>
+                    <i className="iconfont icon-warn-icon"/>
+                    {maxLimitTip}
+                </div>),
+                className: 'extract-notification-wrapper'
+            });
+        }
+    };
+
     batchAssignRecommendClues = (submitObj) => {
         this.setState({
             hasNoExtractCountTip: false,
@@ -473,7 +544,7 @@ class ExtractClues extends React.Component {
             if(this.state.getMaxLimitExtractNumberError){
                 this.batchAssignRecommendClues(submitObj);
             }else{
-                this.getRecommendClueCount((count) => {
+                this.getRecommendClueCount((count, disableExtract) => {
                     let currentVersionType = checkCurrentVersionType();
                     if (
                         //获取已经提取的线索失败了就不校验了 获取失败count返回的是字符串‘error’
@@ -486,8 +557,11 @@ class ExtractClues extends React.Component {
                         this.setState({
                             hasNoExtractCountTip: true,
                             canClickExtract: true,
-                            disabledCheckedClues: []
+                            disabledCheckedClues: [],
+                            selectedRecommendClues: disableExtract ? [] : this.state.disabledCheckedClues
                         });
+                        this.handleExtractLimit(disableExtract);
+
                         if (this['changeSales']) {
                             //隐藏批量变更销售面板
                             this['changeSales'].handleCancel();
@@ -513,7 +587,8 @@ class ExtractClues extends React.Component {
             });
         }
         this.setState({
-            selectedRecommendClues
+            selectedRecommendClues,
+            hasNoExtractCountTip: false
         });
     };
 
@@ -526,7 +601,7 @@ class ExtractClues extends React.Component {
                 return !this.getDisabledClue(item);
             });
         }
-        this.setState({selectedRecommendClues: canExtractClues});
+        this.setState({selectedRecommendClues: canExtractClues, hasNoExtractCountTip: false});
         Trace.traceEvent(e, '点击选中/取消选中全部线索');
     };
     isCheckAll = () => {
@@ -537,7 +612,7 @@ class ExtractClues extends React.Component {
     };
     //是否选中
     hasChecked = (record) => {
-        return _.find(this.state.selectedRecommendClues, item => item.id === record.id);
+        return _.find(this.getSelectedClues(), item => item.id === record.id);
     };
 
     handleUpdatePersonalVersion = (result) => {
@@ -548,7 +623,8 @@ class ExtractClues extends React.Component {
             maxLimitExtractNumber: +clue_number,
             getMaxLimitExtractNumberError: false,
             hasNoExtractCountTip: false,
-            disabledCheckedClues: []
+            disabledCheckedClues: [],
+            disableExtract: false
         });
     };
     //个人试用升级为正式版
@@ -570,7 +646,8 @@ class ExtractClues extends React.Component {
             maxLimitExtractNumber: count + maxLimitExtractNumber,
             getMaxLimitExtractNumberError: false,
             hasNoExtractCountTip: false,
-            disabledCheckedClues: []
+            disabledCheckedClues: [],
+            disableExtract: false
         });
     };
     //增加线索量
@@ -583,6 +660,16 @@ class ExtractClues extends React.Component {
         // 有hasExtracted属性是已经成功提取了的,有hasExtractedByOther属性是已经被别人提取了的
         return record.hasExtracted || _.find(this.state.disabledCheckedClues,item => item.id === record.id) || record.hasExtractedByOther;
     };
+
+    //点击线索名，选中checkbox
+    handleClickClueName = (item) => {
+        if(this.getDisabledClue(item)) {//如果被禁用了，点击后无效
+            return false;
+        }
+        let isSelected = _.find(this.state.selectedRecommendClues, clueItem => clueItem.id === item.id);
+        this.handleCheckChange(item,{target: {checked: !isSelected}});
+    };
+
     setInvalidClassName = (record) => {
         var cls = '';
         if(record.hasExtracted){
@@ -673,7 +760,7 @@ class ExtractClues extends React.Component {
             if(this.state.getMaxLimitExtractNumberError){
                 this.extractRecommendCluesSingele(record);
             }else{
-                this.getRecommendClueCount((count) => {
+                this.getRecommendClueCount((count, disableExtract) => {
                     let currentVersionType = checkCurrentVersionType();
                     //如果获取出错了就不要校验数字了
                     if (_.isNumber(count) &&
@@ -686,6 +773,8 @@ class ExtractClues extends React.Component {
                             singleExtractLoading: false,
                             canClickExtract: true
                         });
+                        this.handleExtractLimit(disableExtract);
+
                         if (this['changeSales' + record.id]) {
                             //隐藏批量变更销售面板
                             this['changeSales' + record.id].handleCancel();
@@ -788,7 +877,7 @@ class ExtractClues extends React.Component {
                                 <div className={cls}>
                                     <Checkbox checked={this.hasChecked(item)} disabled={this.getDisabledClue(item)} onChange={this.handleCheckChange.bind(this, item)}/>
                                     <div className="extract-clue-text-wrapper" title={item.hasExtractedByOther ? Intl.get('errorcode.169', '该线索已被提取') : ''}>
-                                        <div className="extract-clue-text__name">
+                                        <div className="extract-clue-text__name" onClick={this.handleClickClueName.bind(this, item)}>
                                             {item.hasExtractedByOther ? <i className='iconfont icon-warning-tip'/> : null}
                                             <span>{item.name}</span>
                                         </div>
@@ -803,13 +892,13 @@ class ExtractClues extends React.Component {
                                             </div>
                                             <div className="extract-clue-text-item">
                                                 <span className="extract-clue-text-label">{Intl.get('common.phone', '电话')}</span>：
-                                                <span>{item.telephones}</span>
+                                                <span>{_.get(item.telephones, '[0]')}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="single-extract-clue">
                                         {item.hasExtracted ? Intl.get('common.has.been.extracted', '已提取') : (
-                                            <div className="handle-btn-item">
+                                            this.getDisabledClue(item) ? null : <div className="handle-btn-item">
                                                 {this.extractClueOperator(item)}
                                             </div>
                                         )}
@@ -831,7 +920,7 @@ class ExtractClues extends React.Component {
             moreDataTip = (
                 <span>
                     {Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以')}
-                    <a data-tracename="点击换一批按钮" onClick={this.getRecommendLists}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
+                    <a data-tracename="点击换一批按钮" onClick={this.getRecommendLists.bind(this,ANOTHER_BATCH)}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
                 </span>
             );
         }else {
@@ -900,9 +989,9 @@ class ExtractClues extends React.Component {
         }
     };
 
-    getRecommendLists = () => {
+    getRecommendLists = (type) => {
         if(this.state.canClickMoreBatch) {
-            this.props.getRecommendClueLists();
+            this.props.getRecommendClueLists(null, type);
         }
     };
 
@@ -931,7 +1020,7 @@ class ExtractClues extends React.Component {
                     className="btn-item more-batch-btn"
                     data-tracename="点击换一批按钮"
                     title={Intl.get('clue.customer.refresh.list', '换一批')}
-                    onClick={this.getRecommendLists}
+                    onClick={this.getRecommendLists.bind(this, ANOTHER_BATCH)}
                 >
                     <span className={moreRotationClass}/>
                     <span>{isWebMin ? null : Intl.get('clue.customer.refresh.list', '换一批')}</span>
@@ -940,14 +1029,33 @@ class ExtractClues extends React.Component {
         );
     };
 
+    //热门选项点击处理事件
+    handleClickHotBtn = (key) => {
+        if(!this.state.canClickMoreBatch) { return false; }
+        let hot_source = '';
+        let traceTip = `取消选中${key}`;
+        if(key !== this.state.feature) {
+            hot_source = key;
+            traceTip = `选中${key}`;
+        }
+        Trace.traceEvent(ReactDOM.findDOMNode(this), `点击${traceTip}按钮`);
+        clueCustomerAction.setHotSource(hot_source);
+        setTimeout(() => {
+            this.getRecommendLists();
+        });
+    };
+
     render() {
         let divHeight = $(window).height()
             - LAYOUT_CONSTANCE.PADDING_TOP
-            - LAYOUT_CONSTANCE.TITLE_HEIGHT
             - LAYOUT_CONSTANCE.BTN_PADDING;
 
+        let extractClueTipEl = $('.extract-clues-title-container');
+        if(extractClueTipEl.length) {
+            divHeight -= extractClueTipEl.outerHeight(true);
+        }
+
         let {isWebMin} = isResponsiveDisplay();
-        let hasNoExtractCountTip = this.state.hasNoExtractCountTip;
 
         let unextractClueTipEl = $('.unextract-clue-tip');
         if(unextractClueTipEl.length) {
@@ -958,13 +1066,28 @@ class ExtractClues extends React.Component {
 
         return (
             <div className="extract-clues-wrapper" data-tracename="线索推荐操作面板">
-                <div className="extract-clues-title-wrapper">
-                    <div className="extract-clues-title">
-                        <span>{Intl.get('clue.customer.clue.recommend', '线索推荐')}</span>
-                        <div className="extract-clues-btn-container">
-                            {
-                                hasSelectedClue ? this.renderExtractOperator(isWebMin) : this.renderBtnClock(isWebMin)
-                            }
+                <div className="extract-clues-title-container">
+                    <div className="extract-clues-title-wrapper">
+                        <div className="extract-clues-title">
+                            <span>{Intl.get('clue.customer.clue.recommend', '线索推荐')}</span>
+                            <div className="extract-clues-btn-container">
+                                {
+                                    hasSelectedClue ? this.renderExtractOperator(isWebMin) : this.renderBtnClock(isWebMin)
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div className="extract-hot-wrapper">
+                        <span className="extract-hot-title">{Intl.get('clue.recommend.hot.name', '热门')}：</span>
+                        <div className='extract-hot-btn-container'>
+                            {_.map(HOT_SELECTORS, hotItem => {
+                                let cls = classNames('hot-btn-item', {
+                                    'hot-active': this.state.feature === hotItem.value
+                                });
+                                return (
+                                    <span className={cls} onClick={this.handleClickHotBtn.bind(this, hotItem.value)}>{hotItem.name}</span>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
@@ -974,8 +1097,17 @@ class ExtractClues extends React.Component {
                         {this.hasNoExtractCountTip()}
                     </span>
                 </div>
-                <div className="extract-clues-content" style={{height: divHeight}}>
+                <div className="extract-clues-content" style={{height: divHeight}} ref="scrolltoTop">
                     <GeminiScrollbar>
+                        {
+                            this.state.isShowWiningClue ? (
+                                <div className="winning-clue-tips">
+                                    <WinningClue
+                                        handleClickClose={this.handleClickCloseWinningClue}
+                                    />
+                                </div>
+                            ) : null
+                        }
                         {this.renderRecommendLists()}
                     </GeminiScrollbar>
                 </div>
@@ -1007,5 +1139,5 @@ ExtractClues.propTypes = {
     salesManList: PropTypes.array,
     showSuccessPage: PropTypes.bool,
 };
-
+ExtractClues.ANOTHER_BATCH = ANOTHER_BATCH;
 export default ExtractClues;

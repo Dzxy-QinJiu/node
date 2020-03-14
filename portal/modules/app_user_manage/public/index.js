@@ -31,8 +31,7 @@ var FilterBtn = require('../../../components/filter-btn');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 var SelectFullWidth = require('../../../components/select-fullwidth');
 import ApplyUser from './views/v2/apply-user';
-
-var topNavEmitter = require('../../../public/sources/utils/emitters').topNavEmitter;
+import { topNavEmitter, selectedAppEmitter } from 'PUB_DIR/sources/utils/emitters';
 import queryString from 'query-string';
 import {RETRY_GET_APP} from './util/consts';
 import Trace from 'LIB_DIR/trace';
@@ -50,6 +49,7 @@ import userData from 'PUB_DIR/sources/user-data';
 import BackMainPage from 'CMP_DIR/btn-back';
 import userManagePrivilege from './privilege-const';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
+import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
 
 const UPLOAD_USER_TIPS = {
     EXIST: 'data exist', // （用户名、邮箱 ）已存在
@@ -179,7 +179,7 @@ class AppUserManage extends React.Component {
             } else {
                 //如果是从统计分析点击某个图转过来的
                 if (query.analysis_filter_field) {
-                    AppUserAction.setSelectedAppId(query.app_id);
+                    AppUserAction.setSelectedAppId({appId: query.app_id, appList: this.state.appList});
                     const filterField = query.analysis_filter_field;
                     const filterValue = query.analysis_filter_value;
                     delete query.analysis_filter_field;
@@ -349,7 +349,8 @@ class AppUserManage extends React.Component {
         //原来的应用id
         const oldSelectAppId = this.state.selectedAppId;
         //设置当前选中应用
-        AppUserAction.setSelectedAppId(app_id);
+        AppUserAction.setSelectedAppId({appId: app_id, appList: this.state.appList});
+        selectedAppEmitter.emit(selectedAppEmitter.CHANGE_SELECTED_APP, '');
         //用户列表滚动条置顶
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.CHANGE_USER_LIST_SCROLL_TOP, 0);
         //当前用户有按照角色筛选的权限,如果有app_id，获取该应用对应角色信息
@@ -796,6 +797,28 @@ class AppUserManage extends React.Component {
         return unique;
     };
 
+    // 筛选终端类型
+    onSelectTerminalsType = (value) => {
+        //设置当前选中应用的多终端信息
+        AppUserAction.setSelectedAppTerminals(value,);
+        //延迟搜索，等待界面改变多终端参数
+        setTimeout(() => {
+            AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.FETCH_USER_LIST, {terminal_id: value});
+        });
+    }
+
+    // 渲染多终端类型
+    renderAppTerminalsType = () => {
+        return (
+            <SelectAppTerminal
+                appTerminals={this.state.selectedAppTerminals}
+                handleSelectedTerminal={this.onSelectTerminalsType.bind(this)}
+                className="btn-item"
+                isNeedTerminalId={true}
+            />
+        );
+    }
+
     //渲染按钮区域
     renderTopNavOperation = () => {
         var currentView = AppUserUtil.getCurrentView();
@@ -832,6 +855,11 @@ class AppUserManage extends React.Component {
                         {appOptions}
                     </SelectFullWidth>
                 </div>
+                {
+                    _.get(this.state.selectedAppTerminals, 'length') ? (
+                        this.renderAppTerminalsType()
+                    ) : null
+                }
                 {/*如果是从客户界面点击过来的，不要显示搜索框*/}
                 {/*如果是按照角色筛选，则不能再按照关键字搜索了*/}
                 {
@@ -898,6 +926,11 @@ class AppUserManage extends React.Component {
     render() {
         var currentView = AppUserUtil.getCurrentView();
         var rightPanelView = null;
+        let appList = _.cloneDeep(this.state.appList);
+        if ( this.state.isShowBatchChangePanel || this.state.rightPanelType === 'applyUser') {
+            appList = _.filter(appList, item => item.status);
+        }
+
         if (this.state.isShowRightPanel) {
             switch (this.state.rightPanelType) {
                 case 'addOrEditUser':
@@ -911,12 +944,11 @@ class AppUserManage extends React.Component {
                     //发邮件使用的数据
                     var emailData = this.getEmailData();
                     //应用列表
-                    var appListTransform = this.state.appList.map((obj) => {
+                    let appListTransform = _.map(appList, obj => {
                         return {
                             client_id: obj.app_id,
                             client_name: obj.app_name,
                             client_image: obj.app_logo,
-                            terminals: obj.terminals,
                         };
                     });
                     rightPanelView = (
@@ -993,7 +1025,7 @@ class AppUserManage extends React.Component {
                         <UserDetailAddApp
                             multiple={true}
                             initialUser={this.state.selectedUserRows}
-                            appList={this.state.appList}
+                            appList={appList}
                             closeRightPanel={this.closeBatchChangePanel}
                         />
                     ) : null

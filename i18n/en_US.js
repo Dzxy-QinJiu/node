@@ -304,6 +304,9 @@ var en_US = {
     'common.all.terminals': 'All terminals', // 所有终端
     'common.terminals': 'Terminal', // 终端
     'common.period': '.',//。
+    'common.company.owner': 'The authority to interpret the above activities belongs to Shandong Ketao Intelligent Technology Co., Ltd', // 以上活动解释权归山东客套智能科技有限公司
+    'common.have': 'have',//有
+    'common.nothing': 'nothing',//无
     //公共部分--end
 
     'login.login': 'Login',//登录
@@ -757,6 +760,7 @@ var en_US = {
     'user.login.last.month': 'The latest a month', // 近一月
     'user.login.last.week': 'The latest a week', // 近一周
     'user.login.last.title': 'Active statistics of {title}', // {title}的活跃统计
+    'user.login.analysis.filter.config.ip': 'Filter configuration IP', // 过滤配置IP
     'user.login.last.failed': 'Failed to get user recent login statistic', // 获取用户最近登录统计信息失败
     'user.login.analysis.user': 'Users analysis',//用户分析
     'user.login.analysis.signed': 'Signed users analysis',//签约用户分析
@@ -840,6 +844,7 @@ var en_US = {
     'user.position.input.name.search': 'Search for organization', // 输入组织名称搜索
     'user.position.number.tips': 'Plese enter phone order', // 请输入座席号
     'user.position.select.user': 'Please select user', // 请选择用户
+    'team.position.select.team': 'Please select team',//请选择团队
     'user.third.thirdapp.consts.sina': 'Sina Weibo',//新浪微博',
     'user.third.thirdapp.consts.tencent': 'Tencent Weibo',//腾讯微博',
     'user.permission.show': 'spread particular permission', //'展开具体权限',
@@ -1403,6 +1408,7 @@ var en_US = {
     'user.apply.change.status.false': 'disable application', // 申请禁用应用
     'user.apply.change.status.true': 'enable application', // 申请启用应用
     'user.apply.presenter': 'presenter', // 申请人
+    'user.apply.team': 'The team of applicant',//申请人所属团队
     'user.apply.id': 'Account apply', // 账号申请
     'user.apply.no.match.retry': 'no match apply list', // 暂无符合查询条件的用户申请
     'user.apply.no.apply': 'User applications that do not yet need to be approved',//还没有需要审批的用户申请
@@ -1822,6 +1828,8 @@ var en_US = {
     'crm.score.history.title': 'Historical score',//历史分数
     'crm.concern.top.set': 'Concerned customers on the top',//将关注的客户置顶
     'crm.concern.top.cancel': 'Concerned customers not on the top',//取消关注客户置顶
+    'crm.see.concern.slef': 'Check out the clients I follow',//查看我关注的客户
+    'crm.see.concern.slef.cancel': 'Uncheck my customers',//取消查看我关注的客户
     'crm.add.to.exist.customer': 'Add to existing customers',//添加到已有客户
     'crm.select.add.contact': 'Please select or fill contact name',//请选择或输入联系人名称
     'crm.contact.name.add': 'Add name',//添加联系人姓名
@@ -1958,6 +1966,7 @@ var en_US = {
     'crm.search.customer.detail.customer.pool': 'Customer has been deleted or has been released to {customerpool}',//客户已被删除或已被释放到{customerpool}
     'crm.search.customer.no.customer.pool.dash': 'The customer has been deleted or has been released to the customer pool, please go to {recycle} or {customerpool}',//客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看
     'crm.batch.second.user': 'Change partner',//变更联合跟进人
+    'crm.has.contain.join.user': 'Is there a joint follow-up person',//是否有联合跟进人
     // 客户管理end
 
     //客户分析 start
@@ -2627,7 +2636,8 @@ var en_US = {
     'errorcode.172': 'Not your lead, cannot be merged into a customer',//不是您的线索，无法合并到客户
     'errorcode.173': 'Failed to turn lead to customer',//线索转为客户失败
     'errorcode.174': 'Failed to merge lead to customer',//线索合并到客户失败
-    'errorcode.175': 'Your own Leads cannot be assigned to you',//自己的线索不能分配给自己
+    'errorcode.175': 'Your own Leads cannot be assigned to you',//操作失败
+    'errorcode.176': 'If the operation fails, the customer may be rolled out, released, or deleted',//操作失败，客户可能被转出、释放或删除
     'errorcode.send.message.limit': 'Cannot send again in one minute',//一分钟内不能重复发送
     'errorcode.phone.unbind.account.tip': 'This mobile number is not bound to an account, please change another mobile number and try again',//此手机号未绑定账号，请换其他手机号再试
 
@@ -2660,9 +2670,8 @@ var en_US = {
     'common.export.failure': 'export failure', //导出失败
     'common.gross_profit_rate': 'gross profit rate', //毛利率
     'common.summation': 'summation',//合计
-
-    'company.name.curtao': '© Curtao Smart Technology 鲁ICP备18038856号',//© 客套智能科技 鲁ICP备18038856号
-    'company.name.eefung': '© Eefung Software 湘ICP备14007253号-1',//© 蚁坊软件 湘ICP备14007253号-1
+    'company.name.curtao': 'Curtao Smart Technology',//客套智能科技
+    'company.name.eefung': 'Eefung Software',//蚁坊软件
     'companay.hotline': 'Service Hotline: {phone}',//服务热线: {phone}
     'company.qq': 'QQ: {qq}',//企业QQ: {qq}
     'login.fail.login': 'Login service is temporarily unavailable. Please try again later',//登录服务暂时不可用，请稍后重试
@@ -2741,6 +2750,7 @@ var en_US = {
     'crm.phone.failed.add.trace': 'Failed to add trace record',//添加跟进记录失败
     'crm.phone.success.add.trace': 'Add trace record successfully!',//添加跟进记录成功
     'crm.phone.failed.get.customer': 'Failed to query the customer connectting to this phone number',//查询此号码对应的客户信息失败
+    'crm.phone.failed.get.clue': 'Failed to query the clue connectting to this phone number',//查询此号码对应的线索信息失败
     'call.record.show.customer.detail': 'See details',//查看详情
     'call.record.customer.source': 'Source',//来源
     'call.record.no.response.customer': 'This number does not have a corresponding {type}',//此号码无对应客户
@@ -2792,6 +2802,7 @@ var en_US = {
     'failed.update.customer.detail': 'Failed to update lead customer information',//更新线索客户信息失败
     'clue.customer.distribute': 'distribution',//分配
     'clue.customer.add.trace.content': 'Please fill in follow-up content',//请填写跟进内容
+    'clue.customer.other.contact_way': 'Other contact way',//其他联系方式
     'failed.to.distribute.cluecustomer': 'Failed to distribute lead customers',//分配线索客户失败
     'crm.alert.topic': 'Title',//标题
     'crm.contact.time': 'Contact time',//联系时间
@@ -3600,7 +3611,6 @@ var en_US = {
     'apply.add.condition.less.and.equal': 'Less than or equal to',//小于等于
     'apply.add.condition.equal': 'equal',//等于
     'apply.add.condition.within': 'Between',//介于
-    'apply.condition.meet.rule': 'To meet the conditions',//满足条件
     'apply.condition.apply.approve': 'Approval Process',//审批流程
     'apply.condition.item.add.cc': 'Cc',//抄送人
     'apply.condition.item.money': 'Amount',//金额
@@ -3635,6 +3645,7 @@ var en_US = {
     'apply.cc.node.socket.noty': 'System popup',//系统弹窗
     'apply.business.change.time.range': 'Please edit total business time first',//请先修改总出差时间
     'apply.please.add.assign.node': 'The process is incomplete, you need to add the "appointed approver approval node"',//流程不完整，需添加“指定审批人审批节点”
+    'apply.please.add.approve.node': 'The process is incomplete, you need to add the approver node',//流程不完整，需添加审批人节点
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
@@ -3787,6 +3798,7 @@ var en_US = {
     'user.score.total.days': 'Total number of days',//总天数
     'user.score.choose.interval': 'Please select the period',//请选择周期
     'apply.approve.user.select': 'User select',//用户选择
+    'apply.approve.team.select': 'Team select',//团队选择
     // 引导流程
     'guide.add.customer.title': 'Add your customer',//添加您的客户
     'guide.add.customer.des': 'After adding customers, you can easily follow up with your customers',//添加客户后，可以轻松跟进您的客户
@@ -3840,9 +3852,12 @@ var en_US = {
     'clue.recommend.extract.num.limit': 'The number of leads extracted by your organization {timerange} has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
     'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} {timerange} and can extract up to {ableExtract} leads',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
     'clue.recommend.formal.extract.num.limit.tip': 'The {count} clause of this month has been extracted. If you need to continue to extract, please {addLeads}.',//本月{count}条已提取完毕，如需继续提取请{addLeads}
-    'clue.recommend.trial.extract.num.limit.tip': 'The {count} bar has been extracted, if you want to continue extracting please {upgradedVersion}',//已提取{count}条，如需继续提取请{upgradedVersion}
-    'clue.recommend.company.trial.extract.num.limit.tip': '{count} bar has been extracted, if you need to continue extracting, please contact our sales staff to upgrade, contact information: {contact}',//已提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}
+    'clue.recommend.trial.extract.num.limit.tip': '{count} can also be extracted, if need to continue to extract please {upgradedVersion}',//还可提取{count}条，如需继续提取请{upgradedVersion}
+    'clue.recommend.company.trial.extract.num.limit.tip': '{count} can also be extracted, if you need to continue to extract, please contact our sales staff to upgrade, contact: {contact}',//还可提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}
     'clue.recommend.company.formal.sales.extract.num.limit.tip': '{count} has been extracted this month, please contact the administrator if you want to continue extracting',//本月{count}条已提取完毕，如需继续提取请联系管理员
+    'clue.recommend.default.tip': '{timerange} can also extract {ableExtract} clues',//{timerange}还可提取{ableExtract}条线索
+    'clue.recommend.selected.extract.tip': 'The {count} bar has been selected, and the {ableExtract} bar can be extracted',//已选中{count}条，还可提取{ableExtract}条线索
+    'clue.extract.count.has.been.exceed': 'The extractable number has been exceeded',//已超过可提取数
 
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
@@ -3872,6 +3887,9 @@ var en_US = {
     'clue.see.recommend': 'See recommendations',//查看推荐
     'clue.recommend.has.extract.count': '{timerange} has extracted {hasExtract} bars, and at most {ableExtract} bars',//{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
     'clue.recommend.has.extracted.count': '{timerange} has extracted {hasExtract} clues',//{timerange}已提取{hasExtract}条线索
+    'clue.recommend.hot.name': 'hot',//热门
+    'clue.recommend.return.to.work': 'The enterprise has been restarted',//已复工企业
+    'clue.recommend.listed': 'Listed companies',//上市企业
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
     'clue.assignment.strategy.fail.to.get': 'Fail to fetch lead assignment strategy list',//获取线索分配策略列表失败
@@ -3974,6 +3992,9 @@ var en_US = {
     'boot.input.industry': 'Please enter industries of concern',//请输入关注的行业
     'boot.set.recommend.clue.faild': 'Setup failed. Please try again',//设置失败，请重试一次
     'personal.upgrade.company.trial.tip': 'Open enterprise trial, you can experience the call function',//开通企业试用后，可体验拨打电话功能
+    'boot.personal.trial.welcome.tip': 'Welcome to try out the Curtao personal version, the trial period {time} days, every day can extract {count} clues free',//欢迎试用客套个人版，试用期{time}天，每天可免费提取{count}条线索
+    'boot.company.trial.welcome.tip': 'Welcome to try out the Curtao, the trial period {time} days, each day can extract {count} clues free',//欢迎试用客套，试用期{time}天，每人每天可免费提取{count}条线索
+    'boot.please.input.industry.placeholder': 'Please enter the industry of interest, such as Internet, service, etc',//请输入关注的行业，如互联网、服务业等
     /*个人试用 --- end*/
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': 'You have {time} days left in the trial period. {count} clues can be extracted every day. Will you upgrade to {upgrade} or {enterprise}?',//您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？

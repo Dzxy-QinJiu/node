@@ -29,7 +29,8 @@ import {hasPrivilege, PrivilegeChecker} from '../../../../components/privilege/c
 require('../css/main.less');
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from '../../../../components/rightPanel';
-import {getPassStrenth, PassStrengthBar, passwordRegex} from 'CMP_DIR/password-strength-bar';
+import { PassStrengthBar } from 'CMP_DIR/password-strength-bar';
+import { checkPassword, checkConfirmPassword } from 'PUB_DIR/sources/utils/validate-util';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {APPLY_TYPES, userTypeList, TOP_NAV_HEIGHT, TIMERANGEUNIT, WEEKDAYS} from 'PUB_DIR/sources/utils/consts';
 import ModalDialog from 'CMP_DIR/ModalDialog';
@@ -47,7 +48,8 @@ import {handleDiffTypeApply,getUserApplyFilterReplyList,
     updateUnapprovedCount, isFinalTask,
     isApprovedByManager,timeShowFormat,
     isCustomDelayType, getDelayTimeUnit,
-    applyAppConfigTerminal
+    applyAppConfigTerminal,
+    approveAppConfigTerminal
 } from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import ApplyHistory from 'CMP_DIR/apply-components/apply-history';
@@ -124,9 +126,18 @@ function getDelayDisplayTime(delayUnit, delayNumber) {
 
 const APPLY_LIST_WIDTH = 421;
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
-import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {INTEGRATE_TYPES, APPROVE_STATUS} from 'PUB_DIR/sources/utils/consts';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
+const COLUMN_WIDTH = {
+    PRODUCT: 200,//产品
+    NUM: 50,//数量
+    TIME_INTERNAL: 190,//周期
+    DUE_TIME: 130,//到期时间
+    USER_TYPE: 80,//用户类型
+    ROLE: 120,//角色
+    PRIVILEGE: 120,//权限
+};
 const ApplyViewDetail = createReactClass({
     propTypes: {
         detailItem: PropTypes.object,
@@ -568,8 +579,6 @@ const ApplyViewDetail = createReactClass({
         if (this.state.detailInfoObj.loading || _.isEmpty(this.state.detailInfoObj)) {
             return;
         }
-        //是否启用滚动条
-        let GeminiScrollbarEnabled = false;
         //详情高度
         let applyDetailHeight = 'auto';
         //判断是否屏蔽窗口的滚动条
@@ -585,11 +594,6 @@ const ApplyViewDetail = createReactClass({
             //     }
             //
             // }
-            //启用滚动条
-            GeminiScrollbarEnabled = true;
-        }
-        if (this.state.applyIsExpanded) {
-            GeminiScrollbarEnabled = false;
         }
         let selectedDetailItem = this.state.selectedDetailItem;
         return (
@@ -601,47 +605,42 @@ const ApplyViewDetail = createReactClass({
                     {this.renderDetailBottom()}
                 </div>
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
-                    <PrivilegeChecker check='USER_APPLY_APPROVE'>
-                        {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
-                    </PrivilegeChecker>
-                    {this.state.applyIsExpanded ? null : (
-                        <GeminiScrollbar enabled={GeminiScrollbarEnabled} ref="gemini">
-                            {this.renderDetailCustomerBlock(detailInfo)}
-                            <div className="apply-detail-user apply-detail-info">
-                                <div className="user-icon-block">
-                                    <span className="iconfont icon-user"/>
-                                </div>
-                                {this.renderDetailCenter(detailInfo)}
+                    <GeminiScrollbar ref="gemini">
+                        {this.renderDetailCustomerBlock(detailInfo)}
+                        <div className="apply-detail-user apply-detail-info">
+                            <div className="user-icon-block">
+                                <span className="iconfont icon-user"/>
                             </div>
-                            {detailInfo.comment ? (<div className="apply-detail-common apply-detail-info">
-                                <div className="common-icon-block">
-                                    <span className="iconfont icon-common"/>
-                                </div>
-                                {this.renderComment()}
-                            </div>) : null}
-                            {this.renderApplyStatus()}
-                            <div className="apply-detail-reply-list apply-detail-info">
-                                <div className="reply-icon-block">
-                                    <span className="iconfont icon-apply-message-tip"/>
-                                </div>
-                                <div className="reply-info-block apply-info-block">
-                                    <div className="reply-list-container apply-info-content">
-                                        {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
-                                        {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderReplyList() : null}
-                                        {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? (
-                                            <Input addonAfter={(
-                                                <a onClick={this.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
-                                            value={this.state.formData.comment}
-                                            onChange={this.commentInputChange}
-                                            placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}/>
-                                        ) : null}
-                                        {this.renderReplyFormResult()}
-                                    </div>
+                            {this.renderDetailCenter(detailInfo)}
+                        </div>
+                        {detailInfo.comment ? (<div className="apply-detail-common apply-detail-info">
+                            <div className="common-icon-block">
+                                <span className="iconfont icon-common"/>
+                            </div>
+                            {this.renderComment()}
+                        </div>) : null}
+                        {this.renderApplyStatus()}
+                        <div className="apply-detail-reply-list apply-detail-info">
+                            <div className="reply-icon-block">
+                                <span className="iconfont icon-apply-message-tip"/>
+                            </div>
+                            <div className="reply-info-block apply-info-block">
+                                <div className="reply-list-container apply-info-content">
+                                    {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
+                                    {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderReplyList() : null}
+                                    {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? (
+                                        <Input addonAfter={(
+                                            <a onClick={this.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
+                                        value={this.state.formData.comment}
+                                        onChange={this.commentInputChange}
+                                        placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}/>
+                                    ) : null}
+                                    {this.renderReplyFormResult()}
                                 </div>
                             </div>
-                            {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderSameCustomerHistoricalApply() : null}
-                        </GeminiScrollbar>
-                    )}
+                        </div>
+                        {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderSameCustomerHistoricalApply() : null}
+                    </GeminiScrollbar>
                 </div>
             </div>
         );
@@ -716,27 +715,39 @@ const ApplyViewDetail = createReactClass({
         });
     },
 
-    renderDetailOperateBtn(user_id) {
-        if (this.notShowIcon()) {
-            return null;
-        }
-        if (this.state.applyIsExpanded) {
-            return (
-                <Tooltip title={Intl.get('user.apply.detail.expanded.title', '返回缩略内容')}>
-                    <div className="btn-icon-return" onClick={this.toggleApplyExpanded.bind(this, false)}>
-                        <span className="iconfont icon-return" data-tracename="查看应用详细内容"></span>
-                    </div>
-                </Tooltip>
-            );
-        }
+    renderAppSettingBtn(userId) {
         return (
             <Tooltip title={Intl.get('user.apply.detail.show.role.auth.title', '查看详细内容')}>
-                <div className="btn-icon-role-auth" onClick={this.toggleApplyExpanded.bind(this, true, user_id)}
+                <div className="btn-icon-role-auth" onClick={this.toggleApplyExpanded.bind(this, true, userId)}
                     data-tracename="点击申请详情中的配置按钮">
                     <span className="iconfont icon-role-auth-config"></span>
                 </div>
             </Tooltip>
         );
+    },
+
+    renderAppSettingReturnBtn() {
+        return (
+            <Tooltip title={Intl.get('user.apply.detail.expanded.title', '返回缩略内容')}>
+                <div className="btn-icon-return" onClick={this.toggleApplyExpanded.bind(this, false)}>
+                    <span className="iconfont icon-return" data-tracename="查看应用详细内容"></span>
+                </div>
+            </Tooltip>
+        );
+    },
+
+    renderDetailOperateBtn(user_id) {
+        if (this.notShowIcon()) {
+            return null;
+        }
+        if (this.state.applyIsExpanded) {
+            if (user_id && user_id !== this.state.curShowConfigUserId) { // 申请延期的情况
+                return this.renderAppSettingBtn(user_id);
+            } else {
+                return this.renderAppSettingReturnBtn();
+            }
+        }
+        return this.renderAppSettingBtn(user_id);
     },
 
     //是否是已有用户开通试用
@@ -849,7 +860,7 @@ const ApplyViewDetail = createReactClass({
         return this.hasApprovalPrivilege() && this.isUnApproved() && (_.get(this, 'state.detailInfoObj.info.showApproveBtn') || this.props.isHomeMyWork) && isFinalTask(this.state.applyNode);
     },
     notShowIcon(){
-        return !this.isUnApproved() || !hasPrivilege('USER_APPLY_APPROVE') || !this.state.isOplateUser || !isFinalTask(this.state.applyNode) || !(_.get(this, 'state.detailInfoObj.info.showApproveBtn') || this.props.isHomeMyWork);
+        return !this.isUnApproved() || !hasPrivilege(commonPrivilegeConst.USER_APPLY_APPROVE) || !this.state.isOplateUser || !isFinalTask(this.state.applyNode) || !(_.get(this, 'state.detailInfoObj.info.showApproveBtn') || this.props.isHomeMyWork);
     },
     //选择了手动设置密码时，未输入密码，不能通过
     settingPasswordManuWithNoValue: function() {
@@ -1136,16 +1147,53 @@ const ApplyViewDetail = createReactClass({
             return null;
         }
     },
+
+    // 获取应用终端名称
+    getAppTerminalName(custom_setting, terminals, appId) {
+        let terminalsName = [];
+        // 应用包含多终端信息
+        let configTerminals = _.get(custom_setting, 'terminals.value');
+        if (!_.isEmpty(configTerminals)) {
+            terminalsName = _.map(configTerminals, 'name');
+        } else if (!_.isEmpty(terminals)) {
+            let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
+            terminalsName = _.map(appTerminals, 'name');
+        } else {
+            let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
+            terminalsName = _.map(appTerminals, 'name');
+        }
+        return terminalsName;
+    },
+
     //渲染延期多应用的table
     renderMultiAppDelayTable(user) {
+        const appsSetting = this.appsSetting;
         let columns = [
             {
                 title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
-                className: 'apply-detail-th'
+                width: COLUMN_WIDTH.PRODUCT,
+                className: 'apply-detail-th',
+                render: (text, app, index) => {
+                    const appId = app.app_id;
+                    const terminals = _.get(app, 'terminals', []);
+                    const custom_setting = appsSetting[`${appId}&&${app.user_id}`];
+                    let terminalsName = this.getAppTerminalName(custom_setting, terminals, appId);
+                    return (
+                        <div>
+                            <span>{text}</span>
+                            {
+                                !_.isEmpty(terminalsName) ? <span>
+                                    ({ terminalsName.join('、')})
+                                </span> : null
+                            }
+                        </div>
+                    );
+                }
             }, {
                 title: Intl.get('user.time.end', '到期时间'),
                 dataIndex: 'start_time',
+                width: COLUMN_WIDTH.DUE_TIME,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     //如果有应用的特殊配置，使用特殊配置
@@ -1159,6 +1207,7 @@ const ApplyViewDetail = createReactClass({
             }, {
                 title: Intl.get('user.user.type', '用户类型'),
                 dataIndex: 'user_type',
+                width: COLUMN_WIDTH.USER_TYPE,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     let userType = app.user_type;//此处是后端穿过来的用户类型（正式用户、试用用户、training）
@@ -1176,6 +1225,7 @@ const ApplyViewDetail = createReactClass({
             columns.push({
                 title: Intl.get('user.apply.detail.table.role', '角色'),
                 dataIndex: 'rolesNames',
+                width: COLUMN_WIDTH.ROLE,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     let rolesNames = app.rolesNames;
@@ -1190,6 +1240,8 @@ const ApplyViewDetail = createReactClass({
             });
         }
         return (<AntcTable dataSource={user.apps}
+            isSmallSize={true}
+            tableType='data'
             bordered={true}
             pagination={false}
             columns={columns}/>);
@@ -1200,6 +1252,8 @@ const ApplyViewDetail = createReactClass({
         const detailInfo = this.state.detailInfoObj.info;
 
         return (<AntcTable dataSource={detailInfo.apps}
+            isSmallSize={true}
+            tableType='data'
             bordered={true}
             pagination={false}
             columns={this.getTableColunms()}/>);
@@ -1233,25 +1287,20 @@ const ApplyViewDetail = createReactClass({
         const appsSetting = this.appsSetting;
         const isExistUserApply = this.isExistUserApply();
         const isOplateUser = this.state.isOplateUser;
+        const approvalState = _.get(this.state.detailInfoObj, 'info.approval_state');
         let columns = [
             {
                 title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
+                width: COLUMN_WIDTH.PRODUCT,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
+                    const appId = app.app_id;
                     const terminals = _.get(app, 'terminals', []);
-                    const custom_setting = appsSetting[app.app_id];
-                    let terminalsName = [];
+                    const custom_setting = appsSetting[appId];
                     // 应用包含多终端信息
                     let configTerminals = _.get(custom_setting, 'terminals.value');
-                    if (!_.isEmpty(configTerminals)) {
-                        terminalsName = _.map(configTerminals, 'name');
-                    } else {
-                        if (!_.isEmpty(terminals)) {
-                            let appTerminals = applyAppConfigTerminal(terminals, app.app_id, this.props.appList);
-                            terminalsName = _.map(appTerminals, 'name');
-                        }
-                    }
+                    let terminalsName = this.getAppTerminalName(custom_setting, terminals, appId);
                     return (
                         <div>
                             <span>{text}</span>
@@ -1269,6 +1318,8 @@ const ApplyViewDetail = createReactClass({
             columns.push({
                 title: Intl.get('common.app.count', '数量'),
                 dataIndex: 'number',
+                align: 'right',
+                width: COLUMN_WIDTH.NUM,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     //获取开通个数
@@ -1290,6 +1341,7 @@ const ApplyViewDetail = createReactClass({
             title: isOplateUser ? Intl.get('user.apply.detail.table.time', '周期') : Intl.get('user.time.end', '到期时间'),
             dataIndex: 'start_time',
             className: 'apply-detail-th',
+            width: isOplateUser ? COLUMN_WIDTH.TIME_INTERNAL : COLUMN_WIDTH.DUE_TIME,
             render: (text, app, index) => {
                 //如果有应用的特殊配置，使用特殊配置
                 //没有特殊配置，使用申请单的配置
@@ -1322,6 +1374,7 @@ const ApplyViewDetail = createReactClass({
             columns.push({
                 title: Intl.get('user.apply.detail.table.role', '角色'),
                 dataIndex: 'roleNames',
+                width: COLUMN_WIDTH.ROLE,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     let rolesNames = app.rolesNames;
@@ -1338,6 +1391,7 @@ const ApplyViewDetail = createReactClass({
                 columns.push({
                     title: Intl.get('common.app.auth', '权限'),
                     dataIndex: 'permissionsNames',
+                    width: COLUMN_WIDTH.PRIVILEGE,
                     className: 'apply-detail-th',
                     render: (text, app, index) => {
                         const custom_setting = appsSetting[app.app_id];
@@ -1356,13 +1410,15 @@ const ApplyViewDetail = createReactClass({
         }
         return (<AntcTable
             dataSource={detailInfo.apps}
+            isSmallSize={true}
+            tableType='data'
             bordered={true}
             pagination={false}
             columns={columns}/>);
     },
 
     //渲染每个应用设置区域
-    renderDetailForm(detailInfo) {
+    renderDetailForm(detailInfo, userId) {
         let selectedApps = $.extend(true, [], detailInfo.apps), appsSetting = this.state.appsSetting;
         let appList = this.props.appList;
         _.each(selectedApps, app => {
@@ -1378,6 +1434,9 @@ const ApplyViewDetail = createReactClass({
         let height = this.getApplyDetailHeight();
         if (height !== 'auto') {
             height = height - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.ORDER_DIV_HEIGHT - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.OPERATION_BTN_HEIGHT;
+        }
+        if (userId) { // 延期审批的情况，由于没有应用的基本配置信息，需要减去应用的配置高度
+            height = height - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.APP_BASIC_HEIGHT;
         }
         if (!this.isUnApproved()) {
             return null;
@@ -1398,13 +1457,14 @@ const ApplyViewDetail = createReactClass({
         if (this.isExistUserApply()) {
             appComponentProps.showUserNumber = false;
         }
+        let isShowAppSetting = this.state.applyIsExpanded;
+        if (userId) { // 审批延期的配置界面
+            isShowAppSetting = isShowAppSetting && this.state.curShowConfigUserId === userId;
+        }
 
         return (
             <div className="apply_custom_setting_wrap"
-                style={{display: this.state.applyIsExpanded ? 'block' : 'none'}}>
-                <div className="apply_detail_operate clearfix">
-                    {this.renderDetailOperateBtn()}
-                </div>
+                style={{display: isShowAppSetting ? 'block' : 'none'}}>
                 <AppProperty {...appComponentProps}
                     isOplateUser={this.state.isOplateUser}
                 />
@@ -1423,9 +1483,6 @@ const ApplyViewDetail = createReactClass({
 
     //渲染用户申请
     renderApplyUser: function(detailInfo) {
-        if (this.state.applyIsExpanded) {
-            return null;
-        }
         // 判断是否显示权限项
         let permissionNameIndex = 'false';
         let appsLen = (detailInfo.apps && detailInfo.apps.length) || 0;
@@ -1450,15 +1507,24 @@ const ApplyViewDetail = createReactClass({
                         <div className="apply_detail_operate clearfix">
                             {this.renderDetailOperateBtn()}
                         </div>
-                        {/** 不显示角色和权限的情况：
-                         detailInfo.approval_state === '0' &&  !hasPrivilege("BASE_QUERY_PERMISSION_APPLICATION") 销售人员待审批的情况
-                         detailInfo.approval_state === '2'表示是已驳回的应用，
-                         detailInfo.approval_state === '3'表示是已撤销的应用，
-                         */}
-                        {detailInfo.approval_state === '0' && !hasPrivilege(commonPrivilegeConst.BASE_QUERY_PERMISSION_APPLICATION) ||
-                        detailInfo.approval_state === '2' ||
-                        detailInfo.approval_state === '3' ?
-                            this.renderAppTable() : this.renderAppTableRolePermission()
+                        <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
+                            {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
+                        </PrivilegeChecker>
+                        {
+                            this.state.applyIsExpanded ? null : (
+                                <React.Fragment>
+                                    {/** 不显示角色和权限的情况：
+                                     detailInfo.approval_state === '0' &&  !hasPrivilege("BASE_QUERY_PERMISSION_APPLICATION") 销售人员待审批的情况
+                                     detailInfo.approval_state === '2'表示是已驳回的应用，
+                                     detailInfo.approval_state === '3'表示是已撤销的应用，
+                                     */}
+                                    {detailInfo.approval_state === '0' && !hasPrivilege(commonPrivilegeConst.BASE_QUERY_PERMISSION_APPLICATION) ||
+                                    detailInfo.approval_state === '2' ||
+                                    detailInfo.approval_state === '3' ?
+                                        this.renderAppTable() : this.renderAppTableRolePermission()
+                                    }
+                                </React.Fragment>
+                            )
                         }
                     </div>
                 </div>
@@ -1623,9 +1689,12 @@ const ApplyViewDetail = createReactClass({
             {
                 title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
+                width: COLUMN_WIDTH.PRODUCT,
                 className: 'apply-detail-th'
             }];
         return (<AntcTable dataSource={user.apps}
+            isSmallSize={true}
+            tableType='data'
             bordered={true}
             pagination={false}
             columns={columns}/>);
@@ -1691,8 +1760,8 @@ const ApplyViewDetail = createReactClass({
         const isUnApproved = this.isUnApproved();
         //把apps数据根据user_id重组
         let users = this.getDetailInfoUserCount(detailInfo);
-        //修改后的用户类型，如果没有说明未修改用户类型，不用设置角色、权限
-        let changedUserType = this.showConfigOfDelayApply(detailInfo);
+        // //修改后的用户类型，如果没有说明未修改用户类型，不用设置角色、权限
+        // let changedUserType = this.showConfigOfDelayApply(detailInfo);
         var userCount = _.get(users,'length');
         return (
             <div className="user-info-block apply-info-block">
@@ -1714,13 +1783,21 @@ const ApplyViewDetail = createReactClass({
                         _.map(users, (user, idx) => {
                             return (
                                 <div className="col-12 apply_detail_apps delay_detail_apps" key={idx}>
-                                    {changedUserType ? (
-                                        <div className="apply_detail_operate clearfix">
-                                            {this.renderDetailOperateBtn(user.user_id)}
-                                        </div>
-                                    ) : null}
+                                    <div className="apply_detail_operate clearfix">
+                                        {this.renderDetailOperateBtn(user.user_id)}
+                                    </div>
                                     {this.renderApplyDetailSingleUserName(user)}
-                                    {this.renderMultiAppDelayTable(user)}
+                                    {
+                                        this.state.applyIsExpanded && this.state.curShowConfigUserId === user.user_id ? (
+                                            <PrivilegeChecker check={commonPrivilegeConst.USER_APPLY_APPROVE}>
+                                                {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo, user.user_id)}
+                                            </PrivilegeChecker>
+                                        ) : (
+                                            <div className="multi-user-delay-table">
+                                                {this.renderMultiAppDelayTable(user)}
+                                            </div>
+                                        )
+                                    }
                                 </div>);
                         })
                     }
@@ -1854,24 +1931,11 @@ const ApplyViewDetail = createReactClass({
 
     //密码的验证
     checkPassword: function(rule, value, callback) {
-        if (value && value.match(passwordRegex)) {
-            var passStrength = getPassStrenth(value);
-            this.setState({
-                passStrength: passStrength
-            });
-            if (this.state.formData.confirmPassword) {
-                this.refs.validation.forceValidate(['confirmPassword']);
-            }
-            callback();
-        } else {
-            this.setState({
-                passStrength: {
-                    passBarShow: false,
-                    passStrength: 'L'
-                }
-            });
-            callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
-        }
+        let rePassWord = _.get(this, 'state.formData.confirmPassword');
+        checkPassword(this, value, callback, rePassWord, () => {
+            // 如果密码验证通过后，需要强制刷新下确认密码的验证，以防密码不一致的提示没有去掉
+            this.refs.validation.forceValidate(['confirmPassword']);
+        });
     },
 
     //渲染密码区域
@@ -1899,8 +1963,8 @@ const ApplyViewDetail = createReactClass({
                     </Validator>
                 </FormItem>
                 {
-                    this.state.passStrength.passBarShow ? (
-                        <PassStrengthBar passStrength={this.state.passStrength.passStrength}/>) : null
+                    this.state.passBarShow ? (
+                        <PassStrengthBar passStrength={this.state.passStrength}/>) : null
                 }
             </div>
         );
@@ -1918,12 +1982,7 @@ const ApplyViewDetail = createReactClass({
                 validateStatus={this.renderValidateStyle('confirmPassword')}
                 help={status.confirmPassword.errors ? status.confirmPassword.errors.join(',') : null}
             >
-                <Validator rules={[{
-                    required: true,
-                    whitespace: true,
-                    message: Intl.get('common.password.unequal', '两次输入密码不一致！')
-                }, {validator: this.checkConfirmPassword}]}
-                >
+                <Validator rules={[{validator: this.checkConfirmPassword}]}>
                     <Input
                         name="confirmPassword"
                         type="password"
@@ -1939,11 +1998,11 @@ const ApplyViewDetail = createReactClass({
 
     //确认密码验证
     checkConfirmPassword: function(rule, value, callback) {
-        if (value && value !== this.state.formData.apply_detail_password) {
-            callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
-        } else {
-            callback();
-        }
+        let password = _.get(this, 'state.formData.apply_detail_password');
+        checkConfirmPassword(value, callback, password, () => {
+            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
+            this.refs.validation.forceValidate(['apply_detail_password']);
+        });
     },
 
     //延期，修改应用状态，修改密码，渲染“所属客户”
@@ -2019,10 +2078,7 @@ const ApplyViewDetail = createReactClass({
         //不展示配置按钮的情况
         if (_.includes([APPLY_TYPES.APPLY_PWD_CHANGE,APPLY_TYPES.APPLY_STH_ELSE,APPLY_TYPES.APPLY_GRANT_DELAY,APPLY_TYPES.APPLY_GRANT_STATUS_CHANGE,APPLY_TYPES.DISABLE], detailInfo.type)){
             return true;
-        }else if(_.includes([APPLY_TYPES.DELAY], detailInfo.type)){
-            //延期申请类型不加配置按钮的情况
-            return !this.showConfigOfDelayApply(detailInfo) || this.notShowIcon();
-        }else{
+        } else{
             return this.notShowIcon();
         }
     },
@@ -2430,14 +2486,30 @@ const ApplyViewDetail = createReactClass({
 
                     }
                     let appConfig = this.appsSetting[`${item.client_id}&&${item.user_id}`];
-                    //角色、权限，如果修改了用户类型，需要传设置的角色、权限
-                    if (appConfig && changedUserType) {
-                        item.roles = _.map(appConfig.roles, roleId => {
-                            return {role_id: roleId};
-                        });
-                        item.permissions = _.map(appConfig.permissions, permissionId => {
-                            return {permission_id: permissionId};
-                        });
+                    // 延期的多终端字段
+                    if (appConfig && _.get(appConfig, 'terminals.setted')) {
+                        let terminals = _.get(appConfig, 'terminals.value');
+                        item.terminals = _.map(terminals, 'id');
+                    }
+                    //角色、权限，如果修改了角色权限，需要传设置的角色、权限
+                    if (appConfig && (!_.isEqual(appConfig.roles, x.roles) || !_.isEqual(appConfig.permissions, x.permissions))) {
+                        // 传空数组，是为了在node端判断是否做了修改
+                        if (_.isEmpty(appConfig.roles)) { // 把角色置空的情况
+                            item.roles = [];
+                        } else {
+                            item.roles = _.map(appConfig.roles, roleId => {
+                                return {role_id: roleId};
+                            });
+                        }
+
+                        if (_.isEmpty(appConfig.permissions)) { // 把权限置空的情况
+                            item.permissions = [];
+                        } else {
+                            item.permissions = _.map(appConfig.permissions, permissionId => {
+                                return {permission_id: permissionId};
+                            });
+                        }
+
                     }
                     return item;
                 })
@@ -2802,4 +2874,3 @@ const ApplyViewDetail = createReactClass({
     },
 });
 export default ApplyViewDetail;
-

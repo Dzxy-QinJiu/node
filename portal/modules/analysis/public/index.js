@@ -37,7 +37,9 @@ import {
     dateSelectorEmitter,
     analysisCustomerListEmitter,
     detailPanelEmitter,
-    callDeviceTypeEmitter
+    callDeviceTypeEmitter,
+    terminalsSelectorEmitter,
+    selectedAppEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 
 import rightPanelUtil from 'CMP_DIR/rightPanel';
@@ -47,7 +49,8 @@ const RightPanelClose = rightPanelUtil.RightPanelClose;
 const CustomerList = require('MOD_DIR/crm/public/crm-list');
 
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-
+import { approveAppConfigTerminal } from 'PUB_DIR/sources/utils/common-method-util';
+import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
 //引入pages目录（包括子目录）下的所有index.js文件
 const req = require.context('./pages', true, /index\.js$/);
 //分析组
@@ -78,6 +81,8 @@ class CurtaoAnalysis extends React.Component {
             isHistoricHighDetailShow: false,
             //试用合格客户统计历史最高值记录
             historicHighData: {},
+            isShowAppTerminalSelect: false, // 是否显示多终端筛选框
+            selectedAppTerminals: [],
         };
     }
 
@@ -91,7 +96,7 @@ class CurtaoAnalysis extends React.Component {
 
         analysisCustomerListEmitter.on(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
         detailPanelEmitter.on(detailPanelEmitter.SHOW, this.showDetailPanel);
-
+        appSelectorEmitter.on(appSelectorEmitter.SELECT_APP, this.getSelectedAppId);
         //将页面body元素的overflow样式设为hidden，以防止出现纵向滚动条
         this.setBodyOverflow('hidden');
     }
@@ -99,9 +104,31 @@ class CurtaoAnalysis extends React.Component {
     componentWillUnmount() {
         analysisCustomerListEmitter.removeListener(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
         detailPanelEmitter.removeListener(detailPanelEmitter.SHOW, this.showDetailPanel);
-
+        appSelectorEmitter.removeListener(appSelectorEmitter.SELECT_APP, this.getSelectedAppId);
         //恢复页面body元素的overflow样式
         this.setBodyOverflow('auto');
+    }
+
+    getSelectedAppId = (selectedAppIds) => {
+        // 切换应用后，多终端筛选框默认为全部终端
+        selectedAppEmitter.emit(selectedAppEmitter.CHANGE_SELECTED_APP, '');
+        const selectedAppArray = _.split(selectedAppIds, ',');
+        // 只有一个应用时，才可能显示多终端信息，
+        if (_.get(selectedAppArray, 'length') === 1 && selectedAppArray[0] !== 'all') {
+            // 选择应用的多终端信息
+            let selectedAppTerminals = approveAppConfigTerminal(selectedAppArray[0], Store.appList);
+            if (!_.isEmpty(selectedAppTerminals)) {
+                this.setState({
+                    isShowAppTerminalSelect: true, // 是否显示多终端筛选框
+                    selectedAppTerminals
+                });
+            }
+        } else {
+            this.setState({
+                isShowAppTerminalSelect: false,
+                selectedAppTerminals: []
+            });
+        }
     }
 
     //设置页面body元素的overflow样式
@@ -319,6 +346,22 @@ class CurtaoAnalysis extends React.Component {
         );
     }
 
+    // 筛选终端类型
+    onSelectTerminalsType = (value) => {
+        terminalsSelectorEmitter.emit(terminalsSelectorEmitter.SELECT_TERMINAL, value);
+    }
+
+    // 渲染多终端类型
+    renderAppTerminalsType = () => {
+        return (
+            <SelectAppTerminal
+                appTerminals={this.state.selectedAppTerminals}
+                handleSelectedTerminal={this.onSelectTerminalsType.bind(this)}
+                className="btn-item"
+            />
+        );
+    }
+
     //获取默认应用id
     getDefaultAppId(arg = {}) {
         let defaultAppId = [];
@@ -370,7 +413,8 @@ class CurtaoAnalysis extends React.Component {
 
         let isAppSelectorShow = false;
         let isCallDeviceTypeSelectorShow = false;
-
+        let isShowAppTerminalSelect = false;
+        let selectedAppTerminals = []; // 选择产品的多终端信息
         let adjustConditions;
 
         function deleteCallDeviceTypeCondition(conditions) {
@@ -393,14 +437,26 @@ class CurtaoAnalysis extends React.Component {
                     });
                 }
             };
-        } else if (group.key === ACCOUNT_MENUS.INDEX.key) {
+        } else if (group.key === ACCOUNT_MENUS.INDEX.key) { // 用户分析界面
             isAppSelectorShow = true;
+            const defaultAppId = this.getDefaultAppId({returnString: true});
+            const selectedAppArray = _.split(defaultAppId, ',');
+            // 新增过期用户分析,不需要多终端筛选，其他分析，只有选择单个应用时 ，并且选择的应用有终端信息才显示多终端
+            if (page.key !== ACCOUNT_MENUS.NEW_ADD_EXPIRE.key && _.get(selectedAppArray, 'length') === 1 && selectedAppArray[0] !== 'all') {
+                // 选择应用的多终端信息
+                selectedAppTerminals = approveAppConfigTerminal(selectedAppArray[0], Store.appList);
+                if (!_.isEmpty(selectedAppTerminals)) {
+                    isShowAppTerminalSelect = true;
+                }
+            }
             adjustConditions = conditions => {
                 deleteCallDeviceTypeCondition(conditions);
-
-                const defaultAppId = this.getDefaultAppId({returnString: true});
-
                 const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
+                // 新增过期用户分析界面,不显示多终端筛选
+                if (page.key === ACCOUNT_MENUS.NEW_ADD_EXPIRE.key) {
+                    const terminalCondition = _.find(conditions, condition => condition.name === 'terminal');
+                    _.set(terminalCondition, 'value', '');
+                }
                 _.set(appIdCondition, 'value', defaultAppId);
                 this.adjustStartEndTime(conditions);
             };
@@ -424,7 +480,9 @@ class CurtaoAnalysis extends React.Component {
             currentPage: page,
             isAppSelectorShow,
             isCallDeviceTypeSelectorShow,
-            adjustConditions
+            adjustConditions,
+            isShowAppTerminalSelect,
+            selectedAppTerminals
         }, () => {
             //状态变更完成后，触发一下窗口大小变更事件，使分析组件重新计算其显示区域的高度，以解决显示或隐藏产品选择下拉菜单时，分析组件高度计算不准确的问题
             $(window).resize();
@@ -481,6 +539,10 @@ class CurtaoAnalysis extends React.Component {
             name: 'tab',
             value: 'total',
             type: 'params',
+        }, {
+            // 多终端类型
+            name: 'terminal',
+            value: ''
         }];
     }
 
@@ -496,6 +558,10 @@ class CurtaoAnalysis extends React.Component {
             event: appSelectorEmitter.SELECT_APP,
             callbackArgs: [{
                 name: 'app_id',
+                related: {
+                    name: 'terminal',
+                    value: ''
+                }
             }],
         }, {
             emitter: teamTreeEmitter,
@@ -530,6 +596,12 @@ class CurtaoAnalysis extends React.Component {
                 name: 'interval',
             }, {
                 name: 'time_range',
+            }],
+        }, {
+            emitter: terminalsSelectorEmitter,
+            event: terminalsSelectorEmitter.SELECT_TERMINAL,
+            callbackArgs: [{
+                name: 'terminal',
             }],
         }];
     }
@@ -584,8 +656,16 @@ class CurtaoAnalysis extends React.Component {
                                     appList={appList}
                                     selectMode={appSelectMode}
                                 />
+                                {
+                                    this.state.isShowAppTerminalSelect && _.get(this.state.selectedAppTerminals, 'length') ? (
+                                        <div className="select-app-terminals">
+                                            { this.renderAppTerminalsType()}
+                                        </div>
+                                    ) : null
+                                }
                             </div>
                         ) : null}
+
                         {this.renderContent()}
                     </Col>
                 </Row>

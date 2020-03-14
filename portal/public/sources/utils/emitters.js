@@ -280,3 +280,18 @@ export { leadRecommendEmitter };
 const clickUpgradeNoiceEmitter = new EventEmitter();
 clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB = 'click_notice_tab'; // 点击公告tab
 export { clickUpgradeNoiceEmitter };
+
+// 选择不同应用的事件
+const selectedAppEmitter = new EventEmitter();
+selectedAppEmitter.CHANGE_SELECTED_APP = 'change_selected_app'; // 切换应用
+export { selectedAppEmitter };
+
+// 主导航的领线索，显示内容区的事件
+const showWiningClueEmitter = new EventEmitter();
+showWiningClueEmitter.SHOW_WINNING_CLUE = 'show_winning_clue'; //
+export { showWiningClueEmitter };
+
+// 多终端筛选
+const terminalsSelectorEmitter = new EventEmitter();
+terminalsSelectorEmitter.SELECT_TERMINAL = 'select_terminal'; //
+export { terminalsSelectorEmitter };

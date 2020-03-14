@@ -631,6 +631,7 @@ class CallRecord extends React.Component {
                 title: this.getSearchPhoneRecommendList('dst', Intl.get('common.phone', '电话')),
                 dataIndex: 'dst',
                 width: this.state.isFilter ? 150 : 120,
+                align: 'left',
                 key: 'call_number'
             }, {
                 title: Intl.get('crm.96', '地域'),

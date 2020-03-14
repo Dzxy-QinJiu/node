@@ -5,7 +5,7 @@
  */
 import 'babel-polyfill';
 var rightPanelShow = false;
-import {clueSourceArray, accessChannelArray, clueClassifyArray, CLUE_MESSAGE_TYPE} from 'PUB_DIR/sources/utils/consts';
+import {clueSourceArray, accessChannelArray, clueClassifyArray, CLUE_MESSAGE_TYPE, DISAPPEAR_DELAY_TIME} from 'PUB_DIR/sources/utils/consts';
 var clueCustomerStore = require('./store/clue-customer-store');
 var clueFilterStore = require('./store/clue-filter-store');
 var clueCustomerAction = require('./action/clue-customer-action');
@@ -56,7 +56,6 @@ import {
     ADD_SELECT_TYPE,
     SIMILAR_CLUE,
     SIMILAR_CUSTOMER,
-    NEED_MY_HANDLE,
     isCommonSalesOrPersonnalVersion,
     isSalesOrPersonnalVersion,
     freedCluePrivilege,
@@ -100,7 +99,7 @@ import DifferentVersion from 'MOD_DIR/different_version/public';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import RecommendClues from 'MOD_DIR/home_page/public/views/boot-process/recommend_clues';
 const EXTRACT_CLUE_STEPS = RecommendClues.EXTRACT_CLUE_STEPS;
-import {subtracteGlobalClue, formatSalesmanList, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
+import { formatSalesmanList, isResponsiveDisplay, isShowWinningClue} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
@@ -109,14 +108,13 @@ var LAYOUT_CONSTANTS = {
     MIN_WIDTH_NEED_CAL: 405,//需要计算输入框时的断点
     WIDTH_WITHOUT_INPUT: 185//topnav中除了输入框以外的宽度
 };
-import RecommendCluesForm from './views/recomment_clues/recommend_clues_form';
-import ClueRecommedLists from './views/recomment_clues/recommend_clues_lists';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import { clueEmitter, notificationEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { parabola } from 'PUB_DIR/sources/utils/parabola';
 import { storageUtil } from 'ant-utils';
 import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import AddTraceContentSuccessTips from './views/add-trace-success-tips';
 const DIFFREF = {
     ASSIGN: 'assign',//分配
     TRACE: 'trace', //跟进
@@ -186,7 +184,7 @@ class ClueCustomer extends React.Component {
             ...clueCustomerStore.getState(),
             showBatchRelease: false,//在手机端时，是否释放线索的确认框
             showBatchDistribute: false,//在手机端时，是否显示分配的dropdown
-
+            isShowRewardClueTips: false, // 是否显示赢线索的提示，默认不显示
         };
     }
 
@@ -278,14 +276,14 @@ class ClueCustomer extends React.Component {
     getUnhandledClue = () => {
         //现在只有普通销售有未读数
         clueFilterAction.setTimeType('all');
-        clueFilterAction.setFilterClueAllotNoTrace(NEED_MY_HANDLE);
+        clueFilterAction.setFilterClueAllotNoTrace(true);
         this.filterPanel.filterList.setDefaultFilterSetting();
     };
 
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps, 'history.action') === 'PUSH' && _.get(nextProps, 'location.state.clickUnhandleNum')) {
             var filterStoreData = clueFilterStore.getState();
-            var checkAllotNoTraced = filterStoreData.filterAllotNoTraced === NEED_MY_HANDLE;//待我处理
+            var checkAllotNoTraced = this.isSelfHandleFilter();//待我处理
             var checkedAdvance = false;//在高级筛选中是否有其他的选中项
             var checkOtherData = _.get(this, 'filterPanel.filterList.props.advancedData', []);//线索状态
             if (filterStoreData.filterClueAvailability === '1') {
@@ -362,8 +360,7 @@ class ClueCustomer extends React.Component {
     };
     removeClueItem = (item) => {
         //在列表中删除线索
-        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
-        if (filterAllotNoTraced) {
+        if (this.isSelfHandleFilter()) {
             this.handleSelectedClue(item);
             //需要在列表中删除
             clueCustomerAction.deleteClueById(item);
@@ -674,6 +671,7 @@ class ClueCustomer extends React.Component {
         });
     };
     closeRecommendCluePanel = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '关闭推荐线索面板');
         this.setState({
             isShowRecommendCluePanel: false
         });
@@ -975,7 +973,8 @@ class ClueCustomer extends React.Component {
         return {
             queryParam: {
                 keyword: isGetAllClue ? '' : _.trim(this.state.keyword),
-                statistics_fields: 'status,availability'
+                statistics_fields: 'status,availability',
+                self_pending: this.isSelfHandleFilter()
             },
             bodyParam: {
                 query: {
@@ -1005,17 +1004,10 @@ class ClueCustomer extends React.Component {
         }
         //跟据类型筛选
         const queryObj = this.getClueSearchCondition();
-        if (this.isSelfHandleFilter()){
-            clueCustomerAction.getClueFulltextSelfHandle(queryObj,(isSelfHandleFlag) => {
-                this.handleFirstLoginData(isSelfHandleFlag);
-            });
-        }else{
-            //取全部线索列表
-            clueCustomerAction.getClueFulltext(queryObj,(isSelfHandleFlag) => {
-                this.handleFirstLoginData(isSelfHandleFlag);
-            });
-
-        }
+        //取全部线索列表
+        clueCustomerAction.getClueFulltext(queryObj,(isSelfHandleFlag) => {
+            this.handleFirstLoginData(isSelfHandleFlag);
+        });
     };
     handleFirstLoginData = (flag) => {
         if (flag === 'filterAllotNoTraced'){
@@ -1058,9 +1050,6 @@ class ClueCustomer extends React.Component {
             type: type,
         };
         var route = '/rest/customer/v2/customer/range/clue/export/:page_size/:sort_field/:order/:type';
-        if(this.isSelfHandleFilter()){
-            route = '/rest/customer/v2/customer/range/selfHandle/clue/export/:page_size/:sort_field/:order/:type';
-        }
         const url = route.replace(pathParamRegex, function($0, $1) {
             return params[$1];
         });
@@ -1167,7 +1156,6 @@ class ClueCustomer extends React.Component {
             return;
         }
         var value = _.get(item, 'customer_traces[0].remark', '');
-        subtracteGlobalClue(item);
         //获取填写的保存跟进记录的内容
         var textareVal = _.trim(this.state.submitContent);
         if (!textareVal) {
@@ -1210,12 +1198,18 @@ class ClueCustomer extends React.Component {
                         clueItem.customer_traces[0].nick_name = userName;
                         clueItem.customer_traces[0].add_time = addTime;
                     }
+                    if (isShowWinningClue()) {
+                        Trace.traceEvent(ReactDOM.findDOMNode(this), '线索列表>填写跟进赢得2条线索');
+                    }
                     this.setState({
                         submitTraceLoading: false,
                         submitTraceErrMsg: '',
                         isEdittingItem: {},
-                        currentMoreBtnStatus: ''
+                        currentMoreBtnStatus: '',
+                        isShowRewardClueTips: true
                     });
+                    // 填写跟进记录成功后，个人试用版、企业试用版增加提示信息
+
                     //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
                     setTimeout(() => {
                         this.handleSelectedClue(item);
@@ -1495,7 +1489,7 @@ class ClueCustomer extends React.Component {
                     });
                 } else {
                     //待我审批状态中没有无效的tab，不展示动画
-                    let filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
+                    let filterAllotNoTraced = this.isSelfHandleFilter();
                     if(!filterAllotNoTraced) {
                         this.flyClueInvalid(item,DIFFREF.TRASFERINVALID);
                     }
@@ -1508,7 +1502,6 @@ class ClueCustomer extends React.Component {
                     setTimeout(() => {
                         this.handleSelectedClue(item);
                         clueCustomerAction.deleteClueById(item);
-                        subtracteGlobalClue(item);
                         clueCustomerAction.updateClueTabNum('invalidClue');
                     },FLOW_FLY_TIME);
 
@@ -1650,7 +1643,6 @@ class ClueCustomer extends React.Component {
                 message.error(errorMsg);
             } else {
                 this.handleSelectedClue(curDeleteClue);
-                subtracteGlobalClue(curDeleteClue);
             }
         });
     }
@@ -1679,7 +1671,7 @@ class ClueCustomer extends React.Component {
             'has-refresh-tip': _.get(this.state, 'isShowRefreshPrompt')
         });
         //如果选中了待我审批状态，就不展示已转化
-        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
+        var filterAllotNoTraced = this.isSelfHandleFilter();
         return <span className={clueStatusCls}>
             <span className="clue-status-container">
                 {isSalesOrPersonnalVersion() ? null : <span className={willDistCls} data-tracename='点击待分配tab'
@@ -2365,7 +2357,6 @@ class ClueCustomer extends React.Component {
             if (item){
                 //有item的是单个修改跟进人
                 clueCustomerAction.updateClueItemAfterAssign({item: item,submitObj: submitObj,isWillDistribute: isWillDistribute});
-                subtracteGlobalClue(item);
                 if (this['changesale' + clue_id]) {
                     //隐藏批量变更销售面板
                     this['changesale' + clue_id].handleCancel();
@@ -2407,7 +2398,6 @@ class ClueCustomer extends React.Component {
                         running: totalSelectedSize,
                         typeText: Intl.get('clue.batch.change.trace.man', '变更跟进人')
                     });
-                    subtracteGlobalClue({id: clue_id});
                     if (isWillDistribute) {
                         clueCustomerAction.afterAssignSales(clue_id);
                     }
@@ -2981,9 +2971,7 @@ class ClueCustomer extends React.Component {
         if (this.state.selectAllMatched) {
             let queryObj = this.getClueSearchCondition();
             condition.query_param = queryObj.bodyParam;
-            let filterStoreData = clueFilterStore.getState();
-            let filterAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理的线索
-            if (filterAllotNoTraced) {
+            if (this.isSelfHandleFilter()) {
                 //获取有待我处理条件的线索
                 condition.self_no_traced = true;
             }
@@ -3034,7 +3022,6 @@ class ClueCustomer extends React.Component {
             this.setState({isReleasingCustomer: false});
             clueCustomerAction.afterReleaseClue(clue.id);
             this.handleSelectedClue(clue);
-            subtracteGlobalClue(clue);
         }, errorMsg => {
             this.setState({isReleasingCustomer: false});
             message.error(errorMsg);
@@ -3418,6 +3405,20 @@ class ClueCustomer extends React.Component {
         });
     }
 
+    renderWinningClueTips = () => {
+        let hide = () => {
+            this.setState({
+                isShowRewardClueTips: false,
+            });
+        };
+        return (
+            <AddTraceContentSuccessTips
+                onHide={hide}
+                time={DISAPPEAR_DELAY_TIME}
+            />
+        );
+    };
+
     render() {
         var isFirstLoading = this.isFirstLoading();
         var cls = classNames('right-panel-modal',
@@ -3437,6 +3438,7 @@ class ClueCustomer extends React.Component {
         //普通销售或者个人注册线索用
         var isCommonSale = isCommonSalesOrPersonnalVersion();//是否是普通销售
         let {isWebMin} = isResponsiveDisplay();
+
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索列表">
@@ -3486,11 +3488,19 @@ class ClueCustomer extends React.Component {
                                 toggleList={this.toggleList.bind(this)}
                             />
                         </div>
+                        
                         <div className={contentClassName}>
                             {_.get(this.state, 'isShowRefreshPrompt') ? this.getClueRefreshPrompt() : null}
                             {this.state.allClueCount ? this.getClueTypeTab() : null}
                             {this.renderLoadingAndErrAndNodataContent()}
                         </div>
+                        {
+                            isShowWinningClue() && this.state.isShowRewardClueTips ? (
+                                <div className="winning-clue-tips">
+                                    {this.renderWinningClueTips()}
+                                </div>
+                            ) : null
+                        }
                         <div className="customer-item-ball" style={animateStyle} ></div>
                     </div>
                     {this.state.clueAddFormShow ?
@@ -3538,9 +3548,6 @@ class ClueCustomer extends React.Component {
                     {
                         this.state.isShowRecommendCluePanel ?
                             <React.Fragment>
-                                {/*<ClueRecommedLists
-                                    closeRecommendCluePanel={this.closeRecommendCluePanel}
-                                />*/}
                                 <RightPanelModal
                                     isShowMadal
                                     isShowCloseBtn

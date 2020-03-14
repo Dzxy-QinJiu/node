@@ -75,7 +75,7 @@ var UnreadMixin = {
                 if (item.showNum){
                     var len = (count + '').length;
                     if (len >= 3) {
-                        styleText = `.${item.cls}:before{content:\'99+\';display:block;padding:0 2px 0 2px;}`;
+                        styleText = `.${item.cls}:before{content:\'99+\';display:block;padding:0 2px 0 2px;font-size: 8px!important;width: 19px!important;;}`;
                     } else {
                         styleText = `.${item.cls}:before{content:'${count}';display:block}`;
                     }

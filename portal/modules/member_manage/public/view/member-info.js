@@ -2,9 +2,8 @@
  * Created by wangliping on 2016/11/8.
  */
 require('../css/member-info.less');
-import {Icon, Select, Popconfirm, message, Tabs, Switch} from 'antd';
+import {Icon, Select, Popconfirm, message, Tabs, Col} from 'antd';
 const TabPane = Tabs.TabPane;
-import {getPassStrenth, passwordRegex} from 'CMP_DIR/password-strength-bar';
 var Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var HeadIcon = require('../../../../components/headIcon');
@@ -18,7 +17,7 @@ import MemberInfoAction from '../action/member-info-action';
 import Trace from 'LIB_DIR/trace';
 const UserData = require('PUB_DIR/sources/user-data');
 import RadioCard from './radio-card';
-import {checkPhone, checkQQ, validatorNameRuleRegex, getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
+import {checkPhone, checkQQ, validatorNameRuleRegex, getNumberValidateRule, checkPassword, checkConfirmPassword} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
@@ -28,10 +27,10 @@ import Spinner from 'CMP_DIR/spinner';
 import { StatusWrapper } from 'antc';
 import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 import MemberRecord from './member-record';
-import { storageUtil } from 'ant-utils';
-import ajax from 'ant-ajax';
 import memberManagePrivilege from '../privilege-const';
-
+import {PasswdStrengthBar} from 'CMP_DIR/password-strength-bar';
+import {checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+const {setWebsiteConfig, getLocalWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const TAB_KEYS = {
     BASIC_INFO_TAB: '1',//基本信息
     LOG_TAB: '2',//操作日志
@@ -39,8 +38,6 @@ const TAB_KEYS = {
 };
 const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 352;
 const EDIT_PASSWORD_WIDTH = 340;
-
-const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
 
 class MemberInfo extends React.Component {
 
@@ -58,7 +55,7 @@ class MemberInfo extends React.Component {
         errorMsg: this.props.errorMsg,
         salesRoleList: [], // 职务列表
         //是否显示拨打电话的提示
-        isShowCallTip: !_.get(websiteConfig, 'no_show_call_tips'),
+        isShowCallTip: !_.get(getLocalWebsiteConfig(), 'no_show_call_tips'),
         ...MemberInfoStore.getState(),
     };
 
@@ -236,7 +233,7 @@ class MemberInfo extends React.Component {
     }
 
     onPasswordValueChange = () => {
-        const confirmPassword = this.refs.confirmPassword;
+        const confirmPassword = this.confirmPassWordRef;
         if (confirmPassword && confirmPassword.state.formData.input) {
             confirmPassword.refs.validation.forceValidate();
         }
@@ -244,33 +241,30 @@ class MemberInfo extends React.Component {
 
     onConfirmPasswordDisplayTypeChange = () => {
         this.setState({isPasswordInputShow: false});
-        this.refs.password.setState({displayType: 'text'});
+        this.passwordRef.setState({displayType: 'text'});
     };
 
     //对密码 进行校验
     checkPass = (rule, value, callback) => {
-        if (value && value.match(passwordRegex)) {
-            let passStrength = getPassStrenth(value);
-            this.refs.password.setState({passStrength: passStrength});
-            callback();
-        } else {
-            this.refs.password.setState({
-                passStrength: {
-                    passBarShow: false,
-                    passStrength: 'L'
-                }
-            });
-            callback(Intl.get('common.password.validate.rule', '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符'));
-        }
+        let rePassWord = _.get(this, 'confirmPassWordRef.state.formData.input');
+        checkPassword(this.passwordRef, value, callback, rePassWord, () => {
+            // 如果密码验证通过后，需要强制刷新下确认密码的验证，以防密码不一致的提示没有去掉
+            if(_.get(this, 'confirmPassWordRef.refs.validation')){
+                // 密码、确认密码在input组件中的key都是用的input    
+                this.confirmPassWordRef.refs.validation.forceValidate(['input']);
+            } 
+        });
     };
 
     //对确认密码 进行校验
     checkRePass = (rule, value, callback) => {
-        if (value && value === this.refs.password.state.formData.input) {
-            callback();
-        } else {
-            callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
-        }
+        let password = _.get(this, 'passwordRef.state.formData.input');
+        checkConfirmPassword(value, callback, password, () => {
+            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
+            if(_.get(this, 'passwordRef.refs.validation')){
+                this.passwordRef.refs.validation.forceValidate(['input']);
+            } 
+        });
     };
 
     uploadImg = (src) => {
@@ -317,7 +311,19 @@ class MemberInfo extends React.Component {
         memberInfo.image = this.props.memberInfo.image;
         this.setState({memberInfo, showSaveIconTip: false});
     };
-
+    // 保存修改的密码
+    saveEditPassword = (type, saveObj, successFunc, errorFunc) => {
+        if(_.get(this, 'passwordRef.refs.validation')){
+            // 密码验证通过后才能调用保存密码的方法(不能设置弱密码)
+            this.passwordRef.refs.validation.validate(valid => {
+                if (!valid) {
+                    this.confirmPassWordRef.setState({loading: false});
+                    return;
+                }
+                this.saveEditMemberInfo(type, saveObj, successFunc, errorFunc);
+            });
+        }
+    }
     //保存修改的成员信息
     saveEditMemberInfo = (type, saveObj, successFunc, errorFunc) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存成员${type}的修改`);
@@ -844,21 +850,13 @@ class MemberInfo extends React.Component {
 
     //不再提示可以打电话的提示
     handleClickNoCallTip = () => {
-        ajax.send({
-            url: '/rest/base/v1/user/website/config/personnel',
-            type: 'post',
-            data: {
-                no_show_call_tips: true
-            }
-        })
-            .done(result => {
-                this.setState({
-                    isShowCallTip: false
-                });
-            })
-            .fail(err => {
-                message.error(err);
+        setWebsiteConfig({no_show_call_tips: true}, () => {
+            this.setState({
+                isShowCallTip: false
             });
+        }, (err) => {
+            message.error(err);
+        });
     }
 
     // 添加成员成功后的提示信息
@@ -889,7 +887,7 @@ class MemberInfo extends React.Component {
                             {Intl.get('user.password.new.password', '新密码')}
                         </span>
                         <BasicEditInputField
-                            ref="password"
+                            ref={ref => this.passwordRef = ref}
                             width={EDIT_PASSWORD_WIDTH}
                             id={memberInfo.id}
                             field="password"
@@ -904,12 +902,16 @@ class MemberInfo extends React.Component {
                             onValueChange={this.onPasswordValueChange}
                         />
                     </div>
+                    <Col span="23">
+                        {this.state.passBarShow ?
+                            (<PasswdStrengthBar passStrength={this.state.passStrength}/>) : null}
+                    </Col>
                     <div className="basic-info-item">
                         <span className="basic-info-label">
                             {Intl.get('common.confirm.password', '确认密码')}
                         </span>
                         <BasicEditInputField
-                            ref="confirmPassword"
+                            ref={ref => this.confirmPassWordRef = ref}
                             width={EDIT_PASSWORD_WIDTH}
                             id={memberInfo.id}
                             displayType="edit"
@@ -918,7 +920,7 @@ class MemberInfo extends React.Component {
                             placeholder={Intl.get('common.input.confirm.password', '请输入确认密码')}
                             validators={[{validator: this.checkRePass}]}
                             onDisplayTypeChange={this.onConfirmPasswordDisplayTypeChange}
-                            saveEditInput={this.saveEditMemberInfo.bind(this, 'password')}
+                            saveEditInput={this.saveEditPassword.bind(this, 'password')}
                         />
                     </div>
                 </div>
@@ -949,12 +951,14 @@ class MemberInfo extends React.Component {
             let isSales = _.find(roleNames, roleName => roleName && roleName.indexOf(Intl.get('sales.home.sales', '销售')) !== -1);
             // 开通营收中心并且有销售目标的权限
             let showSalesGoalPrivilege = isSales && hasPrivilege(memberManagePrivilege.USER_MANAGE_ADD_SALES_GOAL);
+            // 只有企业试用用户、在添加完成员之后返回详情界面才显示打电话的提示
+            const isShowCallTip = checkVersionAndType().isCompanyTrial && this.props.isContinueAddButtonShow && this.state.isShowCallTip;
             return (
                 <div className="member-detail-basic-container" style={{height: this.getContainerHeight()}}>
                     <GeminiScrollbar>
                         <div className="member-detail-basic-content">
                             {
-                                this.props.isContinueAddButtonShow && this.state.isShowCallTip ? (
+                                isShowCallTip ? (
                                     <DetailCard
                                         content={this.renderAddMemberSuccessTips()}
                                         className='member-info-success-tips-card-container'

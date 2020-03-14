@@ -25,9 +25,9 @@
     position: absolute;
     top: 45%;
     left: 30%;
+    font-size: 14px;
     .errmsg-tip{
       color:@error_tips_color;
-      font-size: 14px;
       a{
         color: @BUTTON-HOVER;
       }
@@ -61,18 +61,49 @@
       top: calc(50% - 86px);
     }
     // 头部样式
+    .extract-clues-title-container{
+      background-color: #ffffff;
+      border-bottom:1px solid #dedfe1;
+    }
     .extract-clues-title-wrapper{
       padding: 0 24px;
       background-color: #ffffff;
-      border-bottom: 1px solid #dedfe1;
       font-size: 16px;
       font-weight: 800;
-      height: 70px;
     }
     .extract-clues-title{
       overflow: hidden;
       padding-top: 20px;
       line-height: 32px;
+    }
+    //热门选项样式
+    .extract-hot-wrapper{
+      font-weight: normal;
+      margin: 10px 0 16px 24px;
+      .extract-hot-title{
+        font-size: 14px;
+        color: #999;
+      }
+      .extract-hot-btn-container{
+        display: inline-block;
+        .hot-btn-item{
+          color: #EFA246;
+          font-size: 12px;
+          padding: 3px 6px;
+          border: 1px solid @border-color;
+          border-radius:2px;
+          margin-right: 5px;
+          cursor: pointer;
+          &:hover{
+            border-color: @version-basic-color;
+          }
+          &.hot-active{
+            background: @version-basic-color;
+            color: #fff;
+            border-color: @version-basic-color;
+          }
+        }
+      }
     }
     .extract-clues-btn-container{
       float: right;
@@ -105,6 +136,24 @@
       .customer-btn{
         height: 24px;
         color: @will-distribute-color;
+      }
+      // 赢线索的提示
+      .winning-clue-btn {
+        width: 72px;
+        height:24px;
+        border:1px solid @sub-content-font-color;
+        border-radius:4px;
+        margin-left: 5px;
+        .gift-logo {
+          width: 14px;
+          margin-left: -8px;
+        }
+        .text {
+          margin-left: 5px;
+          color: @confirm-delete-background;
+          font-size: 12px;
+          vertical-align: middle;
+        }
       }
       .has-extracted-count{
         color: @BORDER-BLUE;
@@ -150,7 +199,10 @@
             color: @label-content-color!important;
             box-shadow: none;
             .extract-clue-text-wrapper{
-              color: @label-content-color
+              color: @label-content-color;
+              .extract-clue-text__name{
+                cursor: unset;
+              }
             }
             .iconfont.icon-extract{
               color: @label-content-color;
@@ -161,6 +213,11 @@
             .iconfont.icon-extract{
               color: @label-content-color;
               cursor: not-allowed;
+            }
+            .extract-clue-text-wrapper {
+              .extract-clue-text__name {
+                cursor: unset;
+              }
             }
           }
           .extract-clue-text-wrapper{
@@ -174,6 +231,7 @@
               //overflow: hidden;
               //white-space: nowrap;
               margin-top: -3px;
+              cursor: pointer;
             }
             .extract-clue-text__filters{
               margin-top: 10px;
@@ -193,11 +251,20 @@
             }
           }
         }
+
         .no-more-data-tip{
             .anticon{
               position: static;
               margin-right: 4px;
             }
+        }
+      }
+      .winning-clue-tips {
+        padding: 5px 24px;
+        .winning-clue-container {
+          border:1px solid rgba(204,204,204,1);
+          border-radius:4px;
+          position: relative;
         }
       }
     }
@@ -242,6 +309,31 @@
   .no-more-data-tip{
     .ant-alert{
       padding: 8px;
+    }
+  }
+}
+
+//提示通知样式
+.extract-notification-wrapper{
+  .ant-notification-notice-content{
+    padding-right: 10px;
+    padding-top: 5px;
+    .ant-notification-notice-message{
+      font-size: 16px;
+      font-weight: bold;
+      display: none;
+    }
+    .ant-notification-notice-description{
+      font-size: 14px;
+      color: @title-color;
+      .has-extracted-count{
+        color: @BORDER-BLUE;
+        margin: 2px;
+      }
+      .icon-warn-icon{
+        color: #ffbf00;
+        margin-right: 5px;
+      }
     }
   }
 }

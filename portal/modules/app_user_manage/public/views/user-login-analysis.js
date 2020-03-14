@@ -9,7 +9,7 @@ import StatusWrapper from 'CMP_DIR/status-wrapper';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import { AntcChart } from 'antc';
-import { Progress, Tooltip, Icon, Alert, Select, Popover } from 'antd';
+import { Progress, Tooltip, Icon, Alert, Select, Popover, Checkbox } from 'antd';
 const Option = Select.Option;
 import PropTypes from 'prop-types';
 import {DATE_SELECT} from 'PUB_DIR/sources/utils/consts';
@@ -18,6 +18,7 @@ const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util')
 import {getCertainTypeTooltip} from 'PUB_DIR/sources/utils/common-method-util';
 import history from 'PUB_DIR/sources/history';
 import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
+import {selectedAppEmitter } from 'PUB_DIR/sources/utils/emitters';
 //日历热力图颜色
 const CALENDAR_COLOR = {
     BORDER: '#A2A2A2',
@@ -114,7 +115,7 @@ class UserLoginAnalysis extends React.Component {
         let lastLoginParams = this.getUserLastLoginParams(queryParams);
         let reqData = this.getUserLoginScoreParams(queryParams);
         let type = this.getUserLoginType();
-        let appTerminalType = _.has(queryParams, 'appTerminalType') && queryParams.appTerminalType || this.state.appTerminalType;
+        let appTerminalType = _.has(queryParams, 'appTerminalType') ? queryParams.appTerminalType : this.state.appTerminalType[queryParams.appid];
         if (appTerminalType) {
             queryObj.terminal = appTerminalType;
             lastLoginParams.terminal = appTerminalType;
@@ -125,14 +126,6 @@ class UserLoginAnalysis extends React.Component {
         UserLoginAnalysisAction.getLoginUserActiveStatistics(lastLoginParams, type);
         UserLoginAnalysisAction.getUserLoginChartInfo(lastLoginParams);
         UserLoginAnalysisAction.getLoginUserScore(reqData, type);
-    };
-
-    // 选择应用
-    onSelectedAppChange = (appid) => {
-        UserLoginAnalysisAction.resetState();
-        UserLoginAnalysisAction.setSelectedAppId(appid);
-        // 获取用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录次数统计）
-        this.getUserAnalysisData({ appid: appid });
     };
 
     renderLoginFirstLastTime = (loginLast, loginFirst) => {
@@ -398,10 +391,18 @@ class UserLoginAnalysis extends React.Component {
                 </div>
             );
         }
-        const radioValue = [{ value: 'LoginFrequency', name: '次数' }, { value: 'loginDuration', name: '时长' }];
+        const radioValue = [{ value: 'loginDuration', name: '时长' }, { value: 'LoginFrequency', name: '次数' }];
         if (_.isArray(loginChartInfo.loginDuration) || _.isArray(loginChartInfo.loginCount)) {
             return (
                 <div className="login-chart">
+                    <div className="filter-ip">
+                        <Checkbox
+                            checked={this.state.filterIpCheckMap[app.app_id]}
+                            onChange={this.handleFilterIp.bind(this, app)}
+                        >
+                            {Intl.get('user.login.analysis.filter.config.ip', '过滤配置IP')}
+                        </Checkbox>
+                    </div>
                     {Oplate.hideSomeItem ? (
                         <div className="duration-chart">
                             {loginChartInfo.count ? (
@@ -412,17 +413,17 @@ class UserLoginAnalysis extends React.Component {
                     ) : (
                         <CardContainer
                             radioValue={radioValue}
-                            dateRange={this.state.selectValueMap[app.app_id] || 'LoginFrequency'}
+                            dateRange={this.state.selectValueMap[app.app_id] || 'loginDuration'}
                             onDateRangeChange={this.handleSelectRadio.bind(this, app)}
                             title=''
                         >
                             <div className="duration-chart">
                                 {
-                                    this.state.selectValueMap[app.app_id] === 'loginDuration' ?
-                                        // 时长
-                                        this.renderChart(loginChartInfo.loginDuration, this.durationTooltip) :
+                                    this.state.selectValueMap[app.app_id] === 'LoginFrequency' ?
                                         // 次数
-                                        this.renderChart(loginChartInfo.loginCount, this.chartFrequencyTooltip)
+                                        this.renderChart(loginChartInfo.loginCount, this.chartFrequencyTooltip) :
+                                        // 时长
+                                        this.renderChart(loginChartInfo.loginDuration, this.durationTooltip)
                                 }
                             </div>
                         </CardContainer>
@@ -574,15 +575,52 @@ class UserLoginAnalysis extends React.Component {
         });
     };
 
+    handleFilterIp = (app, e) => {
+        let checked = e.target.checked;
+        let timeType = _.get(this.state.appUserDataMap, [app.app_id, 'timeType'], 'six_month');
+        let starttime = moment().subtract(6, 'month').valueOf();
+        if (timeType === 'month') {
+            starttime = moment().subtract(1, 'month').valueOf();
+        } else if(timeType === 'week') {
+            starttime = moment().subtract(1, 'week').valueOf();
+        }
+        let queryObj = this.getUserLastLoginParams({appid: app.app_id, starttime: starttime});
+        // 接口约定：过滤IP，传2，不过滤的话，可以不传参数
+        if (checked) { // 选择过滤IP
+            queryObj.lan = 2;
+        }
+        const { filterIpCheckMap } = this.state;
+        filterIpCheckMap[app.app_id] = checked;
+        this.setState({
+            filterIpCheckMap
+        }, () => {
+            UserLoginAnalysisAction.getUserLoginChartInfo(queryObj);
+        });
+    };
+
     showAppDetail = (app, isShow) => {
+        let appId = _.get(app, 'app_id');
         const showDetailMap = this.state.showDetailMap;
-        showDetailMap[app.app_id] = isShow;
+        showDetailMap[appId] = isShow;
+        let selectAppTerminals = this.state.selectAppTerminals;
+        const selectTerminalType = this.state.selectTerminalType;
+        selectTerminalType[appId] = '';
         if (isShow) {
-            UserLoginAnalysisAction.setSelectedAppTerminals(app.app_id);
-            this.getUserAnalysisData({ appid: app.app_id });
+            if (selectTerminalType[appId] === '') {
+                selectedAppEmitter.emit(selectedAppEmitter.CHANGE_SELECTED_APP, '');
+            }
+            let matchSelectApp = _.find(this.props.appLists, item => item.app_id === appId);
+            if (matchSelectApp) {
+                selectAppTerminals[appId] = matchSelectApp.terminals || [];
+            }
+            this.getUserAnalysisData({ appid: appId, appTerminalType: '' });
+        } else {
+            selectAppTerminals[appId] = [];
         }
         this.setState({
-            showDetailMap
+            showDetailMap,
+            selectAppTerminals,
+            selectTerminalType
         });
     };
     handleSelectDate = (app, value) => {
@@ -595,9 +633,14 @@ class UserLoginAnalysis extends React.Component {
         let queryObj = this.getUserLastLoginParams({appid: app.app_id, starttime: starttime});
         let type = this.getUserLoginType();
         let reqData = {...queryObj, timeType: value};
+        let chartReqData = _.cloneDeep(reqData);
         // 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
         UserLoginAnalysisAction.getLoginUserActiveStatistics(reqData, type);
-        UserLoginAnalysisAction.getUserLoginChartInfo(reqData);
+        let isCheckedFilterIp = this.state.filterIpCheckMap[app.app_id]; // 过滤IP是否选中的状态
+        if (isCheckedFilterIp) {
+            chartReqData.lan = 2;
+        }
+        UserLoginAnalysisAction.getUserLoginChartInfo(chartReqData);
     };
     // 渲染时间选择框
     renderTimeSelect = (app) => {
@@ -686,22 +729,29 @@ class UserLoginAnalysis extends React.Component {
         selectValue: 'LoginFrequency',
         selectValueMap: {},
         showDetailMap: {},//是否展示app详情的map
+        filterIpCheckMap: {}, // 过滤IP
+        selectAppTerminals: {},
+        selectTerminalType: {},
         ...this.getStateData()
     };
 
     // 筛选终端类型
-    onSelectTerminalsType = (value) => {
-        UserLoginAnalysisAction.resetState();
-        UserLoginAnalysisAction.setAppTerminalsType(value);
-        this.getUserAnalysisData({ appTerminalType: value });
+    onSelectTerminalsType = (appId, value) => {
+        const selectTerminalType = this.state.selectTerminalType;
+        selectTerminalType[appId] = value;
+        this.getUserAnalysisData({ appid: appId, appTerminalType: value });
+        this.setState({
+            selectTerminalType
+        });
     };
 
     // 渲染多终端类型
-    renderAppTerminalsType = () => {
+    renderAppTerminalsType = (app) => {
         return (
             <SelectAppTerminal
-                appTerminals={this.state.selectAppTerminals}
-                handleSelectedTerminal={this.onSelectTerminalsType.bind(this)}
+                terminalType={this.state.selectTerminalType[app.app_id]}
+                appTerminals={this.state.selectAppTerminals[app.app_id]}
+                handleSelectedTerminal={this.onSelectTerminalsType.bind(this, app.app_id)}
             />
         );
     };
@@ -727,31 +777,14 @@ class UserLoginAnalysis extends React.Component {
                                             />
                                         </span>
                                         <p title={app.app_name}>{app.app_name}</p>
-                                        <span className="btn-bar">
-                                            {
-                                                this.state.showDetailMap[app.app_id] ?
-                                                    <span
-                                                        className="iconfont icon-up-twoline handle-btn-item"
-                                                        onClick={this.showAppDetail.bind(this, app, false)}
-                                                    ></span> :
-                                                    <span
-                                                        className="iconfont icon-down-twoline handle-btn-item"
-                                                        onClick={this.showAppDetail.bind(this, app, true)}></span>
-                                            }
-                                        </span>
+
                                         {
-                                            /***
-                                         *  TODO 由于接口还没有实现，所以暂时隐藏 终端类型筛选
-                                         *  {
-                                            this.state.showDetailMap[app.app_id] && _.get(this.state.selectAppTerminals, 'length') ? (
+                                            this.state.showDetailMap[app.app_id] && _.get(this.state.selectAppTerminals[app.app_id], 'length') ? (
                                                 <span className="app-terminals-select">
-                                                    {this.renderAppTerminalsType()}
+                                                    {this.renderAppTerminalsType(app)}
                                                 </span>
                                             ) : null
                                         }
-                                         * */
-                                        }
-
                                     </div>
                                 )}
                                 content={
@@ -781,6 +814,9 @@ class UserLoginAnalysis extends React.Component {
                                             </div>
                                         </StatusWrapper>) : null
                                 }
+                                isShowToggleBtn={true}
+                                isExpandDetail={this.state.showDetailMap[app.app_id]}
+                                handleToggleDetail={this.showAppDetail.bind(this, app)}
                             />
                         );
                     })

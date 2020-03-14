@@ -123,7 +123,7 @@ class Crm extends React.Component {
             customersSize: CrmStore.getCustomersLength(),
             pageSize: crmStoreData.pageSize,
             pageNum: crmStoreData.pageNum,
-            isConcernCustomerTop: crmStoreData.isConcernCustomerTop,//关注客户是否置顶
+            isConcernCustomer: crmStoreData.isConcernCustomer,//是否关注我的客户
             curPageCustomers: list,//将后端返回的数据转为界面列表所需的数据
             originCustomerList: originCustomerList,//后端返回的客户数据
             rightPanelIsShow: rightPanelShow,
@@ -307,12 +307,6 @@ class Crm extends React.Component {
         const customerSortMap = crmUtil.CUSOTMER_SORT_MAP;
         let sort_and_orders = [];
         //字符串类型的排序字段，key需要在字段后面加上.row
-        //设置了关注客户置顶后的处理
-        if (this.state.isConcernCustomerTop) {
-            sort_and_orders = [
-                {key: customerSortMap['interest_member_ids'], value: 'ascend'}
-            ];
-        }
         //如果常用筛选选中了从客户池中提取的客户
         if(_.get(filterStoreCondition,'otherSelectedItem') === OTHER_FILTER_ITEMS.EXTRACT_TIME) {
             sort_and_orders.push({
@@ -932,6 +926,12 @@ class Crm extends React.Component {
         const rangParams = (this.props.params && this.props.params.rangParams) || this.state.rangParams;
         const conditionParams = (this.props.params && this.props.params.condition) || condition;
         const queryObjParams = $.extend({}, (this.props.params && this.props.params.queryObj));
+        //设置了关注我的客户后的处理
+        if (this.state.isConcernCustomer) {
+            if(_.isEmpty(conditionParams.interest_member_ids)) {
+                conditionParams.interest_member_ids = [crmUtil.getMyUserId()];
+            }
+        }
         //组合接口所需的数据结构
         let params = {
             data: JSON.stringify(conditionParams),
@@ -1153,6 +1153,10 @@ class Crm extends React.Component {
         this.setState({isReleasingCustomer: true});
         batchAjax.doBatch('release_pool', condition).then((taskId) => {
             this.setState({isReleasingCustomer: false});
+            if(this['releaseRef']) {
+                //隐藏批量释放面板
+                this['releaseRef'].handleCancel();
+            }
             //批量操作参数
             var is_select_all = this.state.selectAllMatched;
             //全部记录的个数
@@ -1177,6 +1181,10 @@ class Crm extends React.Component {
             });
         }, (errorMsg) => {
             this.setState({isReleasingCustomer: false});
+            if(this['releaseRef']) {
+                //隐藏批量释放面板
+                this['releaseRef'].handleCancel();
+            }
             message.error(errorMsg);
         });
     };
@@ -1348,7 +1356,7 @@ batchTopBarDropList = (isMinWeb) => {
                             </Button>
                         </PrivilegeChecker>
                         {/*除了运营不能释放客户，管理员、销售都可以释放*/}
-                        {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : this.renderReleaseReasonBlock(content, this.batchReleaseCustomer)}
+                        {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : this.renderReleaseReasonBlock(content, this.batchReleaseCustomer, 'batch')}
                     </React.Fragment>
                     : (
                         <React.Fragment>
@@ -1938,24 +1946,21 @@ batchTopBarDropList = (isMinWeb) => {
     }
 
     handleFocusCustomerTop(e) {
-        let isConcernCustomerTop = !this.state.isConcernCustomerTop;
-        CrmAction.setConcernCustomerTop(isConcernCustomerTop);
+        let isConcernCustomer = !this.state.isConcernCustomer;
+        Trace.traceEvent(ReactDOM.findDOMNode(this), isConcernCustomer ? '查看我关注的客户' : '取消查看我关注的客户');
+        CrmAction.setConcernCustomer(isConcernCustomer);
         setTimeout(() => {
             this.search();
         });
-        //关注客户置顶标识修改后保存到个人配置上
-        let personnelObj = {};
-        personnelObj[oplateConsts.STORE_PERSONNAL_SETTING.CONCERN_CUSTOMER_TOP_FLAG] = isConcernCustomerTop;
-        setWebsiteConfig(personnelObj);
     }
 
     //渲染带关注客户置顶图标的联系人列标题
     renderContactConcernTop() {
         let interestClassName = classNames('iconfont concern-customer-top-icon', {
-            'icon-interested': this.state.isConcernCustomerTop,
-            'icon-uninterested': !this.state.isConcernCustomerTop
+            'icon-interested': this.state.isConcernCustomer,
+            'icon-uninterested': !this.state.isConcernCustomer
         });
-        let title = this.state.isConcernCustomerTop ? Intl.get('crm.concern.top.cancel', '取消关注客户置顶') : Intl.get('crm.concern.top.set', '设置关注客户置顶');
+        let title = this.state.isConcernCustomer ? Intl.get('crm.see.concern.slef.cancel', '取消查看我关注的客户') : Intl.get('crm.see.concern.slef', '查看我关注的客户');
         return (
             <span>
                 <span className={interestClassName} title={title}
@@ -2035,7 +2040,7 @@ batchTopBarDropList = (isMinWeb) => {
             releaseTip = crmUtil.releaseCustomerTip();
         }
         const handleSubmit = () => {
-            if(!this.state.releaseReason) {
+            if(!_.trim(this.state.releaseReason)) {
                 this.setState({
                     unFillReasonTip: Intl.get('crm.customer.release.reason', '请填写释放理由')
                 });
@@ -2049,6 +2054,9 @@ batchTopBarDropList = (isMinWeb) => {
                 datatraceContainer='释放客户'
                 overlayClassName="release-reason-wrapper"
                 btnAtTop={false}
+                ref={ref => { if(_.includes(['moreBtn', 'batch'], type)) {
+                    this['releaseRef'] = ref;
+                }}}
                 content={content}
                 overlayTitle={Intl.get('crm.customer.release.customer', '释放客户')}
                 isSaving={this.state.isReleasingCustomer}
@@ -2115,7 +2123,7 @@ batchTopBarDropList = (isMinWeb) => {
                     var isInterested = _.isArray(record.interest_member_ids) && _.indexOf(record.interest_member_ids, crmUtil.getMyUserId()) > -1;
                     var interestClassName = 'iconfont focus-customer';
                     interestClassName += (isInterested ? ' icon-interested' : ' icon-uninterested');
-                    var title = (isInterested === 'true' ? Intl.get('crm.customer.uninterested', '取消关注') : Intl.get('crm.customer.interested', '添加关注'));
+                    var title = (_.toString(isInterested) === 'true' ? Intl.get('crm.customer.uninterested', '取消关注') : Intl.get('crm.customer.interested', '添加关注'));
                     return (
                         <span>
                             <div className={className}>
@@ -2145,7 +2153,8 @@ batchTopBarDropList = (isMinWeb) => {
                 title: Intl.get('crm.5', '联系方式'),
                 width: '130px',
                 dataIndex: 'contact_way',
-                className: 'column-contact-way  table-data-align-right',
+                className: 'column-contact-way',
+                align: 'left',
                 render: (text, record, index) => {
                     return this.getContactList(text, record, index);
                 }

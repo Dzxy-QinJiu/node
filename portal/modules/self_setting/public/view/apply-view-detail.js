@@ -375,7 +375,7 @@ class ApplyViewDetail extends React.Component {
                                 title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
                             >{_.get(showItem,'[0].name')}</a>
                         });
-                    }else if (item.component_type === ALL_COMPONENTS.TIMEPERIOD ){
+                    }else if (item.component_type === ALL_COMPONENTS.TIME_PERIOD ){
                         var starttime = '', endtime = '';
                         if (item.selected_value !== '0.5day'){
                             starttime = moment(parseInt(showItem.begin_time)).format(oplateConsts.DATE_FORMAT);

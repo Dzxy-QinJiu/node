@@ -70,6 +70,7 @@ export function getOffdutyChart(paramObj) {
             }, {
                 title: Intl.get('common.number.of.travel.day', '出差天数'),
                 dataIndex: 'offduty_time',
+                align: 'right',
                 width: '20%',
             }, {
                 title: Intl.get('leave.apply.for.city.address', '出差地点'),

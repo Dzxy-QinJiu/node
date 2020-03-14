@@ -45,7 +45,8 @@ exports.getAppList = function(cb) {
                         app_id: app.app_id,
                         app_name: app.app_name,
                         app_logo: app.app_logo,
-                        terminals: app.terminals // 多终端类型
+                        terminals: app.terminals, // 多终端类型
+                        status: app.status // 应用的启停用状态
                     };
                 });
             }
@@ -780,6 +781,26 @@ exports.getUpgradeNoticeList = (queryObj) => {
                 Deferred.reject(error && error.responseJSON || Intl.get('notice.get.list.failed', '获取公告列表失败'));
             }
         }
+    });
+    return Deferred.promise();
+};
+
+// 获取填写跟进记录赢的线索量
+exports.getRewardedCluesCount = () => {
+    const Deferred = $.Deferred();
+    const data = {
+        award_type: 'lead_followup',
+        start: moment().startOf('day').valueOf(),
+        end: moment().endOf('day').valueOf(),
+    };
+    $.ajax({
+        url: '/rest/rewarded/clues/count',
+        type: 'get',
+        dateType: 'json',
+        data: data,
+        success: (count) => {
+            Deferred.resolve(count);
+        },
     });
     return Deferred.promise();
 };

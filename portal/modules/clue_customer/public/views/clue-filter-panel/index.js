@@ -11,7 +11,7 @@ var FilterAction = require('../../action/filter-action');
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
-import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,NOT_CONNECTED,EXTRACT_TIME, sourceClassifyArray, NEED_MY_HANDLE, isCommonSalesOrPersonnalVersion, APPLY_TRY_LEAD } from '../../utils/clue-customer-utils';
+import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,NOT_CONNECTED,EXTRACT_TIME, sourceClassifyArray, isCommonSalesOrPersonnalVersion, APPLY_TRY_LEAD } from '../../utils/clue-customer-utils';
 import {getClueUnhandledPrivilege, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
@@ -334,7 +334,7 @@ class ClueFilterPanel extends React.Component {
                         FilterAction.setExistedFiled();
                         FilterAction.setUnexistedFiled();
                         //如果上次选中的状态是已转化，需要把已转化改成待跟进
-                        FilterAction.setFilterClueAllotNoTrace(NEED_MY_HANDLE);
+                        FilterAction.setFilterClueAllotNoTrace(true);
                         FilterAction.setSimilarFiled();
                         if(this.getFilterStatus().status === SELECT_TYPE.HAS_TRANSFER){
                             FilterAction.setFilterType(SELECT_TYPE.WILL_TRACE);

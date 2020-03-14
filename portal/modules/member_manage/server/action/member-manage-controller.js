@@ -191,13 +191,7 @@ exports.getRoleList = function(req, res) {
 //昵称（对应的是姓名）唯一性验证
 exports.checkOnlyNickName = (req, res) => {
     memberManageService.checkOnlyNickName(req, res, req.params.nickname).on('success', (data) => {
-        if (data && data.account_nickname) {
-            // 昵称（对应的是姓名）已存在，返回true
-            res.status(200).json(true);
-        } else {
-            // 昵称（对应的是姓名）不存在，返回false
-            res.status(200).json(false);
-        }
+        res.status(200).json(data);
     }).on('error', (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
@@ -206,13 +200,7 @@ exports.checkOnlyNickName = (req, res) => {
 // 用户名唯一性验证
 exports.checkOnlyUserName = function(req, res) {
     memberManageService.checkOnlyUserName(req, res, req.params.username).on('success', function(data) {
-        if (data && data.user_name) {
-            // 用户名已存在，返回true
-            res.status(200).json(true);
-        } else {
-            // 用户名不存在，返回false
-            res.status(200).json(false);
-        }
+        res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
@@ -221,13 +209,7 @@ exports.checkOnlyUserName = function(req, res) {
 //电话唯一性验证
 exports.checkOnlyPhone = function(req, res) {
     memberManageService.checkOnlyPhone(req, res, req.params.phone).on('success', function(data) {
-        if (data && data.phone) {
-            // 电话已存在，返回true
-            res.status(200).json(true);
-        } else {
-            // 电话不存在，返回false
-            res.status(200).json(false);
-        }
+        res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
@@ -236,13 +218,7 @@ exports.checkOnlyPhone = function(req, res) {
 //邮箱唯一性验证
 exports.checkOnlyEmail = function(req, res) {
     memberManageService.checkOnlyEmail(req, res, req.params.email).on('success', function(data) {
-        if (data && data.email) {
-            // 邮箱已存在，返回true
-            res.status(200).json(true);
-        } else {
-            // 邮箱不存在，返回false
-            res.status(200).json(false);
-        }
+        res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });

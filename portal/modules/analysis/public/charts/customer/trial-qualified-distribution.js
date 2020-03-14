@@ -86,12 +86,15 @@ export function getCustomerTrialQualifiedDistributionChart(title, field) {
                 isSetCsvValueBlank: true
             }, {
                 title: '已开通试用客户数',
+                align: 'right',
                 dataIndex: 'open_trial'
             }, {
                 title: '有效登录客户数',
+                align: 'right',
                 dataIndex: 'valid_login'
             }, {
                 title: '试用合格客户数',
+                align: 'right',
                 dataIndex: 'trial_qualify'
             }];
 

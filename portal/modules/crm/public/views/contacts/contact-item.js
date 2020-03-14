@@ -1,4 +1,3 @@
-var React = require('react');
 import {Button, message, Select} from 'antd';
 const Option = Select.Option;
 var ContactUtil = require('../../utils/contact-util');
@@ -85,8 +84,8 @@ class ContactItem extends React.Component {
     };
 
     //展开、收起联系方式的处理
-    toggleContactWay = () => {
-        ContactAction.toggleContactWay(this.props.contact);
+    toggleContactWay = (isExpanded) => {
+        ContactAction.toggleContactWay({contact: this.props.contact, isExpanded});
     };
 
     //获取联系人的角色、职位、部门信息
@@ -144,16 +143,10 @@ class ContactItem extends React.Component {
     //渲染联系人标题区
     renderContactTitle = () => {
         let contact = this.props.contact.contact;
-        let isExpanded = this.props.contact.isExpanded;
         //默认联系人
         const isDefaultContact = contact.def_contancts === 'true';
         const defaultClassName = classNames('iconfont icon-contact-default', {'is-default-contact': isDefaultContact});
         const defaultTitle = isDefaultContact ? Intl.get('crm.119', '默认') : Intl.get('crm.detail.contact.default.set', '设为默认联系人');
-        //联系方式展开、收起
-        const contactWayClassName = classNames('iconfont', {
-            'icon-up-twoline handle-btn-item': isExpanded,
-            'icon-down-twoline handle-btn-item': !isExpanded
-        });
         return (
             <span className="contact-item-title">
                 <span className={defaultClassName} data-tracename="点击设置默认联系人按钮"
@@ -176,15 +169,16 @@ class ContactItem extends React.Component {
                         </Button>
                     </span>) : (
                     <span className="contact-item-buttons">
-                        {this.props.disableEdit || !hasPrivilege(crmPrivilegeConst.CRM_DELETE_CONTACT) ? null : (
-                            <span className="iconfont icon-delete handle-btn-item"
-                                title={Intl.get('common.delete', '删除')}
-                                data-tracename="点击删除联系人按钮"
-                                onClick={this.showDeleteContactConfirm}/>)}
-                        <span className={contactWayClassName}
-                            data-tracename={isExpanded ? '收起详情' : '展开详情'}
-                            title={isExpanded ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('crm.basic.detail.show', '展开详情')}
-                            onClick={this.toggleContactWay}/>
+                        {
+                            this.props.disableEdit || !hasPrivilege(crmPrivilegeConst.CRM_DELETE_CONTACT) ? null : (
+                                <span
+                                    className="iconfont icon-delete handle-btn-item"
+                                    title={Intl.get('common.delete', '删除')}
+                                    data-tracename="点击删除联系人按钮"
+                                    onClick={this.showDeleteContactConfirm}
+                                />
+                            )
+                        }
                     </span>)}
             </span>);
     };
@@ -516,9 +510,15 @@ class ContactItem extends React.Component {
         let containerClassName = classNames('contact-item-container', {
             'contact-delete-border': this.props.contact.isShowDeleteContactConfirm
         });
-        return (<DetailCard title={this.renderContactTitle()}
-            content={this.renderContactContent()}
-            className={containerClassName}/>);
+        return (
+            <DetailCard
+                title={this.renderContactTitle()}
+                content={this.renderContactContent()}
+                className={containerClassName}
+                isShowToggleBtn={true}
+                handleToggleDetail={this.toggleContactWay.bind(this)}
+            />
+        );
     }
 }
 ContactItem.propTypes = {

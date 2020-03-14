@@ -11,13 +11,11 @@ function UserInfoActions() {
 
     //获取用户信息
     this.getUserInfo = function() {
-        var _this = this;
-        var user_id = userData.getUserData().user_id;
-        _this.dispatch({error: false, loading: true});
-        userInfoAjax.getUserInfo(user_id).then(function(userInfo) {
-            _this.dispatch({error: false, loading: false, userInfo: userInfo});
-        }, function(errorMsg) {
-            _this.dispatch({
+        this.dispatch({error: false, loading: true});
+        userInfoAjax.getUserInfo().then( (userInfo) => {
+            this.dispatch({error: false, loading: false, userInfo: userInfo});
+        }, (errorMsg) => {
+            this.dispatch({
                 error: true,
                 loading: false,
                 errorMsg: errorMsg || Intl.get('user.info.get.user.info.failed', '获取用户信息失败')

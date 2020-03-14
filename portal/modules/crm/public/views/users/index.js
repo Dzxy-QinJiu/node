@@ -1,6 +1,4 @@
 import { AntcTable } from 'antc';
-
-var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -205,13 +203,13 @@ class CustomerUsers extends React.Component {
 
     getAppList() {
         commonDataUtil.getAppList(appList => {
+            let ableAppList = _.filter(appList, app => app.status);
             this.setState({
-                appList: _.map(appList, app => {
+                appList: _.map(ableAppList, app => {
                     return {
                         client_id: app.app_id,
                         client_name: app.app_name,
                         client_logo: app.app_logo,
-                        terminals: app.terminals
                     };
                 })
             });
@@ -723,52 +721,53 @@ class CustomerUsers extends React.Component {
             let user = _.isObject(userObj) ? userObj.message : {};
             let userNameText = `${_.get(user, 'email_user_names', '')}(${_.get(user, 'nick_name', '')})`;
             let apps = _.get(user, 'products', '');
-            //如果是已有用户申请试用和正式时，不显示
-            if(_.get(user,'type') === APPLY_CONSTANTS.EXIST_APPLY_FORMAL
-                || _.get(user,'type') === APPLY_CONSTANTS.EXIST_APPLY_TRIAL) {
-                return null;
-            }
-            //处理产品应用信息
-            if(apps) {
-                try {
-                    apps = JSON.parse(apps);
-                    let appsName = _.get(user,'email_app_names', '').split('、');
-                    _.each(appsName, (name, index) => {
-                        if(apps[index]) {
-                            apps[index].client_name = name;
-                            apps[index].tag = _.get(user, 'tag', '');
-                            apps[index].type = _.get(user, 'type', '');
-                        }
-                    });
-                }catch (e) {
+
+            //只展示新申请的试用用户或者是签约用户
+            if(_.includes([APPLY_CONSTANTS.APPLY_USER_OFFICIAL,
+                APPLY_CONSTANTS.APPLY_USER_TRIAL,
+                APPLY_CONSTANTS.APPLY_USER],_.get(user,'type'))){
+                //处理产品应用信息
+                if(apps) {
+                    try {
+                        apps = JSON.parse(apps);
+                        let appsName = _.get(user,'email_app_names', '').split('、');
+                        _.each(appsName, (name, index) => {
+                            if(apps[index]) {
+                                apps[index].client_name = name;
+                                apps[index].tag = _.get(user, 'tag', '');
+                                apps[index].type = _.get(user, 'type', '');
+                            }
+                        });
+                    }catch (e) {
+                        apps = [];
+                    }
+                }else {
                     apps = [];
                 }
-            }else {
-                apps = [];
-            }
-            return (
-                <div className="crm-user-item crm-user-apply-item" key={index}>
-                    <div className="crm-user-name user-apply-name">
-                        <span
-                            className="user-name-text"
-                            title={userNameText}
-                        >
-                            {userNameText}
-                        </span>
-                        <span className="user-apply-state">
-                            <span className="apply-left-bracket">[</span>{Intl.get('user.apply.false', '待审批')}<span className="apply-right-bracket">]</span>
-                        </span>
-                    </div>
-                    <div className="crm-user-apps-container no-checkbox-apps-container user-apply-apps-container">
-                        <div className="crm-user-apps">
-                            <div className="apps-top-title">
-                                <label>{this.renderApplyTitle(apps[0])}</label>
+                return (
+                    <div className="crm-user-item crm-user-apply-item" key={index}>
+                        <div className="crm-user-name user-apply-name">
+                            <span
+                                className="user-name-text"
+                                title={userNameText}
+                            >
+                                {userNameText}
+                            </span>
+                            <span className="user-apply-state">
+                                <span className="apply-left-bracket">[</span>{Intl.get('user.apply.false', '待审批')}<span className="apply-right-bracket">]</span>
+                            </span>
+                        </div>
+                        <div className="crm-user-apps-container no-checkbox-apps-container user-apply-apps-container">
+                            <div className="crm-user-apps">
+                                <div className="apps-top-title">
+                                    <label>{this.renderApplyTitle(apps[0])}</label>
+                                </div>
+                                {this.getUserApplyOptions(apps)}
                             </div>
-                            {this.getUserApplyOptions(apps)}
                         </div>
                     </div>
-                </div>
-            );
+                );
+            }else {return null;}
         });
     }
 

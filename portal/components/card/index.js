@@ -93,16 +93,23 @@ class Card extends React.Component {
         let buildingIcon = classNames('building-icon',{
             'building-icon-curtao': _.isEqual(card.leftFlagDesc, '客套')
         });
+        const cardBoxCls = classNames('card-box',{
+            'production-stop': this.props.type === 'production' && card.status === 0
+        });
         return (
             <div className="card-layout-container " style={{width: this.props.cardWidth}}>
-                <div className="card-box" onClick={this.showCardInfo}>
-                    <div className="card-stop-layer" style={{display: card.status === 0 ? 'block' : 'none'}}>
-                        <div className="card-stop-bg"></div>
-                        <div className="stop-icon">
-                            <ReactIntl.FormattedMessage id="common.stop" defaultMessage="停用"/>
-                        </div>
-                        <div className="stop-triangle"></div>
-                    </div>
+                <div className={cardBoxCls} onClick={this.showCardInfo}>
+                    {
+                        this.props.type === 'production' ? null : (
+                            <div className="card-stop-layer" style={{display: card.status === 0 ? 'block' : 'none'}}>
+                                <div className="card-stop-bg"></div>
+                                <div className="stop-icon">
+                                    <ReactIntl.FormattedMessage id="common.stop" defaultMessage="停用"/>
+                                </div>
+                                <div className="stop-triangle"></div>
+                            </div>
+                        )
+                    }
                     {card.id ? null : (
                         <div className="card-stop-layer">
                             <div className="card-stop-bg"></div>

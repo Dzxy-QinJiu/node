@@ -770,6 +770,10 @@ class Production extends React.Component {
             </span>
         </div>);
         let height = $(window).height() - $('.product-info-title').height() - LAYOUT_CONST.BOTTOM;
+        let isProductStop = _.get(this.props.info, 'status') === 0; // 产品是停用状态
+        const productTitleCls = classNames('product-title', {
+            'product-detail-stop': isProductStop
+        });
         return (<div className="product-details-content">
             <div className="product-info-title">
                 <div className="product-icon">
@@ -784,7 +788,7 @@ class Production extends React.Component {
                     {_.get(this.state, 'saveLogoErrorMsg') ? <span className="save-logo-error">{_.get(this.state, 'saveLogoErrorMsg')}</span> : null}
                 </div>
                 <div className="product-info">
-                    <div className="product-title">
+                    <div className={productTitleCls}>
                         <BasicEditInputField
                             hasEditPrivilege={true}
                             id={this.props.info.id}
@@ -796,7 +800,15 @@ class Production extends React.Component {
                             placeholder={Intl.get('config.product.input.name', '请输入产品名称')}
                             hasMoreRow={true}
                         />
+                        {
+                            _.get(this.props.info, 'status') === 0 ? (
+                                <div className='product-stop-status'>
+                                    {Intl.get('user.status.stopped', '已停用')}
+                                </div>
+                            ) : null
+                        }
                     </div>
+
                     <div className="product-item product-version">
                         <div className="product-item-key">{Intl.get('config.product.spec', '规格/版本')}：</div>
                         <div className="product-item-editor">

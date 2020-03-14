@@ -24,6 +24,8 @@ class ApplyDetailCustomer extends React.Component {
                             columns={this.props.columns}
                             dataSource={this.props.dataSource}
                             bordered={this.props.bordered}
+                            isSmallSize={true}
+                            tableType='data'
                             pagination={false}
                         />
                     </div>

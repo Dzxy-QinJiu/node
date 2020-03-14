@@ -102,13 +102,6 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
-    }, {
-        'method': 'get',
-        'path': '/company/name/validate',
-        'handler': 'getCompanyByName',
-        'passport': {
-            'needLogin': false
-        }
     }, {// 检查电话是否已经被注册过
         'method': 'get',
         'path': '/phone/registed/check',

@@ -55,7 +55,7 @@ import PhoneCallout from 'CMP_DIR/phone-callout';
 import PhoneInput from 'CMP_DIR/phone-input';
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerStore = require('../../store/clue-customer-store');
-import { subtracteGlobalClue, renderClueStatus, checkCurrentVersion } from 'PUB_DIR/sources/utils/common-method-util';
+import {renderClueStatus, checkCurrentVersion } from 'PUB_DIR/sources/utils/common-method-util';
 import crmUtil, {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -510,13 +510,6 @@ class ClueDetailOverview extends React.Component {
                 } else {
 
                     if (_.isFunction(successFunc)) successFunc();
-                    if (submitObj.user_id !== userData.getUserData().user_id) {
-                        subtracteGlobalClue(curClue, (flag) => {
-                            if(flag){
-                                clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
-                            }
-                        });
-                    }
                     this.setState({
                         clickAssigenedBtn: false
                     });
@@ -912,7 +905,6 @@ class ClueDetailOverview extends React.Component {
                 myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
             }
             clueCustomerAction.afterReleaseClue(curClue.id);
-            subtracteGlobalClue(curClue);
             //需要关闭面板
             _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel();
         }, errorMsg => {
@@ -972,7 +964,6 @@ class ClueDetailOverview extends React.Component {
                             type: 'other',
                             showAdd: false
                         };
-                        subtracteGlobalClue(item);
                         ClueTraceAction.addClueTraceWithoutAjax(newTrace);
                         this.props.updateClueProperty({
                             availability: updateAvailability

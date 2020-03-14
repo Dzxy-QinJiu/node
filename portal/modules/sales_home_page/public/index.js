@@ -40,7 +40,6 @@ import UserListPanel from 'MOD_DIR/app_user_manage/public/user-list-panel';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {getEmailActiveUrl} from 'PUB_DIR/sources/utils/common-method-util';
-import InviteMember from 'MOD_DIR/invite_member/public';
 import AlertTip from 'CMP_DIR/alert-tip';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import commonSalesHomePrivilegeConst from './privilege-const';
@@ -726,6 +725,7 @@ class SalesHomePage extends React.Component {
                             <AntcCardContainer
                                 title={title}
                                 exportData={exportData}
+                                type='table-card'
                             >
                                 <AntcTable
                                     dropLoad={dropLoadConfig}
@@ -735,6 +735,7 @@ class SalesHomePage extends React.Component {
                                     util={{zoomInSortArea: true}}
                                     onChange={this.onCallBackTableChange}
                                     scroll={{y: 400}}
+                                    tableType='data'
                                 />
                             </AntcCardContainer>
                         </div>
@@ -1184,7 +1185,6 @@ class SalesHomePage extends React.Component {
                             <span className={hamburgerCls} onClick={this.handleCrmTeamListShow} title={title}>
                             </span>
                         </div>}
-                    <InviteMember />
                 </TopNav>
                 {this.state.salesTeamListObj.resultType === 'loading' ?
                     <div className="spinner-container">
