@@ -136,6 +136,16 @@ let routers = [
                             'CRM_CONTRACT_SALES_REPORTS_COMMON'
                         ]
                     },
+                    //销售经理日报
+                    {
+                        id: 'SALES_MANAGER_DAILY_REPORT',
+                        name: 'analysis.sales.manager.daily.report',
+                        routePath: '/analysis/report/daily-report',
+                        component: `${MODULE_PATH}daily-report`,
+                        showPrivileges: [
+                            'CRM_DAILY_REPORT'
+                        ]
+                    },
                 ],
             },
         ]

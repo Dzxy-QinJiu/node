@@ -3181,6 +3181,7 @@ var zh_CN = {
     'analysis.to': '至',
     'analysis.extended.account.number': '延期帐号数',
     'analysis.monthly.turnover.rate': '月流失率',
+    'analysis.sales.manager.daily.report': '销售经理日报',
     'common.font.the': '第',
     'common.weeks': '周',
     'clue.add.contacts.tip': '添加联系方式',
