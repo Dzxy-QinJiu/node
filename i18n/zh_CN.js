@@ -116,6 +116,7 @@ var zh_CN = {
     'common.remark': '备注',
     'common.disabled': '禁用',
     'common.enabled': '启用',
+    'common.not.enabled': '未启用',
     'common.edit.password': '修改密码',
     'common.login.time': '时间',
     'common.login.equipment': '设备',
@@ -1921,6 +1922,15 @@ var zh_CN = {
     'crm.customer.release.push.tip': '客户 {customerName} 被 {operatorName} 释放到了客户池',
     'crm.customer.batch.release.push.tip': '{customerName} 等{count}个客户被 {operatorName} 释放到了客户池',
     'crm.customer.release.reason': '请填写释放理由',
+    'crm.pool.visible.rules': '可见规则',
+    'crm.pool.release.rules': '释放规则',
+    'crm.pool.need.joint.followup': '需联合跟进',
+    'crm.pool.release.rules.name': '{name}释放规则',
+    'crm.pool.release.rule.non.followup.time': '未跟进时长',
+    'crm.pool.responsible.type': '负责类型',
+    'crm.pool.select.team.placeholder': '选择适用团队',
+    'crm.pool.get.rule.configs.faild': '获取规则配置失败',
+
 
     'crm.pool.single.extract.tip': '您确定要提取此客户吗？',
     'crm.pool.batch.extract.tip': '您确定要提取选中的客户吗？',

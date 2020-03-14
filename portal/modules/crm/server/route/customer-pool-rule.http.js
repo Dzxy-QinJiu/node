@@ -65,5 +65,41 @@ module.exports = {
             },
             privileges: [crmPrivilegeCons.CUSTOMER_POOL_CONFIG]
         },
+        { // 获取自动释放配置
+            'method': 'get',
+            'path': '/rest/customer_pool/configs/autorelease',
+            'handler': 'getCrpAutoReleaseConfigs',
+            'passport': {
+                'needLogin': true
+            },
+            privileges: [crmPrivilegeCons.CUSTOMER_POOL_CONFIG]
+        },
+        { // 新增自动释放配置
+            'method': 'post',
+            'path': '/rest/customer_pool/config/autorelease',
+            'handler': 'addCrpAutoReleaseConfig',
+            'passport': {
+                'needLogin': true
+            },
+            privileges: [crmPrivilegeCons.CUSTOMER_POOL_CONFIG]
+        },
+        { // 修改自动释放配置
+            'method': 'put',
+            'path': '/rest/customer_pool/config/autorelease',
+            'handler': 'updateCrpAutoReleaseConfig',
+            'passport': {
+                'needLogin': true
+            },
+            privileges: [crmPrivilegeCons.CUSTOMER_POOL_CONFIG]
+        },
+        { // 删除自动释放配置
+            'method': 'delete',
+            'path': '/rest/customer_pool/config/autorelease/:id',
+            'handler': 'deleteCrpAutoReleaseConfig',
+            'passport': {
+                'needLogin': true
+            },
+            privileges: [crmPrivilegeCons.CUSTOMER_POOL_CONFIG]
+        },
     ]
 };

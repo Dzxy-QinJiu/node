@@ -117,6 +117,7 @@ var en_US = {
     'common.disabled': 'Disabled',//禁用过的  ———— 已经被禁用的，过去式。
     // 'common.enable': 'enable',//启用  ———— 动词，去启用。  新加的
     'common.enabled': 'Enabled',//启用过的 ———— 已经被启用，过去式。
+    'common.not.enabled': 'Is not enabled',//未启用
     'common.edit.password': 'Change Password',//修改密码
     'common.login.time': 'Time',//时间
     'common.login.equipment': 'Equipment',//设备
@@ -1900,6 +1901,15 @@ var en_US = {
     'crm.customer.release.push.tip': 'The customer {customerName} is released to the customer pool by {operatorName}',//客户{customerName}被{operatorName}释放到了客户池
     'crm.customer.batch.release.push.tip': '{customerName}, etc. {count} customers are released to the customer pool by {operatorName}',//{customerName}等{count}个客户被{operatorName}释放到了客户池
     'crm.customer.release.reason': 'Please fill in the reason for release',//请填写释放理由
+    'crm.pool.visible.rules': 'Visible rules',//可见规则
+    'crm.pool.release.rules': 'Release rules',//释放规则
+    'crm.pool.need.joint.followup': 'Need joint follow-up',//需联合跟进
+    'crm.pool.release.rules.name': '{name} release rule',//{name}释放规则
+    'crm.pool.release.rule.non.followup.time': 'Non-follow-up time',//未跟进时长
+    'crm.pool.responsible.type': 'Responsible for the type',//负责类型
+    'crm.pool.select.team.placeholder': 'Select the right team',//选择适用团队
+    'crm.pool.get.rule.configs.faild': 'Failed to get the rule configuration',//获取规则配置失败
+
 
     'crm.customer.rule.name': 'Rules set',//规则设置
     'crm.add.customer.pool.rule': 'Add rules',//添加规则

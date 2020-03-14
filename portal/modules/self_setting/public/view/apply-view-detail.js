@@ -468,8 +468,15 @@ class ApplyViewDetail extends React.Component {
     onSalesmanChange = (salesMan) => {
         LeaveApplyDetailAction.setSalesMan(salesMan);
     };
+    //获取已选团队的id
+    onTeamChange = (groupId) => {
+        LeaveApplyDetailAction.setGroupId(groupId);
+    };
     clearSelectSales() {
         LeaveApplyDetailAction.setSalesMan('');
+    }
+    clearSelectTeams() {
+        LeaveApplyDetailAction.setGroupId('');
     }
     clearSelectCandidate(){
         LeaveApplyDetailAction.setApplyCandate('');
@@ -478,19 +485,37 @@ class ApplyViewDetail extends React.Component {
         LeaveApplyDetailAction.setApplyCandate(updateUser);
     };
     renderSalesBlock = (type) => {
-        //type 区分是分配下一节点负责人  还是分配给普通销售
-        var onChangeFunction = this.onSalesmanChange;
-        var defaultValue = _.get(this.state,'detailInfoObj.info.user_ids');
-        var salesManList = this.state.salesManList;
+        var onChangeFunction = function() {},defaultValue = '',dataList = [],noDataTip = '';
         if(type === ASSIGN_TYPE.NEXT_CANDIDATED){
             //需要选择销售总经理
             onChangeFunction = this.onSelectApplySales;
             defaultValue = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
             //列表中只选销售总经理,
+            var salesManList = this.state.salesManList;
             salesManList = _.filter(salesManList, data => _.get(data, 'user_groups[0].owner_id') === _.get(data, 'user_info.user_id'));
+            //销售领导、域管理员,展示其所有（子）团队的成员列表
+            dataList = formatSalesmanList(salesManList);
+            noDataTip = dataList.length ? Intl.get('crm.29', '暂无销售') : Intl.get('crm.30', '无相关销售');
+
+        }else if(type === ASSIGN_TYPE.NEXT_TEAM){
+            //type 区分是分配下一节点负责人  还是分配团队
+            onChangeFunction = this.onTeamChange;
+            defaultValue = _.get(this.state,'detailInfoObj.info.group_id');
+            var teamList = this.state.teamList;
+            _.forEach(teamList, team => {
+                dataList.push({
+                    name: team.group_name,
+                    value: team.group_id,
+                });
+            });
+            noDataTip = dataList.length ? Intl.get('member.no.groups', '暂无团队') : Intl.get('apply.no.relate.team', '无相关团队');
+        }else{
+            onChangeFunction = this.onSalesmanChange;
+            defaultValue = _.get(this.state,'detailInfoObj.info.user_ids');
+            //销售领导、域管理员,展示其所有（子）团队的成员列表
+            dataList = formatSalesmanList(this.state.salesManList);
+            noDataTip = dataList.length ? Intl.get('crm.29', '暂无销售') : Intl.get('crm.30', '无相关销售');
         }
-        //销售领导、域管理员,展示其所有（子）团队的成员列表
-        let dataList = formatSalesmanList(salesManList);
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect
@@ -521,6 +546,27 @@ class ApplyViewDetail extends React.Component {
                 btnAtTop={false}
                 isSaving={this.state.applyResult.submitResult === 'loading'}
                 isDisabled={!assignedSalesUsersIds}
+            />
+        );
+    };
+    renderAssigenedTeamContext = () => {
+        var assignedSalesGroupId = _.get(this.state, 'detailInfoObj.info.group_id','');
+        return (
+            <AntcDropdown
+                datatraceContainer='拜访申请分配团队按钮'
+                ref={AssignSales => this.assignSales = AssignSales}
+                content={<Button
+                    className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('clue.customer.distribute', '分配')}</Button>}
+                overlayTitle={Intl.get('user.user.team', '团队')}
+                okTitle={Intl.get('common.confirm', '确认')}
+                cancelTitle={Intl.get('common.cancel', '取消')}
+                overlayContent={this.renderSalesBlock(ASSIGN_TYPE.NEXT_TEAM)}
+                handleSubmit={this.passOrRejectApplyApprove.bind(this, 'pass')}//分配销售的时候直接分配，不需要再展示模态框
+                unSelectDataTip={assignedSalesGroupId ? '' : Intl.get('apply.approve.select.assigned.team', '请选择要分配的团队')}
+                clearSelectData={this.clearSelectTeams}
+                btnAtTop={false}
+                isSaving={this.state.applyResult.submitResult === 'loading'}
+                isDisabled={!assignedSalesGroupId}
             />
         );
 
@@ -564,6 +610,9 @@ class ApplyViewDetail extends React.Component {
         var renderAssigenedContext = null;
         //渲染分配的按钮
         if (_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'distributeSalesToVisit') > -1 && showApproveBtn){
+            //分配给团队
+            renderAssigenedContext = this.renderAssigenedTeamContext;
+        }else if(_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'distributeSalesToVisit') > -1 && showApproveBtn){
             //分配给普通销售
             renderAssigenedContext = this.renderAssigenedContext;
         }else if(_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'assignNextNodeApprover') > -1 && showApproveBtn){
@@ -657,9 +706,11 @@ class ApplyViewDetail extends React.Component {
     passOrRejectApplyApprove = (confirmType) => {
         var assignedCandidateUserIds = '';//要分配下一节点的负责人的id
         var assignedSalesUsersIds = '';//要分配下一节点的销售的id
+        var assignedSalesGroupId = '';//要分配下一节点的团队的id
         if (confirmType === 'pass'){
             assignedCandidateUserIds = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
             assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
+            assignedSalesGroupId = _.get(this.state, 'detailInfoObj.info.group_id','');
         }
         var detailInfoObj = this.state.detailInfoObj.info;
         var submitObj = {
@@ -670,12 +721,15 @@ class ApplyViewDetail extends React.Component {
             var candidateUserIds = assignedCandidateUserIds.split('&&')[0];
             submitObj.assigned_candidate_users = [candidateUserIds];
         }
-        if (assignedSalesUsersIds && _.isArray(assignedSalesUsersIds.split('&&'))){
+        if (assignedSalesUsersIds && _.isArray(assignedSalesUsersIds.split('&&'))) {
             var salesUserIds = assignedSalesUsersIds.split('&&')[0];
             submitObj.user_ids = [salesUserIds];
         }
+        if (assignedSalesGroupId){
+            submitObj.group_id = assignedSalesGroupId;
+        }
         LeaveApplyDetailAction.approveLeaveApplyPassOrReject(submitObj, (flag) => {
-            if ((submitObj.assigned_candidate_users || submitObj.user_ids)) {
+            if ((submitObj.assigned_candidate_users || submitObj.user_ids || submitObj.group_id)) {
                 if (flag) {
                     this.viewApprovalResult();
                 } else {

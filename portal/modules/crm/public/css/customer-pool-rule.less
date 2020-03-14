@@ -14,8 +14,14 @@
   .load8{
     transform: scale(0.5, 0.5);
   }
+  //tab样式
+  .ant-tabs-bar{
+    padding-left: 24px;
+    padding-top: 12px;
+  }
   // 头部标题区域样式
   .customer-title-wrapper{
+    padding: 0 24px;
     span{
       color: @title-color;
     }
@@ -26,9 +32,13 @@
       font-weight: 400;
       cursor: pointer;
       &:hover{
-        color: @blue;
+        color: @BUTTON-HOVER;
+        .icon-add{
+          color: @BUTTON-HOVER;
+        }
       }
       .icon-add{
+        float: left;
         font-size: 14px;
         margin-right: 3px;
       }
@@ -89,6 +99,27 @@
             vertical-align: middle;
           }
         }
+      }
+    }
+    .default-config-rule-wrapper{
+      //默认编辑时样式
+      .default-edit-form-content{
+        border: 1px solid #d3eafc;
+        padding: 10px;
+        border-radius: 3px;
+      }
+      .rule-form-title-wrapper{
+        .rule-form-label{
+          font-size: 16px;
+          font-weight: 600;
+        }
+      }
+      .ant-form-item-label{
+        text-align: left;
+        line-height: 30px;
+      }
+      .ant-form-item-control{
+        line-height: 30px;
       }
     }
   }
@@ -192,6 +223,15 @@
     .visible-text{
       color: #999;
       margin-left: 5px;
+    }
+    .auto-release-period-item{
+      margin-bottom: 0!important;
+      .ant-input-number{
+        height: 30px;
+      }
+      input{
+        height: 28px;
+      }
     }
   }
 }
