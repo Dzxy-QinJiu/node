@@ -4,16 +4,14 @@
  * Created by tangmaoqin on 2020/03/12.
  */
 //客户池释放规则
+import { message } from 'antd';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import CustomerPoolReleaseRuleForm from './customer-pool-release-rule-form';
 import Spinner from 'CMP_DIR/spinner';
-import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import userData from 'PUB_DIR/sources/user-data';
 import CustomerPoolAjax from '../../ajax/customer-pool-configs';
-import DetailCard from 'MOD_DIR/crm/public/views/customer_pool_rule/customer-pool-visible-rule';
-import { Checkbox, message } from 'antd';
 
 const LAYOUT_CONSTS = {
     TITLE_HEIGHT: 70,
@@ -80,7 +78,9 @@ class CustomerPoolReleaseRule extends React.Component {
             if(_.isEmpty(this.state.defaultRuleConfig)) {
                 defaultRuleConfig = _.find(releaseRuleConfigs, config => this.isDefaultRuleConfig(config));
                 releaseRuleConfigs = _.filter(releaseRuleConfigs, config => !this.isDefaultRuleConfig(config));
-                defaultRuleConfig.team_name = Intl.get('crm.119', '默认');
+                if(defaultRuleConfig) {
+                    defaultRuleConfig.team_name = Intl.get('crm.119', '默认');
+                }
             }
             let total = _.get(res,'total', 0);
 
@@ -252,6 +252,8 @@ class CustomerPoolReleaseRule extends React.Component {
 
         if(this.state.isLoading) {
             return <Spinner/>;
+        }else if(!releaseRuleConfigsLength) {
+            return <NoDataIconTip tipContent={Intl.get('crm.pool.no.rule', '暂无规则')}/>;
         } if(releaseRuleConfigsLength) {
             return (
                 <div className="customer-rules-content">
