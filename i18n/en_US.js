@@ -1909,6 +1909,7 @@ var en_US = {
     'crm.pool.responsible.type': 'Responsible for the type',//负责类型
     'crm.pool.select.team.placeholder': 'Select the right team',//选择适用团队
     'crm.pool.get.rule.configs.faild': 'Failed to get the rule configuration',//获取规则配置失败
+    'crm.pool.no.rule': 'No rules',//暂无规则
 
 
     'crm.customer.rule.name': 'Rules set',//规则设置
