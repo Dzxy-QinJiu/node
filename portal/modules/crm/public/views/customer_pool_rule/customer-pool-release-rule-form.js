@@ -262,6 +262,9 @@ class CustomerPoolReleaseRuleForm extends React.Component {
                             <span className="customer-info-text">{noFollowUpTimeText}</span>
                         )}
                     </FormItem>
+                    <FormItem {...formItemLayout} label={Intl.get('crm.pool.responsible.type', '负责类型')}>
+                        <span className="customer-info-text">{Intl.get('crm.second.sales', '联合跟进人')}</span>
+                    </FormItem>
                     <FormItem {...formItemLayout} label={Intl.get('common.status', '状态')}>
                         {this.props.isEdit ? (
                             <React.Fragment>

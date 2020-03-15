@@ -252,7 +252,7 @@ class CustomerPoolReleaseRule extends React.Component {
 
         if(this.state.isLoading) {
             return <Spinner/>;
-        }else if(!releaseRuleConfigsLength) {
+        }else if(!releaseRuleConfigsLength && !this.state.isShowAddForm) {
             return <NoDataIconTip tipContent={Intl.get('crm.pool.no.rule', '暂无规则')}/>;
         } if(releaseRuleConfigsLength) {
             return (
