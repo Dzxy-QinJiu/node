@@ -60,9 +60,9 @@ exports.getOrderStatus = function(req,res) {
             // 0：待付款（不用管）
             // -1：超时关闭（后台关闭订单，需重新生成订单）
             if(_.toString(status) === '1') {//付款成功
-                restLogger.info('sessionID: ' + req.sessionID + ',支付成功,支付方式：%s', req.query.type);
+                restLogger.info('sessionID: ' + req.sessionID + ',支付成功,支付方式：%s, 订单号：%s', req.query.type, req.query.id);
             }else if(_.toString(status) === '-1') {//超时关闭
-                restLogger.info('sessionID: ' + req.sessionID + ',订单超时,支付方式：%s', req.query.type);
+                restLogger.info('sessionID: ' + req.sessionID + ',订单超时,支付方式：%s, 订单号：%s', req.query.type, req.query.id);
             }
             emitter.emit('success' , status);
         }

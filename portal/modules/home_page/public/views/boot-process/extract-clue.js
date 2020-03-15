@@ -472,11 +472,11 @@ class ExtractClues extends React.Component {
          * 企业试用和企业正式销售，展示notification弹框
         */
         if(versionAndType.isPersonalTrial) {//个人试用
-            Trace.traceEvent(ReactDOM.findDOMNode(this), '点击个人升级为正式版按钮');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '超限后再提取线索自动打开个人升级界面');
             this.handleUpgradePersonalVersion();
         }else if(versionAndType.isPersonalFormal//个人正式版
             || versionAndType.isCompanyFormal && this.isManager()) { //或企业正式版管理员
-            Trace.traceEvent(ReactDOM.findDOMNode(this), '点击增加线索量按钮');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '超限后再提取线索自动打开增加线索量界面');
             this.handleClickAddClues();
         }else if(disableExtract && versionAndType.isCompanyTrial) {//超限时，企业试用
             maxLimitTip = <ReactIntl.FormattedMessage
