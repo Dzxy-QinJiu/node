@@ -162,17 +162,18 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
                 }
                 let completeDurationList = durationArray;
                 if (completeDurationList.length) {
-                    // 最后的时间点是今天
-                    const endDate = moment().startOf('day').valueOf();
-                    completeDurationList = Array.from({length: 365}, (x, idx) => {
-                        /// 比如：从 2020/2/14先前推，2019/2/15是这一年的开头，需要加1计算开始时间
-                        const startDate = moment(endDate).subtract(1, 'years').add(1, 'day');
+                    // 登录时长、登录天数 统计近6个月的数据，平年365天，润年366天，
+                    // 需要计算半年的时间区间，如果按平年计算半年的时间区域，会出现小数，并且 闰年的时候会有问题 所以按闰年计算
+                    // 所以取的时间点共183个点
+                    completeDurationList = Array.from({length: 183}, (x, idx) => {
+                        // 统计图上统计最多显示近6个月的数据，开始时间是6个月前的时间点
+                        const startDate = moment().subtract(6, 'months').startOf('day');
                         const dayItem = {
                             date: startDate.add(idx, 'days').valueOf(),
                             sum: 0
                         };
                         durationArray.forEach(item => {
-                            if (moment(dayItem.date).format('YYYY MM DD') === moment(item.date).format('YYYY MM DD')) {
+                            if (moment(dayItem.date).isSame( moment(item.date), 'day')) {
                                 dayItem.sum = item.sum;
                             }
                         });
