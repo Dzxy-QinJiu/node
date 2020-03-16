@@ -130,6 +130,7 @@ class ReportList extends React.Component {
                             if (name === '其他') {
                                 column.isSetCsvValueBlank = true;
                                 column.align = 'left';
+                                column.render = value => value;
                             }
 
                             columns.push(column);
