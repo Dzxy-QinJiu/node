@@ -625,7 +625,6 @@ function applyUpgradeListener(data) {
         const user = _.get(data, 'lead.app_user_info[0].name', '');
         const version = _.get(data, 'version_change_info.new_version', '');
         const time = getTimeStr(_.get(data.version_change_info,'apply_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        const tipContent = time + ' ，' + Intl.get('common.lead.apply.try','用户{user}（线索：{lead}）申请试用',{user: userLink,lead: leadLink}) + version;
         if (canPopDesktop()) {
             //桌面通知的展示（只能展示提示内容，无法添加自定义的点击事件）
             let tipContent = time + ' ，' + Intl.get('common.lead.apply.try','用户{user}（线索：{lead}）申请试用',{user, lead}) + version;
