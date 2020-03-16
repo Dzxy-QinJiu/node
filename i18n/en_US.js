@@ -300,7 +300,8 @@ var en_US = {
     'common.apply.try.success.tip': 'An account manager will serve you later',//稍后会有客户经理专门为您服务
     'common.apply.try.user.scales': 'Number of users',//使用人数
     'common.lead.apply.try': 'User {user} (lead {lead}) apply try',//用户{user}（线索{lead}）申请试用
-    'common.terminals.type': 'ype of terminal', // 终端类型
+    'common.terminals.type': 'Type of terminal', // 终端类型
+    'common.terminals.unknown': 'Unknown terminal', // 未知终端
     'common.all.terminals': 'All terminals', // 所有终端
     'common.terminals': 'Terminal', // 终端
     'common.period': '.',//。

@@ -291,7 +291,7 @@ class LogView extends React.Component {
         });
     };
 
-    getTableColumns = () => {
+    getFixedTableColumns = () => {
         var _this = this;
         var columns = [
             {
@@ -464,6 +464,29 @@ class LogView extends React.Component {
         ];
         return columns;
     };
+
+    getTableColumns = () => {
+        let columns = this.getFixedTableColumns();
+        // 选的应用是多终端类型，并且选的是所有终端时，列表中增加终端类型列
+        if ( _.get(this.state.selectAppTerminals, 'length') && _.isEmpty(this.state.appTerminalType)) {
+            columns.splice(5, 0, {
+                title: Intl.get('common.terminals.type', '终端类型'),
+                dataIndex: 'terminal',
+                className: 'has-filter click-show-user-detail',
+                width: '130px',
+                key: 'terminal',
+                render: (text, record, index) => {
+                    return (
+                        <div>
+                            {text ? text : Intl.get('common.terminals.unknown', '未知终端')}
+                        </div>
+                    );
+                }
+            });
+        }
+        return columns;
+    };
+
 
     // 委内维拉项目，显示的列表项（不包括类型、IP归属地、运营商）
     getTableColumnsVe = () => {
@@ -646,9 +669,14 @@ class LogView extends React.Component {
 
     // 渲染多终端类型
     renderAppTerminalsType = () => {
+        // 增加未知终端的筛选
+        let selectAppTerminals = _.concat(this.state.selectAppTerminals, {
+            code: 'unknown',
+            name: Intl.get('common.terminals.unknown', '未知终端')
+        });
         return (
             <SelectAppTerminal
-                appTerminals={this.state.selectAppTerminals}
+                appTerminals={selectAppTerminals}
                 handleSelectedTerminal={this.onSelectTerminalsType.bind(this)}
                 className="btn-item"
             />
