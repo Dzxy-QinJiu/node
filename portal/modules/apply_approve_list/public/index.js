@@ -1,5 +1,3 @@
-import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -434,7 +432,7 @@ class ApplyApproveList extends React.Component {
                                 'active-tab': activeApplyTab === _.get(item, 'value', '')
                             });
                             //如果是普通销售或者是个人版，不需要展示团队这个tab
-                            if(item === APPLY_TYPE.APPLY_BY_TEAM && isCommonSalesOrPersonnalVersion()){
+                            if(item.value === APPLY_TYPE.APPLY_BY_TEAM && isCommonSalesOrPersonnalVersion()){
                                 return null;
                             }else{
                                 //只有我的审批上加红色数字
