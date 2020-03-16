@@ -162,6 +162,7 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
                 }
                 let completeDurationList = durationArray;
                 if (completeDurationList.length) {
+                    // 登录时长、登录天数 统计近6个月的数据，平年356天，润年366年，所以取的时间点共183个点
                     completeDurationList = Array.from({length: 183}, (x, idx) => {
                         // 统计图上统计最多显示近6个月的数据，开始时间是6个月前的时间点
                         const startDate = moment().subtract(6, 'months').startOf('day');
@@ -170,7 +171,7 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
                             sum: 0
                         };
                         durationArray.forEach(item => {
-                            if (moment(dayItem.date).isSame( moment(item.date), 'second')) {
+                            if (moment(dayItem.date).isSame( moment(item.date), 'day')) {
                                 dayItem.sum = item.sum;
                             }
                         });
