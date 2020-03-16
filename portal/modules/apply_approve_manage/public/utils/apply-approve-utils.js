@@ -11,7 +11,7 @@ import SelectOption from '../view/select_option';
 import TimePeriod from '../view/time_period';
 import CustomerSuggest from '../view/customer_suggest';
 import InputContent from '../view/input_container';
-import ApplyAction from '../../../domain_application/public/action/leave-apply-action';
+import {checkDomainExist} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 const APPLYAPPROVE_LAYOUT = {
     TOPANDBOTTOM: 64,
     PADDINGHEIGHT: 24,
@@ -22,6 +22,7 @@ exports.APPLYAPPROVE_LAYOUT = APPLYAPPROVE_LAYOUT;
 exports.calculateHeight = function() {
     return $(window).height() - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM;
 };
+//这些value值不可以修改，因为这些类型如果有的申请审批表单已经保存，修改后界面展示会有问题
 export const ALL_COMPONENTS = {
     INPUT: 'Input',
     INPUTNUMBER: 'InputNumber',
@@ -30,7 +31,7 @@ export const ALL_COMPONENTS = {
     DATETIME: 'datetime',//日期或者日期加时间
     PRODUCTION: 'prodution',//产品
     CUSTOMERSEARCH: 'customerSearch',//客户的搜索
-    TIME_PERIOD: 'timePeriod',//时间
+    TIME_PERIOD: 'timeperiod',//时间
     USER_SEARCH: 'userSearch',//成员
     TEAM_SEARCH: 'teamSearch'//团队
 
@@ -427,7 +428,7 @@ export const checkDomainName = function(rule, value, callback) {
     if (value) {
         if (domainNameRule.test(value)) {
             //发请求校验是否该域名重复
-            ApplyAction.checkDomainExist({sub_domains: value}, (result) => {
+            checkDomainExist({sub_domains: value}).then((result) => {
                 if (_.isString(result)) {
                     callback(new Error(result || Intl.get('apply.domain.name.check.err', '二级域名校验失败！')));
                 } else {

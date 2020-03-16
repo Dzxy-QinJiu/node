@@ -1,0 +1,165 @@
+@import "../../../../../../../public/css/common-variables";
+.usertype-config-style {
+  //展示部分列表内容
+  .grantinfo-content-list {
+    margin-left: 20px;
+    margin-right: 12px;
+    margin-top: 10px;
+    //列表内顶部app名称部分
+    .appTitle {
+      font-size: 16px;
+      text-align: left;
+      color: #4d96d1;
+      height: 25px;
+      line-height: 25px;
+      margin-top: 15px;
+      display: inline-block;
+    }
+    div.appTitle{
+      margin-left: 20px;
+    }
+    .usertypeconfig-content-list {
+      margin-left: 20px;
+      margin-right: 6px;
+      //顶部app名称、返回关闭按钮外容器样式
+      .topcontainer{
+        position: relative;
+        //返回和关闭图标右移一点，与其他的页面保持一致
+        margin-right: -10px;
+        padding-bottom: 15px;
+      }
+      //每个项目展示部分
+      .usertypeconfig-item {
+        overflow: hidden;
+        font-size: 14px;
+        margin: 2px 15px 20px 0;
+        padding: 18px 10px;
+        background: #dce4e7;
+        .circle-button {
+          float: right;
+        }
+        .usertypeconfig-content {
+          display: block;
+          clear: both;
+          .content-item {
+            overflow: hidden;
+            margin-top: 2px;
+            .item-lable {
+              float: left;
+              width: 20%;
+            }
+            .item-content {
+              float: left;
+              width: 75%;
+              margin-left: 3%;
+              white-space: normal;
+            }
+            .addbtn-tip {
+              font-size: 18px;
+              .item-title {
+                font-size: 14px;
+                margin-left: 10px;
+              }
+            }
+          }
+          .content-item:first-child {
+            margin-bottom: 6px;
+          }
+        }
+      }
+      .ant-alert {
+        left: 30px
+      }
+    }
+    .gm-scrollbar.-vertical {
+      bottom: 20px!important;
+    }
+
+
+  }
+  //表单里的内容
+  .grantinfo-form {
+    //与上面app名字增大些距离
+    padding: 20px 3px 0 20px;
+    white-space: normal;
+    position: relative;
+    margin-right: 15px;
+    //基本信息部分
+    .basic-data-form {
+      //用户类型按钮部分
+      .custom_radio_active {
+        cursor: pointer;
+        border-radius: @border-radius;
+        border: 2px solid #729fb4;
+        display: inline-block;
+        padding: 4px;
+        margin-right: 4px !important;
+        background: #67a3bf;
+        color: #fff;
+      }
+      .ant-select{
+        width: @edit_input_width !important;
+      }
+      .form-item-label {
+        width: 52px;
+        padding: 14px 0 0 0;
+      }
+
+      .form-item-content {
+        textarea, input {
+          margin-bottom: 10px;
+        }
+
+      }
+      .custom_radio_group .custom_radio {
+        padding: 4px 0;
+        margin-right: 4px !important;
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+      }
+    }
+    //角色权限部分样式
+    .app-role-permission {
+      .ant-alert {
+        left: 0;
+        top: 0;
+      }
+      h3 {
+        padding-left: 0;
+      }
+      .anticon-reload {
+        margin-right: -2px !important;
+      }
+    }
+    //表单内保存和取消按钮
+    .usertypeconfig-form-button {
+      margin-top: 20px;
+      position: relative;
+      .ant-btn {
+        margin-left: 8px;
+      }
+      text-align: right;
+      padding-bottom: 5px;
+      .ant-alert-error {
+        position: absolute;
+        top: -38px;
+        left: 38px;
+      }
+      .ant-alert-info {
+        position: absolute;
+        top: -3px;
+        left: 74px;
+
+      }
+    }
+    .gm-scrollbar.-vertical {
+      bottom: 55px!important;
+    }
+
+  }
+  .ant-select-selection--single  {
+    padding-right:30px;
+  }
+
+
+}

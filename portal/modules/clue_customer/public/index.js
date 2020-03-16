@@ -691,7 +691,7 @@ class ClueCustomer extends React.Component {
     renderClueRecommend = () => {
         return (
             <div className="recomend-clue-customer-container pull-right">
-                {hasRecommendPrivilege() ?
+                {hasRecommendPrivilege()?
                     <Popover
                         placement="bottom"
                         content={(

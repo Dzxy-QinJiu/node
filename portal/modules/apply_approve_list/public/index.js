@@ -26,28 +26,28 @@ import {
     DOCUMENT_TYPE,
     REPORT_TYPE
 } from 'PUB_DIR/sources/utils/consts';
-import AddSalesOpportunityApply from 'MOD_DIR/sales_opportunity/public/view/add-sales-opportunity-apply';
-import BusinessOpportunity from 'MOD_DIR/sales_opportunity/public/view/apply-view-detail';
-import AddBusinessApply from 'MOD_DIR/business-apply/public/view/add-business-apply';
-import BusinessDetail from 'MOD_DIR/business-apply/public/view/apply-view-detail';
-import AddLeaveApply from 'MOD_DIR/leave-apply/public/view/add-leave-apply';
-import LeaveDetail from 'MOD_DIR/leave-apply/public/view/apply-view-detail';
+import AddSalesOpportunityApply from './all_application_type/sales_opportunity/public/view/add-sales-opportunity-apply';
+import BusinessOpportunity from './all_application_type/sales_opportunity/public/view/apply-view-detail';
+import AddBusinessApply from './all_application_type/business-apply/public/view/add-business-apply';
+import BusinessDetail from './all_application_type/business-apply/public/view/apply-view-detail';
+import AddLeaveApply from './all_application_type/leave-apply/public/view/add-leave-apply';
+import LeaveDetail from './all_application_type/leave-apply/public/view/apply-view-detail';
 import AddDocumentWriteOrReportSendApplyPanel from 'CMP_DIR/add-send-document-template';
-import DocumentDetail from 'MOD_DIR/document_write/public/view/apply-view-detail';
-import ReportDetail from 'MOD_DIR/report_send/public/view/apply-view-detail';
-import AddBusinessWhileApply from 'MOD_DIR/business-while/public/view/add-business-while';
-import BusinessWhileDetail from 'MOD_DIR/business-while/public/view/apply-view-detail';
-import AddDomainApply from 'MOD_DIR/domain_application/public/view/add-apply';
-import DomainDetail from 'MOD_DIR/domain_application/public/view/apply-view-detail';
-import AddVisitApply from 'MOD_DIR/self_setting/public/view/add-apply';
-import VisitDetail from 'MOD_DIR/self_setting/public/view/apply-view-detail';
+import DocumentDetail from './all_application_type/document_write/public/view/apply-view-detail';
+import ReportDetail from './all_application_type/report_send/public/view/apply-view-detail';
+import AddBusinessWhileApply from './all_application_type/business-while/public/view/add-business-while';
+import BusinessWhileDetail from './all_application_type/business-while/public/view/apply-view-detail';
+import AddDomainApply from './all_application_type/domain_application/public/view/add-apply';
+import DomainDetail from './all_application_type/domain_application/public/view/apply-view-detail';
+import AddVisitApply from './all_application_type/self_setting/public/view/add-apply';
+import VisitDetail from './all_application_type/self_setting/public/view/apply-view-detail';
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
 import Trace from 'LIB_DIR/trace';
 import UserApplyActions from '../public/action/apply_approve_list_action';
 import ApplyApproveListStore from '../public/store/apply_approve_list_store';
-import UserApplyViewDetailWrap from 'MOD_DIR/user_apply/public/views/apply-view-detail-wrap';
+import UserApplyViewDetailWrap from './all_application_type/user_apply/public/views/apply-view-detail-wrap';
 
 
 import {storageUtil} from 'ant-utils';
@@ -58,8 +58,8 @@ import {SearchInput} from 'antc';
 import UserData from '../../../public/sources/user-data';
 import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import HistoricalApplyViewDetailStore from 'MOD_DIR/user_apply/public/store/historical-apply-view-detail-store';
-import HistoricalApplyViewDetailAction from 'MOD_DIR/user_apply/public/action/historical-apply-view-detail-actions';
+import HistoricalApplyViewDetailStore from './all_application_type/user_apply/public/store/historical-apply-view-detail-store';
+import HistoricalApplyViewDetailAction from './all_application_type/user_apply/public/action/historical-apply-view-detail-actions';
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 var ApplyApproveUtils = require('./utils/apply_approve_utils');
 class ApplyApproveList extends React.Component {

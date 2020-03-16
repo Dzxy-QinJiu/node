@@ -5,6 +5,7 @@
  */
 'use strict';
 import privilegeConst_common from '../../public/privilege-const';
+
 module.exports = {
     module: 'common/server/action/apply-approve',
     routes: [{
@@ -24,16 +25,7 @@ module.exports = {
         },
         'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
 
-    },
-    //     {
-    //     method: 'get',
-    //     path: '/rest/apply_approve/detail/by/id',
-    //     handler: 'getApplyDetailById',
-    //     passport: {
-    //         needLogin: true
-    //     },
-    // },
-    {
+    }, {
         'method': 'post',
         'path': '/rest/add/userapply/new/candidate',
         'handler': 'addUserApplyNewCandidate',
@@ -56,5 +48,112 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
-    }]
+    }, {
+        method: 'post',
+        path: '/rest/add/businesswhile/apply',
+        handler: 'addBusinessWhileApply',
+        passport: {
+            needLogin: true
+        }
+    }, {
+        method: 'post',
+        path: '/rest/business_while/submitApply',
+        handler: 'approveApplyPassOrReject',
+        passport: {
+            needLogin: true
+        },
+    }, {
+        method: 'put',
+        path: '/rest/update/customer/business/while',
+        handler: 'updateBusinessWhileCustomerTime',
+        passport: {
+            needLogin: true
+        },
+    }, {
+        method: 'get',
+        path: '/rest/check/domain/name',
+        handler: 'checkDomainExist',
+        passport: {
+            needLogin: true
+        }
+    }, {
+        method: 'post',
+        path: '/rest/add/sales_opportunity_apply/list',
+        handler: 'addSalesOpportunityApply',
+        passport: {
+            needLogin: true
+        },
+    }, {
+        method: 'post',
+        path: '/rest/add/apply/list',
+        handler: 'addBusinessApply',
+        passport: {
+            needLogin: true
+        },
+    }, {
+        method: 'put',
+        path: '/rest/update/customer/visit/range',
+        handler: 'updateVisitCustomerTime',
+        passport: {
+            needLogin: true
+        },
+    }, {
+        method: 'post',
+        path: '/rest/add/leave_apply/list',
+        handler: 'addLeaveApply',
+        passport: {
+            needLogin: true
+        },
+    }, {
+        method: 'post',
+        path: '/rest/add/opinionreport/list',
+        handler: 'addReportSendApply',
+        passport: {
+            needLogin: true
+        },
+    }, {
+        method: 'post',
+        path: '/rest/opinionreport/submitApply',
+        handler: 'approveReportSendApplyPassOrReject',
+        passport: {
+            needLogin: true
+        },
+    }, {
+        method: 'post',
+        path: '/rest/documentwrite/submitApply',
+        handler: 'approveDocumentWriteApplyPassOrReject',
+        passport: {
+            needLogin: true
+        },
+    }, {
+        method: 'post',
+        path: '/rest/reportsend/upload',
+        handler: 'uploadReportSend',
+        passport: {
+            'needLogin': true
+        }
+    }, {
+        method: 'get',
+        path: '/rest/reportsend/download/:fileObj',
+        handler: 'downLoadReportSend',
+        passport: {
+            'needLogin': true
+        }
+    }, {
+        method: 'delete',
+        path: '/rest/applyapprove/delete',
+        handler: 'deleteReportSend',
+        passport: {
+            'needLogin': true
+        }
+    }
+        //     {
+        //     method: 'get',
+        //     path: '/rest/apply_approve/detail/by/id',
+        //     handler: 'getApplyDetailById',
+        //     passport: {
+        //         needLogin: true
+        //     },
+        // },
+    ]
 };

@@ -6,7 +6,7 @@ const Validator = Validation.Validator;
 import {Form,Input} from 'antd';
 const FormItem = Form.Item;
 import UserNameTextFieldUtil from './util';
-import ApplyViewDetailStore from '../../../modules/user_apply/public/store/apply-view-detail-store';
+import ApplyViewDetailStore from 'MOD_DIR/apply_approve_list/public/all_application_type/user_apply/public/store/apply-view-detail-store';
 let number = 1;
 
 const UserNameTextFieldMixin = {

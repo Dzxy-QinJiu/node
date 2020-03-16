@@ -1,0 +1,34 @@
+@import "../../../../../../../public/css/common-variables";
+.leave_manage_apply_detail_wrap {
+  color: #5d5d5d;
+  position: relative;
+  padding-right: 0;
+  padding-left: 0;
+  background-color: @current-item-color;
+  //详情头部标题
+  .apply-detail-title {
+    height: 64px;
+    padding: 24px;
+    .apply-type-tip {
+      font-size: 16px;
+      color: @title-color;
+    }
+    .order-id {
+      float: right;
+      font-size: 14px;
+      color: @LOADING_ERR_TIP;
+    }
+  }
+  .apply-detail-content {
+    padding: 0 24px;
+  }
+  .ant-form-horizontal {
+    dt {
+      padding-top: 10px !important;
+    }
+  }
+  //加载中，出错和没有数据的展示
+  .app_user_manage_detail{
+    padding-top: 260px;
+  }
+}

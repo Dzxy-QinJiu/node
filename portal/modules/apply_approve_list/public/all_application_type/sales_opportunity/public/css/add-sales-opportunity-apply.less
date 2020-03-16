@@ -1,0 +1,80 @@
+@import "../../../../../../../public/css/common-variables";
+.add-sales-opportunity-container.right-pannel-default{
+  width: 504px!important;
+  background-color:transparent!important;
+  transform: translateX(504px);
+  overflow: visible;
+  .iconfont.icon-close.add-sales-opportunity-apply-close-btn{
+    color: #fff;
+    background-color: #8ea9c4;
+    border-radius: 0 !important;
+    width: 24px;
+    height: 24px;
+    float: left;
+    font-size: 14px;
+  }
+  //添加销售机会申请的面板
+  .add-sales-opportunity-apply-wrap{
+    float: left;
+    height: 100%;
+    width: 480px !important;
+    background-color: @NOTICE-BACKGROUND !important;
+    position: relative;
+    box-shadow: -4px 0 20px @box_shadow_color;
+    .add-leave-apply-form-wrap{
+      padding: 20px 0 20px 0;
+      margin-right: 20px;
+      form {
+        .ant-form-item{
+          width:100%;
+          .ant-calendar-picker{
+            width: 100%;
+          }
+          input, textarea, .ant-select{
+            width: 100%
+          }
+          .ant-form-item-label label{
+            font-size: 14px;
+            color:#999;
+          }
+          .ant-form-explain{
+            text-align: left;
+          }
+        }
+        .ant-form-item.add-apply-time{
+          .anticon.anticon-cross-circle.ant-calendar-picker-clear{
+            display: none;
+          }
+        }
+        .customer_search_wrap {
+          .customer_suggest_tip{
+            text-align: left;
+          }
+        }
+        .customer-milestone{
+          float: left;
+          margin-left: 10px;
+          color: #999;
+        }
+        .submit-button-container{
+          text-align: right;
+          .submit-btn{
+            margin-right:10px;
+          }
+          button{
+            font-size: 14px;
+          }
+          .indicator{
+            .ant-alert{
+              width: 180px;
+              margin:0 auto;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.ant-checkbox-wrapper{
+ text-align: left;
+}

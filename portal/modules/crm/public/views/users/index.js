@@ -23,7 +23,7 @@ import ErrorDataTip from '../components/error-data-tip';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
-import {getApplyList} from 'MOD_DIR/user_apply/public/ajax/app-user-ajax';
+import {getApplyList} from 'MOD_DIR/apply_approve_list/public/all_application_type/user_apply/public/ajax/app-user-ajax';
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import { EventEmitter } from 'events';
 import {getDetailLayoutHeight} from '../../utils/crm-util';

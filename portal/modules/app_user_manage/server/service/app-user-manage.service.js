@@ -95,8 +95,6 @@ var AppUserRestApis = {
     submitApplyChangePasswordOrOther: '/rest/base/v1/workflow/user/change/approve',
     //延期和启用停用审批
     submitApplyDelayMultiApp: '/rest/base/v1/workflow/grant/change/approve',
-    //审批其他类型的修改
-    // submitApplyChangeOther: '/rest/base/v1/user/approve/sthelse',
     //审批开通状态
     submitApplyGrantStatus: '/rest/base/v1/user/approve_status',
     //编辑用户应用单个字段

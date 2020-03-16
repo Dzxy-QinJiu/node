@@ -1,7 +1,7 @@
 import {Button} from 'antd';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import userData from 'PUB_DIR/sources/user-data';
-
+let salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
 export const APPLY_TYPE = {
     APPLY_BY_ME: 'apply_by_me',
     APPROVE_BY_ME: 'approve_by_me',
@@ -139,3 +139,15 @@ export const addCancelBtnPrivliege = (worklist) => {
 var EventEmitter = require('events');
 //暴露一个emitter，做自定义事件
 exports.emitter = new EventEmitter();
+//获取销售人员列表
+const getSalesManList = function() {
+    var Deferred = $.Deferred();
+    salesmanAjax.getSalesmanListAjax().sendRequest({filter_manager: true})
+        .success(list => {
+            Deferred.resolve(list);
+        }).error((xhr) => {//xhr:XMLHttpRequest
+        Deferred.reject(xhr.responseJSON);
+    });
+    return Deferred.promise();
+};
+exports.getSalesManList = getSalesManList;
