@@ -51,7 +51,7 @@ import {
     updateUnapprovedCount, isFinalTask,
     isApprovedByManager, timeShowFormat,
     isCustomDelayType, getDelayTimeUnit,
-    applyAppConfigTerminal, getApplyTopicText, getApplyResultDscr, isCiviwRealm,    applyAppConfigTerminal,
+    applyAppConfigTerminal, getApplyTopicText, getApplyResultDscr, isCiviwRealm, applyAppConfigTerminal,
     approveAppConfigTerminal
 } from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
@@ -143,7 +143,7 @@ const COLUMN_WIDTH = {
     USER_TYPE: 80,//用户类型
     ROLE: 120,//角色
     PRIVILEGE: 120,//权限
-};const ApplyViewDetail = createReactClass({
+}; const ApplyViewDetail = createReactClass({
     propTypes: {
         detailItem: PropTypes.object,
         applyData: PropTypes.object,
@@ -2352,36 +2352,35 @@ const COLUMN_WIDTH = {
                 } else {//延期时间为：延期 n天、周、月等时
                     item.delay_time = _.get(this.state, 'formData.delay_time');
 
+                }
+                let appConfig = this.appsSetting[`${item.client_id}&&${item.user_id}`];
+                // 延期的多终端字段
+                if (appConfig && _.get(appConfig, 'terminals.setted')) {
+                    let terminals = _.get(appConfig, 'terminals.value');
+                    item.terminals = _.map(terminals, 'id');
+                }
+                //角色、权限，如果修改了角色权限，需要传设置的角色、权限
+                if (appConfig && (!_.isEqual(appConfig.roles, x.roles) || !_.isEqual(appConfig.permissions, x.permissions))) {
+                    // 传空数组，是为了在node端判断是否做了修改
+                    if (_.isEmpty(appConfig.roles)) { // 把角色置空的情况
+                        item.roles = [];
+                    } else {
+                        item.roles = _.map(appConfig.roles, roleId => {
+                            return {role_id: roleId};
+                        });
                     }
-                    let appConfig = this.appsSetting[`${item.client_id}&&${item.user_id}`];
-                    // 延期的多终端字段
-                    if (appConfig && _.get(appConfig, 'terminals.setted')) {
-                        let terminals = _.get(appConfig, 'terminals.value');
-                        item.terminals = _.map(terminals, 'id');
-                    }
-                    //角色、权限，如果修改了角色权限，需要传设置的角色、权限
-                    if (appConfig && (!_.isEqual(appConfig.roles, x.roles) || !_.isEqual(appConfig.permissions, x.permissions))) {
-                        // 传空数组，是为了在node端判断是否做了修改
-                        if (_.isEmpty(appConfig.roles)) { // 把角色置空的情况
-                            item.roles = [];
-                        } else {
-                            item.roles = _.map(appConfig.roles, roleId => {
-                                return {role_id: roleId};
-                            });
-                        }
 
-                        if (_.isEmpty(appConfig.permissions)) { // 把权限置空的情况
-                            item.permissions = [];
-                        } else {
-                            item.permissions = _.map(appConfig.permissions, permissionId => {
-                                return {permission_id: permissionId};
-                            });
-                        }
-
+                    if (_.isEmpty(appConfig.permissions)) { // 把权限置空的情况
+                        item.permissions = [];
+                    } else {
+                        item.permissions = _.map(appConfig.permissions, permissionId => {
+                            return {permission_id: permissionId};
+                        });
                     }
-                    return item;
-                })
-            );
+
+                }
+                return item;
+            });
         }
         return obj;
     },
