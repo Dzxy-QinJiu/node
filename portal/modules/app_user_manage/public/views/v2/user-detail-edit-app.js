@@ -28,7 +28,8 @@ const UserDetailEditApp = createReactClass({
 
     getInitialState() {
         return {
-            appList: [], // 拥有列表
+            appList: [], // 应用列表
+            disabled: true, // 确认按钮，默认禁用状态
             ...UserDetailEditAppStore.getState()
         };
     },
@@ -267,6 +268,7 @@ const UserDetailEditApp = createReactClass({
                     finishText={Intl.get('common.confirm', '确认')}
                     onStepChange={this.cancel}
                     onFinish={this.onFinish}
+                    disabled={this.state.disabled}
                 >
                     {this.renderIndicator()}
                 </OperationStepsFooter>
