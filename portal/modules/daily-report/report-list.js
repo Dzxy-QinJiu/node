@@ -4,6 +4,7 @@
 
 import { AntcAnalysis } from 'antc';
 import { teamTreeEmitter, dateSelectorEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { showReportPanel } from './utils';
 
 class ReportList extends React.Component {
     //获取查询条件
@@ -107,7 +108,22 @@ class ReportList extends React.Component {
                                 title: name,
                                 dataIndex: name,
                                 width: 130,
-                                align: 'right'
+                                align: 'right',
+                                render: (value, record) => {
+                                    return (
+                                        <span
+                                            onClick={e => {
+                                                e.stopPropagation();
+                                                showReportPanel({
+                                                    currentView: VIEW_TYPE.REPORT_FORM,
+                                                    //clickedTpl: tpl
+                                                });
+                                            }}
+                                        >
+                                            {value}
+                                        </span>
+                                    );
+                                }
                             };
 
                             if (name === '其他') {
@@ -127,6 +143,13 @@ class ReportList extends React.Component {
                             width: 80,
                         },
                     ],
+                    onRowClick: (record, index, event) => {
+                        console.log(record);
+                        showReportPanel({
+                            currentView: VIEW_TYPE.REPORT_FORM,
+                            //clickedTpl: tpl
+                        });
+                    }
                 },
             },
         ];
