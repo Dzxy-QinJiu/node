@@ -13,6 +13,7 @@ import AppUserUtil from '../../util/app-user-util';
 import PropTypes from 'prop-types';
 import {isEqualArray} from 'LIB_DIR/func';
 import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
+import {modifyAppConfigEmitter} from 'PUB_DIR/sources/utils/emitters';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 
 //记录上下留白布局
@@ -53,6 +54,7 @@ const UserDetailEditApp = createReactClass({
     componentDidMount() {
         UserDetailEditAppStore.listen(this.onStoreChange);
         $(window).on('resize', this.onStoreChange);
+        modifyAppConfigEmitter.on(modifyAppConfigEmitter.MODIFY_APP_CONFIG, this.getModifyAppConfig);
         this.getAppList();
         UserDetailEditAppActions.setInitialData(this.props.appInfo);
     },
@@ -63,8 +65,15 @@ const UserDetailEditApp = createReactClass({
         });
     },
 
+    getModifyAppConfig() {
+        this.setState({
+            disabled: false
+        });
+    },
+
     componentWillUnmount() {
         UserDetailEditAppStore.unlisten(this.onStoreChange);
+        modifyAppConfigEmitter.removeListener(modifyAppConfigEmitter.MODIFY_APP_CONFIG, this.getModifyAppConfig);
         $(window).off('resize', this.onStoreChange);
     },
 

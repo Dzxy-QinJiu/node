@@ -288,10 +288,15 @@ export { selectedAppEmitter };
 
 // 主导航的领线索，显示内容区的事件
 const showWiningClueEmitter = new EventEmitter();
-showWiningClueEmitter.SHOW_WINNING_CLUE = 'show_winning_clue'; //
+showWiningClueEmitter.SHOW_WINNING_CLUE = 'show_winning_clue'; // 显示领线索
 export { showWiningClueEmitter };
 
 // 多终端筛选
 const terminalsSelectorEmitter = new EventEmitter();
-terminalsSelectorEmitter.SELECT_TERMINAL = 'select_terminal'; //
+terminalsSelectorEmitter.SELECT_TERMINAL = 'select_terminal'; // 选择多终端类型
 export { terminalsSelectorEmitter };
+
+// 修改应用配置
+const modifyAppConfigEmitter = new EventEmitter();
+modifyAppConfigEmitter.MODIFY_APP_CONFIG = 'modify_app_config'; // 修改应用配置
+export { modifyAppConfigEmitter };
