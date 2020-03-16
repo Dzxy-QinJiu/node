@@ -8,6 +8,8 @@ import Detail from 'CMP_DIR/detail';
 import AddTpl from './add-tpl';
 import SetRule from './set-rule';
 import ReportList from './report-list';
+import ReportDetail from './report-detail';
+import NumberDetail from './number-detail';
 import ReportForm from './report-form';
 
 class ReportPanel extends React.Component {
@@ -50,6 +52,8 @@ class ReportPanel extends React.Component {
             case VIEW_TYPE.ADD_TPL: return <AddTpl {...props} />;
             case VIEW_TYPE.SET_RULE: return <SetRule {...props} />;
             case VIEW_TYPE.REPORT_LIST: return <ReportList {...props} />;
+            case VIEW_TYPE.REPORT_DETAIL: return <ReportDetail {...props} />;
+            case VIEW_TYPE.NUMBER_DETAIL: return <NumberDetail {...props} />;
             case VIEW_TYPE.REPORT_FORM: return <ReportForm {...props} />;
         }
     }

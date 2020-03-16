@@ -5,6 +5,7 @@
 import { AntcAnalysis } from 'antc';
 import { teamTreeEmitter, dateSelectorEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { showReportPanel } from './utils';
+import { VIEW_TYPE } from './consts';
 
 class ReportList extends React.Component {
     //获取查询条件
@@ -115,7 +116,7 @@ class ReportList extends React.Component {
                                             onClick={e => {
                                                 e.stopPropagation();
                                                 showReportPanel({
-                                                    currentView: VIEW_TYPE.REPORT_FORM,
+                                                    currentView: VIEW_TYPE.NUMBER_DETAIL,
                                                     //clickedTpl: tpl
                                                 });
                                             }}
@@ -146,7 +147,7 @@ class ReportList extends React.Component {
                     onRowClick: (record, index, event) => {
                         console.log(record);
                         showReportPanel({
-                            currentView: VIEW_TYPE.REPORT_FORM,
+                            currentView: VIEW_TYPE.REPORT_DETAIL,
                             //clickedTpl: tpl
                         });
                     }
