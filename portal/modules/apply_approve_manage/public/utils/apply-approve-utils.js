@@ -22,6 +22,7 @@ exports.APPLYAPPROVE_LAYOUT = APPLYAPPROVE_LAYOUT;
 exports.calculateHeight = function() {
     return $(window).height() - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM;
 };
+//这些value值不可以修改，因为这些类型如果有的申请审批表单已经保存，修改后界面展示会有问题
 export const ALL_COMPONENTS = {
     INPUT: 'Input',
     INPUTNUMBER: 'InputNumber',
@@ -30,7 +31,7 @@ export const ALL_COMPONENTS = {
     DATETIME: 'datetime',//日期或者日期加时间
     PRODUCTION: 'prodution',//产品
     CUSTOMERSEARCH: 'customerSearch',//客户的搜索
-    TIME_PERIOD: 'timePeriod',//时间
+    TIME_PERIOD: 'timeperiod',//时间
     USER_SEARCH: 'userSearch',//成员
     TEAM_SEARCH: 'teamSearch'//团队
 
