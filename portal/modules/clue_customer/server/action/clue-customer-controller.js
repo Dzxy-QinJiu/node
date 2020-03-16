@@ -368,7 +368,7 @@ function doExport(data, backendIntl, res) {
                             contactDes += _.get(firstContact,'name','');
                             break;
                         case 'contacts_phone':
-                            contactDes += _.get(firstContact,'phone',[]).join('；');
+                            contactDes += '\t' + _.get(firstContact,'phone',[]).join('；');//加上\t是为了防止在用wps打开的时候，如果是座机会把前面的0忽略，直接展示成一个数字，例如01085655689会展示成1085655689
                             break;
                         case 'contacts_email':
                             contactDes += _.get(firstContact,'email',[]).join('；');
