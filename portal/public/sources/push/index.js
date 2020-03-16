@@ -622,19 +622,22 @@ function applyUpgradeListener(data) {
     if (_.isObject(data)) {
         const title = Intl.get('versions.apply.try.enterprise','申请企业试用');
         const lead = _.get(data, 'lead.name', '');
-        const leadLink = '<a href="javascript:void(0)" onclick="handleLeadClickCallback(\'' + _.get(data, 'lead.id', '') + '\')">' + lead + '</a>';
         const user = _.get(data, 'lead.app_user_info[0].name', '');
-        const userLink = '<a href="javascript:void(0)" onclick="handleUserClickCallback(\'' + _.get(data, 'lead.app_user_info[0].id', '') + '\')">' + user + '</a>';
         const version = _.get(data, 'version_change_info.new_version', '');
         const time = getTimeStr(_.get(data.version_change_info,'apply_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
         const tipContent = time + ' ，' + Intl.get('common.lead.apply.try','用户{user}（线索：{lead}）申请试用',{user: userLink,lead: leadLink}) + version;
         if (canPopDesktop()) {
-            //桌面通知的展示
+            //桌面通知的展示（只能展示提示内容，无法添加自定义的点击事件）
+            let tipContent = time + ' ，' + Intl.get('common.lead.apply.try','用户{user}（线索：{lead}）申请试用',{user, lead}) + version;
             showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
         }else{
             if(!isOpenPopUpNotify) {
                 return;
             }
+            // 系统弹窗提示中，添加点击可打开对应详情的事件
+            const userLink = '<a href="javascript:void(0)" onclick="handleUserClickCallback(\'' + _.get(data, 'lead.app_user_info[0].id', '') + '\')">' + user + '</a>';
+            const leadLink = '<a href="javascript:void(0)" onclick="handleLeadClickCallback(\'' + _.get(data, 'lead.id', '') + '\')">' + lead + '</a>';
+            let tipContent = time + ' ，' + Intl.get('common.lead.apply.try','用户{user}（线索：{lead}）申请试用',{user: userLink,lead: leadLink}) + version;
             notificationUtil.showNotification({
                 title: title,
                 content: tipContent,
