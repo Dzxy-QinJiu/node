@@ -51,7 +51,7 @@ import {
     updateUnapprovedCount, isFinalTask,
     isApprovedByManager, timeShowFormat,
     isCustomDelayType, getDelayTimeUnit,
-    applyAppConfigTerminal, getApplyTopicText, getApplyResultDscr, isCiviwRealm, applyAppConfigTerminal,
+    getApplyTopicText, getApplyResultDscr, isCiviwRealm, applyAppConfigTerminal,
     approveAppConfigTerminal
 } from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
