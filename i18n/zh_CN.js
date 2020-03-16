@@ -308,6 +308,7 @@ var zh_CN = {
     'common.apply.try.user.scales': '使用人数',
     'common.lead.apply.try': '用户{user}（线索：{lead}）申请试用',
     'common.terminals.type': '终端类型',
+    'common.terminals.unknown': '未知终端',
     'common.all.terminals': '所有终端',
     'common.terminals': '终端',
     'common.period': '。',
