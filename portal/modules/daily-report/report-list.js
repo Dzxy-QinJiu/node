@@ -145,10 +145,9 @@ class ReportList extends React.Component {
                         },
                     ],
                     onRowClick: (record, index, event) => {
-                        console.log(record);
                         showReportPanel({
                             currentView: VIEW_TYPE.REPORT_DETAIL,
-                            //clickedTpl: tpl
+                            currentReport: record
                         });
                     }
                 },
