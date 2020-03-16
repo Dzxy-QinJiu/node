@@ -32,7 +32,7 @@ class ApplyTabContent extends React.Component {
     }
 
     fetchApplyList = () => {
-        let approval_state = UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? 'pass' : this.state.applyListType;
+        let approval_state = UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? 'pass' : this.state.selectedApplyStatus;
         let sort_field = 'produce_date';//全部类型、待审批下按申请时间倒序排
         //[已通过、已驳回、已审批、已撤销
         let approvedTypes = ['pass', 'reject', 'true', 'cancel'];
@@ -50,7 +50,7 @@ class ApplyTabContent extends React.Component {
             order: 'descend'
         }, (count) => {
             //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
-            if (this.state.applyListType === 'false') {
+            if (this.state.selectedApplyStatus === 'ongoing') {
                 //触发更新待审批数
                 commonMethodUtil.updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
                 // 解决通过或驳回操作失败（后台其实是成功）后的状态更新
@@ -296,7 +296,7 @@ class ApplyTabContent extends React.Component {
     };
 
     getApplyListType = () => {
-        switch (this.state.applyListType) {
+        switch (this.state.selectedApplyStatus) {
             case 'all':
                 return Intl.get('user.apply.all', '全部申请');
             case 'false':
@@ -401,9 +401,9 @@ class ApplyTabContent extends React.Component {
             );
 
             let unreadReplyList = this.state.unreadReplyList;
-            let applyListType = this.state.applyListType;
+            let selectedApplyStatus = this.state.selectedApplyStatus;
             //是否展示有未读申请的提示，后端推送过来的未读回复列表中有数据，并且是在全部类型下可展示，其他待审批、已通过等类型下不展示
-            let showUnreadTip = _.isArray(unreadReplyList) && unreadReplyList.length > 0 && applyListType === 'all' && !this.state.searchKeyword;
+            let showUnreadTip = _.isArray(unreadReplyList) && unreadReplyList.length > 0 && selectedApplyStatus === 'all' && !this.state.searchKeyword;
             return (
                 <div className="searchbar clearfix">
                     <div className="apply-type-filter btn-item" id="apply-type-container">
@@ -430,11 +430,11 @@ class ApplyTabContent extends React.Component {
                     </div>
                     {!this.state.searchKeyword ? (//没有搜索时才会展示刷新和查看未读回复的按钮
                         <div className="search-btns">
-                            {applyListType === 'all' || applyListType === 'false' ? (//只有在全部\待审批申请下才会展示刷新按钮
+                            {selectedApplyStatus === 'all' || selectedApplyStatus === 'false' ? (//只有在全部\待审批申请下才会展示刷新按钮
                                 <span onClick={this.refreshPage}
                                     className={classNames('iconfont icon-refresh', {'has-new-apply': this.state.showUpdateTip})}
                                     title={this.state.showUpdateTip ? Intl.get('user.apply.new.refresh.tip', '有新申请，点此刷新') : Intl.get('user.apply.no.new.refresh.tip', '无新申请')}/>) : null}
-                            {applyListType === 'all' ? (//只有在全部申请下才会展示未读回复的按钮
+                            {selectedApplyStatus === 'all' ? (//只有在全部申请下才会展示未读回复的按钮
                                 <div className={classNames('check-uread-reply-bg', {
                                     'active': this.state.isCheckUnreadApplyList
                                 })}>
@@ -479,7 +479,7 @@ class ApplyTabContent extends React.Component {
         return <ApplyViewDetailWrap
             isHomeMyWork={true}
             detailItem={this.state.showHistoricalItem}
-            applyListType='false'//待审批状态
+            selectedApplyStatus='false'//待审批状态
             afterApprovedFunc={this.afterFinishApplyWork}
             ApplyViewDetailStore={HistoricalApplyViewDetailStore}
             ApplyViewDetailAction={HistoricalApplyViewDetailAction}
@@ -506,15 +506,15 @@ class ApplyTabContent extends React.Component {
             applyListHeight = this.getApplyListDivHeight();
         }
         var applyType = '';
-        if (this.state.applyListType === 'false') {
+        if (this.state.selectedApplyStatus === 'false') {
             applyType = Intl.get('leave.apply.my.worklist.apply', '待我审批');
-        } else if (this.state.applyListType === 'pass') {
+        } else if (this.state.selectedApplyStatus === 'pass') {
             applyType = Intl.get('user.apply.pass', '已通过');
-        } else if (this.state.applyListType === 'reject') {
+        } else if (this.state.selectedApplyStatus === 'reject') {
             applyType = '被驳回';
-        } else if (this.state.applyListType === 'true') {
+        } else if (this.state.selectedApplyStatus === 'true') {
             applyType = '已审批';
-        } else if (this.state.applyListType === 'cancel') {
+        } else if (this.state.selectedApplyStatus === 'cancel') {
             applyType = Intl.get('user.apply.backout', '已撤销');
         }
         var noShowApplyDetail = this.state.applyListObj.list.length === 0;
@@ -577,7 +577,7 @@ class ApplyTabContent extends React.Component {
                         detailItem={this.state.selectedDetailItem}
                         isUnreadDetail={this.getIsUnreadDetail()}
                         showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                        applyListType={this.state.applyListType}
+                        selectedApplyStatus={this.state.selectedApplyStatus}
                         handleOpenApplyDetail={this.handleOpenApplyDetail}
                         appList={this.state.appList}
                     />

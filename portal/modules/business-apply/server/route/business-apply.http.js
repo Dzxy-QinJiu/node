@@ -21,13 +21,6 @@ module.exports = {
                 needLogin: true
             },
         }, {
-            method: 'get',
-            path: '/rest/get/worklist/business_apply/list',
-            handler: 'getWorklistBusinessApplyList',
-            passport: {
-                needLogin: true
-            },
-        }, {
             method: 'post',
             path: '/rest/add/apply/list',
             handler: 'addBusinessApply',
@@ -42,20 +35,6 @@ module.exports = {
                 needLogin: true
             },
         }, {
-            method: 'get',
-            path: '/rest/get/apply/comment/list',
-            handler: 'getApplyComments',
-            passport: {
-                needLogin: true
-            },
-        }, {
-            method: 'post',
-            path: '/rest/add/apply/comment',
-            handler: 'addApplyComments',
-            passport: {
-                needLogin: true
-            },
-        }, {
             method: 'post',
             path: '/rest/business_trip/submitApply',
             handler: 'approveApplyPassOrReject',
@@ -66,13 +45,6 @@ module.exports = {
             method: 'get',
             path: '/rest/get/apply/status/byId',
             handler: 'getApplyStatusById',
-            passport: {
-                needLogin: true
-            },
-        }, {
-            method: 'post',
-            path: '/rest/cancel/apply/approve',
-            handler: 'cancelApplyApprove',
             passport: {
                 needLogin: true
             },

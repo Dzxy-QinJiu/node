@@ -421,26 +421,6 @@ class AppUserManage extends React.Component {
             </span>);
     };
 
-    //发邮件使用的参数
-    getEmailData = () => {
-        var selectedRows = this.state.selectedUserRows;
-
-        var email_customer_names = [];
-        var email_user_names = [];
-
-        if (!_.isArray(selectedRows)) {
-            selectedRows = [];
-        }
-        _.each(selectedRows, (obj) => {
-            email_customer_names.push(obj.customer && obj.customer.customer_name || '');
-            email_user_names.push(obj.user && obj.user.user_name || '');
-        });
-        return {
-            email_customer_names: email_customer_names.join('、'),
-            email_user_names: email_user_names.join('、')
-        };
-    };
-
     showBatchOperate = (e) => {
         Trace.traceEvent(e, '已有用户-批量变更');
         AppUserAction.showBatchOperate();
@@ -930,7 +910,14 @@ class AppUserManage extends React.Component {
         if ( this.state.isShowBatchChangePanel || this.state.rightPanelType === 'applyUser') {
             appList = _.filter(appList, item => item.status);
         }
-
+        //应用列表
+        let appListTransform = _.map(appList, obj => {
+            return {
+                client_id: obj.app_id,
+                client_name: obj.app_name,
+                client_image: obj.app_logo,
+            };
+        });
         if (this.state.isShowRightPanel) {
             switch (this.state.rightPanelType) {
                 case 'addOrEditUser':
@@ -941,25 +928,15 @@ class AppUserManage extends React.Component {
                     );
                     break;
                 case 'applyUser':
-                    //发邮件使用的数据
-                    var emailData = this.getEmailData();
-                    //应用列表
-                    let appListTransform = _.map(appList, obj => {
-                        return {
-                            client_id: obj.app_id,
-                            client_name: obj.app_name,
-                            client_image: obj.app_logo,
-                        };
-                    });
                     rightPanelView = (
                         <ApplyUser
                             appList={appListTransform}
                             users={this.state.selectedUserRows}
                             customerId={this.state.customer_id}
                             cancelApply={AppUserAction.closeRightPanel}
-                            emailData={emailData}
                         />
                     );
+                    break;
             }
         }
 

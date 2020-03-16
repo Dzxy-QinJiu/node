@@ -404,18 +404,10 @@ const ApplyUserForm = createReactClass({
                     });
                 }
                 submitData.products = JSON.stringify(submitData.products);
-                //添加申请邮件中用的应用名
-                if (_.isArray(this.state.apps)) {
-                    var client_names = _.map(this.state.apps, (obj) => obj.client_name);
-                    submitData.email_app_names = client_names.join('、');
-                }
-
                 if (this.state.applyFrom === 'order') {//订单中申请试用、签约用户
                     this.applyUserFromOder(submitData);
-                } else if (this.isApplyNewUsers()) {//申请新用户时，没有订单和销售阶段，先随便乱传个字符串（不传接口会报错）
+                } else if (this.isApplyNewUsers()) {//todo 申请新用户时，没有订单和销售阶段，先随便乱传个字符串（不传接口会报错）
                     delete submitData.selectAppIds;//去掉用于验证的数据
-                    submitData.order_id = 'apply_new_users';
-                    submitData.sales_opportunity = 'apply_new_users';
                     //如果是uem类型的，应用的信息只给后端传应用id，应用名和到期时间就可以
                     if (!this.state.isOplateUser){
                         var products = JSON.parse(submitData.products);
@@ -428,6 +420,15 @@ const ApplyUserForm = createReactClass({
                             submitData.products = JSON.stringify(products);
                         }
                     }
+                    submitData.users_or_grants = JSON.parse(submitData.products);
+                    delete submitData.products;
+                    submitData.user_type = submitData.tag;
+                    delete submitData.tag;
+                    _.forEach(submitData.users_or_grants,item => {
+                        if(!_.get(item,'terminals.length')){//终端是必传参数
+                            item.terminals = null;
+                        }
+                    });
                     this.applyUserFromOder(submitData);
                 } else {
                     delete submitData.selectAppIds;//去掉用于验证的数据
@@ -436,20 +437,16 @@ const ApplyUserForm = createReactClass({
             }
         });
     },
-
+    //申请新用户
     applyUserFromOder: function(submitData) {
         submitData.user_name = _.trim(submitData.user_name);
-        //添加申请邮件中用的客户名
-        submitData.email_customer_names = this.props.customerName;
-        //添加申请邮件中用的用户名
-        submitData.email_user_names = submitData.user_name;
         OrderAction.applyUser(submitData, {}, result => {
-            if (result === true) {
+            if (_.get(result,'id')) {
                 this.setState({
                     isLoading: false,
                     applyErrorMsg: ''
                 });
-                this.props.afterAddApplySuccess(submitData);
+                this.props.afterAddApplySuccess(result);
                 this.handleCancel();
             } else {
                 this.setState({
@@ -459,17 +456,34 @@ const ApplyUserForm = createReactClass({
             }
         });
     },
-
+    calcDescartes: function(array,submitData) {
+        if (array.length < 2) return array[0] || [];
+        return [].reduce.call(array, function(col, set) {
+            var res = [];
+            col.forEach(function(c) {
+                set.forEach(function(s) {
+                    res.push({
+                        'user_id': c,
+                        'tags': [submitData.tag],
+                        ...s});
+                });
+            });
+            return res;
+        });
+    },
+    //开通新应用
     applyUserFromUserList: function(submitData) {
-        submitData.user_ids = JSON.stringify(submitData.user_ids);
         submitData.user_names = JSON.stringify(submitData.user_names);
-        //看从emailData中传过来的有数据，就放到submitData中 email_customer_names email_user_names
-        if (_.isObject(this.props.emailData)) {
-            _.extend(submitData, this.props.emailData);
-        }
-        UserApplyAction.applyUser(submitData, result => {
+        var newSubmitObj = {
+            customer_id: submitData.customer_id,
+            remark: submitData.remark
+        };
+        delete submitData.customer_id;
+        //users_or_grants 是跟据user_ids 和 原来参数中的 products 做笛卡尔积后获取的总数量
+        newSubmitObj['users_or_grants'] = this.calcDescartes([submitData.user_ids,JSON.parse(submitData.products)],submitData);
+        UserApplyAction.applyNewGrant(newSubmitObj, result => {
             this.setState({isLoading: false});
-            if (result === true) {
+            if (_.get(result,'id')) {
                 this.setState({
                     isLoading: false,
                     applyErrorMsg: ''

@@ -1,53 +1,65 @@
 @import "../../../public/css/common-variables";
+@font-color: #999999;
 li.apply-list-item {
-  position: relative;
-  padding-left: 20px;
-  padding-right: 20px;
-  border-left: 3px solid transparent;
-  border-bottom: 1px solid #f0f4f7;
   cursor: pointer;
-  &:hover{
+  padding: 16px;
+  border-left: 3px solid transparent;
+  border-bottom: 1px solid #E5E5E5;
+
+  &:hover {
     background-color: @current-item-color;
   }
+
   &.current {
     background-color: @current-item-color;
     border-left: 3px solid @apply-active-color;
+
     dt span {
       color: @title-color;
     }
   }
+
   em, dt {
     font-weight: normal;
     font-style: normal;
-    font-size: 13px;
   }
+
   dt {
-    padding-top: 12px;
+    line-height: 18px;
     padding-bottom: 12px;
+
     span {
-      padding-top: 5px;
-      line-height: 19px;
       font-size: 16px;
+      color: #333;
     }
+
     //未读回复的标识
     span.icon-apply-message-tip {
       padding-left: 5px;
       color: @reply-message-tip-color;
     }
+
     em {
       float: right;
-      line-height: 20px;
+      font-size: 12px;
       color: @approval-pending-color;
+
       &.processed {
-        color: @LOADING_ERR_TIP;
+        color: @font-color;
       }
     }
   }
+
   dd {
-    line-height: 18px;
-    font-size: 13px;
-    padding-bottom: 6px;
-    color: @LOADING_ERR_TIP;
+    font-size: 14px;
+    line-height: 16px;
+    padding-bottom: 10px;
+    color: @font-color;
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+
     & > span {
       float: left;
       max-width: 65%;
@@ -55,11 +67,13 @@ li.apply-list-item {
       text-overflow: ellipsis;
       overflow: hidden;
     }
+
     em {
       float: right;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
+      font-size: 12px;
     }
   }
 }

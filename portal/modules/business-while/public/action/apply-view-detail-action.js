@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/18.
  */
 var BusinessApplyAjax = require('../ajax/business-apply-ajax');
-import LeaveApplyUtil from '../utils/leave-apply-utils';
+import LeaveApplyUtil from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var TIMEOUT = 1000;//1秒后刷新未读数
@@ -52,8 +52,6 @@ function ApplyViewDetailActions() {
     this.getBusinessApplyCommentList = function(queryObj) {
         this.dispatch({loading: true, error: false});
         getApplyCommentList(queryObj).then((list) => {
-            //清除未读回复列表中已读的回复
-            applyApproveAction.clearUnreadReply(queryObj.id);
             this.dispatch({loading: false, error: false, list: list});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('failed.get.reply.comment', '获取回复列表失败')});

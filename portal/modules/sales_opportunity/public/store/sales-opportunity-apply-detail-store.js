@@ -132,6 +132,8 @@ SalesOpportunityApplyDetailStore.prototype.cancelApplyApprove = function(resultO
     }else{
         this.backApplyResult.submitResult = 'success';
         this.backApplyResult.errorMsg = '';
+        this.hideCancelBtns();
+        this.showOrHideApprovalBtns();
     }
 };
 

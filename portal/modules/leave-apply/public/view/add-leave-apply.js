@@ -59,8 +59,8 @@ class AddLeaveApply extends React.Component {
             $('.add-leave-apply-form-wrap form .require-item label').addClass('ant-form-item-required');
         }
     }
-    hideLeaveApplyAddForm = () => {
-        this.props.hideLeaveApplyAddForm();
+    hideLeaveApplyAddForm = (data) => {
+        this.props.hideLeaveApplyAddForm(data);
     };
     //去掉保存后提示信息
     hideSaveTooltip = () => {
@@ -112,11 +112,11 @@ class AddLeaveApply extends React.Component {
                     if (data){
                         //添加成功
                         this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                        this.hideLeaveApplyAddForm();
                         //添加完后的处理
                         data.afterAddReplySuccess = true;
                         data.showCancelBtn = true;
-                        LeaveApplyAction.afterAddApplySuccess(data);
+                        this.hideLeaveApplyAddForm(data);
+
                     }else{
                         this.setResultData(errTip, 'error');
                     }

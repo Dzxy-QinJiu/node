@@ -209,16 +209,7 @@ const ApplyUserForm = createReactClass({
                 submitData.user_ids = JSON.stringify(submitData.user_ids);
                 submitData.user_names = JSON.stringify(submitData.user_names);
                 submitData.products = JSON.stringify(submitData.products);
-                //看从emailData中传过来的有数据，就放到submitData中 email_customer_names email_user_names
-                if (_.isObject(this.props.emailData)) {
-                    _.extend(submitData, this.props.emailData);
-                }
-                //添加应用名
-                if (_.isArray(this.props.apps)) {
-                    var client_names = _.map(this.props.apps, (obj) => obj.client_name);
-                    submitData.email_app_names = client_names.join('、');
-                }
-                UserApplyAction.applyUser(submitData, result => {
+                UserApplyAction.applyNewGrant(submitData, result => {
                     this.setState({isLoading: false});
                     if (result === true) {
                         message.success(Intl.get('user.apply.success', '申请成功'));

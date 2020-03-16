@@ -42,7 +42,7 @@ import {APPLY_APPROVE_TYPES, APPLY_FINISH_STATUS,LEAVE_TIME_RANGE} from 'PUB_DIR
 import {disabledDate, calculateSelectType} from 'PUB_DIR/sources/utils/common-method-util';
 import {calculateTotalTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 import classNames from 'classnames';
-
+import {transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -125,8 +125,8 @@ class ApplyViewDetail extends React.Component {
                     this.addNextCandidate.handleCancel();
                 }
                 //转出成功后，如果左边选中的是待审批的列表，在待审批列表中把这条记录删掉
-                if (this.props.applyListType === 'ongoing'){
-                    BusinessApplyActions.afterTransferApplySuccess(submitObj.id);
+                if (this.props.selectedApplyStatus === 'ongoing'){
+                    this.props.afterTransferApplySuccess(submitObj.id);
                 }else{
                     message.success(Intl.get('apply.approve.transfer.success','转出申请成功'));
                 }
@@ -168,8 +168,7 @@ class ApplyViewDetail extends React.Component {
                 <AntcDropdown
                     ref={AssignSales => this.addNextCandidate = AssignSales}
                     datatraceContainer='出差申请转审按钮'
-                    content={<Button
-                        className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('apply.view.transfer.candidate','转审')}</Button>}
+                    content={transferBtnContent()}
                     overlayTitle={Intl.get('apply.will.approve.apply.item','待审批人')}
                     okTitle={Intl.get('common.confirm', '确认')}
                     cancelTitle={Intl.get('common.cancel', '取消')}
@@ -1103,7 +1102,7 @@ class ApplyViewDetail extends React.Component {
             'col-md-8': !this.props.isHomeMyWork
         });
         return (
-            <div className={detailWrapCls} style={{'height': divHeight}} data-tracename="出差审批详情界面">
+            <div className={detailWrapCls} style={{'height': this.props.height,'width': this.props.width}} data-tracename="出差审批详情界面">
                 <ApplyDetailStatus
                     showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
                     showErrTip={this.state.detailInfoObj.loadingResult === 'error'}
@@ -1136,20 +1135,28 @@ class ApplyViewDetail extends React.Component {
 ApplyViewDetail.defaultProps = {
     detailItem: {},
     showNoData: false,
-    applyListType: '',
+    selectedApplyStatus: '',
     isUnreadDetail: false,
     applyData: {},
     isHomeMyWork: false,//是否是首页我的工作中打开的详情
     afterApprovedFunc: function() {//审批完后的外部处理方法
+    },
+    height: '100%',
+    width: '100%',
+    afterTransferApplySuccess: function() {
+
     }
 };
 ApplyViewDetail.propTypes = {
     detailItem: PropTypes.string,
     showNoData: PropTypes.bool,
-    applyListType: PropTypes.string,
+    selectedApplyStatus: PropTypes.string,
     isUnreadDetail: PropTypes.bool,
     applyData: PropTypes.object,
     isHomeMyWork: PropTypes.bool,
-    afterApprovedFunc: PropTypes.func
+    afterApprovedFunc: PropTypes.func,
+    height: PropTypes.string,
+    width: PropTypes.string,
+    afterTransferApplySuccess: PropTypes.func,
 };
 module.exports = ApplyViewDetail;

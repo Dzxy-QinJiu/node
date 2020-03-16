@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/28.
  */
 var ReportSendApplyAjax = require('../ajax/report-send-apply-ajax');
-var ReportSendUtils = require('../utils/report-send-utils');
+var ReportSendUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
@@ -51,8 +51,6 @@ function ApplyViewDetailActions() {
     this.getApplyCommentList = function(queryObj) {
         this.dispatch({loading: true, error: false});
         getApplyCommentList(queryObj).then((list) => {
-            //清除未读回复列表中已读的回复
-            applyApproveAction.clearUnreadReply(queryObj.id);
             this.dispatch({loading: false, error: false, list: list});
         }, (errMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errMsg || Intl.get('failed.get.reply.comment', '获取回复列表失败')});

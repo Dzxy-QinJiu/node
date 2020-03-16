@@ -1,3 +1,6 @@
+import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
+
+
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
@@ -25,8 +28,6 @@ import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 const FormItem = Form.Item;
 import classNames from 'classnames';
 import {hasPrivilege, PrivilegeChecker} from '../../../../components/privilege/checker';
-/*在审批界面显示用户的右侧面板开始*/
-require('../css/main.less');
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from '../../../../components/rightPanel';
 import { PassStrengthBar } from 'CMP_DIR/password-strength-bar';
@@ -34,6 +35,7 @@ import { checkPassword, checkConfirmPassword } from 'PUB_DIR/sources/utils/valid
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {APPLY_TYPES, userTypeList, TOP_NAV_HEIGHT, TIMERANGEUNIT, WEEKDAYS} from 'PUB_DIR/sources/utils/consts';
 import ModalDialog from 'CMP_DIR/ModalDialog';
+import ApplyDetailRemarks from 'CMP_DIR/apply-components/apply-detail-remarks';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import PasswordSetting from 'CMP_DIR/password-setting';
 /*在审批界面显示用户的右侧面板结束*/
@@ -43,12 +45,13 @@ var DefaultHeadIconImage = require('../../../common/public/image/default-head-ic
 var UserTypeConfigForm = require('./user-type-config-form');
 import Trace from 'LIB_DIR/trace';
 var moment = require('moment');
-import {handleDiffTypeApply,getUserApplyFilterReplyList,
-    getApplyStatusTimeLineDesc,formatUsersmanList,
+import {
+    handleDiffTypeApply, getUserApplyFilterReplyList,
+    getApplyStatusTimeLineDesc, formatUsersmanList,
     updateUnapprovedCount, isFinalTask,
-    isApprovedByManager,timeShowFormat,
+    isApprovedByManager, timeShowFormat,
     isCustomDelayType, getDelayTimeUnit,
-    applyAppConfigTerminal,
+    applyAppConfigTerminal, getApplyTopicText, getApplyResultDscr, isCiviwRealm,    applyAppConfigTerminal,
     approveAppConfigTerminal
 } from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
@@ -56,6 +59,7 @@ import ApplyHistory from 'CMP_DIR/apply-components/apply-history';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {getAllUserList,getNotSalesRoleUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import CustomerLabel from 'CMP_DIR/customer_label';
+import {getApplyListDivHeight,transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 //表单默认配置
 var appConfig = {
     //默认没id，用id区分增加和修改类型，有id是修改，没id是增加
@@ -129,6 +133,8 @@ import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {INTEGRATE_TYPES, APPROVE_STATUS} from 'PUB_DIR/sources/utils/consts';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
+import {APPLY_LIST_LAYOUT_CONSTANTS} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
 const COLUMN_WIDTH = {
     PRODUCT: 200,//产品
     NUM: 50,//数量
@@ -137,18 +143,20 @@ const COLUMN_WIDTH = {
     USER_TYPE: 80,//用户类型
     ROLE: 120,//角色
     PRIVILEGE: 120,//权限
-};
-const ApplyViewDetail = createReactClass({
+};const ApplyViewDetail = createReactClass({
     propTypes: {
         detailItem: PropTypes.object,
         applyData: PropTypes.object,
         showNoData: PropTypes.bool,
         isUnreadDetail: PropTypes.bool,
-        applyListType: PropTypes.object,
+        selectedApplyStatus: PropTypes.object,
         isHomeMyWork: PropTypes.bool,
         afterApprovedFunc: PropTypes.func,
         handleOpenApplyDetail: PropTypes.func,
         appList: PropTypes.array,
+        width: PropTypes.string,
+        height: PropTypes.string,
+        afterTransferApplySuccess: PropTypes.func
     },
     displayName: 'ApplyViewDetail',
     mixins: [FieldMixin, UserNameTextField],
@@ -166,6 +174,11 @@ const ApplyViewDetail = createReactClass({
             afterApprovedFunc: function() {//审批完后的外部处理方法
             },
             handleOpenApplyDetail: function() {
+                
+            },
+            width: '100%',
+            height: '100%',
+            afterTransferApplySuccess: function() {
                 
             }
         };
@@ -220,7 +233,7 @@ const ApplyViewDetail = createReactClass({
             if (_.includes(['1','2','3'], _.get(detailItem,'approval_state'))){
                 approval_state = _.get(detailItem,'approval_state');
             }
-            ApplyViewDetailActions.getApplyDetail(detailItem.id, applyData, approval_state, this.props.appList);
+            ApplyViewDetailActions.getApplyDetail({id: detailItem.id}, approval_state, applyData, this.props.appList);
             ApplyViewDetailActions.getNextCandidate({id: detailItem.id});
             //获取该审批所在节点的位置
             ApplyViewDetailActions.getApplyTaskNode({id: detailItem.id});
@@ -300,100 +313,50 @@ const ApplyViewDetail = createReactClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.detailItem.id && !_.isEqual(nextProps.detailItem, this.props.detailItem)) {
-            this.appsSetting = {};
-            if (nextProps.detailItem.id !== _.get(this, 'props.detailItem.id')) {
-                this.setState({
-                    showBackoutConfirmType: '',
-                    curEditExpireDateAppIdr: '',
-                    updateDelayTime: ''
-                });
-            }
-            if ((!this.state.applyResult.submitResult && !this.state.backApplyResult.submitResult) || nextProps.detailItem.id !== this.props.detailItem.id) {
-                this.getApplyDetail(nextProps.detailItem);
-                //关闭右侧详情
-                phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
-                //触发关闭用户详情面板
-                userDetailEmitter.emit(userDetailEmitter.CLOSE_USER_DETAIL);
-            }
+        var thisPropsId = this.props.detailItem.id;
+        var nextPropsId = nextProps.detailItem.id;
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
+        if (_.get(nextProps,'detailItem.afterAddReplySuccess')){
+            setTimeout(() => {
+                ApplyViewDetailActions.setDetailInfoObjAfterAdd(nextProps.detailItem);
+                this.getNextCandidate(_.get(nextProps, 'detailItem.id',''));
+            });
+        }else if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
+            this.getApplyDetail(nextProps.detailItem);
+            //关闭右侧详情
+            phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
+            //触发关闭用户详情面板
+            userDetailEmitter.emit(userDetailEmitter.CLOSE_USER_DETAIL);
+            this.setState({
+                showBackoutConfirmType: '',
+                curEditExpireDateAppIdr: '',
+                updateDelayTime: ''
+            });
         }
+
+        // if (nextProps.detailItem.id && !_.isEqual(nextProps.detailItem, this.props.detailItem)) {
+        //     this.appsSetting = {};
+        //     if (nextProps.detailItem.id !== _.get(this, 'props.detailItem.id')) {
+        //         this.setState({
+        //             showBackoutConfirmType: '',
+        //             curEditExpireDateAppIdr: '',
+        //             updateDelayTime: ''
+        //         });
+        //     }
+        //     if ((!this.state.applyResult.submitResult && !this.state.backApplyResult.submitResult) || nextProps.detailItem.id !== this.props.detailItem.id) {
+        //         this.getApplyDetail(nextProps.detailItem);
+        //
+        //     }
+        // }
         this.setState({
             isHomeMyWork: nextProps.isHomeMyWork
         });
     },
 
-    getApplyListDivHeight: function() {
-        if (!this.props.isHomeMyWork && $(window).width() < Oplate.layout['screen-md']) {
-            return 'auto';
-        }
-        let height = $(window).height() - AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
-        //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
-        if (!this.props.isHomeMyWork) {
-            height -= AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
-        }
-        return height;
-    },
-
-    renderApplyDetailLoading() {
-        if (this.state.detailInfoObj.loading) {
-            var height = this.getApplyListDivHeight();
-            if (height !== 'auto') {
-                height += 60;
-            }
-            return (<div className="app_user_manage_detail app_user_manage_detail_loading" style={{height: height}}>
-                <Spinner/></div>);
-        }
-        return null;
-    },
 
     retryFetchDetail(e) {
         Trace.traceEvent(e, '点击了重试');
         this.getApplyDetail(this.props.detailItem);
-    },
-
-    renderApplyDetailError() {
-        if (!this.state.detailInfoObj.loading && this.state.detailInfoObj.errorMsg) {
-            var height = this.getApplyListDivHeight();
-            if (height !== 'auto') {
-                height += 60;
-            }
-            var retry = (
-                <span>
-                    {this.state.detailInfoObj.errorMsg}，<a href="javascript:void(0)"
-                        onClick={this.retryFetchDetail}><ReactIntl.FormattedMessage
-                            id="common.retry" defaultMessage="重试"/></a>
-                </span>
-            );
-            return (
-                <div className="app_user_manage_detail app_user_manage_detail_error" style={{height: height}}>
-                    <Alert
-                        message={retry}
-                        type="error"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        }
-        return null;
-    },
-
-    renderApplyDetailNodata() {
-        if (this.props.showNoData) {
-            var height = this.getApplyListDivHeight();
-            if (height !== 'auto') {
-                height += 60;
-            }
-            return (
-                <div className="app_user_manage_detail app_user_manage_detail_error" style={{height: height}}>
-                    <Alert
-                        message={Intl.get('common.no.data', '暂无数据')}
-                        type="info"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        }
-        return null;
     },
 
     //获取详情高度
@@ -402,14 +365,7 @@ const ApplyViewDetail = createReactClass({
         if (!this.props.isHomeMyWork && $(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
         }
-        let height = $(window).height() -
-            AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.TOP_DELTA -
-            AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.BOTTOM_DELTA;
-        //不是首页打开的申请详情时（申请审批列表），需要减去头部导航的高度
-        if (!this.props.isHomeMyWork){
-            height -= AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.TOP_DELTA;
-        }
-        return height;
+        return getApplyListDivHeight() + APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.DETAIL_BOTTOM_DELTA;
     },
 
     //回复列表滚动到最后
@@ -446,62 +402,6 @@ const ApplyViewDetail = createReactClass({
         if (event.target.failCount < 3) {
             event.target.src = DefaultHeadIconImage;
         }
-    },
-
-    //渲染回复列表
-    renderReplyList() {
-        let replyListInfo = this.state.replyListInfo;
-        if (replyListInfo.result === 'loading') {
-            return (
-                <div className="reply-loading-wrap">
-                    <Icon type="loading"/>
-                    <span className="reply-loading-text">
-                        {Intl.get('user.apply.reply.loading', '正在努力加载回复列表 ......')}
-                    </span>
-                </div>);
-        }
-        if (replyListInfo.result === 'error') {
-            var message = (
-                <span>{replyListInfo.errorMsg}，<Icon type="reload" onClick={this.refreshReplyList}
-                    title={Intl.get('common.get.again', '重新获取')}/></span>);
-            return (<Alert message={message} type="error" showIcon={true}/>);
-        }
-        let replyList = _.cloneDeep(replyListInfo.list);
-        if (_.isArray(replyList) && replyList.length) {
-            //过滤掉点击通过，驳回或撤销按钮后的回复消息
-            replyList = _.filter(replyList, item => !_.get(item,'approve_status'));
-            {/*<Icon type="reload" onClick={this.refreshReplyList} className="pull-right"*/
-            }
-            {/*title={Intl.get("common.get.again", "重新获取")}/>*/
-            }
-            return (
-                <ul>
-                    {replyList.map((replyItem, index) => {
-                        return (
-                            <li key={index} className="apply-info-label">
-                                <span className="user-info-label">{replyItem.user_name}:</span>
-                                <span className="user-info-text">{replyItem.message}</span>
-                                <span className="user-info-label reply-date-text">{replyItem.date}</span>
-                            </li>);
-                    })}
-                </ul>);
-        } else {
-            return null;
-        }
-    },
-
-    //渲染刷新回复列表的提示
-    renderRefreshReplyTip: function() {
-        return (<span className="refresh-reply-data-tip">
-            <ReactIntl.FormattedMessage
-                id="user.apply.refresh.reply.tip"
-                defaultMessage={'有新回复，点此{refreshTip}'}
-                values={{
-                    'refreshTip': <a
-                        onClick={this.refreshReplyList}>{Intl.get('common.refresh', '刷新')}</a>
-                }}
-            />
-        </span>);
     },
     //审批状态
     renderApplyStatus: function() {
@@ -565,9 +465,10 @@ const ApplyViewDetail = createReactClass({
         );
     },
     renderSameCustomerHistoricalApply(){
+        var sameHistoryApplyLists = this.state.sameHistoryApplyLists;
         return (
             <ApplyHistory
-                sameHistoryApplyLists={this.state.sameHistoryApplyLists}
+                sameHistoryApplyLists={sameHistoryApplyLists}
                 handleOpenApplyDetail={this.props.handleOpenApplyDetail}
             />
         );
@@ -576,7 +477,7 @@ const ApplyViewDetail = createReactClass({
     renderApplyDetailInfo() {
         var detailInfo = this.state.detailInfoObj.info;
         //如果没有详情数据，不渲染
-        if (this.state.detailInfoObj.loading || _.isEmpty(this.state.detailInfoObj)) {
+        if (this.state.detailInfoObj.loadingResult || _.isEmpty(this.state.detailInfoObj)) {
             return;
         }
         //详情高度
@@ -585,22 +486,13 @@ const ApplyViewDetail = createReactClass({
         if ($(window).width() >= Oplate.layout['screen-md']) {
             //计算详情高度
             applyDetailHeight = this.getApplyDetailHeight();
-            // approval_state：0待审批，1通过 2驳回 3撤销，当是0时，保持高度不变，非0时，要增加回复框
-            // if (detailInfo.approval_state !== CONSTANTS.APPLY_STATUS) {
-            //     if (detailInfo.approval_comment) {
-            //         applyDetailHeight -= CONSTANTS.DETAIL_CONTAIN_COMMENT_HEIGHT;
-            //     } else {
-            //         applyDetailHeight -= CONSTANTS.DETAIL_NO_COMMENT_HEIGHT;
-            //     }
-            //
-            // }
         }
         let selectedDetailItem = this.state.selectedDetailItem;
         return (
             <div>
                 <div className="apply-detail-title">
                     <span className="apply-type-tip">
-                        {this.props.detailItem.topic || Intl.get('user.apply.id', '账号申请')}
+                        {_.get(this.props.detailItem,'detail.user_apply_name') || Intl.get('user.apply.id', '账号申请')}
                     </span>
                     {this.renderDetailBottom()}
                 </div>
@@ -620,25 +512,15 @@ const ApplyViewDetail = createReactClass({
                             {this.renderComment()}
                         </div>) : null}
                         {this.renderApplyStatus()}
-                        <div className="apply-detail-reply-list apply-detail-info">
-                            <div className="reply-icon-block">
-                                <span className="iconfont icon-apply-message-tip"/>
-                            </div>
-                            <div className="reply-info-block apply-info-block">
-                                <div className="reply-list-container apply-info-content">
-                                    {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
-                                    {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderReplyList() : null}
-                                    {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? (
-                                        <Input addonAfter={(
-                                            <a onClick={this.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
-                                        value={this.state.formData.comment}
-                                        onChange={this.commentInputChange}
-                                        placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}/>
-                                    ) : null}
-                                    {this.renderReplyFormResult()}
-                                </div>
-                            </div>
-                        </div>
+                        <ApplyDetailRemarks
+                            detailInfo={detailInfo}
+                            replyListInfo={this.state.replyListInfo}
+                            replyFormInfo={this.state.replyFormInfo}
+                            refreshReplyList={this.refreshReplyList}
+                            addReply={this.addReply}
+                            commentInputChange={this.commentInputChange}
+                            isUnreadDetail={this.props.isUnreadDetail}
+                        />
                         {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderSameCustomerHistoricalApply() : null}
                     </GeminiScrollbar>
                 </div>
@@ -880,7 +762,7 @@ const ApplyViewDetail = createReactClass({
             if (_.isArray(detailInfo.user_ids) && detailInfo.user_ids.length) {
                 return (
                     <div className="apply-info-label">
-                        <span className="user-info-label">{Intl.get('crm.detail.user', '用户')}:</span>
+                        <span className="user-info-label">{Intl.get('crm.detail.user', '用户')}</span>
                         <span className="user-info-text">
                             {
                                 detailInfo.user_ids.map((id, idx) => {
@@ -1683,11 +1565,11 @@ const ApplyViewDetail = createReactClass({
             </div>
         );
     },
-    //禁用、其他类型的表格渲染
+    //禁用、其他类型的表格渲染(新版的用户审批不需要展示产品相关了)
     renderOtherStatusTable: function(user) {
         let columns = [
             {
-                title: Intl.get('common.product','产品'),
+                title: Intl.get('common.product', '产品'),
                 dataIndex: 'client_name',
                 width: COLUMN_WIDTH.PRODUCT,
                 className: 'apply-detail-th'
@@ -2093,9 +1975,8 @@ const ApplyViewDetail = createReactClass({
         }
         //构造提交数据
         var submitData = {
-            apply_id: this.props.detailItem.id,
-            comment: _.trim(this.state.formData.comment),
-            notice_url: getApplyDetailUrl(this.state.detailInfoObj.info)
+            id: this.props.detailItem.id,
+            comment: _.trim(this.state.formData.comment)
         };
         if (!submitData.comment) {
             ApplyViewDetailActions.showReplyCommentEmptyError();
@@ -2103,22 +1984,6 @@ const ApplyViewDetail = createReactClass({
         }
         //提交数据
         ApplyViewDetailActions.addReply(submitData);
-    },
-
-    //渲染回复表单loading,success,error
-    renderReplyFormResult: function() {
-        var replyFormInfo = this.state.replyFormInfo;
-        if (replyFormInfo.result === 'loading') {
-            return <Icon type="loading"/>;
-        }
-        if (replyFormInfo.result === 'error') {
-            return <Alert
-                message={replyFormInfo.errorMsg}
-                type="error"
-                showIcon={true}
-            />;
-        }
-        return null;
     },
 
     //备注 输入框改变时候触发
@@ -2129,8 +1994,9 @@ const ApplyViewDetail = createReactClass({
         }
         this.setField('comment', event);
         var val = _.trim(event.target.value);
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
+        ApplyViewDetailActions.setApplyFormDataComment(val);
         if (val) {
-            var ApplyViewDetailActions = this.getApplyViewDetailAction();
             ApplyViewDetailActions.hideReplyCommentEmptyError();
         }
     },
@@ -2149,16 +2015,14 @@ const ApplyViewDetail = createReactClass({
     },
 
     // 撤销申请
-    saleBackoutApply(e) {
+    cancelApplyApprove(e) {
         e.stopPropagation();
         Trace.traceEvent(e, '点击撤销按钮');
         let backoutObj = {
-            apply_id: this.props.detailItem.id,
-            remark: _.trim(this.state.formData.comment),
-            notice_url: getApplyDetailUrl(this.state.detailInfoObj.info)
+            id: this.props.detailItem.id
         };
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
-        ApplyViewDetailActions.saleBackoutApply(backoutObj);
+        ApplyViewDetailActions.cancelApplyApprove(backoutObj);
     },
     renderCancelApplyApprove() {
         var confirmType = this.state.showBackoutConfirmType, modalContent = '', deleteFunction = function() {
@@ -2166,11 +2030,11 @@ const ApplyViewDetail = createReactClass({
             }, okText = '',cancelText = '', modalShow = false, resultType = {};
         if (confirmType) {
             //不同类型的操作，展示的描述和后续操作也不一样
-            if (confirmType === '1' || confirmType === '2') {
-                deleteFunction = this.submitApprovalForm.bind(this, confirmType);
+            if (confirmType === 'pass' || confirmType === 'reject') {
+                deleteFunction = this.passOrRejectApplyApprove.bind(this, confirmType);
                 modalContent = Intl.get('apply.approve.modal.text.pass', '是否通过此申请');
                 okText = Intl.get('user.apply.detail.button.pass', '通过');
-                if (confirmType === '2') {
+                if (confirmType === 'reject') {
                     modalContent = Intl.get('apply.approve.modal.text.reject', '是否驳回此申请');
                     okText = Intl.get('common.apply.reject', '驳回');
                 }
@@ -2182,9 +2046,9 @@ const ApplyViewDetail = createReactClass({
                     deleteFunction = this.continueSubmit;
                 }
                 resultType = this.state.applyResult;
-            } else if (confirmType === '3') {
+            } else if (confirmType === 'cancel') {
                 modalContent = Intl.get('user.apply.detail.modal.content', '是否撤销此申请？');
-                deleteFunction = this.saleBackoutApply;
+                deleteFunction = this.cancelApplyApprove;
                 okText = Intl.get('user.apply.detail.modal.ok', '撤销');
                 resultType = this.state.backApplyResult;
             }
@@ -2225,15 +2089,15 @@ const ApplyViewDetail = createReactClass({
         return time ? moment(time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : '';
     },
     clickApprovalFormBtn(approval) {
-        if (approval === '1') {
+        if (approval === 'pass') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击通过按钮');
-        } else if (approval === '2') {
+        } else if (approval === 'reject') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击驳回按钮');
-        } else if (approval === '3') {
+        } else if (approval === 'cancel') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击撤销申请按钮');
         }
         //用户申请时，选择了手动设置密码时，未输入密码，不能通过
-        if (this.showPassWordPrivilege() && this.settingPasswordManuWithNoValue() && approval === '1'){
+        if (this.showPassWordPrivilege() && this.settingPasswordManuWithNoValue() && approval === 'pass'){
             this.setState({
                 showWariningTip: true
             });
@@ -2250,11 +2114,11 @@ const ApplyViewDetail = createReactClass({
     renderApplyApproveStatus() {
         var showLoading = false, approveSuccess = false, approveError = false, applyResultErrorMsg = '',approveSuccessTip = '',showAfterApproveTip = '',
             confirmType = this.state.showBackoutConfirmType, resultType = {};
-        if (confirmType === '3') {
+        if (confirmType === 'cancel') {
             resultType = this.state.backApplyResult;
             approveSuccessTip = Intl.get('user.apply.detail.backout.success', '撤销成功');
             showAfterApproveTip = Intl.get('apply.show.cancel.result','查看撤销结果');
-        } else if (confirmType === '1' || confirmType === '2') {
+        } else if (confirmType === 'pass' || confirmType === 'reject') {
             resultType = this.state.applyResult;
         } else {
             return;
@@ -2270,7 +2134,8 @@ const ApplyViewDetail = createReactClass({
             viewApprovalResult={this.viewApprovalResult}
             approveError={approveError}
             applyResultErrorMsg={applyResultErrorMsg}
-            reSendApproval={this.continueSubmit}
+            // reSendApproval={this.continueSubmit}
+            reSendApproval={typeObj.deleteFunction}
             cancelSendApproval={this.cancelSendApproval.bind(this, confirmType)}
             container={this}
             approveSuccessTip={approveSuccessTip}
@@ -2323,8 +2188,8 @@ const ApplyViewDetail = createReactClass({
                     this.addNextCandidate.handleCancel();
                 }
                 //转出成功后，如果左边选中的是待审批的列表，在待审批列表中把这条记录删掉
-                if (this.props.applyListType === 'false') {
-                    UserApplyAction.afterTransferApplySuccess(submitObj.id);
+                if (this.props.selectedApplyStatus === 'ongoing') {
+                    this.props.afterTransferApplySuccess(submitObj.id);
                 } else {
                     message.success(Intl.get('apply.approve.transfer.success', '转出申请成功'));
                 }
@@ -2374,8 +2239,7 @@ const ApplyViewDetail = createReactClass({
                 <AntcDropdown
                     datatraceContainer='用户申请转审按钮'
                     ref={AssignSales => this.addNextCandidate = AssignSales}
-                    content={<Button
-                        className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('apply.view.transfer.candidate','转审')}</Button>}
+                    content={transferBtnContent()}
                     overlayTitle={Intl.get('apply.will.approve.apply.item','待审批人')}
                     okTitle={Intl.get('common.confirm', '确认')}
                     cancelTitle={Intl.get('common.cancel', '取消')}
@@ -2395,40 +2259,45 @@ const ApplyViewDetail = createReactClass({
     renderDetailBottom() {
         var selectedDetailItem = this.props.detailItem;
         var detailInfoObj = this.state.detailInfoObj.info;
-        var showBackoutApply = detailInfoObj.presenter_id === userData.getUserData().user_id;
         //是否显示通过驳回(主页我的工作中打开的详情，我的工作中打开的我都可以进行审批)
-        var isShowApproveBtn = detailInfoObj.showApproveBtn || this.props.isHomeMyWork;
+        var showApproveBtn = detailInfoObj.showApproveBtn || this.props.isHomeMyWork;
         //是否审批
         let isConsumed = !this.isUnApproved();
-
+        var userName = _.last(_.get(detailInfoObj, 'approve_details')) ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name : '' : '';
+        var approvalDes = getApplyResultDscr(detailInfoObj);
+        var renderAssigenedContext = null;
+        //渲染分配的按钮
+        if (_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'distributeSalesToVisit') > -1 && showApproveBtn){
+            //分配给普通销售
+            renderAssigenedContext = this.renderAssigenedContext;
+        }else if(_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'assignNextNodeApprover') > -1 && showApproveBtn){
+            if (isCiviwRealm()){
+                //如果是识微域，直接点通过就可以，不需要手动选择分配销售总经理
+                renderAssigenedContext = null;
+            }else{
+                //如果是不是识微域,需要选择所分配给的销售总经理
+                renderAssigenedContext = this.renderCandidatedContext;
+            }
+        }
+        var addApplyNextCandidate = null;
+        if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || showApproveBtn || this.state.isLeader) && (detailInfoObj.status === 'ongoing' || detailInfoObj.approval_state === '0')){//todo 审批后还有问题
+            addApplyNextCandidate = this.renderAddApplyNextCandidate;
+        }
         return (
-            <div className="approval_block pull-right">
-                <Row className="approval_person clearfix">
-                    <Col>
-                        {isConsumed ? null : (<div className="pull-right">
-                            {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) && showBackoutApply ?
-                                <Button type="primary" className="btn-primary-sure" size="small"
-                                    onClick={this.clickApprovalFormBtn.bind(this, '3')}>
-                                    {Intl.get('user.apply.detail.backout', '撤销申请')}
-                                </Button>
-                                : null}
-                            {isShowApproveBtn ? (
-                                <Button type="primary" className="btn-primary-sure" size="small"
-                                    onClick={this.clickApprovalFormBtn.bind(this, '1')}>
-                                    {Intl.get('user.apply.detail.button.pass', '通过')}
-                                </Button>) : null}
-                            {isShowApproveBtn ? (
-                                <Button type="primary" className="btn-primary-sure" size="small"
-                                    onClick={this.clickApprovalFormBtn.bind(this, '2')}>
-                                    {Intl.get('common.apply.reject', '驳回')}
-                                </Button>) : null}
-                            {/*如果是管理员或者我是待审批人或者我是待审批人的上级领导，我都可以把申请进行转出*/}
-                            {(isShowApproveBtn || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || this.state.isLeader) && detailInfoObj.approval_state === '0' ? this.renderAddApplyNextCandidate() : null}
-                        </div>)}
-                    </Col>
-                </Row>
-            </div>);
+            <ApplyDetailBottom
+                create_time={detailInfoObj.create_time}
+                applicantText={_.get(detailInfoObj, 'applicant.nick_name','') + Intl.get('crm.109', '申请')}
+                isConsumed={isConsumed}
+                update_time={detailInfoObj.update_time}
+                approvalText={userName + approvalDes}
+                showApproveBtn={showApproveBtn}
+                showCancelBtn={detailInfoObj.showCancelBtn}
+                submitApprovalForm={this.clickApprovalFormBtn}
+                renderAssigenedContext={renderAssigenedContext}
+                addApplyNextCandidate={addApplyNextCandidate}
+            />);
     },
+
 
     // 用户名重名时
     renderDuplicationName(errorMsg) {
@@ -2470,19 +2339,18 @@ const ApplyViewDetail = createReactClass({
         //修改的用户类型，如果存在，说明修改过用户类型，需要把角色权限传过去，如果不存在，未修改用户类型，不需要把用户类型、角色、权限传过去
         let changedUserType = _.get(this.state.detailInfoObj, 'info.changedUserType');
         if (apps.length > 0) {
-            obj.data = JSON.stringify(
-                apps.map(x => {
-                    let item = _.pick(x, 'client_id', 'client_name', 'user_id',
-                        'user_name', 'nickname', 'begin_date', 'over_draft');
-                    //如果修改了用户类型，需要把修改后的用户类型传过去
-                    if (changedUserType) {
-                        item.user_type = changedUserType;
-                    }
-                    //延期时间为：自定义的到期时间时
-                    if (isCustomDelayType(_.get(this.state, 'formData.delayTimeUnit'))) {
-                        item.end_date = _.get(this.state, 'formData.end_date');
-                    } else {//延期时间为：延期 n天、周、月等时
-                        item.delay_time = _.get(this.state, 'formData.delay_time');
+            obj.users_or_grants = apps.map(x => {
+                let item = _.pick(x, 'client_id', 'client_name', 'user_id',
+                    'user_name', 'nickname', 'begin_date', 'over_draft');
+                //如果修改了用户类型，需要把修改后的用户类型传过去
+                if (changedUserType) {
+                    item.user_type = changedUserType;
+                }
+                //延期时间为：自定义的到期时间时
+                if (isCustomDelayType(_.get(this.state, 'formData.delayTimeUnit'))) {
+                    item.end_date = _.get(this.state, 'formData.end_date');
+                } else {//延期时间为：延期 n天、周、月等时
+                    item.delay_time = _.get(this.state, 'formData.delay_time');
 
                     }
                     let appConfig = this.appsSetting[`${item.client_id}&&${item.user_id}`];
@@ -2517,13 +2385,27 @@ const ApplyViewDetail = createReactClass({
         }
         return obj;
     },
-
-    submitApprovalForm(approval) {
+    calcDescartes: function(array) {
+        if (array.length < 2) return array[0] || [];
+        return [].reduce.call(array, function(col, set) {
+            var res = [];
+            col.forEach(function(c) {
+                set.forEach(function(s) {
+                    res.push({
+                        'user_id': c,
+                        ...s});
+                });
+            });
+            return res;
+        });
+    },
+    //通过或者驳回申请
+    passOrRejectApplyApprove(approval) {
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
         const state = this.state;
-        if (approval === '1') {
+        if (approval === 'pass') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击通过按钮');
-        } else if (approval === '2') {
+        } else if (approval === 'reject') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击驳回按钮');
         }
         const realSubmit = () => {
@@ -2537,14 +2419,20 @@ const ApplyViewDetail = createReactClass({
             let obj = {};
             //多用户延期、禁用
             if (detailInfo.type === APPLY_TYPES.DELAY || detailInfo.type === APPLY_TYPES.DISABLE) {
-                //准备提交的数据（多用户禁用的情况下审批时只需要传message_id、approval）
+                //准备提交的数据
                 obj = {
-                    approval_state: approval_state + '',
-                    message_id: this.props.detailItem.id
+                    agree: approval_state + '',
+                    id: this.props.detailItem.id,
+                    //审批类型
+                    type: detailInfo.type
                 };
                 //多用户申请延期时，需要提交的数据处理
                 if (detailInfo.type === APPLY_TYPES.DELAY) {
                     obj = this.getMultiDelaySubmitData(obj);
+                }
+                //禁用申请的时候
+                if(detailInfo.type === APPLY_TYPES.DISABLE){
+                    obj.users_or_grants = _.get(this,'state.detailInfoObj.info.apps');
                 }
             } else {
                 //左侧选中的申请单
@@ -2573,9 +2461,13 @@ const ApplyViewDetail = createReactClass({
                                 //应用id
                                 client_id: app_id,
                                 //角色
-                                roles: app_config.roles,
+                                apply_roles: _.map(app_config.roles,roleId => {
+                                    return {role_id: roleId};
+                                }),
                                 //权限
-                                permissions: app_config.permissions,
+                                apply_permissions: _.map(app_config.permissions,permissionId => {
+                                    return {permission_id: permissionId};
+                                }),
                                 //到期停用
                                 over_draft: _.get(app_config, 'over_draft.value'),
                                 //开始时间
@@ -2599,7 +2491,7 @@ const ApplyViewDetail = createReactClass({
                 //如果是开通用户，需要先检查是否有角色设置，如果没有角色设置，给出一个警告
                 //如果已经有这个警告了，就是继续提交的逻辑，就跳过此判断
                 if (
-                    approval === '1' && !this.state.rolesNotSettingModalDialog.continueSubmit &&
+                    approval === 'pass' && !this.state.rolesNotSettingModalDialog.continueSubmit &&
                     (detailInfo.type === CONSTANTS.APPLY_USER_OFFICIAL ||
                         detailInfo.type === CONSTANTS.APPLY_USER_TRIAL ||
                         detailInfo.type === CONSTANTS.EXIST_APPLY_FORMAL ||
@@ -2607,7 +2499,7 @@ const ApplyViewDetail = createReactClass({
                 ) {
                     //遍历每个应用，找到没有设置角色的应用
                     var rolesNotSetAppNames = _.chain(products).filter((obj) => {
-                        return obj.roles.length === 0;
+                        return _.get(obj,'apply_roles.length') === 0;
                     }).map('client_id').map((app_id) => {
                         var appInfo = _.find(appList, (appObj) => appObj.app_id === app_id);
                         return appInfo && appInfo.app_name || '';
@@ -2622,7 +2514,7 @@ const ApplyViewDetail = createReactClass({
                     }
                 }
                 // 点击通过时，当用户数量大于1，并且改为用户数量为1时
-                if (approval !== '2' && applyMaxNumber > changeMaxNumber && changeMaxNumber === 1) {
+                if (approval !== 'reject' && applyMaxNumber > changeMaxNumber && changeMaxNumber === 1) {
                     if (this.state.isChangeUserName) { // 更改用户名时，校验
                         if (UserNameTextfieldUtil.userInfo.length) { // 同一客户下，用户名重名时
                             this.renderDuplicationName();
@@ -2643,14 +2535,14 @@ const ApplyViewDetail = createReactClass({
                 }
                 //准备提交数据
                 obj = {
-                    approval: approval_state + '',
-                    comment: this.state.formData.comment,
-                    message_id: this.props.detailItem.id,
-                    products: JSON.stringify(products),
+                    agree: approval_state + '',
+                    // comment: this.state.formData.comment,
+                    id: this.props.detailItem.id,
+                    users_or_grants: products,
                     //审批类型
                     type: detailInfo.type,
                     //从邮件转到界面的链接地址
-                    notice_url: getApplyDetailUrl(this.state.detailInfoObj.info),
+                    // notice_url: getApplyDetailUrl(this.state.detailInfoObj.info),
                 };
                 //如果手动设置了密码
                 if (!this.state.checkStatus && this.state.passwordValue){
@@ -2668,8 +2560,10 @@ const ApplyViewDetail = createReactClass({
                 if (detailInfo.type === 'apply_pwd_change') {
                     obj.password = AppUserUtil.encryptPassword(this.state.formData.apply_detail_password);
                 }
-                //如果是已有用户选择开通，则不提交user_name和number
-                if (!isExistUserApply) {
+                if (isExistUserApply) {//如果是已有用户选择开通，则不提交user_name和number
+                    //如果是已有用户开通授权，授权信息的数据是用用户数量和开通授权的应用数量做笛卡尔积求得，但是界面展示暂时是跟据旧数据展示的，界面上只展示应用
+                    obj.users_or_grants = this.calcDescartes([_.get(detailInfo,'user_ids',[]),products]);
+                }else{
                     obj.user_name = _.trim(this.state.formData.user_name);
                     obj.nick_name = this.state.formData.nick_name;
                 }
@@ -2684,7 +2578,7 @@ const ApplyViewDetail = createReactClass({
         var validation = this.refs.validation;
         if (!validation) {
             realSubmit();
-        } else if (approval === '2') {
+        } else if (approval === 'reject') {
             //当点击驳回按钮时，不用对输入的密码进行校验
             //如果之前密码验证有错误提示，先将错误提示去掉
             state.status.apply_detail_password = {};
@@ -2718,7 +2612,7 @@ const ApplyViewDetail = createReactClass({
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.rolesNotSettingContinueSubmit();
         setTimeout(() => {
-            this.submitApprovalForm(this.state.showBackoutConfirmType);
+            this.passOrRejectApplyApprove(this.state.showBackoutConfirmType);
         });
     },
 
@@ -2817,21 +2711,16 @@ const ApplyViewDetail = createReactClass({
             'app_user_manage_apply_detail_wrap': true
         });
         let customerOfCurUser = this.state.customerOfCurUser;
-        let detailWrapWidth = this.props.isHomeMyWork ? '100%' : $('.user_apply_page').width() - APPLY_LIST_WIDTH;
-        let divHeight = $(window).height();
-        //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
-        if (!this.props.isHomeMyWork) {
-            divHeight -= TOP_NAV_HEIGHT;
-        }
         return (
-            <div className={cls} data-tracename="审批详情界面" style={{'width': detailWrapWidth, 'height': divHeight}}>
-                {this.renderApplyDetailLoading()}
-                {this.renderApplyDetailError()}
-                {this.renderApplyDetailNodata()}
-                {
-                    !this.state.detailInfoObj.loading ?
-                        this.renderApplyDetailInfo() : null
-                }
+            <div className={cls} data-tracename="审批详情界面" style={{'width': this.props.width, 'height': this.props.height}}>
+                <ApplyDetailStatus
+                    showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
+                    showErrTip={this.state.detailInfoObj.loadingResult === 'error'}
+                    errMsg={this.state.detailInfoObj.errorMsg}
+                    retryFetchDetail={this.retryFetchDetail}
+                    showNoData={this.props.showNoData}
+                />
+                {this.renderApplyDetailInfo()}
                 {this.renderApplyApproveStatus()}
                 {this.renderCancelApplyApprove()}
                 {this.state.showRightPanel ?

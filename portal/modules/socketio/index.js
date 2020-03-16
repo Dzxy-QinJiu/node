@@ -10,8 +10,8 @@ var batchLogger = logger.getLogger('batch');
 var cookie = require('cookie');
 //cookie解码器
 var cookieParser = require('cookie-parser');
-//推送消息数据(弹窗消息)
-var notifyChannel = 'com.antfact.ketao.apply.notice';
+// //推送消息数据(弹窗消息)
+// var notifyChannel = 'com.antfact.ketao.apply.notice';
 //登录踢出通道
 var offlineChannel = 'com.antfact.oplate.notify.socketio.offline';
 //消息数推送频道(消息个数)
@@ -28,7 +28,7 @@ const scheduleNoticeChannel = 'com.antfact.ketao.schedule';
 const applyUnreadReplyChannel = 'com.antfact.ketao.apply.comment';
 //线索添加或分配后推送频道
 const clueUnhandledNum = 'com.antfact.ketao.clue.notice';
-//出差，销售机会和请假申请
+//申请审批消息推送
 const applyApproveChannel = 'com.antfact.curtao.workflow.notice';
 //客户操作的推送通道
 const crmOperatorChannel = 'com.curtao.customer.operator.message.notice.channel';
@@ -100,22 +100,22 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
         }
     }
 }
-/**
- * 消息监听器
- * @param data 消息数据
- */
-function notifyChannelListener(data) {
-    pushLogger.debug('后端推送的消息数据:' + data);
-    // 将查询结果返给浏览器
-    let messageObj = JSON.parse(data);
-    if (messageObj.consumers && messageObj.consumers.length > 0) {
-        //遍历消息接收者
-        messageObj.consumers.forEach(function(consumer) {
-            //将数据推送到浏览器
-            emitMsgBySocket(consumer && consumer.user_id, 'mes', pushDto.applyMessageToFrontend(messageObj));
-        });
-    }
-}
+// /**
+//  * 消息监听器
+//  * @param data 消息数据
+//  */
+// function notifyChannelListener(data) {
+//     pushLogger.debug('后端推送的消息数据:' + data);
+//     // 将查询结果返给浏览器
+//     let messageObj = JSON.parse(data);
+//     if (messageObj.consumers && messageObj.consumers.length > 0) {
+//         //遍历消息接收者
+//         messageObj.consumers.forEach(function(consumer) {
+//             //将数据推送到浏览器
+//             emitMsgBySocket(consumer && consumer.user_id, 'mes', pushDto.applyMessageToFrontend(messageObj));
+//         });
+//     }
+// }
 
 /*
  *
@@ -151,7 +151,7 @@ function clueUnhandledNumListener(data) {
 }
 /*处理申请审批消息监听器*/
 function applyApproveNumListener(data) {
-    // pushLogger.debug('后端推送的申请审批的数据:' + JSON.stringify(data));
+    pushLogger.debug('后端推送的申请审批的数据:' + JSON.stringify(data));
     //将查询结果返给浏览器
     var applyApprovesgObj = data || {};
     if (_.isArray(applyApprovesgObj.consumers) && _.get(applyApprovesgObj,'consumers[0]')) {
@@ -272,7 +272,7 @@ function systemNoticeListener(notice) {
  * }]
  */
 function applyUnreadReplyListener(unreadList) {
-    // pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
+    pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
     if (_.get(unreadList, '[0]')) {
         _.each(unreadList, unreadReply => {
             if (unreadReply.member_id) {
