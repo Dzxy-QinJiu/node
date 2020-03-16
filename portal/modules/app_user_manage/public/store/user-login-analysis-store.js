@@ -162,7 +162,9 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
                 }
                 let completeDurationList = durationArray;
                 if (completeDurationList.length) {
-                    // 登录时长、登录天数 统计近6个月的数据，平年356天，润年366年，所以取的时间点共183个点
+                    // 登录时长、登录天数 统计近6个月的数据，平年365天，润年366年，
+                    // 需要计算半年的时间区间，如果按平年计算半年的数据，会出现小数，并且 闰年的时候会有问题 所以需要按闰年的计算
+                    // 所以取的时间点共183个点
                     completeDurationList = Array.from({length: 183}, (x, idx) => {
                         // 统计图上统计最多显示近6个月的数据，开始时间是6个月前的时间点
                         const startDate = moment().subtract(6, 'months').startOf('day');
