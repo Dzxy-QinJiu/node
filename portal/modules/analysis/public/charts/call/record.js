@@ -48,18 +48,22 @@ export function getCallRecordChart(paramObj = {}) {
         layout: {sm: 24},
         height: 'auto',
         chartType: 'table',
-        url: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
+        url: [
+            '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
+            '/rest/base/v1/group/team/available/statistic'
+        ],
         ajaxInstanceFlag: 'getCallRecordStatistics',
         processData: (data, chart, analysisInstance, chartIndex) => {
             _.set(chart, 'cardContainer.props.refreshData', refreshData.bind(null, analysisInstance, chartIndex));
 
-            let callInfoList = _.get(data, 'result');
+            let callInfoList = _.get(data, '[0].result');
+            const teamInfoList = _.get(data, '[1]');
 
-            if (_.isArray(callInfoList)) {
+            if (_.isArray(callInfoList) && _.isArray(teamInfoList)) {
                 const sumRowName = Intl.get('common.summation', '合计');
 
                 //合计列
-                let sumRow = _.get(data, 'total');
+                let sumRow = _.get(data, '[0].total');
 
                 if (sumRow) {
                     sumRow.name = sumRowName;
@@ -67,6 +71,24 @@ export function getCallRecordChart(paramObj = {}) {
                 }
 
                 _.each(callInfoList, callInfo => {
+                    const teamName = _.get(callInfo, 'name');
+
+                    if (teamName) {
+                        let availableUserNum;
+
+                        if (teamName === sumRowName) {
+                            availableUserNum = _.sumBy(teamInfoList, 'available.user');
+                        } else {
+                            const corrTeamInfo = _.find(teamInfoList, teamInfo => teamInfo.team_name === teamName);
+                            availableUserNum = _.get(corrTeamInfo, 'available.user', 1);
+                        }
+
+                        if (availableUserNum) {
+                            callInfo.per_capita_duration = _.toInteger(callInfo.total_time / availableUserNum);
+                            callInfo.per_capita_number = _.toInteger(callInfo.total_callout_success / availableUserNum);
+                        }
+                    }
+
                     //日均接通数转换为整数
                     callInfo.average_num = _.toInteger(callInfo.average_num);
                     //日均时长转换为整数
@@ -238,9 +260,9 @@ export function getCallRecordChart(paramObj = {}) {
                 title: Intl.get('call.record.average.call.duration', '人均时长'),
                 width: col_width,
                 align: 'right',
-                dataIndex: 'average_person_time',
+                dataIndex: 'per_capita_duration',
                 sorter: function(a, b) {
-                    return a.average_person_time - b.average_person_time;
+                    return a.per_capita_duration - b.per_capita_duration;
                 },
                 render: function(text, record, index){
                     return (
@@ -253,9 +275,9 @@ export function getCallRecordChart(paramObj = {}) {
                 title: Intl.get('call.record.average.connected', '人均接通数'),
                 width: col_width,
                 align: 'right',
-                dataIndex: 'average_person_num',
+                dataIndex: 'per_capita_number',
                 sorter: function(a, b) {
-                    return a.average_person_num - b.average_person_num;
+                    return a.per_capita_number - b.per_capita_number;
                 },
             });
         }
