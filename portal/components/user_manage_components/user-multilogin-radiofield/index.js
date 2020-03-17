@@ -5,6 +5,7 @@ const CHECKED = {
     TRUE: '1',
     FALSE: '0'
 };
+import { isModifyAppConfig } from 'PUB_DIR/sources/utils/common-method-util';
 const UserTypeRadioField = {
     showMultiLoginError() {
         this.setState({
@@ -49,6 +50,7 @@ const UserTypeRadioField = {
             let value = selectValue(event);
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
+            isModifyAppConfig(_.clone(formData), 'multilogin', value);
             formData.multilogin.value = value;
             if(value !== config.globalMultiLogin) {
                 formData.multilogin.setted = true;

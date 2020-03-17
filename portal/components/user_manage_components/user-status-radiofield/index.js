@@ -1,6 +1,7 @@
 import {Form,Radio} from 'antd';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+import { isModifyAppConfig } from 'PUB_DIR/sources/utils/common-method-util';
 
 const UserStatusRadioField = {
     renderUserStatusRadioBlock(config) {
@@ -19,6 +20,7 @@ const UserStatusRadioField = {
             const value = event.target.value;
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
+            isModifyAppConfig(_.clone(formData), 'status', value);
             formData.status.value = value;
             if(value != config.globalStatus) {
                 formData.status.setted = true;
