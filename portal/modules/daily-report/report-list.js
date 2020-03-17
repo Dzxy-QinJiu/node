@@ -61,6 +61,19 @@ class ReportList extends React.Component {
         ];
     };
 
+    onNumberClick(record, name, e) {
+        e.stopPropagation();
+
+        const itemValues = _.get(record, 'item_values');
+        const itemValue = _.find(itemValues, item => item.name === name);
+        const numberDetail = _.get(itemValue, 'detail');
+
+        showReportPanel({
+            currentView: VIEW_TYPE.NUMBER_DETAIL,
+            numberDetail,
+        });
+    }
+
     //获取图表列表
     getCharts = () => {
         return [
@@ -111,19 +124,7 @@ class ReportList extends React.Component {
                                 width: 130,
                                 align: 'right',
                                 render: (value, record) => {
-                                    return (
-                                        <span
-                                            onClick={e => {
-                                                e.stopPropagation();
-                                                showReportPanel({
-                                                    currentView: VIEW_TYPE.NUMBER_DETAIL,
-                                                    //clickedTpl: tpl
-                                                });
-                                            }}
-                                        >
-                                            {value}
-                                        </span>
-                                    );
+                                    return <span onClick={this.onNumberClick.bind(this, record, name)}>{value}</span>;
                                 }
                             };
 

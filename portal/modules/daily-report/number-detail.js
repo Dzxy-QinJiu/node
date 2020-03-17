@@ -9,12 +9,12 @@ import { renderButtonZoneFunc, hideReportPanel, getReportList, saveReport } from
 
 class NumberDetail extends React.Component {
     render() {
-        const { currentReport } = this.props;
+        const { numberDetail } = this.props;
 
         return (
             <div>
-                {_.map(currentReport.item_values, item => {
-                    return <div>{item.name}：{item.value}</div>;
+                {_.map(numberDetail, item => {
+                    return <div>客户名：{item.customer_name}</div>;
                 })}
             </div>
         );
