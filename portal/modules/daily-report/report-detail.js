@@ -14,7 +14,12 @@ class ReportDetail extends React.Component {
         return (
             <div>
                 {_.map(currentReport.item_values, item => {
-                    return <div>{item.name}：{item.value}</div>;
+                    return (
+                        <div>
+                            <span>{item.name}：</span>
+                            <span>{item.value}</span>
+                        </div>
+                    );
                 })}
             </div>
         );
