@@ -97,6 +97,10 @@ class ApplyApproveList extends React.Component {
         notificationEmitter.on(notificationEmitter.MY_UNREAD_REPLY, this.refreshMyUnreadReplyList);
         notificationEmitter.on(notificationEmitter.TEAM_UNREAD_REPLY, this.refreshTeamUnreadReplyList);
         notificationEmitter.on(notificationEmitter.CLEAR_UNREAD_REPLY, this.clearUnreadReplyList);
+        //监听待我处理的审批数字
+        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.updateUnhandleApplyApproveCount);
+        //监听有新的审批后的提示
+        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_TIP, this.updateUnhandleApplyApproveTip);
         ApplyApproveUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
     }
     updateSelectedItem = (message) => {
@@ -122,6 +126,10 @@ class ApplyApproveList extends React.Component {
         notificationEmitter.removeListener(notificationEmitter.TEAM_UNREAD_REPLY, this.refreshTeamUnreadReplyList);
         notificationEmitter.removeListener(notificationEmitter.CLEAR_UNREAD_REPLY, this.clearUnreadReplyList);
         ApplyApproveUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
+        //监听待我处理的审批数字
+        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.updateUnhandleApplyApproveCount);
+        //监听有新的审批后的提示
+        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_TIP, this.updateUnhandleApplyApproveTip);
         ApplyApproveListStore.unlisten(this.onStoreChange);
     }
 
@@ -133,6 +141,20 @@ class ApplyApproveList extends React.Component {
 
     clearUnreadReplyList = (applyId) => {
         UserApplyActions.clearUnreadReply(applyId);
+    };
+    //更新审批的数字
+    updateUnhandleApplyApproveCount = () => {
+        this.showUnhandleApplyTip();
+    };
+    //展示刷新的提示
+    updateUnhandleApplyApproveTip = () => {
+        //如果当前选中的是我审批的
+        if(this.state.activeApplyTab === APPLY_TYPE.APPROVE_BY_ME){
+            this.setState({
+                showRefreshTip: true
+            });
+        }
+
     };
 
     //从sessionStorage中获取该用户未读的回复列表
@@ -151,10 +173,6 @@ class ApplyApproveList extends React.Component {
             this.refreshTeamUnreadReplyList(JSON.parse(unreadReplyList) || []);
         }
     };
-    //刷新未读回复的列表
-    // refreshUnreadReplyList = (unreadReplyList) => {
-    //     UserApplyActions.refreshUnreadReplyList(unreadReplyList);
-    // };
     refreshMyUnreadReplyList = (unreadReplyList) => {
         UserApplyActions.refreshMyUnreadReplyList(unreadReplyList);
     };
@@ -394,7 +412,6 @@ class ApplyApproveList extends React.Component {
         });
     };
     renderUnhandleNum = (val, count, showNum) => {
-
         var style = `unhandle${val}NumStyle`, cls = `${val}_container`;
         if (this[style]) {
             this[style].destroy();
@@ -712,7 +729,8 @@ class ApplyApproveList extends React.Component {
                             />
                         </GeminiScrollbar>
                     </div>
-                    {this.state.applyId ? null : (
+                    {/*如果是我审批的申请就不要展示审批的条数了，这个数字是不准确的*/}
+                    {this.state.applyId || this.state.activeApplyTab === APPLY_TYPE.APPROVE_BY_ME ? null : (
                         <div className='summary_info'>
                             {Intl.get('user.apply.total.apply', '共{number}条申请{apply_type}', {
                                 'number': this.state.totalSize,

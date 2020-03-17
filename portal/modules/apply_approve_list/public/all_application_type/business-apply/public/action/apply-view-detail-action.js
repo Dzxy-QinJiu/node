@@ -5,10 +5,6 @@
  */
 var BusinessApplyAjax = require('../ajax/business-apply-ajax');
 import LeaveApplyUtil from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
-import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
-var timeoutFunc;//定时方法
-var timeout = 1000;//1秒后刷新未读数
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import {
     getApplyStatusById,
@@ -17,7 +13,7 @@ import {
     getApplyCommentList,
     addApplyComments
 } from 'PUB_DIR/sources/utils/apply-common-data-utils';
-import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
+import {checkIfLeader,substractUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -79,16 +75,7 @@ function ApplyViewDetailActions() {
             }
             //更新选中的申请单类型
             LeaveApplyUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
-            if (Oplate && Oplate.unread) {
-                Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT] -= 1;
-                if (timeoutFunc) {
-                    clearTimeout(timeoutFunc);
-                }
-                timeoutFunc = setTimeout(function() {
-                    //触发展示的组件待审批数的刷新
-                    notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
-                }, timeout);
-            }
+            substractUnapprovedCount(obj.id);
         }, (errorMsg) => {
             //更新选中的申请单类型
             LeaveApplyUtil.emitter.emit('updateSelectedItem', {status: 'error'});

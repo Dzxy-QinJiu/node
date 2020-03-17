@@ -26,7 +26,7 @@ import {
     getFilterReplyList,
     handleDiffTypeApply,
     formatUsersmanList,
-    updateUnapprovedCount,
+    substractUnapprovedCount,
     isCiviwRealm,
     formatSalesmanList,
     timeShowFormat,
@@ -144,9 +144,7 @@ class ApplyViewDetail extends React.Component {
                 }
                 //将待我审批的申请转审后
                 if (hasApprovePrivilege){
-                    //待审批数字减一
-                    var count = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY] - 1;
-                    updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+                    substractUnapprovedCount(submitObj.id);
                     //隐藏通过、驳回按钮
                     LeaveApplyDetailAction.showOrHideApprovalBtns(false);
                     //调用父组件的方法进行转成完成后的其他处理

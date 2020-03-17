@@ -122,6 +122,9 @@ exports.applyApproveMsgToFrontend = function(applyApproveMsg,memberId) {
     return {
         message_type: applyApproveMsg.topic,//申请审批的类型
         member_id: memberId,//分配给谁的申请审批
+        apply_list: [{id: _.get(applyApproveMsg,'id')}],
+        opinion: _.get(applyApproveMsg ,'opinion'),
+        operate_id: _.get(applyApproveMsg ,'operate_id'),
     };
 };
 //将销售的拜访结果推送给邮件抄送人的数据

@@ -15,11 +15,10 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 require('../css/leave-apply-detail.less');
 import ApplyDetailRemarks from 'CMP_DIR/apply-components/apply-detail-remarks';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
-import ApplyDetailCustomer from 'CMP_DIR/apply-components/apply-detail-customer';
 import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
-import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import {
     getApplyTopicText,
     getApplyResultDscr,
@@ -27,21 +26,17 @@ import {
     getFilterReplyList,
     handleDiffTypeApply,
     formatUsersmanList,
-    updateUnapprovedCount,
+    substractUnapprovedCount,
     timeShowFormat
 } from 'PUB_DIR/sources/utils/common-method-util';
 import {handleTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 import {LEAVE_TYPE,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-const salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
-var timeoutFunc;//定时方法
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import {APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import classNames from 'classnames';
 class ApplyViewDetail extends React.Component {
@@ -132,8 +127,7 @@ class ApplyViewDetail extends React.Component {
                 //将待我审批的申请转审后
                 if (isShowApproveBtn){
                     //待审批数字减一
-                    var count = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] - 1;
-                    updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+                    substractUnapprovedCount(submitObj.id);
                     //隐藏通过、驳回按钮
                     LeaveApplyDetailAction.showOrHideApprovalBtns(false);
                     //调用父组件的方法进行转成完成后的其他处理

@@ -48,7 +48,7 @@ var moment = require('moment');
 import {
     handleDiffTypeApply, getUserApplyFilterReplyList,
     getApplyStatusTimeLineDesc, formatUsersmanList,
-    updateUnapprovedCount, isFinalTask,
+    substractUnapprovedCount, isFinalTask,
     isApprovedByManager, timeShowFormat,
     isCustomDelayType, getDelayTimeUnit,
     getApplyTopicText, getApplyResultDscr, isCiviwRealm, applyAppConfigTerminal,
@@ -2196,8 +2196,7 @@ const COLUMN_WIDTH = {
                 //将待我审批的申请转审后
                 if (isShowApproveBtn){
                     //待审批数字减一
-                    var count = Oplate.unread.approve - 1;
-                    updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+                    substractUnapprovedCount(submitObj.id);
                     //隐藏通过、驳回按钮
                     ApplyViewDetailActions.showOrHideApprovalBtns(false);
                     //调用父组件的方法进行转成完成后的其他处理
@@ -2205,8 +2204,8 @@ const COLUMN_WIDTH = {
                         this.props.afterApprovedFunc();
                     }
                 }else if (memberId === transferCandidateId ){
-                    var count = Oplate.unread.approve + 1;
-                    updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+                    // var count = Oplate.unread.approve + 1;
+                    // updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
                     //将非待我审批的申请转给我审批后，展示出通过驳回按钮,不需要再手动加一，因为后端会有推送，这里如果加一就会使数量多一个
                     ApplyViewDetailActions.showOrHideApprovalBtns(true);
                 }

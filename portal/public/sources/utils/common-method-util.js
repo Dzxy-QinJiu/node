@@ -683,17 +683,38 @@ exports.formatUsersmanList = function(usersManList) {
     });
     return dataList;
 };
+// exports.updateUnapprovedCount = function(type, emitterType, updateCount) {
+//     if (Oplate && Oplate.unread) {
+//         Oplate.unread[type] = updateCount;
+//         if (timeoutFunc) {
+//             clearTimeout(timeoutFunc);
+//         }
+//         timeoutFunc = setTimeout(function() {
+//             //触发展示的组件待审批数的刷新
+//             notificationEmitter.emit(notificationEmitter[emitterType]);
+//         }, timeout);
+//     }
+// };
 
-exports.updateUnapprovedCount = function(type, emitterType, updateCount) {
+//待我审批的数量减一
+exports.substractUnapprovedCount = function(applyId) {
     if (Oplate && Oplate.unread) {
-        Oplate.unread[type] = updateCount;
-        if (timeoutFunc) {
-            clearTimeout(timeoutFunc);
+        var unhandleApplyList = Oplate.unread['unhandleApplyList'];
+        //如果这个审批的id在待我审批的列表中
+        var targetObj = _.find(unhandleApplyList, item => item.id === applyId);
+        if(targetObj){
+            Oplate.unread['unhandleApply'] -= 1;
+            Oplate.unread['unhandleApplyList'] = _.filter(Oplate.unread['unhandleApplyList'],item => item.id !== applyId);
+            if (timeoutFunc) {
+                clearTimeout(timeoutFunc);
+            }
+            timeoutFunc = setTimeout(function() {
+                //触发展示的组件待审批数的刷新
+                notificationEmitter.emit(notificationEmitter['SHOW_UNHANDLE_APPLY_APPROVE_COUNT']);
+            }, timeout);
         }
-        timeoutFunc = setTimeout(function() {
-            //触发展示的组件待审批数的刷新
-            notificationEmitter.emit(notificationEmitter[emitterType]);
-        }, timeout);
+
+
     }
 };
 

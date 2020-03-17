@@ -148,12 +148,12 @@ var config = {
         grantType: process.env.LOGIN_GRANT_TYPE || 'client_credentials'//授权类型
     },
     //服务网关,测试环境：https://gateway-dev.curtao.com,正式：'http://gateway-ketao.antfact.com', exp环境：http://10.20.2.57:9090
-    gateway: getGateway() || 'https://gateway-dev.curtao.com',
+    gateway: 'https://gateway-dev.curtao.com',
     metricAddress: process.env.METRIC_ADDRESS,//"http://172.19.104.253:8086/oplate_web",
     loggerTag: process.env.LOGGER_TAG || 'ketao-web',//日志标签,用来区分是oplate的还是ketao的
     errorMessagePath: path.join(__dirname, '../portal/lib/utils/errorCode.js'),//错误码处理文件路径，ant-auth-request中需要用
     siteID: process.env.SITE_ID || '1',//piwik需配置site_id,1:oplate,4:ketao
-    pushServerAddress: process.env.PUSH_SERVER_ADDRESS || 'http://10.20.1.184:9093',//推送的服务地址（测试： http://10.20.1.184:9093，正式:http://notify-ketao.antfact.com:80）
+    pushServerAddress: 'http://10.20.2.60:9093',//推送的服务地址（测试： http://10.20.1.184:9093，正式:http://notify-ketao.antfact.com:80）
     lang: process.env.OPLATE_LANG, //语言环境(优先)
     useSso: process.env.USESSO,//是否使用sso
     ssoUrl: process.env.SSO_URL || 'https://sso-dev.curtao.com',//正式：https://sso.curtao.com，测试：https://sso-dev.curtao.com

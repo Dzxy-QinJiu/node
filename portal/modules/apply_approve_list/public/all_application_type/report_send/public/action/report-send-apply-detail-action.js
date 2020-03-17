@@ -5,13 +5,9 @@
  */
 var ReportSendApplyAjax = require('../ajax/report-send-apply-ajax');
 var ReportSendUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
-import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
-var timeoutFunc;//定时方法
-var timeout = 1000;//1秒后刷新未读数
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import {getApplyDetailById,getApplyStatusById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
-import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
+import {checkIfLeader,substractUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -75,16 +71,7 @@ function ApplyViewDetailActions() {
                 //如果不是最后确认的那一步，状态就还是ongoing
                 if(obj.report_ids || obj.agree === 'reject' || obj.agree === 'cancel'){
                     ReportSendUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
-                    if (Oplate && Oplate.unread) {
-                        Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND] -= 1;
-                        if (timeoutFunc) {
-                            clearTimeout(timeoutFunc);
-                        }
-                        timeoutFunc = setTimeout(function() {
-                            //触发展示的组件待审批数的刷新
-                            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
-                        }, timeout);
-                    }
+                    substractUnapprovedCount(obj.report_ids);
                 }
                 _.isFunction(callback) && callback();
             }else{

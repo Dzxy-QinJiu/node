@@ -22,13 +22,12 @@ import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/co
 import {
     getApplyTopicText,
     getApplyResultDscr,
-    getApplyStatusTimeLineDesc,
     getFilterReplyList,
     handleDiffTypeApply,
     getReportSendApplyStatusTimeLineDesc,
     getDocumentReportTypeText,
     formatUsersmanList,
-    updateUnapprovedCount,
+    substractUnapprovedCount,
     timeShowFormat
 } from 'PUB_DIR/sources/utils/common-method-util';
 import {DOCUMENT_TYPE,TOP_NAV_HEIGHT,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
@@ -137,8 +136,7 @@ class ApplyViewDetail extends React.Component {
                 //将待我审批的申请转审后
                 if (isShowApproveBtn){
                     //待审批数字减一
-                    var count = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE] - 1;
-                    updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+                    substractUnapprovedCount(submitObj.id);
                     //隐藏通过、驳回按钮
                     DocumentWriteApplyDetailAction.showOrHideApprovalBtns(false);
                     //调用父组件的方法进行转成完成后的其他处理

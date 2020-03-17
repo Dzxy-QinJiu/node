@@ -167,6 +167,14 @@ function applyApproveNumListener(data) {
             }
         });
     }
+    //last_consumers一个人审批后，推送给其他待审批人的消息
+    if (_.isArray(applyApprovesgObj.last_consumers) && _.get(applyApprovesgObj,'last_consumers[0]')) {
+        //遍历消息接收者
+        applyApprovesgObj.last_consumers.forEach(function(consumer) {
+            //将数据推送到浏览器
+            emitMsgBySocket(consumer, 'applyApprovedByOthermsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+        });
+    }
 }
 
 /*
@@ -297,7 +305,7 @@ function createBackendClient() {
         pushLogger.info('已与后台建立连接');
     });
     //创建接收消息的通道
-    client.on(notifyChannel, notifyChannelListener);
+    // client.on(notifyChannel, notifyChannelListener);
     //创建登录踢出的通道
     // client.on(offlineChannel, offlineChannelListener);
     //创建用户批量操作的通道

@@ -41,10 +41,7 @@ const salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
-var timeoutFunc;//定时方法
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-import {uniteFileSize} from 'PUB_DIR/sources/utils/common-method-util';
+import {uniteFileSize,substractUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import classNames from 'classnames';
 import {transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 class ApplyViewDetail extends React.Component {
@@ -136,8 +133,7 @@ class ApplyViewDetail extends React.Component {
                 //将待我审批的申请转审后
                 if (isShowApproveBtn){
                     //待审批数字减一
-                    var count = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND] - 1;
-                    updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+                    substractUnapprovedCount(submitObj.id);
                     //隐藏通过、驳回按钮
                     ReportSendApplyDetailAction.showOrHideApprovalBtns(false);
                     //调用父组件的方法进行转成完成后的其他处理

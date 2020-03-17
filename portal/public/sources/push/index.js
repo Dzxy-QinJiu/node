@@ -36,9 +36,9 @@ import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 import {
     getClueUnhandledPrivilege,
     getUnhandledClueCountParams,
-    isKetaoOrganizaion
+    isKetaoOrganizaion,
+    substractUnapprovedCount
 } from 'PUB_DIR/sources/utils/common-method-util';
-import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 
 const session = storageUtil.session;
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
@@ -111,45 +111,6 @@ function updateUnreadByPushMessage(type, isAdd, isAddLists) {
         }, timeout);
     }
 }
-
-// /**
-//  * 监听弹出消息。
-//  * @param data
-//  */
-// function listenOnMessage(data) {
-//     if (_.isObject(data)) {
-//         switch (data.message_type) {
-//             case 'apply':
-//                 //有新的未处理的申请消息时,只修改待审批数，不用展示
-//                 //申请审批列表弹出，有新数据，是否刷新数据的提示
-//                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-//                 //将待审批数加一（true）
-//                 updateUnreadByPushMessage('approve', true);
-//                 break;
-//             case 'reply':
-//                 //批复类型
-//                 if (!userData.hasRole('realm_manager')) {
-//                     //批复类型的通知，不通知管理员
-//                     notifyApplyInfo(data);
-//                 }
-//                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-//                 //将审批后的申请消息未读数加一（true）
-//                 // updateUnreadByPushMessage('apply', true);
-//                 //待审批数减一
-//                 updateUnreadByPushMessage('approve', false);
-//                 break;
-//             case 'notice':
-//                 //有新的抄送的申请消息时,只展示，不用修改审批数量
-//                 //申请审批列表弹出，有新数据，是否刷新数据的提示
-//                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-//                 notifyApplyInfo(data);
-//                 break;
-//         }
-//     }
-// }
-
-
-
 window.closeAllNoty = function() {
     clueTotalCount = 0;
     hasAddCloseBtn = false;
@@ -263,6 +224,41 @@ ${Intl.get('clue.close.all.noty', '关闭全部')}</a></p>`);
     }
 
 }
+// /**
+//  * 监听弹出消息。
+//  * @param data
+//  */
+// function listenOnMessage(data) {
+//     if (_.isObject(data)) {
+//         switch (data.message_type) {
+//             case 'apply':
+//                 //有新的未处理的申请消息时,只修改待审批数，不用展示
+//                 //申请审批列表弹出，有新数据，是否刷新数据的提示
+//                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
+//                 //将待审批数加一（true）
+//                 updateUnreadByPushMessage('approve', true);
+//                 break;
+//             case 'reply':
+//                 //批复类型
+//                 if (!userData.hasRole('realm_manager')) {
+//                     //批复类型的通知，不通知管理员
+//                     notifyApplyInfo(data);
+//                 }
+//                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
+//                 //将审批后的申请消息未读数加一（true）
+//                 // updateUnreadByPushMessage('apply', true);
+//                 //待审批数减一
+//                 updateUnreadByPushMessage('approve', false);
+//                 break;
+//             case 'notice':
+//                 //有新的抄送的申请消息时,只展示，不用修改审批数量
+//                 //申请审批列表弹出，有新数据，是否刷新数据的提示
+//                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
+//                 notifyApplyInfo(data);
+//                 break;
+//         }
+//     }
+// }
 
 //TODO 待我审批的申请推送
 function applyApproveUnhandledListener(data) {
@@ -270,6 +266,14 @@ function applyApproveUnhandledListener(data) {
         var applyList = _.get(data, 'apply_list', []);
         updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEAPPLY, applyList.length, applyList);
         notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_TIP, data);
+    }
+}
+//我的一条待我审批被其他人审批了的推送
+function applyApproveApprovedByOtherListener(data) {
+    if(_.isArray(data.apply_list)){
+        _.each(data.apply_list,item => {
+            substractUnapprovedCount(item.id);
+        });
     }
 }
 //处理释放客户的数据
@@ -982,6 +986,7 @@ function disconnectListener() {
         socketIo.off('apply_unread_reply', applyUnreadReplyListener);
         socketIo.off('cluemsg', clueUnhandledListener);
         socketIo.off('applyApprovemsg', applyApproveUnhandledListener);
+        socketIo.off('applyApprovedByOthermsg', applyApproveUnhandledListener);
         socketIo.off('applyVisitCustomerMsg', applyVisitCustomerListener);
         socketIo.off('crm_operator_alert_msg', crmOperatorAlertListener);
         socketIo.off('apply_upgrade', applyUpgradeListener);
@@ -1100,6 +1105,7 @@ function unreadListener(type) {
         } else if (type === APPLY_APPROVE_TYPES.UNHANDLEAPPLY) {
             //申请审批未读回复的监听
             socketIo.on('applyApprovemsg', applyApproveUnhandledListener);
+            socketIo.on('applyApprovedByOthermsg', applyApproveApprovedByOtherListener);
         } else {
             //获取完未读数后，监听node端推送的弹窗消息
             // socketIo.on('mes', listenOnMessage);

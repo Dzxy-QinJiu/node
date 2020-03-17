@@ -4,7 +4,7 @@ import ApplyApproveUtil from 'MOD_DIR/apply_approve_list/public/utils/apply_appr
 import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
 import {updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
-import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
+import {checkIfLeader,substractUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import {addApplyComments, getApplyCommentList, getApplyDetailById,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 class ApplyViewDetailActions {
@@ -132,10 +132,7 @@ class ApplyViewDetailActions {
             //更新选中的申请单类型
             ApplyApproveUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
             //刷新用户审批未处理数
-            if (Oplate && Oplate.unread) {
-                var count = Oplate.unread.approve - 1;
-                updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
-            }
+            substractUnapprovedCount(obj.id);
 
         }, (errorMsg) => {
             //更新选中的申请单类型
@@ -167,10 +164,10 @@ class ApplyViewDetailActions {
                 this.dispatch({loading: false, error: false});
                 ApplyApproveUtil.emitter.emit('updateSelectedItem', {id: obj.id, cancel: true, status: 'success'});
                 //刷新用户审批未处理数(左侧导航中待审批数)
-                if (Oplate && Oplate.unread) {
-                    var count = Oplate.unread.approve - 1;
-                    updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
-                }
+                // if (Oplate && Oplate.unread) {
+                //     var count = Oplate.unread.approve - 1;
+                //     updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+                // }
             }else{
                 this.dispatch({loading: false, error: true, errorMsg: errTip});
                 ApplyApproveUtil.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});

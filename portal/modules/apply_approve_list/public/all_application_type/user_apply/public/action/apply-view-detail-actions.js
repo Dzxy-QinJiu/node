@@ -1,10 +1,11 @@
 import AppUserAjax from '../ajax/app-user-ajax';
 import AppUserUtil from '../util/app-user-util';
 var ApplyApproveUtil = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
-import {updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
+import {substractUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 import {addApplyComments, getApplyCommentList, getApplyDetailById, cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 class ApplyViewDetailActions {
     constructor() {
@@ -93,7 +94,7 @@ class ApplyViewDetailActions {
     //在审批详情中得到客户的id，然后根据客户的id获取历史申请审批
     getHistoryApplyListsByCustomerId(apply){
         this.dispatch({loading: true, error: false});
-        AppUserAjax.getApplyList({customer_id: _.get(apply,'customer_id',''), page_size: 100}).then((data) => {
+        AppUserAjax.getApplyList({customer_id: _.get(apply,'customer_id',''), page_size: 100, type: APPLY_APPROVE_TYPES.USER_OR_GRANT}).then((data) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             //过滤掉本条申请
             data.list = _.filter(data.list, item => item.id !== _.get(apply, 'id',''));
@@ -130,10 +131,7 @@ class ApplyViewDetailActions {
             //更新选中的申请单类型
             ApplyApproveUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
             //刷新用户审批未处理数
-            if (Oplate && Oplate.unread) {
-                var count = Oplate.unread.approve - 1;
-                updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
-            }
+            substractUnapprovedCount(obj.id);
 
         }, (errorMsg) => {
             //更新选中的申请单类型

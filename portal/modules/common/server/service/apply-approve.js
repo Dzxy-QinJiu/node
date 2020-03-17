@@ -3,6 +3,8 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/12/10.
  */
+//上传超时时长
+var uploadTimeOut = 5 * 60 * 1000;
 let restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var restApis = {

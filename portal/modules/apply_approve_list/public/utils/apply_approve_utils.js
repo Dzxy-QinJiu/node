@@ -146,8 +146,10 @@ const getSalesManList = function() {
         .success(list => {
             Deferred.resolve(list);
         }).error((xhr) => {//xhr:XMLHttpRequest
-        Deferred.reject(xhr.responseJSON);
-    });
+            Deferred.reject(xhr.responseJSON);
+        });
     return Deferred.promise();
 };
 exports.getSalesManList = getSalesManList;
+
+
