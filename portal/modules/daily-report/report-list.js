@@ -61,7 +61,11 @@ class ReportList extends React.Component {
         ];
     };
 
+    //数字点击处理事件
     onNumberClick(record, name, e) {
+        //只有单个销售的数据允许点击查看详情
+        if (!record.nickname) return;
+
         e.stopPropagation();
 
         const itemValues = _.get(record, 'item_values');
