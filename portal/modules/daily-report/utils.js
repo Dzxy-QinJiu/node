@@ -164,6 +164,7 @@ export function showNumberDetail(record, name, e) {
 
     showReportPanel({
         currentView: VIEW_TYPE.NUMBER_DETAIL,
+        currentReport: record,
         numberDetail,
     });
 }
