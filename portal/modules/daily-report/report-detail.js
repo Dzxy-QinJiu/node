@@ -17,7 +17,12 @@ class ReportDetail extends React.Component {
                     return (
                         <div>
                             <span>{item.name}：</span>
-                            <span className='clickable' onClick={showNumberDetail.bind(this, currentReport, item.name)}>{item.value}</span>
+
+                            {item.name === '其他' ? (
+                                <span>{item.value}</span>
+                            ) : (
+                                <span className='clickable' onClick={showNumberDetail.bind(this, currentReport, item.name)}>{item.value}</span>
+                            )}
                         </div>
                     );
                 })}
