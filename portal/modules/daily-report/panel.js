@@ -46,6 +46,12 @@ class ReportPanel extends React.Component {
 
     getDetailTitle() {
         let title = this.state.currentView;
+        if (title === '数字详情') {
+            title = <span>
+                <span>{title}</span>
+                <span onClick={() => {this.setState({currentView: VIEW_TYPE.REPORT_DETAIL});}}>返回</span>
+            </span>;
+        }
 
         return title;
     }
