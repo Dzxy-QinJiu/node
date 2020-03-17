@@ -27,6 +27,12 @@ class ReportPanel extends React.Component {
         isPreview: false,
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.currentView !== this.props.currentView) {
+            this.setState(nextProps);
+        }
+    }
+
     render() {
         return (
             <div className="daily-report-panel">

@@ -5,7 +5,7 @@
 import { Form } from 'antd';
 import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
 import { VIEW_TYPE } from './consts';
-import { renderButtonZoneFunc, hideReportPanel, getReportList, saveReport } from './utils';
+import { renderButtonZoneFunc, hideReportPanel, getReportList, saveReport, showNumberDetail } from './utils';
 
 class ReportDetail extends React.Component {
     render() {
@@ -17,7 +17,7 @@ class ReportDetail extends React.Component {
                     return (
                         <div>
                             <span>{item.name}：</span>
-                            <span>{item.value}</span>
+                            <span className='clickable' onClick={showNumberDetail.bind(this, currentReport, item.name)}>{item.value}</span>
                         </div>
                     );
                 })}
