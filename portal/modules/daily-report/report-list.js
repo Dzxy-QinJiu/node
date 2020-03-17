@@ -4,7 +4,7 @@
 
 import { AntcAnalysis } from 'antc';
 import { teamTreeEmitter, dateSelectorEmitter } from 'PUB_DIR/sources/utils/emitters';
-import { showReportPanel } from './utils';
+import { showReportPanel, showNumberDetail } from './utils';
 import { VIEW_TYPE } from './consts';
 
 class ReportList extends React.Component {
@@ -61,23 +61,6 @@ class ReportList extends React.Component {
         ];
     };
 
-    //数字点击处理事件
-    onNumberClick(record, name, e) {
-        //只有单个销售的数据允许点击查看详情
-        if (!record.nickname) return;
-
-        e.stopPropagation();
-
-        const itemValues = _.get(record, 'item_values');
-        const itemValue = _.find(itemValues, item => item.name === name);
-        const numberDetail = _.get(itemValue, 'detail');
-
-        showReportPanel({
-            currentView: VIEW_TYPE.NUMBER_DETAIL,
-            numberDetail,
-        });
-    }
-
     //获取图表列表
     getCharts = () => {
         return [
@@ -128,7 +111,7 @@ class ReportList extends React.Component {
                                 width: 130,
                                 align: 'right',
                                 render: (value, record) => {
-                                    return <span onClick={this.onNumberClick.bind(this, record, name)}>{value}</span>;
+                                    return <span onClick={showNumberDetail.bind(this, record, name)}>{value}</span>;
                                 }
                             };
 
