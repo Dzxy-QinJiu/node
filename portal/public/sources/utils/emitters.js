@@ -295,3 +295,8 @@ export { showWiningClueEmitter };
 const terminalsSelectorEmitter = new EventEmitter();
 terminalsSelectorEmitter.SELECT_TERMINAL = 'select_terminal'; //
 export { terminalsSelectorEmitter };
+
+//在线客服
+const customerServiceEmitter = new EventEmitter();
+customerServiceEmitter.CLICK_EMOTION_IMAGE = 'click_emotion_image';//点击表情
+export { customerServiceEmitter };
