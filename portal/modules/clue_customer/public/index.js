@@ -172,7 +172,7 @@ class ClueCustomer extends React.Component {
             selectedClue: [],//选中的线索
             isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
             cluePoolCondition: {},//线索池的搜索条件
-            filterInputWidth: 210,//筛选输入框的宽度
+            filterInputWidth: 250,//筛选输入框的宽度
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             showRecommendTips: !_.get(websiteConfig, oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS,false),
             guideRecommendCondition: null,//引导设置的推荐线索的条件
@@ -246,7 +246,7 @@ class ClueCustomer extends React.Component {
             });
         } else {
             this.setState({
-                filterInputWidth: 210
+                filterInputWidth: 250
             });
         }
     }
@@ -3464,7 +3464,7 @@ class ClueCustomer extends React.Component {
                                 ) : <div className="search-input-inner" style={{width: this.state.filterInputWidth}}>
                                     <SearchInput
                                         searchEvent={this.searchFullTextEvent}
-                                        searchPlaceHolder ={Intl.get('clue.search.full.text','全文搜索')}
+                                        searchPlaceHolder ={Intl.get('clue.search.full.text','线索名/联系人/电话/跟进内容')}
                                     />
                                 </div>}
                             </div>
