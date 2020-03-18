@@ -131,7 +131,7 @@ class MyWorkColumn extends React.Component {
             callback: tplList => { this.setState({tplList}); },
             query: { status: 'on' }
         });
-        this.getAppList()
+        this.getAppList();
         this.getUserList();
         this.getGuideConfig();
         this.getMyWorkList();
@@ -1219,41 +1219,63 @@ class MyWorkColumn extends React.Component {
     }
 
     renderCheckReportNotice(workList) {
-        let item = {
-            id: REPORT_NOTICE_ITEM_ID,
-            tags: ['工作通知'],
-            btnConf: {
-                handleFunc: showReportPanel,
-                btnDesc: '点击查看'
-            }
-        };
-
         const tpl = _.get(this.state.tplList, '[0]', {});
         const { isCommonSales } = userData.getUserData();
+        let title = '';
+        let buttons = null;
 
         if (_.isEmpty(tpl)) {
             if (!isCommonSales) {
-                item.workObj = { name: '启用报告可以汇总销售日常工作' };
+                title = '启用报告可以汇总销售日常工作';
 
-                workList.push(this.renderWorkCard(item));
+                buttons = (
+                    <div>
+                        <Button type="primary">开启报告</Button>
+                    </div>
+                );
             }
         } else {
-            item.workObj = { name: tpl.name };
+            title = tpl.name;
 
             if (userData.getUserData().isCommonSales) {
-                item.btnConf.handleFunc = showReportPanel.bind(null, {
-                    currentView: VIEW_TYPE.REPORT_FORM,
-                    clickedTpl: tpl
-                });
-                item.btnConf.btnDesc = '填写';
+                buttons = (
+                    <Button
+                        onClick={showReportPanel.bind(null, {
+                            currentView: VIEW_TYPE.REPORT_FORM,
+                            clickedTpl: tpl
+                        })}
+                    >
+                        填写报告
+                    </Button>
+                );
             } else {
-                item.btnConf.handleFunc = () => {
-                    history.push('analysis/report/daily-report');
-                };
+                buttons = (
+                    <Button
+                        onClick={showReportPanel.bind(null, {
+                            currentView: VIEW_TYPE.REPORT_FORM,
+                            clickedTpl: tpl
+                        })}
+                    >
+                        查看报告
+                    </Button>
+                );
             }
-
-            workList.push(this.renderWorkCard(item));
         }
+
+        const dailyReportWorkCard = (
+            <div className="my-work-card-container">
+                <div className="work-content-wrap">
+                    <div className="title">
+                        {title}
+                    </div>
+                    <div className="buttons">
+                        {buttons}
+                    </div>
+                </div>
+            </div>
+        );
+
+        workList.push(dailyReportWorkCard);
     }
 
     showAddSchedulePanel = (event) => {
