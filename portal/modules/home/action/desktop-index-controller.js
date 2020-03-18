@@ -56,7 +56,9 @@ exports.home = function(req, res) {
             cash: global.config.cashClientId,
             caller: global.config.callerClientId,
         }),
-        ssoUrl: global.config.ssoUrl
+        ssoUrl: global.config.ssoUrl,
+        antmeActorUrl: global.config.antmeActorUrl,
+        curtaoClientId: global.config.curtaoClientId
     });
 };
 
