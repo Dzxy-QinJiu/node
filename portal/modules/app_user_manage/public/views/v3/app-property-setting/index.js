@@ -28,6 +28,7 @@ var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import AppUserUtil from 'MOD_DIR/app_user_manage/public/util/app-user-util.js';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 import PropTypes from 'prop-types';
+import {modifyAppConfigEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 const AppPropertySetting = createReactClass({
     displayName: 'AppPropertySetting',
@@ -335,6 +336,10 @@ const AppPropertySetting = createReactClass({
     },
 
     onRolesPermissionSelect(roles, permissions) {
+        let originalData = _.clone(this.props.appInfo);
+        if (!_.isEqual(originalData.roles, roles) || !_.isEqual(originalData.permissions, permissions)) {
+            modifyAppConfigEmitter.emit(modifyAppConfigEmitter.MODIFY_APP_CONFIG);
+        }
         var state = this.state;
         var app_id = state.currentApp.app_id;
         var app_info = state.appPropSettingsMap[app_id];

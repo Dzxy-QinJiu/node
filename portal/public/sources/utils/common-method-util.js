@@ -35,7 +35,7 @@ import {
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import { notificationEmitter, modifyAppConfigEmitter } from './emitters';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 import {getMyTeamTreeAndFlattenList} from './common-data-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
@@ -1524,4 +1524,13 @@ exports.checkCustomerTotalLeaveTime = function(startTime,endTime,customers,isAdd
 exports.isShowWinningClue = () => {
     const versionAndType = checkVersionAndType();
     return versionAndType.trial && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+};
+
+// 判断是否修改了应用的配置信息
+// 若修改了，则需要触发修改应用配置事件
+exports.isModifyAppConfig = (originalData, configType ,value) => {
+    const originalValue = _.get(originalData,`${configType}.value`); // 原始值
+    if (!_.isEqual(originalValue, value)) {
+        modifyAppConfigEmitter.emit(modifyAppConfigEmitter.MODIFY_APP_CONFIG);
+    }
 };

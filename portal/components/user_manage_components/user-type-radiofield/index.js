@@ -2,6 +2,7 @@ import {Form, Select} from 'antd';
 const Option = Select.Option;
 import CustomRadioGroup from '../../custom_radio_group';
 import AppUserUtil from '../../../modules/app_user_manage/public/util/app-user-util';
+import { isModifyAppConfig } from 'PUB_DIR/sources/utils/common-method-util';
 const FormItem = Form.Item;
 const UserTypeRadioField = {
     showUserTypeError() {
@@ -39,6 +40,7 @@ const UserTypeRadioField = {
         const callback = config.isCustomSetting ? (value) => {
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
+            isModifyAppConfig(_.clone(formData), 'user_type', value);
             formData.user_type.value = value;
             if(value !== config.globalUserType) {
                 formData.user_type.setted = true;

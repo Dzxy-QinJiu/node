@@ -55,8 +55,12 @@ class OperationStepsFooter extends React.Component {
             return null;
         }
         return (
-            <RightPanelSubmit onClick={this.turnStep.bind(this,'finish')}
-                disabled={this.props.isSubmiting}>{this.props.finishText}</RightPanelSubmit>
+            <RightPanelSubmit
+                onClick={this.turnStep.bind(this,'finish')}
+                disabled={this.props.disabled || this.props.isSubmiting}
+            >
+                {this.props.finishText}
+            </RightPanelSubmit>
         );
     }
 
@@ -88,7 +92,9 @@ OperationStepsFooter.defaultProps = {
     finishText: Intl.get('user.user.add.finish', '完成'),
     onStepChange: noop,
     onFinish: noop,
-    className: ''
+    className: '',
+    disabled: false, // 按钮状态是否禁用，默认false
+    isSubmiting: false, // 是否正在提交
 };
 //属性类型配置
 OperationStepsFooter.propTypes = {
@@ -99,7 +105,9 @@ OperationStepsFooter.propTypes = {
     prevText: PropTypes.string,
     nextText: PropTypes.string,
     finishText: PropTypes.string,
-    className: PropTypes.string
+    className: PropTypes.string,
+    disabled: PropTypes.boolean,
+    isSubmiting: PropTypes.boolean,
 };
 
 //高度恒定。54

@@ -4,6 +4,7 @@
 import {Form,Checkbox } from 'antd';
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
+import { isModifyAppConfig } from 'PUB_DIR/sources/utils/common-method-util';
 
 const UserAppTerminalCheckboxField = {
     renderUserAppTerminalCheckboxBlock(config) {
@@ -29,6 +30,7 @@ const UserAppTerminalCheckboxField = {
                 }
             });
             const formData = appPropSettingsMap[config.appId] || {};
+            isModifyAppConfig(_.clone(formData), 'terminals', checkedValues);
             formData.terminals.value = checkedTerminals;
             if(checkedValues !== config.globalTerminals) {
                 formData.terminals.setted = true;
