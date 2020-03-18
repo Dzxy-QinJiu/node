@@ -366,12 +366,15 @@ class RegisterForm extends React.Component {
     //     });
     // }
     openUserAgreement = (e) => {
+        Trace.traceEvent(e, '点击用户协议');
         window.open('/user/agreement');
     }
     openPrivacyPolicy = (e) => {
+        Trace.traceEvent(e, '点击隐私策略');
         window.open('/privacy/policy');
     }
-    toLogin = (e) => {
+    toLogin = (eventTraceDescr, e) => {
+        Trace.traceEvent(e, eventTraceDescr);
         window.location.href = '/login';
     }
     clearErrorMsg = () => {
@@ -407,7 +410,7 @@ class RegisterForm extends React.Component {
                             id="register.phone.has.registed.to.login"
                             defaultMessage='该手机号已被注册, 去 {login}'
                             values={{
-                                'login': <a onClick={this.toLogin}>{Intl.get('login.login', '登录')}?</a>
+                                'login': <a onClick={this.toLogin.bind(this, '手机号已被注册, 去登录')}>{Intl.get('login.login', '登录')}?</a>
                             }}
                         />
                     </div>) : null}
@@ -531,7 +534,7 @@ class RegisterForm extends React.Component {
                             defaultMessage= '已有账号，去{login}'
                             values={{
                                 'login': (
-                                    <a onClick={this.toLogin}>
+                                    <a onClick={this.toLogin.bind(this, '已有账号，去登录')}>
                                         {Intl.get('login.login', '登录')}
                                     </a>)
                             }}
