@@ -410,7 +410,7 @@ class CustomerPool extends React.Component {
                 className: 'has-filter',
                 render: (text, record, index) => {
                     var tagsArray = _.isArray(record.labels) ? record.labels : [];
-                    //线索、转出、已回访标签不可操作的标签，在immutable_labels属性中，和普通标签一起展示
+                    //线索、转出、需联合跟进、已回访标签不可操作的标签，在immutable_labels属性中，和普通标签一起展示
                     if (_.isArray(record.immutable_labels) && record.immutable_labels.length) {
                         tagsArray = record.immutable_labels.concat(tagsArray);
                     }
