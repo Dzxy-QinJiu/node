@@ -276,6 +276,9 @@ function getClueListColumns(backendIntl) {
             title: backendIntl.get('crm.96', '地域'),
             dataIndex: 'province',
         },{
+            title: backendIntl.get('common.full.address', '详细地址'),
+            dataIndex: 'address',
+        },{
             title: backendIntl.get('crm.sales.clue.access.channel', '接入渠道'),
             dataIndex: 'access_channel',
         },{
