@@ -208,7 +208,7 @@ class CustomerPoolReleaseRuleForm extends React.Component {
                 </FormItem>
                 <div className={cls}>
                     <FormItem {...formItemLayout} label={Intl.get('sales.process.suitable.objects', '适用范围')}>
-                        {this.props.isEdit && !isDefaultRuleConfig ? (
+                        {this.props.formType === FORM_TYPE.ADD && !isDefaultRuleConfig ? (
                             <React.Fragment>
                                 {
                                     getFieldDecorator('team_id', {
