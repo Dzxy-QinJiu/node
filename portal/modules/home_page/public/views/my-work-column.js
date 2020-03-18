@@ -1251,7 +1251,7 @@ class MyWorkColumn extends React.Component {
         } else {
             title = tpl.name;
 
-            if (userData.getUserData().isCommonSales) {
+            if (isCommonSales) {
                 buttons = (
                     <Button
                         onClick={showReportPanel.bind(null, {
@@ -1289,7 +1289,9 @@ class MyWorkColumn extends React.Component {
             </div>
         );
 
-        workList.push(dailyReportWorkCard);
+        if (!(_.isEmpty(tpl) && isCommonSales)) {
+            workList.push(dailyReportWorkCard);
+        }
     }
 
     showAddSchedulePanel = (event) => {
