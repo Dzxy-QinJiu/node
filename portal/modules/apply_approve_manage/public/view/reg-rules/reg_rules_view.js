@@ -738,7 +738,7 @@ class RegRulesView extends React.Component {
                     if(newNodeObj['conditionTotalRule'].indexOf('none') === -1){//之前没有自动补齐没有用户/团队的条件
                         if(hasUserLimitBeside && !hasUserLimit){
                             //加上该属性
-                            newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionRule'], '}', '');
+                            newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '}', '');
                             newNodeObj['conditionTotalRule'] += '  \&& user_range == "none"}';//如果有一个条件选择了用户，自动补齐其他没有选择用户的条件
                         }
                         if(hasTeamLimitBeside && !hasTeamLimit){
@@ -747,10 +747,19 @@ class RegRulesView extends React.Component {
                         }
                     }else{//之前有自动补齐有用户/团队的条件
                         if(!hasUserLimitBeside && !hasUserLimit){
-                            newNodeObj['conditionTotalRule'].replace('  \&& user_range == "none"','');
+                            newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '  && user_range == "none"', '');
                         }
                         if(!hasTeamLimitBeside && !hasTeamLimit){
-                            newNodeObj['conditionTotalRule'].replace('  \&& team_range == "none"','');
+                            newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '  && team_range == "none"', '');
+                        }
+                        if(hasUserLimitBeside && !hasUserLimit){
+                            //加上该属性
+                            newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '}', '');
+                            newNodeObj['conditionTotalRule'] += '  \&& user_range == "none"}';//如果有一个条件选择了用户，自动补齐其他没有选择用户的条件
+                        }
+                        if(hasTeamLimitBeside && !hasTeamLimit){
+                            newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '}', '');
+                            newNodeObj['conditionTotalRule'] += '  \&& team_range == "none"}';
                         }
                     }
                 }
