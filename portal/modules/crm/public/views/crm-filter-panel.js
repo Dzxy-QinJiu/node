@@ -491,7 +491,7 @@ class CrmFilterPanel extends React.Component {
         //普通销售或者个人版，展示负责人和联合跟进人的筛选（用户来筛选销售是负责人还是联合跟进人）
         if (isCommonSalesOrPersonnalVersion()) {
             let loginUserName = userData.getUserData().nick_name;
-            if(hasPrivilege(crmPrivilegeConst.CRM_ASSERT_CUSTOMER_SALES)) {
+            if(!checkVersionAndType().personal) {
                 advancedData.unshift({
                     groupName: Intl.get('crm.second.sales', '联合跟进人'),
                     groupId: 'second_nickname',
@@ -502,8 +502,6 @@ class CrmFilterPanel extends React.Component {
                         selected: loginUserName && loginUserName === _.get(this.state, 'condition.second_nickname', '')
                     }]
                 });
-            }
-            if(!checkVersionAndType().personal) {
                 advancedData.unshift({
                     groupName: Intl.get('crm.6', '负责人'),
                     groupId: 'nickname',
@@ -537,7 +535,7 @@ class CrmFilterPanel extends React.Component {
             }
             userList = _.uniqBy(userList, 'nickname');
             if (_.get(userList, 'length')) {
-                if(hasPrivilege(crmPrivilegeConst.CRM_ASSERT_CUSTOMER_SALES)) {
+                if(!checkVersionAndType().personal) {
                     advancedData.unshift({
                         groupName: Intl.get('crm.second.sales', '联合跟进人'),
                         groupId: 'second_nickname',
@@ -548,8 +546,6 @@ class CrmFilterPanel extends React.Component {
                             selected: x.nickname && x.nickname === _.get(this.state, 'condition.second_nickname', '')
                         }))
                     });
-                }
-                if(!checkVersionAndType().personal) {
                     advancedData.unshift({
                         groupName: Intl.get('crm.6', '负责人'),
                         groupId: 'nickname',
