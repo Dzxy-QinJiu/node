@@ -1,0 +1,203 @@
+/**
+ * Copyright (c) 2018-2019 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2018-2019 山东客套智能科技有限公司。保留所有权利。
+ * Created by tangmaoqin on 2020/03/16.
+*/
+@import "../../../public/css/common-variables";
+
+.chat-message-home {
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid @leftSidePanelBorderColor;
+  .empty-container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .loading-circle {
+      width: 32px;
+      height: 32px;
+    }
+
+    .customer-error-msg, .customer-empty-msg {
+      text-align: center;
+      .empty-img {
+        width: 106px;
+        height: 106px;
+        margin: 15px auto 0;
+        background: url("../../../static/images/customer-empty-msg.png") no-repeat center;
+        background-size: 100%;
+      }
+    }
+  }
+  .chat-message-item {
+    clear: both;
+    padding: 10px 15px;
+    overflow: hidden;
+    .system-message {
+      text-align: center;
+    }
+    .chat-message-head {
+      float: left;
+      .sender-image-img {
+        height: 32px;
+        width: 32px;
+        border-radius: 50%;
+        display: inline-block;
+        float: left;
+        overflow: hidden;
+        img {
+          height: 100%;
+          width: 100%;
+        }
+        &.default {
+          background-size: 100%;
+          background-image: url("../../../static/images/default_user.png");
+        }
+      }
+    }
+
+    .chat-message-content {
+      float: left;
+      margin-left: 6px;
+      margin-top: 5px;
+      .user-info {
+        .user-name {
+          font-size: 13px;
+          display: inline-block;
+        }
+        .send-time {
+          display: inline-block;
+          font-size: 12px;
+          margin-left: 5px;
+        }
+      }
+      .message-content {
+        margin-top: 5px;
+        max-width: 500px;
+        .feed-message {
+          cursor: pointer;
+          border-radius: 5px;
+          display: inline-block;
+          padding: 5px 0;
+          border: 1px solid #eee;
+          min-width: 350px;
+          .feed-image {
+            float: left;
+            width: 40px;
+            height: 40px;
+            margin-left: 8px;
+            > svg {
+              width: 40px;
+              height: 40px;
+            }
+          }
+          .feed-info {
+            margin-left: 8px;
+            margin-right: 8px;
+            display: inline-block;
+            .feed-send {
+              font-size: 12px;
+            }
+          }
+          .feed-status {
+            margin-top: 10px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            padding-left: 8px;
+            padding-right: 8px;
+            padding-top: 5px;
+            .time-text {
+              float: left;
+            }
+            .state-text {
+              float: right;
+            }
+          }
+        }
+        .content-wrap {
+          border-radius: 5px;
+          display: inline-block;
+          padding: 5px 8px;
+          border: 1px solid #eee;
+          svg {
+            height: 24px;
+            width: 24px;
+            vertical-align: -6px;
+          }
+          img {
+            height: 24px;
+            width: 24px;
+            vertical-align: -6px;
+          }
+          .at-sign {
+            cursor: pointer;
+            color: #70b8e7;
+          }
+          .json-button {
+            margin-top: 2px;
+            text-align: right;
+          }
+
+          //语音图标
+          .audio-btn {
+            @recorderPlaySize: 24px;
+            width: 26px;
+            height: 26px;
+            display: inline-block;
+            vertical-align: -5px;
+            cursor: pointer;
+          }
+          .recorder-label {
+            line-height: 24px;
+            color: #989898;
+            font-size: 12px;
+          }
+        }
+        .message-state {
+          display: inline-block;
+          margin-right: 5px;
+          .help-text {
+            background-color: red;
+            padding: 3px 8px;
+            color: #fff;
+            font-size: 10px;
+            border-radius: 12px;
+          }
+        }
+      }
+    }
+
+    img {
+      cursor: pointer;
+    }
+
+    &.self {
+      .chat-message-head {
+        float: right;
+      }
+      .chat-message-content {
+        float: right;
+        margin-right: 6px;
+        margin-left: 0;
+        .user-info {
+          text-align: right;
+        }
+        .user-name {
+          float: right;
+          margin-left: 5px;
+        }
+        .send-time {
+          margin-left: 0;
+        }
+        .message-content {
+          text-align: right;
+          .chat-message-content {
+            text-align: left;
+          }
+        }
+      }
+    }
+  }
+}
