@@ -3110,7 +3110,7 @@ var en_US = {
     'clue.search.by.name': 'search by lead name',//按线索名搜索
     'clue.add.trace.content': 'Add follow-up content',//添加跟进内容
     'clue.add.trace.follow': 'follow up',//跟进
-    'clue.search.full.text': 'search',//全文搜索
+    'clue.search.full.text': 'Lead name/contact/phone/follow-up',//线索名/联系人/电话/跟进内容
     'clue.suggest.input.customer.name': 'Recommend to enter the customer name',//建议输入客户名称
     'clue.name.rule': 'The lead name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 50 (including 50).',//线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间
     'clue.add.customer.need': 'Please describe the customer needs',//请描述一下客户需求
