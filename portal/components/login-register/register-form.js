@@ -19,6 +19,13 @@ const CODE_EFFECTIVE_TIME = 60;
 const CODE_INTERVAL_TIME = 1000;
 let getVerifyErrorCaptchaCodeAJax = null;
 var base64_prefix = 'data:image/png;base64,';
+// 将传入的内容进行md5加密处理
+function getMD5Val(value) {
+    //md5加密处理
+    var md5Hash = crypto.createHash('md5');
+    md5Hash.update(value);
+    return md5Hash.digest('hex');
+}
 class RegisterForm extends React.Component {
     constructor(props) {
         super(props);
@@ -65,7 +72,7 @@ class RegisterForm extends React.Component {
         }
         return referrer;
     }
-
+ 
     //提交form表单的数据
     submitFormData(e) {
         const form = this.props.form;
@@ -82,7 +89,7 @@ class RegisterForm extends React.Component {
             if(values.verifyErrorCaptchaCode){
                 formData.captcha = values.verifyErrorCaptchaCode;
             }
-            Trace.traceEvent(e, '个人注册手机号:' + formData.phone);
+            Trace.traceEvent(e, '提交表单, 注册手机号:' + getMD5Val(formData.phone));
             let md5Hash = crypto.createHash('md5');
             md5Hash.update(values.pwd);
             formData.pwd = md5Hash.digest('hex');
@@ -228,7 +235,7 @@ class RegisterForm extends React.Component {
         let phone = _.trim(this.props.form.getFieldValue('phone'));
         if (phone && commonPhoneRegex.test(phone)) {
             // 获取输入手机号的短信验证码
-            Trace.traceEvent(e, '获取短信验证码，手机号:' + phone);
+            Trace.traceEvent(e, '获取短信验证码，手机号:' + getMD5Val(phone));
             this.setState({isLoadingValidCode: true, validateCodeErrorMsg: '', getCodeErrorMsg: ''});
             $.ajax({
                 url: '/phone/validate_code',
@@ -319,7 +326,7 @@ class RegisterForm extends React.Component {
         if (phone) {
             if (commonPhoneRegex.test(phone)) {
                 // 电话通过验证后，将电话上传到matomo上记录
-                Trace.traceEvent('个人注册页面', '输入手机号:' + phone);
+                Trace.traceEvent('个人注册页面', '验证手机号:' + getMD5Val(phone));
                 callback();
             } else {
                 callback(Intl.get('register.phon.validat.tip', '请输入正确的手机号, 格式如:13877775555'));
@@ -366,12 +373,15 @@ class RegisterForm extends React.Component {
     //     });
     // }
     openUserAgreement = (e) => {
+        Trace.traceEvent(e, '点击用户协议');
         window.open('/user/agreement');
     }
     openPrivacyPolicy = (e) => {
+        Trace.traceEvent(e, '点击隐私策略');
         window.open('/privacy/policy');
     }
-    toLogin = (e) => {
+    toLogin = (eventTraceDescr, e) => {
+        Trace.traceEvent(e, eventTraceDescr);
         window.location.href = '/login';
     }
     clearErrorMsg = () => {
@@ -407,7 +417,7 @@ class RegisterForm extends React.Component {
                             id="register.phone.has.registed.to.login"
                             defaultMessage='该手机号已被注册, 去 {login}'
                             values={{
-                                'login': <a onClick={this.toLogin}>{Intl.get('login.login', '登录')}?</a>
+                                'login': <a onClick={this.toLogin.bind(this, '手机号已被注册, 去登录')}>{Intl.get('login.login', '登录')}?</a>
                             }}
                         />
                     </div>) : null}
@@ -531,7 +541,7 @@ class RegisterForm extends React.Component {
                             defaultMessage= '已有账号，去{login}'
                             values={{
                                 'login': (
-                                    <a onClick={this.toLogin}>
+                                    <a onClick={this.toLogin.bind(this, '已有账号，去登录')}>
                                         {Intl.get('login.login', '登录')}
                                     </a>)
                             }}
