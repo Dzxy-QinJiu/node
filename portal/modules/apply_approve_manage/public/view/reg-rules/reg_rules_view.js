@@ -983,11 +983,11 @@ class RegRulesView extends React.Component {
         }else{
             //在提交的时候，把用户或者团队为非的情况也加上
             this.addDefaultUserOrTeamCondition();
-            // if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
-            //     this.handleSubmitCCApply();
-            // }else{
-            this.handleSubmitApproveApply();
-            // }
+            if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
+                this.handleSubmitCCApply();
+            }else{
+                this.handleSubmitApproveApply();
+            }
         }
     };
     handleDownLoadBPMN = () => {
