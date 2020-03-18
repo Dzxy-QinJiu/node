@@ -1276,9 +1276,9 @@ class MyWorkColumn extends React.Component {
         }
 
         const dailyReportWorkCard = (
-            <div className="my-work-card-container">
+            <div className="my-work-card-container daily-report-work-card">
                 <div className="work-content-wrap">
-                    <div className="title">
+                    <div className="work-name">
                         {title}
                     </div>
                     <div className="buttons">
