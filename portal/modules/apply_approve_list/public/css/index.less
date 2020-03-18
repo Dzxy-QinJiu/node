@@ -55,10 +55,13 @@
 
     //左侧列表内容区域
     .app_user_manage_apply_list_wrap {
+      min-height: 400px;
+      position: relative;
       //加载列表的loading状态
       .load8 {
         transform: scale(0.5, 0.5);
-
+        left: 40%;
+        top: 20%;
         .loader8 {
           border-left-color: #394144;
         }
@@ -138,6 +141,25 @@
     float: left;
     color: #5d5d5d;
     background-color: #f5f6f8;
+  }
+  //右侧详情没有内容
+  .no-apply-detail{
+     background: #E8EEF3;
+     width: calc(100% - 336px);
+     margin-left: 336px;
+     position: absolute;
+     height: 100%;
+     color: #C6D3E2;
+     font-size: 16px;
+     text-align: center;
+     .detail-tip{
+       position: relative;
+       top: calc(50% - 44px);
+     }
+     .iconfont.icon-apply-ico{
+        font-size: 40px;
+
+     }
   }
 }
 

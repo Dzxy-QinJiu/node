@@ -1,3 +1,5 @@
+import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
+
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -18,8 +20,9 @@ import {
     getAllUnhandleApplyCount
 } from './utils/apply_approve_utils';
 import classNames from 'classnames';
-import {Dropdown, Menu, Alert, Select} from 'antd';
+import {Dropdown, Menu, Alert, Select, Button, Popover} from 'antd';
 import userData from 'PUB_DIR/sources/user-data';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {
     APPLY_APPROVE_TYPES,
     DIFF_APPLY_TYPE_UNREAD_REPLY,
@@ -60,6 +63,7 @@ import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import HistoricalApplyViewDetailStore from './all_application_type/user_apply/public/store/historical-apply-view-detail-store';
 import HistoricalApplyViewDetailAction from './all_application_type/user_apply/public/action/historical-apply-view-detail-actions';
+import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 var ApplyApproveUtils = require('./utils/apply_approve_utils');
 class ApplyApproveList extends React.Component {
@@ -94,6 +98,11 @@ class ApplyApproveList extends React.Component {
         this.getTeamUnreadReplyList();
         this.getAppList();
         this.showUnhandleApplyTip();
+        getApplyState().then(applyState => {
+            this.setState({
+                applyState
+            });
+        });
         notificationEmitter.on(notificationEmitter.MY_UNREAD_REPLY, this.refreshMyUnreadReplyList);
         notificationEmitter.on(notificationEmitter.TEAM_UNREAD_REPLY, this.refreshTeamUnreadReplyList);
         notificationEmitter.on(notificationEmitter.CLEAR_UNREAD_REPLY, this.clearUnreadReplyList);
@@ -439,6 +448,24 @@ class ApplyApproveList extends React.Component {
         //展示数字
         this[style] = insertStyle(styleText);
     };
+    //根据返回的状态信息渲染带Popover的button和不带Popover的button
+    renderApplyButton = () => {
+        let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
+        return (
+            applyPrivileged ? (
+                <Dropdown overlay={this.getAddApplyTypeMenu()} trigger={['click']}>
+                    <i className='iconfont icon-plus'></i>
+                </Dropdown>) :
+                (<Popover
+                    overlayClassName="apply-invalid-popover"
+                    placement="bottomLeft"
+                    content={_.get(this.state, 'applyState.applyMessage')}
+                    trigger="click"
+                >
+                    <i className='iconfont icon-plus'></i>
+                </Popover>)
+        );
+    }
     //左侧申请审批不同类型列表
     renderApplyListTab = () => {
         const {activeApplyTab} = this.state;
@@ -465,9 +492,10 @@ class ApplyApproveList extends React.Component {
                         })}
                     </ul>
                     <div className='add_apply_type_icon'>
-                        <Dropdown overlay={this.getAddApplyTypeMenu()} trigger={['click']}>
-                            <i className='iconfont icon-plus'></i>
-                        </Dropdown>
+                        {/* 只有销售需要申请 */}
+                        {isSalesRole() ?
+                            this.renderApplyButton()
+                            : null}
                         <Dropdown overlay={this.getAddFilterAndSearchMenu()} trigger={['click']}>
                             <i className='iconfont icon-other'></i>
                         </Dropdown>
@@ -490,39 +518,25 @@ class ApplyApproveList extends React.Component {
             );
             return (
                 <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
-                    <Alert message={retry} type="error" showIcon={true}/>
+                    <div className='err-tip'>
+                        <i className='iconfont icon-tips'></i>
+                        <p>{Intl.get('apply.list.get.list.err','获取列表失败，请检查网络状态')}</p>
+                        <Button onClick={this.fetchApplyList} size='small' className='btn-item ant-btn-primary'>{Intl.get('common.refresh', '刷新')}</Button>
+                    </div>
                 </div>);
         } else if (noData) {
             if (this.state.searchKeyword !== '') {
-                tipMsg = (
-                    <span>
-                        {Intl.get('user.apply.no.match.retry', '暂无符合查询条件的用户申请')}<span>,</span>
-                        <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                            {Intl.get('common.get.again', '重新获取')}
-                        </a>
-                    </span>
-                );
+                tipMsg = Intl.get('user.apply.no.match.retry', '暂无符合查询条件的申请');
             } else if (this.state.isCheckUnreadApplyList) {
-                tipMsg = (
-                    <span>
-                        {Intl.get('user.apply.no.unread', '已无未读回复的申请')}<span>,</span>
-                        <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                            {Intl.get('common.get.again', '重新获取')}
-                        </a>
-                    </span>
-                );
+                tipMsg = Intl.get('user.apply.no.unread', '已无未读回复的申请');
             } else {
-                tipMsg = (
-                    <span>
-                        {Intl.get('user.apply.no.apply', '还没有需要审批的用户申请')}<span>,</span>
-                        <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                            {Intl.get('common.get.again', '重新获取')}
-                        </a>
-                    </span>
-                );
+                tipMsg = Intl.get('user.apply.no.apply', '暂无申请');
             }
             return <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
-                <Alert message={tipMsg} type="info" showIcon={true}/>
+                <div className='no-list-tip'>
+                    <i className='iconfont icon-tips'></i>
+                    <p>{tipMsg}</p>
+                </div>
             </div>;
         }
     };
@@ -982,7 +996,18 @@ class ApplyApproveList extends React.Component {
     getFirstApplyItem = () => {
         return _.get(this.state.applyListObj, 'list[0]');
     };
-
+    renderNoApplyDetail = () => {
+        if (this.state.applyListObj.loadingResult !== 'loading') {
+            return <div className='no-apply-detail'>
+                <div className='detail-tip'>
+                    <i className='iconfont icon-apply-ico'></i>
+                    <p>{Intl.get('apply.list.no.select.apply', '未选择申请')}</p>
+                </div>
+            </div>;
+        } else {
+            return null;
+        }
+    };
 
     render() {
         //展示右侧申请审批的详情
@@ -996,7 +1021,7 @@ class ApplyApproveList extends React.Component {
         return (
             <div className='apply_approve_content_wrap user_apply_page'>
                 {this.renderApplyListTab()}
-                {noShowApplyDetail ? null :
+                {noShowApplyDetail ? this.renderNoApplyDetail() :
                     <div className='apply_approve_detail_wrap' style={{'width': detailWrapWidth, 'height': divHeight}}>
                         {this.renderApplyListDetail()}
                     </div>}

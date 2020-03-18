@@ -572,15 +572,10 @@
   }
 }
 
-.app_user_manage_apply_list_error {
-  height: 80px;
-}
-
 .app_user_manage_apply_list_loading, .app_user_manage_apply_list_error, .app_user_manage_detail_loading, .app_user_manage_detail_error {
   text-align: center;
   padding: 20px 0;
   margin: 0 auto;
-  width: 100%;
   position:absolute;
   z-index: 1;
   .ant-alert-error, .ant-alert-message, .ant-alert-info {
@@ -588,7 +583,34 @@
   }
 }
 .app_user_manage_apply_list_error{
-  position: absolute;
+  width: 336px;
+  .no-list-tip{
+     margin: 65px auto;
+     color: #B5C6D8;
+    font-size: 16px;
+    .iconfont.icon-tips{
+      font-size: 40px;
+    }
+  }
+  .err-tip{
+    margin: 40px auto;
+    color: #333;
+    text-align: center;
+    font-size: 16px;
+    .iconfont.icon-tips{
+      color:@import_data_warn_color;
+      font-size: 40px;
+    }
+    .ant-btn{
+      float: initial;
+      width: 80px;
+      height: 32px;
+      display: inline-block;
+      min-width: auto;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+  }
 }
 
 .apply-filter-menu-list {

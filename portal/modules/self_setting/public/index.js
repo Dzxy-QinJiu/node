@@ -273,7 +273,7 @@ class LeaveApplyManagement extends React.Component {
                 id="user.apply.unread.reply.null"
                 defaultMessage={'已无未读回复的申请，{return}'}
                 values={{'return': <a onClick={this.toggleUnreadApplyList}>{Intl.get('crm.52', '返回')}</a>}}
-            />) : Intl.get('user.apply.no.apply', '还没有用户审批诶...');
+            />) : Intl.get('user.apply.no.apply', '暂无申请');
             return (
                 <div className="apply_manage_wrap">
                     <NoData msg={noDataTip}/>

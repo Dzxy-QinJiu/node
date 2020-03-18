@@ -1411,8 +1411,8 @@ var en_US = {
     'user.apply.presenter': 'presenter', // 申请人
     'user.apply.team': 'The team of applicant',//申请人所属团队
     'user.apply.id': 'Account apply', // 账号申请
-    'user.apply.no.match.retry': 'no match apply list', // 暂无符合查询条件的用户申请
-    'user.apply.no.apply': 'User applications that do not yet need to be approved',//还没有需要审批的用户申请
+    'user.apply.no.match.retry': 'no match apply list', // 暂无符合查询条件的申请
+    'user.apply.no.apply': 'User applications that do not yet need to be approved',//暂无申请
     'user.apply.no.unread': 'No unread reply',//已无未读回复的申请
     'user.apply.show.update.tip': 'The data has been updated, Whether to', // 数据已更新,是否
     'user.apply.total.apply': '{number} applies {apply_type}', // apply_type: null=>全部 已通过 已驳回 待审批 已撤销  共{number}条申请{apply_type}@

@@ -185,7 +185,7 @@ class ApplyTabContent extends React.Component {
             if( this.state.searchKeyword !== ''){
                 tipMsg = (
                     <span>
-                        {Intl.get('user.apply.no.match.retry','暂无符合查询条件的用户申请')}<span>,</span>
+                        {Intl.get('user.apply.no.match.retry','暂无符合查询条件的申请')}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
                             {Intl.get('common.get.again','重新获取')}
                         </a>
@@ -203,7 +203,7 @@ class ApplyTabContent extends React.Component {
             }else{
                 tipMsg = (
                     <span>
-                        {Intl.get('user.apply.no.apply','还没有需要审批的用户申请')}<span>,</span>
+                        {Intl.get('user.apply.no.apply','暂无申请')}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
                             {Intl.get('common.get.again','重新获取')}
                         </a>

@@ -1419,9 +1419,9 @@ var zh_CN = {
     'user.apply.presenter': '申请人',
     'user.apply.team': '申请人所属团队',
     'user.apply.id': '账号申请',
-    'user.apply.no.match.retry': '暂无符合查询条件的用户申请',
+    'user.apply.no.match.retry': '暂无符合查询条件的申请',
     'user.apply.no.unread': '已无未读回复的申请',
-    'user.apply.no.apply': '还没有需要审批的用户申请',
+    'user.apply.no.apply': '暂无申请',
     'user.apply.show.update.tip': '数据已更新,是否',
     'user.apply.total.apply': '共{number}条申请{apply_type}', // apply_type: null=>全部 已通过 已驳回 待审批 已撤销
     'user.apply.detail.order': '订单',
@@ -1488,6 +1488,8 @@ var zh_CN = {
     'user.apply.approve.no.comment': '暂无申请历史！',
     'user.apply.has.been.opened': '已开通{count}个',
     'apply.list.return.back': '返回',
+    'apply.list.no.select.apply': '未选择申请',
+    'apply.list.get.list.err': '获取列表失败，请检查网络状态',
     // 用户审批end
 
     // 在线用户start
