@@ -1,6 +1,8 @@
 import ajax from 'ant-ajax';
 import { message, Button } from 'antd';
 import { detailPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { VIEW_TYPE } from './consts';
+
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const SITE_CONGFIG_KEY = 'is_no_longer_show_check_report_notice';
 const DR_URL = '/rest/customer/v3/dailyreport';
@@ -147,4 +149,22 @@ export function saveReport(data, callback) {
             message.error(err);
             callback();
         });
+}
+
+//显示数字详情
+export function showNumberDetail(record, name, e) {
+    //只有单个销售的数据允许点击查看详情
+    if (!record.nickname) return;
+
+    if (e && _.isFunction(e.stopPropagation)) e.stopPropagation();
+
+    const itemValues = _.get(record, 'item_values');
+    const itemValue = _.find(itemValues, item => item.name === name);
+    const numberDetail = _.get(itemValue, 'detail');
+
+    showReportPanel({
+        currentView: VIEW_TYPE.NUMBER_DETAIL,
+        currentReport: record,
+        numberDetail,
+    });
 }
