@@ -99,6 +99,14 @@ module.exports = {
             'passport': {
                 'needLogin': false
             }
+        }, {
+            //设置forceLogin
+            'method': 'get',
+            'path': '/rest/user/set-force-login',
+            'handler': 'setForceLogin',
+            'passport': {
+                'needLogin': true
+            },
         }
         ];
         list.push(...(_.unionBy(getRoutesFromConfig(routers.routers), 'path')));

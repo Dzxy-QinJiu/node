@@ -91,7 +91,7 @@
     "uuid": "3.1.0",
     "antme-sdk-js-biz-visitor": "git+ssh://git@git.eefung.com:modules-nodejs/antme-sdk-js.git#biz-visitor-1.x",
     "antme-sdk-js-core": "git+ssh://git@git.eefung.com:modules-nodejs/antme-sdk-js.git#core-2.x",
-    "perfect-scrollbar": "^0.7.1"
+    "perfect-scrollbar": "0.7.1"
   },
   "devDependencies": {
     "alt": "0.17.9",

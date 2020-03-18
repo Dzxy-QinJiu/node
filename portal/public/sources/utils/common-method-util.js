@@ -1531,14 +1531,13 @@ exports.downloadFile = function(id, url) {
     let downloadIFrameId = '_DOWNLOAD_IFRAME_' + id;
     let downloadIFrame = $('iframe[id=\'' + downloadIFrameId + '\']:first');
     let lastDownloadTime = downloadIFrame.data('lastDownloadTime');
-    let downloadUrl = window.data.ctxPath + url;
 
     if (!downloadIFrame.length) {
         downloadIFrame = $('<iframe style=\'display:none\' />').attr('id', downloadIFrameId).appendTo($('body'));
     }
 
     if (!_.isNumber(lastDownloadTime) || lastDownloadTime + 1000 < $.now()) {
-        downloadIFrame.data('lastDownloadTime', $.now()).get(0).contentWindow.location.replace(downloadUrl);
+        downloadIFrame.data('lastDownloadTime', $.now()).get(0).contentWindow.location.replace(url);
         return true;
     } else {
         return false;

@@ -73,7 +73,7 @@ AntmeProxy.prototype.store = function(method, params, callback) {
 // mode: message、user、group、dialog、antme、dept、team
 AntmeProxy.prototype.on = function(name, mode, callback, callbackId) {
     let self = this;
-    self.listenerId = 'listener:' + Math.random();
+    self.listenerId = 'listener:' + uuid();
     self.antmeListener[self.listenerId] = callback;
     callbackId(self.listenerId);
     self.antmeWorker.postMessage({

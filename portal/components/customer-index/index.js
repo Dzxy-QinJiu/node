@@ -31,35 +31,61 @@ class CustomerIndex extends React.Component {
         this.removeAntMeEvents();
     }
 
+    //获取蚁讯ticket
+    getAntMeTicket() {
+        const Deferred = $.Deferred();
+        $.ajax({
+            url: '/rest/base/v1/user/antme/ticket',
+            type: 'get',
+            dateType: 'json',
+            success: (ticket) => {
+                Deferred.resolve(ticket);
+            },
+            error: (errorInfo) => {
+                Deferred.reject(errorInfo.responseJSON);
+            }
+        });
+        return Deferred.promise();
+    }
+
+    //设置forceLogin
+    setForceLogin() {
+        const Deferred = $.Deferred();
+        $.ajax({
+            url: '/rest/user/set-force-login',
+            type: 'get',
+            dateType: 'json',
+            success: (ticket) => {
+                Deferred.resolve(ticket);
+            },
+            error: (errorInfo) => {
+                Deferred.reject(errorInfo.responseJSON);
+            }
+        });
+        return Deferred.promise();
+    }
+
     //登录蚁讯服务
     initialLoginAntme() {
+        let self = this;
         window.antmeProxy = AntmeProxy.init({
             url: Oplate.antmeActorUrl,
-            forceLogin: false,
-            appId: Oplate.curtaoClientId,
+            forceLogin: Oplate.forceLogin === 'true',
+            appId: Oplate.antmeClientId,
             ssoLoginCallback: function() {
-                /*self.ssoClient.quickLogin().then((data) => {
-                    console.log('sso login success:', data.ticket);
-                    console.log('ticket获取成功：', new Date());
-                    window.antmeProxy.rpc('RPC.auth2.loginByTicket', [data.ticket], function () {
-                        console.log('ticket登陆成功：', new Date());
-                        console.log('antme login success');
+                console.log('开始获取ticket：', new Date());
+                self.getAntMeTicket().then((ticket) => {
+                    console.log('获取ticket成功', new Date());
+                    console.log('开始登陆蚁讯服务：', new Date());
+                    window.antmeProxy.rpc('RPC.auth2.loginByTicket', [ticket], function() {
+                        console.log('登陆蚁讯成功', new Date());
                         // 登陆成功后forceLogin置为false 刷新界面重新连接antme免登陆
-                        api.user.setForceLogin().then(ret => {
-                            console.log('antme-set-force-login', ret.body.data.force_login);
+                        self.setForceLogin().then(ret => {
+                            console.log('设置蚁讯强制登录为：', ret.force_login);
                         });
                     });
-                }).catch((data) => {
-                    console.log('sso login fail:', data);
-                });*/
-                console.log('开始登陆蚁讯服务：', new Date());
-                window.antmeProxy.rpc('RPC.auth2.loginByTicket', ['2UmXAmcdu4uHblM02ROJsMPr'], function() {
-                    console.log('ticket登陆成功：', new Date());
-                    console.log('antme login success');
-                    // 登陆成功后forceLogin置为false 刷新界面重新连接antme免登陆
-                    // api.user.setForceLogin().then(ret => {
-                    //     console.log('antme-set-force-login', ret.body.data.force_login);
-                    // });
+                }, (errMsg) => {
+                    console.log('获取ticket失败：', errMsg);
                 });
             },
             initSuccessCallBack: function(data) {
@@ -81,6 +107,7 @@ class CustomerIndex extends React.Component {
             let constants = sdkEventConstants.MessageConstants[key];
             for (let name in constants) {
                 window.antmeProxy.on(name, key, (data) => {
+                    console.log('事件名：', constants[name]);
                     customerServiceEmitter.emit(constants[name], data);
                 }, (id) => {
                     if (!this.listenerIds[key]) {

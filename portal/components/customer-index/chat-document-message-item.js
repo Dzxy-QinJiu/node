@@ -14,15 +14,22 @@ class ChatDocumentMessageItem extends React.Component {
             fileUrl: null,
             imageUrl: null,
             imageData: {
-                w: '100',
-                h: '200'
+                w: '200',
+                h: '100'
             }
         };
     }
 
     componentWillMount() {
         this.getFileUrl();
-        this.getImageUrl();
+    }
+
+    isImageMessage() {
+        let { message: { message }} = this.props;
+        let name = message.name;
+        return message.mimeType && (name.endsWith('.jpg') || name.endsWith('.jpeg') ||
+            name.endsWith('.JPG') || name.endsWith('.JPEG') ||
+            name.endsWith('.png') || name.endsWith('.PNG'));
     }
 
     isVoiceMessage() {
@@ -43,20 +50,14 @@ class ChatDocumentMessageItem extends React.Component {
         const { message: { message } } = this.props;
         window.antmeProxy.rpc('RPC.messaging.loadFile',
             [message.fileId, message.accessHash], function(result) {
-                self.setState({fileUrl: result.url});
-            });
-    }
-
-    //获取图片url
-    getImageUrl() {
-        let self = this;
-        const { message: { message } } = this.props;
-        window.antmeProxy.rpc('RPC.messaging.loadFile',
-            [message.fileId, message.accessHash], function(result) {
-                self.setState({
-                    imageUrl: result.url,
-                    imageData: message.thumb
-                });
+                if(self.isImageMessage()) {
+                    self.setState({
+                        imageUrl: result.url,
+                        imageData: message.thumb
+                    });
+                }else {
+                    self.setState({fileUrl: result.url});
+                }
             });
     }
 
@@ -97,9 +98,9 @@ class ChatDocumentMessageItem extends React.Component {
                     <span className="recorder-label">{this.recorderSeconds()}</span>
                 </React.Fragment>
             );
-        }else if(this.isPhotoMessage()) {
+        }else if(this.isImageMessage()) {
             return (
-                <img src={this.state.imageUrl} style={{width: this.state.imageData.w, height: this.state.imageData.h}}/>
+                <img src={this.state.imageUrl} style={{width: _.get(this.state.imageData, 'w', 200), height: _.get(this.state.imageData, 'h', 100)}}/>
             );
         }else {
             return <a onClick={this.downloadFile}>{this.props.message.message.name}</a>;

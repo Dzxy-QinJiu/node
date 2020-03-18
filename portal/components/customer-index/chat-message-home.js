@@ -18,7 +18,7 @@ class ChatMessageHome extends React.Component {
 
         this.state = {
             messageList: [], //消息列表
-            isLoading: false,
+            isLoading: true,
             errorMsg: '',
             isScrollToTop: true
         };
@@ -70,6 +70,7 @@ class ChatMessageHome extends React.Component {
     componentDidMount() {
         this.registryEvents();
         if (this.props.initAntme) {
+            console.log('获取历史信息，didMount中');
             this.loadHistoryMessage({
                 isLoading: true
             });
@@ -78,6 +79,7 @@ class ChatMessageHome extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if(nextProps.initAntme && !_.isEqual(nextProps.initAntme, this.props.initAntme)) {
+            console.log('获取历史信息，willReceiveProps中');
             this.loadHistoryMessage({
                 isLoading: true
             });
@@ -89,6 +91,7 @@ class ChatMessageHome extends React.Component {
     }
 
     registryEvents() {
+        console.log('开始注册事件监听');
         this.bindEvents = {};
         for (let eventId in this.events) {
             this.bindEvents[eventId] = this.events[eventId].bind(this);
@@ -110,7 +113,7 @@ class ChatMessageHome extends React.Component {
         let newState = {};
         newState.isScrollToTop = isScrollToTop;
         let self = this;
-        window.antmeProxy.rpc('RPC.messaging.getServiceHistoryByCustomer', [window.Oplate.curtaoClientId, date, size], function(result) {
+        window.antmeProxy.rpc('RPC.messaging.getServiceHistoryByCustomer', [window.Oplate.antmeClientId, date, size], function(result) {
             newState.isLoading = false;
             if (result.array.length) {
                 let array = result.array.reverse();

@@ -128,11 +128,14 @@ class SendMessage extends React.Component {
         });
         this.refs.editDiv.innerHTML = '';
         if (nodeText.trim().length === 0 && mentions.length === 0 && replacedAttachments.length === 0) {
+            this.setState({
+                loading: false
+            });
             return;
         }
 
-        window.antmeProxy.rpc('RPC.messaging.sendImageMessage',
-            [window.Oplate.curtaoClientId, nodeText, mentions, replacedAttachments], function(newDialog) {
+        window.antmeProxy.rpc('RPC.messaging.sendMessage',
+            [[], window.Oplate.antmeClientId, nodeText, mentions, replacedAttachments], function(data) {
                 self.imageData = {};
                 self.setState({
                     loading: false
@@ -272,10 +275,6 @@ class SendMessage extends React.Component {
         }
     };
 
-    handleChange = (e) => {
-        console.log(e);
-    };
-
     render() {
         return (
             <div className="send-message" onKeyDown={this.messageEnter}>
@@ -298,12 +297,7 @@ class SendMessage extends React.Component {
                 <div className="send-message-wrap">
                     <div
                         className="send-message-body"
-                        onPaste={this.messagePaste}
-                        onKeyDown={this.preventDefault}
-                        onBlur={this.triggerFocus.bind(this, false)}
-                        onFocus={this.triggerFocus.bind(this, true)}
                         contentEditable
-                        onChange={this.handleChange}
                         ref="editDiv"
                     />
                 </div>

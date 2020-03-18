@@ -15,7 +15,7 @@ class ChatMessageContentItem extends React.Component {
     imageData = null;
 
     componentWillMount() {
-        if (this.message.type === MESSAGE_TYPES.IMAGE) {
+        if (this.props.message.type === MESSAGE_TYPES.IMAGE) {
             this.imageData = this.props.message.attachment.images.array[0];
             this.getImageUrl();
         }
@@ -46,7 +46,7 @@ class ChatMessageContentItem extends React.Component {
         return (
             <span className="chat-message-content-item">
                 {this.props.message.type === MESSAGE_TYPES.IMAGE ? (
-                    <img src={this.state.imageUrl} style={{width: this.imageData.width, height: this.imageData.height}}/>
+                    <img src={this.state.imageUrl} style={{width: 200, height: 100}}/>
                 ) : (
                     <span dangerouslySetInnerHTML={{__html: this.getText()}}/>
                 )}
