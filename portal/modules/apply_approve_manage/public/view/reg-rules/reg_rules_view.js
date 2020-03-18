@@ -683,6 +683,100 @@ class RegRulesView extends React.Component {
             applyRulesAndSetting
         });
     };
+    isUserLimit = (item) => {
+        return _.get(item,'limitType') === `${ALL_COMPONENTS.USER_SEARCH}_limit`;
+    };
+    //是否有添加用户的条件
+    hasAddUserLimit = (list) => {
+        return _.find(list,item => this.isUserLimit(item));
+    };
+    isTeamLimit = (item) => {
+        return _.get(item,'limitType') === `${ALL_COMPONENTS.TEAM_SEARCH}_limit`;
+    };
+    //是否有添加团队的条件
+    hasAddTeamLimit = (list) => {
+        return _.find(list,item => this.isTeamLimit(item));
+    };
+
+    //给除了默认流程之外的其他条件审批流程加上user_range 或者team_range为none的条件
+    addDefaultUserOrTeamCondition = () => {
+        //如果这几个条件中，有一个有userRange 或者有teamRange，并且当前这个条件中没有设置团队或者用户，需要加上团队或者用户字段为none
+        var applyApproveRules = _.get(this.state.applyRulesAndSetting,'applyApproveRules',{});
+        var customiz_user_range = [], customiz_team_range = [];
+        _.forEach(applyApproveRules,(value,flowKey) => {
+            if(flowKey === 'defaultFlow'){
+                //默认流程不做处理
+                return;
+            }
+            var otherLimitList = [];
+            for(var key in applyApproveRules){
+                if(key !== flowKey){
+                    otherLimitList = otherLimitList.concat(_.get(applyApproveRules[key],'conditionRuleLists.limitRules',[]));
+                }
+            }
+            var limitRules = _.get(value,'conditionRuleLists.limitRules'),//当前的限制条件
+                newNodeObj = _.get(value,'bpmnNode[0]');//当前的node节点
+            var hasUserLimitBeside = this.hasAddUserLimit(otherLimitList);//除该条件外其他条件是否有userRange
+            var hasTeamLimitBeside = this.hasAddTeamLimit(otherLimitList);//除该条件外其他条件是否有teamRange
+            var hasUserLimit = this.hasAddUserLimit(limitRules);//该是否有用户申请
+            var hasTeamLimit = this.hasAddTeamLimit(limitRules);//是否有团队申请
+
+            _.forEach(limitRules, item => {
+                //如果是单独划分出一批人，需要单独把这些人传过去
+                if(this.isUserLimit(item)){
+                    customiz_user_range.push({
+                        'range_key': _.get(item,'userRangeRoute'),
+                        'range_users': _.get(item,'userRange')
+                    });
+
+                }
+                //如果是单独划分出一些团队，把组织相关的人和key单独传到后端
+                if(this.isTeamLimit(item)){
+                    customiz_team_range.push({
+                        'range_key': _.get(item,'teamRangeRoute'),
+                        'range_teams': _.get(item,'teamRange')
+                    });
+                }
+            });
+
+            if(!_.isEmpty(newNodeObj)){
+                if(_.isString(newNodeObj['conditionTotalRule'])){
+                    if(newNodeObj['conditionTotalRule'].indexOf('none') === -1){//之前没有自动补齐没有用户/团队的条件
+                        if(hasUserLimitBeside && !hasUserLimit){
+                            //加上该属性
+                            newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '}', '');
+                            newNodeObj['conditionTotalRule'] += '  \&& user_range == "none"}';//如果有一个条件选择了用户，自动补齐其他没有选择用户的条件
+                        }
+                        if(hasTeamLimitBeside && !hasTeamLimit){
+                            newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '}', '');
+                            newNodeObj['conditionTotalRule'] += '  \&& team_range == "none"}';
+                        }
+                    }else{//之前有自动补齐有用户/团队的条件
+                        if(!hasUserLimitBeside && !hasUserLimit){
+                            newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '  && user_range == "none"', '');
+                        }
+                        if(!hasTeamLimitBeside && !hasTeamLimit){
+                            newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '  && team_range == "none"', '');
+                        }
+                        if(hasUserLimitBeside && !hasUserLimit){
+                            //加上该属性
+                            newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '}', '');
+                            newNodeObj['conditionTotalRule'] += '  \&& user_range == "none"}';//如果有一个条件选择了用户，自动补齐其他没有选择用户的条件
+                        }
+                        if(hasTeamLimitBeside && !hasTeamLimit){
+                            newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '}', '');
+                            newNodeObj['conditionTotalRule'] += '  \&& team_range == "none"}';
+                        }
+                    }
+                }
+            }
+        });
+        this.setState({
+            customiz_user_range: _.uniqBy(customiz_user_range, 'range_key'),
+            customiz_team_range: _.uniqBy(customiz_team_range, 'range_key')
+        });
+
+    };
     handleOtherCheckChange = (e) => {
         var applyRulesAndSetting = _.get(this, 'state.applyRulesAndSetting');
         applyRulesAndSetting.mergeSameApprover = e.target.checked;
