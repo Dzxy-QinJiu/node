@@ -1,6 +1,9 @@
 /**
 * 用户分析样式
 */
+@import '../../../../public/css/common-variables';
+@import './user-common-variales';
+
 .user-analysis-panel {
   .detail-card-container {
     .title-container {
@@ -91,6 +94,103 @@
     .alert-tip {
       text-align: center;
       margin-top: 80px;
+    }
+  }
+  .user-login-info {
+    .alert-tip {
+      margin-top: 0;
+      margin-left: 45px;
+      position: relative;
+      top: 45px;
+    }
+    .login-score {
+      text-align: center;
+      .score-container {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 40px;
+        text-align: left;
+        li {
+          span:first-child {
+            width: 120px;
+            display: inline-block;
+          }
+        }
+        .anticon {
+          float: right;
+          margin-top: 3px;
+          margin-left: 3px;
+          cursor: pointer;
+          color: #ccc;
+        }
+      }
+      .total-score {
+        position: relative;
+        .ant-progress-inner {
+          .ant-progress-text {
+            top: 40%;
+          }
+        }
+        span.over-icon {
+          display: inline-block;
+          position: absolute;
+          top: 53%;
+          width: 100%;
+          text-align: center;
+        }
+      }
+
+    }
+    .login-info .login-stress {
+      padding-left: 0;
+    }
+    .login-chart {
+      margin-left: -4px;
+      padding-top: 10px;
+      .box-container {
+        background: white;
+      }
+      .box-title {
+        background: white;
+        font-weight: initial;
+        .title-name {
+          font-size: 14px;
+        }
+        .additional-content {
+          float: left;
+        }
+      }
+      .duration-chart {
+        height:@chart-height;
+        margin-left: 0;
+        background: white;
+      }
+      .box-container {
+        overflow: initial;
+      }
+      .box-container .box-title .additional-content {
+        position: initial;
+        .ant-radio-group .ant-radio-button-wrapper {
+          font-weight: initial;
+          background: white;
+        }
+      }
+    }
+    // 最近登录统计信息
+    .last-login-active-statistics {
+      margin: 0 0 10px 10px;
+      .last-login-title {
+        padding: 10px 0;
+      }
+    }
+  }
+  .title-container {
+    .app-terminals-select {
+      float: right;
+      margin-right: 10px;
+      .select-app-terminal-type {
+        width: 100px;
+      }
     }
   }
 }

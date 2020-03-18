@@ -1443,6 +1443,7 @@ const ApplyViewDetail = createReactClass({
         }
         //为每个应用特殊配置的组件
         var appComponentProps = {
+            isShowOther: false,
             showMultiLogin: false,
             selectedApps: selectedApps,
             height: height,

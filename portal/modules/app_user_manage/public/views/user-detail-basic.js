@@ -30,6 +30,7 @@ const FORMAT = oplateConsts.DATE_FORMAT;
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import ShareObj from'../util/app-id-share-util';
 import userManagePrivilege from '../privilege-const';
+require('../css/user-detail-basic.less');
 
 class UserDetailBasic extends React.Component {
     static defaultProps = {
@@ -687,7 +688,7 @@ class UserDetailBasic extends React.Component {
         let groupsInfo = _.get(initialUser, 'groups', []);
         let hasEditPrivilege = hasPrivilege(userManagePrivilege.USER_MANAGE);
         var DetailBlock = !this.state.isLoading && !this.state.getDetailErrorMsg ? (
-            <div className='user-detail-baisc-v3'>
+            <div className='user-detail-basic'>
                 <UserBasicCard
                     hasEditPrivilege={hasEditPrivilege}
                     customer_id={this.state.customer_id}
