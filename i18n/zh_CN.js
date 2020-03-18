@@ -3119,7 +3119,7 @@ var zh_CN = {
     'clue.search.by.name': '按线索名搜索',
     'clue.add.trace.content': '添加跟进内容',
     'clue.add.trace.follow': '跟进',
-    'clue.search.full.text': '全文搜索',
+    'clue.search.full.text': '线索名/联系人/电话/跟进内容',
     'clue.suggest.input.customer.name': '建议输入客户名称',
     'clue.name.rule': '线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间',
     'clue.add.customer.need': '请描述一下客户需求',

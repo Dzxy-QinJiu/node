@@ -1232,7 +1232,7 @@ class ClueExtract extends React.Component {
                                 <SearchInput
                                     ref="searchInput"
                                     searchEvent={this.getClueByKeywords}
-                                    searchPlaceHolder={Intl.get('clue.search.full.text', '全文搜索')}
+                                    searchPlaceHolder={Intl.get('clue.search.full.text', '线索名/联系人/电话/跟进内容')}
                                 />
                             </div>}
                     </div>
