@@ -265,6 +265,9 @@ class ApplyApproveList extends React.Component {
     };
     //在获取数据前先把之前的数据置空一下
     clearDataBeforeGetApplyList = () => {
+        this.setState({
+            showRefreshTip: false
+        });
         UserApplyActions.resetState();
         setTimeout(() => {
             this.fetchApplyList();

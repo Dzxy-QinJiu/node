@@ -26,7 +26,7 @@ import {
     APPLY_APPROVE_TYPES,
     DIFF_APPLY_TYPE_UNREAD_REPLY,
     CALL_TYPES,
-    CLUE_HIDE_NOTICE_TYPE
+    CLUE_HIDE_NOTICE_TYPE,
 } from '../utils/consts';
 import logoSrc from './notification.png';
 import userData from '../user-data';
@@ -228,37 +228,11 @@ ${Intl.get('clue.close.all.noty', '关闭全部')}</a></p>`);
 //  * 监听弹出消息。
 //  * @param data
 //  */
-// function listenOnMessage(data) {
-//     if (_.isObject(data)) {
-//         switch (data.message_type) {
-//             case 'apply':
-//                 //有新的未处理的申请消息时,只修改待审批数，不用展示
-//                 //申请审批列表弹出，有新数据，是否刷新数据的提示
-//                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-//                 //将待审批数加一（true）
-//                 updateUnreadByPushMessage('approve', true);
-//                 break;
-//             case 'reply':
-//                 //批复类型
-//                 if (!userData.hasRole('realm_manager')) {
-//                     //批复类型的通知，不通知管理员
-//                     notifyApplyInfo(data);
-//                 }
-//                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-//                 //将审批后的申请消息未读数加一（true）
-//                 // updateUnreadByPushMessage('apply', true);
-//                 //待审批数减一
-//                 updateUnreadByPushMessage('approve', false);
-//                 break;
-//             case 'notice':
-//                 //有新的抄送的申请消息时,只展示，不用修改审批数量
-//                 //申请审批列表弹出，有新数据，是否刷新数据的提示
-//                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-//                 notifyApplyInfo(data);
-//                 break;
-//         }
-//     }
-// }
+function listenOnMessage(data) {
+    if (_.isObject(data)) {
+        notifyApplyInfo(data);
+    }
+}
 
 //TODO 待我审批的申请推送
 function applyApproveUnhandledListener(data) {
@@ -468,14 +442,9 @@ function documentIsHidden() {
 
 //获取申请用户的名称
 function getUserNames(replyMessage) {
-    let userNames = '';
-    if (replyMessage.user_name) {
-        userNames = replyMessage.user_name;
-    } else if (replyMessage.user_names) {
-        userNames = JSON.parse(replyMessage.user_names);
-        if (_.isArray(userNames)) {
-            userNames = userNames.join(',');
-        }
+    let userNames = replyMessage.user_names || replyMessage.user_name || '';
+    if (_.isArray(userNames)) {
+        userNames = userNames.join(',');
     }
     return userNames;
 }
@@ -484,12 +453,12 @@ function getUserNames(replyMessage) {
 function getApproveTipContent(data) {
     //审批的消息
     let tipContent = '';
-    let approvalPerson = data.approval_person || '';//谁批复的
-    let salesName = data.message.sales_name || '';//谁发的申请(销售)
-    let customerName = data.message.customer_name || '';//给哪个客户开通的用户
-    let userType = data.message.tag || '';//申请用户的类型：正式、试用用户
-    let userNames = getUserNames(data.message);//申请用户的名称
-    switch (data.approval_state) {
+    let approvalPerson = data.operate || '';//谁批复的
+    let salesName = data.applicant_name || '';//谁发的申请(销售)
+    let customerName = data.customer_name || '';//给哪个客户开通的用户
+    let userType = data.user_apply_name || '';//申请用户的类型：正式、试用用户
+    let userNames = getUserNames(data);//申请用户的名称
+    switch (data.opinion) {
         case 'pass'://审批通过
             // xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
             tipContent = Intl.get('reply.pass.tip.content',
@@ -839,7 +808,7 @@ function scheduleAlertListener(scheduleAlertMsg) {
  *审批的提示 */
 function notifyApplyInfo(data) {
     let isOpenPopUpNotify = getNotifyStatus();
-    if (_.isObject(data.message)) {
+    if (_.get(data,'message_type') === APPLY_APPROVE_TYPES.USER_OR_GRANT && _.includes(['apply_user_official', 'apply_user_trial', 'apply_app_official', 'apply_app_trial'] ,data.user_apply_type)) {
         //记录推送的审批通知的数量
         approveTipCount++;
         //标签页不可见时，有桌面通知，且允许弹出桌面通知时
@@ -1106,9 +1075,10 @@ function unreadListener(type) {
             //申请审批未读回复的监听
             socketIo.on('applyApprovemsg', applyApproveUnhandledListener);
             socketIo.on('applyApprovedByOthermsg', applyApproveApprovedByOtherListener);
-        } else {
             //获取完未读数后，监听node端推送的弹窗消息
-            // socketIo.on('mes', listenOnMessage);
+            socketIo.on('applyApprovedFinishmsg', listenOnMessage);
+        } else {
+
             //监听系统消息
             socketIo.on('system_notice', listenSystemNotice);
         }

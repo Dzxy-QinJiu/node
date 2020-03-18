@@ -123,8 +123,16 @@ exports.applyApproveMsgToFrontend = function(applyApproveMsg,memberId) {
         message_type: applyApproveMsg.topic,//申请审批的类型
         member_id: memberId,//分配给谁的申请审批
         apply_list: [{id: _.get(applyApproveMsg,'id')}],
-        opinion: _.get(applyApproveMsg ,'opinion'),
-        operate_id: _.get(applyApproveMsg ,'operate_id'),
+        opinion: _.get(applyApproveMsg ,'opinion'),//是通过还是驳回
+        operate_id: _.get(applyApproveMsg ,'operate_id'),//操作者的id
+        operate: _.get(applyApproveMsg ,'operate'),//操作者
+        applicant_name: _.get(applyApproveMsg,'applicant_name'),
+        applicant_id: _.get(applyApproveMsg,'applicant_id'),
+        user_apply_type: _.get(applyApproveMsg,'user_apply_type'),
+        user_apply_name: _.get(applyApproveMsg,'user_apply_name'),
+        user_names: _.get(applyApproveMsg,'user_names'),
+        topic: _.get(applyApproveMsg,'topic'),
+        customer_name: _.get(applyApproveMsg,'customer_name')
     };
 };
 //将销售的拜访结果推送给邮件抄送人的数据

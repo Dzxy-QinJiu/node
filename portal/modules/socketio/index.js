@@ -153,28 +153,50 @@ function clueUnhandledNumListener(data) {
 function applyApproveNumListener(data) {
     pushLogger.debug('后端推送的申请审批的数据:' + JSON.stringify(data));
     //将查询结果返给浏览器
+    //数字的增减和展示弹框现在是一个channel，但是弹框的是加了一个"type":"notice"
     var applyApprovesgObj = data || {};
-    if (_.isArray(applyApprovesgObj.consumers) && _.get(applyApprovesgObj,'consumers[0]')) {
-        //遍历消息接收者
-        applyApprovesgObj.consumers.forEach(function(consumer) {
+    //展示弹框的
+    if(_.get(applyApprovesgObj,'type') === 'notice'){
+        //某人的申请审批通过后，给申请人发消息
+        if (applyApprovesgObj.applicant_id) {
             //将数据推送到浏览器
-            //如果是将销售的拜访结果推送给邮件抄送人
-            if(applyApprovesgObj.type && applyApprovesgObj.type === 'customer_visit' ){
-                console.log(applyApprovesgObj);
-                emitMsgBySocket(consumer, 'applyVisitCustomerMsg', pushDto.applyVisitCustomerMsgToFrontend(applyApprovesgObj, consumer));
-            }else{
-                emitMsgBySocket(consumer, 'applyApprovemsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
-            }
-        });
+            emitMsgBySocket(applyApprovesgObj.applicant_id, 'applyApprovedFinishmsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, applyApprovesgObj.applicant_id));
+        }
+        //给抄送的人发消息consumers是抄送人
+        if (_.isArray(applyApprovesgObj.consumers) && _.get(applyApprovesgObj,'consumers[0]')) {
+            //遍历消息接收者
+            applyApprovesgObj.consumers.forEach(function(consumer) {
+                //将数据推送到浏览器
+                emitMsgBySocket(consumer, 'applyApprovedFinishmsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+            });
+        }
+    }else{
+        //带consumers的是加一
+        if (_.isArray(applyApprovesgObj.consumers) && _.get(applyApprovesgObj,'consumers[0]')) {
+            //遍历消息接收者
+            applyApprovesgObj.consumers.forEach(function(consumer) {
+                //将数据推送到浏览器
+                //如果是将销售的拜访结果推送给邮件抄送人
+                if(applyApprovesgObj.type && applyApprovesgObj.type === 'customer_visit' ){
+                    console.log(applyApprovesgObj);
+                    emitMsgBySocket(consumer, 'applyVisitCustomerMsg', pushDto.applyVisitCustomerMsgToFrontend(applyApprovesgObj, consumer));
+                }else{
+                    emitMsgBySocket(consumer, 'applyApprovemsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+                }
+            });
+        }
+        //一个人审批后，推送给其他待审批人(last_consumers)的消息,其他待审批人的待审批数量要减一
+        if (_.isArray(applyApprovesgObj.last_consumers) && _.get(applyApprovesgObj,'last_consumers[0]')) {
+            //遍历消息接收者
+            applyApprovesgObj.last_consumers.forEach(function(consumer) {
+                //将数据推送到浏览器
+                emitMsgBySocket(consumer, 'applyApprovedByOthermsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+            });
+        }
     }
-    //last_consumers一个人审批后，推送给其他待审批人的消息
-    if (_.isArray(applyApprovesgObj.last_consumers) && _.get(applyApprovesgObj,'last_consumers[0]')) {
-        //遍历消息接收者
-        applyApprovesgObj.last_consumers.forEach(function(consumer) {
-            //将数据推送到浏览器
-            emitMsgBySocket(consumer, 'applyApprovedByOthermsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
-        });
-    }
+
+
+
 }
 
 /*
