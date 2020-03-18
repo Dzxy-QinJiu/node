@@ -1230,7 +1230,21 @@ class MyWorkColumn extends React.Component {
 
                 buttons = (
                     <div>
-                        <Button type="primary">开启报告</Button>
+                        <Button
+                            type="primary"
+                            onClick={showReportPanel}
+                        >
+                            开启报告
+                        </Button>
+
+                        <Button
+                            onClick={showReportPanel.bind(null, {
+                                currentView: VIEW_TYPE.REPORT_FORM,
+                                clickedTpl: tpl
+                            })}
+                        >
+                            我知道了
+                        </Button>
                     </div>
                 );
             }
@@ -1251,10 +1265,9 @@ class MyWorkColumn extends React.Component {
             } else {
                 buttons = (
                     <Button
-                        onClick={showReportPanel.bind(null, {
-                            currentView: VIEW_TYPE.REPORT_FORM,
-                            clickedTpl: tpl
-                        })}
+                        onClick={() => {
+                            history.push('analysis/report/daily-report');
+                        }}
                     >
                         查看报告
                     </Button>
