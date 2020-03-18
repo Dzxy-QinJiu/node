@@ -48,7 +48,8 @@ const UserTypeRadioField = {
             if(this.props.isSingleAppEdit) {
                 this.hideUserTypeError();
             }
-        } : (value) => {
+        } : (event) => {
+            const value = event.target.value;
             const formData = this.state.formData;
             formData.user_type = value;
             this.setState({formData});
