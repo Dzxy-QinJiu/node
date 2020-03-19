@@ -8,7 +8,7 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import {Form, Input, Menu, Dropdown, Select, DatePicker, Button, Icon, Radio, Checkbox, InputNumber} from 'antd';
-
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 const RadioGroup = Radio.Group;
 var Option = Select.Option;
 const FormItem = Form.Item;
@@ -18,8 +18,6 @@ import PropTypes from 'prop-types';
 const FORMLAYOUT = {
     PADDINGTOTAL: 60
 };
-import AlertTimer from 'CMP_DIR/alert-timer';
-import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {
     CONDITION_KEYS,
     ALL_COMPONENTS,
@@ -49,6 +47,7 @@ class AddApplyConditionPanel extends React.Component {
                 selectUser: '',//选中的成员
                 showSelectUser: ''
             },
+            saveErrMsg: ''
         };
     }
 
@@ -333,24 +332,57 @@ class AddApplyConditionPanel extends React.Component {
             </div>
         );
     };
+    //选择了用户筛选，没有选择用户名
+    checkUserSearch = (item) => {
+        return item.limitType === ALL_COMPONENTS.USER_SEARCH + '_limit' && _.isEmpty(item.userRange);
+    };
+    checkTeamSearch = (item) => {
+        return item.limitType === ALL_COMPONENTS.TEAM_SEARCH + '_limit' && _.isEmpty(item.teamRange);
+    };
+    checkTimePeriod = (item) => {
+        return item.limitType === ALL_COMPONENTS.TIME_PERIOD + '_limit' && (_.isEmpty(item.rangeLimit) || _.isEmpty(item.rangeNumber));
+    };
+    showErrTip = () => {
+        this.setState({
+            saveErrMsg: Intl.get('apply.approve.not.full.condition','请完善条件后再保存')
+        });
+    };
     handleSubmitCondition = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
             var submitObj = _.cloneDeep(this.state.diffConditionLists);
+            if(_.isEmpty(submitObj.limitRules)){
+                this.showErrTip();
+                return;
+            }
+            var checkFlag = true;//对所加的限制条件进行校验，看是否有选择具体的限制值
             _.forEach(_.get(submitObj, 'limitRules'), (item) => {
                 var target = this.getConditionRelate(item.limitType);
+                if(this.checkUserSearch(item) || this.checkTeamSearch(item) || this.checkTimePeriod(item)){
+                    checkFlag = false;
+                }
                 target.conditionRule(item);//生成随机的流程的key和对应的userIds的数组
             });
-            if (this.props.updateConditionFlowKey) {
-                submitObj.updateConditionFlowKey = this.props.updateConditionFlowKey;
+            if(checkFlag){
+                if (this.props.updateConditionFlowKey) {
+                    submitObj.updateConditionFlowKey = this.props.updateConditionFlowKey;
+                }
+                this.props.saveAddApprovCondition(submitObj);
+                this.props.hideRightPanel();
+            }else{
+                this.showErrTip();
             }
-            this.props.saveAddApprovCondition(submitObj);
-            this.props.hideRightPanel();
+
         });
     };
 
-
+    //去掉保存后提示信息
+    hideSaveTooltip = () => {
+        this.setState({
+            saveErrMsg: '',
+        });
+    };
     render() {
         var divHeight = $(window).height() - FORMLAYOUT.PADDINGTOTAL;
         const formItemLayout = {
@@ -401,17 +433,13 @@ class AddApplyConditionPanel extends React.Component {
                                         )}
                                     </FormItem>
                                     <div className="submit-button-container">
-                                        <Button type="primary" className="submit-btn"
-                                            onClick={this.handleSubmitCondition}
-                                            disabled={this.state.isSaving} data-tracename="点击保存添加
-                                            条件审批申请">
-                                            {Intl.get('common.save', '保存')}
-                                            {this.state.isSaving ? <Icon type="loading"/> : null}
-                                        </Button>
-                                        <Button className="cancel-btn" onClick={this.props.hideRightPanel}
-                                            data-tracename="点击取消添加条件审批流程按钮">
-                                            {Intl.get('common.cancel', '取消')}
-                                        </Button>
+                                        <SaveCancelButton loading={this.state.isSaving}
+                                            saveErrorMsg={this.state.saveErrMsg}
+                                            handleSubmit={this.handleSubmitCondition}
+                                            handleCancel={this.props.hideRightPanel}
+                                            errorShowTime={3000}
+                                            hideSaveTooltip={this.hideSaveTooltip}
+                                        />
                                     </div>
                                 </Form>
                             </div>
