@@ -1308,7 +1308,7 @@ class ClueDetailOverview extends React.Component {
                         {traceAddTime && isSimilarClue && hasTraceContent ?
                             <div className="trace-container">
                                 <span className="trace-time">{Intl.get('crm.last.trace', '最后跟进') + '：'}</span>
-                                <span className="trace-content">{_.get(listItem,'customer_traces[0].remark') + ' (' + _.get(listItem,'customer_traces[0].nick_name') + ' ' + moment(traceAddTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT) + ')'}</span>
+                                <span className="trace-content">{_.get(listItem,'customer_traces[0].remark') + ' (' + _.get(listItem,'customer_traces[0].nick_name','') + ' ' + moment(traceAddTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT) + ')'}</span>
                             </div> : null}
                     </div>;
                 })}
