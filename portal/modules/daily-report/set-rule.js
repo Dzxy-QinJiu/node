@@ -5,7 +5,8 @@
 import { Form } from 'antd';
 import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
 import { getMyTeamTreeAndFlattenList } from 'PUB_DIR/sources/utils/common-data-util';
-import addTplHoc from './add-tpl-hoc';
+import { VIEW_TYPE } from './consts';
+import { hideReportPanel, saveTpl, renderButtonZoneFunc } from './utils';
 
 class SetRule extends React.Component {
     componentDidMount() {
@@ -24,6 +25,7 @@ class SetRule extends React.Component {
         const formData = _.find(tplList, tpl => tpl.id === currentTpl) || {};
 
         const renderFormItem = renderFormItemFunc.bind(this, formData);
+        const renderButtonZone = renderButtonZoneFunc.bind(this);
 
         return (
             <div>
@@ -59,9 +61,41 @@ class SetRule extends React.Component {
                         }],
                     })}
                 </Form>
+
+                {renderButtonZone([{
+                    func: this.save.bind(this),
+                    name: '确认开启',
+                }, {
+                    func: () => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL }); },
+                    name: '取消',
+                }])}
             </div>
         );
     }
+
+    save() {
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                _.each(values, (value, key) => {
+                    if (_.isUndefined(value)) delete values[key];
+                });
+
+                if (values.status === true) {
+                    values.status = 'on';
+                } else if (values.status === false) {
+                    values.status = 'off';
+                }
+
+                const { tplList, currentTpl } = this.props;
+
+                const tplData = _.find(tplList, tpl => tpl.id === currentTpl) || {};
+
+                const postData = _.extend({}, tplData, values);
+
+                saveTpl(postData, result => {});
+            }
+        });
+    }
 }
 
-export default addTplHoc(Form.create()(SetRule));
+export default Form.create()(SetRule);
