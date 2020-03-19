@@ -676,6 +676,7 @@ class OrderItem extends React.Component {
             'item-delete-border': this.state.modalDialogFlag,
             'order-win-hide-detail': _.get(this.state, 'formData.oppo_status') === ORDER_STATUS.WIN && !this.state.isExpandDetail//赢单后隐藏订单详情时的样式
         });
+        let isShowToggleBtn = _.get(this.state, 'formData.oppo_status');
         return (
             <div>
                 <DetailCard
@@ -683,7 +684,7 @@ class OrderItem extends React.Component {
                     content={this.renderOrderContent()}
                     bottom={this.renderOrderBottom()}
                     className={containerClassName}
-                    isShowToggleBtn={true}
+                    isShowToggleBtn={isShowToggleBtn}
                     handleToggleDetail={this.toggleOrderDetail.bind(this)}
                 />
                 {this.state.isShowApplyUserForm ? (
