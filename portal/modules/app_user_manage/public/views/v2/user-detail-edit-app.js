@@ -6,13 +6,12 @@ import AppUserPanelSwitchAction from '../../action/app-user-panelswitch-actions'
 import UserDetailEditAppActions from '../../action/v2/user-detail-edit-app-actions';
 import UserDetailEditAppStore from '../../store/v2/user-detail-edit-app-store';
 import AppPropertySetting from 'CMP_DIR/user_manage_components/app-property-setting';
-import {Tabs, Icon, Alert} from 'antd';
+import {Icon, Alert} from 'antd';
 import AlertTimer from '../../../../../components/alert-timer';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
 import AppUserUtil from '../../util/app-user-util';
 import PropTypes from 'prop-types';
 import {isEqualArray} from 'LIB_DIR/func';
-import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
 import {modifyAppConfigEmitter} from 'PUB_DIR/sources/utils/emitters';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 require('../../css/edit-app.less');
@@ -29,7 +28,6 @@ const UserDetailEditApp = createReactClass({
 
     getInitialState() {
         return {
-            appList: [], // 应用列表
             disabled: true, // 确认按钮，默认禁用状态
             ...UserDetailEditAppStore.getState()
         };
@@ -55,14 +53,8 @@ const UserDetailEditApp = createReactClass({
         UserDetailEditAppStore.listen(this.onStoreChange);
         $(window).on('resize', this.onStoreChange);
         modifyAppConfigEmitter.on(modifyAppConfigEmitter.MODIFY_APP_CONFIG, this.getModifyAppConfig);
-        this.getAppList();
+        let appInfo = this.props.appInfo;
         UserDetailEditAppActions.setInitialData(this.props.appInfo);
-    },
-
-    getAppList(){
-        getAppList(appList => {
-            this.setState({appList: appList});
-        });
     },
 
     getModifyAppConfig() {
@@ -117,7 +109,9 @@ const UserDetailEditApp = createReactClass({
         //多次登录
         changeAppInfo.multilogin = appData.multilogin.value || '0';
         // 多终端状态
-        changeAppInfo.terminals = appData.terminals.value;
+        if (_.get(appData, 'terminals.value')) {
+            changeAppInfo.terminals = appData.terminals.value;
+        }
         //角色
         changeAppInfo.roles = appData.roles;
         //权限
@@ -269,7 +263,6 @@ const UserDetailEditApp = createReactClass({
                     isSingleAppEdit={true}
                     appSelectRoleError={this.state.appSelectRoleError}
                     appInfo={this.props.appInfo}
-                    appList={this.state.appList}
                 />
                 <OperationStepsFooter
                     currentStep={2}

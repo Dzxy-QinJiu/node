@@ -25,7 +25,7 @@ const WHEEL_DELAY = 10;//滚轮事件延时
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import UserStatusSwitch from './user-status-switch';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
-import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
+import {getIntegrationConfig, getAppList} from 'PUB_DIR/sources/utils/common-data-util';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -34,6 +34,7 @@ import userManagePrivilege from '../privilege-const';
 import publicPrivilege from 'PUB_DIR/privilege-const';
 import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 import { checkPassword, checkConfirmPassword } from 'PUB_DIR/sources/utils/validate-util';
+
 const EDIT_PASSWORD_WIDTH = 260;
 //当前面板z-index
 let thisPanelZIndex;
@@ -52,7 +53,8 @@ class UserDetail extends React.Component {
         showEditPw: false,
         isChangingActiveKey: false, // 是否正在切换tab,默认false
         ...AppUserPanelSwitchStore.getState(),
-        ...AppUserDetailStore.getState()
+        ...AppUserDetailStore.getState(),
+        allAppLists: []
     };
     componentWillReceiveProps(nextProps) {
         if (nextProps.userId !== this.props.userId) {
@@ -119,12 +121,20 @@ class UserDetail extends React.Component {
             this.setState({isOplateUser});
         });
     }
+
+    getAppList(){
+        getAppList(appList => {
+            this.setState({allAppLists: appList});
+        });
+    }
+
     componentDidMount() {
         this._isMounted = true;
         $(window).on('resize', this.reLayout);
         AppUserPanelSwitchStore.listen(this.onStoreChange);
         AppUserDetailStore.listen(this.onDetailStoreChange);
         this.getIntegrateConfig();
+        this.getAppList();
         AppUserDetailAction.getUserDetail(this.props.userId);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
@@ -489,6 +499,10 @@ class UserDetail extends React.Component {
                 case 'editapp':
                     var initialUser = this.state.initialUser;
                     var appInfo = this.state.panel_switch_appToEdit;
+                    var matchSelectedApp = _.find(this.state.allAppLists, item => item.app_id === appInfo.app_id);
+                    if (matchSelectedApp && !_.isEmpty(matchSelectedApp.terminals)) {
+                        appInfo = {...appInfo, matchAppTerminals: matchSelectedApp.terminals};
+                    }
                     moveView = (
                         <UserDetailEditApp
                             height={contentHeight}

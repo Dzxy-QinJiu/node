@@ -28,7 +28,7 @@ import DetailCard from '../../detail-card';
 import DefaultUserLogoTitle from '../../default-user-logo-title';
 import AppUserUtil from 'MOD_DIR/app_user_manage/public/util/app-user-util.js';
 const LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
-
+import {modifyAppConfigEmitter} from 'PUB_DIR/sources/utils/emitters';
 const AppPropertySetting = createReactClass({
     displayName: 'AppPropertySetting',
 
@@ -365,6 +365,9 @@ const AppPropertySetting = createReactClass({
         var app_id = state.currentApp.app_id, user_id = state.currentApp.user_id;
         let key = this.getAppSettingKey(app_id, user_id);
         var app_info = state.appPropSettingsMap[key];
+        if (!_.isEqual(app_info.roles, roles) || !_.isEqual(app_info.permissions, permissions)) {
+            modifyAppConfigEmitter.emit(modifyAppConfigEmitter.MODIFY_APP_CONFIG);
+        }
         app_info.roles = roles.slice();
         app_info.permissions = permissions.slice();
         this.setState({
