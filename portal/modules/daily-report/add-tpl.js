@@ -2,7 +2,7 @@
  * 开启报告
  */
 
-import { Radio } from 'antd';
+import { Button } from 'antd';
 import { VIEW_TYPE } from './consts';
 import { getTplList } from './utils';
 import DetailCard from 'CMP_DIR/detail-card';
@@ -35,6 +35,12 @@ class AddTpl extends React.Component {
         return (
             <div>
                 <a href="javascript:void(0)" onClick={() => { updateState({ currentView: VIEW_TYPE.REPORT_FORM, clickedTpl: tpl, isPreview: true }); }}>查看</a>
+
+                <Button
+                    onClick={() => { updateState({ currentView: VIEW_TYPE.SET_RULE, selectedTpl: tpl }); }}
+                >
+                    开启
+                </Button>
             </div>
         );
     }
