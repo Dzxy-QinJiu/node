@@ -342,26 +342,26 @@ class AddApplyConditionPanel extends React.Component {
     checkTimePeriod = (item) => {
         return item.limitType === ALL_COMPONENTS.TIME_PERIOD + '_limit' && (_.isEmpty(item.rangeLimit) || _.isEmpty(item.rangeNumber));
     };
+    showErrTip = () => {
+        this.setState({
+            saveErrMsg: Intl.get('apply.approve.not.full.condition','请完善条件后再保存')
+        });
+    };
     handleSubmitCondition = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
-            var submitObj = _.cloneDeep(this.state.diffConditionLists);
             if (err) return;
+            var submitObj = _.cloneDeep(this.state.diffConditionLists);
             if(_.isEmpty(submitObj.limitRules)){
-                this.setState({
-                    saveErrMsg: Intl.get('apply.approve.not.full.condition','请完善条件后再保存')
-                });
+                this.showErrTip();
                 return;
             }
-            var checkFlag = true;
+            var checkFlag = true;//对所加的限制条件进行校验，看是否有选择具体的限制值
             _.forEach(_.get(submitObj, 'limitRules'), (item) => {
                 var target = this.getConditionRelate(item.limitType);
                 if(this.checkUserSearch(item) || this.checkTeamSearch(item) || this.checkTimePeriod(item)){
                     checkFlag = false;
-                    this.setState({
-                        saveErrMsg: Intl.get('apply.approve.not.full.condition','请完善条件后再保存')
-                    });
-                    return;
+                    this.showErrTip();
                 }
                 target.conditionRule(item);//生成随机的流程的key和对应的userIds的数组
             });
