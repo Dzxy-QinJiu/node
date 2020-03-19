@@ -13,6 +13,7 @@ import AppUserUtil from '../../util/app-user-util';
 import PropTypes from 'prop-types';
 import {isEqualArray} from 'LIB_DIR/func';
 import {modifyAppConfigEmitter} from 'PUB_DIR/sources/utils/emitters';
+import { DISAPPEAR_DELAY_TIME } from 'PUB_DIR/sources/utils/consts';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 require('../../css/edit-app.less');
 //记录上下留白布局
@@ -217,8 +218,11 @@ const UserDetailEditApp = createReactClass({
             //面板向右滑
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
             //等待3秒界面切换回去
-            AppUserPanelSwitchAction.resetState();
-            UserDetailEditAppActions.resetState();
+            setTimeout( () => {
+                AppUserPanelSwitchAction.resetState();
+                UserDetailEditAppActions.resetState();
+            }, DISAPPEAR_DELAY_TIME );
+
         });
     },
 
