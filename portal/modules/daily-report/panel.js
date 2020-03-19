@@ -46,6 +46,12 @@ class ReportPanel extends React.Component {
 
     getDetailTitle() {
         let title = this.state.currentView;
+
+        if (title === '报告详情') {
+            const nickName = _.get(this.state.currentReport, 'nickname');
+            title = nickName + '的报告详情';
+        }
+
         if (title === '数字详情') {
             title = <span>
                 <span>{title}</span>
