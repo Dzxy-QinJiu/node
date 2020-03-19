@@ -16,8 +16,15 @@ export function getIsNoLongerShowCheckReportNotice() {
 }
 
 //设置是否不再显示查看报告的工作通知
-export function setIsNoLongerShowCheckReportNotice() {
-    setWebsiteConfig(SITE_CONGFIG_KEY, true);
+export function setIsNoLongerShowCheckReportNotice(cb) {
+    let configData = {};
+    configData[SITE_CONGFIG_KEY] = true;
+
+    setWebsiteConfig(configData, result => {
+        if (_.isFunction(cb)) cb();
+    }, err => {
+        message.error(err);
+    });
 }
 
 //显示报告面板
