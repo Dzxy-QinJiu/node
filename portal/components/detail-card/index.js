@@ -27,7 +27,7 @@ class DetailCard extends React.Component {
     toggleDetail() {
         if (this.props.isShowToggleBtn) {
             this.setState((prevState, props) => ({
-                isExpandDetail: !prevState.isExpandDetail
+                isExpandDetail: _.get(prevState, 'isExpandDetail') ? !prevState.isExpandDetail : !props.isExpandDetail
             }), () => {
                 this.props.handleToggleDetail(this.state.isExpandDetail);
             });

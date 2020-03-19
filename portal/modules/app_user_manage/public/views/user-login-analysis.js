@@ -19,6 +19,8 @@ import {getCertainTypeTooltip} from 'PUB_DIR/sources/utils/common-method-util';
 import history from 'PUB_DIR/sources/history';
 import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
 import {selectedAppEmitter } from 'PUB_DIR/sources/utils/emitters';
+import classNames from 'classnames';
+
 //日历热力图颜色
 const CALENDAR_COLOR = {
     BORDER: '#A2A2A2',
@@ -391,7 +393,8 @@ class UserLoginAnalysis extends React.Component {
                 </div>
             );
         }
-        const radioValue = [{ value: 'loginDuration', name: '时长' }, { value: 'LoginFrequency', name: '次数' }];
+        const radioValue = [{ value: 'loginDuration', name: Intl.get('user.login.duration', '在线时长') },
+            { value: 'LoginFrequency', name: Intl.get('user.login.times', '登录次数') }];
         if (_.isArray(loginChartInfo.loginDuration) || _.isArray(loginChartInfo.loginCount)) {
             return (
                 <div className="login-chart">
@@ -745,6 +748,10 @@ class UserLoginAnalysis extends React.Component {
         });
     };
 
+    handleSelectTerminal(event){
+        event.stopPropagation();
+    }
+
     // 渲染多终端类型
     renderAppTerminalsType = (app) => {
         return (
@@ -764,8 +771,14 @@ class UserLoginAnalysis extends React.Component {
                         const userInfo = this.state.appUserDataMap[app.app_id] || {};
                         const loading = userInfo.loading;
                         const isLoading = userInfo.isLoading;
+                        // 是否显示多终端筛选
+                        const isShowTerminalSelect = this.state.showDetailMap[app.app_id] && _.get(this.state.selectAppTerminals[app.app_id], 'length');
+                        const cardContainerCls = classNames({
+                            'terminals-select-zone': isShowTerminalSelect
+                        });
                         return (
                             <DetailCard
+                                className={cardContainerCls}
                                 key={index}
                                 titleBottomBorderNone={!this.state.showDetailMap[app.app_id]}
                                 title={(
@@ -778,24 +791,12 @@ class UserLoginAnalysis extends React.Component {
                                         </span>
                                         <p title={app.app_name}>{app.app_name}</p>
                                         {
-                                            this.state.showDetailMap[app.app_id] && _.get(this.state.selectAppTerminals[app.app_id], 'length') ? (
-                                                <div className="app-terminals-select">
+                                            isShowTerminalSelect ? (
+                                                <div className="app-terminals-select" onClick={this.handleSelectTerminal}>
                                                     {this.renderAppTerminalsType(app)}
                                                 </div>
                                             ) : null
                                         }
-                                        <span className="btn-bar">
-                                            {
-                                                this.state.showDetailMap[app.app_id] ?
-                                                    <span
-                                                        className="iconfont icon-up-twoline handle-btn-item"
-                                                        onClick={this.showAppDetail.bind(this, app, false)}
-                                                    ></span> :
-                                                    <span
-                                                        className="iconfont icon-down-twoline handle-btn-item"
-                                                        onClick={this.showAppDetail.bind(this, app, true)}></span>
-                                            }
-                                        </span>
                                     </div>
                                 )}
                                 content={
@@ -825,6 +826,9 @@ class UserLoginAnalysis extends React.Component {
                                             </div>
                                         </StatusWrapper>) : null
                                 }
+                                isShowToggleBtn={true}
+                                isExpandDetail={this.state.showDetailMap[app.app_id]}
+                                handleToggleDetail={this.showAppDetail.bind(this, app)}
                             />
                         );
                     })

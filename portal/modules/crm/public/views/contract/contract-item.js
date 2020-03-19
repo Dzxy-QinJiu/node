@@ -47,6 +47,7 @@ class ContractItem extends React.Component {
     };
 
     cancelDeleteContract = (event) => {
+        event.stopPropagation();
         Trace.traceEvent(event, '点击取消删除合同');
         this.setState({
             isDeleteContractFlag: false,
@@ -57,6 +58,7 @@ class ContractItem extends React.Component {
     // 删除合同
     deleteContract = (contract, event) => {
         Trace.traceEvent(event, '点击确认删除合同');
+        event.stopPropagation();
         this.setState({isLoading: true});
         ContractAjax.deletePendingContract(contract.id, {type: contract.type}).then( (resData) => {
             if (resData && resData.code === 0) {
@@ -83,6 +85,7 @@ class ContractItem extends React.Component {
 
     showDeleteContractConfirm = (event) => {
         Trace.traceEvent(event, '点击删除按钮');
+        event.stopPropagation();
         this.setState({
             isDeleteContractFlag: true
         });
