@@ -15,7 +15,7 @@ export function getIsNoLongerShowCheckReportNotice() {
     return _.get(getLocalWebsiteConfig(), SITE_CONGFIG_KEY);
 }
 
-//设置是否显示查看报告的工作通知
+//设置是否不再显示查看报告的工作通知
 export function setIsNoLongerShowCheckReportNotice() {
     setWebsiteConfig(SITE_CONGFIG_KEY, true);
 }
