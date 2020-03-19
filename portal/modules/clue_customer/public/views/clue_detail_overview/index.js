@@ -835,29 +835,20 @@ class ClueDetailOverview extends React.Component {
         if (assignedTeam){
             displayText += ' - ' + assignedTeam;
         }
-        return (
-            <div className="clue-info-item">
-                <div className="clue-info-label handle-clue-person">
-                    {Intl.get('crm.6', '负责人')}
-                </div>
-                <div className="clue-info-detail">
-                    <BasicEditSelectField
-                        width={EDIT_FEILD_WIDTH}
-                        displayType={assignedDisplayType}
-                        hasEditPrivilege={hasAssignedPrivilege}
-                        id={curClue.id}
-                        saveEditSelect={this.handleChangeAssignedSales}
-                        cancelEditField={this.cancelEditSales}
-                        value={displayText}
-                        field="user_id"
-                        displayText={displayText}
-                        selectOptions={this.getSalesOptions(curClue.user_id)}
-                        onSelectChange={this.onSelectClueSales}
-                        noDataTip={Intl.get('clue.handle.no.distribute.clue', '未分配')}
-                    />
-                </div>
-            </div>
-        );
+        return this.renderBasicContent(Intl.get('crm.6', '负责人'),<BasicEditSelectField
+            width={EDIT_FEILD_WIDTH}
+            displayType={assignedDisplayType}
+            hasEditPrivilege={hasAssignedPrivilege}
+            id={curClue.id}
+            saveEditSelect={this.handleChangeAssignedSales}
+            cancelEditField={this.cancelEditSales}
+            value={displayText}
+            field="user_id"
+            displayText={displayText}
+            selectOptions={this.getSalesOptions(curClue.user_id)}
+            onSelectChange={this.onSelectClueSales}
+            noDataTip={Intl.get('clue.handle.no.distribute.clue', '未分配')}
+        />,{labelCls: 'handle-clue-person'});
     };
     showConfirmInvalid = (item) => {
         let availability = item.availability;
@@ -1110,32 +1101,23 @@ class ClueDetailOverview extends React.Component {
         var associatedDisplyType = this.state.clickAssociatedBtn ? 'edit' : 'text';
         //如果关联了客户
         if (this.state.clickAssociatedBtn || associatedCustomer) {
-            return (
-                <div className="clue-info-item">
-                    <div className="clue-info-label">
-                        {Intl.get('clue.customer.associate.customer', '关联客户')}
-                    </div>
-                    <div className="clue-info-detail">
-                        <CustomerSuggest
-                            field='customer_id'
-                            hasEditPrivilege={false}
-                            displayText={associatedCustomer}
-                            displayType={associatedDisplyType}
-                            id={curClue.id}
-                            show_error={this.state.isShowCustomerError}
-                            noJumpToCrm={true}
-                            saveEditSelectCustomer={this.handleAssociatedCustomer}
-                            customer_name={associatedCustomer}
-                            customer_id={curClue.customer_id}
-                            addAssignedCustomer={this.addAssignedCustomer}
-                            noDataTip={Intl.get('clue.has.no.data', '暂无')}
-                            handleCancel={this.handleCancelCustomerSuggest}
-                            customerLable={curClue.customer_label}
-                            saveSameNoCustomerName={this.saveSameNoCustomerName}
-                        />
-                    </div>
-                </div>
-            );
+            return this.renderBasicContent(Intl.get('clue.customer.associate.customer',<CustomerSuggest
+                field='customer_id'
+                hasEditPrivilege={false}
+                displayText={associatedCustomer}
+                displayType={associatedDisplyType}
+                id={curClue.id}
+                show_error={this.state.isShowCustomerError}
+                noJumpToCrm={true}
+                saveEditSelectCustomer={this.handleAssociatedCustomer}
+                customer_name={associatedCustomer}
+                customer_id={curClue.customer_id}
+                addAssignedCustomer={this.addAssignedCustomer}
+                noDataTip={Intl.get('clue.has.no.data', '暂无')}
+                handleCancel={this.handleCancelCustomerSuggest}
+                customerLable={curClue.customer_label}
+                saveSameNoCustomerName={this.saveSameNoCustomerName}
+            />,'关联客户'));
         }
     };
 
@@ -1181,14 +1163,7 @@ class ClueDetailOverview extends React.Component {
         }
         return (
             <div className="associate-user-detail clue-detail-block">
-                <div className="clue-info-item associate-user-item">
-                    <div className="clue-info-label">
-                        {Intl.get('clue.associate.user', '关联账号')}
-                    </div>
-                    <div className="clue-info-detail ">
-                        <span className="associate-user" onClick={this.handleShowAppUser.bind(this,appUserInfo.id)} data-tracename="查看关联账号详情">{appUserInfo.name}</span>
-                    </div>
-                </div>
+                {this.renderBasicContent(Intl.get('clue.associate.user', '关联账号'),<span className="associate-user" onClick={this.handleShowAppUser.bind(this,appUserInfo.id)} data-tracename="查看关联账号详情">{appUserInfo.name}</span>,{containerCls: 'associate-user-item'})}
             </div>
         );
     };
@@ -1417,8 +1392,7 @@ class ClueDetailOverview extends React.Component {
         );
     };
     isClueNotAssociateCustomer = (curClue, associatedCustomer) => {
-        return curClue.clue_type !== 'clue_pool' && (curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE ||
-           curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer;
+        return curClue.clue_type !== 'clue_pool' && (_.includes([SELECT_TYPE.WILL_DISTRIBUTE,SELECT_TYPE.HAS_TRACE,SELECT_TYPE.WILL_TRACE],curClue.status)) && !associatedCustomer;
     };
     // 渲染关联线索
     renderAssociatedClue = (curClue, associatedCustomer ) => {
@@ -1565,6 +1539,26 @@ class ClueDetailOverview extends React.Component {
                             />
                         </div>
                     </React.Fragment>) : <div className="contact-item-content">
+                    <div className="contact-item-content contact-name">
+                        <span className="clue-info-label">{Intl.get('call.record.contacts', '联系人')}</span>
+                        <div className="clue-info-detail">
+                            <BasicEditInputField
+                                width={EDIT_FEILD_WIDTH}
+                                hasEditPrivilege={hasPrivilegeEdit}
+                                id={curClue.id}
+                                saveEditInput={this.saveEditBasicInfo.bind(this, {
+                                    editItem: 'contact_name',
+                                    id: contactItem.id
+                                })}
+                                value={contactItem.name}
+                                field='contact_name'
+                                noDataTip={Intl.get('crm.no.contact', '暂无联系人')}
+                                addDataTip={Intl.get('clue.customer.edit.contact', '请填写联系人名称')}
+                                placeholder={Intl.get('clue.customer.edit.contact', '请填写联系人名称')}
+                                validators={contactNameRule()}
+                            />
+                        </div>
+                    </div>
                     <DynamicAddDelField
                         id={curClue.id}
                         field='phone'
@@ -1589,10 +1583,10 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     }
-    renderContactTitle = (contact) => {
+    renderContactTitle = () => {
         return (
             <span className="contact-item-title">
-                <span className="contact-name" title={contact.name}>{contact.name}</span>
+                <span className='contact-name-label'>{Intl.get('crm.5', '联系方式')}</span>
             </span>);
     };
     toggleContactWay = (contactItem, isExpanded) => {
@@ -1611,7 +1605,7 @@ class ClueDetailOverview extends React.Component {
         return (<div className='clue-info-wrap clue-detail-block clue-contact-container'>
             {_.map(curClue.contacts, (contactItem) => {
                 return <DetailCard
-                    title={this.renderContactTitle(contactItem)}
+                    title={this.renderContactTitle()}
                     content={this.renderContactContent(contactItem)}
                     className= 'contact-item'
                     isShowToggleBtn={true}
@@ -1622,6 +1616,17 @@ class ClueDetailOverview extends React.Component {
         </div>);
 
     };
+    //渲染详情中label和content中的基本结构
+    renderBasicContent = (label, content, basicCls) => {
+        return <div className={'clue-info-item ' + _.get(basicCls,'containerCls','')}>
+            <div className={'clue-info-label ' + _.get(basicCls,'labelCls','')}>
+                {label}
+            </div>
+            <div className={'clue-info-detail ' + _.get(basicCls,'contentCls','')}>
+                {content}
+            </div>
+        </div>;
+    };
     //线索的地域，地址，来源，官网
     renderClueAddress = () => {
         var {curClue} = this.state;
@@ -1630,75 +1635,47 @@ class ClueDetailOverview extends React.Component {
         return (
             <div className='clue-info-wrap clue-detail-block'>
                 <div className="clue-basic-info">
-                    <div className="clue-info-item area-content">
-                        <div className="clue-info-label">
-                            {Intl.get('crm.96', '地域')}
-                        </div>
-                        <div className="clue-info-detail area-item">
-                            <LocationSelectField
-                                width={EDIT_FEILD_WIDTH}
-                                id={curClue.id}
-                                province={curClue.province}
-                                city={curClue.city}
-                                county={curClue.county}
-                                province_code={curClue.province_code}
-                                city_code={curClue.city_code}
-                                county_code={curClue.county_code}
-                                saveEditLocation={this.saveEditBasicInfo.bind(this, 'province')}
-                                hasEditPrivilege={hasPrivilegeEdit}
-                                noDataTip={Intl.get('crm.basic.no.location', '暂无地域信息')}
-                                addDataTip={Intl.get('crm.basic.add.location', '添加地域信息')}
-                            />
-                        </div>
-                    </div>
-                    <div className="basic-info-detail-address clue-info-item">
-                        <span className="clue-info-label">
-                            {Intl.get('common.full.address', '详细地址')}
-                        </span>
-                        <div className="clue-info-detail">
-                            <BasicEditInputField
-                                width={EDIT_FEILD_WIDTH}
-                                id={curClue.id}
-                                value={curClue.address}
-                                field="address"
-                                type="input"
-                                placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
-                                hasEditPrivilege={hasPrivilegeEdit}
-                                saveEditInput={this.saveEditBasicInfo.bind(this, 'address')}
-                                noDataTip={Intl.get('crm.basic.no.address', '暂无详细地址')}
-                                addDataTip={Intl.get('crm.basic.add.address', '添加详细地址')}
-                            />
-                        </div>
-                    </div>
-                    <div className="clue-info-item">
-                        <div className="clue-info-label">
-                            {Intl.get('clue.customer.source.ip', '来源IP')}
-                        </div>
-                        <div className="clue-info-detail">
-                            <BasicEditInputField
-                                hasEditPrivilege={false}
-                                id={curClue.id}
-                                saveEditInput={this.saveEditBasicInfo.bind(this, 'source_ip')}
-                                value={curClue.source_ip}
-                                field='source_ip'
-                                noDataTip={Intl.get('clue.customer.no.source.ip', '未设置来源IP')}
-                            />
-                        </div>
-                    </div>
+                    {this.renderBasicContent(Intl.get('crm.96', '地域'), <LocationSelectField
+                        width={EDIT_FEILD_WIDTH}
+                        id={curClue.id}
+                        province={curClue.province}
+                        city={curClue.city}
+                        county={curClue.county}
+                        province_code={curClue.province_code}
+                        city_code={curClue.city_code}
+                        county_code={curClue.county_code}
+                        saveEditLocation={this.saveEditBasicInfo.bind(this, 'province')}
+                        hasEditPrivilege={hasPrivilegeEdit}
+                        noDataTip={Intl.get('crm.basic.no.location', '暂无地域信息')}
+                        addDataTip={Intl.get('crm.basic.add.location', '添加地域信息')}
+                    />, {containerCls: 'area-content', contentCls: 'area-item'})}
+                    {this.renderBasicContent(Intl.get('common.full.address', '详细地址'),<BasicEditInputField
+                        width={EDIT_FEILD_WIDTH}
+                        id={curClue.id}
+                        value={curClue.address}
+                        field="address"
+                        type="input"
+                        placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
+                        hasEditPrivilege={hasPrivilegeEdit}
+                        saveEditInput={this.saveEditBasicInfo.bind(this, 'address')}
+                        noDataTip={Intl.get('crm.basic.no.address', '暂无详细地址')}
+                        addDataTip={Intl.get('crm.basic.add.address', '添加详细地址')}
+                    />,{containerCls: 'basic-info-detail-address'})}
+                    {this.renderBasicContent(Intl.get('clue.customer.source.ip', '来源IP'),<BasicEditInputField
+                        hasEditPrivilege={false}
+                        id={curClue.id}
+                        saveEditInput={this.saveEditBasicInfo.bind(this, 'source_ip')}
+                        value={curClue.source_ip}
+                        field='source_ip'
+                        noDataTip={Intl.get('clue.customer.no.source.ip', '未设置来源IP')}
+                    />)}
                     {/*有官网字段就展示*/}
-                    {curClue.website ? <div className="clue-info-item">
-                        <div className="clue-info-label">
-                            {Intl.get('lead.info.website.info' , '官网')}
-                        </div>
-                        <div className="clue-info-detail">
-                            <BasicEditInputField
-                                hasEditPrivilege={false}
-                                id={curClue.id}
-                                value={curClue.website}
-                                field='website'
-                            />
-                        </div>
-                    </div> : null}
+                    {curClue.website ? this.renderBasicContent(Intl.get('lead.info.website.info' , '官网'),<BasicEditInputField
+                        hasEditPrivilege={false}
+                        id={curClue.id}
+                        value={curClue.website}
+                        field='website'
+                    />) : null}
                     <div className='clear-float'></div>
                 </div>
             </div>
@@ -1715,63 +1692,42 @@ class ClueDetailOverview extends React.Component {
         return (
             <div className='clue-info-wrap clue-detail-block'>
                 <div className="clue-basic-info">
-                    <div className="clue-info-item">
-                        <div className="clue-info-label">
-                            {Intl.get('common.login.time', '时间')}
-                        </div>
-                        <div className="clue-info-detail">
-                            <DatePickerField
-                                width={EDIT_FEILD_WIDTH}
-                                hasEditPrivilege={hasPrivilegeEdit}
-                                id={curClue.id}
-                                saveEditDateInput={this.saveEditBasicInfo.bind(this, 'source_time')}
-                                value={curClue.source_time}
-                                field="source_time"
-                                disabledDate={this.disabledDate}
-                            />
-                        </div>
-                    </div>
-                    <div className="clue-info-item">
-                        <div className="clue-info-label">
-                            {Intl.get('crm.sales.clue.descr', '线索描述')}
-                        </div>
-                        <div className="clue-info-detail">
-                            <BasicEditInputField
-                                width={EDIT_FEILD_WIDTH}
-                                hasEditPrivilege={hasPrivilegeEdit}
-                                id={curClue.id}
-                                saveEditInput={this.saveEditBasicInfo.bind(this, 'source')}
-                                value={curClue.source}
-                                field='source'
-                                type='textarea'
-                                row={3}
-                                noDataTip={Intl.get('clue.no.clue.describe', '暂无线索描述')}
-                                addDataTip={Intl.get('clue.add.clue.describe', '添加线索描述')}
-                                placeholder={Intl.get('clue.add.clue.placeholder', '请填写线索描述')}
-                            />
-                        </div>
-                    </div>
-                    <div className="basic-info-industry clue-info-item">
-                        <span className="clue-info-label">
-                            {Intl.get('common.industry', '行业')}
-                        </span>
-                        <div className="clue-info-detail">
-                            <BasicEditSelectField
-                                width={EDIT_FEILD_WIDTH}
-                                id={curClue.id}
-                                displayText={curClue.industry}
-                                value={curClue.industry}
-                                field="industry"
-                                selectOptions={industryOptions}
-                                hasEditPrivilege={hasPrivilegeEdit}
-                                placeholder={Intl.get('crm.22', '请选择行业')}
-                                editBtnTip={Intl.get('crm.163', '设置行业')}
-                                saveEditSelect={this.saveEditBasicInfo.bind(this, 'industry')}
-                                noDataTip={Intl.get('crm.basic.no.industry', '暂无行业')}
-                                addDataTip={Intl.get('crm.basic.add.industry', '添加行业')}
-                            />
-                        </div>
-                    </div>
+                    {this.renderBasicContent(Intl.get('common.login.time', '时间'), <DatePickerField
+                        width={EDIT_FEILD_WIDTH}
+                        hasEditPrivilege={hasPrivilegeEdit}
+                        id={curClue.id}
+                        saveEditDateInput={this.saveEditBasicInfo.bind(this, 'source_time')}
+                        value={curClue.source_time}
+                        field="source_time"
+                        disabledDate={this.disabledDate}
+                    />)}
+                    {this.renderBasicContent(Intl.get('crm.sales.clue.descr', '线索描述'),<BasicEditInputField
+                        width={EDIT_FEILD_WIDTH}
+                        hasEditPrivilege={hasPrivilegeEdit}
+                        id={curClue.id}
+                        saveEditInput={this.saveEditBasicInfo.bind(this, 'source')}
+                        value={curClue.source}
+                        field='source'
+                        type='textarea'
+                        row={3}
+                        noDataTip={Intl.get('clue.no.clue.describe', '暂无线索描述')}
+                        addDataTip={Intl.get('clue.add.clue.describe', '添加线索描述')}
+                        placeholder={Intl.get('clue.add.clue.placeholder', '请填写线索描述')}
+                    />)}
+                    {this.renderBasicContent(Intl.get('common.industry', '行业'), <BasicEditSelectField
+                        width={EDIT_FEILD_WIDTH}
+                        id={curClue.id}
+                        displayText={curClue.industry}
+                        value={curClue.industry}
+                        field="industry"
+                        selectOptions={industryOptions}
+                        hasEditPrivilege={hasPrivilegeEdit}
+                        placeholder={Intl.get('crm.22', '请选择行业')}
+                        editBtnTip={Intl.get('crm.163', '设置行业')}
+                        saveEditSelect={this.saveEditBasicInfo.bind(this, 'industry')}
+                        noDataTip={Intl.get('crm.basic.no.industry', '暂无行业')}
+                        addDataTip={Intl.get('crm.basic.add.industry', '添加行业')}
+                    />,{containerCls: 'basic-info-industry'})}
                     <div className='clear-float'></div>
                 </div>
             </div>);
@@ -1784,97 +1740,69 @@ class ClueDetailOverview extends React.Component {
         return (
             <div className='clue-info-wrap clue-detail-block'>
                 <div className="clue-basic-info">
-                    <div className="clue-info-item">
-                        <div className="clue-info-label">
-                            {Intl.get('crm.clue.client.source', '获客方式')}
-                        </div>
-                        <div className="clue-info-detail source-classify">
-                            <BasicEditSelectField
-                                width={EDIT_FEILD_WIDTH}
-                                hasEditPrivilege={hasPrivilegeEdit}
-                                id={curClue.id}
-                                saveEditSelect={this.saveEditBasicInfo.bind(this, 'source_classify')}
-                                cancelEditField={this.cancelEditSourceClassify}
-                                selectOptions={sourceClassifyOptions}
-                                displayText={this.getSourceClassify(curClue.source_classify)}
-                                onSelectChange={this.onSelectSourceClassify}
-                                value={curClue.source_classify}
-                                placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择获客方式')}
-                                addDataTip={Intl.get('crm.clue.client.source.add', '添加获客方式')}
-                                field="source_classify"
-                                noDataTip={Intl.get('common.unknown', '未知')}
-                            />
-                        </div>
-                    </div>
-                    <div className="clue-info-item">
-                        <div className="clue-info-label">
-                            {Intl.get('call.record.customer.source', '来源')}
-                        </div>
-                        <div className="clue-info-detail">
-                            <BasicEditSelectField
-                                width={EDIT_FEILD_WIDTH}
-                                combobox={true}
-                                hasEditPrivilege={hasPrivilegeEdit}
-                                id={curClue.id}
-                                saveEditSelect={this.saveEditBasicInfo.bind(this, 'clue_source')}
-                                cancelEditField={this.cancelEditClueSource}
-                                value={curClue.clue_source}
-                                field="clue_source"
-                                selectOptions={this.getClueSourceOptions()}
-                                displayText={curClue.clue_source}
-                                onSelectChange={this.onSelectCluesource}
-                                placeholder={Intl.get('crm.clue.source.placeholder', '请选择或输入线索来源')}
-                                noDataTip={Intl.get('clue.no.clue.source', '暂无线索来源')}
-                                addDataTip={Intl.get('clue.add.clue.source', '添加线索来源')}
-                            />
-                        </div>
-                    </div>
-                    <div className="clue-info-item">
-                        <div className="clue-info-label">
-                            {Intl.get('crm.sales.clue.access.channel', '接入渠道')}
-                        </div>
-                        <div className="clue-info-detail">
-                            <BasicEditSelectField
-                                width={EDIT_FEILD_WIDTH}
-                                combobox={true}
-                                hasEditPrivilege={hasPrivilegeEdit}
-                                id={curClue.id}
-                                saveEditSelect={this.saveEditBasicInfo.bind(this, 'access_channel')}
-                                cancelEditField={this.cancelEditClueChannel}
-                                value={curClue.access_channel}
-                                field="access_channel"
-                                displayText={curClue.access_channel}
-                                selectOptions={this.getAccessChannelOptions()}
-                                onSelectChange={this.onSelectAccessChannel}
-                                placeholder={Intl.get('crm.access.channel.placeholder', '请选择或输入接入渠道')}
-                                noDataTip={Intl.get('clue.no.access.channel', '暂无接入渠道')}
-                                addDataTip={Intl.get('clue.add.access.channel', '添加接入渠道')}
-                            />
-                        </div>
-                    </div>
-                    <div className="clue-info-item">
-                        <div className="clue-info-label">
-                            {Intl.get('contract.purchase.contract.type', '分类')}
-                        </div>
-                        <div className="clue-info-detail">
-                            <BasicEditSelectField
-                                width={EDIT_FEILD_WIDTH}
-                                combobox={true}
-                                hasEditPrivilege={hasPrivilegeEdit}
-                                id={curClue.id}
-                                saveEditSelect={this.saveEditBasicInfo.bind(this, 'clue_classify')}
-                                cancelEditField={this.cancelEditClueClassify}
-                                value={curClue.clue_classify}
-                                field="clue_classify"
-                                displayText={curClue.clue_classify}
-                                selectOptions={this.getClueClassifyOptions()}
-                                onSelectChange={this.onSelectClueClassify}
-                                placeholder={Intl.get('crm.clue.classify.placeholder', '请选择或输入线索分类')}
-                                noDataTip={Intl.get('clue.customer.no.classify.tip', '暂无分类')}
-                                addDataTip={Intl.get('clue.add.clue.classfify', '添加线索分类')}
-                            />
-                        </div>
-                    </div>
+                    {this.renderBasicContent(Intl.get('crm.clue.client.source', '获客方式'),<BasicEditSelectField
+                        width={EDIT_FEILD_WIDTH}
+                        hasEditPrivilege={hasPrivilegeEdit}
+                        id={curClue.id}
+                        saveEditSelect={this.saveEditBasicInfo.bind(this, 'source_classify')}
+                        cancelEditField={this.cancelEditSourceClassify}
+                        selectOptions={sourceClassifyOptions}
+                        displayText={this.getSourceClassify(curClue.source_classify)}
+                        onSelectChange={this.onSelectSourceClassify}
+                        value={curClue.source_classify}
+                        placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择获客方式')}
+                        addDataTip={Intl.get('crm.clue.client.source.add', '添加获客方式')}
+                        field="source_classify"
+                        noDataTip={Intl.get('common.unknown', '未知')}
+                    />,{contentCls: 'source-classify'})}
+                    {this.renderBasicContent(Intl.get('call.record.customer.source', '来源'),<BasicEditSelectField
+                        width={EDIT_FEILD_WIDTH}
+                        combobox={true}
+                        hasEditPrivilege={hasPrivilegeEdit}
+                        id={curClue.id}
+                        saveEditSelect={this.saveEditBasicInfo.bind(this, 'clue_source')}
+                        cancelEditField={this.cancelEditClueSource}
+                        value={curClue.clue_source}
+                        field="clue_source"
+                        selectOptions={this.getClueSourceOptions()}
+                        displayText={curClue.clue_source}
+                        onSelectChange={this.onSelectCluesource}
+                        placeholder={Intl.get('crm.clue.source.placeholder', '请选择或输入线索来源')}
+                        noDataTip={Intl.get('clue.no.clue.source', '暂无线索来源')}
+                        addDataTip={Intl.get('clue.add.clue.source', '添加线索来源')}
+                    />)}
+                    {this.renderBasicContent(Intl.get('crm.sales.clue.access.channel', '接入渠道'),<BasicEditSelectField
+                        width={EDIT_FEILD_WIDTH}
+                        combobox={true}
+                        hasEditPrivilege={hasPrivilegeEdit}
+                        id={curClue.id}
+                        saveEditSelect={this.saveEditBasicInfo.bind(this, 'access_channel')}
+                        cancelEditField={this.cancelEditClueChannel}
+                        value={curClue.access_channel}
+                        field="access_channel"
+                        displayText={curClue.access_channel}
+                        selectOptions={this.getAccessChannelOptions()}
+                        onSelectChange={this.onSelectAccessChannel}
+                        placeholder={Intl.get('crm.access.channel.placeholder', '请选择或输入接入渠道')}
+                        noDataTip={Intl.get('clue.no.access.channel', '暂无接入渠道')}
+                        addDataTip={Intl.get('clue.add.access.channel', '添加接入渠道')}
+                    />)}
+                    {this.renderBasicContent(Intl.get('contract.purchase.contract.type', '分类'),<BasicEditSelectField
+                        width={EDIT_FEILD_WIDTH}
+                        combobox={true}
+                        hasEditPrivilege={hasPrivilegeEdit}
+                        id={curClue.id}
+                        saveEditSelect={this.saveEditBasicInfo.bind(this, 'clue_classify')}
+                        cancelEditField={this.cancelEditClueClassify}
+                        value={curClue.clue_classify}
+                        field="clue_classify"
+                        displayText={curClue.clue_classify}
+                        selectOptions={this.getClueClassifyOptions()}
+                        onSelectChange={this.onSelectClueClassify}
+                        placeholder={Intl.get('crm.clue.classify.placeholder', '请选择或输入线索分类')}
+                        noDataTip={Intl.get('clue.customer.no.classify.tip', '暂无分类')}
+                        addDataTip={Intl.get('clue.add.clue.classfify', '添加线索分类')}
+                    />)}
                     <div className='clear-float'></div>
                 </div>
             </div>
@@ -1894,7 +1822,7 @@ class ClueDetailOverview extends React.Component {
         return (
             <div className="clue-detail-container" data-tracename="线索基本信息" style={this.hasButtonTabHeight(curClue, associatedCustomer)}>
                 <GeminiScrollbar>
-                    {curClue.version_upgrade_id && !$.isEmptyObject(this.state.versionData) ? <ApplyTryCard versionData={this.state.versionData}/> : null}
+                    {curClue.version_upgrade_id && !_.isEmpty(this.state.versionData) ? <ApplyTryCard versionData={this.state.versionData}/> : null}
                     {this.props.hideContactWay ? null : this.renderClueContact()}
                     {this.renderClueAddress()}
                     {this.renderClueTimeAndIndustry()}

@@ -1954,7 +1954,7 @@ class ClueCustomer extends React.Component {
                                         <span>
                                             <span className="clue_source_time">{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}&nbsp;</span>
 
-                                            <span>{salesClueItem.source ? Intl.get('clue.item.acceess.channel', '详情：{content}',{content: salesClueItem.source}) : null}</span>
+                                            <span>{salesClueItem.source ? salesClueItem.source : null}</span>
                                         </span>
                                     </ShearContent>
                                 </div>
