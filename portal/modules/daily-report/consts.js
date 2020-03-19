@@ -8,5 +8,5 @@ export const VIEW_TYPE = {
     REPORT_LIST: '报告列表',
     REPORT_DETAIL: '报告详情',
     NUMBER_DETAIL: '数字详情',
-    REPORT_FORM: '填写报告',
+    REPORT_FORM: '报告表单',
 };
