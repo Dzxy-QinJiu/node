@@ -4,7 +4,7 @@
  * Created by tangmaoqin on 2019/08/01.
  */
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import { Checkbox, Button, message, Popover, notification } from 'antd';
+import { Checkbox, Button, message, Popover, notification, Tag } from 'antd';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
 var clueCustomerStore = require('MOD_DIR/clue_customer/public/store/clue-customer-store');
 import {batchPushEmitter, notificationEmitter, showWiningClueEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -13,6 +13,7 @@ var batchOperate = require('PUB_DIR/sources/push/batch');
 import userData from 'PUB_DIR/sources/user-data';
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import ShearContent from 'CMP_DIR/shear-content';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
@@ -685,6 +686,15 @@ class ExtractClues extends React.Component {
         updateGuideMark(BOOT_PROCESS_KEYS.EXTRACT_CLUE);
     };
 
+    //处理高亮文字
+    handleHighLightStyle(text) {
+        //百捷集团武汉<em>百度</em>分公司
+        return {
+            content: _.replace(text, /<em>/g, '<em class="text-highlight">'),
+            hasHighLight: text && text.indexOf('<em>') > -1
+        };
+    }
+
     handleExtractRecommendClues = (reqData) => {
         //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
         let salesMan = _.cloneDeep(this.state.salesMan);
@@ -873,27 +883,107 @@ class ExtractClues extends React.Component {
                     {
                         _.map(recommendClueLists, item => {
                             const cls = 'extract-clue-item' + this.setInvalidClassName(item);
+                            let otherProps = {
+                                products: this.handleHighLightStyle(item.products),
+                                scope: this.handleHighLightStyle(item.scope),
+                                industry: this.handleHighLightStyle(item.industry),
+                                companyProfile: this.handleHighLightStyle(item.companyProfile),
+                            };
+                            const otherCls = classNames('extract-clue-text__info extract-clue-text__filters', {
+                                'extract-clue-text__null': !otherProps.products.hasHighLight && !otherProps.scope.hasHighLight && !otherProps.industry.hasHighLight && !otherProps.companyProfile.hasHighLight
+                            });
                             return (
                                 <div className={cls}>
                                     <Checkbox checked={this.hasChecked(item)} disabled={this.getDisabledClue(item)} onChange={this.handleCheckChange.bind(this, item)}/>
                                     <div className="extract-clue-text-wrapper" title={item.hasExtractedByOther ? Intl.get('errorcode.169', '该线索已被提取') : ''}>
                                         <div className="extract-clue-text__name" onClick={this.handleClickClueName.bind(this, item)}>
                                             {item.hasExtractedByOther ? <i className='iconfont icon-warning-tip'/> : null}
-                                            <span>{item.name}</span>
+                                            <span dangerouslySetInnerHTML={{__html: this.handleHighLightStyle(item.name).content}}/>
+                                            {item.labels.length ? (
+                                                <div className="clue-labels">
+                                                    {_.map(item.labels, (tag, index) => (
+                                                        <Tag key={index}>{tag}</Tag>
+                                                    ))}
+                                                </div>
+                                            ) : null}
                                         </div>
                                         <div className="extract-clue-text__filters">
+                                            {item.startTime ? (
+                                                <div className="extract-clue-text-item">
+                                                    <span className="extract-clue-text-label">{Intl.get('clue.customer.register.time', '注册时间')}：</span>
+                                                    <span> { moment(item.startTime).format(oplateConsts.DATE_FORMAT)}</span>
+                                                </div>
+                                            ) : null}
                                             <div className="extract-clue-text-item">
-                                                <span className="extract-clue-text-label">{Intl.get('clue.customer.register.time', '注册时间')}：</span>
-                                                <span> {item.startTime ? moment(item.startTime).format(oplateConsts.DATE_FORMAT) : null}</span>
+                                                {_.get(item.contact, 'phones') ? (
+                                                    <span className="extract-clue-contacts-item">
+                                                        <span className="extract-clue-text-label">{Intl.get('common.phone', '电话')}：</span>
+                                                        <span>{Intl.get('clue.recommend.clue.count', '{count}个', {
+                                                            count: _.get(item.contact, 'phones')
+                                                        })}</span>
+                                                    </span>
+                                                ) : null}
+                                                {_.get(item.contact, 'email') ? (
+                                                    <span className="extract-clue-contacts-item">
+                                                        <span className="extract-clue-text-label">{Intl.get('common.email', '邮箱')}：</span>
+                                                        <span>{Intl.get('clue.recommend.clue.count', '{count}个', {
+                                                            count: _.get(item.contact, 'email')
+                                                        })}</span>
+                                                    </span>
+                                                ) : null}
+                                                {_.get(item.contact, 'qq') ? (
+                                                    <span className="extract-clue-contacts-item">
+                                                        <span className="extract-clue-text-label">QQ：</span>
+                                                        <span>{Intl.get('clue.recommend.clue.count', '{count}个', {
+                                                            count: _.get(item.contact, 'qq')
+                                                        })}</span>
+                                                    </span>
+                                                ) : null}
+                                                {_.get(item.contact, 'weChat') ? (
+                                                    <span className="extract-clue-contacts-item">
+                                                        <span className="extract-clue-text-label">{Intl.get('crm.58', '微信')}：</span>
+                                                        <span>{Intl.get('clue.recommend.clue.count', '{count}个', {
+                                                            count: _.get(item.contact, 'weChat')
+                                                        })}</span>
+                                                    </span>
+                                                ) : null}
                                             </div>
-                                            <div className="extract-clue-text-item">
-                                                <span className="extract-clue-text-label">{Intl.get('call.record.contacts', '联系人')}</span>：
-                                                <span>{item.legalPerson}</span>
-                                            </div>
-                                            <div className="extract-clue-text-item">
-                                                <span className="extract-clue-text-label">{Intl.get('common.phone', '电话')}</span>：
-                                                <span>{_.get(item.telephones, '[0]')}</span>
-                                            </div>
+                                        </div>
+                                        <div className={otherCls}>
+                                            {/*产品*/}
+                                            {otherProps.products.hasHighLight ? (
+                                                <div className="extract-clue-text-item">
+                                                    <span>{Intl.get('common.product', '产品')}：</span>
+                                                    <span dangerouslySetInnerHTML={{__html: otherProps.products.content}}/>
+                                                </div>
+                                            ) : null}
+                                            {/*经营范围*/}
+                                            {otherProps.scope.hasHighLight ? (
+                                                <div className="extract-clue-text-item">
+                                                    <ShearContent rowsNum={1}>
+                                                        <span>{Intl.get('clue.recommend.clue.scope', '经营范围')}：</span>
+                                                        <span dangerouslySetInnerHTML={{__html: otherProps.scope.content}}/>
+                                                    </ShearContent>
+                                                </div>
+                                            ) : null}
+                                            {/*行业*/}
+                                            {otherProps.industry.hasHighLight ? (
+                                                <div className="extract-clue-text-item">
+                                                    <span>{Intl.get('menu.industry', '行业')}：</span>
+                                                    <span dangerouslySetInnerHTML={{__html: otherProps.industry.content}}/>
+                                                </div>
+                                            ) : null}
+                                            {/*简介*/}
+                                            {otherProps.companyProfile.hasHighLight ? (
+                                                <div className="extract-clue-text-item">
+                                                    <ShearContent
+                                                        rowsNum={1}
+                                                    >
+                                                        <span>{Intl.get('clue.recommend.clue.introduction', '简介')}：</span>
+                                                        <span dangerouslySetInnerHTML={{__html: otherProps.companyProfile.content}}/>
+                                                    </ShearContent>
+                                                </div>
+                                            ) : null}
                                         </div>
                                     </div>
                                     <div className="single-extract-clue">

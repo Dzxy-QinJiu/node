@@ -3887,6 +3887,9 @@ var zh_CN = {
     'clue.recommend.default.tip': '{timerange}还可提取{ableExtract}条线索',
     'clue.recommend.selected.extract.tip': '已选中{count}条，还可提取{ableExtract}条线索',
     'clue.extract.count.has.been.exceed': '已超过可提取数',
+    'clue.recommend.clue.scope': '经营范围',
+    'clue.recommend.clue.introduction': '简介',
+    'clue.recommend.clue.count': '{count}个',
 
     'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',
