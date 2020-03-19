@@ -27,6 +27,10 @@ class UserDetailEditAppStore {
     setInitialData(appInfo) {
         //修改单个应用，所以选中应用只有一个
         this.selectedApps = [_.pick(appInfo , 'app_id' , 'app_name', 'app_logo')];
+        let matchAppTerminals = _.get(appInfo, 'matchAppTerminals'); // 所选应用的所用默认多终端
+        if (!_.isEmpty(matchAppTerminals)) {
+            this.selectedApps[0].terminals = matchAppTerminals;
+        }
         //根据应用信息计算“开始时间、结束时间、周期”
         let start_time = appInfo.start_time,
             end_time = appInfo.end_time,

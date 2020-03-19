@@ -28,12 +28,12 @@ import insertStyle from '../../../../../components/insert-style';
 const GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 const DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 const CheckboxGroup = Checkbox.Group;
-import UserAppConfig from '../v3/AppPropertySetting';
+import UserAppConfig from 'CMP_DIR/user_manage_components/app-property-setting';
 import ApplyUserAppConfig from 'CMP_DIR/apply-user-app-config';
 import AppConfigForm from 'CMP_DIR/apply-user-app-config/app-config-form';
 import {CONFIG_TYPE} from 'PUB_DIR/sources/utils/consts';
 import {getConfigAppType} from 'PUB_DIR/sources/utils/common-method-util';
-
+require('../../css/add-app.less');
 function merge(obj1, obj2) {
     obj1 = obj1 || {};
     obj2 = obj2 || {};
@@ -641,6 +641,7 @@ const UserDetailAddApp = createReactClass({
                     onAppPropertyChange={this.onAppPropertyChange.bind(this)}
                     height={height}
                     hideSingleApp={true}
+                    hideAppBasicInfo={true}
                 />
             </div>
         );
@@ -819,7 +820,7 @@ const UserDetailAddApp = createReactClass({
     //render函数
     render() {
         return (
-            <div className="user-manage-v2 user-detail-add-app-v2">
+            <div className="user-detail-add-app-v2">
                 <span className="btn-return btn-text" onClick={this.cancel}>{Intl.get('user.detail.return', '返回基本信息')}</span>
                 <Form layout='horizontal'>
                     <div className="add-app-container" style={{ height: this.props.height }}>
