@@ -1238,9 +1238,8 @@ class MyWorkColumn extends React.Component {
                         </Button>
 
                         <Button
-                            onClick={showReportPanel.bind(null, {
-                                currentView: VIEW_TYPE.REPORT_FORM,
-                                clickedTpl: tpl
+                            onClick={setIsNoLongerShowCheckReportNotice.bind(this, () => {
+                                this.setState();
                             })}
                         >
                             我知道了
