@@ -22,9 +22,19 @@ class AddTpl extends React.Component {
                 {_.map(this.props.tplList, tpl => (
                     <DetailCard
                         title={tpl.name}
-                        content={tpl.name}
+                        content={this.renderCardContent(tpl)}
                     />
                 ))}
+            </div>
+        );
+    }
+
+    renderCardContent(tpl) {
+        const { updateState } = this.props;
+
+        return (
+            <div>
+                <a href="javascript:void(0)" onClick={() => { updateState({ currentView: VIEW_TYPE.REPORT_FORM, clickedTpl: tpl, isPreview: true }); }}>查看</a>
             </div>
         );
     }
