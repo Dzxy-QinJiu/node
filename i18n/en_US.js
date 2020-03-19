@@ -3110,12 +3110,13 @@ var en_US = {
     'clue.add.wechat.num': 'Wechat',//微信号码
     'clue.alanalysis.charts': 'lead analysis',//线索分析
     'clue.detail.info': 'lead info',//线索信息
-    'clue.no.clue.source': 'Not added lead source', //未添加线索来源
+    'clue.no.clue.source': 'Not added lead source', //暂无线索来源
     'clue.add.clue.source': 'Add lead source',//添加线索来源
-    'clue.no.access.channel': 'Not added access channel', //未添加接入渠道
+    'clue.no.access.channel': 'Not added access channel', //暂无接入渠道
     'clue.add.access.channel': 'Add access channel',//添加接入渠道
     'clue.add.clue.classfify': 'Add lead classify',//添加线索分类
     'clue.add.clue.describe': 'Add lead description',//添加线索描述
+    'clue.no.clue.describe': 'No lead description',//暂无线索描述
     'clue.add.clue.name': 'Add clue name',//添加线索名称
     'clue.no.clue.name': 'No added clue name',//未添加线索名称
     'clue.add.clue.placeholder': 'Please fill in lead description',//请填写线索描述
@@ -3228,6 +3229,7 @@ var en_US = {
     'lead.recommend.form.show.all.condition': 'Show all conditions',//展开全部条件
     'lead.recommend.form.hide.some.condition': 'Hide some condition',//收起部分条件
     'lead.associate.customer.detail': 'View associated customers',//查看关联客户
+    'lead.info.website.info': 'Official website',//官网
     
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',

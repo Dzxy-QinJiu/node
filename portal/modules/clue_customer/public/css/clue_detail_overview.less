@@ -2,15 +2,21 @@
 @FONT_COLOR:#999;
 .clue-detail-container{
   font-size: 14px;
+  .clear-float{
+    clear: both;
+  }
+  .clue-contact-container.clue-detail-block{
+    background: #f5f6f8;
+    padding: 0;
+    margin-bottom: 8px;
+    .contact-item.detail-card-container{
+      margin-bottom: 0;
+    }
+  }
   .clue-detail-block{
     padding:12px;
     margin-bottom: 8px;
     background: #fff;
-    .clue-basic-info{
-      .clear-float{
-        clear: both;
-      }
-    }
     .clue-info-item{
       border-radius: 4px;
       //overflow: hidden;
@@ -18,12 +24,13 @@
       min-height: 24px;
       float: left;
       width: 100%;
-      .clue-info-label,.item-show-label{
+      .clue-info-label,.item-show-label, .ant-form-item-label label{
         width: 60px;
         float: left;
         color: @FONT_COLOR;
         font-size: 14px;
         line-height: 24px;
+        text-align: left;
         &.contact-way-icon{
           margin-top:0;
           margin-right: 0px;
@@ -101,7 +108,20 @@
     }
     .contact-item{
       overflow: hidden;
-      margin-bottom:10px;
+      .phone-input-wrap {
+        .phone-validate-error {
+          font-size: 12px;
+          text-align: start;
+          width: 248px;
+          float: left;
+          display: inline-block;
+          line-height: 1.5;
+          color: #f04134;
+          margin-top: -15px;
+          margin-left: 59px;
+          margin-bottom: 8px
+        }
+      }
       .contact-item-content{
         overflow: hidden;
         .dynamic-item-form{
@@ -114,20 +134,7 @@
         label.ant-form-item-required:before{
           display: none;
         }
-        .phone-input-wrap {
-          .phone-validate-error {
-            font-size: 12px;
-            text-align: start;
-            width: 248px;
-            float: left;
-            display: inline-block;
-            line-height: 1.5;
-            color: #f04134;
-            margin-top: -15px;
-            margin-left: 59px;
-            margin-bottom: 8px
-          }
-        }
+
       }
 
        .contact-way{
@@ -271,6 +278,9 @@
     }
   }
   .associate-customer-detail.clue-detail-block{
+    &.no-margin{
+      margin-bottom: 0;
+    }
     padding: 0;
     overflow: hidden;
     //确认有效或确认无效容器
@@ -416,7 +426,7 @@
     }
   }
   .detail-card-container {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     margin-top: 0;
     padding: 10px;
     position: relative;
