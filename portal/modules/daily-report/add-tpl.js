@@ -15,7 +15,7 @@ class AddTpl extends React.Component {
     }
 
     render() {
-        const { updateState, selectedTpl } = this.props;
+        const { updateState, currentTpl } = this.props;
 
         return (
             <div>
@@ -34,10 +34,10 @@ class AddTpl extends React.Component {
 
         return (
             <div>
-                <a href="javascript:void(0)" onClick={() => { updateState({ currentView: VIEW_TYPE.REPORT_FORM, clickedTpl: tpl, isPreview: true }); }}>查看</a>
+                <a href="javascript:void(0)" onClick={() => { updateState({ currentView: VIEW_TYPE.REPORT_FORM, currentTpl: tpl, isPreview: true }); }}>查看</a>
 
                 <Button
-                    onClick={() => { updateState({ currentView: VIEW_TYPE.SET_RULE, selectedTpl: tpl }); }}
+                    onClick={() => { updateState({ currentView: VIEW_TYPE.SET_RULE, currentTpl: tpl }); }}
                 >
                     开启
                 </Button>

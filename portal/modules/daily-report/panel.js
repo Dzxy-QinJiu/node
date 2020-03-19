@@ -19,9 +19,7 @@ class ReportPanel extends React.Component {
         teamList: [],
         tplList: [],
         reportList: [],
-        selectedTpl: '',
-        clickedTpl: this.props.clickedTpl || {},
-        tplValues: {},
+        currenTpl: this.props.currenTpl || {},
         currentReport: this.props.currentReport || {},
         numberDetail: this.props.numberDetail || [],
         isPreview: false,
@@ -53,6 +51,12 @@ class ReportPanel extends React.Component {
                 title = nickName + '的报告详情';
                 break;
             case VIEW_TYPE.NUMBER_DETAIL:
+                title = <span>
+                    <span>{title}</span>
+                    <span onClick={() => {this.setState({currentView: VIEW_TYPE.REPORT_DETAIL});}}>返回</span>
+                </span>;
+                break;
+            case VIEW_TYPE.REPORT_FORM:
                 title = <span>
                     <span>{title}</span>
                     <span onClick={() => {this.setState({currentView: VIEW_TYPE.REPORT_DETAIL});}}>返回</span>

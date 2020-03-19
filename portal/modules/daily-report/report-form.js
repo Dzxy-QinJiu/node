@@ -11,8 +11,8 @@ class ReportForm extends React.Component {
     componentDidMount() {
         if (!this.props.isPreview) {
             getReportList(list => {
-                const tplValues = _.first(list) || {};
-                this.props.updateState({ tplValues });
+                const currentReport = _.first(list) || {};
+                this.props.updateState({ currentReport });
             });
         }
     }
@@ -21,8 +21,8 @@ class ReportForm extends React.Component {
         const renderFormItem = renderFormItemFunc.bind(this, {});
         const renderButtonZone = renderButtonZoneFunc.bind(this);
 
-        const { updateState, clickedTpl, isPreview, tplValues } = this.props;
-        const items = isPreview ? clickedTpl.items : tplValues.item_values;
+        const { updateState, currentTpl, isPreview, currentReport } = this.props;
+        const items = isPreview ? currentTpl.items : currentReport.item_values;
         const editableFields = ['其他'];
         const editableItems = _.filter(items, item => _.includes(editableFields, item.name));
         const unEditableItems = _.filter(items, item => !_.includes(editableFields, item.name));
@@ -60,8 +60,8 @@ class ReportForm extends React.Component {
         this.props.form.validateFields((err, values) => {
             console.log(values,3);
             if (!err) {
-                let { tplValues } = this.props;
-                let itemValues = _.get(tplValues, 'item_values');
+                let { currentReport } = this.props;
+                let itemValues = _.get(currentReport, 'item_values');
 
                 _.each(values, (value, key) => {
                     if (_.isUndefined(value)) {
@@ -73,7 +73,7 @@ class ReportForm extends React.Component {
                     }
                 });
 
-                saveReport(tplValues, result => {});
+                saveReport(currentReport, result => {});
                 //hideReportPanel()
             }
         });
