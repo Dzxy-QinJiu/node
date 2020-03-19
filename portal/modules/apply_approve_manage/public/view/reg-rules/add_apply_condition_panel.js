@@ -361,7 +361,6 @@ class AddApplyConditionPanel extends React.Component {
                 var target = this.getConditionRelate(item.limitType);
                 if(this.checkUserSearch(item) || this.checkTeamSearch(item) || this.checkTimePeriod(item)){
                     checkFlag = false;
-                    this.showErrTip();
                 }
                 target.conditionRule(item);//生成随机的流程的key和对应的userIds的数组
             });
@@ -371,6 +370,8 @@ class AddApplyConditionPanel extends React.Component {
                 }
                 this.props.saveAddApprovCondition(submitObj);
                 this.props.hideRightPanel();
+            }else{
+                this.showErrTip();
             }
 
         });
