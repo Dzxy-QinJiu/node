@@ -3438,6 +3438,7 @@ var en_US = {
     'apply.approve.upload.error.file.type': 'The file format is incorrect!',//文件格式不正确！
     'apply.approve.upload.not.more.than50': 'The file size cannot exceed 10M!',//文件大小不能超过10M!
     'apply.approve.no.comment': 'There is no reply content!',//暂无回复内容！
+    'apply.approve.not.full.condition': 'Please complete the conditions before saving',//请完善条件后再保存
     'crm.input.your.apply.user.type': 'Please enter or select the type of user you are applying for',//请输入或选择您申请的用户类型
     'apply.view.transfer.candidate': 'Transfer approval',//转审
     'contract.form.customize': 'Add customized product',//'添加自定义产品',

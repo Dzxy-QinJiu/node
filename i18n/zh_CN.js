@@ -3461,6 +3461,7 @@ var zh_CN = {
     'apply.approve.upload.error.file.type': '文件格式不正确！',
     'apply.approve.upload.not.more.than50': '文件大小不能超过10M!',
     'apply.approve.no.comment': '暂无回复内容！',
+    'apply.approve.not.full.condition': '请完善条件后再保存',
     'crm.input.your.apply.user.type': '请输入或选择您申请的用户类型',
     'apply.view.transfer.candidate': '转审',
     'contract.form.customize': '添加自定义产品',
