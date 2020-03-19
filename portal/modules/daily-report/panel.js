@@ -43,10 +43,12 @@ class ReportPanel extends React.Component {
     }
 
     getDetailTitle() {
-        let title = this.state.currentView;
-        const nickName = _.get(this.state.currentReport, 'nickname');
+        const { currentView, currentTpl, currentReport, isPreview } = this.state;
 
-        switch(title) {
+        let title = currentView;
+        const nickName = _.get(currentReport, 'nickname');
+
+        switch(currentView) {
             case VIEW_TYPE.REPORT_DETAIL:
                 title = nickName + '的报告详情';
                 break;
@@ -57,10 +59,9 @@ class ReportPanel extends React.Component {
                 </span>;
                 break;
             case VIEW_TYPE.REPORT_FORM:
-                title = <span>
-                    <span>{title}</span>
-                    <span onClick={() => {this.setState({currentView: VIEW_TYPE.REPORT_DETAIL});}}>返回</span>
-                </span>;
+                if (isPreview) {
+                    title = currentTpl.name;
+                }
                 break;
         }
 
