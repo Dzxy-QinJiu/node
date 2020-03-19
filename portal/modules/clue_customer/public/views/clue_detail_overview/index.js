@@ -1101,7 +1101,7 @@ class ClueDetailOverview extends React.Component {
         var associatedDisplyType = this.state.clickAssociatedBtn ? 'edit' : 'text';
         //如果关联了客户
         if (this.state.clickAssociatedBtn || associatedCustomer) {
-            return this.renderBasicContent(Intl.get('clue.customer.associate.customer',<CustomerSuggest
+            return this.renderBasicContent(Intl.get('clue.customer.associate.customer','关联客户'),<CustomerSuggest
                 field='customer_id'
                 hasEditPrivilege={false}
                 displayText={associatedCustomer}
@@ -1117,7 +1117,7 @@ class ClueDetailOverview extends React.Component {
                 handleCancel={this.handleCancelCustomerSuggest}
                 customerLable={curClue.customer_label}
                 saveSameNoCustomerName={this.saveSameNoCustomerName}
-            />,'关联客户'));
+            />);
         }
     };
 
