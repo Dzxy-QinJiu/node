@@ -28,12 +28,14 @@ class ContactItem extends React.Component {
         isLoading: false
     };
 
-    showDeleteContactConfirm = () => {
+    showDeleteContactConfirm = (event) => {
+        event.stopPropagation();
         Trace.traceEvent(ReactDOM.findDOMNode(this), '删除联系人');
         ContactAction.showDeleteContactConfirm(this.props.contact);
     };
 
-    setDefaultContact = (contact) => {
+    setDefaultContact = (contact, event) => {
+        event.stopPropagation();
         //如果已经是默认联系人或者正在设置默认联系人
         if (contact.def_contancts === 'true' || this.state.isLoading) return;
         if (this.props.isMerge) {
@@ -56,12 +58,14 @@ class ContactItem extends React.Component {
         }
     };
 
-    hideDeleteContactModal = () => {
+    hideDeleteContactModal = (event) => {
+        event.stopPropagation();
         Trace.traceEvent(ReactDOM.findDOMNode(this), '取消删除联系人');
         ContactAction.hideDeleteContactConfirm(this.props.contact);
     };
 
-    deleteContact = () => {
+    deleteContact = (event) => {
+        event.stopPropagation();
         if (this.props.isMerge) {
             this.props.delMergeCustomerContact(this.props.contact.contact.id);
             ContactAction.hideDeleteContactConfirm(this.props.contact.contact);

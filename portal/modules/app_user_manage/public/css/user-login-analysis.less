@@ -3,9 +3,19 @@
 */
 .user-analysis-panel {
   .detail-card-container {
+    position: relative;
+    z-index: 999;
     .title-container {
       overflow: inherit;
     }
+  }
+  .terminals-select-zone {
+      .title-click-block {
+        .toggle-detail {
+          position: relative;
+          top: -26px;
+        }
+      }
   }
   .load8 {
     transform: scale(0.5, 0.5);
@@ -83,6 +93,7 @@
       .duration-chart {
         height: 126px;
         .analysis-chart {
+          height: 146px;
           position: relative;
           top: 10px;
         }
