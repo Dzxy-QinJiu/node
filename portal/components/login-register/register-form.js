@@ -6,11 +6,11 @@
 require('./css/register.less');
 const PropTypes = require('prop-types');
 import Trace from '../../lib/trace';
-import {commonPhoneRegex, checkPassword, checkConfirmPassword} from '../../public/sources/utils/validate-util';
-import {PassStrengthBar} from 'CMP_DIR/password-strength-bar';
+import { commonPhoneRegex, checkPassword, checkConfirmPassword } from '../../public/sources/utils/validate-util';
+import { PassStrengthBar } from 'CMP_DIR/password-strength-bar';
 import crypto from 'crypto';
-import {Form, Input, Icon, Button, Col} from 'antd';
-import {TextField} from '@material-ui/core';
+import { Form, Input, Icon, Button, Col } from 'antd';
+import { TextField } from '@material-ui/core';
 import classNames from 'classnames';
 const FormItem = Form.Item;
 let codeEffectiveInterval = null;
@@ -19,13 +19,7 @@ const CODE_EFFECTIVE_TIME = 60;
 const CODE_INTERVAL_TIME = 1000;
 let getVerifyErrorCaptchaCodeAJax = null;
 var base64_prefix = 'data:image/png;base64,';
-// 将传入的内容进行md5加密处理
-function getMD5Val(value) {
-    //md5加密处理
-    var md5Hash = crypto.createHash('md5');
-    md5Hash.update(value);
-    return md5Hash.digest('hex');
-}
+
 class RegisterForm extends React.Component {
     constructor(props) {
         super(props);
@@ -52,10 +46,10 @@ class RegisterForm extends React.Component {
             }
         };
     }
-   
+
     componentWillUnmount() {
         //组件注销前，将电话是否通过验证\是否注册过的标识恢复默认值
-        this.setState({phoneIsPassValid: false, phoneIsRegisted: false});
+        this.setState({ phoneIsPassValid: false, phoneIsRegisted: false });
     }
     //获取网页的来源
     getWebReferrer() {
@@ -72,28 +66,41 @@ class RegisterForm extends React.Component {
         }
         return referrer;
     }
- 
+
     //提交form表单的数据
     submitFormData(e) {
         const form = this.props.form;
         form.validateFields((err, values) => {
-            if (err) return;
+            if (err) {
+                let errorMsg = '表单验证未通过: ';
+                // {phone:{errors:[{message:'错误提示'，feild:'phone'}]},
+                //   code：{...}, ...}
+                _.each(err, (val, key) => {
+                    errorMsg += `${key}：${_.get(val, 'errors[0].message', '')};  `;
+                });
+                Trace.traceEvent(e, errorMsg);
+                return;
+            }
             // 电话已经注册过
-            if (this.state.phoneIsRegisted) return;
+            if (this.state.phoneIsRegisted) {
+                Trace.traceEvent(e, '电话已被注册过');
+                return;
+            }
             let formData = {
                 phone: values.phone,
                 code: values.code,
                 referrer: this.getWebReferrer()
             };
-                // 图片验证码
-            if(values.verifyErrorCaptchaCode){
+            // 图片验证码
+            if (values.verifyErrorCaptchaCode) {
                 formData.captcha = values.verifyErrorCaptchaCode;
             }
-            Trace.traceEvent(e, '提交表单, 注册手机号:' + getMD5Val(formData.phone));
+            // 此处的事件跟踪描述不可修改，因为后端会根据 “个人注册手机号:”的描述来从matomo中获取注册账号对应线索的线索描述
+            Trace.traceEvent(e, '个人注册手机号:' + formData.phone);
             let md5Hash = crypto.createHash('md5');
             md5Hash.update(values.pwd);
             formData.pwd = md5Hash.digest('hex');
-            this.setState({registerErrorMsg: '', isRegistering: true});
+            this.setState({ registerErrorMsg: '', isRegistering: true });
             $.ajax({
                 url: '/account/register',
                 dataType: 'json',
@@ -101,19 +108,19 @@ class RegisterForm extends React.Component {
                 data: formData,
                 success: data => {
                     if (data) {
-                        this.setState({registerErrorMsg: '', isRegistering: false});
+                        this.setState({ registerErrorMsg: '', isRegistering: false });
                         window.location.href = '/';
                     } else {
-                        this.setState({registerErrorMsg: Intl.get('register.error.tip', '注册失败'), isRegistering: false});
+                        this.setState({ registerErrorMsg: Intl.get('register.error.tip', '注册失败'), isRegistering: false });
                     }
                 },
                 error: xhr => {
                     let errorMsg = _.get(xhr, 'responseJSON', Intl.get('register.error.tip', '注册失败'));
                     // 手机验证码验证失败三次后或图片验证码输错后，会报图片验证码错误
-                    if(errorMsg === Intl.get('login.fogot.password.picture.code.error', '图片验证码错误')){
+                    if (errorMsg === Intl.get('login.fogot.password.picture.code.error', '图片验证码错误')) {
                         this.getVerifyErrorCaptchaCode(values.phone);
                         // 没有图片验证码时，说明是手机验证码验证失败三次后，此时需提示'短信验证码错误'
-                        if(!formData.captcha){
+                        if (!formData.captcha) {
                             errorMsg = Intl.get('login.fogot.password.phone.code.error', '短信验证码错误');
                         }
                     }
@@ -133,7 +140,7 @@ class RegisterForm extends React.Component {
             code: values.code, // 短信验证码
         };
         // 图片验证码
-        if(values.verifyErrorCaptchaCode){
+        if (values.verifyErrorCaptchaCode) {
             queryObj.captcha = values.verifyErrorCaptchaCode;
         }
         $.ajax({
@@ -145,17 +152,17 @@ class RegisterForm extends React.Component {
                 if (data) {
                     if (_.isFunction(successFunc)) successFunc();
                 } else {
-                    this.setState({registerErrorMsg: Intl.get('login.fogot.password.phone.code.error', '短信验证码错误')});
+                    this.setState({ registerErrorMsg: Intl.get('login.fogot.password.phone.code.error', '短信验证码错误') });
                     this.getVerifyErrorCaptchaCode(values.phone);
                 }
             },
             error: xhr => {
                 let errorMsg = _.get(xhr, 'responseJSON');
                 // 手机验证码验证失败三次后或图片验证码输错后，会报图片验证码错误
-                if(errorMsg === Intl.get('login.fogot.password.picture.code.error', '图片验证码错误')){
+                if (errorMsg === Intl.get('login.fogot.password.picture.code.error', '图片验证码错误')) {
                     this.getVerifyErrorCaptchaCode(values.phone);
                     // 没有图片验证码时，说明是手机验证码验证失败三次后，此时需提示'短信验证码错误'
-                    if(!values.captcha){
+                    if (!values.captcha) {
                         errorMsg = Intl.get('login.fogot.password.phone.code.error', '短信验证码错误');
                     }
                 }
@@ -167,7 +174,7 @@ class RegisterForm extends React.Component {
     }
     // 短信验证码验证失败三次后获取图片验证码
     getVerifyErrorCaptchaCode = (phone, isRefresh, e) => {
-        if(isRefresh){
+        if (isRefresh) {
             Trace.traceEvent(e, '刷新图片验证码');
         }
         if (getVerifyErrorCaptchaCodeAJax) getVerifyErrorCaptchaCodeAJax.abort();
@@ -194,7 +201,7 @@ class RegisterForm extends React.Component {
         if (this.state.captchaCode) {
             return (
                 <Button>
-                    {Intl.get('register.code.effective.time', '{second}秒后重试', {second: this.state.codeEffectiveTime})}
+                    {Intl.get('register.code.effective.time', '{second}秒后重试', { second: this.state.codeEffectiveTime })}
                 </Button>);
         } else {
             // 电话通过验证 并且 电话未被注册时，按钮才可用
@@ -202,7 +209,7 @@ class RegisterForm extends React.Component {
             return (
                 <Button disabled={!btnEnable} className={btnEnable ? 'captcha-btn' : ''}>
                     {Intl.get('register.get.phone.captcha.code', '获取验证码')}
-                    {this.state.isLoadingValidCode ? <Icon type="loading"/> : null}
+                    {this.state.isLoadingValidCode ? <Icon type="loading" /> : null}
                 </Button>);
         }
     }
@@ -220,9 +227,9 @@ class RegisterForm extends React.Component {
         codeEffectiveInterval = setInterval(() => {
             if (codeEffectiveTime) {
                 codeEffectiveTime -= 1;
-                this.setState({codeEffectiveTime});
+                this.setState({ codeEffectiveTime });
                 if (codeEffectiveTime === 0) {
-                    this.setState({captchaCode: ''});
+                    this.setState({ captchaCode: '' });
                     this.clearCodeEffectiveInterval();
                 }
             }
@@ -235,13 +242,13 @@ class RegisterForm extends React.Component {
         let phone = _.trim(this.props.form.getFieldValue('phone'));
         if (phone && commonPhoneRegex.test(phone)) {
             // 获取输入手机号的短信验证码
-            Trace.traceEvent(e, '获取短信验证码，手机号:' + getMD5Val(phone));
-            this.setState({isLoadingValidCode: true, validateCodeErrorMsg: '', getCodeErrorMsg: ''});
+            Trace.traceEvent(e, '获取短信验证码，手机号:' + phone);
+            this.setState({ isLoadingValidCode: true, validateCodeErrorMsg: '', getCodeErrorMsg: '' });
             $.ajax({
                 url: '/phone/validate_code',
                 dataType: 'json',
                 type: 'get',
-                data: {phone},
+                data: { phone },
                 success: data => {
                     if (data) {
                         this.setState({
@@ -268,13 +275,13 @@ class RegisterForm extends React.Component {
                         isLoadingValidCode: false
                     };
                     // 手机号已被注册时
-                    if(updateState.getCodeErrorMsg === Intl.get('register.phone.has.registed', '该手机号已被注册')){
+                    if (updateState.getCodeErrorMsg === Intl.get('register.phone.has.registed', '该手机号已被注册')) {
                         // 需要在手机号下面提示
                         updateState.phoneIsRegisted = true;
                         // 短信验证码下面就不用展示了
                         delete updateState.getCodeErrorMsg;
                     }
-                    this.setState({...updateState});
+                    this.setState({ ...updateState });
                 }
             });
         }
@@ -283,7 +290,7 @@ class RegisterForm extends React.Component {
         let phone = this.props.form.getFieldValue('phone');
         if (phone && commonPhoneRegex.test(phone)) {
             if (phone === this.state.isCheckingRegistedPhone) return;
-            this.setState({isCheckingRegistedPhone: phone});
+            this.setState({ isCheckingRegistedPhone: phone });
             $.ajax({
                 url: '/phone/registed/check',
                 dataType: 'json',
@@ -326,7 +333,7 @@ class RegisterForm extends React.Component {
         if (phone) {
             if (commonPhoneRegex.test(phone)) {
                 // 电话通过验证后，将电话上传到matomo上记录
-                Trace.traceEvent('个人注册页面', '验证手机号:' + getMD5Val(phone));
+                Trace.traceEvent('个人注册页面', '验证手机号:' + phone);
                 callback();
             } else {
                 callback(Intl.get('register.phon.validat.tip', '请输入正确的手机号, 格式如:13877775555'));
@@ -354,16 +361,16 @@ class RegisterForm extends React.Component {
         let rePassWord = getFieldValue('rePwd');
         checkPassword(this, value, callback, rePassWord, () => {
             // 如果密码验证通过后，需要强制刷新下确认密码的验证，以防密码不一致的提示没有去掉
-            validateFields(['rePwd'], {force: true});
+            validateFields(['rePwd'], { force: true });
         });
     };
-   
+
     checkPass2 = (rule, value, callback) => {
         let { getFieldValue, validateFields } = this.props.form;
         let password = getFieldValue('pwd');
         checkConfirmPassword(value, callback, password, () => {
             // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
-            validateFields(['pwd'], {force: true});
+            validateFields(['pwd'], { force: true });
         });
     }
 
@@ -390,14 +397,14 @@ class RegisterForm extends React.Component {
         });
     }
     render() {
-        const {getFieldDecorator, getFieldsValue} = this.props.form;
+        const { getFieldDecorator, getFieldsValue } = this.props.form;
         const values = getFieldsValue();
         return (
             <Form className='register-form' autoComplete="off">
-                <Input type="password" className='password-hidden-input' name="pwd"/>
+                <Input type="password" className='password-hidden-input' name="pwd" />
                 <FormItem>
                     {getFieldDecorator('phone', {
-                        rules: [{validator: this.validatePhone}],
+                        rules: [{ validator: this.validatePhone }],
                         validateTrigger: 'onBlur'
                     })(
                         <TextField
@@ -424,7 +431,7 @@ class RegisterForm extends React.Component {
                 </FormItem>
                 <FormItem>
                     {getFieldDecorator('code', {
-                        rules: [{validator: this.validateCode.bind(this)}]
+                        rules: [{ validator: this.validateCode.bind(this) }]
                     })(
                         <TextField
                             required
@@ -470,7 +477,7 @@ class RegisterForm extends React.Component {
                 }
                 <FormItem>
                     {getFieldDecorator('pwd', {
-                        rules: [{validator: this.checkPass.bind(this)}]
+                        rules: [{ validator: this.checkPass.bind(this) }]
                     })(
                         <TextField
                             required
@@ -486,7 +493,7 @@ class RegisterForm extends React.Component {
                 </FormItem>
                 <Col span="24" className='password-strength-wrap'>
                     {this.state.passBarShow ?
-                        (<PassStrengthBar passStrength={this.state.passStrength}/>) : null}
+                        (<PassStrengthBar passStrength={this.state.passStrength} />) : null}
                 </Col>
                 <FormItem>
                     {getFieldDecorator('rePwd', {
@@ -518,27 +525,27 @@ class RegisterForm extends React.Component {
                                 </a>),
                             'privacyPolicy': (
                                 <a onClick={this.openPrivacyPolicy} data-tracename="点击《用户协议》">
-                                 《{Intl.get('register.privacy.policy', '隐私政策')}》
+                                    《{Intl.get('register.privacy.policy', '隐私政策')}》
                                 </a>)
                         }}
                     />
                 </div>
                 <FormItem className='register-btn-form-item'>
                     <div className='register-btn'>
-                        <Button 
+                        <Button
                             fullWidth
                             variant="contained"
-                            onClick={this.submitFormData.bind(this)} 
+                            onClick={this.submitFormData.bind(this)}
                             data-tracename="点击注册"
-                        > 
+                        >
                             {Intl.get('login.register', '注册')}
-                            {this.state.isRegistering ? <Icon type="loading"/> : null}
+                            {this.state.isRegistering ? <Icon type="loading" /> : null}
                         </Button>
                     </div>
-                    <div className='register-to-login' data-tracename="点击登录"> 
+                    <div className='register-to-login' data-tracename="点击登录">
                         <ReactIntl.FormattedMessage
                             id='register.to.login.tip'
-                            defaultMessage= '已有账号，去{login}'
+                            defaultMessage='已有账号，去{login}'
                             values={{
                                 'login': (
                                     <a onClick={this.toLogin.bind(this, '已有账号，去登录')}>
