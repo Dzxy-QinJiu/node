@@ -1222,57 +1222,47 @@ class MyWorkColumn extends React.Component {
         const tpl = _.get(this.state.tplList, '[0]', {});
         const { isCommonSales } = userData.getUserData();
         let title = '';
-        let buttons = null;
+        let buttons = [];
 
         if (_.isEmpty(tpl)) {
             if (!isCommonSales) {
                 title = '启用报告可以汇总销售日常工作';
 
-                buttons = (
-                    <div>
-                        <Button
-                            type="primary"
-                            onClick={showReportPanel}
-                        >
-                            开启报告
-                        </Button>
-
-                        <Button
-                            onClick={setIsNoLongerShowCheckReportNotice.bind(this, () => {
-                                this.setState();
-                            })}
-                        >
-                            我知道了
-                        </Button>
-                    </div>
-                );
+                buttons.push({
+                    type: 'primary',
+                    onClick: showReportPanel,
+                    name: '开启报告'
+                });
             }
         } else {
             title = tpl.name;
 
             if (isCommonSales) {
-                buttons = (
-                    <Button
-                        onClick={showReportPanel.bind(null, {
-                            currentView: VIEW_TYPE.REPORT_FORM,
-                            clickedTpl: tpl
-                        })}
-                    >
-                        填写报告
-                    </Button>
-                );
+                buttons.push({
+                    type: 'primary',
+                    onClick: showReportPanel.bind(null, {
+                        currentView: VIEW_TYPE.REPORT_FORM,
+                        clickedTpl: tpl
+                    }),
+                    name: '填写报告'
+                });
             } else {
-                buttons = (
-                    <Button
-                        onClick={() => {
-                            history.push('analysis/report/daily-report');
-                        }}
-                    >
-                        查看报告
-                    </Button>
-                );
+                buttons.push({
+                    type: 'primary',
+                    onClick: () => {
+                        history.push('analysis/report/daily-report');
+                    },
+                    name: '查看报告'
+                });
             }
         }
+
+        buttons.push({
+            onClick: setIsNoLongerShowCheckReportNotice.bind(this, () => {
+                this.setState();
+            }),
+            name: '我知道了'
+        });
 
         const dailyReportWorkCard = (
             <div className="my-work-card-container daily-report-work-card">
@@ -1282,7 +1272,18 @@ class MyWorkColumn extends React.Component {
                         {title}
                     </div>
                     <div className="buttons">
-                        {buttons}
+                        {_.map(buttons, item => {
+                            const { name } = item;
+                            delete item.name;
+
+                            return (
+                                <Button
+                                    {...item}
+                                >
+                                    {name}
+                                </Button>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
