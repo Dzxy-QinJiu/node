@@ -46,17 +46,18 @@ class ReportPanel extends React.Component {
 
     getDetailTitle() {
         let title = this.state.currentView;
+        const nickName = _.get(this.state.currentReport, 'nickname');
 
-        if (title === '报告详情') {
-            const nickName = _.get(this.state.currentReport, 'nickname');
-            title = nickName + '的报告详情';
-        }
-
-        if (title === '数字详情') {
-            title = <span>
-                <span>{title}</span>
-                <span onClick={() => {this.setState({currentView: VIEW_TYPE.REPORT_DETAIL});}}>返回</span>
-            </span>;
+        switch(title) {
+            case VIEW_TYPE.REPORT_DETAIL:
+                title = nickName + '的报告详情';
+                break;
+            case VIEW_TYPE.NUMBER_DETAIL:
+                title = <span>
+                    <span>{title}</span>
+                    <span onClick={() => {this.setState({currentView: VIEW_TYPE.REPORT_DETAIL});}}>返回</span>
+                </span>;
+                break;
         }
 
         return title;
