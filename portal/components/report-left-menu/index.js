@@ -47,9 +47,10 @@ class ReportLeftMenu extends React.Component {
                     subMenus[dailyReportMenuIndex].addition = isCommonSales ? null : (
                         <i className="iconfont icon-nav-setting"
                             onClick={showReportPanel.bind(null, {
-                                currentView: VIEW_TYPE.SET_RULE,
+                                currentView: VIEW_TYPE.MANAGE_TPL,
                                 currentTpl,
-                                isManageTpl: true
+                                isManageTpl: true,
+                                isPreview: true
                             })}
                         />
                     );

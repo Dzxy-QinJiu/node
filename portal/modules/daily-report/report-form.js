@@ -22,7 +22,7 @@ class ReportForm extends React.Component {
         const renderFormItem = renderFormItemFunc.bind(this, {});
         const renderButtonZone = renderButtonZoneFunc.bind(this);
 
-        const { updateState, currentTpl, isPreview, currentReport } = this.props;
+        const { updateState, currentTpl, isPreview, isManageTpl, currentReport } = this.props;
         const items = isPreview ? currentTpl.items : currentReport.item_values;
         const editableFields = ['其他'];
         const editableItems = _.filter(items, item => _.includes(editableFields, item.name));
@@ -61,7 +61,7 @@ class ReportForm extends React.Component {
                     />
 
                     {renderButtonZone([{
-                        hide: !isPreview,
+                        hide: !isPreview || isManageTpl,
                         name: '开启',
                         type: 'primary',
                         func: () => {
@@ -69,7 +69,7 @@ class ReportForm extends React.Component {
                             saveTpl(tplData, () => {});
                         }
                     }, {
-                        hide: !isPreview,
+                        hide: !isPreview || isManageTpl,
                         name: '取消',
                         func: () => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL }); },
                     }, {

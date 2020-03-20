@@ -6,6 +6,7 @@ require('./style.less');
 import { VIEW_TYPE } from './consts';
 import Detail from 'CMP_DIR/detail';
 import AddTpl from './add-tpl';
+import ManageTpl from './manage-tpl';
 import SetRule from './set-rule';
 import ReportList from './report-list';
 import ReportDetail from './report-detail';
@@ -15,7 +16,6 @@ import ReportForm from './report-form';
 class ReportPanel extends React.Component {
     state = {
         currentView: this.props.currentView || VIEW_TYPE.ADD_TPL,
-        currentStep: 1,
         teamList: [],
         tplList: [],
         reportList: [],
@@ -23,7 +23,7 @@ class ReportPanel extends React.Component {
         currentReport: this.props.currentReport || {},
         numberDetail: this.props.numberDetail || [],
         isManageTpl: this.props.isManageTpl || false,
-        isPreview: false,
+        isPreview: this.props.isPreview || false,
     }
 
     componentWillReceiveProps(nextProps) {
@@ -77,6 +77,7 @@ class ReportPanel extends React.Component {
 
         switch(this.state.currentView) {
             case VIEW_TYPE.ADD_TPL: return <AddTpl {...props} />;
+            case VIEW_TYPE.MANAGE_TPL: return <ManageTpl {...props} />;
             case VIEW_TYPE.SET_RULE: return <SetRule {...props} />;
             case VIEW_TYPE.REPORT_LIST: return <ReportList {...props} />;
             case VIEW_TYPE.REPORT_DETAIL: return <ReportDetail {...props} />;
