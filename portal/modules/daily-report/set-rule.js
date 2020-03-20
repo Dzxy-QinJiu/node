@@ -20,11 +20,9 @@ class SetRule extends React.Component {
     }
 
     render() {
-        const { tplList, currentTpl } = this.props;
+        const { currentTpl } = this.props;
 
-        const formData = _.find(tplList, tpl => tpl.id === currentTpl) || {};
-
-        const renderFormItem = renderFormItemFunc.bind(this, formData);
+        const renderFormItem = renderFormItemFunc.bind(this, currentTpl);
         const renderButtonZone = renderButtonZoneFunc.bind(this);
 
         return (
@@ -46,7 +44,7 @@ class SetRule extends React.Component {
                         type: 'switch',
                         fieldDecoratorOption: {
                             valuePropName: 'checked',
-                            initialValue: formData.status === 'on' ? true : false,
+                            initialValue: currentTpl.status === 'on' ? true : false,
                         }
                     })}
 
@@ -86,11 +84,9 @@ class SetRule extends React.Component {
                     values.status = 'off';
                 }
 
-                const { tplList, currentTpl } = this.props;
+                const { currentTpl } = this.props;
 
-                const tplData = _.find(tplList, tpl => tpl.id === currentTpl) || {};
-
-                const postData = _.extend({}, tplData, values);
+                const postData = _.extend({}, currentTpl, values);
 
                 saveTpl(postData, result => {});
             }
