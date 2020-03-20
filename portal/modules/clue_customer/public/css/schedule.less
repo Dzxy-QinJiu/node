@@ -1,10 +1,10 @@
 //日程列表
+@import "../../../../public/css/common-variables";
 @btn_color: #8ba9c3;
 @hover_color: #2196f3;
 @padding: 8px;
 @icon_visit_color: #9b5bf7;
 @other_icon_color: #8da8c5;
-@title_color: #333333;
 @font_color: #999999;
 @overdue_color: #fbcb8f;
 @today_color: #34ca71;
@@ -33,7 +33,7 @@
   width: 100%;
   margin-top: 6px;
   background-color: #ffffff;
-  color: @title_color;
+  color: @primary-font-color;
   .time-line{
     overflow: hidden;
     padding: 6px 10px 0 12px;
@@ -67,7 +67,7 @@
     }
   }
   .schedule-item-title {
-    color: @title_color;
+    color: @primary-font-color;
     .iconfont.icon-alarm-clock {
       float: right;
       color: @btn_color;
