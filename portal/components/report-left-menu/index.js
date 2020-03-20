@@ -42,8 +42,9 @@ class ReportLeftMenu extends React.Component {
                     subMenus.splice(dailyReportMenuIndex, 1);
                 } else {
                     const currentTpl = _.first(tplList);
+                    const { isCommonSales } = userData.getUserData();
 
-                    subMenus[dailyReportMenuIndex].addition = (
+                    subMenus[dailyReportMenuIndex].addition = isCommonSales ? null : (
                         <i className="iconfont icon-nav-setting"
                             onClick={showReportPanel.bind(null, {
                                 currentView: VIEW_TYPE.SET_RULE,
