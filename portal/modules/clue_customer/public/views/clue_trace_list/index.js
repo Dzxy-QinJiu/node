@@ -25,7 +25,6 @@ import Trace from 'LIB_DIR/trace';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 //电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型）
 const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP];
-import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 var userData = require('PUB_DIR/sources/user-data');
 var clueCustomerAction = require('../../action/clue-customer-action');
@@ -34,7 +33,7 @@ var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {SELECT_TYPE, AVALIBILITYSTATUS, editCluePrivilege} from '../../utils/clue-customer-utils';
 import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
-import { isShowWinningClue } from 'PUB_DIR/sources/utils/common-method-util';
+import { isShowWinningClue, isWinningClueMaxCount } from 'PUB_DIR/sources/utils/common-method-util';
 import { DISAPPEAR_DELAY_TIME } from 'PUB_DIR/sources/utils/consts';
 import AddTraceContentSuccessTips from '../add-trace-success-tips';
 const OVERVIEW_SHOW_COUNT = 3; //在概览中显示最近三条跟进
@@ -239,11 +238,12 @@ class ClueTraceList extends React.Component {
                     remark: addcontent,
                 };
                 ClueTraceAction.addClueTrace(queryObj, (customer_trace) => {
-                    if (isShowWinningClue()) {
+                    let isShowRewardClueTips = isWinningClueMaxCount();
+                    if (isShowRewardClueTips && isShowWinningClue()) {
                         Trace.traceEvent(ReactDOM.findDOMNode(this), '填写跟进赢得2条线索');
                     }
                     this.setState({
-                        newAddClueId: customer_trace.id,
+                        newAddClueId: isShowRewardClueTips ? customer_trace.id : '',
                     });
                     //更新列表中的最后联系
                     _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(customer_trace);

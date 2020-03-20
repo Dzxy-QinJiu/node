@@ -34,4 +34,6 @@ Oplate.unread = {
 
 };
 
+Oplate.todayWinningClueCount = 0; // 当天赢取的线索量
+
 Oplate.isCalling = false; //是否正在打电话，如果正在打电话，不可以继续打
