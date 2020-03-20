@@ -22,6 +22,7 @@ class ReportPanel extends React.Component {
         currentTpl: this.props.currentTpl || {},
         currentReport: this.props.currentReport || {},
         numberDetail: this.props.numberDetail || [],
+        isManageTpl: this.props.isManageTpl || false,
         isPreview: false,
     }
 

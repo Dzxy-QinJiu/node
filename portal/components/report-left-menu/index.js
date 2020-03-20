@@ -48,7 +48,8 @@ class ReportLeftMenu extends React.Component {
                         <i className="iconfont icon-nav-setting"
                             onClick={showReportPanel.bind(null, {
                                 currentView: VIEW_TYPE.SET_RULE,
-                                currentTpl
+                                currentTpl,
+                                isManageTpl: true
                             })}
                         />
                     );

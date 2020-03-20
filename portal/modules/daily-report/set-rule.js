@@ -21,7 +21,7 @@ class SetRule extends React.Component {
     }
 
     render() {
-        const { currentTpl } = this.props;
+        const { currentTpl, isManageTpl } = this.props;
 
         const renderFormItem = renderFormItemFunc.bind(this, currentTpl);
         const renderButtonZone = renderButtonZoneFunc.bind(this);
@@ -76,8 +76,14 @@ class SetRule extends React.Component {
                     func: this.save.bind(this, {status: 'on'}),
                     name: '确认开启',
                     type: 'primary',
+                    hide: isManageTpl
                 }, {
-                    func: () => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL }); },
+                    func: this.save.bind(this, null),
+                    name: '保存',
+                    type: 'primary',
+                    hide: !isManageTpl
+                }, {
+                    func: isManageTpl ? hideReportPanel : () => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL }); },
                     name: '取消',
                 }])}
             </div>
