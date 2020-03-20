@@ -5,6 +5,7 @@
 require('./style.less');
 import {NavLink} from 'react-router-dom';
 import { getTplList, showReportPanel } from 'MOD_DIR/daily-report/utils';
+import { VIEW_TYPE } from 'MOD_DIR/daily-report/consts';
 import userData from 'PUB_DIR/sources/user-data';
 
 const menuUtil = require('PUB_DIR/sources/utils/menu-util');
@@ -40,8 +41,15 @@ class ReportLeftMenu extends React.Component {
                 if (_.isEmpty(tplList)) {
                     subMenus.splice(dailyReportMenuIndex, 1);
                 } else {
+                    const currentTpl = _.first(tplList);
+
                     subMenus[dailyReportMenuIndex].addition = (
-                        <i className="iconfont icon-nav-setting" />
+                        <i className="iconfont icon-nav-setting"
+                            onClick={showReportPanel.bind(null, {
+                                currentView: VIEW_TYPE.SET_RULE,
+                                currentTpl
+                            })}
+                        />
                     );
                 }
 

@@ -19,7 +19,7 @@ class ReportPanel extends React.Component {
         teamList: [],
         tplList: [],
         reportList: [],
-        currenTpl: this.props.currenTpl || {},
+        currentTpl: this.props.currentTpl || {},
         currentReport: this.props.currentReport || {},
         numberDetail: this.props.numberDetail || [],
         isPreview: false,
