@@ -427,12 +427,24 @@ var BatchChangUser = createReactClass({
         };
         if(this.state.submitResult === 'success') {
             return (
-                <AlertTimer time={3000} message={Intl.get('user.operate.success', '操作成功')} type="success" showIcon onHide={hide}/>
+                <AlertTimer
+                    time={3000}
+                    message={Intl.get('user.operate.success', '操作成功')}
+                    type="success"
+                    showIcon
+                    onHide={hide}
+                />
             );
         }
         if(this.state.submitResult === 'error') {
             return (
-                <AlertTimer time={3000} message={this.state.submitErrorMsg} type="error" showIcon onHide={hide}/>
+                <AlertTimer
+                    time={3000}
+                    message={this.state.submitErrorMsg}
+                    type="error"
+                    showIcon
+                    onHide={hide}
+                />
             );
         }
         return null;
@@ -733,12 +745,13 @@ var BatchChangUser = createReactClass({
                 <FormItem
                     label={Intl.get('common.remark', '备注')}
                     labelCol={labelCol}
-                    wrapperCol={{span: 13}}
+                    wrapperCol={{span: 20}}
                 >
                     <AutosizeTextarea
-                        rows="5"
                         onChange={this.remarkChange.bind(this , 'passwordRemark')}
                         value={this.state.formData.remark.passwordRemark}
+                        autoSize={true}
+                        autoFocus={true}
                     />
                 </FormItem>
             </div>
@@ -777,7 +790,7 @@ var BatchChangUser = createReactClass({
                     wrapperCol={{span: 13}}
                 >
                     <AutosizeTextarea
-                        rows="5"
+                        autoSize={true}
                         onChange={this.remarkChange.bind(this , 'statusRemark')}
                         value={this.state.formData.remark.statusRemark}
                     />
@@ -934,7 +947,7 @@ var BatchChangUser = createReactClass({
                             <InputNumber
                                 value={this.state.formData.delayTimeNumber}
                                 onChange={this.delayTimeNumberChange}
-                                style={{width: '80px',height: '30px'}}
+                                style={{width: '80px',height: '32px'}}
                                 min={1}
                                 max={10000}
                             />
@@ -942,7 +955,7 @@ var BatchChangUser = createReactClass({
 
                         <Select
                             value={this.state.formData.delayTimeRange}
-                            style={{width: divWidth}}
+                            style={{width: divWidth,height: '32px'}}
                             onChange={this.delayTimeRangeChange}
                         >
                             <Option value={TIMERANGEUNIT.DAY}><ReactIntl.FormattedMessage id="common.time.unit.day" defaultMessage="天" /></Option>
@@ -1278,7 +1291,7 @@ var BatchChangUser = createReactClass({
                                         style={{height: fixedHeight - 90}}
                                         ref="gemini"
                                     >
-                                        {this.renderChangePassword()}
+                                        {this.renderSalesChangePassword()}
                                     </GeminiScrollBar>}
                                 />
 

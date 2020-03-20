@@ -175,7 +175,6 @@ UserDetailAddAppStore.prototype.submitAddApp = function(result) {
 
 //延期、开通状态申请（多应用）
 UserDetailAddAppStore.prototype.applyDelayMultiApp = function(result) {
-    var _this = this;
     if(result.error) {
         this.submitResult = 'error';
         this.submitErrorMsg = result.errorMsg;
@@ -185,9 +184,9 @@ UserDetailAddAppStore.prototype.applyDelayMultiApp = function(result) {
             this.submitResult = 'loading';
         } else {
             this.submitResult = 'success';
-            setTimeout(function() {
-                _this.resetState();
-                AppUserAction.closeRightPanel();
+            setTimeout( () => {
+                this.resetState();
+                AppUserAction.closeBatchChangePanel();
             } , 500);
         }
     }
