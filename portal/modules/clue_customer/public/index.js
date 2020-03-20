@@ -5,7 +5,8 @@
  */
 import 'babel-polyfill';
 var rightPanelShow = false;
-import {clueSourceArray, accessChannelArray, clueClassifyArray, CLUE_MESSAGE_TYPE, DISAPPEAR_DELAY_TIME} from 'PUB_DIR/sources/utils/consts';
+import {clueSourceArray, accessChannelArray, clueClassifyArray,
+    CLUE_MESSAGE_TYPE, DISAPPEAR_DELAY_TIME} from 'PUB_DIR/sources/utils/consts';
 var clueCustomerStore = require('./store/clue-customer-store');
 var clueFilterStore = require('./store/clue-filter-store');
 var clueCustomerAction = require('./action/clue-customer-action');
@@ -85,7 +86,9 @@ var batchOperate = require('PUB_DIR/sources/push/batch');
 import {FilterInput} from 'CMP_DIR/filter';
 import NoDataAddAndImportIntro from 'CMP_DIR/no-data-add-and-import-intro';
 import ClueFilterPanel from './views/clue-filter-panel';
-import {isSalesRole, checkCurrentVersion, checkCurrentVersionType, getRecommendClueCount} from 'PUB_DIR/sources/utils/common-method-util';
+import {isSalesRole, checkCurrentVersion, checkCurrentVersionType,
+    getRecommendClueCount, formatSalesmanList, isResponsiveDisplay, 
+    isShowWinningClue, isWinningClueMaxCount} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {phoneMsgEmitter, clueToCustomerPanelEmitter, paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ShearContent from 'CMP_DIR/shear-content-new';
@@ -99,7 +102,7 @@ import DifferentVersion from 'MOD_DIR/different_version/public';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import RecommendClues from 'MOD_DIR/home_page/public/views/boot-process/recommend_clues';
 const EXTRACT_CLUE_STEPS = RecommendClues.EXTRACT_CLUE_STEPS;
-import { formatSalesmanList, isResponsiveDisplay, isShowWinningClue} from 'PUB_DIR/sources/utils/common-method-util';
+
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
@@ -1198,7 +1201,9 @@ class ClueCustomer extends React.Component {
                         clueItem.customer_traces[0].nick_name = userName;
                         clueItem.customer_traces[0].add_time = addTime;
                     }
-                    if (isShowWinningClue()) {
+
+                    let isShowRewardClueTips = isWinningClueMaxCount();
+                    if (isShowRewardClueTips && isShowWinningClue()) {
                         Trace.traceEvent(ReactDOM.findDOMNode(this), '线索列表>填写跟进赢得2条线索');
                     }
                     this.setState({
@@ -1206,7 +1211,7 @@ class ClueCustomer extends React.Component {
                         submitTraceErrMsg: '',
                         isEdittingItem: {},
                         currentMoreBtnStatus: '',
-                        isShowRewardClueTips: true
+                        isShowRewardClueTips: isShowRewardClueTips
                     });
                     // 填写跟进记录成功后，个人试用版、企业试用版增加提示信息
 

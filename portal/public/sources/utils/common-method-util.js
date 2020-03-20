@@ -30,7 +30,8 @@ import {
     RESPONSIVE_LAYOUT,
     TIMERANGEUNIT,
     WEEKDAYS,
-    CONFIG_TYPE
+    CONFIG_TYPE,
+    winningClueMaxCount
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -1524,4 +1525,16 @@ exports.checkCustomerTotalLeaveTime = function(startTime,endTime,customers,isAdd
 exports.isShowWinningClue = () => {
     const versionAndType = checkVersionAndType();
     return versionAndType.trial && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+};
+
+// 是否已经赢取了最大的线索量
+exports.isWinningClueMaxCount = () => {
+    let isShowRewardClueTips = true;
+    let todayWinningClueCount = _.get(Oplate, 'todayWinningClueCount', 0);
+    if (todayWinningClueCount >= winningClueMaxCount) {
+        isShowRewardClueTips = false;
+    } else {
+        Oplate.todayWinningClueCount += 2;
+    }
+    return isShowRewardClueTips;
 };
