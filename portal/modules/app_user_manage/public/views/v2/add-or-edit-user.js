@@ -729,26 +729,15 @@ const AddOrEditUser = createReactClass({
                             {this.renderUserOverDraftBlock()}
                         </div>
                     </div>
-                    {/**委内维拉项目,不显示二步认证*/}
-                    {Oplate.hideSomeItem ? null : (
-                        <div className="form-item">
-                            <div className="form-item-label"><ReactIntl.FormattedMessage
-                                id="user.two.step.certification" defaultMessage="二步认证"/></div>
-                            <div className="form-item-content">
-                                {this.renderUserTwoFactorBlock()}
+                    {
+                        !Oplate.hideSomeItem && <div className="form-item">
+                            <div className="form-item-label">{Intl.get('crm.186', '其他')}</div>
+                            <div className="form-item-content other-config-content">
+                                {this.renderMultiLoginRadioBlock({showCheckbox: true})}
+                                {this.renderUserTwoFactorBlock({showCheckbox: true})}
                             </div>
                         </div>
-                    )}
-                    {/**委内维拉项目,不显示多人登录*/}
-                    {Oplate.hideSomeItem ? null : (
-                        <div className="form-item">
-                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login"
-                                defaultMessage="多人登录"/></div>
-                            <div className="form-item-content">
-                                {this.renderMultiLoginRadioBlock()}
-                            </div>
-                        </div>
-                    )}
+                    }
                     <div className="form-item" ref="descriptionBlock">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="common.remark"
                             defaultMessage="备注"/></div>
