@@ -47,7 +47,14 @@ class ReportForm extends React.Component {
                         content={(
                             <div>
                                 {_.map(editableItems, item => {
-                                    return renderFormItem(item.name, item.name, { type: 'textarea', fieldDecoratorOption: { initialValue: item.value_str } });
+                                    return renderFormItem('', item.name, {
+                                        type: 'textarea',
+                                        fieldDecoratorOption: { initialValue: item.value_str },
+                                        formItemLayout: {
+                                            labelCol: { span: 0 },
+                                            wrapperCol: { span: 24 },
+                                        }
+                                    });
                                 })}
                             </div>
                         )}
