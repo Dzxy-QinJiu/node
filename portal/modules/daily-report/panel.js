@@ -68,7 +68,7 @@ class ReportPanel extends React.Component {
             case VIEW_TYPE.MANAGE_TPL:
                 title = <div>
                     <span>{currentTpl.name}</span>
-                    <Switch onChange={() => {
+                    <Switch checked={currentTpl.status === 'on'} onChange={() => {
                     }} />
                 </div>;
                 break;
