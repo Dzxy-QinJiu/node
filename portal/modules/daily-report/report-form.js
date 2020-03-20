@@ -5,7 +5,7 @@
 import { Form } from 'antd';
 import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
 import { VIEW_TYPE } from './consts';
-import { renderButtonZoneFunc, hideReportPanel, getReportList, saveReport } from './utils';
+import { renderButtonZoneFunc, hideReportPanel, getReportList, saveReport, saveTpl } from './utils';
 import DetailCard from 'CMP_DIR/detail-card';
 
 class ReportForm extends React.Component {
@@ -62,7 +62,14 @@ class ReportForm extends React.Component {
 
                     {renderButtonZone([{
                         hide: !isPreview,
-                        name: '返回',
+                        name: '开启',
+                        func: () => {
+                            let tplData = _.cloneDeep(currentTpl);
+                            saveTpl(tplData, () => {});
+                        }
+                    }, {
+                        hide: !isPreview,
+                        name: '取消',
                         func: () => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL }); },
                     }, {
                         hide: isPreview,
