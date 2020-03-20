@@ -361,8 +361,10 @@ class AddApplyConditionPanel extends React.Component {
                 var target = this.getConditionRelate(item.limitType);
                 if(this.checkUserSearch(item) || this.checkTeamSearch(item) || this.checkTimePeriod(item)){
                     checkFlag = false;
+                }else{
+                    target.conditionRule(item);//生成随机的流程的key和对应的userIds的数组
                 }
-                target.conditionRule(item);//生成随机的流程的key和对应的userIds的数组
+
             });
             if(checkFlag){
                 if (this.props.updateConditionFlowKey) {
