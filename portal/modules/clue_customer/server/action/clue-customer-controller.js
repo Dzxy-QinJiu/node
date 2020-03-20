@@ -493,7 +493,7 @@ exports.getRecommendClueLists = function(req, res) {
                     //contact: {phones: 1, qq: 1, weChat: 0, email: 2}
                     contact: {
                         phones: _.get(item, 'telephones.length', 0),
-                        qq: 0,
+                        qq: 0,//qq信息后端暂未实现，这里先占位
                         weChat: _.get(item, 'gongzhonghao') ? 1 : 0,
                         email: _.get(item, 'email.length', 0),
                     }
