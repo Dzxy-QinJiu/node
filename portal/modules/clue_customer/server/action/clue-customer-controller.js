@@ -472,13 +472,31 @@ exports.getRecommendClueLists = function(req, res) {
         .on('success', function(data) {
             var result = {list: [],total: _.get(data,'total',0), listId: _.get(data,'id','')};
             _.forEach(_.get(data,'list',[]), item => {
-                result.list.push({id: item.id,
+                result.list.push({
+                    id: item.id,
+                    //(会有高亮内容<em>###</em>)
                     name: item.name,
-                    legalPerson: item.legalPerson,
-                    telephones: item.telephones,
-                    startTime: item.startTime || '',
                     sortvalues: item.sortvalues,
-                    ranking: item.ranking
+                    ranking: item.ranking,
+                    //注册时间
+                    startTime: _.get(item,'startTime', ''),
+                    //经营范围(会有高亮内容<em>###</em>)
+                    scope: _.get(item,'scope', ''),
+                    //标签
+                    labels: _.get(item,'labels', []),
+                    //产品(会有高亮内容<em>###</em>)
+                    products: _.get(item,'products', ''),
+                    //行业
+                    industry: _.get(item,'industry', ''),
+                    //简介(会有高亮内容<em>###</em>)
+                    companyProfile: _.get(item,'companyProfile', ''),
+                    //contact: {phones: 1, qq: 1, weChat: 0, email: 2}
+                    contact: {
+                        phones: _.get(item, 'telephones.length', 0),
+                        qq: 0,//qq信息后端暂未实现，这里先占位
+                        weChat: _.get(item, 'gongzhonghao') ? 1 : 0,
+                        email: _.get(item, 'email.length', 0),
+                    }
                 });
             });
             res.status(200).json(result);

@@ -33,7 +33,7 @@ import {
     isVisitApplyFlow,
     isDomainApplyFlow,
     CC_SETTINGT_TYPE,
-    isUserApplyFlow, ROLES_SETTING,ALL_COMPONENTS
+    isUserApplyFlow, ROLES_SETTING
 } from '../../utils/apply-approve-utils';
 import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveManageStore from '../../store/apply_approve_manage_store';
@@ -43,18 +43,15 @@ class RegRulesView extends React.Component {
         var applyRulesAndSetting = _.cloneDeep(this.props.applyTypeData.applyRulesAndSetting);
         var notify_configs = _.cloneDeep(this.props.applyTypeData.notify_configs);
         var customiz_user_range = _.cloneDeep(this.props.applyTypeData.customiz_user_range);
-        var customiz_team_range = _.cloneDeep(this.props.applyTypeData.customiz_team_range);
         this.state = {
             applyRulesAndSetting: applyRulesAndSetting,
             notify_configs: notify_configs || {},
-            customiz_user_range: customiz_user_range || [],//单独划定一批的用户
-            customiz_team_range: customiz_team_range || [],//单独划定一批的团队
+            customiz_user_range: customiz_user_range || [],
             addNodePanelFlow: '',
             addCCNodePanelFlow: '',//添加抄送人的流程类型
             showAddConditionPanel: false,
             roleList: this.props.roleList,//角色列表
             userList: this.props.userList,//用户列表
-            teamList: this.props.teamList,//团队列表
             ...ApplyApproveManageStore.getState()
         };
     }
@@ -67,7 +64,6 @@ class RegRulesView extends React.Component {
         this.setState({
             roleList: nextProps.roleList,//角色列表
             userList: nextProps.userList,//用户列表
-            teamList: nextProps.teamList,//团队列表
         });
     }
 
@@ -165,9 +161,12 @@ class RegRulesView extends React.Component {
             elem.distributeSales = false;
         }
         if (isVisitApplyFlow(_.get(this, 'props.applyTypeData.type'))) {
-            elem.distributeSalesToVisit = true;
+            //todo 不同组织所传的字段不一样
+            // elem.distributeSalesToVisit = true;
+            elem.releaseCustomerToTeamPool = true;
         } else {
-            elem.distributeSalesToVisit = false;
+            // elem.distributeSalesToVisit = false;
+            elem.releaseCustomerToTeamPool = false;
         }
         if (isDomainApplyFlow(_.get(this, 'props.applyTypeData.type'))) {
             elem.customerSLDUpdate = true;
@@ -395,6 +394,7 @@ class RegRulesView extends React.Component {
                                     className="addition-text">{Intl.get('apply.add.approver.distribute', '指定下一审批人')}</span> : null}
                             {item.distributeSales + '' === 'true' || item.distributeSalesToVisit + '' === 'true' ? <span
                                 className="addition-text">{Intl.get('leave.apply.general.apply', '分配销售')}</span> : null}
+                            {item.releaseCustomerToTeamPool + '' === 'true' ? Intl.get('apply.approve.distribute.team', '分配团队') : null}
                             <span className="connet-bar"></span>
                         </div>
                     );
@@ -425,8 +425,7 @@ class RegRulesView extends React.Component {
             var applyId = _.get(this, 'props.applyTypeData.id');
             //表单的内容不需要提交
             var submitObj = {
-                customiz_user_range: JSON.stringify(this.state.customiz_user_range),
-                customiz_team_range: JSON.stringify(this.state.customiz_team_range),
+                customiz_user_range: this.state.customiz_user_range,
                 ...applyRulesAndSetting
             };
             applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId, submitObj, (result) => {
@@ -434,11 +433,7 @@ class RegRulesView extends React.Component {
                     message.error(result);
                 }else{
                     message.success('保存成功');
-                    this.props.updateRegRulesView({
-                        ...submitObj,
-                        customiz_user_range: JSON.parse(submitObj.customiz_user_range),
-                        customiz_team_range: JSON.parse(submitObj.customiz_team_range),
-                    });
+                    this.props.updateRegRulesView(submitObj);
                 }
 
             });
@@ -619,9 +614,7 @@ class RegRulesView extends React.Component {
         //为了避免bpmnNodeFlow在condition中没有值的情况，在这里重新设置一下
         applyFlowObj['bpmnNode'] = bpmnNodeFlow;
     };
-    //更新每个节点上总的条件
     updateCustomizeNode = (limitRules,newNodeObj) => {
-        //limitRules是流程所加的限制条件
         _.forEach(limitRules, (item, index) => {
             if (index === 0) {
                 newNodeObj['conditionTotalRule'] = _.get(item, 'conditionRule');
@@ -632,7 +625,20 @@ class RegRulesView extends React.Component {
                 newNodeObj['conditionTotalRule'] = _.replace(newNodeObj['conditionTotalRule'], '}', '');
                 newNodeObj['conditionTotalRule'] += '  \&& ' + _.replace( _.get(item, 'conditionRule'), '${', '');
                 newNodeObj['conditionTotalRuleDsc'] += '并且' + _.get(item, 'conditionRuleDsc');
+
             }
+            //如果是单独划分出一批人，需要单独把这些人传过去
+            var customiz_user_range = [];
+            if(item.limitType === 'userSearch_limit'){
+                customiz_user_range.push({
+                    'range_key': _.get(item,'userRangeRoute'),
+                    'range_users': _.get(item,'userRange')
+                });
+
+            }
+            this.setState({
+                customiz_user_range: customiz_user_range
+            });
         });
     };
     saveAddApprovCondition = (data) => {
@@ -808,18 +814,9 @@ class RegRulesView extends React.Component {
             //删除这个流程之前要把设置的划定一批人也删除掉
             var limitRoutes = _.map(_.get(applyApproveRules[deleteKey],'conditionRuleLists.limitRules',[]),'userRangeRoute');
             var customiz_user_range = this.state.customiz_user_range;
-            if(!_.isEmpty(limitRoutes)){
+            if(_.get(limitRoutes,'[0]')){
                 _.forEach(limitRoutes,routeKey => {
                     customiz_user_range = _.filter(customiz_user_range, range => range.range_key !== routeKey);
-                });
-            }
-            //删除这个流程之前要把设置的团队也删除
-            var limitRules = _.get(applyApproveRules[deleteKey],'conditionRuleLists.limitRules',[]);
-            var teamLimitRoutes = _.map(limitRules,'teamRangeRoute');
-            var {customiz_team_range} = this.state;
-            if(!_.isEmpty(teamLimitRoutes)){
-                _.forEach(teamLimitRoutes,routeKey => {
-                    customiz_team_range = _.filter(customiz_team_range, range => range.range_key !== routeKey);
                 });
             }
             delete applyApproveRules[deleteKey];
@@ -835,12 +832,7 @@ class RegRulesView extends React.Component {
                 var firstNode = _.get(defalutBpmnNode, '[0]');
                 delete firstNode.previous;
             }
-            this.setState({
-                applyRulesAndSetting,
-                customiz_user_range,
-                customiz_team_range,
-                confirmDeleteItem: '',
-            });
+            this.setState({applyRulesAndSetting, confirmDeleteItem: '',customiz_user_range: customiz_user_range});
         }
 
     };
@@ -981,8 +973,6 @@ class RegRulesView extends React.Component {
         }else if(showAddApproveNodeTip){
             message.warning(Intl.get('apply.please.add.approve.node', '流程不完整，需添加审批人节点'));
         }else{
-            //在提交的时候，把用户或者团队为非的情况也加上
-            this.addDefaultUserOrTeamCondition();
             if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
                 this.handleSubmitCCApply();
             }else{
@@ -1212,7 +1202,6 @@ class RegRulesView extends React.Component {
                             updateConditionFlowKey={this.state.updateConditionFlowKey}
                             roleList={this.state.roleList}
                             userList={this.state.userList}
-                            teamList={this.state.teamList}
                         />
                     </div>
                     : null}
@@ -1228,8 +1217,7 @@ RegRulesView.defaultProps = {
 
     },
     roleList: [],
-    userList: [],
-    teamList: []
+    userList: []
 };
 
 RegRulesView.propTypes = {
@@ -1237,7 +1225,6 @@ RegRulesView.propTypes = {
     updateRegRulesView: PropTypes.func,
     roleList: PropTypes.array,
     userList: PropTypes.array,
-    teamList: PropTypes.array
 
 };
 export default RegRulesView;

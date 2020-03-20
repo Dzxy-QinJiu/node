@@ -799,6 +799,19 @@
         width: 100%;
         padding-right: 10px;
       }
+      .user-count-numberfield-block {
+        .ant-input-number-lg {
+          margin: 0;
+          .ant-input-number-input{
+            line-height:30px;
+          }
+        }
+        .ant-input-number-lg .ant-input-number-input-wrap,
+        .ant-input-number-lg,
+        .ant-input-number-lg .ant-input-number-handler-wrap {
+          height: inherit;
+        }
+      }
     }
 
     .modal-backdrop, .modal {
@@ -1024,7 +1037,7 @@
       }
     }
     .app-property-custom-settings{
-      .app-property-content {
+      .app-property-other-property {
         padding-bottom: 10px;
         margin-top: 0;
         .form-item {
@@ -1051,6 +1064,9 @@
             }
           }
         }
+      }
+      .app-role-permission {
+        padding-left: 0;
       }
     }
   }

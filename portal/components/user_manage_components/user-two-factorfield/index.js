@@ -11,6 +11,8 @@ function merge(obj1,obj2) {
         obj1[key] = obj2[key];
     }
 }
+import { isModifyAppConfig } from 'PUB_DIR/sources/utils/common-method-util';
+
 const UserTwoFactorField = { 
     renderUserTwoFactorBlock(config) {
 
@@ -51,6 +53,7 @@ const UserTwoFactorField = {
             let value = selectValue(event);
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
+            isModifyAppConfig(_.clone(formData), 'is_two_factor', value);
             formData.is_two_factor.value = value;
             if(value !== config.globalTwoFactor) {
                 formData.is_two_factor.setted = true;

@@ -654,7 +654,8 @@ export const REALM_REMARK = {
 };
 export const ASSIGN_TYPE = {
     NEXT_CANDIDATED: 'nextCandidated',
-    COMMON_SALES: 'commonSales'
+    COMMON_SALES: 'commonSales',
+    NEXT_TEAM: 'nextTeam'
 };
 
 //申请抄送类型

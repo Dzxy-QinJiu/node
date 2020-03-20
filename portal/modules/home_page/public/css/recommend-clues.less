@@ -240,6 +240,12 @@
               .extract-clue-text-item{
                 margin-bottom: 5px;
               }
+              .extract-clue-contacts-item{
+                margin-right: 15px;
+                &:last-child{
+                  margin-right: 0;
+                }
+              }
             }
             .single-extract-clue{
               font-size: 14px;
@@ -248,6 +254,26 @@
             .iconfont.icon-warning-tip{
               color: @import_data_warn_color;
               margin-right: 6px;
+            }
+            //标签
+            .clue-labels{
+              margin-top: 3px;
+              .ant-tag {
+                border-radius: 4px;
+                background: #d1d9db;
+              }
+            }
+            //高亮文字样式
+            .text-highlight{
+              color: @confirm-delete-background;
+              font-style: unset;
+            }
+            .extract-clue-text__info{
+              margin-top: 20px;
+              color: @label-content-color;
+            }
+            .extract-clue-text__null{
+              margin-top: 0
             }
           }
         }

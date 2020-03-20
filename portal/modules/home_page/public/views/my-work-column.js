@@ -13,6 +13,8 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
 import myWorkAjax from '../ajax';
 import CrmScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
+import { getTplList, getIsNoLongerShowCheckReportNotice, setIsNoLongerShowCheckReportNotice, showReportPanel } from 'MOD_DIR/daily-report/utils';
+import { VIEW_TYPE } from 'MOD_DIR/daily-report/consts';
 import DetailCard from 'CMP_DIR/detail-card';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import Spinner from 'CMP_DIR/spinner';
@@ -53,6 +55,7 @@ import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply
 import CustomerRecordActions from 'MOD_DIR/crm/public/action/customer-record-action';
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import history from 'PUB_DIR/sources/history';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -94,6 +97,8 @@ const DISTRIBUTEAUTHS = {
     'DISTRIBUTESELF': 'CLUECUSTOMER_DISTRIBUTE_USER'
 };
 
+const REPORT_NOTICE_ITEM_ID = 'report-notice';
+
 class MyWorkColumn extends React.Component {
     constructor(props) {
         super(props);
@@ -122,7 +127,11 @@ class MyWorkColumn extends React.Component {
     }
 
     componentDidMount() {
-        this.getAppList()
+        getTplList({
+            callback: tplList => { this.setState({tplList}); },
+            query: { status: 'on' }
+        });
+        this.getAppList();
         this.getUserList();
         this.getGuideConfig();
         this.getMyWorkList();
@@ -365,6 +374,8 @@ class MyWorkColumn extends React.Component {
         } else if (item.type === WORK_TYPES.APPLY && _.get(item, 'apply.apply_type') === APPLY_APPROVE_TYPES.PERSONAL_LEAVE) {
             //请假申请
             workObj = {name: Intl.get('leave.apply.leave.application', '请假申请')};
+        } else if (item.workObj) {
+            workObj = item.workObj;
         }
         //客户阶段标签
         const customer_label = workObj.tag;
@@ -846,6 +857,8 @@ class MyWorkColumn extends React.Component {
                 tagDescr = Intl.get('common.visit', '拜访');
                 remark = this.getVisitTip(item);
                 break;
+            default:
+                tagDescr = tag;
         }
         return (
             // 对于拜访类型的工作，后端tags字段会返回['APPLY', 'customer_visit']
@@ -901,7 +914,10 @@ class MyWorkColumn extends React.Component {
                 clickTip = Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('home.page.apply.type', '申请')});
             }
         }
-        let hoverCls = classNames('my-work-item-hover', {'hide-my-work-item-hover': _.isEqual(_.get(this.state, 'isEditingItem.id'), _.get(item, 'id'))});
+        let hoverCls = classNames('my-work-item-hover', {
+            'hide-my-work-item-hover': _.isEqual(_.get(this.state, 'isEditingItem.id'), _.get(item, 'id')),
+            'show-my-work-item-hover': _.isEqual(REPORT_NOTICE_ITEM_ID, _.get(item, 'id'))
+        });
         return (
             <div className='my-work-card-container'>
                 <div className={contentCls} id={`home-page-work${item.id}`}>
@@ -1061,6 +1077,9 @@ class MyWorkColumn extends React.Component {
                     btnCls += ' ant-btn ant-btn-primary visit-btn';
                     handleFunc = this.addVisitTrace;
                     btnDesc = Intl.get('home.page.my.work.visit.finished', '我已拜访');
+                } else if(item.btnConf) {
+                    ({ handleFunc, btnTitle, btnDesc } = item.btnConf);
+                    btnCls += ' approval-btn';
                 } else {//其他的展示对号已完成的按钮
                     handleFunc = this.handleMyWork;
                     btnTitle = Intl.get('home.page.my.work.finished', '点击设为已完成');
@@ -1169,10 +1188,15 @@ class MyWorkColumn extends React.Component {
                         />
                     </div>);
             }
+
+            const isShowCheckReportNotice = !getIsNoLongerShowCheckReportNotice();
+
             //没数据时的渲染,
             if (_.isEmpty(this.state.myWorkList)) {
+                if (isShowCheckReportNotice) {
+                    this.renderCheckReportNotice(workList);
                 //需判断是否还有引导流程,没有时才显示无数据
-                if (_.isEmpty(this.state.guideConfig)) {
+                } else if (_.isEmpty(this.state.guideConfig)) {
                     workList.push(
                         <NoDataIntro
                             noDataAndAddBtnTip={Intl.get('home.page.no.work.tip', '暂无工作')}
@@ -1182,11 +1206,91 @@ class MyWorkColumn extends React.Component {
                         />);
                 }
             } else {//工作列表的渲染
+                if (isShowCheckReportNotice) {
+                    this.renderCheckReportNotice(workList);
+                }
+
                 _.each(this.state.myWorkList, (item, index) => {
                     workList.push(this.renderWorkCard(item, index));
                 });
             }
             return workList;
+        }
+    }
+
+    renderCheckReportNotice(workList) {
+        const tpl = _.get(this.state.tplList, '[0]', {});
+        const { isCommonSales } = userData.getUserData();
+        let title = '';
+        let buttons = null;
+
+        if (_.isEmpty(tpl)) {
+            if (!isCommonSales) {
+                title = '启用报告可以汇总销售日常工作';
+
+                buttons = (
+                    <div>
+                        <Button
+                            type="primary"
+                            onClick={showReportPanel}
+                        >
+                            开启报告
+                        </Button>
+
+                        <Button
+                            onClick={showReportPanel.bind(null, {
+                                currentView: VIEW_TYPE.REPORT_FORM,
+                                clickedTpl: tpl
+                            })}
+                        >
+                            我知道了
+                        </Button>
+                    </div>
+                );
+            }
+        } else {
+            title = tpl.name;
+
+            if (isCommonSales) {
+                buttons = (
+                    <Button
+                        onClick={showReportPanel.bind(null, {
+                            currentView: VIEW_TYPE.REPORT_FORM,
+                            clickedTpl: tpl
+                        })}
+                    >
+                        填写报告
+                    </Button>
+                );
+            } else {
+                buttons = (
+                    <Button
+                        onClick={() => {
+                            history.push('analysis/report/daily-report');
+                        }}
+                    >
+                        查看报告
+                    </Button>
+                );
+            }
+        }
+
+        const dailyReportWorkCard = (
+            <div className="my-work-card-container daily-report-work-card">
+                <div className="work-content-wrap">
+                    <div className="work-name">
+                        <i className="iconfont icon-report" />
+                        {title}
+                    </div>
+                    <div className="buttons">
+                        {buttons}
+                    </div>
+                </div>
+            </div>
+        );
+
+        if (!(_.isEmpty(tpl) && isCommonSales)) {
+            workList.push(dailyReportWorkCard);
         }
     }
 
@@ -1305,6 +1409,7 @@ class MyWorkColumn extends React.Component {
                     handleScheduleAdd={this.afterAddSchedule}
                 />
                 {this.renderExtractClue()}
+
             </div>);
     }
 

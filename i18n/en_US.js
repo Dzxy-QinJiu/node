@@ -117,6 +117,7 @@ var en_US = {
     'common.disabled': 'Disabled',//禁用过的  ———— 已经被禁用的，过去式。
     // 'common.enable': 'enable',//启用  ———— 动词，去启用。  新加的
     'common.enabled': 'Enabled',//启用过的 ———— 已经被启用，过去式。
+    'common.not.enabled': 'Is not enabled',//未启用
     'common.edit.password': 'Change Password',//修改密码
     'common.login.time': 'Time',//时间
     'common.login.equipment': 'Equipment',//设备
@@ -1901,6 +1902,16 @@ var en_US = {
     'crm.customer.release.push.tip': 'The customer {customerName} is released to the customer pool by {operatorName}',//客户{customerName}被{operatorName}释放到了客户池
     'crm.customer.batch.release.push.tip': '{customerName}, etc. {count} customers are released to the customer pool by {operatorName}',//{customerName}等{count}个客户被{operatorName}释放到了客户池
     'crm.customer.release.reason': 'Please fill in the reason for release',//请填写释放理由
+    'crm.pool.visible.rules': 'Visible rules',//可见规则
+    'crm.pool.release.rules': 'Release rules',//释放规则
+    'crm.pool.need.joint.followup': 'Need joint follow-up',//需联合跟进
+    'crm.pool.release.rules.name': '{name} release rule',//{name}释放规则
+    'crm.pool.release.rule.non.followup.time': 'Non-follow-up time',//未跟进时长
+    'crm.pool.responsible.type': 'Responsible for the type',//负责类型
+    'crm.pool.select.team.placeholder': 'Select the right team',//选择适用团队
+    'crm.pool.get.rule.configs.faild': 'Failed to get the rule configuration',//获取规则配置失败
+    'crm.pool.no.rule': 'No rules',//暂无规则
+
 
     'crm.customer.rule.name': 'Rules set',//规则设置
     'crm.add.customer.pool.rule': 'Add rules',//添加规则
@@ -3110,12 +3121,13 @@ var en_US = {
     'clue.add.wechat.num': 'Wechat',//微信号码
     'clue.alanalysis.charts': 'lead analysis',//线索分析
     'clue.detail.info': 'lead info',//线索信息
-    'clue.no.clue.source': 'Not added lead source', //未添加线索来源
+    'clue.no.clue.source': 'Not added lead source', //暂无线索来源
     'clue.add.clue.source': 'Add lead source',//添加线索来源
-    'clue.no.access.channel': 'Not added access channel', //未添加接入渠道
+    'clue.no.access.channel': 'Not added access channel', //暂无接入渠道
     'clue.add.access.channel': 'Add access channel',//添加接入渠道
     'clue.add.clue.classfify': 'Add lead classify',//添加线索分类
     'clue.add.clue.describe': 'Add lead description',//添加线索描述
+    'clue.no.clue.describe': 'No lead description',//暂无线索描述
     'clue.add.clue.name': 'Add clue name',//添加线索名称
     'clue.no.clue.name': 'No added clue name',//未添加线索名称
     'clue.add.clue.placeholder': 'Please fill in lead description',//请填写线索描述
@@ -3162,6 +3174,7 @@ var en_US = {
     'analysis.to': 'to',//至
     'analysis.extended.account.number': 'extended account number',//延期帐号数
     'analysis.monthly.turnover.rate': 'monthly turnover rate',//月流失率
+    'analysis.sales.manager.daily.report': 'sales manager daily report',//销售经理日报
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
@@ -3228,6 +3241,7 @@ var en_US = {
     'lead.recommend.form.show.all.condition': 'Show all conditions',//展开全部条件
     'lead.recommend.form.hide.some.condition': 'Hide some condition',//收起部分条件
     'lead.associate.customer.detail': 'View associated customers',//查看关联客户
+    'lead.info.website.info': 'Official website',//官网
     
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
@@ -3311,7 +3325,9 @@ var en_US = {
     'clue.check.only.clue.phone': 'Failed to check only lead phone',//线索电话唯一性校验失败
     'leave.apply.apartment.apply': 'Supervisor',//上级主管
     'leave.apply.general.apply': 'Distribution sales',//分配销售
+    'apply.approve.distribute.team': 'Distribution team',//分配团队
     'leave.apply.select.assigned.sales': 'Please select the sales to be assigned',//请选择要分配的销售
+    'apply.approve.select.assigned.team': 'Please select the team to be assigned',//请选择要分配的团队
     'schedule.expired.call.time.at': 'at',//于
     'schedule.expired.call.in.phone.num': 'dial your phone number',//拨打过您的电话
     'config.integrated.clue.manage': 'Lead integration',//线索同步
@@ -3417,6 +3433,7 @@ var en_US = {
     'apply.will.select.transfer.approver': 'Please select the person to be approved to be transferred to',//请选择要转给的待审批人
     'apply.will.approve.apply.item': 'Pending person',//待审批人
     'apply.no.relate.user': 'No related members',//无相关成员
+    'apply.no.relate.team': 'No related teams',//无相关团队
     'apply.approve.transfer.failed': 'Failed to transfer apply',//转出申请失败
     'apply.approve.transfer.success': 'Transfer out the application successfully',//转出申请成功
     'apply.approve.upload.empty.file': 'Do not upload empty files!',//不可上传空文件！
@@ -3859,6 +3876,9 @@ var en_US = {
     'clue.recommend.default.tip': '{timerange} can also extract {ableExtract} clues',//{timerange}还可提取{ableExtract}条线索
     'clue.recommend.selected.extract.tip': 'The {count} bar has been selected, and the {ableExtract} bar can be extracted',//已选中{count}条，还可提取{ableExtract}条线索
     'clue.extract.count.has.been.exceed': 'The extractable number has been exceeded',//已超过可提取数
+    'clue.recommend.clue.scope': 'Scope of business',//经营范围
+    'clue.recommend.clue.introduction': 'brief introduction',//简介
+    'clue.recommend.clue.count': '{count}',//{count}个
 
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并

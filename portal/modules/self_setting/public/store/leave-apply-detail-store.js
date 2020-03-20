@@ -281,6 +281,9 @@ LeaveApplyDetailStore.prototype.setApplyCandate = function(selectUserId) {
 LeaveApplyDetailStore.prototype.setSalesMan = function(selectSales) {
     this.detailInfoObj.info.user_ids = selectSales;
 };
+LeaveApplyDetailStore.prototype.setGroupId = function(groupId) {
+    this.detailInfoObj.info.group_id = groupId;
+};
 LeaveApplyDetailStore.prototype.transferNextCandidate = function(result) {
     if (result.loading) {
         this.transferStatusInfo.result = 'loading';

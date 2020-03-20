@@ -4,7 +4,7 @@
 import {Form,Radio} from 'antd';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
-
+import { isModifyAppConfig } from 'PUB_DIR/sources/utils/common-method-util';
 
 const UserOverDraftField = {
     renderUserOverDraftBlock(config) {
@@ -31,6 +31,7 @@ const UserOverDraftField = {
             const value = event.target.value;
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
+            isModifyAppConfig(_.clone(formData), 'over_draft', value);
             formData.over_draft.value = value;
             if(value != config.globalOverDraft) {
                 formData.over_draft.setted = true;
