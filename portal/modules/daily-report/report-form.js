@@ -36,7 +36,7 @@ class ReportForm extends React.Component {
                         content={(
                             <div>
                                 {_.map(unEditableItems, item => {
-                                    return renderFormItem(item.name, item.name, { type: 'text', initialValue: item.value });
+                                    return <div>{item.name}: {item.value || 0}</div>;
                                 })}
                             </div>
                         )}
@@ -63,6 +63,7 @@ class ReportForm extends React.Component {
                     {renderButtonZone([{
                         hide: !isPreview,
                         name: '开启',
+                        type: 'primary',
                         func: () => {
                             let tplData = _.cloneDeep(currentTpl);
                             saveTpl(tplData, () => {});

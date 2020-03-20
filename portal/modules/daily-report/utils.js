@@ -48,6 +48,7 @@ export function renderButtonZoneFunc(buttons) {
                     return (
                         <Button
                             onClick={item.func}
+                            type={item.type || 'default'}
                         >
                             {item.name}
                         </Button>
