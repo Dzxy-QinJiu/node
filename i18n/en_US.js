@@ -3859,6 +3859,9 @@ var en_US = {
     'clue.recommend.default.tip': '{timerange} can also extract {ableExtract} clues',//{timerange}还可提取{ableExtract}条线索
     'clue.recommend.selected.extract.tip': 'The {count} bar has been selected, and the {ableExtract} bar can be extracted',//已选中{count}条，还可提取{ableExtract}条线索
     'clue.extract.count.has.been.exceed': 'The extractable number has been exceeded',//已超过可提取数
+    'clue.recommend.clue.scope': 'Scope of business',//经营范围
+    'clue.recommend.clue.introduction': 'brief introduction',//简介
+    'clue.recommend.clue.count': '{count}',//{count}个
 
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
