@@ -1,10 +1,11 @@
 @import '../../../public/css/bootstrap-variables.less';
 @import '../../../public/css/common-variables';
-@bg-white: #FFFFFF;
+@primary-color: #1976D2;
 @bd-grey: #DEDFE3;
 @font-grey: #cccccc;
 @icon-grey: #CBCBCB;
-@icon-blue: #2196F3;
+@icon-active: #ffffff;
+@nav-icon: #64B5F6;
 @nav-icon-size: 30px;
 //缩小图标时的菜单高度
 @reduce-nav-icon-li-height: 40px;
@@ -114,8 +115,7 @@
     border-bottom-width: 0;
     border-radius: 0;
     border: none;
-    border-right: 1px solid @bd-grey;
-    background-color: @bg-white;
+    background-color: @primary-color;
     .container,
     .container-fluid {
         width: auto;
@@ -158,11 +158,11 @@
             content: " ";
             position: absolute;
             bottom: 0;
-            left: 13px;
-            right: 13px;
+            left: 0;
+            right: 0;
             height: 1px;
             overflow: hidden;
-            background-color: @bd-grey;
+            background-color: #1565C0;
         }
     }
     .navbar-nav {
@@ -228,20 +228,20 @@
             width: @sidebar-min-width - 1;
             &.iconfont:before,
             .iconfont:before {
-                color: @icon-grey;
+                color: @nav-icon;
                 text-align: center;
                 width: 100%;
                 font-size: @nav-icon-size;
             }
             a {
                 &:hover.iconfont:before {
-                    color: @icon-blue;
+                    color: @icon-active;
                 }
                 &.active.iconfont:before {
-                    color: @icon-blue;
+                    color: @icon-active;
                 }
                 &.deactivation.iconfont:before {
-                    color: @icon-grey
+                    color: @nav-icon;
                 }
                 height: @nav-item-height;
                 white-space: nowrap;
@@ -281,21 +281,21 @@
         width: @sidebar-min-width - 1;
         padding: 0;
         overflow: hidden;
-        background-color: @bg-white;
-        @hover-color: @icon-blue;
+        background-color: @primary-color;
+        @hover-color: @icon-active;
         .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon, .winning-clue{
             text-align: center;
             cursor: pointer;
             .iconfont{
-                color:@icon-grey;
+                color: @nav-icon;
                 font-size: 28px;
                 &:hover{
-                    color: @icon-blue;
+                    color: @icon-active;
                 }
             }
             // 在线客服、拨号键盘active加到了iconfont上
             .active.iconfont {
-                color: @icon-blue;
+                color: @icon-active;
             }
             // 打开通知面板时
             .active.deactivation.iconfont{
@@ -305,11 +305,11 @@
             a.active {
                 text-decoration: none;
                 .iconfont{
-                    color: @icon-blue;
+                    color: @icon-active;
                 }
                 // 打开通知面板时
                 .deactivation.iconfont{
-                    color: @bd-grey;
+                    color: @nav-icon;
                 }
             }
         }    
@@ -320,7 +320,7 @@
         .dial-up-keyboard-btn.keyboard-expanded{
             >.iconfont:before{
                 content: "\E733";
-                color: @icon-blue;
+                color: @icon-active;
             }
         }
         .winning-clue {
@@ -434,7 +434,7 @@
     }
     a:hover,
     a.active {
-        color: @icon-blue;
+        color: @icon-active;
     }
     li:last-child a {
         border-bottom: none;
@@ -570,7 +570,7 @@
     }
     a:hover,
     a.active {
-        color: @icon-blue;
+        color: @icon-active;
     }
     li:last-child a {
         border-bottom: none;
