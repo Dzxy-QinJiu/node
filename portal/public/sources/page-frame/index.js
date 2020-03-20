@@ -17,6 +17,7 @@ import BootCompleteInformation from 'CMP_DIR/boot-complete-information';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import PurchaseLeads from 'CMP_DIR/purchase-leads';
 import ClueToCustomerPanel from 'CMP_DIR/clue-to-customer-panel';
+import ReportPanel from 'MOD_DIR/daily-report/panel';
 import OfficialPersonalEdition from 'CMP_DIR/official-personal-edition';
 import OrganizationExpiredTip from 'CMP_DIR/organization-expired-tip';
 import ApplyTry from 'MOD_DIR/apply_try/public';
@@ -29,6 +30,7 @@ import{
     userDetailEmitter,
     paymentEmitter,
     clueToCustomerPanelEmitter,
+    detailPanelEmitter,
     clickUpgradeNoiceEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
@@ -55,6 +57,8 @@ class PageFrame extends React.Component {
         rightContentHeight: 0,
         clueDetailPanelShow: false,
         isShowUserDetailPanel: false, // 是否显示用户详情界面
+        isShowDetailPanel: false, // 是否显示报告面板
+        detailPanelProps: {}, //详情面板属性
         isShowClueToCustomerPanel: false, // 是否显示线索转客户面板
         clueToCustomerPanelProps: {}, //线索转客户面板属性
         clueParamObj: $.extend(true, {}, emptyParamObj),
@@ -133,6 +137,10 @@ class PageFrame extends React.Component {
         paymentEmitter.on(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, this.showPersonalVersionPanel);
         //监听线索转客户面板打开事件
         clueToCustomerPanelEmitter.on(clueToCustomerPanelEmitter.OPEN_PANEL, this.openClueToCustomerPanel);
+        //监听详情面板关闭事件
+        detailPanelEmitter.on(detailPanelEmitter.HIDE, this.closeDetailPanel);
+        //监听详情面板打开事件
+        detailPanelEmitter.on(detailPanelEmitter.SHOW, this.openDetailPanel);
         //监听线索转客户面板关闭事件
         clueToCustomerPanelEmitter.on(clueToCustomerPanelEmitter.CLOSE_PANEL, this.closeClueToCustomerPanel);
         //监听申请试用面板打开事件
@@ -194,6 +202,10 @@ class PageFrame extends React.Component {
         clueToCustomerPanelEmitter.removeListener(clueToCustomerPanelEmitter.OPEN_PANEL, this.openClueToCustomerPanel);
         //取消监听线索转客户面板关闭事件
         clueToCustomerPanelEmitter.removeListener(clueToCustomerPanelEmitter.CLOSE_PANEL, this.closeClueToCustomerPanel);
+        //取消监听详情面板打开事件
+        detailPanelEmitter.removeListener(detailPanelEmitter.SHOW, this.openDetailPanel);
+        //取消监听详情面板关闭事件
+        detailPanelEmitter.removeListener(detailPanelEmitter.HIDE, this.closeDetailPanel);
         paymentEmitter.removeListener(paymentEmitter.OPEN_APPLY_TRY_PANEL, this.showApplyTryPanel);
         //需清除定时获取最新公告的定时器，以防出现问题
         this.getLastNoticeTimer && clearInterval(this.getLastNoticeTimer);
@@ -287,6 +299,22 @@ class PageFrame extends React.Component {
         this.setState({
             isShowClueToCustomerPanel: false,
             clueToCustomerPanelProps: {},
+        });
+    };
+
+    // 打开详情面板
+    openDetailPanel = props => {
+        this.setState({
+            isShowDetailPanel: true,
+            detailPanelProps: props,
+        });
+    };
+
+    // 关闭详情面板
+    closeDetailPanel = () => {
+        this.setState({
+            isShowDetailPanel: false,
+            detailPanelProps: {},
         });
     };
 
@@ -442,6 +470,11 @@ class PageFrame extends React.Component {
                         {
                             this.state.isShowApplyTryPanel ? (
                                 <ApplyTry hideApply={this.closeApplyTryPanel} {...this.state.applyTryParamObj}/>
+                            ) : null
+                        }
+                        {
+                            this.state.isShowDetailPanel ? (
+                                <ReportPanel {...this.state.detailPanelProps} />
                             ) : null
                         }
                     </div>

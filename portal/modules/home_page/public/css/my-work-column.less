@@ -27,6 +27,9 @@
       .hide-my-work-item-hover {
         display: none !important;
       }
+      .show-my-work-item-hover {
+        display: block !important;
+      }
       .my-work-item-hover{
         position: absolute;
         display: none;
@@ -275,6 +278,25 @@
       &:hover {
         .my-work-item-hover{
           display: block;
+        }
+      }
+    }
+    .daily-report-work-card{
+      .work-content-wrap{
+        overflow: hidden;
+        .work-name{
+          float: left;
+          .iconfont{
+            font-size: 30px;
+            vertical-align: middle;
+            margin-right: 10px;
+          }
+        }
+        .buttons{
+          float: right;
+          button{
+            margin-left: 10px;
+          }
         }
       }
     }

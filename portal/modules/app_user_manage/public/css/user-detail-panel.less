@@ -1,0 +1,712 @@
+@import '../../../../public/css/common-variables';
+@import './user-common-variales';
+.titlecut() {
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  white-space: nowrap;
+  word-wrap: normal; //兼容ie8
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// 用户基本详情样式
+.user-detail-panel-wrap {
+  position: relative;
+  overflow: initial;
+  .right-panel-modal-content {
+    overflow: initial;
+    form {
+      .ant-form-item {
+        padding-right: 0;
+        margin-bottom: 6px;
+      }
+    }
+    .right-panel-modal-title {
+      font-weight: normal;
+      float: left;
+      width: 100%;
+      padding: 0;
+      font-size: 12px;
+      border-bottom: none;
+      margin-bottom: 0;
+      .basic-info-contianer {
+        .basic-info-title-block {
+          .basic-info-name {
+            position: relative;
+            float: left;
+            border-right: none;
+            width: auto;
+            &:extend(.overflow-break);
+            .basic-name-text {
+              display: block;
+              max-width: @user-name-width;
+              .titlecut();
+            }
+          } //查看详情、关注按钮区域的样式
+          .basic-info-btns {
+            float: right;
+            span.iconfont {
+              float: left;
+              width: 24px;
+              margin-left: -7px;
+              margin-right: 9px;
+              cursor: pointer;
+            }
+            .status-switch-container {
+              float: left;
+            }
+            .icon-detail-list.btn-active {
+              color: @btn_active_color;
+            }
+            .iconfont.icon-interested {
+              color: @interested_color;
+            }
+          }
+        }
+        .basic-info-content {
+          .basic-info-item {
+            float: left;
+            width: 100%;
+            min-height: 24px;
+            .basic-info-text {
+              color: @font-grey;
+            }
+            .basic-info-label {
+              float: left;
+              line-height: 24px;
+              color: @font_color;
+            } //编辑按钮hover时才展示
+            .icon-edit-btn {
+              display: none;
+            }
+            &:hover {
+              .icon-edit-btn {
+                float: right;
+                display: block;
+              }
+            }
+            .basic-info-label {
+              float: left;
+            }
+          } //时间线样式
+          margin-top: 6px;
+          p {
+            line-height: 25px;
+            span {
+              word-break: break-all;
+              white-space: normal;
+            }
+          }
+        }
+        .edit-pw-container {
+          background: @bg-lightblue;
+          padding: 13px;
+          .user-basic-edit-field-input:first-child {
+            .ant-form-item-control {
+              margin-bottom: 5px;
+            }
+          }
+          .btn-bar {
+            margin-top: 10px;
+            button {
+              margin-right: 13px;
+              height: 24px;
+            }
+          }
+          .basic-edit-field {
+            form {
+              .ant-form-item {
+                .ant-input {
+                  margin-left: 0;
+                }
+              }
+            }
+          }
+        }
+        float: left;
+        width: 100%;
+        background-color: @white_color;
+        padding: @right_panel_padding @right_panel_padding 12px @right_panel_padding;
+        font-size: 12px;
+        .basic-info-content {
+          margin-top: 6px;
+          p {
+            line-height: 25px;
+            span {
+              word-break: break-all;
+              white-space: normal;
+            }
+          }
+        }
+        .basic-info-title-block {
+          .basic-info-name {
+            position: relative;
+            float: left;
+            padding-right: 26px;
+            border-right: none;
+            width: auto;
+            &:extend(.overflow-break);
+            .basic-name-text {
+              display: block;
+              max-width: @user-name-width;
+              .titlecut();
+            }
+          } //查看详情、关注按钮区域的样式
+          .basic-info-btns {
+            float: right;
+            span.iconfont {
+              float: left;
+              width: 24px;
+              margin-left: -7px;
+              margin-right: 9px;
+              cursor: pointer;
+            }
+            .icon-detail-list.btn-active {
+              color: @btn_active_color;
+            }
+            .iconfont.icon-interested {
+              color: @interested_color;
+            }
+          }
+        }
+      } //所属销售的样式
+    }
+    .user-detail-content-wrap {
+      white-space: normal;
+      background: @right_panel_bgcolor;
+      padding: 11px 12px 0 20px;
+      display: inline-block;
+      height: 100%;
+      width: 100%;
+      &.move-left-wrapper {
+        overflow: hidden;
+        .ant-tabs {
+          overflow: hidden;
+        }
+      }
+      .single-log-tabs {
+        overflow: initial;
+      }
+      .move_left {
+        transform: translateX(-500px) !important;
+      }
+      .title-container {
+        // padding-bottom: 10px;
+        overflow: hidden;
+        .logo-container {
+          float: left;
+          vertical-align: middle;
+          width: @app-logo-width;
+          height: @app-logo-width;
+          border-radius: 4px;
+          margin-right: @app-logo-mr;
+          overflow: hidden;
+          img {
+            width: 100%;
+            height: 100%;
+            vertical-align: top;
+          }
+          .no-user-logo-div {
+            height: 24px;
+            width: 24px;
+            line-height: 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            display: block;
+            .icon-users-ico {
+              font-size: 16px;
+            }
+          }
+        }
+        p {
+          max-width: @app-title-width;
+          margin-right: 8px;
+          float: left;
+          font-size: 15px;
+          text-align: left;
+          .titlecut();
+        }
+        .icon-bar {
+          cursor: pointer;
+          float: right;
+          margin-right: 10px;
+          font-size: 15px;
+        }
+      }
+      .basic-info-item {
+        float: left;
+        width: 100%;
+        min-height: 24px;
+        .basic-info-text {
+          color: @font-grey;
+        }
+        .basic-info-label {
+          float: left;
+          line-height: 24px;
+          color: @font_color;
+        } //编辑按钮hover时才展示
+        .icon-edit-btn {
+          display: none;
+        }
+        &:hover {
+          .icon-edit-btn {
+            float: right;
+            display: block;
+          }
+        }
+        .basic-info-label {
+          float: left;
+        }
+      } //时间线样式
+      .time-line.group-by-day {
+        .ant-timeline .ant-timeline-item .ant-timeline-item-tail {
+          border-left: 2px solid #eee;
+        }
+        & {
+          .icon-blue {
+            .iconfont {
+              color: @btn_color;
+            }
+          }
+          .icon-yellow {
+            .iconfont {
+              color: @interested_color;
+            }
+          }
+        }
+        ul {
+          .ant-timeline-item-head-blue {
+            color: initial;
+            border-color: initial;
+          }
+          li {
+            padding-top: 5px;
+            dl {
+              dt {
+                color: #aaafb3;
+                margin-top: 10px;
+                font-weight: normal;
+              }
+              dd {
+                color: #464b4e;
+                white-space: normal;
+                p {
+                  .iconfont {
+                    float: right;
+                    font-size: 15px;
+                    color: @btn_color;
+                  }
+                }
+                &.hightlight {
+                  color: @font-lightblue;
+                  margin-bottom: -10px;
+                  margin-top: 3px;
+                }
+              }
+            }
+          }
+        }
+      }
+      .user-log {
+        padding-top: 10px;
+        .user-log-panel {
+          ul.ant-timeline {
+            margin-right: 10px;
+          }
+          .ant-timeline-item-content {
+            dd {
+              word-break: break-all;
+            }
+          }
+          .log-info-header {
+            .select-time {
+              float: left;
+              width: 52%;
+              margin-right: 0;
+              margin-left: 0;
+              .range-datepicker {
+                width: 100%;
+              }
+            }
+          }
+        }
+        .select-app, .app-terminals-select {
+          width: 100%;
+          margin-bottom: 10px;
+          .log_select_app {
+            width: 100% !important;
+          }
+        }
+
+        .range-datepicker {
+          .date_text_wrap {
+            display: table-cell;
+            position: relative;
+            padding: 6px 4px;
+            width: 230px;
+            text-align: left;
+          }
+          .anticon-calendar {
+            margin-left: 5px;
+          }
+          .datepicker_wrap {
+            .ant-radio-wrapper {
+              .ant-radio+span {
+                margin-left: 8px;
+                position: relative;
+              }
+            }
+          }
+        }
+      }
+      .detail-card-container {
+        .ant-switch:after {
+          width: 15px;
+          height: 15px;
+          top: 3px;
+        }
+        .info-item-container {
+          float: left;
+          width: 50%;
+          padding-bottom: 7px;
+          padding-top: 5px;
+          border-bottom: 1px solid #eee;
+          .login-stress {
+            display: block;
+            font-weight: initial;
+          }
+        }
+        .user-analysis {
+          .title-container {
+            border-bottom: 1px solid #eee;
+            &.no-border {
+              border-bottom: none;
+              padding-bottom: 0;
+            }
+          }
+        }
+      }
+      .detail-card-title {
+        span.btn-bar {
+          float: right;
+          .collapse-btn {
+            span {
+              color: @font-lightblue;
+              cursor: pointer;
+              margin-right: 17px;
+            }
+          }
+        }
+      }
+      .user-opening-daterange {
+        width:318px;
+        .anticon-calendar {
+          margin-left: 3px;
+        }
+        .anticon-question-circle-o {
+          margin: 0 5px 0 4px;
+          font-size: 13px;
+        }
+        .range_wrap {
+          min-width: 66px;
+          padding: 5px;
+          .range_text {
+            margin: 0 2px;
+          }
+        }
+        .date_text_wrap {
+          padding: 8px 4px 8px 8px;
+        }
+      }
+      .status-switch-container {
+        float: left;
+        //图标形式的停用启用所需的错误样式
+        .alert-container {
+          position: absolute;
+          right: -13px;
+          top: 16px;
+          .ant-alert-error {
+            padding: 4px 3px 0 20px;
+            .ant-alert-icon {
+              font-size: 12px;
+              top: 7px;
+              left: 3px;
+            }
+          }
+        }
+      }
+      .app_wrap {
+        .add_app_btns {
+          float: right;
+        }
+        .detail-card-container {
+          .detail-card-content {
+            ul.app_list {
+              padding: 0;
+              margin-top: 10px;
+              margin-right: -12px;
+              li {
+                margin: 0 -13px;
+                margin-bottom: 10px;
+                margin-right: 0;
+                padding: 0 13px;
+                background: initial;
+                &.hide-detail {
+                  background: @bg-lightblue;
+                  line-height: 50px;
+                  .logo-container {
+                    margin-top: 12px;
+                  }
+                }
+                .title-container {
+                  .logo-container {
+                    float: left;
+                    vertical-align: middle;
+                    width: @app-logo-width;
+                    height: @app-logo-width;
+                    border-radius: 4px;
+                    margin-right: @app-logo-mr;
+                    overflow: hidden;
+                    img {
+                      width: 100%;
+                      height: 100%;
+                      vertical-align: top;
+                    }
+                    .no-user-logo-div {
+                      height: 24px;
+                      width: 24px;
+                      line-height: 24px;
+                      font-size: 16px;
+                      border-radius: 4px;
+                      display: block;
+                      .icon-users-ico {
+                        font-size: 16px;
+                      }
+                    }
+                  }
+                  p {
+                    width: @app-title-width;
+                    margin-right: 8px;
+                    float: left;
+                    font-size: 15px;
+                    .titlecut();
+                  }
+                  span.btn-bar {
+                    float: right;
+                    .collapse-btn {
+                      span {
+                        cursor: pointer;
+                        margin-right: 17px;
+                      }
+                    }
+                  }
+                }
+                .desp {
+                  margin-left: @app-pl;
+                  li .app-prop-list .status-wrapper .alert-container {
+                    margin: 0;
+                    text-align: left;
+                  }
+                  .app-prop-list {
+                    margin-bottom: 15px;
+                    font-size: 13px;
+                    &>span {
+                      width: 45%;
+                    }
+                    margin-top:0;
+                    line-height: 22px;
+                    .role-list-container{
+                      .role-name{
+                        display: inline-block;
+                        padding: 0 8px;
+                        font-size: 12px;
+                        margin: 0px 4px 4px 0;
+                        background-color:@BLACK_TAG_BACKGROUND ;
+                        color:@BORDER-BLUE;
+                        border-radius: 4px;
+                        cursor: pointer;
+                      }
+                    }
+
+                  }
+                  .uem-wrapper{
+                    .app-prop-list{
+                      &>span {
+                        display: block;
+                        width: auto;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      .contact-card-container {
+        .user-basic-edit-field-input.user-basic-edit-field.editing {
+          padding: 10px 0;
+          padding-top: 0;
+        }
+        .detail-card-content {
+          position: relative;
+        }
+        .user-basic-edit-field {
+          .buttons {
+            float: left;
+            width: 100%;
+            position: static;
+          }
+        }
+        .sales-team {
+          margin: 0 -12px;
+          padding: 0 12px;
+          position: relative;
+          .user-basic-edit-field {
+            i.iconfont {
+              float: right;
+            }
+          }
+          .sales-team-label {
+            position: absolute;
+            top: 8px;
+            left: 12px;
+          }
+          .sales-team-text {
+            float: left;
+            width: 100%;
+            padding: 5px;
+            padding-left: 50px;
+            min-height: 31px;
+            &:hover {
+              background: @bg-lightblue;
+            }
+            // 让输入框和保存区域对齐
+            .basic-edit-field-input {
+              .ant-form-item-control {
+                input {
+                  margin-left: 0;
+                }
+              }
+            }
+          }
+          i.iconfont {
+            display: none;
+            margin-top: -2px;
+            float: right;
+          }
+          &:hover {
+            i.iconfont {
+              display: inline-block;
+            }
+          }
+        }
+      }
+      .basic-info-contianer {
+        .edit-pw-container {
+          background: @bg-lightblue;
+          padding: 13px;
+          .user-basic-edit-field-input:first-child {
+            .ant-form-item-control {
+              margin-bottom: 5px;
+            }
+          }
+          .btn-bar {
+            margin-top: 10px;
+            button {
+              margin-right: 13px;
+              height: 24px;
+            }
+          }
+          .basic-edit-field {
+            form {
+              .ant-form-item {
+                .ant-input {
+                  margin-left: 0;
+                }
+              }
+            }
+          }
+        }
+        float: left;
+        width: 100%;
+        background-color: @white_color;
+        padding: @right_panel_padding @right_panel_padding 12px @right_panel_padding;
+        font-size: 12px;
+        .basic-info-content {
+          margin-top: 6px;
+          p {
+            line-height: 25px;
+            span {
+              word-break: break-all;
+              white-space: normal;
+            }
+          }
+        }
+        .basic-info-title-block {
+          .basic-info-name {
+            position: relative;
+            float: left;
+            padding-right: 26px;
+            border-right: none;
+            width: auto;
+            &:extend(.overflow-break);
+            .basic-name-text {
+              display: block;
+              max-width: @user-name-width;
+              .titlecut();
+            }
+          } //查看详情、关注按钮区域的样式
+          .basic-info-btns {
+            float: right;
+            span.iconfont {
+              float: left;
+              width: 24px;
+              margin-left: -7px;
+              margin-right: 9px;
+              cursor: pointer;
+            }
+            .icon-detail-list.btn-active {
+              color: @btn_active_color;
+            }
+            .iconfont.icon-interested {
+              color: @interested_color;
+            }
+          }
+        }
+      } //所属销售的样式
+      .detail-card-title {
+        padding-bottom: 6px;
+      }
+
+      .button-container {
+        button {
+          float: right;
+          margin-left: 10px;
+          height: 24px;
+        }
+        .button-transfer {
+          color: #108ee9;
+          &:hover {
+            background-color: #108ee9;
+            color: #ffffff;
+          }
+        }
+      }
+      .detail-card-content {
+        .app-prop-list {
+          .app-terminals {
+            position: absolute;
+            .terminal-content {
+              position: relative;
+              top: 0;
+            }
+          }
+        }
+      }
+    }
+    .app_user_full_size_item {
+      white-space: normal;
+    }
+  }
+}

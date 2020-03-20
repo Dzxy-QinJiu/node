@@ -1,7 +1,6 @@
-import {Form, Select} from 'antd';
-const Option = Select.Option;
-import CustomRadioGroup from '../../custom_radio_group';
+import {Form, Radio} from 'antd';
 import AppUserUtil from '../../../modules/app_user_manage/public/util/app-user-util';
+import { isModifyAppConfig } from 'PUB_DIR/sources/utils/common-method-util';
 const FormItem = Form.Item;
 const UserTypeRadioField = {
     showUserTypeError() {
@@ -36,9 +35,11 @@ const UserTypeRadioField = {
             return null;
         }
 
-        const callback = config.isCustomSetting ? (value) => {
+        const callback = config.isCustomSetting ? (event) => {
+            const value = event.target.value;
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
+            isModifyAppConfig(_.clone(formData), 'user_type', value);
             formData.user_type.value = value;
             if(value !== config.globalUserType) {
                 formData.user_type.setted = true;
@@ -47,7 +48,8 @@ const UserTypeRadioField = {
             if(this.props.isSingleAppEdit) {
                 this.hideUserTypeError();
             }
-        } : (value) => {
+        } : (event) => {
+            const value = event.target.value;
             const formData = this.state.formData;
             formData.user_type = value;
             this.setState({formData});
@@ -61,8 +63,8 @@ const UserTypeRadioField = {
             currentValue = this.state.formData.user_type;
         }
 
-        var options = _.map(AppUserUtil.USER_TYPE_VALUE_MAP , (value,KEY) => {
-            return <Option value={value}>{ AppUserUtil.USER_TYPE_TEXT_MAP[KEY]}</Option>;
+        const options = _.map(AppUserUtil.USER_TYPE_VALUE_MAP, (value, key) => {
+            return (<Radio.Button value={value}>{ AppUserUtil.USER_TYPE_TEXT_MAP[key]}</Radio.Button>);
         });
 
         return (
@@ -72,12 +74,13 @@ const UserTypeRadioField = {
                     labelCol={{span: 0}}
                     wrapperCol={{span: 24}}
                 >
-                    <Select
+                    <Radio.Group
                         value={currentValue}
                         onChange={callback}
                     >
                         {options}
-                    </Select>                        
+                    </Radio.Group>
+
                 </FormItem>
                 {this.state.show_user_type_error ? (<div className="error_form_tip"><ReactIntl.FormattedMessage id="user.open.type.select" defaultMessage="请选择开通类型" /></div>) : null}
             </div>

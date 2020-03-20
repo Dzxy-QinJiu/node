@@ -7,9 +7,8 @@ var AppRolePermission = require('../../../../components/user_manage_components/a
 var passwdStrengthFile = require('CMP_DIR/password-strength-bar');
 var AppUserUtil = require('../util/app-user-util');
 var AppUserStore = require('../store/app-user-store');
-var UserDetailAddAppAction = require('../action/user-detail-add-app-actions');
-import UserDetailAddAppActions from '../action/v2/user-detail-add-app-actions';
-import UserDetailAddAppStore from '../store/user-detail-add-app-store';
+var BatchChangeUserActions = require('../action/batch-change-user');
+import BatchChangeUserStore from '../store/batch-change-user';
 import DateSelector from '../../../../components/date-selector';
 var crypto = require('crypto');
 import { Tabs, Form, Input, InputNumber, Select, DatePicker, Radio, Icon, Alert, Button, Col, Row} from 'antd';
@@ -53,8 +52,8 @@ const TAB_KEYS = {
     DELAY: 'grant_delay',// 批量延期
 };
 
-var UserDetailAddApp = createReactClass({
-    displayName: 'UserDetailAddApp',
+var BatchChangUser = createReactClass({
+    displayName: 'BatchChangUser',
     propTypes: {
         initialUser: PropTypes.object,
         appList: PropTypes.array,
@@ -70,8 +69,7 @@ var UserDetailAddApp = createReactClass({
 
     closeRightPanel() {
         this.props.closeRightPanel();
-        UserDetailAddAppActions.resetState();
-        UserDetailAddAppAction.resetState();
+        BatchChangeUserActions.resetState();
     },
 
     md5(value) {
@@ -178,7 +176,7 @@ var UserDetailAddApp = createReactClass({
                 result.permissions = JSON.stringify(formData.permissions);
             }
             //调用action进行更新
-            UserDetailAddAppAction.submitAddApp({
+            BatchChangeUserActions.submitAddApp({
                 data: result,
                 selectedAppId: selectedAppId,
                 subType: _this.state.multipleSubType,
@@ -204,9 +202,9 @@ var UserDetailAddApp = createReactClass({
             if(!this.state.formData.batchSelectedApps.length) {
                 var appNotSelected = this.getBatchAppJsonList();
                 if(!appNotSelected.length) {
-                    UserDetailAddAppAction.setBatchSelectedAppError( Intl.get('user.select.user.tip', '请在用户列表中选择用户'));
+                    BatchChangeUserActions.setBatchSelectedAppError( Intl.get('user.select.user.tip', '请在用户列表中选择用户'));
                 } else {
-                    UserDetailAddAppAction.setBatchSelectedAppError( Intl.get('user.product.select.please','请选择产品'));
+                    BatchChangeUserActions.setBatchSelectedAppError( Intl.get('user.product.select.please','请选择产品'));
                 }
                 return;
             }
@@ -215,7 +213,7 @@ var UserDetailAddApp = createReactClass({
         if(this.hasRolesBlock()) {
             selectedAppId = this.state.formData.rolePermissionApp;
             if(!selectedAppId) {
-                UserDetailAddAppAction.setRolePermissionSelectedAppError(true);
+                BatchChangeUserActions.setRolePermissionSelectedAppError(true);
                 return;
             }
         }
@@ -223,14 +221,14 @@ var UserDetailAddApp = createReactClass({
         if(this.hasApplyAppBlock()) {
             var selected_apps = formData.selected_apps || [];
             if(!selected_apps.length) {
-                UserDetailAddAppAction.showAppError();
+                BatchChangeUserActions.showAppError();
                 return;
             }
         }
         //所属客户需要选择客户
         if(this.hasCustomerBlock()) {
             if(!formData.choosen_customer.id) {
-                UserDetailAddAppAction.showCustomerError();
+                BatchChangeUserActions.showCustomerError();
                 return;
             }
         }
@@ -307,7 +305,7 @@ var UserDetailAddApp = createReactClass({
             };
         });
         submitObj.data = appArr;
-        UserDetailAddAppAction.applyDelayMultiApp({
+        BatchChangeUserActions.applyDelayMultiApp({
             usePromise: true,
             data: submitObj
         });
@@ -332,23 +330,23 @@ var UserDetailAddApp = createReactClass({
 
         this.setState({ isApplying: true });
         //调用申请修改开通状态
-        UserDetailAddAppAction.applyDelayMultiApp({
+        BatchChangeUserActions.applyDelayMultiApp({
             usePromise: true,
             data: submitObj
         });
     },
 
     addApp: function(app) {
-        UserDetailAddAppAction.addApp(app);
+        BatchChangeUserActions.addApp(app);
     },
 
     removeApp: function(app) {
-        UserDetailAddAppAction.removeApp(app);
+        BatchChangeUserActions.removeApp(app);
     },
 
     customRadioValueChange(field, event) {
         let value = _.get(event, 'target.value');
-        UserDetailAddAppAction.customRadioValueChange({field, value});
+        BatchChangeUserActions.customRadioValueChange({field, value});
     },
 
     end_time_disable_date: function(current) {
@@ -361,7 +359,7 @@ var UserDetailAddApp = createReactClass({
 
     radioValueChange(field, event) {
         var value = event.target.value;
-        UserDetailAddAppAction.radioValueChange({field, value});
+        BatchChangeUserActions.radioValueChange({field, value});
     },
 
     onWindowResize: function() {
@@ -371,9 +369,9 @@ var UserDetailAddApp = createReactClass({
     //选中的行变了之后，检查已经选中的批量应用列表，
     checkSelectedBatchAppList: function(currentRows) {
         if(currentRows.length) {
-            UserDetailAddAppAction.setBatchSelectedAppError(false);
+            BatchChangeUserActions.setBatchSelectedAppError(false);
         } else {
-            UserDetailAddAppAction.setBatchSelectedAppError( Intl.get('user.select.user.tip', '请在用户列表中选择用户'));
+            BatchChangeUserActions.setBatchSelectedAppError( Intl.get('user.select.user.tip', '请在用户列表中选择用户'));
         }
         //当前能够选中的应用列表
         var currentAppIdList = _.map(this.getBatchAppJsonList() , 'app_id');
@@ -385,13 +383,13 @@ var UserDetailAddApp = createReactClass({
         });
         //如果过滤完了之后，发现应用变了，则使用新的数据
         if(newSelectedAppIdList.join(',') !== selectedAppIdList.join(',')) {
-            UserDetailAddAppAction.batchAppChange(newSelectedAppIdList);
+            BatchChangeUserActions.batchAppChange(newSelectedAppIdList);
         }
     },
 
     componentDidMount: function() {
-        UserDetailAddAppStore.listen(this.onStoreChange);
-        UserDetailAddAppAction.getApps();
+        BatchChangeUserStore.listen(this.onStoreChange);
+        BatchChangeUserActions.getApps();
         $(window).on('resize' , this.onWindowResize);
         if (isSalesRole()) {
             this.batchTabChange('grant_delay');
@@ -400,22 +398,22 @@ var UserDetailAddApp = createReactClass({
         //能够选择的批量应用
         var batchAppsToSelect = this.getBatchAppJsonList();
         //当界面显示出来之后，设置默认选中的应用列表
-        UserDetailAddAppAction.setDefaultBatchSelectedApps(batchAppsToSelect);
+        BatchChangeUserActions.setDefaultBatchSelectedApps(batchAppsToSelect);
 
     },
 
     componentWillUnmount: function() {
-        UserDetailAddAppStore.unlisten(this.onStoreChange);
+        BatchChangeUserStore.unlisten(this.onStoreChange);
         $(window).off('resize' , this.onWindowResize);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.SELECTED_USER_ROW_CHANGE , this.checkSelectedBatchAppList);
     },
 
     getInitialState: function() {
-        return UserDetailAddAppStore.getState();
+        return BatchChangeUserStore.getState();
     },
 
     onStoreChange: function() {
-        this.setState(UserDetailAddAppStore.getState());
+        this.setState(BatchChangeUserStore.getState());
     },
 
     renderIndicator: function() {
@@ -425,16 +423,28 @@ var UserDetailAddApp = createReactClass({
             );
         }
         var hide = function() {
-            UserDetailAddAppAction.hideSubmitTip();
+            BatchChangeUserActions.hideSubmitTip();
         };
         if(this.state.submitResult === 'success') {
             return (
-                <AlertTimer time={3000} message={Intl.get('user.operate.success', '操作成功')} type="success" showIcon onHide={hide}/>
+                <AlertTimer
+                    time={3000}
+                    message={Intl.get('user.operate.success', '操作成功')}
+                    type="success"
+                    showIcon
+                    onHide={hide}
+                />
             );
         }
         if(this.state.submitResult === 'error') {
             return (
-                <AlertTimer time={3000} message={this.state.submitErrorMsg} type="error" showIcon onHide={hide}/>
+                <AlertTimer
+                    time={3000}
+                    message={this.state.submitErrorMsg}
+                    type="error"
+                    showIcon
+                    onHide={hide}
+                />
             );
         }
         return null;
@@ -456,7 +466,7 @@ var UserDetailAddApp = createReactClass({
     },
 
     batchTabChange(key) {
-        UserDetailAddAppAction.changeMultipleSubType(key);
+        BatchChangeUserActions.changeMultipleSubType(key);
     },
 
     //grant_application
@@ -538,7 +548,7 @@ var UserDetailAddApp = createReactClass({
     },
 
     selectedAppChange: function(selected_apps) {
-        UserDetailAddAppAction.setSelectedApps(selected_apps);
+        BatchChangeUserActions.setSelectedApps(selected_apps);
 
     },
 
@@ -650,11 +660,11 @@ var UserDetailAddApp = createReactClass({
     },
 
     delayTimeChange: function(value) {
-        UserDetailAddAppAction.delayTimeChange(value);
+        BatchChangeUserActions.delayTimeChange(value);
     },
 
     dateChange: function(start_time,end_time,range) {
-        UserDetailAddAppAction.timeChange({start_time,end_time,range});
+        BatchChangeUserActions.timeChange({start_time,end_time,range});
     },
 
     //渲染开通时间
@@ -735,12 +745,13 @@ var UserDetailAddApp = createReactClass({
                 <FormItem
                     label={Intl.get('common.remark', '备注')}
                     labelCol={labelCol}
-                    wrapperCol={{span: 13}}
+                    wrapperCol={{span: 20}}
                 >
                     <AutosizeTextarea
-                        rows="5"
                         onChange={this.remarkChange.bind(this , 'passwordRemark')}
                         value={this.state.formData.remark.passwordRemark}
+                        autoSize={true}
+                        autoFocus={true}
                     />
                 </FormItem>
             </div>
@@ -779,7 +790,7 @@ var UserDetailAddApp = createReactClass({
                     wrapperCol={{span: 13}}
                 >
                     <AutosizeTextarea
-                        rows="5"
+                        autoSize={true}
                         onChange={this.remarkChange.bind(this , 'statusRemark')}
                         value={this.state.formData.remark.statusRemark}
                     />
@@ -797,9 +808,9 @@ var UserDetailAddApp = createReactClass({
     },
 
     onCustomerChoosen: function(resultObj) {
-        UserDetailAddAppAction.onCustomerChoosen(resultObj);
+        BatchChangeUserActions.onCustomerChoosen(resultObj);
         if(resultObj.customer.id) {
-            UserDetailAddAppAction.hideCustomerError();
+            BatchChangeUserActions.hideCustomerError();
         }
     },
 
@@ -814,7 +825,7 @@ var UserDetailAddApp = createReactClass({
 
     //备注信息修改
     remarkChange: function(field,event) {
-        UserDetailAddAppAction.remarkChange({
+        BatchChangeUserActions.remarkChange({
             field: field,
             value: event.target.value
         });
@@ -822,18 +833,18 @@ var UserDetailAddApp = createReactClass({
 
     //延期时间范围改变
     delayTimeRangeChange: function(value,text) {
-        UserDetailAddAppAction.delayTimeRangeChange(value);
+        BatchChangeUserActions.delayTimeRangeChange(value);
     },
 
     //延期时间数字改变
     delayTimeNumberChange: function(value) {
-        UserDetailAddAppAction.delayTimeNumberChange(value);
+        BatchChangeUserActions.delayTimeNumberChange(value);
     },
 
     // 将延期时间设置为截止时间（具体到xx年xx月xx日）
     setDelayDeadlineTime(value) {
         let timestamp = value && value.endOf('day').valueOf() || '';
-        UserDetailAddAppAction.setDelayDeadlineTime(timestamp);
+        BatchChangeUserActions.setDelayDeadlineTime(timestamp);
     },
 
     // 设置不可选时间的范围
@@ -859,7 +870,7 @@ var UserDetailAddApp = createReactClass({
 
     //批量应用改变
     batchAppChange: function(values) {
-        UserDetailAddAppAction.batchAppChange(values);
+        BatchChangeUserActions.batchAppChange(values);
     },
 
     renderBatchApps: function() {
@@ -936,7 +947,7 @@ var UserDetailAddApp = createReactClass({
                             <InputNumber
                                 value={this.state.formData.delayTimeNumber}
                                 onChange={this.delayTimeNumberChange}
-                                style={{width: '80px',height: '30px'}}
+                                style={{width: '80px',height: '32px'}}
                                 min={1}
                                 max={10000}
                             />
@@ -944,7 +955,7 @@ var UserDetailAddApp = createReactClass({
 
                         <Select
                             value={this.state.formData.delayTimeRange}
-                            style={{width: divWidth}}
+                            style={{width: divWidth,height: '32px'}}
                             onChange={this.delayTimeRangeChange}
                         >
                             <Option value={TIMERANGEUNIT.DAY}><ReactIntl.FormattedMessage id="common.time.unit.day" defaultMessage="天" /></Option>
@@ -1033,7 +1044,7 @@ var UserDetailAddApp = createReactClass({
                         value={selectedApp}
                         optionFilterProp="children"
                         notFoundContent={!options.length ? Intl.get('user.no.product','暂无产品') : Intl.get('user.no.related.product','无相关产品')}
-                        onChange={UserDetailAddAppAction.rolePermissionAppChange}
+                        onChange={BatchChangeUserActions.rolePermissionAppChange}
                     >
                         {options}
                     </Select>
@@ -1072,7 +1083,7 @@ var UserDetailAddApp = createReactClass({
     },
 
     rolesPermissionsChange: function(roles,permissions, rolesInfo){
-        UserDetailAddAppAction.rolesPermissionsChange({roles,permissions,rolesInfo});
+        BatchChangeUserActions.rolesPermissionsChange({roles,permissions,rolesInfo});
     },
 
     // 渲染开通产品
@@ -1089,7 +1100,7 @@ var UserDetailAddApp = createReactClass({
 
     handleSubmitData(submitData) {
         //调用action进行更新
-        UserDetailAddAppAction.submitAddApp({
+        BatchChangeUserActions.submitAddApp({
             data: submitData,
             subType: 'grant_application'
         });
@@ -1280,7 +1291,7 @@ var UserDetailAddApp = createReactClass({
                                         style={{height: fixedHeight - 90}}
                                         ref="gemini"
                                     >
-                                        {this.renderChangePassword()}
+                                        {this.renderSalesChangePassword()}
                                     </GeminiScrollBar>}
                                 />
 
@@ -1353,6 +1364,4 @@ var UserDetailAddApp = createReactClass({
     }
 });
 
-const UserBatchChange = Form.create()(UserDetailAddApp);
-
-module.exports = UserBatchChange;
+module.exports = Form.create()(BatchChangUser);

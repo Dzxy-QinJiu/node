@@ -4,6 +4,8 @@
 
 require('./style.less');
 import {NavLink} from 'react-router-dom';
+import { getTplList, showReportPanel } from 'MOD_DIR/daily-report/utils';
+import userData from 'PUB_DIR/sources/user-data';
 
 const menuUtil = require('PUB_DIR/sources/utils/menu-util');
 
@@ -20,16 +22,37 @@ function getCategory() {
 }
 
 class ReportLeftMenu extends React.Component {
-    render() {
+    state = {
+        subMenus: []
+    }
+
+    componentDidMount() {
         //获取第二层路由
         var category = getCategory();
         //获取当前界面的子模块
         var subMenus = menuUtil.getSubMenus(category);
 
+        getTplList({
+            callback: tplList => {
+                if (_.isEmpty(tplList)) {
+                    const processedMenus = _.filter(subMenus, item => item.routePath !== '/analysis/report/daily-report');
+    
+                    this.setState({ subMenus: processedMenus });
+                } else {
+                    this.setState({ subMenus });
+                }
+            },
+            query: { status: 'on' }
+        });
+    }
+
+    render() {
+        const { isCommonSales } = userData.getUserData();
+
         return (
             <div className='report-left-menu'>
                 <ul>
-                    {_.map(subMenus, menuItem => (
+                    {_.map(this.state.subMenus, menuItem => (
                         <li>
                             <NavLink
                                 to={menuItem.routePath}
@@ -40,6 +63,10 @@ class ReportLeftMenu extends React.Component {
                         </li>
                     ))}
                 </ul>
+
+                {isCommonSales ? null : (
+                    <div onClick={showReportPanel} style={{marginTop: 100, fontSize: 12, textAlign: 'center', cursor: 'pointer'}}><i className="iconfont icon-nav-setting sidebar-bottom-icon"></i> 报告管理</div>
+                )}
             </div>
         );
     }

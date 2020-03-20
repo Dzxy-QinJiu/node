@@ -5,16 +5,17 @@ var createReactClass = require('create-react-class');
 import AppUserPanelSwitchAction from '../../action/app-user-panelswitch-actions';
 import UserDetailEditAppActions from '../../action/v2/user-detail-edit-app-actions';
 import UserDetailEditAppStore from '../../store/v2/user-detail-edit-app-store';
-import AppPropertySetting from '../v3/app-property-setting';
-import {Tabs, Icon, Alert} from 'antd';
+import AppPropertySetting from 'CMP_DIR/user_manage_components/app-property-setting';
+import {Icon, Alert} from 'antd';
 import AlertTimer from '../../../../../components/alert-timer';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
 import AppUserUtil from '../../util/app-user-util';
 import PropTypes from 'prop-types';
 import {isEqualArray} from 'LIB_DIR/func';
-import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
+import {modifyAppConfigEmitter} from 'PUB_DIR/sources/utils/emitters';
+import { DISAPPEAR_DELAY_TIME } from 'PUB_DIR/sources/utils/consts';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
-
+require('../../css/edit-app.less');
 //记录上下留白布局
 const LAYOUT = {
     TAB_TOP_HEIGHT: 66,
@@ -28,7 +29,7 @@ const UserDetailEditApp = createReactClass({
 
     getInitialState() {
         return {
-            appList: [], // 拥有列表
+            disabled: true, // 确认按钮，默认禁用状态
             ...UserDetailEditAppStore.getState()
         };
     },
@@ -52,18 +53,20 @@ const UserDetailEditApp = createReactClass({
     componentDidMount() {
         UserDetailEditAppStore.listen(this.onStoreChange);
         $(window).on('resize', this.onStoreChange);
-        this.getAppList();
+        modifyAppConfigEmitter.on(modifyAppConfigEmitter.MODIFY_APP_CONFIG, this.getModifyAppConfig);
+        let appInfo = this.props.appInfo;
         UserDetailEditAppActions.setInitialData(this.props.appInfo);
     },
 
-    getAppList(){
-        getAppList(appList => {
-            this.setState({appList: appList});
+    getModifyAppConfig() {
+        this.setState({
+            disabled: false
         });
     },
 
     componentWillUnmount() {
         UserDetailEditAppStore.unlisten(this.onStoreChange);
+        modifyAppConfigEmitter.removeListener(modifyAppConfigEmitter.MODIFY_APP_CONFIG, this.getModifyAppConfig);
         $(window).off('resize', this.onStoreChange);
     },
 
@@ -107,7 +110,9 @@ const UserDetailEditApp = createReactClass({
         //多次登录
         changeAppInfo.multilogin = appData.multilogin.value || '0';
         // 多终端状态
-        changeAppInfo.terminals = appData.terminals.value;
+        if (_.get(appData, 'terminals.value')) {
+            changeAppInfo.terminals = appData.terminals.value;
+        }
         //角色
         changeAppInfo.roles = appData.roles;
         //权限
@@ -213,8 +218,11 @@ const UserDetailEditApp = createReactClass({
             //面板向右滑
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
             //等待3秒界面切换回去
-            AppUserPanelSwitchAction.resetState();
-            UserDetailEditAppActions.resetState();
+            setTimeout( () => {
+                AppUserPanelSwitchAction.resetState();
+                UserDetailEditAppActions.resetState();
+            }, DISAPPEAR_DELAY_TIME );
+
         });
     },
 
@@ -247,7 +255,7 @@ const UserDetailEditApp = createReactClass({
     render() {
         const height = this.props.height + LAYOUT_CONSTANTS.BTN_PADDING;//减去底部按钮的padding;
         return (
-            <div className="user-manage-v2 user-detail-edit-app-v2" style={{height}}>
+            <div className="user-detail-edit-app-v2" style={{height}}>
                 <h4 onClick={this.cancel}>
                     <Icon type="left"/>{Intl.get('user.user.product.set','产品设置')}
                 </h4>
@@ -259,7 +267,6 @@ const UserDetailEditApp = createReactClass({
                     isSingleAppEdit={true}
                     appSelectRoleError={this.state.appSelectRoleError}
                     appInfo={this.props.appInfo}
-                    appList={this.state.appList}
                 />
                 <OperationStepsFooter
                     currentStep={2}
@@ -267,6 +274,7 @@ const UserDetailEditApp = createReactClass({
                     finishText={Intl.get('common.confirm', '确认')}
                     onStepChange={this.cancel}
                     onFinish={this.onFinish}
+                    disabled={this.state.disabled}
                 >
                     {this.renderIndicator()}
                 </OperationStepsFooter>

@@ -408,6 +408,14 @@ export const LEAVE_TYPE = [{
 },{
     name: Intl.get('leave.apply.annual.leave', '年假'), value: 'annual_leave'
 },{
+    name: Intl.get('leave.apply.marry.leave', '婚假'), value: 'marriage_leave'
+},{
+    name: Intl.get('leave.apply.funner.leave', '丧假'), value: 'funeral_leave'
+},{
+    name: Intl.get('leave.apply.maternity.leave', '产假'), value: 'maternity_leave'
+},{
+    name: Intl.get('leave.apply.maternity.nursing.leave', '产护假'), value: 'maternityaccompany_leave'
+},{
     name: Intl.get('crm.186', '其他'), value: 'other_leave'
 }];
 //请假类型数组的对象形式
@@ -654,7 +662,8 @@ export const REALM_REMARK = {
 };
 export const ASSIGN_TYPE = {
     NEXT_CANDIDATED: 'nextCandidated',
-    COMMON_SALES: 'commonSales'
+    COMMON_SALES: 'commonSales',
+    NEXT_TEAM: 'nextTeam'
 };
 
 //申请抄送类型

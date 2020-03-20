@@ -159,8 +159,6 @@ class ClueCustomer extends React.Component {
             isExportModalShow: false,//是否展示导出线索的模态框
             isEdittingItem: {},//正在编辑的那一条
             isInvalidateItem: {},//标记无效的那一条
-            submitContent: '',//要提交的跟进记录的内容
-            submitReason: '',//要提交的无效原因
             submitTraceErrMsg: '',//提交跟进记录出错的信息
             submitInvalidateClueMsg: '',//提交标记无效出错的信息
             submitTraceLoading: false,//正在提交跟进记录
@@ -1141,26 +1139,19 @@ class ClueCustomer extends React.Component {
     handleEditTrace = (updateItem) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.foot-text-content'), '点击添加/编辑跟进内容');
         this.setState({
-            isEdittingItem: updateItem,
-            submitContent: ''
+            isEdittingItem: updateItem
         }, () => {
             if (this['changeTextare' + updateItem.id]) {
                 this['changeTextare' + updateItem.id].focus();
             }
         });
     };
-    handleInputChange = (e) => {
-        this.setState({
-            submitContent: e.target.value
-        });
-    };
     handleSubmitContent = (item) => {
         if (this.state.submitTraceLoading) {
             return;
         }
-        var value = _.get(item, 'customer_traces[0].remark', '');
         //获取填写的保存跟进记录的内容
-        var textareVal = _.trim(this.state.submitContent);
+        var textareVal = _.trim(this['changeTextare' + item.id].value);
         if (!textareVal) {
             this.setState({
                 submitTraceErrMsg: Intl.get('cluecustomer.content.not.empty', '跟进内容不能为空')
@@ -1229,7 +1220,6 @@ class ClueCustomer extends React.Component {
         this.setState({
             submitTraceErrMsg: '',
             isEdittingItem: {},
-            submitContent: '',
             currentMoreBtnStatus: ''
         });
     };
@@ -1255,10 +1245,11 @@ class ClueCustomer extends React.Component {
                         />
                     </div>
                 ) : null}
-                <TextArea onScroll={event => event.stopPropagation()}
+                <textarea
+                    className='ant-input'
+                    onScroll={event => event.stopPropagation()}
                     ref={changeTextare => this['changeTextare' + salesClueItem.id] = changeTextare}
                     placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')}
-                    onChange={this.handleInputChange}
                 />
                 <div className="save-cancel-btn">
                     <Button type='primary'
@@ -1337,7 +1328,6 @@ class ClueCustomer extends React.Component {
         this.setState({
             isInvalidClue: item.id,//正在标为无效的线索
             isInvalidateItem: item,
-            submitReason: ''
         }, () => {
             if (this['invalidateClueChange' + item.id]) {
                 this['invalidateClueChange' + item.id].focus();
@@ -1434,15 +1424,8 @@ class ClueCustomer extends React.Component {
         this.setState({
             submitInvalidateClueMsg: '',
             isInvalidateItem: {},
-            submitReason: '',
             isInvalidClue: '',
             currentMoreBtnStatus: ''
-        });
-    };
-    //确认无效输入框改变时数据处理
-    handleInvalidateInputChange = (e) => {
-        this.setState({
-            submitReason: e.target.value
         });
     };
     //将当前列表存入localStorage
@@ -1450,13 +1433,13 @@ class ClueCustomer extends React.Component {
         const uselessDropList = storageUtil.local.get('uselessDropList') || {};
         uselessDropList[userData.getUserData().user_id] = list;
         storageUtil.local.set('uselessDropList', uselessDropList);
-    }
+    };
     //确认无效处理
     handleInvalidateBtn = (item, callback) => {
         if (this.state.submitInvalidateLoading) {
             return;
         }
-        let invalidReason = _.trim(this.state.submitReason);
+        let invalidReason = _.trim(this['invalidateClueChange' + item.id].value);
         if(invalidReason){ //将失效数据存入localStorage
             let dropList = this.state.dropList;
             dropList = _.filter(dropList, item => item !== invalidReason);
@@ -1474,7 +1457,7 @@ class ClueCustomer extends React.Component {
                 id: item.id,
                 availability: updateAvailability,
                 invalid_info: {
-                    invalid_reason: _.get(this.state, 'submitReason')
+                    invalid_reason: invalidReason
                 }
             };
             updateObj = JSON.stringify(updateObj);
@@ -1516,19 +1499,20 @@ class ClueCustomer extends React.Component {
     };
 
     onClickMenu = ({item}) => {
+
         this.setState({
-            submitReason: item.props.value,
             visibleDrop: false
         });
         if (this['invalidateClueChange' + this.state.isInvalidateItem.id]) {
             this['invalidateClueChange' + this.state.isInvalidateItem.id].focus();
+            this['invalidateClueChange' + this.state.isInvalidateItem.id].value = item.props.value;
         }
     }
     handleDropDownVisibleChange = (flag) => {
         this.setState({
             visibleDrop: flag
         });
-    }
+    };
 
     //渲染确认无效输入框
     renderInvalidInput = (salesClueItem) => {
@@ -1558,11 +1542,9 @@ class ClueCustomer extends React.Component {
                 ) : null}
                 <Dropdown overlay={menu} trigger={['click']} onVisibleChange={this.handleDropDownVisibleChange}
                     visible={this.state.visibleDrop}>
-                    <TextArea ref={invalidateClueChange => this['invalidateClueChange' + salesClueItem.id] = invalidateClueChange}
+                    <textarea className='ant-input' ref={invalidateClueChange => this['invalidateClueChange' + salesClueItem.id] = invalidateClueChange}
                         onScroll={event => event.stopPropagation()}
                         placeholder={Intl.get('clue.describe.invalid.reason', '请描述一下无效原因')}
-                        onChange={this.handleInvalidateInputChange}
-                        value={this.state.submitReason}
                     />
                 </Dropdown>
                 <div className="save-cancel-btn">
@@ -1958,8 +1940,7 @@ class ClueCustomer extends React.Component {
                                     <ShearContent>
                                         <span>
                                             <span className="clue_source_time">{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}&nbsp;</span>
-
-                                            <span>{salesClueItem.source ? Intl.get('clue.item.acceess.channel', '详情：{content}',{content: salesClueItem.source}) : null}</span>
+                                            <span>{_.get(salesClueItem,'source','')}</span>
                                         </span>
                                     </ShearContent>
                                 </div>

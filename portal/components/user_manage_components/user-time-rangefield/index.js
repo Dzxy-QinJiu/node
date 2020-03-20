@@ -2,6 +2,7 @@ import {Form, Select} from 'antd';
 const Option = Select.Option;
 import DateSelector from '../../date-selector';
 const FormItem = Form.Item;
+import { isModifyAppConfig } from 'PUB_DIR/sources/utils/common-method-util';
 
 const UserTimeRangeField = {
     renderUserTimeRangeBlock(config, app) {//客户详情中，新版的用户申请，需要用到app，来查找要修改的应用配置表单
@@ -35,6 +36,7 @@ const UserTimeRangeField = {
             } else {
                 const appPropSettingsMap = this.state.appPropSettingsMap;
                 const formData = _.get(appPropSettingsMap[config.appId], 'time') || {};
+                isModifyAppConfig(_.clone(formData), 'time', {start_time, end_time, range});
                 const globalTime = config.globalTime;
                 formData.start_time = start_time;
                 formData.end_time = end_time;

@@ -515,13 +515,6 @@ class ClueFilterPanel extends React.Component {
             groupName: Intl.get('clue.customer.classify', '线索分类'),
             groupId: 'clue_classify',
             data: this.processClueClassifyArray(clueClassifyArray)
-        },{
-            groupName: Intl.get('crm.clue.client.source', '获客方式'),
-            groupId: 'source_classify',
-            data: sourceClassifyArray.map(x => ({
-                name: x.name,
-                value: x.value
-            }))
         });
         //非普通销售 且 非个人版本才有销团队和负责人
         if (!isCommonSalesOrPersonnalVersion()) {
@@ -548,6 +541,14 @@ class ClueFilterPanel extends React.Component {
                 }
             );
         }
+        advancedData.unshift({
+            groupName: Intl.get('crm.clue.client.source', '获客方式'),
+            groupId: 'source_classify',
+            data: sourceClassifyArray.map(x => ({
+                name: x.name,
+                value: x.value
+            }))
+        });
 
         return (
             <div data-tracename="线索筛选">
