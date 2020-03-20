@@ -881,3 +881,6 @@ export const OFFDUTY_TYPE = {
 };
 
 export const DISAPPEAR_DELAY_TIME = 3000;
+
+// 赢取线索量的最大值
+export const winningClueMaxCount = 80;

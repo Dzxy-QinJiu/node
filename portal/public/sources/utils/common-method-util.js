@@ -30,7 +30,8 @@ import {
     RESPONSIVE_LAYOUT,
     TIMERANGEUNIT,
     WEEKDAYS,
-    CONFIG_TYPE
+    CONFIG_TYPE,
+    winningClueMaxCount
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -1526,6 +1527,18 @@ exports.isShowWinningClue = () => {
     return versionAndType.trial && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
 };
 
+// 是否已经赢取了最大的线索量
+exports.isWinningClueMaxCount = () => {
+    let isShowRewardClueTips = true;
+    let todayWinningClueCount = _.get(Oplate, 'todayWinningClueCount', 0);
+    if (todayWinningClueCount >= winningClueMaxCount) {
+        isShowRewardClueTips = false;
+    } else {
+        Oplate.todayWinningClueCount += 2;
+    }
+    return isShowRewardClueTips;
+};
+
 // 判断是否修改了应用的配置信息
 // 若修改了，则需要触发修改应用配置事件
 exports.isModifyAppConfig = (originalData, configType ,value) => {
@@ -1533,4 +1546,4 @@ exports.isModifyAppConfig = (originalData, configType ,value) => {
     if (!_.isEqual(originalValue, value)) {
         modifyAppConfigEmitter.emit(modifyAppConfigEmitter.MODIFY_APP_CONFIG);
     }
-};
+}

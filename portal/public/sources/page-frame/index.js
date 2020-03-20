@@ -75,6 +75,8 @@ class PageFrame extends React.Component {
 
     getRewardedCluesCount() {
         getRewardedCluesCount().then( (count) => {
+            // 登录界面的时候，保存一下获取赢取的线索量
+            Oplate.todayWinningClueCount = count;
             this.setState({
                 rewardClueCount: count
             });
