@@ -1,0 +1,95 @@
+/**
+ * Copyright (c) 2018-2019 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2018-2019 山东客套智能科技有限公司。保留所有权利。
+ * Created by tangmaoqin on 2020/03/16.
+*/
+.ef-loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-size: 12px;
+  color: #108ee9;
+  vertical-align: middle;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  z-index: inherit;
+  line-height: 18px;
+
+  .ef-loading-icon {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transform: rotate(45deg);
+    animation: efRotate 3.2s infinite linear;
+
+    &.small {
+      width: 14px;
+      height: 14px;
+      i {
+        width: 6px;
+        height: 6px;
+      }
+    }
+
+    &.large {
+      width: 30px;
+      height: 30px;
+      i {
+        width: 12px;
+        height: 12px;
+      }
+    }
+
+    i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #108ee9;
+      transform: scale(0.6);
+      display: block;
+      position: absolute;
+      opacity: 0.3;
+      animation: efSpinMove .8s infinite linear alternate;
+      transform-origin: 0 0;
+
+      &:nth-child(1) {
+        left: 0;
+        top: 0;
+      }
+
+      &:nth-child(2) {
+        right: 0;
+        top: 0;
+        animation-delay: 0.4s;
+      }
+
+      &:nth-child(3) {
+        left: 0;
+        bottom: 0;
+        animation-delay: 0.8s;
+      }
+
+      &:nth-child(4) {
+        right: 0;
+        bottom: 0;
+        animation-delay: 1.2s;
+      }
+    }
+  }
+}
+
+@keyframes efSpinMove {
+  to {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes efRotate {
+  to {
+    -webkit-transform: rotate(405deg);
+    transform: rotate(405deg);
+  }
+}

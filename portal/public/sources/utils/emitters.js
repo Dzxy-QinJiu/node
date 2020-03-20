@@ -300,3 +300,8 @@ export { terminalsSelectorEmitter };
 const modifyAppConfigEmitter = new EventEmitter();
 modifyAppConfigEmitter.MODIFY_APP_CONFIG = 'modify_app_config'; // 修改应用配置
 export { modifyAppConfigEmitter };
+
+//在线客服
+const customerServiceEmitter = new EventEmitter();
+customerServiceEmitter.CLICK_EMOTION_IMAGE = 'click_emotion_image';//点击表情
+export { customerServiceEmitter };
