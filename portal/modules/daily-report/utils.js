@@ -161,6 +161,7 @@ export function saveReport(data, callback) {
 
 //显示数字详情
 export function showNumberDetail(record, name, e) {
+    if (true) return; //因数字详情面板样式还没调好，暂时不让打开详情模板
     //只有单个销售的数据允许点击查看详情
     if (!record.nickname) return;
 
