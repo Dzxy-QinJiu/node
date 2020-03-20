@@ -40,24 +40,36 @@ class SetRule extends React.Component {
                                         mode: 'multiple',
                                         placeholder: '请选择团队'
                                     },
-                                    fieldDecoratorOption: {
-                                        rules: [{ required: true, message: '请选择团队' }]
+                                    formItemLayout: {
+                                        labelCol: { span: 0 },
+                                        wrapperCol: { span: 24 },
                                     }
                                 })}
                             </div>
                         )}
                     />
 
-                    {renderFormItem('统计周期', 'statistic_interval', {
-                        type: 'select',
-                        options: [{
-                            name: '按日',
-                            value: 'day'
-                        }, {
-                            name: '按周',
-                            value: 'week'
-                        }],
-                    })}
+                    <DetailCard
+                        title="统计周期"
+                        content={(
+                            <div>
+                                {renderFormItem('', 'statistic_interval', {
+                                    type: 'select',
+                                    options: [{
+                                        name: '按日',
+                                        value: 'day'
+                                    }, {
+                                        name: '按周',
+                                        value: 'week'
+                                    }],
+                                    formItemLayout: {
+                                        labelCol: { span: 0 },
+                                        wrapperCol: { span: 24 },
+                                    }
+                                })}
+                            </div>
+                        )}
+                    />
                 </Form>
 
                 {renderButtonZone([{
