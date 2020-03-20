@@ -6,6 +6,7 @@ import { Form } from 'antd';
 import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
 import { VIEW_TYPE } from './consts';
 import { renderButtonZoneFunc, hideReportPanel, getReportList, saveReport } from './utils';
+import DetailCard from 'CMP_DIR/detail-card';
 
 class ReportForm extends React.Component {
     componentDidMount() {
@@ -30,13 +31,27 @@ class ReportForm extends React.Component {
         return (
             <div>
                 <Form>
-                    {_.map(unEditableItems, item => {
-                        return renderFormItem(item.name, item.name, { type: 'text', initialValue: item.value });
-                    })}
+                    <DetailCard
+                        title="日常工作"
+                        content={(
+                            <div>
+                                {_.map(unEditableItems, item => {
+                                    return renderFormItem(item.name, item.name, { type: 'text', initialValue: item.value });
+                                })}
+                            </div>
+                        )}
+                    />
 
-                    {_.map(editableItems, item => {
-                        return renderFormItem(item.name, item.name, { type: 'textarea', fieldDecoratorOption: { initialValue: item.value_str } });
-                    })}
+                    <DetailCard
+                        title="其他工作"
+                        content={(
+                            <div>
+                                {_.map(editableItems, item => {
+                                    return renderFormItem(item.name, item.name, { type: 'textarea', fieldDecoratorOption: { initialValue: item.value_str } });
+                                })}
+                            </div>
+                        )}
+                    />
 
                     {renderButtonZone([{
                         hide: !isPreview,
