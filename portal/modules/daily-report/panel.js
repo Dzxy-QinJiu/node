@@ -5,6 +5,7 @@
 require('./style.less');
 import { Switch } from 'antd';
 import { VIEW_TYPE } from './consts';
+import { saveTpl } from './utils';
 import Detail from 'CMP_DIR/detail';
 import AddTpl from './add-tpl';
 import ManageTpl from './manage-tpl';
@@ -68,7 +69,10 @@ class ReportPanel extends React.Component {
             case VIEW_TYPE.MANAGE_TPL:
                 title = <div>
                     <span>{currentTpl.name}</span>
-                    <Switch checked={currentTpl.status === 'on'} onChange={() => {
+                    <Switch defaultChecked={currentTpl.status === 'on'} onChange={checked => {
+                        const status = checked ? 'on' : 'off';
+                        const postData = _.extend({}, currentTpl, { status });
+                        saveTpl(postData, result => {});
                     }} />
                 </div>;
                 break;
