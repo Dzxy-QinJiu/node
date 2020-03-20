@@ -829,6 +829,7 @@ class UserLoginAnalysis extends React.Component {
                                 isShowToggleBtn={true}
                                 isExpandDetail={this.state.showDetailMap[app.app_id]}
                                 handleToggleDetail={this.showAppDetail.bind(this, app)}
+                                isMutipleCard={true}
                             />
                         );
                     })
