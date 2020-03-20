@@ -1661,25 +1661,33 @@ class ClueDetailOverview extends React.Component {
                         noDataTip={Intl.get('crm.basic.no.address', '暂无详细地址')}
                         addDataTip={Intl.get('crm.basic.add.address', '添加详细地址')}
                     />,{containerCls: 'basic-info-detail-address'})}
-                    {this.renderBasicContent(Intl.get('clue.customer.source.ip', '来源IP'),<BasicEditInputField
+                    {curClue.source_ip ? this.renderBasicContent(Intl.get('clue.customer.source.ip', '来源IP'),<BasicEditInputField
                         hasEditPrivilege={false}
                         id={curClue.id}
                         saveEditInput={this.saveEditBasicInfo.bind(this, 'source_ip')}
                         value={curClue.source_ip}
                         field='source_ip'
                         noDataTip={Intl.get('clue.customer.no.source.ip', '未设置来源IP')}
-                    />)}
-                    {/*有官网字段就展示*/}
-                    {curClue.website ? this.renderBasicContent(Intl.get('lead.info.website.info' , '官网'),<BasicEditInputField
-                        hasEditPrivilege={false}
-                        id={curClue.id}
-                        value={curClue.website}
-                        field='website'
                     />) : null}
+                    {/*有官网字段就展示*/}
+                    {curClue.website ? this.renderBasicContent(Intl.get('lead.info.website.info' , '官网'),
+                        <a onClick={this.openNewTabLink.bind(this,curClue.website)}><BasicEditInputField
+                            hasEditPrivilege={false}
+                            id={curClue.id}
+                            value={curClue.website}
+                            field='website'
+                        /></a>
+                    ) : null}
                     <div className='clear-float'></div>
                 </div>
             </div>
         );
+    };
+    openNewTabLink = (website) => {
+        if(website.indexOf('http') === -1){
+            website = `http://${website}`;
+        }
+        window.open(website,'_blank');
     };
     //时间，线索描述，行业
     renderClueTimeAndIndustry = () => {
