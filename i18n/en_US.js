@@ -3313,6 +3313,10 @@ var en_US = {
     'leave.apply.sick.leave': 'Sick leave',//病假
     'leave.apply.personnal.leave': 'Personnal leave',//事假
     'leave.apply.annual.leave': 'Annual leave',//年假
+    'leave.apply.marry.leave': 'Wedding leave',//婚假
+    'leave.apply.funner.leave': 'Funeral leave',//丧假
+    'leave.apply.maternity.leave': 'Maternity leave',//产假
+    'leave.apply.maternity.nursing.leave': 'Maternity nursing leave',//产护假
     'leave.apply.fill.in.leave.reason': 'Please fill in the reason for leave',//请填写请假原因
     'leave.apply.leave.reason': 'Leave reason',//请假原因
     'leave.apply.leave.time': 'Leave time',//请假时间
