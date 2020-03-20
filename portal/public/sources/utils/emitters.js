@@ -304,4 +304,5 @@ export { modifyAppConfigEmitter };
 //在线客服
 const customerServiceEmitter = new EventEmitter();
 customerServiceEmitter.CLICK_EMOTION_IMAGE = 'click_emotion_image';//点击表情
+customerServiceEmitter.FULL_CHAT_MESSAGE_IMAGE = 'FULL_CHAT_MESSAGE_IMAGE';//图片放大
 export { customerServiceEmitter };

@@ -9,6 +9,7 @@ import classNames from 'classnames';
 import userData from 'PUB_DIR/sources/user-data';
 import { transTimeFormat } from 'PUB_DIR/sources/utils/time-format-util';
 import { MESSAGE_TYPES } from './consts';
+import uuid from 'uuid/v4';
 
 class ChatMessageItem extends React.Component {
     constructor(props) {
@@ -53,17 +54,20 @@ class ChatMessageItem extends React.Component {
                     messageContentList.push({
                         data: replacedAttachment.id,
                         type: replacedAttachment.rType.name,
-                        attachment: replacedAttachment.attachment
+                        attachment: replacedAttachment.attachment,
+                        uid: uuid()
                     });
                 } else {
                     messageContentList.push({
                         data: text.substring(startIndex, index),
-                        type: MESSAGE_TYPES.TEXT
+                        type: MESSAGE_TYPES.TEXT,
+                        uid: uuid()
                     });
                     messageContentList.push({
                         data: replacedAttachment.id,
                         type: replacedAttachment.rType.name,
-                        attachment: replacedAttachment.attachment
+                        attachment: replacedAttachment.attachment,
+                        uid: uuid()
                     });
                 }
                 startIndex = index + 1;
@@ -71,13 +75,15 @@ class ChatMessageItem extends React.Component {
             if (startIndex <= text.length) {
                 messageContentList.push({
                     data: text.substring(startIndex),
-                    type: MESSAGE_TYPES.TEXT
+                    type: MESSAGE_TYPES.TEXT,
+                    uid: uuid()
                 });
             }
         } else {
             messageContentList.push({
                 data: text,
-                type: MESSAGE_TYPES.TEXT
+                type: MESSAGE_TYPES.TEXT,
+                uid: uuid()
             });
         }
         this.setState({ messageContentList });
@@ -87,8 +93,8 @@ class ChatMessageItem extends React.Component {
         if(this.isDocumentMessage()) {//是否是文档类型
             return <ChatDocumentMessageItem message={this.props.message}/>;
         }else if(this.isTextMessage()) {//是否是文本类型
-            return this.state.messageContentList.map((item, index) => (
-                <ChatMessageContentItem key={index + Date.now()} message={item}/>
+            return this.state.messageContentList.map((item) => (
+                <ChatMessageContentItem key={item.uid} message={item}/>
             ));
         }
         return null;

@@ -4,6 +4,7 @@
  * Created by tangmaoqin on 2020/03/16.
  */
 import './css/customer-index.less';
+import RcViewer from 'CMP_DIR/rc-viewer';
 import ChatMessageHome from './chat-message-home';
 import SendMessage from './send-message';
 import AntmeProxy from 'LIB_DIR/worker/antme.proxy';
@@ -17,6 +18,7 @@ class CustomerIndex extends React.Component {
         this.state = {
             initAntme: false,
             userId: null, //蚁讯中登录后返回的用户id
+            previewImage: '',//预览图片地址
         };
     }
 
@@ -25,10 +27,12 @@ class CustomerIndex extends React.Component {
     componentDidMount() {
         //登录蚁讯
         this.initialLoginAntme();
+        customerServiceEmitter.on(customerServiceEmitter.FULL_CHAT_MESSAGE_IMAGE, this.handlePreview);
     }
 
     componentWillUnmount() {
         this.removeAntMeEvents();
+        customerServiceEmitter.removeListener(customerServiceEmitter.FULL_CHAT_MESSAGE_IMAGE, this.handlePreview);
     }
 
     //获取蚁讯ticket
@@ -103,18 +107,20 @@ class CustomerIndex extends React.Component {
 
     //初始化蚁讯服务的事件监听
     registryAntMeEvents() {
-        for (let key in sdkEventConstants.MessageConstants) {
-            let constants = sdkEventConstants.MessageConstants[key];
-            for (let name in constants) {
-                window.antmeProxy.on(name, key, (data) => {
-                    console.log('事件名：', constants[name]);
-                    customerServiceEmitter.emit(constants[name], data);
-                }, (id) => {
-                    if (!this.listenerIds[key]) {
-                        this.listenerIds[key] = {};
-                    }
-                    this.listenerIds[key][name] = id;
-                });
+        if(_.isEmpty(this.listenerIds)) {
+            for (let key in sdkEventConstants.MessageConstants) {
+                let constants = sdkEventConstants.MessageConstants[key];
+                for (let name in constants) {
+                    window.antmeProxy.on(name, key, (data) => {
+                        console.log('事件名：', constants[name]);
+                        customerServiceEmitter.emit(constants[name], data);
+                    }, (id) => {
+                        if (!this.listenerIds[key]) {
+                            this.listenerIds[key] = {};
+                        }
+                        this.listenerIds[key][name] = id;
+                    });
+                }
             }
         }
     }
@@ -140,6 +146,15 @@ class CustomerIndex extends React.Component {
         _.isFunction(this.props.initAntme) && this.props.initAntme();
     }
 
+    handlePreview = (image) => {
+        this.setState({
+            previewImage: image.url,
+        }, () => {
+            const { viewer } = this.refs.viewer;
+            viewer.show();
+        });
+    };
+
     render() {
         return (
             <div className="customer">
@@ -157,6 +172,10 @@ class CustomerIndex extends React.Component {
                         <SendMessage initAntme={this.state.initAntme}/>
                     </div>
                 </div>
+                <RcViewer ref="viewer">
+                    {/*我们这里创建一个不显示的图片，因为这张图片只是为了用来查看放大图片的,不需要显示*/}
+                    <img style={{display: 'none'}} src={this.state.previewImage}/>
+                </RcViewer>
             </div>
         );
     }

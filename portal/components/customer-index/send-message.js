@@ -134,14 +134,81 @@ class SendMessage extends React.Component {
             return;
         }
 
+        let images = [];
+        let files = [];
+        replacedAttachments.forEach(item => {
+            if (item.attachment) {
+                images.push(item);
+                files.push(item.attachment);
+            }
+        });
+
+        if(images.length) {
+            window.antmeProxy.rpc('RPC.messaging.getFileUploadUrlList', [files], (data) => {
+                let list = data;
+                let arrPromise = [];
+                for (let i = 0; i < list.length; i++) {
+                    arrPromise.push(this.uploadImageFile(list[i].uploadKey, list[i].urls, images[i].attachment.file, images[i].attachment.arrayBuffer));
+                }
+                return Promise.all(arrPromise).then(result => {
+                    this.sendMessage(result, nodeText, mentions, replacedAttachments);
+                });
+            });
+        }else {
+            this.sendMessage(files, nodeText, mentions, replacedAttachments);
+        }
+    };
+
+    uploadImageFile(uploadKey, urls, file, arrayBuffer) {
+        let arrPromise = [];
+        let size = 1024 * 1024;
+        let num = Math.ceil(file.size / size);
+        let start = 0;
+        let end = 0;
+        for (let i = 0; i < urls.length; i++) {
+            let p1 = new Promise((resolve, reject) => {
+                let xhr = new XMLHttpRequest();
+                xhr.open('POST', urls[i].url, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            let result = xhr.responseText;
+                            resolve(result);
+                        }
+                    }
+                };
+                let formData = new FormData();
+                let fileChunk;
+                if (i === num - 1) {
+                    end = file.size;
+                } else {
+                    end = start + size;
+                }
+                fileChunk = file.slice(start, end);
+                start = end;
+                formData.append('file', fileChunk);
+                xhr.send(formData);
+            });
+            arrPromise.push(p1);
+        }
+        return Promise.all(arrPromise).then(() => {
+            return Promise.resolve({
+                uploadKey: uploadKey,
+                file: file
+            });
+        });
+    }
+
+    sendMessage(files, nodeText, mentions, replacedAttachments) {
+        let self = this;
         window.antmeProxy.rpc('RPC.messaging.sendMessage',
-            [[], window.Oplate.antmeClientId, nodeText, mentions, replacedAttachments], function(data) {
+            [files, window.Oplate.antmeClientId, nodeText, mentions, replacedAttachments], function(data) {
                 self.imageData = {};
                 self.setState({
                     loading: false
                 });
             });
-    };
+    }
 
     messageEnter = (event) => {
         if(event.keyCode === KeyCode.ENTER) {
@@ -233,43 +300,61 @@ class SendMessage extends React.Component {
 
     //粘贴事件处理
     messagePaste = (e) => {
+        //阻止默认行为即不让剪贴板内容在div中显示出来
         e.preventDefault();
         let self = this;
-        if (!this.props.initAntme) {
+        let clipboardData = e.clipboardData || e.originalEvent.clipboardData || window.clipboardData;
+        let items;
+        //判断IE浏览器
+        if(!!window.ActiveXObject || 'ActiveXObject' in window){
+            items = clipboardData.files;
+        }else{
+            items = clipboardData.items;
+        }
+        if (!this.props.initAntme || !(clipboardData && items)) {
             return false;
         }
-        if (e && e.clipboardData && e.clipboardData.items) {
-            let copiedData = e.clipboardData.items[0];
-            if (copiedData && copiedData.type.indexOf('image') === 0) {
-                let image = copiedData.getAsFile();
-                let reader = new FileReader();
-                reader.onload = function() {
-                    let rd = new FileReader();
-                    rd.onload = function(e) {
-                        let data = e.target.result;
-                        // 加载图片获取图片真实宽度和高度
-                        let newImage = new Image();
-                        newImage.onload = function() {
-                            image.width = newImage.width;
-                            image.height = newImage.height;
-                            let fileId = Math.random();
-                            self.insertMessage('<img src=\'' + data + '\' fileId=\'' + fileId + '\' class=\'img-item\'>');
-                            self.imageData[fileId] = {
-                                arrayBuffer: reader.result,
-                                file: image,
-                                width: newImage.width,
-                                height: newImage.height
+
+        if (items) {
+            // 复制的内容在剪贴板里位置不确定，所以通过遍历来保证数据准确
+            for(let i = 0, len = items.length; i < len; i++) {
+                const copiedData = items[i];
+                if (copiedData && copiedData.type.indexOf('image') === 0) {
+                    let image = copiedData.getAsFile();
+                    if(_.get(image,'size') === 0) {
+                        return;
+                    }
+                    let reader = new FileReader();
+                    reader.onload = function() {
+                        let rd = new FileReader();
+                        rd.onload = function(e) {
+                            let data = e.target.result;
+                            // 加载图片获取图片真实宽度和高度
+                            let newImage = new Image();
+                            newImage.onload = function() {
+                                image.width = newImage.width;
+                                image.height = newImage.height;
+                                let fileId = Math.random();
+                                self.insertMessage('<img src=\'' + data + '\' fileId=\'' + fileId + '\' class=\'img-item\'>');
+                                self.imageData[fileId] = {
+                                    arrayBuffer: reader.result,
+                                    file: image,
+                                    width: newImage.width,
+                                    height: newImage.height
+                                };
                             };
+                            newImage.src = data;
                         };
-                        newImage.src = data;
+                        rd.readAsDataURL(image);
                     };
-                    rd.readAsDataURL(image);
-                };
-                reader.readAsArrayBuffer(image);
-            } else {
-                let text = e.clipboardData.getData('text/plain') || '';
-                if (text !== '') {
-                    this.insertMessage(text);
+                    reader.readAsArrayBuffer(image);
+
+                } else if (copiedData.kind === 'string' && copiedData.type === 'text/plain') {
+                    copiedData.getAsString((text) => {
+                        if (text !== '') {
+                            this.insertMessage(text);
+                        }
+                    });
                 }
             }
         }
@@ -297,6 +382,7 @@ class SendMessage extends React.Component {
                 <div className="send-message-wrap">
                     <div
                         className="send-message-body"
+                        onPaste={this.messagePaste}
                         contentEditable
                         ref="editDiv"
                     />

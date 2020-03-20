@@ -94,11 +94,12 @@
     "perfect-scrollbar": "0.7.1"
   },
   "devDependencies": {
+    "@component-util/sso-login": "git+ssh://git@git.eefung.com:modules-nodejs/component-util.git#sso-login-1.3.3",
     "alt": "0.17.9",
     "ant-ajax": "1.0.2",
+    "ant-react-catch-errors": "0.0.1",
     "antc": "1.1.18",
     "antd": "2.13.0",
-    "ant-react-catch-errors": "0.0.1",
     "autoprefixer": "8.3.0",
     "autosize": "3.0.17",
     "babel-eslint": "8.2.3",
@@ -169,6 +170,7 @@
     "truncate.js": "1.1.2",
     "uglifyjs-webpack-plugin": "1.2.5",
     "url-loader": "1.0.1",
+    "viewerjs": "1.5.0",
     "webpack": "4.6.0",
     "webpack-bundle-analyzer": "2.11.1",
     "webpack-cli": "2.1.2",
@@ -176,7 +178,6 @@
     "webpack-dev-server": "3.1.3",
     "webpack-hot-middleware": "2.22.1",
     "wordcloud": "1.1.0",
-    "worker-loader": "2.0.0",
-    "@component-util/sso-login": "git+ssh://git@git.eefung.com:modules-nodejs/component-util.git#sso-login-1.3.3"
+    "worker-loader": "2.0.0"
   }
 }

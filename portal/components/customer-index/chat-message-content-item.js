@@ -5,6 +5,7 @@
  */
 import emotionUtils from 'PUB_DIR/sources/utils/emotion-utils';
 import { MESSAGE_TYPES } from './consts';
+import { customerServiceEmitter } from 'OPLATE_EMITTER';
 
 class ChatMessageContentItem extends React.Component {
 
@@ -27,6 +28,7 @@ class ChatMessageContentItem extends React.Component {
 
     getImageUrl() {
         let self = this;
+        console.log('获取图片信息');
         window.antmeProxy.rpc('RPC.messaging.loadFile',
             [self.imageData.image.fileLocation.fileId, self.imageData.image.fileLocation.accessHash],
             function(result) {
@@ -42,11 +44,18 @@ class ChatMessageContentItem extends React.Component {
         }
     }
 
+    //图片放大
+    handleFullImage = () => {
+        customerServiceEmitter.emit(customerServiceEmitter.FULL_CHAT_MESSAGE_IMAGE, {
+            url: this.state.imageUrl
+        });
+    };
+
     render() {
         return (
             <span className="chat-message-content-item">
                 {this.props.message.type === MESSAGE_TYPES.IMAGE ? (
-                    <img src={this.state.imageUrl} style={{width: 200, height: 100}}/>
+                    <img src={this.state.imageUrl} style={{width: 200, height: 100}} onClick={this.handleFullImage}/>
                 ) : (
                     <span dangerouslySetInnerHTML={{__html: this.getText()}}/>
                 )}

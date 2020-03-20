@@ -5,6 +5,7 @@
  */
 import { MESSAGE_TYPES } from './consts';
 import { downloadFile } from 'PUB_DIR/sources/utils/common-method-util';
+import { customerServiceEmitter } from 'OPLATE_EMITTER';
 
 class ChatDocumentMessageItem extends React.Component {
     constructor(props) {
@@ -87,6 +88,13 @@ class ChatDocumentMessageItem extends React.Component {
         this.setState({isPlaying: false});
     };
 
+    //图片放大
+    handleFullImage = () => {
+        customerServiceEmitter.emit(customerServiceEmitter.FULL_CHAT_MESSAGE_IMAGE, {
+            url: this.state.imageUrl
+        });
+    };
+
     renderContentBlock() {
         if(this.isVoiceMessage()) {
             return (
@@ -100,7 +108,7 @@ class ChatDocumentMessageItem extends React.Component {
             );
         }else if(this.isImageMessage()) {
             return (
-                <img src={this.state.imageUrl} style={{width: _.get(this.state.imageData, 'w', 200), height: _.get(this.state.imageData, 'h', 100)}}/>
+                <img src={this.state.imageUrl} style={{width: _.get(this.state.imageData, 'w', 200), height: _.get(this.state.imageData, 'h', 100)}} onClick={this.handleFullImage}/>
             );
         }else {
             return <a onClick={this.downloadFile}>{this.props.message.message.name}</a>;

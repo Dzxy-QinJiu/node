@@ -9,6 +9,7 @@ import EfLoadMore from 'CMP_DIR/ef-components/load-more';
 import ChatMessageItem from './chat-message-item';
 import { sdkEventConstants } from './consts';
 import { customerServiceEmitter } from 'OPLATE_EMITTER';
+import uuid from 'uuid/v4';
 
 const PAGE_SIZE = 20;
 
@@ -28,6 +29,7 @@ class ChatMessageHome extends React.Component {
         [sdkEventConstants.MessageConstants.dialog['send-message-before']]: function(obj) {
             obj.message.isActive = true;
             obj.message.isSelf = true;
+            obj.message.uid = uuid();
             let messageList = this.state.messageList;
             messageList.push(obj.message);
             this.setState({messageList}, () => {
@@ -47,6 +49,7 @@ class ChatMessageHome extends React.Component {
         },
         [sdkEventConstants.MessageConstants.dialog['update-message']]: function(obj) {
             obj.message.isSelf = false;
+            obj.message.uid = uuid();
             let messageList = this.state.messageList;
             messageList.push(obj.message);
             this.setState({messageList}, () => {
@@ -91,11 +94,13 @@ class ChatMessageHome extends React.Component {
     }
 
     registryEvents() {
-        console.log('开始注册事件监听');
-        this.bindEvents = {};
-        for (let eventId in this.events) {
-            this.bindEvents[eventId] = this.events[eventId].bind(this);
-            customerServiceEmitter.on(eventId, this.bindEvents[eventId]);
+        if(_.isEmpty(this.bindEvents)) {
+            console.log('开始注册事件监听');
+            this.bindEvents = {};
+            for (let eventId in this.events) {
+                this.bindEvents[eventId] = this.events[eventId].bind(this);
+                customerServiceEmitter.on(eventId, this.bindEvents[eventId]);
+            }
         }
     }
 
@@ -116,7 +121,11 @@ class ChatMessageHome extends React.Component {
         window.antmeProxy.rpc('RPC.messaging.getServiceHistoryByCustomer', [window.Oplate.antmeClientId, date, size], function(result) {
             newState.isLoading = false;
             if (result.array.length) {
-                let array = result.array.reverse();
+                let array = _.chain(result.array)
+                    .map(item => {
+                        item.uid = uuid();
+                        return item;
+                    }).reverse().value();
                 newState.messageList = array.concat(self.state.messageList);
             }
             self.setState(newState, () => {
@@ -155,7 +164,7 @@ class ChatMessageHome extends React.Component {
                 {this.state.messageList.map(message => {
                     return (
                         <ChatMessageItem
-                            key={message.rid + message.date}
+                            key={message.uid}
                             message={message}
                             userId={this.props.userId}
                         />
