@@ -7,6 +7,7 @@ import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
 import { getMyTeamTreeAndFlattenList } from 'PUB_DIR/sources/utils/common-data-util';
 import { VIEW_TYPE } from './consts';
 import { hideReportPanel, saveTpl, renderButtonZoneFunc } from './utils';
+import DetailCard from 'CMP_DIR/detail-card';
 
 class SetRule extends React.Component {
     componentDidMount() {
@@ -28,25 +29,24 @@ class SetRule extends React.Component {
         return (
             <div>
                 <Form>
-                    {renderFormItem('谁可填写', 'sales_team_ids', {
-                        type: 'select',
-                        options: _.map(this.props.teamList, item => ({name: item.group_name, value: item.group_id})),
-                        elementProps: {
-                            mode: 'multiple',
-                            placeholder: '请选择团队'
-                        },
-                        fieldDecoratorOption: {
-                            rules: [{ required: true, message: '请选择团队' }]
-                        }
-                    })}
-
-                    {renderFormItem.call(this, '是否开启', 'status', {
-                        type: 'switch',
-                        fieldDecoratorOption: {
-                            valuePropName: 'checked',
-                            initialValue: currentTpl.status === 'on' ? true : false,
-                        }
-                    })}
+                    <DetailCard
+                        title="适用范围"
+                        content={(
+                            <div>
+                                {renderFormItem('谁可填写', 'sales_team_ids', {
+                                    type: 'select',
+                                    options: _.map(this.props.teamList, item => ({name: item.group_name, value: item.group_id})),
+                                    elementProps: {
+                                        mode: 'multiple',
+                                        placeholder: '请选择团队'
+                                    },
+                                    fieldDecoratorOption: {
+                                        rules: [{ required: true, message: '请选择团队' }]
+                                    }
+                                })}
+                            </div>
+                        )}
+                    />
 
                     {renderFormItem('统计周期', 'statistic_interval', {
                         type: 'select',
@@ -63,6 +63,7 @@ class SetRule extends React.Component {
                 {renderButtonZone([{
                     func: this.save.bind(this),
                     name: '确认开启',
+                    type: 'primary',
                 }, {
                     func: () => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL }); },
                     name: '取消',
