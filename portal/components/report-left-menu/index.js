@@ -34,13 +34,18 @@ class ReportLeftMenu extends React.Component {
 
         getTplList({
             callback: tplList => {
+                const dailyReportMenuIndex = _.findIndex(subMenus, item => item.routePath === '/analysis/report/daily-report');
+                if (dailyReportMenuIndex === -1) return;
+
                 if (_.isEmpty(tplList)) {
-                    const processedMenus = _.filter(subMenus, item => item.routePath !== '/analysis/report/daily-report');
-    
-                    this.setState({ subMenus: processedMenus });
+                    subMenus.splice(dailyReportMenuIndex, 1);
                 } else {
-                    this.setState({ subMenus });
+                    subMenus[dailyReportMenuIndex].addition = (
+                        <i className="iconfont icon-nav-setting" />
+                    );
                 }
+
+                this.setState({ subMenus });
             },
             query: { status: 'on' }
         });
@@ -60,6 +65,7 @@ class ReportLeftMenu extends React.Component {
                             >
                                 {menuItem.name}
                             </NavLink>
+                            {menuItem.addition}
                         </li>
                     ))}
                 </ul>
