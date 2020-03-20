@@ -35,6 +35,11 @@ class DetailCard extends React.Component {
     }
 
     render() {
+        let isExpandDetail = this.state.isExpandDetail;
+        // 同时渲染多个卡片，并且需要显示展示收起按钮时，使用传过过来的属性
+        if (this.props.isShowToggleBtn && this.props.isMutipleCard) {
+            isExpandDetail = this.props.isExpandDetail;
+        }
         let className = classNames(this.props.className, 'detail-card-container', {
             'detail-card-edit-status': this.props.isEdit
         });
@@ -44,10 +49,10 @@ class DetailCard extends React.Component {
                                         this.props.isEdit//编辑状态下，title也没有下边框
         });
         const expandIconCls = classNames('title-right-block toggle-detail iconfont', {
-            'icon-down-twoline handle-btn-item': !this.props.isExpandDetail,
-            'icon-up-twoline handle-btn-item': this.props.isExpandDetail,
+            'icon-down-twoline handle-btn-item': !isExpandDetail,
+            'icon-up-twoline handle-btn-item': isExpandDetail,
         });
-        const expandIconTip = this.props.isExpandDetail ? Intl.get('crm.basic.detail.hide', '收起详情') :
+        const expandIconTip = isExpandDetail ? Intl.get('crm.basic.detail.hide', '收起详情') :
             Intl.get('crm.basic.detail.show', '展开详情');
         //若果没有标题时，编辑状态的内容不显示border
         let contentCl = classNames('detail-card-content', {
@@ -116,6 +121,7 @@ DetailCard.defaultProps = {
     saveErrorMsg: '',//保存的错误提示
     isExpandDetail: false, // 是否展示详情，默认不展示
     isShowToggleBtn: false, // 是否显示展示收起按钮，默认false
+    isMutipleCard: false, // 是否一次显示多个卡片
     handleToggleDetail: function() {
     }
 };
@@ -139,5 +145,6 @@ DetailCard.propTypes = {
     isShowToggleBtn: PropTypes.bool,
     isExpandDetail: PropTypes.bool,
     handleToggleDetail: PropTypes.func,
+    isMutipleCard: PropTypes.bool, // 是否同时显示多个卡片
 };
 export default DetailCard;
