@@ -2360,7 +2360,7 @@ batchTopBarDropList = (isMinWeb) => {
                                 </div> : null
                         }
                         <div className={contentClassName} style={{ display: shouldTableShow ? 'block' : 'none' }}>
-                            {this.state.customersSize || this.state.getErrMsg ? <AntcTable
+                            {this.state.customersSize || this.state.getErrMsg || this.state.isConcernCustomer ? <AntcTable
                                 rowSelection={rowSelection}
                                 rowKey={rowKey}
                                 columns={columns}

@@ -70,6 +70,7 @@ function getConcernCustomerTopFlag() {
 
 //是否关注我的客户
 CrmStore.prototype.setConcernCustomer = function(flag) {
+    this.isLoading = true;
     this.isConcernCustomer = flag;
 },
 
