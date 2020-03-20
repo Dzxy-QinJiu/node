@@ -65,7 +65,7 @@ class ReportLeftMenu extends React.Component {
                 </ul>
 
                 {isCommonSales ? null : (
-                    <div onClick={showReportPanel} style={{marginTop: 100, fontSize: 12, textAlign: 'center', cursor: 'pointer'}}><i className="iconfont icon-nav-setting sidebar-bottom-icon"></i> 报告管理</div>
+                    <div onClick={showReportPanel} style={{position: 'absolute', top: -65, left: 100, zIndex: 11, fontSize: 12, cursor: 'pointer'}} title="开启报告"><i className="iconfont icon-plus"></i></div>
                 )}
             </div>
         );
