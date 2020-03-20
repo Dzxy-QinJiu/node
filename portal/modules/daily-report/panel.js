@@ -3,6 +3,7 @@
  */
 
 require('./style.less');
+import { Switch } from 'antd';
 import { VIEW_TYPE } from './consts';
 import Detail from 'CMP_DIR/detail';
 import AddTpl from './add-tpl';
@@ -63,6 +64,13 @@ class ReportPanel extends React.Component {
                 if (isPreview) {
                     title = currentTpl.name;
                 }
+                break;
+            case VIEW_TYPE.MANAGE_TPL:
+                title = <div>
+                    <span>{currentTpl.name}</span>
+                    <Switch onChange={() => {
+                    }} />
+                </div>;
                 break;
         }
 
