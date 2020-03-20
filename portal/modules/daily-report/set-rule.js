@@ -73,7 +73,7 @@ class SetRule extends React.Component {
                 </Form>
 
                 {renderButtonZone([{
-                    func: this.save.bind(this),
+                    func: this.save.bind(this, {status: 'on'}),
                     name: '确认开启',
                     type: 'primary',
                 }, {
@@ -84,22 +84,16 @@ class SetRule extends React.Component {
         );
     }
 
-    save() {
+    save(paramObj) {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 _.each(values, (value, key) => {
                     if (_.isUndefined(value)) delete values[key];
                 });
 
-                if (values.status === true) {
-                    values.status = 'on';
-                } else if (values.status === false) {
-                    values.status = 'off';
-                }
-
                 const { currentTpl } = this.props;
 
-                const postData = _.extend({}, currentTpl, values);
+                const postData = _.extend({}, currentTpl, values, paramObj);
 
                 saveTpl(postData, result => {});
             }
