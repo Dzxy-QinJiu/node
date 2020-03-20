@@ -34,6 +34,7 @@ class ReportLeftMenu extends React.Component {
 
         getTplList({
             callback: tplList => {
+                tplList = [];//用于暂时隐藏日报菜单
                 if (_.isEmpty(tplList)) {
                     const processedMenus = _.filter(subMenus, item => item.routePath !== '/analysis/report/daily-report');
     
@@ -64,9 +65,9 @@ class ReportLeftMenu extends React.Component {
                     ))}
                 </ul>
 
-                {isCommonSales ? null : (
+                {/*isCommonSales ? null : (
                     <div onClick={showReportPanel} style={{marginTop: 100, fontSize: 12, textAlign: 'center', cursor: 'pointer'}}><i className="iconfont icon-nav-setting sidebar-bottom-icon"></i> 报告管理</div>
-                )}
+                )*/}
             </div>
         );
     }

@@ -1290,7 +1290,7 @@ class MyWorkColumn extends React.Component {
         );
 
         if (!(_.isEmpty(tpl) && isCommonSales)) {
-            workList.push(dailyReportWorkCard);
+            //workList.push(dailyReportWorkCard);
         }
     }
 
