@@ -7,6 +7,7 @@ import {NavLink} from 'react-router-dom';
 import { getTplList, showReportPanel } from 'MOD_DIR/daily-report/utils';
 import { VIEW_TYPE } from 'MOD_DIR/daily-report/consts';
 import userData from 'PUB_DIR/sources/user-data';
+import { dailyReportEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 const menuUtil = require('PUB_DIR/sources/utils/menu-util');
 
@@ -28,6 +29,8 @@ class ReportLeftMenu extends React.Component {
     }
 
     componentDidMount() {
+        dailyReportEmitter.on(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
+
         //获取第二层路由
         var category = getCategory();
         //获取当前界面的子模块
@@ -59,6 +62,14 @@ class ReportLeftMenu extends React.Component {
             },
             query: { status: 'on' }
         });
+    }
+
+    componentWillUnmount() {
+        dailyReportEmitter.removeListener(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
+    }
+
+    handleReportStatusChange() {
+        console.log(3);
     }
 
     render() {
