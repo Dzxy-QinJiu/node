@@ -31,6 +31,14 @@ class ReportLeftMenu extends React.Component {
     componentDidMount() {
         dailyReportEmitter.on(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
 
+        this.getMenu();
+    }
+
+    componentWillUnmount() {
+        dailyReportEmitter.removeListener(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
+    }
+
+    getMenu = () => {
         //获取第二层路由
         var category = getCategory();
         //获取当前界面的子模块
@@ -64,12 +72,8 @@ class ReportLeftMenu extends React.Component {
         });
     }
 
-    componentWillUnmount() {
-        dailyReportEmitter.removeListener(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
-    }
-
-    handleReportStatusChange() {
-        console.log(3);
+    handleReportStatusChange = () => {
+        setTimeout(this.getMenu, 1500);
     }
 
     render() {

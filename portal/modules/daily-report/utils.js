@@ -81,7 +81,7 @@ export function getTplList(paramObj) {
 }
 
 //保存模板
-export function saveTpl(data, paramObj) {
+export function saveTpl(data, paramObj = {}) {
     const { callback, isChangeStatus } = paramObj;
 
     ajax.send({

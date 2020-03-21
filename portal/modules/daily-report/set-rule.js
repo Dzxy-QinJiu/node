@@ -101,7 +101,11 @@ class SetRule extends React.Component {
 
                 const postData = _.extend({}, currentTpl, values, paramObj);
 
-                saveTpl(postData);
+                if (paramObj) {
+                    saveTpl(postData, { isChangeStatus: true });
+                } else {
+                    saveTpl(postData);
+                }
             }
         });
     }
