@@ -22,7 +22,7 @@ import crmUtil, {AUTHS, TAB_KEYS} from 'MOD_DIR/crm/public/utils/crm-util';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import {scrollBarEmitter, myWorkEmitter, notificationEmitter, phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {scrollBarEmitter, myWorkEmitter, notificationEmitter, phoneMsgEmitter, userDetailEmitter, dailyReportEmitter} from 'PUB_DIR/sources/utils/emitters';
 import UserApplyDetail from 'MOD_DIR/user_apply/public/views/apply-view-detail';
 import OpportunityApplyDetail from 'MOD_DIR/sales_opportunity/public/view/apply-view-detail';
 import CustomerVisitApplyDetail from 'MOD_DIR/business-apply/public/view/apply-view-detail';
@@ -127,10 +127,7 @@ class MyWorkColumn extends React.Component {
     }
 
     componentDidMount() {
-        getTplList({
-            callback: tplList => { this.setState({tplList}); },
-            query: { status: 'on' }
-        });
+        this.getOpenedTplList();
         this.getAppList();
         this.getUserList();
         this.getGuideConfig();
@@ -153,6 +150,7 @@ class MyWorkColumn extends React.Component {
         //监听待处理线索的消息
         notificationEmitter.on(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.UPDATED_HANDLE_CLUE, this.updateRefreshMyWork);
+        dailyReportEmitter.on(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
     }
 
     componentWillUnmount() {
@@ -169,6 +167,18 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.removeListener(notificationEmitter.UPDATED_HANDLE_CLUE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_DOMAIN, this.updateRefreshMyWork);
+        dailyReportEmitter.removeListener(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
+    }
+
+    handleReportStatusChange = () => {
+        setTimeout(this.getOpenedTplList, 1500);
+    }
+
+    getOpenedTplList = () => {
+        getTplList({
+            callback: tplList => { this.setState({tplList}); },
+            query: { status: 'on' }
+        });
     }
 
     getAppList(){
@@ -1222,58 +1232,46 @@ class MyWorkColumn extends React.Component {
         const tpl = _.get(this.state.tplList, '[0]', {});
         const { isCommonSales } = userData.getUserData();
         let title = '';
-        let buttons = null;
+        let buttons = [];
 
         if (_.isEmpty(tpl)) {
             if (!isCommonSales) {
                 title = '启用报告可以汇总销售日常工作';
 
-                buttons = (
-                    <div>
-                        <Button
-                            type="primary"
-                            onClick={showReportPanel}
-                        >
-                            开启报告
-                        </Button>
-
-                        <Button
-                            onClick={showReportPanel.bind(null, {
-                                currentView: VIEW_TYPE.REPORT_FORM,
-                                clickedTpl: tpl
-                            })}
-                        >
-                            我知道了
-                        </Button>
-                    </div>
-                );
+                buttons.push({
+                    type: 'primary',
+                    onClick: showReportPanel.bind(null, { isOpenTpl: true }),
+                    name: '开启报告'
+                });
             }
         } else {
             title = tpl.name;
 
             if (isCommonSales) {
-                buttons = (
-                    <Button
-                        onClick={showReportPanel.bind(null, {
-                            currentView: VIEW_TYPE.REPORT_FORM,
-                            clickedTpl: tpl
-                        })}
-                    >
-                        填写报告
-                    </Button>
-                );
+                buttons.push({
+                    type: 'primary',
+                    onClick: showReportPanel.bind(null, {
+                        currentView: VIEW_TYPE.REPORT_FORM,
+                    }),
+                    name: '填写报告'
+                });
             } else {
-                buttons = (
-                    <Button
-                        onClick={() => {
-                            history.push('analysis/report/daily-report');
-                        }}
-                    >
-                        查看报告
-                    </Button>
-                );
+                buttons.push({
+                    type: 'primary',
+                    onClick: () => {
+                        history.push('analysis/report/daily-report');
+                    },
+                    name: '查看报告'
+                });
             }
         }
+
+        buttons.push({
+            onClick: setIsNoLongerShowCheckReportNotice.bind(this, () => {
+                this.setState({});
+            }),
+            name: '我知道了'
+        });
 
         const dailyReportWorkCard = (
             <div className="my-work-card-container daily-report-work-card">
@@ -1283,7 +1281,18 @@ class MyWorkColumn extends React.Component {
                         {title}
                     </div>
                     <div className="buttons">
-                        {buttons}
+                        {_.map(buttons, item => {
+                            const { name } = item;
+                            delete item.name;
+
+                            return (
+                                <Button
+                                    {...item}
+                                >
+                                    {name}
+                                </Button>
+                            );
+                        })}
                     </div>
                 </div>
             </div>

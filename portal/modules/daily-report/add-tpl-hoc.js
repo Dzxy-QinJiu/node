@@ -41,7 +41,7 @@ export default function(WrappedComponent) {
         }
 
         next() {
-            if (!this.props.selectedTpl) {
+            if (!this.props.currentTpl) {
                 message.warning('请选择模板');
                 return;
             }
@@ -62,9 +62,9 @@ export default function(WrappedComponent) {
                         values.status = 'off';
                     }
 
-                    const { tplList, selectedTpl } = this.props;
+                    const { tplList, currentTpl } = this.props;
 
-                    const tplData = _.find(tplList, tpl => tpl.id === selectedTpl) || {};
+                    const tplData = _.find(tplList, tpl => tpl.id === currentTpl) || {};
 
                     const postData = _.extend({}, tplData, values);
 
