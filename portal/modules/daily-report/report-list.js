@@ -133,12 +133,16 @@ class ReportList extends React.Component {
                             };
     
                             if (name === '其他') {
-                                column.isSetCsvValueBlank = true;
-                                column.align = 'left';
-                                column.render = value => value;
+                                if (nickname) {
+                                    column.isSetCsvValueBlank = true;
+                                    column.align = 'left';
+                                    column.render = value => value;
+
+                                    columns.push(column);
+                                }
+                            } else {
+                                columns.push(column);
                             }
-    
-                            columns.push(column);
                         });
                     }
                 },
