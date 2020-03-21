@@ -300,3 +300,8 @@ export { terminalsSelectorEmitter };
 const modifyAppConfigEmitter = new EventEmitter();
 modifyAppConfigEmitter.MODIFY_APP_CONFIG = 'modify_app_config'; // 修改应用配置
 export { modifyAppConfigEmitter };
+
+// 销售日报
+const dailyReportEmitter = new EventEmitter();
+dailyReportEmitter.CHANGE_STATUS = 'change_daily_report_status'; // 修改日报启停状态
+export { dailyReportEmitter };
