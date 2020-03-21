@@ -22,7 +22,7 @@ import crmUtil, {AUTHS, TAB_KEYS} from 'MOD_DIR/crm/public/utils/crm-util';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import {scrollBarEmitter, myWorkEmitter, notificationEmitter, phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {scrollBarEmitter, myWorkEmitter, notificationEmitter, phoneMsgEmitter, userDetailEmitter, dailyReportEmitter} from 'PUB_DIR/sources/utils/emitters';
 import UserApplyDetail from 'MOD_DIR/user_apply/public/views/apply-view-detail';
 import OpportunityApplyDetail from 'MOD_DIR/sales_opportunity/public/view/apply-view-detail';
 import CustomerVisitApplyDetail from 'MOD_DIR/business-apply/public/view/apply-view-detail';
@@ -127,10 +127,7 @@ class MyWorkColumn extends React.Component {
     }
 
     componentDidMount() {
-        getTplList({
-            callback: tplList => { this.setState({tplList}); },
-            query: { status: 'on' }
-        });
+        this.getOpenedTplList();
         this.getAppList();
         this.getUserList();
         this.getGuideConfig();
@@ -153,6 +150,7 @@ class MyWorkColumn extends React.Component {
         //监听待处理线索的消息
         notificationEmitter.on(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.UPDATED_HANDLE_CLUE, this.updateRefreshMyWork);
+        dailyReportEmitter.on(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
     }
 
     componentWillUnmount() {
@@ -169,6 +167,18 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.removeListener(notificationEmitter.UPDATED_HANDLE_CLUE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_DOMAIN, this.updateRefreshMyWork);
+        dailyReportEmitter.removeListener(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
+    }
+
+    handleReportStatusChange = () => {
+        setTimeout(this.getOpenedTplList, 1500);
+    }
+
+    getOpenedTplList = () => {
+        getTplList({
+            callback: tplList => { this.setState({tplList}); },
+            query: { status: 'on' }
+        });
     }
 
     getAppList(){
