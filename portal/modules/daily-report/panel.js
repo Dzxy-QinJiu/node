@@ -37,7 +37,7 @@ class ReportPanel extends React.Component {
 
     render() {
         return (
-            <div className="daily-report-panel">
+            <div className="daily-report daily-report-panel">
                 <Detail
                     title={this.getDetailTitle()}
                     content={this.getDetailContent()}

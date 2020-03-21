@@ -7,7 +7,7 @@ import { teamTreeEmitter, dateSelectorEmitter } from 'PUB_DIR/sources/utils/emit
 import userData from 'PUB_DIR/sources/user-data';
 import { showReportPanel, showNumberDetail } from './utils';
 import { VIEW_TYPE } from './consts';
-import ReportDetail from './report-detail';
+import ReportForm from './report-form';
 
 class ReportList extends React.Component {
     //获取查询条件
@@ -97,7 +97,7 @@ class ReportList extends React.Component {
                 customChartRender: data => {
                     const currentReport = _.first(data) || {};
 
-                    return <ReportDetail currentReport={currentReport} />;
+                    return <ReportForm currentReport={currentReport} />;
                 }
             });
         } else {
@@ -169,7 +169,7 @@ class ReportList extends React.Component {
 
     render() {
         return (
-            <div className="report-list">
+            <div className="daily-report daily-report-list">
                 <AntcAnalysis
                     charts={this.getCharts()}
                     conditions={this.getConditions()}
