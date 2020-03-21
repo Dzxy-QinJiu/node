@@ -1258,7 +1258,7 @@ class MyWorkColumn extends React.Component {
 
         buttons.push({
             onClick: setIsNoLongerShowCheckReportNotice.bind(this, () => {
-                this.setState();
+                this.setState({});
             }),
             name: '我知道了'
         });
