@@ -9,11 +9,15 @@ import { renderButtonZoneFunc, hideReportPanel, getReportList, saveReport, saveT
 import DetailCard from 'CMP_DIR/detail-card';
 
 class ReportForm extends React.Component {
+    state = {
+        currentReport: {},
+    }
+
     componentDidMount() {
         if (!this.props.isPreview) {
             getReportList(list => {
                 const currentReport = _.first(list) || {};
-                this.props.updateState({ currentReport });
+                this.setState({ currentReport });
             });
         }
     }
@@ -22,8 +26,8 @@ class ReportForm extends React.Component {
         const renderFormItem = renderFormItemFunc.bind(this, {});
         const renderButtonZone = renderButtonZoneFunc.bind(this);
 
-        const { updateState, currentTpl, isPreview, isManageTpl, isOpenTpl, currentReport } = this.props;
-        const items = isOpenTpl || isManageTpl ? currentTpl.items : currentReport.item_values;
+        const { updateState, currentTpl, isPreview, isManageTpl, isOpenTpl } = this.props;
+        const items = isOpenTpl || isManageTpl ? currentTpl.items : this.state.currentReport.item_values;
         const editableFields = ['其他'];
         const editableItems = _.filter(items, item => _.includes(editableFields, item.name));
         const unEditableItems = _.filter(items, item => !_.includes(editableFields, item.name));
