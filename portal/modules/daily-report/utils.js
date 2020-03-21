@@ -1,6 +1,6 @@
 import ajax from 'ant-ajax';
 import { message, Button } from 'antd';
-import { detailPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { detailPanelEmitter, dailyReportEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { VIEW_TYPE } from './consts';
 
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
@@ -81,8 +81,8 @@ export function getTplList(paramObj) {
 }
 
 //保存模板
-export function saveTpl(data, callback) {
-    if (!_.isFunction(callback)) return;
+export function saveTpl(data, paramObj) {
+    const { callback, isChangeStatus } = paramObj;
 
     ajax.send({
         url: TPL_URL,
@@ -90,12 +90,13 @@ export function saveTpl(data, callback) {
         data
     })
         .done(result => {
-            message.success('保存模板成功');
-            callback(result);
+            const msg = isChangeStatus ? '修改报告启停状态成功' : '保存报告规则设置成功';
+            message.success(msg);
+            if (_.isFunction(callback)) callback(result);
+            if (isChangeStatus) dailyReportEmitter.emit(dailyReportEmitter.CHANGE_STATUS);
         })
         .fail(err => {
             message.error(err);
-            callback();
         });
 }
 

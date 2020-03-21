@@ -72,7 +72,7 @@ class ReportPanel extends React.Component {
                     <Switch defaultChecked={currentTpl.status === 'on'} onChange={checked => {
                         const status = checked ? 'on' : 'off';
                         const postData = _.extend({}, currentTpl, { status });
-                        saveTpl(postData, result => {});
+                        saveTpl(postData, { isChangeStatus: true });
                     }} />
                 </div>;
                 break;

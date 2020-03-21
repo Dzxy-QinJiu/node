@@ -80,7 +80,7 @@ class ReportForm extends React.Component {
                         type: 'primary',
                         func: () => {
                             let tplData = _.cloneDeep(currentTpl);
-                            saveTpl(tplData, () => {});
+                            saveTpl(tplData, { isChangeStatus: true });
                         }
                     }, {
                         hide: !isOpenTpl,
