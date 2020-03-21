@@ -94,6 +94,7 @@ class ReportList extends React.Component {
         if (isCommonSales) {
             _.extend(chart, {
                 chartType: 'custom',
+                noExportCsv: true,
                 customChartRender: data => {
                     const currentReport = _.first(data) || {};
 
