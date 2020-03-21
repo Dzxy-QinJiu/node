@@ -1230,7 +1230,7 @@ class MyWorkColumn extends React.Component {
 
                 buttons.push({
                     type: 'primary',
-                    onClick: showReportPanel,
+                    onClick: showReportPanel.bind(null, { isOpenTpl: true }),
                     name: '开启报告'
                 });
             }

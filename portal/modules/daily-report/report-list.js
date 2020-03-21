@@ -152,8 +152,9 @@ class ReportList extends React.Component {
                     onRowClick: (record, index, event) => {
                         if (record.nickname) {
                             showReportPanel({
-                                currentView: VIEW_TYPE.REPORT_DETAIL,
-                                currentReport: record
+                                currentView: VIEW_TYPE.REPORT_FORM,
+                                currentReport: record,
+                                isPreview: true
                             });
                         } else {
                             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, record.sales_team_id);

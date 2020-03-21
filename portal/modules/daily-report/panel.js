@@ -25,6 +25,7 @@ class ReportPanel extends React.Component {
         currentReport: this.props.currentReport || {},
         numberDetail: this.props.numberDetail || [],
         isManageTpl: this.props.isManageTpl || false,
+        isOpenTpl: this.props.isOpenTpl || false,
         isPreview: this.props.isPreview || false,
     }
 
@@ -52,9 +53,6 @@ class ReportPanel extends React.Component {
         const nickName = _.get(currentReport, 'nickname');
 
         switch(currentView) {
-            case VIEW_TYPE.REPORT_DETAIL:
-                title = nickName + '的报告详情';
-                break;
             case VIEW_TYPE.NUMBER_DETAIL:
                 title = <span>
                     <span>{title}</span>
@@ -63,6 +61,8 @@ class ReportPanel extends React.Component {
                 break;
             case VIEW_TYPE.REPORT_FORM:
                 if (isPreview) {
+                    title = nickName + '的报告详情';
+                } else {
                     title = currentTpl.name;
                 }
                 break;

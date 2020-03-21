@@ -22,8 +22,8 @@ class ReportForm extends React.Component {
         const renderFormItem = renderFormItemFunc.bind(this, {});
         const renderButtonZone = renderButtonZoneFunc.bind(this);
 
-        const { updateState, currentTpl, isPreview, isManageTpl, currentReport } = this.props;
-        const items = isPreview ? currentTpl.items : currentReport.item_values;
+        const { updateState, currentTpl, isPreview, isManageTpl, isOpenTpl, currentReport } = this.props;
+        const items = isOpenTpl || isManageTpl ? currentTpl.items : currentReport.item_values;
         const editableFields = ['其他'];
         const editableItems = _.filter(items, item => _.includes(editableFields, item.name));
         const unEditableItems = _.filter(items, item => !_.includes(editableFields, item.name));
@@ -48,7 +48,7 @@ class ReportForm extends React.Component {
                             <div>
                                 {_.map(editableItems, item => {
                                     return renderFormItem('', item.name, {
-                                        type: 'textarea',
+                                        type: isPreview ? 'text' : 'textarea',
                                         fieldDecoratorOption: { initialValue: item.value_str },
                                         formItemLayout: {
                                             labelCol: { span: 0 },
@@ -61,7 +61,7 @@ class ReportForm extends React.Component {
                     />
 
                     {renderButtonZone([{
-                        hide: !isPreview || isManageTpl,
+                        hide: !isOpenTpl,
                         name: '开启',
                         type: 'primary',
                         func: () => {
@@ -69,15 +69,15 @@ class ReportForm extends React.Component {
                             saveTpl(tplData, () => {});
                         }
                     }, {
-                        hide: !isPreview || isManageTpl,
+                        hide: !isOpenTpl,
                         name: '取消',
                         func: () => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL }); },
                     }, {
-                        hide: isPreview,
+                        hide: isPreview || isOpenTpl || isManageTpl,
                         func: hideReportPanel,
                         name: '取消',
                     }, {
-                        hide: isPreview,
+                        hide: isPreview || isOpenTpl || isManageTpl,
                         func: this.save.bind(this),
                         name: '保存',
                     }])}
