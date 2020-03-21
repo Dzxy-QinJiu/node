@@ -10,6 +10,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 class AddTpl extends React.Component {
     componentDidMount() {
         getTplList({
+            query: { status: 'off' },
             callback: result => this.props.updateState({ tplList: result })
         });
     }
