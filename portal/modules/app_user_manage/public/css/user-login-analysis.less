@@ -7,9 +7,8 @@
 .user-analysis-panel {
   .detail-card-container {
     position: relative;
-    z-index: 999;
     .title-container {
-      overflow: inherit;
+      overflow: inherit !important;
     }
   }
   .terminals-select-zone {
@@ -157,13 +156,15 @@
     }
     .login-chart {
       margin-left: -4px;
-      padding-top: 10px;
+      padding-top: 6px;
       .box-container {
         background: white;
       }
       .box-title {
         background: white;
         font-weight: initial;
+        position: absolute;
+        z-index: 1;
         .title-name {
           font-size: 14px;
         }
@@ -172,7 +173,6 @@
         }
       }
       .duration-chart {
-        height:@chart-height;
         margin-left: 0;
         background: white;
       }
@@ -197,8 +197,7 @@
   }
   .title-container {
     .app-terminals-select {
-      float: right;
-      margin-right: 10px;
+      display: inline-block;
       .select-app-terminal-type {
         width: 100px;
       }
