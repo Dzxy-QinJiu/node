@@ -557,8 +557,8 @@ var NavSidebar = createReactClass({
                     <div className="avatar_container">
                         <Avatar
                             className="avatar"
-                            size="50px"
-                            lineHeight="43px"
+                            size="28px"
+                            lineHeight="28px"
                             src={this.state.userInfoLogo}
                             userName={this.state.userInfo.user_name}
                             nickName={this.state.userInfo.nick_name}
@@ -799,10 +799,9 @@ var NavSidebar = createReactClass({
         return (
             <nav className="navbar" onClick={this.closeNotificationPanel}>
                 <div className="container">
-                    <div className="logo-and-menus" ref="logoAndMenus"
-                    >
+                    <div className="logo-and-menus" ref="logoAndMenus">
                         <div className="header-logo" title={Intl.get('menu.home.page', '首页')}>
-                            <Logo/>
+                            <NavLink to='/' className='iconfont icon-curtao-wihte-logo'/>
                         </div>
                         <div className="collapse navbar-collapse">
                             <ul className="nav navbar-nav" id="menusLists">
