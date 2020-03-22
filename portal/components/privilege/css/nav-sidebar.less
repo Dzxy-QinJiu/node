@@ -3,15 +3,15 @@
 @bd-grey: #DEDFE3;
 @font-grey: #cccccc;
 @icon-grey: #CBCBCB;
-@icon-active: #ffffff;//图标选中状态的颜色
-@nav-icon: #90CAF9;//图标默认状态下的颜色
+@icon-active-color: #ffffff;//图标选中状态的颜色
+@nav-icon: #ffffff;//图标默认状态下的颜色
 @nav-icon-size: 30px;
 //缩小图标时的菜单高度
 @reduce-nav-icon-li-height: 40px;
 //缩小图标并缩小间距时的菜单高度
 @reduce-nav-margin-li-height: 32px;
 //正常图标时的菜单高度
-@nav-item-height: 50px;
+@nav-item-height: 48px;
 @nav-text-width: 72px;
 @nav-text-fontSize: 14px;
 .unread-style {
@@ -142,8 +142,8 @@
         line-height: @top_nav_height;
         text-align: center;
         .icon-curtao-wihte-logo {
-            font-size: 36px;
-            color: @icon-active;
+            font-size: 32px;
+            color: @icon-active-color;
         }
         a {
             text-decoration: none;
@@ -154,6 +154,15 @@
         margin: 0;
         font-size: @nav-text-fontSize;
         >li {
+            float: left;
+            height: @nav-item-height;
+            width: @sidebar-min-width;
+            &:hover {
+                background-color: @primary-hover-color; 
+            }
+            &.active {
+                background-color: @primary-active-color; 
+            }
             //线索未读数
             &.leads_icon_container, &.sidebar-applyentry ,&.apply_icon_container{
                 pointer-events:none;
@@ -207,9 +216,6 @@
                     }
                 }
             }
-            float: left;
-            height: @nav-item-height;
-            width: @sidebar-min-width - 1;
             &.iconfont:before,
             .iconfont:before {
                 color: @nav-icon;
@@ -219,10 +225,10 @@
             }
             a {
                 &:hover.iconfont:before {
-                    color: @icon-active;
+                    color:  @icon-active-color;
                 }
                 &.active.iconfont:before {
-                    color: @icon-active;
+                    color:  @icon-active-color;
                 }
                 &.deactivation.iconfont:before {
                     color: @nav-icon;
@@ -231,7 +237,6 @@
                 white-space: nowrap;
                 color: @navbar-default-link-color;
                 line-height: @nav-item-height;
-                //margin: 15px 0 15px 0;
                 padding: 0;
                 text-decoration: none;
                 >i {
@@ -261,25 +266,36 @@
     .sidebar-user {
         display: block;
         position: absolute;
-        bottom: 18px;
-        width: @sidebar-min-width - 1;
+        bottom: 8px;
+        width: @sidebar-min-width;
         padding: 0;
         overflow: hidden;
-        background-color: @primary-color;
-        @hover-color: @icon-active;
-        .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon, .winning-clue{
+        @hover-color: @icon-active-color;
+        // 展示赢线索详细内容时的样式
+        .winning-clue.show-detail {
+            background-color: @primary-hover-color; 
+        }
+        .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon, .winning-clue, .sidebar-userinfo{
+            height: 40px;
+            line-height: 38px;
             text-align: center;
             cursor: pointer;
+            &:hover {
+                background-color: @primary-hover-color;
+            }
+            &.active {
+                background-color: @primary-active-color;
+            }
             .iconfont{
                 color: @nav-icon;
                 font-size: 24px;
                 &:hover{
-                    color: @icon-active;
+                    color: @icon-active-color;
                 }
             }
             // 在线客服、拨号键盘active加到了iconfont上
             .active.iconfont {
-                color: @icon-active;
+                color: @icon-active-color;
             }
             // 打开通知面板时
             .active.deactivation.iconfont{
@@ -289,7 +305,7 @@
             a.active {
                 text-decoration: none;
                 .iconfont{
-                    color: @icon-active;
+                    color: @icon-active-color;
                 }
                 // 打开通知面板时
                 .deactivation.iconfont{
@@ -304,11 +320,10 @@
         .dial-up-keyboard-btn.keyboard-expanded{
             >.iconfont:before{
                 content: "\E733";
-                color: @icon-active;
+                color: @icon-active-color;
             }
         }
         .winning-clue {
-            margin: 8px 0 12px 0;
             .gift-logo {
                 width: 24px;
                 height: 24px;
@@ -316,14 +331,12 @@
         }
         // 通知图标
         .notification {
-            margin: 8px 0 12px 0;
             .iconfont.active:before{
                 content: "\E6a4";
             }
         }
         // 后台管理
         .sidebar-backend-config{
-            margin-bottom: 8px;
             .active{
                 .iconfont:before{
                     content: "\E6a3";
@@ -345,21 +358,21 @@
             img {
                 border: 2px solid rgba(0, 0, 0, 0);
                 &:hover {
-                    border-color: @hover-color;
+                    border-color: @primary-hover-color;
                 }
             }
             .no-user-logo-div {
                 border: 2px solid rgba(0, 0, 0, 0);
                 &:hover {
-                    border-color: @hover-color;
+                    border-color: @primary-hover-color;
                 }
             }
             .active {
                 img {
-                    border-color: @hover-color;
+                    border-color: @primary-active-color;
                 }
                 .no-user-logo-div {
-                    border-color: @hover-color;
+                    border-color: @primary-active-color;
                 }
             }
         }
@@ -418,7 +431,7 @@
     }
     a:hover,
     a.active {
-        color: @icon-active;
+        color: @primary-color;
     }
     li:last-child a {
         border-bottom: none;
@@ -507,7 +520,7 @@
     }
     a:hover,
     a.active {
-        color: #57c5f7;
+        color:@primary-color;
     }
     li:last-child a {
         border-bottom: none;
@@ -554,7 +567,7 @@
     }
     a:hover,
     a.active {
-        color: @icon-active;
+        color: @primary-color;
     }
     li:last-child a {
         border-bottom: none;

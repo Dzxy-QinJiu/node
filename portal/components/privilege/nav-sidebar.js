@@ -448,8 +448,11 @@ var NavSidebar = createReactClass({
         // let aCls = classNames({
         //     'acitve': this.props.isShowNotificationPanel,
         // });
+        let wrapCls = classNames('notification', {
+            'active': this.props.isShowNotificationPanel,
+        });
         return (
-            <div className="notification" onClick={this.toggleNotificationPanel}>
+            <div className={wrapCls} onClick={this.toggleNotificationPanel}>
                 <Badge
                     dot={this.state.isUnReadNotice}
                     onClick={this.toggleNotificationPanel}
@@ -511,8 +514,10 @@ var NavSidebar = createReactClass({
         if (!backendConfigMenu || !backendConfigMenu.routes) {
             return null;
         }
+        const currentPageCategory = this.getCurrentCategory();
         let wrapperCls = classNames('sidebar-menu-li', {
             'sidebar-backend-config': true,
+            'active': !this.props.isShowNotificationPanel && currentPageCategory === 'settings',
             // 'reduce-nav-icon-li': this.state.isReduceNavIcon,
             // 'reduce-nav-margin-li': this.state.isReduceNavMargin
         });
@@ -546,8 +551,12 @@ var NavSidebar = createReactClass({
         if (!userInfoLinkList || !userInfoLinkList.routes) {
             return;
         }
+        const currentPageCategory = this.getCurrentCategory();
+        let userInfoCls = classNames('sidebar-userinfo', {
+            'active': currentPageCategory === 'user-preference' && !this.props.isShowNotificationPanel
+        });
         return (
-            <div className="sidebar-userinfo">
+            <div className={userInfoCls}>
                 <Popover
                     content={this.renderSubMenuLinks(userInfoLinkList.routes, true)}
                     trigger={trigger}
@@ -667,10 +676,14 @@ var NavSidebar = createReactClass({
             </Popover>
         );
     },
+    // 获取当前页面的路由
+    getCurrentCategory(){
+        const pathName = location.pathname.replace(/^\/|\/$/g, '');
+        return pathName.split('/')[0];
+    },
     //生成主菜单
     generateMenu: function() {
-        const pathName = location.pathname.replace(/^\/|\/$/g, '');
-        const currentPageCategory = pathName.split('/')[0];
+        const currentPageCategory = this.getCurrentCategory();
         return this.state.menus.map((menu, i) => {
             let category = menu.routePath.replace(/\//, '');
             //是否添加选中的菜单样式类
@@ -686,6 +699,7 @@ var NavSidebar = createReactClass({
             //菜单项类
             let routeCls = classNames('sidebar-menu-li', {
                 [`${category}_icon_container`]: true,
+                'active': addActive,
                 // 'reduce-nav-icon-li': this.state.isReduceNavIcon,
                 // 'reduce-nav-margin-li': this.state.isReduceNavMargin
             });
@@ -771,6 +785,9 @@ var NavSidebar = createReactClass({
     },
 
     renderWinningClueBlock() {
+        let winCls = classNames('winning-clue', {
+            'show-detail': this.state.isShowWinningClueContent
+        });
         return (
             <Popover
                 content={ this.renderWinningContent() }
@@ -779,7 +796,7 @@ var NavSidebar = createReactClass({
                 onVisibleChange={this.handleVisibleChange}
                 overlayClassName="nav-sidebar-winning-clue"
             >
-                <div className="winning-clue">
+                <div className={winCls}>
                     <img className="gift-logo" src={GIFT_LOGO} />
                 </div>
             </Popover>
