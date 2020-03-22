@@ -1,5 +1,6 @@
 import ajax from 'ant-ajax';
 import { message, Button } from 'antd';
+import { isCurtao } from 'PUB_DIR/sources/utils/common-method-util';
 import { detailPanelEmitter, dailyReportEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { VIEW_TYPE } from './consts';
 
@@ -177,4 +178,13 @@ export function showNumberDetail(record, name, e) {
         currentReport: record,
         numberDetail,
     });
+}
+
+//是否显示日报功能
+export function isShowDailyReport() {
+    if (isCurtao()) {
+        return false;
+    } else {
+        return true;
+    }
 }
