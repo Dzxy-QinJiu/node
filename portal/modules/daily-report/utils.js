@@ -1,6 +1,6 @@
 import ajax from 'ant-ajax';
 import { message, Button } from 'antd';
-import { isCurtao } from 'PUB_DIR/sources/utils/common-method-util';
+import { isCurtao, getOrganization } from 'PUB_DIR/sources/utils/common-method-util';
 import { detailPanelEmitter, dailyReportEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { VIEW_TYPE } from './consts';
 
@@ -182,7 +182,11 @@ export function showNumberDetail(record, name, e) {
 
 //是否显示日报功能
 export function isShowDailyReport() {
-    if (isCurtao()) {
+    const org = getOrganization();
+    const versionName = _.get(org, 'version.name');
+    const isValidVersion = _.includes(['专业版', '企业版'], versionName);
+
+    if (isCurtao() || !isValidVersion) {
         return false;
     } else {
         return true;
