@@ -13,7 +13,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
 import myWorkAjax from '../ajax';
 import CrmScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
-import { getTplList, getIsNoLongerShowCheckReportNotice, setIsNoLongerShowCheckReportNotice, showReportPanel } from 'MOD_DIR/daily-report/utils';
+import { getTplList, getIsNoLongerShowDailyReportNotice, setIsNoLongerShowDailyReportNotice, showReportPanel } from 'MOD_DIR/daily-report/utils';
 import { VIEW_TYPE } from 'MOD_DIR/daily-report/consts';
 import DetailCard from 'CMP_DIR/detail-card';
 import PhoneCallout from 'CMP_DIR/phone-callout';
@@ -1198,14 +1198,16 @@ class MyWorkColumn extends React.Component {
                     </div>);
             }
 
-            const isShowCheckReportNotice = !getIsNoLongerShowCheckReportNotice();
+            const isShowDailyReportNotice = !getIsNoLongerShowDailyReportNotice();
 
             //没数据时的渲染,
             if (_.isEmpty(this.state.myWorkList)) {
-                if (isShowCheckReportNotice) {
-                    this.renderCheckReportNotice(workList);
-                //需判断是否还有引导流程,没有时才显示无数据
-                } else if (_.isEmpty(this.state.guideConfig)) {
+                if (isShowDailyReportNotice) {
+                    this.renderDailyReportNotice(workList);
+                }
+
+                //需判断是否还有其他工作及引导流程,没有时才显示无数据
+                if (_.isEmpty(workList) && _.isEmpty(this.state.guideConfig)) {
                     workList.push(
                         <NoDataIntro
                             noDataAndAddBtnTip={Intl.get('home.page.no.work.tip', '暂无工作')}
@@ -1215,8 +1217,8 @@ class MyWorkColumn extends React.Component {
                         />);
                 }
             } else {//工作列表的渲染
-                if (isShowCheckReportNotice) {
-                    this.renderCheckReportNotice(workList);
+                if (isShowDailyReportNotice) {
+                    this.renderDailyReportNotice(workList);
                 }
 
                 _.each(this.state.myWorkList, (item, index) => {
@@ -1227,7 +1229,8 @@ class MyWorkColumn extends React.Component {
         }
     }
 
-    renderCheckReportNotice(workList) {
+    //渲染销售日报相关的提示
+    renderDailyReportNotice(workList) {
         const { tplList } = this.state;
         if (_.isEmpty(tplList)) return;
 
@@ -1269,7 +1272,7 @@ class MyWorkColumn extends React.Component {
         }
 
         buttons.push({
-            onClick: setIsNoLongerShowCheckReportNotice.bind(this, () => {
+            onClick: setIsNoLongerShowDailyReportNotice.bind(this, () => {
                 this.setState({});
             }),
             name: '我知道了'
