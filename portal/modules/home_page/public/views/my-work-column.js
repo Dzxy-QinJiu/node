@@ -177,7 +177,6 @@ class MyWorkColumn extends React.Component {
     getOpenedTplList = () => {
         getTplList({
             callback: tplList => { this.setState({tplList}); },
-            query: { status: 'on' }
         });
     }
 
@@ -1229,8 +1228,11 @@ class MyWorkColumn extends React.Component {
     }
 
     renderCheckReportNotice(workList) {
-        const tpl = _.get(this.state.tplList, '[0]', {});
+        const { tplList } = this.state;
+        if (_.isEmpty(tplList)) return;
+
         const { isCommonSales } = userData.getUserData();
+        const tpl = _.chain(tplList).filter(item => item.status === 'on').get([0]).value();
         let title = '';
         let buttons = [];
 
