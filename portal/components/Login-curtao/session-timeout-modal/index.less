@@ -1,6 +1,6 @@
 @import '../../../public/sources/page-frame/index-zh_CN.less';
+@import "../../../public/css/common-variables";
 @white-color: #ffffff;
-@font-color: #333333;
 @blue-tip-color: #2196F3;
 @error-tip-color: #ee5b44;
 #session-timeout-modal {
@@ -48,7 +48,7 @@
       margin-bottom: 40px;
       font-size: 16px;
       font-weight: bold;
-      color: @font-color;
+      color: @primary-font-color;
     }
     .retry-login-tip {
       line-height: 20px;
@@ -73,9 +73,9 @@
         height: 30px;
         line-height: 30px;
         padding: 0 15px 0 0; 
-        border-bottom: 1px solid @font-color;
+        border-bottom: 1px solid @primary-font-color;
         border-radius: 0;
-        color: @font-color;
+        color: @primary-font-color;
         outline: none;
         &:hover {
           border-bottom: 1px solid @blue-tip-color;
