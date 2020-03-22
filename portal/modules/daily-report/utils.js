@@ -4,19 +4,19 @@ import { detailPanelEmitter, dailyReportEmitter } from 'PUB_DIR/sources/utils/em
 import { VIEW_TYPE } from './consts';
 
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
-const SITE_CONGFIG_KEY = 'is_no_longer_show_check_report_notice';
+const SITE_CONGFIG_KEY = 'is_no_longer_show_daily_report_notice';
 const DR_URL = '/rest/customer/v3/dailyreport';
 const TPL_LIST_URL = DR_URL + '/templates';
 const TPL_URL = DR_URL + '/template';
 const REPORT_URL = DR_URL + '/report';
 
 //获取是否不再显示查看报告的工作通知
-export function getIsNoLongerShowCheckReportNotice() {
+export function getIsNoLongerShowDailyReportNotice() {
     return _.get(getLocalWebsiteConfig(), SITE_CONGFIG_KEY);
 }
 
 //设置是否不再显示查看报告的工作通知
-export function setIsNoLongerShowCheckReportNotice(cb) {
+export function setIsNoLongerShowDailyReportNotice(cb) {
     let configData = {};
     configData[SITE_CONGFIG_KEY] = true;
 
