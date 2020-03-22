@@ -79,8 +79,7 @@ class ReportForm extends React.Component {
                         name: '开启',
                         type: 'primary',
                         func: () => {
-                            let tplData = _.cloneDeep(currentTpl);
-                            saveTpl(tplData, { isChangeStatus: true });
+                            updateState({ currentView: VIEW_TYPE.SET_RULE });
                         }
                     }, {
                         hide: !isOpenTpl,
