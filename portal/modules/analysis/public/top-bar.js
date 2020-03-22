@@ -54,6 +54,11 @@ class TopBar extends React.Component {
     componentDidMount() {
         this.getTeamList();
         this.getMemberList();
+        teamTreeEmitter.on(teamTreeEmitter.SELECT_TEAM, this.handleTeamChange);
+    }
+
+    componentWillUnmount() {
+        teamTreeEmitter.removeListener(teamTreeEmitter.SELECT_TEAM, this.handleTeamChange);
     }
 
     getTeamList = () => {
@@ -120,19 +125,28 @@ class TopBar extends React.Component {
         let teamIdStr;
 
         if (_.last(teamId) === 'all' || _.isEmpty(teamId)) {
-            selectedTeam = ['all'];
             teamIdStr = '';
         } else {
             selectedTeam = _.filter(teamId, id => id !== 'all');
             teamIdStr = selectedTeam.join(',');
         }
 
+        teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamIdStr);
+    };
+
+    handleTeamChange = (teamIdStr) => {
+        let selectedTeam;
+
+        if (teamIdStr) {
+            selectedTeam = teamIdStr.split(',');
+        } else {
+            selectedTeam = ['all'];
+        }
+
         //根据是否选择的是全部团队更新Store中的记录是否选择的是全部团队或成员的标志
         Store.isSelectedAllTeamMember = teamIdStr ? false : true; 
 
         this.setState({selectedTeam}, () => {
-            teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamIdStr);
-
             this.adjustTeamMemberDropdownWidth();
         });
     };

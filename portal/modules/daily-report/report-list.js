@@ -7,7 +7,7 @@ import { teamTreeEmitter, dateSelectorEmitter } from 'PUB_DIR/sources/utils/emit
 import userData from 'PUB_DIR/sources/user-data';
 import { showReportPanel, showNumberDetail } from './utils';
 import { VIEW_TYPE } from './consts';
-import ReportDetail from './report-detail';
+import ReportForm from './report-form';
 
 class ReportList extends React.Component {
     //获取查询条件
@@ -94,10 +94,11 @@ class ReportList extends React.Component {
         if (isCommonSales) {
             _.extend(chart, {
                 chartType: 'custom',
+                noExportCsv: true,
                 customChartRender: data => {
                     const currentReport = _.first(data) || {};
 
-                    return <ReportDetail currentReport={currentReport} />;
+                    return <ReportForm currentReport={currentReport} />;
                 }
             });
         } else {
@@ -132,12 +133,16 @@ class ReportList extends React.Component {
                             };
     
                             if (name === '其他') {
-                                column.isSetCsvValueBlank = true;
-                                column.align = 'left';
-                                column.render = value => value;
+                                if (nickname) {
+                                    column.isSetCsvValueBlank = true;
+                                    column.align = 'left';
+                                    column.render = value => value;
+
+                                    columns.push(column);
+                                }
+                            } else {
+                                columns.push(column);
                             }
-    
-                            columns.push(column);
                         });
                     }
                 },
@@ -150,10 +155,15 @@ class ReportList extends React.Component {
                         },
                     ],
                     onRowClick: (record, index, event) => {
-                        showReportPanel({
-                            currentView: VIEW_TYPE.REPORT_DETAIL,
-                            currentReport: record
-                        });
+                        if (record.nickname) {
+                            showReportPanel({
+                                currentView: VIEW_TYPE.REPORT_FORM,
+                                currentReport: record,
+                                isPreview: true
+                            });
+                        } else {
+                            teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, record.sales_team_id);
+                        }
                     }
                 },
             });
@@ -164,7 +174,7 @@ class ReportList extends React.Component {
 
     render() {
         return (
-            <div className="report-list">
+            <div className="daily-report daily-report-list">
                 <AntcAnalysis
                     charts={this.getCharts()}
                     conditions={this.getConditions()}

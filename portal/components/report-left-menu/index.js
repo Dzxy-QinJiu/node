@@ -4,8 +4,10 @@
 
 require('./style.less');
 import {NavLink} from 'react-router-dom';
-import { getTplList, showReportPanel } from 'MOD_DIR/daily-report/utils';
+import { getTplList, showReportPanel, isShowDailyReport } from 'MOD_DIR/daily-report/utils';
+import { VIEW_TYPE } from 'MOD_DIR/daily-report/consts';
 import userData from 'PUB_DIR/sources/user-data';
+import { dailyReportEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 const menuUtil = require('PUB_DIR/sources/utils/menu-util');
 
@@ -27,6 +29,16 @@ class ReportLeftMenu extends React.Component {
     }
 
     componentDidMount() {
+        dailyReportEmitter.on(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
+
+        this.getMenu();
+    }
+
+    componentWillUnmount() {
+        dailyReportEmitter.removeListener(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
+    }
+
+    getMenu = () => {
         //获取第二层路由
         var category = getCategory();
         //获取当前界面的子模块
@@ -34,17 +46,34 @@ class ReportLeftMenu extends React.Component {
 
         getTplList({
             callback: tplList => {
-                tplList = [];//用于暂时隐藏日报菜单
-                if (_.isEmpty(tplList)) {
-                    const processedMenus = _.filter(subMenus, item => item.routePath !== '/analysis/report/daily-report');
-    
-                    this.setState({ subMenus: processedMenus });
+                const dailyReportMenuIndex = _.findIndex(subMenus, item => item.routePath === '/analysis/report/daily-report');
+                if (dailyReportMenuIndex === -1) return;
+
+                if (!isShowDailyReport() || _.isEmpty(tplList)) {
+                    subMenus.splice(dailyReportMenuIndex, 1);
                 } else {
-                    this.setState({ subMenus });
+                    const currentTpl = _.first(tplList);
+                    const { isCommonSales } = userData.getUserData();
+
+                    subMenus[dailyReportMenuIndex].addition = isCommonSales ? null : (
+                        <i className="iconfont icon-nav-setting"
+                            onClick={showReportPanel.bind(null, {
+                                currentView: VIEW_TYPE.MANAGE_TPL,
+                                currentTpl,
+                                isManageTpl: true,
+                            })}
+                        />
+                    );
                 }
+
+                this.setState({ subMenus });
             },
             query: { status: 'on' }
         });
+    }
+
+    handleReportStatusChange = () => {
+        setTimeout(this.getMenu, 1500);
     }
 
     render() {
@@ -61,13 +90,14 @@ class ReportLeftMenu extends React.Component {
                             >
                                 {menuItem.name}
                             </NavLink>
+                            {menuItem.addition}
                         </li>
                     ))}
                 </ul>
 
-                {/*isCommonSales ? null : (
-                    <div onClick={showReportPanel} style={{marginTop: 100, fontSize: 12, textAlign: 'center', cursor: 'pointer'}}><i className="iconfont icon-nav-setting sidebar-bottom-icon"></i> 报告管理</div>
-                )*/}
+                {!isShowDailyReport() || isCommonSales ? null : (
+                    <div onClick={showReportPanel.bind(null, { isOpenTpl: true })} style={{position: 'absolute', top: -65, left: 100, zIndex: 11, fontSize: 12, cursor: 'pointer'}} title="开启报告"><i className="iconfont icon-plus"></i></div>
+                )}
             </div>
         );
     }
