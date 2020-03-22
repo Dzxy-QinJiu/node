@@ -42,7 +42,7 @@ import RecommendClues from './boot-process/recommend_clues';
 import userData from 'PUB_DIR/sources/user-data';
 import {getAllSalesUserList, getAppList} from 'PUB_DIR/sources/utils/common-data-util';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
-import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
+import {formatSalesmanList, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 import clueAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
@@ -1298,7 +1298,7 @@ class MyWorkColumn extends React.Component {
             </div>
         );
 
-        if (!(_.isEmpty(tpl) && isCommonSales)) {
+        if (!isCurtao() || !(_.isEmpty(tpl) && isCommonSales)) {
             workList.push(dailyReportWorkCard);
         }
     }
