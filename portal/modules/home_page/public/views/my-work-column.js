@@ -1204,8 +1204,10 @@ class MyWorkColumn extends React.Component {
             if (_.isEmpty(this.state.myWorkList)) {
                 if (isShowDailyReportNotice) {
                     this.renderDailyReportNotice(workList);
-                //需判断是否还有引导流程,没有时才显示无数据
-                } else if (_.isEmpty(this.state.guideConfig)) {
+                }
+
+                //需判断是否还有其他工作及引导流程,没有时才显示无数据
+                if (_.isEmpty(workList) && _.isEmpty(this.state.guideConfig)) {
                     workList.push(
                         <NoDataIntro
                             noDataAndAddBtnTip={Intl.get('home.page.no.work.tip', '暂无工作')}
