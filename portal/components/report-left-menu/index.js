@@ -4,11 +4,10 @@
 
 require('./style.less');
 import {NavLink} from 'react-router-dom';
-import { getTplList, showReportPanel } from 'MOD_DIR/daily-report/utils';
+import { getTplList, showReportPanel, isShowDailyReport } from 'MOD_DIR/daily-report/utils';
 import { VIEW_TYPE } from 'MOD_DIR/daily-report/consts';
 import userData from 'PUB_DIR/sources/user-data';
 import { dailyReportEmitter } from 'PUB_DIR/sources/utils/emitters';
-import { isCurtao } from 'PUB_DIR/sources/utils/common-method-util';
 
 const menuUtil = require('PUB_DIR/sources/utils/menu-util');
 
@@ -50,7 +49,7 @@ class ReportLeftMenu extends React.Component {
                 const dailyReportMenuIndex = _.findIndex(subMenus, item => item.routePath === '/analysis/report/daily-report');
                 if (dailyReportMenuIndex === -1) return;
 
-                if (isCurtao() || _.isEmpty(tplList)) {
+                if (!isShowDailyReport() || _.isEmpty(tplList)) {
                     subMenus.splice(dailyReportMenuIndex, 1);
                 } else {
                     const currentTpl = _.first(tplList);
@@ -96,7 +95,7 @@ class ReportLeftMenu extends React.Component {
                     ))}
                 </ul>
 
-                {isCurtao() || isCommonSales ? null : (
+                {!isShowDailyReport() || isCommonSales ? null : (
                     <div onClick={showReportPanel.bind(null, { isOpenTpl: true })} style={{position: 'absolute', top: -65, left: 100, zIndex: 11, fontSize: 12, cursor: 'pointer'}} title="开启报告"><i className="iconfont icon-plus"></i></div>
                 )}
             </div>
