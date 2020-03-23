@@ -16,7 +16,7 @@ import {
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
 const clueContactType = ['phone', 'qq', 'weChat', 'email'];
-var clueCustomerUtils = require('../utils/clue-customer-utils');
+import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 function ClueCustomerStore() {
     //初始化state数据
     this.resetState();
@@ -162,7 +162,7 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
         this.curClueList = this.processForList(list);
         //如果选中了筛选全部线索，并点击翻页
         if(clueData.isPageChange){
-            clueCustomerUtils.emitter.emit('checkedClueList', this.curClueList);
+            clueEmitter.emit(clueEmitter.CHECKED_CLUE_LIST, this.curClueList);
         }
 
         this.customersSize = data ? data.total : 0;

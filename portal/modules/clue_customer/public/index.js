@@ -67,7 +67,6 @@ import {
     releaseClueTip,
     hasRecommendPrivilege
 } from './utils/clue-customer-utils';
-var clueCustomerUtils = require('./utils/clue-customer-utils');
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
 import ContactItem from 'MOD_DIR/common_sales_home_page/public/view/contact-item';
@@ -204,7 +203,7 @@ class ClueCustomer extends React.Component {
         this.getClueList();
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
-        clueCustomerUtils.emitter.on('checkedClueList', this.updateCheckedClueList);
+        clueEmitter.on(clueEmitter.CHECKED_CLUE_LIST, this.updateCheckedClueList);
         clueEmitter.on(clueEmitter.REMOVE_CLUE_ITEM, this.removeClueItem);
         clueEmitter.on(clueEmitter.FLY_CLUE_WILLDISTRIBUTE, this.flyClueWilldistribute);
         clueEmitter.on(clueEmitter.FLY_CLUE_WILLTRACE, this.flyClueWilltrace);
@@ -390,8 +389,8 @@ class ClueCustomer extends React.Component {
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_INVALID, this.flyClueInvalid);
         clueEmitter.removeListener(clueEmitter.SHOW_RECOMMEND_PANEL, this.showClueRecommendTemplate);
         clueEmitter.removeListener(clueEmitter.UPDATE_APPLY_UPGRADE, this.updateVersionData);
+        clueEmitter.removeListener(clueEmitter.CHECKED_CLUE_LIST, this.updateCheckedClueList);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
-        clueCustomerUtils.emitter.removeListener('checkedClueList', this.updateCheckedClueList);
         $(window).off('resize', this.resizeHandler);
     }
     updateVersionData = data => {

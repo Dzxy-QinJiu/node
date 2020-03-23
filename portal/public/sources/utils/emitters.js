@@ -241,6 +241,7 @@ clueEmitter.FLY_CLUE_HASTRANSFER = 'fly_clue_hastransfer';//线索动态移动�
 clueEmitter.FLY_CLUE_INVALID = 'fly_clue_invalid';//线索动态移动到无效中
 clueEmitter.SHOW_RECOMMEND_PANEL = 'show_recommend_panel';//显示线索推荐列表
 clueEmitter.UPDATE_APPLY_UPGRADE = 'update_apply_upgrade';//申请试用后的推送，更新数据
+clueEmitter.CHECKED_CLUE_LIST = 'checkedClueList';//选中全部线索，点击翻页时自动选中翻页后的线索
 //移动到
 export { clueEmitter };
 
