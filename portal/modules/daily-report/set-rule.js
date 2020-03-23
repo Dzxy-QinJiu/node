@@ -6,7 +6,7 @@ import { Form } from 'antd';
 import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
 import { getMyTeamTreeAndFlattenList } from 'PUB_DIR/sources/utils/common-data-util';
 import { VIEW_TYPE } from './consts';
-import { hideReportPanel, saveTpl, renderButtonZoneFunc } from './utils';
+import { hideReportPanel, saveReportConfig, renderButtonZoneFunc } from './utils';
 import DetailCard from 'CMP_DIR/detail-card';
 
 class SetRule extends React.Component {
@@ -21,9 +21,9 @@ class SetRule extends React.Component {
     }
 
     render() {
-        const { currentTpl, isManageTpl } = this.props;
+        const { reportConfig, isConfigReport } = this.props;
 
-        const renderFormItem = renderFormItemFunc.bind(this, currentTpl);
+        const renderFormItem = renderFormItemFunc.bind(this, reportConfig);
         const renderButtonZone = renderButtonZoneFunc.bind(this);
 
         return (
@@ -76,14 +76,14 @@ class SetRule extends React.Component {
                     func: this.save.bind(this, {status: 'on'}),
                     name: '确认开启',
                     type: 'primary',
-                    hide: isManageTpl
+                    hide: isConfigReport
                 }, {
                     func: this.save.bind(this, null),
                     name: '保存',
                     type: 'primary',
-                    hide: !isManageTpl
+                    hide: !isConfigReport
                 }, {
-                    func: isManageTpl ? hideReportPanel : () => { this.props.updateState({ currentView: VIEW_TYPE.ADD_TPL }); },
+                    func: isConfigReport ? hideReportPanel : () => { this.props.updateState({ currentView: VIEW_TYPE.OPEN_REPORT }); },
                     name: '取消',
                 }])}
             </div>
@@ -97,14 +97,14 @@ class SetRule extends React.Component {
                     if (_.isUndefined(value)) delete values[key];
                 });
 
-                const { currentTpl } = this.props;
+                const { reportConfig } = this.props;
 
-                const postData = _.extend({}, currentTpl, values, paramObj);
+                const postData = _.extend({}, reportConfig, values, paramObj);
 
                 if (paramObj) {
-                    saveTpl(postData, { isChangeStatus: true });
+                    saveReportConfig(postData, { isChangeStatus: true });
                 } else {
-                    saveTpl(postData);
+                    saveReportConfig(postData);
                 }
             }
         });

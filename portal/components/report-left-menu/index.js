@@ -4,7 +4,7 @@
 
 require('./style.less');
 import {NavLink} from 'react-router-dom';
-import { getTplList, showReportPanel, isShowDailyReport } from 'MOD_DIR/daily-report/utils';
+import { getReportConfigList, showReportPanel, isShowDailyReport } from 'MOD_DIR/daily-report/utils';
 import { VIEW_TYPE } from 'MOD_DIR/daily-report/consts';
 import userData from 'PUB_DIR/sources/user-data';
 import { dailyReportEmitter } from 'PUB_DIR/sources/utils/emitters';
@@ -44,23 +44,23 @@ class ReportLeftMenu extends React.Component {
         //获取当前界面的子模块
         var subMenus = menuUtil.getSubMenus(category);
 
-        getTplList({
-            callback: tplList => {
+        getReportConfigList({
+            callback: reportConfigList => {
                 const dailyReportMenuIndex = _.findIndex(subMenus, item => item.routePath === '/analysis/report/daily-report');
                 if (dailyReportMenuIndex === -1) return;
 
-                if (!isShowDailyReport() || _.isEmpty(tplList)) {
+                if (!isShowDailyReport() || _.isEmpty(reportConfigList)) {
                     subMenus.splice(dailyReportMenuIndex, 1);
                 } else {
-                    const currentTpl = _.first(tplList);
+                    const reportConfig = _.first(reportConfigList);
                     const { isCommonSales } = userData.getUserData();
 
                     subMenus[dailyReportMenuIndex].addition = isCommonSales ? null : (
                         <i className="iconfont icon-nav-setting"
                             onClick={showReportPanel.bind(null, {
-                                currentView: VIEW_TYPE.MANAGE_TPL,
-                                currentTpl,
-                                isManageTpl: true,
+                                currentView: VIEW_TYPE.CONFIG_REPORT,
+                                reportConfig,
+                                isConfigReport: true,
                             })}
                         />
                     );
@@ -96,7 +96,7 @@ class ReportLeftMenu extends React.Component {
                 </ul>
 
                 {!isShowDailyReport() || isCommonSales ? null : (
-                    <div onClick={showReportPanel.bind(null, { isOpenTpl: true })} style={{position: 'absolute', top: -65, left: 100, zIndex: 11, fontSize: 12, cursor: 'pointer'}} title="开启报告"><i className="iconfont icon-plus"></i></div>
+                    <div onClick={showReportPanel.bind(null, { isOpenReport: true })} style={{position: 'absolute', top: -65, left: 100, zIndex: 11, fontSize: 12, cursor: 'pointer'}} title="开启报告"><i className="iconfont icon-plus"></i></div>
                 )}
             </div>
         );

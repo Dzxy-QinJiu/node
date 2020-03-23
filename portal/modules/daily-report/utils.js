@@ -6,10 +6,10 @@ import { VIEW_TYPE } from './consts';
 
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const SITE_CONGFIG_KEY = 'is_no_longer_show_daily_report_notice';
-const DR_URL = '/rest/customer/v3/dailyreport';
-const TPL_LIST_URL = DR_URL + '/templates';
-const TPL_URL = DR_URL + '/template';
-const REPORT_URL = DR_URL + '/report';
+const DAILY_REPORT_URL = '/rest/customer/v3/dailyreport';
+const REPORT_CONFIG_LIST_URL = DAILY_REPORT_URL + '/templates';
+const REPORT_CONFIG_URL = DAILY_REPORT_URL + '/template';
+const REPORT_URL = DAILY_REPORT_URL + '/report';
 
 //获取是否不再显示查看报告的工作通知
 export function getIsNoLongerShowDailyReportNotice() {
@@ -61,13 +61,13 @@ export function renderButtonZoneFunc(buttons) {
 }
 
 //获取模板列表
-export function getTplList(paramObj) {
+export function getReportConfigList(paramObj) {
     const { callback, query = {} } = paramObj;
 
     if (!_.isFunction(callback)) return;
 
     ajax.send({
-        url: TPL_LIST_URL,
+        url: REPORT_CONFIG_LIST_URL,
         query
     })
         .done(result => {
@@ -82,11 +82,11 @@ export function getTplList(paramObj) {
 }
 
 //保存模板
-export function saveTpl(data, paramObj = {}) {
+export function saveReportConfig(data, paramObj = {}) {
     const { callback, isChangeStatus } = paramObj;
 
     ajax.send({
-        url: TPL_URL,
+        url: REPORT_CONFIG_URL,
         type: 'post',
         data
     })
@@ -102,11 +102,11 @@ export function saveTpl(data, paramObj = {}) {
 }
 
 //获取模板数值
-export function getTplValues(callback) {
+export function getReportConfigValues(callback) {
     if (!_.isFunction(callback)) return;
 
     ajax.send({
-        url: TPL_URL + '/values'
+        url: REPORT_CONFIG_URL + '/values'
     })
         .done(result => {
             callback(result);
@@ -175,7 +175,7 @@ export function showNumberDetail(record, name, e) {
 
     showReportPanel({
         currentView: VIEW_TYPE.NUMBER_DETAIL,
-        currentReport: record,
+        reportDetail: record,
         numberDetail,
     });
 }

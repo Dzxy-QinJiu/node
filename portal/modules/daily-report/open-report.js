@@ -4,19 +4,19 @@
 
 import { Button } from 'antd';
 import { VIEW_TYPE } from './consts';
-import { getTplList } from './utils';
+import { getReportConfigList } from './utils';
 import DetailCard from 'CMP_DIR/detail-card';
 
-class AddTpl extends React.Component {
+class OpenReport extends React.Component {
     componentDidMount() {
-        getTplList({
+        getReportConfigList({
             query: { status: 'off' },
             callback: result => this.props.updateState({ tplList: result })
         });
     }
 
     render() {
-        const { updateState, currentTpl } = this.props;
+        const { updateState, reportConfig } = this.props;
 
         return (
             <div>
@@ -35,10 +35,10 @@ class AddTpl extends React.Component {
 
         return (
             <div>
-                <a href="javascript:void(0)" onClick={() => { updateState({ currentView: VIEW_TYPE.REPORT_FORM, currentTpl: tpl }); }}>查看</a>
+                <a href="javascript:void(0)" onClick={() => { updateState({ currentView: VIEW_TYPE.REPORT_DETAIL, reportConfig: tpl }); }}>查看</a>
 
                 <Button
-                    onClick={() => { updateState({ currentView: VIEW_TYPE.SET_RULE, currentTpl: tpl }); }}
+                    onClick={() => { updateState({ currentView: VIEW_TYPE.SET_RULE, reportConfig: tpl }); }}
                 >
                     开启
                 </Button>
@@ -47,4 +47,4 @@ class AddTpl extends React.Component {
     }
 }
 
-export default AddTpl;
+export default OpenReport;
