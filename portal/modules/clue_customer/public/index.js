@@ -170,7 +170,6 @@ class ClueCustomer extends React.Component {
             isShowExtractCluePanel: false, // 是否显示提取线索界面，默认不显示
             addType: 'start',//添加按钮的初始
             isReleasingClue: false,//是否正在释放线索
-            selectedClue: [],//选中的线索
             isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
             cluePoolCondition: {},//线索池的搜索条件
             filterInputWidth: 250,//筛选输入框的宽度
@@ -204,6 +203,7 @@ class ClueCustomer extends React.Component {
         this.getClueList();
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
+        clueEmitter.on(clueEmitter.CHECKED_CLUE_LIST, this.updateCheckedClueList);
         clueEmitter.on(clueEmitter.REMOVE_CLUE_ITEM, this.removeClueItem);
         clueEmitter.on(clueEmitter.FLY_CLUE_WILLDISTRIBUTE, this.flyClueWilldistribute);
         clueEmitter.on(clueEmitter.FLY_CLUE_WILLTRACE, this.flyClueWilltrace);
@@ -389,6 +389,7 @@ class ClueCustomer extends React.Component {
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_INVALID, this.flyClueInvalid);
         clueEmitter.removeListener(clueEmitter.SHOW_RECOMMEND_PANEL, this.showClueRecommendTemplate);
         clueEmitter.removeListener(clueEmitter.UPDATE_APPLY_UPGRADE, this.updateVersionData);
+        clueEmitter.removeListener(clueEmitter.CHECKED_CLUE_LIST, this.updateCheckedClueList);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
         $(window).off('resize', this.resizeHandler);
     }
@@ -549,6 +550,12 @@ class ClueCustomer extends React.Component {
         this.setState({
             filterClueStatus: clueFilterStore.getState().filterClueStatus,
             ...clueCustomerStore.getState()
+        });
+    };
+    updateCheckedClueList = (list) => {
+        //这个操作是在 选中了全部筛选后，每次翻页的时候，把当前页的数据放到selectedClues，自动选中这些线索
+        this.setState({
+            selectedClues: _.uniqBy(_.concat(this.state.selectedClues,list), 'id')
         });
     };
 
@@ -996,7 +1003,7 @@ class ClueCustomer extends React.Component {
         return filterStoreData.filterAllotNoTraced;//待我处理的线索
     };
     //获取线索列表
-    getClueList = () => {
+    getClueList = (conditionObj) => {
         //如果有刷新提示，点击刷新提示获取线索列表的，将刷新提示清除
         if(_.get(this.state, 'isShowRefreshPrompt')) {
             this.setState({
@@ -1005,6 +1012,9 @@ class ClueCustomer extends React.Component {
         }
         //跟据类型筛选
         const queryObj = this.getClueSearchCondition();
+        if(_.get(conditionObj,'isPageChange')){//点击翻页
+            queryObj.isPageChange = true;
+        }
         //取全部线索列表
         clueCustomerAction.getClueFulltext(queryObj,(isSelfHandleFlag) => {
             this.handleFirstLoginData(isSelfHandleFlag);
@@ -1029,14 +1039,19 @@ class ClueCustomer extends React.Component {
         if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
             type = 'manager';
         }
-        //如果是有已经选中的线索，那么导出的就是已经选中的线索
+        //如果是有已经选中的线索，那么导出的就是已经选中的线索,如果选中了导出全部筛选的，就不需要再传ids了
         //没有选中的线索，再根据radio的选择不同导出该筛选条件下或者是全部的线索
         var reqData = {};
-        if(this.hasSelectedClues()){
-            reqData = this.getClueSearchCondition(true, true);
-            //然后再在query中加id字段
-            var selectCluesIds = _.map(_.get(this, 'state.selectedClues'),'id');
-            reqData.bodyParam.query.id = selectCluesIds.join(',');
+        if (this.hasSelectedClues()) {
+            if (!this.state.selectAllMatched) {
+                reqData = this.getClueSearchCondition(true, true);
+                //然后再在query中加id字段
+                var selectCluesIds = _.map(_.get(this, 'state.selectedClues'), 'id');
+                reqData.bodyParam.query.id = selectCluesIds.join(',');
+            }else{
+                reqData = this.getClueSearchCondition(true, false);
+            }
+
         }else{
             var isGetAll = this.state.exportRange === 'all';
             reqData = isGetAll ? this.getClueSearchCondition(true, true) : this.getClueSearchCondition(true,false);
@@ -2183,7 +2198,7 @@ class ClueCustomer extends React.Component {
                 },
                 //对客户列表当前页进行全选或取消全选操作时触发
                 onSelectAll: (selected, selectedRows, changeRows) => {
-                    if (this.state.selectAllMatched && selectedRows.length === 0) {
+                    if (this.state.selectAllMatched && _.get(selectedRows,'length') === 0) {
                         this.state.selectAllMatched = false;
                     }
                     this.setState({selectedClues: selectedRows, selectAllMatched: this.state.selectAllMatched});
@@ -2209,7 +2224,11 @@ class ClueCustomer extends React.Component {
             //设置要跳转到的页码数值
             clueCustomerAction.setPageNum(page);
             setTimeout(() => {
-                this.getClueList();
+                var obj = {};
+                if(this.state.selectAllMatched){//如果是在点击选中全部的情况下进行翻页
+                    obj = {isPageChange: true};
+                };
+                this.getClueList(obj);
             });
         }
     };
@@ -2460,7 +2479,10 @@ class ClueCustomer extends React.Component {
     onTypeChange = () => {
         clueCustomerAction.setClueInitialData();
         rightPanelShow = false;
-        this.setState({rightPanelIsShow: false});
+        this.setState({
+            selectAllMatched: false,
+            selectedClues: [],
+            rightPanelIsShow: false});
         setTimeout(() => {
             this.getClueList();
         });
@@ -2856,12 +2878,14 @@ class ClueCustomer extends React.Component {
         return previewColumns;
     };
     selectAllSearchResult = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.date-picker-wrap .clue-list-selected-tip'), '点击选择全部线索');
         this.setState({
             selectedClues: this.state.curClueList.slice(),
             selectAllMatched: true,
         });
     };
     clearSelectAllSearchResult = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.date-picker-wrap .clue-list-selected-tip'), '点击只选当前展示项');
         this.setState({
             selectedClues: [],
             selectAllMatched: false,
@@ -2876,7 +2900,7 @@ class ClueCustomer extends React.Component {
             return (
                 <span>
                     {Intl.get('crm.8', '已选择全部{count}项', { count: this.state.customersSize })}
-                    <a href="javascript:void(0)" data-tracename="点击只选当前展示项"
+                    <a href="javascript:void(0)"
                         onClick={this.clearSelectAllSearchResult}>{Intl.get('crm.10', '只选当前展示项')}</a>
                 </span>);
         } else {//只选择了当前页时，展示：已选当前页xxx项, <a>选择全部xxx项</a>
@@ -2886,7 +2910,7 @@ class ClueCustomer extends React.Component {
                     {/*在筛选条件下可 全选 ，没有筛选条件时，后端接口不支持选 全选*/}
                     {/*如果一页可以展示全，不再展示选择全部的提示*/}
                     {this.state.customersSize <= this.state.pageSize ? null : (
-                        <a href="javascript:void(0)" onClick={this.selectAllSearchResult} data-tracename="点击选择全部线索">
+                        <a href="javascript:void(0)" onClick={this.selectAllSearchResult}>
                             {Intl.get('crm.12', '选择全部{count}项', { count: this.state.customersSize })}
                         </a>)
                     }
