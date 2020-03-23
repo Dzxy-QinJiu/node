@@ -59,6 +59,24 @@ function checkUserNameTips(callback, userId, username_block, isBelongOtherUser =
         clickUserName(userId, username_block);
     }
 }
+//有多个用户的时候，展示多个用户，每个用户是否可以点击根据这个用户是不是属于其他人(isBelongOtherUser,属于其他人的只展示，否则可以点击查看详情)
+function checkMultiUserNameTip(callback,result,username_block){
+    callback(Intl.get('user.user.exist.tip', '用户已存在'));
+    _.forEach(result, (item, index) => {
+        //属于其他人用户，只提示
+        var userId = _.get(item, 'id');
+        var a = `<a href='javascript:void(0)' id=${userId} class="handle-btn-item">${_.get(item, 'name')}${index !== result.length - 1 ? ';' : ''}</a>`;
+        const $explain = $('.ant-form-explain', username_block);
+        $explain.append(a);
+        $(`#${userId}`).click((e) => {
+            e.preventDefault();
+            //清除表单内容
+            AppUserFormActions.resetState();
+            //展示详情
+            showUserDetail(userId);
+        });
+    });
+}
 
 exports.checkUserExist = function(rule, obj, callback, number, username_block) {
     clearTimeout(userExistTimeout);
@@ -69,7 +87,7 @@ exports.checkUserExist = function(rule, obj, callback, number, username_block) {
                 callback();
             } else { // 不通过验证的情况，分为两种情况
                 // 第一种情况：同一个客户下，用户数多个时，通过， 一个时，不通过（提示用户名已存在，并且可以查看同名的用户详情信息）
-                // 第二种情况：不同客户下，不通过，有多个用户名前缀相同时（提示用户名已存在）,有一个相同时，(提示用户名已存在，并且可以查看同名的用户详情信息)
+                // 第二种情况：不同客户下，不通过，有多个用户名前缀相同时（提示用户名已存在，并可以查看每个用户）,有一个相同时，(提示用户名已存在，并且可以查看同名的用户详情信息)
                 let customerIdArray = _.map(result, 'customer_id');
                 let index = _.indexOf(customerIdArray, obj.customer_id);
                 let userId = _.get(result, '[0].id');
@@ -90,7 +108,9 @@ exports.checkUserExist = function(rule, obj, callback, number, username_block) {
                     if (result.length === 1) {
                         checkUserNameTips(callback, userId, username_block, isBelongOtherUser);
                     } else {
-                        callback(Intl.get('user.user.exist.tip', '用户已存在')); // 申请多个用户时
+                        //展示多个已存在的用户，客户
+                        var showUserList = _.filter(result,item => !item.isBelongOtherUser);
+                        checkMultiUserNameTip(callback, showUserList, username_block);
                     }
                 }
             }

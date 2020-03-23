@@ -643,16 +643,28 @@
         }
         .user-name-wrap {
           display: inline-block;
-          width: 260px;
+          position: relative;
           form {
             float: left;
-            width: 200px;
+            .ant-form-item-control input{
+              width: 200px;
+            }
             .ant-form-item {
               margin-bottom: 0;
             }
+            .ant-form-explain{
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              max-width: 860px;
+              a{
+                margin-left: 5px;
+              }
+            }
           }
           .save-buttons {
-            float: left;
+            position: absolute;
+            left: 200px;
             margin-top: 4px;
           }
         }
