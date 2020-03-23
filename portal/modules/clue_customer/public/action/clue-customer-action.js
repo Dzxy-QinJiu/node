@@ -179,9 +179,11 @@ function ClueCustomerActions() {
         //是否是在全部状态下返回数据
         this.dispatch({error: false, loading: true
         });
+        var isPageChange = queryObj.isPageChange;
+        delete queryObj.isPageChange;
         clueCustomerAjax.getClueFulltext(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback,queryObj: queryObj});
+            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback,queryObj: queryObj,isPageChange: isPageChange});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,

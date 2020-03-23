@@ -499,3 +499,6 @@ export const VERSIONS = {
 export const hasRecommendPrivilege = () => {
     return !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE);
 };
+var EventEmitter = require('events');
+//暴露一个emitter，做自定义事件
+exports.emitter = new EventEmitter();
