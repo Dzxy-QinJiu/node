@@ -60,7 +60,7 @@ export function renderButtonZoneFunc(buttons) {
     );
 }
 
-//获取模板列表
+//获取报告配置列表
 export function getReportConfigList(paramObj) {
     const { callback, query = {} } = paramObj;
 
@@ -81,7 +81,7 @@ export function getReportConfigList(paramObj) {
         });
 }
 
-//保存模板
+//保存报告配置
 export function saveReportConfig(data, paramObj = {}) {
     const { callback, isChangeStatus } = paramObj;
 
@@ -98,22 +98,6 @@ export function saveReportConfig(data, paramObj = {}) {
         })
         .fail(err => {
             message.error(err);
-        });
-}
-
-//获取模板数值
-export function getReportConfigValues(callback) {
-    if (!_.isFunction(callback)) return;
-
-    ajax.send({
-        url: REPORT_CONFIG_URL + '/values'
-    })
-        .done(result => {
-            callback(result);
-        })
-        .fail(err => {
-            message.error(err);
-            callback();
         });
 }
 
