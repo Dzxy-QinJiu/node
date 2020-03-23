@@ -108,7 +108,7 @@ class PhonePanel extends React.Component {
         phoneAlertStore.listen(this.onStoreChange);
         let phonemsgObj = this.getPhonemsgObj(this.props.paramObj);
         //通话状态下的处理
-        if (phonemsgObj) {
+        if (!_.isEmpty(phonemsgObj)) {
             //如果是从客户详情中打的电话，则不需要再获取客户详情
             if (!this.isCustomerDetailCall(this.props.paramObj)) {
                 //根据客户的id获取客户的详情
@@ -183,6 +183,9 @@ class PhonePanel extends React.Component {
                     //最新的通话状态
                     if (phonemsgObj.callid === phoneRecordObj.callid) {
                         phoneRecordObj.received_time = phonemsgObj.recevied_time;
+                        if(!_.get(this,'state.customerInfoArr[0]')){
+                            this.getCustomerInfoByCustomerId(phonemsgObj);
+                        }
                     } else {
                         phoneRecordObj.received_time = phonemsgObj.recevied_time;
                         phoneRecordObj.callid = phonemsgObj.callid;
