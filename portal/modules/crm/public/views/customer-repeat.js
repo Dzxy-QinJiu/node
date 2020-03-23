@@ -308,11 +308,10 @@ class CustomerRepeat extends React.Component {
     };
 
     renderContactWay = (customer) => {
-        if (_.isArray(customer.phones) && customer.phones.length) {
-            return customer.phones.map((phone, index) => (<div key={index}>{phone}</div>));
-        } else {
-            return null;
-        }
+        //只展示重复的电话，repeat_id
+        if(_.get(customer, 'repeat_id')) {
+            return customer.repeat_id;
+        }else { return null; }
     };
 
     getCustomerRow = (customer) => {
