@@ -2241,7 +2241,6 @@ class ClueCustomer extends React.Component {
         }
         return (
             <AntcTable
-                ref={antcTable => this.antcTable = antcTable}
                 loading={this.state.isLoading}
                 rowSelection={rowSelection}
                 rowKey={rowKey}
