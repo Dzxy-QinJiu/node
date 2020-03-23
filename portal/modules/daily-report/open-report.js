@@ -11,7 +11,7 @@ class OpenReport extends React.Component {
     componentDidMount() {
         getReportConfigList({
             query: { status: 'off' },
-            callback: result => this.props.updateState({ tplList: result })
+            callback: result => this.props.updateState({ reportConfigList: result })
         });
     }
 
@@ -20,25 +20,25 @@ class OpenReport extends React.Component {
 
         return (
             <div>
-                {_.map(this.props.tplList, tpl => (
+                {_.map(this.props.reportConfigList, reportConfig => (
                     <DetailCard
-                        title={tpl.name}
-                        content={this.renderCardContent(tpl)}
+                        title={reportConfig.name}
+                        content={this.renderCardContent(reportConfig)}
                     />
                 ))}
             </div>
         );
     }
 
-    renderCardContent(tpl) {
+    renderCardContent(reportConfig) {
         const { updateState } = this.props;
 
         return (
             <div>
-                <a href="javascript:void(0)" onClick={() => { updateState({ currentView: VIEW_TYPE.REPORT_DETAIL, reportConfig: tpl }); }}>查看</a>
+                <a href="javascript:void(0)" onClick={() => { updateState({ currentView: VIEW_TYPE.REPORT_DETAIL, reportConfig }); }}>查看</a>
 
                 <Button
-                    onClick={() => { updateState({ currentView: VIEW_TYPE.SET_RULE, reportConfig: tpl }); }}
+                    onClick={() => { updateState({ currentView: VIEW_TYPE.SET_RULE, reportConfig }); }}
                 >
                     开启
                 </Button>
