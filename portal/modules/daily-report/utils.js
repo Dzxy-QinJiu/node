@@ -94,7 +94,7 @@ export function saveReportConfig(data, paramObj = {}) {
             const msg = isChangeStatus ? '修改报告启停状态成功' : '保存报告规则设置成功';
             message.success(msg);
             if (_.isFunction(callback)) callback(result);
-            if (isChangeStatus) dailyReportEmitter.emit(dailyReportEmitter.CHANGE_STATUS);
+            if (isChangeStatus) dailyReportEmitter.emit(dailyReportEmitter.CHANGE_STATUS, result);
         })
         .fail(err => {
             message.error(err);
@@ -175,4 +175,17 @@ export function isShowDailyReport() {
     } else {
         return true;
     }
+}
+
+export function handleReportStatusChange(reportConfig) {
+    let reportConfigList = _.cloneDeep(this.state.reportConfigList);
+    const index = _.findIndex(reportConfigList, item => item.id === reportConfig.id);
+
+    if (index === -1) {
+        reportConfigList.push(reportConfig);
+    } else {
+        reportConfigList.splice(index, 1, reportConfig);
+    }
+
+    this.setState({ reportConfigList });
 }

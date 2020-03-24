@@ -13,7 +13,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
 import myWorkAjax from '../ajax';
 import CrmScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
-import { getReportConfigList, getIsNoLongerShowDailyReportNotice, setIsNoLongerShowDailyReportNotice, showReportPanel, isShowDailyReport } from 'MOD_DIR/daily-report/utils';
+import { getReportConfigList, handleReportStatusChange, getIsNoLongerShowDailyReportNotice, setIsNoLongerShowDailyReportNotice, showReportPanel, isShowDailyReport } from 'MOD_DIR/daily-report/utils';
 import { VIEW_TYPE } from 'MOD_DIR/daily-report/consts';
 import DetailCard from 'CMP_DIR/detail-card';
 import PhoneCallout from 'CMP_DIR/phone-callout';
@@ -127,7 +127,9 @@ class MyWorkColumn extends React.Component {
     }
 
     componentDidMount() {
-        this.getAllReportConfigList();
+        getReportConfigList({
+            callback: reportConfigList => { this.setState({reportConfigList}); },
+        });
         this.getAppList();
         this.getUserList();
         this.getGuideConfig();
@@ -150,7 +152,7 @@ class MyWorkColumn extends React.Component {
         //监听待处理线索的消息
         notificationEmitter.on(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.UPDATED_HANDLE_CLUE, this.updateRefreshMyWork);
-        dailyReportEmitter.on(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
+        dailyReportEmitter.on(dailyReportEmitter.CHANGE_STATUS, handleReportStatusChange.bind(this));
     }
 
     componentWillUnmount() {
@@ -167,17 +169,7 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.removeListener(notificationEmitter.UPDATED_HANDLE_CLUE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_DOMAIN, this.updateRefreshMyWork);
-        dailyReportEmitter.removeListener(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
-    }
-
-    handleReportStatusChange = () => {
-        setTimeout(this.getAllReportConfigList, 1500);
-    }
-
-    getAllReportConfigList = () => {
-        getReportConfigList({
-            callback: reportConfigList => { this.setState({reportConfigList}); },
-        });
+        dailyReportEmitter.removeListener(dailyReportEmitter.CHANGE_STATUS, handleReportStatusChange);
     }
 
     getAppList(){
