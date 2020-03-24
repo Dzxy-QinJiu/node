@@ -5,7 +5,6 @@
 @icon_visit_color: #9b5bf7;
 @other_icon_color: #8da8c5;
 @split_line_color: #f5f5f5;
-@hover_color: #2196f3;
 @report_delivery_color: #f7a33f;
 @error_color: #f04134;
 @border_color: #dee5ea;
@@ -94,7 +93,7 @@
             color: @statistic_label_hover_color;
           }
           .statistic-value{
-            color: @hover_color;
+            color: @primary-color;
           }
         }
         .statistic-label{
@@ -116,12 +115,12 @@
         border-right: none !important;
       }
       .statistic-item.active{
-        border-bottom: 1px solid @hover_color;
+        border-bottom: 1px solid @primary-color;
         .statistic-label{
           color: @statistic_label_hover_color;
         }
         .statistic-value{
-          color: @hover_color;
+          color: @primary-color;
         }
       }
     }
@@ -133,7 +132,7 @@
       font-weight: bold;
       color: @btn_color;
       &:hover {
-        color: @hover_color;
+        color: @primary-color;
       }
       i {
         padding-left: 2px;

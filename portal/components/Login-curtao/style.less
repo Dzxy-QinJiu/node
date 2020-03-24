@@ -3,9 +3,8 @@
  *
  * Created by yubin.
  */
-
+ @import "../../public/css/common-variables";
 @font-color: #d8eaf4;
-@blue-color: #2196f3;
 .login-form {
     //去掉自动填充用户名的背景色chrom
     input:-webkit-autofill {
@@ -28,7 +27,7 @@
     }
     //链接的颜色设置
     a{
-        color:#2196F3;
+        color: @primary-color;
     }
 
     .not-allowed {
@@ -47,7 +46,7 @@
         height: 48px;
         line-height: 48px;
         border-radius: 5px;
-        background-color: @blue-color;
+        background-color: @primary-color;
         color: #ffffff;
         border: none;
         cursor: pointer;

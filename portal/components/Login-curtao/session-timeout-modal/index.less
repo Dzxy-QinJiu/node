@@ -1,7 +1,6 @@
 @import '../../../public/sources/page-frame/index-zh_CN.less';
 @import "../../../public/css/common-variables";
 @white-color: #ffffff;
-@blue-tip-color: #2196F3;
 @error-tip-color: #ee5b44;
 #session-timeout-modal {
   position: absolute;
@@ -33,7 +32,7 @@
     margin: 0 auto;
     .avatar {
       img {
-        border: 1px solid @blue-tip-color;
+        border: 1px solid @primary-color;
       }
     }
     .text-align-center {
@@ -53,7 +52,7 @@
     .retry-login-tip {
       line-height: 20px;
       height: 20px;
-      color: @blue-tip-color;
+      color: @primary-color;
       white-space: nowrap;//缩小宽度后，不折行得设置
     }
     .session-timeout-form {
@@ -67,7 +66,7 @@
         line-height: 48px;
         border-radius: 3px;
         font-size: 20px;
-        background-color: @blue-tip-color;
+        background-color: @primary-color;
       }
       .ant-input {
         height: 30px;
@@ -78,12 +77,12 @@
         color: @primary-font-color;
         outline: none;
         &:hover {
-          border-bottom: 1px solid @blue-tip-color;
+          border-bottom: 1px solid @primary-color;
         }
         &:focus { 
           outline:none;
           box-shadow: none;
-          border-bottom: 1px solid @blue-tip-color;
+          border-bottom: 1px solid @primary-color;
         }
       }
       .ant-form-item {
@@ -131,9 +130,9 @@
         margin-top: 8px;
         font-size: 14px;
         cursor: pointer;
-        color: @blue-tip-color;
+        color: @primary-color;
         &:hover {
-          color: @blue-tip-color;
+          color: @primary-color;
         }
       }
       .login-find-password-tip{

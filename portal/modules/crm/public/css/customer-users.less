@@ -1,6 +1,5 @@
 @import "../../../../public/css/common-variables";
 //客户开通用户的列表
-@click-active-color: #2196f3;
 @pending-font-color: #eda247; //用户待审字体颜色
 .crm-user-list-container {
   float: left;
@@ -17,7 +16,7 @@
     font-size: 14px;
     .user-total-active {
       float: left;
-      color: @click-active-color;
+      color: @primary-color;
       cursor: pointer;
     }
     .crm-user-apply-label {
@@ -141,7 +140,7 @@
           color: @import_data_warn_color;
         }
         .can-click-open-detail{
-          color: @click-active-color;
+          color: @primary-color;
           cursor: pointer;
         }
       }
