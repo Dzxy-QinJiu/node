@@ -102,7 +102,7 @@ class AddApplyConditionPanel extends React.Component {
         }
         //保存的已经添加的表单，是个数组
         //任何流程都要展示选一批人这个筛选条件
-        var saveForm = false;
+        var saveForm = true;
         var menus = <Menu>{
             //如果是内置的出差流程或者是请假流程，要加上时长的判断
             showInnerCondition ?
@@ -112,12 +112,17 @@ class AddApplyConditionPanel extends React.Component {
                 _.map(applySaveForm, (item) => {
                     var component_type = item.subComponentType || item.component_type;
                     var target = this.getConditionRelate(component_type);
-                    if (target && !this.hasAddThisTypeCondition(_.get(target, 'value'))) {
-                        return <Menu.Item>
-                            <a onClick={this.handleAddConditionType.bind(this, component_type)}>{_.get(target, 'name')}</a>
-                        </Menu.Item>;
+                    if (target) {
+                        if(!this.hasAddThisTypeCondition(_.get(target, 'value'))){
+                            saveForm = false;
+                            return <Menu.Item>
+                                <a onClick={this.handleAddConditionType.bind(this, component_type)}>{_.get(target, 'name')}</a>
+                            </Menu.Item>;
+                        }else{
+                            return null;
+                        }
                     } else {
-                        saveForm = true;
+                        return null;
                     }
                 })
         }
@@ -131,7 +136,10 @@ class AddApplyConditionPanel extends React.Component {
         </Menu.Item>}
         </Menu>;
         //是否还有menuitem展示
-        var hasNoMenuItem = ((showInnerCondition && this.hasAddThisTypeCondition(componentType + '_limit')) || (!showInnerCondition && saveForm)) && this.hasAddThisTypeCondition(ALL_COMPONENTS.USER_SEARCH + '_limit');
+        var hasNoMenuItem = ((showInnerCondition && this.hasAddThisTypeCondition(componentType + '_limit'))
+            || (!showInnerCondition && saveForm))
+            && this.hasAddThisTypeCondition(ALL_COMPONENTS.USER_SEARCH + '_limit')
+            && this.hasAddThisTypeCondition(ALL_COMPONENTS.TEAM_SEARCH + '_limit');
         return {
             menus: menus,
             hasNoMenuItem: hasNoMenuItem
