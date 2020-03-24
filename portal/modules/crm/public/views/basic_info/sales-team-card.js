@@ -489,7 +489,7 @@ class SalesTeamCard extends React.Component {
         //如果负责人设置为联合跟进人
         if(_.isEqual(userId, secondUserId)) {
             let userName = _.get(this.state, 'userName');
-            callback(Intl.get('crm.already.sale.error', '{user}已是负责人，不能再设置联合跟进人', {user: userName}));
+            callback(Intl.get('crm.already.sale.error', '{user}已是负责人，不能再设置为联合跟进人', {user: userName}));
         } else {
             callback();
         }
