@@ -137,7 +137,8 @@ export function processReportListData(data) {
 
             switch (name) {
                 case '通话时长':
-                    item[name] = value + '秒';
+                    obj.value = value + '秒';
+                    item[name] = obj.value;
                     break;
                 case '其他':
                     item[name] = value_str;
