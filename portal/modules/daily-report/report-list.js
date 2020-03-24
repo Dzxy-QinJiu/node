@@ -6,7 +6,7 @@ import { AntcAnalysis } from 'antc';
 import { teamTreeEmitter, dateSelectorEmitter } from 'PUB_DIR/sources/utils/emitters';
 import userData from 'PUB_DIR/sources/user-data';
 import { showReportPanel, showNumberDetail } from './utils';
-import { VIEW_TYPE } from './consts';
+import { VIEW_TYPE, REPORT_LIST_DATA_FIELD } from './consts';
 import ReportDetail from './report-detail';
 
 class ReportList extends React.Component {
@@ -75,7 +75,7 @@ class ReportList extends React.Component {
                 },
             },
             url: '/rest/customer/v3/dailyreport/report',
-            dataField: 'daily_reports',
+            dataField: REPORT_LIST_DATA_FIELD,
             processData: data => {
                 _.each(data, item => {
                     _.each(item.item_values, obj => {

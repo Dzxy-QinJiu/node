@@ -2,7 +2,7 @@ import ajax from 'ant-ajax';
 import { message, Button } from 'antd';
 import { isCurtao, getOrganization } from 'PUB_DIR/sources/utils/common-method-util';
 import { detailPanelEmitter, dailyReportEmitter } from 'PUB_DIR/sources/utils/emitters';
-import { VIEW_TYPE } from './consts';
+import { VIEW_TYPE, REPORT_LIST_DATA_FIELD } from './consts';
 
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const SITE_CONGFIG_KEY = 'is_no_longer_show_daily_report_notice';
@@ -117,7 +117,7 @@ export function getReportList(callback, query) {
         query
     })
         .done(result => {
-            const list = _.get(result, 'daily_reports', []);
+            const list = _.get(result, REPORT_LIST_DATA_FIELD, []);
             callback(list);
         })
         .fail(err => {
