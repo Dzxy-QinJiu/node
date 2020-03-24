@@ -56,6 +56,7 @@ class AlwaysShowSelect extends React.Component {
     //输入框获取焦点时
     inputFocus = () => {
         this.setState({isSearch: true, value: '', searchVal: ''});
+        this.props.onInputFocus();
     };
     //获取选择下拉选项
     getSelectOptions = (dataList) => {
@@ -147,7 +148,10 @@ AlwaysShowSelect.defaultProps = {
     },
     getSelectContent: function() {
 
-    }//取到所展示的内容
+    },//取到所展示的内容
+    onInputFocus: function() {
+
+    }
 };
 AlwaysShowSelect.propTypes = {
     placeholder: PropTypes.string,
@@ -156,6 +160,7 @@ AlwaysShowSelect.propTypes = {
     dataList: PropTypes.object,
     notFoundContent: PropTypes.string,
     onChange: PropTypes.func,
-    getSelectContent: PropTypes.func
+    getSelectContent: PropTypes.func,
+    onInputFocus: PropTypes.func,
 };
 export default AlwaysShowSelect;
