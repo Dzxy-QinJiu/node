@@ -808,10 +808,13 @@ const ApplyViewDetail = createReactClass({
             return <span>{info.user_names[0]}</span>;
         }
         let maxUserNumber = this.getChangeMaxUserNumber();
+        var cls = classNames('user-name-wrap',{
+            'home-work': this.props.isHomeMyWork
+        });
         return (<div>
             {!this.showPassWordPrivilege() ? <span>{info.user_names[0]}</span>
                 : (this.state.isUserEdit ? (
-                    <div className="user-name-wrap">
+                    <div className={cls}>
                         <Form>
                             <Validation ref="validation" onValidate={this.handleValidate}>
                                 {this.renderUserNameTextField({existCheck: true, number: maxUserNumber})}
