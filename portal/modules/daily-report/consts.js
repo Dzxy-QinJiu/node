@@ -6,3 +6,5 @@ export const VIEW_TYPE = {
     REPORT_DETAIL: '报告详情',
     NUMBER_DETAIL: '数字详情',
 };
+
+export const REPORT_LIST_DATA_FIELD = 'daily_reports';
