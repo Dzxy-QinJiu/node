@@ -117,13 +117,26 @@ export function getReportList(callback, query) {
         query
     })
         .done(result => {
-            const list = _.get(result, REPORT_LIST_DATA_FIELD, []);
-            callback(list);
+            let data = _.get(result, REPORT_LIST_DATA_FIELD, []);
+            data = processReportListData(data);
+            callback(data);
         })
         .fail(err => {
             message.error(err);
             callback();
         });
+}
+
+export function processReportListData(data) {
+    _.each(data, item => {
+        _.each(item.item_values, obj => {
+            const { name, value, value_str } = obj;
+
+            item[name] = value_str || value;
+        });
+    });
+
+    return data;
 }
 
 //保存报告
