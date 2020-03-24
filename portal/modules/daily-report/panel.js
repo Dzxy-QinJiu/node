@@ -48,6 +48,7 @@ class ReportPanel extends React.Component {
     onReportStatusSwitchChange = (reportConfig, checked) => {
         const status = checked ? 'on' : 'off';
         const postData = _.extend({}, reportConfig, { status });
+
         saveReportConfig(postData, { isChangeStatus: true });
     }
 
