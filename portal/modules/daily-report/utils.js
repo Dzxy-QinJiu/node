@@ -62,6 +62,9 @@ export function renderButtonZoneFunc(buttons) {
 
 //获取报告配置列表
 export function getReportConfigList(paramObj) {
+    //不需要显示日报功能时，直接返回
+    if (!isShowDailyReport()) return;
+
     const { callback, query = {} } = paramObj;
 
     if (!_.isFunction(callback)) return;
