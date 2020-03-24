@@ -114,6 +114,8 @@ ClueCustomerStore.prototype.setClueInitialData = function() {
     this.customersSize = 0;
     this.isLoading = true;
     this.pageNum = 1;
+    this.allClueCount = 0;
+    this.agg_list = {};
 };
 ClueCustomerStore.prototype.setSortField = function(updateSortField) {
     this.sorter.field = updateSortField;
