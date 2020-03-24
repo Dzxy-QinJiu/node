@@ -2,7 +2,8 @@ import ajax from 'ant-ajax';
 import { message, Button } from 'antd';
 import { isCurtao, getOrganization } from 'PUB_DIR/sources/utils/common-method-util';
 import { detailPanelEmitter, dailyReportEmitter } from 'PUB_DIR/sources/utils/emitters';
-import { VIEW_TYPE } from './consts';
+import { VIEW_TYPE, REPORT_LIST_DATA_FIELD } from './consts';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const SITE_CONGFIG_KEY = 'is_no_longer_show_daily_report_notice';
@@ -62,6 +63,9 @@ export function renderButtonZoneFunc(buttons) {
 
 //获取报告配置列表
 export function getReportConfigList(paramObj) {
+    //不需要显示日报功能时，直接返回
+    if (!isShowDailyReport()) return;
+
     const { callback, query = {} } = paramObj;
 
     if (!_.isFunction(callback)) return;
@@ -94,7 +98,7 @@ export function saveReportConfig(data, paramObj = {}) {
             const msg = isChangeStatus ? '修改报告启停状态成功' : '保存报告规则设置成功';
             message.success(msg);
             if (_.isFunction(callback)) callback(result);
-            if (isChangeStatus) dailyReportEmitter.emit(dailyReportEmitter.CHANGE_STATUS);
+            if (isChangeStatus) dailyReportEmitter.emit(dailyReportEmitter.CHANGE_STATUS, result);
         })
         .fail(err => {
             message.error(err);
@@ -117,13 +121,36 @@ export function getReportList(callback, query) {
         query
     })
         .done(result => {
-            const list = _.get(result, 'daily_reports', []);
-            callback(list);
+            let data = _.get(result, REPORT_LIST_DATA_FIELD, []);
+            data = processReportListData(data);
+            callback(data);
         })
         .fail(err => {
             message.error(err);
             callback();
         });
+}
+
+export function processReportListData(data) {
+    _.each(data, item => {
+        _.each(item.item_values, obj => {
+            const { name, value, value_str } = obj;
+
+            switch (name) {
+                case '通话时长':
+                    obj.value = value + '秒';
+                    item[name] = obj.value;
+                    break;
+                case '其他':
+                    item[name] = value_str;
+                    break;
+                default:
+                    item[name] = value;
+            }
+        });
+    });
+
+    return data;
 }
 
 //保存报告
@@ -170,9 +197,22 @@ export function isShowDailyReport() {
     const versionName = _.get(org, 'version.name');
     const isValidVersion = _.includes(['专业版', '企业版'], versionName);
 
-    if (isCurtao() || !isValidVersion) {
+    if (isCurtao() || !isValidVersion || !hasPrivilege('CRM_DAILY_REPORT')) {
         return false;
     } else {
         return true;
     }
+}
+
+export function handleReportStatusChange(reportConfig) {
+    let reportConfigList = _.cloneDeep(this.state.reportConfigList);
+    const index = _.findIndex(reportConfigList, item => item.id === reportConfig.id);
+
+    if (index === -1) {
+        reportConfigList.push(reportConfig);
+    } else {
+        reportConfigList.splice(index, 1, reportConfig);
+    }
+
+    this.setState({ reportConfigList });
 }

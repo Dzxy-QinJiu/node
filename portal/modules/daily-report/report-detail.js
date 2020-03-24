@@ -32,6 +32,8 @@ class ReportDetail extends React.Component {
         let items;
 
         if (isOpenReport || isConfigReport) {
+            //通过解构赋值的方式为items赋值，相当于：items = reportConfig.items
+            //这样写可以避免写重复属性名，便于维护，另外可扩展性好一些
             ({ items } = reportConfig);
         } else {
             items = reportDetail.item_values;

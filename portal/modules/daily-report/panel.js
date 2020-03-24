@@ -45,11 +45,18 @@ class ReportPanel extends React.Component {
         );
     }
 
+    onReportStatusSwitchChange = (reportConfig, checked) => {
+        const status = checked ? 'on' : 'off';
+        const postData = _.extend({}, reportConfig, { status });
+
+        saveReportConfig(postData, { isChangeStatus: true });
+    }
+
     getPanelTitle() {
         const { currentView, reportConfig, reportDetail, isPreviewReport } = this.state;
 
         let title = currentView;
-        const nickName = _.get(reportDetail, 'nickname');
+        const nickName = _.get(reportDetail, 'nickname', '');
 
         switch(currentView) {
             case VIEW_TYPE.NUMBER_DETAIL:
@@ -68,11 +75,7 @@ class ReportPanel extends React.Component {
             case VIEW_TYPE.CONFIG_REPORT:
                 title = <div>
                     <span>{reportConfig.name}</span>
-                    <Switch defaultChecked={reportConfig.status === 'on'} onChange={checked => {
-                        const status = checked ? 'on' : 'off';
-                        const postData = _.extend({}, reportConfig, { status });
-                        saveReportConfig(postData, { isChangeStatus: true });
-                    }} />
+                    <Switch defaultChecked={reportConfig.status === 'on'} onChange={this.onReportStatusSwitchChange.bind(this, reportConfig)} />
                 </div>;
                 break;
         }
