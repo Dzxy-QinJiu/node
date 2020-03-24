@@ -1,8 +1,6 @@
 @import "../../../../public/css/common-variables";
 @font-color: #8DA8C5;
 @btn-color: #8da8c5;
-@label-color: #999999;
-
 @drag-over-color: #fff;
 @click-color: #2196f3;
 
@@ -39,7 +37,7 @@
                   cursor: pointer;
                 }
                 .item-description {
-                  color: #999;
+                  color: @secondary-font-color;
                 }
                 .item-status {
                     div {
@@ -99,7 +97,7 @@
               .customer-stage-set, .customer-stage-team-user {
                 .customer-stage-label {
                   font-size:14px;
-                  color: @label-color;
+                  color: @secondary-font-color;
                   padding-right: 12px;
                 }
                 .stage-content {
@@ -109,7 +107,7 @@
                     width: 104px;
                     display: inline-block;
                     color: @tag-font-color;
-                    background-color: #999;
+                    background-color: @secondary-font-color;
                     margin-right: 1px;
                     border-radius: 4px;
                     text-align: center;
@@ -163,7 +161,7 @@
                         margin-right: 12px;
                       }
                       .item-delete-cancel {
-                        color: @label-color;
+                        color: @secondary-font-color;
                       }
                     }
                   }
@@ -248,7 +246,7 @@
                   margin-right: 12px;
                 }
                 .delete-cancel {
-                  color: @label-color;
+                  color: @secondary-font-color;
                 }
               }
               &:hover {
@@ -263,7 +261,7 @@
             background-color: @content-zone-background;
             padding: 12px;
             .stage-label {
-              color: @label-color;
+              color: @secondary-font-color;
               height: 20px;
               margin-bottom: 8px;
             }
@@ -271,7 +269,7 @@
           .stage-content-set-stage, .stage-content-team-user {
             .stage-set-title-zone {
               cursor: pointer;
-              color: @label-color;
+              color: @secondary-font-color;
               height: 20px;
               margin-bottom: 8px;
               .stage-label {
@@ -404,7 +402,7 @@
                         }
 
                         .customer-stage-content-describe {
-                          color: #999;
+                          color: @secondary-font-color;
                         }
                       }
 
@@ -450,7 +448,7 @@
                           margin-right: 12px;
                         }
                         .delete-cancel {
-                          color: @label-color;
+                          color: @secondary-font-color;
                         }
                       }
                       &:hover {
@@ -551,7 +549,7 @@
         .basic-info-label {
           float: left;
           line-height: 24px;
-          color: @label-color;
+          color: @secondary-font-color;
           margin-right: 10px;
         }
         .process-status {
@@ -587,7 +585,7 @@
         // 表头
         .ant-table-thead {
           th {
-            color: #999 !important;
+            color: @secondary-font-color !important;
             font-weight: normal;
             padding: 9px 16px !important;
           }

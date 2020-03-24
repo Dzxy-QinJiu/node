@@ -1,4 +1,5 @@
-@font-color: #999999;
+
+@import '../../../../public/css/common-variables';
 @btn_color: #8ba9c3;
 @block-line-color: #D1DADE;
 @font_color: #464b4e;
@@ -13,7 +14,7 @@
     padding-right: 10px;
     //共xxx条
     .total-tip {
-      color: @font-color;
+      color: @secondary-font-color;
     }
     //添加订单按钮
     .iconfont.icon-add {
@@ -68,7 +69,7 @@
             color: @filed-font-color;
           }
           .contract-scrapped {
-            color: @font-color;
+            color: @secondary-font-color;
           }
           .contract-num {
             color: @font_color;
@@ -123,7 +124,7 @@
             line-height: 24px;
             width: 60px;
             text-align: right;
-            color: @font-color;
+            color: @secondary-font-color;
           }
           .contract-value {
             line-height: 24px;
@@ -243,7 +244,7 @@
       border-top: 1px @block-line-color solid;
       border-bottom: 1px @block-line-color solid;
       label {
-        color: @font-color;
+        color: @secondary-font-color;
       }
       .ant-form {
         .ant-form-item {

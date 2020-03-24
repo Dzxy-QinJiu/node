@@ -1,3 +1,5 @@
+
+@import '../../../../public/css/common-variables';
 @block-bgColor: #dde6ed;
 @block-bgColor-edit: #d3dbe8;
 @block-line-color: #D1DADE;
@@ -5,7 +7,6 @@
 @font-color: #464b4e;
 @padding: 15px;
 
-@font_color: #999999;
 @btn_color: #8ba9c3;
 @delete_confirm_color: #ec5f56;
 @lose-order-color: #eea145;
@@ -163,7 +164,7 @@
         .order-key {
           float: left;
           line-height: 24px;
-          color: @font_color;
+          color: @secondary-font-color;
         }
         .order-lose-reason {
           color: @lose-order-color;
@@ -251,7 +252,7 @@
       float: right;
       line-height: 22px;
       margin-top: 6px;
-      color: @font_color;
+      color: @secondary-font-color;
       font-size: 12px;
     }
     .order-add-time {
@@ -325,7 +326,7 @@
     .ant-form-item-label {
       text-align: right;
       label {
-        color: @font_color;
+        color: @secondary-font-color;
       }
     }
     .order-app-edit-block {

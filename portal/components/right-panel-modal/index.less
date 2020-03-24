@@ -1,8 +1,8 @@
 //带遮罩层和关闭按钮的右侧面版样式
+@import "../../public/css/common-variables";
 @add-form-borer: 1px solid #dedfe1;
 @panel-width: 480px;
 @panel-bg-color: #f5f5f5;
-@font-color: #999999;
 //遮罩层的样式
 .right-panel-modal.show-modal {
   top: 0;
@@ -74,12 +74,12 @@
           margin-bottom: 0;
           font-size: 14px;
           font-weight: normal;
-          color: @font-color;
+          color: @secondary-font-color;
         }
         .ant-input, .ant-select {
           width: 100%;
           font-size: 14px;
-          color: @font-color;
+          color: @secondary-font-color;
         }
       }
     }

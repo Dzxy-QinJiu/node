@@ -2,7 +2,6 @@
 @RIGHT_BACKGROUND_COLOR: #AAA;
 @BACKGROUND_WHITE: #FFF;
 @FONT_WHITE: #FFF;
-@FONT_COLOR_999: #999;
 @LINE_COLOR: #2196F3;
 @BORDER: 4px solid @LINE_COLOR;
 @import "../../../../public/css/common-variables";
@@ -29,7 +28,7 @@
             float: left;
             width: 100%;
             padding-left: 16px;
-            color: @FONT_COLOR_999;
+            color: @secondary-font-color;
             .data-container {
               margin-left: 16px;
               span {
@@ -74,7 +73,7 @@
         font-size: 16px;
         padding: 10px;
         cursor: pointer;
-        color: @FONT_COLOR_999;
+        color: @secondary-font-color;
         border-left: 4px solid transparent;
         .data-total {
           float: right;
@@ -125,7 +124,7 @@
       .abnornal-status-tip {
         text-align: center;
         margin-top: 16px;
-        color: #999;
+        color: @secondary-font-color;
         font-size: 14px;
       }
 
@@ -135,7 +134,7 @@
         .schedule-list-tip {
           font-size: 12px;
           margin-bottom: 8px;
-          color: @FONT_COLOR_999;
+          color: @secondary-font-color;
         }
         .schedule-list-tip:not(:first-child) {
           margin-top: 16px;

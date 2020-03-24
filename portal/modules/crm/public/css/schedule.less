@@ -5,7 +5,6 @@
 @padding: 8px;
 @icon_visit_color: #9b5bf7;
 @other_icon_color: #8da8c5;
-@font_color: #999999;
 @overdue_color: #fbcb8f;
 @today_color: #34ca71;
 
@@ -86,7 +85,7 @@
     padding-left: 28px;
     .schedule-item-content {
       padding-bottom: 4px;
-      color: @font_color;
+      color: @secondary-font-color;
       &:extend(.break_line);
     }
   }
@@ -224,7 +223,7 @@ form.schedule-form {
       color:#ddd;
     }
     .ant-radio-button-wrapper-checked{
-      color:#999;
+      color: @secondary-font-color;
       .iconfont{
         color: @other_icon_color;
       }
