@@ -49,7 +49,7 @@ class ReportPanel extends React.Component {
         const { currentView, reportConfig, reportDetail, isPreviewReport } = this.state;
 
         let title = currentView;
-        const nickName = _.get(reportDetail, 'nickname');
+        const nickName = _.get(reportDetail, 'nickname', '');
 
         switch(currentView) {
             case VIEW_TYPE.NUMBER_DETAIL:
