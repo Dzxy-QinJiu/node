@@ -132,7 +132,16 @@ export function processReportListData(data) {
         _.each(item.item_values, obj => {
             const { name, value, value_str } = obj;
 
-            item[name] = value_str || value;
+            switch (name) {
+                case '通话时长':
+                    item[name] = value + '秒';
+                    break;
+                case '其他':
+                    item[name] = value_str;
+                    break;
+                default:
+                    item[name] = value;
+            }
         });
     });
 
