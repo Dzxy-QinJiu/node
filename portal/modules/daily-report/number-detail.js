@@ -2,10 +2,7 @@
  * 数字详情
  */
 
-import { Form } from 'antd';
-import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
-import { VIEW_TYPE } from './consts';
-import { renderButtonZoneFunc, hideReportPanel, getReportList, saveReport } from './utils';
+import DetailCard from 'CMP_DIR/detail-card';
 
 class NumberDetail extends React.Component {
     render() {
@@ -13,9 +10,15 @@ class NumberDetail extends React.Component {
 
         return (
             <div>
-                {_.map(numberDetail.detail, item => {
-                    return <div>客户名：{item.customer_name}</div>;
-                })}
+                {_.map(numberDetail.detail, item => (
+                    <DetailCard
+                        content={(
+                            <div>
+                                {item.customer_name}
+                            </div>
+                        )}
+                    />
+                ))}
             </div>
         );
     }
