@@ -65,7 +65,10 @@ class ReportPanel extends React.Component {
         switch(currentView) {
             case VIEW_TYPE.NUMBER_DETAIL:
                 title = <span>
-                    <i className="iconfont icon-left-arrow" onClick={() => {this.setState({currentView: VIEW_TYPE.REPORT_DETAIL});}} />
+                    {isPreviewReport ? (
+                        <i className="iconfont icon-left-arrow" onClick={() => {this.setState({currentView: VIEW_TYPE.REPORT_DETAIL});}} />
+                    ) : null}
+
                     <span>
                         {moment(reportDetail.time).format(oplateConsts.DATE_FORMAT)} &nbsp;
                         {nickname}
