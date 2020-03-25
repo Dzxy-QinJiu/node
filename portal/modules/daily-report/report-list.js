@@ -5,7 +5,7 @@
 import { AntcAnalysis } from 'antc';
 import { teamTreeEmitter, dateSelectorEmitter } from 'PUB_DIR/sources/utils/emitters';
 import userData from 'PUB_DIR/sources/user-data';
-import { showReportPanel, showNumberDetail, processReportListData } from './utils';
+import { showReportPanel, processReportListData, numberRender } from './utils';
 import { VIEW_TYPE, REPORT_LIST_DATA_FIELD } from './consts';
 import ReportDetail from './report-detail';
 
@@ -117,16 +117,14 @@ class ReportList extends React.Component {
                                 dataIndex: name,
                                 width: 130,
                                 align: 'right',
-                                render: (value, record) => {
-                                    return <span onClick={showNumberDetail.bind(this, record, name)}>{value}</span>;
-                                }
+                                render: numberRender.bind(null, name)
                             };
     
                             if (name === '其他') {
                                 if (nickname) {
                                     column.isSetCsvValueBlank = true;
                                     column.align = 'left';
-                                    column.render = value => value;
+                                    delete column.render;
 
                                     columns.push(column);
                                 }
