@@ -182,8 +182,7 @@ export function showNumberDetail(record, name, e) {
     if (e && _.isFunction(e.stopPropagation)) e.stopPropagation();
 
     const itemValues = _.get(record, 'item_values');
-    const itemValue = _.find(itemValues, item => item.name === name);
-    const numberDetail = _.get(itemValue, 'detail');
+    const numberDetail = _.find(itemValues, item => item.name === name);
 
     showReportPanel({
         currentView: VIEW_TYPE.NUMBER_DETAIL,

@@ -53,21 +53,27 @@ class ReportPanel extends React.Component {
     }
 
     getPanelTitle() {
-        const { currentView, reportConfig, reportDetail, isPreviewReport } = this.state;
+        const { currentView, reportConfig, reportDetail, numberDetail, isPreviewReport } = this.state;
 
         let title = currentView;
-        const nickName = _.get(reportDetail, 'nickname', '');
+        const nickname = _.get(reportDetail, 'nickname', '');
 
         switch(currentView) {
             case VIEW_TYPE.NUMBER_DETAIL:
                 title = <span>
                     <i className="iconfont icon-left-arrow" onClick={() => {this.setState({currentView: VIEW_TYPE.REPORT_DETAIL});}} />
-                    <span>{title}</span>
+                    <span>
+                        {moment(reportDetail.time).format(oplateConsts.DATE_FORMAT)} &nbsp;
+                        {nickname}
+                        {numberDetail.name} &nbsp;
+                        {numberDetail.value}
+                        {_.isNumber(numberDetail.value) ? '个' : null}
+                    </span>
                 </span>;
                 break;
             case VIEW_TYPE.REPORT_DETAIL:
                 if (isPreviewReport) {
-                    title = nickName + '的报告详情';
+                    title = nickname + '的报告详情';
                 } else {
                     title = reportConfig.name;
                 }

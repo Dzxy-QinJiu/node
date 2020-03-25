@@ -13,7 +13,7 @@ class NumberDetail extends React.Component {
 
         return (
             <div>
-                {_.map(numberDetail, item => {
+                {_.map(numberDetail.detail, item => {
                     return <div>客户名：{item.customer_name}</div>;
                 })}
             </div>
