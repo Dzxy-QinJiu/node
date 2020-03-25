@@ -567,8 +567,8 @@ var NavSidebar = createReactClass({
                         {this.state.userInfoLogo ?
                             <Avatar
                                 className="avatar"
-                                size="28px"
-                                lineHeight="28px"
+                                size="24px"
+                                lineHeight="24px"
                                 src={this.state.userInfoLogo}
                                 userName={this.state.userInfo.user_name}
                                 nickName={this.state.userInfo.nick_name}
@@ -691,9 +691,7 @@ var NavSidebar = createReactClass({
             const addActive = currentPageCategory === category;
             //选中状态类
             let extraClass = classNames('iconfont', {
-                // 'nav-small-icon': this.isShowSmallIcon(),
-                [`icon-${category}-ico`]: !addActive,
-                [`icon-active-${category}-ico`]: addActive,
+                [`icon-${category}-ico`]: true,
                 'active': addActive,
                 'deactivation': this.props.isShowNotificationPanel
             });
@@ -701,8 +699,6 @@ var NavSidebar = createReactClass({
             let routeCls = classNames('sidebar-menu-li', {
                 [`${category}_icon_container`]: true,
                 'active': addActive,
-                // 'reduce-nav-icon-li': this.state.isReduceNavIcon,
-                // 'reduce-nav-margin-li': this.state.isReduceNavMargin
             });
             let routeContent = (
                 <NavLink to={`${menu.routePath}`}
@@ -729,12 +725,8 @@ var NavSidebar = createReactClass({
     //生成拨号按钮
     renderDailCallBlock(trigger) {
         if(this.state.isShowDialUpKeyboard) {
-            const iconCls = classNames('iconfont', 'sidebar-bottom-icon', {
-                'icon-nav-dial-up': !this.state.ronglianNum,
-                'icon-active-call_record-ico': this.state.ronglianNum,
-            });
             const DialIcon = this.state.hideNavIcon ? Intl.get('phone.dial.up.text', '拨号') :
-                (<i className={iconCls}/>);
+                (<i className={'iconfont sidebar-bottom-icon icon-nav-dial-up'}/>);
 
             const versionAndType = checkVersionAndType();
             let dialUpKeyBoardContent = null;

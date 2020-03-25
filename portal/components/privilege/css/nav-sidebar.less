@@ -312,19 +312,6 @@
                     color: @nav-icon;
                 }
             }
-            .user-default-logo-wrap,.user-default-logo-wrap.active {
-                display: inline-block;
-                width: 24px;
-                height: 24px;
-                line-height: 24px;
-                margin-top: 8px;
-                border-radius: 50%;
-                background-color: @icon-active-color;
-                .icon-user-logo-default {
-                    font-size: 16px;
-                    color: @primary-color;
-                }
-            }
         }  
         .notification {
             .ant-badge-dot {
@@ -359,29 +346,7 @@
                 }
             }
         }
-    
-        .avatar {
-            img {
-                border: 2px solid rgba(0, 0, 0, 0);
-                &:hover {
-                    border-color: @primary-hover-color;
-                }
-            }
-            .no-user-logo-div {
-                border: 2px solid rgba(0, 0, 0, 0);
-                &:hover {
-                    border-color: @primary-hover-color;
-                }
-            }
-            .active {
-                img {
-                    border-color: @primary-active-color;
-                }
-                .no-user-logo-div {
-                    border-color: @primary-active-color;
-                }
-            }
-        }
+      
         .logout {
             float: none;
             margin: 80px 0 0 19px;
@@ -404,11 +369,25 @@
         .avatar_container {
             overflow: hidden;
             text-align: center;
+            // 上传了头像的样式
             .avatar {
-                .no-user-logo-div {
-                    .icon-users {
-                        font-size: 32px;
-                    }
+                img {
+                    vertical-align: top;
+                    margin-top: 8px;
+                }
+            }
+            // 没上传头像时，默认头像样式设置
+            .user-default-logo-wrap,.user-default-logo-wrap.active {
+                display: inline-block;
+                width: 24px;
+                height: 24px;
+                line-height: 24px;
+                margin-top: 8px;
+                border-radius: 50%;
+                background-color: @icon-active-color;
+                .icon-user-logo-default {
+                    font-size: 16px;
+                    color: @primary-color;
                 }
             }
         }
