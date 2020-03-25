@@ -5,7 +5,8 @@
 @icon-grey: #CBCBCB;
 @icon-active-color: #ffffff;//图标选中状态的颜色
 @nav-icon: #ffffff;//图标默认状态下的颜色
-@nav-icon-size: 30px;
+@nav-icon-size: 22px;
+@bottom-icon-size: 20px;
 //缩小图标时的菜单高度
 @reduce-nav-icon-li-height: 40px;
 //缩小图标并缩小间距时的菜单高度
@@ -288,7 +289,7 @@
             }
             .iconfont{
                 color: @nav-icon;
-                font-size: 24px;
+                font-size: @bottom-icon-size;
                 &:hover{
                     color: @icon-active-color;
                 }
@@ -398,7 +399,7 @@
             text-align: center;
             .avatar {
                 .no-user-logo-div {
-                    .icon-users-ico {
+                    .icon-users {
                         font-size: 32px;
                     }
                 }
