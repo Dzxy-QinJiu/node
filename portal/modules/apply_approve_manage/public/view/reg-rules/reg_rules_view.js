@@ -52,6 +52,7 @@ class RegRulesView extends React.Component {
             showAddConditionPanel: false,
             roleList: this.props.roleList,//角色列表
             userList: this.props.userList,//用户列表
+            teamList: this.props.teamList,//团队列表
             ...ApplyApproveManageStore.getState()
         };
     }
@@ -64,6 +65,7 @@ class RegRulesView extends React.Component {
         this.setState({
             roleList: nextProps.roleList,//角色列表
             userList: nextProps.userList,//用户列表
+            teamList: nextProps.teamList,//团队列表
         });
     }
 
@@ -1202,6 +1204,7 @@ class RegRulesView extends React.Component {
                             updateConditionFlowKey={this.state.updateConditionFlowKey}
                             roleList={this.state.roleList}
                             userList={this.state.userList}
+                            teamList={this.state.teamList}
                         />
                     </div>
                     : null}
@@ -1217,7 +1220,8 @@ RegRulesView.defaultProps = {
 
     },
     roleList: [],
-    userList: []
+    userList: [],
+    teamList: []
 };
 
 RegRulesView.propTypes = {
@@ -1225,6 +1229,7 @@ RegRulesView.propTypes = {
     updateRegRulesView: PropTypes.func,
     roleList: PropTypes.array,
     userList: PropTypes.array,
+    teamList: PropTypes.array,
 
 };
 export default RegRulesView;
