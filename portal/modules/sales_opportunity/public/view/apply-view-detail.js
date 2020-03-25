@@ -41,6 +41,7 @@ import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import {APPLY_APPROVE_TYPES,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import classNames from 'classnames';
+var crmAjax = require('MOD_DIR/crm/public/ajax/index');
 
 class ApplyViewDetail extends React.Component {
     constructor(props) {
@@ -51,6 +52,8 @@ class ApplyViewDetail extends React.Component {
             salesManList: [],//销售列表
             usersManList: [],//成员列表
             showBackoutConfirmType: '',//操作的确认框类型
+            curCustomerSaleId: '',//当前这个客户的负责人id
+            curCustomerSaleName: '',//当前这个客户的负责人name
             ...SalesOpportunityApplyDetailStore.getState()
         };
     }
@@ -64,7 +67,7 @@ class ApplyViewDetail extends React.Component {
         if (_.get(this.props,'detailItem.afterAddReplySuccess')){
             setTimeout(() => {
                 SalesOpportunityApplyDetailAction.setDetailInfoObjAfterAdd(this.props.detailItem);
-                this.getNextCandidate(_.get(this, 'props.detailItem.id',''));
+                this.getRelatedInfoOfApplyDetail(_.get(this, 'props.detailItem',{}));
             });
         }else if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem, this.props.applyData);
@@ -195,7 +198,7 @@ class ApplyViewDetail extends React.Component {
         if (_.get(nextProps,'detailItem.afterAddReplySuccess')){
             setTimeout(() => {
                 SalesOpportunityApplyDetailAction.setDetailInfoObjAfterAdd(nextProps.detailItem);
-                this.getNextCandidate(_.get(nextProps, 'detailItem.id',''));
+                this.getRelatedInfoOfApplyDetail(_.get(nextProps, 'detailItem',{}));
             });
         }else if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
             //关闭右侧详情
@@ -226,7 +229,10 @@ class ApplyViewDetail extends React.Component {
             this.getBusinessApplyDetailData(this.props.detailItem);
         }
     };
-    getNextCandidate(applyId){
+    //获取与申请审批相关的一些信息
+    getRelatedInfoOfApplyDetail(apply){
+        var applyId = _.get(apply,'id'),customerId = _.get(apply,'detail.customer.id','');
+        //获取下一节点的负责人
         SalesOpportunityApplyDetailAction.getNextCandidate({id: applyId},(result) => {
             var memberId = userData.getUserData().user_id;
             var target = _.find(result,detailItem => detailItem.user_id === memberId);
@@ -234,8 +240,20 @@ class ApplyViewDetail extends React.Component {
                 SalesOpportunityApplyDetailAction.showOrHideApprovalBtns(true);
             }
         });
+        //获取该客户的详情，在详情中取到该客户的负责人，在分配列表中，过滤掉该负责人
+        let condition = {id: customerId};
+        crmAjax.queryCustomer({data: JSON.stringify(condition)}).then(resData => {
+            this.setState({
+                curCustomerSaleId: _.get(resData, 'result[0].user_id', ''),
+                curCustomerSaleName: _.get(resData, 'result[0].user_name', ''),
+            });
+        }, () => {
+            this.setState({
+                curCustomerSaleId: '',
+                curCustomerSaleName: '',
+            });
+        });
     }
-
     getBusinessApplyDetailData(detailItem, applyData) {
         setTimeout(() => {
             SalesOpportunityApplyDetailAction.setInitialData(detailItem);
@@ -244,13 +262,13 @@ class ApplyViewDetail extends React.Component {
             if (_.includes(APPLY_FINISH_STATUS, detailItem.status)) {
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyCommentList({id: detailItem.id});
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id}, detailItem.status, applyData);
-                this.getNextCandidate(detailItem.id);
+                this.getRelatedInfoOfApplyDetail(detailItem);
             } else if (detailItem.id) {
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id});
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyCommentList({id: detailItem.id});
                 //获取该审批所在节点的位置
                 SalesOpportunityApplyDetailAction.getApplyTaskNode({id: detailItem.id});
-                this.getNextCandidate(detailItem.id);
+                this.getRelatedInfoOfApplyDetail(detailItem);
             }
         });
     }
@@ -263,7 +281,7 @@ class ApplyViewDetail extends React.Component {
             SalesOpportunityApplyDetailAction.setApplyComment(detailItem.approve_details);
         } else if (detailItem.id) {
             SalesOpportunityApplyDetailAction.getSalesOpportunityApplyCommentList({id: detailItem.id});
-            this.getNextCandidate(detailItem.id);
+            this.getRelatedInfoOfApplyDetail(detailItem);
         }
     };
 
@@ -430,9 +448,11 @@ class ApplyViewDetail extends React.Component {
         var onChangeFunction = this.onSalesmanChange;
         var defaultValue = _.get(this.state,'detailInfoObj.info.user_ids');
         var salesManList = this.state.salesManList;
+        var clearSelect = this.clearSelectSales;
         if(type === ASSIGN_TYPE.NEXT_CANDIDATED){
             //需要选择销售总经理
             onChangeFunction = this.onSelectApplySales;
+            clearSelect = this.clearSelectCandidate;
             defaultValue = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
             //列表中只选销售总经理,
             salesManList = _.filter(salesManList, data => _.get(data, 'user_groups[0].owner_id') === _.get(data, 'user_info.user_id'));
@@ -447,9 +467,20 @@ class ApplyViewDetail extends React.Component {
                     onChange={onChangeFunction}
                     notFoundContent={dataList.length ? Intl.get('crm.29', '暂无销售') : Intl.get('crm.30', '无相关销售')}
                     dataList={dataList}
+                    onInputFocus={clearSelect}
                 />
             </div>
         );
+    };
+    checkSelectSales = (assignedSalesUsersIds) => {
+        //对所分配的销售进行检测，如果是该客户的负责人，那么不可以分配，因为联合跟进人和负责人不能是同一个人
+        var salesUserIds = _.split(assignedSalesUsersIds, '&&')[0];
+        if(_.isEqual(salesUserIds, this.state.curCustomerSaleId)){
+            var userName = this.state.curCustomerSaleName;
+            return Intl.get('crm.already.sale.error', '{user}已是负责人，不能再设置为联合跟进人', {user: userName});
+        }else{
+            return '';
+        }
     };
     renderAssigenedContext = () => {
         var assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
@@ -464,11 +495,11 @@ class ApplyViewDetail extends React.Component {
                 cancelTitle={Intl.get('common.cancel', '取消')}
                 overlayContent={this.renderSalesBlock(ASSIGN_TYPE.COMMON_SALES)}
                 handleSubmit={this.passOrRejectApplyApprove.bind(this, 'pass')}//分配销售的时候直接分配，不需要再展示模态框
-                unSelectDataTip={assignedSalesUsersIds ? '' : Intl.get('leave.apply.select.assigned.sales','请选择要分配的销售')}
+                unSelectDataTip={assignedSalesUsersIds ? this.checkSelectSales(assignedSalesUsersIds) : Intl.get('leave.apply.select.assigned.sales','请选择要分配的销售')}
                 clearSelectData={this.clearSelectSales}
                 btnAtTop={false}
                 isSaving={this.state.applyResult.submitResult === 'loading'}
-                isDisabled={!assignedSalesUsersIds}
+                isDisabled={!assignedSalesUsersIds || this.checkSelectSales(assignedSalesUsersIds)}
             />
         );
 
@@ -596,9 +627,10 @@ class ApplyViewDetail extends React.Component {
             }
         });
         //关闭下拉框
-        if(_.isFunction(_.get(this, 'assignSales.handleCancel'))){
+        if (_.isFunction(_.get(this, 'assignSales.handleCancel'))) {
             this.assignSales.handleCancel();
         }
+
     };
     renderCancelApplyApprove = () => {
         var confirmType = this.state.showBackoutConfirmType;

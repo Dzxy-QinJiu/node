@@ -29,7 +29,9 @@ import {isOpenCash, checkVersionAndType} from 'PUB_DIR/sources/utils/common-meth
 import { AntcAnalysis } from 'antc';
 import { getColumnHeight } from 'MOD_DIR/home_page/public/views/common-util';
 import { getMaxLimitExtractClueCount } from 'PUB_DIR/sources/utils/common-data-util';
+import { checkPrivilege } from 'MOD_DIR/crm/public/utils/crm-util';
 import Trace from 'LIB_DIR/trace';
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 const performance = {
     image_1: require('../images/performance_1.png'),
     image_2: require('../images/performance_2.png'),
@@ -133,7 +135,7 @@ class TeamDataColumn extends React.Component {
 
     componentDidMount() {
         //开通了营收中心，才获取业绩排名数据
-        if(isOpenCash()){
+        if(this.enableGetPerforManceDate()){
             this.getPerformanceData();
         }
         this.getCallTimeData();
@@ -165,6 +167,11 @@ class TeamDataColumn extends React.Component {
             - LAYOUT_CONSTANTS.EXPIRE_PADDING
             - LAYOUT_CONSTANTS.TABLE_TH_HEIGHT;
     };
+
+    //是否可以获取业绩
+    enableGetPerforManceDate() {
+        return isOpenCash() && checkPrivilege([analysisPrivilegeConst.CRM_CONTRACT_SALES_REPORTS_MANAGER, analysisPrivilegeConst.CRM_CONTRACT_SALES_REPORTS_COMMON]);
+    }
 
     getContactCustomerCount() {
         let params = {
@@ -796,7 +803,7 @@ class TeamDataColumn extends React.Component {
         return (
             <div className='my-data-content' style={{height: getColumnHeight()}} data-tracename="我的数据">
                 <GeminiScrollbar>
-                    {isOpenCash() ? this.renderPerformanceData() : null}
+                    {this.enableGetPerforManceDate() ? this.renderPerformanceData() : null}
                     {this.renderCallTime()}
                     {this.renderContactCustomers()}
                     {this.renderContactClues()}

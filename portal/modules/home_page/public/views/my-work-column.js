@@ -13,7 +13,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
 import myWorkAjax from '../ajax';
 import CrmScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
-import { getTplList, getIsNoLongerShowDailyReportNotice, setIsNoLongerShowDailyReportNotice, showReportPanel, isShowDailyReport } from 'MOD_DIR/daily-report/utils';
+import { getReportConfigList, handleReportStatusChange, getIsNoLongerShowDailyReportNotice, setIsNoLongerShowDailyReportNotice, showReportPanel, isShowDailyReport } from 'MOD_DIR/daily-report/utils';
 import { VIEW_TYPE } from 'MOD_DIR/daily-report/consts';
 import DetailCard from 'CMP_DIR/detail-card';
 import PhoneCallout from 'CMP_DIR/phone-callout';
@@ -127,7 +127,9 @@ class MyWorkColumn extends React.Component {
     }
 
     componentDidMount() {
-        this.getOpenedTplList();
+        getReportConfigList({
+            callback: reportConfigList => { this.setState({reportConfigList}); },
+        });
         this.getAppList();
         this.getUserList();
         this.getGuideConfig();
@@ -150,7 +152,7 @@ class MyWorkColumn extends React.Component {
         //监听待处理线索的消息
         notificationEmitter.on(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.UPDATED_HANDLE_CLUE, this.updateRefreshMyWork);
-        dailyReportEmitter.on(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
+        dailyReportEmitter.on(dailyReportEmitter.CHANGE_STATUS, handleReportStatusChange.bind(this));
     }
 
     componentWillUnmount() {
@@ -167,17 +169,7 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.removeListener(notificationEmitter.UPDATED_HANDLE_CLUE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_DOMAIN, this.updateRefreshMyWork);
-        dailyReportEmitter.removeListener(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
-    }
-
-    handleReportStatusChange = () => {
-        setTimeout(this.getOpenedTplList, 1500);
-    }
-
-    getOpenedTplList = () => {
-        getTplList({
-            callback: tplList => { this.setState({tplList}); },
-        });
+        dailyReportEmitter.removeListener(dailyReportEmitter.CHANGE_STATUS, handleReportStatusChange);
     }
 
     getAppList(){
@@ -1231,32 +1223,32 @@ class MyWorkColumn extends React.Component {
 
     //渲染销售日报相关的提示
     renderDailyReportNotice(workList) {
-        const { tplList } = this.state;
-        if (_.isEmpty(tplList)) return;
+        const { reportConfigList } = this.state;
+        if (_.isEmpty(reportConfigList)) return;
 
         const { isCommonSales } = userData.getUserData();
-        const tpl = _.chain(tplList).filter(item => item.status === 'on').get([0]).value();
+        const reportConfig = _.chain(reportConfigList).filter(item => item.status === 'on').get([0]).value();
         let title = '';
         let buttons = [];
 
-        if (_.isEmpty(tpl)) {
+        if (_.isEmpty(reportConfig)) {
             if (!isCommonSales) {
                 title = '启用报告可以汇总销售日常工作';
 
                 buttons.push({
                     type: 'primary',
-                    onClick: showReportPanel.bind(null, { isOpenTpl: true }),
+                    onClick: showReportPanel.bind(null, { isOpenReport: true }),
                     name: '开启报告'
                 });
             }
         } else {
-            title = tpl.name;
+            title = reportConfig.name;
 
             if (isCommonSales) {
                 buttons.push({
                     type: 'primary',
                     onClick: showReportPanel.bind(null, {
-                        currentView: VIEW_TYPE.REPORT_FORM,
+                        currentView: VIEW_TYPE.REPORT_DETAIL,
                     }),
                     name: '填写报告'
                 });
@@ -1303,7 +1295,7 @@ class MyWorkColumn extends React.Component {
             </div>
         );
 
-        if (isShowDailyReport() && !(_.isEmpty(tpl) && isCommonSales)) {
+        if (isShowDailyReport() && !(_.isEmpty(reportConfig) && isCommonSales)) {
             workList.push(dailyReportWorkCard);
         }
     }

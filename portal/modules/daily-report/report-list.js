@@ -5,9 +5,9 @@
 import { AntcAnalysis } from 'antc';
 import { teamTreeEmitter, dateSelectorEmitter } from 'PUB_DIR/sources/utils/emitters';
 import userData from 'PUB_DIR/sources/user-data';
-import { showReportPanel, showNumberDetail } from './utils';
-import { VIEW_TYPE } from './consts';
-import ReportForm from './report-form';
+import { showReportPanel, showNumberDetail, processReportListData } from './utils';
+import { VIEW_TYPE, REPORT_LIST_DATA_FIELD } from './consts';
+import ReportDetail from './report-detail';
 
 class ReportList extends React.Component {
     //获取查询条件
@@ -75,18 +75,8 @@ class ReportList extends React.Component {
                 },
             },
             url: '/rest/customer/v3/dailyreport/report',
-            dataField: 'daily_reports',
-            processData: data => {
-                _.each(data, item => {
-                    _.each(item.item_values, obj => {
-                        const { name, value, value_str } = obj;
-
-                        item[name] = value_str || value;
-                    });
-                });
-
-                return data;
-            },
+            dataField: REPORT_LIST_DATA_FIELD,
+            processData: processReportListData
         };
 
         const { isCommonSales } = userData.getUserData();
@@ -96,9 +86,9 @@ class ReportList extends React.Component {
                 chartType: 'custom',
                 noExportCsv: true,
                 customChartRender: data => {
-                    const currentReport = _.first(data) || {};
+                    const reportDetail = _.first(data) || {};
 
-                    return <ReportForm currentReport={currentReport} />;
+                    return <ReportDetail reportDetail={reportDetail} />;
                 }
             });
         } else {
@@ -157,9 +147,9 @@ class ReportList extends React.Component {
                     onRowClick: (record, index, event) => {
                         if (record.nickname) {
                             showReportPanel({
-                                currentView: VIEW_TYPE.REPORT_FORM,
-                                currentReport: record,
-                                isPreview: true
+                                currentView: VIEW_TYPE.REPORT_DETAIL,
+                                reportDetail: record,
+                                isPreviewReport: true
                             });
                         } else {
                             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, record.sales_team_id);

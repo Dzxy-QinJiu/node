@@ -16,6 +16,7 @@ import {
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
 const clueContactType = ['phone', 'qq', 'weChat', 'email'];
+import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 function ClueCustomerStore() {
     //初始化state数据
     this.resetState();
@@ -113,6 +114,8 @@ ClueCustomerStore.prototype.setClueInitialData = function() {
     this.customersSize = 0;
     this.isLoading = true;
     this.pageNum = 1;
+    this.allClueCount = 0;
+    this.agg_list = {};
 };
 ClueCustomerStore.prototype.setSortField = function(updateSortField) {
     this.sorter.field = updateSortField;
@@ -159,6 +162,11 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
         let data = clueData.clueCustomerObj;
         let list = data ? data.result : [];
         this.curClueList = this.processForList(list);
+        //如果选中了筛选全部线索，并点击翻页
+        if(clueData.isPageChange){
+            clueEmitter.emit(clueEmitter.CHECKED_CLUE_LIST, this.curClueList);
+        }
+
         this.customersSize = data ? data.total : 0;
         //把线索详情中电话，邮箱，微信，qq里的空值删掉
         _.forEach(this.curClueList, (clueItem) => {

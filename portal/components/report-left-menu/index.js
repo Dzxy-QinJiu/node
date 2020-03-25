@@ -4,7 +4,7 @@
 
 require('./style.less');
 import {NavLink} from 'react-router-dom';
-import { getTplList, showReportPanel, isShowDailyReport } from 'MOD_DIR/daily-report/utils';
+import { getReportConfigList, handleReportStatusChange, showReportPanel, isShowDailyReport } from 'MOD_DIR/daily-report/utils';
 import { VIEW_TYPE } from 'MOD_DIR/daily-report/consts';
 import userData from 'PUB_DIR/sources/user-data';
 import { dailyReportEmitter } from 'PUB_DIR/sources/utils/emitters';
@@ -25,64 +25,65 @@ function getCategory() {
 
 class ReportLeftMenu extends React.Component {
     state = {
-        subMenus: []
+        reportConfigList: []
     }
 
     componentDidMount() {
-        dailyReportEmitter.on(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
+        getReportConfigList({
+            callback: reportConfigList => { this.setState({reportConfigList}); },
+        });
 
-        this.getMenu();
+        dailyReportEmitter.on(dailyReportEmitter.CHANGE_STATUS, handleReportStatusChange.bind(this));
     }
 
     componentWillUnmount() {
-        dailyReportEmitter.removeListener(dailyReportEmitter.CHANGE_STATUS, this.handleReportStatusChange);
+        dailyReportEmitter.removeListener(dailyReportEmitter.CHANGE_STATUS, handleReportStatusChange);
     }
 
-    getMenu = () => {
+    getMenus = () => {
         //获取第二层路由
-        var category = getCategory();
+        const category = getCategory();
         //获取当前界面的子模块
-        var subMenus = menuUtil.getSubMenus(category);
+        let subMenus = _.cloneDeep(menuUtil.getSubMenus(category));
 
-        getTplList({
-            callback: tplList => {
-                const dailyReportMenuIndex = _.findIndex(subMenus, item => item.routePath === '/analysis/report/daily-report');
-                if (dailyReportMenuIndex === -1) return;
+        const dailyReportMenuIndex = _.findIndex(subMenus, item => item.routePath === '/analysis/report/daily-report');
 
-                if (!isShowDailyReport() || _.isEmpty(tplList)) {
-                    subMenus.splice(dailyReportMenuIndex, 1);
-                } else {
-                    const currentTpl = _.first(tplList);
-                    const { isCommonSales } = userData.getUserData();
+        if (dailyReportMenuIndex > -1) {
+            const reportConfigList = _.filter(this.state.reportConfigList, item => item.status === 'on');
+    
+            if (!isShowDailyReport() || _.isEmpty(reportConfigList)) {
+                subMenus.splice(dailyReportMenuIndex, 1);
+            } else {
+                const { isCommonSales } = userData.getUserData();
+                let dailyReportMenu = subMenus[dailyReportMenuIndex];
 
-                    subMenus[dailyReportMenuIndex].addition = isCommonSales ? null : (
+                if (!isCommonSales && !dailyReportMenu.addition) {
+                    const reportConfig = _.first(reportConfigList);
+
+                    dailyReportMenu.addition = (
                         <i className="iconfont icon-nav-setting"
                             onClick={showReportPanel.bind(null, {
-                                currentView: VIEW_TYPE.MANAGE_TPL,
-                                currentTpl,
-                                isManageTpl: true,
+                                currentView: VIEW_TYPE.CONFIG_REPORT,
+                                reportConfig,
+                                isConfigReport: true,
                             })}
                         />
                     );
                 }
+            }
+        }
 
-                this.setState({ subMenus });
-            },
-            query: { status: 'on' }
-        });
-    }
-
-    handleReportStatusChange = () => {
-        setTimeout(this.getMenu, 1500);
+        return subMenus;
     }
 
     render() {
         const { isCommonSales } = userData.getUserData();
+        const menus = this.getMenus();
 
         return (
             <div className='report-left-menu'>
                 <ul>
-                    {_.map(this.state.subMenus, menuItem => (
+                    {_.map(menus, menuItem => (
                         <li>
                             <NavLink
                                 to={menuItem.routePath}
@@ -96,7 +97,7 @@ class ReportLeftMenu extends React.Component {
                 </ul>
 
                 {!isShowDailyReport() || isCommonSales ? null : (
-                    <div onClick={showReportPanel.bind(null, { isOpenTpl: true })} style={{position: 'absolute', top: -65, left: 100, zIndex: 11, fontSize: 12, cursor: 'pointer'}} title="开启报告"><i className="iconfont icon-plus"></i></div>
+                    <div onClick={showReportPanel.bind(null, { isOpenReport: true })} className="btn-open-report" title="开启报告"><i className="iconfont icon-plus"></i></div>
                 )}
             </div>
         );

@@ -186,6 +186,10 @@
       }
       .single-log-tabs {
         overflow: initial;
+        // 为了解决，主界面上，部分区域不能点击的问题
+        .ant-tabs-content-animated {
+          height: 0;
+        }
       }
       .move_left {
         transform: translateX(-500px) !important;
