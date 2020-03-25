@@ -29,7 +29,11 @@ class ReportPanel extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.currentView !== this.state.currentView) {
+        const viewTypeChanged = nextProps.currentView !== this.state.currentView;
+        const numberFieldChanged = _.get(nextProps.numberDetail, 'name') !== this.state.numberDetail.name;
+        const reportIdChanged = _.get(nextProps.reportDetail, 'id') !== this.state.reportDetail.name;
+
+        if (viewTypeChanged || numberFieldChanged || reportIdChanged) {
             this.setState(nextProps);
         }
     }
