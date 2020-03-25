@@ -4,6 +4,8 @@ import { isCurtao, getOrganization } from 'PUB_DIR/sources/utils/common-method-u
 import { detailPanelEmitter, dailyReportEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { VIEW_TYPE, REPORT_LIST_DATA_FIELD } from './consts';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import publicPrivilegeConst from 'PUB_DIR/privilege-const';
+const { CRM_DAILY_REPORT } = publicPrivilegeConst;
 
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const SITE_CONGFIG_KEY = 'is_no_longer_show_daily_report_notice';
@@ -174,15 +176,13 @@ export function saveReport(data, callback) {
 
 //显示数字详情
 export function showNumberDetail(record, name, e) {
-    if (true) return; //因数字详情面板样式还没调好，暂时不让打开详情模板
     //只有单个销售的数据允许点击查看详情
     if (!record.nickname) return;
 
     if (e && _.isFunction(e.stopPropagation)) e.stopPropagation();
 
     const itemValues = _.get(record, 'item_values');
-    const itemValue = _.find(itemValues, item => item.name === name);
-    const numberDetail = _.get(itemValue, 'detail');
+    const numberDetail = _.find(itemValues, item => item.name === name);
 
     showReportPanel({
         currentView: VIEW_TYPE.NUMBER_DETAIL,
@@ -197,7 +197,7 @@ export function isShowDailyReport() {
     const versionName = _.get(org, 'version.name');
     const isValidVersion = _.includes(['专业版', '企业版'], versionName);
 
-    if (isCurtao() || !isValidVersion || !hasPrivilege('CRM_DAILY_REPORT')) {
+    if (isCurtao() || !isValidVersion || !hasPrivilege(CRM_DAILY_REPORT)) {
         return false;
     } else {
         return true;
@@ -215,4 +215,16 @@ export function handleReportStatusChange(reportConfig) {
     }
 
     this.setState({ reportConfigList });
+}
+
+export function numberRender(name, value, record) {
+    let num = _.toString(value);
+    num = num.match(/^\d+/)[0];
+    num = _.toInteger(num);
+
+    if (num === 0 || !record.nickname) {
+        return <span>{value}</span>;
+    } else {
+        return <span className='clickable' onClick={showNumberDetail.bind(this, record, name)}>{value}</span>;
+    }
 }

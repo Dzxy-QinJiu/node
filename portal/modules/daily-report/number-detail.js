@@ -2,20 +2,58 @@
  * 数字详情
  */
 
-import { Form } from 'antd';
-import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
-import { VIEW_TYPE } from './consts';
-import { renderButtonZoneFunc, hideReportPanel, getReportList, saveReport } from './utils';
+import DetailCard from 'CMP_DIR/detail-card';
+import { secondsToHourMinuteSecond } from 'PUB_DIR/sources/utils/time-format-util';
 
 class NumberDetail extends React.Component {
     render() {
         const { numberDetail } = this.props;
 
         return (
-            <div>
-                {_.map(numberDetail, item => {
-                    return <div>客户名：{item.customer_name}</div>;
-                })}
+            <div className="number-detail">
+                {_.map(numberDetail.detail, item => (
+                    <DetailCard
+                        content={(
+                            <div>
+                                {/电话|通话/.test(numberDetail.name) ? (
+                                    <div className="call-detail">
+                                        <div className="call-time">
+                                            {moment(item.call_date).format(oplateConsts.HOUR_MUNITE_FORMAT)}
+                                        </div>
+                                        <div className="call-info">
+                                            <div className="contact-info">
+                                                <div className="contact-name">
+                                                    {item.contact_name || item.dst}
+                                                </div>
+                                                {item.billsec ? (
+                                                    <div className="bill-sec">
+                                                        {secondsToHourMinuteSecond(item.billsec).timeDescr}
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                            <div className="customer-name">
+                                                {item.customer_name}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="customer-detail">
+                                        <div className="customer-name">
+                                            {item.customer_name}
+                                        </div>
+                                        {item.app_user_name ? (
+                                            <div className="app-user-names">
+                                                <div className="app-user-name">
+                                                    {item.app_user_name}
+                                                </div>
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    />
+                ))}
             </div>
         );
     }

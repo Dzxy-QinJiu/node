@@ -1,4 +1,7 @@
 .daily-report {
+    .clickable {
+        color: #108ee9;
+    }
     .detail-card-title {
         color: inherit;
         font-weight: 500;
@@ -22,6 +25,62 @@
     .right-panel-modal-title {
         .ant-switch {
             float: right;
+        }
+        .icon-left-arrow {
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: normal;
+        }
+    }
+    .number-detail {
+        .detail-card-container {
+            width: 425px;
+            margin-left: 10px;
+            padding: 0;
+            .customer-detail {
+                padding: 10px;
+                .app-user-names {
+                    overflow: hidden;
+                    margin-top: 8px;
+                    .app-user-name {
+                        float: left;
+                        background: #FCFBFC;
+                        border: 1px solid #E5E5E5;
+                        border-radius: 2px;
+                        padding: 0 8px;
+                        font-size: 12px;
+                    }
+                }
+            }
+            .call-detail {
+                overflow: hidden;
+                .call-time {
+                    width: 70px;
+                    height: 70px;
+                    line-height: 50px;
+                    float: left;
+                    padding: 10px 0 10px 18px;
+                    border-right: 1px #E8EEF3 solid;
+                }
+                .call-info {
+                    width: 340px;
+                    float: right;
+                    padding: 10px 18px 0 0;
+                    .contact-info {
+                        overflow: hidden;
+                        .contact-name {
+                            float: left;
+                        }
+                        .bill-sec {
+                            float: right;
+                        }
+                    }
+                    .customer-name {
+                        font-size: 12px;
+                        color: #999;
+                    }
+                }
+            }
         }
     }
 }
