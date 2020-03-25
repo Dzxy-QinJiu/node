@@ -84,13 +84,12 @@ body.macintosh, body.macintosh pre{
     .topnav-links-wrap{
       display:inline-block;
       vertical-align:middle;
-      @bright:#4d96d1;
       .navbar-toggle{
         display:none;
         margin-top:21px;
-        border-color:@bright;
+        border-color: @primary-color;
         .icon-bar{
-          background:@bright;
+          background: @primary-color;
         }
       }
       &[hidden]{
@@ -120,14 +119,14 @@ body.macintosh, body.macintosh pre{
             a{
               padding:10px 20px;
               &:hover{
-                color:#4d96d1;
+                color: @primary-color;
                 background-color:#f9f9f9;
               }
             }
           }
         }
         .navbar-toggle{
-          background:@bright;
+          background: @primary-color;
           .icon-bar{
             background:#fff;
           }
@@ -150,10 +149,10 @@ body.macintosh, body.macintosh pre{
         }
       }
       .topNav-menu-item-selected{
-        color:#4d96d1;
+        color: @primary-color;
       }
       a.active{
-        color:#4d96d1;
+        color: @primary-color;
       }
     }
     .inline-block{
@@ -192,8 +191,8 @@ body.macintosh, body.macintosh pre{
 }
 
 .btn-primary-sure{
-  @basiccolor:#4d96d1;
-  @hovercolor:#478ebf;
+  @basiccolor: @primary-color;
+  @hovercolor: @primary-hover-color;
   border-color:@basiccolor;
   background-color:@basiccolor;
   color:#fff;

@@ -1,4 +1,5 @@
 //客户查重界面
+@import "../../../../public/css/common-variables";
 .customer-repeat-container {
   .topNav {
     padding-left: 15px;
@@ -31,7 +32,7 @@
     cursor: default;
   }
   .delete-active, .merge-active {
-    color: #4d96d1;
+    color: @primary-color;
     cursor: pointer;
   }
   //等待效果
@@ -134,11 +135,11 @@
           .customer-name-click {
             cursor: pointer;
             &:hover {
-              color: #4d96d1;
+              color: @primary-color;
             }
           }
           .customer-name-active {
-            color: #4d96d1;
+            color: @primary-color;
           }
           //删除按钮
           .repeat-del-btn {

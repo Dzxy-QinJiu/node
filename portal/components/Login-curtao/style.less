@@ -28,6 +28,9 @@
     //链接的颜色设置
     a{
         color: @primary-color;
+        &:hover{
+            color: @primary-hover-color;
+        }
     }
 
     .not-allowed {
@@ -53,6 +56,9 @@
         transition: 0.3s;
         outline: none;
         margin: 8px 0;
+        &:hover{
+            background-color: @primary-hover-color;
+        }
     }
     .login-captcha{
         position: absolute;

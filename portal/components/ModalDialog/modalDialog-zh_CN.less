@@ -1,5 +1,5 @@
 //模态框的样式设置
-
+@import "../../public/css/common-variables";
 .modal-container {
   position: relative;
   float: left;
@@ -14,10 +14,9 @@
   filter: alpha(opacity=@opacity) !important;
 }
 
-@modalBgColor: #4d96d1;
 @modalOpacity: 30;
 .modal-backdrop {
-  background-color: @modalBgColor;
+  background-color: @primary-color;
   .opacity(@modalOpacity);
 }
 
@@ -40,8 +39,6 @@
   right: 0;
   bottom: 0;
 
-  @fontColor: #4d96d1;
-
   .border-none {
     border: none;
   }
@@ -62,7 +59,7 @@
     .modal-body {
       font-size: 14px;
       text-align: center;
-      color: @fontColor;
+      color: @primary-color;
       padding: 0 10px 0 10px;
     }
 
@@ -80,11 +77,11 @@
 
       button.btn.btn-ok {
         color: #fff;
-        background-color: @fontColor;
-        border-color: @fontColor;
+        background-color: @primary-color;
+        border-color: @primary-color;
         &:hover {
-          border-color: #3A89BF;
-          background-color: #3A89BF;
+          border-color: @primary-hover-color;
+          background-color: @primary-hover-color;
         }
         .anticon-loading{
           margin-left:5px;
@@ -92,12 +89,12 @@
         }
       }
       button.btn.btn-cancel {
-        color: @fontColor;
-        border-color: @fontColor;
+        color: @primary-color;
+        border-color: @primary-color;
         background-color: transparent !important;
         &:hover {
-          color: #3A89BF;
-          border-color: #3A89BF;
+          color: @primary-hover-color;
+          border-color: @primary-hover-color;
         }
       }
     }
