@@ -564,17 +564,18 @@ var NavSidebar = createReactClass({
                     overlayClassName="nav-sidebar-userinfo"
                 >
                     <div className="avatar_container">
-                        <Avatar
-                            className="avatar"
-                            size="28px"
-                            lineHeight="28px"
-                            src={this.state.userInfoLogo}
-                            userName={this.state.userInfo.user_name}
-                            nickName={this.state.userInfo.nick_name}
-                            round="true" link="true" url="/user-preference"
-                            isActiveFlag={this.props.isShowNotificationPanel}
-                            isUseDefaultUserImage={true}
-                        />
+                        {this.state.userInfoLogo ?
+                            <Avatar
+                                className="avatar"
+                                size="28px"
+                                lineHeight="28px"
+                                src={this.state.userInfoLogo}
+                                userName={this.state.userInfo.user_name}
+                                nickName={this.state.userInfo.nick_name}
+                                round="true" link="true" url="/user-preference"
+                                isActiveFlag={this.props.isShowNotificationPanel}
+                                isUseDefaultUserImage={true}
+                            /> : <NavLink className='user-default-logo-wrap' to='/user-preference'><i className='iconfont icon-user-logo-default'/></NavLink>}
                     </div>
                 </Popover>
             </div>

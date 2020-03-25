@@ -5,8 +5,7 @@
 @icon-grey: #CBCBCB;
 @icon-active-color: #ffffff;//图标选中状态的颜色
 @nav-icon: #ffffff;//图标默认状态下的颜色
-@nav-icon-size: 22px;
-@bottom-icon-size: 20px;
+@nav-icon-size: 32px;//导航图标大小
 //缩小图标时的菜单高度
 @reduce-nav-icon-li-height: 40px;
 //缩小图标并缩小间距时的菜单高度
@@ -192,7 +191,7 @@
                 min-width: 10px;
                 height: 10px;
                 top: 11px;
-                right: 20px;
+                right: 16px;
                 border-radius: 10px;
             }
 
@@ -259,8 +258,8 @@
         >li.leads_icon_container {
             &:before {
                 &:extend(.unread-style);
-                top: 12px;
-                left: -35px;
+                top: 8px;
+                left: -30px;
             }
         }
     }
@@ -278,7 +277,7 @@
         }
         .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon, .winning-clue, .sidebar-userinfo{
             height: 40px;
-            line-height: 38px;
+            line-height: 40px;
             text-align: center;
             cursor: pointer;
             &:hover {
@@ -289,7 +288,7 @@
             }
             .iconfont{
                 color: @nav-icon;
-                font-size: @bottom-icon-size;
+                font-size: @nav-icon-size;
                 &:hover{
                     color: @icon-active-color;
                 }
@@ -313,34 +312,42 @@
                     color: @nav-icon;
                 }
             }
-        }    
+            .user-default-logo-wrap,.user-default-logo-wrap.active {
+                display: inline-block;
+                width: 24px;
+                height: 24px;
+                line-height: 24px;
+                margin-top: 8px;
+                border-radius: 50%;
+                background-color: @icon-active-color;
+                .icon-user-logo-default {
+                    font-size: 16px;
+                    color: @primary-color;
+                }
+            }
+        }  
+        .notification {
+            .ant-badge-dot {
+                top: 4px;
+                right: 0px;
+                box-shadow: none;
+            }
+        }  
         //拨号按钮的样式
         .dial-up-keyboard-btn.keyboard-expanded{
             background-color: @primary-active-color;
             >.iconfont:before{
-                content: "\E733";
                 color: @icon-active-color;
             }
         }
         .winning-clue {
             .gift-logo {
-                width: 24px;
-                height: 24px;
-            }
-        }
-        // 通知图标
-        .notification {
-            .iconfont.active:before{
-                content: "\E6a4";
+                width: 20px;
+                height: 20px;
             }
         }
         // 后台管理
         .sidebar-backend-config{
-            .active{
-                .iconfont:before{
-                    content: "\E6a3";
-                }
-            }
             // 有新的公告时，提示杨样式
             .ant-badge {
                 cursor: pointer;
