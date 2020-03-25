@@ -22,7 +22,7 @@ class NumberDetail extends React.Component {
                                         <div className="call-info">
                                             <div className="contact-info">
                                                 <div className="contact-name">
-                                                    {item.contact_name}
+                                                    {item.contact_name || item.dst}
                                                 </div>
                                                 {item.billsec ? (
                                                     <div className="bill-sec">
