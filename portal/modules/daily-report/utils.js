@@ -4,6 +4,8 @@ import { isCurtao, getOrganization } from 'PUB_DIR/sources/utils/common-method-u
 import { detailPanelEmitter, dailyReportEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { VIEW_TYPE, REPORT_LIST_DATA_FIELD } from './consts';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import publicPrivilegeConst from 'PUB_DIR/privilege-const';
+const { CRM_DAILY_REPORT } = publicPrivilegeConst;
 
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const SITE_CONGFIG_KEY = 'is_no_longer_show_daily_report_notice';
@@ -196,7 +198,7 @@ export function isShowDailyReport() {
     const versionName = _.get(org, 'version.name');
     const isValidVersion = _.includes(['专业版', '企业版'], versionName);
 
-    if (isCurtao() || !isValidVersion || !hasPrivilege('CRM_DAILY_REPORT')) {
+    if (isCurtao() || !isValidVersion || !hasPrivilege(CRM_DAILY_REPORT)) {
         return false;
     } else {
         return true;
