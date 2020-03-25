@@ -5,7 +5,7 @@
 import { Form } from 'antd';
 import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
 import { VIEW_TYPE } from './consts';
-import { renderButtonZoneFunc, hideReportPanel, getReportList, saveReport, saveReportConfig } from './utils';
+import { renderButtonZoneFunc, hideReportPanel, getReportList, saveReport, saveReportConfig, numberRender } from './utils';
 import DetailCard from 'CMP_DIR/detail-card';
 
 class ReportDetail extends React.Component {
@@ -51,7 +51,15 @@ class ReportDetail extends React.Component {
                         content={(
                             <div>
                                 {_.map(unEditableItems, item => {
-                                    return <div>{item.name}: {item.value || 0}</div>;
+                                    const num = item.value || 0;
+
+                                    return (
+                                        <div>
+                                            {item.name}:
+                                            &nbsp;
+                                            {numberRender(item.name, item.value, reportDetail)}
+                                        </div>
+                                    );
                                 })}
                             </div>
                         )}

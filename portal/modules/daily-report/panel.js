@@ -29,7 +29,7 @@ class ReportPanel extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.currentView !== this.props.currentView) {
+        if (nextProps.currentView !== this.state.currentView) {
             this.setState(nextProps);
         }
     }
@@ -61,8 +61,8 @@ class ReportPanel extends React.Component {
         switch(currentView) {
             case VIEW_TYPE.NUMBER_DETAIL:
                 title = <span>
+                    <i className="iconfont icon-left-arrow" onClick={() => {this.setState({currentView: VIEW_TYPE.REPORT_DETAIL});}} />
                     <span>{title}</span>
-                    <span onClick={() => {this.setState({currentView: VIEW_TYPE.REPORT_DETAIL});}}>返回</span>
                 </span>;
                 break;
             case VIEW_TYPE.REPORT_DETAIL:
