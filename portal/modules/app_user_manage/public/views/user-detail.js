@@ -34,7 +34,7 @@ import userManagePrivilege from '../privilege-const';
 import publicPrivilege from 'PUB_DIR/privilege-const';
 import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 import { checkPassword, checkConfirmPassword } from 'PUB_DIR/sources/utils/validate-util';
-
+import UserDetailEditAppAction from '../action/v2/user-detail-edit-app-actions';
 const EDIT_PASSWORD_WIDTH = 260;
 //当前面板z-index
 let thisPanelZIndex;
@@ -169,6 +169,9 @@ class UserDetail extends React.Component {
         // 查看用户详情，切换到单个应用的设置界面，再次打开用户详情时，切换面板需要重置，
         // 若不重置，有可能会不在用户详情的基本资料面板上
         AppUserPanelSwitchAction.resetState();
+        // 查看用户中某个应用的基本配置信息，关闭时，需要重置，
+        // 防止出现在单个应用配置界面，直接点关闭，再次打开查看下一个用户时，配置信息显示不对的情况
+        UserDetailEditAppAction.resetState();
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
         AppUserDetailStore.unlisten(this.onDetailStoreChange);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
