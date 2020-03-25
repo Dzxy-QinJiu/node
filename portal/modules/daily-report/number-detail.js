@@ -38,7 +38,16 @@ class NumberDetail extends React.Component {
                                     </div>
                                 ) : (
                                     <div className="customer-detail">
-                                        {item.customer_name}
+                                        <div className="customer-name">
+                                            {item.customer_name}
+                                        </div>
+                                        {item.app_user_name ? (
+                                            <div className="app-user-names">
+                                                <div className="app-user-name">
+                                                    {item.app_user_name}
+                                                </div>
+                                            </div>
+                                        ) : null}
                                     </div>
                                 )}
                             </div>
