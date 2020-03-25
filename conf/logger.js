@@ -3,6 +3,7 @@ var DEFAULT_MAX_LOG_SIZE = 2048000,
     DEFAULT_LOG_LEVEL = global.config.logLevel;
 var commonUtil = require('../portal/lib/utils/common-utils');
 var _ = require('lodash');
+var moment = require('moment');
 
 var path = require('path'),
     fs = require('fs');
@@ -112,8 +113,9 @@ var localAppenders = [
 var esType = {
     type: 'log4js-elasticsearch',
     indexName: function(loggingEvent) {
-        //es索引名称
-        return 'curtaoweb_write';
+        let weekOfYear = moment().week(); 
+        //es索引名称, 按周进行记录
+        return 'curtaoweb' + weekOfYear;
     },
     url: global.config.esUrl,
     logId: function(loggingEvent) {
