@@ -3,6 +3,7 @@
  */
 
 import DetailCard from 'CMP_DIR/detail-card';
+import { secondsToHourMinuteSecond } from 'PUB_DIR/sources/utils/time-format-util';
 
 class NumberDetail extends React.Component {
     render() {
@@ -26,7 +27,7 @@ class NumberDetail extends React.Component {
                                                 </div>
                                                 {item.billsec ? (
                                                     <div className="bill-sec">
-                                                        {item.billsec}秒
+                                                        {secondsToHourMinuteSecond(item.billsec).timeDescr}
                                                     </div>
                                                 ) : null}
                                             </div>
