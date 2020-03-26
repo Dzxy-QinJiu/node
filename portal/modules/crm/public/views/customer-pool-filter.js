@@ -1,4 +1,4 @@
-import {CUSTOMER_TAGS} from '../utils/crm-util';
+import {CUSTOMER_TAGS, CUSTOMER_POOL_TYPES} from '../utils/crm-util';
 import {FilterList} from 'CMP_DIR/filter';
 import {COMMON_OTHER_ITEM} from 'PUB_DIR/sources/utils/consts';
 import filterAJax from '../ajax/filter-ajax';
@@ -14,6 +14,10 @@ const otherFilterArray = [
     {
         name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', {day: 30}),
         value: 'thirty_uncontact'
+    },
+    {
+        name: Intl.get('crm.pool.need.joint.followup', '需联合跟进'),
+        value: CUSTOMER_POOL_TYPES.FOLLOWUP
     }
 ];
 //合格标签的筛选

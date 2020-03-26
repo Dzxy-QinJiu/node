@@ -29,7 +29,7 @@ import {DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import CustomerPoolRule from './customer_pool_rule';
 import BackMainPage from 'CMP_DIR/btn-back';
-import { CRM_VIEW_TYPES } from '../utils/crm-util';
+import { CRM_VIEW_TYPES, CUSTOMER_POOL_TYPES } from '../utils/crm-util';
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 
@@ -162,6 +162,8 @@ class CustomerPool extends React.Component {
                             filterParams.contact_end = moment().valueOf() - DAY_TIME.FIFTEEN_DAY;
                         } else if (val === 'thirty_uncontact') {
                             filterParams.contact_end = moment().valueOf() - DAY_TIME.THIRTY_DAY;
+                        }else if(val === CUSTOMER_POOL_TYPES.FOLLOWUP) {//需联合跟进
+                            filterParams.release_type = val;
                         }
                     } else {//高级筛选
                         filterParams[key] = val;
@@ -386,10 +388,20 @@ class CustomerPool extends React.Component {
                 dataIndex: 'name',
                 className: 'has-filter',
                 render: (text, record, index) => {
+                    var tagsArray = _.isArray(record.customerpool_tags) ? record.customerpool_tags : [];
+                    var tags = null;
+                    if(_.get(tagsArray,'[0]') === CUSTOMER_POOL_TYPES.FOLLOWUP) {
+                        tags = <Tag>{Intl.get('crm.pool.need.joint.followup', '需联合跟进')}</Tag>;
+                    }
                     return (
                         <span>
                             <span>{text}</span>
                             <span className="hidden record-id">{record.id}</span>
+                            {tags ?
+                                <div className="customer-list-tags">
+                                    {tags}
+                                </div>
+                                : null}
                         </span>);
                 }
             }, {
