@@ -51,8 +51,6 @@ class ReportDetail extends React.Component {
                         content={(
                             <div>
                                 {_.map(unEditableItems, item => {
-                                    const num = item.value || 0;
-
                                     return (
                                         <div>
                                             {item.name}:

@@ -217,13 +217,19 @@ export function handleReportStatusChange(reportConfig) {
     this.setState({ reportConfigList });
 }
 
-export function numberRender(name, value, record) {
-    let num = _.toString(value);
-    num = num.match(/^\d+/)[0];
-    num = _.toInteger(num);
+export function numberRender(name, value = 0, record = {}) {
+    if (_.isString(value)) {
+        const matched = value.match(/^\d+/);
 
-    if (num === 0 || !record.nickname) {
-        return <span>{value}</span>;
+        if (matched) {
+            value = _.toInteger(matched[0]);
+        } else {
+            value = 0;
+        }
+    }
+
+    if (value === 0 || !record.nickname) {
+        return value;
     } else {
         return <span className='clickable' onClick={showNumberDetail.bind(this, record, name)}>{value}</span>;
     }
