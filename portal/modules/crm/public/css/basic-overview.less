@@ -1,10 +1,7 @@
 @import "../../../../public/css/common-variables";
 //客户详情概览页
-@btn_color: #8da8c5;
 @card_margin: 8px;
 @error_tips_color: #f04134;
-//选项框提示
-@select_warning_color: #efa246;
 .basic-overview-contianer {
   .no-data-text {
     padding-left: 4px;
@@ -26,7 +23,7 @@
     }
     .icon-arrow-right {
       float: right;
-      color: @btn_color;
+      color: @secondary-color;
     }
   }
   //所属销售的样式
@@ -48,7 +45,7 @@
           float: left;
           margin-top: -62px;
           margin-left: 52px;
-          color: @select_warning_color;
+          color: @warn-color;
         }
       }
     }
@@ -251,7 +248,7 @@
         position: relative;
         top: 1px;
         margin-right: 4px;
-        color: @select_warning_color;
+        color: @warn-color;
       }
       .apply-error-text {
         color: @primary-font-color;

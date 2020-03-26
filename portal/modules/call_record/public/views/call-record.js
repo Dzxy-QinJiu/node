@@ -909,7 +909,7 @@ class CallRecord extends React.Component {
             <div className="call_record_content">
                 <TopNav>
                     <div className="filter-phone-button float-l">
-                        <Button type="ghost" size="large" onClick={this.toggleFilter}
+                        <Button type={this.state.isFilter ? 'primary' : 'ghost'} size="large" onClick={this.toggleFilter}
                             className="btn-item">{this.state.isFilter ? Intl.get('call.record.cancel.search', '取消搜索') : Intl.get('sales.team.search', '搜索')}</Button>
                     </div>
                     <DatePicker

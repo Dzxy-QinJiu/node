@@ -2,8 +2,6 @@
 @import "../../public/css/common-variables";
 @card_margin: 8px;
 @card_width: 100%;
-@btn_color: #8da8c5;
-@font_color: #8da8c5;
 @box_shadow_color: #cac8c8;
 @item_height: 24px;
 //展示状态下的卡片
@@ -33,7 +31,7 @@
     }
     .title-right-block{
       float: right;
-      color: #8da8c5;
+      color: @secondary-color;
     }
   }
   .title-click-block {
@@ -69,7 +67,7 @@
     height: @item_height;
   }
   .button-cancel {
-    color: @font_color;
+    color: @secondary-color;
   }
   //等待样式
   .anticon.save-loading {

@@ -1,9 +1,7 @@
 //日程列表
 @import "../../../../public/css/common-variables";
-@btn_color: #8ba9c3;
 @padding: 8px;
 @icon_visit_color: #9b5bf7;
-@other_icon_color: #8da8c5;
 @overdue_color: #fbcb8f;
 @today_color: #34ca71;
 
@@ -68,7 +66,7 @@
     color: @primary-font-color;
     .iconfont.icon-alarm-clock {
       float: right;
-      color: @btn_color;
+      color: @secondary-color;
       cursor: default;
     }
   }
@@ -93,7 +91,7 @@
     button {
       height: 24px;
       margin-right: 10px;
-      color: @btn_color;
+      color: @secondary-color;
     }
     //联系电话展示区域
     .schedule-contact-phone-block {
@@ -147,7 +145,7 @@
   .iconfont {
     //margin-right: @padding;
     //font-size: 12px;
-    color: @other_icon_color;
+    color: @secondary-color;
     &:hover {
       color: @primary-color;
     }
@@ -224,7 +222,7 @@ form.schedule-form {
     .ant-radio-button-wrapper-checked{
       color: @secondary-font-color;
       .iconfont{
-        color: @other_icon_color;
+        color: @secondary-color;
       }
       .iconfont.icon-visit-briefcase {
         color: @icon_visit_color;

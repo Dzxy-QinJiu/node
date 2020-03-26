@@ -41,8 +41,6 @@
   border-radius:@border-radius;
 }
 
-//蓝色
-@blue: @primary-color;
 //label 黑色
 @label_black:#53575a;
 //下边距
@@ -81,7 +79,7 @@
 
 
 // 错误提示的字体以及边框颜色
-@error_tips_color:#f04134;
+@error_tips_color: @error-color;
 
 //待分配的背景色
 @will-distribute-background: #FDF6EC;
@@ -94,7 +92,7 @@
 //已跟进的背景色
 @has-follow-background: #E8F4FE;
 //已跟进的颜色
-@has-follow-color: @primary-color;
+@has-follow-color: #2196f3;
 //已转化的颜色
 @has-transfer-color:#666;
 //已转化的背景色
@@ -107,10 +105,6 @@
 @BUTTON-HOVER:#09a9fe;
 //蓝色标签的背景颜色
 @BLACK_TAG_BACKGROUND:#EEF7FE;
-//筛选按钮上的颜色
-@FILTER-BUTTON: #8da8c5;
-  //可点击的蓝色
-@CLICK-BLUE:#8da8c5;
 //背景色 列表的背景色
 @NOTICE-BACKGROUND:#f5f6f8;
 //图标的背景色
@@ -127,7 +121,6 @@
 @btn-lineHeight: 30px;
 @btn-font-size: 16px;
 @btn-min-width: 96px;
-@btn-font-color: #8da8c5;
 @btn-radius: 4px;
 //tab页中横线的颜色
 @TAB_SOLID_COLOR:#e2e3e5;
@@ -145,7 +138,6 @@
 @apply-top-height: 64px; //头部的高度
 @apply-list-color: #506470;
 @current-item-color: #f5f6f8;
-@able_call_phone_icon:#8da8c5;
 @disable_call_phone_icon:#ccc;
 
 // 导入面板的背景色
@@ -160,7 +152,7 @@
 @customer-stage-second-color: #9BBD33;
 @customer-stage-third-color: #38BB3B;
 @customer-stage-fourth-color: #07B3C2;
-@customer-stage-fifth-color: @primary-color;
+@customer-stage-fifth-color: #2196f3;
 @customer-stage-sixth-color: #806FE6;
 @customer-stage-seventh-color: #D078D1;
 @customer-stage-eighth-color: #D18F78;
@@ -190,13 +182,11 @@
 @visit-briefcase: #9d5cf4;
 //其他
 @trace-other: #8eaac6;
-// 操作按钮颜色
-@operate-btn-color: #8DA8C5;
 
 @icon-close-background-color: #8ea9c4;
 
 //版本信息基础样式
-@version-basic-color: #EFA246;
+@version-basic-color: @warn-color;
 @version-basic-bg-color: #FDF6EC;
 //商品信息样式
 @goods-name-bg-color: #FAFAFA;
