@@ -59,7 +59,7 @@ class ReportPanel extends React.Component {
     getPanelTitle() {
         const { currentView, reportConfig, reportDetail, numberDetail, isPreviewReport } = this.state;
 
-        let title = currentView;
+        let title = '';
         const nickname = _.get(reportDetail, 'nickname', '');
 
         switch(currentView) {
@@ -74,7 +74,7 @@ class ReportPanel extends React.Component {
                         {nickname}
                         {numberDetail.name} &nbsp;
                         {numberDetail.value}
-                        {_.isNumber(numberDetail.value) ? '个' : null}
+                        {_.isNumber(numberDetail.value) ? Intl.get('contract.22', '个') : null}
                     </span>
                 </span>;
                 break;
@@ -91,6 +91,12 @@ class ReportPanel extends React.Component {
                     <Switch defaultChecked={reportConfig.status === 'on'} onChange={this.onReportStatusSwitchChange.bind(this, reportConfig)} />
                 </div>;
                 break;
+            case VIEW_TYPE.OPEN_REPORT:
+                title = '开启报告';
+                break;
+            case VIEW_TYPE.SET_RULE:
+                title = '规则设置';
+                break;
         }
 
         return title;
@@ -106,7 +112,6 @@ class ReportPanel extends React.Component {
             case VIEW_TYPE.OPEN_REPORT: return <OpenReport {...props} />;
             case VIEW_TYPE.CONFIG_REPORT: return <ConfigReport {...props} />;
             case VIEW_TYPE.SET_RULE: return <SetRule {...props} />;
-            case VIEW_TYPE.REPORT_LIST: return <ReportList {...props} />;
             case VIEW_TYPE.REPORT_DETAIL: return <ReportDetail {...props} />;
             case VIEW_TYPE.NUMBER_DETAIL: return <NumberDetail {...props} />;
         }

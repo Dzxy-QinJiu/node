@@ -33,12 +33,12 @@ class SetRule extends React.Component {
                         title="适用范围"
                         content={(
                             <div>
-                                {renderFormItem('谁可填写', 'sales_team_ids', {
+                                {renderFormItem('', 'sales_team_ids', {
                                     type: 'select',
                                     options: _.map(this.props.teamList, item => ({name: item.group_name, value: item.group_id})),
                                     elementProps: {
                                         mode: 'multiple',
-                                        placeholder: '请选择团队'
+                                        placeholder: Intl.get('team.position.select.team', '请选择团队')
                                     },
                                     formItemLayout: {
                                         labelCol: { span: 0 },
@@ -79,12 +79,12 @@ class SetRule extends React.Component {
                     hide: isConfigReport
                 }, {
                     func: this.save.bind(this, null),
-                    name: '保存',
+                    name: Intl.get('common.save', '保存'),
                     type: 'primary',
                     hide: !isConfigReport
                 }, {
                     func: isConfigReport ? hideReportPanel : () => { this.props.updateState({ currentView: VIEW_TYPE.OPEN_REPORT }); },
-                    name: '取消',
+                    name: Intl.get('common.cancel', '取消'),
                 }])}
             </div>
         );

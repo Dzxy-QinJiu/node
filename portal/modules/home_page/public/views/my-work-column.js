@@ -1249,6 +1249,7 @@ class MyWorkColumn extends React.Component {
                     type: 'primary',
                     onClick: showReportPanel.bind(null, {
                         currentView: VIEW_TYPE.REPORT_DETAIL,
+                        reportConfig
                     }),
                     name: '填写报告'
                 });
