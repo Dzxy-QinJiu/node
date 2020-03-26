@@ -57,7 +57,7 @@ class LoginForm extends React.Component {
         //客户分析,第一次登录的时候，默认展示全部应用
         storageUtil.local.set('customer_analysis_stored_app_id', 'all');
         //获取输入的密码
-        var value = this.state.password;
+        var value = _.trim(this.state.password);
         if (!value) {
             //密码不能为空
             this.props.setErrorMsg(Intl.get('common.input.password', '请输入密码'));
@@ -96,7 +96,7 @@ class LoginForm extends React.Component {
             password: newValue
         };
         if(this.state.captchaCode && this.state.inputCaptchaCode) {
-            submitObj.retcode = this.state.inputCaptchaCode;
+            submitObj.retcode = _.trim(this.state.inputCaptchaCode);
         }
         this.loginFunc('/login', submitObj);
         return false;

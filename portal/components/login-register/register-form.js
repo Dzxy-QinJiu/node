@@ -87,18 +87,18 @@ class RegisterForm extends React.Component {
                 return;
             }
             let formData = {
-                phone: values.phone,
-                code: values.code,
+                phone: _.trim(values.phone),
+                code: _.trim(values.code),
                 referrer: this.getWebReferrer()
             };
             // 图片验证码
             if (values.verifyErrorCaptchaCode) {
-                formData.captcha = values.verifyErrorCaptchaCode;
+                formData.captcha = _.trim(values.verifyErrorCaptchaCode);
             }
             // 此处的事件跟踪描述不可修改，因为后端会根据 “个人注册手机号:”的描述来从matomo中获取注册账号对应线索的线索描述
             Trace.traceEvent(e, '个人注册手机号:' + formData.phone);
             let md5Hash = crypto.createHash('md5');
-            md5Hash.update(values.pwd);
+            md5Hash.update(_.trim(values.pwd));
             formData.pwd = md5Hash.digest('hex');
             this.setState({ registerErrorMsg: '', isRegistering: true });
             $.ajax({
