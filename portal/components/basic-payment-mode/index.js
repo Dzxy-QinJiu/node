@@ -84,7 +84,7 @@ class BasicPaymentMode extends React.Component {
                 let curOrderInfo = this.state.curOrderInfo;
                 if(_.toString(status) === '1') {//付款成功
                     clearInterval(this.queryStatusTimer);
-                    Trace.traceEvent($(ReactDOM.findDOMNode(this)), `商品：${curOrderInfo.goods_name} * ${curOrderInfo.goods_num}, 使用${this.state.payMode}支付成功, 订单号：${curOrderInfo.order_id}`);
+                    Trace.traceEvent($(ReactDOM.findDOMNode(this)), `商品：${curOrderInfo.goods_name} * ${curOrderInfo.goods_num}, 使用${this.state.payMode}支付成功`);
                     _.isFunction(this.props.onPaymentSuccess) && this.props.onPaymentSuccess(this.state.curOrderInfo);
                 }else if(_.toString(status) === '-1') {//超时关闭
                     clearInterval(this.queryStatusTimer);
@@ -192,7 +192,7 @@ class BasicPaymentMode extends React.Component {
     //订单超时处理
     handleOrderTimeout = () => {
         let curOrderInfo = this.state.curOrderInfo;
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)), `商品：${curOrderInfo.goods_name} * ${curOrderInfo.goods_num}, 此订单已超时，订单号：${curOrderInfo.order_id}`);
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), `商品：${curOrderInfo.goods_name} * ${curOrderInfo.goods_num}, 此订单已超时`);
         this.setState({
             payStatus: PAY_STATUS.TIMEOUT,
             qrCodeErrMsg: (
