@@ -35,6 +35,29 @@ class AddApplyConditionPanel extends React.Component {
     constructor(props) {
         super(props);
         var applySaveForm = _.get(this, 'props.applyTypeData.customiz_form', []);
+
+        this.state = {
+            showAddConditionForm: _.get(this, 'props.updateConditionObj.limitRules[0]') ? true : false,
+            diffConditionLists: _.isEmpty(this.props.updateConditionObj) ? {
+                conditionTitle: '',
+                limitRules: [],
+            } : _.cloneDeep(this.props.updateConditionObj),//添加的条件审批数据
+            applySaveForm: applySaveForm,
+            allConditionList: this.getAllConditionList(applySaveForm),
+            userList: this.props.userList,//用户列表
+            teamList: this.props.teamList,//团队列表
+            setting_users: {
+                selectUser: '',//选中的成员
+                showSelectUser: ''
+            },
+            saveErrMsg: ''
+        };
+    }
+
+    componentDidMount() {
+
+    }
+    getAllConditionList = (applySaveForm) => {
         //如果是出差或者请假申请，需要展示时长这个条件
         var applyType = _.get(this, 'props.applyTypeData.type');
         var isShowTimeRange = isBussinessTripFlow(applyType) || isLeaveFlow(applyType);
@@ -56,27 +79,8 @@ class AddApplyConditionPanel extends React.Component {
                 }
             });
         }
-        this.state = {
-            showAddConditionForm: _.get(this, 'props.updateConditionObj.limitRules[0]') ? true : false,
-            diffConditionLists: _.isEmpty(this.props.updateConditionObj) ? {
-                conditionTitle: '',
-                limitRules: [],
-            } : _.cloneDeep(this.props.updateConditionObj),//添加的条件审批数据
-            applySaveForm: applySaveForm,
-            allConditionList: allConditionList,
-            userList: this.props.userList,//用户列表
-            teamList: this.props.teamList,//团队列表
-            setting_users: {
-                selectUser: '',//选中的成员
-                showSelectUser: ''
-            },
-            saveErrMsg: ''
-        };
-    }
-
-    componentDidMount() {
-
-    }
+        return allConditionList;
+    };
 
     componentWillReceiveProps(nextProps, nextContext) {
         this.setState({
@@ -111,22 +115,14 @@ class AddApplyConditionPanel extends React.Component {
         //任何流程都要展示选一批人这个筛选条件
         var menus = <Menu>{
             _.map(allConditionList, (item) => {
+                var conditionType = _.get(item, 'value');
                 if(item.applyConditionType){
-                    if(!this.hasAddThisTypeCondition(item.applyConditionType)){
-                        return <Menu.Item>
-                            <a onClick={this.handleAddConditionType.bind(this, item.applyConditionType)}>{_.get(item, 'name')}</a>
-                        </Menu.Item>;
-                    }else{
-                        return null;
-                    }
-                } else {
-                    if (!this.hasAddThisTypeCondition(_.get(item, 'value'))) {
-                        return <Menu.Item>
-                            <a onClick={this.handleAddConditionType.bind(this, _.get(item, 'value'))}>{_.get(item, 'name')}</a>
-                        </Menu.Item>;
-                    } else {
-                        return null;
-                    }
+                    conditionType = item.applyConditionType;
+                }
+                if (!this.hasAddThisTypeCondition(conditionType)) {
+                    return <Menu.Item>
+                        <a onClick={this.handleAddConditionType.bind(this, conditionType)}>{_.get(item, 'name')}</a>
+                    </Menu.Item>;
                 }
             })
         }
