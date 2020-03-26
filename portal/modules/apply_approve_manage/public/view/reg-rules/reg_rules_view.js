@@ -1057,8 +1057,7 @@ class RegRulesView extends React.Component {
                                 {this.renderAddConditionFlow()}
                             </div>
                         </div>
-                        {/*现在只有用户审批的加上抄送通知，其他的没有模板暂时先不展示这个功能*/}
-                        {isUserApplyFlow(applyType) ? <div className="inform-cc rule-item">
+                        <div className="inform-cc rule-item">
                             <span className="item-label">
                                 {Intl.get('menu.notification', '通知')}：
                             </span>
@@ -1125,7 +1124,7 @@ class RegRulesView extends React.Component {
                                     </div>
                                 </Checkbox.Group>
                             </div>
-                        </div> : null}
+                        </div>
                         {/*<div className="cancel-privilege rule-item">*/}
                         {/*<span className="item-label">*/}
                         {/*{Intl.get('apply.info.cancel.privilege', '撤销权限')}*/}
