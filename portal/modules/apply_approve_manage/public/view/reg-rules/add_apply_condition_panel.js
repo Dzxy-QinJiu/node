@@ -34,13 +34,16 @@ var uuid = require('uuid/v4');
 class AddApplyConditionPanel extends React.Component {
     constructor(props) {
         super(props);
+        var applySaveForm = _.get(this, 'props.applyTypeData.customiz_form', []);
+
         this.state = {
             showAddConditionForm: _.get(this, 'props.updateConditionObj.limitRules[0]') ? true : false,
             diffConditionLists: _.isEmpty(this.props.updateConditionObj) ? {
                 conditionTitle: '',
                 limitRules: [],
             } : _.cloneDeep(this.props.updateConditionObj),//添加的条件审批数据
-            applySaveForm: _.get(this, 'props.applyTypeData.customiz_form', []),
+            applySaveForm: applySaveForm,
+            allConditionList: this.getAllConditionList(applySaveForm),
             userList: this.props.userList,//用户列表
             teamList: this.props.teamList,//团队列表
             setting_users: {
@@ -54,6 +57,30 @@ class AddApplyConditionPanel extends React.Component {
     componentDidMount() {
 
     }
+    getAllConditionList = (applySaveForm) => {
+        //如果是出差或者请假申请，需要展示时长这个条件
+        var applyType = _.get(this, 'props.applyTypeData.type');
+        var isShowTimeRange = isBussinessTripFlow(applyType) || isLeaveFlow(applyType);
+        var allConditionList = [
+            {applyConditionType: ALL_COMPONENTS.TEAM_SEARCH + '_limit',name: Intl.get('user.apply.team', '申请人所属团队')},
+            {applyConditionType: ALL_COMPONENTS.USER_SEARCH + '_limit',name: Intl.get('user.apply.presenter', '申请人')}
+        ];
+        if(isShowTimeRange){
+            allConditionList.push({
+                applyConditionType: ALL_COMPONENTS.TIME_PERIOD + '_limit',
+                name: Intl.get('user.duration', '时长')
+            });
+        }else{
+            _.forEach(applySaveForm,item => {
+                var component_type = item.subComponentType || item.component_type;
+                var target = this.getConditionRelate(component_type);
+                if(target){
+                    allConditionList.push(target);
+                }
+            });
+        }
+        return allConditionList;
+    };
 
     componentWillReceiveProps(nextProps, nextContext) {
         this.setState({
@@ -83,58 +110,26 @@ class AddApplyConditionPanel extends React.Component {
         return _.find(limitRules, limit => limit.limitType === type);
     };
     getDiffTypeComponents = () => {
-        var applySaveForm = this.state.applySaveForm;
-        var applyType = _.get(this, 'props.applyTypeData.type');
-        //如果是出差或者请假申请，需要展示时长这个条件
-        var isShowTimeRange = isBussinessTripFlow(applyType) || isLeaveFlow(applyType);
-        //如果是销售机会申请，需要展示金额这个条件
-        var isShowMoneyRange = isSalesOpportunityFlow(applyType);
-
-        var componentType = '', descriptionTip = '', showInnerCondition = false;
-        if (isShowTimeRange) {
-            componentType = ALL_COMPONENTS.TIME_PERIOD;
-            descriptionTip = Intl.get('user.duration', '时长');
-            showInnerCondition = true;
-        } else if (isShowMoneyRange) {
-            // componentType = ALL_COMPONENTS.TIME_PERIOD;
-            // descriptionTip = Intl.get('user.duration', '时长');
-            // showInnerCondition = true;
-        }
+        var allConditionList = this.state.allConditionList;
         //保存的已经添加的表单，是个数组
         //任何流程都要展示选一批人这个筛选条件
-        var saveForm = false;
         var menus = <Menu>{
-            //如果是内置的出差流程或者是请假流程，要加上时长的判断
-            showInnerCondition ?
-                this.hasAddThisTypeCondition(componentType + '_limit') ? null : <Menu.Item>
-                    <a onClick={this.handleAddConditionType.bind(this, componentType)}>{descriptionTip}</a>
-                </Menu.Item> :
-                _.map(applySaveForm, (item) => {
-                    var component_type = item.subComponentType || item.component_type;
-                    var target = this.getConditionRelate(component_type);
-                    if (target && !this.hasAddThisTypeCondition(_.get(target, 'value'))) {
-                        return <Menu.Item>
-                            <a onClick={this.handleAddConditionType.bind(this, component_type)}>{_.get(target, 'name')}</a>
-                        </Menu.Item>;
-                    } else {
-                        saveForm = true;
-                    }
-                })
+            _.map(allConditionList, (item) => {
+                var conditionType = _.get(item, 'value');
+                if(item.applyConditionType){
+                    conditionType = item.applyConditionType;
+                }
+                if (!this.hasAddThisTypeCondition(conditionType)) {
+                    return <Menu.Item>
+                        <a onClick={this.handleAddConditionType.bind(this, conditionType)}>{_.get(item, 'name')}</a>
+                    </Menu.Item>;
+                }
+            })
         }
-        {/*申请人这个选项是所有申请审批中都要加的*/}
-        {this.hasAddThisTypeCondition(ALL_COMPONENTS.USER_SEARCH + '_limit') ? null : <Menu.Item>
-            <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.USER_SEARCH)}>{Intl.get('user.apply.presenter', '申请人')}</a>
-        </Menu.Item>}
-        {/*团队申请的选项也是所有申请审批都要加的*/}
-        {this.hasAddThisTypeCondition(ALL_COMPONENTS.TEAM_SEARCH + '_limit') ? null : <Menu.Item>
-            <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.TEAM_SEARCH)}>{Intl.get('user.apply.team', '申请人所属团队')}</a>
-        </Menu.Item>}
         </Menu>;
-        //是否还有menuitem展示
-        var hasNoMenuItem = ((showInnerCondition && this.hasAddThisTypeCondition(componentType + '_limit')) || (!showInnerCondition && saveForm)) && this.hasAddThisTypeCondition(ALL_COMPONENTS.USER_SEARCH + '_limit');
         return {
             menus: menus,
-            hasNoMenuItem: hasNoMenuItem
+            hasNoMenuItem: _.get(allConditionList,'length') === _.get(this.state.diffConditionLists.limitRules,'length')
         };
     };
     renderDiffCondition = () => {
