@@ -3251,6 +3251,7 @@ class ClueCustomer extends React.Component {
         if(currentVersionType.trial && checkCurrentVersion().personal) {//是个人试用，直接展示购买界面
             if(visible) {
                 this.setState({exportVisible: visible}, () => {
+                    Trace.traceEvent(ReactDOM.findDOMNode(this), '个人试用点击导出线索，自动打开个人升级界面');
                     this.handleUpgradePersonalVersion();
                 });
             }else {
