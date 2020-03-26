@@ -1286,6 +1286,7 @@ class MyWorkColumn extends React.Component {
                             return (
                                 <Button
                                     {...item}
+                                    data-tracename={`点击${name}按钮`}
                                 >
                                     {name}
                                 </Button>
