@@ -176,6 +176,8 @@ export function saveReport(data, callback) {
 
 //显示数字详情
 export function showNumberDetail(record, name, e) {
+    Trace.traceEvent(e, '查看数字详情');
+
     //只有单个销售的数据允许点击查看详情
     if (!record.nickname) return;
 

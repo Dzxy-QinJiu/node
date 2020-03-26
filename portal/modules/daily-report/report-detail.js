@@ -44,7 +44,7 @@ class ReportDetail extends React.Component {
         const unEditableItems = _.filter(items, item => !_.includes(editableFields, item.name));
 
         return (
-            <div>
+            <div data-tracename="报告详情视图">
                 <Form>
                     <DetailCard
                         title="日常工作"

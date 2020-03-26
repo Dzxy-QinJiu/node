@@ -142,14 +142,18 @@ class ReportList extends React.Component {
                             width: 80,
                         },
                     ],
-                    onRowClick: (record, index, event) => {
+                    onRowClick: (record, index, e) => {
                         if (record.nickname) {
+                            Trace.traceEvent(e, '点击表格行，查看报告详情');
+
                             showReportPanel({
                                 currentView: VIEW_TYPE.REPORT_DETAIL,
                                 reportDetail: record,
                                 isPreviewReport: true
                             });
                         } else {
+                            Trace.traceEvent(e, '点击表格行，查看下级团队报告列表');
+
                             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, record.sales_team_id);
                         }
                     }
@@ -162,7 +166,7 @@ class ReportList extends React.Component {
 
     render() {
         return (
-            <div className="daily-report daily-report-list">
+            <div className="daily-report daily-report-list" data-tracename="销售日报列表">
                 <AntcAnalysis
                     charts={this.getCharts()}
                     conditions={this.getConditions()}

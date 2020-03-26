@@ -40,7 +40,7 @@ class ReportPanel extends React.Component {
 
     render() {
         return (
-            <div className="daily-report daily-report-panel">
+            <div className="daily-report daily-report-panel" data-tracename="销售日报右侧面板">
                 <Detail
                     title={this.getPanelTitle()}
                     content={this.getPanelContent()}

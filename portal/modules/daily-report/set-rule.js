@@ -27,7 +27,7 @@ class SetRule extends React.Component {
         const renderButtonZone = renderButtonZoneFunc.bind(this);
 
         return (
-            <div>
+            <div data-tracename="规则设置">
                 <Form>
                     <DetailCard
                         title="适用范围"
