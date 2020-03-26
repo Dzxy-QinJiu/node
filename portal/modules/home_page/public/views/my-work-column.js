@@ -26,6 +26,7 @@ import {scrollBarEmitter, myWorkEmitter, notificationEmitter, phoneMsgEmitter, u
 import UserApplyDetail from 'MOD_DIR/user_apply/public/views/apply-view-detail';
 import OpportunityApplyDetail from 'MOD_DIR/sales_opportunity/public/view/apply-view-detail';
 import CustomerVisitApplyDetail from 'MOD_DIR/business-apply/public/view/apply-view-detail';
+import BusinessWhileApplyDetail from 'MOD_DIR/business-while/public/view/apply-view-detail';
 import LeaveApplyDetail from 'MOD_DIR/leave-apply/public/view/apply-view-detail';
 import DocumentApplyDetail from 'MOD_DIR/document_write/public/view/apply-view-detail';
 import ReportApplyDetail from 'MOD_DIR/report_send/public/view/apply-view-detail';
@@ -1476,6 +1477,16 @@ class MyWorkColumn extends React.Component {
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
+                case APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE://外出申请
+                    detailContent = (
+                        <BusinessWhileApplyDetail
+                            isHomeMyWork={true}
+                            detailItem={applyInfo}
+                            applyListType='false'//待审批状态
+                            afterApprovedFunc={this.afterFinishApplyWork}
+                        />);
+                    break;
+
                 case APPLY_APPROVE_TYPES.PERSONAL_LEAVE://请假申请
                     detailContent = (
                         <LeaveApplyDetail
