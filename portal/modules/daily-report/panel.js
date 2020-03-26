@@ -80,7 +80,7 @@ class ReportPanel extends React.Component {
                 break;
             case VIEW_TYPE.REPORT_DETAIL:
                 if (isPreviewReport) {
-                    title = nickname + '的报告详情';
+                    title = Intl.get('analysis.someone.report.details', '{someone}的报告详情', {someone: nickname});
                 } else {
                     title = reportConfig.name;
                 }
