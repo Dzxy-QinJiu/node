@@ -4,8 +4,6 @@
   display: none;
 }
 
-// 错误提示的字体以及边框颜色
-@error_tips_color: #f04134;
 //添加成员面版样式
 .member-add-container {
   form {
@@ -37,13 +35,13 @@
         line-height: 20px;
         margin-bottom: 10px;
         padding-left: 105px;
-        color: @error_tips_color;
+        color: @error-color;
       }
       .input-red-border {
         position: relative;
         display: inline-block;
         width: 100%;
-        border: 1px solid @error_tips_color;
+        border: 1px solid @error-color;
         line-height: 1.5;
         color: #666;
         background-color: #fff;
