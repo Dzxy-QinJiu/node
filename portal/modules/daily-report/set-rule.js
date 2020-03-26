@@ -56,10 +56,10 @@ class SetRule extends React.Component {
                                 {renderFormItem('', 'statistic_interval', {
                                     type: 'select',
                                     options: [{
-                                        name: '按日',
+                                        name: Intl.get('analysis.by.day', '按日'),
                                         value: 'day'
                                     }, {
-                                        name: '按周',
+                                        name: Intl.get('analysis.according.to.week', '按周'),
                                         value: 'week'
                                     }],
                                     formItemLayout: {
@@ -74,7 +74,7 @@ class SetRule extends React.Component {
 
                 {renderButtonZone([{
                     func: this.save.bind(this, {status: 'on'}),
-                    name: '确认开启',
+                    name: Intl.get('analysis.confirm.to.open', '确认开启'),
                     type: 'primary',
                     hide: isConfigReport
                 }, {

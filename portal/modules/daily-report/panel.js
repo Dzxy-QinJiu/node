@@ -92,10 +92,10 @@ class ReportPanel extends React.Component {
                 </div>;
                 break;
             case VIEW_TYPE.OPEN_REPORT:
-                title = '开启报告';
+                title = Intl.get('analysis.open.report', '开启报告');
                 break;
             case VIEW_TYPE.SET_RULE:
-                title = '规则设置';
+                title = Intl.get('crm.customer.rule.name', '规则设置');
                 break;
         }
 

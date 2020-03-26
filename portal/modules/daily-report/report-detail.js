@@ -84,23 +84,23 @@ class ReportDetail extends React.Component {
 
                     {renderButtonZone([{
                         hide: !isOpenReport,
-                        name: '开启',
+                        name: Intl.get('common.app.status.open', '开启'),
                         type: 'primary',
                         func: () => {
                             updateState({ currentView: VIEW_TYPE.SET_RULE });
                         }
                     }, {
                         hide: !isOpenReport,
-                        name: '取消',
+                        name: Intl.get('common.cancel', '取消'),
                         func: () => { this.props.updateState({ currentView: VIEW_TYPE.OPEN_REPORT }); },
                     }, {
                         hide: isPreviewReport || isOpenReport || isConfigReport,
                         func: hideReportPanel,
-                        name: '取消',
+                        name: Intl.get('common.cancel', '取消'),
                     }, {
                         hide: isPreviewReport || isOpenReport || isConfigReport,
                         func: this.save.bind(this),
-                        name: '保存',
+                        name: Intl.get('common.save', '保存'),
                     }])}
                 </Form>
             </div>

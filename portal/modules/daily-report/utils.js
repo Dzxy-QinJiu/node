@@ -97,7 +97,7 @@ export function saveReportConfig(data, paramObj = {}) {
         data
     })
         .done(result => {
-            const msg = isChangeStatus ? '修改报告启停状态成功' : '保存报告规则设置成功';
+            const msg = isChangeStatus ? Intl.get('analysis.changed.report.status.successfully', '修改报告启停状态成功') : Intl.get('analysis.changed.report.rule.setting.successfully', '修改报告规则设置成功');
             message.success(msg);
             if (_.isFunction(callback)) callback(result);
             if (isChangeStatus) dailyReportEmitter.emit(dailyReportEmitter.CHANGE_STATUS, result);
@@ -140,7 +140,7 @@ export function processReportListData(data) {
 
             switch (name) {
                 case '通话时长':
-                    obj.value = value + '秒';
+                    obj.value = value + Intl.get('user.time.second', '秒');
                     item[name] = obj.value;
                     break;
                 case '其他':
@@ -165,7 +165,7 @@ export function saveReport(data, callback) {
         data
     })
         .done(result => {
-            message.success('保存报告成功');
+            message.success(Intl.get('analysis.report.saved.successfully', '保存报告成功'));
             callback(result);
         })
         .fail(err => {
