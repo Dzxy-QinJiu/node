@@ -181,7 +181,7 @@ class RegisterForm extends React.Component {
         getVerifyErrorCaptchaCodeAJax = $.ajax({
             url: '/register/captchaCode',
             dataType: 'json',
-            data: { phone },
+            data: { phone: _.trim(phone) },
             success: (data) => {
                 this.setState({
                     verifyErrorCaptchaCode: _.get(data, 'captcha', '')
@@ -287,7 +287,7 @@ class RegisterForm extends React.Component {
         }
     }
     checkPhoneRegisted = () => {
-        let phone = this.props.form.getFieldValue('phone');
+        let phone = _.trim(this.props.form.getFieldValue('phone'));
         if (phone && commonPhoneRegex.test(phone)) {
             if (phone === this.state.isCheckingRegistedPhone) return;
             this.setState({ isCheckingRegistedPhone: phone });
@@ -314,7 +314,7 @@ class RegisterForm extends React.Component {
         }
     }
     onPhoneChange = (e) => {
-        let phone = e.target.value;
+        let phone = _.trim(e.target.value);
         let phoneIsPassValid = false;
         if (phone && commonPhoneRegex.test(phone)) {
             //电话验证通过即可点击获取短信验证码
