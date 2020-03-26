@@ -228,6 +228,8 @@ export const validatorNameRuleRegex = (length, name) => {
  * @param oldPassword 原始密码， 需要输入原始密码时，用来判断新输入的密码与原始密码是否一致
  **/
 export const checkPassword = (_this, value, callback, rePassWord, refreshRepasswordValidate, oldPassword) => {
+    value = _.trim(value);
+    rePassWord = _.trim(rePassWord);
     if (value && value.match(passwordRegex)) {
         //密码强度的校验
         //获取密码强度及是否展示
@@ -267,6 +269,8 @@ export const checkPassword = (_this, value, callback, rePassWord, refreshRepassw
  * @param refreshPasswordValidate  刷新密码的验证（以防密码改成跟确认密码一致时，密码还提示不一致）
  **/
 export const checkConfirmPassword = (value, callback, password, refreshPasswordValidate) => {
+    value = _.trim(value);
+    password = _.trim(password);
     if(value) {
         if (value !== password) {
             callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
