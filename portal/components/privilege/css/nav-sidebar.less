@@ -5,13 +5,15 @@
 @icon-grey: #CBCBCB;
 @icon-active-color: #ffffff;//图标选中状态的颜色
 @nav-icon: #ffffff;//图标默认状态下的颜色
-@nav-icon-size: 32px;//导航图标大小
+@nav-icon-size: 32px;//导航正常图标大小
+//正常图标时的菜单高度
+@nav-item-height: 48px;
 //缩小图标时的菜单高度
 @reduce-nav-icon-li-height: 40px;
 //缩小图标并缩小间距时的菜单高度
 @reduce-nav-margin-li-height: 32px;
-//正常图标时的菜单高度
-@nav-item-height: 48px;
+@nav-icon-small-size: 24px;//缩小浏览器导航主图标大小
+@nav-bottom-small-size: 28px;//缩小浏览器底部图标及高度
 @nav-text-width: 72px;
 @nav-text-fontSize: 14px;
 .unread-style {
@@ -40,50 +42,48 @@
         color: @icon-grey !important;
     }
 }
-@media (max-height: 715px) {
+@media (max-height: 700px) {
     //缩小浏览器时，展示小图标
     .navbar {
-        .navbar-nav {
+        .navbar-nav {//图标32、高度40
             > li.sidebar-menu-li {
                 height: @reduce-nav-icon-li-height;
                 > a.iconfont {
                     height: @reduce-nav-icon-li-height;
                     line-height: @reduce-nav-icon-li-height;
-                    &:before {
-                        font-size: 24px;
-                    }
                 }
             }
         }
-        .sidebar-user {
-            .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon {
-                .iconfont.sidebar-bottom-icon {
-                    font-size: 22px;
-                }
+        .sidebar-user {//图标32、高度32
+            div.notification, div.sidebar-backend-config, div.dial-up-keyboard-btn, div.customer-service-navicon, div.winning-clue {
+                height: @reduce-nav-margin-li-height;
+                line-height: @reduce-nav-margin-li-height;
             }
         }
     }
 }
 
-@media (max-height: 605px) {
+@media (max-height: 600px) {
     //再缩小浏览器到小图标并缩小间距时的样式
     .navbar {
         .navbar-nav {
-            > li.sidebar-menu-li {
+            > li.sidebar-menu-li {//图标24、高度32
                 height: @reduce-nav-margin-li-height;
                 > a.iconfont {
                     height: @reduce-nav-margin-li-height;
                     line-height: @reduce-nav-margin-li-height;
                     &:before {
-                        font-size: 18px;
+                        font-size: @nav-icon-small-size;
                     }
                 }
             }
         }
-        .sidebar-user {
-            .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon {
+        .sidebar-user {//图标：28、高度：28
+            div.notification, div.sidebar-backend-config, div.dial-up-keyboard-btn, div.customer-service-navicon, div.winning-clue {
+                height: @nav-bottom-small-size;
+                line-height: @nav-bottom-small-size;
                 .iconfont.sidebar-bottom-icon {
-                    font-size: 16px;
+                    font-size: @nav-bottom-small-size;
                 }
             }
         }
@@ -95,7 +95,7 @@
 #menusLists{
   display: block;
 }
-@media (max-height: 510px) {
+@media (max-height: 500px) {
   #hamburger{
     display: block;
   }
