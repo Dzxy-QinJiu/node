@@ -3184,6 +3184,10 @@ var en_US = {
     'analysis.report.saved.successfully': 'report saved successfully',//保存报告成功
     'analysis.changed.report.rule.setting.successfully': 'changed the report rule setting successfully',//修改报告规则设置成功
     'analysis.changed.report.status.successfully': 'changed the report status successfully',//修改报告启停状态成功
+    'analysis.check.the.report': 'check the report',//查看报告
+    'analysis.enable.reports.to.summarize': 'enable reports to summarize the daily work of sales',//启用报告可以汇总销售日常工作
+    'analysis.fill.in.the.report': 'fill in the report',//填写报告
+    'analysis.i.got.it': 'i got it',//我知道了
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
