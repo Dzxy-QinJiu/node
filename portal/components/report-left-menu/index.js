@@ -97,7 +97,7 @@ class ReportLeftMenu extends React.Component {
                 </ul>
 
                 {!isShowDailyReport() || isCommonSales ? null : (
-                    <div onClick={showReportPanel.bind(null, { isOpenReport: true })} className="btn-open-report" title="开启报告"><i className="iconfont icon-plus"></i></div>
+                    <div onClick={showReportPanel.bind(null, { isOpenReport: true })} className="btn-open-report" title={Intl.get('analysis.open.report', '开启报告')}><i className="iconfont icon-plus"></i></div>
                 )}
             </div>
         );
