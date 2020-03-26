@@ -62,6 +62,7 @@ class ReportLeftMenu extends React.Component {
 
                     dailyReportMenu.addition = (
                         <i className="iconfont icon-nav-setting"
+                            data-tracename="点击分析报告菜单中的配置报告按钮"
                             onClick={showReportPanel.bind(null, {
                                 currentView: VIEW_TYPE.CONFIG_REPORT,
                                 reportConfig,
@@ -97,7 +98,7 @@ class ReportLeftMenu extends React.Component {
                 </ul>
 
                 {!isShowDailyReport() || isCommonSales ? null : (
-                    <div onClick={showReportPanel.bind(null, { isOpenReport: true })} className="btn-open-report" title={Intl.get('analysis.open.report', '开启报告')}><i className="iconfont icon-plus"></i></div>
+                    <div onClick={showReportPanel.bind(null, { isOpenReport: true })} className="btn-open-report" title={Intl.get('analysis.open.report', '开启报告')} data-tracename="点击分析报告菜单中的启用报告按钮"><i className="iconfont icon-plus"></i></div>
                 )}
             </div>
         );
