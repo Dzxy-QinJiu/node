@@ -9,6 +9,8 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 require('./oplate');
 const LAYOUT_CONSTS = require('../../../lib/consts').LAYOUT;
 var LeftMenu = require('../../../components/privilege/nav-sidebar');
+import LeftPanel from 'CMP_DIR/left-panel';
+import CustomerIndex from 'CMP_DIR/customer-index';
 import PhonePanel from 'MOD_DIR/phone_panel/public';
 import ClueDetailPanel from 'MOD_DIR/clue_detail_panel/public';
 import AudioReportFunction from 'CMP_DIR/audio-report-function';
@@ -35,7 +37,7 @@ import{
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 import {getUserData} from '../../sources/user-data';
-import {checkVersionAndType, isShowUnReadNotice} from '../utils/common-method-util';
+import {checkVersionAndType, isShowUnReadNotice, isCurtao} from '../utils/common-method-util';
 import {getUpgradeNoticeList, getRewardedCluesCount} from '../utils/common-data-util';
 import { hasRecommendPrivilege } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
@@ -71,6 +73,9 @@ class PageFrame extends React.Component {
         isShowApplyTryPanel: false,//是否展示申请试用的面板
         applyTryParamObj: {},
         rewardClueCount: 0,
+        isShowLeftPanel: false,//是否显示左侧面板
+        openNavigationIs: false,
+        initAntme: false,//初始化antme
     };
 
     getRewardedCluesCount() {
@@ -396,6 +401,17 @@ class PageFrame extends React.Component {
         this.setState({isShowApplyTryPanel: false, applyTryParamObj: {}});
     };
 
+    openNavigation = (openNavigationIs) => {
+        this.setState({openNavigationIs});
+    };
+
+    handleTriggerLeftPanel = (flag) => {
+        let isShowLeftPanel = this.state.isShowLeftPanel;
+        this.setState({
+            isShowLeftPanel: flag ? !isShowLeftPanel : flag
+        });
+    };
+
     render() {
         var audioParamObj = this.state.audioParamObj;
         return (
@@ -408,6 +424,8 @@ class PageFrame extends React.Component {
                             showBootCompletePanel={this.showBootCompletePanel}
                             isShowNotificationPanel={this.state.isShowNotificationPanel}
                             rewardClueCount={this.state.rewardClueCount}
+                            handleOpenLeftPanel={this.handleTriggerLeftPanel.bind(this,true)}
+                            isShowCustomerService={this.state.isShowLeftPanel}
                         />
                     </div>
                     <div className="col-xs-10">
@@ -492,6 +510,9 @@ class PageFrame extends React.Component {
                         closeAudioPanel={this.closeAudioPanel}
                     />
                 ) : null}
+                <LeftPanel isShow={this.state.isShowLeftPanel} openNavigationIs={this.state.openNavigationIs} handleHideLeftPanel={this.handleTriggerLeftPanel.bind(this,false)}>
+                    {isCurtao() ? <CustomerIndex/> : null}
+                </LeftPanel>
             </div>
         );
     }
