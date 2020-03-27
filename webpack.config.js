@@ -40,6 +40,14 @@ var entry = function () {
     }
     return entryMap;
 };
+//webpack output
+var output =  {
+    path: path.join(__dirname, 'dist'),
+        filename: '[name].bundle.js',
+        //为了对JS路径进行加密
+        chunkFilename: 'chunk.[name].[chunkhash].js',
+        publicPath: '/resources/'
+};
 
 var jsLoader = {
     id: 'js',
@@ -67,6 +75,22 @@ var loadersLists = [
             path.join(__dirname, 'node_modules/component-util'),
             path.join(__dirname, 'node_modules/ant-chart-collection'),
             path.join(__dirname, 'node_modules/callcenter-sdk-client')
+        ]
+    },
+    {
+        test: /\.worker\.js$/,
+        use: {
+            loader: 'worker-loader',
+            // 可以设置 inline 属性为true将 worker 作为 blob 进行内联；
+            // 要注意，内联模式将额外为浏览器创建 chunk，即使对于不支持内联 worker 的浏览器也是如此；
+            // 若这种浏览器想要禁用这种行为，只需要将 fallback 参数设置为 false 即可。
+            options: webpackMode !== 'production' ? {
+                inline: true,
+                fallback: false,
+            } : {}
+        },
+        include: [
+            path.join(__dirname, 'portal/lib/worker'),
         ]
     },
     {
@@ -207,6 +231,8 @@ addDllPlugins();
 
 //热替换插件
 if (webpackMode !== 'production') {
+    //用来解决 worker 文件在 devServer 模式下报错 "window is not defined"
+    output.globalObject = 'this';
     pluginLists.push(new webpack.HotModuleReplacementPlugin());
     // pluginLists.push(new BundleAnalyzerPlugin({analyzerPort:8088}));
 }
@@ -223,13 +249,7 @@ var webpackConfig = {
     mode: webpackMode === 'production' ? 'production' : 'development',
     cache: true,
     entry: entry(),
-    output: {
-        path: path.join(__dirname, 'dist'),
-        filename: '[name].bundle.js',
-        //为了对JS路径进行加密
-        chunkFilename: 'chunk.[name].[chunkhash].js',
-        publicPath: '/resources/'
-    },
+    output: output,
     optimization: {
         splitChunks: {
             cacheGroups: {

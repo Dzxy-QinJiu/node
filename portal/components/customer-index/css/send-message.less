@@ -1,0 +1,64 @@
+/**
+ * Copyright (c) 2018-2019 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2018-2019 山东客套智能科技有限公司。保留所有权利。
+ * Created by tangmaoqin on 2020/03/17.
+*/
+.send-message {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  .chat-tool-bar {
+    user-select: none;
+    position: relative;
+    height: 26px;
+    line-height: 26px;
+    background: #f2f2f2;
+    padding-left: 24px;
+    padding-right: 24px;
+    .btn-image {
+      user-select: none;
+      height: 24px;
+      width: 24px;
+      display: inline-block;
+      cursor: pointer;
+      .iconfont {
+        font-size: 24px;
+      }
+    }
+    .emotion-wrap {
+      position: absolute;
+      height: 200px;
+      width: 380px;
+      background-color: #fff;
+      bottom: 26px;
+      left: 0;
+    }
+  }
+  .send-message-wrap {
+    position: relative;
+    flex: 1 1 0;
+    .send-message-body {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: auto;
+      outline: none;
+      padding: 0 5px;
+      line-height: 24px;
+      .emotion-item {
+        height: 23px;
+        width: 23px;
+        vertical-align: -6px;
+      }
+    }
+  }
+  .send-btn {
+    text-align: right;
+    padding-right: 10px;
+    .ant-btn {
+      margin: 10px
+    }
+  }
+}

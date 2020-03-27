@@ -517,4 +517,13 @@ module.exports = [{
         'needLogin': true
     },
     privileges: [privilegeConst_common.USER_APPLY_APPROVE]
+}, {
+    //获取蚁讯ticket
+    'method': 'get',
+    'path': '/rest/base/v1/user/antme/ticket',
+    'handler': 'getAntMeTicket',
+    'passport': {
+        'needLogin': true
+    },
+    privileges: [privilegeConst_common.BASE_QUERY_PERMISSION_MEMBER]
 }];

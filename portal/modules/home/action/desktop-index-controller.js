@@ -56,7 +56,10 @@ exports.home = function(req, res) {
             cash: global.config.cashClientId,
             caller: global.config.callerClientId,
         }),
-        ssoUrl: global.config.ssoUrl
+        ssoUrl: global.config.ssoUrl,
+        antmeActorUrl: global.config.antmeActorUrl,
+        antmeClientId: global.config.antmeClientId,
+        forceLogin: _.get(req.session,'force_login', true)
     });
 };
 
@@ -193,5 +196,13 @@ exports.getUserAreaData = function(req, res) {
         res.json(data);
     }).on('error', function(err) {
         res.json(err.message);
+    });
+};
+
+//设置antme是否强制登陆（主要为刷新界面后的状态使用）
+exports.setForceLogin = function(req, res) {
+    req.session.force_login = false;
+    req.session.save(function() {
+        res.json({force_login: req.session.force_login});
     });
 };

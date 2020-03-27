@@ -309,6 +309,12 @@ var en_US = {
     'common.company.owner': 'The authority to interpret the above activities belongs to Shandong Ketao Intelligent Technology Co., Ltd', // 以上活动解释权归山东客套智能科技有限公司
     'common.have': 'have',//有
     'common.nothing': 'nothing',//无
+    'common.customer.service': 'Online customer service',//在线客服
+    'common.empty.customer.record': 'No session records',//暂无会话记录
+    'common.empty.content': '^_^... No content',//^_^ ...   没有内容
+    'common.top.loading.text': 'Getting the latest data',//正在获取最新数据
+    'common.bottom.loading.text': 'Getting earlier data',//正在获取更早的数据
+    'common.send': 'send',//发送
     //公共部分--end
 
     'login.login': 'Login',//登录

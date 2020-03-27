@@ -162,6 +162,8 @@ var config = {
     timeStamp: new Date().valueOf(),//时间戳（解决文件缓存的问题）
     cashClientId: process.env.CASH_CLIENT_ID || '34pj27enfq347ahnfii2SyHi54yv4wO8Qz0kMp6Ow7F',//营收中心应用id
     callerClientId: process.env.CALLER_CLIENT_ID || '34pj27enfq348ma67fo1PzXi4eNV4EOcik0gldrFHuR',//呼叫中心应用id
+    antmeActorUrl: process.env.ANTME_ACTOR_URL || 'wss://platform-exp.antme.io:9080',//蚁讯socketio地址, 测试：'wss://platform-exp.antme.io:9080', 正式、exp: 'wss://platform.antme.io:9080'
+    antmeClientId: process.env.ANTME_CLIENT_ID || '36v8tudu9Z33ctc3i024r3s2S4Oc4yWbwt0Wpa5mqCp',//客套在蚁讯中的应用id,测试：'36v8tudu9Z33ctc3i024r3s2S4Oc4yWbwt0Wpa5mqCp', 正式、exp：'36v8tudu9Z33ct7a5ek4sH2qNbsa4j5b1s0V8K79RGG'
 };
 
 config.nockUrl = config.proxy.protocal + config.proxy.host + ':' + config.proxy.port;

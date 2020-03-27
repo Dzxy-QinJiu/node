@@ -315,6 +315,12 @@ var zh_CN = {
     'common.company.owner': '以上活动解释权归山东客套智能科技有限公司',
     'common.have': '有',
     'common.nothing': '无',
+    'common.customer.service': '在线客服',
+    'common.empty.customer.record': '暂无会话记录',
+    'common.empty.content': '^_^ ...   没有内容',
+    'common.top.loading.text': '正在获取最新数据',
+    'common.bottom.loading.text': '正在获取更早的数据',
+    'common.send': '发送',
     //公共部分--end
     
     'login.login': '登录',
