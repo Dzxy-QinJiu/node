@@ -355,6 +355,7 @@ class PageFrame extends React.Component {
                 // 打开系统通知时，需要关闭以前打开的相应的用户详情、客户详情界面
                 this.closeUserDetailPanel();
                 this.closePhonePanel();
+                this.handleTriggerLeftPanel(false);//展示通知时关掉客服聊天窗口
             }
         });
     };
@@ -406,9 +407,14 @@ class PageFrame extends React.Component {
     };
 
     handleTriggerLeftPanel = (flag) => {
-        let isShowLeftPanel = this.state.isShowLeftPanel;
+        let isShowLeftPanel = flag ? !this.state.isShowLeftPanel : flag;
         this.setState({
-            isShowLeftPanel: flag ? !isShowLeftPanel : flag
+            isShowLeftPanel,
+        }, () => {
+            //展示聊天窗口时，关闭通知
+            if(this.state.isShowLeftPanel){
+                this.closeNotificationPanel();
+            }
         });
     };
 
@@ -426,6 +432,7 @@ class PageFrame extends React.Component {
                             rewardClueCount={this.state.rewardClueCount}
                             handleOpenLeftPanel={this.handleTriggerLeftPanel.bind(this,true)}
                             isShowCustomerService={this.state.isShowLeftPanel}
+                            closeChatPanel={this.handleTriggerLeftPanel.bind(this,false)}
                         />
                     </div>
                     <div className="col-xs-10">
