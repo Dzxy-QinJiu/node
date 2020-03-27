@@ -92,7 +92,7 @@ export function getAverageOnlineTimeChart(type = 'all') {
                     {name: Intl.get('common.time.unit.quarter', '季度'), value: 'quarterly'},
                     {name: Intl.get('common.time.unit.year', '年'), value: 'yearly'}
                 ],
-                activeOption: 'daily',
+                activeOption: '',
                 conditionName: 'interval_important',
             }],
         },
