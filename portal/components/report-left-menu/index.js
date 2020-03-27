@@ -62,6 +62,7 @@ class ReportLeftMenu extends React.Component {
 
                     dailyReportMenu.addition = (
                         <i className="iconfont icon-nav-setting"
+                            data-tracename="点击配置报告按钮"
                             onClick={showReportPanel.bind(null, {
                                 currentView: VIEW_TYPE.CONFIG_REPORT,
                                 reportConfig,
@@ -81,7 +82,7 @@ class ReportLeftMenu extends React.Component {
         const menus = this.getMenus();
 
         return (
-            <div className='report-left-menu'>
+            <div className='report-left-menu' data-tracename="分析报告左侧菜单">
                 <ul>
                     {_.map(menus, menuItem => (
                         <li>
@@ -97,7 +98,7 @@ class ReportLeftMenu extends React.Component {
                 </ul>
 
                 {!isShowDailyReport() || isCommonSales ? null : (
-                    <div onClick={showReportPanel.bind(null, { isOpenReport: true })} className="btn-open-report" title="开启报告"><i className="iconfont icon-plus"></i></div>
+                    <div onClick={showReportPanel.bind(null, { isOpenReport: true })} className="btn-open-report" title={Intl.get('analysis.open.report', '开启报告')} data-tracename="点击启用报告按钮"><i className="iconfont icon-plus"></i></div>
                 )}
             </div>
         );

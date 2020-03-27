@@ -44,15 +44,13 @@ class ReportDetail extends React.Component {
         const unEditableItems = _.filter(items, item => !_.includes(editableFields, item.name));
 
         return (
-            <div>
+            <div data-tracename="报告详情视图">
                 <Form>
                     <DetailCard
-                        title="日常工作"
+                        title={Intl.get('analysis.daily.work', '日常工作')}
                         content={(
                             <div>
                                 {_.map(unEditableItems, item => {
-                                    const num = item.value || 0;
-
                                     return (
                                         <div>
                                             {item.name}:
@@ -66,7 +64,7 @@ class ReportDetail extends React.Component {
                     />
 
                     <DetailCard
-                        title="其他工作"
+                        title={Intl.get('analysis.the.other.work', '其他工作')}
                         content={(
                             <div>
                                 {_.map(editableItems, item => {
@@ -86,23 +84,23 @@ class ReportDetail extends React.Component {
 
                     {renderButtonZone([{
                         hide: !isOpenReport,
-                        name: '开启',
+                        name: Intl.get('common.app.status.open', '开启'),
                         type: 'primary',
                         func: () => {
                             updateState({ currentView: VIEW_TYPE.SET_RULE });
                         }
                     }, {
                         hide: !isOpenReport,
-                        name: '取消',
+                        name: Intl.get('common.cancel', '取消'),
                         func: () => { this.props.updateState({ currentView: VIEW_TYPE.OPEN_REPORT }); },
                     }, {
                         hide: isPreviewReport || isOpenReport || isConfigReport,
                         func: hideReportPanel,
-                        name: '取消',
+                        name: Intl.get('common.cancel', '取消'),
                     }, {
                         hide: isPreviewReport || isOpenReport || isConfigReport,
                         func: this.save.bind(this),
-                        name: '保存',
+                        name: Intl.get('common.save', '保存'),
                     }])}
                 </Form>
             </div>

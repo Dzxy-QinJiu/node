@@ -66,7 +66,7 @@ class ReportList extends React.Component {
     //获取图表列表
     getCharts = () => {
         let chart = {
-            title: '销售经理日报',
+            title: Intl.get('analysis.sales.manager.daily.report', '销售经理日报'),
             layout: {sm: 24},
             height: 'auto',
             cardContainer: {
@@ -103,7 +103,7 @@ class ReportList extends React.Component {
     
                         if (nickname) {
                             columns.push({
-                                title: '销售',
+                                title: Intl.get('sales.home.sales', '销售'),
                                 dataIndex: 'nickname',
                                 width: 80,
                             });
@@ -120,7 +120,7 @@ class ReportList extends React.Component {
                                 render: numberRender.bind(null, name)
                             };
     
-                            if (name === '其他') {
+                            if (name === Intl.get('user.login.analysis.customer.other', '其他')) {
                                 if (nickname) {
                                     column.isSetCsvValueBlank = true;
                                     column.align = 'left';
@@ -137,19 +137,23 @@ class ReportList extends React.Component {
                 option: {
                     columns: [
                         {
-                            title: '团队',
+                            title: Intl.get('user.user.team', '团队'),
                             dataIndex: 'sales_team',
                             width: 80,
                         },
                     ],
-                    onRowClick: (record, index, event) => {
+                    onRowClick: (record, index, e) => {
                         if (record.nickname) {
+                            Trace.traceEvent(e, '点击表格行，查看报告详情');
+
                             showReportPanel({
                                 currentView: VIEW_TYPE.REPORT_DETAIL,
                                 reportDetail: record,
                                 isPreviewReport: true
                             });
                         } else {
+                            Trace.traceEvent(e, '点击表格行，查看下级团队报告列表');
+
                             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, record.sales_team_id);
                         }
                     }
@@ -162,7 +166,7 @@ class ReportList extends React.Component {
 
     render() {
         return (
-            <div className="daily-report daily-report-list">
+            <div className="daily-report daily-report-list" data-tracename="销售日报列表">
                 <AntcAnalysis
                     charts={this.getCharts()}
                     conditions={this.getConditions()}

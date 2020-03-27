@@ -97,7 +97,7 @@ export function saveReportConfig(data, paramObj = {}) {
         data
     })
         .done(result => {
-            const msg = isChangeStatus ? '修改报告启停状态成功' : '保存报告规则设置成功';
+            const msg = isChangeStatus ? Intl.get('analysis.changed.report.status.successfully', '修改报告启停状态成功') : Intl.get('analysis.changed.report.rule.setting.successfully', '修改报告规则设置成功');
             message.success(msg);
             if (_.isFunction(callback)) callback(result);
             if (isChangeStatus) dailyReportEmitter.emit(dailyReportEmitter.CHANGE_STATUS, result);
@@ -140,7 +140,7 @@ export function processReportListData(data) {
 
             switch (name) {
                 case '通话时长':
-                    obj.value = value + '秒';
+                    obj.value = value + Intl.get('user.time.second', '秒');
                     item[name] = obj.value;
                     break;
                 case '其他':
@@ -165,7 +165,7 @@ export function saveReport(data, callback) {
         data
     })
         .done(result => {
-            message.success('保存报告成功');
+            message.success(Intl.get('analysis.report.saved.successfully', '保存报告成功'));
             callback(result);
         })
         .fail(err => {
@@ -176,6 +176,8 @@ export function saveReport(data, callback) {
 
 //显示数字详情
 export function showNumberDetail(record, name, e) {
+    Trace.traceEvent(e, '查看数字详情');
+
     //只有单个销售的数据允许点击查看详情
     if (!record.nickname) return;
 
@@ -217,13 +219,19 @@ export function handleReportStatusChange(reportConfig) {
     this.setState({ reportConfigList });
 }
 
-export function numberRender(name, value, record) {
-    let num = _.toString(value);
-    num = num.match(/^\d+/)[0];
-    num = _.toInteger(num);
+export function numberRender(name, value = 0, record = {}) {
+    if (_.isString(value)) {
+        const matched = value.match(/^\d+/);
 
-    if (num === 0 || !record.nickname) {
-        return <span>{value}</span>;
+        if (matched) {
+            value = _.toInteger(matched[0]);
+        } else {
+            value = 0;
+        }
+    }
+
+    if (value === 0 || !record.nickname) {
+        return value;
     } else {
         return <span className='clickable' onClick={showNumberDetail.bind(this, record, name)}>{value}</span>;
     }

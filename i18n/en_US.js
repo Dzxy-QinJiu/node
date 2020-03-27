@@ -3175,6 +3175,25 @@ var en_US = {
     'analysis.extended.account.number': 'extended account number',//延期帐号数
     'analysis.monthly.turnover.rate': 'monthly turnover rate',//月流失率
     'analysis.sales.manager.daily.report': 'sales manager daily report',//销售经理日报
+    'analysis.someone.report.details': '{someone}\'s report details',//某人的报告详情
+    'analysis.rules.set': 'the rules set',//规则设置
+    'analysis.open.report': 'open the report',//开启报告
+    'analysis.by.day': 'by the day',//按日
+    'analysis.according.to.week': 'according to the week',//按周
+    'analysis.confirm.to.open': 'confirm to open',//确认开启
+    'analysis.report.saved.successfully': 'report saved successfully',//保存报告成功
+    'analysis.changed.report.rule.setting.successfully': 'changed the report rule setting successfully',//修改报告规则设置成功
+    'analysis.changed.report.status.successfully': 'changed the report status successfully',//修改报告启停状态成功
+    'analysis.check.the.report': 'check the report',//查看报告
+    'analysis.enable.reports.to.summarize': 'enable reports to summarize the daily work of sales',//启用报告可以汇总销售日常工作
+    'analysis.fill.in.the.report': 'fill in the report',//填写报告
+    'analysis.i.got.it': 'i got it',//我知道了
+    'analysis.content.of.the.report': 'content of the report',//报告内容
+    'analysis.the.rules.set': 'the rules set',//规则设置
+    'analysis.daily.work': 'daily work',//日常工作
+    'analysis.the.other.work': 'the other work',//其他工作
+    'analysis.scope.of.application': 'scope of application',//适用范围
+    'analysis.statistical.cycle': 'statistical cycle',//统计周期
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式

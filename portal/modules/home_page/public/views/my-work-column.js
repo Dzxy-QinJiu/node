@@ -1234,12 +1234,12 @@ class MyWorkColumn extends React.Component {
 
         if (_.isEmpty(reportConfig)) {
             if (!isCommonSales) {
-                title = '启用报告可以汇总销售日常工作';
+                title = Intl.get('analysis.enable.reports.to.summarize', '启用报告可以汇总销售日常工作');
 
                 buttons.push({
                     type: 'primary',
                     onClick: showReportPanel.bind(null, { isOpenReport: true }),
-                    name: '开启报告'
+                    name: Intl.get('analysis.open.report', '开启报告')
                 });
             }
         } else {
@@ -1250,8 +1250,9 @@ class MyWorkColumn extends React.Component {
                     type: 'primary',
                     onClick: showReportPanel.bind(null, {
                         currentView: VIEW_TYPE.REPORT_DETAIL,
+                        reportConfig
                     }),
-                    name: '填写报告'
+                    name: Intl.get('analysis.fill.in.the.report', '填写报告')
                 });
             } else {
                 buttons.push({
@@ -1259,7 +1260,7 @@ class MyWorkColumn extends React.Component {
                     onClick: () => {
                         history.push('analysis/report/daily-report');
                     },
-                    name: '查看报告'
+                    name: Intl.get('analysis.check.the.report', '查看报告')
                 });
             }
         }
@@ -1268,7 +1269,7 @@ class MyWorkColumn extends React.Component {
             onClick: setIsNoLongerShowDailyReportNotice.bind(this, () => {
                 this.setState({});
             }),
-            name: '我知道了'
+            name: Intl.get('analysis.i.got.it', '我知道了')
         });
 
         const dailyReportWorkCard = (
@@ -1286,6 +1287,7 @@ class MyWorkColumn extends React.Component {
                             return (
                                 <Button
                                     {...item}
+                                    data-tracename={`点击${name}按钮`}
                                 >
                                     {name}
                                 </Button>
