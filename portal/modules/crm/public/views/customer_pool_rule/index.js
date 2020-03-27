@@ -38,11 +38,11 @@ class CustomerPoolRule extends React.Component{
                             <CustomerPoolVisibleRule/>
                         ) : null}
                     </TabPane>
-                    {/*<TabPane tab={Intl.get('crm.pool.release.rules', '释放规则')} key={TAB_KEYS.RELEASE_RULE}>
+                    <TabPane tab={Intl.get('crm.pool.release.rules', '释放规则')} key={TAB_KEYS.RELEASE_RULE}>
                         {this.state.activeKey === TAB_KEYS.RELEASE_RULE ? (
                             <CustomerPoolReleaseRule/>
                         ) : null}
-                    </TabPane>*/}
+                    </TabPane>
                 </Tabs>
             </div>
         );
