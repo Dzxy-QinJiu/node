@@ -53,6 +53,9 @@ exports.changeSalesRole = function(req, res) {
 //根据销售id获取其角色
 exports.getSalesRoleByMemberId = function(req, res) {
     officeManageService.getSalesRoleByMemberId(req, res, req.query).on('success', function(data) {
+        //没有查询结果时，默认返回一个空对象，以防止在页面端通过promise调用时被认为是出错，不能正常获取到返回结果
+        if (!data) data = {};
+
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
