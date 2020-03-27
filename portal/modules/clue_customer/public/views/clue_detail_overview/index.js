@@ -1740,11 +1740,18 @@ class ClueDetailOverview extends React.Component {
                 </div>
             </div>);
     };
+    isAdminOrOperationRole = () => {
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+    }
     //获客方式，来源，接入渠道，分类
     renderClueSourceAndClassfy = () => {
         var {curClue} = this.state;
         //是否有权限修改线索详情
         var hasPrivilegeEdit = editClueItemIconPrivilege(curClue);
+        // 已转化和无效的线索开放修改来源、渠道、获客方式、分类（运营和管理员）
+        if(!hasPrivilegeEdit && this.isAdminOrOperationRole()){
+            hasPrivilegeEdit = true;
+        }
         return (
             <div className='clue-info-wrap clue-detail-block'>
                 <div className="clue-basic-info">
