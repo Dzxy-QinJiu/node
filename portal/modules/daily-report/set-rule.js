@@ -30,7 +30,7 @@ class SetRule extends React.Component {
             <div data-tracename="规则设置">
                 <Form>
                     <DetailCard
-                        title="适用范围"
+                        title={Intl.get('sales.process.suitable.objects', '适用范围')}
                         content={(
                             <div>
                                 {renderFormItem('', 'sales_team_ids', {
@@ -50,7 +50,7 @@ class SetRule extends React.Component {
                     />
 
                     <DetailCard
-                        title="统计周期"
+                        title={Intl.get('analysis.statistical.cycle', '统计周期')}
                         content={(
                             <div>
                                 {renderFormItem('', 'statistic_interval', {

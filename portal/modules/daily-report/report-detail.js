@@ -47,7 +47,7 @@ class ReportDetail extends React.Component {
             <div data-tracename="报告详情视图">
                 <Form>
                     <DetailCard
-                        title="日常工作"
+                        title={Intl.get('analysis.daily.work', '日常工作')}
                         content={(
                             <div>
                                 {_.map(unEditableItems, item => {
@@ -64,7 +64,7 @@ class ReportDetail extends React.Component {
                     />
 
                     <DetailCard
-                        title="其他工作"
+                        title={Intl.get('analysis.the.other.work', '其他工作')}
                         content={(
                             <div>
                                 {_.map(editableItems, item => {

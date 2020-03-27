@@ -16,10 +16,10 @@ class ConfigReport extends React.Component {
         return (
             <div data-tracename="配置报告视图">
                 <Tabs defaultActiveKey="1">
-                    <TabPane tab="报告内容" key="1">
+                    <TabPane tab={Intl.get('analysis.content.of.the.report', '报告内容')} key="1">
                         <ReportDetail {...this.props} />
                     </TabPane>
-                    <TabPane tab="规则设置" key="2">
+                    <TabPane tab={Intl.get('crm.customer.rule.name', '规则设置')} key="2">
                         <SetRule {...this.props} />
                     </TabPane>
                 </Tabs>

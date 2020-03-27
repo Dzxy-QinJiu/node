@@ -3188,6 +3188,12 @@ var en_US = {
     'analysis.enable.reports.to.summarize': 'enable reports to summarize the daily work of sales',//启用报告可以汇总销售日常工作
     'analysis.fill.in.the.report': 'fill in the report',//填写报告
     'analysis.i.got.it': 'i got it',//我知道了
+    'analysis.content.of.the.report': 'content of the report',//报告内容
+    'analysis.the.rules.set': 'the rules set',//规则设置
+    'analysis.daily.work': 'daily work',//日常工作
+    'analysis.the.other.work': 'the other work',//其他工作
+    'analysis.scope.of.application': 'scope of application',//适用范围
+    'analysis.statistical.cycle': 'statistical cycle',//统计周期
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
