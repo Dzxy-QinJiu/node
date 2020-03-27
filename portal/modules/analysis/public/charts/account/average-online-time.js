@@ -5,6 +5,8 @@
 import { ifNotSingleApp, argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToSalesId } from '../../utils';
 
 export function getAverageOnlineTimeChart(type = 'all') {
+    let queryCache = {};
+
     return {
         title: Intl.get('oplate.user.analysis.averageLoginTimes', '平均在线时长'),
         url: '/rest/analysis/user/v3/:auth_type/app/avg/online_time/trend',
@@ -13,18 +15,24 @@ export function getAverageOnlineTimeChart(type = 'all') {
             argCallbackTeamIdsToTeamId(arg);
             argCallbackMemberIdsToSalesId(arg);
 
-            const intervalImportant = _.get(arg, 'query.interval_important');
+            let { query } = arg;
+            const { interval_important } = query;
 
-            if (intervalImportant) {
+            if (interval_important) {
                 //用图表自身条件中的interval替换公共条件中的interval
-                _.set(arg, 'query.interval', intervalImportant);
+                query.interval = interval_important;
 
-                delete arg.query.interval_important;
+                delete query.interval_important;
+            } else {
+                //转换成接口需要的带ly后缀的格式，如 day 转成 daily，week 转成 weekly
+                query.interval = query.interval.replace(/y$/, 'i').replace(/$/, 'ly');
             }
+
+            queryCache = query;
         },
         conditions: [{
             name: 'interval_important',
-            value: 'daily',
+            value: '',
         }, {
             name: 'analysis_type',
             value: type
@@ -33,43 +41,47 @@ export function getAverageOnlineTimeChart(type = 'all') {
         option: {
             tooltip: {
                 formatter: params => {
-                    const data = params.data;
-                    const cardSelectValue = data.cardSelectValue;
-                    let name = data.name;
+                    const { interval } = queryCache;
+                    let { name, value } = params.data;
 
-                    if (cardSelectValue === 'weekly') {
-                        name = `${name} - ${moment().format(oplateConsts.DATE_FORMAT)}`;
-                    } else if (cardSelectValue === 'monthly') {
-                        name = moment(name).format(oplateConsts.DATE_YEAR_MONTH_FORMAT);
-                    } else if (cardSelectValue === 'quarterly') {
-                        name = `${moment(name).format('YYYY年Q')}季度`;
-                    } else if (cardSelectValue === 'yearly') {
-                        name = `${moment(name).format('YYYY')}年`;
+                    switch(interval) {
+                        case 'weekly':
+                            name = `${name} - ${moment().format(oplateConsts.DATE_FORMAT)}`;
+                            break;
+                        case 'monthly':
+                            name = moment(name).format(oplateConsts.DATE_YEAR_MONTH_FORMAT);
+                            break;
+                        case 'quarterly':
+                            name = `${moment(name).format('YYYY年Q')}季度`;
+                            break;
+                        case 'yearly':
+                            name = `${moment(name).format('YYYY')}年`;
+                            break;
                     }
 
                     return `
                         ${name}<br>
-                        ${Intl.get('common.app.minute', '分钟')}：${data.value}
+                        ${Intl.get('common.app.minute', '分钟')}：${value}
                     `;
                 },
             },
         },
-        processOption(option, chartProps) {
-            //设置y轴名称，用以标识y轴数值的单位
-            _.set(option, 'yAxis[0].name', Intl.get('common.app.minute', '分钟'));
+        processData: (data, chart) => {
+            const { interval } = queryCache;
+            let intervalSelector = _.get(chart, 'cardContainer.selectors[0]');
+            _.set(intervalSelector, 'activeOption', interval);
 
-            //时间区间
-            const interval = _.get(chartProps, 'cardContainer.selectors[0].activeOption');
-
-            //系列数据
-            const serieData = _.get(option, 'series[0].data');
-
-            _.each(serieData, dataItem => {
+            _.each(data, dataItem => {
+                dataItem.name = moment(dataItem.timestamp).format(oplateConsts.DATE_FORMAT);
                 //将通话时间转成分钟
                 dataItem.value = moment.duration(dataItem.value).asMinutes().toFixed();
-                //在数据中标识当前统计的时间区间
-                dataItem.cardSelectValue = interval;
             });
+
+            return data;
+        },
+        processOption(option) {
+            //设置y轴名称，用以标识y轴数值的单位
+            _.set(option, 'yAxis[0].name', Intl.get('common.app.minute', '分钟'));
         },
         cardContainer: {
             selectors: [{
