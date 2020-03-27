@@ -9,15 +9,9 @@ import classNames from 'classnames';
 
 class LeftPanel extends React.Component {
 
-    componentDidMount() {
-        document.addEventListener('click', (e) => {
-            if (this.refs.LeftPanel) {
-                if (e.clientX > this.refs.LeftPanel.getBoundingClientRect().right) {
-                    _.isFunction(this.props.handleHideLeftPanel) && this.props.handleHideLeftPanel();
-                }
-            }
-        });
-    }
+    handleClickMask = () => {
+        this.props.handleHideLeftPanel();
+    };
 
     render() {
         let cls = classNames('ef-left-panel', {
@@ -30,11 +24,15 @@ class LeftPanel extends React.Component {
                 <div className="ef-left-panel-content">
                     {this.props.children}
                 </div>
+                <div className="ef-left-panel-mask" onClick={this.handleClickMask}/>
             </div>
         );
     }
 }
 
+LeftPanel.defaultProps = {
+    handleHideLeftPanel: function() {}
+};
 LeftPanel.propTypes = {
     isShow: PropTypes.bool,
     openNavigationIs: PropTypes.bool,

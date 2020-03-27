@@ -151,6 +151,7 @@ var NavSidebar = createReactClass({
         isShowNotificationPanel: PropTypes.bool,
         rewardClueCount: PropTypes.number,
         handleOpenLeftPanel: PropTypes.func,
+        isShowCustomerService: PropTypes.bool,
     },
 
     changeUserInfoLogo: function(userLogoInfo) {
@@ -474,10 +475,22 @@ var NavSidebar = createReactClass({
             </div>
         );
     },
+    renderCustomerServiceBlock: function() {
+        if(isCurtao()) {
+            let cls = classNames('customer-service-navicon', {
+                active: this.props.isShowCustomerService
+            });
+            return (
+                <div className={cls} onClick={this.onChatClick}>
+                    <a className='iconfont icon-customer-service sidebar-bottom-icon' title={Intl.get('menu.online.consulting', '在线咨询')}/>
+                </div>
+            );
+        }
+        return null;
+    },
     //在线咨询
     onChatClick() {
         //如果有客服时，点击触发出客服界面
-        // $('#newBridge #nb_icon_wrap').trigger('click');
         _.isFunction(this.props.handleOpenLeftPanel) && this.props.handleOpenLeftPanel();
     },
     // 渲染二级子菜单，isShowLogOut用来区分是后台管理的二级菜单还是个人信息的二级菜单，个人信息包含退出操作
@@ -837,11 +850,7 @@ var NavSidebar = createReactClass({
                             ) : null
                         }
                         {this.renderDailCallBlock()}
-                        {isCurtao() ? (
-                            <div className='customer-service-navicon' onClick={this.onChatClick}>
-                                <a className='iconfont icon-customer-service sidebar-bottom-icon' title={Intl.get('menu.online.consulting', '在线咨询')}/>
-                            </div>) : null
-                        }
+                        {this.renderCustomerServiceBlock()}
                         {this.getNotificationBlock(trigger)}
                         {this.renderBackendConfigBlock(trigger)}
                         {this.getUserInfoBlock(trigger)}

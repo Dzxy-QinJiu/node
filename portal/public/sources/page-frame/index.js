@@ -425,6 +425,7 @@ class PageFrame extends React.Component {
                             isShowNotificationPanel={this.state.isShowNotificationPanel}
                             rewardClueCount={this.state.rewardClueCount}
                             handleOpenLeftPanel={this.handleTriggerLeftPanel.bind(this,true)}
+                            isShowCustomerService={this.state.isShowLeftPanel}
                         />
                     </div>
                     <div className="col-xs-10">

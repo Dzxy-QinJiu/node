@@ -6,24 +6,35 @@
 .ef-left-panel {
   position: absolute;
   top: 0;
-  left: 75px;
+  left: 64px;
   text-align: left;
-  background-color: #ffffff;
   z-index: 11;
-  width: 500px;
   bottom: 0;
+  right: 0;
   transition: transform .4s ease-in-out;
   transform: translate(-100%, 0);
   &.open {
     visibility: visible;
     transform: translate(0px, 0);
-    box-shadow: 0 7px 21px rgba(0, 0, 0, .1);
   }
   .ef-left-panel-content {
     height: 100%;
+    width: 500px;
+    position: absolute;
+    z-index: 111;
   }
   &.open-navigation {
     left: 210px;
     transition: all .3s ease;
+  }
+  .ef-left-panel-mask{
+    position: absolute;
+    top: 0;
+    z-index: 110;
+    width: 100%;
+    height: 100%;
+    background-color: #787A79;
+    opacity: 0.6;
+    cursor: pointer;
   }
 }
