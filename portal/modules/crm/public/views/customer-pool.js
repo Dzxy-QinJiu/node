@@ -354,6 +354,10 @@ class CustomerPool extends React.Component {
         if (this.state.currentId) {
             let curCustomer = _.find(this.state.poolCustomerList, item => item.id === this.state.currentId);
             if (curCustomer) {
+                //如果是需联合跟进的，需要使用customer_id字段
+                if(_.isEqual(_.get(curCustomer, 'customerpool_tags[0]'), CUSTOMER_POOL_TYPES.FOLLOWUP)) {
+                    curCustomer.id = _.get(curCustomer,'customer_id', curCustomer.id);
+                }
                 phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                     customer_params: {
                         curCustomer: {...curCustomer, customer_type: CRM_VIEW_TYPES.CRM_POOL},
