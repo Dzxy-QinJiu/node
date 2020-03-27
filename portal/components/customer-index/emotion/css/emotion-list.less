@@ -1,0 +1,48 @@
+/**
+ * Copyright (c) 2018-2019 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2018-2019 山东客套智能科技有限公司。保留所有权利。
+ * Created by tangmaoqin on 2020/03/17.
+*/
+.inner-marquee-body {
+  position: absolute;
+  left:0;
+  right:0;
+  top:5px;
+  bottom:10px;
+  z-index: 10;
+  margin: 0 auto;
+  padding: 0;
+  .body {
+    position: relative;
+    margin: 0 auto;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    .inner-marquee-content{
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+    }
+    .item {
+      float: left;
+      border: 1px solid transparent;
+      margin: 0 4px;
+
+      img {
+        height: 24px;
+        width: 24px;
+        cursor: pointer;
+      }
+
+      > svg {
+        height: 24px;
+        width: 24px;
+        cursor: pointer;
+      }
+    }
+  }
+}

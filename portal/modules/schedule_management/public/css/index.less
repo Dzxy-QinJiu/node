@@ -204,13 +204,13 @@
       z-index: 10;
       cursor: pointer;
       button.ant-btn-primary{
-        background-color: @BORDER-BLUE;
-        border-color: @BORDER-BLUE;
+        background-color: @primary-color;
+        border-color: @primary-color;
         color: #ffffff;
         &:hover{
           color: #ffffff;
-          background-color:  @BUTTON-HOVER;
-          border-color: @BUTTON-HOVER;
+          background-color: @primary-hover-color;
+          border-color: @primary-hover-color;
         }
       }
     }
@@ -265,7 +265,7 @@
         float: right;
         margin-right: 20px;
         background: #fff;
-        color:#333
+        color:@primary-font-color;
       }
       //checkbox的样式
       .check-group-container{
@@ -496,7 +496,7 @@
   }
   .fc-event.handle-schedule{
     background-color: #FBFBFB;
-    color:#999;
+    color: @secondary-font-color;
     border-color:#FBFBFB;
   }
   //天视图
@@ -549,13 +549,13 @@
           //日程时间
           .schedule-time-range{
             padding-left: 10px;
-            color:#8da8c5;
+            color: @secondary-color;
 
           }
           //日程联系的客户
           .schedule-customer-name{
             font-size:16px;
-            color:#333333;
+            color:@primary-font-color;
           }
           //标记完成的按钮
           .schedule-content-wrap{

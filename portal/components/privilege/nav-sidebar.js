@@ -150,6 +150,8 @@ var NavSidebar = createReactClass({
         showBootCompletePanel: PropTypes.func,
         isShowNotificationPanel: PropTypes.bool,
         rewardClueCount: PropTypes.number,
+        handleOpenLeftPanel: PropTypes.func,
+        isShowCustomerService: PropTypes.bool,
     },
 
     changeUserInfoLogo: function(userLogoInfo) {
@@ -448,8 +450,11 @@ var NavSidebar = createReactClass({
         // let aCls = classNames({
         //     'acitve': this.props.isShowNotificationPanel,
         // });
+        let wrapCls = classNames('notification', {
+            'active': this.props.isShowNotificationPanel,
+        });
         return (
-            <div className="notification" onClick={this.toggleNotificationPanel}>
+            <div className={wrapCls} onClick={this.toggleNotificationPanel}>
                 <Badge
                     dot={this.state.isUnReadNotice}
                     onClick={this.toggleNotificationPanel}
@@ -473,10 +478,23 @@ var NavSidebar = createReactClass({
             </div>
         );
     },
+    renderCustomerServiceBlock: function() {
+        if(isCurtao()) {
+            let cls = classNames('customer-service-navicon', {
+                active: this.props.isShowCustomerService
+            });
+            return (
+                <div className={cls} onClick={this.onChatClick}>
+                    <a className='iconfont icon-customer-service sidebar-bottom-icon' title={Intl.get('menu.online.consulting', '在线咨询')}/>
+                </div>
+            );
+        }
+        return null;
+    },
     //在线咨询
     onChatClick() {
         //如果有客服时，点击触发出客服界面
-        $('#newBridge #nb_icon_wrap').trigger('click');
+        _.isFunction(this.props.handleOpenLeftPanel) && this.props.handleOpenLeftPanel();
     },
     // 渲染二级子菜单，isShowLogOut用来区分是后台管理的二级菜单还是个人信息的二级菜单，个人信息包含退出操作
     renderSubMenuLinks(linkList, isShowLogOut) {
@@ -511,8 +529,10 @@ var NavSidebar = createReactClass({
         if (!backendConfigMenu || !backendConfigMenu.routes) {
             return null;
         }
+        const currentPageCategory = this.getCurrentCategory();
         let wrapperCls = classNames('sidebar-menu-li', {
             'sidebar-backend-config': true,
+            'active': !this.props.isShowNotificationPanel && currentPageCategory === 'settings',
             // 'reduce-nav-icon-li': this.state.isReduceNavIcon,
             // 'reduce-nav-margin-li': this.state.isReduceNavMargin
         });
@@ -546,8 +566,12 @@ var NavSidebar = createReactClass({
         if (!userInfoLinkList || !userInfoLinkList.routes) {
             return;
         }
+        const currentPageCategory = this.getCurrentCategory();
+        let userInfoCls = classNames('sidebar-userinfo', {
+            'active': currentPageCategory === 'user-preference' && !this.props.isShowNotificationPanel
+        });
         return (
-            <div className="sidebar-userinfo">
+            <div className={userInfoCls}>
                 <Popover
                     content={this.renderSubMenuLinks(userInfoLinkList.routes, true)}
                     trigger={trigger}
@@ -555,17 +579,18 @@ var NavSidebar = createReactClass({
                     overlayClassName="nav-sidebar-userinfo"
                 >
                     <div className="avatar_container">
-                        <Avatar
-                            className="avatar"
-                            size="50px"
-                            lineHeight="43px"
-                            src={this.state.userInfoLogo}
-                            userName={this.state.userInfo.user_name}
-                            nickName={this.state.userInfo.nick_name}
-                            round="true" link="true" url="/user-preference"
-                            isActiveFlag={this.props.isShowNotificationPanel}
-                            isUseDefaultUserImage={true}
-                        />
+                        {this.state.userInfoLogo ?
+                            <Avatar
+                                className="avatar"
+                                size="24px"
+                                lineHeight="24px"
+                                src={this.state.userInfoLogo}
+                                userName={this.state.userInfo.user_name}
+                                nickName={this.state.userInfo.nick_name}
+                                round="true" link="true" url="/user-preference"
+                                isActiveFlag={this.props.isShowNotificationPanel}
+                                isUseDefaultUserImage={true}
+                            /> : <NavLink className='user-default-logo-wrap' to='/user-preference'><i className='iconfont icon-user-logo-default'/></NavLink>}
                     </div>
                 </Popover>
             </div>
@@ -667,27 +692,28 @@ var NavSidebar = createReactClass({
             </Popover>
         );
     },
+    // 获取当前页面的路由
+    getCurrentCategory(){
+        const pathName = location.pathname.replace(/^\/|\/$/g, '');
+        return pathName.split('/')[0];
+    },
     //生成主菜单
     generateMenu: function() {
-        const pathName = location.pathname.replace(/^\/|\/$/g, '');
-        const currentPageCategory = pathName.split('/')[0];
+        const currentPageCategory = this.getCurrentCategory();
         return this.state.menus.map((menu, i) => {
             let category = menu.routePath.replace(/\//, '');
             //是否添加选中的菜单样式类
             const addActive = currentPageCategory === category;
             //选中状态类
             let extraClass = classNames('iconfont', {
-                // 'nav-small-icon': this.isShowSmallIcon(),
-                [`icon-${category}-ico`]: !addActive,
-                [`icon-active-${category}-ico`]: addActive,
+                [`icon-${category}-ico`]: true,
                 'active': addActive,
                 'deactivation': this.props.isShowNotificationPanel
             });
             //菜单项类
             let routeCls = classNames('sidebar-menu-li', {
                 [`${category}_icon_container`]: true,
-                // 'reduce-nav-icon-li': this.state.isReduceNavIcon,
-                // 'reduce-nav-margin-li': this.state.isReduceNavMargin
+                'active': addActive,
             });
             let routeContent = (
                 <NavLink to={`${menu.routePath}`}
@@ -714,12 +740,8 @@ var NavSidebar = createReactClass({
     //生成拨号按钮
     renderDailCallBlock(trigger) {
         if(this.state.isShowDialUpKeyboard) {
-            const iconCls = classNames('iconfont', 'sidebar-bottom-icon', {
-                'icon-nav-dial-up': !this.state.ronglianNum,
-                'icon-active-call_record-ico': this.state.ronglianNum,
-            });
             const DialIcon = this.state.hideNavIcon ? Intl.get('phone.dial.up.text', '拨号') :
-                (<i className={iconCls}/>);
+                (<i className={'iconfont sidebar-bottom-icon icon-nav-dial-up'}/>);
 
             const versionAndType = checkVersionAndType();
             let dialUpKeyBoardContent = null;
@@ -771,6 +793,9 @@ var NavSidebar = createReactClass({
     },
 
     renderWinningClueBlock() {
+        let winCls = classNames('winning-clue', {
+            'show-detail': this.state.isShowWinningClueContent
+        });
         return (
             <Popover
                 content={ this.renderWinningContent() }
@@ -779,7 +804,7 @@ var NavSidebar = createReactClass({
                 onVisibleChange={this.handleVisibleChange}
                 overlayClassName="nav-sidebar-winning-clue"
             >
-                <div className="winning-clue">
+                <div className={winCls}>
                     <img className="gift-logo" src={GIFT_LOGO} />
                 </div>
             </Popover>
@@ -799,10 +824,9 @@ var NavSidebar = createReactClass({
         return (
             <nav className="navbar" onClick={this.closeNotificationPanel}>
                 <div className="container">
-                    <div className="logo-and-menus" ref="logoAndMenus"
-                    >
+                    <div className="logo-and-menus" ref="logoAndMenus">
                         <div className="header-logo" title={Intl.get('menu.home.page', '首页')}>
-                            <Logo/>
+                            <NavLink to='/' className='iconfont icon-curtao-wihte-logo'/>
                         </div>
                         <div className="collapse navbar-collapse">
                             <ul className="nav navbar-nav" id="menusLists">
@@ -835,11 +859,7 @@ var NavSidebar = createReactClass({
                             ) : null
                         }
                         {this.renderDailCallBlock()}
-                        {isCurtao() ? (
-                            <div className='customer-service-navicon' onClick={this.onChatClick}>
-                                <a className='iconfont icon-customer-service sidebar-bottom-icon' title={Intl.get('menu.online.consulting', '在线咨询')}/>
-                            </div>) : null
-                        }
+                        {this.renderCustomerServiceBlock()}
                         {this.getNotificationBlock(trigger)}
                         {this.renderBackendConfigBlock(trigger)}
                         {this.getUserInfoBlock(trigger)}

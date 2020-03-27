@@ -1,3 +1,4 @@
+@import "../../../../../public/css/common-variables";
 .approve-edit-container {
   width: 480px;
   margin: 0 auto;
@@ -8,14 +9,14 @@
     line-height: 30px;
     .label-components {
       display: inline-block;
-      color: #999;
+      color: @secondary-font-color;
       width: 92px;
       text-align: right;
       padding-right: 10px;
     }
     .text-components {
       display: inline-block;
-      color: #333;
+      color: @primary-font-color;
       .ant-input {
         width: 372px;
         height: 24px;
@@ -32,14 +33,14 @@
           .anticon{
             display: inline-block;
             width: 33px;
-            color:#8DA8C5
+            color:@secondary-color;
           }
         }
       }
 
       .iconfont {
         font-size: 14px;
-        color: #8DA8C5;
+        color: @secondary-color;
         margin-right: 5px;
       }
       .ant-checkbox-wrapper {
@@ -60,14 +61,14 @@
         content: "*";
         line-height: 1;
         font-size: 12px;
-        color: #f04134;
+        color: @error-color;
       }
     }
     .ant-input.err-tip{
-      border: 1px solid #f04134;
+      border: 1px solid @error-color;
     }
     .require-err-tip {
-      color: #f04134;
+      color: @error-color;
       display: block;
     }
   }
@@ -88,7 +89,7 @@
     }
   }
   .title-label{
-    color: #333333;
+    color: @primary-font-color;
     font-size: 14px;
     margin-bottom: 10px;
     .icon-wrap{
@@ -132,7 +133,7 @@
   .icon-container{
     .iconfont{
       font-size: 14px;
-      color:#8DA8C5;
+      color: @secondary-color;
       cursor: pointer;
       margin-left: 14px;
     }
@@ -151,6 +152,6 @@
     content: "*";
     line-height: 1;
     font-size: 12px;
-    color: #f04134;
+    color: @error-color;
   }
 }

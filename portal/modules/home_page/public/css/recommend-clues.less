@@ -50,7 +50,7 @@
     text-align: center;
     .loading-status-tip {
       text-align: center;
-      color: #999;
+      color: @secondary-font-color;
       font-size: 16px;
       margin-top: 10px;
     }
@@ -82,12 +82,12 @@
       margin: 10px 0 16px 24px;
       .extract-hot-title{
         font-size: 14px;
-        color: #999;
+        color: @secondary-font-color;
       }
       .extract-hot-btn-container{
         display: inline-block;
         .hot-btn-item{
-          color: #EFA246;
+          color: @warn-color;
           font-size: 12px;
           padding: 3px 6px;
           border: 1px solid @border-color;
@@ -156,7 +156,7 @@
         }
       }
       .has-extracted-count{
-        color: @BORDER-BLUE;
+        color: @primary-color;
         margin: 2px;
       }
       .no-extract-count-tip{
@@ -170,7 +170,7 @@
       }
       .check-all{
         font-size: 14px;
-        color: @title-color;
+        color: @primary-font-color;
         font-weight: normal;
         vertical-align: middle;
         width: 60px;
@@ -196,22 +196,22 @@
             box-shadow: 0 3px 10px -5px #213340;
           }
           &.has-extracted-row, &.has-extracted-row:hover{
-            color: @label-content-color!important;
+            color: @secondary-font-color !important;
             box-shadow: none;
             .extract-clue-text-wrapper{
-              color: @label-content-color;
+              color: @secondary-font-color;
               .extract-clue-text__name{
                 cursor: unset;
               }
             }
             .iconfont.icon-extract{
-              color: @label-content-color;
+              color: @secondary-font-color;
               cursor: not-allowed;
             }
           }
           &.has-extracted-by-other-row, &.has-extracted-by-other-row:hover{
             .iconfont.icon-extract{
-              color: @label-content-color;
+              color: @secondary-font-color;
               cursor: not-allowed;
             }
             .extract-clue-text-wrapper {
@@ -222,7 +222,7 @@
           }
           .extract-clue-text-wrapper{
             width: 85%;
-            color: @title-color;
+            color: @primary-font-color;
             padding-right: 3px;
             .extract-clue-text__name{
               font-size: 16px;
@@ -270,7 +270,7 @@
             }
             .extract-clue-text__info{
               margin-top: 20px;
-              color: @label-content-color;
+              color: @secondary-font-color;
             }
             .extract-clue-text__null{
               margin-top: 0
@@ -317,7 +317,7 @@
     text-align: center;
     margin-top: 150px;
     > p{
-      color: @title-color;
+      color: @primary-font-color;
       font-size: 20px;
       margin: 15px 0 32px;
     }
@@ -351,9 +351,9 @@
     }
     .ant-notification-notice-description{
       font-size: 14px;
-      color: @title-color;
+      color: @primary-font-color;
       .has-extracted-count{
-        color: @BORDER-BLUE;
+        color: @primary-color;
         margin: 2px;
       }
       .icon-warn-icon{

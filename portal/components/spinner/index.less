@@ -1,3 +1,4 @@
+@import "../../public/css/common-variables";
 .loading-wrapper.load8{
   position: absolute;
   top: 0;
@@ -28,7 +29,7 @@
    }
   .loader8-text{
       margin-top: 10px;
-      color: #333;
+      color: @primary-font-color;
       font-size: 14px;
     }
 }
@@ -42,7 +43,7 @@
   border-top: 0.35em solid #D3EAFD;
   border-right: 0.35em solid #D3EAFD;
   border-bottom: 0.35em solid #D3EAFD;
-  border-left: 0.35em solid #2196F3;
+  border-left: 0.35em solid @primary-color;
   animation: load8 0.5s infinite linear;
 }
 

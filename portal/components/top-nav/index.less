@@ -1,7 +1,6 @@
 @import '../../public/css/bootstrap-variables.less';
 @import (optional) "../../public/css/common-variables.less";
 
-@sidebar-min-width: 75px;
 @sidebar-default-width: 155px;
 .topNav {
   position: fixed;
@@ -27,13 +26,12 @@
   .topnav-links-wrap {
     display: inline-block;
     vertical-align: middle;
-    @bright: #4d96d1;
     .navbar-toggle {
       display: none;
       margin-top: 21px;
-      border-color: @bright;
+      border-color: @primary-color;
       .icon-bar {
-        background: @bright;
+        background: @primary-color;
       }
     }
     &[hidden] {
@@ -62,14 +60,14 @@
           a {
             padding: 10px 20px;
             &:hover {
-              color: #4d96d1;
+              color: @primary-color;
               background-color: #f9f9f9;
             }
           }
         }
       }
       .navbar-toggle {
-        background: @bright;
+        background: @primary-color;
         .icon-bar {
           background: #fff;
         }
@@ -93,11 +91,11 @@
       }
     }
     .topNav-menu-item-selected {
-      color: @BORDER-BLUE;
+      color: @primary-color;
     }
     a.active,
     a:hover {
-      color: @BORDER-BLUE;
+      color: @primary-color;
     }
   }
   .inline-block {

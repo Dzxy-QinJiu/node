@@ -26,7 +26,10 @@
       width: 100%;
       margin-bottom: 5px;
       .ant-form-explain {
-        float: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 360px;
       }
       input, textarea, .ant-select {
         width: 100%;
@@ -237,10 +240,10 @@
           cursor: pointer;
         }
         .checkbox-notice {
-          color: #4d96d1;
+          color: @primary-color;
         }
         .ant-checkbox-checked .ant-checkbox-inner:after {
-          border-color: #2db7f5;
+          border-color: @primary-color;
         }
       }
 

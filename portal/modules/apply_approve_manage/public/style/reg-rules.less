@@ -1,3 +1,4 @@
+@import "../../../../public/css/common-variables";
 .reg-rule-container {
   #bpmn-container {
     display: none;
@@ -46,14 +47,14 @@
       }
       .item-label {
         font-size: 14px;
-        color: #333;
+        color: @primary-font-color;
         width: 110px;
         float: left;
       }
       .sub-item-label{
         width: 80px;
         font-size: 14px;
-        color: #333;
+        color: @primary-font-color;
         float: left;
       }
       .rule-content.info-container {
@@ -66,7 +67,7 @@
         float: left;
         width: calc(100% - 120px);
         .add-condition{
-          color: #8DA8C5;
+          color: @secondary-color;
           font-size: 14px;
         }
         .condition-container{
@@ -78,7 +79,7 @@
             .condition-item{
               padding: 12px;
               border-bottom: 1px solid #DEDFE3;
-              color: #999;
+              color: @secondary-font-color;
               font-size: 14px;
               overflow: hidden;
               .condition-item-label{
@@ -93,7 +94,7 @@
               background:rgba(245,245,245,1);
                 padding: 12px;
                 .condition-item-title{
-                  color: #333;
+                  color: @primary-font-color;
                   font-size: 14px;
 
                 }
@@ -111,7 +112,7 @@
                     .iconfont{
                       margin-right: 10px;
                       cursor: pointer;
-                      color: #8DA8C5;
+                      color: @secondary-color;
                       font-size: 17px;
                     }
                   }
@@ -123,13 +124,13 @@
 
               ul{
                 float: left;
-                color:#333;
+                color:@primary-font-color;
                 .icon-tip{
                   display: inline-block;
                   width: 8px;
                   height: 8px;
                   border-radius: 50%;
-                  background: #8DA8C5;
+                  background: @secondary-color;
                   margin:0 5px;
                 }
               }
@@ -155,11 +156,11 @@
         .show-name {
           display: block;
           font-size: 12px;
-          color: #333;
+          color: @primary-font-color;
         }
         .addition-text{
           display: inline-block;
-          color:#999
+          color: @secondary-font-color;
         }
         .iconfont.icon-close-btn {
           cursor: pointer;
@@ -194,7 +195,7 @@
         background: #fff;
         border: 1px solid #ccc;
         .iconfont.icon-add {
-          color: #8DA8C5;
+          color: @secondary-color;
           font-size: 17px;
           cursor: pointer;
         }

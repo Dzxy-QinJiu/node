@@ -3,9 +3,8 @@
  *
  * Created by yubin.
  */
-
+ @import "../../public/css/common-variables";
 @font-color: #d8eaf4;
-@blue-color: #2196f3;
 .login-form {
     //去掉自动填充用户名的背景色chrom
     input:-webkit-autofill {
@@ -26,11 +25,6 @@
             margin-left:10px;
         }
     }
-    //链接的颜色设置
-    a{
-        color:#2196F3;
-    }
-
     .not-allowed {
         cursor: not-allowed;
     }
@@ -47,13 +41,16 @@
         height: 48px;
         line-height: 48px;
         border-radius: 5px;
-        background-color: @blue-color;
+        background-color: @primary-color;
         color: #ffffff;
         border: none;
         cursor: pointer;
         transition: 0.3s;
         outline: none;
         margin: 8px 0;
+        &:hover{
+            background-color: @primary-hover-color;
+        }
     }
     .login-captcha{
         position: absolute;

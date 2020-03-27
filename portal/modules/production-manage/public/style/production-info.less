@@ -1,7 +1,4 @@
 @import "../../../../public/css/common-variables";
-// 错误提示的字体以及边框颜色
-@success-tip-color: #06ae06;
-@error-tip-color: #f5222d;
 //添加成员时，角色选中后就不再在下拉列表中展示的样式设置
 .ant-select-dropdown-menu-item-selected.role-options-selected {
   display: none;
@@ -27,7 +24,7 @@
           }
         }
         .save-logo-error {
-          color: @error-tip-color;
+          color: @error-color;
         }
       }
       //产品参数
@@ -75,7 +72,7 @@
             top: 24px;
             right: 30px;
             margin-left: 6px;
-            background: #999;
+            background: @secondary-font-color;
             color: #fff;
             font-size: 14px;
             padding: 2px;
@@ -143,7 +140,7 @@
             }
             .add-uem-error {
               margin-left:8px;
-              color: @error-tip-color;
+              color: @error-color;
             }
           }
           .add-user-data-details {
@@ -172,13 +169,13 @@
               }
               .anticon-check-circle {
                 float: right;
-                color: @success-tip-color;
+                color: @success-color;
                 font-size: 14px;
                 line-height: 28px;
               }
               .anticon-exclamation-circle {
                 float: right;
-                color: @error-tip-color;
+                color: @error-color;
                 font-size: 14px;
                 line-height: 28px;
               }
@@ -212,7 +209,7 @@
         .product-detail-item-title {
           width: 70px;
           float: left;
-          color: #999;
+          color: @secondary-font-color;
           font-size: 14px;
           line-height: 24px;
         }
@@ -246,7 +243,7 @@
           .operate-btn {
             float: right;
             .icon-plus {
-              color: @operate-btn-color;
+              color: @secondary-color;
             }
           }
         }
@@ -258,10 +255,10 @@
               cursor: pointer;
               padding: 4px 0;
               font-size: 14px;
-              color: @content-font-color;
+              color: @primary-font-color;
               .describe-info {
                 font-size: 12px;
-                color: @label-content-color;
+                color: @secondary-font-color;
               }
               .ip-delete-operator-zone {
                 float: right;
@@ -274,7 +271,7 @@
                     margin-right: 12px;
                   }
                   .item-delete-cancel {
-                    color:@label-content-color;
+                    color: @secondary-font-color;
                   }
                 }
               }
@@ -320,10 +317,10 @@
       font-size: 14px;
     }
     .test-success-tip{
-      color: @success-tip-color;
+      color: @success-color;
     }
     .test-error-tip{
-      color: @error-tip-color;
+      color: @error-color;
     }
     .test-error-tip,.test-success-tip{
       display: inline-block;
@@ -350,13 +347,13 @@
         padding: 9px;
         .icon-tips {
           margin-right: 6px;
-          color: @hover-btn-color;
+          color: @primary-color;
         }
         .content {
           cursor: pointer;
-          color: @content-font-color;
+          color: @primary-font-color;
           .click-content {
-            color: @hover-btn-color;
+            color: @primary-color;
           }
         }
       }

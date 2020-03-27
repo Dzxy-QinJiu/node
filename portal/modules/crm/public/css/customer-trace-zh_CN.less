@@ -1,15 +1,9 @@
 @import '../../../../public/css/common-variables';
 //跟进记录
-@btn_color: #8ba9c3;
-@font_color: #999999;
-@title_color: #333333;
 @padding: 8px;
 @icon_visit_color: #9b5bf7;
-@other_icon_color: #8da8c5;
 @split_line_color: #f5f5f5;
-@hover_color: #2196f3;
 @report_delivery_color: #f7a33f;
-@error_color: #f04134;
 @border_color: #dee5ea;
 @statistic_label_hover_color: #4a8ec4;
 .customer-container {
@@ -19,7 +13,7 @@
       float: left;
       border-radius: 4px;
       border-color: #DEDFE2;
-      color: #8da8c5;
+      color: @secondary-color;
       .border_wrap{
         height: 24px;
         .date_text_wrap{
@@ -46,7 +40,7 @@
       width: 100%;
       margin-bottom: 4px;
       .ant-form-item-label label{
-        color: @font_color;
+        color: @secondary-font-color;
       }
       .ant-radio-wrapper {
         margin-top: -3px;
@@ -55,7 +49,7 @@
         .iconfont {
           padding-right: 4px;
           font-size: 16px;
-          color: @other_icon_color;
+          color: @secondary-color;
         }
         .iconfont.icon-visit-briefcase {
           color: @icon_visit_color;
@@ -96,7 +90,7 @@
             color: @statistic_label_hover_color;
           }
           .statistic-value{
-            color: @hover_color;
+            color: @primary-color;
           }
         }
         .statistic-label{
@@ -104,26 +98,26 @@
           width: 100%;
           line-height: 20px;
           font-size: 14px;
-          color: @font_color;
+          color: @secondary-font-color;
         }
         .statistic-value{
           float: left;
           width: 100%;
           line-height: 20px;
           font-size: 16px;
-          color: @title_color;
+          color: @primary-font-color;
         }
       }
       .statistic-item:last-child {
         border-right: none !important;
       }
       .statistic-item.active{
-        border-bottom: 1px solid @hover_color;
+        border-bottom: 1px solid @primary-color;
         .statistic-label{
           color: @statistic_label_hover_color;
         }
         .statistic-value{
-          color: @hover_color;
+          color: @primary-color;
         }
       }
     }
@@ -133,9 +127,9 @@
       margin-right: 14px;
       line-height: 24px;
       font-weight: bold;
-      color: @btn_color;
+      color: @secondary-color;
       &:hover {
-        color: @hover_color;
+        color: @primary-color;
       }
       i {
         padding-left: 2px;
@@ -185,13 +179,13 @@
           color: @icon_visit_color;
         }
         .item-detail-tip {
-          color: @title_color;
+          color: @primary-font-color;
           .icon-container{
             display: inline-block;
             width: 24px;
             padding-right: 0;
             font-size: 16px;
-            color: @other_icon_color;
+            color: @secondary-color;
           }
           .trace-title-name{
             max-width: 200px;
@@ -203,7 +197,7 @@
             display: inline-block;
           }
           .trace-title-phone{
-            color: @font_color;
+            color: @secondary-font-color;
           }
         }
         //舆情报送的内容
@@ -241,7 +235,7 @@
           .item-detail-content {
             white-space: normal;
             word-wrap: break-word;
-            color: @font_color;
+            color: @secondary-font-color;
             .record-content-show{
               cursor: pointer;
               .icon-edit-btn{
@@ -280,7 +274,7 @@
               //录音图标
               .iconfont.icon-play {
                 font-size: 16px;
-                //color: @blue;
+                //color: @primary-color;
                 cursor: pointer;
               }
               .iconfont.icon-play.icon-selected {
@@ -327,7 +321,7 @@
             }
             .report-content {
               display: inline-block;
-              color: #333333;
+              color: @primary-font-color;
             }
           }
           .report-time {

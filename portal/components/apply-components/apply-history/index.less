@@ -1,3 +1,4 @@
+@import "../../../public/css/common-variables";
 @import "../apply-common-style/index";
 //列表外层容器
 .apply-history-list {
@@ -5,12 +6,12 @@
     .reply-list-container {
       .history-apply-title {
         font-size: 14px;
-        color: #999;
+        color: @secondary-font-color;
         margin-bottom: 10px;
         .ant-checkbox-wrapper{
           margin-left: 10px;
           font-size: 13px;
-          color: #999;
+          color: @secondary-font-color;
           margin-bottom:0;
           font-weight: normal;
         }
@@ -62,10 +63,10 @@
 
 
         .reply-content-name {
-          color: #333;
+          color: @primary-font-color;
         }
         .reply-content-time {
-          color: #999;
+          color: @secondary-font-color;
           float: right;
         }
 
@@ -74,16 +75,16 @@
     .apply-info-label {
       margin-top: 0;
       .apply-item-topic {
-        color: #333;
+        color: @primary-font-color;
         .apply-item-status{
-          color: #999999;
+          color: @secondary-font-color;
           .clue-status {
             margin:0 10px;
             line-height: 20px;
             font-size: 13px;
             color: @approval-pending-color;
             &.processed {
-              color: #999;
+              color: @secondary-font-color;
             }
           }
         }

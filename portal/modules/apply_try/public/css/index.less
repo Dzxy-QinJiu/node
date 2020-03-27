@@ -1,3 +1,4 @@
+@import "../../../../public/css/common-variables";
 .apply-try-wrapper{
     .right-panel-modal{
         z-index: 1053!important;;
@@ -38,7 +39,7 @@
             margin: 25px 0 25px 24px;
             height: 16px;
             font-weight: bold;
-            color: #333;
+            color: @primary-font-color;
         }
         .apply-try-content-componey{
             .ant-form-item-required::after{
@@ -46,7 +47,7 @@
             }
             .ant-form-item-label{
                 font-size:14px;
-                color: #999;
+                color: @secondary-font-color;
                 font-weight: 500;
             }
         }
@@ -79,7 +80,7 @@
                 width: 0;
             }
             &.ant-radio-button-wrapper-checked{
-                border-color:#108ee9;
+                border-color:@primary-color;
                 background-color: #E4F2FE;
                 border-left: 0;
             }
@@ -91,7 +92,7 @@
                 border-left: 1px solid #d9d9d9 !important;
             }
             &:first-of-type.ant-radio-button-wrapper-checked{
-                border-left: 1px solid #108ee9 !important;
+                border-left: 1px solid @primary-color !important;
             }
         }
 
@@ -104,7 +105,7 @@
                 padding: 4px 40px;
                 width:91%;
                 height: 48px;
-                background-color: #EFA246;
+                background-color: @warn-color;
                 border: 0;
             }
         }

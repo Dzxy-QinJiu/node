@@ -1,9 +1,6 @@
 @import "../../../../public/css/common-variables";
 
 //成员详情样式文件
-@btn-color: #8da8c5;
-@label-color: #999999;
-
 .member-detail-container {
   //成员详情头部样式设置
   .right-panel-modal-content {
@@ -53,7 +50,7 @@
           width: 48px;
           height:48px;
           line-height: inherit;
-          .icon-users-ico {
+          .icon-users {
             font-size: 32px;
           }
         }
@@ -138,7 +135,7 @@
     .basic-info-label {
       float: left;
       line-height: 24px;
-      color: @label-color;
+      color: @secondary-font-color;
     }
     //编辑按钮hover时才展示
     .icon-edit-btn {
@@ -223,7 +220,7 @@
       }
       span {
         font-size: 14px;
-        color: #333;
+        color: @primary-font-color;
         margin-left: 8px;
       }
       .no-longer-tips {
@@ -247,7 +244,7 @@
     .show-password-text-zone {
       height: 24px;
       .hide-password-text {
-        color: @content-font-color;
+        color: @primary-font-color;
         font-size: 14px;
         margin-left: 6px;
         font-weight: bolder;
@@ -256,7 +253,7 @@
       .password-change-zone {
         float: right;
         cursor: pointer;
-        color: @CLICK-BLUE;
+        color: @secondary-color;
         display: none;
       }
       &:hover {

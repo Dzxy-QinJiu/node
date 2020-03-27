@@ -287,3 +287,9 @@ exports.getDetailLayoutHeight = (hasTotal) => {
     return divHeight;
 };
 
+//客户池释放类型（联合跟进以及负责人类型）
+exports.CUSTOMER_POOL_TYPES = {
+    OWNER: 'owner',//负责人
+    FOLLOWUP: 'followup',//联合跟进
+};
+

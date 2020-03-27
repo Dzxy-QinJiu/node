@@ -61,7 +61,7 @@
         height: 30px;
         line-height: 30px;
         .icon-sys-notice {
-          color: #4d96d1;
+          color: @primary-color;
           font-size: 18px;
           font-weight: bold;
           float: left;
@@ -69,10 +69,10 @@
         }
         a {
           margin-left: 5px;
-          color: #108ee9;
+          color: @primary-color;
           text-decoration: none;
           &:hover {
-            color: #62AFE6;
+            color: @primary-hover-color;
           }
         }
       }
@@ -89,11 +89,11 @@
         margin-left: 0.5em !important;
         margin-right: 0 !important;
         font-size: 16px;
-        color: @FILTER-BUTTON;
+        color: @secondary-color;
         border-color: @SEARCH-INPUT-BORDER;
         &:hover {
-          color: @BUTTON-HOVER;
-          border-color: @BUTTON-HOVER;
+          color: @primary-color;
+          border-color: @primary-color;
         }
       }
       .manual-add-btn {
@@ -103,13 +103,13 @@
         }
       }
       button.ant-btn-primary {
-        background-color: @BORDER-BLUE;
-        border-color: @BORDER-BLUE;
+        background-color: @primary-color;
+        border-color: @primary-color;
         color: #ffffff;
         &:hover {
           color: #ffffff;
-          background-color: @BUTTON-HOVER;
-          border-color: @BUTTON-HOVER;
+          background-color: @primary-hover-color;
+          border-color: @primary-hover-color;
         }
       }
       .iconfont {
@@ -131,7 +131,7 @@
       height: 32px;
       padding: 0;
       margin-right: @filter_area_margin_top;
-      color: #8da8c5;
+      color: @secondary-color;
       .iconfont {
         margin-right: 0;
       }
@@ -158,7 +158,7 @@
       z-index: 1;
       width: 14px;
       height: 14px;
-      background: @BORDER-BLUE;
+      background: @primary-color;
       border-radius: 50%;
     }
     //线索刷新列表提示
@@ -203,7 +203,7 @@
       }
       .abnornal-status-tip {
         text-align: center;
-        color: #999;
+        color: @secondary-font-color;
         font-size: 20px;
         margin-top: 10px;
       }
@@ -236,7 +236,7 @@
           font-size: 14px;
           line-height: 24px;
           font-weight: initial;
-          color: #333333;
+          color: @primary-font-color;
         }
         .ant-calendar-picker{
           .ant-calendar-picker-input {
@@ -262,7 +262,7 @@
       .clue-status-wrap {
         position: absolute;
         font-size: 14px;
-        color: #999;
+        color: @secondary-font-color;
         left: 70px;
         top: 85px;
         z-index: 10;
@@ -288,7 +288,7 @@
           margin-right: 20px;
           font-size: 14px;
           cursor: pointer;
-          color: #999;
+          color: @secondary-font-color;
           position: relative;
           .clue-status-num {
             padding-left: 5px;
@@ -297,15 +297,15 @@
             position: absolute;
             top: -10px;
             right: 0px;
-            color: #EFA246;
+            color: @warn-color;
             display: none;
             &.show-add-num{
               display: block;
             }
           }
           &.active-tab {
-            color: @has-follow-color;
-            border-bottom: 2px solid @has-follow-color;
+            color: @primary-color;
+            border-bottom: 2px solid @primary-color;
           }
         }
       }
@@ -356,7 +356,7 @@
           }
           .more-btn{
             border: none;
-            color: @CLICK-BLUE;
+            color: @secondary-color;
             background: none;
             cursor: pointer;
             margin-right: 15px;
@@ -387,7 +387,7 @@
           .clue-name {
             cursor: pointer;
             font-size: 16px;
-            color: #333333;
+            color: @primary-font-color;
             .clue-name-item {
               margin-right: 4px;
             }
@@ -401,7 +401,7 @@
               background: transparent url("../../../../static/images/new.png") 0 0;
             }
             .no-clue-name{
-              color: #999;
+              color: @secondary-font-color;
             }
           }
           .clue-trace-content {
@@ -508,8 +508,8 @@
             button.confirm-btn {
               color: #fff;
               margin-right: 10px;
-              border-color: #f04134;
-              background-color: #f04134;
+              border-color: @error-color;
+              background-color: @error-color;
             }
           }
           //有效客户
@@ -547,9 +547,9 @@
         color: @white_color;
       }
       .clue-label.intent-tag-style {
-        color: #EFA246;
+        color: @warn-color;
         background: #fff;
-        border: 1px solid #EFA246;
+        border: 1px solid @warn-color;
         border-radius: 4px;
       }
     }

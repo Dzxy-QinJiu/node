@@ -1,5 +1,4 @@
 @import "../../../../public/css/common-variables";
-@cursor: #8DA8C5;
 .assignment-strategy-info-container {
   .right-panel-modal-title {
     margin-bottom: 0 !important;
@@ -17,7 +16,7 @@
           width: 85%;
           font-size: 16px;
           float: left;
-          color: @title-color;
+          color: @primary-font-color;
           .inputWrap {
             .ant-row.ant-form-item {
               padding-right: 0;
@@ -86,12 +85,12 @@
           }
           .strategy-delete {
             cursor: pointer;
-            color: @cursor;
+            color: @secondary-color;
             margin-left: 12px;
             display: inline-block;
             font-weight: normal;
             &:hover {
-              color: darken(@cursor , 5%)
+              color: @secondary-hover-color;
             }
             .iconfont {
               font-size: 18px;
@@ -103,7 +102,7 @@
         overflow: hidden;
         font-weight: normal;
         font-size: 14px;
-        color: @LOADING_ERR_TIP;
+        color: @secondary-font-color;
         .inputWrap {
           .ant-row.ant-form-item {
             padding-right: 0;
@@ -143,7 +142,7 @@
       .edit-container {
         .basic-info-text {
           transform: translateY(-1.5px);
-          color: @title-color;
+          color: @primary-font-color;
         }
       }
       .icon-edit-btn {
@@ -159,19 +158,19 @@
     .strategy-card-needs {
       margin-top: 0;
       font-size: 14px;
-      color: @LOADING_ERR_TIP;
+      color: @secondary-font-color;
       .detail-card-content {
         .strategy-needs-details {
           .needs-label {
             float: left;
-            color: #333;
+            color: @primary-font-color;
           }
           #condition-province {
             .needs-label {
               line-height: 22px;
               margin-right: 9px;
               font-size: 14px;
-              color: @LOADING_ERR_TIP
+              color: @secondary-font-color;
             }
             .ant-form-item {
               margin-bottom: 0;
@@ -194,7 +193,7 @@
         font-size: 14px;
         .assignee-label {
           float: left;
-          color: @LOADING_ERR_TIP;
+          color: @secondary-font-color;
           line-height: 23px;
         }
         .basic-edit-field {

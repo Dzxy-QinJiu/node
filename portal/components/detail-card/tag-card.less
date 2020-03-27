@@ -1,5 +1,5 @@
 //标签的样式
-@font_color: #8da8c5;
+@import "../../public/css/common-variables";
 @right_panel_margin: 8px;
 @input_border_color: #e2e2e2;
 @item_height: 24px;
@@ -13,7 +13,7 @@
   .tag-title-text {
     margin-right: @right_panel_margin;
     font-size: 14px;
-    color: #999999;
+    color: @secondary-font-color;
   }
   .no-tag-text {
     font-size: 14px;
@@ -30,7 +30,7 @@
     padding: 2px @right_panel_margin;
     display: inline-block;
     margin-bottom: @right_panel_margin;
-    color: @font_color;
+    color: @secondary-color;
   }
   .tag-selected {
     background: #edf1f6;
@@ -57,7 +57,7 @@
       border-left: 1px solid @input_border_color;
       border-radius: 0 !important;
       font-size: 16px;
-      color: @font_color;
+      color: @secondary-color;
     }
   }
 }

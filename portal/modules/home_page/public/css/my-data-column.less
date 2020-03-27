@@ -1,4 +1,4 @@
-@font-color: #333333;
+@import "../../../../public/css/common-variables";
 @border-color: #e3e8ec;
 .team-data-wrap {
   .column-item-content{
@@ -15,7 +15,7 @@
 .my-data-title {
   line-height: 24px;
   font-size: 14px;
-  color: @font-color;
+  color: @primary-font-color;
 }
 
 //各类型标题下的数据
@@ -28,16 +28,16 @@
 }
 
 .my-contact-performance {
-  color: #EFA246;
+  color: @warn-color;
 }
 
 .call-time-total {
-  color: #2196F3;
+  color: @primary-color;
 }
 
 .contact-customer-count, .contact-clue-count, .expire-contract-count {
   //color: #28AF6A;
-  color: #333;
+  color: @primary-font-color;
 }
 
 
@@ -85,13 +85,13 @@
 .performance-data-left {
   float: left;
   font-size: 16px;
-  color: #EFA246;
+  color: @warn-color;
 }
 
 .performance-data-right {
   float: right;
   font-size: 14px;
-  color: @font-color;
+  color: @primary-font-color;
 }
 
 //各列表数据样式
@@ -151,7 +151,7 @@
     .card-container{
       .card-title{
         font-weight: normal;
-        color: #333;
+        color: @primary-font-color;
         font-size: 14px;
         line-height: 24px;
         .title-name{
@@ -178,14 +178,14 @@
   }
 }
 .see-expire-contract-btn{
-  color: #333333;
+  color: @primary-font-color;
 }
 
 //提取线索统计样式
 .extract-clue-wrap{
   margin-top: 4px;
   .extract-clue-data{
-    color: #333333;
+    color: @primary-font-color;
     font-size: 14px;
   }
 }

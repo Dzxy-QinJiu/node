@@ -329,7 +329,6 @@
 }
 
 .apply_manage_wrap.user-manage-v2, .my-work-detail-panel, .historical-detail-panel {
-  @font-color: #999999;
   @bordercolor: #e1e9eb;
   padding: 0;
   min-width: @screen-md;
@@ -370,7 +369,7 @@
       .apply-type-filter {
         position: relative;
         float: left;
-        color: @title-color;
+        color: @primary-font-color;
         cursor: pointer;
         .apply-type-filter-btn {
           float: left;
@@ -466,13 +465,12 @@
         border-bottom: 1px solid #f0f4f7;
         cursor: pointer;
         &:hover{
-          background-color: @current-item-color;
+          background-color: @hover-item-color;
         }
         &.current {
           background-color: @current-item-color;
-          border-left: 3px solid @apply-active-color;
           dt span {
-            color: @title-color;
+            color: @primary-font-color;
           }
         }
         em, dt {
@@ -498,7 +496,7 @@
             font-size: 13px;
             color: @approval-pending-color;
             &.processed {
-              color: @font-color;
+              color: @secondary-font-color;
             }
           }
         }
@@ -506,7 +504,7 @@
           line-height: 18px;
           font-size: 13px;
           padding-bottom: 6px;
-          color: @font-color;
+          color: @secondary-font-color;
           & > span {
             float: left;
             max-width: 65%;
@@ -536,12 +534,12 @@
       padding: 20px;
       .apply-type-tip {
         font-size: 16px;
-        color: @title-color;
+        color: @primary-font-color;
       }
       .order-id {
         float: right;
         font-size: 14px;
-        color: @font-color;
+        color: @secondary-font-color;
       }
     }
     .apply-detail-content {
@@ -612,7 +610,7 @@
           padding-bottom: 6px;
           a {
             font-size: 14px;
-            color: @title-color;
+            color: @primary-font-color;
             text-decoration: none;
           }
           .icon-arrow-right {
@@ -629,7 +627,7 @@
             cursor: pointer;
           }
           .user-nick-name {
-            color: @font-color;
+            color: @secondary-font-color;
           }
         }
         //用户名
@@ -643,17 +641,32 @@
         }
         .user-name-wrap {
           display: inline-block;
-          width: 260px;
+          position: relative;
           form {
             float: left;
-            width: 200px;
+            .ant-form-item-control input{
+              width: 200px;
+            }
             .ant-form-item {
               margin-bottom: 0;
             }
+            .ant-form-explain{
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              max-width: 860px;
+              a{
+                margin-left: 5px;
+              }
+            }
           }
           .save-buttons {
-            float: left;
+            position: absolute;
+            left: 200px;
             margin-top: 4px;
+          }
+          &.home-work .ant-form-explain{
+            max-width: 500px;
           }
         }
         //密码
@@ -836,7 +849,7 @@
 
     .approval {
       text-align: center;
-      color: #4d96d1;
+      color: @primary-color;
       font-size: 14px;
       border-radius: 4px;
       border: 1px solid #748fa0;
@@ -860,7 +873,7 @@
       }
       .approval_person {
         line-height: 22px;
-        color: @font-color;
+        color: @secondary-font-color;
         .col-3 {
           white-space: nowrap;
           text-overflow: ellipsis;
