@@ -502,10 +502,6 @@ class SalesReport extends React.Component {
                 );
             }
             charts.push(
-                //客户阶段
-                customerCharts.getCustomerStageChart(),
-                //客户活跃度统计
-                customerCharts.getCustomerActiveTrendChart('客户活跃度统计', 'day', true),
                 //新开客户登录
                 reportCharts.newCustomerLoginChart(),
                 //合格客户数统计
