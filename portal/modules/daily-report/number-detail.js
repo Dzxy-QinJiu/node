@@ -32,7 +32,7 @@ class NumberDetail extends React.Component {
                                                     </div>
                                                 ) : null}
                                             </div>
-                                            <div className="customer-name clickable" onClick={this.onCustomerNameClick.bind(null, item.customer_id)}>
+                                            <div className="customer-name">
                                                 {item.customer_name}
                                             </div>
                                         </div>
