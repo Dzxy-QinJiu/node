@@ -152,6 +152,7 @@ var NavSidebar = createReactClass({
         rewardClueCount: PropTypes.number,
         handleOpenLeftPanel: PropTypes.func,
         isShowCustomerService: PropTypes.bool,
+        closeChatPanel: PropTypes.func,
     },
 
     changeUserInfoLogo: function(userLogoInfo) {
@@ -492,7 +493,8 @@ var NavSidebar = createReactClass({
         return null;
     },
     //在线咨询
-    onChatClick() {
+    onChatClick(event) {
+        event.stopPropagation();
         //如果有客服时，点击触发出客服界面
         _.isFunction(this.props.handleOpenLeftPanel) && this.props.handleOpenLeftPanel();
     },
@@ -505,7 +507,7 @@ var NavSidebar = createReactClass({
             
                 {
                     _.map(linkList, obj =>
-                        <li key={obj.id} onClick={this.closeNotificationPanel}>
+                        <li key={obj.id} onClick={this.closeNotificationAndChatPanel}>
                             <NavLink to={obj.routePath} activeClassName="active">
                                 {obj.name}
                             </NavLink>
@@ -532,12 +534,12 @@ var NavSidebar = createReactClass({
         const currentPageCategory = this.getCurrentCategory();
         let wrapperCls = classNames('sidebar-menu-li', {
             'sidebar-backend-config': true,
-            'active': !this.props.isShowNotificationPanel && currentPageCategory === 'settings',
+            'active': !this.props.isShowCustomerService && !this.props.isShowNotificationPanel && currentPageCategory === 'settings',
             // 'reduce-nav-icon-li': this.state.isReduceNavIcon,
             // 'reduce-nav-margin-li': this.state.isReduceNavMargin
         });
         let backendConfigCls = classNames('iconfont icon-nav-setting', 'sidebar-bottom-icon', {
-            'deactivation': this.props.isShowNotificationPanel,
+            'deactivation': this.props.isShowCustomerService || this.props.isShowNotificationPanel,
             // 'nav-small-icon': this.isShowSmallIcon()
         });
         // let backendConfigSpanCls = classNames({
@@ -568,7 +570,7 @@ var NavSidebar = createReactClass({
         }
         const currentPageCategory = this.getCurrentCategory();
         let userInfoCls = classNames('sidebar-userinfo', {
-            'active': currentPageCategory === 'user-preference' && !this.props.isShowNotificationPanel
+            'active': currentPageCategory === 'user-preference' && !this.props.isShowNotificationPanel && !this.props.isShowCustomerService
         });
         return (
             <div className={userInfoCls}>
@@ -588,7 +590,7 @@ var NavSidebar = createReactClass({
                                 userName={this.state.userInfo.user_name}
                                 nickName={this.state.userInfo.nick_name}
                                 round="true" link="true" url="/user-preference"
-                                isActiveFlag={this.props.isShowNotificationPanel}
+                                isActiveFlag={this.props.isShowNotificationPanel || this.props.isShowCustomerService}
                                 isUseDefaultUserImage={true}
                             /> : <NavLink className='user-default-logo-wrap' to='/user-preference'><i className='iconfont icon-user-logo-default'/></NavLink>}
                     </div>
@@ -644,10 +646,13 @@ var NavSidebar = createReactClass({
         this.saveModalClicked();
     },
 
-    closeNotificationPanel(event) {
+    closeNotificationAndChatPanel(event) {
         event.stopPropagation();
         this.props.closeNotificationPanel();
+        // 关闭聊天窗口
+        _.isFunction(this.props.closeChatPanel) && this.props.closeChatPanel();
     },
+    
     //展示未读回复的图标提示
     renderUnreadReplyTip(category) {
         //是申请审批，有未读回复数并且，所有申请待审批数都为0
@@ -703,12 +708,12 @@ var NavSidebar = createReactClass({
         return this.state.menus.map((menu, i) => {
             let category = menu.routePath.replace(/\//, '');
             //是否添加选中的菜单样式类
-            const addActive = currentPageCategory === category;
+            const addActive = currentPageCategory === category && !this.props.isShowCustomerService && !this.props.isShowNotificationPanel;
             //选中状态类
             let extraClass = classNames('iconfont', {
                 [`icon-${category}-ico`]: true,
                 'active': addActive,
-                'deactivation': this.props.isShowNotificationPanel
+                'deactivation': this.props.isShowNotificationPanel || this.props.isShowCustomerService
             });
             //菜单项类
             let routeCls = classNames('sidebar-menu-li', {
@@ -822,7 +827,7 @@ var NavSidebar = createReactClass({
     render: function() {
         const trigger = this.getTriggerType();
         return (
-            <nav className="navbar" onClick={this.closeNotificationPanel}>
+            <nav className="navbar" onClick={this.closeNotificationAndChatPanel}>
                 <div className="container">
                     <div className="logo-and-menus" ref="logoAndMenus">
                         <div className="header-logo" title={Intl.get('menu.home.page', '首页')}>
