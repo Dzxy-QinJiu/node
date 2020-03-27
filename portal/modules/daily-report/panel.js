@@ -40,7 +40,7 @@ class ReportPanel extends React.Component {
 
     render() {
         return (
-            <div className="daily-report daily-report-panel">
+            <div className="daily-report daily-report-panel" data-tracename="销售日报右侧面板">
                 <Detail
                     title={this.getPanelTitle()}
                     content={this.getPanelContent()}
@@ -59,7 +59,7 @@ class ReportPanel extends React.Component {
     getPanelTitle() {
         const { currentView, reportConfig, reportDetail, numberDetail, isPreviewReport } = this.state;
 
-        let title = currentView;
+        let title = '';
         const nickname = _.get(reportDetail, 'nickname', '');
 
         switch(currentView) {
@@ -74,13 +74,13 @@ class ReportPanel extends React.Component {
                         {nickname}
                         {numberDetail.name} &nbsp;
                         {numberDetail.value}
-                        {_.isNumber(numberDetail.value) ? '个' : null}
+                        {_.isNumber(numberDetail.value) ? Intl.get('contract.22', '个') : null}
                     </span>
                 </span>;
                 break;
             case VIEW_TYPE.REPORT_DETAIL:
                 if (isPreviewReport) {
-                    title = nickname + '的报告详情';
+                    title = Intl.get('analysis.someone.report.details', '{someone}的报告详情', {someone: nickname});
                 } else {
                     title = reportConfig.name;
                 }
@@ -90,6 +90,12 @@ class ReportPanel extends React.Component {
                     <span>{reportConfig.name}</span>
                     <Switch defaultChecked={reportConfig.status === 'on'} onChange={this.onReportStatusSwitchChange.bind(this, reportConfig)} />
                 </div>;
+                break;
+            case VIEW_TYPE.OPEN_REPORT:
+                title = Intl.get('analysis.open.report', '开启报告');
+                break;
+            case VIEW_TYPE.SET_RULE:
+                title = Intl.get('crm.customer.rule.name', '规则设置');
                 break;
         }
 
@@ -106,7 +112,6 @@ class ReportPanel extends React.Component {
             case VIEW_TYPE.OPEN_REPORT: return <OpenReport {...props} />;
             case VIEW_TYPE.CONFIG_REPORT: return <ConfigReport {...props} />;
             case VIEW_TYPE.SET_RULE: return <SetRule {...props} />;
-            case VIEW_TYPE.REPORT_LIST: return <ReportList {...props} />;
             case VIEW_TYPE.REPORT_DETAIL: return <ReportDetail {...props} />;
             case VIEW_TYPE.NUMBER_DETAIL: return <NumberDetail {...props} />;
         }

@@ -3,6 +3,7 @@
  */
 
 import DetailCard from 'CMP_DIR/detail-card';
+import { phoneMsgEmitter, userDetailEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { secondsToHourMinuteSecond } from 'PUB_DIR/sources/utils/time-format-util';
 
 class NumberDetail extends React.Component {
@@ -38,12 +39,12 @@ class NumberDetail extends React.Component {
                                     </div>
                                 ) : (
                                     <div className="customer-detail">
-                                        <div className="customer-name">
+                                        <div className="customer-name clickable" onClick={this.onCustomerNameClick.bind(null, item.customer_id)}>
                                             {item.customer_name}
                                         </div>
                                         {item.app_user_name ? (
                                             <div className="app-user-names">
-                                                <div className="app-user-name">
+                                                <div className="app-user-name clickable" onClick={this.onUserNameClick.bind(null, item.app_user_id)}>
                                                     {item.app_user_name}
                                                 </div>
                                             </div>
@@ -56,6 +57,18 @@ class NumberDetail extends React.Component {
                 ))}
             </div>
         );
+    }
+
+    onCustomerNameClick(customerId) {
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customerId
+            }
+        });
+    }
+
+    onUserNameClick(userId) {
+        userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, { userId: userId });
     }
 }
 

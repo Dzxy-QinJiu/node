@@ -27,18 +27,18 @@ class SetRule extends React.Component {
         const renderButtonZone = renderButtonZoneFunc.bind(this);
 
         return (
-            <div>
+            <div data-tracename="规则设置">
                 <Form>
                     <DetailCard
-                        title="适用范围"
+                        title={Intl.get('sales.process.suitable.objects', '适用范围')}
                         content={(
                             <div>
-                                {renderFormItem('谁可填写', 'sales_team_ids', {
+                                {renderFormItem('', 'sales_team_ids', {
                                     type: 'select',
                                     options: _.map(this.props.teamList, item => ({name: item.group_name, value: item.group_id})),
                                     elementProps: {
                                         mode: 'multiple',
-                                        placeholder: '请选择团队'
+                                        placeholder: Intl.get('team.position.select.team', '请选择团队')
                                     },
                                     formItemLayout: {
                                         labelCol: { span: 0 },
@@ -50,16 +50,16 @@ class SetRule extends React.Component {
                     />
 
                     <DetailCard
-                        title="统计周期"
+                        title={Intl.get('analysis.statistical.cycle', '统计周期')}
                         content={(
                             <div>
                                 {renderFormItem('', 'statistic_interval', {
                                     type: 'select',
                                     options: [{
-                                        name: '按日',
+                                        name: Intl.get('analysis.by.day', '按日'),
                                         value: 'day'
                                     }, {
-                                        name: '按周',
+                                        name: Intl.get('analysis.according.to.week', '按周'),
                                         value: 'week'
                                     }],
                                     formItemLayout: {
@@ -74,17 +74,17 @@ class SetRule extends React.Component {
 
                 {renderButtonZone([{
                     func: this.save.bind(this, {status: 'on'}),
-                    name: '确认开启',
+                    name: Intl.get('analysis.confirm.to.open', '确认开启'),
                     type: 'primary',
                     hide: isConfigReport
                 }, {
                     func: this.save.bind(this, null),
-                    name: '保存',
+                    name: Intl.get('common.save', '保存'),
                     type: 'primary',
                     hide: !isConfigReport
                 }, {
                     func: isConfigReport ? hideReportPanel : () => { this.props.updateState({ currentView: VIEW_TYPE.OPEN_REPORT }); },
-                    name: '取消',
+                    name: Intl.get('common.cancel', '取消'),
                 }])}
             </div>
         );

@@ -19,7 +19,7 @@ class OpenReport extends React.Component {
         const { updateState, reportConfig } = this.props;
 
         return (
-            <div>
+            <div data-tracename="开启报告视图">
                 {_.map(this.props.reportConfigList, reportConfig => (
                     <DetailCard
                         title={reportConfig.name}
@@ -35,12 +35,13 @@ class OpenReport extends React.Component {
 
         return (
             <div>
-                <a href="javascript:void(0)" onClick={() => { updateState({ currentView: VIEW_TYPE.REPORT_DETAIL, reportConfig }); }}>查看</a>
+                <a href="javascript:void(0)" onClick={() => { updateState({ currentView: VIEW_TYPE.REPORT_DETAIL, reportConfig }); }}>{Intl.get('user.apply.check', '查看')}</a>
 
                 <Button
+                    data-tracename="点击开启按钮"
                     onClick={() => { updateState({ currentView: VIEW_TYPE.SET_RULE, reportConfig }); }}
                 >
-                    开启
+                    {Intl.get('common.app.status.open', '开启')}
                 </Button>
             </div>
         );
