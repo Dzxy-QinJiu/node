@@ -69,7 +69,6 @@ class SalesReport extends React.Component {
 
             if (memberId) {
                 this.getSalesBaseInfo(memberId);
-                this.getSalesRole(memberId);
             }
         } else {
             this.getMemberList();
@@ -115,47 +114,36 @@ class SalesReport extends React.Component {
 
             if (memberId) {
                 this.getSalesBaseInfo(memberId);
-                this.getSalesRole(memberId);
             }
         });
     };
 
     //获取销售基本信息
     getSalesBaseInfo = (id) => {
-        ajax.send({
-            url: '/rest/global/user/' + id,
-        }).then(result => {
-            if (result && result.user_id) {
-                if (result.create_date) {
-                    result.create_date = moment(result.create_date).format(oplateConsts.DATE_FORMAT);
+        const promises = [
+            ajax.send({ url: '/rest/global/user/' + id }),
+            ajax.send({ url: '/rest/sales/role?member_id=' + id })
+        ];
+
+        $.when(...promises).done((...result) => {
+            let baseInfo = result[0];
+            const roleInfo = result[1];
+
+            if (baseInfo && baseInfo.user_id) {
+                if (baseInfo.create_date) {
+                    baseInfo.create_date = moment(baseInfo.create_date).format(oplateConsts.DATE_FORMAT);
                 }
 
-                const currentMember = _.extend({}, this.state.currentMember, result);
+                if (roleInfo && roleInfo.teamrole_name) {
+                    baseInfo.role_name = roleInfo.teamrole_name;
+                }
+
+                const currentMember = _.extend({}, this.state.currentMember, baseInfo);
 
                 this.setState({
                     currentMember
                 });
             }
-        });
-    };
-
-    //获取销售角色
-    getSalesRole = (id) => {
-        let roleName = '';
-
-        ajax.send({
-            url: '/rest/sales/role?member_id=' + id,
-        }).done(result => {
-            if (result && result.teamrole_name) {
-                roleName = result.teamrole_name;
-            }
-        }).fail(err => {
-        }).always(() => {
-            const currentMember = _.extend({}, this.state.currentMember, {role_name: roleName});
-
-            this.setState({
-                currentMember
-            });
         });
     };
 
@@ -216,7 +204,6 @@ class SalesReport extends React.Component {
     //处理成员变更事件
     onMemberChange = (memberId) => {
         this.getSalesBaseInfo(memberId);
-        this.getSalesRole(memberId);
 
         teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberId);
         storageUtil.local.set(STORED_MEMBER_ID_KEY, memberId);
