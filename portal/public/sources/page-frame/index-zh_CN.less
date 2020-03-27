@@ -42,7 +42,7 @@ body.macintosh pre {
         a {
             font-size: @btn-font-size;
             &.active {
-                border-bottom: 4px solid @BORDER-BLUE;
+                border-bottom: 4px solid @primary-color;
             }
         }
     }
@@ -67,7 +67,7 @@ body.macintosh pre {
         height: @btn-height !important;
         vertical-align: middle;
         min-width: @btn-min-width;
-        color: @btn-font-color;
+        color: @secondary-color;
         &.ant-btn-primary {
             color: white;
         }
@@ -75,12 +75,12 @@ body.macintosh pre {
     .ant-input-number {
         min-width: auto;
         .ant-input-number-input {
-            color: @btn-font-color;
+            color: @secondary-color;
         }
     }
     .ant-calendar-picker-input {
         height: @btn-height;
-        color: @btn-font-color;
+        color: @secondary-color;
         font-size: @btn-font-size;
     }
     .ant-select-selection {
@@ -101,12 +101,19 @@ body.macintosh pre {
                 height: @btn-height;
                 line-height: @btn-height;
                 margin-top: 0;
-                color: @btn-font-color;
+                color: @secondary-color;
             }
         }
     }
 }
-
+// 主色调按钮的样式
+.btn-item .ant-btn-primary, .btn-item.ant-btn-primary, .ant-btn-primary, .btn-primary-sure {
+    background-color: @primary-color;
+    &:hover {
+        background-color: @primary-hover-color;   
+    }
+}
+// 普通主界面操作按钮
 .btn-item {
     float: left;
     display: block;
@@ -117,12 +124,12 @@ body.macintosh pre {
     height: @btn-height ;
     vertical-align: middle;
     min-width: @btn-min-width;
-    color: @btn-font-color;
+    color: @secondary-color;
     border-radius: @btn-radius;
     border-color:@SEARCH-INPUT-BORDER;
     &:hover{
-       color: @BUTTON-HOVER;
-       border-color:@BUTTON-HOVER;
+       color: @primary-color;
+       border-color: @primary-color;
     }
     &.ant-btn-primary {
         color: white ;
@@ -151,7 +158,7 @@ body.macintosh pre {
         height: @btn-height;
         vertical-align: middle;
         min-width: @btn-min-width;
-        color: @btn-font-color;
+        color: @secondary-color;
         &.ant-btn-primary {
             color: white;
         }
@@ -163,10 +170,10 @@ body.macintosh pre {
 
 // 操作按钮样式
 .handle-btn-item{
-    color: @CLICK-BLUE;
+    color: @secondary-color;
     cursor: pointer;
     &:hover{
-      color: @BUTTON-HOVER;
+      color: @primary-color;
     }
 }
 
@@ -245,8 +252,8 @@ body.macintosh pre {
 }
 
 .btn-primary-sure {
-    @basiccolor: #4d96d1;
-    @hovercolor: #478ebf;
+    @basiccolor: @primary-color;
+    @hovercolor: @primary-hover-color;
     border-color: @basiccolor ;
     background-color: @basiccolor ;
     color: #fff;
@@ -319,7 +326,7 @@ body.macintosh pre {
         -webkit-line-clamp: 3;
         overflow: hidden;
         font-size: 12px;
-        color: #999;
+        color: @secondary-font-color;
     }
 }
 
@@ -341,7 +348,7 @@ body.macintosh pre {
 
 .noty_bar {
     .noty_close {
-        color: #999;
+        color: @secondary-font-color;
         opacity: 1 !important;
         display: block !important;
         top: 4px !important;

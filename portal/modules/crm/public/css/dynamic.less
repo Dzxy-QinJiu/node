@@ -1,4 +1,4 @@
-@time_line_color: #8da8c5;
+@import "../../../../public/css/common-variables";
 .dynamic-error-tip{
   display: inline-block;
   width: 100%;
@@ -12,7 +12,7 @@
   background: #ffffff;
   .relate-name{
     cursor: pointer;
-    color: @time_line_color;
+    color: @secondary-color;
   }
   //时间线的样式
   .time-line.group-by-day {
@@ -33,9 +33,9 @@
       .ant-timeline-item {
         //时间点的样式
         .ant-timeline-item-head-blue {
-          border-color: @time_line_color;
-          color: @time_line_color;
-          background-color: @time_line_color;
+          border-color: @secondary-color;
+          color: @secondary-color;
+          background-color: @secondary-color;
         }
         .ant-timeline-item-head {
           width: 8px;
@@ -44,7 +44,7 @@
         }
         //时间线
         .ant-timeline-item-tail {
-          border-left: 1px solid @time_line_color;
+          border-left: 1px solid @secondary-color;
           left: 8px;
           top: 16px;
         }

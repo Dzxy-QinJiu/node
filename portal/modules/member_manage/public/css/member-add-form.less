@@ -1,10 +1,9 @@
+@import "../../../../public/css/common-variables";
 //添加成员时，角色选中后就不再在下拉列表中展示的样式设置
 .ant-select-dropdown-menu-item-selected.role-options-selected {
   display: none;
 }
 
-// 错误提示的字体以及边框颜色
-@error_tips_color: #f04134;
 //添加成员面版样式
 .member-add-container {
   form {
@@ -36,13 +35,13 @@
         line-height: 20px;
         margin-bottom: 10px;
         padding-left: 105px;
-        color: @error_tips_color;
+        color: @error-color;
       }
       .input-red-border {
         position: relative;
         display: inline-block;
         width: 100%;
-        border: 1px solid @error_tips_color;
+        border: 1px solid @error-color;
         line-height: 1.5;
         color: #666;
         background-color: #fff;
@@ -60,7 +59,7 @@
           width: 92%;
         }
         .iconfont{
-          color: #8DA8C5;
+          color: @secondary-color;
           cursor: pointer;
         }
       }
@@ -69,7 +68,7 @@
             .operator-buttons-zone {
               text-align: right;
               .add-btn {
-                color: #8da8c5;
+                color: @secondary-color;
               }
               .cancel-btn {
                 margin-left: 12px;

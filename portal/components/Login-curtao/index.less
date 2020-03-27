@@ -1,6 +1,6 @@
 /*登录界面的样式文件*/
+@import "../../public/css/common-variables";
 @wihte-color: #ffffff;
-@font-color: #333333;
 @title-border-color: #dedfe2;
 @form-width: 276px;
 @font-family: 'Noto Sans CJK SC', 'Noto Sans CJK', 'Source Han Sans', source-han-sans-simplified-c, sans-serif !important;
@@ -42,7 +42,7 @@
         color: #ffffff;
         background: transparent;
         &:hover{
-            border: 1px solid #2196f3;
+            border: 1px solid @primary-color;
             background: transparent;
         }
     }
@@ -84,14 +84,14 @@
         }
         .MuiFormLabel-root{
             font-family: @font-family;
-            color:#999999;
+            color: @secondary-font-color;
         }
         // 输入框label内容颜色设置，
         .MuiFormLabel-root.Mui-focused{
-            color:#999999;
+            color: @secondary-font-color;
         } 
         .MuiInput-underline:after{
-            border-bottom: 2px solid #2196f3;
+            border-bottom: 2px solid @primary-color;
         }
         .input-item{
             position: relative;
@@ -121,6 +121,13 @@
             width: @form-width;
             margin: 0 auto;
         }
+         //链接的颜色设置
+        a {
+            color: @primary-color;
+            &:hover{
+                color: @primary-hover-color;
+            }
+        }
     }
     .login-error-tip, .register-error-tip {
         margin-top: 4px;
@@ -139,7 +146,7 @@
         margin-bottom: 4px;
         font-size: 14px;
         >span{
-            color: #999;
+            color: @secondary-font-color;
         }
     }
     .login-find-password-tip{
@@ -151,14 +158,14 @@
 }
 #footer {
   .footer-content {
-    color: #999999; 
+    color: @secondary-font-color;
     a {
-        color: #999999;      
+        color: @secondary-font-color;
     }
   }
 }
 ::selection {
-    color: @font-color !important;
+    color: @primary-font-color !important;
 }
 @media (max-width: 500px) {
     .csm-form-wrap{

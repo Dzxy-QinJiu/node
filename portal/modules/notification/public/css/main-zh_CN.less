@@ -37,7 +37,7 @@
   .ant-tabs {
     position: absolute;
     top: 0;
-    left: 75px;
+    left: @sidebar-min-width;
     z-index: 110;
     height: 100%;
     width: 35%;
@@ -147,7 +147,7 @@
             margin: 20px 24px;
             .notify-text {
               font-size: 14px;
-              color: #333333;
+              color: @primary-font-color;
               margin-right: 9px;
             }
           }
@@ -207,7 +207,7 @@
                   float: right;
                   color: #8fd5f1;
                   &:hover {
-                    color: #108ee9;
+                    color: @primary-color;
                   }
                 }
                 .notice-split-line {
@@ -219,7 +219,7 @@
                   font-size: 14px;
                   margin: 10px 0 20px;
                   height: 24px;
-                  color: #108ee9;
+                  color: @primary-color;
                   .anticon-loading {
                     padding: 0 5px;
                   }
@@ -230,7 +230,7 @@
                   }
                   .system-notice-time {
                     .login-count {
-                      color: #108ee9;
+                      color: @primary-color;
                       padding: 0 2px;
                     }
                     .login-time {

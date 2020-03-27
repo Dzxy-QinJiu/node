@@ -1,8 +1,7 @@
 /*
 用户协议的样式
  */
-@font-color: #333;
-@blue-color: #2196f3;
+ @import "../../../public/css/common-variables";
 @user-agree-width: 912px;
 @user-agree-width-middle: 600px;
 @user-agree-width-small: 300px;
@@ -23,7 +22,7 @@ body{
       margin-left: 12px;
       padding-left: 12px;
       border-left: 1px solid #CCCCCC;
-      color: #333333;
+      color: @primary-font-color;
       font-size: 16px;
     }
   }
@@ -35,7 +34,7 @@ body{
     width: @user-agree-width;
     margin: 54px auto;
     padding: 48px 0 48px 48px;
-    color: #333333;
+    color: @primary-font-color;
     background-color: #ffffff;
     .content-title {
       margin-bottom: 30px;

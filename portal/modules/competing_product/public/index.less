@@ -1,6 +1,4 @@
-// 错误提示的字体以及边框颜色
-@error_tips_color: #f04134;
-
+@import "../../../public/css/common-variables";
 .competing-product-container {
   padding: 12px;
   .competing-product-content-wrap {
@@ -26,7 +24,7 @@
           float: left;
           width: 100%;
           margin-top: -22px;
-          color: @error_tips_color;
+          color: @error-color;
         }
       }
     }
@@ -45,7 +43,7 @@
           height:56px;
           border: 1px solid #E5E5E5;
           border-radius:4px;
-          color: #333;
+          color: @primary-font-color;
           margin: 16px 16px 0 0;
           display: inline-block;
           .mb-tag-content {
@@ -65,7 +63,7 @@
               width: 24px;
               height: 24px;
               border-radius: 50%;
-              background-color: #8DA8C5;
+              background-color: @secondary-color;
               padding-left: 1px;
               .icon-delete {
                 color: #fff;

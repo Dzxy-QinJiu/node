@@ -1,7 +1,5 @@
 @import "../../../../public/css/common-variables";
 
-@FINISHSTATUSBACKGROUND: #8DA8C5;
-@PHONENORMALCOLOR: #2196f3;
 //session过期后，提示重输密码的样式设置
 .overflow-break {
   white-space: normal;
@@ -118,7 +116,7 @@
       .contact-info-detail {
         overflow: hidden;
         padding: 8px;
-        background-color: @PHONENORMALCOLOR;
+        background-color: @primary-color;
         .call-operation-button {
           height: 18px;
           margin-left: 10px;
@@ -167,7 +165,7 @@
         }
       }
       .contact-info-detail.finish-phone-call {
-        background: @FINISHSTATUSBACKGROUND;
+        background: @secondary-color;
       }
       //跟进记录及相关操作
       .trace-and-handle-btn {
@@ -389,7 +387,7 @@
             padding-bottom: 5px;
             button {
               background: #fff;
-              color: #4d96d1;
+              color: @primary-color;
             }
           }
 
@@ -409,7 +407,7 @@
           height: 35px;
           line-height: 35px;
           text-align: left;
-          color: #4d96d1;
+          color: @primary-color;
           cursor: pointer;
           border-radius: 4px;
           padding-left: 10px;

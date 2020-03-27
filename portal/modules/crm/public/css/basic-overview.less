@@ -1,11 +1,6 @@
+@import "../../../../public/css/common-variables";
 //客户详情概览页
-@font_color: #333333;
-@label_color: #999999;
-@btn_color: #8da8c5;
 @card_margin: 8px;
-@error_tips_color: #f04134;
-//选项框提示
-@select_warning_color: #efa246;
 .basic-overview-contianer {
   .no-data-text {
     padding-left: 4px;
@@ -15,7 +10,7 @@
   .overview-user-tip {
     line-height: 22px;
     font-size: 14px;
-    color: @font_color;
+    color: @primary-font-color;
     .icon-warn-icon {
       float: left;
       margin-right: 4px;
@@ -27,7 +22,7 @@
     }
     .icon-arrow-right {
       float: right;
-      color: @btn_color;
+      color: @secondary-color;
     }
   }
   //所属销售的样式
@@ -36,7 +31,7 @@
       font-size: 14px;
       .sales-team-label {
         float: left;
-        color: @label_color;
+        color: @secondary-font-color;
         line-height: 24px;
       }
       .duplicate-sales-warning{
@@ -49,7 +44,7 @@
           float: left;
           margin-top: -62px;
           margin-left: 52px;
-          color: @select_warning_color;
+          color: @warn-color;
         }
       }
     }
@@ -64,11 +59,11 @@
     .crm-score-label{
       padding-right: 6px;
       font-size: 14px;
-      color: @label_color;
+      color: @secondary-font-color;
     }
     .crm-score-title{
       .crm-score-text{
-        color: #2196f3;
+        color: @primary-color;
       }
       .anticon-question-circle-o{
         color: #ccc;
@@ -103,9 +98,9 @@
         word-break: break-all;
         .ant-tag{
           margin-bottom: @card_margin;
-          .icon-active-users-ico{
+          .icon-active-users{
             margin-right: 4px;
-            color: @label_color;
+            color: @secondary-font-color;
           }
         }
         .no-qualify-account-tip{
@@ -231,7 +226,7 @@
         color: #b0b6ba;
         cursor: pointer;
         &:hover {
-          color: #2196f3;
+          color: @primary-color;
         }
       }
     }
@@ -252,10 +247,10 @@
         position: relative;
         top: 1px;
         margin-right: 4px;
-        color: @select_warning_color;
+        color: @warn-color;
       }
       .apply-error-text {
-        color: #333333;
+        color: @primary-font-color;
         margin-left: 4px;
       }
     }
@@ -264,10 +259,10 @@
 .tag-card-container{
   .detail-card-source-classify{
     font-size: 14px;
-    color: @font_color;
+    color: @primary-font-color;
     margin-left: 6px;
     &:first-of-type{
-      color: @label_color;
+      color: @secondary-font-color;
       display: inline-block;
       width: 60px;
       margin-left: 0;

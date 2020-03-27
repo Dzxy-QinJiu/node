@@ -1426,7 +1426,7 @@ batchTopBarDropList = (isMinWeb) => {
                                     placement="bottomRight"
                                     overlayClassName="explain-pop">
                                     <Button>
-                                        <i className="iconfont icon-delete handle-btn-item"/>
+                                        <i className="iconfont icon-delete"/>
                                         {Intl.get('crm.customer.recycle.bin', '回收站')}
                                     </Button>
                                 </Popover>

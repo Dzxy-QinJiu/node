@@ -359,7 +359,7 @@ class RegRulesView extends React.Component {
                     return (
                         <div className="item-node">
                             <div className="icon-container">
-                                <i className="iconfont icon-active-users-ico"></i>
+                                <i className="iconfont icon-active-users"></i>
                             </div>
                             <span className="show-name"> {showName}</span>
                             <i className="iconfont icon-close-btn"
@@ -383,7 +383,7 @@ class RegRulesView extends React.Component {
                     return (
                         <div className="item-node">
                             <div className="icon-container">
-                                <i className="iconfont icon-active-users-ico"></i>
+                                <i className="iconfont icon-active-users"></i>
                             </div>
                             <span className="show-name"> {item.showName}</span>
                             {showDeleteIcon ? <i className="iconfont icon-close-btn"

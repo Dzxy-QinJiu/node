@@ -2,9 +2,6 @@
 @import '../../../../components/ModalDialog/modalDialog-zh_CN.less';
 @import '../../../../public/css/common-variables';
 
-@font_color: #999999;
-@btn_color: #8ba9c3;
-@title_color: #333333;
 @hover_bg_color: #f6fbff;
 @delete_confirm_color: #ec5f56;
 .text-ellipsis {
@@ -27,7 +24,7 @@
         float: left;
         line-height: 24px;
         font-size: 14px;
-        color: @font_color;
+        color: @secondary-font-color;
       }
       .basic-edit-field .basic-info-text{
         font-size: 14px;
@@ -75,7 +72,7 @@
           line-height: 24px;
           max-width: 148px;
           padding: 0 4px;
-          color: @title_color;
+          color: @primary-font-color;
           &:extend(.text-ellipsis);
           cursor: default;
         }
@@ -124,12 +121,12 @@
             border: 1px solid @delete_confirm_color;
             background-color: @delete_confirm_color;
             &:hover {
-              background-color: #f04134;
-              border: 1px solid #f04134;
+              background-color: @error-color;
+              border: 1px solid @error-color;
             }
           }
           .contact-delete-cancel {
-            color: #8da8c5;
+            color: @secondary-color;
             margin-right: 6px;
           }
         }
@@ -151,7 +148,7 @@
           .iconfont.contact-way-icon {
             float: left;
             font-size: 16px;
-            color: #999;
+            color: @secondary-font-color;
             margin-right: 6px;
           }
           .contact-way-content {

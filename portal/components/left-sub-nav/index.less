@@ -17,7 +17,7 @@
         padding-right: 4px;
         font-size: @btn-font-size;
         display: block;
-        color: #b6c2c9;
+        color: @secondary-font-color;
         outline: none;
         text-decoration: none;
         text-align: left;
@@ -29,14 +29,15 @@
       }
     }
     .topNav-menu-item-selected {
-      color: @BORDER-BLUE;
+      color: @primary-color;
     }
     a.active,
     a:hover {
-      color: @BORDER-BLUE;
+      color: @primary-color;
     }
     a.active{
-      border-left: 3px solid @BORDER-BLUE;
+      color: @primary-color;
+      border-right: 2px solid @primary-color;
     }
   }
 }

@@ -1,11 +1,7 @@
 //日程列表
-@btn_color: #8ba9c3;
-@hover_color: #2196f3;
+@import "../../../../public/css/common-variables";
 @padding: 8px;
 @icon_visit_color: #9b5bf7;
-@other_icon_color: #8da8c5;
-@title_color: #333333;
-@font_color: #999999;
 @overdue_color: #fbcb8f;
 @today_color: #34ca71;
 
@@ -33,7 +29,7 @@
   width: 100%;
   margin-top: 6px;
   background-color: #ffffff;
-  color: @title_color;
+  color: @primary-font-color;
   .time-line{
     overflow: hidden;
     padding: 6px 10px 0 12px;
@@ -67,10 +63,10 @@
     }
   }
   .schedule-item-title {
-    color: @title_color;
+    color: @primary-font-color;
     .iconfont.icon-alarm-clock {
       float: right;
-      color: @btn_color;
+      color: @secondary-color;
       cursor: default;
     }
   }
@@ -86,7 +82,7 @@
     padding-left: 28px;
     .schedule-item-content {
       padding-bottom: 4px;
-      color: @font_color;
+      color: @secondary-font-color;
       &:extend(.break_line);
     }
   }
@@ -95,7 +91,7 @@
     button {
       height: 24px;
       margin-right: 10px;
-      color: @btn_color;
+      color: @secondary-color;
     }
     //联系电话展示区域
     .schedule-contact-phone-block {
@@ -136,8 +132,8 @@
       border-color: #c4c6c7;
       background-color: #c4c6c7;
       &:hover {
-        border-color: @hover_color;
-        background-color: @hover_color;
+        border-color: @primary-color;
+        background-color: @primary-color;
       }
     }
     .right-handle-buttons {
@@ -149,9 +145,9 @@
   .iconfont {
     //margin-right: @padding;
     //font-size: 12px;
-    color: @other_icon_color;
+    color: @secondary-color;
     &:hover {
-      color: @hover_color;
+      color: @primary-color;
     }
   }
   .icon-visit-briefcase {
@@ -159,7 +155,7 @@
   }
   .icon-alarm-clock {
     &:hover {
-      color: @hover_color;
+      color: @primary-color;
     }
   }
 }
@@ -221,9 +217,9 @@ form.schedule-form {
       color:#ddd;
     }
     .ant-radio-button-wrapper-checked{
-      color:#999;
+      color: @secondary-font-color;
       .iconfont{
-        color: @other_icon_color;
+        color: @secondary-color;
       }
       .iconfont.icon-visit-briefcase {
         color: @icon_visit_color;

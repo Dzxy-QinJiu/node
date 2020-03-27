@@ -5,7 +5,6 @@
 @right_panel_content_width: 480px;
 @right_panel_bgcolor: #f5f5f5;
 @box_shadow_color: #cac8c8;
-@tab_active_color: #2196f3;
 @font-color: #5D5D5D;
 @white_color: #fff;
 // 提取线索
@@ -61,7 +60,7 @@
         }
         .abnornal-status-tip {
           text-align: center;
-          color: #999;
+          color: @secondary-font-color;
           font-size: 20px;
           margin-top: 10px;
         }
@@ -101,7 +100,7 @@
             font-size: 12px;
             line-height: 24px;
             font-weight: initial;
-            color: #333333;
+            color: @primary-font-color;
           }
           .ant-calendar-picker-input {
             .ant-calendar-range-picker-input{
@@ -126,7 +125,7 @@
         .clue-status-wrap{
           position: absolute;
           font-size: 14px;
-          color: #999;
+          color: @secondary-font-color;
           left: 70px;
           top: 15px;
           z-index: 10;
@@ -152,7 +151,7 @@
             margin-right: 20px;
             font-size: 14px;
             cursor: pointer;
-            color:#999;
+            color:@secondary-font-color;
             .clue-status-num{
               padding-left: 5px;
             }
@@ -208,7 +207,7 @@
             .clue-name {
               cursor: pointer;
               font-size: 16px;
-              color: #333333;
+              color: @primary-font-color;
               font-weight: bold;
             }
             .clue-trace-content{
@@ -234,9 +233,9 @@
               color: @white_color;
             }
             .clue-label.intent-tag-style {
-              color: #EFA246;
+              color: @warn-color;
               background: #fff;
-              border: 1px solid #EFA246;
+              border: 1px solid @warn-color;
               border-radius: 4px;
             }
           }
@@ -273,7 +272,7 @@
           }
           // 提取线索
           .singl-extract-clue{
-            color: #8da8c5;
+            color: @secondary-color;
             font-size: 14px;
             cursor: pointer;
           }
@@ -293,7 +292,7 @@
             //展示跟进内容
             .foot-text-content{
               .add-trace-content{
-                color:#8da8c5;
+                color: @secondary-color;
                 cursor:pointer;
               };
               .trace-author{
@@ -386,14 +385,14 @@
       .ant-tabs-bar {
         margin-bottom: 8px;
         .ant-tabs-nav {
-          color: #999999;
+          color: @secondary-font-color;
           .ant-tabs-tab {
             margin-right: 9px;
             font-size: 14px;
             padding: 8px 4px !important;
           }
           .ant-tabs-tab-active {
-            color: @tab_active_color;
+            color: @primary-color;
           }
         }
       }
@@ -416,7 +415,7 @@
 
       }
       .ant-tabs-ink-bar {
-        background-color: @tab_active_color !important;
+        background-color: @primary-color !important;
         height: 2px;
       }
       .ant-tabs-nav .ant-tabs-tab-inner {
@@ -424,7 +423,7 @@
         padding-top: 5px;
         color: #898989;
         &:hover {
-          color: #4D96D1;
+          color: @primary-color;
         }
       }
     }

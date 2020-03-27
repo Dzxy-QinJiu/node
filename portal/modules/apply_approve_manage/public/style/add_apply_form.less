@@ -1,3 +1,4 @@
+@import "../../../../public/css/common-variables";
 .add-apply-form-container {
   background: #fff;
   height: 100%;
@@ -8,7 +9,7 @@
     overflow: hidden;
     padding: 20px;
     .show-and-edit-approve-type {
-      color: #333;
+      color: @primary-font-color;
       font-size: 16px;
       display: inline-block;
       font-weight: 500;
@@ -35,7 +36,7 @@
         background: #E4F2FE;
         .iconfont.icon-update {
           visibility: visible;
-          color: #2196F3;
+          color: @primary-color;
           cursor: pointer;
           margin-left: 5px;
         }
@@ -51,7 +52,7 @@
       width: 64px;
     }
     .iconfont.icon-close {
-      color: #999;
+      color: @secondary-font-color;
       font-size: 12px;
       cursor: pointer;
     }
@@ -126,19 +127,19 @@
                 border-radius: 4px;
                 .iconfont{
                   margin:0 5px 0 10px;
-                  color:#8DA8C5
+                  color:@secondary-color;
                 }
                 .addition-cls{
-                  color:#999;
+                  color:@secondary-font-color;
                 };
                 .rule-cls{
-                  color:#333;
+                  color:@primary-font-color;
                 }
 
                 &:hover{
-                  border-color:#2196F3;
+                  border-color: @primary-color;
                     .rule-cls, .iconfont{
-                      color:#2196F3;
+                      color: @primary-color;
                     }
                 }
               }

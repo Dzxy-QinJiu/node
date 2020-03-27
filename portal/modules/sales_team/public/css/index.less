@@ -5,8 +5,6 @@
 @border-color: #f3f5f7;
 @edit-team-form-height: 130px;
 @edit-teamName-form-height: 86px;
-// 错误提示的字体以及边框颜色
-@error_tips_color: #f04134;
 
 .sales-team-manage-container {
   padding: 12px;
@@ -126,7 +124,7 @@
                 cursor: pointer;
 
                 &.active-btn {
-                  color: #4d96d1;
+                  color: @primary-color;
                 }
               }
 
@@ -150,7 +148,7 @@
           }
           .operation-zone {
             .select-row-number {
-              color: #333;
+              color: @primary-font-color;
               margin-left: 62px;
               padding: 8px 16px;
             }
@@ -166,11 +164,11 @@
           .sale-goal-zone {
             .member-top-operation-div-title {
               margin-left: 62px;
-              color: #333333;
+              color: @primary-font-color;
               padding: 9px 0 10px 0;
             }
             .sales-team-goals-container {
-              color: #999999;
+              color: @secondary-font-color;
               display: inline-block;
               float: right;
               .sales-goal-value, .no-sale-goal-value {
@@ -178,12 +176,12 @@
                 .icon-update {
                   padding: 0 5px;
                   cursor: pointer;
-                  color: #8DA8C5;
+                  color: @secondary-color;
                 }
               }
               .no-sale-goal-value {
                 cursor: pointer;
-                color: #8DA8C5;
+                color: @secondary-color;
               }
               .sales-goals-item {
                 display: inline-block;
@@ -230,7 +228,7 @@
           float: right;
           .operation-add, .operation-cancel {
             padding: 0 15px 0;
-            color: #8DA8C5;
+            color: @secondary-color;
           }
         }
       }
@@ -279,7 +277,7 @@
                         font-size: 12px;
                       }
                       .icon-more {
-                        color: #2196F3;
+                        color: @primary-color;
                       }
                     }
                     .member-info-name {
@@ -301,7 +299,7 @@
                         padding-right: 10px;
                       }
                       .cancel-delete {
-                        color: #999;
+                        color: @secondary-font-color;
                       }
                     }
                   }
@@ -327,7 +325,7 @@
                     }
                     &:hover {
                       .icon-tree-arrow {
-                        color: #4d96d1;
+                        color: @primary-color;
                       }
                     }
                   }
@@ -335,7 +333,7 @@
                 &.select {
                   width: 100%;
                   background-color: #E4F2FE;
-                  color: #2196F3;
+                  color: @primary-color;
                   .sale-team-tree-item-container {
                     background-color: #E4F2FE !important;
                   }
@@ -522,7 +520,7 @@
                     display: inline-block;
                     width: 100%;
                     padding: 6px 7px;
-                    border: 1px solid @error_tips_color;
+                    border: 1px solid @error-color;
                     line-height: 1.5;
                     color: #666;
                     background-color: #fff;
@@ -538,7 +536,7 @@
                   line-height: 20px;
                   margin-bottom: 10px;
                   padding-left: 54px;
-                  color: @error_tips_color;
+                  color: @error-color;
                 }
               }
             }
@@ -558,7 +556,7 @@
 
     &.select-active {
       background-color: #E4F2FE;
-      border-color: #4d96d1;
+      border-color: @primary-color;
       color: #ffffff;
     }
   }
@@ -566,7 +564,7 @@
   .set-select-member-btns {
     position: relative;
     float: right;
-    color: #8DA8C5;
+    color: @secondary-color;
     display: inline-block;
 
     .indicator {
@@ -643,7 +641,7 @@
       color: #666;
       cursor: pointer;
       &:hover {
-        color: #4d96d1;
+        color: @primary-color;
       }
     }
     //搜索框
@@ -691,7 +689,7 @@
       .tree-operation-div {
         padding: 4px 0;
         cursor: pointer;
-        color: #8DA8C5;
+        color: @secondary-color;
         font-size: 14px;
         .iconfont {
           padding-right: 5px;
@@ -700,7 +698,7 @@
           height: 32px;
           padding: 4px 16px 0 16px;
           &:hover {
-            color: #2196F3;
+            color: @primary-color;
             background-color: #F1F8FE;
           }
         }

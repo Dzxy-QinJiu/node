@@ -1,3 +1,4 @@
+@import "../../../public/css/common-variables";
 .curtao-analysis {
   background: #f3f5f5;
   padding-top: 10px;
@@ -6,13 +7,13 @@
   }
   .clickable-with-color {
     cursor: pointer;
-    color: #09a9fe;
+    color: @primary-color;
   }
   .clickable-with-hover-color {
     cursor: pointer;
   }
   .clickable-with-hover-color:hover {
-    color: #09a9fe;
+    color: @primary-color;
   }
   .select-team-member-list .ant-select-selection__rendered {
     max-width: 800px;
@@ -34,7 +35,7 @@
     font-size: 14px;
     cursor: pointer;
     .active {
-      color: blue;
+      color: @primary-color;
     }
     .ant-collapse {
       .ant-collapse-header {
@@ -127,7 +128,7 @@
         font-size: 14px;
         .retry-btn {
           cursor: pointer;
-          color: #2196F3;
+          color: @primary-color;
         }
       }
       .crm_content #content-block {

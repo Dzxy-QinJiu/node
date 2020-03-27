@@ -1,17 +1,19 @@
 @import '../../../public/css/bootstrap-variables.less';
 @import '../../../public/css/common-variables';
-@bg-white: #FFFFFF;
 @bd-grey: #DEDFE3;
 @font-grey: #cccccc;
 @icon-grey: #CBCBCB;
-@icon-blue: #2196F3;
-@nav-icon-size: 30px;
+@icon-active-color: #ffffff;//图标选中状态的颜色
+@nav-icon: #ffffff;//图标默认状态下的颜色
+@nav-icon-size: 32px;//导航正常图标大小
+//正常图标时的菜单高度
+@nav-item-height: 48px;
 //缩小图标时的菜单高度
 @reduce-nav-icon-li-height: 40px;
 //缩小图标并缩小间距时的菜单高度
 @reduce-nav-margin-li-height: 32px;
-//正常图标时的菜单高度
-@nav-item-height: 50px;
+@nav-icon-small-size: 24px;//缩小浏览器导航主图标大小
+@nav-bottom-small-size: 28px;//缩小浏览器底部图标及高度
 @nav-text-width: 72px;
 @nav-text-fontSize: 14px;
 .unread-style {
@@ -40,50 +42,48 @@
         color: @icon-grey !important;
     }
 }
-@media (max-height: 715px) {
+@media (max-height: 700px) {
     //缩小浏览器时，展示小图标
     .navbar {
-        .navbar-nav {
+        .navbar-nav {//图标32、高度40
             > li.sidebar-menu-li {
                 height: @reduce-nav-icon-li-height;
                 > a.iconfont {
                     height: @reduce-nav-icon-li-height;
                     line-height: @reduce-nav-icon-li-height;
-                    &:before {
-                        font-size: 24px;
-                    }
                 }
             }
         }
-        .sidebar-user {
-            .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon {
-                .iconfont.sidebar-bottom-icon {
-                    font-size: 22px;
-                }
+        .sidebar-user {//图标32、高度32
+            div.notification, div.sidebar-backend-config, div.dial-up-keyboard-btn, div.customer-service-navicon, div.winning-clue {
+                height: @reduce-nav-margin-li-height;
+                line-height: @reduce-nav-margin-li-height;
             }
         }
     }
 }
 
-@media (max-height: 605px) {
+@media (max-height: 600px) {
     //再缩小浏览器到小图标并缩小间距时的样式
     .navbar {
         .navbar-nav {
-            > li.sidebar-menu-li {
+            > li.sidebar-menu-li {//图标24、高度32
                 height: @reduce-nav-margin-li-height;
                 > a.iconfont {
                     height: @reduce-nav-margin-li-height;
                     line-height: @reduce-nav-margin-li-height;
                     &:before {
-                        font-size: 18px;
+                        font-size: @nav-icon-small-size;
                     }
                 }
             }
         }
-        .sidebar-user {
-            .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon {
+        .sidebar-user {//图标：28、高度：28
+            div.notification, div.sidebar-backend-config, div.dial-up-keyboard-btn, div.customer-service-navicon, div.winning-clue {
+                height: @nav-bottom-small-size;
+                line-height: @nav-bottom-small-size;
                 .iconfont.sidebar-bottom-icon {
-                    font-size: 16px;
+                    font-size: @nav-bottom-small-size;
                 }
             }
         }
@@ -95,7 +95,7 @@
 #menusLists{
   display: block;
 }
-@media (max-height: 510px) {
+@media (max-height: 500px) {
   #hamburger{
     display: block;
   }
@@ -114,8 +114,7 @@
     border-bottom-width: 0;
     border-radius: 0;
     border: none;
-    border-right: 1px solid @bd-grey;
-    background-color: @bg-white;
+    background-color: @primary-color;
     .container,
     .container-fluid {
         width: auto;
@@ -139,30 +138,15 @@
         box-shadow: none;
     }
     .header-logo {
-        float: none;
-        overflow: hidden;
         height: @top_nav_height;
-        padding: 12px 0;
-        position: relative;
-        margin-bottom: 10px;
-        .logo {
-            float: none;
-            margin-left: 0;
-            padding: 0 0 0 17px !important;
-            color: @navbar-default-link-color;
-            >span {
-                display: none;
-            }
+        line-height: @top_nav_height;
+        text-align: center;
+        .icon-curtao-wihte-logo {
+            font-size: 32px;
+            color: @icon-active-color;
         }
-        &:after {
-            content: " ";
-            position: absolute;
-            bottom: 0;
-            left: 13px;
-            right: 13px;
-            height: 1px;
-            overflow: hidden;
-            background-color: @bd-grey;
+        a {
+            text-decoration: none;
         }
     }
     .navbar-nav {
@@ -170,6 +154,15 @@
         margin: 0;
         font-size: @nav-text-fontSize;
         >li {
+            float: left;
+            height: @nav-item-height;
+            width: @sidebar-min-width;
+            &:hover {
+                background-color: @primary-hover-color; 
+            }
+            &.active {
+                background-color: @primary-active-color; 
+            }
             //线索未读数
             &.leads_icon_container, &.sidebar-applyentry ,&.apply_icon_container{
                 pointer-events:none;
@@ -198,7 +191,7 @@
                 min-width: 10px;
                 height: 10px;
                 top: 11px;
-                right: 20px;
+                right: 16px;
                 border-radius: 10px;
             }
 
@@ -223,31 +216,27 @@
                     }
                 }
             }
-            float: left;
-            height: @nav-item-height;
-            width: @sidebar-min-width - 1;
             &.iconfont:before,
             .iconfont:before {
-                color: @icon-grey;
+                color: @nav-icon;
                 text-align: center;
                 width: 100%;
                 font-size: @nav-icon-size;
             }
             a {
                 &:hover.iconfont:before {
-                    color: @icon-blue;
+                    color:  @icon-active-color;
                 }
                 &.active.iconfont:before {
-                    color: @icon-blue;
+                    color:  @icon-active-color;
                 }
                 &.deactivation.iconfont:before {
-                    color: @icon-grey
+                    color: @nav-icon;
                 }
                 height: @nav-item-height;
                 white-space: nowrap;
                 color: @navbar-default-link-color;
                 line-height: @nav-item-height;
-                //margin: 15px 0 15px 0;
                 padding: 0;
                 text-decoration: none;
                 >i {
@@ -269,33 +258,44 @@
         >li.leads_icon_container {
             &:before {
                 &:extend(.unread-style);
-                top: 12px;
-                left: -35px;
+                top: 8px;
+                left: -30px;
             }
         }
     }
     .sidebar-user {
         display: block;
         position: absolute;
-        bottom: 18px;
-        width: @sidebar-min-width - 1;
+        bottom: 8px;
+        width: @sidebar-min-width;
         padding: 0;
         overflow: hidden;
-        background-color: @bg-white;
-        @hover-color: @icon-blue;
-        .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon, .winning-clue{
+        @hover-color: @icon-active-color;
+        // 展示赢线索详细内容时的样式
+        .winning-clue.show-detail {
+            background-color: @primary-hover-color; 
+        }
+        .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon, .winning-clue, .sidebar-userinfo{
+            height: 40px;
+            line-height: 40px;
             text-align: center;
             cursor: pointer;
+            &:hover {
+                background-color: @primary-hover-color;
+            }
+            &.active {
+                background-color: @primary-active-color;
+            }
             .iconfont{
-                color:@icon-grey;
-                font-size: 28px;
+                color: @nav-icon;
+                font-size: @nav-icon-size;
                 &:hover{
-                    color: @icon-blue;
+                    color: @icon-active-color;
                 }
             }
             // 在线客服、拨号键盘active加到了iconfont上
             .active.iconfont {
-                color: @icon-blue;
+                color: @icon-active-color;
             }
             // 打开通知面板时
             .active.deactivation.iconfont{
@@ -305,46 +305,36 @@
             a.active {
                 text-decoration: none;
                 .iconfont{
-                    color: @icon-blue;
+                    color: @icon-active-color;
                 }
                 // 打开通知面板时
                 .deactivation.iconfont{
-                    color: @bd-grey;
+                    color: @nav-icon;
                 }
             }
-        }    
+        }  
+        .notification {
+            .ant-badge-dot {
+                top: 4px;
+                right: 0px;
+                box-shadow: none;
+            }
+        }  
         //拨号按钮的样式
-        .dial-up-keyboard-btn{
-            margin-top: 10px;
-        }
         .dial-up-keyboard-btn.keyboard-expanded{
+            background-color: @primary-active-color;
             >.iconfont:before{
-                content: "\E733";
-                color: @icon-blue;
+                color: @icon-active-color;
             }
         }
         .winning-clue {
-            margin: 8px 0 12px 0;
             .gift-logo {
-                width: 28px;
-                height: 28px;
-            }
-        }
-        // 通知图标
-        .notification {
-            margin: 8px 0 12px 0;
-            .iconfont.active:before{
-                content: "\E6a4";
+                width: 20px;
+                height: 20px;
             }
         }
         // 后台管理
         .sidebar-backend-config{
-            margin-bottom: 8px;
-            .active{
-                .iconfont:before{
-                    content: "\E6a3";
-                }
-            }
             // 有新的公告时，提示杨样式
             .ant-badge {
                 cursor: pointer;
@@ -356,29 +346,7 @@
                 }
             }
         }
-    
-        .avatar {
-            img {
-                border: 2px solid rgba(0, 0, 0, 0);
-                &:hover {
-                    border-color: @hover-color;
-                }
-            }
-            .no-user-logo-div {
-                border: 2px solid rgba(0, 0, 0, 0);
-                &:hover {
-                    border-color: @hover-color;
-                }
-            }
-            .active {
-                img {
-                    border-color: @hover-color;
-                }
-                .no-user-logo-div {
-                    border-color: @hover-color;
-                }
-            }
-        }
+      
         .logout {
             float: none;
             margin: 80px 0 0 19px;
@@ -401,11 +369,25 @@
         .avatar_container {
             overflow: hidden;
             text-align: center;
+            // 上传了头像的样式
             .avatar {
-                .no-user-logo-div {
-                    .icon-users-ico {
-                        font-size: 32px;
-                    }
+                img {
+                    vertical-align: top;
+                    margin-top: 8px;
+                }
+            }
+            // 没上传头像时，默认头像样式设置
+            .user-default-logo-wrap,.user-default-logo-wrap.active {
+                display: inline-block;
+                width: 24px;
+                height: 24px;
+                line-height: 24px;
+                margin-top: 8px;
+                border-radius: 50%;
+                background-color: @icon-active-color;
+                .icon-user-logo-default {
+                    font-size: 16px;
+                    color: @primary-color;
                 }
             }
         }
@@ -434,7 +416,7 @@
     }
     a:hover,
     a.active {
-        color: @icon-blue;
+        color: @primary-color;
     }
     li:last-child a {
         border-bottom: none;
@@ -523,7 +505,7 @@
     }
     a:hover,
     a.active {
-        color: #57c5f7;
+        color:@primary-color;
     }
     li:last-child a {
         border-bottom: none;
@@ -549,7 +531,7 @@
 //个人信息样式
 .nav-sidebar-userinfo {
     .ant-popover-inner {
-        margin-left: 1px;
+        margin-left: -16px;
     }
     margin-left: 0 !important;
     padding-left: 0 !important;
@@ -570,7 +552,7 @@
     }
     a:hover,
     a.active {
-        color: @icon-blue;
+        color: @primary-color;
     }
     li:last-child a {
         border-bottom: none;

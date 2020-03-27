@@ -1,6 +1,5 @@
 @import "../../../public/sources/page-frame/index-zh_CN.less";
 @bd-lightgrey: #EBEBEB;
-@bd-blue: #2497F4;
 @bg-lightblue: #EDF7FF;
 @color: #4c8ec4;
 @font-lightblue: #9FB4CF;
@@ -77,13 +76,12 @@
 
   .app-property-roles {
     margin: 0;
-    @active: #4D96D1;
     .iconfont {
       float: right;
       font-size: 16px;
       cursor: pointer;
       &:hover {
-        color: @active;
+        color: @primary-color;
         transform: scale(1.2, 1.2);
       }
       position:relative;
@@ -125,9 +123,9 @@
     margin-bottom: 10px;
     padding: 0 9px;
     &.selected {
-      border-color: @bd-blue;
+      border-color: @primary-color;
       background-color: @bg-lightblue;
-      color: @bd-blue;
+      color: @primary-color;
     }
     &.unselectable-item {
       border-color: lighten(@color , 30%);
@@ -146,7 +144,7 @@
     padding: 8px 16px !important;
   }
   .ant-tabs-ink-bar {
-    background-color: #4d96d1;
+    background-color: @primary-color;
   }
   .ant-tabs-tabs-bar {
     border-bottom-color: #ccd6e5;

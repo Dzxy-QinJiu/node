@@ -1,5 +1,4 @@
 @import "../../../../public/css/common-variables";
-@FONT_COLOR:#999;
 .clue-detail-container{
   font-size: 14px;
   .clear-float{
@@ -30,7 +29,7 @@
       .clue-info-label,.item-show-label, .ant-form-item-label label{
         width: 60px;
         float: left;
-        color: @FONT_COLOR;
+        color: @secondary-font-color;
         font-size: 14px;
         line-height: 24px;
         text-align: left;
@@ -41,6 +40,7 @@
       }
       .clue-info-detail{
         font-size: 14px;
+        color: @primary-font-color;
         .basic-edit-field .basic-info-text{
           max-width: 300px;
         }
@@ -100,8 +100,8 @@
         margin-right:23px;
         &.confirm-btn{
           color:#fff;
-          border-color: #f04134;
-          background-color: #f04134;
+          border-color: @error-color;
+          background-color: @error-color;
         }
       }
     }
@@ -118,7 +118,7 @@
           float: left;
           display: inline-block;
           line-height: 1.5;
-          color: #f04134;
+          color: @error-color;
           margin-top: -15px;
           margin-left: 59px;
           margin-bottom: 8px
@@ -157,7 +157,7 @@
         overflow: hidden;
         padding-top: 12px;
         .add-clue-info {
-          color: #999;
+          color: @secondary-font-color;
           float: right;
           font-size: 12px;
           .source-name {
@@ -177,7 +177,7 @@
         margin-bottom: 8px;
       }
       .similar-tip{
-        color:#EFA246;
+        color:@warn-color;
         border-bottom:1px solid #F5F5F5;
         padding:0 0 8px 0;
         .iconfont{
@@ -192,7 +192,7 @@
           border-bottom:none;
         }
         .similar-title{
-          color: #333;
+          color: @primary-font-color;
           margin:8px 0;
           overflow: hidden;
           cursor: pointer;
@@ -202,7 +202,7 @@
           .similar-title-name {
             display: inline;
             .no-clue-name{
-              color:#999;
+              color:@secondary-font-color;
             }
           }
           .clue-stage {
@@ -234,18 +234,18 @@
           button{
             float: right;
             background: #fff;
-            color:#8DA8C5;
-            border: 1px solid #8DA8C5;
+            color: @secondary-color;
+            border: 1px solid @secondary-color;
             &:hover{
               color: #fff;
-              background-color: #108ee9;
-              border-color: #108ee9;
+              background-color: @primary-color;
+              border-color: @primary-color;
             }
           }
         }
         .similar-name-phone{
           font-size: 12px;
-          color:#999;
+          color:@secondary-font-color;
           .contact-name{
             display: inline-block;
             max-width: 200px;
@@ -257,7 +257,7 @@
         }
         .trace-time{
           font-size: 12px;
-          color:#999;
+          color:@secondary-font-color;
         }
         .trace-container {
           display: inline-block;
@@ -267,14 +267,14 @@
             width: 85%;
             white-space: normal;
             font-size: 12px;
-            color: @FONT_COLOR;
+            color: @secondary-font-color;
             margin-top: 2px;
           }
         }
       }
       .show-hide-tip{
         cursor: pointer;
-        color:#8DA8C5;
+        color: @secondary-color;
         text-align: right;
       }
     }
@@ -335,7 +335,7 @@
       .cancel-invalid{
         cursor: pointer;
         float: right;
-        color: #8da8c5;
+        color: @secondary-color;
       }
       .clue-info-label{
         top:0;
@@ -348,13 +348,13 @@
           margin-right:5px;
           &.confirm-btn{
             color:#fff;
-            border-color: #f04134;
-            background-color: #f04134;
+            border-color: @error-color;
+            background-color: @error-color;
           }
         }
         .detail-extract-clue-btn {
           border-color: transparent;
-          color: #8da8c5;
+          color: @secondary-color;
           font-size: 14px;
           cursor: pointer;
 
@@ -374,7 +374,7 @@
       }
     }
     .clue-inability-btn{
-      color:@CLICK-BLUE;
+      color: @secondary-color;
     }
 
   }
@@ -392,7 +392,7 @@
     }
     .associate-user{
       cursor: pointer;
-      color: #8da8c5;
+      color: @secondary-color;
       margin-left:8px;
     }
   }
@@ -438,7 +438,7 @@
   }
   .clue-info-item-apply-try-content-title{
     display: inline-block;
-    color: #999;
+    color: @secondary-font-color;
     width: 65px;
   }
   .clue-info-item-apply-try-content-value{
@@ -460,7 +460,7 @@
       }
       .client-error-text {
         margin-left: 5px;
-        color: #333333;
+        color: @primary-font-color;
       }
     }
   }

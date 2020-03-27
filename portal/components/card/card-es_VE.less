@@ -1,7 +1,7 @@
 /*
 * 卡片组件的样式设置
 */
-
+@import "../../public/css/common-variables";
 .position-left {
   position: relative;
   float: left;
@@ -190,10 +190,10 @@
     }
 
     .select-icon:hover {
-      color: #45B4D8;
+      color: @primary-color;
     }
     .active {
-      color: #0048F1 !important;
+      color: @primary-color !important;
     }
     //我的应用中权限角色配置按钮样式
     .icon-role-auth-config {
@@ -208,7 +208,7 @@
       text-align: center;
       z-index: 10;
       &:hover {
-        color: #4d96d1;
+        color: @primary-color;
       }
     }
   }

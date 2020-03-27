@@ -1,12 +1,16 @@
 @import "../../../../public/css/common-variables.less";
 //编辑按钮主色
 @edit-icon-color: #b6c2c9;
-@personal-data-title: #999;
-@personal-data-content: #333;
 .user-info-manage-container {
   height: 100%;
   //展示区域样式
   padding: 20px @container_padding 30px @container_padding;
+  a {
+    color: @primary-color;
+    &:hover {
+      color: @primary-hover-color;
+    }
+  }
   //个人资料展示区域样式
   .user-info-container-div {
     background-color: #fff;
@@ -29,7 +33,7 @@
         position: absolute;
         right: 0;
         &:hover {
-          background-color: #4d96d1;
+          background-color: @primary-color;
         }
       }
 
@@ -102,7 +106,7 @@
           }
           .basic-info-text {
             margin-left: 0;
-            color: @personal-data-content;
+            color: @primary-font-color;
             font-family: 'Noto Sans CJK SC', 'Noto Sans CJK', 'Source Han Sans', source-han-sans-simplified-c, sans-serif !important;
           }
           .edit-container {
@@ -163,7 +167,7 @@
             top: 5px;
             right:24px;
             span {
-              color: #EFA246;
+              color: @warn-color;
             }
           }
         }
@@ -217,7 +221,7 @@
             }
             .active-info {
               margin-left: 10px;
-              color: @personal-data-title;
+              color: @secondary-font-color;
             }
             .ant-input {
               font-size: 14px;
@@ -226,11 +230,11 @@
             .basic-info-text {
               margin-bottom: 4px;
               margin-left: 0;
-              color: @personal-data-content;
+              color: @primary-font-color;
               font-family: 'Noto Sans CJK SC', 'Noto Sans CJK', 'Source Han Sans', source-han-sans-simplified-c, sans-serif !important;
               .hasSendMail{
                 margin-left: 10px;
-                color: @personal-data-title;
+                color: @secondary-font-color;
                 font-weight: 400;
               }
             }
@@ -269,16 +273,16 @@
             .basic-edit-field {
               .no-data-descr {
                 .handle-btn-item {
-                  color: #108ee9;
+                  color: @primary-color;
                 }
               }
             }
           }
           .user-info-item-title{
-            color: @personal-data-title;
+            color: @secondary-font-color;
           }
           .user-info-item-content{
-            color: @personal-data-content;
+            color: @primary-font-color;
             .iconfont.icon-update{
               &:before{
                 content: "\E708" !important;
@@ -338,13 +342,13 @@
           padding: 0px 9px;
           position: relative;
           .icon-phone-call-out-tip{
-            color: @blue;
+            color: @primary-color;
             position: relative;
             top: 2px;
           }
           .mailMsgContent{
             margin-left: 7px;
-            color: @personal-data-content;
+            color: @primary-font-color;
           }
         }
         .icon-close-wide{
@@ -443,7 +447,11 @@
     padding-left: 20px;
     padding-right: 0;
     min-height: 380px;
-
+    .ant-tabs-nav .ant-tabs-tab{
+      &:hover{
+        color: @primary-hover-color;
+      }
+    }
     .user-log-div {
       background-color: #fff;
       min-width: 625px;
@@ -479,7 +487,7 @@
           .update-pwd {
             cursor: pointer;
             padding-left: 5px;
-            color: #4d96d1;
+            color: @primary-color;
           }
         }
       }
@@ -496,7 +504,7 @@
         .abnornal-status-tip {
           margin-top: 10px;
           font-size: 20px;
-          color:@LOADING_ERR_TIP;
+          color: @secondary-font-color;
         }
 
       }
