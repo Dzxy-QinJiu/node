@@ -3158,7 +3158,7 @@ var en_US = {
     'analysis.extracting.cue.number': 'extracting cue number',//提取线索数
     'analysis.follow-up.leads': 'follow-up leads',//跟进线索数
     'analysis.call.record.statistics': 'call record statistics',//通话记录统计
-    'analysis.how.filter.114': 'How to filter 114 etc?',//如何过滤114等?
+    'analysis.how.filter.114': 'How to filter 114 and customer service telephone?',//点击查看如何过滤114和客服电话?
     'analysis.contact.admin.set.call.center.rule': 'Please contact admin, set rules in the call center.',//请联系管理员，到呼叫中心设置规则
     'analysis.exclude.ip.staff': 'Exclude configuration IP and staff',//排除配置ip和员工
     'analysis.on.payroll.staff': 'staff on the payroll',//在职员工
