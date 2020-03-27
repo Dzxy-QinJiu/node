@@ -20,7 +20,7 @@ export function getCallRecordChart(paramObj = {}) {
             window.open('https://caller.curtao.com/manage/rules');
         };
 
-        const tip = <span style={{fontSize: 13, cursor: 'pointer'}} onClick={onClickTip}>{Intl.get('analysis.how.filter.114', '如何过滤114等?')}</span>;
+        const tip = <span style={{fontSize: 13, cursor: 'pointer'}} onClick={onClickTip}>{Intl.get('analysis.how.filter.114', '点击查看如何过滤114和客服电话?')}</span>;
 
         title = (
             <span>

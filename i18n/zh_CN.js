@@ -3178,7 +3178,7 @@ var zh_CN = {
     'analysis.extracting.cue.number': '提取线索数',
     'analysis.follow-up.leads': '跟进线索数',
     'analysis.call.record.statistics': '通话记录统计',
-    'analysis.how.filter.114': '如何过滤114等?',
+    'analysis.how.filter.114': '点击查看如何过滤114和客服电话?',
     'analysis.contact.admin.set.call.center.rule': '请联系管理员，到呼叫中心设置规则',
     'analysis.exclude.ip.staff': '排除配置ip和员工',
     'analysis.on.payroll.staff': '在职员工',
