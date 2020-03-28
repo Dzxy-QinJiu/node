@@ -16,10 +16,12 @@
   &.open {
     visibility: visible;
     transform: translate(0px, 0);
+    .ef-left-panel-content{
+      width: 500px;
+    }
   }
   .ef-left-panel-content {
     height: 100%;
-    width: 500px;
     position: absolute;
     z-index: 111;
   }
@@ -36,5 +38,15 @@
     background-color: #787A79;
     opacity: 0.6;
     cursor: pointer;
+  }
+}
+
+@media screen and (max-width: 720px){
+  .ef-left-panel{
+    &.open {
+      .ef-left-panel-content {
+        width: 100%;
+      }
+    }
   }
 }
