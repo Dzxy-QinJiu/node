@@ -31,9 +31,13 @@ export const getApplyListDivHeight = function() {
     return $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
 };
 export const transferBtnContent = function() {
-    return (<Button className='assign-btn'>
+    return (<Button className='transfer-btn'>
         <i className='iconfont icon-transfer'></i>
         {Intl.get('apply.view.transfer.candidate','转审')}</Button>);
+};
+export const renderApproveBtn = function() {
+    return (<Button
+        className='assign-candidate-btn btn-primary-sure agree-btn'><i className='iconfont icon-agree'></i>{Intl.get('user.apply.detail.button.pass', '通过')}</Button>);
 };
 export const SEARCH = 'search';
 export const FILTER = 'filter';

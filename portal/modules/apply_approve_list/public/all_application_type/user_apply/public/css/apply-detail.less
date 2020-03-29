@@ -2,311 +2,14 @@
 @pd-l: 13px;
 @font-grey: #A1A1A1;
 @font-color: #999;
-.apply_manage_wrap{
-  .app_user_manage_apply_detail_wrap {
-    float: left;
-    .app-property-setting {
-      .app-property-container-content {
-        margin-right: 12px;
-      }
-    }
-  }
-  .app_user_manage_apply_update{
-    font-size:@form_font_size14;
-    color:#aaa;
-    text-align:center;
-    margin-top:6px;
-    a{
-      color:#4d96d1;
-    }
-  }
-  .apply-change-password-style{
-    .ant-pwd-strength{
-      margin-top:-20px;
-    }
-  }
-  .apply_detail_operate{
-    height:30px;
-    overflow:hidden;
-    color:#4c8dc3;
-    .btn-icon-return, .btn-icon-role-auth{
-      cursor:pointer;
-      float:right;
-      padding-right: 6px;
-      padding-top: 4px;
-    }
-  }
-  .apply_detail_apps {
-    .multi-user-delay-table {
-      padding: 8px 0;
-    }
-  }
-  .apply_detail_margin{
-    margin:0 20px 0 29px;
-  }
-  .apply_detail_simple{
-    padding:50px 0 0 30px;
-    .modify-delay-time-style {
-      margin-top: -6px;
-      .ant-input-number {
-        border-radius: 3px;
-        height: 30px;
-        vertical-align: middle;
-        .ant-input-number-input-wrap {
-          height: 28px;
-          overflow: hidden;
-        }
-      }
-      .select-modify-unit {
-        width: 70px;
-        margin-left: 5px;
-      }
-    }
-  }
-  .apply_detail_uuid{
-    overflow:hidden;
-    height: 53px;
-    line-height: 53px;
-    border-bottom:1px solid #ced6da;
-    font-size:14px;
-    color:#5c5d5d;
-    span.last-contact-time{
-      margin-left: 20px;
-    }
-    span.order{
-      float:right;
-    }
-  }
-  .customer-list-tags{
-    margin-left: 4px;
-  }
-  .customer-label {
-    margin-left: 4px;
-    margin-right: 0;
-    padding: 0 5px;
-    height: 20px;
-    line-height: 19px;
-    font-size: 12px;
-    color: @tag-font-color;
-  }
-  .user-info-block {
-    &.apply-info-block {
-      .apply-info-label {
-        .user-info-label.label-fix {
-          line-height: 20px!important;
-        }
-        .edit-fix {
-          margin-top: -3px;
-        }
-      }
-      .delay-days-title {
-        font-size: 15px;
-        color: @font-grey;
-        .delay-days-bar {
-          color: #5c5d5d;
-        }
-      }
-      .user-item-container {
-        margin-top: 10px;
-      }
-      .username-container {
-        font-size: 14px;
-        span.nickname {
-          color: @font-grey;
-        }
-        .username {
-          cursor: pointer;
-        }
-      }
-    }
-  }
-  //延期
-  .delay_detail_apps{
-    padding-top: 0 !important;
-    .apply_detail_operate{
-      top: 0 !important;
-    }
-  }
-
-  //表格头部样式
-  .apply_detail_apps{
-    // th.apply-detail-th{
-    //   background: #f0f4f5 !important;
-    // }
-    .apply-detail-th.number-align-right{
-      text-align: right;
-    }
-  }
-  .apply-detail-config-form {
-    .app-role-permission .app-property-roles,.app-role-permission-permission {
-      float: left;
-      width: 100%;
-      .rounded_item{
-        float: left;
-        display: block;
-      }
-    }
-  }
-
-  .apply_detail_desp, .apply_detail_apps{
-    padding:0;
-
-    .applist-container {
-      background: white;
-      li {
-        line-height: 36px;
-        padding-left: @pd-l;
-        padding-right: @pd-l;
-        font-size: 13px;
-        .time-bar {
-          float: right;
-          color: #999999
-        }
-      }
-
-    }
-  }
-  .apply_detail_desp{
-    padding-right:40px;
-    margin-top:-@label_padding_top;
-    color:#5c5d5d;
-  }
-  .apply_detail_desp dt{
-    font-weight:normal;
-  }
-  .apply_detail_desp dd{
-    padding-right:35px;
-    white-space:normal;
-    word-break:break-all;
-  }
-  .apply_detail_desp dt, .apply_detail_desp dd{
-    font-size:@form_font_size14;
-    line-height:@line_height14;
-  }
-  .no-user-logo-div{
-    @size:36px;
-    width:@size;
-    height:@size;
-    line-height:@size - 2px;
-    font-size:24px;
-  }
-  .apply_detail_apps > table{
-    // border-color:#ced6da;
-    // tr td:nth-child(1), td:nth-child(2), td:nth-child(3), td:nth-child(4){
-    //   border-right:1px dashed @table_dashed_color
-    // }
-
-    // .apply-detail-head > th{
-    //   text-align:center;
-    //   border:1px dashed @table_dashed_color;
-    // }
-
-    .apply-app-name, .desp_time{
-      max-width: 200px;
-    }
-
-    // td{
-    //   text-align:left;
-    //   vertical-align:middle;
-    //   color:#5d5d5d;
-    //   font-size:@form_font_size14;
-    //   border:none;
-    //   max-width: 100px;
-    // }
-    // .apply-app-numbers{
-    //   text-align:right;
-    // }
-    img{
-      width:36px;
-      height:36px;
-      border-radius:50%;
-    }
-  }
-  td.desp_time{
-    font-size:12px;
-  }
-  h3 .anticon-reload{
-    margin-right:20px;
-  }
-  .app-property-custom-settings{
-    padding-bottom:20px;
-    .app-property-content {
-      padding-bottom: 10px;
-      margin-top: 0;
-      .form-item {
-        display: flex;
-        height: 40px;
-        .form-item-label {
-          text-align: end;
-        }
-      }
-    }
-  }
-  .app-property-setting{
-    padding-top:0;
-  }
-  .icon-update{
-    margin-left:20px;
-  }
-  .user-name-edit-block{
-    .user-name-wrap{
-      display:table;
-      width:100%;
-      input[type=text]{
-        height:24px;
-      }
-      input[type=text], .distance{
-        display:table-cell;
-      }
-    }
-    .distance{
-      padding-left:10px;
-    }
-    .distance:nth-child(3){
-      padding-left:0px;
-    }
-    .iconfont{
-      cursor:pointer;
-    }
-  }
-  .approval_person{
-    .anticon-loading{
-      color:#444;
-      font-size:16px;
-      margin:0 5px 0 0;
-      vertical-align:middle;
-    }
-    .alert-timer{
-      float:left;
-    }
-    .ant-alert{
-      display:inline-block;
-      vertical-align:top;
-      padding-top:6px;
-      padding-bottom:6px;
-      margin:0 5px 0 0;
-    }
-  }
-  .roles-notset-btn-continue{
-    margin:0 20px 0 0;
-  }
-  // 撤销申请
-  .backout-apply {
-    .modal-content {
-      background-color: #fff ;
-    }
-  }
-  .historical-apply-detail{
-    position: relative;
-    overflow: hidden;
-    >.iconfont.icon-close{
-      position: absolute;
-      left: -10px;
-    }
-  }
-}
 //申请详情
 .app_user_manage_apply_detail_wrap {
+  float: left;
+  .app-property-setting {
+    .app-property-container-content {
+      margin-right: 12px;
+    }
+  }
   color: #5d5d5d;
   position: relative;
   background-color: @current-item-color;
@@ -316,7 +19,7 @@
     padding: 20px;
     .apply-type-tip {
       font-size: 16px;
-      //color: @title-color;
+      color: @primary-font-color;
     }
     .order-id {
       float: right;
@@ -392,7 +95,7 @@
         padding-bottom: 6px;
         a {
           font-size: 14px;
-          //color: @title-color;
+          color: @primary-font-color;
           text-decoration: none;
         }
         .icon-arrow-right {
@@ -787,6 +490,299 @@
         margin-right: 20px;
         display: block;
       }
+    }
+  }
+  .app_user_manage_apply_update{
+    font-size:@form_font_size14;
+    color:#aaa;
+    text-align:center;
+    margin-top:6px;
+    a{
+      color:#4d96d1;
+    }
+  }
+  .apply-change-password-style{
+    .ant-pwd-strength{
+      margin-top:-20px;
+    }
+  }
+  .apply_detail_operate{
+    height:30px;
+    overflow:hidden;
+    color:#4c8dc3;
+    .btn-icon-return, .btn-icon-role-auth{
+      cursor:pointer;
+      float:right;
+      padding-right: 6px;
+      padding-top: 4px;
+    }
+  }
+  .apply_detail_apps {
+    .multi-user-delay-table {
+      padding: 8px 0;
+    }
+  }
+  .apply_detail_margin{
+    margin:0 20px 0 29px;
+  }
+  .apply_detail_simple{
+    padding:50px 0 0 30px;
+    .modify-delay-time-style {
+      margin-top: -6px;
+      .ant-input-number {
+        border-radius: 3px;
+        height: 30px;
+        vertical-align: middle;
+        .ant-input-number-input-wrap {
+          height: 28px;
+          overflow: hidden;
+        }
+      }
+      .select-modify-unit {
+        width: 70px;
+        margin-left: 5px;
+      }
+    }
+  }
+  .apply_detail_uuid{
+    overflow:hidden;
+    height: 53px;
+    line-height: 53px;
+    border-bottom:1px solid #ced6da;
+    font-size:14px;
+    color:#5c5d5d;
+    span.last-contact-time{
+      margin-left: 20px;
+    }
+    span.order{
+      float:right;
+    }
+  }
+  .customer-list-tags{
+    margin-left: 4px;
+  }
+  .customer-label {
+    margin-left: 4px;
+    margin-right: 0;
+    padding: 0 5px;
+    height: 20px;
+    line-height: 19px;
+    font-size: 12px;
+    color: @tag-font-color;
+  }
+  .user-info-block {
+    &.apply-info-block {
+      .apply-info-label {
+        .user-info-label.label-fix {
+          line-height: 20px!important;
+        }
+        .edit-fix {
+          margin-top: -3px;
+        }
+      }
+      .delay-days-title {
+        font-size: 15px;
+        color: @font-grey;
+        .delay-days-bar {
+          color: #5c5d5d;
+        }
+      }
+      .user-item-container {
+        margin-top: 10px;
+      }
+      .username-container {
+        font-size: 14px;
+        span.nickname {
+          color: @font-grey;
+        }
+        .username {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  //延期
+  .delay_detail_apps{
+    padding-top: 0 !important;
+    .apply_detail_operate{
+      top: 0 !important;
+    }
+  }
+
+  //表格头部样式
+  .apply_detail_apps{
+    // th.apply-detail-th{
+    //   background: #f0f4f5 !important;
+    // }
+    .apply-detail-th.number-align-right{
+      text-align: right;
+    }
+  }
+  .apply-detail-config-form {
+    .app-role-permission .app-property-roles,.app-role-permission-permission {
+      float: left;
+      width: 100%;
+      .rounded_item{
+        float: left;
+        display: block;
+      }
+    }
+  }
+
+  .apply_detail_desp, .apply_detail_apps{
+    padding:0;
+
+    .applist-container {
+      background: white;
+      li {
+        line-height: 36px;
+        padding-left: @pd-l;
+        padding-right: @pd-l;
+        font-size: 13px;
+        .time-bar {
+          float: right;
+          color: #999999
+        }
+      }
+
+    }
+  }
+  .apply_detail_desp{
+    padding-right:40px;
+    margin-top:-@label_padding_top;
+    color:#5c5d5d;
+  }
+  .apply_detail_desp dt{
+    font-weight:normal;
+  }
+  .apply_detail_desp dd{
+    padding-right:35px;
+    white-space:normal;
+    word-break:break-all;
+  }
+  .apply_detail_desp dt, .apply_detail_desp dd{
+    font-size:@form_font_size14;
+    line-height:@line_height14;
+  }
+  .no-user-logo-div{
+    @size:36px;
+    width:@size;
+    height:@size;
+    line-height:@size - 2px;
+    font-size:24px;
+  }
+  .apply_detail_apps > table{
+    // border-color:#ced6da;
+    // tr td:nth-child(1), td:nth-child(2), td:nth-child(3), td:nth-child(4){
+    //   border-right:1px dashed @table_dashed_color
+    // }
+
+    // .apply-detail-head > th{
+    //   text-align:center;
+    //   border:1px dashed @table_dashed_color;
+    // }
+
+    .apply-app-name, .desp_time{
+      max-width: 200px;
+    }
+
+    // td{
+    //   text-align:left;
+    //   vertical-align:middle;
+    //   color:#5d5d5d;
+    //   font-size:@form_font_size14;
+    //   border:none;
+    //   max-width: 100px;
+    // }
+    // .apply-app-numbers{
+    //   text-align:right;
+    // }
+    img{
+      width:36px;
+      height:36px;
+      border-radius:50%;
+    }
+  }
+  td.desp_time{
+    font-size:12px;
+  }
+  h3 .anticon-reload{
+    margin-right:20px;
+  }
+  .app-property-custom-settings{
+    padding-bottom:20px;
+    .app-property-content {
+      padding-bottom: 10px;
+      margin-top: 0;
+      .form-item {
+        display: flex;
+        height: 40px;
+        .form-item-label {
+          text-align: end;
+        }
+      }
+    }
+  }
+  .app-property-setting{
+    padding-top:0;
+  }
+  .icon-update{
+    margin-left:20px;
+  }
+  .user-name-edit-block{
+    .user-name-wrap{
+      display:table;
+      width:100%;
+      input[type=text]{
+        height:24px;
+      }
+      input[type=text], .distance{
+        display:table-cell;
+      }
+    }
+    .distance{
+      padding-left:10px;
+    }
+    .distance:nth-child(3){
+      padding-left:0px;
+    }
+    .iconfont{
+      cursor:pointer;
+    }
+  }
+  .approval_person{
+    .anticon-loading{
+      color:#444;
+      font-size:16px;
+      margin:0 5px 0 0;
+      vertical-align:middle;
+    }
+    .alert-timer{
+      float:left;
+    }
+    .ant-alert{
+      display:inline-block;
+      vertical-align:top;
+      padding-top:6px;
+      padding-bottom:6px;
+      margin:0 5px 0 0;
+    }
+  }
+  .roles-notset-btn-continue{
+    margin:0 20px 0 0;
+  }
+  // 撤销申请
+  .backout-apply {
+    .modal-content {
+      background-color: #fff ;
+    }
+  }
+  .historical-apply-detail{
+    position: relative;
+    overflow: hidden;
+    >.iconfont.icon-close{
+      position: absolute;
+      left: -10px;
     }
   }
 }

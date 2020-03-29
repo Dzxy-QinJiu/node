@@ -303,7 +303,7 @@ exports.editAppDetail = function(req, res) {
     });
 };
 
-//申请修改密码
+//申请修改密码和其他
 exports.applyChangePasswordAndOther = function(req, res) {
     AppUserService.applyChangePasswordAndOther(req, res).on('success', function(data) {
         res.json(data);

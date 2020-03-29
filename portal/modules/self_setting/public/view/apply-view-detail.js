@@ -39,7 +39,8 @@ import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_APPROVE_TYPES,APPLY_FINISH_STATUS,ASSIGN_TYPE,TOP_NAV_HEIGHT,APPLY_LIST_LAYOUT_CONSTANTS,LEAVE_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
-import {ALL_COMPONENTS, SELF_SETTING_FLOW,transferBtnContent} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import {ALL_COMPONENTS, SELF_SETTING_FLOW,} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import {transferBtnContent,renderApproveBtn} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import classNames from 'classnames';
 import salesOpportunityApplyAjax from 'MOD_DIR/sales_opportunity/public/ajax/sales-opportunity-apply-ajax';
 class ApplyViewDetail extends React.Component {
@@ -584,9 +585,7 @@ class ApplyViewDetail extends React.Component {
             <AntcDropdown
                 datatraceContainer='拜访申请通过申请按钮'
                 ref={AssignSales => this.assignSales = AssignSales}
-                content={<Button
-                    className='assign-candidate-btn btn-primary-sure' size="small"
-                    type="primary">{Intl.get('user.apply.detail.button.pass', '通过')}</Button>}
+                content={renderApproveBtn()}
                 overlayTitle={Intl.get('user.salesman', '销售人员')}
                 okTitle={Intl.get('common.confirm', '确认')}
                 cancelTitle={Intl.get('common.cancel', '取消')}

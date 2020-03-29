@@ -38,7 +38,7 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import {APPLY_APPROVE_TYPES,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
-import {transferBtnContent,getSalesManList} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+import {transferBtnContent,getSalesManList,renderApproveBtn} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import classNames from 'classnames';
 var crmAjax = require('MOD_DIR/crm/public/ajax/index');
 
@@ -508,9 +508,7 @@ class ApplyViewDetail extends React.Component {
             <AntcDropdown
                 datatraceContainer='销售机会申请通过按钮'
                 ref={AssignSales => this.assignSales = AssignSales}
-                content={<Button
-                    className='assign-candidate-btn btn-primary-sure' size="small"
-                    type="primary">{Intl.get('user.apply.detail.button.pass', '通过')}</Button>}
+                content={renderApproveBtn()}
                 overlayTitle={Intl.get('user.salesman', '销售人员')}
                 okTitle={Intl.get('common.confirm', '确认')}
                 cancelTitle={Intl.get('common.cancel', '取消')}
@@ -690,7 +688,6 @@ class ApplyViewDetail extends React.Component {
         var replyList = getFilterReplyList(this.state);
         var applicateName = _.get(applicantList, 'applicant.nick_name');
         var applicateTime = moment(_.get(applicantList, 'create_time')).format(oplateConsts.DATE_TIME_FORMAT);
-        var userDetail = userData.getUserData();
         var descriptionArr = [];
         if(isCiviwRealm()){
             descriptionArr = [Intl.get('user.apply.submit.list', '提交申请'),Intl.get('user.apply.detail.pass', '通过申请'),Intl.get('user.apply.distribute.to.sales','已分配给销售')];

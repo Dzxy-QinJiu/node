@@ -1495,7 +1495,6 @@ var zh_CN = {
     'user.apply.approve.no.comment': '暂无申请历史！',
     'user.apply.has.been.opened': '已开通{count}个',
     'apply.list.return.back': '返回',
-    'apply.list.no.select.apply': '未选择申请',
     'apply.list.get.list.err': '获取列表失败，请检查网络状态',
     // 用户审批end
 

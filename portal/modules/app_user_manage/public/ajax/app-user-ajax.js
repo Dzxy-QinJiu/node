@@ -445,7 +445,7 @@ exports.editAppField = function(data) {
     return Deferred.promise();
 };
 
-//申请修改密码
+//申请修改密码和其他申请审批
 exports.applyChangePasswordAndOther = function(data) {
     const ERROR_MSG = Intl.get('user.apply.password.failed', '申请修改密码失败');
     var Deferred = $.Deferred();

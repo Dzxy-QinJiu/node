@@ -71,8 +71,6 @@ var AppUserRestApis = {
     getOrAddApplyComments: '/rest/base/v1/workflow/comments',
     //todo 获取我审批的申请(包含我审批过的和待我审批的)
     getMyApplyLists: '/rest/base/v1/workflow/work/approved/list',
-    //获取未读回复列表(用户来标识未读回复的申请)
-    // getUnreadReplyList: '/rest/base/v1/message/applycomment/unread/notices',
     //获取工作流未读回复列表
     getWorkFlowUnreadReplyList: 'rest/base/v1/workflow/comments/notice/unread',
     //todo 获取申请单详情
@@ -87,11 +85,9 @@ var AppUserRestApis = {
     getCustomerUsers: '/rest/base/v1/user/customer/users',
     //批量用户延期
     batchDelayUser: '/rest/base/v1/user/batch/grant/delay',
-    //todo 修改密码和其他类型申请
-    // changePassword: '/rest/base/v1/user/apply/user_password',
+    //修改密码和其他类型申请
     applyChangePasswordAndOther: '/rest/base/v1/workflow/user/change',
-    //todo 审批修改密码和其他类型的申请审批
-    // submitApplyChangePassword: '/rest/base/v1/user/approve_password',
+    //审批修改密码和其他类型的申请审批
     submitApplyChangePasswordOrOther: '/rest/base/v1/workflow/user/change/approve',
     //延期和启用停用审批
     submitApplyDelayMultiApp: '/rest/base/v1/workflow/grant/change/approve',

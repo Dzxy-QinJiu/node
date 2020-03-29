@@ -147,13 +147,5 @@ module.exports = {
             'needLogin': true
         }
     }
-        //     {
-        //     method: 'get',
-        //     path: '/rest/apply_approve/detail/by/id',
-        //     handler: 'getApplyDetailById',
-        //     passport: {
-        //         needLogin: true
-        //     },
-        // },
     ]
 };

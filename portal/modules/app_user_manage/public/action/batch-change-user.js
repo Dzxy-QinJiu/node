@@ -1,3 +1,5 @@
+import {APPLY_TYPES} from 'PUB_DIR/sources/utils/consts';
+
 /**
  * 批量变更用户action
  */
@@ -112,8 +114,8 @@ function BatchChangeUserActions() {
         //批量操作的用户个数
         var userCount = obj.data && obj.data.user_ids && obj.data.user_ids.length || 0;
         //提交给后台要求是json字符串
-        obj.data.user_ids = JSON.stringify(obj.data.user_ids);
         if(field === 'grant_delay') {
+            obj.data.user_ids = JSON.stringify(obj.data.user_ids);
             var submitObj = {
                 user_ids: obj.data.user_ids,
                 over_draft: obj.data.over_draft,
@@ -153,7 +155,10 @@ function BatchChangeUserActions() {
                 _this.dispatch({error: true, errorMsg: errorMsg});
             });
         }else if(field === 'sales_change_password') {
+            //todo
             var submitObj = {
+                apply_type: APPLY_TYPES.APPLY_PWD_CHANGE,
+                customer_id: obj.data.customer_id,
                 user_ids: obj.data.user_ids,
                 remark: obj.data.remark,
                 application_ids: selectedAppId

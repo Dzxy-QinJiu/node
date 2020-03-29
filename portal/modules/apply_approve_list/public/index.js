@@ -306,6 +306,7 @@ class ApplyApproveList extends React.Component {
             }
         });
     };
+    //激活的tab是 “我审批的”
     isActiveTabMyApproveList = () => {
         return this.state.activeApplyTab === APPLY_TYPE.APPROVE_BY_ME;
     };
@@ -453,14 +454,13 @@ class ApplyApproveList extends React.Component {
         let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
         return (
             applyPrivileged ? (
-                <Dropdown overlay={this.getAddApplyTypeMenu()} trigger={['click']}>
+                <Dropdown overlay={this.getAddApplyTypeMenu()} trigger={['hover']}>
                     <i className='iconfont icon-plus'></i>
                 </Dropdown>) :
                 (<Popover
                     overlayClassName="apply-invalid-popover"
                     placement="bottomLeft"
                     content={_.get(this.state, 'applyState.applyMessage')}
-                    trigger="click"
                 >
                     <i className='iconfont icon-plus'></i>
                 </Popover>)
@@ -496,7 +496,7 @@ class ApplyApproveList extends React.Component {
                         {isSalesRole() ?
                             this.renderApplyButton()
                             : null}
-                        <Dropdown overlay={this.getAddFilterAndSearchMenu()} trigger={['click']}>
+                        <Dropdown overlay={this.getAddFilterAndSearchMenu()} trigger={['hover']}>
                             <i className='iconfont icon-other'></i>
                         </Dropdown>
                     </div>
@@ -580,22 +580,6 @@ class ApplyApproveList extends React.Component {
             />
         </div>;
     };
-    getApplyListType = () => {
-        switch (this.state.selectedApplyStatus) {
-            case 'all':
-                return Intl.get('user.apply.all', '全部申请');
-            case 'false':
-                return Intl.get('leave.apply.my.worklist.apply', '待我审批');
-            case 'pass':
-                return Intl.get('user.apply.pass', '已通过');
-            case 'reject':
-                return Intl.get('user.apply.reject', '已驳回');
-            case 'true':
-                return Intl.get('user.apply.applied', '已审批');
-            case 'cancel':
-                return Intl.get('user.apply.backout', '已撤销');
-        }
-    };
     handleChangeSelectedApplyStatus = (value) => {
         UserApplyActions.changeApplyStatus(value);
         setTimeout(() => this.fetchApplyList());
@@ -610,7 +594,7 @@ class ApplyApproveList extends React.Component {
             name: Intl.get('user.online.all.status', '全部状态'),
             value: ALL
         }, {
-            name: Intl.get('leave.apply.my.worklist.apply', '待我审批'),
+            name: Intl.get('user.apply.false', '待审批'),
             value: 'ongoing'
         }, {
             name: Intl.get('user.apply.pass', '已通过'),
@@ -1001,7 +985,7 @@ class ApplyApproveList extends React.Component {
             return <div className='no-apply-detail'>
                 <div className='detail-tip'>
                     <i className='iconfont icon-apply-ico'></i>
-                    <p>{Intl.get('apply.list.no.select.apply', '未选择申请')}</p>
+                    <p>{Intl.get('user.apply.no.apply', '暂无申请')}</p>
                 </div>
             </div>;
         } else {

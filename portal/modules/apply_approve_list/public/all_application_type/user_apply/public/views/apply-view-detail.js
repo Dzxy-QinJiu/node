@@ -52,7 +52,7 @@ import {
     isApprovedByManager, timeShowFormat,
     isCustomDelayType, getDelayTimeUnit,
     getApplyTopicText, getApplyResultDscr, isCiviwRealm, applyAppConfigTerminal,
-    approveAppConfigTerminal
+    approveAppConfigTerminal, getFilterReplyList
 } from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import ApplyHistory from 'CMP_DIR/apply-components/apply-history';
@@ -420,9 +420,15 @@ const COLUMN_WIDTH = {
     renderApplyApproveSteps: function() {
         var stepStatus = '';
         var applicantList = _.get(this.state, 'detailInfoObj.info');
-        var replyList = getUserApplyFilterReplyList(this.state);
+        var replyList = getFilterReplyList(this.state);
         var applicateName = _.get(applicantList, 'presenter') || '';
         var applicateTime = moment(_.get(applicantList, 'time')).format(oplateConsts.DATE_TIME_FORMAT);
+        var descriptionArr = [];
+        if(isCiviwRealm()){
+            descriptionArr = [Intl.get('user.apply.submit.list', '提交申请'),Intl.get('user.apply.detail.pass', '通过申请'),Intl.get('user.apply.distribute.to.sales','已分配给销售')];
+        }else{
+            descriptionArr = [Intl.get('user.apply.submit.list', '提交申请'),Intl.get('user.apply.detail.pass', '通过申请'),Intl.get('user.apply.distribute.to','分配给'),Intl.get('user.apply.distribute.to.sales','已分配给销售')];
+        }
         var stepArr = [{
             title: applicateName + Intl.get('user.apply.submit.list', '提交申请'),
             description: applicateTime
@@ -432,8 +438,13 @@ const COLUMN_WIDTH = {
         currentLength = replyList.length;
         if (currentLength) {
             _.forEach(replyList, (replyItem, index) => {
-                var descrpt = getApplyStatusTimeLineDesc(replyItem.approve_status);
-                if (_.includes(['reject'], replyItem.approve_status)){
+                var descrpt = descriptionArr[index + 1];
+                if (index === 1 && !isCiviwRealm()){
+                    //下一个节点的执行人
+                    descrpt += Intl.get('sales.commission.role.manager', '销售总经理');
+                }
+                descrpt = getApplyStatusTimeLineDesc(replyItem.status);
+                if (_.includes(['reject'], replyItem.status)){
                     stepStatus = 'error';
                     currentLength--;
                 }
