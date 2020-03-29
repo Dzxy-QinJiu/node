@@ -1,0 +1,46 @@
+/**
+ * Created by zhshj on 2017/2/14.
+ */
+/**
+ * * 请求路径
+ */
+require('../action/user-type-config');
+import commonPrivilegeConst from '../../../../../../common/public/privilege-const';
+module.exports = {
+    module: 'apply_approve_list/public/all_application_type/user_apply/server/action/user-type-config',
+    routes: [{
+        //获取用户类型配置
+        'method': 'get',
+        'path': '/rest/usertypeconfig',
+        'handler': 'getUserTypeConfig',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': [
+            commonPrivilegeConst.BASE_QUERY_PERMISSION_APPLICATION
+        ]
+    }, {
+        // 添加用户类型设置
+        'method': 'post',
+        'path': '/rest/add_usertypeconfig',
+        'handler': 'addUserTypeConfig',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': [
+            commonPrivilegeConst.BASE_QUERY_PERMISSION_APPLICATION
+        ]
+    },{
+        // 修改用户类型设置
+        'method': 'put',
+        'path': '/rest/update_usertypeconfig',
+        'handler': 'updateUserTypeConfig',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': [
+            commonPrivilegeConst.BASE_QUERY_PERMISSION_APPLICATION
+        ]
+    }
+    ]
+};

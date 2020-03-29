@@ -277,7 +277,7 @@ class TeamDataColumn extends React.Component {
 
     //获取提取线索数量
     getExtractCluesData = (queryObj) => {
-        return new Promise((resolve, reject) => {
+        return new ((resolve, reject) => {
             $.ajax({
                 url: '/rest/recommend/clue/count',
                 dataType: 'json',

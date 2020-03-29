@@ -125,21 +125,44 @@ exports.getCustomerUsers = function(req, res) {
 
 //获取用户申请列表
 exports.getApplyList = function(req, res) {
-    AppUserService.getApplyList(req, res, req.query).on('success', function(data) {
+    AppUserService.getApplyList(req, res).on('success', function(data) {
         res.json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
-//获取未读回复列表
-exports.getUnreadReplyList = function(req, res) {
-    AppUserService.getUnreadReplyList(req, res).on('success', function(data) {
-        res.status(200).json(data);
+exports.getMyApplyLists = function(req, res) {
+    AppUserService.getMyApplyLists(req, res).on('success', function(data) {
+        var result = {list: [],total: 0};
+        if(_.isArray(data)){
+            result.list = data;
+            result.total = data.length;
+        }
+        res.status(200).json(result);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+exports.getApplyListStartSelf = function(req, res) {
+    AppUserService.getApplyListStartSelf(req, res).on('success', function(data) {
+        res.json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+
+
+
+// //获取未读回复列表
+// exports.getUnreadReplyList = function(req, res) {
+//     AppUserService.getUnreadReplyList(req, res).on('success', function(data) {
+//         res.status(200).json(data);
+//     }).on('error', function(codeMessage) {
+//         res.status(500).json(codeMessage && codeMessage.message);
+//     });
+// };
 //获取工作流的未读回复列表
 exports.getWorkFlowUnreadReplyList = function(req, res) {
     AppUserService.getWorkFlowUnreadReplyList(req, res).on('success', function(data) {
@@ -148,66 +171,82 @@ exports.getWorkFlowUnreadReplyList = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-
-//获取申请详情
-exports.getApplyDetail = function(req, res, next) {
-    //申请单id
-    var apply_id = req.params.apply_id;
-    if (apply_id === 'unread') {
-        next();
-        return;
+function handleNodata(data) {
+    if (!data){
+        data = {
+            list: [],
+            total: 0
+        };
     }
-    //获取申请单详情
-    AppUserService.getApplyDetail(req, res, apply_id).on('success', function(data) {
-        res.json(data);
+    return data;
+}
+exports.getApplyListWillApprovedByMe = function(req, res) {
+    AppUserService.getApplyListWillApprovedByMe(req, res).on('success', function(data) {
+        data = handleNodata(data);
+        res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-
+//获取申请详情
+exports.getApplyDetail = function(req, res) {
+    //获取申请单详情
+    AppUserService.getApplyDetail(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+exports.cancelApplyApprove = function(req, res) {
+    AppUserService.cancelApplyApprove(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
 //提交审批
 exports.submitApply = function(req, res) {
 
-    var message_id = req.params.apply_id;
-    var approval_state = req.body.approval;
-    var approval_comment = req.body.comment;
-
-    var user_name = req.body.user_name || '';
-    var nick_name = req.body.nick_name || '';
-    var products = req.body.products;
-    var notice_url = req.body.notice_url || '';
-    var password = req.body.password || '';
-    if (password) {
-        var bytes = CryptoJS.AES.decrypt(password, 'apply_change_password');
-        password = bytes.toString(CryptoJS.enc.Utf8);
-    }
-    if (req.body.passwordObvious){
-        password = req.body.passwordObvious;
-    }
-    //申请类型
-    var type = req.body.type || '';
-
-    var requestObj = {
-        type: type,
-        message_id: message_id,
-        approval_state: approval_state,
-        approval_comment: approval_comment,
-        user_name: user_name,
-        nick_name: nick_name,
-        products: products,
-        notice_url: notice_url,
-        password: password
-    };
-
-    if (req.body.delay_time) {
-        requestObj.delay = req.body.delay_time || '';
-    }
-    if (req.body.end_date) {
-        requestObj.end_date = req.body.end_date || '';
-    }
+    // var message_id = req.params.apply_id;
+    // var approval_state = req.body.approval;
+    // var approval_comment = req.body.comment;
+    //
+    // var user_name = req.body.user_name || '';
+    // var nick_name = req.body.nick_name || '';
+    // var products = req.body.products;
+    // var notice_url = req.body.notice_url || '';
+    // var password = req.body.password || '';
+    // if (password) {
+    //     var bytes = CryptoJS.AES.decrypt(password, 'apply_change_password');
+    //     password = bytes.toString(CryptoJS.enc.Utf8);
+    // }
+    // if (req.body.passwordObvious){
+    //     password = req.body.passwordObvious;
+    // }
+    // //申请类型
+    // var type = req.body.type || '';
+    //
+    // var requestObj = {
+    //     type: type,
+    //     message_id: message_id,
+    //     approval_state: approval_state,
+    //     approval_comment: approval_comment,
+    //     user_name: user_name,
+    //     nick_name: nick_name,
+    //     products: products,
+    //     notice_url: notice_url,
+    //     password: password
+    // };
+    //
+    // if (req.body.delay_time) {
+    //     requestObj.delay = req.body.delay_time || '';
+    // }
+    // if (req.body.end_date) {
+    //     requestObj.end_date = req.body.end_date || '';
+    // }
 
     //发请求进行审批
-    AppUserService.submitApply(req, res, requestObj).on('success', function(data) {
+    AppUserService.submitApply(req, res).on('success', function(data) {
         if (data === true) {
             res.json(data);
         } else {
@@ -238,9 +277,8 @@ exports.editApp = function(req, res) {
 };
 
 //申请用户
-exports.applyUser = function(req, res) {
-    const requestObj = JSON.parse(req.body.reqData);
-    AppUserService.applyUser(req, res, requestObj).on('success', function(data) {
+exports.applyNewgrant = function(req, res) {
+    AppUserService.applyNewgrant(req, res).on('success', function(data) {
         res.json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -266,17 +304,8 @@ exports.editAppDetail = function(req, res) {
 };
 
 //申请修改密码
-exports.applyChangePassword = function(req, res) {
-    AppUserService.applyChangePassword(req, res, req.body).on('success', function(data) {
-        res.json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
-
-//申请修改其他类型
-exports.applyChangeOther = function(req, res) {
-    AppUserService.applyChangeOther(req, res, req.body).on('success', function(data) {
+exports.applyChangePasswordAndOther = function(req, res) {
+    AppUserService.applyChangePasswordAndOther(req, res).on('success', function(data) {
         res.json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -284,10 +313,9 @@ exports.applyChangeOther = function(req, res) {
 };
 
 //获取申请单的回复列表
-exports.getReplyList = function(req, res) {
-    //申请单id
-    var apply_id = req.params.apply_id;
-    AppUserService.getReplyList(req, res, apply_id).on('success', function(data) {
+exports.getApplyComments = function(req, res) {
+
+    AppUserService.getApplyComments(req, res).on('success', function(data) {
         res.json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -295,18 +323,23 @@ exports.getReplyList = function(req, res) {
 };
 
 //添加回复
-exports.addReply = function(req, res) {
-    //申请单id
-    var apply_id = req.body.apply_id;
-    //回复内容
-    var comment = req.body.comment;
-    //详情url
-    var notice_url = req.body.notice_url;
-    //提交给后台的数据
-    var submitObj = {apply_id, comment, notice_url};
+exports.addApplyComments = function(req, res) {
     //添加一条回复
-    AppUserService.addReply(req, res, submitObj).on('success', function(data) {
-        res.json(data);
+    AppUserService.addApplyComments(req, res).on('success', function(replyData) {
+        if (_.isObject(replyData)) {
+            //创建回复数据，直接添加到store的回复数组后面
+            let replyTime = replyData.comment_time ? replyData.comment_time : moment().valueOf();
+            let replyItem = {
+                user_id: replyData.user_id || '',
+                user_name: replyData.user_name || '',
+                comment: replyData.comment || '',
+                comment_time: replyTime,
+                nick_name: replyData.nick_name || ''
+            };
+            res.status(200).json(replyItem);
+        }else{
+            res.status(200).json({});
+        }
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
@@ -322,8 +355,8 @@ exports.getteamlists = function(req, res) {
 };
 
 // 撤销申请
-exports.saleBackoutApply = function(req, res) {
-    AppUserService.saleBackoutApply(req, res, req.body).on('success', function(data) {
+exports.cancelApplyApprove = function(req, res) {
+    AppUserService.cancelApplyApprove(req, res, req.body).on('success', function(data) {
         res.json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

@@ -23,15 +23,15 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {scrollBarEmitter, myWorkEmitter, notificationEmitter, phoneMsgEmitter, userDetailEmitter, dailyReportEmitter} from 'PUB_DIR/sources/utils/emitters';
-import UserApplyDetail from 'MOD_DIR/user_apply/public/views/apply-view-detail';
-import OpportunityApplyDetail from 'MOD_DIR/sales_opportunity/public/view/apply-view-detail';
-import CustomerVisitApplyDetail from 'MOD_DIR/business-apply/public/view/apply-view-detail';
-import BusinessWhileApplyDetail from 'MOD_DIR/business-while/public/view/apply-view-detail';
-import LeaveApplyDetail from 'MOD_DIR/leave-apply/public/view/apply-view-detail';
-import DocumentApplyDetail from 'MOD_DIR/document_write/public/view/apply-view-detail';
-import ReportApplyDetail from 'MOD_DIR/report_send/public/view/apply-view-detail';
-import VisitApplyDetail from 'MOD_DIR/self_setting/public/view/apply-view-detail';
-import DomainApplyDetail from 'MOD_DIR/domain_application/public/view/apply-view-detail';
+import UserApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/user_apply/public/views/apply-view-detail';
+import OpportunityApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/sales_opportunity/public/view/apply-view-detail';
+import CustomerVisitApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/business-apply/public/view/apply-view-detail';
+import BusinessWhileApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/business-while/public/view/apply-view-detail';
+import LeaveApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/leave-apply/public/view/apply-view-detail';
+import DocumentApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/document_write/public/view/apply-view-detail';
+import ReportApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/report_send/public/view/apply-view-detail';
+import VisitApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/self_setting/public/view/apply-view-detail';
+import DomainApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/domain_application/public/view/apply-view-detail';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {APPLY_APPROVE_TYPES, AUTO_SIZE_MAP, TRACE_NULL_TIP} from 'PUB_DIR/sources/utils/consts';
 import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel';
@@ -1457,7 +1457,7 @@ class MyWorkColumn extends React.Component {
                         <VisitApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
@@ -1466,7 +1466,7 @@ class MyWorkColumn extends React.Component {
                         <OpportunityApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
@@ -1475,7 +1475,7 @@ class MyWorkColumn extends React.Component {
                         <CustomerVisitApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
@@ -1494,7 +1494,7 @@ class MyWorkColumn extends React.Component {
                         <LeaveApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
@@ -1503,7 +1503,7 @@ class MyWorkColumn extends React.Component {
                         <ReportApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
@@ -1512,7 +1512,7 @@ class MyWorkColumn extends React.Component {
                         <DocumentApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
@@ -1521,7 +1521,7 @@ class MyWorkColumn extends React.Component {
                         <DomainApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
@@ -1530,7 +1530,7 @@ class MyWorkColumn extends React.Component {
                         <UserApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
-                            applyListType='false'//待审批状态
+                            selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                             appList={this.state.appList}
                         />);
