@@ -99,30 +99,40 @@ export function getAverageOnlineTimeChart(type = 'all') {
         },
     };
 
+    //调整时间区间选择器
     function adjustIntervalSelector(chart) {
         const { interval, starttime, endtime } = queryCache;
 
         let intervalSelector = _.get(chart, 'cardContainer.selectors[0]');
+        //将时间区间选择器的选中值设为查询参数中的时间区间参数值
         _.set(intervalSelector, 'activeOption', interval);
 
         const days = moment(endtime).diff(starttime, 'days') + 1;
 
+        //如果查询区间大于30天
         if (days > 30) {
             const hideOption = hideOptionFunc.bind(null, intervalSelector);
 
+            //隐藏天
             hideOption('daily');
 
             const months = moment(endtime).diff(starttime, 'months');
 
+            //如果查询区间大于6个月
             if (months > 6) {
+                //隐藏周
                 hideOption('weekly');
 
                 const years = moment(endtime).diff(starttime, 'years');
 
+                //如果查询区间大于3年
                 if (years > 3) {
+                    //隐藏月
                     hideOption('monthly');
 
+                    //如果查询区间大于6年
                     if (years > 6) {
+                        //隐藏季度
                         hideOption('quarterly');
                     }
                 }
@@ -130,6 +140,7 @@ export function getAverageOnlineTimeChart(type = 'all') {
         }
     }
 
+    //隐藏时间区间选择器中的特定选项
     function hideOptionFunc(intervalSelector, value) {
         let { options } = intervalSelector;
         const index = _.findIndex(options, option => option.value === value);
