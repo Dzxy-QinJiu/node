@@ -161,6 +161,7 @@ var zh_CN = {
     'user.detail.tip.searchApp': '输入关键字自动搜索',
     'user.detail.errorTip.getRoleTimeout': '获取角色列表超时',
     'user.detail.errorTip.getPermissionTimeout': '获取权限组信息失败',
+    'user.detail.app.disabled': '产品已停用',
     'common.sure': '确定',
     'common.name.is.existed': '姓名已存在！',
     'common.name.is.unique': '姓名唯一性校验出错！',
