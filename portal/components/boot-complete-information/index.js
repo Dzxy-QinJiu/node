@@ -555,7 +555,7 @@ class BootCompleteInformation extends React.Component{
                                         // onChange={this.handleSearch}
                                         onChange={this.handleIndustryChange}
                                         className='search-industry-input'
-                                        placeholder={Intl.get('boot.please.input.industry.placeholder', '请输入关注的行业，如互联网、服务业等')}
+                                        placeholder={Intl.get('boot.please.input.industry.placeholder', '请输入关注的行业，如互联网、金融业等')}
                                     />
                                 )
                             }
