@@ -572,6 +572,7 @@ var NavSidebar = createReactClass({
         let userInfoCls = classNames('sidebar-userinfo', {
             'active': currentPageCategory === 'user-preference' && !this.props.isShowNotificationPanel && !this.props.isShowCustomerService
         });
+        let defaultUserImage = (<NavLink className='user-default-logo-wrap' to='/user-preference'><i className='iconfont icon-user-logo-default'/></NavLink>);
         return (
             <div className={userInfoCls}>
                 <Popover
@@ -581,18 +582,18 @@ var NavSidebar = createReactClass({
                     overlayClassName="nav-sidebar-userinfo"
                 >
                     <div className="avatar_container">
-                        {this.state.userInfoLogo ?
-                            <Avatar
-                                className="avatar"
-                                size="24px"
-                                lineHeight="24px"
-                                src={this.state.userInfoLogo}
-                                userName={this.state.userInfo.user_name}
-                                nickName={this.state.userInfo.nick_name}
-                                round="true" link="true" url="/user-preference"
-                                isActiveFlag={this.props.isShowNotificationPanel || this.props.isShowCustomerService}
-                                isUseDefaultUserImage={true}
-                            /> : <NavLink className='user-default-logo-wrap' to='/user-preference'><i className='iconfont icon-user-logo-default'/></NavLink>}
+                        <Avatar
+                            className="avatar"
+                            size="24px"
+                            lineHeight="24px"
+                            src={this.state.userInfoLogo}
+                            userName={this.state.userInfo.user_name}
+                            nickName={this.state.userInfo.nick_name}
+                            round="true" link="true" url="/user-preference"
+                            isActiveFlag={this.props.isShowNotificationPanel || this.props.isShowCustomerService}
+                            isUseDefaultUserImage={true}
+                            defaultUserImage={defaultUserImage}
+                        />
                     </div>
                 </Popover>
             </div>

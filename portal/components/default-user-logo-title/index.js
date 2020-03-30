@@ -35,7 +35,19 @@ class DefaultUserLogoTitle extends React.Component {
         var headIconDefIconClass = classNames('no-user-logo-div', this.props.className, {
             [`${defaultHeadIcon}`]: true
         });
-
+        // 默认头像如果有传入的自定义默认头像，就用传入的，没有就用组件支持的默认头像
+        let defaultImage = this.props.defaultUserImage || (
+            <div
+                className={headIconDefIconClass}
+                style={this.props.style}
+            >
+                {
+                    this.props.isUseDefaultUserImage ? (
+                        <i className="iconfont icon-users"></i>
+                    ) : (nickName.substr(0, 1))
+                }
+            </div>
+        );
         return (
             this.state.userLogo ?
                 (
@@ -45,25 +57,15 @@ class DefaultUserLogoTitle extends React.Component {
                         style={this.props.style}
                         alt={this.props.name}
                     />
-                ) :
-                (
-                    <div
-                        className={headIconDefIconClass}
-                        style={this.props.style}
-                    >
-                        {
-                            this.props.isUseDefaultUserImage ? (
-                                <i className="iconfont icon-users"></i>
-                            ) : (nickName.substr(0, 1))
-                        }
-                    </div>
-                )
+                ) : defaultImage
+               
         );
     }
 }
 
 DefaultUserLogoTitle.defaultProps = {
-    isUseDefaultUserImage: false // 是否用默认的头像,默认不用
+    isUseDefaultUserImage: false, // 是否用默认的头像,默认不用
+    defaultUserImage: ''//默认头像默认为空
 };
 
 DefaultUserLogoTitle.propTypes = {
@@ -74,7 +76,8 @@ DefaultUserLogoTitle.propTypes = {
     defaultImgClass: PropTypes.string,
     style: PropTypes.string,
     userLogo: PropTypes.string,
-    isUseDefaultUserImage: PropTypes.bool
+    isUseDefaultUserImage: PropTypes.bool,
+    defaultUserImage: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 };
 
 module.exports = DefaultUserLogoTitle;
