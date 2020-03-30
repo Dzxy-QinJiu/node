@@ -40,5 +40,23 @@ exports.getCrmUserList = function(req, res, queryObj) {
             url: urls.getCrmUserList,
             req: req,
             res: res
-        }, queryObj);
+        }, queryObj, {
+            success: (emitter, result) => {
+                // 处理已停用的产品，产品的状态是app_status字段，0 表示已停用
+                let data = _.get(result, 'data', []);
+                if (!_.isEmpty(data)) {
+                    data = _.each(data, item => {
+                        let apps = _.get(item, 'apps', []);
+                        if (!_.isEmpty(apps)) {
+                            apps = _.filter(apps, app => app.app_status);
+                        }
+                        item.apps = apps;
+                    });
+                }
+                emitter.emit('success', result);
+            },
+            error: (emitter, errData) => {
+                emitter.emit('error', errData);
+            }
+        });
 };
