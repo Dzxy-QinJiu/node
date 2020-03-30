@@ -9,6 +9,7 @@ export function getAverageOnlineTimeChart(type = 'all') {
 
     return {
         title: Intl.get('oplate.user.analysis.averageLoginTimes', '平均在线时长'),
+        chartType: 'bar',
         url: '/rest/analysis/user/v3/:auth_type/app/avg/online_time/trend',
         argCallback: arg => {
             argCallbackUnderlineTimeToTime(arg);
@@ -37,7 +38,17 @@ export function getAverageOnlineTimeChart(type = 'all') {
             name: 'analysis_type',
             value: type
         }],
-        chartType: 'bar',
+        processData: (data, chart) => {
+            adjustIntervalSelector(chart);
+
+            _.each(data, dataItem => {
+                dataItem.name = moment(dataItem.timestamp).format(oplateConsts.DATE_FORMAT);
+                //将通话时间转成分钟
+                dataItem.value = moment.duration(dataItem.value).asMinutes().toFixed();
+            });
+
+            return data;
+        },
         option: {
             tooltip: {
                 formatter: params => {
@@ -66,19 +77,6 @@ export function getAverageOnlineTimeChart(type = 'all') {
                 },
             },
         },
-        processData: (data, chart) => {
-            const { interval } = queryCache;
-            let intervalSelector = _.get(chart, 'cardContainer.selectors[0]');
-            _.set(intervalSelector, 'activeOption', interval);
-
-            _.each(data, dataItem => {
-                dataItem.name = moment(dataItem.timestamp).format(oplateConsts.DATE_FORMAT);
-                //将通话时间转成分钟
-                dataItem.value = moment.duration(dataItem.value).asMinutes().toFixed();
-            });
-
-            return data;
-        },
         processOption(option) {
             //设置y轴名称，用以标识y轴数值的单位
             _.set(option, 'yAxis[0].name', Intl.get('common.app.minute', '分钟'));
@@ -100,4 +98,44 @@ export function getAverageOnlineTimeChart(type = 'all') {
             callback: ifNotSingleApp
         },
     };
+
+    function adjustIntervalSelector(chart) {
+        const { interval, starttime, endtime } = queryCache;
+
+        let intervalSelector = _.get(chart, 'cardContainer.selectors[0]');
+        _.set(intervalSelector, 'activeOption', interval);
+
+        const days = moment(endtime).diff(starttime, 'days') + 1;
+
+        if (days > 30) {
+            const hideOption = hideOptionFunc.bind(null, intervalSelector);
+
+            hideOption('daily');
+
+            const months = moment(endtime).diff(starttime, 'months');
+
+            if (months > 6) {
+                hideOption('weekly');
+
+                const years = moment(endtime).diff(starttime, 'years');
+
+                if (years > 3) {
+                    hideOption('monthly');
+
+                    if (years > 6) {
+                        hideOption('quarterly');
+                    }
+                }
+            }
+        }
+    }
+
+    function hideOptionFunc(intervalSelector, value) {
+        let { options } = intervalSelector;
+        const index = _.findIndex(options, option => option.value === value);
+
+        if (index > -1) {
+            options.splice(index, 1);
+        }
+    }
 }
