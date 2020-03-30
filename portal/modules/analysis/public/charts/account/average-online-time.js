@@ -63,10 +63,10 @@ export function getAverageOnlineTimeChart(type = 'all') {
                             name = moment(name).format(oplateConsts.DATE_YEAR_MONTH_FORMAT);
                             break;
                         case 'quarterly':
-                            name = `${moment(name).format('YYYY年Q')}季度`;
+                            name = `${moment(name).format('YYYY-[Q]Q')}`;
                             break;
                         case 'yearly':
-                            name = `${moment(name).format('YYYY')}年`;
+                            name = `${moment(name).format('YYYY')}`;
                             break;
                     }
 
