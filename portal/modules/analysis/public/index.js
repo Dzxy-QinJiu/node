@@ -357,7 +357,6 @@ class CurtaoAnalysis extends React.Component {
             <SelectAppTerminal
                 appTerminals={this.state.selectedAppTerminals}
                 handleSelectedTerminal={this.onSelectTerminalsType.bind(this)}
-                className="btn-item"
             />
         );
     }
