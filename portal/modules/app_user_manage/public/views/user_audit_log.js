@@ -252,10 +252,6 @@ class LogView extends React.Component {
     // 更改时间
     onSelectDate = (start_time, end_time, range) => {
         let startTime = start_time;
-        if (Date.now() - THREE_MONTH_TIME_RANGE > start_time) {
-            startTime = Date.now() - THREE_MONTH_TIME_RANGE;
-            message.info(SELECT_TIME_TIPS.range);
-        }
         let endTime = end_time;
         if (endTime - startTime > THIRTY_ONE_DAY_TIME_RANGE) {
             startTime = endTime - THIRTY_DAY_TIME_RANGE;
