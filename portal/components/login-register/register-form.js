@@ -58,7 +58,7 @@ class RegisterForm extends React.Component {
             referrer = document.referrer;
         }
         try {
-            if (referrer.length === 0 && opener.location.href.length > 0) {
+            if (referrer.length === 0 && _.get(opener, 'location.href.length', 0) > 0) {
                 referrer = opener.location.href;
             }
         } catch (e) {
@@ -86,6 +86,8 @@ class RegisterForm extends React.Component {
                 Trace.traceEvent(e, '电话已被注册过');
                 return;
             }
+            // 正在注册时，不能再注册，防止连续发多次相同手机号的注册请求
+            if(this.state.isRegistering) return;
             let formData = {
                 phone: _.trim(values.phone),
                 code: _.trim(values.code),
@@ -536,6 +538,7 @@ class RegisterForm extends React.Component {
                             fullWidth
                             variant="contained"
                             onClick={this.submitFormData.bind(this)}
+                            disabled={this.state.isRegistering}
                             data-tracename="点击注册"
                         >
                             {Intl.get('login.register', '注册')}

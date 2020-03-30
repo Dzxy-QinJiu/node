@@ -28,6 +28,7 @@ class Avatar extends React.Component {
                         isActiveFlag={this.props.isActiveFlag}
                         lineHeight={this.props.lineHeight}
                         isUseDefaultUserImage={this.props.isUseDefaultUserImage}
+                        defaultUserImage={this.props.defaultUserImage}
                     />) :
                     (<a style={aStyle}><Img {...this.props}/>
                         {this.props.showName ? <Name name={this.props.name}/> : ''}</a>)
@@ -52,6 +53,7 @@ class Aimg extends React.Component {
                     isActiveFlag={this.props.isActiveFlag}
                     lineHeight={this.props.lineHeight}
                     isUseDefaultUserImage={this.props.isUseDefaultUserImage}
+                    defaultUserImage={this.props.defaultUserImage}
                 />
                 {this.props.showName ? <Name name={this.props.name}/> : ''}
             </NavLink>
@@ -80,6 +82,7 @@ class Img extends React.Component {
                 alt={this.props.name}
                 style={ imgStyle }
                 isUseDefaultUserImage={this.props.isUseDefaultUserImage}
+                defaultUserImage={this.props.defaultUserImage}
             />
         );
     }
@@ -111,6 +114,7 @@ Aimg.propTypes = {
     name: PropTypes.string,
     lineHeight: PropTypes.string,
     isUseDefaultUserImage: PropTypes.bool,
+    defaultUserImage: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 };
 
 Img.propTypes = {
@@ -124,6 +128,7 @@ Img.propTypes = {
     fontSize: PropTypes.string,
     lineHeight: PropTypes.string,
     isUseDefaultUserImage: PropTypes.bool,
+    defaultUserImage: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 };
 
 Name.propTypes = {
@@ -146,7 +151,8 @@ Avatar.propTypes = {
     name: PropTypes.string,
     fontSize: PropTypes.string,
     lineHeight: PropTypes.string,
-    isUseDefaultUserImage: PropTypes.bool // 是否使用默认的头像
+    isUseDefaultUserImage: PropTypes.bool, // 是否使用默认的头像
+    defaultUserImage: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 };
 
 module.exports = Avatar;
