@@ -44,6 +44,7 @@ import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import { AntcTable } from 'antc';
 import userManagePrivilege from '../privilege-const';
 import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
+import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 
 class RecentLoginUsers extends React.Component {
     constructor(props) {
@@ -450,7 +451,20 @@ class RecentLoginUsers extends React.Component {
                         <div title={sales_name}>{sales_name}</div>
                     );
                 }
-            }, {
+            },
+            {
+                title: Intl.get('user.login.duration', '在线时长'),
+                dataIndex: 'online_time',
+                width: '85px',
+                key: 'online_time',
+                className: 'has-filter',
+                render: (billsec, rowData, idx) => {
+                    return (
+                        <div>{TimeUtil.getFormatTime(billsec)}</div>
+                    );
+                }
+            },
+            {
                 title: Intl.get('user.login.times', '登录次数'),
                 dataIndex: 'logins',
                 key: 'logins',
