@@ -11,7 +11,8 @@ import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
 import { AntcDatePicker as DatePicker } from 'antc';
 import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
 import { RightPanel } from 'CMP_DIR/rightPanel';
-import { topNavEmitter, selectedAppEmitter, scrollBarEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { topNavEmitter, selectedAppEmitter, scrollBarEmitter,
+    userDetailEmitter, phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { userTypeList, filterTypeList } from 'PUB_DIR/sources/utils/consts';
 import {
     getUserByFromUserList,
@@ -41,7 +42,6 @@ import {isEqualArray} from 'LIB_DIR/func';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import { AntcTable } from 'antc';
-import { userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import userManagePrivilege from '../privilege-const';
 import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
 
@@ -71,6 +71,7 @@ class RecentLoginUsers extends React.Component {
             selectedSalesId: [ALL_MEMBER_VALUE],
             selectedTeamIds: [], // 所选团队以及下级团队id
             terminal_id: '', // 默认选中全部终端类型
+            curShowCustomerId: '', //查看右侧详情的客户id
         };
     }
 
@@ -103,20 +104,28 @@ class RecentLoginUsers extends React.Component {
             return;
         }
         $(event.currentTarget).addClass('current_row').siblings().removeClass('current_row');
-        let userObj = getUserByFromUserList(this.state.recentLoginUsers, user_id);
-        userObj.isShownExceptionTab = _.find(userObj.apps, app => {
-            return app.exception_mark_date;
-        }) ? true : false;
+        //点击所属客户那一列，只有点击所属客户的客户名 才能展开客户的详情
+        if ($(target).closest('.owner-customer-wrap').length) {
+            const customer_id = $(event.currentTarget).find('.hidden_customer_id').val();
+            // 有客户id，打开客户详情
+            if (customer_id) {
+                this.showCustomerDetail(customer_id);
+            }
+        } else {
+            let userObj = getUserByFromUserList(this.state.recentLoginUsers, user_id);
+            userObj.isShownExceptionTab = _.find(userObj.apps, app => {
+                return app.exception_mark_date;
+            }) ? true : false;
 
-        let paramObj = {
-            selectedAppId: this.state.selectedAppId,
-            isShownExceptionTab: _.get(userObj, 'isShownExceptionTab'),
-            appLists: _.get(userObj, 'apps'),
-            userId: user_id
-        };
-
-        //触发打开用户详情面板
-        userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, paramObj);
+            let paramObj = {
+                selectedAppId: this.state.selectedAppId,
+                isShownExceptionTab: _.get(userObj, 'isShownExceptionTab'),
+                appLists: _.get(userObj, 'apps'),
+                userId: user_id
+            };
+            //触发打开用户详情面板
+            userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, paramObj);
+        }
     }
 
 
@@ -298,6 +307,28 @@ class RecentLoginUsers extends React.Component {
         this.getRecentLoginUsers();
     }
 
+    hideRightPanel = () => {
+        this.setState({
+            curShowCustomerId: ''
+        }, () => {
+            this.closeRightPanel();
+        });
+    };
+
+    showCustomerDetail = (customer_id) => {
+        this.setState({
+            curShowCustomerId: customer_id,
+        });
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customer_id,
+                userViewShowCustomerUserListPanel: true,
+                hideRightPanel: this.hideRightPanel
+            }
+        });
+    }
+
     getTableColumns() {
         return [
             {
@@ -344,11 +375,19 @@ class RecentLoginUsers extends React.Component {
                 dataIndex: 'customer_name',
                 key: 'customer_name',
                 width: '100px',
-                className: 'has-filter',
-                render: function($1, rowData, idx) {
-                    var customer_name = rowData.customer && rowData.customer.customer_name || '';
+                className: 'has-filter owner-customer-wrap',
+                render: ($1, rowData, idx) => {
+                    const customer_name = _.get(rowData, 'customer.customer_name', '');
+                    const customer_id = _.get(rowData, 'customer.customer_id', '');
                     return (
-                        <div title={customer_name}>{customer_name}</div>
+                        <div
+                            title={customer_name}
+                            className="owner-customer"
+                            data-tracename="点击所属客户列"
+                        >
+                            {customer_name}
+                            <input type="hidden" className="hidden_customer_id" value={customer_id}/>
+                        </div>
                     );
                 }
             },
