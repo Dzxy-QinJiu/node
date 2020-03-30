@@ -754,7 +754,9 @@ class CustomerUsers extends React.Component {
                                 {userNameText}
                             </span>
                             <span className="user-apply-state">
-                                <span className="apply-left-bracket">[</span>{Intl.get('user.apply.false', '待审批')}<span className="apply-right-bracket">]</span>
+                                <span className="apply-left-bracket">[</span>
+                                {Intl.get('user.apply.false', '待审批')}
+                                <span className="apply-right-bracket">]</span>
                             </span>
                         </div>
                         <div className="crm-user-apps-container no-checkbox-apps-container user-apply-apps-container">
@@ -765,6 +767,7 @@ class CustomerUsers extends React.Component {
                                 {this.getUserApplyOptions(apps)}
                             </div>
                         </div>
+
                     </div>
                 );
             }else {return null;}
@@ -796,19 +799,40 @@ class CustomerUsers extends React.Component {
                             <div className="crm-user-item" key={index}>
                                 <div className="crm-user-name">
                                     {isShowCheckbox ? (
-                                        <Checkbox checked={user.checked} disabled={!!this.state.applyType}
-                                            onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
-                                            {isManager ? <i className='iconfont icon-team-role' title={Intl.get('common.managers', '管理员')}></i> : null}
-                                            <span className={classNames('user-name-text', {'can-click-open-detail': !this.props.isMerge})}
+                                        <Checkbox
+                                            checked={user.checked}
+                                            disabled={!!this.state.applyType}
+                                            onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}
+                                        >
+                                            {
+                                                isManager ?
+                                                    <i
+                                                        className='iconfont icon-team-role'
+                                                        title={Intl.get('common.managers', '管理员')}
+                                                    ></i> : null
+                                            }
+                                            <span
+                                                className={
+                                                    classNames('user-name-text',{'can-click-open-detail': !this.props.isMerge})
+                                                }
                                                 title={userNameText}
-                                                onClick={this.showUserDetail.bind(this, user.user_id)}>
+                                                onClick={this.showUserDetail.bind(this, user.user_id)}
+                                            >
                                                 {userNameText}
                                             </span>
                                         </Checkbox>) :
                                         <span>
-                                            {isManager ? <i className='iconfont icon-team-role' title={Intl.get('common.managers', '管理员')}></i> : null}
+                                            {
+                                                isManager ?
+                                                    <i
+                                                        className='iconfont icon-team-role'
+                                                        title={Intl.get('common.managers', '管理员')}
+                                                    ></i> : null
+                                            }
                                             <span
-                                                className={classNames('user-name-text', {'can-click-open-detail': !this.props.isMerge})}
+                                                className={
+                                                    classNames('user-name-text', {'can-click-open-detail': !this.props.isMerge})
+                                                }
                                                 title={userNameText}
                                                 onClick={this.showUserDetail.bind(this, user.user_id)}>
                                                 {userNameText}
@@ -817,20 +841,28 @@ class CustomerUsers extends React.Component {
 
                                     }
                                 </div>
-                                <div
-                                    className={classNames('crm-user-apps-container', {'no-checkbox-apps-container': !isShowCheckbox})}>
-                                    <div className="crm-user-apps">
-                                        <div className="apps-top-title">
-                                            {isShowCheckbox ? (
-                                                <Checkbox checked={user.checked} disabled={!!this.state.applyType}
-                                                    onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
-                                                    {this.renderUserAppTitle()}
-                                                </Checkbox>
-                                            ) : (<label>{this.renderUserAppTitle()}</label>)}
+                                {
+                                    _.isEmpty(userObj.apps) ? null : (
+                                        <div
+                                            className={
+                                                classNames('crm-user-apps-container',
+                                                    {'no-checkbox-apps-container': !isShowCheckbox})
+                                            }
+                                        >
+                                            <div className="crm-user-apps">
+                                                <div className="apps-top-title">
+                                                    {isShowCheckbox ? (
+                                                        <Checkbox checked={user.checked} disabled={!!this.state.applyType}
+                                                            onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
+                                                            {this.renderUserAppTitle()}
+                                                        </Checkbox>
+                                                    ) : (<label>{this.renderUserAppTitle()}</label>)}
+                                                </div>
+                                                {this.getUserAppOptions(userObj, isShowCheckbox)}
+                                            </div>
                                         </div>
-                                        {this.getUserAppOptions(userObj, isShowCheckbox)}
-                                    </div>
-                                </div>
+                                    )
+                                }
                             </div>
                         );
                     })}
