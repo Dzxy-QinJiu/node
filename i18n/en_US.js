@@ -486,6 +486,7 @@ var en_US = {
     'user.detail.addApp.setRolePermissions': 'Config role and permissions',//'设置角色权限',
     'user.detail.errorTip.getRoleTimeout': 'get role data time out',//'获取角色列表超时',
     'user.detail.errorTip.getPermissionTimeout': 'get permissions data time out',
+    'user.detail.app.disabled': 'Product Deactivated', // 产品已停用
     'user.user.product.set': 'Product Configuration',//产品设置
     'user.batch.operation': 'Batch operations',//批量操作
     'user.operator': 'Operator',//操作人

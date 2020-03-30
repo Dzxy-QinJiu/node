@@ -528,6 +528,8 @@ class UserDetailBasic extends React.Component {
                     }else {
                         renderAppInfo = _this.renderUemAppInfo(app);
                     }
+                    // 产品状态
+                    const appStatus = _.get(app, 'app_status');
                     return (
                         <li className={hideDetail ? 'clearfix list-unstyled hide-detail' : 'clearfix list-unstyled'} key={app.app_id}>
                             <div className="title-container">
@@ -541,20 +543,33 @@ class UserDetailBasic extends React.Component {
                                 <span className="icon-suffix">
 
                                 </span>
-                                <span className="btn-bar">
-                                    {
-                                        app.is_disabled === 'true' ?
-                                            <span className="collapse-btn handle-btn-item">
-                                                {
-                                                    app.showDetail ?
-                                                        <span onClick={() => this.showAppDetail({ app, isShow: false })}>{Intl.get('user.detail.tip.collapse', '收起停用前设置')}</span> :
-                                                        <span onClick={() => this.showAppDetail({ app, isShow: true })}>{Intl.get('user.detail.tip.expand', '展开停用前设置')}</span>
-                                                }
-                                            </span> :
-                                            null
-                                    }
-                                    {this.renderStatus(app)}
-                                </span>
+                                {
+                                    appStatus ? (
+                                        <span className="btn-bar">
+                                            {
+                                                app.is_disabled === 'true' ?
+                                                    <span className="collapse-btn handle-btn-item">
+                                                        {
+                                                            app.showDetail ?
+                                                                <span onClick={() => this.showAppDetail({ app, isShow: false })}>
+                                                                    {Intl.get('user.detail.tip.collapse', '收起停用前设置')}
+                                                                </span> :
+                                                                <span onClick={() => this.showAppDetail({ app, isShow: true })}>
+                                                                    {Intl.get('user.detail.tip.expand', '展开停用前设置')}
+                                                                </span>
+                                                        }
+                                                    </span> :
+                                                    null
+                                            }
+                                            {this.renderStatus(app)}
+                                        </span>
+                                    ) : (
+                                        <span className="btn-bar app-disabled">
+                                            {Intl.get('user.detail.app.disabled', '产品已停用')}
+                                        </span>
+                                    )
+                                }
+
                             </div>
                             <div className="desp pull-left">
                                 {
@@ -563,7 +578,7 @@ class UserDetailBasic extends React.Component {
                             </div>
 
                             {
-                                !hideDetail && isOplateUser() ?
+                                !hideDetail && isOplateUser() && appStatus ?
                                     <PrivilegeChecker
                                         check={userManagePrivilege.USER_MANAGE}
                                         tagName="div"
