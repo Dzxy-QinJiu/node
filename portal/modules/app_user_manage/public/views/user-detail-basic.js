@@ -528,8 +528,9 @@ class UserDetailBasic extends React.Component {
                     }else {
                         renderAppInfo = _this.renderUemAppInfo(app);
                     }
-                    // 产品状态
-                    const appStatus = _.get(app, 'app_status');
+                    // 产品状态,返回字段是app_status字段
+                    // 返回字段的值是0表示停用的产品；没有返回这个字段，或是返回的值是1，表示产品是启用的
+                    const appDisabledStatus = _.get(app, 'app_status') === 0;
                     return (
                         <li className={hideDetail ? 'clearfix list-unstyled hide-detail' : 'clearfix list-unstyled'} key={app.app_id}>
                             <div className="title-container">
@@ -544,7 +545,11 @@ class UserDetailBasic extends React.Component {
 
                                 </span>
                                 {
-                                    appStatus ? (
+                                    appDisabledStatus ? (
+                                        <span className="btn-bar app-disabled">
+                                            {Intl.get('user.detail.app.disabled', '产品已停用')}
+                                        </span>
+                                    ) : (
                                         <span className="btn-bar">
                                             {
                                                 app.is_disabled === 'true' ?
@@ -563,10 +568,6 @@ class UserDetailBasic extends React.Component {
                                             }
                                             {this.renderStatus(app)}
                                         </span>
-                                    ) : (
-                                        <span className="btn-bar app-disabled">
-                                            {Intl.get('user.detail.app.disabled', '产品已停用')}
-                                        </span>
                                     )
                                 }
 
@@ -578,7 +579,7 @@ class UserDetailBasic extends React.Component {
                             </div>
 
                             {
-                                !hideDetail && isOplateUser() && appStatus ?
+                                !hideDetail && isOplateUser() && !appDisabledStatus ?
                                     <PrivilegeChecker
                                         check={userManagePrivilege.USER_MANAGE}
                                         tagName="div"
