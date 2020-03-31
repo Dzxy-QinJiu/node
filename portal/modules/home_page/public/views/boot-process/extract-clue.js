@@ -46,6 +46,8 @@ const HOT_SELECTORS = [/*{
         value: '上市'
     }];
 
+const CONTACT_PHONE_CLS = 'extract-clue-contact-count';
+
 class ExtractClues extends React.Component {
     constructor(props) {
         super(props);
@@ -663,10 +665,16 @@ class ExtractClues extends React.Component {
     };
 
     //点击线索名，选中checkbox
-    handleClickClueName = (item) => {
-        if(this.getDisabledClue(item)) {//如果被禁用了，点击后无效
+    handleClickClueName = (item, event) => {
+        let target = _.get(event,'target');
+
+        if( //如果被禁用了，点击后无效
+            this.getDisabledClue(item)
+            //如果是电话和提取按钮点击冒泡上来的，不触发选中checkbox
+            || _.includes(['iconfont icon-extract', CONTACT_PHONE_CLS, `${CONTACT_PHONE_CLS} ant-popover-open`], _.get(target,'className'))) {
             return false;
         }
+
         let isSelected = _.find(this.state.selectedRecommendClues, clueItem => clueItem.id === item.id);
         this.handleCheckChange(item,{target: {checked: !isSelected}});
     };
@@ -893,10 +901,10 @@ class ExtractClues extends React.Component {
                                 'extract-clue-text__null': !otherProps.products.hasHighLight && !otherProps.scope.hasHighLight && !otherProps.industry.hasHighLight && !otherProps.companyProfile.hasHighLight
                             });
                             return (
-                                <div className={cls}>
+                                <div className={cls} key={item.id} onClick={this.handleClickClueName.bind(this, item)}>
                                     <Checkbox checked={this.hasChecked(item)} disabled={this.getDisabledClue(item)} onChange={this.handleCheckChange.bind(this, item)}/>
                                     <div className="extract-clue-text-wrapper" title={item.hasExtractedByOther ? Intl.get('errorcode.169', '该线索已被提取') : ''}>
-                                        <div className="extract-clue-text__name" onClick={this.handleClickClueName.bind(this, item)}>
+                                        <div className="extract-clue-text__name">
                                             {item.hasExtractedByOther ? <i className='iconfont icon-warning-tip'/> : null}
                                             <span dangerouslySetInnerHTML={{__html: this.handleHighLightStyle(item.name).content}}/>
                                             {item.labels.length ? (
@@ -918,9 +926,11 @@ class ExtractClues extends React.Component {
                                                 {_.get(item.contact, 'phones') ? (
                                                     <span className="extract-clue-contacts-item">
                                                         <span className="extract-clue-text-label">{Intl.get('common.phone', '电话')}：</span>
-                                                        <span>{Intl.get('clue.recommend.clue.count', '{count}个', {
-                                                            count: _.get(item.contact, 'phones')
-                                                        })}</span>
+                                                        <Popover trigger="click" content={_.get(item,'telephones').map(phone => (<div key={phone}>{phone}</div>))}>
+                                                            <span className={CONTACT_PHONE_CLS}>{Intl.get('clue.recommend.clue.count', '{count}个', {
+                                                                count: _.get(item.contact, 'phones')
+                                                            })}</span>
+                                                        </Popover>
                                                     </span>
                                                 ) : null}
                                                 {_.get(item.contact, 'email') ? (

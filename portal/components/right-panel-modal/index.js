@@ -17,6 +17,7 @@ class RightPanelModal extends React.Component {
         });
         return (
             <div className={panelClass} data-tracename={this.props.dataTracename || ''}>
+                {this.props.isShowMadal && this.props.canClickMaskClosePanel ? <div className="right-panel-modal-mask" onClick={this.props.onClosePanel}/> : null}
                 {this.props.isShowCloseBtn && !isWebMin ? (
                     <span className="iconfont icon-close close-modal-btn" onClick={this.props.onClosePanel} style={this.props.width ? {right: this.props.width} : null}/>) : null}
                 <div className="right-panel-modal-content" style={this.props.width ? {width: this.props.width} : null}>
@@ -49,6 +50,8 @@ RightPanelModal.propTypes = {
     //面板中展示的内容
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     //事件跟踪的描述
-    dataTracename: PropTypes.string
+    dataTracename: PropTypes.string,
+    //是否可点击遮罩层关闭面板
+    canClickMaskClosePanel: PropTypes.bool,
 };
 export default RightPanelModal;
