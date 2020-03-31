@@ -78,6 +78,8 @@ export function getAverageOnlineTimeChart(type = 'all') {
             },
         },
         processOption(option) {
+            //设置x轴标签显示策略为自动计算，避免重叠
+            _.set(option, 'xAxis[0].axisLabel.interval', 'auto');
             //设置y轴名称，用以标识y轴数值的单位
             _.set(option, 'yAxis[0].name', Intl.get('common.app.minute', '分钟'));
         },
