@@ -798,7 +798,7 @@ class CustomerUsers extends React.Component {
                         return (
                             <div className="crm-user-item" key={index}>
                                 <div className="crm-user-name">
-                                    {isShowCheckbox ? (
+                                    {isShowCheckbox && !_.isEmpty(userObj.apps) ? (
                                         <Checkbox
                                             checked={user.checked}
                                             disabled={!!this.state.applyType}
