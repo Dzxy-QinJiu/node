@@ -123,7 +123,7 @@ export function getCallRecordChart(paramObj = {}) {
             title: Intl.get('sales.home.total.connected', '总接通数'),
             width: col_width,
             align: 'right',
-            dataIndex: 'total_callout_success',
+            dataIndex: 'total_success',
             sorter: function(a, b) {
                 return a.total_callout_success - b.total_callout_success;
             },
