@@ -530,7 +530,7 @@ class UserDetailBasic extends React.Component {
                     }
                     // 产品状态,返回字段是app_status字段
                     // 返回字段的值是0表示停用的产品；没有返回这个字段，或是返回的值是1，表示产品是启用的
-                    const appDisabledStatus = _.get(app, 'app_status') === 0;
+                    const isAppDisabled = _.get(app, 'app_status') === 0;
                     return (
                         <li className={hideDetail ? 'clearfix list-unstyled hide-detail' : 'clearfix list-unstyled'} key={app.app_id}>
                             <div className="title-container">
@@ -545,7 +545,7 @@ class UserDetailBasic extends React.Component {
 
                                 </span>
                                 {
-                                    appDisabledStatus ? (
+                                    isAppDisabled ? (
                                         <span className="btn-bar app-disabled">
                                             {Intl.get('user.detail.app.disabled', '产品已停用')}
                                         </span>
@@ -579,7 +579,7 @@ class UserDetailBasic extends React.Component {
                             </div>
 
                             {
-                                !hideDetail && isOplateUser() && !appDisabledStatus ?
+                                !hideDetail && isOplateUser() && !isAppDisabled ?
                                     <PrivilegeChecker
                                         check={userManagePrivilege.USER_MANAGE}
                                         tagName="div"
