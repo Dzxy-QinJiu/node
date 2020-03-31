@@ -100,10 +100,6 @@ class RecommendClues extends React.Component {
 
     getSearchCondition = (condition) => {
         var conditionObj = _.cloneDeep(condition || _.get(this, 'state.settedCustomerRecommend.obj'));
-        //去掉一些不用的属性
-        delete conditionObj.id;
-        delete conditionObj.user_id;
-        delete conditionObj.organization;
         conditionObj.load_size = this.state.pageSize;
         return conditionObj;
     };
@@ -131,11 +127,16 @@ class RecommendClues extends React.Component {
 
     //保存成功后需要获取数据,以及展示下一步
     saveRecommedConditionsSuccess = (saveCondition) => {
-        clueCustomerAction.saveSettingCustomerRecomment(saveCondition);
+        let isNoEmpty = !_.isEmpty(saveCondition);
+        if(isNoEmpty) {
+            clueCustomerAction.saveSettingCustomerRecomment(saveCondition);
+        }
         this.setState({
             step: EXTRACT_CLUE_STEPS.EXTRACT_CLUE
         }, () => {
-            this.getRecommendClueLists();
+            if(isNoEmpty) {
+                this.getRecommendClueLists();
+            }
         });
     };
 
