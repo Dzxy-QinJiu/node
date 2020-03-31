@@ -459,8 +459,13 @@ class RecentLoginUsers extends React.Component {
                 key: 'online_time',
                 className: 'has-filter',
                 render: (billsec, rowData, idx) => {
+                    let onLineTime = 0;
+                    if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
+                        // 后面返回的单位是毫秒，先转成秒，使用公共的方法
+                        onLineTime = (rowData.apps[0].online_time || 0) / 1000;
+                    }
                     return (
-                        <div>{TimeUtil.getFormatTime(billsec)}</div>
+                        <div>{TimeUtil.getFormatTime(onLineTime)}</div>
                     );
                 }
             },
