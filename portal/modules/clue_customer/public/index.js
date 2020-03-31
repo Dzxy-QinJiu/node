@@ -3562,6 +3562,7 @@ class ClueCustomer extends React.Component {
                                 <RightPanelModal
                                     isShowMadal
                                     isShowCloseBtn
+                                    canClickMaskClosePanel
                                     onClosePanel={this.closeRecommendCluePanel}
                                     content={(
                                         <RecommendClues
