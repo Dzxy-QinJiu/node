@@ -42,13 +42,14 @@ exports.getCrmUserList = function(req, res, queryObj) {
             res: res
         }, queryObj, {
             success: (emitter, result) => {
-                // 处理已停用的产品，产品的状态是app_status字段，0 表示已停用
+                // 处理已停用的产品，产品的状态是app_status字段
+                // 返回字段的值是0表示停用的产品；没有返回这个字段，或是返回的值是1，表示产品是启用的
                 let data = _.get(result, 'data', []);
                 if (!_.isEmpty(data)) {
                     data = _.each(data, item => {
                         let apps = _.get(item, 'apps', []);
                         if (!_.isEmpty(apps)) {
-                            apps = _.filter(apps, app => app.app_status);
+                            apps = _.filter(apps, app => _.get(app, 'app_status') !== 0 );
                         }
                         item.apps = apps;
                     });
