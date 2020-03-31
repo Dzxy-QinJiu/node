@@ -23,7 +23,7 @@ import {
     isCommonSalesOrPersonnalVersion, getClueSalesList, getLocalSalesClickCount, HASEXTRACTBYOTHERERRTIP
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import { formatSalesmanList, checkCurrentVersionType,
-    checkVersionAndType, isResponsiveDisplay, isShowWinningClueDeadlineTime } from 'PUB_DIR/sources/utils/common-method-util';
+    checkVersionAndType, isResponsiveDisplay } from 'PUB_DIR/sources/utils/common-method-util';
 import { getMaxLimitExtractClueCount, updateGuideMark } from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
 import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon, GIFT_LOGO} from 'PUB_DIR/sources/utils/consts';
@@ -447,16 +447,11 @@ class ExtractClues extends React.Component {
         />;
         if(versionAndType.isPersonalTrial || versionAndType.isCompanyTrial) {//个人试用/企业试用,展示领取线索按钮
             maxLimitTip = (
-                <React.Fragment>
-                    <ReactIntl.FormattedMessage
-                        id="clue.recommend.default.tip"
-                        defaultMessage={'{timerange}还可提取{ableExtract}条线索'}
-                        values={i18Obj}
-                    />
-                    {
-                        isShowWinningClueDeadlineTime() ? this.renderWinningClueBtn() : null
-                    }
-                </React.Fragment>
+                <ReactIntl.FormattedMessage
+                    id="clue.recommend.default.tip"
+                    defaultMessage={'{timerange}还可提取{ableExtract}条线索'}
+                    values={i18Obj}
+                />
             );
         }
         return maxLimitTip;
