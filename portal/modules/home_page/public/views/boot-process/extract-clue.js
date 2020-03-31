@@ -22,7 +22,8 @@ import {
     SetLocalSalesClickCount,
     isCommonSalesOrPersonnalVersion, getClueSalesList, getLocalSalesClickCount, HASEXTRACTBYOTHERERRTIP
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import { formatSalesmanList, checkCurrentVersionType, checkVersionAndType, isResponsiveDisplay } from 'PUB_DIR/sources/utils/common-method-util';
+import { formatSalesmanList, checkCurrentVersionType,
+    checkVersionAndType, isResponsiveDisplay, isShowWinningClue } from 'PUB_DIR/sources/utils/common-method-util';
 import { getMaxLimitExtractClueCount, updateGuideMark } from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
 import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon, GIFT_LOGO} from 'PUB_DIR/sources/utils/consts';
@@ -434,7 +435,11 @@ class ExtractClues extends React.Component {
         var maxLimitExtractNumber = this.state.maxLimitExtractNumber;
         var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
         let versionAndType = checkVersionAndType();
-        const i18Obj = {hasExtract: <span className="has-extracted-count">{this.state.hasExtractCount}</span>, ableExtract: <span className="has-extracted-count">{ableExtract}</span>, timerange: this.getTimeRangeText()};
+        const i18Obj = {
+            hasExtract: <span className="has-extracted-count">
+                {this.state.hasExtractCount}</span>,
+            ableExtract: <span className="has-extracted-count">{ableExtract}</span>, timerange: this.getTimeRangeText()
+        };
         let maxLimitTip = <ReactIntl.FormattedMessage
             id="clue.recommend.default.tip"
             defaultMessage={'{timerange}还可提取{ableExtract}条线索'}
@@ -448,7 +453,9 @@ class ExtractClues extends React.Component {
                         defaultMessage={'{timerange}还可提取{ableExtract}条线索'}
                         values={i18Obj}
                     />
-                    {this.renderWinningClueBtn()}
+                    {
+                        isShowWinningClue() ? this.renderWinningClueBtn() : null
+                    }
                 </React.Fragment>
             );
         }

@@ -1524,7 +1524,9 @@ exports.checkCustomerTotalLeaveTime = function(startTime,endTime,customers,isAdd
 // 判断依据：试用（个人和企业）并且不是运营角色
 exports.isShowWinningClue = () => {
     const versionAndType = checkVersionAndType();
-    return versionAndType.trial && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+    // 赢线索活动截止到2020-03-31, 直接加了false判断，不显示赢线索活动了
+    // 要是以后再显示赢线索活动，需要去掉false
+    return false && versionAndType.trial && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
 };
 
 // 是否已经赢取了最大的线索量
