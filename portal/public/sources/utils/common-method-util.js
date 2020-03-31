@@ -1520,8 +1520,8 @@ exports.checkCustomerTotalLeaveTime = function(startTime,endTime,customers,isAdd
     }
 };
 
-// 是否到了截止时间
-function isWinningClueDeadLine() {
+// 是否显示赢线索活动
+function isShowWinningClueDeadlineTime() {
     // 2020-04-01 时间戳
     const deadlineTime = moment('2020-04-1').startOf('day').valueOf();
     const nowTime = new Date().valueOf();
@@ -1529,13 +1529,13 @@ function isWinningClueDeadLine() {
     return false;
 }
 
-exports.isWinningClueDeadLine = isWinningClueDeadLine;
+exports.isShowWinningClueDeadlineTime = isShowWinningClueDeadlineTime;
 
 // 是否显示赢线索活动
 // 判断依据：试用（个人和企业）并且不是运营角色
 exports.isShowWinningClue = () => {
     const versionAndType = checkVersionAndType();
-    return isWinningClueDeadLine() && versionAndType.trial && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+    return isShowWinningClueDeadlineTime() && versionAndType.trial && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
 };
 
 // 是否已经赢取了最大的线索量

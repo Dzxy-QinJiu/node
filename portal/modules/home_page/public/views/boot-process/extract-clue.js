@@ -23,7 +23,7 @@ import {
     isCommonSalesOrPersonnalVersion, getClueSalesList, getLocalSalesClickCount, HASEXTRACTBYOTHERERRTIP
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import { formatSalesmanList, checkCurrentVersionType,
-    checkVersionAndType, isResponsiveDisplay, isWinningClueDeadLine } from 'PUB_DIR/sources/utils/common-method-util';
+    checkVersionAndType, isResponsiveDisplay, isShowWinningClueDeadlineTime } from 'PUB_DIR/sources/utils/common-method-util';
 import { getMaxLimitExtractClueCount, updateGuideMark } from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
 import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon, GIFT_LOGO} from 'PUB_DIR/sources/utils/consts';
@@ -454,7 +454,7 @@ class ExtractClues extends React.Component {
                         values={i18Obj}
                     />
                     {
-                        isWinningClueDeadLine() ? this.renderWinningClueBtn() : null
+                        isShowWinningClueDeadlineTime() ? this.renderWinningClueBtn() : null
                     }
                 </React.Fragment>
             );
