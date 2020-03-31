@@ -1526,7 +1526,7 @@ function isWinningClueDeadLine() {
     const deadlineTime = moment('2020-04-1').startOf('day').valueOf();
     const nowTime = new Date().valueOf();
     // 当前时间大于2020-04-01零点时，活动截止，小于时，显示赢线索活动
-    return nowTime < deadlineTime;
+    return false;
 }
 
 exports.isWinningClueDeadLine = isWinningClueDeadLine;
