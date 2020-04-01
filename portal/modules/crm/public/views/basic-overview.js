@@ -122,9 +122,7 @@ class BasicOverview extends React.Component {
     }
     getAppList = () => {
         commonDataUtil.getAppList(appList => {
-            // 过滤掉停用的产品
-            let ableAppList = _.filter(appList, app => app.status);
-            this.setState({appList: _.map(ableAppList, app => {
+            this.setState({appList: _.filter(appList, app => app.status).map(app => {
                 return {
                     client_id: app.app_id,
                     client_name: app.app_name,
