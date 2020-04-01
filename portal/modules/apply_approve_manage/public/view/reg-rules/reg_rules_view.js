@@ -164,11 +164,11 @@ class RegRulesView extends React.Component {
         }
         if (isVisitApplyFlow(_.get(this, 'props.applyTypeData.type'))) {
             //todo 不同组织所传的字段不一样
-            // elem.distributeSalesToVisit = true;
-            elem.releaseCustomerToTeamPool = true;
+            elem.distributeSalesToVisit = true;//分配销售字段
+            // elem.releaseCustomerToTeamPool = true;//分配团队字段
         } else {
-            // elem.distributeSalesToVisit = false;
-            elem.releaseCustomerToTeamPool = false;
+            elem.distributeSalesToVisit = false;
+            // elem.releaseCustomerToTeamPool = false;
         }
         if (isDomainApplyFlow(_.get(this, 'props.applyTypeData.type'))) {
             elem.customerSLDUpdate = true;
