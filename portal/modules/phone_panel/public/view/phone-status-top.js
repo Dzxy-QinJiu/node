@@ -64,6 +64,10 @@ class phoneStatusTop extends React.Component {
     componentWillUnmount() {
         this.setInitialData();
         phoneAlertStore.unlisten(this.onStoreChange);
+        //拨打电话状态区移除后，重新计算详情中的高度计算（客户详情中拨打电话后，打开其他客户的详情时，对应详情内容的高度需要去掉电话状态高度）
+        setTimeout(() => {
+            phoneMsgEmitter.emit(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT);
+        });
     }
 
     componentWillReceiveProps(nextProps) {

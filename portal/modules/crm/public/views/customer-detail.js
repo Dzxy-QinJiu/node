@@ -64,7 +64,10 @@ class CrmRightPanel extends React.Component {
         } else if (nextProps.currentId !== this.props.currentId) {
             this.getCurCustomer(nextProps.currentId);
         }
-        this.setTabsContainerHeight();
+        // 拨打电话弹窗后，直接切换客户详情时直接计算高度时，头部的通话状态还未消失，所以需要加上延时处理
+        setTimeout(() => {
+            this.setTabsContainerHeight();
+        });
     }
     componentWillUnmount() {
         contactUtil.emitter.removeListener('changeActiveTab', this.changeActiveKey);
