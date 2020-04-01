@@ -421,7 +421,7 @@ class RegisterForm extends React.Component {
                             autoComplete="off"
                         />
                     )}
-                    {this.state.phoneIsRegisted && this.state.phoneIsPassValid ? (<div className="register-error-tip">
+                    {this.state.phoneIsRegisted && this.state.phoneIsPassValid ? (<div className="register-error-tip phone-registed-tip">
                         <ReactIntl.FormattedMessage
                             id="register.phone.has.registed.to.login"
                             defaultMessage='该手机号已被注册, 去 {login}'
