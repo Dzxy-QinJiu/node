@@ -54,7 +54,6 @@ const UserDetailEditApp = createReactClass({
         UserDetailEditAppStore.listen(this.onStoreChange);
         $(window).on('resize', this.onStoreChange);
         modifyAppConfigEmitter.on(modifyAppConfigEmitter.MODIFY_APP_CONFIG, this.getModifyAppConfig);
-        let appInfo = this.props.appInfo;
         UserDetailEditAppActions.setInitialData(this.props.appInfo);
     },
 

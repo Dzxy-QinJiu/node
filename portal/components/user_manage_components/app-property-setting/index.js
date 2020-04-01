@@ -398,6 +398,19 @@ const AppPropertySetting = createReactClass({
         let terminals = defaultSettings.terminals;
         let multilogin = defaultSettings.multilogin;
         let isTwoFactor = defaultSettings.is_two_factor;
+        
+        // 修改单个应用时
+        if (this.props.isSingleAppEdit) {
+            number = _.get(currentAppInfo, 'number.value');
+            userType = _.get(currentAppInfo, 'user_type.value');
+            time = _.get(currentAppInfo, 'time.value');
+            overDraft = _.get(currentAppInfo, 'over_draft.value');
+            status = _.get(currentAppInfo, 'status.value');
+            terminals = _.get(currentAppInfo, 'terminals.value');
+            multilogin = _.get(currentAppInfo, 'multilogin.value');
+            isTwoFactor = _.get(currentAppInfo, 'is_two_factor.value');
+        }
+        // 应用配置的默认信息
         if (!_.isEmpty(appsDefaultSetting)) {
             time = appsDefaultSetting.time;
             overDraft = appsDefaultSetting.over_draft;
