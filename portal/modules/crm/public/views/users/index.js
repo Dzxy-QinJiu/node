@@ -330,10 +330,13 @@ class CustomerUsers extends React.Component {
 
     //获取到期后的状态
     getOverDraftStatus(over_draft) {
+        // 默认是到期不变
+        // 做一次转换，防止出现返回的类型修改导致前端做相应的调整
+        let overDraft = _.toNumber(over_draft);
         let status = Intl.get('user.expire.immutability', '到期不变');
-        if (over_draft === '1') {
+        if (overDraft === 1) {
             status = Intl.get('user.expire.stop', '到期停用');
-        } else if (over_draft === '2') {
+        } else if (overDraft === 2) {
             status = Intl.get('user.expire.degrade', '到期降级');
         }
         return status;
