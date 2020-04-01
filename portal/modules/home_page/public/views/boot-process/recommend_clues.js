@@ -100,10 +100,6 @@ class RecommendClues extends React.Component {
 
     getSearchCondition = (condition) => {
         var conditionObj = _.cloneDeep(condition || _.get(this, 'state.settedCustomerRecommend.obj'));
-        //去掉一些不用的属性
-        delete conditionObj.id;
-        delete conditionObj.user_id;
-        delete conditionObj.organization;
         conditionObj.load_size = this.state.pageSize;
         return conditionObj;
     };
