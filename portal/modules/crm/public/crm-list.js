@@ -524,7 +524,13 @@ class Crm extends React.Component {
     confirmDelete = (cusId) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-btn .ant-btn-primary'), '确定删除客户');
         if(cusId){
-            CrmAction.deleteCustomer(cusId);
+            CrmAction.deleteCustomer(cusId, () => {
+                if(this.state.selectedCustomer.length) {
+                    this.setState({
+                        selectedCustomer: _.filter(this.state.selectedCustomer, item => item.id !== cusId)
+                    });
+                }
+            });
         }
     };
 
@@ -1117,6 +1123,12 @@ class Crm extends React.Component {
                 }
                 crmAjax.releaseCustomer(reqData).then(result => {
                     this.setState({isReleasingCustomer: false});
+                    //从选中客户列表里移除已释放项
+                    if(this.state.selectedCustomer.length) {
+                        this.setState({
+                            selectedCustomer: _.filter(this.state.selectedCustomer, item => customerId !== item.id)
+                        });
+                    }
                     CrmAction.afterReleaseCustomer(customerId);
                 }, (errorMsg) => {
                     this.setState({isReleasingCustomer: false});
