@@ -133,12 +133,13 @@ export function getReportList(callback, query) {
         });
 }
 
-export function processReportListData(data) {
+export function processReportListData(data, chart) {
     const reportConfigId = _.get(location.href.match(/id=(.*)/), [1]);
 
     let reportData = _.find(data, item => item.template_id === reportConfigId);
 
     if (reportData) {
+        chart.title = reportData.template_name;
         reportData = _.get(reportData, REPORT_LIST_DATA_FIELD);
     } else {
         return [];

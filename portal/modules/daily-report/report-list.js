@@ -66,7 +66,7 @@ class ReportList extends React.Component {
     //获取图表列表
     getCharts = () => {
         let chart = {
-            title: Intl.get('analysis.sales.manager.daily.report', '销售经理日报'),
+            title: '',
             layout: {sm: 24},
             height: 'auto',
             cardContainer: {
