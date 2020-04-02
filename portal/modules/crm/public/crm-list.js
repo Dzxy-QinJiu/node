@@ -46,7 +46,7 @@ const userInfo = userData.getUserData();
 const COMMON_OTHER_ITEM = 'otherSelectedItem';
 import { OTHER_FILTER_ITEMS, DAY_TIME, BOOT_PROCESS_KEYS } from 'PUB_DIR/sources/utils/consts';
 import {getStartTime, getEndTime} from 'PUB_DIR/sources/utils/time-format-util';
-import ShearContent from 'CMP_DIR/shear-content';
+import ShearContent from 'CMP_DIR/shear-content-new';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
