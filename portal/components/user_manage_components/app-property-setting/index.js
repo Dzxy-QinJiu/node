@@ -360,7 +360,7 @@ const AppPropertySetting = createReactClass({
 
     },
 
-    onRolesPermissionSelect(roles , permissions) {
+    onRolesPermissionSelect(roles , permissions, rolesInfo) {
         var state = this.state;
         var app_id = state.currentApp.app_id, user_id = state.currentApp.user_id;
         let key = this.getAppSettingKey(app_id, user_id);
@@ -368,10 +368,15 @@ const AppPropertySetting = createReactClass({
         if (!_.isEqual(app_info.roles, roles) || !_.isEqual(app_info.permissions, permissions)) {
             modifyAppConfigEmitter.emit(modifyAppConfigEmitter.MODIFY_APP_CONFIG);
         }
+        if (!_.isEmpty(rolesInfo)) {
+            app_info.rolesInfo = _.clone(rolesInfo);
+        }
         app_info.roles = roles.slice();
         app_info.permissions = permissions.slice();
         this.setState({
             appPropSettingsMap: state.appPropSettingsMap
+        }, () => {
+            this.props.onAppPropertyChange(state.appPropSettingsMap);
         });
     },
 
