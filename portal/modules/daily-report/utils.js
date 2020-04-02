@@ -134,7 +134,17 @@ export function getReportList(callback, query) {
 }
 
 export function processReportListData(data) {
-    _.each(data, item => {
+    const reportConfigId = _.get(location.href.match(/id=(.*)/), [1]);
+
+    let reportData = _.find(data, item => item.template_id === reportConfigId);
+
+    if (reportData) {
+        reportData = _.get(reportData, REPORT_LIST_DATA_FIELD);
+    } else {
+        return [];
+    }
+
+    _.each(reportData, item => {
         _.each(item.item_values, obj => {
             const { name, value, value_str } = obj;
 
@@ -152,7 +162,7 @@ export function processReportListData(data) {
         });
     });
 
-    return data;
+    return reportData;
 }
 
 //保存报告

@@ -75,7 +75,6 @@ class ReportList extends React.Component {
                 },
             },
             url: '/rest/customer/v3/dailyreport/report',
-            dataField: REPORT_LIST_DATA_FIELD,
             processData: processReportListData
         };
 
