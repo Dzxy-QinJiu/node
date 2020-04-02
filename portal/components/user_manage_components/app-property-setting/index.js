@@ -372,6 +372,8 @@ const AppPropertySetting = createReactClass({
         app_info.permissions = permissions.slice();
         this.setState({
             appPropSettingsMap: state.appPropSettingsMap
+        }, () => {
+            this.props.onAppPropertyChange(state.appPropSettingsMap);
         });
     },
 
