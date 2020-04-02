@@ -1227,8 +1227,16 @@ class MyWorkColumn extends React.Component {
         const { reportConfigList } = this.state;
         if (_.isEmpty(reportConfigList)) return;
 
+        _.each(reportConfigList, reportConfig => {
+            if (reportConfig.status === 'on') {
+                this.renderDailyReportNoticeCard(workList, reportConfig);
+            }
+        });
+    }
+
+    //渲染销售日报相关提示的卡片
+    renderDailyReportNoticeCard(workList, reportConfig) {
         const { isCommonSales } = userData.getUserData();
-        const reportConfig = _.chain(reportConfigList).filter(item => item.status === 'on').get([0]).value();
         let title = '';
         let buttons = [];
 
