@@ -10,6 +10,18 @@ import { VIEW_TYPE, REPORT_LIST_DATA_FIELD } from './consts';
 import ReportDetail from './report-detail';
 
 class ReportList extends React.Component {
+    componentWillReceiveProps(nextProps) {
+        const thisLocationSearch = _.get(this.props, 'location.search');
+        const nextLocationSearch = _.get(nextProps, 'location.search');
+
+        if (nextLocationSearch !== thisLocationSearch) {
+            const interval = 'day';
+            const range = interval;
+            const startTime = moment().startOf(range).valueOf();
+            const endTime = moment().endOf(range).valueOf();
+            dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime, interval, range);
+        }
+    }
     //获取查询条件
     getConditions = () => {
         return [
