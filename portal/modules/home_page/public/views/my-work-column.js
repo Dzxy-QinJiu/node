@@ -1266,7 +1266,7 @@ class MyWorkColumn extends React.Component {
                 buttons.push({
                     type: 'primary',
                     onClick: () => {
-                        history.push('analysis/report/daily-report');
+                        history.push('analysis/report/daily-report?id=' + reportConfig.id);
                     },
                     name: Intl.get('analysis.check.the.report', '查看报告')
                 });
