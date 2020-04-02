@@ -51,26 +51,33 @@ class ReportLeftMenu extends React.Component {
         if (dailyReportMenuIndex > -1) {
             const reportConfigList = _.filter(this.state.reportConfigList, item => item.status === 'on');
     
-            if (!isShowDailyReport() || _.isEmpty(reportConfigList)) {
-                subMenus.splice(dailyReportMenuIndex, 1);
-            } else {
+            if (isShowDailyReport() && !_.isEmpty(reportConfigList)) {
                 const { isCommonSales } = userData.getUserData();
-                let dailyReportMenu = subMenus[dailyReportMenuIndex];
 
-                if (!isCommonSales && !dailyReportMenu.addition) {
-                    const reportConfig = _.first(reportConfigList);
+                let dailyReportMenu = _.cloneDeep(subMenus[dailyReportMenuIndex]);
 
-                    dailyReportMenu.addition = (
-                        <i className="iconfont icon-nav-setting"
-                            data-tracename="点击配置报告按钮"
-                            onClick={showReportPanel.bind(null, {
-                                currentView: VIEW_TYPE.CONFIG_REPORT,
-                                reportConfig,
-                                isConfigReport: true,
-                            })}
-                        />
-                    );
-                }
+                subMenus.splice(dailyReportMenuIndex, 1);
+
+                _.each(reportConfigList, reportConfig => {
+                    let menu = _.cloneDeep(dailyReportMenu);
+                    menu.name = reportConfig.name;
+                    menu.routePath = menu.routePath + '?id=' + reportConfig.id;
+
+                    if (!isCommonSales && !menu.addition) {
+                        menu.addition = (
+                            <i className="iconfont icon-nav-setting"
+                                data-tracename="点击配置报告按钮"
+                                onClick={showReportPanel.bind(null, {
+                                    currentView: VIEW_TYPE.CONFIG_REPORT,
+                                    reportConfig,
+                                    isConfigReport: true,
+                                })}
+                            />
+                        );
+                    }
+
+                    subMenus.push(menu);
+                });
             }
         }
 
