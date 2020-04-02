@@ -152,10 +152,23 @@ class ExtractClues extends React.Component {
     };
     //更新选中的推荐线索
     updateSelectedClueLists = (updateClueId) => {
-        var selectedRecommendClues = this.state.selectedRecommendClues;
-        this.setState({
-            selectedRecommendClues: _.filter(selectedRecommendClues,item => item.id !== updateClueId),
-        });
+        let { selectedRecommendClues, disabledCheckedClues } = this.state;
+        let name = '', list = [];
+        //在这里需要判断selectedRecommendClues是否存在，不存在就使用disabledCheckedClues
+        if(_.get(selectedRecommendClues, 'length')) {
+            name = 'selectedRecommendClues';
+            list = selectedRecommendClues;
+        }else if(_.get(disabledCheckedClues, 'length')) {
+            name = 'disabledCheckedClues';
+            list = disabledCheckedClues;
+        }
+        if(name) {
+            let newDate = {
+                [name]: _.filter(list,item => item.id !== updateClueId)
+            };
+
+            this.setState(newDate);
+        }
     };
     //标记线索已被其他人提取
     remarkLeadExtractedByOther = (remarkLeadId) => {
