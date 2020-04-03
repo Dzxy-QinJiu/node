@@ -8,6 +8,7 @@ import { getReportConfigList, handleReportStatusChange, showReportPanel, isShowD
 import { VIEW_TYPE } from 'MOD_DIR/daily-report/consts';
 import userData from 'PUB_DIR/sources/user-data';
 import { dailyReportEmitter } from 'PUB_DIR/sources/utils/emitters';
+import history from 'PUB_DIR/sources/history';
 
 const menuUtil = require('PUB_DIR/sources/utils/menu-util');
 
@@ -60,7 +61,9 @@ class ReportLeftMenu extends React.Component {
 
                 _.each(reportConfigList, reportConfig => {
                     let menu = _.cloneDeep(dailyReportMenu);
+                    menu.type = 'dailyReport';
                     menu.name = reportConfig.name;
+                    menu.reportConfigId = reportConfig.id;
                     menu.routePath = menu.routePath + '?id=' + reportConfig.id;
 
                     if (!isCommonSales && !menu.addition) {
@@ -87,21 +90,38 @@ class ReportLeftMenu extends React.Component {
     render() {
         const { isCommonSales } = userData.getUserData();
         const menus = this.getMenus();
+        const reportConfigId = _.get(location.href.match(/id=(.*)/), [1]);
 
         return (
             <div className='report-left-menu' data-tracename="分析报告左侧菜单">
                 <ul>
-                    {_.map(menus, menuItem => (
-                        <li>
-                            <NavLink
-                                to={menuItem.routePath}
-                                activeClassName="active"
-                            >
-                                {menuItem.name}
-                            </NavLink>
-                            {menuItem.addition}
-                        </li>
-                    ))}
+                    {_.map(menus, menuItem => {
+                        if (menuItem.type === 'dailyReport') {
+                            return (
+                                <li>
+                                    <a
+                                        href="javascript:void(0);"
+                                        onClick={() => { history.push(menuItem.routePath); }}
+                                        className={menuItem.reportConfigId === reportConfigId ? 'active' : ''}
+                                    >
+                                        {menuItem.name}
+                                    </a>
+                                    {menuItem.addition}
+                                </li>
+                            );
+                        } else {
+                            return (
+                                <li>
+                                    <NavLink
+                                        to={menuItem.routePath}
+                                        activeClassName="active"
+                                    >
+                                        {menuItem.name}
+                                    </NavLink>
+                                </li>
+                            );
+                        }
+                    })}
                 </ul>
 
                 {!isShowDailyReport() || isCommonSales ? null : (
