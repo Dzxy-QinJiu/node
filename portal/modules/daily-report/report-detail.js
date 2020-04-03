@@ -15,9 +15,14 @@ class ReportDetail extends React.Component {
 
     componentDidMount() {
         if (_.isEmpty(this.state.reportDetail)) {
-            getReportList(list => {
-                const reportDetail = _.first(list) || {};
-                this.setState({ reportDetail });
+            const reportConfigId = _.get(this.props, 'reportConfig.id');
+
+            getReportList({
+                callback: list => {
+                    const reportDetail = _.find(list, item => item.template_id === reportConfigId);
+                    if (reportDetail) this.setState({ reportDetail });
+                },
+                reportConfigId
             });
         }
     }

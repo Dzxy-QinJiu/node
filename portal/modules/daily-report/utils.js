@@ -108,7 +108,9 @@ export function saveReportConfig(data, paramObj = {}) {
 }
 
 //获取报告列表
-export function getReportList(callback, query) {
+export function getReportList(paramObj) {
+    let { callback, query, reportConfigId } = paramObj;
+
     if (!_.isFunction(callback)) return;
 
     if (!query) {
@@ -123,8 +125,7 @@ export function getReportList(callback, query) {
         query
     })
         .done(result => {
-            let data = _.get(result, REPORT_LIST_DATA_FIELD, []);
-            data = processReportListData(data);
+            const data = processReportListData(reportConfigId, result);
             callback(data);
         })
         .fail(err => {
@@ -133,16 +134,24 @@ export function getReportList(callback, query) {
         });
 }
 
-export function processReportListData(data) {
-    _.each(data, item => {
+export function processReportListData(reportConfigId, data, chart) {
+    if (!reportConfigId) reportConfigId = _.get(location.href.match(/id=(.*)/), [1]);
+
+    let reportData = _.find(data, item => item.template_id === reportConfigId);
+
+    if (reportData) {
+        if (chart) chart.title = reportData.template_name;
+        reportData = _.get(reportData, REPORT_LIST_DATA_FIELD);
+    } else {
+        if (chart) chart.title = '';
+        return [];
+    }
+
+    _.each(reportData, item => {
         _.each(item.item_values, obj => {
             const { name, value, value_str } = obj;
 
             switch (name) {
-                case '通话时长':
-                    obj.value = value + Intl.get('user.time.second', '秒');
-                    item[name] = obj.value;
-                    break;
                 case '其他':
                     item[name] = value_str;
                     break;
@@ -152,7 +161,7 @@ export function processReportListData(data) {
         });
     });
 
-    return data;
+    return reportData;
 }
 
 //保存报告
@@ -220,19 +229,15 @@ export function handleReportStatusChange(reportConfig) {
 }
 
 export function numberRender(name, value = 0, record = {}) {
-    if (_.isString(value)) {
-        const matched = value.match(/^\d+/);
+    let showValue = value;
 
-        if (matched) {
-            value = _.toInteger(matched[0]);
-        } else {
-            value = 0;
-        }
+    if (name === '通话时长') {
+        showValue += Intl.get('user.time.second', '秒');
     }
 
     if (value === 0 || !record.nickname) {
-        return value;
+        return showValue;
     } else {
-        return <span className='clickable' onClick={showNumberDetail.bind(this, record, name)}>{value}</span>;
+        return <span className='clickable' onClick={showNumberDetail.bind(this, record, name)}>{showValue}</span>;
     }
 }

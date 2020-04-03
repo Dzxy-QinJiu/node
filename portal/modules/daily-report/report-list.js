@@ -10,6 +10,14 @@ import { VIEW_TYPE, REPORT_LIST_DATA_FIELD } from './consts';
 import ReportDetail from './report-detail';
 
 class ReportList extends React.Component {
+    componentWillReceiveProps(nextProps) {
+        const thisLocationSearch = _.get(this.props, 'location.search');
+        const nextLocationSearch = _.get(nextProps, 'location.search');
+
+        if (nextLocationSearch !== thisLocationSearch) {
+            this.analysisInstance.getData();
+        }
+    }
     //获取查询条件
     getConditions = () => {
         return [
@@ -66,7 +74,7 @@ class ReportList extends React.Component {
     //获取图表列表
     getCharts = () => {
         let chart = {
-            title: Intl.get('analysis.sales.manager.daily.report', '销售经理日报'),
+            title: '',
             layout: {sm: 24},
             height: 'auto',
             cardContainer: {
@@ -75,8 +83,7 @@ class ReportList extends React.Component {
                 },
             },
             url: '/rest/customer/v3/dailyreport/report',
-            dataField: REPORT_LIST_DATA_FIELD,
-            processData: processReportListData
+            processData: processReportListData.bind(null, '')
         };
 
         const { isCommonSales } = userData.getUserData();
@@ -120,7 +127,7 @@ class ReportList extends React.Component {
                                 render: numberRender.bind(null, name)
                             };
     
-                            if (name === Intl.get('user.login.analysis.customer.other', '其他')) {
+                            if (name === '其他') {
                                 if (nickname) {
                                     column.isSetCsvValueBlank = true;
                                     column.align = 'left';
@@ -168,6 +175,7 @@ class ReportList extends React.Component {
         return (
             <div className="daily-report daily-report-list" data-tracename="销售日报列表">
                 <AntcAnalysis
+                    ref={ref => this.analysisInstance = ref}
                     charts={this.getCharts()}
                     conditions={this.getConditions()}
                     emitterConfigList={this.getEmitters()}
