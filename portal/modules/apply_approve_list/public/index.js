@@ -268,7 +268,18 @@ class ApplyApproveList extends React.Component {
                 activeApplyTab: activeTab,
                 filterOrSearchType: ''
             }, () => {
-                this.clearDataBeforeGetApplyList();
+                //如果选中的是我审批的，需要把筛选的框和筛选的类型(用户审批类型)选中
+                if(this.isActiveTabMyApproveList()){
+                    this.setState({
+                        filterOrSearchType: FILTER,
+                    });
+                    UserApplyActions.changeApplyType(APPLY_APPROVE_TYPES.USER_OR_GRANT);
+                    setTimeout(() => {
+                        this.fetchApplyList();
+                    });
+                }else{
+                    this.clearDataBeforeGetApplyList();
+                }
             });
         }
     };
