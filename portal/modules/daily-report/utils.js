@@ -123,7 +123,6 @@ export function getReportList(callback, query) {
         query
     })
         .done(result => {
-            let data = _.get(result, REPORT_LIST_DATA_FIELD, []);
             data = processReportListData(data);
             callback(data);
         })
@@ -133,9 +132,7 @@ export function getReportList(callback, query) {
         });
 }
 
-export function processReportListData(data, chart) {
-    const reportConfigId = _.get(location.href.match(/id=(.*)/), [1]);
-
+export function processReportListData(reportConfigId, data, chart) {
     let reportData = _.find(data, item => item.template_id === reportConfigId);
 
     if (reportData) {
@@ -206,6 +203,7 @@ export function showNumberDetail(record, name, e) {
 
 //是否显示日报功能
 export function isShowDailyReport() {
+    if (true) return true;
     const org = getOrganization();
     const versionName = _.get(org, 'version.name');
     const isValidVersion = _.includes(['专业版', '企业版'], versionName);

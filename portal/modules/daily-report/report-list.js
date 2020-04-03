@@ -73,6 +73,8 @@ class ReportList extends React.Component {
 
     //获取图表列表
     getCharts = () => {
+        const reportConfigId = _.get(location.href.match(/id=(.*)/), [1]);
+
         let chart = {
             title: '',
             layout: {sm: 24},
@@ -83,7 +85,7 @@ class ReportList extends React.Component {
                 },
             },
             url: '/rest/customer/v3/dailyreport/report',
-            processData: processReportListData
+            processData: processReportListData.bind(null, reportConfigId)
         };
 
         const { isCommonSales } = userData.getUserData();
