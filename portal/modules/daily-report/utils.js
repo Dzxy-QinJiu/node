@@ -135,6 +135,8 @@ export function getReportList(paramObj) {
 }
 
 export function processReportListData(reportConfigId, data, chart) {
+    if (!reportConfigId) reportConfigId = _.get(location.href.match(/id=(.*)/), [1]);
+
     let reportData = _.find(data, item => item.template_id === reportConfigId);
 
     if (reportData) {
