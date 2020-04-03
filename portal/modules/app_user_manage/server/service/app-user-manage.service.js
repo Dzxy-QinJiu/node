@@ -21,8 +21,8 @@ var CONSTANTS = {
     EXIST_APPLY_TRIAL: 'apply_app_trial', //已有用户开通试用
     EXIST_APPLY_FORMAL: 'apply_app_official', //已有用户开通正式
     APPLY_GRANT_DELAY: 'apply_grant_delay',// 延期
-    APPLY_PWD_CHANGE: 'apply_pwd_change',// 修改开通状态
-    APPLY_GRANT_STATUS_CHANGE: 'apply_grant_status_change', // 修改密码
+    APPLY_PWD_CHANGE: 'apply_pwd_change',// 修改密码
+    APPLY_GRANT_STATUS_CHANGE: 'apply_grant_status_change', // 修改开通状态
     APPLY_GRANT_OTHER_CHANGE: 'apply_sth_else', // 修改其他类型
     DELAY_MULTI_APP: 'apply_grant_delay_multiapp',//延期（多应用）
     DISABLE_MULTI_APP: 'apply_grant_status_change_multiapp',//修改开通状态（多应用）
@@ -58,44 +58,43 @@ var AppUserRestApis = {
     editAppUser: '/rest/base/v1/user/:user_id/detail',
     //修改用户所属客户
     editAppUserCustomer: '/rest/base/v1/user/belong/customer',
-    //获取用户审批列表
-    getApplyList: '/rest/base/v1/message/applylist',
-    //获取有未读回复的申请列表
-    getUnreadApplyList: '/rest/base/v1/message/applylist/comment/unread',
-    //获取未读回复列表(用户来标识未读回复的申请)
-    getUnreadReplyList: '/rest/base/v1/message/applycomment/unread/notices',
+    //todo 获取用户审批列表
+    // getApplyList: '/rest/base/v1/message/applylist',
+    getApplyList: '/rest/base/v1/workflow/applylist',
+    //todo 我申请的
+    getApplyListStartSelf: '/rest/base/v1/workflow/applylist/self',
+    // todo 待我审批的
+    getApplyListWillApprovedByMe: '/rest/base/v1/workflow/worklist',
+    //todo 我审批过的
+    getApplyListApprovedByMe: '/rest/base/v1/workflow/applylist/self/approved',
+    //todo 获取或者添加回复列表
+    getOrAddApplyComments: '/rest/base/v1/workflow/comments',
+    //todo 获取我审批的申请(包含我审批过的和待我审批的)
+    getMyApplyLists: '/rest/base/v1/workflow/work/approved/list',
     //获取工作流未读回复列表
     getWorkFlowUnreadReplyList: 'rest/base/v1/workflow/comments/notice/unread',
-    //获取申请单详情
-    getApplyDetail: '/rest/base/v1/message/apply/:apply_id',
-    //审批申请单（新创建用户）
-    submitNewApply: '/rest/base/v1/user/approve_users',
-    //审批申请单（已有用户）
-    submitExistApply: '/rest/base/v1/user/approve_grants',
-    // 申请用户
-    applyUser: '/rest/base/v1/user/apply_grants',
+    //todo 获取申请单详情
+    getApplyDetail: '/rest/base/v1/workflow/detail',
+    //审批申请单（创建新用户审批）
+    submitApplyNewUser: '/rest/base/v1/workflow/newuser/approve',
+    //审批申请单（已有用户开通应用审批）
+    submitExistApply: '/rest/base/v1/workflow/newgrant/approve',
+    //开通新应用授权
+    applyNewgrant: '/rest/base/v1/workflow/newgrant',
     //获取客户对应的用户列表
     getCustomerUsers: '/rest/base/v1/user/customer/users',
     //批量用户延期
     batchDelayUser: '/rest/base/v1/user/batch/grant/delay',
-    //修改密码
-    changePassword: '/rest/base/v1/user/apply/user_password',
-    //用户申请修改其他类型
-    applyChangeOther: '/rest/base/v1/user/apply/else',
-    //审批用户延期
-    approveDelayUser: '/rest/base/v1/user/approve_delay',
-    //审批修改密码
-    submitApplyChangePassword: '/rest/base/v1/user/approve_password',
-    //审批其他类型的修改
-    submitApplyChangeOther: '/rest/base/v1/user/approve/sthelse',
+    //修改密码和其他类型申请
+    applyChangePasswordAndOther: '/rest/base/v1/workflow/user/change',
+    //审批修改密码和其他类型的申请审批
+    submitApplyChangePasswordOrOther: '/rest/base/v1/workflow/user/change/approve',
+    //延期和启用停用审批
+    submitApplyDelayMultiApp: '/rest/base/v1/workflow/grant/change/approve',
     //审批开通状态
     submitApplyGrantStatus: '/rest/base/v1/user/approve_status',
     //编辑用户应用单个字段
     editAppDetail: '/rest/base/v1/user/grantdetail',
-    //添加一条回复
-    addReply: '/rest/base/v1/message/apply/comment',
-    //获取回复列表
-    getReplyList: '/rest/base/v1/message/apply/comments',
     //管理员批量添加、修改应用
     BATCH_GRANT_APPLICATION: '/rest/base/v1/user/batch/grants',
     //管理员批量延期
@@ -115,7 +114,7 @@ var AppUserRestApis = {
     //获取团队列表
     getteamlists: '/rest/base/v1/group/myteam',
     // 撤销申请
-    saleBackoutApply: '/rest/base/v1/message/apply/cancel',
+    cancelApplyApprove: '/rest/base/v1/workflow/cancel',
     // 获取应用的默认配置信息（待审批）
     getAppExtraConfigInfo: '/rest/base/v1/application/extra/grantinfos',
     // 获取应用的角色名称（已通过）
@@ -188,6 +187,7 @@ exports.getRecentLoginUsers = function(req, res, queryObj) {
             res: res
         }, queryObj);
 };
+
 
 // 获取用户列表
 function getUsersList(req, res, obj, requestUrl) {
@@ -313,28 +313,105 @@ exports.batchUpdate = function(req, res, field, data, application_ids) {
         res: res,
     }, userObj);
 };
+function handleUserApplyData(list){
+    let userApplyList = [];
+    _.forEach(list, item => {
+        //如果是
+        if(_.get(item,'message_type') === 'apply'){//如果是旧版的用户申请审批
+            userApplyList.push(applyDto.toRestObject(item));
+        }else if(_.get(item,'workflow_type') === 'user_or_grant'){
+            userApplyList.push(applyDto.toRestObjectNewUserApply(item));
+        }else{//其他类型的数据可以不用动
+            userApplyList.push(item);
+        }
+    });
+    return userApplyList;
+}
 /**
- * 获取申请列表
+ * 获取所有申请列表（对应页面上的团队申请的列表）
  */
-exports.getApplyList = function(req, res, obj) {
+exports.getApplyList = function(req, res) {
     let url = AppUserRestApis.getApplyList;
-    //获取有未读回复的申请列表
-    if (obj.isUnreadApply === 'true') {
-        obj = {id: obj.id, page_size: obj.page_size};
-        url = AppUserRestApis.getUnreadApplyList;
-    } else {
-        delete obj.isUnreadApply;
-    }
-    //如果
+    let obj = req.query;
     return restUtil.authRest.get({
         url: url,
         req: req,
         res: res
     }, obj, {
         success: function(eventEmitter, data) {
-            //处理数据
+            // todo  处理数据
             if (data && data.list && data.list.length) {
-                var applyList = applyDto.toRestObject(data.list || []);
+                var applyList = handleUserApplyData(data.list || []);
+                data.list = applyList;
+            }
+            //todo 如果是根据客户id查询申请列表的时候，还需要格外查询这些申请的回复列表
+            if (obj.customer_id){
+                var emitter = new EventEmitter();
+                var promiseList = [];
+                _.forEach(data.list, item => {
+                    promiseList.push(getReplyItem(req, res, _.get(item, 'id')));
+                });
+                Promise.all(promiseList).then((dataList) => {
+                    _.forEach(data.list, (item,index) => {
+                        var replyList = _.filter(dataList[index], item => !_.get(item,'approve_status',''));
+                        item['replyLists'] = replyList;
+                    });
+                    eventEmitter.emit('success', data);
+                }).catch((err) => {
+                    emitter.emit('error', err);
+                });
+                return emitter;
+            }else{
+                eventEmitter.emit('success', data);
+            }
+        }
+    });
+};
+//获取我的申请审批
+exports.getMyApplyLists = function(req, res){
+    return restUtil.authRest.get({
+        url: AppUserRestApis.getMyApplyLists,
+        req: req,
+        res: res
+    }, req.query,{
+        success: function(eventEmitter, data) {
+            // todo  处理数据
+            if (data && data.list && data.list.length) {
+                var applyList = handleUserApplyData(data.list || []);
+                data.list = applyList;
+            }
+            eventEmitter.emit('success', data);
+        }
+    });
+};
+/**
+ * 获取我申请的申请列表*/
+exports.getApplyListStartSelf = function(req, res){
+    var obj = req.query;
+    let url = AppUserRestApis.getApplyListStartSelf;
+    //如果有传类型
+    if(obj.type){
+        url += `?type=${obj.type}`;
+        if(obj.status){
+            url += `&status=${obj.status}`;
+
+        }
+    } else{
+        if(obj.status){
+            url += `?status=${obj.status}`;
+        }
+    }
+    delete obj.status;
+    delete obj.type;
+    return restUtil.authRest.get({
+        url: url,
+        req: req,
+        res: res
+    }, obj, {
+        success: function(eventEmitter, data) {
+            //todo 处理数据，只处理用户申请审批的数据，其他类型的数据不需要处理
+            if (data && data.list && data.list.length) {
+                var applyList = handleUserApplyData(data.list || []);
                 data.list = applyList;
             }
             //如果是根据客户id查询申请列表的时候，还需要格外查询这些申请的回复列表
@@ -360,26 +437,53 @@ exports.getApplyList = function(req, res, obj) {
         }
     });
 };
-
-
-
-//获取未读回复列表
-exports.getUnreadReplyList = function(req, res) {
+/*
+* 获取待我审批的及我审批过的申请列表
+* */
+//获取我审批过的申请
+function getApplyListApprovedByMe(req, res) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.put({
+            url: AppUserRestApis.getApplyListApprovedByMe,
+            req: req,
+            res: res
+        }, req.query, {
+            success: (emitter, data) => {
+                resolve(data);
+            },
+            error: (eventEmitter, errorDesc) => {
+                reject(errorDesc);
+            }
+        });
+    });
+}
+//获取待我审批的申请
+exports.getApplyListWillApprovedByMe = function(req, res) {
     return restUtil.authRest.get({
-        url: AppUserRestApis.getUnreadReplyList,
+        url: AppUserRestApis.getApplyListWillApprovedByMe,
         req: req,
         res: res
-    }, req.query, {
-        success: (eventEmitter, data) => {
-            //处理数据
-            let replyList = _.get(data, 'list[0]') ? data.list : [];
-            data.list = _.map(replyList, reply => {
-                return applyDto.unreadReplyToFrontend(reply);
-            });
-            eventEmitter.emit('success', data);
-        }
-    });
+    }, req.query);
+
 };
+
+// //获取未读回复列表
+// exports.getUnreadReplyList = function(req, res) {
+//     return restUtil.authRest.get({
+//         url: AppUserRestApis.getUnreadReplyList,
+//         req: req,
+//         res: res
+//     }, req.query, {
+//         success: (eventEmitter, data) => {
+//             //处理数据
+//             let replyList = _.get(data, 'list[0]') ? data.list : [];
+//             data.list = _.map(replyList, reply => {
+//                 return applyDto.unreadReplyToFrontend(reply);
+//             });
+//             eventEmitter.emit('success', data);
+//         }
+//     });
+// };
 //获取工作流未读回复列表
 exports.getWorkFlowUnreadReplyList = function(req, res) {
     return restUtil.authRest.get({
@@ -440,9 +544,9 @@ exports.getCustomerUsers = function(req, res, obj) {
 };
 
 //获取申请单详情
-exports.getApplyDetail = function(req, res, apply_id) {
+exports.getApplyDetail = function(req, res) {
     var emitter = new EventEmitter();
-    getApplyBasicDetail(req, res, apply_id).then((applyBasicDetail) => {
+    getApplyBasicDetail(req, res).then((applyBasicDetail) => {
         //延期（多应用）
         // 延期申请需要配置多终端信息
         if (applyBasicDetail.type === CONSTANTS.DELAY_MULTI_APP) {
@@ -583,32 +687,50 @@ function getAppExtraPermissionNames(applyBasicDetail, appPermissionList) {
 
 
 // 获取用户详情的基本信息
-function getApplyBasicDetail(req, res, apply_id) {
-    let obj = {
-        with_addition: 'true' // 附加字段，true时，获取额应用对应的名称
-    };
+function getApplyBasicDetail(req, res) {
     return new Promise((resolve, reject) => {
         return restUtil.authRest.get({
-            url: AppUserRestApis.getApplyDetail.replace(':apply_id', apply_id),
+            url: AppUserRestApis.getApplyDetail,
             req: req,
             res: res
-        }, obj, {
+        }, req.query, {
             success: function(eventEmitter, data) {
-                if (data && data.message && !_.isEmpty(data.message)) {
+                var newUserApply = _.get(data,'workflow_type') === 'user_or_grant';
+                if (!_.isEmpty(_.get(data,'message',{})) || newUserApply) {//如果是旧版的用户审批或者是新版的用户审批
                     var detailObj;
-                    if (data.message.type === CONSTANTS.APPLY_GRANT_DELAY) { // 延期
+                    var oldMessageType = _.get(data,'message.type',''), //旧版的用户审批的申请type
+                        newMessageType = _.get(data,'detail.user_apply_type','');//新版的用户审批的申请type
+                    var types = [oldMessageType, newMessageType];
+                    if (_.includes(types, CONSTANTS.APPLY_GRANT_DELAY)) { // 延期（新数据没有这种类型了，旧数据可能有）
                         detailObj = applyDto.toDetailDelayRestObject(data);
-                    } else if (data.message.type === CONSTANTS.APPLY_PWD_CHANGE ||// 更改密码
-                        data.message.type === CONSTANTS.APPLY_GRANT_OTHER_CHANGE) {// 更改其他信息
-                        detailObj = applyDto.toDetailChangePwdOtherRestObject(data);
-                    } else if (data.message.type === CONSTANTS.APPLY_GRANT_STATUS_CHANGE) { // 更改状态
-                        detailObj = applyDto.toDetailStatusRestObject(data);
-                    } else if (data.message.type === CONSTANTS.DELAY_MULTI_APP ||// 延期（多应用）
-                        data.message.type === CONSTANTS.DISABLE_MULTI_APP) { //更改状态(多应用)
-                        detailObj = applyDto.toDetailMultiAppRestObject(data, CONSTANTS);
+                    } else if (_.includes(types, CONSTANTS.APPLY_PWD_CHANGE) ||// 更改密码
+                        _.includes(types, CONSTANTS.APPLY_GRANT_OTHER_CHANGE)){// 更改其他信息
+                        if(newUserApply){
+                            detailObj = applyDto.toDetailRestObjectNewUserApply(data, CONSTANTS);
+                        }else{
+                            detailObj = applyDto.toDetailChangePwdOtherRestObject(data);
+                        }
+                    } else if (_.includes(types, CONSTANTS.APPLY_GRANT_STATUS_CHANGE)) { // 更改状态(todo 暂时还没有这种类型)
+                        if(newUserApply){
+                            detailObj = data;
+                        }else{
+                            detailObj = applyDto.toDetailStatusRestObject(data);
+                        }
+                    } else if (_.includes(types, CONSTANTS.DELAY_MULTI_APP) ||// 延期（多应用）
+                        _.includes(types, CONSTANTS.DISABLE_MULTI_APP)) { //更改状态(多应用)
+                        if(newUserApply){
+                            detailObj = applyDto.toDetailRestObjectNewUserApply(data, CONSTANTS);
+                        }else{
+                            detailObj = applyDto.toDetailMultiAppRestObject(data, CONSTANTS);
+                        }
                     } else {
-                        detailObj = applyDto.toDetailRestObject(data); // 待审批、已审批、已驳回（用户申请应用）
+                        if(newUserApply){
+                            detailObj = applyDto.toDetailRestObjectNewUserApply(data, CONSTANTS);
+                        }else{
+                            detailObj = applyDto.toDetailRestObject(data); // 待审批、已审批、已驳回（用户申请应用）
+                        }
                     }
+                    //todo 是是是
                     if (detailObj && detailObj.customer_id) {
                         getQueryCustomerById(req, res, detailObj.customer_id).then((result) => {
                             if (_.isArray(result.result) && result.result.length) {
@@ -625,6 +747,8 @@ function getApplyBasicDetail(req, res, apply_id) {
                     } else {
                         resolve(detailObj);
                     }
+                }else if(!_.isEmpty(data)){//其他类型的申请审批详情
+                    resolve(data);
                 }
             },
             error: function(eventEmitter, errorDesc) {
@@ -772,50 +896,57 @@ function getAppPermissionNames(req, res, obj) {
 }
 
 //审批申请单
-exports.submitApply = function(req, res, requestObj) {
+exports.submitApply = function(req, res) {
+    var requestObj = req.body;
     //审批提交地址
     var applyUrl;
     //如果有用户名，是新申请
-    if (requestObj.type === 'apply_grant_delay') {
-        applyUrl = AppUserRestApis.approveDelayUser;
-        delete requestObj.user_name;
-        delete requestObj.products;
-        delete requestObj.nick_name;
-        delete requestObj.password;
-    } else if (requestObj.type === 'apply_pwd_change') {
-        applyUrl = AppUserRestApis.submitApplyChangePassword;
-        delete requestObj.user_name;
-        delete requestObj.products;
-        delete requestObj.nick_name;
-        delete requestObj.delay;
-        delete requestObj.end_date;
-    } else if (requestObj.type === 'apply_sth_else') {
-        applyUrl = AppUserRestApis.submitApplyChangeOther;
+    // if (requestObj.type === 'apply_grant_delay') {
+    //     applyUrl = AppUserRestApis.approveDelayUser;
+    //     delete requestObj.user_name;
+    //     delete requestObj.products;
+    //     delete requestObj.nick_name;
+    //     delete requestObj.password;
+    // } else
+    if (_.includes([CONSTANTS.APPLY_PWD_CHANGE,CONSTANTS.APPLY_GRANT_OTHER_CHANGE],requestObj.type)) {//审批密码和其他变更的审批 {id:'',agree:'pass'}
+        applyUrl = AppUserRestApis.submitApplyChangePasswordOrOther;
         delete requestObj.user_name;
         delete requestObj.products;
         delete requestObj.nick_name;
         delete requestObj.delay;
         delete requestObj.end_date;
-        delete requestObj.password;
-    } else if (requestObj.type === 'apply_grant_status_change') {
-        applyUrl = AppUserRestApis.submitApplyGrantStatus;
-        delete requestObj.user_name;
-        delete requestObj.products;
-        delete requestObj.nick_name;
-        delete requestObj.delay;
-        delete requestObj.end_date;
-        delete requestObj.password;
-    } else {
+    }
+    // else if (requestObj.type === CONSTANTS.APPLY_GRANT_OTHER_CHANGE) {//用户其他信息变更审批 {id:'',agree:'pass'}
+    //     applyUrl = AppUserRestApis.submitApplyChangeOther;
+    //     delete requestObj.user_name;
+    //     delete requestObj.products;
+    //     delete requestObj.nick_name;
+    //     delete requestObj.delay;
+    //     delete requestObj.end_date;
+    //     delete requestObj.password;
+    // }
+    // else if (requestObj.type === 'apply_grant_status_change') {
+    //     applyUrl = AppUserRestApis.submitApplyGrantStatus;
+    //     delete requestObj.user_name;
+    //     delete requestObj.products;
+    //     delete requestObj.nick_name;
+    //     delete requestObj.delay;
+    //     delete requestObj.end_date;
+    //     delete requestObj.password;
+    // }
+    else if(_.includes([CONSTANTS.DELAY_MULTI_APP ,CONSTANTS.DISABLE_MULTI_APP], requestObj.type)){//延期申请及启用和停用{id:'',agree:'pass',users_or_grants:[]}
+        applyUrl = AppUserRestApis.submitApplyDelayMultiApp;
+    }else{
         delete requestObj.delay;
         delete requestObj.end_date;
         //如果是申请新用户（试用、签约）的审批，不用删除密码
         if (!_.includes([CONSTANTS.APPLY_USER_OFFICIAL,CONSTANTS.APPLY_USER_TRIAL,CONSTANTS.APPLY_USER], requestObj.type)){
             delete requestObj.password;
         }
-        if (requestObj.user_name) {
-            applyUrl = AppUserRestApis.submitNewApply;
+        if (requestObj.user_name) {//创建新用户申请
+            applyUrl = AppUserRestApis.submitApplyNewUser;
         } else {
-            //没有用户名，是已有用户申请
+            //没有用户名，是已有用户申请 {id:'',agree:'pass',users_or_grants: []}
             applyUrl = AppUserRestApis.submitExistApply;
             delete requestObj.user_name;
             delete requestObj.nick_name;
@@ -870,12 +1001,12 @@ exports.checkUserExist = function(req, res, field, value) {
 };
 
 //申请用户
-exports.applyUser = function(req, res, requestObj) {
+exports.applyNewgrant = function(req, res) {
     return restUtil.authRest.post({
-        url: AppUserRestApis.applyUser,
+        url: AppUserRestApis.applyNewgrant,
         req: req,
         res: res
-    }, requestObj);
+    }, JSON.parse(req.body.reqData));
 };
 
 //批量用户延期
@@ -887,22 +1018,13 @@ exports.batchDelayUser = function(req, res, requestObj) {
     }, requestObj);
 };
 
-//销售申请修改密码
-exports.applyChangePassword = function(req, res, requestObj) {
+//销售申请修改密码和其他申请
+exports.applyChangePasswordAndOther = function(req, res) {
     return restUtil.authRest.post({
-        url: AppUserRestApis.changePassword,
+        url: AppUserRestApis.applyChangePasswordAndOther,
         req: req,
         res: res
-    }, requestObj);
-};
-
-//申请修改其他类型
-exports.applyChangeOther = function(req, res, requestObj) {
-    return restUtil.authRest.post({
-        url: AppUserRestApis.applyChangeOther,
-        req: req,
-        res: res
-    }, requestObj);
+    }, req.body);
 };
 
 //编辑用户应用单个字段
@@ -929,32 +1051,15 @@ exports.editAppDetail = function(req, res, requestObj) {
         res: res
     }, requestObj);
 };
-
-//针对一个用户申请，添加一条回复
-exports.addReply = function(req, res, postData) {
-    return restUtil.authRest.post({
-        url: AppUserRestApis.addReply,
-        req: req,
-        res: res
-    }, postData);
-};
-function getReplyItem(req, res, apply_id) {
+function getReplyItem(req, res, id) {
     return new Promise((resolve, reject) => {
         return restUtil.authRest.get({
-            url: AppUserRestApis.getReplyList,
+            url: AppUserRestApis.getOrAddApplyComments,
             req: req,
             res: res
-        }, {
-            apply_id: apply_id,
-            page_size: 1000
-        }, {
+        }, {id: id}, {
             success: function(eventEmitter, data) {
-                var list = [];
-                //处理数据
-                if (data && data.list && data.list.length) {
-                    list = replyDto.toRestObject(data.list);
-                }
-                resolve(list);
+                resolve(data);
             },
             error: function(eventEmitter, errorDesc) {
                 reject(errorDesc);
@@ -963,9 +1068,9 @@ function getReplyItem(req, res, apply_id) {
     });
 }
 //获取一个申请单的回复列表
-exports.getReplyList = function(req, res, apply_id) {
+exports.getApplyComments = function(req, res) {
     var emitter = new EventEmitter();
-    let promiseList = [getReplyItem(req, res, apply_id)];
+    let promiseList = [getReplyItem(req, res, req.query.id)];
     Promise.all(promiseList).then((dataList) => {
         var result = dataList[0] ? dataList[0] : [];
         emitter.emit('success', result);
@@ -973,6 +1078,15 @@ exports.getReplyList = function(req, res, apply_id) {
         emitter.emit('error', err);
     });
     return emitter;
+};
+//添加审批意见
+exports.addApplyComments = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: AppUserRestApis.getOrAddApplyComments,
+            req: req,
+            res: res
+        }, req.body);
 };
 
 //获取团队信息
@@ -982,15 +1096,6 @@ exports.getteamlists = function(req, res) {
         req: req,
         res: res
     }, {});
-};
-
-// 撤销申请
-exports.saleBackoutApply = function(req, res, obj) {
-    return restUtil.authRest.put({
-        url: AppUserRestApis.saleBackoutApply,
-        req: req,
-        res: res
-    }, obj);
 };
 
 // 判断审批的用户名的合法性
@@ -1063,4 +1168,12 @@ exports.confirmUploadUser = function(req, res) {
             req: req,
             res: res
         }, JSON.parse(obj));
+};
+// 撤销申请
+exports.cancelApplyApprove = function(req, res) {
+    return restUtil.authRest.post({
+        url: AppUserRestApis.cancelApplyApprove,
+        req: req,
+        res: res
+    }, req.body);
 };

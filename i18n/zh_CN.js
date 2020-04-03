@@ -1427,9 +1427,9 @@ var zh_CN = {
     'user.apply.presenter': '申请人',
     'user.apply.team': '申请人所属团队',
     'user.apply.id': '账号申请',
-    'user.apply.no.match.retry': '暂无符合查询条件的用户申请',
+    'user.apply.no.match.retry': '暂无符合查询条件的申请',
     'user.apply.no.unread': '已无未读回复的申请',
-    'user.apply.no.apply': '还没有需要审批的用户申请',
+    'user.apply.no.apply': '暂无申请',
     'user.apply.show.update.tip': '数据已更新,是否',
     'user.apply.total.apply': '共{number}条申请{apply_type}', // apply_type: null=>全部 已通过 已驳回 待审批 已撤销
     'user.apply.detail.order': '订单',
@@ -1477,6 +1477,7 @@ var zh_CN = {
     'user.apply.approve': '用户申请审批',
     'user.apply.approve.count': '有{approveCount}条审批消息',
     'user.apply.unread.reply': '有未读回复',
+    'apply.list.has.unreply': '未读回复',
     'user.apply.no.unread.reply': '无未读回复',
     'user.apply.refresh.reply.tip': '有新回复，点此{refreshTip}',
     'user.apply.unread.reply.check': '有未读回复的申请，{check}',
@@ -1489,10 +1490,13 @@ var zh_CN = {
     'reply.reject.tip.content': '{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'reply.cancel.tip.content': '{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'user.apply.new.refresh.tip': '有新申请，点此刷新',
+    'apply.list.new.refresh.tip': '有新申请，{refresh}查看',
     'user.apply.no.new.refresh.tip': '无新申请',
     'user.apply.last.follow.date': '最新跟进日期',
     'user.apply.approve.no.comment': '暂无申请历史！',
     'user.apply.has.been.opened': '已开通{count}个',
+    'apply.list.return.back': '返回',
+    'apply.list.get.list.err': '获取列表失败，请检查网络状态',
     // 用户审批end
 
     // 在线用户start
@@ -4081,6 +4085,12 @@ var zh_CN = {
     'boot.company.trial.welcome.tip': '欢迎试用客套，试用期 {time} 天，每人每天可免费提取 {count} 条线索',
     'boot.please.input.industry.placeholder': '请输入关注的行业，如互联网、金融业等',
     /*个人试用 --- end*/
+
+    /*自定义申请审批列表 --- start*/
+    'apply.approve.list.start.by.me': '我申请的',
+    'apply.approve.list.approved.by.me': '我审批的',
+    'apply.approve.list.approved.by.team': '团队申请',
+    /*自定义申请审批列表 --- end*/
 
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': '您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？',

@@ -99,6 +99,7 @@ var BatchChangUser = createReactClass({
             //申请修改密码
             if(_this.hasSalesChangePasswordBlock()) {
                 result.remark = _this.state.formData.remark.passwordRemark;
+                result.customer_id = _.get(userList,'[0].customer.customer_id','');
             }
             //添加申请延期块
             if(_this.state.multipleSubType === 'grant_delay') {
@@ -278,8 +279,10 @@ var BatchChangUser = createReactClass({
     //销售延期申请
     delayApply() {
         let formData = this.state.formData || {};
+
         let submitObj = {
-            type: APPLY_TYPES.DELAY,
+            apply_type: APPLY_TYPES.DELAY,
+            customer_id: this.getCustomerId(),
             remark: _.get(formData, 'remark.delayRemark', '')
         };
         let delayObj = {
@@ -304,17 +307,21 @@ var BatchChangUser = createReactClass({
 
             };
         });
-        submitObj.data = appArr;
+        submitObj.users_or_grants = appArr;
         BatchChangeUserActions.applyDelayMultiApp({
-            usePromise: true,
+            // usePromise: true,
             data: submitObj
         });
+    },
+    getCustomerId() {
+        var userList = this.props.initialUser;
+        return _.get(userList,'[0].customer.customer_id','');
     },
     //销售修改开通状态的申请
     editStatusApply(){
         Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请修改开通状态)');
         let formData = this.state.formData || {};
-        const data = _.map(this.getSelectedUserMultiAppData(), x => {
+        const users_or_grants = _.map(this.getSelectedUserMultiAppData(), x => {
             delete x.end_date;
             delete x.begin_date;
             return {
@@ -323,9 +330,10 @@ var BatchChangUser = createReactClass({
             };
         });
         const submitObj = {
-            type: APPLY_TYPES.DISABLE,
+            apply_type: APPLY_TYPES.DISABLE,
             remark: this.state.formData.remark.statusRemark,
-            data
+            customer_id: this.getCustomerId(),
+            users_or_grants
         };
 
         this.setState({ isApplying: true });

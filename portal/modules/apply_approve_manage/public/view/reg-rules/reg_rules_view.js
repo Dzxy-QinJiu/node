@@ -975,11 +975,11 @@ class RegRulesView extends React.Component {
         }else if(showAddApproveNodeTip){
             message.warning(Intl.get('apply.please.add.approve.node', '流程不完整，需添加审批人节点'));
         }else{
-            if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
-                this.handleSubmitCCApply();
-            }else{
-                this.handleSubmitApproveApply();
-            }
+            // if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
+            //     this.handleSubmitCCApply();
+            // }else{
+            this.handleSubmitApproveApply();
+            // }
         }
     };
     handleDownLoadBPMN = () => {
