@@ -15,11 +15,7 @@ class ReportList extends React.Component {
         const nextLocationSearch = _.get(nextProps, 'location.search');
 
         if (nextLocationSearch !== thisLocationSearch) {
-            const interval = 'day';
-            const range = interval;
-            const startTime = moment().startOf(range).valueOf();
-            const endTime = moment().endOf(range).valueOf();
-            dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime, interval, range);
+            this.analysisInstance.getData();
         }
     }
     //获取查询条件
@@ -179,6 +175,7 @@ class ReportList extends React.Component {
         return (
             <div className="daily-report daily-report-list" data-tracename="销售日报列表">
                 <AntcAnalysis
+                    ref={ref => this.analysisInstance = ref}
                     charts={this.getCharts()}
                     conditions={this.getConditions()}
                     emitterConfigList={this.getEmitters()}
