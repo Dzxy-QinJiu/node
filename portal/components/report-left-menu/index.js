@@ -26,17 +26,12 @@ function getCategory() {
 
 class ReportLeftMenu extends React.Component {
     state = {
-        openedReportConfigList: [],
-        unopenedReportConfigList: []
+        reportConfigList: []
     }
 
     componentDidMount() {
         getReportConfigList({
-            callback: reportConfigList => {
-                const openedReportConfigList = _.filter(reportConfigList, item => item.status === 'on');
-                const unopenedReportConfigList = _.filter(reportConfigList, item => item.status === 'off');
-                this.setState({ openedReportConfigList, unopenedReportConfigList });
-            }
+            callback: reportConfigList => { this.setState({reportConfigList}); },
         });
 
         dailyReportEmitter.on(dailyReportEmitter.CHANGE_STATUS, handleReportStatusChange.bind(this));
@@ -61,7 +56,9 @@ class ReportLeftMenu extends React.Component {
 
             if (isShowDailyReport()) {
                 const { isCommonSales } = userData.getUserData();
-                const { openedReportConfigList, unopenedReportConfigList } = this.state;
+                const { reportConfigList } = this.state;
+                const openedReportConfigList = _.filter(reportConfigList, item => item.status === 'on');
+                const unopenedReportConfigList = _.filter(reportConfigList, item => item.status === 'off');
 
                 if (!_.isEmpty(openedReportConfigList)) {
                     _.each(openedReportConfigList, reportConfig => {
