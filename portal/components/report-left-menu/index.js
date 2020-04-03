@@ -55,16 +55,15 @@ class ReportLeftMenu extends React.Component {
         const dailyReportMenuIndex = _.findIndex(subMenus, item => item.routePath === '/analysis/report/daily-report');
 
         if (dailyReportMenuIndex > -1) {
-            const { openedReportConfigList, unopenedReportConfigList } = this.state;
+            const dailyReportMenu = _.cloneDeep(subMenus[dailyReportMenuIndex]);
+
+            subMenus.splice(dailyReportMenuIndex, 1);
 
             if (isShowDailyReport()) {
                 const { isCommonSales } = userData.getUserData();
+                const { openedReportConfigList, unopenedReportConfigList } = this.state;
 
                 if (!_.isEmpty(openedReportConfigList)) {
-                    let dailyReportMenu = _.cloneDeep(subMenus[dailyReportMenuIndex]);
-
-                    subMenus.splice(dailyReportMenuIndex, 1);
-
                     _.each(openedReportConfigList, reportConfig => {
                         let menu = _.cloneDeep(dailyReportMenu);
                         menu.type = 'dailyReport';
