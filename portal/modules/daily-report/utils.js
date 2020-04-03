@@ -152,10 +152,6 @@ export function processReportListData(reportConfigId, data, chart) {
             const { name, value, value_str } = obj;
 
             switch (name) {
-                case '通话时长':
-                    obj.value = value + Intl.get('user.time.second', '秒');
-                    item[name] = obj.value;
-                    break;
                 case '其他':
                     item[name] = value_str;
                     break;
@@ -208,6 +204,7 @@ export function showNumberDetail(record, name, e) {
 
 //是否显示日报功能
 export function isShowDailyReport() {
+    if (true) return true;
     const org = getOrganization();
     const versionName = _.get(org, 'version.name');
     const isValidVersion = _.includes(['专业版', '企业版'], versionName);
@@ -233,19 +230,15 @@ export function handleReportStatusChange(reportConfig) {
 }
 
 export function numberRender(name, value = 0, record = {}) {
-    if (_.isString(value)) {
-        const matched = value.match(/^\d+/);
+    let showValue = value;
 
-        if (matched) {
-            value = _.toInteger(matched[0]);
-        } else {
-            value = 0;
-        }
+    if (name === '通话时长') {
+        showValue += Intl.get('user.time.second', '秒');
     }
 
     if (value === 0 || !record.nickname) {
-        return value;
+        return showValue;
     } else {
-        return <span className='clickable' onClick={showNumberDetail.bind(this, record, name)}>{value}</span>;
+        return <span className='clickable' onClick={showNumberDetail.bind(this, record, name)}>{showValue}</span>;
     }
 }
