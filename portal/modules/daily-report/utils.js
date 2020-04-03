@@ -143,6 +143,7 @@ export function processReportListData(reportConfigId, data, chart) {
         if (chart) chart.title = reportData.template_name;
         reportData = _.get(reportData, REPORT_LIST_DATA_FIELD);
     } else {
+        if (chart) chart.title = '';
         return [];
     }
 
