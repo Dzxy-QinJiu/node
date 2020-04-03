@@ -204,7 +204,6 @@ export function showNumberDetail(record, name, e) {
 
 //是否显示日报功能
 export function isShowDailyReport() {
-    if (true) return true;
     const org = getOrganization();
     const versionName = _.get(org, 'version.name');
     const isValidVersion = _.includes(['专业版', '企业版'], versionName);
