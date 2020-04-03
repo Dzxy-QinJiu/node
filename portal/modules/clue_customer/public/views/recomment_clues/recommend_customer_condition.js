@@ -148,6 +148,11 @@ class RecommendCustomerCondition extends React.Component {
                 }
             }
             if (err) return;
+            //保存前先判断条件是否有修改，没有修改时，不用调用保存接口
+            if(_.isEqual(hasSavedRecommendParams, this.props.hasSavedRecommendParams)) {
+                this.props.saveRecommedConditionsSuccess();
+                return;
+            }
             this.setState({
                 isSaving: true,
                 saveMsg: '',

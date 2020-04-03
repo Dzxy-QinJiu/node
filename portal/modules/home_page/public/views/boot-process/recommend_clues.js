@@ -127,11 +127,16 @@ class RecommendClues extends React.Component {
 
     //保存成功后需要获取数据,以及展示下一步
     saveRecommedConditionsSuccess = (saveCondition) => {
-        clueCustomerAction.saveSettingCustomerRecomment(saveCondition);
+        let isNoEmpty = !_.isEmpty(saveCondition);
+        if(isNoEmpty) {
+            clueCustomerAction.saveSettingCustomerRecomment(saveCondition);
+        }
         this.setState({
             step: EXTRACT_CLUE_STEPS.EXTRACT_CLUE
         }, () => {
-            this.getRecommendClueLists();
+            if(isNoEmpty) {
+                this.getRecommendClueLists();
+            }
         });
     };
 

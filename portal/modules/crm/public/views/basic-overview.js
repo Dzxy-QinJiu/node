@@ -1,4 +1,3 @@
-var React = require('react');
 import '../css/basic-overview.less';
 import DetailCard from 'CMP_DIR/detail-card';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
@@ -123,7 +122,7 @@ class BasicOverview extends React.Component {
     }
     getAppList = () => {
         commonDataUtil.getAppList(appList => {
-            this.setState({appList: _.map(appList, app => {
+            this.setState({appList: _.filter(appList, app => app.status).map(app => {
                 return {
                     client_id: app.app_id,
                     client_name: app.app_name,

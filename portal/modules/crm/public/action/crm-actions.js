@@ -81,9 +81,10 @@ function CrmActions() {
     };
 
 
-    this.deleteCustomer = function(id) {
+    this.deleteCustomer = function(id, callback) {
         crmAjax.deleteCustomer(id).then((data) => {
             message.success(Intl.get('crm.138', '删除成功'));
+            _.isFunction(callback) && callback();
             this.dispatch(id);
         }, (errMsg) => {
             message.error(errMsg || Intl.get('crm.139', '删除失败'));

@@ -81,6 +81,9 @@ CrmStore.prototype.updateCurrentCustomerRemark = function(submitObj) {
     if(customer) {
         customer.customer_trace = submitObj.remark;
         customer.last_contact_time = submitObj.last_contact_time;
+        if (_.isArray(customer.customer_traces) && customer.customer_traces.length) {
+            customer.customer_traces[0].remark = submitObj.remark;
+        }
     }
 },
 
@@ -233,6 +236,9 @@ CrmStore.prototype.updateCustomerLastContact = function(traceObj) {
         if (updateTraceCustomer) {
             updateTraceCustomer.last_contact_time = traceObj.time;
             updateTraceCustomer.customer_trace = traceObj.remark;
+            if (_.get(updateTraceCustomer, 'customer_traces[0]')) {
+                updateTraceCustomer.customer_traces[0].remark = traceObj.remark;
+            }
         }
     }
 };

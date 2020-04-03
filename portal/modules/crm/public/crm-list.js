@@ -46,7 +46,7 @@ const userInfo = userData.getUserData();
 const COMMON_OTHER_ITEM = 'otherSelectedItem';
 import { OTHER_FILTER_ITEMS, DAY_TIME, BOOT_PROCESS_KEYS } from 'PUB_DIR/sources/utils/consts';
 import {getStartTime, getEndTime} from 'PUB_DIR/sources/utils/time-format-util';
-import ShearContent from 'CMP_DIR/shear-content';
+import ShearContent from 'CMP_DIR/shear-content-new';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
@@ -524,7 +524,13 @@ class Crm extends React.Component {
     confirmDelete = (cusId) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-btn .ant-btn-primary'), '确定删除客户');
         if(cusId){
-            CrmAction.deleteCustomer(cusId);
+            CrmAction.deleteCustomer(cusId, () => {
+                if(this.state.selectedCustomer.length) {
+                    this.setState({
+                        selectedCustomer: _.filter(this.state.selectedCustomer, item => item.id !== cusId)
+                    });
+                }
+            });
         }
     };
 
@@ -1117,6 +1123,12 @@ class Crm extends React.Component {
                 }
                 crmAjax.releaseCustomer(reqData).then(result => {
                     this.setState({isReleasingCustomer: false});
+                    //从选中客户列表里移除已释放项
+                    if(this.state.selectedCustomer.length) {
+                        this.setState({
+                            selectedCustomer: _.filter(this.state.selectedCustomer, item => customerId !== item.id)
+                        });
+                    }
                     CrmAction.afterReleaseCustomer(customerId);
                 }, (errorMsg) => {
                     this.setState({isReleasingCustomer: false});

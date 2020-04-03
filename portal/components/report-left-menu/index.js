@@ -8,6 +8,7 @@ import { getReportConfigList, handleReportStatusChange, showReportPanel, isShowD
 import { VIEW_TYPE } from 'MOD_DIR/daily-report/consts';
 import userData from 'PUB_DIR/sources/user-data';
 import { dailyReportEmitter } from 'PUB_DIR/sources/utils/emitters';
+import history from 'PUB_DIR/sources/history';
 
 const menuUtil = require('PUB_DIR/sources/utils/menu-util');
 
@@ -49,27 +50,46 @@ class ReportLeftMenu extends React.Component {
         const dailyReportMenuIndex = _.findIndex(subMenus, item => item.routePath === '/analysis/report/daily-report');
 
         if (dailyReportMenuIndex > -1) {
-            const reportConfigList = _.filter(this.state.reportConfigList, item => item.status === 'on');
-    
-            if (!isShowDailyReport() || _.isEmpty(reportConfigList)) {
-                subMenus.splice(dailyReportMenuIndex, 1);
-            } else {
+            const dailyReportMenu = _.cloneDeep(subMenus[dailyReportMenuIndex]);
+
+            subMenus.splice(dailyReportMenuIndex, 1);
+
+            if (isShowDailyReport()) {
                 const { isCommonSales } = userData.getUserData();
-                let dailyReportMenu = subMenus[dailyReportMenuIndex];
+                const { reportConfigList } = this.state;
+                const openedReportConfigList = _.filter(reportConfigList, item => item.status === 'on');
+                const unopenedReportConfigList = _.filter(reportConfigList, item => item.status === 'off');
 
-                if (!isCommonSales && !dailyReportMenu.addition) {
-                    const reportConfig = _.first(reportConfigList);
+                if (!_.isEmpty(openedReportConfigList)) {
+                    _.each(openedReportConfigList, reportConfig => {
+                        let menu = _.cloneDeep(dailyReportMenu);
+                        menu.type = 'dailyReport';
+                        menu.name = reportConfig.name;
+                        menu.reportConfigId = reportConfig.id;
+                        menu.routePath = menu.routePath + '?id=' + reportConfig.id;
 
-                    dailyReportMenu.addition = (
-                        <i className="iconfont icon-nav-setting"
-                            data-tracename="点击配置报告按钮"
-                            onClick={showReportPanel.bind(null, {
-                                currentView: VIEW_TYPE.CONFIG_REPORT,
-                                reportConfig,
-                                isConfigReport: true,
-                            })}
-                        />
-                    );
+                        if (!isCommonSales && !menu.addition) {
+                            menu.addition = (
+                                <i className="iconfont icon-nav-setting"
+                                    data-tracename="点击配置报告按钮"
+                                    onClick={showReportPanel.bind(null, {
+                                        currentView: VIEW_TYPE.CONFIG_REPORT,
+                                        reportConfig,
+                                        isConfigReport: true,
+                                    })}
+                                />
+                            );
+                        }
+
+                        subMenus.push(menu);
+                    });
+                }
+
+                if (!_.isEmpty(unopenedReportConfigList) && !isCommonSales) {
+                    subMenus.push({
+                        name: Intl.get('analysis.open.report', '开启报告'),
+                        type: 'openReport'
+                    });
                 }
             }
         }
@@ -80,26 +100,54 @@ class ReportLeftMenu extends React.Component {
     render() {
         const { isCommonSales } = userData.getUserData();
         const menus = this.getMenus();
+        const reportConfigId = _.get(location.href.match(/id=(.*)/), [1]);
 
         return (
             <div className='report-left-menu' data-tracename="分析报告左侧菜单">
                 <ul>
-                    {_.map(menus, menuItem => (
-                        <li>
-                            <NavLink
-                                to={menuItem.routePath}
-                                activeClassName="active"
-                            >
-                                {menuItem.name}
-                            </NavLink>
-                            {menuItem.addition}
-                        </li>
-                    ))}
+                    {_.map(menus, menuItem => {
+                        if (menuItem.type === 'openReport') {
+                            return (
+                                <li>
+                                    <a
+                                        href="javascript:void(0);"
+                                        onClick={showReportPanel.bind(null, { isOpenReport: true })}
+                                        className="btn-open-report"
+                                        data-tracename="点击启用报告按钮"
+                                    >
+                                        <i className="iconfont icon-plus" />
+                                        {menuItem.name}
+                                    </a>
+                                    {menuItem.addition}
+                                </li>
+                            );
+                        } else if (menuItem.type === 'dailyReport') {
+                            return (
+                                <li>
+                                    <a
+                                        href="javascript:void(0);"
+                                        onClick={() => { history.push(menuItem.routePath); }}
+                                        className={menuItem.reportConfigId === reportConfigId ? 'active' : ''}
+                                    >
+                                        {menuItem.name}
+                                    </a>
+                                    {menuItem.addition}
+                                </li>
+                            );
+                        } else {
+                            return (
+                                <li>
+                                    <NavLink
+                                        to={menuItem.routePath}
+                                        activeClassName="active"
+                                    >
+                                        {menuItem.name}
+                                    </NavLink>
+                                </li>
+                            );
+                        }
+                    })}
                 </ul>
-
-                {!isShowDailyReport() || isCommonSales ? null : (
-                    <div onClick={showReportPanel.bind(null, { isOpenReport: true })} className="btn-open-report" title={Intl.get('analysis.open.report', '开启报告')} data-tracename="点击启用报告按钮"><i className="iconfont icon-plus"></i></div>
-                )}
             </div>
         );
     }

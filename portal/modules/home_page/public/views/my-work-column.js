@@ -1227,12 +1227,18 @@ class MyWorkColumn extends React.Component {
         const { reportConfigList } = this.state;
         if (_.isEmpty(reportConfigList)) return;
 
+        _.each(reportConfigList, reportConfig => {
+            this.renderDailyReportNoticeCard(workList, reportConfig);
+        });
+    }
+
+    //渲染销售日报相关提示的卡片
+    renderDailyReportNoticeCard(workList, reportConfig) {
         const { isCommonSales } = userData.getUserData();
-        const reportConfig = _.chain(reportConfigList).filter(item => item.status === 'on').get([0]).value();
         let title = '';
         let buttons = [];
 
-        if (_.isEmpty(reportConfig)) {
+        if (reportConfig.status === 'off') {
             if (!isCommonSales) {
                 title = Intl.get('analysis.enable.reports.to.summarize', '启用报告可以汇总销售日常工作');
 
@@ -1258,7 +1264,7 @@ class MyWorkColumn extends React.Component {
                 buttons.push({
                     type: 'primary',
                     onClick: () => {
-                        history.push('analysis/report/daily-report');
+                        history.push('analysis/report/daily-report?id=' + reportConfig.id);
                     },
                     name: Intl.get('analysis.check.the.report', '查看报告')
                 });

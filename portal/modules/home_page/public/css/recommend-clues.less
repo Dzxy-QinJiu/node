@@ -192,12 +192,14 @@
           margin-bottom: 8px;
           border-radius: 4px;
           transition: all .3s linear;
+          cursor: pointer;
           &:hover{
             box-shadow: 0 3px 10px -5px #213340;
           }
           &.has-extracted-row, &.has-extracted-row:hover{
             color: @secondary-font-color !important;
             box-shadow: none;
+            cursor: unset;
             .extract-clue-text-wrapper{
               color: @secondary-font-color;
               .extract-clue-text__name{
@@ -244,6 +246,9 @@
                 margin-right: 15px;
                 &:last-child{
                   margin-right: 0;
+                }
+                .extract-clue-contact-count{
+                  cursor: pointer;
                 }
               }
             }
