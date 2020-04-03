@@ -108,7 +108,9 @@ export function saveReportConfig(data, paramObj = {}) {
 }
 
 //获取报告列表
-export function getReportList(callback, query) {
+export function getReportList(paramObj) {
+    let { callback, query, reportConfigId } = paramObj;
+
     if (!_.isFunction(callback)) return;
 
     if (!query) {
@@ -123,7 +125,7 @@ export function getReportList(callback, query) {
         query
     })
         .done(result => {
-            data = processReportListData(data);
+            const data = processReportListData(reportConfigId, result);
             callback(data);
         })
         .fail(err => {
@@ -136,7 +138,7 @@ export function processReportListData(reportConfigId, data, chart) {
     let reportData = _.find(data, item => item.template_id === reportConfigId);
 
     if (reportData) {
-        chart.title = reportData.template_name;
+        if (chart) chart.title = reportData.template_name;
         reportData = _.get(reportData, REPORT_LIST_DATA_FIELD);
     } else {
         return [];
