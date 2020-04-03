@@ -1228,9 +1228,7 @@ class MyWorkColumn extends React.Component {
         if (_.isEmpty(reportConfigList)) return;
 
         _.each(reportConfigList, reportConfig => {
-            if (reportConfig.status === 'on') {
-                this.renderDailyReportNoticeCard(workList, reportConfig);
-            }
+            this.renderDailyReportNoticeCard(workList, reportConfig);
         });
     }
 
@@ -1240,7 +1238,7 @@ class MyWorkColumn extends React.Component {
         let title = '';
         let buttons = [];
 
-        if (_.isEmpty(reportConfig)) {
+        if (reportConfig.status === 'off') {
             if (!isCommonSales) {
                 title = Intl.get('analysis.enable.reports.to.summarize', '启用报告可以汇总销售日常工作');
 
