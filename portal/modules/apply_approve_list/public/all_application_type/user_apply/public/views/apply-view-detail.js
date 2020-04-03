@@ -420,7 +420,7 @@ const COLUMN_WIDTH = {
     renderApplyApproveSteps: function() {
         var stepStatus = '';
         var applicantList = _.get(this.state, 'detailInfoObj.info');
-        var replyList = getFilterReplyList(this.state);
+        var replyList = getUserApplyFilterReplyList(this.state);
         var applicateName = _.get(applicantList, 'presenter') || '';
         var applicateTime = moment(_.get(applicantList, 'time')).format(oplateConsts.DATE_TIME_FORMAT);
         var descriptionArr = [];
@@ -443,7 +443,7 @@ const COLUMN_WIDTH = {
                     //下一个节点的执行人
                     descrpt += Intl.get('sales.commission.role.manager', '销售总经理');
                 }
-                descrpt = getApplyStatusTimeLineDesc(replyItem.status);
+                descrpt = getApplyStatusTimeLineDesc(replyItem.approve_status);
                 if (_.includes(['reject'], replyItem.status)){
                     stepStatus = 'error';
                     currentLength--;
