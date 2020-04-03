@@ -116,7 +116,7 @@ class ReportLeftMenu extends React.Component {
                                     <a
                                         href="javascript:void(0);"
                                         onClick={showReportPanel.bind(null, { isOpenReport: true })}
-                                        className={menuItem.reportConfigId === reportConfigId ? 'active' : ''}
+                                        className="btn-open-report"
                                         data-tracename="点击启用报告按钮"
                                     >
                                         <i className="iconfont icon-plus" />
