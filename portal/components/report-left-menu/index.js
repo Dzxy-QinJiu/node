@@ -26,12 +26,17 @@ function getCategory() {
 
 class ReportLeftMenu extends React.Component {
     state = {
-        reportConfigList: []
+        openedReportConfigList: [],
+        unopenedReportConfigList: []
     }
 
     componentDidMount() {
         getReportConfigList({
-            callback: reportConfigList => { this.setState({reportConfigList}); },
+            callback: reportConfigList => {
+                const openedReportConfigList = _.filter(reportConfigList, item => item.status === 'on');
+                const unopenedReportConfigList = _.filter(reportConfigList, item => item.status === 'off');
+                this.setState({ openedReportConfigList, unopenedReportConfigList });
+            }
         });
 
         dailyReportEmitter.on(dailyReportEmitter.CHANGE_STATUS, handleReportStatusChange.bind(this));
@@ -50,37 +55,46 @@ class ReportLeftMenu extends React.Component {
         const dailyReportMenuIndex = _.findIndex(subMenus, item => item.routePath === '/analysis/report/daily-report');
 
         if (dailyReportMenuIndex > -1) {
-            const reportConfigList = _.filter(this.state.reportConfigList, item => item.status === 'on');
-    
-            if (isShowDailyReport() && !_.isEmpty(reportConfigList)) {
+            const { openedReportConfigList, unopenedReportConfigList } = this.state;
+
+            if (isShowDailyReport()) {
                 const { isCommonSales } = userData.getUserData();
 
-                let dailyReportMenu = _.cloneDeep(subMenus[dailyReportMenuIndex]);
+                if (!_.isEmpty(openedReportConfigList)) {
+                    let dailyReportMenu = _.cloneDeep(subMenus[dailyReportMenuIndex]);
 
-                subMenus.splice(dailyReportMenuIndex, 1);
+                    subMenus.splice(dailyReportMenuIndex, 1);
 
-                _.each(reportConfigList, reportConfig => {
-                    let menu = _.cloneDeep(dailyReportMenu);
-                    menu.type = 'dailyReport';
-                    menu.name = reportConfig.name;
-                    menu.reportConfigId = reportConfig.id;
-                    menu.routePath = menu.routePath + '?id=' + reportConfig.id;
+                    _.each(openedReportConfigList, reportConfig => {
+                        let menu = _.cloneDeep(dailyReportMenu);
+                        menu.type = 'dailyReport';
+                        menu.name = reportConfig.name;
+                        menu.reportConfigId = reportConfig.id;
+                        menu.routePath = menu.routePath + '?id=' + reportConfig.id;
 
-                    if (!isCommonSales && !menu.addition) {
-                        menu.addition = (
-                            <i className="iconfont icon-nav-setting"
-                                data-tracename="点击配置报告按钮"
-                                onClick={showReportPanel.bind(null, {
-                                    currentView: VIEW_TYPE.CONFIG_REPORT,
-                                    reportConfig,
-                                    isConfigReport: true,
-                                })}
-                            />
-                        );
-                    }
+                        if (!isCommonSales && !menu.addition) {
+                            menu.addition = (
+                                <i className="iconfont icon-nav-setting"
+                                    data-tracename="点击配置报告按钮"
+                                    onClick={showReportPanel.bind(null, {
+                                        currentView: VIEW_TYPE.CONFIG_REPORT,
+                                        reportConfig,
+                                        isConfigReport: true,
+                                    })}
+                                />
+                            );
+                        }
 
-                    subMenus.push(menu);
-                });
+                        subMenus.push(menu);
+                    });
+                }
+
+                if (!_.isEmpty(unopenedReportConfigList) && !isCommonSales) {
+                    subMenus.push({
+                        name: Intl.get('analysis.open.report', '开启报告'),
+                        type: 'openReport'
+                    });
+                }
             }
         }
 
@@ -96,7 +110,22 @@ class ReportLeftMenu extends React.Component {
             <div className='report-left-menu' data-tracename="分析报告左侧菜单">
                 <ul>
                     {_.map(menus, menuItem => {
-                        if (menuItem.type === 'dailyReport') {
+                        if (menuItem.type === 'openReport') {
+                            return (
+                                <li>
+                                    <a
+                                        href="javascript:void(0);"
+                                        onClick={showReportPanel.bind(null, { isOpenReport: true })}
+                                        className={menuItem.reportConfigId === reportConfigId ? 'active' : ''}
+                                        data-tracename="点击启用报告按钮"
+                                    >
+                                        <i className="iconfont icon-plus" />
+                                        {menuItem.name}
+                                    </a>
+                                    {menuItem.addition}
+                                </li>
+                            );
+                        } else if (menuItem.type === 'dailyReport') {
                             return (
                                 <li>
                                     <a
@@ -123,10 +152,6 @@ class ReportLeftMenu extends React.Component {
                         }
                     })}
                 </ul>
-
-                {!isShowDailyReport() || isCommonSales ? null : (
-                    <div onClick={showReportPanel.bind(null, { isOpenReport: true })} className="btn-open-report" title={Intl.get('analysis.open.report', '开启报告')} data-tracename="点击启用报告按钮"><i className="iconfont icon-plus"></i></div>
-                )}
             </div>
         );
     }
