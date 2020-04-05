@@ -4,14 +4,16 @@
 @card_width: 100%;
 @box_shadow_color: #cac8c8;
 @item_height: 24px;
+@border-color: #E8EEF3;
 //展示状态下的卡片
 .detail-card-container {
   float: left;
   width: @card_width;
   padding: 12px;
   margin-top: @card_margin;
-  border-radius: 3px;
+  border-radius: 4px;
   background-color: #ffffff;
+  box-shadow: 0px 2px 2px 0px rgba(33,51,64,0.1);
   .title-border-bottom-none.detail-card-title{
     margin-bottom: 0;
     padding-bottom: 0;
@@ -22,7 +24,7 @@
     min-height: @item_height;
     margin-bottom: @card_margin;
     padding-bottom: @card_margin;
-    border-bottom: 1px solid #f5f5f5;
+    border-bottom: 1px solid @border-color;
     color: @secondary-font-color;
     font-size: 14px;
     .title-descr-style{
@@ -40,7 +42,7 @@
   .detail-card-bottom {
     float: left;
     width: @card_width;
-    border-top: 1px solid #f5f5f5;
+    border-top: 1px solid @border-color;
     padding-top: 4px;
     color: @secondary-font-color;
     font-size: 14px;
