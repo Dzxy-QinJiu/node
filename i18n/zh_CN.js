@@ -1939,6 +1939,8 @@ var zh_CN = {
     'crm.pool.select.team.placeholder': '选择适用团队',
     'crm.pool.get.rule.configs.faild': '获取规则配置失败',
     'crm.pool.no.rule': '暂无规则',
+    'crm.pool.responsible.type.placeholder': '请选择负责类型',
+    'crm.pool.extract.distribute.followup': '提取并分配联合跟进人',
 
 
     'crm.pool.single.extract.tip': '您确定要提取此客户吗？',
