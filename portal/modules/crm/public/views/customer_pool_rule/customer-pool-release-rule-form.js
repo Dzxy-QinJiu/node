@@ -25,6 +25,15 @@ const INTERVAL_KEYS = [
 //未跟进时长默认为7天
 const INTERVER_TIME = 7;
 
+//负责类型
+const RESPONSIBLE_TYPE = [{
+    name: Intl.get('crm.6', '负责人'),
+    value: 'release_owner',
+}, {
+    name: Intl.get('crm.second.sales', '联合跟进人'),
+    value: 'release_followup',
+}];
+
 class CustomerPoolReleaseRuleForm extends React.Component {
     state = {
         isLoading: false,
@@ -51,12 +60,22 @@ class CustomerPoolReleaseRuleForm extends React.Component {
             }
         }
 
+        //处理释放负责类型
+        let responsible_type = [];
+        if(curRule.release_owner) {
+            responsible_type.push(RESPONSIBLE_TYPE[0]);
+        }
+        if(curRule.release_followup) {
+            responsible_type.push(RESPONSIBLE_TYPE[1]);
+        }
+
         return {
             team_id: curRule.team_id,
             team_name: curRule.team_name,
             auto_release: _.get(curRule, 'auto_release', true),
             auto_release_period,
-            interval
+            interval,
+            responsible_type
         };
     }
 
@@ -93,6 +112,11 @@ class CustomerPoolReleaseRuleForm extends React.Component {
             }
             saveObj.auto_release_period = auto_release_period + interval;
 
+            //处理释放负责类型
+            //负责人
+            saveObj[RESPONSIBLE_TYPE[0].value] = !!_.includes(values.responsible_type, RESPONSIBLE_TYPE[0].value);
+            //联合跟进人
+            saveObj[RESPONSIBLE_TYPE[1].value] = !!_.includes(values.responsible_type, RESPONSIBLE_TYPE[1].value);
 
             if(this.props.formType === FORM_TYPE.EDIT) {
                 saveObj.id = this.props.curRule.id;
@@ -263,7 +287,24 @@ class CustomerPoolReleaseRuleForm extends React.Component {
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout} label={Intl.get('crm.pool.responsible.type', '负责类型')}>
-                        <span className="customer-info-text">{Intl.get('crm.second.sales', '联合跟进人')}</span>
+                        {/*负责人release_owner、联合跟进人release_followup可多选*/}
+                        {this.props.isEdit ? (
+                            getFieldDecorator('responsible_type', {
+                                initialValue: _.map(formData.responsible_type,'value'),
+                                rules: [
+                                    {required: true, message: Intl.get('crm.pool.responsible.type.placeholder', '请选择负责类型')},
+                                ]
+                            })(
+                                <Select
+                                    mode="multiple"
+                                    placeholder={Intl.get('crm.pool.responsible.type.placeholder', '请选择负责类型')}
+                                >
+                                    {RESPONSIBLE_TYPE.map(item => (<Option key={item.value} value={item.value}>{item.name}</Option>))}
+                                </Select>
+                            )
+                        ) : (
+                            <span className="customer-info-text">{_.map(formData.responsible_type,'name').join(',')}</span>
+                        )}
                     </FormItem>
                     <FormItem {...formItemLayout} label={Intl.get('common.status', '状态')}>
                         {this.props.isEdit ? (

@@ -349,13 +349,16 @@ class CustomerPool extends React.Component {
         });
         $('.customer-pool-table .ant-table-row').removeClass('current-row');
     };
+    isNeedFollowUpCustomer(curCustomer) {
+        return _.isEqual(_.get(curCustomer, 'customerpool_tags[0]'), CUSTOMER_POOL_TYPES.FOLLOWUP);
+    }
     renderCustomerDetail = () => {
         //触发打开带拨打电话状态的客户详情面板
         if (this.state.currentId) {
             let curCustomer = _.find(this.state.poolCustomerList, item => item.id === this.state.currentId);
             if (curCustomer) {
                 //如果是需联合跟进的，需要使用customer_id字段
-                if(_.isEqual(_.get(curCustomer, 'customerpool_tags[0]'), CUSTOMER_POOL_TYPES.FOLLOWUP)) {
+                if(this.isNeedFollowUpCustomer(curCustomer)) {
                     curCustomer.id = _.get(curCustomer,'customer_id', curCustomer.id);
                 }
                 phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
@@ -382,6 +385,18 @@ class CustomerPool extends React.Component {
             this.getPoolCustomer(true);
         });
     };
+
+    getExtractTip(customer) {
+        let tip = {
+            title: Intl.get('crm.pool.extract.distribute', '提取并分配负责人'),
+            dataTraceName: '客户池提取客户并分配负责人'
+        };
+        if(this.isNeedFollowUpCustomer(customer)) {
+            tip.title = Intl.get('crm.pool.extract.distribute.followup', '提取并分配联合跟进人');
+            tip.dataTraceName = '客户池提取客户并分配联合跟进人';
+        }
+        return tip;
+    }
 
     getColumns() {
         const column_width = 80;
@@ -477,9 +492,9 @@ class CustomerPool extends React.Component {
                             {extractIcon}
                         </Popconfirm>
                     ) : (<AntcDropdown
-                        datatraceContainer='客户池提取客户并分配负责人'
+                        datatraceContainer={this.getExtractTip(record).dataTraceName}
                         content={extractIcon}
-                        overlayTitle={Intl.get('crm.pool.extract.distribute', '提取并分配负责人')}
+                        overlayTitle={this.getExtractTip(record).title}
                         okTitle={Intl.get('common.confirm', '确认')}
                         cancelTitle={Intl.get('common.cancel', '取消')}
                         isSaving={this.state.isExtracting}
