@@ -6,7 +6,7 @@
 import '../css/my-data-column.less';
 import {Progress, Tooltip, Select} from 'antd';
 const Option = Select.Option;
-import ColumnItem from './column-item';
+import CardColumnItem from 'CMP_DIR/card-column-item';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import myDataAjax from '../ajax';
 import {getClueFulltext} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
@@ -827,7 +827,7 @@ class TeamDataColumn extends React.Component {
 
     render() {
         return (
-            <ColumnItem contianerClass='team-data-wrap'
+            <CardColumnItem contianerClass='team-data-wrap'
                 title={Intl.get('home.page.my.data', '我的数据')}
                 content={this.renderTeamDataContent()}
             />);
