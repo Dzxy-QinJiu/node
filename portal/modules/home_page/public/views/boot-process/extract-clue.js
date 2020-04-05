@@ -947,10 +947,9 @@ class ExtractClues extends React.Component {
                                                     <span className="extract-clue-contacts-item">
                                                         <span className="extract-clue-text-label">{Intl.get('common.phone', '电话')}：</span>
                                                         <Popover trigger="click" content={_.get(item,'telephones').map(phone => (<div key={phone}>{phone}</div>))}>
-                                                            <span className={CONTACT_PHONE_CLS}>{Intl.get('clue.recommend.clue.count', '{count}个', {
-                                                                count: _.get(item.contact, 'phones')
-                                                            })}</span>
+                                                            <span className={CONTACT_PHONE_CLS}>{_.get(item.contact, 'phones')}</span>
                                                         </Popover>
+                                                        {Intl.get('contract.22', '个')}
                                                     </span>
                                                 ) : null}
                                                 {_.get(item.contact, 'email') ? (
