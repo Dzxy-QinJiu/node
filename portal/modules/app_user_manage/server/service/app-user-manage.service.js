@@ -730,7 +730,6 @@ function getApplyBasicDetail(req, res) {
                             detailObj = applyDto.toDetailRestObject(data); // 待审批、已审批、已驳回（用户申请应用）
                         }
                     }
-                    //todo 是是是
                     if (detailObj && detailObj.customer_id) {
                         getQueryCustomerById(req, res, detailObj.customer_id).then((result) => {
                             if (_.isArray(result.result) && result.result.length) {

@@ -174,12 +174,12 @@ const COLUMN_WIDTH = {
             afterApprovedFunc: function() {//审批完后的外部处理方法
             },
             handleOpenApplyDetail: function() {
-                
+
             },
             width: '100%',
             height: '100%',
             afterTransferApplySuccess: function() {
-                
+
             }
         };
     },
@@ -234,7 +234,9 @@ const COLUMN_WIDTH = {
                 approval_state = _.get(detailItem,'approval_state');
             }
             ApplyViewDetailActions.getApplyDetail({id: detailItem.id}, approval_state, applyData, this.props.appList);
-            ApplyViewDetailActions.getNextCandidate({id: detailItem.id});
+            if(!_.includes(['2','3'], _.get(detailItem,'approval_state'))){
+                ApplyViewDetailActions.getNextCandidate({id: detailItem.id});
+            }
             //获取该审批所在节点的位置
             ApplyViewDetailActions.getApplyTaskNode({id: detailItem.id});
             //获取回复列表
@@ -281,7 +283,7 @@ const COLUMN_WIDTH = {
         this.getAllUserList();
         this.getNotSalesRoleUserList();
     },
-    
+
     componentWillUnmount() {
         var ApplyViewDetailStore = this.getApplyViewDetailStore();
         ApplyViewDetailStore.unlisten(this.onStoreChange);
@@ -2658,7 +2660,7 @@ const COLUMN_WIDTH = {
         this.getApplyDetail(this.props.detailItem);
         //this.getAppConfigExtra( appId ,appConfig.user_type);
     },
-    
+
     // 假设没有默认配置，默认配置成功
     getAppConfigExtra(client_id, user_type) {
         var ApplyViewDetailActions = this.getApplyViewDetailAction();

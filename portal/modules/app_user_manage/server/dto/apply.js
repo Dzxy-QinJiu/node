@@ -19,19 +19,19 @@ exports.toRestObject = function(item) {
 exports.toRestObjectNewUserApply = function(item) {
     return {
         ...item,
-        topic: _.get(item, 'topic', ''),//todo 2222
+        topic: _.get(item, 'topic', ''),
         presenter: _.get(item, 'applicant.nick_name', ''),
-        time: _.get(item, 'time', ''),//todo 222
-        approval_time: _.get(item, 'consume_date', ''),//todo 22
+        time: _.get(item, 'time', ''),
+        approval_time: _.get(item, 'consume_date', ''),
         id: _.get(item, 'id'),
-        order_id: _.get(item, 'order_id', ''),//todo 222
-        customer_id: _.get(item, 'detail.customer_id', ''),//todo 222
+        order_id: _.get(item, 'order_id', ''),
+        customer_id: _.get(item, 'detail.customer_id', ''),
         customer_name: _.get(item, 'detail.customer_name', ''),
-        isConsumed: (item.status !== 'ongoing') + '',//todo 33
+        isConsumed: (item.status !== 'ongoing') + '',
         approval_state: getStatusNum(_.get(item, 'status')),
         message_type: _.get(item, 'workflow_type'),
-        producer: _.get(item, 'applicant'),//todo 22
-        message: {//todo
+        producer: _.get(item, 'applicant'),
+        message: {
             sales_team_name: '',
             user_name: _.get(item, 'detail.user_name') || _.chain(item).get('detail.user_grants_apply').map('user_name').uniq(),
             remark: _.get(item, 'remark'),
@@ -45,9 +45,9 @@ exports.toRestObjectNewUserApply = function(item) {
             customer_id: _.get(item, 'detail.customer_id'),
             order_id: _.get(item, 'order_id')
         },
-        approval_person: _.get(item, ''),
-        produce_date: '',
-        replyLists: []
+        approval_person: _.chain(item).get('approve_details').last().get('nick_name').value(),
+        produce_date: _.get(item,'create_time'),
+        replyLists: _.get(item,'approve_details')
     };
 };
 
@@ -150,9 +150,9 @@ exports.toDetailRestObjectNewUserApply = function(detail, APPLY_TYPES){
         comment: _.get(detail,'remarks',''),
         approval_comment: _.get(detail,'approval_comment',''),
         approval_state: getStatusNum(_.get(detail,'status')),
-        approval_person: _.get(detail,'approval_person',''),//审批人
+        approval_person: _.chain(detail).get('approve_details').last().get('nick_name').value(),//审批人
         time: _.get(detail,'create_time'),//申请时间
-        approval_time: _.get(detail,'approval_time',''),//审批时间
+        approval_time: _.chain(detail).get('approve_details').last().get('comment_time').value(),//审批时间
         last_contact_time: _.get(detail,'last_call_back_time',''),//最后联系时间
         // id: _.get(detail,'id'),
         // isConsumed: '',
