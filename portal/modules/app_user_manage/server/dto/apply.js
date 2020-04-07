@@ -154,11 +154,7 @@ exports.toDetailRestObjectNewUserApply = function(detail, APPLY_TYPES){
         time: _.get(detail,'create_time'),//申请时间
         approval_time: _.chain(detail).get('approve_details').last().get('comment_time').value(),//审批时间
         last_contact_time: _.get(detail,'last_call_back_time',''),//最后联系时间
-        // id: _.get(detail,'id'),
-        // isConsumed: '',
         presenter: _.get(detail,'applicant.nick_name'),//
-        // topic: _.get(detail,'detail.user_apply_name'),
-        // last_contact_time: '',
         immutable_labels: _.get(detail,'detail.immutable'),
         customer_label: _.get(detail,'detail.customer_label'),
     };
@@ -209,9 +205,14 @@ exports.toDetailRestObjectNewUserApply = function(detail, APPLY_TYPES){
             //用户id
             obj.user_ids = _.get(detail,'detail.user_ids[0]',) ? _.get(detail,'detail.user_ids') : [];
             obj.nick_names = _.get(detail,'detail.nickname',) ? [_.get(detail,'detail.nickname')] : [];
+            //账号类型
+            obj.account_type = userType === 'apply_user_official' || userType === 'apply_app_official' ? '1' : '0';
+        }else if(_.includes([APPLY_TYPES.APPLY_USER],userType)){
+            obj.user_names = _.chain(detail).get('detail.user_name').value() ? [_.chain(detail).get('detail.user_name').value()] : [];
+            obj.user_ids = _.chain(detail).get('detail.user_id').value() ? [_.chain(detail).get('detail.user_id').value()] : [];
+            obj.nick_names = _.chain(detail).get('detail.nick_name').value() ? [_.chain(detail).get('detail.nick_name').value()] : [];
         }
-        //账号类型
-        obj.account_type = userType === 'apply_user_official' || userType === 'apply_app_official' ? '1' : '0';
+
         if (userType === 'apply_user' || userType === 'apply_app') {
             obj.tag = _.get(detail, 'tag', '');
         }

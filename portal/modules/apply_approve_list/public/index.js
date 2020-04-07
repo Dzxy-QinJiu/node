@@ -68,7 +68,7 @@ var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notification
 var ApplyApproveUtils = require('./utils/apply_approve_utils');
 class ApplyApproveList extends React.Component {
     state = {
-        activeApplyTab: APPLY_TYPE.APPLY_BY_ME,
+        activeApplyTab: isCommonSalesOrPersonnalVersion() ? APPLY_TYPE.APPLY_BY_ME : APPLY_TYPE.APPROVE_BY_ME,
         addApplyFormPanel: '',//添加的申请审批的表单类型
         filterOrSearchType: '',//添加筛选或者搜索的类型
         showRefreshTip: false,//展示刷新列表的提示
@@ -480,11 +480,16 @@ class ApplyApproveList extends React.Component {
     //左侧申请审批不同类型列表
     renderApplyListTab = () => {
         const {activeApplyTab} = this.state;
+        var applyApproveTabTypes = _.cloneDeep(APPLY_APPROVE_TAB_TYPES);
+        //如果是普通销售，优先展示我申请的，如果是管理员，优先展示我审批的
+        if(!isCommonSalesOrPersonnalVersion()){
+            applyApproveTabTypes = _.sortBy(applyApproveTabTypes, (item) => { return item.value !== APPLY_TYPE.APPROVE_BY_ME; });
+        }
         return (
             <div className='apply_approve_list_wrap'>
                 <div className='apply_approve_list_tab'>
                     <ul>
-                        {_.map(APPLY_APPROVE_TAB_TYPES, item => {
+                        {_.map(applyApproveTabTypes, item => {
                             var val = _.get(item, 'value', '');
                             var cls = classNames(`apply_type_item ${val}_container`, {
                                 'active-tab': activeApplyTab === _.get(item, 'value', '')

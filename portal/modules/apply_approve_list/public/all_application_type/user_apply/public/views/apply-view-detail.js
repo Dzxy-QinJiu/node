@@ -445,7 +445,7 @@ const COLUMN_WIDTH = {
                     //下一个节点的执行人
                     descrpt += Intl.get('sales.commission.role.manager', '销售总经理');
                 }
-                descrpt = getApplyStatusTimeLineDesc(replyItem.approve_status);
+                descrpt = getApplyStatusTimeLineDesc(replyItem.status);
                 if (_.includes(['reject'], replyItem.status)){
                     stepStatus = 'error';
                     currentLength--;
