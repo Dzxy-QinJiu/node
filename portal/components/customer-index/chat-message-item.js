@@ -105,6 +105,20 @@ class ChatMessageItem extends React.Component {
         return null;
     }
 
+    //渲染客服或者用户的头像
+    renderHeaderImageBlock() {
+        if(this.isSelf()) {//是用户自己
+            const userInfo = userData.getUserData();
+            if(userInfo.user_logo) {
+                return <img className="sender-image-img" src={userInfo.user_logo}/>;
+            }else {
+                return (<div className="sender-image-img default"/>);
+            }
+        }else {//在线客服的头像
+            return (<div className="sender-image-img default-kf"/>);
+        }
+    }
+
     render() {
         let cls = classNames('chat-message-item', {
             'self': this.isSelf()
@@ -121,9 +135,7 @@ class ChatMessageItem extends React.Component {
                 ) : (
                     <React.Fragment>
                         <div className="chat-message-head">
-                            {this.isSelf() && userInfo.user_logo ? (
-                                <img className="sender-image-img" src={userInfo.user_logo}/>
-                            ) : (<div className="sender-image-img default"/>)}
+                            {this.renderHeaderImageBlock()}
                         </div>
                         <div className="chat-message-content">
                             <div className="user-info">
