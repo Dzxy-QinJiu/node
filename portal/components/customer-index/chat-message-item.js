@@ -40,6 +40,11 @@ class ChatMessageItem extends React.Component {
         return this.props.message.message.structName === MESSAGE_TYPES.API_TEXT_MESSAGE;
     }
 
+    //是否是系统类型消息
+    isSystemMessage() {
+        return this.props.message.message.structName === MESSAGE_TYPES.API_SERVICE_MESSAGE;
+    }
+
     formatTextMessage() {
         let { message: { message } } = this.props;
         let text = message.text;
@@ -107,22 +112,32 @@ class ChatMessageItem extends React.Component {
         const userInfo = userData.getUserData();
         return (
             <div className={cls}>
-                <div className="chat-message-head">
-                    {this.isSelf() && userInfo.user_logo ? (
-                        <img className="sender-image-img" src={userInfo.user_logo}/>
-                    ) : (<div className="sender-image-img default"/>)}
-                </div>
-                <div className="chat-message-content">
-                    <div className="user-info">
-                        <div className="user-name">{this.isSelf() ? userInfo.nick_name : Intl.get('common.customer.service', '在线客服')}</div>
-                        <div className="send-time">{transTimeFormat(this.props.message.date)}</div>
+                {this.isSystemMessage() ? (
+                    <div className="system-message">
+                        <span className="system-message-item">
+                            <span className="system-message-content">{this.props.message.message.text}</span>
+                        </span>
                     </div>
-                    <div className="message-content">
-                        <div className="content-wrap">
-                            {this.renderContentBlock()}
+                ) : (
+                    <React.Fragment>
+                        <div className="chat-message-head">
+                            {this.isSelf() && userInfo.user_logo ? (
+                                <img className="sender-image-img" src={userInfo.user_logo}/>
+                            ) : (<div className="sender-image-img default"/>)}
                         </div>
-                    </div>
-                </div>
+                        <div className="chat-message-content">
+                            <div className="user-info">
+                                <div className="user-name">{this.isSelf() ? userInfo.nick_name : Intl.get('common.customer.service', '在线客服')}</div>
+                                <div className="send-time">{transTimeFormat(this.props.message.date)}</div>
+                            </div>
+                            <div className="message-content">
+                                <div className="content-wrap">
+                                    {this.renderContentBlock()}
+                                </div>
+                            </div>
+                        </div>
+                    </React.Fragment>
+                )}
             </div>
         );
     }
