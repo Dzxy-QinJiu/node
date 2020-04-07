@@ -13,6 +13,9 @@ const option = {
                     startTime: moment().startOf('day').valueOf(),
                     endTime: moment().valueOf(),
                 });
+
+                //只允许选择天
+                option.periodOptions = _.filter(option.periodOptions, option => option.value === 'day');
             }
         }
     }
