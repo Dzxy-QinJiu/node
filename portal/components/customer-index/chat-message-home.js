@@ -128,13 +128,13 @@ class ChatMessageHome extends React.Component {
                     }).reverse().value();
                 newState.messageList = array.concat(self.state.messageList);
             }
-            if(!_.get(newState,'messageList.length')) {//沒有消息时，自动添加一条客服消息
+            if(!_.get(newState,'messageList.length') && !self.state.messageList.length) {//沒有消息时，自动添加一条客服消息
                 newState.messageList = [{
                     attribute: null,
                     date: Date.now(),
                     message: {
                         structName: MESSAGE_TYPES.API_TEXT_MESSAGE,
-                        text: '您好，请问有什么可以帮您？\n您也可以在此留下联系电话，我们将及时安排专属客户经理为您服务。',
+                        text: Intl.get('common.customer.service.help.tip', '您好，请问有什么可以帮您？'),
                         traitName: 'ApiMessage'
                     },
                     quotedMessage: null,

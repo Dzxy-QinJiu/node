@@ -315,6 +315,9 @@ var en_US = {
     'common.top.loading.text': 'Getting the latest data',//正在获取最新数据
     'common.bottom.loading.text': 'Getting earlier data',//正在获取更早的数据
     'common.send': 'send',//发送
+    'common.customer.service.online.assistant': 'Online assistant',//在线小助手
+    'common.press.enter.send': 'Press enter to send the message',//按enter键发送消息
+    'common.customer.service.help.tip': 'Hello, what can I do for you',//您好，请问有什么可以帮您？
     //公共部分--end
 
     'login.login': 'Login',//登录
@@ -2987,6 +2990,9 @@ var en_US = {
     'scan.ketao.qrcode.download.tip': 'Scan to download KETAO APP Android',//扫码下载客套APP安卓端
     'config.manage.input.teleRepeat': 'The phone number has been recorded in',//该电话号码已录入
     'config.not.fill.in': 'Not to fill in',//暂不填写
+    'customer.service.placeholder': 'Please enter your questions or Suggestions',//请输入您的问题或建议
+    //缺失补充end
+
     'common.ketao.app': 'Ketao APP',//客套APP
     'contract.130': 'Social expenses',//交际费
     'contract.131': 'Local Transportation',//市内交通费

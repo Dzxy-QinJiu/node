@@ -7,14 +7,19 @@
   height: 100%;
   display: flex;
   flex-flow: column;
+  .send-message-footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+  }
   .chat-tool-bar {
     user-select: none;
     position: relative;
     height: 26px;
     line-height: 26px;
-    padding-left: 24px;
+    padding-left: 18px;
     padding-right: 24px;
-    border-top: 1px solid #ccc;
     .btn-image {
       user-select: none;
       height: 24px;
@@ -37,6 +42,7 @@
   .send-message-wrap {
     position: relative;
     flex: 1 1 0;
+    border-top: 1px solid #ccc;
     .send-message-body {
       position: absolute;
       top: 0;
@@ -45,12 +51,18 @@
       bottom: 0;
       overflow: auto;
       outline: none;
-      padding: 0 5px;
+      padding: 10px 0 0 20px;
       line-height: 24px;
       .emotion-item {
         height: 23px;
         width: 23px;
         vertical-align: -6px;
+      }
+      &:empty:before{
+        content: attr(placeholder);
+      }
+      &:focus:before{
+        content: '';
       }
     }
   }
@@ -58,7 +70,7 @@
     text-align: right;
     padding-right: 10px;
     .ant-btn {
-      margin: 10px
+      margin-right: 10px;
     }
   }
 }
@@ -67,7 +79,7 @@
   .send-message{
     .chat-tool-bar {
       .emotion-wrap {
-        width: 98%;
+        width: 100vw;
       }
     }
   }
