@@ -1157,6 +1157,29 @@ class ExtractClues extends React.Component {
     //热门选项点击处理事件
     handleClickHotBtn = (key) => {
         if(!this.state.canClickMoreBatch) { return false; }
+        let versionAndType = checkVersionAndType();
+        if(versionAndType.isPersonalTrial) {//个人试用
+            Trace.traceEvent(ReactDOM.findDOMNode(this), `点击'${key}'按钮自动打开个人升级界面`);
+            this.handleUpgradePersonalVersion();
+            return false;
+        }else if(versionAndType.isCompanyTrial) {//企业试用
+            Trace.traceEvent(ReactDOM.findDOMNode(this), `点击了'${key}'按钮`);
+            notification.open({
+                key: Date.now(),
+                description: (<div>
+                    <i className="iconfont icon-warn-icon"/>
+                    <ReactIntl.FormattedMessage
+                        id="payment.please.contact.our.sale.upgrade"
+                        defaultMessage={'请联系我们的销售人员进行升级，联系方式：{contact}'}
+                        values={{
+                            contact: COMPANY_PHONE
+                        }}
+                    />
+                </div>),
+                className: 'extract-notification-wrapper'
+            });
+            return false;
+        }
         let hot_source = '';
         let traceTip = `取消选中${key}`;
         if(key !== this.state.feature) {
