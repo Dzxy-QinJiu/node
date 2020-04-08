@@ -134,14 +134,17 @@ class RecommendClues extends React.Component {
 
     //保存成功后需要获取数据,以及展示下一步
     saveRecommedConditionsSuccess = (saveCondition) => {
-        let isNoEmpty = !_.isEmpty(saveCondition);
-        if(isNoEmpty) {
+        let isSetCondition = !_.isEmpty(saveCondition);
+        if(isSetCondition) {
             clueCustomerAction.saveSettingCustomerRecomment(saveCondition);
         }
+        let isClickChangeCondition = this.state.isClickChangeCondition;
         this.setState({
-            step: EXTRACT_CLUE_STEPS.EXTRACT_CLUE
+            step: EXTRACT_CLUE_STEPS.EXTRACT_CLUE,
+            isClickChangeCondition: false
         }, () => {
-            if(isNoEmpty) {
+            //不是从推荐线索面板点击修改条件出来的、或者修改了条件，需要获取推荐列表
+            if(!isClickChangeCondition || isSetCondition) {
                 this.getRecommendClueLists();
             }
         });
@@ -152,9 +155,11 @@ class RecommendClues extends React.Component {
         if(step === EXTRACT_CLUE_STEPS.EXTRACT_CLUE) {
             this.handleContinueExtractClue();
         }else {
-            this.setState({
-                step: step
-            });
+            let newState = {step, isClickChangeCondition: false};
+            if(EXTRACT_CLUE_STEPS.SET_RECOMMEND === step) {//说明是从提取线索面板点击修改条件出来的
+                newState.isClickChangeCondition = true;
+            }
+            this.setState(newState);
         }
     };
 
@@ -171,7 +176,8 @@ class RecommendClues extends React.Component {
     handleContinueExtractClue = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '继续提取推荐线索');
         this.setState({
-            step: EXTRACT_CLUE_STEPS.EXTRACT_CLUE
+            step: EXTRACT_CLUE_STEPS.EXTRACT_CLUE,
+            isClickChangeCondition: false
         }, () => {
             this.getRecommendClueLists();
         });
