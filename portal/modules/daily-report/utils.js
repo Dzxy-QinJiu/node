@@ -53,6 +53,7 @@ export function renderButtonZoneFunc(buttons) {
                         <Button
                             onClick={item.func}
                             type={item.type || 'default'}
+                            data-tracename={`点击${item.name}按钮`}
                         >
                             {item.name}
                         </Button>
