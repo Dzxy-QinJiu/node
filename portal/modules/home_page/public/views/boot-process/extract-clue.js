@@ -604,6 +604,7 @@ class ExtractClues extends React.Component {
     };
 
     handleCheckChange = (item, e) => {
+        // e.preventDefault();
         let checked = e.target.checked;
         let selectedRecommendClues = this.state.selectedRecommendClues;
         if(checked) {
@@ -697,7 +698,7 @@ class ExtractClues extends React.Component {
         if( //如果被禁用了，点击后无效
             this.getDisabledClue(item)
             //如果是电话和提取按钮点击冒泡上来的，不触发选中checkbox
-            || _.includes(['iconfont icon-extract', CONTACT_PHONE_CLS, `${CONTACT_PHONE_CLS} ant-popover-open`], _.get(target,'className'))) {
+            || _.includes(['iconfont icon-extract', CONTACT_PHONE_CLS, `${CONTACT_PHONE_CLS} ant-popover-open`,'ant-checkbox-input'], _.get(target,'className'))) {
             return false;
         }
 
