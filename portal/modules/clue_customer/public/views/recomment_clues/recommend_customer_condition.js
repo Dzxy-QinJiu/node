@@ -343,15 +343,18 @@ class RecommendCustomerCondition extends React.Component {
                                         <Input placeholder={Intl.get('clue.recommend.input.keyword', '请输入公司名')}/>
                                     )}
                             </FormItem>
-                            <div className="ant-row ant-form-item">
-                                <div className="ant-form-item-label ant-col-xs-24">
-                                    <label >{Intl.get('clue.customer.register.time', '注册时间')}</label></div>
-                                <div className="ant-form-item-control-wrapper ant-col-xs-24">
-                                    <div className="ant-form-item-control has-success">
-                                        <RangePicker defaultValue={defaultValue} onChange={this.onDateChange}/>
+                            {/*如果选了'最近半年注册',就不用再显示注册时间*/}
+                            {this.props.isSelectedHalfYearRegister ? null : (
+                                <div className="ant-row ant-form-item">
+                                    <div className="ant-form-item-label ant-col-xs-24">
+                                        <label >{Intl.get('clue.customer.register.time', '注册时间')}</label></div>
+                                    <div className="ant-form-item-control-wrapper ant-col-xs-24">
+                                        <div className="ant-form-item-control has-success">
+                                            <RangePicker defaultValue={defaultValue} onChange={this.onDateChange}/>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                             <FormItem
                                 label={Intl.get('clue.customer.staff.size', '人员规模')}
                                 id="staff_size"
@@ -449,5 +452,6 @@ RecommendCustomerCondition.propTypes = {
     form: PropTypes.object,
     saveRecommedConditionsSuccess: PropTypes.func,
     hideFocusCustomerPanel: PropTypes.func,
+    isSelectedHalfYearRegister: PropTypes.bool,
 };
 export default Form.create()(RecommendCustomerCondition);
