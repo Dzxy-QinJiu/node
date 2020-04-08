@@ -579,7 +579,7 @@ exports.getUserApplyFilterReplyList = function(thisState) {
         replyList = _.get(thisState, 'replyListInfo.list');
     }
     replyList = _.filter(replyList, (item) => {
-        return !item.comment;
+        return item.status;
     });
     replyList = _.sortBy(_.cloneDeep(replyList), [item => item.comment_time]);
     return replyList;

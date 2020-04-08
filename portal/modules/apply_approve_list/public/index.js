@@ -70,7 +70,7 @@ class ApplyApproveList extends React.Component {
     state = {
         activeApplyTab: isCommonSalesOrPersonnalVersion() ? APPLY_TYPE.APPLY_BY_ME : APPLY_TYPE.APPROVE_BY_ME,
         addApplyFormPanel: '',//添加的申请审批的表单类型
-        filterOrSearchType: '',//添加筛选或者搜索的类型
+        filterOrSearchType: isCommonSalesOrPersonnalVersion() ? '' : FILTER,//添加筛选或者搜索的类型
         showRefreshTip: false,//展示刷新列表的提示
         type: '',//申请审批的类型
         status: '',//申请审批的状态
@@ -90,7 +90,14 @@ class ApplyApproveList extends React.Component {
             UserApplyActions.getApplyById(this.state.applyId);
             //是通过点击未处理的审批数量跳转过来的
         } else {
-            this.fetchApplyList();
+            if(this.state.filterOrSearchType === FILTER){
+                UserApplyActions.changeApplyType(APPLY_APPROVE_TYPES.USER_OR_GRANT);
+                setTimeout(() => {
+                    this.fetchApplyList();
+                });
+            }else{
+                this.fetchApplyList();
+            }
         }
         //获取我的申请中的未读回复
         this.getMyUnreadReplyList();
