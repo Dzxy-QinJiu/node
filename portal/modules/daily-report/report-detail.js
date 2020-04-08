@@ -110,7 +110,7 @@ class ReportDetail extends React.Component {
     save() {
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                let { reportDetail } = this.state;
+                let { reportDetail } = this.props;
                 let itemValues = _.get(reportDetail, 'item_values');
 
                 _.each(values, (value, key) => {
