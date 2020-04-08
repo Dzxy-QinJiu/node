@@ -9,18 +9,14 @@ import { renderButtonZoneFunc, hideReportPanel, getReportList, saveReport, saveR
 import DetailCard from 'CMP_DIR/detail-card';
 
 class ReportDetail extends React.Component {
-    state = {
-        reportDetail: this.props.reportDetail || {},
-    }
-
     componentDidMount() {
-        if (_.isEmpty(this.state.reportDetail)) {
+        if (_.isEmpty(this.props.reportDetail)) {
             const reportConfigId = _.get(this.props, 'reportConfig.id');
 
             getReportList({
                 callback: list => {
                     const reportDetail = _.find(list, item => item.template_id === reportConfigId);
-                    if (reportDetail) this.setState({ reportDetail });
+                    if (reportDetail) this.props.updateState({ reportDetail });
                 },
                 reportConfigId
             });
@@ -31,8 +27,7 @@ class ReportDetail extends React.Component {
         const renderFormItem = renderFormItemFunc.bind(this, {});
         const renderButtonZone = renderButtonZoneFunc.bind(this);
 
-        const { updateState, reportConfig, isPreviewReport, isConfigReport, isOpenReport } = this.props;
-        const { reportDetail } = this.state;
+        const { updateState, reportConfig, reportDetail, isPreviewReport, isConfigReport, isOpenReport } = this.props;
 
         let items;
 
@@ -115,7 +110,7 @@ class ReportDetail extends React.Component {
     save() {
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                let { reportDetail } = this.state;
+                let { reportDetail } = this.props;
                 let itemValues = _.get(reportDetail, 'item_values');
 
                 _.each(values, (value, key) => {
