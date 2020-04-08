@@ -5,7 +5,7 @@ var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-custo
 var clueCustomerStore = require('MOD_DIR/clue_customer/public/store/clue-customer-store');
 import Spinner from 'CMP_DIR/spinner';
 import ExtractClues from './extract-clue';
-const ANOTHER_BATCH = ExtractClues.ANOTHER_BATCH;
+const EXTRACT_CLUE_CONST_MAP = ExtractClues.EXTRACT_CLUE_CONST_MAP;
 import OperateSuccessTip from 'CMP_DIR/operate-success-tip';
 import { Button } from 'antd';
 import userData from 'PUB_DIR/sources/user-data';
@@ -117,9 +117,16 @@ class RecommendClues extends React.Component {
         // }
         //是否选择复工企业或者上市企业
         if(this.state.feature) {
-            conditionObj.feature = this.state.feature;
+            //如果选中'最近半年注册'项
+            if(this.isSelectedHalfYearRegister()) {
+                // startTime、endTime改为最近半年注册的时间
+                conditionObj.startTime = moment().subtract(6, 'months').startOf('day').valueOf();
+                conditionObj.endTime = moment().endOf('day').valueOf();
+            }else {
+                conditionObj.feature = this.state.feature;
+            }
         }
-        if(_.isEqual(type, ANOTHER_BATCH) && !_.isNil(_.get(lastItem,'ranking'))) {//点击换一批时，才加这个ranking参数
+        if(_.isEqual(type, EXTRACT_CLUE_CONST_MAP.ANOTHER_BATCH) && !_.isNil(_.get(lastItem,'ranking'))) {//点击换一批时，才加这个ranking参数
             conditionObj.ranking = _.get(lastItem, 'ranking') + 1;
         }
         clueCustomerAction.getRecommendClueLists(conditionObj);
@@ -175,6 +182,10 @@ class RecommendClues extends React.Component {
         _.isFunction(this.props.onClosePanel) && this.props.onClosePanel();
     };
 
+    isSelectedHalfYearRegister() {
+        return this.state.feature === EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER;
+    }
+
     renderStepBlock = () => {
         let {
             step,
@@ -189,6 +200,7 @@ class RecommendClues extends React.Component {
                     hideFocusCustomerPanel={this.setCurrentStep.bind(this, EXTRACT_CLUE_STEPS.EXTRACT_CLUE)}
                     hasSavedRecommendParams={this.state.settedCustomerRecommend.obj}
                     saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
+                    isSelectedHalfYearRegister={this.isSelectedHalfYearRegister()}
                 />
             );
         }else if(step === EXTRACT_CLUE_STEPS.EXTRACT_CLUE) {// 提取线索

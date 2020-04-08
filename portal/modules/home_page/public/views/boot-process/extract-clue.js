@@ -36,8 +36,11 @@ const LAYOUT_CONSTANCE = {
     BTN_PADDING: 10, //底部按钮区域高度
 };
 
-//换一批
-const ANOTHER_BATCH = 'anotherBatch';
+//线索推荐面板的静态常量集合
+const EXTRACT_CLUE_CONST_MAP = {
+    ANOTHER_BATCH: 'anotherBatch',//换一批
+    LAST_HALF_YEAR_REGISTER: '最近半年注册',
+};
 
 const HOT_SELECTORS = [/*{
     name: Intl.get('clue.recommend.return.to.work', '已复工企业'),
@@ -45,6 +48,9 @@ const HOT_SELECTORS = [/*{
 },*/{
         name: Intl.get('clue.recommend.listed', '上市企业'),
         value: '上市'
+    }, {
+        name: Intl.get('clue.recommend.register.half.year', '最近半年注册'),
+        value: EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER
     }];
 
 const CONTACT_PHONE_CLS = 'extract-clue-contact-count';
@@ -1039,7 +1045,7 @@ class ExtractClues extends React.Component {
             moreDataTip = (
                 <span>
                     {Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以')}
-                    <a data-tracename="点击换一批按钮" onClick={this.getRecommendLists.bind(this,ANOTHER_BATCH)}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
+                    <a data-tracename="点击换一批按钮" onClick={this.getRecommendLists.bind(this, EXTRACT_CLUE_CONST_MAP.ANOTHER_BATCH)}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
                 </span>
             );
         }else {
@@ -1139,7 +1145,7 @@ class ExtractClues extends React.Component {
                     className="btn-item more-batch-btn"
                     data-tracename="点击换一批按钮"
                     title={Intl.get('clue.customer.refresh.list', '换一批')}
-                    onClick={this.getRecommendLists.bind(this, ANOTHER_BATCH)}
+                    onClick={this.getRecommendLists.bind(this, EXTRACT_CLUE_CONST_MAP.ANOTHER_BATCH)}
                 >
                     <span className={moreRotationClass}/>
                     <span>{isWebMin ? null : Intl.get('clue.customer.refresh.list', '换一批')}</span>
@@ -1258,5 +1264,5 @@ ExtractClues.propTypes = {
     salesManList: PropTypes.array,
     showSuccessPage: PropTypes.bool,
 };
-ExtractClues.ANOTHER_BATCH = ANOTHER_BATCH;
+ExtractClues.EXTRACT_CLUE_CONST_MAP = EXTRACT_CLUE_CONST_MAP;
 export default ExtractClues;
