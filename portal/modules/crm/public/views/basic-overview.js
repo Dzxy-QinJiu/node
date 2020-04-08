@@ -607,11 +607,15 @@ class BasicOverview extends React.Component {
                         saveTags={this.saveEditCompetitors}
                     />
                     {
-                        _.get(basicData, 'source_classify') ?
-                            <div className="tag-card-container detail-card-container">
-                                <span className='detail-card-source-classify'>{`${Intl.get('crm.clue.client.source', '获客方式')}:`}</span>
-                                <span className='detail-card-source-classify'>{this.getSourceClassify(basicData.source_classify)}</span>
-                            </div> : null
+                        _.get(basicData, 'source_classify') ? (
+                            <DetailCard
+                                content={(
+                                    <React.Fragment>
+                                        <span className='detail-card-source-classify'>{`${Intl.get('crm.clue.client.source', '获客方式')}:`}</span>
+                                        <span className='detail-card-source-classify'>{this.getSourceClassify(basicData.source_classify)}</span>
+                                    </React.Fragment> )}
+                            />
+                        ) : null
                     }
 
                     {this.renderUnComplateScheduleList()}
