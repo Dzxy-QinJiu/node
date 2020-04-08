@@ -465,7 +465,6 @@ class CustomerPoolVisibleRule extends React.Component {
                             _.isEmpty(this.state.defaultRuleConfig) ? null : (
                                 <DetailCard
                                     title={this.renderDefaultTitleBlock()}
-                                    titleBottomBorderNone
                                     isEdit={this.state.isDefaultEdit}
                                     loading={this.state.isDefaultLoading}
                                     saveErrorMsg={this.state.defaultErrMsg}

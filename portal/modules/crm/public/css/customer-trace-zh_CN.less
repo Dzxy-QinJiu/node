@@ -6,88 +6,116 @@
 @report_delivery_color: #f7a33f;
 @border_color: #dee5ea;
 @statistic_label_hover_color: #4a8ec4;
-.customer-container {
-  display: inline-block;
-  width: 100%;
-  padding-right: 0 !important;
-  .top-hander-wrap{
-    .range-datepicker{
-      float: left;
-      border-radius: 4px;
-      border-color: #DEDFE2;
-      color: @secondary-color;
-      .border_wrap{
-        height: 24px;
-        .date_text_wrap{
-          padding: 6px 8px;
-        }
-      }
-      .datepicker_wrap {
-        color: #757B79;
-      }
-    }
-  }
-  //添加
-  > .add-customer-trace{
-    float: left;
-    margin-top: 10px;
-  }
-  //添加、补充跟进记录面板
-  .add-customer-trace {
+.right-panel-content {
+  .customer-container {
+    display: inline-block;
     width: 100%;
-    padding: 12px;
-    border-radius: 4px;
-    background-color: #ffffff;
-    .ant-form-item {
-      width: 100%;
-      margin-bottom: 4px;
-      .ant-form-item-label label{
-        color: @secondary-font-color;
-      }
-      .ant-radio-wrapper {
-        margin-top: -3px;
-        margin-right: 30px;
-        font-size: 14px;
-        .iconfont {
-          padding-right: 4px;
-          font-size: 16px;
-          color: @secondary-color;
-        }
-        .iconfont.icon-visit-briefcase {
-          color: @icon_visit_color;
-        }
-        .iconfont.icon-report-delivery {
-          font-size: 18px;
-          color: @report_delivery_color;
-        }
-      }
-      textarea {
-        width: 350px;
-      }
-    }
-  }
-  //跟进记录列表（下部时间线）展示面板
-  .show-container {
-    position: relative;
-    float: left;
-    width: 100%;
-    margin-top: 12px;
-    border-radius: 3px;
-    background-color: #fff;
-    //分类统计
-    .statistic-container{
-      float: left;
-      margin-bottom: 6px;
-      width: 100%;
-      .statistic-item{
+    padding-right: 0 !important;
+    .top-hander-wrap{
+      .range-datepicker{
         float: left;
-        width: 20%;
-        padding: 4px;
-        border-right: 1px solid @border_color;
-        border-bottom: 1px solid @border_color;
-        text-align: center;
-        cursor: pointer;
-        &:hover{
+        border-radius: 4px;
+        border-color: #DEDFE2;
+        color: @secondary-color;
+        .border_wrap{
+          height: 24px;
+          .date_text_wrap{
+            padding: 6px 8px;
+          }
+        }
+        .datepicker_wrap {
+          color: #757B79;
+        }
+      }
+    }
+    //添加
+    > .add-customer-trace{
+      float: left;
+      margin-top: 10px;
+    }
+    //添加、补充跟进记录面板
+    .add-customer-trace {
+      width: 100%;
+      padding: 12px;
+      border-radius: 4px;
+      background-color: #ffffff;
+      .ant-form-item {
+        width: 100%;
+        margin-bottom: 4px;
+        .ant-form-item-label label{
+          color: @secondary-font-color;
+        }
+        .ant-radio-wrapper {
+          margin-top: -3px;
+          margin-right: 30px;
+          font-size: 14px;
+          .iconfont {
+            padding-right: 4px;
+            font-size: 16px;
+            color: @secondary-color;
+          }
+          .iconfont.icon-visit-briefcase {
+            color: @icon_visit_color;
+          }
+          .iconfont.icon-report-delivery {
+            font-size: 18px;
+            color: @report_delivery_color;
+          }
+        }
+        textarea {
+          width: 350px;
+        }
+      }
+    }
+    //跟进记录列表（下部时间线）展示面板
+    .show-container {
+      position: relative;
+      float: left;
+      width: 100%;
+      margin-top: 12px;
+      border-radius: 3px;
+      background-color: #fff;
+      //分类统计
+      .statistic-container{
+        float: left;
+        margin-bottom: 6px;
+        width: 100%;
+        .statistic-item{
+          float: left;
+          width: 20%;
+          padding: 4px;
+          border-right: 1px solid @border_color;
+          border-bottom: 1px solid @border_color;
+          text-align: center;
+          cursor: pointer;
+          &:hover{
+            .statistic-label{
+              color: @statistic_label_hover_color;
+            }
+            .statistic-value{
+              color: @primary-color;
+            }
+          }
+          .statistic-label{
+            float: left;
+            width: 100%;
+            line-height: 20px;
+            font-size: 14px;
+            color: @secondary-font-color;
+          }
+          .statistic-value{
+            float: left;
+            width: 100%;
+            line-height: 20px;
+            font-size: 16px;
+            color: @primary-font-color;
+          }
+        }
+        .statistic-item:last-child {
+          border-right: none !important;
+        }
+        .statistic-item.active{
+          border-bottom: 1px solid @primary-color;
           .statistic-label{
             color: @statistic_label_hover_color;
           }
@@ -95,250 +123,225 @@
             color: @primary-color;
           }
         }
-        .statistic-label{
-          float: left;
-          width: 100%;
-          line-height: 20px;
-          font-size: 14px;
-          color: @secondary-font-color;
-        }
-        .statistic-value{
-          float: left;
-          width: 100%;
-          line-height: 20px;
-          font-size: 16px;
-          color: @primary-font-color;
-        }
       }
-      .statistic-item:last-child {
-        border-right: none !important;
-      }
-      .statistic-item.active{
-        border-bottom: 1px solid @primary-color;
-        .statistic-label{
-          color: @statistic_label_hover_color;
-        }
-        .statistic-value{
+      //通话类行筛选
+      .trace-filter-item {
+        float: right;
+        margin-right: 14px;
+        line-height: 24px;
+        font-weight: bold;
+        color: @secondary-color;
+        &:hover {
           color: @primary-color;
         }
+        i {
+          padding-left: 2px;
+        }
       }
-    }
-    //通话类行筛选
-    .trace-filter-item {
-      float: right;
-      margin-right: 14px;
-      line-height: 24px;
-      font-weight: bold;
-      color: @secondary-color;
-      &:hover {
-        color: @primary-color;
-      }
-      i {
-        padding-left: 2px;
-      }
-    }
-    .show-customer-trace {
-      float: left;
-      width: 100%;
-      padding-left: 15px;
-      padding-right: 4px;
-      .time-line-item{
-        background-color: #fff;
-      }
-    }
-    .customer-trace-loading, .no-record-container {
-      position: relative;
-      float: left;
-      width: 100%;
-    }
-    .customer-trace-loading{
-      .load8 {
-        transform: scale(0.5, 0.5);
-      }
-    }
-    .trace-item-content {
+      .show-customer-trace {
         float: left;
         width: 100%;
-        padding: 8px;
-        margin-bottom: 8px;
-        font-size: 14px;
-        border-radius: 3px;
-        background-color: #f9f9f9;
-        &:hover{
-          background-color: #f1f9ff;
-          .trace-content .item-detail-content .record-content-show {
-              .iconfont.icon-edit-btn {
-                display: inline-block;
-              }
-            }
-        }
-        //跟进记录类型图标
-        .iconfont {
-          padding-right: @padding;
-          font-size: 16px;
-        }
-        .icon-visit-briefcase {
-          color: @icon_visit_color;
-        }
-        .item-detail-tip {
-          color: @primary-font-color;
-          .icon-container{
-            display: inline-block;
-            width: 24px;
-            padding-right: 0;
-            font-size: 16px;
-            color: @secondary-color;
-          }
-          .trace-title-name{
-            max-width: 200px;
-            padding-right: 4px;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-            line-height: 1;
-            display: inline-block;
-          }
-          .trace-title-phone{
-            color: @secondary-font-color;
-          }
-        }
-        //舆情报送的内容
-        .report-detail-content {
-          padding-left: 24px;
-          //舆情报送的内容展示样式
-          .report-content-descr {
-            padding-bottom: 6px;
-            .report-content-start{
-              width: 100%;
-              white-space: pre-line;
-            }
-            .content-overflow-ellipsis{
-              overflow: hidden;
-              text-overflow: ellipsis;
-              display: -webkit-box;
-              -webkit-box-orient: vertical;
-              -webkit-line-clamp: 2;
-            }
-          }
-          .trace-record-time {
-            float: right;
-          }
-          .item-bottom-content {
-            margin-top: 0;
-            .report-app-name {
-              float: left;
-              line-height: 24px;
-            }
-          }
-        }
-        .trace-content{
-          padding-left: 24px;
-          //跟进内容
-          .item-detail-content {
-            white-space: normal;
-            word-wrap: break-word;
-            color: @secondary-font-color;
-            .record-content-show{
-              cursor: pointer;
-              .icon-edit-btn{
-                display: none;
-                float: none;
-                padding-right: 0;
-                vertical-align: bottom;
-                font-size: 14px;
-              }
-            }
-            //点此补充跟进记录
-            .add-detail-tip {
-              font-size: 14px;
-              color: #4a8ec4;
-              cursor: pointer;
-            }
-          }
-          .item-bottom-content {
-            margin-top: 4px;
-            color: #b0b6ba;
-            //未接听
-            .call-un-answer {
-              line-height: 24px;
-              margin-right: 4px;
-              border: 1px solid #e2e2e2;
-              border-radius: 3px;
-              padding: 5px;
-            }
-            //播放录音区的样式
-            .audio-container {
-              float: left;
-              border: 1px solid #e2e2e2;
-              border-radius: 3px;
-              padding-left: 4px;
-              margin-right: 4px;
-              //录音图标
-              .iconfont.icon-play {
-                font-size: 16px;
-                //color: @primary-color;
-                cursor: pointer;
-              }
-              .iconfont.icon-play.icon-selected {
-                color: #C20C0C;
-              }
-              .iconfont.icon-play.icon-play-disable{
-                color: #b0b6ba;
-                cursor: default;
-              }
-              //通话时长
-              .call-time-descr {
-                display: inline-block;
-                font-size: 14px;
-                padding-left: 4px;
-              }
-            }
-            //拨号按钮的样式
-            .phone-call-out-btn{
-              padding-top: 6px;
-              padding-bottom: 5px;
-              border: 1px solid #e2e2e2;
-              border-radius: 3px;
-              cursor: pointer;
-            }
-          }
-        }
-        .item-bottom-content {
-          .item-bottom-right {
-            float: right;
-            line-height: 24px;
-            .sale-name {
-              margin-right: 4px;
-            }
-          }
-        }
-        //舆情报告的内容
-        .public-opinion-report-content {
-          margin-top: -24px;
-          .report-type-container, .report-remark-container {
-            .report-label {
-              display: inline-block;
-              margin-right: 4px;
-              color: #9f9fa1;
-            }
-            .report-content {
-              display: inline-block;
-              color: @primary-font-color;
-            }
-          }
-          .report-time {
-            color: #b0b6ba;
-            font-size: 14px;
-            float: right;
-            .report-applicant {
-              display: inline-block;
-              margin-right: 4px;
-            }
-            .apply-time {
-              display: inline-block;
-            }
-          }
+        padding-left: 15px;
+        padding-right: 4px;
+        .time-line-item{
+          background-color: #fff;
         }
       }
+      .customer-trace-loading, .no-record-container {
+        position: relative;
+        float: left;
+        width: 100%;
+      }
+      .customer-trace-loading{
+        .load8 {
+          transform: scale(0.5, 0.5);
+        }
+      }
+      .trace-item-content {
+          float: left;
+          width: 100%;
+          padding: 8px;
+          margin-bottom: 8px;
+          font-size: 14px;
+          border-radius: 3px;
+          background-color: #f9f9f9;
+          &:hover{
+            background-color: #f1f9ff;
+            .trace-content .item-detail-content .record-content-show {
+                .iconfont.icon-edit-btn {
+                  display: inline-block;
+                }
+              }
+          }
+          //跟进记录类型图标
+          .iconfont {
+            padding-right: @padding;
+            font-size: 16px;
+          }
+          .icon-visit-briefcase {
+            color: @icon_visit_color;
+          }
+          .item-detail-tip {
+            color: @primary-font-color;
+            .icon-container{
+              display: inline-block;
+              width: 24px;
+              padding-right: 0;
+              font-size: 16px;
+              color: @secondary-color;
+            }
+            .trace-title-name{
+              max-width: 200px;
+              padding-right: 4px;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              overflow: hidden;
+              line-height: 1;
+              display: inline-block;
+            }
+            .trace-title-phone{
+              color: @secondary-font-color;
+            }
+          }
+          //舆情报送的内容
+          .report-detail-content {
+            padding-left: 24px;
+            //舆情报送的内容展示样式
+            .report-content-descr {
+              padding-bottom: 6px;
+              .report-content-start{
+                width: 100%;
+                white-space: pre-line;
+              }
+              .content-overflow-ellipsis{
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+              }
+            }
+            .trace-record-time {
+              float: right;
+            }
+            .item-bottom-content {
+              margin-top: 0;
+              .report-app-name {
+                float: left;
+                line-height: 24px;
+              }
+            }
+          }
+          .trace-content{
+            padding-left: 24px;
+            //跟进内容
+            .item-detail-content {
+              white-space: normal;
+              word-wrap: break-word;
+              color: @secondary-font-color;
+              .record-content-show{
+                cursor: pointer;
+                .icon-edit-btn{
+                  display: none;
+                  float: none;
+                  padding-right: 0;
+                  vertical-align: bottom;
+                  font-size: 14px;
+                }
+              }
+              //点此补充跟进记录
+              .add-detail-tip {
+                font-size: 14px;
+                color: #4a8ec4;
+                cursor: pointer;
+              }
+            }
+            .item-bottom-content {
+              margin-top: 4px;
+              color: #b0b6ba;
+              //未接听
+              .call-un-answer {
+                line-height: 24px;
+                margin-right: 4px;
+                border: 1px solid #e2e2e2;
+                border-radius: 3px;
+                padding: 5px;
+              }
+              //播放录音区的样式
+              .audio-container {
+                float: left;
+                border: 1px solid #e2e2e2;
+                border-radius: 3px;
+                padding-left: 4px;
+                margin-right: 4px;
+                //录音图标
+                .iconfont.icon-play {
+                  font-size: 16px;
+                  //color: @primary-color;
+                  cursor: pointer;
+                }
+                .iconfont.icon-play.icon-selected {
+                  color: #C20C0C;
+                }
+                .iconfont.icon-play.icon-play-disable{
+                  color: #b0b6ba;
+                  cursor: default;
+                }
+                //通话时长
+                .call-time-descr {
+                  display: inline-block;
+                  font-size: 14px;
+                  padding-left: 4px;
+                }
+              }
+              //拨号按钮的样式
+              .phone-call-out-btn{
+                padding-top: 6px;
+                padding-bottom: 5px;
+                border: 1px solid #e2e2e2;
+                border-radius: 3px;
+                cursor: pointer;
+              }
+            }
+          }
+          .item-bottom-content {
+            .item-bottom-right {
+              float: right;
+              line-height: 24px;
+              .sale-name {
+                margin-right: 4px;
+              }
+            }
+          }
+          //舆情报告的内容
+          .public-opinion-report-content {
+            margin-top: -24px;
+            .report-type-container, .report-remark-container {
+              .report-label {
+                display: inline-block;
+                margin-right: 4px;
+                color: #9f9fa1;
+              }
+              .report-content {
+                display: inline-block;
+                color: @primary-font-color;
+              }
+            }
+            .report-time {
+              color: #b0b6ba;
+              font-size: 14px;
+              float: right;
+              .report-applicant {
+                display: inline-block;
+                margin-right: 4px;
+              }
+              .apply-time {
+                display: inline-block;
+              }
+            }
+          }
+        }
+    }
   }
 }
+
