@@ -28,8 +28,10 @@ function UserAuditLogAction() {
             if (!errorMsg){
                 var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
                 var lastSelectAppId = storageValue && storageValue.logViewAppId ? storageValue.logViewAppId : '';
+                // 判断记住的应用，在应用列表中，是否还存在，若存在，则使用,否则，不用
+                let matchAppList = _.find(data, app => app.app_id === lastSelectAppId);
                 var app_id = '';
-                if (lastSelectAppId) { //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
+                if (matchAppList) { //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
                     app_id = lastSelectAppId;
                 } else { // 首次登陆时
                     if (ShareObj.app_id) { // 已有用户选择的应用时，用户审计日志也要展示该应用的
