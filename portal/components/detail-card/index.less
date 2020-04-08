@@ -41,6 +41,9 @@
   // 卡片内容的样式
   .detail-card-content {
     padding: @card-padding;
+    &.content-no-padding{
+      padding: 0;
+    }
   }
   .detail-card-bottom {
     float: left;
@@ -54,7 +57,6 @@
 
 //编辑状态下的卡片,有阴影
 .detail-card-edit-status {
-  // box-shadow: 0 8px 10px @box_shadow_color;
   .card-content-edit-status {
     border: 1px solid #d3eafc;
     padding: @card-padding;

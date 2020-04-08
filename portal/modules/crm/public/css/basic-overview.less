@@ -156,6 +156,20 @@
   //最新跟进
   .detail-card-container {
     position: relative;
+    // 没有最新跟进时的样式
+    &.no-trace-card{
+      .detail-card-content{
+        height: 0;
+        padding: 0;
+        // 没有跟进记录，添加跟进记录时的样式设置
+        .customer-container {
+          background-color: #ffffff;
+          .add-customer-trace{
+            margin-top: 0 
+          }
+        }
+      }
+    }
     .schedule-item:not(:first-child){
       border-top: 1px solid #eee;
     }

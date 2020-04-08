@@ -33,6 +33,7 @@ import {INTEGRATE_TYPES, PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 import CustomerStageCard from './basic_info/customer-stage-card';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 import crmPrivilegeConst from '../privilege-const';
+import classNames from 'classnames';
 class BasicOverview extends React.Component {
     constructor(props) {
         super(props);
@@ -620,6 +621,7 @@ class BasicOverview extends React.Component {
 
                     {this.renderUnComplateScheduleList()}
                     <DetailCard
+                        className={classNames({'no-trace-card': noRecordData})}
                         title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
                         titleBottomBorderNone={noRecordData}
                         titleDescr={noRecordData ? Intl.get('crm.no.trace.record', '还没有跟进过该客户') : ''}

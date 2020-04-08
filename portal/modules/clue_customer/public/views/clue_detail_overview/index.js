@@ -73,6 +73,7 @@ import commonSalesHomePrivilegeConst from 'MOD_DIR/common_sales_home_page/public
 import LocationSelectField from 'CMP_DIR/basic-edit-field-new/location-select';
 import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 import ApplyTryCard from 'CMP_DIR/apply-try-card';
+import classNames from 'classnames';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -1146,6 +1147,7 @@ class ClueDetailOverview extends React.Component {
         let noTraceData = _.isEmpty(_.get(curClue, 'customer_traces'));
         return (
             <DetailCard
+                className={classNames('lead-trace-card', {'no-trace-card': noTraceData})}
                 title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}`}
                 titleBottomBorderNone={noTraceData}
                 content={this.renderTraceList()}

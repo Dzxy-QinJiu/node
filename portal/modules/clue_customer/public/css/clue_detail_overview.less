@@ -10,9 +10,6 @@
     margin-bottom: 8px;
     .contact-item.detail-card-container{
       margin-bottom: 0;
-      .detail-card-title.title-click-block{
-        border-bottom: none;
-      }
     }
   }
   .clue-detail-block{
@@ -428,12 +425,36 @@
     }
   }
   .detail-card-container {
-    margin-bottom: 8px;
-    margin-top: 0;
-    padding: 10px;
-    position: relative;
     .title-descr-style {
       padding-left: 8px;
+    }
+  }
+  .contact-item.detail-card-container {
+    .detail-card-content {
+      float: left;
+      width: 100%;
+    }
+  }
+  .lead-trace-card.detail-card-container {
+    position: relative;
+    //没有跟进时的样式设置
+    .top-hander-wrap{
+      .no-data-device{
+        position: absolute;
+        top: 16px;
+        left: 80px;
+      }
+    }
+    // 没有最新跟进时的样式
+    &.no-trace-card{
+      .detail-card-content{
+        height: 0;
+        padding: 0;
+        // 没有跟进添加跟进记录时的样式设置
+        .add-customer-trace {
+          margin-top: 0;
+        }
+      }
     }
   }
   .clue-info-item-apply-try-content-title{
