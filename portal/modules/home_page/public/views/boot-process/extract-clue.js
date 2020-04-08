@@ -604,7 +604,6 @@ class ExtractClues extends React.Component {
     };
 
     handleCheckChange = (item, e) => {
-        // e.preventDefault();
         let checked = e.target.checked;
         let selectedRecommendClues = this.state.selectedRecommendClues;
         if(checked) {
