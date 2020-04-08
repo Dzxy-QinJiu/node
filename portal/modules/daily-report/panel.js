@@ -74,8 +74,8 @@ class ReportPanel extends React.Component {
                         {moment(reportDetail.time).format(oplateConsts.DATE_FORMAT)} &nbsp;
                         {nickname}
                         {numberDetail.name} &nbsp;
-                        {numberDetail.value}
-                        {_.isNumber(numberDetail.value) ? Intl.get('contract.22', '个') : null}
+                        {numberDetail.value} &nbsp;
+                        {numberDetail.name === '通话时长' ? Intl.get('user.time.second', '秒') : Intl.get('contract.22', '个')}
                     </span>
                 </span>;
                 break;
