@@ -14,7 +14,8 @@ class ApplyDetailRemarks extends React.Component {
         this.state = {
             detailInfo: this.props.detailInfo,
             replyListInfo: this.props.replyListInfo,
-            replyFormInfo: this.props.replyFormInfo
+            replyFormInfo: this.props.replyFormInfo,
+            keyword: '',
         };
     }
     componentWillReceiveProps = (nextProps) => {
@@ -107,7 +108,21 @@ class ApplyDetailRemarks extends React.Component {
             />
         </span>);
     };
+    handleInputChange = (e) => {
+        var searchContent = e.target.value;
 
+        this.setState({
+            keyword: searchContent
+        });
+        this.props.commentInputChange(e);
+    };
+    addReply = (e) => {
+        this.props.addReply(e,() => {
+            this.setState({
+                keyword: ''
+            });
+        });
+    };
     render(){
         let detailInfo = this.state.detailInfo;
         return (
@@ -122,11 +137,13 @@ class ApplyDetailRemarks extends React.Component {
                         {/*已经通过和驳回的申请，不能再添加回复了*/}
                         {this.getApplyFinishedStatus() ?
                             null :
-                            <Input addonAfter={(
-                                <a data-tracename="点击回复按钮" onClick={this.props.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
-                            value={this.state.replyFormInfo.comment}
-                            onChange={this.props.commentInputChange}
-                            placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}/>}
+                            <Input
+                                addonAfter={(
+                                    <a data-tracename="点击回复按钮" onClick={this.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
+                                value={this.state.keyword}
+                                onChange={this.handleInputChange}
+                                placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}
+                            />}
                         {this.renderReplyFormResult()}
                     </div>
                 </div>

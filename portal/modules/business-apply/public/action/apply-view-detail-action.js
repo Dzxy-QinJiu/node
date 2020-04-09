@@ -61,7 +61,7 @@ function ApplyViewDetailActions() {
         });
     };
     //添加回复
-    this.addBusinessApplyComments = function(obj) {
+    this.addBusinessApplyComments = function(obj,callback) {
         this.dispatch({loading: true, error: false});
         BusinessApplyAjax.addBusinessApplyComments(obj).then((replyData) => {
             if (_.isObject(replyData)) {
@@ -75,6 +75,7 @@ function ApplyViewDetailActions() {
                     comment_time: replyTime
                 };
                 this.dispatch({loading: false, error: false, reply: replyItem});
+                _.isFunction(callback) && callback();
             }
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
