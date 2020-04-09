@@ -172,13 +172,22 @@ class CallRecordAnalyis extends React.Component {
     };
 
     getCharts() {
+        //通话记录统计
+        let callRecordChart = callChart.getCallRecordChart({
+            Store: this.state
+        });
+
+        const startTime = _.get(this.datePicker, 'state.start_time');
+
+        console.log (startTime , moment().format('YYYY-MM-DD') , commonMethodUtil.isEefungCustomerManager()); 
+        if (startTime && startTime === moment().format('YYYY-MM-DD') && commonMethodUtil.isEefungCustomerManager()) {
+            callRecordChart = null;
+        }
+
         return [
             //通话趋势统计
             callChart.getCallNumberTimeTrendChart({Store: this.state}),
-            //通话记录统计
-            callChart.getCallRecordChart({
-                Store: this.state
-            }),
+            callRecordChart,
             //电话行业统计
             callChart.getCallIndustryChart(),
             //通话总次数TOP10
@@ -345,6 +354,7 @@ class CallRecordAnalyis extends React.Component {
                             </div>
                             <span className="btn-item">
                                 <AntcDatePicker
+                                    ref={ref => this.datePicker = ref}
                                     disableDateAfterToday={true}
                                     range={DEFAULT_TIME_RANGE}
                                     selectedTimeFormat="int"
