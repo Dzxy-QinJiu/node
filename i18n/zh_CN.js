@@ -83,6 +83,7 @@ var zh_CN = {
     'common.password.compose.rule': '6-18位数字、字母、符号的组合',
     'common.password.validate.rule': '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符',
     'common.confirm.password': '确认密码',
+    'common.change.password.success.tips': '密码已成功修改，请使用新密码重新登录系统。',
     'common.phone': '电话',
     'common.email': '邮箱',
     'common.no.match': '暂无匹配项',

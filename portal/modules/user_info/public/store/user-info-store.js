@@ -17,8 +17,6 @@ var emptyUserInfo = {
 function UserInfoStore() {
     //在 编辑 状态的时候userInfoFormShow为true
     this.userInfoFormShow = false;
-    //修改完用户密码之后值为 true 用来清空文本框
-    this.userInfoFormPwdShow = false;
     //用户信息
     this.userInfo = emptyUserInfo;
     //登录日志
@@ -27,10 +25,6 @@ function UserInfoStore() {
     this.logTotal = 0;
     //正在获取登录日志列表
     this.logLoading = true;
-    //提交成功
-    this.submitResult = '';
-    //错误提示
-    this.submitErrorMsg = '';
     // 当前数据最后一条数据的id
     this.sortId = '';
     // 每次加载的日志条数
@@ -154,33 +148,6 @@ UserInfoStore.prototype.editUserInfo = function(modifiedUser) {
         }
     }
     this.userInfoFormShow = false;
-};
-UserInfoStore.prototype.editUserInfoPwd = function(result) {
-
-    if (result.error) {
-        this.submitResult = 'error';
-        this.submitErrorMsg = result.errorMsg;
-    } else {
-        this.submitErrorMsg = '';
-        if (result.loading) {
-            this.submitResult = 'loading';
-        } else {
-            if (result.editFlag) {
-                this.submitResult = 'success';
-            } else {
-                this.submitResult = 'error';
-                this.submitErrorMsg = Intl.get('user.info.edit.password.failed','密码修改失败');
-            }
-        }
-    }
-
-    this.userInfoFormPwdShow = true;
-};
-
-//隐藏提交提示
-UserInfoStore.prototype.hideSubmitTip = function() {
-    this.submitErrorMsg = '';
-    this.submitResult = '';
 };
 
 module.exports = alt.createStore(UserInfoStore, 'UserInfoStore');
