@@ -82,6 +82,34 @@
         .card-box .single-card .card-content .card-item .card-item-right {
           width: 60%;
         }
+        .card-layout-container {
+          .card-box {
+            .card-content {
+              .card-title {
+                color: @primary-font-color;
+              }
+              .card-item {
+                color: @has-transfer-color;
+              }
+            }
+          }
+          .production-stop {
+            background-color: #fbfbfb;
+            .img-container {
+              img {
+                filter:grayscale(100%) opacity(20%);
+              }
+              .no-user-logo-div {
+                background-color: #e6e6e6;
+              }
+            }
+            .card-content {
+              .card-title, .card-item {
+                color: @has-transfer-color;
+              }
+            }
+          }
+        }
       }
     }
   }
