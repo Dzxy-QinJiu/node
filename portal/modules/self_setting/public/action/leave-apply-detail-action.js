@@ -70,10 +70,11 @@ function ApplyViewDetailActions() {
         });
     };
     //添加回复
-    this.addLeaveApplyComments = function(obj) {
+    this.addLeaveApplyComments = function(obj,callback) {
         this.dispatch({loading: true, error: false});
         addApplyComments(obj).then((replyData) => {
             this.dispatch({loading: false, error: false, reply: replyData});
+            _.isFunction(callback) && callback();
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
