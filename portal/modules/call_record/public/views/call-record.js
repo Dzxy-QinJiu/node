@@ -905,6 +905,9 @@ class CallRecord extends React.Component {
     }
 
     render() {
+        const startTime = _.get(this.datePicker, 'state.start_time');
+        const isHideTotal = startTime && startTime === moment().format('YYYY-MM-DD') && commonMethodUtil.isEefungCustomerManager();
+
         return (<RightContent>
             <div className="call_record_content">
                 <TopNav>
@@ -913,6 +916,7 @@ class CallRecord extends React.Component {
                             className="btn-item">{this.state.isFilter ? Intl.get('call.record.cancel.search', '取消搜索') : Intl.get('sales.team.search', '搜索')}</Button>
                     </div>
                     <DatePicker
+                        ref={ref => this.datePicker = ref}
                         className="btn-item"
                         disableDateAfterToday={true}
                         range="day"
@@ -944,7 +948,7 @@ class CallRecord extends React.Component {
                         {this.renderCallRecordList()}
                     </div>
                     {
-                        this.state.callRecord.data_list.length ? (
+                        this.state.callRecord.data_list.length && !isHideTotal ? (
                             <BottomTotalCount totalCount={<ReactIntl.FormattedMessage
                                 id="common.total.data"
                                 defaultMessage={'共{num}条数据'}
