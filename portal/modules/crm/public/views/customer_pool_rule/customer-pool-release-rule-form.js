@@ -10,6 +10,7 @@ const Option = Select.Option;
 import DetailCard from 'CMP_DIR/detail-card';
 import classNames from 'classnames';
 import Spinner from 'CMP_DIR/spinner';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 
 const FORM_TYPE = {
     ADD: 'add',
@@ -33,6 +34,8 @@ const RESPONSIBLE_TYPE = [{
     name: Intl.get('crm.second.sales', '联合跟进人'),
     value: 'release_followup',
 }];
+
+const RULE_FORM_HEIGHT = 225;
 
 class CustomerPoolReleaseRuleForm extends React.Component {
     state = {
@@ -222,8 +225,8 @@ class CustomerPoolReleaseRuleForm extends React.Component {
             'default-edit-form-content': isDefaultRuleConfig && this.props.isEdit
         });
 
-        return (
-            <Form>
+        const formContent = (
+            <React.Fragment>
                 <FormItem {...ruleNameFormLayout}>
                     <div className="rule-form-title-wrapper">
                         <span className="rule-form-label">{Intl.get('crm.pool.release.rules.name', '{name}释放规则', {name: _.get(formData,'team_name', '')})}</span>
@@ -326,6 +329,24 @@ class CustomerPoolReleaseRuleForm extends React.Component {
                         )}
                     </FormItem>
                 </div>
+            </React.Fragment>
+        );
+
+        let content = null;
+
+        if(this.props.isUseGeminiScrollbar) {
+            content = (
+                <GeminiScrollbar ref="geminiScrollbarRef" className="scrollbar-out-card-style">
+                    {formContent}
+                </GeminiScrollbar>
+            );
+        }else {
+            content = formContent;
+        }
+
+        return (
+            <Form style={{height: this.props.isUseGeminiScrollbar ? this.props.height : 'auto'}}>
+                {content}
             </Form>
         );
     };
@@ -359,6 +380,9 @@ CustomerPoolReleaseRuleForm.defaultProps = {
     handleEdit: function() {},
     handleDelete: function() {},
     handleSubmit: function() {},
+    height: RULE_FORM_HEIGHT,
+    //是否使用滚动条，默认不使用
+    isUseGeminiScrollbar: false,
 };
 CustomerPoolReleaseRuleForm.propTypes = {
     isEdit: PropTypes.bool,
@@ -373,5 +397,7 @@ CustomerPoolReleaseRuleForm.propTypes = {
     handleEdit: PropTypes.func,
     handleDelete: PropTypes.func,
     handleSubmit: PropTypes.func,
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    isUseGeminiScrollbar: PropTypes.bool,
 };
 export default Form.create()(CustomerPoolReleaseRuleForm);

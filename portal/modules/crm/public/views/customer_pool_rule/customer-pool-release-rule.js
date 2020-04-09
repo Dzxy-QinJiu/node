@@ -131,7 +131,7 @@ class CustomerPoolReleaseRule extends React.Component {
 
     addRule = () => {
         this.setState({isShowAddForm: true}, () => {
-            GeminiScrollbar.scrollTo(this.refs.scrolltoTop, 0);
+            GeminiScrollbar.scrollTo(ReactDOM.findDOMNode(this.refs.geminiScrollbarRef), 0);
         });
     };
 
@@ -313,7 +313,7 @@ class CustomerPoolReleaseRule extends React.Component {
         });
 
         return (
-            <div className="customer-rules-wrapper" style={{height: contentHeight}} ref="scrolltoTop">
+            <div className="customer-rules-wrapper" style={{height: contentHeight}}>
                 <div className="customer-title-wrapper">
                     <span
                         className="customer-title-btn"
@@ -321,21 +321,25 @@ class CustomerPoolReleaseRule extends React.Component {
                         onClick={this.addRule}
                     ><i className="iconfont icon-add"/>{Intl.get('crm.add.customer.pool.rule', '添加规则')}</span>
                 </div>
+                {this.state.isShowAddForm ? (
+                    <div className="customer-rule-add-form">
+                        <CustomerPoolReleaseRuleForm
+                            isEdit
+                            isUseGeminiScrollbar
+                            formType={FORM_TYPE.ADD}
+                            teamList={this.state.teamList}
+                            visibleTeamList={visibleTeamList}
+                            handleSubmit={this.saveCustomerRuleBasicInfo.bind(this, FORM_TYPE.ADD)}
+                            handleCancel={this.hideAddRule}
+                        />
+                    </div>
+                ) : null}
                 <GeminiScrollbar
+                    ref="geminiScrollbarRef"
                     handleScrollBottom={this.handleScrollBottom}
                     listenScrollBottom={this.state.listenScrollBottom}
                 >
                     <div className="customer-rules-scroll-wrapper clearfix">
-                        {this.state.isShowAddForm ? (
-                            <CustomerPoolReleaseRuleForm
-                                isEdit
-                                formType={FORM_TYPE.ADD}
-                                teamList={this.state.teamList}
-                                visibleTeamList={visibleTeamList}
-                                handleSubmit={this.saveCustomerRuleBasicInfo.bind(this, FORM_TYPE.ADD)}
-                                handleCancel={this.hideAddRule}
-                            />
-                        ) : null}
                         {this.renderConfigBlock(visibleTeamList)}
                         {_.isEmpty(this.state.defaultRuleConfig) ? null : this.renderDefaultRuleForm()}
                     </div>
