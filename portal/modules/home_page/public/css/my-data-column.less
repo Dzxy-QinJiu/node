@@ -6,7 +6,6 @@
   }
   .detail-card-container {
     margin-top: 0;
-    padding-top: 10px;
     border-bottom: 1px solid @border-color;
     border-radius: 0;
     box-shadow: none;
@@ -21,7 +20,7 @@
 
 //各类型标题下的数据
 .my-data-title-data {
-  float: left;
+  display: inline-block;
   width: 100%;
   margin-top: 4px;
   line-height: 24px;
@@ -36,12 +35,12 @@
   color: @primary-color;
 }
 
-.contact-customer-count, .contact-clue-count, .expire-contract-count {
-  //color: #28AF6A;
-  color: @primary-font-color;
+.contact-customer-count, .contact-clue-count, .see-expire-contract-btn {
+  color: @primary-color;
 }
-
-
+.expire-contract-count {
+  color: @warn-color;
+}
 .call-time-item {
   float: left;
   width: 100%;
@@ -179,7 +178,7 @@
   }
 }
 .see-expire-contract-btn{
-  color: @primary-font-color;
+  color: @primary-color;
 }
 
 //提取线索统计样式
