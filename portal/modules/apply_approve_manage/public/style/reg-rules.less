@@ -151,12 +151,15 @@
       .item-node {
         float: left;
         margin-right: 21px;
-        min-width: 80px;
+        width: 90px;
         position: relative;
         .show-name {
           display: block;
           font-size: 12px;
           color: @primary-font-color;
+          overflow: hidden;
+          text-overflow:ellipsis;
+          white-space: nowrap;
         }
         .addition-text{
           display: inline-block;
@@ -171,7 +174,7 @@
         .connet-bar {
           position: absolute;
           display: inline-block;
-          width: 60px;
+          width: 80px;
           top: 20px;
           border-bottom: 2px solid #B8D3EA;
           left: 41px;
