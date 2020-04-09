@@ -997,6 +997,16 @@ exports.isManagerOrOpRole = function() {
     return userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER);
 };
 
+//是否客户经理
+exports.isCustomerManager = function() {
+    return userData.getUserData().position === '客户经理';
+};
+
+//是否是蚁坊域的客户经理
+exports.isEefungCustomerManager = function() {
+    return isOrganizationEefung() && isCustomerManager();
+};
+
 // 是否开通呼叫中心
 exports.isOpenCaller = () => {
     let organization = getOrganization();
