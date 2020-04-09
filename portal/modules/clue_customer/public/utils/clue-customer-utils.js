@@ -414,6 +414,7 @@ export const SIMILAR_CUSTOMER = 'similarCustomer';
 export const SIMILAR_CLUE = 'similarClue';
 export const EXTRACT_TIME = 'getLeadFromLeadPool';
 export const APPLY_TRY_LEAD = 'applyTryEnterprise';
+export const NOT_CONNECTED = Intl.get('clue.customer.not.connect.phone', '未打通电话的线索');
 export const clueStatusTabNum = [{
     numName: 'invalidClue',
     status: 'invalidClue',
@@ -458,6 +459,24 @@ export const sourceClassifyArray = [
         value: SOURCE_CLASSIFY.OTHER
     }
 ];
+export const otherFilterArray = [
+    {
+        name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
+        value: SELECT_TYPE.WAIT_ME_HANDLE
+    },{
+        name: Intl.get( 'clue.has.similar.customer','有相似客户'),
+        value: SIMILAR_CUSTOMER
+    },{
+        name: Intl.get( 'clue.has.similar.clue','有相似线索'),
+        value: SIMILAR_CLUE
+    },{
+        name: Intl.get('clue.customer.not.connect.phone', '未打通电话的线索'),
+        value: NOT_CONNECTED
+    },{
+        name: Intl.get('crm.filter.extract.from.lead.pool','从线索池中提取的线索'),
+        value: EXTRACT_TIME
+    }
+];
 //获客方式options
 export const sourceClassifyOptions = sourceClassifyWithoutOtherArray.map((source, index) => {
     return (<Option value={source.value} key={index}>{source.title}</Option>);
@@ -492,10 +511,11 @@ export const HASEXTRACTBYOTHERERRTIP = [Intl.get('errorcode.169', '该线索已�
 export const VERSIONS = {
     'starter': Intl.get('versions.starter','基础版'),
     'professional': Intl.get('versions.professional','专业版'),
-    'enterprise': Intl.get('versions.enterprise','企业版') 
+    'enterprise': Intl.get('versions.enterprise','企业版')
 };
 
 //是否有推荐线索的权限
 export const hasRecommendPrivilege = () => {
     return !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE);
 };
+
