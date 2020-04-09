@@ -11,7 +11,7 @@ var FilterAction = require('../../action/filter-action');
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
-import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,NOT_CONNECTED,EXTRACT_TIME, sourceClassifyArray, isCommonSalesOrPersonnalVersion, APPLY_TRY_LEAD } from '../../utils/clue-customer-utils';
+import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,NOT_CONNECTED,EXTRACT_TIME, sourceClassifyArray, isCommonSalesOrPersonnalVersion, APPLY_TRY_LEAD ,otherFilterArray} from '../../utils/clue-customer-utils';
 import {getClueUnhandledPrivilege, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
@@ -20,24 +20,7 @@ import { DatePicker } from 'antd';
 const { RangePicker } = DatePicker;
 import {checkVersionAndType,isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
-let otherFilterArray = [
-    {
-        name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
-        value: SELECT_TYPE.WAIT_ME_HANDLE
-    },{
-        name: Intl.get( 'clue.has.similar.customer','有相似客户'),
-        value: SIMILAR_CUSTOMER
-    },{
-        name: Intl.get( 'clue.has.similar.clue','有相似线索'),
-        value: SIMILAR_CLUE
-    },{
-        name: Intl.get('clue.customer.not.connect.phone', '未打通电话的线索'),
-        value: NOT_CONNECTED
-    },{
-        name: Intl.get('crm.filter.extract.from.lead.pool','从线索池中提取的线索'),
-        value: EXTRACT_TIME
-    }
-];
+
 class ClueFilterPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -49,12 +32,6 @@ class ClueFilterPanel extends React.Component {
             customCommonFilter: [],
             ...clueFilterStore.getState(),
         };
-        if(isKetaoOrganizaion()){//在客套组织下，才可以筛选申请试用的线索
-            otherFilterArray.push({
-                name: Intl.get('crm.filter.lead.apply.try.enterprise','申请企业试用的线索'),
-                value: APPLY_TRY_LEAD
-            });
-        }
     }
 
     onStoreChange = () => {
@@ -75,6 +52,16 @@ class ClueFilterPanel extends React.Component {
             accessChannelArray: nextProps.accessChannelArray,
             clueClassifyArray: nextProps.clueClassifyArray,
         });
+    };
+    getOtherFilterArray = () => {
+        var otherFilterCloneArray = _.cloneDeep(otherFilterArray);
+        if (isKetaoOrganizaion()) {//在客套组织下，才可以筛选申请试用的线索
+            otherFilterCloneArray.push({
+                name: Intl.get('crm.filter.lead.apply.try.enterprise', '申请企业试用的线索'),
+                value: APPLY_TRY_LEAD
+            });
+        }
+        return otherFilterCloneArray;
     };
     componentWillUnmount = () => {
         clueFilterStore.unlisten(this.onStoreChange);
@@ -457,6 +444,7 @@ class ClueFilterPanel extends React.Component {
         const clueClassifyArray = this.state.clueClassifyArray;
         const clueProvinceList = this.handleClueProvinceList();
         //如果是销售或者运营，增加待我处理筛选项
+        var otherFilterArray = this.getOtherFilterArray();
         if (!getClueUnhandledPrivilege()) {
             otherFilterArray = _.filter(otherFilterArray, item => item.value !== SELECT_TYPE.WAIT_ME_HANDLE);
         }
