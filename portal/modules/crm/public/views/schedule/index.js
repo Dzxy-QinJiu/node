@@ -195,17 +195,19 @@ class CrmSchedule extends React.Component {
     renderScheduleLists = () => {
         if (_.get(this.state, 'scheduleList[0]')) {
             return (
-                <TimeLine
-                    list={this.state.scheduleList}
-                    groupByDay={true}
-                    groupByYear={true}
-                    timeField="start_time"
-                    renderTimeLineItem={this.renderTimeLineItem}
-                    relativeDate={false}
+                <DetailCard content={(
+                    <TimeLine
+                        list={this.state.scheduleList}
+                        groupByDay={true}
+                        groupByYear={true}
+                        timeField="start_time"
+                        renderTimeLineItem={this.renderTimeLineItem}
+                        relativeDate={false}
+                    />)}
                 />);
         } else {
             //加载完成，没有数据的情况
-            return <NoDataIconTip tipContent={Intl.get('common.no.more.schedule', '暂无计划')}/>;
+            return <NoDataIconTip tipContent={Intl.get('common.no.more.schedule', '暂无计划')} />;
         }
     };
 

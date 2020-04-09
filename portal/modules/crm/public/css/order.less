@@ -253,7 +253,6 @@
     .order-user, .order-add-time {
       float: right;
       line-height: 22px;
-      margin-top: 6px;
       color: @secondary-font-color;
       font-size: 12px;
     }
@@ -323,6 +322,12 @@
       }
       input, textarea, .ant-calendar-picker {
         width: 100%;
+      }
+      .pull-right.only_show_choosen {
+        margin-right: 0;
+        .ant-checkbox-wrapper {
+          margin-right: 0;
+        }
       }
     }
     .ant-form-item-label {

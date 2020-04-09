@@ -8,6 +8,8 @@
   }
   //有应用签约到期的提示、没有用户的提示
   .overview-user-tip {
+    display: inline-block;
+    width: 100%;
     line-height: 22px;
     font-size: 14px;
     color: @primary-font-color;
@@ -192,7 +194,8 @@
     }
     .customer-container {
       //添加跟进记录
-      > .add-customer-trace {
+      > .customer-trace-card {
+        margin-top: 0;
         border: 1px solid #d3eafc;
       }
       .add-customer-trace {

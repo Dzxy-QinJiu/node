@@ -27,6 +27,7 @@ import {getApplyList} from 'MOD_DIR/user_apply/public/ajax/app-user-ajax';
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import { EventEmitter } from 'events';
 import {getDetailLayoutHeight} from '../../utils/crm-util';
+import DetailCard from 'CMP_DIR/detail-card';
 
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
@@ -722,59 +723,63 @@ class CustomerUsers extends React.Component {
     renderUserApplyList(userApplyList) {
         return userApplyList.map((userObj, index) => {
             let user = _.isObject(userObj) ? userObj.message : {};
-            let userNameText = `${_.get(user, 'email_user_names', '')}(${_.get(user, 'nick_name', '')})`;
-            let apps = _.get(user, 'products', '');
-
             //只展示新申请的试用用户或者是签约用户
             if(_.includes([APPLY_CONSTANTS.APPLY_USER_OFFICIAL,
                 APPLY_CONSTANTS.APPLY_USER_TRIAL,
-                APPLY_CONSTANTS.APPLY_USER],_.get(user,'type'))){
-                //处理产品应用信息
-                if(apps) {
-                    try {
-                        apps = JSON.parse(apps);
-                        let appsName = _.get(user,'email_app_names', '').split('、');
-                        _.each(appsName, (name, index) => {
-                            if(apps[index]) {
-                                apps[index].client_name = name;
-                                apps[index].tag = _.get(user, 'tag', '');
-                                apps[index].type = _.get(user, 'type', '');
-                            }
-                        });
-                    }catch (e) {
-                        apps = [];
-                    }
-                }else {
-                    apps = [];
-                }
+                APPLY_CONSTANTS.APPLY_USER], _.get(user,'type'))){
                 return (
-                    <div className="crm-user-item crm-user-apply-item" key={index}>
-                        <div className="crm-user-name user-apply-name">
-                            <span
-                                className="user-name-text"
-                                title={userNameText}
-                            >
-                                {userNameText}
-                            </span>
-                            <span className="user-apply-state">
-                                <span className="apply-left-bracket">[</span>
-                                {Intl.get('user.apply.false', '待审批')}
-                                <span className="apply-right-bracket">]</span>
-                            </span>
-                        </div>
-                        <div className="crm-user-apps-container no-checkbox-apps-container user-apply-apps-container">
-                            <div className="crm-user-apps">
-                                <div className="apps-top-title">
-                                    <label>{this.renderApplyTitle(apps[0])}</label>
-                                </div>
-                                {this.getUserApplyOptions(apps)}
-                            </div>
-                        </div>
-
-                    </div>
+                    <DetailCard
+                        contentNoPadding={true}
+                        content={this.renderUnApporveItem(user, index)}/>
                 );
-            }else {return null;}
+            } else { 
+                return null;
+            }
         });
+    }
+
+    renderUnApporveItem(user, index){
+        let userNameText = `${_.get(user, 'email_user_names', '')}(${_.get(user, 'nick_name', '')})`;
+        let apps = _.get(user, 'products', '');
+        //处理产品应用信息
+        if(apps) {
+            try {
+                apps = JSON.parse(apps);
+                let appsName = _.get(user,'email_app_names', '').split('、');
+                _.each(appsName, (name, index) => {
+                    if(apps[index]) {
+                        apps[index].client_name = name;
+                        apps[index].tag = _.get(user, 'tag', '');
+                        apps[index].type = _.get(user, 'type', '');
+                    }
+                });
+            }catch (e) {
+                apps = [];
+            }
+        }else {
+            apps = [];
+        }
+        return (
+            <div className="crm-user-item crm-user-apply-item" key={index}>
+                <div className="crm-user-name user-apply-name">
+                    <span className="user-name-text" title={userNameText}>
+                        {userNameText}
+                    </span>
+                    <span className="user-apply-state">
+                        <span className="apply-left-bracket">[</span>
+                        {Intl.get('user.apply.false', '待审批')}
+                        <span className="apply-right-bracket">]</span>
+                    </span>
+                </div>
+                <div className="crm-user-apps-container no-checkbox-apps-container user-apply-apps-container">
+                    <div className="crm-user-apps">
+                        <div className="apps-top-title">
+                            <label>{this.renderApplyTitle(apps[0])}</label>
+                        </div>
+                        {this.getUserApplyOptions(apps)}
+                    </div>
+                </div>
+            </div>);
     }
 
     renderCrmUserList(isApplyButtonShow) {
@@ -795,78 +800,10 @@ class CustomerUsers extends React.Component {
                 <ul className="crm-user-list">
                     {this.renderUserApplyList(userApplyList)}
                     {crmUserList.map((userObj, index) => {
-                        let user = _.isObject(userObj) ? userObj.user : {};
-                        let userNameText = `${_.get(user, 'user_name', '')}(${_.get(user, 'nick_name', '')})`;
-                        let isManager = _.get(user, 'group_position', '') === 'manager';//该用户是否是管理员
                         return (
-                            <div className="crm-user-item" key={index}>
-                                <div className="crm-user-name">
-                                    {isShowCheckbox && !_.isEmpty(userObj.apps) ? (
-                                        <Checkbox
-                                            checked={user.checked}
-                                            disabled={!!this.state.applyType}
-                                            onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}
-                                        >
-                                            {
-                                                isManager ?
-                                                    <i
-                                                        className='iconfont icon-team-role'
-                                                        title={Intl.get('common.managers', '管理员')}
-                                                    ></i> : null
-                                            }
-                                            <span
-                                                className={
-                                                    classNames('user-name-text',{'can-click-open-detail': !this.props.isMerge})
-                                                }
-                                                title={userNameText}
-                                                onClick={this.showUserDetail.bind(this, user.user_id)}
-                                            >
-                                                {userNameText}
-                                            </span>
-                                        </Checkbox>) :
-                                        <span>
-                                            {
-                                                isManager ?
-                                                    <i
-                                                        className='iconfont icon-team-role'
-                                                        title={Intl.get('common.managers', '管理员')}
-                                                    ></i> : null
-                                            }
-                                            <span
-                                                className={
-                                                    classNames('user-name-text', {'can-click-open-detail': !this.props.isMerge})
-                                                }
-                                                title={userNameText}
-                                                onClick={this.showUserDetail.bind(this, user.user_id)}>
-                                                {userNameText}
-                                            </span>
-                                        </span>
-
-                                    }
-                                </div>
-                                {
-                                    _.isEmpty(userObj.apps) ? null : (
-                                        <div
-                                            className={
-                                                classNames('crm-user-apps-container',
-                                                    {'no-checkbox-apps-container': !isShowCheckbox})
-                                            }
-                                        >
-                                            <div className="crm-user-apps">
-                                                <div className="apps-top-title">
-                                                    {isShowCheckbox ? (
-                                                        <Checkbox checked={user.checked} disabled={!!this.state.applyType}
-                                                            onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
-                                                            {this.renderUserAppTitle()}
-                                                        </Checkbox>
-                                                    ) : (<label>{this.renderUserAppTitle()}</label>)}
-                                                </div>
-                                                {this.getUserAppOptions(userObj, isShowCheckbox)}
-                                            </div>
-                                        </div>
-                                    )
-                                }
-                            </div>
+                            <DetailCard key={index}
+                                contentNoPadding={true}
+                                content={this.renderCrmUserItem(userObj, index, isShowCheckbox)} />
                         );
                     })}
                 </ul>);
@@ -874,6 +811,81 @@ class CustomerUsers extends React.Component {
             //加载完成，没有数据的情况
             return (<NoDataIconTip tipContent={Intl.get('crm.detail.no.user', '暂无用户')}/>);
         }
+    }
+    renderCrmUserItem(userObj, index, isShowCheckbox){
+        let user = _.isObject(userObj) ? userObj.user : {};
+        let userNameText = `${_.get(user, 'user_name', '')}(${_.get(user, 'nick_name', '')})`;
+        let isManager = _.get(user, 'group_position', '') === 'manager';//该用户是否是管理员
+        return (
+            <div className="crm-user-item" key={index}>
+                <div className="crm-user-name">
+                    {isShowCheckbox && !_.isEmpty(userObj.apps) ? (
+                        <Checkbox
+                            checked={user.checked}
+                            disabled={!!this.state.applyType}
+                            onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}
+                        >
+                            {
+                                isManager ?
+                                    <i
+                                        className='iconfont icon-team-role'
+                                        title={Intl.get('common.managers', '管理员')}
+                                    ></i> : null
+                            }
+                            <span
+                                className={
+                                    classNames('user-name-text',{'can-click-open-detail': !this.props.isMerge})
+                                }
+                                title={userNameText}
+                                onClick={this.showUserDetail.bind(this, user.user_id)}
+                            >
+                                {userNameText}
+                            </span>
+                        </Checkbox>) :
+                        <span>
+                            {
+                                isManager ?
+                                    <i
+                                        className='iconfont icon-team-role'
+                                        title={Intl.get('common.managers', '管理员')}
+                                    ></i> : null
+                            }
+                            <span
+                                className={
+                                    classNames('user-name-text', {'can-click-open-detail': !this.props.isMerge})
+                                }
+                                title={userNameText}
+                                onClick={this.showUserDetail.bind(this, user.user_id)}>
+                                {userNameText}
+                            </span>
+                        </span>
+
+                    }
+                </div>
+                {
+                    _.isEmpty(userObj.apps) ? null : (
+                        <div
+                            className={
+                                classNames('crm-user-apps-container',
+                                    {'no-checkbox-apps-container': !isShowCheckbox})
+                            }
+                        >
+                            <div className="crm-user-apps">
+                                <div className="apps-top-title">
+                                    {isShowCheckbox ? (
+                                        <Checkbox checked={user.checked} disabled={!!this.state.applyType}
+                                            onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
+                                            {this.renderUserAppTitle()}
+                                        </Checkbox>
+                                    ) : (<label>{this.renderUserAppTitle()}</label>)}
+                                </div>
+                                {this.getUserAppOptions(userObj, isShowCheckbox)}
+                            </div>
+                        </div>
+                    )
+                }
+            </div>
+        );
     }
 
     //展示按客户搜索到的用户列表
@@ -944,7 +956,7 @@ class CustomerUsers extends React.Component {
                             crmUserList={this.state.crmUserList}/>)
                 : null
             }
-            <div className="crm-user-scroll-wrap" style={{height: this.state.userListHeight}}>
+            <div className="crm-user-scroll-wrap" style={{ height: this.state.userListHeight }}>
                 <GeminiScrollbar className="srollbar-out-card-style"
                     listenScrollBottom={this.state.listenScrollBottom}
                     handleScrollBottom={this.handleScrollBottom.bind(this)}>
