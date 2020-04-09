@@ -1151,6 +1151,7 @@ class ClueDetailOverview extends React.Component {
                 title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}`}
                 titleBottomBorderNone={noTraceData}
                 content={this.renderTraceList()}
+                contentNoPadding={true}
                 disableEdit={hasPrivilegeAddEditTrace}
             />);
     };
@@ -1164,10 +1165,11 @@ class ClueDetailOverview extends React.Component {
             return null;
         }
         return (
-            <div className="associate-user-detail clue-detail-block">
-                {this.renderBasicContent(Intl.get('clue.associate.user', '关联账号'),<span className="associate-user" onClick={this.handleShowAppUser.bind(this,appUserInfo.id)} data-tracename="查看关联账号详情">{appUserInfo.name}</span>,{containerCls: 'associate-user-item'})}
-            </div>
-        );
+            <DetailCard content={(
+                <div className="associate-user-detail clue-detail-block">
+                    {this.renderBasicContent(Intl.get('clue.associate.user', '关联账号'), <span className="associate-user" onClick={this.handleShowAppUser.bind(this, appUserInfo.id)} data-tracename="查看关联账号详情">{appUserInfo.name}</span>, { containerCls: 'associate-user-item' })}
+                </div>
+            )}/>);
     };
     //获取获客方式
     getSourceClassify = (sourceClassify) => {
@@ -1270,54 +1272,58 @@ class ClueDetailOverview extends React.Component {
             similarLists = _.cloneDeep(similarLists).splice(0,3);
         }
         return (
-            <div className="similar-content similar-customer-list">
-                <div className="similar-tip">
-                    <i className="iconfont icon-phone-call-out-tip"></i>
-                    {isSimilarClue ? Intl.get('clue.has.similar.lists', '相似线索') : Intl.get('customer.has.similar.lists', '相似客户')}
-                </div>
-                {_.map(similarLists,(listItem) => {
-                    var sameContact = this.getSamePhoneContact(_.get(listItem,'contacts',[]));
-                    var traceAddTime = _.get(listItem, 'customer_traces[0].call_date') || _.get(listItem, 'customer_traces[0].add_time');//跟进时间
-                    let hasTraceContent = _.has(listItem, 'customer_traces[0].remark');
-                    let isFromCluepool = _.isEqual(_.get(this.state, 'curClue.clue_type'), 'clue_pool');
-                    let similarTitleCls = className('similar-title', {
-                        'title-from-clue-pool': isFromCluepool
-                    });
-                    return <div className="similar-block">
-                        <div className={similarTitleCls}>
-                            {isSimilarClue ? renderClueStatus(listItem) : null}
-                            {this.renderClueSimilarLists(listItem, isSimilarClue)}
-                        </div>
-                        {_.isArray(sameContact) ? _.map(sameContact,(contactsItem) => {
-                            return (
-                                <div className="similar-name-phone">
-                                    {isSimilarClue ?
-                                        <span className="contact-name" title={_.get(contactsItem, 'name', '')}>
-                                            {Intl.get('call.record.contacts', '联系人') + '：' + _.get(contactsItem, 'name', '')}
-                                        </span> :
-                                        <span className="contact-name" title={contactsItem.name}>
-                                            {contactsItem.name }
-                                        </span>
-                                    }
-                                    {contactsItem.name && !_.isEmpty(contactsItem.phone) && !isSimilarClue ? '：' : ''}
-                                    {contactsItem.name && !_.isEmpty(contactsItem.phone) && isSimilarClue ? ' (' : ''}
-                                    {_.isArray(contactsItem.phone) ? contactsItem.phone.join(',') : null}
-                                    {contactsItem.name && !_.isEmpty(contactsItem.phone) && isSimilarClue ? ')' : ''}
+            <DetailCard
+                title={(
+                    <div className="similar-tip">
+                        <i className="iconfont icon-phone-call-out-tip"></i>
+                        {isSimilarClue ? Intl.get('clue.has.similar.lists', '相似线索') : Intl.get('customer.has.similar.lists', '相似客户')}
+                    </div>)}
+                contentNoPadding={true}
+                content={(
+                    <div className="similar-content similar-customer-list">
+                        {_.map(similarLists, (listItem) => {
+                            var sameContact = this.getSamePhoneContact(_.get(listItem, 'contacts', []));
+                            var traceAddTime = _.get(listItem, 'customer_traces[0].call_date') || _.get(listItem, 'customer_traces[0].add_time');//跟进时间
+                            let hasTraceContent = _.has(listItem, 'customer_traces[0].remark');
+                            let isFromCluepool = _.isEqual(_.get(this.state, 'curClue.clue_type'), 'clue_pool');
+                            let similarTitleCls = className('similar-title', {
+                                'title-from-clue-pool': isFromCluepool
+                            });
+                            return <div className="similar-block">
+                                <div className={similarTitleCls}>
+                                    {isSimilarClue ? renderClueStatus(listItem) : null}
+                                    {this.renderClueSimilarLists(listItem, isSimilarClue)}
                                 </div>
-                            );
-                        }) : null}
-                        {traceAddTime && isSimilarClue && !hasTraceContent ? <span className="trace-time">{Intl.get('crm.last.trace', '最后跟进') + '：' + moment(traceAddTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT)}</span> : null}
-                        {traceAddTime && isSimilarClue && hasTraceContent ?
-                            <div className="trace-container">
-                                <span className="trace-time">{Intl.get('crm.last.trace', '最后跟进') + '：'}</span>
-                                <span className="trace-content">{_.get(listItem,'customer_traces[0].remark') + ' (' + _.get(listItem,'customer_traces[0].nick_name','') + ' ' + moment(traceAddTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT) + ')'}</span>
-                            </div> : null}
-                    </div>;
-                })}
-                {listMoreThanThree ? <div className="show-hide-tip" onClick={isSimilarClue ? this.handleToggleClueTip : this.handleToggleCustomerTip} data-tracename='点击收起或展开全部按钮'>
-                    {moreListShowFlag ? Intl.get('crm.contact.way.hide', '收起') : Intl.get('notification.system.more', '展开全部')}</div> : null}
-            </div>
-        );
+                                {_.isArray(sameContact) ? _.map(sameContact, (contactsItem) => {
+                                    return (
+                                        <div className="similar-name-phone">
+                                            {isSimilarClue ?
+                                                <span className="contact-name" title={_.get(contactsItem, 'name', '')}>
+                                                    {Intl.get('call.record.contacts', '联系人') + '：' + _.get(contactsItem, 'name', '')}
+                                                </span> :
+                                                <span className="contact-name" title={contactsItem.name}>
+                                                    {contactsItem.name}
+                                                </span>
+                                            }
+                                            {contactsItem.name && !_.isEmpty(contactsItem.phone) && !isSimilarClue ? '：' : ''}
+                                            {contactsItem.name && !_.isEmpty(contactsItem.phone) && isSimilarClue ? ' (' : ''}
+                                            {_.isArray(contactsItem.phone) ? contactsItem.phone.join(',') : null}
+                                            {contactsItem.name && !_.isEmpty(contactsItem.phone) && isSimilarClue ? ')' : ''}
+                                        </div>
+                                    );
+                                }) : null}
+                                {traceAddTime && isSimilarClue && !hasTraceContent ? <span className="trace-time">{Intl.get('crm.last.trace', '最后跟进') + '：' + moment(traceAddTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT)}</span> : null}
+                                {traceAddTime && isSimilarClue && hasTraceContent ?
+                                    <div className="trace-container">
+                                        <span className="trace-time">{Intl.get('crm.last.trace', '最后跟进') + '：'}</span>
+                                        <span className="trace-content">{_.get(listItem, 'customer_traces[0].remark') + ' (' + _.get(listItem, 'customer_traces[0].nick_name', '') + ' ' + moment(traceAddTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT) + ')'}</span>
+                                    </div> : null}
+                            </div>;
+                        })}
+                        {listMoreThanThree ? <div className="show-hide-tip" onClick={isSimilarClue ? this.handleToggleClueTip : this.handleToggleCustomerTip} data-tracename='点击收起或展开全部按钮'>
+                            {moreListShowFlag ? Intl.get('crm.contact.way.hide', '收起') : Intl.get('notification.system.more', '展开全部')}</div> : null}
+                    </div>
+                )} />);
     };
     handleToggleCustomerTip = () => {
         this.setState({
@@ -1400,15 +1406,15 @@ class ClueDetailOverview extends React.Component {
     renderAssociatedClue = (curClue, associatedCustomer ) => {
         if (curClue.clue_type === 'clue_pool') { // 线索池中详情，处理线索
             if (freedCluePrivilege()) {
-                return this.renderExtractClueBtn(curClue);
+                return <DetailCard content={this.renderExtractClueBtn(curClue)}/>;
             } else {
                 return null;
             }
         } else {  
             if (this.isClueNotAssociateCustomer(curClue, associatedCustomer)) { // 待跟进或是已跟进，并且没有关联客户时，处理线索
-                return this.renderAssociatedAndInvalidClueHandle(curClue);
+                return <DetailCard content={this.renderAssociatedAndInvalidClueHandle(curClue)}/>;
             } else { // 显示处理线索的结果
-                return this.renderAssociatedAndInvalidClueText(associatedCustomer);
+                return <DetailCard content={this.renderAssociatedAndInvalidClueText(associatedCustomer)}/>;
             }
         }
     };
@@ -1841,20 +1847,22 @@ class ClueDetailOverview extends React.Component {
                 <GeminiScrollbar>
                     {curClue.version_upgrade_id && !_.isEmpty(this.state.versionData) ? <ApplyTryCard versionData={this.state.versionData}/> : null}
                     {this.props.hideContactWay ? null : this.renderClueContact()}
-                    {this.renderClueAddress()}
-                    {this.renderClueTimeAndIndustry()}
-                    {this.renderClueSourceAndClassfy()}
+                    <DetailCard content={this.renderClueAddress()}/>
+                    <DetailCard content={this.renderClueTimeAndIndustry()}/>
+                    <DetailCard content={this.renderClueSourceAndClassfy()}/>
                     {this.renderClueCustomerLists()}
                     {/*分配线索给某个销售*/}
                     {/*有分配的权限，但是该线索没有分配给某个销售的时候，展示分配按钮，其他情况都展示分配详情就可以*/}
-                    <div className="assign-sales-warp clue-detail-block">
-                        {hasAssignedPrivilege && !assignedSales && !this.state.clickAssigenedBtn ?
-                            this.renderAssigendClueText() : this.renderAssignedClueEdit()
-                        }
-                    </div>
+                    <DetailCard content={(
+                        <div className="assign-sales-warp clue-detail-block">
+                            {hasAssignedPrivilege && !assignedSales && !this.state.clickAssigenedBtn ?
+                                this.renderAssigendClueText() : this.renderAssignedClueEdit()
+                            }
+                        </div>
+                    )} />
                     <div className={associateCls}>
                         {/*线索处理，已跟进或待跟进的线索并且没有关联客户*/}
-                        {this.renderAssociatedClue(curClue,associatedCustomer)}
+                        {this.renderAssociatedClue(curClue, associatedCustomer)}
                     </div>
                     {this.renderAppUserDetail()}
                     {this.state.isShowAddCustomer ? this.renderAddCustomer() : null}
