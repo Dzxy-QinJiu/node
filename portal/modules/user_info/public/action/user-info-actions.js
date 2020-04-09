@@ -5,7 +5,6 @@ function UserInfoActions() {
     this.generateActions(
         'showUserInfoForm',//展示修改用户面板
         'hideUserInfoForm',//隐藏修改用户面板
-        'hideSubmitTip',//隐藏保存提示
         'setLogNum',//设置当前操作记录的展示页
     );
 
@@ -83,17 +82,6 @@ function UserInfoActions() {
             if (typeof callback === 'function') {
                 callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));
             }
-        });
-    };
-
-    //修改用户密码
-    this.editUserInfoPwd = function(userInfo) {
-        var _this = this;
-        _this.dispatch({error: false, loading: true});
-        userInfoAjax.editUserInfoPwd(userInfo).then(function(editFlag) {
-            _this.dispatch({error: false, editFlag: editFlag});
-        }, function(errorMsg) {
-            _this.dispatch({error: true, errorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')});
         });
     };
 }
