@@ -15,7 +15,7 @@ class ApplyDetailRemarks extends React.Component {
             detailInfo: this.props.detailInfo,
             replyListInfo: this.props.replyListInfo,
             replyFormInfo: this.props.replyFormInfo,
-            keyword: '',
+            keyword: '',//输入的回复内容，之所以在这个组件中再加一个属性，是因为如果Input用replyListInfo.comment,普通输入法没有问题，搜狗五笔输入法总是会出现输入不上去的情况
         };
     }
     componentWillReceiveProps = (nextProps) => {
