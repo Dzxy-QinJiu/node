@@ -365,7 +365,7 @@ class ApplyViewDetail extends React.Component {
     }
 
     //添加一条回复
-    addReply = (e) => {
+    addReply = (e,callback) => {
         Trace.traceEvent(e, '点击回复按钮');
         //如果ajax没有执行完，则不提交
         if (this.state.replyFormInfo.result === 'loading') {
@@ -381,7 +381,7 @@ class ApplyViewDetail extends React.Component {
             return;
         }
         //提交数据
-        DocumentWriteApplyDetailAction.addApplyComments(submitData);
+        DocumentWriteApplyDetailAction.addApplyComments(submitData,callback);
     };
     //备注 输入框改变时候触发
     commentInputChange = (event) => {
