@@ -616,7 +616,7 @@ class ExtractClues extends React.Component {
             });
         }
         this.setState({
-            selectedRecommendClues,
+            selectedRecommendClues: _.uniqBy(selectedRecommendClues, 'id'),
             hasNoExtractCountTip: false
         });
     };
