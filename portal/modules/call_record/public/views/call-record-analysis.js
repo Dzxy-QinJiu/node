@@ -52,6 +52,7 @@ class CallRecordAnalyis extends React.Component {
             secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
             teamMemberFilterType: 'team', // 按团队还是成员筛选
             isShowEffectiveTimeAndCount: this.props.isShowEffectiveTimeAndCount, // 是否展示有效通话时长和有效接通数
+            startTime: moment().startOf(DEFAULT_TIME_RANGE).valueOf(),
         };
     }
 
@@ -204,7 +205,9 @@ class CallRecordAnalyis extends React.Component {
 
     //时间的设置
     onSelectDate = (startTime, endTime, timeType) => {
-        dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
+        this.setState({ startTime }, () => {
+            dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
+        });
     };
 
     handleSelectTeamOrMember = () => {

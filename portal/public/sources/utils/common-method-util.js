@@ -705,10 +705,12 @@ function getOrganization() {
 exports.getOrganization = getOrganization;
 
 // 判断组织类型，若是eefung返回true，否则返回false
-exports.isOrganizationEefung = () => {
+function isOrganizationEefung() {
     let organization = getOrganization(); // 组织信息
     return _.get(organization, 'id') === ORGANIZATION_TYPE.EEFUNG;
-};
+}
+exports.isOrganizationEefung = isOrganizationEefung;
+
 //是否已经配置了坐席号
 function hasCalloutPrivilege() {
     //是否展示拨打按钮
@@ -995,6 +997,17 @@ exports.isAdminRole = isAdminRole;
 //是否主管或运营人员
 exports.isManagerOrOpRole = function() {
     return userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER);
+};
+
+//是否客户经理
+function isCustomerManager() {
+    return userData.getUserData().position === '客户经理';
+}
+exports.isCustomerManager = isCustomerManager;
+
+//是否是蚁坊域的客户经理
+exports.isEefungCustomerManager = function() {
+    return isOrganizationEefung() && isCustomerManager();
 };
 
 // 是否开通呼叫中心
