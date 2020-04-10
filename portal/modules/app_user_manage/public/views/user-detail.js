@@ -1,5 +1,6 @@
 var language = require('../../../../public/language/getLanguage');
 require('../css/user-detail-panel.less');
+import ajax from 'ant-ajax';
 var Tabs = require('antd').Tabs;
 var TabPane = Tabs.TabPane;
 var AppUserAction = require('../action/app-user-actions');
@@ -19,7 +20,7 @@ var SingleUserLogAction = require('../action/single_user_log_action');
 var AppUserUtil = require('../util/app-user-util');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 import { StatusWrapper } from 'antc';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 var AppUserAjax = require('../ajax/app-user-ajax');
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 const WHEEL_DELAY = 10;//滚轮事件延时
@@ -55,7 +56,8 @@ class UserDetail extends React.Component {
         isChangingActiveKey: false, // 是否正在切换tab,默认false
         ...AppUserPanelSwitchStore.getState(),
         ...AppUserDetailStore.getState(),
-        allAppLists: []
+        allAppLists: [],
+        isIntgPay: false, //是否集成了付费功能
     };
     componentWillReceiveProps(nextProps) {
         if (nextProps.userId !== this.props.userId) {
@@ -129,6 +131,18 @@ class UserDetail extends React.Component {
         });
     }
 
+    getIsIntgPay(){
+        ajax.send({
+            url: '/rest/base/v1/realm/pay/integration',
+        })
+            .done(result => {
+                result = _.unionBy(result, 'name');
+            })
+            .fail(err => {
+                message.error(err);
+            });
+    }
+
     componentDidMount() {
         this._isMounted = true;
         $(window).on('resize', this.reLayout);
@@ -136,6 +150,7 @@ class UserDetail extends React.Component {
         AppUserDetailStore.listen(this.onDetailStoreChange);
         this.getIntegrateConfig();
         this.getAppList();
+        this.getIsIntgPay();
         AppUserDetailAction.getUserDetail(this.props.userId);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
