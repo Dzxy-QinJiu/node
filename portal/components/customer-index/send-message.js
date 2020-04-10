@@ -29,12 +29,21 @@ class SendMessage extends React.Component {
 
     componentDidMount() {
         customerServiceEmitter.on(customerServiceEmitter.CLICK_EMOTION_IMAGE, this.emotionClick);
+        document.addEventListener('click', this.onClickOutsideHandler);
     }
 
     componentWillUnmount() {
         this.imageData = {};
         customerServiceEmitter.removeListener(customerServiceEmitter.CLICK_EMOTION_IMAGE, this.emotionClick);
+        document.removeEventListener('click', this.onClickOutsideHandler);
     }
+
+    onClickOutsideHandler = (e) => {
+        //点击表情框之外的地方，所以需要隐藏表情框
+        if(this.state.isShowEmotion && !this.btnImageRef.contains(e.target)) {
+            this.handleClose();
+        }
+    };
 
     getNums = () => {
         return emotionUtils.getEmotionType().length;
@@ -218,12 +227,14 @@ class SendMessage extends React.Component {
                 event.returnValue = false; // 取消此事件的默认操作
             }
             event.stopPropagation();
-            if (document.selection) { // IE
+            //todo 按enter键发送消息，所以注释掉下面代码
+            /*if (document.selection) { // IE
                 let range = document.selection.createRange();
                 range.pasteHTML('<br/><br/>');
             } else { // other
                 document.execCommand('InsertHtml', false, '<br/><br/>');
-            }
+            }*/
+            this.send();
         }
     };
 
@@ -363,38 +374,42 @@ class SendMessage extends React.Component {
     render() {
         return (
             <div className="send-message" onKeyDown={this.messageEnter}>
-                <div className="chat-tool-bar">
-                    <div className="tool-btn-wrap">
-                        <div className="btn-image">
-                            <div className="emotion-wrap" style={{display: this.state.isShowEmotion ? 'block' : 'none'}}>
-                                <EmotionBase
-                                    nums={this.getNums()}
-                                    emotionArray={this.getEmotionArray()}
-                                    emotionTypes={this.getEmotionTypes()}
-                                />
-                            </div>
-                            <div className="emotion-btn" onClick={this.showEmotion}>
-                                <i className="iconfont icon-biaoqing"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div className="send-message-wrap">
                     <div
                         className="send-message-body"
                         onPaste={this.messagePaste}
                         contentEditable
                         ref="editDiv"
+                        placeholder={Intl.get('customer.service.placeholder','请输入您的问题或建议')}
                     />
                 </div>
-                <div className="send-btn">
-                    <Button
-                        loading={this.state.loading}
-                        disabled={!this.props.initAntme}
-                        onClick={this.send}
-                        type="primary"
-                        size="small"
-                    >{Intl.get('common.send', '发送')}</Button>
+                <div className="send-message-footer">
+                    <div className="chat-tool-bar">
+                        <div className="tool-btn-wrap">
+                            <div className="btn-image" ref={ref => this.btnImageRef = ref}>
+                                <div className="emotion-wrap" style={{display: this.state.isShowEmotion ? 'block' : 'none'}}>
+                                    <EmotionBase
+                                        nums={this.getNums()}
+                                        emotionArray={this.getEmotionArray()}
+                                        emotionTypes={this.getEmotionTypes()}
+                                    />
+                                </div>
+                                <div className="emotion-btn" onClick={this.showEmotion}>
+                                    <i className="iconfont icon-biaoqing"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="send-btn">
+                        <Button
+                            loading={this.state.loading}
+                            disabled={!this.props.initAntme}
+                            onClick={this.send}
+                            type="primary"
+                            size="small"
+                            title={Intl.get('common.press.enter.send', '按enter键发送消息')}
+                        >{Intl.get('common.send', '发送')}</Button>
+                    </div>
                 </div>
             </div>
         );

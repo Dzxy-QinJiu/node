@@ -323,6 +323,9 @@ var zh_CN = {
     'common.top.loading.text': '正在获取最新数据',
     'common.bottom.loading.text': '正在获取更早的数据',
     'common.send': '发送',
+    'common.customer.service.online.assistant': '在线小助手',
+    'common.press.enter.send': '按enter键发送消息',
+    'common.customer.service.help.tip': '您好，请问有什么可以帮您？',
     //公共部分--end
     
     'login.login': '登录',
@@ -3030,6 +3033,7 @@ var zh_CN = {
     'scan.ketao.qrcode.download.tip': '扫码下载客套APP安卓端',
     'config.manage.input.teleRepeat': '该电话号码已录入',
     'config.not.fill.in': '暂不填写',
+    'customer.service.placeholder': '请输入您的问题或建议',
     //缺失补充end
     'common.batch.sales.target': '设置团队销售目标',
     'common.batch.self.sales.target': '批量设置个人销售目标',
