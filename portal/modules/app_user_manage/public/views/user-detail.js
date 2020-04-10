@@ -136,7 +136,7 @@ class UserDetail extends React.Component {
             url: '/rest/base/v1/realm/pay/integration',
         })
             .done(result => {
-                result = _.unionBy(result, 'name');
+                this.setState({ isIntgPay: result });
             })
             .fail(err => {
                 message.error(err);
@@ -620,7 +620,7 @@ class UserDetail extends React.Component {
                 </TabPane>
             );
         }
-        if (hasPrivilege(userManagePrivilege.CRM_USER_ANALYSIS_ALL_ROLE_QUERY)) {
+        if (this.state.isIntgPay) {
             tabPaneList.push(
                 <TabPane tab='付费记录' key="6">
                     {
