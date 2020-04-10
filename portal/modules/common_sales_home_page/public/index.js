@@ -1130,6 +1130,7 @@ class SalesHomePage extends React.Component {
                                     </div>
                                 </div>
                             </li>
+                            {/*对蚁坊组织下的客户经理隐藏今日接通电话统计*/}
                             {isEefungCustomerManager() ? null : (
                                 <li>
                                     <div className="statistic-total-content">
