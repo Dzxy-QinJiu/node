@@ -60,9 +60,6 @@ class PaymentRecords extends React.Component {
     }
 
     renderCardContent(record) {
-        const platform = _.find(record.pay_response, item => item.type === record.pay_type);
-        const platformOrderId = _.get(platform, 'order_id', '');
-
         return (
             <div className="field-list">
                 <div className="field-item">
@@ -72,13 +69,13 @@ class PaymentRecords extends React.Component {
                     {Intl.get('payment.amount', '付款金额')}：{record.total_fee} {Intl.get('contract.82', '元')}
                 </div>
                 <div className="field-item">
-                    {Intl.get('crm.order.id', '订单编号')}：{record.trade_no}
+                    {Intl.get('crm.order.id', '订单编号')}：{record.id}
                 </div>
                 <div className="field-item">
                     {Intl.get('payment.platform', '支付平台')}：{this.renderPayType(record.pay_type)}
                 </div>
                 <div className="field-item">
-                    {Intl.get('payment.platform.order.no', '平台订单号')}：{platformOrderId}
+                    {Intl.get('payment.platform.order.no', '平台订单号')}：{record.trade_no}
                 </div>
             </div>
         );
