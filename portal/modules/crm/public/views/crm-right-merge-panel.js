@@ -23,6 +23,7 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import Spinner from 'CMP_DIR/spinner';
 import crmPrivilegeConst from '../privilege-const';
 import {isOpenCash, isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
+import { DOMAIN_END } from 'PUB_DIR/sources/utils/consts';
 
 class CrmRightMergePanel extends React.Component {
     componentDidMount() {
@@ -509,7 +510,7 @@ class CrmRightMergePanel extends React.Component {
                             <React.Fragment key={item}><span className="customer-name">{item}</span>,</React.Fragment>
                         ))
                     }</span>,
-                    domain: <span className="customer-domain">{_.get(this.state, 'mergeObj.customer.sub_domains', '')}.eagok.com</span>
+                    domain: <span className="customer-domain">{_.get(this.state, 'mergeObj.customer.sub_domains', '')}{DOMAIN_END}</span>
                 }}
             />
         );
