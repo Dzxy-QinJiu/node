@@ -25,7 +25,7 @@ import {
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import classNames from 'classnames';
 import {contractChart} from 'ant-chart-collection';
-import {isOpenCash, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {isOpenCash, checkVersionAndType, isEefungCustomerManager} from 'PUB_DIR/sources/utils/common-method-util';
 import { AntcAnalysis } from 'antc';
 import { getColumnHeight } from 'MOD_DIR/home_page/public/views/common-util';
 import { getMaxLimitExtractClueCount } from 'PUB_DIR/sources/utils/common-data-util';
@@ -261,10 +261,10 @@ class TeamDataColumn extends React.Component {
         let type = DATE_TYPE_KEYS.TODAY;
         //销售
         if (this.isSalesRole()) {
-            //普通销售
-            if (userData.getUserData().isCommonSales) {
+            //销售经理
+            if (userData.getUserData().isCommonSales && !isEefungCustomerManager) {
                 type = DATE_TYPE_KEYS.TODAY;
-            } else {//销售总监、主管
+            } else {//销售总监、主管、客户经理
                 //昨天
                 type = DATE_TYPE_KEYS.YESTERDAY;
             }
@@ -484,7 +484,16 @@ class TeamDataColumn extends React.Component {
         let timeObj = this.getCallTimeObj();
         //只展示前三条数据
         callTimeData = _.filter(callTimeData, (item, index) => index <= 2);
-        const callTimeOptions = _.map(DATE_TYPE_MAP, date => (
+
+        let dateTypes = DATE_TYPE_MAP;
+
+        //如果是蚁坊组织下的客户经理
+        if (isEefungCustomerManager()) {
+            //去掉今天选项
+            dateTypes = _.filter(dateTypes, item => item.value !== DATE_TYPE_KEYS.TODAY);
+        }
+
+        const callTimeOptions = _.map(dateTypes, date => (
             <Option key={date.value} value={date.value}>{date.name}</Option>
         ));
         const cls = classNames('my-data-call-time-card', {
