@@ -44,14 +44,11 @@ class PaymentRecords extends React.Component {
                             <div>
                                 {_.map(this.state.paymentRecordList, (item, index) => (
                                     <DetailCard
-                                        className=""
                                         key={index}
-                                        titleBottomBorderNone={false}
                                         title={item.goods.name}
                                         content={this.renderCardContent(item)}
                                         isShowToggleBtn={true}
                                         isExpandDetail={true}
-                                        isMutipleCard={true}
                                     />
                                 ))}
                             </div>
