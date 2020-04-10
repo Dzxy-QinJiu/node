@@ -361,7 +361,7 @@ class RegRulesView extends React.Component {
                             <div className="icon-container">
                                 <i className="iconfont icon-active-users"></i>
                             </div>
-                            <span className="show-name"> {showName}</span>
+                            <span className="show-name" title={showName}> {showName}</span>
                             <i className="iconfont icon-close-btn"
                                 onClick={this.handleDeleteCCNode.bind(this, flowType, key)}></i>
                         </div>
@@ -385,7 +385,7 @@ class RegRulesView extends React.Component {
                             <div className="icon-container">
                                 <i className="iconfont icon-active-users"></i>
                             </div>
-                            <span className="show-name"> {item.showName}</span>
+                            <span className="show-name" title={item.showName}> {item.showName}</span>
                             {showDeleteIcon ? <i className="iconfont icon-close-btn"
                                 onClick={this.handleDeleteNode.bind(this, flowType, item)}></i> : null}
                             {item.submitFiles + '' === 'true' ?
@@ -969,7 +969,7 @@ class RegRulesView extends React.Component {
             });
 
         });
-        
+
         if(showAddNextNodeTip){
             message.warning(Intl.get('apply.please.add.assign.node', '流程不完整，需添加“指定审批人审批节点”'));
         }else if(showAddApproveNodeTip){
