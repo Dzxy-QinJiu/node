@@ -52,7 +52,7 @@ export function getCallRecordChart(paramObj = {}) {
             callback: () => {
                 const startTime = _.get(paramObj, 'Store.startTime');
 
-                if (startTime && startTime >= moment().startOf('day').valueOf() && isEefungCustomerManager()) {
+                if (startTime === moment().startOf('day').valueOf() && isEefungCustomerManager()) {
                     return true;
                 } else {
                     return false;
