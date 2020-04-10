@@ -4032,6 +4032,11 @@ var en_US = {
     'payment.add.leads.tip': 'If the quantity of clues is insufficient, {addBtn}',//如果线索量不够用，可另外{addBtn}
     'payment.personal.upgrade.notice': 'Personal version upgrade',//个人用户升级
     'payment.personal.upgrade': 'User {user} (lead {lead}) paid to upgrade to official version',//用户{user}（线索{lead}）付费升级为个人正式用户
+    'payment.payment.amount': 'payment amount',//付款金额
+    'payment.time.of.payment': 'time of payment',//付款时间
+    'payment.platform.order.no': 'platform order no',//平台订单号
+    'payment.payment.platform': 'payment platform',//支付平台
+    'payment.payment.records': 'payment records',//付费记录
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/

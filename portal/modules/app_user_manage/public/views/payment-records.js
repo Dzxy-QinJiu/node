@@ -69,19 +69,19 @@ class PaymentRecords extends React.Component {
         return (
             <div className="field-list">
                 <div className="field-item">
-                    付款时间：{moment(record.finish_time).format(oplateConsts.DATE_TIME_FORMAT)}
+                    {Intl.get('payment.time.of.payment', '付款时间')}：{moment(record.finish_time).format(oplateConsts.DATE_TIME_FORMAT)}
                 </div>
                 <div className="field-item">
-                    付款金额：{record.total_fee} 元
+                    {Intl.get('payment.amount', '付款金额')}：{record.total_fee} {Intl.get('contract.82', '元')}
                 </div>
                 <div className="field-item">
-                    订单编号：{record.trade_no}
+                    {Intl.get('crm.order.id', '订单编号')}：{record.trade_no}
                 </div>
                 <div className="field-item">
-                    支付平台：{record.pay_type}
+                    {Intl.get('payment.platform', '支付平台')}：{record.pay_type}
                 </div>
                 <div className="field-item">
-                    平台订单号：{platformOrderId}
+                    {Intl.get('payment.platform.order.no', '平台订单号')}：{platformOrderId}
                 </div>
             </div>
         );

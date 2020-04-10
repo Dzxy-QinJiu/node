@@ -622,7 +622,7 @@ class UserDetail extends React.Component {
         }
         if (this.state.isIntgPay) {
             tabPaneList.push(
-                <TabPane tab='付费记录' key="6">
+                <TabPane tab={Intl.get('payment.records', '付费记录')} key="6">
                     {
                         this.state.activeKey === '6' ?
                             <div className="payment-records">
