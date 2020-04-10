@@ -149,7 +149,7 @@ class CustomerPoolVisibleRule extends React.Component {
 
     addRule = () => {
         this.setState({isAddFormShow: true}, () => {
-            GeminiScrollbar.scrollTo(this.refs.scrolltoTop, 0);
+            GeminiScrollbar.scrollTo(ReactDOM.findDOMNode(this.refs.geminiScrollbarRef), 0);
         });
     };
 
@@ -436,7 +436,7 @@ class CustomerPoolVisibleRule extends React.Component {
         });
 
         return (
-            <div className="customer-rules-wrapper" style={{height: contentHeight}} ref="scrolltoTop">
+            <div className="customer-rules-wrapper" style={{height: contentHeight}}>
                 <div className="customer-title-wrapper">
                     <span
                         className="customer-title-btn"
@@ -444,28 +444,31 @@ class CustomerPoolVisibleRule extends React.Component {
                         onClick={this.addRule}
                     ><i className="iconfont icon-add"/>{Intl.get('crm.add.customer.pool.rule', '添加规则')}</span>
                 </div>
+                {this.state.isAddFormShow ? (
+                    <div className="customer-rule-add-form">
+                        <CustomerPoolRuleForm
+                            isEdit
+                            isUseGeminiScrollbar
+                            formType={FORM_TYPE.ADD}
+                            teamList={this.state.teamList}
+                            visibleTeamList={visibleTeamList}
+                            customerLabelList={this.state.customerLabelList}
+                            handleSubmit={this.saveCustomerRuleBasicInfo.bind(this, FORM_TYPE.ADD)}
+                            handleCancel={this.hideAddRule}
+                        />
+                    </div>
+                ) : null}
                 <GeminiScrollbar
+                    ref="geminiScrollbarRef"
                     handleScrollBottom={this.handleScrollBottom}
                     listenScrollBottom={this.state.listenScrollBottom}
                 >
                     <div className="customer-rules-scroll-wrapper clearfix">
-                        {this.state.isAddFormShow ? (
-                            <CustomerPoolRuleForm
-                                isEdit
-                                formType={FORM_TYPE.ADD}
-                                teamList={this.state.teamList}
-                                visibleTeamList={visibleTeamList}
-                                customerLabelList={this.state.customerLabelList}
-                                handleSubmit={this.saveCustomerRuleBasicInfo.bind(this, FORM_TYPE.ADD)}
-                                handleCancel={this.hideAddRule}
-                            />
-                        ) : null}
                         {this.renderConfigBlock(visibleTeamList)}
                         {
                             _.isEmpty(this.state.defaultRuleConfig) ? null : (
                                 <DetailCard
                                     title={this.renderDefaultTitleBlock()}
-                                    titleBottomBorderNone
                                     isEdit={this.state.isDefaultEdit}
                                     loading={this.state.isDefaultLoading}
                                     saveErrorMsg={this.state.defaultErrMsg}

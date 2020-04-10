@@ -98,7 +98,7 @@ exports.editUserInfoPwd = function(userInfo) {
             Deferred.resolve(userInfoModified);
         },
         error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+            Deferred.reject(errorMsg.responseJSON || Intl.get('user.info.edit.password.failed','密码修改失败'));
         }
     });
     return Deferred.promise();

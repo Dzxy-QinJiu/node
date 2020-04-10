@@ -7,7 +7,7 @@ var LeaveApplyAction = require('./action/leave-apply-action');
 var LeaveApplyStore = require('./store/leave-apply-store');
 var LeaveApplyDetailAction = require('./action/leave-apply-detail-action');
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-components/apply-dropdown-and-add-btn';
-import AddLeaveApplyPanel from './view/add-leave-apply';
+import AddLeaveApplyPanel from './view/add-apply';
 import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES,APPLY_TYPE_STATUS_CONST} from 'PUB_DIR/sources/utils/consts';
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
@@ -19,7 +19,7 @@ import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ApplyViewDetail from './view/apply-view-detail';
-var LeaveApplyUtils = require('./utils/leave-apply-utils');
+var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 let userData = require('../../../public/sources/user-data');
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 var NoData = require('CMP_DIR/analysis-nodata');
@@ -48,7 +48,7 @@ class LeaveApplyManagement extends React.Component {
             //不区分角色，都获取全部的申请列表
             this.getAllLeaveApplyList();
         }
-        LeaveApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
+        ApplyApproveUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_VISIT, this.pushDataListener);
         this.getUnreadReplyList();
         notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
@@ -79,8 +79,8 @@ class LeaveApplyManagement extends React.Component {
             comment_unread: this.state.isCheckUnreadApplyList,
         };
         //如果是选择的全部类型，不需要传status这个参数
-        if (this.state.applyListType !== 'all') {
-            params.status = this.state.applyListType;
+        if (this.state.selectedApplyStatus !== 'all') {
+            params.status = this.state.selectedApplyStatus;
         }
         //去除查询条件中值为空的项
         commonMethodUtil.removeEmptyItem(params);
@@ -106,7 +106,7 @@ class LeaveApplyManagement extends React.Component {
         var queryObj = this.getQueryParams();
         LeaveApplyAction.getAllLeaveApplyList(queryObj,(count) => {
             //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
-            if (this.state.applyListType === 'ongoing') {
+            if (this.state.selectedApplyStatus === 'ongoing') {
                 //触发更新待审批数
                 commonMethodUtil.updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
             }
@@ -126,7 +126,7 @@ class LeaveApplyManagement extends React.Component {
     componentWillUnmount() {
         LeaveApplyStore.unlisten(this.onStoreChange);
         LeaveApplyAction.setInitState();
-        LeaveApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
+        ApplyApproveUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.pushDataListener);
         notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
@@ -157,7 +157,7 @@ class LeaveApplyManagement extends React.Component {
     };
 
     getApplyListType = () => {
-        return commonMethodUtil.getApplyListTypeDes(this.state.applyListType);
+        return commonMethodUtil.getApplyListTypeDes(this.state.selectedApplyStatus);
     };
     menuClick = (obj) => {
         let selectType = '';
@@ -179,7 +179,7 @@ class LeaveApplyManagement extends React.Component {
         setTimeout(() => this.getAllLeaveApplyList());
     };
     renderApplyListError = () => {
-        var noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType !== '';
+        var noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.selectedApplyStatus !== '';
         if (this.state.applyListObj.loadingResult === 'error' || noData) {
             var retry = (
                 <span>
@@ -238,9 +238,9 @@ class LeaveApplyManagement extends React.Component {
     };
     getUnreadTip = () => {
         let unreadReplyList = this.state.unreadReplyList;
-        let applyListType = this.state.applyListType;
+        let selectedApplyStatus = this.state.selectedApplyStatus;
         //是否展示有未读申请的提示，后端推送过来的未读回复列表中有数据，并且是在全部类型下可展示，其他待审批、已通过等类型下不展示
-        return _.isArray(unreadReplyList) && unreadReplyList.length > 0 && applyListType === 'all' && !this.state.searchKeyword;
+        return _.isArray(unreadReplyList) && unreadReplyList.length > 0 && selectedApplyStatus === 'all' && !this.state.searchKeyword;
     };
     //从sessionStorage中获取该用户未读的回复列表
     getUnreadReplyList = () => {
@@ -267,12 +267,12 @@ class LeaveApplyManagement extends React.Component {
     };
     render() {
         //根本就没有用户审批的时候，显示没数据的提示
-        if (this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType === 'all' && this.state.searchKeyword === '') {
+        if (this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.selectedApplyStatus === 'all' && this.state.searchKeyword === '') {
             let noDataTip = this.state.isCheckUnreadApplyList ? (<ReactIntl.FormattedMessage
                 id="user.apply.unread.reply.null"
                 defaultMessage={'已无未读回复的申请，{return}'}
                 values={{'return': <a onClick={this.toggleUnreadApplyList}>{Intl.get('crm.52', '返回')}</a>}}
-            />) : Intl.get('user.apply.no.apply', '还没有用户审批诶...');
+            />) : Intl.get('user.apply.no.apply', '暂无申请');
             return (
                 <div className="apply_manage_wrap">
                     <NoData msg={noDataTip}/>
@@ -281,8 +281,8 @@ class LeaveApplyManagement extends React.Component {
         }
         var addPanelWrap = classNames({'show-add-modal': this.state.showAddApplyPanel});
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
-        var applyListType = this.state.applyListType;
-        var applyType = commonMethodUtil.getApplyStatusDscr(applyListType);
+        var selectedApplyStatus = this.state.selectedApplyStatus;
+        var applyType = commonMethodUtil.getApplyStatusDscr(selectedApplyStatus);
         var noShowApplyDetail = this.state.applyListObj.list.length === 0;
         //申请详情数据
         var applyDetail = null;
@@ -302,8 +302,8 @@ class LeaveApplyManagement extends React.Component {
                             menuList={selectMenuList}
                             refreshPage={this.refreshPage}
                             showUpdateTip={this.state.showUpdateTip}
-                            showRefreshIcon={applyListType === APPLY_TYPE_STATUS_CONST.ALL || applyListType === APPLY_TYPE_STATUS_CONST.ONGOING}
-                            showApplyMessageIcon = {applyListType === APPLY_TYPE_STATUS_CONST.ALL}
+                            showRefreshIcon={selectedApplyStatus === APPLY_TYPE_STATUS_CONST.ALL || selectedApplyStatus === APPLY_TYPE_STATUS_CONST.ONGOING}
+                            showApplyMessageIcon = {selectedApplyStatus === APPLY_TYPE_STATUS_CONST.ALL}
                             isCheckUnreadApplyList = {this.state.isCheckUnreadApplyList}
                             toggleUnreadApplyList= {this.toggleUnreadApplyList}
                             showUnreadTip= {this.getUnreadTip()}
@@ -359,8 +359,7 @@ class LeaveApplyManagement extends React.Component {
                         <ApplyViewDetail
                             detailItem={this.state.selectedDetailItem}
                             showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                            applyListType={this.state.applyListType}
-                            applyData={this.state.applyId ? applyDetail : null}
+                            selectedApplyStatus={this.state.selectedApplyStatus}
                             isUnreadDetail={this.getIsUnreadDetail()}
                         />
                     )}

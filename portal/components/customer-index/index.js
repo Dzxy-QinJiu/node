@@ -160,7 +160,7 @@ class CustomerIndex extends React.Component {
             <div className="customer">
                 <div className="customer-service">
                     <div className="customer-title">
-                        <div className="to-name">{Intl.get('common.customer.service', '在线客服')}</div>
+                        <div className="to-name">{Intl.get('common.customer.service.online.assistant', '在线小助手')}</div>
                     </div>
                     <div className="customer-body">
                         <ChatMessageHome

@@ -8,7 +8,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 } else if (language.lan() === 'zh') {
     require('./css/user-password-zh_CN.less');
 }
-import {Form, Icon, Input, Button, Col} from 'antd';
+import {Form, Icon, Input, Button, Col, Modal} from 'antd';
 const FormItem = Form.Item;
 var crypto = require('crypto');//用于密码md5SSSS
 var AlertTimer = require('../../../components/alert-timer');
@@ -23,9 +23,6 @@ function getStateFromStore() {
     let stateData = UserInfoStore.getState();
     return {
         userId: _.get(getUserData(), 'user_id'),
-        userInfoFormPwdShow: stateData.userInfoFormPwdShow,
-        submitErrorMsg: stateData.submitErrorMsg,
-        submitResult: stateData.submitResult
     };
 }
 
@@ -38,6 +35,8 @@ var UserPwdPage = createReactClass({
         var datas = getStateFromStore();
         datas.passBarShow = false;//是否显示密码强度
         datas.passStrength = 'L';//密码强度
+        datas.rePasswordErrMsg = ''; // 重置密码错误的提示信息
+        datas.loading = false; // loading
         return datas;
     },
 
@@ -47,9 +46,6 @@ var UserPwdPage = createReactClass({
             status: this.state.status,
             ...datas,
         });
-        if (this.state.userInfoFormPwdShow) {
-            this.handleReset();
-        }
     },
 
     propTypes: {
@@ -106,8 +102,22 @@ var UserPwdPage = createReactClass({
     },
 
     handleReset() {
-        this.props.form.resetFields();
-        this.setState(this.initData());
+        this.setState({
+            passBarShow: false,
+            passStrength: 'L',
+            loading: false
+        }, () => {
+            this.props.form.resetFields();
+        });
+    },
+
+    // 重置密码错误的处理
+    handleRePasswordSaveError(errMsg) {
+        this.setState({
+            rePasswordErrMsg: errMsg,
+        }, () => {
+            this.handleReset();
+        });
     },
 
     events_submitUserInfoForm: function(e) {
@@ -119,7 +129,25 @@ var UserPwdPage = createReactClass({
                     passwd: this.md5Hash(values.passwd),
                     newPasswd: this.md5Hash(values.newPasswd)
                 };
-                UserInfoAction.editUserInfoPwd(user);
+                this.setState({
+                    loading: true
+                });
+                userInfoAjax.editUserInfoPwd(user).then( (result) => {
+                    if (result) {
+                        this.setState({
+                            rePasswordErrMsg: '',
+                            loading: false
+                        });
+                        Modal.success({
+                            content: Intl.get('common.change.password.success.tips','密码已成功修改，请使用新密码重新登录系统。'),
+                            okText: <a href="/logout">{Intl.get('config.manage.realm.oktext','确定')}</a>,
+                        });
+                    } else {
+                        this.handleRePasswordSaveError(Intl.get('user.info.edit.password.failed','密码修改失败'));
+                    }
+                }, (errMsg) => {
+                    this.handleRePasswordSaveError(errMsg);
+                } );
             }
         });
     },
@@ -131,23 +159,26 @@ var UserPwdPage = createReactClass({
     },
 
     renderIndicator: function() {
-        if (this.state.submitResult === 'loading') {
+        if (this.state.loading) {
             return (
                 <Icon type="loading"/>
             );
         }
-        var hide = function() {
-            UserInfoAction.hideSubmitTip();
+        const hide = () => {
+            this.setState({
+                rePasswordErrMsg: ''
+            });
         };
-        if (this.state.submitResult === 'success') {
+        let rePasswordErrMsg = this.state.rePasswordErrMsg;
+        if (rePasswordErrMsg) {
             return (
-                <AlertTimer time={3000} message={Intl.get('user.password.change.password.succ', '密码修改成功')}
-                    type="success" showIcon onHide={hide}/>
-            );
-        }
-        if (this.state.submitResult === 'error') {
-            return (
-                <AlertTimer time={3000} message={this.state.submitErrorMsg} type="error" showIcon onHide={hide}/>
+                <AlertTimer
+                    time={3000}
+                    message={rePasswordErrMsg}
+                    type="error"
+                    showIcon
+                    onHide={hide}
+                />
             );
         }
         return null;
@@ -235,4 +266,3 @@ var UserPwdPage = createReactClass({
 
 const UserInfoFormForm = Form.create()(UserPwdPage);
 module.exports = UserInfoFormForm;
-

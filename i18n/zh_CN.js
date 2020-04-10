@@ -83,6 +83,7 @@ var zh_CN = {
     'common.password.compose.rule': '6-18位数字、字母、符号的组合',
     'common.password.validate.rule': '请输入6-18位包含数字、字母和字符组成的密码，不能包含空格、中文和非法字符',
     'common.confirm.password': '确认密码',
+    'common.change.password.success.tips': '密码已成功修改，请使用新密码重新登录系统。',
     'common.phone': '电话',
     'common.email': '邮箱',
     'common.no.match': '暂无匹配项',
@@ -322,6 +323,9 @@ var zh_CN = {
     'common.top.loading.text': '正在获取最新数据',
     'common.bottom.loading.text': '正在获取更早的数据',
     'common.send': '发送',
+    'common.customer.service.online.assistant': '在线小助手',
+    'common.press.enter.send': '按enter键发送消息',
+    'common.customer.service.help.tip': '您好，请问有什么可以帮您？',
     //公共部分--end
     
     'login.login': '登录',
@@ -1427,9 +1431,9 @@ var zh_CN = {
     'user.apply.presenter': '申请人',
     'user.apply.team': '申请人所属团队',
     'user.apply.id': '账号申请',
-    'user.apply.no.match.retry': '暂无符合查询条件的用户申请',
+    'user.apply.no.match.retry': '暂无符合查询条件的申请',
     'user.apply.no.unread': '已无未读回复的申请',
-    'user.apply.no.apply': '还没有需要审批的用户申请',
+    'user.apply.no.apply': '暂无申请',
     'user.apply.show.update.tip': '数据已更新,是否',
     'user.apply.total.apply': '共{number}条申请{apply_type}', // apply_type: null=>全部 已通过 已驳回 待审批 已撤销
     'user.apply.detail.order': '订单',
@@ -1477,6 +1481,7 @@ var zh_CN = {
     'user.apply.approve': '用户申请审批',
     'user.apply.approve.count': '有{approveCount}条审批消息',
     'user.apply.unread.reply': '有未读回复',
+    'apply.list.has.unreply': '未读回复',
     'user.apply.no.unread.reply': '无未读回复',
     'user.apply.refresh.reply.tip': '有新回复，点此{refreshTip}',
     'user.apply.unread.reply.check': '有未读回复的申请，{check}',
@@ -1489,10 +1494,13 @@ var zh_CN = {
     'reply.reject.tip.content': '{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'reply.cancel.tip.content': '{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'user.apply.new.refresh.tip': '有新申请，点此刷新',
+    'apply.list.new.refresh.tip': '有新申请，{refresh}查看',
     'user.apply.no.new.refresh.tip': '无新申请',
     'user.apply.last.follow.date': '最新跟进日期',
     'user.apply.approve.no.comment': '暂无申请历史！',
     'user.apply.has.been.opened': '已开通{count}个',
+    'apply.list.return.back': '返回',
+    'apply.list.get.list.err': '获取列表失败，请检查网络状态',
     // 用户审批end
 
     // 在线用户start
@@ -1941,6 +1949,7 @@ var zh_CN = {
     'crm.pool.no.rule': '暂无规则',
     'crm.pool.responsible.type.placeholder': '请选择负责类型',
     'crm.pool.extract.distribute.followup': '提取并分配联合跟进人',
+    'crm.merge.success.domain.tip': '请告知{name}需要使用{domain}访问',
 
 
     'crm.pool.single.extract.tip': '您确定要提取此客户吗？',
@@ -3029,6 +3038,7 @@ var zh_CN = {
     'scan.ketao.qrcode.download.tip': '扫码下载客套APP安卓端',
     'config.manage.input.teleRepeat': '该电话号码已录入',
     'config.not.fill.in': '暂不填写',
+    'customer.service.placeholder': '请输入您的问题或建议',
     //缺失补充end
     'common.batch.sales.target': '设置团队销售目标',
     'common.batch.self.sales.target': '批量设置个人销售目标',
@@ -4065,6 +4075,11 @@ var zh_CN = {
     'payment.add.leads.tip': '如果线索量不够用，可另外{addBtn}',
     'payment.personal.upgrade.notice': '个人用户升级',
     'payment.personal.upgrade': '用户{user}（线索{lead}）付费升级为个人正式用户',
+    'payment.amount': '付款金额',
+    'payment.time.of.payment': '付款时间',
+    'payment.platform.order.no': '平台订单号',
+    'payment.platform': '支付平台',
+    'payment.records': '付费记录',
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
@@ -4084,6 +4099,12 @@ var zh_CN = {
     'boot.company.trial.welcome.tip': '欢迎试用客套，试用期 {time} 天，每人每天可免费提取 {count} 条线索',
     'boot.please.input.industry.placeholder': '请输入关注的行业，如互联网、金融业等',
     /*个人试用 --- end*/
+
+    /*自定义申请审批列表 --- start*/
+    'apply.approve.list.start.by.me': '我申请的',
+    'apply.approve.list.approved.by.me': '我审批的',
+    'apply.approve.list.approved.by.team': '团队申请',
+    /*自定义申请审批列表 --- end*/
 
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': '您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？',

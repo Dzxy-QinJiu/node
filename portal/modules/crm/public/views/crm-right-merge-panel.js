@@ -1,6 +1,6 @@
 var React = require('react');
 require('../css/crm-right-panel.less');
-import {Tabs, Select, Button, Icon, message} from 'antd';
+import {Tabs, Select, Button, Icon, message, Popconfirm} from 'antd';
 var TabPane = Tabs.TabPane;
 var Option = Select.Option;
 var AlertTimer = require('../../../../components/alert-timer');
@@ -22,7 +22,8 @@ import CustomerUsers from './users';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import Spinner from 'CMP_DIR/spinner';
 import crmPrivilegeConst from '../privilege-const';
-import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
+import {isOpenCash, isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
+import { DOMAIN_END } from 'PUB_DIR/sources/utils/consts';
 
 class CrmRightMergePanel extends React.Component {
     componentDidMount() {
@@ -263,7 +264,7 @@ class CrmRightMergePanel extends React.Component {
 
     //合并客户
     mergeRepeatCustomer = () => {
-        if (this.state.isMergingCustomer) return;
+        if (this.state.isMergingCustomer || this.state.visible) return;
         let delete_customers = [], mergeCustomerList = this.props.mergeCustomerList,
             selectedCustomer = this.state.selectedCustomer;
         //获取合并后要删除的重复客户id
@@ -321,17 +322,34 @@ class CrmRightMergePanel extends React.Component {
             } else {
                 //合并成功的处理
                 this.setState({mergeErrorMsg: '', isMergingCustomer: false});
-                //关闭合并面板
-                CustomerRepeatAction.setMergePanelShow(false);
-                if (this.props.afterMergeCustomer) {
-                    //客户列表界面，合并客户后的处理
-                    this.props.afterMergeCustomer(mergeObj);
-                } else {
-                    //重复客户列表，合并重复客户后的处理
-                    CustomerRepeatAction.afterMergeRepeatCustomer(mergeObj);
+                //是蚁坊域，且多个客户合并时以及有二级域名，需提示用新的域名进行访问
+                if(isOrganizationEefung() && !_.isEmpty(_.map(delete_customers, 'id')) && _.get(selectedCustomer, 'sub_domains')){
+                    //先不要关闭合并面板
+                    this.mergeRepeatCustomerSuccess(mergeObj);
+                    this.setState({
+                        mergeObj,
+                        visible: true
+                    });
+                }else {
+                    this.mergeRepeatCustomerSuccess(mergeObj, true);
                 }
             }
         });
+    };
+
+    //合并客户成功后的处理
+    mergeRepeatCustomerSuccess = (mergeObj, isClosePanel) => {
+        //关闭合并面板
+        if(isClosePanel) {
+            CustomerRepeatAction.setMergePanelShow(false);
+        }
+        if (this.props.afterMergeCustomer) {
+            //客户列表界面，合并客户后的处理
+            this.props.afterMergeCustomer(mergeObj, isClosePanel);
+        } else {
+            //重复客户列表，合并重复客户后的处理
+            CustomerRepeatAction.afterMergeRepeatCustomer(mergeObj);
+        }
     };
 
     renderSelectOptions = () => {
@@ -480,6 +498,30 @@ class CrmRightMergePanel extends React.Component {
         this.setState({tabsContainerHeight: tabsContainerHeight});
     };
 
+    renderMergeTipTitle() {
+        let delete_customers = _.get(this.state,'mergeObj.delete_customers');
+        return (
+            <ReactIntl.FormattedMessage
+                id="crm.merge.success.domain.tip"
+                defaultMessage="请告知{name}需要使用{domain}访问"
+                values={{
+                    name: <span>{
+                        _.map(delete_customers, 'name').map(item => (
+                            <React.Fragment key={item}><span className="customer-name">{item}</span>,</React.Fragment>
+                        ))
+                    }</span>,
+                    domain: <span className="customer-domain">{_.get(this.state, 'mergeObj.customer.sub_domains', '')}{DOMAIN_END}</span>
+                }}
+            />
+        );
+    }
+
+    handleVisibleChange = (visible) => {
+        if(!visible && !_.isEmpty(this.state.mergeObj)) {
+            this.mergeRepeatCustomerSuccess(null, true);
+        }
+    };
+
     state = {
         activeKey: '1',//tab激活页的key
         apps: [],
@@ -491,6 +533,8 @@ class CrmRightMergePanel extends React.Component {
         selectedCustomer: this.getMergedCustomer(this.props.mergeCustomerList, this.props.originCustomerList),//合并后保存的客户（默认第一个）
         tabsContainerHeight: 'auto',
         isLoadingMergeCustomer: true,//正在获取合并客户详细信息（联系人、订单）
+        visible: false,//是否显示合并后的提示
+        mergeObj: null,//合并后的客户信息
     };
 
     render() {
@@ -515,13 +559,23 @@ class CrmRightMergePanel extends React.Component {
                             <Select value={this.state.selectedCustomer.id}
                                 dropdownClassName="merge-customer-select"
                                 style={{width: 200}}
+                                disabled={this.state.visible}
                                 onChange={this.handleChange}>
                                 {this.renderSelectOptions()}
                             </Select>
-                            <Button type="primary" className="btn-primary-merge"
-                                onClick={this.mergeRepeatCustomer}
-                                data-tracename="点击合并按钮"
-                            ><ReactIntl.FormattedMessage id="crm.54" defaultMessage="合并"/></Button>
+                            <Popconfirm 
+                                overlayClassName="crm-merge-confirm-wrapper" 
+                                placement="bottomRight" 
+                                visible={this.state.visible} 
+                                onVisibleChange={this.handleVisibleChange}
+                                title={this.renderMergeTipTitle()}
+                            >
+                                <Button type="primary" className="btn-primary-merge"
+                                    onClick={this.mergeRepeatCustomer}
+                                    disabled={this.state.visible}
+                                    data-tracename="点击合并按钮"
+                                ><ReactIntl.FormattedMessage id="crm.54" defaultMessage="合并"/></Button>
+                            </Popconfirm>
                         </div>
                         {this.state.isMergingCustomer ?
                             <Icon className="merge-customer-loading" type="loading"/> : null}

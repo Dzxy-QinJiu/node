@@ -7,7 +7,7 @@ import './css/chat-message-home.less';
 import EfLoading from 'CMP_DIR/ef-components/ef-loading';
 import EfLoadMore from 'CMP_DIR/ef-components/load-more';
 import ChatMessageItem from './chat-message-item';
-import { sdkEventConstants } from './consts';
+import { sdkEventConstants, MESSAGE_TYPES } from './consts';
 import { customerServiceEmitter } from 'OPLATE_EMITTER';
 import uuid from 'uuid/v4';
 
@@ -127,6 +127,24 @@ class ChatMessageHome extends React.Component {
                         return item;
                     }).reverse().value();
                 newState.messageList = array.concat(self.state.messageList);
+            }
+            if(!_.get(newState,'messageList.length') && !self.state.messageList.length) {//沒有消息时，自动添加一条客服消息
+                newState.messageList = [{
+                    attribute: null,
+                    date: Date.now(),
+                    message: {
+                        structName: MESSAGE_TYPES.API_TEXT_MESSAGE,
+                        text: Intl.get('common.customer.service.help.tip', '您好，请问有什么可以帮您？'),
+                        traitName: 'ApiMessage'
+                    },
+                    quotedMessage: null,
+                    reactions: {array: []},
+                    rid: {h: 937754, l: 487009, m: 338647},
+                    senderUid: 1234567,
+                    structName: 'ApiMessageContainer',
+                    tags: {array: []},
+                    uid: uuid()
+                }];
             }
             self.setState(newState, () => {
                 if (newState.isScrollToTop) {

@@ -14,13 +14,14 @@ import {NavLink} from 'react-router-dom';
 import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
-import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES, GIFT_LOGO} from 'PUB_DIR/sources/utils/consts';
+import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES, GIFT_LOGO,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {hasCalloutPrivilege, isCurtao, checkVersionAndType, 
     isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay,isShowWinningClue} from 'PUB_DIR/sources/utils/common-method-util';
 import {phoneEmitter, notificationEmitter, userInfoEmitter,
     phoneMsgEmitter, clickUpgradeNoiceEmitter, showWiningClueEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
+import {getAllUnhandleApplyCount} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 const session = storageUtil.session;
 const { setWebsiteConfigModuleRecord, getWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
 import WinningClue from '../winning-clue';
@@ -133,8 +134,8 @@ var NavSidebar = createReactClass({
             isShowIntroModal: false,//是否展示引导的模态框
             introModalLayout: {},//模态框上蚂蚁及提示的展示样式
             tipMessage: '',//提示内容
-            hasUnreadReply: false,//是否有未读的回复
-            hasDiffApplyUnreadReply: false,//除用户申请外其他申请是否有未读回复
+            hasMyApplyUnreadReply: false,//我的审批是否有未读的回复
+            hasTeamApplyUnreadReply: false,//团队申请审批是否有未读回复
             // isReduceNavIcon: false,//是否展示缩小的图标(缩小浏览器时)
             // isReduceNavMargin: false, //是否展示小图标和图标间距
             isShowDialUpKeyboard: false,//是否展示拨号键盘的标识
@@ -213,11 +214,11 @@ var NavSidebar = createReactClass({
 
     componentDidMount: function() {
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
-        //未读回复列表变化后触发
-        notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
+        //我的申请回复列表变化后触发
+        notificationEmitter.on(notificationEmitter.MY_UNREAD_REPLY, this.refreshMyApplyHasUnreadReply);
         phoneEmitter.on(phoneEmitter.CALL_CLIENT_INITED, this.triggerDialUpKeyboardShow);
-        //其他类型的未读回复列表变化后触发
-        notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshDiffApplyHasUnreadReply);
+        //团队申请审批未读回复列表变化后触发
+        notificationEmitter.on(notificationEmitter.TEAM_UNREAD_REPLY, this.refreshTeamApplyHasUnreadReply);
         //正在拨打容联的电话
         phoneMsgEmitter.on(phoneMsgEmitter.OPEN_CLUE_PANEL, this.callingRonglianBtn);
         phoneMsgEmitter.on(phoneMsgEmitter.OPEN_PHONE_PANEL, this.callingRonglianBtn);
@@ -225,10 +226,10 @@ var NavSidebar = createReactClass({
         clickUpgradeNoiceEmitter.on(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, this.toggleUpgradeNotice);
         // 点击通知面板上tabs类型的触发
         notificationEmitter.on(notificationEmitter.CLICK_NOTICE_TABS_TYPE, this.clickSystemPanelTabsType);
-        //获取用户审批的未读回复列表
-        this.getHasUnreadReply();
-        //获取其他类型的用户审批的未读回复列表
-        this.getHasDiffApplyUnreadReply();
+        //获取我的审批的未读回复列表
+        this.getMyApplyUnreadReply();
+        //获取团队审批的未读回复列表
+        this.getTeamApplyUnreadReply();
         // //响应式设计 logo和菜单占据的实际高度
         // responsiveLayout.logoAndMenusHeight = $('.logo-and-menus').outerHeight(true);
         // //计算 拨号按钮、通知、设置、个人信息 占据的实际高度
@@ -262,41 +263,35 @@ var NavSidebar = createReactClass({
             this.setState({isShowDialUpKeyboard: true});
         }
     },
-    getHasDiffApplyUnreadReply: function() {
-        const DIFF_APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.DIFF_APPLY_UNREAD_REPLY;
-        let userId = userData.getUserData().user_id;
+    getTeamApplyUnreadReply: function() {
+        const TEAM_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.TEAM_UNREAD_REPLY;
         //获取sessionStore中已存的未读回复列表
-        let applyUnreadReply = session.get(DIFF_APPLY_UNREAD_REPLY);
-        if (applyUnreadReply) {
-            let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
-            let applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
-            this.refreshDiffApplyHasUnreadReply(applyUnreadReplyList);
+        let applyUnreadReplyList = session.get(TEAM_UNREAD_REPLY);
+        if (applyUnreadReplyList) {
+            this.refreshTeamApplyHasUnreadReply(JSON.parse(applyUnreadReplyList));
         }
     },
-    getHasUnreadReply: function() {
-        const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
-        let userId = userData.getUserData().user_id;
+    getMyApplyUnreadReply: function() {
+        const MY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.MY_UNREAD_REPLY;
         //获取sessionStore中已存的未读回复列表
-        let applyUnreadReply = session.get(APPLY_UNREAD_REPLY);
-        if (applyUnreadReply) {
-            let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
-            let applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
-            this.refreshHasUnreadReply(applyUnreadReplyList);
+        let applyUnreadReplyList = session.get(MY_UNREAD_REPLY);
+        if (applyUnreadReplyList) {
+            this.refreshMyApplyHasUnreadReply(JSON.parse(applyUnreadReplyList));
         }
     },
 
-    refreshHasUnreadReply: function(unreadReplyList) {
+    refreshMyApplyHasUnreadReply: function(unreadReplyList) {
         if (_.isArray(unreadReplyList) && unreadReplyList.length) {
-            this.setState({hasUnreadReply: true});
+            this.setState({hasMyApplyUnreadReply: true});
         } else {
-            this.setState({hasUnreadReply: false});
+            this.setState({hasMyApplyUnreadReply: false});
         }
     },
-    refreshDiffApplyHasUnreadReply: function(unreadReplyList) {
+    refreshTeamApplyHasUnreadReply: function(unreadReplyList) {
         if (_.isArray(unreadReplyList) && unreadReplyList.length) {
-            this.setState({hasDiffApplyUnreadReply: true});
+            this.setState({hasTeamApplyUnreadReply: true});
         } else {
-            this.setState({hasDiffApplyUnreadReply: false});
+            this.setState({hasTeamApplyUnreadReply: false});
         }
     },
     //本次要加的引导是否没有被点击过
@@ -390,8 +385,8 @@ var NavSidebar = createReactClass({
     },
     componentWillUnmount: function() {
         userInfoEmitter.removeListener(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
-        notificationEmitter.removeListener(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
-        notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshDiffApplyHasUnreadReply);
+        notificationEmitter.removeListener(notificationEmitter.MY_UNREAD_REPLY, this.refreshMyApplyHasUnreadReply);
+        notificationEmitter.removeListener(notificationEmitter.TEAM_UNREAD_REPLY, this.refreshTeamApplyHasUnreadReply);
         phoneEmitter.removeListener(phoneEmitter.CALL_CLIENT_INITED, this.triggerDialUpKeyboardShow);
         //正在拨打容联的电话
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_CLUE_PANEL, this.callingRonglianBtn);
@@ -656,21 +651,15 @@ var NavSidebar = createReactClass({
     
     //展示未读回复的图标提示
     renderUnreadReplyTip(category) {
-        //是申请审批，有未读回复数并且，所有申请待审批数都为0
-        //所有申请的待审批总数
+        //是申请审批，有未读回复数并且，待审批数为0
+        //所有待审批总数
         var allUnhandleApplyTotal = 0;
         if (_.has(Oplate, 'unread')) {
-            _.forEach(Oplate.unread, (value,key) => {
-                //todo 这里的计算待优化
-                // 计算所有待审批的数量时，需要把待处理的线索的值去掉
-                if (value && _.isNumber(value) && key.indexOf('unhandleClue') === -1) {
-                    allUnhandleApplyTotal += value;
-                }
-            });
+            allUnhandleApplyTotal = getAllUnhandleApplyCount();
         }
-        let unreadReplyTipShowFlag = category === 'application' &&//申请审批
-            (this.state.hasUnreadReply || this.state.hasDiffApplyUnreadReply) &&//有用户审批或者其他类型审批的未读回复
-            allUnhandleApplyTotal === 0;//总的待我审批数为0
+        let unreadReplyTipShowFlag = category === 'apply' &&//申请审批路径
+            (this.state.hasMyApplyUnreadReply || this.state.hasTeamApplyUnreadReply) &&//我的审批或者团队类型审批的有未读回复
+            allUnhandleApplyTotal === 0;//待我审批数为0
 
         if (unreadReplyTipShowFlag) {
             return (

@@ -672,16 +672,17 @@ class OrderItem extends React.Component {
     };
 
     render() {
+        let isHideWinDetailContent = _.get(this.state, 'formData.oppo_status') === ORDER_STATUS.WIN && !this.state.isExpandDetail;//是否是赢单后隐藏订单详情的状态
         let containerClassName = classNames('order-item-container', {
             'item-delete-border': this.state.modalDialogFlag,
-            'order-win-hide-detail': _.get(this.state, 'formData.oppo_status') === ORDER_STATUS.WIN && !this.state.isExpandDetail//赢单后隐藏订单详情时的样式
+            'order-win-hide-detail': isHideWinDetailContent//赢单后隐藏订单详情时的样式
         });
         let isShowToggleBtn = _.get(this.state, 'formData.oppo_status');
         return (
             <div>
                 <DetailCard
                     title={this.renderOrderTitle()}
-                    content={this.renderOrderContent()}
+                    content={isHideWinDetailContent ? null : this.renderOrderContent()}
                     bottom={this.renderOrderBottom()}
                     className={containerClassName}
                     isShowToggleBtn={isShowToggleBtn}

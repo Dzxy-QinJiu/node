@@ -428,6 +428,7 @@ class RegRulesView extends React.Component {
             //表单的内容不需要提交
             var submitObj = {
                 customiz_user_range: this.state.customiz_user_range,
+                notify_configs: this.state.notify_configs,
                 ...applyRulesAndSetting
             };
             applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId, submitObj, (result) => {

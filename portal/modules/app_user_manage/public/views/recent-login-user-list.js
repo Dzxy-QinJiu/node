@@ -139,10 +139,12 @@ class RecentLoginUsers extends React.Component {
         //上次手动选中的appid
         let websitConfig = JSON.parse(storageUtil.local.get(WEBSITE_CONFIG));
         let localSelectedAppId = websitConfig ? websitConfig[RECENT_LOGIN_USER_SELECTED_APP_ID] : '';
+        // 判断记住的应用，在应用列表中，是否还存在，若存在，则使用,否则，不用
+        let matchAppList = _.find(props.appList, app => app.app_id === localSelectedAppId);
         if (props.selectedAppId) {
             //如果外面选中一个应用，最近登录的用户，默认用此应用
             selectedAppId = props.selectedAppId;
-        } else if (localSelectedAppId) {
+        } else if (matchAppList) {
             //如果外面没有选中应用，但上次在最近登录的用户的应用列表中选中过一个应用，就用上一次选中的应用
             selectedAppId = localSelectedAppId;
         } else {

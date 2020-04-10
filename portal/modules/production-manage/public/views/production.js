@@ -35,7 +35,7 @@ const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
     TITLE_H: 94,//标题的高度
     TITLE_EDIT_FIELD_WIDTH: 256,//标题输入框宽度
-    EDIT_FIELD_WIDTH: 340,//卡片输入框宽度
+    EDIT_FIELD_WIDTH: 335,//卡片输入框宽度
     BOTTOM: 50,//底部长度
 };
 

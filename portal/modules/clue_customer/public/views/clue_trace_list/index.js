@@ -23,6 +23,7 @@ import PhoneCallout from 'CMP_DIR/phone-callout';
 var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
+import DetailCard from 'CMP_DIR/detail-card';
 //电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型）
 const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP];
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
@@ -364,7 +365,7 @@ class ClueTraceList extends React.Component {
     }
     getRecordListShowHeight = () => {
         var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT -
-            LAYOUT_CONSTANTS.TIME_ADD_BTN_HEIGHT - LAYOUT_CONSTANTS.STATISTIC_TYPE_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
+            LAYOUT_CONSTANTS.TIME_ADD_BTN_HEIGHT - LAYOUT_CONSTANTS.STATISTIC_TYPE_HEIGHT - 3 * LAYOUT_CONSTANTS.MARGIN_BOTTOM;
         let basicInfoHeight = parseInt($('.clue-basic-info-container').outerHeight(true));
         //减头部的客户基本信息高度
         divHeight -= basicInfoHeight;
@@ -712,17 +713,21 @@ class ClueTraceList extends React.Component {
                     {this.props.isOverViewPanel ? null : this.renderDatePicker()}
                     {hasAddRecordPrivilege ? this.tipRecordButton() : null}
                 </div>
-                {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : null}
-                <div className="show-container" id="show-container">
-                    {this.isStatusFilterShow() ? <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
-                        <a className="ant-dropdown-link trace-filter-item">
-                            {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get('call.record.call.state', '通话状态')}
-                            <Icon type="down"/>
-                        </a>
-                    </Dropdown> : null}
-                    {this.renderClueTraceLists()}
-                    {this.renderTraceRecordBottom()}
-                </div>
+                <DetailCard className='clue-trace-card' content={(
+                    <React.Fragment>
+                        {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : null}
+                        <div className="show-container" id="show-container">
+                            {this.isStatusFilterShow() ? <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
+                                <a className="ant-dropdown-link trace-filter-item">
+                                    {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get('call.record.call.state', '通话状态')}
+                                    <Icon type="down"/>
+                                </a>
+                            </Dropdown> : null}
+                            {this.renderClueTraceLists()}
+                            {this.renderTraceRecordBottom()}
+                        </div>
+                    </React.Fragment>)
+                } />
             </div>
         );
     }

@@ -2227,7 +2227,7 @@ class ClueCustomer extends React.Component {
                 var obj = {};
                 if(this.state.selectAllMatched){//如果是在点击选中全部的情况下进行翻页
                     obj = {isPageChange: true};
-                };
+                }
                 this.getClueList(obj);
             });
         }

@@ -41,6 +41,8 @@
   border-radius:@border-radius;
 }
 
+//蓝色
+@blue:#4d96d1;
 //label 黑色
 @label_black:#53575a;
 //下边距
@@ -101,6 +103,8 @@
 @has-invalid-color: @secondary-font-color;
 //无效的背景色
 @has-invalid-background: #E5E5E5;
+//边框蓝色,按钮图标,标签字体的蓝色
+@BORDER-BLUE:#2196f3;
 //button悬浮的蓝色
 @BUTTON-HOVER:#09a9fe;
 //蓝色标签的背景颜色
@@ -133,11 +137,11 @@
 @text-color: #313330;
 @reply-message-tip-color: #f7a43e;
 @approval-pending-color: #f68a4a;
-@text-color: #313330;
 @apply-detail-bg-color: #ffffff;
 @apply-top-height: 64px; //头部的高度
 @apply-list-color: #506470;
-@current-item-color: #F1F4F8;//选中行的样式
+@current-item-color: #f5f6f8;
+@able_call_phone_icon:#8da8c5;
 @hover-item-color: #F8F9FB;//hover行的样式
 @disable_call_phone_icon:#ccc;
 
@@ -145,6 +149,8 @@
 @import_bg_color: #f5f5f5;
 // 导入的数据错误时，字体颜色
 @import_data_error_color: #eb5e57;
+// 导入的数据，规则说明字体颜色
+@import_data_rule_color: #333333;
 // 导入的数据，出现警告时的字体颜色
 @import_data_warn_color: #efa246;
 
@@ -158,6 +164,9 @@
 @customer-stage-seventh-color: #D078D1;
 @customer-stage-eighth-color: #D18F78;
 
+// 内容字体颜色
+@content-font-color: #333333;
+
 // 鼠标移入的背景色
 @mouse-enter-zone-background: #F1F8FE;
 
@@ -167,11 +176,16 @@
 // 确认删除的背景色
 @confirm-delete-background: #EB5E57;
 
+//通过按钮的背景色
+@agree-btn-background:#28AF6A;
 // 内容区背景色
 @content-zone-background: #FFFFFF;
 
 // 边框颜色
 @border-color: #E5E5E5;
+
+// 悬停按钮的颜色
+@hover-btn-color: #2196F3;
 
 // 选中状态背景色
 @select-btn-color: #E4F2FE;
@@ -183,6 +197,10 @@
 @visit-briefcase: #9d5cf4;
 //其他
 @trace-other: #8eaac6;
+// 操作按钮颜色
+@operate-btn-color: #8DA8C5;
+
+@label-content-color:#999999;
 
 @icon-close-background-color: #8ea9c4;
 
@@ -193,9 +211,73 @@
 @goods-name-bg-color: #FAFAFA;
 @goods-item-border-color: #2196F3;
 @goods-name-hover-bg-color: #F1F8FE;
-
 @leftSidePanelColor: #f6f8f8; // 滑动容器
 @leftSidePanelBorderColor: #e0e0e0;
 
 @efScrollarColor: #748591;
+// 默认图像停用的背景色
+@disable-default-img-bg-color: #e6e6e6;
 @efScrollarHoverColor: #80919B;
+//详情头部标题
+.apply-detail-title {
+  @font-color: #999;
+  height: 64px;
+  padding: 24px;
+  line-height: 16px;
+  .apply-type-tip {
+    font-size: 16px;
+    color: @primary-font-color;
+  }
+  //通过，驳回或者转审的按钮
+  .approval_block {
+    overflow: hidden;
+    margin-top: -8px;
+    .ant-form-item-control textarea {
+      resize: none;
+    }
+    .approval_text {
+      padding-top: 15px;
+      padding-bottom: 0;
+      line-height: 24px;
+      font-size: 16px;
+      color: #506470;
+    }
+    .ant-btn{
+      font-size: 14px;
+      height: 32px;
+      line-height: 30px;
+      width: 88px;
+      margin-left: 8px;
+      .iconfont{
+        margin-right: 7px;
+      }
+      //同意按钮
+      &.agree-btn{
+        color:#fff;
+        background: @agree-btn-background;
+        border:1px solid @agree-btn-background;
+      }
+      //驳回按钮
+      &.reject-btn{
+        color:#fff;
+        background:@confirm-delete-background;
+        border:1px solid @confirm-delete-background;
+      }
+      //转审按钮
+      &.transfer-btn{
+        color: #8DA8C5;
+        border: 1px solid #ccc;
+      }
+      //分配按钮
+      &.assgin-btn{
+
+      }
+    }
+
+  }
+  .order-id {
+    float: right;
+    font-size: 14px;
+    color: @font-color;
+  }
+}

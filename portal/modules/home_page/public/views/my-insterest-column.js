@@ -21,7 +21,7 @@ import Trace from 'LIB_DIR/trace';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import myInterestAjax from '../ajax';
-import ColumnItem from './column-item';
+import CardColumnItem from 'CMP_DIR/card-column-item';
 import {getColumnHeight} from './common-util';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
@@ -416,7 +416,7 @@ class MyInsterestColumn extends React.Component {
 
     render() {
         return (
-            <ColumnItem contianerClass='my-insterest-wrap'
+            <CardColumnItem contianerClass='my-insterest-wrap'
                 title={Intl.get('home.page.my.interest', '我的关注')}
                 content={this.renderInterestContent()}
             />);

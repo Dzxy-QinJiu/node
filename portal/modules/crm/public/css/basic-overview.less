@@ -8,6 +8,8 @@
   }
   //有应用签约到期的提示、没有用户的提示
   .overview-user-tip {
+    display: inline-block;
+    width: 100%;
     line-height: 22px;
     font-size: 14px;
     color: @primary-font-color;
@@ -62,6 +64,7 @@
       color: @secondary-font-color;
     }
     .crm-score-title{
+      display: inline-block;
       .crm-score-text{
         color: @primary-color;
       }
@@ -75,88 +78,76 @@
         font-size: 14px;
       }
     }
-
-    .toggle-detail {
-      position: relative;
-      top: -20px;
-    }
-
-    //合格账号
-    .crm-qualified-user-blcok{
-      float: left;
-      width: 100%;
-      border-bottom: 1px solid #f5f5f5;
-      margin-bottom: @card_margin;
-      .crm-account-label{
-        float: left;
-      }
-      .crm-account-text{
-        float: left;
-        max-width: 350px;
-        white-space: normal;
-        word-wrap: break-word;
-        word-break: break-all;
-        .ant-tag{
-          margin-bottom: @card_margin;
-          .icon-active-users{
-            margin-right: 4px;
-            color: @secondary-font-color;
-          }
-        }
-        .no-qualify-account-tip{
-          font-size: 14px;
-          color: #d2d0d0;
-        }
-      }
-    }
-    //分数趋势
-    .crm-history-score-block{
-      float: left;
-      width: 100%;
-      .crm-score-label{
-        float: left;
-        line-height: 24px;
-      }
-      .date-selector-wrap,.date-selector-wrap .range-datepicker{
-        float: right;
-        font-size: 14px !important;
-        line-height: 24px !important;
-        height: 24px !important;
-      }
-
-      .range-datepicker{
-        .border_wrap{
-          height: 24px;
-        }
-        .date_text_wrap{
-          padding: 6px;
-        }
-      }
-      //选择自定义时间时，防止时间选择框超出详情部分被覆盖的样式设置
-      .select-custom-range-style {
-        .range-datepicker {
-          .datepicker_wrap {
-            position: fixed;
-            top: auto;
-            margin-top: 13px;
-            left: -101px !important;
-          }
-        }
-      }
-
-      .analysis-chart{
+    .crm-score-detail-wrap{
+      display: inline-block;
+      //合格账号
+      .crm-qualified-user-blcok{
         float: left;
         width: 100%;
+        border-bottom: 1px solid #f5f5f5;
+        margin-bottom: @card_margin;
+        .crm-account-label{
+          float: left;
+        }
+        .crm-account-text{
+          float: left;
+          max-width: 350px;
+          white-space: normal;
+          word-wrap: break-word;
+          word-break: break-all;
+          .ant-tag{
+            margin-bottom: @card_margin;
+            .icon-active-users{
+              margin-right: 4px;
+              color: @secondary-font-color;
+            }
+          }
+          .no-qualify-account-tip{
+            font-size: 14px;
+            color: #d2d0d0;
+          }
+        }
       }
-    }
+      //分数趋势
+      .crm-history-score-block {
+        float: left;
+        width: 100%;
+        .crm-score-label{
+          float: left;
+          line-height: 24px;
+        }
+        .date-selector-wrap,.date-selector-wrap .range-datepicker{
+          float: right;
+          font-size: 14px !important;
+          line-height: 24px !important;
+          height: 24px !important;
+        }
 
-  }
+        .range-datepicker{
+          .border_wrap{
+            height: 24px;
+          }
+          .date_text_wrap{
+            padding: 6px;
+          }
+        }
+        //选择自定义时间时，防止时间选择框超出详情部分被覆盖的样式设置
+        .select-custom-range-style {
+          .range-datepicker {
+            .datepicker_wrap {
+              position: fixed;
+              top: auto;
+              margin-top: 13px;
+              left: -101px !important;
+            }
+          }
+        }
 
-  .default-score-card-container {
-    padding: 0 12px;
-    .detail-card-title {
-      position: relative;
-      top: 12px;
+        .analysis-chart{
+          float: left;
+          width: 100%;
+        }
+      }
     }
   }
 
@@ -167,6 +158,20 @@
   //最新跟进
   .detail-card-container {
     position: relative;
+    // 没有最新跟进时的样式
+    &.no-trace-card{
+      .detail-card-content{
+        height: 0;
+        padding: 0;
+        // 没有跟进记录，添加跟进记录时的样式设置
+        .customer-container {
+          background-color: #ffffff;
+          .add-customer-trace{
+            margin-top: 0 
+          }
+        }
+      }
+    }
     .schedule-item:not(:first-child){
       border-top: 1px solid #eee;
     }
@@ -189,7 +194,8 @@
     }
     .customer-container {
       //添加跟进记录
-      > .add-customer-trace {
+      > .customer-trace-card {
+        margin-top: 0;
         border: 1px solid #d3eafc;
       }
       .add-customer-trace {
@@ -256,7 +262,7 @@
     }
   }
 }
-.tag-card-container{
+.detail-card-container{
   .detail-card-source-classify{
     font-size: 14px;
     color: @primary-font-color;

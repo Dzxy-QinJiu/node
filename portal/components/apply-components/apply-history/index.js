@@ -89,7 +89,7 @@ class ApplyDetailRemarks extends React.Component {
         }
         if (sameHistoryApplyLists.result === 'error') {
             var message = (
-                <span>{sameHistoryApplyLists.errorMsg}，<Icon type="reload" onClick={this.props.refreshReplyList}
+                <span>{sameHistoryApplyLists.errorMsg}，<Icon type="reload" onClick={this.props.refreshHistoryList}
                     title={Intl.get('common.get.again', '重新获取')}/></span>);
             return (<Alert message={message} type="error" showIcon={true}/> );
         }
@@ -111,7 +111,7 @@ class ApplyDetailRemarks extends React.Component {
                             <li key={index} className="apply-info-label">
                                 <p className="apply-item-title">
                                     <span className="apply-item-topic user-info-label" onClick={this.props.handleOpenApplyDetail.bind(this,replyItem)}>
-                                        {replyItem.topic}
+                                        {_.get(replyItem,'detail.user_apply_name') || _.get(replyItem,'configDescription')}
                                         <span className="apply-item-status">
                                             <span className={btnClass}>[{getUserApplyStateText(replyItem)}]</span>&gt;
                                         </span>
@@ -121,10 +121,10 @@ class ApplyDetailRemarks extends React.Component {
                                         {!_.get(replyLists, '[0]') ? Intl.get('user.apply.no.rely.list', '无回复') : this.renderToggleReply(replyItem)}
                                     </span>
                                     <span className="reply-date-text">
-                                        {_.get(replyItem, 'presenter')}
+                                        {_.get(replyItem, 'applicant.nick_name')}
                                         <span
                                             className="apply-applicate">{Intl.get('user.apply.applicate.time', '申请于')}</span>
-                                        {replyItem.time ? moment(replyItem.time).format(oplateConsts.DATE_FORMAT) : ''}</span>
+                                        {replyItem.create_time ? moment(replyItem.create_time).format(oplateConsts.DATE_FORMAT) : ''}</span>
                                 </p>
                                 {showReplyLists ? this.renderReplyLists(replyLists) : null}
                             </li>);
@@ -163,7 +163,7 @@ ApplyDetailRemarks.defaultProps = {
     handleOpenApplyDetail: function(){},
 
     replyFormInfo: {},
-    refreshReplyList: function() {
+    refreshHistoryList: function() {
 
     },
     commentInputChange: function() {
@@ -176,7 +176,7 @@ ApplyDetailRemarks.propTypes = {
     handleOpenApplyDetail: PropTypes.func,
 
     replyFormInfo: PropTypes.object,
-    refreshReplyList: PropTypes.func,
+    refreshHistoryList: PropTypes.func,
     commentInputChange: PropTypes.func,
     isReportOrDocument: PropTypes.bool,
 };

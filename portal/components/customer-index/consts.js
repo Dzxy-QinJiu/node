@@ -9,6 +9,7 @@ export const MESSAGE_TYPES = {
     API_REPLACED_ATTACHMENTS: 'ApiReplacedAttachments',
     API_DOCUMENT_MESSAGE: 'ApiDocumentMessage',
     API_TEXT_MESSAGE: 'ApiTextMessage',
+    API_SERVICE_MESSAGE: 'ApiServiceMessage',
     TEXT: 'TEXT',//文本
     IMAGE: 'IMAGE',//图片
     EMOJI: 'EMOJI',//表情

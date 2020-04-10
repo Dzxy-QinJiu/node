@@ -7,22 +7,15 @@
   .clue-contact-container.clue-detail-block{
     background: #f5f6f8;
     padding: 0;
-    margin-bottom: 8px;
     .contact-item.detail-card-container{
       margin-bottom: 0;
-      .detail-card-title.title-click-block{
-        border-bottom: none;
-      }
     }
   }
   .clue-detail-block{
-    padding:12px;
-    margin-bottom: 8px;
     background: #fff;
     .clue-info-item{
       border-radius: 4px;
       //overflow: hidden;
-      margin-bottom:4px;
       min-height: 24px;
       float: left;
       width: 100%;
@@ -169,25 +162,20 @@
   .similar-wrap{
     font-size: 14px;
     margin-bottom: 8px;
+    .similar-tip{
+      color:@warn-color;
+      .iconfont{
+        margin-right: 5px;
+      }
+    }
     .similar-content{
-      border-radius: 4px;
-      padding: 12px;
       background: #fff;
       &:not(:last-child){
         margin-bottom: 8px;
       }
-      .similar-tip{
-        color:@warn-color;
-        border-bottom:1px solid #F5F5F5;
-        padding:0 0 8px 0;
-        .iconfont{
-          margin-right: 5px;
-
-        }
-      }
       .similar-block{
-        padding: 8px 0;
-        border-bottom: 1px solid #f5f5f5;
+        padding: 8px 16px 16px;
+        border-bottom: 1px solid #E8EEF3;
         &:last-child{
           border-bottom:none;
         }
@@ -321,7 +309,6 @@
     }
     .clue-info-item{
       position: relative;
-      padding: 10px;
       background: #fff;
       margin-bottom: 0;
       .invalid-person{
@@ -384,7 +371,6 @@
     .clue-info-item{
       margin-bottom: 0;
       position: relative;
-      padding: 10px;
       background: #fff;
       .clue-info-label{
         top:1px;
@@ -402,7 +388,6 @@
     .clue-info-item{
       border-radius: 4px;
       position: relative;
-      padding: 10px;
       background: #fff;
       margin-bottom: 0;
       .clue-info-label{
@@ -412,9 +397,10 @@
         top:2px;
       }
       .btn-container{
-        position: absolute;
+        position: relative;
+        float: right;
         right: 0;
-        top:6px;
+        bottom: 0;
         .ant-btn{
           margin-right:5px;
         }
@@ -422,18 +408,45 @@
     }
 
   }
+  .clue-trace-card {
+    box-shadow: none;
+  }
   .clue-trace-content{
     .basic-edit-field form .ant-form-item .ant-input{
       margin-left:0;
     }
   }
   .detail-card-container {
-    margin-bottom: 8px;
-    margin-top: 0;
-    padding: 10px;
-    position: relative;
     .title-descr-style {
       padding-left: 8px;
+    }
+  }
+  .contact-item.detail-card-container {
+    .detail-card-content {
+      float: left;
+      width: 100%;
+    }
+  }
+  .lead-trace-card.detail-card-container {
+    position: relative;
+    //没有跟进时的样式设置
+    .top-hander-wrap{
+      .no-data-device{
+        position: absolute;
+        top: 16px;
+        left: 80px;
+      }
+    }
+    // 没有最新跟进时的样式
+    &.no-trace-card{
+      .detail-card-content{
+        height: 0;
+        padding: 0;
+        // 没有跟进添加跟进记录时的样式设置
+        .add-customer-trace {
+          margin-top: 0;
+        }
+      }
     }
   }
   .clue-info-item-apply-try-content-title{
