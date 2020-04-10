@@ -85,7 +85,7 @@ class PaymentRecords extends React.Component {
         if (type === 'alipay') {
             type = <span><i className="iconfont icon-alipay" />{Intl.get('user.trade.payment.alipay','支付宝')}</span>;
         } else if (type === 'wxpay') {
-            type = Intl.get('crm.58', '微信');
+            type = <span><i className="iconfont icon-wxpay" />{Intl.get('crm.58', '微信')}</span>;
         }
 
         return type;
