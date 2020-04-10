@@ -6,6 +6,7 @@ var AppUserAction = require('../action/app-user-actions');
 var AppUserDetailAction = require('../action/app-user-detail-actions');
 var UserDetailBasic = require('./user-detail-basic');
 import UserLoginAnalysis from './user-login-analysis';
+import PaymentRecords from './payment-records';
 var SingleUserLog = require('./single-user-log');
 var UserDetailChangeRecord = require('./user-detail-change-record');
 var UserAbnormalLogin = require('./user-abnormal-login');
@@ -598,6 +599,23 @@ class UserDetail extends React.Component {
                                     userId={this.props.userId}
                                     selectedAppId={this.props.selectedAppId}
                                     appLists={appLists}
+                                />
+                            </div> : null
+                    }
+                </TabPane>
+            );
+        }
+        if (hasPrivilege(userManagePrivilege.CRM_USER_ANALYSIS_ALL_ROLE_QUERY)) {
+            tabPaneList.push(
+                <TabPane tab='付费记录' key="6">
+                    {
+                        this.state.activeKey === '6' ?
+                            <div className="payment-records">
+                                <PaymentRecords
+                                    height={contentHeight}
+                                    userId={this.props.userId}
+                                    selectedAppId={this.props.selectedAppId}
+                                    appLists={ketaoAppList}
                                 />
                             </div> : null
                     }
