@@ -1075,8 +1075,11 @@ class Crm extends React.Component {
     };
 
     //合并客户后的处理
-    afterMergeCustomer = (mergeObj) => {
-        this.setState({ selectedCustomer: [], mergePanelIsShow: false });//清空选择的客户
+    afterMergeCustomer = (mergeObj, isClosePanel) => {
+        if(isClosePanel) {
+            this.state.selectedCustomer = [];
+            this.setState({ mergePanelIsShow: false });//清空选择的客户
+        }
         CrmAction.afterMergeCustomer(mergeObj);
     };
 

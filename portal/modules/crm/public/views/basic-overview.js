@@ -29,7 +29,7 @@ import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import CrmScoreCard from './basic_info/crm-score-card';
-import {INTEGRATE_TYPES, PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
+import {INTEGRATE_TYPES, PRIVILEGE_MAP, DOMAIN_END} from 'PUB_DIR/sources/utils/consts';
 import CustomerStageCard from './basic_info/customer-stage-card';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 import crmPrivilegeConst from '../privilege-const';
@@ -512,7 +512,7 @@ class BasicOverview extends React.Component {
     };
 
     renderSecondLevelDomain = (subDomain) => {
-        return <span className="second-level-domain-name">{`${subDomain}.eagok.com`}</span>;
+        return <span className="second-level-domain-name">{`${subDomain}${DOMAIN_END}`}</span>;
     };
     renderPlatFormName = (platFormName) => {
         return <span className="plat-form-name">{platFormName}</span>;

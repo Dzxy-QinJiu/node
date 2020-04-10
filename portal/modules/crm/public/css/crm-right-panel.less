@@ -86,6 +86,21 @@
   }
 }
 
+//合并客户后提示通知
+.crm-merge-confirm-wrapper{
+  .ant-popover-inner-content{
+    max-width: 350px;
+    .ant-btn:not(.ant-btn-primary){
+      display: none;
+    }
+  }
+  .customer-name, .customer-domain{
+    color: @primary-color;
+    margin: 2px;
+    display: inline-block;
+  }
+}
+
 //申请用户面板
 .apply-user-form-panel {
   width: 700px !important;
