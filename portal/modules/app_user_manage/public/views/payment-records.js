@@ -22,7 +22,7 @@ class PaymentRecords extends React.Component {
     getPaymentRecordList = () => {
         ajax.send({
             url: '/rest/base/v1/realm/pay/tradeorders',
-            query: {user_id: this.props.userId}
+            query: {user_id: this.props.userId, page_size: 1000}
         })
             .done(result => {
                 this.setState({ paymentRecordList: result.list });
