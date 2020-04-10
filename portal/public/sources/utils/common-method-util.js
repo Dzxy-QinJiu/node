@@ -15,6 +15,7 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
 import {
     APPLY_APPROVE_TYPES,
+    USERAPPLY_FINISH_STATUS,
     DOCUMENT_TYPE,
     INTEGRATE_TYPES,
     REPORT_TYPE,
@@ -364,13 +365,13 @@ exports.getClueStatus = function(status) {
     return statusDes;
 };
 exports.renderClueStatus = function(listItem) {
-    let status = 
+    let status =
             _.isString(listItem) ? listItem :
                 listItem.availability === '1' ? 'invalid' : listItem.status;
     var statusDes = '';
     switch (status) {
         case '0':
-            statusDes = 
+            statusDes =
                 <span className="clue-stage will-distribute">{Intl.get('clue.customer.will.distribution', '待分配')}</span>;
             break;
         case '1':
@@ -461,17 +462,14 @@ exports.getTimeStr = function(d, format) {
     return moment(new Date(d)).format(format || oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
 };
 exports.getApplyTopicText = function(obj) {
-    if (obj.topic === APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES) {
-        return _.get(obj, 'detail.customer.name');
-    } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1) {
+    var workFlow = _.get(obj,'workflow_type','');
+    if (workFlow.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1) {
         return Intl.get('apply.approve.specific.report', '{customer}客户的{reporttype}', {
             customer: _.get(obj, 'detail.customer.name'),
             reporttype: getDocumentReportTypeDes(REPORT_TYPE, _.get(obj, 'detail.report_type'))
         });
-    } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1) {
+    } else if (workFlow.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1) {
         return getDocumentReportTypeText(DOCUMENT_TYPE, _.get(obj, 'detail.document_type'));
-    } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.VISITAPPLY) !== -1) {
-        return _.get(obj, 'detail.customers[0].name') || _.get(obj, 'configDescription','');
     } else {
         return _.get(obj, 'configDescription','');
     }
@@ -572,40 +570,17 @@ exports.getFilterReplyList = function(thisState) {
     return replyList;
 };
 exports.getUserApplyFilterReplyList = function(thisState) {
-    //用户审批里面不会有approve_detail这个字段，只能在comment里面过滤数据
-    //用户审批会有两类数据，一类是改成工作流之前的数据，一类是改成工作流之后的数据
+    //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
     var applicantList = _.get(thisState, 'detailInfoObj.info');
-    var replyList = _.get(thisState, 'replyListInfo.list', []);
+    var replyList = [];
+    if ((_.includes(USERAPPLY_FINISH_STATUS, applicantList.status)) && _.isArray(_.get(thisState, 'detailInfoObj.info.approve_details'))) {
+        replyList = _.get(thisState, 'detailInfoObj.info.approve_details');
+    } else {
+        replyList = _.get(thisState, 'replyListInfo.list');
+    }
     replyList = _.filter(replyList, (item) => {
-        return item.approve_status;
+        return item.status;
     });
-    //如果工作流的状态是已经结束并且在reply列表中每一条都没有approve_status 这就是改成工作流之前的数据
-    //撤销某条申请
-    if (_.get(applicantList, 'approval_state') === APPLY_USER_STATUS.CANCELED_USER_APPLY) {
-        replyList.push({
-            approve_status: 'cancel',
-            nick_name: applicantList.approval_person,
-            comment_time: applicantList.approval_time
-        });
-    }
-    if (_.includes([APPLY_USER_STATUS.PASSED_USER_APPLY, APPLY_USER_STATUS.REJECTED_USER_APPLY], _.get(applicantList, 'approval_state')) && !replyList.length) {
-        //通过某条申请
-        if (_.get(applicantList, 'approval_state') === APPLY_USER_STATUS.PASSED_USER_APPLY) {
-            replyList.push({
-                approve_status: 'pass',
-                nick_name: applicantList.approval_person,
-                comment_time: applicantList.approval_time
-            });
-        }
-        //驳回某条申请
-        if (_.get(applicantList, 'approval_state') === APPLY_USER_STATUS.REJECTED_USER_APPLY) {
-            replyList.push({
-                approve_status: 'reject',
-                nick_name: applicantList.approval_person,
-                comment_time: applicantList.approval_time
-            });
-        }
-    }
     replyList = _.sortBy(_.cloneDeep(replyList), [item => item.comment_time]);
     return replyList;
 };
@@ -683,17 +658,38 @@ exports.formatUsersmanList = function(usersManList) {
     });
     return dataList;
 };
+// exports.updateUnapprovedCount = function(type, emitterType, updateCount) {
+//     if (Oplate && Oplate.unread) {
+//         Oplate.unread[type] = updateCount;
+//         if (timeoutFunc) {
+//             clearTimeout(timeoutFunc);
+//         }
+//         timeoutFunc = setTimeout(function() {
+//             //触发展示的组件待审批数的刷新
+//             notificationEmitter.emit(notificationEmitter[emitterType]);
+//         }, timeout);
+//     }
+// };
 
-exports.updateUnapprovedCount = function(type, emitterType, updateCount) {
+//待我审批的数量减一
+exports.substractUnapprovedCount = function(applyId) {
     if (Oplate && Oplate.unread) {
-        Oplate.unread[type] = updateCount;
-        if (timeoutFunc) {
-            clearTimeout(timeoutFunc);
+        var unhandleApplyList = Oplate.unread['unhandleApplyList'];
+        //如果这个审批的id在待我审批的列表中
+        var targetObj = _.find(unhandleApplyList, item => item.id === applyId);
+        if(targetObj){
+            Oplate.unread['unhandleApply'] -= 1;
+            Oplate.unread['unhandleApplyList'] = _.filter(Oplate.unread['unhandleApplyList'],item => item.id !== applyId);
+            if (timeoutFunc) {
+                clearTimeout(timeoutFunc);
+            }
+            timeoutFunc = setTimeout(function() {
+                //触发展示的组件待审批数的刷新
+                notificationEmitter.emit(notificationEmitter['SHOW_UNHANDLE_APPLY_APPROVE_COUNT']);
+            }, timeout);
         }
-        timeoutFunc = setTimeout(function() {
-            //触发展示的组件待审批数的刷新
-            notificationEmitter.emit(notificationEmitter[emitterType]);
-        }, timeout);
+
+
     }
 };
 
@@ -741,8 +737,8 @@ exports.afterGetExtendUserInfo = (data, that, isShowPhoneSet) => {
         }, true);
     }
 };
-exports.getApplyListTypeDes = (applyListType) => {
-    switch (applyListType) {
+exports.getApplyListTypeDes = (selectedApplyStatus) => {
+    switch (selectedApplyStatus) {
         case 'all':
             return Intl.get('user.apply.all', '全部申请');
         case 'ongoing':

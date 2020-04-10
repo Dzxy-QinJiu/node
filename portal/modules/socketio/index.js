@@ -10,8 +10,8 @@ var batchLogger = logger.getLogger('batch');
 var cookie = require('cookie');
 //cookie解码器
 var cookieParser = require('cookie-parser');
-//推送消息数据(弹窗消息)
-var notifyChannel = 'com.antfact.ketao.apply.notice';
+// //推送消息数据(弹窗消息)
+// var notifyChannel = 'com.antfact.ketao.apply.notice';
 //登录踢出通道
 var offlineChannel = 'com.antfact.oplate.notify.socketio.offline';
 //消息数推送频道(消息个数)
@@ -28,7 +28,7 @@ const scheduleNoticeChannel = 'com.antfact.ketao.schedule';
 const applyUnreadReplyChannel = 'com.antfact.ketao.apply.comment';
 //线索添加或分配后推送频道
 const clueUnhandledNum = 'com.antfact.ketao.clue.notice';
-//出差，销售机会和请假申请
+//申请审批消息推送
 const applyApproveChannel = 'com.antfact.curtao.workflow.notice';
 //客户操作的推送通道
 const crmOperatorChannel = 'com.curtao.customer.operator.message.notice.channel';
@@ -100,22 +100,22 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
         }
     }
 }
-/**
- * 消息监听器
- * @param data 消息数据
- */
-function notifyChannelListener(data) {
-    pushLogger.debug('后端推送的消息数据:' + data);
-    // 将查询结果返给浏览器
-    let messageObj = JSON.parse(data);
-    if (messageObj.consumers && messageObj.consumers.length > 0) {
-        //遍历消息接收者
-        messageObj.consumers.forEach(function(consumer) {
-            //将数据推送到浏览器
-            emitMsgBySocket(consumer && consumer.user_id, 'mes', pushDto.applyMessageToFrontend(messageObj));
-        });
-    }
-}
+// /**
+//  * 消息监听器
+//  * @param data 消息数据
+//  */
+// function notifyChannelListener(data) {
+//     pushLogger.debug('后端推送的消息数据:' + data);
+//     // 将查询结果返给浏览器
+//     let messageObj = JSON.parse(data);
+//     if (messageObj.consumers && messageObj.consumers.length > 0) {
+//         //遍历消息接收者
+//         messageObj.consumers.forEach(function(consumer) {
+//             //将数据推送到浏览器
+//             emitMsgBySocket(consumer && consumer.user_id, 'mes', pushDto.applyMessageToFrontend(messageObj));
+//         });
+//     }
+// }
 
 /*
  *
@@ -151,22 +151,52 @@ function clueUnhandledNumListener(data) {
 }
 /*处理申请审批消息监听器*/
 function applyApproveNumListener(data) {
-    // pushLogger.debug('后端推送的申请审批的数据:' + JSON.stringify(data));
+    pushLogger.debug('后端推送的申请审批的数据:' + JSON.stringify(data));
     //将查询结果返给浏览器
+    //数字的增减和展示弹框现在是一个channel，但是弹框的是加了一个"type":"notice"
     var applyApprovesgObj = data || {};
-    if (_.isArray(applyApprovesgObj.consumers) && _.get(applyApprovesgObj,'consumers[0]')) {
-        //遍历消息接收者
-        applyApprovesgObj.consumers.forEach(function(consumer) {
+    //展示弹框的
+    if(_.get(applyApprovesgObj,'type') === 'notice'){
+        //某人的申请审批通过后，给申请人发消息
+        if (applyApprovesgObj.applicant_id) {
             //将数据推送到浏览器
-            //如果是将销售的拜访结果推送给邮件抄送人
-            if(applyApprovesgObj.type && applyApprovesgObj.type === 'customer_visit' ){
-                console.log(applyApprovesgObj);
-                emitMsgBySocket(consumer, 'applyVisitCustomerMsg', pushDto.applyVisitCustomerMsgToFrontend(applyApprovesgObj, consumer));
-            }else{
-                emitMsgBySocket(consumer, 'applyApprovemsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
-            }
-        });
+            emitMsgBySocket(applyApprovesgObj.applicant_id, 'applyApprovedFinishmsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, applyApprovesgObj.applicant_id));
+        }
+        //给抄送的人发消息consumers是抄送人
+        if (_.isArray(applyApprovesgObj.consumers) && _.get(applyApprovesgObj,'consumers[0]')) {
+            //遍历消息接收者
+            applyApprovesgObj.consumers.forEach(function(consumer) {
+                //将数据推送到浏览器
+                emitMsgBySocket(consumer, 'applyApprovedFinishmsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+            });
+        }
+    }else{
+        //带consumers的是加一
+        if (_.isArray(applyApprovesgObj.consumers) && _.get(applyApprovesgObj,'consumers[0]')) {
+            //遍历消息接收者
+            applyApprovesgObj.consumers.forEach(function(consumer) {
+                //将数据推送到浏览器
+                //如果是将销售的拜访结果推送给邮件抄送人
+                if(applyApprovesgObj.type && applyApprovesgObj.type === 'customer_visit' ){//这里的处理不会影响待审批数量，因为有新的审批的时候，applyApprovesgObj没有type属性，只有在将销售的拜访结果推送给邮件抄送人的时候，才有这个字段为customer_visit
+                    console.log(applyApprovesgObj);
+                    emitMsgBySocket(consumer, 'applyVisitCustomerMsg', pushDto.applyVisitCustomerMsgToFrontend(applyApprovesgObj, consumer));
+                }else{
+                    emitMsgBySocket(consumer, 'applyApprovemsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+                }
+            });
+        }
+        //一个人审批后，推送给其他待审批人(last_consumers)的消息,其他待审批人的待审批数量要减一
+        if (_.isArray(applyApprovesgObj.last_consumers) && _.get(applyApprovesgObj,'last_consumers[0]')) {
+            //遍历消息接收者
+            applyApprovesgObj.last_consumers.forEach(function(consumer) {
+                //将数据推送到浏览器
+                emitMsgBySocket(consumer, 'applyApprovedByOthermsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+            });
+        }
     }
+
+
+
 }
 
 /*
@@ -272,11 +302,14 @@ function systemNoticeListener(notice) {
  * }]
  */
 function applyUnreadReplyListener(unreadList) {
-    // pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
+    pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
     if (_.get(unreadList, '[0]')) {
+        //todo 这里需要拿到申请人的id，因为有我申请的tab要展示有未读回复的标识，现在这个地方还有问题，待后端调试
+        var applicateId = _.chain(unreadList).last().get('member_id').value();
         _.each(unreadList, unreadReply => {
             if (unreadReply.member_id) {
                 //找到消息接收者对应的socket，将数据推送到浏览器
+                unreadReply.applicateId = applicateId;
                 emitMsgBySocket(unreadReply.member_id, 'apply_unread_reply', pushDto.unreadReplyToFrontend(unreadReply));
             }
         });
@@ -297,7 +330,7 @@ function createBackendClient() {
         pushLogger.info('已与后台建立连接');
     });
     //创建接收消息的通道
-    client.on(notifyChannel, notifyChannelListener);
+    // client.on(notifyChannel, notifyChannelListener);
     //创建登录踢出的通道
     // client.on(offlineChannel, offlineChannelListener);
     //创建用户批量操作的通道

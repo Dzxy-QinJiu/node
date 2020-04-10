@@ -1,0 +1,69 @@
+@import "../../../../../../../public/css/common-variables";
+.business_apply_detail_wrap {
+  color: #5d5d5d;
+  position: relative;
+  padding-right: 0;
+  padding-left: 0;
+  background-color: @current-item-color;
+  //详情头部标题
+  .apply-detail-title {
+    height: 64px;
+    padding: 20px;
+    .apply-type-tip {
+      font-size: 16px;
+      color:@primary-font-color;
+    }
+    .order-id {
+      float: right;
+      font-size: 14px;
+      color: @secondary-font-color;
+    }
+  }
+  .apply-detail-content {
+    padding: 0 20px;
+    .apply-customer-visit-range{
+      min-width: 300px;
+    }
+    .user-info-label:first-child{
+      margin-top: 2px;
+    }
+    .total-business-range-edit{
+        .ant-alert-error{
+          display: inline-block;
+          margin-left: 10px;
+        }
+    }
+    .while-time{
+      margin-left: 10px;
+    }
+  }
+
+  .ant-form-horizontal {
+    dt {
+      padding-top: 10px !important;
+    }
+  }
+  //加载中，出错和没有数据的展示
+  .app_user_manage_detail{
+    padding-top: 260px;
+  }
+  .apply-customer-visit-range,.user-info-text {
+    .iconfont{
+      cursor: pointer;
+      margin-left:8px;
+      font-size: 16px;
+    }
+    .icon-choose {
+      color:#4dbe50;
+    }
+    .icon-close {
+      color:#b50e0a;
+    }
+  }
+  .ant-calendar-time-picker-select:last-child{
+    display: none;
+  }
+  .ant-calendar-time-picker-column-3 .ant-calendar-time-picker-select{
+    width: 50%;
+  }
+}

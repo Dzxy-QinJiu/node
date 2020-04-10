@@ -1,3 +1,5 @@
+import {notificationEmitter} from 'PUB_DIR/sources/utils/emitters';
+
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -28,7 +30,7 @@ exports.getWorklistApplyList = function(queryObj) {
     var Deferred = $.Deferred();
     getWorklistApplyListAjax && getWorklistApplyListAjax.abort();
     getWorklistApplyListAjax = $.ajax({
-        url: '/rest/get/worklist/apply_approve/list',
+        url: '/rest/get/worklist/approve/by/me',
         dataType: 'json',
         type: 'get',
         data: queryObj,
@@ -65,10 +67,11 @@ exports.getApplyCommentList = function(queryObj) {
     var Deferred = $.Deferred();
     getApplyCommentListAjax && getApplyCommentListAjax.abort();
     getApplyCommentListAjax = $.ajax({
-        url: '/rest/get/apply_approve/comment/list',
+        url: '/rest/get/apply/comment/list',
         type: 'get',
         data: queryObj,
         success: function(data) {
+            notificationEmitter.emit(notificationEmitter.CLEAR_UNREAD_REPLY, queryObj.id);
             Deferred.resolve(data);
         },
         error: function(errorMsg) {
@@ -83,7 +86,7 @@ exports.addApplyComments = function(data) {
     var Deferred = $.Deferred();
     addApplyCommentsAjax && addApplyCommentsAjax.abort();
     addApplyCommentsAjax = $.ajax({
-        url: '/rest/add/apply_approve/comment',
+        url: '/rest/add/apply/comment',
         dataType: 'json',
         type: 'post',
         data: data,
@@ -171,6 +174,23 @@ exports.deleteLoadApplyApproveFile = function(queryObj) {
         },
         error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//校验二级域名是否存在
+exports.checkDomainExist = function(data) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/check/domain/name',
+        dataType: 'json',
+        type: 'get',
+        data: data,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON);
         }
     });
     return Deferred.promise();

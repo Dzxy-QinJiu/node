@@ -11,7 +11,7 @@ import SelectOption from '../view/select_option';
 import TimePeriod from '../view/time_period';
 import CustomerSuggest from '../view/customer_suggest';
 import InputContent from '../view/input_container';
-import ApplyAction from '../../../domain_application/public/action/leave-apply-action';
+import {checkDomainExist} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 const APPLYAPPROVE_LAYOUT = {
     TOPANDBOTTOM: 64,
     PADDINGHEIGHT: 24,
@@ -265,6 +265,7 @@ const INNER_SETTING_FLOW = {
     LEAVE: 'leave',//请假
     BUSINESSOPPORTUNITIES: 'businessopportunities',//销售机会
     USERAPPLY: 'userapply',//用户申请
+    NEWUSERAPPLY: 'user_or_grant'
 
 };
 const SELF_SETTING_FLOW = {
@@ -404,7 +405,7 @@ exports.isLeaveFlow = function(itemType) {
 };
 //是用户申请流程
 exports.isUserApplyFlow = function(itemType) {
-    return itemType === INNER_SETTING_FLOW.USERAPPLY;
+    return itemType === INNER_SETTING_FLOW.USERAPPLY || itemType === INNER_SETTING_FLOW.NEWUSERAPPLY;
 };
 //是否展示该节点
 exports.isShowCCNode = (item) => {
@@ -427,7 +428,7 @@ export const checkDomainName = function(rule, value, callback) {
     if (value) {
         if (domainNameRule.test(value)) {
             //发请求校验是否该域名重复
-            ApplyAction.checkDomainExist({sub_domains: value}, (result) => {
+            checkDomainExist({sub_domains: value}).then((result) => {
                 if (_.isString(result)) {
                     callback(new Error(result || Intl.get('apply.domain.name.check.err', '二级域名校验失败！')));
                 } else {

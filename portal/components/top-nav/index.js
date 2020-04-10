@@ -7,67 +7,15 @@ var classNames = require('classnames');
 import {NavLink} from 'react-router-dom';
 
 var topNavEmitter = require('../../public/sources/utils/emitters').topNavEmitter;
-import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 
-var insertStyle = require('CMP_DIR/insert-style');
 require('./index.less');
-var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
-let history = require('../../public/sources/history');
 let RIGHT_MARGIN = 10;//右边预留宽度，用户计算
-import {Popover, Icon} from 'antd';
-/**
- * 待处理的数据列表
- * name:待处理数在Oplate.unread对象中的key或key数组
- * cls: 左侧导航中，显示线索、申请审批图标的类
- * style: 显示待处理数的样式
- */
-const unhandleApplyNumObj = [
-    {
-        name: APPLY_APPROVE_TYPES.UNHANDLE_USER_APPLY,
-        cls: 'apply_users_ico',
-        style: 'unhandleUserAplplyNumStyle'
-    }, {
-        name: APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT,
-        cls: 'apply_business_ico',
-        style: 'unhandleBusinessApplyNumStyle'
-    }, {
-        name: APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,
-        cls: 'apply_leave_ico',
-        style: 'unhandleLeaveApplyNumStyle'
-    }, {
-        name: APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,
-        cls: 'apply_opportunities_ico',
-        style: 'unhandleSalesOpperNumStyle'
-    }, {
-        name: APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND,
-        cls: 'apply_reports_ico',
-        style: 'unhandleReportSendNumStyle'
-    }, {
-        name: APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE,
-        cls: 'apply_documents_ico',
-        style: 'unhandleDocumentWriteNumStyle'
-    }, {
-        name: APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,
-        cls: 'apply_visits_ico',
-        style: 'unhandleVisitNumStyle'
-    }, {
-        name: APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY,
-        cls: 'apply_domain-name_ico',
-        style: 'unhandleDomainNumSyle'
-    }, {
-        name: APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY,
-        cls: 'apply_business-while_ico',
-        style: 'unhandleBusinessWhileNumSyle'
-    }];
+import {Popover} from 'antd';
 
 //顶部导航外层div
 class TopNav extends React.Component {
     constructor(props) {
         super(props);
-        //未处理数的提示样式初始化
-        _.forEach(unhandleApplyNumObj,(item) => {
-            this[item.style] = null;
-        });
     }
 
     resizeHandler = () => {
@@ -152,134 +100,12 @@ class TopNav extends React.Component {
         $(ReactDOM.findDOMNode(this)).find('.navbar-toggle').on('click', this.navBarToggle);
         this.resizeFunc();
         topNavEmitter.on(topNavEmitter.RELAYOUT, this.resizeFunc);
-        //用户申请的待审批数的监听
-        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.renderUnhandleApplyStyle);
-        //出差申请、请假申请、销售机会申请待我审批数的监听
-        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.renderUnhandleApplyStyle);
-        this.renderUnhandleApplyStyle();
-        //点击审批数字后，查看待审批的数量
-        $('.topNav').on('click', '.apply_users_ico', function(e) {
-            //如果点击到a标签上，不做处理
-            if ($(e.target).is('a')) {
-                return;
-            }
-            //点击到数字上，进行跳转
-            history.push('/apply/users');
-        });
-        $('.topNav').on('click', '.apply_business_ico', function(e) {
-            //如果点击到a标签上，不做处理
-            if ($(e.target).is('a')) {
-                return;
-            }
-            //点击到数字上，进行跳转
-            history.push('/apply/business');
-        });
-        $('.topNav').on('click', '.apply_opportunities_ico', function(e) {
-            //如果点击到a标签上，不做处理
-            if ($(e.target).is('a')) {
-                return;
-            }
-            //点击到数字上，进行跳转
-            history.push('/apply/oppotunities');
-        });
-        $('.topNav').on('click', '.apply_leave_ico', function(e) {
-            //如果点击到a标签上，不做处理
-            if ($(e.target).is('a')) {
-                return;
-            }
-            //点击到数字上，进行跳转
-            history.push('/apply/leave');
-        });
-        $('.topNav').on('click', '.apply_reports_ico', function(e) {
-            //如果点击到a标签上，不做处理
-            if ($(e.target).is('a')) {
-                return;
-            }
-            //点击到数字上，进行跳转
-            history.push('/apply/reports');
-        });
-        $('.topNav').on('click', '.apply_documents_ico', function(e) {
-            //如果点击到a标签上，不做处理
-            if ($(e.target).is('a')) {
-                return;
-            }
-            //点击到数字上，进行跳转
-            history.push('/apply/documents');
-        });
-        $('.topNav').on('click', '.apply_visits_ico', function(e) {
-            //如果点击到a标签上，不做处理
-            if ($(e.target).is('a')) {
-                return;
-            }
-            //点击到数字上，进行跳转
-            history.push('/apply/visits');
-        });
-        $('.topNav').on('click', '.apply_domain-name_ico', function(e) {
-            //如果点击到a标签上，不做处理
-            if ($(e.target).is('a')) {
-                return;
-            }
-            //点击到数字上，进行跳转
-            history.push('/apply/domain-name');
-        });
-        $('.topNav').on('click', '.apply_business-while_ico', function(e) {
-            //如果点击到a标签上，不做处理
-            if ($(e.target).is('a')) {
-                return;
-            }
-            //点击到数字上，进行跳转
-            history.push('/apply/business-while');
-        });
-
-
     }
-
-    componentWillUpdate() {
-        this.renderUnhandleApplyStyle();
-    }
-
-    renderUnhandleNum = (item) => {
-        if (this[item.style]) {
-            this[item.style].destroy();
-            this[item.style] = null;
-        }
-        var styleText = '';
-        var count = Oplate.unread[item.name] || 0;
-        //设置数字
-        if (count > 0) {
-            var len = (count + '').length;
-            if (len >= 3) {
-                styleText = `.${item.cls}:before{content:\'99+\';display:block;padding:0 2px 0 2px;}`;
-            } else {
-                styleText = `.${item.cls}:before{content:'${count}';display:block}`;
-            }
-        } else {
-            styleText = `.${item.cls}:before{content:\'\';display:none}`;
-        }
-        //展示数字
-        this[item.style] = insertStyle(styleText);
-    };
-    renderUnhandleApplyStyle = () => {
-        if (Oplate && Oplate.unread) {
-            _.forEach(unhandleApplyNumObj, (item) => {
-                this.renderUnhandleNum(item);
-            });
-        }
-    };
 
     componentWillUnmount() {
         $(window).off('resize', this.resizeFunc);
         $('body').off('click', this.clickBodyEmptySpace);
         topNavEmitter.removeListener(topNavEmitter.RELAYOUT, this.resizeFunc);
-        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.renderUnhandleApplyStyle);
-        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.renderUnhandleApplyStyle);
-        _.forEach(unhandleApplyNumObj, (item) => {
-            if (this[item.style]) {
-                this[item.style].destroy();
-                this[item.style] = null;
-            }
-        });
-
     }
 
     render() {
