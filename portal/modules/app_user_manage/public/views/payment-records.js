@@ -1,13 +1,8 @@
-require('../css/user-login-analysis.less');
 import ajax from 'ant-ajax';
-import CardContainer from 'CMP_DIR/card-container'; // 容器
-import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import DetailCard from 'CMP_DIR/detail-card';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 import { Alert, message } from 'antd';
-import classNames from 'classnames';
-import userManagePrivilege from '../privilege-const';
 
 class PaymentRecords extends React.Component {
     state = {
