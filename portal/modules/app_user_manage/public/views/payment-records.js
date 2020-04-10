@@ -63,19 +63,19 @@ class PaymentRecords extends React.Component {
         return (
             <div className="field-list">
                 <div className="field-item">
-                    {Intl.get('payment.time.of.payment', '付款时间')}：{moment(record.finish_time).format(oplateConsts.DATE_TIME_FORMAT)}
+                    <span className="field-label">{Intl.get('payment.time.of.payment', '付款时间')}</span>：{moment(record.finish_time).format(oplateConsts.DATE_TIME_FORMAT)}
                 </div>
                 <div className="field-item">
-                    {Intl.get('payment.amount', '付款金额')}：{record.total_fee} {Intl.get('contract.82', '元')}
+                    <span className="field-label">{Intl.get('payment.amount', '付款金额')}</span>：{record.total_fee} {Intl.get('contract.82', '元')}
                 </div>
                 <div className="field-item">
-                    {Intl.get('crm.order.id', '订单编号')}：{record.id}
+                    <span className="field-label">{Intl.get('crm.order.id', '订单编号')}</span>：{record.id}
                 </div>
                 <div className="field-item">
-                    {Intl.get('payment.platform', '支付平台')}：{this.renderPayType(record.pay_type)}
+                    <span className="field-label">{Intl.get('payment.platform', '支付平台')}</span>：{this.renderPayType(record.pay_type)}
                 </div>
                 <div className="field-item">
-                    {Intl.get('payment.platform.order.no', '平台订单号')}：{record.trade_no}
+                    <span className="field-label">{Intl.get('payment.platform.order.no', '平台订单号')}</span>：{record.trade_no}
                 </div>
             </div>
         );
