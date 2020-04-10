@@ -11,6 +11,7 @@ import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
 import ShearContent from '../../../../../components/shear-content';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import DetailCard from 'CMP_DIR/detail-card';
 class Dynamic extends React.Component {
     state = {
         ...CustomerDynamicStore.getState(),
@@ -89,12 +90,14 @@ class Dynamic extends React.Component {
                 {this.state.isLoading ? <Spinner/> : this.state.errorMsg ? (
                     <span className="dynamic-error-tip">{this.state.errorMsg}</span>) : _.get(this.state, 'dynamicList[0]') ? (
                     <div className="dynamic-list">
-                        <AntcTimeLine
-                            data={this.state.dynamicList}
-                            groupByDay={true}
-                            timeField="date"
-                            contentRender={this.timeLineItemRender}
-                        />
+                        <DetailCard contentNoPadding={true} content={(
+                            <AntcTimeLine
+                                data={this.state.dynamicList}
+                                groupByDay={true}
+                                timeField="date"
+                                contentRender={this.timeLineItemRender}
+                            />
+                        )}/>
                     </div>) : <NoDataIconTip tipContent={Intl.get('crm.dynamic.no.data', '暂无动态')}/>}
             </RightPanelScrollBar>
         );

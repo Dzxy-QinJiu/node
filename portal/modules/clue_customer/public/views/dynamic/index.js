@@ -17,7 +17,7 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ShearContent from '../../../../../components/shear-content';
-
+import DetailCard from 'CMP_DIR/detail-card';
 
 class Dynamic extends React.Component {
     state = {
@@ -99,26 +99,27 @@ class Dynamic extends React.Component {
     };
 
     render() {
-
         let customerOfCurUser = this.state.customerOfCurUser;
         return (
-            <div className="clue-customer-dynamic" style={{height: this.state.divHeight}} data-tracename="线索变更记录">
-                <GeminiScrollbar
+            <DetailCard content={(
+                <div className="clue-customer-dynamic" style={{ height: this.state.divHeight }} data-tracename="线索变更记录">
+                    <GeminiScrollbar
                     // handleScrollBottom={this.handleScrollBarBottom}
                     // listenScrollBottom={this.state.listenScrollBottom}
-                >
-                    {this.state.isLoading ? <Spinner/> : this.state.errorMsg ? (
-                        <span className="dynamic-error-tip">{this.state.errorMsg}</span>) : _.get(this.state, 'dynamicList[0]') ? (
-                        <div className="dynamic-list">
-                            <AntcTimeLine
-                                data={this.state.dynamicList}
-                                groupByDay={true}
-                                timeField="date"
-                                contentRender={this.timeLineItemRender}
-                            />
-                        </div>) : <NoDataIconTip tipContent={Intl.get('crm.dynamic.no.data', '暂无动态')}/>}
-                </GeminiScrollbar>
-            </div>
+                    >
+                        {this.state.isLoading ? <Spinner /> : this.state.errorMsg ? (
+                            <span className="dynamic-error-tip">{this.state.errorMsg}</span>) : _.get(this.state, 'dynamicList[0]') ? (
+                            <div className="dynamic-list">
+                                <AntcTimeLine
+                                    data={this.state.dynamicList}
+                                    groupByDay={true}
+                                    timeField="date"
+                                    contentRender={this.timeLineItemRender}
+                                />
+                            </div>) : <NoDataIconTip tipContent={Intl.get('crm.dynamic.no.data', '暂无动态')} />}
+                    </GeminiScrollbar>
+                </div>
+            )} />
         );
     }
 }

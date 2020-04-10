@@ -33,6 +33,7 @@ import {INTEGRATE_TYPES, PRIVILEGE_MAP, DOMAIN_END} from 'PUB_DIR/sources/utils/
 import CustomerStageCard from './basic_info/customer-stage-card';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 import crmPrivilegeConst from '../privilege-const';
+import classNames from 'classnames';
 class BasicOverview extends React.Component {
     constructor(props) {
         super(props);
@@ -352,7 +353,7 @@ class BasicOverview extends React.Component {
                 <div className="overview-user-tip">
                     <span className="iconfont icon-warn-icon"/>
                     <span className="expire-tip-content">
-                        {Intl.get('crm.overview.expire.tip', '有应用{days}试用到期', {days: expireTrialUsers[0].overDraftTimeStr})}
+                        {Intl.get('crm.overview.expire.tip', '有应用{days}试用到期', {days: _.get(expireTrialUsers,'[0].overDraftTimeStr','')})}
                     </span>
                     <span className="iconfont icon-arrow-right handle-btn-item" onClick={this.turnToUserList}
                         title={Intl.get('call.record.show.customer.detail', '查看详情')}/>
@@ -607,15 +608,20 @@ class BasicOverview extends React.Component {
                         saveTags={this.saveEditCompetitors}
                     />
                     {
-                        _.get(basicData, 'source_classify') ?
-                            <div className="tag-card-container detail-card-container">
-                                <span className='detail-card-source-classify'>{`${Intl.get('crm.clue.client.source', '获客方式')}:`}</span>
-                                <span className='detail-card-source-classify'>{this.getSourceClassify(basicData.source_classify)}</span>
-                            </div> : null
+                        _.get(basicData, 'source_classify') ? (
+                            <DetailCard
+                                content={(
+                                    <React.Fragment>
+                                        <span className='detail-card-source-classify'>{`${Intl.get('crm.clue.client.source', '获客方式')}:`}</span>
+                                        <span className='detail-card-source-classify'>{this.getSourceClassify(basicData.source_classify)}</span>
+                                    </React.Fragment> )}
+                            />
+                        ) : null
                     }
 
                     {this.renderUnComplateScheduleList()}
                     <DetailCard
+                        className={classNames({'no-trace-card': noRecordData})}
                         title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
                         titleBottomBorderNone={noRecordData}
                         titleDescr={noRecordData ? Intl.get('crm.no.trace.record', '还没有跟进过该客户') : ''}

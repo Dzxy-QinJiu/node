@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import {Dropdown, Icon, Menu, Tag, Popover, Button, message, Input, Radio, Form} from 'antd';
 const { TextArea } = Input;
 const FormItem = Form.Item;
-import ColumnItem from './column-item';
+import CardColumnItem from 'CMP_DIR/card-column-item';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
 import myWorkAjax from '../ajax';
@@ -1570,8 +1570,9 @@ class MyWorkColumn extends React.Component {
         //     title += this.state.totalCount;
         // }
         return (
-            <ColumnItem contianerClass='my-work-wrap'
+            <CardColumnItem contianerClass='my-work-wrap'
                 title={title}
+                isFirstColumn={true}
                 content={this.renderWorkContent()}
             />);
     }

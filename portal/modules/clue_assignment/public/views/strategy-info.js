@@ -18,9 +18,8 @@ const LAYOUT = {
     TITLE_INPUT_WIDTH: 88,//顶部
     NAME_EDIT_FIELD_WIDTH: 360,//策略名称宽度
     DESC_EDIT_FIELD_WIDTH: 394,//策略描述宽度
-    EDIT_FIELD_WIDTH: 366,//满足条件（地域，来源）
+    EDIT_FIELD_WIDTH: 358,//满足条件（地域，来源）、被分配人
     EDIT_FIELD_WIDTH_4_CHAR: 346,//满足条件（接入渠道，线索分类）
-    EDIT_FIELD_WIDTH_ASSIGNEE: 363 //被分配人
 };
 
 const SAVE_CONTENT = {
@@ -422,7 +421,7 @@ class StrategyInfo extends React.Component {
             <div className="assignee-card">
                 <span className="assignee-label">{Intl.get('clue.assignment.assignee', '分配给')}</span>
                 <BasicEditSelectField
-                    width={LAYOUT.EDIT_FIELD_WIDTH_ASSIGNEE}
+                    width={LAYOUT.EDIT_FIELD_WIDTH}
                     id={strategyInfo.id}
                     field="assignee"
                     displayText={getSelectedSaleManValue(this.state.strategyInfo)}
