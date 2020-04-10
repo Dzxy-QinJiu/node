@@ -6,7 +6,8 @@ import { Alert, message } from 'antd';
 
 class PaymentRecords extends React.Component {
     state = {
-        paymentRecordList: []
+        paymentRecordList: [],
+        total: 0
     };
 
     componentDidMount() {
@@ -20,7 +21,7 @@ class PaymentRecords extends React.Component {
             query: {user_id: this.props.userId, page_size: 1000}
         })
             .done(result => {
-                this.setState({ paymentRecordList: result.list });
+                this.setState({ paymentRecordList: result.list, total: result.total });
             })
             .fail(err => {
                 message.error(err);
@@ -42,6 +43,9 @@ class PaymentRecords extends React.Component {
                             </div>
                         ) : (
                             <div>
+                                <div className="total">
+                                    {Intl.get('crm.14', '共{count}条记录', {count: this.state.total})}
+                                </div>
                                 {_.map(this.state.paymentRecordList, (item, index) => (
                                     <DetailCard
                                         key={index}
