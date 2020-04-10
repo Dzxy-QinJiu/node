@@ -75,13 +75,23 @@ class PaymentRecords extends React.Component {
                     {Intl.get('crm.order.id', '订单编号')}：{record.trade_no}
                 </div>
                 <div className="field-item">
-                    {Intl.get('payment.platform', '支付平台')}：{record.pay_type}
+                    {Intl.get('payment.platform', '支付平台')}：{this.renderPayType(record.pay_type)}
                 </div>
                 <div className="field-item">
                     {Intl.get('payment.platform.order.no', '平台订单号')}：{platformOrderId}
                 </div>
             </div>
         );
+    }
+
+    renderPayType(type) {
+        if (type === 'alipay') {
+            type = Intl.get('user.trade.payment.alipay','支付宝');
+        } else if (type === 'wxpay') {
+            type = Intl.get('crm.58', '微信');
+        }
+
+        return type;
     }
 }
 
