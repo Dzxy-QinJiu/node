@@ -1942,6 +1942,7 @@ var zh_CN = {
     'crm.pool.no.rule': '暂无规则',
     'crm.pool.responsible.type.placeholder': '请选择负责类型',
     'crm.pool.extract.distribute.followup': '提取并分配联合跟进人',
+    'crm.merge.success.domain.tip': '请告知{name}需要使用{domain}访问',
 
 
     'crm.pool.single.extract.tip': '您确定要提取此客户吗？',

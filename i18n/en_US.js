@@ -1921,6 +1921,7 @@ var en_US = {
     'crm.pool.no.rule': 'No rules',//暂无规则
     'crm.pool.responsible.type.placeholder': 'Please select the responsibility type',//请选择负责类型
     'crm.pool.extract.distribute.followup': 'Extract and assign joint follow-ups',//提取并分配联合跟进人
+    'crm.merge.success.domain.tip': 'Please tell {name} that you need access using {domain}',//请告知{name}需要使用{domain}访问
 
 
     'crm.customer.rule.name': 'Rules set',//规则设置
