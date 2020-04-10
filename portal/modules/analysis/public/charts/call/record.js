@@ -52,6 +52,7 @@ export function getCallRecordChart(paramObj = {}) {
             callback: () => {
                 const startTime = _.get(paramObj, 'Store.startTime');
 
+                //如果查询时间是今天且当前用户是蚁坊组织下的客户经理，则不显示该统计
                 if (startTime === moment().startOf('day').valueOf() && isEefungCustomerManager()) {
                     return true;
                 } else {
