@@ -109,6 +109,9 @@ exports.getUserData = function(req, res) {
                 user.roles = data.roles;
                 user.lang = lang;
                 user.isCommonSales = data.isCommonSales;//是否是普通销售
+                if (data.isCommonSales) {
+                    user.position = data.position;//职务
+                }
                 user.workFlowConfigs = data.workFlowConfigs;//配置过的流程列表
                 user.guideConfig = data.guideConfig;//引导流程
                 user.phone = data.phone;
