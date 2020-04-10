@@ -69,7 +69,7 @@ class PaymentRecords extends React.Component {
         return (
             <div className="field-list">
                 <div className="field-item">
-                    付款时间：{record.finish_time}
+                    付款时间：{moment(record.finish_time).format(oplateConsts.DATE_TIME_FORMAT)}
                 </div>
                 <div className="field-item">
                     付款金额：{record.total_fee}
