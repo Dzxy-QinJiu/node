@@ -89,7 +89,7 @@ class ApplyDetailRemarks extends React.Component {
         }
         if (sameHistoryApplyLists.result === 'error') {
             var message = (
-                <span>{sameHistoryApplyLists.errorMsg}，<Icon type="reload" onClick={this.props.refreshReplyList}
+                <span>{sameHistoryApplyLists.errorMsg}，<Icon type="reload" onClick={this.props.refreshHistoryList}
                     title={Intl.get('common.get.again', '重新获取')}/></span>);
             return (<Alert message={message} type="error" showIcon={true}/> );
         }
@@ -163,7 +163,7 @@ ApplyDetailRemarks.defaultProps = {
     handleOpenApplyDetail: function(){},
 
     replyFormInfo: {},
-    refreshReplyList: function() {
+    refreshHistoryList: function() {
 
     },
     commentInputChange: function() {
@@ -176,7 +176,7 @@ ApplyDetailRemarks.propTypes = {
     handleOpenApplyDetail: PropTypes.func,
 
     replyFormInfo: PropTypes.object,
-    refreshReplyList: PropTypes.func,
+    refreshHistoryList: PropTypes.func,
     commentInputChange: PropTypes.func,
     isReportOrDocument: PropTypes.bool,
 };

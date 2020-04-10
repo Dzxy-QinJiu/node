@@ -4,6 +4,7 @@
  */
 
 'use strict';
+import crmPrivilegeConst from '../../../crm/public/privilege-const';
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var applyDto = require('../dto/apply');
@@ -12,7 +13,6 @@ var _ = require('lodash');
 var auth = require('../../../../lib/utils/auth');
 var Promise = require('bluebird');
 var EventEmitter = require('events').EventEmitter;
-
 //常量定义
 var CONSTANTS = {
     APPLY_USER_OFFICIAL: 'apply_user_official', //申请正式用户
@@ -58,22 +58,21 @@ var AppUserRestApis = {
     editAppUser: '/rest/base/v1/user/:user_id/detail',
     //修改用户所属客户
     editAppUserCustomer: '/rest/base/v1/user/belong/customer',
-    //todo 获取用户审批列表
-    // getApplyList: '/rest/base/v1/message/applylist',
+    //获取用户审批列表
     getApplyList: '/rest/base/v1/workflow/applylist',
-    //todo 我申请的
+    //我申请的
     getApplyListStartSelf: '/rest/base/v1/workflow/applylist/self',
-    // todo 待我审批的
+    //待我审批的
     getApplyListWillApprovedByMe: '/rest/base/v1/workflow/worklist',
-    //todo 我审批过的
+    //我审批过的
     getApplyListApprovedByMe: '/rest/base/v1/workflow/applylist/self/approved',
-    //todo 获取或者添加回复列表
+    //获取或者添加回复列表
     getOrAddApplyComments: '/rest/base/v1/workflow/comments',
-    //todo 获取我审批的申请(包含我审批过的和待我审批的)
+    //获取我审批的申请(包含我审批过的和待我审批的)
     getMyApplyLists: '/rest/base/v1/workflow/work/approved/list',
     //获取工作流未读回复列表
     getWorkFlowUnreadReplyList: 'rest/base/v1/workflow/comments/notice/unread',
-    //todo 获取申请单详情
+    //获取申请单详情
     getApplyDetail: '/rest/base/v1/workflow/detail',
     //审批申请单（创建新用户审批）
     submitApplyNewUser: '/rest/base/v1/workflow/newuser/approve',
@@ -409,7 +408,7 @@ exports.getApplyListStartSelf = function(req, res){
         res: res
     }, obj, {
         success: function(eventEmitter, data) {
-            //todo 处理数据，只处理用户申请审批的数据，其他类型的数据不需要处理
+            //处理数据，只处理用户申请审批的数据，其他类型的数据不需要处理
             if (data && data.list && data.list.length) {
                 var applyList = handleUserApplyData(data.list || []);
                 data.list = applyList;
@@ -798,7 +797,7 @@ function getAppsUserRolesType(req, res, applyBasicDetail, emitter) {
     let userIds = _.uniqBy(applyBasicDetail.apps,'user_id').map(app => app.user_id);
     let isApproved = applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_PASS; // 是否是已通过
     let isChangeUserType = false; // 延期时，是否修改了用户类型, 默认false
-    let user_type = _.get(applyBasicDetail, 'apps[0].user_type');
+    let user_type = _.get(applyBasicDetail, 'apps[0].tags[0]');
     if (user_type) {
         isChangeUserType = true;
         //修改的用户类型，界面上用来判断是否修改用户类型
@@ -857,13 +856,25 @@ function getAppsUserRolesType(req, res, applyBasicDetail, emitter) {
         emitter.emit('success', applyBasicDetail);
     }
 }
+//获取用户权限
+function getPrivileges(req) {
+    var userInfo = auth.getUser(req);
+    var userPrivileges = userInfo.privileges;
+    return userPrivileges;
+}
+
 //跟据客户的id获取客户详情
 function getQueryCustomerById(req, res, id) {
     var queryObj = {'query': {'id': id}};
+    let userPrivileges = getPrivileges(req);
+    var type = 'user';
+    if (userPrivileges.indexOf(crmPrivilegeConst.CUSTOMER_ALL) !== -1) {
+        type = 'manager';
+    }
     return new Promise((resolve, reject) => {
         return restUtil.authRest.post(
             {
-                url: AppUserRestApis.getQueryCustomerById.replace(':type', req.params.type),
+                url: AppUserRestApis.getQueryCustomerById.replace(':type', type),
                 req: req,
                 res: res
             }, queryObj, {

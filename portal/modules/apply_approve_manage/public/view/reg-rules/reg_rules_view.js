@@ -428,6 +428,7 @@ class RegRulesView extends React.Component {
             //表单的内容不需要提交
             var submitObj = {
                 customiz_user_range: this.state.customiz_user_range,
+                notify_configs: this.state.notify_configs,
                 ...applyRulesAndSetting
             };
             applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId, submitObj, (result) => {
@@ -969,17 +970,17 @@ class RegRulesView extends React.Component {
             });
 
         });
-        
+
         if(showAddNextNodeTip){
             message.warning(Intl.get('apply.please.add.assign.node', '流程不完整，需添加“指定审批人审批节点”'));
         }else if(showAddApproveNodeTip){
             message.warning(Intl.get('apply.please.add.approve.node', '流程不完整，需添加审批人节点'));
         }else{
-            // if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
-            //     this.handleSubmitCCApply();
-            // }else{
-            this.handleSubmitApproveApply();
-            // }
+            if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
+                this.handleSubmitCCApply();
+            }else{
+                this.handleSubmitApproveApply();
+            }
         }
     };
     handleDownLoadBPMN = () => {

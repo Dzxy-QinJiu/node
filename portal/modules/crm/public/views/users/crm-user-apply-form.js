@@ -123,7 +123,7 @@ class CrmUserApplyForm extends React.Component {
         paramItem.over_draft = Number(formData.over_draft);
         //用户类型，如果保持不变，就不需要传
         if(formData.user_type !== UNCHANGED_TYPE){
-            paramItem.user_type = formData.user_type;
+            paramItem.tags = [formData.user_type];
         }
 
         submitObj.users_or_grants = this.getSelectedUserMultiAppData().map(x => {

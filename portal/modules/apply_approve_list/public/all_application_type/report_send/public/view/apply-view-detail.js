@@ -18,7 +18,7 @@ import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
-import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS,FILES_LIMIT} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS,FILES_LIMIT,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {
     getApplyTopicText,
     getApplyResultDscr,

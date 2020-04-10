@@ -483,6 +483,7 @@ const COLUMN_WIDTH = {
             <ApplyHistory
                 sameHistoryApplyLists={sameHistoryApplyLists}
                 handleOpenApplyDetail={this.props.handleOpenApplyDetail}
+                refreshHistoryList={() => {}}
             />
         );
     },
@@ -1108,7 +1109,7 @@ const COLUMN_WIDTH = {
                 width: COLUMN_WIDTH.USER_TYPE,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
-                    let userType = app.user_type;//此处是后端穿过来的用户类型（正式用户、试用用户、training）
+                    let userType = _.get(app,'tags[0]');//此处是后端穿过来的用户类型（正式用户、试用用户、training）
                     if (userType) {
                         let type = _.find(userTypeList, type => type.value === userType);
                         if (type) {
@@ -2360,7 +2361,7 @@ const COLUMN_WIDTH = {
                     'user_name', 'nickname', 'begin_date', 'over_draft');
                 //如果修改了用户类型，需要把修改后的用户类型传过去
                 if (changedUserType) {
-                    item.user_type = changedUserType;
+                    item.tags = [changedUserType];
                 }
                 //延期时间为：自定义的到期时间时
                 if (isCustomDelayType(_.get(this.state, 'formData.delayTimeUnit'))) {
@@ -2379,17 +2380,17 @@ const COLUMN_WIDTH = {
                 if (appConfig && (!_.isEqual(appConfig.roles, x.roles) || !_.isEqual(appConfig.permissions, x.permissions))) {
                     // 传空数组，是为了在node端判断是否做了修改
                     if (_.isEmpty(appConfig.roles)) { // 把角色置空的情况
-                        item.roles = [];
+                        item.apply_roles = [];
                     } else {
-                        item.roles = _.map(appConfig.roles, roleId => {
+                        item.apply_roles = _.map(appConfig.roles, roleId => {
                             return {role_id: roleId};
                         });
                     }
 
                     if (_.isEmpty(appConfig.permissions)) { // 把权限置空的情况
-                        item.permissions = [];
+                        item.apply_permissions = [];
                     } else {
-                        item.permissions = _.map(appConfig.permissions, permissionId => {
+                        item.apply_permissions = _.map(appConfig.permissions, permissionId => {
                             return {permission_id: permissionId};
                         });
                     }
