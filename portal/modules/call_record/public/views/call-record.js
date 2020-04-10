@@ -905,6 +905,7 @@ class CallRecord extends React.Component {
     }
 
     render() {
+        //是否隐藏总数，蚁坊组织下的客户经理查看今天的数据时隐藏总数
         const isHideTotal = this.state.start_time === moment().startOf('day').valueOf() && commonMethodUtil.isEefungCustomerManager();
 
         return (<RightContent>
