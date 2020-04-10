@@ -105,7 +105,6 @@ exports.getUserInfo = function(req, res) {
                     //用户职务
                     userData.position = _.get(resultList, '[6].successData.teamrole_name', '');
                 } else {
-
                     //用户职务
                     userData.position = _.get(resultList, '[5].successData.teamrole_name', '');
                 }
