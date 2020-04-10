@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/28.
  */
 var ReportSendApplyAjax = require('../ajax/report-send-apply-ajax');
-var ReportSendUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
+var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import {getApplyDetailById,getApplyStatusById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import {checkIfLeader,substractUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
@@ -70,18 +70,18 @@ function ApplyViewDetailActions() {
                 //更新选中的申请单类型
                 //如果不是最后确认的那一步，状态就还是ongoing
                 if(obj.report_ids || obj.agree === 'reject' || obj.agree === 'cancel'){
-                    ReportSendUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
+                    ApplyApproveUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
                     substractUnapprovedCount(obj.report_ids);
                 }
                 _.isFunction(callback) && callback();
             }else{
                 //更新选中的申请单类型
-                ReportSendUtils.emitter.emit('updateSelectedItem', {status: 'error'});
+                ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});
                 this.dispatch({loading: false, error: true, errorMsg: Intl.get('fail.apply.approve.result','审批失败')});
             }
         }, (errMsg) => {
             //更新选中的申请单类型
-            ReportSendUtils.emitter.emit('updateSelectedItem', {status: 'error'});
+            ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errMsg});
         });
     };
@@ -93,15 +93,15 @@ function ApplyViewDetailActions() {
             _.isFunction(callback) && callback();
             if (data) {
                 this.dispatch({loading: false, error: false});
-                ReportSendUtils.emitter.emit('updateSelectedItem', {id: obj.id, cancel: true, status: 'success'});
+                ApplyApproveUtils.emitter.emit('updateSelectedItem', {id: obj.id, cancel: true, status: 'success'});
             }else {
                 this.dispatch({loading: false, error: true, errorMsg: errTip});
-                ReportSendUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
+                ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
             }
         }, (errMsg) => {
             _.isFunction(callback) && callback();
             this.dispatch({loading: false, error: true, errorMsg: errMsg || errTip});
-            ReportSendUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
+            ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
         });
     };
     //获取下一节点的负责人

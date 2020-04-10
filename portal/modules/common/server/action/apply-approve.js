@@ -57,8 +57,8 @@ exports.addBusinessWhileApply = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-exports.approveApplyPassOrReject = function(req, res) {
-    ApplyApproveService.approveApplyPassOrReject(req, res).on('success', function(data) {
+exports.approveBusinessWhileApplyPassOrReject = function(req, res) {
+    ApplyApproveService.approveBusinessWhileApplyPassOrReject(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -227,6 +227,27 @@ exports.downLoadReportSend = function(req, res) {
 };
 exports.deleteReportSend = function(req, res) {
     ApplyApproveService.deleteReportSend(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+exports.approveBusinessApplyPassOrReject = function(req, res) {
+    ApplyApproveService.approveBusinessApplyPassOrReject(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+exports.approveLeaveApplyPassOrReject = function(req, res) {
+    ApplyApproveService.approveLeaveApplyPassOrReject(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+exports.approveSalesOpportunityApplyPassOrReject = function(req, res) {
+    ApplyApproveService.approveSalesOpportunityApplyPassOrReject(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

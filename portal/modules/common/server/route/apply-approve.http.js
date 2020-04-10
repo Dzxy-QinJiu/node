@@ -58,7 +58,7 @@ module.exports = {
     }, {
         method: 'post',
         path: '/rest/business_while/submitApply',
-        handler: 'approveApplyPassOrReject',
+        handler: 'approveBusinessWhileApplyPassOrReject',
         passport: {
             needLogin: true
         },
@@ -125,6 +125,20 @@ module.exports = {
         passport: {
             needLogin: true
         },
+    },{
+        method: 'post',
+        path: '/rest/business_trip/submitApply',
+        handler: 'approveBusinessApplyPassOrReject',
+        passport: {
+            needLogin: true
+        },
+    },{
+        method: 'post',
+        path: '/rest/leave_apply/submitApply',
+        handler: 'approveLeaveApplyPassOrReject',
+        passport: {
+            needLogin: true
+        },
     }, {
         method: 'post',
         path: '/rest/reportsend/upload',
@@ -146,6 +160,13 @@ module.exports = {
         passport: {
             'needLogin': true
         }
-    }
+    }, {
+        method: 'post',
+        path: '/rest/sales_opportunity_apply/submitApply',
+        handler: 'approveSalesOpportunityApplyPassOrReject',
+        passport: {
+            needLogin: true
+        },
+    },
     ]
 };

@@ -11,25 +11,31 @@ var restApis = {
     //添加外出申请
     addBusinessWhileApply: '/rest/base/v1/workflow/businesstripawhile',
     //通过或者驳回申请
-    approveApplyPassOrReject: '/rest/base/v1/workflow/businesstripawhile/approve',
+    approveBusinessWhileApplyPassOrReject: '/rest/base/v1/workflow/businesstripawhile/approve',
     //修改外出申请的时间
     updateBusinessWhileCustomerTime: '/rest/base/v1/workflow/businesstripawhile/:id',
     //校验二级域名是否存在
     checkDomainExist: '/rest/customer/v3/customer/sub/domains',
     //添加销售机会申请
     addSalesOpportunityApply: '/rest/base/v1/workflow/businessopportunities',
+    //通过或者驳回申请
+    approveSalesOpportunityApplyPassOrReject: '/rest/base/v1/workflow/businessopportunities/approve',
     //添加出差申请
     addBusinessApply: '/rest/base/v1/workflow/businesstrip',
+    //通过或者驳回出差申请
+    approveBusinessApplyPassOrReject: '/rest/base/v1/workflow/businesstrip/approve',
     //修改出差申请的拜访时间
     updateVisitCustomerTime: '/rest/base/v1/workflow/businesstrip/:id',
     //添加请假申请
     addLeaveApply: '/rest/base/v1/workflow/leave',
+    //通过或者驳回申请
+    approveLeaveApplyPassOrReject: '/rest/base/v1/workflow/leave/approve',
     //添加舆情报送申请
     addReportSendApply: '/rest/base/v1/workflow/report/apply',
-    //添加文件撰写申请
-    addDocumentWriteApply: '/rest/base/v1/workflow/document/apply',
     //通过或者驳回申请
     approveOpinionreportApplyPassOrReject: '/rest/base/v1/workflow/opinionreport/approve',
+    //添加文件撰写申请
+    addDocumentWriteApply: '/rest/base/v1/workflow/document/apply',
     //文件撰写的通过或者驳回
     approveDocumentApplyPassOrReject: '/rest/base/v1/workflow/document/approve',
     //上传文件
@@ -101,10 +107,19 @@ exports.addBusinessWhileApply = function(req, res) {
         }, req.body);
 };
 //批准或驳回审批
-exports.approveApplyPassOrReject = function(req, res) {
+exports.approveBusinessWhileApplyPassOrReject = function(req, res) {
     return restUtil.authRest.post(
         {
-            url: restApis.approveApplyPassOrReject,
+            url: restApis.approveBusinessWhileApplyPassOrReject,
+            req: req,
+            res: res
+        }, req.body);
+};
+//批准或驳回审批
+exports.approveBusinessApplyPassOrReject = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.approveBusinessApplyPassOrReject,
             req: req,
             res: res
         }, req.body);
@@ -227,4 +242,22 @@ exports.deleteReportSend = function(req, res) {
             req: req,
             res: res
         }, null);
+};
+//批准或驳回审批
+exports.approveLeaveApplyPassOrReject = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.approveLeaveApplyPassOrReject,
+            req: req,
+            res: res
+        }, req.body);
+};
+//批准或驳回审批
+exports.approveSalesOpportunityApplyPassOrReject = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.approveSalesOpportunityApplyPassOrReject,
+            req: req,
+            res: res
+        }, req.body);
 };

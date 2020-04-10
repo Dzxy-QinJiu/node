@@ -6,6 +6,7 @@ import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 import {addApplyComments, getApplyCommentList, getApplyDetailById, cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 class ApplyViewDetailActions {
     constructor() {
@@ -75,20 +76,36 @@ class ApplyViewDetailActions {
             'setApplyFormDataComment',
         );
     }
-    
+
     //获取审批单详情
-    getApplyDetail(queryObj, status, applyData) {
+    getApplyDetail(queryObj, status, applyData, appList) {
         if (applyData){
             this.dispatch({loading: false, error: false, detail: applyData.detail, status: status});
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,_.get(applyData,'detail',''));
         }else{
-            getApplyDetailById(queryObj).then((detail) => {
-                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,detail);
-                this.dispatch({loading: false, error: false, detail: detail, status: status});
-            }, (errorMsg) => {
-                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID);
-                this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('user.get.apply.detail.failed', '获取申请审批详情失败')});
-            });
+            if (_.isEmpty(appList)) {
+                getAppList(appList => {
+                    getApplyDetailById(queryObj).then((detail) => {
+                        AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,detail);
+                        this.dispatch({loading: false, error: false, detail: detail ,approvalState: status, appList: appList});
+                    }, (errorMsg) => {
+                        AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID);
+                        this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('user.get.apply.detail.failed', '获取申请审批详情失败')});
+                    });
+                });
+            } else {
+                getApplyDetailById(queryObj).then((detail) => {
+                    AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,detail);
+                    this.dispatch({loading: false, error: false, detail: detail, approvalState: status, appList: appList});
+                }, (errorMsg) => {
+                    AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID);
+                    this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('user.get.apply.detail.failed', '获取申请审批详情失败')});
+                });
+            }
+
+
+
+
         }
     }
     //在审批详情中得到客户的id，然后根据客户的id获取历史申请审批

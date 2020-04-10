@@ -19,7 +19,7 @@ import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ApplyViewDetail from './view/apply-view-detail';
-var LeaveApplyUtils = require('./utils/leave-apply-utils');
+var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 let userData = require('../../../public/sources/user-data');
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 var NoData = require('CMP_DIR/analysis-nodata');
@@ -49,7 +49,7 @@ class LeaveApplyManagement extends React.Component {
             //不区分角色，都获取全部的申请列表
             this.getAllLeaveApplyList();
         }
-        LeaveApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
+        ApplyApproveUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_VISIT, this.pushDataListener);
         this.getUnreadReplyList();
         notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
@@ -127,7 +127,7 @@ class LeaveApplyManagement extends React.Component {
     componentWillUnmount() {
         LeaveApplyStore.unlisten(this.onStoreChange);
         LeaveApplyAction.setInitState();
-        LeaveApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
+        ApplyApproveUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.pushDataListener);
         notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }

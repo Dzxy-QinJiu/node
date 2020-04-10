@@ -1,6 +1,6 @@
 import AppUserAjax from '../ajax/app-user-ajax';
 import AppUserUtil from '../util/app-user-util';
-import ApplyApproveUtil from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+var ApplyApproveUtil = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
 import {updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';

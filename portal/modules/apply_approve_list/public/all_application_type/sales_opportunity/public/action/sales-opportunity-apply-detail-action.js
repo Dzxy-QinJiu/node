@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/28.
  */
 var SalesOpportunityApplyAjax = require('../ajax/sales-opportunity-apply-ajax');
-var SalesOpportunityApplyUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
+var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import {message} from 'antd';
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import {cancelApplyApprove, getApplyDetailById,getApplyCommentList,addApplyComments} from 'PUB_DIR/sources/utils/apply-common-data-utils';
@@ -69,19 +69,19 @@ function ApplyViewDetailActions() {
             //返回的data是true才是审批成功的，false也是审批失败的
             if (data){
                 //更新选中的申请单类型
-                SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
+                ApplyApproveUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
                 substractUnapprovedCount(obj.id);
                 this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
                 _.isFunction(callback) && callback(true);
             }else{
-                SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});
+                ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});
                 this.dispatch({loading: false, error: true, errorMsg: Intl.get('errorcode.19', '审批申请失败')});
                 _.isFunction(callback) && callback(false);
             }
         }, (errorMsg) => {
             _.isFunction(callback) && callback(false);
             //更新选中的申请单类型
-            SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});
+            ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
@@ -93,16 +93,16 @@ function ApplyViewDetailActions() {
             _.isFunction(callback) && callback();
             if (data) {
                 this.dispatch({loading: false, error: false});
-                SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {id: obj.id, cancel: true, status: 'success'});
+                ApplyApproveUtils.emitter.emit('updateSelectedItem', {id: obj.id, cancel: true, status: 'success'});
             }else {
                 this.dispatch({loading: false, error: true, errorMsg: errTip});
-                SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
+                ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
             }
         }, (errorMsg) => {
             _.isFunction(callback) && callback();
             var errMsg = errorMsg || errTip;
             this.dispatch({loading: false, error: true, errorMsg: errMsg});
-            SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
+            ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
             message.error(errMsg);
         });
     };
