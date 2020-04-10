@@ -1162,7 +1162,7 @@ const ApplyViewDetail = createReactClass({
             let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
             terminalsName = _.map(appTerminals, 'name');
         } else {
-            let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
+            let appTerminals = approveAppConfigTerminal(appId, this.props.appList);
             terminalsName = _.map(appTerminals, 'name');
         }
         return terminalsName;
