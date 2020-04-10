@@ -1,10 +1,11 @@
 require('../css/user-login-analysis.less');
+import ajax from 'ant-ajax';
 import CardContainer from 'CMP_DIR/card-container'; // 容器
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import DetailCard from 'CMP_DIR/detail-card';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
-import { Progress, Tooltip, Icon, Alert, Select, Popover, Checkbox } from 'antd';
+import { Alert, message } from 'antd';
 import classNames from 'classnames';
 import userManagePrivilege from '../privilege-const';
 
@@ -19,7 +20,16 @@ class PaymentRecords extends React.Component {
     }
 
     getPaymentRecordList = () => {
-        //获取用户基础评分规则
+        ajax.send({
+            url: '/rest/base/v1/realm/pay/tradeorders',
+            query: {user_id: this.props.userId}
+        })
+            .done(result => {
+                result = _.unionBy(result, 'name');
+            })
+            .fail(err => {
+                message.error(err);
+            });
     };
 
     render() {
