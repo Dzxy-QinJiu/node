@@ -101,10 +101,14 @@ exports.getUserInfo = function(req, res) {
                 //已经配置过的流程
                 if(hasWorkFlowPrivilege){
                     userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[5].successData', []));
-                }
 
-                //用户职务
-                userData.position = _.get(resultList, '[6].successData.teamrole_name', '');
+                    //用户职务
+                    userData.position = _.get(resultList, '[6].successData.teamrole_name', '');
+                } else {
+
+                    //用户职务
+                    userData.position = _.get(resultList, '[5].successData.teamrole_name', '');
+                }
             }
             emitter.emit('success', userData);
         } else if (userInfoResult.errorData) {//只有用户信息获取失败时，才返回失败信息
