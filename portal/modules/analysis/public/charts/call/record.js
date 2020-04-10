@@ -4,7 +4,7 @@
 
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import { Checkbox, Popover } from 'antd';
-const { isAdminRole, isManagerOrOpRole } = require('PUB_DIR/sources/utils/common-method-util');
+const { isAdminRole, isManagerOrOpRole, isEefungCustomerManager } = require('PUB_DIR/sources/utils/common-method-util');
 
 export function getCallRecordChart(paramObj = {}) {
     let title = Intl.get('analysis.call.record.statistics', '通话记录统计');
@@ -48,6 +48,17 @@ export function getCallRecordChart(paramObj = {}) {
         layout: {sm: 24},
         height: 'auto',
         chartType: 'table',
+        noShowCondition: {
+            callback: () => {
+                const startTime = _.get(paramObj, 'Store.startTime');
+
+                if (startTime && startTime >= moment().startOf('day').valueOf() && isEefungCustomerManager()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+        },
         url: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
         ajaxInstanceFlag: 'getCallRecordStatistics',
         processData: (data, chart, analysisInstance, chartIndex) => {
