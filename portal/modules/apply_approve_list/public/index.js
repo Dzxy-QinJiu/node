@@ -435,9 +435,10 @@ class ApplyApproveList extends React.Component {
             unreadMyApproveCount = getAllUnhandleApplyCount();//我审批的数量
         _.each(APPLY_APPROVE_TAB_TYPES, (item) => {
             var val = _.get(item, 'value');
-            if (APPLY_TYPE.APPLY_BY_ME === val) {
-                this.renderUnhandleNum(val, unreadMyReplyCount, false);
-            }
+            //todo 暂时无法展示，得后端在推送消息中加上申请人的信息后才可以
+            // if (APPLY_TYPE.APPLY_BY_ME === val) {
+            //     this.renderUnhandleNum(val, unreadMyReplyCount, false);
+            // }
             if (APPLY_TYPE.APPLY_BY_TEAM === val) {
                 this.renderUnhandleNum(val, unreadTeamReplyCount, false);
             }
