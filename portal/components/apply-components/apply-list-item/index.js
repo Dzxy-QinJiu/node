@@ -40,9 +40,10 @@ class ApplyListItem extends React.Component {
             >
                 <dl>
                     <dt>
-                        <span>{_.get(obj,'detail.user_apply_name') || getApplyTopicText(obj)}</span>
-                        {this.props.hasUnreadReply ? <span className="iconfont icon-apply-message-tip"
-                            title={Intl.get('user.apply.unread.reply', '有未读回复')}/> : null}
+                        <span className='user-apply-name'>{_.get(obj,'detail.user_apply_name') || getApplyTopicText(obj)}
+                            {this.props.hasUnreadReply ? <span className="iconfont icon-apply-message-tip"
+                                title={Intl.get('user.apply.unread.reply', '有未读回复')}/> : null}
+                        </span>
                         <em className={btnClass}>{getApplyStateText(obj)}</em>
                     </dt>
                     {_.get(obj, 'detail.customer_name') ?

@@ -177,7 +177,7 @@ function applyApproveNumListener(data) {
             applyApprovesgObj.consumers.forEach(function(consumer) {
                 //将数据推送到浏览器
                 //如果是将销售的拜访结果推送给邮件抄送人
-                if(applyApprovesgObj.type && applyApprovesgObj.type === 'customer_visit' ){
+                if(applyApprovesgObj.type && applyApprovesgObj.type === 'customer_visit' ){//这里的处理不会影响待审批数量，因为有新的审批的时候，applyApprovesgObj没有type属性，只有在将销售的拜访结果推送给邮件抄送人的时候，才有这个字段为customer_visit
                     console.log(applyApprovesgObj);
                     emitMsgBySocket(consumer, 'applyVisitCustomerMsg', pushDto.applyVisitCustomerMsgToFrontend(applyApprovesgObj, consumer));
                 }else{

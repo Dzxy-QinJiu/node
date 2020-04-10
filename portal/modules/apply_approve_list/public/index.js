@@ -424,20 +424,24 @@ class ApplyApproveList extends React.Component {
             </ul>
         );
     };
+    getUnreadReplyList = () => {
+        const {activeApplyTab, unreadMyReplyList, unreadTeamReplyList} = this.state;
+        return activeApplyTab === APPLY_TYPE.APPLY_BY_ME ? unreadMyReplyList : unreadTeamReplyList;
+    };
     showUnhandleApplyTip = () => {
         const {unreadMyReplyList, unreadTeamReplyList} = this.state;
         var unreadMyReplyCount = _.get(unreadMyReplyList, 'length'),
             unreadTeamReplyCount = _.get(unreadTeamReplyList, 'length'),
-            unreadMyApproveCount = getAllUnhandleApplyCount();
+            unreadMyApproveCount = getAllUnhandleApplyCount();//我审批的数量
         _.each(APPLY_APPROVE_TAB_TYPES, (item) => {
             var val = _.get(item, 'value');
-            if (APPLY_TYPE.APPLY_BY_ME === val && unreadMyReplyCount > 0) {
+            if (APPLY_TYPE.APPLY_BY_ME === val) {
                 this.renderUnhandleNum(val, unreadMyReplyCount, false);
             }
-            if (APPLY_TYPE.APPLY_BY_TEAM === val && unreadTeamReplyCount > 0) {
+            if (APPLY_TYPE.APPLY_BY_TEAM === val) {
                 this.renderUnhandleNum(val, unreadTeamReplyCount, false);
             }
-            if (APPLY_TYPE.APPROVE_BY_ME === val && unreadMyApproveCount > 0) {
+            if (APPLY_TYPE.APPROVE_BY_ME === val) {
                 this.renderUnhandleNum(val, unreadMyApproveCount, true);
             }
         });
@@ -792,10 +796,7 @@ class ApplyApproveList extends React.Component {
     afterTransferApplySuccess = (id) => {
         UserApplyActions.afterTransferApplySuccess(id);
     };
-    getUnreadReplyList = () => {
-        const {activeApplyTab, unreadMyReplyList, unreadTeamReplyList} = this.state;
-        return activeApplyTab === APPLY_TYPE.APPLY_BY_ME ? unreadMyReplyList : unreadTeamReplyList;
-    };
+
     //当前展示的详情是否是有未读回复的详情
     getIsUnreadDetail = () => {
         const {selectedDetailItem} = this.state;

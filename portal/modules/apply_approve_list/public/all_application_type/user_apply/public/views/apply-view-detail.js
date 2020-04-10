@@ -1058,7 +1058,7 @@ const COLUMN_WIDTH = {
             let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
             terminalsName = _.map(appTerminals, 'name');
         } else {
-            let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
+            let appTerminals = approveAppConfigTerminal(terminals, appId, this.props.appList);
             terminalsName = _.map(appTerminals, 'name');
         }
         return terminalsName;

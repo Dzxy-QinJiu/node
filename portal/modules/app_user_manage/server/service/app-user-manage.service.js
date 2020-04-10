@@ -549,7 +549,7 @@ exports.getApplyDetail = function(req, res) {
         //延期（多应用）
         // 延期申请需要配置多终端信息
         if (applyBasicDetail.type === CONSTANTS.DELAY_MULTI_APP) {
-            if (applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_FALSE ||//待审批，未修改用户类型时
+            if (applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_FALSE ||//待审批
                 applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_PASS) {//通过时
                 // 获取此用户在各应用的角色和用户类型
                 getAppsUserRolesType(req, res, applyBasicDetail, emitter);
