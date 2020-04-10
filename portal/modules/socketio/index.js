@@ -304,9 +304,12 @@ function systemNoticeListener(notice) {
 function applyUnreadReplyListener(unreadList) {
     pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
     if (_.get(unreadList, '[0]')) {
+        //todo 这里需要拿到申请人的id，因为有我申请的tab要展示有未读回复的标识，现在这个地方还有问题，待后端调试
+        var applicateId = _.chain(unreadList).last().get('member_id').value();
         _.each(unreadList, unreadReply => {
             if (unreadReply.member_id) {
                 //找到消息接收者对应的socket，将数据推送到浏览器
+                unreadReply.applicateId = applicateId;
                 emitMsgBySocket(unreadReply.member_id, 'apply_unread_reply', pushDto.unreadReplyToFrontend(unreadReply));
             }
         });

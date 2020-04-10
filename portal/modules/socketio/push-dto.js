@@ -96,6 +96,7 @@ exports.unreadReplyToFrontend = function(unreadReply) {
         comment_id: unreadReply.id,//回复的id
         id: unreadReply.apply_id,//有未读回复的申请id
         type: unreadReply.type || '',//未读回复的类型
+        applicateId: unreadReply.applicateId//申请人的id
     };
 };
 //线索数量变化后的数据
