@@ -835,9 +835,10 @@ class TeamDataColumn extends React.Component {
     }
 
     render() {
+        let title = (<React.Fragment><i className='iconfont icon-my-data column-title-icon'/> {Intl.get('home.page.my.data', '我的数据')}</React.Fragment>);
         return (
             <CardColumnItem contianerClass='team-data-wrap'
-                title={Intl.get('home.page.my.data', '我的数据')}
+                title={title}
                 content={this.renderTeamDataContent()}
             />);
     }
