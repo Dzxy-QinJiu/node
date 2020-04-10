@@ -25,7 +25,7 @@ class PaymentRecords extends React.Component {
             query: {user_id: this.props.userId}
         })
             .done(result => {
-                result = _.unionBy(result, 'name');
+                this.setState({ paymentRecordList: result.list });
             })
             .fail(err => {
                 message.error(err);
@@ -44,7 +44,7 @@ class PaymentRecords extends React.Component {
                                     type="info"
                                     showIcon={true}
                                 />
-                            </div>                            
+                            </div>
                         ) : (
                             <div>
                                 {_.map(this.state.paymentRecordList, (item, index) => (
@@ -52,8 +52,8 @@ class PaymentRecords extends React.Component {
                                         className=""
                                         key={index}
                                         titleBottomBorderNone={false}
-                                        title=""
-                                        content={null}
+                                        title={item.goods.name}
+                                        content={this.renderCardContent(item)}
                                         isShowToggleBtn={true}
                                         isExpandDetail={true}
                                         isMutipleCard={true}
@@ -64,6 +64,31 @@ class PaymentRecords extends React.Component {
                     </GeminiScrollbar>
                 </div>
             </StatusWrapper>
+        );
+    }
+
+    renderCardContent(record) {
+        const platform = _.find(record.pay_response, item => item.type === record.pay_type);
+        const platformOrderId = _.get(platform, 'order_id', '');
+
+        return (
+            <div className="field-list">
+                <div className="field-item">
+                    付款时间：{record.finish_time}
+                </div>
+                <div className="field-item">
+                    付款金额：{record.total_fee}
+                </div>
+                <div className="field-item">
+                    订单编号：{record.trade_no}
+                </div>
+                <div className="field-item">
+                    支付平台：{record.pay_type}
+                </div>
+                <div className="field-item">
+                    平台订单号：{platformOrderId}
+                </div>
+            </div>
         );
     }
 }
