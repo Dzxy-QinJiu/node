@@ -905,8 +905,7 @@ class CallRecord extends React.Component {
     }
 
     render() {
-        const startTime = _.get(this.datePicker, 'state.start_time');
-        const isHideTotal = startTime && startTime === moment().format('YYYY-MM-DD') && commonMethodUtil.isEefungCustomerManager();
+        const isHideTotal = this.state.start_time === moment().startOf('day').valueOf() && commonMethodUtil.isEefungCustomerManager();
 
         return (<RightContent>
             <div className="call_record_content">
@@ -916,7 +915,6 @@ class CallRecord extends React.Component {
                             className="btn-item">{this.state.isFilter ? Intl.get('call.record.cancel.search', '取消搜索') : Intl.get('sales.team.search', '搜索')}</Button>
                     </div>
                     <DatePicker
-                        ref={ref => this.datePicker = ref}
                         className="btn-item"
                         disableDateAfterToday={true}
                         range="day"
