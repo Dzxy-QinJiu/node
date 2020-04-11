@@ -15,7 +15,7 @@ import RightPanelScrollBar from 'MOD_DIR/crm/public/views/components/rightPanelS
 import ErrorDataTip from 'MOD_DIR/crm/public/views/components/error-data-tip';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import {editCluePrivilege} from '../../utils/clue-customer-utils';
-
+import DetailCard from 'CMP_DIR/detail-card';
 class CrmSchedule extends React.Component {
     state = {
         clueId: this.props.curClue.id || '',
@@ -195,17 +195,19 @@ class CrmSchedule extends React.Component {
     renderScheduleLists = () => {
         if (_.get(this.state, 'scheduleList[0]')) {
             return (
-                <TimeLine
-                    list={this.state.scheduleList}
-                    groupByDay={true}
-                    groupByYear={true}
-                    timeField="start_time"
-                    renderTimeLineItem={this.renderTimeLineItem}
-                    relativeDate={false}
+                <DetailCard content={(
+                    <TimeLine
+                        list={this.state.scheduleList}
+                        groupByDay={true}
+                        groupByYear={true}
+                        timeField="start_time"
+                        renderTimeLineItem={this.renderTimeLineItem}
+                        relativeDate={false}
+                    />)}
                 />);
         } else {
             //加载完成，没有数据的情况
-            return <NoDataIconTip tipContent={Intl.get('common.no.more.schedule', '暂无计划')}/>;
+            return <NoDataIconTip tipContent={Intl.get('common.no.more.schedule', '暂无计划')} />;
         }
     };
 

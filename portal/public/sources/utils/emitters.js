@@ -52,18 +52,22 @@ exports.cardEmitter.ADD_CARD = 'addCard';
 //申请消息的emitter
 exports.notificationEmitter = new EventEmitter();
 exports.notificationEmitter.UPDATE_NOTIFICATION_UNREAD = 'updateNotificationUnread';
-exports.notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT = 'showUnhandledApplyCount';
 
-exports.notificationEmitter.APPLY_UPDATED = 'applyUpdated';
-exports.notificationEmitter.APPLY_UPDATED_CUSTOMER_VISIT = 'applyUpdatedCustomerVisit';
-exports.notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY = 'applyUpdatedSalesOpportunity';
-exports.notificationEmitter.APPLY_UPDATED_LEAVE = 'applyUpdatedLeave';
-exports.notificationEmitter.APPLY_UPDATED_MEMBER_INVITE = 'applyUpdatedMemberInvite';
-exports.notificationEmitter.APPLY_UPDATED_REPORT_SEND = 'applyUpdatedReportSend';
-exports.notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE = 'applyUpdatedDocumentWrite';
-exports.notificationEmitter.APPLY_UPDATED_VISIT = 'applyUpdatedVisit';
-exports.notificationEmitter.APPLY_UPDATED_DOMAIN = 'applyUpdatedDomain';
-exports.notificationEmitter.APPLY_UPDATED_BUSINESS_WHILE = 'applyUpdateBusinessWhile';
+//更新未审批申请的数量
+exports.notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT = 'showUnhandledApplyApproveCount';
+//展示申请审批刷新的提示
+exports.notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_TIP = 'showUnhandledApplyApproveTip';
+// exports.notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT = 'showUnhandledApplyCount';
+// exports.notificationEmitter.APPLY_UPDATED = 'applyUpdated';
+// exports.notificationEmitter.APPLY_UPDATED_CUSTOMER_VISIT = 'applyUpdatedCustomerVisit';
+// exports.notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY = 'applyUpdatedSalesOpportunity';
+// exports.notificationEmitter.APPLY_UPDATED_LEAVE = 'applyUpdatedLeave';
+// exports.notificationEmitter.APPLY_UPDATED_MEMBER_INVITE = 'applyUpdatedMemberInvite';
+// exports.notificationEmitter.APPLY_UPDATED_REPORT_SEND = 'applyUpdatedReportSend';
+// exports.notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE = 'applyUpdatedDocumentWrite';
+// exports.notificationEmitter.APPLY_UPDATED_VISIT = 'applyUpdatedVisit';
+// exports.notificationEmitter.APPLY_UPDATED_DOMAIN = 'applyUpdatedDomain';
+// exports.notificationEmitter.APPLY_UPDATED_BUSINESS_WHILE = 'applyUpdateBusinessWhile';
 //未处理的线索数量
 exports.notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT = 'showUnhandledClueCount';
 //更新待我处理的数据
@@ -74,12 +78,12 @@ exports.notificationEmitter.UPDATE_CLUE = 'updateClue';
 exports.notificationEmitter.UPDATED_HANDLE_CLUE = 'updateMyHandleClue';
 //电话系统初始化成功
 exports.notificationEmitter.PHONE_INITIALIZE = 'phoneInitialize';
-//未审批申请的数量
-exports.notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT = 'showUnhandledApplyApproveCount';
-//申请审批未读回复
-exports.notificationEmitter.APPLY_UNREAD_REPLY = 'applyUnreadReply';
-//其他申请审批未读回复
-exports.notificationEmitter.DIFF_APPLY_UNREAD_REPLY = 'diffApplyUnreadReply';
+//我的申请审批未读回复
+exports.notificationEmitter.MY_UNREAD_REPLY = 'myUnreadReply';
+//团队的申请审批未读回复
+exports.notificationEmitter.TEAM_UNREAD_REPLY = 'teamUnreadReply';
+//查看了一个审批的回复，
+exports.notificationEmitter.CLEAR_UNREAD_REPLY = 'clearUnreadReply';
 //刷新系统消息的emitter
 exports.notificationEmitter.SYSTEM_NOTICE_UPDATED = 'systemNoticeUpdated';
 // 点击系统通知框的emitter

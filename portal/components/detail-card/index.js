@@ -56,7 +56,8 @@ class DetailCard extends React.Component {
             Intl.get('crm.basic.detail.show', '展开详情');
         //若果没有标题时，编辑状态的内容不显示border
         let contentCl = classNames('detail-card-content', {
-            'card-content-edit-status': this.props.isEdit && this.props.title
+            'card-content-edit-status': this.props.isEdit && this.props.title,
+            'content-no-padding': this.props.contentNoPadding
         });
         return (
             <div className={className} style={{height: this.props.height || 'auto'}}>
@@ -122,6 +123,7 @@ DetailCard.defaultProps = {
     isExpandDetail: false, // 是否展示详情，默认不展示
     isShowToggleBtn: false, // 是否显示展示收起按钮，默认false
     isMutipleCard: false, // 是否一次显示多个卡片
+    contentNoPadding: false,//卡片内容展示区是否有默认的16px的padding
     handleToggleDetail: function() {
     }
 };
@@ -146,5 +148,6 @@ DetailCard.propTypes = {
     isExpandDetail: PropTypes.bool,
     handleToggleDetail: PropTypes.func,
     isMutipleCard: PropTypes.bool, // 是否同时显示多个卡片
+    contentNoPadding: PropTypes.bool,
 };
 export default DetailCard;

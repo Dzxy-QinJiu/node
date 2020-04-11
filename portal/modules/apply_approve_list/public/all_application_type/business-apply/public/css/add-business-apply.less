@@ -1,0 +1,96 @@
+@import "../../../../../../../public/css/common-variables";
+.add-leave-apply-container.right-pannel-default{
+  width: 504px!important;
+  background-color:transparent!important;
+  transform: translateX(504px);
+  overflow: visible;
+  .iconfont.icon-close.add—leave-apply-close-btn{
+    color: #fff;
+    background-color: #8ea9c4;
+    border-radius: 0 !important;
+    width: 24px;
+    height: 24px;
+    float: left;
+    font-size: 14px;
+  }
+  .add-leave-form{
+    margin-right: 20px;
+  }
+  //添加出差申请的面板
+  .add-leave-apply-wrap{
+    float: left;
+    height: 100%;
+    width: 480px !important;
+    background-color: @NOTICE-BACKGROUND !important;
+    position: relative;
+    box-shadow: -4px 0 20px @box_shadow_color;
+    .add-leave-apply-form-wrap{
+      padding: 20px 0 20px 0;
+        form {
+          .ant-form-item{
+            width:100%;
+            .ant-calendar-picker{
+              float: left;
+              width: 50%;
+            }
+            input, textarea, .ant-select{
+              width: 100%
+            }
+            .ant-form-item-label label{
+              font-size: 14px;
+              color:@secondary-font-color;
+            }
+            .ant-form-explain{
+              text-align: left;
+            }
+          }
+          .ant-form-item.add-apply-time{
+            .anticon.anticon-cross-circle.ant-calendar-picker-clear{
+                display: none;
+            }
+            .ant-select{
+              float: left;
+              width: 50%;
+            }
+          }
+          .total-range{
+            text-align: left;
+            color: #53575a;
+          }
+          .customer_search_wrap {
+            .customer_suggest_tip{
+              text-align: left;
+            }
+          }
+          .customer-milestone{
+            float: left;
+            margin-left: 10px;
+            color: @secondary-font-color;
+          }
+          .submit-button-container{
+            text-align: right;
+            margin-top:10px;
+            .submit-btn{
+              margin-right:10px;
+            }
+            button{
+              font-size: 14px;
+            }
+            .indicator{
+              .ant-alert{
+                width: 180px;
+                margin:0 auto;
+              }
+            }
+          }
+          .contact-way-container{
+            overflow: visible;
+            .contact-wrap{
+              overflow: visible;
+              padding:10px 0;
+            }
+          }
+        }
+    }
+  }
+}

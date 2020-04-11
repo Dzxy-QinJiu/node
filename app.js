@@ -50,6 +50,10 @@ if (config.webpackMode !== 'production') {
 }
 app.use('/static/', express.static(path.join(__dirname, './portal/static')));
 app.use('/upload/', express.static(path.join(__dirname, 'upload')));
+//添加微信小程序认证文件
+app.use('/6CMRQ4Aa8c.txt', function(req, res) {
+    res.sendFile(path.resolve(__dirname, './portal/static/6CMRQ4Aa8c.txt'));
+});
 
 app.use(require('./portal/lib/middlewares/accesslog'));
 //handle request entity too large

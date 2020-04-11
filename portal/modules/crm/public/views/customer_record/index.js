@@ -46,6 +46,7 @@ import {audioMsgEmitter, myWorkEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/u
 import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util'; //判断是否在蚁坊域
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {getDetailLayoutHeight} from '../../utils/crm-util';
+import DetailCard from 'CMP_DIR/detail-card';
 //除去固定的电话、拜访、其他以外的类型的缓存数据，获取后存起来，不用每次都取
 let extraTraceTypeList = [];
 class CustomerRecord extends React.Component {
@@ -972,7 +973,7 @@ class CustomerRecord extends React.Component {
                     {this.props.isOverViewPanel ? null : this.renderDatePicker()}
                     {hasAddRecordPrivilege ? this.renderAddRecordButton() : null}
                 </div>
-                {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : null}
+                {this.state.addRecordPanelShow ? (<DetailCard className='customer-trace-card' content={this.renderAddRecordPanel()}/>) : null}
                 <div className="show-container" id="show-container">
                     {this.props.isOverViewPanel ? null : this.renderStatisticTabs()}
                     {this.isStatusFilterShow() ? (

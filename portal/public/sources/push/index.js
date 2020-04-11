@@ -1,3 +1,5 @@
+import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
+
 /**
  * Created by wangliping on 2016/6/22.
  */
@@ -24,15 +26,20 @@ import {
     APPLY_APPROVE_TYPES,
     DIFF_APPLY_TYPE_UNREAD_REPLY,
     CALL_TYPES,
-    CLUE_HIDE_NOTICE_TYPE
+    CLUE_HIDE_NOTICE_TYPE,
 } from '../utils/consts';
 import logoSrc from './notification.png';
 import userData from '../user-data';
 import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
 import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
-import {getClueUnhandledPrivilege, getUnhandledClueCountParams, isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
-import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import {
+    getClueUnhandledPrivilege,
+    getUnhandledClueCountParams,
+    isKetaoOrganizaion,
+    substractUnapprovedCount
+} from 'PUB_DIR/sources/utils/common-method-util';
+
 const session = storageUtil.session;
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
@@ -62,6 +69,8 @@ var contactNameObj = {};
 var socketIo;
 var hasAddCloseBtn = false;
 import history from 'PUB_DIR/sources/history';
+import {getWorklistApplyList} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+
 var clueTotalCount = 0;
 const CLUE_MAX_NUM = 3;//最多展示线索通知框的个数
 //推送过来新的消息后，将未读数加/减一
@@ -84,13 +93,15 @@ function updateUnreadByPushMessage(type, isAdd, isAddLists) {
             //把待我处理的线索的数量更新一下
             Oplate.unread['unhandleClue'] = _.get(isAdd,'pending_num',0);
         }
+        //如果是待我审批的申请
+        if (type === 'unhandleApply' && _.isArray(isAddLists) && _.isArray(_.get(Oplate, 'unread.unhandleApplyList'))) {
+            Oplate.unread['unhandleApplyList'] = _.concat(Oplate.unread['unhandleApplyList'], isAddLists);
+        }
         if (timeoutFunc) {
             clearTimeout(timeoutFunc);
         }
         //向展示的组件发送数据
         timeoutFunc = setTimeout(function() {
-            //待审批数的刷新展示
-            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
             //刷新未读消息数
             // notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
             //刷新线索未处理的数量
@@ -100,88 +111,6 @@ function updateUnreadByPushMessage(type, isAdd, isAddLists) {
         }, timeout);
     }
 }
-/**
- * 监听弹出消息。
- * @param data
- */
-function listenOnMessage(data) {
-    if (_.isObject(data)) {
-        switch (data.message_type) {
-            case 'apply':
-                //有新的未处理的申请消息时,只修改待审批数，不用展示
-                //申请审批列表弹出，有新数据，是否刷新数据的提示
-                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-                //将待审批数加一（true）
-                updateUnreadByPushMessage('approve', true);
-                break;
-            case 'reply':
-                //批复类型
-                if (!userData.hasRole('realm_manager')) {
-                    //批复类型的通知，不通知管理员
-                    notifyApplyInfo(data);
-                }
-                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-                //将审批后的申请消息未读数加一（true）
-                // updateUnreadByPushMessage('apply', true);
-                //待审批数减一
-                updateUnreadByPushMessage('approve', false);
-                break;
-            case 'notice':
-                //有新的抄送的申请消息时,只展示，不用修改审批数量
-                //申请审批列表弹出，有新数据，是否刷新数据的提示
-                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-                notifyApplyInfo(data);
-                break;
-        }
-    }
-}
-//todo 审批推送
-//更新申请审批的数量
-function applyApproveUnhandledListener(data) {
-    if (_.isObject(data)) {
-        if (data.message_type.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1 ){
-            updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND, true);
-            notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_REPORT_SEND, data);
-        }
-        if (data.message_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1){
-            updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE, true);
-            notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE, data);
-        }
-        switch (data.message_type) {
-            case APPLY_APPROVE_TYPES.CUSTOMER_VISIT:
-                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT, true);
-                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_CUSTOMER_VISIT, data);
-                break;
-            case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES:
-                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES, true);
-                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY, data);
-                break;
-            case APPLY_APPROVE_TYPES.PERSONAL_LEAVE:
-                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE, true);
-                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_LEAVE, data);
-                break;
-            case APPLY_APPROVE_TYPES.MEMBER_INVITE:
-                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEMBERINIVTE, true);
-                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, data);
-                break;
-            case SELF_SETTING_FLOW.VISITAPPLYTOPIC:
-                //这里应该用的是拜访申请手动输入的名字
-                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY, true);
-                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_VISIT, data);
-                break;
-            case SELF_SETTING_FLOW.DOMAINAPPLYTOPIC:
-                //这里应该用的是舆情平台申请手动输入的名字
-                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY, true);
-                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_DOMAIN, data);
-                break;
-            case APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE:
-                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY, true);
-                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_BUSINESS_WHILE, data);
-                break;
-        }
-    }
-
-}
 window.closeAllNoty = function() {
     clueTotalCount = 0;
     hasAddCloseBtn = false;
@@ -189,23 +118,25 @@ window.closeAllNoty = function() {
     $.noty.closeAll();
 };
 //打开线索列表，同时将新分配的线索加上new的标识
-window.openAllClues = function(){
+window.openAllClues = function() {
     history.push('/leads', {refreshClueList: true});
 };
+
 //是自己提取的线索或者是自己添加的线索
 function isExtractOrAddByMe(data) {
     //如果是推荐线索提取的类型或者是线索池提取的类型
-    const extractType = _.includes(CLUE_HIDE_NOTICE_TYPE, _.get(data,'type'));
+    const extractType = _.includes(CLUE_HIDE_NOTICE_TYPE, _.get(data, 'type'));
     //并且是登录人操作的
-    const isOperatedByMe = _.get(data,'operator_id','') === userData.getUserData().user_id;
+    const isOperatedByMe = _.get(data, 'operator_id', '') === userData.getUserData().user_id;
     return extractType && isOperatedByMe;
 }
+
 //处理线索的数据
 function clueUnhandledListener(data) {
     let isOpenPopUpNotify = getNotifyStatus();
     if (_.isObject(data)) {
-        if (getClueUnhandledPrivilege()){
-            var clueList = _.get(data, 'clue_list',[]);
+        if (getClueUnhandledPrivilege()) {
+            var clueList = _.get(data, 'clue_list', []);
             updateUnreadByPushMessage('unhandleClue', data);
             notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, data);
         }
@@ -231,12 +162,12 @@ function clueUnhandledListener(data) {
                     return;
                 }
                 clueTotalCount++;
-                var clueHtml = '',titleHtml = '';
+                var clueHtml = '', titleHtml = '';
                 titleHtml += '<p class="clue-title">' + '<span class="title-tip">' + title + '</span>';
                 _.each(clueArr, (clueItem) => {
                     clueHtml +=
-                        '<p class="clue-item" title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(_.get(clueItem,'id','')) + ')\'>' +
-                        '<span class=\'clue-item-name\'>' + _.get(clueItem,'name','') + '</span>' +
+                        '<p class="clue-item" title=\'' + Intl.get('clue.click.show.clue.detail', '点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(_.get(clueItem, 'id', '')) + ')\'>' +
+                        '<span class=\'clue-item-name\'>' + _.get(clueItem, 'name', '') + '</span>' +
                         '<span class=\'clue-detail\'>' +
                         Intl.get('call.record.show.customer.detail', '查看详情') +
                         '<i class=\'great-than\'>&gt;</i>' +
@@ -256,10 +187,10 @@ function clueUnhandledListener(data) {
                             //关闭之后，队列中还有几个未展示的提醒
                             clueTotalCount > 0 && clueTotalCount--;
                             var addtionClueCount = clueTotalCount - CLUE_MAX_NUM;//还未展示的线索提醒的数量
-                            if (addtionClueCount === 0){
+                            if (addtionClueCount === 0) {
                                 hasAddCloseBtn = false;
                                 $('#noty-quene-tip-container').remove();
-                            }else if(addtionClueCount > 0 && hasAddCloseBtn){
+                            } else if (addtionClueCount > 0 && hasAddCloseBtn) {
                                 var queueNum = $('#queue-num');
                                 if (queueNum) {
                                     queueNum.text(addtionClueCount);
@@ -293,18 +224,44 @@ ${Intl.get('clue.close.all.noty', '关闭全部')}</a></p>`);
     }
 
 }
+// /**
+//  * 监听弹出消息。
+//  * @param data
+//  */
+function listenOnMessage(data) {
+    if (_.isObject(data)) {
+        notifyApplyInfo(data);
+    }
+}
 
+//TODO 待我审批的申请推送
+function applyApproveUnhandledListener(data) {
+    if (_.isObject(data)) {
+        var applyList = _.get(data, 'apply_list', []);
+        updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEAPPLY, applyList.length, applyList);
+        notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_TIP, data);
+    }
+}
+//我的一条待我审批被其他人审批了的推送
+function applyApproveApprovedByOtherListener(data) {
+    if(_.isArray(data.apply_list)){
+        _.each(data.apply_list,item => {
+            substractUnapprovedCount(item.id);
+        });
+    }
+}
 //处理释放客户的数据
 function crmReleaseListener(data) {
     let isOpenPopUpNotify = getNotifyStatus();
     if (_.isObject(data)) {
-        var crmReleaseLength = _.get(data, 'customer_ids.length',0);
-        var title = Intl.get( 'crm.customer.release.customer', '释放客户'),tipContent = Intl.get('crm.customer.release.push.tip', '客户{customerName}被{operatorName}释放到了客户池',{
-            customerName: _.get(data, 'customer_name', ''),
-            operatorName: _.get(data, 'operator_nickname', '')
-        });
-        if(crmReleaseLength > 1) {
-            tipContent = Intl.get('crm.customer.batch.release.push.tip', '{customerName}等{count}个客户被{operatorName}释放到了客户池',{
+        var crmReleaseLength = _.get(data, 'customer_ids.length', 0);
+        var title = Intl.get('crm.customer.release.customer', '释放客户'),
+            tipContent = Intl.get('crm.customer.release.push.tip', '客户{customerName}被{operatorName}释放到了客户池', {
+                customerName: _.get(data, 'customer_name', ''),
+                operatorName: _.get(data, 'operator_nickname', '')
+            });
+        if (crmReleaseLength > 1) {
+            tipContent = Intl.get('crm.customer.batch.release.push.tip', '{customerName}等{count}个客户被{operatorName}释放到了客户池', {
                 customerName: _.get(data, 'customer_name', ''),
                 operatorName: _.get(data, 'operator_nickname', ''),
                 count: crmReleaseLength
@@ -383,7 +340,7 @@ function listenSystemNotice(notice) {
 
         // 拨打电话失败
         if (isCallUpFailed) {
-            tipContent += _.get(notice, 'content.operate_detail',Intl.get('notification.call.up.failed', '拨打电话失败'));
+            tipContent += _.get(notice, 'content.operate_detail', Intl.get('notification.call.up.failed', '拨打电话失败'));
         }
         // 提取线索失败
         if (isPullClueFailed) {
@@ -417,7 +374,7 @@ function listenSystemNotice(notice) {
                         onClose: function() {
                             delete NotificationType['system'];
                             systemTipCount = 0;
-                            if(systemTimeout){
+                            if (systemTimeout) {
                                 clearTimeout(systemTimeout);
                             }
                         }
@@ -467,7 +424,7 @@ function showDesktopNotification(title, tipContent, isClosedByClick, isOpenPopUp
         //如果通知消息被点击,通知窗口将被激活
         window.focus();
         notification.close();
-    },
+    };
     notification.onshow = function() {
         if (!isClosedByClick) {
             setTimeout(function() {
@@ -476,6 +433,7 @@ function showDesktopNotification(title, tipContent, isClosedByClick, isOpenPopUp
         }
     };
 }
+
 // 标签页是否可见（各种浏览器兼容）
 function documentIsHidden() {
     return document.hidden || document.mozHidden || document.msHidden
@@ -484,27 +442,23 @@ function documentIsHidden() {
 
 //获取申请用户的名称
 function getUserNames(replyMessage) {
-    let userNames = '';
-    if (replyMessage.user_name) {
-        userNames = replyMessage.user_name;
-    } else if (replyMessage.user_names) {
-        userNames = JSON.parse(replyMessage.user_names);
-        if (_.isArray(userNames)) {
-            userNames = userNames.join(',');
-        }
+    let userNames = replyMessage.user_names || replyMessage.user_name || '';
+    if (_.isArray(userNames)) {
+        userNames = userNames.join(',');
     }
     return userNames;
 }
+
 //获取审批消息提醒中的内容
 function getApproveTipContent(data) {
     //审批的消息
     let tipContent = '';
-    let approvalPerson = data.approval_person || '';//谁批复的
-    let salesName = data.message.sales_name || '';//谁发的申请(销售)
-    let customerName = data.message.customer_name || '';//给哪个客户开通的用户
-    let userType = data.message.tag || '';//申请用户的类型：正式、试用用户
-    let userNames = getUserNames(data.message);//申请用户的名称
-    switch (data.approval_state) {
+    let approvalPerson = data.operate || '';//谁批复的
+    let salesName = data.applicant_name || '';//谁发的申请(销售)
+    let customerName = data.customer_name || '';//给哪个客户开通的用户
+    let userType = data.user_apply_name || '';//申请用户的类型：正式、试用用户
+    let userNames = getUserNames(data);//申请用户的名称
+    switch (data.opinion) {
         case 'pass'://审批通过
             // xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
             tipContent = Intl.get('reply.pass.tip.content',
@@ -550,15 +504,18 @@ function getApproveTipContent(data) {
     }
     return tipContent;
 }
+
 function listPhoneNum(data) {
     if (data) {
         contactNameObj = data;
     }
 }
+
 // contactNameObj 是包含所拨打的联系人的信息对象
 function setInitialPhoneObj() {
     contactNameObj = {};
 }
+
 /*
  * 监听拨打电话消息的推送*/
 function phoneEventListener(phonemsgObj) {
@@ -600,10 +557,11 @@ function phoneEventListener(phonemsgObj) {
         }
     }
 }
+
 /*
  * 监听客户操作消息的推送*/
 function crmOperatorAlertListener(data) {
-    if(_.isObject(data)) {
+    if (_.isObject(data)) {
         switch (_.get(data, 'type')) {
             //释放客户后的提醒消息
             case 'release_notice'://单个释放时，通知客户负责人以及所属领导
@@ -616,21 +574,25 @@ function crmOperatorAlertListener(data) {
         }
     }
 }
+
 //申请试用弹窗
 function applyUpgradeListener(data) {
     let isOpenPopUpNotify = getNotifyStatus();
     if (_.isObject(data)) {
-        const title = Intl.get('versions.apply.try.enterprise','申请企业试用');
+        const title = Intl.get('versions.apply.try.enterprise', '申请企业试用');
         const lead = _.get(data, 'lead.name', '');
         const user = _.get(data, 'lead.app_user_info[0].name', '');
         const version = _.get(data, 'version_change_info.new_version', '');
-        const time = getTimeStr(_.get(data.version_change_info,'apply_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+        const tipContent = time + ' ，' + Intl.get('common.lead.apply.try', '用户{user}（线索：{lead}）申请试用', {
+            user: userLink,
+            lead: leadLink
+        }) + version;
         if (canPopDesktop()) {
             //桌面通知的展示（只能展示提示内容，无法添加自定义的点击事件）
             let tipContent = time + ' ，' + Intl.get('common.lead.apply.try','用户{user}（线索：{lead}）申请试用',{user, lead}) + version;
             showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
-        }else{
-            if(!isOpenPopUpNotify) {
+        } else {
+            if (!isOpenPopUpNotify) {
                 return;
             }
             // 系统弹窗提示中，添加点击可打开对应详情的事件
@@ -643,23 +605,27 @@ function applyUpgradeListener(data) {
                 closeWith: ['button']
             });
         }
-        clueEmitter.emit(clueEmitter.UPDATE_APPLY_UPGRADE,data);
+        clueEmitter.emit(clueEmitter.UPDATE_APPLY_UPGRADE, data);
     }
 }
+
 //升级完成弹窗
 function applyUpgradeCompleteListener(data) {
     let isOpenPopUpNotify = getNotifyStatus();
-    if (_.isObject(data) && _.get(data.version_change_info,'upgrade_type') === 'trade') {
-        const title = Intl.get('payment.personal.upgrade.notice','个人用户升级');
+    if (_.isObject(data) && _.get(data.version_change_info, 'upgrade_type') === 'trade') {
+        const title = Intl.get('payment.personal.upgrade.notice', '个人用户升级');
         const lead = _.get(data, 'lead.name', '');
         const user = _.get(data, 'lead.app_user_info[0].name', '');
-        const time = getTimeStr(_.get(data.version_change_info,'apply_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        const tipContent = time + ' ，' + Intl.get('payment.personal.upgrade','用户{user}（线索{lead}）付费升级为个人正式用户',{lead,user});
+        const time = getTimeStr(_.get(data.version_change_info, 'apply_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+        const tipContent = time + ' ，' + Intl.get('payment.personal.upgrade', '用户{user}（线索{lead}）付费升级为个人正式用户', {
+            lead,
+            user
+        });
         if (canPopDesktop()) {
             //桌面通知的展示
             showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
-        }else{
-            if(!isOpenPopUpNotify) {
+        } else {
+            if (!isOpenPopUpNotify) {
                 return;
             }
             notificationUtil.showNotification({
@@ -670,9 +636,10 @@ function applyUpgradeCompleteListener(data) {
         }
     }
 }
+
 //用户名可点击
-window.handleUserClickCallback = function(user_id){
-    userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL,{
+window.handleUserClickCallback = function(user_id) {
+    userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, {
         userId: user_id
     });
 };
@@ -693,29 +660,30 @@ window.handleVisitCallback = function(customer_id) {
         }
     });
 };
+
 //监听将销售的拜访结果推送给邮件抄送人
 function applyVisitCustomerListener(obj) {
     let isOpenPopUpNotify = getNotifyStatus();
-    if(_.isObject(obj)){
+    if (_.isObject(obj)) {
         const title = Intl.get('leave-feedback-title', '出差反馈');
-        const nickname = _.get(obj,'nickname');
-        const customer_name = _.get(obj,'customer_name');
-        const remark = _.get(obj,'remark');
-        const customer_id = _.get(obj,'customer_id');
-        const create_time = getTimeStr(_.get(obj,'create_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        
-        if(canPopDesktop()){
+        const nickname = _.get(obj, 'nickname');
+        const customer_name = _.get(obj, 'customer_name');
+        const remark = _.get(obj, 'remark');
+        const customer_id = _.get(obj, 'customer_id');
+        const create_time = getTimeStr(_.get(obj, 'create_time'), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+
+        if (canPopDesktop()) {
             //桌面通知的显示
-            const content1 = nickname + Intl.get('leave-feedback-visit-consumer','拜访了') + customer_name;
-            const content2 = Intl.get('leave-feedback-visit-record','拜访记录：') + remark + create_time;
+            const content1 = nickname + Intl.get('leave-feedback-visit-consumer', '拜访了') + customer_name;
+            const content2 = Intl.get('leave-feedback-visit-record', '拜访记录：') + remark + create_time;
             showDesktopNotification(title, content1 + content2, true, isOpenPopUpNotify);
-        }else{
-            if(!isOpenPopUpNotify){
+        } else {
+            if (!isOpenPopUpNotify) {
                 return;
             }
-            const contentHtml = '<p>' + nickname + Intl.get('leave-feedback-visit-consumer','拜访了') + '<a href="javascript:void(0)" onclick="handleVisitCallback(\'' + customer_id + '\')">' + customer_name + '</a>' + '</p>'
-            + '<p>' + Intl.get('leave-feedback-visit-record','拜访记录：') + remark + '</p><br/>'
-            + '<p class=\'visit-customer-callback-to-superior\'>' + create_time + '</p>';
+            const contentHtml = '<p>' + nickname + Intl.get('leave-feedback-visit-consumer', '拜访了') + '<a href="javascript:void(0)" onclick="handleVisitCallback(\'' + customer_id + '\')">' + customer_name + '</a>' + '</p>'
+                + '<p>' + Intl.get('leave-feedback-visit-record', '拜访记录：') + remark + '</p><br/>'
+                + '<p class=\'visit-customer-callback-to-superior\'>' + create_time + '</p>';
             notificationUtil.showNotification({
                 title: title,
                 content: contentHtml,
@@ -731,15 +699,16 @@ function canPopDesktop() {
     //标签页不可见时，有桌面通知，并且允许弹出桌面通知时
     return documentIsHidden() && window.Notification && Notification.permission === 'granted';
 }
+
 //点击拨打电话
 window.handleClickPhone = function(phoneObj) {
     //如果原来页面上有模态框，再拨打电话的时候把模态框关闭
-    var showCustomerModal = _.get($('#customer-phone-status-content'),'length',0) > 0;
-    var showClueModal = _.get($('#clue-phone-status-content'),'length',0) > 0;
-    if (showCustomerModal){
+    var showCustomerModal = _.get($('#customer-phone-status-content'), 'length', 0) > 0;
+    var showClueModal = _.get($('#clue-phone-status-content'), 'length', 0) > 0;
+    if (showCustomerModal) {
         phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
     }
-    if (showClueModal){
+    if (showClueModal) {
         phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_CLUE_PANEL);
     }
     var phoneNumber = phoneObj.phoneItem, contactName = phoneObj.contactName;
@@ -750,7 +719,7 @@ window.handleClickPhone = function(phoneObj) {
     });
 };
 //点击展开线索详情
-window.handleClickClueName = (event,clueId) => {
+window.handleClickClueName = (event, clueId) => {
     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.noty-container .noty-content .clue-item .clue-name'), '打开线索详情');
     phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
         clue_params: {
@@ -760,6 +729,7 @@ window.handleClickClueName = (event,clueId) => {
     //点击查看详情时要把对应的通知框关掉
     $(event.target).closest('li').remove();
 };
+
 function scheduleAlertListener(scheduleAlertMsg) {
     let isOpenPopUpNotify = getNotifyStatus();
     var phoneArr = [];
@@ -797,30 +767,33 @@ function scheduleAlertListener(scheduleAlertMsg) {
         tipContent = `<div>${tipContent}<p>${phoneHtml}</p></div>`;
         let type = scheduleAlertMsg.type;
         //注：客户和线索的电联采用不同的标签
-        switch(type){
-            case 'calls':title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + '<a href="javascript:void(0)" onclick="handleVisitCallback(\'' + scheduleAlertMsg.customer_id + '\')">' + scheduleAlertMsg.topic + '</a>';//客户电联
+        switch (type) {
+            case 'calls':
+                title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + '<a href="javascript:void(0)" onclick="handleVisitCallback(\'' + scheduleAlertMsg.customer_id + '\')">' + scheduleAlertMsg.topic + '</a>';//客户电联
                 break;
-            case 'lead':title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + '<a href="javascript:void(0)" onclick="handleLeadClickCallback(\'' + scheduleAlertMsg.lead_id + '\')">' + scheduleAlertMsg.topic + '</a>';//线索电联
+            case 'lead':
+                title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + '<a href="javascript:void(0)" onclick="handleLeadClickCallback(\'' + scheduleAlertMsg.lead_id + '\')">' + scheduleAlertMsg.topic + '</a>';//线索电联
                 break;
             case 'visit':
-                if(scheduleAlertMsg.customer_id){
+                if (scheduleAlertMsg.customer_id) {
                     title = '【' + Intl.get('schedule.phone.connect', '拜访') + '】 ' + '<a href="javascript:void(0)" onclick="handleVisitCallback(\'' + scheduleAlertMsg.customer_id + '\')">' + scheduleAlertMsg.topic + '</a>';
-                }else if (scheduleAlertMsg.lead_id){
+                } else if (scheduleAlertMsg.lead_id) {
                     title = '【' + Intl.get('schedule.phone.connect', '拜访') + '】 ' + '<a href="javascript:void(0)" onclick="handleLeadClickCallback(\'' + scheduleAlertMsg.lead_id + '\')">' + scheduleAlertMsg.topic + '</a>';
-                }else{
+                } else {
                     title = '【' + Intl.get('common.visit', '拜访') + '】 ' + scheduleAlertMsg.topic;
                 }
                 break;
             case 'other':
-                if(scheduleAlertMsg.customer_id){
+                if (scheduleAlertMsg.customer_id) {
                     title = '【' + Intl.get('schedule.phone.connect', '其他') + '】 ' + '<a href="javascript:void(0)" onclick="handleVisitCallback(\'' + scheduleAlertMsg.customer_id + '\')">' + scheduleAlertMsg.topic + '</a>';
-                }else if (scheduleAlertMsg.lead_id){
+                } else if (scheduleAlertMsg.lead_id) {
                     title = '【' + Intl.get('schedule.phone.connect', '其他') + '】 ' + '<a href="javascript:void(0)" onclick="handleLeadClickCallback(\'' + scheduleAlertMsg.lead_id + '\')">' + scheduleAlertMsg.topic + '</a>';
-                }else{
+                } else {
                     title = '【' + Intl.get('common.visit', '其他') + '】 ' + scheduleAlertMsg.topic;
                 }
                 break;
-            default:title = scheduleAlertMsg.topic;
+            default:
+                title = scheduleAlertMsg.topic;
         }
         // notificationUtil.showNotiSchedule({title,content: tipContent,type});
         notificationUtil.showNotification({
@@ -832,11 +805,12 @@ function scheduleAlertListener(scheduleAlertMsg) {
         });
     }
 }
+
 /*
  *审批的提示 */
 function notifyApplyInfo(data) {
     let isOpenPopUpNotify = getNotifyStatus();
-    if (_.isObject(data.message)) {
+    if (_.get(data,'message_type') === APPLY_APPROVE_TYPES.USER_OR_GRANT && _.includes(['apply_user_official', 'apply_user_trial', 'apply_app_official', 'apply_app_trial'] ,data.user_apply_type)) {
         //记录推送的审批通知的数量
         approveTipCount++;
         //标签页不可见时，有桌面通知，且允许弹出桌面通知时
@@ -861,7 +835,7 @@ function notifyApplyInfo(data) {
                         onClose: function() {
                             delete NotificationType['exist'];
                             approveTipCount = 0;
-                            if(approveTimeout){
+                            if (approveTimeout) {
                                 clearTimeout(approveTimeout);
                             }
                         }
@@ -883,6 +857,7 @@ function notifyApplyInfo(data) {
         }
     }
 }
+
 /**
  *回款提醒
  */
@@ -894,6 +869,7 @@ function notifyRepayInfo(data) {
         timeout: 5 * 1000
     });
 }
+
 /**
  *客户提醒
  */
@@ -952,8 +928,9 @@ function getReloginTooltip(userObj) {
 function handleSessionExpired() {
     ajaxGlobal.handleSessionExpired();
 }
+
 // /logout退出登录后的处理
-function handleLogout(){
+function handleLogout() {
     //退出登录后，退出容联电话系统的登录
     phoneUtil.logoutCallClient();
 }
@@ -964,11 +941,11 @@ function socketEmitterListener() {
         socketIo.disconnect();
     }
 }
+
 //socketio断开连接处理器
 function disconnectListener() {
     if (socketIo) {
         //取消监听
-        socketIo.off('mes', listenOnMessage);
         socketIo.off('offline', listenOnOffline);
         socketIo.off('sessionExpired', handleSessionExpired);
         socketIo.off('logoutAccount', handleLogout);
@@ -980,6 +957,7 @@ function disconnectListener() {
         socketIo.off('apply_unread_reply', applyUnreadReplyListener);
         socketIo.off('cluemsg', clueUnhandledListener);
         socketIo.off('applyApprovemsg', applyApproveUnhandledListener);
+        socketIo.off('applyApprovedByOthermsg', applyApproveUnhandledListener);
         socketIo.off('applyVisitCustomerMsg', applyVisitCustomerListener);
         socketIo.off('crm_operator_alert_msg', crmOperatorAlertListener);
         socketIo.off('apply_upgrade', applyUpgradeListener);
@@ -988,6 +966,7 @@ function disconnectListener() {
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
     }
 }
+
 /**
  *启动socketio
  */
@@ -1028,6 +1007,7 @@ function startSocketIo() {
         notificationCheckPermission();
     });
 }
+
 /**
  * 获取消息数
  * @param callback 获取消息数后的回调函数
@@ -1061,122 +1041,84 @@ function getMessageCount(callback) {
 
     let user = userData.getUserData();
     var applyShowTabs = _.find(user.routes, item => item.id === 'application_apply_management');
-    if (applyShowTabs){
-        var applyTypeList = _.get(applyShowTabs,'routes',[]);
-        _.forEach(applyTypeList, routeItem => {
-            switch (routeItem.id) {
-                case 'sales_bussiness_apply_management':
-                    getUnapproveApplyLists(APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES, APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES);//获取销售机会待我审批数量;
-                    break;
-                case 'app_user_manage_apply':
-                    if(hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION)){
-                        getNotificationUnread({type: 'unapproved'}, callback);
-                    }
-                    break;
-                case 'bussiness_apply_management':
-                    getUnapproveBussinessTripApply(callback);//获取出差申请待我审批数量
-                    break;
-                case 'leave_apply_management':
-                    getUnapproveApplyLists(APPLY_APPROVE_TYPES.LEAVE, APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE);//获取请假申请待我审批数量
-                    break;
-                case 'reportsend_apply_management':
-                    getUnapproveReportDocumentSendApply(APPLY_APPROVE_TYPES.OPINIONREPORT, APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND);//获取舆情报送待我审批数量
-                    break;
-                case 'documentwriting_apply_management':
-                    getUnapproveReportDocumentSendApply(APPLY_APPROVE_TYPES.DOCUMENTWRITING, APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE);//获取文件撰写的待我审批数
-                    break;
-                case 'my_leave_apply_management'://路由配置中路由的id
-                    getUnapproveApplyLists(SELF_SETTING_FLOW.VISITAPPLY, APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY);//获取拜访申请的待我审批数
-                    break;
-                case 'my_domain_apply_management'://路由配置中路由的id
-                    getUnapproveApplyLists(SELF_SETTING_FLOW.DOMAINAPPLY, APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY);//获取拜访申请的待我审批数
-                    break;
-                case 'my_business_while_apply_management'://路由配置中路由的id
-                    getUnapproveApplyLists(APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE, APPLY_APPROVE_TYPES.UNHANDLE_BUSINESSTRIP_AWHILE_APPLY);//获取外出申请的待我审批数
-                    break;
-
-            }
-        });
+    if (applyShowTabs) {
+        //获取未读回复及待我审批的列表
+        if (hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION)) {
+            //获取其他类型申请审批未读数，根据type对类型进行区分
+            getDiffApplyUnreadReply(callback);
+            //获取待我审批的申请列表
+            getUnapproveApplyLists(callback);
+        }
     }
 
     //获取线索未处理数的权限（除运营人员外展示）
-    if (getClueUnhandledPrivilege()){
+    if (getClueUnhandledPrivilege()) {
         var data = getUnhandledClueCountParams();
         getClueUnreadNum(data, callback);
-    }else{
+    } else {
         //运营人员和普通销售即使没有获取未读数的权限，但是在有分配给他的线索的时候，他也要收到弹窗
         callback('unhandleClue');
     }
-    //获取未读回复列表
-    if(hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION)){
-        //获取用户审批未读数
-        getUnreadReplyList(callback);
-        //获取其他类型申请审批未读数，根据type对类型进行区分
-        getDiffApplyUnreadReply(callback);
-    }
+
 }
 
 //添加未读数的监听，包括申请审批，系统消息等
 function unreadListener(type) {
     if (socketIo) {
         //如果是未处理的线索，要和审批的区分开，避免会加上两个监听的情况，未读数要在发ajax请求后再进行监听，避免出现监听数据比获取的数据早的情况
-        if (type === 'unhandleClue'){
+        if (type === 'unhandleClue') {
             //监听未处理的线索
             clueTotalCount = 0;
             socketIo.on('cluemsg', clueUnhandledListener);
         } else if (type === 'unread_reply') {
             //申请审批未读回复的监听
             socketIo.on('apply_unread_reply', applyUnreadReplyListener);
-        }else if(type === APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT){
+        } else if (type === APPLY_APPROVE_TYPES.UNHANDLEAPPLY) {
             //申请审批未读回复的监听
             socketIo.on('applyApprovemsg', applyApproveUnhandledListener);
-        }else {
+            socketIo.on('applyApprovedByOthermsg', applyApproveApprovedByOtherListener);
             //获取完未读数后，监听node端推送的弹窗消息
-            socketIo.on('mes', listenOnMessage);
+            socketIo.on('applyApprovedFinishmsg', listenOnMessage);
+        } else {
+
             //监听系统消息
             socketIo.on('system_notice', listenSystemNotice);
         }
     }
 }
+
 //申请审批未读回复的监听
 function applyUnreadReplyListener(unreadReply) {
-    //用户申请审批和其他类型的审批审批都走这个listner，用户审批的类型的type是没有值，其他类型的都是有type值的是吧
-    if (!unreadReply.type){
-        const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
-        //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
-        let unreadReplyList = session.get(APPLY_UNREAD_REPLY);
-        if(unreadReplyList){
-            unreadReplyList = JSON.parse(unreadReplyList);
-            //已有回复列表，将新得回复加入回复列表中
-            if (_.get(unreadReplyList, '[0]')) {
-                unreadReplyList.push(unreadReply);
-                //根据申请id去重
-                unreadReplyList = _.uniqBy(unreadReplyList,'apply_id');
-            } else {//还没有回复列表时，将新回复组成回复列表
-                unreadReplyList = [unreadReply];
-            }
-            session.set(APPLY_UNREAD_REPLY, JSON.stringify(unreadReplyList));
-            notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, unreadReplyList);
+    const MY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.MY_UNREAD_REPLY;
+    const TEAM_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.TEAM_UNREAD_REPLY;
+    //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
+    let unreadMyReplyList = session.get(MY_UNREAD_REPLY);
+    //todo 这里的判断需要修改一下，member_id 推送给的人的id，需要校验的是这条审批的申请人的id，暂时后端还没有加上
+    if (unreadMyReplyList && userData.getUserData().user_id === _.get(unreadReply,'applicateId')) {
+        unreadMyReplyList = JSON.parse(unreadMyReplyList);
+        //已有回复列表，将新得回复加入回复列表中
+        if (_.get(unreadMyReplyList, '[0]')) {
+            unreadMyReplyList.push(unreadReply);
+        } else {//还没有回复列表时，将新回复组成回复列表
+            unreadMyReplyList = [unreadReply];
         }
-    }else{
-        const DIFF_APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.DIFF_APPLY_UNREAD_REPLY;
-        //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
-        let unreadReplyList = session.get(DIFF_APPLY_UNREAD_REPLY);
-        if(unreadReplyList){
-            unreadReplyList = JSON.parse(unreadReplyList);
-            //已有回复列表，将新得回复加入回复列表中
-            if (_.get(unreadReplyList, '[0]')) {
-                unreadReplyList.push(unreadReply);
-                //根据申请id去重
-                unreadReplyList = _.uniqBy(unreadReplyList,'apply_id');
-            } else {//还没有回复列表时，将新回复组成回复列表
-                unreadReplyList = [unreadReply];
-            }
-            session.set(DIFF_APPLY_UNREAD_REPLY, JSON.stringify(unreadReplyList));
-            notificationEmitter.emit(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, unreadReplyList);
+        session.set(MY_UNREAD_REPLY, JSON.stringify(unreadMyReplyList));
+        notificationEmitter.emit(notificationEmitter.MY_UNREAD_REPLY, unreadMyReplyList);
+    }
+    let unreadTeamReplyList = session.get(TEAM_UNREAD_REPLY);
+    if (unreadTeamReplyList) {
+        unreadTeamReplyList = JSON.parse(unreadTeamReplyList);
+        //已有回复列表，将新得回复加入回复列表中
+        if (_.get(unreadTeamReplyList, '[0]')) {
+            unreadTeamReplyList.push(unreadReply);
+        } else {//还没有回复列表时，将新回复组成回复列表
+            unreadTeamReplyList = [unreadReply];
         }
+        session.set(TEAM_UNREAD_REPLY, JSON.stringify(unreadTeamReplyList));
+        notificationEmitter.emit(notificationEmitter.TEAM_UNREAD_REPLY, unreadTeamReplyList);
     }
 }
+
 // 判断是否已启用桌面通知
 function notificationCheckPermission() {
     if (window.Notification) {
@@ -1188,6 +1130,7 @@ function notificationCheckPermission() {
         }
     }
 }
+
 //获取未读数
 function getNotificationUnread(queryObj, callback) {
     $.ajax({
@@ -1226,11 +1169,12 @@ function getNotificationUnread(queryObj, callback) {
         }
     });
 }
+
 //获取未处理的线索数量
-function getClueUnreadNum(data, callback){
+function getClueUnreadNum(data, callback) {
     //pageSize设置为0，只取到数据就行
     var type = 'user';
-    if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
+    if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)) {
         type = 'manager';
     }
     $.ajax({
@@ -1264,7 +1208,37 @@ function getClueUnreadNum(data, callback){
         }
     });
 }
-function setMessageValue(applyType,data) {
+//获取待我审批的申请
+function getUnapproveApplyLists(callback) {
+    getWorklistApplyList().then((data) => {
+        var messages = {
+            unhandleApply: 0,//待我处理的申请审批的数量
+            unhandleApply_list: []
+        };
+        var value = data.total;
+        if (typeof value === 'number' && value > 0) {
+            messages['unhandleApply'] = value;
+        } else if (typeof value === 'string') {
+            var num = parseInt(value);
+            if (!isNaN(num) && num > 0) {
+                messages[APPLY_APPROVE_TYPES.UNHANDLEAPPLY] = num;
+            }
+        }
+        if (_.isArray(_.get(data, 'list'))) {
+            messages['unhandleApplyList'] = _.get(data, 'list');
+        }
+        //更新全局中存的未处理的线索数
+        updateGlobalUnreadStorage(messages);
+        if (typeof callback === 'function') {
+            callback(APPLY_APPROVE_TYPES.UNHANDLEAPPLY);
+        }
+    },() => {
+        if (typeof callback === 'function') {
+            callback(APPLY_APPROVE_TYPES.UNHANDLEAPPLY);
+        }
+    });
+}
+function setMessageValue(applyType, data) {
     var messages = {};
     messages[applyType] = 0;
     var value = _.get(data, 'total');
@@ -1279,110 +1253,66 @@ function setMessageValue(applyType,data) {
     //更新全局中存的未处理的线索数
     updateGlobalUnreadStorage(messages);
 }
-//获取待我审批的出差申请
-function getUnapproveBussinessTripApply(callback) {
-    $.ajax({
-        url: '/rest/get/worklist/business_apply/list',
-        dataType: 'json',
-        type: 'get',
-        success: function(data) {
-            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT,data);
-            if (typeof callback === 'function') {
-                callback(APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT);
-            }
-        },
-        error: function(errorMsg) {
-            if (typeof callback === 'function') {
-                callback(APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT);
-            }
-        }
-    });
-}
-//获取待我审批的销售机会申请
-function getUnapproveSalesOpportunityApply() {
-    var queryObj = {type: APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES};
-    $.ajax({
-        url: '/rest/get/worklist/sales_opportunity_apply/list',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,data);
-        },
-        error: function(errorMsg) {
-        }
-    });
-}
-//获取待我审批的申请
-function getUnapproveApplyLists(queryType,updateType) {
-    var queryObj = {type: queryType};
-    $.ajax({
-        url: '/rest/get/worklist/apply_approve/list',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            setMessageValue(updateType,data);
-        },
-        error: function(errorMsg) {
-        }
-    });
-}
-//获取待我审批的舆情报告和文件撰写申请
-function getUnapproveReportDocumentSendApply(queryType,updateType) {
-    var queryObj = {type: queryType};
-    $.ajax({
-        url: '/rest/get/worklist/apply_approve/list',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            //获取的是两类的待我审批列表需要对数字区分一下
-            var reportData = {total: 0};
-            if (_.isArray(data.list) && data.list.length){
-                reportData.total = data.list.length;
-            }
-            setMessageValue(updateType,reportData);
-        },
-        error: function(errorMsg) {
-        }
-    });
-}
 
 
-//存储获取的未读回复列表
-function saveUnreadReplyList(applyUnreadReplyList) {
-    const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
-    //根据申请的id去重
-    let unreadReplyList = _.uniqBy(applyUnreadReplyList, 'apply_id');
-    //将未读回复列表存入sessionStorage（session失效时会自动清空数据）
-    session.set(APPLY_UNREAD_REPLY, JSON.stringify(unreadReplyList));
-    notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, unreadReplyList);
-}
+
 //存储其他类型申请审批的未读回复列表
-function saveDiffApplyUnreadReplyList(data) {
-    const DIFF_APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.DIFF_APPLY_UNREAD_REPLY;
-    //根据申请的id去重
-    let unreadReplyList = _.uniqBy(data, 'apply_id');
+function saveTeamApplyUnreadReplyList(data) {
+    const DIFF_APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.TEAM_UNREAD_REPLY;
     //将未读回复列表存入sessionStorage（session失效时会自动清空数据）
-    session.set(DIFF_APPLY_UNREAD_REPLY, JSON.stringify(unreadReplyList));
-    notificationEmitter.emit(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, unreadReplyList);
+    session.set(DIFF_APPLY_UNREAD_REPLY, JSON.stringify(data));
+    notificationEmitter.emit(notificationEmitter.TEAM_UNREAD_REPLY, data);
 }
-//获取用户审批未读回复列表
-function getUnreadReplyList(callback) {
+
+function saveMyApplyUnreadReplyList(data) {
+    const DIFF_APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.MY_UNREAD_REPLY;
+    //将未读回复列表存入sessionStorage（session失效时会自动清空数据）
+    session.set(DIFF_APPLY_UNREAD_REPLY, JSON.stringify(data));
+    notificationEmitter.emit(notificationEmitter.MY_UNREAD_REPLY, data);
+}
+//获取我申请的未读回复的申请审批列表
+function getMyApplicationListWithUnreadReply(callback) {
     $.ajax({
-        url: '/rest/appuser/unread_reply',
+        url: '/rest/apply_list/start/self',
         type: 'get',
         dataType: 'json',
         data: {
             sort_field: 'create_time',//按回复时间倒序排
             order: 'descend',
             page_size: 1000,//需要获取全部的未读回复列表，预估不会超过1000条
-            id: ''
+            id: '',
+            comment_unread: true
+
         },
         success: data => {
             //将获取的未读回复列表存到session中
-            saveUnreadReplyList(_.get(data, 'list', []));
+            saveMyApplyUnreadReplyList(_.get(data, 'list', []));
+            if (typeof callback === 'function') {
+                callback('unread_reply');
+            }
+        },
+        error: () => {
+
+        }
+    });
+}
+
+//获取团队申请包含未读回复的列表
+function getTeamApplicationListWithUnreadReply(callback) {
+    $.ajax({
+        url: '/rest/appuser/apply_list',
+        type: 'get',
+        dataType: 'json',
+        data: {
+            sort_field: 'create_time',//按回复时间倒序排
+            order: 'descend',
+            page_size: 1000,//需要获取全部的未读回复列表，预估不会超过1000条
+            id: '',
+            comment_unread: true
+        },
+        success: data => {
+            //将获取的未读回复列表存到session中
+            saveTeamApplyUnreadReplyList(_.get(data, 'list', []));
             if (typeof callback === 'function') {
                 callback('unread_reply');
             }
@@ -1394,36 +1324,17 @@ function getUnreadReplyList(callback) {
         }
     });
 }
-//获取工作流审批未读回复列表
-function getDiffApplyUnreadReply(callback){
-    $.ajax({
-        url: '/rest/workflow/unread_reply',
-        type: 'get',
-        dataType: 'json',
-        data: {
-            sort_field: 'create_time',//按回复时间倒序排
-            order: 'descend',
-            page_size: 1000,//需要获取全部的未读回复列表，预估不会超过1000条
-            id: ''
-        },
-        success: data => {
-            //将获取的未读回复列表存到session中
-            saveDiffApplyUnreadReplyList(_.get(data, 'list', []));
-            if (typeof callback === 'function') {
-                callback('unread_reply');
-            }
-        },
-        error: () => {
-            if (typeof callback === 'function') {
-                callback('unread_reply');
-            }
-        }
-    });
+
+//获取工作流审批未读审批列表(包含我申请的和团队申请的)
+function getDiffApplyUnreadReply(callback) {
+    getMyApplicationListWithUnreadReply(callback);
+    getTeamApplicationListWithUnreadReply(callback);
 }
+
 //更新全局变量里存储的未读数，以便在业务逻辑里使用
 function updateGlobalUnreadStorage(unreadObj) {
     if (Oplate && Oplate.unread && unreadObj) {
-        for (var key in unreadObj){
+        for (var key in unreadObj) {
             Oplate.unread[key] = unreadObj[key];
         }
         if (timeoutFunc) {
@@ -1433,8 +1344,6 @@ function updateGlobalUnreadStorage(unreadObj) {
         timeoutFunc = setTimeout(function() {
             //更新未读消息数
             // notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
-            //待审批数的刷新展示
-            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
             //未处理的线索数量刷新展示
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
             //刷新审批申请未处理的数量
@@ -1442,4 +1351,5 @@ function updateGlobalUnreadStorage(unreadObj) {
         }, timeout);
     }
 }
+
 module.exports.startSocketIo = startSocketIo;

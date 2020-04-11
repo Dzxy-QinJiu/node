@@ -36,8 +36,8 @@ const TAB_KEYS = {
     LOG_TAB: '2',//操作日志
     RECORD_TAB: '3', // 变更记录
 };
-const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 352;
-const EDIT_PASSWORD_WIDTH = 340;
+const EDIT_FEILD_WIDTH = 375, EDIT_FEILD_LESS_WIDTH = 352;
+const EDIT_PASSWORD_WIDTH = 335;
 
 class MemberInfo extends React.Component {
 

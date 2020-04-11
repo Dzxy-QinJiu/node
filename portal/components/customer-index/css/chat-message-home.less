@@ -38,6 +38,36 @@
     overflow: hidden;
     .system-message {
       text-align: center;
+      .system-message-item{
+        background: #e0e0e0;
+        font-size: 14px;
+        height: 32px;
+        border-color: rgba(0,0,0,.12);
+        color: rgba(0,0,0,.87);
+        border-radius: 4px!important;
+        align-items: center;
+        cursor: default;
+        display: inline-flex;
+        line-height: 20px;
+        max-width: 100%;
+        outline: none;
+        overflow: hidden;
+        padding: 0 12px;
+        position: relative;
+        text-decoration: none;
+        transition-duration: .28s;
+        transition-property: box-shadow,opacity;
+        transition-timing-function: cubic-bezier(.4,0,.2,1);
+        vertical-align: middle;
+        white-space: nowrap;
+        .system-message-content{
+          font-size: 12px;
+          align-items: center;
+          display: inline-flex;
+          height: 100%;
+          max-width: 100%;
+        }
+      }
     }
     .chat-message-head {
       float: left;
@@ -55,6 +85,10 @@
         &.default {
           background-size: 100%;
           background-image: url("../../../static/images/default_user.png");
+        }
+        &.default-kf {
+          background-size: 100%;
+          background-image: url("../../../static/images/default_kf.svg");
         }
       }
     }

@@ -204,24 +204,6 @@ class OrderIndex extends React.Component {
         return this.state.applyType === applyType ? 'primary' : '';
     };
 
-    //发邮件使用的参数
-    getEmailData = (checkedUsers) => {
-        let email_customer_names = [];
-        let email_user_names = [];
-
-        if (!_.isArray(checkedUsers)) {
-            checkedUsers = [];
-        }
-        _.each(checkedUsers, (obj) => {
-            email_customer_names.push(obj.customer && obj.customer.customer_name || '');
-            email_user_names.push(obj.user && obj.user.user_name || '');
-        });
-        return {
-            email_customer_names: email_customer_names.join('、'),
-            email_user_names: email_user_names.join('、')
-        };
-    };
-
     render() {
         const _this = this;
         const appList = this.state.appList;

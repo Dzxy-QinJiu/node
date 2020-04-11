@@ -21,7 +21,7 @@ import Trace from 'LIB_DIR/trace';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import myInterestAjax from '../ajax';
-import ColumnItem from './column-item';
+import CardColumnItem from 'CMP_DIR/card-column-item';
 import {getColumnHeight} from './common-util';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
@@ -306,10 +306,10 @@ class MyInsterestColumn extends React.Component {
         // const qualify_label = workObj.qualify_label;
         //分数
         const score = item.customer_score;
-        const interestCls = classNames('iconfont icon-concern-customer-login', {'is-insterested-style': item.is_interested === 'true'});
+        // const interestCls = classNames('iconfont icon-concern-customer-login', {'is-insterested-style': item.is_interested === 'true'});
         return (
             <div className='customer-name'>
-                <i className={interestCls}/>
+                {/* <i className={interestCls}/> */}
                 <CustomerLabel label={customer_label}/>
                 <span className='customer-name-text'
                     title={Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('call.record.customer', '客户')})}
@@ -415,9 +415,10 @@ class MyInsterestColumn extends React.Component {
     };
 
     render() {
+        let title = (<React.Fragment><i className='iconfont icon-my-interest column-title-icon'/> {Intl.get('home.page.my.interest', '我的关注')}</React.Fragment>);
         return (
-            <ColumnItem contianerClass='my-insterest-wrap'
-                title={Intl.get('home.page.my.interest', '我的关注')}
+            <CardColumnItem contianerClass='my-insterest-wrap'
+                title={title}
                 content={this.renderInterestContent()}
             />);
     }

@@ -905,6 +905,9 @@ class CallRecord extends React.Component {
     }
 
     render() {
+        //是否隐藏总数，蚁坊组织下的客户经理查看今天的数据时隐藏总数
+        const isHideTotal = this.state.start_time === moment().startOf('day').valueOf() && commonMethodUtil.isEefungCustomerManager();
+
         return (<RightContent>
             <div className="call_record_content">
                 <TopNav>
@@ -944,7 +947,7 @@ class CallRecord extends React.Component {
                         {this.renderCallRecordList()}
                     </div>
                     {
-                        this.state.callRecord.data_list.length ? (
+                        this.state.callRecord.data_list.length && !isHideTotal ? (
                             <BottomTotalCount totalCount={<ReactIntl.FormattedMessage
                                 id="common.total.data"
                                 defaultMessage={'共{num}条数据'}

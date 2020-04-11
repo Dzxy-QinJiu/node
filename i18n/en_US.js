@@ -316,6 +316,9 @@ var en_US = {
     'common.top.loading.text': 'Getting the latest data',//正在获取最新数据
     'common.bottom.loading.text': 'Getting earlier data',//正在获取更早的数据
     'common.send': 'send',//发送
+    'common.customer.service.online.assistant': 'Online assistant',//在线小助手
+    'common.press.enter.send': 'Press enter to send the message',//按enter键发送消息
+    'common.customer.service.help.tip': 'Hello, what can I do for you',//您好，请问有什么可以帮您？
     //公共部分--end
 
     'login.login': 'Login',//登录
@@ -1420,8 +1423,8 @@ var en_US = {
     'user.apply.presenter': 'presenter', // 申请人
     'user.apply.team': 'The team of applicant',//申请人所属团队
     'user.apply.id': 'Account apply', // 账号申请
-    'user.apply.no.match.retry': 'no match apply list', // 暂无符合查询条件的用户申请
-    'user.apply.no.apply': 'User applications that do not yet need to be approved',//还没有需要审批的用户申请
+    'user.apply.no.match.retry': 'no match apply list', // 暂无符合查询条件的申请
+    'user.apply.no.apply': 'User applications that do not yet need to be approved',//暂无申请
     'user.apply.no.unread': 'No unread reply',//已无未读回复的申请
     'user.apply.show.update.tip': 'The data has been updated, Whether to', // 数据已更新,是否
     'user.apply.total.apply': '{number} applies {apply_type}', // apply_type: null=>全部 已通过 已驳回 待审批 已撤销  共{number}条申请{apply_type}@
@@ -1921,6 +1924,7 @@ var en_US = {
     'crm.pool.no.rule': 'No rules',//暂无规则
     'crm.pool.responsible.type.placeholder': 'Please select the responsibility type',//请选择负责类型
     'crm.pool.extract.distribute.followup': 'Extract and assign joint follow-ups',//提取并分配联合跟进人
+    'crm.merge.success.domain.tip': 'Please tell {name} that you need access using {domain}',//请告知{name}需要使用{domain}访问
 
 
     'crm.customer.rule.name': 'Rules set',//规则设置
@@ -2988,6 +2992,9 @@ var en_US = {
     'scan.ketao.qrcode.download.tip': 'Scan to download KETAO APP Android',//扫码下载客套APP安卓端
     'config.manage.input.teleRepeat': 'The phone number has been recorded in',//该电话号码已录入
     'config.not.fill.in': 'Not to fill in',//暂不填写
+    'customer.service.placeholder': 'Please enter your questions or Suggestions',//请输入您的问题或建议
+    //缺失补充end
+
     'common.ketao.app': 'Ketao APP',//客套APP
     'contract.130': 'Social expenses',//交际费
     'contract.131': 'Local Transportation',//市内交通费

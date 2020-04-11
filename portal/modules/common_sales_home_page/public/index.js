@@ -20,7 +20,7 @@ import NewDistributeCustomer from './view/new-distribute-customer';
 import {phoneMsgEmitter, userDetailEmitter,notificationEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
-import {getRelativeTime, getEmailActiveUrl} from 'PUB_DIR/sources/utils/common-method-util';
+import {getRelativeTime, getEmailActiveUrl, isEefungCustomerManager} from 'PUB_DIR/sources/utils/common-method-util';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import Spinner from 'CMP_DIR/spinner';
 import SalesClueItem from './view/sales-clue-item';
@@ -1130,20 +1130,23 @@ class SalesHomePage extends React.Component {
                                     </div>
                                 </div>
                             </li>
-                            <li>
-                                <div className="statistic-total-content">
-                                    <div className="content-right">
-                                        <span>
-                                            {Intl.get('sales.frontpage.connected.today', '今日接通电话')}
-                                        </span>
-                                        <span className="data-container">
-                                            <span className="phone-total-count total-data-style">
-                                                {phoneData.totalCount}
+                            {/*对蚁坊组织下的客户经理隐藏今日接通电话统计*/}
+                            {isEefungCustomerManager() ? null : (
+                                <li>
+                                    <div className="statistic-total-content">
+                                        <div className="content-right">
+                                            <span>
+                                                {Intl.get('sales.frontpage.connected.today', '今日接通电话')}
                                             </span>
-                                        </span>
+                                            <span className="data-container">
+                                                <span className="phone-total-count total-data-style">
+                                                    {phoneData.totalCount}
+                                                </span>
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
+                                </li>
+                            )}
                             <li>
                                 <div className="statistic-total-content">
                                     <div className="content-right">

@@ -4,6 +4,7 @@
 import appUserPrivilegeConst from '../../public/privilege-const';
 import crmPrivilegeConst from '../../../crm/public/privilege-const';
 import commonPrivilegeConst from '../../../common/public/privilege-const';
+
 module.exports = {
     module: 'app_user_manage/server/action/app_user_manage.action',
     routes: [{
@@ -23,8 +24,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
-    },
-    {
+    }, {
         'method': 'get',
         'path': '/rest/appuser/name/:name',
         'handler': 'getUserByName',
@@ -34,8 +34,7 @@ module.exports = {
         'privileges': [
             appUserPrivilegeConst.USER_QUERY
         ]
-    },
-    {
+    }, {
         'method': 'get',
         'path': '/rest/appuser/exist/:field/:value',
         'handler': 'checkUserExist',
@@ -43,8 +42,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
-    },
-    {
+    }, {
         'method': 'post',
         'path': '/rest/appuser',
         'handler': 'addAppUser',
@@ -62,8 +60,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
-    },
-    {
+    }, {
         'method': 'get',
         'path': '/rest/appuser/detail/:id',
         'handler': 'getUserDetail',
@@ -73,8 +70,7 @@ module.exports = {
         'privileges': [
             appUserPrivilegeConst.USER_QUERY
         ]
-    },
-    {
+    }, {
         'method': 'post',
         'path': '/rest/appuser/disable_apps',
         'handler': 'disableAllApps',
@@ -84,8 +80,7 @@ module.exports = {
         'privileges': [
             appUserPrivilegeConst.USER_MANAGE
         ]
-    },
-    {
+    }, {
         'method': 'put',
         'path': '/rest/appuser/batch',
         'handler': 'batchUpdate',
@@ -95,8 +90,7 @@ module.exports = {
         'privileges': [
             appUserPrivilegeConst.USER_MANAGE
         ]
-    },
-    {
+    }, {
         'method': 'get',
         'path': '/rest/appuser/customer/:customer_id',
         'handler': 'getCustomerUsers',
@@ -107,8 +101,7 @@ module.exports = {
             appUserPrivilegeConst.USER_QUERY, //列出用户
             crmPrivilegeConst.CRM_LIST_CUSTOMERS //列出客户
         ]
-    },
-    {
+    }, {
         'method': 'get',
         'path': '/rest/appuser/apply_list',
         'handler': 'getApplyList',
@@ -118,30 +111,34 @@ module.exports = {
         'privileges': [
             commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批列表
         ]
-    },
-    {
+    }, {
+        method: 'post',
+        path: '/rest/cancel/apply/approve',
+        handler: 'cancelApplyApprove',
+        passport: {
+            needLogin: true
+        },
+    },{
+        method: 'get',
+        path: '/rest/get/worklist/approve/by/me',
+        handler: 'getApplyListWillApprovedByMe',
+        passport: {
+            needLogin: true
+        },
+    }, {//todo 权限的修改
         'method': 'get',
-        'path': '/rest/appuser/unread_reply',
-        'handler': 'getUnreadReplyList',
+        'path': '/rest/apply_list/start/self',
+        'handler': 'getApplyListStartSelf',
         'passport': {
             'needLogin': true
         },
         'privileges': [
-            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取未读回复列表
+            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批列表
         ]
-    },
-    {
+    }, {
         'method': 'get',
-        'path': '/rest/workflow/unread_reply',
-        'handler': 'getWorkFlowUnreadReplyList',
-        'passport': {
-            'needLogin': true
-        },
-    },
-    {
-        'method': 'get',
-        'path': '/rest/appuser/apply/:apply_id/:type',
-        'handler': 'getApplyDetail',
+        'path': '/rest/apply_list/approve/my',
+        'handler': 'getMyApplyLists',
         'passport': {
             'needLogin': true
         },
@@ -149,15 +146,42 @@ module.exports = {
             commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批详情
         ]
     },
+    //     {
+    //     'method': 'get',
+    //     'path': '/rest/appuser/unread_reply',
+    //     'handler': 'getUnreadReplyList',
+    //     'passport': {
+    //         'needLogin': true
+    //     },
+    //     'privileges': [
+    //         commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取未读回复列表
+    //     ]
+    // },
     {
+        'method': 'get',
+        'path': '/rest/workflow/unread_reply',
+        'handler': 'getWorkFlowUnreadReplyList',
+        'passport': {
+            'needLogin': true
+        },
+    }, {
+        'method': 'get',
+        'path': '/rest/apply_approve/detail/by/id',
+        'handler': 'getApplyDetail',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': [
+            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批详情
+        ]
+    }, {
         'method': 'post',
-        'path': '/rest/appuser/apply/:apply_id',
+        'path': '/rest/appuser/apply',
         'handler': 'submitApply',
         'passport': {
             'needLogin': true
         }
-    },
-    {
+    }, {
         'method': 'post',
         'path': '/rest/appuser/addapp',
         'handler': 'addApp',
@@ -167,8 +191,7 @@ module.exports = {
         'privileges': [
             appUserPrivilegeConst.USER_MANAGE//为用户添加应用
         ]
-    },
-    {
+    }, {
         'method': 'post',
         'path': '/rest/appuser/editapp',
         'handler': 'editApp',
@@ -178,11 +201,10 @@ module.exports = {
         'privileges': [
             appUserPrivilegeConst.USER_MANAGE//为用户修改应用
         ]
-    },
-    {
+    }, {
         'method': 'post',
         'path': '/rest/base/v1/user/apply_grants',
-        'handler': 'applyUser',
+        'handler': 'applyNewgrant',
         'passport': {
             'needLogin': true
         }
@@ -203,31 +225,24 @@ module.exports = {
     }, {
         'method': 'post',
         'path': '/rest/user/apply/password',
-        'handler': 'applyChangePassword',
+        'handler': 'applyChangePasswordAndOther',
         'passport': {
             'needLogin': true
         }
     }, {
-        'method': 'post',
-        'path': '/rest/user/apply/other',
-        'handler': 'applyChangeOther',
-        'passport': {
-            'needLogin': true
-        }
+        method: 'get',
+        path: '/rest/get/apply/comment/list',
+        handler: 'getApplyComments',
+        passport: {
+            needLogin: true
+        },
     }, {
-        'method': 'get',
-        'path': '/rest/appuser/replylist/:apply_id',
-        'handler': 'getReplyList',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
-        'method': 'post',
-        'path': '/rest/appuser/add_reply',
-        'handler': 'addReply',
-        'passport': {
-            'needLogin': true
-        }
+        method: 'post',
+        path: '/rest/add/apply/comment',
+        handler: 'addApplyComments',
+        passport: {
+            needLogin: true
+        },
     }, {
         'method': 'get',
         'path': '/rest/get_team_lists',
@@ -238,7 +253,7 @@ module.exports = {
     }, {
         'method': 'put',
         'path': '/rest/appuser/backout_apply',
-        'handler': 'saleBackoutApply',
+        'handler': 'cancelApplyApprove',
         'passport': {
             'needLogin': true
         }
