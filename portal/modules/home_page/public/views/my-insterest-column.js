@@ -306,10 +306,10 @@ class MyInsterestColumn extends React.Component {
         // const qualify_label = workObj.qualify_label;
         //分数
         const score = item.customer_score;
-        const interestCls = classNames('iconfont icon-concern-customer-login', {'is-insterested-style': item.is_interested === 'true'});
+        // const interestCls = classNames('iconfont icon-concern-customer-login', {'is-insterested-style': item.is_interested === 'true'});
         return (
             <div className='customer-name'>
-                <i className={interestCls}/>
+                {/* <i className={interestCls}/> */}
                 <CustomerLabel label={customer_label}/>
                 <span className='customer-name-text'
                     title={Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('call.record.customer', '客户')})}
@@ -415,9 +415,10 @@ class MyInsterestColumn extends React.Component {
     };
 
     render() {
+        let title = (<React.Fragment><i className='iconfont icon-my-interest column-title-icon'/> {Intl.get('home.page.my.interest', '我的关注')}</React.Fragment>);
         return (
             <CardColumnItem contianerClass='my-insterest-wrap'
-                title={Intl.get('home.page.my.interest', '我的关注')}
+                title={title}
                 content={this.renderInterestContent()}
             />);
     }
