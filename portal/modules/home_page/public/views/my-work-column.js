@@ -1565,7 +1565,7 @@ class MyWorkColumn extends React.Component {
     }
 
     render() {
-        let title = Intl.get('home.page.my.work', '我的工作');
+        let title = (<React.Fragment><i className='iconfont icon-my-work column-title-icon'/> {Intl.get('home.page.my.work', '我的工作')}</React.Fragment>);
         // if (this.state.totalCount) {
         //     title += this.state.totalCount;
         // }
