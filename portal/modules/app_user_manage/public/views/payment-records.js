@@ -15,10 +15,16 @@ class PaymentRecords extends React.Component {
         this.getPaymentRecordList();
     }
 
-    getPaymentRecordList = () => {
+    componentWillReceiveProps(nextProps) {
+        if (this.props.userId !== nextProps.userId) {
+            this.getPaymentRecordList(nextProps);
+        }
+    }
+
+    getPaymentRecordList = (props = this.props) => {
         ajax.send({
             url: '/rest/base/v1/realm/pay/tradeorders',
-            query: {user_id: this.props.userId, page_size: 1000}
+            query: {user_id: props.userId, page_size: 1000}
         })
             .done(result => {
                 const paymentRecordList = _.map(result.list, item => {
