@@ -21,7 +21,12 @@ class PaymentRecords extends React.Component {
             query: {user_id: this.props.userId, page_size: 1000}
         })
             .done(result => {
-                this.setState({ paymentRecordList: result.list, total: result.total });
+                const paymentRecordList = _.map(result.list, item => {
+                    item.height = 'auto';
+                    return item;
+                });
+
+                this.setState({ paymentRecordList, total: result.total });
             })
             .fail(err => {
                 message.error(err);
@@ -52,7 +57,14 @@ class PaymentRecords extends React.Component {
                                         title={item.goods.name}
                                         content={this.renderCardContent(item)}
                                         isShowToggleBtn={true}
-                                        isExpandDetail={true}
+                                        isMutipleCard={true}
+                                        isExpandDetail={item.height === 'auto'}
+                                        height={item.height}
+                                        handleToggleDetail={(isExpand) => {
+                                            let paymentRecordList = _.cloneDeep(this.state.paymentRecordList);
+                                            paymentRecordList[index].height = isExpand ? 'auto' : 100;
+                                            this.setState({ paymentRecordList });
+                                        }}
                                     />
                                 ))}
                             </div>
