@@ -3,8 +3,6 @@
  */
 
 export default {
-    //销售阶段列表
-    stageList: [],
     //应用列表
     appList: [],
     //团队、成员筛选器类型，'team'为团队，'member'为成员

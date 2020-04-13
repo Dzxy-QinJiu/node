@@ -46,7 +46,6 @@ class SalesReport extends React.Component {
     state = {
         contentHeight: 600,
         memberList: [],
-        stageList: [],
         currentMember: {
             user_id: storageUtil.local.get(STORED_MEMBER_ID_KEY),
         },
@@ -58,8 +57,6 @@ class SalesReport extends React.Component {
         //窗口大小改变事件
         $(window).on('resize', this.resizeHandler);
         this.resizeHandler();
-
-        this.getStageList();
 
         //是否普通销售
         let isCommonSales = userData.getUserData().isCommonSales;
@@ -86,17 +83,6 @@ class SalesReport extends React.Component {
 
         this.setState({
             contentHeight: height
-        });
-    };
-
-    //获取订单阶段列表
-    getStageList = () => {
-        ajax.send({
-            url: '/rest/customer/v2/salestage'
-        }).then(result => {
-            this.setState({
-                stageList: result.result,
-            });
         });
     };
 
@@ -468,9 +454,7 @@ class SalesReport extends React.Component {
                 //销售行为统计
                 salesProductivityCharts.getSalesBehaviorVisitCustomerChart(),
                 //订单阶段
-                orderCharts.getOrderStageChart({
-                    stageList: this.state.stageList
-                }),
+                orderCharts.getOrderStageChart(),
                 //客户阶段
                 customerCharts.getCustomerStageChart(),
                 //联系客户频率统计
@@ -503,9 +487,7 @@ class SalesReport extends React.Component {
                 //销售行为统计
                 salesProductivityCharts.getSalesBehaviorVisitCustomerChart(),
                 //订单阶段
-                orderCharts.getOrderStageChart({
-                    stageList: this.state.stageList
-                }),
+                orderCharts.getOrderStageChart(),
                 //客户阶段
                 customerCharts.getCustomerStageChart(),
                 //联系客户频率统计
