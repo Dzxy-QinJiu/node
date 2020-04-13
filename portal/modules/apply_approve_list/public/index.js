@@ -17,7 +17,8 @@ import {
     UnitOldAndNewUserInfo,
     ALL,
     UNREPLY,
-    getAllUnhandleApplyCount
+    getAllUnhandleApplyCount,
+    getContentWidth
 } from './utils/apply_approve_utils';
 import classNames from 'classnames';
 import {Dropdown, Menu, Alert, Select, Button, Popover} from 'antd';
@@ -74,6 +75,7 @@ class ApplyApproveList extends React.Component {
         showRefreshTip: false,//展示刷新列表的提示
         type: '',//申请审批的类型
         status: '',//申请审批的状态
+        detailWrapWidth: getContentWidth(),//右侧内容区域的宽度
         ...ApplyApproveListStore.getState()
 
     };
@@ -118,6 +120,7 @@ class ApplyApproveList extends React.Component {
         //监听有新的审批后的提示
         notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_TIP, this.updateUnhandleApplyApproveTip);
         ApplyApproveUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
+        $(window).on('resize', this.changeContentWidth);
     }
     updateSelectedItem = (message) => {
         if(message && message.status === 'success'){
@@ -147,8 +150,13 @@ class ApplyApproveList extends React.Component {
         //监听有新的审批后的提示
         notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_TIP, this.updateUnhandleApplyApproveTip);
         ApplyApproveListStore.unlisten(this.onStoreChange);
+        $(window).on('resize', this.changeContentWidth);
     }
-
+    changeContentWidth = () => {
+        this.setState({
+            detailWrapWidth: getContentWidth()
+        });
+    }
     getAppList() {
         getAppList(appList => {
             this.setState({appList: appList});
@@ -1021,7 +1029,6 @@ class ApplyApproveList extends React.Component {
     render() {
         //展示右侧申请审批的详情
         var noShowApplyDetail = !this.getFirstApplyItem();
-        let detailWrapWidth = $('.user_apply_page').width() - APPLY_LIST_LAYOUT_CONSTANTS.APPLY_LIST_WIDTH;
         let divHeight = $(window).height();
         // //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
         // if (!this.props.isHomeMyWork) {
@@ -1031,7 +1038,7 @@ class ApplyApproveList extends React.Component {
             <div className='apply_approve_content_wrap user_apply_page'>
                 {this.renderApplyListTab()}
                 {noShowApplyDetail ? this.renderNoApplyDetail() :
-                    <div className='apply_approve_detail_wrap' style={{'width': detailWrapWidth, 'height': divHeight}}>
+                    <div className='apply_approve_detail_wrap' style={{'width': this.state.detailWrapWidth, 'height': divHeight}}>
                         {this.renderApplyListDetail()}
                     </div>}
                 {this.renderAddApplyForm()}

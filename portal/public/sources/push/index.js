@@ -234,7 +234,7 @@ function listenOnMessage(data) {
     }
 }
 
-//TODO 待我审批的申请推送
+//待我审批的申请推送
 function applyApproveUnhandledListener(data) {
     if (_.isObject(data)) {
         var applyList = _.get(data, 'apply_list', []);
@@ -957,7 +957,7 @@ function disconnectListener() {
         socketIo.off('apply_unread_reply', applyUnreadReplyListener);
         socketIo.off('cluemsg', clueUnhandledListener);
         socketIo.off('applyApprovemsg', applyApproveUnhandledListener);
-        socketIo.off('applyApprovedByOthermsg', applyApproveUnhandledListener);
+        socketIo.off('applyApprovedByOthermsg', applyApproveApprovedByOtherListener);
         socketIo.off('applyVisitCustomerMsg', applyVisitCustomerListener);
         socketIo.off('crm_operator_alert_msg', crmOperatorAlertListener);
         socketIo.off('apply_upgrade', applyUpgradeListener);

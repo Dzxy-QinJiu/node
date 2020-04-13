@@ -208,13 +208,19 @@ exports.toDetailRestObjectNewUserApply = function(detail, APPLY_TYPES){
             //账号类型
             obj.account_type = userType === 'apply_user_official' || userType === 'apply_app_official' ? '1' : '0';
         }else if(_.includes([APPLY_TYPES.APPLY_USER],userType)){
-            obj.user_names = _.chain(detail).get('detail.user_name').value() ? [_.chain(detail).get('detail.user_name').value()] : [];
-            obj.user_ids = _.chain(detail).get('detail.user_id').value() ? [_.chain(detail).get('detail.user_id').value()] : [];
-            obj.nick_names = _.chain(detail).get('detail.nick_name').value() ? [_.chain(detail).get('detail.nick_name').value()] : [];
+            if(_.get(detail,'detail.user_names[0]','')){
+                obj.user_names = _.get(detail,'detail.user_names','');//审批过后，如果有用户名在user_names中，比如有多个用户名的时候，都在这个数组中
+            }else if(_.get(detail,'detail.user_name','')){
+                obj.user_names = [_.get(detail,'detail.user_name','')];//在审批之前，用户名在user_name中
+            }else{
+                obj.user_names = [];
+            }
+            obj.user_ids = _.get(detail,'detail.user_ids[0]',) ? _.get(detail,'detail.user_ids') : [];
+            obj.nick_names = _.chain(detail).get('detail.nickname').value() ? [_.chain(detail).get('detail.nickname').value()] : [];
         }
 
         if (userType === 'apply_user' || userType === 'apply_app') {
-            obj.tag = _.get(detail, 'tag', '');
+            obj.tag = _.get(detail, 'detail.user_type', '');
         }
     }
     //把应用中角色的字段apply_roles改成roles字段

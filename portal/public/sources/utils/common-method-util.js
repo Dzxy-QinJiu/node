@@ -658,19 +658,6 @@ exports.formatUsersmanList = function(usersManList) {
     });
     return dataList;
 };
-// exports.updateUnapprovedCount = function(type, emitterType, updateCount) {
-//     if (Oplate && Oplate.unread) {
-//         Oplate.unread[type] = updateCount;
-//         if (timeoutFunc) {
-//             clearTimeout(timeoutFunc);
-//         }
-//         timeoutFunc = setTimeout(function() {
-//             //触发展示的组件待审批数的刷新
-//             notificationEmitter.emit(notificationEmitter[emitterType]);
-//         }, timeout);
-//     }
-// };
-
 //待我审批的数量减一
 exports.substractUnapprovedCount = function(applyId) {
     if (Oplate && Oplate.unread) {
@@ -1197,7 +1184,15 @@ exports.isResponsiveDisplay = () => {
 };
 //处理历史申请记录的数据
 exports.handleHistoricalList = function(lists) {
-    return _.filter(lists, item => _.get(item,'replyLists[0]'));
+    return _.filter(lists, item => {
+        var replyList = _.get(item,'replyLists[0]');
+        var targetObj = _.find(replyList,item => item.comment);
+        if(targetObj){
+            return true;
+        }else{
+            return false;
+        }
+    });
 };
 //判断当前版本，个人版/企业版
 function checkCurrentVersion() {
