@@ -41,7 +41,7 @@ const salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import {uniteFileSize,substractUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
+import {uniteFileSize} from 'PUB_DIR/sources/utils/common-method-util';
 import classNames from 'classnames';
 import {transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 class ApplyViewDetail extends React.Component {
@@ -132,8 +132,6 @@ class ApplyViewDetail extends React.Component {
                 }
                 //将待我审批的申请转审后
                 if (isShowApproveBtn){
-                    //待审批数字减一
-                    substractUnapprovedCount(submitObj.id);
                     //隐藏通过、驳回按钮
                     ReportSendApplyDetailAction.showOrHideApprovalBtns(false);
                     //调用父组件的方法进行转成完成后的其他处理
@@ -259,6 +257,8 @@ class ApplyViewDetail extends React.Component {
             var target = _.find(result,detailItem => detailItem.user_id === memberId);
             if (target){
                 ReportSendApplyDetailAction.showOrHideApprovalBtns(true);
+            }else{
+                ReportSendApplyDetailAction.showOrHideApprovalBtns(false);
             }
         });
     }

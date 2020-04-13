@@ -7,7 +7,7 @@ var LeaveApplyAjax = require('../ajax/leave-apply-ajax');
 var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import {getApplyDetailById,getApplyStatusById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
-import {checkIfLeader,substractUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
+import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -71,7 +71,6 @@ function ApplyViewDetailActions() {
             }
             //更新选中的申请单类型
             ApplyApproveUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
-            substractUnapprovedCount(obj.id);
         }, (errorMsg) => {
             //更新选中的申请单类型
             ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});

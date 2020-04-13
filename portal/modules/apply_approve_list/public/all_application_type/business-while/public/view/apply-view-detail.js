@@ -29,7 +29,6 @@ import {
     getFilterReplyList,
     handleDiffTypeApply,
     formatUsersmanList,
-    substractUnapprovedCount,
     timeShowFormat, getTimeWithSecondZero, disabledHour, disabledMinute
 } from 'PUB_DIR/sources/utils/common-method-util';
 import {handleTimeRange, getAllUserList, calculateTotalTimeInterval} from 'PUB_DIR/sources/utils/common-data-util';
@@ -133,7 +132,7 @@ class ApplyViewDetail extends React.Component {
                 //将待我审批的申请转审后
                 if (isShowApproveBtn){
                     //待审批数字减一
-                    substractUnapprovedCount(submitObj.id);
+                    (submitObj.id);
                     //隐藏通过、驳回按钮
                     ApplyViewDetailActions.showOrHideApprovalBtns(false);
                     //调用父组件的方法进行转成完成后的其他处理
@@ -242,6 +241,8 @@ class ApplyViewDetail extends React.Component {
             var target = _.find(result,detailItem => detailItem.user_id === memberId);
             if (target){
                 ApplyViewDetailActions.showOrHideApprovalBtns(true);
+            }else{
+                ApplyViewDetailActions.showOrHideApprovalBtns(false);
             }
         });
     }
