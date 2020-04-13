@@ -87,7 +87,6 @@ class CurtaoAnalysis extends React.Component {
     }
 
     componentDidMount() {
-        this.getStageList();
         this.getIndustryList();
         this.getAppList();
         this.getUserTypeList();
@@ -135,15 +134,6 @@ class CurtaoAnalysis extends React.Component {
     setBodyOverflow(value = 'auto') {
         $('body').css('overflow', value);
     }
-
-    //获取订单阶段列表
-    getStageList = () => {
-        ajax.send({
-            url: '/rest/customer/v2/salestage'
-        }).then(result => {
-            Store.stageList = result.result;
-        });
-    };
 
     //获取行业列表
     getIndustryList = () => {

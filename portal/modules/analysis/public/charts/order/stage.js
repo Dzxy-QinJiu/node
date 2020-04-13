@@ -11,7 +11,10 @@ export function getOrderStageChart(paramObj = {}) {
 
     return {
         title: Intl.get('oplate_customer_analysis.11', '订单阶段统计'),
-        url: '/rest/analysis/customer/v1/:auth_type/total/stage',
+        url: [
+            '/rest/customer/v2/salestage',
+            '/rest/analysis/customer/v1/:auth_type/total/stage',
+        ],
         argCallback: arg => {
             argCallbackUnderlineTimeToTime(arg);
             argCallbackMemberIdToMemberIds(arg);
@@ -28,9 +31,10 @@ export function getOrderStageChart(paramObj = {}) {
         chartType: 'horizontalStage',
         layout,
         processData: (data) => {
-            const stageList = paramObj.stageList || Store.stageList;
+            const stageList = _.get(data, '[0].result', []);
+            const stageData = _.get(data, '[1]', []);
 
-            return processOrderStageData(stageList, data);
+            return processOrderStageData(stageList, stageData);
         },
     };
 }
