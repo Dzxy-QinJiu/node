@@ -6,6 +6,7 @@ import { Alert, message } from 'antd';
 
 class PaymentRecords extends React.Component {
     state = {
+        loading: true,
         paymentRecordList: [],
         total: 0
     };
@@ -22,6 +23,8 @@ class PaymentRecords extends React.Component {
     }
 
     getPaymentRecordList = (props = this.props) => {
+        this.setState({ loading: true });
+
         ajax.send({
             url: '/rest/base/v1/realm/pay/tradeorders',
             query: {user_id: props.userId, page_size: 1000}
@@ -32,7 +35,7 @@ class PaymentRecords extends React.Component {
                     return item;
                 });
 
-                this.setState({ paymentRecordList, total: result.total });
+                this.setState({ loading: false, paymentRecordList, total: result.total });
             })
             .fail(err => {
                 message.error(err);
@@ -41,7 +44,9 @@ class PaymentRecords extends React.Component {
 
     render() {
         return (
-            <StatusWrapper>
+            <StatusWrapper
+                loading={this.state.loading}
+            >
                 <div className="payment-records-panel" style={{ height: this.props.height }}>
                     <GeminiScrollbar>
                         {_.isEmpty(this.state.paymentRecordList) ? (
