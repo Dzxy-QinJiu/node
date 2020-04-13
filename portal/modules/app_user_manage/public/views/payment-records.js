@@ -30,8 +30,8 @@ class PaymentRecords extends React.Component {
             query: {user_id: props.userId, page_size: 1000}
         })
             .done(result => {
-                const paymentRecordList = _.map(result.list, item => {
-                    item.height = 'auto';
+                const paymentRecordList = _.map(result.list, (item, index) => {
+                    item.isExpand = index === 0;
                     return item;
                 });
 
@@ -68,12 +68,10 @@ class PaymentRecords extends React.Component {
                                         title={item.goods.name}
                                         content={this.renderCardContent(item)}
                                         isShowToggleBtn={true}
-                                        isMutipleCard={true}
-                                        isExpandDetail={item.height === 'auto'}
-                                        height={item.height}
+                                        isExpandDetail={item.isExpand}
                                         handleToggleDetail={(isExpand) => {
                                             let paymentRecordList = _.cloneDeep(this.state.paymentRecordList);
-                                            paymentRecordList[index].height = isExpand ? 'auto' : 100;
+                                            paymentRecordList[index].isExpand = isExpand;
                                             this.setState({ paymentRecordList });
                                         }}
                                     />
@@ -92,18 +90,23 @@ class PaymentRecords extends React.Component {
                 <div className="field-item">
                     <span className="field-label">{Intl.get('payment.time.of.payment', '付款时间')}：</span>{moment(record.finish_time).format(oplateConsts.DATE_TIME_FORMAT)}
                 </div>
-                <div className="field-item">
-                    <span className="field-label">{Intl.get('payment.amount', '付款金额')}：</span>{record.total_fee} {Intl.get('contract.82', '元')}
-                </div>
-                <div className="field-item">
-                    <span className="field-label">{Intl.get('crm.order.id', '订单编号')}：</span>{record.id}
-                </div>
-                <div className="field-item">
-                    <span className="field-label">{Intl.get('payment.platform', '支付平台')}：</span>{this.renderPayType(record.pay_type)}
-                </div>
-                <div className="field-item">
-                    <span className="field-label">{Intl.get('payment.platform.order.no', '平台订单号')}：</span>{record.trade_no}
-                </div>
+
+                {record.isExpand ? (
+                    <div>
+                        <div className="field-item">
+                            <span className="field-label">{Intl.get('payment.amount', '付款金额')}：</span>{record.total_fee} {Intl.get('contract.82', '元')}
+                        </div>
+                        <div className="field-item">
+                            <span className="field-label">{Intl.get('crm.order.id', '订单编号')}：</span>{record.id}
+                        </div>
+                        <div className="field-item">
+                            <span className="field-label">{Intl.get('payment.platform', '支付平台')}：</span>{this.renderPayType(record.pay_type)}
+                        </div>
+                        <div className="field-item">
+                            <span className="field-label">{Intl.get('payment.platform.order.no', '平台订单号')}：</span>{record.trade_no}
+                        </div>
+                    </div>
+                ) : null}
             </div>
         );
     }
