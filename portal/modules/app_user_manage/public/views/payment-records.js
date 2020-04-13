@@ -39,6 +39,8 @@ class PaymentRecords extends React.Component {
             })
             .fail(err => {
                 message.error(err);
+
+                this.setState({ loading: false });
             });
     };
 
