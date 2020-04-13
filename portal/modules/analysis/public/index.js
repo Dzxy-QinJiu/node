@@ -61,12 +61,13 @@ class CurtaoAnalysis extends React.Component {
         super(props);
 
         const processedGroups = this.processMenu(groups);
+        const currentPage = _.get(processedGroups, '[0].pages[0]', {});
 
         this.state = {
             currentMenuIndex: '0,0',
-            currentCharts: _.get(processedGroups, '[0].pages[0].charts'),
-            //当前显示页面的id
-            currentPage: '',
+            currentCharts: _.get(currentPage, 'charts', []),
+            //当前显示的页面
+            currentPage,
             groups: processedGroups,
             isAppSelectorShow: false,
             //是否显示通话设备类型选择器
