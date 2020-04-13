@@ -212,7 +212,6 @@ class CustomerAnalysis extends React.Component {
 
     componentDidMount() {
         OplateCustomerAnalysisStore.listen(this.onStateChange);
-        OplateCustomerAnalysisAction.getSalesStageList();
         this.getChartData();
         setTimeout(() => {
             this.getStageChangeCustomers();
@@ -327,10 +326,6 @@ class CustomerAnalysis extends React.Component {
                 analysis_filter_field: analysis_filter_field
             }
         };
-    };
-
-    processOrderStageData = (data) => {
-        return processOrderStageData(this.state.salesStageList, data);
     };
 
     //处理阶段点击的回调 
@@ -917,9 +912,7 @@ class CustomerAnalysis extends React.Component {
         //客户阶段统计
         customerCharts.getCustomerStageChart(),
         //订单阶段统计
-        orderCharts.getOrderStageChart({
-            stageList: this.state.salesStageList
-        }),
+        orderCharts.getOrderStageChart(),
         {
             title: Intl.get('user.analysis.location.add', '地域-新增'),
             chartType: 'bar',
