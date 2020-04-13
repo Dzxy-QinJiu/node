@@ -26,7 +26,6 @@ import {
     getFilterReplyList,
     handleDiffTypeApply,
     formatUsersmanList,
-    substractUnapprovedCount,
     isCiviwRealm,
     formatSalesmanList,
     timeShowFormat,
@@ -144,7 +143,6 @@ class ApplyViewDetail extends React.Component {
                 }
                 //将待我审批的申请转审后
                 if (hasApprovePrivilege){
-                    substractUnapprovedCount(submitObj.id);
                     //隐藏通过、驳回按钮
                     LeaveApplyDetailAction.showOrHideApprovalBtns(false);
                     //调用父组件的方法进行转成完成后的其他处理
@@ -259,6 +257,8 @@ class ApplyViewDetail extends React.Component {
             var target = _.find(result,detailItem => detailItem.user_id === memberId);
             if (target){
                 LeaveApplyDetailAction.showOrHideApprovalBtns(true);
+            }else{
+                LeaveApplyDetailAction.showOrHideApprovalBtns(false);
             }
         });
     }

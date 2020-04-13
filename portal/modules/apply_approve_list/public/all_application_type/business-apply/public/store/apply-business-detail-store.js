@@ -142,6 +142,9 @@ ApplyViewDetailStore.prototype.hideCancelBtns = function() {
 ApplyViewDetailStore.prototype.showOrHideApprovalBtns = function(flag){
     this.selectedDetailItem.showApproveBtn = flag;
     this.detailInfoObj.info.showApproveBtn = flag;
+    // if(flag){//如果转审给自己，把
+    //
+    // }
 };
 ApplyViewDetailStore.prototype.setNextCandidate = function(candidateArr){
     this.candidateList = candidateArr;

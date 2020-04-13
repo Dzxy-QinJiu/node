@@ -22,13 +22,17 @@ export const APPLY_LIST_LAYOUT_CONSTANTS = {
     TOP_DELTA: 64,
     BOTTOM_DELTA: 48,
     APPLY_LIST_WIDTH: 336,
-    DETAIL_BOTTOM_DELTA: 14
+    DETAIL_BOTTOM_DELTA: 14,
+    NAV_SIDER_BAR: 65//左侧导航的宽度
 };
 export const getApplyListDivHeight = function() {
     if ($(window).width() < Oplate.layout['screen-md']) {
         return 'auto';
     }
     return $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
+};
+export const getContentWidth = function() {
+    return $(window).width() - APPLY_LIST_LAYOUT_CONSTANTS.APPLY_LIST_WIDTH - APPLY_LIST_LAYOUT_CONSTANTS.NAV_SIDER_BAR;
 };
 export const transferBtnContent = function() {
     return (<Button className='transfer-btn'>

@@ -13,7 +13,7 @@ import {
     getApplyCommentList,
     addApplyComments
 } from 'PUB_DIR/sources/utils/apply-common-data-utils';
-import {checkIfLeader,substractUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
+import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -75,7 +75,6 @@ function ApplyViewDetailActions() {
             }
             //更新选中的申请单类型
             ApplyApproveUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
-            substractUnapprovedCount(obj.id);
         }, (errorMsg) => {
             //更新选中的申请单类型
             ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});

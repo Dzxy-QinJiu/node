@@ -12,7 +12,6 @@ import DefaultApplyViewDetailStore from '../store/apply-view-detail-store';
 import {AntcTable} from 'antc';
 // import ApplyViewDetailActions from '../action/apply-view-detail-actions';
 import DefaultApplyViewDetailActions from '../action/apply-view-detail-actions';
-import UserApplyAction from '../action/user-apply-actions';
 import AppUserUtil from '../util/app-user-util';
 import Spinner from 'CMP_DIR/spinner';
 import userData from 'PUB_DIR/sources/user-data';
@@ -47,8 +46,7 @@ import Trace from 'LIB_DIR/trace';
 var moment = require('moment');
 import {
     handleDiffTypeApply, getUserApplyFilterReplyList,
-    getApplyStatusTimeLineDesc, formatUsersmanList,
-    substractUnapprovedCount, isFinalTask,
+    getApplyStatusTimeLineDesc, formatUsersmanList, isFinalTask,
     isApprovedByManager, timeShowFormat,
     isCustomDelayType, getDelayTimeUnit,
     getApplyTopicText, getApplyResultDscr, isCiviwRealm, applyAppConfigTerminal,
@@ -234,14 +232,24 @@ const COLUMN_WIDTH = {
                 approval_state = _.get(detailItem,'approval_state');
             }
             ApplyViewDetailActions.getApplyDetail({id: detailItem.id}, approval_state, applyData, this.props.appList);
-            if(!_.includes(['2','3'], _.get(detailItem,'approval_state'))){
-                ApplyViewDetailActions.getNextCandidate({id: detailItem.id});
-            }
+            this.getNextCandidate(detailItem.id);
             //获取该审批所在节点的位置
             ApplyViewDetailActions.getApplyTaskNode({id: detailItem.id});
             //获取回复列表
             if (hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION)) {
                 ApplyViewDetailActions.getReplyList(detailItem.id);
+            }
+        });
+    },
+    getNextCandidate(applyId){
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
+        ApplyViewDetailActions.getNextCandidate({id: applyId},(result) => {
+            var memberId = userData.getUserData().user_id;
+            var target = _.find(result,detailItem => detailItem.user_id === memberId);
+            if (target){
+                ApplyViewDetailActions.showOrHideApprovalBtns(true);
+            }else{
+                ApplyViewDetailActions.showOrHideApprovalBtns(false);
             }
         });
     },
@@ -391,7 +399,7 @@ const COLUMN_WIDTH = {
         if (applyId) {
             ApplyViewDetailActions.getReplyList(applyId);
             //获取该审批所在节点的位置
-            ApplyViewDetailActions.getNextCandidate({id: applyId});
+            this.getNextCandidate(applyId);
         }
     },
 
@@ -2213,8 +2221,6 @@ const COLUMN_WIDTH = {
                 }
                 //将待我审批的申请转审后
                 if (isShowApproveBtn){
-                    //待审批数字减一
-                    substractUnapprovedCount(submitObj.id);
                     //隐藏通过、驳回按钮
                     ApplyViewDetailActions.showOrHideApprovalBtns(false);
                     //调用父组件的方法进行转成完成后的其他处理
@@ -2222,8 +2228,6 @@ const COLUMN_WIDTH = {
                         this.props.afterApprovedFunc();
                     }
                 }else if (memberId === transferCandidateId ){
-                    // var count = Oplate.unread.approve + 1;
-                    // updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
                     //将非待我审批的申请转给我审批后，展示出通过驳回按钮,不需要再手动加一，因为后端会有推送，这里如果加一就会使数量多一个
                     ApplyViewDetailActions.showOrHideApprovalBtns(true);
                 }

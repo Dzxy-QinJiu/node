@@ -171,6 +171,9 @@ function applyApproveNumListener(data) {
             });
         }
     }else{
+        //带consumers的是加一，带last_consumers的是减一
+        //求出这两个集合的交集
+        var commonArr = _.intersection(_.get(applyApprovesgObj,'consumers',[]), _.get(applyApprovesgObj,'last_consumers',[]));
         //带consumers的是加一
         if (_.isArray(applyApprovesgObj.consumers) && _.get(applyApprovesgObj,'consumers[0]')) {
             //遍历消息接收者
@@ -181,7 +184,9 @@ function applyApproveNumListener(data) {
                     console.log(applyApprovesgObj);
                     emitMsgBySocket(consumer, 'applyVisitCustomerMsg', pushDto.applyVisitCustomerMsgToFrontend(applyApprovesgObj, consumer));
                 }else{
-                    emitMsgBySocket(consumer, 'applyApprovemsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+                    if (!_.includes(commonArr, consumer)){
+                        emitMsgBySocket(consumer, 'applyApprovemsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+                    }
                 }
             });
         }
@@ -190,7 +195,9 @@ function applyApproveNumListener(data) {
             //遍历消息接收者
             applyApprovesgObj.last_consumers.forEach(function(consumer) {
                 //将数据推送到浏览器
-                emitMsgBySocket(consumer, 'applyApprovedByOthermsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+                if(!_.includes(commonArr, consumer)){
+                    emitMsgBySocket(consumer, 'applyApprovedByOthermsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+                }
             });
         }
     }

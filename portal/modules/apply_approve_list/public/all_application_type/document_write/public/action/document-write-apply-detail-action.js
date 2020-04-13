@@ -7,7 +7,7 @@ var DocumentWriteApplyAjax = require('../ajax/document-write-apply-ajax');
 var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import {getApplyDetailById,getApplyStatusById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
-import {checkIfLeader,substractUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
+import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -80,7 +80,6 @@ function ApplyViewDetailActions() {
                 //如果不是最后确认的那一步，状态就还是ongoing
                 if(obj.report_ids || obj.agree === 'reject' || obj.agree === 'cancel'){
                     ApplyApproveUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
-                    substractUnapprovedCount(obj.report_ids);
                 }
                 _.isFunction(callback) && callback();
             }else{
@@ -116,15 +115,19 @@ function ApplyViewDetailActions() {
         });
     };
     //获取下一节点的负责人
-    this.getNextCandidate = function(queryObj) {
+    this.getNextCandidate = function(queryObj,callback) {
         ApplyApproveAjax.getNextCandidate().sendRequest(queryObj).success((list) => {
             if (_.isArray(list)){
                 checkIfLeader(list,(isLeader) => {
                     this.dispatch({list: list, isLeader: isLeader});
                 });
+                _.isFunction(callback) && callback(list);
             }
-        }).error(this.dispatch({error: true}));
+        }).error(
+            this.dispatch({error: true})
+        );
     };
+
     //把申请转给另外一个人
     this.transferNextCandidate = function(queryObj,callback) {
         this.dispatch({loading: true, error: false});

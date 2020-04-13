@@ -4,7 +4,7 @@ var ApplyApproveUtil = require('MOD_DIR/apply_approve_list/public/utils/apply_ap
 import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
 import {updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
-import {checkIfLeader,substractUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
+import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 import {addApplyComments, getApplyCommentList, getApplyDetailById,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 class ApplyViewDetailActions {
@@ -131,8 +131,6 @@ class ApplyViewDetailActions {
             }
             //更新选中的申请单类型
             ApplyApproveUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
-            //刷新用户审批未处理数
-            substractUnapprovedCount(obj.id);
 
         }, (errorMsg) => {
             //更新选中的申请单类型
@@ -181,12 +179,13 @@ class ApplyViewDetailActions {
     }
 
     //获取下一节点的负责人
-    getNextCandidate(queryObj) {
+    getNextCandidate(queryObj,callback) {
         ApplyApproveAjax.getNextCandidate().sendRequest(queryObj).success((list) => {
-            if (_.isArray(list)) {
+            if (_.isArray(list)){
                 checkIfLeader(list,(isLeader) => {
                     this.dispatch({list: list, isLeader: isLeader});
                 });
+                _.isFunction(callback) && callback(list);
             }
         }).error(this.dispatch({error: true}));
     }
