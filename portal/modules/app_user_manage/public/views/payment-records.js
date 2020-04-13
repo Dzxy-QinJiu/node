@@ -47,7 +47,7 @@ class PaymentRecords extends React.Component {
             <StatusWrapper
                 loading={this.state.loading}
             >
-                <div className="payment-records-panel" style={{ height: this.props.height }}>
+                <div className="payment-records-panel" style={{ height: this.props.height }} data-tracename="付费记录">
                     <GeminiScrollbar>
                         {_.isEmpty(this.state.paymentRecordList) ? (
                             <div className="alert-container">
