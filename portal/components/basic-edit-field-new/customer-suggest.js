@@ -141,6 +141,10 @@ class CustomerSuggest extends React.Component {
         }
         this.suggestTimer = setTimeout(() => {
             let condition = {name: value};
+            if(this.props.isSearchMyCustomer){//获取的是登陆人作为负责人的客户列表
+                condition['members'] = [{'nickname': userData.getUserData().nick_name,'is_owner': true}];
+                condition['term_fields'] = ['nickname'];
+            }
             let sorter = {
                 field: 'start_time',
                 order: 'descend'
@@ -617,6 +621,7 @@ CustomerSuggest.defaultProps = {
 
     },
     searchClue: function() {},
+    isSearchMyCustomer: false
 };
 CustomerSuggest.propTypes = {
     name: PropTypes.string,
@@ -651,6 +656,7 @@ CustomerSuggest.propTypes = {
     searchClue: PropTypes.func,
     tryClue: PropTypes.bool,
     needRemovePrefix: PropTypes.bool,
+    isSearchMyCustomer: PropTypes.bool,
 };
 
 module.exports = CustomerSuggest;
