@@ -56,7 +56,8 @@ function ApplyViewDetailActions() {
     this.addSalesOpportunityApplyComments = function(obj,callback) {
         this.dispatch({loading: true, error: false});
         addApplyComments(obj).then((replyData) => {
-            this.dispatch({loading: false, error: false, reply: replyItem});
+            this.dispatch({loading: false, error: false, reply: replyData});
+            _.isFunction(callback) && callback();
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
@@ -112,7 +113,7 @@ function ApplyViewDetailActions() {
                 checkIfLeader(list,(isLeader) => {
                     this.dispatch({list: list, isLeader: isLeader});
                 });
-                _.isFunction(callback) && callback();
+                _.isFunction(callback) && callback(list);
             }
         }).error(
             this.dispatch({error: true})

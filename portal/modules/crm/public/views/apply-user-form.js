@@ -137,7 +137,7 @@ const ApplyUserForm = createReactClass({
                 order_id: order.id,
                 sales_opportunity: order.sale_stages,
                 user_name: '',
-                nick_name: props.customerName,
+                nickname: props.customerName,
                 tag: props.userType,
                 remark: ''
             };
@@ -156,7 +156,7 @@ const ApplyUserForm = createReactClass({
                 formData.user_names = _.map(users, 'user_name');
             } else {//开通新用户
                 formData.user_name = '';
-                formData.nick_name = props.customerName;
+                formData.nickname = props.customerName;
             }
         }
         //构造应用数据
@@ -279,7 +279,7 @@ const ApplyUserForm = createReactClass({
     },
     setNickName: function(nickName) {
         let formData = this.state.formData;
-        formData.nick_name = _.trim(nickName);
+        formData.nickname = _.trim(nickName);
         this.setState({formData});
     },
 
@@ -638,8 +638,8 @@ const ApplyUserForm = createReactClass({
                 <FormItem
                     {...formItemLayout}
                     label={Intl.get('common.nickname', '昵称')}
-                    validateStatus={this.getValidateStatus('nick_name')}
-                    help={this.getHelpMessage('nick_name')}
+                    validateStatus={this.getValidateStatus('nickname')}
+                    help={this.getHelpMessage('nickname')}
                     required
                 >
                     <Validator rules={[{
@@ -647,9 +647,9 @@ const ApplyUserForm = createReactClass({
                         message: Intl.get('user.nickname.write.tip', '请填写昵称')
                     }]}>
                         <Input
-                            name="nick_name"
+                            name="nickname"
                             placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
-                            value={formData.nick_name}
+                            value={formData.nickname}
                             onChange={this.onNickNameChange}/>
                     </Validator>
                 </FormItem>
