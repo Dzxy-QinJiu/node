@@ -7,6 +7,9 @@ import emotionUtils from 'PUB_DIR/sources/utils/emotion-utils';
 import { MESSAGE_TYPES } from './consts';
 import { customerServiceEmitter } from 'OPLATE_EMITTER';
 
+//图片最大宽度
+const IMAGE_MAX_WIDTH = 300;
+
 class ChatMessageContentItem extends React.Component {
 
     state = {
@@ -44,6 +47,24 @@ class ChatMessageContentItem extends React.Component {
         }
     }
 
+    getWidthAndHeight() {
+        let image = _.get(this.imageData,'image', {});
+        let width = _.get(image, 'width', 0);
+        let height = _.get(image, 'height', 0);
+
+        //超过图片最大宽度需要动态计算图片宽度和高度
+        if(width > IMAGE_MAX_WIDTH) {
+            //需要缩小的倍数
+            let ratio = (width / IMAGE_MAX_WIDTH);
+            width = IMAGE_MAX_WIDTH;
+            height = (height / ratio).toFixed(2);
+        }
+        return {
+            width,
+            height
+        };
+    }
+
     //图片放大
     handleFullImage = () => {
         customerServiceEmitter.emit(customerServiceEmitter.FULL_CHAT_MESSAGE_IMAGE, {
@@ -55,7 +76,7 @@ class ChatMessageContentItem extends React.Component {
         return (
             <span className="chat-message-content-item">
                 {this.props.message.type === MESSAGE_TYPES.IMAGE ? (
-                    <img src={this.state.imageUrl} style={{width: 200, height: 100}} onClick={this.handleFullImage}/>
+                    <img src={this.state.imageUrl} style={this.getWidthAndHeight()} onClick={this.handleFullImage}/>
                 ) : (
                     <span dangerouslySetInnerHTML={{__html: this.getText()}}/>
                 )}
