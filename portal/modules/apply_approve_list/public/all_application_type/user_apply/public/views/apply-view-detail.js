@@ -1992,7 +1992,7 @@ const COLUMN_WIDTH = {
     },
 
     //添加一条回复
-    addReply: function(e) {
+    addReply: function(e,callback) {
         Trace.traceEvent(e, '点击回复按钮');
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
         //如果ajax没有执行完，则不提交
@@ -2009,7 +2009,7 @@ const COLUMN_WIDTH = {
             return;
         }
         //提交数据
-        ApplyViewDetailActions.addReply(submitData);
+        ApplyViewDetailActions.addReply(submitData,callback);
     },
 
     //备注 输入框改变时候触发
