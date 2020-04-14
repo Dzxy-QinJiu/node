@@ -108,7 +108,7 @@ class ChatDocumentMessageItem extends React.Component {
             );
         }else if(this.isImageMessage()) {
             return (
-                <img src={this.state.imageUrl} style={{width: _.get(this.state.imageData, 'w', 200), height: _.get(this.state.imageData, 'h', 100)}} onClick={this.handleFullImage}/>
+                <img src={this.state.imageUrl} style={{width: _.get(this.state.imageData, 'w'), height: _.get(this.state.imageData, 'h')}} onClick={this.handleFullImage}/>
             );
         }else {
             return <a onClick={this.downloadFile}>{this.props.message.message.name}</a>;
