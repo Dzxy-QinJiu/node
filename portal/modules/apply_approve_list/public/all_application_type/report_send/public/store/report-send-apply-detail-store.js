@@ -128,7 +128,7 @@ ReportSendApplyDetailStore.prototype.getApplyDetailById = function(obj) {
         this.detailInfoObj.errorMsg = obj.errorMsg;
     } else {
         this.detailInfoObj.loadingResult = '';
-        //todo 是否展示通过和驳回的按钮
+        //是否展示通过和驳回的按钮
         this.detailInfoObj.info = obj.detail;
         if (obj.status){
             //审批通过或者驳回后立刻查询状态还没有立刻改变

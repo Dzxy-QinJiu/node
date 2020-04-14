@@ -169,7 +169,7 @@ UserApplyStore.prototype.handleApplyLists = function(obj,flag){
     } else {
         this.applyListObj.loadingResult = '';
         this.applyListObj.errorMsg = '';
-        this.totalSize = obj.data.total;//todo 我的审批的总值是不对的
+        this.totalSize = obj.data.total;//todo 我的审批的总值是不对的，页面暂时不展示
         let applyList = obj.data.list;
         if (_.isArray(applyList) && applyList.length) {
             if (this.lastApplyId) {//下拉加载数据时
