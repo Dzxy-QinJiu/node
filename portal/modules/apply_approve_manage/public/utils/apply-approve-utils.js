@@ -270,7 +270,7 @@ const INNER_SETTING_FLOW = {
 };
 const SELF_SETTING_FLOW = {
     VISITAPPLY: 'visitapply',//拜访申请
-    VISITAPPLYTOPIC: Intl.get('apply.my.self.setting.work.flow', '拜访申请'),
+    VISITAPPLYTOPIC: Intl.get('apply.my.self.setting.work.flow', '预约拜访'),
     DOMAINAPPLY: 'domainName',//舆情平台申请
     DOMAINAPPLYTOPIC: Intl.get('apply.domain.application.work.flow', '舆情平台申请'),
 };

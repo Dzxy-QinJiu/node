@@ -338,12 +338,12 @@ exports.getApplyList = function(req, res) {
         res: res
     }, obj, {
         success: function(eventEmitter, data) {
-            // todo  处理数据
+            //处理数据
             if (data && data.list && data.list.length) {
                 var applyList = handleUserApplyData(data.list || []);
                 data.list = applyList;
             }
-            //todo 如果是根据客户id查询申请列表的时候，还需要格外查询这些申请的回复列表
+            //如果是根据客户id查询申请列表的时候，还需要格外查询这些申请的回复列表
             if (obj.customer_id){
                 var emitter = new EventEmitter();
                 var promiseList = [];
@@ -374,7 +374,7 @@ exports.getMyApplyLists = function(req, res){
         res: res
     }, req.query,{
         success: function(eventEmitter, data) {
-            // todo  处理数据
+            // 处理数据
             if (data && data.list && data.list.length) {
                 var applyList = handleUserApplyData(data.list || []);
                 data.list = applyList;
@@ -834,7 +834,7 @@ function getAppsUserRolesType(req, res, applyBasicDetail, emitter) {
                             if (!_.isEmpty( app.terminals)) {
                                 curApp.terminals = _.map(app.terminals, 'id');
                             }
-                            curApp.user_type = app.user_type;
+                            curApp.tags = [app.user_type];
                             curApp.roles = app.roles || [];
                             curApp.permissions = app.permissions || [];
                         }

@@ -267,7 +267,7 @@ class CrmUserApplyForm extends React.Component {
     submitEditPasswordData() {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请修改密码)');
         const selectedUserAppData = this.getSelectedUserAppData();
-        //todo 修改修改密码
+        //修改修改密码
         const submitObj = {
             apply_type: APPLY_TYPES.APPLY_PWD_CHANGE,
             customer_id: _.get(this.props.crmUserList,'[0].customer.customer_id'),
