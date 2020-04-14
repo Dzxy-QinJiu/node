@@ -155,13 +155,14 @@ class ApplyViewDetailActions {
     }
 
     //添加回复
-    addReply(obj) {
+    addReply(obj,callback) {
         this.dispatch({loading: true, error: false});
         addApplyComments(obj).then((replyData) => {
             if (_.isObject(replyData)) {
                 //滚动条定位到最后
                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM);
                 this.dispatch({loading: false, error: false, reply: replyData});
+                _.isFunction(callback) && callback();
             }
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});

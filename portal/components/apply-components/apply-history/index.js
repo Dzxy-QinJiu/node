@@ -42,16 +42,21 @@ class ApplyDetailRemarks extends React.Component {
         return (
             <div className="reply-container">
                 {replyList.map((replyItem, index) => {
-                    return (
-                        <p key={index} className="reply-content">
-                            <span className="reply-content-name">
-                                {replyItem.nick_name || UserData.getUserData().nick_name}：</span>
-                            <span className="reply-content-message">
-                                {_.get(replyItem,'message')}
-                            </span>
-                            <span className="reply-content-time">{
-                                replyItem.comment_time ? moment(replyItem.comment_time).format(oplateConsts.DATE_FORMAT) : ''}</span>
-                        </p>);
+                    var message = _.get(replyItem,'message');
+                    if(message){
+                        return (
+                            <p key={index} className="reply-content">
+                                <span className="reply-content-name">
+                                    {replyItem.nick_name || UserData.getUserData().nick_name}：</span>
+                                <span className="reply-content-message">
+                                    {_.get(replyItem,'message')}
+                                </span>
+                                <span className="reply-content-time">{
+                                    replyItem.comment_time ? moment(replyItem.comment_time).format(oplateConsts.DATE_FORMAT) : ''}</span>
+                            </p>);
+                    }else{
+                        return null;
+                    }
                 })}
             </div>);
     }
