@@ -742,7 +742,7 @@ class MyWorkColumn extends React.Component {
 
     getApplyType(type) {
         const APPLY_TYPE_MAP = {
-            'visitapply': Intl.get('apply.my.self.setting.work.flow', '拜访申请'),
+            'visitapply': Intl.get('apply.my.self.setting.work.flow', '预约拜访'),
             'business_opportunities': Intl.get('leave.apply.sales.oppotunity', '机会申请'),
             'customer_visit': Intl.get('leave.apply.add.leave.apply', '出差申请'),
             'personal_leave': Intl.get('leave.apply.leave.application', '请假申请'),
@@ -1418,7 +1418,7 @@ class MyWorkColumn extends React.Component {
                 </RightPanel>
                 {this.state.curOpenDetailWork ? this.renderWorkDetail() : null}
                 {/*添加日程*/}
-                <AddSchedule 
+                <AddSchedule
                     isShowAddToDo={this.state.isShowAddToDo}
                     handleCancelAddToDo={this.handleCancel}
                     handleScheduleAdd={this.afterAddSchedule}

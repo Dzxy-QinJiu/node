@@ -327,7 +327,7 @@ var zh_CN = {
     'common.press.enter.send': '按enter键发送消息',
     'common.customer.service.help.tip': '您好，请问有什么可以帮您？',
     //公共部分--end
-    
+
     'login.login': '登录',
     'login.register': '注册',
     'login.service.error': '很抱歉,服务器出现了异常状况',
@@ -379,7 +379,7 @@ var zh_CN = {
     'login.fogot.password.picture.code.error': '图片验证码错误',
     'login.fogot.password.phone.code.error': '短信验证码错误',
     'login.fogot.password.phone.code.expired': '短信验证码已过期',
-    
+
     'register.title.tip': '欢迎注册客套',
     'register.slogan.tip': '销售加速，从这里开始 ...',
     'register.set.company.id': '设置公司标识',
@@ -1229,7 +1229,7 @@ var zh_CN = {
     'notification.system.who.account': '{who}的账号',
     'notification.extract.clue.failed.because': '原因',
     //通知end
-    
+
     // 公告start
     'notice.upgrade.title': '升级通知',
     'notice.upgrade.system': '公告消息',
@@ -1239,7 +1239,7 @@ var zh_CN = {
     'notice.system': '系统',
     'notice.get.list.failed': '获取公告列表失败',
     // 公告end
-    
+
     //销售阶段start
     'sales.stage.change.sort': '变更顺序',
     'sales.stage.add.order.stage': '添加订单阶段',
@@ -3703,7 +3703,7 @@ var zh_CN = {
     'apply.time.select.period': '周期选择',
     'apply.time.distinct.am': '区分上下午',
     'apply.form.has.edit.components': '您有组件还是编辑状态',
-    'apply.my.self.setting.work.flow': '拜访申请',
+    'apply.my.self.setting.work.flow': '预约拜访',
     'apply.domain.application.work.flow': '舆情平台申请',
     'apply.leave.while.application.work.flow': '外出申请',
     'apply.went.out.while.range': '外出时长',
