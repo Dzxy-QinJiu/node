@@ -35,12 +35,12 @@ class TopBar extends React.Component {
         this.state = {
             filterType: 'team',
             teamList: [{
-                group_name: '全部团队',
+                group_name: Intl.get('user.list.all.teamlist', '全部团队'),
                 group_id: 'all',
             }],
             selectedTeam: 'all',
             memberList: [{
-                nick_name: '全部成员',
+                nick_name: Intl.get('common.memeber.all', '全部成员'),
                 user_id: 'all',
             }],
             selectedMember: 'all',
