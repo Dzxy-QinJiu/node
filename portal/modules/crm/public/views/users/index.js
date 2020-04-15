@@ -23,7 +23,7 @@ import ErrorDataTip from '../components/error-data-tip';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
-import {getApplyList} from 'MOD_DIR/apply_approve_list/public/all_application_type/user_apply/public/ajax/app-user-ajax';
+import {getAllApplyLists} from 'MOD_DIR/apply_approve_list/public/ajax/apply_approve_list_ajax';
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import { EventEmitter } from 'events';
 import {getDetailLayoutHeight} from '../../utils/crm-util';
@@ -127,7 +127,7 @@ class CustomerUsers extends React.Component {
     getCrmUserApplyAndPassList() {
         this.setState({ isLoading: true });
         let promiseList = [
-            getApplyList({
+            getAllApplyLists({
                 customer_id: this.state.curCustomer.id,
                 status: 'ongoing',
                 type: APPLY_APPROVE_TYPES.USER_OR_GRANT,
@@ -523,7 +523,7 @@ class CustomerUsers extends React.Component {
         return rightPanelView;
     }
 
-    getLayoutHeight() { 
+    getLayoutHeight() {
         let divHeight = getDetailLayoutHeight(true);//true: 需要减去总数的高度
         let userListHeight = divHeight;
         //减去申请用户面板的高度

@@ -305,8 +305,6 @@ const COLUMN_WIDTH = {
         }
 
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
-
-
     },
 
     closeRightPanel() {
@@ -491,7 +489,6 @@ const COLUMN_WIDTH = {
             <ApplyHistory
                 sameHistoryApplyLists={sameHistoryApplyLists}
                 handleOpenApplyDetail={this.props.handleOpenApplyDetail}
-                refreshHistoryList={() => {}}
             />
         );
     },

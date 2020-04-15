@@ -1,3 +1,4 @@
+import {getAllApplyLists} from '../../../../../public/ajax/apply_approve_list_ajax';
 import AppUserAjax from '../ajax/app-user-ajax';
 import AppUserUtil from '../util/app-user-util';
 var ApplyApproveUtil = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
@@ -110,7 +111,7 @@ class ApplyViewDetailActions {
     //在审批详情中得到客户的id，然后根据客户的id获取历史申请审批
     getHistoryApplyListsByCustomerId(apply){
         this.dispatch({loading: true, error: false});
-        AppUserAjax.getApplyList({customer_id: _.get(apply,'customer_id',''), page_size: 100, type: APPLY_APPROVE_TYPES.USER_OR_GRANT}).then((data) => {
+        getAllApplyLists({customer_id: _.get(apply,'customer_id',''), page_size: 100, type: APPLY_APPROVE_TYPES.USER_OR_GRANT}).then((data) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             //过滤掉本条申请
             data.list = _.filter(data.list, item => item.id !== _.get(apply, 'id',''));
