@@ -6,7 +6,7 @@
 var customerRecordAjax = require('../ajax/customer-record-ajax');
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util'; //判断是否在蚁坊域
-import {getAllApplyList} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {getAllApplyLists} from 'MOD_DIR/apply_approve_list/public/ajax/apply_approve_list_ajax';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 function CustomerRecordAction() {
     this.generateActions(
@@ -48,7 +48,7 @@ function CustomerRecordAction() {
                     status: 'pass',
                     customer_id: queryParams.customer_id
                 };
-                getAllApplyList(queryObj).then((reportResult) => {
+                getAllApplyLists(queryObj).then((reportResult) => {
                     data.public_opinion_report = _.get(reportResult, 'total', 0);
                     this.dispatch({loading: false,error: false,data: data});
                 }, () => {
@@ -87,7 +87,7 @@ function CustomerRecordAction() {
     //获取舆情报告列表
     this.getPublicOpinionReports = function(queryObj, callback) {
         let result = {data: null, error: false};
-        getAllApplyList(queryObj).then((data) => {
+        getAllApplyLists(queryObj).then((data) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             result.data = data;
             this.dispatch(result);
