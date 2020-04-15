@@ -147,21 +147,14 @@ class CurtaoAnalysis extends React.Component {
 
     //获取产品列表
     getAppList = () => {
-        ajax.send({
-            url: '/rest/global/grant_applications',
-            data: {
-                integration: true,
-                page_size: 1000
-            }
-        }).then(result => {
-            if (_.isArray(result) && !_.isEmpty(result)) {
-                Store.appList = result;
+        commonDataUtil.getAppList((list) => {
+            if (_.isArray(list) && !_.isEmpty(list)) {
+                Store.appList = list;
 
                 Store.appList.unshift({
                     app_id: 'all',
                     app_name: Intl.get('user.product.all', '全部产品')
                 });
-
                 //获取完应用后，再走一遍处理菜单的过程，以便根据是否有应用来控制菜单的显示隐藏
                 this.setState({groups: this.processMenu(groups)});
             }

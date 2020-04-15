@@ -40,7 +40,8 @@ exports.getAppList = function(cb) {
         appAjaxTrans.getGrantApplicationListAjax().sendRequest({integration: true, page_size: 1000}).success(result => {
             let list = [];
             if (_.get(result, '[0]')) {
-                list = result.map(function(app) {
+                // 过滤掉停用的产品
+                list = _.filter(result, app => app.status).map(app => {
                     return {
                         app_id: app.app_id,
                         app_name: app.app_name,
