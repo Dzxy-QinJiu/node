@@ -1,6 +1,6 @@
 var React = require('react');
 require('./css/index.less');
-import { Tag, Modal, message, Button, Icon, Dropdown, Menu, Popconfirm, Popover, Input} from 'antd';
+import { Tag, Modal, message, Button, Icon, Dropdown, Menu, Popconfirm, Popover, Input, Radio } from 'antd';
 import { AntcTable } from 'antc';
 var RightContent = require('../../../components/privilege/right-content');
 var FilterBlock = require('../../../components/filter-block');
@@ -95,6 +95,11 @@ const DEFAULT_RANGE_PARAM = {
     type: 'time',
     name: 'start_time'
 };
+
+const RELEASE_TYPE = {
+    JOIN: 'join',//联合跟进人
+    OWNER: 'owner',//负责人
+};
 //查看是否可以继续添加客户
 let member_id = userData.getUserData().user_id;
 class Crm extends React.Component {
@@ -157,6 +162,7 @@ class Crm extends React.Component {
             releaseReason: '',//释放理由
             unFillReasonTip: '',//没有填写释放理由
             isShowMoreButton: true,//显示更多按钮
+            releaseType: RELEASE_TYPE.OWNER,//释放客户时，释放的类型（负责人、联合跟进人）
         };
     };
 
@@ -1165,6 +1171,9 @@ class Crm extends React.Component {
             //后端检测到传递的id后，将会对这些id的客户进行迁移
             condition.query_param.id = _.map(this.state.selectedCustomer, 'id');
         }
+        if(this.state.releaseType) {//添加释放的类型（负责人/联合跟进人）
+            condition.query_param.type = this.state.releaseType;
+        }
         this.setState({isReleasingCustomer: true});
         batchAjax.doBatch('release_pool', condition).then((taskId) => {
             this.setState({isReleasingCustomer: false});
@@ -2025,12 +2034,19 @@ batchTopBarDropList = (isMinWeb) => {
         this.setState({
             releaseReason: '',
             unFillReasonTip: '',
-            isShowMoreButton: true
+            isShowMoreButton: true,
+            releaseType: RELEASE_TYPE.OWNER
         });
     };
 
     onReasonChange = (e) => {
         this.setState({releaseReason: _.get(e, 'target.value', '')});
+    };
+
+    onTypeChange = (e) => {
+        this.setState({
+            releaseType: e.target.value,
+        });
     };
 
     renderReleaseCustomerBlock = (releaseTip) => {
@@ -2040,6 +2056,10 @@ batchTopBarDropList = (isMinWeb) => {
                     <Icon type="exclamation-circle"/>
                     <span>{releaseTip}</span>
                 </div>
+                <Radio.Group onChange={this.onTypeChange} value={this.state.releaseType}>
+                    <Radio value={RELEASE_TYPE.OWNER}>{Intl.get('crm.6', '负责人')}</Radio>
+                    <Radio value={RELEASE_TYPE.JOIN}>{Intl.get('crm.second.sales', '联合跟进人')}</Radio>
+                </Radio.Group>
                 <Input.TextArea
                     placeholder={Intl.get('crm.customer.release.reason', '请填写释放理由')}
                     value={this.state.releaseReason}
