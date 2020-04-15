@@ -88,7 +88,7 @@ import NoDataAddAndImportIntro from 'CMP_DIR/no-data-add-and-import-intro';
 import ClueFilterPanel from './views/clue-filter-panel';
 import {isSalesRole, checkCurrentVersion, checkCurrentVersionType,
     getRecommendClueCount, formatSalesmanList, isResponsiveDisplay, 
-    isShowWinningClue, isWinningClueMaxCount} from 'PUB_DIR/sources/utils/common-method-util';
+    isShowWinningClue, isWinningClueMaxCount, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {phoneMsgEmitter, clueToCustomerPanelEmitter, paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ShearContent from 'CMP_DIR/shear-content-new';
@@ -649,8 +649,11 @@ class ClueCustomer extends React.Component {
                 {Intl.get('crm.sales.manual.import.clue','导入线索')}
             </Menu.Item>
         </Menu>);
+        let cls = classNames('add-import-clue-btn-container', {
+            'pull-right': isCurtao()
+        });
         return (
-            <div className="add-import-clue-btn-container">
+            <div className={cls}>
                 {
                     addCluePrivilege() ?
                         <Dropdown overlay={menu} overlayClassName="norm-add-dropdown" placement="bottomCenter">
@@ -697,8 +700,11 @@ class ClueCustomer extends React.Component {
     };
     //渲染线索推荐按钮
     renderClueRecommend = () => {
+        let cls = classNames('recomend-clue-customer-container', {
+            'pull-right': !isCurtao()
+        });
         return (
-            <div className="recomend-clue-customer-container pull-right">
+            <div className={cls}>
                 {hasRecommendPrivilege() ?
                     <Popover
                         placement="bottom"
@@ -714,7 +720,7 @@ class ClueCustomer extends React.Component {
                         <Button onClick={this.showClueRecommendTemplate} className="btn-item ant-btn-primary" data-tracename="点击线索推荐按钮">
                             <i className="iconfont icon-clue-recommend"></i>
                             <span className="clue-container">
-                                {Intl.get('clue.customer.clue.recommend', '线索推荐')}
+                                {isCurtao() ? Intl.get('clue.find.recommend.clue', '找线索') : Intl.get('clue.customer.clue.recommend', '线索推荐')}
                             </span>
                         </Button>
                     </Popover>
@@ -3290,7 +3296,7 @@ class ClueCustomer extends React.Component {
                 </Menu.Item> : null}
             {hasRecommendPrivilege() ?
                 <Menu.Item key="recommend">
-                    {Intl.get('clue.customer.clue.recommend', '线索推荐')}
+                    {isCurtao() ? Intl.get('clue.find.recommend.clue', '找线索') : Intl.get('clue.customer.clue.recommend', '线索推荐')}
                 </Menu.Item> : null}
         </Menu>);
     };
@@ -3562,7 +3568,7 @@ class ClueCustomer extends React.Component {
                                 <RightPanelModal
                                     isShowMadal
                                     isShowCloseBtn
-                                    canClickMaskClosePanel
+                                    canClickMaskClosePanel={!isCurtao()}
                                     onClosePanel={this.closeRecommendCluePanel}
                                     content={(
                                         <RecommendClues

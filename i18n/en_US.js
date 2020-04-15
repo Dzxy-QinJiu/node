@@ -3919,6 +3919,7 @@ var en_US = {
     'clue.recommend.clue.scope': 'Scope of business',//经营范围
     'clue.recommend.clue.introduction': 'brief introduction',//简介
     'clue.recommend.clue.count': '{count}',//{count}个
+    'clue.find.recommend.clue': 'Look for clues',//找线索
 
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
