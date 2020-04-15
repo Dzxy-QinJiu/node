@@ -859,12 +859,14 @@ class MyWorkColumn extends React.Component {
                 tagDescr = Intl.get('common.visit', '拜访');
                 remark = this.getVisitTip(item);
                 break;
+            case 'APPLY': //对于拜访类型的工作，后端tags字段会返回['APPLY', 'customer_visit']，这里的'APPLY'是后端用来标识工作不做合并的操作，前端遇到这样的tags自己处理为空
+                tagDescr = '';
+                remark = '';
+                break;
             default:
                 tagDescr = tag;
         }
         return (
-            // 对于拜访类型的工作，后端tags字段会返回['APPLY', 'customer_visit']
-            // 这里的'APPLY'是后端用来标识工作不做合并的操作，前端遇到这样的tags自己处理为空
             _.isEmpty(tagDescr) && _.isEmpty(remark) ? null :
                 <div className='work-remark-content'>
                     【{tagDescr}】{remark}

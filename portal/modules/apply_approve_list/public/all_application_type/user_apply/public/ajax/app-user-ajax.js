@@ -1,29 +1,4 @@
 /**
- * 获取用户审批列表
- */
-var applyListAjax;
-exports.getApplyList = function(obj) {
-    var Deferred = $.Deferred();
-    applyListAjax && applyListAjax.abort();
-    applyListAjax = $.ajax({
-        url: '/rest/appuser/apply_list',
-        dataType: 'json',
-        type: 'get',
-        data: obj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(data,textStatus) {
-            if(textStatus !== 'abort') {
-                Deferred.reject(data && data.message || Intl.get('common.get.user.apply.failed', '获取用户审批列表失败'));
-            }
-        }
-    });
-    return Deferred.promise();
-};
-
-
-/**
  * 提交审批
  */
 exports.submitApply = function(obj) {
