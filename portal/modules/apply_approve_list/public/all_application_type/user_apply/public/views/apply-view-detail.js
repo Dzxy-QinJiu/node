@@ -2585,13 +2585,12 @@ const COLUMN_WIDTH = {
                     obj.nick_name = this.state.formData.nick_name;
                 }
             }
-            console.log(obj);
-            // ApplyViewDetailActions.submitApply(obj, detailInfo.type, () => {
-            //     //调用父组件的方法进行审批完成后的其他处理
-            //     if (_.isFunction(this.props.afterApprovedFunc)) {
-            //         this.props.afterApprovedFunc();
-            //     }
-            // });
+            ApplyViewDetailActions.submitApply(obj, detailInfo.type, () => {
+                //调用父组件的方法进行审批完成后的其他处理
+                if (_.isFunction(this.props.afterApprovedFunc)) {
+                    this.props.afterApprovedFunc();
+                }
+            });
         };
         var validation = this.refs.validation;
         if (!validation) {
