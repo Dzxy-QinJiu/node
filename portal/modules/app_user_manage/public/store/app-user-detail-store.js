@@ -88,7 +88,8 @@ AppUserDetailStore.prototype.getUserDetail = function(result) {
     } else {
         this.getDetailErrorMsg = '';
         this.initialUser = _.get(result, 'userDetail', {});
-        this.initialUser.apps = _.map(this.initialUser.apps, x => {
+        let apps = _.get(this.initialUser, 'apps');
+        this.initialUser.apps = _.filter(apps, item => item.app_status !== 0).map( x => {
             x.showDetail = false;
             return x;
         });
