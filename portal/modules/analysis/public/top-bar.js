@@ -38,12 +38,12 @@ class TopBar extends React.Component {
                 group_name: '全部团队',
                 group_id: 'all',
             }],
-            selectedTeam: ['all'],
+            selectedTeam: 'all',
             memberList: [{
                 nick_name: '全部成员',
                 user_id: 'all',
             }],
-            selectedMember: ['all'],
+            selectedMember: 'all',
             //开始时间
             startTime: initialTime.start,
             //结束时间
@@ -89,8 +89,8 @@ class TopBar extends React.Component {
     onFilterTypeChange = (type) => {
         this.setState({
             filterType: type,
-            selectedTeam: ['all'],
-            selectedMember: ['all'],
+            selectedTeam: 'all',
+            selectedMember: 'all',
         }, () => {
             Store.teamMemberFilterType = type;
             Store.isSelectedAllTeamMember = true; 
@@ -122,26 +122,20 @@ class TopBar extends React.Component {
     }
 
     onTeamChange = (teamId) => {
-        let selectedTeam;
-        let teamIdStr;
-
-        if (_.last(teamId) === 'all' || _.isEmpty(teamId)) {
-            teamIdStr = '';
-        } else {
-            selectedTeam = _.filter(teamId, id => id !== 'all');
-            teamIdStr = selectedTeam.join(',');
+        if (teamId === 'all' || _.isEmpty(teamId)) {
+            teamId = '';
         }
 
-        teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamIdStr);
+        teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamId);
     };
 
     handleTeamChange = (teamIdStr) => {
         let selectedTeam;
 
         if (teamIdStr) {
-            selectedTeam = teamIdStr.split(',');
+            selectedTeam = teamIdStr;
         } else {
-            selectedTeam = ['all'];
+            selectedTeam = 'all';
         }
 
         //根据是否选择的是全部团队更新Store中的记录是否选择的是全部团队或成员的标志
@@ -154,18 +148,16 @@ class TopBar extends React.Component {
 
     onMemberChange = (memberId) => {
         let selectedMember;
-        let memberIdStr;
 
-        if (_.last(memberId) === 'all' || _.isEmpty(memberId)) {
-            selectedMember = ['all'];
-            memberIdStr = '';
+        if (memberId === 'all' || _.isEmpty(memberId)) {
+            selectedMember = 'all';
+            memberId = '';
         } else {
-            selectedMember = _.filter(memberId, id => id !== 'all');
-            memberIdStr = selectedMember.join(',');
+            selectedMember = memberId;
         }
 
         this.setState({selectedMember}, () => {
-            teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberIdStr);
+            teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberId);
 
             this.adjustTeamMemberDropdownWidth();
         });
@@ -297,7 +289,6 @@ class TopBar extends React.Component {
                 {this.state.filterType === 'team' && !isCommonSales ? (
                     <Select
                         className='btn-item select-team-member-list'
-                        mode="multiple"
                         showSearch
                         optionFilterProp="children"
                         value={this.state.selectedTeam}
@@ -314,7 +305,6 @@ class TopBar extends React.Component {
                 {this.state.filterType === 'member' && !isCommonSales ? (
                     <Select
                         className='btn-item select-team-member-list'
-                        mode="multiple"
                         showSearch
                         optionFilterProp="children"
                         value={this.state.selectedMember}
