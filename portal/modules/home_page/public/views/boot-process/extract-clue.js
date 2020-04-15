@@ -23,7 +23,7 @@ import {
     isCommonSalesOrPersonnalVersion, getClueSalesList, getLocalSalesClickCount, HASEXTRACTBYOTHERERRTIP
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import { formatSalesmanList, checkCurrentVersionType,
-    checkVersionAndType, isResponsiveDisplay, isShowWinningClue } from 'PUB_DIR/sources/utils/common-method-util';
+    checkVersionAndType, isResponsiveDisplay, isShowWinningClue, isCurtao } from 'PUB_DIR/sources/utils/common-method-util';
 import { getMaxLimitExtractClueCount, updateGuideMark } from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
 import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon, GIFT_LOGO} from 'PUB_DIR/sources/utils/consts';
@@ -1217,7 +1217,7 @@ class ExtractClues extends React.Component {
                 <div className="extract-clues-title-container">
                     <div className="extract-clues-title-wrapper">
                         <div className="extract-clues-title">
-                            <span>{Intl.get('clue.customer.clue.recommend', '线索推荐')}</span>
+                            <span>{isCurtao() ? Intl.get('clue.find.recommend.clue', '找线索') : Intl.get('clue.customer.clue.recommend', '线索推荐')}</span>
                             <div className="extract-clues-btn-container">
                                 {
                                     hasSelectedClue ? this.renderExtractOperator(isWebMin) : this.renderBtnClock(isWebMin)
