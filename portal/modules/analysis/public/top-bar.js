@@ -39,8 +39,11 @@ class TopBar extends React.Component {
                 group_id: 'all',
             }],
             selectedTeam: ['all'],
-            memberList: [],
-            selectedMember: [],
+            memberList: [{
+                nick_name: '全部成员',
+                user_id: 'all',
+            }],
+            selectedMember: ['all'],
             //开始时间
             startTime: initialTime.start,
             //结束时间
@@ -75,35 +78,33 @@ class TopBar extends React.Component {
         ajax.send({
             url: '/rest/base/v1/group/childgroupusers?filter_manager=true',
         }).then(result => {
-            let newState = {
-                memberList: result
-            };
+            const memberList = _.map(result, 'user_info');
 
-            if (_.isEmpty(this.state.selectedMember)) {
-                const firstMemberId = _.get(_.first(result), 'user_info.user_id');
-                newState.selectedMember = [firstMemberId];
-            }
-
-            this.setState(newState);
+            this.setState({
+                memberList: this.state.memberList.concat(memberList)
+            });
         });
     };
 
     onFilterTypeChange = (type) => {
-        this.setState({filterType: type});
-        Store.teamMemberFilterType = type;
+        this.setState({
+            filterType: type,
+            selectedTeam: ['all'],
+            selectedMember: ['all'],
+        }, () => {
+            Store.teamMemberFilterType = type;
+            Store.isSelectedAllTeamMember = true; 
 
-        if (type === 'team') {
-            const selectedTeam = this.state.selectedTeam;
-            const teamIdStr = _.isEqual(selectedTeam, ['all']) ? '' : selectedTeam.join(',');
-            //根据是否选择的是全部团队更新Store中的记录是否选择的是全部团队或成员的标志
-            Store.isSelectedAllTeamMember = teamIdStr ? false : true; 
-            teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamIdStr);
-        } else {
-            Store.isSelectedAllTeamMember = false;
-            const selectedMember = this.state.selectedMember;
-            const memberIdStr = selectedMember.join(',');
-            teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberIdStr);
-        }
+            let eventName;
+
+            if (type === 'team') {
+                eventName = teamTreeEmitter.SELECT_TEAM;
+            } else {
+                eventName = teamTreeEmitter.SELECT_MEMBER;
+            }
+
+            teamTreeEmitter.emit(eventName, '');
+        });
     };
 
     //调整团队、成员下拉菜单内容区域的宽度，以解决删除选中项时下拉内容宽度和菜单宽度不对应，导致页面产生横向滚动条的问题
@@ -155,14 +156,12 @@ class TopBar extends React.Component {
         let selectedMember;
         let memberIdStr;
 
-        //清空所有选中的成员时，默认选中第一个
-        if (_.isEmpty(memberId)) {
-            const firstMemberId = _.get(_.first(this.state.memberList), 'user_info.user_id');
-            selectedMember = [firstMemberId];
-            memberIdStr = firstMemberId;
+        if (_.last(memberId) === 'all' || _.isEmpty(memberId)) {
+            selectedMember = ['all'];
+            memberIdStr = '';
         } else {
-            selectedMember = memberId;
-            memberIdStr = memberId.join(',');
+            selectedMember = _.filter(memberId, id => id !== 'all');
+            memberIdStr = selectedMember.join(',');
         }
 
         this.setState({selectedMember}, () => {
@@ -324,8 +323,7 @@ class TopBar extends React.Component {
                         filterOption={(input, option) => ignoreCase(input, option)}
                     >
                         {_.map(this.state.memberList, (memberItem, index) => {
-                            return <Option key={index}
-                                value={memberItem.user_info.user_id}>{memberItem.user_info.nick_name}</Option>;
+                            return <Option key={index} value={memberItem.user_id}>{memberItem.nick_name}</Option>;
                         })}
                     </Select>
                 ) : null}
