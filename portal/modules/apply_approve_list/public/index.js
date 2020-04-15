@@ -67,6 +67,7 @@ import HistoricalApplyViewDetailAction from './all_application_type/user_apply/p
 import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 var ApplyApproveUtils = require('./utils/apply_approve_utils');
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
 class ApplyApproveList extends React.Component {
     state = {
         activeApplyTab: isCommonSalesOrPersonnalVersion() ? APPLY_TYPE.APPLY_BY_ME : APPLY_TYPE.APPROVE_BY_ME,
@@ -92,14 +93,7 @@ class ApplyApproveList extends React.Component {
             UserApplyActions.getApplyById(this.state.applyId);
             //是通过点击未处理的审批数量跳转过来的
         } else {
-            if(this.state.filterOrSearchType === FILTER){
-                UserApplyActions.changeApplyType(APPLY_APPROVE_TYPES.USER_OR_GRANT);
-                setTimeout(() => {
-                    this.fetchApplyList();
-                });
-            }else{
-                this.fetchApplyList();
-            }
+            this.fetchApplyList();
         }
         //获取我的申请中的未读回复
         this.getMyUnreadReplyList();
@@ -135,10 +129,6 @@ class ApplyApproveList extends React.Component {
             }
         }
     };
-
-    componentWillUpdate() {
-        this.showUnhandleApplyTip();
-    }
 
     componentWillUnmount() {
         notificationEmitter.removeListener(notificationEmitter.MY_UNREAD_REPLY, this.refreshMyUnreadReplyList);
@@ -790,17 +780,17 @@ class ApplyApproveList extends React.Component {
             showHistoricalItem: {}
         });
     };
-    //todo 申请审批查看详情
+    //申请审批查看详情
     renderHistoricalContent = () => {
-        // return <ApplyViewDetailWrap
-        //     isHomeMyWork={true}
-        //     detailItem={this.state.showHistoricalItem}
-        //     selectedApplyStatus='false'//待审批状态
-        //     afterApprovedFunc={this.afterFinishApplyWork}
-        //     ApplyViewDetailStore={HistoricalApplyViewDetailStore}
-        //     ApplyViewDetailAction={HistoricalApplyViewDetailAction}
-        //     appList={this.state.appList}
-        // />;
+        return <UserApplyViewDetailWrap
+            isHomeMyWork={false}
+            detailItem={this.state.showHistoricalItem}
+            selectedApplyStatus='false'//待审批状态
+            afterApprovedFunc={this.afterFinishApplyWork}
+            ApplyViewDetailStore={HistoricalApplyViewDetailStore}
+            ApplyViewDetailAction={HistoricalApplyViewDetailAction}
+            appList={this.state.appList}
+        />;
     };
     afterTransferApplySuccess = (id) => {
         UserApplyActions.afterTransferApplySuccess(id);
@@ -1037,6 +1027,16 @@ class ApplyApproveList extends React.Component {
         return (
             <div className='apply_approve_content_wrap user_apply_page'>
                 {this.renderApplyListTab()}
+                {!_.isEmpty(this.state.showHistoricalItem) ? (
+                    <RightPanelModal
+                        className="historical-detail-panel"
+                        isShowMadal={false}
+                        isShowCloseBtn={true}
+                        onClosePanel={this.hideHistoricalApplyItem}
+                        content={this.renderHistoricalContent()}
+                        dataTracename="申请详情"
+                    />
+                ) : null}
                 {noShowApplyDetail ? this.renderNoApplyDetail() :
                     <div className='apply_approve_detail_wrap' style={{'width': this.state.detailWrapWidth, 'height': divHeight}}>
                         {this.renderApplyListDetail()}

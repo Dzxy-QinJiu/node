@@ -14,17 +14,6 @@ function UserApplyActions() {
         , 'changeListenScrollBottom' // 下拉加载
         , 'getApplyById'//根据id获取申请（实际是获取申请的详情）
     );
-    //获取申请列表
-    this.getApplyList = function(obj) {
-        this.dispatch({loading: true, error: false});
-        var _this = this;
-        UserAjax.getApplyList(obj).then(function(data) {
-            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            _this.dispatch({loading: false, error: false, data: data});
-        }, function(errorMsg) {
-            _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
-    };
     //根据id获取申请
     this.getApplyById = function(applyId) {
         this.dispatch({loading: true, error: false});
