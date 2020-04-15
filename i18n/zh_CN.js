@@ -3949,6 +3949,7 @@ var zh_CN = {
     'clue.recommend.clue.scope': '经营范围',
     'clue.recommend.clue.introduction': '简介',
     'clue.recommend.clue.count': '{count}个',
+    'clue.find.recommend.clue': '找线索',
 
     'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',

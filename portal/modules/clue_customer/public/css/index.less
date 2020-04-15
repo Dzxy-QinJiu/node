@@ -5,6 +5,8 @@
 @filter-width: 300px;
 //x颜色
 @x_color: #cdcdcd;
+//right-panel关闭按钮背景色
+@close-btn-bg-color: #7bafe2;
 .clue_customer_content {
   overflow: hidden;
   .topNav {
@@ -588,6 +590,10 @@
       right: 480px;
       text-align: center;
       cursor: pointer;
+    }
+    .close-modal-btn{
+      z-index: 112;
+      background-color: @close-btn-bg-color;
     }
   }
   //添加客户的面板的z-index设置大一些，避免被线索详情覆盖
