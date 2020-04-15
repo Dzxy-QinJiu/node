@@ -768,7 +768,17 @@ class ClueDetailOverview extends React.Component {
                         //电话没有被线索使用时
                         this.handleDuplicatePhoneMsg(change.key, false, '');
                     } else {
-                        let message = Intl.get('clue.customer.repeat.phone.user', '该电话已被线索"{userName}"使用',{userName: _.get(data, 'list[0].name', [])});
+                        let message = <span>
+                            <span>
+                                {Intl.get('clue.customer.repeat.phone.user', '该电话已被线索"{userName}"使用',{userName: _.get(data, 'list[0].name', [])})}
+                            </span>
+                            <a href="javascript:void(0)"
+                                onClick={this.handleDuplicatePhoneMsg.bind(this,change.key,false,'')}
+                                className="handle-btn-item"
+                                data-tracename="隐藏电话已被其他线索使用的警告">
+                                {Intl.get('clue.customer.phone.still.add.phone',' 仍用此电话？')}
+                            </a>
+                        </span>;
                         //已存在
                         this.handleDuplicatePhoneMsg(change.key, true, message);
                     }
