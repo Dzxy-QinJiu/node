@@ -149,8 +149,7 @@ class CurtaoAnalysis extends React.Component {
     getAppList = () => {
         commonDataUtil.getAppList((list) => {
             if (_.isArray(list) && !_.isEmpty(list)) {
-                Store.appList = list;
-
+                Store.appList = _.cloneDeep(list);
                 Store.appList.unshift({
                     app_id: 'all',
                     app_name: Intl.get('user.product.all', '全部产品')
