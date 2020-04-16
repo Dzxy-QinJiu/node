@@ -28,16 +28,18 @@ class NoDataIntro extends React.Component {
                             {this.props.renderAddDataContent()}
                         </div>
                     </div>
-                    <div className="import-data-wrap">
-                        <span className="import-data-background"></span>
-                        <div className="import-data-tip">
-                            {this.props.renderImportDataContent()}
-                        </div>
+                    {this.props.useImportContent ? (
+                        <div className="import-data-wrap">
+                            <span className="import-data-background"></span>
+                            <div className="import-data-tip">
+                                {this.props.renderImportDataContent()}
+                            </div>
 
-                    </div>
+                        </div>
+                    ) : null}
                 </div>
                 <div className="add-other-operation">
-                    {this.props.renderOtherOperation()}
+                    {_.isFunction(this.props.renderOtherOperation) && this.props.renderOtherOperation()}
                 </div>
             </div>
         );
@@ -52,7 +54,7 @@ class NoDataIntro extends React.Component {
     }
     render() {
         return (
-            <div className="no-data-add-and-import-intro-wrap">
+            <div className={`no-data-add-and-import-intro-wrap ${this.props.className}`}>
                 {this.props.showAddBtn ? this.renderNodataAddIntro() : this.renderNodataTip()}
             </div>
         );
@@ -64,7 +66,9 @@ NoDataIntro.defaultProps = {
     noDataTip: '',
     renderAddDataContent: function() {},
     renderImportDataContent: function() {},
-    renderOtherOperation: function(){}
+    renderOtherOperation: function(){},
+    useImportContent: true,
+    className: ''
 };
 NoDataIntro.propTypes = {
     showAddBtn: PropTypes.bool,
@@ -72,5 +76,7 @@ NoDataIntro.propTypes = {
     renderAddDataContent: PropTypes.func,
     renderImportDataContent: PropTypes.func,
     renderOtherOperation: PropTypes.func,
+    useImportContent: PropTypes.bool,
+    className: PropTypes.string,
 };
 export default NoDataIntro;
