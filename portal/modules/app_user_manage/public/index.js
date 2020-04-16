@@ -312,7 +312,7 @@ class AppUserManage extends React.Component {
         AppUserAction.getAppList();
     };
     getAppOptions = () => {
-        var appList = this.state.appList;
+        var appList = _.cloneDeep(this.state.appList);
         if (!_.isArray(appList) || !appList.length) {
             if (_.isArray(ShareObj.share_app_list) && ShareObj.share_app_list.length) {
                 appList = ShareObj.share_app_list;
