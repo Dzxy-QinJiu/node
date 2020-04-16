@@ -2494,7 +2494,18 @@ class ClueCustomer extends React.Component {
         });
     };
     renderAddDataContent = () => {
-        if (addCluePrivilege()) {
+        if(isCurtao()) {
+            return (
+                <div className="btn-containers" data-tracename='没有线索的提示'>
+                    <div>
+                        <Button type='primary' className='add-clue-btn' onClick={this.showClueRecommendTemplate} data-tracename='点击找线索按钮'>{Intl.get('clue.find.recommend.clue', '找线索')}</Button>
+                    </div>
+                    <div>
+                        {Intl.get('clue.recommend.extract.count.more', '1亿+条线索待您提取')}
+                    </div>
+                </div>
+            );
+        } else if (addCluePrivilege()) {
             return (
                 <div className="btn-containers" data-tracename='没有线索的提示'>
                     <div>
@@ -2587,11 +2598,13 @@ class ClueCustomer extends React.Component {
                 && addCluePrivilege();//有添加线索的权限
             return (
                 <NoDataAddAndImportIntro
-                    renderOtherOperation={this.renderOtherOperation}
+                    renderOtherOperation={isCurtao() ? null : this.renderOtherOperation}
                     renderAddDataContent={this.renderAddDataContent}
-                    renderImportDataContent={this.renderImportDataContent}
+                    renderImportDataContent={isCurtao() ? null : this.renderImportDataContent}
                     showAddBtn={showAddBtn}
                     noDataTip={this.hasNoFilterCondition() ? Intl.get('clue.no.data', '暂无线索信息') : this.renderNotFoundClue()}
+                    useImportContent={!isCurtao()}
+                    className={isCurtao() ? 'single-no-date-tip-wrapper' : ''}
                 />
             );
         }
