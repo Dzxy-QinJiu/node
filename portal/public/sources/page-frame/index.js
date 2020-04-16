@@ -38,7 +38,7 @@ import{
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 import {getUserData} from '../../sources/user-data';
 import {checkVersionAndType, isShowUnReadNotice, isCurtao} from '../utils/common-method-util';
-import {getUpgradeNoticeList, getRewardedCluesCount} from '../utils/common-data-util';
+import {getUpgradeNoticeList, getRewardedCluesCount, getAppList} from '../utils/common-data-util';
 import { hasRecommendPrivilege } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const emptyParamObj = {
@@ -114,7 +114,16 @@ class PageFrame extends React.Component {
         }, NOTICE_INTERVAL_TIME);
     }
 
+    getAppList() {
+        getAppList((list) => {
+            let userDetailParamObj = this.state.userDetailParamObj;
+            userDetailParamObj.allAppList = list; // 应用列表
+            this.setState({ userDetailParamObj});
+        });
+    }
+
     componentDidMount() {
+        this.getAppList(); // 获取应用列表
         this.getRewardedCluesCount();
         this.getLastUpgradeNoticeList();
         // 影响了session不超时，暂时隐藏获取公告轮询的操作

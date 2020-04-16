@@ -602,6 +602,9 @@ class UserDetailBasic extends React.Component {
     renderAddAppBtn = () => {
         //所有应用列表
         var allApps = AppUserStore.getState().appList || [];
+        if (_.isEmpty(allApps)) {
+            allApps = this.props.allAppList;
+        }
         if (!_.get(allApps, 'length') && _.get(ShareObj, 'share_app_list.length')) {
             allApps = ShareObj.share_app_list;
         }
@@ -820,6 +823,7 @@ UserDetailBasic.propTypes = {
     getBasicInfo: PropTypes.func,
     selectApp: PropTypes.object,
     height: PropTypes.number,
-    userConditions: PropTypes.array
+    userConditions: PropTypes.array,
+    allAppList: PropTypes.array
 };
 module.exports = UserDetailBasic;
