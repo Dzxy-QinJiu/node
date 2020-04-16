@@ -315,7 +315,7 @@ class UserDetailBasic extends React.Component {
     };
 
     renderStatus = (app) => {
-        var is_disabled = app.is_disabled;
+        var is_disabled = _.toString(app.is_disabled);
         if (typeof is_disabled === 'boolean') {
             is_disabled = is_disabled.toString();
         }
@@ -411,7 +411,7 @@ class UserDetailBasic extends React.Component {
         }
         return (
             <div className="rows-3">
-                <div className={(!app.showDetail && app.is_disabled === 'true') ? 'hide' : 'app-prop-list'}>
+                <div className={ this.isHideAppDetail(app) ? 'hide' : 'app-prop-list'}>
                     {_.isArray(app.roles) && app.roles.length ? this.renderAppRoleLists(_.get(app, 'roleItems')) : null}
                     <span><ReactIntl.FormattedMessage id="user.time.start"
                         defaultMessage="开通时间" />：{displayEstablishTime}</span>
@@ -465,7 +465,7 @@ class UserDetailBasic extends React.Component {
 
         return (
             <div className="rows-3 uem-wrapper">
-                <div className={(!app.showDetail && app.is_disabled === 'true') ? 'hide' : 'app-prop-list'}>
+                <div className={ this.isHideAppDetail(app) ? 'hide' : 'app-prop-list'}>
                     <span><ReactIntl.FormattedMessage id="user.time.end" defaultMessage="到期时间" />：{displayEndTime}</span>
                     {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.user.type"
                         defaultMessage="用户类型" />：{this.getUserTypeText(app)}</span>}
@@ -483,6 +483,11 @@ class UserDetailBasic extends React.Component {
     };
     showAppDetail = (params) => {
         AppUserDetailAction.showAppDetail(params);
+    };
+
+    // 判断是否隐藏应用的详情
+    isHideAppDetail = (app) => {
+        return !app.showDetail && _.toString(app.is_disabled) === 'true';
     };
 
     //获取应用列表段
@@ -521,7 +526,7 @@ class UserDetailBasic extends React.Component {
         return (
             <ul className="app_list">
                 {this.state.initialUser.apps.map(app => {
-                    const hideDetail = !app.showDetail && app.is_disabled === 'true';
+                    const hideDetail = this.isHideAppDetail(app);
                     let renderAppInfo = null;
                     if(isOplateUser()) {
                         renderAppInfo = _this.renderAppInfo(app);
@@ -552,7 +557,7 @@ class UserDetailBasic extends React.Component {
                                     ) : (
                                         <span className="btn-bar">
                                             {
-                                                app.is_disabled === 'true' ?
+                                                _.toString(app.is_disabled) === 'true' ?
                                                     <span className="collapse-btn handle-btn-item">
                                                         {
                                                             app.showDetail ?
