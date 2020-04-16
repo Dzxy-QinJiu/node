@@ -51,7 +51,10 @@ const HOT_SELECTORS = [/*{
     }, {
         name: Intl.get('clue.recommend.register.half.year', '最近半年注册'),
         value: EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER
-    }];
+    },{
+        name: Intl.get('clue.recommend.mask.Manufactor', '口罩厂家'),
+        value: '口罩'
+    },];
 
 const CONTACT_PHONE_CLS = 'extract-clue-contact-count';
 
