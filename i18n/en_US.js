@@ -3953,6 +3953,7 @@ var en_US = {
     'clue.recommend.return.to.work': 'The enterprise has been restarted',//已复工企业
     'clue.recommend.listed': 'Listed companies',//上市企业
     'clue.recommend.register.half.year': 'Last half year registration',//最近半年注册
+    'clue.recommend.extract.count.more': '100 million + clues for you to extract',//1亿+条线索待您提取
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
     'clue.assignment.strategy.fail.to.get': 'Fail to fetch lead assignment strategy list',//获取线索分配策略列表失败
