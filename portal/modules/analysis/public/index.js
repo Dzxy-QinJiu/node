@@ -347,12 +347,13 @@ class CurtaoAnalysis extends React.Component {
     //获取默认应用id
     getDefaultAppId(arg = {}) {
         let defaultAppId = [];
+        const currentPage = _.get(arg, 'page', this.state.currentPage);
 
         //上次选中的应用id
         const storedAppId = storageUtil.local.get(STORED_APP_ID_KEY);
 
         //当前页是否只能选择单个产品
-        const isCanOnlySelectSingleApp = this.state.currentPage.isCanOnlySelectSingleApp;
+        const isCanOnlySelectSingleApp = currentPage.isCanOnlySelectSingleApp;
 
         if (storedAppId) {
             if (storedAppId === 'all') {
@@ -370,6 +371,8 @@ class CurtaoAnalysis extends React.Component {
 
                 if (_.isEmpty(defaultAppId)) {
                     defaultAppId = [_.get(Store.appList, '[1].app_id')];
+                } else if (isCanOnlySelectSingleApp) {
+                    defaultAppId.splice(1);
                 }
             }
         } else {
@@ -421,7 +424,7 @@ class CurtaoAnalysis extends React.Component {
             };
         } else if (group.key === ACCOUNT_MENUS.INDEX.key) { // 用户分析界面
             isAppSelectorShow = true;
-            const defaultAppId = this.getDefaultAppId({returnString: true});
+            const defaultAppId = this.getDefaultAppId({page, returnString: true});
             const selectedAppArray = _.split(defaultAppId, ',');
             // 新增过期用户分析,不需要多终端筛选，其他分析，只有选择单个应用时 ，并且选择的应用有终端信息才显示多终端
             if (page.key !== ACCOUNT_MENUS.NEW_ADD_EXPIRE.key && _.get(selectedAppArray, 'length') === 1 && selectedAppArray[0] !== 'all') {
