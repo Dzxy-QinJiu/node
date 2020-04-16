@@ -548,6 +548,7 @@ class UserDetail extends React.Component {
             <TabPane tab={Intl.get('user.basic.info', '基本资料')} key="1">
                 {this.state.activeKey === '1' ? <div className="user_manage_user_detail">
                     <UserDetailBasic
+                        allAppList={this.props.allAppList}
                         height={contentHeight}
                         userId={this.props.userId}
                         selectApp={selectApp}
@@ -690,5 +691,6 @@ UserDetail.propTypes = {
     userConditions: PropTypes.array,
     operatorRecordDateSelectTime: PropTypes.object, // 操作记录界面，选择的时间
     isNotificationOpenUserDetail: PropTypes.bool, // 是否是系统通知界面，打开用户详情
+    allAppList: PropTypes.array
 };
 module.exports = UserDetail;
