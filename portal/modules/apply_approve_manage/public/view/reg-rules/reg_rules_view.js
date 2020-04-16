@@ -976,6 +976,8 @@ class RegRulesView extends React.Component {
         }else if(showAddApproveNodeTip){
             message.warning(Intl.get('apply.please.add.approve.node', '流程不完整，需添加审批人节点'));
         }else{
+            //在提交的时候，把用户或者团队为非的情况也加上
+            this.addDefaultUserOrTeamCondition();
             if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
                 this.handleSubmitCCApply();
             }else{
