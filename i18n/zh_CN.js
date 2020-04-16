@@ -3990,6 +3990,7 @@ var zh_CN = {
     'clue.recommend.listed': '上市企业',
     'clue.recommend.register.half.year': '最近半年注册',
     'clue.recommend.extract.count.more': '1亿+条线索待您提取',
+    'clue.recommend.mask.Manufactor': '口罩厂家',
     // 线索分配策略
     'clue.assignment.strategy.add': '添加分配策略',
     'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',
