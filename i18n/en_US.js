@@ -3955,7 +3955,7 @@ var en_US = {
     'clue.recommend.register.half.year': 'Last half year registration',//最近半年注册
     'clue.recommend.extract.count.more': '100 million + clues for you to extract',//1亿+条线索待您提取
     'clue.recommend.mask.Manufactor': 'Mask manufacturers',// 口罩厂家
-    'clue.recommend.scale.company': 'Scale company',//规模以上企业
+    'clue.recommend.scale.company': 'State-owned enterprise',//国有企业
 
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
