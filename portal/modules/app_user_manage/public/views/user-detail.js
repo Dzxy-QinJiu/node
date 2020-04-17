@@ -472,6 +472,8 @@ class UserDetail extends React.Component {
     renderContent() {
         // 用户详情的应用列表中，包含多终端信息，在用户分析和操作记录中，显示多终端信息
         let appLists = _.get(this.state.initialUser, 'apps', []);
+        // 返回字段的值是0表示停用的产品；没有返回这个字段，或是返回的值是1，表示产品是启用的
+        appLists = _.filter(appLists, item => item.app_status !== 0);
         let ketaoAppList = _.clone(appLists);
         // 客套组织下，客套产品显示在最前面的处理
         if (isKetaoOrganizaion()) {

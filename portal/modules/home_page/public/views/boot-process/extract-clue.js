@@ -53,7 +53,10 @@ const HOT_SELECTORS = [/*{
         value: EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER
     },{
         name: Intl.get('clue.recommend.mask.Manufactor', '口罩厂家'),
-        value: '口罩'
+        value: '口罩厂家'
+    },{
+        name: Intl.get('clue.recommend.State-owned.enterprise', '国有企业'),
+        value: '规模'
     },];
 
 const CONTACT_PHONE_CLS = 'extract-clue-contact-count';
@@ -929,6 +932,7 @@ class ExtractClues extends React.Component {
                             const otherCls = classNames('extract-clue-text__info extract-clue-text__filters', {
                                 'extract-clue-text__null': !otherProps.products.hasHighLight && !otherProps.scope.hasHighLight && !otherProps.industry.hasHighLight && !otherProps.companyProfile.hasHighLight
                             });
+                            let labels = item.labels.concat(item.features);
                             return (
                                 <div className={cls} key={item.id} onClick={this.handleClickClueName.bind(this, item)}>
                                     <Checkbox checked={this.hasChecked(item)} disabled={this.getDisabledClue(item)} onChange={this.handleCheckChange.bind(this, item)}/>
@@ -936,9 +940,9 @@ class ExtractClues extends React.Component {
                                         <div className="extract-clue-text__name">
                                             {item.hasExtractedByOther ? <i className='iconfont icon-warning-tip'/> : null}
                                             <span dangerouslySetInnerHTML={{__html: this.handleHighLightStyle(item.name).content}}/>
-                                            {item.labels.length ? (
+                                            {labels.length ? (
                                                 <div className="clue-labels">
-                                                    {_.map(item.labels, (tag, index) => (
+                                                    {_.map(labels, (tag, index) => (
                                                         <Tag key={index}>{tag}</Tag>
                                                     ))}
                                                 </div>
@@ -955,7 +959,7 @@ class ExtractClues extends React.Component {
                                                 {_.get(item.contact, 'phones') ? (
                                                     <span className="extract-clue-contacts-item">
                                                         <span className="extract-clue-text-label">{Intl.get('common.phone', '电话')}：</span>
-                                                        <Popover trigger="click" content={_.get(item,'telephones').map(phone => (<div key={phone}>{phone}</div>))}>
+                                                        <Popover trigger="hover" content={_.get(item,'telephones').map(phone => (<div key={phone}>{phone}</div>))}>
                                                             <span className={CONTACT_PHONE_CLS}>{_.get(item.contact, 'phones')}</span>
                                                         </Popover>
                                                         {Intl.get('contract.22', '个')}

@@ -147,21 +147,13 @@ class CurtaoAnalysis extends React.Component {
 
     //获取产品列表
     getAppList = () => {
-        ajax.send({
-            url: '/rest/global/grant_applications',
-            data: {
-                integration: true,
-                page_size: 1000
-            }
-        }).then(result => {
-            if (_.isArray(result) && !_.isEmpty(result)) {
-                Store.appList = result;
-
+        commonDataUtil.getAppList((list) => {
+            if (_.isArray(list) && !_.isEmpty(list)) {
+                Store.appList = _.cloneDeep(list);
                 Store.appList.unshift({
                     app_id: 'all',
                     app_name: Intl.get('user.product.all', '全部产品')
                 });
-
                 //获取完应用后，再走一遍处理菜单的过程，以便根据是否有应用来控制菜单的显示隐藏
                 this.setState({groups: this.processMenu(groups)});
             }
@@ -355,12 +347,13 @@ class CurtaoAnalysis extends React.Component {
     //获取默认应用id
     getDefaultAppId(arg = {}) {
         let defaultAppId = [];
+        const currentPage = _.get(arg, 'page', this.state.currentPage);
 
         //上次选中的应用id
         const storedAppId = storageUtil.local.get(STORED_APP_ID_KEY);
 
         //当前页是否只能选择单个产品
-        const isCanOnlySelectSingleApp = this.state.currentPage.isCanOnlySelectSingleApp;
+        const isCanOnlySelectSingleApp = currentPage.isCanOnlySelectSingleApp;
 
         if (storedAppId) {
             if (storedAppId === 'all') {
@@ -378,6 +371,8 @@ class CurtaoAnalysis extends React.Component {
 
                 if (_.isEmpty(defaultAppId)) {
                     defaultAppId = [_.get(Store.appList, '[1].app_id')];
+                } else if (isCanOnlySelectSingleApp) {
+                    defaultAppId.splice(1);
                 }
             }
         } else {
@@ -429,7 +424,7 @@ class CurtaoAnalysis extends React.Component {
             };
         } else if (group.key === ACCOUNT_MENUS.INDEX.key) { // 用户分析界面
             isAppSelectorShow = true;
-            const defaultAppId = this.getDefaultAppId({returnString: true});
+            const defaultAppId = this.getDefaultAppId({page, returnString: true});
             const selectedAppArray = _.split(defaultAppId, ',');
             // 新增过期用户分析,不需要多终端筛选，其他分析，只有选择单个应用时 ，并且选择的应用有终端信息才显示多终端
             if (page.key !== ACCOUNT_MENUS.NEW_ADD_EXPIRE.key && _.get(selectedAppArray, 'length') === 1 && selectedAppArray[0] !== 'all') {
