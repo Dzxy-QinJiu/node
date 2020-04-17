@@ -33,7 +33,7 @@ import {
     isVisitApplyFlow,
     isDomainApplyFlow,
     CC_SETTINGT_TYPE,
-    isUserApplyFlow, ROLES_SETTING
+    isUserApplyFlow, ROLES_SETTING,ALL_COMPONENTS
 } from '../../utils/apply-approve-utils';
 import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveManageStore from '../../store/apply_approve_manage_store';
@@ -43,10 +43,12 @@ class RegRulesView extends React.Component {
         var applyRulesAndSetting = _.cloneDeep(this.props.applyTypeData.applyRulesAndSetting);
         var notify_configs = _.cloneDeep(this.props.applyTypeData.notify_configs);
         var customiz_user_range = _.cloneDeep(this.props.applyTypeData.customiz_user_range);
+        var customiz_team_range = _.cloneDeep(this.props.applyTypeData.customiz_team_range);
         this.state = {
             applyRulesAndSetting: applyRulesAndSetting,
             notify_configs: notify_configs || {},
-            customiz_user_range: customiz_user_range || [],
+            customiz_user_range: customiz_user_range || [],//单独划定一批的用户
+            customiz_team_range: customiz_team_range || [],//单独划定一批的团队
             addNodePanelFlow: '',
             addCCNodePanelFlow: '',//添加抄送人的流程类型
             showAddConditionPanel: false,
@@ -428,6 +430,7 @@ class RegRulesView extends React.Component {
             //表单的内容不需要提交
             var submitObj = {
                 customiz_user_range: this.state.customiz_user_range,
+                customiz_team_range: this.state.customiz_team_range,
                 notify_configs: this.state.notify_configs,
                 ...applyRulesAndSetting
             };
@@ -436,7 +439,11 @@ class RegRulesView extends React.Component {
                     message.error(result);
                 }else{
                     message.success('保存成功');
-                    this.props.updateRegRulesView(submitObj);
+                    this.props.updateRegRulesView({
+                        ...submitObj,
+                        customiz_user_range: JSON.parse(submitObj.customiz_user_range),
+                        customiz_team_range: JSON.parse(submitObj.customiz_team_range),
+                    });
                 }
 
             });
@@ -617,7 +624,9 @@ class RegRulesView extends React.Component {
         //为了避免bpmnNodeFlow在condition中没有值的情况，在这里重新设置一下
         applyFlowObj['bpmnNode'] = bpmnNodeFlow;
     };
+    //更新每个节点上总的条件
     updateCustomizeNode = (limitRules,newNodeObj) => {
+        //limitRules是流程所加的限制条件
         _.forEach(limitRules, (item, index) => {
             if (index === 0) {
                 newNodeObj['conditionTotalRule'] = _.get(item, 'conditionRule');
@@ -817,9 +826,18 @@ class RegRulesView extends React.Component {
             //删除这个流程之前要把设置的划定一批人也删除掉
             var limitRoutes = _.map(_.get(applyApproveRules[deleteKey],'conditionRuleLists.limitRules',[]),'userRangeRoute');
             var customiz_user_range = this.state.customiz_user_range;
-            if(_.get(limitRoutes,'[0]')){
+            if(!_.isEmpty(limitRoutes)){
                 _.forEach(limitRoutes,routeKey => {
                     customiz_user_range = _.filter(customiz_user_range, range => range.range_key !== routeKey);
+                });
+            }
+            //删除这个流程之前要把设置的团队也删除
+            var limitRules = _.get(applyApproveRules[deleteKey],'conditionRuleLists.limitRules',[]);
+            var teamLimitRoutes = _.map(limitRules,'teamRangeRoute');
+            var {customiz_team_range} = this.state;
+            if(!_.isEmpty(teamLimitRoutes)){
+                _.forEach(teamLimitRoutes,routeKey => {
+                    customiz_team_range = _.filter(customiz_team_range, range => range.range_key !== routeKey);
                 });
             }
             delete applyApproveRules[deleteKey];
@@ -835,7 +853,12 @@ class RegRulesView extends React.Component {
                 var firstNode = _.get(defalutBpmnNode, '[0]');
                 delete firstNode.previous;
             }
-            this.setState({applyRulesAndSetting, confirmDeleteItem: '',customiz_user_range: customiz_user_range});
+            this.setState({
+                applyRulesAndSetting,
+                customiz_user_range,
+                customiz_team_range,
+                confirmDeleteItem: '',
+            });
         }
 
     };
