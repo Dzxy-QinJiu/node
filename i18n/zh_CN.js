@@ -4062,6 +4062,8 @@ var zh_CN = {
     'payment.please.contact.our.sale.upgrade': '请联系我们的销售人员进行升级，联系方式：{contact}',
     'payment.please.contact.our.sale': '请联系我们的销售人员，联系方式：{contact}',
     'payment.please.contact.our.sale.renewal': '请联系我们的销售人员进行续费，联系方式：{contact}',
+    'payment.upgrade.export.lead': '升级后可导出线索',
+    'payment.renewal.export.lead': '续费后可导出线索',
     'payment.upgrading': '正在升级...',
     'payment.countdown.default.msg': '倒计时中...',
     'payment.upgrade.version.success': '您已成功升级为正式版，{time} 到期',

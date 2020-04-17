@@ -4026,6 +4026,8 @@ var en_US = {
     'payment.please.contact.our.sale.upgrade': 'Please contact our sales staff for upgrade. Contact: {contact}',//请联系我们的销售人员进行升级，联系方式：{contact}
     'payment.please.contact.our.sale': 'Please contact our sales staff. Contact: {contact}',//请联系我们的销售人员，联系方式：{contact}
     'payment.please.contact.our.sale.renewal': 'Please contact our sales staff for renewal. Contact: {contact}',//请联系我们的销售人员进行续费，联系方式：{contact}
+    'payment.upgrade.export.lead': 'Leads can be exported after upgrading',//升级后可导出线索
+    'payment.renewal.export.lead': 'Leads can be exported after renewal',//续费后可导出线索
     'payment.upgrading': 'Upgrading...',//正在升级...
     'payment.countdown.default.msg': 'Countdown...',//倒计时中...
     'payment.upgrade.version.success': 'You have successfully upgraded to the official version, {time} expires',//您已成功升级为正式版，{time} 到期
