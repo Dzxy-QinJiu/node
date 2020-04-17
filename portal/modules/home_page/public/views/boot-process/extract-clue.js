@@ -932,7 +932,7 @@ class ExtractClues extends React.Component {
                             const otherCls = classNames('extract-clue-text__info extract-clue-text__filters', {
                                 'extract-clue-text__null': !otherProps.products.hasHighLight && !otherProps.scope.hasHighLight && !otherProps.industry.hasHighLight && !otherProps.companyProfile.hasHighLight
                             });
-                            item.labels = item.labels.concat(item.features);
+                            let labels = item.labels.concat(item.features);
                             return (
                                 <div className={cls} key={item.id} onClick={this.handleClickClueName.bind(this, item)}>
                                     <Checkbox checked={this.hasChecked(item)} disabled={this.getDisabledClue(item)} onChange={this.handleCheckChange.bind(this, item)}/>
@@ -940,9 +940,9 @@ class ExtractClues extends React.Component {
                                         <div className="extract-clue-text__name">
                                             {item.hasExtractedByOther ? <i className='iconfont icon-warning-tip'/> : null}
                                             <span dangerouslySetInnerHTML={{__html: this.handleHighLightStyle(item.name).content}}/>
-                                            {item.labels.length ? (
+                                            {labels.length ? (
                                                 <div className="clue-labels">
-                                                    {_.map(item.labels, (tag, index) => (
+                                                    {_.map(labels, (tag, index) => (
                                                         <Tag key={index}>{tag}</Tag>
                                                     ))}
                                                 </div>
