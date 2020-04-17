@@ -88,7 +88,7 @@ import NoDataAddAndImportIntro from 'CMP_DIR/no-data-add-and-import-intro';
 import ClueFilterPanel from './views/clue-filter-panel';
 import {isSalesRole, checkCurrentVersion, checkCurrentVersionType,
     getRecommendClueCount, formatSalesmanList, isResponsiveDisplay, 
-    isShowWinningClue, isWinningClueMaxCount, isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+    isShowWinningClue, isWinningClueMaxCount, isCurtao, checkVersionAndType, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {phoneMsgEmitter, clueToCustomerPanelEmitter, paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ShearContent from 'CMP_DIR/shear-content-new';
@@ -135,10 +135,7 @@ const MORE_BTN_CONSTS = {
     EXPORT: 'export',//导出线索
     RELEASE: 'release',//批量释放
 };
-// 是否过期
-function isExpired(){
-    return _.get(userData.getUserData(), 'organization.isExpired');
-}
+
 class ClueCustomer extends React.Component {
     constructor(props) {
         super(props);
@@ -775,22 +772,10 @@ class ClueCustomer extends React.Component {
         paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {isShowModal, versionKind: COMPANY_VERSION_KIND});
     };
 
-    getExportClueTips = (currentVersionObj) => {
-        let tips = '';
-        if (currentVersionObj.company) {//企业版
-            if (currentVersionObj.trial) {//试用账号
-                tips = Intl.get('payment.please.contact.our.sale.upgrade', '请联系我们的销售人员进行升级，联系方式：{contact}', { contact: COMPANY_PHONE });
-            } else if (currentVersionObj.formal && isExpired()) {//正式账号过期
-                tips = Intl.get('payment.please.contact.our.sale.renewal', '请联系我们的销售人员进行续费，联系方式：{contact}', { contact: COMPANY_PHONE });
-            }
-        }
-        return tips;
-    };
-
     handlePersonalTrialVisiable = (visible) => {
         this.setState({personalTrialVisiable: visible});
     };
-    // 点导出线索时，是否展示popover提示
+    // 点提取线索时，是否展示popover提示
     isShowExportPopover(currentVersionObj){
         // 是否展示提示信息
         let isShowPopoverTip = false;
@@ -805,7 +790,6 @@ class ClueCustomer extends React.Component {
     //渲染导出线索的按钮
     renderExportClue = () => {
         let currentVersionObj = checkVersionAndType();
-        let tips = this.getExportClueTips(currentVersionObj);
         const exportBtnContent = (
             <React.Fragment>
                 <i className="iconfont icon-export-clue"></i>
@@ -815,10 +799,10 @@ class ClueCustomer extends React.Component {
         return(
             <div className="export-clue-customer-container pull-right">
                 {this.isShowExportPopover(currentVersionObj) ?
-                    (<Popover content={tips} trigger="click" overlayClassName="explain-pop">
-                        {<Button className="btn-item">
+                    (<Popover content={getContactSalesPopoverTip(true)} trigger="click" overlayClassName="explain-pop" data-tracename='点击导出线索按钮'>
+                        <Button className="btn-item">
                             {exportBtnContent}
-                        </Button>}
+                        </Button>
                     </Popover>) :
                     (<Button onClick={this.showExportClueModal.bind(this, currentVersionObj)} className="btn-item" data-tracename='点击导出线索按钮'>
                         {exportBtnContent}
@@ -3111,7 +3095,6 @@ class ClueCustomer extends React.Component {
     //渲染响应式布局下的批量操作的选项
     batchTopBarDropList = (hasPrivileges) => {
         let currentVersionObj = checkVersionAndType();
-        let tips = this.getExportClueTips(currentVersionObj);
         let exportText = Intl.get('clue.export.clue.list','导出线索');
         return (
             <Menu onClick={this.handleBatchMenuSelectClick.bind(this, null)}>
@@ -3122,7 +3105,7 @@ class ClueCustomer extends React.Component {
                 }
                 <Menu.Item key={MORE_BTN_CONSTS.EXPORT}>
                     {this.isShowExportPopover(currentVersionObj) ? (
-                        <Popover placement="left" content={tips} trigger="click" overlayClassName="explain-pop">
+                        <Popover placement="left" content={getContactSalesPopoverTip(true)} trigger="click" overlayClassName="explain-pop">
                             {exportText}
                         </Popover>
                     ) : exportText}
@@ -3276,7 +3259,6 @@ class ClueCustomer extends React.Component {
 
     topBarDropList = (isWebMin) => {
         let currentVersionObj = checkVersionAndType();
-        let tips = this.getExportClueTips(currentVersionObj);
         let exportText = Intl.get('clue.export.clue.list','导出线索');
         return (<Menu onClick={this.handleMenuSelectClick.bind(this)}>
             {isWebMin && addCluePrivilege() ?
@@ -3291,7 +3273,7 @@ class ClueCustomer extends React.Component {
                 : null}
             <Menu.Item key="export" >
                 {this.isShowExportPopover(currentVersionObj) ? (
-                    <Popover placement="left" content={tips} trigger="click" overlayClassName="explain-pop">
+                    <Popover placement="left" content={getContactSalesPopoverTip(true)} trigger="click" overlayClassName="explain-pop">
                         {exportText}
                     </Popover>
                 ) : exportText}

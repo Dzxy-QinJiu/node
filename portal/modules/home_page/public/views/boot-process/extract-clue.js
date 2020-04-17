@@ -23,7 +23,7 @@ import {
     isCommonSalesOrPersonnalVersion, getClueSalesList, getLocalSalesClickCount, HASEXTRACTBYOTHERERRTIP
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import { formatSalesmanList, checkCurrentVersionType,
-    checkVersionAndType, isResponsiveDisplay, isShowWinningClue, isCurtao } from 'PUB_DIR/sources/utils/common-method-util';
+    checkVersionAndType, isResponsiveDisplay, isShowWinningClue, isCurtao, getContactSalesPopoverTip, isExpired } from 'PUB_DIR/sources/utils/common-method-util';
 import { getMaxLimitExtractClueCount, updateGuideMark } from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
 import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon, GIFT_LOGO} from 'PUB_DIR/sources/utils/consts';
@@ -453,6 +453,8 @@ class ExtractClues extends React.Component {
 
     //提取数为0时显示的提示信息
     hasNoExtractCountTip = () => {
+        // 过期的账号不能提取线索，所以不需要展示还可提取xxx条线索
+        if(isExpired) return null;
         var maxLimitExtractNumber = this.state.maxLimitExtractNumber;
         var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
         let versionAndType = checkVersionAndType();
@@ -832,41 +834,60 @@ class ExtractClues extends React.Component {
     };
     //渲染单项中的提取按钮
     extractClueOperator = (record) => {
-        // 提取线索分配给相关的销售人员的权限
-        let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
-        if (hasAssignedPrivilege) {
-            return (
-                <AntcDropdown
-                    isDropdownAble={record.hasExtracted}
-                    datatraceContainer='线索推荐页面单个提取'
-                    ref={assignSale => this['changeSales' + record.id] = assignSale}
-                    content={
-                        <span
-                            data-tracename="点击提取按钮"
-                            className="assign-btn"
-                        >
-                            {extractIcon}
-                        </span>}
-                    overlayTitle={Intl.get('user.salesman', '销售人员')}
-                    okTitle={Intl.get('common.confirm', '确认')}
-                    cancelTitle={Intl.get('common.cancel', '取消')}
-                    isSaving={this.state.singleExtractLoading}
-                    overlayContent={this.renderSalesBlock()}
-                    handleSubmit={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege)}
-                    unSelectDataTip={this.state.unSelectDataTip}
-                    clearSelectData={this.clearSelectSales}
-                    btnAtTop={false}
-                />
-            );
-        } else {
-            return (
-                <span
-                    onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege)}
-                    data-tracename='单个提取推荐线索'
-                >
-                    {extractIcon}
-                </span>
-            );
+        // 过期的账号不能提取线索
+        if(isExpired()){
+            let currentVersionObj = checkVersionAndType();
+            // 企业账号到期，提示联系销售升级\续费的popover
+            if(currentVersionObj.company){
+                return (
+                    <Popover content={getContactSalesPopoverTip()} placement="left" trigger="click" data-tracename="单个提取推荐线索">
+                        {extractIcon}
+                    </Popover>
+                );
+            } else {//个人版，展示升级\续费的界面
+                return (
+                    <span onClick={this.showUpgradePersonalPanel.bind(this, currentVersionObj)}
+                        data-tracename='单个提取推荐线索'>
+                        {extractIcon}
+                    </span>);
+            }
+        } else {//渲染可提取线索的按钮
+            // 提取线索分配给相关的销售人员的权限
+            let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
+            if (hasAssignedPrivilege) {
+                return (
+                    <AntcDropdown
+                        isDropdownAble={record.hasExtracted}
+                        datatraceContainer='线索推荐页面单个提取'
+                        ref={assignSale => this['changeSales' + record.id] = assignSale}
+                        content={
+                            <span
+                                data-tracename="单个提取推荐线索"
+                                className="assign-btn"
+                            >
+                                {extractIcon}
+                            </span>}
+                        overlayTitle={Intl.get('user.salesman', '销售人员')}
+                        okTitle={Intl.get('common.confirm', '确认')}
+                        cancelTitle={Intl.get('common.cancel', '取消')}
+                        isSaving={this.state.singleExtractLoading}
+                        overlayContent={this.renderSalesBlock()}
+                        handleSubmit={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege)}
+                        unSelectDataTip={this.state.unSelectDataTip}
+                        clearSelectData={this.clearSelectSales}
+                        btnAtTop={false}
+                    />
+                );
+            } else {
+                return (
+                    <span
+                        onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege)}
+                        data-tracename='单个提取推荐线索'
+                    >
+                        {extractIcon}
+                    </span>
+                );
+            }
         }
     };
 
@@ -1065,54 +1086,94 @@ class ExtractClues extends React.Component {
             }}
         />;
     };
-
+    showUpgradePersonalPanel(currentVersionObj, event){
+        let tipTitle = ''; 
+        //个人试用版本过期
+        if (currentVersionObj.isPersonalTrial && isExpired()) {
+            // 展示升级个人正式版的界面
+            Trace.traceEvent(event, '个人试用到期后点击提取线索，打开个人升级界面');
+            tipTitle = Intl.get('payment.upgrade.extract.lead', '升级后可提取线索');
+        } else if (currentVersionObj.isPersonalFormal && isExpired()) {//个人正式版过期时，展示续费界面
+            Trace.traceEvent(event, '个人正式过期后点击提取线索，打开个人续费界面');
+            tipTitle = Intl.get('payment.renewal.extract.lead', '续费后可提取线索');
+        }
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            showDifferentVersion: this.triggerShowVersionInfo,
+            leftTitle: tipTitle,
+        });
+    }
+    //显示/隐藏版本信息面板
+    triggerShowVersionInfo = (isShowModal = true) => {
+        paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {isShowModal, versionKind: COMPANY_VERSION_KIND});
+    };
     //渲染批量提取的按钮
     renderExtractOperator = (isWebMin) => {
-        let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
-        if(hasAssignedPrivilege) {
-            return (
-                <div>
-                    <AntcDropdown
-                        datatraceContainer='批量提取线索'
-                        ref={ref => this['changeSales'] = ref}
-                        content={
-                            <Button
-                                type="primary"
-                                className="button-save btn-item"
-                            >
-                                <span className="iconfont icon-extract"/>
-                                {isWebMin ? null : Intl.get('clue.pool.batch.extract.clue', '批量提取')}
-                            </Button>}
-                        overlayTitle={Intl.get('user.salesman', '销售人员')}
-                        okTitle={Intl.get('common.confirm', '确认')}
-                        cancelTitle={Intl.get('common.cancel', '取消')}
-                        isSaving={this.state.batchExtractLoading}
-                        isDisabled={this.state.selectedRecommendClues.length === 0}
-                        overlayContent={this.renderSalesBlock()}
-                        handleSubmit={this.handleSubmitAssignSalesBatch}
-                        unSelectDataTip={this.state.unSelectDataTip}
-                        clearSelectData={this.clearSelectSales}
-                        placement="topRight"
-                        btnAtTop={false}
-                    />
-                </div>
-            );
-        }else {
-            return (
-                <Button
-                    title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
-                    type="primary"
-                    data-tracename="点击批量提取线索按钮"
-                    className='btn-item common-sale-batch-extract'
-                    onClick={this.handleSubmitAssignSalesBatch}
-                    disabled={this.state.batchExtractLoading}
-                >
-                    <span className="iconfont icon-extract"/>
-                    {isWebMin ? null : Intl.get('clue.pool.batch.extract.clue', '批量提取')}
-                </Button>
-            );
+        // 过期的账号不能提取线索
+        if(isExpired()){
+            let currentVersionObj = checkVersionAndType();
+            // 企业账号到期，提示联系销售升级\续费的popover
+            if(currentVersionObj.company){
+                return (
+                    <Popover content={getContactSalesPopoverTip()} placement="left" trigger="click" data-tracename="点击批量提取线索按钮">
+                        {this.renderBatchExtractBtn(() => { }, isWebMin)}
+                    </Popover>
+                );
+            } else {//个人版，展示升级\续费的界面
+                // 渲染批量提取按钮
+                return this.renderBatchExtractBtn(this.showUpgradePersonalPanel.bind(this, currentVersionObj), isWebMin);
+            }
+        } else {//渲染可提取线索的按钮
+            let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
+            if(hasAssignedPrivilege) {
+                return (
+                    <div>
+                        <AntcDropdown
+                            datatraceContainer='批量提取线索'
+                            ref={ref => this['changeSales'] = ref}
+                            content={
+                                <Button
+                                    type="primary"
+                                    className="button-save btn-item"
+                                >
+                                    <span className="iconfont icon-extract"/>
+                                    {isWebMin ? null : Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                                </Button>}
+                            overlayTitle={Intl.get('user.salesman', '销售人员')}
+                            okTitle={Intl.get('common.confirm', '确认')}
+                            cancelTitle={Intl.get('common.cancel', '取消')}
+                            isSaving={this.state.batchExtractLoading}
+                            isDisabled={this.state.selectedRecommendClues.length === 0}
+                            overlayContent={this.renderSalesBlock()}
+                            handleSubmit={this.handleSubmitAssignSalesBatch}
+                            unSelectDataTip={this.state.unSelectDataTip}
+                            clearSelectData={this.clearSelectSales}
+                            placement="topRight"
+                            btnAtTop={false}
+                        />
+                    </div>
+                );
+            } else {
+                // 渲染批量提取按钮
+                return this.renderBatchExtractBtn(this.handleSubmitAssignSalesBatch, isWebMin);
+            }
         }
     };
+    // 渲染批量提取按钮
+    renderBatchExtractBtn(clickFunc, isWebMin){
+        return (
+            <Button
+                title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                type="primary"
+                data-tracename="点击批量提取线索按钮"
+                className='btn-item common-sale-batch-extract'
+                onClick={clickFunc}
+                disabled={this.state.batchExtractLoading}
+            >
+                <span className="iconfont icon-extract"/>
+                {isWebMin ? null : Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+            </Button>
+        );
+    }
 
     getRecommendLists = (type) => {
         if(this.state.canClickMoreBatch) {
