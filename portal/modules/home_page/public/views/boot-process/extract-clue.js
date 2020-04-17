@@ -932,6 +932,7 @@ class ExtractClues extends React.Component {
                             const otherCls = classNames('extract-clue-text__info extract-clue-text__filters', {
                                 'extract-clue-text__null': !otherProps.products.hasHighLight && !otherProps.scope.hasHighLight && !otherProps.industry.hasHighLight && !otherProps.companyProfile.hasHighLight
                             });
+                            item.labels = item.labels.concat(item.features);
                             return (
                                 <div className={cls} key={item.id} onClick={this.handleClickClueName.bind(this, item)}>
                                     <Checkbox checked={this.hasChecked(item)} disabled={this.getDisabledClue(item)} onChange={this.handleCheckChange.bind(this, item)}/>
