@@ -55,7 +55,7 @@ const HOT_SELECTORS = [/*{
         name: Intl.get('clue.recommend.mask.Manufactor', '口罩厂家'),
         value: '口罩厂家'
     },{
-        name: Intl.get('clue.recommend.scale.company', '规模以上企业'),
+        name: Intl.get('clue.recommend.State-owned.enterprise', '国有企业'),
         value: '规模'
     },];
 
