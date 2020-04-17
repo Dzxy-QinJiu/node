@@ -17,6 +17,7 @@ class Index extends React.Component {
     }
 
     static propTypes = {
+        title: PropTypes.string,
         hideApply: PropTypes.func,
         versionKind: PropTypes.string,
         form: PropTypes.object,
@@ -76,7 +77,7 @@ class Index extends React.Component {
         return <div className='apply-try-content'>
             {this.state.successFlag ? this.renderApplyResult() : (
                 <div className='apply-try-content-wrapper'>
-                    <div className='apply-try-content-title'>{Intl.get('personal.apply.trial.enterprise.edition','申请试用企业版')}</div>
+                    <div className='apply-try-content-title'>{this.props.title || Intl.get('personal.apply.trial.enterprise.edition','申请试用企业版')}</div>
                     <Form>
                         <Form.Item label={Intl.get('register.company.nickname','公司名称')} className='apply-try-content-componey' {...formLayout} require>
                             {getFieldDecorator('company', {
@@ -141,6 +142,7 @@ class Index extends React.Component {
     }
 }
 Index.defaultProps = {
+    title: Intl.get('personal.apply.trial.enterprise.edition','申请试用企业版'),
     isShowModal: true,
     versionKindName: Intl.get('versions.enterprise','企业版'),
     versionKind: 'enterprise',
