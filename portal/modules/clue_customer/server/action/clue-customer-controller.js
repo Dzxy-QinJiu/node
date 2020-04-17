@@ -484,6 +484,7 @@ exports.getRecommendClueLists = function(req, res) {
                     scope: _.get(item,'scope', ''),
                     //标签
                     labels: _.get(item,'labels', []),
+                    features: _.get(item,'features',[]),
                     //产品(会有高亮内容<em>###</em>)
                     products: _.get(item,'products', ''),
                     //行业
