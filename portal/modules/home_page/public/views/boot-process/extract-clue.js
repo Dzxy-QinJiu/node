@@ -53,7 +53,10 @@ const HOT_SELECTORS = [/*{
         value: EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER
     },{
         name: Intl.get('clue.recommend.mask.Manufactor', '口罩厂家'),
-        value: '口罩'
+        value: '口罩厂家'
+    },{
+        name: Intl.get('clue.recommend.scale.company', '规模以上企业'),
+        value: '规模'
     },];
 
 const CONTACT_PHONE_CLS = 'extract-clue-contact-count';
@@ -955,7 +958,7 @@ class ExtractClues extends React.Component {
                                                 {_.get(item.contact, 'phones') ? (
                                                     <span className="extract-clue-contacts-item">
                                                         <span className="extract-clue-text-label">{Intl.get('common.phone', '电话')}：</span>
-                                                        <Popover trigger="click" content={_.get(item,'telephones').map(phone => (<div key={phone}>{phone}</div>))}>
+                                                        <Popover trigger="hover" content={_.get(item,'telephones').map(phone => (<div key={phone}>{phone}</div>))}>
                                                             <span className={CONTACT_PHONE_CLS}>{_.get(item.contact, 'phones')}</span>
                                                         </Popover>
                                                         {Intl.get('contract.22', '个')}
