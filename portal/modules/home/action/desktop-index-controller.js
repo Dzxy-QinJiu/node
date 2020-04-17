@@ -120,10 +120,6 @@ exports.getUserData = function(req, res) {
                 let curtTime = new Date().getTime();
                 // 组织是否过期
                 user.organization.isExpired = endTime <= curtTime;
-                console.log('组织是否过期==================================');
-                console.log(endTime);
-                console.log(curtTime);
-                console.log(user.organization.isExpired);
                 req.session.user.nickname = data.nick_name;
                 req.session.save(function() {
                     res.header('Content-Type', 'application/javascript');
