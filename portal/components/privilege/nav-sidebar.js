@@ -749,7 +749,7 @@ var NavSidebar = createReactClass({
             if(versionAndType.personal) {
                 return this.disableClickBlock('dial-up-keyboard-btn', DialIcon);
             } else if (versionAndType.company && isExpired()) {//企业账号过期后不可拨打电话，点击提示升级或续费
-                routeContent = this.disableClickBlock('dial-up-keyboard-btn', DialIcon, getContactSalesPopoverTip());
+                return this.disableClickBlock('dial-up-keyboard-btn', DialIcon, getContactSalesPopoverTip());
             }
             return (
                 <DialUpKeyboard
