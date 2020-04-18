@@ -116,6 +116,16 @@ exports.getUserData = function(req, res) {
                 user.guideConfig = data.guideConfig;//引导流程
                 user.phone = data.phone;
                 user.websiteConfig = data.websiteConfig;//网站个性化
+                user.organization = {
+                    id: _.get(data,'organization.id', ''),
+                    officialName: _.get(data, 'organization.official_name', ''),
+                    functions: _.get(data, 'organization.functions', []),
+                    type: _.get(data, 'organization.type', ''),
+                    version: _.get(data, 'organization.version', {}),
+                    endTime: _.get(data, 'organization.end_time', ''),
+                    expireAfterDays: _.get(data, 'organization.expire_after_days'),
+                    grantProducts: _.get(data, 'organization.grant_products', []),
+                };
                 let endTime = _.get(user, 'organization.endTime', '');
                 let curtTime = new Date().getTime();
                 // 组织是否过期
