@@ -3,7 +3,8 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/30.
  */
-import {Row, Col, Button, Icon} from 'antd';
+import {Row, Col, Button, Icon, Popover} from 'antd';
+import { getContactSalesPopoverTip, isExpired } from 'PUB_DIR/sources/utils/common-method-util';
 require('./index.less');
 class ApplyDetailBottom extends React.Component {
     constructor(props) {
@@ -12,19 +13,30 @@ class ApplyDetailBottom extends React.Component {
     }
     renderPassOrAssignedContext = () => {
         var assigenedContext = _.isFunction(this.props.renderAssigenedContext) ? this.props.renderAssigenedContext() : null;
+        const passBtn = assigenedContext ? assigenedContext : (
+            <Button className="agree-btn btn-primary-sure" disabled={this.props.disabled}
+                onClick={isExpired() ? () => { } : this.props.submitApprovalForm.bind(this, 'pass')}>
+                <i className='iconfont icon-agree'></i>{this.props.passText}
+            </Button>);
+        const rejectBtn = (
+            <Button className="reject-btn btn-primary-sure"
+                onClick={isExpired() ? () => { } : this.props.submitApprovalForm.bind(this, 'reject')}>
+                <i className='iconfont icon-reject'></i>{this.props.rejectText}
+            </Button>);
+        const contentTip = getContactSalesPopoverTip();
         return (
             <div className="pull-right">
                 {
                     this.props.showApproveBtn || assigenedContext ? (
                         <div className="pass-and-reject-wrap">
-                            {assigenedContext ? assigenedContext : <Button className="agree-btn btn-primary-sure" disabled={this.props.disabled}
-                                onClick={this.props.submitApprovalForm.bind(this, 'pass')}>
-                                <i className='iconfont icon-agree'></i>{this.props.passText}
-                            </Button>}
-                            <Button className="reject-btn btn-primary-sure"
-                                onClick={this.props.submitApprovalForm.bind(this, 'reject')}>
-                                <i className='iconfont icon-reject'></i>{this.props.rejectText}
-                            </Button>
+                            {isExpired() ? (
+                                <Popover content={contentTip} trigger="click" placement="left">
+                                    {passBtn}
+                                </Popover>) : passBtn}
+                            {isExpired() ? (
+                                <Popover content={contentTip} trigger="click" placement="left">
+                                    {rejectBtn}
+                                </Popover>) : rejectBtn}
                         </div>
                     ) : null
                 }
@@ -34,11 +46,20 @@ class ApplyDetailBottom extends React.Component {
     renderBottomText = () => {
         var assigenedContext = _.isFunction(this.props.renderAssigenedContext) ? this.props.renderAssigenedContext() : null;
         var showPassOrAssignedContext = this.props.showApproveBtn || assigenedContext;
+        let backoutBtn = (
+            <Button onClick={isExpired() ? () => { } : this.props.submitApprovalForm.bind(this, 'cancel')}>
+                {Intl.get('user.apply.detail.backout', '撤销申请')}
+            </Button>);
+        // 过期的账号，撤销，提示升级或续费
+        if (isExpired()) {
+            backoutBtn = (
+                <Popover content={getContactSalesPopoverTip()} trigger="click" placement="left">
+                    {backoutBtn}
+                </Popover>
+            );
+        }
         return <div className="pull-right">
-            {this.props.showCancelBtn ?
-                <Button onClick={this.props.submitApprovalForm.bind(this, 'cancel')}>
-                    {Intl.get('user.apply.detail.backout', '撤销申请')}
-                </Button> : null}
+            {this.props.showCancelBtn ? backoutBtn : null}
             {showPassOrAssignedContext ? this.renderPassOrAssignedContext() : null}
         </div>;
     };
