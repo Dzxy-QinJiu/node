@@ -4000,6 +4000,7 @@ var en_US = {
     'personal.official.version': 'Personal',//个人正式版
     'personal.upgrade.to.enterprise.edition': 'Upgrade to enterprise edition',//升级为企业版
     'personal.apply.trial.enterprise.edition': 'Apply for trial enterprise edition',//申请试用企业版
+    'personal.apply.trial.enterprise.dail': 'Apply for enterprise trial experience dial telephone',//申请企业试用体验拨打电话
     'common.upgrade': 'Upgrade',//升级
     'clues.extract.count.at.month': 'Extract {count} clues per month',//每月可提取 {count} 条线索
     'goods.price.most.favorable': 'The most favorable',//最优惠
@@ -4030,6 +4031,10 @@ var en_US = {
     'payment.please.contact.our.sale.upgrade': 'Please contact our sales staff for upgrade. Contact: {contact}',//请联系我们的销售人员进行升级，联系方式：{contact}
     'payment.please.contact.our.sale': 'Please contact our sales staff. Contact: {contact}',//请联系我们的销售人员，联系方式：{contact}
     'payment.please.contact.our.sale.renewal': 'Please contact our sales staff for renewal. Contact: {contact}',//请联系我们的销售人员进行续费，联系方式：{contact}
+    'payment.upgrade.export.lead': 'Leads can be exported after upgrading',//升级后可导出线索
+    'payment.renewal.export.lead': 'Leads can be exported after renewal',//续费后可导出线索
+    'payment.upgrade.extract.lead': 'Clues can be extracted after upgrading',//升级后可提取线索
+    'payment.renewal.extract.lead': 'Clues can be extracted after renewal',//续费后可提取线索
     'payment.upgrading': 'Upgrading...',//正在升级...
     'payment.countdown.default.msg': 'Countdown...',//倒计时中...
     'payment.upgrade.version.success': 'You have successfully upgraded to the official version, {time} expires',//您已成功升级为正式版，{time} 到期

@@ -57,7 +57,9 @@ exports.getUserInfo = function(req, res) {
     let getUserGuideCOnfigs = getDataPromise(req, res, userInfoRestApis.getGuideConfig);
     //获取网站个性化设置
     let getWebsiteConfig = getDataPromise(req, res, userInfoRestApis.getWebsiteConfig);
-    let promiseList = [getUserBasicInfo, getUserRole, getUserGuideCOnfigs, getWebsiteConfig];
+    // 获取用户的组织信息
+    let getOrganization = getDataPromise(req, res, userInfoRestApis.getOrganization);
+    let promiseList = [getUserBasicInfo, getUserRole, getUserGuideCOnfigs, getWebsiteConfig, getOrganization];
     let userPrivileges = getPrivileges(req);
     //是否有获取所有团队数据的权限
     let hasGetAllTeamPrivilege = userPrivileges.indexOf(publicPrivilegeConst.GET_TEAM_LIST_ALL) !== -1;
@@ -88,25 +90,27 @@ exports.getUserInfo = function(req, res) {
             userData.guideConfig = _.get(resultList,'[2].successData',[]);
             //网站个性化
             userData.websiteConfig = _.get(resultList, '[3].successData', {});
+            //用户组织信息
+            userData.organization = _.get(resultList, '[4].successData', {});
             //是否是普通销售
             if (hasGetAllTeamPrivilege) {//管理员或运营人员，肯定不是普通销售
                 userData.isCommonSales = false;
                 //已经配置过的流程
                 if(hasWorkFlowPrivilege){
-                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[4].successData', []));
+                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[5].successData', []));
                 }
             } else {//普通销售、销售主管、销售总监等，通过我所在的团队及下级团队来判断是否是普通销售
-                let teamTreeList = _.get(resultList, '[4].successData', []);
+                let teamTreeList = _.get(resultList, '[5].successData', []);
                 userData.isCommonSales = getIsCommonSalesByTeams(userData.user_id, teamTreeList);
                 //已经配置过的流程
                 if(hasWorkFlowPrivilege){
-                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[5].successData', []));
+                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[6].successData', []));
 
                     //用户职务
-                    userData.position = _.get(resultList, '[6].successData.teamrole_name', '');
+                    userData.position = _.get(resultList, '[7].successData.teamrole_name', '');
                 } else {
                     //用户职务
-                    userData.position = _.get(resultList, '[5].successData.teamrole_name', '');
+                    userData.position = _.get(resultList, '[6].successData.teamrole_name', '');
                 }
             }
             emitter.emit('success', userData);
@@ -226,6 +230,8 @@ var userInfoRestApis = {
     getAreaByPhone: baseUrl + '/rest/es/v2/es/phone_location/:phone',
     getWebsiteConfig: '/rest/base/v1/user/website/config',
     getSalesRoleByMemberId: '/rest/base/v1/user/member/teamrole',
+    //获取登录用户的组织信息
+    getOrganization: '/rest/base/v1/user/member/organization'
 };
 
 exports.getPrivileges = getPrivileges;

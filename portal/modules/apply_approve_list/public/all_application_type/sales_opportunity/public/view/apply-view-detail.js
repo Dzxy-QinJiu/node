@@ -6,7 +6,7 @@
 var SalesOpportunityApplyDetailStore = require('../store/sales-opportunity-apply-detail-store');
 var SalesOpportunityApplyDetailAction = require('../action/sales-opportunity-apply-detail-action');
 import Trace from 'LIB_DIR/trace';
-import {Alert, Icon, Input, Row, Col, Button,message, Select, Steps} from 'antd';
+import {Alert, Icon, Input, Row, Col, Button,message, Select, Steps, Popover} from 'antd';
 const Step = Steps.Step;
 const Option = Select.Option;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -30,7 +30,7 @@ import {
     handleDiffTypeApply,
     formatSalesmanList,
     formatUsersmanList,
-    isCiviwRealm, timeShowFormat
+    isCiviwRealm, timeShowFormat, getContactSalesPopoverTip, isExpired
 } from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
@@ -153,6 +153,12 @@ class ApplyViewDetail extends React.Component {
         SalesOpportunityApplyDetailAction.setNextCandidateName(nextCandidateName);
     };
     renderAddApplyNextCandidate = () => {
+        if (isExpired()) {
+            return (
+                <Popover content={getContactSalesPopoverTip()} trigger="click" placement="left">
+                    {transferBtnContent()}
+                </Popover>);
+        }
         var addNextCandidateId = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
         var addNextCandidateName = _.get(this.state, 'detailInfoObj.info.nextCandidateName','');
         return (

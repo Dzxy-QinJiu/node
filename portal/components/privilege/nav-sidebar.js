@@ -16,7 +16,7 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES, GIFT_LOGO,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {hasCalloutPrivilege, isCurtao, checkVersionAndType, 
-    isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay,isShowWinningClue} from 'PUB_DIR/sources/utils/common-method-util';
+    isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay,isShowWinningClue, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
 import {phoneEmitter, notificationEmitter, userInfoEmitter,
     phoneMsgEmitter, clickUpgradeNoiceEmitter, showWiningClueEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
@@ -48,6 +48,7 @@ const MENU = {
 
 const ROUTE_CONST = {
     'CALL_RECORD': 'call_record',//通话记录id
+    'ANALYSIS': 'analysis'//分析
 };
 
 //获取用户logo
@@ -612,6 +613,8 @@ var NavSidebar = createReactClass({
                     let versionAndType = checkVersionAndType();
                     if(ROUTE_CONST.CALL_RECORD === category && versionAndType.personal) {
                         routeContent = _this.disableClickBlock('', obj.name);
+                    } else if (ROUTE_CONST.ANALYSIS === category && isExpired()) {//分析，企业账号过期后不可访问分析，点击提示升级或续费
+                        routeContent = _this.disableClickBlock('', obj.name, getContactSalesPopoverTip());
                     }
                     return (
                         <li key={obj.id}>
@@ -675,12 +678,12 @@ var NavSidebar = createReactClass({
         //缩放到显示小图标或（显示小图标并缩小图标间距）时
         return this.state.isReduceNavIcon || this.state.isReduceNavMargin;
     },
-    disableClickBlock(cls = '', text) {
+    disableClickBlock(cls = '', text, tipContent) {
         const trigger = this.getTriggerType();
         return (
             <Popover
                 placement='right'
-                content={Intl.get('payment.please.upgrade.company.version', '请先升级到基础版以上版本，联系销售：{contact}',{contact: '400-6978-520'})}
+                content={tipContent || Intl.get('payment.please.upgrade.company.version', '请先升级到基础版以上版本，联系销售：{contact}',{contact: '400-6978-520'})}
                 trigger={trigger}
             >
                 <a className={`${cls} disable-link`}>{text}</a>
@@ -723,6 +726,8 @@ var NavSidebar = createReactClass({
             let versionAndType = checkVersionAndType();
             if(ROUTE_CONST.CALL_RECORD === category && versionAndType.personal) {
                 routeContent = this.disableClickBlock(extraClass);
+            } else if (ROUTE_CONST.ANALYSIS === category && isExpired()) {//分析，企业账号过期后不可访问分析，点击提示升级或续费
+                routeContent = this.disableClickBlock(extraClass, '', getContactSalesPopoverTip());
             }
             return (
                 <li key={i} title={menu.name} className={routeCls}>
@@ -743,6 +748,8 @@ var NavSidebar = createReactClass({
             //个人版，拨号功能不可用，需提示升级为企业版
             if(versionAndType.personal) {
                 return this.disableClickBlock('dial-up-keyboard-btn', DialIcon);
+            } else if (versionAndType.company && isExpired()) {//企业账号过期后不可拨打电话，点击提示升级或续费
+                return this.disableClickBlock('dial-up-keyboard-btn', DialIcon, getContactSalesPopoverTip());
             }
             return (
                 <DialUpKeyboard

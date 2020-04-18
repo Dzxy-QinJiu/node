@@ -24,7 +24,7 @@ import ScheduleItem from './schedule/schedule-item';
 import Trace from 'LIB_DIR/trace';
 import RightPanelScrollBar from './components/rightPanelScrollBar';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
-import {isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCurtao, checkVersionAndType, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
 import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
@@ -368,14 +368,14 @@ class BasicOverview extends React.Component {
     renderApplyButton = () => {
         let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
         return (
-            applyPrivileged ? (
+            applyPrivileged && !isExpired() ? (
                 <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
                     {Intl.get('crm.apply.user.new', '申请新用户')}
                 </Button>) :
                 (<Popover
                     placement="bottomRight"
                     overlayClassName="apply-invalid-popover"
-                    content={_.get(this.state, 'applyState.applyMessage')}
+                    content={isExpired() ? getContactSalesPopoverTip() : _.get(this.state, 'applyState.applyMessage')}
                     trigger="click">
                     <Button className='crm-detail-add-btn'>
                         {Intl.get('crm.apply.user.new', '申请新用户')}

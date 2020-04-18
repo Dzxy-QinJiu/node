@@ -64,7 +64,7 @@ import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import HistoricalApplyViewDetailStore from './all_application_type/user_apply/public/store/historical-apply-view-detail-store';
 import HistoricalApplyViewDetailAction from './all_application_type/user_apply/public/action/historical-apply-view-detail-actions';
-import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
+import {isSalesRole, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 var ApplyApproveUtils = require('./utils/apply_approve_utils');
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
@@ -472,6 +472,14 @@ class ApplyApproveList extends React.Component {
     };
     //根据返回的状态信息渲染带Popover的button和不带Popover的button
     renderApplyButton = () => {
+        // 过期后添加申请，提示升级或续费
+        if(isExpired()){
+            return (
+                <Popover content={getContactSalesPopoverTip()} trigger="click" placement="right">
+                    <i className='iconfont icon-plus'/>
+                </Popover>
+            );
+        }
         let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
         return (
             applyPrivileged ? (

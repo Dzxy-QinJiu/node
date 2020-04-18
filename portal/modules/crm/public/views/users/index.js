@@ -24,7 +24,7 @@ import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 import {getAllApplyLists} from 'MOD_DIR/apply_approve_list/public/ajax/apply_approve_list_ajax';
-import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
+import {isOplateUser, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
 import { EventEmitter } from 'events';
 import {getDetailLayoutHeight} from '../../utils/crm-util';
 import DetailCard from 'CMP_DIR/detail-card';
@@ -377,7 +377,7 @@ class CustomerUsers extends React.Component {
     renderApplyButton = () => {
         let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
         return (
-            applyPrivileged ? (
+            applyPrivileged && !isExpired() ? (
                 <div className="crm-user-apply-btns" data-tracename="申请新用户">
                     <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
                         onClick={this.handleMenuClick.bind(this, APPLY_TYPES.NEW_USERS) }>
@@ -387,7 +387,7 @@ class CustomerUsers extends React.Component {
                 <Popover
                     placement="bottomRight"
                     overlayClassName="apply-invalid-popover"
-                    content={_.get(this.state, 'applyState.applyMessage')}
+                    content={isExpired() ? getContactSalesPopoverTip() : _.get(this.state, 'applyState.applyMessage')}
                     trigger="click"
                 >
                     <div className="crm-user-apply-btns" data-tracename="申请新用户">
@@ -402,8 +402,9 @@ class CustomerUsers extends React.Component {
     //其他申请时，根据返回的状态信息渲染带popover的button和不带popover的button
     renderOtherApplyButton = (batchApplyFlag, openAppFlag) => {
         let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
+        let popoverTip = isExpired ? getContactSalesPopoverTip() : _.get(this.state, 'applyState.applyMessage');
         return (
-            applyPrivileged ? (
+            applyPrivileged && !isExpired() ? (
                 <div className="crm-user-apply-btns">
                     <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
                         onClick={this.handleMenuClick.bind(this, APPLY_TYPES.STOP_USE)}
@@ -432,7 +433,7 @@ class CustomerUsers extends React.Component {
                     <Popover
                         placement="bottomRight"
                         overlayClassName="apply-invalid-popover"
-                        content={_.get(this.state, 'applyState.applyMessage')}
+                        content={popoverTip}
                         trigger="click"
                     >
                         <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
@@ -443,7 +444,7 @@ class CustomerUsers extends React.Component {
                     <Popover
                         placement="bottomRight"
                         overlayClassName="apply-invalid-popover"
-                        content={_.get(this.state, 'applyState.applyMessage')}
+                        content={popoverTip}
                         trigger="click"
                     >
                         <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.DELAY)}
@@ -454,7 +455,7 @@ class CustomerUsers extends React.Component {
                     <Popover
                         placement="bottomRight"
                         overlayClassName="apply-invalid-popover"
-                        content={_.get(this.state, 'applyState.applyMessage')}
+                        content={popoverTip}
                         trigger="click"
                     >
                         <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.EDIT_PASSWORD)}
@@ -465,7 +466,7 @@ class CustomerUsers extends React.Component {
                     <Popover
                         placement="bottomRight"
                         overlayClassName="apply-invalid-popover"
-                        content={_.get(this.state, 'applyState.applyMessage')}
+                        content={popoverTip}
                         trigger="click"
                     >
                         <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.OTHER)}
@@ -476,7 +477,7 @@ class CustomerUsers extends React.Component {
                     <Popover
                         placement="bottomRight"
                         overlayClassName="apply-invalid-popover"
-                        content={_.get(this.state, 'applyState.applyMessage')}
+                        content={popoverTip}
                         trigger="click"
                     >
                         <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}

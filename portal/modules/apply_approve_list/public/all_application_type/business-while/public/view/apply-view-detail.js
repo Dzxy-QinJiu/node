@@ -29,7 +29,7 @@ import {
     getFilterReplyList,
     handleDiffTypeApply,
     formatUsersmanList,
-    timeShowFormat, getTimeWithSecondZero, disabledHour, disabledMinute
+    timeShowFormat, getTimeWithSecondZero, disabledHour, disabledMinute, getContactSalesPopoverTip, isExpired
 } from 'PUB_DIR/sources/utils/common-method-util';
 import {handleTimeRange, getAllUserList, calculateTotalTimeInterval} from 'PUB_DIR/sources/utils/common-data-util';
 let userData = require('PUB_DIR/sources/user-data');
@@ -159,6 +159,12 @@ class ApplyViewDetail extends React.Component {
         ApplyViewDetailActions.setNextCandidateName(nextCandidateName);
     };
     renderAddApplyNextCandidate = () => {
+        if (isExpired()) {
+            return (
+                <Popover content={getContactSalesPopoverTip()} trigger="click" placement="left">
+                    {transferBtnContent()}
+                </Popover>);
+        }
         var addNextCandidateId = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
         var addNextCandidateName = _.get(this.state, 'detailInfoObj.info.nextCandidateName','');
         return (
