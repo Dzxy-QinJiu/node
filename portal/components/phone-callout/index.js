@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2019/2/28.
  */
 import {Popover, message} from 'antd';
-import {hasCalloutPrivilege, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasCalloutPrivilege, checkVersionAndType, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
 import {showDisabledCallTip, handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
 import {isRongLianPhoneSystem, handleBeforeCallOutCheck} from 'PUB_DIR/sources/utils/phone-util';
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
@@ -49,9 +49,13 @@ class PhoneCallout extends React.Component {
         let versionAndType = checkVersionAndType();
         if(versionAndType.isPersonalTrial) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)), '个人版点击电话按钮');
-            paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {versionKind: COMPANY_VERSION_KIND});
+            paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {
+                versionKind: COMPANY_VERSION_KIND,
+                title: Intl.get('personal.apply.trial.enterprise.dail', '申请企业试用体验拨打电话')
+            });
+            return;
         }
-        if (visible && hasCalloutPrivilege() && !versionAndType.personal){// 显示，并且能拨打电话，以及不是个人版时
+        if (visible && hasCalloutPrivilege() && !versionAndType.personal && !isExpired()){// 显示，并且能拨打电话，以及不是个人版、未过期时
             if (!this.state.ableClickPhoneIcon){
                 return;
             }
@@ -78,8 +82,8 @@ class PhoneCallout extends React.Component {
         let versionAndType = checkVersionAndType();
         if(versionAndType.isPersonalFormal) {//个人正式
             contentTip = Intl.get('payment.please.contact.our.sale.upgrade','请联系我们的销售人员进行升级，联系方式：{contact}',{contact: COMPANY_PHONE});
-        }else if(versionAndType.isPersonalTrial) {//个人试用
-            contentTip = Intl.get('personal.upgrade.company.trial.tip', '开通企业试用后，可体验拨打电话功能');
+        } else {//企业试用\正式过期, 联系销售升级\续费的提示
+            contentTip = getContactSalesPopoverTip();
         }
         var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
         var contactName = this.props.contactName;

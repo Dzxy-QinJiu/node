@@ -17,7 +17,7 @@ import Spinner from 'CMP_DIR/spinner';
 import userData from 'PUB_DIR/sources/user-data';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import AppProperty from 'CMP_DIR/user_manage_components/app-property-setting';
-import {Alert, Tooltip, Form, Button, Input, InputNumber, Select, Icon, message, DatePicker, Row, Col,Steps, Tag} from 'antd';
+import {Alert, Tooltip, Form, Button, Input, InputNumber, Select, Icon, message, DatePicker, Row, Col,Steps, Tag, Popover} from 'antd';
 const Step = Steps.Step;
 const Option = Select.Option;
 import FieldMixin from 'CMP_DIR/antd-form-fieldmixin';
@@ -50,7 +50,7 @@ import {
     isApprovedByManager, timeShowFormat,
     isCustomDelayType, getDelayTimeUnit,
     getApplyTopicText, getApplyResultDscr, isCiviwRealm, applyAppConfigTerminal,
-    approveAppConfigTerminal, getFilterReplyList
+    approveAppConfigTerminal, getFilterReplyList, getContactSalesPopoverTip, isExpired
 } from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import ApplyHistory from 'CMP_DIR/apply-components/apply-history';
@@ -2250,6 +2250,12 @@ const COLUMN_WIDTH = {
         ApplyViewDetailActions.setNextCandidateName('');
     },
     renderAddApplyNextCandidate(){
+        if (isExpired()) {
+            return (
+                <Popover content={getContactSalesPopoverTip()} trigger="click" placement="left">
+                    {transferBtnContent()}
+                </Popover>);
+        }
         var addNextCandidateId = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
         var addNextCandidateName = _.get(this.state, 'detailInfoObj.info.nextCandidateName','');
         return (

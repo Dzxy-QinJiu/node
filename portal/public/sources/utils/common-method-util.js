@@ -32,7 +32,8 @@ import {
     TIMERANGEUNIT,
     WEEKDAYS,
     CONFIG_TYPE,
-    winningClueMaxCount
+    winningClueMaxCount,
+    COMPANY_PHONE
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -1238,6 +1239,30 @@ function checkVersionAndType() {
 
 //返回版本信息及类型
 exports.checkVersionAndType = checkVersionAndType;
+
+// 渲染联系销售的提示内容, isOnlyTrial:只需要判断是试用版（导出线索的试用版都需要提示升级）
+exports.getContactSalesPopoverTip = (isOnlyTrial) => {
+    let currentVersionObj = checkVersionAndType();
+    let tips = '';
+    if (currentVersionObj.company) {//企业版
+        let needUpgradeFlag = currentVersionObj.trial && isExpired();
+        // 只需要判断是否是试用
+        if(isOnlyTrial){
+            needUpgradeFlag = currentVersionObj.trial;
+        }
+        if (needUpgradeFlag) {//需要升级的提示（企业试用或过期的企业试用）
+            tips = Intl.get('payment.please.contact.our.sale.upgrade', '请联系我们的销售人员进行升级，联系方式：{contact}', { contact: COMPANY_PHONE });
+        } else if (currentVersionObj.formal && isExpired()) {//正式账号过期
+            tips = Intl.get('payment.please.contact.our.sale.renewal', '请联系我们的销售人员进行续费，联系方式：{contact}', { contact: COMPANY_PHONE });
+        }
+    }
+    return tips;
+};
+// 账号是否过期
+function isExpired(){
+    return _.get(userData.getUserData(), 'organization.isExpired');
+}
+exports.isExpired = isExpired;
 
 //获取日程打电话时需要的类型（customer/lead）和id
 exports.getScheduleCallTypeId = function(scheduleItem) {

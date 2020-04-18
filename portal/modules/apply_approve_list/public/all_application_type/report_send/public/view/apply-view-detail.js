@@ -6,7 +6,7 @@
 var ReportSendApplyDetailStore = require('../store/report-send-apply-detail-store');
 var ReportSendApplyDetailAction = require('../action/report-send-apply-detail-action');
 import Trace from 'LIB_DIR/trace';
-import {Alert, Icon, Input, Row, Col, Button, Steps,Upload,message} from 'antd';
+import {Alert, Icon, Input, Row, Col, Button, Steps, Upload, message, Popover} from 'antd';
 const Step = Steps.Step;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -28,7 +28,10 @@ import {
     getReportSendApplyStatusTimeLineDesc,
     formatUsersmanList,
     updateUnapprovedCount,
-    timeShowFormat
+    timeShowFormat,
+    uniteFileSize,
+    getContactSalesPopoverTip,
+    isExpired
 } from 'PUB_DIR/sources/utils/common-method-util';
 import {REPORT_TYPE,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
@@ -41,7 +44,6 @@ const salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import {uniteFileSize} from 'PUB_DIR/sources/utils/common-method-util';
 import classNames from 'classnames';
 import {transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 class ApplyViewDetail extends React.Component {
@@ -157,6 +159,12 @@ class ApplyViewDetail extends React.Component {
         ReportSendApplyDetailAction.setNextCandidateName(nextCandidateName);
     };
     renderAddApplyNextCandidate = () => {
+        if (isExpired()) {
+            return (
+                <Popover content={getContactSalesPopoverTip()} trigger="click" placement="left">
+                    {transferBtnContent()}
+                </Popover>);
+        }
         var addNextCandidateId = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
         var addNextCandidateName = _.get(this.state, 'detailInfoObj.info.nextCandidateName','');
         return (
@@ -465,12 +473,20 @@ class ApplyViewDetail extends React.Component {
         var onHide = function() {
             ReportSendApplyDetailAction.cancelSendApproval();
         };
-        return (
-            <Button type='primary' size="small" onClick={this.confirmFinishApply} disabled={isLoading}>
+        let confirmBtn = (
+            <Button type='primary' size="small" onClick={isExpired() ? () => { } : this.confirmFinishApply} disabled={isLoading}>
                 {Intl.get('apply.approve.confirm.finish','确认完成')}
                 {isLoading ? <Icon type="loading"/> : resultErrMsg ? <AlertTimer time={90000} message={resultErrMsg} type="error" onHide={onHide} showIcon/> : null}
             </Button>
         );
+        if(isExpired()){
+            return (
+                <Popover placement="left" content={getContactSalesPopoverTip()} trigger="click">
+                    {confirmBtn}
+                </Popover>
+            );
+        }
+        return confirmBtn;
     };
     //渲染详情底部区域
     renderDetailBottom() {

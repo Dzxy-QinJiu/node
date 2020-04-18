@@ -6,7 +6,7 @@
 var DocumentWriteApplyDetailStore = require('../store/document-write-apply-detail-store');
 var DocumentWriteApplyDetailAction = require('../action/document-write-apply-detail-action');
 import Trace from 'LIB_DIR/trace';
-import {Alert, Icon, Input, Row, Col, Button, Steps,Upload,message} from 'antd';
+import {Alert, Icon, Input, Row, Col, Button, Steps, Upload, message, Popover} from 'antd';
 const Step = Steps.Step;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -27,7 +27,9 @@ import {
     getReportSendApplyStatusTimeLineDesc,
     getDocumentReportTypeText,
     formatUsersmanList,
-    timeShowFormat
+    timeShowFormat,
+    getContactSalesPopoverTip,
+    isExpired
 } from 'PUB_DIR/sources/utils/common-method-util';
 import {DOCUMENT_TYPE,TOP_NAV_HEIGHT,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
@@ -160,6 +162,12 @@ class ApplyViewDetail extends React.Component {
         DocumentWriteApplyDetailAction.setNextCandidateName(nextCandidateName);
     };
     renderAddApplyNextCandidate = () => {
+        if (isExpired()) {
+            return (
+                <Popover content={getContactSalesPopoverTip()} trigger="click" placement="left">
+                    {transferBtnContent()}
+                </Popover>);
+        }
         var addNextCandidateId = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
         var addNextCandidateName = _.get(this.state, 'detailInfoObj.info.nextCandidateName','');
         return (
@@ -462,12 +470,20 @@ class ApplyViewDetail extends React.Component {
         var onHide = function() {
             DocumentWriteApplyDetailAction.cancelSendApproval();
         };
-        return (
-            <Button type='primary' size="small" onClick={this.confirmFinishApply} disabled={isLoading}>
-                {Intl.get('apply.approve.confirm.finish','确认完成')}
-                {isLoading ? <Icon type="loading"/> : resultErrMsg ? <AlertTimer time={3000} message={resultErrMsg} type="error" onHide={onHide} showIcon/> : null}
+        let confirmBtn = (
+            <Button type='primary' size="small" onClick={isExpired() ? () => { } : this.confirmFinishApply} disabled={isLoading}>
+                {Intl.get('apply.approve.confirm.finish', '确认完成')}
+                {isLoading ? <Icon type="loading" /> : resultErrMsg ? <AlertTimer time={3000} message={resultErrMsg} type="error" onHide={onHide} showIcon /> : null}
             </Button>
         );
+        if(isExpired()){
+            return (
+                <Popover placement="left" content={getContactSalesPopoverTip()} trigger="click">
+                    {confirmBtn}
+                </Popover>
+            );
+        }
+        return confirmBtn;
     };
     //渲染详情底部区域
     renderDetailBottom() {

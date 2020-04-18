@@ -88,7 +88,7 @@ import NoDataAddAndImportIntro from 'CMP_DIR/no-data-add-and-import-intro';
 import ClueFilterPanel from './views/clue-filter-panel';
 import {isSalesRole, checkCurrentVersion, checkCurrentVersionType,
     getRecommendClueCount, formatSalesmanList, isResponsiveDisplay, 
-    isShowWinningClue, isWinningClueMaxCount, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+    isShowWinningClue, isWinningClueMaxCount, isCurtao, checkVersionAndType, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {phoneMsgEmitter, clueToCustomerPanelEmitter, paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ShearContent from 'CMP_DIR/shear-content-new';
@@ -176,7 +176,6 @@ class ClueCustomer extends React.Component {
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             showRecommendTips: !_.get(websiteConfig, oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS,false),
             guideRecommendCondition: null,//引导设置的推荐线索的条件
-            exportVisible: false,//导出线索显示popover
             dropList: dropList,//无效原因下拉框内容
             visibleDrop: false,//是否显示无效原因下拉框
             filterClueStatus: clueFilterStore.getState().filterClueStatus,//线索选中的状态
@@ -625,12 +624,11 @@ class ClueCustomer extends React.Component {
                 clueImportTemplateFormShow: true
             });
         } else if(e.key === 'export') {
-            let currentVersionType = checkCurrentVersionType();
-            if(currentVersionType.trial) {
-                return false;
-            }
+            let currentVersionObj = checkVersionAndType();
+            // 如果企业试用或企业正式到期展示popover时，不需要展示导出的模态框
+            if (this.isShowExportPopover(currentVersionObj)) return false;
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-anlysis-handle-btns'), '点击下拉中的导出线索按钮');
-            this.showExportClueModal();
+            this.showExportClueModal(currentVersionObj);
         } else if(e.key === 'clue_pool') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-anlysis-handle-btns'), '点击下拉中的线索池按钮');
             this.showExtractCluePanel();
@@ -763,9 +761,10 @@ class ClueCustomer extends React.Component {
     };
 
     //个人试用升级为正式版
-    handleUpgradePersonalVersion = () => {
+    handleUpgradePersonalVersion = (tipTitle) => {
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
-            showDifferentVersion: this.triggerShowVersionInfo
+            showDifferentVersion: this.triggerShowVersionInfo,
+            leftTitle: tipTitle,
         });
     };
     //显示/隐藏版本信息面板
@@ -773,43 +772,40 @@ class ClueCustomer extends React.Component {
         paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {isShowModal, versionKind: COMPANY_VERSION_KIND});
     };
 
-
-    getExportClueTips = () => {
-        let currentVersion = checkCurrentVersion();
-        let currentVersionType = checkCurrentVersionType();
-        let tips = '';
-        if(currentVersion.personal && currentVersionType.trial) {//个人试用
-            tips = <a onClick={this.handleUpgradePersonalVersion} data-tracename='点击请升级正式版按钮'>{Intl.get('clue.customer.export.trial.user.tip', '请升级正式版')}</a>;
-        }else if(currentVersion.company && currentVersionType.trial){//企业试用
-            tips = Intl.get('payment.please.contact.our.sale.upgrade', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: COMPANY_PHONE});
-        }
-        return tips;
-    };
-
     handlePersonalTrialVisiable = (visible) => {
         this.setState({personalTrialVisiable: visible});
     };
-
+    // 点提取线索时，是否展示popover提示
+    isShowExportPopover(currentVersionObj){
+        // 是否展示提示信息
+        let isShowPopoverTip = false;
+        // 是否是过期的企业正式账号
+        let isCompanyFormalExpired = currentVersionObj.isCompanyFormal && isExpired();
+        // 企业试用或过期的企业正式账号，展示提示信息
+        if (currentVersionObj.isCompanyTrial || isCompanyFormalExpired){
+            isShowPopoverTip = true;
+        }
+        return isShowPopoverTip;
+    }
     //渲染导出线索的按钮
     renderExportClue = () => {
-        let currentVersionType = checkCurrentVersionType();
-        let tips = this.getExportClueTips();
+        let currentVersionObj = checkVersionAndType();
+        const exportBtnContent = (
+            <React.Fragment>
+                <i className="iconfont icon-export-clue"></i>
+                <span className="clue-container">{Intl.get('clue.export.clue.list','导出线索')}</span>
+            </React.Fragment>
+        );
         return(
             <div className="export-clue-customer-container pull-right">
-                {currentVersionType.trial ?
-                    (<Popover content={tips} trigger="click" visible={this.state.exportVisible} onVisibleChange={this.handleVisibleChange.bind(this, currentVersionType)} overlayClassName="explain-pop">
+                {this.isShowExportPopover(currentVersionObj) ?
+                    (<Popover content={getContactSalesPopoverTip(true)} trigger="click" overlayClassName="explain-pop" data-tracename='点击导出线索按钮'>
                         <Button className="btn-item">
-                            <i className="iconfont icon-export-clue"></i>
-                            <span className="clue-container">
-                                {Intl.get('clue.export.clue.list','导出线索')}
-                            </span>
+                            {exportBtnContent}
                         </Button>
                     </Popover>) :
-                    (<Button onClick={this.showExportClueModal} className="btn-item" data-tracename='点击导出线索按钮'>
-                        <i className="iconfont icon-export-clue"></i>
-                        <span className="clue-container">
-                            {Intl.get('clue.export.clue.list','导出线索')}
-                        </span>
+                    (<Button onClick={this.showExportClueModal.bind(this, currentVersionObj)} className="btn-item" data-tracename='点击导出线索按钮'>
+                        {exportBtnContent}
                     </Button>)}
             </div>
         );
@@ -823,11 +819,21 @@ class ClueCustomer extends React.Component {
         });
     };
     //点击导出线索按钮
-    showExportClueModal = () => {
+    showExportClueModal = (currentVersionObj) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.export-clue-customer-container'), '点击导出线索按钮');
-        this.setState({
-            isExportModalShow: true
-        });
+        //个人试用版本
+        if (currentVersionObj.isPersonalTrial) {
+            // 展示升级个人正式版的界面
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '个人试用点击导出线索，自动打开个人升级界面');
+            this.handleUpgradePersonalVersion(Intl.get('payment.upgrade.export.lead', '升级后可导出线索'));
+        } else if (currentVersionObj.isPersonalFormal && isExpired()) {//个人正式版过期时，展示续费界面
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '个人正式过期后点击导出线索，自动打开个人续费界面');
+            this.handleUpgradePersonalVersion(Intl.get('payment.renewal.export.lead', '续费后可导出线索'));
+        } else {//展示导出线索的模态框
+            this.setState({
+                isExportModalShow: true
+            });
+        }
     };
     hideExportModal = () => {
         this.setState({
@@ -3066,12 +3072,11 @@ class ClueCustomer extends React.Component {
                 showBatchDistribute: true
             });
         } else if(e.key === MORE_BTN_CONSTS.EXPORT) {
-            let currentVersionType = checkCurrentVersionType();
-            if(currentVersionType.trial) {
-                return false;
-            }
+            let currentVersionObj = checkVersionAndType();
+            // 如果企业试用或企业正式到期展示popover时，不需要展示导出的模态框
+            if (this.isShowExportPopover(currentVersionObj)) return false;
             Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击下拉中的导出线索按钮');
-            this.showExportClueModal();
+            this.showExportClueModal(currentVersionObj);
         } else if(e.key === MORE_BTN_CONSTS.RELEASE) {//批量释放
             this.setState({
                 showBatchRelease: true
@@ -3102,8 +3107,7 @@ class ClueCustomer extends React.Component {
     }
     //渲染响应式布局下的批量操作的选项
     batchTopBarDropList = (hasPrivileges) => {
-        let currentVersionType = checkCurrentVersionType();
-        let tips = this.getExportClueTips();
+        let currentVersionObj = checkVersionAndType();
         let exportText = Intl.get('clue.export.clue.list','导出线索');
         return (
             <Menu onClick={this.handleBatchMenuSelectClick.bind(this, null)}>
@@ -3113,8 +3117,8 @@ class ClueCustomer extends React.Component {
                     </Menu.Item> : null
                 }
                 <Menu.Item key={MORE_BTN_CONSTS.EXPORT}>
-                    {currentVersionType.trial ? (
-                        <Popover placement="left" content={tips} trigger="click" visible={this.state.exportVisible} onVisibleChange={this.handleVisibleChange.bind(this, currentVersionType)} overlayClassName="explain-pop">
+                    {this.isShowExportPopover(currentVersionObj) ? (
+                        <Popover placement="left" content={getContactSalesPopoverTip(true)} trigger="click" overlayClassName="explain-pop">
                             {exportText}
                         </Popover>
                     ) : exportText}
@@ -3266,24 +3270,8 @@ class ClueCustomer extends React.Component {
 
     };
 
-    handleVisibleChange = (currentVersionType, visible) => {
-        if(currentVersionType.trial && checkCurrentVersion().personal) {//是个人试用，直接展示购买界面
-            if(visible) {
-                this.setState({exportVisible: visible}, () => {
-                    Trace.traceEvent(ReactDOM.findDOMNode(this), '个人试用点击导出线索，自动打开个人升级界面');
-                    this.handleUpgradePersonalVersion();
-                });
-            }else {
-                this.setState({exportVisible: visible});
-            }
-        }else {
-            this.setState({exportVisible: visible});
-        }
-    };
-
     topBarDropList = (isWebMin) => {
-        let currentVersionType = checkCurrentVersionType();
-        let tips = this.getExportClueTips();
+        let currentVersionObj = checkVersionAndType();
         let exportText = Intl.get('clue.export.clue.list','导出线索');
         return (<Menu onClick={this.handleMenuSelectClick.bind(this)}>
             {isWebMin && addCluePrivilege() ?
@@ -3297,8 +3285,8 @@ class ClueCustomer extends React.Component {
                 </Menu.Item>
                 : null}
             <Menu.Item key="export" >
-                {currentVersionType.trial ? (
-                    <Popover placement="left" content={tips} trigger="click" visible={this.state.exportVisible} onVisibleChange={this.handleVisibleChange.bind(this, currentVersionType)} overlayClassName="explain-pop">
+                {this.isShowExportPopover(currentVersionObj) ? (
+                    <Popover placement="left" content={getContactSalesPopoverTip(true)} trigger="click" overlayClassName="explain-pop">
                         {exportText}
                     </Popover>
                 ) : exportText}
