@@ -753,7 +753,7 @@ var NavSidebar = createReactClass({
             }
             return (
                 <DialUpKeyboard
-                    placement="right"
+                    placement={userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ? 'right' : 'rightBottom'}
                     content={dialUpKeyBoardContent}
                     dialIcon={DialIcon}
                     inputNumber={this.state.ronglianNum}
