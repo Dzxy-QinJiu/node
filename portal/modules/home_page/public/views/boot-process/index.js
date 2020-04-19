@@ -4,7 +4,7 @@
  */
 import '../../css/boot-process.less';
 import DialSrc from '../../images/call-system.svg';
-import { Button, message, Popconfirm } from 'antd';
+import { Button, message, Popconfirm, Popover } from 'antd';
 import {Link} from 'react-router-dom';
 import GuideAjax from 'MOD_DIR/common/public/ajax/guide';
 import Spinner from 'CMP_DIR/spinner';
@@ -24,7 +24,7 @@ import MemberMangeAjax from 'MOD_DIR/member_manage/public/ajax';
 import MemberManageAction from 'MOD_DIR/member_manage/public/action';
 import MemberManageStore from 'MOD_DIR/member_manage/public/store';
 import MemberInfo from 'MOD_DIR/member_manage/public/view/member-info';
-import { hasCalloutPrivilege } from 'PUB_DIR/sources/utils/common-method-util';
+import { hasCalloutPrivilege, getContactSalesPopoverTip, isExpired } from 'PUB_DIR/sources/utils/common-method-util';
 import {storageUtil} from 'ant-utils';
 import {BOOT_PROCESS_KEYS} from 'PUB_DIR/sources/utils/consts';
 import Trace from 'LIB_DIR/trace';
@@ -649,6 +649,13 @@ class BootProcess extends React.Component {
         if(item.key === BOOT_PROCESS_KEYS_MAP.dial.key) {
             // 判断是否有拨打电话的权限
             if(this.state.isShowDialUpKeyboard) {
+                if(isExpired()){
+                    return (
+                        <Popover content={getContactSalesPopoverTip()} trigger="click" placement="bottomRight">
+                            <Button data-tracename="点击拨号按钮" className={btnCls}>{item.btnText}</Button>
+                        </Popover>
+                    );
+                }
                 return (
                     <DialUpKeyboard
                         placement="bottomRight"
