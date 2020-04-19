@@ -658,7 +658,7 @@ class BootProcess extends React.Component {
                 }
                 return (
                     <DialUpKeyboard
-                        placement="bottomRight"
+                        placement="bottom"
                         dialIcon={(
                             <Button data-tracename="点击拨号按钮" className={btnCls}>{item.btnText}</Button>
                         )}
