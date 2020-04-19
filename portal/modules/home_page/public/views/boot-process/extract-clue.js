@@ -1184,6 +1184,7 @@ class ExtractClues extends React.Component {
 
     getRecommendLists = (type) => {
         if(this.state.canClickMoreBatch) {
+            this.setState({selectedRecommendClues: [], disabledCheckedClues: []});
             this.props.getRecommendClueLists(null, type);
         }
     };
