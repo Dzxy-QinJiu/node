@@ -84,7 +84,7 @@ class ApplyDetailRemarks extends React.Component {
         }
         if (replyFormInfo.result === 'error') {
             return <Alert
-                message={replyFormInfo.errorMsg}
+                message={replyFormInfo.errorMsg || Intl.get('user.apply.reply.error','添加回复失败')}
                 type="error"
                 showIcon={true}
             />;
@@ -134,16 +134,18 @@ class ApplyDetailRemarks extends React.Component {
                     <div className="reply-list-container apply-info-content">
                         {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
                         {this.renderReplyList()}
-                        {/*已经通过和驳回还有已撤销的申请，不能再添加回复了*/}
-                        {this.getApplyFinishedStatus() ?
-                            null :
-                            <Input
-                                addonAfter={(
-                                    <a data-tracename="点击回复按钮" onClick={this.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
-                                value={this.state.keyword}
-                                onChange={this.handleInputChange}
-                                placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}
-                            />}
+                        {/*（待审批、已通过、已驳回、已撤销 ） 添加回复*/}
+                        <Input
+                            addonAfter={(
+                                <a data-tracename="点击回复按钮"
+                                    onClick={this.addReply}
+                                >
+                                    {Intl.get('user.apply.reply.button', '回复')}
+                                </a>)}
+                            value={this.state.keyword}
+                            onChange={this.handleInputChange}
+                            placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}
+                        />
                         {this.renderReplyFormResult()}
                     </div>
                 </div>
