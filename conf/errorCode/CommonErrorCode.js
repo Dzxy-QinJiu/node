@@ -199,7 +199,7 @@ function getConfigJson(req) {
         '90074': {'httpCode': 500, 'message': backendIntl.get('errorcode.174', '线索合并到客户失败')},
 
         '190001': {'httpCode': 500, 'message': backendIntl.get('errorcode.phone.busy', '座机繁忙，请稍后再试！')},//总机返回busy，分机忙
-
+        '14207': {'httpCode': 500, 'message': backendIntl.get('errorcode.deal.stage.error', '订单阶段错误')},
         /*************************** 角色权限 *****************************/
         '15101': {'httpCode': 500, 'message': backendIntl.get('errorcode.84', '添加角色失败')},
         '15102': {'httpCode': 500, 'message': backendIntl.get('errorcode.85', '修改角色失败')},
@@ -222,6 +222,19 @@ function getConfigJson(req) {
         '16103': {'httpCode': 500, 'message': backendIntl.get('errorcode.97', '添加销售阶段失败')},
         '16104': {'httpCode': 500, 'message': backendIntl.get('errorcode.98', '添加默认销售阶段失败')},
         '16105': {'httpCode': 500, 'message': backendIntl.get('errorcode.99', '修改销售阶段失败')},
+        '16106': {'httpCode': 500, 'message': backendIntl.get('errorcode.stage.count.limit.tip', '阶段个数超限')},
+        '16107': {'httpCode': 500, 'message': backendIntl.get('errorcode.stage.name.limit.tip', '阶段名称字数超限')},
+        '16108': {'httpCode': 500, 'message': backendIntl.get('errorcode.stage.description.limit.tip', '阶段描述字数超限')},
+        '16109': {'httpCode': 500, 'message': backendIntl.get('errorcode.industry.unexist', '行业不存在')},
+        '16110': {'httpCode': 500, 'message': backendIntl.get('errorcode.administrative.level.unexist', '行政级别不存在')},
+        '16111': {'httpCode': 500, 'message': backendIntl.get('errorcode.province.name.error', '省份名称错误')},
+        '16112': {'httpCode': 500, 'message': backendIntl.get('errorcode.city.name.error', '城市名称错误')},
+        '16113': {'httpCode': 500, 'message': backendIntl.get('errorcode.county.name.error', '区县名称错误')},
+        '16114': {'httpCode': 500, 'message': backendIntl.get('errorcode.address.error', '地址格式错误')},
+        '16115': {'httpCode': 500, 'message': backendIntl.get('errorcode.province.code.error', '省份遍码错误')},
+        '16116': {'httpCode': 500, 'message': backendIntl.get('errorcode.city.code.error', '城市编码错误')},
+        '16117': {'httpCode': 500, 'message': backendIntl.get('errorcode.county.code.error', '区县编码错误')},
+
         /**团队**/
         '16201': {'httpCode': 500, 'message': backendIntl.get('errorcode.100', '添加销售团队失败')},
         '16202': {'httpCode': 500, 'message': backendIntl.get('errorcode.101', '修改销售团队失败')},

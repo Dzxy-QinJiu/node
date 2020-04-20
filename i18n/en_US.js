@@ -2666,6 +2666,20 @@ var en_US = {
     'errorcode.176': 'If the operation fails, the customer may be rolled out, released, or deleted',//操作失败，客户可能被转出、释放或删除
     'errorcode.send.message.limit': 'Cannot send again in one minute',//一分钟内不能重复发送
     'errorcode.phone.unbind.account.tip': 'This mobile number is not bound to an account, please change another mobile number and try again',//此手机号未绑定账号，请换其他手机号再试
+    'errorcode.deal.stage.error': 'deal stage error',//订单阶段错误
+    'errorcode.stage.count.limit.tip': 'Number of stages out of limit',//阶段个数超限
+    'errorcode.stage.name.limit.tip': 'Stage name words out of limit',//阶段名称字数超限
+    'errorcode.stage.description.limit.tip': 'Stage description words out of limit',//阶段描述字数超限
+    'errorcode.industry.unexist': 'Industry does not exist',//行业不存在
+    'errorcode.administrative.level.unexist': 'Administrative level does not exist',//行政级别不存在
+    'errorcode.province.name.error': 'Wrong province name',//省份名称错误
+    'errorcode.province.code.error': 'Wrong province code',//省份遍码错误
+    'errorcode.city.name.error': 'Wrong city name',//城市名称错误
+    'errorcode.city.code.error': 'Wrong city code',//城市编码错误
+    'errorcode.county.name.error': 'Wrong county name',//区县名称错误
+    'errorcode.county.code.error': 'Wrong county code',//区县编码错误
+    'errorcode.address.error': 'wrong address format',//地址格式错误
+    'errorcode.member.unexist': 'The member does not exist',//该成员不存在
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
