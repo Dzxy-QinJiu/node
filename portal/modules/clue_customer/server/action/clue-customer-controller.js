@@ -492,6 +492,8 @@ exports.getRecommendClueLists = function(req, res) {
                     //简介(会有高亮内容<em>###</em>)
                     companyProfile: _.get(item,'companyProfile', ''),
                     telephones: _.get(item,'telephones',[]),
+                    //企业状态
+                    openStatus: _.get(item,'openStatus', ''),
                     //contact: {phones: 1, qq: 1, weChat: 0, email: 2}
                     contact: {
                         phones: _.get(item, 'telephones.length', 0),
