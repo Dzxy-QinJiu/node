@@ -961,6 +961,7 @@ class ExtractClues extends React.Component {
                                         <div className="extract-clue-text__name">
                                             {item.hasExtractedByOther ? <i className='iconfont icon-warning-tip'/> : null}
                                             <span dangerouslySetInnerHTML={{__html: this.handleHighLightStyle(item.name).content}}/>
+                                            {item.openStatus ? <span className="clue-company-open-status">{item.openStatus.split('（')[0]}</span> : null}
                                             {labels.length ? (
                                                 <div className="clue-labels">
                                                     {_.map(labels, (tag, index) => (
