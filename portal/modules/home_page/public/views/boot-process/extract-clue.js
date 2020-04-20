@@ -1106,6 +1106,7 @@ class ExtractClues extends React.Component {
         }
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
             showDifferentVersion: this.triggerShowVersionInfo,
+            isShowModal: false,
             leftTitle: tipTitle,
         });
     }
