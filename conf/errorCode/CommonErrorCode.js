@@ -188,6 +188,7 @@ function getConfigJson(req) {
         '90010': {'httpCode': 500, 'message': backendIntl.get('errorcode.150', '修改线索信息失败')},
         '90031': {'httpCode': 500, 'message': backendIntl.get('errorcode.152', '线索重复')},
         '90032': {'httpCode': 500, 'message': backendIntl.get('errorcode.175', '自己的线索不能分配给自己')},
+        '90041': {'httpCode': 500, 'message': backendIntl.get('errorcode.member.unexist', '该成员不存在')},
         '90061': {'httpCode': 500, 'message': backendIntl.get('errorcode.162', '已达到一天的提取上限')},
         '90064': {'httpCode': 500, 'message': backendIntl.get('errorcode.165', '已达到本月的提取上限')},
         '90065': {'httpCode': 500, 'message': backendIntl.get('errorcode.168', '符合条件的线索已被提取完成，请修改条件再查看')},
@@ -199,7 +200,7 @@ function getConfigJson(req) {
         '90074': {'httpCode': 500, 'message': backendIntl.get('errorcode.174', '线索合并到客户失败')},
 
         '190001': {'httpCode': 500, 'message': backendIntl.get('errorcode.phone.busy', '座机繁忙，请稍后再试！')},//总机返回busy，分机忙
-
+        '14207': {'httpCode': 500, 'message': backendIntl.get('errorcode.deal.stage.error', '订单阶段错误')},
         /*************************** 角色权限 *****************************/
         '15101': {'httpCode': 500, 'message': backendIntl.get('errorcode.84', '添加角色失败')},
         '15102': {'httpCode': 500, 'message': backendIntl.get('errorcode.85', '修改角色失败')},
@@ -222,6 +223,19 @@ function getConfigJson(req) {
         '16103': {'httpCode': 500, 'message': backendIntl.get('errorcode.97', '添加销售阶段失败')},
         '16104': {'httpCode': 500, 'message': backendIntl.get('errorcode.98', '添加默认销售阶段失败')},
         '16105': {'httpCode': 500, 'message': backendIntl.get('errorcode.99', '修改销售阶段失败')},
+        '16106': {'httpCode': 500, 'message': backendIntl.get('errorcode.stage.count.limit.tip', '阶段个数超限')},
+        '16107': {'httpCode': 500, 'message': backendIntl.get('errorcode.stage.name.limit.tip', '阶段名称字数超限')},
+        '16108': {'httpCode': 500, 'message': backendIntl.get('errorcode.stage.description.limit.tip', '阶段描述字数超限')},
+        '16109': {'httpCode': 500, 'message': backendIntl.get('errorcode.industry.unexist', '行业不存在')},
+        '16110': {'httpCode': 500, 'message': backendIntl.get('errorcode.administrative.level.unexist', '行政级别不存在')},
+        '16111': {'httpCode': 500, 'message': backendIntl.get('errorcode.province.name.error', '省份名称错误')},
+        '16112': {'httpCode': 500, 'message': backendIntl.get('errorcode.city.name.error', '城市名称错误')},
+        '16113': {'httpCode': 500, 'message': backendIntl.get('errorcode.county.name.error', '区县名称错误')},
+        '16114': {'httpCode': 500, 'message': backendIntl.get('errorcode.address.error', '地址格式错误')},
+        '16115': {'httpCode': 500, 'message': backendIntl.get('errorcode.province.code.error', '省份遍码错误')},
+        '16116': {'httpCode': 500, 'message': backendIntl.get('errorcode.city.code.error', '城市编码错误')},
+        '16117': {'httpCode': 500, 'message': backendIntl.get('errorcode.county.code.error', '区县编码错误')},
+
         /**团队**/
         '16201': {'httpCode': 500, 'message': backendIntl.get('errorcode.100', '添加销售团队失败')},
         '16202': {'httpCode': 500, 'message': backendIntl.get('errorcode.101', '修改销售团队失败')},
@@ -406,6 +420,7 @@ function getConfigJson(req) {
         '20008': {'httpCode': 500, 'message': backendIntl.get('errorcode.organization.expire', '您的账号已到期')},
         //用户不存在，业务端的登录接口报的错误
         '20009': {'httpCode': 500, 'message': backendIntl.get('errorcode.39', '用户名或密码错误')},
+        '20010': {'httpCode': 500, 'message': backendIntl.get('errorcode.orgnization.unexist', '组织不存在')},
         
         /*扫码登录*/
         '11058': {'httpCode': 500, 'message': ''},//请用APP扫描二维码的错误码，界面上不需要提示此错误
