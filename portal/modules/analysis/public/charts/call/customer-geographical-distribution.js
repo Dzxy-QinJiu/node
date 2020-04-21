@@ -7,7 +7,7 @@ export function getCallCustomerGeographicalDistributionChart() {
         title: '客户的地域分布',
         chartType: 'map',
         height: 600,
-        url: '/rest/analysis/callrecord/v1/callrecord/statistics/distribution/region',
+        url: '/rest/analysis/callrecord/v1/callrecord/statistics/bakup/data/distribution/region',
         conditions: [{
             name: 'filter_phone',
             value: false 
