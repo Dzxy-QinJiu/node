@@ -188,6 +188,7 @@ function getConfigJson(req) {
         '90010': {'httpCode': 500, 'message': backendIntl.get('errorcode.150', '修改线索信息失败')},
         '90031': {'httpCode': 500, 'message': backendIntl.get('errorcode.152', '线索重复')},
         '90032': {'httpCode': 500, 'message': backendIntl.get('errorcode.175', '自己的线索不能分配给自己')},
+        '90041': {'httpCode': 500, 'message': backendIntl.get('errorcode.member.unexist', '该成员不存在')},
         '90061': {'httpCode': 500, 'message': backendIntl.get('errorcode.162', '已达到一天的提取上限')},
         '90064': {'httpCode': 500, 'message': backendIntl.get('errorcode.165', '已达到本月的提取上限')},
         '90065': {'httpCode': 500, 'message': backendIntl.get('errorcode.168', '符合条件的线索已被提取完成，请修改条件再查看')},
