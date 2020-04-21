@@ -115,6 +115,10 @@ class CallRecordAnalyis extends React.Component {
                 value: moment().endOf(DEFAULT_TIME_RANGE).valueOf(),
             },
             {
+                name: 'interval',
+                value: DEFAULT_TIME_RANGE,
+            },
+            {
                 name: 'team_ids',
                 value: '',
             },
@@ -138,6 +142,8 @@ class CallRecordAnalyis extends React.Component {
                     name: 'start_time',
                 }, {
                     name: 'end_time',
+                }, {
+                    name: 'interval',
                 }],
             },
             {
@@ -204,9 +210,13 @@ class CallRecordAnalyis extends React.Component {
     }
 
     //时间的设置
-    onSelectDate = (startTime, endTime, timeType) => {
+    onSelectDate = (startTime, endTime, interval) => {
         this.setState({ startTime }, () => {
-            dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
+            //根据和后端的约定，对自定义类型和全部时间类型做一下转换
+            if (interval === 'custom') interval = 'day';
+            if (interval === 'all') interval = 'year';
+
+            dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime, interval);
         });
     };
 
