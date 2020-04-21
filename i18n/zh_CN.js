@@ -2721,6 +2721,7 @@ var zh_CN = {
     'errorcode.county.code.error': '区县编码错误',
     'errorcode.address.error': '地址格式错误',
     'errorcode.member.unexist': '该成员不存在',
+    'errorcode.orgnization.unexist': '组织不存在',
 
     //遗漏部分
     'user.input.phone': '请输入手机号',

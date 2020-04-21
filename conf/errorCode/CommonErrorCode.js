@@ -420,6 +420,7 @@ function getConfigJson(req) {
         '20008': {'httpCode': 500, 'message': backendIntl.get('errorcode.organization.expire', '您的账号已到期')},
         //用户不存在，业务端的登录接口报的错误
         '20009': {'httpCode': 500, 'message': backendIntl.get('errorcode.39', '用户名或密码错误')},
+        '20010': {'httpCode': 500, 'message': backendIntl.get('errorcode.orgnization.unexist', '组织不存在')},
         
         /*扫码登录*/
         '11058': {'httpCode': 500, 'message': ''},//请用APP扫描二维码的错误码，界面上不需要提示此错误

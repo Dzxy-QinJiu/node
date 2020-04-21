@@ -2680,6 +2680,7 @@ var en_US = {
     'errorcode.county.code.error': 'Wrong county code',//区县编码错误
     'errorcode.address.error': 'wrong address format',//地址格式错误
     'errorcode.member.unexist': 'The member does not exist',//该成员不存在
+    'errorcode.orgnization.unexist': 'Organization does not exist',//组织不存在
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
