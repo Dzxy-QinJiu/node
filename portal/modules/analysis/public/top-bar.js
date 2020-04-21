@@ -259,6 +259,9 @@ class TopBar extends React.Component {
             }, {
                 name: Intl.get('common.time.unit.year', '年'),
                 value: 'year'
+            }, {
+                name: Intl.get('user.time.custom', '自定义'),
+                value: 'custom'
             }]
         };
 
