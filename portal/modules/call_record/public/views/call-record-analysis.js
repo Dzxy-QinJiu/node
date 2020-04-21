@@ -362,7 +362,6 @@ class CallRecordAnalyis extends React.Component {
                                     range={DEFAULT_TIME_RANGE}
                                     selectedTimeFormat="int"
                                     onSelect={this.onSelectDate}>
-                                    <AntcDatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</AntcDatePicker.Option>
                                     <AntcDatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</AntcDatePicker.Option>
                                     <AntcDatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</AntcDatePicker.Option>
                                     <AntcDatePicker.Option
@@ -370,7 +369,6 @@ class CallRecordAnalyis extends React.Component {
                                     <AntcDatePicker.Option
                                         value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</AntcDatePicker.Option>
                                     <AntcDatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</AntcDatePicker.Option>
-                                    <AntcDatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</AntcDatePicker.Option>
                                 </AntcDatePicker>
                             </span>
                             {/**
