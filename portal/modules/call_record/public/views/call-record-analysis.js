@@ -360,6 +360,10 @@ class CallRecordAnalyis extends React.Component {
                                 <AntcDatePicker
                                     disableDateAfterToday={true}
                                     range={DEFAULT_TIME_RANGE}
+                                    customTimeLimit={{
+                                        dateSelectRange: moment().diff(moment().subtract(3, 'months')),
+                                        tipMsg: Intl.get('analysis.please.choose.within.3.months', '请选择近3个月以内的时间')
+                                    }}
                                     selectedTimeFormat="int"
                                     onSelect={this.onSelectDate}>
                                     <AntcDatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</AntcDatePicker.Option>
@@ -369,6 +373,7 @@ class CallRecordAnalyis extends React.Component {
                                     <AntcDatePicker.Option
                                         value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</AntcDatePicker.Option>
                                     <AntcDatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</AntcDatePicker.Option>
+                                    <AntcDatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</AntcDatePicker.Option>
                                 </AntcDatePicker>
                             </span>
                             {/**
