@@ -322,6 +322,10 @@ class TopBar extends React.Component {
                     className={datePickerOption.className}
                     disableDateAfterToday={true}
                     range={datePickerOption.range}
+                    customTimeLimit={{
+                        dateSelectRange: moment().diff(moment().subtract(3, 'months')),
+                        tipMsg: '请选择近3个月以内的时间'
+                    }}
                     start_time={datePickerOption.startTime}
                     end_time={datePickerOption.endTime}
                     selectedTimeFormat='int'
