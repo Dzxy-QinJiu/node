@@ -26,6 +26,7 @@ const session = storageUtil.session;
 const { setWebsiteConfigModuleRecord, getWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
 import WinningClue from '../winning-clue';
 import Trace from 'LIB_DIR/trace';
+import newComment from '../../static/images/new-comment.svg';
 
 //需要加引导的模块
 const schedule_menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
@@ -227,10 +228,6 @@ var NavSidebar = createReactClass({
         clickUpgradeNoiceEmitter.on(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, this.toggleUpgradeNotice);
         // 点击通知面板上tabs类型的触发
         notificationEmitter.on(notificationEmitter.CLICK_NOTICE_TABS_TYPE, this.clickSystemPanelTabsType);
-        //获取我的审批的未读回复列表
-        this.getMyApplyUnreadReply();
-        //获取团队审批的未读回复列表
-        this.getTeamApplyUnreadReply();
         // //响应式设计 logo和菜单占据的实际高度
         // responsiveLayout.logoAndMenusHeight = $('.logo-and-menus').outerHeight(true);
         // //计算 拨号按钮、通知、设置、个人信息 占据的实际高度
@@ -262,22 +259,6 @@ var NavSidebar = createReactClass({
         //电话系统初始化完成后，判断是否有打电话的权限（是否配坐席号，配置了才可以打电话）
         if (hasCalloutPrivilege) {
             this.setState({isShowDialUpKeyboard: true});
-        }
-    },
-    getTeamApplyUnreadReply: function() {
-        const TEAM_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.TEAM_UNREAD_REPLY;
-        //获取sessionStore中已存的未读回复列表
-        let applyUnreadReplyList = session.get(TEAM_UNREAD_REPLY);
-        if (applyUnreadReplyList) {
-            this.refreshTeamApplyHasUnreadReply(JSON.parse(applyUnreadReplyList));
-        }
-    },
-    getMyApplyUnreadReply: function() {
-        const MY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.MY_UNREAD_REPLY;
-        //获取sessionStore中已存的未读回复列表
-        let applyUnreadReplyList = session.get(MY_UNREAD_REPLY);
-        if (applyUnreadReplyList) {
-            this.refreshMyApplyHasUnreadReply(JSON.parse(applyUnreadReplyList));
         }
     },
 
@@ -653,21 +634,24 @@ var NavSidebar = createReactClass({
     },
     
     //展示未读回复的图标提示
-    renderUnreadReplyTip(category) {
+    renderUnreadReplyTip() {
         //是申请审批，有未读回复数并且，待审批数为0
         //所有待审批总数
         var allUnhandleApplyTotal = 0;
         if (_.has(Oplate, 'unread')) {
             allUnhandleApplyTotal = getAllUnhandleApplyCount();
         }
-        let unreadReplyTipShowFlag = category === 'apply' &&//申请审批路径
+        let unreadReplyTipShowFlag =
             (this.state.hasMyApplyUnreadReply || this.state.hasTeamApplyUnreadReply) &&//我的审批或者团队类型审批的有未读回复
             allUnhandleApplyTotal === 0;//待我审批数为0
 
         if (unreadReplyTipShowFlag) {
             return (
-                <span className="iconfont icon-apply-message-tip"
-                    title={Intl.get('user.apply.unread.reply', '有未读回复')}/>
+                <img
+                    src={newComment}
+                    className="new-message-tip"
+                    title={Intl.get('user.apply.unread.reply', '有未读回复')}
+                />
             );
         } else {
             return null;
@@ -718,7 +702,9 @@ var NavSidebar = createReactClass({
                     activeClassName='active'
                     className={extraClass}
                 >
-                    {this.renderUnreadReplyTip(category)}
+                    {
+                        category === 'apply' ? (this.renderUnreadReplyTip()) : null
+                    }
                     {/*{this.state.isReduceNavIcon ? (<span> {menu.shortName} </span>) : null}*/}
                 </NavLink>
             );
