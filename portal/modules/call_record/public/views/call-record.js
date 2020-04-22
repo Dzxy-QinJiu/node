@@ -899,8 +899,9 @@ class CallRecord extends React.Component {
     // 获取组织电话系统配置
     getCallSystemConfig() {
         getCallSystemConfig().then(config => {
-            let isShowEffectiveTimeAndCount = _.get(config,'filter_114',false) || _.get(config,'filter_customerservice_number',false);
-            this.setState({ isShowEffectiveTimeAndCount });
+            const isFilter114 = _.get(config, 'filter_114');
+            let isShowEffectiveTimeAndCount = isFilter114 || _.get(config,'filter_customerservice_number',false);
+            this.setState({ isShowEffectiveTimeAndCount, isFilter114 });
         });
     }
 
@@ -980,6 +981,7 @@ class CallRecord extends React.Component {
                     >
                         <CallRecordAnalyis
                             closeCallAnalysisPanel={this.closeCallAnalysisPanel}
+                            isFilter114={this.state.isFilter114}
                             isShowEffectiveTimeAndCount={this.state.isShowEffectiveTimeAndCount}
                         />
                     </RightPanel>
