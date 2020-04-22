@@ -57,6 +57,7 @@ import {
     ADD_SELECT_TYPE,
     SIMILAR_CLUE,
     SIMILAR_CUSTOMER,
+    SIMILAR_IP,
     isCommonSalesOrPersonnalVersion,
     isSalesOrPersonnalVersion,
     freedCluePrivilege,
@@ -956,13 +957,15 @@ class ClueCustomer extends React.Component {
             if (_.isArray(filterClueProvince) && filterClueProvince.length){
                 typeFilter.province = filterClueProvince.join(',');
             }
-            //相似客户和线索
+            //相似客户和线索和IP
             let filterLabels = filterStoreData.filterLabels;
             if(!_.isEmpty(filterLabels)){
                 if(_.isEqual(filterLabels, SIMILAR_CLUE)) {
                     typeFilter.lead_similarity = Intl.get( 'clue.has.similar.clue','有相似线索');
                 }else if(_.isEqual(filterLabels, SIMILAR_CUSTOMER)) {
                     typeFilter.customer_similarity = Intl.get( 'clue.has.similar.customer','有相似客户');
+                }else if(_.isEqual(filterLabels, SIMILAR_IP)) {
+                    typeFilter.repeat_ip = Intl.get( 'clue.has.similar.ip','有相同IP线索');
                 }
             }
             if(filterStoreData.appliedTryLead){ //筛选申请试用企业版的线索
@@ -1918,10 +1921,14 @@ class ClueCustomer extends React.Component {
                     let hasSimilarClue = _.get(salesClueItem, 'lead_similarity');
                     //有相似客户
                     let hasSimilarClient = _.get(salesClueItem, 'customer_similarity');
+                    //有相同IP线索
+                    let hasSimilarIP = _.get(salesClueItem, 'repeat_ip');
                     //是否申请试用
                     let hasApplyTry = _.get(salesClueItem, 'version_upgrade_label') === 'true';
                     let availability = _.get(salesClueItem, 'availability');
                     let status = _.get(salesClueItem, 'status');
+                    //判断是否为无效ip
+                    let isInvalidIP = _.isEqual(availability, '1');
                     //判断是否为无效客户
                     let isInvalidClients = _.isEqual(availability, '1');
                     // 判断是否为已转化客户
@@ -1952,6 +1959,10 @@ class ClueCustomer extends React.Component {
                                             <span className="clue-label intent-tag-style">
                                                 {Intl.get('clue.has.similar.customer', '有相似客户')}
                                             </span> : null}
+                                        {!isInvalidIP && hasSimilarIP ?
+                                            <span className="clue-label intent-tag-style">
+                                                {Intl.get('clue.has.similar.ip', '有相同IP线索')}
+                                            </span> : null}    
                                         {hasApplyTry ?
                                             <span className='clue-label intent-tag-style'>
                                                 {Intl.get('login.apply.trial','申请试用')}

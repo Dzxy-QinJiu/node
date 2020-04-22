@@ -3267,6 +3267,7 @@ var zh_CN = {
     'common.trial.qualified.customer.statistics': '试用合格客户数统计',
     'clue.has.similar.customer': '有相似客户',
     'clue.has.similar.clue': '有相似线索',
+    'clue.has.similar.ip': '有相同IP线索',
     'clue.export.clue.list': '导出线索',
     'clue.extract.clue': '提取线索',
     'clue.pool': '线索池',

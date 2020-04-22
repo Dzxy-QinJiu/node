@@ -35,6 +35,7 @@ ClueCustomerStore.prototype.resetState = function() {
     this.curClue = {}; //当前展示的线索详情
     this.submitTraceErrMsg = '';//提交跟进内容报错的情况
     this.submitTraceLoading = false;//正在提交跟进内容
+    this.lead_similarity = '';//是否有相似线索
     this.sorter = {
         field: 'source_time',
         order: 'descend'
@@ -275,6 +276,7 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
         this.queryObj = clueData.queryObj;
     }
     this.handleClueData(clueData);
+    console.log('store的clueData',clueData);
 };
 //申请试用的数据
 ClueCustomerStore.prototype.getApplyTryData = function(result) {

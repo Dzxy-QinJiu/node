@@ -213,12 +213,15 @@ exports.updateClueItemDetail = function(data) {
 };
 //获取全文搜索的线索
 exports.getClueFulltext = function(queryObj) {
+    console.log('queryobj',queryObj);
     var pageSize = queryObj.pageSize;
     delete queryObj.pageSize;
     var pageNum = queryObj.pageNum;
     delete queryObj.pageNum;
     var sorter = queryObj.sorter ? queryObj.sorter : {field: 'source_time', order: 'descend'};
     delete queryObj.sorter;
+    var lead = queryObj.lead_similarity;
+    delete queryObj.lead_similarity;
     var type = 'user';
     if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
         type = 'manager';
@@ -231,6 +234,7 @@ exports.getClueFulltext = function(queryObj) {
         type: 'post',
         data: queryObj,
         success: function(list) {
+            console.log('ajax的list',list);
             Deferred.resolve(list);
         },
         error: function(errorMsg) {
