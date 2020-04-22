@@ -3249,6 +3249,8 @@ var zh_CN = {
     'analysis.the.other.work': '其他工作',
     'analysis.scope.of.application': '适用范围',
     'analysis.statistical.cycle': '统计周期',
+    'analysis.please.choose.within.3.months': '请选择近3个月以内的时间',
+    'analysis.custom.period.cannot.exceed.1.year': '自定义时间段不能超过1年',
     'common.font.the': '第',
     'common.weeks': '周',
     'clue.add.contacts.tip': '添加联系方式',
