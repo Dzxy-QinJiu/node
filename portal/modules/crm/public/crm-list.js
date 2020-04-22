@@ -57,6 +57,9 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import crmPrivilegeConst from './privilege-const';
+
+const RELEASE_TYPE = crmUtil.RELEASE_TYPE;
+
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -96,10 +99,6 @@ const DEFAULT_RANGE_PARAM = {
     name: 'start_time'
 };
 
-const RELEASE_TYPE = {
-    JOIN: 'join',//联合跟进人
-    OWNER: 'owner',//负责人
-};
 //查看是否可以继续添加客户
 let member_id = userData.getUserData().user_id;
 class Crm extends React.Component {
@@ -200,8 +199,10 @@ class Crm extends React.Component {
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_CHANGE_LEVEL, this.batchChangeLevel);
         //批量更新地域
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_CHANGE_TERRITORY, this.batchChangeTerritory);
-        //批量释放客户
+        //批量释放客户负责人
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_RELEASE_POOL, this.afterBatchReleseCustomer);
+        //批量释放客户联合跟进人
+        batchPushEmitter.on(batchPushEmitter.CRM_BATCH_RELEASE_POOL_JOIN_USER, this.afterBatchReleseCustomer);
         CrmStore.listen(this.onChange);
         OrderAction.getSysStageList();
         const query = queryString.parse(this.props.location.search);
@@ -378,6 +379,8 @@ class Crm extends React.Component {
         batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_CHANGE_INDUSTRY, this.batchChangeIndustry);
         batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_CHANGE_LEVEL, this.batchChangeLevel);
         batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_CHANGE_TERRITORY, this.batchChangeTerritory);
+        batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_RELEASE_POOL, this.afterBatchReleseCustomer);
+        batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_RELEASE_POOL_JOIN_USER, this.afterBatchReleseCustomer);
         $(window).off('resize', this.changeTableHeight);
         //将store中的值设置初始值
         CrmAction.setInitialState();
@@ -1130,6 +1133,7 @@ class Crm extends React.Component {
                 if(this.state.releaseReason) {
                     reqData.reason = this.state.releaseReason;
                 }
+                reqData.type = this.state.releaseType;
                 crmAjax.releaseCustomer(reqData).then(result => {
                     this.setState({isReleasingCustomer: false});
                     //从选中客户列表里移除已释放项
@@ -1171,11 +1175,13 @@ class Crm extends React.Component {
             //后端检测到传递的id后，将会对这些id的客户进行迁移
             condition.query_param.id = _.map(this.state.selectedCustomer, 'id');
         }
-        if(this.state.releaseType) {//添加释放的类型（负责人/联合跟进人）
-            condition.query_param.type = this.state.releaseType;
+
+        let type = 'release_pool';
+        if(this.state.releaseType === RELEASE_TYPE.JOIN) {//添加释放的类型（负责人/联合跟进人）
+            type = 'release_pool_join_user';
         }
         this.setState({isReleasingCustomer: true});
-        batchAjax.doBatch('release_pool', condition).then((taskId) => {
+        batchAjax.doBatch(type, condition).then((taskId) => {
             this.setState({isReleasingCustomer: false});
             if(this['releaseRef']) {
                 //隐藏批量释放面板
@@ -2056,10 +2062,13 @@ batchTopBarDropList = (isMinWeb) => {
                     <Icon type="exclamation-circle"/>
                     <span>{releaseTip}</span>
                 </div>
-                <Radio.Group onChange={this.onTypeChange} value={this.state.releaseType}>
-                    <Radio value={RELEASE_TYPE.OWNER}>{Intl.get('crm.6', '负责人')}</Radio>
-                    <Radio value={RELEASE_TYPE.JOIN}>{Intl.get('crm.second.sales', '联合跟进人')}</Radio>
-                </Radio.Group>
+                {/*个人版不展示选择释放类型*/}
+                {checkVersionAndType().personal ? null : (
+                    <Radio.Group onChange={this.onTypeChange} value={this.state.releaseType}>
+                        <Radio value={RELEASE_TYPE.OWNER}>{Intl.get('crm.6', '负责人')}</Radio>
+                        <Radio value={RELEASE_TYPE.JOIN}>{Intl.get('crm.second.sales', '联合跟进人')}</Radio>
+                    </Radio.Group>
+                )}
                 <Input.TextArea
                     placeholder={Intl.get('crm.customer.release.reason', '请填写释放理由')}
                     value={this.state.releaseReason}

@@ -6,7 +6,7 @@ var CrmOverviewActions = require('../../action/basic-overview-actions');
 var SalesTeamStore = require('../../../../sales_team/public/store/sales-team-store');
 var PrivilegeChecker = require('../../../../../components/privilege/checker').PrivilegeChecker;
 let hasPrivilege = require('../../../../../components/privilege/checker').hasPrivilege;
-import { Tag, Dropdown, Menu, message, Popconfirm, Icon, Input } from 'antd';
+import {Tag, Dropdown, Menu, message, Popconfirm, Icon, Input, Radio} from 'antd';
 var history = require('../../../../../public/sources/history');
 let NameTextareaField = require('./name-textarea-field');
 let CrmAction = require('../../action/crm-actions');
@@ -26,6 +26,7 @@ import crmPrivilegeConst from '../../privilege-const';
 import {checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 
+const RELEASE_TYPE = crmUtil.RELEASE_TYPE;
 let customerLabelList = [];//存储客户阶段的列表
 const CRM_VIEW_TYPES = crmUtil.CRM_VIEW_TYPES;
 const VIEW_MAPS = [
@@ -50,6 +51,7 @@ class BasicData extends React.Component {
         isReleasingCustomer: false,//正在释放客户
         releaseReason: '',//释放理由
         unFillReasonTip: '',//没有填写释放理由
+        releaseType: RELEASE_TYPE.OWNER,//释放客户时，释放的类型（负责人、联合跟进人）
     };
 
     onChange = () => {
@@ -268,6 +270,7 @@ class BasicData extends React.Component {
                 if(this.state.releaseReason) {
                     reqData.reason = this.state.releaseReason;
                 }
+                reqData.type = this.state.releaseType;
                 CrmBasicAjax.releaseCustomer(reqData).then(result => {
                     this.setState({isReleasingCustomer: false});
                     //释放完客户后，需要将首页对应的工作设为已完成
@@ -487,11 +490,18 @@ class BasicData extends React.Component {
         this.setState({
             releaseReason: '',
             unFillReasonTip: '',
+            releaseType: RELEASE_TYPE.OWNER
         });
     };
 
     onReasonChange = (e) => {
         this.setState({releaseReason: _.get(e, 'target.value', '')});
+    };
+
+    onTypeChange = (e) => {
+        this.setState({
+            releaseType: e.target.value,
+        });
     };
 
     renderReleaseCustomerBlock = (releaseTip) => {
@@ -501,6 +511,13 @@ class BasicData extends React.Component {
                     <Icon type="exclamation-circle"/>
                     <span>{releaseTip}</span>
                 </div>
+                {/*个人版不展示选择释放类型*/}
+                {checkVersionAndType().personal ? null : (
+                    <Radio.Group onChange={this.onTypeChange} value={this.state.releaseType}>
+                        <Radio value={RELEASE_TYPE.OWNER}>{Intl.get('crm.6', '负责人')}</Radio>
+                        <Radio value={RELEASE_TYPE.JOIN}>{Intl.get('crm.second.sales', '联合跟进人')}</Radio>
+                    </Radio.Group>
+                )}
                 <Input.TextArea
                     placeholder={Intl.get('crm.customer.release.reason', '请填写释放理由')}
                     value={this.state.releaseReason}
