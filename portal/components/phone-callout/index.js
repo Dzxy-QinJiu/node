@@ -82,7 +82,7 @@ class PhoneCallout extends React.Component {
         let versionAndType = checkVersionAndType();
         if(versionAndType.isPersonalFormal) {//个人正式
             contentTip = Intl.get('payment.please.contact.our.sale.upgrade','请联系我们的销售人员进行升级，联系方式：{contact}',{contact: COMPANY_PHONE});
-        } else {//企业试用\正式过期, 联系销售升级\续费的提示
+        } else if(isExpired()) {//企业试用\正式过期, 联系销售升级\续费的提示
             contentTip = getContactSalesPopoverTip();
         }
         var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
