@@ -1927,9 +1927,7 @@ class ClueCustomer extends React.Component {
                     let hasApplyTry = _.get(salesClueItem, 'version_upgrade_label') === 'true';
                     let availability = _.get(salesClueItem, 'availability');
                     let status = _.get(salesClueItem, 'status');
-                    //判断是否为无效ip
-                    let isInvalidIP = _.isEqual(availability, '1');
-                    //判断是否为无效客户
+                    //判断是否为无效客户 判断是否为无效ip
                     let isInvalidClients = _.isEqual(availability, '1');
                     // 判断是否为已转化客户
                     let isConvertedClients = _.isEqual(status, '3');
@@ -1959,7 +1957,7 @@ class ClueCustomer extends React.Component {
                                             <span className="clue-label intent-tag-style">
                                                 {Intl.get('clue.has.similar.customer', '有相似客户')}
                                             </span> : null}
-                                        {!isInvalidIP && hasSimilarIP ?
+                                        {!isInvalidClients && hasSimilarIP ?
                                             <span className="clue-label intent-tag-style">
                                                 {Intl.get('clue.has.similar.ip', '有相同IP线索')}
                                             </span> : null}    

@@ -1312,7 +1312,6 @@ class ClueDetailOverview extends React.Component {
 
     renderSimilarLists = (listType) => {
         var isSimilarClue = listType === 'clue';
-        // isSimilarClue == clue时为truel;
         var moreListShowFlag = this.state.showLargerClueLists;
         var similarLists = this.state.similarClueLists;
         if (!isSimilarClue){
@@ -1380,7 +1379,6 @@ class ClueDetailOverview extends React.Component {
 
     // 渲染相同IP线索卡片
     renderSimilarIpLists = () => {
-        var isSimilarIpClue = true;
         var repeatIpIds = this.state.similarIpClueLists;
         var moreListShowFlagIP = this.state.showLargerIpLists;
         var ipListMoreThanThree = _.get(repeatIpIds,'length') > 3;
@@ -1388,38 +1386,39 @@ class ClueDetailOverview extends React.Component {
             repeatIpIds = _.cloneDeep(repeatIpIds).splice(0,3);
         }
         return (
-            <DetailCard
-                title={(
-                    <div className="similar-tip">
-                        <i className="iconfont icon-phone-call-out-tip"></i>
-                        {Intl.get('clue.has.similar.ip', '相似IP线索')}
-                    </div>)}
-                contentNoPadding={true}
-                content={(
-                    <div className="similar-content similar-customer-list">
-                        {_.map(repeatIpIds, (listItem) => {
-                            let isFromCluepool = _.isEqual(_.get(this.state, 'curClue.clue_type'), 'clue_pool');
-                            let similarTitleCls = className('similar-title', {
-                                'title-from-clue-pool': isFromCluepool
-                            });
-                            return <div className="similar-block">
-                                <div className={similarTitleCls}>
-                                    {isSimilarIpClue ? renderClueStatus(listItem) : null}
-                                    {this.renderClueSimilarLists(listItem, isSimilarIpClue)}
-                                    
-                                </div>
-                                <div className="similar-name-phone">
-                                    <span className="contact-name contact-name-ip" title={_.get(listItem, 'source_ip', '')}>
-                                        {Intl.get('clue.customer.source.ip', '来源IP') + '：' + listItem.source_ip }
-                                    </span>
-                                </div>
-                            </div>;
-                        })}
-                        {ipListMoreThanThree ? <div className="show-hide-tip" onClick={ this.handleToggleIpClueTip } data-tracename='点击收起或展开全部按钮'>
-                            {moreListShowFlagIP ? Intl.get('crm.contact.way.hide', '收起') : Intl.get('notification.system.more', '展开全部')}</div> : null}
-                    </div>
-                )} 
-            />);
+            <div className='similar-wrap'>
+                <DetailCard
+                    title={(
+                        <div className="similar-tip">
+                            <i className="iconfont icon-phone-call-out-tip"></i>
+                            {Intl.get('clue.has.similar.ip', '相似IP线索')}
+                        </div>)}
+                    contentNoPadding={true}
+                    content={(
+                        <div className="similar-content similar-customer-list">
+                            {_.map(repeatIpIds, (listItem) => {
+                                let isFromCluepool = _.isEqual(_.get(this.state, 'curClue.clue_type'), 'clue_pool');
+                                let similarTitleCls = className('similar-title', {
+                                    'title-from-clue-pool': isFromCluepool
+                                });
+                                return <div className="similar-block">
+                                    <div className={similarTitleCls}>
+                                        {renderClueStatus(listItem)}
+                                        {this.renderClueSimilarLists(listItem, true)}
+                                    </div>
+                                    <div className="similar-name-phone">
+                                        <span className="contact-name contact-name-ip" title={_.get(listItem, 'source_ip', '')}>
+                                            {Intl.get('clue.customer.source.ip', '来源IP') + '：' + listItem.source_ip }
+                                        </span>
+                                    </div>
+                                </div>;
+                            })}
+                            {ipListMoreThanThree ? <div className="show-hide-tip" onClick={ this.handleToggleIpClueTip } data-tracename='点击收起或展开全部按钮'>
+                                {moreListShowFlagIP ? Intl.get('crm.contact.way.hide', '收起') : Intl.get('notification.system.more', '展开全部')}</div> : null}
+                        </div>
+                    )} 
+                />
+            </div>);
     };
 
 
@@ -1481,19 +1480,6 @@ class ClueDetailOverview extends React.Component {
                 <div className="similar-wrap">
                     {_.get(this, 'state.similarCustomerLists[0]') && !this.isHasTransferClue() ? this.renderSimilarLists() : null}
                     {_.get(this,'state.similarClueLists[0]') ? this.renderSimilarLists('clue') : null}
-                </div>
-            );
-        }else{
-            return null;
-        }
-    };
-    
-    // 线索-常用筛选-有相同IP线索-详情 渲染相同IP列表
-    renderClueIPList = () => {
-        if (_.get(this,'props.curClue.repeat_ip_ids[0]')){
-            return (
-                <div className="similar-wrap">
-                    {_.get(this,'props.curClue.repeat_ip_ids[0]') ? this.renderSimilarIpLists() : null}
                 </div>
             );
         }else{
@@ -1968,7 +1954,7 @@ class ClueDetailOverview extends React.Component {
                     <DetailCard content={this.renderClueTimeAndIndustry()}/>
                     <DetailCard content={this.renderClueSourceAndClassfy()}/>
                     {this.renderClueCustomerLists()}
-                    {this.renderClueIPList()}
+                    {this.renderSimilarIpLists()}
                     {/*分配线索给某个销售*/}
                     {/*有分配的权限，但是该线索没有分配给某个销售的时候，展示分配按钮，其他情况都展示分配详情就可以*/}
                     <DetailCard content={(
