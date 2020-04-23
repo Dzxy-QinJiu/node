@@ -89,6 +89,9 @@ class ClueDetailOverview extends React.Component {
         similarCustomerLoading: false,//正在获取相似客户
         similarCustomerErrmsg: '',//获取相似客户出错
         similarCustomerLists: [],//相似客户列表
+        similarIpClueLists: [],//相同IP线索列表
+        similarIpClueLoading: false,//正在获取相同IP线索
+        similarIpClueErrmsg: '',//获取相同Ip线索出错
         showLargerCustomerLists: false,//展示大于3个的客户列表
         showLargerClueLists: false,//展示大于3个的线索列表
         showLargerIpLists: false,//展示大于3个的相同IP线索列表
