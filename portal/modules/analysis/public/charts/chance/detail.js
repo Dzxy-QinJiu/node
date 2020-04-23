@@ -15,12 +15,12 @@ export function getChanceDetailChart() {
         option: {
             columns: [
                 {
-                    title: '销售团队',
-                    dataIndex: 'apply_team_name',
-                    width: 90,
-                }, {
                     title: '销售经理',
                     dataIndex: 'apply_nick_name',
+                    width: 90,
+                }, {
+                    title: '销售团队',
+                    dataIndex: 'apply_team_name',
                     width: 90,
                 }, {
                     title: '销售机会',
