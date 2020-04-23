@@ -11,22 +11,14 @@ export function getSalesNewOpenChart(paramObj = {}) {
         option: {
             columns: [
                 {
-                    title: Intl.get('user.sales.team', '销售团队'),
-                    dataIndex: 'team_name',
+                    title: Intl.get('user.salesman', '销售人员'),
+                    dataIndex: 'user_name',
                     isSetCsvValueBlank: true,
-                    render: (text, item, index) => {
-                        return {
-                            children: text,
-                            props: {
-                                rowSpan: item.rowSpan
-                            },
-                        };
-                    },
                     width: 80
                 },
                 {
-                    title: Intl.get('user.salesman', '销售人员'),
-                    dataIndex: 'user_name',
+                    title: Intl.get('user.sales.team', '销售团队'),
+                    dataIndex: 'team_name',
                     isSetCsvValueBlank: true,
                     width: 80
                 },
@@ -59,11 +51,6 @@ export function getSalesNewOpenChart(paramObj = {}) {
                 data.list.forEach(teamItem => {
                     teamItem.team_result.forEach((sale, index) => {
                         sale.team_name = teamItem.team_name;
-                        if (list.find(item => item.team_name === teamItem.team_name)) {
-                            sale.rowSpan = 0;
-                        } else {
-                            sale.rowSpan = teamItem.team_result.length;
-                        }
                         list.push(sale);
                         //在每个团队最后一个销售的数据后加上合计
                         if (index === teamItem.team_result.length - 1) {

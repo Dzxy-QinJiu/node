@@ -51,7 +51,7 @@ export function getRemainAccountChart(paramObj = {}) {
                     {
                         title: Intl.get('common.login.time', '时间'),
                         dataIndex: 'date',
-                        width: 100,
+                        width: 120,
                     }, {
                         title: Intl.get('oplate.user.analysis.32', '新增数'),
                         dataIndex: 'count',

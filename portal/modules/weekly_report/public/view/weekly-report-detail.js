@@ -471,7 +471,7 @@ class WeeklyReportDetail extends React.Component {
     };
 
     //渲染不同的表格
-    renderDiffTypeTable = (type) => {
+    renderDiffTypeTable = (type, title) => {
         var data = {}, retryFunction = '', columns = {};
         switch (type) {
             case 'callInfo'://电话接通率
@@ -522,12 +522,16 @@ class WeeklyReportDetail extends React.Component {
 
         } else {
             return (
-                <AntcTable
-                    dataSource={data.list}
-                    columns={columns}
-                    pagination={false}
-                    tableType='data'
-                />
+                <div className="card-wrapper">
+                    <AntcCardContainer type="table-card" title={title}>
+                        <AntcTable
+                            dataSource={data.list}
+                            columns={columns}
+                            pagination={false}
+                            tableType='data'
+                        />
+                    </AntcCardContainer>
+                </div>
             );
         }
     };
@@ -653,37 +657,13 @@ class WeeklyReportDetail extends React.Component {
                     <GeminiScrollbar>
                         {this.state.selectedItem.teamId ? this.renderSalesBehavior() : null}
                         {/*开通呼叫中心*/}
-                        {isOpenCaller() ? (
-                            <div className="call-info-wrap">
-                                <AntcCardContainer type={cardType} title={Intl.get('weekly.report.call.statics', '电话统计')}>
-                                    {this.renderDiffTypeTable('callInfo')}
-                                </AntcCardContainer>
-                            </div>
-                        ) : null}
-                        <div className="customer-stage-info-wrap">
-                            <AntcCardContainer type={cardType} title={Intl.get('crm.order.stage', '订单阶段')}>
-                                {this.renderDiffTypeTable('customerStageInfo')}
-                            </AntcCardContainer>
-                        </div>
-                        <div className="region-overlay-info-wrap">
-                            <AntcCardContainer type={cardType} title={Intl.get('weekly.report.region.overlay', '区域覆盖情况')}>
-                                {this.renderDiffTypeTable('regionOverlay')}
-                            </AntcCardContainer>
-                        </div>
+                        {isOpenCaller() ? this.renderDiffTypeTable('callInfo', Intl.get('weekly.report.call.statics', '电话统计')) : null}
+                        {this.renderDiffTypeTable('customerStageInfo', Intl.get('crm.order.stage', '订单阶段'))}
+                        {this.renderDiffTypeTable('regionOverlay', Intl.get('weekly.report.region.overlay', '区域覆盖情况'))}
                         {/*开通营收中心*/}
-                        {isOpenCash() ? (
-                            <div className="contract-info-wrap">
-                                <AntcCardContainer type={cardType} title={Intl.get('weekly.report.contract', '合同情况')}>
-                                    {this.renderDiffTypeTable('contactInfo')}
-                                </AntcCardContainer>
-                            </div>) : null}
+                        {isOpenCash() ? this.renderDiffTypeTable('contactInfo', Intl.get('weekly.report.contract', '合同情况')) : null}
                         {/*开通营收中心*/}
-                        {isOpenCash() ? (
-                            <div className="repayment-info-wrap">
-                                <AntcCardContainer type={cardType} title={Intl.get('weekly.report.repayment', '回款情况')}>
-                                    {this.renderDiffTypeTable('repaymentInfo')}
-                                </AntcCardContainer>
-                            </div>) : null}
+                        {isOpenCash() ? this.renderDiffTypeTable('repaymentInfo', Intl.get('weekly.report.repayment', '回款情况')) : null}
 
                         {this.renderOffdutyCharts()}
                     </GeminiScrollbar>
