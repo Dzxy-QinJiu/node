@@ -228,6 +228,10 @@ var NavSidebar = createReactClass({
         clickUpgradeNoiceEmitter.on(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, this.toggleUpgradeNotice);
         // 点击通知面板上tabs类型的触发
         notificationEmitter.on(notificationEmitter.CLICK_NOTICE_TABS_TYPE, this.clickSystemPanelTabsType);
+        //获取我的审批的未读回复列表
+        this.getMyApplyUnreadReply();
+        //获取团队审批的未读回复列表
+        this.getTeamApplyUnreadReply();
         // //响应式设计 logo和菜单占据的实际高度
         // responsiveLayout.logoAndMenusHeight = $('.logo-and-menus').outerHeight(true);
         // //计算 拨号按钮、通知、设置、个人信息 占据的实际高度
@@ -259,6 +263,23 @@ var NavSidebar = createReactClass({
         //电话系统初始化完成后，判断是否有打电话的权限（是否配坐席号，配置了才可以打电话）
         if (hasCalloutPrivilege) {
             this.setState({isShowDialUpKeyboard: true});
+        }
+    },
+
+    getTeamApplyUnreadReply: function() {
+        const TEAM_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.TEAM_UNREAD_REPLY;
+        //获取sessionStore中已存的未读回复列表
+        let applyUnreadReplyList = session.get(TEAM_UNREAD_REPLY);
+        if (applyUnreadReplyList) {
+            this.refreshTeamApplyHasUnreadReply(JSON.parse(applyUnreadReplyList));
+        }
+    },
+    getMyApplyUnreadReply: function() {
+        const MY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.MY_UNREAD_REPLY;
+        //获取sessionStore中已存的未读回复列表
+        let applyUnreadReplyList = session.get(MY_UNREAD_REPLY);
+        if (applyUnreadReplyList) {
+            this.refreshMyApplyHasUnreadReply(JSON.parse(applyUnreadReplyList));
         }
     },
 

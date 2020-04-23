@@ -52,7 +52,8 @@ import Trace from 'LIB_DIR/trace';
 import UserApplyActions from '../public/action/apply_approve_list_action';
 import ApplyApproveListStore from '../public/store/apply_approve_list_store';
 import UserApplyViewDetailWrap from './all_application_type/user_apply/public/views/apply-view-detail-wrap';
-
+import {storageUtil} from 'ant-utils';
+const session = storageUtil.session;
 import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
 import {SearchInput} from 'antc';
 import UserData from '../../../public/sources/user-data';
@@ -91,6 +92,10 @@ class ApplyApproveList extends React.Component {
         } else {
             this.fetchApplyList();
         }
+        //获取我的申请中的未读回复
+        this.getMyUnreadReplyList();
+        //获取团队申请中的未读回复
+        this.getTeamUnreadReplyList();
         this.getAppList();
         getApplyState().then(applyState => {
             this.setState({
@@ -160,6 +165,23 @@ class ApplyApproveList extends React.Component {
             });
         }
 
+    };
+
+    //从sessionStorage中获取该用户未读的回复列表
+    getMyUnreadReplyList = () => {
+        const MY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.MY_UNREAD_REPLY;
+        let unreadReplyList = session.get(MY_UNREAD_REPLY);
+        if (unreadReplyList) {
+            this.refreshMyUnreadReplyList(JSON.parse(unreadReplyList) || []);
+        }
+    };
+    //从sessionStorage中获取该用户未读的回复列表
+    getTeamUnreadReplyList = () => {
+        const TEAM_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.TEAM_UNREAD_REPLY;
+        let unreadReplyList = session.get(TEAM_UNREAD_REPLY);
+        if (unreadReplyList) {
+            this.refreshTeamUnreadReplyList(JSON.parse(unreadReplyList) || []);
+        }
     };
 
     refreshMyUnreadReplyList = (unreadReplyList) => {
