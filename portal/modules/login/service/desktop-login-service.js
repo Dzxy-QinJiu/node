@@ -55,7 +55,9 @@ var urls = {
     //登录后判断是否绑定微信
     checkLoginWechatIsBindUrl: '/auth2/rs/self/social?platform=wechat',
     //获取登录用户的组织信息
-    getOrganization: '/rest/base/v1/user/member/organization'
+    getOrganization: '/rest/base/v1/user/member/organization',
+    //获取网站个性化设置
+    getWebsiteConfig: '/rest/base/v1/user/website/config'
 };
 //验证码的高和宽
 var captcha = {
@@ -608,6 +610,16 @@ exports.getOrganization = function(req, res) {
     return restUtil.authRest.get(
         {
             url: urls.getOrganization,
+            req: req,
+            res: res
+        }, null);
+};
+
+//获取网站个性化配置
+exports.getWebsiteConfig = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: urls.getWebsiteConfig,
             req: req,
             res: res
         }, null);

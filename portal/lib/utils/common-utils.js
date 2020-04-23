@@ -138,9 +138,14 @@ var methodUtil = {
     }
 };
 
+var CONSTS = {
+    WELCOME_PAGE_FIELD: 'no_show_boot_complete_set_recommend'
+};
+
 module.exports = {
     html: HtmlUtil,
     ip: IPUtil,
     file: FileUtil,
-    method: methodUtil
+    method: methodUtil,
+    const: CONSTS
 };

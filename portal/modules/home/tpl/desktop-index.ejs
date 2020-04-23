@@ -102,6 +102,7 @@
         antmeActorUrl: '<%- antmeActorUrl %>',
         antmeClientId: '<%- antmeClientId %>',
         forceLogin: '<%- forceLogin %>',
+        showWelComePage: '<%- showWelComePage %>'
     };
 </script>
 <script type="text/javascript">
@@ -143,6 +144,7 @@
 <!-- End Piwik Code -->
 <% } %>
 <% // 页头2               %>
+<% show_welcome_page = showWelComePage ? true : false %>
 <% include ../../common/public/tpl/common-header.end.ejs %>
 <div id="app">
     <div class="load8 index-loading">

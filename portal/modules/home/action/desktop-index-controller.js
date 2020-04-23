@@ -31,6 +31,14 @@ exports.home = function(req, res) {
     if (global.config.lang && global.config.lang === 'es_VE') {
         hideSomeItem = 'true';
     }
+    let showWelComePage = req.session.showWelComePage;
+    //如果没有展示过欢迎页
+    if(showWelComePage) {
+        //而且欢迎页只展示一次
+        req.session.showWelComePage = false;
+        //发送设置网站个性化的配置
+        setWebsiteConfig(req, res, commonUtil.const.WELCOME_PAGE_FIELD);
+    }
     let custom_service_lang = global.config.lang || 'zh_CN';
     custom_service_lang = custom_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
     let roles = _.map(user.role_infos, 'role_name') || [];
@@ -59,7 +67,13 @@ exports.home = function(req, res) {
         ssoUrl: global.config.ssoUrl,
         antmeActorUrl: global.config.antmeActorUrl,
         antmeClientId: global.config.antmeClientId,
-        forceLogin: _.get(req.session,'force_login', true)
+        forceLogin: _.get(req.session,'force_login', true),
+        showWelComePage: showWelComePage,
+        welcomePageInfo: {
+            title: backendIntl.get('personal.welcome.title.tip', '欢迎使用客套系统!'),
+            closeText: backendIntl.get('common.app.status.close', '关闭'),
+            content: backendIntl.get('personal.welcome.public.account', '关注公众号，获得更多信息')
+        }
     });
 };
 
@@ -223,3 +237,11 @@ exports.setForceLogin = function(req, res) {
         res.json({force_login: req.session.force_login});
     });
 };
+
+//设置网站个性化设置
+function setWebsiteConfig(req, res, field) {
+    let data = {
+        [field]: true
+    };
+    DesktopIndexService.setWebsiteConfig(req, res, data);
+}

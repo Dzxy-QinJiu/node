@@ -217,6 +217,14 @@ exports.getUserAreaData = function(req, res) {
         }
     }, null);
 };
+//设置网站个性化配置
+exports.setWebsiteConfig = function(req, res, data) {
+    return restUtil.authRest.post({
+        url: userInfoRestApis.setWebsiteConfig,
+        req: req,
+        res: res
+    }, data);
+};
 var baseUrl = 'http://dataservice.curtao.com';
 var userInfoRestApis = {
     getUserInfo: '/rest/base/v1/user/member/self', // 登录用户信息
@@ -231,7 +239,9 @@ var userInfoRestApis = {
     getWebsiteConfig: '/rest/base/v1/user/website/config',
     getSalesRoleByMemberId: '/rest/base/v1/user/member/teamrole',
     //获取登录用户的组织信息
-    getOrganization: '/rest/base/v1/user/member/organization'
+    getOrganization: '/rest/base/v1/user/member/organization',
+    //设置网站个性化配置
+    setWebsiteConfig: '/rest/base/v1/user/website/config/personnel',
 };
 
 exports.getPrivileges = getPrivileges;
