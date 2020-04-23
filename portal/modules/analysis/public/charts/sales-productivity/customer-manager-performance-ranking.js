@@ -36,12 +36,12 @@ export function getCustomerManagerPerformanceRankingChart() {
             onRowClick: onRankingRowClick,
             rowClassName: () => 'clickable',
             columns: [{
-                title: Intl.get('user.user.team', '团队'),
-                dataIndex: 'sales_team',
-                width: '10%',
-            }, {
                 title: Intl.get('sales.home.sales', '销售'),
                 dataIndex: 'member_name',
+                width: '10%',
+            }, {
+                title: Intl.get('user.user.team', '团队'),
+                dataIndex: 'sales_team',
                 width: '10%',
             }, {
                 title: Intl.get('common.gross.margin.score.of.newly.signed.refund', '新签回款毛利分数'),
