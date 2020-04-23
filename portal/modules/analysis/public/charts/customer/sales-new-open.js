@@ -11,14 +11,14 @@ export function getSalesNewOpenChart(paramObj = {}) {
         option: {
             columns: [
                 {
-                    title: Intl.get('user.sales.team', '销售团队'),
-                    dataIndex: 'team_name',
+                    title: Intl.get('user.salesman', '销售人员'),
+                    dataIndex: 'user_name',
                     isSetCsvValueBlank: true,
                     width: 80
                 },
                 {
-                    title: Intl.get('user.salesman', '销售人员'),
-                    dataIndex: 'user_name',
+                    title: Intl.get('user.sales.team', '销售团队'),
+                    dataIndex: 'team_name',
                     isSetCsvValueBlank: true,
                     width: 80
                 },
