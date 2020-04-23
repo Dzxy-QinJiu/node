@@ -282,16 +282,12 @@ class ApplyViewDetail extends React.Component {
     refreshReplyList = (e) => {
         Trace.traceEvent(e, '点击了重新获取');
         var detailItem = this.props.detailItem;
-        if (_.includes(APPLY_FINISH_STATUS, detailItem.status)) {
-            LeaveApplyDetailAction.setApplyComment(detailItem.approve_details);
-        } else if (detailItem.id) {
+        if (_.get(detailItem, 'id')) {
             LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
             this.getNextCandidate(detailItem.id);
         }
     };
-
-
-
+    
     //显示客户详情
     showCustomerDetail(customerId) {
         //触发打开带拨打电话状态的客户详情面板
@@ -655,6 +651,7 @@ ApplyViewDetail.propTypes = {
     isHomeMyWork: PropTypes.bool,
     afterApprovedFunc: PropTypes.func,
     width: PropTypes.string,
-    height: PropTypes.string
+    height: PropTypes.string,
+    afterTransferApplySuccess: PropTypes.func,
 };
 module.exports = ApplyViewDetail;

@@ -134,7 +134,10 @@ class ApplyDetailRemarks extends React.Component {
                     <div className="reply-list-container apply-info-content">
                         {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
                         {this.renderReplyList()}
-                        {/*（待审批、已通过、已驳回、已撤销 ） 添加回复*/}
+                        {/*
+                        （待审批、已通过、已驳回、已撤销 ） 添加回复
+                        为方便期间，按下enter键，也是可以提交回复信息的
+                        */}
                         <Input
                             addonAfter={(
                                 <a data-tracename="点击回复按钮"
@@ -142,6 +145,7 @@ class ApplyDetailRemarks extends React.Component {
                                 >
                                     {Intl.get('user.apply.reply.button', '回复')}
                                 </a>)}
+                            onPressEnter={this.addReply}
                             value={this.state.keyword}
                             onChange={this.handleInputChange}
                             placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}
