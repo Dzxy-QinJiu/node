@@ -39,20 +39,9 @@ export function getCustomerTrialQualifiedDistributionChart(title, field) {
 
                 if (staList && staList.length) {
                     _.each(staList, (staItem, index) => {
-                        let row = staItem;
-                        //需要合并行
-                        row.needRowSpan = true;
-                        //合并行数
-                        row.rowSpanNum = 0;
+                        staItem.name = name;
 
-                        if (index === 0) {
-                            //数据的第一项里需要包含团队名
-                            row.name = name;
-                            //合并行数为数据条数
-                            row.rowSpanNum = staList.length;
-                        }
-
-                        dataSource.push(row);
+                        dataSource.push(staItem);
                     });
                 } else {
                     dataSource.push({
@@ -68,18 +57,6 @@ export function getCustomerTrialQualifiedDistributionChart(title, field) {
                 title: '名称',
                 dataIndex: 'name',
                 isSetCsvValueBlank: true,
-                render: (value, row, index) => {
-                    let obj = {
-                        children: value,
-                        props: {}
-                    };
-
-                    if (row.needRowSpan) {
-                        obj.props.rowSpan = row.rowSpanNum;
-                    }
-
-                    return obj;
-                }
             }, {
                 title: field === 'province' ? '区域' : '行业',
                 dataIndex: 'sta_type',

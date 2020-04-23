@@ -13,12 +13,12 @@ export function getClueRetrievalChart() {
         dataField: 'list',
         option: {
             columns: [{
-                title: Intl.get('user.user.team', '团队'),
-                dataIndex: 'sales_team',
-                width: '10%',
-            }, {
                 title: Intl.get('sales.home.sales', '销售'),
                 dataIndex: 'user_name',
+                width: '10%',
+            }, {
+                title: Intl.get('user.user.team', '团队'),
+                dataIndex: 'sales_team',
                 width: '10%',
             }, {
                 title: Intl.get('analysis.extracting.cue.number', '提取线索数'),
