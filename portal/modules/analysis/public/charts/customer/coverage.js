@@ -42,14 +42,6 @@ export function getCustomerCoverageChart() {
                 {
                     title: Intl.get('common.definition', '名称'),
                     dataIndex: 'team_name',
-                    render: (text, item, index) => {
-                        return {
-                            children: text,
-                            props: {
-                                rowSpan: item.rowSpan
-                            },
-                        };
-                    },
                     width: 100
                 },
                 {
@@ -105,13 +97,6 @@ export function getCustomerCoverageChart() {
                         //区县覆盖率转百分比
                         sale.district_dredge_scale = antUtilNum.decimalToPercent(sale.district_dredge_scale);
                         sale.team_name = teamItem.team_name;
-                        //list中已有当前数据的团队名，不展示对应单元格(rowSpan==0)
-                        if (list.find(item => item.team_name === teamItem.team_name)) {
-                            sale.rowSpan = 0;
-                        } else {
-                            //为第一条存在团队名的数据设置列合并(rowSpan)
-                            sale.rowSpan = teamItem.team_result.length;
-                        }
                         list.push(sale);
                     });
                 });
