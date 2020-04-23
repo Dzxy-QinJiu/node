@@ -460,7 +460,7 @@ class ExtractClues extends React.Component {
     //提取数为0时显示的提示信息
     hasNoExtractCountTip = () => {
         // 过期的账号不能提取线索，所以不需要展示还可提取xxx条线索
-        if(isExpired) return null;
+        if(isExpired()) return null;
         var maxLimitExtractNumber = this.state.maxLimitExtractNumber;
         var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
         let versionAndType = checkVersionAndType();
