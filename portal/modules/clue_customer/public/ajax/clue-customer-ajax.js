@@ -219,8 +219,6 @@ exports.getClueFulltext = function(queryObj) {
     delete queryObj.pageNum;
     var sorter = queryObj.sorter ? queryObj.sorter : {field: 'source_time', order: 'descend'};
     delete queryObj.sorter;
-    var lead = queryObj.lead_similarity;
-    delete queryObj.lead_similarity;
     var type = 'user';
     if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
         type = 'manager';
