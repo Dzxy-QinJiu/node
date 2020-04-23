@@ -635,7 +635,7 @@ class TeamDataColumn extends React.Component {
             // 设置每页显示条数
             chart.option.pagination = { pageSize: PAGE_SIZE };
 
-            //负责人列索引
+            //到期时间列索引
             const endTimeColumnIndex = _.findIndex(columns, column => column.dataIndex === 'end_time');
 
             _.each(columns, column => {
@@ -652,15 +652,22 @@ class TeamDataColumn extends React.Component {
 
             //需要加两列毛利 回款额
             if (endTimeColumnIndex !== -1) {
-                columns.splice(endTimeColumnIndex, 0, {
+                const endTimeColumn = columns[endTimeColumnIndex];
+
+                columns.splice(endTimeColumnIndex, 1, {
                     title: Intl.get('contract.109', '毛利'),
                     dataIndex: 'gross_profit',
                     width: TABLE_CONSTS.COLUMN_WIDTH_100,
+                    align: 'right'
                 }, {
                     title: Intl.get('contract.28', '回款额'),
                     dataIndex: 'total_gross_profit',
                     width: TABLE_CONSTS.COLUMN_WIDTH_100,
+                    align: 'right'
                 });
+
+                //将到期时间列移到负责人列后面，这样就把需要左对齐的列放到一块儿了，方便排版
+                columns.splice(2, 0, endTimeColumn);
             }
 
             // 构建我们自己需要的chart
