@@ -56,7 +56,7 @@ const HOT_SELECTORS = [/*{
         value: '口罩厂家'
     },{
         name: Intl.get('clue.recommend.State-owned.enterprise', '国有企业'),
-        value: '规模'
+        value: '国有'
     },];
 
 const CONTACT_PHONE_CLS = 'extract-clue-contact-count';
