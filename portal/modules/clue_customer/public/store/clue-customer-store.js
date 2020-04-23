@@ -276,7 +276,6 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
         this.queryObj = clueData.queryObj;
     }
     this.handleClueData(clueData);
-    console.log('store的clueData',clueData);
 };
 //申请试用的数据
 ClueCustomerStore.prototype.getApplyTryData = function(result) {

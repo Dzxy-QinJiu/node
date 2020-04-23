@@ -213,7 +213,6 @@ exports.updateClueItemDetail = function(data) {
 };
 //获取全文搜索的线索
 exports.getClueFulltext = function(queryObj) {
-    console.log('queryobj',queryObj);
     var pageSize = queryObj.pageSize;
     delete queryObj.pageSize;
     var pageNum = queryObj.pageNum;
@@ -234,7 +233,6 @@ exports.getClueFulltext = function(queryObj) {
         type: 'post',
         data: queryObj,
         success: function(list) {
-            console.log('ajax的list',list);
             Deferred.resolve(list);
         },
         error: function(errorMsg) {
