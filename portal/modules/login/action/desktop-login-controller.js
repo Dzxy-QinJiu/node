@@ -255,9 +255,10 @@ function loginSuccess(req, res) {
             //登录成功后获取用户的组织信息，（主页的matomo数据参数设置中需要放入组织信息）
             DesktopLoginService.getOrganization(req, res).on('success', data => {
                 //获取网站个性化配置,以便判断进入后的首页是否展示欢迎页
-                handleWebsiteConfig(req, data.websiteConfig, commonUtil.const.WELCOME_PAGE_FIELD, () => {
+                let personnel_setting = _.get(data.websiteConfig, 'personnel_setting');
+                if(!_.get(personnel_setting, commonUtil.CONSTS.WELCOME_PAGE_FIELD)) {
                     req.session.showWelComePage = true;
-                });
+                }
                 // 接口返回的组织信息：official_name：公司名，name: 组织名称
                 // 现在系统中展示和修改的都是公司名，组织名是不能修改的
                 // 组织信息中公司名official_name和id字段转为officialName和id字段，方便前端处理（若后端更改字段名时，只需修改这里就可以，不用多处修改了）
@@ -322,26 +323,6 @@ function loginError(req, res) {
             }
         });
     };
-}
-
-//处理网站个性化配置信息处理
-//存在该字段，且为false时，说明没有设置过
-function handleWebsiteConfig(req, result, field, cb) {
-    let personnel_setting = _.get(result, 'personnel_setting');
-    // todo 暂时去掉，逻辑待优化
-    /*if(_.has(personnel_setting, field)) {//存在这个字段
-        //（为true设置过，false没有设置过）
-        let isSettinged = personnel_setting[field];
-        if(_.isBoolean(isSettinged)) {//是布尔类型
-            // 为false
-            if(!isSettinged) {
-                _.isFunction(cb) && cb();
-            }
-        }
-    }*/
-    if(!_.get(personnel_setting, field)) {
-        _.isFunction(cb) && cb();
-    }
 }
 
 //获取验证码

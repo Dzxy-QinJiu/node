@@ -147,5 +147,5 @@ module.exports = {
     ip: IPUtil,
     file: FileUtil,
     method: methodUtil,
-    const: CONSTS
+    CONSTS: CONSTS
 };

@@ -37,7 +37,7 @@ exports.home = function(req, res) {
         //而且欢迎页只展示一次
         req.session.showWelComePage = false;
         //发送设置网站个性化的配置
-        setWebsiteConfig(req, res, commonUtil.const.WELCOME_PAGE_FIELD);
+        setWebsiteConfig(req, res, commonUtil.CONSTS.WELCOME_PAGE_FIELD);
     }
     let custom_service_lang = global.config.lang || 'zh_CN';
     custom_service_lang = custom_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
