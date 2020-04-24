@@ -9,40 +9,13 @@ var EventEmitter = require('events');
 let BackendIntl = require('../../../lib/utils/backend_intl');
 import publicPrivilegeConst from '../../../public/privilege-const';
 import privilegeConstCommon from '../../../modules/common/public/privilege-const';
+import {getDataPromise} from '../../../lib/utils/getDataPromise';
 
 //获取用户权限
 function getPrivileges(req) {
     var userInfo = auth.getUser(req);
     var userPrivileges = userInfo.privileges;
     return userPrivileges;
-}
-
-//获取数据的promise
-function getDataPromise(req, res, url, pathParams, queryObj) {
-    //url中的参数处理
-    if (pathParams) {
-        for (let key in pathParams) {
-            url += '/' + pathParams[key];
-        }
-    }
-    let resultObj = {errorData: null, successData: null};
-    return new Promise((resolve, reject) => {
-        return restUtil.authRest.get(
-            {
-                url: url,
-                req: req,
-                res: res
-            }, queryObj, {
-                success: function(eventEmitter, data) {
-                    resultObj.successData = data;
-                    resolve(resultObj);
-                },
-                error: function(eventEmitter, errorObj) {
-                    resultObj.errorData = errorObj;
-                    resolve(resultObj);
-                }
-            });
-    });
 }
 
 //获取用户信息
@@ -218,6 +191,14 @@ exports.getUserAreaData = function(req, res) {
         }
     }, null);
 };
+//设置网站个性化配置
+exports.setWebsiteConfig = function(req, res, data) {
+    return restUtil.authRest.post({
+        url: userInfoRestApis.setWebsiteConfig,
+        req: req,
+        res: res
+    }, data);
+};
 var baseUrl = 'http://dataservice.curtao.com';
 var userInfoRestApis = {
     getUserInfo: '/rest/base/v1/user/member/self', // 登录用户信息
@@ -232,7 +213,9 @@ var userInfoRestApis = {
     getWebsiteConfig: '/rest/base/v1/user/website/config',
     getSalesRoleByMemberId: '/rest/base/v1/user/member/teamrole',
     //获取登录用户的组织信息
-    getOrganization: '/rest/base/v1/user/member/organization'
+    getOrganization: '/rest/base/v1/user/member/organization',
+    //设置网站个性化配置
+    setWebsiteConfig: '/rest/base/v1/user/website/config/personnel',
 };
 
 exports.getPrivileges = getPrivileges;
