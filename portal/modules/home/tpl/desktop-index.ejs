@@ -102,6 +102,7 @@
         antmeActorUrl: '<%- antmeActorUrl %>',
         antmeClientId: '<%- antmeClientId %>',
         forceLogin: '<%- forceLogin %>',
+        showWelComePage: '<%- showWelComePage %>'
     };
 </script>
 <script type="text/javascript">
@@ -144,6 +145,99 @@
 <% } %>
 <% // 页头2               %>
 <% include ../../common/public/tpl/common-header.end.ejs %>
+<% // 主页里边是否展示欢迎页                %>
+<% if(showWelComePage) { %>
+    <style>
+        .welcome-page-container{
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: #E3E8ED;
+            z-index: 1111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .welcome-page-container .welcome-page-content{
+            width: 482px;
+            background: #F8F9FB;
+            border-radius:4px;
+            box-shadow: 0 0 10px 0px #ccc;
+        }
+        .welcome-page-container .welcome-page-title{
+            height: 89px;
+            background: #fff;
+            font-size: 16px;
+            color: #333;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .welcome-page-container .welcome-img-wrapper {
+            width: 56px;
+            height: 56px;
+            margin: 0 16px;
+            border-radius: 50%;
+            background-color: #E8EEF3;
+            padding-bottom: 1px;
+        }
+        .welcome-page-container .welcome-page-title .image{
+            width: 100%;
+            height: 100%;
+        }
+        .welcome-page-container .welcome-page-title .welcome-close-btn{
+            padding: 10px 20px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            cursor: pointer;
+        }
+        .welcome-page-container .welcome-page-title .title-close{
+            width: 16px;
+            height: 16px;
+
+        }
+        .welcome-page-container .welcome-page-info-content{
+            text-align: center;
+            color: #1976D2;
+            font-size: 20px;
+            margin: 48px 0;
+        }
+        .welcome-page-container .welcome-page-info-content img{
+            width: 128px;
+            height: 128px;
+            margin: auto auto 18px auto;
+        }
+    </style>
+    <div id="welcome-page" class="welcome-page-container">
+        <div class="welcome-page-content">
+            <div class="welcome-page-title">
+                <div class="welcome-img-wrapper">
+                    <img class="image" src="/static/images/curtao-personal.svg"/>
+                </div>
+                <span><%= welcomePageInfo.title %></span>
+                <div class="welcome-close-btn" title="<%= welcomePageInfo.closeText %>" onclick="handleCloseWelComePage()">
+                    <img class="title-close" src="/static/images/close.svg" alt="<%= welcomePageInfo.closeText %>"/>
+                </div>
+            </div>
+            <div class="welcome-page-info-content">
+                <img src="/static/images/curtao-wx-qrcdoe.jpg"/>
+                <div><%= welcomePageInfo.content %></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        console.log(new Date())
+        window.handleCloseWelComePage = function() {
+            var welComePageEl = document.getElementById("welcome-page");
+            if(welComePageEl) {
+                document.body.removeChild(welComePageEl);
+            }
+        }
+    </script>
+<% } %>
 <div id="app">
     <div class="load8 index-loading">
         <div class="loader8-content">
