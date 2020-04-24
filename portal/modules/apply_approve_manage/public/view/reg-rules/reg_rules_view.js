@@ -1002,19 +1002,13 @@ class RegRulesView extends React.Component {
         }else if(showAddApproveNodeTip){
             message.warning(Intl.get('apply.please.add.approve.node', '流程不完整，需添加审批人节点'));
         }else{
+            const isChangeRuleNotify = this.isChangeRuleNotify();
+            // 修改了分配销售的职责,需要发请求处理
+            if (this.state.isChangeCustomerSale) {
+                this.handleApprovedSettingWordFlow();
+            }
             // 判断是否修改了其他配置，若修改了其他配置，需要同时保存
-            // 若只修改了审批通过后，分配销售的配置，只需要保存分配给销售的接口即可
-            const isUnChangeRuleNotify = this.isUnChangeRuleNotify();
-            if (isUnChangeRuleNotify) {
-                // 修改了分配销售的职责
-                if (this.state.isChangeCustomerSale) {
-                    this.handleApprovedSettingWordFlow();
-                }
-            } else {
-                // 修改了分配销售的职责
-                if (this.state.isChangeCustomerSale) {
-                    this.handleApprovedSettingWordFlow();
-                }
+            if (isChangeRuleNotify) {
                 //在提交的时候，把用户或者团队为非的情况也加上
                 this.addDefaultUserOrTeamCondition();
                 if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
@@ -1034,13 +1028,13 @@ class RegRulesView extends React.Component {
         });
     };
     // 判断是否修改了流程、通知
-    isUnChangeRuleNotify = () => {
+    isChangeRuleNotify = () => {
         const applyApproveRulesNodes = _.get(this.state, 'applyRulesAndSetting.applyApproveRules');//所保存的节点
         // 判断是否修改了流程
-        const isChangeApplyRule = _.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes);
+        const isChangeApplyRule = !_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes);
         // 判断是否修改了通知的配置
-        const isChangeNoticeConfig = _.isEqual(_.get(this.props, 'applyTypeData.notify_configs'), this.state.notify_configs);
-        return isChangeApplyRule && isChangeNoticeConfig;
+        const isChangeNoticeConfig = !_.isEqual(_.get(this.props, 'applyTypeData.notify_configs'), this.state.notify_configs);
+        return isChangeApplyRule || isChangeNoticeConfig;
     };
     // 修改审批通知后的自定义流程
     handleApprovedSettingWordFlow = () => {
@@ -1056,8 +1050,8 @@ class RegRulesView extends React.Component {
             });
             if (result === true) {
                 // 只修改了审批通过后，分配销售的操作，才提示
-                const isUnChangeRuleNotify = this.isUnChangeRuleNotify();
-                if (isUnChangeRuleNotify) {
+                const isChangeRuleNotify = this.isChangeRuleNotify();
+                if (!isChangeRuleNotify) {
                     message.success(Intl.get('common.save.success', '保存成功'));
                 }
             } else {
