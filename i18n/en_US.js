@@ -1925,6 +1925,9 @@ var en_US = {
     'crm.pool.responsible.type.placeholder': 'Please select the responsibility type',//请选择负责类型
     'crm.pool.extract.distribute.followup': 'Extract and assign joint follow-ups',//提取并分配联合跟进人
     'crm.merge.success.domain.tip': 'Please tell {name} that you need access using {domain}',//请告知{name}需要使用{domain}访问
+    'crm.pool.need.to.head.': 'Need to head',//需负责人
+    'crm.pool.extract.and.distribute': 'Extract and distribute',//提取并分配
+    'crm.pool.sales.extract.exist.tip': 'I, as',//我作为
 
 
     'crm.customer.rule.name': 'Rules set',//规则设置
@@ -3721,6 +3724,9 @@ var en_US = {
     'apply.business.change.time.range': 'Please edit total business time first',//请先修改总出差时间
     'apply.please.add.assign.node': 'The process is incomplete, you need to add the "appointed approver approval node"',//流程不完整，需添加“指定审批人审批节点”
     'apply.please.add.approve.node': 'The process is incomplete, you need to add the approver node',//流程不完整，需添加审批人节点
+    'apply.approved.title': 'Upon approval', // 审批通过后
+    'apply.approved.sales.assigned': 'The assigned sales person is in charge', // 分配的销售作为负责人
+    'apply.approved.sales.assigned.follow': 'The distribution of sales as the person in charge, at the same time the original person in charge into the joint follow-up.', // 分配的销售作为负责人，同时原负责人变为联合跟进人
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
@@ -3779,6 +3785,7 @@ var en_US = {
     'contract.profit.check.tip': 'The gross profit can not be greater than {num} yuan of the total contract amount, please check it',//产品毛利不能大于合同总额{amount}元，请核对
     'customer.has.similar.lists': 'Similar customer',//相似客户
     'clue.has.similar.lists': 'Similar lead',//相似线索
+    'clue.has.similar.ip': 'Same ip clue',//相同IP线索
     'clue.similar.clue': 'Similar lead or customer', //相似线索或客户
     'apply.approve.first.higher.level': 'Directly superior',//直属上级
     'apply.approve.some.level': 'Level {n}',//第{n}级上级

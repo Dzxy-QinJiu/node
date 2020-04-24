@@ -124,8 +124,10 @@ exports.batchPushEmitter.CRM_BATCH_CHANGE_INDUSTRY = 'batchtask.crm_batch_change
 exports.batchPushEmitter.CRM_BATCH_CHANGE_TERRITORY = 'batchtask.crm_batch_change_address';
 //客户管理批量-变更行政级别
 exports.batchPushEmitter.CRM_BATCH_CHANGE_LEVEL = 'batchtask.crm_batch_change_level';
-//客户管理批量-释放客户
+//客户管理批量-释放客户负责人
 exports.batchPushEmitter.CRM_BATCH_RELEASE_POOL = 'batchtask.crm_batch_release_pool';
+//客户管理批量-释放客户联合跟进人
+exports.batchPushEmitter.CRM_BATCH_RELEASE_POOL_JOIN_USER = 'batchtask.crm_batch_release_pool_join_user';
 //线索管理批量-变更跟进人
 exports.batchPushEmitter.CLUE_BATCH_CHANGE_TRACE = 'batchtask.clue_user';
 // 线索池-批量提取线索

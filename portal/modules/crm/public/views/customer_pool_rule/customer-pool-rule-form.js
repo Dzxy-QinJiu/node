@@ -276,7 +276,7 @@ class CustomerPoolRuleForm extends React.Component{
                     {this.props.isEdit ? (
                         <div>
                             {
-                                getFieldDecorator('team_id', {
+                                this.props.formType === FORM_TYPE.ADD ? getFieldDecorator('team_id', {
                                     initialValue: formData.team_id,
                                     rules: [
                                         {required: true, message: Intl.get('crm.customer.pool.select.range', '请选择可见范围')},
@@ -290,7 +290,7 @@ class CustomerPoolRuleForm extends React.Component{
                                     >
                                         {visibleTeamOptions}
                                     </Select>
-                                )
+                                ) : (<div className="customer-info-text">{_.get(formData,'team_name', '')}</div>)
                             }
                             {
                                 getFieldDecorator('show_my_customers', {

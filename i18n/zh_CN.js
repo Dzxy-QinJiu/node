@@ -1950,6 +1950,9 @@ var zh_CN = {
     'crm.pool.responsible.type.placeholder': '请选择负责类型',
     'crm.pool.extract.distribute.followup': '提取并分配联合跟进人',
     'crm.merge.success.domain.tip': '请告知{name}需要使用{domain}访问',
+    'crm.pool.need.to.head.': '需负责人',
+    'crm.pool.extract.and.distribute': '提取并分配',
+    'crm.pool.sales.extract.exist.tip': '我作为',
 
 
     'crm.pool.single.extract.tip': '您确定要提取此客户吗？',
@@ -3285,6 +3288,7 @@ var zh_CN = {
     'common.trial.qualified.customer.statistics': '试用合格客户数统计',
     'clue.has.similar.customer': '有相似客户',
     'clue.has.similar.clue': '有相似线索',
+    'clue.has.similar.ip': '有相同IP线索',
     'clue.export.clue.list': '导出线索',
     'clue.extract.clue': '提取线索',
     'clue.pool': '线索池',
@@ -3746,6 +3750,9 @@ var zh_CN = {
     'apply.business.change.time.range': '请先修改总出差时间',
     'apply.please.add.assign.node': '流程不完整，需添加“指定审批人审批节点”',
     'apply.please.add.approve.node': '流程不完整，需添加审批人节点',
+    'apply.approved.title': '审批通过后',
+    'apply.approved.sales.assigned': '分配的销售作为负责人',
+    'apply.approved.sales.assigned.follow': '分配的销售作为负责人，同时原负责人变为联合跟进人',
     /*自定义流程 end*/
     'app.user.manage.role.name': '角色名称',
     'app.user.manage.organaization.name': '所在单位或公司',

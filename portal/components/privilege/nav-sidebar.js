@@ -26,6 +26,7 @@ const session = storageUtil.session;
 const { setWebsiteConfigModuleRecord, getWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
 import WinningClue from '../winning-clue';
 import Trace from 'LIB_DIR/trace';
+import newComment from '../../static/images/new-comment.svg';
 
 //需要加引导的模块
 const schedule_menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
@@ -264,6 +265,7 @@ var NavSidebar = createReactClass({
             this.setState({isShowDialUpKeyboard: true});
         }
     },
+
     getTeamApplyUnreadReply: function() {
         const TEAM_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.TEAM_UNREAD_REPLY;
         //获取sessionStore中已存的未读回复列表
@@ -653,21 +655,24 @@ var NavSidebar = createReactClass({
     },
     
     //展示未读回复的图标提示
-    renderUnreadReplyTip(category) {
+    renderUnreadReplyTip() {
         //是申请审批，有未读回复数并且，待审批数为0
         //所有待审批总数
         var allUnhandleApplyTotal = 0;
         if (_.has(Oplate, 'unread')) {
             allUnhandleApplyTotal = getAllUnhandleApplyCount();
         }
-        let unreadReplyTipShowFlag = category === 'apply' &&//申请审批路径
+        let unreadReplyTipShowFlag =
             (this.state.hasMyApplyUnreadReply || this.state.hasTeamApplyUnreadReply) &&//我的审批或者团队类型审批的有未读回复
             allUnhandleApplyTotal === 0;//待我审批数为0
 
         if (unreadReplyTipShowFlag) {
             return (
-                <span className="iconfont icon-apply-message-tip"
-                    title={Intl.get('user.apply.unread.reply', '有未读回复')}/>
+                <img
+                    src={newComment}
+                    className="new-message-tip"
+                    title={Intl.get('user.apply.unread.reply', '有未读回复')}
+                />
             );
         } else {
             return null;
@@ -718,7 +723,9 @@ var NavSidebar = createReactClass({
                     activeClassName='active'
                     className={extraClass}
                 >
-                    {this.renderUnreadReplyTip(category)}
+                    {
+                        category === 'apply' ? (this.renderUnreadReplyTip()) : null
+                    }
                     {/*{this.state.isReduceNavIcon ? (<span> {menu.shortName} </span>) : null}*/}
                 </NavLink>
             );

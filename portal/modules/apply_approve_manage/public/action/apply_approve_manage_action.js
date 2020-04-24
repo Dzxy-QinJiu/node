@@ -63,6 +63,15 @@ function ApplyApproveManageActions() {
             this.dispatch({error: true, loading: false, errorMsg: errorMsg});
         });
     };
+    // 修改审批通知后的自定义流程
+    this.approvedSettingWordFlow = function(submitObj,callback) {
+        applyApproveManageAjax.approvedSettingWordFlow(submitObj).then((result) => {
+            _.isFunction(callback) && callback(result);
+        }, (errorMsg) => {
+            var errMsg = errorMsg || Intl.get('common.save.failed', '保存失败');
+            _.isFunction(callback) && callback(errMsg);
+        });
+    };
 
 }
 module.exports = alt.createActions(ApplyApproveManageActions);

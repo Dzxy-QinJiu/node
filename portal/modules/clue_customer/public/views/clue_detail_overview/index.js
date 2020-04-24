@@ -89,8 +89,12 @@ class ClueDetailOverview extends React.Component {
         similarCustomerLoading: false,//正在获取相似客户
         similarCustomerErrmsg: '',//获取相似客户出错
         similarCustomerLists: [],//相似客户列表
+        similarIpClueLists: [],//相同IP线索列表
+        similarIpClueLoading: false,//正在获取相同IP线索
+        similarIpClueErrmsg: '',//获取相同Ip线索出错
         showLargerCustomerLists: false,//展示大于3个的客户列表
         showLargerClueLists: false,//展示大于3个的线索列表
+        showLargerIpLists: false,//展示大于3个的相同IP线索列表
         submitReason: '',//要提交的无效原因
         submitInvalidateClueMsg: '',//提交标记无效出错的信息
         submitInvalidateLoading: false,//正在提交无效记录
@@ -115,6 +119,10 @@ class ClueDetailOverview extends React.Component {
             //如果是已转化的客户，不需要展示相似客户
             if (!this.isHasTransferClue() && _.get(this.state, 'curClue.customer_similarity')){
                 this.getSimilarCustomerLists();
+            }
+            //获取相同IP线索列表，如果有相同IP线索字段才获取
+            if(_.get(this.state, 'curClue.repeat_ip')) {
+                this.getSimilarIpClueLists();
             }
         }
         //获取版本信息
@@ -193,6 +201,39 @@ class ClueDetailOverview extends React.Component {
         });
 
     };
+    getSimilarIpClueLists = () => {
+        let ids = _.reduce(_.get(this.state, 'curClue.repeat_ip_ids'), (result, id) => {
+            return result + `,${id}`;
+        });
+        this.setState({
+            similarIpClueLoading: true,
+            similarIpClueErrmsg: ''
+        });
+        $.ajax({
+            url: '/rest/clue/v2/query/leads/by/ids',
+            type: 'post',
+            dateType: 'json',
+            data: {
+                id: ids
+            },
+            success: (data) => {
+                this.setState({
+                    similarIpClueLists: _.isArray(data) ? data : [],
+                    similarIpClueLoading: false,
+                    similarIpClueErrmsg: ''
+                });
+            },
+            error: (errorMsg) => {
+                this.setState({
+                    similarIpClueLists: [],
+                    similarIpClueLoading: false,
+                    similarIpClueErrmsg: errorMsg
+                });
+            }
+        });
+
+    };
+
     getCurCluePhones = () => {
         var curClue = this.state.curClue;
         var phones = [];
@@ -264,11 +305,16 @@ class ClueDetailOverview extends React.Component {
                     if (!this.isHasTransferClue() && _.get(this.state, 'curClue.customer_similarity')) {
                         this.getSimilarCustomerLists();
                     }
-                    //如果相似客户和相似线索两个字段都没有，清空相似客户和相似线索列表
-                    if(!_.get(this.state, 'curClue.customer_similarity') && !_.get(this.state, 'curClue.customer_similarity')) {
+                    // 获取相同Ip列表
+                    if(_.get(this.state, 'curClue.repeat_ip')) {
+                        this.getSimilarIpClueLists();
+                    }
+                    //如果相似客户和相似线索两个字段都没有或者没有相同IP线索，清空相似客户和相似线索以及相同IP线索列表
+                    if((!_.get(this.state, 'curClue.customer_similarity') && !_.get(this.state, 'curClue.customer_similarity')) || !_.get(this.state, 'curClue.repeat_ip')) {
                         this.setState({
                             similarClueLists: [],
-                            similarCustomerLists: []
+                            similarCustomerLists: [],
+                            similarIpClueLists: []
                         });
                     }
                 }
@@ -1335,6 +1381,52 @@ class ClueDetailOverview extends React.Component {
                     </div>
                 )} />);
     };
+
+    // 渲染相同IP线索卡片
+    renderSimilarIpLists = () => {
+        var repeatIpIds = this.state.similarIpClueLists;
+        var moreListShowFlagIP = this.state.showLargerIpLists;
+        var ipListMoreThanThree = _.get(repeatIpIds,'length') > 3;
+        if (!moreListShowFlagIP && ipListMoreThanThree){
+            repeatIpIds = _.cloneDeep(repeatIpIds).splice(0,3);
+        }
+        return (
+            <div className='similar-wrap'>
+                <DetailCard
+                    title={(
+                        <div className="similar-tip">
+                            <i className="iconfont icon-phone-call-out-tip"></i>
+                            {Intl.get('clue.has.similar.ip', '相似IP线索')}
+                        </div>)}
+                    contentNoPadding={true}
+                    content={(
+                        <div className="similar-content similar-customer-list">
+                            {_.map(repeatIpIds, (listItem) => {
+                                let isFromCluepool = _.isEqual(_.get(this.state, 'curClue.clue_type'), 'clue_pool');
+                                let similarTitleCls = className('similar-title', {
+                                    'title-from-clue-pool': isFromCluepool
+                                });
+                                return <div className="similar-block">
+                                    <div className={similarTitleCls}>
+                                        {renderClueStatus(listItem)}
+                                        {this.renderClueSimilarLists(listItem, true)}
+                                    </div>
+                                    <div className="similar-name-phone">
+                                        <span className="contact-name contact-name-ip" title={_.get(listItem, 'source_ip', '')}>
+                                            {Intl.get('clue.customer.source.ip', '来源IP') + '：' + listItem.source_ip }
+                                        </span>
+                                    </div>
+                                </div>;
+                            })}
+                            {ipListMoreThanThree ? <div className="show-hide-tip" onClick={ this.handleToggleIpClueTip } data-tracename='点击收起或展开全部按钮'>
+                                {moreListShowFlagIP ? Intl.get('crm.contact.way.hide', '收起') : Intl.get('notification.system.more', '展开全部')}</div> : null}
+                        </div>
+                    )} 
+                />
+            </div>);
+    };
+
+
     handleToggleCustomerTip = () => {
         this.setState({
             showLargerCustomerLists: !this.state.showLargerCustomerLists
@@ -1374,10 +1466,16 @@ class ClueDetailOverview extends React.Component {
         });
         return contacts;
     };
-
+    
     handleToggleClueTip = () => {
         this.setState({
             showLargerClueLists: !this.state.showLargerClueLists
+        });
+    }
+
+    handleToggleIpClueTip = () => {
+        this.setState({
+            showLargerIpLists: !this.state.showLargerIpLists
         });
     }
 
@@ -1387,6 +1485,19 @@ class ClueDetailOverview extends React.Component {
                 <div className="similar-wrap">
                     {_.get(this, 'state.similarCustomerLists[0]') && !this.isHasTransferClue() ? this.renderSimilarLists() : null}
                     {_.get(this,'state.similarClueLists[0]') ? this.renderSimilarLists('clue') : null}
+                </div>
+            );
+        }else{
+            return null;
+        }
+    };
+
+    // 调取渲染相同IP线索的方法
+    renderIpClueLists = () => {
+        if (_.get(this,'state.similarIpClueLists[0]')){
+            return (
+                <div className="similar-wrap">
+                    { this.renderSimilarIpLists() }
                 </div>
             );
         }else{
@@ -1861,6 +1972,7 @@ class ClueDetailOverview extends React.Component {
                     <DetailCard content={this.renderClueTimeAndIndustry()}/>
                     <DetailCard content={this.renderClueSourceAndClassfy()}/>
                     {this.renderClueCustomerLists()}
+                    {this.renderIpClueLists()}
                     {/*分配线索给某个销售*/}
                     {/*有分配的权限，但是该线索没有分配给某个销售的时候，展示分配按钮，其他情况都展示分配详情就可以*/}
                     <DetailCard content={(

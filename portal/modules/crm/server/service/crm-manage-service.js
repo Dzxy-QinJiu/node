@@ -582,9 +582,14 @@ exports.editSecondSales = function(req, res) {
 
 //释放客户
 exports.releaseCustomer = function(req, res) {
+    let url = crmRestApis.releaseCustomer.replace(':id',req.body.id);
+    if(_.get(req.query, 'type')) {
+        url += `?type=${req.query.type}`;
+    }
+
     return restUtil.authRest.put(
         {
-            url: crmRestApis.releaseCustomer.replace(':id',req.body.id),
+            url: url,
             req: req,
             res: res,
         }, req.body);

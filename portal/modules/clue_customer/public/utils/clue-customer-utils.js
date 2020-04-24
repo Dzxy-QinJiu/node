@@ -412,6 +412,7 @@ export const deleteEmptyProperty = function(data) {
 export const COMMON_OTHER_ITEM = 'otherSelectedItem';
 export const SIMILAR_CUSTOMER = 'similarCustomer';
 export const SIMILAR_CLUE = 'similarClue';
+export const SIMILAR_IP = 'similarIP';
 export const EXTRACT_TIME = 'getLeadFromLeadPool';
 export const APPLY_TRY_LEAD = 'applyTryEnterprise';
 export const NOT_CONNECTED = Intl.get('clue.customer.not.connect.phone', '未打通电话的线索');
@@ -467,8 +468,11 @@ export const otherFilterArray = [
         name: Intl.get( 'clue.has.similar.customer','有相似客户'),
         value: SIMILAR_CUSTOMER
     },{
-        name: Intl.get( 'clue.has.similar.clue','有相似线索'),
+        name: Intl.get('clue.has.similar.clue','有相似线索'),
         value: SIMILAR_CLUE
+    },{
+        name: Intl.get('clue.has.similar.ip','有相同IP线索'),
+        value: SIMILAR_IP
     },{
         name: Intl.get('clue.customer.not.connect.phone', '未打通电话的线索'),
         value: NOT_CONNECTED
