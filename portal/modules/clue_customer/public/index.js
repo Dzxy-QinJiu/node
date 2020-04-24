@@ -99,10 +99,7 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import ClueExtract from 'MOD_DIR/clue_pool/public';
 import MoreButton from 'CMP_DIR/more-btn';
-import DifferentVersion from 'MOD_DIR/different_version/public';
-import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import RecommendClues from 'MOD_DIR/home_page/public/views/boot-process/recommend_clues';
-const EXTRACT_CLUE_STEPS = RecommendClues.EXTRACT_CLUE_STEPS;
+import history from 'PUB_DIR/sources/history';
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -669,23 +666,8 @@ class ClueCustomer extends React.Component {
         );
     };
     showClueRecommendTemplate = (param) => {
-        this.setState({
-            isShowRecommendCluePanel: true,
-            guideRecommendCondition: _.get(param, 'isGuideSetting')
-        });
+        history.push('/clues-recommend');
     };
-    // 清空引导页传入的推荐线索条件
-    clearGuideRecomentCondition = () => {
-        this.setState({
-            guideRecommendCondition: false,
-        });
-    };
-    closeRecommendCluePanel = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '关闭推荐线索面板');
-        this.setState({
-            isShowRecommendCluePanel: false
-        });
-    }
     handleClickCloseClue = () => {
         let personnelObj = {};
         personnelObj[oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS] = true;
@@ -3570,26 +3552,6 @@ class ClueCustomer extends React.Component {
                                     closeExtractCluePanel={this.closeExtractCluePanel}
                                 />
                             </RightPanel>
-                            : null
-                    }
-                    {
-                        this.state.isShowRecommendCluePanel ?
-                            <React.Fragment>
-                                <RightPanelModal
-                                    isShowMadal
-                                    isShowCloseBtn
-                                    canClickMaskClosePanel={!isCurtao()}
-                                    onClosePanel={this.closeRecommendCluePanel}
-                                    content={(
-                                        <RecommendClues
-                                            guideRecommendCondition={this.state.guideRecommendCondition}
-                                            clearGuideRecomentCondition={this.clearGuideRecomentCondition}
-                                            showSuccessPage={false}
-                                            onClosePanel={this.closeRecommendCluePanel}
-                                        />
-                                    )}
-                                />
-                            </React.Fragment>
                             : null
                     }
                     {this.state.clueAnalysisPanelShow ? <RightPanel

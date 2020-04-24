@@ -25,6 +25,7 @@ class PurchaseLeads extends React.Component{
             listHeight: 120,
             inputNumber: 1,//输入的线索量份数
             showCountDown: true,
+            leftTitle: _.get(this.props.paramObj,'leftTitle',''),
         };
     }
 
