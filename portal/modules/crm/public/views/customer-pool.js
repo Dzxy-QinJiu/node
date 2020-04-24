@@ -352,7 +352,6 @@ class CustomerPool extends React.Component {
                         dealCustomer(curCustomer);
                     }
                 }
-                // eslint-disable-next-line no-unreachable
             }else {
                 totalSize -= _.get(customerIds, 'length', 0);
             }
