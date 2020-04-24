@@ -13,6 +13,7 @@ const ROUTE_CONST = {
     'SALES_HOME': 'sales_home_page',//销售首页id
     'HOME_PAGE': 'home_page',//首页id
     'CALL_RECORD': 'call_record',//通话记录id
+    'CLUES_RECOMMEND': 'clues_recommend',//推荐线索id
 };
 const isOpenCaller = require('../utils/common-method-util').isOpenCaller;
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
@@ -21,6 +22,7 @@ import {isCurtao, isOrganizationEefung, checkVersionAndType} from 'PUB_DIR/sourc
 import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 import privilegeConst_user_info from '../../../modules/user_info/public/privilege-config';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {hasRecommendPrivilege} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 //如果访问/，跳转到左侧导航菜单的第一个路由
 class FirstIndexRoute extends React.Component {
     //当组件即将加载的时候，跳转到第一个路由
@@ -311,6 +313,21 @@ function filterRoute(allRoutes) {
     dealWorkFlowConfigRoute(user.routes, user.workFlowConfigs);
     //过滤没有开通呼叫中心时的通话记录路由
     dealCallRecordRoute(user.routes);
+    //如果是蚁坊的组织，需要把销售自动化的去掉
+    if(isOrganizationEefung()){
+        var backgroundObj = _.find(user.routes, item => item.id === 'background_management');
+        if(_.get(backgroundObj,'routes')){
+            backgroundObj.routes = _.filter(backgroundObj.routes, item => item.id !== 'sales_auto');
+        }
+    }
+    //如果是个人版（试用，正式），不需要展示首页，即/home,需过滤掉
+    filterPersonalRoutes(user.routes);
+    //过滤掉curtao域名下不显示的菜单
+    user.routes = filterCurtaoRoutes(user.routes);
+    //没有线索推荐权限的，需要去掉线索推荐页
+    if(!hasRecommendPrivilege()) {
+        user.routes = _.filter(user.routes, item => item.id !== ROUTE_CONST.CLUES_RECOMMEND);
+    }
     let childRoutes = matchRoute(user.routes, allRoutes);
     dealCommonSaleRoute(childRoutes, user.isCommonSales);
     //如果申请审批没有内容，手动渲染一个页面进去
@@ -334,17 +351,6 @@ function filterRoute(allRoutes) {
         //如果展示的是申请审批的提示页面，把申请申请页面过滤掉
         user.routes = _.filter(user.routes, item => item.id !== 'application_apply_management');
     }
-    //如果是蚁坊的组织，需要把销售自动化的去掉
-    if(isOrganizationEefung()){
-        var backgroundObj = _.find(user.routes, item => item.id === 'background_management');
-        if(_.get(backgroundObj,'routes')){
-            backgroundObj.routes = _.filter(backgroundObj.routes, item => item.id !== 'sales_auto');
-        }
-    }
-    //如果是个人版（试用，正式），不需要展示首页，即/home,需过滤掉
-    filterPersonalRoutes(user.routes);
-    //过滤掉curtao域名下不显示的菜单
-    user.routes = filterCurtaoRoutes(user.routes);
     //路由配置
     const routePaths = [
         {
