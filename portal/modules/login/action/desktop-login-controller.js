@@ -334,7 +334,8 @@ function loginError(req, res) {
 //存在该字段，且为false时，说明没有设置过
 function handleWebsiteConfig(req, result, field, cb) {
     let personnel_setting = _.get(result, 'personnel_setting');
-    if(_.has(personnel_setting, field)) {//存在这个字段
+    // todo 暂时去掉，逻辑待优化
+    /*if(_.has(personnel_setting, field)) {//存在这个字段
         //（为true设置过，false没有设置过）
         let isSettinged = personnel_setting[field];
         if(_.isBoolean(isSettinged)) {//是布尔类型
@@ -343,6 +344,9 @@ function handleWebsiteConfig(req, result, field, cb) {
                 _.isFunction(cb) && cb();
             }
         }
+    }*/
+    if(!_.get(personnel_setting, field)) {
+        _.isFunction(cb) && cb();
     }
 }
 
