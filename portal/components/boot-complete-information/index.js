@@ -208,7 +208,7 @@ class BootCompleteInformation extends React.Component{
         function setWebConfig(callback) {
             if(!_this.hasSetWebConfigSuccess) {
                 _this.setWebConfig({
-                    no_show_boot_complete_set_recommend: false
+                    no_show_boot_complete_set_recommend: true
                 }).then(() => {
                     _.isFunction(callback) && callback();
                 });
