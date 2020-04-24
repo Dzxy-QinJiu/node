@@ -435,8 +435,13 @@ exports.getHistoryScoreList = function(reqData) {
 //释放客户
 exports.releaseCustomer = function(reqData) {
     let Deferred = $.Deferred();
+    let url = '/rest/customer/release';
+    if(reqData.type) {
+        url = url + '?type=' + reqData.type;
+        delete reqData.type;
+    }
     $.ajax({
-        url: '/rest/customer/release',
+        url: url,
         dataType: 'json',
         type: 'put',
         data: reqData,

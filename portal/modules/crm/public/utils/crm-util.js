@@ -293,3 +293,9 @@ exports.CUSTOMER_POOL_TYPES = {
     FOLLOWUP: 'followup',//联合跟进
 };
 
+//客户管理释放类型
+exports.RELEASE_TYPE = {
+    JOIN: 'join',//联合跟进人
+    OWNER: 'owner',//负责人
+};
+

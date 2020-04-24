@@ -11,7 +11,8 @@ import {AntcTable} from 'antc';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {SearchInput} from 'antc';
-import {message, Popconfirm, Icon, Tag, Button, Popover} from 'antd';
+import {message, Popconfirm, Icon, Tag, Button, Popover, Radio} from 'antd';
+const RadioGroup = Radio.Group;
 import crmAjax from '../ajax/index';
 import userData from 'PUB_DIR/sources/user-data';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
@@ -44,6 +45,12 @@ var LAYOUT_CONSTANTS = {
     EXTRA_WIDTH_WITHOUT_INPUT: 548//在需要额计算输入框宽度时，除了输入框意外的宽度
 };
 const PAGE_SIZE = 20;
+
+const EXTRACT_TYPE = {
+    SINGLE: 'single',
+    BATCH: 'batch'
+};
+
 class CustomerPool extends React.Component {
     constructor(props) {
         super(props);
@@ -76,6 +83,7 @@ class CustomerPool extends React.Component {
             showCustomerRulePanel: false, //显示规则设置面板
             isExtractSuccess: false,//是否提取成功
             filterInputWidth: 300,//输入框的默认宽度
+            distributeType: CUSTOMER_POOL_TYPES.FOLLOWUP,//提取时的分配类型，默认为联合跟进人
         };
     }
 
@@ -258,24 +266,40 @@ class CustomerPool extends React.Component {
     }
 
     //批量提取客户
-    batchExtractCustomer = () => {
+    batchExtractCustomer = (hasAllExist, e) => {
+        if(_.isObject(e)) { e.stopPropagation(); }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.extract-btn'), '批量提取客户');
         let customerIdArray = _.map(this.state.selectedCustomer, 'id');
-        this.extractCustomer(customerIdArray);
+        hasAllExist = _.isBoolean(hasAllExist) && hasAllExist;
+        if(hasAllExist) {//选择的客户中，两种类型都存在时
+            let { ownerCustomers, followUpCustomers } = this.getSelectedTypeCustomers(this.state.selectedCustomer);
+            if(this.state.distributeType === CUSTOMER_POOL_TYPES.OWNER) {//分配负责人
+                customerIdArray = ownerCustomers;
+            }else {
+                customerIdArray = followUpCustomers;
+            }
+        }
+        this.extractCustomer(customerIdArray, hasAllExist, EXTRACT_TYPE.BATCH);
     };
     //单个提取客户
-    singleExtractCustomer = (customer) => {
+    singleExtractCustomer = (customer, hasAllExist, e) => {
+        if(_.isObject(e)) { e.stopPropagation(); }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-extract'), '提取单个客户');
+        hasAllExist = _.isBoolean(hasAllExist) && hasAllExist;
         let customerIdArray = _.get(customer, 'id') ? [_.get(customer, 'id')] : [];
-        this.extractCustomer(customerIdArray);
+        this.extractCustomer(customerIdArray, hasAllExist, EXTRACT_TYPE.SINGLE);
     };
 
     //提取客户的处理
-    extractCustomer = (customerIds) => {
+    extractCustomer = (customerIds, hasAllExist, operatorType) => {
         if (this.state.isExtracting || !_.get(customerIds, 'length')) return;
         let paramObj = {
             customerIds: customerIds
         };
+        //两种类型都存在时，需要加上选择的哪种类型（负责人/联合跟进人）
+        if(hasAllExist) {
+            paramObj.type = this.state.distributeType;
+        }
         if (isCommonSalesOrPersonnalVersion()) {
             paramObj.ownerId = userData.getUserData().user_id;
             if (_.get(paramObj, 'customerIds.length') > 20) {
@@ -301,9 +325,62 @@ class CustomerPool extends React.Component {
         crmAjax.extractCustomer(paramObj).then(result => {
             let poolCustomerList = this.state.poolCustomerList;
             let customerIds = paramObj.customerIds;
+            let selectedCustomer = this.state.selectedCustomer;
+            let totalSize = this.state.totalSize;
+            let self = this;
+            let isDistributeFollowUp = this.state.distributeType === CUSTOMER_POOL_TYPES.FOLLOWUP;
+            //todo
+            // 1. 如果选择的客户都是需要联合跟进的，提示“提取并分配联合跟进人" ，提取成功，客户在列表中消失
+            // 2. 如果选择的客户都是需要负责人的，提示“提取并分配负责人”，提取成功，客户在列表中消失
+            // 3. 如果既有需要联合跟进又有需要负责人的客户，提示“ 提取并分配：负责人、联合跟进人，选择销售人员“，
+            // 3-1. 选择负责人的，只分配负责人的，联合跟进人不用处理；
+            // 3-2. 选择联合跟进人，只分配需要联合跟进人的，需要负责人的不做处理。
+            // 3-3. 提取成功后，
+            // 3-3-1. 分配的负责人，只需要负责人的客户在列表中消失，
+            //        既需要负责人又需要联合跟进人的，修改客户信息【去掉需负责人标记】；
+            // 3-3-2. 分配的联合跟进人，只需联合跟进人的客户在列表中消失，
+            //        既需要负责人又需要联合跟进人的，修改客户信息【去掉需联合跟进标记】
+            if(hasAllExist) {//既有需要联合跟进又有需要负责人的客户
+                customerIds = [];
+                if(operatorType === EXTRACT_TYPE.BATCH) {//批量提取时
+                    _.each(selectedCustomer, customer => {
+                        dealCustomer(customer);
+                    });
+                }else {//单个提取时
+                    let curCustomer = _.find(poolCustomerList, customer => customer.id === paramObj.customerIds[0]);
+                    if(curCustomer) {
+                        dealCustomer(curCustomer);
+                    }
+                }
+            }else {
+                totalSize -= _.get(customerIds, 'length', 0);
+            }
+
+            function dealCustomer(customer) {
+                let { ownerCustomers, followUpCustomers, hasAllExist } = self.getSelectedTypeCustomers([customer]);
+                if(hasAllExist) {//都存在时，需要修改客户信息里对应的标记
+                    let curCustomer = _.find(poolCustomerList, poolCustomer => poolCustomer.id === customer.id);
+                    if(curCustomer) {
+                        if(isDistributeFollowUp) {//分配联合跟进人，去掉需联合跟进标记
+                            customer.customerpool_tags = curCustomer.customerpool_tags = [CUSTOMER_POOL_TYPES.OWNER];
+                        }else {//分配负责人，去掉需负责人标记
+                            customer.customerpool_tags = curCustomer.customerpool_tags = [CUSTOMER_POOL_TYPES.FOLLOWUP];
+                        }
+                    }
+                }else if(
+                    //分配的联合跟进人，需联合跟进人的客户在列表中消失
+                    isDistributeFollowUp && followUpCustomers.length ||
+                    //分配的负责人，只需要负责人的客户在列表中消失
+                    !isDistributeFollowUp && ownerCustomers.length
+                ) {
+                    customerIds.push(customer.id);
+                    totalSize--;
+                }
+            }
+
             poolCustomerList = _.filter(poolCustomerList, item => !_.includes(customerIds, item.id));
-            let selectedCustomer = _.filter(this.state.selectedCustomer, customer => !_.includes(customerIds, customer.id));
-            let totalSize = this.state.totalSize - _.get(customerIds, 'length', 0);
+            selectedCustomer = _.filter(this.state.selectedCustomer, customer => !_.includes(customerIds, customer.id));
+
             this.setState({
                 isExtracting: false,
                 salesMan: '',
@@ -311,7 +388,9 @@ class CustomerPool extends React.Component {
                 customersBack: poolCustomerList,
                 selectedCustomer,
                 totalSize,
-                isExtractSuccess: true
+                isExtractSuccess: true,
+                unSelectDataTip: '',
+                distributeType: CUSTOMER_POOL_TYPES.FOLLOWUP
             });
             message.success(Intl.get('clue.extract.success', '提取成功'));
             //隐藏批量提取面板
@@ -321,7 +400,7 @@ class CustomerPool extends React.Component {
                 this.getPoolCustomer(true);
             }
         }, (errorMsg) => {
-            this.setState({isExtracting: false, salesMan: ''});
+            this.setState({isExtracting: false, salesMan: '', unSelectDataTip: ''});
             message.error(errorMsg);
         });
     };
@@ -357,10 +436,6 @@ class CustomerPool extends React.Component {
         if (this.state.currentId) {
             let curCustomer = _.find(this.state.poolCustomerList, item => item.id === this.state.currentId);
             if (curCustomer) {
-                //如果是需联合跟进的，需要使用customer_id字段
-                if(this.isNeedFollowUpCustomer(curCustomer)) {
-                    curCustomer.id = _.get(curCustomer,'customer_id', curCustomer.id);
-                }
                 phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                     customer_params: {
                         curCustomer: {...curCustomer, customer_type: CRM_VIEW_TYPES.CRM_POOL},
@@ -398,6 +473,89 @@ class CustomerPool extends React.Component {
         return tip;
     }
 
+    //获取需负责人、需联合跟进的客户
+    // 1. 单个提取时, 两个都存在，需展示选择分配类型
+    // 2. 批量提取时, 两个都存在，展示选择分配类型
+    getSelectedTypeCustomers(customers) {
+        let ownerCustomers = [], followUpCustomers = [];
+
+        _.each(customers, customer => {
+            if(_.get(customer, 'customerpool_tags.length') > 0) {
+                let customerPoolTags = _.get(customer, 'customerpool_tags');
+                //只有一个时
+                if(customerPoolTags.length === 1) {
+                    if(customerPoolTags[0] === CUSTOMER_POOL_TYPES.FOLLOWUP) {//需联合跟进
+                        followUpCustomers.push(customer.id);
+                    }else if(customerPoolTags[0] === CUSTOMER_POOL_TYPES.OWNER) {//需负责人
+                        ownerCustomers.push(customer.id);
+                    }
+                }else {//两个都有时
+                    ownerCustomers.push(customer.id);
+                    followUpCustomers.push(customer.id);
+                }
+            }
+        });
+
+        return {
+            ownerCustomers,
+            followUpCustomers,
+            hasAllExist: !!(ownerCustomers.length && followUpCustomers.length)
+        };
+    }
+
+    onTypeChange = (e) => {
+        this.setState({
+            distributeType: e.target.value,
+        });
+    };
+
+    renderExtractCustomer({content, customers, callback, type, isCommonSales = false}) {
+        customers = type === EXTRACT_TYPE.SINGLE ? customers : this.state.selectedCustomer;
+        let { ownerCustomers, followUpCustomers, hasAllExist } = this.getSelectedTypeCustomers(customers);
+        let dataTraceName = '', overlayTitle = '';
+        //需联合跟进和需负责人都有时，展示选择分配类型
+        if(hasAllExist) {
+            dataTraceName = '提取并分配负责人或联合跟进人';
+            overlayTitle = Intl.get('crm.pool.extract.and.distribute', '提取并分配');
+        }else if(ownerCustomers.length) {//需负责人
+            dataTraceName = '客户池提取客户并分配负责人';
+            overlayTitle = Intl.get('crm.pool.extract.distribute', '提取并分配负责人');
+        }else if(followUpCustomers.length) {//需联合跟进
+            dataTraceName = '客户池提取客户并分配联合跟进人';
+            overlayTitle = Intl.get('crm.pool.extract.distribute.followup', '提取并分配联合跟进人');
+        }
+        if(isCommonSales) {//销售提取时，两种情况都存在时处理
+            dataTraceName = '普通销售选择分配类型';
+            overlayTitle = Intl.get('crm.pool.sales.extract.exist.tip', '我作为');
+        }
+
+        const handleSubmit = (e) => {
+            if(type === EXTRACT_TYPE.SINGLE) {
+                callback(customers[0], hasAllExist, e);
+            } else {
+                callback(hasAllExist, e);
+            }
+        };
+
+        return (
+            <AntcDropdown
+                datatraceContainer={dataTraceName}
+                ref={ref => { if(_.includes([EXTRACT_TYPE.BATCH], type)) {
+                    this.batchExtractRef = ref;
+                }}}
+                content={content}
+                overlayTitle={overlayTitle}
+                okTitle={Intl.get('common.confirm', '确认')}
+                cancelTitle={Intl.get('common.cancel', '取消')}
+                isSaving={this.state.isExtracting}
+                overlayContent={this.renderSalesBlock(hasAllExist, isCommonSales)}
+                handleSubmit={handleSubmit}
+                unSelectDataTip={this.state.unSelectDataTip}
+                clearSelectData={this.clearSelectSales}
+                btnAtTop={false}
+            />);
+    }
+
     getColumns() {
         const column_width = 80;
         let columns = [
@@ -408,15 +566,20 @@ class CustomerPool extends React.Component {
                 className: 'has-filter',
                 render: (text, record, index) => {
                     var tagsArray = _.isArray(record.customerpool_tags) ? record.customerpool_tags : [];
-                    var tags = null;
-                    if(_.get(tagsArray,'[0]') === CUSTOMER_POOL_TYPES.FOLLOWUP) {
-                        tags = <Tag>{Intl.get('crm.pool.need.joint.followup', '需联合跟进')}</Tag>;
-                    }
+                    var tags = [];
+                    _.each(tagsArray, item => {
+                        if(item === CUSTOMER_POOL_TYPES.FOLLOWUP) {//需联合跟进
+                            tags.push(<Tag>{Intl.get('crm.pool.need.joint.followup', '需联合跟进')}</Tag>);
+                        }else if(item === CUSTOMER_POOL_TYPES.OWNER) {//需负责人
+                            tags.push(<Tag>{Intl.get('crm.pool.need.to.head.', '需负责人')}</Tag>);
+                        }
+                    });
+
                     return (
                         <span>
                             <span>{text}</span>
                             <span className="hidden record-id">{record.id}</span>
-                            {tags ?
+                            {tags.length ?
                                 <div className="customer-list-tags">
                                     {tags}
                                 </div>
@@ -483,26 +646,35 @@ class CustomerPool extends React.Component {
                 title: Intl.get('common.operate', '操作'),
                 width: 40,
                 render: (text, record, index) => {
-                    return isCommonSalesOrPersonnalVersion() ? (
-                        <Popconfirm
-                            placement="left"
-                            title={Intl.get('crm.pool.single.extract.tip', '您确定要提取此客户吗？')}
-                            onConfirm={this.singleExtractCustomer.bind(this, record)}
-                        >
-                            {extractIcon}
-                        </Popconfirm>
-                    ) : (<AntcDropdown
-                        datatraceContainer={this.getExtractTip(record).dataTraceName}
-                        content={extractIcon}
-                        overlayTitle={this.getExtractTip(record).title}
-                        okTitle={Intl.get('common.confirm', '确认')}
-                        cancelTitle={Intl.get('common.cancel', '取消')}
-                        isSaving={this.state.isExtracting}
-                        overlayContent={this.renderSalesBlock()}
-                        handleSubmit={this.singleExtractCustomer.bind(this, record)}
-                        unSelectDataTip={this.state.unSelectDataTip}
-                        clearSelectData={this.clearSelectSales}
-                        btnAtTop={false}/>);
+                    if(isCommonSalesOrPersonnalVersion()) {
+                        let { hasAllExist } = this.getSelectedTypeCustomers([record]);
+                        if(hasAllExist) {//如果两种都存在时，需要特殊处理
+                            return this.renderExtractCustomer({
+                                content: extractIcon,
+                                customers: [record],
+                                callback: this.singleExtractCustomer,
+                                type: EXTRACT_TYPE.SINGLE,
+                                isCommonSales: true
+                            });
+                        }else {
+                            return (
+                                <Popconfirm
+                                    placement="left"
+                                    title={Intl.get('crm.pool.single.extract.tip', '您确定要提取此客户吗？')}
+                                    onConfirm={this.singleExtractCustomer.bind(this, record)}
+                                >
+                                    {extractIcon}
+                                </Popconfirm>
+                            );
+                        }
+                    }else {
+                        return this.renderExtractCustomer({
+                            content: extractIcon,
+                            customers: [record],
+                            callback: this.singleExtractCustomer,
+                            type: EXTRACT_TYPE.SINGLE
+                        });
+                    }
                 }
             });
         }
@@ -626,20 +798,31 @@ class CustomerPool extends React.Component {
     };
 
     clearSelectSales = () => {
-        this.setState({salesMan: ''});
+        this.setState({salesMan: '', distributeType: CUSTOMER_POOL_TYPES.FOLLOWUP});
     };
-    renderSalesBlock = () => {
+    renderSalesBlock = (showType, isCommonSales) => {
         let dataList = formatSalesmanList(this.state.userList);
         return (
             <div className="op-pane change-salesman">
-                <AlwaysShowSelect
-                    placeholder={Intl.get('sales.team.search', '搜索')}
-                    value={this.state.salesMan}
-                    onChange={this.onSalesmanChange}
-                    getSelectContent={this.setSelectContent}
-                    notFoundContent={dataList.length ? Intl.get('crm.29', '暂无销售') : Intl.get('crm.30', '无相关销售')}
-                    dataList={dataList}
-                />
+                {showType ? (
+                    <React.Fragment>
+                        <RadioGroup onChange={this.onTypeChange} value={this.state.distributeType}>
+                            <Radio value={CUSTOMER_POOL_TYPES.OWNER}>{Intl.get('crm.6', '负责人')}</Radio>
+                            <Radio value={CUSTOMER_POOL_TYPES.FOLLOWUP}>{Intl.get('crm.second.sales', '联合跟进人')}</Radio>
+                        </RadioGroup>
+                        {isCommonSales ? null : <div className="change-salesman-title" >{Intl.get('crm.17', '请选择销售人员')}</div>}
+                    </React.Fragment>
+                ) : null}
+                {isCommonSales ? null : (
+                    <AlwaysShowSelect
+                        placeholder={Intl.get('sales.team.search', '搜索')}
+                        value={this.state.salesMan}
+                        onChange={this.onSalesmanChange}
+                        getSelectContent={this.setSelectContent}
+                        notFoundContent={dataList.length ? Intl.get('crm.29', '暂无销售') : Intl.get('crm.30', '无相关销售')}
+                        dataList={dataList}
+                    />
+                )}
             </div>
         );
     };
@@ -686,26 +869,30 @@ class CustomerPool extends React.Component {
             if (selectCustomerLength) {
                 //普通销售或者个人版，可以直接将客户提取到自己身上
                 if (isCommonSalesOrPersonnalVersion()) {
-                    return (<Popconfirm
-                        title={Intl.get('crm.pool.batch.extract.tip', '您确定要提取选中的客户吗？')}
-                        onConfirm={this.batchExtractCustomer}
-                    >
-                        {batchExtractBtn}
-                    </Popconfirm>);
+                    let { hasAllExist } = this.getSelectedTypeCustomers(this.state.selectedCustomer);
+                    if(hasAllExist) {
+                        return this.renderExtractCustomer({
+                            content: batchExtractBtn,
+                            customers: [],
+                            callback: this.batchExtractCustomer,
+                            type: EXTRACT_TYPE.BATCH,
+                            isCommonSales: true
+                        });
+                    }else {
+                        return (<Popconfirm
+                            title={Intl.get('crm.pool.batch.extract.tip', '您确定要提取选中的客户吗？')}
+                            onConfirm={this.batchExtractCustomer}
+                        >
+                            {batchExtractBtn}
+                        </Popconfirm>);
+                    }
                 } else {//销售领导、管理员提取需要分配客户的负责人
-                    return (<AntcDropdown
-                        datatraceContainer='客户池提取并分配负责人'
-                        ref={batchExtract => this.batchExtractRef = batchExtract}
-                        content={batchExtractBtn}
-                        overlayTitle={Intl.get('crm.pool.extract.distribute', '提取并分配负责人')}
-                        okTitle={Intl.get('common.confirm', '确认')}
-                        cancelTitle={Intl.get('common.cancel', '取消')}
-                        isSaving={this.state.isExtracting}
-                        overlayContent={this.renderSalesBlock()}
-                        handleSubmit={this.batchExtractCustomer}
-                        unSelectDataTip={this.state.unSelectDataTip}
-                        clearSelectData={this.clearSelectSales}
-                        btnAtTop={false}/>);
+                    return this.renderExtractCustomer({
+                        content: batchExtractBtn,
+                        customers: [],
+                        callback: this.batchExtractCustomer,
+                        type: EXTRACT_TYPE.BATCH
+                    });
                 }
             } else {//未选客户时，批量提取按钮不可用，点击后提示先选择客户
                 const clickTip = (
