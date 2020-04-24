@@ -10,7 +10,7 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
     const Store = paramObj.Store;
 
     return {
-        title: Intl.get('call.record.trend.charts', '近一个月的通话趋势'),
+        title: Intl.get('call.record.trend.charts', '通话趋势统计'),
         chartType: 'line',
         option: {
             tooltip: {
@@ -20,12 +20,10 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
         layout: {sm: 24},
         ajaxInstanceFlag: 'getCallNumberTimeTrend',
         url: '/rest/analysis/callrecord/v1/callrecord/histogram',
-        conditions: [{
-            name: 'interval',
-            value: 'day',
-        }],
         argCallback: arg => {
             let query = arg.query;
+
+            query.interval = 'day';
 
             const teamList = _.get(Store, 'teamList.list');
 

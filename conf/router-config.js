@@ -184,6 +184,7 @@ let routers = [
         routePath: '/apply',
         shortName: 'crm.109',//申请
         component: `${MODULE_PATH}apply_approve_list/public`,
+        showPrivileges: ['WORKFLOW_BASE_PERMISSION']//申请审批工作流程的基础权限，只有专业版以上才有此权限
     },
     {
         id: 'NOTIFICATION',//唯一标识 - 通知

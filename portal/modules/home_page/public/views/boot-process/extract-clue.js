@@ -56,7 +56,7 @@ const HOT_SELECTORS = [/*{
         value: '口罩厂家'
     },{
         name: Intl.get('clue.recommend.State-owned.enterprise', '国有企业'),
-        value: '规模'
+        value: '国有'
     },];
 
 const CONTACT_PHONE_CLS = 'extract-clue-contact-count';
@@ -460,7 +460,7 @@ class ExtractClues extends React.Component {
     //提取数为0时显示的提示信息
     hasNoExtractCountTip = () => {
         // 过期的账号不能提取线索，所以不需要展示还可提取xxx条线索
-        if(isExpired) return null;
+        if(isExpired()) return null;
         var maxLimitExtractNumber = this.state.maxLimitExtractNumber;
         var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
         let versionAndType = checkVersionAndType();
@@ -961,6 +961,7 @@ class ExtractClues extends React.Component {
                                         <div className="extract-clue-text__name">
                                             {item.hasExtractedByOther ? <i className='iconfont icon-warning-tip'/> : null}
                                             <span dangerouslySetInnerHTML={{__html: this.handleHighLightStyle(item.name).content}}/>
+                                            {item.openStatus ? <span className="clue-company-open-status">{item.openStatus.split('（')[0]}</span> : null}
                                             {labels.length ? (
                                                 <div className="clue-labels">
                                                     {_.map(labels, (tag, index) => (
@@ -1106,6 +1107,7 @@ class ExtractClues extends React.Component {
         }
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
             showDifferentVersion: this.triggerShowVersionInfo,
+            isShowModal: false,
             leftTitle: tipTitle,
         });
     }

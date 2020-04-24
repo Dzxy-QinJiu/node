@@ -52,6 +52,7 @@ class CallRecordAnalyis extends React.Component {
             secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
             teamMemberFilterType: 'team', // 按团队还是成员筛选
             isShowEffectiveTimeAndCount: this.props.isShowEffectiveTimeAndCount, // 是否展示有效通话时长和有效接通数
+            isFilter114: this.props.isFilter114, // 是否过滤114
             startTime: moment().startOf(DEFAULT_TIME_RANGE).valueOf(),
         };
     }
@@ -115,6 +116,10 @@ class CallRecordAnalyis extends React.Component {
                 value: moment().endOf(DEFAULT_TIME_RANGE).valueOf(),
             },
             {
+                name: 'interval',
+                value: DEFAULT_TIME_RANGE,
+            },
+            {
                 name: 'team_ids',
                 value: '',
             },
@@ -138,6 +143,8 @@ class CallRecordAnalyis extends React.Component {
                     name: 'start_time',
                 }, {
                     name: 'end_time',
+                }, {
+                    name: 'interval',
                 }],
             },
             {
@@ -204,9 +211,13 @@ class CallRecordAnalyis extends React.Component {
     }
 
     //时间的设置
-    onSelectDate = (startTime, endTime, timeType) => {
+    onSelectDate = (startTime, endTime, interval) => {
         this.setState({ startTime }, () => {
-            dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
+            //根据和后端的约定，对自定义类型和全部时间类型做一下转换
+            if (interval === 'custom') interval = 'day';
+            if (interval === 'all') interval = 'year';
+
+            dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime, interval);
         });
     };
 
@@ -350,9 +361,12 @@ class CallRecordAnalyis extends React.Component {
                                 <AntcDatePicker
                                     disableDateAfterToday={true}
                                     range={DEFAULT_TIME_RANGE}
+                                    customTimeLimit={{
+                                        dateSelectRange: moment().diff(moment().subtract(3, 'months')),
+                                        tipMsg: Intl.get('analysis.please.choose.within.3.months', '请选择近3个月以内的时间')
+                                    }}
                                     selectedTimeFormat="int"
                                     onSelect={this.onSelectDate}>
-                                    <AntcDatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</AntcDatePicker.Option>
                                     <AntcDatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</AntcDatePicker.Option>
                                     <AntcDatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</AntcDatePicker.Option>
                                     <AntcDatePicker.Option

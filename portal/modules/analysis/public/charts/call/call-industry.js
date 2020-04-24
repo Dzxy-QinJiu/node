@@ -7,7 +7,7 @@ export function getCallIndustryChart(paramObj = {}) {
         title: '电话行业统计',
         chartType: 'bar',
         layout: {sm: 24},
-        url: '/rest/analysis/callrecord/v1/callrecord/statistics/distribution/industry',
+        url: '/rest/analysis/callrecord/v1/callrecord/statistics/bakup/data/distribution/industry',
         argCallback: arg => {
             const deviceType = _.get(arg, 'query.device_type', '');
             

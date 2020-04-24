@@ -122,7 +122,7 @@ class ReportList extends React.Component {
                             let column = {
                                 title: name,
                                 dataIndex: name,
-                                width: 130,
+                                width: name.length * 18,
                                 align: 'right',
                                 render: numberRender.bind(null, name)
                             };

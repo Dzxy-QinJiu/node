@@ -89,3 +89,20 @@ exports.getSelfSettingWorkFlow = function(submitObj) {
     return Deferred.promise();
 };
 
+// 修改审批通知后的自定义流程
+exports.approvedSettingWordFlow = (data) => {
+    const Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/approved/self_setting/work_flow',
+        dataType: 'json',
+        type: 'put',
+        data: data,
+        success: (list) => {
+            Deferred.resolve(list);
+        },
+        error: (xhr) => {
+            Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

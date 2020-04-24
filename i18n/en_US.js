@@ -2669,6 +2669,21 @@ var en_US = {
     'errorcode.176': 'If the operation fails, the customer may be rolled out, released, or deleted',//操作失败，客户可能被转出、释放或删除
     'errorcode.send.message.limit': 'Cannot send again in one minute',//一分钟内不能重复发送
     'errorcode.phone.unbind.account.tip': 'This mobile number is not bound to an account, please change another mobile number and try again',//此手机号未绑定账号，请换其他手机号再试
+    'errorcode.deal.stage.error': 'deal stage error',//订单阶段错误
+    'errorcode.stage.count.limit.tip': 'Number of stages out of limit',//阶段个数超限
+    'errorcode.stage.name.limit.tip': 'Stage name words out of limit',//阶段名称字数超限
+    'errorcode.stage.description.limit.tip': 'Stage description words out of limit',//阶段描述字数超限
+    'errorcode.industry.unexist': 'Industry does not exist',//行业不存在
+    'errorcode.administrative.level.unexist': 'Administrative level does not exist',//行政级别不存在
+    'errorcode.province.name.error': 'Wrong province name',//省份名称错误
+    'errorcode.province.code.error': 'Wrong province code',//省份遍码错误
+    'errorcode.city.name.error': 'Wrong city name',//城市名称错误
+    'errorcode.city.code.error': 'Wrong city code',//城市编码错误
+    'errorcode.county.name.error': 'Wrong county name',//区县名称错误
+    'errorcode.county.code.error': 'Wrong county code',//区县编码错误
+    'errorcode.address.error': 'wrong address format',//地址格式错误
+    'errorcode.member.unexist': 'The member does not exist',//该成员不存在
+    'errorcode.orgnization.unexist': 'Organization does not exist',//组织不存在
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -3214,6 +3229,8 @@ var en_US = {
     'analysis.the.other.work': 'the other work',//其他工作
     'analysis.scope.of.application': 'scope of application',//适用范围
     'analysis.statistical.cycle': 'statistical cycle',//统计周期
+    'analysis.please.choose.within.3.months': 'please choose within 3 months',//请选择近3个月以内的时间
+    'analysis.custom.period.cannot.exceed.1.year': 'custom period cannot exceed 1 year',//自定义时间段不能超过1年
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
@@ -3707,6 +3724,9 @@ var en_US = {
     'apply.business.change.time.range': 'Please edit total business time first',//请先修改总出差时间
     'apply.please.add.assign.node': 'The process is incomplete, you need to add the "appointed approver approval node"',//流程不完整，需添加“指定审批人审批节点”
     'apply.please.add.approve.node': 'The process is incomplete, you need to add the approver node',//流程不完整，需添加审批人节点
+    'apply.approved.title': 'Upon approval', // 审批通过后
+    'apply.approved.sales.assigned': 'The assigned sales person is in charge', // 分配的销售作为负责人
+    'apply.approved.sales.assigned.follow': 'The distribution of sales as the person in charge, at the same time the original person in charge into the joint follow-up.', // 分配的销售作为负责人，同时原负责人变为联合跟进人
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
@@ -3765,6 +3785,7 @@ var en_US = {
     'contract.profit.check.tip': 'The gross profit can not be greater than {num} yuan of the total contract amount, please check it',//产品毛利不能大于合同总额{amount}元，请核对
     'customer.has.similar.lists': 'Similar customer',//相似客户
     'clue.has.similar.lists': 'Similar lead',//相似线索
+    'clue.has.similar.ip': 'Same ip clue',//相同IP线索
     'clue.similar.clue': 'Similar lead or customer', //相似线索或客户
     'apply.approve.first.higher.level': 'Directly superior',//直属上级
     'apply.approve.some.level': 'Level {n}',//第{n}级上级

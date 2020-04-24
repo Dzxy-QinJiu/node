@@ -43,6 +43,7 @@ import filterEmitter from 'CMP_DIR/filter/emitter';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
     FILTER_TOP: 64,//筛选框高度
@@ -753,6 +754,8 @@ class ClueExtract extends React.Component {
                     let hasSimilarClue = _.get(salesClueItem, 'lead_similarity');
                     //有相似客户
                     let hasSimilarClient = _.get(salesClueItem, 'customer_similarity');
+                    //有相同IP线索
+                    // let hasSimilarIP = _.get(salesClueItem, 'repeat_ip');
                     let availability = _.get(salesClueItem, 'availability');
                     let status = _.get(salesClueItem, 'status');
                     //判断是否为无效客户
@@ -777,6 +780,10 @@ class ClueExtract extends React.Component {
                                     <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.customer', '有相似客户')}
                                     </span> : null}
+                                {/* {!hasSimilarIP && hasSimilarIP ?
+                                    <span className="clue-label intent-tag-style">
+                                        {Intl.get('clue.has.similar.ip', '有相同IP线索')}
+                                    </span> : null} */}
                             </div>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
                                 <ShearContent>

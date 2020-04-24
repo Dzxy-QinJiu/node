@@ -48,12 +48,12 @@ export function getSalesManagerPerformanceRankingChart() {
         option: {
             columns: [
                 {
-                    title: Intl.get('user.user.team', '团队'),
-                    dataIndex: 'sales_team',
-                    width: '10%',
-                }, {
                     title: Intl.get('sales.home.sales', '销售'),
                     dataIndex: 'member_name',
+                    width: '10%',
+                }, {
+                    title: Intl.get('user.user.team', '团队'),
+                    dataIndex: 'sales_team',
                     width: '10%',
                 }, {
                     title: Intl.get('contract.29', '回款毛利'),

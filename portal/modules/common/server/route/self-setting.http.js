@@ -64,6 +64,15 @@ module.exports = {
                 needLogin: true
             },
             'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
+        }, {
+            // 修改审批通知后的自定义流程
+            method: 'put',
+            path: '/rest/approved/self_setting/work_flow',
+            handler: 'approvedSettingWordFlow',
+            passport: {
+                needLogin: true
+            },
+            'privileges': [privilegeConst_common.WORKFLOW_CONFIG_CUSTOMIZE]
         }
     ]
 };
