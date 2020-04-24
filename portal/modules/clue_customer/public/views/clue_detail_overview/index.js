@@ -120,6 +120,7 @@ class ClueDetailOverview extends React.Component {
             if (!this.isHasTransferClue() && _.get(this.state, 'curClue.customer_similarity')){
                 this.getSimilarCustomerLists();
             }
+            //获取相同IP线索列表，如果有相同IP线索字段才获取
             if(_.get(this.state, 'curClue.repeat_ip')) {
                 this.getSimilarIpClueLists();
             }
@@ -308,11 +309,12 @@ class ClueDetailOverview extends React.Component {
                     if(_.get(this.state, 'curClue.repeat_ip')) {
                         this.getSimilarIpClueLists();
                     }
-                    //如果相似客户和相似线索两个字段都没有，清空相似客户和相似线索列表
-                    if(!_.get(this.state, 'curClue.customer_similarity') && !_.get(this.state, 'curClue.customer_similarity')) {
+                    //如果相似客户和相似线索两个字段都没有或者没有相同IP线索，清空相似客户和相似线索以及相同IP线索列表
+                    if((!_.get(this.state, 'curClue.customer_similarity') && !_.get(this.state, 'curClue.customer_similarity')) || !_.get(this.state, 'curClue.repeat_ip')) {
                         this.setState({
                             similarClueLists: [],
-                            similarCustomerLists: []
+                            similarCustomerLists: [],
+                            similarIpClueLists: []
                         });
                     }
                 }
@@ -1490,6 +1492,19 @@ class ClueDetailOverview extends React.Component {
         }
     };
 
+    // 调取渲染相同IP线索的方法
+    renderIpClueLists = () => {
+        if (_.get(this,'state.similarIpClueLists[0]')){
+            return (
+                <div className="similar-wrap">
+                    { this.renderSimilarIpLists() }
+                </div>
+            );
+        }else{
+            return null;
+        }
+    };
+
     // 渲染提取线索按钮
     renderExtractClueBtn = (curClue) => {
         const hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
@@ -1957,7 +1972,7 @@ class ClueDetailOverview extends React.Component {
                     <DetailCard content={this.renderClueTimeAndIndustry()}/>
                     <DetailCard content={this.renderClueSourceAndClassfy()}/>
                     {this.renderClueCustomerLists()}
-                    {this.renderSimilarIpLists()}
+                    {this.renderIpClueLists()}
                     {/*分配线索给某个销售*/}
                     {/*有分配的权限，但是该线索没有分配给某个销售的时候，展示分配按钮，其他情况都展示分配详情就可以*/}
                     <DetailCard content={(
