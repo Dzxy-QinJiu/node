@@ -1172,19 +1172,19 @@ class MyWorkColumn extends React.Component {
         }
     }
 
-    //判断引导流程是否为空
+    //判断是否有展示的引导流程
     isGuideConfigEmpty() {
         let {guideConfig} = this.state;
         let guideList = [];
         _.each(guideConfig, item => {
             if(item.content === BOOT_PROCESS_KEYS.DIAL) {
-                //TODO 是否已有专属号码，有就不显示，没有显示(default)
+                //是否已有专属号码，有就不显示，没有显示(default)
                 let hasExclusive = _.get(userData.getUserData(), 'hasExcluesiveNumber');
                 if(hasExclusive === 'false') {// 没有专属号码时，是default显示拨号流程
                     guideList.push(item);
                 }
             }else if(item.content === BOOT_PROCESS_KEYS.EXTRACT_CLUE) {
-                if(hasRecommendPrivilege()) {//运营人员没有提取线索的引导
+                if(hasRecommendPrivilege()) {//有推荐线索权限才展示(运营人员没有提取线索的引导)
                     guideList.push(item);
                 }
             }else {
