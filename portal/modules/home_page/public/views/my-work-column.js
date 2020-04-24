@@ -33,7 +33,7 @@ import ReportApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application
 import VisitApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/self_setting/public/view/apply-view-detail';
 import DomainApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/domain_application/public/view/apply-view-detail';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import {APPLY_APPROVE_TYPES, AUTO_SIZE_MAP, TRACE_NULL_TIP} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_APPROVE_TYPES, AUTO_SIZE_MAP, BOOT_PROCESS_KEYS, TRACE_NULL_TIP} from 'PUB_DIR/sources/utils/consts';
 import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import BootProcess from './boot-process/';
@@ -57,6 +57,7 @@ import CustomerRecordActions from 'MOD_DIR/crm/public/action/customer-record-act
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import history from 'PUB_DIR/sources/history';
+import {hasRecommendPrivilege} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -1171,6 +1172,27 @@ class MyWorkColumn extends React.Component {
         }
     }
 
+    //判断是否有展示的引导流程
+    isGuideConfigEmpty() {
+        let {guideConfig} = this.state;
+        let guideList = [];
+        _.each(guideConfig, item => {
+            if(item.content === BOOT_PROCESS_KEYS.DIAL) {
+                //是否已有专属号码，有就不显示，没有显示(default)
+                let hasExclusive = _.get(userData.getUserData(), 'hasExcluesiveNumber');
+                if(hasExclusive === 'false') {// 没有专属号码时，是default显示拨号流程
+                    guideList.push(item);
+                }
+            }else if(item.content === BOOT_PROCESS_KEYS.EXTRACT_CLUE) {
+                if(hasRecommendPrivilege()) {//有推荐线索权限才展示(运营人员没有提取线索的引导)
+                    guideList.push(item);
+                }
+            }else {
+                guideList.push(item);
+            }
+        });
+        return _.isEmpty(guideList);
+    }
 
     renderMyWorkList() {
         //等待效果的渲染
@@ -1202,7 +1224,7 @@ class MyWorkColumn extends React.Component {
                 }
 
                 //需判断是否还有其他工作及引导流程,没有时才显示无数据
-                if (_.isEmpty(workList) && _.isEmpty(this.state.guideConfig)) {
+                if (_.isEmpty(workList) && this.isGuideConfigEmpty()) {
                     workList.push(
                         <NoDataIntro
                             noDataAndAddBtnTip={Intl.get('home.page.no.work.tip', '暂无工作')}
@@ -1329,7 +1351,7 @@ class MyWorkColumn extends React.Component {
                 <div className="btn-containers">
                     <Button type='primary' className='import-btn'
                         onClick={this.showAddSchedulePanel}>{Intl.get('home.page.add.schedule', '添加日程')}</Button>
-                    {!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE) ? (
+                    {hasRecommendPrivilege() ? (
                         <Button className='add-clue-btn'
                             onClick={this.showRecommendCluePanel}>{Intl.get('clue.customer.recommend.clue.lists', '推荐线索')}</Button>
                     ) : null}
@@ -1382,7 +1404,7 @@ class MyWorkColumn extends React.Component {
     };
 
     renderBootProcessBlock = () => {
-        if (_.isEmpty(this.state.guideConfig)) {
+        if (this.isGuideConfigEmpty()) {
             return null;
         } else {
             return (
