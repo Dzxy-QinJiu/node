@@ -1,13 +1,11 @@
 @import "../../../../public/css/common-variables";
 //客户开通用户的列表
 @pending-font-color: #eda247; //用户待审字体颜色
-.date_text_wrap{
-  font-size:12px;
-}
 .crm-user-list-container {
   float: left;
   width: 100%;
   font-size: 14px;
+  
   .detail-card-container{
     width:calc(100% - 10px);
   }
@@ -108,6 +106,9 @@
     float: left;
     width: 100%;
     margin-top: 8px;
+    .detail-card-container {
+      width: 100%;
+    }
     .get-crm-users-error-tip {
       .ant-alert {
         left: 20%;
