@@ -485,6 +485,10 @@ exports.getRecommendClueLists = function(req, res) {
                     //标签
                     labels: _.get(item,'labels', []),
                     features: _.get(item,'features',[]),
+                    //注册资本
+                    capital: _.get(item,'capital', ''),
+                    //法人
+                    legalPerson: _.get(item,'legalPerson', ''),
                     //产品(会有高亮内容<em>###</em>)
                     products: _.get(item,'products', ''),
                     //行业

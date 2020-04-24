@@ -17,6 +17,15 @@ let routers = [
     },
     {
         id: 'ClUE_CUSTOMER',
+        name: 'clue.customer.clue.recommend',//线索推荐
+        routePath: '/clues-recommend',
+        component: `${MODULE_PATH}clue_customer/public/views/recomment_clues`,
+        shortName: 'clue.customer.clue.recommend',//线索推荐
+        //有这个权限，才显示入口图标
+        showPrivileges: ['CURTAO_CRM_LEAD_QUERY_ALL', 'CURTAO_CRM_LEAD_QUERY_SELF']
+    },
+    {
+        id: 'ClUE_CUSTOMER',
         name: 'crm.sales.clue',//线索
         routePath: '/leads',
         component: `${MODULE_PATH}clue_customer/public`,

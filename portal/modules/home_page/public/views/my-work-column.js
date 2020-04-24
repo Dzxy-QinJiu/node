@@ -1321,7 +1321,7 @@ class MyWorkColumn extends React.Component {
         if (event) {
             Trace.traceEvent(event, '点击推荐线索');
         }
-        this.setState({isShowRecormendClue: true});
+        history.push('/clues-recommend');
     }
     renderAddAndImportBtns = () => {
         if (hasPrivilege(crmPrivilegeConst.CUSTOMER_ADD)) {
