@@ -31,7 +31,7 @@ const ADVANCED_OPTIONS = [
         value: 'feature:上市'
     },
     {
-        name: Intl.get('clue.recommend.mask.Manufactor', '口罩厂家'),
+        name: Intl.get('clue.recommend.mask.manufactor', '口罩厂家'),
         value: 'feature:口罩厂家'
     },
     {
@@ -39,8 +39,12 @@ const ADVANCED_OPTIONS = [
         value: `feature:${EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER}`
     },
     {
-        name: Intl.get('clue.recommend.State-owned.enterprise', '国有企业'),
+        name: Intl.get('clue.recommend.state.owned.enterprise', '国有企业'),
         value: 'feature:国有'
+    },
+    {
+        name: Intl.get('clue.recommend.high.tech.enterprise.enterprise', '高新技术企业'),
+        value: 'feature:高新'
     },
     {
         name: Intl.get('clue.recommend.has.mobile', '有手机号'),
@@ -89,14 +93,17 @@ class RecommendCluesFilterPanel extends Component {
         }
     }
 
-    getRecommendClueList= (condition, isSaveFilter = true) => {
+    getRecommendClueList= (condition) => {
         if(searchTimeOut) {
             clearTimeout(searchTimeOut);
         }
         searchTimeOut = setTimeout(() => {
             let newCondition = _.clone(condition);
+            let propsCondition = _.clone(this.props.hasSavedRecommendParams);
             removeEmptyItem(newCondition);
-            if(isSaveFilter) {
+
+            //条件没有变动时，不用请求接口保存筛选条件
+            if(!_.isEqual(newCondition, propsCondition)) {
                 this.saveRecommendFilter(newCondition);
             }
             clueCustomerAction.saveSettingCustomerRecomment(newCondition);

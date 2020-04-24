@@ -3983,8 +3983,9 @@ var en_US = {
     'clue.recommend.listed': 'Listed companies',//上市企业
     'clue.recommend.register.half.year': 'Last half year registration',//最近半年注册
     'clue.recommend.extract.count.more': '100 million + clues for you to extract',//1亿+条线索待您提取
-    'clue.recommend.mask.Manufactor': 'Mask manufacturers',// 口罩厂家
-    'clue.recommend.scale.company': 'State-owned enterprise',//国有企业
+    'clue.recommend.mask.manufactor': 'Mask manufacturers',// 口罩厂家
+    'clue.recommend.state.owned.enterprise': 'State-owned enterprise',//国有企业
+    'clue.recommend.high.tech.enterprise.enterprise': 'High-tech enterprise',//高新技术企业
     'clue.recommend.has.mobile': 'Have a mobile phone number',//有手机号
     'clue.recommend.has.phone': 'Have a phone',//有电话
     'clue.recommend.has.more.contact': 'There are multiple contact information',//有多个联系方式
