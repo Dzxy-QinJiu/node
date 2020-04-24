@@ -44,6 +44,7 @@ class RegRulesView extends React.Component {
         var notify_configs = _.cloneDeep(this.props.applyTypeData.notify_configs);
         var customiz_user_range = _.cloneDeep(this.props.applyTypeData.customiz_user_range);
         var customiz_team_range = _.cloneDeep(this.props.applyTypeData.customiz_team_range);
+        const customerSaleResponsible = _.get(this.props.applyTypeData, 'variable.origin_customer_sales', 'delete'); // 机会申请中，审批后，分配销售配置
         this.state = {
             applyRulesAndSetting: applyRulesAndSetting,
             notify_configs: notify_configs || {},
@@ -55,6 +56,8 @@ class RegRulesView extends React.Component {
             roleList: this.props.roleList,//角色列表
             userList: this.props.userList,//用户列表
             teamList: this.props.teamList,//团队列表
+            customerSaleResponsible: customerSaleResponsible, // 机会申请，审批通过后，默认作为负责人
+            isChangeCustomerSale: false, // 机会申请，审批通过后,是否修改了负责人，默认false
             ...ApplyApproveManageStore.getState()
         };
     }
@@ -999,12 +1002,26 @@ class RegRulesView extends React.Component {
         }else if(showAddApproveNodeTip){
             message.warning(Intl.get('apply.please.add.approve.node', '流程不完整，需添加审批人节点'));
         }else{
-            //在提交的时候，把用户或者团队为非的情况也加上
-            this.addDefaultUserOrTeamCondition();
-            if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
-                this.handleSubmitCCApply();
-            }else{
-                this.handleSubmitApproveApply();
+            // 判断是否修改了其他配置，若修改了其他配置，需要同时保存
+            // 若只修改了审批通过后，分配销售的配置，只需要保存分配给销售的接口即可
+            const isUnChangeRuleNotify = this.isUnChangeRuleNotify();
+            if (isUnChangeRuleNotify) {
+                // 修改了分配销售的职责
+                if (this.state.isChangeCustomerSale) {
+                    this.handleApprovedSettingWordFlow();
+                }
+            } else {
+                // 修改了分配销售的职责
+                if (this.state.isChangeCustomerSale) {
+                    this.handleApprovedSettingWordFlow();
+                }
+                //在提交的时候，把用户或者团队为非的情况也加上
+                this.addDefaultUserOrTeamCondition();
+                if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
+                    this.handleSubmitCCApply();
+                }else{
+                    this.handleSubmitApproveApply();
+                }
             }
         }
     };
@@ -1015,6 +1032,44 @@ class RegRulesView extends React.Component {
         viewer.saveXML({format: true}, (err, xml) => {
             this.setEncoded(downloadLink, 'diagram.bpmn', err ? null : xml);
         });
+    };
+    // 判断是否修改了流程、通知
+    isUnChangeRuleNotify = () => {
+        const applyApproveRulesNodes = _.get(this.state, 'applyRulesAndSetting.applyApproveRules');//所保存的节点
+        // 判断是否修改了流程
+        const isChangeApplyRule = _.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes);
+        // 判断是否修改了通知的配置
+        const isChangeNoticeConfig = _.isEqual(_.get(this.props, 'applyTypeData.notify_configs'), this.state.notify_configs);
+        return isChangeApplyRule && isChangeNoticeConfig;
+    };
+    // 修改审批通知后的自定义流程
+    handleApprovedSettingWordFlow = () => {
+        const submitObj = {
+            id: _.get(this, 'props.applyTypeData.id'),
+            variable: {
+                origin_customer_sales: this.state.customerSaleResponsible
+            }
+        };
+        applyApproveManageAction.approvedSettingWordFlow(submitObj, (result) => {
+            this.setState({
+                isChangeCustomerSale: false
+            });
+            if (result === true) {
+                // 只修改了审批通过后，分配销售的操作，才提示
+                const isUnChangeRuleNotify = this.isUnChangeRuleNotify();
+                if (isUnChangeRuleNotify) {
+                    message.success(Intl.get('common.save.success', '保存成功'));
+                }
+            } else {
+                message.error(result);
+            }
+        });
+    };
+
+    // 审批通过后，配置中修改负责人的处理
+    handleChangeApproveResponsible = (e) => {
+        const customerSaleResponsible = e.target.value;
+        this.setState({ customerSaleResponsible, isChangeCustomerSale: true });
     };
     render = () => {
         var hasErrTip = this.state.titleRequiredMsg;
@@ -1151,6 +1206,30 @@ class RegRulesView extends React.Component {
                                 </Checkbox.Group>
                             </div>
                         </div>
+                        {/*只有机会申请，才有审批通过后自动处理*/}
+                        {
+                            applyType === 'businessopportunities' ? (
+                                <div className="rule-item rule-sale-responsible">
+                                    <span className="item-label">
+                                        {Intl.get('apply.approved.title', '审批通过后')}:
+                                    </span>
+                                    <div className="rule-content info-sale-responsible">
+                                        <RadioGroup
+                                            value={this.state.customerSaleResponsible}
+                                            onChange={this.handleChangeApproveResponsible}
+                                        >
+                                            <Radio value="delete" className="sale-responsible">
+                                                {Intl.get('apply.approved.sales.assigned', '分配的销售作为负责人')}
+                                            </Radio>
+                                            <Radio value="followup" className="sale-responsible">
+                                                {Intl.get('apply.approved.sales.assigned.follow', '分配的销售作为负责人，同时原负责人变为联合跟进人')}
+                                            </Radio>
+                                        </RadioGroup>
+                                    </div>
+
+                                </div>
+                            ) : null
+                        }
                         {/*<div className="cancel-privilege rule-item">*/}
                         {/*<span className="item-label">*/}
                         {/*{Intl.get('apply.info.cancel.privilege', '撤销权限')}*/}

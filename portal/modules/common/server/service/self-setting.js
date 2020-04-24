@@ -21,8 +21,8 @@ var restApis = {
     approveSelfSettingApply: '/rest/base/v1/workflow/customiz/approve',
     //获取自定义审批流程
     getSettingWorkFlow: '/rest/base/v1/workflow/configs',
-
-
+    // 修改自定义流程配置(修改审批通知后的自定义流程 针对机会申请配置中的，审批通过后自动处理的接口，修改负责人)
+    approvedSettingWordFlow: '/rest/base/v1/workflow/config'
 };
 exports.restUrls = restApis;
 //添加自定义流程
@@ -97,4 +97,14 @@ exports.getSelfSettingWorkFlow = function(req, res) {
             req: req,
             res: res
         }, req.query);
+};
+
+// 修改审批通知后的自定义流程
+exports.approvedSettingWordFlow = (req, res) => {
+    return restUtil.authRest.put(
+        {
+            url: restApis.approvedSettingWordFlow,
+            req: req,
+            res: res
+        }, req.body);
 };

@@ -3746,6 +3746,9 @@ var zh_CN = {
     'apply.business.change.time.range': '请先修改总出差时间',
     'apply.please.add.assign.node': '流程不完整，需添加“指定审批人审批节点”',
     'apply.please.add.approve.node': '流程不完整，需添加审批人节点',
+    'apply.approved.title': '审批通过后',
+    'apply.approved.sales.assigned': '分配的销售作为负责人',
+    'apply.approved.sales.assigned.follow': '分配的销售作为负责人，同时原负责人变为联合跟进人',
     /*自定义流程 end*/
     'app.user.manage.role.name': '角色名称',
     'app.user.manage.organaization.name': '所在单位或公司',

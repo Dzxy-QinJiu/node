@@ -89,3 +89,12 @@ exports.getSelfSettingWorkFlow = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+// 修改审批通知后的自定义流程
+exports.approvedSettingWordFlow = (req, res) => {
+    ApplyApproveManageService.approvedSettingWordFlow(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
