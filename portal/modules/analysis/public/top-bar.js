@@ -322,6 +322,11 @@ class TopBar extends React.Component {
                     className={datePickerOption.className}
                     disableDateAfterToday={true}
                     range={datePickerOption.range}
+                    customTimeLimit={{
+                        limit: 366,
+                        unit: 'days',
+                        errMsg: Intl.get('analysis.custom.period.cannot.exceed.1.year', '自定义时间段不能超过1年')
+                    }}
                     start_time={datePickerOption.startTime}
                     end_time={datePickerOption.endTime}
                     selectedTimeFormat='int'

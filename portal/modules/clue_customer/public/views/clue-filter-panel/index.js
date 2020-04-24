@@ -11,7 +11,7 @@ var FilterAction = require('../../action/filter-action');
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
-import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,NOT_CONNECTED,EXTRACT_TIME, sourceClassifyArray, isCommonSalesOrPersonnalVersion, APPLY_TRY_LEAD ,otherFilterArray} from '../../utils/clue-customer-utils';
+import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,SIMILAR_IP,NOT_CONNECTED,EXTRACT_TIME, sourceClassifyArray, isCommonSalesOrPersonnalVersion, APPLY_TRY_LEAD ,otherFilterArray} from '../../utils/clue-customer-utils';
 import {getClueUnhandledPrivilege, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
@@ -313,6 +313,14 @@ class ClueFilterPanel extends React.Component {
                         FilterAction.setUnexistedFiled();
                         FilterAction.setFilterClueAllotNoTrace();
                         FilterAction.setSimilarFiled(SIMILAR_CLUE);
+                        FilterAction.setNotConnectedClues();
+                        FilterAction.setLeadFromLeadPool();
+                        FilterAction.setAppliedTryLead();
+                    }else if(item.value === SIMILAR_IP){
+                        FilterAction.setExistedFiled();
+                        FilterAction.setUnexistedFiled();
+                        FilterAction.setFilterClueAllotNoTrace();
+                        FilterAction.setSimilarFiled(SIMILAR_IP);
                         FilterAction.setNotConnectedClues();
                         FilterAction.setLeadFromLeadPool();
                         FilterAction.setAppliedTryLead();

@@ -309,9 +309,11 @@ function systemNoticeListener(notice) {
  * }]
  */
 function applyUnreadReplyListener(unreadList) {
+    // 回复消息的推送，根据审批状态不同，推送的给不同的人
+    // 待审批的，是推送给申请人和下一个节点的审批人
+    // 已通过、已驳回、已撤销，是推送给申请人
     pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
     if (_.get(unreadList, '[0]')) {
-        //todo 这里需要拿到申请人的id，因为有我申请的tab要展示有未读回复的标识，现在这个地方还有问题，待后端调试
         var applicateId = _.chain(unreadList).last().get('member_id').value();
         _.each(unreadList, unreadReply => {
             if (unreadReply.member_id) {

@@ -256,13 +256,13 @@ class ForgotPassword extends React.Component {
                 },
                 success: (data) => {
                     if (!data) {
-                        this.setState({ successMsg: Intl.get('login.reset_password_success', '重置密码成功') });
+                        this.setState({ successMsg: Intl.get('login.reset_password_success', '重置密码成功'), errorMsg: ''});
                     } else {
-                        this.setState({ errorMsg: Intl.get('login.reset_password_failure', '重置密码失败') });
+                        this.setState({ errorMsg: Intl.get('login.reset_password_failure', '重置密码失败'), successMsg: ''});
                     }
                 },
                 error: () => {
-                    this.setState({ errorMsg: Intl.get('login.reset_password_failure', '重置密码失败') });
+                    this.setState({ errorMsg: Intl.get('login.reset_password_failure', '重置密码失败'), successMsg: ''});
                 }
             });
         });

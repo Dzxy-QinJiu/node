@@ -142,15 +142,20 @@ class CustomerSuggest extends React.Component {
         this.suggestTimer = setTimeout(() => {
             let condition = {name: value};
             if(this.props.isSearchMyCustomer){//获取的是登陆人作为负责人的客户列表
-                condition['members'] = [{'nickname': userData.getUserData().nick_name,'is_owner': true}];
-                condition['term_fields'] = ['nickname'];
+                //用下面客户列表中负责人筛选（nickname）的方式查，上级团队的普通成员会查不出数据，所以发光让把此处改为用user_id查
+                // condition['members'] = [{'nickname': userData.getUserData().nick_name,'is_owner': true}];
+                // condition['term_fields'] = ['nickname'];
+                condition.user_id = _.get(userData.getUserData(), 'user_id','');
+                condition.is_owner = true;
             }
             let sorter = {
                 field: 'start_time',
                 order: 'descend'
             };
             let params = {
-                data: JSON.stringify(condition)
+                data: JSON.stringify(condition),
+                // 下拉列表中只需要客户id和名称，所以获取简洁的数据结构即可
+                getSimpleCrm: true
             };
             crmCustomerAjax.queryCustomer(params, 10, 1, sorter).then((data) => {
                 var list = data.result;
