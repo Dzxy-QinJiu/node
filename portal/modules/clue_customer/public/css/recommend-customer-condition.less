@@ -1,4 +1,5 @@
 @import "../../../../public/css/common-variables";
+@vip-color: #FF8B00;
 .recommend-customer-condition.recommend-customer-condition-wrapper{
   .recommend-top-title{
     font-size: 14px;
@@ -7,6 +8,7 @@
   }
   form {
     .area-selector{
+      display: inline-block;
       .ant-col-24.ant-form-item-label{
         padding: 0;
         line-height: 32px;
@@ -23,7 +25,8 @@
         text-align: left;
         label{
           font-size: 14px;
-          color:@secondary-font-color;
+          color: @has-transfer-color;
+          font-weight: normal;
           &:after{
             content: ''
           }
@@ -50,12 +53,16 @@
         width: 50%;
       }
     }
-     .show-hide-tip{
-        font-size: 13px;
-        cursor:pointer;
-        color: @secondary-color;
-        float: left;
+    .show-hide-tip{
+      font-size: 13px;
+      cursor:pointer;
+      color: @primary-color;
+      display: inline-block;
+      margin-left: 10px;
+      span, .iconfont{
+        vertical-align: middle;
       }
+    }
     .submit-button-container{
  
       text-align: right;
@@ -80,7 +87,79 @@
          display: none;
       }
     }
+    .save-btn{
+      margin-left: 350px!important;
+    }
+  }
+  //vip样式
+  .label-wrapper{
+    .label-text{
+      vertical-align: middle;
+    }
+    .label-vip{
+      padding: 0 4px;
+      border: 1px solid @vip-color;
+      border-radius: 2px;
+      background-color: @version-basic-bg-color;
+      color: @vip-color;
+      font-size: 10px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+  }
+  //高级筛选样式
+  .advance-data-container{
+    .advance-btn-item{
+      padding: 3px 6px;
+      font-size: 12px;
+      color: @warn-color;
+      border: 1px solid @border-color;
+      border-radius: 2px;
+      cursor: pointer;
+      margin-right: 5px;
+      &:hover{
+        border-color: @warn-color;
+      }
+      &.advance-active{
+        background: @warn-color;
+        color: #fff;
+        border-color: @warn-color;
+      }
+    }
+  }
+  //搜索框样式
+  .search-input-container {
+    width: 100%;
+    position: relative;
+    .search-input {
+      width: 100%;
+      height: @input_top_height;
+      padding: 8px 25px 8px 8px;
+      line-height: @input_height;
+      border: 1px solid @SEARCH-INPUT-BORDER;
+      border-radius: @border-radius;
+      font-size: @form_font_size;;
+      &:hover {
+        border-color: #57c5f7;
+      }
+    }
 
+    .search-icon {
+      position: absolute;
+      top: 50%;
+      margin-top: -9px;
+      right: 5px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #7f909a;
+      cursor: pointer;
+      z-index: 1;
+    }
+    .icon-circle-close.search-icon{
+      margin-top: -14px;
+      font-size: 18px;
+      color: #7f909a;
+    }
   }
 }
 .ant-calendar-range-right .ant-calendar-date-input-wrap{

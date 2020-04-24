@@ -65,12 +65,22 @@ function ClueCustomerActions() {
     this.getSettingCustomerRecomment = function(condition, callback) {
         //引导页设置了推荐条件后跳转过来时，用引导页设置的推荐条件
         if(!_.isEmpty(condition)){
+            //需要处理筛选条件，兼容以前的industrys，改为现在的keyword
+            if(_.get(condition,'industrys[0]')) {
+                condition.keyword = condition.industrys[0];
+                delete condition.industrys;
+            }
             _.isFunction(callback) && callback(condition);
             this.dispatch({list: [condition]});
         } else {
             clueCustomerAjax.getSettingCustomerRecomment().then((list) => {
                 var data = _.get(list,'[0]');
                 deleteEmptyProperty(data);
+                //需要处理筛选条件，兼容以前的industrys，改为现在的keyword
+                if(_.get(data,'industrys[0]')) {
+                    data.keyword = data.industrys[0];
+                    delete data.industrys;
+                }
                 _.isFunction(callback) && callback(data);
                 this.dispatch({list: list});
             },(errorMsg) => {
