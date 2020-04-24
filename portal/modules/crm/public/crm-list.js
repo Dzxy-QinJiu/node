@@ -2062,13 +2062,14 @@ batchTopBarDropList = (isMinWeb) => {
                     <Icon type="exclamation-circle"/>
                     <span>{releaseTip}</span>
                 </div>
+                {/*todo 暂时注释掉选择类型*/}
                 {/*个人版不展示选择释放类型*/}
-                {checkVersionAndType().personal ? null : (
+                {/*{checkVersionAndType().personal ? null : (
                     <Radio.Group onChange={this.onTypeChange} value={this.state.releaseType}>
                         <Radio value={RELEASE_TYPE.OWNER}>{Intl.get('crm.6', '负责人')}</Radio>
                         <Radio value={RELEASE_TYPE.JOIN}>{Intl.get('crm.second.sales', '联合跟进人')}</Radio>
                     </Radio.Group>
-                )}
+                )}*/}
                 <Input.TextArea
                     placeholder={Intl.get('crm.customer.release.reason', '请填写释放理由')}
                     value={this.state.releaseReason}
