@@ -169,6 +169,7 @@ function handleWorkFlowData(list) {
             id: _.get(item, 'id',''),
             type: _.get(item, 'type',''),
             notify_configs: _.get(item, 'notify_configs',[]),
+            variable: _.get(item, 'variable',{}), // 审批后,修改分配销售
         });
 
     });

@@ -3721,6 +3721,9 @@ var en_US = {
     'apply.business.change.time.range': 'Please edit total business time first',//请先修改总出差时间
     'apply.please.add.assign.node': 'The process is incomplete, you need to add the "appointed approver approval node"',//流程不完整，需添加“指定审批人审批节点”
     'apply.please.add.approve.node': 'The process is incomplete, you need to add the approver node',//流程不完整，需添加审批人节点
+    'apply.approved.title': 'Upon approval', // 审批通过后
+    'apply.approved.sales.assigned': 'The assigned sales person is in charge', // 分配的销售作为负责人
+    'apply.approved.sales.assigned.follow': 'The distribution of sales as the person in charge, at the same time the original person in charge into the joint follow-up.', // 分配的销售作为负责人，同时原负责人变为联合跟进人
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
