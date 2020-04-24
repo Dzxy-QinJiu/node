@@ -241,7 +241,6 @@ class RecommendCluesFilterPanel extends Component {
 
     handleClickAdvanced = (key) => {
         if(!this.props.canClickMoreBatch) { return false; }
-        let versionAndType = checkVersionAndType();
         let advanced = '';
         let advancedValue = key.split(':')[1] || '';
         let traceTip = `取消选中'${advancedValue}'`;
