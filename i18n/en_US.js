@@ -3779,6 +3779,7 @@ var en_US = {
     'contract.profit.check.tip': 'The gross profit can not be greater than {num} yuan of the total contract amount, please check it',//产品毛利不能大于合同总额{amount}元，请核对
     'customer.has.similar.lists': 'Similar customer',//相似客户
     'clue.has.similar.lists': 'Similar lead',//相似线索
+    'clue.has.similar.ip': 'Same ip clue',//相同IP线索
     'clue.similar.clue': 'Similar lead or customer', //相似线索或客户
     'apply.approve.first.higher.level': 'Directly superior',//直属上级
     'apply.approve.some.level': 'Level {n}',//第{n}级上级
