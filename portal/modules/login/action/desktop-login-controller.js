@@ -255,39 +255,33 @@ function loginSuccess(req, res) {
             //登录成功后获取用户的组织信息，（主页的matomo数据参数设置中需要放入组织信息）
             DesktopLoginService.getOrganization(req, res).on('success', data => {
                 //获取网站个性化配置,以便判断进入后的首页是否展示欢迎页
-                DesktopLoginService.getWebsiteConfig(req, res).on('success', result => {
-                    handleWebsiteConfig(req, result, commonUtil.const.WELCOME_PAGE_FIELD, () => {
-                        req.session.showWelComePage = true;
-                    });
-                    saveUserInfo();
-                }).on('error', () => {
-                    saveUserInfo();
+                handleWebsiteConfig(req, data.websiteConfig, commonUtil.const.WELCOME_PAGE_FIELD, () => {
+                    req.session.showWelComePage = true;
                 });
-                function saveUserInfo() {
-                    // 接口返回的组织信息：official_name：公司名，name: 组织名称
-                    // 现在系统中展示和修改的都是公司名，组织名是不能修改的
-                    // 组织信息中公司名official_name和id字段转为officialName和id字段，方便前端处理（若后端更改字段名时，只需修改这里就可以，不用多处修改了）
-                    let userData = _.get(req, 'session.user', {});
-                    userData.organization = {
-                        id: _.get(data,'id', ''),
-                        officialName: _.get(data, 'official_name', ''),
-                        functions: _.get(data, 'functions', []),
-                        type: _.get(data, 'type', ''),
-                        version: _.get(data, 'version', {}),
-                        endTime: _.get(data, 'end_time', ''),
-                        expireAfterDays: _.get(data, 'expire_after_days'),
-                        grantProducts: _.get(data, 'grant_products', []),
-                    };
-                    req.session.save(() => {
-                        //ajax请求返回sussess
-                        if (req.xhr) {
-                            //session失效时，登录成功后的处理
-                            res.status(200).json('success');
-                        } else {
-                            //登录界面，登录成功后的处理
-                            res.redirect('/');
-                        }
-                    });}
+                // 接口返回的组织信息：official_name：公司名，name: 组织名称
+                // 现在系统中展示和修改的都是公司名，组织名是不能修改的
+                // 组织信息中公司名official_name和id字段转为officialName和id字段，方便前端处理（若后端更改字段名时，只需修改这里就可以，不用多处修改了）
+                let userData = _.get(req, 'session.user', {});
+                userData.organization = {
+                    id: _.get(data,'id', ''),
+                    officialName: _.get(data, 'official_name', ''),
+                    functions: _.get(data, 'functions', []),
+                    type: _.get(data, 'type', ''),
+                    version: _.get(data, 'version', {}),
+                    endTime: _.get(data, 'end_time', ''),
+                    expireAfterDays: _.get(data, 'expire_after_days'),
+                    grantProducts: _.get(data, 'grant_products', []),
+                };
+                req.session.save(() => {
+                    //ajax请求返回sussess
+                    if (req.xhr) {
+                        //session失效时，登录成功后的处理
+                        res.status(200).json('success');
+                    } else {
+                        //登录界面，登录成功后的处理
+                        res.redirect('/');
+                    }
+                });
             }).on('error', errorObj => {
                 // 获取组织失败后的处理
                 req.session.user = '';

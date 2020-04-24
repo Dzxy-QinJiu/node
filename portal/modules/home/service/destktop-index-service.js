@@ -9,40 +9,13 @@ var EventEmitter = require('events');
 let BackendIntl = require('../../../lib/utils/backend_intl');
 import publicPrivilegeConst from '../../../public/privilege-const';
 import privilegeConstCommon from '../../../modules/common/public/privilege-const';
+import {getDataPromise} from '../../../lib/utils/getDataPromise';
 
 //获取用户权限
 function getPrivileges(req) {
     var userInfo = auth.getUser(req);
     var userPrivileges = userInfo.privileges;
     return userPrivileges;
-}
-
-//获取数据的promise
-function getDataPromise(req, res, url, pathParams, queryObj) {
-    //url中的参数处理
-    if (pathParams) {
-        for (let key in pathParams) {
-            url += '/' + pathParams[key];
-        }
-    }
-    let resultObj = {errorData: null, successData: null};
-    return new Promise((resolve, reject) => {
-        return restUtil.authRest.get(
-            {
-                url: url,
-                req: req,
-                res: res
-            }, queryObj, {
-                success: function(eventEmitter, data) {
-                    resultObj.successData = data;
-                    resolve(resultObj);
-                },
-                error: function(eventEmitter, errorObj) {
-                    resultObj.errorData = errorObj;
-                    resolve(resultObj);
-                }
-            });
-    });
 }
 
 //获取用户信息

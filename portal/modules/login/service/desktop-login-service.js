@@ -5,6 +5,9 @@ var config = require('../../../../conf/config');
 let BackendIntl = require('../../../lib/utils/backend_intl');
 const ipUtil = require('../../../lib/utils/common-utils').ip;
 let appUtils = require('../util/appUtils');
+var EventEmitter = require('events');
+import {getDataPromise} from '../../../lib/utils/getDataPromise';
+var _ = require('lodash');
 
 //定义url
 var urls = {
@@ -605,22 +608,26 @@ exports.checkLoginWechatIsBind = function(req, res) {
         });
 };
 
-//获得登录用户所在组织
+//获得登录用户所在组织以及网站个性化配置
 exports.getOrganization = function(req, res) {
-    return restUtil.authRest.get(
-        {
-            url: urls.getOrganization,
-            req: req,
-            res: res
-        }, null);
-};
-
-//获取网站个性化配置
-exports.getWebsiteConfig = function(req, res) {
-    return restUtil.authRest.get(
-        {
-            url: urls.getWebsiteConfig,
-            req: req,
-            res: res
-        }, null);
+    var emitter = new EventEmitter();
+    //获取登录用户的组织信息
+    let getOrganization = getDataPromise(req, res, urls.getOrganization);
+    //获取网站个性化设置
+    let getWebsiteConfig = getDataPromise(req, res, urls.getWebsiteConfig);
+    let promiseList = [getOrganization, getWebsiteConfig];
+    Promise.all(promiseList).then(resultList => {
+        let organizationResult = _.get(resultList, '[0]', {});
+        if(organizationResult.successData) {
+            let organizationData = organizationResult.successData;
+            //网站个性化
+            organizationData.websiteConfig = _.get(resultList, '[1].successData', {});
+            emitter.emit('success', organizationData);
+        }else if(organizationResult.errorData) {
+            emitter.emit('error', organizationResult.errorData);
+        }
+    }).catch(errorObj => {
+        emitter.emit('error', errorObj);
+    });
+    return emitter;
 };
