@@ -86,9 +86,9 @@
       &.hide-container{
          display: none;
       }
-    }
-    .save-btn{
-      margin-left: 350px!important;
+      .save-btn{
+        //margin-left: 458px!important;
+      }
     }
   }
   //vip样式
@@ -154,11 +154,39 @@
       color: #7f909a;
       cursor: pointer;
       z-index: 1;
+      &.search-icon-btn{
+        top: 30%;
+        right: 0;
+        font-size: 20px;
+        color: #fff;
+        background: @warn-color;
+        padding: 6px 8px 5px;
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+      }
     }
     .icon-circle-close.search-icon{
       margin-top: -14px;
       font-size: 18px;
       color: #7f909a;
+    }
+  }
+  //vip筛选样式
+  .vip-filter-container{
+    .vip-filter-content{
+      position: relative;
+      .vip-filter-item{
+        display: inline-block;
+        font-size: 14px;
+        margin-right: 15px;
+        cursor: pointer;
+        .btn-item{
+          float: none;
+        }
+        .vip-item-active{
+          color: @primary-color;
+        }
+      }
     }
   }
 }

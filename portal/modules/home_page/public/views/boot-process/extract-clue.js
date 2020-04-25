@@ -49,7 +49,7 @@ const HOT_SELECTORS = [/*{
         name: Intl.get('clue.recommend.listed', '上市企业'),
         value: '上市'
     }, {
-        name: Intl.get('clue.recommend.register.half.year', '最近半年注册'),
+        name: Intl.get('clue.recommend.register.half.year', '近半年注册'),
         value: EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER
     },{
         name: Intl.get('clue.recommend.mask.Manufactor', '口罩厂家'),

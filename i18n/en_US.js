@@ -3956,6 +3956,8 @@ var en_US = {
     'clue.recommend.fitler.advanced.options': 'Advanced options',//高级选项
     'clue.recommend.extract.success.tip': 'Extraction successful! {leads} view',//提取成功！ 去{leads}查看
     'clue.recommend.selected.tip': 'The selected article {count}',//已选{count}条
+    'clue.recommend.filter.vip': 'VIP screening',//VIP筛选
+    'clue.recommend.filter.name.no.limit': '{name} is unlimited',//{name}不限
 
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
@@ -3988,14 +3990,14 @@ var en_US = {
     'clue.recommend.hot.name': 'hot',//热门
     'clue.recommend.return.to.work': 'The enterprise has been restarted',//已复工企业
     'clue.recommend.listed': 'Listed companies',//上市企业
-    'clue.recommend.register.half.year': 'Last half year registration',//最近半年注册
+    'clue.recommend.register.half.year': 'Nearly half year registration',//近半年注册
     'clue.recommend.extract.count.more': '100 million + clues for you to extract',//1亿+条线索待您提取
     'clue.recommend.mask.manufactor': 'Mask manufacturers',// 口罩厂家
     'clue.recommend.state.owned.enterprise': 'State-owned enterprise',//国有企业
-    'clue.recommend.high.tech.enterprise.enterprise': 'High-tech enterprise',//高新技术企业
+    'clue.recommend.high.tech.enterprise.enterprise': 'High and new technology',//高新技术
     'clue.recommend.has.mobile': 'Have a mobile phone number',//有手机号
     'clue.recommend.has.phone': 'Have a phone',//有电话
-    'clue.recommend.has.more.contact': 'There are multiple contact information',//有多个联系方式
+    'clue.recommend.has.more.contact': 'There are multiple contact information',//多个联系方式
 
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略

@@ -301,7 +301,7 @@ const TENTHOUSAND = 10000;
 //成立时间
 export const registerSize = [
     {
-        name: Intl.get('crm.customer.pool.unlimited', '不限')
+        name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.established.time', '成立时间')})
     },
     {
         name: Intl.get('clue.recommend.condition.register.size', '{num}年以内', {num: 1}),
@@ -327,7 +327,7 @@ export const registerSize = [
 //公司规模
 export const staffSize = [
     {
-        name: Intl.get('crm.customer.pool.unlimited', '不限')
+        name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.company.size', '公司规模')})
     },
     {
         name: Intl.get('clue.customer.condition.staff.size', '{num}人以下', {num: 20}),
@@ -361,7 +361,7 @@ export const staffSize = [
 //注册资本
 export const moneySize = [
     {
-        name: Intl.get('crm.customer.pool.unlimited', '不限')
+        name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.registered.capital', '注册资本')})
     },
     {
         name: Intl.get('clue.customer.money.size.less.num', '{num}万以内', {num: 10}),
@@ -389,7 +389,7 @@ export const moneySize = [
 ];
 //企业类
 export const companyProperty = [
-    // { name: Intl.get('crm.customer.pool.unlimited', '不限') },
+    { name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.enterprise.class', '企业类型')}) },
     {
         name: Intl.get('clue.customer.condition.company.limit', '有限责任公司'),
         value: Intl.get('clue.customer.condition.company.limit', '有限责任公司')
@@ -434,7 +434,7 @@ export const companyProperty = [
 //线索推荐面板的静态常量集合
 export const EXTRACT_CLUE_CONST_MAP = {
     ANOTHER_BATCH: 'anotherBatch',//换一批
-    LAST_HALF_YEAR_REGISTER: '最近半年注册',
+    LAST_HALF_YEAR_REGISTER: '近半年注册',
     RESET: 'reset',//重置
 };
 

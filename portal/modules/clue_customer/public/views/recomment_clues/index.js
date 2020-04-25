@@ -532,6 +532,21 @@ class RecommendCluesList extends React.Component {
         this.setState({batchPopoverVisible: '', singlePopoverVisible: '', extractLimitContent: null});
     };
 
+    handleSuccessTip() {
+        // 更新引导流程
+        this.upDateGuideMark();
+        this.props.afterSuccess();
+        message.success(
+            <ReactIntl.FormattedMessage
+                id="clue.recommend.extract.success.tip"
+                defaultMessage={'提取成功！ 去{leads}查看'}
+                values={{
+                    leads: <a onClick={this.handleLinkLeads}>{Intl.get('versions.feature.lead.management', '线索管理')}</a>
+                }}
+            />
+        );
+    }
+
     //------ 升级正式版或者购买线索量的处理start ------//
     //个人试用升级为正式版
     handleUpgradePersonalVersion = (tipTitle = '') => {
@@ -607,19 +622,7 @@ class RecommendCluesList extends React.Component {
                 });
                 var taskId = _.get(data, 'batch_label','');
                 if (taskId){
-                    //todo 到这一步，提取线索的引导就完成了，需要更新引导流程状态
-                    // 更新引导流程
-                    this.upDateGuideMark();
-                    this.props.afterSuccess();
-                    message.success(
-                        <ReactIntl.FormattedMessage
-                            id="clue.recommend.extract.success.tip"
-                            defaultMessage={'提取成功！ 去{leads}查看'}
-                            values={{
-                                leads: <a onClick={this.handleLinkLeads}>{Intl.get('versions.feature.lead.management', '线索管理')}</a>
-                            }}
-                        />
-                    );
+                    this.handleSuccessTip();
                     //向任务列表id中添加taskId
                     batchOperate.addTaskIdToList(taskId);
                     //存储批量操作参数，后续更新时使用
@@ -915,18 +918,7 @@ class RecommendCluesList extends React.Component {
                         //隐藏批量变更销售面板
                         this['changeSales' + leadId].handleCancel();
                     }
-                    message.success(
-                        <ReactIntl.FormattedMessage
-                            id="clue.recommend.extract.success.tip"
-                            defaultMessage={'提取成功！ 去{leads}查看'}
-                            values={{
-                                leads: <a onClick={this.handleLinkLeads}>{Intl.get('versions.feature.lead.management', '线索管理')}</a>
-                            }}
-                        />
-                    );
-                    // 更新引导流程
-                    this.upDateGuideMark();
-                    this.props.afterSuccess();
+                    this.handleSuccessTip();
                     this.clearSelectSales();
                     SetLocalSalesClickCount(salesMan, CLUE_RECOMMEND_SELECTED_SALES);
                     this.updateRecommendClueLists(leadId);
@@ -1286,7 +1278,7 @@ class RecommendCluesList extends React.Component {
                                         <div className="extract-clue-text__name">
                                             {item.hasExtractedByOther ? <i className='iconfont icon-warning-tip'/> : null}
                                             <span className="clue-name" dangerouslySetInnerHTML={{__html: this.handleHighLightStyle(item.name).content}}/>
-                                            {item.openStatus ? <span className="clue-company-open-status">{item.openStatus.split('（')[0]}</span> : null}
+                                            {item.openStatus ? <span className="clue-company-open-status">{item.openStatus.split('（')[0].replace('开业', '在业')}</span> : null}
                                             {labels.length ? (
                                                 <div className="clue-labels">
                                                     {_.map(labels, (tag, index) => (
