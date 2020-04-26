@@ -75,31 +75,12 @@ UserAuditLogStore.prototype.getUserApp = function(result){
         this.userAppArrayErrMsg = result.errorMsg;
     } else {
         this.userAppArray = result.data;
-        var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
-        var lastSelectAppId = storageValue && storageValue.logViewAppId ? storageValue.logViewAppId : '';
-        if(lastSelectAppId){
-            //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
-            this.selectAppId = lastSelectAppId;
-            let matchSelectApp = _.find(result.data, item => item.app_id === lastSelectAppId);
-            if (matchSelectApp) {
-                this.selectAppTerminals = matchSelectApp.terminals;
-            }
-        }else{
-            // 不存在（首次）
-            if(ShareObj.app_id){
-                // 已有用戶有选择的应用时，用户审计日志也要展示该应用的
-                this.selectAppId = ShareObj.app_id;
-                let matchSelectApp = _.find(result.data, item => item.app_id === this.selectAppId);
-                if (matchSelectApp) {
-                    this.selectAppTerminals = matchSelectApp.terminals;
-                }
-            }else{
-                // 已有用户应用选择框中选择全部时，用户审计日志默认展示第一个应用的
-                if( _.isArray(this.userAppArray) && (this.userAppArray.length >= 1) ){
-                    this.selectAppId = this.userAppArray[0].app_id;
-                    this.selectAppTerminals = this.userAppArray[0].terminals;
-                }
-            }
+        // 选中的appId
+        this.selectAppId = _.get(result, 'selectAppId');
+        let matchSelectApp = _.find(result.data, item => item.app_id === this.selectAppId);
+        // 判断选中应用的多终端信息
+        if (matchSelectApp) {
+            this.selectAppTerminals = matchSelectApp.terminals;
         }
     }
 };
