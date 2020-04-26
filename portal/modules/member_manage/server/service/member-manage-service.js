@@ -52,7 +52,24 @@ exports.getMemberOrganization = (req, res) => {
             url: memberRestApis.getMemberOrganization,
             req: req,
             res: res
-        }, null);
+        }, null, {
+            success: (eventEmitter, data) => {
+                let isPrintLog = _.get(req.query, 'isPrintLog');
+                if(isPrintLog) {
+                    let queryData = _.get(req.query, 'data');
+                    queryData = queryData && _.isString(queryData) ? JSON.parse(queryData) : queryData;
+                    let title = _.get(queryData, 'title', '');
+                    let goodsNum = _.get(queryData, 'goodsNum', 0);
+                    let endTime = _.get(data, 'end_time', '');
+                    endTime = endTime ? new Date(endTime).toLocaleDateString() : '';
+                    let user = _.get(req, 'session.user', {});
+                    let oldEndTime = _.get(user, 'organization.endTime', '');
+                    oldEndTime = oldEndTime ? new Date(oldEndTime).toLocaleDateString() : '';
+                    restLogger.info('sessionID: %s, 在%s中，购买了个人版: %s个月，到期时间为: %s, 之前的到期时间为: %s', req.sessionID, title, goodsNum, endTime, oldEndTime);
+                }
+                eventEmitter.emit('success', data);
+            }
+        });
 };
 
 function getUserLists(req, res, condition, isGetAllUser, teamrole_id) {
