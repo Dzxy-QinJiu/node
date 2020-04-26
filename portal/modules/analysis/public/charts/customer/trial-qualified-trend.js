@@ -9,6 +9,9 @@ export function getCustomerTrialQualifiedTrendChart() {
         layout: {sm: 24},
         url: '/rest/analysis/customer/v2/:data_type/trial/qualify/trend',
         conditions: [{
+            name: 'interval_important',
+            value: 'month',
+        }, {
             name: 'label',
             value: '试用合格',
         }],
@@ -25,7 +28,14 @@ export function getCustomerTrialQualifiedTrendChart() {
                 delete query.statistics_type;
             }
 
-            query.interval = 'month';
+            const { interval_important } = query;
+
+            if (interval_important) {
+                //用图表自身条件中的interval替换公共条件中的interval
+                query.interval = interval_important;
+
+                delete query.interval_important;
+            }
         },
         dataField: 'list',
         processOption: (option, props) => {
@@ -73,6 +83,16 @@ export function getCustomerTrialQualifiedTrendChart() {
             });
 
             return csvData;
-        }
+        },
+        cardContainer: {
+            selectors: [{
+                options: [
+                    {name: Intl.get('common.time.unit.week', '周'), value: 'week'},
+                    {name: Intl.get('common.time.unit.month', '月'), value: 'month'},
+                ],
+                activeOption: 'month',
+                conditionName: 'interval_important',
+            }],
+        },
     };
 }
