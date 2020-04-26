@@ -142,6 +142,7 @@
       &:hover {
         border-color: #57c5f7;
       }
+
     }
 
     .search-icon {
@@ -154,21 +155,24 @@
       color: #7f909a;
       cursor: pointer;
       z-index: 1;
-      &.search-icon-btn{
-        top: 30%;
+    }
+    .ant-input-group-addon{
+      background-color: @warn-color;
+      border-color: @warn-color;
+      .search-icon-btn{
+        position: relative;
+        top: 0;
         right: 0;
         font-size: 20px;
         color: #fff;
-        background: @warn-color;
-        padding: 6px 8px 5px;
-        border-top-right-radius: 3px;
-        border-bottom-right-radius: 3px;
+        margin-top: 0;
       }
     }
     .icon-circle-close.search-icon{
-      margin-top: -14px;
+      margin-top: -16px;
       font-size: 18px;
       color: #7f909a;
+      right: 40px;
     }
   }
   //vip筛选样式

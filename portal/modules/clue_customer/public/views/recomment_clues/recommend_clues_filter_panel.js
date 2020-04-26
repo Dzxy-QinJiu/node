@@ -145,8 +145,8 @@ class RecommendCluesFilterPanel extends Component {
     }
 
     onSearchButtonClick = () => {
-        if (this.refs.searchInput.value.trim()) {
-            this.searchEvent({target: { value: _.trim(this.refs.searchInput.value) }});
+        if (this.props.canClickMoreBatch && _.trim(this.refs.searchInput.props.value)) {
+            this.searchEvent({target: { value: _.trim(this.refs.searchInput.props.value) }});
         }
     };
 
@@ -228,8 +228,8 @@ class RecommendCluesFilterPanel extends Component {
                     }
                 }
                 break;
-            case VIP_ITEM_MAP.COMPANY_ENTYPES://企业类
-                hasContinueUse = this.handleVipItemClick(VIP_ITEM_MAP.COMPANY_ENTYPES, '企业类');
+            case VIP_ITEM_MAP.COMPANY_ENTYPES://企业类型
+                hasContinueUse = this.handleVipItemClick(VIP_ITEM_MAP.COMPANY_ENTYPES, '企业类型');
                 if(hasContinueUse && value && _.isString(value)) {
                     let entTypes = JSON.parse(value);
                     if (_.get(entTypes, 'value')){
@@ -343,6 +343,7 @@ class RecommendCluesFilterPanel extends Component {
     };
 
     handleSubmit = () => {
+        if(!this.props.canClickMoreBatch) { return false;}
         this.getRecommendClueList(this.state.hasSavedRecommendParams);
     };
 
@@ -393,7 +394,7 @@ class RecommendCluesFilterPanel extends Component {
         );
     }
 
-    renderDropDownBlock({btnText, type, list, unLimitText, getValue = () => {}}) {
+    renderDropDownBlock({btnText, type, list, getValue = () => {}}) {
         let currentValue = getValue();
         let menus = (
             <Menu onClick={this.onSelect.bind(this, type)} selectedKeys={currentValue}>
@@ -405,7 +406,7 @@ class RecommendCluesFilterPanel extends Component {
         currentValue = JSON.parse(currentValue);
         let text = _.get(currentValue, 'name');
         let textCls = classNames({
-            'vip-item-active': text && text !== Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: unLimitText})
+            'vip-item-active': text && text !== Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText})
         });
         return (
             <Dropdown overlay={menus} overlayClassName="vip-item-dropDown">
@@ -469,11 +470,13 @@ class RecommendCluesFilterPanel extends Component {
                                         placeholder={this.getKeyWordPlaceholder()}
                                         className="search-input"
                                         onChange={this.searchEvent}
+                                        addonAfter={(
+                                            <Icon type="search" className="search-icon search-icon-btn" onClick={this.onSearchButtonClick}/>
+                                        )}
                                     />
                                     {hasSavedRecommendParams.keyword ? (
                                         <span className="iconfont icon-circle-close search-icon" onClick={this.closeSearchInput}/>
-                                    ) : (<Icon type="search" className="search-icon search-icon-btn" onClick={this.onSearchButtonClick}/>
-                                    )}
+                                    ) : null}
                                 </div>
                             </FormItem>
                             <FormItem
@@ -512,74 +515,6 @@ class RecommendCluesFilterPanel extends Component {
                                         onChange={this.handleChange}
                                     />
                                 </FormItem>*/}
-                                {/*如果选了'最近半年注册',就不用再显示注册时间*/}
-                                {/*{
-                                    this.props.isSelectedHalfYearRegister ? null : (
-                                        <FormItem
-                                            label={this.renderLabelAndVip(Intl.get('clue.recommend.established.time', '成立时间'), VIP_ITEM_MAP.REGISTER_TIME)}
-                                        >
-                                            {this.renderSelectFilterBlock('register_size', registerSize, () => {
-                                                let timeTarget = {};
-                                                let startTime = hasSavedRecommendParams.startTime, endTime = hasSavedRecommendParams.endTime;
-                                                if(startTime) {
-                                                    timeTarget.max = moment().diff(startTime, 'years');
-                                                }
-                                                if(endTime) {
-                                                    timeTarget.min = moment().endOf('day').diff(endTime, 'years');
-                                                }
-                                                timeTarget = _.find(registerSize, item => {
-                                                    if(timeTarget.max <= 1 && item.max === 1) {//一年以内
-                                                        return true;
-                                                    }else if(timeTarget.min >= 10 && item.min === 10) {//10年以上
-                                                        return true;
-                                                    }
-                                                    if(timeTarget.max >= item.min && timeTarget.max <= item.max) {
-                                                        return true;
-                                                    }
-                                                });
-                                                return _.isEmpty(timeTarget) ? JSON.stringify({name: Intl.get('crm.customer.pool.unlimited', '不限')}) : JSON.stringify(timeTarget);
-                                            })}
-                                        </FormItem>
-                                    )
-                                }
-                                <FormItem
-                                    label={this.renderLabelAndVip(Intl.get('clue.recommend.company.size', '公司规模'), VIP_ITEM_MAP.COMPANY_SIZE)}
-                                >
-                                    {this.renderSelectFilterBlock('staff_size', staffSize, () => {
-                                        let staffTarget = {};
-                                        if(hasSavedRecommendParams.staffnumMin || hasSavedRecommendParams.staffnumMax){
-                                            staffTarget = _.find(staffSize, item => item.staffnumMin === hasSavedRecommendParams.staffnumMin && item.staffnumMax === hasSavedRecommendParams.staffnumMax );
-                                        }
-                                        return _.isEmpty(staffTarget) ? JSON.stringify({name: Intl.get('crm.customer.pool.unlimited', '不限')}) : JSON.stringify(staffTarget);
-                                    })}
-                                </FormItem>
-                                <FormItem
-                                    label={this.renderLabelAndVip(Intl.get('clue.recommend.registered.capital', '注册资本'), VIP_ITEM_MAP.REGISTER_MONEY)}
-                                >
-                                    {this.renderSelectFilterBlock('money_size', moneySize, () => {
-                                        let capitalTarget = {};
-                                        if(hasSavedRecommendParams.capitalMin || hasSavedRecommendParams.capitalMax){
-                                            capitalTarget = _.find(moneySize, item => item.capitalMin === hasSavedRecommendParams.capitalMin && item.capitalMax === hasSavedRecommendParams.capitalMax );
-                                        }
-                                        return _.isEmpty(capitalTarget) ? JSON.stringify({name: Intl.get('crm.customer.pool.unlimited', '不限')}) : JSON.stringify(capitalTarget);
-                                    })}
-                                </FormItem>
-                                <FormItem
-                                    label={this.renderLabelAndVip(Intl.get('clue.recommend.enterprise.class', '企业类型'), VIP_ITEM_MAP.COMPANY_ENTYPES)}
-                                >
-                                    <Select
-                                        mode="multiple"
-                                        value={_.get(hasSavedRecommendParams,'entTypes', [])}
-                                        onChange={this.onSelect.bind(this,'entTypes')}
-                                        getPopupContainer={() => document.getElementById('clue-recommend-form')}
-                                    >
-                                        {_.isArray(companyProperty) && companyProperty.length ?
-                                            companyProperty.map((propertyItem, idx) => {
-                                                return (<Option key={idx} value={propertyItem.value}>{propertyItem.name}</Option>);
-                                            }) : null
-                                        }
-                                    </Select>
-                                </FormItem>*/}
                                 <FormItem className="vip-filter-container" label={Intl.get('clue.recommend.filter.vip', 'VIP筛选')}>
                                     <div className="vip-filter-content">
                                         {this.props.isSelectedHalfYearRegister ? null : (
@@ -588,7 +523,6 @@ class RecommendCluesFilterPanel extends Component {
                                                     btnText: Intl.get('clue.recommend.established.time', '成立时间'),
                                                     type: VIP_ITEM_MAP.REGISTER_TIME,
                                                     list: registerSize,
-                                                    unLimitText: Intl.get('clue.recommend.established.time', '成立时间'),
                                                     getValue: () => {
                                                         let timeTarget = {};
                                                         let startTime = hasSavedRecommendParams.startTime, endTime = hasSavedRecommendParams.endTime;
@@ -623,7 +557,6 @@ class RecommendCluesFilterPanel extends Component {
                                                 btnText: Intl.get('clue.recommend.company.size', '公司规模'),
                                                 type: VIP_ITEM_MAP.COMPANY_SIZE,
                                                 list: staffSize,
-                                                unLimitText: Intl.get('clue.recommend.company.size', '公司规模'),
                                                 getValue: () => {
                                                     let staffTarget = {};
                                                     if(hasSavedRecommendParams.staffnumMin || hasSavedRecommendParams.staffnumMax){
@@ -643,7 +576,6 @@ class RecommendCluesFilterPanel extends Component {
                                                 btnText: Intl.get('clue.recommend.registered.capital', '注册资本'),
                                                 type: VIP_ITEM_MAP.REGISTER_MONEY,
                                                 list: moneySize,
-                                                unLimitText: Intl.get('clue.recommend.registered.capital', '注册资本'),
                                                 getValue: () => {
                                                     let capitalTarget = {};
                                                     if(hasSavedRecommendParams.capitalMin || hasSavedRecommendParams.capitalMax){
@@ -663,7 +595,6 @@ class RecommendCluesFilterPanel extends Component {
                                                 btnText: Intl.get('clue.recommend.enterprise.class', '企业类型'),
                                                 type: VIP_ITEM_MAP.COMPANY_ENTYPES,
                                                 list: companyProperty,
-                                                unLimitText: Intl.get('clue.recommend.enterprise.class', '企业类型'),
                                                 getValue: () => {
                                                     let entypesTarget = {};
                                                     if(hasSavedRecommendParams.entTypes){
@@ -679,7 +610,7 @@ class RecommendCluesFilterPanel extends Component {
                                             })}
                                         </div>
                                         <div className="vip-filter-item">
-                                            <Button className={btnCls} type="primary" onClick={this.handleSubmit} loading={this.state.isSaving || this.props.isLoading}>{Intl.get('common.confirm', '确认')}</Button>
+                                            <Button className={btnCls} type="primary" onClick={this.handleSubmit}>{Intl.get('common.confirm', '确认')}</Button>
                                         </div>
                                     </div>
                                 </FormItem>
