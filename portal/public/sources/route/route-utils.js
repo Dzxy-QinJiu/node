@@ -324,7 +324,7 @@ function filterRoute(allRoutes) {
     filterPersonalRoutes(user.routes);
     //过滤掉curtao域名下不显示的菜单
     user.routes = filterCurtaoRoutes(user.routes);
-    //没有线索推荐权限的，需要去掉线索推荐页
+    //没有找线索权限的，需要去掉找线索页
     if(!hasRecommendPrivilege()) {
         user.routes = _.filter(user.routes, item => item.id !== ROUTE_CONST.CLUES_RECOMMEND);
     }

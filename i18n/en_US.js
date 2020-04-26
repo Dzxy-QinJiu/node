@@ -4077,7 +4077,7 @@ var en_US = {
     'payment.renewal.export.lead': 'Leads can be exported after renewal',//续费后可导出线索
     'payment.upgrade.extract.lead': 'Clues can be extracted after upgrading',//升级后可提取线索
     'payment.renewal.extract.lead': 'Clues can be extracted after renewal',//续费后可提取线索
-    'payment.upgrade.extract.clue.limit': 'Extraction cue overload',//提取线索超限
+    'payment.upgrade.extract.clue.limit': 'Extract more than {count} clues',//提取线索超过{count}条
     'payment.upgrading': 'Upgrading...',//正在升级...
     'payment.countdown.default.msg': 'Countdown...',//倒计时中...
     'payment.upgrade.version.success': 'You have successfully upgraded to the official version, {time} expires',//您已成功升级为正式版，{time} 到期

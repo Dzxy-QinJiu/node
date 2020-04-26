@@ -864,7 +864,7 @@ class ExtractClues extends React.Component {
                 return (
                     <AntcDropdown
                         isDropdownAble={record.hasExtracted}
-                        datatraceContainer='线索推荐页面单个提取'
+                        datatraceContainer='找线索页面单个提取'
                         ref={assignSale => this['changeSales' + record.id] = assignSale}
                         content={
                             <span
@@ -1284,11 +1284,11 @@ class ExtractClues extends React.Component {
         const hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length') || _.get(this, 'state.disabledCheckedClues.length');
 
         return (
-            <div className="extract-clues-wrapper" data-tracename="线索推荐操作面板">
+            <div className="extract-clues-wrapper" data-tracename="找线索操作面板">
                 <div className="extract-clues-title-container">
                     <div className="extract-clues-title-wrapper">
                         <div className="extract-clues-title">
-                            <span>{isCurtao() ? Intl.get('clue.find.recommend.clue', '找线索') : Intl.get('clue.customer.clue.recommend', '线索推荐')}</span>
+                            <span>{Intl.get('clue.find.recommend.clue', '找线索')}</span>
                             <div className="extract-clues-btn-container">
                                 {
                                     hasSelectedClue ? this.renderExtractOperator(isWebMin) : this.renderBtnClock(isWebMin)

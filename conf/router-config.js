@@ -17,19 +17,19 @@ let routers = [
     },
     {
         id: 'CLUES_RECOMMEND',
-        name: 'clue.customer.clue.recommend',//线索推荐
+        name: 'clue.find.recommend.clue',//找线索
         routePath: '/clues-recommend',
         component: `${MODULE_PATH}clue_customer/public/views/recomment_clues`,
-        shortName: 'clue.customer.clue.recommend',//线索推荐
+        shortName: 'clue.find.recommend.clue',//找线索
         //有这个权限，才显示入口图标
         showPrivileges: ['CURTAO_CRM_COMPANY_STORAGE']
     },
     {
         id: 'ClUE_CUSTOMER',
-        name: 'crm.sales.clue',//线索
+        name: 'versions.feature.lead.management',//线索管理
         routePath: '/leads',
         component: `${MODULE_PATH}clue_customer/public`,
-        shortName: 'crm.sales.clue',//线索
+        shortName: 'versions.feature.lead.management',//线索管理
         //有这个权限，才显示入口图标
         showPrivileges: ['CURTAO_CRM_LEAD_QUERY_ALL', 'CURTAO_CRM_LEAD_QUERY_SELF']
     },

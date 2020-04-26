@@ -482,11 +482,11 @@ class RecommendCluesList extends React.Component {
          */
         if(versionAndType.isPersonalTrial) {//个人试用
             Trace.traceEvent(ReactDOM.findDOMNode(this), '超限后再提取线索自动打开个人升级界面');
-            this.handleUpgradePersonalVersion(Intl.get('payment.upgrade.extract.clue.limit', '提取线索超限'));
+            this.handleUpgradePersonalVersion(Intl.get('payment.upgrade.extract.clue.limit', '提取线索超过{count}条', {count: maxLimitExtractNumber}));
         }else if(versionAndType.isPersonalFormal//个人正式版
             || versionAndType.isCompanyFormal && this.isManager()) { //或企业正式版管理员
             Trace.traceEvent(ReactDOM.findDOMNode(this), '超限后再提取线索自动打开增加线索量界面');
-            this.handleClickAddClues(Intl.get('payment.upgrade.extract.clue.limit', '提取线索超限'));
+            this.handleClickAddClues(Intl.get('payment.upgrade.extract.clue.limit', '提取线索超过{count}条', {count: maxLimitExtractNumber}));
         }else if(disableExtract && versionAndType.isCompanyTrial) {//超限时，企业试用
             maxLimitTip = <ReactIntl.FormattedMessage
                 id="clue.recommend.company.trial.extract.num.limit.tip"
@@ -792,6 +792,11 @@ class RecommendCluesList extends React.Component {
     };
     //渲染批量提取的按钮
     renderExtractOperator = (isWebMin) => {
+        const hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length') || _.get(this, 'state.disabledCheckedClues.length');
+        let isDisabled = !hasSelectedClue;
+        if(isDisabled) {
+            return null;
+        }
         // 过期的账号不能提取线索
         if(isExpired()) {
             let currentVersionObj = checkVersionAndType();
@@ -808,9 +813,8 @@ class RecommendCluesList extends React.Component {
             }
         }else {//渲染可提取线索的按钮
             let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
-            const hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length') || _.get(this, 'state.disabledCheckedClues.length');
-            let isDisabled = !hasSelectedClue || this.state.batchExtractLoading;
             if(hasAssignedPrivilege) {
+                isDisabled = !hasSelectedClue || this.state.batchExtractLoading;
                 let btnCls = classNames('button-save btn-item', {
                     'btn-disabled': isDisabled
                 });
@@ -1400,8 +1404,8 @@ class RecommendCluesList extends React.Component {
             <div className="unextract-clue-tip clearfix">
                 <div className="no-extract-count-tip">
                     <Checkbox className="check-all" checked={this.isCheckAll()} onChange={this.handleCheckAllChange} disabled={this.disabledCheckAll()}>{Intl.get('common.all.select', '全选')}</Checkbox>
-                    {this.renderExtractOperator(isWebMin)}
                     {this.hasNoExtractCountTip()}
+                    {this.renderExtractOperator(isWebMin)}
                 </div>
                 {this.renderBtnClock(isWebMin)}
             </div>

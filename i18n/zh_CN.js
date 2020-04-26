@@ -4113,7 +4113,7 @@ var zh_CN = {
     'payment.renewal.export.lead': '续费后可导出线索',
     'payment.upgrade.extract.lead': '升级后可提取线索',
     'payment.renewal.extract.lead': '续费后可提取线索',
-    'payment.upgrade.extract.clue.limit': '提取线索超限',
+    'payment.upgrade.extract.clue.limit': '提取线索超过{count}条',
     'payment.upgrading': '正在升级...',
     'payment.countdown.default.msg': '倒计时中...',
     'payment.upgrade.version.success': '您已成功升级为正式版，{time} 到期',

@@ -1353,7 +1353,7 @@ class MyWorkColumn extends React.Component {
                         onClick={this.showAddSchedulePanel}>{Intl.get('home.page.add.schedule', '添加日程')}</Button>
                     {hasRecommendPrivilege() ? (
                         <Button className='add-clue-btn'
-                            onClick={this.showRecommendCluePanel}>{Intl.get('clue.customer.recommend.clue.lists', '推荐线索')}</Button>
+                            onClick={this.showRecommendCluePanel}>{Intl.get('clue.find.recommend.clue', '找线索')}</Button>
                     ) : null}
                 </div>
             );

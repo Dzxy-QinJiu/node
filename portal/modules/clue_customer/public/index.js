@@ -631,7 +631,7 @@ class ClueCustomer extends React.Component {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-anlysis-handle-btns'), '点击下拉中的线索池按钮');
             this.showExtractCluePanel();
         } else if(e.key === 'recommend') {
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-anlysis-handle-btns'), '点击下拉中的线索推荐按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-anlysis-handle-btns'), '点击下拉中的找线索按钮');
             this.showClueRecommendTemplate();
         }
     }
@@ -679,7 +679,7 @@ class ClueCustomer extends React.Component {
             message.error(err);
         });
     };
-    //渲染线索推荐按钮
+    //渲染找线索按钮
     renderClueRecommend = () => {
         let cls = classNames('recomend-clue-customer-container', {
             'pull-right': !isCurtao()
@@ -698,10 +698,10 @@ class ClueCustomer extends React.Component {
                         visible={!_.isNil(this.state.hasExtractCount) && !this.state.hasExtractCount && this.state.showRecommendTips}
                         overlayClassName="clue-recommend-tips explain-pop"
                     >
-                        <Button onClick={this.showClueRecommendTemplate} className="btn-item ant-btn-primary" data-tracename="点击线索推荐按钮">
+                        <Button onClick={this.showClueRecommendTemplate} className="btn-item ant-btn-primary" data-tracename="点击找线索按钮">
                             <i className="iconfont icon-clue-recommend"></i>
                             <span className="clue-container">
-                                {isCurtao() ? Intl.get('clue.find.recommend.clue', '找线索') : Intl.get('clue.customer.clue.recommend', '线索推荐')}
+                                {Intl.get('clue.find.recommend.clue', '找线索')}
                             </span>
                         </Button>
                     </Popover>
@@ -2618,8 +2618,8 @@ class ClueCustomer extends React.Component {
                         id="import.excel.no.data"
                         defaultMessage={'试下客套给您{recommend}的功能'}
                         values={{
-                            'recommend': <a onClick={this.showClueRecommendTemplate} data-tracename="点击推荐线索">
-                                {Intl.get('import.recommend.clue.lists', '推荐线索')}
+                            'recommend': <a onClick={this.showClueRecommendTemplate} data-tracename="点击找线索按钮">
+                                {Intl.get('clue.find.recommend.clue', '找线索')}
                             </a>
                         }}/>
                 </div>
@@ -3288,7 +3288,7 @@ class ClueCustomer extends React.Component {
                 </Menu.Item> : null}
             {hasRecommendPrivilege() ?
                 <Menu.Item key="recommend">
-                    {isCurtao() ? Intl.get('clue.find.recommend.clue', '找线索') : Intl.get('clue.customer.clue.recommend', '线索推荐')}
+                    {Intl.get('clue.find.recommend.clue', '找线索')}
                 </Menu.Item> : null}
         </Menu>);
     };
