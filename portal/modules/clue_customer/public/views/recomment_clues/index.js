@@ -14,6 +14,7 @@ import ShearContent from 'CMP_DIR/shear-content';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import DetailCard from 'CMP_DIR/detail-card';
+import AlertTimer from 'CMP_DIR/alert-timer';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
 var clueCustomerStore = require('MOD_DIR/clue_customer/public/store/clue-customer-store');
 import { batchPushEmitter, notificationEmitter, paymentEmitter } from 'PUB_DIR/sources/utils/emitters';
@@ -55,6 +56,9 @@ const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 
 const CONTACT_PHONE_CLS = 'extract-clue-contact-count';
 
+//提取成功后，显示的时间，默认5s
+const EXTRACTED_SUCCESS_TIME = 5000;
+
 class RecommendCluesList extends React.Component {
     constructor(props) {
         super(props);
@@ -80,6 +84,7 @@ class RecommendCluesList extends React.Component {
             singlePopoverVisible: '',//是否显示单个提取后超限内容
             batchPopoverVisible: '',//是否显示批量提取后超限内容
             extractLimitContent: null,//超限后提示内容
+            extractedResult: '',//提取成功后提示
             ...clueCustomerStore.getState()
         };
     }
@@ -536,15 +541,9 @@ class RecommendCluesList extends React.Component {
         // 更新引导流程
         this.upDateGuideMark();
         this.props.afterSuccess();
-        message.success(
-            <ReactIntl.FormattedMessage
-                id="clue.recommend.extract.success.tip"
-                defaultMessage={'提取成功！ 去{leads}查看'}
-                values={{
-                    leads: <a onClick={this.handleLinkLeads}>{Intl.get('versions.feature.lead.management', '线索管理')}</a>
-                }}
-            />
-        );
+        this.setState({
+            extractedResult: 'success'
+        });
     }
 
     //------ 升级正式版或者购买线索量的处理start ------//
@@ -1200,20 +1199,46 @@ class RecommendCluesList extends React.Component {
         this.setState({});
     };
 
+    //去掉成功提示信息
+    hideExtractedTooltip = () => {
+        this.setState({extractedResult: ''});
+    };
+
     renderBtnClock = (isWebMin) => {
         let moreRotationClass = classNames('iconfont icon-change-new', {
             'change-new-icon-rotation': !this.state.canClickMoreBatch
         });
         return (
-            <Button
-                className="btn-item more-batch-btn"
-                data-tracename="点击换一批按钮"
-                title={Intl.get('clue.customer.refresh.list', '换一批')}
-                onClick={this.getRecommendClueLists.bind(this, null, EXTRACT_CLUE_CONST_MAP.ANOTHER_BATCH)}
-            >
-                <span className={moreRotationClass}/>
-                <span>{isWebMin ? null : Intl.get('clue.customer.refresh.list', '换一批')}</span>
-            </Button>
+            <React.Fragment>
+                <Button
+                    className="btn-item more-batch-btn"
+                    data-tracename="点击换一批按钮"
+                    title={Intl.get('clue.customer.refresh.list', '换一批')}
+                    onClick={this.getRecommendClueLists.bind(this, null, EXTRACT_CLUE_CONST_MAP.ANOTHER_BATCH)}
+                >
+                    <span className={moreRotationClass}/>
+                    <span>{isWebMin ? null : Intl.get('clue.customer.refresh.list', '换一批')}</span>
+                </Button>
+                {this.state.extractedResult === 'success' ? (
+                    <AlertTimer
+                        closable
+                        time={EXTRACTED_SUCCESS_TIME}
+                        message={(
+                            <ReactIntl.FormattedMessage
+                                id="clue.recommend.extract.success.tip"
+                                defaultMessage={'提取成功！ 去{leads}查看'}
+                                values={{
+                                    leads: <a onClick={this.handleLinkLeads}>{Intl.get('versions.feature.lead.management', '线索管理')}</a>
+                                }}
+                            />
+                        )}
+                        type="success"
+                        showIcon
+                        onHide={this.hideExtractedTooltip}
+                        onClose={this.hideExtractedTooltip}
+                    />
+                ) : null}
+            </React.Fragment>
         );
     };
 
