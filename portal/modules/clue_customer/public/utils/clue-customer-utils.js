@@ -298,9 +298,36 @@ export const contactNameRule = function() {
         message: Intl.get('crm.90', '请输入姓名')}];
 };
 const TENTHOUSAND = 10000;
+//成立时间
+export const registerSize = [
+    {
+        name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.established.time', '成立时间')})
+    },
+    {
+        name: Intl.get('clue.recommend.condition.register.size', '{num}年以内', {num: 1}),
+        max: 1
+    },
+    {
+        name: Intl.get('clue.recommend.condition.register.range', '{min}-{max}年', {min: 1, max: 3}),
+        min: 1, max: 3
+    },
+    {
+        name: Intl.get('clue.recommend.condition.register.range', '{min}-{max}年', {min: 3, max: 5}),
+        min: 3, max: 5
+    },
+    {
+        name: Intl.get('clue.recommend.condition.register.range', '{min}-{max}年', {min: 5, max: 10}),
+        min: 5, max: 10
+    },
+    {
+        name: Intl.get('clue.recommend.condition.register.over.num', '{num}年以上', {num: 10}),
+        min: 10
+    },
+];
+//公司规模
 export const staffSize = [
     {
-        name: Intl.get('common.all', '全部'),
+        name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.company.size', '公司规模')})
     },
     {
         name: Intl.get('clue.customer.condition.staff.size', '{num}人以下', {num: 20}),
@@ -331,10 +358,10 @@ export const staffSize = [
         staffnumMin: TENTHOUSAND
     }
 ];
-
+//注册资本
 export const moneySize = [
     {
-        name: Intl.get('common.all', '全部'),
+        name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.registered.capital', '注册资本')})
     },
     {
         name: Intl.get('clue.customer.money.size.less.num', '{num}万以内', {num: 10}),
@@ -360,7 +387,9 @@ export const moneySize = [
         capitalMin: 5000 * TENTHOUSAND,
     },
 ];
+//企业类
 export const companyProperty = [
+    { name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.enterprise.class', '企业类型')}) },
     {
         name: Intl.get('clue.customer.condition.company.limit', '有限责任公司'),
         value: Intl.get('clue.customer.condition.company.limit', '有限责任公司')
@@ -402,6 +431,25 @@ export const companyProperty = [
         value: Intl.get('clue.customer.condition.company.not.above.type', '非上述类型')
     }
 ];
+//线索推荐面板的静态常量集合
+export const EXTRACT_CLUE_CONST_MAP = {
+    ANOTHER_BATCH: 'anotherBatch',//换一批
+    LAST_HALF_YEAR_REGISTER: '近半年注册',
+    RESET: 'reset',//重置
+};
+//处理推荐线索条件
+export const handleRecommendClueFilters = function(condition) {
+    //需要处理筛选条件，兼容以前的industrys，改为现在的keyword
+    if(_.get(condition,'industrys[0]')) {
+        condition.keyword = condition.industrys[0];
+        delete condition.industrys;
+    }
+    //需要处理下公司名，现在新版不支持公司名搜索，所以需要去掉该字段
+    if(_.get(condition, 'name')) {
+        delete condition.name;
+    }
+};
+
 export const deleteEmptyProperty = function(data) {
     for (var key in data){
         if (data[key] === null){
@@ -497,7 +545,7 @@ export function releaseClueTip() {
 }
 //检查是否已选中了条件
 export const CLUE_CONDITION = ['name','startTime','endTime','entTypes','staffnumMax','staffnumMin','capitalMin','capitalMax'];
-export const ADD_INDUSTRY_ADDRESS_CLUE_CONDITION = _.concat(['industrys','province','city','district'],CLUE_CONDITION);
+export const ADD_INDUSTRY_ADDRESS_CLUE_CONDITION = _.concat(['keyword', 'industrys','province','city','district'],CLUE_CONDITION);
 export const checkClueCondition = (checkConditionItem,settedCondition) => {
     var hasCondition = false;
     hasCondition = _.some(checkConditionItem, key => {

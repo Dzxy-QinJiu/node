@@ -3944,6 +3944,20 @@ var en_US = {
     'clue.recommend.clue.introduction': 'brief introduction',//简介
     'clue.recommend.clue.count': '{count}',//{count}个
     'clue.find.recommend.clue': 'Look for clues',//找线索
+    'clue.recommend.keyword': 'keywords',//关键词
+    'clue.recommend.industry.name': 'The name of the industry',//行业名称
+    'clue.recommend.established.time': 'Established time',//成立时间
+    'clue.recommend.company.size': 'The company size',//公司规模
+    'clue.recommend.registered.capital': 'The registered capital',//注册资本
+    'clue.recommend.enterprise.class': 'The enterprise type',//企业类型
+    'clue.recommend.condition.register.size': '{num} years or less',//{num}年以内
+    'clue.recommend.condition.register.range': '{min} - {Max} year',//{min}-{max}年
+    'clue.recommend.condition.register.over.num': '{num} years',//{num}年以上
+    'clue.recommend.fitler.advanced.options': 'Advanced options',//高级选项
+    'clue.recommend.extract.success.tip': 'Extraction successful! {leads} view',//提取成功！ 去{leads}查看
+    'clue.recommend.selected.tip': 'The selected article {count}',//已选{count}条
+    'clue.recommend.filter.vip': 'VIP screening',//VIP筛选
+    'clue.recommend.filter.name.no.limit': '{name} is unlimited',//{name}不限
 
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
@@ -3976,10 +3990,14 @@ var en_US = {
     'clue.recommend.hot.name': 'hot',//热门
     'clue.recommend.return.to.work': 'The enterprise has been restarted',//已复工企业
     'clue.recommend.listed': 'Listed companies',//上市企业
-    'clue.recommend.register.half.year': 'Last half year registration',//最近半年注册
+    'clue.recommend.register.half.year': 'Nearly half year registration',//近半年注册
     'clue.recommend.extract.count.more': '100 million + clues for you to extract',//1亿+条线索待您提取
-    'clue.recommend.mask.Manufactor': 'Mask manufacturers',// 口罩厂家
-    'clue.recommend.scale.company': 'State-owned enterprise',//国有企业
+    'clue.recommend.mask.manufactor': 'Mask manufacturers',// 口罩厂家
+    'clue.recommend.state.owned.enterprise': 'State-owned enterprise',//国有企业
+    'clue.recommend.high.tech.enterprise.enterprise': 'High and new technology',//高新技术
+    'clue.recommend.has.mobile': 'Have a mobile phone number',//有手机号
+    'clue.recommend.has.phone': 'Have a phone',//有电话
+    'clue.recommend.has.more.contact': 'There are multiple contact information',//多个联系方式
 
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
@@ -4059,6 +4077,7 @@ var en_US = {
     'payment.renewal.export.lead': 'Leads can be exported after renewal',//续费后可导出线索
     'payment.upgrade.extract.lead': 'Clues can be extracted after upgrading',//升级后可提取线索
     'payment.renewal.extract.lead': 'Clues can be extracted after renewal',//续费后可提取线索
+    'payment.upgrade.extract.clue.limit': 'Extract more than {count} clues',//提取线索超过{count}条
     'payment.upgrading': 'Upgrading...',//正在升级...
     'payment.countdown.default.msg': 'Countdown...',//倒计时中...
     'payment.upgrade.version.success': 'You have successfully upgraded to the official version, {time} expires',//您已成功升级为正式版，{time} 到期

@@ -788,6 +788,9 @@ export const CLUE_MESSAGE_TYPE = {
 export const CLUE_HIDE_NOTICE_TYPE = [CLUE_MESSAGE_TYPE.ADD_CUSTOMER_CLUE, CLUE_MESSAGE_TYPE.BASE_EXTRACT_ALLOT,CLUE_MESSAGE_TYPE.POOL_EXTRACT_ALLOT];
 
 export const RECOMMEND_CLUE_FILTERS = [{
+    key: 'keyword',
+    label: '关键词',
+},{
     key: 'industrys',
     label: '行业',
     separator: '、',
