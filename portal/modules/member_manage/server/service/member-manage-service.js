@@ -55,7 +55,7 @@ exports.getMemberOrganization = (req, res) => {
         }, null, {
             success: (eventEmitter, data) => {
                 let isPrintLog = _.get(req.query, 'isPrintLog');
-                if(isPrintLog) {
+                if(isPrintLog) {//在升级或者续费个人正式版时，需要打印下更新后的组织信息，以便于后期查找问题
                     let queryData = _.get(req.query, 'data');
                     queryData = queryData && _.isString(queryData) ? JSON.parse(queryData) : queryData;
                     let title = _.get(queryData, 'title', '');
