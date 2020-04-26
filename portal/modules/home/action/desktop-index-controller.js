@@ -139,11 +139,9 @@ exports.getUserData = function(req, res) {
                     endTime: _.get(data, 'organization.end_time', ''),
                     expireAfterDays: _.get(data, 'organization.expire_after_days'),
                     grantProducts: _.get(data, 'organization.grant_products', []),
+                    // 组织是否过期
+                    isExpired: _.get(data, 'organization.end_time', '') <= new Date().getTime()
                 };
-                let endTime = _.get(user, 'organization.endTime', '');
-                let curtTime = new Date().getTime();
-                // 组织是否过期
-                user.organization.isExpired = endTime <= curtTime;
                 req.session.user.nickname = data.nick_name;
                 req.session.save(function() {
                     res.header('Content-Type', 'application/javascript');

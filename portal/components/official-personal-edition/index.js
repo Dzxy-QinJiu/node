@@ -193,37 +193,41 @@ class OfficialPersonalEdition extends React.Component{
         }*/
         if(goodsList.length) {
             //构建个人正版的商品,1个月，3个月，6个月。。。
-            let originalList = goodsList[0];
-            discountList.push({
-                number: 1,
-                discount: 1
-            });
-            //根据折扣信息生成对应商品
-            newState.list = _.map(_.orderBy(discountList, ['number'], 'desc'), (discount, index) => {
-                //根据折扣信息计算单价
-                let price = _.get(originalList,'goods_fee',0) * (+_.get(discount,'discount','0'));
-                let number = _.get(discount, 'number', 0);
-                return {
-                    id: originalList.id,
-                    number: number,
-                    price,
-                    totalPrice: Math.round(price * number),
-                    index
-                };
-            });
+            let originalList = _.filter(goodsList, item => item.status === 1)[0];
+            if(originalList) {
+                discountList.push({
+                    number: 1,
+                    discount: 1
+                });
+                //根据折扣信息生成对应商品
+                newState.list = _.map(_.orderBy(discountList, ['number'], 'desc'), (discount, index) => {
+                    //根据折扣信息计算单价
+                    let price = _.get(originalList,'goods_fee',0) * (+_.get(discount,'discount','0'));
+                    let number = _.get(discount, 'number', 0);
+                    return {
+                        id: originalList.id,
+                        number: number,
+                        price,
+                        totalPrice: Math.round(price * number),
+                        index
+                    };
+                });
 
-            //动态计算商品滚动区域高度
-            /*if(newState.list.length > 4) {
-                let row = Math.ceil(newState.list.length / 4);
-                let height = row * DEFAULT_HEIGHT;
-                let maxScrollHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT - LAYOUT_CONSTS.DESC_HEIGHT - LAYOUT_CONSTS.BOTTOM_HEIGHT;
-                newState.listHeight = height > maxScrollHeight ? maxScrollHeight : height;
-            }*/
+                //动态计算商品滚动区域高度
+                /*if(newState.list.length > 4) {
+                    let row = Math.ceil(newState.list.length / 4);
+                    let height = row * DEFAULT_HEIGHT;
+                    let maxScrollHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT - LAYOUT_CONSTS.DESC_HEIGHT - LAYOUT_CONSTS.BOTTOM_HEIGHT;
+                    newState.listHeight = height > maxScrollHeight ? maxScrollHeight : height;
+                }*/
 
-            newState.activeGoods = newState.list[0];
-            let leadLimit = _.get(originalList,'related_info.lead_limit', '');
-            //lead_limit: "1000_1/M"
-            newState.count = _.get(leadLimit.split('_'),'[0]',0);
+                newState.activeGoods = newState.list[0];
+                let leadLimit = _.get(originalList,'related_info.lead_limit', '');
+                //lead_limit: "1000_1/M"
+                newState.count = _.get(leadLimit.split('_'),'[0]',0);
+                //需要存入商品信息
+                newState.originalList = _.get(originalList,'related_info', {});
+            }
         }
 
         this.setState(newState);
@@ -333,27 +337,47 @@ class OfficialPersonalEdition extends React.Component{
             countDownSeconds: 6,
             onCountDownComplete: () => {
                 let organization = _.get(getUserData(),'organization', {});
-                let originalList = _this.state.list[0];
+                let originalList = _this.state.originalList;
                 let related_info = _.cloneDeep(_.get(originalList, 'related_info', {}));
                 //请求组织信息数据
                 getOrganizationInfo({
-                    update: true
+                    update: true,
+                    //是否打印日志
+                    isPrintLog: true,
+                    data: JSON.stringify({
+                        title: this.state.leftTitle || '升级为正式版',
+                        goodsNum: _.get(curOrderInfo,'goods_num', 0)
+                    })
                 }).then((result) => {
+                    result = _.isObject(result) && !_.isEmpty(result) ? result : {};
+                    // 需要判断获取回来的组织信息是否已更新,根据过期时间来判断
+                    // 若没有更新，暂时使用上面的版本信息
+                    if(_.isEqual(_.get(result, 'end_time'), _.get(organization, 'endTime'))) {
+                        result.version = related_info;
+                        result.end_time = endTime;
+                        result.expire_after_days = moment(endTime).diff(moment(), 'days') || 0;
+                    }
                     complete(result,{
                         id: _.get(result, 'id', ''),
                         officialName: _.get(result, 'official_name', ''),
                         version: _.get(result, 'version', {}),
+                        type: _.get(result, 'type', ''),
                         functions: _.get(result, 'functions', []),
                         endTime: _.get(result, 'end_time', ''),
                         expireAfterDays: _.get(result, 'expire_after_days'),
                         grantProducts: _.get(result, 'grant_products', []),
+                        isExpired: false
                     });
                 }, () => {
-                    let id = _.get(related_info, 'realm_or_group_id', '');
+                    //获取组织信息失败了
+                    //需要更新本地组织信息有（版本信息、到期时间、到期时间还剩几天、是否到期(isExpired)）
                     delete related_info.realm_or_group_id;
+                    let expireAfterDays = moment(endTime).diff(moment(), 'days') || 0;
                     complete({end_time: endTime, version: related_info},{
-                        id: id,
                         version: related_info,
+                        endTime: endTime,
+                        expireAfterDays: expireAfterDays,
+                        isExpired: false
                     });
                 });
 
