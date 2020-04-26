@@ -42,8 +42,11 @@
     </div>
 </div>
 <% } %>
-<% if(isCurtao && custom_service_lang) { %>
+<% if(isCurtao && show_custom_service) { %>
 <style>
+    #newBridge{
+        display: none;
+    }
     #chatBtn {
         right: 0px !important;;
         bottom: 1px !important;;
