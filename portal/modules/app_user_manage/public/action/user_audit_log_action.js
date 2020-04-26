@@ -43,7 +43,7 @@ function UserAuditLogAction() {
                         }
                     }
                 }
-                _this.dispatch({error: false, data: data});
+                _this.dispatch({error: false, data: data, selectAppId: app_id});
                 callback && callback(app_id);
             }else{
                 _this.dispatch({error: true, errorMsg: errorMsg});
