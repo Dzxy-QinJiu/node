@@ -6,7 +6,7 @@
 var clueCustomerAjax = require('../ajax/clue-customer-ajax');
 var clueTraceAjax = require('../ajax/clue-trace-ajax');
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
-import {deleteEmptyProperty, handleSubmitClueItemData} from '../utils/clue-customer-utils';
+import {deleteEmptyProperty, handleSubmitClueItemData, handleRecommendClueFilters} from '../utils/clue-customer-utils';
 import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
 function ClueCustomerActions() {
     this.generateActions(
@@ -65,12 +65,14 @@ function ClueCustomerActions() {
     this.getSettingCustomerRecomment = function(condition, callback) {
         //引导页设置了推荐条件后跳转过来时，用引导页设置的推荐条件
         if(!_.isEmpty(condition)){
+            handleRecommendClueFilters(condition);
             _.isFunction(callback) && callback(condition);
             this.dispatch({list: [condition]});
         } else {
             clueCustomerAjax.getSettingCustomerRecomment().then((list) => {
                 var data = _.get(list,'[0]');
                 deleteEmptyProperty(data);
+                handleRecommendClueFilters(data);
                 _.isFunction(callback) && callback(data);
                 this.dispatch({list: list});
             },(errorMsg) => {

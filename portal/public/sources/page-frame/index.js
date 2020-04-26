@@ -15,7 +15,6 @@ import PhonePanel from 'MOD_DIR/phone_panel/public';
 import ClueDetailPanel from 'MOD_DIR/clue_detail_panel/public';
 import AudioReportFunction from 'CMP_DIR/audio-report-function';
 import Notification from 'MOD_DIR/notification/public/index';
-import BootCompleteInformation from 'CMP_DIR/boot-complete-information';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import PurchaseLeads from 'CMP_DIR/purchase-leads';
 import ClueToCustomerPanel from 'CMP_DIR/clue-to-customer-panel';
@@ -37,9 +36,8 @@ import{
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 import {getUserData} from '../../sources/user-data';
-import {checkVersionAndType, isShowUnReadNotice, isCurtao} from '../utils/common-method-util';
+import { isShowUnReadNotice, isCurtao} from '../utils/common-method-util';
 import {getUpgradeNoticeList, getRewardedCluesCount, getAppList} from '../utils/common-data-util';
-import { hasRecommendPrivilege } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
@@ -64,7 +62,6 @@ class PageFrame extends React.Component {
         isShowClueToCustomerPanel: false, // 是否显示线索转客户面板
         clueToCustomerPanelProps: {}, //线索转客户面板属性
         clueParamObj: $.extend(true, {}, emptyParamObj),
-        isShowBootCompletePanel: !_.get(getUserData(), 'websiteConfig.personnel_setting.no_show_boot_complete_set_recommend', false) && hasRecommendPrivilege(),//是否显示首次引导设置推荐线索条件面板（运营人员不显示）
         userDetailParamObj: $.extend(true, {}), // 用户详情组件相关的参数
         isShowPurchaseLeadsPanel: false,//是否展示购买线索量面板
         cluePaymentParamObj: {},
@@ -378,18 +375,6 @@ class PageFrame extends React.Component {
         this.closePhonePanel();
     };
 
-    showBootCompletePanel = (websitConfig) => {
-        if(!_.get(websitConfig,'no_show_boot_complete_set_recommend')) {
-            this.setState({
-                isShowBootCompletePanel: true
-            });
-        }
-    };
-
-    closeBootCompleteInfoPanel = () => {
-        this.setState({isShowBootCompletePanel: false});
-    };
-
     showPurchaseLeadsPanel = (paramObj) => {
         this.setState({isShowPurchaseLeadsPanel: true, cluePaymentParamObj: $.extend(this.state.cluePaymentParamObj, paramObj)});
     };
@@ -436,7 +421,6 @@ class PageFrame extends React.Component {
                         <LeftMenu
                             toggleNotificationPanel={this.toggleNotificationPanel}
                             closeNotificationPanel={this.closeNotificationPanel}
-                            showBootCompletePanel={this.showBootCompletePanel}
                             isShowNotificationPanel={this.state.isShowNotificationPanel}
                             rewardClueCount={this.state.rewardClueCount}
                             handleOpenLeftPanel={this.handleTriggerLeftPanel.bind(this,true)}
@@ -513,13 +497,6 @@ class PageFrame extends React.Component {
                         }
                     </div>
                 </div>
-                {
-                    this.state.isShowBootCompletePanel ? (
-                        <BootCompleteInformation
-                            hideRightPanel={this.closeBootCompleteInfoPanel}
-                        />
-                    ) : null
-                }
                 {this.state.audioPanelShow && audioParamObj ? (
                     <AudioReportFunction
                         curPlayItem={audioParamObj.curPlayItem}
