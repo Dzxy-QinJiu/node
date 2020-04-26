@@ -1027,7 +1027,7 @@ class RecommendCluesList extends React.Component {
                         ref={assignSale => this['changeSales' + record.id] = assignSale}
                         content={
                             <Popover
-                                placement="bottomLeft"
+                                placement="bottomRight"
                                 trigger="click"
                                 content={this.state.extractLimitContent}
                                 visible={checkRecord}
@@ -1058,7 +1058,7 @@ class RecommendCluesList extends React.Component {
             } else {
                 return (
                     <Popover
-                        placement="bottomLeft"
+                        placement="bottomRight"
                         trigger="click"
                         content={this.state.extractLimitContent}
                         visible={checkRecord}

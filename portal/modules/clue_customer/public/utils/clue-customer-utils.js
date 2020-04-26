@@ -437,6 +437,18 @@ export const EXTRACT_CLUE_CONST_MAP = {
     LAST_HALF_YEAR_REGISTER: '近半年注册',
     RESET: 'reset',//重置
 };
+//处理推荐线索条件
+export const handleRecommendClueFilters = function(condition) {
+    //需要处理筛选条件，兼容以前的industrys，改为现在的keyword
+    if(_.get(condition,'industrys[0]')) {
+        condition.keyword = condition.industrys[0];
+        delete condition.industrys;
+    }
+    //需要处理下公司名，现在新版不支持公司名搜索，所以需要去掉该字段
+    if(_.get(condition, 'name')) {
+        delete condition.name;
+    }
+};
 
 export const deleteEmptyProperty = function(data) {
     for (var key in data){
