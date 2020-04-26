@@ -17,6 +17,8 @@ exports.getMemberOrganization = (req, res) => {
                 version: _.get(data, 'version', {}),
                 endTime: _.get(data, 'end_time', ''),
                 expireAfterDays: _.get(data, 'expire_after_days'),
+                grantProducts: _.get(data, 'grant_products', []),
+                isExpired: _.get(data, 'end_time', '') <= new Date().getTime()
             };
             req.session.save(() => {
                 res.status(200).json(data);

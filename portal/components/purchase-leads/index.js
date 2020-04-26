@@ -100,7 +100,7 @@ class PurchaseLeads extends React.Component{
         let list = _.isArray(result.list) ? result.list : [];
         if(list.length) {
             //构建线索量的商品,1份，2份，5份。。。
-            let originalList = list[0];
+            let originalList = _.filter(list, item => item.status === 1)[0];
             newState.list = _.map(CLUE_GOODS_LIST_MAP, item => {
                 return {
                     num: item,
