@@ -1297,6 +1297,7 @@ class ClueCustomer extends React.Component {
         );
     };
     renderShowTraceContent = (salesClueItem) => {
+        console.log('salesClueItem===',salesClueItem);
         var traceContent = _.trim(_.get(salesClueItem, 'customer_traces[0].remark', ''));//该线索的跟进内容
         var traceAddTime = _.get(salesClueItem, 'customer_traces[0].call_date') || _.get(salesClueItem, 'customer_traces[0].add_time');//跟进时间
         return (
