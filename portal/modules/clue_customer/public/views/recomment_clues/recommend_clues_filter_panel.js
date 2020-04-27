@@ -250,11 +250,16 @@ class RecommendCluesFilterPanel extends Component {
     handleClickAdvanced = (key) => {
         if(!this.props.canClickMoreBatch) { return false; }
         let advanced = '';
-        let advancedValue = key.split(':')[1] || '';
-        let traceTip = `取消选中'${advancedValue}'`;
+        let currentAdvancedItem = _.find(ADVANCED_OPTIONS, item => item.value === key);
+        let advancedName = '';
+        if(currentAdvancedItem) {
+            advancedName = currentAdvancedItem.name;
+        }
+
+        let traceTip = `取消选中'${advancedName}'`;
         if(key !== this.props.feature) {
             advanced = key;
-            traceTip = `选中'${advancedValue}'`;
+            traceTip = `选中'${advancedName}'`;
         }
         Trace.traceEvent(ReactDOM.findDOMNode(this), `点击${traceTip}按钮`);
         clueCustomerAction.saveSettingCustomerRecomment(this.state.hasSavedRecommendParams);
