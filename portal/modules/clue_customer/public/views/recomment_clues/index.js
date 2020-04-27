@@ -1228,7 +1228,7 @@ class RecommendCluesList extends React.Component {
                                 id="clue.recommend.extract.success.tip"
                                 defaultMessage={'提取成功！ 去{leads}查看'}
                                 values={{
-                                    leads: <a onClick={this.handleLinkLeads}>{Intl.get('versions.feature.lead.management', '线索管理')}</a>
+                                    leads: <a data-tracename="点击查看线索管理按钮" onClick={this.handleLinkLeads}>{Intl.get('versions.feature.lead.management', '线索管理')}</a>
                                 }}
                             />
                         )}
@@ -1246,7 +1246,7 @@ class RecommendCluesList extends React.Component {
         return (
             <div className="more-date-wrapper">
                 <div className="more-data-content">
-                    <span className="btn-wrapper" title={Intl.get('clue.customer.refresh.list', '换一批')} onClick={this.getRecommendClueLists.bind(this, null, EXTRACT_CLUE_CONST_MAP.ANOTHER_BATCH)}>
+                    <span className="btn-wrapper" data-tracename="点击列表底部的换一批按钮" title={Intl.get('clue.customer.refresh.list', '换一批')} onClick={this.getRecommendClueLists.bind(this, null, EXTRACT_CLUE_CONST_MAP.ANOTHER_BATCH)}>
                         <i className="iconfont icon-change-new"/>
                         <span>{Intl.get('clue.customer.refresh.list', '换一批')}</span>
                     </span>
@@ -1273,7 +1273,7 @@ class RecommendCluesList extends React.Component {
             return (
                 <div className="errmsg-container">
                     <span className="errmsg-tip">{getRecommendClueErrMsg},</span>
-                    <a className="retry-btn" data-tracename="点击重新获取推荐线索按钮" onClick={this.getRecommendClueLists}>
+                    <a className="retry-btn" data-tracename="点击重新获取推荐线索按钮" onClick={this.getRecommendClueLists.bind(this, null, '')}>
                         {Intl.get('user.info.retry', '请重试')}
                     </a>
                 </div>
@@ -1451,7 +1451,7 @@ class RecommendCluesList extends React.Component {
             'responsive-mini-btn': isWebMin
         });
         return (
-            <div className="recommend-clues-lists-container" data-tracename="推荐线索列表">
+            <div className="recommend-clues-lists-container" data-tracename="推荐线索列表面板">
                 <div className="recommend-customer-list">
                     <div className="recommend-clue-panel">
                         <div className="recommend-clue-content-container">
