@@ -277,8 +277,8 @@ class RecommendCluesFilterPanel extends Component {
             this.handleUpgradePersonalVersion(trace);
             return false;
         }
-        //企业账号到期，提示联系销售升级\续费的popover
-        else if(currentVersionObj.company) {
+        //企业使用或者企业账号到期，提示联系销售升级\续费的popover
+        else if(currentVersionObj.isCompanyTrial || currentVersionObj.isCompanyFormal && isExpired()) {
             let tip = null;
             if(currentVersionObj.isCompanyTrial) {
                 Trace.traceEvent(ReactDOM.findDOMNode(this), `企业试用点击了'${trace}'`);
@@ -380,25 +380,6 @@ class RecommendCluesFilterPanel extends Component {
         });
     }
 
-    //label加上vip
-    renderLabelAndVip(label, key) {
-        return (
-            <Popover
-                trigger="click"
-                placement="bottomLeft"
-                content={this.state.vipPopOverVisibleContent}
-                visible={this.state.vipPopOverVisible === key}
-                onVisibleChange={this.handleVisibleChange}
-                overlayClassName="extract-limit-content"
-            >
-                <span className="label-wrapper">
-                    <span className="label-text">{label}</span>
-                    <span className="label-vip">VIP</span>
-                </span>
-            </Popover>
-        );
-    }
-
     renderDropDownBlock({btnText, type, list, getValue = () => {}}) {
         let currentValue = getValue();
         let menus = (
@@ -432,21 +413,7 @@ class RecommendCluesFilterPanel extends Component {
     }
 
     render() {
-        const formItemLayout = {
-            colon: false,
-            labelCol: {
-                sm: {span: 4},
-            },
-            wrapperCol: {
-                sm: {span: 20},
-            },
-        };
         let { hasSavedRecommendParams, showOtherCondition } = this.state;
-
-        let defaultValue = [];
-        if (hasSavedRecommendParams.startTime && hasSavedRecommendParams.endTime){
-            defaultValue = [moment(hasSavedRecommendParams.startTime), moment(hasSavedRecommendParams.endTime)];
-        }
 
         var cls = 'other-condition-container', show_tip = '', iconCls = 'iconfont', btnCls = 'btn-item save-btn';
         //是否展示其他的筛选条件
