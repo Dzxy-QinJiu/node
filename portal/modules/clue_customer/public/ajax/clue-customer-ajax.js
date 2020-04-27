@@ -380,9 +380,11 @@ exports.getSettingCustomerRecomment = function() {
     return Deferred.promise();
 };
 //添加和修改个人线索推荐保存配置
+var addOrEditSettingCustomerRecommentAjax = null;
 exports.addOrEditSettingCustomerRecomment = function(data) {
     var Deferred = $.Deferred();
-    $.ajax({
+    addOrEditSettingCustomerRecommentAjax && addOrEditSettingCustomerRecommentAjax.abort();
+    addOrEditSettingCustomerRecommentAjax = $.ajax({
         url: '/rest/clue/recommend/condition',
         dataType: 'json',
         type: 'post',
@@ -397,9 +399,11 @@ exports.addOrEditSettingCustomerRecomment = function(data) {
     return Deferred.promise();
 };
 //获取线索的推荐列表
+var getRecommendClueListsAjax = null;
 exports.getRecommendClueLists = function(obj) {
     var Deferred = $.Deferred();
-    $.ajax({
+    getRecommendClueListsAjax && getRecommendClueListsAjax.abort();
+    getRecommendClueListsAjax = $.ajax({
         url: '/rest/clue/recommend/lists',
         dataType: 'json',
         type: 'post',
