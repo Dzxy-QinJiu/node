@@ -4117,6 +4117,7 @@ var en_US = {
     'boot.please.input.industry.placeholder': 'Please enter the industry of interest, such as Internet, finance, etc',//请输入关注的行业，如互联网、金融业等
     'personal.welcome.title.tip': 'Welcome to the Curtao system!',//欢迎使用客套系统!
     'personal.welcome.public.account': 'Follow the official account for more information',//关注公众号，获得更多信息
+    'personal.welcome.enter.system': 'Enter the system',//进入系统
     /*个人试用 --- end*/
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': 'You have {time} days left in the trial period. {count} clues can be extracted every day. Will you upgrade to {upgrade} or {enterprise}?',//您的试用期还剩{time}天,每天可提取{count}条线索,是否升级为{upgrade}或{enterprise}？

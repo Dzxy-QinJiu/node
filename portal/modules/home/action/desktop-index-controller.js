@@ -71,7 +71,7 @@ exports.home = function(req, res) {
         showWelComePage: showWelComePage,
         welcomePageInfo: {
             title: backendIntl.get('personal.welcome.title.tip', '欢迎使用客套系统!'),
-            closeText: backendIntl.get('common.app.status.close', '关闭'),
+            closeText: backendIntl.get('personal.welcome.enter.system', '进入系统'),
             content: backendIntl.get('personal.welcome.public.account', '关注公众号，获得更多信息')
         }
     });
