@@ -4153,6 +4153,7 @@ var zh_CN = {
     'boot.please.input.industry.placeholder': '请输入关注的行业，如互联网、金融业等',
     'personal.welcome.title.tip': '欢迎使用客套系统!',
     'personal.welcome.public.account': '关注公众号，获得更多信息',
+    'personal.welcome.enter.system': '进入系统',
     /*个人试用 --- end*/
 
     /*自定义申请审批列表 --- start*/
