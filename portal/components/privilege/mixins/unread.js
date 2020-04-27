@@ -1,6 +1,6 @@
 var insertStyle = require('../../insert-style');
 var UserData = require('../../../public/sources/user-data');
-var notificationEmitter = require('../../../public/sources/utils/emitters').notificationEmitter;
+import {notificationEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
