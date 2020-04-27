@@ -277,7 +277,7 @@ class RecommendCluesFilterPanel extends Component {
             this.handleUpgradePersonalVersion(trace);
             return false;
         }
-        //企业使用或者企业账号到期，提示联系销售升级\续费的popover
+        //企业试用或者企业账号到期，提示联系销售升级\续费的popover
         else if(currentVersionObj.isCompanyTrial || currentVersionObj.isCompanyFormal && isExpired()) {
             let tip = null;
             if(currentVersionObj.isCompanyTrial) {
