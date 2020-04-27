@@ -3989,6 +3989,7 @@ var zh_CN = {
     'clue.recommend.selected.tip': '已选{count}条',
     'clue.recommend.filter.vip': 'VIP筛选',
     'clue.recommend.filter.name.no.limit': '{name}不限',
+    'clue.recommend.filter.selected': '已选条件',
 
     'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',

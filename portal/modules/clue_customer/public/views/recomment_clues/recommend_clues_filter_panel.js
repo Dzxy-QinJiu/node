@@ -23,6 +23,7 @@ import {
 import {RECOMMEND_CLUE_FILTERS, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/utils/consts';
 import classNames from 'classnames';
 import { paymentEmitter } from 'OPLATE_EMITTER';
+import {addOrEditSettingCustomerRecomment} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 
 
 const ADVANCED_OPTIONS = [
@@ -66,6 +67,10 @@ const VIP_ITEM_MAP = {
     REGISTER_MONEY: 'register_money',//注册资本
     COMPANY_ENTYPES: 'company_entTypes',//企业类型
     HOT_ITEM: 'hot_item',//热门
+};
+
+const KEYCODE = {
+    ENTER: 13
 };
 
 class RecommendCluesFilterPanel extends Component {
@@ -113,22 +118,15 @@ class RecommendCluesFilterPanel extends Component {
         let traceStr = getFormattedCondition(hasSavedRecommendParams, RECOMMEND_CLUE_FILTERS);
         Trace.traceEvent($(ReactDOM.findDOMNode(this)), '保存线索推荐查询条件 ' + traceStr);
         this.setState({isSaving: true});
-        $.ajax({
-            url: '/rest/clue/recommend/condition',
-            dataType: 'json',
-            type: 'post',
-            data: hasSavedRecommendParams,
-            success: (data) => {
-                this.setState({isSaving: false});
-                if (data){
-                    let targetObj = _.get(data, '[0]');
-                    this.setState({hasSavedRecommendParams: targetObj});
-                    clueCustomerAction.saveSettingCustomerRecomment(targetObj);
-                }
-            },
-            error: () => {
-                this.setState({isSaving: false});
+        addOrEditSettingCustomerRecomment(hasSavedRecommendParams).then((data) => {
+            this.setState({isSaving: false});
+            if (data){
+                let targetObj = _.get(data, '[0]');
+                this.setState({hasSavedRecommendParams: targetObj});
+                clueCustomerAction.saveSettingCustomerRecomment(targetObj);
             }
+        }, () => {
+            this.setState({isSaving: false});
         });
     }
 
@@ -136,22 +134,39 @@ class RecommendCluesFilterPanel extends Component {
         return [Intl.get('register.company.nickname', '公司名称'), Intl.get('clue.recommend.industry.name', '行业名称'), Intl.get('common.product.name', '产品名称')].join('/');
     }
 
-    searchEvent = (e) => {
+    searchChange = (e) => {
         let hasSavedRecommendParams = this.state.hasSavedRecommendParams;
         hasSavedRecommendParams.keyword = _.trim(e.target.value || '');
+        this.setState({hasSavedRecommendParams});
+    };
+
+    onKeyDown = (e) => {
+        if(e.keyCode === KEYCODE.ENTER && this.props.canClickMoreBatch) {
+            this.searchEvent(e.target.value);
+        }
+    };
+
+    searchEvent = (value) => {
+        let hasSavedRecommendParams = this.state.hasSavedRecommendParams;
+        hasSavedRecommendParams.keyword = _.trim(value || '');
         this.setState({hasSavedRecommendParams}, () => {
-            this.getRecommendClueList(hasSavedRecommendParams);
+            if(searchTimeOut) {
+                clearTimeout(searchTimeOut);
+            }
+            searchTimeOut = setTimeout(() => {
+                this.getRecommendClueList(hasSavedRecommendParams);
+            }, delayTime);
         });
     }
 
     onSearchButtonClick = () => {
         if (this.props.canClickMoreBatch && _.trim(this.refs.searchInput.props.value)) {
-            this.searchEvent({target: { value: _.trim(this.refs.searchInput.props.value) }});
+            this.searchEvent(this.refs.searchInput.props.value);
         }
     };
 
     closeSearchInput = () => {
-        this.searchEvent({target: {value: ''}});
+        this.searchEvent();
     };
 
     //更新地址
@@ -277,8 +292,8 @@ class RecommendCluesFilterPanel extends Component {
             this.handleUpgradePersonalVersion(trace);
             return false;
         }
-        //企业账号到期，提示联系销售升级\续费的popover
-        else if(currentVersionObj.company) {
+        //企业试用或者企业账号到期，提示联系销售升级\续费的popover
+        else if(currentVersionObj.isCompanyTrial || currentVersionObj.isCompanyFormal && isExpired()) {
             let tip = null;
             if(currentVersionObj.isCompanyTrial) {
                 Trace.traceEvent(ReactDOM.findDOMNode(this), `企业试用点击了'${trace}'`);
@@ -352,20 +367,180 @@ class RecommendCluesFilterPanel extends Component {
         this.getRecommendClueList(this.state.hasSavedRecommendParams);
     };
 
-    renderSelectFilterBlock(type, array, getValue) {
-        return (
-            <Select
-                getPopupContainer={() => document.getElementById('clue-recommend-form')}
-                value={getValue()}
-                onSelect={this.onSelect.bind(this, type)}
-            >
-                {_.isArray(array) && array.length ?
-                    array.map((sizeItem, idx) => {
-                        return (<Option key={idx} value={JSON.stringify(sizeItem)}>{sizeItem.name}</Option>);
-                    }) : null
+    //处理成立时间数据
+    handleRegisterTimeData(condition) {
+        let timeTarget = {};
+        let startTime = condition.startTime, endTime = condition.endTime;
+        if(startTime) {
+            timeTarget.max = moment().diff(startTime, 'years');
+        }
+        if(endTime) {
+            timeTarget.min = moment().endOf('day').diff(endTime, 'years');
+        }
+        timeTarget = _.find(registerSize, item => {
+            if(timeTarget.max <= 1 && item.max === 1) {//一年以内
+                return true;
+            }else if(timeTarget.min >= 10 && item.min === 10) {//10年以上
+                return true;
+            }
+            if(timeTarget.max >= item.min && timeTarget.max <= item.max) {
+                return true;
+            }
+        });
+        return timeTarget;
+    }
+
+    //处理公司规模数据
+    handleCompanySizeData(condition) {
+        let staffTarget = {};
+        if(condition.staffnumMin || condition.staffnumMax){
+            staffTarget = _.find(staffSize, item => item.staffnumMin === condition.staffnumMin && item.staffnumMax === condition.staffnumMax );
+        }
+        return staffTarget;
+    }
+
+    //处理注册资本数据
+    handleCapitalData(condition) {
+        let capitalTarget = {};
+        if(condition.capitalMin || condition.capitalMax){
+            capitalTarget = _.find(moneySize, item => item.capitalMin === condition.capitalMin && item.capitalMax === condition.capitalMax );
+        }
+        return capitalTarget;
+    }
+
+    //处理企业类型数据
+    handleEntTypesData(condition) {
+        let entypesTarget = {};
+        if(condition.entTypes){
+            entypesTarget = _.find(companyProperty, item => _.includes(condition.entTypes, item.value));
+        }
+        return entypesTarget;
+    }
+
+    //已选中条件集合
+    handleSelectedFilterList() {
+        let { hasSavedRecommendParams } = this.state;
+        let list = [];
+        //可展示的已选条件field集合
+        const SELECTED_FILTER_FIELDS = [
+            {
+                processValue: () => {
+                    let currentHotItem = _.find(ADVANCED_OPTIONS, item => item.value === this.props.feature);
+                    let value = {};
+                    if(currentHotItem) {
+                        value = {
+                            name: Intl.get('clue.recommend.hot.name', '热门'),
+                            value: currentHotItem.name,
+                            key: 'hot',
+                            handleClick: () => {
+                                this.handleClickAdvanced(this.props.feature);
+                            }
+                        };
+                    }
+                    return value;
                 }
-            </Select>
-        );
+            },
+            {
+                processValue: (condition) => {
+                    let value = {};
+                    if(_.get(condition, 'province')
+                        || _.get(condition, 'city')
+                    ) {
+                        let areas = [condition.province];
+                        if(_.get(condition, 'city')) {
+                            areas.push(condition.city);
+                        }
+                        value = {
+                            name: Intl.get('crm.96', '地域'),
+                            value: areas.join('/'),
+                            key: 'area',
+                            handleClick: () => {
+                                this.updateLocation({});
+                            }
+                        };
+                    }
+                    return value;
+                }
+            },
+            {
+                processValue: (condition) => {
+                    let value = {};
+                    let timeTarget = this.handleRegisterTimeData(condition);
+                    if(!_.isEmpty(timeTarget)) {
+                        value = {
+                            name: Intl.get('clue.recommend.established.time', '成立时间'),
+                            value: timeTarget.name,
+                            key: VIP_ITEM_MAP.REGISTER_TIME,
+                            handleClick: () => {
+                                this.onSelect(VIP_ITEM_MAP.REGISTER_TIME, JSON.stringify({name: ''}));
+                            }
+                        };
+                    }
+                    return value;
+                }
+            },
+            {
+                processValue: (condition) => {
+                    let value = {};
+                    let staffTarget = this.handleCompanySizeData(condition);
+                    if(!_.isEmpty(staffTarget)) {
+                        value = {
+                            name: Intl.get('clue.recommend.company.size', '公司规模'),
+                            value: staffTarget.name,
+                            key: VIP_ITEM_MAP.COMPANY_SIZE,
+                            handleClick: () => {
+                                this.onSelect(VIP_ITEM_MAP.COMPANY_SIZE, JSON.stringify({name: ''}));
+                            }
+                        };
+                    }
+                    return value;
+                }
+            },
+            {
+                processValue: (condition) => {
+                    let value = {};
+                    let capitalTarget = this.handleCapitalData(condition);
+                    if(!_.isEmpty(capitalTarget)) {
+                        value = {
+                            name: Intl.get('clue.recommend.registered.capital', '注册资本'),
+                            value: capitalTarget.name,
+                            key: VIP_ITEM_MAP.REGISTER_MONEY,
+                            handleClick: () => {
+                                this.onSelect(VIP_ITEM_MAP.REGISTER_MONEY, JSON.stringify({name: ''}));
+                            }
+                        };
+                    }
+                    return value;
+                }
+            },
+            {
+                processValue: (condition) => {
+                    let value = {};
+                    let entypesTarget = this.handleEntTypesData(condition);
+                    if(!_.isEmpty(entypesTarget)) {
+                        value = {
+                            name: Intl.get('clue.recommend.enterprise.class', '企业类型'),
+                            value: entypesTarget.name,
+                            key: VIP_ITEM_MAP.COMPANY_ENTYPES,
+                            handleClick: () => {
+                                this.onSelect(VIP_ITEM_MAP.COMPANY_ENTYPES, JSON.stringify({name: ''}));
+                            }
+                        };
+                    }
+                    return value;
+                }
+            },
+        ];
+        _.each(SELECTED_FILTER_FIELDS, item => {
+            let value = {};
+            if(_.isFunction(item.processValue)) {
+                value = item.processValue(hasSavedRecommendParams);
+                if(!_.isEmpty(value)) {
+                    list.push(value);
+                }
+            }
+        });
+        return list;
     }
 
     //渲染高级选项
@@ -378,25 +553,6 @@ class RecommendCluesFilterPanel extends Component {
                 <span key={idx} className={cls} onClick={this.handleClickAdvanced.bind(this, item.value)}>{item.name}</span>
             );
         });
-    }
-
-    //label加上vip
-    renderLabelAndVip(label, key) {
-        return (
-            <Popover
-                trigger="click"
-                placement="bottomLeft"
-                content={this.state.vipPopOverVisibleContent}
-                visible={this.state.vipPopOverVisible === key}
-                onVisibleChange={this.handleVisibleChange}
-                overlayClassName="extract-limit-content"
-            >
-                <span className="label-wrapper">
-                    <span className="label-text">{label}</span>
-                    <span className="label-vip">VIP</span>
-                </span>
-            </Popover>
-        );
     }
 
     renderDropDownBlock({btnText, type, list, getValue = () => {}}) {
@@ -431,22 +587,25 @@ class RecommendCluesFilterPanel extends Component {
         );
     }
 
-    render() {
-        const formItemLayout = {
-            colon: false,
-            labelCol: {
-                sm: {span: 4},
-            },
-            wrapperCol: {
-                sm: {span: 20},
-            },
-        };
-        let { hasSavedRecommendParams, showOtherCondition } = this.state;
+    //渲染已选中条件
+    renderSelectedFilterBlock() {
+        let list = this.handleSelectedFilterList();
+        if(list.length) {
+            return (
+                <div className="selected-filter-container">
+                    <div className="selected-filter-content">
+                        <span className="selected-filter-title">{Intl.get('clue.recommend.filter.selected', '已选条件')}：</span>
+                        {_.map(list, item => (
+                            <span key={item.key} className="selected-filter-item"><span>{item.name}：{item.value}</span><i className="iconfont icon-close" onClick={item.handleClick}/></span>
+                        ))}
+                    </div>
+                </div>
+            );
+        }else { return null; }
+    }
 
-        let defaultValue = [];
-        if (hasSavedRecommendParams.startTime && hasSavedRecommendParams.endTime){
-            defaultValue = [moment(hasSavedRecommendParams.startTime), moment(hasSavedRecommendParams.endTime)];
-        }
+    render() {
+        let { hasSavedRecommendParams, showOtherCondition } = this.state;
 
         var cls = 'other-condition-container', show_tip = '', iconCls = 'iconfont', btnCls = 'btn-item save-btn';
         //是否展示其他的筛选条件
@@ -474,7 +633,8 @@ class RecommendCluesFilterPanel extends Component {
                                         value={hasSavedRecommendParams.keyword}
                                         placeholder={this.getKeyWordPlaceholder()}
                                         className="search-input"
-                                        onChange={this.searchEvent}
+                                        onChange={this.searchChange}
+                                        onKeyDown={this.onKeyDown}
                                         addonAfter={(
                                             <Icon type="search" className="search-icon search-icon-btn" onClick={this.onSearchButtonClick}/>
                                         )}
@@ -484,6 +644,7 @@ class RecommendCluesFilterPanel extends Component {
                                     ) : null}
                                 </div>
                             </FormItem>
+                            {this.renderSelectedFilterBlock()}
                             <FormItem
                                 label={Intl.get('clue.recommend.hot.name', '热门')}
                                 className="special-item"
