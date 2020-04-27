@@ -194,6 +194,37 @@
         }
       }
     }
+    .ant-form-item-label{
+      label{
+        letter-spacing: 2px;
+      }
+    }
+  }
+  //已选条件样式
+  .selected-filter-container{
+    margin: 5px 0 10px;
+    color: @primary-font-color;
+    .selected-filter-title{
+      font-size: 14px;
+    }
+    .selected-filter-item{
+      color: @primary-color;
+      background: #fff;
+      border: 1px solid @primary-color;
+      padding: 3px 10px;
+      border-radius: 2px;
+      margin-right: 10px;
+      font-size: 12px;
+      cursor: pointer;
+      &:hover{
+        color: #fff;
+        background: @primary-hover-color;
+      }
+      .icon-close{
+        font-size: 12px;
+        margin-left: 5px;
+      }
+    }
   }
 }
 .ant-calendar-range-right .ant-calendar-date-input-wrap{
