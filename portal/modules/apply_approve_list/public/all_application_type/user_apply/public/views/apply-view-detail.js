@@ -1,6 +1,4 @@
 import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
-
-
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
@@ -330,6 +328,7 @@ const COLUMN_WIDTH = {
                 this.getNextCandidate(_.get(nextProps, 'detailItem.id',''));
             });
         }else if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
+            this.appsSetting = {};
             this.getApplyDetail(nextProps.detailItem);
             //关闭右侧详情
             phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
@@ -341,21 +340,6 @@ const COLUMN_WIDTH = {
                 updateDelayTime: ''
             });
         }
-
-        // if (nextProps.detailItem.id && !_.isEqual(nextProps.detailItem, this.props.detailItem)) {
-        //     this.appsSetting = {};
-        //     if (nextProps.detailItem.id !== _.get(this, 'props.detailItem.id')) {
-        //         this.setState({
-        //             showBackoutConfirmType: '',
-        //             curEditExpireDateAppIdr: '',
-        //             updateDelayTime: ''
-        //         });
-        //     }
-        //     if ((!this.state.applyResult.submitResult && !this.state.backApplyResult.submitResult) || nextProps.detailItem.id !== this.props.detailItem.id) {
-        //         this.getApplyDetail(nextProps.detailItem);
-        //
-        //     }
-        // }
         this.setState({
             isHomeMyWork: nextProps.isHomeMyWork
         });
@@ -608,6 +592,11 @@ const COLUMN_WIDTH = {
     toggleApplyExpanded(flag, user_id) {
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.toggleApplyExpanded({flag, user_id});
+        // 当点击配置区域的返回按钮时，需要保存起来对应设置的应用配置信息
+        if (flag === false) {
+            ApplyViewDetailActions.setAppsSetting({appsSetting: this.appsSetting, userId: user_id});
+        }
+        
     },
     getIntegrateConfig(){
         commonDataUtil.getIntegrationConfig().then(resultObj => {
@@ -627,10 +616,10 @@ const COLUMN_WIDTH = {
         );
     },
 
-    renderAppSettingReturnBtn() {
+    renderAppSettingReturnBtn(user_id) {
         return (
             <Tooltip title={Intl.get('user.apply.detail.expanded.title', '返回缩略内容')}>
-                <div className="btn-icon-return" onClick={this.toggleApplyExpanded.bind(this, false)}>
+                <div className="btn-icon-return" onClick={this.toggleApplyExpanded.bind(this, false, user_id)}>
                     <span className="iconfont icon-return" data-tracename="查看应用详细内容"></span>
                 </div>
             </Tooltip>
@@ -645,7 +634,7 @@ const COLUMN_WIDTH = {
             if (user_id && user_id !== this.state.curShowConfigUserId) { // 申请延期的情况
                 return this.renderAppSettingBtn(user_id);
             } else {
-                return this.renderAppSettingReturnBtn();
+                return this.renderAppSettingReturnBtn(user_id);
             }
         }
         return this.renderAppSettingBtn(user_id);
@@ -1069,9 +1058,39 @@ const COLUMN_WIDTH = {
         return terminalsName;
     },
 
+    // 渲染应用的角色
+    renderAppRolesName(app, approveOngoing, appConfig) {
+        let rolesNames = _.get(app, 'rolesNames', []);
+        // 待审
+        if (approveOngoing) {
+            if (!_.isEmpty(appConfig)) {
+                let appConfigSelectedRolesName = [];
+                let roles = _.get(appConfig, 'roles');
+                let rolesInfo = _.get(appConfig, 'rolesInfo');
+                if (!_.isEmpty(rolesInfo)) {
+                    _.each(roles, roleId => {
+                        let matchedRoles = _.find(rolesInfo, item => item.role_id === roleId);
+                        if (matchedRoles) {
+                            appConfigSelectedRolesName.push(matchedRoles.role_name);
+                        }}
+                    );
+                    rolesNames = appConfigSelectedRolesName;
+                }
+            }
+        }
+        if (_.get(rolesNames, '[0]')) {
+            return rolesNames.map((item) => {
+                return (
+                    <div key={item}>{item}</div>
+                );
+            });
+        }
+    },
+
     //渲染延期多应用的table
     renderMultiAppDelayTable(user) {
         const appsSetting = this.appsSetting;
+        const detailInfo = this.state.detailInfoObj.info;
         let columns = [
             {
                 title: Intl.get('common.product','产品'),
@@ -1081,7 +1100,7 @@ const COLUMN_WIDTH = {
                 render: (text, app, index) => {
                     const appId = app.app_id;
                     const terminals = _.get(app, 'terminals', []);
-                    const custom_setting = appsSetting[`${appId}&&${app.user_id}`];
+                    const custom_setting = appsSetting[`${appId}&&${user.user_id}`];
                     let terminalsName = this.getAppTerminalName(custom_setting, terminals, appId);
                     return (
                         <div>
@@ -1132,14 +1151,9 @@ const COLUMN_WIDTH = {
                 width: COLUMN_WIDTH.ROLE,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
-                    let rolesNames = app.rolesNames;
-                    if (_.get(rolesNames, '[0]')) {
-                        return rolesNames.map((item) => {
-                            return (
-                                <div key={item}>{item}</div>
-                            );
-                        });
-                    }
+                    let approveOngoing = _.get(detailInfo, 'approval_state') === '0';
+                    let appConfig = appsSetting[`${app.app_id}&&${user.user_id}`];
+                    return this.renderAppRolesName(app, approveOngoing, appConfig);
                 }
             });
         }
@@ -1281,14 +1295,9 @@ const COLUMN_WIDTH = {
                 width: COLUMN_WIDTH.ROLE,
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
-                    let rolesNames = app.rolesNames;
-                    if (_.get(rolesNames, '[0]')) {
-                        return rolesNames.map((item) => {
-                            return (
-                                <div key={item}>{item}</div>
-                            );
-                        });
-                    }
+                    let approveOngoing = _.get(detailInfo, 'approval_state') === '0';
+                    let appConfig = appsSetting[app.app_id];
+                    return this.renderAppRolesName(app, approveOngoing, appConfig);
                 }
             });
             if (permissionNameIndex) {

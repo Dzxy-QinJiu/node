@@ -70,7 +70,8 @@ class ApplyViewDetailActions {
             'setNextCandidateName',//下一节点审批人的名字
             'setNextCandidate',
             'showOrHideApprovalBtns',
-            'setHistoryApplyStatus'
+            'setHistoryApplyStatus',
+            'setAppsSetting', // 设置应用的配置信息
         );
     }
 

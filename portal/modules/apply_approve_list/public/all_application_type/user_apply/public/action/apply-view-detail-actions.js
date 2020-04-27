@@ -74,6 +74,7 @@ class ApplyViewDetailActions {
             'setHistoryApplyStatus',
             'setDetailInfoObjAfterAdd',
             'setApplyFormDataComment',
+            'setAppsSetting', // 设置应用的配置信息
         );
     }
 
