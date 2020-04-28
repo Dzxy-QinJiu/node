@@ -666,7 +666,7 @@ class ClueCustomer extends React.Component {
         );
     };
     showClueRecommendTemplate = (param) => {
-        history.push('/clues-recommend');
+        history.push('/leads-recommend');
     };
     handleClickCloseClue = () => {
         let personnelObj = {};
