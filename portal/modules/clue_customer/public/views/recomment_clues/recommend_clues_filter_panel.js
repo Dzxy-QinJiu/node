@@ -101,7 +101,7 @@ class RecommendCluesFilterPanel extends Component {
     dealRecommendParamsVipData(condition) {
         let obj = {};
         if(condition.startTime) {
-            obj.startTime = condition.endTime;
+            obj.startTime = condition.startTime;
         }
         if(condition.endTime) {
             obj.endTime = condition.endTime;
