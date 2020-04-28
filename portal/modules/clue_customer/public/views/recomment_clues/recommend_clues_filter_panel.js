@@ -185,8 +185,8 @@ class RecommendCluesFilterPanel extends Component {
     }
 
     onSearchButtonClick = () => {
-        if (this.props.canClickMoreBatch && _.trim(this.refs.searchInput.props.value)) {
-            this.searchEvent(this.refs.searchInput.props.value);
+        if (this.props.canClickMoreBatch && _.trim(this.refs.searchInput.props.defaultValue)) {
+            this.searchEvent(this.refs.searchInput.props.defaultValue);
         }
     };
 
@@ -333,7 +333,7 @@ class RecommendCluesFilterPanel extends Component {
             traceTip = `选中'${advancedName}'`;
         }
         Trace.traceEvent(ReactDOM.findDOMNode(this), `点击${traceTip}按钮`);
-        clueCustomerAction.saveSettingCustomerRecomment(this.state.hasSavedRecommendParams);
+        // clueCustomerAction.saveSettingCustomerRecomment(this.state.hasSavedRecommendParams);
         clueCustomerAction.setHotSource(advanced);
         setTimeout(() => {
             this.getRecommendClueList(this.state.hasSavedRecommendParams);
@@ -607,7 +607,7 @@ class RecommendCluesFilterPanel extends Component {
                                     <Input
                                         ref="searchInput"
                                         type="text"
-                                        value={hasSavedRecommendParams.keyword}
+                                        defaultValue={hasSavedRecommendParams.keyword}
                                         placeholder={this.getKeyWordPlaceholder()}
                                         className="search-input"
                                         onChange={this.searchChange}
