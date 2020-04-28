@@ -1343,7 +1343,7 @@ class MyWorkColumn extends React.Component {
         if (event) {
             Trace.traceEvent(event, '点击推荐线索');
         }
-        history.push('/clues-recommend');
+        history.push('/leads-recommend');
     }
     renderAddAndImportBtns = () => {
         if (hasPrivilege(crmPrivilegeConst.CUSTOMER_ADD)) {

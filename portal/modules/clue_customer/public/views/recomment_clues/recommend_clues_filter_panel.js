@@ -36,12 +36,16 @@ const ADVANCED_OPTIONS = [
         value: 'feature:上市'
     },
     {
-        name: Intl.get('clue.recommend.high.tech.enterprise.enterprise', '高新技术'),
+        name: Intl.get('clue.recommend.high.tech.enterprise.enterprise', '高新技术企业'),
         value: 'feature:高新'
     },
     {
         name: Intl.get('clue.recommend.state.owned.enterprise', '国有企业'),
         value: 'feature:国企'
+    },
+    {
+        name: Intl.get('clue.recommend.smal.micro.enterprise', '小微企业'),
+        value: 'feature:小微企业'
     },
     {
         name: Intl.get('clue.recommend.has.mobile', '有手机号'),
@@ -172,6 +176,7 @@ class RecommendCluesFilterPanel extends Component {
 
     onKeyDown = (e) => {
         if(e.keyCode === KEYCODE.ENTER && this.props.canClickMoreBatch) {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '使用enter搜索关键词：' + e.target.value);
             this.searchEvent(e.target.value);
         }
     };
@@ -185,8 +190,9 @@ class RecommendCluesFilterPanel extends Component {
     }
 
     onSearchButtonClick = () => {
-        if (this.props.canClickMoreBatch && _.trim(this.refs.searchInput.props.value)) {
-            this.searchEvent(this.refs.searchInput.props.value);
+        if (this.props.canClickMoreBatch && _.trim(this.refs.searchInput.props.defaultValue)) {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '点击搜索按钮：' + e.target.value);
+            this.searchEvent(this.refs.searchInput.props.defaultValue);
         }
     };
 
@@ -200,6 +206,18 @@ class RecommendCluesFilterPanel extends Component {
         hasSavedRecommendParams.province = addressObj.provName || '';
         hasSavedRecommendParams.city = addressObj.cityName || '';
         hasSavedRecommendParams.district = addressObj.countyName || '';
+        let traceTip = '全部';
+        if(addressObj.provName || addressObj.cityName || addressObj.countyName) {
+            let areas = [addressObj.province];
+            if(_.get(addressObj, 'city')) {
+                areas.push(addressObj.city);
+            }
+            if(_.get(addressObj, 'district')) {
+                areas.push(addressObj.district);
+            }
+            traceTip += areas.join('/');
+        }
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '选择了地域：' + traceTip);
         //这里不要setState，否则选中了省份后的各省市面板会收起
         this.getRecommendClueList(hasSavedRecommendParams);
     };
@@ -332,7 +350,7 @@ class RecommendCluesFilterPanel extends Component {
             advanced = key;
             traceTip = `选中'${advancedName}'`;
         }
-        Trace.traceEvent(ReactDOM.findDOMNode(this), `点击${traceTip}按钮`);
+        Trace.traceEvent(ReactDOM.findDOMNode(this), `点击热门选项,${traceTip}`);
         clueCustomerAction.saveSettingCustomerRecomment(this.state.hasSavedRecommendParams);
         clueCustomerAction.setHotSource(advanced);
         setTimeout(() => {
@@ -537,7 +555,7 @@ class RecommendCluesFilterPanel extends Component {
         let menus = (
             <Menu onClick={this.onSelect.bind(this, type)} selectedKeys={currentValue}>
                 {_.map(list, item => (
-                    <Menu.Item key={JSON.stringify(item)}>{item.name}</Menu.Item>
+                    <Menu.Item key={JSON.stringify(item)}><span data-tracename={`点击了'${btnText}:${item.name}'`}>{item.name}</span></Menu.Item>
                 ))}
             </Menu>
         );
@@ -569,11 +587,11 @@ class RecommendCluesFilterPanel extends Component {
         let list = this.handleSelectedFilterList();
         if(list.length) {
             return (
-                <div className="selected-filter-container">
+                <div className="selected-filter-container" data-tracename="已选条件展示区">
                     <div className="selected-filter-content">
                         <span className="selected-filter-title">{Intl.get('clue.recommend.filter.selected', '已选条件')}：</span>
                         {_.map(list, item => (
-                            <span key={item.key} className="selected-filter-item"><span>{item.name}：{item.value}</span><i className="iconfont icon-close" onClick={item.handleClick}/></span>
+                            <span key={item.key} className="selected-filter-item"><span>{item.name}：{item.value}</span><i className="iconfont icon-close" data-tracename={`点击关闭${item.name}:${item.value}`} onClick={item.handleClick}/></span>
                         ))}
                     </div>
                 </div>
@@ -607,7 +625,7 @@ class RecommendCluesFilterPanel extends Component {
                                     <Input
                                         ref="searchInput"
                                         type="text"
-                                        value={hasSavedRecommendParams.keyword}
+                                        defaultValue={hasSavedRecommendParams.keyword}
                                         placeholder={this.getKeyWordPlaceholder()}
                                         className="search-input"
                                         onChange={this.searchChange}
@@ -626,7 +644,7 @@ class RecommendCluesFilterPanel extends Component {
                                 label={Intl.get('clue.recommend.hot.name', '热门')}
                                 className="special-item"
                             >
-                                <div className="advance-data-container" data-tracename="热门">
+                                <div className="advance-data-container">
                                     {this.renderAdvancedOptions()}
                                 </div>
                             </FormItem>
@@ -659,7 +677,7 @@ class RecommendCluesFilterPanel extends Component {
                                     />
                                 </FormItem>*/}
                                 <FormItem className="vip-filter-container" label={Intl.get('clue.recommend.filter.vip', 'VIP筛选')}>
-                                    <div className="vip-filter-content">
+                                    <div className="vip-filter-content" data-tracename="vip筛选列表">
                                         {this.props.isSelectedHalfYearRegister ? null : (
                                             <div className="vip-filter-item">
                                                 {this.renderDropDownBlock({
@@ -753,7 +771,7 @@ class RecommendCluesFilterPanel extends Component {
                                             })}
                                         </div>
                                         <div className="vip-filter-item">
-                                            <Button className={btnCls} type="primary" onClick={this.handleSubmit}>{Intl.get('common.confirm', '确认')}</Button>
+                                            <Button className={btnCls} type="primary" data-tracename="点击确认按钮" onClick={this.handleSubmit}>{Intl.get('common.confirm', '确认')}</Button>
                                         </div>
                                     </div>
                                 </FormItem>

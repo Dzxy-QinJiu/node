@@ -4032,10 +4032,11 @@ var zh_CN = {
     'clue.recommend.extract.count.more': '1亿+条线索待您提取',
     'clue.recommend.mask.manufactor': '口罩厂家',
     'clue.recommend.state.owned.enterprise': '国有企业',
-    'clue.recommend.high.tech.enterprise.enterprise': '高新技术',
+    'clue.recommend.high.tech.enterprise.enterprise': '高新技术企业',
     'clue.recommend.has.mobile': '有手机号',
     'clue.recommend.has.phone': '有电话',
     'clue.recommend.has.more.contact': '多个联系方式',
+    'clue.recommend.smal.micro.enterprise': '小微企业',
     // 线索分配策略
     'clue.assignment.strategy.add': '添加分配策略',
     'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',

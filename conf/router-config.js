@@ -18,7 +18,7 @@ let routers = [
     {
         id: 'CLUES_RECOMMEND',
         name: 'clue.find.recommend.clue',//找线索
-        routePath: '/clues-recommend',
+        routePath: '/leads-recommend',
         component: `${MODULE_PATH}clue_customer/public/views/recomment_clues`,
         shortName: 'clue.find.recommend.clue',//找线索
         //有这个权限，才显示入口图标
