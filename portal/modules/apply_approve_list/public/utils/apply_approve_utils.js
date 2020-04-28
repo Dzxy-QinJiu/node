@@ -160,4 +160,23 @@ const getSalesManList = function() {
 };
 exports.getSalesManList = getSalesManList;
 
-
+// 用户申请类型
+export const userApplyType = [{
+    value: 'apply_app_trial',
+    title: Intl.get('home.page.user.trial.apply', '试用用户申请')
+}, {
+    value: 'apply_user_official',
+    title: Intl.get('home.page.user.formal.apply', '签约用户申请')
+}, {
+    value: 'apply_grant_delay_multiapp',
+    title: Intl.get('home.page.user.delay.apply', '用户延期申请')
+},{
+    value: 'apply_pwd_change',
+    title: Intl.get('home.page.user.password.apply', '修改密码申请')
+}, {
+    value: 'apply_grant_status_change_multiapp',
+    title: Intl.get('home.page.user.status.apply', '禁用用户申请')
+}, {
+    value: 'apply_sth_else',
+    title: Intl.get('home.page.user.other.apply', '其他申请')
+}];

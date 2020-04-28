@@ -21,7 +21,7 @@ import {
     getContentWidth
 } from './utils/apply_approve_utils';
 import classNames from 'classnames';
-import {Dropdown, Menu, Alert, Select, Button, Popover} from 'antd';
+import {Dropdown, Menu, Alert, Select, Button, Popover, TreeSelect} from 'antd';
 import userData from 'PUB_DIR/sources/user-data';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {
@@ -643,7 +643,7 @@ class ApplyApproveList extends React.Component {
             value: 'cancel'
         }];
         var allTypeList = [{
-            name: Intl.get('oplate_customer_analysis.type.all', '全部类型'),
+            title: Intl.get('oplate_customer_analysis.type.all', '全部类型'),
             value: ALL
         }];
         var workFlowList = this.getWorkFlowList();
@@ -661,12 +661,16 @@ class ApplyApproveList extends React.Component {
                 if (type === APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES) {
                     type = APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES;
                 }
-                allTypeList.push({
-                    name: _.get(workItem, 'description'),
+                let selectItem = {
+                    title: _.get(workItem, 'description'),
                     value: type
-                });
+                };
+                // 用户申请
+                if (type === 'user_or_grant') {
+                    selectItem.children = ApplyApproveUtils.userApplyType;
+                }
+                allTypeList.push(selectItem);
             }
-
         });
 
         return (
@@ -684,15 +688,12 @@ class ApplyApproveList extends React.Component {
                         </Select>
                     )
                 }
-                <Select
+                <TreeSelect
                     className='apply-type-select'
                     value={this.state.selectedApplyType}
                     onChange={this.handleChangeSelectedApplyType}
-                >
-                    {_.map(allTypeList, item => {
-                        return <Option value={_.get(item, 'value')}>{_.get(item, 'name')}</Option>;
-                    })}
-                </Select>
+                    treeData={allTypeList}
+                />
             </div>
         );
     };
