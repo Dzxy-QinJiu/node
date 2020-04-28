@@ -3995,10 +3995,11 @@ var en_US = {
     'clue.recommend.extract.count.more': '100 million + clues for you to extract',//1亿+条线索待您提取
     'clue.recommend.mask.manufactor': 'Mask manufacturers',// 口罩厂家
     'clue.recommend.state.owned.enterprise': 'State-owned enterprise',//国有企业
-    'clue.recommend.high.tech.enterprise.enterprise': 'High and new technology',//高新技术
+    'clue.recommend.high.tech.enterprise.enterprise': 'High-tech enterprise',//高新技术企业
     'clue.recommend.has.mobile': 'Have a mobile phone number',//有手机号
     'clue.recommend.has.phone': 'Have a phone',//有电话
     'clue.recommend.has.more.contact': 'There are multiple contact information',//多个联系方式
+    'clue.recommend.smal.micro.enterprise': 'Small micro enterprise',//小微企业
 
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略

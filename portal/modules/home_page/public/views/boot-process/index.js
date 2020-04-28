@@ -308,7 +308,7 @@ class BootProcess extends React.Component {
         }else {
             Trace.traceEvent(e, '点击了' + item.btnText);
             if(item.key === BOOT_PROCESS_KEYS.EXTRACT_CLUE) {//提取线索，跳转找线索页面
-                history.push('/clues-recommend');
+                history.push('/leads-recommend');
                 return false;
             }
             this.setState({

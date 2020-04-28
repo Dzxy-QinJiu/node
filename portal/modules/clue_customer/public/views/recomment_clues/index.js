@@ -1301,7 +1301,7 @@ class RecommendCluesList extends React.Component {
                             });
                             let labels = item.labels.concat(item.features);
                             return (
-                                <div className={cls} key={item.id} onClick={this.handleClickClueName.bind(this, item)}>
+                                <div className={cls} key={item.id}>
                                     <Checkbox checked={this.hasChecked(item)} disabled={this.getDisabledClue(item)} onChange={this.handleCheckChange.bind(this, item)}/>
                                     <div className="extract-clue-text-wrapper" title={item.hasExtractedByOther ? Intl.get('errorcode.169', '该线索已被提取') : ''}>
                                         <div className="extract-clue-text__name">
@@ -1370,11 +1370,20 @@ class RecommendCluesList extends React.Component {
                                             </div>
                                         </div>
                                         <div className={otherCls}>
+                                            {/*行业*/}
+                                            {otherProps.industry.hasContent ? (
+                                                <div className="extract-clue-text-item">
+                                                    <span>{Intl.get('menu.industry', '行业')}：</span>
+                                                    <span dangerouslySetInnerHTML={{__html: otherProps.industry.content}}/>
+                                                </div>
+                                            ) : null}
                                             {/*产品*/}
                                             {otherProps.products.hasContent ? (
                                                 <div className="extract-clue-text-item">
-                                                    <span>{Intl.get('common.product', '产品')}：</span>
-                                                    <span dangerouslySetInnerHTML={{__html: otherProps.products.content}}/>
+                                                    <ShearContent rowsNum={1}>
+                                                        <span>{Intl.get('common.product', '产品')}：</span>
+                                                        <span dangerouslySetInnerHTML={{__html: otherProps.products.content}}/>
+                                                    </ShearContent>
                                                 </div>
                                             ) : null}
                                             {/*经营范围*/}
@@ -1384,13 +1393,6 @@ class RecommendCluesList extends React.Component {
                                                         <span>{Intl.get('clue.recommend.clue.scope', '经营范围')}：</span>
                                                         <span dangerouslySetInnerHTML={{__html: otherProps.scope.content}}/>
                                                     </ShearContent>
-                                                </div>
-                                            ) : null}
-                                            {/*行业*/}
-                                            {otherProps.industry.hasContent ? (
-                                                <div className="extract-clue-text-item">
-                                                    <span>{Intl.get('menu.industry', '行业')}：</span>
-                                                    <span dangerouslySetInnerHTML={{__html: otherProps.industry.content}}/>
                                                 </div>
                                             ) : null}
                                             {/*简介*/}
