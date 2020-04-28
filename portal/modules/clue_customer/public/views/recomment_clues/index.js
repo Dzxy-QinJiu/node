@@ -1370,6 +1370,13 @@ class RecommendCluesList extends React.Component {
                                             </div>
                                         </div>
                                         <div className={otherCls}>
+                                            {/*行业*/}
+                                            {otherProps.industry.hasContent ? (
+                                                <div className="extract-clue-text-item">
+                                                    <span>{Intl.get('menu.industry', '行业')}：</span>
+                                                    <span dangerouslySetInnerHTML={{__html: otherProps.industry.content}}/>
+                                                </div>
+                                            ) : null}
                                             {/*产品*/}
                                             {otherProps.products.hasContent ? (
                                                 <div className="extract-clue-text-item">
@@ -1384,13 +1391,6 @@ class RecommendCluesList extends React.Component {
                                                         <span>{Intl.get('clue.recommend.clue.scope', '经营范围')}：</span>
                                                         <span dangerouslySetInnerHTML={{__html: otherProps.scope.content}}/>
                                                     </ShearContent>
-                                                </div>
-                                            ) : null}
-                                            {/*行业*/}
-                                            {otherProps.industry.hasContent ? (
-                                                <div className="extract-clue-text-item">
-                                                    <span>{Intl.get('menu.industry', '行业')}：</span>
-                                                    <span dangerouslySetInnerHTML={{__html: otherProps.industry.content}}/>
                                                 </div>
                                             ) : null}
                                             {/*简介*/}
