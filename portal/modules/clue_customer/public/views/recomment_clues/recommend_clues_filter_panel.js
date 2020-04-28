@@ -36,12 +36,16 @@ const ADVANCED_OPTIONS = [
         value: 'feature:上市'
     },
     {
-        name: Intl.get('clue.recommend.high.tech.enterprise.enterprise', '高新技术'),
+        name: Intl.get('clue.recommend.high.tech.enterprise.enterprise', '高新技术企业'),
         value: 'feature:高新'
     },
     {
         name: Intl.get('clue.recommend.state.owned.enterprise', '国有企业'),
         value: 'feature:国企'
+    },
+    {
+        name: Intl.get('clue.recommend.smal.micro.enterprise', '小微企业'),
+        value: 'feature:小微企业'
     },
     {
         name: Intl.get('clue.recommend.has.mobile', '有手机号'),
