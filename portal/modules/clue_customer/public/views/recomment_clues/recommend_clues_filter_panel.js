@@ -41,7 +41,7 @@ const ADVANCED_OPTIONS = [
     },
     {
         name: Intl.get('clue.recommend.state.owned.enterprise', '国有企业'),
-        value: 'feature:国有'
+        value: 'feature:国企'
     },
     {
         name: Intl.get('clue.recommend.has.mobile', '有手机号'),
@@ -66,7 +66,6 @@ const VIP_ITEM_MAP = {
     COMPANY_SIZE: 'company_size',//公司规模
     REGISTER_MONEY: 'register_money',//注册资本
     COMPANY_ENTYPES: 'company_entTypes',//企业类型
-    HOT_ITEM: 'hot_item',//热门
 };
 
 const KEYCODE = {
@@ -77,21 +76,52 @@ class RecommendCluesFilterPanel extends Component {
     constructor(props) {
         super(props);
 
+        let hasSavedRecommendParams = _.cloneDeep(this.props.hasSavedRecommendParams);
         this.state = {
-            hasSavedRecommendParams: _.cloneDeep(this.props.hasSavedRecommendParams),
+            hasSavedRecommendParams,
             vipPopOverVisible: '',
             vipPopOverVisibleContent: null,
             showOtherCondition: false,
             isSaving: false,
+            vipFilters: this.dealRecommendParamsVipData(hasSavedRecommendParams)
         };
     }
 
     componentWillReceiveProps(nextProps) {
         if (_.isEmpty(this.state.hasSavedRecommendParams) || !_.isEqual(nextProps.hasSavedRecommendParams, this.state.hasSavedRecommendParams)){
+            let hasSavedRecommendParams = _.cloneDeep(nextProps.hasSavedRecommendParams);
             this.setState({
-                hasSavedRecommendParams: _.cloneDeep(nextProps.hasSavedRecommendParams)
+                hasSavedRecommendParams,
+                vipFilters: this.dealRecommendParamsVipData({...hasSavedRecommendParams, ...this.state.vipFilters})
             });
         }
+    }
+
+    //处理线索推荐条件中的vip选项
+    dealRecommendParamsVipData(condition) {
+        let obj = {};
+        if(condition.startTime) {
+            obj.startTime = condition.endTime;
+        }
+        if(condition.endTime) {
+            obj.endTime = condition.endTime;
+        }
+        if(condition.staffnumMax) {
+            obj.staffnumMax = condition.staffnumMax;
+        }
+        if(condition.staffnumMin) {
+            obj.staffnumMin = condition.staffnumMin;
+        }
+        if(condition.capitalMax) {
+            obj.capitalMax = condition.capitalMax;
+        }
+        if(condition.capitalMin) {
+            obj.capitalMin = condition.capitalMin;
+        }
+        if(condition.entTypes) {
+            obj.entTypes = condition.entTypes;
+        }
+        return obj;
     }
 
     getRecommendClueList= (condition) => {
@@ -150,12 +180,7 @@ class RecommendCluesFilterPanel extends Component {
         let hasSavedRecommendParams = this.state.hasSavedRecommendParams;
         hasSavedRecommendParams.keyword = _.trim(value || '');
         this.setState({hasSavedRecommendParams}, () => {
-            if(searchTimeOut) {
-                clearTimeout(searchTimeOut);
-            }
-            searchTimeOut = setTimeout(() => {
-                this.getRecommendClueList(hasSavedRecommendParams);
-            }, delayTime);
+            this.getRecommendClueList(hasSavedRecommendParams);
         });
     }
 
@@ -185,7 +210,8 @@ class RecommendCluesFilterPanel extends Component {
         this.setState({hasSavedRecommendParams});
     };
 
-    onSelect = (type, value) => {
+    onSelect = (type, value, isReset) => {
+        let vipFilters = _.cloneDeep(this.state.vipFilters);
         let hasSavedRecommendParams = _.cloneDeep(this.state.hasSavedRecommendParams);
         let hasContinueUse = true;
         value = _.isObject(value) ? value.key : value;
@@ -199,15 +225,22 @@ class RecommendCluesFilterPanel extends Component {
                     //所以min是传到endTime，max是传到startTime上
                     //开始时间要取那天早上的00:00:00
                     //结束时间要取那天晚上的23:59:59
-                    if (_.get(timeObj, 'min')) {//传到endTime
-                        hasSavedRecommendParams.endTime = moment().subtract(_.get(timeObj, 'min'), 'years').endOf('day').valueOf();
-                    }else{
-                        delete hasSavedRecommendParams.endTime;
-                    }
-                    if (_.get(timeObj, 'max')){//传到startTime
-                        hasSavedRecommendParams.startTime = moment().subtract(_.get(timeObj, 'max'), 'years').startOf('day').valueOf();
-                    }else{
+                    if(isReset) {
+                        delete vipFilters.startTime;
+                        delete vipFilters.endTime;
                         delete hasSavedRecommendParams.startTime;
+                        delete hasSavedRecommendParams.endTime;
+                    }else {
+                        if (_.get(timeObj, 'min')) {//传到endTime
+                            vipFilters.endTime = moment().subtract(_.get(timeObj, 'min'), 'years').endOf('day').valueOf();
+                        }else{
+                            delete vipFilters.endTime;
+                        }
+                        if (_.get(timeObj, 'max')){//传到startTime
+                            vipFilters.startTime = moment().subtract(_.get(timeObj, 'max'), 'years').startOf('day').valueOf();
+                        }else{
+                            delete vipFilters.startTime;
+                        }
                     }
                 }
                 break;
@@ -215,15 +248,22 @@ class RecommendCluesFilterPanel extends Component {
                 hasContinueUse = this.handleVipItemClick(VIP_ITEM_MAP.COMPANY_SIZE, '公司规模');
                 if (hasContinueUse && value && _.isString(value)){
                     let staffObj = JSON.parse(value);
-                    if (_.get(staffObj, 'staffnumMin')) {
-                        hasSavedRecommendParams.staffnumMin = _.get(staffObj, 'staffnumMin');
-                    }else{
-                        delete hasSavedRecommendParams.staffnumMin;
-                    }
-                    if (_.get(staffObj, 'staffnumMax')){
-                        hasSavedRecommendParams.staffnumMax = _.get(staffObj,'staffnumMax');
-                    }else{
+                    if(isReset) {
+                        delete vipFilters.staffnumMin;
+                        delete vipFilters.staffnumMax;
                         delete hasSavedRecommendParams.staffnumMax;
+                        delete hasSavedRecommendParams.staffnumMin;
+                    }else {
+                        if (_.get(staffObj, 'staffnumMin')) {
+                            vipFilters.staffnumMin = _.get(staffObj, 'staffnumMin');
+                        }else{
+                            delete vipFilters.staffnumMin;
+                        }
+                        if (_.get(staffObj, 'staffnumMax')){
+                            vipFilters.staffnumMax = _.get(staffObj,'staffnumMax');
+                        }else{
+                            delete vipFilters.staffnumMax;
+                        }
                     }
                 }
                 break;
@@ -231,15 +271,22 @@ class RecommendCluesFilterPanel extends Component {
                 hasContinueUse = this.handleVipItemClick(VIP_ITEM_MAP.REGISTER_MONEY, '注册资本');
                 if (hasContinueUse && value && _.isString(value)) {
                     let moneyObj = JSON.parse(value);
-                    if (_.get(moneyObj, 'capitalMin')) {
-                        hasSavedRecommendParams.capitalMin = _.get(moneyObj,'capitalMin');
-                    }else{
-                        delete hasSavedRecommendParams.capitalMin;
-                    }
-                    if (_.get(moneyObj, 'capitalMax')) {
-                        hasSavedRecommendParams.capitalMax = _.get(moneyObj,'capitalMax');
-                    }else{
+                    if(isReset) {
+                        delete vipFilters.capitalMax;
+                        delete vipFilters.capitalMin;
                         delete hasSavedRecommendParams.capitalMax;
+                        delete hasSavedRecommendParams.capitalMin;
+                    }else {
+                        if (_.get(moneyObj, 'capitalMin')) {
+                            vipFilters.capitalMin = _.get(moneyObj,'capitalMin');
+                        }else{
+                            delete vipFilters.capitalMin;
+                        }
+                        if (_.get(moneyObj, 'capitalMax')) {
+                            vipFilters.capitalMax = _.get(moneyObj,'capitalMax');
+                        }else{
+                            delete vipFilters.capitalMax;
+                        }
                     }
                 }
                 break;
@@ -247,10 +294,15 @@ class RecommendCluesFilterPanel extends Component {
                 hasContinueUse = this.handleVipItemClick(VIP_ITEM_MAP.COMPANY_ENTYPES, '企业类型');
                 if(hasContinueUse && value && _.isString(value)) {
                     let entTypes = JSON.parse(value);
-                    if (_.get(entTypes, 'value')){
-                        hasSavedRecommendParams.entTypes = [_.get(entTypes, 'value')];
-                    }else{
+                    if(isReset) {
+                        delete vipFilters.entTypes;
                         delete hasSavedRecommendParams.entTypes;
+                    }else {
+                        if (_.get(entTypes, 'value')){
+                            vipFilters.entTypes = [_.get(entTypes, 'value')];
+                        }else{
+                            delete vipFilters.entTypes;
+                        }
                     }
                 }
                 break;
@@ -259,7 +311,11 @@ class RecommendCluesFilterPanel extends Component {
         if(!hasContinueUse) {
             return false;
         }
-        this.setState({hasSavedRecommendParams});
+        this.setState({vipFilters}, () => {
+            if(isReset) {
+                this.getRecommendClueList(hasSavedRecommendParams);
+            }
+        });
     };
 
     handleClickAdvanced = (key) => {
@@ -356,7 +412,8 @@ class RecommendCluesFilterPanel extends Component {
 
     handleToggleOtherCondition = () => {
         this.setState({
-            showOtherCondition: !this.state.showOtherCondition
+            showOtherCondition: !this.state.showOtherCondition,
+            vipFilters: this.dealRecommendParamsVipData(this.props.hasSavedRecommendParams)
         }, () => {
             _.isFunction(this.props.handleToggleOtherCondition) && this.props.handleToggleOtherCondition();
         });
@@ -364,7 +421,7 @@ class RecommendCluesFilterPanel extends Component {
 
     handleSubmit = () => {
         if(!this.props.canClickMoreBatch) { return false;}
-        this.getRecommendClueList(this.state.hasSavedRecommendParams);
+        this.getRecommendClueList({...this.state.hasSavedRecommendParams, ...this.state.vipFilters});
     };
 
     //处理成立时间数据
@@ -424,119 +481,39 @@ class RecommendCluesFilterPanel extends Component {
         //可展示的已选条件field集合
         const SELECTED_FILTER_FIELDS = [
             {
-                processValue: () => {
-                    let currentHotItem = _.find(ADVANCED_OPTIONS, item => item.value === this.props.feature);
-                    let value = {};
-                    if(currentHotItem) {
-                        value = {
-                            name: Intl.get('clue.recommend.hot.name', '热门'),
-                            value: currentHotItem.name,
-                            key: 'hot',
-                            handleClick: () => {
-                                this.handleClickAdvanced(this.props.feature);
-                            }
-                        };
-                    }
-                    return value;
-                }
-            },
-            {
-                processValue: (condition) => {
-                    let value = {};
-                    if(_.get(condition, 'province')
-                        || _.get(condition, 'city')
-                    ) {
-                        let areas = [condition.province];
-                        if(_.get(condition, 'city')) {
-                            areas.push(condition.city);
-                        }
-                        value = {
-                            name: Intl.get('crm.96', '地域'),
-                            value: areas.join('/'),
-                            key: 'area',
-                            handleClick: () => {
-                                this.updateLocation({});
-                            }
-                        };
-                    }
-                    return value;
-                }
-            },
-            {
-                processValue: (condition) => {
-                    let value = {};
-                    let timeTarget = this.handleRegisterTimeData(condition);
-                    if(!_.isEmpty(timeTarget)) {
-                        value = {
-                            name: Intl.get('clue.recommend.established.time', '成立时间'),
-                            value: timeTarget.name,
-                            key: VIP_ITEM_MAP.REGISTER_TIME,
-                            handleClick: () => {
-                                this.onSelect(VIP_ITEM_MAP.REGISTER_TIME, JSON.stringify({name: ''}));
-                            }
-                        };
-                    }
-                    return value;
-                }
-            },
-            {
-                processValue: (condition) => {
-                    let value = {};
-                    let staffTarget = this.handleCompanySizeData(condition);
-                    if(!_.isEmpty(staffTarget)) {
-                        value = {
-                            name: Intl.get('clue.recommend.company.size', '公司规模'),
-                            value: staffTarget.name,
-                            key: VIP_ITEM_MAP.COMPANY_SIZE,
-                            handleClick: () => {
-                                this.onSelect(VIP_ITEM_MAP.COMPANY_SIZE, JSON.stringify({name: ''}));
-                            }
-                        };
-                    }
-                    return value;
-                }
-            },
-            {
-                processValue: (condition) => {
-                    let value = {};
-                    let capitalTarget = this.handleCapitalData(condition);
-                    if(!_.isEmpty(capitalTarget)) {
-                        value = {
-                            name: Intl.get('clue.recommend.registered.capital', '注册资本'),
-                            value: capitalTarget.name,
-                            key: VIP_ITEM_MAP.REGISTER_MONEY,
-                            handleClick: () => {
-                                this.onSelect(VIP_ITEM_MAP.REGISTER_MONEY, JSON.stringify({name: ''}));
-                            }
-                        };
-                    }
-                    return value;
-                }
-            },
-            {
-                processValue: (condition) => {
-                    let value = {};
-                    let entypesTarget = this.handleEntTypesData(condition);
-                    if(!_.isEmpty(entypesTarget)) {
-                        value = {
-                            name: Intl.get('clue.recommend.enterprise.class', '企业类型'),
-                            value: entypesTarget.name,
-                            key: VIP_ITEM_MAP.COMPANY_ENTYPES,
-                            handleClick: () => {
-                                this.onSelect(VIP_ITEM_MAP.COMPANY_ENTYPES, JSON.stringify({name: ''}));
-                            }
-                        };
-                    }
-                    return value;
-                }
-            },
+                name: Intl.get('clue.recommend.established.time', '成立时间'),
+                key: VIP_ITEM_MAP.REGISTER_TIME,
+                processValue: this.handleRegisterTimeData
+            }, {
+                name: Intl.get('clue.recommend.company.size', '公司规模'),
+                key: VIP_ITEM_MAP.COMPANY_SIZE,
+                processValue: this.handleCompanySizeData
+            }, {
+                name: Intl.get('clue.recommend.registered.capital', '注册资本'),
+                key: VIP_ITEM_MAP.REGISTER_MONEY,
+                processValue: this.handleCapitalData
+            }, {
+                name: Intl.get('clue.recommend.enterprise.class', '企业类型'),
+                key: VIP_ITEM_MAP.COMPANY_ENTYPES,
+                processValue: this.handleEntTypesData
+            }
         ];
         _.each(SELECTED_FILTER_FIELDS, item => {
-            let value = {};
             if(_.isFunction(item.processValue)) {
-                value = item.processValue(hasSavedRecommendParams);
+                let value = item.processValue(hasSavedRecommendParams);
                 if(!_.isEmpty(value)) {
-                    list.push(value);
+                    list.push({
+                        name: item.name,
+                        value: value.name,
+                        key: item.key,
+                        handleClick: () => {
+                            if(_.isFunction(item.handleClick)) {
+                                item.handleClick();
+                            }else{
+                                this.onSelect(item.key, JSON.stringify({name: ''}), true);
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -605,7 +582,7 @@ class RecommendCluesFilterPanel extends Component {
     }
 
     render() {
-        let { hasSavedRecommendParams, showOtherCondition } = this.state;
+        let { hasSavedRecommendParams, showOtherCondition, vipFilters } = this.state;
 
         var cls = 'other-condition-container', show_tip = '', iconCls = 'iconfont', btnCls = 'btn-item save-btn';
         //是否展示其他的筛选条件
@@ -691,7 +668,7 @@ class RecommendCluesFilterPanel extends Component {
                                                     list: registerSize,
                                                     getValue: () => {
                                                         let timeTarget = {};
-                                                        let startTime = hasSavedRecommendParams.startTime, endTime = hasSavedRecommendParams.endTime;
+                                                        let startTime = vipFilters.startTime, endTime = vipFilters.endTime;
                                                         if(startTime) {
                                                             timeTarget.max = moment().diff(startTime, 'years');
                                                         }
@@ -725,8 +702,8 @@ class RecommendCluesFilterPanel extends Component {
                                                 list: staffSize,
                                                 getValue: () => {
                                                     let staffTarget = {};
-                                                    if(hasSavedRecommendParams.staffnumMin || hasSavedRecommendParams.staffnumMax){
-                                                        staffTarget = _.find(staffSize, item => item.staffnumMin === hasSavedRecommendParams.staffnumMin && item.staffnumMax === hasSavedRecommendParams.staffnumMax );
+                                                    if(vipFilters.staffnumMin || vipFilters.staffnumMax){
+                                                        staffTarget = _.find(staffSize, item => item.staffnumMin === vipFilters.staffnumMin && item.staffnumMax === vipFilters.staffnumMax );
                                                     }
                                                     if(_.isEmpty(staffTarget)) {
                                                         staffTarget = {
@@ -744,8 +721,8 @@ class RecommendCluesFilterPanel extends Component {
                                                 list: moneySize,
                                                 getValue: () => {
                                                     let capitalTarget = {};
-                                                    if(hasSavedRecommendParams.capitalMin || hasSavedRecommendParams.capitalMax){
-                                                        capitalTarget = _.find(moneySize, item => item.capitalMin === hasSavedRecommendParams.capitalMin && item.capitalMax === hasSavedRecommendParams.capitalMax );
+                                                    if(vipFilters.capitalMin || vipFilters.capitalMax){
+                                                        capitalTarget = _.find(moneySize, item => item.capitalMin === vipFilters.capitalMin && item.capitalMax === vipFilters.capitalMax );
                                                     }
                                                     if(_.isEmpty(capitalTarget)) {
                                                         capitalTarget = {
@@ -763,8 +740,8 @@ class RecommendCluesFilterPanel extends Component {
                                                 list: companyProperty,
                                                 getValue: () => {
                                                     let entypesTarget = {};
-                                                    if(hasSavedRecommendParams.entTypes){
-                                                        entypesTarget = _.find(companyProperty, item => _.includes(hasSavedRecommendParams.entTypes, item.value));
+                                                    if(vipFilters.entTypes){
+                                                        entypesTarget = _.find(companyProperty, item => _.includes(vipFilters.entTypes, item.value));
                                                     }
                                                     if(_.isEmpty(entypesTarget)) {
                                                         entypesTarget = {
