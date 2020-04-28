@@ -1,5 +1,4 @@
 var userInfoAjax = require('../ajax/user-info-ajax');
-var userData = require('../../../../public/sources/user-data');
 
 function UserInfoActions() {
     this.generateActions(

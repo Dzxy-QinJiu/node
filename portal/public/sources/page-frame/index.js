@@ -35,7 +35,6 @@ import{
     clickUpgradeNoiceEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
-import {getUserData} from '../../sources/user-data';
 import { isShowUnReadNotice, isCurtao} from '../utils/common-method-util';
 import {getUpgradeNoticeList, getRewardedCluesCount, getAppList} from '../utils/common-data-util';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
