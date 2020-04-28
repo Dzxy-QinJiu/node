@@ -1380,8 +1380,10 @@ class RecommendCluesList extends React.Component {
                                             {/*产品*/}
                                             {otherProps.products.hasContent ? (
                                                 <div className="extract-clue-text-item">
-                                                    <span>{Intl.get('common.product', '产品')}：</span>
-                                                    <span dangerouslySetInnerHTML={{__html: otherProps.products.content}}/>
+                                                    <ShearContent rowsNum={1}>
+                                                        <span>{Intl.get('common.product', '产品')}：</span>
+                                                        <span dangerouslySetInnerHTML={{__html: otherProps.products.content}}/>
+                                                    </ShearContent>
                                                 </div>
                                             ) : null}
                                             {/*经营范围*/}
