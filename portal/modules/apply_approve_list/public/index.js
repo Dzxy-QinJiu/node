@@ -221,6 +221,7 @@ class ApplyApproveList extends React.Component {
         if (selectedApplyType !== ALL) {
             const userApplyType = ApplyApproveUtils.userApplyType;
             let isFilterUserApplyType = _.find(userApplyType, item => item.value === selectedApplyType);
+            // 用户申请中，类型的过滤，对应的字段是 user_apply_type
             if (isFilterUserApplyType) {
                 submitObj.type = 'user_or_grant';
                 submitObj.user_apply_type = selectedApplyType;
