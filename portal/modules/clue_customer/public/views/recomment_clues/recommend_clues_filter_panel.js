@@ -41,7 +41,7 @@ const ADVANCED_OPTIONS = [
     },
     {
         name: Intl.get('clue.recommend.state.owned.enterprise', '国有企业'),
-        value: 'feature:国企'
+        value: 'feature:国有企业'
     },
     {
         name: Intl.get('clue.recommend.smal.micro.enterprise', '小微企业'),
