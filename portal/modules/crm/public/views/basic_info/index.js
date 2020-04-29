@@ -261,35 +261,54 @@ class BasicData extends React.Component {
     releaseCustomer = () => {
         let basicData = this.state.basicData;
         if(!_.get(basicData,'id') || this.state.isReleasingCustomer) return;
+        let isRequest = true;
+        let _this = this;
+        let type = _this.state.releaseType;
+        if(_.get(userData.getUserData(), 'isCommonSales')) {
+            //普通销售需判断是当前释放的这个客户的负责人还是联合跟进人
+            isRequest = _.isEqual(_.get(basicData, 'user_id'), userData.getUserData().user_id);
+        }else if(this.state.releaseType === RELEASE_TYPE.JOIN) {//释放联合跟进人
+            isRequest = false;
+        }
         Trace.traceEvent(ReactDOM.findDOMNode(this), '释放客户');
-        // 单个释放需判断，验证是否有权限处理跟进人
-        CrmBasicAjax.checkCrmUpdateUserByCustomerId(basicData.id).then((res) => {
-            if(res) {
-                this.setState({isReleasingCustomer: true});
-                let reqData = {id: basicData.id};
-                if(this.state.releaseReason) {
-                    reqData.reason = this.state.releaseReason;
+        if(isRequest) {
+            type = RELEASE_TYPE.OWNER;
+            // 单个释放需判断，验证是否有权限处理负责人
+            CrmBasicAjax.checkCrmUpdateUserByCustomerId(basicData.id).then((res) => {
+                if(res) {
+                    releaseCustomer();
+                }else {
+                    message.error(Intl.get('crm.release.no.permissions', '您不能释放共同跟进的客户'));
                 }
-                reqData.type = this.state.releaseType;
-                CrmBasicAjax.releaseCustomer(reqData).then(result => {
-                    this.setState({isReleasingCustomer: false});
-                    //释放完客户后，需要将首页对应的工作设为已完成
-                    if (window.location.pathname === '/home') {
-                        myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
-                    }
-                    CrmAction.afterReleaseCustomer(basicData.id);
-                    //需要关闭面板
-                    _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel($(ReactDOM.findDOMNode(this)));
-                }, (errorMsg) => {
-                    this.setState({isReleasingCustomer: false});
-                    message.error(errorMsg);
-                });
-            }else {
-                message.error(Intl.get('crm.release.no.permissions', '您不能释放共同跟进的客户'));
+            }, (errorMsg) => {
+                message.error(errorMsg);
+            });
+        }else {
+            type = RELEASE_TYPE.JOIN;
+            releaseCustomer();
+        }
+
+        function releaseCustomer() {
+            _this.setState({isReleasingCustomer: true});
+            let reqData = {id: basicData.id};
+            if(_this.state.releaseReason) {
+                reqData.reason = _this.state.releaseReason;
             }
-        }, (errorMsg) => {
-            message.error(errorMsg);
-        });
+            reqData.type = type;
+            CrmBasicAjax.releaseCustomer(reqData).then(result => {
+                _this.setState({isReleasingCustomer: false});
+                //释放完客户后，需要将首页对应的工作设为已完成
+                if (window.location.pathname === '/home') {
+                    myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+                }
+                CrmAction.afterReleaseCustomer(basicData.id);
+                //需要关闭面板
+                _.isFunction(_this.props.hideRightPanel) && _this.props.hideRightPanel($(ReactDOM.findDOMNode(_this)));
+            }, (errorMsg) => {
+                _this.setState({isReleasingCustomer: false});
+                message.error(errorMsg);
+            });
+        }
     };
 
     //是否展示释放按钮
