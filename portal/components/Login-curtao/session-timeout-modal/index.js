@@ -141,8 +141,6 @@ class SessionTimeoutModal extends React.Component {
     //登录成功处理
     afterLoginSuccess(username, data) {
         sendMessage && sendMessage(username + ' 登录成功 data: ' + JSON.stringify(data));
-        // 登录成功后，需要重新加载
-        window.location.reload(true);
         userData.getUserDataByAjax().done(() => {
             //重新建立socket连接
             !Oplate.hideSomeItem && require('PUB_DIR/sources/push').startSocketIo();

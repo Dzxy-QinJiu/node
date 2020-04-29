@@ -38,6 +38,9 @@ var UnreadMixin = {
     showUnhandledCount: function(item) {
         //从全局数据中获取
         if (Oplate && Oplate.unread){
+            // 未处理的申请数据
+            const unhandleApplyList = _.get(Oplate.unread, 'unhandleApplyList', []);
+            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_TIP, unhandleApplyList);
             var count = 0;
             this.setState({
                 messages: Oplate.unread
@@ -132,6 +135,7 @@ var UnreadMixin = {
     },
 
     componentDidMount: function() {
+        console.log('############:componentDidMount');
         _.forEach(UNREADCOUNT,(item) => {
             this.showUnhandledCount(item);
         });
