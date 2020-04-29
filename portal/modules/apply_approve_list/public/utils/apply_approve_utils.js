@@ -161,11 +161,14 @@ const getSalesManList = function() {
 exports.getSalesManList = getSalesManList;
 
 // 用户申请类型
+// 注意的地方：申请新试用用户对应的value：apply_user_trial， 已有用户开通产品选择试用用户，对应的value：apply_app_trial
+// 申请新签约用户对应的value：apply_user_official， 已有用户开通产品选择签约用户，对应的value：apply_app_official
+// 在审批列表中，没有区分是那种类型的试用、签约，所以需要传都传
 export const userApplyType = [{
-    value: 'apply_app_trial',
+    value: 'apply_user_trial,apply_app_trial', // 已有用户开通产品，申请新试用用户
     title: Intl.get('home.page.user.trial.apply', '试用用户申请')
 }, {
-    value: 'apply_user_official',
+    value: 'apply_user_official, apply_app_official', // 已有用户开通产品，申请新签约用户
     title: Intl.get('home.page.user.formal.apply', '签约用户申请')
 }, {
     value: 'apply_grant_delay_multiapp',

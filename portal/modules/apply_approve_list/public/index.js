@@ -217,9 +217,18 @@ class ApplyApproveList extends React.Component {
         if (this.state.selectedApplyStatus !== ALL) {
             submitObj.status = this.state.selectedApplyStatus;
         }
-        if (this.state.selectedApplyType !== ALL) {
-            submitObj.type = this.state.selectedApplyType;
+        const selectedApplyType = this.state.selectedApplyType;
+        if (selectedApplyType !== ALL) {
+            const userApplyType = ApplyApproveUtils.userApplyType;
+            let isFilterUserApplyType = _.find(userApplyType, item => item.value === selectedApplyType);
+            if (isFilterUserApplyType) {
+                submitObj.type = 'user_or_grant';
+                submitObj.user_apply_type = selectedApplyType;
+            } else {
+                submitObj.type = selectedApplyType;
+            }
         }
+
         if (this.state.activeApplyTab === APPLY_TYPE.APPLY_BY_ME) {
             UserApplyActions.getApplyListStartSelf(submitObj, (count) => {
                 //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
