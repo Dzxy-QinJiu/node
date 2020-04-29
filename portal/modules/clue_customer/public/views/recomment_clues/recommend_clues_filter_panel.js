@@ -87,7 +87,8 @@ class RecommendCluesFilterPanel extends Component {
             vipPopOverVisibleContent: null,
             showOtherCondition: false,
             isSaving: false,
-            vipFilters: this.dealRecommendParamsVipData(hasSavedRecommendParams)
+            vipFilters: this.dealRecommendParamsVipData(hasSavedRecommendParams),
+            keyword: hasSavedRecommendParams.keyword
         };
     }
 
@@ -96,7 +97,8 @@ class RecommendCluesFilterPanel extends Component {
             let hasSavedRecommendParams = _.cloneDeep(nextProps.hasSavedRecommendParams);
             this.setState({
                 hasSavedRecommendParams,
-                vipFilters: this.dealRecommendParamsVipData({...hasSavedRecommendParams, ...this.state.vipFilters})
+                vipFilters: this.dealRecommendParamsVipData({...hasSavedRecommendParams, ...this.state.vipFilters}),
+                keyword: hasSavedRecommendParams.keyword
             });
         }
     }
@@ -134,6 +136,7 @@ class RecommendCluesFilterPanel extends Component {
         }
         searchTimeOut = setTimeout(() => {
             let newCondition = _.clone(condition);
+            newCondition.keyword = this.state.keyword;
             let propsCondition = _.clone(this.props.hasSavedRecommendParams);
             removeEmptyItem(newCondition);
 
@@ -169,9 +172,7 @@ class RecommendCluesFilterPanel extends Component {
     }
 
     searchChange = (e) => {
-        let hasSavedRecommendParams = this.state.hasSavedRecommendParams;
-        hasSavedRecommendParams.keyword = _.trim(e.target.value || '');
-        this.setState({hasSavedRecommendParams});
+        this.setState({keyword: _.trim(e.target.value)});
     };
 
     onKeyDown = (e) => {
@@ -182,15 +183,13 @@ class RecommendCluesFilterPanel extends Component {
     };
 
     searchEvent = (value) => {
-        let hasSavedRecommendParams = this.state.hasSavedRecommendParams;
-        hasSavedRecommendParams.keyword = _.trim(value || '');
-        this.setState({hasSavedRecommendParams}, () => {
-            this.getRecommendClueList(hasSavedRecommendParams);
+        this.setState({keyword: _.trim(value || '')}, () => {
+            this.getRecommendClueList(this.state.hasSavedRecommendParams);
         });
     }
 
     onSearchButtonClick = () => {
-        let value = _.trim(this.refs.searchInput.props.defaultValue);
+        let value = _.trim($('#clue-search-input').val());
         if (this.props.canClickMoreBatch && value) {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '点击搜索按钮：' + value);
             this.searchEvent(value);
@@ -601,7 +600,7 @@ class RecommendCluesFilterPanel extends Component {
     }
 
     render() {
-        let { hasSavedRecommendParams, showOtherCondition, vipFilters } = this.state;
+        let { hasSavedRecommendParams, showOtherCondition, vipFilters, keyword } = this.state;
 
         var cls = 'other-condition-container', show_tip = '', iconCls = 'iconfont', btnCls = 'btn-item save-btn';
         //是否展示其他的筛选条件
@@ -624,9 +623,9 @@ class RecommendCluesFilterPanel extends Component {
                             <FormItem>
                                 <div className="search-input-container">
                                     <Input
-                                        ref="searchInput"
+                                        id="clue-search-input"
                                         type="text"
-                                        defaultValue={hasSavedRecommendParams.keyword}
+                                        value={keyword}
                                         placeholder={this.getKeyWordPlaceholder()}
                                         className="search-input"
                                         onChange={this.searchChange}
@@ -635,7 +634,7 @@ class RecommendCluesFilterPanel extends Component {
                                             <Icon type="search" className="search-icon search-icon-btn" onClick={this.onSearchButtonClick}/>
                                         )}
                                     />
-                                    {hasSavedRecommendParams.keyword ? (
+                                    {keyword ? (
                                         <span className="iconfont icon-circle-close search-icon" onClick={this.closeSearchInput}/>
                                     ) : null}
                                 </div>
