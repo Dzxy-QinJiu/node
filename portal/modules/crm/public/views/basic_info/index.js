@@ -554,7 +554,7 @@ class BasicData extends React.Component {
         }
         let customerLabel = basicData.customer_label ? (
             <Tag className={crmUtil.getCrmLabelCls(basicData.customer_label)}>
-                {basicData.customer_label.substr(0, 2)}
+                {basicData.customer_label}
             </Tag>) : null;
         const isShowRelease = this.isShowReleaseBtn();
         const basicInfoNameCls = classNames('basic-info-name', {
