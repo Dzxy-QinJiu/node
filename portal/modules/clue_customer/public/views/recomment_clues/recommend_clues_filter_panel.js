@@ -190,9 +190,10 @@ class RecommendCluesFilterPanel extends Component {
     }
 
     onSearchButtonClick = () => {
-        if (this.props.canClickMoreBatch && _.trim(this.refs.searchInput.props.defaultValue)) {
-            Trace.traceEvent(ReactDOM.findDOMNode(this), '点击搜索按钮：' + e.target.value);
-            this.searchEvent(this.refs.searchInput.props.defaultValue);
+        let value = _.trim(this.refs.searchInput.props.defaultValue);
+        if (this.props.canClickMoreBatch && value) {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '点击搜索按钮：' + value);
+            this.searchEvent(value);
         }
     };
 
