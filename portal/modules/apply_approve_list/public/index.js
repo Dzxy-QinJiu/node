@@ -65,6 +65,8 @@ import {isSalesRole, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 var ApplyApproveUtils = require('./utils/apply_approve_utils');
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import {INNER_SETTING_FLOW} from '../../apply_approve_manage/public/utils/apply-approve-utils';
+
 class ApplyApproveList extends React.Component {
     state = {
         activeApplyTab: isCommonSalesOrPersonnalVersion() ? APPLY_TYPE.APPLY_BY_ME : APPLY_TYPE.APPROVE_BY_ME,
@@ -223,7 +225,7 @@ class ApplyApproveList extends React.Component {
             let isFilterUserApplyType = _.find(userApplyType, item => item.value === selectedApplyType);
             // 用户申请中，类型的过滤，对应的字段是 user_apply_type
             if (isFilterUserApplyType) {
-                submitObj.type = 'user_or_grant';
+                submitObj.type = INNER_SETTING_FLOW.NEWUSERAPPLY;
                 submitObj.user_apply_type = selectedApplyType;
             } else {
                 submitObj.type = selectedApplyType;
@@ -676,7 +678,7 @@ class ApplyApproveList extends React.Component {
                     value: type
                 };
                 // 用户申请
-                if (type === 'user_or_grant') {
+                if (type === INNER_SETTING_FLOW.NEWUSERAPPLY) {
                     selectItem.children = ApplyApproveUtils.userApplyType;
                 }
                 allTypeList.push(selectItem);
