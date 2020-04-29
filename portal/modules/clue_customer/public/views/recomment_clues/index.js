@@ -261,7 +261,15 @@ class RecommendCluesList extends React.Component {
                 }
             }
         }
-        if(_.isEqual(type, EXTRACT_CLUE_CONST_MAP.ANOTHER_BATCH) && !_.isNil(_.get(lastItem,'ranking'))) {//点击换一批时，才加这个ranking参数
+
+        let length = this.state.recommendClueLists.length;
+        let total = this.state.total;
+        //点击换一批,且总数大于20，且当前列表长度等于20时，才加这个ranking参数
+        if(_.isEqual(type, EXTRACT_CLUE_CONST_MAP.ANOTHER_BATCH)
+            && total > this.state.pageSize
+            && length === this.state.pageSize
+            && !_.isNil(_.get(lastItem,'ranking'))
+        ) {
             conditionObj.ranking = _.get(lastItem, 'ranking') + 1;
         }
         clueCustomerAction.getRecommendClueLists(conditionObj);
