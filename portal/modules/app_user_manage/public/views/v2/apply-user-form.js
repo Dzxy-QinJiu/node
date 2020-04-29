@@ -20,7 +20,6 @@ const ApplyUserForm = createReactClass({
     mixins: [ValidateMixin, UserTimeRangeField],
     propTypes: {
         apps: PropTypes.array,
-        emailData: PropTypes.obj,
         cancelApply: PropTypes.func,
         appList: PropTypes.array,
     },

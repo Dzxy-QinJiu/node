@@ -421,26 +421,6 @@ class AppUserManage extends React.Component {
             </span>);
     };
 
-    //发邮件使用的参数
-    getEmailData = () => {
-        var selectedRows = this.state.selectedUserRows;
-
-        var email_customer_names = [];
-        var email_user_names = [];
-
-        if (!_.isArray(selectedRows)) {
-            selectedRows = [];
-        }
-        _.each(selectedRows, (obj) => {
-            email_customer_names.push(obj.customer && obj.customer.customer_name || '');
-            email_user_names.push(obj.user && obj.user.user_name || '');
-        });
-        return {
-            email_customer_names: email_customer_names.join('、'),
-            email_user_names: email_user_names.join('、')
-        };
-    };
-
     showBatchOperate = (e) => {
         Trace.traceEvent(e, '已有用户-批量变更');
         AppUserAction.showBatchOperate();
@@ -941,8 +921,6 @@ class AppUserManage extends React.Component {
                     );
                     break;
                 case 'applyUser':
-                    //发邮件使用的数据
-                    var emailData = this.getEmailData();
                     //应用列表
                     var appListTransform = _.map(appList, obj => {
                         return {
@@ -957,7 +935,6 @@ class AppUserManage extends React.Component {
                             users={this.state.selectedUserRows}
                             customerId={this.state.customer_id}
                             cancelApply={AppUserAction.closeRightPanel}
-                            emailData={emailData}
                         />
                     );
                     break;
