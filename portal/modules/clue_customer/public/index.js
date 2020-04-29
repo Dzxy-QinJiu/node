@@ -849,7 +849,7 @@ class ClueCustomer extends React.Component {
     clearSelectedClue = () => {
         this.setState({
             selectedClues: [],
-            selectAllMatched: false
+            selectAllMatched: true // 初始控制全选线索默认导出 全部/只导出本页 true为全部 false为本页    
         });
     };
 
@@ -2199,7 +2199,7 @@ class ClueCustomer extends React.Component {
                     });
                     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中某个线索');
                 },
-                //对客户列表当前页进行全选或取消全选操作时触发
+                //对线索列表当前页进行全选或取消全选操作时触发
                 onSelectAll: (selected, selectedRows, changeRows) => {
                     if (this.state.selectAllMatched && _.get(selectedRows,'length') === 0) {
                         this.state.selectAllMatched = false;
@@ -2483,7 +2483,7 @@ class ClueCustomer extends React.Component {
         clueCustomerAction.setClueInitialData();
         rightPanelShow = false;
         this.setState({
-            selectAllMatched: false,
+            selectAllMatched: true, // 初始控制全选线索默认导出 全部/只导出本页 true为全部 false为本页    
             selectedClues: [],
             rightPanelIsShow: false});
         setTimeout(() => {
