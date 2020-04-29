@@ -135,7 +135,6 @@ var UnreadMixin = {
     },
 
     componentDidMount: function() {
-        console.log('############:componentDidMount');
         _.forEach(UNREADCOUNT,(item) => {
             this.showUnhandledCount(item);
         });
