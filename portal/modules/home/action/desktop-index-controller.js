@@ -83,81 +83,64 @@ exports.home = function(req, res) {
 exports.getUserData = function(req, res) {
     var userSession = auth.getUser(req);
     var user = extend(true, {}, userSession);
-    DesktopIndexService.getUserLanguage(req, res, user.user_id)
+    user.privileges = DesktopIndexService.getPrivileges(req);
+    user.routes = authRouters.getAuthedRouters(user.privileges);
+    //删除认证数据
+    delete user.auth.access_token;
+    delete user.auth.refresh_token;
+    var callback = req.query.callback;
+    console.time('用户信息相关接口============================');
+    DesktopIndexService.getUserInfo(req, res)
         .on('success', function(data) {
-            let lang = global.config.lang || 'zh_CN';
-            if (data && data.language) {
-                lang = data.language;
+            console.timeEnd('用户信息相关接口============================');
+            //将界面上可能会修改到的登录用户的信息进行刷新
+            user.email = data.email;
+            user.email_enable = data.email_enable;
+            user.user_logo = data.user_logo;
+            user.nick_name = data.nick_name;
+            user.team_id = data.team_id;
+            user.team_name = data.team_name;
+            user.roles = _.get(req.session, 'user.roles');
+            user.lang = _.get(data, 'language_setting.language', global.config.lang || 'zh_CN');
+            user.isCommonSales = data.isCommonSales;//是否是普通销售
+            if (data.isCommonSales) {
+                user.position = data.position;//职务
             }
-            setLang(lang);
-        }).on('error', function(codeMessage) {
-            setLang(global.config.lang || 'zh_CN');
-        });
-
-    //设置语言环境
-    function setLang(lang) {
-        moment.locale(lang);
-        //将当前用户的语言环境存入session中
-        if (req.session) {
-            req.session.lang = lang;
-            req.session.save(getUserInfo(lang));
-        }
-    }
-
-    //获取登录用户的相关信息
-    function getUserInfo(lang) {
-        user.privileges = DesktopIndexService.getPrivileges(req);
-        user.routes = authRouters.getAuthedRouters(user.privileges);
-        //删除认证数据
-        delete user.auth.access_token;
-        delete user.auth.refresh_token;
-        var callback = req.query.callback;
-        DesktopIndexService.getUserInfo(req, res)
-            .on('success', function(data) {
-                //将界面上可能会修改到的登录用户的信息进行刷新
-                user.email = data.email,
-                user.user_logo = data.user_logo;
-                user.nick_name = data.nick_name;
-                user.team_id = data.team_id;
-                user.team_name = data.team_name;
-                user.roles = data.roles;
-                user.lang = lang;
-                user.isCommonSales = data.isCommonSales;//是否是普通销售
-                if (data.isCommonSales) {
-                    user.position = data.position;//职务
-                }
-                user.workFlowConfigs = data.workFlowConfigs;//配置过的流程列表
-                user.guideConfig = data.guideConfig;//引导流程
-                user.phone = data.phone;
-                user.websiteConfig = data.websiteConfig;//网站个性化
-                user.organization = {
-                    id: _.get(data,'organization.id', ''),
-                    officialName: _.get(data, 'organization.official_name', ''),
-                    functions: _.get(data, 'organization.functions', []),
-                    type: _.get(data, 'organization.type', ''),
-                    version: _.get(data, 'organization.version', {}),
-                    endTime: _.get(data, 'organization.end_time', ''),
-                    expireAfterDays: _.get(data, 'organization.expire_after_days'),
-                    grantProducts: _.get(data, 'organization.grant_products', []),
-                    // 组织是否过期
-                    isExpired: _.get(data, 'organization.end_time', '') <= new Date().getTime()
-                };
-                req.session.user.nickname = data.nick_name;
-                req.session.save(function() {
-                    res.header('Content-Type', 'application/javascript');
-                    res.send(callback + '(' + JSON.stringify(user) + ')');
-                });
-                //直接请求的内部模块的链接
-                user.preUrl = req.session.preUrl;
-                //取完数据后，删除preUrl
-                delete req.session.preUrl;
-            }).on('error', function(codeMessage) {
+            user.workFlowConfigs = data.workFlowConfigs;//配置过的流程列表
+            user.guideConfig = data.guideConfig;//引导流程
+            user.phone = data.phone;
+            user.websiteConfig = data.websiteConfig;//网站个性化
+            user.organization = {
+                id: _.get(data, 'organization.id', ''),
+                officialName: _.get(data, 'organization.official_name', ''),
+                functions: _.get(data, 'organization.functions', []),
+                type: _.get(data, 'organization.type', ''),
+                version: _.get(data, 'organization.version', {}),
+                endTime: _.get(data, 'organization.end_time', ''),
+                expireAfterDays: _.get(data, 'organization.expire_after_days'),
+                grantProducts: _.get(data, 'organization.grant_products', []),
+                // 组织是否过期
+                isExpired: _.get(data, 'organization.end_time', '') <= new Date().getTime()
+            };
+            req.session.user.nickname = data.nick_name;
+            moment.locale(user.lang);
+            req.session.lang = user.lang;
+            req.session.save(function() {
                 res.header('Content-Type', 'application/javascript');
-                let errorObj = {lang: lang, errorMsg: codeMessage && codeMessage.message};
-                res.status(codeMessage.httpCode).send(callback + '(' + JSON.stringify(errorObj) + ')');
-            }
-            );
-    }
+                res.send(callback + '(' + JSON.stringify(user) + ')');
+            });
+            //直接请求的内部模块的链接
+            user.preUrl = req.session.preUrl;
+            //取完数据后，删除preUrl
+            delete req.session.preUrl;
+        }).on('error', function(codeMessage) {
+            res.header('Content-Type', 'application/javascript');
+            let lang = global.config.lang || 'zh_CN';
+            moment.locale(lang);
+            req.session.save();
+            let errorObj = { lang: lang, errorMsg: codeMessage && codeMessage.message };
+            res.status(500).send(callback + '(' + JSON.stringify(errorObj) + ')');
+        });
 };
 
 /**
