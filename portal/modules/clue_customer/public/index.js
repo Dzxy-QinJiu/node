@@ -2201,8 +2201,8 @@ class ClueCustomer extends React.Component {
                 },
                 //对线索列表当前页进行全选或取消全选操作时触发
                 onSelectAll: (selected, selectedRows, changeRows) => {
-                    if (this.state.selectAllMatched && _.get(selectedRows,'length') === 0) {
-                        this.state.selectAllMatched = false;
+                    if (_.get(selectedRows,'length') === 0) {
+                        this.state.selectAllMatched = true; 
                     }
                     this.setState({selectedClues: selectedRows, selectAllMatched: this.state.selectAllMatched});
                     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中全部线索');
@@ -2228,7 +2228,7 @@ class ClueCustomer extends React.Component {
             clueCustomerAction.setPageNum(page);
             setTimeout(() => {
                 var obj = {};
-                if(this.state.selectAllMatched){//如果是在点击选中全部的情况下进行翻页
+                if(this.state.selectAllMatched && _.get(this.state.selectedClues,'length') != 0){//如果是在点击选中全部的情况下进行翻页 条件是已选中列表不能为空
                     obj = {isPageChange: true};
                 }
                 this.getClueList(obj);
