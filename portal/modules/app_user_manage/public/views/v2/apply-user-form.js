@@ -20,7 +20,6 @@ const ApplyUserForm = createReactClass({
     mixins: [ValidateMixin, UserTimeRangeField],
     propTypes: {
         apps: PropTypes.array,
-        emailData: PropTypes.obj,
         cancelApply: PropTypes.func,
         appList: PropTypes.array,
     },
@@ -169,6 +168,22 @@ const ApplyUserForm = createReactClass({
         this.setState({appFormData});
     },
 
+    calcDescartes: function(array,submitData) {
+        if (array.length < 2) return array[0] || [];
+        return [].reduce.call(array, function(col, set) {
+            var res = [];
+            col.forEach(function(c) {
+                set.forEach(function(s) {
+                    res.push({
+                        'user_id': c,
+                        'tags': [submitData.tag],
+                        ...s});
+                });
+            });
+            return res;
+        });
+    },
+
     handleSubmit: function(cb) {
         if (this.state.isLoading) {
             //正在申请，不可重复申请
@@ -206,12 +221,22 @@ const ApplyUserForm = createReactClass({
                         delete app.range;
                     });
                 }
-                submitData.user_ids = JSON.stringify(submitData.user_ids);
+               
                 submitData.user_names = JSON.stringify(submitData.user_names);
                 submitData.products = JSON.stringify(submitData.products);
-                UserApplyAction.applyNewGrant(submitData, result => {
+
+                var newSubmitObj = {
+                    customer_id: submitData.customer_id,
+                    remark: submitData.remark
+                };
+                delete submitData.customer_id;
+                //users_or_grants 是跟据user_ids 和 原来参数中的 products 做笛卡尔积后获取的总数量
+                newSubmitObj['users_or_grants'] = this.calcDescartes([submitData.user_ids,JSON.parse(submitData.products)],submitData);
+
+
+                UserApplyAction.applyNewGrant(newSubmitObj, result => {
                     this.setState({isLoading: false});
-                    if (result === true) {
+                    if (_.get(result, 'id')) {
                         message.success(Intl.get('user.apply.success', '申请成功'));
                         this.handleCancel();
                     }

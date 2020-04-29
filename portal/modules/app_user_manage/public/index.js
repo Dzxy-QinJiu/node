@@ -921,8 +921,6 @@ class AppUserManage extends React.Component {
                     );
                     break;
                 case 'applyUser':
-                    //发邮件使用的数据
-                    var emailData = this.getEmailData();
                     //应用列表
                     var appListTransform = _.map(appList, obj => {
                         return {
@@ -937,7 +935,6 @@ class AppUserManage extends React.Component {
                             users={this.state.selectedUserRows}
                             customerId={this.state.customer_id}
                             cancelApply={AppUserAction.closeRightPanel}
-                            emailData={emailData}
                         />
                     );
                     break;

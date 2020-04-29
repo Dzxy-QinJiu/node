@@ -921,7 +921,11 @@ class CustomerUsers extends React.Component {
         });
         if(userNum) {
             return (
-                <span className={userNumClass} onClick={this.triggerUserList.bind(this, userNum)}>
+                <span
+                    className={userNumClass}
+                    onClick={this.triggerUserList.bind(this, userNum)}
+                    data-tracename="点击已开通用户数"
+                >
                     <ReactIntl.FormattedMessage
                         id="user.apply.has.been.opened"
                         defaultMessage={'已开通{count}个'}

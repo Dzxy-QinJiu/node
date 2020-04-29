@@ -326,7 +326,7 @@ var BatchChangUser = createReactClass({
             delete x.begin_date;
             return {
                 ...x,
-                status: formData.user_status
+                status: '0'
             };
         });
         const submitObj = {
@@ -781,12 +781,8 @@ var BatchChangUser = createReactClass({
                     wrapperCol={wrapperCol}
                 >
                     <RadioGroup
-                        onChange={this.radioValueChange.bind(this , 'user_status')}
-                        value={formData.user_status}
+                        value="0"
                     >
-                        <Radio key="1" value="1">
-                            {Intl.get('common.app.status.open', '开启')}
-                        </Radio>
                         <Radio key="0" value="0">
                             {Intl.get('common.app.status.close', '关闭')}
                         </Radio>
@@ -1283,7 +1279,7 @@ var BatchChangUser = createReactClass({
                                         style={{height: fixedHeight - 90}}
                                         ref="gemini"
                                     >
-                                        {this.renderApplyStatus()}
+                                        {this.renderSalesApplyStatus()}
                                     </GeminiScrollBar>}
                                 />
                             ) : null
