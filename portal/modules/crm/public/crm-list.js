@@ -29,7 +29,7 @@ import routeList from 'MOD_DIR/common/route';
 import ajax from 'MOD_DIR/common/ajax';
 import crmAjax from './ajax/index';
 import Trace from 'LIB_DIR/trace';
-import crmUtil from './utils/crm-util';
+import crmUtil, {CUSTOMER_POOL_TYPES} from './utils/crm-util';
 const { UNKNOWN, UNKNOWN_KEY} = crmUtil;
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
@@ -1125,34 +1125,54 @@ class Crm extends React.Component {
     //释放客户
     releaseCustomer = (customerId) => {
         if(this.state.isReleasingCustomer) return;
-        // 单个释放需判断，验证是否有权限处理跟进人
-        crmAjax.checkCrmUpdateUserByCustomerId(customerId).then((res) => {
-            if(res) {
-                this.setState({isReleasingCustomer: true});
-                let reqData = {id: customerId};
-                if(this.state.releaseReason) {
-                    reqData.reason = this.state.releaseReason;
+        let isRequest = true;
+        let _this = this;
+        let type = _this.state.releaseType;
+        if(this.isCommonSales()) {
+            let customer = _.find(this.state.curPageCustomers, customer => customer.id === customerId);
+            //普通销售需判断是当前释放的这个客户的负责人还是联合跟进人
+            isRequest = _.isEqual(_.get(customer, 'user_id'), userData.getUserData().user_id);
+        }else if(this.state.releaseType === RELEASE_TYPE.JOIN) {//释放联合跟进人
+            isRequest = false;
+        }
+        if(isRequest) {
+            type = RELEASE_TYPE.OWNER;
+            // 单个释放需判断，验证是否有权限处理负责人
+            crmAjax.checkCrmUpdateUserByCustomerId(customerId).then((res) => {
+                if(res) {
+                    releaseCustomer();
+                }else {
+                    message.error(Intl.get('crm.release.no.permissions', '您不能释放共同跟进的客户'));
                 }
-                reqData.type = this.state.releaseType;
-                crmAjax.releaseCustomer(reqData).then(result => {
-                    this.setState({isReleasingCustomer: false});
-                    //从选中客户列表里移除已释放项
-                    if(this.state.selectedCustomer.length) {
-                        this.setState({
-                            selectedCustomer: _.filter(this.state.selectedCustomer, item => customerId !== item.id)
-                        });
-                    }
-                    CrmAction.afterReleaseCustomer(customerId);
-                }, (errorMsg) => {
-                    this.setState({isReleasingCustomer: false});
-                    message.error(errorMsg);
-                });
-            }else {
-                message.error(Intl.get('crm.release.no.permissions', '您不能释放共同跟进的客户'));
+            }, (errorMsg) => {
+                message.error(errorMsg);
+            });
+        }else {//释放联合跟进人不需要请求接口验证
+            type = RELEASE_TYPE.JOIN;
+            releaseCustomer();
+        }
+
+        function releaseCustomer() {
+            _this.setState({isReleasingCustomer: true});
+            let reqData = {id: customerId};
+            reqData.type = type;
+            if(_this.state.releaseReason) {
+                reqData.reason = _this.state.releaseReason;
             }
-        }, (errorMsg) => {
-            message.error(errorMsg);
-        });
+            crmAjax.releaseCustomer(reqData).then(result => {
+                _this.setState({isReleasingCustomer: false});
+                //从选中客户列表里移除已释放项
+                if(_this.state.selectedCustomer.length) {
+                    _this.setState({
+                        selectedCustomer: _.filter(_this.state.selectedCustomer, item => customerId !== item.id)
+                    });
+                }
+                CrmAction.afterReleaseCustomer(customerId);
+            }, (errorMsg) => {
+                _this.setState({isReleasingCustomer: false});
+                message.error(errorMsg);
+            });
+        }
     };
 
     //批量释放客户
@@ -1162,9 +1182,14 @@ class Crm extends React.Component {
             query_param: {},
             update_param: {release_customer: true}
         };
+        let {ownerCustomers, followUpCustomers, hasAllExist} = this.getSelectedTypeCustomers(this.state.selectedCustomer);
         //添加释放理由
         if(this.state.releaseReason) {
             condition.update_param.reason = this.state.releaseReason;
+        }
+        let type = 'release_pool';
+        if(this.state.releaseType === RELEASE_TYPE.JOIN) {//添加释放的类型（负责人/联合跟进人）
+            type = 'release_pool_join_user';
         }
         //选中全部搜索结果时，将搜索条件传给后端
         //后端会将符合这个条件的客户释放
@@ -1174,12 +1199,22 @@ class Crm extends React.Component {
             //只在当前页进行选择时，将选中项的id传给后端
             //后端检测到传递的id后，将会对这些id的客户进行迁移
             condition.query_param.id = _.map(this.state.selectedCustomer, 'id');
+            //普通销售批量操作，两种都有时，传选择释放的那一类型(负责人、联合跟进人)的客户ids
+            if(this.isCommonSales()) {
+                let list = condition.query_param.id;
+                if(hasAllExist && this.state.releaseType === RELEASE_TYPE.JOIN
+                    || !hasAllExist && followUpCustomers.length
+                ) {
+                    list = followUpCustomers;
+                    type = 'release_pool_join_user';
+                }else {
+                    list = ownerCustomers;
+                    type = 'release_pool';
+                }
+                condition.query_param.id = list;
+            }
         }
 
-        let type = 'release_pool';
-        if(this.state.releaseType === RELEASE_TYPE.JOIN) {//添加释放的类型（负责人/联合跟进人）
-            type = 'release_pool_join_user';
-        }
         this.setState({isReleasingCustomer: true});
         batchAjax.doBatch(type, condition).then((taskId) => {
             this.setState({isReleasingCustomer: false});
@@ -1190,7 +1225,7 @@ class Crm extends React.Component {
             //批量操作参数
             var is_select_all = this.state.selectAllMatched;
             //全部记录的个数
-            var totalSelectedSize = is_select_all ? this.state.customersSize : this.state.selectedCustomer.length;
+            var totalSelectedSize = is_select_all ? this.state.customersSize : condition.query_param.id.length;
             //构造批量操作参数
             var batchParams = {};
             //向任务列表id中添加taskId
@@ -1291,56 +1326,56 @@ class Crm extends React.Component {
         let userObj = userData.getUserData();
         return _.get(userObj, 'isCommonSales');
     }
-//渲染响应式布局下的批量操作的选项
-batchTopBarDropList = (isMinWeb) => {
-    let hasUpdatePrivilege = hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL);
-    return (
-        <Menu onClick={this.handleBatchMenuSelectClick.bind(this)}>
-            {isMinWeb && hasUpdatePrivilege && !isCommonSalesOrPersonnalVersion() ?
-                <Menu.Item key="changeSales">
-                    {Intl.get('crm.103', '变更负责人')}
-                </Menu.Item> : null
-            }
-            {isMinWeb && hasUpdatePrivilege && !isCommonSalesOrPersonnalVersion() ?
-                <Menu.Item key="changeSecondSales">
-                    {Intl.get('crm.batch.second.user', '变更联合跟进人')}
-                </Menu.Item> : null
-            }
-            {isMinWeb && hasUpdatePrivilege ?
-                <Menu.Item key="changeTag">
-                    {Intl.get('crm.19', '变更标签')}
-                </Menu.Item> : null
-            }
-            {isMinWeb && hasUpdatePrivilege ?
-                <Menu.Item key="changeIndustry">
-                    {Intl.get('crm.20', '变更行业')}
-                </Menu.Item> : null
-            }
-            {isMinWeb && hasUpdatePrivilege ?
-                <Menu.Item key="changeTerritory">
-                    {Intl.get('crm.21', '变更地域')}
-                </Menu.Item> : null
-            }
-            {isMinWeb && hasUpdatePrivilege ?
-                <Menu.Item key="changeAdministrativeLevel">
-                    {Intl.get('crm.administrative.level.change', '变更行政级别')}
-                </Menu.Item> : null
-            }
-            {hasUpdatePrivilege ?
-                <Menu.Item key="add">
-                    {Intl.get('crm.214', '添加联系计划')}
-                </Menu.Item> : null}
-            {hasUpdatePrivilege ?
-                <Menu.Item key="merge">
-                    {Intl.get('crm.0', '合并客户')}
-                </Menu.Item> : null}
-            {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null :
-                <Menu.Item key="release">
-                    {Intl.get('crm.customer.release', '释放')}
-                </Menu.Item>
-            }
-        </Menu>);
-}
+    //渲染响应式布局下的批量操作的选项
+    batchTopBarDropList = (isMinWeb) => {
+        let hasUpdatePrivilege = hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL);
+        return (
+            <Menu onClick={this.handleBatchMenuSelectClick.bind(this)}>
+                {isMinWeb && hasUpdatePrivilege && !isCommonSalesOrPersonnalVersion() ?
+                    <Menu.Item key="changeSales">
+                        {Intl.get('crm.103', '变更负责人')}
+                    </Menu.Item> : null
+                }
+                {isMinWeb && hasUpdatePrivilege && !isCommonSalesOrPersonnalVersion() ?
+                    <Menu.Item key="changeSecondSales">
+                        {Intl.get('crm.batch.second.user', '变更联合跟进人')}
+                    </Menu.Item> : null
+                }
+                {isMinWeb && hasUpdatePrivilege ?
+                    <Menu.Item key="changeTag">
+                        {Intl.get('crm.19', '变更标签')}
+                    </Menu.Item> : null
+                }
+                {isMinWeb && hasUpdatePrivilege ?
+                    <Menu.Item key="changeIndustry">
+                        {Intl.get('crm.20', '变更行业')}
+                    </Menu.Item> : null
+                }
+                {isMinWeb && hasUpdatePrivilege ?
+                    <Menu.Item key="changeTerritory">
+                        {Intl.get('crm.21', '变更地域')}
+                    </Menu.Item> : null
+                }
+                {isMinWeb && hasUpdatePrivilege ?
+                    <Menu.Item key="changeAdministrativeLevel">
+                        {Intl.get('crm.administrative.level.change', '变更行政级别')}
+                    </Menu.Item> : null
+                }
+                {hasUpdatePrivilege ?
+                    <Menu.Item key="add">
+                        {Intl.get('crm.214', '添加联系计划')}
+                    </Menu.Item> : null}
+                {hasUpdatePrivilege ?
+                    <Menu.Item key="merge">
+                        {Intl.get('crm.0', '合并客户')}
+                    </Menu.Item> : null}
+                {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null :
+                    <Menu.Item key="release">
+                        {Intl.get('crm.customer.release', '释放')}
+                    </Menu.Item>
+                }
+            </Menu>);
+    }
 
     //渲染操作按钮
     renderHandleBtn = () => {
@@ -2055,7 +2090,38 @@ batchTopBarDropList = (isMinWeb) => {
         });
     };
 
-    renderReleaseCustomerBlock = (releaseTip) => {
+    getSelectedTypeCustomers(customers) {
+        let ownerCustomers = [], followUpCustomers = [];
+        _.each(customers, customer => {
+            //如果负责人是自己
+            if(_.isEqual(_.get(customer, 'user_id'), userData.getUserData().user_id)) {
+                ownerCustomers.push(customer.id);
+            }else {
+                followUpCustomers.push(customer.id);
+            }
+        });
+        ownerCustomers = _.union(ownerCustomers);
+        followUpCustomers = _.union(followUpCustomers);
+        return {
+            ownerCustomers,
+            followUpCustomers,
+            hasAllExist: !!(ownerCustomers.length && followUpCustomers.length)
+        };
+    }
+
+    isShowReleaseSelectType(type) {
+        if(this.isCommonSales()) {//普通销售
+            if(type === 'single') {//单个释放时，不展示释放类型
+                return false;
+            }else {//批量释放时,若两个都有，则展示释放类型
+                return this.getSelectedTypeCustomers(this.state.selectedCustomer).hasAllExist;
+            }
+        }else {
+            return true;
+        }
+    }
+
+    renderReleaseCustomerBlock = (releaseTip, type) => {
         return (
             <div className="release-customer-container">
                 <div className="release-customer-tip">
@@ -2063,13 +2129,13 @@ batchTopBarDropList = (isMinWeb) => {
                     <span>{releaseTip}</span>
                 </div>
                 {/*todo 暂时注释掉选择类型*/}
-                {/*个人版不展示选择释放类型*/}
-                {/*{checkVersionAndType().personal ? null : (
+                {/*普通销售单个提取或者是个人版本不展示选择释放类型*/}
+                {checkVersionAndType().personal || !this.isShowReleaseSelectType(type) ? null : (
                     <Radio.Group onChange={this.onTypeChange} value={this.state.releaseType}>
                         <Radio value={RELEASE_TYPE.OWNER}>{Intl.get('crm.6', '负责人')}</Radio>
                         <Radio value={RELEASE_TYPE.JOIN}>{Intl.get('crm.second.sales', '联合跟进人')}</Radio>
                     </Radio.Group>
-                )}*/}
+                )}
                 <Input.TextArea
                     placeholder={Intl.get('crm.customer.release.reason', '请填写释放理由')}
                     value={this.state.releaseReason}
@@ -2105,7 +2171,7 @@ batchTopBarDropList = (isMinWeb) => {
                 content={content}
                 overlayTitle={Intl.get('crm.customer.release.customer', '释放客户')}
                 isSaving={this.state.isReleasingCustomer}
-                overlayContent={this.renderReleaseCustomerBlock(releaseTip)}
+                overlayContent={this.renderReleaseCustomerBlock(releaseTip, type)}
                 handleSubmit={handleSubmit}
                 okTitle={Intl.get('common.confirm', '确认')}
                 cancelTitle={Intl.get('common.cancel', '取消')}
@@ -2297,7 +2363,7 @@ batchTopBarDropList = (isMinWeb) => {
                                         </Popconfirm>
                                 ) : null}
                             </span>
-                            {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : this.renderReleaseReasonBlock(content, this.releaseCustomer.bind(this, record.id))}
+                            {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : this.renderReleaseReasonBlock(content, this.releaseCustomer.bind(this, record.id), 'single')}
                         </span>
                     );
                 }
