@@ -117,13 +117,39 @@
                 }
               }
             }
-            .area-selector-wrapper {
-              display: inline-block;
-              .ant-input{
-                width: 547px!important;
+            .area-selector {
+              .ant-form-item{
+                input{
+                  width: 547px!important;
+                }
+              }
+              .anticon-close-circle{
+                font-size: 22px;
+                color: @placeholder-font-color;
+                top: -10px;
+                right: -4px;
+                transition: color 0.3s;
+                &:hover{
+                  color: @secondary-font-color;
+                }
+              }
+              input{
+                height: 32px;
+              }
+              .area-selector-all-container{
+                margin-right: 10px;
+                top: 4px;
+              }
+              .address-prov{
+                .prov-nav-span{
+                  height: 50px;
+                }
+              }
+              label{
+                font-size: 14px;
               }
             }
-            .special-item, .area-selector-wrapper{
+            .special-item, .area-selector{
               .ant-form-item-label{
                 label{
                   letter-spacing: 30px;
