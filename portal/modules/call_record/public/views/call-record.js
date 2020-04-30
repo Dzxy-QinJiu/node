@@ -108,7 +108,7 @@ class CallRecord extends React.Component {
             showRightPanel: false,
             seletedRecordId: '',//当前点击的记录id
             showTextEdit: {}, //展示跟进记录的编辑框
-            isShowEffectiveTimeAndCount: null, // 是否展示有效通话时长和有效接通数
+            isShowEffectiveTimeAndCount: null, // 是否展示有效通话时长和有效接通数，此处默认值设置为null而非false，是为了区分获取后端配置是否成功，成功时会将该属性值改为true或false，不成功时，该属性值保持不变，也就是null
         };
     }
 
