@@ -9,7 +9,7 @@ import React, {Component} from 'react';
 import {Form, Input, Select, Icon, Popover, Button, Dropdown, Menu} from 'antd';
 const Option = Select.Option;
 const FormItem = Form.Item;
-import {AntcAreaSelector} from 'antc';
+import {AntcAreaSelector, SearchInput} from 'antc';
 import Trace from 'LIB_DIR/trace';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
 import { registerSize, staffSize, moneySize, companyProperty, EXTRACT_CLUE_CONST_MAP } from '../../utils/clue-customer-utils';
@@ -88,9 +88,16 @@ class RecommendCluesFilterPanel extends Component {
             showOtherCondition: false,
             isSaving: false,
             vipFilters: this.dealRecommendParamsVipData(hasSavedRecommendParams),
-            keyword: hasSavedRecommendParams.keyword
         };
         this.currentArea = {};
+    }
+
+    componentDidMount() {
+        //添加keydown事件
+        $('.clue-recommend-filter-search-wrapper .search-input').on('keydown', this.onKeyDown);
+        if(this.refs.searchInput) {
+            this.refs.searchInput.state.keyword = this.state.hasSavedRecommendParams.keyword;
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -99,9 +106,16 @@ class RecommendCluesFilterPanel extends Component {
             this.setState({
                 hasSavedRecommendParams,
                 vipFilters: this.dealRecommendParamsVipData({...hasSavedRecommendParams, ...this.state.vipFilters}),
-                keyword: hasSavedRecommendParams.keyword
+            }, () => {
+                if(this.refs.searchInput) {
+                    this.refs.searchInput.state.keyword = this.state.hasSavedRecommendParams.keyword;
+                }
             });
         }
+    }
+
+    componentWillUnmount() {
+        $('.clue-recommend-filter-search-wrapper .search-input').off('keydown', this.onKeyDown);
     }
 
     //处理线索推荐条件中的vip选项
@@ -137,7 +151,6 @@ class RecommendCluesFilterPanel extends Component {
         }
         searchTimeOut = setTimeout(() => {
             let newCondition = _.clone(condition);
-            newCondition.keyword = this.state.keyword;
             let propsCondition = _.clone(this.props.hasSavedRecommendParams);
             removeEmptyItem(newCondition);
 
@@ -172,8 +185,10 @@ class RecommendCluesFilterPanel extends Component {
         return [Intl.get('register.company.nickname', '公司名称'), Intl.get('clue.recommend.industry.name', '行业名称'), Intl.get('common.product.name', '产品名称')].join('/');
     }
 
-    searchChange = (e) => {
-        this.setState({keyword: _.trim(e.target.value)});
+    searchChange = (value) => {
+        let { hasSavedRecommendParams } = this.state;
+        hasSavedRecommendParams.keyword = _.trim(value || '');
+        this.setState({hasSavedRecommendParams});
     };
 
     onKeyDown = (e) => {
@@ -184,16 +199,17 @@ class RecommendCluesFilterPanel extends Component {
     };
 
     searchEvent = (value) => {
-        this.setState({keyword: _.trim(value || '')}, () => {
-            this.getRecommendClueList(this.state.hasSavedRecommendParams);
+        let { hasSavedRecommendParams } = this.state;
+        hasSavedRecommendParams.keyword = _.trim(value || '');
+        this.setState({hasSavedRecommendParams}, () => {
+            this.getRecommendClueList(hasSavedRecommendParams);
         });
     }
 
     onSearchButtonClick = () => {
-        let value = _.trim($('#clue-search-input').val());
-        if (this.props.canClickMoreBatch && value) {
-            Trace.traceEvent(ReactDOM.findDOMNode(this), '点击搜索按钮：' + value);
-            this.searchEvent(value);
+        let keyword = this.state.hasSavedRecommendParams.keyword;
+        if (this.props.canClickMoreBatch && keyword) {
+            this.searchEvent(keyword);
         }
     };
 
@@ -434,6 +450,7 @@ class RecommendCluesFilterPanel extends Component {
     };
 
     handleToggleOtherCondition = () => {
+        clueCustomerAction.saveSettingCustomerRecomment({...this.props.hasSavedRecommendParams, ...this.state.hasSavedRecommendParams});
         this.setState({
             showOtherCondition: !this.state.showOtherCondition,
             vipFilters: this.dealRecommendParamsVipData(this.props.hasSavedRecommendParams)
@@ -626,22 +643,17 @@ class RecommendCluesFilterPanel extends Component {
                     <div className="add-customer-recommend">
                         <Form layout='horizontal' className="clue-recommend-form" id="clue-recommend-form">
                             <FormItem>
-                                <div className="search-input-container">
-                                    <Input
-                                        id="clue-search-input"
-                                        type="text"
-                                        value={keyword}
-                                        placeholder={this.getKeyWordPlaceholder()}
-                                        className="search-input"
-                                        onChange={this.searchChange}
-                                        onKeyDown={this.onKeyDown}
-                                        addonAfter={(
-                                            <Icon type="search" className="search-icon search-icon-btn" onClick={this.onSearchButtonClick}/>
-                                        )}
+                                <div className="clue-recommend-filter-search-wrapper">
+                                    <SearchInput
+                                        key="search-input"
+                                        ref="searchInput"
+                                        searchEvent={this.searchChange}
+                                        searchPlaceHolder ={this.getKeyWordPlaceholder()}
+                                        closeSearchInput={this.closeSearchInput}
                                     />
-                                    {keyword ? (
-                                        <span className="iconfont icon-circle-close search-icon" onClick={this.closeSearchInput}/>
-                                    ) : null}
+                                    <span className="ant-input-group-addon" data-tracename="点击搜索关键词按钮" onClick={this.onSearchButtonClick}>
+                                        <Icon type="search" className="search-icon search-confirm-btn"/>
+                                    </span>
                                 </div>
                             </FormItem>
                             {this.renderSelectedFilterBlock()}

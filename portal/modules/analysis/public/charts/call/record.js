@@ -13,7 +13,7 @@ export function getCallRecordChart(paramObj = {}) {
     const isAdmin = isAdminRole();
     const isManagerOrOp = isManagerOrOpRole();
 
-    if ((isAdmin || isManagerOrOp) && paramObj.Store.isFilter114 === false) {
+    if ((isAdmin || isManagerOrOp) && paramObj.Store.isShowEffectiveTimeAndCount === false) {
         const onClickTip = function() {
             if (!isAdmin) return;
 
