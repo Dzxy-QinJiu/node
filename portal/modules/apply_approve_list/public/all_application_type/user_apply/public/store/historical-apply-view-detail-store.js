@@ -358,6 +358,51 @@ class ApplyViewDetailStore {
             }
         });
     }
+    setAppsSetting({appsSetting, userId}) {
+        // 返回的应用配置信息
+        let originAppsSetting = this.appsSetting;
+        _.each(appsSetting, (appConfigValue, key) => {
+            let originRoles = _.get(originAppsSetting[key], 'roles', []);
+            let appConfigRoles = _.get(appConfigValue, 'roles', []);
+            // 延期申请
+            if (userId && key.indexOf('&&') !== -1) {
+                if (_.includes(key, userId)) {
+                    if (_.get(appConfigValue, 'terminals.setted')) {
+                        originAppsSetting[key].terminals = _.get(appConfigValue, 'terminals.value');
+                    }
+
+                    if (!_.isEqual(originRoles, appConfigRoles) ) {
+                        originAppsSetting[key].roles = appConfigRoles;
+                    }
+                }
+            } else {
+                if (_.get(appConfigValue, 'number.setted')) {
+                    originAppsSetting[key].number = _.get(appConfigValue, 'number.value');
+                }
+
+                if (_.get(appConfigValue, 'over_draft.setted')) {
+                    originAppsSetting[key].over_draft = _.toString(_.get(appConfigValue, 'over_draft.value'));
+                }
+
+                if (_.get(appConfigValue, 'time.setted')) {
+                    originAppsSetting[key].time = {
+                        start_time: _.get(appConfigValue, 'time.start_time'),
+                        end_time: _.get(appConfigValue, 'time.end_time'),
+                        range: _.get(appConfigValue, 'time.range'),
+                    };
+                }
+
+                if (_.get(appConfigValue, 'terminals.setted')) {
+                    originAppsSetting[key].terminals = _.get(appConfigValue, 'terminals.value');
+                }
+
+                if (!_.isEqual(originRoles, appConfigRoles) ) {
+                    originAppsSetting[key].roles = appConfigRoles;
+                }
+
+            }
+        });
+    }
     //显示右侧详情加载中
     showDetailLoading(obj) {
         //重置数据

@@ -159,12 +159,24 @@ class ApplyApproveList extends React.Component {
         this.showUnhandleApplyTip();
     };
     //展示刷新的提示
-    updateUnhandleApplyApproveTip = () => {
+    updateUnhandleApplyApproveTip = (data) => {
+        // 推送未读数据长度
+        const length = data.length;
+        const unHandleApplyId = _.map(data, 'id');
+        // 申请列表数据
+        const applyList = _.get(this.state.applyListObj, 'list', []);
+        // 获取申请列表中，和推送数据一样的长的id
+        const applyListId = _ .chain(applyList).slice(0, length).map(item => item.id).value();
+        // 对比是否有不同的数据，若有则说明有新的推送数据
+        const diffArray = _.difference(unHandleApplyId, applyListId);
         //如果当前选中的是我审批的
         if(this.state.activeApplyTab === APPLY_TYPE.APPROVE_BY_ME){
-            this.setState({
-                showRefreshTip: true
-            });
+            // 不同时，说明有推送数据, 需要刷新
+            if (!_.isEmpty(diffArray)) {
+                this.setState({
+                    showRefreshTip: true
+                });
+            }
         }
 
     };
