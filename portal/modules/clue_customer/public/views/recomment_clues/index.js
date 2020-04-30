@@ -1013,6 +1013,7 @@ class RecommendCluesList extends React.Component {
     };
     //渲染单项中的提取按钮
     extractClueOperator = (record) => {
+        let {isWebMin} = isResponsiveDisplay();
         // 过期的账号不能提取线索
         if(isExpired()){
             let currentVersionObj = checkVersionAndType();
@@ -1051,7 +1052,7 @@ class RecommendCluesList extends React.Component {
                                     className="assign-btn btn-item"
                                 >
                                     {extractIcon}
-                                    {Intl.get('clue.extract', '提取')}
+                                    {isWebMin ? null : Intl.get('clue.extract', '提取')}
                                 </Button>
                             </Popover>
                         }
@@ -1083,6 +1084,7 @@ class RecommendCluesList extends React.Component {
         }
     };
     renderSingleExtractBtn(clickFunc) {
+        let {isWebMin} = isResponsiveDisplay();
         return (
             <Button
                 onClick={clickFunc}
@@ -1091,7 +1093,7 @@ class RecommendCluesList extends React.Component {
                 className="assign-btn btn-item"
             >
                 {extractIcon}
-                {Intl.get('clue.extract', '提取')}
+                {isWebMin ? null : Intl.get('clue.extract', '提取')}
             </Button>
         );
     }
@@ -1440,9 +1442,10 @@ class RecommendCluesList extends React.Component {
                 <div className="no-extract-count-tip">
                     <Checkbox className="check-all" checked={this.isCheckAll()} onChange={this.handleCheckAllChange} disabled={this.disabledCheckAll()}>{Intl.get('common.all.select', '全选')}</Checkbox>
                     {this.hasNoExtractCountTip()}
-                    {this.renderExtractOperator(isWebMin)}
+                    {isWebMin ? null : this.renderExtractOperator(isWebMin)}
                 </div>
                 {this.renderBtnClock(isWebMin)}
+                {isWebMin ? this.renderExtractOperator(isWebMin) : null}
             </div>
         );
     }
@@ -1450,12 +1453,11 @@ class RecommendCluesList extends React.Component {
     render() {
         let divHeight = $(window).height();
 
+        let {isWebMin} = isResponsiveDisplay();
         let contentEl = $('.recommend-clue-content');
         if(contentEl.length) {
-            divHeight -= (contentEl.offset().top + LAYOUT_CONSTANCE.PADDING_BOTTOM);
+            divHeight -= (contentEl.offset().top + (isWebMin ? 0 : LAYOUT_CONSTANCE.PADDING_BOTTOM));
         }
-
-        let {isWebMin} = isResponsiveDisplay();
 
         let recommendCls = classNames('recommend-customer-top-nav-wrap', {
             'responsive-mini-btn': isWebMin

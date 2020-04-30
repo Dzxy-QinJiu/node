@@ -599,3 +599,106 @@
     transform: rotate(360deg);
   }
 }
+
+@media screen and (max-width: 720px){
+  .recommend-clues-lists-container{
+    .recommend-customer-list{
+      .recommend-clue-panel{
+        .recommend-clue-content-container{
+          //条件设置样式
+          .filter-container{
+            .add-customer-recommend{
+              form {
+                .ant-form-item{
+                  .ant-form-item-control-wrapper{
+                    display: block;
+                  }
+                  .ant-form-item-label{
+                    line-height: 20px;
+                    label{
+                      letter-spacing: 0!important;
+                    }
+                  }
+                  .clue-recommend-filter-search-wrapper {
+                    display: flex;
+                    .search-input-container{
+                      .search-input{
+                        width: 100%;
+                      }
+                      .icon-circle-close.search-icon{
+                        right: 4px;
+                      }
+                    }
+                    .ant-input-group-addon{
+                      position: unset;
+                    }
+                  }
+                }
+                .area-selector{
+                  width: 80%;
+                  .ant-form-item input{
+                    width: 100%!important;
+                  }
+                  .address-prov .prov-nav-span{
+                    height: 100px;
+                  }
+                }
+              }
+              .vip-filter-content{
+                .vip-filter-item{
+                  width: 50%;
+                  margin-right: 0;
+                  &:last-child{
+                    margin-top: 10px;
+                  }
+                }
+              }
+            }
+          }
+          //推荐线索列表样式
+          .recommend-clue-detail-content-container{
+            .recommend-clue-detail-content-box{
+              padding: 0;
+            }
+            .extract-clue-panel-container{
+              .single-extract-clue{
+                .assign-btn{
+                  opacity: 1!important;
+                }
+              }
+              .extract-clue-item{
+                .ant-checkbox-wrapper{
+                  margin: 0 8px 5px 0;
+                  padding: 0;
+                }
+                .extract-clue-text-wrapper{
+                  .extract-clue-text__name{
+                    .clue-name{
+                      max-width: unset;
+                      text-overflow: unset;
+                      white-space: unset;
+                      overflow: auto;
+                    }
+                  }
+                }
+              }
+            }
+            .btn-item{
+              width: 32px;
+              height: 32px;
+              padding: 0;
+              min-width: unset;
+              .iconfont{
+                margin-right: 0!important;
+              }
+            }
+            .unextract-clue-tip .tip-wrapper{
+              margin: 0;
+              padding: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}
