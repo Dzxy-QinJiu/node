@@ -74,7 +74,11 @@ class PhoneNumberBoard extends React.Component {
     }
 
     onNumberInputChange = (e) => {
-        const {value} = e.target;
+        let value = _.trim(e.target.value);
+        // 复制带横线的座机号时，自动将横线去掉
+        if (_.indexOf(value, '-') !== -1) {
+            value = value.replace('-', '');
+        }
         const reg = /^\d*$/;
         if ((!_.isNaN(value) && reg.test(value)) || value === '') {
             this.setState({inputNumber: value});
