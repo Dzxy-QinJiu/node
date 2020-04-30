@@ -206,9 +206,9 @@ class RecommendCluesFilterPanel extends Component {
     }
 
     onSearchButtonClick = () => {
-        let value = _.trim($('.clue-recommend-filter-search-wrapper input').val());
-        if (this.props.canClickMoreBatch && value) {
-            this.searchEvent(value);
+        let keyword = this.state.hasSavedRecommendParams.keyword;
+        if (this.props.canClickMoreBatch && keyword) {
+            this.searchEvent(keyword);
         }
     };
 
@@ -445,6 +445,7 @@ class RecommendCluesFilterPanel extends Component {
     };
 
     handleToggleOtherCondition = () => {
+        clueCustomerAction.saveSettingCustomerRecomment({...this.props.hasSavedRecommendParams, ...this.state.hasSavedRecommendParams});
         this.setState({
             showOtherCondition: !this.state.showOtherCondition,
             vipFilters: this.dealRecommendParamsVipData(this.props.hasSavedRecommendParams)
@@ -636,7 +637,7 @@ class RecommendCluesFilterPanel extends Component {
                 <div className="recommend-clue-filter-panel">
                     <div className="add-customer-recommend">
                         <Form layout='horizontal' className="clue-recommend-form" id="clue-recommend-form">
-                            <FormItem>
+                            <FormItem key="search-input">
                                 <div className="clue-recommend-filter-search-wrapper">
                                     <SearchInput
                                         ref="searchInput"
