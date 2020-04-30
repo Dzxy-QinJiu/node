@@ -17,7 +17,12 @@ import DetailCard from 'CMP_DIR/detail-card';
 import AlertTimer from 'CMP_DIR/alert-timer';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
 var clueCustomerStore = require('MOD_DIR/clue_customer/public/store/clue-customer-store');
-import { batchPushEmitter, notificationEmitter, paymentEmitter } from 'PUB_DIR/sources/utils/emitters';
+import {
+    batchPushEmitter,
+    leadRecommendEmitter,
+    notificationEmitter,
+    paymentEmitter
+} from 'PUB_DIR/sources/utils/emitters';
 import RecommendCluesFilterPanel from './recommend_clues_filter_panel';
 var batchOperate = require('PUB_DIR/sources/push/batch');
 import userData from 'PUB_DIR/sources/user-data';
@@ -141,6 +146,8 @@ class RecommendCluesList extends React.Component {
         // 如果提取给的销售是自己，则需要提示刷新
         if(_.isEqual(_.get(taskParams,'user_id'), userData.getUserData().user_id)) {
             notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, {});
+            //提取成功nav-sidebar线索管理展示加1效果
+            leadRecommendEmitter.emit(leadRecommendEmitter.ADD_LEAD_MANAGEMENT_ONE_NUM);
         }
 
         var clueArr = _.map(tasks, 'taskDefine');
@@ -778,7 +785,7 @@ class RecommendCluesList extends React.Component {
                             hasNoExtractCountTip: true,
                             canClickExtract: true,
                             disabledCheckedClues: [],
-                            selectedRecommendClues: disableExtract ? [] : this.state.disabledCheckedClues
+                            selectedRecommendClues: this.state.disabledCheckedClues
                         };
                         if(maxLimitTip) {//显示超限提示
                             newState.batchPopoverVisible = true;
@@ -930,6 +937,11 @@ class RecommendCluesList extends React.Component {
                         this['changeSales' + leadId].handleCancel();
                     }
                     this.handleSuccessTip();
+                    // 如果提取的是自己，则需要提示刷新
+                    if(_.isEqual(_.get(reqData, 'user_id'), userData.getUserData().user_id)) {
+                        //提取成功nav-sidebar线索管理展示加1效果
+                        leadRecommendEmitter.emit(leadRecommendEmitter.ADD_LEAD_MANAGEMENT_ONE_NUM);
+                    }
                     this.clearSelectSales();
                     SetLocalSalesClickCount(salesMan, CLUE_RECOMMEND_SELECTED_SALES);
                     this.updateRecommendClueLists(leadId);
