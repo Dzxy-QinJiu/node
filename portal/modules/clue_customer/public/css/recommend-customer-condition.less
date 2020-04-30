@@ -157,26 +157,41 @@
       cursor: pointer;
       z-index: 1;
     }
+    .icon-circle-close.search-icon{
+      margin-top: -16px;
+      font-size: 14px;
+      color: @placeholder-font-color;
+      right: 6px;
+      transition: color 0.3s;
+      &:hover{
+        color: @secondary-font-color;
+      }
+    }
+  }
+  .clue-recommend-filter-search-wrapper{
+    position: relative;
+    .anticon-search.search-icon{
+      display: none;
+    }
     .ant-input-group-addon{
       background-color: @warn-color;
       border-color: @warn-color;
-      .search-icon-btn{
+      position: absolute;
+      right: -35px;
+      top: 0;
+      width: 35px;
+      height: 32px;
+      cursor: pointer;
+      padding-left: 8px;
+      padding-top: 6px;
+      .search-confirm-btn{
+        display: block;
         position: relative;
         top: 0;
         right: 0;
         font-size: 20px;
         color: #fff;
         margin-top: 0;
-      }
-    }
-    .icon-circle-close.search-icon{
-      margin-top: -16px;
-      font-size: 14px;
-      color: @placeholder-font-color;
-      right: 45px;
-      transition: color 0.3s;
-      &:hover{
-        color: @secondary-font-color;
       }
     }
   }
