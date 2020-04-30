@@ -21,7 +21,7 @@ import {
     getContentWidth
 } from './utils/apply_approve_utils';
 import classNames from 'classnames';
-import {Dropdown, Menu, Alert, Select, Button, Popover} from 'antd';
+import {Dropdown, Menu, Alert, Select, Button, Popover, TreeSelect} from 'antd';
 import userData from 'PUB_DIR/sources/user-data';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {
@@ -65,6 +65,8 @@ import {isSalesRole, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 var ApplyApproveUtils = require('./utils/apply_approve_utils');
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import {INNER_SETTING_FLOW} from '../../apply_approve_manage/public/utils/apply-approve-utils';
+
 class ApplyApproveList extends React.Component {
     state = {
         activeApplyTab: isCommonSalesOrPersonnalVersion() ? APPLY_TYPE.APPLY_BY_ME : APPLY_TYPE.APPROVE_BY_ME,
@@ -157,12 +159,24 @@ class ApplyApproveList extends React.Component {
         this.showUnhandleApplyTip();
     };
     //展示刷新的提示
-    updateUnhandleApplyApproveTip = () => {
+    updateUnhandleApplyApproveTip = (data) => {
+        // 推送未读数据长度
+        const length = data.length;
+        const unHandleApplyId = _.map(data, 'id');
+        // 申请列表数据
+        const applyList = _.get(this.state.applyListObj, 'list', []);
+        // 获取申请列表中，和推送数据一样的长的id
+        const applyListId = _ .chain(applyList).slice(0, length).map(item => item.id).value();
+        // 对比是否有不同的数据，若有则说明有新的推送数据
+        const diffArray = _.difference(unHandleApplyId, applyListId);
         //如果当前选中的是我审批的
         if(this.state.activeApplyTab === APPLY_TYPE.APPROVE_BY_ME){
-            this.setState({
-                showRefreshTip: true
-            });
+            // 不同时，说明有推送数据, 需要刷新
+            if (!_.isEmpty(diffArray)) {
+                this.setState({
+                    showRefreshTip: true
+                });
+            }
         }
 
     };
@@ -217,9 +231,19 @@ class ApplyApproveList extends React.Component {
         if (this.state.selectedApplyStatus !== ALL) {
             submitObj.status = this.state.selectedApplyStatus;
         }
-        if (this.state.selectedApplyType !== ALL) {
-            submitObj.type = this.state.selectedApplyType;
+        const selectedApplyType = this.state.selectedApplyType;
+        if (selectedApplyType !== ALL) {
+            const userApplyType = ApplyApproveUtils.userApplyType;
+            let isFilterUserApplyType = _.find(userApplyType, item => item.value === selectedApplyType);
+            // 用户申请中，类型的过滤，对应的字段是 user_apply_type
+            if (isFilterUserApplyType) {
+                submitObj.type = INNER_SETTING_FLOW.NEWUSERAPPLY;
+                submitObj.user_apply_type = selectedApplyType;
+            } else {
+                submitObj.type = selectedApplyType;
+            }
         }
+
         if (this.state.activeApplyTab === APPLY_TYPE.APPLY_BY_ME) {
             UserApplyActions.getApplyListStartSelf(submitObj, (count) => {
                 //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
@@ -643,7 +667,7 @@ class ApplyApproveList extends React.Component {
             value: 'cancel'
         }];
         var allTypeList = [{
-            name: Intl.get('oplate_customer_analysis.type.all', '全部类型'),
+            title: Intl.get('oplate_customer_analysis.type.all', '全部类型'),
             value: ALL
         }];
         var workFlowList = this.getWorkFlowList();
@@ -661,12 +685,16 @@ class ApplyApproveList extends React.Component {
                 if (type === APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES) {
                     type = APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES;
                 }
-                allTypeList.push({
-                    name: _.get(workItem, 'description'),
+                let selectItem = {
+                    title: _.get(workItem, 'description'),
                     value: type
-                });
+                };
+                // 用户申请
+                if (type === INNER_SETTING_FLOW.NEWUSERAPPLY) {
+                    selectItem.children = ApplyApproveUtils.userApplyType;
+                }
+                allTypeList.push(selectItem);
             }
-
         });
 
         return (
@@ -684,15 +712,12 @@ class ApplyApproveList extends React.Component {
                         </Select>
                     )
                 }
-                <Select
+                <TreeSelect
                     className='apply-type-select'
                     value={this.state.selectedApplyType}
                     onChange={this.handleChangeSelectedApplyType}
-                >
-                    {_.map(allTypeList, item => {
-                        return <Option value={_.get(item, 'value')}>{_.get(item, 'name')}</Option>;
-                    })}
-                </Select>
+                    treeData={allTypeList}
+                />
             </div>
         );
     };

@@ -57,8 +57,10 @@ const LAYOUT_CONSTANTS = {
 };
 //线索池字段的宽度
 const TABLE_WIDTH = {
-    TITLE: 330,
-    CONTACT: 250,
+    TITLE: 230,
+    CONTACT: 150,
+    LAST: 100,
+    FOLLOWUP: 100,
     TRACE: 270,
     EXTRACT: 56
 };
@@ -738,17 +740,32 @@ class ClueExtract extends React.Component {
         }
     };
 
+    //最后联系时间 获取排序
+    getSorter = () => {
+        let sorter = true;
+        //从销售首页跳转过来的不显示排序
+        if (this.props.fromSalesHome) {
+            sorter = false;
+        }
+        return sorter;
+    };
+
     // table 列
     getClueTableColunms = () => {
+        //最后联系时间数据
+        let timeData = this.state.cluePoolList;
         //待跟进线索无跟进内容
         let typeFilter = this.getFilterStatus();//线索类型
         let willTrace = SELECT_TYPE.WILL_TRACE === typeFilter.status;
-        let contactWidth = willTrace ? TABLE_WIDTH.CONTACT + TABLE_WIDTH.TRACE / 2 : TABLE_WIDTH.CONTACT;
-        let titleWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE / 2 : TABLE_WIDTH.TITLE;
+        let contactWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
+        let titleWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
+        let lastWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
+        let followupWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
+
         let columns = [
             {
                 dataIndex: 'clue_name',
-                width: titleWidth,
+                // width: titleWidth,
                 render: (text, salesClueItem, index) => {
                     //有相似线索
                     let hasSimilarClue = _.get(salesClueItem, 'lead_similarity');
@@ -809,7 +826,7 @@ class ClueExtract extends React.Component {
              ***/
             {
                 dataIndex: 'contact',
-                width: contactWidth,
+                // width: contactWidth,
                 render: (text, record, index) => {
                     var contacts = record.contacts ? record.contacts : [];
                     if (_.isArray(contacts) && contacts.length){
@@ -832,7 +849,33 @@ class ClueExtract extends React.Component {
                     }
                 }
             },
-            // }, {
+            {
+                // title:'最后联系与跟进内容',
+                width: lastWidth,
+                dataIndex: 'last_contact',
+                render: function(text, record, index) 
+                {
+                    let time = record.last_contact_time ? record.last_contact_time : ''; //拿到时间戳
+                    time = new Date(time); //将时间戳转换为正常时间显示
+                    let year = time.getFullYear() + '-';
+                    let month = (time.getMonth() + 1 < 10 ? '0' + (time.getMonth() + 1) : time.getMonth() + 1) + '-';
+                    let date = (time.getDate() < 10 ? '0' + time.getDate() : time.getDate()) + ' ';
+                    let last_contact = '';
+                    let followupContent = _.get(record.customer_traces, 'remark') ? record.customer_tracess.remark : '';
+                    let newTime = year + month + date;
+
+                    return (
+                        <span>
+                            <div className="last-contact-time">
+                                {newTime}
+                                {followupContent}
+                            </div>
+
+                        </span>
+                    );
+                }
+            },
+            // {
             //     title: Intl.get('clue.extract.former.responsible.person', '原负责人'),
             //     dataIndex: 'user_name',
             //     width: '10%',

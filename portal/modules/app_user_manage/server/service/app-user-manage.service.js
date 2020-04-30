@@ -58,7 +58,7 @@ var AppUserRestApis = {
     editAppUser: '/rest/base/v1/user/:user_id/detail',
     //修改用户所属客户
     editAppUserCustomer: '/rest/base/v1/user/belong/customer',
-    //获取用户审批列表
+    //获取所有申请列表（对应页面上的团队申请的列表）
     getApplyList: '/rest/base/v1/workflow/applylist',
     //我申请的
     getApplyListStartSelf: '/rest/base/v1/workflow/applylist/self',
@@ -68,7 +68,7 @@ var AppUserRestApis = {
     getApplyListApprovedByMe: '/rest/base/v1/workflow/applylist/self/approved',
     //获取或者添加回复列表
     getOrAddApplyComments: '/rest/base/v1/workflow/comments',
-    //获取我审批的申请(包含我审批过的和待我审批的)
+    //获取我审批的申请列表(包含我审批过的和待我审批的)
     getMyApplyLists: '/rest/base/v1/workflow/work/approved/list',
     //获取工作流未读回复列表
     getWorkFlowUnreadReplyList: 'rest/base/v1/workflow/comments/notice/unread',
@@ -379,7 +379,7 @@ exports.getApplyList = function(req, res) {
         }
     });
 };
-//获取我的申请审批
+// 获取我审批的申请列表(包含我审批过的和待我审批的)（对应页面上的我审批的列表）
 exports.getMyApplyLists = function(req, res){
     return restUtil.authRest.get({
         url: AppUserRestApis.getMyApplyLists,
@@ -698,7 +698,7 @@ function getAppExtraPermissionNames(applyBasicDetail, appPermissionList) {
 }
 
 
-// 获取用户详情的基本信息
+// 获取申请详情的基本信息
 function getApplyBasicDetail(req, res) {
     return new Promise((resolve, reject) => {
         return restUtil.authRest.get({

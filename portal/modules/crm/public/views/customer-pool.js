@@ -482,19 +482,18 @@ class CustomerPool extends React.Component {
         _.each(customers, customer => {
             if(_.get(customer, 'customerpool_tags.length') > 0) {
                 let customerPoolTags = _.get(customer, 'customerpool_tags');
-                //只有一个时
-                if(customerPoolTags.length === 1) {
-                    if(customerPoolTags[0] === CUSTOMER_POOL_TYPES.FOLLOWUP) {//需联合跟进
+                _.each(customerPoolTags, tag => {
+                    if(tag === CUSTOMER_POOL_TYPES.FOLLOWUP) {//需联合跟进
                         followUpCustomers.push(customer.id);
-                    }else if(customerPoolTags[0] === CUSTOMER_POOL_TYPES.OWNER) {//需负责人
+                    }else if(tag === CUSTOMER_POOL_TYPES.OWNER) {//需负责人
                         ownerCustomers.push(customer.id);
                     }
-                }else {//两个都有时
-                    ownerCustomers.push(customer.id);
-                    followUpCustomers.push(customer.id);
-                }
+                });
             }
         });
+
+        ownerCustomers = _.union(ownerCustomers);
+        followUpCustomers = _.union(followUpCustomers);
 
         return {
             ownerCustomers,
@@ -599,7 +598,7 @@ class CustomerPool extends React.Component {
                 }
             }, {
                 title: Intl.get('crm.customer.label', '客户标签'),
-                width: 130,
+                width: 80,
                 dataIndex: 'labels',
                 className: 'has-filter',
                 render: (text, record, index) => {
@@ -632,7 +631,31 @@ class CustomerPool extends React.Component {
                 width: 100,
                 dataIndex: 'push_time',
                 className: 'has-filter',
-            }
+            },{
+                title: Intl.get('crm.last.contact', '最后联系'),
+                width: 150,
+                dataIndex: 'finalcontact_and_followupcontent',
+                render: function(text, record, index) 
+                {
+                    let time = record.last_contact_time ? record.last_contact_time : ''; //拿到时间戳
+                    time = new Date(time); //将时间戳转换为正常时间显示
+                    let year = time.getFullYear() + '-';
+                    let month = (time.getMonth() + 1 < 10 ? '0' + (time.getMonth() + 1) : time.getMonth() + 1) + '-';
+                    let date = (time.getDate() < 10 ? '0' + time.getDate() : time.getDate()) + ' ';
+                    let last_contact = '';
+                    let followupContent = _.get(record.customer_traces, 'remark') ? record.customer_traces.remark : '';
+                    let newTime = year + month + date;
+                    return (
+                        <span>
+                            <div className="last-contact-time">
+                                {newTime}
+                                {followupContent}
+                            </div>
+
+                        </span>
+                    );
+                }
+            },
         ];
 
         //没有获取用户列表的权限，或者不是销售或者管理员时不展示分数

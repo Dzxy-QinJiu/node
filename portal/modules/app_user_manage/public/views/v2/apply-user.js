@@ -79,7 +79,6 @@ class ApplyUser extends React.Component {
                         customerId={this.props.customerId}
                         cancelApply={this.props.cancelApply}
                         ref="applyUserForm"
-                        emailData={this.props.emailData}
                     />
                 </OperationScrollBar>
             );

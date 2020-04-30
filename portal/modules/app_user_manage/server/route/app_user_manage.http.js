@@ -101,7 +101,7 @@ module.exports = {
             appUserPrivilegeConst.USER_QUERY, //列出用户
             crmPrivilegeConst.CRM_LIST_CUSTOMERS //列出客户
         ]
-    }, {
+    }, { // 团队申请 列表
         'method': 'get',
         'path': '/rest/appuser/apply_list',
         'handler': 'getApplyList',
@@ -126,6 +126,7 @@ module.exports = {
             needLogin: true
         },
     }, {//todo 权限的修改
+        // 获取 我申请的 列表
         'method': 'get',
         'path': '/rest/apply_list/start/self',
         'handler': 'getApplyListStartSelf',
@@ -133,9 +134,10 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批列表
+            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION
         ]
     }, {
+        // 获取我审批的列表
         'method': 'get',
         'path': '/rest/apply_list/approve/my',
         'handler': 'getMyApplyLists',
@@ -143,7 +145,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批详情
+            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION
         ]
     },
     //     {
@@ -164,7 +166,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-    }, {
+    }, { // 获取申请详情
         'method': 'get',
         'path': '/rest/apply_approve/detail/by/id',
         'handler': 'getApplyDetail',
@@ -172,7 +174,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批详情
+            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION
         ]
     }, {
         'method': 'post',

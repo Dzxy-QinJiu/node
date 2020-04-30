@@ -1,6 +1,6 @@
 var insertStyle = require('../../insert-style');
 var UserData = require('../../../public/sources/user-data');
-var notificationEmitter = require('../../../public/sources/utils/emitters').notificationEmitter;
+import {notificationEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
@@ -38,6 +38,9 @@ var UnreadMixin = {
     showUnhandledCount: function(item) {
         //从全局数据中获取
         if (Oplate && Oplate.unread){
+            // 未处理的申请数据
+            const unhandleApplyList = _.get(Oplate.unread, 'unhandleApplyList', []);
+            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_TIP, unhandleApplyList);
             var count = 0;
             this.setState({
                 messages: Oplate.unread

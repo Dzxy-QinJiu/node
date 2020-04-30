@@ -24,6 +24,7 @@ import {RECOMMEND_CLUE_FILTERS, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/util
 import classNames from 'classnames';
 import { paymentEmitter } from 'OPLATE_EMITTER';
 import {addOrEditSettingCustomerRecomment} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
+import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 
 
 const ADVANCED_OPTIONS = [
@@ -568,6 +569,7 @@ class RecommendCluesFilterPanel extends Component {
     }
 
     renderDropDownBlock({btnText, type, list, getValue = () => {}}) {
+        let {isWebMin} = isResponsiveDisplay();
         let currentValue = getValue();
         let menus = (
             <Menu onClick={this.onSelect.bind(this, type)} selectedKeys={currentValue}>
@@ -582,7 +584,7 @@ class RecommendCluesFilterPanel extends Component {
             'vip-item-active': text && text !== Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText})
         });
         return (
-            <Dropdown overlay={menus} overlayClassName="vip-item-dropDown">
+            <Dropdown trigger={isWebMin ? 'click' : 'hover'} overlay={menus} overlayClassName="vip-item-dropDown">
                 <Popover
                     trigger="click"
                     placement="bottomLeft"

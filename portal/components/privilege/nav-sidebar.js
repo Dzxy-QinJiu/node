@@ -18,7 +18,7 @@ import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES, GIFT_LOGO,APPLY_APPROVE_TYPES}
 import {hasCalloutPrivilege, isCurtao, checkVersionAndType, 
     isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay,isShowWinningClue, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
 import {phoneEmitter, notificationEmitter, userInfoEmitter,
-    phoneMsgEmitter, clickUpgradeNoiceEmitter, showWiningClueEmitter} from 'PUB_DIR/sources/utils/emitters';
+    phoneMsgEmitter, clickUpgradeNoiceEmitter, showWiningClueEmitter, leadRecommendEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 import {getAllUnhandleApplyCount} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
@@ -51,6 +51,8 @@ const ROUTE_CONST = {
     'CALL_RECORD': 'call_record',//通话记录id
     'ANALYSIS': 'analysis'//分析
 };
+
+const FLOW_FLY_TIME = 800;//加1效果动画时长
 
 //获取用户logo
 function getUserInfoLogo() {
@@ -145,6 +147,7 @@ var NavSidebar = createReactClass({
             isUnReadNotice: isUnReadNotice, // 是否有未读的公告，默认false
             noticeSubMenuSelectedType: isUnReadNotice ? 'notice' : 'system', // 通知二级子菜单选中的类型
             isShowWinningClueContent: false, // 是否显示领线索内容
+            leadAddNumEffect: false,//是否显示线索图标加1效果
         };
     },
     propTypes: {
@@ -214,6 +217,25 @@ var NavSidebar = createReactClass({
         });
     },
 
+    handleAddLeadManagementOneNum() {
+        let leadAddNum = this.state.leadAddNum || 0;
+        leadAddNum++;
+        this.setState({
+            leadAddNumEffect: true,
+            leadAddNum: leadAddNum,
+        }, () => {
+            var addNumber = $('.navbar-nav .sidebar-menu-li .lead-icon-add-num.show-add-num');
+            addNumber.animate({top: '-10px'}, FLOW_FLY_TIME, 'linear', () => {
+                this.setState({
+                    leadAddNumEffect: false,
+                    leadAddNum: 0
+                }, () => {
+                    $('.navbar-nav .sidebar-menu-li .lead-icon-add-num').css({top: 0});
+                });
+            });
+        });
+    },
+
     componentDidMount: function() {
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         //我的申请回复列表变化后触发
@@ -228,6 +250,8 @@ var NavSidebar = createReactClass({
         clickUpgradeNoiceEmitter.on(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, this.toggleUpgradeNotice);
         // 点击通知面板上tabs类型的触发
         notificationEmitter.on(notificationEmitter.CLICK_NOTICE_TABS_TYPE, this.clickSystemPanelTabsType);
+        // 线索管理加1效果
+        leadRecommendEmitter.on(leadRecommendEmitter.ADD_LEAD_MANAGEMENT_ONE_NUM, this.handleAddLeadManagementOneNum);
         //获取我的审批的未读回复列表
         this.getMyApplyUnreadReply();
         //获取团队审批的未读回复列表
@@ -396,6 +420,7 @@ var NavSidebar = createReactClass({
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.callingRonglianBtn);
         clickUpgradeNoiceEmitter.removeListener(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, this.toggleUpgradeNotice);
         notificationEmitter.removeListener(notificationEmitter.CLICK_NOTICE_TABS_TYPE, this.clickSystemPanelTabsType);
+        leadRecommendEmitter.removeListener(leadRecommendEmitter.ADD_LEAD_MANAGEMENT_ONE_NUM, this.handleAddLeadManagementOneNum);
     },
 
 
@@ -729,6 +754,13 @@ var NavSidebar = createReactClass({
                     {/*{this.state.isReduceNavIcon ? (<span> {menu.shortName} </span>) : null}*/}
                 </NavLink>
             );
+            let addNum = null;
+            if(category === 'leads') {//线索管理
+                let cls = classNames('lead-icon-add-num', {
+                    'show-add-num': this.state.leadAddNumEffect
+                });
+                addNum = <span className={cls}> +{this.state.leadAddNum} </span>;
+            }
             //判断是否是个人版，以及有通话路由
             let versionAndType = checkVersionAndType();
             if(ROUTE_CONST.CALL_RECORD === category && versionAndType.personal) {
@@ -739,6 +771,7 @@ var NavSidebar = createReactClass({
             return (
                 <li key={i} title={menu.name} className={routeCls}>
                     {routeContent}
+                    {addNum}
                 </li>
             );
         });
