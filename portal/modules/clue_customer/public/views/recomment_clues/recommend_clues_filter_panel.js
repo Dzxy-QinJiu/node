@@ -637,9 +637,10 @@ class RecommendCluesFilterPanel extends Component {
                 <div className="recommend-clue-filter-panel">
                     <div className="add-customer-recommend">
                         <Form layout='horizontal' className="clue-recommend-form" id="clue-recommend-form">
-                            <FormItem key="search-input">
+                            <FormItem>
                                 <div className="clue-recommend-filter-search-wrapper">
                                     <SearchInput
+                                        key="search-input"
                                         ref="searchInput"
                                         searchEvent={this.searchChange}
                                         searchPlaceHolder ={this.getKeyWordPlaceholder()}
