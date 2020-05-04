@@ -5,7 +5,7 @@ import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
  */
 
 require('./index.less');
-var Modal = require('antd').Modal;
+import {Modal, Icon} from 'antd';
 var batch = require('./batch');
 var io = require('socket.io-client');
 var timeoutFunc;//定时方法
@@ -975,6 +975,31 @@ function startSocketIo() {
     socketIo = io({forceNew: true, transports: [transportType]});
     //监听 connect
     socketIo.on('connect', function() {
+        // 当前升级版本的时间监听
+        socketIo.on('curUpgradeTime', newUpgradeTime => {
+            // 监听到node端推送的最新版本的升级时间，与浏览器中缓存的时间不一致，说明有新的版本升级，需要提示用户手动刷新界面
+            if (newUpgradeTime !== +Oplate.curUpgradeTime) {
+                //session过期提示的添加
+                var $upgradeTip = $('#app >.upgrade-refresh-tip');
+                if ($upgradeTip && $upgradeTip.length > 0) {
+                    return;
+                } else {
+                    $('#app').append('<div class="upgrade-refresh-tip"></div>');
+                    ReactDOM.render(<span>
+                        <Icon type="exclamation-circle" />
+                        <ReactIntl.FormattedMessage
+                            id="common.upgrade.refresh.tip"
+                            defaultMessage="版本已升级，请{refresh}"
+                            values={{
+                                refresh: <a href='#' onClick={() => {
+                                    window.location.reload();
+                                }} data-tracename="点击升级刷新提示中的刷新按钮">{Intl.get('common.refresh', '刷新')}</a>
+                            }} />
+                    </span>, $('#app >.upgrade-refresh-tip')[0]);
+                }
+            }
+        });
+
         // 获取消息数后添加监听
         getMessageCount(unreadListener);
         //监听node端推送的登录踢出的信息
