@@ -183,5 +183,31 @@
   text-align: right;
 }
 
+// 重部署后，通知客户升级刷新提示
+.upgrade-refresh-tip {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  padding: 8px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #fec;
+  background-color: #fff7e6;
+  color: #666;
+  z-index: 2;
+  i.anticon.anticon-exclamation-circle {
+    color: #ffbf00;
+    margin-right: 8px;
+    font-size: 16px;
+  }
+  a {
+    margin-left: 4px;
+    color: @primary-color;
+    text-decoration: none;
+    &:hover {
+      color: @primary-hover-color;
+    }
+  }
+}
 
 
