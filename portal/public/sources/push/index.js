@@ -978,7 +978,7 @@ function startSocketIo() {
         // 当前升级版本的时间监听
         socketIo.on('curUpgradeTime', newUpgradeTime => {
             // 监听到node端推送的最新版本的升级时间，与浏览器中缓存的时间不一致，说明有新的版本升级，需要提示用户手动刷新界面
-            if (newUpgradeTime !== +Oplate.curUpgradeTime) {
+            if (Oplate.curUpgradeTime && newUpgradeTime !== +Oplate.curUpgradeTime) {
                 //session过期提示的添加
                 var $upgradeTip = $('#app >.upgrade-refresh-tip');
                 if ($upgradeTip && $upgradeTip.length > 0) {
