@@ -25,6 +25,7 @@ var UserDto = {
                 'email': userData.email ? userData.email : '',
                 'phone': userData.phone ? userData.phone : '',
                 'role_infos': userData.role_infos,
+                'roles': userData.roles,
                 'organization': userData.organization
             };
             //获取客户端信息

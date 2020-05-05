@@ -122,8 +122,6 @@ var NavSidebar = createReactClass({
             },
             closeNotificationPanel: function() {
             },
-            showBootCompletePanel: function() {
-            },
         };
     },
 
@@ -153,7 +151,6 @@ var NavSidebar = createReactClass({
     propTypes: {
         toggleNotificationPanel: PropTypes.func,
         closeNotificationPanel: PropTypes.func,
-        showBootCompletePanel: PropTypes.func,
         isShowNotificationPanel: PropTypes.bool,
         rewardClueCount: PropTypes.number,
         handleOpenLeftPanel: PropTypes.func,
@@ -262,17 +259,15 @@ var NavSidebar = createReactClass({
         // responsiveLayout.userInfoHeight = $(this.userInfo).outerHeight(true);
         // this.calculateHeight();
         // $(window).on('resize', this.calculateHeight);
-        //获取已经点击过的模块
-        getWebsiteConfig((WebsiteConfigModuleRecord) => {
-            //
-            let personnel_setting = storageUtil.local.get('websiteConfig');
-            personnel_setting = personnel_setting ? JSON.parse(personnel_setting) : {};
-            this.props.showBootCompletePanel(personnel_setting);
-            //本次要加引导的模块是否点击过
-            if (this.isIntroModlueNeverClicked(WebsiteConfigModuleRecord)) {
-                this.selectedIntroElement();
-            }
-        });
+
+        //获取已经点击过的模块, 之前新增日程时，新功能使用的引导，现已去掉，
+        // 此处未删除是以防后期新增功能时用,再用时注意，此处不需要再调用接口getWebsiteConfig获取一遍，直接从userData中取即可
+        // getWebsiteConfig((WebsiteConfigModuleRecord) => {
+        //     //本次要加引导的模块是否点击过
+        //     if (this.isIntroModlueNeverClicked(WebsiteConfigModuleRecord)) {
+        //         this.selectedIntroElement();
+        //     }
+        // });
         $('.navbar').on('click', '.leads_icon_container', function(e) {
             //点击到a标签上，不做处理
             if ($(e.target).is('a')) {

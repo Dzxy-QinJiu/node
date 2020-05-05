@@ -147,6 +147,14 @@ function getLoginResult(data) {
         user_id: '',
         user_name: '',
         role_infos: [],
+        // 组织信息中公司名official_name和id字段转为officialName和id字段，方便前端处理（若后端更改字段名时，只需修改这里就可以，不用多处修改了）
+        organization: {//登录接口只返回了组织的基本信息，matomo上传公司名用，组织的详细信息登录后会重新获取
+            id: _.get(data, 'organization.id', ''),
+            // 接口返回的组织信息：official_name：公司名，name: 组织名称
+            // 现在系统中展示和修改的都是公司名，组织名是不能修改的
+            officialName: _.get(data, 'organization.official_name', ''),
+        },
+        roles: _.get(data, 'roles_define', [])//角色对应的标识：sales、realm_manager、operations
     };
     if (data.token) {
         loginResult.auth.access_token = data.token.access_token || '';
@@ -607,27 +615,22 @@ exports.checkLoginWechatIsBind = function(req, res) {
             }
         });
 };
-
-//获得登录用户所在组织以及网站个性化配置
+//获取登录用户所在组织
 exports.getOrganization = function(req, res) {
-    var emitter = new EventEmitter();
-    //获取登录用户的组织信息
-    let getOrganization = getDataPromise(req, res, urls.getOrganization);
-    //获取网站个性化设置
-    let getWebsiteConfig = getDataPromise(req, res, urls.getWebsiteConfig);
-    let promiseList = [getOrganization, getWebsiteConfig];
-    Promise.all(promiseList).then(resultList => {
-        let organizationResult = _.get(resultList, '[0]', {});
-        if(organizationResult.successData) {
-            let organizationData = organizationResult.successData;
-            //网站个性化
-            organizationData.websiteConfig = _.get(resultList, '[1].successData', {});
-            emitter.emit('success', organizationData);
-        }else if(organizationResult.errorData) {
-            emitter.emit('error', organizationResult.errorData);
-        }
-    }).catch(errorObj => {
-        emitter.emit('error', errorObj);
-    });
-    return emitter;
+    return restUtil.authRest.get(
+        {
+            url: urls.getOrganization,
+            req: req,
+            res: res
+        }, null);
+};
+
+//获取网站个性化配置
+exports.getWebsiteConfig = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: urls.getWebsiteConfig,
+            req: req,
+            res: res
+        }, null);
 };

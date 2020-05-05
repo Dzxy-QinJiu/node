@@ -17,7 +17,6 @@ var Spinner = require('../../../../components/spinner');
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import routeList from '../../../common/route';
 import ajax from '../../../common/ajax';
-const userData = require('../../../../public/sources/user-data');
 var CallRecordAction = require('../action/call-record-actions');
 var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
@@ -182,7 +181,7 @@ var CallAddCustomerForm = createReactClass({
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
                 let list = _.get(data,'list');
                 //客户名是否重复
-                let repeatCustomer = _.some(list,{'name':customerName});
+                let repeatCustomer = _.some(list,{'name': customerName});
                 if (_.isString(data)) {
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});

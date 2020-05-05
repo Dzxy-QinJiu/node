@@ -1,6 +1,5 @@
 import UserAjax from '../ajax/apply_approve_list_ajax';
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
-let userData = require('PUB_DIR/sources/user-data');
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {getApplyDetailById} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import {addCancelBtnPrivliege} from '../utils/apply_approve_utils';

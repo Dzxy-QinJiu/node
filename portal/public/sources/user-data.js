@@ -1,5 +1,5 @@
 var UserData;
-
+import { storageUtil } from 'ant-utils';
 //通过ajax获取
 exports.getUserDataByAjax = function() {
     var deferred = $.Deferred();
@@ -9,6 +9,11 @@ exports.getUserDataByAjax = function() {
             UserData = _.isObject(data) ? data : {};
             //语言环境的设置
             Oplate.lang = _.isObject(data) ? data.lang : 'zh_CN';
+            if (_.get(data, 'websiteConfig.personnel_setting')) {
+                storageUtil.local.set('websiteConfig', JSON.stringify(data.websiteConfig.personnel_setting));
+            } else {
+                storageUtil.local.set('websiteConfig', JSON.stringify({}));
+            }
             deferred.resolve();
         }).error(function(data) {
             let errorMsg = '';

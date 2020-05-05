@@ -1,7 +1,6 @@
 import { func } from 'prop-types';
 
 var BatchChangeActions = require('../action/batch-change-actions');
-let userData = require('../../../../public/sources/user-data');
 
 function BatchChangeStore() {
     this.resetState();
