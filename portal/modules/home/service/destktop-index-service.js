@@ -31,9 +31,7 @@ exports.getUserInfo = function(req, res) {
     });
     // 获取用户的组织信息
     let getOrganization = getDataPromise(req, res, userInfoRestApis.getOrganization);
-    //获取登录用户的引导流程
-    let getUserGuideCOnfigs = getDataPromise(req, res, userInfoRestApis.getGuideConfig);
-    let promiseList = [getUserBasicInfo, getOrganization, getUserGuideCOnfigs];
+    let promiseList = [getUserBasicInfo, getOrganization];
     let userPrivileges = getPrivileges(req);
     //是否有获取所有团队数据的权限
     let hasGetAllTeamPrivilege = userPrivileges.indexOf(publicPrivilegeConst.GET_TEAM_LIST_ALL) !== -1;
@@ -63,8 +61,6 @@ exports.getUserInfo = function(req, res) {
             let userData = userInfoResult.successData;
             //用户组织信息
             userData.organization = _.get(resultList, '[1].successData', {});
-            //引导流程
-            userData.guideConfig = _.get(resultList,'[2].successData',[]);
             // 登录时已获取过websiteConfig此处就不需要获取了，直接用session中存的
             if (req.session.websiteConfig) {
                 userData.websiteConfig = req.session.websiteConfig;
@@ -77,18 +73,18 @@ exports.getUserInfo = function(req, res) {
                 userData.isCommonSales = false;
                 //已经配置过的流程
                 if (hasWorkFlowPrivilege) {
-                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[3].successData', []));
+                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[2].successData', []));
                     //刷新时，需要重新获取websiteConfig
                     if (!req.session.websiteConfig) {
                         //网站个性化
-                        userData.websiteConfig = _.get(resultList, '[4].successData', {});
+                        userData.websiteConfig = _.get(resultList, '[3].successData', {});
                     }
                 } else if (!req.session.websiteConfig) {//刷新时，需要重新获取websiteConfig
                     //网站个性化
-                    userData.websiteConfig = _.get(resultList, '[3].successData', {});
+                    userData.websiteConfig = _.get(resultList, '[2].successData', {});
                 }
             } else {//普通销售、销售主管、销售总监等，通过我所在的团队及下级团队来判断是否是普通销售
-                let teamTreeList = _.get(resultList, '[3].successData', []);
+                let teamTreeList = _.get(resultList, '[2].successData', []);
                 userData.isCommonSales = getIsCommonSalesByTeams(userData.user_id, teamTreeList);
                 // 有团队时，赋值销售所在的团队信息
                 if (_.get(teamTreeList, 'length')) {
@@ -97,21 +93,21 @@ exports.getUserInfo = function(req, res) {
                 }
                 //已经配置过的流程
                 if(hasWorkFlowPrivilege){
-                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[4].successData', []));
-                    //用户职务
-                    userData.position = _.get(resultList, '[5].successData.teamrole_name', '');
-                    //刷新时，需要重新获取websiteConfig
-                    if (!req.session.websiteConfig) {
-                        //网站个性化
-                        userData.websiteConfig = _.get(resultList, '[6].successData', {});
-                    }
-                } else {
+                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[3].successData', []));
                     //用户职务
                     userData.position = _.get(resultList, '[4].successData.teamrole_name', '');
                     //刷新时，需要重新获取websiteConfig
                     if (!req.session.websiteConfig) {
                         //网站个性化
                         userData.websiteConfig = _.get(resultList, '[5].successData', {});
+                    }
+                } else {
+                    //用户职务
+                    userData.position = _.get(resultList, '[3].successData.teamrole_name', '');
+                    //刷新时，需要重新获取websiteConfig
+                    if (!req.session.websiteConfig) {
+                        //网站个性化
+                        userData.websiteConfig = _.get(resultList, '[4].successData', {});
                     }
                 }
             }

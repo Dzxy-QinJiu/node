@@ -686,6 +686,19 @@ exports.getUserTypeList = function() {
         });
     });
 };
+// 获取引导流程
+exports.getGuideConfig = function(cb) {
+    let userProperty = 'guideConfig';
+    let guideConfig = _.get(getUserData(), userProperty, []);
+    if(_.isEmpty(guideConfig)) {
+        guideAjax.getGuideConfig().then((data) => {
+            setUserData(userProperty, data);
+            _.isFunction(cb) && cb(data);
+        });
+    }else {
+        _.isFunction(cb) && cb(guideConfig);
+    }
+};
 // 更新引导流程
 exports.updateGuideMark = function(key) {
     // 判断是否完成此引导，没有则请求接口
