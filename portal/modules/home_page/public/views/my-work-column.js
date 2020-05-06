@@ -41,7 +41,7 @@ import {getTimeStrFromNow, getFutureTimeStr} from 'PUB_DIR/sources/utils/time-fo
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import RecommendClues from './boot-process/recommend_clues';
 import userData from 'PUB_DIR/sources/user-data';
-import {getAllSalesUserList, getAppList} from 'PUB_DIR/sources/utils/common-data-util';
+import {getAllSalesUserList, getAppList, getGuideConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
 import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 import clueAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
@@ -227,8 +227,9 @@ class MyWorkColumn extends React.Component {
     }
 
     getGuideConfig() {
-        let guideConfig = _.get(userData.getUserData(), 'guideConfig', []);
-        this.setState({guideConfig});
+        getGuideConfig(data => {
+            this.setState({guideConfig: data});
+        });
     }
 
 

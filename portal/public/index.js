@@ -69,6 +69,7 @@ function getUserPrivilegeAndStart() {
         const user = userData.getUserData();
         storageUtil.setUserId(user.user_id);
         commonDataUtil.getAreaInfoAll();
+        commonDataUtil.getGuideConfig();
         AppStarter.init({
             goIndex: false
         });
