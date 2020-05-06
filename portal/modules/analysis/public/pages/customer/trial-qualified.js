@@ -33,6 +33,8 @@ function getCharts() {
         customerChart.getCustomerTrialQualifiedDistributionChart('行业统计', 'industry'),
         //趋势图
         customerChart.getCustomerTrialQualifiedTrendChart(),
+        //新增试用合格客户趋势统计
+        customerChart.getCustomerTrialQualifiedTrendChart('new'),
     ];
 }
 
