@@ -643,7 +643,7 @@ class CustomerPool extends React.Component {
                     let month = (time.getMonth() + 1 < 10 ? '0' + (time.getMonth() + 1) : time.getMonth() + 1) + '-';
                     let date = (time.getDate() < 10 ? '0' + time.getDate() : time.getDate()) + ' ';
                     let last_contact = '';
-                    let followupContent = _.get(record.customer_traces, 'remark') ? record.customer_traces.remark : '';
+                    let followupContent = _.get(record, 'customer_trace') ? record.customer_trace : '';
                     let newTime = year + month + date;
                     return (
                         <span>
@@ -651,7 +651,6 @@ class CustomerPool extends React.Component {
                                 {newTime}
                                 {followupContent}
                             </div>
-
                         </span>
                     );
                 }
