@@ -546,19 +546,17 @@ exports.getVertificationCode = function(req, res) {
 //注册个人账号
 exports.registerAccount = function(req, res) {
     DesktopLoginService.registerAccount(req, res).on('success', function(data) {
-        if (data) {//注册成功后延时5s（5s后才能确保es组织初始化完成）后自动登录
-            setTimeout(function() {
-                var username = req.body.phone;
-                var password = req.body.pwd;
-                //记录上一次登录用户名，到session中
-                username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
-                req.session.last_login_user = username;
-                DesktopLoginService.login(req, res, username, password)
-                    .on('success', loginSuccess(req, res))
-                    .on('error', function(errorObj) {
-                        res.status(500).json(errorObj && errorObj.message);
-                    });
-            }, 5000);
+        if (data) {//注册成功后自动登录
+            var username = req.body.phone;
+            var password = req.body.pwd;
+            //记录上一次登录用户名，到session中
+            username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+            req.session.last_login_user = username;
+            DesktopLoginService.login(req, res, username, password)
+                .on('success', loginSuccess(req, res))
+                .on('error', function(errorObj) {
+                    res.status(500).json(errorObj && errorObj.message);
+                });
         } else {
             res.status(200).json(data);
         }
