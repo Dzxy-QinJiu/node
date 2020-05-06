@@ -261,40 +261,17 @@ class BasicData extends React.Component {
     releaseCustomer = () => {
         let basicData = this.state.basicData;
         if(!_.get(basicData,'id') || this.state.isReleasingCustomer) return;
-        let isRequest = true;
         let _this = this;
-        let type = _this.state.releaseType;
-        if(_.get(userData.getUserData(), 'isCommonSales')) {
-            //普通销售需判断是当前释放的这个客户的负责人还是联合跟进人
-            isRequest = _.isEqual(_.get(basicData, 'user_id'), userData.getUserData().user_id);
-        }else if(this.state.releaseType === RELEASE_TYPE.JOIN) {//释放联合跟进人
-            isRequest = false;
-        }
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '释放客户');
-        if(isRequest) {
-            type = RELEASE_TYPE.OWNER;
-            // 单个释放需判断，验证是否有权限处理负责人
-            CrmBasicAjax.checkCrmUpdateUserByCustomerId(basicData.id).then((res) => {
-                if(res) {
-                    releaseCustomer();
-                }else {
-                    message.error(Intl.get('crm.release.no.permissions', '您不能释放共同跟进的客户'));
-                }
-            }, (errorMsg) => {
-                message.error(errorMsg);
-            });
-        }else {
-            type = RELEASE_TYPE.JOIN;
-            releaseCustomer();
-        }
+        crmUtil.checkReleaseCustomer(this.state.releaseType, basicData, basicData.id, releaseCustomer);
 
-        function releaseCustomer() {
+        function releaseCustomer(isReleaseOwner) {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '客户详情中释放客户');
             _this.setState({isReleasingCustomer: true});
             let reqData = {id: basicData.id};
             if(_this.state.releaseReason) {
                 reqData.reason = _this.state.releaseReason;
             }
-            reqData.type = type;
+            reqData.type = isReleaseOwner ? RELEASE_TYPE.OWNER : RELEASE_TYPE.JOIN;
             CrmBasicAjax.releaseCustomer(reqData).then(result => {
                 _this.setState({isReleasingCustomer: false});
                 //释放完客户后，需要将首页对应的工作设为已完成
@@ -530,14 +507,6 @@ class BasicData extends React.Component {
                     <Icon type="exclamation-circle"/>
                     <span>{releaseTip}</span>
                 </div>
-                {/*todo 暂时注释掉选择类型*/}
-                {/*个人版不展示选择释放类型*/}
-                {/*{checkVersionAndType().personal ? null : (
-                    <Radio.Group onChange={this.onTypeChange} value={this.state.releaseType}>
-                        <Radio value={RELEASE_TYPE.OWNER}>{Intl.get('crm.6', '负责人')}</Radio>
-                        <Radio value={RELEASE_TYPE.JOIN}>{Intl.get('crm.second.sales', '联合跟进人')}</Radio>
-                    </Radio.Group>
-                )}*/}
                 <Input.TextArea
                     placeholder={Intl.get('crm.customer.release.reason', '请填写释放理由')}
                     value={this.state.releaseReason}
