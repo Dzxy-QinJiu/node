@@ -237,7 +237,7 @@ class AddApply extends React.Component {
             },
         };
         let saveResult = this.state.saveResult;
-        var workConfig = _.find(_.get(user, 'workFlowConfigs', []), item => item.type === SELF_SETTING_FLOW.DOMAINAPPLY);
+        var workConfig = _.find(this.props.workFlowList, item => item.type === SELF_SETTING_FLOW.DOMAINAPPLY);
         var customizForm = workConfig.customiz_form;
         return (
             <RightPanel showFlag={true} data-tracename="添加舆情平台申请" className="add-leave-container">
@@ -337,9 +337,11 @@ class AddApply extends React.Component {
 AddApply.defaultProps = {
     hideLeaveApplyAddForm: function() {
     },
+    workFlowList: []
 };
 AddApply.propTypes = {
     hideLeaveApplyAddForm: PropTypes.func,
     form: PropTypes.object,
+    workFlowList: PropTypes.array
 };
 export default Form.create()(AddApply);

@@ -41,7 +41,7 @@ import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_APPROVE_TYPES,APPLY_FINISH_STATUS,ASSIGN_TYPE,TOP_NAV_HEIGHT,APPLY_LIST_LAYOUT_CONSTANTS,LEAVE_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
-import {ALL_COMPONENTS, SELF_SETTING_FLOW,} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import {ALL_COMPONENTS, SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import {transferBtnContent,renderApproveBtn} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import classNames from 'classnames';
 import salesOpportunityApplyAjax from 'MOD_DIR/sales_opportunity/public/ajax/sales-opportunity-apply-ajax';
@@ -371,7 +371,7 @@ class ApplyViewDetail extends React.Component {
     renderDetailApplyBlock(detailInfo) {
         //找到流程保存的组件
         var detail = detailInfo.detail || {}, customizForm = [], showApplyInfo = [];
-        var applyLists = userData.getUserData().workFlowConfigs;
+        var applyLists = this.props.workFlowList;
         var workFlowConfig = _.find(applyLists, item => item.type === SELF_SETTING_FLOW.VISITAPPLY);
 
         if (workFlowConfig){
@@ -901,6 +901,7 @@ ApplyViewDetail.defaultProps = {
     },
     width: '100%',
     height: '100%',
+    workFlowList: []
 
 };
 ApplyViewDetail.propTypes = {
@@ -912,6 +913,7 @@ ApplyViewDetail.propTypes = {
     isHomeMyWork: PropTypes.bool,
     afterApprovedFunc: PropTypes.func,
     width: PropTypes.string,
-    height: PropTypes.string
+    height: PropTypes.string,
+    workFlowList: PropTypes.array,
 };
 module.exports = ApplyViewDetail;

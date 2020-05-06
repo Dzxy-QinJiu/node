@@ -366,7 +366,7 @@ class ApplyViewDetail extends React.Component {
     renderDetailApplyBlock(detailInfo) {
         //找到流程保存的组件
         var detail = detailInfo.detail || {}, customizForm = [], showApplyInfo = [];
-        var applyLists = userData.getUserData().workFlowConfigs;
+        var applyLists = this.props.workFlowList;
         var workFlowConfig = _.find(applyLists, item => item.type === SELF_SETTING_FLOW.VISITAPPLY);
 
         if (workFlowConfig){
@@ -896,6 +896,7 @@ ApplyViewDetail.defaultProps = {
     },
     width: '100%',
     height: '100%',
+    workFlowList: []
 
 };
 ApplyViewDetail.propTypes = {
@@ -909,5 +910,6 @@ ApplyViewDetail.propTypes = {
     width: PropTypes.string,
     height: PropTypes.string,
     afterTransferApplySuccess: PropTypes.func,
+    workFlowList: PropTypes.array,
 };
 module.exports = ApplyViewDetail;

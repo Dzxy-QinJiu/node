@@ -13,10 +13,8 @@ const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
-var user = require('PUB_DIR/sources/user-data').getUserData();
-import {ADDAPPLYFORMCOMPONENTS} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import Trace from 'LIB_DIR/trace';
-import {ALL_COMPONENTS, SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import {ALL_COMPONENTS, SELF_SETTING_FLOW,ADDAPPLYFORMCOMPONENTS} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import classNames from 'classnames';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
@@ -165,7 +163,7 @@ class AddApply extends React.Component {
             },
         };
         let saveResult = this.state.saveResult;
-        var workConfig = _.find(_.get(user, 'workFlowConfigs'),item => item.type === SELF_SETTING_FLOW.VISITAPPLY);
+        var workConfig = _.find(this.props.workFlowList,item => item.type === SELF_SETTING_FLOW.VISITAPPLY);
         var customizForm = workConfig.customiz_form;
         return (
             <RightPanel showFlag={true} data-tracename="添加拜访申请" className="add-leave-container">
@@ -254,9 +252,11 @@ class AddApply extends React.Component {
 AddApply.defaultProps = {
     hideLeaveApplyAddForm: function() {
     },
+    workFlowList: []
 };
 AddApply.propTypes = {
     hideLeaveApplyAddForm: PropTypes.func,
     form: PropTypes.object,
+    workFlowList: PropTypes.array
 };
 export default Form.create()(AddApply);

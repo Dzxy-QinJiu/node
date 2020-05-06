@@ -106,7 +106,6 @@ exports.getUserData = function(req, res) {
             if (data.isCommonSales) {
                 user.position = data.position;//职务
             }
-            user.workFlowConfigs = data.workFlowConfigs;//配置过的流程列表
             user.phone = data.phone;
             user.websiteConfig = data.websiteConfig;//网站个性化
             user.organization = {

@@ -9,20 +9,18 @@ import {Switch, Input, Button, Dropdown, Menu, Icon} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import ApplyFormAndRules from './apply_form_and_rules';
 var classNames = require('classnames');
-import {calculateHeight, APPLYAPPROVE_LAYOUT} from '../utils/apply-approve-utils';
+import {calculateHeight, APPLYAPPROVE_LAYOUT, getAllWorkFlowList} from '../utils/apply-approve-utils';
 var applyApproveManageStore = require('../store/apply_approve_manage_store');
 var applyApproveManageAction = require('../action/apply_approve_manage_action');
 var uuid = require('uuid/v4');
-let userData = require('PUB_DIR/sources/user-data');
 
 class AddAndShowApplyList extends React.Component {
     constructor(props) {
         super(props);
-        var applyList = userData.getUserData().workFlowConfigs;
-        applyList = _.filter(applyList, item => item.type !== 'member_invite');
         this.state = {
             newApplyTitle: '',//新添加的申请的名称
-            showApplyList: applyList,//自定义流程的列表
+            showApplyList: [],
+            isLoading: true,//正在获取申请审批类型列表
             showAddWorkFlowName: this.props.showAddWorkFlowName,//是否展示添加自定义流程名称
             showApplyDetailForm: false,//是否展示审批的详情
             showApplyDetailId: '',
@@ -30,7 +28,6 @@ class AddAndShowApplyList extends React.Component {
             ...applyApproveManageStore.getState()
         };
     }
-
     componentWillReceiveProps = (nextProps) => {
         if (nextProps.showAddWorkFlowName !== this.state.showAddWorkFlowName) {
             this.setState({
@@ -50,6 +47,12 @@ class AddAndShowApplyList extends React.Component {
     };
     componentDidMount = () => {
         applyApproveManageStore.listen(this.onStoreChange);
+        getAllWorkFlowList((list) => {
+            this.setState({
+                showApplyList: list,
+                isLoading: false
+            });
+        });//自定义流程的列表
         var _this = this;
         this.changeTableHeight();
         $(window).on('resize', e => this.changeTableHeight());
@@ -106,8 +109,6 @@ class AddAndShowApplyList extends React.Component {
                 showApplyList: applyList,
                 showAddWorkFlowName: false
             }, () => {
-                //把userData上的值也改掉
-                userData.getUserData().workFlowConfigs = applyList;
                 this.props.updateShowApplyList(applyList);
             });
         });
@@ -223,7 +224,7 @@ class AddAndShowApplyList extends React.Component {
                 />
             </div>);
 
-    
+
     };
     closeAddApplyPanel = () => {
         this.setState({
@@ -306,6 +307,7 @@ class AddAndShowApplyList extends React.Component {
         return (
             <div className="apply-list-container">
                 {this.state.showApplyDetailForm ? this.renderApplyDetail() : <AntcTable
+                    loading={this.state.isLoading}
                     columns={columns}
                     dataSource={this.state.showApplyList}
                     pagination={false}

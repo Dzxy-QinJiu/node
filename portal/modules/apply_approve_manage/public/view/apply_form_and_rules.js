@@ -99,29 +99,18 @@ class ApplyFormAndRules extends React.Component {
     componentWillUnmount(){
         ApplyApproveManageStore.unlisten(this.onStoreChange);
     }
-        //请求并展示审批流程
-        getSelfSettingWorkFlow = (recordId) => {
-            let submitObj = {page_size: 1, id: recordId};
-            let newUserData = userData.getUserData().workFlowConfigs;
-            applyApproveManageAction.getSelfSettingWorkFlow(submitObj,(data) => {
-                this.changeNewFlow(newUserData,recordId,data);
-                if(data[0]){
-                    this.setState({
-                        applyTypeData: data[0],
-                        activeKey: _.get(data[0],'customiz') ? TAB_KEYS.FORM_CONTENT : TAB_KEYS.APPLY_RULE
-                    });
-                }
-            });
-        }
-        //将请求到的内容更新
-    changeNewFlow = (list,id,data) => {
-        _.forEach(list,(value) => {
-            if(_.get(value,'id') === id && data[0]){
-                _.extend(value, data[0]);
-                return false;
+    //请求并展示审批流程
+    getSelfSettingWorkFlow = (recordId) => {
+        let submitObj = {page_size: 1, id: recordId};
+        applyApproveManageAction.getSelfSettingWorkFlow(submitObj, (data) => {
+            if (data[0]) {
+                this.setState({
+                    applyTypeData: data[0],
+                    activeKey: _.get(data[0], 'customiz') ? TAB_KEYS.FORM_CONTENT : TAB_KEYS.APPLY_RULE
+                });
             }
         });
-    }
+    };
     handleTabChange = (key) => {
         let keyName = key === TAB_KEYS.FORM_CONTENT ? Intl.get('apply.add.form.content', '表单内容') : Intl.get('apply.add.form.regex', '审批规则');
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + keyName);
@@ -253,11 +242,6 @@ class ApplyFormAndRules extends React.Component {
             }
             this.setState({editWorkFlowLoading: true});
             applyApproveManageAction.editSelfSettingWorkFlow(submitObj, () => {
-                //userData上的属性也修改
-                var targetItem = this.updateUserData();
-                if (targetItem) {
-                    targetItem.customiz_form = submitObj.customiz_form;
-                }
                 //保存成功后自动切换到另一个tab
                 this.setState({
                     activeKey: TAB_KEYS.APPLY_RULE
@@ -304,11 +288,6 @@ class ApplyFormAndRules extends React.Component {
             }
             submitObj.description = updateName;
             applyApproveManageAction.editSelfSettingWorkFlow(submitObj, () => {
-                //userData上的属性也修改
-                var targetItem = this.updateUserData();
-                if (targetItem) {
-                    targetItem.description = updateName;
-                }
                 //此页面的名字也需要修改
                 applyTypeData.description = updateName;
                 this.setState({
@@ -320,12 +299,6 @@ class ApplyFormAndRules extends React.Component {
 
         }
     };
-    //获取目标
-    updateUserData = () => {
-        var applyLists = userData.getUserData().workFlowConfigs;
-        return _.find(applyLists, item => item.type === _.get(this, 'state.applyTypeData.type'));
-    };
-    //
     handleCancelSaveTitle = () => {
         this.setState({
             isEdittingApplyName: false,
@@ -430,21 +403,13 @@ class ApplyFormAndRules extends React.Component {
         );
     };
     updateRegRulesView = (updateRules) => {
-        //userData上的属性也修改
-        var targetItem = this.updateUserData();
-        if (targetItem) {
-            targetItem.applyRulesAndSetting = updateRules.applyRulesAndSetting;
-            targetItem.customiz_user_range = updateRules.customiz_user_range;
-            targetItem.customiz_team_range = updateRules.customiz_team_range;
-            var applyTypeData = this.state.applyTypeData;
-            applyTypeData.applyRulesAndSetting = updateRules.applyRulesAndSetting;
-            applyTypeData.customiz_user_range = updateRules.customiz_user_range;
-            applyTypeData.customiz_team_range = updateRules.customiz_team_range;
-            this.setState({
-                applyTypeData: applyTypeData
-            });
-        }
-
+        var applyTypeData = this.state.applyTypeData;
+        applyTypeData.applyRulesAndSetting = updateRules.applyRulesAndSetting;
+        applyTypeData.customiz_user_range = updateRules.customiz_user_range;
+        applyTypeData.customiz_team_range = updateRules.customiz_team_range;
+        this.setState({
+            applyTypeData: applyTypeData
+        });
     };
     renderAddApplyContent = () => {
         return (

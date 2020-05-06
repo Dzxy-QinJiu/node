@@ -65,7 +65,7 @@ import {isSalesRole, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 var ApplyApproveUtils = require('./utils/apply_approve_utils');
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import {INNER_SETTING_FLOW} from '../../apply_approve_manage/public/utils/apply-approve-utils';
+import {INNER_SETTING_FLOW,getAllWorkFlowList} from '../../apply_approve_manage/public/utils/apply-approve-utils';
 
 class ApplyApproveList extends React.Component {
     state = {
@@ -76,6 +76,7 @@ class ApplyApproveList extends React.Component {
         type: '',//申请审批的类型
         status: '',//申请审批的状态
         detailWrapWidth: getContentWidth(),//右侧内容区域的宽度
+        workFlowList: [],//配置过的所有流程
         ...ApplyApproveListStore.getState()
 
     };
@@ -102,6 +103,11 @@ class ApplyApproveList extends React.Component {
         getApplyState().then(applyState => {
             this.setState({
                 applyState
+            });
+        });
+        getAllWorkFlowList((workFlowList) => {
+            this.setState({
+                workFlowList: workFlowList
             });
         });
         notificationEmitter.on(notificationEmitter.MY_UNREAD_REPLY, this.refreshMyUnreadReplyList);
@@ -387,12 +393,8 @@ class ApplyApproveList extends React.Component {
             </Menu>
         );
     };
-    getWorkFlowList = () => {
-        let user = userData.getUserData();
-        return _.get(user, 'workFlowConfigs', []);
-    };
     getAddApplyTypeMenu = () => {
-        var workFlowList = this.getWorkFlowList();
+        var workFlowList = this.state.workFlowList;
         return (
             <Menu className='add-apply-type-list'>
                 {_.map(workFlowList, (item, index) => {
@@ -670,8 +672,7 @@ class ApplyApproveList extends React.Component {
             title: Intl.get('oplate_customer_analysis.type.all', '全部类型'),
             value: ALL
         }];
-        var workFlowList = this.getWorkFlowList();
-
+        var {workFlowList} = this.state;
         _.each(workFlowList, (workItem) => {
             //有几种特殊的类型，添加的时候的type和详情中的type的值不一样，后期这里会改掉
             var type = _.get(workItem, 'type');
@@ -933,6 +934,7 @@ class ApplyApproveList extends React.Component {
             //联合跟进申请和拜访申请
             case APPLY_APPROVE_TYPES.VISITAPPLY:
                 applyDetailContent = <VisitDetail
+                    workFlowList={this.state.workFlowList}
                     applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
@@ -944,6 +946,7 @@ class ApplyApproveList extends React.Component {
                 break;
             case APPLY_APPROVE_TYPES.DOMAINAPPLY://舆情平台申请
                 applyDetailContent = <DomainDetail
+                    workFlowList={this.state.workFlowList}
                     applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
@@ -1011,11 +1014,13 @@ class ApplyApproveList extends React.Component {
             case APPLY_APPROVE_TYPES.VISITAPPLY:
                 return (
                     <AddVisitApply
+                        workFlowList={this.state.workFlowList}
                         hideLeaveApplyAddForm={this.closeAddApplyForm}
                     />
                 );
             case APPLY_APPROVE_TYPES.DOMAINAPPLY://舆情平台申请
                 return <AddDomainApply
+                    workFlowList={this.state.workFlowList}
                     hideLeaveApplyAddForm={this.closeAddApplyForm}
                 />;
 
