@@ -379,8 +379,13 @@ exports.getApplyList = function(req, res) {
         }
     });
 };
+function getMyApplyList(){
+
+}
 // 获取我审批的申请列表(包含我审批过的和待我审批的)（对应页面上的我审批的列表）
 exports.getMyApplyLists = function(req, res){
+
+
     return restUtil.authRest.get({
         url: AppUserRestApis.getMyApplyLists,
         req: req,

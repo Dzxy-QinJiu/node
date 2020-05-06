@@ -261,7 +261,7 @@ class ApplyApproveList extends React.Component {
             if (!submitObj.id) {
                 delete submitObj.id;
             }
-            UserApplyActions.getMyApplyLists(submitObj, (count) => {
+            UserApplyActions.getMyApplyLists({...submitObj,firstLogin: this.state.firstLogin}, (count) => {
                 //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
                 // if (this.state.selectedApplyStatus === 'false') {
                 //     //触发更新待审批数
