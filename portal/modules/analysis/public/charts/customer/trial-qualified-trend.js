@@ -2,9 +2,9 @@
  * 试用合格趋势统计
  */
 
-export function getCustomerTrialQualifiedTrendChart() {
-    return {
-        title: '趋势图',
+export function getCustomerTrialQualifiedTrendChart(type) {
+    let chart = {
+        title: Intl.get('analysis.trial.qualified.customer.trend.chart', '试用合格客户趋势图'),
         chartType: 'line',
         layout: {sm: 24},
         url: '/rest/analysis/customer/v2/:data_type/trial/qualify/trend',
@@ -95,4 +95,32 @@ export function getCustomerTrialQualifiedTrendChart() {
             }],
         },
     };
+
+    if (type === 'new') {
+        chart.title = Intl.get('analysis.new.trial.qualified.customer.trend.chart', '新增试用合格客户趋势图');
+
+        let { conditions } = chart;
+
+        if (conditions) {
+            conditions.push({
+                name: 'qualify_type',
+                value: 'new',
+            });
+        }
+
+        let options = _.get(chart, 'cardContainer.selectors[0].options');
+
+        if (options) {
+            options.unshift(
+                {name: Intl.get('common.time.unit.day', '天'), value: 'day'}
+            );
+
+            options.push(
+                {name: Intl.get('common.time.unit.quarter', '季度'), value: 'quarter'},
+                {name: Intl.get('common.time.unit.year', '年'), value: 'year'}
+            );
+        }
+    }
+
+    return chart;
 }
