@@ -360,14 +360,6 @@ class ClueCustomer extends React.Component {
         }
         //当最后一个推送完成后
         if(_.isEqual(taskInfo.running, 0)) {
-            //批量操作删除之后，
-            // 1.如果全部删除，当前数据大于20个，tab的数据对不上
-            // 2.如果删除的数据小于二十个，当前页面的数据并不能补充展示
-            //刷新重新获取列表
-            //做1s延迟为了跟数据库同步
-            setTimeout(() => {
-                this.getClueList();
-            },1000);
             this.setState({
                 selectedClues: []
             });
@@ -2220,12 +2212,10 @@ class ClueCustomer extends React.Component {
                 },
                 //对线索列表当前页进行全选或取消全选操作时触发
                 onSelectAll: (selected, selectedRows, changeRows) => {
-                    if (_.get(selectedRows,'length') === 0) {
-                        this.state.selectAllMatched = true;
-                    }else if(selectedRows.length < this.state.customersSize){//选择全部的时候，选中的线索小于总的线索数量的时候，selectAllMatched是true
-                        this.state.selectAllMatched = true;
-                    }else{
+                    if(selectedRows.length === this.state.customersSize){//选择全部的时候，选中的线索小于总的线索数量的时候，selectAllMatched是true
                         this.state.selectAllMatched = false;
+                    }else{
+                        this.state.selectAllMatched = true;
                     }
                     this.setState({selectedClues: selectedRows, selectAllMatched: this.state.selectAllMatched});
                     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中全部线索');
@@ -2991,14 +2981,6 @@ class ClueCustomer extends React.Component {
         });
         //当最后一个推送完成后
         if(_.isEqual(taskInfo.running, 0)) {
-            //批量操作删除之后，
-            // 1.如果全部删除，因为tab的数据对不上
-            // 2.如果删除的数据小于二十个，当前页面的数据并不能补充展示
-            //刷新重新获取列表
-            //做1s延迟为了跟数据库同步
-            setTimeout(() => {
-                this.getClueList();
-            },1000);
             this.setState({
                 selectedClues: []
             });

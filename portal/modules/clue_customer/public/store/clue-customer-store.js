@@ -529,14 +529,12 @@ ClueCustomerStore.prototype.afterAssignSales = function(updateItemId) {
     }
     //如果是待分配状态，分配完之后要在列表中删除一个
     this.curClueList = _.filter(this.curClueList, clue => {
-        if (_.indexOf(clueIds, clue.id) !== -1) {
-            this.customersSize--;
-            this.agg_list['willDistribute'] = this.agg_list['willDistribute'] - 1;
-            //待跟进的需要加一
-            this.agg_list['willTrace'] = this.agg_list['willTrace'] + 1;
-        }
         return _.indexOf(clueIds, clue.id) === -1;
     });
+    this.agg_list['willDistribute'] = this.agg_list['willDistribute'] - 1;
+    //待跟进的需要加一
+    this.agg_list['willTrace'] = this.agg_list['willTrace'] + 1;
+    this.customersSize--;
 };
 ClueCustomerStore.prototype.getSalesManList = function(list) {
     list = _.isArray(list) ? list : [];
