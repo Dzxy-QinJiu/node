@@ -3231,6 +3231,8 @@ var en_US = {
     'analysis.statistical.cycle': 'statistical cycle',//统计周期
     'analysis.please.choose.within.3.months': 'please choose within 3 months',//请选择近3个月以内的时间
     'analysis.custom.period.cannot.exceed.1.year': 'custom period cannot exceed 1 year',//自定义时间段不能超过1年
+    'analysis.trial.qualified.customer.trend.chart': 'trial qualified customer trend chart',//试用合格客户趋势图
+    'analysis.new.trial.qualified.customer.trend.chart': 'new trial qualified customer trend chart',//新增试用合格客户趋势图
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
