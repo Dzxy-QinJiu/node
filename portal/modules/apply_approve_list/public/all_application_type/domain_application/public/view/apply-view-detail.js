@@ -39,7 +39,11 @@ import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_APPROVE_TYPES,APPLY_FINISH_STATUS,ASSIGN_TYPE,TOP_NAV_HEIGHT,APPLY_LIST_LAYOUT_CONSTANTS,LEAVE_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
-import {ALL_COMPONENTS, SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import {
+    ALL_COMPONENTS,
+    getAllWorkFlowList,
+    SELF_SETTING_FLOW
+} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import {transferBtnContent,getSalesManList,renderApproveBtn} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import classNames from 'classnames';
 class ApplyViewDetail extends React.Component {
@@ -51,6 +55,7 @@ class ApplyViewDetail extends React.Component {
             showBackoutConfirmType: '',//操作的确认框类型
             salesManList: [],//销售列表
             usersManList: [],//成员列表
+            workFlowList: [],//配置过的申请审批列表
             ...LeaveApplyDetailStore.getState()
         };
     }
@@ -71,6 +76,11 @@ class ApplyViewDetail extends React.Component {
         }
         this.getSalesManList();
         this.getAllUserList();
+        getAllWorkFlowList((workFlowList) => {
+            this.setState({
+                workFlowList: workFlowList
+            });
+        });
     }
     getSalesManList = () => {
         getSalesManList().then(data => {
@@ -362,7 +372,7 @@ class ApplyViewDetail extends React.Component {
     renderDetailApplyBlock(detailInfo) {
         //找到流程保存的组件
         var detail = detailInfo.detail || {}, customizForm = [], showApplyInfo = [];
-        var applyLists = this.props.workFlowList;
+        var applyLists = this.state.workFlowList;
         var workFlowConfig = _.find(applyLists, item => item.type === SELF_SETTING_FLOW.DOMAINAPPLY);
         if (workFlowConfig){
             customizForm = workFlowConfig.customiz_form;
@@ -849,7 +859,6 @@ ApplyViewDetail.defaultProps = {
     },
     width: '100%',
     height: '100%',
-    workFlowList: []
 
 };
 ApplyViewDetail.propTypes = {
@@ -862,7 +871,6 @@ ApplyViewDetail.propTypes = {
     afterApprovedFunc: PropTypes.func,
     width: PropTypes.string,
     height: PropTypes.string,
-    afterTransferApplySuccess: PropTypes.func,
-    workFlowList: PropTypes.array,
+    afterTransferApplySuccess: PropTypes.func
 };
 module.exports = ApplyViewDetail;

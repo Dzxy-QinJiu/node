@@ -12,6 +12,7 @@ import TimePeriod from '../view/time_period';
 import CustomerSuggest from '../view/customer_suggest';
 import InputContent from '../view/input_container';
 import {checkDomainExist} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+let workFlowList = [];//已经设置过的申请审批的流程
 var applyApproveManageAction = require('../action/apply_approve_manage_action');
 const APPLYAPPROVE_LAYOUT = {
     TOPANDBOTTOM: 64,
@@ -489,12 +490,15 @@ const maxFormItemLayout = {
     },
 };
 export const getAllWorkFlowList = function(callback){
-    var applyList = [];
-    applyApproveManageAction.getSelfSettingWorkFlow({page_size: 1000}, (data) => {
-        if (data[0]) {
-            applyList = _.filter(data, item => item.type !== 'member_invite');
-        }
-        callback(applyList);
-    });
+    if(_.get(workFlowList,'[0]')){
+        callback(workFlowList);
+    }else{
+        applyApproveManageAction.getSelfSettingWorkFlow({page_size: 1000}, (data) => {
+            if (data[0]) {
+                workFlowList = _.filter(data, item => item.type !== 'member_invite');
+            }
+            callback(workFlowList);
+        });
+    }
 };
 

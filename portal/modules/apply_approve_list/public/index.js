@@ -934,7 +934,6 @@ class ApplyApproveList extends React.Component {
             //联合跟进申请和拜访申请
             case APPLY_APPROVE_TYPES.VISITAPPLY:
                 applyDetailContent = <VisitDetail
-                    workFlowList={this.state.workFlowList}
                     applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
@@ -946,7 +945,6 @@ class ApplyApproveList extends React.Component {
                 break;
             case APPLY_APPROVE_TYPES.DOMAINAPPLY://舆情平台申请
                 applyDetailContent = <DomainDetail
-                    workFlowList={this.state.workFlowList}
                     applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
                     showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
@@ -1014,13 +1012,11 @@ class ApplyApproveList extends React.Component {
             case APPLY_APPROVE_TYPES.VISITAPPLY:
                 return (
                     <AddVisitApply
-                        workFlowList={this.state.workFlowList}
                         hideLeaveApplyAddForm={this.closeAddApplyForm}
                     />
                 );
             case APPLY_APPROVE_TYPES.DOMAINAPPLY://舆情平台申请
                 return <AddDomainApply
-                    workFlowList={this.state.workFlowList}
                     hideLeaveApplyAddForm={this.closeAddApplyForm}
                 />;
 
