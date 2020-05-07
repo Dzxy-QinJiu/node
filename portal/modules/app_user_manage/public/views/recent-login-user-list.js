@@ -818,22 +818,24 @@ class RecentLoginUsers extends React.Component {
         );
     };
 
+    renderLoadingBlock = () => {
+        if (this.state.isLoadingUserList) {
+            return (
+                <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
+            );
+        } else {
+            return null;
+        }
+    };
+
     render() {
         return (
             <div className="recent-login-users-container" data-tracename="近期登录用户列表">
                 {this.renderRecentLoginHeader()}
-                {
-                    this.state.isLoadingUserList ? (
-                        <Spinner
-                            loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}
-                        />
-                    ) : (
-                        <div className="recent-login-users-table-wrap">
-                            {this.renderTableContent()}
-                        </div>
-                    )
-                }
-
+                {this.renderLoadingBlock()}
+                <div className="recent-login-users-table-wrap">
+                    {this.renderTableContent()}
+                </div>
             </div>
         );
     }
