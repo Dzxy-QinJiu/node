@@ -11,10 +11,8 @@ exports.getTeamMemberCountList = function() {
     teamMemberCountAjax = teamAjax.getTeamMemberCountListAjax().sendRequest()
         .success(list => {
             Deferred.resolve(list);
-        }).error((error,statusText) => {
-            if(statusText !== 'abort') {
-                Deferred.resolve(error.responseText);
-            }
+        }).error((error) => {
+            Deferred.resolve(error.responseText);
         });
     return Deferred.promise();
 };
