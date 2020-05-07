@@ -461,7 +461,7 @@ const COLUMN_WIDTH = {
             <Steps current={currentLength + 1} status={stepStatus}>
                 {_.map(stepArr, (stepItem) => {
                     return (
-                        <Step title={stepItem.title} description={stepItem.description}/>
+                        <Step title={<span title={stepItem.title}>{stepItem.title}</span>} description={<span title={stepItem.description}>{stepItem.description}</span>}/>
                     );
                 })}
             </Steps>
@@ -596,7 +596,7 @@ const COLUMN_WIDTH = {
         if (flag === false) {
             ApplyViewDetailActions.setAppsSetting({appsSetting: this.appsSetting, userId: user_id});
         }
-        
+
     },
     getIntegrateConfig(){
         commonDataUtil.getIntegrationConfig().then(resultObj => {

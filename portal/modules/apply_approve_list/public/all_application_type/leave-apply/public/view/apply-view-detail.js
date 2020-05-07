@@ -287,7 +287,7 @@ class ApplyViewDetail extends React.Component {
             this.getNextCandidate(detailItem.id);
         }
     };
-    
+
     //显示客户详情
     showCustomerDetail(customerId) {
         //触发打开带拨打电话状态的客户详情面板
@@ -484,7 +484,7 @@ class ApplyViewDetail extends React.Component {
             <Steps current={currentLength + 1} status={stepStatus}>
                 {_.map(stepArr, (stepItem) => {
                     return (
-                        <Step title={stepItem.title} description={stepItem.description}/>
+                        <Step title={<span title={stepItem.title}>{stepItem.title}</span>} description={<span title={stepItem.description}>{stepItem.description}</span>}/>
                     );
                 })}
             </Steps>

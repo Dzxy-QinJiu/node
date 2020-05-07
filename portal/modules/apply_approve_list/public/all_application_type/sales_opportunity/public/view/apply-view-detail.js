@@ -719,7 +719,7 @@ class ApplyViewDetail extends React.Component {
             <Steps current={currentLength + 1} status={stepStatus} >
                 {_.map(stepArr,(stepItem) => {
                     return (
-                        <Step title={stepItem.title} description={stepItem.description}/>
+                        <Step title={<span title={stepItem.title}>{stepItem.title}</span>} description={<span title={stepItem.description}>{stepItem.description}</span>}/>
                     );
                 })}
             </Steps>
