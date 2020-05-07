@@ -28,10 +28,8 @@ exports.getAppLists = function() {
     getAppListsAjax = appAjaxTrans.getGrantApplicationListAjax().sendRequest()
         .success(function(list) {
             Deferred.resolve(list);
-        }).error(function(errorMsg, statusText) {
-            if(statusText !== 'abort') {
-                Deferred.reject(errorMsg.responseJSON);
-            }
+        }).error(function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
         }).timeout(function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         });
