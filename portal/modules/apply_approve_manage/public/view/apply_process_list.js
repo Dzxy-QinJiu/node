@@ -13,7 +13,7 @@ import {calculateHeight, APPLYAPPROVE_LAYOUT, getAllWorkFlowList} from '../utils
 var applyApproveManageStore = require('../store/apply_approve_manage_store');
 var applyApproveManageAction = require('../action/apply_approve_manage_action');
 var uuid = require('uuid/v4');
-
+let userData = require('PUB_DIR/sources/user-data');
 class AddAndShowApplyList extends React.Component {
     constructor(props) {
         super(props);
@@ -109,6 +109,8 @@ class AddAndShowApplyList extends React.Component {
                 showApplyList: applyList,
                 showAddWorkFlowName: false
             }, () => {
+                //把userData上的值也改掉
+                userData.getUserData().workFlowConfigs = applyList;
                 this.props.updateShowApplyList(applyList);
             });
         });

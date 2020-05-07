@@ -12,8 +12,8 @@ import TimePeriod from '../view/time_period';
 import CustomerSuggest from '../view/customer_suggest';
 import InputContent from '../view/input_container';
 import {checkDomainExist} from 'PUB_DIR/sources/utils/apply-common-data-utils';
-let workFlowList = [];//已经设置过的申请审批的流程
 var applyApproveManageAction = require('../action/apply_approve_manage_action');
+let userData = require('PUB_DIR/sources/user-data');
 const APPLYAPPROVE_LAYOUT = {
     TOPANDBOTTOM: 64,
     PADDINGHEIGHT: 24,
@@ -490,12 +490,15 @@ const maxFormItemLayout = {
     },
 };
 export const getAllWorkFlowList = function(callback){
-    if(_.get(workFlowList,'[0]')){
-        callback(workFlowList);
+    let userDataInfo = userData.getUserData();//配置过的流程列表
+    if(_.get(userDataInfo,'workFlowConfigs[0]')){
+        callback(userDataInfo.workFlowConfigs);
     }else{
         applyApproveManageAction.getSelfSettingWorkFlow({page_size: 1000}, (data) => {
+            let workFlowList = [];
             if (data[0]) {
                 workFlowList = _.filter(data, item => item.type !== 'member_invite');
+                userDataInfo.workFlowConfigs = workFlowList;
             }
             callback(workFlowList);
         });
