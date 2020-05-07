@@ -133,12 +133,7 @@ exports.getApplyList = function(req, res) {
 };
 
 exports.getMyApplyLists = function(req, res) {
-    AppUserService.getMyApplyLists(req, res).on('success', function(data) {
-        var result = {list: [],total: 0};
-        if(_.isArray(data)){
-            result.list = data;
-            result.total = data.length;
-        }
+    AppUserService.getMyApplyLists(req, res).on('success', function(result) {
         res.status(200).json(result);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

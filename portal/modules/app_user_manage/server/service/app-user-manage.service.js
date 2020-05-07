@@ -379,27 +379,55 @@ exports.getApplyList = function(req, res) {
         }
     });
 };
-function getMyApplyList(){
-
+function getMyApplyList(req, res){
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.get({
+            url: AppUserRestApis.getMyApplyLists,
+            req: req,
+            res: res
+        }, req.query,{
+            success: (eventEmitter, data) => {
+                resolve(data);
+            },
+            error: (eventEmitter, errorDesc) => {
+                reject(errorDesc);
+            }
+        });
+    });
+}
+function handleApplyData(data,setAll){
+    var result = {list: [],total: 0};
+    if(_.isArray(data)){
+        result.list = handleUserApplyData(data);
+        result.total = data.length;
+    }
+    if(setAll){
+        result.apply_type = 'all';
+    }
+    return result;
 }
 // 获取我审批的申请列表(包含我审批过的和待我审批的)（对应页面上的我审批的列表）
 exports.getMyApplyLists = function(req, res){
-
-
-    return restUtil.authRest.get({
-        url: AppUserRestApis.getMyApplyLists,
-        req: req,
-        res: res
-    }, req.query,{
-        success: function(eventEmitter, data) {
-            // 处理数据
-            if (data && data.list && data.list.length) {
-                var applyList = handleUserApplyData(data.list || []);
-                data.list = applyList;
-            }
-            eventEmitter.emit('success', data);
+    let emitter = new EventEmitter();
+    var firstLogin = req.query.firstLogin;
+    delete req.query.firstLogin;
+    let promiseList = [getMyApplyList(req, res)];
+    Promise.all(promiseList).then((dataList) => {
+        var data = handleApplyData(dataList[0]) || {};
+        if(_.get(data,'list.[0].approval_state') !== '0' && firstLogin === 'true'){
+            delete req.query.type;
+            getMyApplyList(req, res).then((data) => {
+                emitter.emit('success', handleApplyData(data,true));
+            } ).catch( (errorObj) => {
+                emitter.emit('error', errorObj);
+            });
+        }else{
+            emitter.emit('success', data);
         }
+    }, (errorMsg) => {
+        emitter.emit('error', errorMsg);
     });
+    return emitter;
 };
 /**
  * 获取我申请的申请列表*/

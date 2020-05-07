@@ -169,6 +169,9 @@ UserApplyStore.prototype.handleApplyLists = function(obj,flag){
             this.clearData();
         }
     } else {
+        if(_.get(obj,'data.apply_type')){
+            this.selectedApplyType = _.get(obj,'data.apply_type');
+        }
         this.applyListObj.loadingResult = '';
         this.applyListObj.errorMsg = '';
         this.totalSize = obj.data.total;//todo 我的审批的总值是不对的，页面暂时不展示
@@ -184,6 +187,7 @@ UserApplyStore.prototype.handleApplyLists = function(obj,flag){
             this.lastApplyId = this.applyListObj.list.length ? _.last(this.applyListObj.list).id : '';
             //如果是我的审批，listenScrollBottom要一直保持是true
             if(flag){
+                this.firstLogin = false;
                 if(_.get(applyList,'length') < this.pageSize){
                     this.listenScrollBottom = false;
                 }else{
