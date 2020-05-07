@@ -210,7 +210,9 @@ class CustomerMerge extends React.Component {
 
                 {contact.replaceName ? (
                     <div className="is-replace-contact-name">
-                        {Intl.get('common.modify.name.to', '修改姓名为')}“{contact.replaceName}”？
+                        <div className="question-content">
+                            {Intl.get('common.modify.name.to', '修改姓名为')}“{contact.replaceName}”？
+                        </div>
                         <Button
                             onClick={this.onReplaceContactNameCancelBtnClick.bind(this, contactIndex)}
                         >
