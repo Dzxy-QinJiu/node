@@ -70,6 +70,7 @@ function getUserPrivilegeAndStart() {
         storageUtil.setUserId(user.user_id);
         commonDataUtil.getAreaInfoAll();
         commonDataUtil.getGuideConfig();
+        commonDataUtil.getUserPosition();
         AppStarter.init({
             goIndex: false
         });

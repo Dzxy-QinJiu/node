@@ -1,4 +1,5 @@
 import {getUserData, setUserData} from '../user-data';
+import ajax from 'ant-ajax';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import teamAjaxTrans from 'MOD_DIR/common/public/ajax/team';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
@@ -817,4 +818,23 @@ exports.getRewardedCluesCount = () => {
         },
     });
     return Deferred.promise();
+};
+
+// 获取用户职务
+exports.getUserPosition = function(cb) {
+    const userData = getUserData();
+    const userId = _.get(userData, 'user_id');
+    const field = 'position';
+    let position = _.get(userData, field);
+
+    if(!position) {
+        ajax.send({
+            url: '/rest/base/v1/user/member/teamrole',
+            query: { member_id: userId }
+        }).then(result => {
+            //用户职务
+            position = _.get(result, 'teamrole_name', '');
+            setUserData(field, position);
+        });
+    }
 };
