@@ -81,7 +81,6 @@ exports.getUserInfo = function(req, res) {
                     //网站个性化
                     userData.websiteConfig = _.get(resultList, '[2].successData', {});
                 }
-
             } else {//普通销售、销售主管、销售总监等，通过我所在的团队及下级团队来判断是否是普通销售
                 let teamTreeList = _.get(resultList, '[2].successData', []);
                 userData.isCommonSales = getIsCommonSalesByTeams(userData.user_id, teamTreeList);
