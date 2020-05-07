@@ -27,7 +27,7 @@ let history = require('PUB_DIR/sources/history');
 import Trace from 'LIB_DIR/trace';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-const ACTIVE_DEFAULT_NUM = '1';
+const ACTIVE_DEFAULT_NUM = '0';
 class userScore extends React.Component {
     constructor(props) {
         super(props);
@@ -64,6 +64,11 @@ class userScore extends React.Component {
                 getProductList(productList => {
                     //有产品时，直接获取用户列表并展示
                     if (_.get(productList, '[0]')) {
+                        // uem的数据属性和非uem的不一样，把属性改成一致的
+                        _.forEach(productList, listItem => {
+                            listItem.app_id = listItem.id;
+                            listItem.app_name = listItem.name;
+                        });
                         this.setState({
                             showUserIntro: false,
                             appList: productList,
@@ -182,7 +187,7 @@ class userScore extends React.Component {
                 userIndicatorList = _.filter(userIndicatorList, item => item.indicator !== userScoreItem.indicator);
             });
         }
-        
+
         if (_.get(userIndicatorList, 'length')) {
             var indicator = _.get(userIndicatorList, '[0].indicator');
             if (this.isRateItem(_.get(userIndicatorList, '[0]'))) {
@@ -463,7 +468,7 @@ class userScore extends React.Component {
                     {_.map(appList, (appItem, idx) => {
                         var engageItem = _.find(userEngagements, item => item.app_id === appItem.app_id);
                         return (
-                            <TabPane tab={appItem.app_name} key={idx}>
+                            <TabPane tab={appItem.app_name} key={idx} >
                                 <div style={{ height: 220 }}>
                                     <GeminiScrollbar>
                                         {_.get(engageItem, 'detail[0]') || (!_.get(engageItem, 'detail[0]') && isEditUserEngagementRule) ?
