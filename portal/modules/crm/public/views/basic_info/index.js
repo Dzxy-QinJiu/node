@@ -1,3 +1,5 @@
+import crmAjax from 'MOD_DIR/crm/public/ajax';
+
 var React = require('react');
 import '../../css/crm-basic-info.less';
 import classNames from 'classnames';
@@ -262,29 +264,33 @@ class BasicData extends React.Component {
         let basicData = this.state.basicData;
         if(!_.get(basicData,'id') || this.state.isReleasingCustomer) return;
         let _this = this;
-        crmUtil.checkReleaseCustomer(this.state.releaseType, basicData, basicData.id, releaseCustomer);
+        crmUtil.checkSingleReleaseCustomer(this.state.releaseType, basicData, basicData.id, releaseCustomer);
 
-        function releaseCustomer(isReleaseOwner) {
-            Trace.traceEvent(ReactDOM.findDOMNode(this), '客户详情中释放客户');
-            _this.setState({isReleasingCustomer: true});
-            let reqData = {id: basicData.id};
-            if(_this.state.releaseReason) {
-                reqData.reason = _this.state.releaseReason;
-            }
-            reqData.type = isReleaseOwner ? RELEASE_TYPE.OWNER : RELEASE_TYPE.JOIN;
-            CrmBasicAjax.releaseCustomer(reqData).then(result => {
-                _this.setState({isReleasingCustomer: false});
-                //释放完客户后，需要将首页对应的工作设为已完成
-                if (window.location.pathname === '/home') {
-                    myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+        function releaseCustomer(result) {
+            if(_.isObject(result) && _.get(result, 'error')) {
+                _this.setState({unFillReasonTip: _.get(result, 'error')});
+            }else if(_.isBoolean(result)) {
+                Trace.traceEvent(ReactDOM.findDOMNode(this), '客户详情中释放客户');
+                _this.setState({isReleasingCustomer: true});
+                let reqData = {id: basicData.id};
+                if(_this.state.releaseReason) {
+                    reqData.reason = _this.state.releaseReason;
                 }
-                CrmAction.afterReleaseCustomer(basicData.id);
-                //需要关闭面板
-                _.isFunction(_this.props.hideRightPanel) && _this.props.hideRightPanel($(ReactDOM.findDOMNode(_this)));
-            }, (errorMsg) => {
-                _this.setState({isReleasingCustomer: false});
-                message.error(errorMsg);
-            });
+                reqData.type = result ? RELEASE_TYPE.OWNER : RELEASE_TYPE.JOIN;
+                CrmBasicAjax.releaseCustomer(reqData).then(result => {
+                    _this.setState({isReleasingCustomer: false});
+                    //释放完客户后，需要将首页对应的工作设为已完成
+                    if (window.location.pathname === '/home') {
+                        myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+                    }
+                    CrmAction.afterReleaseCustomer(basicData.id);
+                    //需要关闭面板
+                    _.isFunction(_this.props.hideRightPanel) && _this.props.hideRightPanel($(ReactDOM.findDOMNode(_this)));
+                }, (errorMsg) => {
+                    _this.setState({isReleasingCustomer: false});
+                    message.error(errorMsg);
+                });
+            }
         }
     };
 
@@ -507,6 +513,13 @@ class BasicData extends React.Component {
                     <Icon type="exclamation-circle"/>
                     <span>{releaseTip}</span>
                 </div>
+                {/*个人版或者普通销售，不展示释放类型*/}
+                {checkVersionAndType().personal || userData.getUserData().isCommonSales ? null : (
+                    <Radio.Group onChange={this.onTypeChange} value={this.state.releaseType}>
+                        <Radio value={RELEASE_TYPE.OWNER}>{Intl.get('crm.6', '负责人')}</Radio>
+                        <Radio value={RELEASE_TYPE.JOIN}>{Intl.get('crm.second.sales', '联合跟进人')}</Radio>
+                    </Radio.Group>
+                )}
                 <Input.TextArea
                     placeholder={Intl.get('crm.customer.release.reason', '请填写释放理由')}
                     value={this.state.releaseReason}

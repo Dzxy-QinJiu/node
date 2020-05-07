@@ -503,7 +503,7 @@ exports.getCustomerStageByTeamId = (req, res) => {
     });
 };
 
-// 验证是否有权限处理跟进人
+// 验证是否有权限处理负责人
 exports.checkCustomerUpdateUser = (req, res) => {
     crmService.checkCustomerUpdateUser(req, res).on('success', (data) => {
         res.status(200).json(data);

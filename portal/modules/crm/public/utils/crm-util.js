@@ -4,7 +4,6 @@ var userData = require('../../../../public/sources/user-data');
 import crmPrivilegeConst from '../privilege-const';
 import { checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
 import crmAjax from '../ajax';
-import {message} from 'antd';
 // 跟进记录类型常量
 const CALL_RECORD_TYPE = {
     PHONE: 'phone',//呼叫中心 - effung的电话系统（讯时+usterisk）
@@ -309,7 +308,7 @@ exports.BATCH_RELEASE_TYPE = {
 };
 
 //单个释放客户的验证处理
-exports.checkReleaseCustomer = function (releaseType, customer, customerId, releaseCustomer) {
+exports.checkSingleReleaseCustomer = function(releaseType, customer, customerId, releaseCustomer) {
     let isReleaseOwner = true;//是否释放负责人
     let isCommonSales = userData.getUserData().isCommonSales;
     if(isCommonSales) {
@@ -324,12 +323,12 @@ exports.checkReleaseCustomer = function (releaseType, customer, customerId, rele
             if(res) {
                 _.isFunction(releaseCustomer) && releaseCustomer(isReleaseOwner);
             }else {
-                message.error(Intl.get('crm.release.no.permissions', '您不能释放共同跟进的客户'));
+                _.isFunction(releaseCustomer) && releaseCustomer({error: Intl.get('crm.release.no.permissions', '您不能释放共同跟进的客户')});
             }
         }, (errorMsg) => {
-            message.error(errorMsg);
+            _.isFunction(releaseCustomer) && releaseCustomer({error: errorMsg});
         });
-    }else {//释放联合跟进人不需要请求接口验证
+    }else {
         _.isFunction(releaseCustomer) && releaseCustomer(isReleaseOwner);
     }
 };

@@ -1133,28 +1133,32 @@ class Crm extends React.Component {
         if(this.state.isReleasingCustomer) return;
         let _this = this;
         let customer = _.find(this.state.curPageCustomers, customer => customer.id === customerId);
-        crmUtil.checkReleaseCustomer(this.state.releaseType, customer, customerId, releaseCustomer);
+        crmUtil.checkSingleReleaseCustomer(this.state.releaseType, customer, customerId, releaseCustomer);
 
-        function releaseCustomer(isReleaseOwner) {
-            _this.setState({isReleasingCustomer: true});
-            let reqData = {id: customerId};
-            reqData.type = isReleaseOwner ? RELEASE_TYPE.OWNER : RELEASE_TYPE.JOIN;
-            if(_this.state.releaseReason) {
-                reqData.reason = _this.state.releaseReason;
-            }
-            crmAjax.releaseCustomer(reqData).then(result => {
-                _this.setState({isReleasingCustomer: false});
-                //从选中客户列表里移除已释放项
-                if(_this.state.selectedCustomer.length) {
-                    _this.setState({
-                        selectedCustomer: _.filter(_this.state.selectedCustomer, item => customerId !== item.id)
-                    });
+        function releaseCustomer(result) {
+            if(_.isObject(result) && _.get(result, 'error')) {
+                _this.setState({unFillReasonTip: _.get(result, 'error')});
+            }else if(_.isBoolean(result)) {
+                _this.setState({isReleasingCustomer: true});
+                let reqData = {id: customerId};
+                reqData.type = result ? RELEASE_TYPE.OWNER : RELEASE_TYPE.JOIN;
+                if(_this.state.releaseReason) {
+                    reqData.reason = _this.state.releaseReason;
                 }
-                CrmAction.afterReleaseCustomer(customerId);
-            }, (errorMsg) => {
-                _this.setState({isReleasingCustomer: false});
-                message.error(errorMsg);
-            });
+                crmAjax.releaseCustomer(reqData).then(result => {
+                    _this.setState({isReleasingCustomer: false});
+                    //从选中客户列表里移除已释放项
+                    if(_this.state.selectedCustomer.length) {
+                        _this.setState({
+                            selectedCustomer: _.filter(_this.state.selectedCustomer, item => customerId !== item.id)
+                        });
+                    }
+                    CrmAction.afterReleaseCustomer(customerId);
+                }, (errorMsg) => {
+                    _this.setState({isReleasingCustomer: false});
+                    message.error(errorMsg);
+                });
+            }
         }
     };
 
