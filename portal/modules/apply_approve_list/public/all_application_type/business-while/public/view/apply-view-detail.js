@@ -40,7 +40,11 @@ import {APPLY_APPROVE_TYPES, APPLY_FINISH_STATUS,LEAVE_TIME_RANGE} from 'PUB_DIR
 import {disabledDate, calculateSelectType} from 'PUB_DIR/sources/utils/common-method-util';
 import {calculateTotalTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 import classNames from 'classnames';
-import {getApplyListDivHeight,transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+import {
+    getApplyListDivHeight,
+    renderStepContent,
+    transferBtnContent
+} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 
 class ApplyViewDetail extends React.Component {
     constructor(props) {
@@ -827,15 +831,7 @@ class ApplyViewDetail extends React.Component {
                 description: ''
             });
         }
-        return (
-            <Steps current={currentLength + 1} status={stepStatus}>
-                {_.map(stepArr, (stepItem) => {
-                    return (
-                        <Step title={<span title={stepItem.title}>{stepItem.title}</span>} description={<span title={stepItem.description}>{stepItem.description}</span>}/>
-                    );
-                })}
-            </Steps>
-        );
+        return renderStepContent(currentLength,stepStatus,stepArr);
     };
     passOrRejectApplyApprove = (confirmType) => {
         var detailInfoObj = this.state.detailInfoObj.info;

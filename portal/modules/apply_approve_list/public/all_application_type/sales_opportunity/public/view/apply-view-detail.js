@@ -37,7 +37,12 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import {APPLY_APPROVE_TYPES,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
-import {transferBtnContent,getSalesManList,renderApproveBtn} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+import {
+    transferBtnContent,
+    getSalesManList,
+    renderApproveBtn,
+    renderStepContent
+} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import classNames from 'classnames';
 
 class ApplyViewDetail extends React.Component {
@@ -715,15 +720,7 @@ class ApplyViewDetail extends React.Component {
         }
 
 
-        return (
-            <Steps current={currentLength + 1} status={stepStatus} >
-                {_.map(stepArr,(stepItem) => {
-                    return (
-                        <Step title={<span title={stepItem.title}>{stepItem.title}</span>} description={<span title={stepItem.description}>{stepItem.description}</span>}/>
-                    );
-                })}
-            </Steps>
-        );
+        return renderStepContent(currentLength,stepStatus,stepArr);
     };
 
     //渲染申请单详情

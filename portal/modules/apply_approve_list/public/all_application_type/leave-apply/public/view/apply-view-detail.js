@@ -38,7 +38,7 @@ import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+import {renderStepContent, transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import classNames from 'classnames';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
@@ -480,15 +480,7 @@ class ApplyViewDetail extends React.Component {
                 description: ''
             });
         }
-        return (
-            <Steps current={currentLength + 1} status={stepStatus}>
-                {_.map(stepArr, (stepItem) => {
-                    return (
-                        <Step title={<span title={stepItem.title}>{stepItem.title}</span>} description={<span title={stepItem.description}>{stepItem.description}</span>}/>
-                    );
-                })}
-            </Steps>
-        );
+        return renderStepContent(currentLength,stepStatus,stepArr);
     };
     passOrRejectApplyApprove = (confirmType) => {
         var detailInfoObj = this.state.detailInfoObj.info;

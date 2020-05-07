@@ -55,7 +55,11 @@ import ApplyHistory from 'CMP_DIR/apply-components/apply-history';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {getAllUserList,getNotSalesRoleUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import CustomerLabel from 'CMP_DIR/customer_label';
-import {getApplyListDivHeight,transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+import {
+    getApplyListDivHeight,
+    renderStepContent,
+    transferBtnContent
+} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 //表单默认配置
 var appConfig = {
     //默认没id，用id区分增加和修改类型，有id是修改，没id是增加
@@ -457,15 +461,7 @@ const COLUMN_WIDTH = {
                 description: ''
             });
         }
-        return (
-            <Steps current={currentLength + 1} status={stepStatus}>
-                {_.map(stepArr, (stepItem) => {
-                    return (
-                        <Step title={<span title={stepItem.title}>{stepItem.title}</span>} description={<span title={stepItem.description}>{stepItem.description}</span>}/>
-                    );
-                })}
-            </Steps>
-        );
+        return renderStepContent(currentLength,stepStatus,stepArr);
     },
     renderSameCustomerHistoricalApply(){
         var sameHistoryApplyLists = this.state.sameHistoryApplyLists;

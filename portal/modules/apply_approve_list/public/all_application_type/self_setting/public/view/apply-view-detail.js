@@ -40,7 +40,12 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_APPROVE_TYPES,APPLY_FINISH_STATUS,ASSIGN_TYPE,TOP_NAV_HEIGHT,APPLY_LIST_LAYOUT_CONSTANTS,LEAVE_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import {ALL_COMPONENTS, SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
-import {transferBtnContent,getSalesManList,renderApproveBtn} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+import {
+    transferBtnContent,
+    getSalesManList,
+    renderApproveBtn,
+    renderStepContent
+} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import classNames from 'classnames';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
@@ -701,15 +706,7 @@ class ApplyViewDetail extends React.Component {
                 description: ''
             });
         }
-        return (
-            <Steps current={currentLength + 1} status={stepStatus}>
-                {_.map(stepArr, (stepItem) => {
-                    return (
-                        <Step title={<span title={stepItem.title}>{stepItem.title}</span>} description={<span title={stepItem.description}>{stepItem.description}</span>}/>
-                    );
-                })}
-            </Steps>
-        );
+        return renderStepContent(currentLength,stepStatus,stepArr);
     };
     passOrRejectApplyApprove = (confirmType) => {
         var assignedCandidateUserIds = '';//要分配下一节点的负责人的id
