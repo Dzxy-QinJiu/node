@@ -513,7 +513,7 @@ exports.getCustomerStageByTeamId = (teamId) => {
     return Deferred.promise();
 };
 
-// 验证是否有权限处理跟进人
+// 验证是否有权限处理负责人
 exports.checkCrmUpdateUserByCustomerId = (customerId) => {
     let Deferred = $.Deferred();
     $.ajax({

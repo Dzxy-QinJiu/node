@@ -99,7 +99,7 @@ var crmRestApis = {
     getCustomerPoolFilterItems: '/customerpool/resource/customers/field/aggregation',
     // 通过团队id获取客户阶段（销售流程）
     getCustomerStageByTeamId: '/rest/customer/v3/salesprocess/:team_id',
-    // 验证是否有权限处理跟进人
+    // 验证是否有权限处理负责人
     checkCustomerUpdateUser: '/rest/customer/v3/customer/check/update/user/:customer_id',
     // 是否有权限处理联合跟进人
     checkCustomerJoinUser: '/rest/customer/v3/customer/check/join/user/:customer_id',
@@ -622,7 +622,7 @@ exports.getCustomerPoolFilterItems = function(req, res) {
             res: res,
         }, req.query);
 };
-//验证是否有权限处理跟进人
+//验证是否有权限处理负责人
 exports.checkCustomerUpdateUser = function(req, res) {
     return restUtil.authRest.get(
         {

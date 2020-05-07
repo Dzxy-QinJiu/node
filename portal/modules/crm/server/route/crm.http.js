@@ -430,7 +430,7 @@ module.exports = {
                 needLogin: true
             },
             privileges: [crmPrivilegeConst.CRM_GET_SALES_PROCESS]
-        }, {// 验证是否有权限处理跟进人
+        }, {// 验证是否有权限处理负责人
             method: 'get',
             path: '/rest/customer/check/update/:customer_id',
             handler: 'checkCustomerUpdateUser',

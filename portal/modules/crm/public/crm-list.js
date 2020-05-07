@@ -59,6 +59,7 @@ import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/util
 import crmPrivilegeConst from './privilege-const';
 
 const RELEASE_TYPE = crmUtil.RELEASE_TYPE;
+const BATCH_RELEASE_TYPE = crmUtil.BATCH_RELEASE_TYPE;
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -97,6 +98,11 @@ const DEFAULT_RANGE_PARAM = {
     to: '',
     type: 'time',
     name: 'start_time'
+};
+
+const RELEASE_OPERATOR_TYPE = {
+    SINGLE: 'single_release',
+    BATCH: 'batch_release'
 };
 
 //查看是否可以继续添加客户
@@ -1125,53 +1131,34 @@ class Crm extends React.Component {
     //释放客户
     releaseCustomer = (customerId) => {
         if(this.state.isReleasingCustomer) return;
-        let isRequest = true;
         let _this = this;
-        let type = _this.state.releaseType;
-        if(this.isCommonSales()) {
-            let customer = _.find(this.state.curPageCustomers, customer => customer.id === customerId);
-            //普通销售需判断是当前释放的这个客户的负责人还是联合跟进人
-            isRequest = _.isEqual(_.get(customer, 'user_id'), userData.getUserData().user_id);
-        }else if(this.state.releaseType === RELEASE_TYPE.JOIN) {//释放联合跟进人
-            isRequest = false;
-        }
-        if(isRequest) {
-            type = RELEASE_TYPE.OWNER;
-            // 单个释放需判断，验证是否有权限处理负责人
-            crmAjax.checkCrmUpdateUserByCustomerId(customerId).then((res) => {
-                if(res) {
-                    releaseCustomer();
-                }else {
-                    message.error(Intl.get('crm.release.no.permissions', '您不能释放共同跟进的客户'));
-                }
-            }, (errorMsg) => {
-                message.error(errorMsg);
-            });
-        }else {//释放联合跟进人不需要请求接口验证
-            type = RELEASE_TYPE.JOIN;
-            releaseCustomer();
-        }
+        let customer = _.find(this.state.curPageCustomers, customer => customer.id === customerId);
+        crmUtil.checkSingleReleaseCustomer(this.state.releaseType, customer, customerId, releaseCustomer);
 
-        function releaseCustomer() {
-            _this.setState({isReleasingCustomer: true});
-            let reqData = {id: customerId};
-            reqData.type = type;
-            if(_this.state.releaseReason) {
-                reqData.reason = _this.state.releaseReason;
-            }
-            crmAjax.releaseCustomer(reqData).then(result => {
-                _this.setState({isReleasingCustomer: false});
-                //从选中客户列表里移除已释放项
-                if(_this.state.selectedCustomer.length) {
-                    _this.setState({
-                        selectedCustomer: _.filter(_this.state.selectedCustomer, item => customerId !== item.id)
-                    });
+        function releaseCustomer(result) {
+            if(_.isObject(result) && _.get(result, 'error')) {
+                _this.setState({unFillReasonTip: _.get(result, 'error')});
+            }else if(_.isBoolean(result)) {
+                _this.setState({isReleasingCustomer: true});
+                let reqData = {id: customerId};
+                reqData.type = result ? RELEASE_TYPE.OWNER : RELEASE_TYPE.JOIN;
+                if(_this.state.releaseReason) {
+                    reqData.reason = _this.state.releaseReason;
                 }
-                CrmAction.afterReleaseCustomer(customerId);
-            }, (errorMsg) => {
-                _this.setState({isReleasingCustomer: false});
-                message.error(errorMsg);
-            });
+                crmAjax.releaseCustomer(reqData).then(result => {
+                    _this.setState({isReleasingCustomer: false});
+                    //从选中客户列表里移除已释放项
+                    if(_this.state.selectedCustomer.length) {
+                        _this.setState({
+                            selectedCustomer: _.filter(_this.state.selectedCustomer, item => customerId !== item.id)
+                        });
+                    }
+                    CrmAction.afterReleaseCustomer(customerId);
+                }, (errorMsg) => {
+                    _this.setState({isReleasingCustomer: false});
+                    message.error(errorMsg);
+                });
+            }
         }
     };
 
@@ -1182,14 +1169,13 @@ class Crm extends React.Component {
             query_param: {},
             update_param: {release_customer: true}
         };
-        let {ownerCustomers, followUpCustomers, hasAllExist} = this.getSelectedTypeCustomers(this.state.selectedCustomer);
         //添加释放理由
         if(this.state.releaseReason) {
             condition.update_param.reason = this.state.releaseReason;
         }
-        let type = 'release_pool';
+        let type = BATCH_RELEASE_TYPE.OWNER;
         if(this.state.releaseType === RELEASE_TYPE.JOIN) {//添加释放的类型（负责人/联合跟进人）
-            type = 'release_pool_join_user';
+            type = BATCH_RELEASE_TYPE.JOIN;
         }
         //选中全部搜索结果时，将搜索条件传给后端
         //后端会将符合这个条件的客户释放
@@ -1199,17 +1185,19 @@ class Crm extends React.Component {
             //只在当前页进行选择时，将选中项的id传给后端
             //后端检测到传递的id后，将会对这些id的客户进行迁移
             condition.query_param.id = _.map(this.state.selectedCustomer, 'id');
-            //普通销售批量操作，两种都有时，传选择释放的那一类型(负责人、联合跟进人)的客户ids
+            //普通销售批量操作
             if(this.isCommonSales()) {
-                let list = condition.query_param.id;
+                let {ownerCustomers, followUpCustomers, hasAllExist} = this.getSelectedTypeCustomers(this.state.selectedCustomer);
+                let list = [];
+                //两种都有时，并且选择释放的是联合跟进人或者只有一种存在且选的都是作为联合跟进人时
                 if(hasAllExist && this.state.releaseType === RELEASE_TYPE.JOIN
                     || !hasAllExist && followUpCustomers.length
                 ) {
                     list = followUpCustomers;
-                    type = 'release_pool_join_user';
-                }else {
+                    type = BATCH_RELEASE_TYPE.JOIN;
+                }else {//两种都有时，选择释放的是负责人时或者只有一种存在且选的都是作为负责人时
                     list = ownerCustomers;
-                    type = 'release_pool';
+                    type = BATCH_RELEASE_TYPE.OWNER;
                 }
                 condition.query_param.id = list;
             }
@@ -1421,7 +1409,7 @@ class Crm extends React.Component {
                             </Button>
                         </PrivilegeChecker>
                         {/*除了运营不能释放客户，管理员、销售都可以释放*/}
-                        {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : this.renderReleaseReasonBlock(content, this.batchReleaseCustomer, 'batch')}
+                        {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : this.renderReleaseReasonBlock(content, this.batchReleaseCustomer, RELEASE_OPERATOR_TYPE.BATCH)}
                     </React.Fragment>
                     : (
                         <React.Fragment>
@@ -2110,8 +2098,10 @@ class Crm extends React.Component {
     }
 
     isShowReleaseSelectType(type) {
-        if(this.isCommonSales()) {//普通销售
-            if(type === 'single') {//单个释放时，不展示释放类型
+        if(checkVersionAndType().personal) {//个人版，不展示释放类型
+            return false;
+        }else if(this.isCommonSales()) {//普通销售
+            if(type === RELEASE_OPERATOR_TYPE.SINGLE) {//单个释放时，不展示释放类型
                 return false;
             }else {//批量释放时,若两个都有，则展示释放类型
                 return this.getSelectedTypeCustomers(this.state.selectedCustomer).hasAllExist;
@@ -2128,14 +2118,12 @@ class Crm extends React.Component {
                     <Icon type="exclamation-circle"/>
                     <span>{releaseTip}</span>
                 </div>
-                {/*todo 暂时注释掉选择类型*/}
-                {/*普通销售单个提取或者是个人版本不展示选择释放类型*/}
-                {checkVersionAndType().personal || !this.isShowReleaseSelectType(type) ? null : (
+                {this.isShowReleaseSelectType(type) ? (
                     <Radio.Group onChange={this.onTypeChange} value={this.state.releaseType}>
                         <Radio value={RELEASE_TYPE.OWNER}>{Intl.get('crm.6', '负责人')}</Radio>
                         <Radio value={RELEASE_TYPE.JOIN}>{Intl.get('crm.second.sales', '联合跟进人')}</Radio>
                     </Radio.Group>
-                )}
+                ) : null}
                 <Input.TextArea
                     placeholder={Intl.get('crm.customer.release.reason', '请填写释放理由')}
                     value={this.state.releaseReason}
@@ -2363,7 +2351,7 @@ class Crm extends React.Component {
                                         </Popconfirm>
                                 ) : null}
                             </span>
-                            {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : this.renderReleaseReasonBlock(content, this.releaseCustomer.bind(this, record.id), 'single')}
+                            {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : this.renderReleaseReasonBlock(content, this.releaseCustomer.bind(this, record.id), RELEASE_OPERATOR_TYPE.SINGLE)}
                         </span>
                     );
                 }
