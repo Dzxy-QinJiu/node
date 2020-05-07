@@ -139,7 +139,13 @@ class Production extends React.Component {
                 if (this.props.formType === util.CONST.ADD) {
                     production.create_time = new Date().getTime();
                     ProductionFormAction.setSaveFlag(true);
-                    ProductionFormAction.addProduction(production);
+                    ProductionFormAction.addProduction(production, (result) => {
+                        if (_.isObject(result)) {
+                            this.props.afterOperation(this.props.formType, result);
+                        } else {
+                            message.error(result);
+                        }
+                    });
                 }
                 production.id = oldProduct.id;
                 //设置正在保存中
@@ -156,7 +162,6 @@ class Production extends React.Component {
 
     //去掉保存后提示信息
     hideSaveTooltip = () => {
-        this.props.afterOperation(this.props.formType, this.state.savedProduction);
         this.props.openRightPanel();
     };
 
