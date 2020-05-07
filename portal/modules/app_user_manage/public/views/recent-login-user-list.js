@@ -3,7 +3,7 @@
  * Created by wangliping on 2017/8/31.
  */
 require('../css/recent-login-user-list.less');
-import { Select} from 'antd';
+import { Select, Button } from 'antd';
 import ShareObj from '../util/app-id-share-util';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
@@ -45,6 +45,7 @@ import { AntcTable } from 'antc';
 import userManagePrivilege from '../privilege-const';
 import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
+import Spinner from 'CMP_DIR/spinner';
 
 class RecentLoginUsers extends React.Component {
     constructor(props) {
@@ -525,19 +526,32 @@ class RecentLoginUsers extends React.Component {
         if (!end_time) {
             end_time = moment().endOf('day').valueOf();
         }
-        this.setState({ start_time: start_time, end_time: end_time, lastUserId: '' });
-        setTimeout(() => this.getRecentLoginUsers());
+        this.setState({
+            start_time: start_time,
+            end_time: end_time,
+            lastUserId: '',
+        }, () => {
+            this.getRecentLoginUsers();
+        });
     }
 
     onUserTypeChange(type) {
-        this.setState({ user_type: type, lastUserId: '' });
-        setTimeout(() => this.getRecentLoginUsers());
+        this.setState({
+            user_type: type,
+            lastUserId: '',
+        }, () => {
+            this.getRecentLoginUsers();
+        });
     }
 
     // 是否过期类型的选择
     onFilterTypeChange(type) {
-        this.setState({ filter_type: type, lastUserId: '' });
-        setTimeout(() => this.getRecentLoginUsers());
+        this.setState({
+            filter_type: type,
+            lastUserId: '',
+        }, () => {
+            this.getRecentLoginUsers();
+        });
     }
 
     // 修改所选中的团队
@@ -559,8 +573,13 @@ class RecentLoginUsers extends React.Component {
             RecentUserAction.getSelectedTeamSalesMembers();
         }
 
-        this.setState({ team_ids: team_ids, lastUserId: '', selectedTeamIds: selectedTeamIds});
-        setTimeout(() => this.getRecentLoginUsers());
+        this.setState({
+            team_ids: team_ids,
+            lastUserId: '',
+            selectedTeamIds: selectedTeamIds
+        }, () => {
+            this.getRecentLoginUsers();
+        });
     }
 
     onMemberChange = (value) => {
@@ -619,6 +638,14 @@ class RecentLoginUsers extends React.Component {
                 isNeedTerminalId={true}
             />
         );
+    }
+
+    handleRefresh = () => {
+        this.setState({
+            lastUserId: ''
+        }, () => {
+            this.getRecentLoginUsers();
+        });
     }
 
     renderRecentLoginHeader(){
@@ -719,6 +746,11 @@ class RecentLoginUsers extends React.Component {
                                 }
                             </SelectFullWidth>
                         </div>
+                        <div className="btn-item refresh-btn">
+                            <Button onClick={this.handleRefresh} title={Intl.get('common.refresh', '刷新')}>
+                                <i className="iconfont icon-shuaxin"></i>
+                            </Button>
+                        </div>
                     </div>
                 </ButtonZones>
             </div>
@@ -790,9 +822,18 @@ class RecentLoginUsers extends React.Component {
         return (
             <div className="recent-login-users-container" data-tracename="近期登录用户列表">
                 {this.renderRecentLoginHeader()}
-                <div className="recent-login-users-table-wrap">
-                    {this.renderTableContent()}
-                </div>
+                {
+                    this.state.isLoadingUserList ? (
+                        <Spinner
+                            loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}
+                        />
+                    ) : (
+                        <div className="recent-login-users-table-wrap">
+                            {this.renderTableContent()}
+                        </div>
+                    )
+                }
+
             </div>
         );
     }

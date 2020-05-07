@@ -741,7 +741,7 @@ class LogView extends React.Component {
                             />
                         </div>
                         <div className="user_audit_log_all">
-                            <Button onClick={this.handleRefresh} className="btn-item" title="刷新">
+                            <Button onClick={this.handleRefresh} className="btn-item" title={Intl.get('common.refresh', '刷新')}>
                                 <i className="iconfont icon-shuaxin"></i>
                             </Button>
                         </div>
