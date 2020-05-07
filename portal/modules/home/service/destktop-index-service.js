@@ -93,20 +93,16 @@ exports.getUserInfo = function(req, res) {
                 //已经配置过的流程
                 if(hasWorkFlowPrivilege){
                     userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[3].successData', []));
-                    //用户职务
-                    userData.position = _.get(resultList, '[4].successData.teamrole_name', '');
-                    //刷新时，需要重新获取websiteConfig
-                    if (!req.session.websiteConfig) {
-                        //网站个性化
-                        userData.websiteConfig = _.get(resultList, '[5].successData', {});
-                    }
-                } else {
-                    //用户职务
-                    userData.position = _.get(resultList, '[3].successData.teamrole_name', '');
                     //刷新时，需要重新获取websiteConfig
                     if (!req.session.websiteConfig) {
                         //网站个性化
                         userData.websiteConfig = _.get(resultList, '[4].successData', {});
+                    }
+                } else {
+                    //刷新时，需要重新获取websiteConfig
+                    if (!req.session.websiteConfig) {
+                        //网站个性化
+                        userData.websiteConfig = _.get(resultList, '[3].successData', {});
                     }
                 }
             }
