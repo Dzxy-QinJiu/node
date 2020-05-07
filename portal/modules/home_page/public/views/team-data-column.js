@@ -262,7 +262,7 @@ class TeamDataColumn extends React.Component {
         //销售
         if (this.isSalesRole()) {
             //销售经理
-            if (userData.getUserData().isCommonSales && !isEefungCustomerManager) {
+            if (userData.getUserData().isCommonSales && !isEefungCustomerManager()) {
                 type = DATE_TYPE_KEYS.TODAY;
             } else {//销售总监、主管、客户经理
                 //昨天
