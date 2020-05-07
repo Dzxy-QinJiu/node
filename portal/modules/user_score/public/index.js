@@ -65,13 +65,15 @@ class userScore extends React.Component {
                     //有产品时，直接获取用户列表并展示
                     if (_.get(productList, '[0]')) {
                         // uem的数据属性和非uem的不一样，把属性改成一致的
-                        _.forEach(productList, listItem => {
-                            listItem.app_id = listItem.id;
-                            listItem.app_name = listItem.name;
+                        var appList = _.map(productList, listItem => {
+                            return {
+                                app_id: listItem.id,
+                                app_name: listItem.name,
+                            };
                         });
                         this.setState({
                             showUserIntro: false,
-                            appList: productList,
+                            appList: appList,
                             getUserIntegrationConfigLoading: false,
                             getUserIntegrationConfigErrMsg: ''
                         });
