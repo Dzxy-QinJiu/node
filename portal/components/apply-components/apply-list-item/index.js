@@ -6,6 +6,8 @@
 var classNames = require('classnames');
 require('./index.less');
 import {getApplyStateText, getTimeStr, getApplyTopicText} from 'PUB_DIR/sources/utils/common-method-util';
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+
 class ApplyListItem extends React.Component {
     constructor(props) {
         super(props);
@@ -34,6 +36,13 @@ class ApplyListItem extends React.Component {
         var currentClass = classNames('apply-list-item',{
             current: obj.id === this.state.selectedDetailItem.id && index === this.state.selectedDetailItemIdx
         });
+        let customerName = _.get(obj, 'detail.customer_name');
+        // 机会申请、预约拜访申请显示客户名
+        if (_.get(obj, 'workflow_type') === APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES) { // 机会申请
+            customerName = _.get(obj, 'detail.customer.name');
+        } else if ( _.get(obj, 'workflow_type') === APPLY_APPROVE_TYPES.VISITAPPLY) { // 预约拜访申请
+            customerName = _.get(obj, 'detail.customers[0].name');
+        }
         return (
             <li key={obj.id} className={currentClass}
                 onClick={this.props.clickShowDetail.bind(this, obj, index)}
@@ -46,10 +55,13 @@ class ApplyListItem extends React.Component {
                         </span>
                         <em className={btnClass}>{getApplyStateText(obj)}</em>
                     </dt>
-                    {_.get(obj, 'detail.customer_name') ?
-                        <dd className="clearfix" title={_.get(obj, 'detail.customer_name')}>
-                            <span>{_.get(obj, 'detail.customer_name')}</span>
-                        </dd> : null}
+                    {
+                        customerName ? (
+                            <dd className="clearfix" title={customerName}>
+                                <span>{customerName}</span>
+                            </dd>
+                        ) : null
+                    }
 
                     <dd className="clearfix">
                         <span>{Intl.get('user.apply.presenter', '申请人')}:{_.get(obj, 'applicant.nick_name')}</span>
