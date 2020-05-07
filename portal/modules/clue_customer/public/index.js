@@ -363,6 +363,19 @@ class ClueCustomer extends React.Component {
             this.setState({
                 selectedClues: []
             });
+            //批量操作删除之后，
+            //当前页都删除了，下一页还有数据的时候
+            if(isWillDistribute //如果选中的是待分配的tab
+             && _.get(this.state,'agg_list.willDistribute','0') > 0 //待分配的数字大于0
+             && _.isEmpty(this.state.curClueList)//当前列表的为空
+             ){
+                //刷新重新获取列表
+                //做1s延迟为了跟数据库同步
+                setTimeout(() => {
+                    this.getClueList();
+                },1000);
+
+            }
         }
     };
     removeClueItem = (item) => {
@@ -1628,7 +1641,6 @@ class ClueCustomer extends React.Component {
             clueFilterAction.setFilterClueAvailbility();
         }else{
             clueFilterAction.setFilterType(selectedType);
-            clueFilterAction.setFilterType(selectedType);
         }
         this.onTypeChange();
         this.setCurrentMoreBtnStatus('');
@@ -2358,6 +2370,14 @@ class ClueCustomer extends React.Component {
         var clueCustomerTypeFilter = this.getFilterStatus();
         return clueCustomerTypeFilter.status === SELECT_TYPE.WILL_TRACE;
     };
+    isHasTraceStatusTabActive = () => {
+        var clueCustomerTypeFilter = this.getFilterStatus();
+        return clueCustomerTypeFilter.status === SELECT_TYPE.HAS_TRACE;
+    };
+    isInvalidStatusTabActive = () => {
+        let filterStore = clueFilterStore.getState();
+        return filterStore.filterClueAvailability === AVALIBILITYSTATUS.INAVALIBILITY;
+    }
     //不同类别处理完线索后，处理页面上已选中线索的数组
     handleSelectedClue = (item) => {
         var selectedClueList = _.filter(this.state.selectedClues, selectItem => selectItem.id !== item.id);
@@ -2981,6 +3001,25 @@ class ClueCustomer extends React.Component {
         });
         //当最后一个推送完成后
         if(_.isEqual(taskInfo.running, 0)) {
+            //批量操作删除之后，
+            //当前页都删除了，下一页还有数据的时候
+            var isWillTraceType = this.isWillTraceStatusTabActive()//如果选中的是待跟进的tab
+                && _.get(this.state,'agg_list.willTrace','0') > 0;//待跟进的数字大于0
+            var isHasTraceType = this.isHasTraceStatusTabActive()//如果选中的是已跟进的tab
+                && _.get(this.state,'agg_list.hasTrace','0') > 0;//已跟进的数字大于0
+            var isInvalidType = this.isInvalidStatusTabActive()//如果选中的是无效的tab
+                && _.get(this.state,'agg_list.invalidClue','0') > 0;//无效的数字大于0
+            if((isWillTraceType || isHasTraceType || isInvalidType)
+                && _.isEmpty(this.state.curClueList)//当前列表的为空
+            ){
+                //刷新重新获取列表
+                //做1s延迟为了跟数据库同步
+                setTimeout(() => {
+                    this.getClueList();
+                },1000);
+
+            }
+
             this.setState({
                 selectedClues: []
             });
