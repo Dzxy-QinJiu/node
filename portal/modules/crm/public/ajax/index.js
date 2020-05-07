@@ -13,8 +13,10 @@ exports.addCustomer = function(newCus) {
         success: function(added) {
             Deferred.resolve(added);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -33,8 +35,10 @@ exports.editSecondSales = function(submitObj) {
         success: function(result) {
             Deferred.resolve(result);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -56,8 +60,10 @@ exports.addCustomerByClue = function(newCus, isConvert) {
         success: function(added) {
             Deferred.resolve(added);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();

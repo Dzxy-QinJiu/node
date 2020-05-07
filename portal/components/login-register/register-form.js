@@ -189,12 +189,14 @@ class RegisterForm extends React.Component {
                     verifyErrorCaptchaCode: _.get(data, 'captcha', '')
                 });
             },
-            error: (xhr) => {
-                let errorMsg = _.get(xhr, 'responseJSON', Intl.get('retry.failed.get.code', '获取验证码错误'));
-                if (isRefresh) {
-                    this.setState({ registerErrorMsg: errorMsg, verifyErrorCaptchaCode: errorMsg });
-                } else {
-                    this.setState({ registerErrorMsg: errorMsg });
+            error: (xhr, statusText) => {
+                if(statusText !== 'abort') {
+                    let errorMsg = _.get(xhr, 'responseJSON', Intl.get('retry.failed.get.code', '获取验证码错误'));
+                    if (isRefresh) {
+                        this.setState({ registerErrorMsg: errorMsg, verifyErrorCaptchaCode: errorMsg });
+                    } else {
+                        this.setState({ registerErrorMsg: errorMsg });
+                    }
                 }
             }
         });

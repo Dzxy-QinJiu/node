@@ -18,8 +18,10 @@ exports.getWorklistApplyList = function(queryObj) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -36,8 +38,10 @@ exports.getApplyDetailById = function(queryObj) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON || Intl.get('user.get.apply.detail.failed', '获取申请审批详情失败'));
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON || Intl.get('user.get.apply.detail.failed', '获取申请审批详情失败'));
+            }
         }
     });
     return Deferred.promise();
@@ -55,8 +59,10 @@ exports.getApplyCommentList = function(queryObj) {
             notificationEmitter.emit(notificationEmitter.CLEAR_UNREAD_REPLY, queryObj.id);
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -74,8 +80,10 @@ exports.addApplyComments = function(data) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -93,8 +101,10 @@ exports.getApplyStatusById = function(queryObj) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -135,8 +145,10 @@ exports.approveApplyPassOrRejectReportOrDocument = function(obj) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -153,8 +165,10 @@ exports.deleteLoadApplyApproveFile = function(queryObj) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();

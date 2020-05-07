@@ -121,8 +121,10 @@ exports.addCluecustomerTrace = function(submitObj) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+        error: function(xhr, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -143,8 +145,10 @@ exports.distributeCluecustomerToSale = function(submitObj) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+        error: function(xhr, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -166,8 +170,10 @@ exports.distributeCluecustomerToSaleBatch = function(submitObj) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+        error: function(xhr, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -186,8 +192,10 @@ exports.updateClueContactDetail = function(data) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+        error: function(xhr, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -205,8 +213,10 @@ exports.updateClueItemDetail = function(data) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+        error: function(xhr,statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -392,8 +402,10 @@ exports.addOrEditSettingCustomerRecomment = function(data) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -411,8 +423,8 @@ exports.getRecommendClueLists = function(obj) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(errorMsg, status) {
-            if(status !== 'abort') {
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
                 Deferred.reject(errorMsg.responseJSON);
             }
         }

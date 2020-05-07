@@ -34,8 +34,10 @@ exports.getTeamMemberCountList = function() {
     teamMemberCountAjax = teamAjax.getTeamMemberCountListAjax().sendRequest()
         .success(list => {
             Deferred.resolve(list);
-        }).error(error => {
-            Deferred.resolve(error.responseText);
+        }).error((error, statusText) => {
+            if(statusText !== 'abort') {
+                Deferred.resolve(error.responseText);
+            }
         });
     return Deferred.promise();
 };
@@ -246,8 +248,10 @@ exports.setWebsiteConfig = function(queryObj) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -304,8 +308,10 @@ exports.approveMemberApplyPassOrReject = (obj) => {
         success: (data) => {
             Deferred.resolve(data);
         },
-        error: (errorMsg) => {
-            Deferred.reject(errorMsg.responseJSON);
+        error: (errorMsg, statusText) => {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();

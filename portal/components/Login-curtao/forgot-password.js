@@ -90,8 +90,10 @@ class ForgotPassword extends React.Component {
                     });
                 }
             },
-            error: () => {
-                this.setState({ errorMsg: ERROR_MSGS.NO_SERVICE });
+            error: (xhr,statusText) => {
+                if(statusText !== 'abort') {
+                    this.setState({ errorMsg: ERROR_MSGS.NO_SERVICE });
+                }
             }
         });
     };
