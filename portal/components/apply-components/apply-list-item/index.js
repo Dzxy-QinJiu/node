@@ -6,6 +6,8 @@
 var classNames = require('classnames');
 require('./index.less');
 import {getApplyStateText, getTimeStr, getApplyTopicText} from 'PUB_DIR/sources/utils/common-method-util';
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+
 class ApplyListItem extends React.Component {
     constructor(props) {
         super(props);
@@ -36,9 +38,9 @@ class ApplyListItem extends React.Component {
         });
         let customerName = _.get(obj, 'detail.customer_name');
         // 机会申请、预约拜访申请显示客户名
-        if (_.get(obj, 'workflow_type') === 'business_opportunities') { // 机会申请
+        if (_.get(obj, 'workflow_type') === APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES) { // 机会申请
             customerName = _.get(obj, 'detail.customer.name');
-        } else if ( _.get(obj, 'workflow_type') === 'visitapply') { // 预约拜访申请
+        } else if ( _.get(obj, 'workflow_type') === APPLY_APPROVE_TYPES.VISITAPPLY) { // 预约拜访申请
             customerName = _.get(obj, 'detail.customers[0].name');
         }
         return (
