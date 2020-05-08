@@ -296,7 +296,6 @@ class RecommendCluesList extends React.Component {
         addOrEditSettingCustomerRecomment(hasSavedRecommendParams).then((data) => {
             if (data){
                 let targetObj = _.get(data, '[0]');
-                this.setState({hasSavedRecommendParams: targetObj});
                 clueCustomerAction.saveSettingCustomerRecomment(targetObj);
             }
         });
