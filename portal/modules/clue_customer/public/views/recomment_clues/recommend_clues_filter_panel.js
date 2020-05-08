@@ -482,7 +482,10 @@ class RecommendCluesFilterPanel extends Component {
 
     handleSubmit = () => {
         if(!this.props.canClickMoreBatch) { return false;}
-        this.getRecommendClueList({...this.state.hasSavedRecommendParams, ...this.state.vipFilters});
+        //需要处理下vip选项
+        let vipItems = ['startTime', 'endTime', 'staffnumMax', 'staffnumMin', 'capitalMax', 'capitalMin', 'entTypes', 'openStatus'];
+        let hasSavedRecommendParams = _.omit(this.state.hasSavedRecommendParams, vipItems);
+        this.getRecommendClueList({...hasSavedRecommendParams, ...this.state.vipFilters});
     };
 
     //处理成立时间数据
