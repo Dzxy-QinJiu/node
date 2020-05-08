@@ -213,17 +213,19 @@ class CustomerMerge extends React.Component {
                         <div className="question-content">
                             {Intl.get('common.modify.name.to', '修改姓名为')}“{contact.replaceName}”？
                         </div>
-                        <Button
-                            onClick={this.onReplaceContactNameCancelBtnClick.bind(this, contactIndex)}
-                        >
-                            {Intl.get('common.not.modify', '不修改')}
-                        </Button>
-                        <Button
-                            type="primary"
-                            onClick={this.onReplaceContactNameConfirmBtnClick.bind(this, contactIndex, contact.replaceName)}
-                        >
-                            {Intl.get('common.confirm.modify', '确认修改')}
-                        </Button>
+                        <div className="btn-zone">
+                            <Button
+                                onClick={this.onReplaceContactNameCancelBtnClick.bind(this, contactIndex)}
+                            >
+                                {Intl.get('common.not.modify', '不修改')}
+                            </Button>
+                            <Button
+                                type="primary"
+                                onClick={this.onReplaceContactNameConfirmBtnClick.bind(this, contactIndex, contact.replaceName)}
+                            >
+                                {Intl.get('common.confirm.modify', '确认修改')}
+                            </Button>
+                        </div>
                     </div>
                 ) : null}
             </div>
