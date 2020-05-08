@@ -39,14 +39,21 @@ import {
 import {
     checkCurrentVersionType,
     checkVersionAndType,
-    formatSalesmanList, getContactSalesPopoverTip, isExpired, isResponsiveDisplay
+    formatSalesmanList, getContactSalesPopoverTip, getFormattedCondition, isExpired, isResponsiveDisplay
 } from 'PUB_DIR/sources/utils/common-method-util';
 import {getMaxLimitExtractClueCount, updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 import classNames from 'classnames';
 import Trace from 'LIB_DIR/trace';
-import { BOOT_PROCESS_KEYS, COMPANY_PHONE, COMPANY_VERSION_KIND, extractIcon } from 'PUB_DIR/sources/utils/consts';
+import {
+    BOOT_PROCESS_KEYS,
+    COMPANY_PHONE,
+    COMPANY_VERSION_KIND,
+    extractIcon,
+    RECOMMEND_CLUE_FILTERS
+} from 'PUB_DIR/sources/utils/consts';
 import history from 'PUB_DIR/sources/history';
 import React from 'react';
+import {addOrEditSettingCustomerRecomment} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 
 
 const LAYOUT_CONSTANCE = {
@@ -215,11 +222,12 @@ class RecommendCluesList extends React.Component {
                 type: 'get',
                 dataType: 'json',
                 success: (data) => {
-                    let hasSavedRecommendParams = _.get(this.state.settedCustomerRecommend, 'obj', {});
+                    let {...hasSavedRecommendParams} = _.get(this.state.settedCustomerRecommend,'obj', {});
                     if(_.isObject(data)) {
                         hasSavedRecommendParams.province = data.province;
                         hasSavedRecommendParams.city = data.city;
-                        clueCustomerAction.saveSettingCustomerRecomment(hasSavedRecommendParams);
+                        //保存条件
+                        this.saveRecommendFilter(hasSavedRecommendParams);
                     }
 
                     //获取推荐的线索
@@ -281,6 +289,18 @@ class RecommendCluesList extends React.Component {
         }
         clueCustomerAction.getRecommendClueLists(conditionObj);
     };
+    //保存推荐线索的条件
+    saveRecommendFilter(hasSavedRecommendParams) {
+        let traceStr = getFormattedCondition(hasSavedRecommendParams, RECOMMEND_CLUE_FILTERS);
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '保存线索推荐查询条件 ' + traceStr);
+        addOrEditSettingCustomerRecomment(hasSavedRecommendParams).then((data) => {
+            if (data){
+                let targetObj = _.get(data, '[0]');
+                this.setState({hasSavedRecommendParams: targetObj});
+                clueCustomerAction.saveSettingCustomerRecomment(targetObj);
+            }
+        });
+    }
 
     //获取选中的高级筛选
     getAdvanceItem() {
