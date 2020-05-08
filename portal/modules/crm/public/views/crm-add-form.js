@@ -221,7 +221,7 @@ class CRMAddForm extends React.Component {
                     _this.props.hideAddForm();
                 }
                 _this.setState(_this.getInitialState());
-                //添加成功后的emitter事件
+                //添加成功后的emitter事件 解决在添加申请审批时，创建客户完成后，退回到申请页面仍报错的问题
                 customerEmitter.emit(customerEmitter.ADD_CUSTOMER_SUCCESS, result.result);
 
             } else {

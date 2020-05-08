@@ -64,14 +64,15 @@ class CustomerSuggest extends React.Component {
         customerEmitter.removeListener(customerEmitter.ADD_CUSTOMER_SUCCESS, this.afterAddCustomerSuccess);
     }
     handleCustomerData = (newCustomer) => {
-        _.forEach(newCustomer, (customerItem) => {
-            customerItem.customer_name = customerItem.name;
-            customerItem.customer_id = customerItem.id;
+        return _.map(newCustomer, (customerItem) => {
+            return {
+                ...newCustomer,
+                'customer_name': customerItem.name,
+                'customer_id': customerItem.id
+            };
         });
-        return newCustomer;
-    }
+    };
     afterAddCustomerSuccess = (newCustomer) => {
-
         var {list} = this.state;
         this.setState({
             list: _.concat(list, this.handleCustomerData(newCustomer)),
@@ -484,7 +485,7 @@ class CustomerSuggest extends React.Component {
         if(this.props.needRemovePrefix) {
             input = _.replace(input, /【.*】/, '');
         }
-        return _.isString(checkedOption) && checkedOption.indexOf(input) >= 0;
+        return checkedOption.indexOf(input) >= 0;
     };
     setCustomer = (list, customerId) => {
         this.setState({
