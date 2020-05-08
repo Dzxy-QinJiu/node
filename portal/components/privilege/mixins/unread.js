@@ -38,9 +38,12 @@ var UnreadMixin = {
     showUnhandledCount: function(item) {
         //从全局数据中获取
         if (Oplate && Oplate.unread){
-            // 未处理的申请数据
-            const unhandleApplyList = _.get(Oplate.unread, 'unhandleApplyList', []);
-            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_TIP, unhandleApplyList);
+            // 待我审批，有数据时，才触发刷新的事件
+            if (_.get(Oplate.unread, 'unhandleApply')) {
+                // 未处理的申请数据
+                const unhandleApplyList = _.get(Oplate.unread, 'unhandleApplyList', []);
+                notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_TIP, unhandleApplyList);
+            }
             var count = 0;
             this.setState({
                 messages: Oplate.unread
