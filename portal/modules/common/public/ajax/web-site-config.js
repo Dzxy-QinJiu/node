@@ -15,8 +15,10 @@ exports.getWebsiteConfig = function(queryObj) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();

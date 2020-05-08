@@ -38,8 +38,10 @@ exports.ignoreAbnormalLogin = function(id) {
         success: (result) => {
             Deferred.resolve(result);
         },
-        error: (xhr) => {
-            Deferred.reject(xhr.responseJSON || Intl.get('user.login.abnormal.failed', '忽略异常登录地失败！'));
+        error: (xhr,status) => {
+            if( status !== 'abort' ){
+                Deferred.reject(xhr.responseJSON || Intl.get('user.login.abnormal.failed', '忽略异常登录地失败！'));
+            }
         }
     });
     return Deferred.promise();

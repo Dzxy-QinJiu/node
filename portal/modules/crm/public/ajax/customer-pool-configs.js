@@ -16,8 +16,10 @@ exports.getCustomerLabel = function(reqData) {
         success: function(added) {
             Deferred.resolve(added);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -82,8 +84,10 @@ exports.addCustomerPoolConfig = function(reqData) {
         success: function(added) {
             Deferred.resolve(added);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -102,8 +106,10 @@ exports.updateCustomerPoolConfig = function(reqData) {
         success: function(added) {
             Deferred.resolve(added);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -122,8 +128,10 @@ exports.deleteCustomerPoolConfig = function(reqData) {
         success: function(added) {
             Deferred.resolve(added);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -170,8 +178,10 @@ exports.addCrpAutoReleaseConfig = function(reqData) {
         success: function(added) {
             Deferred.resolve(added);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -190,8 +200,10 @@ exports.updateCrpAutoReleaseConfig = function(reqData) {
         success: function(added) {
             Deferred.resolve(added);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -210,8 +222,10 @@ exports.deleteCrpAutoReleaseConfig = function(reqData) {
         success: function(added) {
             Deferred.resolve(added);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
