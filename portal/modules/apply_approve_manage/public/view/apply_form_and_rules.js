@@ -99,29 +99,28 @@ class ApplyFormAndRules extends React.Component {
     componentWillUnmount(){
         ApplyApproveManageStore.unlisten(this.onStoreChange);
     }
-        //请求并展示审批流程
-        getSelfSettingWorkFlow = (recordId) => {
-            let submitObj = {page_size: 1, id: recordId};
-            let newUserData = userData.getUserData().workFlowConfigs;
-            applyApproveManageAction.getSelfSettingWorkFlow(submitObj,(data) => {
-                this.changeNewFlow(newUserData,recordId,data);
-                if(data[0]){
-                    this.setState({
-                        applyTypeData: data[0],
-                        activeKey: _.get(data[0],'customiz') ? TAB_KEYS.FORM_CONTENT : TAB_KEYS.APPLY_RULE
-                    });
-                }
-            });
-        }
-        //将请求到的内容更新
-    changeNewFlow = (list,id,data) => {
-        _.forEach(list,(value) => {
-            if(_.get(value,'id') === id && data[0]){
+    //请求并展示审批流程
+    getSelfSettingWorkFlow = (recordId) => {
+        let submitObj = {page_size: 1, id: recordId};
+        let newUserData = userData.getUserData().workFlowConfigs;
+        applyApproveManageAction.getSelfSettingWorkFlow(submitObj, (data) => {
+            this.changeNewFlow(newUserData,recordId,data);
+            if (data[0]) {
+                this.setState({
+                    applyTypeData: data[0],
+                    activeKey: _.get(data[0], 'customiz') ? TAB_KEYS.FORM_CONTENT : TAB_KEYS.APPLY_RULE
+                });
+            }
+        });
+    };
+    changeNewFlow = (list, id, data) => {
+        _.forEach(list, (value) => {
+            if (_.get(value, 'id') === id && data[0]) {
                 _.extend(value, data[0]);
                 return false;
             }
         });
-    }
+    };
     handleTabChange = (key) => {
         let keyName = key === TAB_KEYS.FORM_CONTENT ? Intl.get('apply.add.form.content', '表单内容') : Intl.get('apply.add.form.regex', '审批规则');
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + keyName);
@@ -325,7 +324,6 @@ class ApplyFormAndRules extends React.Component {
         var applyLists = userData.getUserData().workFlowConfigs;
         return _.find(applyLists, item => item.type === _.get(this, 'state.applyTypeData.type'));
     };
-    //
     handleCancelSaveTitle = () => {
         this.setState({
             isEdittingApplyName: false,
@@ -444,7 +442,6 @@ class ApplyFormAndRules extends React.Component {
                 applyTypeData: applyTypeData
             });
         }
-
     };
     renderAddApplyContent = () => {
         return (
