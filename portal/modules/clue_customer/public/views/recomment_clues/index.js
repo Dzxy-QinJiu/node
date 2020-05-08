@@ -451,20 +451,7 @@ class RecommendCluesList extends React.Component {
 
     //还可提取线索的数量展示
     hasNoExtractCountTip = () => {
-        var maxLimitExtractNumber = this.state.maxLimitExtractNumber;
-        var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
-        const i18Obj = {
-            hasExtract: <span className="has-extracted-count">
-                {this.state.hasExtractCount}</span>,
-            ableExtract: <span className="has-extracted-count">{ableExtract}</span>, timerange: this.getTimeRangeText()
-        };
-        let content = (
-            <ReactIntl.FormattedMessage
-                id="clue.recommend.default.tip"
-                defaultMessage={'{timerange}还可提取{ableExtract}条线索'}
-                values={i18Obj}
-            />
-        );
+        let content;
         let selectedClues = this.getSelectedClues();
         if(selectedClues.length) {
             content = (
@@ -474,6 +461,23 @@ class RecommendCluesList extends React.Component {
                     values={{
                         count: <span className="has-extracted-count">{selectedClues.length}</span>
                     }}
+                />
+            );
+        }else if(isExpired()) {//过期账号就不用显示还可提取数
+            content = null;
+        }else {
+            let maxLimitExtractNumber = this.state.maxLimitExtractNumber;
+            let ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
+
+            const i18Obj = {
+                hasExtract: <span className="has-extracted-count">{this.state.hasExtractCount}</span>,
+                ableExtract: <span className="has-extracted-count">{ableExtract}</span>, timerange: this.getTimeRangeText()
+            };
+            content = (
+                <ReactIntl.FormattedMessage
+                    id="clue.recommend.default.tip"
+                    defaultMessage={'{timerange}还可提取{ableExtract}条线索'}
+                    values={i18Obj}
                 />
             );
         }
