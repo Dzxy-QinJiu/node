@@ -381,7 +381,7 @@ class ApplyViewDetail extends React.Component {
     renderDetailApplyBlock(detailInfo) {
         //找到流程保存的组件
         var detail = detailInfo.detail || {}, customizForm = [], showApplyInfo = [];
-        var applyLists = this.props.workFlowList;
+        var applyLists = this.state.workFlowList;
         var workFlowConfig = _.find(applyLists, item => item.type === SELF_SETTING_FLOW.VISITAPPLY);
 
         if (workFlowConfig){
