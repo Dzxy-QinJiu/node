@@ -4,6 +4,7 @@ import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
 import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
 import {ALL} from '../utils/apply_approve_utils';
+import {INNER_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 //用户审批界面使用的store
 function UserApplyStore() {
     //我的有未读回复的列表
@@ -42,7 +43,8 @@ UserApplyStore.prototype.resetState = function() {
     //筛选状态 all(全部) pass(已通过) reject(已驳回)  ongoing(待审批)
     this.selectedApplyStatus = ALL;
     //筛选审批类型
-    this.selectedApplyType = ALL;
+    this.selectedApplyType = INNER_SETTING_FLOW.NEWUSERAPPLY;
+    this.firstLogin = true;//用来记录是否是首次加载
     //是否显示更新数据提示
     this.showUpdateTip = false;
     // 下拉加载
@@ -167,6 +169,9 @@ UserApplyStore.prototype.handleApplyLists = function(obj,flag){
             this.clearData();
         }
     } else {
+        if(_.get(obj,'data.apply_type')){
+            this.selectedApplyType = _.get(obj,'data.apply_type');
+        }
         this.applyListObj.loadingResult = '';
         this.applyListObj.errorMsg = '';
         this.totalSize = obj.data.total;//todo 我的审批的总值是不对的，页面暂时不展示
@@ -182,6 +187,7 @@ UserApplyStore.prototype.handleApplyLists = function(obj,flag){
             this.lastApplyId = this.applyListObj.list.length ? _.last(this.applyListObj.list).id : '';
             //如果是我的审批，listenScrollBottom要一直保持是true
             if(flag){
+                this.firstLogin = false;
                 if(_.get(applyList,'length') < this.pageSize){
                     this.listenScrollBottom = false;
                 }else{
