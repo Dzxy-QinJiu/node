@@ -165,20 +165,20 @@ class ApplyApproveList extends React.Component {
         const unHandleApplyId = _.map(data, 'id');
         // 申请列表数据
         const applyList = _.get(this.state.applyListObj, 'list', []);
-        // 获取申请列表中，和推送数据一样的长的id
-        const applyListId = _ .chain(applyList).slice(0, length).map(item => item.id).value();
+        // 获取申请列表中待审批的数据，和推送数据一样的长的id
+        const applyListId = _ .chain(applyList).filter(item => item.status === 'ongoing').slice(0, length).map(item => item.id).value();
         // 对比是否有不同的数据，若有则说明有新的推送数据
         const diffArray = _.difference(unHandleApplyId, applyListId);
         //如果当前选中的是我审批的
         if(this.state.activeApplyTab === APPLY_TYPE.APPROVE_BY_ME){
+            // 获取申请列表，需要时间，有推送，则待我审批列表，一定是有数据的，
             // 不同时，说明有推送数据, 需要刷新
-            if (!_.isEmpty(diffArray)) {
+            if (applyList.length && !_.isEmpty(diffArray)) {
                 this.setState({
                     showRefreshTip: true
                 });
             }
         }
-
     };
 
     //从sessionStorage中获取该用户未读的回复列表
