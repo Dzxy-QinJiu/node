@@ -884,7 +884,7 @@ class MyWorkColumn extends React.Component {
             //今天、昨天、前天、xxx天前到期
             timeStr = getTimeStrFromNow(time);
         }
-        return _.get(item, `[${tag}][0].user_name`, '') + ' ' + timeStr + ' ' + Intl.get('apply.delay.endTime', '到期');
+        return _.get(item, `[${tag}][0].user_name`, '') + ' ' + timeStr.replace(' ','') + Intl.get('apply.delay.endTime', '到期');
     }
 
     getVisitTip(item) {
