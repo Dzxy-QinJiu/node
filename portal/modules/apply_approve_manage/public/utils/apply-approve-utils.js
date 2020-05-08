@@ -498,7 +498,7 @@ export const getAllWorkFlowList = function(callback){
             let workFlowList = [];
             if (data[0]) {
                 workFlowList = _.filter(data, item => item.type !== 'member_invite');
-                userDataInfo.workFlowConfigs = workFlowList;
+                userData.setUserData('workFlowConfigs', workFlowList);
             }
             callback(workFlowList);
         });

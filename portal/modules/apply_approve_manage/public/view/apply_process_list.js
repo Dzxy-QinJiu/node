@@ -110,7 +110,7 @@ class AddAndShowApplyList extends React.Component {
                 showAddWorkFlowName: false
             }, () => {
                 //把userData上的值也改掉
-                userData.getUserData().workFlowConfigs = applyList;
+                userData.setUserData('workFlowConfigs', applyList);
                 this.props.updateShowApplyList(applyList);
             });
         });
