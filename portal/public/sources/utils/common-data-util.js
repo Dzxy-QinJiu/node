@@ -835,6 +835,8 @@ exports.getUserPosition = function(cb) {
             //用户职务
             position = _.get(result, 'teamrole_name', '');
             setUserData(field, position);
+
+            _.isFunction(cb) && cb(position);
         });
     }
 };
