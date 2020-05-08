@@ -46,6 +46,7 @@ import userManagePrivilege from '../privilege-const';
 import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import Spinner from 'CMP_DIR/spinner';
+import RefreshButton from 'CMP_DIR/refresh-button';
 
 class RecentLoginUsers extends React.Component {
     constructor(props) {
@@ -746,11 +747,9 @@ class RecentLoginUsers extends React.Component {
                                 }
                             </SelectFullWidth>
                         </div>
-                        <div className="btn-item refresh-btn">
-                            <Button onClick={this.handleRefresh} title={Intl.get('common.refresh', '刷新')}>
-                                <i className="iconfont icon-shuaxin"></i>
-                            </Button>
-                        </div>
+                        <RefreshButton
+                            handleRefresh={this.handleRefresh}
+                        />
                     </div>
                 </ButtonZones>
             </div>

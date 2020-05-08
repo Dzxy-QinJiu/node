@@ -28,7 +28,7 @@ import { phoneMsgEmitter, selectedAppEmitter } from 'PUB_DIR/sources/utils/emitt
 import { RETRY_GET_APP } from '../util/consts';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
-
+import RefreshButton from 'CMP_DIR/refresh-button';
 // 用户类型的常量
 const USER_TYPE_OPTION = {
     ALL: '', //  全部类型
@@ -519,7 +519,7 @@ class LogView extends React.Component {
         }
         return (
             <div className="appuser-list-loading-wrap">
-                <Spinner />
+                <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
             </div>
         );
     };
@@ -741,9 +741,9 @@ class LogView extends React.Component {
                             />
                         </div>
                         <div className="user_audit_log_all">
-                            <Button onClick={this.handleRefresh} className="btn-item" title={Intl.get('common.refresh', '刷新')}>
-                                <i className="iconfont icon-shuaxin"></i>
-                            </Button>
+                            <RefreshButton
+                                handleRefresh={this.handleRefresh}
+                            />
                         </div>
                         <span className="refresh-btn customize-btn btn-item">
                             <i
