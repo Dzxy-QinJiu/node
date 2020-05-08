@@ -878,7 +878,7 @@ class LogView extends React.Component {
 
     render() {
         return (
-            <div ref="userListTable" className="user_audit_log_style">
+            <div ref="userListTable" className="user_audit_log_style" data-tracename="操作记录列表">
                 {this.renderLogHeader()}
                 {this.renderLoadingBlock()}
                 {this.state.getUserLogErrorMsg !== '' ? this.renderDataErrorHandle() : this.renderTableContent()}
