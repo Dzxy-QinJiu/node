@@ -14,10 +14,11 @@ const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
 var user = require('PUB_DIR/sources/user-data').getUserData();
-import {applyComponentsType, ADDAPPLYFORMCOMPONENTS} from '../../../apply_approve_manage/public/utils/apply-approve-utils';
-import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
-import {calculateTotalTimeRange,calculateRangeType} from 'PUB_DIR/sources/utils/common-data-util';
-import { LEAVE_TYPE } from 'PUB_DIR/sources/utils/consts';
+import {
+    applyComponentsType,
+    ADDAPPLYFORMCOMPONENTS,
+    getAllWorkFlowList
+} from '../../../apply_approve_manage/public/utils/apply-approve-utils';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
 import {ALL_COMPONENTS, SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
@@ -34,6 +35,7 @@ class AddApply extends React.Component {
             formData: {
                 customer: {id: '', name: ''},
             },
+            workFlowList: [],//配置过的申请审批列表
             ...leaveStore.getState()
         };
     }
@@ -43,6 +45,11 @@ class AddApply extends React.Component {
     componentDidMount() {
         leaveStore.listen(this.onStoreChange);
         this.addLabelRequiredCls();
+        getAllWorkFlowList((workFlowList) => {
+            this.setState({
+                workFlowList: workFlowList
+            });
+        });
     }
     componentDidUpdate() {
         this.addLabelRequiredCls();
@@ -172,7 +179,7 @@ class AddApply extends React.Component {
             },
         };
         let saveResult = this.state.saveResult;
-        var workConfig = _.find(_.get(user, 'workFlowConfigs'),item => item.type === SELF_SETTING_FLOW.VISITAPPLY);
+        var workConfig = _.find(this.state.workFlowList,item => item.type === SELF_SETTING_FLOW.VISITAPPLY);
         var customizForm = workConfig.customiz_form;
         return (
             <RightPanel showFlag={true} data-tracename="添加拜访申请" className="add-leave-container">
@@ -273,10 +280,11 @@ class AddApply extends React.Component {
 }
 AddApply.defaultProps = {
     hideLeaveApplyAddForm: function() {
-    },
+    }
+
 };
 AddApply.propTypes = {
     hideLeaveApplyAddForm: PropTypes.func,
-    form: PropTypes.object,
+    form: PropTypes.object
 };
 export default Form.create()(AddApply);

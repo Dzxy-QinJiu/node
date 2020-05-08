@@ -23,7 +23,7 @@ exports.getUserInfo = function(req, res) {
     let user = auth.getUser(req);
     var emitter = new EventEmitter();
     //获取登录用户的基本信息
-    let getUserBasicInfo = getDataPromise(req, res, userInfoRestApis.getUserInfo, null, { 
+    let getUserBasicInfo = getDataPromise(req, res, userInfoRestApis.getUserInfo, null, {
         //以下参数不传时，默认为true，都会获取
         with_role: false, //是否获取角色信息roles:[{role_id, role_name}]
         with_group: false,//是否获取团队信息team_id, team_name
@@ -35,17 +35,9 @@ exports.getUserInfo = function(req, res) {
     let userPrivileges = getPrivileges(req);
     //是否有获取所有团队数据的权限
     let hasGetAllTeamPrivilege = userPrivileges.indexOf(publicPrivilegeConst.GET_TEAM_LIST_ALL) !== -1;
-    //是否有获取流程配置的权限
-    let hasWorkFlowPrivilege = userPrivileges.indexOf(privilegeConstCommon.WORKFLOW_BASE_PERMISSION) !== -1;
     //没有获取所有团队数据的权限,通过获取我所在的团队及下级团队来判断是否是普通销售
     if (!hasGetAllTeamPrivilege) {
         promiseList.push(getDataPromise(req, res, userInfoRestApis.getMyTeamWithSubteams));
-        if (hasWorkFlowPrivilege) {
-            //获取登录用户已经配置过的流程
-            promiseList.push(getDataPromise(req, res, userInfoRestApis.getUserWorkFlowConfigs, '', { page_size: 1000 }));
-        }
-    } else if (hasWorkFlowPrivilege) {
-        promiseList.push(getDataPromise(req, res, userInfoRestApis.getUserWorkFlowConfigs, '', { page_size: 1000 }));
     }
     // 登录时已获取过网站个性化配置，此处就不用再获取了,只有刷新时才需要重新获取
     if (!req.session.websiteConfig) {
@@ -69,15 +61,7 @@ exports.getUserInfo = function(req, res) {
             //是否是普通销售
             if (hasGetAllTeamPrivilege) {//管理员或运营人员，肯定不是普通销售
                 userData.isCommonSales = false;
-                //已经配置过的流程
-                if (hasWorkFlowPrivilege) {
-                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[2].successData', []));
-                    //刷新时，需要重新获取websiteConfig
-                    if (!req.session.websiteConfig) {
-                        //网站个性化
-                        userData.websiteConfig = _.get(resultList, '[3].successData', {});
-                    }
-                } else if (!req.session.websiteConfig) {//刷新时，需要重新获取websiteConfig
+                if (!req.session.websiteConfig) {//刷新时，需要重新获取websiteConfig
                     //网站个性化
                     userData.websiteConfig = _.get(resultList, '[2].successData', {});
                 }
@@ -89,20 +73,10 @@ exports.getUserInfo = function(req, res) {
                     userData.team_id = _.get(teamTreeList, '[0].group_id', '');
                     userData.team_name = _.get(teamTreeList, '[0].group_name', '');
                 }
-                //已经配置过的流程
-                if(hasWorkFlowPrivilege){
-                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[3].successData', []));
-                    //刷新时，需要重新获取websiteConfig
-                    if (!req.session.websiteConfig) {
-                        //网站个性化
-                        userData.websiteConfig = _.get(resultList, '[4].successData', {});
-                    }
-                } else {
-                    //刷新时，需要重新获取websiteConfig
-                    if (!req.session.websiteConfig) {
-                        //网站个性化
-                        userData.websiteConfig = _.get(resultList, '[3].successData', {});
-                    }
+                //刷新时，需要重新获取websiteConfig
+                if (!req.session.websiteConfig) {
+                    //网站个性化
+                    userData.websiteConfig = _.get(resultList, '[3].successData', {});
                 }
             }
             emitter.emit('success', userData);
@@ -225,7 +199,6 @@ var userInfoRestApis = {
     activeEmail: '/rest/base/v1/user/email/confirm',
     getUserLanguage: '/rest/base/v1/user/member/language/setting',
     getMyTeamWithSubteams: '/rest/base/v1/group/teams/tree/self',
-    getUserWorkFlowConfigs: '/rest/base/v1/workflow/configs',
     getOrganizationInfoById: '/rest/base/v1/realm/organization',
     getGuideConfig: '/rest/base/v1/user/member/guide',
     getAreaByPhone: baseUrl + '/rest/es/v2/es/phone_location/:phone',

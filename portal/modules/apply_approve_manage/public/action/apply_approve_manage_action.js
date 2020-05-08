@@ -61,6 +61,7 @@ function ApplyApproveManageActions() {
             _.isFunction(callback) && callback(result);
         }, (errorMsg) => {
             this.dispatch({error: true, loading: false, errorMsg: errorMsg});
+            _.isFunction(callback) && callback([]);
         });
     };
     // 修改审批通知后的自定义流程
