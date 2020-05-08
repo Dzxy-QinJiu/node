@@ -47,7 +47,7 @@ var timeoutFunc;//定时方法
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {uniteFileSize} from 'PUB_DIR/sources/utils/common-method-util';
 import classNames from 'classnames';
-import {transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+import {transferBtnContent,renderStepContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -577,15 +577,7 @@ class ApplyViewDetail extends React.Component {
                 description: ''
             });
         }
-        return (
-            <Steps current={currentLength + 1} status={stepStatus}>
-                {_.map(stepArr, (stepItem) => {
-                    return (
-                        <Step title={stepItem.title} description={stepItem.description}/>
-                    );
-                })}
-            </Steps>
-        );
+        return renderStepContent(currentLength,stepStatus,stepArr);
     };
     passOrRejectApplyApprove = (confirmType) => {
         var detailInfoObj = this.state.detailInfoObj.info;
