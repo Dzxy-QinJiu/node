@@ -20,7 +20,7 @@ import NewDistributeCustomer from './view/new-distribute-customer';
 import {phoneMsgEmitter, userDetailEmitter,notificationEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
-import {getRelativeTime, getEmailActiveUrl, isEefungCustomerManager} from 'PUB_DIR/sources/utils/common-method-util';
+import {getRelativeTime, getEmailActiveUrl} from 'PUB_DIR/sources/utils/common-method-util';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import Spinner from 'CMP_DIR/spinner';
 import SalesClueItem from './view/sales-clue-item';
@@ -31,6 +31,7 @@ const LAYOUT_CONSTS = {
 var websiteConfig = require('../../../lib/utils/websiteConfig');
 var setWebsiteConfig = websiteConfig.setWebsiteConfig;
 import AlertTip from 'CMP_DIR/alert-tip';
+import eefungCustomerManagerHoc from 'CMP_DIR/eefung-customer-manager-hoc';
 import {message, Button} from 'antd';
 const DELAY_TIME = 2000;
 //即将到期合同合同统计
@@ -1131,7 +1132,7 @@ class SalesHomePage extends React.Component {
                                 </div>
                             </li>
                             {/*对蚁坊组织下的客户经理隐藏今日接通电话统计*/}
-                            {isEefungCustomerManager() ? null : (
+                            {this.props.isEefungCustomerManager ? null : (
                                 <li>
                                     <div className="statistic-total-content">
                                         <div className="content-right">
@@ -1206,4 +1207,4 @@ class SalesHomePage extends React.Component {
 SalesHomePage.propTypes = {
     history: PropTypes.obj
 };
-module.exports = SalesHomePage;
+module.exports = eefungCustomerManagerHoc(SalesHomePage);

@@ -38,8 +38,6 @@ exports.getUserInfo = function(req, res) {
     //没有获取所有团队数据的权限,通过获取我所在的团队及下级团队来判断是否是普通销售
     if (!hasGetAllTeamPrivilege) {
         promiseList.push(getDataPromise(req, res, userInfoRestApis.getMyTeamWithSubteams));
-        //获取用户职务
-        promiseList.push(getDataPromise(req, res, userInfoRestApis.getSalesRoleByMemberId, null, { member_id: user.user_id }));
     }
     // 登录时已获取过网站个性化配置，此处就不用再获取了,只有刷新时才需要重新获取
     if (!req.session.websiteConfig) {
@@ -75,12 +73,10 @@ exports.getUserInfo = function(req, res) {
                     userData.team_id = _.get(teamTreeList, '[0].group_id', '');
                     userData.team_name = _.get(teamTreeList, '[0].group_name', '');
                 }
-                //用户职务
-                userData.position = _.get(resultList, '[3].successData.teamrole_name', '');
                 //刷新时，需要重新获取websiteConfig
                 if (!req.session.websiteConfig) {
                     //网站个性化
-                    userData.websiteConfig = _.get(resultList, '[4].successData', {});
+                    userData.websiteConfig = _.get(resultList, '[3].successData', {});
                 }
             }
             emitter.emit('success', userData);
