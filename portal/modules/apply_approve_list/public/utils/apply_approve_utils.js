@@ -1,4 +1,5 @@
-import {Button} from 'antd';
+import {Button, Steps} from 'antd';
+const Step = Steps.Step;
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import userData from 'PUB_DIR/sources/user-data';
 let salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
@@ -183,3 +184,12 @@ export const userApplyType = [{
     value: 'apply_sth_else',
     title: Intl.get('home.page.user.other.apply', '其他申请')
 }];
+export const renderStepContent = function(currentLength,stepStatus,stepArr) {
+    return <Steps current={currentLength + 1} status={stepStatus}>
+        {_.map(stepArr, (stepItem) => {
+            return (
+                <Step title={<span title={stepItem.title}>{stepItem.title}</span>} description={<span title={stepItem.description}>{stepItem.description}</span>}/>
+            );
+        })}
+    </Steps>;
+};
