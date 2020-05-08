@@ -171,14 +171,12 @@ class ApplyApproveList extends React.Component {
         const diffArray = _.difference(unHandleApplyId, applyListId);
         //如果当前选中的是我审批的
         if(this.state.activeApplyTab === APPLY_TYPE.APPROVE_BY_ME){
-            // 获取申请列表，需要时间，有推送，则待我审批列表，一定是有数据的
-            if (applyList.length ) {
-                // 不同时，说明有推送数据, 需要刷新
-                if (!_.isEmpty(diffArray)) {
-                    this.setState({
-                        showRefreshTip: true
-                    });
-                }
+            // 获取申请列表，需要时间，有推送，则待我审批列表，一定是有数据的，
+            // 不同时，说明有推送数据, 需要刷新
+            if (applyList.length && !_.isEmpty(diffArray)) {
+                this.setState({
+                    showRefreshTip: true
+                });
             }
         }
     };
