@@ -465,6 +465,9 @@ class RecommendCluesList extends React.Component {
                 values={i18Obj}
             />
         );
+        if(isExpired()) {//过期账号就不用显示还可提取数
+            content = null;
+        }
         let selectedClues = this.getSelectedClues();
         if(selectedClues.length) {
             content = (
