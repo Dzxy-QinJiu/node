@@ -411,9 +411,8 @@ exports.getMyApplyLists = function(req, res){
     let emitter = new EventEmitter();
     var firstLogin = req.query.firstLogin;
     delete req.query.firstLogin;
-    let promiseList = [getMyApplyList(req, res)];
-    Promise.all(promiseList).then((dataList) => {
-        var data = handleApplyData(dataList[0]) || {};
+    getMyApplyList(req, res).then((dataList) => {
+        var data = handleApplyData(dataList) || {};
         if(_.get(data,'list.[0].approval_state') !== '0' && firstLogin === 'true'){
             delete req.query.type;
             getMyApplyList(req, res).then((data) => {
