@@ -12,7 +12,7 @@ const FormItem = Form.Item;
 import {AntcAreaSelection, SearchInput} from 'antc';
 import Trace from 'LIB_DIR/trace';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
-import { registerSize, staffSize, moneySize, companyProperty, EXTRACT_CLUE_CONST_MAP } from '../../utils/clue-customer-utils';
+import { registerSize, staffSize, moneySize, companyProperty, companyStatus, EXTRACT_CLUE_CONST_MAP } from '../../utils/clue-customer-utils';
 import {
     checkVersionAndType,
     getFormattedCondition,
@@ -71,6 +71,7 @@ const VIP_ITEM_MAP = {
     COMPANY_SIZE: 'company_size',//公司规模
     REGISTER_MONEY: 'register_money',//注册资本
     COMPANY_ENTYPES: 'company_entTypes',//企业类型
+    COMPANY_STAUTS: 'company_status',//企业类型
 };
 
 const KEYCODE = {
@@ -141,6 +142,9 @@ class RecommendCluesFilterPanel extends Component {
         }
         if(condition.entTypes) {
             obj.entTypes = condition.entTypes;
+        }
+        if(condition.openStatus) {
+            obj.openStatus = condition.openStatus;
         }
         return obj;
     }
@@ -341,6 +345,22 @@ class RecommendCluesFilterPanel extends Component {
                     }
                 }
                 break;
+            case VIP_ITEM_MAP.COMPANY_STAUTS://企业状态
+                hasContinueUse = this.handleVipItemClick(VIP_ITEM_MAP.COMPANY_STAUTS, '企业状态');
+                if(hasContinueUse && value && _.isString(value)) {
+                    let openStatus = JSON.parse(value);
+                    if(isReset) {
+                        delete vipFilters.openStatus;
+                        delete hasSavedRecommendParams.openStatus;
+                    }else {
+                        if (_.get(openStatus, 'value')){
+                            vipFilters.openStatus = _.get(openStatus, 'value');
+                        }else{
+                            delete vipFilters.openStatus;
+                        }
+                    }
+                }
+                break;
         }
 
         if(!hasContinueUse) {
@@ -510,43 +530,33 @@ class RecommendCluesFilterPanel extends Component {
         return entypesTarget;
     }
 
+    //处理企业状态数据
+    handleOpenStatusData(condition) {
+        let statusTarget = {};
+        if(condition.openStatus){
+            statusTarget = _.find(companyStatus, item => _.isEqual(condition.openStatus, item.value));
+        }
+        return statusTarget;
+    }
     //已选中条件集合
     handleSelectedFilterList() {
         let { hasSavedRecommendParams } = this.state;
         let list = [];
         //可展示的已选条件field集合
-        const SELECTED_FILTER_FIELDS = [
-            {
-                name: Intl.get('clue.recommend.established.time', '成立时间'),
-                key: VIP_ITEM_MAP.REGISTER_TIME,
-                processValue: this.handleRegisterTimeData
-            }, {
-                name: Intl.get('clue.recommend.company.size', '公司规模'),
-                key: VIP_ITEM_MAP.COMPANY_SIZE,
-                processValue: this.handleCompanySizeData
-            }, {
-                name: Intl.get('clue.recommend.registered.capital', '注册资本'),
-                key: VIP_ITEM_MAP.REGISTER_MONEY,
-                processValue: this.handleCapitalData
-            }, {
-                name: Intl.get('clue.recommend.enterprise.class', '企业类型'),
-                key: VIP_ITEM_MAP.COMPANY_ENTYPES,
-                processValue: this.handleEntTypesData
-            }
-        ];
+        const SELECTED_FILTER_FIELDS = this.getVipFilters();
         _.each(SELECTED_FILTER_FIELDS, item => {
             if(_.isFunction(item.processValue)) {
                 let value = item.processValue(hasSavedRecommendParams);
                 if(!_.isEmpty(value)) {
                     list.push({
-                        name: item.name,
+                        name: item.btnText,
                         value: value.name,
-                        key: item.key,
+                        key: item.type,
                         handleClick: () => {
                             if(_.isFunction(item.handleClick)) {
                                 item.handleClick();
                             }else{
-                                this.onSelect(item.key, JSON.stringify({name: ''}), true);
+                                this.onSelect(item.type, JSON.stringify({name: ''}), true);
                             }
                         }
                     });
@@ -554,6 +564,42 @@ class RecommendCluesFilterPanel extends Component {
             }
         });
         return list;
+    }
+
+    //获取vip筛选项
+    getVipFilters() {
+        return [
+            {
+                btnText: Intl.get('clue.recommend.established.time', '成立时间'),
+                type: VIP_ITEM_MAP.REGISTER_TIME,
+                list: registerSize,
+                processValue: this.handleRegisterTimeData
+            },
+            {
+                btnText: Intl.get('clue.recommend.company.size', '公司规模'),
+                type: VIP_ITEM_MAP.COMPANY_SIZE,
+                list: staffSize,
+                processValue: this.handleCompanySizeData
+            },
+            {
+                btnText: Intl.get('clue.recommend.registered.capital', '注册资本'),
+                type: VIP_ITEM_MAP.REGISTER_MONEY,
+                list: moneySize,
+                processValue: this.handleCapitalData
+            },
+            {
+                btnText: Intl.get('clue.recommend.enterprise.class', '企业类型'),
+                type: VIP_ITEM_MAP.COMPANY_ENTYPES,
+                list: companyProperty,
+                processValue: this.handleEntTypesData
+            },
+            {
+                btnText: Intl.get('clue.recommend.filter.company.status', '企业状态'),
+                type: VIP_ITEM_MAP.COMPANY_STAUTS,
+                list: companyStatus,
+                processValue: this.handleOpenStatusData
+            }
+        ];
     }
 
     //渲染高级选项
@@ -568,17 +614,38 @@ class RecommendCluesFilterPanel extends Component {
         });
     }
 
-    renderDropDownBlock({btnText, type, list, getValue = () => {}}) {
+    //渲染vip选项
+    renderVipFiltersBlock() {
+        let list = this.getVipFilters();
+        return _.map(list, item => {
+            if(item.type === VIP_ITEM_MAP.REGISTER_TIME && this.props.isSelectedHalfYearRegister) {
+                return null;
+            }
+            return (
+                <div key={item.type} className="vip-filter-item">
+                    {this.renderDropDownBlock({...item})}
+                </div>
+            );
+        });
+    }
+
+    renderDropDownBlock({btnText, type, list, processValue = () => {}}) {
         let {isWebMin} = isResponsiveDisplay();
-        let currentValue = getValue();
+        let {vipFilters} = this.state;
+        let currentValue = processValue(vipFilters);
+        if(_.isEmpty(currentValue)) {
+            currentValue = {
+                name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText})
+            };
+        }
+
         let menus = (
-            <Menu onClick={this.onSelect.bind(this, type)} selectedKeys={currentValue}>
+            <Menu onClick={this.onSelect.bind(this, type)} selectedKeys={[JSON.stringify(currentValue)]}>
                 {_.map(list, item => (
                     <Menu.Item key={JSON.stringify(item)}><span data-tracename={`点击了'${btnText}:${item.name}'`}>{item.name}</span></Menu.Item>
                 ))}
             </Menu>
         );
-        currentValue = JSON.parse(currentValue);
         let text = _.get(currentValue, 'name');
         let textCls = classNames({
             'vip-item-active': text && text !== Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText})
@@ -692,98 +759,7 @@ class RecommendCluesFilterPanel extends Component {
                                 </FormItem>*/}
                                 <FormItem className="vip-filter-container" label={Intl.get('clue.recommend.filter.vip', 'VIP筛选')}>
                                     <div className="vip-filter-content" data-tracename="vip筛选列表">
-                                        {this.props.isSelectedHalfYearRegister ? null : (
-                                            <div className="vip-filter-item">
-                                                {this.renderDropDownBlock({
-                                                    btnText: Intl.get('clue.recommend.established.time', '成立时间'),
-                                                    type: VIP_ITEM_MAP.REGISTER_TIME,
-                                                    list: registerSize,
-                                                    getValue: () => {
-                                                        let timeTarget = {};
-                                                        let startTime = vipFilters.startTime, endTime = vipFilters.endTime;
-                                                        if(startTime) {
-                                                            timeTarget.max = moment().diff(startTime, 'years');
-                                                        }
-                                                        if(endTime) {
-                                                            timeTarget.min = moment().endOf('day').diff(endTime, 'years');
-                                                        }
-                                                        timeTarget = _.find(registerSize, item => {
-                                                            if(timeTarget.max <= 1 && item.max === 1) {//一年以内
-                                                                return true;
-                                                            }else if(timeTarget.min >= 10 && item.min === 10) {//10年以上
-                                                                return true;
-                                                            }
-                                                            if(timeTarget.max >= item.min && timeTarget.max <= item.max) {
-                                                                return true;
-                                                            }
-                                                        });
-                                                        if(_.isEmpty(timeTarget)) {
-                                                            timeTarget = {
-                                                                name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.established.time', '成立时间')})
-                                                            };
-                                                        }
-                                                        return [JSON.stringify(timeTarget)];
-                                                    }
-                                                })}
-                                            </div>
-                                        )}
-                                        <div className="vip-filter-item">
-                                            {this.renderDropDownBlock({
-                                                btnText: Intl.get('clue.recommend.company.size', '公司规模'),
-                                                type: VIP_ITEM_MAP.COMPANY_SIZE,
-                                                list: staffSize,
-                                                getValue: () => {
-                                                    let staffTarget = {};
-                                                    if(vipFilters.staffnumMin || vipFilters.staffnumMax){
-                                                        staffTarget = _.find(staffSize, item => item.staffnumMin === vipFilters.staffnumMin && item.staffnumMax === vipFilters.staffnumMax );
-                                                    }
-                                                    if(_.isEmpty(staffTarget)) {
-                                                        staffTarget = {
-                                                            name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.company.size', '公司规模')})
-                                                        };
-                                                    }
-                                                    return [JSON.stringify(staffTarget)];
-                                                }
-                                            })}
-                                        </div>
-                                        <div className="vip-filter-item">
-                                            {this.renderDropDownBlock({
-                                                btnText: Intl.get('clue.recommend.registered.capital', '注册资本'),
-                                                type: VIP_ITEM_MAP.REGISTER_MONEY,
-                                                list: moneySize,
-                                                getValue: () => {
-                                                    let capitalTarget = {};
-                                                    if(vipFilters.capitalMin || vipFilters.capitalMax){
-                                                        capitalTarget = _.find(moneySize, item => item.capitalMin === vipFilters.capitalMin && item.capitalMax === vipFilters.capitalMax );
-                                                    }
-                                                    if(_.isEmpty(capitalTarget)) {
-                                                        capitalTarget = {
-                                                            name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.registered.capital', '注册资本')})
-                                                        };
-                                                    }
-                                                    return [JSON.stringify(capitalTarget)];
-                                                }
-                                            })}
-                                        </div>
-                                        <div className="vip-filter-item">
-                                            {this.renderDropDownBlock({
-                                                btnText: Intl.get('clue.recommend.enterprise.class', '企业类型'),
-                                                type: VIP_ITEM_MAP.COMPANY_ENTYPES,
-                                                list: companyProperty,
-                                                getValue: () => {
-                                                    let entypesTarget = {};
-                                                    if(vipFilters.entTypes){
-                                                        entypesTarget = _.find(companyProperty, item => _.includes(vipFilters.entTypes, item.value));
-                                                    }
-                                                    if(_.isEmpty(entypesTarget)) {
-                                                        entypesTarget = {
-                                                            name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.enterprise.class', '企业类型')})
-                                                        };
-                                                    }
-                                                    return [JSON.stringify(entypesTarget)];
-                                                }
-                                            })}
-                                        </div>
+                                        {this.renderVipFiltersBlock()}
                                         <div className="vip-filter-item">
                                             <Button className={btnCls} type="primary" data-tracename="点击确认按钮" onClick={this.handleSubmit}>{Intl.get('common.confirm', '确认')}</Button>
                                         </div>
