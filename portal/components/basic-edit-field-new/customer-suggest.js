@@ -10,8 +10,7 @@ import SaveCancelButton from '../detail-card/save-cancel-button';
 import Trace from 'LIB_DIR/trace';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
+import {phoneMsgEmitter, customerEmitter} from 'PUB_DIR/sources/utils/emitters';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
@@ -58,6 +57,30 @@ class CustomerSuggest extends React.Component {
     }
 
     suggestTimer = null;
+    componentDidMount() {
+        customerEmitter.on(customerEmitter.ADD_CUSTOMER_SUCCESS, this.afterAddCustomerSuccess);
+    }
+    componentWillUnmount(){
+        customerEmitter.removeListener(customerEmitter.ADD_CUSTOMER_SUCCESS, this.afterAddCustomerSuccess);
+    }
+    handleCustomerData = (newCustomer) => {
+        return _.map(newCustomer, (customerItem) => {
+            return {
+                ...newCustomer,
+                'customer_name': customerItem.name,
+                'customer_id': customerItem.id
+            };
+        });
+    };
+    afterAddCustomerSuccess = (newCustomer) => {
+        var {list} = this.state;
+        this.setState({
+            list: _.concat(list, this.handleCustomerData(newCustomer)),
+            suggest_error_msg: '',
+            no_select_error_msg: Intl.get('customer.select.name.tip', '请在下拉框中选择客户'),
+            show_tip: true
+        });
+    };
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.id !== this.props.id) {
@@ -158,11 +181,7 @@ class CustomerSuggest extends React.Component {
                 getSimpleCrm: true
             };
             crmCustomerAjax.queryCustomer(params, 10, 1, sorter).then((data) => {
-                var list = data.result;
-                _.forEach(list, (customerItem) => {
-                    customerItem.customer_name = customerItem.name;
-                    customerItem.customer_id = customerItem.id;
-                });
+                var list = this.handleCustomerData(data.result);
                 this.setState({
                     result_type: '',
                     suggest_error_msg: '',
@@ -523,7 +542,7 @@ class CustomerSuggest extends React.Component {
                     combobox
                     autoFocus = {true}
                     placeholder={this.props.placeholder}
-                    filterOption={(input, option) => this.ignorePrefix(input, option)}
+                    filterOption={this.props.needRemovePrefix ? (input, option) => this.ignorePrefix(input, option) : 'false'}
                     onSearch={this.suggestChange}
                     onChange={this.customerChoosen}
                     onBlur={this.onCheckIfCustomerChoose.bind(this)}
