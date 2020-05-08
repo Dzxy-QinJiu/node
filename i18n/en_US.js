@@ -3961,6 +3961,15 @@ var en_US = {
     'clue.recommend.filter.vip': 'VIP screening',//VIP筛选
     'clue.recommend.filter.name.no.limit': '{name} is unlimited',//{name}不限
     'clue.recommend.filter.selected': 'The selected conditions',//已选条件
+    'clue.recommend.filter.company.status': 'Enterprise state',//企业状态
+    'clue.recommend.filter.company.status.survival': 'survival',//存续
+    'clue.recommend.filter.company.status.employment': 'employment',//在业
+    'clue.recommend.filter.company.status.revoked': 'revoked',//吊销
+    'clue.recommend.filter.company.status.cancellation': 'The cancellation',//注销
+    'clue.recommend.filter.company.status.immigration': 'To move in',//迁入
+    'clue.recommend.filter.company.status.out': 'Out of',//迁出
+    'clue.recommend.filter.company.status.closed': 'closed',//停业
+    'clue.recommend.filter.company.status.liquidation': 'The liquidation',//清算
 
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并

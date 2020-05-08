@@ -387,7 +387,7 @@ export const moneySize = [
         capitalMin: 5000 * TENTHOUSAND,
     },
 ];
-//企业类
+//企业类型
 export const companyProperty = [
     { name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.enterprise.class', '企业类型')}) },
     {
@@ -431,6 +431,47 @@ export const companyProperty = [
         value: Intl.get('clue.customer.condition.company.not.above.type', '非上述类型')
     }
 ];
+//企业状态
+export const companyStatus = [
+    { name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.filter.company.status', '企业状态')}) },
+    {
+        name: Intl.get('clue.recommend.filter.company.status.survival', '存续'),
+        value: '存续'
+    },
+    {
+        name: Intl.get('clue.recommend.filter.company.status.employment', '在业'),
+        value: '在业'
+    },
+    {
+        name: Intl.get('clue.recommend.filter.company.status.revoked', '吊销'),
+        value: '吊销'
+    },
+    {
+        name: Intl.get('clue.recommend.filter.company.status.cancellation', '注销'),
+        value: '注销'
+    },
+    {
+        name: Intl.get('clue.recommend.filter.company.status.immigration', '迁入'),
+        value: '迁入'
+    },
+    {
+        name: Intl.get('clue.recommend.filter.company.status.out', '迁出'),
+        value: '迁出'
+    },
+    {
+        name: Intl.get('clue.recommend.filter.company.status.closed', '停业'),
+        value: '停业'
+    },
+    {
+        name: Intl.get('clue.recommend.filter.company.status.liquidation', '清算'),
+        value: '清算'
+    },
+    {
+        name: Intl.get('common.others', '其他'),
+        value: '其他'
+    },
+];
+
 //线索推荐面板的静态常量集合
 export const EXTRACT_CLUE_CONST_MAP = {
     ANOTHER_BATCH: 'anotherBatch',//换一批
@@ -544,7 +585,7 @@ export function releaseClueTip() {
     return releaseTip;
 }
 //检查是否已选中了条件
-export const CLUE_CONDITION = ['name','startTime','endTime','entTypes','staffnumMax','staffnumMin','capitalMin','capitalMax'];
+export const CLUE_CONDITION = ['name','startTime','endTime','entTypes','staffnumMax','staffnumMin','capitalMin','capitalMax', 'openStatus'];
 export const ADD_INDUSTRY_ADDRESS_CLUE_CONDITION = _.concat(['keyword', 'industrys','province','city','district'],CLUE_CONDITION);
 export const checkClueCondition = (checkConditionItem,settedCondition) => {
     var hasCondition = false;
