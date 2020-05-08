@@ -406,26 +406,34 @@ function handleApplyData(data,setAll){
     }
     return result;
 }
+function getMyApplyListFun(req, res,emitter,isAllType){
+    getMyApplyList(req, res).then((data) => {
+        emitter.emit('success', handleApplyData(data,isAllType));
+    } ).catch((errorObj) => {
+        emitter.emit('error', errorObj);
+    });
+}
 // 获取我审批的申请列表(包含我审批过的和待我审批的)（对应页面上的我审批的列表）
 exports.getMyApplyLists = function(req, res){
     let emitter = new EventEmitter();
     var firstLogin = req.query.firstLogin;
     delete req.query.firstLogin;
-    getMyApplyList(req, res).then((dataList) => {
-        var data = handleApplyData(dataList) || {};
-        if(_.get(data,'list.[0].approval_state') !== '0' && firstLogin === 'true'){
-            delete req.query.type;
-            getMyApplyList(req, res).then((data) => {
-                emitter.emit('success', handleApplyData(data,true));
-            } ).catch( (errorObj) => {
-                emitter.emit('error', errorObj);
-            });
-        }else{
-            emitter.emit('success', data);
-        }
-    }, (errorMsg) => {
-        emitter.emit('error', errorMsg);
-    });
+    //先获取待我审批的用户类型的申请列表，如果待我审批的有用户类型，那么就发我的审批（用户类型的申请）否则就发全部类型的申请
+    if(firstLogin === 'true'){
+        getWillApproveByMe(req, res).then((dataList) => {
+            var isAllType = false;//是否要取是全部类型的列表
+            if(!_.get(dataList,'list[0]')){
+                delete req.query.type;
+                isAllType = true;
+            }
+            getMyApplyListFun(req, res,emitter,isAllType);
+        }, (errorMsg) => {
+            emitter.emit('error', errorMsg);
+        });
+    }else{
+        getMyApplyListFun(req, res,emitter);
+    }
+
     return emitter;
 };
 /**
@@ -501,14 +509,31 @@ function getApplyListApprovedByMe(req, res) {
         });
     });
 }
+function getWillApproveByMe(req, res) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.get({
+            url: AppUserRestApis.getApplyListWillApprovedByMe,
+            req: req,
+            res: res
+        }, req.query, {
+            success: (emitter, data) => {
+                resolve(data);
+            },
+            error: (eventEmitter, errorDesc) => {
+                reject(errorDesc);
+            }
+        });
+    });
+}
 //获取待我审批的申请
 exports.getApplyListWillApprovedByMe = function(req, res) {
-    return restUtil.authRest.get({
-        url: AppUserRestApis.getApplyListWillApprovedByMe,
-        req: req,
-        res: res
-    }, req.query);
-
+    var emitter = new EventEmitter();
+    getWillApproveByMe(req, res).then((data) => {
+        emitter.emit('success', data);
+    }).catch((errorMsg) => {
+        emitter.emit('error', errorMsg);
+    });
+    return emitter;
 };
 
 // //获取未读回复列表
