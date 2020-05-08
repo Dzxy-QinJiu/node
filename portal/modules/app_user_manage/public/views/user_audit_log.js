@@ -743,16 +743,17 @@ class LogView extends React.Component {
                         <div className="user_audit_log_all">
                             <RefreshButton
                                 handleRefresh={this.handleRefresh}
+                                className="btn-item"
                             />
                         </div>
-                        <span className="refresh-btn customize-btn btn-item">
+                        <Button className="refresh-btn customize-btn btn-item">
                             <i
                                 className="iconfont icon-down-twoline handle-btn-item"
                                 id="audit-log"
                                 data-tracename="点击自定义表格列按钮"
                                 title={Intl.get('common.table.customize', '自定义表格列')}
                             ></i>
-                        </span>
+                        </Button>
                     </div>
                 </ButtonZones>
 

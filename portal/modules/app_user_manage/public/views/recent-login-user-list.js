@@ -749,6 +749,7 @@ class RecentLoginUsers extends React.Component {
                         </div>
                         <RefreshButton
                             handleRefresh={this.handleRefresh}
+                            className="btn-item"
                         />
                     </div>
                 </ButtonZones>
