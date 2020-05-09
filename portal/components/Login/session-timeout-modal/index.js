@@ -192,6 +192,11 @@ class SessionTimeoutModal extends React.Component {
         this.submitFormData();
     }
 
+    // 监听密码输入框变化
+    monitorInputChange = () => {
+        this.setState({loginErrorMsg: ''});
+    }
+
     render() {
         let userInfo = userData.getUserData();
         const {getFieldDecorator} = this.props.form;
@@ -223,7 +228,7 @@ class SessionTimeoutModal extends React.Component {
                             {getFieldDecorator('password', {
                                 rules: [{required: true, message: Intl.get('common.input.password', '请输入密码')}]
                             })(
-                                <Input type='password' placeholder={Intl.get('common.password', '密码')}
+                                <Input type='password' onChange={this.monitorInputChange} placeholder={Intl.get('common.password', '密码')}
                                     onKeyUp={this.onInputEnter}
                                     autoComplete="new-password"/>
                             )}
