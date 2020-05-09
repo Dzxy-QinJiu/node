@@ -199,22 +199,6 @@ function addDllPlugins() {
     var dllPluins = [
         new webpack.DllReferencePlugin({
             context: path.join(__dirname),
-            manifest: require('./dll/echarts-manifest.json')
-        }),
-        new webpack.DllReferencePlugin({
-            context: path.join(__dirname),
-            manifest: require('./dll/world-manifest.json')
-        }),
-        new webpack.DllReferencePlugin({
-            context: path.join(__dirname),
-            manifest: require('./dll/china-manifest.json')
-        }),
-        new webpack.DllReferencePlugin({
-            context: path.join(__dirname),
-            manifest: require('./dll/province-manifest.json')
-        }),
-        new webpack.DllReferencePlugin({
-            context: path.join(__dirname),
             manifest: require('./dll/reactRel-manifest.json')
         }),
         new webpack.DllReferencePlugin({
