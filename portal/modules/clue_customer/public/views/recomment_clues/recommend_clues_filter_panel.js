@@ -9,7 +9,7 @@ import React, {Component} from 'react';
 import {Form, Input, Select, Icon, Popover, Button, Dropdown, Menu} from 'antd';
 const Option = Select.Option;
 const FormItem = Form.Item;
-import {AntcAreaSelector, SearchInput} from 'antc';
+import {AntcAreaSelection, SearchInput} from 'antc';
 import Trace from 'LIB_DIR/trace';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
 import { registerSize, staffSize, moneySize, companyProperty, companyStatus, EXTRACT_CLUE_CONST_MAP } from '../../utils/clue-customer-utils';
@@ -91,7 +91,6 @@ class RecommendCluesFilterPanel extends Component {
             isSaving: false,
             vipFilters: this.dealRecommendParamsVipData(hasSavedRecommendParams),
         };
-        this.currentArea = {};
     }
 
     componentDidMount() {
@@ -223,29 +222,25 @@ class RecommendCluesFilterPanel extends Component {
     };
 
     //更新地址
-    updateLocation = (value) => {
-        this.currentArea.province = value[0] || '';
-        this.currentArea.city = value[1] || '';
-
-        const traceTip = value.join('/') || '全部';
+    updateLocation = (addressObj) => {
+        let hasSavedRecommendParams = this.state.hasSavedRecommendParams;
+        hasSavedRecommendParams.province = addressObj.provName || '';
+        hasSavedRecommendParams.city = addressObj.cityName || '';
+        hasSavedRecommendParams.district = addressObj.countyName || '';
+        let traceTip = '全部';
+        if(addressObj.provName || addressObj.cityName || addressObj.countyName) {
+            let areas = [addressObj.province];
+            if(_.get(addressObj, 'city')) {
+                areas.push(addressObj.city);
+            }
+            if(_.get(addressObj, 'district')) {
+                areas.push(addressObj.district);
+            }
+            traceTip += areas.join('/');
+        }
         Trace.traceEvent(ReactDOM.findDOMNode(this), '选择了地域：' + traceTip);
-
-        if (_.isEmpty(value)) {
-            let params = _.clone(this.state.hasSavedRecommendParams);
-            _.extend(params, this.currentArea);
-            this.getRecommendClueList(params);
-        }
-    };
-
-    //地域选择浮层显示/隐藏状态变更事件
-    onPopupVisibleChange = (visible) => {
-        let params = _.clone(this.state.hasSavedRecommendParams);
-        const prevArea = _.pick(params, 'province', 'city');
-
-        if (!visible && !_.isEmpty(this.currentArea) && !_.isEqual(this.currentArea, prevArea)) {
-            _.extend(params, this.currentArea);
-            this.getRecommendClueList(params);
-        }
+        //这里不要setState，否则选中了省份后的各省市面板会收起
+        this.getRecommendClueList(hasSavedRecommendParams);
     };
 
     handleChange = (e) => {
@@ -737,26 +732,18 @@ class RecommendCluesFilterPanel extends Component {
                                     {this.renderAdvancedOptions()}
                                 </div>
                             </FormItem>
-                            <FormItem
+                            <AntcAreaSelection
+                                labelCol="0" wrapperCol="0" width="100%"
+                                colon={false}
                                 label={Intl.get('crm.96', '地域')}
-                                className="area-selector-wrapper"
-                            >
-                                <AntcAreaSelector
-                                    placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
-                                    value={(() => {
-                                        let value = [];
-                                        const { province, city } = hasSavedRecommendParams;
-                                        if (province) value.push(province);
-                                        if (city) value.push(city);
-                                        return value;
-                                    })()}
-                                    onChange={this.updateLocation}
-                                    onPopupVisibleChange={this.onPopupVisibleChange}
-                                    hiddenCounty
-                                    filterNewArea
-                                    changeOnSelect
-                                />
-                            </FormItem>
+                                placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
+                                provName={hasSavedRecommendParams.province}
+                                cityName={hasSavedRecommendParams.city}
+                                countyName={hasSavedRecommendParams.district}
+                                updateLocation={this.updateLocation}
+                                hiddenCounty
+                                showAllBtn
+                            />
                             <div className="show-hide-tip" onClick={this.handleToggleOtherCondition} data-tracename='点击更多或收起推荐线索的条件'>
                                 <span>{show_tip}</span>
                                 <i className={iconCls}/>
