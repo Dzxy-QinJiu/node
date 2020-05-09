@@ -49,6 +49,28 @@ exports.productionDeleteFilterIP = (deleteIpObj) => {
     return Deferred.promise();
 };
 
+// 校验产品名称
+let checkProductNameAjax = null;
+exports.checkProductName = (query) => {
+    const Deferred = $.Deferred();
+    checkProductNameAjax && checkProductNameAjax.abort();
+    checkProductNameAjax = $.ajax({
+        url: '/rest/check/product/name',
+        type: 'get',
+        dataType: 'json',
+        data: query,
+        success: (data) => {
+            Deferred.resolve(data);
+        },
+        error: (xhr, textStatus) => {
+            if ('abort' !== textStatus) {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
 //获取当前页的用户列表
 exports.getProductions = function(query) {
     var Deferred = $.Deferred();

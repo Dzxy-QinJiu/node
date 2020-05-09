@@ -165,6 +165,24 @@ class Production extends React.Component {
         this.props.openRightPanel();
     };
 
+    // 产品名称唯一性的验证
+    getValidatorName = () => {
+        return (rule, value, callback) => {
+            let productName = _.trim(value);
+            productionAjax.checkProductName({name: productName}).then( result => {
+                if (result) {
+                    //已存在
+                    callback(Intl.get('config.product.valid.name.exist', '该产品名称已存在'));
+                } else {
+                    callback();
+                }
+            }, () => {
+                //唯一性验证出错了
+                callback(Intl.get('config.product.valid.name.error', '产品名称唯一性验证出错了'));
+            });
+        };
+    };
+
     //渲染添加面板内容
     renderFormContent() {
         const {getFieldDecorator} = this.props.form;
@@ -204,7 +222,9 @@ class Production extends React.Component {
                             >
                                 {getFieldDecorator('name', {
                                     initialValue: this.props.info.name,
-                                    rules: [productNameRule],
+                                    rules: [productNameRule, {
+                                        validator: this.getValidatorName()
+                                    }],
                                     validateTrigger: 'onBlur'
                                 })(
                                     <Input

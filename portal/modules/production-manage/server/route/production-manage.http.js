@@ -8,6 +8,14 @@ require('../action/production-manage-controller');
 module.exports = {
     module: 'production-manage/server/action/production-manage-controller',
     routes: [{
+        // 校验产品名称
+        'method': 'get',
+        'path': '/rest/check/product/name',
+        'handler': 'checkProductName',
+        'passport': {
+            'needLogin': true
+        }
+    },{
         'method': 'get',
         'path': '/rest/product',
         'handler': 'getProduct',

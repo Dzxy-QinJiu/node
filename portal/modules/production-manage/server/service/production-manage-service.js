@@ -11,6 +11,7 @@ var EventEmitter = require('events').EventEmitter;
 // 产品配置中过滤ip公共的url
 const filterIpCommonUrl = '/rest/base/v1/products/config/';
 const productRestApis = {
+    checkProductName: '/rest/base/v1/products/list',
     product: '/rest/base/v1/products',
     oplateProductList: '/rest/base/v1/application/oplate',
     matomoProductList: '/rest/base/v1/matomo/sites',
@@ -21,6 +22,15 @@ const productRestApis = {
     productionGetFilterIP: filterIpCommonUrl + ':product_id', // 获取产品配置中的ip（后端描述：获取产品的配置，加注释：方便在yapi上查找接口）
     productionAddFilterIP: filterIpCommonUrl + 'filterIP', // 产品配置中增加过滤ip
     productionDeleteFilterIP: filterIpCommonUrl + 'filterIP/:product_id/:ips', // 产品配置中删除过滤ip
+};
+
+// 校验产品名称
+exports.checkProductName = (req, res) => {
+    return restUtil.authRest.get({
+        url: productRestApis.checkProductName,
+        req: req,
+        res: res
+    }, req.query);
 };
 
 // 获取产品配置中的ip
