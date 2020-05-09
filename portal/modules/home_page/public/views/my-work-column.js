@@ -371,6 +371,11 @@ class MyWorkColumn extends React.Component {
         if (!_.isEmpty(item.customer)) {
             workObj = item.customer;
             titleTip = Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('call.record.customer', '客户')});
+            // 客户对象存在，客户名没有，但有线索时，说明是自注册的账号还未绑定客户时到期或即将到期，此时展示线索
+            if (!_.has(item.customer, 'name') && !_.isEmpty(item.lead)) {
+                workObj = item.lead;
+                titleTip = Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('crm.sales.clue', '线索')});
+            }
         } else if (!_.isEmpty(item.lead)) {
             workObj = item.lead;
             titleTip = Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('crm.sales.clue', '线索')});
