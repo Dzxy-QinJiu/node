@@ -27,7 +27,7 @@
   100% { width: @right-panle-initial; }
 }
 .schedule-list-content{
-  overflow: hidden;  
+  overflow: hidden;
   #expire-list-content{
     float: left;
     width: @left-panel-show-width;
@@ -43,6 +43,19 @@
         color: #636768;
         padding: 10px 16px 9px 16px;
         min-width: 200px;
+        .btn-item{
+          cursor: pointer;
+          float: right;
+          display: inline-block;
+          margin: 0px !important;
+          min-width: 32px;
+          z-index: 100;
+          .icon-refresh.iconfont{
+            top: 0;
+            font-size: 14px;
+            padding-right:0
+          }
+        }
       }
       //过期日程内容
       .expire-list-content{
