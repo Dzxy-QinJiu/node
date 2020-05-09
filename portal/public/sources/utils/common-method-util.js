@@ -704,7 +704,7 @@ function hasCalloutPrivilege() {
 exports.hasCalloutPrivilege = hasCalloutPrivilege;
 exports.afterGetExtendUserInfo = (data, that, isShowPhoneSet) => {
     var responseObj = {
-        isShowActiveEmail: !data.email_enable,//是否展示激活邮箱的提示
+        isShowActiveEmail: !data.emailEnable,//是否展示激活邮箱的提示
         isShowAddEmail: !data.email,//是否展示添加邮箱的提示，不能仅用是否有email字段进行判断，原因是如果数据获取慢的时候，也会在页面上展示出添加邮箱的提示
         isShowSetClient: isShowPhoneSet,//是否展示设置坐席号的提示
         email: data.email

@@ -5,6 +5,7 @@ var salesClueAjax = require('MOD_DIR/clue_customer/public/ajax/clue-customer-aja
 var userData = require('../../../../public/sources/user-data');
 import UserAjax from '../../../common/public/ajax/user';
 import {afterGetExtendUserInfo} from 'PUB_DIR/sources/utils/common-method-util';
+import {getUserInfo} from 'PUB_DIR/sources/utils/apply-estimate';
 function SalesHomeActions() {
     this.generateActions(
         'setInitState',//设置初始化数据
@@ -151,9 +152,7 @@ function SalesHomeActions() {
     this.getShowActiveEmailOrClientConfig = function(isShowPhoneSet) {
         //先获取个人资料
         var user_id = userData.getUserData().user_id;
-        UserAjax.getUserByIdAjax().resolvePath({
-            user_id: user_id
-        }).sendRequest().success((data) => {
+        getUserInfo().then((data) => {
             afterGetExtendUserInfo(data, this, isShowPhoneSet);
         });
     };
@@ -200,7 +199,7 @@ function SalesHomeActions() {
     };
 
     //在客户panel中点击了添加跟进，此时需要将页面中跟进的客户删除，并且今日已跟进客户+1
-    this.updatePageNewDistributeCustomer = function (customer_id) {
+    this.updatePageNewDistributeCustomer = function(customer_id) {
         this.dispatch(customer_id);
     };
 }
