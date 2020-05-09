@@ -22,7 +22,6 @@ function UserById(obj) {
     this.create_date = _.get(obj, 'create_date', '');
     this.team_name = obj.team_name || '';
     this.team_id = obj.team_id || '';
-    this.email_enable = obj.email_enable || false;
     this.email = obj.email || '';
     this.role_name = _.get(obj, 'roles[0].role_name', ''); // 角色
 }

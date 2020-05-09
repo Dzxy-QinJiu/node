@@ -80,6 +80,7 @@ function getUserInfo() {
         });
     });
 }
+export {getUserInfo};
 
 //获取返回的错误信息jsx
 function getApplyMessage(hasPrivilege) {
