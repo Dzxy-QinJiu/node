@@ -1,7 +1,11 @@
 @import "../../../../public/css/common-variables";
 
 @tag-color: #FF8B00;
+@content-bg-color: #E3E8ED;
 @filter-width: 396px;
+.recommend-clues-page-container{
+  background-color: @content-bg-color!important;
+}
 .recommend-clues-lists-container{
   .recommend-customer-list{
     width: auto;
@@ -136,7 +140,7 @@
           padding: 0;
           //padding-left: @filter-width + 1px;
           margin-top: 0;
-          background-color: #E3E8ED;
+          background-color: @content-bg-color;
           .recommend-clue-detail-content-box{
             padding: 16px;
           }
