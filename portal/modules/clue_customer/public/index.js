@@ -368,7 +368,7 @@ class ClueCustomer extends React.Component {
             if(isWillDistribute //如果选中的是待分配的tab
              && _.get(this.state,'agg_list.willDistribute','0') > 0 //待分配的数字大于0
              && _.isEmpty(this.state.curClueList)//当前列表的为空
-             ){
+            ){
                 //刷新重新获取列表
                 //做1s延迟为了跟数据库同步
                 setTimeout(() => {
@@ -2001,25 +2001,19 @@ class ClueCustomer extends React.Component {
                     //联系人的相关信息
                     let contacts = salesClueItem.contacts ? salesClueItem.contacts : [];
                     if (_.isArray(contacts) && contacts.length) {
+                        var showContact = _.get(contacts,'[0]');
+                        var contactName = _.trim(showContact.name) || '';
+                        var cls = classNames({
+                            'contact-name': contactName
+                        });
                         return (
                             <div className="contact-container">
-                                {_.map(contacts, (contactItem, idx) => {
-                                    var contactName = _.trim(contactItem.name) || '';
-                                    var cls = classNames({
-                                        'contact-name': contactName
-                                    });
-                                    return (
-                                        <div className="contact-container" key={idx}>
-                                            <span
-                                                className={cls}
-                                                title={contactName}
-                                            >
-                                                {contactName}
-                                            </span>
-                                        </div>
-                                    );})}
+                                <div className="contact-container">
+                                    <span className={cls} title={contactName}>
+                                        {contactName}
+                                    </span>
+                                </div>
                             </div>
-
                         );
                     } else {
                         return null;
