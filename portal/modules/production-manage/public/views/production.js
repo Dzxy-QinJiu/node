@@ -139,7 +139,13 @@ class Production extends React.Component {
                 if (this.props.formType === util.CONST.ADD) {
                     production.create_time = new Date().getTime();
                     ProductionFormAction.setSaveFlag(true);
-                    ProductionFormAction.addProduction(production);
+                    ProductionFormAction.addProduction(production, (result) => {
+                        if (_.isObject(result)) {
+                            this.props.afterOperation(this.props.formType, result);
+                        } else {
+                            message.error(result);
+                        }
+                    });
                 }
                 production.id = oldProduct.id;
                 //设置正在保存中
@@ -156,8 +162,25 @@ class Production extends React.Component {
 
     //去掉保存后提示信息
     hideSaveTooltip = () => {
-        this.props.afterOperation(this.props.formType, this.state.savedProduction);
         this.props.openRightPanel();
+    };
+
+    // 产品名称唯一性的验证
+    getValidatorName = () => {
+        return (rule, value, callback) => {
+            let productName = _.trim(value);
+            productionAjax.checkProductName({name: productName}).then( result => {
+                if (result) {
+                    //已存在
+                    callback(Intl.get('config.product.valid.name.exist', '该产品名称已存在'));
+                } else {
+                    callback();
+                }
+            }, () => {
+                //唯一性验证出错了
+                callback(Intl.get('config.product.valid.name.error', '产品名称唯一性验证出错了'));
+            });
+        };
     };
 
     //渲染添加面板内容
@@ -199,7 +222,9 @@ class Production extends React.Component {
                             >
                                 {getFieldDecorator('name', {
                                     initialValue: this.props.info.name,
-                                    rules: [productNameRule],
+                                    rules: [productNameRule, {
+                                        validator: this.getValidatorName()
+                                    }],
                                     validateTrigger: 'onBlur'
                                 })(
                                     <Input
@@ -796,7 +821,7 @@ class Production extends React.Component {
                             value={this.props.info.name}
                             field='name'
                             type='textarea'
-                            validators={[productNameRuleForValidator]}
+                            validators={[productNameRuleForValidator, this.getValidatorName()]}
                             placeholder={Intl.get('config.product.input.name', '请输入产品名称')}
                             hasMoreRow={true}
                         />
