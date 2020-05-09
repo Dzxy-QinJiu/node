@@ -821,7 +821,7 @@ class Production extends React.Component {
                             value={this.props.info.name}
                             field='name'
                             type='textarea'
-                            validators={[productNameRuleForValidator]}
+                            validators={[productNameRuleForValidator, this.getValidatorName()]}
                             placeholder={Intl.get('config.product.input.name', '请输入产品名称')}
                             hasMoreRow={true}
                         />
