@@ -16,7 +16,7 @@ const FORMLAYOUT = {
 import DynamicAddDelCustomers from 'CMP_DIR/dynamic-add-delete-customers';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 const DEFAULTTIMETYPE = 'day';
-var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
+var DateSelectorUtils = require('antc/lib/components/datepicker/utils');
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
 import {calculateTotalTimeRange, calculateRangeType} from 'PUB_DIR/sources/utils/common-data-util';
 import AlertTimer from 'CMP_DIR/alert-timer';

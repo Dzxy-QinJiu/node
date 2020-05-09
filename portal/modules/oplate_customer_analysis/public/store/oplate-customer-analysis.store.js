@@ -1,5 +1,5 @@
 var OplateCustomerAnalysisActions = require('../action/oplate-customer-analysis.action');
-var DateSelectorUtils = require('../../../../components/datepicker/utils');
+var DateSelectorUtils = require('antc/lib/components/datepicker/utils');
 //客户分析
 function OplateCustomerAnalysisStore() {
     //初始化state数据

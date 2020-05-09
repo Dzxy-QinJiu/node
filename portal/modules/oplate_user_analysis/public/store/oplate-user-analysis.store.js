@@ -1,5 +1,5 @@
 var OplateUserAnalysisActions = require('../action/oplate-user-analysis.action');
-var DateSelectorUtils = require('../../../../components/datepicker/utils');
+var DateSelectorUtils = require('antc/lib/components/datepicker/utils');
 var userData = require('../../../../public/sources/user-data');
 
 //用户分析

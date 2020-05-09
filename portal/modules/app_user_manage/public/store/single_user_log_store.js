@@ -1,6 +1,6 @@
 const SingleUserLogAction = require('../action/single_user_log_action');
 const ShareObj = require('../util/app-id-share-util');
-const datePickerUtils = require('CMP_DIR/datepicker/utils');
+const datePickerUtils = require('antc/lib/components/datepicker/utils');
 
 function SingleUserLogStore(){
     //初始化state数据
