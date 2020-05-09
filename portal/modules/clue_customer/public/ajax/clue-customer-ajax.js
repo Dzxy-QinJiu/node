@@ -11,7 +11,6 @@ const RELATEAUTHS = {
 
 let salesmanAjax = require('../../../common/public/ajax/salesman');
 let teamAjax = require('../../../common/public/ajax/team');
-var userData = require('PUB_DIR/sources/user-data');
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 //获取线索来源列表
 exports.getClueSource = function() {

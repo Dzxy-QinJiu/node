@@ -9,7 +9,7 @@ import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
 import { AntcDatePicker as DatePicker } from 'antc';
-import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
+import DateSelectorUtils from 'antc/lib/components/datepicker/utils';
 import { RightPanel } from 'CMP_DIR/rightPanel';
 import { topNavEmitter, selectedAppEmitter, scrollBarEmitter,
     userDetailEmitter, phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';

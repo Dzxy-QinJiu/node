@@ -3,7 +3,7 @@
  */
 
 import FilterAction from '../action/filter-action';
-const datePickerUtils = require('CMP_DIR/datepicker/utils');
+const datePickerUtils = require('antc/lib/components/datepicker/utils');
 import {clueStartTime} from '../utils/clue-pool-utils';
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
 import {AVALIBILITYSTATUS, CLUE_DIFF_TYPE, SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';

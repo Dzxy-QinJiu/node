@@ -2,7 +2,7 @@
  * 获取不同时间段内的开始时间和结束时间的毫秒数
  */
 const MOMENT_DATE_FORMAT = oplateConsts.DATE_FORMAT;
-import DatePickerUtils from 'CMP_DIR/datepicker/utils';
+import DatePickerUtils from 'antc/lib/components/datepicker/utils';
 
 function getTimeStamp(timeRange) {
     return {

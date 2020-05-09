@@ -408,6 +408,8 @@ module.exports.startSocketio = function(nodeServer) {
                 //将当前用户应用的socket、token保存到内存中
                 socketStore[session.user.userid] = socketArray;
                 pushLogger.debug('用户信息 %s', JSON.stringify(session.user));
+                // 推送最新升级版本的时间到浏览器端，以便于界面判断是否有新版本升级提示用户刷新界面
+                socket.emit('curUpgradeTime', global.config.timeStamp);
             } else {
                 var sid = socket.request && socket.request.sessionId;
                 if (err) {

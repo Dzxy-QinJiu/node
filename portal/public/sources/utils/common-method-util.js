@@ -35,7 +35,7 @@ import {
     winningClueMaxCount,
     COMPANY_PHONE
 } from './consts';
-var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
+var DateSelectorUtils = require('antc/lib/components/datepicker/utils');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 import { notificationEmitter, modifyAppConfigEmitter } from './emitters';

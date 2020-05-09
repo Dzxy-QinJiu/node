@@ -6,7 +6,6 @@
 /**
  * Created by wangliping on 2016/4/18.
  */
-var userData = require('../../../../public/sources/user-data');
 var productionAjax = require('../ajax/production-ajax');
 // var ProductionActions = require('./production-actions');
 // var cardEmitter = require('../../../../public/sources/utils/emitters').cardEmitter;

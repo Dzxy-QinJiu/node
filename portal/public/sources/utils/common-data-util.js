@@ -1,4 +1,5 @@
 import {getUserData, setUserData} from '../user-data';
+import ajax from 'ant-ajax';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import teamAjaxTrans from 'MOD_DIR/common/public/ajax/team';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
@@ -686,6 +687,19 @@ exports.getUserTypeList = function() {
         });
     });
 };
+// 获取引导流程
+exports.getGuideConfig = function(cb) {
+    let userProperty = 'guideConfig';
+    let guideConfig = _.get(getUserData(), userProperty, []);
+    if(_.isEmpty(guideConfig)) {
+        guideAjax.getGuideConfig().then((data) => {
+            setUserData(userProperty, data);
+            _.isFunction(cb) && cb(data);
+        });
+    }else {
+        _.isFunction(cb) && cb(guideConfig);
+    }
+};
 // 更新引导流程
 exports.updateGuideMark = function(key) {
     // 判断是否完成此引导，没有则请求接口
@@ -804,4 +818,25 @@ exports.getRewardedCluesCount = () => {
         },
     });
     return Deferred.promise();
+};
+
+// 获取用户职务
+exports.getUserPosition = function(cb) {
+    const userData = getUserData();
+    const userId = _.get(userData, 'user_id');
+    const field = 'position';
+    let position = _.get(userData, field);
+
+    if(!position) {
+        ajax.send({
+            url: '/rest/base/v1/user/member/teamrole',
+            query: { member_id: userId }
+        }).then(result => {
+            //用户职务
+            position = _.get(result, 'teamrole_name', '');
+            setUserData(field, position);
+
+            _.isFunction(cb) && cb(position);
+        });
+    }
 };

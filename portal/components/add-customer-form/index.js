@@ -20,7 +20,6 @@ require('./index.less');
 import PhoneInput from 'CMP_DIR/phone-input';
 import {AntcAreaSelection} from 'antc';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
-const userData = require('PUB_DIR/sources/user-data');
 const noop = function() {
 };
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';

@@ -102,7 +102,9 @@
         antmeActorUrl: '<%- antmeActorUrl %>',
         antmeClientId: '<%- antmeClientId %>',
         forceLogin: '<%- forceLogin %>',
-        showWelComePage: '<%- showWelComePage %>'
+        showWelComePage: '<%- showWelComePage %>',
+        //当前版本升级时间的记录，界面上用来判断是否有新的版本升级
+        curUpgradeTime: '<%- timeStamp %>'
     };
 </script>
 <script type="text/javascript">
@@ -264,9 +266,6 @@
 </div>
 <script src="/dll/dll.vendor.js?timestamp=<%= timeStamp %>"></script>
 <script src="/dll/dll.reactRel.js?timestamp=<%= timeStamp %>"></script>
-<script src="/dll/dll.china.js?timestamp=<%= timeStamp %>"></script>
-<script src="/dll/dll.province.js?timestamp=<%= timeStamp %>"></script>
-<script src="/dll/dll.echarts.js?timestamp=<%= timeStamp %>"></script>
 <script src="/resources/common.bundle.js?timestamp=<%= timeStamp %>"></script>
 <script src="/resources/app.bundle.js?timestamp=<%= timeStamp %>"></script>
 <% // 页脚                %>

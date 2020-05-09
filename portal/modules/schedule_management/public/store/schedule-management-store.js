@@ -4,7 +4,6 @@
  * Created by zhangshujuan on 2017/10/16.
  */
 var ScheduleManagementAction = require('../action/schedule-management-action');
-let userData = require('PUB_DIR/sources/user-data');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 const TimeStampUtil = require('PUB_DIR/sources/utils/time-stamp-util');
 import {LESSONESECOND} from '../utils/schedule-manage-utils';

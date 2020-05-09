@@ -190,64 +190,6 @@ function filterCertainRoutes(routes, item) {
 function getApplicationApplyManagement(routes) {
     return _.find(routes, item => item.id === 'application_apply_management');
 }
-/*
- * 过滤流程配置路由
- * * @param userRoutes  授权的路由
- *   @param workFlowConfigLiST  配置申请审批流程
- * */
-function dealWorkFlowConfigRoute(userRoutes, workFlowConfigList) {
-    var REPORTANDDOUCMENTMAP = [{
-        id: 'reportsend_apply_management',
-        configType: 'opinionreport'
-    }, {
-        id: 'documentwriting_apply_management',//路由配置中路由id
-        configType: 'documentwriting'//获取后端返回的申请流程配置中流程的类型
-    }, {
-        id: 'app_user_manage_apply',//路由配置中路由id
-        configType: 'userapply'//获取后端返回的申请流程配置中流程的类型
-    }, {
-        id: 'leave_apply_management',//路由配置中路由id
-        configType: 'leave'//获取后端返回的申请流程配置中流程的类型
-    }, {
-        id: 'sales_bussiness_apply_management',//路由配置中路由id
-        configType: 'businessopportunities'//获取后端返回的申请流程配置中流程的类型
-    }, {
-        id: 'bussiness_apply_management',//路由配置中路由id
-        configType: 'businesstrip'//获取后端返回的申请流程配置中流程的类型
-    }, {
-        id: 'my_leave_apply_management',//路由配置中路由id
-        configType: SELF_SETTING_FLOW.VISITAPPLY//获取后端返回的申请流程配置中流程的类型
-    }, {
-        id: 'my_domain_apply_management',//路由配置中路由id
-        configType: SELF_SETTING_FLOW.DOMAINAPPLY//获取后端返回的申请流程配置中流程的类型
-    }, {
-        id: 'my_business_while_apply_management',//路由配置中路由id
-        configType: APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE//获取后端返回的外出申请流程配置中流程的类型
-    }];
-
-    _.forEach(REPORTANDDOUCMENTMAP, item => {
-        //只有配置过流程的才展示舆情平台申请的tab
-        //加上配置过的自定义流程在后端所存的描述描述
-        var configTarget = _.find(workFlowConfigList, config => config.type === item.configType);
-        if(configTarget){
-            item['customName'] = _.get(configTarget,'description');
-        }
-        if (!workFlowConfigList || _.indexOf(_.map(workFlowConfigList, 'type'), item.configType) < 0
-        ) {
-            filterCertainRoutes(userRoutes, item);
-        }
-        //找到自定义的流程
-        var target = getApplicationApplyManagement(userRoutes);
-        //找到自定义流程下面的子路由，给子路由加上'customName'字段，这个字段是后端所存储的流程的描述
-        //todo 这个主要是因为现在路由子菜单的渲染是跟据语言包的key来确定的，等之后统一成一种类型后，会去掉
-        if (target && _.isArray(target.routes)) {
-            var subTarget = _.find(target.routes, subMenuItem => subMenuItem.id === item.id);
-            if(subTarget){
-                subTarget['customName'] = item['customName'];
-            }
-        }
-    });
-}
 
 /***
  * 过滤通话记录路由
@@ -309,8 +251,6 @@ function filterPersonalRoutes(routes) {
  */
 function filterRoute(allRoutes) {
     let user = userData.getUserData();
-    //过滤没有配置过流程的路由
-    dealWorkFlowConfigRoute(user.routes, user.workFlowConfigs);
     //过滤没有开通呼叫中心时的通话记录路由
     dealCallRecordRoute(user.routes);
     //如果是蚁坊的组织，需要把销售自动化的去掉
@@ -330,27 +270,6 @@ function filterRoute(allRoutes) {
     }
     let childRoutes = matchRoute(user.routes, allRoutes);
     dealCommonSaleRoute(childRoutes, user.isCommonSales);
-    //如果申请审批没有内容，手动渲染一个页面进去
-    //todo 申请审批代码优化后会去掉
-    var targetObj = _.find(childRoutes, item => item.id === 'application_apply_management');
-    if (targetObj) {
-        //如果有内置或者自定义的流程，过滤掉申请审批的提示页面
-        childRoutes = _.filter(childRoutes, item => item.id !== 'application_apply_management1');
-        user.routes = _.filter(user.routes, item => item.id !== 'application_apply_management1');
-        //如果没有获取用户列表的权限，需要把用户审批tab也去掉
-        if(!hasPrivilege(PRIVILEGE_MAP.APP_USER_LIST)){
-            var userApplyObj = _.find(user.routes, item => item.id === 'application_apply_management');
-            if(_.get(userApplyObj,'routes')){
-                userApplyObj.routes = _.filter(userApplyObj.routes, item => item.id !== 'app_user_manage_apply');
-            }
-            if(_.get(targetObj,'routes')){
-                targetObj.routes = _.filter(targetObj.routes, item => item.id !== 'app_user_manage_apply');
-            }
-        }
-    }else {
-        //如果展示的是申请审批的提示页面，把申请申请页面过滤掉
-        user.routes = _.filter(user.routes, item => item.id !== 'application_apply_management');
-    }
     //路由配置
     const routePaths = [
         {

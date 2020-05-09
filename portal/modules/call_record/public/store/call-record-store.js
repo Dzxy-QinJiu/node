@@ -1,5 +1,5 @@
 import CallRecordActions from '../action/call-record-actions';
-import DateSelectorUtils from '../../../../components/datepicker/utils';
+import DateSelectorUtils from 'antc/lib/components/datepicker/utils';
 
 function SalesCallRecordStore() {
     this.filter_phone = false;

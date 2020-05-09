@@ -1,6 +1,6 @@
 var UserAuditLogAction = require('../action/user_audit_log_action');
 var ShareObj = require('../util/app-id-share-util');
-var DateSelectorUtils = require('../../../../components/datepicker/utils');
+var DateSelectorUtils = require('antc/lib/components/datepicker/utils');
 var AppUserUtil = require('../util/app-user-util');
 import { ALL_LOG_INFO, AUDIT_LOG} from 'PUB_DIR/sources/utils/consts';
 import { storageUtil } from 'ant-utils';

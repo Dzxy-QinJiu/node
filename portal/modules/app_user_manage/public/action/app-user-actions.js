@@ -4,7 +4,6 @@
 //联系人的ajax
 var AppUserAjax = require('../ajax/app-user-ajax');
 var AppUserUtil = require('../util/app-user-util');
-var UserData = require('../../../../public/sources/user-data');
 var ShareObj = require('../util/app-id-share-util');
 var rolesAjax = require('../../../common/public/ajax/role');
 import { packageTry } from 'LIB_DIR/func';

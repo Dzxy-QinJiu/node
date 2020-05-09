@@ -6,7 +6,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/user-audit-log-zh_CN.less');
 }
 var UserAuditLogStore = require('../store/user_audit_log_store');
-const datePickerUtils = require('CMP_DIR/datepicker/utils');
+const datePickerUtils = require('antc/lib/components/datepicker/utils');
 // 默认的今天时间
 const timeObj = datePickerUtils.getTodayTime();
 import {userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';

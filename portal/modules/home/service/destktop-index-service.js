@@ -23,67 +23,60 @@ exports.getUserInfo = function(req, res) {
     let user = auth.getUser(req);
     var emitter = new EventEmitter();
     //获取登录用户的基本信息
-    let getUserBasicInfo = getDataPromise(req, res, userInfoRestApis.getUserInfo);
-    //获取登录用户的角色信息
-    let getUserRole = getDataPromise(req, res, userInfoRestApis.getMemberRoles);
-    //获取登录用户的引导流程
-    let getUserGuideCOnfigs = getDataPromise(req, res, userInfoRestApis.getGuideConfig);
-    //获取网站个性化设置
-    let getWebsiteConfig = getDataPromise(req, res, userInfoRestApis.getWebsiteConfig);
+    let getUserBasicInfo = getDataPromise(req, res, userInfoRestApis.getUserInfo, null, {
+        //以下参数不传时，默认为true，都会获取
+        with_role: false, //是否获取角色信息roles:[{role_id, role_name}]
+        with_group: false,//是否获取团队信息team_id, team_name
+        with_extentions: true//是否获取邮箱激活email_enable、国际化语言language_setting:{lang:EN}
+    });
     // 获取用户的组织信息
     let getOrganization = getDataPromise(req, res, userInfoRestApis.getOrganization);
-    let promiseList = [getUserBasicInfo, getUserRole, getUserGuideCOnfigs, getWebsiteConfig, getOrganization];
+    let promiseList = [getUserBasicInfo, getOrganization];
     let userPrivileges = getPrivileges(req);
     //是否有获取所有团队数据的权限
     let hasGetAllTeamPrivilege = userPrivileges.indexOf(publicPrivilegeConst.GET_TEAM_LIST_ALL) !== -1;
-    //是否有获取流程配置的权限
-    let hasWorkFlowPrivilege = userPrivileges.indexOf(privilegeConstCommon.WORKFLOW_BASE_PERMISSION) !== -1;
     //没有获取所有团队数据的权限,通过获取我所在的团队及下级团队来判断是否是普通销售
     if (!hasGetAllTeamPrivilege) {
         promiseList.push(getDataPromise(req, res, userInfoRestApis.getMyTeamWithSubteams));
-        if(hasWorkFlowPrivilege){
-            //获取登录用户已经配置过的流程
-            promiseList.push(getDataPromise(req, res, userInfoRestApis.getUserWorkFlowConfigs,'',{page_size: 1000}));
-        }
-
-        //获取用户职务
-        promiseList.push(getDataPromise(req, res, userInfoRestApis.getSalesRoleByMemberId, null, { member_id: user.user_id }));
-    }else if(hasWorkFlowPrivilege){
-        promiseList.push(getDataPromise(req, res, userInfoRestApis.getUserWorkFlowConfigs,'',{page_size: 1000}));
     }
-
+    // 登录时已获取过网站个性化配置，此处就不用再获取了,只有刷新时才需要重新获取
+    if (!req.session.websiteConfig) {
+        //获取网站个性化设置
+        promiseList.push(getDataPromise(req, res, userInfoRestApis.getWebsiteConfig));
+    }
     Promise.all(promiseList).then(resultList => {
         let userInfoResult = _.get(resultList, '[0]', {});
         //成功获取用户信息
         if (userInfoResult.successData) {
             let userData = userInfoResult.successData;
-            //角色标识的数组['realm_manager', 'sales', ...]
-            userData.roles = _.get(resultList, '[1].successData', []);
-            //引导流程
-            userData.guideConfig = _.get(resultList,'[2].successData',[]);
-            //网站个性化
-            userData.websiteConfig = _.get(resultList, '[3].successData', {});
             //用户组织信息
-            userData.organization = _.get(resultList, '[4].successData', {});
+            userData.organization = _.get(resultList, '[1].successData', {});
+            // 登录时已获取过websiteConfig此处就不需要获取了，直接用session中存的
+            if (req.session.websiteConfig) {
+                userData.websiteConfig = req.session.websiteConfig;
+                // 取完登录后的websiteConfig后，即可删掉session中的websiteConfig，为了刷新时可以重新获取最新数据
+                delete req.session.websiteConfig;
+                req.session.save();
+            }
             //是否是普通销售
             if (hasGetAllTeamPrivilege) {//管理员或运营人员，肯定不是普通销售
                 userData.isCommonSales = false;
-                //已经配置过的流程
-                if(hasWorkFlowPrivilege){
-                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[5].successData', []));
+                if (!req.session.websiteConfig) {//刷新时，需要重新获取websiteConfig
+                    //网站个性化
+                    userData.websiteConfig = _.get(resultList, '[2].successData', {});
                 }
             } else {//普通销售、销售主管、销售总监等，通过我所在的团队及下级团队来判断是否是普通销售
-                let teamTreeList = _.get(resultList, '[5].successData', []);
+                let teamTreeList = _.get(resultList, '[2].successData', []);
                 userData.isCommonSales = getIsCommonSalesByTeams(userData.user_id, teamTreeList);
-                //已经配置过的流程
-                if(hasWorkFlowPrivilege){
-                    userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[6].successData', []));
-
-                    //用户职务
-                    userData.position = _.get(resultList, '[7].successData.teamrole_name', '');
-                } else {
-                    //用户职务
-                    userData.position = _.get(resultList, '[6].successData.teamrole_name', '');
+                // 有团队时，赋值销售所在的团队信息
+                if (_.get(teamTreeList, 'length')) {
+                    userData.team_id = _.get(teamTreeList, '[0].group_id', '');
+                    userData.team_name = _.get(teamTreeList, '[0].group_name', '');
+                }
+                //刷新时，需要重新获取websiteConfig
+                if (!req.session.websiteConfig) {
+                    //网站个性化
+                    userData.websiteConfig = _.get(resultList, '[3].successData', {});
                 }
             }
             emitter.emit('success', userData);
@@ -206,7 +199,6 @@ var userInfoRestApis = {
     activeEmail: '/rest/base/v1/user/email/confirm',
     getUserLanguage: '/rest/base/v1/user/member/language/setting',
     getMyTeamWithSubteams: '/rest/base/v1/group/teams/tree/self',
-    getUserWorkFlowConfigs: '/rest/base/v1/workflow/configs',
     getOrganizationInfoById: '/rest/base/v1/realm/organization',
     getGuideConfig: '/rest/base/v1/user/member/guide',
     getAreaByPhone: baseUrl + '/rest/es/v2/es/phone_location/:phone',

@@ -13,7 +13,6 @@ const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
-var user = require('PUB_DIR/sources/user-data').getUserData();
 import AlertTimer from 'CMP_DIR/alert-timer';
 import {DELAY_TIME_RANGE, FILES_LIMIT} from 'PUB_DIR/sources/utils/consts';
 import {uniteFileSize} from 'PUB_DIR/sources/utils/common-method-util';

@@ -5,7 +5,6 @@
  */
 var scheduleManagementAjax = require('../ajax/schedule-management-ajax');
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
-let userData = require('PUB_DIR/sources/user-data');
 function ScheduleManagementActions() {
     this.generateActions(
         'setInitState',

@@ -14,7 +14,6 @@ import {
     clueStatusTabNum,
 } from '../utils/clue-customer-utils';
 var clueFilterStore = require('./clue-filter-store');
-var user = require('../../../../public/sources/user-data').getUserData();
 const clueContactType = ['phone', 'qq', 'weChat', 'email'];
 import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 function ClueCustomerStore() {

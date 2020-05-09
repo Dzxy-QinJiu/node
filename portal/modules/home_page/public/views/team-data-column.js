@@ -14,6 +14,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 import Spinner from 'CMP_DIR/spinner';
 import userData from 'PUB_DIR/sources/user-data';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import eefungCustomerManagerHoc from 'CMP_DIR/eefung-customer-manager-hoc';
 import {
     getTodayTimeStamp,
     getThisWeekTimeStamp,
@@ -25,7 +26,7 @@ import {
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import classNames from 'classnames';
 import {contractChart} from 'ant-chart-collection';
-import {isOpenCash, checkVersionAndType, isEefungCustomerManager} from 'PUB_DIR/sources/utils/common-method-util';
+import {isOpenCash, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import { AntcAnalysis } from 'antc';
 import { getColumnHeight } from 'MOD_DIR/home_page/public/views/common-util';
 import { getMaxLimitExtractClueCount } from 'PUB_DIR/sources/utils/common-data-util';
@@ -150,6 +151,14 @@ class TeamDataColumn extends React.Component {
         $(window).on('resize', e => this.changeTableHeight());
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.isEefungCustomerManager !== this.props.isEefungCustomerManager) {
+            this.setState({
+                currentDateType: this.getDefaultCallTimeType(nextProps)
+            });
+        }
+    }
+
     componentWillUnmount() {
         $(window).off('resize', this.changeTableHeight);
         tableHeight = 0;
@@ -257,12 +266,12 @@ class TeamDataColumn extends React.Component {
         });
     }
 
-    getDefaultCallTimeType() {
+    getDefaultCallTimeType(props = this.props) {
         let type = DATE_TYPE_KEYS.TODAY;
         //销售
         if (this.isSalesRole()) {
             //销售经理
-            if (userData.getUserData().isCommonSales && !isEefungCustomerManager) {
+            if (userData.getUserData().isCommonSales && !props.isEefungCustomerManager) {
                 type = DATE_TYPE_KEYS.TODAY;
             } else {//销售总监、主管、客户经理
                 //昨天
@@ -488,7 +497,7 @@ class TeamDataColumn extends React.Component {
         let dateTypes = DATE_TYPE_MAP;
 
         //如果是蚁坊组织下的客户经理
-        if (isEefungCustomerManager()) {
+        if (this.props.isEefungCustomerManager) {
             //去掉今天选项
             dateTypes = _.filter(dateTypes, item => item.value !== DATE_TYPE_KEYS.TODAY);
         }
@@ -850,4 +859,4 @@ class TeamDataColumn extends React.Component {
             />);
     }
 }
-export default TeamDataColumn;
+export default eefungCustomerManagerHoc(TeamDataColumn);
