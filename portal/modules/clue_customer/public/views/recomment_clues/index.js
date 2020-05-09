@@ -110,7 +110,7 @@ class RecommendCluesList extends React.Component {
         message.config({
             top: 10
         });
-        $('#app .row > .col-xs-10').css({backgroundColor: '#E3E8ED'});
+        $('#app .row > .col-xs-10').addClass('recommend-clues-page-container');
     }
 
     componentWillUnmount() {
@@ -122,7 +122,7 @@ class RecommendCluesList extends React.Component {
         message.config({
             top: 400
         });
-        $('#app .row > .col-xs-10').css({backgroundColor: '#fff'});
+        $('#app .row > .col-xs-10').removeClass('recommend-clues-page-container');
     }
 
     batchExtractCluesLists = (taskInfo, taskParams) => {
