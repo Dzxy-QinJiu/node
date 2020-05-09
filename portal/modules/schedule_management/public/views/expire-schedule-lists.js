@@ -35,6 +35,7 @@ class ExpireScheduleLists extends React.Component {
             expired_status: '',//过期日程的状态
             isEdittingItemId: '',//正在标记为完成的那一条日程
             updateScrollBar: false,
+            isClickRefreshBtn: false,
             ...scheduleManagementStore.getState()
         };
         this.onStoreChange = this.onStoreChange.bind(this);
@@ -46,6 +47,9 @@ class ExpireScheduleLists extends React.Component {
 
     gr(){
         scheduleManagementStore.listen(this.onStoreChange);
+        this.getExpiredList();
+    }
+    getExpiredList = () => {
         //获取超时未完成的日程
         this.setState({
             expired_start_time: new Date().getTime() - 2 * 365 * oplateConsts.ONE_DAY_TIME_RANGE,//开始时间传一个两年前的今天
@@ -54,7 +58,14 @@ class ExpireScheduleLists extends React.Component {
         }, () => {
             this.getExpiredScheduleList();
         });
-    }
+    };
+    refreshList = () => {
+        this.setState({
+            isClickRefreshBtn: true
+        });
+        scheduleManagementAction.setExpiredScheduleInitState();
+        this.getExpiredList();
+    };
 
     onStoreChange = () => {
         this.setState(scheduleManagementStore.getState());
@@ -196,8 +207,9 @@ class ExpireScheduleLists extends React.Component {
 
     //渲染超期日程区域
     renderExpireListContent() {
-        //加载出错或者没有数据时
-        if (this.state.scheduleExpiredErrMsg && !this.state.isLoadingScheduleExpired) {
+        if(this.state.isLoadingScheduleExpired && !this.state.lastScheduleExpiredId && this.state.isClickRefreshBtn){
+            return <Spinner/>;
+        }else if (this.state.scheduleExpiredErrMsg && !this.state.isLoadingScheduleExpired) {//加载出错或者没有数据时
             var retry = (
                 <span>
                     {this.state.scheduleExpiredErrMsg}，<a href="javascript:void(0)"
@@ -276,7 +288,6 @@ class ExpireScheduleLists extends React.Component {
     };
 
     render() {
-
         //左侧超期日程动画 如果没有数据，就不显示左侧面板
         var expiredCls = classNames({
             'show-expire-panel': this.state.isShowExpiredPanel && !this.state.isFirstLogin,
@@ -293,6 +304,9 @@ class ExpireScheduleLists extends React.Component {
                 <div className="expire-list-innerwrap">
                     <div className="expire-list-title">
                         {Intl.get('schedule.expired.list', '超时未完成')}
+                        <Button onClick={this.refreshList} className="btn-item " title="刷新">
+                            <i className="iconfont icon-shuaxin"></i>
+                        </Button>
                     </div>
                     <div className="expire-list-content">
                         {/*渲染超时未完成日程列表*/}
