@@ -201,8 +201,8 @@ class CustomerPoolReleaseRuleForm extends React.Component {
     renderRuleForm = () => {
         const isDefaultRuleConfig = this.props.isDefaultRuleConfig(this.props.curRule);
         const formItemLayout = {
-            labelCol: { span: isDefaultRuleConfig ? 5 : 6 },
-            wrapperCol: { span: isDefaultRuleConfig ? 19 : 18 }
+            labelCol: { span: 6 },
+            wrapperCol: { span: 18 }
         };
 
         const defaultFormLayout = {

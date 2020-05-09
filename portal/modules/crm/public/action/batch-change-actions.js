@@ -1,5 +1,4 @@
 var batchChangeAjax = require('../ajax/batch-change-ajax');
-let userData = require('../../../../public/sources/user-data');
 
 function BatchChangeAction() {
     this.generateActions(

@@ -12,6 +12,8 @@ import TimePeriod from '../view/time_period';
 import CustomerSuggest from '../view/customer_suggest';
 import InputContent from '../view/input_container';
 import {checkDomainExist} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+var applyApproveManageAction = require('../action/apply_approve_manage_action');
+let userData = require('PUB_DIR/sources/user-data');
 const APPLYAPPROVE_LAYOUT = {
     TOPANDBOTTOM: 64,
     PADDINGHEIGHT: 24,
@@ -287,7 +289,7 @@ exports.APPROVER_TYPE = [{
     value: 'setting_users',
 },
     // {name: Intl.get('apply.add.approver.applicant.setting', '申请人指定'), value: 'application_setting'},
-    
+
 {name: Intl.get('apply.add.approver.applicant.self', '申请人自己'), value: 'application_self'}
 ];
 
@@ -486,5 +488,20 @@ const maxFormItemLayout = {
         xs: {span: 24},
         sm: {span: 24},
     },
+};
+export const getAllWorkFlowList = function(callback){
+    let userDataInfo = userData.getUserData();//配置过的流程列表
+    if(_.get(userDataInfo,'workFlowConfigs[0]')){
+        callback(userDataInfo.workFlowConfigs);
+    }else{
+        applyApproveManageAction.getSelfSettingWorkFlow({page_size: 1000}, (data) => {
+            let workFlowList = [];
+            if (data[0]) {
+                workFlowList = _.filter(data, item => item.type !== 'member_invite');
+                userData.setUserData('workFlowConfigs', workFlowList);
+            }
+            callback(workFlowList);
+        });
+    }
 };
 

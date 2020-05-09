@@ -71,7 +71,11 @@ var APPLY_CONSTANTS = {
 class CustomerUsers extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = this.getInitStateData();
+    }
+
+    getInitStateData = () => {
+        return {
             isLoading: false,//是否正在获取用户列表
             lastUserId: '',//用于下拉加载的最后一个用户id
             crmUserList: [],
@@ -85,10 +89,9 @@ class CustomerUsers extends React.Component {
             popoverErrorVisible: false,
             userApplyList: [],//客户待审批的用户列表
             isOplateUser: isOplateUser(),
-            ... this.getLayoutHeight() //用户列表、申请用户面板的高度
+            ...this.getLayoutHeight() //用户列表、申请用户面板的高度
         };
-    }
-
+    };
     componentWillMount = () => {
         getApplyState().then(applyState => {
             this.setState({
@@ -116,6 +119,7 @@ class CustomerUsers extends React.Component {
         }
     }
     componentWillUnmount() {
+        this.setState(this.getInitStateData());
         phoneMsgEmitter.removeListener(phoneMsgEmitter.RESIZE_DETAIL_HEIGHT, this.resizeLayoutHeight);
     }
     // 重新设置用户列表展示区域的高度

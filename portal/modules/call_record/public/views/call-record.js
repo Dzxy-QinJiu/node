@@ -32,6 +32,7 @@ const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import ShearContent from 'CMP_DIR/shear-content';
+import eefungCustomerManagerHoc from 'CMP_DIR/eefung-customer-manager-hoc';
 //接听状态
 let CALL_STATUS_MAP = {
     'ANSWERED': Intl.get('call.record.state.answer', '已接听'),
@@ -906,7 +907,7 @@ class CallRecord extends React.Component {
 
     render() {
         //是否隐藏总数，蚁坊组织下的客户经理查看今天的数据时隐藏总数
-        const isHideTotal = this.state.start_time === moment().startOf('day').valueOf() && commonMethodUtil.isEefungCustomerManager();
+        const isHideTotal = this.state.start_time === moment().startOf('day').valueOf() && this.props.isEefungCustomerManager;
 
         return (<RightContent>
             <div className="call_record_content">
@@ -1208,4 +1209,4 @@ class CallRecord extends React.Component {
 }
 
 
-export default injectIntl(CallRecord);
+export default injectIntl(eefungCustomerManagerHoc(CallRecord));

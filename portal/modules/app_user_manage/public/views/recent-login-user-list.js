@@ -3,13 +3,13 @@
  * Created by wangliping on 2017/8/31.
  */
 require('../css/recent-login-user-list.less');
-import { Select} from 'antd';
+import { Select, Button } from 'antd';
 import ShareObj from '../util/app-id-share-util';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
 import { AntcDatePicker as DatePicker } from 'antc';
-import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
+import DateSelectorUtils from 'antc/lib/components/datepicker/utils';
 import { RightPanel } from 'CMP_DIR/rightPanel';
 import { topNavEmitter, selectedAppEmitter, scrollBarEmitter,
     userDetailEmitter, phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
@@ -45,6 +45,8 @@ import { AntcTable } from 'antc';
 import userManagePrivilege from '../privilege-const';
 import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
+import Spinner from 'CMP_DIR/spinner';
+import RefreshButton from 'CMP_DIR/refresh-button';
 
 class RecentLoginUsers extends React.Component {
     constructor(props) {
@@ -525,19 +527,32 @@ class RecentLoginUsers extends React.Component {
         if (!end_time) {
             end_time = moment().endOf('day').valueOf();
         }
-        this.setState({ start_time: start_time, end_time: end_time, lastUserId: '' });
-        setTimeout(() => this.getRecentLoginUsers());
+        this.setState({
+            start_time: start_time,
+            end_time: end_time,
+            lastUserId: '',
+        }, () => {
+            this.getRecentLoginUsers();
+        });
     }
 
     onUserTypeChange(type) {
-        this.setState({ user_type: type, lastUserId: '' });
-        setTimeout(() => this.getRecentLoginUsers());
+        this.setState({
+            user_type: type,
+            lastUserId: '',
+        }, () => {
+            this.getRecentLoginUsers();
+        });
     }
 
     // 是否过期类型的选择
     onFilterTypeChange(type) {
-        this.setState({ filter_type: type, lastUserId: '' });
-        setTimeout(() => this.getRecentLoginUsers());
+        this.setState({
+            filter_type: type,
+            lastUserId: '',
+        }, () => {
+            this.getRecentLoginUsers();
+        });
     }
 
     // 修改所选中的团队
@@ -559,8 +574,13 @@ class RecentLoginUsers extends React.Component {
             RecentUserAction.getSelectedTeamSalesMembers();
         }
 
-        this.setState({ team_ids: team_ids, lastUserId: '', selectedTeamIds: selectedTeamIds});
-        setTimeout(() => this.getRecentLoginUsers());
+        this.setState({
+            team_ids: team_ids,
+            lastUserId: '',
+            selectedTeamIds: selectedTeamIds
+        }, () => {
+            this.getRecentLoginUsers();
+        });
     }
 
     onMemberChange = (value) => {
@@ -619,6 +639,14 @@ class RecentLoginUsers extends React.Component {
                 isNeedTerminalId={true}
             />
         );
+    }
+
+    handleRefresh = () => {
+        this.setState({
+            lastUserId: ''
+        }, () => {
+            this.getRecentLoginUsers();
+        });
     }
 
     renderRecentLoginHeader(){
@@ -719,6 +747,10 @@ class RecentLoginUsers extends React.Component {
                                 }
                             </SelectFullWidth>
                         </div>
+                        <RefreshButton
+                            handleRefresh={this.handleRefresh}
+                            className="btn-item"
+                        />
                     </div>
                 </ButtonZones>
             </div>
@@ -786,10 +818,21 @@ class RecentLoginUsers extends React.Component {
         );
     };
 
+    renderLoadingBlock = () => {
+        if (this.state.isLoadingUserList) {
+            return (
+                <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
+            );
+        } else {
+            return null;
+        }
+    };
+
     render() {
         return (
             <div className="recent-login-users-container" data-tracename="近期登录用户列表">
                 {this.renderRecentLoginHeader()}
+                {this.renderLoadingBlock()}
                 <div className="recent-login-users-table-wrap">
                     {this.renderTableContent()}
                 </div>

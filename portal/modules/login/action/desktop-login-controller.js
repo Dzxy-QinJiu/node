@@ -214,6 +214,7 @@ exports.login = function(req, res) {
     //记录上一次登录用户名，到session中
     username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
     req.session.last_login_user = username;
+    console.time('登录相关接口============================');
     DesktopLoginService.login(req, res, username, password, captcha)
         .on('success', loginSuccess(req, res))
         .on('error', loginError(req, res));
@@ -252,27 +253,16 @@ function loginSuccess(req, res) {
         //设置sessionStore，如果是内存session时，需要从req中获取
         global.config.sessionStore = global.config.sessionStore || req.sessionStore;
         req.session.save(function() {
-            //登录成功后获取用户的组织信息，（主页的matomo数据参数设置中需要放入组织信息）
-            DesktopLoginService.getOrganization(req, res).on('success', data => {
+            //登录成功后获取网站个性化配置:是否是首次登录，来控制是否展示欢迎页
+            DesktopLoginService.getWebsiteConfig(req, res).on('success', data => {
+                console.timeEnd('登录相关接口============================');
+                // 记录网站的个性化配置数据，获取用户信息时，不用再发请求获取一遍
+                req.session.websiteConfig = data || {};
                 //获取网站个性化配置,以便判断进入后的首页是否展示欢迎页
-                let personnel_setting = _.get(data.websiteConfig, 'personnel_setting');
+                let personnel_setting = _.get(data, 'personnel_setting');
                 if(!_.get(personnel_setting, commonUtil.CONSTS.WELCOME_PAGE_FIELD)) {
                     req.session.showWelComePage = true;
                 }
-                // 接口返回的组织信息：official_name：公司名，name: 组织名称
-                // 现在系统中展示和修改的都是公司名，组织名是不能修改的
-                // 组织信息中公司名official_name和id字段转为officialName和id字段，方便前端处理（若后端更改字段名时，只需修改这里就可以，不用多处修改了）
-                let userData = _.get(req, 'session.user', {});
-                userData.organization = {
-                    id: _.get(data,'id', ''),
-                    officialName: _.get(data, 'official_name', ''),
-                    functions: _.get(data, 'functions', []),
-                    type: _.get(data, 'type', ''),
-                    version: _.get(data, 'version', {}),
-                    endTime: _.get(data, 'end_time', ''),
-                    expireAfterDays: _.get(data, 'expire_after_days'),
-                    grantProducts: _.get(data, 'grant_products', []),
-                };
                 req.session.save(() => {
                     //ajax请求返回sussess
                     if (req.xhr) {

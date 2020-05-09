@@ -16,7 +16,6 @@ let AutosizeTextarea = require('../../../../../components/autosize-textarea');
 let CrmAction = require('../../action/crm-actions');
 let CrmBasicAjax = require('../../ajax/index');
 import Trace from 'LIB_DIR/trace';
-import userData from 'PUB_DIR/sources/user-data';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {renderCustomerNameMsg} from 'PUB_DIR/sources/utils/common-method-util';
 let NameTextareaField = createReactClass({
@@ -149,7 +148,7 @@ let NameTextareaField = createReactClass({
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
                 let list = _.get(data,'list');
                 //客户名是否重复
-                let repeatCustomer = _.some(list,{'name':customerName});
+                let repeatCustomer = _.some(list,{'name': customerName});
                 if (_.isString(data)) {
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});

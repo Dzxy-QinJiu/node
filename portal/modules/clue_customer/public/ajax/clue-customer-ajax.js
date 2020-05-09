@@ -11,7 +11,6 @@ const RELATEAUTHS = {
 
 let salesmanAjax = require('../../../common/public/ajax/salesman');
 let teamAjax = require('../../../common/public/ajax/team');
-var userData = require('PUB_DIR/sources/user-data');
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 //获取线索来源列表
 exports.getClueSource = function() {
@@ -121,8 +120,10 @@ exports.addCluecustomerTrace = function(submitObj) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+        error: function(xhr, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -143,8 +144,10 @@ exports.distributeCluecustomerToSale = function(submitObj) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+        error: function(xhr, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -166,8 +169,10 @@ exports.distributeCluecustomerToSaleBatch = function(submitObj) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+        error: function(xhr, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -186,8 +191,10 @@ exports.updateClueContactDetail = function(data) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+        error: function(xhr, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -205,8 +212,10 @@ exports.updateClueItemDetail = function(data) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+        error: function(xhr,statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -392,8 +401,10 @@ exports.addOrEditSettingCustomerRecomment = function(data) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -411,8 +422,8 @@ exports.getRecommendClueLists = function(obj) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(errorMsg, status) {
-            if(status !== 'abort') {
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
                 Deferred.reject(errorMsg.responseJSON);
             }
         }

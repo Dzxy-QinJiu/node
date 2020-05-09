@@ -243,8 +243,8 @@ class CustomerPoolRuleForm extends React.Component{
         };
         const teamRangeLength = _.get(this.state.formData.team_range,'length');
         const CustomerSourceFormLayout = {
-            labelCol: { span: teamRangeLength > 1 ? 7 : 6 },
-            wrapperCol: { span: teamRangeLength > 1 ? 17 : 18 }
+            labelCol: { span: 7 },
+            wrapperCol: { span: 17 }
         };
         const formData = this.state.formData;
         const { getFieldDecorator } = this.props.form;

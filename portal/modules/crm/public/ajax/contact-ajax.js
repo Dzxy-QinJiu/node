@@ -45,8 +45,10 @@ exports.addContact = function(contact) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get('crm.180', '添加联系人失败'));
+        error: function(xhr, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON || Intl.get('crm.180', '添加联系人失败'));
+            }
         }
     });
     return Deferred.promise();

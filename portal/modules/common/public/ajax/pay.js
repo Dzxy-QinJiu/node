@@ -12,8 +12,10 @@ exports.getGoodsList = function(queryObj) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON || Intl.get('clues.get.goods.faild', '获取商品失败'));
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON || Intl.get('clues.get.goods.faild', '获取商品失败'));
+            }
         }
     });
     return Deferred.promise();
@@ -32,8 +34,10 @@ exports.goodsTrade = function(reqData) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -70,8 +74,10 @@ exports.getPaymentMode = function(queryObj) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON || Intl.get('payment.get.payment.mode.faild', '获取支付渠道失败'));
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON || Intl.get('payment.get.payment.mode.faild', '获取支付渠道失败'));
+            }
         }
     });
     return Deferred.promise();
@@ -90,8 +96,10 @@ exports.getGoodsDiscountList = function(queryObj) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON || Intl.get('payment.get.discount.faild', '获取商品折扣信息失败'));
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON || Intl.get('payment.get.discount.faild', '获取商品折扣信息失败'));
+            }
         }
     });
     return Deferred.promise();

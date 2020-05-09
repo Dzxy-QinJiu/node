@@ -91,6 +91,8 @@ class RecommendCluesFilterPanel extends Component {
             isSaving: false,
             vipFilters: this.dealRecommendParamsVipData(hasSavedRecommendParams),
         };
+
+        this.currentArea = {};
     }
 
     componentDidMount() {
@@ -223,24 +225,28 @@ class RecommendCluesFilterPanel extends Component {
 
     //更新地址
     updateLocation = (addressObj) => {
-        let hasSavedRecommendParams = this.state.hasSavedRecommendParams;
-        hasSavedRecommendParams.province = addressObj.provName || '';
-        hasSavedRecommendParams.city = addressObj.cityName || '';
-        hasSavedRecommendParams.district = addressObj.countyName || '';
-        let traceTip = '全部';
-        if(addressObj.provName || addressObj.cityName || addressObj.countyName) {
-            let areas = [addressObj.province];
-            if(_.get(addressObj, 'city')) {
-                areas.push(addressObj.city);
-            }
-            if(_.get(addressObj, 'district')) {
-                areas.push(addressObj.district);
-            }
-            traceTip += areas.join('/');
-        }
+        this.currentArea.province = addressObj.provName;
+        this.currentArea.city = addressObj.cityName;
+        const value = _.chain(this.currentArea).values().filter(item => item).value();
+
+        const traceTip = value.join('/') || '全部';
         Trace.traceEvent(ReactDOM.findDOMNode(this), '选择了地域：' + traceTip);
-        //这里不要setState，否则选中了省份后的各省市面板会收起
-        this.getRecommendClueList(hasSavedRecommendParams);
+
+        if (_.isEmpty(value)) {
+            let params = _.clone(this.state.hasSavedRecommendParams);
+            _.extend(params, this.currentArea);
+            this.getRecommendClueList(params);
+        }
+    };
+
+    onAreaPanelHide = () => {
+        let params = _.clone(this.state.hasSavedRecommendParams);
+        const prevArea = _.pick(params, 'province', 'city');
+
+        if (!_.isEmpty(this.currentArea) && !_.isEqual(this.currentArea, prevArea)) {
+            _.extend(params, this.currentArea);
+            this.getRecommendClueList(params);
+        }
     };
 
     handleChange = (e) => {
@@ -741,8 +747,11 @@ class RecommendCluesFilterPanel extends Component {
                                 cityName={hasSavedRecommendParams.city}
                                 countyName={hasSavedRecommendParams.district}
                                 updateLocation={this.updateLocation}
+                                onAreaPanelHide={this.onAreaPanelHide}
                                 hiddenCounty
                                 showAllBtn
+                                filterSomeNewArea
+                                sortProvinceByFirstLetter
                             />
                             <div className="show-hide-tip" onClick={this.handleToggleOtherCondition} data-tracename='点击更多或收起推荐线索的条件'>
                                 <span>{show_tip}</span>

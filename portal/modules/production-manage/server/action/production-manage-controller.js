@@ -4,6 +4,21 @@
  * Created by wangliping on 2018/9/21.
  */
 const productService = require('../service/production-manage-service');
+const _ = require('lodash');
+// 校验产品名称
+exports.checkProductName = (req, res) => {
+    productService.checkProductName(req, res).on('success', (data) => {
+        // 接口返回得是个对象，可以通过total 进行判断是否重名
+        if (_.get(data, 'total')) {
+            res.json(true);
+        } else {
+            res.json(false);
+        }
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 // 获取产品
 exports.getProduct = function(req, res) {
     productService.getProduct(req, res).on('success', function(data) {

@@ -20,8 +20,10 @@ exports.getMyWorkList = function(queryParams) {
         success: function(result) {
             Deferred.resolve(result);
         },
-        error: function(error) {
-            Deferred.reject(error.responseJSON);
+        error: function(error, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(error.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -39,8 +41,10 @@ exports.getMyWorkTypes = function() {
         success: function(result) {
             Deferred.resolve(result);
         },
-        error: function(error) {
-            Deferred.reject(error.responseJSON);
+        error: function(error, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(error.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -81,8 +85,10 @@ exports.getContractPerformance = function(queryParams) {
         success: function(result) {
             Deferred.resolve(result);
         },
-        error: function(error) {
-            Deferred.reject(error.responseJSON);
+        error: function(error, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(error.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -101,8 +107,10 @@ exports.getCallTimeData = function(reqData) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -126,8 +134,10 @@ exports.getContactCustomerCount = function(reqData) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -146,8 +156,10 @@ exports.getMyInterestData = function(reqData) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -183,8 +195,10 @@ exports.getExpireContractData = function(reqData) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(errorMsg, statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
         }
     });
     return Deferred.promise();

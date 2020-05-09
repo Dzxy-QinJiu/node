@@ -3,6 +3,7 @@ import history from 'PUB_DIR/sources/history';
 var userData = require('../../../../public/sources/user-data');
 import crmPrivilegeConst from '../privilege-const';
 import { checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
+import crmAjax from '../ajax';
 // 跟进记录类型常量
 const CALL_RECORD_TYPE = {
     PHONE: 'phone',//呼叫中心 - effung的电话系统（讯时+usterisk）
@@ -293,9 +294,41 @@ exports.CUSTOMER_POOL_TYPES = {
     FOLLOWUP: 'followup',//联合跟进
 };
 
-//客户管理释放类型
-exports.RELEASE_TYPE = {
+//客户管理单个释放时传的类型
+const RELEASE_TYPE = {
     JOIN: 'join',//联合跟进人
     OWNER: 'owner',//负责人
 };
+exports.RELEASE_TYPE = RELEASE_TYPE;
 
+//批量释放客户时的类型
+exports.BATCH_RELEASE_TYPE = {
+    OWNER: 'release_pool',//批量释放负责人
+    JOIN: 'release_pool_join_user',//批量释放联合跟进人
+};
+
+//单个释放客户的验证处理
+exports.checkSingleReleaseCustomer = function(releaseType, customer, customerId, releaseCustomer) {
+    let isReleaseOwner = true;//是否释放负责人
+    let isCommonSales = userData.getUserData().isCommonSales;
+    if(isCommonSales) {
+        //普通销售需判断是当前释放的这个客户的负责人还是联合跟进人
+        isReleaseOwner = _.isEqual(_.get(customer, 'user_id'), userData.getUserData().user_id);
+    }else if(releaseType === RELEASE_TYPE.JOIN) {//释放联合跟进人
+        isReleaseOwner = false;
+    }
+    // 不是普通销售释放负责人时，需判断验证是否有权限处理负责人
+    if(!isCommonSales && isReleaseOwner) {
+        crmAjax.checkCrmUpdateUserByCustomerId(customerId).then((res) => {
+            if(res) {
+                _.isFunction(releaseCustomer) && releaseCustomer(isReleaseOwner);
+            }else {
+                _.isFunction(releaseCustomer) && releaseCustomer({error: Intl.get('crm.release.no.permissions', '您不能释放共同跟进的客户')});
+            }
+        }, (errorMsg) => {
+            _.isFunction(releaseCustomer) && releaseCustomer({error: errorMsg});
+        });
+    }else {
+        _.isFunction(releaseCustomer) && releaseCustomer(isReleaseOwner);
+    }
+};

@@ -326,6 +326,7 @@ var zh_CN = {
     'common.customer.service.online.assistant': '在线小助手',
     'common.press.enter.send': '按enter键发送消息',
     'common.customer.service.help.tip': '您好，请问有什么可以帮您？',
+    'common.upgrade.refresh.tip': '版本已升级，请{refresh}',
     //公共部分--end
 
     'login.login': '登录',
@@ -1362,6 +1363,8 @@ var zh_CN = {
     'config.integration.server.placeholder': '请输入Matomo域名',
     'config.integration.token.placeholder': '请输入API验证token',
     'config.integration.config.get.error': '获取集成配置的信息出错了',
+    'config.product.valid.name.exist': '该产品名称已存在',
+    'config.product.valid.name.error': '产品名称唯一性验证出错了',
     //配置end
     // 通话记录start
     'call.record.call.in.to.click': '有电话打入,请点击',

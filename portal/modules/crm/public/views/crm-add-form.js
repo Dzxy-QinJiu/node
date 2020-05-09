@@ -24,7 +24,7 @@ import { renderCustomerNameMsg } from 'PUB_DIR/sources/utils/common-method-util'
 import ContactForm from 'MOD_DIR/crm/public/views/contacts/contact-form';
 const ADD_TITLE_HEIGHT = 70 + 24;//添加客户标题的高度+下边距marginBottom
 var uuid = require('uuid/v4');
-
+import {customerEmitter} from 'PUB_DIR/sources/utils/emitters';
 function defaultContact() {
     return {
         uid: uuid(),
@@ -221,6 +221,9 @@ class CRMAddForm extends React.Component {
                     _this.props.hideAddForm();
                 }
                 _this.setState(_this.getInitialState());
+                //添加成功后的emitter事件 解决在添加申请审批时，创建客户完成后，退回到申请页面仍报错的问题
+                customerEmitter.emit(customerEmitter.ADD_CUSTOMER_SUCCESS, result.result);
+
             } else {
                 //错误信息，必须保证其类型为字符串，否则会导致页面报错
                 const errMsg = _.isString(result) ? result : Intl.get('member.apply.approve.tips', '操作失败');

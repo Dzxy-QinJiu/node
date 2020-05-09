@@ -5,7 +5,7 @@ import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
  */
 
 require('./index.less');
-var Modal = require('antd').Modal;
+import {Modal, Icon} from 'antd';
 var batch = require('./batch');
 var io = require('socket.io-client');
 var timeoutFunc;//定时方法
@@ -961,7 +961,7 @@ function disconnectListener() {
         socketIo.off('applyVisitCustomerMsg', applyVisitCustomerListener);
         socketIo.off('crm_operator_alert_msg', crmOperatorAlertListener);
         socketIo.off('apply_upgrade', applyUpgradeListener);
-        socketIo.off('apply_upgrade_complete', applyUpgradeCompleteListener);
+        // socketIo.off('apply_upgrade_complete', applyUpgradeCompleteListener);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
     }
@@ -975,6 +975,31 @@ function startSocketIo() {
     socketIo = io({forceNew: true, transports: [transportType]});
     //监听 connect
     socketIo.on('connect', function() {
+        // 当前升级版本的时间监听
+        socketIo.on('curUpgradeTime', newUpgradeTime => {
+            // 监听到node端推送的最新版本的升级时间，与浏览器中缓存的时间不一致，说明有新的版本升级，需要提示用户手动刷新界面
+            if (Oplate.curUpgradeTime && newUpgradeTime !== +Oplate.curUpgradeTime) {
+                //session过期提示的添加
+                var $upgradeTip = $('#app >.upgrade-refresh-tip');
+                if ($upgradeTip && $upgradeTip.length > 0) {
+                    return;
+                } else {
+                    $('#app').append('<div class="upgrade-refresh-tip"></div>');
+                    ReactDOM.render(<span>
+                        <Icon type="exclamation-circle" />
+                        <ReactIntl.FormattedMessage
+                            id="common.upgrade.refresh.tip"
+                            defaultMessage="版本已升级，请{refresh}"
+                            values={{
+                                refresh: <a href='#' onClick={() => {
+                                    window.location.reload();
+                                }} data-tracename="点击升级刷新提示中的刷新按钮">{Intl.get('common.refresh', '刷新')}</a>
+                            }} />
+                    </span>, $('#app >.upgrade-refresh-tip')[0]);
+                }
+            }
+        });
+
         // 获取消息数后添加监听
         getMessageCount(unreadListener);
         //监听node端推送的登录踢出的信息
@@ -998,7 +1023,7 @@ function startSocketIo() {
         //监听申请试用
         socketIo.on('apply_upgrade', applyUpgradeListener);
         //监听升级成功
-        socketIo.on('apply_upgrade_complete', applyUpgradeCompleteListener);
+        // socketIo.on('apply_upgrade_complete', applyUpgradeCompleteListener);
         //监听后端消息
         phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         //如果接受到主动断开的方法，调用socket的断开

@@ -319,6 +319,7 @@ var en_US = {
     'common.customer.service.online.assistant': 'Online assistant',//在线小助手
     'common.press.enter.send': 'Press enter to send the message',//按enter键发送消息
     'common.customer.service.help.tip': 'Hello, what can I do for you',//您好，请问有什么可以帮您？
+    'common.upgrade.refresh.tip': 'Version upgraded, please {refresh}',//版本已升级，请{refresh}
     //公共部分--end
 
     'login.login': 'Login',//登录
@@ -1356,6 +1357,8 @@ var en_US = {
     'config.integration.server.placeholder': 'Please enter the Matomo domain name',//请输入Matomo域名
     'config.integration.token.placeholder': 'Please enter API verify token',//请输入API验证token
     'config.integration.config.get.error': 'Failed to get integrate config',//获取集成配置的信息出错了
+    'config.product.valid.name.exist': 'The name of product is already taken', // 该产品名称已存在
+    'config.product.valid.name.error': 'Failed to valid the name of product', // 产品名称唯一性验证出错了
     //配置end
     // 通话记录start
     'call.record.call.in.to.click': 'There is a phone call,whether to',//有电话打入,请点击

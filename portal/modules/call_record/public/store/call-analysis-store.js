@@ -1,5 +1,5 @@
 var CallAnalysisActions = require('../action/call-analysis-action');
-import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
+import DateSelectorUtils from 'antc/lib/components/datepicker/utils';
 import userData from 'PUB_DIR/sources/user-data';
 import {formatRoundingPercentData} from 'PUB_DIR/sources/utils/common-method-util';
 function CallAnalysisStore() {

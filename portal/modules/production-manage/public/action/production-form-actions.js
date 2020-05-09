@@ -6,7 +6,6 @@
 /**
  * Created by wangliping on 2016/4/18.
  */
-var userData = require('../../../../public/sources/user-data');
 var productionAjax = require('../ajax/production-ajax');
 // var ProductionActions = require('./production-actions');
 // var cardEmitter = require('../../../../public/sources/utils/emitters').cardEmitter;
@@ -23,7 +22,7 @@ function ProductionFormActions() {
 
 
     //保存
-    this.addProduction = function(production) {
+    this.addProduction = function(production, callback) {
         var _this = this;
         productionAjax.addProduction(production).then(function(savedProduction) {
             _this.dispatch({
@@ -31,9 +30,11 @@ function ProductionFormActions() {
                 saveMsg: '保存成功',
                 value: savedProduction
             });
+            if (_.isFunction(callback)) callback(savedProduction);
         }, function(errorMsg) {
             //保存失败后的处理
             _this.dispatch({saveResult: 'error', saveMsg: errorMsg || Intl.get('member.add.failed', '添加失败！')});
+            if (_.isFunction(callback)) callback(Intl.get('member.add.failed', '添加失败！'));
         });
     };
 

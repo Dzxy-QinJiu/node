@@ -122,7 +122,7 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
  * 拨打电话消息监听器
  * */
 function phoneEventChannelListener(data) {
-    // pushLogger.debug('后端推送的拨打电话的数据:' + JSON.stringify(data));
+    pushLogger.debug('后端推送的拨打电话的数据:' + JSON.stringify(data));
     // 将查询结果返给浏览器
     var phonemsgObj = JSON.parse(data) || {};
     //将数据推送到浏览器
@@ -408,6 +408,8 @@ module.exports.startSocketio = function(nodeServer) {
                 //将当前用户应用的socket、token保存到内存中
                 socketStore[session.user.userid] = socketArray;
                 pushLogger.debug('用户信息 %s', JSON.stringify(session.user));
+                // 推送最新升级版本的时间到浏览器端，以便于界面判断是否有新版本升级提示用户刷新界面
+                socket.emit('curUpgradeTime', global.config.timeStamp);
             } else {
                 var sid = socket.request && socket.request.sessionId;
                 if (err) {

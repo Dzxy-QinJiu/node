@@ -251,6 +251,11 @@ clueEmitter.CHECKED_CLUE_LIST = 'checkedClueList';//选中全部线索，点击�
 //移动到
 export { clueEmitter };
 
+//客户相关事件
+const customerEmitter = new EventEmitter();
+customerEmitter.ADD_CUSTOMER_SUCCESS = 'add_customer_success';
+export { customerEmitter };
+
 //线索转客户面板相关事件
 const clueToCustomerPanelEmitter = new EventEmitter();
 clueToCustomerPanelEmitter.OPEN_PANEL = 'open_clue_to_customer_panel';

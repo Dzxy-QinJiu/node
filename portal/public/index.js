@@ -66,10 +66,11 @@ function getUserPrivilegeAndStart() {
         moment.locale(Oplate.lang);
         unmountPrivilegeGet();
         suppressWarnings();
-        getWebsiteConfig();
         const user = userData.getUserData();
         storageUtil.setUserId(user.user_id);
         commonDataUtil.getAreaInfoAll();
+        commonDataUtil.getGuideConfig();
+        commonDataUtil.getUserPosition();
         AppStarter.init({
             goIndex: false
         });
