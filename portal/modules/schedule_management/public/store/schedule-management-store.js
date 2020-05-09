@@ -17,7 +17,7 @@ function ScheduleManagementStore() {
         getViewDate: this.getViewDate
     });
 }
-ScheduleManagementStore.prototype.setInitState = function() {
+ScheduleManagementStore.prototype.setExpiredScheduleInitState = function() {
     this.scheduleExpiredList = [];//过期日程列表
     this.scheduleExpiredSize = 0;//过期日程列表的数量
     this.isLoadingScheduleExpired = false;//正在获取过期日程列表
@@ -25,6 +25,9 @@ ScheduleManagementStore.prototype.setInitState = function() {
     this.pageSize = 20;//一次获取日程列表的页数
     this.lastScheduleExpiredId = '';//过期日程列表用于下拉加载的id
     this.listenScrollBottom = true;//是否监听下拉加载
+};
+ScheduleManagementStore.prototype.setInitState = function() {
+    this.setExpiredScheduleInitState();
     this.handleStatusLoading = false;//正在修改日程的状态
     this.handleStatusErrMsg = '';//修改日程状态失败
     this.curViewDate = '';//当前页面展示的日期
