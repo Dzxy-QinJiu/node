@@ -1,3 +1,5 @@
+import RefreshButton from 'CMP_DIR/refresh-button';
+
 var React = require('react');
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
@@ -304,9 +306,10 @@ class ExpireScheduleLists extends React.Component {
                 <div className="expire-list-innerwrap">
                     <div className="expire-list-title">
                         {Intl.get('schedule.expired.list', '超时未完成')}
-                        <Button onClick={this.refreshList} className="btn-item " title="刷新">
-                            <i className="iconfont icon-shuaxin"></i>
-                        </Button>
+                        <RefreshButton
+                            handleRefresh={this.refreshList}
+                            className="btn-item"
+                        />
                     </div>
                     <div className="expire-list-content">
                         {/*渲染超时未完成日程列表*/}
