@@ -61,7 +61,7 @@ const LAYOUT_CONSTANCE = {
     TABLE_TITLE_HEIGHT: 60,//带选择框的TH高度
     TITLE_HEIGHT: 70,// 顶部标题区域高度
     PADDING_TOP: 24,// 距离顶部标题区域高度
-    PADDING_BOTTOM: 16, //底部区域padding高度
+    PADDING_BOTTOM: 20, //底部区域padding高度
 };
 
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
@@ -117,6 +117,7 @@ class RecommendCluesList extends React.Component {
         message.config({
             top: 10
         });
+        $('#app .row > .col-xs-10').addClass('recommend-clues-page-container');
     }
 
     componentWillUnmount() {
@@ -128,6 +129,7 @@ class RecommendCluesList extends React.Component {
         message.config({
             top: 400
         });
+        $('#app .row > .col-xs-10').removeClass('recommend-clues-page-container');
     }
 
     batchExtractCluesLists = (taskInfo, taskParams) => {
