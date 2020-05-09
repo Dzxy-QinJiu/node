@@ -189,6 +189,11 @@ class SessionTimeoutModal extends React.Component {
         }
     }
 
+    // 监听密码输入框变化
+    monitorInputChange = () => {
+        this.setState({loginErrorMsg: ''});
+    }
+
     turnToLoginPage = () => {
         //跳转到登录页，用其他账号进行登录
         window.location.href = '/login';
@@ -235,7 +240,7 @@ class SessionTimeoutModal extends React.Component {
                         {getFieldDecorator('password', {
                             rules: [{ required: true, message: Intl.get('common.input.password', '请输入密码') }]
                         })(
-                            <Input type={this.state.passwordVisible ? 'text' : 'password'} className='password-input' placeholder={Intl.get('common.password', '密码')}
+                            <Input type={this.state.passwordVisible ? 'text' : 'password'} onChange={this.monitorInputChange} className='password-input' placeholder={Intl.get('common.password', '密码')}
                                 onKeyUp={this.onInputEnter}
                                 autoComplete="new-password" />
                         )}
