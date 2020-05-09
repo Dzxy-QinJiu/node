@@ -961,7 +961,7 @@ function disconnectListener() {
         socketIo.off('applyVisitCustomerMsg', applyVisitCustomerListener);
         socketIo.off('crm_operator_alert_msg', crmOperatorAlertListener);
         socketIo.off('apply_upgrade', applyUpgradeListener);
-        socketIo.off('apply_upgrade_complete', applyUpgradeCompleteListener);
+        // socketIo.off('apply_upgrade_complete', applyUpgradeCompleteListener);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
     }
@@ -1023,7 +1023,7 @@ function startSocketIo() {
         //监听申请试用
         socketIo.on('apply_upgrade', applyUpgradeListener);
         //监听升级成功
-        socketIo.on('apply_upgrade_complete', applyUpgradeCompleteListener);
+        // socketIo.on('apply_upgrade_complete', applyUpgradeCompleteListener);
         //监听后端消息
         phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         //如果接受到主动断开的方法，调用socket的断开
