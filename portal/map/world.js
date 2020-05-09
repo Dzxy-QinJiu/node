@@ -1,1 +1,0 @@
-require('echarts/map/json/world.json');
