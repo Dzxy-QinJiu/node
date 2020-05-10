@@ -13,3 +13,13 @@ exports.getRewardedCluesCount = (req, res) => {
             res: res
         }, req.query);
 };
+
+// 检测手机号的状态
+exports.checkPhoneStatus = (req, res) => {
+    return restUtil.authRest.post(
+        {
+            url: '/rest/company/v1/count/check/phone/status',
+            req: req,
+            res: res
+        }, req.body);
+};

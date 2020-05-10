@@ -840,3 +840,28 @@ exports.getUserPosition = function(cb) {
         });
     }
 };
+
+// 检测手机号状态
+let checkPhoneStatusAjax;
+exports.checkPhoneStatus = (reqData) => {
+    let data = {
+        check_params: reqData
+    };
+    checkPhoneStatusAjax && checkPhoneStatusAjax.abort();
+    const Deferred = $.Deferred();
+    checkPhoneStatusAjax = $.ajax({
+        url: '/rest/check/phone/status',
+        dataType: 'json',
+        type: 'post',
+        data: data,
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (error, errorText) => {
+            if (errorText !== 'abort') {
+                Deferred.reject(error && error.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};

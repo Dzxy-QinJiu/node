@@ -10,6 +10,7 @@ import {isEqualArray} from 'LIB_DIR/func';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import PhoneCallout from 'CMP_DIR/phone-callout';
+import {PHONE_STATUS_MAP} from 'PUB_DIR/sources/utils/consts';
 class ContactItem extends React.Component {
     constructor(props) {
         super(props);
@@ -53,12 +54,25 @@ class ContactItem extends React.Component {
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
                                 <span className="phone-num-container">
                                     {_.map(contactItem.phone, (phoneItem, index) => {
+                                        let showPhoneNum = phoneItem;
+                                        let phoneNumber = phoneItem;
+                                        if(_.get(this.state.customerData, 'phone_status[0]')) {
+                                            let phoneStatus = _.get(this.state.customerData, 'phone_status');
+                                            let curPhoneStatus = _.find(phoneStatus, item => item.phone === phoneItem);
+                                            if(curPhoneStatus) {
+                                                let status = _.get(PHONE_STATUS_MAP, curPhoneStatus.status, Intl.get( 'common.others', '其他'));
+                                                showPhoneNum = `${showPhoneNum}(${status})`;
+                                            }
+                                        }
                                         return (
                                             <PhoneCallout
-                                                phoneNumber={phoneItem}
+                                                showPhoneNum={showPhoneNum}
+                                                phoneNumber={phoneNumber}
                                                 contactName={contactName}
+                                                showCheckPhone={this.props.showCheckPhone}
                                                 showClueDetailPanel={this.props.showClueDetailPanel}
                                                 hidePhoneIcon={this.props.hidePhoneIcon}
+                                                onCheckPhoneSuccess={this.props.onCheckPhoneSuccess}
                                                 id={this.props.id}
                                                 type={this.props.type}
                                             />
@@ -133,7 +147,9 @@ ContactItem.defaultProps = {
     isHideContactName: false, // 默认不隐藏联系人信息
     showClueDetailPanel: function() {
 
-    }
+    },
+    onCheckPhoneSuccess: function() {},
+    showCheckPhone: false,//是否展示检测空号图标
 };
 ContactItem.propTypes = {
     id: PropTypes.string,
@@ -144,7 +160,9 @@ ContactItem.propTypes = {
     showContactLabel: PropTypes.bool,//是否展示联系人这几个字
     hasMoreIcon: PropTypes.bool,
     showClueDetailPanel: PropTypes.func,
+    onCheckPhoneSuccess: PropTypes.func,
     hidePhoneIcon: PropTypes.bool,//是否展示电话图标
     isHideContactName: PropTypes.bool,
+    showCheckPhone: PropTypes.bool,
 };
 export default ContactItem;

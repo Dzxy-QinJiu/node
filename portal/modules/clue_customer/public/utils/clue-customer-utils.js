@@ -9,6 +9,8 @@ import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import { checkCurrentVersion, checkVersionAndType, isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
+import {isPhone} from 'PUB_DIR/sources/utils/validate-util';
+
 export const checkClueName = function(rule, value, callback) {
     value = _.trim(value);
     if (value) {
@@ -612,3 +614,33 @@ export const hasRecommendPrivilege = () => {
     return !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE);
 };
 
+//是否有检测空号的权限
+export const hasCheckPhoneStatusPrivilege = (curStatus) => {
+    //正式版，并且只有待我处理、待分配、待跟进、已跟进tab才有批量检测操作
+    return checkVersionAndType().formal && _.includes([SELECT_TYPE.WAIT_ME_HANDLE, SELECT_TYPE.WILL_DISTRIBUTE, SELECT_TYPE.WILL_TRACE, SELECT_TYPE.HAS_TRACE], curStatus.status);
+};
+
+//获取需要检测的手机号
+export const getCheckedPhones = function(clues) {
+    let phoneList = [];
+    _.each(clues, clue => {
+        if(clue.contacts.length) {
+            let phones = _.chain(clue.contacts)
+                .filter(item => _.isArray(item.phone) && item.phone.length)
+                .map('phone')
+                .reduce((sum, n) => sum.concat(n))
+                .uniq()
+                .filter(item => isPhone(item))
+                .value();
+            if(phones.length) {
+                _.each(phones, phone => {
+                    phoneList.push({
+                        clue_id: clue.id,
+                        mobile_phone: phone
+                    });
+                });
+            }
+        }
+    });
+    return phoneList;
+};

@@ -5,7 +5,7 @@
  */
 import {Popover, message} from 'antd';
 import {hasCalloutPrivilege, checkVersionAndType, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
-import {showDisabledCallTip, handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
+import {showDisabledCallTip, handleCallOutResult, checkPhoneStatus}from 'PUB_DIR/sources/utils/common-data-util';
 import {isRongLianPhoneSystem, handleBeforeCallOutCheck} from 'PUB_DIR/sources/utils/phone-util';
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
 import { paymentEmitter } from 'OPLATE_EMITTER';
@@ -13,16 +13,36 @@ var classNames = require('classnames');
 require('./index.less');
 import Trace from 'LIB_DIR/trace';
 import { COMPANY_VERSION_KIND, COMPANY_PHONE } from 'PUB_DIR/sources/utils/consts';
+import {isPhone} from 'PUB_DIR/sources/utils/validate-util';
+
 class PhoneCallout extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             visible: false,
             ableClickPhoneIcon: true,//是否可以点击电话的icon
+            ableClickCheckPhoneIcon: true,//是否可以点击检测按钮
         };
     }
     componentDidMount() {
     }
+
+    //检测空号
+    handleCheckPhone = () => {
+        if(!this.state.ableClickCheckPhoneIcon) {return false;}
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-search'), '单个手机号检测空号');
+        this.setState({ableClickCheckPhoneIcon: false});
+        checkPhoneStatus([{
+            clue_id: this.props.id,
+            mobile_phone: this.props.phoneNumber
+        }]).then((result) => {
+            this.setState({ableClickCheckPhoneIcon: true});
+            _.isFunction(this.props.onCheckPhoneSuccess) && this.props.onCheckPhoneSuccess(result);
+        }, () => {
+            this.setState({ableClickCheckPhoneIcon: true});
+            message.error(Intl.get('lead.check.phone.fiald', '检测空号失败!!!'));
+        });
+    };
 
     // 自动拨号
     handleClickCallOut = (phoneNumber, contactName) => {
@@ -99,10 +119,20 @@ class PhoneCallout extends React.Component {
             </Popover>
         );
     };
+    renderCheckPhone = () => {
+        //正式版，拨打电话按钮展示时，且该电话是手机号、沒有检测过状态时，才能展示检测按钮
+        if(checkVersionAndType().formal && this.props.showCheckPhone && !this.props.hidePhoneIcon && isPhone(this.props.phoneNumber) && _.indexOf(this.props.showPhoneNum, '(') < 0) {
+            var iconCls = classNames('iconfont icon-search handle-btn-item',{
+                'default-show': this.props.showPhoneIcon
+            });
+            return <i className={iconCls} title={Intl.get('lead.check.phone.status', '检测空号')} onClick={this.handleCheckPhone}/>;
+        }
+        return null;
+    };
     render() {
         return(
             <span className="phone-callout-container" >
-                {this.props.hidePhoneNumber ? null : (<span>{this.props.showPhoneNum || this.props.phoneNumber}</span>)}
+                {this.props.hidePhoneNumber ? null : (<span>{this.props.showPhoneNum || this.props.phoneNumber}{this.renderCheckPhone()}</span>)}
                 {this.renderPhoneIcon()}
             </span>
         );
@@ -119,6 +149,8 @@ PhoneCallout.defaultProps = {
     hidePhoneIcon: false,//是否隐藏电话图标
     showClueDetailPanel: function(){},
     onCallSuccess: function(){},//打电话成功的处理（首页）
+    showCheckPhone: false,//是否展示检测空号图标
+    onCheckPhoneSuccess: function() {},
 };
 PhoneCallout.propTypes = {
     id: PropTypes.string,
@@ -131,5 +163,7 @@ PhoneCallout.propTypes = {
     showClueDetailPanel: PropTypes.func,
     onCallSuccess: PropTypes.func,
     hidePhoneIcon: PropTypes.bool,
+    showCheckPhone: PropTypes.bool,
+    onCheckPhoneSuccess: PropTypes.func,
 };
 export default PhoneCallout;

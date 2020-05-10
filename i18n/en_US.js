@@ -3303,6 +3303,12 @@ var en_US = {
     'lead.recommend.form.hide.some.condition': 'Hide some condition',//收起部分条件
     'lead.associate.customer.detail': 'View associated customers',//查看关联客户
     'lead.info.website.info': 'Official website',//官网
+    'lead.check.phone.status': 'Detection of space',//检测空号
+    'lead.phone.status.null': 'Suspected the space',//疑似空号
+    'lead.phone.status.real': 'Real no.',//实号
+    'lead.phone.status.halt': 'downtime',//停机
+    'lead.selected.has.phone.tip': 'Please select the clue with the phone number',//请选择有手机号的线索
+    'lead.check.phone.fiald': 'Failed to detect empty number!!',//检测空号失败!!!
     
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',

@@ -3326,6 +3326,12 @@ var zh_CN = {
     'lead.recommend.form.hide.some.condition': '收起部分条件',
     'lead.associate.customer.detail': '查看关联客户',
     'lead.info.website.info': '官网',
+    'lead.check.phone.status': '检测空号',
+    'lead.phone.status.null': '疑似空号',
+    'lead.phone.status.real': '实号',
+    'lead.phone.status.halt': '停机',
+    'lead.selected.has.phone.tip': '请选择有手机号的线索',
+    'lead.check.phone.fiald': '检测空号失败!!!',
     //线索模块 end
     'common.memeber.all': '全部成员',
     'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分中占比30%',
