@@ -22,7 +22,7 @@ import {
     APPLY_FINISH_STATUS,
     APPLY_USER_STATUS,
     REG_FILES_SIZE_RULES,
-    ORGANIZATION_TYPE,LEAVE_TIME_RANGE, AM_AND_PM,
+    ORGANIZATION_TYPE, LEAVE_TIME_RANGE, AM_AND_PM,
     FINAL_TASK,
     ORGANIZATION_APP_TYPES,
     REALM_REMARK,
@@ -33,12 +33,12 @@ import {
     WEEKDAYS,
     CONFIG_TYPE,
     winningClueMaxCount,
-    COMPANY_PHONE
+    COMPANY_PHONE, COMPANY_VERSION_KIND
 } from './consts';
 var DateSelectorUtils = require('antc/lib/components/datepicker/utils');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
-import { notificationEmitter, modifyAppConfigEmitter } from './emitters';
+import {notificationEmitter, modifyAppConfigEmitter, paymentEmitter} from './emitters';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 import {getMyTeamTreeAndFlattenList} from './common-data-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
@@ -1595,3 +1595,15 @@ exports.downloadFile = function(id, url) {
         return false;
     }
 };
+//个人试用升级为正式版
+exports.handleUpgradePersonalVersion = function (tipTitle) {
+    paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+        showDifferentVersion: triggerShowVersionInfo,
+        leftTitle: tipTitle,
+    });
+};
+//显示/隐藏版本信息面板
+const triggerShowVersionInfo = function(isShowModal = true) {
+    paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {isShowModal, versionKind: COMPANY_VERSION_KIND});
+};
+exports.triggerShowVersionInfo = triggerShowVersionInfo;

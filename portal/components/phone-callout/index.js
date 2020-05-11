@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2019/2/28.
  */
 import {Popover, message} from 'antd';
-import {hasCalloutPrivilege, checkVersionAndType, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasCalloutPrivilege, checkVersionAndType, getContactSalesPopoverTip, isExpired, handleUpgradePersonalVersion} from 'PUB_DIR/sources/utils/common-method-util';
 import {showDisabledCallTip, handleCallOutResult, checkPhoneStatus}from 'PUB_DIR/sources/utils/common-data-util';
 import {isRongLianPhoneSystem, handleBeforeCallOutCheck} from 'PUB_DIR/sources/utils/phone-util';
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
@@ -29,6 +29,15 @@ class PhoneCallout extends React.Component {
 
     //检测空号
     handleCheckPhone = () => {
+        if(checkVersionAndType().isPersonalTrial) {//个人试用，提示升级可使用
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '个人试用点击批量检测空号，自动打开个人升级界面');
+            handleUpgradePersonalVersion(Intl.get('lead.check.phone.upgrade.tip', '升级后可检测空号'));
+            return false;
+        }else if(checkVersionAndType().isPersonalFormal && isExpired()) {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '个人正式过期后点击批量检测空号，自动打开个人续费界面');
+            handleUpgradePersonalVersion(Intl.get('lead.check.phone.renewal.tip', '续费后可检测空号'));
+            return false;
+        }
         if(!this.state.ableClickCheckPhoneIcon) {return false;}
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-search'), '单个手机号检测空号');
         this.setState({ableClickCheckPhoneIcon: false});
@@ -38,9 +47,9 @@ class PhoneCallout extends React.Component {
         }]).then((result) => {
             this.setState({ableClickCheckPhoneIcon: true});
             _.isFunction(this.props.onCheckPhoneSuccess) && this.props.onCheckPhoneSuccess(result);
-        }, () => {
+        }, (errorMsg) => {
             this.setState({ableClickCheckPhoneIcon: true});
-            message.error(Intl.get('lead.check.phone.fiald', '检测空号失败!!!'));
+            message.error(errorMsg);
         });
     };
 
@@ -120,15 +129,38 @@ class PhoneCallout extends React.Component {
         );
     };
     renderCheckPhone = () => {
-        //正式版，拨打电话按钮展示时，且该电话是手机号、沒有检测过状态时，才能展示检测按钮
-        if(checkVersionAndType().formal && this.props.showCheckPhone && !this.props.hidePhoneIcon && isPhone(this.props.phoneNumber) && _.indexOf(this.props.showPhoneNum, '(') < 0) {
+        //拨打电话按钮展示时，且该电话是手机号、沒有检测过状态时，才能展示检测按钮
+        if(this.props.showCheckPhone && !this.props.hidePhoneIcon && isPhone(this.props.phoneNumber) && _.indexOf(this.props.showPhoneNum, '(') < 0) {
             var iconCls = classNames('iconfont icon-search handle-btn-item',{
                 'default-show': this.props.showPhoneIcon
             });
-            return <i className={iconCls} title={Intl.get('lead.check.phone.status', '检测空号')} onClick={this.handleCheckPhone}/>;
+            let content = <i className={iconCls} title={Intl.get('lead.check.phone.status', '检测空号')}/>;
+            if(this.isShowCheckPhonePopover()) {
+                let contentTip = getContactSalesPopoverTip(true);
+                return (
+                    <Popover
+                        placement="right"
+                        content={contentTip}
+                        trigger="click"
+                    >
+                        {content}
+                    </Popover>
+                );
+            }
+            return React.cloneElement(content, {
+                onClick: this.handleCheckPhone
+            });
         }
         return null;
     };
+    isShowCheckPhonePopover() {
+        let isShowPopover = false;
+        //企业试用，或企业正式过期
+        if(checkVersionAndType().isCompanyTrial || checkVersionAndType().isCompanyFormal && isExpired()) {
+            isShowPopover = true;
+        }
+        return isShowPopover;
+    }
     render() {
         return(
             <span className="phone-callout-container" >

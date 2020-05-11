@@ -3332,6 +3332,8 @@ var zh_CN = {
     'lead.phone.status.halt': '停机',
     'lead.selected.has.phone.tip': '请选择有手机号的线索',
     'lead.check.phone.fiald': '检测空号失败!!!',
+    'lead.check.phone.upgrade.tip': '升级后可检测空号',
+    'lead.check.phone.renewal.tip': '续费后可检测空号',
     //线索模块 end
     'common.memeber.all': '全部成员',
     'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分中占比30%',

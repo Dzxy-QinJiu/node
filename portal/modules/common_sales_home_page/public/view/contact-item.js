@@ -10,7 +10,7 @@ import {isEqualArray} from 'LIB_DIR/func';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import PhoneCallout from 'CMP_DIR/phone-callout';
-import {PHONE_STATUS_MAP} from 'PUB_DIR/sources/utils/consts';
+import {getShowPhoneNumber} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 class ContactItem extends React.Component {
     constructor(props) {
         super(props);
@@ -54,20 +54,11 @@ class ContactItem extends React.Component {
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
                                 <span className="phone-num-container">
                                     {_.map(contactItem.phone, (phoneItem, index) => {
-                                        let showPhoneNum = phoneItem;
-                                        let phoneNumber = phoneItem;
-                                        if(_.get(this.state.customerData, 'phone_status[0]')) {
-                                            let phoneStatus = _.get(this.state.customerData, 'phone_status');
-                                            let curPhoneStatus = _.find(phoneStatus, item => item.phone === phoneItem);
-                                            if(curPhoneStatus) {
-                                                let status = _.get(PHONE_STATUS_MAP, curPhoneStatus.status, Intl.get( 'common.others', '其他'));
-                                                showPhoneNum = `${showPhoneNum}(${status})`;
-                                            }
-                                        }
+                                        let showPhoneNum = getShowPhoneNumber(this.state.customerData, phoneItem);
                                         return (
                                             <PhoneCallout
                                                 showPhoneNum={showPhoneNum}
-                                                phoneNumber={phoneNumber}
+                                                phoneNumber={phoneItem}
                                                 contactName={contactName}
                                                 showCheckPhone={this.props.showCheckPhone}
                                                 showClueDetailPanel={this.props.showClueDetailPanel}

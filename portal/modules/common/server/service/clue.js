@@ -18,7 +18,7 @@ exports.getRewardedCluesCount = (req, res) => {
 exports.checkPhoneStatus = (req, res) => {
     return restUtil.authRest.post(
         {
-            url: '/rest/company/v1/count/check/phone/status',
+            url: '/rest/company/v1/count/check/mobile/status',
             req: req,
             res: res
         }, req.body);

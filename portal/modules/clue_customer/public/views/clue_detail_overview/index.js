@@ -45,6 +45,8 @@ import {
     transferClueToCustomerIconPrivilege,
     editClueItemIconPrivilege,
     releaseClueTip,
+    getShowPhoneNumber,
+    dealClueCheckPhoneStatus
 } from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -74,7 +76,6 @@ import LocationSelectField from 'CMP_DIR/basic-edit-field-new/location-select';
 import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 import ApplyTryCard from 'CMP_DIR/apply-try-card';
 import classNames from 'classnames';
-import {PHONE_STATUS_MAP} from 'PUB_DIR/sources/utils/consts';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -737,7 +738,7 @@ class ClueDetailOverview extends React.Component {
         let hasPrivilege = editCluePrivilege(curClue);
         return <PhoneCallout
             phoneNumber={item}
-            showPhoneNum={this.handleCheckPhoneStatus(addHyphenToPhoneNumber(item))}
+            showPhoneNum={getShowPhoneNumber(curClue, addHyphenToPhoneNumber(item))}
             showPhoneIcon={true}
             showCheckPhone
             onCheckPhoneSuccess={this.onCheckPhoneSuccess}
@@ -1560,27 +1561,8 @@ class ClueDetailOverview extends React.Component {
             afterConvert: this.props.afterTransferClueSuccess
         });
     };
-    handleCheckPhoneStatus(phone) {
-        let curClue = this.state.curClue;
-        let phoneStatus = _.get(curClue, 'phone_status', []);
-        let curPhoneStatus = _.find(phoneStatus, item => item.phone === phone);
-        if(curPhoneStatus) {
-            let status = _.get(PHONE_STATUS_MAP, curPhoneStatus.status, Intl.get( 'common.others', '其他'));
-            return `${phone}(${status})`;
-        }
-        return phone;
-    }
     onCheckPhoneSuccess = (result) => {
-        let phoneStatus = _.get(this.state.curClue, 'phone_status', []);
-        let phoneResult = result[0];
-        let phoneObj = {phone: phoneResult.mobile_phone, status: phoneResult.phone_status};
-        let curIndex = _.findIndex(phoneStatus, item => item.phone === phoneResult.mobile_phone);
-        if(curIndex > -1) {
-            phoneStatus[curIndex] = phoneObj;
-        }else {
-            phoneStatus.push(phoneObj);
-        }
-        this.props.updateClueProperty({phone_status: phoneStatus});
+        this.props.updateClueProperty({phone_status: dealClueCheckPhoneStatus(this.state.curClue, result)});
     };
     renderContactContent(contactItem) {
         let {curClue,isExpandList} = this.state;

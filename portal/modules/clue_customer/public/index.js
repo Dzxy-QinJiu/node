@@ -69,6 +69,7 @@ import {
     hasRecommendPrivilege,
     getCheckedPhones,
     hasCheckPhoneStatusPrivilege,
+    dealClueCheckPhoneStatus
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -3333,7 +3334,6 @@ class ClueCustomer extends React.Component {
         let {isWebMiddle, isWebMin} = isResponsiveDisplay();
         return (
             <div className="pull-right add-anlysis-handle-btns">
-                {!(isWebMiddle || isWebMin) ? this.renderCheckPhoneBtn() : null}
                 {!(isWebMiddle || isWebMin) ? this.renderClueRecommend() : null}
                 {/*是否有查看线索分析的权限
                  CRM_CLUE_STATISTICAL 查看线索概览的权限
@@ -3351,6 +3351,7 @@ class ClueCustomer extends React.Component {
                 }
                 {!(isWebMiddle || isWebMin) ? this.renderExportClue() : null}
                 {!isWebMin ? this.renderAddBtn() : null}
+                {!(isWebMiddle || isWebMin) ? this.renderCheckPhoneBtn() : null}
                 {isWebMiddle || isWebMin ?
                     <MoreButton
                         topBarDropList={this.topBarDropList.bind(this, isWebMin)}
@@ -3359,19 +3360,35 @@ class ClueCustomer extends React.Component {
         );
     };
     renderCheckPhoneBtn = () => {
+        //选中全部后，不展示检测空号按钮
+        if(this.state.selectAllMatched && this.state.selectedClues.length > 1) {
+            return null;
+        }
         if(hasCheckPhoneStatusPrivilege(this.getFilterStatus())) {
             let checkPhones = getCheckedPhones(this.state.selectedClues);
-            return (
-                <Popover
-                    placement="bottom"
-                    trigger="click"
-                    content={Intl.get('lead.selected.has.phone.tip', '请选择有手机号的线索')}
-                    visible={this.state.checkPhoneStatusVisible}
-                    onVisibleChange={this.handleCheckPhoneStatusVisibleChange.bind(this, checkPhones)}
-                >
+            if(this.isShowCheckPhonePopover(checkPhones)) {
+                let contentTip = getContactSalesPopoverTip(true) || Intl.get('lead.selected.has.phone.tip', '请选择有手机号的线索');
+                return (
+                    <Popover
+                        placement="bottom"
+                        trigger="click"
+                        content={contentTip}
+                    >
+                        <Button
+                            data-tracename="点击批量检测空号按钮"
+                            className='btn-item handle-btn-item pull-right'
+                            title={Intl.get('lead.check.phone.status', '检测空号')}
+                        >
+                            <span className="iconfont icon-search"/>
+                            {Intl.get('lead.check.phone.status', '检测空号')}
+                        </Button>
+                    </Popover>
+                );
+            }else {
+                return (
                     <Button
                         data-tracename="点击批量检测空号按钮"
-                        className='btn-item handle-btn-item'
+                        className='btn-item handle-btn-item pull-right'
                         title={Intl.get('lead.check.phone.status', '检测空号')}
                         onClick={this.handleCheckPhoneStatus.bind(this, checkPhones)}
                         loading={this.state.isBatchCheckPhoneStatusLoading}
@@ -3379,23 +3396,34 @@ class ClueCustomer extends React.Component {
                         <span className="iconfont icon-search"/>
                         {Intl.get('lead.check.phone.status', '检测空号')}
                     </Button>
-                </Popover>
-            );
+                );
+            }
+
         }else { return null; }
     };
-    handleCheckPhoneStatusVisibleChange = (checkPhones, visible) => {
-        if(visible && !checkPhones.length) {
-            this.setState({
-                checkPhoneStatusVisible: true
-            });
-        }else {
-            this.setState({
-                checkPhoneStatusVisible: false
-            });
+    isShowCheckPhonePopover(checkPhones) {
+        let isShowPopover = false;
+        //个人试用或者个人正式过期不用展示popover
+        if(checkVersionAndType().isPersonalTrial || checkVersionAndType().isPersonalFormal && isExpired()) {
+            isShowPopover = false;
         }
-    };
+        //企业试用 或 企业正式过期 或者 没有选择有手机号的线索
+        else if(checkVersionAndType().isCompanyTrial || checkVersionAndType().isCompanyFormal && isExpired() || !checkPhones.length) {
+            isShowPopover = true;
+        }
+        return isShowPopover;
+    }
     //批量检测空号
     handleCheckPhoneStatus = (checkPhones) => {
+        if(checkVersionAndType().isPersonalTrial) {//个人试用，提示升级可使用
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '个人试用点击批量检测空号，自动打开个人升级界面');
+            this.handleUpgradePersonalVersion(Intl.get('lead.check.phone.upgrade.tip', '升级后可检测空号'));
+            return false;
+        }else if(checkVersionAndType().isPersonalFormal && isExpired()) {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '个人正式过期后点击批量检测空号，自动打开个人续费界面');
+            this.handleUpgradePersonalVersion(Intl.get('lead.check.phone.renewal.tip', '续费后可检测空号'));
+            return false;
+        }
         if(!checkPhones.length || this.state.isBatchCheckPhoneStatusLoading) { return false; }
         checkPhoneStatus(checkPhones).then((result) => {
             this.setState({isBatchCheckPhoneStatusLoading: false});
@@ -3410,23 +3438,14 @@ class ClueCustomer extends React.Component {
                 }
             });
             clueCustomerAction.updateClueCustomers(curClueList);
-        }, () => {
+        }, (errorMsg) => {
             this.setState({isBatchCheckPhoneStatusLoading: false});
-            message.error(Intl.get('lead.check.phone.fiald', '检测空号失败!!!'));
+            message.error(errorMsg);
         });
     };
     //单个检测空号成功回调事件
     onCheckPhoneSuccess = (clue, result) => {
-        let phoneStatus = _.get(clue, 'phone_status', []);
-        let phoneResult = result[0];
-        let phoneObj = {phone: phoneResult.mobile_phone, status: phoneResult.phone_status};
-        let curIndex = _.findIndex(phoneStatus, item => item.phone === phoneResult.mobile_phone);
-        if(curIndex > -1) {
-            phoneStatus[curIndex] = phoneObj;
-        }else {
-            phoneStatus.push(phoneObj);
-        }
-        clue.phone_status = phoneStatus;
+        clue.phone_status = dealClueCheckPhoneStatus(clue, result);
         clueCustomerAction.updateClueCustomers(this.state.curClueList);
     };
     isFirstLoading = () => {
