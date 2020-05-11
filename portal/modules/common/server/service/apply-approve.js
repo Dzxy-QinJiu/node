@@ -43,7 +43,9 @@ var restApis = {
     //下载相关文件
     downLoadReportFile: '/rest/base/v1/workflow/file/download',
     //删除相关文件
-    delReportFile: '/rest/base/v1/workflow/file/delete'
+    delReportFile: '/rest/base/v1/workflow/file/delete',
+    //清空所有未读
+    clearAllUnread: '/rest/base/v1/workflow/comments/notice/unread/clear'
 };
 exports.restUrls = restApis;
 exports.getNextCandidate = function(req, res) {
@@ -261,3 +263,12 @@ exports.approveSalesOpportunityApplyPassOrReject = function(req, res) {
             res: res
         }, req.body);
 };
+exports.clearAllUnread = function(req, res) {
+    return restUtil.authRest.put(
+        {
+            url: restApis.clearAllUnread,
+            req: req,
+            res: res
+        }, null);
+};
+

@@ -66,6 +66,7 @@ var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notification
 var ApplyApproveUtils = require('./utils/apply_approve_utils');
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {INNER_SETTING_FLOW,getAllWorkFlowList} from '../../apply_approve_manage/public/utils/apply-approve-utils';
+import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 
 class ApplyApproveList extends React.Component {
     state = {
@@ -722,6 +723,13 @@ class ApplyApproveList extends React.Component {
             </div>
         );
     };
+    handleAllUnread = () => {
+        ApplyApproveAjax.clearAllUnread().sendRequest().success((flag) => {
+            if(flag){
+                UserApplyActions.clearUnreadReply();
+            }
+        });
+    };
     renderFilterSearch = () => {
         var filterOrSearchType = this.state.filterOrSearchType;
         if (!filterOrSearchType) {
@@ -735,9 +743,12 @@ class ApplyApproveList extends React.Component {
                 </div>
             );
         } else {
-            return <div className='filter-and-search-container return-back' onClick={this.closeSearchOrFilterPanel}>
-                <i className='iconfont icon-left-arrow'></i>
-                {Intl.get('apply.list.return.back', '返回')}
+            return <div className='filter-and-search-container return-back'>
+                <div className='pull-left return-arrow' onClick={this.closeSearchOrFilterPanel}><i className='iconfont icon-left-arrow'></i>
+                    {Intl.get('apply.list.return.back', '返回')}</div>
+                <div className="pull-right all-unread-read" onClick={this.handleAllUnread}>
+                    {Intl.get('apply.list.all.list.read', '全部已读')}
+                </div>
             </div>;
         }
 
