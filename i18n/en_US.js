@@ -3308,9 +3308,10 @@ var en_US = {
     'lead.phone.status.real': 'Real no.',//实号
     'lead.phone.status.halt': 'downtime',//停机
     'lead.selected.has.phone.tip': 'Please select the clue with the phone number',//请选择有手机号的线索
-    'lead.check.phone.fiald': 'Failed to detect empty number!!',//检测空号失败!!!
+    'lead.check.phone.fiald': 'Failed to detect empty number!!',//空号检测失败
     'lead.check.phone.upgrade.tip': 'Empty number can be detected after upgrade',//升级后可检测空号
     'lead.check.phone.renewal.tip': 'Empty number can be detected after renewal',//续费后可检测空号
+    'lead.check.phone.status.other.tip': 'Others include: risk number, silence number, etc',//其他包括: 风险号、沉默号等
     
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',

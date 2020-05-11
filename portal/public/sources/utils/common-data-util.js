@@ -859,7 +859,7 @@ exports.checkPhoneStatus = (reqData) => {
         },
         error: (error, errorText) => {
             if (errorText !== 'abort') {
-                Deferred.reject(error && error.responseJSON || Intl.get('lead.check.phone.fiald', '检测空号失败!!!'));
+                Deferred.reject(error && error.responseJSON || Intl.get('lead.check.phone.fiald', '空号检测失败'));
             }
         }
     });

@@ -3,7 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/2/28.
  */
-import {Popover, message} from 'antd';
+import {Popover, message, Icon} from 'antd';
 import {hasCalloutPrivilege, checkVersionAndType, getContactSalesPopoverTip, isExpired, handleUpgradePersonalVersion} from 'PUB_DIR/sources/utils/common-method-util';
 import {showDisabledCallTip, handleCallOutResult, checkPhoneStatus}from 'PUB_DIR/sources/utils/common-data-util';
 import {isRongLianPhoneSystem, handleBeforeCallOutCheck} from 'PUB_DIR/sources/utils/phone-util';
@@ -129,6 +129,16 @@ class PhoneCallout extends React.Component {
         );
     };
     renderCheckPhone = () => {
+        if(this.props.showPhoneNum.indexOf(Intl.get( 'common.others', '其他')) > -1) {
+            return (
+                <Popover
+                    placement="right"
+                    content={Intl.get('lead.check.phone.status.other.tip', '其他包括: 风险号、沉默号等')}
+                >
+                    <Icon type="question-circle-o" className="handle-btn-item"/>
+                </Popover>
+            );
+        }
         //拨打电话按钮展示时，且该电话是手机号、沒有检测过状态时，才能展示检测按钮
         if(this.props.showCheckPhone && !this.props.hidePhoneIcon && isPhone(this.props.phoneNumber) && _.indexOf(this.props.showPhoneNum, '(') < 0) {
             var iconCls = classNames('iconfont icon-search handle-btn-item',{
