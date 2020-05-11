@@ -113,7 +113,7 @@ export function getCallRecordChart(paramObj = {}) {
 
         let columns = [{
             title: isShowTeamData ? Intl.get('user.sales.team', '销售团队') : Intl.get('sales.home.sales', '销售'),
-            width: col_width,
+            width: 110,
             dataIndex: 'name',
         }, {
             title: Intl.get('sales.home.total.duration', '总时长'),
@@ -269,6 +269,12 @@ export function getCallRecordChart(paramObj = {}) {
                 sorter: function(a, b) {
                     return a.average_person_num - b.average_person_num;
                 },
+            });
+        } else {
+            columns.splice(1, 0, {
+                title: Intl.get('user.sales.team', '销售团队'),
+                width: 80,
+                dataIndex: 'team_name',
             });
         }
 
