@@ -2216,14 +2216,16 @@ class ClueCustomer extends React.Component {
                     });
                     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中某个线索');
                 },
-                //对线索列表当前页进行全选或取消全选操作时触发
+                //对线索列表当前页进行全选或取消全选操作,或者点击只选当前页的时候也会触发这个方法触发
                 onSelectAll: (selected, selectedRows, changeRows) => {
-                    if(selectedRows.length === this.state.customersSize){//选择全部的时候，选中的线索小于总的线索数量的时候，selectAllMatched是true
+                    if(this.state.isCheckCurPage){
+                        this.state.selectAllMatched = false;
+                    }else if(selectedRows.length === this.state.customersSize){//选择全部的时候，选中的线索小于总的线索数量的时候，selectAllMatched是true
                         this.state.selectAllMatched = false;
                     }else{
                         this.state.selectAllMatched = true;
                     }
-                    this.setState({selectedClues: selectedRows, selectAllMatched: this.state.selectAllMatched});
+                    this.setState({selectedClues: selectedRows, selectAllMatched: this.state.selectAllMatched,isCheckCurPage: false});
                     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中全部线索');
                 }
             };
@@ -2929,6 +2931,7 @@ class ClueCustomer extends React.Component {
         this.setState({
             selectedClues: [],
             selectAllMatched: false,
+            isCheckCurPage: true,
         }, () => {
             $('th.ant-table-selection-column input').click();
         });

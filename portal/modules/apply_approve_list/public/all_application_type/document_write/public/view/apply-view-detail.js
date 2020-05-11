@@ -469,8 +469,8 @@ class ApplyViewDetail extends React.Component {
             DocumentWriteApplyDetailAction.cancelSendApproval();
         };
         let confirmBtn = (
-            <Button type='primary' size="small" onClick={isExpired() ? () => { } : this.confirmFinishApply} disabled={isLoading}>
-                {Intl.get('apply.approve.confirm.finish', '确认完成')}
+            <Button className="agree-btn btn-primary-sure" onClick={isExpired() ? () => { } : this.confirmFinishApply} disabled={isLoading}>
+                <i className='iconfont icon-agree'></i>{Intl.get('apply.approve.confirm.finish', '确认完成')}
                 {isLoading ? <Icon type="loading" /> : resultErrMsg ? <AlertTimer time={3000} message={resultErrMsg} type="error" onHide={onHide} showIcon /> : null}
             </Button>
         );

@@ -639,14 +639,14 @@ var CrmAlertForm = createReactClass({
                         //         </Validator>
                         //     </FormItem>
                         // ) : (
-                        this.props.selectedCustomer ? null : (
-                            <FormItem
-                                {...formItemLayout}
-                                label={Intl.get('crm.alert.topic', '标题')}
-                            >
-                                <Validator rules={[{required: true}]} trigger= 'onBlur'>
-                                    {hasOverOneCustomer ?
-                                        <Select onChange={this.handleTopicChange} value={formData.lead_id} >
+                        this.props.selectedCustomer ? null : (hasOverOneCustomer ?
+                                <FormItem
+                                    {...formItemLayout}
+                                    label={Intl.get('crm.alert.topic', '标题')}
+                                >
+                                    <Validator rules={[{required: true}]} trigger='onBlur'>
+
+                                        <Select onChange={this.handleTopicChange} value={formData.lead_id}>
                                             {_.map(this.props.clueArr, (clueItem) => {
                                                 return (
                                                     <Option value={clueItem.id}>{clueItem.name}</Option>
@@ -654,10 +654,10 @@ var CrmAlertForm = createReactClass({
                                             })}
                                         </Select>
 
-                                        : <Input name="topic" value={formData.topic} disabled/>}
-
-                                </Validator>
-                            </FormItem>)
+                                    </Validator>
+                                </FormItem>
+                                : null
+                        )
                         // )
                     }
                     <FormItem
@@ -749,12 +749,12 @@ var CrmAlertForm = createReactClass({
                                             <TimePicker
                                                 value={moment(scheduleStartTime, HOUR_MUNITE_FORMAT)}
                                                 format={HOUR_MUNITE_FORMAT}
-                                                onChange={this.onScheduleStartTimeChange} 
-                                            />  
+                                                onChange={this.onScheduleStartTimeChange}
+                                            />
                                         }
                                     </div>
                                 </Validator>
-                                
+
                             </FormItem>
                             {this.state.isSelectFullday ? null :
                                 <FormItem
