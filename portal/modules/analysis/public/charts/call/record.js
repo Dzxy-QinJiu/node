@@ -270,6 +270,12 @@ export function getCallRecordChart(paramObj = {}) {
                     return a.average_person_num - b.average_person_num;
                 },
             });
+        } else {
+            columns.splice(1, 0, {
+                title: Intl.get('user.sales.team', '销售团队'),
+                width: col_width,
+                dataIndex: 'team_name',
+            });
         }
 
         return columns;
