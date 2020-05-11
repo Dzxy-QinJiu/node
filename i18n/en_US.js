@@ -1492,6 +1492,9 @@ var en_US = {
     'user.apply.last.follow.date': 'Latest follow up date',//最新跟进日期
     'user.apply.approve.no.comment': 'There is no historical application!',//暂无申请历史！
     'user.apply.has.been.opened': '{count} has been opened',//已开通{count}个
+    'apply.list.return.back': 'return',//返回
+    'apply.list.get.list.err': 'Failed to get the list, please check the network status',//获取列表失败，请检查网络状态
+    'apply.list.all.list.read': 'All read',//全部已读
     // 用户审批end
 
     // 在线用户start
@@ -3303,7 +3306,7 @@ var en_US = {
     'lead.recommend.form.hide.some.condition': 'Hide some condition',//收起部分条件
     'lead.associate.customer.detail': 'View associated customers',//查看关联客户
     'lead.info.website.info': 'Official website',//官网
-    
+
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',

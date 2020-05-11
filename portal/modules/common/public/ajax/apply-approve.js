@@ -8,7 +8,7 @@ trans.register('candidateList', {url: '/rest/get/apply/next/candidate', type: 'g
 trans.register('transferNextCandidate', {url: '/rest/add/apply/new/candidate', type: 'post'});
 trans.register('getApplyListApprovedByMe', {url: '/rest/get/myapproved/apply/list', type: 'get'});
 trans.register('getApplyTaskNode', {url: '/rest/get/apply/node', type: 'get'});
-
+trans.register('clearAllUnread', {url: '/rest/clear/all/unread', type: 'put'});
 exports.getNextCandidate = function(reqParams) {
     return trans.getAjax('candidateList', reqParams);
 };
@@ -22,3 +22,7 @@ exports.getApplyListApprovedByMe = function(reqParams) {
 exports.getApplyTaskNode = function(reqParams) {
     return trans.getAjax('getApplyTaskNode', reqParams);
 };
+exports.clearAllUnread = function() {
+    return trans.getAjax('clearAllUnread');
+};
+

@@ -1504,6 +1504,7 @@ var zh_CN = {
     'user.apply.has.been.opened': '已开通{count}个',
     'apply.list.return.back': '返回',
     'apply.list.get.list.err': '获取列表失败，请检查网络状态',
+    'apply.list.all.list.read': '全部已读',
     // 用户审批end
 
     // 在线用户start

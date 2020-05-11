@@ -167,6 +167,13 @@ module.exports = {
         passport: {
             needLogin: true
         },
+    }, {
+        method: 'put',
+        path: '/rest/clear/all/unread',
+        handler: 'clearAllUnread',
+        passport: {
+            needLogin: true
+        },
     },
     ]
 };
