@@ -457,7 +457,7 @@ var CrmAlertForm = createReactClass({
                 }
             });
         }
-        
+
     },
 
     handleSave: function(e) {
@@ -833,11 +833,18 @@ var CrmAlertForm = createReactClass({
                 field: OBJECT_TYPE.CLUE
             }
         ];
-        const formItemLayout = this.props.formItemLayout || {
+        let formItemLayout = this.props.formItemLayout || {
             colon: false,
             labelCol: {span: 3},
             wrapperCol: {span: 21},
         };
+        if(this.props.isAddToDoClicked){
+            formItemLayout = {
+                colon: false,
+                labelCol: {span: 5},
+                wrapperCol: {span: 19},
+            };
+        }
         var formData = this.state.formData;
         //如果一个电话对应多个联系人的时候，要可以选择标题
         let hasOverOneCustomer = _.isArray(this.props.customerArr) && this.props.customerArr.length > 1;
@@ -873,25 +880,22 @@ var CrmAlertForm = createReactClass({
                                         />
                                     </Validator>
                                 </FormItem>)
-                        ) : (this.props.selectedCustomer ? null : (
+                        ) : (this.props.selectedCustomer ? null : (hasOverOneCustomer ?
                             <FormItem
                                 {...formItemLayout}
                                 label={Intl.get('crm.alert.topic', '标题')}
                             >
                                 <Validator rules={[{required: true}]}>
-                                    {hasOverOneCustomer ?
-                                        <Select onChange={this.handleTopicChange} value={formData.customer_id} >
-                                            {_.map(this.props.customerArr, (customerItem) => {
-                                                return (
-                                                    <Option value={customerItem.id}>{customerItem.name}</Option>
-                                                );
-                                            })}
-                                        </Select>
-
-                                        : <Input name="topic" value={formData.topic} disabled/>}
-
+                                    <Select onChange={this.handleTopicChange} value={formData.customer_id}>
+                                        {_.map(this.props.customerArr, (customerItem) => {
+                                            return (
+                                                <Option value={customerItem.id}>{customerItem.name}</Option>
+                                            );
+                                        })}
+                                    </Select>
                                 </Validator>
-                            </FormItem>))
+                            </FormItem> : null
+                        ))
                     }
                     <FormItem
                         {...formItemLayout}
