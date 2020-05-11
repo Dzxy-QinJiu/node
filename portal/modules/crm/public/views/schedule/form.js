@@ -457,7 +457,7 @@ var CrmAlertForm = createReactClass({
                 }
             });
         }
-        
+
     },
 
     handleSave: function(e) {
@@ -881,24 +881,20 @@ var CrmAlertForm = createReactClass({
                                     </Validator>
                                 </FormItem>)
                         ) : (this.props.selectedCustomer ? null : (hasOverOneCustomer ?
-                                <FormItem
-                                    {...formItemLayout}
-                                    label={Intl.get('crm.alert.topic', '标题')}
-                                >
-                                    <Validator rules={[{required: true}]}>
-                                        {hasOverOneCustomer ?
-                                            <Select onChange={this.handleTopicChange} value={formData.customer_id}>
-                                                {_.map(this.props.customerArr, (customerItem) => {
-                                                    return (
-                                                        <Option value={customerItem.id}>{customerItem.name}</Option>
-                                                    );
-                                                })}
-                                            </Select>
-
-                                            : <Input name="topic" value={formData.topic} disabled/>}
-
-                                    </Validator>
-                                </FormItem> : null
+                            <FormItem
+                                {...formItemLayout}
+                                label={Intl.get('crm.alert.topic', '标题')}
+                            >
+                                <Validator rules={[{required: true}]}>
+                                    <Select onChange={this.handleTopicChange} value={formData.customer_id}>
+                                        {_.map(this.props.customerArr, (customerItem) => {
+                                            return (
+                                                <Option value={customerItem.id}>{customerItem.name}</Option>
+                                            );
+                                        })}
+                                    </Select>
+                                </Validator>
+                            </FormItem> : null
                         ))
                     }
                     <FormItem
