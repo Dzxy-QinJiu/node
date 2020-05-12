@@ -80,6 +80,7 @@ export const APPLY_APPROVE_TYPES = {
     BUSSINESSTRIP: 'businesstrip',//出差
     USERAPPLY: 'userapply',//用户申请
     USER_OR_GRANT: 'user_or_grant',//改版后用户审批的类型
+    EEFUNG_DATA_SERVICE: 'eefung_data_service',//蚁坊的数据服务申请
     UNHANDLEAPPLY: 'unhandleApply'//未处理的申请审批
 
 };
@@ -873,8 +874,8 @@ export const USER_LABEL_KEY = {
 
 // 用户标签
 export const USER_LABEL = {
-    [USER_LABEL_KEY.QUALIFY]: Intl.get('common.qualified', '合格'), 
-    [USER_LABEL_KEY.HISTORY_QUALIFY]: Intl.get('common.history.qualified', '曾经合格'), 
+    [USER_LABEL_KEY.QUALIFY]: Intl.get('common.qualified', '合格'),
+    [USER_LABEL_KEY.HISTORY_QUALIFY]: Intl.get('common.history.qualified', '曾经合格'),
 };
 
 // 上下午英文简写与其中文名的映射

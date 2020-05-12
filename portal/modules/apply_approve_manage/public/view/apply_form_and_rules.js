@@ -364,7 +364,9 @@ class ApplyFormAndRules extends React.Component {
             <div className="apply-form-content-wrap"
                 style={{height: calculateHeight() - 2 * APPLYAPPROVE_LAYOUT.PADDINGHEIGHT - APPLYAPPROVE_LAYOUT.TABTITLE - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM + 70}}>
                 <div className="apply-form-rules">
+                    <GeminiScrollbar>
                     {this.renderAddFormRules()}
+                    </GeminiScrollbar>
                 </div>
                 <div className="apply-form-content-container">
                     <GeminiScrollbar>

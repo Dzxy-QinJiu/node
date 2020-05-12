@@ -38,6 +38,8 @@ var restApis = {
     addDocumentWriteApply: '/rest/base/v1/workflow/document/apply',
     //文件撰写的通过或者驳回
     approveDocumentApplyPassOrReject: '/rest/base/v1/workflow/document/approve',
+    //添加数据服务申请
+    addDataServiceApply: '/rest/base/v1/workflow/eefung/dataservice/apply',
     //上传文件
     uploadReportFile: '/rest/base/v1/workflow/file/upload',
     //下载相关文件
@@ -162,6 +164,17 @@ exports.addBusinessApply = function(req, res) {
             req: req,
             res: res
         }, req.body);
+};
+//添加数据导出申请
+exports.addDataServiceApply = function(req, res,formData) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.addDataServiceApply,
+            req: req,
+            res: res,
+            formData: formData,
+            timeout: uploadTimeOut,
+        }, null);
 };
 //修改拜访客户的实际
 exports.updateVisitCustomerTime = function(req, res) {

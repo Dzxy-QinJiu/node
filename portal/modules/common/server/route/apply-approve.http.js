@@ -91,6 +91,13 @@ module.exports = {
             needLogin: true
         },
     }, {
+        method: 'post',
+        path: '/rest/add/data_service/list',
+        handler: 'addDataServiceApply',
+        passport: {
+            needLogin: true
+        },
+    }, {
         method: 'put',
         path: '/rest/update/customer/visit/range',
         handler: 'updateVisitCustomerTime',

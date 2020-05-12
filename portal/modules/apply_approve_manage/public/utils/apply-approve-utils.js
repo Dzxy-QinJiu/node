@@ -11,6 +11,8 @@ import SelectOption from '../view/select_option';
 import TimePeriod from '../view/time_period';
 import CustomerSuggest from '../view/customer_suggest';
 import InputContent from '../view/input_container';
+import Template from '../view/template';
+import Annex from '../view/annex';
 import {checkDomainExist} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 var applyApproveManageAction = require('../action/apply_approve_manage_action');
 let userData = require('PUB_DIR/sources/user-data');
@@ -35,7 +37,9 @@ export const ALL_COMPONENTS = {
     CUSTOMERSEARCH: 'customerSearch',//客户的搜索
     TIME_PERIOD: 'timeperiod',//时间
     USER_SEARCH: 'userSearch',//成员
-    TEAM_SEARCH: 'teamSearch'//团队
+    TEAM_SEARCH: 'teamSearch',//团队
+    TEMPLATE: 'Template',//模板
+    ANNEX: 'Annex'//附件
 
 };
 export const ALL_COMPONENTS_TYPE = {
@@ -74,6 +78,12 @@ exports.applyComponentsType = [{
 }, {
     name: ALL_COMPONENTS.USER_SEARCH,
     component: SelectOption
+}, {
+    name: ALL_COMPONENTS.TEMPLATE,
+    component: Template
+}, {
+    name: ALL_COMPONENTS.ANNEX,
+    component: Annex
 }
 ];
 exports.CONDITION_KEYS = [
@@ -258,6 +268,15 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'key': 'managers',
         component: SelectOption,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
+    },
+    {
+        'rulename': Intl.get('common.import.template', '模板'), 'iconfontCls': 'icon-fuwu',
+        'component_type': ALL_COMPONENTS.TEMPLATE,
+        component: Template,
+    },{
+        'rulename': Intl.get('apply.approved.annex.list', '附件'), 'iconfontCls': 'icon-fuwu',
+        'component_type': ALL_COMPONENTS.ANNEX,
+        component: Annex
     }
 ];
 

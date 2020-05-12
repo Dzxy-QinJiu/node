@@ -106,6 +106,29 @@ exports.addLeaveApply = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+exports.addDataServiceApply = function(req, res) {
+    var form = new multiparty.Form();
+    //开始处理上传请求
+    form.parse(req, function(err, fields, files) {
+        let fileItem = _.get(files, 'files[0]');
+        let formData = {}, newTmpPath = '';
+        if (fileItem) {
+            let tmpPath = fileItem.path;
+            newTmpPath = tmpPath;
+            // 获取生成的文件名称
+            var tempName = _.last(_.split(tmpPath, '\\'));
+            // 获取文件名
+            var filename = fileItem.originalFilename;
+            newTmpPath = _.replace(newTmpPath, tempName, filename);
+            fs.renameSync(tmpPath, newTmpPath);
+            // 文件不为空的处理
+            formData['files'] = [fs.createReadStream(newTmpPath)];
+            addDataServiceApply(req, res, fields, formData);
+            //把文件删除
+            fs.unlinkSync(newTmpPath);
+        }
+    });
+};
 exports.addReportSendApply = function(req, res) {
     var form = new multiparty.Form();
     //开始处理上传请求
@@ -154,6 +177,20 @@ function addReportSendApplyData(req, res, fields, formData) {
         getFieldValues(fields,formData);
         //调用上传请求服务
         ApplyApproveService.addReportSendApply(req, res, formData).on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+    } catch (e) {
+        console.log(JSON.stringify(e));
+    }
+}
+function addDataServiceApply(req, res, fields, formData) {
+    try {
+        //获取不同字段上的参数值
+        getFieldValues(fields,formData);
+        //调用上传请求服务
+        ApplyApproveService.addDataServiceApply(req, res, formData).on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);

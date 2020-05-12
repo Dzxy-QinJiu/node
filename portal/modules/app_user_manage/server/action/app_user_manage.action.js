@@ -375,6 +375,13 @@ exports.getUserTemplate = (req, res) => {
     res.download(filePath, filename + '.xls');
 
 };
+//下载数据服务申请模板文件
+exports.getDataServiceTemplate = function(req, res) {
+    var filePath = path.resolve(__dirname, '../tpl/data_service_tpl.xlsx');
+    let backendIntl = new BackendIntl(req);
+    let filename = backendIntl.get('apply.approved.data.service.template', '数据导出申请表-申请时间-xxx部门-联系人') + '.xlsx';
+    res.download(filePath, filename);
+};
 
 // 上传用户
 exports.uploadUser = (req, res) => {
