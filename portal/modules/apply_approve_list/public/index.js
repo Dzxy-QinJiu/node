@@ -772,8 +772,9 @@ class ApplyApproveList extends React.Component {
                 applyListHeight -= APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
             }
         }
+        var {workFlowList} = this.state;
         return <div className='app_user_manage_apply_list_wrap'>
-            {this.renderFilterSearch()}
+            {_.get(workFlowList,'[0]') ? this.renderFilterSearch() : null}
             {this.renderRefreshTip()}
             {this.renderApplyListError()}
             {
