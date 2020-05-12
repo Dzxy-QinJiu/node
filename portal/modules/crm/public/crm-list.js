@@ -263,8 +263,8 @@ class Crm extends React.Component {
         var _this = this;
         //点击客户列表某一行时打开对应的详情
         $('.tbody').on('click', 'td.has-filter', function(e) {
-            //td中的表示关注的星星元素不能触发打开右侧面板的事件
-            if ($(e.target).hasClass('focus-customer')) {
+            //td中的表示关注的星星元素,以及截断的文本的展开收起按钮不能触发打开右侧面板的事件
+            if ($(e.target).hasClass('focus-customer') || $(e.target).hasClass('more-click') || $(e.target).hasClass('less-click')) {
                 return;
             }
             Trace.traceEvent($(ReactDOM.findDOMNode(_this)).find('.ant-table-tbody'), '打开客户详情');
