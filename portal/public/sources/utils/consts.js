@@ -15,6 +15,7 @@ export const userTypeList = [
     {name: Intl.get('user.online.free', '赠送用户'), value: 'special'},
     {name: Intl.get('user.online.train', '培训用户'), value: 'training'},
     {name: Intl.get('user.online.employee', '员工用户'), value: 'internal'},
+    {name: Intl.get('analysis.exclude.ip.staff', '排除配置ip和员工'), value: 'valid'},
 ];
 //用户类型常量(数据库中的值)
 export const USER_TYPE_VALUE_MAP = {

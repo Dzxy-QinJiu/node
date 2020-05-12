@@ -203,8 +203,14 @@ class RecentLoginUsers extends React.Component {
         if (this.state.lastUserId) {
             paramObj.id = this.state.lastUserId;
         }
-        if (this.state.user_type) {
-            paramObj.user_type = this.state.user_type;
+        let userType = this.state.user_type;
+        if (userType) {
+            if (userType === 'valid') { // 排除配置ip和员工所传字段
+                paramObj.active_type = userType;
+            } else { // 其他用户类型（试用、签约、赠送、培训、员工）
+                paramObj.user_type = userType;
+            }
+
         }
         //团队筛选的处理
         if (this.state.team_ids) {
@@ -720,7 +726,8 @@ class RecentLoginUsers extends React.Component {
                          * 用户类型筛选框
                          * */}
                         <div className="inline-block recent-login-type-select btn-item">
-                            <Select
+                            <SelectFullWidth
+                                minWidth={120}
                                 value={this.state.user_type}
                                 onChange={this.onUserTypeChange.bind(this)}
                             >
@@ -729,7 +736,7 @@ class RecentLoginUsers extends React.Component {
                                         return <Option key={idx} value={userType.value}>{userType.name}</Option>;
                                     })
                                 }
-                            </Select>
+                            </SelectFullWidth>
                         </div>
                         {/**
                          * 用户状态筛选框
