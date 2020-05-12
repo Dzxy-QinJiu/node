@@ -946,7 +946,7 @@ function socketEmitterListener() {
 function disconnectListener() {
     if (socketIo) {
         //取消监听
-        socketIo.off('curUpgradeTime', upgradeRefreshListener);
+        // socketIo.off('curUpgradeTime', upgradeRefreshListener);
         socketIo.off('offline', listenOnOffline);
         socketIo.off('sessionExpired', handleSessionExpired);
         socketIo.off('logoutAccount', handleLogout);
@@ -1000,7 +1000,7 @@ function startSocketIo() {
     //监听 connect
     socketIo.on('connect', function() {
         // 升级后，当前版本的时间监听
-        socketIo.on('curUpgradeTime', upgradeRefreshListener);
+        // socketIo.on('curUpgradeTime', upgradeRefreshListener);
         // 获取消息数后添加监听
         getMessageCount(unreadListener);
         //监听node端推送的登录踢出的信息
