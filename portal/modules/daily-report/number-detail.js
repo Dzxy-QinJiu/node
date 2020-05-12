@@ -9,14 +9,16 @@ import { secondsToHourMinuteSecond } from 'PUB_DIR/sources/utils/time-format-uti
 class NumberDetail extends React.Component {
     render() {
         const { numberDetail } = this.props;
+        const isCallDetail = /电话|通话/.test(numberDetail.name);
 
         return (
             <div className="number-detail">
                 {_.map(numberDetail.detail, item => (
                     <DetailCard
+                        contentNoPadding={isCallDetail}
                         content={(
                             <div>
-                                {/电话|通话/.test(numberDetail.name) ? (
+                                {isCallDetail ? (
                                     <div className="call-detail">
                                         <div className="call-time">
                                             {moment(item.call_date).format(oplateConsts.HOUR_MUNITE_FORMAT)}
