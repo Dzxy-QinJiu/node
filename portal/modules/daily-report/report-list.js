@@ -131,6 +131,7 @@ class ReportList extends React.Component {
                                 if (nickname) {
                                     column.isSetCsvValueBlank = true;
                                     column.align = 'left';
+                                    column.width = 200;
                                     delete column.render;
 
                                     columns.push(column);
