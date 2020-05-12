@@ -42,6 +42,9 @@ export function getCallRecordChart(paramObj = {}) {
         );
     }
 
+    //查询参数缓存
+    let queryCache = {};
+
     return {
         title,
         csvFileName,
@@ -62,6 +65,7 @@ export function getCallRecordChart(paramObj = {}) {
         },
         url: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
         ajaxInstanceFlag: 'getCallRecordStatistics',
+        argCallback: arg => { queryCache = arg.query; },
         processData: (data, chart, analysisInstance, chartIndex) => {
             _.set(chart, 'cardContainer.props.refreshData', refreshData.bind(null, analysisInstance, chartIndex));
 
@@ -104,8 +108,16 @@ export function getCallRecordChart(paramObj = {}) {
         //是否显示的是团队数据
         let isShowTeamData = paramObj.Store.teamMemberFilterType === 'team';
 
-        //只有一个团队时不显示的是团队数据
+        //只有一个团队时显示的不是团队数据，而是该团队下的成员的数据
         if (paramObj.Store.teamList.list.length === 1) {
+            isShowTeamData = false;
+        }
+
+        //查询的团队
+        const queryTeam = _.get(queryCache, 'team_ids');
+
+        //只查一个团队时显示的不是团队数据，而是该团队下的成员的数据
+        if (queryTeam && !_.includes(queryTeam, ',')) {
             isShowTeamData = false;
         }
 
