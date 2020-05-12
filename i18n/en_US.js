@@ -1934,6 +1934,8 @@ var en_US = {
     'crm.pool.need.to.head.': 'Need to head',//需负责人
     'crm.pool.extract.and.distribute': 'Extract and distribute',//提取并分配
     'crm.pool.sales.extract.exist.tip': 'I, as',//我作为
+    'crm.pool.release.rule.skip.holiday': 'Do you exclude holidays?',//是否排除节假日
+    'crm.pool.release.rule.form.skip.holiday': 'Exclusive holiday',//排除节假日
 
 
     'crm.customer.rule.name': 'Rules set',//规则设置
