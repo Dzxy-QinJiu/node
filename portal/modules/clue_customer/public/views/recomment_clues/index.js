@@ -1211,7 +1211,9 @@ class RecommendCluesList extends React.Component {
     //------ checkbox事件end ------//
 
     handleLinkLeads = () => {
-        history.push('/leads');
+        history.push('/leads', {
+            showWillTraceTab: true,//打开待跟进tab栏
+        });
     };
 
     //设置该条线索不能提取的样式

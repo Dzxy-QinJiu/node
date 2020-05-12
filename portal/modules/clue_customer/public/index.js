@@ -197,7 +197,12 @@ class ClueCustomer extends React.Component {
         //获取已提取线索量
         this.getRecommendClueCount();
         this.getSalesmanList();
-        this.getClueList();
+        //如果是从找线索跳转到该页面，需要打开待跟进tab
+        if(_.get(this.props, 'history.action') === 'PUSH' && _.get(this.props, 'location.state.showWillTraceTab')) {
+            this.handleChangeSelectedType(SELECT_TYPE.WILL_TRACE);
+        }else {
+            this.getClueList();
+        }
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         clueEmitter.on(clueEmitter.CHECKED_CLUE_LIST, this.updateCheckedClueList);
@@ -213,13 +218,6 @@ class ClueCustomer extends React.Component {
         //如果从url跳转到该页面，并且有add=true，则打开右侧面板
         if (query.add === 'true') {
             this.showAddForm();
-        }
-        //如果是进入线索推荐
-        if(_.get(this.props, 'history.action') === 'PUSH' && _.get(this.props, 'location.state.showRecommendCluePanel')) {
-            if(_.get(this.props, 'location.state.targetObj')) {
-                clueCustomerAction.saveSettingCustomerRecomment(_.get(this.props, 'location.state.targetObj', {}));
-            }
-            this.showClueRecommendTemplate({isGuideSetting: true});
         }
         this.setFilterInputWidth();
         //响应式布局时动态计算filterinput的宽度
