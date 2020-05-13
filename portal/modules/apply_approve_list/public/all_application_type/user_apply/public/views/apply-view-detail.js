@@ -21,7 +21,6 @@ const Option = Select.Option;
 import FieldMixin from 'CMP_DIR/antd-form-fieldmixin';
 import UserNameTextField from 'CMP_DIR/user_manage_components/user-name-textfield/apply-input-index';
 import UserNameTextfieldUtil from 'CMP_DIR/user_manage_components/user-name-textfield/util';
-import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 const FormItem = Form.Item;
 import classNames from 'classnames';
 import {hasPrivilege, PrivilegeChecker} from 'CMP_DIR/privilege/checker';
@@ -1048,7 +1047,7 @@ const COLUMN_WIDTH = {
             let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
             terminalsName = _.map(appTerminals, 'name');
         } else {
-            let appTerminals = approveAppConfigTerminal(terminals, appId, this.props.appList);
+            let appTerminals = approveAppConfigTerminal(appId, this.props.appList);
             terminalsName = _.map(appTerminals, 'name');
         }
         return terminalsName;
