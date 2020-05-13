@@ -386,7 +386,20 @@ class RegRulesView extends React.Component {
             </div>
         );
     };
-    renderEmailSendTo = () => {
+    renderEmailSendTo = (workflowFormEmailTo) => {
+        var {userList} = this.state;
+        return (
+            <span>
+                {_.map(workflowFormEmailTo,value => {
+                    var targetObj = _.find(userList, item => item.userId === value);
+                    if(targetObj){
+                        return <span>{_.get(targetObj,'nickName')}</span>;
+                    }else{
+                        return <span>{value}</span>;
+                    }
+                })}
+            </span>
+        );
 
     };
     renderApplyWorkFlowNode = (candidateRules, flowType) => {
