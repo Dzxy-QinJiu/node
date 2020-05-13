@@ -232,7 +232,7 @@ function getConfigJson(req) {
         '16112': {'httpCode': 500, 'message': backendIntl.get('errorcode.city.name.error', '城市名称错误')},
         '16113': {'httpCode': 500, 'message': backendIntl.get('errorcode.county.name.error', '区县名称错误')},
         '16114': {'httpCode': 500, 'message': backendIntl.get('errorcode.address.error', '地址格式错误')},
-        '16115': {'httpCode': 500, 'message': backendIntl.get('errorcode.province.code.error', '省份遍码错误')},
+        '16115': {'httpCode': 500, 'message': backendIntl.get('errorcode.province.code.error', '省份编码错误')},
         '16116': {'httpCode': 500, 'message': backendIntl.get('errorcode.city.code.error', '城市编码错误')},
         '16117': {'httpCode': 500, 'message': backendIntl.get('errorcode.county.code.error', '区县编码错误')},
 
@@ -387,7 +387,7 @@ function getConfigJson(req) {
         //获取即将到期的客户统计数据失败
         '17241': {'httpCode': 500, 'message': backendIntl.get('errorcode.164', '获取即将到期的客户统计数据失败')},
         //销售新开客户数
-        '17242': {'httpCode': 500, 'message': backendIntl.get('errorcode.151', '获取销售新开客户数和新开帐号数失败')},	
+        '17242': {'httpCode': 500, 'message': backendIntl.get('errorcode.151', '获取销售新开客户数和新开帐号数失败')},
         /*************************** 申请消息 *****************************/
         /*申请消息*/
         '18201': {'httpCode': 500, 'message': backendIntl.get('errorcode.124', '修改申请失败')},
@@ -421,7 +421,7 @@ function getConfigJson(req) {
         //用户不存在，业务端的登录接口报的错误
         '20009': {'httpCode': 500, 'message': backendIntl.get('errorcode.39', '用户名或密码错误')},
         '20010': {'httpCode': 500, 'message': backendIntl.get('errorcode.orgnization.unexist', '组织不存在')},
-        
+
         /*扫码登录*/
         '11058': {'httpCode': 500, 'message': ''},//请用APP扫描二维码的错误码，界面上不需要提示此错误
         '11059': {'httpCode': 500, 'message': backendIntl.get('errorcode.147', '二维码已失效')},

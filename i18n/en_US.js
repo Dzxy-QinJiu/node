@@ -2682,7 +2682,7 @@ var en_US = {
     'errorcode.industry.unexist': 'Industry does not exist',//行业不存在
     'errorcode.administrative.level.unexist': 'Administrative level does not exist',//行政级别不存在
     'errorcode.province.name.error': 'Wrong province name',//省份名称错误
-    'errorcode.province.code.error': 'Wrong province code',//省份遍码错误
+    'errorcode.province.code.error': 'Wrong province code',//省份编码错误
     'errorcode.city.name.error': 'Wrong city name',//城市名称错误
     'errorcode.city.code.error': 'Wrong city code',//城市编码错误
     'errorcode.county.name.error': 'Wrong county name',//区县名称错误
