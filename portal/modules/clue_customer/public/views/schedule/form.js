@@ -210,6 +210,7 @@ var CrmAlertForm = createReactClass({
         //         });
         //     });
         // } else {
+        delete submitObj.starttime;
         //单独添加一个联系计划
         ScheduleAction.addSchedule(submitObj, (resData) => {
             if (resData.id) {
@@ -361,7 +362,7 @@ var CrmAlertForm = createReactClass({
                 }
             });
         }
-        
+
         // if(this.props.isAddToDoClicked && !submitObj.customer_id){
         //     this.refs.validation.forceValidate(['customer']);
         //     return;
@@ -640,23 +641,23 @@ var CrmAlertForm = createReactClass({
                         //     </FormItem>
                         // ) : (
                         this.props.selectedCustomer ? null : (hasOverOneCustomer ?
-                                <FormItem
-                                    {...formItemLayout}
-                                    label={Intl.get('crm.alert.topic', '标题')}
-                                >
-                                    <Validator rules={[{required: true}]} trigger='onBlur'>
+                            <FormItem
+                                {...formItemLayout}
+                                label={Intl.get('crm.alert.topic', '标题')}
+                            >
+                                <Validator rules={[{required: true}]} trigger='onBlur'>
 
-                                        <Select onChange={this.handleTopicChange} value={formData.lead_id}>
-                                            {_.map(this.props.clueArr, (clueItem) => {
-                                                return (
-                                                    <Option value={clueItem.id}>{clueItem.name}</Option>
-                                                );
-                                            })}
-                                        </Select>
+                                    <Select onChange={this.handleTopicChange} value={formData.lead_id}>
+                                        {_.map(this.props.clueArr, (clueItem) => {
+                                            return (
+                                                <Option value={clueItem.id}>{clueItem.name}</Option>
+                                            );
+                                        })}
+                                    </Select>
 
-                                    </Validator>
-                                </FormItem>
-                                : null
+                                </Validator>
+                            </FormItem>
+                            : null
                         )
                         // )
                     }
