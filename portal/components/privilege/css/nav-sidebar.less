@@ -475,7 +475,7 @@
 }
 
 //左侧响应式导航 汉堡包按钮
-.logo-and-menus .hamburger {
+.navbar-collapse .hamburger {
     margin-top: 20px;
     display: none;
     &:hover {
@@ -593,6 +593,18 @@
             width: 48px;
             height: 48px;
             line-height: 46px;
+        }
+        .navbar-collapse {
+            float: left;
+            .hamburger {
+                margin-left: 12px;
+                margin-top: 13px;
+                .line {
+                    width: 32px;
+                    height: 4px;
+                    margin: 6px auto;
+                }
+            }
         }
         .sidebar-user{
             position: relative;

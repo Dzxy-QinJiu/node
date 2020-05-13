@@ -863,6 +863,20 @@ var NavSidebar = createReactClass({
                 <div className="header-logo" title={Intl.get('menu.home.page', '首页')}>
                     <NavLink to='/' className='iconfont icon-curtao-wihte-logo' />
                 </div>
+                <div className="collapse navbar-collapse">
+                    <Popover
+                        content={this.getNavbarLists()}
+                        trigger={trigger}
+                        placement="rightTop"
+                        overlayClassName="nav-sidebar-lists"
+                    >
+                        <div className="hamburger" id="hamburger">
+                            <span className="line"></span>
+                            <span className="line"></span>
+                            <span className="line"></span>
+                        </div>
+                    </Popover>
+                </div>
                 <div className="sidebar-user" ref={(element) => {
                     this.userInfo = element;
                 }}>
