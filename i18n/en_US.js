@@ -2679,7 +2679,7 @@ var en_US = {
     'errorcode.industry.unexist': 'Industry does not exist',//行业不存在
     'errorcode.administrative.level.unexist': 'Administrative level does not exist',//行政级别不存在
     'errorcode.province.name.error': 'Wrong province name',//省份名称错误
-    'errorcode.province.code.error': 'Wrong province code',//省份遍码错误
+    'errorcode.province.code.error': 'Wrong province code',//省份编码错误
     'errorcode.city.name.error': 'Wrong city name',//城市名称错误
     'errorcode.city.code.error': 'Wrong city code',//城市编码错误
     'errorcode.county.name.error': 'Wrong county name',//区县名称错误
@@ -3303,7 +3303,7 @@ var en_US = {
     'lead.recommend.form.hide.some.condition': 'Hide some condition',//收起部分条件
     'lead.associate.customer.detail': 'View associated customers',//查看关联客户
     'lead.info.website.info': 'Official website',//官网
-    
+
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
