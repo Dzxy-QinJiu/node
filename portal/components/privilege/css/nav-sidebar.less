@@ -95,6 +95,7 @@
 #menusLists{
   display: block;
 }
+// 高度缩放适配
 @media (max-height: 500px) {
   #hamburger{
     display: block;
@@ -103,8 +104,8 @@
     display: none;
   }
 }
-
-.navbar {
+// 导航左右布局时的样式
+.navbar.navbar-horizontal{
     position: fixed;
     margin: 0 -15px;
     top: 0;
@@ -114,6 +115,8 @@
     border-bottom-width: 0;
     border-radius: 0;
     border: none;
+}
+.navbar {
     background-color: @primary-color;
     .container,
     .container-fluid {
@@ -570,3 +573,40 @@
         display: none;
     }
 }
+
+// 宽度缩放适配
+@media (max-width: 600px) {
+    #hamburger{
+      display: block;
+    }
+    #menusLists{
+      display: none;
+    }
+    .navbar-vertical {
+        position: relative;
+        height: 48px;
+        min-height: 48px;
+        margin-bottom: 0;
+        border: none;
+        .header-logo {
+            float: left;
+            width: 48px;
+            height: 48px;
+            line-height: 46px;
+        }
+        .sidebar-user{
+            position: relative;
+            float: right;
+            width: auto;
+            .menu-item{
+                float: left;
+                margin-top: 15px;
+                margin-right: 8px;
+                &.sidebar-userinfo{
+                    margin-top: 12px;
+                }
+            }
+        }
+    }
+  }
+  

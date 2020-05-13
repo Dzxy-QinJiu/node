@@ -16,7 +16,7 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES, GIFT_LOGO,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {hasCalloutPrivilege, isCurtao, checkVersionAndType, 
-    isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay,isShowWinningClue, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
+    isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay, isShowWinningClue, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
 import {phoneEmitter, notificationEmitter, userInfoEmitter,
     phoneMsgEmitter, clickUpgradeNoiceEmitter, showWiningClueEmitter, leadRecommendEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
@@ -469,7 +469,7 @@ var NavSidebar = createReactClass({
         // let aCls = classNames({
         //     'acitve': this.props.isShowNotificationPanel,
         // });
-        let wrapCls = classNames('notification', {
+        let wrapCls = classNames('notification', 'menu-item', {
             'active': this.props.isShowNotificationPanel,
         });
         return (
@@ -499,7 +499,7 @@ var NavSidebar = createReactClass({
     },
     renderCustomerServiceBlock: function() {
         if(isCurtao()) {
-            let cls = classNames('customer-service-navicon', {
+            let cls = classNames('customer-service-navicon', 'menu-item', {
                 active: this.props.isShowCustomerService
             });
             return (
@@ -550,7 +550,7 @@ var NavSidebar = createReactClass({
             return null;
         }
         const currentPageCategory = this.getCurrentCategory();
-        let wrapperCls = classNames('sidebar-menu-li', {
+        let wrapperCls = classNames('sidebar-menu-li', 'menu-item', {
             'sidebar-backend-config': true,
             'active': !this.props.isShowCustomerService && !this.props.isShowNotificationPanel && currentPageCategory === 'settings',
             // 'reduce-nav-icon-li': this.state.isReduceNavIcon,
@@ -587,7 +587,7 @@ var NavSidebar = createReactClass({
             return;
         }
         const currentPageCategory = this.getCurrentCategory();
-        let userInfoCls = classNames('sidebar-userinfo', {
+        let userInfoCls = classNames('sidebar-userinfo', 'menu-item', {
             'active': currentPageCategory === 'user-preference' && !this.props.isShowNotificationPanel && !this.props.isShowCustomerService
         });
         let defaultUserImage = (<NavLink className='user-default-logo-wrap' to='/user-preference'><i className='iconfont icon-user-logo-default'/></NavLink>);
@@ -856,10 +856,38 @@ var NavSidebar = createReactClass({
         }
         return trigger;
     },
+
+    renderVerticalNav(navbarCls, trigger){
+        return (
+            <nav className={navbarCls} onClick={this.closeNotificationAndChatPanel}>
+                <div className="header-logo" title={Intl.get('menu.home.page', '首页')}>
+                    <NavLink to='/' className='iconfont icon-curtao-wihte-logo' />
+                </div>
+                <div className="sidebar-user" ref={(element) => {
+                    this.userInfo = element;
+                }}>
+                    <div className='menu-item' >
+                        {this.renderDailCallBlock()}
+                    </div>
+                    {this.renderCustomerServiceBlock()}
+                    {this.getNotificationBlock(trigger)}
+                    {this.renderBackendConfigBlock(trigger)}
+                    {this.getUserInfoBlock(trigger)}
+                </div>
+            </nav>);
+    },
+
     render: function() {
         const trigger = this.getTriggerType();
+        let navbarCls = classNames('navbar', {
+            'navbar-horizontal': !isResponsiveDisplay().isWebSmall,//web上正常展示时，导航和内容左右布局时的样式类
+            'navbar-vertical': isResponsiveDisplay().isWebSmall//缩小屏幕或手机上，导航和内容为上下布局时的样式类
+        });
+        if(isResponsiveDisplay().isWebSmall){
+            return this.renderVerticalNav(navbarCls, trigger);
+        }
         return (
-            <nav className="navbar" onClick={this.closeNotificationAndChatPanel}>
+            <nav className={navbarCls} onClick={this.closeNotificationAndChatPanel}>
                 <div className="container">
                     <div className="logo-and-menus" ref="logoAndMenus">
                         <div className="header-logo" title={Intl.get('menu.home.page', '首页')}>
