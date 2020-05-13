@@ -1,4 +1,5 @@
 @import "../../../../public/css/common-variables";
+@import "../../../../public/css/common-colors";
 .add-apply-approver-container.right-pannel-default{
   width: 480px!important;
   background-color:transparent!important;
@@ -20,6 +21,10 @@
           float: left;
         }
         .add-node-content{
+          .validate-err-msg{
+            color: @error-color;
+            margin-top: 5px;
+          }
           float: left;
           padding: 5px 0 0 0;
           color: @primary-font-color;

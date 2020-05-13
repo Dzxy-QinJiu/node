@@ -516,6 +516,9 @@ export const REG_FILES_SIZE_RULES = [
 export const XLS_FILES_TYPE_RULES = [
     {valueArr: ['xls'],messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'xls'})},
 ];
+export const XLSX_FILES_TYPE_RULES = [
+    {valueArr: ['xlsx'],messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'xlsx'})},
+];
 
 export const CSV_FILES_TYPE_RULES = [
     {valueArr: ['csv'],messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'csv'})},

@@ -58,6 +58,7 @@ class RegRulesView extends React.Component {
             teamList: this.props.teamList,//团队列表
             customerSaleResponsible: customerSaleResponsible, // 机会申请，审批通过后，默认作为负责人
             isChangeCustomerSale: false, // 机会申请，审批通过后,是否修改了负责人，默认false
+            workflowform_emailto: [],//配置在哪个节点上发送邮件
             ...ApplyApproveManageStore.getState()
         };
     }
@@ -234,6 +235,11 @@ class RegRulesView extends React.Component {
                                     id: item,
                                     name: elem[item]
                                 }));
+                            }else if(item === 'workflowFormEmailTo' && _.isArray(elem[item])){//发送邮件，在每个节点要配置的抄送人
+                                additonConditionArr.push(bpmnFactory.create('activiti:FormProperty', {
+                                    id: item,
+                                    name: elem[item].join(',')
+                                }));
                             }
                         });
                         bo.set('extensionElements', bpmnFactory.create('bpmn:ExtensionElements', {values: additonConditionArr}));
@@ -380,11 +386,15 @@ class RegRulesView extends React.Component {
             </div>
         );
     };
+    renderEmailSendTo = () => {
+
+    };
     renderApplyWorkFlowNode = (candidateRules, flowType) => {
         return (
             <div className="rule-content apply-node-lists">
                 {_.map(candidateRules, (item, index) => {
                     var showDeleteIcon = index === _.get(candidateRules, 'length') - 1;
+                    var workflowFormEmailTo = _.get(item,'workflowFormEmailTo',[]);
                     return (
                         <div className="item-node">
                             <div className="icon-container">
@@ -401,7 +411,13 @@ class RegRulesView extends React.Component {
                                     className="addition-text">{Intl.get('apply.add.approver.distribute', '指定下一审批人')}</span> : null}
                             {item.distributeSales + '' === 'true' || item.distributeSalesToVisit + '' === 'true' ? <span
                                 className="addition-text">{Intl.get('leave.apply.general.apply', '分配销售')}</span> : null}
-                            {item.releaseCustomerToTeamPool + '' === 'true' ? Intl.get('apply.approve.distribute.team', '分配团队') : null}
+                            {item.releaseCustomerToTeamPool + '' === 'true' ? <span
+                                className="addition-text">{Intl.get('apply.approve.distribute.team', '分配团队')}</span> : null}
+                            {_.get(workflowFormEmailTo,'[0]') ?
+                                <span className="addition-text">{Intl.get('apply.approved.receive.email', '接收邮件人员或邮箱')}：
+                                    {this.renderEmailSendTo(workflowFormEmailTo)}
+                                </span>
+                                : null}
                             <span className="connet-bar"></span>
                         </div>
                     );

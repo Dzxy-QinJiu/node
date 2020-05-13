@@ -3765,6 +3765,8 @@ var zh_CN = {
     'apply.approved.upload.template': '上传模板',
     'apply.approved.download.template': '下载模板',
     'apply.approved.data.service.template': '数据导出申请表-申请时间-xxx部门-联系人',
+    'apply.approved.receive.email': '接收邮件人员或邮箱',
+    'apply.approved.select.receive.email': '请选择接收邮件的成员或邮箱',
     /*自定义流程 end*/
     'app.user.manage.role.name': '角色名称',
     'app.user.manage.organaization.name': '所在单位或公司',

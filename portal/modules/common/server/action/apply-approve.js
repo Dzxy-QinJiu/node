@@ -214,6 +214,14 @@ exports.approveDocumentWriteApplyPassOrReject = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+exports.approveDataServiceApply = function(req, res) {
+    ApplyApproveService.approveDataServiceApply(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 
 exports.uploadReportSend = function(req, res) {
     var form = new multiparty.Form();
@@ -262,6 +270,12 @@ exports.downLoadReportSend = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+exports.downLoadDataServiceFile = function(req, res) {
+    ApplyApproveService.downLoadDataServiceFile(req, res).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 exports.deleteReportSend = function(req, res) {
     ApplyApproveService.deleteReportSend(req, res).on('success', function(data) {
         res.status(200).json(data);

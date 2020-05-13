@@ -132,6 +132,13 @@ module.exports = {
         passport: {
             needLogin: true
         },
+    }, {
+        method: 'post',
+        path: '/rest/dataservice/submitApply',
+        handler: 'approveDataServiceApply',
+        passport: {
+            needLogin: true
+        },
     },{
         method: 'post',
         path: '/rest/business_trip/submitApply',
@@ -157,6 +164,13 @@ module.exports = {
         method: 'get',
         path: '/rest/reportsend/download/:fileObj',
         handler: 'downLoadReportSend',
+        passport: {
+            'needLogin': true
+        }
+    }, {
+        method: 'get',
+        path: '/rest/dataservice/download/:fileObj',
+        handler: 'downLoadDataServiceFile',
         passport: {
             'needLogin': true
         }

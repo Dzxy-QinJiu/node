@@ -14,13 +14,14 @@ const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
-
 import Trace from 'LIB_DIR/trace';
-import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
+import {DELAY_TIME_RANGE,XLSX_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
+import {checkFileNameAllowRule} from 'PUB_DIR/sources/utils/common-method-util';
+var AlertTimer = require('CMP_DIR/alert-timer');
 class AddDataService extends React.Component {
     constructor(props) {
         super(props);
@@ -156,11 +157,31 @@ class AddDataService extends React.Component {
             this.props.form.validateFields(['customer'], {force: true});
         });
     };
+    checkFileNameRule = (filename) => {
+        var checkObj = checkFileNameAllowRule(filename,XLSX_FILES_TYPE_RULES);
+        if (checkObj.warningMsg){
+            this.setState({
+                warningMsg: checkObj.warningMsg
+            });
+        }
+        return checkObj.nameQualified;
+    };
+    checkFileType = (filename,fileSize) => {
+        if (!this.checkFileNameRule(filename)){
+            return false;
+        }
+        return true;
+    };
     beforeUpload = (file) => {
-        this.setState({
-            fileList: [file],
-        });
-        return false;
+        var fileName = file.name,fileSize = file.size;
+        if (this.checkFileType(fileName,fileSize)){
+            this.setState({
+                fileList: [file],
+            });
+            return true;
+        }else{
+            return false;
+        }
     };
     handleDeleteFile = (fileItem) => {
         this.setState({
@@ -170,11 +191,11 @@ class AddDataService extends React.Component {
     renderDeleteAndLoadingBtn = (fileItem) => {
         return (
             <span>
-              <Popconfirm placement="top" title={Intl.get('apply.approve.delete.this.file', '是否删除此文件')}
-                          onConfirm={this.handleDeleteFile.bind(this, fileItem)} okText={Intl.get('user.yes', '是')}
-                          cancelText={Intl.get('user.no', '否')}>
-                        <i className="iconfont icon-delete handle-btn-item"></i>
-                    </Popconfirm>
+                <Popconfirm placement="top" title={Intl.get('apply.approve.delete.this.file', '是否删除此文件')}
+                    onConfirm={this.handleDeleteFile.bind(this, fileItem)} okText={Intl.get('user.yes', '是')}
+                    cancelText={Intl.get('user.no', '否')}>
+                    <i className="iconfont icon-delete handle-btn-item"></i>
+                </Popconfirm>
             </span>
         );
 
@@ -185,9 +206,9 @@ class AddDataService extends React.Component {
             var fileName = fileItem.file_name || fileItem.name;
             return (
                 <div className="upload-file-name">
-                                <span className="file-name">
-                                    {fileName}
-                                </span>
+                    <span className="file-name">
+                        {fileName}
+                    </span>
                     {this.renderDeleteAndLoadingBtn(fileItem)}
                 </div>
             );
@@ -233,10 +254,15 @@ class AddDataService extends React.Component {
         };
         var formData = this.state.formData;
         let saveResult = this.state.saveResult;
+        var hide = () => {
+            this.setState({
+                warningMsg: ''
+            });
+        };
         return (
             <RightPanel showFlag={true} data-tracename="添加数据服务申请" className="add-data-service-apply-container">
                 <span className="iconfont icon-close add—leave-apply-close-btn" onClick={this.hideApplyAddForm}
-                      data-tracename="关闭添加数据服务申请面板"></span>
+                    data-tracename="关闭添加数据服务申请面板"></span>
                 <div className="add-leave-apply-wrap">
                     <BasicData
                         clueTypeTitle={Intl.get('apply.eefung.data.service', '数据服务申请')}
@@ -277,15 +303,24 @@ class AddDataService extends React.Component {
                                         )}
                                     </FormItem>
                                     {_.get(this.state.fileList,'[0]') ? this.renderFileList() : this.renderUploadAndDownLoad()}
+                                    {this.state.warningMsg ?
+                                        <div className='alert-wrap'>
+                                            <AlertTimer time={4000}
+                                                message={this.state.warningMsg}
+                                                type="error"
+                                                showIcon
+                                                onHide={hide}/>
+                                        </div>
+                                        : null}
                                     <div className="submit-button-container" >
                                         <SaveCancelButton loading={this.state.isSaving}
-                                                          saveErrorMsg={this.state.saveMsg}
-                                                          saveSuccessMsg={this.state.saveMsg}
-                                                          handleSubmit={this.handleSubmit}
-                                                          handleCancel={this.hideApplyAddForm}
-                                                          hideSaveTooltip={this.hideSaveTooltip}
-                                                          saveResult={saveResult}
-                                                          errorShowTime={DELAY_TIME_RANGE.ERROR_RANGE}
+                                            saveErrorMsg={this.state.saveMsg}
+                                            saveSuccessMsg={this.state.saveMsg}
+                                            handleSubmit={this.handleSubmit}
+                                            handleCancel={this.hideApplyAddForm}
+                                            hideSaveTooltip={this.hideSaveTooltip}
+                                            saveResult={saveResult}
+                                            errorShowTime={DELAY_TIME_RANGE.ERROR_RANGE}
                                         />
                                     </div>
                                 </Form>
