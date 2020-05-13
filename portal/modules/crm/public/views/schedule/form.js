@@ -188,7 +188,6 @@ var CrmAlertForm = createReactClass({
             this.refs.validation.forceValidate(['starttime']);
         });
         Trace.traceEvent(ReactDOM.findDOMNode(this), '修改开始时间');
-
     },
 
     //更改结束时间
@@ -210,6 +209,7 @@ var CrmAlertForm = createReactClass({
 
     //添加联系计划
     addSchedule: function(submitObj) {
+        delete submitObj.starttime;
         //如果是批量添加联系计划的情况,要跟据联系人逐个添加
         var selectedCustomer = this.props.selectedCustomer;
         if (_.isArray(selectedCustomer)) {
