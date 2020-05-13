@@ -68,14 +68,14 @@ const UserAppTerminalCheckboxField = {
                         value={currentValue}
                         options={options}
                     />
+                    {
+                        _.isEmpty(currentValue) ? (
+                            <div className="no-select-terminals-tips">
+                                {Intl.get('user.app.no.select.terminals.tip', '请至少选择一个多终端')}
+                            </div>
+                        ) : null
+                    }
                 </FormItem>
-                {
-                   _.isEmpty(currentValue) ? (
-                        <div className="no-select-terminals-tips">
-                            请至少选择一个多终端
-                        </div>
-                    ) : null
-                }
             </div>
         );
     }

@@ -48,7 +48,8 @@ import UserNameTextFieldUtil from 'CMP_DIR/user_manage_components/user-name-text
 import AppUserAjax from '../../ajax/app-user-ajax';
 import AppUserStore from '../../store/app-user-store';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
-import { userDetailEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { userDetailEmitter, noSelectedAppTerminalEmitter } from 'PUB_DIR/sources/utils/emitters';
+
 require('../../css/add-user.less');
 //动态添加的样式
 var dynamicStyle;
@@ -97,6 +98,8 @@ const AddOrEditUser = createReactClass({
     componentDidMount() {
         AppUserFormStore.listen(this.onStoreChange);
         $(window).on('resize', this.onStoreChange);
+        // 没有选择应用的多终端信息
+        noSelectedAppTerminalEmitter.on(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, this.getNoSelectedAppTerminals);
         AppUserFormActions.getCurrentRealmApps();
         var $textarea = $(this.refs.descriptionBlock).find('textarea');
         autosize($textarea[0]);
@@ -105,9 +108,18 @@ const AddOrEditUser = createReactClass({
     componentWillUnmount() {
         AppUserFormStore.unlisten(this.onStoreChange);
         $(window).off('resize', this.onStoreChange);
+        noSelectedAppTerminalEmitter.removeListener(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, this.getNoSelectedAppTerminals);
         dynamicStyle && dynamicStyle.destroy();
         dynamicStyle = null;
         tempSuggestNames = [];
+    },
+
+    getNoSelectedAppTerminals(flag = false) {
+        setTimeout( () => {
+            this.setState({
+                disabled: flag
+            });
+        } );
     },
 
     //是否只能添加一个用户的判断
@@ -971,20 +983,13 @@ const AddOrEditUser = createReactClass({
                             <CarouselItem>
                                 {this.renderRolesCarousel()}
                             </CarouselItem>
-                            {
-                                this.state.selectRealmId ? (
-                                    <CarouselItem>
-                                        {this.renderSelectRealm()}
-                                    </CarouselItem>
-                                ) : null
-                            }
-
                         </Carousel>
                         <OperationStepsFooter
                             currentStep={this.state.step}
                             totalStep={this.state.selectRealmId ? 4 : 3}
                             onStepChange={this.turnStep}
                             onFinish={this.onStepFinish}
+                            disabled={this.state.disabled}
                         >
                             <span
                                 className="operator_person">{Intl.get('user.operator', '操作人')}:{this.state.operator}</span>

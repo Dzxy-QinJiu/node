@@ -200,6 +200,7 @@ const COLUMN_WIDTH = {
             updateDelayTime: '',//修改后的到期时间
             isHomeMyWork: this.props.isHomeMyWork,
             isShowNoSelectAppTerminalsTips: false, //  是否显示没有选择多终端信息的提示
+            isShowTipsClickPass: false, // 点击通过时，是否显示提示信息
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -361,7 +362,9 @@ const COLUMN_WIDTH = {
             });
         }
         this.setState({
-            isHomeMyWork: nextProps.isHomeMyWork
+            isHomeMyWork: nextProps.isHomeMyWork,
+            isShowNoSelectAppTerminalsTips: false,
+            isShowTipsClickPass: false
         });
     },
 
@@ -1214,7 +1217,9 @@ const COLUMN_WIDTH = {
                 <span>{text}</span>
                 {
                     !_.isEmpty(appDefaultTerminals) && this.state.isShowNoSelectAppTerminalsTips ? (
-                        <span className="no-select-terminals-tips">(请至少选择一个多终端)</span>
+                        <span className="no-select-terminals-tips">
+                            ({Intl.get('user.app.no.select.terminals.tip', '请至少选择一个多终端')})
+                        </span>
                     ) : null
                 }
                 {

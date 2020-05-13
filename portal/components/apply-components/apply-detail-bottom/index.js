@@ -16,7 +16,9 @@ class ApplyDetailBottom extends React.Component {
         const passBtn = assigenedContext ? assigenedContext : (
             <span>
                 {this.props.isShowTipsClickPass ? (
-                    <span className="no-select-terminals-tips">请至少选择一个多终端</span>
+                    <span className="no-select-terminals-tips">
+                         {Intl.get('user.app.no.select.terminals.tip', '请至少选择一个多终端')}
+                    </span>
                 ) : null}
                 <Button
                     className="agree-btn btn-primary-sure"

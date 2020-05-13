@@ -863,6 +863,7 @@ var en_US = {
     'user.third.thirdapp.consts.tencent': 'Tencent Weibo',//腾讯微博',
     'user.permission.show': 'spread particular permission', //'展开具体权限',
     'user.permission.hide': 'collapse particular permission', //'收起具体权限',
+    'user.app.no.select.terminals.tip': 'Please select at least one terminal of the app', // 请至少选择一个多终端
     /*用户管理模块-end*/
     'my.app.no.app': 'no apps', // 暂无应用
     'my.app.change.expire.time.placeholder': 'please select expire time', // 请选择到期时间
