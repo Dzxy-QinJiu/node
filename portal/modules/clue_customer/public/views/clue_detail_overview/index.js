@@ -740,7 +740,7 @@ class ClueDetailOverview extends React.Component {
             phoneNumber={item}
             showPhoneNum={getShowPhoneNumber(curClue, addHyphenToPhoneNumber(item))}
             showPhoneIcon={true}
-            showCheckPhone
+            showCheckPhone={false}
             onCheckPhoneSuccess={this.onCheckPhoneSuccess}
             hidePhoneIcon={!hasPrivilege}
             type='lead'

@@ -1806,7 +1806,7 @@ class ClueCustomer extends React.Component {
                         isHideContactName={true}
                         contacts={handledContactObj.contact}
                         customerData={salesClueItem}
-                        showCheckPhone
+                        showCheckPhone={false}
                         showContactLabel={false}
                         hasMoreIcon={hasMoreIconPrivilege}
                         showClueDetailPanel={this.showClueDetailPanel.bind(this, salesClueItem)}
@@ -3360,8 +3360,10 @@ class ClueCustomer extends React.Component {
         );
     };
     renderCheckPhoneBtn = () => {
+        //todo 暂时去掉空号检测的功能
+        return null;
         //选中全部后，不展示检测空号按钮
-        if(this.state.selectAllMatched && this.state.selectedClues.length > 1) {
+        /*if(this.state.selectAllMatched && this.state.selectedClues.length > 1) {
             return null;
         }
         if(hasCheckPhoneStatusPrivilege(this.getFilterStatus())) {
@@ -3399,7 +3401,7 @@ class ClueCustomer extends React.Component {
                 );
             }
 
-        }else { return null; }
+        }else { return null; }*/
     };
     isShowCheckPhonePopover(checkPhones) {
         let isShowPopover = false;
