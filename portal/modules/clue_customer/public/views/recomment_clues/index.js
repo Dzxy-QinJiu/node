@@ -1247,8 +1247,8 @@ class RecommendCluesList extends React.Component {
     //处理标签根据热门中的feature字段进行高亮处理
     handleTagHighLightText(text) {
         let {key, value} = this.getAdvanceItem();
-        let feature = _.find(ADVANCED_OPTIONS, item => item.value === this.state.feature);
         if(key === 'feature' && value !== EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER) {
+            let feature = _.find(ADVANCED_OPTIONS, item => item.value === this.state.feature);
             let char = new RegExp(feature.name, 'g');
             text = text.replace(char, `<em class="text-highlight">${feature.name}</em>`);
         }
