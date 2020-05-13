@@ -371,12 +371,13 @@ body.macintosh pre {
 // 手机端样式设置
 @media screen and (max-width: 600px) {
     .nav-bar-wrap {
-        float: left;
+        position: fixed;
+        bottom: 0;
         height: 48px;
         padding: 0;
         z-index: 12;
     }
-    .content-wrap{
-        float: left;
+    .content-wrap {
+        padding: 0 0 48px 0;
     }
 }

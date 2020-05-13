@@ -723,7 +723,13 @@ var NavSidebar = createReactClass({
     //生成主菜单
     generateMenu: function() {
         const currentPageCategory = this.getCurrentCategory();
-        return this.state.menus.map((menu, i) => {
+        let menus = this.state.menus;
+        // 屏幕缩小到一定宽度，只展示找线索、线索列表、客户列表
+        const PHONE_SHOW_MENU_IDS = ['clues_recommend', 'clue_customer', 'crm'];
+        if(isResponsiveDisplay().isWebSmall){
+            menus = _.filter(menus, item => _.indexOf(PHONE_SHOW_MENU_IDS, item.id) !== -1);
+        }
+        return menus.map((menu, i) => {
             let category = menu.routePath.replace(/\//, '');
             //是否添加选中的菜单样式类
             const addActive = currentPageCategory === category && !this.props.isShowCustomerService && !this.props.isShowNotificationPanel;
@@ -860,34 +866,11 @@ var NavSidebar = createReactClass({
     renderVerticalNav(navbarCls, trigger){
         return (
             <nav className={navbarCls} onClick={this.closeNotificationAndChatPanel}>
-                <div className="header-logo" title={Intl.get('menu.home.page', '首页')}>
-                    <NavLink to='/' className='iconfont icon-curtao-wihte-logo' />
-                </div>
-                <div className="collapse navbar-collapse">
-                    <Popover
-                        content={this.getNavbarLists()}
-                        trigger={trigger}
-                        placement="rightTop"
-                        overlayClassName="nav-sidebar-lists"
-                    >
-                        <div className="hamburger" id="hamburger">
-                            <span className="line"></span>
-                            <span className="line"></span>
-                            <span className="line"></span>
-                        </div>
-                    </Popover>
-                </div>
-                <div className="sidebar-user" ref={(element) => {
-                    this.userInfo = element;
-                }}>
-                    <div className='menu-item' >
-                        {this.renderDailCallBlock()}
-                    </div>
-                    {this.renderCustomerServiceBlock()}
-                    {this.getNotificationBlock(trigger)}
-                    {this.renderBackendConfigBlock(trigger)}
-                    {this.getUserInfoBlock(trigger)}
-                </div>
+                <ul className="nav navbar-nav" id="menusLists">
+                    {
+                        this.generateMenu()
+                    }
+                </ul>
             </nav>);
     },
 
