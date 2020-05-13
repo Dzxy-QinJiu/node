@@ -2720,7 +2720,7 @@ var zh_CN = {
     'errorcode.industry.unexist': '行业不存在',
     'errorcode.administrative.level.unexist': '行政级别不存在',
     'errorcode.province.name.error': '省份名称错误',
-    'errorcode.province.code.error': '省份遍码错误',
+    'errorcode.province.code.error': '省份编码错误',
     'errorcode.city.name.error': '城市名称错误',
     'errorcode.city.code.error': '城市编码错误',
     'errorcode.county.name.error': '区县名称错误',
