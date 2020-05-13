@@ -5,6 +5,8 @@ import {Form,Checkbox } from 'antd';
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 import { isModifyAppConfig } from 'PUB_DIR/sources/utils/common-method-util';
+import {noSelectedAppTerminalEmitter} from 'PUB_DIR/sources/utils/emitters';
+require('./index.less');
 
 const UserAppTerminalCheckboxField = {
     renderUserAppTerminalCheckboxBlock(config) {
@@ -48,6 +50,12 @@ const UserAppTerminalCheckboxField = {
             currentValue = _.map(this.state.formData.terminals, 'value');
         }
 
+        if ( _.isEmpty(currentValue)) {
+            noSelectedAppTerminalEmitter.emit(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, true)
+        } else {
+            noSelectedAppTerminalEmitter.emit(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, false)
+        }
+
         return (
             <div className="user-app-terminals-checkbox-block">
                 <FormItem
@@ -61,6 +69,13 @@ const UserAppTerminalCheckboxField = {
                         options={options}
                     />
                 </FormItem>
+                {
+                   _.isEmpty(currentValue) ? (
+                        <div className="no-select-terminals-tips">
+                            请至少选择一个多终端
+                        </div>
+                    ) : null
+                }
             </div>
         );
     }

@@ -324,3 +324,8 @@ export { customerServiceEmitter };
 const dailyReportEmitter = new EventEmitter();
 dailyReportEmitter.CHANGE_STATUS = 'change_daily_report_status'; // 修改日报启停状态
 export { dailyReportEmitter };
+
+// 没有选择多终端信息
+const noSelectedAppTerminalEmitter = new EventEmitter();
+noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL = 'no_selected_app_terminal'; // 修改应用配置
+export { noSelectedAppTerminalEmitter };
