@@ -55,6 +55,7 @@ const { getWebsiteConfig, getLocalWebsiteConfig } = require('LIB_DIR/utils/websi
 //缓存在sessionStorage中的我能查看的团队
 const MY_TEAM_TREE_KEY = 'my_team_tree';
 import {setUserData} from '../user-data';
+import { LAYOUT } from 'LIB_DIR/consts';
 
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -960,11 +961,16 @@ exports.getTableContainerHeight = function() {
         PADDING_BOTTOM: 20,//底部间距
         SUMMARY: 30//总数统计的高度
     };
-    return $(window).height() -
+    let tableHeight = $(window).height() -
         LAYOUT_CONSTANTS.TOP_HANDLE_HEIGHT -
         LAYOUT_CONSTANTS.FIXED_THEAD -
         LAYOUT_CONSTANTS.PADDING_BOTTOM -
         LAYOUT_CONSTANTS.SUMMARY;
+    // 移动端，减去底部二级导航的高度
+    if (isResponsiveDisplay().isWebSmall) {
+        tableHeight -= LAYOUT.BOTTOM_NAV;
+    }
+    return tableHeight;
 };
 function isSalesRole() {
     return userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SECRETARY) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER);
@@ -1176,14 +1182,15 @@ exports.isFormalUser = () => {
 };
 
 //判断当前页面是否处于手机端或pad端的断点，用于响应式布局的展示
-exports.isResponsiveDisplay = () => {
+function isResponsiveDisplay() {
     let responsive = {};
     responsive.isWebMiddle = $(window).width() < RESPONSIVE_LAYOUT.MIDDLE_WIDTH;//浏览器是否处于pad端断点位置
     responsive.isWebMin = $(window).width() < RESPONSIVE_LAYOUT.MIN_WIDTH;//浏览器是否处于手机端断点位置
     responsive.isWebSmall = $(window).width() <= RESPONSIVE_LAYOUT.SMALL_WIDTH;//浏览器是否处于左右布局的最小宽度
     return responsive;
 
-};
+}
+exports.isResponsiveDisplay = isResponsiveDisplay;
 //处理历史申请记录的数据
 exports.handleHistoricalList = function(lists) {
     return _.filter(lists, item => {

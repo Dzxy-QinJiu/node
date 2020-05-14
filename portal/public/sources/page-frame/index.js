@@ -505,9 +505,11 @@ class PageFrame extends React.Component {
                         closeAudioPanel={this.closeAudioPanel}
                     />
                 ) : null}
-                <LeftPanel isShow={this.state.isShowLeftPanel} openNavigationIs={this.state.openNavigationIs} handleHideLeftPanel={this.handleTriggerLeftPanel.bind(this, false)}>
-                    {isCurtao() ? <CustomerIndex /> : null}
-                </LeftPanel>
+                {this.state.isShowLeftPanel ? (
+                    <LeftPanel isShow={this.state.isShowLeftPanel} openNavigationIs={this.state.openNavigationIs} handleHideLeftPanel={this.handleTriggerLeftPanel.bind(this, false)}>
+                        {isCurtao() ? <CustomerIndex /> : null}
+                    </LeftPanel>
+                ) : null}
             </div>
         );
     }

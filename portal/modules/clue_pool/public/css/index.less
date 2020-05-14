@@ -16,6 +16,8 @@
   background-color: #fff;
   display: block;
   .extract-clue-panel {
+    height: 100%;
+    background-color: #fff;
     .extract-clue-top-nav-wrap {
       .clue-list-selected-tip {
         font-size: 16px;
@@ -447,5 +449,13 @@
     .clue-right-panel-addbtn:hover {
       background-color: #B9DBEA;
     }
+  }
+}
+// 移动端样式适配
+@media screen and (max-width: 600px) {
+  .extract-clue-panel.right-pannel-default{
+    left: 0;
+    padding-bottom: 48px;
+    background-color: transparent;
   }
 }

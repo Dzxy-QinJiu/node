@@ -54,7 +54,7 @@ import {
 import history from 'PUB_DIR/sources/history';
 import React from 'react';
 import {addOrEditSettingCustomerRecomment} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
-
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 
 const LAYOUT_CONSTANCE = {
     FILTER_WIDTH: 396,
@@ -117,7 +117,7 @@ class RecommendCluesList extends React.Component {
         message.config({
             top: 10
         });
-        $('#app .row > .col-xs-10').addClass('recommend-clues-page-container');
+        $('#app .row > .main-content-wrap').addClass('recommend-clues-page-container');
     }
 
     componentWillUnmount() {
@@ -129,7 +129,7 @@ class RecommendCluesList extends React.Component {
         message.config({
             top: 400
         });
-        $('#app .row > .col-xs-10').removeClass('recommend-clues-page-container');
+        $('#app .row > .main-content-wrap').removeClass('recommend-clues-page-container');
     }
 
     batchExtractCluesLists = (taskInfo, taskParams) => {
@@ -1488,7 +1488,7 @@ class RecommendCluesList extends React.Component {
     }
 
     render() {
-        let divHeight = $(window).height();
+        let divHeight = this.props.adaptiveHeight;
 
         let {isWebMin} = isResponsiveDisplay();
         let contentEl = $('.recommend-clue-content');
@@ -1549,4 +1549,4 @@ RecommendCluesList.propTypes = {
     clearGuideRecomentCondition: PropTypes.func
 };
 
-export default RecommendCluesList;
+export default adaptiveHeightHoc(RecommendCluesList);
