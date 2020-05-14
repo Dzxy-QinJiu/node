@@ -1,4 +1,6 @@
 @import "../../../public/css/common-variables";
+@import "../../../public/css/common-colors";
+
 .approval_block {
   height: 48px;
   overflow: hidden;
@@ -14,6 +16,9 @@
   }
   .pass-and-reject-wrap{
     display: inline;
+    .no-select-terminals-tips {
+      color: @error-color;
+    }
   }
   button.ant-btn-sm{
     margin-left: 10px;

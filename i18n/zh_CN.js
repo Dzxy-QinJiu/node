@@ -865,6 +865,7 @@ var zh_CN = {
     'user.position.number.tips': '请输入座席号',
     'user.position.select.user': '请选择用户',
     'team.position.select.team': '请选择团队',
+    'user.app.no.select.terminals.tip': '请至少选择一个多终端',
     /*用户管理模块-end*/
     'my.app.no.app': '暂无应用',
     'my.app.change.expire.time.placeholder': '请选择到期时间',
