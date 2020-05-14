@@ -599,6 +599,7 @@ class CRMAddForm extends React.Component {
                                         <ContactForm
                                             uid={'contact' + contact.uid}
                                             isContactWayExpanded={isContactWayExpanded}
+                                            notShowFormItems={this.props.notShowFormItems}
                                             wrappedComponentRef={ref => this[`form${contact.uid}Ref`] = ref}
                                             contact={{contact}}
                                             height='auto'
@@ -664,6 +665,8 @@ CRMAddForm.defaultProps = {
     isAssociateClue: false,
     //联系方式是否展示其余项不折叠
     isContactWayExpanded: false,
+    //不显示的formItem数组，如['remark', 'sex', 'birthday']
+    notShowFormItems: [],
     formData: {},
     isShowMadal: true,
     //添加完成后是否关闭面板
@@ -683,6 +686,7 @@ CRMAddForm.propTypes = {
     isAssociateClue: PropTypes.bool,
     //联系方式是否展示其余项不折叠
     isContactWayExpanded: PropTypes.bool,
+    notShowFormItems: PropTypes.array,
     formData: PropTypes.object,
     isShowMadal: PropTypes.bool,
     isConvert: PropTypes.bool,
