@@ -648,8 +648,11 @@ class ApplyApproveList extends React.Component {
         setTimeout(() => this.fetchApplyList());
     };
     handleChangeSelectedApplyType = (value) => {
-        UserApplyActions.changeApplyType(value);
-        setTimeout(() => this.fetchApplyList());
+        // TreeSelect 组件上有bug，再次筛选同一个内容时，会出现undefined 的情况，所以需要加个判断处理一下
+        if (value) {
+            UserApplyActions.changeApplyType(value);
+            setTimeout(() => this.fetchApplyList());
+        }
     };
     //渲染筛选的界面
     renderFilterPanel = () => {
@@ -698,7 +701,6 @@ class ApplyApproveList extends React.Component {
                 allTypeList.push(selectItem);
             }
         });
-
         return (
             <div className="apply-type-filter btn-item" id="apply-type-container">
                 {
