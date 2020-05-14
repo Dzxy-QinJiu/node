@@ -3710,6 +3710,7 @@ var en_US = {
     'apply.my.self.setting.work.flow': 'Visit apply',//拜访申请
     'apply.domain.application.work.flow': 'Domain name application',//舆情平台申请
     'apply.leave.while.application.work.flow': 'Out of office application',//外出申请
+    'apply.eefung.data.service': 'Data Service Application',//数据服务申请
     'apply.went.out.while.range': 'Time out',//外出时长
     'apply.domain.descriptipn.reg': 'The domain name description can only contain letters, numbers, underscores (cannot begin or end with a dash), and is between 1 and 32 in length.',//域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间
     'apply.domain.plat.name.reg': 'Platform name length is between 1 and 32 characters (English characters count as one character, and other characters count as 2 characters)',//平台名称长度在1到32个字符之间(英文数字算一个字符，其他字符一个算2个字符)
@@ -3735,6 +3736,15 @@ var en_US = {
     'apply.approved.title': 'Upon approval', // 审批通过后
     'apply.approved.sales.assigned': 'The assigned sales person is in charge', // 分配的销售作为负责人
     'apply.approved.sales.assigned.follow': 'The distribution of sales as the person in charge, at the same time the original person in charge into the joint follow-up.', // 分配的销售作为负责人，同时原负责人变为联合跟进人
+    'apply.approved.annex.list': 'Attachment',//附件
+    'apply.approved.upload.annex.list': 'Upload Attachment',//上传附件
+    'apply.approved.upload.annex.list.first': 'Please upload the attachment first',//请先上传附件
+    'apply.approved.upload.template': 'Upload template',//上传模板
+    'apply.approved.download.template': 'Download template',//下载模板
+    'apply.approved.data.service.template': 'Data export application form-application time-xxx department-contact person',//数据导出申请表-申请时间-xxx部门-联系人
+    'apply.approved.receive.email': 'Mail recipient or mailbox',//接收邮件人员或邮箱
+    'apply.approved.select.receive.email': 'Please select a member or mailbox to receive mail',//请选择接收邮件的成员或邮箱
+
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
