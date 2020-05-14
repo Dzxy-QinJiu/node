@@ -311,17 +311,17 @@ class ApplyApproveList extends React.Component {
                         this.fetchApplyList();
                     });
                 }else{
-                    this.clearDataBeforeGetApplyList();
+                    this.clearDataBeforeGetApplyList(true);
                 }
             });
         }
     };
     //在获取数据前先把之前的数据置空一下
-    clearDataBeforeGetApplyList = () => {
+    clearDataBeforeGetApplyList = (flag) => {
         this.setState({
             showRefreshTip: false
         });
-        UserApplyActions.resetState();
+        UserApplyActions.resetState(flag);
         setTimeout(() => {
             this.fetchApplyList();
         });
