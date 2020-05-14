@@ -19,7 +19,7 @@ function UserApplyStore() {
 }
 
 //初始化数据
-UserApplyStore.prototype.resetState = function() {
+UserApplyStore.prototype.resetState = function(flag) {
     //申请列表
     this.applyListObj = {
         // "" loading error
@@ -44,7 +44,7 @@ UserApplyStore.prototype.resetState = function() {
     //筛选状态 all(全部) pass(已通过) reject(已驳回)  ongoing(待审批)
     this.selectedApplyStatus = ALL;
     //筛选审批类型
-    this.selectedApplyType = isCommonSalesOrPersonnalVersion() ? ALL : INNER_SETTING_FLOW.NEWUSERAPPLY;
+    this.selectedApplyType = flag || isCommonSalesOrPersonnalVersion() ? ALL : INNER_SETTING_FLOW.NEWUSERAPPLY;
     this.firstLogin = true;//用来记录是否是首次加载
     //是否显示更新数据提示
     this.showUpdateTip = false;
@@ -200,6 +200,9 @@ UserApplyStore.prototype.handleApplyLists = function(obj,flag){
             }
 
         } else if (!this.lastApplyId) {//获取第一页就没有数据时
+            if(flag){
+                this.firstLogin = false;
+            }
             this.clearData();
             //获取的未读回复列表为空时，清除sessionStore中存的未读回复的申请
             if (this.isCheckUnreadApplyList) {
