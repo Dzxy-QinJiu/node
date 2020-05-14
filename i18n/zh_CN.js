@@ -3762,6 +3762,7 @@ var zh_CN = {
     'apply.approved.sales.assigned.follow': '分配的销售作为负责人，同时原负责人变为联合跟进人',
     'apply.approved.annex.list': '附件',
     'apply.approved.upload.annex.list': '上传附件',
+    'apply.approved.upload.annex.list.first': '请先上传附件',
     'apply.approved.upload.template': '上传模板',
     'apply.approved.download.template': '下载模板',
     'apply.approved.data.service.template': '数据导出申请表-申请时间-xxx部门-联系人',

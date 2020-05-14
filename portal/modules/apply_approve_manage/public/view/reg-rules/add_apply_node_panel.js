@@ -212,7 +212,7 @@ class AddApplyNodePanel extends React.Component {
                     emailValidateErrMsg = Intl.get('common.correct.email', '请输入正确的邮箱');
                 }
             }else{
-                workflowFormEmailToList.push(value);
+                workflowFormEmailToList.push(_.get(targetObj,'email'));
             }
 
         });
@@ -362,6 +362,16 @@ class AddApplyNodePanel extends React.Component {
             //邮件是否抄送给对应的人
             if(this.state.workflowFormEmailTo && _.get(this.state.workflowFormEmailToList,'[0]')){
                 submitObj.workflowFormEmailTo = this.state.workflowFormEmailToList;//邮件所抄送给人的列表
+                var workflowFormEmailToName = [];
+                _.forEach(this.state.workflowFormEmailToList,value => {
+                    var targetObj = _.find(this.state.userList, item => item.userId === value);
+                    if(targetObj){
+                        workflowFormEmailToName.push(_.get(targetObj,'nickName'));
+                    }else{
+                        workflowFormEmailToName.push(value);
+                    }
+                });
+                submitObj.workflowFormEmailToName = workflowFormEmailToName;
             }
             this.props.saveAddApproveNode(submitObj);
             this.props.hideRightPanel();

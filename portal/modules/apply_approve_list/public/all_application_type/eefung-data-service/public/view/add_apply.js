@@ -15,12 +15,12 @@ const FORMLAYOUT = {
 };
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import Trace from 'LIB_DIR/trace';
-import {DELAY_TIME_RANGE,XLSX_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+import {DELAY_TIME_RANGE, FILES_TYPE_FORBIDDEN_RULES, XLSX_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
-import {checkFileNameAllowRule} from 'PUB_DIR/sources/utils/common-method-util';
+import {checkFileNameAllowRule, checkFileNameForbidRule} from 'PUB_DIR/sources/utils/common-method-util';
 var AlertTimer = require('CMP_DIR/alert-timer');
 class AddDataService extends React.Component {
     constructor(props) {
@@ -72,9 +72,16 @@ class AddDataService extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             var customer_id = _.get(this.state.formData,'customer.id');
             var fileList = this.state.fileList;
-            if(!customer_id || !_.get(fileList,'[0]')){
+            if(!customer_id){
                 return;
             }
+            if(!_.get(fileList,'[0]')){
+                this.setState({
+                    warningMsg: Intl.get('apply.approved.upload.annex.list.first', '请先上传附件')
+                });
+                return;
+            }
+
             const formData = new FormData();
             //是否有上传过文件
             formData.append('files', _.get(fileList,'[0]'));
@@ -158,13 +165,19 @@ class AddDataService extends React.Component {
         });
     };
     checkFileNameRule = (filename) => {
-        var checkObj = checkFileNameAllowRule(filename,XLSX_FILES_TYPE_RULES);
-        if (checkObj.warningMsg){
+        var checkForbidObj = checkFileNameForbidRule(filename, FILES_TYPE_FORBIDDEN_RULES);
+        var checkAllowObj = checkFileNameAllowRule(filename,XLSX_FILES_TYPE_RULES);
+        var warningMsg = checkForbidObj.warningMsg || checkAllowObj.warningMsg;
+        var nameQualified = true;
+        if (!checkForbidObj.nameQualified || !checkAllowObj.nameQualified){
+            nameQualified = false;
+        }
+        if (warningMsg){
             this.setState({
-                warningMsg: checkObj.warningMsg
+                warningMsg: warningMsg
             });
         }
-        return checkObj.nameQualified;
+        return nameQualified;
     };
     checkFileType = (filename,fileSize) => {
         if (!this.checkFileNameRule(filename)){
@@ -222,7 +235,7 @@ class AddDataService extends React.Component {
         };
         return (
             <div className='upload-and-download'>
-                <div className='ant-col-xs-24 ant-col-sm-19'>
+                <div className='ant-col-xs-24 ant-col-sm-20'>
                     <Upload {...props}>
                         <Button type='primary'>{Intl.get('apply.approved.upload.annex.list', '上传附件')}</Button>
                     </Upload>
@@ -245,11 +258,11 @@ class AddDataService extends React.Component {
         const formItemLayout = {
             labelCol: {
                 xs: {span: 24},
-                sm: {span: 5},
+                sm: {span: 4},
             },
             wrapperCol: {
                 xs: {span: 24},
-                sm: {span: 19},
+                sm: {span: 20},
             },
         };
         var formData = this.state.formData;

@@ -64,7 +64,7 @@ function ApplyViewDetailActions() {
     //通过或者驳回审批
     this.approveLeaveApplyPassOrReject = function( obj, callback) {
         this.dispatch({loading: true, error: false});
-        LeaveApplyAjax.approveLeaveApplyPassOrReject(obj).then((data) => {
+        ApplyAjax.approveLeaveApplyPassOrReject(obj).then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
             if (_.isFunction(callback)) {
                 callback();

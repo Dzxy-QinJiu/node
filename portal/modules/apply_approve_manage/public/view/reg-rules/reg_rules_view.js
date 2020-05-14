@@ -386,22 +386,6 @@ class RegRulesView extends React.Component {
             </div>
         );
     };
-    renderEmailSendTo = (workflowFormEmailTo) => {
-        var {userList} = this.state;
-        return (
-            <span>
-                {_.map(workflowFormEmailTo,value => {
-                    var targetObj = _.find(userList, item => item.userId === value);
-                    if(targetObj){
-                        return <span>{_.get(targetObj,'nickName')}</span>;
-                    }else{
-                        return <span>{value}</span>;
-                    }
-                })}
-            </span>
-        );
-
-    };
     renderApplyWorkFlowNode = (candidateRules, flowType) => {
         return (
             <div className="rule-content apply-node-lists">
@@ -427,9 +411,9 @@ class RegRulesView extends React.Component {
                             {item.releaseCustomerToTeamPool + '' === 'true' ? <span
                                 className="addition-text">{Intl.get('apply.approve.distribute.team', '分配团队')}</span> : null}
                             {_.get(workflowFormEmailTo,'[0]') ?
-                                <span className="addition-text">{Intl.get('apply.approved.receive.email', '接收邮件人员或邮箱')}：
-                                    {this.renderEmailSendTo(workflowFormEmailTo)}
-                                </span>
+                                <p className="addition-text workflow-to-email">{Intl.get('apply.approved.receive.email', '接收邮件人员或邮箱')}：
+                                    {_.isArray(item.workflowFormEmailToName) ? <p>{item.workflowFormEmailToName.join('，')}</p> : null}
+                                </p>
                                 : null}
                             <span className="connet-bar"></span>
                         </div>

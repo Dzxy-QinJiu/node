@@ -95,7 +95,8 @@ function getUserLists(req, res, condition, isGetAllUser, teamrole_id) {
                                 userId: curMemberList[i].user_id,
                                 nickName: curMemberList[i].nick_name,
                                 userName: curMemberList[i].user_name,
-                                status: curMemberList[i].status
+                                status: curMemberList[i].status,
+                                email: curMemberList[i].email,//在申请审批那里会需要用到账号的邮箱
                             };
                         } else {
                             curMemberList[i] = {
