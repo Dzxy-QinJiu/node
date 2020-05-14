@@ -517,6 +517,7 @@ class ApplyViewDetail extends React.Component {
         return (
             <div className='total-business-range-edit'>
                 <DatePicker
+                    allowClear={false}
                     onChange={this.onBeginTimeTotalChange}
                     value={visit_start_time ? moment(visit_start_time) : ''}
                     disabledDate={disabledDate}
@@ -533,6 +534,7 @@ class ApplyViewDetail extends React.Component {
                     }
                 </Select>
                 <DatePicker
+                    allowClear={false}
                     onChange={this.onEndTimeTotalChange}
                     value={visit_end_time ? moment(visit_end_time) : ''}
                     disabledDate={disabledDate}
@@ -553,7 +555,8 @@ class ApplyViewDetail extends React.Component {
                         <span className="iconfont icon-close" onClick={this.cancelChangeCustomerTotalRange}></span>
                     </span>}
                 </span>
-                {this.state.totalTimeEditErrTip ? <Alert
+                {this.state.totalTimeEditErrTip ? <AlertTimer
+                    time={3000}
                     message={this.state.totalTimeEditErrTip}
                     type='error' showIcon
                     onHide={this.hideSaveTooltip}/> : null}
@@ -600,6 +603,7 @@ class ApplyViewDetail extends React.Component {
         return (
             <div>
                 <DatePicker
+                    allowClear={false}
                     onChange={this.onBeginTimeCustomerChange}
                     value={visit_start_time ? moment(visit_start_time) : ''}
                     disabledDate={disabledDate.bind(this, initialStartTime, initialEndTime)}
@@ -616,6 +620,7 @@ class ApplyViewDetail extends React.Component {
                     }
                 </Select>
                 <DatePicker
+                    allowClear={false}
                     onChange={this.onEndTimeCustomerChange}
                     value={visit_end_time ? moment(visit_end_time) : ''}
                     disabledDate={disabledDate.bind(this, initialStartTime, initialEndTime)}
@@ -635,11 +640,20 @@ class ApplyViewDetail extends React.Component {
                         <span className="iconfont icon-choose" onClick={this.saveChangeCustomerVisistRange.bind(this, record)}></span>
                         <span className="iconfont icon-close" onClick={this.cancelChangeCustomerVisitRange}></span>
                     </span>}
-
                 </span>
+                {this.state.customerVisitTimeEditErrTip ? <AlertTimer
+                    time={3000}
+                    message={this.state.customerVisitTimeEditErrTip}
+                    type='error' showIcon
+                    onHide={this.hideSaveVisitTooltip}/> : null}
             </div>
         );
     };
+    hideSaveVisitTooltip = () => {
+        this.setState({
+            customerVisitTimeEditErrTip: ''
+        });
+    }
     saveChangeCustomerTotalRange = () => {
         var applyObj = _.get(this, 'state.detailInfoObj.info', {});
         var apply_time = _.get(applyObj, 'detail.apply_time[0]');
@@ -647,6 +661,17 @@ class ApplyViewDetail extends React.Component {
             applyId: _.get(applyObj, 'id'),
             apply_time: apply_time
         };
+        var noTimeErrTip = false;
+        if(!_.get(apply_time, 'visit_time.start') || !_.get(apply_time, 'visit_time.end')){
+            noTimeErrTip = true;
+        }
+        if(noTimeErrTip){
+            this.setState({
+                totalTimeEditErrTip: Intl.get('bussiness.trip.time.range.no.empty', '拜访时间不能为空')
+            });
+            return;
+        }
+
         this.setState({isEditting: true});
         $.ajax({
             url: '/rest/update/customer/visit/range',
@@ -675,11 +700,19 @@ class ApplyViewDetail extends React.Component {
             applyId: _.get(applyObj, 'id'),
             customers: _.get(applyObj, 'detail.customers')
         };
+        var noTimeErrTip = false;
         _.forEach(submitObj.customers,(item) => {
             if(!_.get(item, 'visit_time.start') || !_.get(item, 'visit_time.end')){
-                delete item.visit_time;
+                noTimeErrTip = true;
             }
         });
+
+        if(noTimeErrTip){
+            this.setState({
+                customerVisitTimeEditErrTip: Intl.get('bussiness.trip.time.range.no.empty', '拜访时间不能为空')
+            });
+            return;
+        }
         this.setState({isEditting: true});
         $.ajax({
             url: '/rest/update/customer/visit/range',
