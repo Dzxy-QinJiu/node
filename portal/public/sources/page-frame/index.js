@@ -54,7 +54,7 @@ class PageFrame extends React.Component {
         audioParamObj: {},
         isShowNotificationPanel: false, // 是否展示系统通知面板
         isUnReadNotice: isShowUnReadNotice(), // 是否有未读的公告
-        rightContentHeight: 0,
+        mainContentHeight: 0,
         clueDetailPanelShow: false,
         isShowUserDetailPanel: false, // 是否显示用户详情界面
         isShowDetailPanel: false, // 是否显示报告面板
@@ -125,7 +125,8 @@ class PageFrame extends React.Component {
         this.getLastUpgradeNoticeList();
         // 影响了session不超时，暂时隐藏获取公告轮询的操作
         // this.pollingGetNotice(); // 轮询获取公告信息
-        this.setContentHeight();
+        this.layoutContentSize();
+        $(window).on('resize', this.resizeHandler);
         Trace.addEventListener(window, 'click', Trace.eventHandler);
         //打开拨打电话面板的事件监听
         phoneMsgEmitter.on(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
@@ -156,8 +157,6 @@ class PageFrame extends React.Component {
         clueToCustomerPanelEmitter.on(clueToCustomerPanelEmitter.CLOSE_PANEL, this.closeClueToCustomerPanel);
         //监听申请试用面板打开事件
         paymentEmitter.on(paymentEmitter.OPEN_APPLY_TRY_PANEL, this.showApplyTryPanel);
-
-        $(window).on('resize', this.resizeHandler);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -168,28 +167,22 @@ class PageFrame extends React.Component {
         }
     }
 
-    resizeEmitter = () => {
-        resizeEmitter.emit(resizeEmitter.WINDOW_SIZE_CHANGE, {
-            width: $('#app .col-xs-10').width(),
-            height: this.state.rightContentHeight
-        });
-    };
-
     resizeHandler = () => {
         clearTimeout(this.scrollTimer);
         this.scrollTimer = setTimeout(() => {
-            this.setContentHeight();
-        }, 100);
+            this.layoutContentSize();
+        });
     };
-
-    componentDidUpdate() {
-        this.resizeEmitter();
-    }
-
-    setContentHeight = () => {
-        const height = $(window).height() - LAYOUT_CONSTS.TOP_NAV - LAYOUT_CONSTS.PADDING_BOTTOM;
-        this.setState({
-            rightContentHeight: height
+    // 重新计算内容区域的大小
+    layoutContentSize = () => {
+        let height = $(window).height();
+        // 移动端样式，内容区需要减去底部导航的高度
+        let mainContentHeight = isResponsiveDisplay().isWebSmall ? height - LAYOUT_CONSTS.BOTTOM_NAV : height; 
+        this.setState({ mainContentHeight });
+        // 浏览器缩放后，触发各模块的高、宽重新计算
+        resizeEmitter.emit(resizeEmitter.WINDOW_SIZE_CHANGE, {
+            width: $('#app .main-content-wrap').width(),
+            height: mainContentHeight
         });
     }
 
@@ -414,13 +407,14 @@ class PageFrame extends React.Component {
 
     render() {
         var audioParamObj = this.state.audioParamObj;
+        let isWebSmall = isResponsiveDisplay().isWebSmall;
         let navBarCls = classNames('nav-bar-wrap', {
-            'col-xs-12': isResponsiveDisplay().isWebSmall,
-            'col-xs-2': !isResponsiveDisplay().isWebSmall,
+            'col-xs-12': isWebSmall,
+            'col-xs-2': !isWebSmall,
         }); 
-        let contentCls = classNames('content-wrap', {
-            'col-xs-12': isResponsiveDisplay().isWebSmall,
-            'col-xs-10': !isResponsiveDisplay().isWebSmall,
+        let contentCls = classNames('main-content-wrap', {
+            'col-xs-12': isWebSmall,
+            'col-xs-10': !isWebSmall,
         });
         return (
             <div className="container-fluid">

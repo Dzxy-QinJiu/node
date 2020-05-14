@@ -1180,7 +1180,7 @@ exports.isResponsiveDisplay = () => {
     let responsive = {};
     responsive.isWebMiddle = $(window).width() < RESPONSIVE_LAYOUT.MIDDLE_WIDTH;//浏览器是否处于pad端断点位置
     responsive.isWebMin = $(window).width() < RESPONSIVE_LAYOUT.MIN_WIDTH;//浏览器是否处于手机端断点位置
-    responsive.isWebSmall = $(window).width() < RESPONSIVE_LAYOUT.SMALL_WIDTH;//浏览器是否处于左右布局的最小宽度
+    responsive.isWebSmall = $(window).width() <= RESPONSIVE_LAYOUT.SMALL_WIDTH;//浏览器是否处于左右布局的最小宽度
     return responsive;
 
 };
