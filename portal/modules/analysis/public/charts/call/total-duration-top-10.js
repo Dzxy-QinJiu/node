@@ -33,6 +33,7 @@ export function getTotalDurationTop10Chart(paramObj = {}) {
                 {
                     title: Intl.get('common.phone', '电话'),
                     dataIndex: 'dst',
+                    csvRenderTd: value => '\t' + value,
                     width: 120,
                 }, {
                     title: Intl.get('call.analysis.total.time', '通话总时长'),

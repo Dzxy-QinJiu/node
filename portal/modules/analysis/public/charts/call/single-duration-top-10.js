@@ -56,6 +56,7 @@ export function getSingleDurationTop10Chart() {
                 {
                     title: Intl.get('common.phone', '电话'),
                     dataIndex: 'dst',
+                    csvRenderTd: value => '\t' + value,
                     width: 120,
                 }, {
                     title: Intl.get('sales.home.call.top.ten', '单次通话时长'),
