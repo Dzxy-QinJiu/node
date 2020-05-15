@@ -75,20 +75,20 @@ export function getStageActiveCustomerChart() {
                     width: 100
                 },
                 {
-                    dataIndex: '信息',
                     title: Intl.get('weekly.report.customer.stage.info', '信息阶段'),
+                    dataIndex: '信息',
                     align: 'right',
                     width: 100
                 },
                 {
-                    dataIndex: '意向',
                     title: Intl.get('weekly.report.customer.stage.intentioned', '意向阶段'),
+                    dataIndex: '意向',
                     align: 'right',
                     width: 100
                 },
                 {
-                    dataIndex: '试用',
                     title: Intl.get('crm.143', '试用阶段'),
+                    dataIndex: '试用',
                     align: 'right',
                     width: 100
                 },
@@ -99,20 +99,20 @@ export function getStageActiveCustomerChart() {
                     width: 100
                 },
                 {
-                    dataIndex: '机会',
                     title: Intl.get('common.chance', '机会'),
+                    dataIndex: '机会',
                     align: 'right',
                     width: 100
                 },
                 {
-                    dataIndex: '签约',
                     title: Intl.get('common.official', '签约'),
+                    dataIndex: '签约',
                     align: 'right',
                     width: 100
                 },
                 {
-                    dataIndex: '续约',
                     title: Intl.get('contract.163', '续约'),
+                    dataIndex: '续约',
                     align: 'right',
                     width: 100
                 },
