@@ -23,7 +23,7 @@ import {
 import {RECOMMEND_CLUE_FILTERS, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/utils/consts';
 import classNames from 'classnames';
 import { paymentEmitter } from 'OPLATE_EMITTER';
-import {addOrEditSettingCustomerRecomment} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
+import {addOrEditSettingCustomerRecomment, getCompanyListByName} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 
 
@@ -90,16 +90,21 @@ class RecommendCluesFilterPanel extends Component {
             showOtherCondition: false,
             isSaving: false,
             vipFilters: this.dealRecommendParamsVipData(hasSavedRecommendParams),
+            keywordList: [],
         };
 
         this.currentArea = {};
     }
 
     componentDidMount() {
+        let input = '.clue-recommend-filter-search-wrapper .search-input';
         //添加keydown事件
-        $('.clue-recommend-filter-search-wrapper .search-input').on('keydown', this.onKeyDown);
-        if(this.refs.searchInput) {
-            this.refs.searchInput.state.keyword = this.state.hasSavedRecommendParams.keyword;
+        $(input).on('keydown', this.onKeyDown);
+        //添加focus
+        $(input).on('focus', this.onInputFocus);
+        document.addEventListener('click', this.onClickOutsideHandler);
+        if(this.searchInputRef) {
+            this.searchInputRef.state.keyword = this.state.hasSavedRecommendParams.keyword;
         }
     }
 
@@ -110,15 +115,18 @@ class RecommendCluesFilterPanel extends Component {
                 hasSavedRecommendParams,
                 vipFilters: this.dealRecommendParamsVipData({...hasSavedRecommendParams, ...this.state.vipFilters}),
             }, () => {
-                if(this.refs.searchInput) {
-                    this.refs.searchInput.state.keyword = this.state.hasSavedRecommendParams.keyword;
+                if(this.searchInputRef) {
+                    this.searchInputRef.state.keyword = hasSavedRecommendParams.keyword;
                 }
             });
         }
     }
 
     componentWillUnmount() {
-        $('.clue-recommend-filter-search-wrapper .search-input').off('keydown', this.onKeyDown);
+        let input = '.clue-recommend-filter-search-wrapper .search-input';
+        $(input).off('keydown', this.onKeyDown);
+        $(input).off('focus', this.onInputFocus);
+        document.removeEventListener('click', this.onClickOutsideHandler);
     }
 
     //处理线索推荐条件中的vip选项
@@ -151,7 +159,7 @@ class RecommendCluesFilterPanel extends Component {
         return obj;
     }
 
-    getRecommendClueList= (condition) => {
+    getRecommendClueList= (condition, isSaveFilter = true) => {
         if(searchTimeOut) {
             clearTimeout(searchTimeOut);
         }
@@ -161,10 +169,10 @@ class RecommendCluesFilterPanel extends Component {
             removeEmptyItem(newCondition);
 
             //条件没有变动时，不用请求接口保存筛选条件
-            if(!_.isEqual(newCondition, propsCondition)) {
+            if(isSaveFilter && !_.isEqual(newCondition, propsCondition)) {
                 this.saveRecommendFilter(newCondition);
             }
-            clueCustomerAction.saveSettingCustomerRecomment(newCondition);
+            if(isSaveFilter) clueCustomerAction.saveSettingCustomerRecomment(newCondition);
             this.props.getRecommendClueLists(newCondition, EXTRACT_CLUE_CONST_MAP.RESET);
         }, delayTime);
     };
@@ -194,6 +202,7 @@ class RecommendCluesFilterPanel extends Component {
     searchChange = (value) => {
         let { hasSavedRecommendParams } = this.state;
         hasSavedRecommendParams.keyword = _.trim(value || '');
+        this.getCompanyListByName(hasSavedRecommendParams.keyword);
         this.setState({hasSavedRecommendParams});
     };
 
@@ -204,10 +213,29 @@ class RecommendCluesFilterPanel extends Component {
         }
     };
 
+    onInputFocus = () => {
+        if(this.state.keywordList.length > 0) {
+            $('.recommend-clue-sug').css('display', 'block');
+        }else if(this.state.hasSavedRecommendParams.keyword) {
+            this.getCompanyListByName(this.state.hasSavedRecommendParams.keyword);
+        }
+    };
+
+    onClickOutsideHandler = (e) => {
+        if(ReactDOM.findDOMNode(this.searchInputRef).contains(e.target)) {
+            return false;
+        }
+        //点击关键词推荐列表之外的地方，所以需要隐藏下拉列表
+        if($('.recommend-clue-sug').css('display') === 'block' && !this.keywordListRef.contains(e.target)) {
+            $('.recommend-clue-sug').css('display', 'none');
+        }
+    };
+
     searchEvent = (value) => {
         let { hasSavedRecommendParams } = this.state;
         hasSavedRecommendParams.keyword = _.trim(value || '');
-        this.setState({hasSavedRecommendParams}, () => {
+        $('.recommend-clue-sug').css('display', 'none');
+        this.setState({hasSavedRecommendParams, keywordList: []}, () => {
             this.getRecommendClueList(hasSavedRecommendParams);
         });
     }
@@ -221,6 +249,37 @@ class RecommendCluesFilterPanel extends Component {
 
     closeSearchInput = () => {
         this.searchEvent();
+    };
+
+    onKeywordListClick = (value) => {
+        let hasSavedRecommendParams = _.pick(this.state.hasSavedRecommendParams, ['id', 'addTime', 'userId']);
+        $('.recommend-clue-sug').css('display', 'none');
+        if(this.searchInputRef) {
+            this.searchInputRef.state.keyword = value;
+            clueCustomerAction.saveSettingCustomerRecomment({...hasSavedRecommendParams, keyword: value});
+            clueCustomerAction.setHotSource('');
+        }
+        hasSavedRecommendParams.name = value;
+        this.getRecommendClueList(hasSavedRecommendParams, false);
+    };
+
+    //根据关键词获取推荐信息
+    getCompanyListByName = (value) => {
+        getCompanyListByName({
+            name: value
+        }).then((result) => {
+            let list = _.isArray(result.list) ? result.list : [];
+            list = _.map(list, 'name');
+            if(list.length > 0) {
+                $('.recommend-clue-sug').css('display', 'block');
+            }else{
+                $('.recommend-clue-sug').css('display', 'none');
+            }
+            this.setState({keywordList: list});
+        }, () => {
+            $('.recommend-clue-sug').css('display', 'none');
+            this.setState({keywordList: []});
+        });
     };
 
     //更新地址
@@ -695,7 +754,7 @@ class RecommendCluesFilterPanel extends Component {
     }
 
     render() {
-        let { hasSavedRecommendParams, showOtherCondition, vipFilters, keyword } = this.state;
+        let { hasSavedRecommendParams, showOtherCondition, keywordList } = this.state;
 
         var cls = 'other-condition-container', show_tip = '', iconCls = 'iconfont', btnCls = 'btn-item save-btn';
         //是否展示其他的筛选条件
@@ -719,11 +778,18 @@ class RecommendCluesFilterPanel extends Component {
                                 <div className="clue-recommend-filter-search-wrapper">
                                     <SearchInput
                                         key="search-input"
-                                        ref="searchInput"
+                                        ref={ref => this.searchInputRef = ref}
                                         searchEvent={this.searchChange}
                                         searchPlaceHolder ={this.getKeyWordPlaceholder()}
                                         closeSearchInput={this.closeSearchInput}
                                     />
+                                    <div ref={ref => this.keywordListRef = ref} className="recommend-clue-sug recommend-clue-sug-new">
+                                        <ul>
+                                            {_.map(keywordList, (item, index) => (
+                                                <li key={index} className="recommend-clue-sug-overflow" onClick={this.onKeywordListClick.bind(this, item)}>{item}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
                                     <span className="ant-input-group-addon" data-tracename="点击搜索关键词按钮" onClick={this.onSearchButtonClick}>
                                         <Icon type="search" className="search-icon search-confirm-btn"/>
                                     </span>
