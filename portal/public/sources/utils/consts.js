@@ -895,3 +895,15 @@ export const DISAPPEAR_DELAY_TIME = 3000;
 
 // 赢取线索量的最大值
 export const winningClueMaxCount = 80;
+
+// 自定义字段类型
+export const customFieldType = [{
+    value: 'lead',
+    name: Intl.get('crm.sales.clue', '线索')
+}, {
+    value: 'opportunity',
+    name: Intl.get('common.chance', '机会')
+}, {
+    value: 'customer',
+    name: Intl.get('call.record.customer', '客户')
+}];

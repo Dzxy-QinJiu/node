@@ -1,12 +1,41 @@
 /**
 * 字段管理样式
 **/
+@import "../../../../public/css/common-variables";
+@import "../../../../public/css/common-colors";
+
 .custom-field-manage-wrap {
   height: 100%;
   padding: 12px;
   .custom-field-content-wrap {
     height: 100%;
     background: #fff;
-    padding: 24px;
+    .top-nav {
+      padding: 24px;
+      height: 80px;
+      border-bottom: 1px solid #E5E5E5;
+      .condition-operator {
+        .pull-left {
+          .custom-field-type {
+            li {
+              float: left;
+              position: relative;
+              width: 64px;
+              font-size: 16px;
+              text-align: center;
+              cursor: pointer;
+              &.active-tab {
+                color: @primary-color;
+                // border-bottom: 2px solid @primary-color;
+                padding-bottom: 5px;
+              }
+            }
+          }
+        }
+      }
+    }
+    .custom-field-content {
+      margin-top: 16px;
+    }
   }
 }

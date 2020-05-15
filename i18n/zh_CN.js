@@ -1089,6 +1089,10 @@ var zh_CN = {
     'clue.integration.failed.regenerate.create': '重新生成密钥失败',
     'clue.integration.failed.create': '生成密钥失败',
     // 后台管理-线索集成end
+    
+    // 后台管理-自定义字段start
+    'custom.field.title': '字段名',
+    // 后台管理-自定义字段end
 
     //应用管理start
     'app.title': '应用管理',
