@@ -14,19 +14,19 @@ export function getStageActiveCustomerChart() {
         cardContainer: {
             selectors: [{
                 options: [{
-                    name: '全部行政级别',
+                    name: Intl.get('analysis.all.administrative.levels', '全部行政级别'),
                     value: '',
                 },{
-                    name: '部委级',
+                    name: Intl.get('crm.Administrative.level.0', '部委级'),
                     value: '0',
                 },{
-                    name: '省部级',
+                    name: Intl.get('crm.Administrative.level.1', '省部级'),
                     value: '1',
                 },{
-                    name: '地市级',
+                    name: Intl.get('crm.Administrative.level.2', '地市级'),
                     value: '2',
                 },{
-                    name: '区县级',
+                    name: Intl.get('crm.Administrative.level.3', '区县级'),
                     value: '3',
                 }],
                 activeOption: '',
@@ -34,7 +34,7 @@ export function getStageActiveCustomerChart() {
             }, {
                 optionsCallback: () => {
                     let options = [{
-                        name: '全部标签',
+                        name: Intl.get('oplate_customer_analysis.allLabel', '全部标签'),
                         value: '',
                     }];
 
@@ -70,25 +70,25 @@ export function getStageActiveCustomerChart() {
         option: {
             columns: [
                 {
-                    title: '团队',
+                    title: Intl.get('user.user.team', '团队'),
                     dataIndex: 'team_name',
                     width: 100
                 },
                 {
-                    title: '信息阶段',
                     dataIndex: '信息',
+                    title: Intl.get('weekly.report.customer.stage.info', '信息阶段'),
                     align: 'right',
                     width: 100
                 },
                 {
-                    title: '意向阶段',
                     dataIndex: '意向',
+                    title: Intl.get('weekly.report.customer.stage.intentioned', '意向阶段'),
                     align: 'right',
                     width: 100
                 },
                 {
-                    title: '试用阶段',
                     dataIndex: '试用',
+                    title: Intl.get('crm.143', '试用阶段'),
                     align: 'right',
                     width: 100
                 },
@@ -99,20 +99,20 @@ export function getStageActiveCustomerChart() {
                     width: 100
                 },
                 {
-                    title: '机会',
                     dataIndex: '机会',
+                    title: Intl.get('common.chance', '机会'),
                     align: 'right',
                     width: 100
                 },
                 {
-                    title: '签约',
                     dataIndex: '签约',
+                    title: Intl.get('common.official', '签约'),
                     align: 'right',
                     width: 100
                 },
                 {
-                    title: '续约',
                     dataIndex: '续约',
+                    title: Intl.get('contract.163', '续约'),
                     align: 'right',
                     width: 100
                 },
@@ -121,7 +121,7 @@ export function getStageActiveCustomerChart() {
         processOption: (option, chart) => {
             if (_.get(chart, 'data[0].nick_name')) {
                 option.columns.unshift({
-                    title: '销售',
+                    title: Intl.get('sales.home.sales', '销售'),
                     dataIndex: 'nick_name',
                     width: 100
                 });
