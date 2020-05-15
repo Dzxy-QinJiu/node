@@ -37,12 +37,12 @@ class ApplyListItem extends React.Component {
             current: obj.id === this.state.selectedDetailItem.id && index === this.state.selectedDetailItemIdx
         });
         let customerName = _.get(obj, 'detail.customer_name');
-        // 机会申请、预约拜访申请显示客户名
-        if (_.get(obj, 'workflow_type') === APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES) { // 机会申请
+        if (_.get(obj, 'detail.customer.name')) {
             customerName = _.get(obj, 'detail.customer.name');
-        } else if ( _.get(obj, 'workflow_type') === APPLY_APPROVE_TYPES.VISITAPPLY) { // 预约拜访申请
-            customerName = _.get(obj, 'detail.customers[0].name');
+        } else if(_.get(_.get(obj,'detail.customer.length') === 1 || obj,'detail.customers.length') === 1 ){
+            customerName = _.get(obj, 'detail.customer[0].name') || _.get(obj, 'detail.customers[0].name');
         }
+
         return (
             <li key={obj.id} className={currentClass}
                 onClick={this.props.clickShowDetail.bind(this, obj, index)}

@@ -463,17 +463,7 @@ exports.getTimeStr = function(d, format) {
     return moment(new Date(d)).format(format || oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
 };
 exports.getApplyTopicText = function(obj) {
-    var workFlow = _.get(obj,'workflow_type','');
-    if (workFlow.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1) {
-        return Intl.get('apply.approve.specific.report', '{customer}客户的{reporttype}', {
-            customer: _.get(obj, 'detail.customer.name'),
-            reporttype: getDocumentReportTypeDes(REPORT_TYPE, _.get(obj, 'detail.report_type'))
-        });
-    } else if (workFlow.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1) {
-        return getDocumentReportTypeText(DOCUMENT_TYPE, _.get(obj, 'detail.document_type'));
-    } else {
-        return _.get(obj, 'configDescription','');
-    }
+    return _.get(obj, 'configDescription','');
 };
 function getDocumentReportTypeText(AllTypeList, specificType) {
     var targetObj = _.find(AllTypeList, (item) => {
