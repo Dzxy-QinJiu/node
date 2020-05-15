@@ -2,8 +2,6 @@
  * 各阶段活跃客户统计
  */
 
-const STAGES = ['信息', '意向', '试用', 'AQL', '机会', '签约', '续约'];
-
 export function getStageActiveCustomerChart() {
     return {
         title: Intl.get('analysis.active.customer.statistics.at.all.stages', '各阶段活跃客户统计'),
@@ -31,33 +29,11 @@ export function getStageActiveCustomerChart() {
                 }],
                 activeOption: '',
                 conditionName: 'administrative_level',
-            }, {
-                optionsCallback: () => {
-                    let options = [{
-                        name: Intl.get('oplate_customer_analysis.allLabel', '全部标签'),
-                        value: '',
-                    }];
-
-                    _.each(STAGES, item => {
-                        options.push({
-                            name: item,
-                            value: item
-                        });
-                    });
-
-                    return options;
-                },
-                activeOption: '',
-                conditionName: 'label',
             }],
         },
         conditions: [
             {
                 name: 'administrative_level',
-                value: '',
-            },
-            {
-                name: 'label',
                 value: '',
             },
         ],
