@@ -430,7 +430,9 @@ class DynamicAddDelCustomers extends React.Component {
                     label={Intl.get('common.address', '地址')}
                     {...formItemLayout}
                 >
-                    {getFieldDecorator(`customers[${key}].address`, {initialValue: curCustomer.address})(
+                    {getFieldDecorator(`customers[${key}].address`, {initialValue: curCustomer.address,
+                        rules: [{required: this.props.addAddressIsRequired, message: Intl.get('contract.224', '请输入地址')}]
+                    })(
                         <Input
                             placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
                             onChange={this.setSelectedAddr.bind(this, key)}
@@ -483,22 +485,24 @@ DynamicAddDelCustomers.propTypes = {
     initialVisitEndTime: PropTypes.string,
     initial_visit_start_type: PropTypes.string,
     initial_visit_end_type: PropTypes.string,
-    isRequired: PropTypes.boolean//是否客户是必填项
+    isRequired: PropTypes.boolean,//是否客户是必填项
+    addAddressIsRequired: PropTypes.boolean,//地址是否是必填项
 
 };
 DynamicAddDelCustomers.defaultProps = {
     form: {},
     addAssignedCustomer: function() {
-        
+
     },
     handleCustomersChange: function() {
-        
+
     },
     initialVisitStartTime: '',
     initialVisitEndTime: '',
     initial_visit_start_type: '',
     initial_visit_end_type: '',
-    isRequired: true
+    isRequired: true,
+    addAddressIsRequired: false
 
 };
 export default Form.create()(DynamicAddDelCustomers);
