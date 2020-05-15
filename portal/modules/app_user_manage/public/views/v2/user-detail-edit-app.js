@@ -12,7 +12,7 @@ import OperationStepsFooter from '../../../../../components/user_manage_componen
 import AppUserUtil from '../../util/app-user-util';
 import PropTypes from 'prop-types';
 import {isEqualArray} from 'LIB_DIR/func';
-import {modifyAppConfigEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {modifyAppConfigEmitter, noSelectedAppTerminalEmitter} from 'PUB_DIR/sources/utils/emitters';
 import { DISAPPEAR_DELAY_TIME } from 'PUB_DIR/sources/utils/consts';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 require('../../css/edit-app.less');
@@ -54,6 +54,8 @@ const UserDetailEditApp = createReactClass({
         UserDetailEditAppStore.listen(this.onStoreChange);
         $(window).on('resize', this.onStoreChange);
         modifyAppConfigEmitter.on(modifyAppConfigEmitter.MODIFY_APP_CONFIG, this.getModifyAppConfig);
+        // 没有选择应用的多终端信息
+        noSelectedAppTerminalEmitter.on(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, this.getNoSelectedAppTerminals);
         UserDetailEditAppActions.setInitialData(this.props.appInfo);
     },
 
@@ -66,7 +68,16 @@ const UserDetailEditApp = createReactClass({
     componentWillUnmount() {
         UserDetailEditAppStore.unlisten(this.onStoreChange);
         modifyAppConfigEmitter.removeListener(modifyAppConfigEmitter.MODIFY_APP_CONFIG, this.getModifyAppConfig);
+        noSelectedAppTerminalEmitter.removeListener(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, this.getNoSelectedAppTerminals);
         $(window).off('resize', this.onStoreChange);
+    },
+
+    getNoSelectedAppTerminals(flag = false) {
+        setTimeout( () => {
+            this.setState({
+                disabled: flag
+            });
+        } );
     },
 
     cancel() {

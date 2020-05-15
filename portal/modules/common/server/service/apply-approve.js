@@ -38,12 +38,20 @@ var restApis = {
     addDocumentWriteApply: '/rest/base/v1/workflow/document/apply',
     //文件撰写的通过或者驳回
     approveDocumentApplyPassOrReject: '/rest/base/v1/workflow/document/approve',
+    //添加数据服务申请
+    addDataServiceApply: '/rest/base/v1/workflow/eefung/dataservice/apply',
+    //数据服务申请审批
+    approveDataServiceApply: '/rest/base/v1/workflow/eefung/dataservice/approve',
+    //数据服务申请文件的下载
+    downLoadDataServiceFile: '/rest/base/v1/workflow/file/download',
     //上传文件
     uploadReportFile: '/rest/base/v1/workflow/file/upload',
     //下载相关文件
     downLoadReportFile: '/rest/base/v1/workflow/file/download',
     //删除相关文件
-    delReportFile: '/rest/base/v1/workflow/file/delete'
+    delReportFile: '/rest/base/v1/workflow/file/delete',
+    //清空所有未读
+    clearAllUnread: '/rest/base/v1/workflow/comments/notice/unread/clear'
 };
 exports.restUrls = restApis;
 exports.getNextCandidate = function(req, res) {
@@ -161,6 +169,17 @@ exports.addBusinessApply = function(req, res) {
             res: res
         }, req.body);
 };
+//添加数据导出申请
+exports.addDataServiceApply = function(req, res,formData) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.addDataServiceApply,
+            req: req,
+            res: res,
+            formData: formData,
+            timeout: uploadTimeOut,
+        }, null);
+};
 //修改拜访客户的实际
 exports.updateVisitCustomerTime = function(req, res) {
     let bodyData = req.body;
@@ -209,6 +228,15 @@ exports.approveDocumentWriteApplyPassOrReject = function(req, res) {
             res: res
         }, req.body);
 };
+exports.approveDataServiceApply = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.approveDataServiceApply,
+            req: req,
+            res: res
+        }, req.body);
+};
+
 //上传舆情上报文件
 exports.uploadReportSend = function(req, res, formData,id) {
     var url = restApis.uploadReportFile;
@@ -233,6 +261,16 @@ exports.downLoadReportSend = function(req, res) {
         'pipe-download-file': true
     }, null);
 };
+exports.downLoadDataServiceFile = function(req, res) {
+    var fileObj = JSON.parse(req.params.fileObj);
+    return restUtil.authRest.get({
+        url: restApis.downLoadDataServiceFile + `?file_dir_id=${fileObj.file_dir_id}&file_id=${fileObj.file_id}&file_name=${encodeURI(fileObj.file_name)}`,
+        req: req,
+        res: res,
+        'pipe-download-file': true
+    }, null);
+};
+
 //删除相关文件
 exports.deleteReportSend = function(req, res) {
     var fileObj = req.body;
@@ -261,3 +299,12 @@ exports.approveSalesOpportunityApplyPassOrReject = function(req, res) {
             res: res
         }, req.body);
 };
+exports.clearAllUnread = function(req, res) {
+    return restUtil.authRest.put(
+        {
+            url: restApis.clearAllUnread,
+            req: req,
+            res: res
+        }, null);
+};
+

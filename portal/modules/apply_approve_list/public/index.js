@@ -45,6 +45,8 @@ import AddDomainApply from './all_application_type/domain_application/public/vie
 import DomainDetail from './all_application_type/domain_application/public/view/apply-view-detail';
 import AddVisitApply from './all_application_type/self_setting/public/view/add-apply';
 import VisitDetail from './all_application_type/self_setting/public/view/apply-view-detail';
+import AddDataServiceApply from './all_application_type/eefung-data-service/public/view/add_apply';
+import DataServiceDetail from './all_application_type/eefung-data-service/public/view/apply_detail';
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
@@ -66,6 +68,7 @@ var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notification
 var ApplyApproveUtils = require('./utils/apply_approve_utils');
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {INNER_SETTING_FLOW,getAllWorkFlowList} from '../../apply_approve_manage/public/utils/apply-approve-utils';
+import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 
 class ApplyApproveList extends React.Component {
     state = {
@@ -724,6 +727,13 @@ class ApplyApproveList extends React.Component {
             </div>
         );
     };
+    handleAllUnread = () => {
+        ApplyApproveAjax.clearAllUnread().sendRequest().success((flag) => {
+            if(flag){
+                UserApplyActions.clearUnreadReply();
+            }
+        });
+    };
     renderFilterSearch = () => {
         var filterOrSearchType = this.state.filterOrSearchType;
         if (!filterOrSearchType) {
@@ -737,9 +747,12 @@ class ApplyApproveList extends React.Component {
                 </div>
             );
         } else {
-            return <div className='filter-and-search-container return-back' onClick={this.closeSearchOrFilterPanel}>
-                <i className='iconfont icon-left-arrow'></i>
-                {Intl.get('apply.list.return.back', '返回')}
+            return <div className='filter-and-search-container return-back'>
+                <div className='pull-left return-arrow' onClick={this.closeSearchOrFilterPanel}><i className='iconfont icon-left-arrow'></i>
+                    {Intl.get('apply.list.return.back', '返回')}</div>
+                <div className="pull-right all-unread-read" onClick={this.handleAllUnread}>
+                    {Intl.get('apply.list.all.list.read', '全部已读')}
+                </div>
             </div>;
         }
 
@@ -957,6 +970,17 @@ class ApplyApproveList extends React.Component {
                     afterTransferApplySuccess={this.afterTransferApplySuccess}
                 />;
                 break;
+            case APPLY_APPROVE_TYPES.EEFUNG_DATA_SERVICE://蚁坊的数据服务申请
+                applyDetailContent = <DataServiceDetail
+                    applyData={this.state.applyId ? applyDetail : null}
+                    detailItem={this.state.selectedDetailItem}
+                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                    selectedApplyStatus={this.state.selectedApplyStatus}
+                    isUnreadDetail={this.getIsUnreadDetail()}
+                    height={$(window).height()}
+                    afterTransferApplySuccess={this.afterTransferApplySuccess}
+                />;
+                break;
         }
         //如果是旧版的用户审批
         if (_.get(selectedDetailItem, 'message_type') === APPLY_APPROVE_TYPES.USERAPPLY) {
@@ -1021,6 +1045,10 @@ class ApplyApproveList extends React.Component {
             case APPLY_APPROVE_TYPES.DOMAINAPPLY://舆情平台申请
                 return <AddDomainApply
                     hideLeaveApplyAddForm={this.closeAddApplyForm}
+                />;
+            case APPLY_APPROVE_TYPES.EEFUNG_DATA_SERVICE://蚁坊的数据服务申请
+                return <AddDataServiceApply
+                    hideApplyAddForm={this.closeAddApplyForm}
                 />;
 
         }

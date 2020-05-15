@@ -801,4 +801,5 @@ RecommendCluesFilterPanel.propTypes = {
     feature: PropTypes.string,
     handleToggleOtherCondition: PropTypes.func,
 };
+RecommendCluesFilterPanel.ADVANCED_OPTIONS = ADVANCED_OPTIONS;
 export default RecommendCluesFilterPanel;

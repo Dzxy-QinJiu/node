@@ -114,6 +114,8 @@ UserApplyStore.prototype.clearUnreadReply = function(applyId) {
         //清除某条申请
         if (applyId) {
             applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.id !== applyId);
+        }else{//不传时，清除当前登录用户所有的未读回复申请列表
+            applyUnreadReplyList = [];
         }
         this.unreadMyReplyList = applyUnreadReplyList;
         session.set(MY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyList));
@@ -127,6 +129,8 @@ UserApplyStore.prototype.clearUnreadReply = function(applyId) {
         //清除某条申请
         if (applyId) {
             applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.id !== applyId);
+        }else{//不传时，清除当前登录用户所有的未读回复申请列表
+            applyUnreadReplyList = [];
         }
         this.unreadTeamReplyList = applyUnreadReplyList;
         session.set(TEAM_UNREAD_REPLY, JSON.stringify(applyUnreadReplyList));

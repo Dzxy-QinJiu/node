@@ -11,7 +11,6 @@ import {AntcTable} from 'antc';
 // import ApplyViewDetailActions from '../action/apply-view-detail-actions';
 import DefaultApplyViewDetailActions from '../action/apply-view-detail-actions';
 import AppUserUtil from '../util/app-user-util';
-import Spinner from 'CMP_DIR/spinner';
 import userData from 'PUB_DIR/sources/user-data';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import AppProperty from 'CMP_DIR/user_manage_components/app-property-setting';
@@ -21,11 +20,10 @@ const Option = Select.Option;
 import FieldMixin from 'CMP_DIR/antd-form-fieldmixin';
 import UserNameTextField from 'CMP_DIR/user_manage_components/user-name-textfield/apply-input-index';
 import UserNameTextfieldUtil from 'CMP_DIR/user_manage_components/user-name-textfield/util';
-import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 const FormItem = Form.Item;
 import classNames from 'classnames';
 import {hasPrivilege, PrivilegeChecker} from 'CMP_DIR/privilege/checker';
-import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneMsgEmitter, userDetailEmitter, noSelectedAppTerminalEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import { PassStrengthBar } from 'CMP_DIR/password-strength-bar';
 import { checkPassword, checkConfirmPassword } from 'PUB_DIR/sources/utils/validate-util';
@@ -55,6 +53,7 @@ import ApplyHistory from 'CMP_DIR/apply-components/apply-history';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {getAllUserList,getNotSalesRoleUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import CustomerLabel from 'CMP_DIR/customer_label';
+
 import {
     getApplyListDivHeight,
     renderStepContent,
@@ -200,6 +199,8 @@ const COLUMN_WIDTH = {
             curEditExpireDateAppIdr: '',//正在展示修改到期时间的应用id
             updateDelayTime: '',//修改后的到期时间
             isHomeMyWork: this.props.isHomeMyWork,
+            isShowNoSelectAppTerminalsTips: false, //  是否显示没有选择多终端信息的提示
+            isShowTipsClickPass: false, // 点击通过时，是否显示提示信息
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -288,7 +289,8 @@ const COLUMN_WIDTH = {
         // 关闭用户详情面板
         userDetailEmitter.on(userDetailEmitter.USER_DETAIL_CLOSE_RIGHT_PANEL, this.closeRightPanel);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
-
+        // 没有选择应用的多终端信息
+        noSelectedAppTerminalEmitter.on(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, this.getNoSelectedAppTerminals);
         this.getIntegrateConfig();
         this.getAllUserList();
         this.getNotSalesRoleUserList();
@@ -299,7 +301,7 @@ const COLUMN_WIDTH = {
         ApplyViewDetailStore.unlisten(this.onStoreChange);
         // 关闭用户详情面板
         userDetailEmitter.removeListener(userDetailEmitter.USER_DETAIL_CLOSE_RIGHT_PANEL, this.closeRightPanel);
-
+        noSelectedAppTerminalEmitter.removeListener(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, this.getNoSelectedAppTerminals);
         if (!_.isEmpty(this.props.ApplyViewDetailStore)){
             AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
         }else{
@@ -307,6 +309,21 @@ const COLUMN_WIDTH = {
         }
 
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
+    },
+
+    getNoSelectedAppTerminals(flag = false) {
+        setTimeout(() => {
+            if (flag === false) {
+                this.setState({
+                    isShowTipsClickPass: false,
+                    isShowNoSelectAppTerminalsTips: false
+                });
+            } else {
+                this.setState({
+                    isShowNoSelectAppTerminalsTips: true
+                });
+            }
+        });
     },
 
     closeRightPanel() {
@@ -345,7 +362,9 @@ const COLUMN_WIDTH = {
             });
         }
         this.setState({
-            isHomeMyWork: nextProps.isHomeMyWork
+            isHomeMyWork: nextProps.isHomeMyWork,
+            isShowNoSelectAppTerminalsTips: false,
+            isShowTipsClickPass: false
         });
     },
 
@@ -472,6 +491,7 @@ const COLUMN_WIDTH = {
             />
         );
     },
+
     //渲染申请单详情
     renderApplyDetailInfo() {
         var detailInfo = this.state.detailInfoObj.info;
@@ -1038,18 +1058,25 @@ const COLUMN_WIDTH = {
     },
 
     // 获取应用终端名称
-    getAppTerminalName(custom_setting, terminals, appId) {
+    getAppTerminalName(custom_setting, terminals, appId, appDefaultTerminals) {
         let terminalsName = [];
-        // 应用包含多终端信息
-        let configTerminals = _.get(custom_setting, 'terminals.value');
-        if (!_.isEmpty(configTerminals)) {
-            terminalsName = _.map(configTerminals, 'name');
-        } else if (!_.isEmpty(terminals)) {
-            let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
-            terminalsName = _.map(appTerminals, 'name');
+        // 待审批
+        if (this.isUnApproved()) {
+            // 应用包含多终端信息
+            let configTerminals = _.get(custom_setting, 'terminals.value');
+            if (!_.isEmpty(configTerminals) || _.get(custom_setting, 'terminals.setted')) {
+                terminalsName = _.map(configTerminals, 'name');
+            } else if (!_.isEmpty(terminals)) {
+                let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
+                terminalsName = _.map(appTerminals, 'name');
+            } else {
+                terminalsName = _.map(appDefaultTerminals, 'name');
+            }
         } else {
-            let appTerminals = approveAppConfigTerminal(terminals, appId, this.props.appList);
-            terminalsName = _.map(appTerminals, 'name');
+            if (!_.isEmpty(terminals)) {
+                let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
+                terminalsName = _.map(appTerminals, 'name');
+            }
         }
         return terminalsName;
     },
@@ -1095,19 +1122,8 @@ const COLUMN_WIDTH = {
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     const appId = app.app_id;
-                    const terminals = _.get(app, 'terminals', []);
                     const custom_setting = appsSetting[`${appId}&&${user.user_id}`];
-                    let terminalsName = this.getAppTerminalName(custom_setting, terminals, appId);
-                    return (
-                        <div>
-                            <span>{text}</span>
-                            {
-                                !_.isEmpty(terminalsName) ? <span>
-                                    ({ terminalsName.join('、')})
-                                </span> : null
-                            }
-                        </div>
-                    );
+                    return this.renderAppInfo(text, app, custom_setting);
                 }
             }, {
                 title: Intl.get('user.time.end', '到期时间'),
@@ -1197,11 +1213,31 @@ const COLUMN_WIDTH = {
             </ul>
         );
     },
+    // 渲染产品信息
+    renderAppInfo(text, app, custom_setting) {
+        const appId = app.app_id;
+        const terminals = _.get(app, 'terminals', []);
+        let appDefaultTerminals = approveAppConfigTerminal(appId, this.props.appList);
+        let terminalsName = this.getAppTerminalName(custom_setting, terminals, appId, appDefaultTerminals);
+
+        return (
+            <div>
+                <span>{text}</span>
+                {
+                    !_.isEmpty(terminalsName) ? (
+                        <span>
+                            ({ terminalsName.join('、')})
+                        </span>
+                    ) : null
+                }
+            </div>
+        );
+    },
+
     getTableColunms() {
         const appsSetting = this.appsSetting;
         const isExistUserApply = this.isExistUserApply();
         const isOplateUser = this.state.isOplateUser;
-        const approvalState = _.get(this.state.detailInfoObj, 'info.approval_state');
         let columns = [
             {
                 title: Intl.get('common.product','产品'),
@@ -1210,21 +1246,8 @@ const COLUMN_WIDTH = {
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
                     const appId = app.app_id;
-                    const terminals = _.get(app, 'terminals', []);
                     const custom_setting = appsSetting[appId];
-                    // 应用包含多终端信息
-                    let configTerminals = _.get(custom_setting, 'terminals.value');
-                    let terminalsName = this.getAppTerminalName(custom_setting, terminals, appId);
-                    return (
-                        <div>
-                            <span>{text}</span>
-                            {
-                                !_.isEmpty(terminalsName) ? <span>
-                                    ({ terminalsName.join('、')})
-                                </span> : null
-                            }
-                        </div>
-                    );
+                    return this.renderAppInfo(text, app, custom_setting);
                 }
             }];
         //数量
@@ -2131,6 +2154,13 @@ const COLUMN_WIDTH = {
             });
             return;
         }
+        // 用户申请时，应用有默认终端配置，没有选择终端信息不能通过
+        if (approval === 'pass' && this.state.isShowNoSelectAppTerminalsTips) {
+            this.setState({
+                isShowTipsClickPass: true
+            });
+            return;
+        }
         this.showConfirmModal(approval);
     },
 
@@ -2324,6 +2354,7 @@ const COLUMN_WIDTH = {
                 submitApprovalForm={this.clickApprovalFormBtn}
                 renderAssigenedContext={renderAssigenedContext}
                 addApplyNextCandidate={addApplyNextCandidate}
+                isShowTipsClickPass={this.state.isShowTipsClickPass}
             />);
     },
 
@@ -2380,13 +2411,22 @@ const COLUMN_WIDTH = {
                     item.end_date = _.get(this.state, 'formData.end_date');
                 } else {//延期时间为：延期 n天、周、月等时
                     item.delay_time = _.get(this.state, 'formData.delay_time');
-
                 }
-                let appConfig = this.appsSetting[`${item.client_id}&&${item.user_id}`];
+                const appId = _.get(item, 'client_id');
+                let appConfig = this.appsSetting[`${appId}&&${item.user_id}`];
                 // 延期的多终端字段
                 if (appConfig && _.get(appConfig, 'terminals.setted')) {
                     let terminals = _.get(appConfig, 'terminals.value');
                     item.terminals = _.map(terminals, 'id');
+                    // 延期用户的应用，有多终端的信息, 默认跟停用前的终端选择一致，
+                } else if (_.get(x, 'terminals')) {
+                    item.terminals = _.get(x, 'terminals');
+                    // 如果停用的状态下没有选中任何终端，则默认选上所有终端
+                } else {
+                    let appDefaultTerminals = approveAppConfigTerminal(appId, this.props.appList);
+                    if (!_.isEmpty(appDefaultTerminals)) {
+                        item.terminals = _.map(appDefaultTerminals, 'id');
+                    }
                 }
                 //角色、权限，如果修改了角色权限，需要传设置的角色、权限
                 if (appConfig && (!_.isEqual(appConfig.roles, x.roles) || !_.isEqual(appConfig.permissions, x.permissions))) {

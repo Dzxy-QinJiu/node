@@ -118,7 +118,7 @@ module.exports = {
         passport: {
             needLogin: true
         },
-    },{
+    }, {
         method: 'get',
         path: '/rest/get/worklist/approve/by/me',
         handler: 'getApplyListWillApprovedByMe',
@@ -148,158 +148,165 @@ module.exports = {
             commonPrivilegeConst.USERAPPLY_BASE_PERMISSION
         ]
     },
-    //     {
-    //     'method': 'get',
-    //     'path': '/rest/appuser/unread_reply',
-    //     'handler': 'getUnreadReplyList',
-    //     'passport': {
-    //         'needLogin': true
-    //     },
-    //     'privileges': [
-    //         commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取未读回复列表
-    //     ]
-    // },
-    {
-        'method': 'get',
-        'path': '/rest/workflow/unread_reply',
-        'handler': 'getWorkFlowUnreadReplyList',
-        'passport': {
-            'needLogin': true
-        },
-    }, { // 获取申请详情
-        'method': 'get',
-        'path': '/rest/apply_approve/detail/by/id',
-        'handler': 'getApplyDetail',
-        'passport': {
-            'needLogin': true
-        },
-        'privileges': [
-            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION
-        ]
-    }, {
-        'method': 'post',
-        'path': '/rest/appuser/apply',
-        'handler': 'submitApply',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
-        'method': 'post',
-        'path': '/rest/appuser/addapp',
-        'handler': 'addApp',
-        'passport': {
-            'needLogin': true
-        },
-        'privileges': [
-            appUserPrivilegeConst.USER_MANAGE//为用户添加应用
-        ]
-    }, {
-        'method': 'post',
-        'path': '/rest/appuser/editapp',
-        'handler': 'editApp',
-        'passport': {
-            'needLogin': true
-        },
-        'privileges': [
-            appUserPrivilegeConst.USER_MANAGE//为用户修改应用
-        ]
-    }, {
-        'method': 'post',
-        'path': '/rest/base/v1/user/apply_grants',
-        'handler': 'applyNewgrant',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
-        'method': 'post',
-        'path': '/rest/user/batch_delay',
-        'handler': 'batchDelayUser',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
-        'method': 'put',
-        'path': '/rest/user/appdetail',
-        'handler': 'editAppDetail',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
-        'method': 'post',
-        'path': '/rest/user/apply/password',
-        'handler': 'applyChangePasswordAndOther',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
-        method: 'get',
-        path: '/rest/get/apply/comment/list',
-        handler: 'getApplyComments',
-        passport: {
-            needLogin: true
-        },
-    }, {
-        method: 'post',
-        path: '/rest/add/apply/comment',
-        handler: 'addApplyComments',
-        passport: {
-            needLogin: true
-        },
-    }, {
-        'method': 'get',
-        'path': '/rest/get_team_lists',
-        'handler': 'getteamlists',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
-        'method': 'put',
-        'path': '/rest/appuser/backout_apply',
-        'handler': 'cancelApplyApprove',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
-        'method': 'get',
-        'path': '/rest/apply/user_name/valid',
-        'handler': 'checkUserName',
-        'passport': {
-            'needLogin': true
-        }
-    }, { // 添加一个用户名，提示用户名信息
-        'method': 'get',
-        'path': '/rest/add/one/user/suggest',
-        'handler': 'addOneUserSuggestName',
-        'passport': {
-            'needLogin': true
-        }
-    }, { // 获取安全域信息列表
-        'method': 'get',
-        'path': '/rest/get/realm/list',
-        'handler': 'getRealmList',
-        'passport': {
-            'needLogin': true
-        }
-    }, { // 导入用户模板文件
-        'method': 'get',
-        'path': '/rest/import/user/download_template',
-        'handler': 'getUserTemplate',
-        'passport': {
-            'needLogin': true
-        }
-    }, { // 预览上传用户
-        'method': 'post',
-        'path': '/rest/user/upload/:app_id',
-        'handler': 'uploadUser',
-        'passport': {
-            'needLogin': true
-        }
-    }, { // 确认上传用户
-        'method': 'post',
-        'path': '/rest/confirm/user/upload/:app_id',
-        'handler': 'confirmUploadUser',
-        'passport': {
-            'needLogin': true
-        }
-    }]
+        //     {
+        //     'method': 'get',
+        //     'path': '/rest/appuser/unread_reply',
+        //     'handler': 'getUnreadReplyList',
+        //     'passport': {
+        //         'needLogin': true
+        //     },
+        //     'privileges': [
+        //         commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取未读回复列表
+        //     ]
+        // },
+        {
+            'method': 'get',
+            'path': '/rest/workflow/unread_reply',
+            'handler': 'getWorkFlowUnreadReplyList',
+            'passport': {
+                'needLogin': true
+            },
+        }, { // 获取申请详情
+            'method': 'get',
+            'path': '/rest/apply_approve/detail/by/id',
+            'handler': 'getApplyDetail',
+            'passport': {
+                'needLogin': true
+            },
+            'privileges': [
+                commonPrivilegeConst.USERAPPLY_BASE_PERMISSION
+            ]
+        }, {
+            'method': 'post',
+            'path': '/rest/appuser/apply',
+            'handler': 'submitApply',
+            'passport': {
+                'needLogin': true
+            }
+        }, {
+            'method': 'post',
+            'path': '/rest/appuser/addapp',
+            'handler': 'addApp',
+            'passport': {
+                'needLogin': true
+            },
+            'privileges': [
+                appUserPrivilegeConst.USER_MANAGE//为用户添加应用
+            ]
+        }, {
+            'method': 'post',
+            'path': '/rest/appuser/editapp',
+            'handler': 'editApp',
+            'passport': {
+                'needLogin': true
+            },
+            'privileges': [
+                appUserPrivilegeConst.USER_MANAGE//为用户修改应用
+            ]
+        }, {
+            'method': 'post',
+            'path': '/rest/base/v1/user/apply_grants',
+            'handler': 'applyNewgrant',
+            'passport': {
+                'needLogin': true
+            }
+        }, {
+            'method': 'post',
+            'path': '/rest/user/batch_delay',
+            'handler': 'batchDelayUser',
+            'passport': {
+                'needLogin': true
+            }
+        }, {
+            'method': 'put',
+            'path': '/rest/user/appdetail',
+            'handler': 'editAppDetail',
+            'passport': {
+                'needLogin': true
+            }
+        }, {
+            'method': 'post',
+            'path': '/rest/user/apply/password',
+            'handler': 'applyChangePasswordAndOther',
+            'passport': {
+                'needLogin': true
+            }
+        }, {
+            method: 'get',
+            path: '/rest/get/apply/comment/list',
+            handler: 'getApplyComments',
+            passport: {
+                needLogin: true
+            },
+        }, {
+            method: 'post',
+            path: '/rest/add/apply/comment',
+            handler: 'addApplyComments',
+            passport: {
+                needLogin: true
+            },
+        }, {
+            'method': 'get',
+            'path': '/rest/get_team_lists',
+            'handler': 'getteamlists',
+            'passport': {
+                'needLogin': true
+            }
+        }, {
+            'method': 'put',
+            'path': '/rest/appuser/backout_apply',
+            'handler': 'cancelApplyApprove',
+            'passport': {
+                'needLogin': true
+            }
+        }, {
+            'method': 'get',
+            'path': '/rest/apply/user_name/valid',
+            'handler': 'checkUserName',
+            'passport': {
+                'needLogin': true
+            }
+        }, { // 添加一个用户名，提示用户名信息
+            'method': 'get',
+            'path': '/rest/add/one/user/suggest',
+            'handler': 'addOneUserSuggestName',
+            'passport': {
+                'needLogin': true
+            }
+        }, { // 获取安全域信息列表
+            'method': 'get',
+            'path': '/rest/get/realm/list',
+            'handler': 'getRealmList',
+            'passport': {
+                'needLogin': true
+            }
+        }, { // 导入用户模板文件
+            'method': 'get',
+            'path': '/rest/import/user/download_template',
+            'handler': 'getUserTemplate',
+            'passport': {
+                'needLogin': true
+            }
+        }, { // 数据服务模板文件
+            'method': 'get',
+            'path': '/rest/data/service/download_template',
+            'handler': 'getDataServiceTemplate',
+            'passport': {
+                'needLogin': true
+            }
+        }, { // 预览上传用户
+            'method': 'post',
+            'path': '/rest/user/upload/:app_id',
+            'handler': 'uploadUser',
+            'passport': {
+                'needLogin': true
+            }
+        }, { // 确认上传用户
+            'method': 'post',
+            'path': '/rest/confirm/user/upload/:app_id',
+            'handler': 'confirmUploadUser',
+            'passport': {
+                'needLogin': true
+            }
+        }]
 };

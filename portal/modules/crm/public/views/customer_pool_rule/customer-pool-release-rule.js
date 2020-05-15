@@ -43,12 +43,14 @@ class CustomerPoolReleaseRule extends React.Component {
             teamList: [],
             defaultRuleConfig: {},//默认释放规则
             releaseRuleConfigs: [],//释放规则配置信息列表
+            customerLabelList: [],//客户标签
         };
     }
 
     componentDidMount() {
         this.getCustomerPoolReleaseConfigs();
         this.getTeamTreeList();
+        this.getCustomerLabelList();
     }
 
     // 获取团队数据
@@ -56,6 +58,24 @@ class CustomerPoolReleaseRule extends React.Component {
         getMyTeamTreeAndFlattenList((res) => {
             this.setState({teamList: res.teamList});
         });
+    }
+
+    // 获取客户标签
+    getCustomerLabelList() {
+        let userProperty = 'customer_label_list';
+        let customerLabelList = userData.getUserData()[userProperty] || [];
+        if(_.get(customerLabelList, '[0]')) {
+            this.setState({
+                customerLabelList
+            });
+        }else {
+            CustomerPoolAjax.getCustomerLabel({type: 'manager'}).then((res) => {
+                let customerLabelList = _.isArray(res.result) ? res.result : [];
+                this.setState({customerLabelList});
+                // 保存到userData中
+                userData.setUserData(userProperty, customerLabelList);
+            });
+        }
     }
 
     // 获取客户池释放规则配置
@@ -272,6 +292,7 @@ class CustomerPoolReleaseRule extends React.Component {
                                     formType={FORM_TYPE.EDIT}
                                     curRule={config}
                                     visibleTeamList={visibleTeamlist}
+                                    customerLabelList={this.state.customerLabelList}
                                     handleSubmit={this.saveCustomerRuleBasicInfo.bind(this, FORM_TYPE.EDIT)}
                                     handleEdit={this.handleEditRule.bind(this, index, RULE_CONFIG_OPERATOR.EDIT)}
                                     handleCancel={this.handleEditRule.bind(this, index, RULE_CONFIG_OPERATOR.CANCEL)}
@@ -329,6 +350,7 @@ class CustomerPoolReleaseRule extends React.Component {
                             formType={FORM_TYPE.ADD}
                             teamList={this.state.teamList}
                             visibleTeamList={visibleTeamList}
+                            customerLabelList={this.state.customerLabelList}
                             handleSubmit={this.saveCustomerRuleBasicInfo.bind(this, FORM_TYPE.ADD)}
                             handleCancel={this.hideAddRule}
                         />

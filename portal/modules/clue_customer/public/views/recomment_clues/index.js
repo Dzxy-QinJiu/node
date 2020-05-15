@@ -24,6 +24,7 @@ import {
     paymentEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 import RecommendCluesFilterPanel from './recommend_clues_filter_panel';
+const ADVANCED_OPTIONS = RecommendCluesFilterPanel.ADVANCED_OPTIONS;
 var batchOperate = require('PUB_DIR/sources/push/batch');
 import userData from 'PUB_DIR/sources/user-data';
 import {
@@ -1211,7 +1212,9 @@ class RecommendCluesList extends React.Component {
     //------ checkbox事件end ------//
 
     handleLinkLeads = () => {
-        history.push('/leads');
+        history.push('/leads', {
+            showWillTraceTab: true,//打开待跟进tab栏
+        });
     };
 
     //设置该条线索不能提取的样式
@@ -1239,6 +1242,17 @@ class RecommendCluesList extends React.Component {
             hasHighLight: text && text.indexOf('<em>') > -1,
             hasContent: text.length > 0
         };
+    }
+
+    //处理标签根据热门中的feature字段进行高亮处理
+    handleTagHighLightText(text) {
+        let {key, value} = this.getAdvanceItem();
+        if(key === 'feature' && value !== EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER) {
+            let feature = _.find(ADVANCED_OPTIONS, item => item.value === this.state.feature);
+            let char = new RegExp(feature.name, 'g');
+            text = text.replace(char, `<em class="text-highlight">${feature.name}</em>`);
+        }
+        return text;
     }
 
     //处理点击展开全部条件时
@@ -1358,7 +1372,7 @@ class RecommendCluesList extends React.Component {
                                             {labels.length ? (
                                                 <div className="clue-labels">
                                                     {_.map(labels, (tag, index) => (
-                                                        <Tag key={index}>{tag}</Tag>
+                                                        <Tag key={index}><span dangerouslySetInnerHTML={{__html: this.handleTagHighLightText(tag)}}/></Tag>
                                                     ))}
                                                 </div>
                                             ) : null}

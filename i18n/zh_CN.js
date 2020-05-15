@@ -865,6 +865,7 @@ var zh_CN = {
     'user.position.number.tips': '请输入座席号',
     'user.position.select.user': '请选择用户',
     'team.position.select.team': '请选择团队',
+    'user.app.no.select.terminals.tip': '请至少选择一个多终端',
     /*用户管理模块-end*/
     'my.app.no.app': '暂无应用',
     'my.app.change.expire.time.placeholder': '请选择到期时间',
@@ -1504,6 +1505,7 @@ var zh_CN = {
     'user.apply.has.been.opened': '已开通{count}个',
     'apply.list.return.back': '返回',
     'apply.list.get.list.err': '获取列表失败，请检查网络状态',
+    'apply.list.all.list.read': '全部已读',
     // 用户审批end
 
     // 在线用户start
@@ -1956,6 +1958,8 @@ var zh_CN = {
     'crm.pool.need.to.head.': '需负责人',
     'crm.pool.extract.and.distribute': '提取并分配',
     'crm.pool.sales.extract.exist.tip': '我作为',
+    'crm.pool.release.rule.skip.holiday': '是否排除节假日',
+    'crm.pool.release.rule.form.skip.holiday': '排除节假日',
 
 
     'crm.pool.single.extract.tip': '您确定要提取此客户吗？',
@@ -3737,6 +3741,7 @@ var zh_CN = {
     'apply.my.self.setting.work.flow': '预约拜访',
     'apply.domain.application.work.flow': '舆情平台申请',
     'apply.leave.while.application.work.flow': '外出申请',
+    'apply.eefung.data.service': '数据服务申请',
     'apply.went.out.while.range': '外出时长',
     'apply.domain.descriptipn.reg': '域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间',
     'apply.domain.plat.name.reg': '平台名称长度在1到32个字符之间(英文数字算一个字符，其他字符一个算2个字符)',
@@ -3762,6 +3767,14 @@ var zh_CN = {
     'apply.approved.title': '审批通过后',
     'apply.approved.sales.assigned': '分配的销售作为负责人',
     'apply.approved.sales.assigned.follow': '分配的销售作为负责人，同时原负责人变为联合跟进人',
+    'apply.approved.annex.list': '附件',
+    'apply.approved.upload.annex.list': '上传附件',
+    'apply.approved.upload.annex.list.first': '请先上传附件',
+    'apply.approved.upload.template': '上传模板',
+    'apply.approved.download.template': '下载模板',
+    'apply.approved.data.service.template': '数据导出申请表-申请时间-xxx部门-联系人',
+    'apply.approved.receive.email': '接收邮件人员或邮箱',
+    'apply.approved.select.receive.email': '请选择接收邮件的成员或邮箱',
     /*自定义流程 end*/
     'app.user.manage.role.name': '角色名称',
     'app.user.manage.organaization.name': '所在单位或公司',

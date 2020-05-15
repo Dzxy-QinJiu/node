@@ -14,10 +14,21 @@ class ApplyDetailBottom extends React.Component {
     renderPassOrAssignedContext = () => {
         var assigenedContext = _.isFunction(this.props.renderAssigenedContext) ? this.props.renderAssigenedContext() : null;
         const passBtn = assigenedContext ? assigenedContext : (
-            <Button className="agree-btn btn-primary-sure" disabled={this.props.disabled}
-                onClick={isExpired() ? () => { } : this.props.submitApprovalForm.bind(this, 'pass')}>
-                <i className='iconfont icon-agree'></i>{this.props.passText}
-            </Button>);
+            <span>
+                {this.props.isShowTipsClickPass ? (
+                    <span className="no-select-terminals-tips">
+                         {Intl.get('user.app.no.select.terminals.tip', '请至少选择一个多终端')}
+                    </span>
+                ) : null}
+                <Button
+                    className="agree-btn btn-primary-sure"
+                    disabled={this.props.disabled}
+                    onClick={isExpired() ? () => { } : this.props.submitApprovalForm.bind(this, 'pass')}
+                >
+                    <i className='iconfont icon-agree'></i>{this.props.passText}
+                </Button>
+            </span>
+           );
         const rejectBtn = (
             <Button className="reject-btn btn-primary-sure"
                 onClick={isExpired() ? () => { } : this.props.submitApprovalForm.bind(this, 'reject')}>

@@ -4,13 +4,14 @@
  * Created by tangmaoqin on 2020/03/12.
  */
 //添加、编辑释放规则
-import { Form, Col, Select, message, Icon, Popconfirm, InputNumber, Switch } from 'antd';
+import {Form, Col, Select, message, Icon, Popconfirm, InputNumber, Switch, Checkbox} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import DetailCard from 'CMP_DIR/detail-card';
 import classNames from 'classnames';
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import CustomerPoolAjax from 'MOD_DIR/crm/public/ajax/customer-pool-configs';
 
 const FORM_TYPE = {
     ADD: 'add',
@@ -35,14 +36,22 @@ const RESPONSIBLE_TYPE = [{
     value: 'release_followup',
 }];
 
-const RULE_FORM_HEIGHT = 225;
+const RULE_FORM_HEIGHT = 352;
 
 class CustomerPoolReleaseRuleForm extends React.Component {
     state = {
         isLoading: false,
         errMsg: '',
         formData: this.getIntialState(), // 规则信息
+        customerStageList: [],
+        isLoadingStageList: false,//获取客户阶段
     };
+
+    componentDidMount() {
+        if(this.props.formType === FORM_TYPE.EDIT && !this.props.isDefaultRuleConfig(this.props.curRule)) {
+            this.getCustomerStageList(this.state.formData.team_id);
+        }
+    }
 
     getIntialState() {
         let curRule = this.props.curRule;
@@ -78,15 +87,33 @@ class CustomerPoolReleaseRuleForm extends React.Component {
             auto_release: _.get(curRule, 'auto_release', true),
             auto_release_period,
             interval,
-            responsible_type
+            responsible_type,
+            skip_holiday: _.get(curRule, 'skip_holiday', true),
+            customer_label: _.get(curRule, 'customer_label', []),
+            labels: _.get(curRule, 'labels', []),
         };
     }
+
+    getCustomerStageList = (team_id) => {
+        this.setState({isLoadingStageList: true});
+        CustomerPoolAjax.getCustomerStageByTeamId({team_id: team_id}).then((res) => {
+            this.setState({
+                isLoadingStageList: false,
+                customerStageList: res.customer_stages
+            });
+        }, () => {
+            this.setState({isLoadingStageList: false});
+        });
+    };
 
     handleSelectTeam = (value) => {
         let formData = this.state.formData;
         let team = _.find(this.props.visibleTeamList, item => item.group_id === value);
         formData.team_id = team.group_id;
         formData.team_name = team.group_name;
+        if(this.props.formType === FORM_TYPE.ADD) {
+            this.getCustomerStageList(value);
+        }
         this.setState({formData});
     };
 
@@ -103,7 +130,10 @@ class CustomerPoolReleaseRuleForm extends React.Component {
             let saveObj = {
                 team_id: formData.team_id,
                 team_name: formData.team_name,
-                auto_release: values.auto_release
+                auto_release: values.auto_release,
+                skip_holiday: values.skip_holiday,
+                customer_label: _.get(values,'customer_label', []),
+                labels: _.get(values,'labels', []),
             };
 
             //处理未跟进时长，格式化为：'2D'/'3M'形式
@@ -126,6 +156,8 @@ class CustomerPoolReleaseRuleForm extends React.Component {
                 if(this.props.isDefaultRuleConfig(this.props.curRule)) {//默认规则
                     delete saveObj.team_id;
                     delete saveObj.team_name;
+                    delete saveObj.customer_label;
+                    delete saveObj.labels;
                 }
             }
 
@@ -221,9 +253,16 @@ class CustomerPoolReleaseRuleForm extends React.Component {
         const statusText = formData.auto_release ? Intl.get('common.enabled', '启用') : Intl.get('common.not.enabled', '未启用');
         const curInterval = _.find(INTERVAL_KEYS, item => item.value === formData.interval);
         const noFollowUpTimeText = _.get(formData,'auto_release_period', '') + curInterval.name;
+        const excludeHolidayText = formData.skip_holiday ? (<span className="visible-text">({Intl.get('crm.pool.release.rule.form.skip.holiday', '排除节假日')})</span>) : '';
         const cls = classNames({
             'default-edit-form-content': isDefaultRuleConfig && this.props.isEdit
         });
+        const customerLabelOptions = _.map(this.props.customerLabelList, label => (
+            <Option key={label} value={label}>{label}</Option>
+        ));
+        const customerStageOptions = _.map(this.state.customerStageList, stage => (
+            <Option key={stage.id} value={stage.id}>{stage.name}</Option>
+        ));
 
         const formContent = (
             <React.Fragment>
@@ -254,9 +293,48 @@ class CustomerPoolReleaseRuleForm extends React.Component {
                                         </Select>
                                     )
                                 }
+
                             </React.Fragment>
                         ) : (
                             <span className="customer-info-text">{isDefaultRuleConfig ? Intl.get('user.list.all.teamlist', '全部团队') : _.get(formData,'team_name', '')}</span>
+                        )}
+                    </FormItem>
+                    <FormItem {...formItemLayout} label={Intl.get('weekly.report.customer.stage', '客户阶段')}>
+                        {this.state.isLoadingStageList ? (
+                            <div className="customer-stage-list-loading">
+                                {Intl.get('crm.customer.pool.rule.get.stage.lists', '正在获取客户阶段列表')}
+                                <Icon type="loading"/>
+                            </div>) : (
+                            this.props.isEdit && !isDefaultRuleConfig ? (getFieldDecorator('customer_label', {
+                                initialValue: formData.customer_label
+                            })(
+                                <Select
+                                    showSearch
+                                    optionFilterProp="children"
+                                    mode="multiple"
+                                    placeholder={Intl.get('contract.choose', '请选择')}
+                                >
+                                    {customerStageOptions}
+                                </Select>
+                            )) : (
+                                <span className="customer-info-text">{formData.customer_label.join(',') || Intl.get('crm.customer.pool.unlimited', '不限')}</span>
+                            )
+                        )}
+                    </FormItem>
+                    <FormItem {...formItemLayout} label={Intl.get('crm.customer.label', '客户标签')}>
+                        {this.props.isEdit && !isDefaultRuleConfig ? (getFieldDecorator('label', {
+                            initialValue: formData.labels
+                        })(
+                            <Select
+                                showSearch
+                                optionFilterProp="children"
+                                mode="multiple"
+                                placeholder={Intl.get('contract.choose', '请选择')}
+                            >
+                                {customerLabelOptions}
+                            </Select>
+                        )) : (
+                            <span className="customer-info-text">{_.get(formData, 'labels',[]).join(',') || Intl.get('crm.customer.pool.unlimited', '不限')}</span>
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout} label={Intl.get('crm.pool.release.rule.non.followup.time', '未跟进时长')}>
@@ -284,9 +362,21 @@ class CustomerPoolReleaseRuleForm extends React.Component {
                                         {INTERVAL_KEYS.map(item => (<Option key={item.value} value={item.value}>{item.name}</Option>))}
                                     </Select>
                                 </Col>
+                                <Col span={24}>
+                                    {
+                                        getFieldDecorator('skip_holiday', {
+                                            initialValue: formData.skip_holiday,
+                                            valuePropName: 'checked'
+                                        })(
+                                            <Checkbox>
+                                                {Intl.get('crm.pool.release.rule.skip.holiday', '是否排除节假日')}
+                                            </Checkbox>
+                                        )
+                                    }
+                                </Col>
                             </React.Fragment>
                         ) : (
-                            <span className="customer-info-text">{noFollowUpTimeText}</span>
+                            <span className="customer-info-text">{noFollowUpTimeText}{excludeHolidayText}</span>
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout} label={Intl.get('crm.pool.responsible.type', '负责类型')}>
@@ -391,6 +481,7 @@ CustomerPoolReleaseRuleForm.propTypes = {
     curRule: PropTypes.object,
     form: PropTypes.object,
     visibleTeamList: PropTypes.array,
+    customerLabelList: PropTypes.array,
     formType: PropTypes.string,
     isDefaultRuleConfig: PropTypes.func,
     handleCancel: PropTypes.func,
