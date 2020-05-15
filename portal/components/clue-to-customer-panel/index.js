@@ -15,7 +15,7 @@ import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import CustomerList from './customer-list';
 import CustomerSearch from './customer-search';
 import CustomerMerge from './customer-merge';
-import { VIEW_TYPE, NOOP } from './consts';
+import { VIEW_TYPE, NOOP, NOT_SHOW_FORM_ITEMS } from './consts';
 const CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 
 class ClueToCustomerPanel extends React.Component {
@@ -91,6 +91,7 @@ class ClueToCustomerPanel extends React.Component {
                     formData={this.props.clue}
                     isAssociateClue={true}
                     isContactWayExpanded={true}
+                    notShowFormItems={NOT_SHOW_FORM_ITEMS}
                     isConvert={true}
                     phoneNum={_.get(this.props, 'clue.phones[0]', '')}
                     isShowMadal={false}

@@ -10,11 +10,10 @@ import ajax from 'ant-ajax';
 import { Button, Row, Col, message } from 'antd';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import { VIEW_TYPE, NOOP } from './consts';
+import { VIEW_TYPE, NOOP, NOT_SHOW_FORM_ITEMS } from './consts';
 import DetailCard from 'CMP_DIR/detail-card';
 //联系人表单
 const ContactForm = require('MOD_DIR/crm/public/views/contacts/contact-form');
-const CONTACT_OTHER_KEYS = ContactForm.CONTACT_OTHER_KEYS;
 //联系人store
 const ContactStore = require('MOD_DIR/crm/public/store/contact-store');
 
@@ -44,13 +43,6 @@ const CONTACT_WAY_TYPES = [
 const CONTACT_WAY_TYPE_FIELDS = _.map(CONTACT_WAY_TYPES, 'field');
 
 let queryCustomerTimeout = null;
-//联系人不用展示的项
-const NOT_SHOW_FORM_ITEMS = [
-    CONTACT_OTHER_KEYS.SEX,
-    CONTACT_OTHER_KEYS.BIRTHDAY,
-    CONTACT_OTHER_KEYS.HOBBY,
-    CONTACT_OTHER_KEYS.REMARK
-];
 
 class CustomerMerge extends React.Component {
     static defaultProps = {
