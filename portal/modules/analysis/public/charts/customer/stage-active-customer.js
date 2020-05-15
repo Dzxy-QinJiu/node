@@ -2,11 +2,19 @@
  * 各阶段活跃客户统计
  */
 
-const STAGES = ['信息', '意向', '试用', 'AQL', '机会', '签约', '续约'];
+const STAGES = [
+    Intl.get('sales.stage.message', '信息'),
+    Intl.get('sales.stage.intention', '意向'),
+    Intl.get('common.trial', '试用'),
+    'AQL',
+    Intl.get('common.chance', '机会'),
+    Intl.get('common.official', '签约'),
+    Intl.get('contract.163', '续约')
+];
 
 export function getStageActiveCustomerChart() {
     return {
-        title: '各阶段活跃客户统计',
+        title: Intl.get('analysis.active.customer.statistics.at.all.stages', '各阶段活跃客户统计'),
         chartType: 'table',
         layout: {sm: 24},
         height: 'auto',
