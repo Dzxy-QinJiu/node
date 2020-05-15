@@ -29,6 +29,7 @@ var zh_CN = {
     'menu.competing.product': '竞品',
     'menu.sales.process': '客户阶段',
     'menu.clue.integration': '线索集成',
+    'menu.field.manage': '字段管理',
     'menu.clue.allocation': '线索分配',
     'menu.my.company': '我的企业',
     'menu.user': '成员管理',
