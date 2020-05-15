@@ -152,6 +152,7 @@ class AddBusinessApply extends React.Component {
             submitObj.condition = {
                 condition: formData.total_range
             };
+            var hasNoAddress = false;
             _.forEach(formData.customers, (customerItem, index) => {
                 var submitCustomerItem = {
                     name: customerItem.name || '',
@@ -162,6 +163,9 @@ class AddBusinessApply extends React.Component {
                     address: customerItem.address || '',
                     remarks: customerItem.remarks || '',
                 };
+                if(!customerItem.province && !customerItem.city && !customerItem.county){
+                    hasNoAddress = true;
+                }
                 //传入每个客户的拜访时间
                 if (customerItem.visit_start_time && customerItem.visit_start_type && customerItem.visit_end_time && customerItem.visit_end_type){
                     submitCustomerItem.visit_time = {
@@ -176,6 +180,11 @@ class AddBusinessApply extends React.Component {
                 }
                 submitObj.customers.push(submitCustomerItem);
             });
+            //外出的地址是必填项
+            if(hasNoAddress){
+                this.setResultData(Intl.get('business.customer.time.is.required', '地域是必填项'), 'error');
+                return;
+            }
             this.setState({
                 isSaving: true,
                 saveMsg: '',
@@ -394,6 +403,7 @@ class AddBusinessApply extends React.Component {
                                         initialVisitEndTime={formData.end_time}
                                         initial_visit_end_type={formData.end_type}
                                         isRequired={false}
+                                        addAddressIsRequired={true}
                                     />
                                     <div className="submit-button-container">
                                         <SaveCancelButton loading={this.state.isSaving}
