@@ -1060,15 +1060,23 @@ const COLUMN_WIDTH = {
     // 获取应用终端名称
     getAppTerminalName(custom_setting, terminals, appId, appDefaultTerminals) {
         let terminalsName = [];
-        // 应用包含多终端信息
-        let configTerminals = _.get(custom_setting, 'terminals.value');
-        if (!_.isEmpty(configTerminals) || _.get(custom_setting, 'terminals.setted')) {
-            terminalsName = _.map(configTerminals, 'name');
-        } else if (!_.isEmpty(terminals)) {
-            let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
-            terminalsName = _.map(appTerminals, 'name');
+        // 待审批
+        if (this.isUnApproved()) {
+            // 应用包含多终端信息
+            let configTerminals = _.get(custom_setting, 'terminals.value');
+            if (!_.isEmpty(configTerminals) || _.get(custom_setting, 'terminals.setted')) {
+                terminalsName = _.map(configTerminals, 'name');
+            } else if (!_.isEmpty(terminals)) {
+                let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
+                terminalsName = _.map(appTerminals, 'name');
+            } else {
+                terminalsName = _.map(appDefaultTerminals, 'name');
+            }
         } else {
-            terminalsName = _.map(appDefaultTerminals, 'name');
+            if (!_.isEmpty(terminals)) {
+                let appTerminals = applyAppConfigTerminal(terminals, appId, this.props.appList);
+                terminalsName = _.map(appTerminals, 'name');
+            }
         }
         return terminalsName;
     },
@@ -2403,13 +2411,22 @@ const COLUMN_WIDTH = {
                     item.end_date = _.get(this.state, 'formData.end_date');
                 } else {//延期时间为：延期 n天、周、月等时
                     item.delay_time = _.get(this.state, 'formData.delay_time');
-
                 }
-                let appConfig = this.appsSetting[`${item.client_id}&&${item.user_id}`];
+                const appId = _.get(item, 'client_id');
+                let appConfig = this.appsSetting[`${appId}&&${item.user_id}`];
                 // 延期的多终端字段
                 if (appConfig && _.get(appConfig, 'terminals.setted')) {
                     let terminals = _.get(appConfig, 'terminals.value');
                     item.terminals = _.map(terminals, 'id');
+                    // 延期用户的应用，有多终端的信息, 默认跟停用前的终端选择一致，
+                } else if (_.get(x, 'terminals')) {
+                    item.terminals = _.get(x, 'terminals');
+                    // 如果停用的状态下没有选中任何终端，则默认选上所有终端
+                } else {
+                    let appDefaultTerminals = approveAppConfigTerminal(appId, this.props.appList);
+                    if (!_.isEmpty(appDefaultTerminals)) {
+                        item.terminals = _.map(appDefaultTerminals, 'id');
+                    }
                 }
                 //角色、权限，如果修改了角色权限，需要传设置的角色、权限
                 if (appConfig && (!_.isEqual(appConfig.roles, x.roles) || !_.isEqual(appConfig.permissions, x.permissions))) {
