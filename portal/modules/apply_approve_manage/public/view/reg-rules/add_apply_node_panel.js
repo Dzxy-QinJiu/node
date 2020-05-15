@@ -28,6 +28,7 @@ import {
     SETTING_APPLY_APPROVER
 } from '../../utils/apply-approve-utils';
 require('../../style/add-apply-node.less');
+import {isEmail} from 'PUB_DIR/sources/utils/validate-util';
 class AddApplyNodePanel extends React.Component {
     constructor(props) {
         super(props);
@@ -52,6 +53,9 @@ class AddApplyNodePanel extends React.Component {
             },
             submitFiles: false,//可以上传文件
             assignNextNodeApprover: false,//指定下一审批人
+            workflowFormEmailTo: false,//可以发送邮件
+            workflowFormEmailToList: [],//可发送邮件人的列表
+            emailValidateErrMsg: '',//邮箱校验的错误提示
             roleList: [],//角色列表
             userList: [],//用户列表
             submitErrorMsg: '',//提交时的错误提示
@@ -127,6 +131,17 @@ class AddApplyNodePanel extends React.Component {
             assignNextNodeApprover: e.target.checked,
         });
     };
+    onChangeWorkFlowEmailTo = (e) => {
+        this.setState({
+            workflowFormEmailTo: e.target.checked,
+        },() => {
+            if(!e.target.checked){
+                this.setState({
+                    workflowFormEmailToList: []
+                });
+            }
+        });
+    };
 
     onChangeAdminApproveCheck = (e) => {
         var higher_ups = this.state.higher_ups;
@@ -184,6 +199,27 @@ class AddApplyNodePanel extends React.Component {
                 setting_users: setting_users
             });
         }
+    };
+    handleChangeSelectEmailTo = (valueList) => {
+        var {workflowFormEmailToList, userList} = this.state;
+        var emailValidateErrMsg = '';
+        _.forEach(valueList, value => {
+            var targetObj = _.find(userList, item => item.userId === value);
+            if (!targetObj) {
+                if(isEmail(value)){
+                    workflowFormEmailToList.push(value);
+                }else{
+                    emailValidateErrMsg = Intl.get('common.correct.email', '请输入正确的邮箱');
+                }
+            }else{
+                workflowFormEmailToList.push(_.get(targetObj,'email'));
+            }
+
+        });
+        this.setState({
+            emailValidateErrMsg,
+            workflowFormEmailToList: _.uniq(workflowFormEmailToList)
+        });
     };
     renderAdditonContent = (typeItem, index) => {
         var checkedRadioValue = this.state.checkedRadioValue;
@@ -250,7 +286,7 @@ class AddApplyNodePanel extends React.Component {
         }
     };
     handleSubmitAddApproveNode = () => {
-        var radioValue = this.state.checkedRadioValue, submitObj = {}, errTip = true;
+        var radioValue = this.state.checkedRadioValue, submitObj = {}, errTip = true,submitErrorMsg = '';
         if (radioValue) {
             switch (radioValue) {
                 case 'higher_ups':
@@ -302,8 +338,6 @@ class AddApplyNodePanel extends React.Component {
                     submitObj.showName = target.name;
                     errTip = false;
             }
-
-
         } else {
             //如果上一节点是指定审批人
             if (this.state.isPreviousNodeCheck) {
@@ -311,7 +345,11 @@ class AddApplyNodePanel extends React.Component {
                 submitObj.showName = SETTING_APPLY_APPROVER.label;
                 errTip = false;
             }
-
+            if(this.state.workflowFormEmailTo){
+                if(!_.get(this.state.workflowFormEmailToList,'[0]')){
+                    submitErrorMsg = Intl.get('apply.approved.select.receive.email', '请选择接收邮件的成员或邮箱');
+                }
+            }
         }
         if (!errTip) {
             submitObj.radioType = radioValue;
@@ -321,12 +359,25 @@ class AddApplyNodePanel extends React.Component {
             submitObj.assignNextNodeApprover = this.state.assignNextNodeApprover;
             //可分配销售
             // submitObj.distributeSales = this.state.distributeSales;
-
+            //邮件是否抄送给对应的人
+            if(this.state.workflowFormEmailTo && _.get(this.state.workflowFormEmailToList,'[0]')){
+                submitObj.workflowFormEmailTo = this.state.workflowFormEmailToList;//邮件所抄送给人的列表
+                var workflowFormEmailToName = [];
+                _.forEach(this.state.workflowFormEmailToList,value => {
+                    var targetObj = _.find(this.state.userList, item => item.userId === value);
+                    if(targetObj){
+                        workflowFormEmailToName.push(_.get(targetObj,'nickName'));
+                    }else{
+                        workflowFormEmailToName.push(value);
+                    }
+                });
+                submitObj.workflowFormEmailToName = workflowFormEmailToName;
+            }
             this.props.saveAddApproveNode(submitObj);
             this.props.hideRightPanel();
         }else{
             this.setState({
-                submitErrorMsg: Intl.get('apply.select.approver.type', '请选择审批人类型')
+                submitErrorMsg: submitErrorMsg || Intl.get('apply.select.approver.type', '请选择审批人类型')
             });
         }
 
@@ -412,6 +463,28 @@ class AddApplyNodePanel extends React.Component {
                                         >
                                             {Intl.get('apply.add.approver.distribute', '指定下一审批人')}
                                         </Checkbox>
+                                    </div>
+                                    <div>
+                                        <Checkbox
+                                            checked={this.state.workflowFormEmailTo}
+                                            onChange={this.onChangeWorkFlowEmailTo}
+                                        >
+                                            {Intl.get('apply.approved.receive.email', '接收邮件人员或邮箱')}
+                                        </Checkbox>
+                                        {this.state.workflowFormEmailTo ?
+                                            <div>
+                                                <Select
+                                                    mode="tags"
+                                                    tokenSeparators={[',']}
+                                                    onChange={this.handleChangeSelectEmailTo}
+                                                    filterOption={(input, option) => ignoreCase(input, option)}>
+                                                    {_.map(this.state.userList, (item,index) => {
+                                                        return <Option value={item.userId} key={index}>{item.nickName}</Option>;
+                                                    })}
+                                                </Select>
+                                                {this.state.emailValidateErrMsg ? <div className='validate-err-msg'>{this.state.emailValidateErrMsg}</div> : null}
+                                            </div>
+                                            : null}
                                     </div>
                                 </div>
                             </div>

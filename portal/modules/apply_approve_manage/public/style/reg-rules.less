@@ -1,8 +1,8 @@
 @import "../../../../public/css/common-variables";
 .reg-rule-container {
-  #bpmn-container {
-    display: none;
-  }
+  //#bpmn-container {
+  //  display: none;
+  //}
   .reg-rule-wrap {
     .rule-item {
       padding: 16px 0;
@@ -118,7 +118,7 @@
                   }
                 }
 
-                
+
               }
             .condition-item.condition-item-des{
 
@@ -173,6 +173,12 @@
         .addition-text{
           display: inline-block;
           color: @secondary-font-color;
+          &.workflow-to-email{
+            display: block;
+            p{
+              word-break: break-word;
+            }
+          }
         }
         .iconfont.icon-close-btn {
           cursor: pointer;

@@ -91,6 +91,13 @@ module.exports = {
             needLogin: true
         },
     }, {
+        method: 'post',
+        path: '/rest/add/data_service/list',
+        handler: 'addDataServiceApply',
+        passport: {
+            needLogin: true
+        },
+    }, {
         method: 'put',
         path: '/rest/update/customer/visit/range',
         handler: 'updateVisitCustomerTime',
@@ -125,6 +132,13 @@ module.exports = {
         passport: {
             needLogin: true
         },
+    }, {
+        method: 'post',
+        path: '/rest/dataservice/submitApply',
+        handler: 'approveDataServiceApply',
+        passport: {
+            needLogin: true
+        },
     },{
         method: 'post',
         path: '/rest/business_trip/submitApply',
@@ -150,6 +164,13 @@ module.exports = {
         method: 'get',
         path: '/rest/reportsend/download/:fileObj',
         handler: 'downLoadReportSend',
+        passport: {
+            'needLogin': true
+        }
+    }, {
+        method: 'get',
+        path: '/rest/dataservice/download/:fileObj',
+        handler: 'downLoadDataServiceFile',
         passport: {
             'needLogin': true
         }

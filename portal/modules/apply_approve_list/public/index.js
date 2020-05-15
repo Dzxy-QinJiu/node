@@ -45,6 +45,8 @@ import AddDomainApply from './all_application_type/domain_application/public/vie
 import DomainDetail from './all_application_type/domain_application/public/view/apply-view-detail';
 import AddVisitApply from './all_application_type/self_setting/public/view/add-apply';
 import VisitDetail from './all_application_type/self_setting/public/view/apply-view-detail';
+import AddDataServiceApply from './all_application_type/eefung-data-service/public/view/add_apply';
+import DataServiceDetail from './all_application_type/eefung-data-service/public/view/apply_detail';
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
@@ -968,6 +970,17 @@ class ApplyApproveList extends React.Component {
                     afterTransferApplySuccess={this.afterTransferApplySuccess}
                 />;
                 break;
+            case APPLY_APPROVE_TYPES.EEFUNG_DATA_SERVICE://蚁坊的数据服务申请
+                applyDetailContent = <DataServiceDetail
+                    applyData={this.state.applyId ? applyDetail : null}
+                    detailItem={this.state.selectedDetailItem}
+                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                    selectedApplyStatus={this.state.selectedApplyStatus}
+                    isUnreadDetail={this.getIsUnreadDetail()}
+                    height={$(window).height()}
+                    afterTransferApplySuccess={this.afterTransferApplySuccess}
+                />;
+                break;
         }
         //如果是旧版的用户审批
         if (_.get(selectedDetailItem, 'message_type') === APPLY_APPROVE_TYPES.USERAPPLY) {
@@ -1032,6 +1045,10 @@ class ApplyApproveList extends React.Component {
             case APPLY_APPROVE_TYPES.DOMAINAPPLY://舆情平台申请
                 return <AddDomainApply
                     hideLeaveApplyAddForm={this.closeAddApplyForm}
+                />;
+            case APPLY_APPROVE_TYPES.EEFUNG_DATA_SERVICE://蚁坊的数据服务申请
+                return <AddDataServiceApply
+                    hideApplyAddForm={this.closeAddApplyForm}
                 />;
 
         }
