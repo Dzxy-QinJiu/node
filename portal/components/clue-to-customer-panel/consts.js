@@ -18,3 +18,13 @@ export const VIEW_TYPE = {
 
 //空操作
 export const NOOP = function(){};
+
+const { CONTACT_OTHER_KEYS } = require('MOD_DIR/crm/public/views/contacts/contact-form');
+
+//联系人不用展示的项
+export const NOT_SHOW_FORM_ITEMS = [
+    CONTACT_OTHER_KEYS.SEX,
+    CONTACT_OTHER_KEYS.BIRTHDAY,
+    CONTACT_OTHER_KEYS.HOBBY,
+    CONTACT_OTHER_KEYS.REMARK
+];
