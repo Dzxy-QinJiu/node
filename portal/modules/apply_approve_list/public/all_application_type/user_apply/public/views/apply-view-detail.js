@@ -1206,7 +1206,7 @@ const COLUMN_WIDTH = {
         );
     },
     // 渲染产品信息
-    renderAppInfo(text,  app, custom_setting) {
+    renderAppInfo(text, app, custom_setting) {
         const appId = app.app_id;
         const terminals = _.get(app, 'terminals', []);
         let appDefaultTerminals = approveAppConfigTerminal(appId, this.props.appList);
@@ -1216,16 +1216,11 @@ const COLUMN_WIDTH = {
             <div>
                 <span>{text}</span>
                 {
-                    !_.isEmpty(appDefaultTerminals) && this.state.isShowNoSelectAppTerminalsTips ? (
-                        <span className="no-select-terminals-tips">
-                            ({Intl.get('user.app.no.select.terminals.tip', '请至少选择一个多终端')})
+                    !_.isEmpty(terminalsName) ? (
+                        <span>
+                            ({ terminalsName.join('、')})
                         </span>
                     ) : null
-                }
-                {
-                    !_.isEmpty(terminalsName) ? <span>
-                                    ({ terminalsName.join('、')})
-                                </span> : null
                 }
             </div>
         );
@@ -2156,7 +2151,7 @@ const COLUMN_WIDTH = {
             this.setState({
                 isShowTipsClickPass: true
             });
-            return
+            return;
         }
         this.showConfirmModal(approval);
     },
