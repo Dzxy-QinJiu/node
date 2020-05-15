@@ -133,7 +133,7 @@ class PhoneCallout extends React.Component {
             return (
                 <Popover
                     placement="right"
-                    content={Intl.get('lead.check.phone.status.other.tip', '其他包括: 风险号、沉默号等')}
+                    content={Intl.get('lead.check.phone.status.other.tip', '标示号码是危险号码、不存在或沉默号。')}
                 >
                     <Icon type="question-circle-o" className="handle-btn-item"/>
                 </Popover>

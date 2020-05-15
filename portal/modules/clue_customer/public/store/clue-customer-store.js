@@ -348,15 +348,26 @@ ClueCustomerStore.prototype.processForList = function(curClueList) {
     if (!_.isArray(curClueList)) return [];
     var list = _.clone(curClueList);
     _.map(list, (curClue) => {
+        let phone_status = [];
         if (_.isArray(curClue.contacts)) {
             for (var j = 0; j < curClue.contacts.length; j++) {
                 var contact = curClue.contacts[j];
+                //处理手机号的检测状态
+                if(_.get(contact, 'phone_status[0]')) {
+                    _.each(_.get(contact, 'phone_status'), item => {
+                        if(_.has(item, 'status')) {//是否有status这个字段
+                            phone_status.push(item);
+                        }
+                    });
+                }
                 if (contact.def_contancts === 'true') {
                     curClue.contact = contact.name;
                     curClue.contact_way = getContactWay(contact.phone);
                 }
+                delete contact.phone_status;
             }
         }
+        curClue.phone_status = phone_status;
     });
     return list;
 };

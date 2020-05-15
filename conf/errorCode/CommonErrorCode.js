@@ -216,6 +216,7 @@ function getConfigJson(req) {
         //权限操作参数错误
         '15205': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
         '15206': {'httpCode': 500, 'message': backendIntl.get('errorcode.93', '删除权限失败，存在拥有该权限的用户')},
+        '15214': {'httpCode': 500, 'message': backendIntl.get('errorcode.check.phone', '手机号检测服务异常',)},
 
         /***************************销售阶段、团队&组织 *****************************/
         '16101': {'httpCode': 500, 'message': backendIntl.get('errorcode.95', '获取销售阶段失败')},

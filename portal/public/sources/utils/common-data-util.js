@@ -843,14 +843,18 @@ exports.getUserPosition = function(cb) {
 
 // 检测手机号状态
 let checkPhoneStatusAjax;
-exports.checkPhoneStatus = (reqData) => {
+exports.checkPhoneStatus = (reqData, type) => {
     let data = {
         check_params: reqData
     };
+    let url = '/rest/check/phone/status';
+    if(type) {
+        url += '?type=' + type;
+    }
     checkPhoneStatusAjax && checkPhoneStatusAjax.abort();
     const Deferred = $.Deferred();
     checkPhoneStatusAjax = $.ajax({
-        url: '/rest/check/phone/status',
+        url,
         dataType: 'json',
         type: 'post',
         data: data,

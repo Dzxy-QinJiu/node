@@ -3311,7 +3311,19 @@ var en_US = {
     'lead.check.phone.fiald': 'Failed to detect empty number!!',//空号检测失败
     'lead.check.phone.upgrade.tip': 'Empty number can be detected after upgrade',//升级后可检测空号
     'lead.check.phone.renewal.tip': 'Empty number can be detected after renewal',//续费后可检测空号
-    'lead.check.phone.status.other.tip': 'Others include: risk number, silence number, etc',//其他包括: 风险号、沉默号等
+    'lead.check.phone.status.other.tip': 'The identification number is a hazard number, nonexistence or silence number.',//标示号码是危险号码、不存在或沉默号。
+    'lead.check.phone': 'Space detection',//空号检测
+    'lead.check.phone.only.phone': 'Only mobile phone number',//仅手机号
+    'lead.check.phone.single.tip': 'This clue has {allCount} Numbers. The system found {emptyCount} suspected empty Numbers for you.',//此线索有{allCount}个号码，系统帮您发现了{emptyCount}个疑似空号。
+    'lead.check.phone.no.real.count.tip': 'The mobile phone number of this clue has no real number, shall we extract it?',//此线索的手机号没有实号，是否提取？
+    'lead.check.phone.batch.tip': 'The system helps you find {emptyCount} clues all suspected empty Numbers.',//系统帮您发现了{emptyCount}条线索全部疑似空号。
+    'lead.smart.extract.real.phone': 'Intelligent extraction',//智能提取
+    'lead.all.extract': 'All extracts',//全部提取
+    'lead.check.phone.free.tip': 'Free phone number blank detection is available this week',//本周免费提供手机号空号检测
+    'lead.check.phone.explain': 'Mobile phone number detection (no 14, 16, 17, 19)',//仅支持手机号检测(不支持14、16、17、19号段)
+    'lead.direct.extraction': 'Direct extraction',//直接提取
+    'lead.check.phone.result': 'Null detection results',//空号检测结果
+    'lead.check.phone.free.weekly.tip': 'This week free empty number detection {text}, welcome to try!',//本周免费提供空号检测{text}，欢迎大家试用！
     
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
