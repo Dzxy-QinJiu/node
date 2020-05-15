@@ -493,3 +493,23 @@ exports.checkOnlyClueNamePhone = function(queryObj) {
     });
     return Deferred.promise();
 };
+let getCompanyListByNameAjax = null;
+exports.getCompanyListByName = function(queryObj) {
+    var Deferred = $.Deferred();
+    getCompanyListByNameAjax && getCompanyListByNameAjax.abort();
+    getCompanyListByNameAjax = $.ajax({
+        url: '/rest/recommend/clue/company/name',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg, errorText) {
+            if(errorText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};

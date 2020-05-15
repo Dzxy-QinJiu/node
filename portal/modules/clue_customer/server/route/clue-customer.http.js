@@ -281,6 +281,13 @@ module.exports = {
             needLogin: true
         },
         privileges: [cluePrivilegeConst.BASE_QUERY_PERMISSION_ORGANIZATION]
+    }, {
+        method: 'get',
+        path: '/rest/recommend/clue/company/name',
+        handler: 'getCompanyListByName',
+        passport: {
+            needLogin: true
+        },
     }
     ]
 };

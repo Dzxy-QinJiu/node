@@ -85,7 +85,9 @@ const restApis = {
     //获取线索最大提取量的数值（适用用户是今天的最大提取量，正式用户是本月的最大提取量）及已经提取了多少的数值
     getMaxLimitCountAndHasExtractedClue: 'rest/clue/v2/month/able/clues',
     //获取申请试用的数据
-    getApplyTryData: '/rest/base/v1/realm/version/upgrade/apply'
+    getApplyTryData: '/rest/base/v1/realm/version/upgrade/apply',
+    //根据企业名称模糊获取企业基本信息
+    getCompanyListByName: '/rest/company/v1/companys/name',
 };
 
 //获取线索来源
@@ -621,6 +623,13 @@ exports.checkOnlyClueNamePhone = function(req, res) {
 exports.getApplyTryData = function(req, res) {
     return restUtil.authRest.get({
         url: restApis.getApplyTryData,
+        req: req,
+        res: res
+    }, req.query);
+};
+exports.getCompanyListByName = function(req, res) {
+    return restUtil.authRest.get({
+        url: restApis.getCompanyListByName,
         req: req,
         res: res
     }, req.query);
