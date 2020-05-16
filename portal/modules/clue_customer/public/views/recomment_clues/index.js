@@ -588,8 +588,8 @@ class RecommendCluesList extends React.Component {
             };
             handleCancel = this.handleBatchVisibleChange.bind(this, false);
             let traceTip = errorMsg ? '直接提取' : '全部提取';
-            //已选线索中过滤掉全部疑似空号和检测状态为[]的线索后，可以提取的线索列表
-            let canExtractClueList = _.filter(_.get(result, 'clues'), item => !_.includes(allEmptyPhones, item.id) && !_.includes(_.get(result, 'checkEmptyResultClues'), item.id));
+            //已选线索中过滤掉全部疑似空号的线索后，可以提取的线索列表
+            let canExtractClueList = _.filter(_.get(result, 'clues'), item => !_.includes(allEmptyPhones, item.id));
             {/*有错误信息，或者可以提取的线索列表为空时，不显示智能提取按钮*/}
             let hiddenSmartExtractBtn = errorMsg || !canExtractClueList.length;
             btnContent = (
