@@ -12,3 +12,12 @@ exports.getRewardedCluesCount = (req, res) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+// 检测手机号的状态
+exports.checkPhoneStatus = (req, res) => {
+    clueService.checkPhoneStatus(req, res).on('success' , (data) => {
+        res.status(200).json(data);
+    }).on('error' , (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

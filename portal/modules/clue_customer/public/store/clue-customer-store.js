@@ -348,15 +348,26 @@ ClueCustomerStore.prototype.processForList = function(curClueList) {
     if (!_.isArray(curClueList)) return [];
     var list = _.clone(curClueList);
     _.map(list, (curClue) => {
+        let phone_status = [];
         if (_.isArray(curClue.contacts)) {
             for (var j = 0; j < curClue.contacts.length; j++) {
                 var contact = curClue.contacts[j];
+                //处理手机号的检测状态
+                if(_.get(contact, 'phone_status[0]')) {
+                    _.each(_.get(contact, 'phone_status'), item => {
+                        if(_.has(item, 'status')) {//是否有status这个字段
+                            phone_status.push(item);
+                        }
+                    });
+                }
                 if (contact.def_contancts === 'true') {
                     curClue.contact = contact.name;
                     curClue.contact_way = getContactWay(contact.phone);
                 }
+                delete contact.phone_status;
             }
         }
+        curClue.phone_status = phone_status;
     });
     return list;
 };
@@ -463,7 +474,7 @@ ClueCustomerStore.prototype.setUnSelectDataTip = function(tip) {
 ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail) {
     //修改线索相关的属性，直接传属性和线索的id
     //如果修改联系人相关的属性，还要把联系人的id传过去
-    var customerProperty = ['access_channel', 'clue_source', 'source_classify', 'clue_classify', 'source', 'user_id', 'user_name', 'sales_team', 'sales_team_id', 'name', 'availability', 'source_time', 'status','customer_name','customer_id','industry','address'];
+    var customerProperty = ['access_channel', 'clue_source', 'source_classify', 'clue_classify', 'source', 'user_id', 'user_name', 'sales_team', 'sales_team_id', 'name', 'availability', 'source_time', 'status','customer_name','customer_id','industry','address', 'phone_status'];
     var contact_id = newCustomerDetail.contact_id || '';
     if (newCustomerDetail.contact_id) {
         delete newCustomerDetail.contact_id;

@@ -45,6 +45,8 @@ import {
     transferClueToCustomerIconPrivilege,
     editClueItemIconPrivilege,
     releaseClueTip,
+    getShowPhoneNumber,
+    dealClueCheckPhoneStatus
 } from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -736,8 +738,10 @@ class ClueDetailOverview extends React.Component {
         let hasPrivilege = editCluePrivilege(curClue);
         return <PhoneCallout
             phoneNumber={item}
-            showPhoneNum={addHyphenToPhoneNumber(item)}
+            showPhoneNum={getShowPhoneNumber(curClue, addHyphenToPhoneNumber(item))}
             showPhoneIcon={true}
+            showCheckPhone={false}
+            onCheckPhoneSuccess={this.onCheckPhoneSuccess}
             hidePhoneIcon={!hasPrivilege}
             type='lead'
             id={_.get(curClue, 'id', '')}
@@ -1556,6 +1560,9 @@ class ClueDetailOverview extends React.Component {
             targetCustomer: customer,
             afterConvert: this.props.afterTransferClueSuccess
         });
+    };
+    onCheckPhoneSuccess = (result) => {
+        this.props.updateClueProperty({phone_status: dealClueCheckPhoneStatus(this.state.curClue, result)});
     };
     renderContactContent(contactItem) {
         let {curClue,isExpandList} = this.state;
