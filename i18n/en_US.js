@@ -3332,6 +3332,7 @@ var en_US = {
     'lead.direct.extraction': 'Direct extraction',//直接提取
     'lead.check.phone.result': 'Null detection results',//空号检测结果
     'lead.check.phone.free.weekly.tip': 'This week free empty number detection {text}, welcome to try!',//本周免费提供空号检测{text}，欢迎大家试用！
+    'lead.extract.confirm': 'Confirm to extract',//确认提取
     
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',

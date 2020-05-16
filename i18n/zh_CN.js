@@ -3354,6 +3354,7 @@ var zh_CN = {
     'lead.direct.extraction': '直接提取',
     'lead.check.phone.result': '空号检测结果',
     'lead.check.phone.free.weekly.tip': '本周免费提供空号检测{text}，欢迎大家试用！',
+    'lead.extract.confirm': '确认提取',
 
     //线索模块 end
     'common.memeber.all': '全部成员',

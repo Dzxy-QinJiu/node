@@ -127,6 +127,8 @@ class RecommendCluesList extends React.Component {
         };
     }
 
+    isClearSelectSales = true;
+
     onStoreChange = () => {
         this.setState(clueCustomerStore.getState());
     };
@@ -150,6 +152,7 @@ class RecommendCluesList extends React.Component {
         clueCustomerStore.unlisten(this.onStoreChange);
         clueCustomerAction.initialRecommendClues();
         $('#app .row > .col-xs-10').removeClass('recommend-clues-page-container');
+        this.isClearSelectSales = true;
     }
 
     batchExtractCluesLists = (taskInfo, taskParams) => {
@@ -334,16 +337,6 @@ class RecommendCluesList extends React.Component {
     }
 
     //-------------- 检测手机号状态 start -------
-    //是否展示空号检测功能
-    isShowCheckPhoneCheckBox() {
-        //csm域下,普通销售以及个人版
-        return isCurtao() && isCommonSalesOrPersonnalVersion();
-    }
-    //是否检测手机号空号
-    isCheckPhoneStatus() {
-        //csm域下以及是否启用了空号检测功能
-        return isCurtao() && this.hasEnableCheckPhone();
-    }
     //获取可检测空号的线索列表
     getCluePhoneList(clues) {
         let checkedClueList = [];
@@ -367,8 +360,15 @@ class RecommendCluesList extends React.Component {
         };
     }
     //检测手机号状态
-    checkPhoneStatus(clues, type, callback) {
+    checkPhoneStatus(clues, type, callback, hasAssignedPrivilege) {
         if(this.state.singleExtractLoading || this.state.batchExtractLoading) {return false;}
+        if(hasAssignedPrivilege && !this.state.salesMan) {//有分配销售的权限时，需要判断是否选择了销售人员
+            this.setState({unSelectDataTip: Intl.get('crm.17', '请选择销售人员')});
+            return false;
+        }
+
+        //有分配权限，在检测空号时，不能清除选择的销售人员
+        this.isClearSelectSales = !hasAssignedPrivilege;
 
         if(type === EXTRACT_OPERATOR_TYPE.SINGLE) {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '点击单个检测按钮');
@@ -377,20 +377,24 @@ class RecommendCluesList extends React.Component {
             clues = this.state.selectedRecommendClues;
         }
 
-        //线索下是否含有实号
         let data = this.getCluePhoneList(clues);
         clues = type === EXTRACT_OPERATOR_TYPE.SINGLE ? clues[0] : clues;
         let recommendClueLists = this.state.recommendClueLists;
         let ids = _.map(data.checkedClueList, 'id').join(',');
 
-        if(data.isCanNotCheckPhone) {//都是不可检测的电话
+        //没有可检测的电话时,直接提示
+        if(data.isCanNotCheckPhone) {
             let newState = {};
             if(type === EXTRACT_OPERATOR_TYPE.SINGLE) {//单个检测时
                 let content = this.renderCheckedStatusTip(type, {clueEmptyPhoneIds: [], phones: clues.telephones}, () => {
-                    _.isFunction(callback) && callback(clues);
+                    _.isFunction(callback) && callback(clues, hasAssignedPrivilege);
                 });
                 newState.extractLimitContent = content;
                 newState.singlePopoverVisible = clues.id;
+                if (this['changeSales' + clues.id]) {
+                    //隐藏批量变更销售面板
+                    this['changeSales' + clues.id].handleCancel();
+                }
             }else {
                 let content = this.renderCheckedStatusTip(type, {}, (extractType) => {
                     if(_.isFunction(callback)) {
@@ -417,11 +421,15 @@ class RecommendCluesList extends React.Component {
                     recommendClueLists[index].phone_status = phone_status;
                 }
                 let content = this.renderCheckedStatusTip(type, {...checkPhoneResult, phones: clues.telephones}, () => {
-                    _.isFunction(callback) && callback(clues);
+                    _.isFunction(callback) && callback(clues, hasAssignedPrivilege);
                 });
                 newState.recommendClueLists = recommendClueLists;
                 newState.extractLimitContent = content;
                 newState.singlePopoverVisible = ids;
+                if (this['changeSales' + clues.id]) {
+                    //隐藏批量变更销售面板
+                    this['changeSales' + clues.id].handleCancel();
+                }
             }else {//批量检测时
                 _.each(recommendClueLists, item => {
                     let ids = _.map(checkPhoneResult.list, 'id');
@@ -449,10 +457,14 @@ class RecommendCluesList extends React.Component {
             let newState = {};
             if(type === EXTRACT_OPERATOR_TYPE.SINGLE) {//单个检测时
                 let content = this.renderCheckedStatusTip(type, {error: Intl.get('lead.check.phone.fiald', '空号检测失败')}, () => {
-                    _.isFunction(callback) && callback(clues);
+                    _.isFunction(callback) && callback(clues, hasAssignedPrivilege);
                 });
                 newState.extractLimitContent = content;
                 newState.singlePopoverVisible = clues.id;
+                if (this['changeSales' + clues.id]) {
+                    //隐藏批量变更销售面板
+                    this['changeSales' + clues.id].handleCancel();
+                }
             }else {
                 let content = this.renderCheckedStatusTip(type, {error: Intl.get('lead.check.phone.fiald', '空号检测失败')}, (extractType) => {
                     if(_.isFunction(callback)) {
@@ -556,11 +568,11 @@ class RecommendCluesList extends React.Component {
                 }
             };
             handleCancel = this.handleSingleVisibleChange.bind(this, false);
-            let traceTip = errorMsg ? '直接提取' : '提取';
+            let traceTip = errorMsg ? '直接提取' : '确认提取';
             btnContent = (
                 <React.Fragment>
                     <Button type="primary" size="small" loading={this.state.singleExtractLoading} onClick={callback} data-tracename={`点击单个检测中的'${traceTip}'按钮`}>{
-                        errorMsg ? Intl.get('lead.direct.extraction', '直接提取') : Intl.get('clue.extract', '提取')
+                        errorMsg ? Intl.get('lead.direct.extraction', '直接提取') : Intl.get('lead.extract.confirm', '确认提取')
                     }</Button>
                 </React.Fragment>
             );
@@ -766,10 +778,12 @@ class RecommendCluesList extends React.Component {
         return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
     };
     clearSelectSales = () => {
-        this.setState({
-            salesMan: '',
-            salesManNames: '',
-        });
+        if(this.isClearSelectSales) {
+            this.setState({
+                salesMan: '',
+                salesManNames: '',
+            });
+        }
     };
     //设置已选销售的名字
     setSelectContent = (salesManNames) => {
@@ -1085,6 +1099,7 @@ class RecommendCluesList extends React.Component {
     };
     // 批量提取，发请求前的参数处理
     handleBeforeSubmitChangeSales = (itemId) => {
+        this.isClearSelectSales = true;
         let list_id = this.state.recommendClueListId;
         if(isCommonSalesOrPersonnalVersion()) {// 普通销售或者个人版
             let saleLoginData = userData.getUserData();
@@ -1219,6 +1234,11 @@ class RecommendCluesList extends React.Component {
             }
         }else {//渲染可提取线索的按钮
             let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
+            let isShowCheckPhoneStatus = this.hasEnableCheckPhone() && !this.state.disableExtract && !this.state.showBatchExtractTip;
+            let handleFnc = this.handleSubmitAssignSalesBatch;
+            if(isShowCheckPhoneStatus) {
+                handleFnc = this.checkPhoneStatus.bind(this, [], EXTRACT_OPERATOR_TYPE.BATCH, this.handleSubmitAssignSalesBatch, hasAssignedPrivilege);
+            }
             if(hasAssignedPrivilege) {
                 isDisabled = !hasSelectedClue || this.state.batchExtractLoading;
                 let btnCls = classNames('button-save btn-item', {
@@ -1257,7 +1277,7 @@ class RecommendCluesList extends React.Component {
                         isSaving={this.state.batchExtractLoading}
                         isDisabled={!hasSelectedClue}
                         overlayContent={this.renderSalesBlock()}
-                        handleSubmit={this.handleSubmitAssignSalesBatch}
+                        handleSubmit={handleFnc}
                         unSelectDataTip={this.state.unSelectDataTip}
                         clearSelectData={this.clearSelectSales}
                         placement="topRight"
@@ -1265,11 +1285,6 @@ class RecommendCluesList extends React.Component {
                     />
                 );
             }else {
-                let isShowCheckPhoneStatus = this.isCheckPhoneStatus() && !this.state.disableExtract && !this.state.showBatchExtractTip;
-                let handleFnc = this.handleSubmitAssignSalesBatch;
-                if(isShowCheckPhoneStatus) {
-                    handleFnc = this.checkPhoneStatus.bind(this, [], EXTRACT_OPERATOR_TYPE.BATCH, this.handleSubmitAssignSalesBatch);
-                }
                 return (
                     <Popover
                         placement="bottomLeft"
@@ -1443,6 +1458,12 @@ class RecommendCluesList extends React.Component {
             // 提取线索分配给相关的销售人员的权限
             let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
             let checkRecord = this.state.singlePopoverVisible === record.id;
+            let isShowCheckPhoneStatus = this.hasEnableCheckPhone() && !this.state.disableExtract && !_.isEqual(this.state.showSingleExtractTip, record.id);
+            let placement = isShowCheckPhoneStatus ? 'topRight' : 'bottomRight';
+            let handleFnc = this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege);
+            if(isShowCheckPhoneStatus) {
+                handleFnc = this.checkPhoneStatus.bind(this, [record], EXTRACT_OPERATOR_TYPE.SINGLE, this.handleExtractClueAssignToSale, hasAssignedPrivilege);
+            }
             if (hasAssignedPrivilege) {
                 return (
                     <AntcDropdown
@@ -1451,7 +1472,7 @@ class RecommendCluesList extends React.Component {
                         ref={assignSale => this['changeSales' + record.id] = assignSale}
                         content={
                             <Popover
-                                placement="bottomRight"
+                                placement={placement}
                                 trigger="click"
                                 content={this.state.extractLimitContent}
                                 visible={checkRecord}
@@ -1473,19 +1494,13 @@ class RecommendCluesList extends React.Component {
                         cancelTitle={Intl.get('common.cancel', '取消')}
                         isSaving={this.state.singleExtractLoading}
                         overlayContent={this.renderSalesBlock()}
-                        handleSubmit={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege)}
+                        handleSubmit={handleFnc}
                         unSelectDataTip={this.state.unSelectDataTip}
                         clearSelectData={this.clearSelectSales}
                         btnAtTop={false}
                     />
                 );
             } else {
-                let isShowCheckPhoneStatus = this.isCheckPhoneStatus() && !this.state.disableExtract && !_.isEqual(this.state.showSingleExtractTip, record.id);
-                let placement = isShowCheckPhoneStatus ? 'topRight' : 'bottomRight';
-                let handleFnc = this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege);
-                if(isShowCheckPhoneStatus) {
-                    handleFnc = this.checkPhoneStatus.bind(this, [record], EXTRACT_OPERATOR_TYPE.SINGLE, this.handleExtractClueAssignToSale);
-                }
                 return (
                     <Popover
                         placement={placement}
@@ -1677,37 +1692,35 @@ class RecommendCluesList extends React.Component {
                     <span>{isWebMin ? null : Intl.get('clue.customer.refresh.list', '换一批')}</span>
                 </Button>
                 {/*空号检测*/}
-                {this.isShowCheckPhoneCheckBox() ? (
-                    <Popover
-                        placement="top"
-                        content={(
-                            <div className="check-phone-use-container">
-                                <div className="img-wrapper">
-                                    <img className="image" src="/static/images/curtao-personal.svg"/>
-                                </div>
-                                <span className="">
-                                    <ReactIntl.FormattedMessage
-                                        id="lead.check.phone.free.weekly.tip"
-                                        defaultMessage="本周免费提供空号检测{text}，欢迎大家试用！"
-                                        values={{
-                                            text: <span className="only-phone-text">({Intl.get('lead.check.phone.only.phone', '仅手机号')})</span>
-                                        }}
-                                    />
-                                </span>
+                <Popover
+                    placement="top"
+                    content={(
+                        <div className="check-phone-use-container">
+                            <div className="img-wrapper">
+                                <img className="image" src="/static/images/curtao-personal.svg"/>
                             </div>
-                        )}
-                        overlayClassName="extract-limit-content"
+                            <span>
+                                <ReactIntl.FormattedMessage
+                                    id="lead.check.phone.free.weekly.tip"
+                                    defaultMessage="本周免费提供空号检测{text}，欢迎大家试用！"
+                                    values={{
+                                        text: <span className="only-phone-text">({Intl.get('lead.check.phone.only.phone', '仅手机号')})</span>
+                                    }}
+                                />
+                            </span>
+                        </div>
+                    )}
+                    overlayClassName="extract-limit-content"
+                >
+                    <Checkbox
+                        checked={this.hasEnableCheckPhone()}
+                        disabled={this.state.setEnableCheckPhone}
+                        onChange={this.handleCheckPhoneChange}
+                        className="check-phone-enable-checkbox"
                     >
-                        <Checkbox
-                            checked={this.hasEnableCheckPhone()}
-                            disabled={this.state.setEnableCheckPhone}
-                            onChange={this.handleCheckPhoneChange}
-                            className="check-phone-enable-checkbox"
-                        >
-                            {Intl.get('lead.check.phone', '空号检测')}
-                        </Checkbox>
-                    </Popover>
-                ) : null}
+                        {Intl.get('lead.check.phone', '空号检测')}
+                    </Checkbox>
+                </Popover>
                 {this.state.extractedResult === 'success' ? (
                     <AlertTimer
                         closable
