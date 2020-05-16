@@ -189,11 +189,6 @@ class RecommendCluesList extends React.Component {
         if ( _.isEmpty(this.state.recommendClueLists)) {
             this.getRecommendClueLists();
         }
-
-        this.setState({
-            selectedRecommendClues: [],
-            disabledCheckedClues: []
-        });
     };
 
     // 获取销售人员
@@ -338,6 +333,11 @@ class RecommendCluesList extends React.Component {
     }
 
     //-------------- 检测手机号状态 start -------
+    //是否展示空号检测功能
+    isShowCheckPhoneCheckBox() {
+        //csm域下,普通销售以及个人版
+        return isCurtao() && isCommonSalesOrPersonnalVersion();
+    }
     //是否检测手机号空号
     isCheckPhoneStatus() {
         //csm域下以及是否启用了空号检测功能
@@ -383,29 +383,34 @@ class RecommendCluesList extends React.Component {
         let ids = _.map(data.checkedClueList, 'id').join(',');
 
         if(data.isCanNotCheckPhone) {//都是不可检测的电话
+            let newState = {};
             if(type === EXTRACT_OPERATOR_TYPE.SINGLE) {//单个检测时
                 let content = this.renderCheckedStatusTip(type, {clueEmptyPhoneIds: [], phones: clues.telephones}, () => {
                     _.isFunction(callback) && callback(clues);
                 });
-                this.setState({
-                    extractLimitContent: content,
-                    singlePopoverVisible: clues.id,
-                });
+                newState.extractLimitContent = content;
+                newState.singlePopoverVisible = clues.id;
             }else {
                 let content = this.renderCheckedStatusTip(type, {}, (extractType) => {
                     if(_.isFunction(callback)) {
                         callback(clues, extractType);
                     }
                 });
-                this.setState({
-                    extractLimitContent: content,
-                    batchPopoverVisible: true,
-                });
+                newState.extractLimitContent = content;
+                newState.batchPopoverVisible = true;
             }
+            this.setState(newState);
             return false;
         }
 
+        if(type === EXTRACT_OPERATOR_TYPE.BATCH) {
+            this.setState({batchExtractLoading: true});
+        }
         checkPhoneStatus({ids}, 'recommend-clue').then((result) => {
+            let newState = {};
+            if(type === EXTRACT_OPERATOR_TYPE.BATCH) {
+                newState.batchExtractLoading = false;
+            }
             let checkPhoneResult = this.getCheckedPhoneStatus(clues, result);
             if(type === EXTRACT_OPERATOR_TYPE.SINGLE) {//单个检测时
                 let index = _.findIndex(recommendClueLists, item => item.id === clues.id);
@@ -416,11 +421,9 @@ class RecommendCluesList extends React.Component {
                 let content = this.renderCheckedStatusTip(type, {...checkPhoneResult, phones: clues.telephones}, () => {
                     _.isFunction(callback) && callback(clues);
                 });
-                this.setState({
-                    recommendClueLists,
-                    extractLimitContent: content,
-                    singlePopoverVisible: ids,
-                });
+                newState.recommendClueLists = recommendClueLists;
+                newState.extractLimitContent = content;
+                newState.singlePopoverVisible = ids;
             }else {//批量检测时
                 _.each(recommendClueLists, item => {
                     let ids = _.map(checkPhoneResult.list, 'id');
@@ -429,42 +432,41 @@ class RecommendCluesList extends React.Component {
                         item.phone_status = _.get(curListItem, 'phone_status', []);
                     }
                 });
-                let content = this.renderCheckedStatusTip(type, checkPhoneResult, (extractType, allEmptyPhones) => {
+                let content = this.renderCheckedStatusTip(type, {...checkPhoneResult, clues,}, (extractType, canExtractClueList) => {
                     if(_.isFunction(callback)) {
                         let list = clues;
-                        if(extractType === BATCH_EXTRACT_TYPE.ONLY) {//智能提取时，需要排除掉那些手机号全部疑似空号的线索
-                            let ids = _.map(allEmptyPhones, 'id');
-                            list = _.filter(list, item => !_.includes(ids, item.id));
+                        if(extractType === BATCH_EXTRACT_TYPE.ONLY) {//智能提取时，需要排除掉那些手机号全部疑似空号的线索以及检测时没有返回检测状态的线索
+                            list = canExtractClueList;
                         }
                         callback(list, extractType);
                     }
                 });
-                this.setState({
-                    recommendClueLists,
-                    extractLimitContent: content,
-                    batchPopoverVisible: true,
-                });
+                newState.recommendClueLists = recommendClueLists;
+                newState.extractLimitContent = content;
+                newState.batchPopoverVisible = true;
             }
+            this.setState(newState);
         }, () => {
+            let newState = {};
+            if(type === EXTRACT_OPERATOR_TYPE.BATCH) {
+                newState.batchExtractLoading = false;
+            }
             if(type === EXTRACT_OPERATOR_TYPE.SINGLE) {//单个检测时
                 let content = this.renderCheckedStatusTip(type, {error: Intl.get('lead.check.phone.fiald', '空号检测失败')}, () => {
                     _.isFunction(callback) && callback(clues);
                 });
-                this.setState({
-                    extractLimitContent: content,
-                    singlePopoverVisible: clues.id,
-                });
+                newState.extractLimitContent = content;
+                newState.singlePopoverVisible = clues.id;
             }else {
                 let content = this.renderCheckedStatusTip(type, {error: Intl.get('lead.check.phone.fiald', '空号检测失败')}, (extractType) => {
                     if(_.isFunction(callback)) {
                         callback(clues, extractType);
                     }
                 });
-                this.setState({
-                    extractLimitContent: content,
-                    batchPopoverVisible: true,
-                });
+                newState.extractLimitContent = content;
+                newState.batchPopoverVisible = true;
             }
+            this.setState(newState);
         });
     }
     //获取检测后的手机号状态
@@ -473,57 +475,62 @@ class RecommendCluesList extends React.Component {
         let clueEmptyPhoneIds = [];//有疑似空号的线索ids
         let clueRealPhoneIds = [];//有实号的线索ids
         let allEmptyPhones = [];//全部疑似空号的线索ids
+        let checkEmptyResultClues = [];//返回的检测状态为空[]的线索
         _.each(result, item => {
-            let obj = {
-                id: item.id,
-                //疑似空号
-                emptyPhones: [],
-                //实号
-                realPhones: [],
-                //停机
-                downTimePhones: [],
-                //其他
-                otherPhones: [],
-                phone_status: []
-            };
-            let idObj = {id: item.id};
-            _.each(item.check_result, checkedItem => {
-                obj.phone_status.push({phone: checkedItem.mobile_phone, status: checkedItem.phone_status});
-                switch(checkedItem.phone_status) {
-                    case '0'://疑似空号
-                        obj.emptyPhones.push(checkedItem.mobile_phone);
-                        break;
-                    case '1'://实号
-                        obj.realPhones.push(checkedItem.mobile_phone);
-                        break;
-                    case '2'://停机
-                        obj.downTimePhones.push(checkedItem.mobile_phone);
-                        break;
-                    default://其他(沉默号、风险号等)
-                        obj.otherPhones.push(checkedItem.mobile_phone);
-                        break;
-                }
-            });
-            if(_.get(obj.emptyPhones,'length')) {//有疑似空号
-                clueEmptyPhoneIds.push(idObj);
+            if(!_.isEmpty(item.check_result)){
+                let obj = {
+                    id: item.id,
+                    //疑似空号
+                    emptyPhones: [],
+                    //实号
+                    realPhones: [],
+                    //停机
+                    downTimePhones: [],
+                    //其他
+                    otherPhones: [],
+                    phone_status: []
+                };
+                let idObj = {id: item.id};
+                _.each(item.check_result, checkedItem => {
+                    obj.phone_status.push({phone: checkedItem.mobile_phone, status: checkedItem.phone_status});
+                    switch(checkedItem.phone_status) {
+                        case '0'://疑似空号
+                            obj.emptyPhones.push(checkedItem.mobile_phone);
+                            break;
+                        case '1'://实号
+                            obj.realPhones.push(checkedItem.mobile_phone);
+                            break;
+                        case '2'://停机
+                            obj.downTimePhones.push(checkedItem.mobile_phone);
+                            break;
+                        default://其他(沉默号、风险号等)
+                            obj.otherPhones.push(checkedItem.mobile_phone);
+                            break;
+                    }
+                });
+                if(_.get(obj.emptyPhones,'length')) {//有疑似空号
+                    clueEmptyPhoneIds.push(idObj);
 
-                let cluesList = clues;
-                if(_.isObject(clues)) {
-                    cluesList = [clues];
+                    let cluesList = clues;
+                    if(!_.isArray(clues) && _.isObject(clues)) {
+                        cluesList = [clues];
+                    }
+                    let curClue = _.find(cluesList, item => item.id === obj.id);
+                    let phones = _.get(curClue, 'telephones', []);
+                    let data = this.getCluePhoneList([curClue]);
+                    //全部是疑似空号，逻辑：该线索下都是可检测的手机号，且都是疑似空号
+                    if(_.isEqual(data.checkedClueList.length, phones.length) && _.isEqual(obj.emptyPhones.length, phones.length)) {
+                        allEmptyPhones.push(item.id);
+                    }
                 }
-                let curClue = _.find(cluesList, item => item.id === obj.id);
-                let phones = _.get(curClue, 'telephones', []);
-                let data = this.getCluePhoneList([curClue]);
-                //全部是疑似空号，逻辑：该线索下都是可检测的手机号，且都是疑似空号
-                if(_.isEqual(data.checkedClueList.length, phones.length) && _.isEqual(obj.emptyPhones.length, phones.length)) {
-                    allEmptyPhones.push(idObj);
+                if(_.get(obj.realPhones,'length')) {//有实号
+                    clueRealPhoneIds.push(idObj);
                 }
+                obj.phone_status = _.uniq(obj.phone_status);
+                list.push(obj);
+            }else {
+                checkEmptyResultClues.push(item.id);
             }
-            if(_.get(obj.realPhones,'length')) {//有实号
-                clueRealPhoneIds.push(idObj);
-            }
-            obj.phone_status = _.uniq(obj.phone_status);
-            list.push(obj);
         });
         //单个提取时，此线索有#个号码，系统帮您发现了#个疑似空号。
         //批量提取时，系统帮您发现了#条线索全部疑似空号。
@@ -531,6 +538,7 @@ class RecommendCluesList extends React.Component {
             clueEmptyPhoneIds: _.uniq(clueEmptyPhoneIds),
             allEmptyPhones: _.uniq(allEmptyPhones),
             clueRealPhoneIds: _.uniq(clueRealPhoneIds),
+            checkEmptyResultClues: _.uniq(checkEmptyResultClues),
             list
         };
     }
@@ -560,32 +568,37 @@ class RecommendCluesList extends React.Component {
                 </React.Fragment>
             );
         }else {
-            let allEmptyPhones = _.get(result,'allEmptyPhones.length', 0);
+            let allEmptyPhonesCount = _.get(result,'allEmptyPhones.length', 0);
+            let allEmptyPhones = _.get(result,'allEmptyPhones', []);
             i18n = {
                 id: 'lead.check.phone.batch.tip',
                 name: '系统帮您发现了{emptyCount}条线索全部疑似空号。',
                 value: {
-                    emptyCount: <span className="extract-count">{allEmptyPhones}</span>
+                    emptyCount: <span className="extract-count">{allEmptyPhonesCount}</span>
                 }
             };
             handleCancel = this.handleBatchVisibleChange.bind(this, false);
             let traceTip = errorMsg ? '直接提取' : '全部提取';
+            //已选线索中过滤掉全部疑似空号和检测状态为[]的线索后，可以提取的线索列表
+            let canExtractClueList = _.filter(_.get(result, 'clues'), item => !_.includes(allEmptyPhones, item.id) && !_.includes(_.get(result, 'checkEmptyResultClues'), item.id));
+            {/*有错误信息，或者全部疑似空号的线索跟选择的线索相等，或者可以提取的线索列表为空时，不显示智能提取按钮*/}
+            let hiddenSmartExtractBtn = errorMsg || allEmptyPhonesCount === _.get(result, 'clues.length', 0) || !canExtractClueList.length;
             btnContent = (
                 <React.Fragment>
-                    {errorMsg || !allEmptyPhones ? null : (
+                    {hiddenSmartExtractBtn ? null : (
                         <Button
                             className="check-btn-cancel"
                             size="small"
-                            disabled={!result.clueRealPhoneIds.length || this.state.batchExtractLoading && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ONLY}
+                            disabled={this.state.batchExtractLoading && this.state.batchExtractType && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ONLY}
                             loading={this.state.batchExtractLoading && this.state.batchExtractType === BATCH_EXTRACT_TYPE.ONLY}
-                            onClick={callback.bind(this, BATCH_EXTRACT_TYPE.ONLY, _.get(result,'allEmptyPhones', []))}
+                            onClick={callback.bind(this, BATCH_EXTRACT_TYPE.ONLY, canExtractClueList)}
                             data-tracename="点击批量检测中的'智能提取'按钮"
                         >{Intl.get('lead.smart.extract.real.phone', '智能提取')}</Button>
                     )}
                     <Button
                         type="primary"
                         size="small"
-                        disabled={this.state.batchExtractLoading && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ALL}
+                        disabled={this.state.batchExtractLoading && this.state.batchExtractType && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ALL}
                         loading={this.state.batchExtractLoading && this.state.batchExtractType === BATCH_EXTRACT_TYPE.ALL}
                         onClick={callback.bind(this, BATCH_EXTRACT_TYPE.ALL)}
                         data-tracename={`点击批量检测中的'${traceTip}'按钮`}
@@ -917,7 +930,14 @@ class RecommendCluesList extends React.Component {
 
     //点击后，隐藏掉所有的popover
     handleVisibleChange = () => {
-        this.setState({batchPopoverVisible: '', singlePopoverVisible: '', extractLimitContent: null});
+        this.setState({
+            batchPopoverVisible: '',
+            singlePopoverVisible: '',
+            extractLimitContent: null,
+            showSingleExtractTip: '',
+            showBatchExtractTip: false,
+            batchExtractType: '',
+        });
     };
 
     handleSuccessTip() {
@@ -998,9 +1018,12 @@ class RecommendCluesList extends React.Component {
             dateType: 'json',
             data: submitObj,
             success: (data) => {
+                let disabledCheckedClues = _.get(this.state,'disabledCheckedClues', []);
                 this.setState({
                     batchExtractLoading: false,
-                    canClickExtract: true
+                    canClickExtract: true,
+                    selectedRecommendClues: disabledCheckedClues,
+                    disabledCheckedClues: [],
                 });
                 var taskId = _.get(data, 'batch_label','');
                 if (taskId){
@@ -1014,7 +1037,7 @@ class RecommendCluesList extends React.Component {
                         urlPath: '/leads'
                     });
                     //总的被选中的线索数量
-                    var totalSelectedSize = _.get(this.state,'disabledCheckedClues.length',0);
+                    var totalSelectedSize = _.get(disabledCheckedClues,'length',0);
                     //已经被提取的线索
                     var hasExtractedLeadIds = _.get(data,'picked',[]);
                     var hasExtractedLeadCount = hasExtractedLeadIds.length;
@@ -1136,7 +1159,6 @@ class RecommendCluesList extends React.Component {
             //点击批量提取后把select的check选中状态都取消，并且加上disabled的样式
             this.setState({
                 disabledCheckedClues: this.state.selectedRecommendClues,
-                selectedRecommendClues: [],
                 batchExtractType
             });
             if(this.state.getMaxLimitExtractNumberError){
@@ -1253,7 +1275,7 @@ class RecommendCluesList extends React.Component {
                 }
                 return (
                     <Popover
-                        placement={isShowCheckPhoneStatus ? 'bottomLeft' : 'bottomRight'}
+                        placement="bottomLeft"
                         trigger="click"
                         content={this.state.extractLimitContent}
                         visible={this.state.batchPopoverVisible}
@@ -1358,7 +1380,7 @@ class RecommendCluesList extends React.Component {
     //单个提取线索
     handleExtractClueAssignToSale = (record, flag) => {
         //如果这条线索已经提取过了或正在提取，就不能再点击提取了
-        if(record.hasExtracted || record.hasExtractedByOther || this.state.singleExtractLoading){
+        if(record.hasExtracted || record.hasExtractedByOther || this.state.singleExtractLoading || !this.state.canClickExtract){
             return;
         }
         if (!this.state.salesMan && flag) {
@@ -1645,35 +1667,37 @@ class RecommendCluesList extends React.Component {
                     <span>{isWebMin ? null : Intl.get('clue.customer.refresh.list', '换一批')}</span>
                 </Button>
                 {/*空号检测*/}
-                <Popover
-                    placement="top"
-                    content={(
-                        <div className="check-phone-use-container">
-                            <div className="img-wrapper">
-                                <img className="image" src="/static/images/curtao-personal.svg"/>
+                {this.isShowCheckPhoneCheckBox() ? (
+                    <Popover
+                        placement="top"
+                        content={(
+                            <div className="check-phone-use-container">
+                                <div className="img-wrapper">
+                                    <img className="image" src="/static/images/curtao-personal.svg"/>
+                                </div>
+                                <span className="">
+                                    <ReactIntl.FormattedMessage
+                                        id="lead.check.phone.free.weekly.tip"
+                                        defaultMessage="本周免费提供空号检测{text}，欢迎大家试用！"
+                                        values={{
+                                            text: <span className="only-phone-text">({Intl.get('lead.check.phone.only.phone', '仅手机号')})</span>
+                                        }}
+                                    />
+                                </span>
                             </div>
-                            <span className="">
-                                <ReactIntl.FormattedMessage
-                                    id="lead.check.phone.free.weekly.tip"
-                                    defaultMessage="本周免费提供空号检测{text}，欢迎大家试用！"
-                                    values={{
-                                        text: <span className="only-phone-text">({Intl.get('lead.check.phone.only.phone', '仅手机号')})</span>
-                                    }}
-                                />
-                            </span>
-                        </div>
-                    )}
-                    overlayClassName="extract-limit-content"
-                >
-                    <Checkbox
-                        checked={this.hasEnableCheckPhone()}
-                        disabled={this.state.setEnableCheckPhone}
-                        onChange={this.handleCheckPhoneChange}
-                        className="check-phone-enable-checkbox"
+                        )}
+                        overlayClassName="extract-limit-content"
                     >
-                        {Intl.get('lead.check.phone', '空号检测')}
-                    </Checkbox>
-                </Popover>
+                        <Checkbox
+                            checked={this.hasEnableCheckPhone()}
+                            disabled={this.state.setEnableCheckPhone}
+                            onChange={this.handleCheckPhoneChange}
+                            className="check-phone-enable-checkbox"
+                        >
+                            {Intl.get('lead.check.phone', '空号检测')}
+                        </Checkbox>
+                    </Popover>
+                ) : null}
                 {this.state.extractedResult === 'success' ? (
                     <AlertTimer
                         closable
