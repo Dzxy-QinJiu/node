@@ -1092,6 +1092,9 @@ var zh_CN = {
     
     // 后台管理-自定义字段start
     'custom.field.title': '字段名',
+    'custom.field.add.title': '添加{name}字段',
+    'custom.field.edit.title': '{name}字段',
+    'custom.field.input.placeholder': '请输入{name}',
     // 后台管理-自定义字段end
 
     //应用管理start

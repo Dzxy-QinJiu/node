@@ -2,10 +2,11 @@
  * Created by hzl on 2020/5/14.
  */
 import { Button} from 'antd';
-import { customFieldType } from 'PUB_DIR/sources/utils/consts';
+import { manageCustomType, customFieldType } from 'PUB_DIR/sources/utils/consts';
 import { AntcTable } from 'antc';
 import classNames from 'classnames';
 import Spinner from 'CMP_DIR/spinner';
+import CustomFieldPanel from './views/custom-field-panel';
 import ajax from './ajax';
 require('./css/index.less');
 
@@ -16,7 +17,8 @@ class CustomFieldManage extends React.Component {
             activeTab: 'lead', // 默认的tab
             loading: false,
             customFieldData: {}, // 自定义字段数据
-            isShowAddRightPanel: false, // 是否显示添加的面板
+            isShowRightPanel: false, // 是否显示右侧面板，默认不显示
+            editCustomField: {}, // 编辑的内容
         };
     }
 
@@ -51,7 +53,7 @@ class CustomFieldManage extends React.Component {
     // 添加自定义字段
     handleAddCustomField = () => {
         this.setState({
-            isShowAddRightPanel: true,
+            isShowRightPanel: true,
         }, () => {
         });
     };
@@ -64,7 +66,7 @@ class CustomFieldManage extends React.Component {
                 <div className='pull-left'>
                     <ul className='custom-field-type'>
                         {
-                            _.map(customFieldType, item => {
+                            _.map(manageCustomType, item => {
                                 const cls = classNames('custom_field_type_item', {
                                     'active-tab': activeTab === _.get(item, 'value', '')
                                 });
@@ -90,8 +92,11 @@ class CustomFieldManage extends React.Component {
         );
     };
 
-    handleEdit = () => {
-
+    handleEdit = (rowData) => {
+        this.setState({
+            editCustomField: rowData,
+            isShowRightPanel: true
+        });
     };
 
     handleDelete = () => {
@@ -109,6 +114,11 @@ class CustomFieldManage extends React.Component {
             dataIndex: 'field_type',
             key: 'field_type',
             width: '25%',
+            render: (text) => {
+                return (
+                    <div>{customFieldType[text]}</div>
+                );
+            }
         }, {
             title: Intl.get('common.operate', '操作'),
             width: '25%',
@@ -137,11 +147,19 @@ class CustomFieldManage extends React.Component {
                     util={{zoomInSortArea: true}}
                     dataSource={dataSource}
                     columns={columns}
+                    onRowClick={this.handleRowClick}
+                    rowClassName={this.handleRowClassName}
                     pagination={false}
                     locale={{ emptyText: Intl.get('common.no.data', '暂无数据')}}
                 />
             </div>
         );
+    };
+
+    handleClosePanel = () => {
+        this.setState({
+            isShowRightPanel: false
+        });
     };
 
     render() {
@@ -164,6 +182,15 @@ class CustomFieldManage extends React.Component {
                         )
                     }
                 </div>
+                {
+                    this.state.isShowRightPanel ? (
+                        <CustomFieldPanel
+                            tabType={this.state.activeTab}
+                            onClosePanel={this.handleClosePanel}
+                            editCustomField ={this.state.editCustomField}
+                        />
+                    ) : null
+                }
             </div>
         );
     }

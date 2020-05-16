@@ -896,8 +896,14 @@ export const DISAPPEAR_DELAY_TIME = 3000;
 // 赢取线索量的最大值
 export const winningClueMaxCount = 80;
 
-// 自定义字段类型
-export const customFieldType = [{
+export const manageCustomTab = {
+    'lead': Intl.get('crm.sales.clue', '线索'),
+    'opportunity': Intl.get('common.chance', '机会'),
+    'customer': Intl.get('call.record.customer', '客户')
+};
+
+// 管理的字段类型
+export const manageCustomType = [{
     value: 'lead',
     name: Intl.get('crm.sales.clue', '线索')
 }, {
@@ -907,3 +913,51 @@ export const customFieldType = [{
     value: 'customer',
     name: Intl.get('call.record.customer', '客户')
 }];
+
+// 自定义字段的类型
+export const customFieldType = {
+    'text': '单行文本',
+    'multitext': '多行文本',
+    'select': '下拉单选',
+    'multiselect': '下拉多选',
+    'radio': '单项选择',
+    'checkbox': '多项选择',
+    'date': '日期选择',
+    'number:': '数字类型'
+};
+
+// 选择自定义字段筛选框的值
+export const customFieldSelectOptions = [{
+    value: 'text',
+    name: '单行文本'
+}, {
+    value: 'multitext',
+    name: '多行文本'
+}, {
+    value: 'select',
+    name: '下拉单选'
+}, {
+    value: 'multiselect',
+    name: '下拉多选'
+}, {
+    value: 'radio',
+    name: '单项选择'
+}, {
+    value: 'checkbox',
+    name: '多项选择'
+}, {
+    value: 'date',
+    name: '日期选择'
+}, {
+    value: 'number',
+    name: '数字类型'
+}];
+
+export const customFieldDefaultValue = ['statistics', 'sort', 'in'];
+
+// 自定义字段默认设置属性
+export const customFieldCheckOptions = [
+    { label: '是否统计', value: 'statistics' },
+    { label: '是否支持排序', value: 'sort' },
+    { label: '是否出现在表单中', value: 'in' },
+];
