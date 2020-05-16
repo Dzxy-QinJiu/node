@@ -409,9 +409,6 @@ class RecommendCluesList extends React.Component {
         }
         checkPhoneStatus({ids}, 'recommend-clue').then((result) => {
             let newState = {};
-            if(type === EXTRACT_OPERATOR_TYPE.BATCH) {
-                newState.batchExtractLoading = false;
-            }
             let checkPhoneResult = this.getCheckedPhoneStatus(clues, result);
             if(type === EXTRACT_OPERATOR_TYPE.SINGLE) {//单个检测时
                 let index = _.findIndex(recommendClueLists, item => item.id === clues.id);
@@ -445,13 +442,11 @@ class RecommendCluesList extends React.Component {
                 newState.recommendClueLists = recommendClueLists;
                 newState.extractLimitContent = content;
                 newState.batchPopoverVisible = true;
+                newState.batchExtractLoading = false;
             }
             this.setState(newState);
         }, () => {
             let newState = {};
-            if(type === EXTRACT_OPERATOR_TYPE.BATCH) {
-                newState.batchExtractLoading = false;
-            }
             if(type === EXTRACT_OPERATOR_TYPE.SINGLE) {//单个检测时
                 let content = this.renderCheckedStatusTip(type, {error: Intl.get('lead.check.phone.fiald', '空号检测失败')}, () => {
                     _.isFunction(callback) && callback(clues);
@@ -466,6 +461,7 @@ class RecommendCluesList extends React.Component {
                 });
                 newState.extractLimitContent = content;
                 newState.batchPopoverVisible = true;
+                newState.batchExtractLoading = false;
             }
             this.setState(newState);
         });
@@ -582,8 +578,8 @@ class RecommendCluesList extends React.Component {
             let traceTip = errorMsg ? '直接提取' : '全部提取';
             //已选线索中过滤掉全部疑似空号和检测状态为[]的线索后，可以提取的线索列表
             let canExtractClueList = _.filter(_.get(result, 'clues'), item => !_.includes(allEmptyPhones, item.id) && !_.includes(_.get(result, 'checkEmptyResultClues'), item.id));
-            {/*有错误信息，或者全部疑似空号的线索跟选择的线索相等，或者可以提取的线索列表为空时，不显示智能提取按钮*/}
-            let hiddenSmartExtractBtn = errorMsg || allEmptyPhonesCount === _.get(result, 'clues.length', 0) || !canExtractClueList.length;
+            {/*有错误信息，或者可以提取的线索列表为空时，不显示智能提取按钮*/}
+            let hiddenSmartExtractBtn = errorMsg || !canExtractClueList.length;
             btnContent = (
                 <React.Fragment>
                     {hiddenSmartExtractBtn ? null : (
