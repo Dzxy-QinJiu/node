@@ -3333,6 +3333,8 @@ var en_US = {
     'lead.check.phone.result': 'Null detection results',//空号检测结果
     'lead.check.phone.free.weekly.tip': 'This week free empty number detection {text}, welcome to try!',//本周免费提供空号检测{text}，欢迎大家试用！
     'lead.extract.confirm': 'Confirm to extract',//确认提取
+    'lead.single.check.phone.no.empty.phone.tip': 'There are {allCount} Numbers in this clue, but the system has not found any suspected empty Numbers',//此线索有{allCount}个号码，系统未发现疑似空号
+    'lead.batch.check.phone.no.empty.phone.tip': 'The system did not find all possible clues to empty Numbers',//系统未发现全部疑似空号的线索
     
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
