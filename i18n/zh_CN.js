@@ -3355,6 +3355,8 @@ var zh_CN = {
     'lead.check.phone.result': '空号检测结果',
     'lead.check.phone.free.weekly.tip': '本周免费提供空号检测{text}，欢迎大家试用！',
     'lead.extract.confirm': '确认提取',
+    'lead.single.check.phone.no.empty.phone.tip': '此线索有{allCount}个号码，系统未发现疑似空号',
+    'lead.batch.check.phone.no.empty.phone.tip': '系统未发现全部疑似空号的线索',
 
     //线索模块 end
     'common.memeber.all': '全部成员',
