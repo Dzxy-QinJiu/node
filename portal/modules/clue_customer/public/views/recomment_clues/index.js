@@ -573,12 +573,12 @@ class RecommendCluesList extends React.Component {
             let traceTip = errorMsg ? '直接提取' : '确认提取';
             btnContent = (
                 <React.Fragment>
-                    {!clueEmptyPhoneCount ? (
-                        <Button className="check-btn-cancel" size="small" onClick={handleCancel} data-tracename="点击单个检测中的'取消'按钮">{Intl.get('common.cancel', '取消')}</Button>
-                    ) : null}
                     <Button type="primary" size="small" loading={this.state.singleExtractLoading} onClick={callback} data-tracename={`点击单个检测中的'${traceTip}'按钮`}>{
                         errorMsg ? Intl.get('lead.direct.extraction', '直接提取') : Intl.get('lead.extract.confirm', '确认提取')
                     }</Button>
+                    {!clueEmptyPhoneCount ? (
+                        <Button className="check-btn-cancel" size="small" onClick={handleCancel} data-tracename="点击单个检测中的'取消'按钮">{Intl.get('common.cancel', '取消')}</Button>
+                    ) : null}
                 </React.Fragment>
             );
         }else {
@@ -607,7 +607,6 @@ class RecommendCluesList extends React.Component {
                     {hiddenSmartExtractBtn ? null : (
                         <Button
                             type="primary"
-                            className="check-btn-cancel"
                             size="small"
                             disabled={this.state.batchExtractLoading && this.state.batchExtractType && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ONLY}
                             loading={this.state.batchExtractLoading && this.state.batchExtractType === BATCH_EXTRACT_TYPE.ONLY}
@@ -616,6 +615,7 @@ class RecommendCluesList extends React.Component {
                         >{Intl.get('lead.smart.extract.real.phone', '智能提取')}</Button>
                     )}
                     <Button
+                        className="check-btn-cancel"
                         size="small"
                         disabled={this.state.batchExtractLoading && this.state.batchExtractType && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ALL}
                         loading={this.state.batchExtractLoading && this.state.batchExtractType === BATCH_EXTRACT_TYPE.ALL}
@@ -653,13 +653,13 @@ class RecommendCluesList extends React.Component {
                     </div>
                 </div>
                 <div className="check-btn-container">
-                    {btnContent}
                     {errorMsg ? null : (
                         <div className="check-phone-free-tip">
                             <i className="iconfont icon-warn-icon"/>
                             {Intl.get('lead.check.phone.explain', '仅支持手机号检测(不支持14、16、17、19号段)')}
                         </div>
                     )}
+                    {btnContent}
                 </div>
             </div>
         );
@@ -1451,11 +1451,11 @@ class RecommendCluesList extends React.Component {
             if(currentVersionObj.company){
                 return (
                     <Popover content={getContactSalesPopoverTip()} placement="bottomLeft" trigger="click">
-                        {this.renderSingleExtractBtn(() => {})}
+                        {this.renderSingleExtractBtn(() => {}, record)}
                     </Popover>
                 );
             } else {//个人版，展示升级\续费的界面
-                return this.renderSingleExtractBtn(this.handleUpgradePersonalVersion);
+                return this.renderSingleExtractBtn(this.handleUpgradePersonalVersion, record);
             }
         } else {//渲染可提取线索的按钮
             // 提取线索分配给相关的销售人员的权限
