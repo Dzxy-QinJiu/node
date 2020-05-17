@@ -391,10 +391,7 @@ class RecommendCluesList extends React.Component {
                 });
                 newState.extractLimitContent = content;
                 newState.singlePopoverVisible = clues.id;
-                if (this['changeSales' + clues.id]) {
-                    //隐藏批量变更销售面板
-                    this['changeSales' + clues.id].handleCancel();
-                }
+                this.hiddenDropDownBlock(clues.id);
             }else {
                 let content = this.renderCheckedStatusTip(type, {}, (extractType) => {
                     if(_.isFunction(callback)) {
@@ -403,6 +400,7 @@ class RecommendCluesList extends React.Component {
                 });
                 newState.extractLimitContent = content;
                 newState.batchPopoverVisible = true;
+                this.hiddenDropDownBlock();
             }
             this.setState(newState);
             return false;
@@ -426,10 +424,7 @@ class RecommendCluesList extends React.Component {
                 newState.recommendClueLists = recommendClueLists;
                 newState.extractLimitContent = content;
                 newState.singlePopoverVisible = ids;
-                if (this['changeSales' + clues.id]) {
-                    //隐藏批量变更销售面板
-                    this['changeSales' + clues.id].handleCancel();
-                }
+                this.hiddenDropDownBlock(clues.id);
             }else {//批量检测时
                 _.each(recommendClueLists, item => {
                     let ids = _.map(checkPhoneResult.list, 'id');
@@ -451,6 +446,7 @@ class RecommendCluesList extends React.Component {
                 newState.extractLimitContent = content;
                 newState.batchPopoverVisible = true;
                 newState.batchExtractLoading = false;
+                this.hiddenDropDownBlock();
             }
             this.setState(newState);
         }, () => {
@@ -461,10 +457,7 @@ class RecommendCluesList extends React.Component {
                 });
                 newState.extractLimitContent = content;
                 newState.singlePopoverVisible = clues.id;
-                if (this['changeSales' + clues.id]) {
-                    //隐藏批量变更销售面板
-                    this['changeSales' + clues.id].handleCancel();
-                }
+                this.hiddenDropDownBlock(clues.id);
             }else {
                 let content = this.renderCheckedStatusTip(type, {error: Intl.get('lead.check.phone.fiald', '空号检测失败')}, (extractType) => {
                     if(_.isFunction(callback)) {
@@ -474,6 +467,7 @@ class RecommendCluesList extends React.Component {
                 newState.extractLimitContent = content;
                 newState.batchPopoverVisible = true;
                 newState.batchExtractLoading = false;
+                this.hiddenDropDownBlock();
             }
             this.setState(newState);
         });
@@ -559,18 +553,29 @@ class RecommendCluesList extends React.Component {
         let errorMsg = _.get(result, 'error');
 
         if(type === EXTRACT_OPERATOR_TYPE.SINGLE) {//单个检测时
+            let clueEmptyPhoneCount = _.get(result, 'clueEmptyPhoneIds.length', 0);
             i18n = {
                 id: 'lead.check.phone.single.tip',
                 name: '此线索有{allCount}个号码，系统帮您发现了{emptyCount}个疑似空号。',
                 value: {
                     allCount: <span className="primary-count">{_.get(result, 'phones.length', 0)}</span>,
-                    emptyCount: <span className="extract-count">{_.get(result, 'clueEmptyPhoneIds.length', 0)}</span>
+                    emptyCount: <span className="extract-count">{clueEmptyPhoneCount}</span>
                 }
             };
+            if(!clueEmptyPhoneCount) {//疑似空号为0时
+                i18n.id = 'lead.single.check.phone.no.empty.phone.tip';
+                i18n.name = '此线索有{allCount}个号码，系统未发现疑似空号';
+                i18n.value = {
+                    allCount: <span className="primary-count">{_.get(result, 'phones.length', 0)}</span>,
+                };
+            }
             handleCancel = this.handleSingleVisibleChange.bind(this, false);
             let traceTip = errorMsg ? '直接提取' : '确认提取';
             btnContent = (
                 <React.Fragment>
+                    {!clueEmptyPhoneCount ? (
+                        <Button className="check-btn-cancel" size="small" onClick={handleCancel} data-tracename="点击单个检测中的'取消'按钮">{Intl.get('common.cancel', '取消')}</Button>
+                    ) : null}
                     <Button type="primary" size="small" loading={this.state.singleExtractLoading} onClick={callback} data-tracename={`点击单个检测中的'${traceTip}'按钮`}>{
                         errorMsg ? Intl.get('lead.direct.extraction', '直接提取') : Intl.get('lead.extract.confirm', '确认提取')
                     }</Button>
@@ -586,6 +591,11 @@ class RecommendCluesList extends React.Component {
                     emptyCount: <span className="extract-count">{allEmptyPhonesCount}</span>
                 }
             };
+            if(!allEmptyPhonesCount) {//全部疑似空号为0时
+                i18n.id = 'lead.batch.check.phone.no.empty.phone.tip';
+                i18n.name = '系统未发现全部疑似空号的线索';
+                i18n.value = {};
+            }
             handleCancel = this.handleBatchVisibleChange.bind(this, false);
             let traceTip = errorMsg ? '直接提取' : '全部提取';
             //已选线索中过滤掉全部疑似空号的线索后，可以提取的线索列表
@@ -596,6 +606,7 @@ class RecommendCluesList extends React.Component {
                 <React.Fragment>
                     {hiddenSmartExtractBtn ? null : (
                         <Button
+                            type="primary"
                             className="check-btn-cancel"
                             size="small"
                             disabled={this.state.batchExtractLoading && this.state.batchExtractType && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ONLY}
@@ -605,7 +616,6 @@ class RecommendCluesList extends React.Component {
                         >{Intl.get('lead.smart.extract.real.phone', '智能提取')}</Button>
                     )}
                     <Button
-                        type="primary"
                         size="small"
                         disabled={this.state.batchExtractLoading && this.state.batchExtractType && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ALL}
                         loading={this.state.batchExtractLoading && this.state.batchExtractType === BATCH_EXTRACT_TYPE.ALL}
@@ -643,13 +653,13 @@ class RecommendCluesList extends React.Component {
                     </div>
                 </div>
                 <div className="check-btn-container">
+                    {btnContent}
                     {errorMsg ? null : (
-                        <span className="check-phone-free-tip">
+                        <div className="check-phone-free-tip">
                             <i className="iconfont icon-warn-icon"/>
                             {Intl.get('lead.check.phone.explain', '仅支持手机号检测(不支持14、16、17、19号段)')}
-                        </span>
+                        </div>
                     )}
-                    {btnContent}
                 </div>
             </div>
         );
@@ -785,6 +795,14 @@ class RecommendCluesList extends React.Component {
             });
         }
     };
+    //隐藏销售选择面板
+    hiddenDropDownBlock(clueId) {
+        if(this['changeSales' + clueId]) {
+            this['changeSales' + clueId].handleCancel();
+        }else if(this['changeSales']) {
+            this['changeSales'].handleCancel();
+        }
+    }
     //设置已选销售的名字
     setSelectContent = (salesManNames) => {
         this.setState({salesManNames, unSelectDataTip: ''});
@@ -1038,6 +1056,7 @@ class RecommendCluesList extends React.Component {
                 });
                 var taskId = _.get(data, 'batch_label','');
                 if (taskId){
+                    this.hiddenDropDownBlock();
                     this.handleSuccessTip();
                     //向任务列表id中添加taskId
                     batchOperate.addTaskIdToList(taskId);
@@ -1088,10 +1107,7 @@ class RecommendCluesList extends React.Component {
                 //如果提取失败的原因是因为被提取过，将该推荐线索设置不可点击并且前面加提示
                 if(_.includes(HASEXTRACTBYOTHERERRTIP, errTip)){
                     this.handleLeadHasExtractedByOther(submitObj.companyIds);
-                    if (this['changeSales']) {
-                        //隐藏批量变更销售面板
-                        this['changeSales'].handleCancel();
-                    }
+                    this.hiddenDropDownBlock();
                 }
                 message.error(errTip);
             }
@@ -1200,10 +1216,7 @@ class RecommendCluesList extends React.Component {
                         }
                         this.setState(newState);
 
-                        if (this['changeSales']) {
-                            //隐藏批量变更销售面板
-                            this['changeSales'].handleCancel();
-                        }
+                        this.hiddenDropDownBlock();
                     }else{
                         this.batchAssignRecommendClues(submitObj);
                     }
@@ -1263,11 +1276,9 @@ class RecommendCluesList extends React.Component {
                         </Button>
                     </Popover>
                 );
-                if(isDisabled) {
-                    return batchExtractBtn;
-                }
                 return (
                     <AntcDropdown
+                        isDropdownAble={isDisabled}
                         datatraceContainer='批量提取线索'
                         ref={ref => this['changeSales'] = ref}
                         content={batchExtractBtn}
@@ -1280,7 +1291,7 @@ class RecommendCluesList extends React.Component {
                         handleSubmit={handleFnc}
                         unSelectDataTip={this.state.unSelectDataTip}
                         clearSelectData={this.clearSelectSales}
-                        placement="topRight"
+                        placement="bottomLeft"
                         btnAtTop={false}
                     />
                 );
@@ -1324,6 +1335,7 @@ class RecommendCluesList extends React.Component {
     }
     handleBatchVisibleChange = (visible) => {
         if(!visible && !this.state.batchExtractLoading) {
+            this.isClearSelectSales = true;
             this.setState({batchPopoverVisible: '', extractLimitContent: null, showBatchExtractTip: false, batchExtractType: ''});
         }
     };
@@ -1345,10 +1357,7 @@ class RecommendCluesList extends React.Component {
                     canClickExtract: true
                 });
                 if (data){
-                    if (this['changeSales' + leadId]) {
-                        //隐藏批量变更销售面板
-                        this['changeSales' + leadId].handleCancel();
-                    }
+                    this.hiddenDropDownBlock(leadId);
                     this.handleSuccessTip();
                     // 如果提取的是自己，则需要提示刷新
                     if(_.isEqual(_.get(reqData, 'user_id'), userData.getUserData().user_id)) {
@@ -1373,10 +1382,7 @@ class RecommendCluesList extends React.Component {
                 //如果提取失败的原因是因为被提取过，将该推荐线索设置不可点击并且前面加提示
                 if(_.includes(HASEXTRACTBYOTHERERRTIP, errTip)){
                     this.handleLeadHasExtractedByOther(reqData.companyIds);
-                    if (this['changeSales' + leadId]) {
-                        //隐藏批量变更销售面板
-                        this['changeSales' + leadId].handleCancel();
-                    }
+                    this.hiddenDropDownBlock(leadId);
                 }
                 message.error(errTip);
             }
@@ -1427,10 +1433,7 @@ class RecommendCluesList extends React.Component {
                         }
                         this.setState(newState);
 
-                        if (this['changeSales' + record.id]) {
-                            //隐藏批量变更销售面板
-                            this['changeSales' + record.id].handleCancel();
-                        }
+                        this.hiddenDropDownBlock(record.id);
                     }else{
                         this.extractRecommendCluesSingele(record);
                     }
@@ -1533,6 +1536,7 @@ class RecommendCluesList extends React.Component {
     }
     handleSingleVisibleChange = (visible) => {
         if(!visible && !this.state.singleExtractLoading) {
+            this.isClearSelectSales = true;
             this.setState({singlePopoverVisible: '', extractLimitContent: null, showSingleExtractTip: ''});
         }
     };
