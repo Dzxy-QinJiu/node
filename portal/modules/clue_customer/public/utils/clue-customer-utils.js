@@ -9,6 +9,9 @@ import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import { checkCurrentVersion, checkVersionAndType, isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
+import {isPhone} from 'PUB_DIR/sources/utils/validate-util';
+import {PHONE_STATUS_MAP} from 'PUB_DIR/sources/utils/consts';
+
 export const checkClueName = function(rule, value, callback) {
     value = _.trim(value);
     if (value) {
@@ -612,3 +615,60 @@ export const hasRecommendPrivilege = () => {
     return !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE);
 };
 
+//是否有检测空号的权限
+export const hasCheckPhoneStatusPrivilege = (curStatus) => {
+    //只有待我处理、待分配、待跟进、已跟进tab才有批量检测操作
+    return _.includes([SELECT_TYPE.WAIT_ME_HANDLE, SELECT_TYPE.WILL_DISTRIBUTE, SELECT_TYPE.WILL_TRACE, SELECT_TYPE.HAS_TRACE], curStatus.status);
+};
+
+//获取需要检测的手机号
+export const getCheckedPhones = function(clues) {
+    let phoneList = [];
+    _.each(clues, clue => {
+        if(clue.contacts.length) {
+            let phones = _.chain(clue.contacts)
+                .filter(item => _.isArray(item.phone) && item.phone.length)
+                .map('phone')
+                .reduce((sum, n) => sum.concat(n))
+                .uniq()
+                .filter(item => isPhone(item))
+                .value();
+            if(phones.length) {
+                _.each(phones, phone => {
+                    phoneList.push({
+                        clue_id: clue.id,
+                        mobile_phone: phone
+                    });
+                });
+            }
+        }
+    });
+    return phoneList;
+};
+
+//获取展示的电话号码，13567893112(实号)
+export const getShowPhoneNumber = function(obj, phoneNumber) {
+    if(_.get(obj, 'phone_status[0]')) {
+        let phoneStatus = _.get(obj, 'phone_status');
+        let curPhoneStatus = _.find(phoneStatus, item => item.phone === phoneNumber);
+        if(curPhoneStatus) {
+            let status = _.get(PHONE_STATUS_MAP, curPhoneStatus.status, Intl.get( 'common.others', '其他'));
+            phoneNumber = `${phoneNumber}(${status})`;
+        }
+    }
+    return phoneNumber;
+};
+
+//处理对象上的电话检测状态
+export const dealClueCheckPhoneStatus = function(obj, result) {
+    let phoneStatus = _.get(obj, 'phone_status', []);
+    let phoneResult = result[0];
+    let phoneObj = {phone: phoneResult.mobile_phone, status: phoneResult.phone_status};
+    let curIndex = _.findIndex(phoneStatus, item => item.phone === phoneResult.mobile_phone);
+    if(curIndex > -1) {
+        phoneStatus[curIndex] = phoneObj;
+    }else {
+        phoneStatus.push(phoneObj);
+    }
+    return phoneStatus;
+};

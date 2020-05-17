@@ -47,6 +47,10 @@ export const hotlinePhoneRegex = /^400-?\d{3}-?\d{4}$/;
 export const phone1010Regex = /^1010\d+$/;
 //QQ号码的正则表达式
 export const qqRegex = /^[1-9][0-9]{4,}$/;
+//是否是支持检测的手机号(处理带星号的手机号判断)
+export const isSupportCheckPhone = function(phone) {
+    return /^1[358][\d|*]{9}$/.test(phone);
+};
 
 //微信号的正则表达式 (只能6—20个字母、数字、下划线和减号，必须以字母开头（不区分大小写），不支持设置中文)
 export const wechatRegex = /^[a-zA-Z][-_a-zA-Z0-9]{5,19}$/;

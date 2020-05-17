@@ -840,3 +840,32 @@ exports.getUserPosition = function(cb) {
         });
     }
 };
+
+// 检测手机号状态
+let checkPhoneStatusAjax;
+exports.checkPhoneStatus = (reqData, type) => {
+    let data = {
+        check_params: reqData
+    };
+    let url = '/rest/check/phone/status';
+    if(type) {
+        url += '?type=' + type;
+    }
+    checkPhoneStatusAjax && checkPhoneStatusAjax.abort();
+    const Deferred = $.Deferred();
+    checkPhoneStatusAjax = $.ajax({
+        url,
+        dataType: 'json',
+        type: 'post',
+        data: data,
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (error, errorText) => {
+            if (errorText !== 'abort') {
+                Deferred.reject(error && error.responseJSON || Intl.get('lead.check.phone.fiald', '空号检测失败'));
+            }
+        }
+    });
+    return Deferred.promise();
+};

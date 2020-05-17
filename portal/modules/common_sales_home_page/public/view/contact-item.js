@@ -10,6 +10,7 @@ import {isEqualArray} from 'LIB_DIR/func';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import PhoneCallout from 'CMP_DIR/phone-callout';
+import {getShowPhoneNumber} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 class ContactItem extends React.Component {
     constructor(props) {
         super(props);
@@ -53,12 +54,16 @@ class ContactItem extends React.Component {
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
                                 <span className="phone-num-container">
                                     {_.map(contactItem.phone, (phoneItem, index) => {
+                                        let showPhoneNum = getShowPhoneNumber(this.state.customerData, phoneItem);
                                         return (
                                             <PhoneCallout
+                                                showPhoneNum={showPhoneNum}
                                                 phoneNumber={phoneItem}
                                                 contactName={contactName}
+                                                showCheckPhone={this.props.showCheckPhone}
                                                 showClueDetailPanel={this.props.showClueDetailPanel}
                                                 hidePhoneIcon={this.props.hidePhoneIcon}
+                                                onCheckPhoneSuccess={this.props.onCheckPhoneSuccess}
                                                 id={this.props.id}
                                                 type={this.props.type}
                                             />
@@ -133,7 +138,9 @@ ContactItem.defaultProps = {
     isHideContactName: false, // 默认不隐藏联系人信息
     showClueDetailPanel: function() {
 
-    }
+    },
+    onCheckPhoneSuccess: function() {},
+    showCheckPhone: false,//是否展示检测空号图标
 };
 ContactItem.propTypes = {
     id: PropTypes.string,
@@ -144,7 +151,9 @@ ContactItem.propTypes = {
     showContactLabel: PropTypes.bool,//是否展示联系人这几个字
     hasMoreIcon: PropTypes.bool,
     showClueDetailPanel: PropTypes.func,
+    onCheckPhoneSuccess: PropTypes.func,
     hidePhoneIcon: PropTypes.bool,//是否展示电话图标
     isHideContactName: PropTypes.bool,
+    showCheckPhone: PropTypes.bool,
 };
 export default ContactItem;

@@ -66,7 +66,10 @@ import {
     transferClueToCustomerIconPrivilege,
     addCluePrivilege,
     releaseClueTip,
-    hasRecommendPrivilege
+    hasRecommendPrivilege,
+    getCheckedPhones,
+    hasCheckPhoneStatusPrivilege,
+    dealClueCheckPhoneStatus
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -100,6 +103,7 @@ var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitte
 import ClueExtract from 'MOD_DIR/clue_pool/public';
 import MoreButton from 'CMP_DIR/more-btn';
 import history from 'PUB_DIR/sources/history';
+import {checkPhoneStatus} from 'PUB_DIR/sources/utils/common-data-util';
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -182,6 +186,7 @@ class ClueCustomer extends React.Component {
             showBatchRelease: false,//在手机端时，是否释放线索的确认框
             showBatchDistribute: false,//在手机端时，是否显示分配的dropdown
             isShowRewardClueTips: false, // 是否显示赢线索的提示，默认不显示
+            isBatchCheckPhoneStatusLoading: false,//是否正在批量检测空号
         };
     }
 
@@ -665,11 +670,8 @@ class ClueCustomer extends React.Component {
                 {Intl.get('crm.sales.manual.import.clue','导入线索')}
             </Menu.Item>
         </Menu>);
-        let cls = classNames('add-import-clue-btn-container', {
-            'pull-right': isCurtao()
-        });
         return (
-            <div className={cls}>
+            <div className="add-import-clue-btn-container pull-right">
                 {
                     addCluePrivilege() ?
                         <Dropdown overlay={menu} overlayClassName="norm-add-dropdown" placement="bottomCenter">
@@ -701,11 +703,8 @@ class ClueCustomer extends React.Component {
     };
     //渲染找线索按钮
     renderClueRecommend = () => {
-        let cls = classNames('recomend-clue-customer-container', {
-            'pull-right': !isCurtao()
-        });
         return (
-            <div className={cls}>
+            <div className="recomend-clue-customer-container">
                 {hasRecommendPrivilege() ?
                     <Popover
                         placement="bottom"
@@ -1805,9 +1804,11 @@ class ClueCustomer extends React.Component {
                         isHideContactName={true}
                         contacts={handledContactObj.contact}
                         customerData={salesClueItem}
+                        showCheckPhone={false}
                         showContactLabel={false}
                         hasMoreIcon={hasMoreIconPrivilege}
                         showClueDetailPanel={this.showClueDetailPanel.bind(this, salesClueItem)}
+                        onCheckPhoneSuccess={this.onCheckPhoneSuccess.bind(this, salesClueItem)}
                         id={_.get(salesClueItem, 'id', '')}
                         type='lead'
                         hidePhoneIcon={!editCluePrivilege(salesClueItem)}
@@ -3231,6 +3232,7 @@ class ClueCustomer extends React.Component {
         const hasPrivileges = {
             showBatchChange,//是否可以批量分配
             batchReleaseClue: roleRule && batchRule,//是否可以批量释放
+            batchCheckPhoneStatus: hasCheckPhoneStatusPrivilege(curStatus),//是否可以检测手机号状态
         };
         return (
             <div className="pull-right">
@@ -3239,6 +3241,7 @@ class ClueCustomer extends React.Component {
                         <React.Fragment>
                             {this.renderExportClue()}
                             <div className={assignCls}>
+                                {this.renderCheckPhoneBtn()}
                                 {hasPrivileges.showBatchChange ?
                                     <AntcDropdown
                                         ref='changesales'
@@ -3349,12 +3352,104 @@ class ClueCustomer extends React.Component {
                 }
                 {!(isWebMiddle || isWebMin) ? this.renderExportClue() : null}
                 {!isWebMin ? this.renderAddBtn() : null}
+                {!(isWebMiddle || isWebMin) ? this.renderCheckPhoneBtn() : null}
                 {isWebMiddle || isWebMin ?
                     <MoreButton
                         topBarDropList={this.topBarDropList.bind(this, isWebMin)}
                     /> : null}
             </div>
         );
+    };
+    renderCheckPhoneBtn = () => {
+        //todo 暂时去掉空号检测的功能
+        return null;
+        //选中全部后，不展示检测空号按钮
+        /*if(this.state.selectAllMatched && this.state.selectedClues.length > 1) {
+            return null;
+        }
+        if(hasCheckPhoneStatusPrivilege(this.getFilterStatus())) {
+            let checkPhones = getCheckedPhones(this.state.selectedClues);
+            if(this.isShowCheckPhonePopover(checkPhones)) {
+                let contentTip = getContactSalesPopoverTip(true) || Intl.get('lead.selected.has.phone.tip', '请选择有手机号的线索');
+                return (
+                    <Popover
+                        placement="bottom"
+                        trigger="click"
+                        content={contentTip}
+                    >
+                        <Button
+                            data-tracename="点击批量检测空号按钮"
+                            className='btn-item handle-btn-item pull-right'
+                            title={Intl.get('lead.check.phone.status', '检测空号')}
+                        >
+                            <span className="iconfont icon-search"/>
+                            {Intl.get('lead.check.phone.status', '检测空号')}
+                        </Button>
+                    </Popover>
+                );
+            }else {
+                return (
+                    <Button
+                        data-tracename="点击批量检测空号按钮"
+                        className='btn-item handle-btn-item pull-right'
+                        title={Intl.get('lead.check.phone.status', '检测空号')}
+                        onClick={this.handleCheckPhoneStatus.bind(this, checkPhones)}
+                        loading={this.state.isBatchCheckPhoneStatusLoading}
+                    >
+                        <span className="iconfont icon-search"/>
+                        {Intl.get('lead.check.phone.status', '检测空号')}
+                    </Button>
+                );
+            }
+
+        }else { return null; }*/
+    };
+    isShowCheckPhonePopover(checkPhones) {
+        let isShowPopover = false;
+        //个人试用或者个人正式过期不用展示popover
+        if(checkVersionAndType().isPersonalTrial || checkVersionAndType().isPersonalFormal && isExpired()) {
+            isShowPopover = false;
+        }
+        //企业试用 或 企业正式过期 或者 没有选择有手机号的线索
+        else if(checkVersionAndType().isCompanyTrial || checkVersionAndType().isCompanyFormal && isExpired() || !checkPhones.length) {
+            isShowPopover = true;
+        }
+        return isShowPopover;
+    }
+    //批量检测空号
+    handleCheckPhoneStatus = (checkPhones) => {
+        if(checkVersionAndType().isPersonalTrial) {//个人试用，提示升级可使用
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '个人试用点击批量检测空号，自动打开个人升级界面');
+            this.handleUpgradePersonalVersion(Intl.get('lead.check.phone.upgrade.tip', '升级后可检测空号'));
+            return false;
+        }else if(checkVersionAndType().isPersonalFormal && isExpired()) {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '个人正式过期后点击批量检测空号，自动打开个人续费界面');
+            this.handleUpgradePersonalVersion(Intl.get('lead.check.phone.renewal.tip', '续费后可检测空号'));
+            return false;
+        }
+        if(!checkPhones.length || this.state.isBatchCheckPhoneStatusLoading) { return false; }
+        checkPhoneStatus(checkPhones).then((result) => {
+            this.setState({isBatchCheckPhoneStatusLoading: false});
+            let curClueList = this.state.curClueList;
+            _.each(result, item => {
+                let curClue = _.find(curClueList, clue => clue.id === item.clue_id);
+                if(curClue) {
+                    let phoneStatus = _.get(curClue, 'phone_status', []);
+                    let phoneObj = {phone: item.mobile_phone, status: item.phone_status};
+                    phoneStatus.push(phoneObj);
+                    curClue.phone_status = _.uniqBy(phoneStatus, 'phone');
+                }
+            });
+            clueCustomerAction.updateClueCustomers(curClueList);
+        }, (errorMsg) => {
+            this.setState({isBatchCheckPhoneStatusLoading: false});
+            message.error(errorMsg);
+        });
+    };
+    //单个检测空号成功回调事件
+    onCheckPhoneSuccess = (clue, result) => {
+        clue.phone_status = dealClueCheckPhoneStatus(clue, result);
+        clueCustomerAction.updateClueCustomers(this.state.curClueList);
     };
     isFirstLoading = () => {
         return this.state.isLoading && this.state.firstLogin;
