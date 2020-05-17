@@ -12,5 +12,13 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    }, {
+        // 检测手机号的状态
+        'method': 'post',
+        'path': '/rest/check/phone/status',
+        'handler': 'checkPhoneStatus',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };
