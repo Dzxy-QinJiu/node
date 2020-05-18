@@ -54,6 +54,7 @@ class UserAddApp extends React.Component {
                 multilogin: '0' // 多人登录
             },
             configType: CONFIG_TYPE.UNIFIED_CONFIG,// 配置类型, 默认为统一配置
+            disabled: false, // 是否禁用
         };
     }
 
@@ -297,8 +298,14 @@ class UserAddApp extends React.Component {
                     }
                 });
                 value = terminals;
+                this.setState({
+                    disabled: false
+                });
             } else {
                 value = [];
+                this.setState({
+                    disabled: true
+                });
             }
         } else {
             if (e.target.type === 'checkbox') {
@@ -601,6 +608,7 @@ class UserAddApp extends React.Component {
                             totalStep={2}
                             onStepChange={this.turnStep.bind(this)}
                             onFinish={this.onStepFinish}
+                            disabled={this.state.disabled}
                         >
                             {this.renderIndicator()}
                         </OperationStepsFooter>

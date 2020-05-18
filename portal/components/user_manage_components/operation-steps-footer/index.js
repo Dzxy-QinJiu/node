@@ -45,8 +45,13 @@ class OperationStepsFooter extends React.Component {
         if (this.props.currentStep === (this.props.totalStep - 1)) {
             return null;
         }
+        const cls = ({'btn-disabled': this.props.disabled});
         return (
-            <RightPanelSubmit onClick={this.turnStep.bind(this,'next')}>{this.props.nextText}</RightPanelSubmit>
+            <RightPanelSubmit
+                onClick={this.turnStep.bind(this,'next')}
+                disabled={this.props.disabled}
+                className={cls}
+            >{this.props.nextText}</RightPanelSubmit>
         );
     }
 
