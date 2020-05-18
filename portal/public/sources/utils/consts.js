@@ -81,7 +81,7 @@ export const APPLY_APPROVE_TYPES = {
     BUSSINESSTRIP: 'businesstrip',//出差
     USERAPPLY: 'userapply',//用户申请
     USER_OR_GRANT: 'user_or_grant',//改版后用户审批的类型
-    EEFUNG_DATA_SERVICE: 'eefung_data_service',//蚁坊的数据服务申请
+    EEFUNG_DATA_SERVICE: 'eefung_data_service',//蚁坊的数据导出申请
     UNHANDLEAPPLY: 'unhandleApply'//未处理的申请审批
 
 };

@@ -273,12 +273,12 @@ class AddDataService extends React.Component {
             });
         };
         return (
-            <RightPanel showFlag={true} data-tracename="添加数据服务申请" className="add-data-service-apply-container">
+            <RightPanel showFlag={true} data-tracename="添加数据导出申请" className="add-data-service-apply-container">
                 <span className="iconfont icon-close add—leave-apply-close-btn" onClick={this.hideApplyAddForm}
-                    data-tracename="关闭添加数据服务申请面板"></span>
+                    data-tracename="关闭添加数据导出申请面板"></span>
                 <div className="add-leave-apply-wrap">
                     <BasicData
-                        clueTypeTitle={Intl.get('apply.eefung.data.service', '数据服务申请')}
+                        clueTypeTitle={Intl.get('apply.eefung.data.service', '数据导出申请')}
                     />
                     <div className="add-leave-apply-form-wrap" style={{'height': divHeight}}>
                         <GeminiScrollbar>

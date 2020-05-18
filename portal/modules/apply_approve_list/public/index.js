@@ -970,7 +970,7 @@ class ApplyApproveList extends React.Component {
                     afterTransferApplySuccess={this.afterTransferApplySuccess}
                 />;
                 break;
-            case APPLY_APPROVE_TYPES.EEFUNG_DATA_SERVICE://蚁坊的数据服务申请
+            case APPLY_APPROVE_TYPES.EEFUNG_DATA_SERVICE://蚁坊的数据导出申请
                 applyDetailContent = <DataServiceDetail
                     applyData={this.state.applyId ? applyDetail : null}
                     detailItem={this.state.selectedDetailItem}
@@ -1046,7 +1046,7 @@ class ApplyApproveList extends React.Component {
                 return <AddDomainApply
                     hideLeaveApplyAddForm={this.closeAddApplyForm}
                 />;
-            case APPLY_APPROVE_TYPES.EEFUNG_DATA_SERVICE://蚁坊的数据服务申请
+            case APPLY_APPROVE_TYPES.EEFUNG_DATA_SERVICE://蚁坊的数据导出申请
                 return <AddDataServiceApply
                     hideApplyAddForm={this.closeAddApplyForm}
                 />;
