@@ -375,7 +375,7 @@ exports.getUserTemplate = (req, res) => {
     res.download(filePath, filename + '.xls');
 
 };
-//下载数据服务申请模板文件
+//下载数据导出申请模板文件
 exports.getDataServiceTemplate = function(req, res) {
     var filePath = path.resolve(__dirname, '../tpl/data_service_tpl.xlsx');
     let backendIntl = new BackendIntl(req);
