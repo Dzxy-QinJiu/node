@@ -75,6 +75,7 @@ const UserDetailAddApp = createReactClass({
             ...storeObj,
             appPropSettingsMap,
             showAppSelector: true,
+            disabled: false, // 是否禁用
             selectedAppIds: [],
             configType: CONFIG_TYPE.UNIFIED_CONFIG,//配置类型：统一配置、分别配置
         };
@@ -331,6 +332,13 @@ const UserDetailAddApp = createReactClass({
                     }
                 });
                 value = terminals;
+                this.setState({
+                    disabled: false
+                });
+            } else {
+                this.setState({
+                    disabled: true
+                });
             }
         } else {
             if (e.target.type === 'checkbox') {
@@ -865,6 +873,7 @@ const UserDetailAddApp = createReactClass({
                                 totalStep={2}
                                 onStepChange={this.turnStep}
                                 onFinish={this.onStepFinish}
+                                disabled={this.state.disabled}
                             >
                                 {this.renderIndicator()}
                             </OperationStepsFooter>
