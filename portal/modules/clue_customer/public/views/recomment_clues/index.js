@@ -65,8 +65,7 @@ import {addOrEditSettingCustomerRecomment} from 'MOD_DIR/clue_customer/public/aj
 import {isSupportCheckPhone} from 'PUB_DIR/sources/utils/validate-util';
 import { storageUtil } from 'ant-utils';
 import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
-
-
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 const LAYOUT_CONSTANCE = {
     FILTER_WIDTH: 396,
     TABLE_TITLE_HEIGHT: 60,//带选择框的TH高度
@@ -142,7 +141,7 @@ class RecommendCluesList extends React.Component {
         paymentEmitter.on(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
         paymentEmitter.on(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, this.handleUpdateClues);
         clueCustomerStore.listen(this.onStoreChange);
-        $('#app .row > .col-xs-10').addClass('recommend-clues-page-container');
+        $('#app .row > .main-content-wrap').addClass('recommend-clues-page-container');
     }
 
     componentWillUnmount() {
@@ -151,7 +150,7 @@ class RecommendCluesList extends React.Component {
         paymentEmitter.removeListener(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, this.handleUpdateClues);
         clueCustomerStore.unlisten(this.onStoreChange);
         clueCustomerAction.initialRecommendClues();
-        $('#app .row > .col-xs-10').removeClass('recommend-clues-page-container');
+        $('#app .row > .main-content-wrap').removeClass('recommend-clues-page-container');
         this.isClearSelectSales = true;
     }
 
@@ -1950,7 +1949,7 @@ class RecommendCluesList extends React.Component {
     }
 
     render() {
-        let divHeight = $(window).height();
+        let divHeight = this.props.adaptiveHeight;
 
         let {isWebMin} = isResponsiveDisplay();
         let contentEl = $('.recommend-clue-content');
@@ -2011,4 +2010,4 @@ RecommendCluesList.propTypes = {
     clearGuideRecomentCondition: PropTypes.func
 };
 
-export default RecommendCluesList;
+export default adaptiveHeightHoc(RecommendCluesList);
