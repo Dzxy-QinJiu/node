@@ -92,7 +92,10 @@ const BATCH_EXTRACT_TYPE = {
     ALL: 'all',//全部提取
 };
 
-const ENABLE_CHECK_PHONE_STATUS = 'enable_check_phone_status';
+const CHECK_PHONE_CONFIG = {
+    ENABLE_CHECK_PHONE_STATUS: 'enable_check_phone_status',//是否启用空号检测
+    SHOW_CHECK_PHONE_FEATURE_POP_TIP: 'first_show_check_phone_feature_pop_tip',
+};
 
 class RecommendCluesList extends React.Component {
     constructor(props) {
@@ -600,8 +603,8 @@ class RecommendCluesList extends React.Component {
             let traceTip = errorMsg ? '直接提取' : '全部提取';
             //已选线索中过滤掉全部疑似空号的线索后，可以提取的线索列表
             let canExtractClueList = _.filter(_.get(result, 'clues'), item => !_.includes(allEmptyPhones, item.id));
-            {/*有错误信息，或者可以提取的线索列表为空时，不显示智能提取按钮*/}
-            let hiddenSmartExtractBtn = errorMsg || !canExtractClueList.length;
+            {/*有错误信息，或者全部疑似空号为0，或者可以提取的线索列表为空时，不显示智能提取按钮*/}
+            let hiddenSmartExtractBtn = errorMsg || !allEmptyPhonesCount || !canExtractClueList.length;
             btnContent = (
                 <React.Fragment>
                     {hiddenSmartExtractBtn ? null : (
@@ -667,7 +670,7 @@ class RecommendCluesList extends React.Component {
     //是否启用空号检测
     hasEnableCheckPhone = () => {
         const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig')) || {};
-        return _.get(websiteConfig, ENABLE_CHECK_PHONE_STATUS, true);
+        return _.get(websiteConfig, CHECK_PHONE_CONFIG.ENABLE_CHECK_PHONE_STATUS, true);
     };
     //启用/停用空号检测
     handleCheckPhoneChange = () => {
@@ -679,7 +682,7 @@ class RecommendCluesList extends React.Component {
             setEnableCheckPhone: false
         });
         setWebsiteConfig({
-            [ENABLE_CHECK_PHONE_STATUS]: !isEnableCheckPhone
+            [CHECK_PHONE_CONFIG.ENABLE_CHECK_PHONE_STATUS]: !isEnableCheckPhone
         }, () => {
             this.setState({
                 setEnableCheckPhone: false
@@ -691,6 +694,33 @@ class RecommendCluesList extends React.Component {
             });
         });
     }
+    //是否第一次展示空号检测功能pop提示
+    isFirstShowCheckPhonePop() {
+        const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig')) || {};
+        return _.get(websiteConfig, CHECK_PHONE_CONFIG.SHOW_CHECK_PHONE_FEATURE_POP_TIP, true);
+    }
+    setShowCheckPhonePopTip = () => {
+        if(this.isFirstShowCheckPhonePop()) {
+            setWebsiteConfig({
+                [CHECK_PHONE_CONFIG.SHOW_CHECK_PHONE_FEATURE_POP_TIP]: false
+            }, () => {
+                this.checkPhoneFeatureVisibleChange();
+            }, (err) => {
+                let websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig')) || {};
+                _.set(websiteConfig, CHECK_PHONE_CONFIG.SHOW_CHECK_PHONE_FEATURE_POP_TIP, false);
+                storageUtil.local.set('websiteConfig', JSON.stringify(websiteConfig));
+                this.checkPhoneFeatureVisibleChange();
+            });
+        }else {
+            this.checkPhoneFeatureVisibleChange();
+        }
+    };
+    //空号检测功能pop事件
+    checkPhoneFeatureVisibleChange = (visible) => {
+        if(!this.isFirstShowCheckPhonePop()) {
+            this.setState({ showCheckPhoneFeaturePopover: visible });
+        }
+    };
     //-------------- 检测手机号状态 end -------
 
     //更新推荐线索列表,需要给已经提取成功的加上一个类名，界面相应的加上对应的不能处理的样式
@@ -1712,8 +1742,11 @@ class RecommendCluesList extends React.Component {
                                     }}
                                 />
                             </span>
+                            <i className="iconfont icon-close" title={Intl.get('common.app.status.close', '关闭')} onClick={this.setShowCheckPhonePopTip}/>
                         </div>
                     )}
+                    visible={this.isFirstShowCheckPhonePop() || this.state.showCheckPhoneFeaturePopover}
+                    onVisibleChange={this.checkPhoneFeatureVisibleChange}
                     overlayClassName="extract-limit-content"
                 >
                     <Checkbox
