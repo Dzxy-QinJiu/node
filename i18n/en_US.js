@@ -3335,7 +3335,7 @@ var en_US = {
     'lead.extract.confirm': 'Confirm to extract',//确认提取
     'lead.single.check.phone.no.empty.phone.tip': 'There are {allCount} Numbers in this clue, but the system has not found any suspected empty Numbers',//此线索有{allCount}个号码，系统未发现疑似空号
     'lead.batch.check.phone.no.empty.phone.tip': 'The system did not find all possible clues to empty Numbers',//系统未发现全部疑似空号的线索
-    
+
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3621,6 +3621,8 @@ var en_US = {
     'apply.detail.show.password': 'Show password',//显示密码
     'apply.detail.hide.password': 'Hide password',//隐藏密码
     'bussiness.trip.time.range': 'Visit time',//拜访时间
+    'bussiness.trip.time.range.no.empty': 'Visit time cannot be empty',//拜访时间不能为空
+    'bussiness.while.time.range.no.empty': 'Travel time cannot be empty',//外出时间不能为空
     'business.while.trip.time.range': 'Out time',//外出时间
     'business.while.trip.go.out': 'Out',//外出
     'business.leave.time.range': 'Bussiness range',//出差时长
@@ -3740,7 +3742,7 @@ var en_US = {
     'apply.my.self.setting.work.flow': 'Visit apply',//拜访申请
     'apply.domain.application.work.flow': 'Domain name application',//舆情平台申请
     'apply.leave.while.application.work.flow': 'Out of office application',//外出申请
-    'apply.eefung.data.service': 'Data Service Application',//数据服务申请
+    'apply.eefung.data.service': 'Data Service Application',//数据导出申请
     'apply.went.out.while.range': 'Time out',//外出时长
     'apply.domain.descriptipn.reg': 'The domain name description can only contain letters, numbers, underscores (cannot begin or end with a dash), and is between 1 and 32 in length.',//域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间
     'apply.domain.plat.name.reg': 'Platform name length is between 1 and 32 characters (English characters count as one character, and other characters count as 2 characters)',//平台名称长度在1到32个字符之间(英文数字算一个字符，其他字符一个算2个字符)

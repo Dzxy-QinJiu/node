@@ -575,6 +575,7 @@ class ApplyViewDetail extends React.Component {
             isEdittingTotalTime: false,
             detailInfoObj: this.state.beforeEditDetailInfoObj,
             beforeEditDetailInfoObj: {},
+            totalTimeEditErrTip: '',
         });
     };
     renderEditVisitRange = (record) => {
@@ -659,10 +660,10 @@ class ApplyViewDetail extends React.Component {
         var apply_time = _.get(applyObj, 'detail.apply_time[0]');
         var submitObj = {
             applyId: _.get(applyObj, 'id'),
-            apply_time: apply_time
+            apply_time: [apply_time]
         };
         var noTimeErrTip = false;
-        if(!_.get(apply_time, 'visit_time.start') || !_.get(apply_time, 'visit_time.end')){
+        if(!_.get(apply_time, 'start') || !_.get(apply_time, 'end')){
             noTimeErrTip = true;
         }
         if(noTimeErrTip){
@@ -706,7 +707,6 @@ class ApplyViewDetail extends React.Component {
                 noTimeErrTip = true;
             }
         });
-
         if(noTimeErrTip){
             this.setState({
                 customerVisitTimeEditErrTip: Intl.get('bussiness.trip.time.range.no.empty', '拜访时间不能为空')
@@ -739,6 +739,7 @@ class ApplyViewDetail extends React.Component {
             customerUpdate: {id: '',index: ''},
             detailInfoObj: this.state.beforeEditDetailInfoObj,
             beforeEditDetailInfoObj: {},
+            customerVisitTimeEditErrTip: ''
         });
     };
     calculateStartAndEndRange = (visit_time) => {
