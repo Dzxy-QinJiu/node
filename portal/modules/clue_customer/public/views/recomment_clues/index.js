@@ -1950,11 +1950,10 @@ class RecommendCluesList extends React.Component {
 
     render() {
         let divHeight = this.props.adaptiveHeight;
-
         let {isWebMin} = isResponsiveDisplay();
         let contentEl = $('.recommend-clue-content');
         if(contentEl.length) {
-            divHeight -= (contentEl.offset().top + (isWebMin ? 0 : LAYOUT_CONSTANCE.PADDING_BOTTOM));
+            divHeight -= isWebMin ? 0 : LAYOUT_CONSTANCE.PADDING_BOTTOM;
         }
 
         let recommendCls = classNames('recommend-customer-top-nav-wrap', {
@@ -1973,7 +1972,7 @@ class RecommendCluesList extends React.Component {
                                     isSelectedHalfYearRegister={this.isSelectedHalfYearRegister()}
                                     feature={this.state.feature}
                                     getRecommendClueLists={this.getRecommendClueLists}
-                                    style={{width: LAYOUT_CONSTANCE.FILTER_WIDTH, height: $(window).height()}}
+                                    style={{width: LAYOUT_CONSTANCE.FILTER_WIDTH, height: this.props.adaptiveHeight}}
                                     handleToggleOtherCondition={this.handleToggleOtherCondition}
                                 />
                             </div>
@@ -2007,7 +2006,8 @@ RecommendCluesList.propTypes = {
     onClosePanel: PropTypes.func,
     afterSuccess: PropTypes.func,
     guideRecommendCondition: PropTypes.object,
-    clearGuideRecomentCondition: PropTypes.func
+    clearGuideRecomentCondition: PropTypes.func,
+    adaptiveHeight: PropTypes.number
 };
 
-export default adaptiveHeightHoc(RecommendCluesList);
+export default adaptiveHeightHoc(RecommendCluesList, '.recommend-clue-detail-content-container .recommend-clue-content');

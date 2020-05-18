@@ -7,7 +7,7 @@
  */
 import { LAYOUT } from 'LIB_DIR/consts';
 import { isResponsiveDisplay } from 'PUB_DIR/sources/utils/common-method-util';
-// element:计算高度的元素（例：'.detail-content'），不传计算最外层的内容区高度
+// element:计算高度的元素（例：'.detail-content'），不传计算最外层的内容区高度;
 export default function(WrappedComponent, element, marginBottom = 0) {
     return class extends React.Component {
         state = {
@@ -15,6 +15,8 @@ export default function(WrappedComponent, element, marginBottom = 0) {
         }
         resizeTimeout = null
         componentDidMount() {
+            // 渲染完界面后重新计算容器高度
+            this.onWindowResize();
             $(window).on('resize', this.onWindowResize);
         }
 
@@ -33,11 +35,11 @@ export default function(WrappedComponent, element, marginBottom = 0) {
         }
 
         getAdaptiveHeight() {
-            const $element = element ? $(element) : $('#app .main-content-wrap');
+            const $element = element && $(element).length ? $(element) : $('#app .main-content-wrap');
             const offsetTop = $element.offset().top;
             let adaptiveHeight = $(window).height() - offsetTop - marginBottom;
             // 不传element是计算最外层内容展示区的高度，移动端内容区高度，需要减去底部导航的高度
-            if (!element && isResponsiveDisplay().isWebSmall) {
+            if (isResponsiveDisplay().isWebSmall) {
                 adaptiveHeight -= LAYOUT.BOTTOM_NAV;
             }
             return adaptiveHeight;

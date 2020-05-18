@@ -944,14 +944,14 @@ exports.ajustTagWidth = (contentWidth) => {
 };
 
 //获取列表容器的高度
-exports.getTableContainerHeight = function() {
+exports.getTableContainerHeight = function(adaptiveHeight) {
     const LAYOUT_CONSTANTS = {
         TOP_HANDLE_HEIGHT: 66,//头部操作区的高度
         FIXED_THEAD: 40,//表头的高度
         PADDING_BOTTOM: 20,//底部间距
         SUMMARY: 30//总数统计的高度
     };
-    let tableHeight = $(window).height() -
+    let tableHeight = (adaptiveHeight || $(window).height()) -
         LAYOUT_CONSTANTS.TOP_HANDLE_HEIGHT -
         LAYOUT_CONSTANTS.FIXED_THEAD -
         LAYOUT_CONSTANTS.PADDING_BOTTOM -

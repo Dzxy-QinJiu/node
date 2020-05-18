@@ -574,6 +574,30 @@
     }
 }
 
+// 手机端样式设置
+.nav-bar-wrap.col-xs-12 {
+    .navbar-vertical {
+        position: relative;
+        width: 100%;
+        height: 48px;
+        min-height: 48px;
+        margin-bottom: 0;
+        border: none;
+        .navbar-nav {
+            > li.sidebar-menu-li {
+                width: 33.33%;
+                height: 48px;
+                > a.iconfont {
+                    height: 48px;
+                    line-height: 46px;
+                    &:before {
+                        font-size: 28px;
+                    }
+                }
+            }
+        } 
+    }
+}
 // 宽度缩放适配
 @media (max-width: 600px) {
     #hamburger{
@@ -582,21 +606,4 @@
     #menusLists{
       display: block;
     }
-    .navbar-vertical {
-        position: relative;
-        width: 100%;
-        height: 48px;
-        min-height: 48px;
-        margin-bottom: 0;
-        border: none;
-        .navbar-nav > li.sidebar-menu-li {
-            width: 33.33%;
-            height: 48px;
-            > a.iconfont {
-                height: 48px;
-                line-height: 46px;
-            }
-        }
-    }
   }
-  
