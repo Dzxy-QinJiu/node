@@ -718,7 +718,7 @@ class RecommendCluesList extends React.Component {
     //空号检测功能pop事件
     checkPhoneFeatureVisibleChange = (visible) => {
         if(!this.isFirstShowCheckPhonePop()) {
-            this.setState({ showCheckPhoneFeaturePopover: !!visible });
+            this.setState({ showCheckPhoneFeaturePopover: visible });
         }
     };
     //-------------- 检测手机号状态 end -------
