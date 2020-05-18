@@ -3742,7 +3742,7 @@ var en_US = {
     'apply.my.self.setting.work.flow': 'Visit apply',//拜访申请
     'apply.domain.application.work.flow': 'Domain name application',//舆情平台申请
     'apply.leave.while.application.work.flow': 'Out of office application',//外出申请
-    'apply.eefung.data.service': 'Data Service Application',//数据导出申请
+    'apply.eefung.data.service': 'Data Export Application',//数据导出申请
     'apply.went.out.while.range': 'Time out',//外出时长
     'apply.domain.descriptipn.reg': 'The domain name description can only contain letters, numbers, underscores (cannot begin or end with a dash), and is between 1 and 32 in length.',//域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间
     'apply.domain.plat.name.reg': 'Platform name length is between 1 and 32 characters (English characters count as one character, and other characters count as 2 characters)',//平台名称长度在1到32个字符之间(英文数字算一个字符，其他字符一个算2个字符)
