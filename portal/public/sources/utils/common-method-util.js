@@ -944,7 +944,7 @@ exports.ajustTagWidth = (contentWidth) => {
 };
 
 //获取列表容器的高度
-exports.getTableContainerHeight = function(adaptiveHeight) {
+exports.getTableContainerHeight = function(adaptiveHeight, hasSummary = true) {
     const LAYOUT_CONSTANTS = {
         TOP_HANDLE_HEIGHT: 66,//头部操作区的高度
         FIXED_THEAD: 40,//表头的高度
@@ -954,11 +954,9 @@ exports.getTableContainerHeight = function(adaptiveHeight) {
     let tableHeight = (adaptiveHeight || $(window).height()) -
         LAYOUT_CONSTANTS.TOP_HANDLE_HEIGHT -
         LAYOUT_CONSTANTS.FIXED_THEAD -
-        LAYOUT_CONSTANTS.PADDING_BOTTOM -
-        LAYOUT_CONSTANTS.SUMMARY;
-    // 移动端，减去底部二级导航的高度
-    if (isResponsiveDisplay().isWebSmall) {
-        tableHeight -= LAYOUT.BOTTOM_NAV;
+        LAYOUT_CONSTANTS.PADDING_BOTTOM;
+    if (hasSummary) {
+        tableHeight -= LAYOUT_CONSTANTS.SUMMARY;
     }
     return tableHeight;
 };

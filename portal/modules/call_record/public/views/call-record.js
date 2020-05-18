@@ -10,7 +10,6 @@ import { Alert, Input, Icon, Button, Select, message, Popconfirm, Menu, Dropdown
 import { AntcTable } from 'antc';
 const Option = Select.Option;
 import { AntcDatePicker as DatePicker } from 'antc';
-import { FormattedMessage, defineMessages, injectIntl } from 'react-intl';
 import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import CallAddCustomerForm from './call-add-customer-form'; // 添加客户
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
@@ -33,6 +32,7 @@ import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import ShearContent from 'CMP_DIR/shear-content';
 import eefungCustomerManagerHoc from 'CMP_DIR/eefung-customer-manager-hoc';
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 //接听状态
 let CALL_STATUS_MAP = {
     'ANSWERED': Intl.get('call.record.state.answer', '已接听'),
@@ -156,7 +156,7 @@ class CallRecord extends React.Component {
 
     //计算表格高度
     changeTableHeight = () => {
-        var tableHeight = commonMethodUtil.getTableContainerHeight();
+        var tableHeight = commonMethodUtil.getTableContainerHeight(this.props.adaptiveHeight);
         this.setState({ tableHeight });
     };
 
@@ -1207,6 +1207,7 @@ class CallRecord extends React.Component {
         this.setState(CallRecordStore.getState());
     };
 }
-
-
-export default injectIntl(eefungCustomerManagerHoc(CallRecord));
+CallRecord.protoTypes = {
+    adaptiveHeight: PropTypes.number
+};
+export default adaptiveHeightHoc(eefungCustomerManagerHoc(CallRecord));

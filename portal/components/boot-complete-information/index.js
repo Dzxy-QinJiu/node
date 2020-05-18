@@ -76,7 +76,7 @@ class BootCompleteInformation extends React.Component{
 
     componentWillUnmount() {
         //恢复框架右侧区域内容显示
-        $('.col-xs-10').css('display', 'block');
+        $('.main-content-wrap').css('display', 'block');
     }
 
     getRecommendCustomerIndustry = () => {
@@ -120,7 +120,7 @@ class BootCompleteInformation extends React.Component{
             const contentEl = $('.boot-complete-content');
             if (contentEl.length) {
                 //设置框架右侧区域内容隐藏，不要出现滚动条
-                $('.col-xs-10').css('display', 'none');
+                $('.main-content-wrap').css('display', 'none');
                 //这里取窗口的高度赋值
                 contentEl.height($(window).height());
             }
