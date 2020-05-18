@@ -3350,13 +3350,15 @@ var zh_CN = {
     'lead.smart.extract.real.phone': '智能提取',
     'lead.all.extract': '全部提取',
     'lead.check.phone.free.tip': '本周免费提供手机号空号检测',
-    'lead.check.phone.explain': '仅支持手机号检测(不支持14、16、17、19号段)',
+    'lead.check.phone.explain': '仅支持非14、16、17、19号段手机号',
     'lead.direct.extraction': '直接提取',
     'lead.check.phone.result': '空号检测结果',
-    'lead.check.phone.free.weekly.tip': '本周免费提供空号检测{text}，欢迎大家试用！',
+    'lead.check.phone.enabled.free.weekly.tip': '空号检测已开启，本周提线索免费检测，快来试试吧！',
+    'lead.check.phone.free.weekly.tip': '本周提线索可免费检测空号，快来试试吧！',
     'lead.extract.confirm': '确认提取',
     'lead.single.check.phone.no.empty.phone.tip': '此线索有{allCount}个号码，系统未发现疑似空号',
     'lead.batch.check.phone.no.empty.phone.tip': '系统未发现全部疑似空号的线索',
+    'lead.smart.extract.title': '提取时会排除全部是疑似空号的线索',
 
     //线索模块 end
     'common.memeber.all': '全部成员',
