@@ -388,13 +388,14 @@ class RecommendCluesList extends React.Component {
         //没有可检测的电话时,直接提示
         if(data.isCanNotCheckPhone) {
             let newState = {};
+            let clueId = '';
             if(type === EXTRACT_OPERATOR_TYPE.SINGLE) {//单个检测时
                 let content = this.renderCheckedStatusTip(type, {clueEmptyPhoneIds: [], phones: clues.telephones}, () => {
                     _.isFunction(callback) && callback(clues, hasAssignedPrivilege);
                 });
                 newState.extractLimitContent = content;
                 newState.singlePopoverVisible = clues.id;
-                this.hiddenDropDownBlock(clues.id);
+                clueId = clues.id;
             }else {
                 let content = this.renderCheckedStatusTip(type, {}, (extractType) => {
                     if(_.isFunction(callback)) {
@@ -403,9 +404,10 @@ class RecommendCluesList extends React.Component {
                 });
                 newState.extractLimitContent = content;
                 newState.batchPopoverVisible = true;
-                this.hiddenDropDownBlock();
             }
-            this.setState(newState);
+            this.setState(newState, () => {
+                this.hiddenDropDownBlock(clueId);
+            });
             return false;
         }
 
@@ -576,12 +578,12 @@ class RecommendCluesList extends React.Component {
             let traceTip = errorMsg ? '直接提取' : '确认提取';
             btnContent = (
                 <React.Fragment>
-                    <Button type="primary" size="small" loading={this.state.singleExtractLoading} onClick={callback} data-tracename={`点击单个检测中的'${traceTip}'按钮`}>{
+                    {!clueEmptyPhoneCount ? (
+                        <Button onClick={handleCancel} data-tracename="点击单个检测中的'取消'按钮">{Intl.get('common.cancel', '取消')}</Button>
+                    ) : null}
+                    <Button className="check-btn-primary" type="primary" loading={this.state.singleExtractLoading} onClick={callback} data-tracename={`点击单个检测中的'${traceTip}'按钮`}>{
                         errorMsg ? Intl.get('lead.direct.extraction', '直接提取') : Intl.get('lead.extract.confirm', '确认提取')
                     }</Button>
-                    {!clueEmptyPhoneCount ? (
-                        <Button className="check-btn-cancel" size="small" onClick={handleCancel} data-tracename="点击单个检测中的'取消'按钮">{Intl.get('common.cancel', '取消')}</Button>
-                    ) : null}
                 </React.Fragment>
             );
         }else {
@@ -607,38 +609,31 @@ class RecommendCluesList extends React.Component {
             let hiddenSmartExtractBtn = errorMsg || !allEmptyPhonesCount || !canExtractClueList.length;
             btnContent = (
                 <React.Fragment>
+                    <Button
+                        disabled={this.state.batchExtractLoading && this.state.batchExtractType && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ALL}
+                        loading={this.state.batchExtractLoading && this.state.batchExtractType === BATCH_EXTRACT_TYPE.ALL}
+                        onClick={callback.bind(this, BATCH_EXTRACT_TYPE.ALL)}
+                        data-tracename={`点击批量检测中的'${traceTip}'按钮`}
+                    >{ errorMsg ? Intl.get('lead.direct.extraction', '直接提取') : Intl.get('lead.all.extract', '全部提取')}</Button>
                     {hiddenSmartExtractBtn ? null : (
                         <Button
                             type="primary"
-                            size="small"
+                            className="check-btn-primary"
+                            titl={Intl.get('lead.smart.extract.title', '提取时会排除全部是疑似空号的线索')}
                             disabled={this.state.batchExtractLoading && this.state.batchExtractType && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ONLY}
                             loading={this.state.batchExtractLoading && this.state.batchExtractType === BATCH_EXTRACT_TYPE.ONLY}
                             onClick={callback.bind(this, BATCH_EXTRACT_TYPE.ONLY, canExtractClueList)}
                             data-tracename="点击批量检测中的'智能提取'按钮"
                         >{Intl.get('lead.smart.extract.real.phone', '智能提取')}</Button>
                     )}
-                    <Button
-                        className="check-btn-cancel"
-                        size="small"
-                        disabled={this.state.batchExtractLoading && this.state.batchExtractType && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ALL}
-                        loading={this.state.batchExtractLoading && this.state.batchExtractType === BATCH_EXTRACT_TYPE.ALL}
-                        onClick={callback.bind(this, BATCH_EXTRACT_TYPE.ALL)}
-                        data-tracename={`点击批量检测中的'${traceTip}'按钮`}
-                    >{ errorMsg ? Intl.get('lead.direct.extraction', '直接提取') : Intl.get('lead.all.extract', '全部提取')}</Button>
                 </React.Fragment>
             );
         }
 
         return (
             <div className={`check-phone-container ${errorMsg ? 'check-phone-error-container' : ''}`} data-tracname="检测空号内容提示区">
-                <i className="iconfont icon-close" data-tracename="点击关闭" title={Intl.get('common.app.status.close', '关闭')} onClick={handleCancel}/>
                 <div className="check-phone-content">
-                    {/*<i className="iconfont icon-search"/>*/}
                     <div className="check-phone-box">
-                        <div className="check-phone-title">
-                            <span>{Intl.get('lead.check.phone', '空号检测')}</span>
-                            {/*<span className="check-phone-only">({Intl.get('lead.check.phone.only.phone', '仅手机号')})</span>*/}
-                        </div>
                         <span className="check-phone-text">
                             {errorMsg ? (
                                 <span>
@@ -656,12 +651,6 @@ class RecommendCluesList extends React.Component {
                     </div>
                 </div>
                 <div className="check-btn-container">
-                    {errorMsg ? null : (
-                        <div className="check-phone-free-tip">
-                            <i className="iconfont icon-warn-icon"/>
-                            {Intl.get('lead.check.phone.explain', '仅支持手机号检测(不支持14、16、17、19号段)')}
-                        </div>
-                    )}
                     {btnContent}
                 </div>
             </div>
@@ -681,6 +670,8 @@ class RecommendCluesList extends React.Component {
         this.setState({
             setEnableCheckPhone: false
         });
+        let traceTip = isEnableCheckPhone ? '停用' : '启用';
+        Trace.traceEvent(ReactDOM.findDOMNode(this), `${traceTip}空号检测`);
         setWebsiteConfig({
             [CHECK_PHONE_CONFIG.ENABLE_CHECK_PHONE_STATUS]: !isEnableCheckPhone
         }, () => {
@@ -718,9 +709,37 @@ class RecommendCluesList extends React.Component {
     //空号检测功能pop事件
     checkPhoneFeatureVisibleChange = (visible) => {
         if(!this.isFirstShowCheckPhonePop()) {
-            this.setState({ showCheckPhoneFeaturePopover: visible });
+            this.setState({ showCheckPhoneFeaturePopover: !!visible });
         }
     };
+    //渲染检测结果头部
+    renderCheckTitle(handleFunc) {
+        return (
+            <div className="check-phone-title" data-tracename="空号检测title内容">
+                <i className="iconfont icon-check"/>
+                <span className="check-phone-name">{Intl.get('lead.check.phone', '空号检测')}</span>
+                <span className="check-phone-only">（{Intl.get('lead.check.phone.explain', '仅支持非14、16、17、19号段手机号')})</span>
+                <i className="iconfont icon-close" data-tracename="点击关闭" title={Intl.get('common.app.status.close', '关闭')} onClick={handleFunc}/>
+            </div>
+        );
+    }
+    //渲染启用/停用空号检测pop提示
+    renderCheckPhonePopTip() {
+        let i18n = {
+            id: 'lead.check.phone.free.weekly.tip',
+            name: '本周提线索可免费检测空号，快来试试吧！'
+        };
+        if(this.hasEnableCheckPhone()) {//启用空号检测
+            i18n.id = 'lead.check.phone.enabled.free.weekly.tip';
+            i18n.name = '空号检测已开启，本周提线索免费检测，快来试试吧！';
+        }
+        return (
+            <ReactIntl.FormattedMessage
+                id={i18n.id}
+                defaultMessage={i18n.name}
+            />
+        );
+    }
     //-------------- 检测手机号状态 end -------
 
     //更新推荐线索列表,需要给已经提取成功的加上一个类名，界面相应的加上对应的不能处理的样式
@@ -1279,8 +1298,12 @@ class RecommendCluesList extends React.Component {
             let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
             let isShowCheckPhoneStatus = this.hasEnableCheckPhone() && !this.state.disableExtract && !this.state.showBatchExtractTip;
             let handleFnc = this.handleSubmitAssignSalesBatch;
+            let title = null;
+            let overlayClassName = 'extract-limit-content';
             if(isShowCheckPhoneStatus) {
                 handleFnc = this.checkPhoneStatus.bind(this, [], EXTRACT_OPERATOR_TYPE.BATCH, this.handleSubmitAssignSalesBatch, hasAssignedPrivilege);
+                title = this.renderCheckTitle(this.handleBatchVisibleChange.bind(this, false));
+                overlayClassName += ' check-phone-result-container';
             }
             if(hasAssignedPrivilege) {
                 isDisabled = !hasSelectedClue || this.state.batchExtractLoading;
@@ -1291,10 +1314,11 @@ class RecommendCluesList extends React.Component {
                     <Popover
                         placement="bottomLeft"
                         trigger="click"
+                        title={title}
                         content={this.state.extractLimitContent}
                         visible={this.state.batchPopoverVisible}
                         onVisibleChange={this.handleBatchVisibleChange}
-                        overlayClassName="extract-limit-content"
+                        overlayClassName={overlayClassName}
                     >
                         <Button
                             type={isDisabled ? 'ghost' : 'primary'}
@@ -1330,10 +1354,11 @@ class RecommendCluesList extends React.Component {
                     <Popover
                         placement="bottomLeft"
                         trigger="click"
+                        title={title}
                         content={this.state.extractLimitContent}
                         visible={this.state.batchPopoverVisible}
                         onVisibleChange={this.handleBatchVisibleChange}
-                        overlayClassName="extract-limit-content"
+                        overlayClassName={overlayClassName}
                     >
                         {this.renderBatchExtractBtn(handleFnc, isWebMin)}
                     </Popover>
@@ -1494,8 +1519,12 @@ class RecommendCluesList extends React.Component {
             let isShowCheckPhoneStatus = this.hasEnableCheckPhone() && !this.state.disableExtract && !_.isEqual(this.state.showSingleExtractTip, record.id);
             let placement = isShowCheckPhoneStatus ? 'topRight' : 'bottomRight';
             let handleFnc = this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege);
+            let title = null;
+            let overlayClassName = 'extract-limit-content';
             if(isShowCheckPhoneStatus) {
                 handleFnc = this.checkPhoneStatus.bind(this, [record], EXTRACT_OPERATOR_TYPE.SINGLE, this.handleExtractClueAssignToSale, hasAssignedPrivilege);
+                title = title = this.renderCheckTitle(this.handleSingleVisibleChange.bind(this, false));
+                overlayClassName += ' check-phone-result-container';
             }
             if (hasAssignedPrivilege) {
                 return (
@@ -1507,10 +1536,11 @@ class RecommendCluesList extends React.Component {
                             <Popover
                                 placement={placement}
                                 trigger="click"
+                                title={title}
                                 content={this.state.extractLimitContent}
                                 visible={checkRecord}
                                 onVisibleChange={this.handleSingleVisibleChange}
-                                overlayClassName="extract-limit-content"
+                                overlayClassName={overlayClassName}
                             >
                                 <Button
                                     type="primary"
@@ -1538,10 +1568,11 @@ class RecommendCluesList extends React.Component {
                     <Popover
                         placement={placement}
                         trigger="click"
+                        title={title}
                         content={this.state.extractLimitContent}
                         visible={checkRecord}
                         onVisibleChange={this.handleSingleVisibleChange}
-                        overlayClassName="extract-limit-content"
+                        overlayClassName={overlayClassName}
                     >
                         {this.renderSingleExtractBtn(handleFnc, record)}
                     </Popover>
@@ -1733,16 +1764,8 @@ class RecommendCluesList extends React.Component {
                             <div className="img-wrapper">
                                 <img className="image" src="/static/images/curtao-personal.svg"/>
                             </div>
-                            <span>
-                                <ReactIntl.FormattedMessage
-                                    id="lead.check.phone.free.weekly.tip"
-                                    defaultMessage="本周免费提供空号检测{text}，欢迎大家试用！"
-                                    values={{
-                                        text: <span className="only-phone-text">({Intl.get('lead.check.phone.only.phone', '仅手机号')})</span>
-                                    }}
-                                />
-                            </span>
-                            <i className="iconfont icon-close" title={Intl.get('common.app.status.close', '关闭')} onClick={this.setShowCheckPhonePopTip}/>
+                            <span>{this.renderCheckPhonePopTip()}</span>
+                            <i className="iconfont icon-close" data-tracename="点击空号检测功能提示中的关闭按钮" title={Intl.get('common.app.status.close', '关闭')} onClick={this.setShowCheckPhonePopTip}/>
                         </div>
                     )}
                     visible={this.isFirstShowCheckPhonePop() || this.state.showCheckPhoneFeaturePopover}
