@@ -1034,15 +1034,15 @@ class RegRulesView extends React.Component {
                 this.handleApprovedSettingWordFlow();
             }
             // 判断是否修改了其他配置，若修改了其他配置，需要同时保存
-            // if (isChangeRuleNotify) {
+            if (isChangeRuleNotify) {
             //在提交的时候，把用户或者团队为非的情况也加上
-            this.addDefaultUserOrTeamCondition();
-            // if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
-            //     this.handleSubmitCCApply();
-            // }else{
-            this.handleSubmitApproveApply();
-            // }
-            // }
+                this.addDefaultUserOrTeamCondition();
+                if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
+                    this.handleSubmitCCApply();
+                }else{
+                    this.handleSubmitApproveApply();
+                }
+            }
         }
     };
     handleDownLoadBPMN = () => {
