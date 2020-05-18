@@ -542,16 +542,13 @@ class ApplyViewDetail extends React.Component {
             applyId: _.get(applyObj, 'id'),
             apply_time: [apply_time]
         };
-        var noTimeErrTip = false;
         if(!_.get(apply_time, 'start') || !_.get(apply_time, 'end')){
-            noTimeErrTip = true;
-        }
-        if(noTimeErrTip){
             this.setState({
                 totalTimeEditErrTip: Intl.get('bussiness.while.time.range.no.empty', '外出时间不能为空')
             });
             return;
         }
+
         this.setState({isEditting: true});
         $.ajax({
             url: '/rest/update/customer/business/while',
