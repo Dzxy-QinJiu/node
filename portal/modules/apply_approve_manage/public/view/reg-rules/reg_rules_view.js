@@ -37,6 +37,8 @@ import {
 } from '../../utils/apply-approve-utils';
 import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveManageStore from '../../store/apply_approve_manage_store';
+//是否在蚁坊域的判断方法
+const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
 class RegRulesView extends React.Component {
     constructor(props) {
         super(props);
@@ -162,16 +164,27 @@ class RegRulesView extends React.Component {
         });
     };
     //在最后一个流程节点设置相关属性
-    lastNodePropertySetting = (elem) => {
+    lastNodePropertySetting = (elem,isConditionFlow) => {
         if (isSalesOpportunityFlow(_.get(this, 'props.applyTypeData.type'))) {
             elem.distributeSales = true;
         } else {
             elem.distributeSales = false;
         }
         if (isVisitApplyFlow(_.get(this, 'props.applyTypeData.type'))) {
-            //todo 不同组织所传的字段不一样
-            elem.distributeSalesToVisit = true;//分配销售字段
-            // elem.releaseCustomerToTeamPool = true;//分配团队字段
+            var isEefungRealm = isOrganizationEefung();
+            if(isEefungRealm){
+                if(isConditionFlow){
+                    elem.distributeSalesToVisit = true;//分配销售字段
+                    elem.releaseCustomerToTeamPool = false;
+                }else{
+                    elem.distributeSalesToVisit = false;
+                    elem.releaseCustomerToTeamPool = true;//分配团队字段
+                }
+            }else{
+                //todo 不同组织所传的字段不一样
+                elem.distributeSalesToVisit = true;//分配销售字段
+                // elem.releaseCustomerToTeamPool = true;//分配团队字段
+            }
         } else {
             elem.distributeSalesToVisit = false;
             // elem.releaseCustomerToTeamPool = false;
@@ -222,7 +235,7 @@ class RegRulesView extends React.Component {
                         modeling.appendShape(previousNode, curNode);
                         //如果此节点是条件流程中的最后一个节点，需要再单独把这个节点和结束节点连接起来
                         if (key !== FLOW_TYPES.DEFAULTFLOW && _.isString(elem.next) && elem.next.indexOf('EndTask') > -1) {
-                            this.lastNodePropertySetting(elem);
+                            this.lastNodePropertySetting(elem,true);
                             var nextNode = elementRegistry.get(elem.next);
                             this.connectDiffNode(curNode, nextNode);
                         }
@@ -1021,15 +1034,15 @@ class RegRulesView extends React.Component {
                 this.handleApprovedSettingWordFlow();
             }
             // 判断是否修改了其他配置，若修改了其他配置，需要同时保存
-            if (isChangeRuleNotify) {
-                //在提交的时候，把用户或者团队为非的情况也加上
-                this.addDefaultUserOrTeamCondition();
-                if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
-                    this.handleSubmitCCApply();
-                }else{
-                    this.handleSubmitApproveApply();
-                }
-            }
+            // if (isChangeRuleNotify) {
+            //在提交的时候，把用户或者团队为非的情况也加上
+            this.addDefaultUserOrTeamCondition();
+            // if (_.isEqual(_.get(this.props, 'applyTypeData.applyRulesAndSetting.applyApproveRules'), applyApproveRulesNodes)){
+            //     this.handleSubmitCCApply();
+            // }else{
+            this.handleSubmitApproveApply();
+            // }
+            // }
         }
     };
     handleDownLoadBPMN = () => {
