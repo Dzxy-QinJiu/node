@@ -201,6 +201,13 @@ class AppConfigSetting extends React.Component {
                                 onChange={this.props.onSelectTerminalChange.bind(this, app, appsConfigData)}
                                 value={checkedTerminals}
                             />
+                            {
+                                _.isEmpty(checkedTerminals) ? (
+                                    <div className="no-select-terminals-tips">
+                                        {Intl.get('user.app.no.select.terminals.tip', '请至少选择一个多终端')}
+                                    </div>
+                                ) : null
+                            }
                         </FormItem>
                     ) : null
                 }
