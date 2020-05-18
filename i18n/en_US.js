@@ -3328,14 +3328,16 @@ var en_US = {
     'lead.smart.extract.real.phone': 'Intelligent extraction',//智能提取
     'lead.all.extract': 'All extracts',//全部提取
     'lead.check.phone.free.tip': 'Free phone number blank detection is available this week',//本周免费提供手机号空号检测
-    'lead.check.phone.explain': 'Mobile phone number detection (no 14, 16, 17, 19)',//仅支持手机号检测(不支持14、16、17、19号段)
+    'lead.check.phone.explain': 'Only non-14, 16, 17 and 19 mobile phone Numbers are supported',//仅支持非14、16、17、19号段手机号
     'lead.direct.extraction': 'Direct extraction',//直接提取
     'lead.check.phone.result': 'Null detection results',//空号检测结果
-    'lead.check.phone.free.weekly.tip': 'This week free empty number detection {text}, welcome to try!',//本周免费提供空号检测{text}，欢迎大家试用！
+    'lead.check.phone.enabled.free.weekly.tip': 'Empty number detection has been opened, this week to raise clues free detection, quick to try it!',//空号检测已开启，本周提线索免费检测，快来试试吧！
+    'lead.check.phone.free.weekly.tip': 'Free detection of clues available this week, come and try it!',//本周提线索可免费检测空号，快来试试吧！
     'lead.extract.confirm': 'Confirm to extract',//确认提取
     'lead.single.check.phone.no.empty.phone.tip': 'There are {allCount} Numbers in this clue, but the system has not found any suspected empty Numbers',//此线索有{allCount}个号码，系统未发现疑似空号
     'lead.batch.check.phone.no.empty.phone.tip': 'The system did not find all possible clues to empty Numbers',//系统未发现全部疑似空号的线索
-
+    'leac.smart.extract.title': 'When extracting, all clues that are suspected to be empty will be eliminated',//提取时会排除全部是疑似空号的线索
+    
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',

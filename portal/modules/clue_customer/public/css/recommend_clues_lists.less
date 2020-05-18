@@ -577,6 +577,31 @@
 //超限后的内容显示样式
 .extract-limit-content{
   min-width: 200px;
+  &.check-phone-result-container{
+    .ant-popover-arrow, .ant-popover-arrow:after{
+      border-bottom-color: @primary-color;
+    }
+    //头部样式
+    .ant-popover-title{
+      background-color: @primary-color;
+      .check-phone-title{
+        color: #fff;
+        .icon-check{
+          margin-right: 6px;
+        }
+        .icon-close{
+          font-weight: bold;
+          color: #fff;
+        }
+        .check-phone-name{
+          font-size: 16px;
+        }
+        .check-phone-only{
+          color: #A6CCF2;
+        }
+      }
+    }
+  }
   .ant-popover-inner-content{
     color: @primary-font-color;
     font-size: 14px;
@@ -650,6 +675,7 @@
         }
         .check-phone-only{
           color: @secondary-font-color;
+          font-size: 14px;
         }
         .check-phone-text{
           font-size: 14px;
@@ -669,7 +695,7 @@
     .check-btn-container{
       text-align: right;
       margin: 15px 0 10px;
-      .check-btn-cancel{
+      .check-btn-primary{
         margin-left: 15px;
       }
     }
