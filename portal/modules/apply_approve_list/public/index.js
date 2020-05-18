@@ -113,6 +113,7 @@ class ApplyApproveList extends React.Component {
                 workFlowList: workFlowList
             });
         });
+        this.updateUnhandleApplyApproveCount();
         notificationEmitter.on(notificationEmitter.MY_UNREAD_REPLY, this.refreshMyUnreadReplyList);
         notificationEmitter.on(notificationEmitter.TEAM_UNREAD_REPLY, this.refreshTeamUnreadReplyList);
         notificationEmitter.on(notificationEmitter.CLEAR_UNREAD_REPLY, this.clearUnreadReplyList);
@@ -440,7 +441,6 @@ class ApplyApproveList extends React.Component {
         return activeApplyTab === APPLY_TYPE.APPLY_BY_ME ? unreadMyReplyList : unreadTeamReplyList;
     };
     showUnhandleApplyTip = () => {
-        console.log('qwqwq');
         const {unreadMyReplyList, unreadTeamReplyList} = this.state;
         var unreadMyReplyCount = _.get(unreadMyReplyList, 'length'),
             // 团队申请，未读数
@@ -1082,7 +1082,6 @@ class ApplyApproveList extends React.Component {
         return (
             <div className='apply_approve_content_wrap user_apply_page'>
                 {this.renderApplyListTab()}
-                {/*{this.showUnhandleApplyTip()}*/}
                 {!_.isEmpty(this.state.showHistoricalItem) ? (
                     <RightPanelModal
                         className="historical-detail-panel"
