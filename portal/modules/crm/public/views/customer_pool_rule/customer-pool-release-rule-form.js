@@ -322,7 +322,7 @@ class CustomerPoolReleaseRuleForm extends React.Component {
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout} label={Intl.get('crm.customer.label', '客户标签')}>
-                        {this.props.isEdit && !isDefaultRuleConfig ? (getFieldDecorator('label', {
+                        {this.props.isEdit && !isDefaultRuleConfig ? (getFieldDecorator('labels', {
                             initialValue: formData.labels
                         })(
                             <Select
