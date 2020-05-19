@@ -27,7 +27,7 @@ module.exports = {
                 needLogin: true
             }
         }, { // 删除自定义参数配置
-            method: 'put',
+            method: 'delete',
             path: '/rest/delete/custom/field/:id',
             handler: 'deleteCustomFieldConfig',
             passport: {

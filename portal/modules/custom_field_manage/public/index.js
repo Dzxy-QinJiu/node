@@ -1,7 +1,7 @@
 /**
  * Created by hzl on 2020/5/14.
  */
-import { Button} from 'antd';
+import { Button, message} from 'antd';
 import { manageCustomType, customFieldType } from 'PUB_DIR/sources/utils/consts';
 import { AntcTable } from 'antc';
 import classNames from 'classnames';
@@ -19,6 +19,7 @@ class CustomFieldManage extends React.Component {
             customFieldData: {}, // 自定义字段数据
             isShowRightPanel: false, // 是否显示右侧面板，默认不显示
             editCustomField: {}, // 编辑的内容
+            isDeleteCustomFieldKey: '', // 删除自定义字段key
         };
     }
 
@@ -44,7 +45,8 @@ class CustomFieldManage extends React.Component {
 
     handleChangeCustomFieldActiveTab = (item) => {
         this.setState({
-            activeTab: _.get(item, 'value')
+            activeTab: _.get(item, 'value'),
+            isDeleteCustomFieldKey: '',
         }, () => {
             this.getCustomFieldConfig();
         });
@@ -54,7 +56,25 @@ class CustomFieldManage extends React.Component {
     handleAddCustomField = () => {
         this.setState({
             isShowRightPanel: true,
+            editCustomField: {}
         }, () => {
+            const queryObj = {
+                customized_type: this.state.activeTab,
+                customized_variables: [{
+                    field_type: 'select',
+                    name: '行政级别',
+                    select_values: ['省部级', '地市级', '区县级'],
+                    show_index: 1
+                },{
+                    field_type: 'text',
+                    name: '客户',
+                    select_values: '请输入客户的名称',
+                    show_index: 2
+                }],
+            };
+            ajax.addCustomFieldConfig(queryObj).then( (result) => {
+                console.log('result:',result);
+            } );
         });
     };
 
@@ -99,8 +119,64 @@ class CustomFieldManage extends React.Component {
         });
     };
 
-    handleDelete = () => {
+    handleConfirmDelete = (rowData) => {
+        const customizedVariables = _.get(this.state.customFieldData, '[0]customized_variables', []);
+        const id = _.get(this.state.customFieldData, '[0]id');
+        // 删除接口
+        if (customizedVariables.length === 1) {
+            ajax.deleteCustomFieldConfig(id).then( (result) => {
+                if (result) {
+                    this.setState({
+                        customFieldData: {}
+                    });
+                    message.success(Intl.get('crm.138', '删除成功！'));
+                } else {
+                    message.error(Intl.get('crm.139', '删除失败！'));
+                }
 
+            }, (errMsg) => {
+                message.error(errMsg || Intl.get('crm.139', '删除失败！'));
+            } );
+        } else { // 编辑接口
+            const deleteIndex = _.get(rowData, 'show_index');
+            const originCustomFieldLength = _.get(customizedVariables, 'length');
+            let updateCustomField = _.filter(customizedVariables, item => item.show_index !== deleteIndex);
+            if (originCustomFieldLength !== deleteIndex) {
+                _.each(updateCustomField, (item, index) => {
+                    item.show_index = index + 1;
+                    delete item.key;
+                });
+            }
+            let queryObj = {
+                id: id,
+                customized_type: this.state.activeTab,
+                customized_variables: updateCustomField
+            };
+            ajax.updateCustomFieldConfig(queryObj).then( (result) => {
+                if (result) {
+                    this.setState({
+                        customFieldData: [queryObj]
+                    });
+                    message.success(Intl.get('crm.218', '修改成功！'));
+                } else {
+                    message.error(Intl.get('crm.219', '修改失败！'));
+                }
+            }, (errMsg) => {
+                message.error(errMsg || Intl.get('crm.219', '修改失败！'));
+            } );
+        }
+    };
+
+    handleDelete = (rowData) => {
+        this.setState({
+            isDeleteCustomFieldKey: _.get(rowData, 'key')
+        });
+    };
+
+    handleCancelDelete = () => {
+        this.setState({
+            isDeleteCustomFieldKey: ''
+        });
     };
 
     getTableColumns = () => {
@@ -125,12 +201,33 @@ class CustomFieldManage extends React.Component {
             render: (text, rowData, idx) => {
                 return (
                     <div className="operate-zone">
-                        <span onClick={this.handleEdit.bind(this, rowData, idx)}>
-                            {Intl.get('common.edit', '编辑')}
-                        </span>
-                        <span onClick={this.handleDelete.bind(this, rowData, idx)}>
-                            {Intl.get('common.delete', '删除')}
-                        </span>
+                        {
+                            this.state.isDeleteCustomFieldKey === _.get(rowData, 'key') ? (
+                                <span className="delete-buttons">
+                                    <Button
+                                        className="delete-confirm"
+                                        onClick={this.handleConfirmDelete.bind(this, rowData, idx)}
+                                    >
+                                        {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                                    </Button>
+                                    <Button
+                                        className="delete-cancel"
+                                        onClick={this.handleCancelDelete.bind(this, rowData, idx)}
+                                    >
+                                        {Intl.get('common.cancel', '取消')}
+                                    </Button>
+                                </span>
+                            ) : (
+                                <React.Fragment>
+                                    <span onClick={this.handleEdit.bind(this, rowData, idx)}>
+                                        {Intl.get('common.edit', '编辑')}
+                                    </span>
+                                    <span onClick={this.handleDelete.bind(this, rowData, idx)}>
+                                        {Intl.get('common.delete', '删除')}
+                                    </span>
+                                </React.Fragment>
+                            )
+                        }
                     </div>
                 );
             }

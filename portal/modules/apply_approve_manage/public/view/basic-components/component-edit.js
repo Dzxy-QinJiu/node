@@ -24,6 +24,15 @@ class componentEdit extends React.Component {
             titleRequiredMsg: '',
         };
     }
+
+    componentWillReceiveProps(nextProps) {
+        if ( !_.isEqual(this.state.formItem, nextProps.formItem) ) {
+            this.setState({
+                formItem: _.cloneDeep(nextProps.formItem),
+            });
+        }
+    }
+
     onStoreChange = () => {
 
     };
@@ -152,14 +161,22 @@ class componentEdit extends React.Component {
                 { _.get(this,'props.formItem.placeholder','') ? <div className="component-row">
                     <span className="label-components">placeHolder</span>
                     <span className='text-components'>
-                        <Input className={cls} defaultValue={ _.get(formItem,'placeholder','')} onChange={this.handleChangeTip}/>
+                        <Input 
+                            className={cls} 
+                            defaultValue={ _.get(formItem,'placeholder','')} 
+                            onChange={this.handleChangeTip}
+                        />
                     </span>
                 </div> : null}
                 {_.get(formItem,'component_type') === ALL_COMPONENTS.RANGEINPUT ?
                     <div className="component-row required">
                         <span className="label-components">{_.get(formItem,'unitLabel')}</span>
                         <span className='text-components'>
-                            <CheckboxGroup options={_.get(formItem,'select_arr',[])} defaultValue={_.map(_.get(formItem,'default_value'),'value')} onChange={this.ontimeRangeChange} />
+                            <CheckboxGroup
+                                options={_.get(formItem,'select_arr',[])}
+                                defaultValue={_.map(_.get(formItem,'default_value'),'value')}
+                                onChange={this.ontimeRangeChange}
+                            />
                         </span>
                     </div>
                     : null}
@@ -210,7 +227,14 @@ class componentEdit extends React.Component {
                     <div className="component-row">
                         <span className="label-components"></span>
                         <span className="text-components">
-                            <Input placeholder={Intl.get('apply.approve.required.err.msg', '请输入未填写时的提示')} defaultValue={_.get(formItem,'is_required_errmsg')} onChange={this.handleChangeRequiredMsg}/></span></div> : null}
+                            <Input
+                                placeholder={Intl.get('apply.approve.required.err.msg', '请输入未填写时的提示')}
+                                defaultValue={_.get(formItem,'is_required_errmsg')}
+                                onChange={this.handleChangeRequiredMsg}
+                            />
+                        </span>
+                    </div> : null
+                }
                 <SaveCancelButton loading={this.state.loading}
                     saveErrorMsg={this.state.submitErrorMsg}
                     handleSubmit={this.handleSubmit}

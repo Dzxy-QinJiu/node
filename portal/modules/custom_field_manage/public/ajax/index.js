@@ -77,7 +77,6 @@ exports.deleteCustomFieldConfig = (id) => {
         url: `/rest/delete/custom/field/${id}`,
         dataType: 'json',
         type: 'delete',
-        data: data,
         success: (list) => {
             Deferred.resolve(list);
         },

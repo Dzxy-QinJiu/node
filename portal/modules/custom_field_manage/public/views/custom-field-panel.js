@@ -7,6 +7,8 @@ import {Form, Input, Checkbox, Select, Button, Icon} from 'antd';
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
+import ComponentEdit from 'MOD_DIR/apply_approve_manage/public/view/basic-components/component-edit';
+import {ADDAPPLYFORMCOMPONENTS} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 require('../css/custom-field-panel.less');
 
 class CustomFieldPanel extends React.Component {
@@ -21,29 +23,32 @@ class CustomFieldPanel extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if ( _.isEqual(this.state.tabType, nextProps.tabType) ) {
+        if ( !_.isEqual(this.state.tabType, nextProps.tabType) ) {
             this.setState({
                 tabType: nextProps.tabType,
             });
-        } else if (_.isEqual(this.state.editCustomField, nextProps.editCustomField)) {
+        } else if (!_.isEqual(this.state.editCustomField, nextProps.editCustomField)) {
             this.setState({
                 editCustomField: nextProps.editCustomField,
             });
         }
     }
 
-    handleSubmit = (event) => {
-        event.preventDefault();
+    handleSubmit = (formItem) => {
         this.props.form.validateFields((err, values) => {
             if (err) {
                 return;
             } else {
+                
             }
         });
     };
 
     renderFormContent = () => {
-        const {getFieldDecorator} = this.props.form;
+        const {getFieldDecorator, getFieldValue} = this.props.form;
+        // 选择字段类型
+        const selectCustomType = getFieldValue('select');
+        const selectComponent = _.find(ADDAPPLYFORMCOMPONENTS, item => item.customField === selectCustomType);
         const name = Intl.get('custom.field.title', '字段名');
         return (
             <Form className="form">
@@ -71,45 +76,63 @@ class CustomFieldPanel extends React.Component {
                 </FormItem>
                 {
                     _.isEmpty(this.state.editCustomField) ? (
+                        <React.Fragment>
+                            <FormItem>
+                                {getFieldDecorator('select', {
+                                })(
+                                    <Select placeholder="选择字段类型">
+                                        {
+                                            _.map(customFieldSelectOptions, item => {
+                                                return <Option value={item.value}>{item.name}</Option>;
+                                            })
+                                        }
+                                    </Select>
+                                )}
+                            </FormItem>
+                            {
+                                selectCustomType ? (
+                                    <ComponentEdit
+                                        form={this.props.form}
+                                        formItem={selectComponent}
+                                        handleCancel={this.handleCancel}
+                                        handleSubmit={this.handleSubmit}
+                                    />
+                                ) : null
+                            }
+                        </React.Fragment>
 
-                        <FormItem>
-                            {getFieldDecorator('select', {
-                            })(
-                                <Select placeholder="选择字段类型">
-                                    {
-                                        _.map(customFieldSelectOptions, item => {
-                                            return <Option value={item.value}>{item.name}</Option>;
-                                        })
-                                    }
-                                </Select>
-                            )}
-                        </FormItem>
                     ) : (
                         <FormItem>
                             {
                                 _.map(this.state.editCustomField.select_values, item => {
-                                    return <Input defaultValue={item}/>;
+                                    return (
+                                        <React.Fragment>
+                                            <Input defaultValue={item}/>
+                                        </React.Fragment>
+                                    );
                                 })
                             }
                         </FormItem>
                     )
                 }
 
-                <div className="submit-button-container">
-                    <Button
-                        disabled={this.state.loading}
-                        type='primary'
-                        onClick={this.handleSubmit.bind(this)}
-                    >
-                        {Intl.get('common.save', '保存')}
-                        {
-                            this.state.loading ? <Icon type="loading"/> : null
-                        }
-                    </Button>
-                    <Button onClick={this.handleCancel.bind(this)}>
-                        {Intl.get('common.cancel', '取消')}
-                    </Button>
-                </div>
+                {
+                    false && <div className="submit-button-container">
+                        <Button
+                            disabled={this.state.loading}
+                            type='primary'
+                            onClick={this.handleSubmit.bind(this)}
+                        >
+                            {Intl.get('common.save', '保存')}
+                            {
+                                this.state.loading ? <Icon type="loading"/> : null
+                            }
+                        </Button>
+                        <Button onClick={this.handleCancel.bind(this)}>
+                            {Intl.get('common.cancel', '取消')}
+                        </Button>
+                    </div>
+                }
             </Form>
         );
     };

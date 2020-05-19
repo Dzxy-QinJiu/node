@@ -953,11 +953,11 @@ export const customFieldSelectOptions = [{
     name: '数字类型'
 }];
 
-export const customFieldDefaultValue = ['statistics', 'sort', 'in'];
+export const customFieldDefaultValue = ['need_statistic', 'need_statistic', 'need_statistic'];
 
 // 自定义字段默认设置属性
 export const customFieldCheckOptions = [
-    { label: '是否统计', value: 'statistics' },
-    { label: '是否支持排序', value: 'sort' },
-    { label: '是否出现在表单中', value: 'in' },
+    { label: '是否统计', value: 'need_statistic' },
+    { label: '是否支持排序', value: 'need_statistic' },
+    { label: '是否出现在表单中', value: 'need_statistic' },
 ];
