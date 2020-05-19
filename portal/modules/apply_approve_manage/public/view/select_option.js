@@ -50,6 +50,7 @@ class SelectOption extends React.Component {
         return (
             <Select
                 showSearch
+                multiple={this.props.multiple}
                 placeholder={this.props.placeholder}
                 filterOption={(input, option) => ignoreCase(input, option)}
                 onChange={this.props.handleOptionChange}
@@ -145,6 +146,7 @@ SelectOption.defaultProps = {
     component_type: '',
     labelKey: '',
     selectOptionValue: '',
+    multiple: false, // 是否支持多选，默认不支持
     handleOptionChange: function() {
         
     }
@@ -159,6 +161,7 @@ SelectOption.propTypes = {
     form: PropTypes.object,
     validator: PropTypes.func,
     selectOptionValue: PropTypes.string,
+    multiple: PropTypes.bool,
     handleOptionChange: PropTypes.func,
 };
 export default SelectOption;

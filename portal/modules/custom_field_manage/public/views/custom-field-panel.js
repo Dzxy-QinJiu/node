@@ -7,8 +7,8 @@ import {Form, Input, Checkbox, Select, Button, Icon} from 'antd';
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
-import ComponentEdit from 'MOD_DIR/apply_approve_manage/public/view/basic-components/component-edit';
-import {ADDAPPLYFORMCOMPONENTS} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import SelectCustomField from './select-custom-field-component';
+import {selectCustomFieldComponents} from '../utils';
 require('../css/custom-field-panel.less');
 
 class CustomFieldPanel extends React.Component {
@@ -48,7 +48,7 @@ class CustomFieldPanel extends React.Component {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         // 选择字段类型
         const selectCustomType = getFieldValue('select');
-        const selectComponent = _.find(ADDAPPLYFORMCOMPONENTS, item => item.customField === selectCustomType);
+        const selectComponent = _.find(selectCustomFieldComponents, item => item.customField === selectCustomType);
         const name = Intl.get('custom.field.title', '字段名');
         return (
             <Form className="form">
@@ -91,7 +91,7 @@ class CustomFieldPanel extends React.Component {
                             </FormItem>
                             {
                                 selectCustomType ? (
-                                    <ComponentEdit
+                                    <SelectCustomField
                                         form={this.props.form}
                                         formItem={selectComponent}
                                         handleCancel={this.handleCancel}

@@ -20,7 +20,7 @@ export const ALL_COMPONENTS_TYPE = {
 
 };
 
-exports.ADDAPPLYFORMCOMPONENTS = [
+exports.selectCustomFieldComponents = [
     {
         'placeholder': Intl.get('apply.rule.within.32', '32个字符以内'),
         'component_type': ALL_COMPONENTS.INPUT,
@@ -59,7 +59,7 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'select_arr': [Intl.get('apply.approve.option.one', '选项一'), Intl.get('apply.approve.option.two', '选项二')],
         'unitLabel': Intl.get('apply.time.range.unit.select.label', '选项'),
         'component_type': ALL_COMPONENTS.SELECTOPTION,
-        'type': 'select',
+        'type': 'option',
         component: SelectOption,
         customField: 'select',
     },
@@ -67,7 +67,8 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'select_arr': [Intl.get('apply.approve.option.one', '选项一'), Intl.get('apply.approve.option.two', '选项二')],
         'unitLabel': Intl.get('apply.time.range.unit.select.label', '选项'),
         'component_type': ALL_COMPONENTS.SELECTOPTION,
-        'type': 'multiselect',
+        'type': 'option',
+        multiple: true,
         component: SelectOption,
         customField: 'multiselect',
     },
