@@ -393,8 +393,9 @@ class RecommendCluesList extends React.Component {
                 let content = this.renderCheckedStatusTip(type, {clueEmptyPhoneIds: [], phones: clues.telephones}, () => {
                     _.isFunction(callback) && callback(clues, hasAssignedPrivilege);
                 });
-                newState.extractLimitContent = content;
+                newState.singleCheckPhonePopContent = content;
                 newState.singlePopoverVisible = clues.id;
+                newState.singleCheckPhonePopVisible = clues.id;
                 clueId = clues.id;
             }else {
                 let content = this.renderCheckedStatusTip(type, {}, (extractType) => {
@@ -402,8 +403,9 @@ class RecommendCluesList extends React.Component {
                         callback(clues, extractType);
                     }
                 });
-                newState.extractLimitContent = content;
+                newState.batchCheckPhonePopContent = content;
                 newState.batchPopoverVisible = true;
+                newState.batchCheckPhonePopVisible = true;
             }
             this.setState(newState, () => {
                 this.hiddenDropDownBlock(clueId);
@@ -427,8 +429,9 @@ class RecommendCluesList extends React.Component {
                     _.isFunction(callback) && callback(clues, hasAssignedPrivilege);
                 });
                 newState.recommendClueLists = recommendClueLists;
-                newState.extractLimitContent = content;
+                newState.singleCheckPhonePopContent = content;
                 newState.singlePopoverVisible = ids;
+                newState.singleCheckPhonePopVisible = ids;
                 this.hiddenDropDownBlock(clues.id);
             }else {//批量检测时
                 _.each(recommendClueLists, item => {
@@ -448,9 +451,10 @@ class RecommendCluesList extends React.Component {
                     }
                 });
                 newState.recommendClueLists = recommendClueLists;
-                newState.extractLimitContent = content;
+                newState.batchCheckPhonePopContent = content;
                 newState.batchPopoverVisible = true;
                 newState.batchExtractLoading = false;
+                newState.batchCheckPhonePopVisible = true;
                 this.hiddenDropDownBlock();
             }
             this.setState(newState);
@@ -460,8 +464,9 @@ class RecommendCluesList extends React.Component {
                 let content = this.renderCheckedStatusTip(type, {error: Intl.get('lead.check.phone.fiald', '空号检测失败')}, () => {
                     _.isFunction(callback) && callback(clues, hasAssignedPrivilege);
                 });
-                newState.extractLimitContent = content;
+                newState.singleCheckPhonePopContent = content;
                 newState.singlePopoverVisible = clues.id;
+                newState.singleCheckPhonePopVisible = clues.id;
                 this.hiddenDropDownBlock(clues.id);
             }else {
                 let content = this.renderCheckedStatusTip(type, {error: Intl.get('lead.check.phone.fiald', '空号检测失败')}, (extractType) => {
@@ -469,9 +474,10 @@ class RecommendCluesList extends React.Component {
                         callback(clues, extractType);
                     }
                 });
-                newState.extractLimitContent = content;
+                newState.batchCheckPhonePopContent = content;
                 newState.batchPopoverVisible = true;
                 newState.batchExtractLoading = false;
+                newState.batchCheckPhonePopVisible = true;
                 this.hiddenDropDownBlock();
             }
             this.setState(newState);
@@ -574,12 +580,16 @@ class RecommendCluesList extends React.Component {
                     allCount: <span className="primary-count">{_.get(result, 'phones.length', 0)}</span>,
                 };
             }
-            handleCancel = this.handleSingleVisibleChange.bind(this, false);
+            handleCancel = () => {
+                this.setState({singleCheckPhonePopVisible: ''}, () => {
+                    this.handleSingleVisibleChange(false);
+                });
+            };
             let traceTip = errorMsg ? '直接提取' : '确认提取';
             btnContent = (
                 <React.Fragment>
                     {!clueEmptyPhoneCount ? (
-                        <Button onClick={handleCancel} data-tracename="点击单个检测中的'取消'按钮">{Intl.get('common.cancel', '取消')}</Button>
+                        <Button className="check-btn-ghost" onClick={handleCancel} data-tracename="点击单个检测中的'取消'按钮">{Intl.get('common.cancel', '取消')}</Button>
                     ) : null}
                     <Button className="check-btn-primary" type="primary" loading={this.state.singleExtractLoading} onClick={callback} data-tracename={`点击单个检测中的'${traceTip}'按钮`}>{
                         errorMsg ? Intl.get('lead.direct.extraction', '直接提取') : Intl.get('lead.extract.confirm', '确认提取')
@@ -601,7 +611,6 @@ class RecommendCluesList extends React.Component {
                 i18n.name = '系统未发现全部疑似空号的线索';
                 i18n.value = {};
             }
-            handleCancel = this.handleBatchVisibleChange.bind(this, false);
             let traceTip = errorMsg ? '直接提取' : '全部提取';
             //已选线索中过滤掉全部疑似空号的线索后，可以提取的线索列表
             let canExtractClueList = _.filter(_.get(result, 'clues'), item => !_.includes(allEmptyPhones, item.id));
@@ -610,6 +619,8 @@ class RecommendCluesList extends React.Component {
             btnContent = (
                 <React.Fragment>
                     <Button
+                        type={hiddenSmartExtractBtn ? 'primary' : 'ghost'}
+                        className={hiddenSmartExtractBtn ? '' : 'check-btn-ghost'}
                         disabled={this.state.batchExtractLoading && this.state.batchExtractType && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ALL}
                         loading={this.state.batchExtractLoading && this.state.batchExtractType === BATCH_EXTRACT_TYPE.ALL}
                         onClick={callback.bind(this, BATCH_EXTRACT_TYPE.ALL)}
@@ -668,7 +679,7 @@ class RecommendCluesList extends React.Component {
         }
         let isEnableCheckPhone = this.hasEnableCheckPhone();
         this.setState({
-            setEnableCheckPhone: false
+            setEnableCheckPhone: true
         });
         let traceTip = isEnableCheckPhone ? '停用' : '启用';
         Trace.traceEvent(ReactDOM.findDOMNode(this), `${traceTip}空号检测`);
@@ -1088,7 +1099,8 @@ class RecommendCluesList extends React.Component {
             batchExtractLoading: true,
             unSelectDataTip: '',
             saveErrorMsg: '',
-            canClickExtract: false
+            canClickExtract: false,
+            batchCheckPhonePopVisible: false,
         });
         $.ajax({
             url: '/rest/clue/batch/recommend/list',
@@ -1258,6 +1270,7 @@ class RecommendCluesList extends React.Component {
                             disabledCheckedClues: [],
                             selectedRecommendClues: this.state.disabledCheckedClues,
                             showBatchExtractTip: true,
+                            batchCheckPhonePopVisible: false,
                         };
                         if(maxLimitTip) {//显示超限提示
                             newState.batchPopoverVisible = true;
@@ -1300,10 +1313,16 @@ class RecommendCluesList extends React.Component {
             let handleFnc = this.handleSubmitAssignSalesBatch;
             let title = null;
             let overlayClassName = 'extract-limit-content';
+            let content = this.state.extractLimitContent;
             if(isShowCheckPhoneStatus) {
                 handleFnc = this.checkPhoneStatus.bind(this, [], EXTRACT_OPERATOR_TYPE.BATCH, this.handleSubmitAssignSalesBatch, hasAssignedPrivilege);
-                title = this.renderCheckTitle(this.handleBatchVisibleChange.bind(this, false));
-                overlayClassName += ' check-phone-result-container';
+                title = this.renderCheckTitle(() => {
+                    this.setState({batchCheckPhonePopVisible: false}, () => {
+                        this.handleBatchVisibleChange(false);
+                    });
+                });
+                overlayClassName += ' check-phone-result-container batch-check-phone-container';
+                content = this.state.batchCheckPhonePopContent;
             }
             if(hasAssignedPrivilege) {
                 isDisabled = !hasSelectedClue || this.state.batchExtractLoading;
@@ -1315,10 +1334,17 @@ class RecommendCluesList extends React.Component {
                         placement="bottomLeft"
                         trigger="click"
                         title={title}
-                        content={this.state.extractLimitContent}
+                        content={content}
                         visible={this.state.batchPopoverVisible}
                         onVisibleChange={this.handleBatchVisibleChange}
                         overlayClassName={overlayClassName}
+                        getTooltipContainer={() => {
+                            if (isShowCheckPhoneStatus) {
+                                return document.getElementById('unextract-clue-tip');
+                            }else {
+                                return document.body;
+                            }
+                        }}
                     >
                         <Button
                             type={isDisabled ? 'ghost' : 'primary'}
@@ -1355,10 +1381,17 @@ class RecommendCluesList extends React.Component {
                         placement="bottomLeft"
                         trigger="click"
                         title={title}
-                        content={this.state.extractLimitContent}
+                        content={content}
                         visible={this.state.batchPopoverVisible}
                         onVisibleChange={this.handleBatchVisibleChange}
                         overlayClassName={overlayClassName}
+                        getTooltipContainer={() => {
+                            if (isShowCheckPhoneStatus) {
+                                return document.getElementById('unextract-clue-tip');
+                            }else {
+                                return document.body;
+                            }
+                        }}
                     >
                         {this.renderBatchExtractBtn(handleFnc, isWebMin)}
                     </Popover>
@@ -1389,9 +1422,9 @@ class RecommendCluesList extends React.Component {
         );
     }
     handleBatchVisibleChange = (visible) => {
-        if(!visible && !this.state.batchExtractLoading) {
+        if(!visible && !this.state.batchExtractLoading && !this.state.batchCheckPhonePopVisible) {
             this.isClearSelectSales = true;
-            this.setState({batchPopoverVisible: '', extractLimitContent: null, showBatchExtractTip: false, batchExtractType: ''});
+            this.setState({batchPopoverVisible: '', extractLimitContent: null, batchCheckPhonePopContent: null, showBatchExtractTip: false, batchExtractType: ''});
         }
     };
     //------ 批量提取处理end ------//
@@ -1409,7 +1442,8 @@ class RecommendCluesList extends React.Component {
             success: (data) => {
                 this.setState({
                     singleExtractLoading: '',
-                    canClickExtract: true
+                    canClickExtract: true,
+                    singleCheckPhonePopVisible: ''
                 });
                 if (data){
                     this.hiddenDropDownBlock(leadId);
@@ -1431,7 +1465,8 @@ class RecommendCluesList extends React.Component {
             error: (errorInfo) => {
                 this.setState({
                     singleExtractLoading: '',
-                    canClickExtract: true
+                    canClickExtract: true,
+                    singleCheckPhonePopVisible: ''
                 });
                 var errTip = errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败');
                 //如果提取失败的原因是因为被提取过，将该推荐线索设置不可点击并且前面加提示
@@ -1453,7 +1488,7 @@ class RecommendCluesList extends React.Component {
     //单个提取线索
     handleExtractClueAssignToSale = (record, flag) => {
         //如果这条线索已经提取过了或正在提取，就不能再点击提取了
-        if(record.hasExtracted || record.hasExtractedByOther || this.state.singleExtractLoading || !this.state.canClickExtract){
+        if(record.hasExtracted || record.hasExtractedByOther || this.state.singleExtractLoading || !this.state.canClickExtract || !this.state.singleCheckPhonePopVisible){
             return;
         }
         if (!this.state.salesMan && flag) {
@@ -1481,6 +1516,7 @@ class RecommendCluesList extends React.Component {
                             singleExtractLoading: '',
                             canClickExtract: true,
                             showSingleExtractTip: record.id,
+                            singleCheckPhonePopVisible: ''
                         };
                         if(maxLimitTip) {//显示超限提示
                             newState.singlePopoverVisible = record.id;
@@ -1521,10 +1557,16 @@ class RecommendCluesList extends React.Component {
             let handleFnc = this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege);
             let title = null;
             let overlayClassName = 'extract-limit-content';
+            let content = this.state.extractLimitContent;
             if(isShowCheckPhoneStatus) {
                 handleFnc = this.checkPhoneStatus.bind(this, [record], EXTRACT_OPERATOR_TYPE.SINGLE, this.handleExtractClueAssignToSale, hasAssignedPrivilege);
-                title = title = this.renderCheckTitle(this.handleSingleVisibleChange.bind(this, false));
+                title = title = this.renderCheckTitle(() => {
+                    this.setState({singleCheckPhonePopVisible: ''}, () => {
+                        this.handleSingleVisibleChange(false);
+                    });
+                });
                 overlayClassName += ' check-phone-result-container';
+                content = this.state.singleCheckPhonePopContent;
             }
             if (hasAssignedPrivilege) {
                 return (
@@ -1537,7 +1579,7 @@ class RecommendCluesList extends React.Component {
                                 placement={placement}
                                 trigger="click"
                                 title={title}
-                                content={this.state.extractLimitContent}
+                                content={content}
                                 visible={checkRecord}
                                 onVisibleChange={this.handleSingleVisibleChange}
                                 overlayClassName={overlayClassName}
@@ -1569,7 +1611,7 @@ class RecommendCluesList extends React.Component {
                         placement={placement}
                         trigger="click"
                         title={title}
-                        content={this.state.extractLimitContent}
+                        content={content}
                         visible={checkRecord}
                         onVisibleChange={this.handleSingleVisibleChange}
                         overlayClassName={overlayClassName}
@@ -1596,9 +1638,9 @@ class RecommendCluesList extends React.Component {
         );
     }
     handleSingleVisibleChange = (visible) => {
-        if(!visible && !this.state.singleExtractLoading) {
+        if(!visible && !this.state.singleExtractLoading && !this.state.singleCheckPhonePopVisible) {
             this.isClearSelectSales = true;
-            this.setState({singlePopoverVisible: '', extractLimitContent: null, showSingleExtractTip: ''});
+            this.setState({singlePopoverVisible: '', extractLimitContent: null, singleCheckPhonePopContent: null, showSingleExtractTip: ''});
         }
     };
     //------ 单个提取end ------//
@@ -1764,7 +1806,7 @@ class RecommendCluesList extends React.Component {
                             <div className="img-wrapper">
                                 <img className="image" src="/static/images/curtao-personal.svg"/>
                             </div>
-                            <span>{this.renderCheckPhonePopTip()}</span>
+                            <span className="check-phone-text">{this.renderCheckPhonePopTip()}</span>
                             <i className="iconfont icon-close" data-tracename="点击空号检测功能提示中的关闭按钮" title={Intl.get('common.app.status.close', '关闭')} onClick={this.setShowCheckPhonePopTip}/>
                         </div>
                     )}
@@ -1993,7 +2035,7 @@ class RecommendCluesList extends React.Component {
     renderTitle() {
         let {isWebMin} = isResponsiveDisplay();
         return (
-            <div className="unextract-clue-tip clearfix">
+            <div className="unextract-clue-tip clearfix" id="unextract-clue-tip">
                 <div className="no-extract-count-tip">
                     <Checkbox className="check-all" checked={this.isCheckAll()} onChange={this.handleCheckAllChange} disabled={this.disabledCheckAll()}>{Intl.get('common.all.select', '全选')}</Checkbox>
                     {this.hasNoExtractCountTip()}
