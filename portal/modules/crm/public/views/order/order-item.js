@@ -20,6 +20,7 @@ import ApplyUserForm from '../apply-user-form';
 import StepsBar from 'CMP_DIR/steps-bar';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import orderPrivilegeConst from 'MOD_DIR/deal_manage/public/privilege-const';
+import {disabledTodayAndBefore} from 'PUB_DIR/sources/utils/common-method-util';
 //订单状态
 const ORDER_STATUS = {
     WIN: 'win',//赢单
@@ -449,6 +450,7 @@ class OrderItem extends React.Component {
                                 id={order.id}
                                 field="predict_finish_time"
                                 value={order.predict_finish_time}
+                                disabledDate={disabledTodayAndBefore}
                                 placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
                                 hasEditPrivilege={hasEditPrivilege}
                                 saveEditDateInput={this.saveOrderBasicInfo.bind(this, 'predict_finish_time')}
