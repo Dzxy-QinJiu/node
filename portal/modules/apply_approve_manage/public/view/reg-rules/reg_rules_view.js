@@ -470,8 +470,8 @@ class RegRulesView extends React.Component {
                     message.success('保存成功');
                     this.props.updateRegRulesView({
                         ...submitObj,
-                        customiz_user_range: JSON.parse(submitObj.customiz_user_range),
-                        customiz_team_range: JSON.parse(submitObj.customiz_team_range),
+                        customiz_user_range: submitObj.customiz_user_range,
+                        customiz_team_range: submitObj.customiz_team_range,
                     });
                 }
 

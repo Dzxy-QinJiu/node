@@ -6,7 +6,7 @@
 var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import SelfSettingApproveAjax from 'MOD_DIR/common/public/ajax/self-setting';
-import {getApplyDetailById,getApplyStatusById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {getApplyDetailById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
     this.generateActions(
@@ -40,15 +40,6 @@ function ApplyViewDetailActions() {
                 this.dispatch({loading: false, error: true, errorMsg: errorMsg});
             });
         }
-    };
-    //根据申请的id获取审批的状态
-    this.getLeaveApplyStatusById = function(queryObj) {
-        this.dispatch({loading: true, error: false});
-        getApplyStatusById(queryObj).then((list) => {
-            this.dispatch({loading: false, error: false, list: list});
-        }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
     };
 
     //获取回复列表

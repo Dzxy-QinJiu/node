@@ -74,6 +74,8 @@ class AddAndShowApplyList extends React.Component {
         this.setState({
             showApplyDetailForm: true,
             showApplyDetailId: recordId,
+        },() => {
+            this.props.showOrCloseApplyDetail();
         });
     }
     onStoreChange = () => {
@@ -231,6 +233,8 @@ class AddAndShowApplyList extends React.Component {
     closeAddApplyPanel = () => {
         this.setState({
             showApplyDetailForm: false
+        },() => {
+            this.props.showOrCloseApplyDetail(true);
         });
     };
     changeTableHeight = () => {
@@ -248,9 +252,6 @@ class AddAndShowApplyList extends React.Component {
                     if (record.showAddWorkFlowName) {
                         return {
                             children: this.renderAddApplyProcessTitle(),
-                            props: {
-                                colSpan: 3,
-                            },
                         };
                     } else {
                         var cls = classNames('apply-type', {'approve-status': !record.approveCheck});
@@ -325,12 +326,16 @@ AddAndShowApplyList.defaultProps = {
     showApplyList: [],
     showAddWorkFlowName: false,
     updateShowApplyList: function() {
+    },
+    showOrCloseApplyDetail: function() {
+        
     }
 };
 
 AddAndShowApplyList.propTypes = {
     showApplyList: PropTypes.object,
     showAddWorkFlowName: PropTypes.bool,
-    updateShowApplyList: PropTypes.func
+    updateShowApplyList: PropTypes.func,
+    showOrCloseApplyDetail: PropTypes.func,
 };
 export default AddAndShowApplyList;

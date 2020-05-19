@@ -6,7 +6,7 @@
 var ReportSendApplyAjax = require('../ajax/report-send-apply-ajax');
 var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
-import {getApplyDetailById,getApplyStatusById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {getApplyDetailById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
     this.generateActions(

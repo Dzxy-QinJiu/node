@@ -58,25 +58,23 @@ class AddApply extends React.Component {
                 return;
             }
             values = _.cloneDeep(values);
-            values['customers'] = [_.get(this.state, 'formData.customer')];
-            if (!_.get(values, 'customers[0].id')){
-                return;
-            }
+            // values['customers'] = [_.get(this.state, 'formData.customer')];
+            // if (!_.get(values, 'customers[0].id')){
+            //     return;
+            // }
             this.setState({
                 saveApplyLoading: true,
             });
-            ApplyApproveAjax.addSelfSettingApply({'detail': values,'type': SELF_SETTING_FLOW.VISITAPPLY},(result) => {
-                if (!_.isString(result)){
-                    //添加成功
-                    this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                    //添加完后的处理
-                    result.afterAddReplySuccess = true;
-                    result.showCancelBtn = true;
-                    this.hideLeaveApplyAddForm(result);
-                }else{
-                    this.setResultData(result, 'error');
-                }
 
+            ApplyApproveAjax.addSelfSettingApply().sendRequest({'detail': values,'type': this.props.addWorkFlowType}).success((result) => {
+                //添加成功
+                this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
+                //添加完后的处理
+                result.afterAddReplySuccess = true;
+                result.showCancelBtn = true;
+                this.hideApplyAddForm(result);
+            }).error((result) => {
+                this.setResultData(result, 'error');
             });
         });
     };
@@ -88,8 +86,8 @@ class AddApply extends React.Component {
             saveResult: saveResult
         });
     }
-    hideLeaveApplyAddForm = (result) => {
-        this.props.hideLeaveApplyAddForm(result);
+    hideApplyAddForm = (result) => {
+        this.props.hideApplyAddForm(result);
     };
     checkCustomerName = (rule, value, callback) => {
         value = _.trim(_.get(this.state, 'formData.customer.id'));
@@ -164,13 +162,15 @@ class AddApply extends React.Component {
         };
         let saveResult = this.state.saveResult;
         var workConfig = _.find(this.state.workFlowList,item => item.type === this.props.addWorkFlowType);
-        var customizForm = workConfig.customiz_form;
+        let customizForm = [];
+        if(workConfig){
+            customizForm = workConfig.customiz_form;
+        }
         return (
             <RightPanel showFlag={true} data-tracename="添加自定义的申请" className="add-leave-container">
                 <span className="iconfont icon-close add-leave-apply-close-btn"
-                    onClick={this.hideLeaveApplyAddForm}
+                    onClick={this.hideApplyAddForm}
                     data-tracename="关闭添加自定义申请面板"></span>
-
                 <div className="add-leave-apply-wrap">
                     <BasicData
                         clueTypeTitle={_.get(workConfig,'description')}
@@ -228,7 +228,7 @@ class AddApply extends React.Component {
                                             saveErrorMsg={this.state.saveMsg}
                                             saveSuccessMsg={this.state.saveMsg}
                                             handleSubmit={this.handleSubmit}
-                                            handleCancel={this.hideLeaveApplyAddForm}
+                                            handleCancel={this.hideApplyAddForm}
                                             hideSaveTooltip={this.hideSaveTooltip}
                                             saveResult={saveResult}
                                             errorShowTime={DELAY_TIME_RANGE.ERROR_RANGE}
@@ -246,12 +246,12 @@ class AddApply extends React.Component {
     }
 }
 AddApply.defaultProps = {
-    hideLeaveApplyAddForm: function() {
+    hideApplyAddForm: function() {
     }
 
 };
 AddApply.propTypes = {
-    hideLeaveApplyAddForm: PropTypes.func,
+    hideApplyAddForm: PropTypes.func,
     form: PropTypes.object,
     addWorkFlowType: PropTypes.string,
 };
