@@ -24,8 +24,12 @@ const UserAppTerminalCheckboxField = {
         const onChange = !config.isCustomSetting ? this.setField.bind(this , 'terminals') : (checkedValues) => {
             const appPropSettingsMap = this.state.appPropSettingsMap;
             let checkedTerminals = [];
+            if ( _.isEmpty(checkedValues)) {
+                noSelectedAppTerminalEmitter.emit(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, true);
+            } else {
+                noSelectedAppTerminalEmitter.emit(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, false);
+            }
             _.each(checkedValues, (checked) => {
-                
                 let matchApp = _.find(config.selectedApps.terminals, item => item.name === checked);
                 if (matchApp) {
                     checkedTerminals.push({id: matchApp.id, code: matchApp.code, name: matchApp.name});
@@ -49,12 +53,6 @@ const UserAppTerminalCheckboxField = {
         } else {
             currentValue = _.map(this.state.formData.terminals, 'value');
         }
-
-        // if ( _.isEmpty(currentValue)) {
-        //     noSelectedAppTerminalEmitter.emit(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, true)
-        // } else {
-        //     noSelectedAppTerminalEmitter.emit(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, false)
-        // }
 
         return (
             <div className="user-app-terminals-checkbox-block">
