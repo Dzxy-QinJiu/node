@@ -5,11 +5,16 @@
  */
 'use strict';
 var clueAssignmentService = require('../service/clue-assignment-service');
+const _ = require('lodash');
 //保存线索分配策略
 exports.saveClueAssignmentStrategy = function(req, res) {
     clueAssignmentService.saveClueAssignmentStrategy(req, res)
         .on('success', function(data) {
-            res.status(200).json(data);
+            if (_.get(data, 'id')) {
+                res.status(200).json(data);
+            } else {
+                res.status(500).json('添加失败');
+            }
         })
         .on('error', function(err) {
             res.status(500).json(err && err.message);
