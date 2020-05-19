@@ -13,7 +13,7 @@ import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import DetailCard from 'CMP_DIR/detail-card';
 import StepsBar from 'CMP_DIR/steps-bar';
 import Trace from 'LIB_DIR/trace';
-import {disabledBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
+import {disabledTodayAndBefore} from 'PUB_DIR/sources/utils/common-method-util';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {DEAL_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
@@ -569,7 +569,7 @@ class DealDetailPanel extends React.Component {
                         placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditDateInput={this.saveDealBasicInfo.bind(this, 'predict_finish_time')}
-                        disabledDate={disabledBeforeToday}
+                        disabledDate={disabledTodayAndBefore}
                         noDataTip={Intl.get('crm.order.no.expected.deal.time', '暂无预计成交时间')}
                         addDataTip={Intl.get('crm.order.add.expected.deal.time', '添加预计成交时间')}
                     /> 
