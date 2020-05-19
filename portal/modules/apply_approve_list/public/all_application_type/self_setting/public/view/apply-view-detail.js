@@ -3,8 +3,8 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/28.
  */
-var LeaveApplyDetailStore = require('../store/leave-apply-detail-store');
-var LeaveApplyDetailAction = require('../action/leave-apply-detail-action');
+var ApplyDetailStore = require('../store/self-setting-apply-detail-store');
+var ApplyDetailAction = require('../action/self-setting-apply-detail-action');
 import Trace from 'LIB_DIR/trace';
 import {Alert, Icon, Input, Row, Col, Button, Steps, message, Popover} from 'antd';
 const Step = Steps.Step;
@@ -12,7 +12,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-require('../css/leave-apply-detail.less');
+require('../css/self-setting-apply-detail.less');
 import ApplyDetailRemarks from 'CMP_DIR/apply-components/apply-detail-remarks';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import ApplyDetailCustomer from 'CMP_DIR/apply-components/apply-detail-customer';
@@ -26,6 +26,7 @@ import {
     getFilterReplyList,
     handleDiffTypeApply,
     formatUsersmanList,
+    updateUnapprovedCount,
     isCiviwRealm,
     formatSalesmanList,
     timeShowFormat,
@@ -62,27 +63,26 @@ class ApplyViewDetail extends React.Component {
             salesManList: [],//销售列表
             usersManList: [],//成员列表
             workFlowList: [],//配置过的申请审批列表
-            ...LeaveApplyDetailStore.getState()
+            ...ApplyDetailStore.getState()
         };
     }
 
     onStoreChange = () => {
-        this.setState(LeaveApplyDetailStore.getState());
+        this.setState(ApplyDetailStore.getState());
     };
 
     componentDidMount() {
-        LeaveApplyDetailStore.listen(this.onStoreChange);
+        ApplyDetailStore.listen(this.onStoreChange);
         if (_.get(this.props,'detailItem.afterAddReplySuccess')){
             setTimeout(() => {
-                LeaveApplyDetailAction.setDetailInfoObjAfterAdd(this.props.detailItem);
+                ApplyDetailAction.setDetailInfoObjAfterAdd(this.props.detailItem);
                 this.getNextCandidate(_.get(this, 'props.detailItem.id',''));
             });
         }else if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem, this.props.applyData);
         }
-
-        this.getSalesManList();
         this.getGroupList();
+        this.getSalesManList();
         this.getAllUserList();
         getAllWorkFlowList((workFlowList) => {
             this.setState({
@@ -110,7 +110,7 @@ class ApplyViewDetail extends React.Component {
         });
     };
     onSelectApplyNextCandidate = (updateUser) => {
-        LeaveApplyDetailAction.setNextCandidateIds(updateUser);
+        ApplyDetailAction.setNextCandidateIds(updateUser);
     };
     renderTransferCandidateBlock = () => {
         var usersManList = this.state.usersManList;
@@ -146,7 +146,7 @@ class ApplyViewDetail extends React.Component {
         //转出操作后，把之前的待审批人都去掉，这条申请只留转出的那个人审批
         submitObj.user_ids_delete = deleteUserIds;
         var memberId = userData.getUserData().user_id;
-        LeaveApplyDetailAction.transferNextCandidate(submitObj,(flag) => {
+        ApplyDetailAction.transferNextCandidate(submitObj,(flag) => {
             //关闭下拉框
             if (flag){
                 if(_.isFunction(_.get(this, 'addNextCandidate.handleCancel'))){
@@ -160,16 +160,19 @@ class ApplyViewDetail extends React.Component {
                 }
                 //将待我审批的申请转审后
                 if (hasApprovePrivilege){
+                    //待审批数字减一
+                    var count = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY] - 1;
+                    updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
                     //隐藏通过、驳回按钮
-                    LeaveApplyDetailAction.showOrHideApprovalBtns(false);
+                    ApplyDetailAction.showOrHideApprovalBtns(false);
                     //调用父组件的方法进行转成完成后的其他处理
                     this.props.afterApprovedFunc();
                 }else if (memberId === transferCandidateId){
                     //将非待我审批的申请转给我审批后，展示出通过驳回按钮,不需要再手动加一，因为后端会有推送，这里如果加一就会使数量多一个
-                    LeaveApplyDetailAction.showOrHideApprovalBtns(true);
+                    ApplyDetailAction.showOrHideApprovalBtns(true);
                 }
                 //转审成功后，把下一节点的审批人改成转审之后的人
-                LeaveApplyDetailAction.setNextCandidate([{nick_name: addNextCandidateName,user_id: transferCandidateId}]);
+                ApplyDetailAction.setNextCandidate([{nick_name: addNextCandidateName,user_id: transferCandidateId}]);
 
             }else{
                 message.error(Intl.get('apply.approve.transfer.failed','转出申请失败'));
@@ -177,11 +180,11 @@ class ApplyViewDetail extends React.Component {
         });
     };
     clearNextCandidateIds = () => {
-        LeaveApplyDetailAction.setNextCandidateIds('');
-        LeaveApplyDetailAction.setNextCandidateName('');
+        ApplyDetailAction.setNextCandidateIds('');
+        ApplyDetailAction.setNextCandidateName('');
     };
     setSelectContent =(nextCandidateName) => {
-        LeaveApplyDetailAction.setNextCandidateName(nextCandidateName);
+        ApplyDetailAction.setNextCandidateName(nextCandidateName);
     };
     renderAddApplyNextCandidate = () => {
         if (isExpired()) {
@@ -240,7 +243,7 @@ class ApplyViewDetail extends React.Component {
         let backoutObj = {
             id: this.props.detailItem.id,
         };
-        LeaveApplyDetailAction.cancelApplyApprove(backoutObj);
+        ApplyDetailAction.cancelApplyApprove(backoutObj);
     };
 
     componentWillReceiveProps(nextProps) {
@@ -248,7 +251,7 @@ class ApplyViewDetail extends React.Component {
         var nextPropsId = nextProps.detailItem.id;
         if (_.get(nextProps,'detailItem.afterAddReplySuccess')){
             setTimeout(() => {
-                LeaveApplyDetailAction.setDetailInfoObjAfterAdd(nextProps.detailItem);
+                ApplyDetailAction.setDetailInfoObjAfterAdd(nextProps.detailItem);
                 this.getNextCandidate(_.get(nextProps, 'detailItem.id',''));
             });
         }else if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
@@ -260,7 +263,7 @@ class ApplyViewDetail extends React.Component {
     }
 
     componentWillUnmount() {
-        LeaveApplyDetailStore.unlisten(this.onStoreChange);
+        ApplyDetailStore.unlisten(this.onStoreChange);
     }
 
     getApplyListDivHeight() {
@@ -275,33 +278,31 @@ class ApplyViewDetail extends React.Component {
         }
     };
     getNextCandidate(applyId){
-        LeaveApplyDetailAction.getNextCandidate({id: applyId},(result) => {
+        ApplyDetailAction.getNextCandidate({id: applyId},(result) => {
             var memberId = userData.getUserData().user_id;
             var target = _.find(result,detailItem => detailItem.user_id === memberId);
             if (target){
-                LeaveApplyDetailAction.showOrHideApprovalBtns(true);
-            }else{
-                LeaveApplyDetailAction.showOrHideApprovalBtns(false);
+                ApplyDetailAction.showOrHideApprovalBtns(true);
             }
         });
     }
     getBusinessApplyDetailData(detailItem, applyData) {
         setTimeout(() => {
-            LeaveApplyDetailAction.setInitialData(detailItem);
+            ApplyDetailAction.setInitialData(detailItem);
             //如果申请的状态是已通过或者是已驳回的时候，就不用发请求获取回复列表，直接用详情中的回复列表
             //其他状态需要发请求请求回复列表
             if (_.includes(APPLY_FINISH_STATUS, detailItem.status)) {
-                LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
-                LeaveApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id}, detailItem.status, applyData);
+                ApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
+                ApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id}, detailItem.status, applyData);
                 //如果是在界面上改变审批的状态是已通过，最好也查一下下一节点的审批人
                 this.getNextCandidate(detailItem.id);
             } else if (detailItem.id) {
-                LeaveApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id});
-                LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
+                ApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id});
+                ApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
                 //根据申请的id获取申请的状态
-                LeaveApplyDetailAction.getLeaveApplyStatusById({id: detailItem.id});
+                ApplyDetailAction.getLeaveApplyStatusById({id: detailItem.id});
                 //获取该审批所在节点的位置
-                LeaveApplyDetailAction.getApplyTaskNode({id: detailItem.id});
+                ApplyDetailAction.getApplyTaskNode({id: detailItem.id});
                 this.getNextCandidate(detailItem.id);
             }
         });
@@ -311,8 +312,10 @@ class ApplyViewDetail extends React.Component {
     refreshReplyList = (e) => {
         Trace.traceEvent(e, '点击了重新获取');
         var detailItem = this.props.detailItem;
-        if (_.get(detailItem, 'id')) {
-            LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
+        if (_.includes(APPLY_FINISH_STATUS, detailItem.status)) {
+            ApplyDetailAction.setApplyComment(detailItem.approve_details);
+        } else if (detailItem.id) {
+            ApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
             this.getNextCandidate(detailItem.id);
         }
     };
@@ -441,11 +444,11 @@ class ApplyViewDetail extends React.Component {
             comment: _.trim(this.state.replyFormInfo.comment),
         };
         if (!submitData.comment) {
-            LeaveApplyDetailAction.showReplyCommentEmptyError();
+            ApplyDetailAction.showReplyCommentEmptyError();
             return;
         }
         //提交数据
-        LeaveApplyDetailAction.addLeaveApplyComments(submitData,callback);
+        ApplyDetailAction.addLeaveApplyComments(submitData,callback);
     };
     //备注 输入框改变时候触发
     commentInputChange = (event) => {
@@ -454,9 +457,9 @@ class ApplyViewDetail extends React.Component {
             return;
         }
         var val = _.trim(event.target.value);
-        LeaveApplyDetailAction.setApplyFormDataComment(val);
+        ApplyDetailAction.setApplyFormDataComment(val);
         if (val) {
-            LeaveApplyDetailAction.hideReplyCommentEmptyError();
+            ApplyDetailAction.hideReplyCommentEmptyError();
         }
     };
 
@@ -467,7 +470,7 @@ class ApplyViewDetail extends React.Component {
         });
         this.getBusinessApplyDetailData(this.props.detailItem);
         //设置这条审批不再展示通过和驳回的按钮
-        LeaveApplyDetailAction.hideApprovalBtns();
+        ApplyDetailAction.hideApprovalBtns();
     };
 
     //取消发送
@@ -476,7 +479,7 @@ class ApplyViewDetail extends React.Component {
             showBackoutConfirmType: ''
         });
         Trace.traceEvent(e, '点击取消按钮');
-        LeaveApplyDetailAction.cancelSendApproval();
+        ApplyDetailAction.cancelSendApproval();
     };
 
     submitApprovalForm = (approval) => {
@@ -491,23 +494,23 @@ class ApplyViewDetail extends React.Component {
     };
     //获取已选销售的id
     onSalesmanChange = (salesMan) => {
-        LeaveApplyDetailAction.setSalesMan(salesMan);
+        ApplyDetailAction.setSalesMan(salesMan);
     };
     //获取已选团队的id
     onTeamChange = (groupId) => {
-        LeaveApplyDetailAction.setGroupId(groupId);
+        ApplyDetailAction.setGroupId(groupId);
     };
     clearSelectSales() {
-        LeaveApplyDetailAction.setSalesMan('');
+        ApplyDetailAction.setSalesMan('');
     }
     clearSelectTeams() {
-        LeaveApplyDetailAction.setGroupId('');
+        ApplyDetailAction.setGroupId('');
     }
     clearSelectCandidate(){
-        LeaveApplyDetailAction.setApplyCandate('');
+        ApplyDetailAction.setApplyCandate('');
     }
     onSelectApplySales = (updateUser) => {
-        LeaveApplyDetailAction.setApplyCandate(updateUser);
+        ApplyDetailAction.setApplyCandate(updateUser);
     };
     renderSalesBlock = (type) => {
         var onChangeFunction = function() {},defaultValue = '',dataList = [],noDataTip = '';
@@ -743,7 +746,7 @@ class ApplyViewDetail extends React.Component {
         if (assignedSalesGroupId){
             submitObj.group_id = assignedSalesGroupId;
         }
-        LeaveApplyDetailAction.approveLeaveApplyPassOrReject(submitObj, (flag) => {
+        ApplyDetailAction.approveLeaveApplyPassOrReject(submitObj, (flag) => {
             if ((submitObj.assigned_candidate_users || submitObj.user_ids || submitObj.group_id)) {
                 if (flag) {
                     this.viewApprovalResult();

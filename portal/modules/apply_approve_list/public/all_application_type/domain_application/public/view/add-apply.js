@@ -30,6 +30,7 @@ import {DELAY_TIME_RANGE, DOMAIN_END} from 'PUB_DIR/sources/utils/consts';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import CustomerAjax from 'MOD_DIR/common/public/ajax/customer';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 const PAGE_SIZE = 1000;
 class AddApply extends React.Component {
     constructor(props) {
@@ -84,25 +85,18 @@ class AddApply extends React.Component {
             this.setState({
                 isSaving: true
             });
-            $.ajax({
-                url: '/rest/add/self_setting/apply',
-                dataType: 'json',
-                type: 'post',
-                data: {
-                    'detail': values,
-                    'type': SELF_SETTING_FLOW.DOMAINAPPLY
-                },
-                success: (result) => {
-                    //添加成功
-                    this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                    //添加完后的处理
-                    result.afterAddReplySuccess = true;
-                    result.showCancelBtn = true;
-                    this.hideLeaveApplyAddForm(result);
-                },
-                error: (xhr) => {
-                    this.setResultData(xhr.responseJSON, 'error');
-                }
+            ApplyApproveAjax.addSelfSettingApply().sendRequest({
+                'detail': values,
+                'type': SELF_SETTING_FLOW.DOMAINAPPLY
+            }).success((result) => {
+                //添加成功
+                this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
+                //添加完后的处理
+                result.afterAddReplySuccess = true;
+                result.showCancelBtn = true;
+                this.hideLeaveApplyAddForm(result);
+            }).error((xhr) => {
+                this.setResultData(xhr.responseJSON, 'error');
             });
         });
     };

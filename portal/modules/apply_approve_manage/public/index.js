@@ -60,9 +60,9 @@ class ApplyApproveManage extends React.Component {
         return (
             <div className="apply-approve-manage" style={{height: height}}>
                 <div className="apply-approve-wrap" style={{height: height}}>
-                    {/*<div className='apply-approve-top-nav'>*/}
-                    {/*{this.renderTopNavOperation()}*/}
-                    {/*</div>*/}
+                    <div className='apply-approve-top-nav'>
+                        {this.renderTopNavOperation()}
+                    </div>
                     <div className='apply-approve-container'>
                         {this.renderApplyTypeList()}
                     </div>

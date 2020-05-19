@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/27.
  */
 import {RightPanel} from 'CMP_DIR/rightPanel';
-require('../css/add-leave-apply.less');
+require('../css/add-self-setting-apply.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {Form, Input, Button, Icon, message, DatePicker, Select} from 'antd';
@@ -13,15 +13,17 @@ const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
-import Trace from 'LIB_DIR/trace';
 import {
-    ALL_COMPONENTS,
-    SELF_SETTING_FLOW,
+    applyComponentsType,
     ADDAPPLYFORMCOMPONENTS,
     getAllWorkFlowList
 } from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
-import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
+import AlertTimer from 'CMP_DIR/alert-timer';
+import Trace from 'LIB_DIR/trace';
+import {ALL_COMPONENTS, SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import {DELAY_TIME_RANGE, LEAVE_TIME_RANGE,AM_AND_PM} from 'PUB_DIR/sources/utils/consts';
 import classNames from 'classnames';
+import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 class AddApply extends React.Component {
@@ -48,6 +50,7 @@ class AddApply extends React.Component {
     componentDidUpdate() {
         this.addLabelRequiredCls();
     }
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
@@ -59,35 +62,21 @@ class AddApply extends React.Component {
             if (!_.get(values, 'customers[0].id')){
                 return;
             }
-            for (var key in values){
-                if (_.get(values[key],'begin_time')){
-                    values[key]['begin_time'] = moment(_.get(values[key],'begin_time')).format(oplateConsts.DATE_FORMAT) + `_${_.get(values[key],'begin_type')}`;
-                }
-                if (_.get(values[key],'end_time')){
-                    values[key]['end_time'] = moment(_.get(values[key],'end_time')).format(oplateConsts.DATE_FORMAT) + `_${_.get(values[key],'end_type')}`;
-                }
-                delete values[key]['begin_type'];
-                delete values[key]['end_type'];
-            }
             this.setState({
                 saveApplyLoading: true,
             });
-            $.ajax({
-                url: '/rest/add/self_setting/apply',
-                dataType: 'json',
-                type: 'post',
-                data: {'detail': values,'type': SELF_SETTING_FLOW.VISITAPPLY},
-                success: (result) => {
+            ApplyApproveAjax.addSelfSettingApply({'detail': values,'type': SELF_SETTING_FLOW.VISITAPPLY},(result) => {
+                if (!_.isString(result)){
                     //添加成功
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
                     //添加完后的处理
                     result.afterAddReplySuccess = true;
                     result.showCancelBtn = true;
                     this.hideLeaveApplyAddForm(result);
-                },
-                error: (xhr) => {
-                    this.setResultData(xhr.responseJSON, 'error');
+                }else{
+                    this.setResultData(result, 'error');
                 }
+
             });
         });
     };
@@ -174,13 +163,13 @@ class AddApply extends React.Component {
             },
         };
         let saveResult = this.state.saveResult;
-        var workConfig = _.find(this.state.workFlowList,item => item.type === SELF_SETTING_FLOW.VISITAPPLY);
+        var workConfig = _.find(this.state.workFlowList,item => item.type === this.props.addWorkFlowType);
         var customizForm = workConfig.customiz_form;
         return (
-            <RightPanel showFlag={true} data-tracename="添加拜访申请" className="add-leave-container">
+            <RightPanel showFlag={true} data-tracename="添加自定义的申请" className="add-leave-container">
                 <span className="iconfont icon-close add-leave-apply-close-btn"
                     onClick={this.hideLeaveApplyAddForm}
-                    data-tracename="关闭添加拜访申请面板"></span>
+                    data-tracename="关闭添加自定义申请面板"></span>
 
                 <div className="add-leave-apply-wrap">
                     <BasicData
@@ -229,11 +218,7 @@ class AddApply extends React.Component {
                                                 );
 
                                             }else{
-                                                if(target.component_type === ALL_COMPONENTS.TIME_PERIOD){
-                                                    return <ApplyComponent {...propertyObj} form={this.props.form} isBeforeTodayAble={false}/>;
-                                                }else{
-                                                    return <ApplyComponent {...propertyObj} form={this.props.form}/>;
-                                                }
+                                                return <ApplyComponent {...propertyObj} form={this.props.form}/>;
                                             }
 
                                         }
@@ -263,9 +248,11 @@ class AddApply extends React.Component {
 AddApply.defaultProps = {
     hideLeaveApplyAddForm: function() {
     }
+
 };
 AddApply.propTypes = {
     hideLeaveApplyAddForm: PropTypes.func,
-    form: PropTypes.object
+    form: PropTypes.object,
+    addWorkFlowType: PropTypes.string,
 };
 export default Form.create()(AddApply);

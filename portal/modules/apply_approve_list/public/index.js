@@ -43,10 +43,12 @@ import AddBusinessWhileApply from './all_application_type/business-while/public/
 import BusinessWhileDetail from './all_application_type/business-while/public/view/apply-view-detail';
 import AddDomainApply from './all_application_type/domain_application/public/view/add-apply';
 import DomainDetail from './all_application_type/domain_application/public/view/apply-view-detail';
-import AddVisitApply from './all_application_type/self_setting/public/view/add-apply';
-import VisitDetail from './all_application_type/self_setting/public/view/apply-view-detail';
+import AddVisitApply from './all_application_type/visit_apply/public/view/add-apply';
+import VisitDetail from './all_application_type/visit_apply/public/view/apply-view-detail';
 import AddDataServiceApply from './all_application_type/eefung-data-service/public/view/add_apply';
 import DataServiceDetail from './all_application_type/eefung-data-service/public/view/apply_detail';
+import AddSelfSettingApply from './all_application_type/self_setting/public/view/add-apply';
+import SelfSettingDetail from './all_application_type/self_setting/public/view/apply-view-detail';
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
@@ -981,6 +983,16 @@ class ApplyApproveList extends React.Component {
                     afterTransferApplySuccess={this.afterTransferApplySuccess}
                 />;
                 break;
+            default:
+                applyDetailContent = <SelfSettingDetail
+                    applyData={this.state.applyId ? applyDetail : null}
+                    detailItem={this.state.selectedDetailItem}
+                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                    selectedApplyStatus={this.state.selectedApplyStatus}
+                    isUnreadDetail={this.getIsUnreadDetail()}
+                    height={$(window).height()}
+                    afterTransferApplySuccess={this.afterTransferApplySuccess}
+                />;
         }
         //如果是旧版的用户审批
         if (_.get(selectedDetailItem, 'message_type') === APPLY_APPROVE_TYPES.USERAPPLY) {
@@ -1050,7 +1062,11 @@ class ApplyApproveList extends React.Component {
                 return <AddDataServiceApply
                     hideApplyAddForm={this.closeAddApplyForm}
                 />;
-
+            default:
+                return <AddSelfSettingApply
+                    addWorkFlowType={addApplyFormPanel}
+                    hideApplyAddForm={this.closeAddApplyForm}
+                />;
         }
     };
     closeAddApplyForm = (result) => {
