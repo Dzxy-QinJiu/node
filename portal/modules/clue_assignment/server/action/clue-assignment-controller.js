@@ -5,6 +5,7 @@
  */
 'use strict';
 var clueAssignmentService = require('../service/clue-assignment-service');
+let BackendIntl = require('../../../../../portal/lib/utils/backend_intl');
 const _ = require('lodash');
 //保存线索分配策略
 exports.saveClueAssignmentStrategy = function(req, res) {
@@ -13,7 +14,8 @@ exports.saveClueAssignmentStrategy = function(req, res) {
             if (_.get(data, 'id')) {
                 res.status(200).json(data);
             } else {
-                res.status(500).json('添加失败');
+                const backendIntl = new BackendIntl(req);
+                res.status(500).json(backendIntl.get('crm.154', '添加失败'));
             }
         })
         .on('error', function(err) {
