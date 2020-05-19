@@ -22,6 +22,7 @@ import {num as antUtilsNum} from 'ant-utils';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 const parseAmount = antUtilsNum.parseAmount;
 const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
+import {disabledTodayAndBefore} from 'PUB_DIR/sources/utils/common-method-util';
 
 const ADD_TITLE_HEIGHT = 70;
 
@@ -325,9 +326,10 @@ class DealForm extends React.Component {
                             {...formItemLayout}
                         >
                             {getFieldDecorator('predict_finish_time', {
-                                initialValue: moment()
+                                initialValue: moment().add(1, 'days'),
+                                rules: [{required: true, message: Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}]
                             })(
-                                <DatePicker style={{width: '100%'}}/>
+                                <DatePicker style={{width: '100%'}} disabledDate={disabledTodayAndBefore}/>
                             )}
                         </FormItem>
                         <FormItem

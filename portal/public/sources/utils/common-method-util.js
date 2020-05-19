@@ -304,6 +304,10 @@ exports.disabledBeforeToday = function(current) {
     return current && current < moment().subtract(1, 'days').endOf('day');
 };
 
+//不能选今天及之前的时间
+exports.disabledTodayAndBefore = function(current) {
+    return current && current <= moment().endOf('day');
+};
 
 //不能选今天之后的时间
 exports.disabledAfterToday = function(current) {

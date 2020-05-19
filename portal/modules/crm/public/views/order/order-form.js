@@ -6,6 +6,7 @@ import SearchIconList from '../../../../../components/search-icon-list';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
+import {disabledTodayAndBefore} from 'PUB_DIR/sources/utils/common-method-util';
 class OrderForm extends React.Component {
     constructor(props){
         super(props);
@@ -111,9 +112,10 @@ class OrderForm extends React.Component {
                         {...formItemLayout}
                     >
                         {getFieldDecorator('predict_finish_time', {
+                            initialValue: moment().add(1, 'days'),
                             rules: [{required: true, message: Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}]
                         })(
-                            <DatePicker allowClear={false}/>
+                            <DatePicker allowClear={false} disabledDate={disabledTodayAndBefore}/>
                         )}
                     </FormItem>
                     <FormItem
