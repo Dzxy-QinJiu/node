@@ -50,11 +50,11 @@ const UserAppTerminalCheckboxField = {
             currentValue = _.map(this.state.formData.terminals, 'value');
         }
 
-        if ( _.isEmpty(currentValue)) {
-            noSelectedAppTerminalEmitter.emit(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, true)
-        } else {
-            noSelectedAppTerminalEmitter.emit(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, false)
-        }
+        // if ( _.isEmpty(currentValue)) {
+        //     noSelectedAppTerminalEmitter.emit(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, true)
+        // } else {
+        //     noSelectedAppTerminalEmitter.emit(noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL, false)
+        // }
 
         return (
             <div className="user-app-terminals-checkbox-block">
