@@ -278,7 +278,7 @@ class AddDataService extends React.Component {
                     data-tracename="关闭添加数据导出申请面板"></span>
                 <div className="add-leave-apply-wrap">
                     <BasicData
-                        clueTypeTitle={Intl.get('apply.eefung.data.service', '数据导出申请')}
+                        clueTypeTitle={Intl.get('apply.eefung.data.service', '数据导出')}
                     />
                     <div className="add-leave-apply-form-wrap" style={{'height': divHeight}}>
                         <GeminiScrollbar>

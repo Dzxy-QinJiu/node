@@ -4,8 +4,9 @@
 
 import {regex} from 'ant-utils';
 import {Button} from 'antd';
-import { moneySize, staffSize } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {moneySize, staffSize} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import giftLogo from '../../../static/images/gift.png';
+
 export const GIFT_LOGO = giftLogo;
 //用户类型的下拉选项
 export const userTypeList = [
@@ -363,9 +364,9 @@ export const selectMenuList = [
     }
     , {
         key: 'reject', value: Intl.get('user.apply.reject', '已驳回'),
-    },{
+    }, {
         key: 'cancel', value: Intl.get('user.apply.backout', '已撤销'),
-    },{
+    }, {
         key: APPLY_TYPE_STATUS_CONST.MYAPPROVED, value: Intl.get('apply.list.my.approved', '我审批过')
     }];
 //申请列表滚动条参数
@@ -399,20 +400,20 @@ export const APPLY_MULTI_TYPE_VALUES = [
 ];
 //请假申请的请假类型
 export const LEAVE_TYPE = [{
-    name: Intl.get('leave.apply.personnal.leave','事假'), value: 'personal_leave'
-},{
-    name: Intl.get('leave.apply.sick.leave','病假'), value: 'sick_leave'
-},{
+    name: Intl.get('leave.apply.personnal.leave', '事假'), value: 'personal_leave'
+}, {
+    name: Intl.get('leave.apply.sick.leave', '病假'), value: 'sick_leave'
+}, {
     name: Intl.get('leave.apply.annual.leave', '年假'), value: 'annual_leave'
-},{
+}, {
     name: Intl.get('leave.apply.marry.leave', '婚假'), value: 'marriage_leave'
-},{
+}, {
     name: Intl.get('leave.apply.funner.leave', '丧假'), value: 'funeral_leave'
-},{
+}, {
     name: Intl.get('leave.apply.maternity.leave', '产假'), value: 'maternity_leave'
-},{
+}, {
     name: Intl.get('leave.apply.maternity.nursing.leave', '产护假'), value: 'maternityaccompany_leave'
-},{
+}, {
     name: Intl.get('crm.186', '其他'), value: 'other_leave'
 }];
 //请假类型数组的对象形式
@@ -426,7 +427,7 @@ export const DELAY_TIME_RANGE = {
 
 export const APPLY_STATUS = {
     READY_APPLY: Intl.get('leave.apply.apartment.apply', '上级主管'),
-    ASSIGN_SALES_APPLY: Intl.get('leave.apply.general.apply','分配销售'),
+    ASSIGN_SALES_APPLY: Intl.get('leave.apply.general.apply', '分配销售'),
 };
 
 //订单状态
@@ -434,25 +435,34 @@ export const DEAL_STATUS = {
     WIN: 'win',//赢单
     LOSE: 'lose'//丢单
 };
+export const OTHER_REPORT = 'other_report';
 //舆情报告类型
-export const REPORT_TYPE = [{
-    name: Intl.get('contract.13', '日报'), value: 'daily_report'
+export const REPORT_TYPE = [
+    {name: Intl.get('apply.approve.simple.report','简报'), value: 'simple_report'}, {
+        name: Intl.get('contract.13', '日报'), value: 'daily_report'
+    }, {
+        name: Intl.get('contract.14', '周报'), value: 'weekly_report'
+    },
+    {
+        name: Intl.get('contract.15', '月报'), value: 'monthly_report'
+    },
+    {
+        name: Intl.get('apply.approve.quarty.report', '季报'), value: 'quarterly_report'
+    }, {
+        name: Intl.get('contract.16', '年报'), value: 'annual_report'
+    },
+    {
+        name: Intl.get('contract.17', '专报'), value: 'special_report'
+    }, {
+        name: Intl.get('crm.186', '其他'), value: OTHER_REPORT
+    },];
+export const CHARGE_MODE = [{
+    name: Intl.get('apply.approved.charge.free', '免费'),
+    value: 'free',
 }, {
-    name: Intl.get('contract.14', '周报'), value: 'weekly_report'
-},
-{
-    name: Intl.get('contract.15', '月报'), value: 'monthly_report'
-},
-{
-    name: Intl.get('apply.approve.quarty.report', '季报'), value: 'quarterly_report'
-}, {
-    name: Intl.get('contract.16', '年报'), value: 'annual_report'
-},
-{
-    name: Intl.get('contract.17', '专报'), value: 'special_report'
-}, {
-    name: Intl.get('crm.186', '其他'), value: 'other_report'
-},];
+    name: Intl.get('apply.approved.charge.paid', '付费'),
+    value: 'paid'
+}];
 //文件撰写类型
 export const DOCUMENT_TYPE = [
     {name: Intl.get('apply.approve.tender.documents', '招标文件'), value: 'tender_document'},
@@ -473,8 +483,8 @@ export const AM_AND_PM = {
 };
 //请假申请的类型
 export const LEAVE_TIME_RANGE = [
-    {name: Intl.get('apply.approve.leave.am','上午'),value: AM_AND_PM.AM},
-    {name: Intl.get('apply.approve.leave.pm','下午'),value: AM_AND_PM.PM}
+    {name: Intl.get('apply.approve.leave.am', '上午'), value: AM_AND_PM.AM},
+    {name: Intl.get('apply.approve.leave.pm', '下午'), value: AM_AND_PM.PM}
 ];
 
 //集成类型
@@ -502,27 +512,30 @@ export const APPLY_USER_STATUS = {
 };
 //文件禁止上传的规则
 export const FILES_TYPE_FORBIDDEN_RULES = [
-    {value: ' ',messageTips: Intl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！')}
+    {value: ' ', messageTips: Intl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！')}
 ];
 //文件允许的上传规则
 export const FILES_TYPE_ALLOW_RULES = [
-    {valueArr: ['docx','doc','ppt','pptx','pdf','xls','xlsx','csv','png','bmp','jpg','txt','rar','zip'],messageTips: Intl.get('apply.approve.upload.error.file.type','文件格式不正确！')},
+    {
+        valueArr: ['docx', 'doc', 'ppt', 'pptx', 'pdf', 'xls', 'xlsx', 'csv', 'png', 'bmp', 'jpg', 'txt', 'rar', 'zip'],
+        messageTips: Intl.get('apply.approve.upload.error.file.type', '文件格式不正确！')
+    },
 ];
 //两个值一个是文件的最小值一个是文件的最大值
 export const REG_FILES_SIZE_RULES = [
-    {minValue: 0, messageTips: Intl.get('apply.approve.upload.empty.file','不可上传空文件！')},
-    {maxValue: 10 * 1024 * 1024, messageTips: Intl.get('apply.approve.upload.not.more.than50','文件大小不能超过10M!')},
+    {minValue: 0, messageTips: Intl.get('apply.approve.upload.empty.file', '不可上传空文件！')},
+    {maxValue: 10 * 1024 * 1024, messageTips: Intl.get('apply.approve.upload.not.more.than50', '文件大小不能超过10M!')},
 ];
 
 export const XLS_FILES_TYPE_RULES = [
-    {valueArr: ['xls'],messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'xls'})},
+    {valueArr: ['xls'], messageTips: Intl.get('clue.import.file.type', '只能导入{type}格式的文件！', {type: 'xls'})},
 ];
 export const XLSX_FILES_TYPE_RULES = [
-    {valueArr: ['xlsx'],messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'xlsx'})},
+    {valueArr: ['xlsx'], messageTips: Intl.get('clue.import.file.type', '只能导入{type}格式的文件！', {type: 'xlsx'})},
 ];
 
 export const CSV_FILES_TYPE_RULES = [
-    {valueArr: ['csv'],messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'csv'})},
+    {valueArr: ['csv'], messageTips: Intl.get('clue.import.file.type', '只能导入{type}格式的文件！', {type: 'csv'})},
 ];
 export const FINAL_TASK = 'final_task';
 export const DIFF_APPLY_TYPE_UNREAD_REPLY = {
@@ -536,7 +549,7 @@ export const DIFF_APPLY_TYPE_UNREAD_REPLY = {
 // 用户分析中，时间选择类型
 export const DATE_SELECT = [
     {name: Intl.get('user.login.last.six.month', '近六个月'), value: 'six_month'},
-    {name: Intl.get('user.login.last.month', '近一月'), value: 'month' },
+    {name: Intl.get('user.login.last.month', '近一月'), value: 'month'},
     {name: Intl.get('user.login.last.week', '近一周'), value: 'week'}
 ];
 //为配置坐席号的错误提示
@@ -607,10 +620,10 @@ export const BOOT_PROCESS_KEYS = {
     EXTRACT_CLUE: 'extract_clue',//提取线索
 };
 export const CONTACT_TIMES_CONSTS = {
-    '1h': Intl.get('crm.schedule.n.hour.later', '{n}小时后',{n: 1}),
-    '2h': Intl.get('crm.schedule.n.hour.later', '{n}小时后',{n: 2}),
-    '5h': Intl.get('crm.schedule.n.hour.later', '{n}小时后',{n: 5}),
-    '1d': Intl.get('crm.alert.after.n.day', '{n}天后',{n: 1}),
+    '1h': Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 1}),
+    '2h': Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 2}),
+    '5h': Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 5}),
+    '1d': Intl.get('crm.alert.after.n.day', '{n}天后', {n: 1}),
     '1w': Intl.get('crm.alert.after.1.week', '1周后'),
     'custom': Intl.get('user.time.custom', '自定义')
 };
@@ -681,7 +694,7 @@ export const CC_INFOTYPE = {
     SOCKET_NOTICE: 'socket_notice'
 };
 export const CC_INFO_LISTS = [
-    CC_INFOTYPE.EMAIL_NOTICE,CC_INFOTYPE.SOCKET_NOTICE
+    CC_INFOTYPE.EMAIL_NOTICE, CC_INFOTYPE.SOCKET_NOTICE
 ];
 //申请抄送人类型
 export const NOTIFY_PERSON_TYPE = {
@@ -790,12 +803,12 @@ export const CLUE_MESSAGE_TYPE = {
     BASE_EXTRACT_ALLOT: 'base_extract_allot',//推荐线索提取的类型
     POOL_EXTRACT_ALLOT: 'pool_extract_allot'//线索池提取的线索类型
 };
-export const CLUE_HIDE_NOTICE_TYPE = [CLUE_MESSAGE_TYPE.ADD_CUSTOMER_CLUE, CLUE_MESSAGE_TYPE.BASE_EXTRACT_ALLOT,CLUE_MESSAGE_TYPE.POOL_EXTRACT_ALLOT];
+export const CLUE_HIDE_NOTICE_TYPE = [CLUE_MESSAGE_TYPE.ADD_CUSTOMER_CLUE, CLUE_MESSAGE_TYPE.BASE_EXTRACT_ALLOT, CLUE_MESSAGE_TYPE.POOL_EXTRACT_ALLOT];
 
 export const RECOMMEND_CLUE_FILTERS = [{
     key: 'keyword',
     label: '关键词',
-},{
+}, {
     key: 'industrys',
     label: '行业',
     separator: '、',
@@ -803,16 +816,16 @@ export const RECOMMEND_CLUE_FILTERS = [{
     key: 'area',
     processValue: (formData) => {
         let region = '';
-        if(_.get(formData, 'province')
+        if (_.get(formData, 'province')
             || _.get(formData, 'district')
             || _.get(formData, 'city')
         ) {
             region = '地域: ';
             let areas = [formData.province];
-            if(_.get(formData, 'city')) {
+            if (_.get(formData, 'city')) {
                 areas.push(formData.city);
             }
-            if(_.get(formData, 'district')) {
+            if (_.get(formData, 'district')) {
                 areas.push(formData.district);
             }
             region += areas.join('/');
@@ -827,7 +840,7 @@ export const RECOMMEND_CLUE_FILTERS = [{
     label: '资本规模',
     processValue: (formData) => {
         let capitalScale = '';
-        if(_.get(formData, 'capitalMax') || _.get(formData, 'capitalMin')) {
+        if (_.get(formData, 'capitalMax') || _.get(formData, 'capitalMin')) {
             let scale = '';
             if (formData.capitalMin) {
                 let item = _.find(moneySize, item => _.isEqual(item.capitalMin, formData.capitalMin));
@@ -837,7 +850,9 @@ export const RECOMMEND_CLUE_FILTERS = [{
                 scale = item.name;
             }
             capitalScale += scale;
-        }else { capitalScale += '全部'; }
+        } else {
+            capitalScale += '全部';
+        }
         return capitalScale;
     }
 }, {
@@ -845,7 +860,7 @@ export const RECOMMEND_CLUE_FILTERS = [{
     label: '人员规模',
     processValue: (formData) => {
         let stuffScale = '';
-        if(_.get(formData, 'staffnumMax') || _.get(formData, 'staffnumMin')) {
+        if (_.get(formData, 'staffnumMax') || _.get(formData, 'staffnumMin')) {
             let scale = '';
             if (formData.staffnumMin) {
                 let item = _.find(staffSize, item => _.isEqual(item.staffnumMin, formData.staffnumMin));
@@ -855,7 +870,9 @@ export const RECOMMEND_CLUE_FILTERS = [{
                 scale = item.name;
             }
             stuffScale += scale;
-        }else { stuffScale += '全部'; }
+        } else {
+            stuffScale += '全部';
+        }
         return stuffScale;
     }
 }, {
