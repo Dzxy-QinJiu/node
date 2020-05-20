@@ -36,8 +36,8 @@ class AddBusinessWhile extends React.Component {
             hideCustomerRequiredTip: false,
             search_customer_name: '',
             formData: {
-                begin_time: moment().startOf('day').add(8,'hour').add(30,'minute').valueOf(),//外出开始时间默认当天8:00
-                end_time: moment().startOf('day').add(17,'hour').add(30,'minute').valueOf(),//外出结束时间默认当天18:00
+                begin_time: moment().startOf('day').add(8,'hour').add(30,'minute').valueOf(),//外出开始时间默认当天8:30
+                end_time: moment().startOf('day').add(17,'hour').add(30,'minute').valueOf(),//外出结束时间默认当天17:30
                 reason: '',
                 customers: [{
                     id: '',
