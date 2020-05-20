@@ -9,6 +9,7 @@
 .recommend-clues-lists-container{
   .recommend-customer-list{
     width: auto;
+    position: relative;
     .iconfont.close-pannel{
       z-index: 14;
     }
@@ -570,7 +571,19 @@
         }
       }
     }
-
+    //遮罩层
+    .recommend-clue-mask{
+      display: none;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 5;
+      &.show-mask{
+        display: block;
+      }
+    }
   }
 }
 .ant-message{
@@ -580,8 +593,8 @@
 .extract-limit-content{
   min-width: 200px;
   &.check-phone-result-container{
-    .ant-popover-arrow, .ant-popover-arrow:after{
-      border-bottom-color: @primary-color;
+    .ant-popover-arrow{
+      display: none;
     }
     //头部样式
     .ant-popover-title{
@@ -614,9 +627,6 @@
   }
   &.batch-check-phone-container{
     top: -8px!important;
-    .ant-popover-arrow{
-      display: none;
-    }
   }
   .ant-popover-inner-content{
     color: @primary-font-color;

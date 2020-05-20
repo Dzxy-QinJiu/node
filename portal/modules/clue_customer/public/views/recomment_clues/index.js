@@ -724,13 +724,15 @@ class RecommendCluesList extends React.Component {
         }
     };
     //渲染检测结果头部
-    renderCheckTitle(handleFunc) {
+    renderCheckTitle(handleFunc, isShowCloseBtn = true) {
         return (
             <div className="check-phone-title" data-tracename="空号检测title内容">
                 <i className="iconfont icon-check"/>
                 <span className="check-phone-name">{Intl.get('lead.check.phone', '空号检测')}</span>
                 <span className="check-phone-only">（{Intl.get('lead.check.phone.explain', '仅支持非14、16、17、19号段手机号')})</span>
-                <i className="iconfont icon-close" data-tracename="点击关闭" title={Intl.get('common.app.status.close', '关闭')} onClick={handleFunc}/>
+                {isShowCloseBtn ? (
+                    <i className="iconfont icon-close" data-tracename="点击关闭" title={Intl.get('common.app.status.close', '关闭')} onClick={handleFunc}/>
+                ) : null}
             </div>
         );
     }
@@ -750,6 +752,11 @@ class RecommendCluesList extends React.Component {
                 defaultMessage={i18n.name}
             />
         );
+    }
+    //是否展示遮罩层
+    showMaskBlock() {
+        //批量检测结果以及单个检测结果显示时，需要加上遮罩层
+        return this.state.batchCheckPhonePopVisible || this.state.singleCheckPhonePopVisible;
     }
     //-------------- 检测手机号状态 end -------
 
@@ -1553,7 +1560,7 @@ class RecommendCluesList extends React.Component {
             let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
             let checkRecord = this.state.singlePopoverVisible === record.id;
             let isShowCheckPhoneStatus = this.hasEnableCheckPhone() && !this.state.disableExtract && !_.isEqual(this.state.showSingleExtractTip, record.id);
-            let placement = isShowCheckPhoneStatus ? 'topRight' : 'bottomRight';
+            let placement = isShowCheckPhoneStatus ? 'left' : 'bottomRight';
             let handleFnc = this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege);
             let title = null;
             let overlayClassName = 'extract-limit-content';
@@ -1564,7 +1571,7 @@ class RecommendCluesList extends React.Component {
                     this.setState({singleCheckPhonePopVisible: ''}, () => {
                         this.handleSingleVisibleChange(false);
                     });
-                });
+                }, false);
                 overlayClassName += ' check-phone-result-container';
                 content = this.state.singleCheckPhonePopContent;
             }
@@ -2059,6 +2066,9 @@ class RecommendCluesList extends React.Component {
         let recommendCls = classNames('recommend-customer-top-nav-wrap', {
             'responsive-mini-btn': isWebMin
         });
+        let maskCls = classNames('recommend-clue-mask', {
+            'show-mask': this.showMaskBlock()
+        });
         return (
             <div className="recommend-clues-lists-container" data-tracename="推荐线索列表面板">
                 <div className="recommend-customer-list">
@@ -2091,6 +2101,7 @@ class RecommendCluesList extends React.Component {
                                 </div>
                             </div>
                         </div>
+                        <div className={maskCls}/>
                     </div>
                 </div>
             </div>
