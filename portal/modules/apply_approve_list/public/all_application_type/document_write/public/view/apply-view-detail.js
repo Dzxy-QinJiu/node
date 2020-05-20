@@ -34,17 +34,13 @@ import {
 import {DOCUMENT_TYPE,TOP_NAV_HEIGHT,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import UploadAndDeleteFile from 'CMP_DIR/apply-components/upload-and-delete-file';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import {seperateFilesDiffType, hasApprovedReportAndDocumentApply} from 'PUB_DIR/sources/utils/common-data-util';
-const salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE, FILES_LIMIT} from 'PUB_DIR/sources/utils/consts';
-var timeoutFunc;//定时方法
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import {FILES_LIMIT} from 'PUB_DIR/sources/utils/consts';
 import {uniteFileSize} from 'PUB_DIR/sources/utils/common-method-util';
 import classNames from 'classnames';
 import {transferBtnContent,renderStepContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';

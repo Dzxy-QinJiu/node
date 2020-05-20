@@ -3337,7 +3337,7 @@ var en_US = {
     'lead.single.check.phone.no.empty.phone.tip': 'There are {allCount} Numbers in this clue, but the system has not found any suspected empty Numbers',//此线索有{allCount}个号码，系统未发现疑似空号
     'lead.batch.check.phone.no.empty.phone.tip': 'The system did not find all possible clues to empty Numbers',//系统未发现全部疑似空号的线索
     'leac.smart.extract.title': 'When extracting, all clues that are suspected to be empty will be eliminated',//提取时会排除全部是疑似空号的线索
-    
+
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3481,6 +3481,7 @@ var en_US = {
     'apply.approve.lyrical.report': 'Lyric report',//舆情报告
     'apply.approve.document.writing': 'Document writing',//文件撰写
     'apply.approve.quarty.report': 'Quarterly report',//季报
+    'apply.approve.simple.report': 'Simple report',//简报
     'apply.approve.tender.documents': 'Bidding Documents',//招标文件
     'apply.approve.bide.documents': 'Tender Documents',//投标文件
     'apply.approve.construction.plan': 'Construction plan',//建设方案
@@ -3744,7 +3745,7 @@ var en_US = {
     'apply.my.self.setting.work.flow': 'Visit apply',//拜访申请
     'apply.domain.application.work.flow': 'Domain name application',//舆情平台申请
     'apply.leave.while.application.work.flow': 'Out of office application',//外出申请
-    'apply.eefung.data.service': 'Data Export Application',//数据导出申请
+    'apply.eefung.data.service': 'Data Export',//数据导出
     'apply.went.out.while.range': 'Time out',//外出时长
     'apply.domain.descriptipn.reg': 'The domain name description can only contain letters, numbers, underscores (cannot begin or end with a dash), and is between 1 and 32 in length.',//域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间
     'apply.domain.plat.name.reg': 'Platform name length is between 1 and 32 characters (English characters count as one character, and other characters count as 2 characters)',//平台名称长度在1到32个字符之间(英文数字算一个字符，其他字符一个算2个字符)
@@ -3778,7 +3779,9 @@ var en_US = {
     'apply.approved.data.service.template': 'Data export application form-application time-xxx department-contact person',//数据导出申请表-申请时间-xxx部门-联系人
     'apply.approved.receive.email': 'Mail recipient or mailbox',//接收邮件人员或邮箱
     'apply.approved.select.receive.email': 'Please select a member or mailbox to receive mail',//请选择接收邮件的成员或邮箱
-
+    'apply.approved.charge.mode': 'charge mode',//收费模式
+    'apply.approved.charge.free': 'free',//免费
+    'apply.approved.charge.paid': 'paid',//付费
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
