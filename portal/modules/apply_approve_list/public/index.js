@@ -113,6 +113,7 @@ class ApplyApproveList extends React.Component {
                 workFlowList: workFlowList
             });
         });
+        this.updateUnhandleApplyApproveCount();
         notificationEmitter.on(notificationEmitter.MY_UNREAD_REPLY, this.refreshMyUnreadReplyList);
         notificationEmitter.on(notificationEmitter.TEAM_UNREAD_REPLY, this.refreshTeamUnreadReplyList);
         notificationEmitter.on(notificationEmitter.CLEAR_UNREAD_REPLY, this.clearUnreadReplyList);
@@ -165,28 +166,32 @@ class ApplyApproveList extends React.Component {
     };
     //更新审批的数字
     updateUnhandleApplyApproveCount = () => {
-        this.showUnhandleApplyTip();
+        const {unreadMyReplyList, unreadTeamReplyList} = this.state;
+        var unreadMyReplyCount = _.get(unreadMyReplyList, 'length'),
+            // 团队申请，未读数
+            unreadTeamReplyCount = _.get(unreadTeamReplyList, 'length'),
+            // 我审批的，未读数
+            unreadMyApproveCount = getAllUnhandleApplyCount();//我审批的数量
+        _.each(APPLY_APPROVE_TAB_TYPES, (item) => {
+            var val = _.get(item, 'value');
+            if (APPLY_TYPE.APPLY_BY_ME === val) {
+                this.renderUnhandleNum(val, unreadMyReplyCount, false);
+            }
+            if (APPLY_TYPE.APPLY_BY_TEAM === val) {
+                this.renderUnhandleNum(val, unreadTeamReplyCount, false);
+            }
+            if (APPLY_TYPE.APPROVE_BY_ME === val) {
+                this.renderUnhandleNum(val, unreadMyApproveCount, true);
+            }
+        });
     };
     //展示刷新的提示
-    updateUnhandleApplyApproveTip = (data) => {
-        // 推送未读数据长度
-        const length = data.length;
-        const unHandleApplyId = _.map(data, 'id');
-        // 申请列表数据
-        const applyList = _.get(this.state.applyListObj, 'list', []);
-        // 获取申请列表中待审批的数据，和推送数据一样的长的id
-        const applyListId = _ .chain(applyList).filter(item => item.status === 'ongoing').slice(0, length).map(item => item.id).value();
-        // 对比是否有不同的数据，若有则说明有新的推送数据
-        const diffArray = _.difference(unHandleApplyId, applyListId);
+    updateUnhandleApplyApproveTip = () => {
         //如果当前选中的是我审批的
         if(this.state.activeApplyTab === APPLY_TYPE.APPROVE_BY_ME){
-            // 获取申请列表，需要时间，有推送，则待我审批列表，一定是有数据的，
-            // 不同时，说明有推送数据, 需要刷新
-            if (applyList.length && !_.isEmpty(diffArray)) {
-                this.setState({
-                    showRefreshTip: true
-                });
-            }
+            this.setState({
+                showRefreshTip: true
+            });
         }
     };
 
@@ -451,26 +456,6 @@ class ApplyApproveList extends React.Component {
     getUnreadReplyList = () => {
         const {activeApplyTab, unreadMyReplyList, unreadTeamReplyList} = this.state;
         return activeApplyTab === APPLY_TYPE.APPLY_BY_ME ? unreadMyReplyList : unreadTeamReplyList;
-    };
-    showUnhandleApplyTip = () => {
-        const {unreadMyReplyList, unreadTeamReplyList} = this.state;
-        var unreadMyReplyCount = _.get(unreadMyReplyList, 'length'),
-            // 团队申请，未读数
-            unreadTeamReplyCount = _.get(unreadTeamReplyList, 'length'),
-            // 我审批的，未读数
-            unreadMyApproveCount = getAllUnhandleApplyCount();//我审批的数量
-        _.each(APPLY_APPROVE_TAB_TYPES, (item) => {
-            var val = _.get(item, 'value');
-            if (APPLY_TYPE.APPLY_BY_ME === val) {
-                this.renderUnhandleNum(val, unreadMyReplyCount, false);
-            }
-            if (APPLY_TYPE.APPLY_BY_TEAM === val) {
-                this.renderUnhandleNum(val, unreadTeamReplyCount, false);
-            }
-            if (APPLY_TYPE.APPROVE_BY_ME === val) {
-                this.renderUnhandleNum(val, unreadMyApproveCount, true);
-            }
-        });
     };
     // tab 上显示的提示
     // 回复消息的推送，根据审批状态不同，推送的给不同的人
@@ -1094,7 +1079,8 @@ class ApplyApproveList extends React.Component {
         return (
             <div className='apply_approve_content_wrap user_apply_page'>
                 {this.renderApplyListTab()}
-                {this.showUnhandleApplyTip()}
+                {/*这个渲染未读数或者未读回复的不可以删除，在点击全部已读的时候需要重新渲染*/}
+                {this.updateUnhandleApplyApproveCount()}
                 {!_.isEmpty(this.state.showHistoricalItem) ? (
                     <RightPanelModal
                         className="historical-detail-panel"
