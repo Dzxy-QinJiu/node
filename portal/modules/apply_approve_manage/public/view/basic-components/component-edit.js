@@ -103,7 +103,7 @@ class componentEdit extends React.Component {
     };
     ontimeRangeChange = (checkedValues) => {
         var formItem = this.state.formItem;
-        formItem.default_value = _.filter(_.get(formItem, 'select_arr'), item =>
+        formItem.default_value = _.filter(this.getSelectOrDefaultArr().selectArr, item =>
             _.indexOf(checkedValues, item.value) > -1
         );
         this.setState({formItem});
@@ -151,15 +151,36 @@ class componentEdit extends React.Component {
                         <span className='template-item'>
                             {templateItem.name}
                             <Popconfirm placement="top" title={Intl.get('apply.approve.delete.this.file', '是否删除此文件')}
-                                        onConfirm={this.handleDeleteFile.bind(this, templateItem)}
-                                        okText={Intl.get('user.yes', '是')} cancelText={Intl.get('user.no', '否')}>
-                            <i className="iconfont icon-delete handle-btn-item"></i>
+                                onConfirm={this.handleDeleteFile.bind(this, templateItem)}
+                                okText={Intl.get('user.yes', '是')} cancelText={Intl.get('user.no', '否')}>
+                                <i className="iconfont icon-delete handle-btn-item"></i>
                             </Popconfirm>
                         </span>
                     );
                 })}
             </div>
         );
+    };
+    isRangeInputType = () => {
+        var formItem = this.state.formItem;
+        return _.get(formItem, 'component_type') === ALL_COMPONENTS.RANGEINPUT;
+    };
+    getSelectOrDefaultArr = () => {
+        var formItem = this.state.formItem;
+        var selectArr = [],defaultArr = [];
+        _.forEach(_.get(formItem, 'select_arr', []),item => {
+            if(_.isString(item)){
+                selectArr.push(JSON.parse(item));
+            }
+        });
+        _.forEach(_.get(formItem, 'default_value',[]),item => {
+            if(_.isString(item)){
+                defaultArr.push(JSON.parse(item));
+            }
+        });
+
+
+        return {selectArr,defaultArr};
     };
     render = () => {
         var formItem = this.state.formItem, hasErrTip = this.state.titleRequiredMsg;
@@ -170,6 +191,7 @@ class componentEdit extends React.Component {
             name: 'template',
             beforeUpload: this.beforeUploadFiles
         };
+        var isRangeInput = this.isRangeInputType();
         return (
             <div className="approve-edit-container" key={formItem.key}>
                 <div className="component-row">
@@ -183,7 +205,7 @@ class componentEdit extends React.Component {
                     <span className="label-components">{Intl.get('crm.alert.topic', '标题')}</span>
                     <span className="text-components">
                         <Input className={cls} defaultValue={_.get(formItem, 'title')}
-                               onChange={this.handleChangeTopic}/>
+                            onChange={this.handleChangeTopic}/>
                         {hasErrTip ? <span className="require-err-tip">
                             {hasErrTip}
                         </span> : null}
@@ -193,16 +215,17 @@ class componentEdit extends React.Component {
                     <span className="label-components">placeHolder</span>
                     <span className='text-components'>
                         <Input className={cls} defaultValue={_.get(formItem, 'placeholder', '')}
-                               onChange={this.handleChangeTip}/>
+                            onChange={this.handleChangeTip}/>
                     </span>
                 </div> : null}
-                {_.get(formItem, 'component_type') === ALL_COMPONENTS.RANGEINPUT ?
+                {isRangeInput ?
                     <div className="component-row required">
                         <span className="label-components">{_.get(formItem, 'unitLabel')}</span>
                         <span className='text-components'>
-                            <CheckboxGroup options={_.get(formItem, 'select_arr', [])}
-                                           defaultValue={_.map(_.get(formItem, 'default_value'), 'value')}
-                                           onChange={this.ontimeRangeChange}/>
+                            {/*select_arr 存储后只能是字符串的数组*/}
+                            <CheckboxGroup options={this.getSelectOrDefaultArr().selectArr}
+                                defaultValue={_.map(this.getSelectOrDefaultArr().defaultArr, 'value')}
+                                onChange={this.ontimeRangeChange}/>
                         </span>
                     </div>
                     : null}
@@ -218,9 +241,9 @@ class componentEdit extends React.Component {
                                     <Input value={item} onChange={this.handleInputChange.bind(this, index)}/>
                                     <span className="icon-container">
                                         <Icon className={noShowMinus ? 'hide-icon' : ''} type="minus"
-                                              onClick={this.handleMinusInput.bind(this, index)}/>
+                                            onClick={this.handleMinusInput.bind(this, index)}/>
                                         <Icon className={noShowAdd ? 'hide-icon' : ''} type="plus"
-                                              onClick={this.handleAddInput.bind(this, index)}/>
+                                            onClick={this.handleAddInput.bind(this, index)}/>
                                     </span>
                                 </span>;
                             })}
@@ -248,12 +271,12 @@ class componentEdit extends React.Component {
                     <div className="component-row required">
                         <span className="label-components">{Intl.get('common.import.template', '模板')}</span>
                         <span className="text-components">
-                       <Upload {...props} >
-                           {_.get(this.state.templateList, 'length') ?
-                               this.renderTemplateList() :
-                               <Button>{Intl.get('apply.approved.upload.template', '上传模板')}</Button>}
-                        </Upload>
-                    </span>
+                            <Upload {...props} >
+                                {_.get(this.state.templateList, 'length') ?
+                                    this.renderTemplateList() :
+                                    <Button>{Intl.get('apply.approved.upload.template', '上传模板')}</Button>}
+                            </Upload>
+                        </span>
                     </div>
                     : null}
                 <div className="component-row">
@@ -268,12 +291,12 @@ class componentEdit extends React.Component {
                         <span className="label-components"></span>
                         <span className="text-components">
                             <Input placeholder={Intl.get('apply.approve.required.err.msg', '请输入未填写时的提示')}
-                                   defaultValue={_.get(formItem, 'is_required_errmsg')}
-                                   onChange={this.handleChangeRequiredMsg}/></span></div> : null}
+                                defaultValue={_.get(formItem, 'is_required_errmsg')}
+                                onChange={this.handleChangeRequiredMsg}/></span></div> : null}
                 <SaveCancelButton loading={this.state.loading}
-                                  saveErrorMsg={this.state.submitErrorMsg}
-                                  handleSubmit={this.handleSubmit}
-                                  handleCancel={this.handleCancel}/>
+                    saveErrorMsg={this.state.submitErrorMsg}
+                    handleSubmit={this.handleSubmit}
+                    handleCancel={this.handleCancel}/>
             </div>
         );
     };

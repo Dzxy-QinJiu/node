@@ -48,7 +48,7 @@ class componentShow extends React.Component {
             return null;
         }
     };
-    handleRemoveItem = (formItem) => {
+    handleDeleteItem = (formItem) => {
         this.setState({
             showCancelConfirmBtn: true
         });
@@ -60,6 +60,13 @@ class componentShow extends React.Component {
     };
     handleEditItem = (formItem) => {
         this.props.handleEditItem(formItem);
+    };
+    handleRemoveItem = (formItem) => {
+        this.props.handleRemoveItem(formItem,() => {
+            this.setState({
+                showCancelConfirmBtn: false
+            });
+        });
     };
 
     render = () => {
@@ -76,7 +83,7 @@ class componentShow extends React.Component {
                         {this.state.showCancelConfirmBtn ?
                             <span className="btns-container">
                                 <Button className='confirm-btn'
-                                    onClick={this.props.handleRemoveItem.bind(this, formItem)}>{Intl.get('crm.contact.delete.confirm', '确认删除')}</Button>
+                                    onClick={this.handleRemoveItem.bind(this, formItem)}>{Intl.get('crm.contact.delete.confirm', '确认删除')}</Button>
                                 <Button onClick={this.cancelRemoveItem}>{Intl.get('common.cancel', '取消')}</Button>
                             </span>
                             : <span className="icon-wrap">
@@ -84,7 +91,7 @@ class componentShow extends React.Component {
                                     onClick={this.handleEditItem.bind(this, formItem)}></i>
                                 {/*<i className="iconfont icon-transfer"></i>*/}
                                 <i className="iconfont icon-delete handle-btn-item"
-                                    onClick={this.handleRemoveItem.bind(this, formItem)}></i>
+                                    onClick={this.handleDeleteItem.bind(this, formItem)}></i>
                             </span>}
 
                     </span>

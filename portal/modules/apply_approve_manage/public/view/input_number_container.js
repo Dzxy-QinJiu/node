@@ -4,10 +4,10 @@
  * Created by zhangshujuan on 2019/5/23.
  */
 
-import {Input,Form} from 'antd';
+import {InputNumber, Form} from 'antd';
 const FormItem = Form.Item;
 
-class InputContent extends React.Component {
+class InputNumberContent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -62,14 +62,14 @@ class InputContent extends React.Component {
                             message: _.get(formItem, 'is_required_errmsg')
                         }, {validator: this.validatorInput}]
                     })(
-                        <Input {...this.props}/>
+                        <InputNumber {...this.props}/>
                     )}
             </FormItem>
         );
     }
 }
 
-InputContent.defaultProps = {
+InputNumberContent.defaultProps = {
     select_arr: [],
     type: '',
     placeholder: '',
@@ -77,7 +77,7 @@ InputContent.defaultProps = {
     labelKey: '',
 };
 
-InputContent.propTypes = {
+InputNumberContent.propTypes = {
     select_arr: PropTypes.array,
     type: PropTypes.string,
     placeholder: PropTypes.string,
@@ -86,4 +86,4 @@ InputContent.propTypes = {
     form: PropTypes.object,
     validator: PropTypes.func
 };
-export default InputContent;
+export default InputNumberContent;

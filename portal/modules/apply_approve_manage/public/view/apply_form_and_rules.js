@@ -176,13 +176,15 @@ class ApplyFormAndRules extends React.Component {
         return _.find(customiz_form, item => item.key === formKey);
     };
     //删除某个item
-    removeTargetFormItem = (formItem) => {
+    removeTargetFormItem = (formItem,callback) => {
         var formKey = formItem.key;
         var applyTypeData = this.state.applyTypeData;
         var customiz_form = _.get(applyTypeData, 'customiz_form');
         applyTypeData.customiz_form = _.filter(customiz_form, item => item.key !== formKey);
         this.setState({
             applyTypeData
+        },() => {
+            _.isFunction(callback) && callback();
         });
     };
     //一种是编辑状态的取消，一种是添加的取消
@@ -365,7 +367,7 @@ class ApplyFormAndRules extends React.Component {
                 style={{height: calculateHeight() - 2 * APPLYAPPROVE_LAYOUT.PADDINGHEIGHT - APPLYAPPROVE_LAYOUT.TABTITLE - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM + 70}}>
                 <div className="apply-form-rules">
                     <GeminiScrollbar>
-                    {this.renderAddFormRules()}
+                        {this.renderAddFormRules()}
                     </GeminiScrollbar>
                 </div>
                 <div className="apply-form-content-container">

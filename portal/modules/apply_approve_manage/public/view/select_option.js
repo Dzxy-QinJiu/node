@@ -18,15 +18,21 @@ class SelectOption extends React.Component {
             selectedRadioValue: ''
         };
     }
-
+    getRadioSelectArr = () => {
+        var selectArr = _.get(this.props,'select_arr',[]);
+        var options = [];
+        _.forEach(selectArr,item => {
+            options.push({
+                label: item,
+                value: item
+            });
+        });
+        return options;
+    };
     renderRadioGroup = () => {
-        var selectArr = this.props.select_arr;
+
         return (
-            <RadioGroup onChange={this.handleRadioChange}>
-                {_.map(selectArr, (item) => {
-                    return (<Radio value={item}>{item}</Radio>);
-                })}
-            </RadioGroup>
+            <RadioGroup onChange={this.handleRadioChange} options={this.getRadioSelectArr()}/>
         );
     };
     componentWillReceiveProps(nextProps) {
@@ -92,6 +98,23 @@ class SelectOption extends React.Component {
         }
         return content;
     };
+    getInitialValue = () => {
+        var type = this.props.type,initialValue = '';
+        switch (type) {
+            case 'radio':
+                initialValue = _.get(this.getRadioSelectArr(),'[0].value');
+                break;
+            case 'checkbox':
+                initialValue = '';
+                break;
+            case 'option':
+                initialValue = '';
+                break;
+            default:
+                initialValue = '';
+        }
+        return initialValue;
+    };
 
     render = () => {
         var formItemLayout = { labelCol: {
@@ -125,7 +148,7 @@ class SelectOption extends React.Component {
             >
                 {
                     getFieldDecorator(_.get(formItem, 'formItemKey'), {
-                        initialValue: '',
+                        initialValue: this.getInitialValue(),
                         rules: [{
                             required: _.get(formItem, 'is_required'),
                             message: _.get(formItem, 'is_required_errmsg')
@@ -146,7 +169,7 @@ SelectOption.defaultProps = {
     labelKey: '',
     selectOptionValue: '',
     handleOptionChange: function() {
-        
+
     }
 };
 

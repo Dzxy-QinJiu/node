@@ -423,13 +423,31 @@ class ApplyViewDetail extends React.Component {
                             text: item.selected_value === '0.5day' ? this.renderShowVisitRange(showItem) :
                                 <span>{starttime - endtime}</span>
                         });
+                    }else if(item.component_type === ALL_COMPONENTS.DATETIME){
+                        showApplyInfo.push({
+                            label: _.get(item, 'title'),
+                            text: showItem.date_time
+                        });
+                    }else{
+                        var showDes = _.isString(showItem) ? showItem : '';
+                        if(_.isArray(showItem)){
+                            showDes = showItem.join(',');
+                        }
+                        showApplyInfo.push({
+                            label: _.get(item, 'title'),
+                            text: showDes
+                        });
                     }
+                }else{
+                    var showDes = _.isString(showItem) ? showItem : '';
+                    if(_.isArray(showItem)){
+                        showDes = showItem.join(',');
+                    }
+                    showApplyInfo.push({
+                        label: _.get(item, 'title'),
+                        text: showDes
+                    });
                 }
-                showApplyInfo.push({
-                    label: _.get(item, 'title'),
-                    text: _.isString(showItem) ? showItem : ''
-                });
-
             });
             return (
                 <ApplyDetailInfo

@@ -62,6 +62,20 @@ class AddApply extends React.Component {
             // if (!_.get(values, 'customers[0].id')){
             //     return;
             // }
+            //时间周期的数据统一
+            for (var key in values){
+                if (_.get(values[key],'begin_time')){
+                    values[key]['begin_time'] = moment(_.get(values[key],'begin_time')).format(oplateConsts.DATE_FORMAT) + `_${_.get(values[key],'begin_type')}`;
+                }
+                if (_.get(values[key],'end_time')){
+                    values[key]['end_time'] = moment(_.get(values[key],'end_time')).format(oplateConsts.DATE_FORMAT) + `_${_.get(values[key],'end_type')}`;
+                }
+                if (_.get(values[key],'date_time')){
+                    values[key]['date_time'] = moment(_.get(values[key],'date_time')).format(oplateConsts.DATE_FORMAT);
+                }
+                delete values[key]['begin_type'];
+                delete values[key]['end_type'];
+            }
             this.setState({
                 saveApplyLoading: true,
             });
