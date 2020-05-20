@@ -1119,7 +1119,8 @@ function applyUnreadReplyListener(unreadReply) {
     const TEAM_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.TEAM_UNREAD_REPLY;
     //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
     let unreadMyReplyList = session.get(MY_UNREAD_REPLY);
-    //todo 这里的判断需要修改一下，member_id 推送给的人的id，需要校验的是这条审批的申请人的id，暂时后端还没有加上
+    //member_id 推送给的人的id，需要校验的是这条审批的申请人的id是不是当前登录人，如果是，推送到我的申请这个tab
+    console.log(userData.getUserData().user_id);
     if (unreadMyReplyList && userData.getUserData().user_id === _.get(unreadReply,'applicateId')) {
         unreadMyReplyList = JSON.parse(unreadMyReplyList);
         //已有回复列表，将新得回复加入回复列表中

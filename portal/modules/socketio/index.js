@@ -314,11 +314,8 @@ function applyUnreadReplyListener(unreadList) {
     // 已通过、已驳回、已撤销，是推送给申请人
     pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
     if (_.get(unreadList, '[0]')) {
-        var applicateId = _.chain(unreadList).last().get('member_id').value();
         _.each(unreadList, unreadReply => {
             if (unreadReply.member_id) {
-                //找到消息接收者对应的socket，将数据推送到浏览器
-                unreadReply.applicateId = applicateId;
                 emitMsgBySocket(unreadReply.member_id, 'apply_unread_reply', pushDto.unreadReplyToFrontend(unreadReply));
             }
         });

@@ -166,7 +166,24 @@ class ApplyApproveList extends React.Component {
     };
     //更新审批的数字
     updateUnhandleApplyApproveCount = () => {
-        this.showUnhandleApplyTip();
+        const {unreadMyReplyList, unreadTeamReplyList} = this.state;
+        var unreadMyReplyCount = _.get(unreadMyReplyList, 'length'),
+            // 团队申请，未读数
+            unreadTeamReplyCount = _.get(unreadTeamReplyList, 'length'),
+            // 我审批的，未读数
+            unreadMyApproveCount = getAllUnhandleApplyCount();//我审批的数量
+        _.each(APPLY_APPROVE_TAB_TYPES, (item) => {
+            var val = _.get(item, 'value');
+            if (APPLY_TYPE.APPLY_BY_ME === val) {
+                this.renderUnhandleNum(val, unreadMyReplyCount, false);
+            }
+            if (APPLY_TYPE.APPLY_BY_TEAM === val) {
+                this.renderUnhandleNum(val, unreadTeamReplyCount, false);
+            }
+            if (APPLY_TYPE.APPROVE_BY_ME === val) {
+                this.renderUnhandleNum(val, unreadMyApproveCount, true);
+            }
+        });
     };
     //展示刷新的提示
     updateUnhandleApplyApproveTip = () => {
@@ -439,26 +456,6 @@ class ApplyApproveList extends React.Component {
     getUnreadReplyList = () => {
         const {activeApplyTab, unreadMyReplyList, unreadTeamReplyList} = this.state;
         return activeApplyTab === APPLY_TYPE.APPLY_BY_ME ? unreadMyReplyList : unreadTeamReplyList;
-    };
-    showUnhandleApplyTip = () => {
-        const {unreadMyReplyList, unreadTeamReplyList} = this.state;
-        var unreadMyReplyCount = _.get(unreadMyReplyList, 'length'),
-            // 团队申请，未读数
-            unreadTeamReplyCount = _.get(unreadTeamReplyList, 'length'),
-            // 我审批的，未读数
-            unreadMyApproveCount = getAllUnhandleApplyCount();//我审批的数量
-        _.each(APPLY_APPROVE_TAB_TYPES, (item) => {
-            var val = _.get(item, 'value');
-            if (APPLY_TYPE.APPLY_BY_ME === val) {
-                this.renderUnhandleNum(val, unreadMyReplyCount, false);
-            }
-            if (APPLY_TYPE.APPLY_BY_TEAM === val) {
-                this.renderUnhandleNum(val, unreadTeamReplyCount, false);
-            }
-            if (APPLY_TYPE.APPROVE_BY_ME === val) {
-                this.renderUnhandleNum(val, unreadMyApproveCount, true);
-            }
-        });
     };
     // tab 上显示的提示
     // 回复消息的推送，根据审批状态不同，推送的给不同的人
@@ -1082,6 +1079,8 @@ class ApplyApproveList extends React.Component {
         return (
             <div className='apply_approve_content_wrap user_apply_page'>
                 {this.renderApplyListTab()}
+                {/*这个渲染未读数或者未读回复的不可以删除，在点击全部已读的时候需要重新渲染*/}
+                {this.updateUnhandleApplyApproveCount()}
                 {!_.isEmpty(this.state.showHistoricalItem) ? (
                     <RightPanelModal
                         className="historical-detail-panel"
