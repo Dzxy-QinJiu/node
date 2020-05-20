@@ -18,7 +18,7 @@ import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
-import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS,FILES_LIMIT,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS,FILES_LIMIT,APPLY_FINISH_STATUS,CHARGE_MODE} from 'PUB_DIR/sources/utils/consts';
 import {
     getApplyTopicText,
     getApplyResultDscr,
@@ -337,10 +337,14 @@ class ApplyViewDetail extends React.Component {
         if (targetObj) {
             reportType = targetObj.name;
         }
+        var changeModeTarget = _.find(CHARGE_MODE,item => item.value === detail.charge_mode);
         var showApplyInfo = [
             {
                 label: Intl.get('common.type', '类型'),
                 text: reportType
+            },{
+                label: Intl.get('apply.approved.charge.mode', '收费模式'),
+                text: _.get(changeModeTarget,'name','')
             },
             {
                 label: Intl.get('call.record.customer', '客户'),

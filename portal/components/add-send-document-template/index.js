@@ -94,7 +94,7 @@ class AddReportSendApply extends React.Component {
             }
             //其他表单的提交项
             if(values.report_type === OTHER_REPORT){//如果选中的是其他的舆情报告类型，就不需要传收费模式字段
-                delete values.charge_mode;
+                values.charge_mode = 'free';
             }
             _.forEach(values, (value, key) => {
                 formData.append(key,value);
