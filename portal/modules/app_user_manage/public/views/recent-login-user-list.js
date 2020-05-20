@@ -659,6 +659,7 @@ class RecentLoginUsers extends React.Component {
         let appOptions = this.getAppOptions();
         let memberList = this.state.memberList.data; // 成员数据
         let teamlists = this.state.teamlists; // 团队数据
+        let userTypeSelectedList = _.concat(userTypeList, {name: Intl.get('analysis.exclude.ip.staff', '排除配置ip和员工'), value: 'valid'});
         return (
             <div className="recent_login_header-wrap">
                 <ButtonZones>
@@ -732,7 +733,7 @@ class RecentLoginUsers extends React.Component {
                                 onChange={this.onUserTypeChange.bind(this)}
                             >
                                 {
-                                    _.map(userTypeList, (userType, idx) => {
+                                    _.map(userTypeSelectedList, (userType, idx) => {
                                         return <Option key={idx} value={userType.value}>{userType.name}</Option>;
                                     })
                                 }
