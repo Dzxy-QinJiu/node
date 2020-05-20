@@ -57,24 +57,6 @@ class CustomFieldManage extends React.Component {
         this.setState({
             isShowRightPanel: true,
             editCustomField: {}
-        }, () => {
-            const queryObj = {
-                customized_type: this.state.activeTab,
-                customized_variables: [{
-                    field_type: 'select',
-                    name: '行政级别',
-                    select_values: ['省部级', '地市级', '区县级'],
-                    show_index: 1
-                },{
-                    field_type: 'text',
-                    name: '客户',
-                    select_values: '请输入客户的名称',
-                    show_index: 2
-                }],
-            };
-            ajax.addCustomFieldConfig(queryObj).then( (result) => {
-                console.log('result:',result);
-            } );
         });
     };
 
@@ -133,7 +115,6 @@ class CustomFieldManage extends React.Component {
                 } else {
                     message.error(Intl.get('crm.139', '删除失败！'));
                 }
-
             }, (errMsg) => {
                 message.error(errMsg || Intl.get('crm.139', '删除失败！'));
             } );
@@ -259,6 +240,13 @@ class CustomFieldManage extends React.Component {
         });
     };
 
+    // 更新数据
+    updateCustomFieldData = (customFieldData) => {
+        this.setState({
+            customFieldData: customFieldData
+        });
+    };
+
     render() {
         return (
             <div
@@ -285,6 +273,8 @@ class CustomFieldManage extends React.Component {
                             tabType={this.state.activeTab}
                             onClosePanel={this.handleClosePanel}
                             editCustomField ={this.state.editCustomField}
+                            customFieldData={this.state.customFieldData}
+                            updateCustomFieldData={this.updateCustomFieldData}
                         />
                     ) : null
                 }

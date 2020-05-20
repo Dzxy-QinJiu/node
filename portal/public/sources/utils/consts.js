@@ -923,7 +923,7 @@ export const customFieldType = {
     'radio': '单项选择',
     'checkbox': '多项选择',
     'date': '日期选择',
-    'number:': '数字类型'
+    'number': '数字类型'
 };
 
 // 选择自定义字段筛选框的值
@@ -953,11 +953,11 @@ export const customFieldSelectOptions = [{
     name: '数字类型'
 }];
 
-export const customFieldDefaultValue = ['need_statistic', 'need_statistic', 'need_statistic'];
+export const customFieldDefaultValue = ['need_statistic', 'need_sort', 'need_show'];
 
 // 自定义字段默认设置属性
 export const customFieldCheckOptions = [
     { label: '是否统计', value: 'need_statistic' },
-    { label: '是否支持排序', value: 'need_statistic' },
-    { label: '是否出现在表单中', value: 'need_statistic' },
+    { label: '是否支持排序', value: 'need_sort' },
+    { label: '是否出现在表单中', value: 'need_show' }
 ];

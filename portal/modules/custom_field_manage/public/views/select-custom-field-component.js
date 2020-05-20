@@ -29,20 +29,6 @@ class SelectCustomField extends React.Component {
         }
     }
 
-    handleChangeTopic = (e) => {
-        var formItem = this.state.formItem;
-        var value = e.target.value;
-        // if (value){
-        //     var errTip = value.length > 6 ? Intl.get('apply.components.length.character', '标题长度不能超过6个字符') : '';
-        //     this.setState({
-        //         submitErrorMsg: errTip
-        //     });
-        // }
-        formItem.title = value;
-        this.setState({
-            formItem
-        });
-    };
     handleChangeTip = (e) => {
         var formItem = this.state.formItem;
         formItem.placeholder = e.target.value;
@@ -59,6 +45,10 @@ class SelectCustomField extends React.Component {
             loading: true
         },() => {
             this.props.handleSubmit(formItem,() => {
+                this.setState({
+                    loading: false,
+                    submitErrorMsg: ''
+                });
             },(errorMsg) => {
                 this.setState({
                     loading: false,

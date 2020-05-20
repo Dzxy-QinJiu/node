@@ -2,13 +2,15 @@
  * Created by hzl on 2020/5/16.
  */
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import { manageCustomTab, customFieldDefaultValue, customFieldCheckOptions, customFieldSelectOptions } from 'PUB_DIR/sources/utils/consts';
-import {Form, Input, Checkbox, Select, Button, Icon} from 'antd';
+import { manageCustomTab, customFieldDefaultValue,
+    customFieldCheckOptions, customFieldSelectOptions } from 'PUB_DIR/sources/utils/consts';
+import {Form, Input, Checkbox, Select, Button, Icon, message} from 'antd';
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 import SelectCustomField from './select-custom-field-component';
 import {selectCustomFieldComponents} from '../utils';
+import ajax from '../ajax';
 require('../css/custom-field-panel.less');
 
 class CustomFieldPanel extends React.Component {
@@ -16,20 +18,41 @@ class CustomFieldPanel extends React.Component {
         super(props);
         this.state = {
             loading: false,
-            tabType: props.tabType,
-            defaultConfig: customFieldDefaultValue,
-            editCustomField: props.editCustomField,
+            tabType: props.tabType, // tab类型，线索、机会、客户
+            defaultCheckedValue: this.getDefaultCheckedValue(props.editCustomField), // 是否统计，是否支持排序，是否出现在表单中，默认全选
+            editCustomField: props.editCustomField, // 编辑字段
+            customFieldData: _.cloneDeep(props.customFieldData), // 自定义数据
         };
     }
+
+    getDefaultCheckedValue = (editCustomField) => {
+        let defaultCheckedValue = customFieldDefaultValue;
+        if (!_.isEmpty( editCustomField)) {
+            let setCheckedValue = [];
+            if (_.get(editCustomField, 'need_statistic')) {
+                setCheckedValue.push('need_statistic');
+            }
+            if (_.get(editCustomField, 'need_sort')) {
+                setCheckedValue.push('need_sort');
+            }
+            if (_.get(editCustomField, 'need_show')) {
+                setCheckedValue.push('need_show');
+            }
+            defaultCheckedValue = setCheckedValue;
+        }
+        return defaultCheckedValue;
+    };
 
     componentWillReceiveProps(nextProps) {
         if ( !_.isEqual(this.state.tabType, nextProps.tabType) ) {
             this.setState({
                 tabType: nextProps.tabType,
+                customFieldData: _.cloneDeep(nextProps.customFieldData)
             });
         } else if (!_.isEqual(this.state.editCustomField, nextProps.editCustomField)) {
             this.setState({
                 editCustomField: nextProps.editCustomField,
+                defaultCheckedValue: this.getDefaultCheckedValue(nextProps.editCustomField)
             });
         }
     }
@@ -39,17 +62,96 @@ class CustomFieldPanel extends React.Component {
             if (err) {
                 return;
             } else {
-                
+                let submitObj = {
+                    customized_type: this.state.tabType
+                };
+                let customized_variables = {};
+                customized_variables.name = _.get(values, 'name');
+                const selectType = _.get(values, 'select');
+                customized_variables.field_type = selectType;
+                // 统计相关的值
+                const defaultChecked = _.get(values, 'checkbox', this.state.defaultCheckedValue);
+                _.each(defaultChecked, item => {
+                    customized_variables[item] = true;
+                });
+                // select_value的值
+                if (_.includes(['text', 'multitext', 'number'], selectType)) {
+                    customized_variables.select_values = [_.get(formItem, 'placeholder')];
+                } else if(selectType === 'date') {
+                    customized_variables.select_values = [moment().valueOf()];
+                } else {
+                    customized_variables.select_values = _.get(formItem, 'select_arr');
+                }
+
+                // 第一次添加
+                if (_.isEmpty(this.state.customFieldData)) {
+                    customized_variables.show_index = 1;
+                    submitObj.customized_variables = [customized_variables];
+                } else {
+                    submitObj.id = _.get(this.state.customFieldData, '[0]id');
+                    let customizedVariables = _.get(this.state.customFieldData, '[0]customized_variables');
+                    if (_.isEmpty(this.state.editCustomField)) { // 说明是添加
+                        customized_variables.show_index = _.get(customizedVariables, 'length') + 1;
+                        customizedVariables.push(customized_variables);
+                        submitObj.customized_variables = customizedVariables;
+                    } else { // 编辑字段
+                        const showIndex = _.get(this.state.editCustomField, 'show_index');
+                        customized_variables.show_index = showIndex;
+                        customizedVariables.splice(showIndex - 1,1,customized_variables);
+                        submitObj.customized_variables = customizedVariables;
+                    }
+
+                }
+                if (_.isEmpty(this.state.editCustomField)) {
+                    ajax.addCustomFieldConfig(submitObj).then( (result) => {
+                        if (_.get(result, 'id')) {
+                            this.props.updateCustomFieldData([result]);
+                            this.handleCancel();
+                            message.success(Intl.get('user.user.add.success', '添加成功'));
+                        } else {
+                            message.error(Intl.get('crm.154', '添加失败'));
+                        }
+                    }, (errMsg) => {
+                        message.error(errMsg || Intl.get('crm.154', '添加失败'));
+                    } );
+                } else {
+                    ajax.updateCustomFieldConfig(submitObj).then( (result) => {
+                        if (result) {
+                            this.props.updateCustomFieldData([submitObj]);
+                            this.handleCancel();
+                            message.success(Intl.get('crm.218', '修改成功！'));
+                        } else {
+                            message.error(Intl.get('crm.219', '修改失败！'));
+                        }
+                    }, (errMsg) => {
+                        message.error(errMsg || Intl.get('crm.219', '修改失败！'));
+                    } );
+                }
             }
         });
     };
 
     renderFormContent = () => {
         const {getFieldDecorator, getFieldValue} = this.props.form;
-        // 选择字段类型
-        const selectCustomType = getFieldValue('select');
-        const selectComponent = _.find(selectCustomFieldComponents, item => item.customField === selectCustomType);
         const name = Intl.get('custom.field.title', '字段名');
+        // 选择字段类型
+        const selectCustomType = getFieldValue('select') || _.get(this.state.editCustomField, 'field_type');
+        let selectComponent = _.find(selectCustomFieldComponents, item => item.customField === selectCustomType);
+        // 编辑单项字段
+        if (!_.isEmpty(this.state.editCustomField)) {
+            const select_values = _.get(this.state.editCustomField, 'select_values');
+            // 选择框，修改时，使用默认的值
+            if (!getFieldValue('select')) {
+                if (_.includes(['text', 'multitext', 'number'], selectCustomType)) {
+                    if (select_values[0]) {
+                        selectComponent.placeholder = select_values[0];
+                    }
+                } else {
+                    selectComponent.select_arr = select_values;
+                }
+            }
+        }
+        console.log('this.state.defaultCheckedValue:',this.state.defaultCheckedValue);
         return (
             <Form className="form">
                 <FormItem>
@@ -65,73 +167,36 @@ class CustomFieldPanel extends React.Component {
                 </FormItem>
                 <FormItem>
                     {getFieldDecorator('checkbox', {
-                        initialValue: this.state.defaultConfig,
                         valuePropName: 'checked'
                     })(
                         <CheckboxGroup
                             options={customFieldCheckOptions}
-                            defaultValue={this.state.defaultConfig}
+                            defaultValue={this.state.defaultCheckedValue}
                         />
                     )}
                 </FormItem>
-                {
-                    _.isEmpty(this.state.editCustomField) ? (
-                        <React.Fragment>
-                            <FormItem>
-                                {getFieldDecorator('select', {
-                                })(
-                                    <Select placeholder="选择字段类型">
-                                        {
-                                            _.map(customFieldSelectOptions, item => {
-                                                return <Option value={item.value}>{item.name}</Option>;
-                                            })
-                                        }
-                                    </Select>
-                                )}
-                            </FormItem>
+                <FormItem>
+                    {getFieldDecorator('select', {
+                        initialValue: _.get(this.state.editCustomField, 'field_type')
+                    })(
+                        <Select placeholder="选择字段类型">
                             {
-                                selectCustomType ? (
-                                    <SelectCustomField
-                                        form={this.props.form}
-                                        formItem={selectComponent}
-                                        handleCancel={this.handleCancel}
-                                        handleSubmit={this.handleSubmit}
-                                    />
-                                ) : null
-                            }
-                        </React.Fragment>
-
-                    ) : (
-                        <FormItem>
-                            {
-                                _.map(this.state.editCustomField.select_values, item => {
-                                    return (
-                                        <React.Fragment>
-                                            <Input defaultValue={item}/>
-                                        </React.Fragment>
-                                    );
+                                _.map(customFieldSelectOptions, item => {
+                                    return <Option value={item.value}>{item.name}</Option>;
                                 })
                             }
-                        </FormItem>
-                    )
-                }
-
+                        </Select>
+                    )}
+                </FormItem>
                 {
-                    false && <div className="submit-button-container">
-                        <Button
-                            disabled={this.state.loading}
-                            type='primary'
-                            onClick={this.handleSubmit.bind(this)}
-                        >
-                            {Intl.get('common.save', '保存')}
-                            {
-                                this.state.loading ? <Icon type="loading"/> : null
-                            }
-                        </Button>
-                        <Button onClick={this.handleCancel.bind(this)}>
-                            {Intl.get('common.cancel', '取消')}
-                        </Button>
-                    </div>
+                    selectCustomType ? (
+                        <SelectCustomField
+                            form={this.props.form}
+                            formItem={selectComponent}
+                            handleCancel={this.handleCancel}
+                            handleSubmit={this.handleSubmit}
+                        />
+                    ) : null
                 }
             </Form>
         );
@@ -165,13 +230,17 @@ function noop() {
 CustomFieldPanel.defaultProps = {
     tabType: '',
     editCustomField: {},
+    customFieldData: {},
     onClosePanel: noop,
+    updateCustomFieldData: noop,
 };
 CustomFieldPanel.propTypes = {
     form: PropTypes.form,
     tabType: PropTypes.string,
     editCustomField: PropTypes.Object,
+    customFieldData: PropTypes.Object,
     onClosePanel: PropTypes.func,
+    updateCustomFieldData: PropTypes.func, // 添加、编辑后成功后，更新数据
 };
 
 export default Form.create()(CustomFieldPanel);
