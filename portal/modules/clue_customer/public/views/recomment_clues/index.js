@@ -1495,7 +1495,7 @@ class RecommendCluesList extends React.Component {
     //单个提取线索
     handleExtractClueAssignToSale = (record, flag) => {
         //如果这条线索已经提取过了或正在提取，就不能再点击提取了
-        if(record.hasExtracted || record.hasExtractedByOther || this.state.singleExtractLoading || !this.state.canClickExtract || !this.state.singleCheckPhonePopVisible){
+        if(record.hasExtracted || record.hasExtractedByOther || this.state.singleExtractLoading || !this.state.canClickExtract){
             return;
         }
         if (!this.state.salesMan && flag) {
