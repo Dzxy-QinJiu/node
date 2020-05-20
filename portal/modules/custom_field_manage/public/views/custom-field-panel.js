@@ -151,7 +151,7 @@ class CustomFieldPanel extends React.Component {
                 }
             }
         }
-        console.log('this.state.defaultCheckedValue:',this.state.defaultCheckedValue);
+        
         return (
             <Form className="form">
                 <FormItem>

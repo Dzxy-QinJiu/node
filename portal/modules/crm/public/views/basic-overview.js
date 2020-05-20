@@ -529,6 +529,15 @@ class BasicOverview extends React.Component {
         return [displayText];
     };
 
+    // 自定义
+    renderCustomField = () => {
+        return (
+            <div>
+
+            </div>
+        );
+    };
+
     render() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         let tagArray = _.isArray(basicData.labels) ? basicData.labels : [];
@@ -627,6 +636,16 @@ class BasicOverview extends React.Component {
                         titleDescr={noRecordData ? Intl.get('crm.no.trace.record', '还没有跟进过该客户') : ''}
                         content={this.renderCustomerRcord()}
                     />
+                    {
+                        _.isEmpty(this.props.customerCustomFieldData) ? null : (
+                            <DetailCard
+                                className={classNames({'no-trace-card': noRecordData})}
+                                title='自定义配置'
+                                titleBottomBorderNone={noRecordData}
+                                content={this.renderCustomField()}
+                            />
+                        )
+                    }
                 </div>
             </RightPanelScrollBar>
         );
@@ -645,6 +664,7 @@ BasicOverview.propTypes = {
     hideContactWay: PropTypes.bool,
     updateCustomerLastContact: PropTypes.func,
     showUserDetail: PropTypes.func,
+    customerCustomFieldData: PropTypes.object,
 };
 module.exports = BasicOverview;
 

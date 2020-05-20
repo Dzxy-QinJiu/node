@@ -109,7 +109,7 @@ class SelectCustomField extends React.Component {
             'err-tip': hasErrTip
         });
         return (
-            <div className="approve-edit-container" key={formItem.key}>
+            <div className="select-container" key={formItem.key}>
                 { _.get(this,'props.formItem.placeholder','') ? <div className="component-row">
                     <span className='text-components'>
                         <Input
