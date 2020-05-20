@@ -48,20 +48,12 @@ class UserDetailChangeRecord extends React.Component {
     showSelectedApp = (props, queryObj) => {
         var selectedAppId = props.selectedAppId;
         //如果外层有选中的app时，默认为外层选中的app，如果没有，就用app列表中的第一个
-        if (selectedAppId) {
-            var selectedApp = _.find(this.props.appLists, (item) => {
-                return item.app_id === selectedAppId;
-            });
-            var appName = selectedApp && selectedApp.app_name ? selectedApp.app_name : '';
-            if (appName) {
-                UserDetailChangeRecordAction.setApp(appName);
-            }
-        } else {
-            if (!_.isEmpty(queryObj)) {
-                selectedAppId = queryObj[0].app_id;
-                UserDetailChangeRecordAction.setApp(queryObj[0].app_name);
-            }
+        if (!selectedAppId && !_.isEmpty(queryObj)) {
+            selectedAppId = queryObj[0].app_id;
         }
+
+        UserDetailChangeRecordAction.setApp(selectedAppId);
+
         this.getUserDetailChangeRecord({
             app_id: selectedAppId + ',everyapp',
             user_id: props.userId,
