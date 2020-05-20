@@ -12,6 +12,7 @@ const moment = require('moment');
 const multiparty = require('multiparty');
 const fs = require('fs');
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
+const recommendClueDto = require('../dto/recommend-clue');
 function getClueSourceClassify(backendIntl) {
     return [
         {
@@ -472,40 +473,7 @@ exports.getRecommendClueLists = function(req, res) {
         .on('success', function(data) {
             var result = {list: [],total: _.get(data,'total',0), listId: _.get(data,'id','')};
             _.forEach(_.get(data,'list',[]), item => {
-                result.list.push({
-                    id: item.id,
-                    //(会有高亮内容<em>###</em>)
-                    name: item.name,
-                    sortvalues: item.sortvalues,
-                    ranking: item.ranking,
-                    //注册时间
-                    startTime: _.get(item,'startTime', ''),
-                    //经营范围(会有高亮内容<em>###</em>)
-                    scope: _.get(item,'scope', ''),
-                    //标签
-                    labels: _.get(item,'labels', []),
-                    features: _.get(item,'features',[]),
-                    //注册资本
-                    capital: _.get(item,'capital', ''),
-                    //法人
-                    legalPerson: _.get(item,'legalPerson', ''),
-                    //产品(会有高亮内容<em>###</em>)
-                    products: _.get(item,'products', ''),
-                    //行业
-                    industry: _.get(item,'industry', ''),
-                    //简介(会有高亮内容<em>###</em>)
-                    companyProfile: _.get(item,'companyProfile', ''),
-                    telephones: _.get(item,'telephones',[]),
-                    //企业状态
-                    openStatus: _.get(item,'openStatus', ''),
-                    //contact: {phones: 1, qq: 1, weChat: 0, email: 2}
-                    contact: {
-                        phones: _.get(item, 'telephones.length', 0),
-                        qq: 0,//qq信息后端暂未实现，这里先占位
-                        weChat: _.get(item, 'gongzhonghao') ? 1 : 0,
-                        email: _.get(item, 'email.length', 0),
-                    }
-                });
+                result.list.push(recommendClueDto.toFrontRecommendClueData(item));
             });
             res.status(200).json(result);
         }).on('error', function(err) {

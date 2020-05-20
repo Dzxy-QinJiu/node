@@ -25,6 +25,7 @@ import classNames from 'classnames';
 import { paymentEmitter } from 'OPLATE_EMITTER';
 import {addOrEditSettingCustomerRecomment, getCompanyListByName} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
+import {toFrontRecommendClueData} from '../../../server/dto/recommend-clue';
 
 
 const ADVANCED_OPTIONS = [
@@ -254,13 +255,17 @@ class RecommendCluesFilterPanel extends Component {
     onKeywordListClick = (value) => {
         let hasSavedRecommendParams = _.pick(this.state.hasSavedRecommendParams, ['id', 'addTime', 'userId']);
         $('.recommend-clue-sug').css('display', 'none');
+        let item = _.find(this.state.keywordList, item => item.id === value);
         if(this.searchInputRef) {
-            this.searchInputRef.state.keyword = value;
-            clueCustomerAction.saveSettingCustomerRecomment({...hasSavedRecommendParams, keyword: value});
+            this.searchInputRef.state.keyword = _.get(item, 'name', '');
+            clueCustomerAction.saveSettingCustomerRecomment({...hasSavedRecommendParams, keyword: _.get(item, 'name', '')});
             clueCustomerAction.setHotSource('');
         }
-        hasSavedRecommendParams.name = value;
-        this.getRecommendClueList(hasSavedRecommendParams, false);
+        let data = {
+            list: [toFrontRecommendClueData(item)],
+            total: 1
+        };
+        clueCustomerAction.getRecommendClueLists(data, false);
     };
 
     //根据关键词获取推荐信息
@@ -269,7 +274,6 @@ class RecommendCluesFilterPanel extends Component {
             name: value
         }).then((result) => {
             let list = _.isArray(result.list) ? result.list : [];
-            list = _.map(list, 'name');
             if(list.length > 0) {
                 $('.recommend-clue-sug').css('display', 'block');
             }else{
@@ -785,8 +789,8 @@ class RecommendCluesFilterPanel extends Component {
                                     />
                                     <div ref={ref => this.keywordListRef = ref} className="recommend-clue-sug recommend-clue-sug-new">
                                         <ul>
-                                            {_.map(keywordList, (item, index) => (
-                                                <li key={index} className="recommend-clue-sug-overflow" onClick={this.onKeywordListClick.bind(this, item)}>{item}</li>
+                                            {_.map(keywordList, item => (
+                                                <li key={item.id} className="recommend-clue-sug-overflow" onClick={this.onKeywordListClick.bind(this, item.id)}>{item.name}</li>
                                             ))}
                                         </ul>
                                     </div>
