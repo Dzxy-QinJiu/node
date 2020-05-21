@@ -311,7 +311,6 @@ class AddDataService extends React.Component {
                                                 customerChoosen={this.customerChoosen}
                                                 required={true}
                                                 hideCustomerRequiredTip={this.hideCustomerRequiredTip}
-                                                isSearchMyCustomer={true}
                                             />
                                         )}
                                     </FormItem>
