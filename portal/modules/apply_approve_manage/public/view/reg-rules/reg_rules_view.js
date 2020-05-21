@@ -399,6 +399,13 @@ class RegRulesView extends React.Component {
             </div>
         );
     };
+    //点击编辑某一个节点
+    handleClickApplyNode = (item,flowType) => {
+        this.setState({
+            isEditNodePanelFlowItem: item,
+            addNodePanelFlow: flowType
+        });
+    };
     renderApplyWorkFlowNode = (candidateRules, flowType) => {
         return (
             <div className="rule-content apply-node-lists">
@@ -406,7 +413,7 @@ class RegRulesView extends React.Component {
                     var showDeleteIcon = index === _.get(candidateRules, 'length') - 1;
                     var workflowFormEmailTo = _.get(item,'workflowFormEmailTo',[]);
                     return (
-                        <div className="item-node">
+                        <div className="item-node" onClick={this.handleClickApplyNode.bind(this,item,flowType)}>
                             <div className="icon-container">
                                 <i className="iconfont icon-active-users"></i>
                             </div>
@@ -1297,6 +1304,7 @@ class RegRulesView extends React.Component {
                 {this.state.addNodePanelFlow ?
                     <div className={addPanelWrap}>
                         <AddApplyNodePanel
+                            isEditNodePanelFlowItem={this.state.isEditNodePanelFlowItem}
                             saveAddApproveNode={this.saveAddApproveNode}
                             hideRightPanel={this.hideRightAddPanel}
                             applyTypeData={this.props.applyTypeData}

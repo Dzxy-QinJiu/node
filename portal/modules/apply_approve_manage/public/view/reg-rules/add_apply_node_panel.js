@@ -33,6 +33,7 @@ class AddApplyNodePanel extends React.Component {
     constructor(props) {
         super(props);
         var isPreviousNodeCheck = this.isPreviousNodeCheck();
+        var isEditNodePanelFlowItemClone = _.cloneDeep(this.props.isEditNodePanelFlowItem);
         this.state = {
             adminApproveHigherLevel: 'higherLevelApproveChecked',
             checkedRadioValue: '',
@@ -51,9 +52,9 @@ class AddApplyNodePanel extends React.Component {
                 selectUser: '',//选中的成员
                 showSelectUser: ''
             },
-            submitFiles: false,//可以上传文件
-            assignNextNodeApprover: false,//指定下一审批人
-            workflowFormEmailTo: false,//可以发送邮件
+            submitFiles: JSON.parse(_.get(isEditNodePanelFlowItemClone,'submitFiles','')) || false,//可以上传文件
+            assignNextNodeApprover: JSON.parse(_.get(isEditNodePanelFlowItemClone,'assignNextNodeApprover','')) || false,//指定下一审批人
+            workflowFormEmailTo: _.get(isEditNodePanelFlowItemClone,'workflowFormEmailTo[0]') ? true : false,//可以发送邮件
             workflowFormEmailToList: [],//可发送邮件人的列表
             emailValidateErrMsg: '',//邮箱校验的错误提示
             roleList: [],//角色列表
@@ -510,7 +511,8 @@ AddApplyNodePanel.defaultProps = {
     },
 
     applyRulesAndSetting: {},
-    addNodePanelFlow: ''
+    addNodePanelFlow: '',
+    isEditNodePanelFlowItem: {}
 
 
 };
@@ -519,5 +521,6 @@ AddApplyNodePanel.propTypes = {
     saveAddApproveNode: PropTypes.func,
     applyRulesAndSetting: PropTypes.object,
     addNodePanelFlow: PropTypes.string,
+    isEditNodePanelFlowItem: PropTypes.object,
 };
 export default Form.create()(AddApplyNodePanel);
