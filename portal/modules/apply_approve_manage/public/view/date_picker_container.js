@@ -56,13 +56,15 @@ class InputContent extends React.Component {
             >
                 {
                     getFieldDecorator(_.get(formItem, 'formItemKey') + '.date_time', {
-                        initialValue: '',
+                        initialValue: this.props.default_value || moment(),
                         rules: [{
                             required: _.get(formItem, 'is_required'),
                             message: _.get(formItem, 'is_required_errmsg')
                         }, {validator: this.validatorInput}]
                     })(
-                        <DatePicker {...this.props}/>
+                        <DatePicker
+                            allowClear={!_.get(formItem, 'is_required')}
+                            {...this.props}/>
                     )}
             </FormItem>
         );
@@ -84,6 +86,7 @@ InputContent.propTypes = {
     component_type: PropTypes.string,
     labelKey: PropTypes.string,
     form: PropTypes.object,
-    validator: PropTypes.func
+    validator: PropTypes.func,
+    default_value: PropTypes.object,
 };
 export default InputContent;

@@ -210,7 +210,7 @@ class TimePeriod extends React.Component {
                             }],
                         })(
                             <Row>
-                                <Col span={isTemplate ? 7 : 12}>
+                                <Col span={isTemplate ? 8 : 12}>
                                     <FormItem
                                         className="form-item-label add-apply-time"
                                     >
@@ -252,7 +252,7 @@ class TimePeriod extends React.Component {
                      ——
                                     </span></Col> : null}
 
-                                <Col span={isTemplate ? 7 : 12}>
+                                <Col span={isTemplate ? 8 : 12}>
                                     <FormItem
                                         className="form-item-label add-apply-time"
                                     >

@@ -10,7 +10,7 @@ import {Alert, Icon, Input, Row, Col, Button, Steps, message, Popover} from 'ant
 
 const Step = Steps.Step;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 
@@ -362,6 +362,10 @@ class ApplyViewDetail extends React.Component {
             }
         });
     };
+    //打开用户详情
+    handleShowUserDetail = (user_id) => {
+        userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, {userId: user_id});
+    };
     calculateStartAndEndRange = (visit_time) => {
         var start = _.get(visit_time, 'begin_time');
         var end = _.get(visit_time, 'end_time');
@@ -411,7 +415,17 @@ class ApplyViewDetail extends React.Component {
                                 title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
                             >{_.get(showItem, '[0].name')}</a>
                         });
-                    } else if (item.component_type === ALL_COMPONENTS.TIME_PERIOD) {
+                    } else if(item.component_type === ALL_COMPONENTS.USER_SEARCH){
+                        showApplyInfo.push({
+                            label: _.get(item, 'title'),
+                            text: <a href="javascript:void(0)"
+                                onClick={this.handleShowUserDetail.bind(this, _.get(showItem, '[0].id'))}
+                                data-tracename="查看用户详情"
+                                className="user-name"
+                                title={Intl.get('call.record.customer.title', '点击可查看用户详情')}
+                            >{_.get(showItem, '[0].nick_name') || _.get(showItem, '[0].user_name')}</a>
+                        });
+                    }else if (item.component_type === ALL_COMPONENTS.TIME_PERIOD) {
                         var starttime = '', endtime = '';
                         if (item.selected_value !== '0.5day') {
                             starttime = moment(parseInt(showItem.begin_time)).format(oplateConsts.DATE_FORMAT);

@@ -58,10 +58,22 @@ class AddApply extends React.Component {
                 return;
             }
             values = _.cloneDeep(values);
-            // values['customers'] = [_.get(this.state, 'formData.customer')];
-            // if (!_.get(values, 'customers[0].id')){
-            //     return;
-            // }
+            values['customers'] = [_.get(this.state, 'formData.customer')];
+            let customizForm = this.getCustomizeForm();
+            var customerTarget = _.find(customizForm,item => item.component_type === ALL_COMPONENTS.CUSTOMERSEARCH);
+            var userTarget = _.find(customizForm,item => item.component_type === ALL_COMPONENTS.USER_SEARCH);
+            if (_.get(customerTarget,'is_required') && !_.get(values, 'customers[0].id')){
+                return;
+            }
+            let {selectUserId,selectUserName,selectNickName} = this.state;
+            if (_.get(userTarget,'is_required') && !selectUserId){
+                return;
+            }
+            values['managers'] = [{
+                id: selectUserId,
+                nick_name: selectNickName,
+                user_name: selectUserName,
+            }];
             //时间周期的数据统一
             for (var key in values){
                 if (_.get(values[key],'begin_time')){
@@ -159,6 +171,21 @@ class AddApply extends React.Component {
             this.props.form.validateFields([key], {force: true});
         });
     };
+    getCustomizeForm = () => {
+        var workConfig = _.find(this.state.workFlowList,item => item.type === this.props.addWorkFlowType);
+        let customizForm = [];
+        if(workConfig){
+            customizForm = workConfig.customiz_form;
+        }
+        return customizForm;
+    };
+    handleOptionChange = (userData) => {
+        this.setState({
+            selectUserId: _.split(userData, '&&')[0],
+            selectNickName: _.split(userData, '&&')[1],
+            selectUserName: _.split(userData, '&&')[2]
+        });
+    };
     render() {
         var formData = this.state.formData;
         var _this = this;
@@ -176,10 +203,7 @@ class AddApply extends React.Component {
         };
         let saveResult = this.state.saveResult;
         var workConfig = _.find(this.state.workFlowList,item => item.type === this.props.addWorkFlowType);
-        let customizForm = [];
-        if(workConfig){
-            customizForm = workConfig.customiz_form;
-        }
+        let customizForm = this.getCustomizeForm();
         return (
             <RightPanel showFlag={true} data-tracename="添加自定义的申请" className="add-leave-container">
                 <span className="iconfont icon-close add-leave-apply-close-btn"
@@ -195,6 +219,9 @@ class AddApply extends React.Component {
                                 <Form layout='horizontal' className="sales-clue-form" id="add-leave-apply-form">
                                     {_.map(customizForm,(formItem,index) => {
                                         var target = _.find(ADDAPPLYFORMCOMPONENTS, item => item.component_type === _.get(formItem, 'component_type'));
+                                        if (target.component_type === ALL_COMPONENTS.DATETIME){//时间组件要按type类型进行区分
+                                            target = _.find(ADDAPPLYFORMCOMPONENTS, item => item.type === _.get(formItem, 'type'));
+                                        }
                                         if (target){
                                             var ApplyComponent = target.component;
                                             var propertyObj = _.assign({}, target, formItem);
@@ -230,7 +257,8 @@ class AddApply extends React.Component {
                                                         )}
                                                     </FormItem>
                                                 );
-
+                                            } else if (target.component_type === ALL_COMPONENTS.USER_SEARCH) {
+                                                return <ApplyComponent {...propertyObj} form={this.props.form} handleOptionChange={this.handleOptionChange}/>;
                                             }else{
                                                 return <ApplyComponent {...propertyObj} form={this.props.form}/>;
                                             }

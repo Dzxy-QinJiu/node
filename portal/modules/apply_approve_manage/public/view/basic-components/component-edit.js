@@ -167,20 +167,20 @@ class componentEdit extends React.Component {
     };
     getSelectOrDefaultArr = () => {
         var formItem = this.state.formItem;
-        var selectArr = [],defaultArr = [];
-        _.forEach(_.get(formItem, 'select_arr', []),item => {
-            if(_.isString(item)){
+        var selectArr = [], defaultArr = [];
+        _.forEach(_.get(formItem, 'select_arr', []), item => {
+            if (_.isString(item)) {
                 selectArr.push(JSON.parse(item));
             }
         });
-        _.forEach(_.get(formItem, 'default_value',[]),item => {
-            if(_.isString(item)){
+        _.forEach(_.get(formItem, 'default_value', []), item => {
+            if (_.isString(item)) {
                 defaultArr.push(JSON.parse(item));
             }
         });
 
 
-        return {selectArr,defaultArr};
+        return {selectArr, defaultArr};
     };
     render = () => {
         var formItem = this.state.formItem, hasErrTip = this.state.titleRequiredMsg;
@@ -192,16 +192,17 @@ class componentEdit extends React.Component {
             beforeUpload: this.beforeUploadFiles
         };
         var isRangeInput = this.isRangeInputType();
+        var {isShowName, isShowTitle, isShowPlaceHolder, isShowRangeInput, isShowSelectArr, isShowTimePeriod, isShowTemplate, isShowOher, isShowRequiredMsg, isShowSaveBtn} = this.props;
         return (
             <div className="approve-edit-container" key={formItem.key}>
-                <div className="component-row">
+                {isShowName ? <div className="component-row">
                     <span className="label-components">{Intl.get('apply.components.name', '组件名称')}</span>
                     <span className="text-components">
                         <i className={`iconfont ${_.get(formItem, 'iconfontCls')}`}></i>
                         {_.get(formItem, 'rulename')}
                     </span>
-                </div>
-                <div className="component-row required">
+                </div> : null}
+                {isShowTitle ? <div className="component-row required">
                     <span className="label-components">{Intl.get('crm.alert.topic', '标题')}</span>
                     <span className="text-components">
                         <Input className={cls} defaultValue={_.get(formItem, 'title')}
@@ -210,15 +211,15 @@ class componentEdit extends React.Component {
                             {hasErrTip}
                         </span> : null}
                     </span>
-                </div>
-                {_.get(this, 'props.formItem.placeholder', '') ? <div className="component-row">
+                </div> : null}
+                {isShowPlaceHolder && _.get(this, 'props.formItem.placeholder', '') ? <div className="component-row">
                     <span className="label-components">placeHolder</span>
                     <span className='text-components'>
                         <Input className={cls} defaultValue={_.get(formItem, 'placeholder', '')}
                             onChange={this.handleChangeTip}/>
                     </span>
                 </div> : null}
-                {isRangeInput ?
+                {isShowRangeInput && isRangeInput ?
                     <div className="component-row required">
                         <span className="label-components">{_.get(formItem, 'unitLabel')}</span>
                         <span className='text-components'>
@@ -229,9 +230,8 @@ class componentEdit extends React.Component {
                         </span>
                     </div>
                     : null}
-                {_.get(formItem, 'component_type') === ALL_COMPONENTS.SELECTOPTION ?
+                {isShowSelectArr && _.get(formItem, 'component_type') === ALL_COMPONENTS.SELECTOPTION ?
                     <div className="component-row required">
-
                         <span className="label-components">{_.get(formItem, 'unitLabel')}</span>
                         <span className="text-components">
                             {_.map(_.get(formItem, 'select_arr'), (item, index) => {
@@ -251,7 +251,7 @@ class componentEdit extends React.Component {
 
                     </div>
                     : null}
-                {_.get(formItem, 'component_type') === ALL_COMPONENTS.TIME_PERIOD ?
+                {isShowTimePeriod && _.get(formItem, 'component_type') === ALL_COMPONENTS.TIME_PERIOD ?
                     <div className="component-row required">
                         <span className="label-components">{_.get(formItem, 'unitLabel')}</span>
                         <span className="text-components">
@@ -267,7 +267,7 @@ class componentEdit extends React.Component {
 
                     </div>
                     : null}
-                {_.get(formItem, 'component_type') === ALL_COMPONENTS.TEMPLATE ?
+                {isShowTemplate && _.get(formItem, 'component_type') === ALL_COMPONENTS.TEMPLATE ?
                     <div className="component-row required">
                         <span className="label-components">{Intl.get('common.import.template', '模板')}</span>
                         <span className="text-components">
@@ -279,24 +279,25 @@ class componentEdit extends React.Component {
                         </span>
                     </div>
                     : null}
-                <div className="component-row">
+                {isShowOher ? <div className="component-row">
                     <span className="label-components">{Intl.get('crm.186', '其他')}</span>
                     <span className="text-components">
                         <Checkbox checked={_.get(formItem, 'is_required')} onChange={this.onCheckboxChange}/>
                         {Intl.get('apply.components.required.item', '必填')}
                     </span>
-                </div>
-                {_.get(formItem, 'is_required') ?
+                </div> : null}
+
+                {isShowRequiredMsg && _.get(formItem, 'is_required') ?
                     <div className="component-row">
                         <span className="label-components"></span>
                         <span className="text-components">
                             <Input placeholder={Intl.get('apply.approve.required.err.msg', '请输入未填写时的提示')}
                                 defaultValue={_.get(formItem, 'is_required_errmsg')}
                                 onChange={this.handleChangeRequiredMsg}/></span></div> : null}
-                <SaveCancelButton loading={this.state.loading}
+                {isShowSaveBtn ? <SaveCancelButton loading={this.state.loading}
                     saveErrorMsg={this.state.submitErrorMsg}
                     handleSubmit={this.handleSubmit}
-                    handleCancel={this.handleCancel}/>
+                    handleCancel={this.handleCancel}/> : null}
             </div>
         );
     };
@@ -308,11 +309,31 @@ componentEdit.defaultProps = {
     },
     handleSubmit: function() {
     },
+    isShowName: true,
+    isShowTitle: true,
+    isShowPlaceHolder: true,
+    isShowRangeInput: true,
+    isShowSelectArr: true,
+    isShowTimePeriod: true,
+    isShowTemplate: true,
+    isShowOher: true,
+    isShowRequiredMsg: true,
+    isShowSaveBtn: true
 };
 
 componentEdit.propTypes = {
     formItem: PropTypes.object,
     handleCancel: PropTypes.func,
     handleSubmit: PropTypes.func,
+    isShowName: PropTypes.bool,
+    isShowTitle: PropTypes.bool,
+    isShowPlaceHolder: PropTypes.bool,
+    isShowRangeInput: PropTypes.bool,
+    isShowSelectArr: PropTypes.bool,
+    isShowTimePeriod: PropTypes.bool,
+    isShowTemplate: PropTypes.bool,
+    isShowOher: PropTypes.bool,
+    isShowRequiredMsg: PropTypes.bool,
+    isShowSaveBtn: PropTypes.bool
 };
 export default componentEdit;
