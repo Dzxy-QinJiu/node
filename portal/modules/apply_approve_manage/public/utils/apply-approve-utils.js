@@ -4,14 +4,18 @@
  * Created by zhangshujuan on 2019/4/4.
  */
 import {domainNameRule} from 'PUB_DIR/sources/utils/validate-util';
-import {Input, InputNumber, Radio, DatePicker, Select} from 'antd';
+import {Input, Radio, Select} from 'antd';
 const RadioGroup = Radio.Group;
 import RangeInput from '../view/range_input';
 import SelectOption from '../view/select_option';
+import UserSelectOption from '../view/user_select_option';
+import ProductSelectOption from '../view/product_select_option';
 import TimePeriod from '../view/time_period';
 import CustomerSuggest from '../view/customer_suggest';
 import InputContent from '../view/input_container';
+import InputNumberContent from '../view/input_number_container';
 import Template from '../view/template';
+import DatePickerContent from '../view/date_picker_container';
 import Annex from '../view/annex';
 import {checkDomainExist} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 var applyApproveManageAction = require('../action/apply_approve_manage_action');
@@ -56,7 +60,7 @@ exports.applyComponentsType = [{
     component: InputContent
 }, {
     name: ALL_COMPONENTS.INPUTNUMBER,
-    component: InputNumber
+    component: InputNumberContent
 }, {
     name: ALL_COMPONENTS.RANGEINPUT,
     component: RangeInput
@@ -65,10 +69,10 @@ exports.applyComponentsType = [{
     component: SelectOption
 }, {
     name: ALL_COMPONENTS.DATETIME,
-    component: DatePicker
+    component: DatePickerContent
 }, {
     name: ALL_COMPONENTS.PRODUCTION,
-    component: SelectOption
+    component: ProductSelectOption
 }, {
     name: ALL_COMPONENTS.CUSTOMERSEARCH,
     component: CustomerSuggest
@@ -77,7 +81,7 @@ exports.applyComponentsType = [{
     component: TimePeriod
 }, {
     name: ALL_COMPONENTS.USER_SEARCH,
-    component: SelectOption
+    component: UserSelectOption
 }, {
     name: ALL_COMPONENTS.TEMPLATE,
     component: Template
@@ -142,7 +146,7 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'iconfontCls': 'icon-fuwu',
         'placeholder': Intl.get('apply.rule.limit.int', '仅限整数'),
         'component_type': ALL_COMPONENTS.INPUTNUMBER,
-        component: InputNumber,
+        component: InputNumberContent,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
@@ -188,6 +192,7 @@ exports.ADDAPPLYFORMCOMPONENTS = [
     },
     {
         'rulename': Intl.get('apply.rule.radio', '单选'), 'iconfontCls': 'icon-fuwu',
+        'default_value': [Intl.get('apply.approve.option.one', '选项一')],
         'select_arr': [Intl.get('apply.approve.option.one', '选项一'), Intl.get('apply.approve.option.two', '选项二')],
         'unitLabel': Intl.get('apply.time.range.unit.select.label', '选项'),
         'component_type': ALL_COMPONENTS.SELECTOPTION,
@@ -208,18 +213,19 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'rulename': Intl.get('apply.rule.date', '日期选择'), 'iconfontCls': 'icon-fuwu',
         'component_type': ALL_COMPONENTS.DATETIME,
         'type': 'date',
-        'defaultValue': moment(moment().format(oplateConsts.DATE_FORMAT), oplateConsts.DATE_FORMAT),
-        component: DatePicker,
+        'default_value': moment(moment().format(oplateConsts.DATE_FORMAT), oplateConsts.DATE_FORMAT),
+        component: DatePickerContent,
+        'format': oplateConsts.DATE_FORMAT,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.date.and.time', '日期+时间选择'), 'iconfontCls': 'icon-fuwu',
         'component_type': ALL_COMPONENTS.DATETIME,
         'type': 'time',
-        'defaultValue': moment(moment().format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT),
+        'default_value': moment(moment().format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT),
         'showTime': {format: 'HH:mm'},
         'format': oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT,
-        component: DatePicker,
+        component: DatePickerContent,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
 
     },
@@ -255,7 +261,8 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'placeholder': Intl.get('leave.apply.select.product', '请选择产品'),
         'notshowInList': true,
         'default_value': [],
-        component: SelectOption,
+        'key': 'products',
+        component: ProductSelectOption,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
@@ -266,18 +273,18 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'notshowInList': true,
         'default_value': [],
         'key': 'managers',
-        component: SelectOption,
+        component: UserSelectOption,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
-    {
-        'rulename': Intl.get('common.import.template', '模板'), 'iconfontCls': 'icon-fuwu',
-        'component_type': ALL_COMPONENTS.TEMPLATE,
-        component: Template,
-    },{
-        'rulename': Intl.get('apply.approved.annex.list', '附件'), 'iconfontCls': 'icon-fuwu',
-        'component_type': ALL_COMPONENTS.ANNEX,
-        component: Annex
-    }
+    // {
+    //     'rulename': Intl.get('common.import.template', '模板'), 'iconfontCls': 'icon-fuwu',
+    //     'component_type': ALL_COMPONENTS.TEMPLATE,
+    //     component: Template,
+    // },{
+    //     'rulename': Intl.get('apply.approved.annex.list', '附件'), 'iconfontCls': 'icon-fuwu',
+    //     'component_type': ALL_COMPONENTS.ANNEX,
+    //     component: Annex
+    // }
 ];
 
 //内置审批流程

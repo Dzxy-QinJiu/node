@@ -16,7 +16,6 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 require('../css/sales-opportunity-apply-detail.less');
 import ApplyDetailRemarks from 'CMP_DIR/apply-components/apply-detail-remarks';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
-import ApplyDetailCustomer from 'CMP_DIR/apply-components/apply-detail-customer';
 import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';

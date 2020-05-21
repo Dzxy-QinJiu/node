@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2019/5/23.
  */
 
-import {Input,Form} from 'antd';
+import {DatePicker,Form} from 'antd';
 const FormItem = Form.Item;
 
 class InputContent extends React.Component {
@@ -55,14 +55,16 @@ class InputContent extends React.Component {
                 {...formItemLayout}
             >
                 {
-                    getFieldDecorator(_.get(formItem, 'formItemKey'), {
-                        initialValue: '',
+                    getFieldDecorator(_.get(formItem, 'formItemKey') + '.date_time', {
+                        initialValue: this.props.default_value || moment(),
                         rules: [{
                             required: _.get(formItem, 'is_required'),
                             message: _.get(formItem, 'is_required_errmsg')
                         }, {validator: this.validatorInput}]
                     })(
-                        <Input {...this.props}/>
+                        <DatePicker
+                            allowClear={!_.get(formItem, 'is_required')}
+                            {...this.props}/>
                     )}
             </FormItem>
         );
@@ -84,6 +86,7 @@ InputContent.propTypes = {
     component_type: PropTypes.string,
     labelKey: PropTypes.string,
     form: PropTypes.object,
-    validator: PropTypes.func
+    validator: PropTypes.func,
+    default_value: PropTypes.object,
 };
 export default InputContent;

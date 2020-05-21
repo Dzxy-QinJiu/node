@@ -88,27 +88,6 @@ exports.addApplyComments = function(data) {
     });
     return Deferred.promise();
 };
-//获取某个申请的状态
-let getApplyStatusByIdAjax = null;
-exports.getApplyStatusById = function(queryObj) {
-    var Deferred = $.Deferred();
-    getApplyStatusByIdAjax && getApplyStatusByIdAjax.abort();
-    getApplyStatusByIdAjax = $.ajax({
-        url: '/rest/get/apply/status/byId',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg, statusText) {
-            if(statusText !== 'abort') {
-                Deferred.reject(errorMsg.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};
 //撤销某个申请审批
 exports.cancelApplyApprove = function(obj) {
     const ERROR_MSG = Intl.get('user.apply.detail.backout.error', '撤销申请失败');

@@ -176,13 +176,15 @@ class ApplyFormAndRules extends React.Component {
         return _.find(customiz_form, item => item.key === formKey);
     };
     //删除某个item
-    removeTargetFormItem = (formItem) => {
+    removeTargetFormItem = (formItem,callback) => {
         var formKey = formItem.key;
         var applyTypeData = this.state.applyTypeData;
         var customiz_form = _.get(applyTypeData, 'customiz_form');
         applyTypeData.customiz_form = _.filter(customiz_form, item => item.key !== formKey);
         this.setState({
             applyTypeData
+        },() => {
+            _.isFunction(callback) && callback();
         });
     };
     //一种是编辑状态的取消，一种是添加的取消
@@ -268,9 +270,6 @@ class ApplyFormAndRules extends React.Component {
         var customiz_form = _.get(submitObj, 'customiz_form');
         //如果有时间相关组件，需要把默认的时间值去掉，要不就会报错
         _.forEach(customiz_form, (item,index) => {
-            if (item.component_type === ALL_COMPONENTS.DATETIME){
-                delete item.defaultValue;
-            }
             //与业务相关的一些组件，字段的key值必须按后端给定的格式传
             //todo 域名申请约定的相关字段 配置完该流程要及时删掉
             // if(index === 1){
@@ -365,7 +364,7 @@ class ApplyFormAndRules extends React.Component {
                 style={{height: calculateHeight() - 2 * APPLYAPPROVE_LAYOUT.PADDINGHEIGHT - APPLYAPPROVE_LAYOUT.TABTITLE - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM + 70}}>
                 <div className="apply-form-rules">
                     <GeminiScrollbar>
-                    {this.renderAddFormRules()}
+                        {this.renderAddFormRules()}
                     </GeminiScrollbar>
                 </div>
                 <div className="apply-form-content-container">
