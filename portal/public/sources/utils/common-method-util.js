@@ -301,7 +301,7 @@ exports.traversingTeamTree = traversingTeamTree;
 
 //不能选今天之前的时间
 exports.disabledBeforeToday = function(current) {
-    return current && current <= moment().subtract(1, 'days').endOf('day');
+    return current && current < moment().startOf('day');
 };
 
 //不能选今天之后的时间
