@@ -6,7 +6,7 @@ import SearchIconList from '../../../../../components/search-icon-list';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
-import {disabledTodayAndBefore} from 'PUB_DIR/sources/utils/common-method-util';
+import {disabledBeforeToday, dealTimeNotLessThanToday} from 'PUB_DIR/sources/utils/common-method-util';
 class OrderForm extends React.Component {
     constructor(props){
         super(props);
@@ -30,6 +30,7 @@ class OrderForm extends React.Component {
             if (err) return;
             let reqData = JSON.parse(JSON.stringify(values));
             reqData.predict_finish_time = reqData.predict_finish_time ? moment(reqData.predict_finish_time).valueOf() : moment().valueOf();
+            reqData.predict_finish_time = dealTimeNotLessThanToday(reqData.predict_finish_time);
             //保存
             reqData.customer_id = this.props.customerId;
             this.setState({isLoading: true});
@@ -112,10 +113,10 @@ class OrderForm extends React.Component {
                         {...formItemLayout}
                     >
                         {getFieldDecorator('predict_finish_time', {
-                            initialValue: moment().add(1, 'days'),
+                            initialValue: moment().endOf('day'),
                             rules: [{required: true, message: Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}]
                         })(
-                            <DatePicker allowClear={false} disabledDate={disabledTodayAndBefore}/>
+                            <DatePicker allowClear={false} disabledDate={disabledBeforeToday}/>
                         )}
                     </FormItem>
                     <FormItem
