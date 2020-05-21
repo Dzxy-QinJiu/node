@@ -2733,6 +2733,7 @@ var zh_CN = {
     'errorcode.member.unexist': '该成员不存在',
     'errorcode.orgnization.unexist': '组织不存在',
     'errorcode.check.phone': '手机号检测服务异常',
+    'errorcode.has.user': '该时间段已发过申请',
 
     //遗漏部分
     'user.input.phone': '请输入手机号',
