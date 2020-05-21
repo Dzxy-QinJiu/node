@@ -20,7 +20,7 @@ import ApplyUserForm from '../apply-user-form';
 import StepsBar from 'CMP_DIR/steps-bar';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import orderPrivilegeConst from 'MOD_DIR/deal_manage/public/privilege-const';
-import {disabledBeforeToday, dealTodayTime} from 'PUB_DIR/sources/utils/common-method-util';
+import {disabledBeforeToday, dealTimeNotLessThanToday} from 'PUB_DIR/sources/utils/common-method-util';
 //订单状态
 const ORDER_STATUS = {
     WIN: 'win',//赢单
@@ -176,7 +176,7 @@ class OrderItem extends React.Component {
                 if (_.isFunction(errorFunc)) errorFunc(Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间'));
                 return;
             }
-            saveObj.predict_finish_time = dealTodayTime(saveObj.predict_finish_time);
+            saveObj.predict_finish_time = dealTimeNotLessThanToday(saveObj.predict_finish_time);
         }
         saveObj.customer_id = this.props.order.customer_id;
         if (property === 'oppo_status') {//丢单+丢单原因

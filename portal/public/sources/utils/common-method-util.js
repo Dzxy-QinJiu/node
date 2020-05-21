@@ -309,8 +309,8 @@ exports.disabledAfterToday = function(current) {
     return current && current > moment().endOf('day');
 };
 
-//处理时间，传今天的最晚时间(23:59:59)
-exports.dealTodayTime = function(time) {
+//处理所传时间,保证时间不小于今天的最晚时间(23:59:59)
+exports.dealTimeNotLessThanToday = function(time) {
     let todayTime = moment().endOf('day').valueOf();
     if(time < todayTime) {
         time = todayTime;
