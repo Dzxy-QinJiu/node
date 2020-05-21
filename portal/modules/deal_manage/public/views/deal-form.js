@@ -22,7 +22,7 @@ import {num as antUtilsNum} from 'ant-utils';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 const parseAmount = antUtilsNum.parseAmount;
 const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
-import {disabledTodayAndBefore} from 'PUB_DIR/sources/utils/common-method-util';
+import {disabledBeforeToday, dealTodayTime} from 'PUB_DIR/sources/utils/common-method-util';
 
 const ADD_TITLE_HEIGHT = 70;
 
@@ -98,6 +98,7 @@ class DealForm extends React.Component {
             //需要将预算去掉千分位逗号
             let budget = values.budget ? _.get(values, 'budget', '').replace(/,/g, '') : 0;
             let predictFinishTime = values.predict_finish_time ? moment(values.predict_finish_time).endOf('day').valueOf() : moment().valueOf();
+            predictFinishTime = dealTodayTime(predictFinishTime);
             let customer_id = _.get(this.state, 'formData.customer.id');
             if (!customer_id) {
                 this.setResultData(Intl.get('errorcode.74', '客户不存在'), RESULT_TYPES.ERROR);
@@ -326,10 +327,10 @@ class DealForm extends React.Component {
                             {...formItemLayout}
                         >
                             {getFieldDecorator('predict_finish_time', {
-                                initialValue: moment().add(1, 'days'),
+                                initialValue: moment().endOf('day'),
                                 rules: [{required: true, message: Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}]
                             })(
-                                <DatePicker style={{width: '100%'}} disabledDate={disabledTodayAndBefore}/>
+                                <DatePicker style={{width: '100%'}} disabledDate={disabledBeforeToday}/>
                             )}
                         </FormItem>
                         <FormItem

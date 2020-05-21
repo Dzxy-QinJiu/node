@@ -20,7 +20,7 @@ import ApplyUserForm from '../apply-user-form';
 import StepsBar from 'CMP_DIR/steps-bar';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import orderPrivilegeConst from 'MOD_DIR/deal_manage/public/privilege-const';
-import {disabledTodayAndBefore} from 'PUB_DIR/sources/utils/common-method-util';
+import {disabledBeforeToday, dealTodayTime} from 'PUB_DIR/sources/utils/common-method-util';
 //订单状态
 const ORDER_STATUS = {
     WIN: 'win',//赢单
@@ -171,9 +171,12 @@ class OrderItem extends React.Component {
     //修改订单的预算、备注、预计成交时间, 丢单+丢单原因
     saveOrderBasicInfo = (property, saveObj, successFunc, errorFunc) => {
         //预计成交时间为空时的处理
-        if (property === 'predict_finish_time' && !saveObj.predict_finish_time) {
-            if (_.isFunction(errorFunc)) errorFunc(Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间'));
-            return;
+        if (property === 'predict_finish_time') {
+            if(!saveObj.predict_finish_time) {
+                if (_.isFunction(errorFunc)) errorFunc(Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间'));
+                return;
+            }
+            saveObj.predict_finish_time = dealTodayTime(saveObj.predict_finish_time);
         }
         saveObj.customer_id = this.props.order.customer_id;
         if (property === 'oppo_status') {//丢单+丢单原因
@@ -450,7 +453,7 @@ class OrderItem extends React.Component {
                                 id={order.id}
                                 field="predict_finish_time"
                                 value={order.predict_finish_time}
-                                disabledDate={disabledTodayAndBefore}
+                                disabledDate={disabledBeforeToday}
                                 placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
                                 hasEditPrivilege={hasEditPrivilege}
                                 saveEditDateInput={this.saveOrderBasicInfo.bind(this, 'predict_finish_time')}

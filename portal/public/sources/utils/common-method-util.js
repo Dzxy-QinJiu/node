@@ -301,17 +301,21 @@ exports.traversingTeamTree = traversingTeamTree;
 
 //不能选今天之前的时间
 exports.disabledBeforeToday = function(current) {
-    return current && current < moment().subtract(1, 'days').endOf('day');
-};
-
-//不能选今天及之前的时间
-exports.disabledTodayAndBefore = function(current) {
-    return current && current <= moment().endOf('day');
+    return current && current <= moment().subtract(1, 'days').endOf('day');
 };
 
 //不能选今天之后的时间
 exports.disabledAfterToday = function(current) {
     return current && current > moment().endOf('day');
+};
+
+//选择今天后，传今天的最晚时间(23:59:59)
+exports.dealTodayTime = function(time) {
+    let todayTime = moment().endOf('day').valueOf();
+    if(time < todayTime) {
+        time = todayTime;
+    }
+    return time;
 };
 
 /**
