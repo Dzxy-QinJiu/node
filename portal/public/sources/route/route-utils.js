@@ -29,7 +29,14 @@ class FirstIndexRoute extends React.Component {
     componentWillMount() {
         var allMenus = menuUtil.getAllMenu();
         if (allMenus[0] && allMenus[0].routePath) {
-            history.replace(allMenus[0].routePath);
+            let url = allMenus[0].routePath;
+            //需要判断是否是首次登陆，并且第一个路由是推荐线索页面
+            if(Oplate.showWelComePage === 'true' && allMenus[0].id === ROUTE_CONST.CLUES_RECOMMEND) {
+                Oplate.showWelComePage = '';
+                //添加首次登录的标识
+                url += '?firstOpenPage=true';
+            }
+            history.replace(url);
         }
     }
 
