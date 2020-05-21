@@ -965,6 +965,12 @@ function isSalesRole() {
 }
 exports.isSalesRole = isSalesRole;
 
+//是否普通销售
+function isCommonSales() {
+    return userData.getUserData().isCommonSales;
+}
+exports.isCommonSales = isCommonSales;
+
 function isAdminRole() {
     return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
 }
