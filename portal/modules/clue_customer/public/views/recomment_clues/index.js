@@ -326,11 +326,16 @@ class RecommendCluesList extends React.Component {
 
     //获取选中的高级筛选
     getAdvanceItem() {
-        let feature = this.state.feature;
+        let curFeature = _.find(ADVANCED_OPTIONS, item => item.value === this.state.feature);
+        let feature = _.get(curFeature,'value','');
         feature = feature.split(':');
+        let value = feature[1];
+        if(curFeature && _.isFunction(curFeature.processValue)) {
+            value = curFeature.processValue(value);
+        }
         return {
             key: feature[0],
-            value: feature[1]
+            value
         };
     }
 
