@@ -178,6 +178,7 @@ class OrderItem extends React.Component {
         saveObj.customer_id = this.props.order.customer_id;
         if (property === 'oppo_status') {//丢单+丢单原因
             saveObj.oppo_status = ORDER_STATUS.LOSE;
+            saveObj.lose_reason = _.trim(saveObj.lose_reason);
         }
         if (this.props.isMerge) {
             if (_.isFunction(this.props.updateMergeCustomerOrder)) this.props.updateMergeCustomerOrder(saveObj);
@@ -589,7 +590,7 @@ class OrderItem extends React.Component {
                     type="textarea"
                     displayType="edit"
                     field="lose_reason"
-                    value={order.lose_reason}
+                    value={_.get(order, 'lose_reason', ' ')}
                     placeholder={Intl.get('crm.order.lose.reason.input', '请输入丢单原因')}
                     saveEditInput={this.saveOrderBasicInfo.bind(this, 'oppo_status')}
                     okBtnText={Intl.get('crm.order.lose.confirm', '确认丢单')}
@@ -604,6 +605,10 @@ class OrderItem extends React.Component {
 
     renderOrderTitle = () => {
         const order = this.state.formData;
+        let btnCls = classNames('order-item-buttons', {
+            'confirm-delete-buttons': this.state.modalDialogFlag,
+            'hidden-btn': this.state.curOrderCloseStatus === ORDER_STATUS.LOSE
+        });
         return (
             <span className="order-item-title">
                 {order.oppo_status ? (
@@ -613,7 +618,7 @@ class OrderItem extends React.Component {
                     <span>
                         {this.state.curOrderCloseStatus === ORDER_STATUS.LOSE ? this.renderLoseOrderForm(order) :
                             this.state.modalDialogFlag ? null : this.renderOrderStage(order.sale_stages)}
-                        <span className="order-item-buttons">
+                        <span className={btnCls}>
                             {
                                 this.state.modalDialogFlag ? (
                                     <span className="item-delete-buttons">
