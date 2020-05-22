@@ -3368,6 +3368,12 @@ var zh_CN = {
     'lead.single.check.phone.no.empty.phone.tip': '此线索有{allCount}个号码，系统未发现疑似空号',
     'lead.batch.check.phone.no.empty.phone.tip': '系统未发现全部疑似空号的线索',
     'lead.smart.extract.title': '提取时会排除全部是疑似空号的线索',
+    'lead.clue.check.phone.all': '系统帮您检测了{allCount}个号码，发现了{emptyCount}个疑似空号。',
+    'lead.clue.check.phone.empty.status': '系统未发现疑似空号',
+    'lead.check.phone.no.empty.number': '此号码不是疑似空号',
+    'lead.has.checked.phone': '所选线索中含已检测的号码，是否重新检测？',
+    'lead.not.has.check.phone': '所选线索中没有可检测的号码',
+    'lead.single.has.checked.phone': '此号码已检测，是否重新检测？',
 
     //线索模块 end
     'common.memeber.all': '全部成员',

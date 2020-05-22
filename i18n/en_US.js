@@ -3339,7 +3339,13 @@ var en_US = {
     'lead.extract.confirm': 'Confirm to extract',//确认提取
     'lead.single.check.phone.no.empty.phone.tip': 'There are {allCount} Numbers in this clue, but the system has not found any suspected empty Numbers',//此线索有{allCount}个号码，系统未发现疑似空号
     'lead.batch.check.phone.no.empty.phone.tip': 'The system did not find all possible clues to empty Numbers',//系统未发现全部疑似空号的线索
-    'leac.smart.extract.title': 'When extracting, all clues that are suspected to be empty will be eliminated',//提取时会排除全部是疑似空号的线索
+    'lead.smart.extract.title': 'When extracting, all clues that are suspected to be empty will be eliminated',//提取时会排除全部是疑似空号的线索
+    'lead.clue.check.phone.all': 'The system detected {allCount} Numbers for you, and found {emptyCount} suspected empty Numbers.',//系统帮您检测了{allCount}个号码，发现了{emptyCount}个疑似空号。
+    'lead.clue.check.phone.empty.status': 'The system did not find the suspected empty number',//系统未发现疑似空号
+    'lead.check.phone.no.empty.number': 'This number is not suspected empty',//此号码不是疑似空号
+    'lead.has.checked.phone': 'The selected clue contains the detected number. Do you want to redetect it?',//所选线索中含已检测的号码，是否重新检测？
+    'lead.not.has.check.phone': 'There is no detectable number in the selected clue',//所选线索中没有可检测的号码
+    'lead.single.has.checked.phone': 'This number has been detected, shall we redetect it?',//此号码已检测，是否重新检测？
 
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',

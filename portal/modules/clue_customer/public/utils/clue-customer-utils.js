@@ -9,7 +9,7 @@ import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import { checkCurrentVersion, checkVersionAndType, isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
-import {isPhone} from 'PUB_DIR/sources/utils/validate-util';
+import {isSupportCheckPhone} from 'PUB_DIR/sources/utils/validate-util';
 import {PHONE_STATUS_MAP, PHONE_STATUS_KEY} from 'PUB_DIR/sources/utils/consts';
 
 export const checkClueName = function(rule, value, callback) {
@@ -623,7 +623,8 @@ export const hasCheckPhoneStatusPrivilege = (curStatus) => {
 
 //获取需要检测的手机号
 export const getCheckedPhones = function(clues) {
-    let phoneList = [];
+    let phoneList = [];//要检测的手机号列表
+    let hasCheckedPhoneList = [];//已经检测过状态的手机号列表
     _.each(clues, clue => {
         if(clue.contacts.length) {
             let phones = _.chain(clue.contacts)
@@ -631,7 +632,7 @@ export const getCheckedPhones = function(clues) {
                 .map('phone')
                 .reduce((sum, n) => sum.concat(n))
                 .uniq()
-                .filter(item => isPhone(item))
+                .filter(item => isSupportCheckPhone(item))
                 .value();
             if(phones.length) {
                 _.each(phones, phone => {
@@ -639,29 +640,38 @@ export const getCheckedPhones = function(clues) {
                         clue_id: clue.id,
                         mobile_phone: phone
                     });
+                    let curPhone = _.find(_.get(clue, 'phone_status'), item => item.phone === phone);
+                    if(curPhone && curPhone.status) {
+                        hasCheckedPhoneList.push(phone);
+                    }
                 });
             }
         }
     });
-    return phoneList;
+    return {
+        phoneList,
+        hasCheckedPhoneList
+    };
 };
 
 //获取展示的电话号码，13567893112(实号)
-export const getShowPhoneNumber = function(obj, phoneNumber) {
+export const getShowPhoneNumber = function(obj, phoneNumber, needStatus = false) {
+    let phone = { phoneNumber: phoneNumber };
     if(_.get(obj, 'phone_status[0]')) {
         let phoneStatus = _.get(obj, 'phone_status');
         let curPhoneStatus = _.find(phoneStatus, item => item.phone === phoneNumber);
-        if(_.includes([
-            PHONE_STATUS_KEY.EMPTY,
-            PHONE_STATUS_KEY.NOTHING,
-            PHONE_STATUS_KEY.SILENCE,
-            PHONE_STATUS_KEY.RISK
-        ], _.get(curPhoneStatus,'status'))) {//只显示疑似空号(0空号，3虚无，4沉默号，5风险号)的手机号状态
+        if(isEmptyPhone(_.get(curPhoneStatus,'status'))) {//只显示疑似空号(0空号，3虚无，4沉默号，5风险号)的手机号状态
             let status = _.get(PHONE_STATUS_MAP, PHONE_STATUS_KEY.EMPTY, Intl.get( 'common.others', '其他'));
-            phoneNumber = `${phoneNumber}(${status})`;
+            phone.phoneNumber = `${phoneNumber}(${status})`;
+        }
+        if(_.has(curPhoneStatus, 'status')) {
+            phone.status = curPhoneStatus.status;
         }
     }
-    return phoneNumber;
+    if(needStatus) {
+        return phone;
+    }
+    return phone.phoneNumber;
 };
 
 //处理对象上的电话检测状态
@@ -676,4 +686,29 @@ export const dealClueCheckPhoneStatus = function(obj, result) {
         phoneStatus.push(phoneObj);
     }
     return phoneStatus;
+};
+
+//处理线索上联系方式的电话状态
+export const dealContactPhoneStatus = function(obj) {
+    let phone_status = [];
+    if (_.isArray(obj.contacts)) {
+        for (let j = 0; j < obj.contacts.length; j++) {
+            let contact = obj.contacts[j];
+            //处理手机号的检测状态
+            if(_.get(contact, 'phone_status[0]')) {
+                _.each(_.get(contact, 'phone_status'), item => {
+                    if(_.has(item, 'status')) {//是否有status这个字段
+                        phone_status.push(item);
+                    }
+                });
+            }
+            delete contact.phone_status;
+        }
+    }
+    return phone_status;
+};
+
+//疑似空号状态
+export const isEmptyPhone = function(status) {
+    return _.includes([PHONE_STATUS_KEY.EMPTY, PHONE_STATUS_KEY.NOTHING, PHONE_STATUS_KEY.SILENCE, PHONE_STATUS_KEY.RISK], status);
 };
