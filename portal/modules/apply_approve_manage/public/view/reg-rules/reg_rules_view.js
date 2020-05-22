@@ -52,7 +52,7 @@ class RegRulesView extends React.Component {
             notify_configs: notify_configs || {},
             customiz_user_range: customiz_user_range || [],//单独划定一批的用户
             customiz_team_range: customiz_team_range || [],//单独划定一批的团队
-            addNodePanelFlow: '',
+            addOrEditNodePanelFlow: '',//添加或者编辑某个节点的流程类型
             addCCNodePanelFlow: '',//添加抄送人的流程类型
             showAddConditionPanel: false,
             roleList: this.props.roleList,//角色列表
@@ -60,7 +60,6 @@ class RegRulesView extends React.Component {
             teamList: this.props.teamList,//团队列表
             customerSaleResponsible: customerSaleResponsible, // 机会申请，审批通过后，默认作为负责人
             isChangeCustomerSale: false, // 机会申请，审批通过后,是否修改了负责人，默认false
-            workflowform_emailto: [],//配置在哪个节点上发送邮件
             ...ApplyApproveManageStore.getState()
         };
     }
@@ -314,7 +313,7 @@ class RegRulesView extends React.Component {
     };
     addApplyNode = (applyFlow) => {
         this.setState({
-            addNodePanelFlow: applyFlow
+            addOrEditNodePanelFlow: applyFlow
         });
     };
     addApplyCC = (applyFlow) => {
@@ -399,14 +398,21 @@ class RegRulesView extends React.Component {
             </div>
         );
     };
+    //点击编辑某一个节点
+    handleClickApplyNode = (item,flowType) => {
+        this.setState({
+            isEditNodePanelFlowItem: item,
+            addOrEditNodePanelFlow: flowType
+        });
+    };
     renderApplyWorkFlowNode = (candidateRules, flowType) => {
         return (
             <div className="rule-content apply-node-lists">
                 {_.map(candidateRules, (item, index) => {
                     var showDeleteIcon = index === _.get(candidateRules, 'length') - 1;
-                    var workflowFormEmailTo = _.get(item,'workflowFormEmailTo',[]);
+                    var workflowFormEmailToName = _.get(item,'workflowFormEmailToName',[]);
                     return (
-                        <div className="item-node">
+                        <div className="item-node" onClick={this.handleClickApplyNode.bind(this,item,flowType)}>
                             <div className="icon-container">
                                 <i className="iconfont icon-active-users"></i>
                             </div>
@@ -423,9 +429,10 @@ class RegRulesView extends React.Component {
                                 className="addition-text">{Intl.get('leave.apply.general.apply', '分配销售')}</span> : null}
                             {item.releaseCustomerToTeamPool + '' === 'true' ? <span
                                 className="addition-text">{Intl.get('apply.approve.distribute.team', '分配团队')}</span> : null}
-                            {_.get(workflowFormEmailTo,'[0]') ?
+                            {_.get(workflowFormEmailToName,'[0]') ?
                                 <p className="addition-text workflow-to-email">{Intl.get('apply.approved.receive.email', '接收邮件人员或邮箱')}：
-                                    {_.isArray(item.workflowFormEmailToName) ? <p>{item.workflowFormEmailToName.join('，')}</p> : null}
+                                    {_.isArray(item.workflowFormEmailToName) ? <p>
+                                        {workflowFormEmailToName.join(',')}</p> : null}
                                 </p>
                                 : null}
                             <span className="connet-bar"></span>
@@ -566,7 +573,7 @@ class RegRulesView extends React.Component {
     };
     hideRightAddPanel = () => {
         this.setState({
-            addNodePanelFlow: '',
+            addOrEditNodePanelFlow: '',
             showAddConditionPanel: false,
             addCCNodePanelFlow: '',
             updateConditionObj: {},
@@ -585,73 +592,82 @@ class RegRulesView extends React.Component {
             notify_configs: notify_configs
         });
     };
-    saveAddApproveNode = (data) => {
-        //新加节点的数据,要把原来最后一个节点的next加上，先判断之前的数据结构中是不是有结束节点
-        var applyFlow = this.state.addNodePanelFlow;
+    saveAddApproveNode = (data,isUpdateItem) => {
+        //isUpdateItem 是修改某个节点的属性，没有这个字段是增加节点
+        var applyFlow = this.state.addOrEditNodePanelFlow;
         var applyRulesAndSetting = this.state.applyRulesAndSetting;
         var applyFlowObj = _.get(applyRulesAndSetting, ['applyApproveRules',applyFlow], {});
         var bpmnNodeFlow = _.get(applyFlowObj, 'bpmnNode', []);
-        var defaultBpmnNode = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
-        //如果是默认流程
-        var previousNode = _.last(bpmnNodeFlow);
-        //看一下最后一个节点的节点类型
-        if (!previousNode) {
-            //如果上一个节点不存在，那就指定为网关节点
-            previousNode = _.find(defaultBpmnNode, item => item.type === 'ExclusiveGateway');
+        if(_.isEmpty(isUpdateItem)){
+            //新加节点的数据,要把原来最后一个节点的next加上，先判断之前的数据结构中是不是有结束节点
 
-        }
-        if (_.get(previousNode, 'type') === 'EndEvent') {
-            //删除最后一个节点
-            bpmnNodeFlow.pop();
-            previousNode = _.last(bpmnNodeFlow);
-        }
-        if (_.get(previousNode, 'type') === 'ExclusiveGateway') {
-            var nodeIndexArr = applyFlow.split('_');
-            var newIndex = _.last(nodeIndexArr) + '_' + '1';
-            var newNodeObj = {
-                name: `UserTask_${newIndex}`,
-                id: `UserTask_${newIndex}`,
-                type: 'UserTask',
-                previous: 'Gateway_1_1',
-                flowIndex: `${newIndex}`
-            };
-            //如果流程不是默认流程并且流程上没有节点，在添加这个节点的时候需要加上条件
-            if (applyFlow !== FLOW_TYPES.DEFAULTFLOW && !bpmnNodeFlow.length) {
-                var limitRules = _.get(applyRulesAndSetting, `applyApproveRules.${applyFlow}.conditionRuleLists.limitRules`, []);
-                this.updateCustomizeNode(limitRules,newNodeObj);
+            var defaultBpmnNode = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
+            //如果是默认流程
+            var previousNode = _.last(bpmnNodeFlow);
+            //看一下最后一个节点的节点类型
+            if (!previousNode) {
+                //如果上一个节点不存在，那就指定为网关节点
+                previousNode = _.find(defaultBpmnNode, item => item.type === 'ExclusiveGateway');
             }
-        } else {
-            //如果是第一个节点
-            if (previousNode) {
-                var previousNodeIndex = _.get(previousNode, 'flowIndex');
-                var nodeIndexArr = _.split(previousNodeIndex, '_');
-                nodeIndexArr.splice(nodeIndexArr.length - 1, 1, parseInt(_.last(nodeIndexArr)) + 1);
-                var newIndex = nodeIndexArr.join('_');
-                previousNode.next = `UserTask_${newIndex}`;
+            if (_.get(previousNode, 'type') === 'EndEvent') {
+                //删除最后一个节点
+                bpmnNodeFlow.pop();
+                previousNode = _.last(bpmnNodeFlow);
+            }
+            if (_.get(previousNode, 'type') === 'ExclusiveGateway') {
+                var nodeIndexArr = applyFlow.split('_');
+                var newIndex = _.last(nodeIndexArr) + '_' + '1';
                 var newNodeObj = {
                     name: `UserTask_${newIndex}`,
                     id: `UserTask_${newIndex}`,
                     type: 'UserTask',
-                    previous: `UserTask_${previousNodeIndex}`,
+                    previous: 'Gateway_1_1',
                     flowIndex: `${newIndex}`
                 };
+                //如果流程不是默认流程并且流程上没有节点，在添加这个节点的时候需要加上条件
+                if (applyFlow !== FLOW_TYPES.DEFAULTFLOW && !bpmnNodeFlow.length) {
+                    var limitRules = _.get(applyRulesAndSetting, `applyApproveRules.${applyFlow}.conditionRuleLists.limitRules`, []);
+                    this.updateCustomizeNode(limitRules,newNodeObj);
+                }
             } else {
-                var newIndex = '1_2';
-                var newNodeObj = {
-                    name: `UserTask_${newIndex}`,
-                    id: `UserTask_${newIndex}`,
-                    type: 'UserTask',
-                    flowIndex: `${newIndex}`
-                };
-            }
+                //如果是第一个节点
+                if (previousNode) {
+                    var previousNodeIndex = _.get(previousNode, 'flowIndex');
+                    var nodeIndexArr = _.split(previousNodeIndex, '_');
+                    nodeIndexArr.splice(nodeIndexArr.length - 1, 1, parseInt(_.last(nodeIndexArr)) + 1);
+                    var newIndex = nodeIndexArr.join('_');
+                    previousNode.next = `UserTask_${newIndex}`;
+                    var newNodeObj = {
+                        name: `UserTask_${newIndex}`,
+                        id: `UserTask_${newIndex}`,
+                        type: 'UserTask',
+                        previous: `UserTask_${previousNodeIndex}`,
+                        flowIndex: `${newIndex}`
+                    };
+                } else {
+                    var newIndex = '1_2';
+                    var newNodeObj = {
+                        name: `UserTask_${newIndex}`,
+                        id: `UserTask_${newIndex}`,
+                        type: 'UserTask',
+                        flowIndex: `${newIndex}`
+                    };
+                }
 
+            }
+            for (var key in data) {
+                newNodeObj[key] = data[key];
+            }
+            bpmnNodeFlow.push(newNodeObj);
+            //为了避免bpmnNodeFlow在condition中没有值的情况，在这里重新设置一下
+            applyFlowObj['bpmnNode'] = bpmnNodeFlow;
+        }else{
+            //修改某个节点上的属性
+            var nodeTarget = _.find(bpmnNodeFlow,flowItem => flowItem.id === isUpdateItem.id);
+            for (var key in data) {
+                nodeTarget[key] = data[key];
+            }
         }
-        for (var key in data) {
-            newNodeObj[key] = data[key];
-        }
-        bpmnNodeFlow.push(newNodeObj);
-        //为了避免bpmnNodeFlow在condition中没有值的情况，在这里重新设置一下
-        applyFlowObj['bpmnNode'] = bpmnNodeFlow;
     };
     //更新每个节点上总的条件
     updateCustomizeNode = (limitRules,newNodeObj) => {
@@ -1096,7 +1112,7 @@ class RegRulesView extends React.Component {
         var cls = classNames('', {
             'err-tip': hasErrTip
         });
-        var addPanelWrap = classNames({'show-add-node-modal': this.state.addCCNodePanelFlow || this.state.addNodePanelFlow || this.state.showAddConditionPanel});
+        var addPanelWrap = classNames({'show-add-node-modal': this.state.addCCNodePanelFlow || this.state.addOrEditNodePanelFlow || this.state.showAddConditionPanel});
         var divHeight = $(window).height() - FORMLAYOUT.PADDINGTOTAL + 110;
         var defaultRules = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
         //把默认流程的中待审批人所在的节点过滤出来
@@ -1294,14 +1310,17 @@ class RegRulesView extends React.Component {
                         hideCancelBtns={true}
                     />
                 </div>
-                {this.state.addNodePanelFlow ?
+                {this.state.addOrEditNodePanelFlow ?
                     <div className={addPanelWrap}>
                         <AddApplyNodePanel
+                            isEditNodePanelFlowItem={this.state.isEditNodePanelFlowItem}
                             saveAddApproveNode={this.saveAddApproveNode}
                             hideRightPanel={this.hideRightAddPanel}
                             applyTypeData={this.props.applyTypeData}
                             applyRulesAndSetting={this.state.applyRulesAndSetting}
-                            addNodePanelFlow={this.state.addNodePanelFlow}
+                            addNodePanelFlow={this.state.addOrEditNodePanelFlow}
+                            roleList={this.state.roleList}
+                            userList={this.state.userList}
                         />
                     </div>
                     : null}

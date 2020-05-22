@@ -491,7 +491,7 @@ class ApplyFormAndRules extends React.Component {
             return(
                 <div className="errmsg-wrap">
                     <i className="iconfont icon-data-error"></i>
-                    <p className="abnornal-status-tip">{this.state.callRecord.errorMsg}</p>
+                    <p className="abnornal-status-tip">{this.state.getSelfSettingWorkFlowErrMsg}</p>
                 </div>);
         }else{
             return (
