@@ -23,10 +23,9 @@ import {
 } from 'PUB_DIR/sources/utils/consts';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
 import {checkFileNameAllowRule, checkFileNameForbidRule} from 'PUB_DIR/sources/utils/common-method-util';
 var AlertTimer = require('CMP_DIR/alert-timer');
+import {disabledDateBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
 class AddDataService extends React.Component {
     constructor(props) {
         super(props);
@@ -284,10 +283,6 @@ class AddDataService extends React.Component {
                 warningMsg: ''
             });
         };
-        const disabledDate = function(current) {
-            //不允许选择大于当前的时刻
-            return current && current.valueOf() < moment().startOf('day');
-        };
         return (
             <RightPanel showFlag={true} data-tracename="添加数据导出申请" className="add-data-service-apply-container">
                 <span className="iconfont icon-close add—leave-apply-close-btn" onClick={this.hideApplyAddForm}
@@ -361,7 +356,7 @@ class AddDataService extends React.Component {
                                             }],
                                         })(
                                             <DatePicker
-                                                disabledDate={disabledDate}
+                                                disabledDate={disabledDateBeforeToday}
                                                 allowClear={false}
                                                 showTime={{format: 'HH:mm'}}
                                                 format="YYYY-MM-DD HH:mm"

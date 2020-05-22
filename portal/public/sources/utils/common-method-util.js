@@ -875,6 +875,11 @@ exports.disabledDate = function(startTime, endTime, value){
     }
     return value.valueOf() < moment(startTime).startOf('day').valueOf() || value.valueOf() > moment(endTime).endOf('day').valueOf();
 };
+//今天之前的时间不可选
+exports.disabledDateBeforeToday = function(current) {
+    //不允许选择大于当前的时刻
+    return current && current.valueOf() < moment().startOf('day');
+};
 //时间选择组件中禁用时间的范围
 exports.disabledHour = function(startTime, endTime){
     var startHour = moment(startTime).get('hour'),endHour = moment(endTime).get('hour');
