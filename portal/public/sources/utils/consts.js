@@ -916,9 +916,20 @@ export const DISAPPEAR_DELAY_TIME = 3000;
 // 赢取线索量的最大值
 export const winningClueMaxCount = 80;
 
+//手机号状态key
+export const PHONE_STATUS_KEY = {
+    EMPTY: '0',//空号
+    REAL: '1',//实号
+    STOP: '2',//停机
+    NOTHING: '3',//虚无
+    SILENCE: '4',//沉默号
+    RISK: '5',//风险号
+};
+
+
 //手机号状态集合
 export const PHONE_STATUS_MAP = {
-    0: Intl.get('lead.phone.status.null', '疑似空号'),
-    1: Intl.get('lead.phone.status.real', '实号'),
-    2: Intl.get('lead.phone.status.halt', '停机'),
+    [PHONE_STATUS_KEY.EMPTY]: Intl.get('lead.phone.status.null', '疑似空号'),
+    [PHONE_STATUS_KEY.REAL]: Intl.get('lead.phone.status.real', '实号'),
+    [PHONE_STATUS_KEY.STOP]: Intl.get('lead.phone.status.halt', '停机'),
 };
