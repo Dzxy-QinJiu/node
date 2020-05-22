@@ -10,7 +10,7 @@ import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import { checkCurrentVersion, checkVersionAndType, isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
 import {isPhone} from 'PUB_DIR/sources/utils/validate-util';
-import {PHONE_STATUS_MAP} from 'PUB_DIR/sources/utils/consts';
+import {PHONE_STATUS_MAP, PHONE_STATUS_KEY} from 'PUB_DIR/sources/utils/consts';
 
 export const checkClueName = function(rule, value, callback) {
     value = _.trim(value);
@@ -651,8 +651,13 @@ export const getShowPhoneNumber = function(obj, phoneNumber) {
     if(_.get(obj, 'phone_status[0]')) {
         let phoneStatus = _.get(obj, 'phone_status');
         let curPhoneStatus = _.find(phoneStatus, item => item.phone === phoneNumber);
-        if(_.get(curPhoneStatus,'status') === '0') {//只显示疑似空号的手机号状态
-            let status = _.get(PHONE_STATUS_MAP, curPhoneStatus.status, Intl.get( 'common.others', '其他'));
+        if(_.includes([
+            PHONE_STATUS_KEY.EMPTY,
+            PHONE_STATUS_KEY.NOTHING,
+            PHONE_STATUS_KEY.SILENCE,
+            PHONE_STATUS_KEY.RISK
+        ], _.get(curPhoneStatus,'status'))) {//只显示疑似空号(0空号，3虚无，4沉默号，5风险号)的手机号状态
+            let status = _.get(PHONE_STATUS_MAP, PHONE_STATUS_KEY.EMPTY, Intl.get( 'common.others', '其他'));
             phoneNumber = `${phoneNumber}(${status})`;
         }
     }

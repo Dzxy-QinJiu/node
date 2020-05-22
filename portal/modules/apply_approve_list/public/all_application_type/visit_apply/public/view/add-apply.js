@@ -7,8 +7,9 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('../css/add-leave-apply.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Form, Input, Button, Icon, message, DatePicker, Select} from 'antd';
-var Option = Select.Option;
+import {Form, Input, Button, Icon, message, DatePicker} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
@@ -169,7 +170,7 @@ class AddApply extends React.Component {
         };
         let saveResult = this.state.saveResult;
         var workConfig = _.find(this.state.workFlowList,item => item.type === SELF_SETTING_FLOW.VISITAPPLY);
-        var customizForm = workConfig.customiz_form;
+        var customizeForm = workConfig.customiz_form;
         return (
             <RightPanel showFlag={true} data-tracename="添加拜访申请" className="add-leave-container">
                 <span className="iconfont icon-close add-leave-apply-close-btn"
@@ -184,7 +185,7 @@ class AddApply extends React.Component {
                         <GeminiScrollbar>
                             <div className="add-leave-form">
                                 <Form layout='horizontal' className="sales-clue-form" id="add-leave-apply-form">
-                                    {_.map(customizForm,(formItem,index) => {
+                                    {_.map(customizeForm,(formItem,index) => {
                                         var target = _.find(ADDAPPLYFORMCOMPONENTS, item => item.component_type === _.get(formItem, 'component_type'));
                                         if (target){
                                             var ApplyComponent = target.component;

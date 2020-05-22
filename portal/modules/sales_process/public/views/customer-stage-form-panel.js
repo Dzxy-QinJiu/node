@@ -3,6 +3,8 @@
  * 添加客户阶段面板
  */
 import {Form, Input, TreeSelect} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const { SHOW_ALL } = TreeSelect;
 const FormItem = Form.Item;
 const {TextArea} = Input;

@@ -3,11 +3,12 @@ import TableListPanel from 'CMP_DIR/table-list-panel';
 import ajax from 'ant-ajax';
 import userData from 'PUB_DIR/sources/user-data';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import {AntcAnalysis, AntcDatePicker} from 'antc';
+import {AntcAnalysis, AntcDatePicker, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {dateSelectorEmitter, teamTreeEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {storageUtil} from 'ant-utils';
-import {Row, Col, Select} from 'antd';
+import {Row, Col} from 'antd';
 import reportCharts from './charts';
 import chanceCharts from 'MOD_DIR/analysis/public/charts/chance';
 import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
@@ -18,7 +19,6 @@ import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
 
 const Avatar = require('CMP_DIR/Avatar');
-const Option = Select.Option;
 const TopNav = require('CMP_DIR/top-nav');
 //是否在蚁坊域的判断方法
 const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
@@ -210,7 +210,7 @@ class SalesReport extends React.Component {
             <ButtonZones>
                 <div className="btn-item-container">
                     {memberList.length ? (
-                        <Select
+                        <AntcSelect
                             showSearch
                             optionFilterProp="children"
                             dropdownMatchSelectWidth={false}
@@ -222,7 +222,7 @@ class SalesReport extends React.Component {
                             {_.map(memberList, (memberItem, index) => {
                                 return <Option key={index} value={memberItem.user_id}>{memberItem.nick_name}</Option>;
                             })}
-                        </Select>
+                        </AntcSelect>
                     ) : null}
 
                     <AntcDatePicker

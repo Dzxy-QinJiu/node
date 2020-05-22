@@ -8,7 +8,8 @@ import PropTypes from 'prop-types';
 import './css/clue-suggest.less';
 
 import {Link} from 'react-router-dom';
-import {Select} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import classNames from 'classnames';
 
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
@@ -279,7 +280,7 @@ class ClueSuggest extends Component {
         return (
             <div className={displayCls} data-tracename="搜索线索">
                 <div ref={clue_search_box => this.clue_search_box = clue_search_box} className="associate-clue-wrap">
-                    <Select
+                    <AntcSelect
                         ref="selectSearch"
                         className={this.getClueTipErrmsg() ? 'err-tip' : ''}
                         combobox
@@ -304,7 +305,7 @@ class ClueSuggest extends Component {
                                 );
                             })
                         }
-                    </Select>
+                    </AntcSelect>
                     {this.getClueTipBlock()}
                 </div>
             </div>

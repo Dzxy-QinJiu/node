@@ -1,11 +1,12 @@
 /**
  * Created by wangliping on 2017/9/20.
  */
-import { Form, DatePicker, InputNumber, Select, Radio, Input } from 'antd';
+import { Form, DatePicker, InputNumber, Radio, Input } from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import PropTypes from 'prop-types';
 import language from 'PUB_DIR/language/getLanguage';
 const { TextArea } = Input;
-const Option = Select.Option;
 import AppUserAjax from 'MOD_DIR/app_user_manage/public/ajax/app-user-ajax';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
@@ -380,7 +381,7 @@ class CrmUserApplyForm extends React.Component {
                             />
                         )}
 
-                        <Select
+                        <AntcSelect
                             value={formData.delayTimeRange}
                             style={{ width: divWidth }}
                             onChange={this.delayTimeRangeChange.bind(this)}
@@ -390,7 +391,7 @@ class CrmUserApplyForm extends React.Component {
                             <Option value={TIMERANGEUNIT.MONTH}>{Intl.get('common.time.unit.month', '月')}</Option>
                             <Option value={TIMERANGEUNIT.YEAR}>{Intl.get('common.time.unit.year', '年')}</Option>
                             <Option value={TIMERANGEUNIT.CUSTOM}>{Intl.get('user.time.custom', '自定义')}</Option>
-                        </Select>
+                        </AntcSelect>
                     </FormItem>
                 </div>
                 <FormItem

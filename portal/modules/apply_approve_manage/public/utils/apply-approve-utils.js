@@ -4,7 +4,9 @@
  * Created by zhangshujuan on 2019/4/4.
  */
 import {domainNameRule} from 'PUB_DIR/sources/utils/validate-util';
-import {Input, Radio, Select} from 'antd';
+import {Input, Radio} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const RadioGroup = Radio.Group;
 import RangeInput from '../view/range_input';
 import SelectOption from '../view/select_option';

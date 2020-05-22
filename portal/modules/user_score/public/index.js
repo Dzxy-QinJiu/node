@@ -9,8 +9,7 @@ require('./css/index.less');
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import userScoreStore from './store/index';
 import userScoreAction from './action/index';
-import {Input, Tabs, Switch, Row, Col, Select, InputNumber, Button, Icon, message, Alert} from 'antd';
-const {Option} = Select;
+import {Input, Tabs, Switch, Row, Col, InputNumber, Button, Icon, message, Alert} from 'antd';
 const {TabPane} = Tabs;
 var uuid = require('uuid/v4');
 import AlertTimer from 'CMP_DIR/alert-timer';
@@ -18,7 +17,8 @@ import Spinner from 'CMP_DIR/spinner';
 import {TimeRangeSelect} from 'MOD_DIR/customer_score/public/utils/customer_score_util';
 import {RETRY_GET_APP} from 'MOD_DIR/app_user_manage/public/util/consts';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
-import {StatusWrapper} from 'antc';
+import {StatusWrapper, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 var spanLength = '8';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
@@ -288,7 +288,7 @@ class userScore extends React.Component {
         const {userIndicator, userIndicatorType, isEditUserBasicRule, } = this.state;
         var numberTarget = _.find(userIndicatorType[item['indicator']], number => number.value === item.online_unit);
         return <span>
-            {isEditUserBasicRule ? <Select
+            {isEditUserBasicRule ? <AntcSelect
                 style={{width: 100}}
                 value={item['online_unit']}
                 onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'online_unit')}
@@ -297,7 +297,7 @@ class userScore extends React.Component {
                     <Option key={index} value={item.value}>{item.name}</Option>
                 )) : null}
 
-            </Select> : _.get(numberTarget, 'name')}
+            </AntcSelect> : _.get(numberTarget, 'name')}
             <span className="icon-multiply">X</span>
             {isEditUserBasicRule ? <InputNumber value={item.score}
                 onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'score')}
@@ -367,7 +367,7 @@ class userScore extends React.Component {
                     return (
                         <Row>
                             <Col span={spanLength}>
-                                {isEditUserBasicRule ? <Select
+                                {isEditUserBasicRule ? <AntcSelect
                                     style={{width: 150}}
                                     value={item['indicator']}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'indicator')}
@@ -375,11 +375,11 @@ class userScore extends React.Component {
                                     {subIndicator.map((item, index) => (
                                         <Option key={index} value={item.indicator}>{item.desc}</Option>
                                     ))}
-                                </Select> : _.get(targetIndicator, 'desc')}
+                                </AntcSelect> : _.get(targetIndicator, 'desc')}
 
                             </Col>
                             <Col span={spanLength}>
-                                {isEditUserBasicRule && !this.isRateItem(item) ? <Select
+                                {isEditUserBasicRule && !this.isRateItem(item) ? <AntcSelect
                                     style={{width: 100}}
                                     value={item['interval']}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'interval')}
@@ -387,7 +387,7 @@ class userScore extends React.Component {
                                     {_.isArray(userIndicatorRangeList[item['indicator']]) ? userIndicatorRangeList[item['indicator']].map((item, index) => (
                                         <Option key={index} value={item.value}>{item.name}</Option>
                                     )) : null}
-                                </Select> : _.get(targetTimeRange, 'name')}
+                                </AntcSelect> : _.get(targetTimeRange, 'name')}
                             </Col>
                             <Col span={spanLength} className='add-minus-container'>
                                 {this.isRateItem(item) ? this.renderRateLastItem(userScoreDetailList, item, index) : this.renderNotRateLastItem(userScoreDetailList, item, index)
@@ -494,7 +494,7 @@ class userScore extends React.Component {
 
                                                         </Col>
                                                         <Col span={spanLength}>
-                                                            {isEditUserEngagementRule ? <Select
+                                                            {isEditUserEngagementRule ? <AntcSelect
                                                                 value={operateItem.interval}
                                                                 style={{width: 100}}
                                                                 placeholder={Intl.get('user.score.choose.interval', '请选择周期')}
@@ -504,7 +504,7 @@ class userScore extends React.Component {
                                                                     return <Option
                                                                         value={item.value}>{item.name}</Option>;
                                                                 })}
-                                                            </Select> : _.get(targetTimeRange, 'name')}
+                                                            </AntcSelect> : _.get(targetTimeRange, 'name')}
 
                                                         </Col>
                                                         <Col span={spanLength} className='add-minus-container'>

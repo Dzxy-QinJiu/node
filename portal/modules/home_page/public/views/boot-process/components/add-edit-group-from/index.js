@@ -4,9 +4,10 @@
  * Created by tangmaoqin on 2019/08/02.
  */
 import './index.less';
-import {Form, Input, Select} from 'antd';
+import {Form, Input} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
-const Option = Select.Option;
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import SalesTeamActions from 'MOD_DIR/sales_team/public/action/sales-team-actions';
 import MemberFormAction from 'MOD_DIR/member_manage/public/action/member-form-actions';
@@ -115,7 +116,7 @@ class AddEditGroupForm extends React.Component{
                                     required: true, message: Intl.get('organization.select.parent.department', '请选择上级部门')
                                 }]
                             })(
-                                <Select
+                                <AntcSelect
                                     placeholder={Intl.get('contract.67', '请选择部门')}
                                     showSearch
                                     optionFilterProp="children"
@@ -124,7 +125,7 @@ class AddEditGroupForm extends React.Component{
                                     getPopupContainer={this.props.getPopupContainer}
                                 >
                                     {this.renderTeamOptions()}
-                                </Select>
+                                </AntcSelect>
                             )
                         }
                     </FormItem>

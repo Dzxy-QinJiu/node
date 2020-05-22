@@ -21,7 +21,7 @@ import {
     getContentWidth
 } from './utils/apply_approve_utils';
 import classNames from 'classnames';
-import {Dropdown, Menu, Alert, Select, Button, Popover, TreeSelect} from 'antd';
+import {Dropdown, Menu, Alert, Button, Popover, TreeSelect} from 'antd';
 import userData from 'PUB_DIR/sources/user-data';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {
@@ -59,7 +59,8 @@ import UserApplyViewDetailWrap from './all_application_type/user_apply/public/vi
 import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
 import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
-import {SearchInput} from 'antc';
+import {SearchInput, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 import UserData from '../../../public/sources/user-data';
 import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
@@ -694,7 +695,7 @@ class ApplyApproveList extends React.Component {
             <div className="apply-type-filter btn-item" id="apply-type-container">
                 {
                     UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) || this.isActiveTabMyApproveList() ? null : (
-                        <Select
+                        <AntcSelect
                             className='apply-status-select'
                             value={this.state.selectedApplyStatus}
                             onChange={this.handleChangeSelectedApplyStatus}
@@ -702,7 +703,7 @@ class ApplyApproveList extends React.Component {
                             {_.map(allStatusList, item => {
                                 return <Option value={_.get(item, 'value')}>{_.get(item, 'name')}</Option>;
                             })}
-                        </Select>
+                        </AntcSelect>
                     )
                 }
                 <TreeSelect

@@ -8,10 +8,11 @@ var React = require('react');
 require('./index.less');
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {Form, Input,DatePicker, Select} from 'antd';
+import {Form, Input,DatePicker} from 'antd';
 const FormItem = Form.Item;
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
-import {AntcAreaSelection} from 'antc';
+import {AntcAreaSelection, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 import {LEAVE_TIME_RANGE,AM_AND_PM} from 'PUB_DIR/sources/utils/consts';
 import {disabledDate} from 'PUB_DIR/sources/utils/common-method-util';
 
@@ -382,7 +383,7 @@ class DynamicAddDelCustomers extends React.Component {
 
                     )}
                     {getFieldDecorator(`customers[${key}].visit_start_type`, {initialValue: curCustomer.visit_start_type})(
-                        <Select
+                        <AntcSelect
                             getPopupContainer={() => document.getElementById('leave-apply-form')}
                             onChange={this.handleChangeStartType.bind(this, key)}
                         >
@@ -391,7 +392,7 @@ class DynamicAddDelCustomers extends React.Component {
                                     return (<Option key={idx} value={item.value}>{item.name}</Option>);
                                 }) : null
                             }
-                        </Select>
+                        </AntcSelect>
                     )}
                     <span className="apply-range">{Intl.get('common.time.connector', '至')}</span>
                     {getFieldDecorator(`customers[${key}].visit_end_time`,{
@@ -403,7 +404,7 @@ class DynamicAddDelCustomers extends React.Component {
                         />
                     )}
                     {getFieldDecorator(`customers[${key}].visit_end_type`, {initialValue: curCustomer.visit_end_type})(
-                        <Select
+                        <AntcSelect
                             getPopupContainer={() => document.getElementById('leave-apply-form')}
                             onChange={this.handleChangeEndType.bind(this, key)}
                         >
@@ -412,7 +413,7 @@ class DynamicAddDelCustomers extends React.Component {
                                     return (<Option key={idx} value={item.value}>{item.name}</Option>);
                                 }) : null
                             }
-                        </Select>
+                        </AntcSelect>
                     )}
                 </FormItem>
                 <AntcAreaSelection labelCol="5" wrapperCol="17" width="100%"

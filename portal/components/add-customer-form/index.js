@@ -4,7 +4,7 @@ var React = require('react');
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/9/8.
  */
-import {Icon, Form, Input, Select, message, Button, Tag} from 'antd';
+import {Icon, Form, Input, message, Button, Tag} from 'antd';
 const CheckableTag = Tag.CheckableTag;
 const GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var crmAjax = require('MOD_DIR/crm/public/ajax/index');
@@ -14,11 +14,11 @@ import {customerNameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var crmUtil = require('MOD_DIR/crm/public/utils/crm-util');
 import {isUnmodifiableTag} from 'MOD_DIR/crm/public/utils/crm-util';
 var FormItem = Form.Item;
-var Option = Select.Option;
 var batchChangeAction = require('MOD_DIR/crm/public/action/batch-change-actions');
 require('./index.less');
 import PhoneInput from 'CMP_DIR/phone-input';
-import {AntcAreaSelection} from 'antc';
+import {AntcAreaSelection, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const noop = function() {
 };
@@ -455,7 +455,7 @@ class AddCustomerForm extends React.Component {
                                                 rules: [{required: true, message: Intl.get('crm.22', '请选择行业')}],
                                                 validateTrigger: 'onBlur'
                                             })(
-                                                <Select
+                                                <AntcSelect
                                                     showSearch
                                                     placeholder={Intl.get('crm.22', '请选择行业')}
                                                     name="industry"
@@ -465,7 +465,7 @@ class AddCustomerForm extends React.Component {
                                                     filterOption={(input, option) => ignoreCase(input, option)}
                                                 >
                                                     {industryOptions}
-                                                </Select>
+                                                </AntcSelect>
                                             ))}
                                     </FormItem>
                                     <div id="area-container">
@@ -588,11 +588,11 @@ class AddCustomerForm extends React.Component {
                                                 initialValue: [ContactUtil.roleArray.length ? ContactUtil.roleArray[0] : ''],
                                                 validateTrigger: 'onBlur'
                                             })(
-                                            <Select
+                                            <AntcSelect
                                                 name="contacts0_role"
                                             >
                                                 {roleOptions}
-                                            </Select>)}
+                                            </AntcSelect>)}
                                     </FormItem>
                                     <FormItem
                                         wrapperCol={{span: 24}}

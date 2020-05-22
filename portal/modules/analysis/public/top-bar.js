@@ -2,11 +2,11 @@
  * 顶部栏
  */
 
-import {AntcDatePicker} from 'antc';
+import {AntcDatePicker, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 import ajax from 'ant-ajax';
 import {initialTime} from './consts';
 import Store from './store';
-import {Select} from 'antd';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {dateSelectorEmitter, teamTreeEmitter, callDeviceTypeEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -14,7 +14,6 @@ import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const isCommonSales = require('PUB_DIR/sources/user-data').getUserData().isCommonSales;
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 
-const Option = Select.Option;
 
 class TopBar extends React.Component {
     static defaultProps = {
@@ -212,7 +211,7 @@ class TopBar extends React.Component {
     renderCallTypeSelect = () => {
         return (
             <div className='btn-item'>
-                <Select
+                <AntcSelect
                     defaultValue={CALL_TYPE_OPTION.ALL}
                     onChange={this.selectCallTypeValue}
                 >
@@ -225,7 +224,7 @@ class TopBar extends React.Component {
                     <Option value={CALL_TYPE_OPTION.APP}>
                         {Intl.get('common.ketao.app', '客套APP')}
                     </Option>
-                </Select>
+                </AntcSelect>
             </div>
         );
     };
@@ -276,18 +275,18 @@ class TopBar extends React.Component {
             <div className="btn-item-container">
                 {this.props.isCallDeviceTypeSelectorShow ? this.renderCallTypeSelect() : null}
                 {isCommonSales ? null : (
-                    <Select
+                    <AntcSelect
                         defaultValue="team"
                         className='btn-item'
                         onChange={this.onFilterTypeChange}
                     >
                         <Option key="1" value="team">{Intl.get('common.by.team', '按团队')}</Option>
                         <Option key="2" value="member">{Intl.get('common.by.member', '按成员')}</Option>
-                    </Select>
+                    </AntcSelect>
                 )}
 
                 {this.state.filterType === 'team' && !isCommonSales ? (
-                    <Select
+                    <AntcSelect
                         className='btn-item select-team-member-list'
                         showSearch
                         optionFilterProp="children"
@@ -299,11 +298,11 @@ class TopBar extends React.Component {
                         {_.map(this.state.teamList, (teamItem, index) => {
                             return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
                         })}
-                    </Select>
+                    </AntcSelect>
                 ) : null}
 
                 {this.state.filterType === 'member' && !isCommonSales ? (
-                    <Select
+                    <AntcSelect
                         className='btn-item select-team-member-list'
                         showSearch
                         optionFilterProp="children"
@@ -315,7 +314,7 @@ class TopBar extends React.Component {
                         {_.map(this.state.memberList, (memberItem, index) => {
                             return <Option key={index} value={memberItem.user_id}>{memberItem.nick_name}</Option>;
                         })}
-                    </Select>
+                    </AntcSelect>
                 ) : null}
 
                 <AntcDatePicker

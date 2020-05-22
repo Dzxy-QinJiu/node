@@ -1,5 +1,6 @@
-import {Button, message, Select, Menu, Dropdown, Popconfirm} from 'antd';
-const Option = Select.Option;
+import {Button, message, Menu, Dropdown, Popconfirm} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const ModalDialog = require('../../../../../components/ModalDialog');
 const Spinner = require('../../../../../components/spinner');
 const OrderAction = require('../../action/order-actions');

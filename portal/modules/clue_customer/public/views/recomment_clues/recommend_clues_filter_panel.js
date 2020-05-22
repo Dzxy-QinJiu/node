@@ -6,10 +6,10 @@
 
 require('../../css/recommend-customer-condition.less');
 import React, {Component} from 'react';
-import {Form, Input, Select, Icon, Popover, Button, Dropdown, Menu} from 'antd';
-const Option = Select.Option;
+import {Form, Input, Icon, Popover, Button, Dropdown, Menu} from 'antd';
 const FormItem = Form.Item;
-import {AntcAreaSelection, SearchInput} from 'antc';
+import {AntcAreaSelection, SearchInput, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 import Trace from 'LIB_DIR/trace';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
 import { registerSize, staffSize, moneySize, companyProperty, companyStatus, EXTRACT_CLUE_CONST_MAP } from '../../utils/clue-customer-utils';
@@ -51,15 +51,31 @@ const ADVANCED_OPTIONS = [
     },
     {
         name: Intl.get('clue.recommend.has.mobile', '有手机号'),
-        value: 'mobile_num:1'
+        value: 'mobile_num:1',
+        processValue: (value) => {
+            return _.toNumber(value);
+        }
     },
     {
         name: Intl.get('clue.recommend.has.phone', '有电话'),
-        value: 'phone_num:1'
+        value: 'phone_num:1',
+        processValue: (value) => {
+            return _.toNumber(value);
+        }
     },
     {
         name: Intl.get('clue.recommend.has.more.contact', '多个联系方式'),
-        value: 'phone_num:2'
+        value: 'phone_num:2',
+        processValue: (value) => {
+            return _.toNumber(value);
+        }
+    },
+    {
+        name: Intl.get('clue.recommend.has.website', '有官网'),
+        value: 'has_website:true',
+        processValue: (value) => {
+            return value === 'true';
+        }
     },
 ];
 
@@ -534,10 +550,10 @@ class RecommendCluesFilterPanel extends Component {
         }
     };
 
-    handleToggleOtherCondition = () => {
+    handleToggleOtherCondition = (property) => {
         clueCustomerAction.saveSettingCustomerRecomment({...this.props.hasSavedRecommendParams, ...this.state.hasSavedRecommendParams});
         this.setState({
-            showOtherCondition: !this.state.showOtherCondition,
+            [property]: !this.state[property],
             vipFilters: this.dealRecommendParamsVipData(this.props.hasSavedRecommendParams)
         }, () => {
             _.isFunction(this.props.handleToggleOtherCondition) && this.props.handleToggleOtherCondition();
@@ -758,7 +774,7 @@ class RecommendCluesFilterPanel extends Component {
     }
 
     render() {
-        let { hasSavedRecommendParams, showOtherCondition, keywordList } = this.state;
+        let { hasSavedRecommendParams, showOtherCondition, keywordList, showHotMore } = this.state;
 
         var cls = 'other-condition-container', show_tip = '', iconCls = 'iconfont', btnCls = 'btn-item save-btn';
         //是否展示其他的筛选条件
@@ -772,6 +788,17 @@ class RecommendCluesFilterPanel extends Component {
             show_tip = Intl.get('crm.basic.more', '更多');
             iconCls += ' icon-down-twoline';
         }
+
+        let hotContentCls = 'advance-data-content', hotShowTip = '', hotIconCls = 'iconfont';
+        if(showHotMore) {//是否展示更多热门选项
+            hotContentCls += ' show-more';
+            hotShowTip = Intl.get('crm.contact.way.hide', '收起');
+            hotIconCls += ' icon-up-twoline';
+        }else {
+            hotShowTip = Intl.get('crm.basic.more', '更多');
+            hotIconCls += ' icon-down-twoline';
+        }
+
 
         return (
             <div className="recommend-customer-condition recommend-customer-condition-wrapper" data-tracename="线索推荐筛选面板">
@@ -805,7 +832,13 @@ class RecommendCluesFilterPanel extends Component {
                                 className="special-item"
                             >
                                 <div className="advance-data-container">
-                                    {this.renderAdvancedOptions()}
+                                    <div className={hotContentCls}>
+                                        {this.renderAdvancedOptions()}
+                                    </div>
+                                    <div className="show-hide-tip" onClick={this.handleToggleOtherCondition.bind(this, 'showHotMore')} data-tracename='点击更多或收起推荐线索的热门选项'>
+                                        <span>{hotShowTip}</span>
+                                        <i className={hotIconCls}/>
+                                    </div>
                                 </div>
                             </FormItem>
                             <AntcAreaSelection
@@ -823,7 +856,7 @@ class RecommendCluesFilterPanel extends Component {
                                 filterSomeNewArea
                                 sortProvinceByFirstLetter
                             />
-                            <div className="show-hide-tip" onClick={this.handleToggleOtherCondition} data-tracename='点击更多或收起推荐线索的条件'>
+                            <div className="show-hide-tip" onClick={this.handleToggleOtherCondition.bind(this, 'showOtherCondition')} data-tracename='点击更多或收起推荐线索的条件'>
                                 <span>{show_tip}</span>
                                 <i className={iconCls}/>
                             </div>

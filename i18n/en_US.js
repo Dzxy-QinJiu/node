@@ -3499,6 +3499,7 @@ var en_US = {
     'apply.approve.no.condition.list': 'No eligible public opinion report',//暂无符合条件的舆情报告
     'apply.approve.no.document.write': 'No eligible documents for writing',//暂无符合条件的文件撰写
     'apply.approve.expect.submit.time': 'Expected submission time',//期望提交时间
+    'apply.approve.form.expect.submit.time.require': 'Please fill in the expected submission time',//请填写期望提交时间
     'apply.approve.specific.report': 'special report of {customer}',//{customer}客户的{reporttype}
     'apply.approve.import.file': 'upload files',//上传文件
     'apply.approve.confirm.apply': 'Confirm application',//确认申请
@@ -4067,6 +4068,7 @@ var en_US = {
     'clue.recommend.has.phone': 'Have a phone',//有电话
     'clue.recommend.has.more.contact': 'There are multiple contact information',//多个联系方式
     'clue.recommend.smal.micro.enterprise': 'Small micro enterprise',//小微企业
+    'clue.recommend.has.website': 'Have a website',//有官网
 
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略

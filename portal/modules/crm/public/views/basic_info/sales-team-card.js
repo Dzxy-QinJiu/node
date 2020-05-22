@@ -1,7 +1,8 @@
 var React = require('react');
-import {message, Select, Button, Icon} from 'antd';
+import {message, Button, Icon} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import classNames from 'classnames';
-let Option = Select.Option;
 let userData = require('../../../../../public/sources/user-data');
 let CrmBasicAjax = require('../../ajax/index');
 import batchChangeAjax from '../../ajax/batch-change-ajax';

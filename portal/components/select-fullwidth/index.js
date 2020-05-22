@@ -20,7 +20,8 @@ var React = require('react');
  *  maxWidth用来指定select的最大宽度，非必传属性，默认值是500
  */
 var React = require('react');
-var Select = require('antd').Select;
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 var measureText = require('../../public/sources/utils/measure-text');
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 class SelectFullWidth extends React.Component {
@@ -95,13 +96,13 @@ class SelectFullWidth extends React.Component {
         }
         style.width = this.state.width;
         return (
-            <Select
+            <AntcSelect
                 {...props}
                 dropdownMatchSelectWidth={false}
                 filterOption={(input, option) => ignoreCase(input, option)}
             >
                 {children}
-            </Select>
+            </AntcSelect>
         );
     }
 }

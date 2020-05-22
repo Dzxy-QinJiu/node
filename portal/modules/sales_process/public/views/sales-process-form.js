@@ -3,6 +3,8 @@
  * 销售流程的添加表单
  */
 import {Form, Input, Switch, TreeSelect} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const { SHOW_PARENT } = TreeSelect;
 const FormItem = Form.Item;
 const {TextArea} = Input;
