@@ -3707,6 +3707,7 @@ var en_US = {
     'apply.cc.when.submit.and.approve': 'Copy the copy approver at the time of submitting the application and copy the applicant after approval',//提交申请时抄送审批人和审批通过后抄送申请人
     'apply.add.condition.workflow': 'Add condition approval process',//添加条件审批流程
     'apply.add.apply.approver': 'Add approver',//添加审批人
+    'apply.edit.apply.approver': 'Edit approver node',//修改审批节点
     'apply.add.approver.higher.level': 'Superior',//上级
     'apply.add.approver.setting.role': 'Specified role',//指定角色
     'apply.add.approver.setting.user': 'Designated member',//指定成员

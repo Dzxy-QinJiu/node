@@ -3732,6 +3732,7 @@ var zh_CN = {
     'apply.cc.when.submit.and.approve': '提交申请时抄送审批人和审批通过后抄送申请人',
     'apply.add.condition.workflow': '添加条件审批流程',
     'apply.add.apply.approver': '添加审批人',
+    'apply.edit.apply.approver': '修改审批节点',
     'apply.add.apply.cc.approver': '添加抄送人',
     'apply.add.approver.higher.level': '上级',
     'apply.add.approver.setting.role': '指定角色',
