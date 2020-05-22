@@ -68,7 +68,8 @@ import {
     hasRecommendPrivilege,
     getCheckedPhones,
     hasCheckPhoneStatusPrivilege,
-    dealClueCheckPhoneStatus
+    dealClueCheckPhoneStatus,
+    isEmptyPhone
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -186,6 +187,7 @@ class ClueCustomer extends React.Component {
             showBatchDistribute: false,//在手机端时，是否显示分配的dropdown
             isShowRewardClueTips: false, // 是否显示赢线索的提示，默认不显示
             isBatchCheckPhoneStatusLoading: false,//是否正在批量检测空号
+            showConfirmBatchCheckPhone: false,//是否有已检测状态的手机号，点击重新检测按钮
         };
     }
 
@@ -1803,7 +1805,7 @@ class ClueCustomer extends React.Component {
                         isHideContactName={true}
                         contacts={handledContactObj.contact}
                         customerData={salesClueItem}
-                        showCheckPhone={false}
+                        showCheckPhone
                         showContactLabel={false}
                         hasMoreIcon={hasMoreIconPrivilege}
                         showClueDetailPanel={this.showClueDetailPanel.bind(this, salesClueItem)}
@@ -3359,17 +3361,19 @@ class ClueCustomer extends React.Component {
             </div>
         );
     };
+    //渲染批量空号检测
     renderCheckPhoneBtn = () => {
-        //todo 暂时去掉空号检测的功能
-        return null;
         //选中全部后，不展示检测空号按钮
-        /*if(this.state.selectAllMatched && this.state.selectedClues.length > 1) {
+        if(this.state.selectAllMatched && this.state.selectedClues.length > 1) {
             return null;
         }
         if(hasCheckPhoneStatusPrivilege(this.getFilterStatus())) {
-            let checkPhones = getCheckedPhones(this.state.selectedClues);
-            if(this.isShowCheckPhonePopover(checkPhones)) {
-                let contentTip = getContactSalesPopoverTip(true) || Intl.get('lead.selected.has.phone.tip', '请选择有手机号的线索');
+            let {phoneList, hasCheckedPhoneList} = getCheckedPhones(this.state.selectedClues);
+            if(this.isShowCheckPhonePopover(phoneList)) {
+                let contentTip = getContactSalesPopoverTip() || Intl.get('crm.suggest.select.clue.first', '请先选择线索');
+                if(this.state.selectedClues.length && !phoneList.length) {//没有可检测的手机号时
+                    contentTip = Intl.get('lead.not.has.check.phone', '所选线索中没有可检测的号码');
+                }
                 return (
                     <Popover
                         placement="bottom"
@@ -3381,56 +3385,109 @@ class ClueCustomer extends React.Component {
                             className='btn-item handle-btn-item pull-right'
                             title={Intl.get('lead.check.phone.status', '检测空号')}
                         >
-                            <span className="iconfont icon-search"/>
+                            <span className="iconfont icon-check"/>
                             {Intl.get('lead.check.phone.status', '检测空号')}
                         </Button>
                     </Popover>
                 );
             }else {
-                return (
+                let btnContent = (
                     <Button
                         data-tracename="点击批量检测空号按钮"
                         className='btn-item handle-btn-item pull-right'
                         title={Intl.get('lead.check.phone.status', '检测空号')}
-                        onClick={this.handleCheckPhoneStatus.bind(this, checkPhones)}
                         loading={this.state.isBatchCheckPhoneStatusLoading}
                     >
-                        <span className="iconfont icon-search"/>
+                        <span className="iconfont icon-check"/>
                         {Intl.get('lead.check.phone.status', '检测空号')}
                     </Button>
                 );
+                //是否显示重新检测的提示
+                if(this.state.showConfirmBatchCheckPhone) {
+                    return (
+                        <Popconfirm
+                            placement="bottomRight"
+                            visible
+                            onConfirm={this.handleCheckPhoneStatus.bind(this, phoneList, hasCheckedPhoneList)}
+                            onCancel={this.handleBatchVisibleChange.bind(this, false)}
+                            title={Intl.get('lead.has.checked.phone', '所选线索中含已检测的号码，是否重新检测？')}
+                        >
+                            {btnContent}
+                        </Popconfirm>
+                    );
+                }else {
+                    let newBtnContent = React.cloneElement(btnContent, {
+                        onClick: this.handleCheckPhoneStatus.bind(this, phoneList, hasCheckedPhoneList)
+                    });
+                    return (
+                        <Popover
+                            placement="bottomRight"
+                            trigger="click"
+                            title={(
+                                <div className="check-phone-title" data-tracename="空号检测title内容">
+                                    <i className="iconfont icon-check"/>
+                                    <span className="check-phone-name">{Intl.get('lead.check.phone', '空号检测')}</span>
+                                    <span className="check-phone-only">（{Intl.get('lead.check.phone.explain', '仅支持非14、16、17、19号段手机号')})</span>
+                                    <i className="iconfont icon-close" data-tracename="点击关闭" title={Intl.get('common.app.status.close', '关闭')} onClick={this.handleBatchVisibleChange.bind(this, false)}/>
+                                </div>
+                            )}
+                            content={this.state.batchCheckPhonePopContent}
+                            visible={this.state.batchCheckPhonePopoverVisible}
+                            onVisibleChange={this.handleBatchVisibleChange}
+                            overlayClassName="extract-limit-content check-phone-result-container"
+                        >
+                            {newBtnContent}
+                        </Popover>
+                    );
+                }
             }
 
-        }else { return null; }*/
+        }else { return null; }
     };
     isShowCheckPhonePopover(checkPhones) {
         let isShowPopover = false;
-        //个人试用或者个人正式过期不用展示popover
-        if(checkVersionAndType().isPersonalTrial || checkVersionAndType().isPersonalFormal && isExpired()) {
-            isShowPopover = false;
-        }
-        //企业试用 或 企业正式过期 或者 没有选择有手机号的线索
-        else if(checkVersionAndType().isCompanyTrial || checkVersionAndType().isCompanyFormal && isExpired() || !checkPhones.length) {
+        //企业版过期 或者 没有选择线索时
+        if(checkVersionAndType().company && isExpired() || !checkPhones.length) {
             isShowPopover = true;
         }
         return isShowPopover;
     }
     //批量检测空号
-    handleCheckPhoneStatus = (checkPhones) => {
-        if(checkVersionAndType().isPersonalTrial) {//个人试用，提示升级可使用
-            Trace.traceEvent(ReactDOM.findDOMNode(this), '个人试用点击批量检测空号，自动打开个人升级界面');
-            this.handleUpgradePersonalVersion(Intl.get('lead.check.phone.upgrade.tip', '升级后可检测空号'));
-            return false;
-        }else if(checkVersionAndType().isPersonalFormal && isExpired()) {
-            Trace.traceEvent(ReactDOM.findDOMNode(this), '个人正式过期后点击批量检测空号，自动打开个人续费界面');
-            this.handleUpgradePersonalVersion(Intl.get('lead.check.phone.renewal.tip', '续费后可检测空号'));
+    handleCheckPhoneStatus = (checkPhones, hasCheckedPhoneList) => {
+        if(checkVersionAndType().personal && isExpired()) {
+            let tipTitle = '';
+            if(checkVersionAndType().isPersonalTrial) {//个人试用过期，提示升级可使用
+                Trace.traceEvent(ReactDOM.findDOMNode(this), '个人试用过期后点击批量检测空号，自动打开个人升级界面');
+                tipTitle = Intl.get('lead.check.phone.upgrade.tip', '升级后可检测空号');
+            }else if(checkVersionAndType().isPersonalFormal) {
+                Trace.traceEvent(ReactDOM.findDOMNode(this), '个人正式过期后点击批量检测空号，自动打开个人续费界面');
+                tipTitle = Intl.get('lead.check.phone.renewal.tip', '续费后可检测空号');
+            }
+            this.handleUpgradePersonalVersion(tipTitle);
             return false;
         }
-        if(!checkPhones.length || this.state.isBatchCheckPhoneStatusLoading) { return false; }
+
+        if(this.state.isBatchCheckPhoneStatusLoading) { return false; }
+
+        if(hasCheckedPhoneList.length) {
+            if(!this.state.showConfirmBatchCheckPhone) {
+                this.setState({showConfirmBatchCheckPhone: true});
+                return false;
+            }
+        }
+
+        this.setState({isBatchCheckPhoneStatusLoading: true});
         checkPhoneStatus(checkPhones).then((result) => {
-            this.setState({isBatchCheckPhoneStatusLoading: false});
             let curClueList = this.state.curClueList;
+            let checkResult = {
+                list: [],
+                emptyPhones: []
+            };
             _.each(result, item => {
+                checkResult.list.push(item.mobile_phone);
+                if(isEmptyPhone(_.get(item, 'phone_status'))) {//疑似空号
+                    checkResult.emptyPhones.push(item.mobile_phone);
+                }
                 let curClue = _.find(curClueList, clue => clue.id === item.clue_id);
                 if(curClue) {
                     let phoneStatus = _.get(curClue, 'phone_status', []);
@@ -3438,6 +3495,13 @@ class ClueCustomer extends React.Component {
                     phoneStatus.push(phoneObj);
                     curClue.phone_status = _.uniqBy(phoneStatus, 'phone');
                 }
+            });
+            let content = this.renderCheckPhoneResult(checkResult);
+            this.setState({
+                batchCheckPhonePopContent: content,
+                batchCheckPhonePopoverVisible: true,
+                isBatchCheckPhoneStatusLoading: false,
+                showConfirmBatchCheckPhone: false
             });
             clueCustomerAction.updateClueCustomers(curClueList);
         }, (errorMsg) => {
@@ -3450,6 +3514,48 @@ class ClueCustomer extends React.Component {
         clue.phone_status = dealClueCheckPhoneStatus(clue, result);
         clueCustomerAction.updateClueCustomers(this.state.curClueList);
     };
+    handleBatchVisibleChange = (visible) => {
+        if(!visible) {
+            this.setState({batchCheckPhonePopoverVisible: false, batchCheckPhonePopContent: null, showConfirmBatchCheckPhone: false});
+        }
+    }
+    renderCheckPhoneResult(result) {
+        let emptyPhonesCount = _.get(result, 'emptyPhones.length', 0);
+        let i18n = {
+            id: 'lead.clue.check.phone.all',
+            name: '系统帮您检测了{allCount}个号码，发现了{emptyCount}个疑似空号。',
+            value: {
+                allCount: <span className="primary-count">{_.get(result, 'list.length', 0)}</span>,
+                emptyCount: <span className="extract-count">{emptyPhonesCount}</span>
+            }
+        };
+        /*if(!_.get(result, 'emptyPhones.length')) {
+            i18n.id = 'lead.clue.check.phone.empty.status';
+            i18n.name = '系统未发现疑似空号';
+        }*/
+        return (
+            <div className="check-phone-container" data-tracname="检测空号内容提示区">
+                <div className="check-phone-content">
+                    <div className="check-phone-box">
+                        <span className="check-phone-text">
+                            <ReactIntl.FormattedMessage
+                                id={i18n.id}
+                                defaultMessage={i18n.name}
+                                values={i18n.value}
+                            />
+                        </span>
+                    </div>
+                </div>
+                <div className="check-btn-container">
+                    <Button
+                        type="primary"
+                        onClick={this.handleBatchVisibleChange.bind(this, false)}
+                        data-tracename="点击批量检测中的'确认'按钮"
+                    >{Intl.get('common.confirm', '确认')}</Button>
+                </div>
+            </div>
+        );
+    }
     isFirstLoading = () => {
         return this.state.isLoading && this.state.firstLogin;
     };

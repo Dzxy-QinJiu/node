@@ -161,7 +161,7 @@ class ClueDetailOverview extends React.Component {
     }
     onClueCustomerStoreChange = () => {
         let curClue = _.cloneDeep(this.state.curClue);
-        curClue.contacts = _.get(clueCustomerStore.getState(), 'curClue.contacts');
+        curClue.contacts = _.get(clueCustomerStore.getState(), 'curClue.contacts', curClue.contacts);
         const versionData = _.get(clueCustomerStore.getState(),'versionData');
         this.setState({curClue,versionData});
     };
@@ -736,11 +736,13 @@ class ClueDetailOverview extends React.Component {
     };
     renderItemSelfSettingContent = (curClue,item) => {
         let hasPrivilege = editCluePrivilege(curClue);
+        let phone = getShowPhoneNumber(curClue, addHyphenToPhoneNumber(item), true);
         return <PhoneCallout
             phoneNumber={item}
-            showPhoneNum={getShowPhoneNumber(curClue, addHyphenToPhoneNumber(item))}
+            showPhoneNum={phone.phoneNumber}
             showPhoneIcon={true}
-            showCheckPhone={false}
+            showCheckPhone
+            phoneStatus={phone.status}
             onCheckPhoneSuccess={this.onCheckPhoneSuccess}
             hidePhoneIcon={!hasPrivilege}
             type='lead'
