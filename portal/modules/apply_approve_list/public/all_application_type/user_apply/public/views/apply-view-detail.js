@@ -7,16 +7,16 @@ const Validator = Validation.Validator;
  */
 require('../css/apply-detail.less');
 import DefaultApplyViewDetailStore from '../store/apply-view-detail-store';
-import {AntcTable} from 'antc';
+import {AntcTable, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 // import ApplyViewDetailActions from '../action/apply-view-detail-actions';
 import DefaultApplyViewDetailActions from '../action/apply-view-detail-actions';
 import AppUserUtil from '../util/app-user-util';
 import userData from 'PUB_DIR/sources/user-data';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import AppProperty from 'CMP_DIR/user_manage_components/app-property-setting';
-import {Alert, Tooltip, Form, Button, Input, InputNumber, Select, Icon, message, DatePicker, Row, Col,Steps, Tag, Popover} from 'antd';
+import {Alert, Tooltip, Form, Button, Input, InputNumber, Icon, message, DatePicker, Row, Col,Steps, Tag, Popover} from 'antd';
 const Step = Steps.Step;
-const Option = Select.Option;
 import FieldMixin from 'CMP_DIR/antd-form-fieldmixin';
 import UserNameTextField from 'CMP_DIR/user_manage_components/user-name-textfield/apply-input-index';
 import UserNameTextfieldUtil from 'CMP_DIR/user_manage_components/user-name-textfield/util';
@@ -1821,7 +1821,7 @@ const COLUMN_WIDTH = {
                         min={1}
                     />
                 )}
-                <Select
+                <AntcSelect
                     value={this.state.formData.delayTimeUnit}
                     onChange={this.delayTimeUnitModify}
                     className="select-modify-unit"
@@ -1836,7 +1836,7 @@ const COLUMN_WIDTH = {
                     <Option value={TIMERANGEUNIT.CUSTOM}><ReactIntl.FormattedMessage id="user.time.custom"
                         defaultMessage="自定义"/></Option>
 
-                </Select>
+                </AntcSelect>
                 <span style={{'marginLeft': '10px'}} className="iconfont icon-choose"
                     onClick={this.saveModifyDelayTime}></span>
                 <span style={{'marginLeft': '10px'}} className="iconfont icon-close"

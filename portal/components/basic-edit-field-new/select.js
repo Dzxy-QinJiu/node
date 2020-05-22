@@ -7,7 +7,9 @@ const Validator = Validation.Validator;
  * 可切换状态
  */
 require('./css/basic-edit-field.less');
-import {Form, Select} from 'antd';
+import {Form} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 var classNames = require('classnames');
 import FieldMixin from '../antd-form-fieldmixin';
 var FormItem = Form.Item;
@@ -259,7 +261,7 @@ let BasicEditSelectField = createReactClass({
                             help={status.select.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.select.errors && status.select.errors.join(','))}
                         >
                             <Validator rules={this.props.validators}>
-                                <Select
+                                <AntcSelect
                                     multiple={this.props.multiple}
                                     combobox={this.props.combobox}
                                     filterOption={(input, option) => ignoreCase(input, option)}
@@ -273,7 +275,7 @@ let BasicEditSelectField = createReactClass({
                                     value={formData.select}
                                     onChange={this.onSelectChange}>
                                     {this.state.selectOptions}
-                                </Select>
+                                </AntcSelect>
                             </Validator>
                         </FormItem>
                     </Validation>

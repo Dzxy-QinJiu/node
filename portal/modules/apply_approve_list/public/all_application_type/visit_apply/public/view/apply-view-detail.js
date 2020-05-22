@@ -5,7 +5,6 @@
  */
 var LeaveApplyDetailStore = require('../store/leave-apply-detail-store');
 var LeaveApplyDetailAction = require('../action/leave-apply-detail-action');
-var LeaveApplyActions = require('../action/leave-apply-action');
 import Trace from 'LIB_DIR/trace';
 import {Alert, Icon, Input, Row, Col, Button, Steps, message, Popover} from 'antd';
 const Step = Steps.Step;
@@ -16,7 +15,6 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 require('../css/leave-apply-detail.less');
 import ApplyDetailRemarks from 'CMP_DIR/apply-components/apply-detail-remarks';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
-import ApplyDetailCustomer from 'CMP_DIR/apply-components/apply-detail-customer';
 import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
@@ -27,7 +25,6 @@ import {
     getFilterReplyList,
     handleDiffTypeApply,
     formatUsersmanList,
-    updateUnapprovedCount,
     isCiviwRealm,
     formatSalesmanList,
     timeShowFormat,
@@ -46,9 +43,13 @@ import {
     getAllWorkFlowList,
     SELF_SETTING_FLOW
 } from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
-import {transferBtnContent,renderApproveBtn} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+import {
+    transferBtnContent,
+    getSalesManList,
+    renderApproveBtn,
+    renderStepContent
+} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import classNames from 'classnames';
-import salesOpportunityApplyAjax from 'MOD_DIR/sales_opportunity/public/ajax/sales-opportunity-apply-ajax';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -78,8 +79,9 @@ class ApplyViewDetail extends React.Component {
         }else if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem, this.props.applyData);
         }
-        this.getGroupList();
+
         this.getSalesManList();
+        this.getGroupList();
         this.getAllUserList();
         getAllWorkFlowList((workFlowList) => {
             this.setState({
@@ -93,7 +95,7 @@ class ApplyViewDetail extends React.Component {
         });
     };
     getSalesManList = () => {
-        salesOpportunityApplyAjax.getSalesManList().then(data => {
+        getSalesManList().then(data => {
             this.setState({
                 salesManList: _.filter(data, sales => sales && sales.user_info && sales.user_info.status === 1)
             });
@@ -157,9 +159,6 @@ class ApplyViewDetail extends React.Component {
                 }
                 //将待我审批的申请转审后
                 if (hasApprovePrivilege){
-                    //待审批数字减一
-                    var count = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY] - 1;
-                    updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
                     //隐藏通过、驳回按钮
                     LeaveApplyDetailAction.showOrHideApprovalBtns(false);
                     //调用父组件的方法进行转成完成后的其他处理
@@ -280,6 +279,8 @@ class ApplyViewDetail extends React.Component {
             var target = _.find(result,detailItem => detailItem.user_id === memberId);
             if (target){
                 LeaveApplyDetailAction.showOrHideApprovalBtns(true);
+            }else{
+                LeaveApplyDetailAction.showOrHideApprovalBtns(false);
             }
         });
     }
@@ -296,8 +297,6 @@ class ApplyViewDetail extends React.Component {
             } else if (detailItem.id) {
                 LeaveApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id});
                 LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
-                //根据申请的id获取申请的状态
-                LeaveApplyDetailAction.getLeaveApplyStatusById({id: detailItem.id});
                 //获取该审批所在节点的位置
                 LeaveApplyDetailAction.getApplyTaskNode({id: detailItem.id});
                 this.getNextCandidate(detailItem.id);
@@ -309,9 +308,7 @@ class ApplyViewDetail extends React.Component {
     refreshReplyList = (e) => {
         Trace.traceEvent(e, '点击了重新获取');
         var detailItem = this.props.detailItem;
-        if (_.includes(APPLY_FINISH_STATUS, detailItem.status)) {
-            LeaveApplyDetailAction.setApplyComment(detailItem.approve_details);
-        } else if (detailItem.id) {
+        if (_.get(detailItem, 'id')) {
             LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
             this.getNextCandidate(detailItem.id);
         }
@@ -380,13 +377,13 @@ class ApplyViewDetail extends React.Component {
     };
     renderDetailApplyBlock(detailInfo) {
         //找到流程保存的组件
-        var detail = detailInfo.detail || {}, customizForm = [], showApplyInfo = [];
+        var detail = detailInfo.detail || {}, customizeForm = [], showApplyInfo = [];
         var applyLists = this.state.workFlowList;
         var workFlowConfig = _.find(applyLists, item => item.type === SELF_SETTING_FLOW.VISITAPPLY);
 
         if (workFlowConfig){
-            customizForm = workFlowConfig.customiz_form;
-            _.forEach(customizForm, item => {
+            customizeForm = workFlowConfig.customiz_form;
+            _.forEach(customizeForm, item => {
                 var showItem = detail[item.key];
                 if (showItem){
                     //有几个需要特殊处理的组件展示
@@ -716,15 +713,7 @@ class ApplyViewDetail extends React.Component {
                 description: ''
             });
         }
-        return (
-            <Steps current={currentLength + 1} status={stepStatus}>
-                {_.map(stepArr, (stepItem) => {
-                    return (
-                        <Step title={stepItem.title} description={stepItem.description}/>
-                    );
-                })}
-            </Steps>
-        );
+        return renderStepContent(currentLength,stepStatus,stepArr);
     };
     passOrRejectApplyApprove = (confirmType) => {
         var assignedCandidateUserIds = '';//要分配下一节点的负责人的id
@@ -922,6 +911,7 @@ ApplyViewDetail.propTypes = {
     isHomeMyWork: PropTypes.bool,
     afterApprovedFunc: PropTypes.func,
     width: PropTypes.string,
-    height: PropTypes.string
+    height: PropTypes.string,
+    afterTransferApplySuccess: PropTypes.func
 };
 module.exports = ApplyViewDetail;

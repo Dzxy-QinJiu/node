@@ -12,7 +12,9 @@ require('CMP_DIR/user_manage_components/css/form-basic-zh_CN.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('CMP_DIR/user_manage_components/css/form-basic-es_VE.less');
 }
-import {Button, Icon, Select} from 'antd';
+import {Button, Icon} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import UserOverDraftField from 'CMP_DIR/user_manage_components/user-over-draftfield';
 import UserMultiLoginField from 'CMP_DIR/user_manage_components/user-multilogin-radiofield';
 import AppRolePermission from 'CMP_DIR/user_manage_components/app-role-permission';
@@ -215,7 +217,7 @@ var UserTypeConfigForm = createReactClass({
     renderModifyTime: function() {
         return (
             <div className="modify-delay-time-style">
-                <Select
+                <AntcSelect
                     value={this.state.formData.range}
                     onChange={this.RangeModify}
                     style={{'marginLeft': '1px'}}
@@ -226,7 +228,7 @@ var UserTypeConfigForm = createReactClass({
                     <Option value="6m">6个月</Option>
                     <Option value="12m">12个月</Option>
                     <Option value="forever">永久</Option>
-                </Select>
+                </AntcSelect>
             </div>
         );
     },

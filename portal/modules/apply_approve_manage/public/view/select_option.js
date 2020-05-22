@@ -3,7 +3,9 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/5/16.
  */
-import {Input, Select, Radio, Checkbox, Form} from 'antd';
+import {Input, Radio, Checkbox, Form} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 import {formItemLayout, maxFormItemLayout} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 
@@ -18,15 +20,21 @@ class SelectOption extends React.Component {
             selectedRadioValue: ''
         };
     }
-
+    getRadioSelectArr = () => {
+        var selectArr = _.get(this.props,'select_arr',[]);
+        var options = [];
+        _.forEach(selectArr,item => {
+            options.push({
+                label: item,
+                value: item
+            });
+        });
+        return options;
+    };
     renderRadioGroup = () => {
-        var selectArr = this.props.select_arr;
+
         return (
-            <RadioGroup onChange={this.handleRadioChange}>
-                {_.map(selectArr, (item) => {
-                    return (<Radio value={item}>{item}</Radio>);
-                })}
-            </RadioGroup>
+            <RadioGroup onChange={this.handleRadioChange} options={this.getRadioSelectArr()}/>
         );
     };
     componentWillReceiveProps(nextProps) {
@@ -48,7 +56,7 @@ class SelectOption extends React.Component {
     renderOptionGroup = () => {
         var selectArr = this.props.select_arr;
         return (
-            <Select
+            <AntcSelect
                 showSearch
                 placeholder={this.props.placeholder}
                 filterOption={(input, option) => ignoreCase(input, option)}
@@ -58,7 +66,7 @@ class SelectOption extends React.Component {
                 {_.map(selectArr, (item) => {
                     return <Option value={item.value}>{item.name}</Option>;
                 })}
-            </Select>
+            </AntcSelect>
         );
     };
     onSaveAllData = () => {
@@ -91,6 +99,23 @@ class SelectOption extends React.Component {
                 content = null;
         }
         return content;
+    };
+    getInitialValue = () => {
+        var type = this.props.type,initialValue = '';
+        switch (type) {
+            case 'radio':
+                initialValue = _.get(this.getRadioSelectArr(),'[0].value');
+                break;
+            case 'checkbox':
+                initialValue = '';
+                break;
+            case 'option':
+                initialValue = '';
+                break;
+            default:
+                initialValue = '';
+        }
+        return initialValue;
     };
 
     render = () => {
@@ -125,7 +150,7 @@ class SelectOption extends React.Component {
             >
                 {
                     getFieldDecorator(_.get(formItem, 'formItemKey'), {
-                        initialValue: '',
+                        initialValue: this.getInitialValue(),
                         rules: [{
                             required: _.get(formItem, 'is_required'),
                             message: _.get(formItem, 'is_required_errmsg')
@@ -146,7 +171,7 @@ SelectOption.defaultProps = {
     labelKey: '',
     selectOptionValue: '',
     handleOptionChange: function() {
-        
+
     }
 };
 

@@ -1,10 +1,11 @@
 require('../../css/organization.less');
-import {Icon,Alert,Select} from 'antd';
+import {Icon,Alert} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import SelectFullWidth from '../../../../../components/select-fullwidth';
 import OrganizationAjax from '../../../../common/public/ajax/organization';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import AlertTimer from '../../../../../components/alert-timer';
-const Option = Select.Option;
 const ID = 'user-organization';
 import userManagePrivilege from '../../privilege-const';
 //class的前缀

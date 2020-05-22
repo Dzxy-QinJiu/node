@@ -3,12 +3,13 @@
  * Created by wangliping on 2017/8/31.
  */
 require('../css/recent-login-user-list.less');
-import { Select, Button } from 'antd';
+import { Button } from 'antd';
 import ShareObj from '../util/app-id-share-util';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
-import { AntcDatePicker as DatePicker } from 'antc';
+import { AntcDatePicker as DatePicker, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import DateSelectorUtils from 'antc/lib/components/datepicker/utils';
 import { RightPanel } from 'CMP_DIR/rightPanel';
 import { topNavEmitter, selectedAppEmitter, scrollBarEmitter,
@@ -22,7 +23,6 @@ import {
     getTimeList
 } from '../util/app-user-util';
 import userAjax from '../ajax/app-user-ajax';
-const Option = Select.Option;
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
 import { storageUtil } from 'ant-utils';
@@ -610,7 +610,7 @@ class RecentLoginUsers extends React.Component {
         );
         return (
             <div className="team-member-select inline-block btn-item">
-                <Select
+                <AntcSelect
                     value={this.state.selectedSalesId}
                     onChange={this.onMemberChange}
                     showSearch={true}
@@ -620,7 +620,7 @@ class RecentLoginUsers extends React.Component {
                     {
                         memberOptions
                     }
-                </Select>
+                </AntcSelect>
             </div>
         );
     };

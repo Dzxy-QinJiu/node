@@ -6,9 +6,10 @@
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
-import {Form, Input, Select, DatePicker, Button, Icon, Radio, Checkbox} from 'antd';
+import {Form, Input, DatePicker, Button, Icon, Radio, Checkbox} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const RadioGroup = Radio.Group;
-var Option = Select.Option;
 import PropTypes from 'prop-types';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 const FORMLAYOUT = {
@@ -208,7 +209,7 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="add-higher-up addition-condition">
                             <div className="higher-level-item addition-condition-item">
-                                <Select showSearch
+                                <AntcSelect showSearch
                                     mode="multiple"
                                     onChange={this.handleHigherUpChange}
                                     filterOption={(input, option) => ignoreCase(input, option)}
@@ -216,7 +217,7 @@ class AddApplyNodePanel extends React.Component {
                                     {_.map(higherUpLists, (item, index) => {
                                         return <Option value={item.value} key={index}>{item.name}</Option>;
                                     })}
-                                </Select>
+                                </AntcSelect>
                             </div>
                         </div>
                     );
@@ -224,13 +225,13 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
-                                <Select showSearch
+                                <AntcSelect showSearch
                                     onChange={this.handleChangeSelectSecretry}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
                                     {_.map(SECRETRYOPTIONS, (item, index) => {
                                         return <Option value={item.value} key={index}>{item.name}</Option>;
                                     })}
-                                </Select>
+                                </AntcSelect>
                             </div>
                         </div>
                     );
@@ -238,13 +239,13 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
-                                <Select showSearch
+                                <AntcSelect showSearch
                                     onChange={this.handleChangeSelectTeamMember}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
                                     {_.map(USEROPTIONS, (item, index) => {
                                         return <Option value={item.value} key={index}>{item.name}</Option>;
                                     })}
-                                </Select>
+                                </AntcSelect>
                             </div>
                         </div>
                     );
@@ -252,14 +253,14 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
-                                <Select showSearch mode="multiple"
+                                <AntcSelect showSearch mode="multiple"
                                     onChange={this.handleChangeSelectRole}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
                                     {_.map(this.state.roleList, (item, index) => {
                                         return <Option value={item.role_name + CONNECT_NAME_INDEX + index} key={index}>{item.role_name}(
                                             {Intl.get('apply.add.approve.num.person', '{num}人', {num: item.num})})</Option>;
                                     })}
-                                </Select>
+                                </AntcSelect>
                             </div>
                         </div>
                     );
@@ -267,13 +268,13 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
-                                <Select showSearch mode="multiple"
+                                <AntcSelect showSearch mode="multiple"
                                     onChange={this.handleChangeSelectUser}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
                                     {_.map(this.state.userList, (item,index) => {
                                         return <Option value={item.nickName + CONNECT_NAME_INDEX + index} key={index}>{item.nickName}</Option>;
                                     })}
-                                </Select>
+                                </AntcSelect>
                             </div>
                         </div>
                     );

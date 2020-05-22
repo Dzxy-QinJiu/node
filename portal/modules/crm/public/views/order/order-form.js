@@ -1,5 +1,7 @@
 const Validation = require('rc-form-validation-for-react16');
-import {Form, Input, Select, DatePicker} from 'antd';
+import {Form, Input, DatePicker} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
 const OrderAction = require('../../action/order-actions');
 import SearchIconList from '../../../../../components/search-icon-list';
@@ -86,14 +88,14 @@ class OrderForm extends React.Component {
                             initialValue: _.get(this.props,'stageList[0].name',''),
                             rules: [{required: true, message: Intl.get('crm.155', '请选择销售阶段')}]
                         })(
-                            <Select size="large" placeholder={Intl.get('crm.155', '请选择销售阶段')}
+                            <AntcSelect size="large" placeholder={Intl.get('crm.155', '请选择销售阶段')}
                                 style={{width: '100%'}}
                                 getPopupContainer={() => document.getElementById('order-form')}
                             >
                                 {this.props.stageList.map(function(stage, index) {
                                     return (<Option value={stage.name} key={index}>{stage.name}</Option>);
                                 })}
-                            </Select>
+                            </AntcSelect>
                         )}
                     </FormItem>
                     <FormItem

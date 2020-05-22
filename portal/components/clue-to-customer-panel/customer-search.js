@@ -7,7 +7,9 @@
  */
 
 import ajax from 'ant-ajax';
-import { Select, message } from 'antd';
+import { message } from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { VIEW_TYPE, NOOP } from './consts';
@@ -68,7 +70,7 @@ class CustomerSearch extends React.Component {
     renderPanelContent() {
         return (
             <div className="customer-search">
-                <Select
+                <AntcSelect
                     combobox
                     filterOption={false}
                     placeholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
@@ -79,7 +81,7 @@ class CustomerSearch extends React.Component {
                     {this.state.customerList.map((customer, index) => {
                         return <Option key={index} value={customer.id}>{customer.name}</Option>;
                     })}
-                </Select>
+                </AntcSelect>
             </div>
         );
     }

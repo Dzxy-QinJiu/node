@@ -1,9 +1,9 @@
 var React = require('react');
-import { Form, Input, Select, Icon, DatePicker } from 'antd';
+import { Form, Input, Icon, DatePicker } from 'antd';
 const FormItem = Form.Item;
-const Option = Select.Option;
 import DetailCard from 'CMP_DIR/detail-card';
-import { AntcValidity } from 'antc';
+import { AntcValidity, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
@@ -161,7 +161,7 @@ class Contract extends React.Component {
                             />
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.37', '合同类型')}>
-                            <Select
+                            <AntcSelect
                                 showSearch
                                 optionFilterProp="children"
                                 value={this.state.contractType}
@@ -169,10 +169,10 @@ class Contract extends React.Component {
                                 filterOption={(input, option) => ignoreCase(input, option)}
                             >
                                 {categoryOptions}
-                            </Select>
+                            </AntcSelect>
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.164', '签约类型')}>
-                            <Select
+                            <AntcSelect
                                 showSearch
                                 optionFilterProp="children"
                                 value={this.state.contractLabel}
@@ -181,7 +181,7 @@ class Contract extends React.Component {
                                 filterOption={(input, option) => ignoreCase(input, option)}
                             >
                                 {labelOptions}
-                            </Select>
+                            </AntcSelect>
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.34', '签订时间')}>
                             <DatePicker

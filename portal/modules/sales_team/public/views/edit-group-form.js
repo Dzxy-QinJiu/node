@@ -4,7 +4,9 @@ const Validator = Validation.Validator;
 /**
  * Created by xiaojinfeng on 2016/04/19.
  */
-import {Form, Input,Select, } from 'antd';
+import {Form, Input,} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 var FormItem = Form.Item;
 var classNames = require('classnames');
 var SalesTeamActions = require('../action/sales-team-actions');
@@ -355,7 +357,7 @@ var SalesTeamForm = createReactClass({
                                 >
                                     <Validator
                                         rules={[{required: true, message: Intl.get('sales.team.select.sub.group', '请选择上级团队')}]}>
-                                        <Select size="large" style={{width: '100%'}}
+                                        <AntcSelect size="large" style={{width: '100%'}}
                                             name="superiorTeam"
                                             value={formData.superiorTeam}
                                             placeholder={Intl.get('sales.team.select.sub.group', '请选择上级团队')}
@@ -367,7 +369,7 @@ var SalesTeamForm = createReactClass({
                                             onChange={this.handleSelect}
                                         >
                                             {this.renderSuperiorTeam()}
-                                        </Select>
+                                        </AntcSelect>
                                     </Validator>
                                 </FormItem>
                             ) : null

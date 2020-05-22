@@ -2,9 +2,8 @@
  * Created by wangliping on 2016/11/8.
  */
 require('../css/member-info.less');
-import {Icon, Select, Popconfirm, message, Tabs, Col} from 'antd';
+import {Icon, Popconfirm, message, Tabs, Col} from 'antd';
 const TabPane = Tabs.TabPane;
-var Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var HeadIcon = require('../../../../components/headIcon');
 import MemberLog from './member-log';
@@ -24,7 +23,8 @@ import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import DetailCard from 'CMP_DIR/detail-card';
 import Spinner from 'CMP_DIR/spinner';
-import { StatusWrapper } from 'antc';
+import { StatusWrapper, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 import MemberRecord from './member-record';
 import memberManagePrivilege from '../privilege-const';

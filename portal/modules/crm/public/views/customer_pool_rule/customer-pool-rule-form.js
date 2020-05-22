@@ -3,9 +3,10 @@
  * 版权所有 (c) 2018-2019 山东客套智能科技有限公司。保留所有权利。
  * Created by tangmaoqin on 2019/08/27.
  */
-import { Form, Select, message, Icon, Popconfirm, Checkbox } from 'antd';
+import { Form, message, Icon, Popconfirm, Checkbox } from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
-const Option = Select.Option;
 import DetailCard from 'CMP_DIR/detail-card';
 import classNames from 'classnames';
 import Spinner from 'CMP_DIR/spinner';
@@ -282,14 +283,14 @@ class CustomerPoolRuleForm extends React.Component{
                                         {required: true, message: Intl.get('crm.customer.pool.select.range', '请选择可见范围')},
                                     ],
                                 })(
-                                    <Select
+                                    <AntcSelect
                                         showSearch
                                         optionFilterProp="children"
                                         placeholder={Intl.get('crm.customer.pool.rule.range.tip', '请选择客户能被哪些团队或者成员看到')}
                                         onChange={this.handleSelectVisibelRange}
                                     >
                                         {visibleTeamOptions}
-                                    </Select>
+                                    </AntcSelect>
                                 ) : (<div className="customer-info-text">{_.get(formData,'team_name', '')}</div>)
                             }
                             {
@@ -340,14 +341,14 @@ class CustomerPoolRuleForm extends React.Component{
                                                     {required: true, message: Intl.get('crm.customer.pool.rule.original.team.select.tip', '请选择原始团队')},
                                                 ],
                                             })(
-                                                <Select
+                                                <AntcSelect
                                                     showSearch
                                                     optionFilterProp="children"
                                                     placeholder={Intl.get('contract.choose', '请选择')}
                                                     onChange={this.handleSelectSource.bind(this, index, 'team_id')}
                                                 >
                                                     {teamOptions}
-                                                </Select>
+                                                </AntcSelect>
                                             )) : (
                                                 <span className="customer-info-text">{_.get(source, 'team_name', '')}</span>
                                             )}
@@ -364,7 +365,7 @@ class CustomerPoolRuleForm extends React.Component{
                                                         // {required: true, message: Intl.get('crm.customer.pool.rule.select.customer.stage', '请选择客户阶段')},
                                                     ],
                                                 })(
-                                                    <Select
+                                                    <AntcSelect
                                                         showSearch
                                                         optionFilterProp="children"
                                                         mode="multiple"
@@ -372,7 +373,7 @@ class CustomerPoolRuleForm extends React.Component{
                                                         onChange={this.handleSelectSource.bind(this, index, 'stage')}
                                                     >
                                                         {customerStageOptions}
-                                                    </Select>
+                                                    </AntcSelect>
                                                 )) : (
                                                     <span className="customer-info-text">{customer_label.join(',') || Intl.get('crm.customer.pool.unlimited', '不限')}</span>
                                                 )
@@ -385,7 +386,7 @@ class CustomerPoolRuleForm extends React.Component{
                                                     // {required: true, message: Intl.get('crm.customer.pool.rule.select.customer.label', '请选择客户标签')},
                                                 ],
                                             })(
-                                                <Select
+                                                <AntcSelect
                                                     showSearch
                                                     optionFilterProp="children"
                                                     mode="multiple"
@@ -393,7 +394,7 @@ class CustomerPoolRuleForm extends React.Component{
                                                     onChange={this.handleSelectSource.bind(this, index, 'label')}
                                                 >
                                                     {customerLabelOptions}
-                                                </Select>
+                                                </AntcSelect>
                                             )) : (
                                                 <span className="customer-info-text">{_.get(source, 'labels',[]).join(',') || Intl.get('crm.customer.pool.unlimited', '不限')}</span>
                                             )}

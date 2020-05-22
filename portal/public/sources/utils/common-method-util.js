@@ -657,6 +657,18 @@ exports.formatUsersmanList = function(usersManList) {
     });
     return dataList;
 };
+//用户列表
+exports.formatUsersmanDataList = function(usersManList) {
+    let dataList = [];
+    _.each(usersManList, usersman => {
+        dataList.push({
+            nickName: _.get(usersman, 'nick_name', ''),
+            userName: _.get(usersman, 'user_name', ''),
+            value: `${_.get(usersman, 'user_id', '')}`
+        });
+    });
+    return dataList;
+};
 //待我审批的数量减一
 exports.substractUnapprovedCount = function(applyId) {
     if (Oplate && Oplate.unread) {

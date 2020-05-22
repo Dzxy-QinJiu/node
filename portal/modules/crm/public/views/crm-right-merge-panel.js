@@ -1,8 +1,9 @@
 var React = require('react');
 require('../css/crm-right-panel.less');
-import {Tabs, Select, Button, Icon, message, Popconfirm} from 'antd';
+import {Tabs, Button, Icon, message, Popconfirm} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 var TabPane = Tabs.TabPane;
-var Option = Select.Option;
 var AlertTimer = require('../../../../components/alert-timer');
 var rightPanelUtil = require('../../../../components/rightPanel/index');
 var RightPanel = rightPanelUtil.RightPanel;
@@ -556,13 +557,13 @@ class CrmRightMergePanel extends React.Component {
                     <div className={className}>
                         <div className="select-customer-container">
                             <span className="select-customer-label">{Intl.get('crm.63', '合并后保存的客户')}：</span>
-                            <Select value={this.state.selectedCustomer.id}
+                            <AntcSelect value={this.state.selectedCustomer.id}
                                 dropdownClassName="merge-customer-select"
                                 style={{width: 200}}
                                 disabled={this.state.visible}
                                 onChange={this.handleChange}>
                                 {this.renderSelectOptions()}
-                            </Select>
+                            </AntcSelect>
                             <Popconfirm 
                                 overlayClassName="crm-merge-confirm-wrapper" 
                                 placement="bottomRight" 

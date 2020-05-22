@@ -5,11 +5,18 @@
  */
 'use strict';
 var clueAssignmentService = require('../service/clue-assignment-service');
+let BackendIntl = require('../../../../../portal/lib/utils/backend_intl');
+const _ = require('lodash');
 //保存线索分配策略
 exports.saveClueAssignmentStrategy = function(req, res) {
     clueAssignmentService.saveClueAssignmentStrategy(req, res)
         .on('success', function(data) {
-            res.status(200).json(data);
+            if (_.get(data, 'id')) {
+                res.status(200).json(data);
+            } else {
+                const backendIntl = new BackendIntl(req);
+                res.status(500).json(backendIntl.get('crm.154', '添加失败'));
+            }
         })
         .on('error', function(err) {
             res.status(500).json(err && err.message);

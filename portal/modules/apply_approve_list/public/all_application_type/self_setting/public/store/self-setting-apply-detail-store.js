@@ -3,15 +3,15 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/28.
  */
-var LeaveApplyDetailAction = require('../action/leave-apply-detail-action');
-var LeaveApplyAction = require('../action/leave-apply-action');
+var ApplyDetailAction = require('../action/self-setting-apply-detail-action');
+var applyApproveListAction = require('../../../../action/apply_approve_list_action');
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
-function LeaveApplyDetailStore() {
+function SelfSettingApplyDetailStore() {
     //初始化state数据
     this.setInitState();
-    this.bindActions(LeaveApplyDetailAction);
+    this.bindActions(ApplyDetailAction);
 }
-LeaveApplyDetailStore.prototype.setInitState = function() {
+SelfSettingApplyDetailStore.prototype.setInitState = function() {
     //选中的审批条目
     this.selectedDetailItem = {};
     //审批的详情数据
@@ -47,15 +47,6 @@ LeaveApplyDetailStore.prototype.setInitState = function() {
         //错误信息
         errorMsg: ''
     };
-    //审批状态列表
-    this.replyStatusInfo = {
-        //三种状态,loading,error,''
-        result: 'loading',
-        //列表数组
-        list: [],
-        //服务端错误信息
-        errorMsg: ''
-    };
     this.backApplyResult = {
         //提交状态  "" loading error success
         submitResult: '',
@@ -71,7 +62,7 @@ LeaveApplyDetailStore.prototype.setInitState = function() {
     this.isLeader = false; //当前账号是否是待审批人的上级领导
     this.applyNode = [];
 };
-LeaveApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
+SelfSettingApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
     this.detailInfoObj = {
         // "" loading error
@@ -89,36 +80,27 @@ LeaveApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
         //服务端错误信息
         errorMsg: ''
     };
-    //审批状态列表
-    this.replyStatusInfo = {
-        //三种状态,loading,error,''
-        result: '',
-        //列表数组
-        list: [],
-        //服务端错误信息
-        errorMsg: ''
-    };
     //下一节点负责人的列表
     this.candidateList = [];
 
 
 };
 //设置某条申请的回复列表
-LeaveApplyDetailStore.prototype.setApplyComment = function(list) {
+SelfSettingApplyDetailStore.prototype.setApplyComment = function(list) {
     this.replyListInfo = {
         result: '',
         list: _.isArray(list) ? _.concat(this.replyListInfo.list,list) : null,
         errorMsg: ''
     };
 };
-LeaveApplyDetailStore.prototype.setInitialData = function(obj) {
+SelfSettingApplyDetailStore.prototype.setInitialData = function(obj) {
     //重置数据
     this.setInitState();
     //指定详情条目
     this.selectedDetailItem = obj;
 };
 //获取审批详情
-LeaveApplyDetailStore.prototype.getLeaveApplyDetailById = function(obj) {
+SelfSettingApplyDetailStore.prototype.getLeaveApplyDetailById = function(obj) {
     if (obj.error) {
         this.detailInfoObj.loadingResult = 'error';
         this.detailInfoObj.info = {};
@@ -135,14 +117,14 @@ LeaveApplyDetailStore.prototype.getLeaveApplyDetailById = function(obj) {
         this.detailInfoObj.info.showCancelBtn = this.selectedDetailItem.showCancelBtn;
         //列表中那一申请的状态以这个为准，因为申请完就不一样了
         setTimeout(() => {
-            LeaveApplyAction.updateAllApplyItemStatus(this.detailInfoObj.info);
+            applyApproveListAction.updateAllApplyItemStatus(this.detailInfoObj.info);
         });
 
         this.detailInfoObj.errorMsg = '';
     }
 };
 
-LeaveApplyDetailStore.prototype.getLeaveApplyCommentList = function(resultObj) {
+SelfSettingApplyDetailStore.prototype.getLeaveApplyCommentList = function(resultObj) {
     //回复列表
     var replyListInfo = this.replyListInfo;
     //result,list,errorMsg
@@ -163,10 +145,10 @@ LeaveApplyDetailStore.prototype.getLeaveApplyCommentList = function(resultObj) {
         replyListInfo.errorMsg = '';
     }
 };
-LeaveApplyDetailStore.prototype.setApplyFormDataComment = function(comment) {
+SelfSettingApplyDetailStore.prototype.setApplyFormDataComment = function(comment) {
     this.replyFormInfo.comment = comment;
 };
-LeaveApplyDetailStore.prototype.cancelApplyApprove = function(resultObj) {
+SelfSettingApplyDetailStore.prototype.cancelApplyApprove = function(resultObj) {
     if (resultObj.loading){
         this.backApplyResult.submitResult = 'loading';
         this.backApplyResult.errorMsg = '';
@@ -180,38 +162,38 @@ LeaveApplyDetailStore.prototype.cancelApplyApprove = function(resultObj) {
         this.showOrHideApprovalBtns();
     }
 };
-LeaveApplyDetailStore.prototype.hideCancelBtns = function() {
+SelfSettingApplyDetailStore.prototype.hideCancelBtns = function() {
     this.selectedDetailItem.showCancelBtn = false;
     this.detailInfoObj.info.showCancelBtn = false;
 };
-LeaveApplyDetailStore.prototype.showOrHideApprovalBtns = function(flag){
+SelfSettingApplyDetailStore.prototype.showOrHideApprovalBtns = function(flag){
     this.selectedDetailItem.showApproveBtn = flag;
     this.detailInfoObj.info.showApproveBtn = flag;
 };
-LeaveApplyDetailStore.prototype.setNextCandidate = function(candidateArr){
+SelfSettingApplyDetailStore.prototype.setNextCandidate = function(candidateArr){
     this.candidateList = candidateArr;
     checkIfLeader(candidateArr,(isLeader) => {
         this.isLeader = isLeader;
     });
 
 };
-LeaveApplyDetailStore.prototype.setNextCandidateName = function(candidateName){
+SelfSettingApplyDetailStore.prototype.setNextCandidateName = function(candidateName){
     this.detailInfoObj.info.nextCandidateName = candidateName;
 };
 
-LeaveApplyDetailStore.prototype.hideReplyCommentEmptyError = function() {
+SelfSettingApplyDetailStore.prototype.hideReplyCommentEmptyError = function() {
     this.replyFormInfo.result = '';
     this.replyFormInfo.errorMsg = '';
 };
 //显示回复输入框为空的错误
-LeaveApplyDetailStore.prototype.showReplyCommentEmptyError = function() {
+SelfSettingApplyDetailStore.prototype.showReplyCommentEmptyError = function() {
     // if(this.replyFormInfo.result === 'success') {
     //     return;
     // }
     this.replyFormInfo.result = 'error';
     this.replyFormInfo.errorMsg = Intl.get('user.apply.reply.no.content', '请填写回复内容');
 };
-LeaveApplyDetailStore.prototype.addLeaveApplyComments = function(resultObj) {
+SelfSettingApplyDetailStore.prototype.addLeaveApplyComments = function(resultObj) {
     //回复表单
     var replyFormInfo = this.replyFormInfo;
     if (resultObj.loading) {
@@ -230,7 +212,7 @@ LeaveApplyDetailStore.prototype.addLeaveApplyComments = function(resultObj) {
     }
 };
 //提交审批
-LeaveApplyDetailStore.prototype.approveLeaveApplyPassOrReject = function(obj) {
+SelfSettingApplyDetailStore.prototype.approveLeaveApplyPassOrReject = function(obj) {
     if (obj.loading) {
         this.applyResult.submitResult = 'loading';
         this.applyResult.errorMsg = '';
@@ -242,31 +224,17 @@ LeaveApplyDetailStore.prototype.approveLeaveApplyPassOrReject = function(obj) {
         this.applyResult.errorMsg = '';
     }
 };
-//获取审批的状态
-LeaveApplyDetailStore.prototype.getLeaveApplyStatusById = function(obj) {
-    if (obj.loading) {
-        this.replyStatusInfo.result = 'loading';
-        this.replyStatusInfo.errorMsg = '';
-    } else if (obj.error) {
-        this.replyStatusInfo.result = 'error';
-        this.replyStatusInfo.errorMsg = obj.errorMsg;
-    } else {
-        this.replyStatusInfo.result = 'success';
-        this.replyStatusInfo.errorMsg = '';
-        this.replyStatusInfo.list = obj.list;
-    }
-};
-LeaveApplyDetailStore.prototype.cancelSendApproval = function() {
+SelfSettingApplyDetailStore.prototype.cancelSendApproval = function() {
     this.applyResult.submitResult = '';
     this.applyResult.errorMsg = '';
     this.backApplyResult.submitResult = '';
     this.backApplyResult.errorMsg = '';
 };
-LeaveApplyDetailStore.prototype.hideApprovalBtns = function() {
+SelfSettingApplyDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
     this.selectedDetailItem.showCancelBtn = false;
 };
-LeaveApplyDetailStore.prototype.getNextCandidate = function(result) {
+SelfSettingApplyDetailStore.prototype.getNextCandidate = function(result) {
     if (result.error){
         this.candidateList = [];
     }else{
@@ -274,19 +242,19 @@ LeaveApplyDetailStore.prototype.getNextCandidate = function(result) {
         this.isLeader = _.get(result,'isLeader',false);
     }
 };
-LeaveApplyDetailStore.prototype.setNextCandidateIds = function(candidateId) {
+SelfSettingApplyDetailStore.prototype.setNextCandidateIds = function(candidateId) {
     this.detailInfoObj.info.nextCandidateId = candidateId;
 };
-LeaveApplyDetailStore.prototype.setApplyCandate = function(selectUserId) {
+SelfSettingApplyDetailStore.prototype.setApplyCandate = function(selectUserId) {
     this.detailInfoObj.info.assigned_candidate_users = selectUserId;
 };
-LeaveApplyDetailStore.prototype.setSalesMan = function(selectSales) {
+SelfSettingApplyDetailStore.prototype.setSalesMan = function(selectSales) {
     this.detailInfoObj.info.user_ids = selectSales;
 };
-LeaveApplyDetailStore.prototype.setGroupId = function(groupId) {
+SelfSettingApplyDetailStore.prototype.setGroupId = function(groupId) {
     this.detailInfoObj.info.group_id = groupId;
 };
-LeaveApplyDetailStore.prototype.transferNextCandidate = function(result) {
+SelfSettingApplyDetailStore.prototype.transferNextCandidate = function(result) {
     if (result.loading) {
         this.transferStatusInfo.result = 'loading';
         this.transferStatusInfo.errorMsg = '';
@@ -301,7 +269,7 @@ LeaveApplyDetailStore.prototype.transferNextCandidate = function(result) {
         this.detailInfoObj.info.showApproveBtn = false;
     }
 };
-LeaveApplyDetailStore.prototype.saveSelfSettingWorkFlowRules = function(result) {
+SelfSettingApplyDetailStore.prototype.saveSelfSettingWorkFlowRules = function(result) {
     if (result.loading) {
         this.saveRulesWorkFlowLoading = true;
         this.saveRulesWorkFlowErrMsg = '';
@@ -313,7 +281,7 @@ LeaveApplyDetailStore.prototype.saveSelfSettingWorkFlowRules = function(result) 
         this.saveRulesWorkFlowErrMsg = '';
     }
 };
-LeaveApplyDetailStore.prototype.getApplyTaskNode = function(result){
+SelfSettingApplyDetailStore.prototype.getApplyTaskNode = function(result){
     if (result.error) {
         this.applyNode = [];
     } else {
@@ -323,4 +291,4 @@ LeaveApplyDetailStore.prototype.getApplyTaskNode = function(result){
 
 
 
-module.exports = alt.createStore(LeaveApplyDetailStore, 'LeaveApplyDetailStore');
+module.exports = alt.createStore(SelfSettingApplyDetailStore, 'LeaveApplyDetailStore');

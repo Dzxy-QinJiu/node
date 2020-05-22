@@ -1,5 +1,7 @@
 require('../../../app_user_manage/public/css/main-zh_CN.less');
-import {Alert, Select, message, Icon, Button, Switch } from 'antd';
+import {Alert, message, Icon, Button, Switch } from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import LAYOUT from '../utils/layout';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import Spinner from 'CMP_DIR/spinner';
@@ -19,7 +21,6 @@ import {notificationEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
-const Option = Select.Option;
 const PAGE_SIZE = 20;
 import {STATUS} from 'PUB_DIR/sources/utils/consts';
 const classnames = require('classnames');
@@ -730,11 +731,11 @@ class SystemNotification extends React.Component {
                         </SelectFullWidth>
                     </div>
                     <div className="notification-status-select btn-item">
-                        <Select size="large" value={this.state.status} onChange={this.handleStatusChange}>
+                        <AntcSelect size="large" value={this.state.status} onChange={this.handleStatusChange}>
                             {STATUS_ARRAY.map((status) => {
                                 return (<Option value={status.value} key={status.value}>{status.name}</Option>);
                             })}
-                        </Select>
+                        </AntcSelect>
                     </div>
                     <div className="notify-setting">
                         <span className="notify-text">

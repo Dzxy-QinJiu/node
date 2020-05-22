@@ -7,25 +7,24 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('../css/add-leave-apply.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Form, Input, Button, Icon, message, DatePicker, Select} from 'antd';
-var Option = Select.Option;
+import {Form, Input, Button, Icon, message, DatePicker} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
-var user = require('PUB_DIR/sources/user-data').getUserData();
+import Trace from 'LIB_DIR/trace';
 import {
-    applyComponentsType,
+    ALL_COMPONENTS,
+    SELF_SETTING_FLOW,
     ADDAPPLYFORMCOMPONENTS,
     getAllWorkFlowList
-} from '../../../apply_approve_manage/public/utils/apply-approve-utils';
-import AlertTimer from 'CMP_DIR/alert-timer';
-import Trace from 'LIB_DIR/trace';
-import {ALL_COMPONENTS, SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
-import {DELAY_TIME_RANGE, LEAVE_TIME_RANGE,AM_AND_PM} from 'PUB_DIR/sources/utils/consts';
+} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import classNames from 'classnames';
-import leaveStore from '../store/leave-apply-store';
-import LeaveApplyAction from '../action/leave-apply-action';
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 class AddApply extends React.Component {
     constructor(props) {
@@ -35,15 +34,12 @@ class AddApply extends React.Component {
             formData: {
                 customer: {id: '', name: ''},
             },
+            saveApplyLoading: false,
             workFlowList: [],//配置过的申请审批列表
-            ...leaveStore.getState()
         };
     }
-    onStoreChange = () => {
-        this.setState(leaveStore.getState());
-    };
+
     componentDidMount() {
-        leaveStore.listen(this.onStoreChange);
         this.addLabelRequiredCls();
         getAllWorkFlowList((workFlowList) => {
             this.setState({
@@ -54,14 +50,7 @@ class AddApply extends React.Component {
     componentDidUpdate() {
         this.addLabelRequiredCls();
     }
-    componentWillUnmount() {
-        leaveStore.unlisten(this.onStoreChange);
-    }
-
-
-
     handleSubmit = (e) => {
-
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if(err){
@@ -82,24 +71,25 @@ class AddApply extends React.Component {
                 delete values[key]['begin_type'];
                 delete values[key]['end_type'];
             }
-            LeaveApplyAction.addSelfSettingApply({'detail': values,'type': SELF_SETTING_FLOW.VISITAPPLY},(result) => {
-                if (!_.isString(result)){
-                    //添加成功
-                    this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                    //添加完后的处理
-                    result.afterAddReplySuccess = true;
-                    result.showCancelBtn = true;
-                    this.hideLeaveApplyAddForm(result);
-                }else{
-                    this.setResultData(result, 'error');
-                }
-
+            this.setState({
+                saveApplyLoading: true,
+            });
+            ApplyApproveAjax.addSelfSettingApply().sendRequest({'detail': values,'type': SELF_SETTING_FLOW.VISITAPPLY}).success((result) => {
+                //添加成功
+                this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
+                //添加完后的处理
+                result.afterAddReplySuccess = true;
+                result.showCancelBtn = true;
+                this.hideLeaveApplyAddForm(result);
+            }).error((xhr) => {
+                this.setResultData(xhr.responseJSON, 'error');
             });
         });
     };
     //保存结果的处理
     setResultData(saveMsg, saveResult) {
         this.setState({
+            saveApplyLoading: false,
             saveMsg: saveMsg,
             saveResult: saveResult
         });
@@ -180,7 +170,7 @@ class AddApply extends React.Component {
         };
         let saveResult = this.state.saveResult;
         var workConfig = _.find(this.state.workFlowList,item => item.type === SELF_SETTING_FLOW.VISITAPPLY);
-        var customizForm = workConfig.customiz_form;
+        var customizeForm = workConfig.customiz_form;
         return (
             <RightPanel showFlag={true} data-tracename="添加拜访申请" className="add-leave-container">
                 <span className="iconfont icon-close add-leave-apply-close-btn"
@@ -195,7 +185,7 @@ class AddApply extends React.Component {
                         <GeminiScrollbar>
                             <div className="add-leave-form">
                                 <Form layout='horizontal' className="sales-clue-form" id="add-leave-apply-form">
-                                    {_.map(customizForm,(formItem,index) => {
+                                    {_.map(customizeForm,(formItem,index) => {
                                         var target = _.find(ADDAPPLYFORMCOMPONENTS, item => item.component_type === _.get(formItem, 'component_type'));
                                         if (target){
                                             var ApplyComponent = target.component;
@@ -243,29 +233,16 @@ class AddApply extends React.Component {
 
                                         }
                                     })}
-
                                     <div className="submit-button-container">
-                                        <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
-                                            disabled={this.state.saveApply.loading} data-tracename="点击保存添加
-                                            拜访申请">
-                                            {Intl.get('common.save', '保存')}
-                                            {this.state.saveApply.loading ? <Icon type="loading"/> : null}
-                                        </Button>
-                                        <Button className="cancel-btn" onClick={this.hideLeaveApplyAddForm}
-                                            data-tracename="点击取消添加拜访申请按钮">
-                                            {Intl.get('common.cancel', '取消')}
-                                        </Button>
-                                        <div className="indicator">
-                                            {saveResult ?
-                                                (
-                                                    <AlertTimer
-                                                        time={saveResult === 'error' ? DELAY_TIME_RANGE.ERROR_RANGE : DELAY_TIME_RANGE.SUCCESS_RANGE}
-                                                        message={this.state.saveMsg}
-                                                        type={saveResult} showIcon
-                                                        onHide={this.hideSaveTooltip}/>
-                                                ) : ''
-                                            }
-                                        </div>
+                                        <SaveCancelButton loading={this.state.saveApplyLoading}
+                                            saveErrorMsg={this.state.saveMsg}
+                                            saveSuccessMsg={this.state.saveMsg}
+                                            handleSubmit={this.handleSubmit}
+                                            handleCancel={this.hideLeaveApplyAddForm}
+                                            hideSaveTooltip={this.hideSaveTooltip}
+                                            saveResult={saveResult}
+                                            errorShowTime={DELAY_TIME_RANGE.ERROR_RANGE}
+                                        />
                                     </div>
                                 </Form>
                             </div>
@@ -281,7 +258,6 @@ class AddApply extends React.Component {
 AddApply.defaultProps = {
     hideLeaveApplyAddForm: function() {
     }
-
 };
 AddApply.propTypes = {
     hideLeaveApplyAddForm: PropTypes.func,

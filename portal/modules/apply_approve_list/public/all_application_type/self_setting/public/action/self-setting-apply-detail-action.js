@@ -3,16 +3,10 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/28.
  */
-var LeaveApplyAjax = require('../ajax/leave-apply-ajax');
 var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
-import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
-var timeoutFunc;//定时方法
-var timeout = 1000;//1秒后刷新未读数
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
-import SelfSettingApproveAjax from '../../../common/public/ajax/self-setting';
-import {getApplyDetailById,getApplyStatusById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
-import applyApproveAction from './leave-apply-action';
+import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
+import SelfSettingApproveAjax from 'MOD_DIR/common/public/ajax/self-setting';
+import {getApplyDetailById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
     this.generateActions(
@@ -48,15 +42,6 @@ function ApplyViewDetailActions() {
             });
         }
     };
-    //根据申请的id获取审批的状态
-    this.getLeaveApplyStatusById = function(queryObj) {
-        this.dispatch({loading: true, error: false});
-        getApplyStatusById(queryObj).then((list) => {
-            this.dispatch({loading: false, error: false, list: list});
-        }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
-    };
 
     //获取回复列表
     this.getLeaveApplyCommentList = function(queryObj) {
@@ -86,16 +71,6 @@ function ApplyViewDetailActions() {
                 this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
                 //更新选中的申请单类型
                 ApplyApproveUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
-                if (Oplate && Oplate.unread) {
-                    Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY] -= 1;
-                    if (timeoutFunc) {
-                        clearTimeout(timeoutFunc);
-                    }
-                    timeoutFunc = setTimeout(function() {
-                        //触发展示的组件待审批数的刷新
-                        notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
-                    }, timeout);
-                }
                 _.isFunction(callback) && callback(true);
             }else{
                 ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});

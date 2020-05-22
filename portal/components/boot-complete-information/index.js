@@ -6,8 +6,7 @@
 // 个人登录后完善资料
 import './style.less';
 import KefuImage from './kefu.png';
-import { Form, Input, Button, message, Col, Row, Select } from 'antd';
-const Option = Select.Option;
+import { Form, Input, Button, message, Col, Row } from 'antd';
 const FormItem = Form.Item;
 import { nameLengthRule, validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
@@ -16,7 +15,8 @@ import {getOrganization, getFormattedCondition, isResponsiveDisplay, checkVersio
 import userData from 'PUB_DIR/sources/user-data';
 import history from 'PUB_DIR/sources/history';
 import ajax from 'ant-ajax';
-import { AntcAreaSelection } from 'antc';
+import { AntcAreaSelection, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import Trace from 'LIB_DIR/trace';
 import Spinner from 'CMP_DIR/spinner';
