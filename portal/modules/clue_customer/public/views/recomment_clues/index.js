@@ -45,8 +45,7 @@ import {
     getContactSalesPopoverTip, 
     getFormattedCondition, 
     isExpired, 
-    isResponsiveDisplay,
-    isCurtao
+    isResponsiveDisplay
 } from 'PUB_DIR/sources/utils/common-method-util';
 import {getMaxLimitExtractClueCount, updateGuideMark, checkPhoneStatus} from 'PUB_DIR/sources/utils/common-data-util';
 import classNames from 'classnames';
@@ -499,7 +498,7 @@ class RecommendCluesList extends React.Component {
             if(!_.isEmpty(item.check_result)){
                 let obj = {
                     id: item.id,
-                    //疑似空号
+                    //疑似空号（包含：0空号，3虚无，4沉默号，5风险号）
                     emptyPhones: [],
                     //实号
                     realPhones: [],
@@ -513,7 +512,10 @@ class RecommendCluesList extends React.Component {
                 _.each(item.check_result, checkedItem => {
                     obj.phone_status.push({phone: checkedItem.mobile_phone, status: checkedItem.phone_status});
                     switch(checkedItem.phone_status) {
-                        case '0'://疑似空号
+                        case '0'://空号
+                        case '3'://虚无
+                        case '4'://沉默号
+                        case '5'://风险号
                             obj.emptyPhones.push(checkedItem.mobile_phone);
                             break;
                         case '1'://实号
@@ -522,7 +524,7 @@ class RecommendCluesList extends React.Component {
                         case '2'://停机
                             obj.downTimePhones.push(checkedItem.mobile_phone);
                             break;
-                        default://其他(沉默号、风险号等)
+                        default://其他
                             obj.otherPhones.push(checkedItem.mobile_phone);
                             break;
                     }

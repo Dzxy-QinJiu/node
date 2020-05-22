@@ -651,8 +651,8 @@ export const getShowPhoneNumber = function(obj, phoneNumber) {
     if(_.get(obj, 'phone_status[0]')) {
         let phoneStatus = _.get(obj, 'phone_status');
         let curPhoneStatus = _.find(phoneStatus, item => item.phone === phoneNumber);
-        if(_.get(curPhoneStatus,'status') === '0') {//只显示疑似空号的手机号状态
-            let status = _.get(PHONE_STATUS_MAP, curPhoneStatus.status, Intl.get( 'common.others', '其他'));
+        if(_.includes(['0', '3', '4', '5'], _.get(curPhoneStatus,'status'))) {//只显示疑似空号(0空号，3虚无，4沉默号，5风险号)的手机号状态
+            let status = _.get(PHONE_STATUS_MAP, '0', Intl.get( 'common.others', '其他'));
             phoneNumber = `${phoneNumber}(${status})`;
         }
     }
