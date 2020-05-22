@@ -562,3 +562,61 @@
     }
   }
 }
+
+// 移动端样式适配
+@media screen and (max-width: 600px) {
+  .user-info-manage-container {
+    padding: 0;
+    .user-info-container-div {
+      .user-logo-div {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        .user-info-logo {
+          padding-top: 0;
+          .head-image-container {
+            height: 64px;
+            margin-top: 0;
+            margin-bottom: 16px;
+            .cirle-image {
+              width: 64px;
+              height: 64px;
+              img {
+                width: 64px;
+                height: 64px;
+              }
+              .upload-img-container {
+                width: 64px;
+                height: 64px;
+                .change-img-container {
+                  width: 64px;
+                  height: 64px;
+                }
+              }
+            }
+          }
+          .user-info-nickname {
+            margin-top: 0;
+          }
+        }
+      }
+      .user-info-bottom {
+        .user-info-div {
+          padding: 16px 0;
+          border-top: 1px solid #E3E8ED;
+          .user-info-item {
+            padding: 0 16px;
+            .user-info-item-content {
+               color: #333333;
+            }
+          }
+          .user-version {
+            .user-version-upgrade {
+              right: -12px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
