@@ -585,7 +585,7 @@
         border: none;
         .navbar-nav {
             > li.sidebar-menu-li {
-                width: 33.33%;
+                width: 25%;
                 height: 48px;
                 > a.iconfont {
                     height: 48px;
@@ -604,6 +604,25 @@
       display: none;
     }
     #menusLists{
-      display: block;
+        display: block;
+        .avatar_container {
+            text-align: center;
+            // 上传了头像的样式
+            .avatar {
+                i {
+                    float: inherit;
+                    line-height: inherit;
+                }
+            }
+            // 没上传头像时，默认头像样式设置
+            .user-default-logo-wrap,.user-default-logo-wrap.active {
+
+                .icon-user-logo-default {
+                    &:before {
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
     }
   }
