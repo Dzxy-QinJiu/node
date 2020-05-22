@@ -29,11 +29,16 @@ import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import CrmScoreCard from './basic_info/crm-score-card';
-import {INTEGRATE_TYPES, PRIVILEGE_MAP, DOMAIN_END} from 'PUB_DIR/sources/utils/consts';
+import {INTEGRATE_TYPES, PRIVILEGE_MAP, DOMAIN_END, inputType, selectType} from 'PUB_DIR/sources/utils/consts';
 import CustomerStageCard from './basic_info/customer-stage-card';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 import crmPrivilegeConst from '../privilege-const';
+import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
+import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
+import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
+import RadioOrCheckBoxEditField from 'CMP_DIR/basic-edit-field-new/radio-checkbox';
 import classNames from 'classnames';
+
 class BasicOverview extends React.Component {
     constructor(props) {
         super(props);
@@ -529,12 +534,156 @@ class BasicOverview extends React.Component {
         return [displayText];
     };
 
+    saveEditCustomFieldInfo = (saveObj, successFunc, errorFunc) => {
+        // 自定义的值
+        const customVariables = _.get(this.state.basicData, 'custom_variables', {});
+        let updateObj = _.cloneDeep(saveObj);
+        delete updateObj.id;
+        const submitData = {
+            id: this.state.basicData.id,
+            type: 'custom_variables',
+            custom_variables: _.extend(customVariables, updateObj)
+        };
+
+        if (this.props.isMerge) {
+            if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(submitData);
+            if (_.isFunction(successFunc)) successFunc();
+        } else {
+            crmAjax.updateCustomer(submitData).then(result => {
+                if (result) {
+                    if (_.isFunction(successFunc)) successFunc();
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc();
+                }
+            }, errorMsg => {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+            });
+        }
+    }
+
+    renderCustomFieldType = (item) => {
+        const basicData = this.state.basicData;
+        // 自定义的值
+        const customVariables = _.get(basicData, 'custom_variables', {});
+        const fieldType = _.get(item, 'field_type');
+        const name = _.get(item, 'name');
+        // 默认的自定义的值
+        let value = customVariables[name];
+        // 是否是选择类型
+        if (_.includes(selectType, fieldType)) {
+            let selectOptions = _.map(_.get(item, 'select_values'), (name, i) => {
+                return (<Option key={i} value={name}>{name}</Option>);
+            });
+            let isMultiple = false;
+            if (_.isEqual(fieldType, 'multiselect')) {
+                isMultiple = true;
+                if ( _.isEmpty(value)) {
+                    value = [];
+                }
+            }
+            if (_.includes(['radio', 'checkbox'], fieldType)) {
+                selectOptions = _.get(item, 'select_values');
+                if (_.isEqual(fieldType, 'checkbox') && _.isEmpty(value)) {
+                    value = [];
+                }
+                return (
+                    <RadioOrCheckBoxEditField
+                        id={basicData.id}
+                        displayText={value}
+                        value={value}
+                        field={name}
+                        componentType={fieldType}
+                        selectOptions={selectOptions}
+                        hasEditPrivilege={crmUtil.checkPrivilege([
+                            crmPrivilegeConst.CUSTOMER_UPDATE,
+                            crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+                        ]) && !this.props.disableEdit}
+                        editBtnTip={'设置' + name}
+                        saveEditInput={this.saveEditCustomFieldInfo.bind(this)}
+                        noDataTip={'暂无' + name}
+                        addDataTip={'添加' + name}
+                    />
+                );
+
+            } else {
+                return (
+                    <BasicEditSelectField
+                        multiple={isMultiple}
+                        id={basicData.id}
+                        displayText={value}
+                        value={value}
+                        field={name}
+                        selectOptions={selectOptions}
+                        validators={[isMultiple ? {type: 'array'} : {}]}
+                        hasEditPrivilege={crmUtil.checkPrivilege([
+                            crmPrivilegeConst.CUSTOMER_UPDATE,
+                            crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+                        ]) && !this.props.disableEdit}
+                        editBtnTip={'设置' + name}
+                        saveEditSelect={this.saveEditCustomFieldInfo.bind(this)}
+                        noDataTip={'暂无' + name}
+                        addDataTip={'添加' + name}
+                    />
+                );
+            }
+
+        } else if (_.includes(inputType, fieldType)) {
+            let type = fieldType;
+            if (_.isEqual(type, 'multitext')) {
+                type = 'textarea';
+            }
+            return (
+                <BasicEditInputField
+                    id={basicData.id}
+                    type={type}
+                    field={name}
+                    textCut={true}
+                    value={value}
+                    editBtnTip={'设置' + name}
+                    placeholder={_.get(item, 'select_values[0]')}
+                    hasEditPrivilege={crmUtil.checkPrivilege([
+                        crmPrivilegeConst.CUSTOMER_UPDATE,
+                        crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+                    ]) && !this.props.disableEdit}
+                    saveEditInput={this.saveEditCustomFieldInfo.bind(this)}
+                    noDataTip={'暂无' + name}
+                    addDataTip={'添加' + name}
+                />
+            );
+        } else if(_.isEqual(fieldType, 'date')){
+            return (
+                <BasicEditDateField
+                    id={basicData.id}
+                    displayText={value}
+                    value={value}
+                    field={name}
+                    placeholder={'请选择' + name}
+                    hasEditPrivilege={crmUtil.checkPrivilege([
+                        crmPrivilegeConst.CUSTOMER_UPDATE,
+                        crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+                    ]) && !this.props.disableEdit}
+                    saveEditDateInput={this.saveEditCustomFieldInfo.bind(this)}
+                    noDataTip={'暂无' + name}
+                    addDataTip={'添加' + name}
+                />
+            );
+        }
+    };
+
     // 自定义
     renderCustomField = () => {
+        // 客户自定义字段
+        const customizedVariables = _.get(this.props.customerCustomFieldData, '[0].customized_variables');
         return (
-            <div>
-
-            </div>
+            _.map(customizedVariables, item => {
+                const name = _.get(item, 'name');
+                return (
+                    <div className="basic-info-item">
+                        <span className="basic-info-label">{name}:</span>
+                        {this.renderCustomFieldType(item)}
+                    </div>
+                );
+            })
         );
     };
 
@@ -639,9 +788,7 @@ class BasicOverview extends React.Component {
                     {
                         _.isEmpty(this.props.customerCustomFieldData) ? null : (
                             <DetailCard
-                                className={classNames({'no-trace-card': noRecordData})}
-                                title='自定义配置'
-                                titleBottomBorderNone={noRecordData}
+                                className="custom-field-detail-card"
                                 content={this.renderCustomField()}
                             />
                         )

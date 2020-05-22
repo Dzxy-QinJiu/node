@@ -926,6 +926,12 @@ export const customFieldType = {
     'number': '数字类型'
 };
 
+// input类型(包括单行文本input、多行文本textarea、数字类型 number)
+export const inputType = ['text', 'multitext', 'number'];
+
+// select类型（包括下拉单选、下拉多选、单项选择radio、多项选择checkbox）
+export const selectType = ['select', 'multiselect', 'radio', 'checkbox'];
+
 // 选择自定义字段筛选框的值
 export const customFieldSelectOptions = [{
     value: 'text',
