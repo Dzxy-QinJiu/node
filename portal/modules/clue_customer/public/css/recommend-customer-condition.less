@@ -115,6 +115,7 @@
   }
   //高级筛选样式
   .advance-data-container{
+    position: relative;
     .advance-btn-item{
       padding: 3px 6px;
       font-size: 14px;
@@ -131,6 +132,22 @@
         color: #fff;
         border-color: @warn-color;
       }
+    }
+    .advance-data-content{
+      max-width: 554px;
+      float: left;
+      height: 32px;
+      overflow: hidden;
+      &.show-more{
+        height: auto;
+      }
+      .advance-btn-item{
+        display: inline-block;
+        line-height: normal;
+      }
+    }
+    .show-hide-tip{
+      margin-left: 1px;
     }
   }
   //搜索框样式

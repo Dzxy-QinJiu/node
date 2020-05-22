@@ -31,6 +31,8 @@ exports.toFrontRecommendClueData = function(item) {
         telephones: _.get(item,'telephones',[]),
         //企业状态
         openStatus: _.get(item,'openStatus', ''),
+        //官网
+        website: _.get(item, 'website', ''),
         //contact: {phones: 1, qq: 1, weChat: 0, email: 2}
         contact: {
             phones: _.get(item, 'telephones.length', 0),

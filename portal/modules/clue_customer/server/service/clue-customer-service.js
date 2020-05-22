@@ -566,12 +566,13 @@ exports.addOrEditSelfClueConditionConfig = function(req, res) {
 };
 //获取推荐线索
 exports.getRecommendClueLists = function(req, res) {
+    let data = JSON.parse(req.body.reqData);
     return restUtil.authRest.post(
         {
             url: restApis.getRecommendClueLists,
             req: req,
             res: res
-        }, req.body);
+        }, data);
 };
 //根据关键词获取线索
 exports.getClueListByKeyword = function(req, res) {
