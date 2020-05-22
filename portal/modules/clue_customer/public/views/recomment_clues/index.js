@@ -45,8 +45,7 @@ import {
     getContactSalesPopoverTip, 
     getFormattedCondition, 
     isExpired, 
-    isResponsiveDisplay,
-    isCurtao
+    isResponsiveDisplay
 } from 'PUB_DIR/sources/utils/common-method-util';
 import {getMaxLimitExtractClueCount, updateGuideMark, checkPhoneStatus} from 'PUB_DIR/sources/utils/common-data-util';
 import classNames from 'classnames';
@@ -57,7 +56,7 @@ import {
     COMPANY_VERSION_KIND,
     extractIcon,
     RECOMMEND_CLUE_FILTERS,
-    PHONE_STATUS_MAP,
+    PHONE_STATUS_KEY,
 } from 'PUB_DIR/sources/utils/consts';
 import history from 'PUB_DIR/sources/history';
 import React from 'react';
@@ -499,7 +498,7 @@ class RecommendCluesList extends React.Component {
             if(!_.isEmpty(item.check_result)){
                 let obj = {
                     id: item.id,
-                    //疑似空号
+                    //疑似空号（包含：0空号，3虚无，4沉默号，5风险号）
                     emptyPhones: [],
                     //实号
                     realPhones: [],
@@ -513,16 +512,19 @@ class RecommendCluesList extends React.Component {
                 _.each(item.check_result, checkedItem => {
                     obj.phone_status.push({phone: checkedItem.mobile_phone, status: checkedItem.phone_status});
                     switch(checkedItem.phone_status) {
-                        case '0'://疑似空号
+                        case PHONE_STATUS_KEY.EMPTY://空号
+                        case PHONE_STATUS_KEY.NOTHING://虚无
+                        case PHONE_STATUS_KEY.SILENCE://沉默号
+                        case PHONE_STATUS_KEY.RISK://风险号
                             obj.emptyPhones.push(checkedItem.mobile_phone);
                             break;
-                        case '1'://实号
+                        case PHONE_STATUS_KEY.REAL://实号
                             obj.realPhones.push(checkedItem.mobile_phone);
                             break;
-                        case '2'://停机
+                        case PHONE_STATUS_KEY.STOP://停机
                             obj.downTimePhones.push(checkedItem.mobile_phone);
                             break;
-                        default://其他(沉默号、风险号等)
+                        default://其他
                             obj.otherPhones.push(checkedItem.mobile_phone);
                             break;
                     }
@@ -635,7 +637,7 @@ class RecommendCluesList extends React.Component {
                         <Button
                             type="primary"
                             className="check-btn-primary"
-                            titl={Intl.get('lead.smart.extract.title', '提取时会排除全部是疑似空号的线索')}
+                            title={Intl.get('lead.smart.extract.title', '提取时会排除全部是疑似空号的线索')}
                             disabled={this.state.batchExtractLoading && this.state.batchExtractType && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ONLY}
                             loading={this.state.batchExtractLoading && this.state.batchExtractType === BATCH_EXTRACT_TYPE.ONLY}
                             onClick={callback.bind(this, BATCH_EXTRACT_TYPE.ONLY, canExtractClueList)}
