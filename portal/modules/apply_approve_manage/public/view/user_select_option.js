@@ -12,7 +12,7 @@ import {formatUsersmanDataList} from 'PUB_DIR/sources/utils/common-method-util';
 const FormItem = Form.Item;
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AppUserAction from 'MOD_DIR/app_user_manage/public/action/app-user-actions';
-class SelectOption extends React.Component {
+class UserSelectOption extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -94,7 +94,7 @@ class SelectOption extends React.Component {
     };
 }
 
-SelectOption.defaultProps = {
+UserSelectOption.defaultProps = {
     select_arr: [],
     type: '',
     placeholder: '',
@@ -106,7 +106,7 @@ SelectOption.defaultProps = {
     }
 };
 
-SelectOption.propTypes = {
+UserSelectOption.propTypes = {
     select_arr: PropTypes.array,
     type: PropTypes.string,
     placeholder: PropTypes.string,
@@ -117,4 +117,4 @@ SelectOption.propTypes = {
     selectOptionValue: PropTypes.string,
     handleOptionChange: PropTypes.func,
 };
-export default SelectOption;
+export default UserSelectOption;

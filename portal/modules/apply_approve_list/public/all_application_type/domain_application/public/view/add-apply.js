@@ -242,7 +242,7 @@ class AddApply extends React.Component {
         };
         let saveResult = this.state.saveResult;
         var workConfig = _.find(this.state.workFlowList, item => item.type === SELF_SETTING_FLOW.DOMAINAPPLY);
-        var customizForm = workConfig.customiz_form;
+        var customizeForm = workConfig.customiz_form;
         return (
             <RightPanel showFlag={true} data-tracename="添加舆情平台申请" className="add-leave-container">
                 <span className="iconfont icon-close add-leave-apply-close-btn"
@@ -256,7 +256,7 @@ class AddApply extends React.Component {
                         <GeminiScrollbar>
                             <div className="add-leave-form">
                                 <Form layout='horizontal' className="sales-clue-form" id="add-leave-apply-form">
-                                    {_.map(customizForm, (formItem, index) => {
+                                    {_.map(customizeForm, (formItem, index) => {
                                         var target = _.find(ADDAPPLYFORMCOMPONENTS, item => item.component_type === _.get(formItem, 'component_type'));
                                         if (target) {
                                             var ApplyComponent = target.component;

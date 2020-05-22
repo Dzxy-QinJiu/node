@@ -7,7 +7,7 @@
 import {DatePicker,Form} from 'antd';
 const FormItem = Form.Item;
 
-class InputContent extends React.Component {
+class DatePickerContent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -71,7 +71,7 @@ class InputContent extends React.Component {
     }
 }
 
-InputContent.defaultProps = {
+DatePickerContent.defaultProps = {
     select_arr: [],
     type: '',
     placeholder: '',
@@ -79,7 +79,7 @@ InputContent.defaultProps = {
     labelKey: '',
 };
 
-InputContent.propTypes = {
+DatePickerContent.propTypes = {
     select_arr: PropTypes.array,
     type: PropTypes.string,
     placeholder: PropTypes.string,
@@ -89,4 +89,4 @@ InputContent.propTypes = {
     validator: PropTypes.func,
     default_value: PropTypes.object,
 };
-export default InputContent;
+export default DatePickerContent;
