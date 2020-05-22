@@ -595,9 +595,7 @@ class RecommendCluesList extends React.Component {
             let traceTip = errorMsg ? '直接提取' : '确认提取';
             btnContent = (
                 <React.Fragment>
-                    {!clueEmptyPhoneCount ? (
-                        <Button className="check-btn-ghost" onClick={handleCancel} data-tracename="点击单个检测中的'取消'按钮">{Intl.get('common.cancel', '取消')}</Button>
-                    ) : null}
+                    <Button className="check-btn-ghost" onClick={handleCancel} data-tracename="点击单个检测中的'取消'按钮">{Intl.get('common.cancel', '取消')}</Button>
                     <Button className="check-btn-primary" type="primary" loading={this.state.singleExtractLoading} onClick={callback} data-tracename={`点击单个检测中的'${traceTip}'按钮`}>{
                         errorMsg ? Intl.get('lead.direct.extraction', '直接提取') : Intl.get('lead.extract.confirm', '确认提取')
                     }</Button>
