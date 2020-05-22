@@ -16,7 +16,8 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES, GIFT_LOGO,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {hasCalloutPrivilege, isCurtao, checkVersionAndType, 
-    isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay, isShowWinningClue, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
+    isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay, 
+    isShowWinningClue, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
 import {phoneEmitter, notificationEmitter, userInfoEmitter,
     phoneMsgEmitter, clickUpgradeNoiceEmitter, showWiningClueEmitter, leadRecommendEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
@@ -723,16 +724,20 @@ var NavSidebar = createReactClass({
     //生成主菜单
     generateMenu: function() {
         const currentPageCategory = this.getCurrentCategory();
-        let menus = this.state.menus;
-        // 屏幕缩小到一定宽度，只展示找线索、线索列表、客户列表
-        const PHONE_SHOW_MENU_IDS = ['clues_recommend', 'clue_customer', 'crm'];
+        let menus = _.cloneDeep(this.state.menus);
+        // 屏幕缩小到一定宽度，只展示找线索、线索列表、客户列表、个人资料
+        const PHONE_SHOW_MENU_IDS = ['clues_recommend', 'clue_customer', 'crm', 'user_info'];
         if(isResponsiveDisplay().isWebSmall){
+            let userInfoLinkList = menuUtil.getMenuById(MENU.USER_INFO);
+            let userInfoRoutes = _.get(userInfoLinkList, 'routes');
+            menus = _.concat(menus, userInfoRoutes);
             menus = _.filter(menus, item => _.indexOf(PHONE_SHOW_MENU_IDS, item.id) !== -1);
         }
         return menus.map((menu, i) => {
             let category = menu.routePath.replace(/\//, '');
             //是否添加选中的菜单样式类
-            const addActive = currentPageCategory === category && !this.props.isShowCustomerService && !this.props.isShowNotificationPanel;
+            const addActive = currentPageCategory === category &&
+                !this.props.isShowCustomerService && !this.props.isShowNotificationPanel;
             //选中状态类
             let extraClass = classNames('iconfont', {
                 [`icon-${category}-ico`]: true,
@@ -744,6 +749,10 @@ var NavSidebar = createReactClass({
                 [`${category}_icon_container`]: true,
                 'active': addActive,
             });
+            let defaultUserImage = (<NavLink className='user-default-logo-wrap' to='/user-preference'>
+                <i className='iconfont icon-user-logo-default'/>
+            </NavLink>);
+
             let routeContent = (
                 <NavLink to={`${menu.routePath}`}
                     activeClassName='active'
@@ -751,6 +760,24 @@ var NavSidebar = createReactClass({
                 >
                     {
                         category === 'apply' ? (this.renderUnreadReplyTip()) : null
+                    }
+                    {
+                        category === 'user-preference/info' ? (
+                            <div className="avatar_container">
+                                <Avatar
+                                    className="avatar"
+                                    size="24px"
+                                    lineHeight="24px"
+                                    src={this.state.userInfoLogo}
+                                    userName={this.state.userInfo.user_name}
+                                    nickName={this.state.userInfo.nick_name}
+                                    round="true" link="true" url="/user-preference"
+                                    isActiveFlag={this.props.isShowNotificationPanel || this.props.isShowCustomerService}
+                                    isUseDefaultUserImage={true}
+                                    defaultUserImage={defaultUserImage}
+                                />
+                            </div>
+                        ) : null
                     }
                     {/*{this.state.isReduceNavIcon ? (<span> {menu.shortName} </span>) : null}*/}
                 </NavLink>
