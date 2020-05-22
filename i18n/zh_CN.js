@@ -4102,6 +4102,7 @@ var zh_CN = {
     'clue.recommend.has.phone': '有电话',
     'clue.recommend.has.more.contact': '多个联系方式',
     'clue.recommend.smal.micro.enterprise': '小微企业',
+    'clue.recommend.has.website': '有官网',
     // 线索分配策略
     'clue.assignment.strategy.add': '添加分配策略',
     'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',

@@ -4066,6 +4066,7 @@ var en_US = {
     'clue.recommend.has.phone': 'Have a phone',//有电话
     'clue.recommend.has.more.contact': 'There are multiple contact information',//多个联系方式
     'clue.recommend.smal.micro.enterprise': 'Small micro enterprise',//小微企业
+    'clue.recommend.has.website': 'Have a website',//有官网
 
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
