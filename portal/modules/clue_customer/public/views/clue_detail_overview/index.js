@@ -9,6 +9,8 @@ var React = require('react');
 require('../../css/clue_detail_overview.less');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import { Button, Form, Icon, message, Input, Popover, Popconfirm } from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
 const {TextArea} = Input;
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
@@ -17,8 +19,6 @@ import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var clueCustomerAction = require('../../action/clue-customer-action');
 var clueCustomerAjax = require('../../ajax/clue-customer-ajax');
-import {Select} from 'antd';
-const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
 var className = require('classnames');
 var userData = require('PUB_DIR/sources/user-data');
@@ -161,7 +161,7 @@ class ClueDetailOverview extends React.Component {
     }
     onClueCustomerStoreChange = () => {
         let curClue = _.cloneDeep(this.state.curClue);
-        curClue.contacts = _.get(clueCustomerStore.getState(), 'curClue.contacts');
+        curClue.contacts = _.get(clueCustomerStore.getState(), 'curClue.contacts', curClue.contacts);
         const versionData = _.get(clueCustomerStore.getState(),'versionData');
         this.setState({curClue,versionData});
     };
@@ -736,11 +736,13 @@ class ClueDetailOverview extends React.Component {
     };
     renderItemSelfSettingContent = (curClue,item) => {
         let hasPrivilege = editCluePrivilege(curClue);
+        let phone = getShowPhoneNumber(curClue, addHyphenToPhoneNumber(item), true);
         return <PhoneCallout
             phoneNumber={item}
-            showPhoneNum={getShowPhoneNumber(curClue, addHyphenToPhoneNumber(item))}
+            showPhoneNum={phone.phoneNumber}
             showPhoneIcon={true}
-            showCheckPhone={false}
+            showCheckPhone
+            phoneStatus={phone.status}
             onCheckPhoneSuccess={this.onCheckPhoneSuccess}
             hidePhoneIcon={!hasPrivilege}
             type='lead'

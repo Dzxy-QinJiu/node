@@ -1,5 +1,6 @@
-import {Form, Select} from 'antd';
-const Option = Select.Option;
+import {Form} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import DateSelector from '../../date-selector';
 const FormItem = Form.Item;
 import { isModifyAppConfig } from 'PUB_DIR/sources/utils/common-method-util';
@@ -78,7 +79,7 @@ const UserTimeRangeField = {
                     labelCol={{span: 0}}
                     wrapperCol={{span: 24}}
                 >
-                    {/* <Select>
+                    {/* <AntcSelect>
                         <Option value="1w">{Intl.get('user.time.one.week','1周')}</Option>
                         <Option value="0.5m">{Intl.get('user.time.half.month','半个月')}</Option>
                         <Option value="1m">{Intl.get('user.time.one.month','1个月')}</Option>
@@ -86,7 +87,7 @@ const UserTimeRangeField = {
                         <Option value="12m">{Intl.get('user.time.twelve.month','12个月')}</Option>
                         <Option value="forever">{Intl.get('common.time.forever','永久')}</Option>
                         <Option value="custom">{Intl.get('user.time.custom','自定义')}</Option>
-                    </Select> */}
+                    </AntcSelect> */}
                     <DateSelector
                         disableDateBeforeRange={true}
                         disableDateBeforeToday={true}

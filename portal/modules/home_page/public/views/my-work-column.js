@@ -30,7 +30,7 @@ import BusinessWhileApplyDetail from 'MOD_DIR/apply_approve_list/public/all_appl
 import LeaveApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/leave-apply/public/view/apply-view-detail';
 import DocumentApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/document_write/public/view/apply-view-detail';
 import ReportApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/report_send/public/view/apply-view-detail';
-import VisitApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/self_setting/public/view/apply-view-detail';
+import VisitApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/visit_apply/public/view/apply-view-detail';
 import DomainApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/domain_application/public/view/apply-view-detail';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {APPLY_APPROVE_TYPES, AUTO_SIZE_MAP, BOOT_PROCESS_KEYS, TRACE_NULL_TIP} from 'PUB_DIR/sources/utils/consts';

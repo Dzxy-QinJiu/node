@@ -29,6 +29,7 @@ var zh_CN = {
     'menu.competing.product': '竞品',
     'menu.sales.process': '客户阶段',
     'menu.clue.integration': '线索集成',
+    'menu.field.manage': '字段管理',
     'menu.clue.allocation': '线索分配',
     'menu.my.company': '我的企业',
     'menu.user': '成员管理',
@@ -1088,6 +1089,13 @@ var zh_CN = {
     'clue.integration.failed.regenerate.create': '重新生成密钥失败',
     'clue.integration.failed.create': '生成密钥失败',
     // 后台管理-线索集成end
+    
+    // 后台管理-自定义字段start
+    'custom.field.title': '字段名',
+    'custom.field.add.title': '添加{name}字段',
+    'custom.field.edit.title': '{name}字段',
+    'custom.field.input.placeholder': '请输入{name}',
+    // 后台管理-自定义字段end
 
     //应用管理start
     'app.title': '应用管理',
@@ -2733,6 +2741,7 @@ var zh_CN = {
     'errorcode.member.unexist': '该成员不存在',
     'errorcode.orgnization.unexist': '组织不存在',
     'errorcode.check.phone': '手机号检测服务异常',
+    'errorcode.has.user': '该时间段已发过申请',
 
     //遗漏部分
     'user.input.phone': '请输入手机号',
@@ -3359,6 +3368,12 @@ var zh_CN = {
     'lead.single.check.phone.no.empty.phone.tip': '此线索有{allCount}个号码，系统未发现疑似空号',
     'lead.batch.check.phone.no.empty.phone.tip': '系统未发现全部疑似空号的线索',
     'lead.smart.extract.title': '提取时会排除全部是疑似空号的线索',
+    'lead.clue.check.phone.all': '系统帮您检测了{allCount}个号码，发现了{emptyCount}个疑似空号。',
+    'lead.clue.check.phone.empty.status': '系统未发现疑似空号',
+    'lead.check.phone.no.empty.number': '此号码不是疑似空号',
+    'lead.has.checked.phone': '所选线索中含已检测的号码，是否重新检测？',
+    'lead.not.has.check.phone': '所选线索中没有可检测的号码',
+    'lead.single.has.checked.phone': '此号码已检测，是否重新检测？',
 
     //线索模块 end
     'common.memeber.all': '全部成员',
@@ -3523,6 +3538,7 @@ var zh_CN = {
     'apply.approve.no.condition.list': '暂无符合条件的舆情报告',
     'apply.approve.no.document.write': '暂无符合条件的文件撰写',
     'apply.approve.expect.submit.time': '期望提交时间',
+    'apply.approve.form.expect.submit.time.require': '请填写期望提交时间',
     'apply.approve.specific.report': '{customer}客户的{reporttype}',
     'apply.approve.import.file': '上传文件',
     'apply.approve.confirm.apply': '确认申请',
@@ -3732,6 +3748,7 @@ var zh_CN = {
     'apply.cc.when.submit.and.approve': '提交申请时抄送审批人和审批通过后抄送申请人',
     'apply.add.condition.workflow': '添加条件审批流程',
     'apply.add.apply.approver': '添加审批人',
+    'apply.edit.apply.approver': '修改审批节点',
     'apply.add.apply.cc.approver': '添加抄送人',
     'apply.add.approver.higher.level': '上级',
     'apply.add.approver.setting.role': '指定角色',

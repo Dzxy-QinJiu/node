@@ -6,10 +6,10 @@
 
 require('../../css/recommend-customer-condition.less');
 import React, {Component} from 'react';
-import {Form, Input, Select, Icon, Popover, Button, Dropdown, Menu} from 'antd';
-const Option = Select.Option;
+import {Form, Input, Icon, Popover, Button, Dropdown, Menu} from 'antd';
 const FormItem = Form.Item;
-import {AntcAreaSelection, SearchInput} from 'antc';
+import {AntcAreaSelection, SearchInput, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 import Trace from 'LIB_DIR/trace';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
 import { registerSize, staffSize, moneySize, companyProperty, companyStatus, EXTRACT_CLUE_CONST_MAP } from '../../utils/clue-customer-utils';

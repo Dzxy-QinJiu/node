@@ -20,7 +20,7 @@ import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
-import {APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_LIST_LAYOUT_CONSTANTS, CHARGE_MODE} from 'PUB_DIR/sources/utils/consts';
 import {
     getApplyTopicText,
     getApplyResultDscr,
@@ -318,6 +318,8 @@ class ApplyViewDetail extends React.Component {
     };
 
     renderDetailApplyBlock(detailInfo) {
+        var detail = detailInfo.detail || {};
+        var changeModeTarget = _.find(CHARGE_MODE,item => item.value === detail.charge_mode);
         var showApplyInfo = [
             {
                 label: Intl.get('call.record.customer', '客户'),
@@ -330,6 +332,15 @@ class ApplyViewDetail extends React.Component {
                         </a>
                     );
                 }
+            },{
+                label: Intl.get('apply.approved.charge.mode', '收费模式'),
+                text: _.get(changeModeTarget,'name','')
+            },{
+                label: Intl.get('apply.approve.expect.submit.time','期望提交时间'),
+                text: moment(detail.expect_submit_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)
+            }, {
+                label: Intl.get('common.remark', '备注'),
+                text: detailInfo.remarks
             }, {
                 label: Intl.get('apply.approved.annex.list', '附件'),
                 renderText: () => {

@@ -13,6 +13,7 @@ class ApplyApproveManage extends React.Component {
         super(props);
         this.state = {
             showAddWorkFlowName: false,//是否展示添加自定义流程的名字
+            showAddTopNav: true,//是否展示添加的topnav
         };
     }
     onStoreChange = () => {
@@ -23,13 +24,18 @@ class ApplyApproveManage extends React.Component {
             showAddWorkFlowName: false
         });
     };
-
+    showOrCloseApplyDetail = (flag = false) => {
+        this.setState({
+            showAddTopNav: flag
+        });
+    };
 
     renderApplyTypeList = () => {
         return (
             <ApplyProcessList
                 showAddWorkFlowName={this.state.showAddWorkFlowName}
                 updateShowApplyList={this.updateShowApplyList}
+                showOrCloseApplyDetail={this.showOrCloseApplyDetail}
             />
         );
     };
@@ -60,9 +66,10 @@ class ApplyApproveManage extends React.Component {
         return (
             <div className="apply-approve-manage" style={{height: height}}>
                 <div className="apply-approve-wrap" style={{height: height}}>
-                    {/*<div className='apply-approve-top-nav'>*/}
-                    {/*{this.renderTopNavOperation()}*/}
-                    {/*</div>*/}
+                    {this.state.showAddTopNav ?
+                        <div className='apply-approve-top-nav'>
+                            {this.renderTopNavOperation()}
+                        </div> : null}
                     <div className='apply-approve-container'>
                         {this.renderApplyTypeList()}
                     </div>

@@ -28,6 +28,7 @@ import PhoneAddToCustomerForm from 'CMP_DIR/phone-add-to-customer-form';
 import {PHONERINGSTATUS} from './consts';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
+import customFieldAjax from '../../custom_field_manage/public/ajax';
 
 const DIVLAYOUT = {
     CUSTOMER_COUNT_TIP_H: 26,//对应几个客户提示的高度
@@ -78,6 +79,7 @@ class PhonePanel extends React.Component {
             isAddingPlanInfo: false,//是否展示添加联系计划面板
             isAddingScheduleSuccess: false, //添加自定义计划是否成功
             isAddToCustomerFlag: false,//是否展示添加到已有客户面板
+            customerCustomFieldData: {}, // 客户自定义字段的值，默认空
         };
     }
 
@@ -102,10 +104,24 @@ class PhonePanel extends React.Component {
         return [];
     }
 
+    // 获取客户自定义字段信息
+    getCustomFieldConfig() {
+        const queryObj = {
+            customized_type: 'customer'
+        };
+        customFieldAjax.getCustomFieldConfig(queryObj).then( (result) => {
+            this.setState({
+                customerCustomFieldData: result
+            });
+        } );
+    }
+
     componentDidMount() {
         this._isMounted = true;
 
         phoneAlertStore.listen(this.onStoreChange);
+        // 获取客户自定义字段信息
+        this.getCustomFieldConfig();
         let phonemsgObj = this.getPhonemsgObj(this.props.paramObj);
         //通话状态下的处理
         if (!_.isEmpty(phonemsgObj)) {
@@ -465,6 +481,7 @@ class PhonePanel extends React.Component {
                 showApplyUserForm={this.showApplyUserForm.bind(this)}
                 showOpenAppForm={this.showOpenAppForm.bind(this)}
                 returnInfoPanel={this.returnInfoPanel.bind(this)}
+                customerCustomFieldData={this.state.customerCustomFieldData}
             />);
     }
 
@@ -847,12 +864,14 @@ class PhonePanel extends React.Component {
                     {paramObj.call_params ? this.renderPhoneStatus() : null}
                     {/*{只打开客户详情或从当前展示的客户详情中打电话时}*/}
                     {this.isOnlyOpenCustomerDetail(paramObj) || this.isCustomerDetailCall(paramObj) ? (
-                        <CustomerDetail {...paramObj.customer_params}
+                        <CustomerDetail
+                            {...paramObj.customer_params}
                             hideRightPanel={this.hidePhonePanel.bind(this)}
                             showApplyUserForm={this.showApplyUserForm.bind(this)}
                             showOpenAppForm={this.showOpenAppForm.bind(this)}
                             returnInfoPanel={this.returnInfoPanel.bind(this)}
                             editCustomerBasic={this.editCustomerBasic.bind(this,_.get(paramObj,'customer_params.curCustomer'))}
+                            customerCustomFieldData={this.state.customerCustomFieldData}
                         />) : null
                     }
                 </div>

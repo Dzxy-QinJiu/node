@@ -7,8 +7,9 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('../css/add-leave-apply.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Form, Input, Button, Icon, message, DatePicker, Select} from 'antd';
-var Option = Select.Option;
+import {Form, Input, Button, Icon, message, DatePicker} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
@@ -280,7 +281,7 @@ class AddLeaveApply extends React.Component {
                                             />
                                         )}
                                         {getFieldDecorator('begin_type', {initialValue: formData.begin_type})(
-                                            <Select
+                                            <AntcSelect
                                                 getPopupContainer={() => document.getElementById('add-leave-apply-form')}
                                                 onChange={this.handleChangeStartRange}
 
@@ -290,7 +291,7 @@ class AddLeaveApply extends React.Component {
                                                         return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
                                                     }) : null
                                                 }
-                                            </Select>
+                                            </AntcSelect>
                                         )}
 
                                     </FormItem>
@@ -313,7 +314,7 @@ class AddLeaveApply extends React.Component {
                                             />
                                         )}
                                         {getFieldDecorator('end_type', {initialValue: formData.end_type})(
-                                            <Select
+                                            <AntcSelect
                                                 getPopupContainer={() => document.getElementById('add-leave-apply-form')}
                                                 onChange={this.handleChangeEndRange}
                                             >
@@ -322,7 +323,7 @@ class AddLeaveApply extends React.Component {
                                                         return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
                                                     }) : null
                                                 }
-                                            </Select>
+                                            </AntcSelect>
                                         )}
 
                                     </FormItem>
@@ -348,7 +349,7 @@ class AddLeaveApply extends React.Component {
                                             getFieldDecorator('leave_type',{
                                                 rules: [{required: true, message: Intl.get('leave.apply.select.at.least.one.type','请选择至少一个请假类型')}],
                                             })(
-                                                <Select
+                                                <AntcSelect
                                                     placeholder={Intl.get('leave.apply.select.leave.type','请选择请假类型')}
                                                     name="leave_type"
                                                     getPopupContainer={() => document.getElementById('add-leave-apply-form')}
@@ -359,7 +360,7 @@ class AddLeaveApply extends React.Component {
                                                             return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
                                                         }) : null
                                                     }
-                                                </Select>
+                                                </AntcSelect>
                                             )}
                                     </FormItem>
                                     <FormItem

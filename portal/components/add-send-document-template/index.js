@@ -7,8 +7,9 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('./index.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Form, Input, Button, Icon, message, DatePicker, Select, Upload,Radio} from 'antd';
-var Option = Select.Option;
+import {Form, Input, Button, Icon, message, DatePicker, Upload,Radio} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
@@ -252,7 +253,7 @@ class AddReportSendApply extends React.Component {
                                             getFieldDecorator(this.props.addType, {
                                                 rules: [{required: true, message: this.props.selectTip}],
                                             })(
-                                                <Select
+                                                <AntcSelect
                                                     placeholder={this.props.selectPlaceholder}
                                                     name={this.props.addType}
                                                     getPopupContainer={() => document.getElementById('add-leave-apply-form')}
@@ -264,7 +265,7 @@ class AddReportSendApply extends React.Component {
                                                                 value={reportItem.value}>{reportItem.name}</Option>);
                                                         }) : null
                                                     }
-                                                </Select>
+                                                </AntcSelect>
                                             )}
                                     </FormItem>
                                     {/*只有舆情报告申请，并且舆情报告的类型不是其他的时候才才加上这个条件*/}

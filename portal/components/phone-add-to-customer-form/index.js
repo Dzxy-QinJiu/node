@@ -9,10 +9,11 @@ import CustomerSuggest from '../basic-edit-field-new/customer-suggest';
 import SaveCancelButton from '../detail-card/save-cancel-button';
 import PhoneInput from '../phone-input';
 import {hasPrivilege} from '../privilege/checker';
-import {Form, Input, Select} from 'antd';
+import {Form, Input} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 const FormItem = Form.Item;
-const Option = Select.Option;
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 
 
@@ -256,7 +257,7 @@ class PhoneAddToCustomerForm extends React.Component {
                                 }],
                                 initialValue: ''
                             })(
-                                <Select size="large" placeholder={Intl.get('crm.select.add.contact', '请选择或添加联系人')}
+                                <AntcSelect size="large" placeholder={Intl.get('crm.select.add.contact', '请选择或添加联系人')}
                                     combobox
                                     getPopupContainer={() => document.getElementById('add-to-customer-form')}
                                     filterOption={(input, option) => ignoreCase(input, option)}
@@ -264,7 +265,7 @@ class PhoneAddToCustomerForm extends React.Component {
                                     {_.map(this.state.contactList, (contact, index) => {
                                         return (<Option value={contact.name} key={index}>{contact.name}</Option>);
                                     })}
-                                </Select>
+                                </AntcSelect>
                             )}
                         </FormItem>
                         <PhoneInput

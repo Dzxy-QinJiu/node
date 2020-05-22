@@ -3,11 +3,11 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/7/24.
  */
-import {Form, Input, DatePicker, Select} from 'antd';
+import {Form, Input, DatePicker} from 'antd';
 const { RangePicker } = DatePicker;
-var Option = Select.Option;
 const FormItem = Form.Item;
-import {AntcAreaSelection} from 'antc';
+import {AntcAreaSelection, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 require('../../css/recommend-customer-condition.less');
 import {checkClueCondition, companyProperty, moneySize, staffSize,CLUE_CONDITION} from '../../utils/clue-customer-utils';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
@@ -302,7 +302,7 @@ class RecommendCustomerCondition extends React.Component {
                                     }
                                 )(
                                     /*
-                                   * <Select
+                                   * <AntcSelect
                                         mode="multiple"
                                         placeholder={Intl.get('crm.22', '请选择行业')}
                                         name="industrys"
@@ -315,7 +315,7 @@ class RecommendCustomerCondition extends React.Component {
                                                 return (<Option key={idx} value={item}>{item}</Option>);
                                             }))
                                         }
-                                    </Select>*/
+                                    </AntcSelect>*/
                                     <Input placeholder={Intl.get('boot.please.input.industry.placeholder', '请输入关注的行业，如互联网、金融业等')}/>
                                 )}
                         </FormItem>
@@ -362,7 +362,7 @@ class RecommendCustomerCondition extends React.Component {
                             >
                                 {
                                     getFieldDecorator('staff_size',{initialValue: _.isEmpty(staffTarget) ? '' : JSON.stringify(staffTarget)})(
-                                        <Select
+                                        <AntcSelect
                                             placeholder={Intl.get('clue.customer.select.size', '请选择规模')}
                                             name="staff_size"
                                             getPopupContainer={() => document.getElementById('customer-recommend-form')}
@@ -373,7 +373,7 @@ class RecommendCustomerCondition extends React.Component {
                                                     return (<Option key={idx} value={JSON.stringify(sizeItem)}>{sizeItem.name}</Option>);
                                                 }) : null
                                             }
-                                        </Select>
+                                        </AntcSelect>
                                     )}
                             </FormItem>
                             <FormItem
@@ -383,7 +383,7 @@ class RecommendCustomerCondition extends React.Component {
                             >
                                 {
                                     getFieldDecorator('money_size',{initialValue: _.isEmpty(capitalTarget) ? '' : JSON.stringify(capitalTarget)})(
-                                        <Select
+                                        <AntcSelect
                                             placeholder={Intl.get('clue.customer.select.size', '请选择规模')}
                                             name="money_size"
                                             getPopupContainer={() => document.getElementById('customer-recommend-form')}
@@ -394,7 +394,7 @@ class RecommendCustomerCondition extends React.Component {
                                                     return (<Option key={idx} value={JSON.stringify(sizeItem)}>{sizeItem.name}</Option>);
                                                 }) : null
                                             }
-                                        </Select>
+                                        </AntcSelect>
                                     )}
                             </FormItem>
                             <FormItem
@@ -404,7 +404,7 @@ class RecommendCustomerCondition extends React.Component {
                             >
                                 {
                                     getFieldDecorator('entTypes',{initialValue: _.get(hasSavedRecommendParams,'entTypes')})(
-                                        <Select
+                                        <AntcSelect
                                             mode="multiple"
                                             placeholder={Intl.get('clue.customer.select.property', '请选择性质')}
                                             name="entTypes"
@@ -415,7 +415,7 @@ class RecommendCustomerCondition extends React.Component {
                                                     return (<Option key={idx} value={propertyItem.value}>{propertyItem.name}</Option>);
                                                 }) : null
                                             }
-                                        </Select>
+                                        </AntcSelect>
                                     )}
                             </FormItem>
                         </div>

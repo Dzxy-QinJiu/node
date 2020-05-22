@@ -11,10 +11,11 @@ var BatchChangeUserActions = require('../action/batch-change-user');
 import BatchChangeUserStore from '../store/batch-change-user';
 import DateSelector from '../../../../components/date-selector';
 var crypto = require('crypto');
-import { Tabs, Form, Input, InputNumber, Select, DatePicker, Radio, Icon, Alert, Button, Col, Row} from 'antd';
+import { Tabs, Form, Input, InputNumber, DatePicker, Radio, Icon, Alert, Button, Col, Row} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
-const Option = Select.Option;
 const RadioGroup = Radio.Group;
 var AlertTimer = require('../../../../components/alert-timer');
 var AutosizeTextarea = require('../../../../components/autosize-textarea');
@@ -880,7 +881,7 @@ var BatchChangUser = createReactClass({
     renderBatchApps: function() {
         var batchApps = this.getBatchAppOptions();
         return (
-            <Select
+            <AntcSelect
                 multiple
                 value={this.state.formData.batchSelectedApps}
                 onChange={this.batchAppChange}
@@ -891,7 +892,7 @@ var BatchChangUser = createReactClass({
                 filterOption={(input, option) => ignoreCase(input, option)}
             >
                 {batchApps}
-            </Select>
+            </AntcSelect>
         );
     },
 
@@ -957,7 +958,7 @@ var BatchChangUser = createReactClass({
                             />
                         )}
 
-                        <Select
+                        <AntcSelect
                             value={this.state.formData.delayTimeRange}
                             style={{width: divWidth,height: '32px'}}
                             onChange={this.delayTimeRangeChange}
@@ -967,7 +968,7 @@ var BatchChangUser = createReactClass({
                             <Option value={TIMERANGEUNIT.MONTH}><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月" /></Option>
                             <Option value={TIMERANGEUNIT.YEAR}><ReactIntl.FormattedMessage id="common.time.unit.year" defaultMessage="年" /></Option>
                             <Option value={TIMERANGEUNIT.CUSTOM}><ReactIntl.FormattedMessage id="user.time.custom" defaultMessage="自定义" /></Option>
-                        </Select>
+                        </AntcSelect>
                     </FormItem>
                 </div>
                 <FormItem
@@ -1042,7 +1043,7 @@ var BatchChangUser = createReactClass({
                     labelCol={labelCol}
                     wrapperCol={{span: 20}}
                 >
-                    <Select
+                    <AntcSelect
                         dropdownMatchSelectWidth={false}
                         placeholder={Intl.get('user.product.select.please','请选择产品')}
                         value={selectedApp}
@@ -1051,7 +1052,7 @@ var BatchChangUser = createReactClass({
                         onChange={BatchChangeUserActions.rolePermissionAppChange}
                     >
                         {options}
-                    </Select>
+                    </AntcSelect>
                     {
                         this.state.roleSelectedAppError ?
                             <div className="batch-role-permission-apps">

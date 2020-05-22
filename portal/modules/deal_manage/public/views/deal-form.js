@@ -3,9 +3,10 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2018/11/2.
  */
-import {Form, Input, DatePicker, Select, message} from 'antd';
+import {Form, Input, DatePicker, message} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
-const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -283,7 +284,7 @@ class DealForm extends React.Component {
                                 }],
                                 initialValue: ''
                             })(
-                                <Select size="large" placeholder={Intl.get('deal.stage.select.tip', '请选择订单阶段',)}
+                                <AntcSelect size="large" placeholder={Intl.get('deal.stage.select.tip', '请选择订单阶段',)}
                                     style={{width: '100%'}}
                                     name="sale_stages"
                                     getPopupContainer={() => document.getElementById('deal-form')}
@@ -291,7 +292,7 @@ class DealForm extends React.Component {
                                     {_.map(this.state.stageList, (stage, index) => {
                                         return (<Option value={stage.name} key={index}>{stage.name}</Option>);
                                     })}
-                                </Select>
+                                </AntcSelect>
                             )}
                         </FormItem>
 
@@ -307,7 +308,7 @@ class DealForm extends React.Component {
                                         message: Intl.get('leave.apply.select.atleast.one.app', '请选择至少一个产品')
                                     }],
                                 })(
-                                    <Select
+                                    <AntcSelect
                                         mode='multiple'
                                         placeholder={Intl.get('leave.apply.select.product', '请选择产品')}
                                         name="apps"
@@ -318,7 +319,7 @@ class DealForm extends React.Component {
                                             return (<Option key={idx}
                                                 value={appItem.client_id}>{appItem.client_name}</Option>);
                                         })}
-                                    </Select>
+                                    </AntcSelect>
                                 )}
                         </FormItem>
                         <FormItem

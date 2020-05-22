@@ -30,6 +30,7 @@ var en_US = {
     'menu.competing.product': 'Competing products', // 竞品
     'menu.sales.process': 'Customer Stage', // 客户阶段
     'menu.clue.integration': 'Lead integration', // 线索集成
+    'menu.field.manage': 'Field Manage', // 字段管理
     'menu.clue.allocation': 'Lead allocation', // 线索分配
     'menu.my.company': 'My Company', // 我的企业
     'menu.user': 'Members',//成员管理
@@ -2693,6 +2694,8 @@ var en_US = {
     'errorcode.address.error': 'wrong address format',//地址格式错误
     'errorcode.member.unexist': 'The member does not exist',//该成员不存在
     'errorcode.orgnization.unexist': 'Organization does not exist',//组织不存在
+    'errorcode.check.phone': 'Phone number detection service is abnormal',//手机号检测服务异常
+    'errorcode.has.user': 'Applications have been sent during this time',//该时间段已发过申请
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -3336,7 +3339,13 @@ var en_US = {
     'lead.extract.confirm': 'Confirm to extract',//确认提取
     'lead.single.check.phone.no.empty.phone.tip': 'There are {allCount} Numbers in this clue, but the system has not found any suspected empty Numbers',//此线索有{allCount}个号码，系统未发现疑似空号
     'lead.batch.check.phone.no.empty.phone.tip': 'The system did not find all possible clues to empty Numbers',//系统未发现全部疑似空号的线索
-    'leac.smart.extract.title': 'When extracting, all clues that are suspected to be empty will be eliminated',//提取时会排除全部是疑似空号的线索
+    'lead.smart.extract.title': 'When extracting, all clues that are suspected to be empty will be eliminated',//提取时会排除全部是疑似空号的线索
+    'lead.clue.check.phone.all': 'The system detected {allCount} Numbers for you, and found {emptyCount} suspected empty Numbers.',//系统帮您检测了{allCount}个号码，发现了{emptyCount}个疑似空号。
+    'lead.clue.check.phone.empty.status': 'The system did not find the suspected empty number',//系统未发现疑似空号
+    'lead.check.phone.no.empty.number': 'This number is not suspected empty',//此号码不是疑似空号
+    'lead.has.checked.phone': 'The selected clue contains the detected number. Do you want to redetect it?',//所选线索中含已检测的号码，是否重新检测？
+    'lead.not.has.check.phone': 'There is no detectable number in the selected clue',//所选线索中没有可检测的号码
+    'lead.single.has.checked.phone': 'This number has been detected, shall we redetect it?',//此号码已检测，是否重新检测？
 
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
@@ -3497,6 +3506,7 @@ var en_US = {
     'apply.approve.no.condition.list': 'No eligible public opinion report',//暂无符合条件的舆情报告
     'apply.approve.no.document.write': 'No eligible documents for writing',//暂无符合条件的文件撰写
     'apply.approve.expect.submit.time': 'Expected submission time',//期望提交时间
+    'apply.approve.form.expect.submit.time.require': 'Please fill in the expected submission time',//请填写期望提交时间
     'apply.approve.specific.report': 'special report of {customer}',//{customer}客户的{reporttype}
     'apply.approve.import.file': 'upload files',//上传文件
     'apply.approve.confirm.apply': 'Confirm application',//确认申请
@@ -3707,6 +3717,7 @@ var en_US = {
     'apply.cc.when.submit.and.approve': 'Copy the copy approver at the time of submitting the application and copy the applicant after approval',//提交申请时抄送审批人和审批通过后抄送申请人
     'apply.add.condition.workflow': 'Add condition approval process',//添加条件审批流程
     'apply.add.apply.approver': 'Add approver',//添加审批人
+    'apply.edit.apply.approver': 'Edit approver node',//修改审批节点
     'apply.add.approver.higher.level': 'Superior',//上级
     'apply.add.approver.setting.role': 'Specified role',//指定角色
     'apply.add.approver.setting.user': 'Designated member',//指定成员

@@ -1,6 +1,8 @@
 var React = require('react');
 require('./index.less');
-import { Select, InputNumber,Radio } from 'antd';
+import { InputNumber,Radio } from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 var RadioButton = Radio.Button;
 var RadioGroup = Radio.Group;
 function noop() {
@@ -105,14 +107,14 @@ class TimeSelect extends React.Component {
                 </div>) : null}
                 <div className="time-select-div">
                     {this.props.hideYearSelect ? null : (<div className="year-select-div">
-                        <Select value={this.props.yearTime} onChange={this.props.onChangeYear}>
+                        <AntcSelect value={this.props.yearTime} onChange={this.props.onChangeYear}>
                             {this.renderYearOptions()}
-                        </Select>
+                        </AntcSelect>
                     </div>)}
                     {this.props.timeType === 'month' ? (<div className="month-select-div">
-                        <Select value={this.props.monthTime} onChange={this.props.onChangeMonth}>
+                        <AntcSelect value={this.props.monthTime} onChange={this.props.onChangeMonth}>
                             {this.renderMonthOptions()}
-                        </Select>
+                        </AntcSelect>
                     </div>) : this.props.timeType === 'week' ? (<div className="week-select-div">
                         <div className="week-time-label">{Intl.get('common.font.the', '第')}</div>
                         <InputNumber min={1} max={lastWeekNum} value={this.props.weekTime} onChange={this.props.onChangeWeek}/>

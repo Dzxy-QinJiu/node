@@ -482,7 +482,9 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
     for (var key in newCustomerDetail) {
         if (_.indexOf(customerProperty, key) > -1) {
             //修改客户的相关属性
-            this.curClue[key] = newCustomerDetail[key];
+            if(!_.isEmpty(this.curClue)) {
+                this.curClue[key] = newCustomerDetail[key];
+            }
         } else {
             //修改联系人的相关属性
             if (key === 'contact_name' && contact_id) {

@@ -47,15 +47,6 @@ LeaveApplyDetailStore.prototype.setInitState = function() {
         //错误信息
         errorMsg: ''
     };
-    //审批状态列表
-    this.replyStatusInfo = {
-        //三种状态,loading,error,''
-        result: 'loading',
-        //列表数组
-        list: [],
-        //服务端错误信息
-        errorMsg: ''
-    };
     this.backApplyResult = {
         //提交状态  "" loading error success
         submitResult: '',
@@ -82,15 +73,6 @@ LeaveApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
         errorMsg: ''
     };
     this.replyListInfo = {
-        //三种状态,loading,error,''
-        result: '',
-        //列表数组
-        list: [],
-        //服务端错误信息
-        errorMsg: ''
-    };
-    //审批状态列表
-    this.replyStatusInfo = {
         //三种状态,loading,error,''
         result: '',
         //列表数组
@@ -240,20 +222,6 @@ LeaveApplyDetailStore.prototype.approveLeaveApplyPassOrReject = function(obj) {
     } else {
         this.applyResult.submitResult = 'success';
         this.applyResult.errorMsg = '';
-    }
-};
-//获取审批的状态
-LeaveApplyDetailStore.prototype.getLeaveApplyStatusById = function(obj) {
-    if (obj.loading) {
-        this.replyStatusInfo.result = 'loading';
-        this.replyStatusInfo.errorMsg = '';
-    } else if (obj.error) {
-        this.replyStatusInfo.result = 'error';
-        this.replyStatusInfo.errorMsg = obj.errorMsg;
-    } else {
-        this.replyStatusInfo.result = 'success';
-        this.replyStatusInfo.errorMsg = '';
-        this.replyStatusInfo.list = obj.list;
     }
 };
 LeaveApplyDetailStore.prototype.cancelSendApproval = function() {

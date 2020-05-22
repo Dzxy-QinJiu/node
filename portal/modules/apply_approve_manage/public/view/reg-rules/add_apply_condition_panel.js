@@ -7,10 +7,11 @@
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
-import {Form, Input, Menu, Dropdown, Select, DatePicker, Button, Icon, Radio, Checkbox, InputNumber} from 'antd';
+import {Form, Input, Menu, Dropdown, DatePicker, Button, Icon, Radio, Checkbox, InputNumber} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 const RadioGroup = Radio.Group;
-var Option = Select.Option;
 const FormItem = Form.Item;
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
@@ -259,14 +260,14 @@ class AddApplyConditionPanel extends React.Component {
                                         onClick={this.deleteConditionType.bind(this, limitType)}></i>
                                 </div>
                                 <div className="condition-type-content">
-                                    <Select
+                                    <AntcSelect
                                         value={_.get(value, 'rangeLimit')}
                                         onChange={this.handleChangeRangeLimit.bind(this, limitType, 'rangeLimit', 'inverseCondition', CONDITION_LIMITE)}
                                     >
                                         {_.map(CONDITION_LIMITE, (item, index) => {
                                             return (<Option key={index} value={item.value}>{item.name}</Option>);
                                         })}
-                                    </Select>
+                                    </AntcSelect>
                                     <Input
                                         value={_.get(value, 'rangeNumber')}
                                         onChange={this.handleRangeInputChange.bind(this, limitType, 'rangeNumber', Intl.get('common.time.unit.day', '天'))}
@@ -282,7 +283,7 @@ class AddApplyConditionPanel extends React.Component {
                                             onClick={this.deleteConditionType.bind(this, limitType)}></i>
                                     </div>
                                     <div className="condition-type-content user-range-content">
-                                        <Select
+                                        <AntcSelect
                                             value={_.get(value, 'userRange')}
                                             showSearch
                                             mode="multiple"
@@ -293,7 +294,7 @@ class AddApplyConditionPanel extends React.Component {
                                             {_.map(this.state.userList, (item, index) => {
                                                 return <Option value={item.userId} key={index}>{item.nickName}</Option>;
                                             })}
-                                        </Select>
+                                        </AntcSelect>
                                     </div>
                                 </div>
                             );
@@ -306,7 +307,7 @@ class AddApplyConditionPanel extends React.Component {
                                             onClick={this.deleteConditionType.bind(this, limitType)}></i>
                                     </div>
                                     <div className="condition-type-content user-range-content">
-                                        <Select
+                                        <AntcSelect
                                             value={_.get(value, 'teamRange')}
                                             showSearch
                                             mode="multiple"
@@ -317,7 +318,7 @@ class AddApplyConditionPanel extends React.Component {
                                             {_.map(this.state.teamList, (item, index) => {
                                                 return <Option value={item.group_id} key={index}>{item.group_name}</Option>;
                                             })}
-                                        </Select>
+                                        </AntcSelect>
                                     </div>
                                 </div>
                             );

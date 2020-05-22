@@ -1,5 +1,6 @@
-import { Select, Spin, Alert } from 'antd';
-const Option = Select.Option;
+import { Spin, Alert } from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const STAGES = [
     Intl.get('oplate_customer_analysis.allLabel', '全部标签'), 
     Intl.get('sales.stage.message', '信息'),
@@ -32,13 +33,13 @@ class StageSelector extends React.Component {
             <Option key={idx} value={x}>{x}</Option>
         ));
         return (
-            <Select
+            <AntcSelect
                 value={this.state.selectedStage}
                 dropdownMatchSelectWidth={false}
                 onChange={this.handleSelect}
             >
                 {options}
-            </Select>
+            </AntcSelect>
         );
     }
 }
