@@ -4,6 +4,8 @@
  */
 
 import {Form, TreeSelect, Button, Icon, message} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const { SHOW_ALL } = TreeSelect;
 const FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';

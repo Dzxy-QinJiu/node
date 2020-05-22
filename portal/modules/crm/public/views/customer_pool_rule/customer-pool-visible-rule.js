@@ -4,8 +4,9 @@
  * Created by tangmaoqin on 2020/03/12.
  */
 //客户池可见规则
-import {Select, message, Checkbox} from 'antd';
-const Option = Select.Option;
+import {message, Checkbox} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DetailCard from 'CMP_DIR/detail-card';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';

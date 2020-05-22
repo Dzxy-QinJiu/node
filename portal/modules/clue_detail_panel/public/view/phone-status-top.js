@@ -5,9 +5,10 @@
  */
 const PropTypes = require('prop-types');
 var React = require('react');
-import {Button, Tag, Select, Input, Menu, Dropdown, Icon, Popconfirm} from 'antd';
+import {Button, Tag, Input, Menu, Dropdown, Icon, Popconfirm} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const {TextArea} = Input;
-const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
 import {PHONERINGSTATUS, HANG_UP_TYPES} from 'MOD_DIR/phone_panel/public/consts';
 import {getCallClient, AcceptButton, ReleaseButton} from 'PUB_DIR/sources/utils/phone-util';
@@ -298,13 +299,13 @@ class phoneStatusTop extends React.Component {
                             {clueInfoArr.length > 1 ?
                                 <div className="select-add-trace-customer">
                                     {Intl.get('apply.select.trace.clue', '请选择要跟进的线索')}：
-                                    <Select
+                                    <AntcSelect
                                         defaultValue={clueInfoArr[0].id}
                                         dropdownMatchSelectWidth={false}
                                         onChange={this.handleSelectCustomer}
                                     >
                                         {options}
-                                    </Select>
+                                    </AntcSelect>
                                 </div> : null}
                             <Button type='primary' className={saveCls} onClick={this.handleTraceSubmit}
                                 data-tracename="保存跟进记录">

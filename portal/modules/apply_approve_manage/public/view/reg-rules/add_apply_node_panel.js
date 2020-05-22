@@ -6,9 +6,10 @@
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
-import {Form, Input, Select, DatePicker, Button, Icon, Radio, Checkbox} from 'antd';
+import {Form, Input, DatePicker, Button, Icon, Radio, Checkbox} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const RadioGroup = Radio.Group;
-var Option = Select.Option;
 const FormItem = Form.Item;
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
@@ -231,7 +232,7 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="add-higher-up addition-condition">
                             <div className="higher-level-item addition-condition-item">
-                                <Select showSearch
+                                <AntcSelect showSearch
                                     onChange={this.handleHigherUpChange}
                                     filterOption={(input, option) => ignoreCase(input, option)}
                                     defaultValue={Intl.get('apply.approve.first.higher.level', '直属上级') + '-0'}
@@ -239,7 +240,7 @@ class AddApplyNodePanel extends React.Component {
                                     {_.map(TEAM_HIGHER_LEVEL, (item,index) => {
                                         return <Option value={item.name + '-' + index} key={index}>{item.name}</Option>;
                                     })}
-                                </Select>
+                                </AntcSelect>
                             </div>
                             <div className="higher-level-item addition-condition-item">
                                 <Checkbox checked={higher_ups.higherLevelApproveChecked}
@@ -256,14 +257,14 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
-                                <Select showSearch
+                                <AntcSelect showSearch
                                     onChange={this.handleChangeSelectRole}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
                                     {_.map(this.state.roleList, (item,index) => {
                                         return <Option value={item.role_name + '-' + index} key={index}>{item.role_name}(
                                             {Intl.get('apply.add.approve.num.person', '{num}人', {num: item.num})})</Option>;
                                     })}
-                                </Select>
+                                </AntcSelect>
                             </div>
                         </div>
                     );
@@ -272,13 +273,13 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
-                                <Select showSearch
+                                <AntcSelect showSearch
                                     onChange={this.handleChangeSelectUser}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
                                     {_.map(this.state.userList, (item,index) => {
                                         return <Option value={item.nickName + '-' + index} key={index}>{item.nickName}</Option>;
                                     })}
-                                </Select>
+                                </AntcSelect>
                             </div>
                         </div>
                     );
@@ -473,7 +474,7 @@ class AddApplyNodePanel extends React.Component {
                                         </Checkbox>
                                         {this.state.workflowFormEmailTo ?
                                             <div>
-                                                <Select
+                                                <AntcSelect
                                                     mode="tags"
                                                     tokenSeparators={[',']}
                                                     onChange={this.handleChangeSelectEmailTo}
@@ -481,7 +482,7 @@ class AddApplyNodePanel extends React.Component {
                                                     {_.map(this.state.userList, (item,index) => {
                                                         return <Option value={item.userId} key={index}>{item.nickName}</Option>;
                                                     })}
-                                                </Select>
+                                                </AntcSelect>
                                                 {this.state.emailValidateErrMsg ? <div className='validate-err-msg'>{this.state.emailValidateErrMsg}</div> : null}
                                             </div>
                                             : null}

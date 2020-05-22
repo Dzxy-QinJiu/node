@@ -11,13 +11,13 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }
 var UserDetailChangeRecordStore = require('../store/user-detail-change-record-store');
 var UserDetailChangeRecordAction = require('../action/user-detail-change-record-actions');
-import {AntcTimeLine} from 'antc';
+import {AntcTimeLine, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 //滚动条
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
-import { Select, Alert } from 'antd';
+import { Alert } from 'antd';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
-var Option = Select.Option;
 import {CHANGE_RECORD_TYPE} from 'PUB_DIR/sources/utils/consts';
 import { recordChangeTimeLineItem } from 'PUB_DIR/sources/utils/common-method-util';
 //高度常量
@@ -167,13 +167,13 @@ class UserDetailChangeRecord extends React.Component {
 
     renderConditionZone() {
         return (
-            <Select
+            <AntcSelect
                 showSearch
                 value={this.state.selectedAppId}
                 onChange={this.handleChange}
                 filterOption={(input, option) => ignoreCase(input, option)}>
                 {this.getSelectOptions()}
-            </Select>
+            </AntcSelect>
         );
     }
 

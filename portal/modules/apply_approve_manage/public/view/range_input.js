@@ -4,11 +4,12 @@
  * Created by zhangshujuan on 2019/5/15.
  */
 import React, {useState} from 'react';
-import {Form, Input, Select} from 'antd';
+import {Form, Input} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 
 const FormItem = Form.Item;
 
-const {Option} = Select;
 
 
 class RangeInput extends React.Component {
@@ -71,14 +72,14 @@ class RangeInput extends React.Component {
                     })(
                         <span>
                             <Input type='number' min={1} placeholder={this.props.placeholder} onChange={this.props.onChangeInput}/>
-                            <Select onChange={this.props.onChangeSelect} defaultValue={_.get(selectArr, '[0].value')}>
+                            <AntcSelect onChange={this.props.onChangeSelect} defaultValue={_.get(selectArr, '[0].value')}>
                                 {_.map(selectArr, (item, index) => {
                                     if (_.isString(item)) {
                                         item = JSON.parse(item);
                                     }
                                     return (<Option key={index} value={item.value}>{item.label}</Option>);
                                 })}
-                            </Select>
+                            </AntcSelect>
                         </span>
                     )}
             </FormItem>

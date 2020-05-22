@@ -1,6 +1,7 @@
-import {Button, Modal, Form, Select, Icon, message} from 'antd';
+import {Button, Modal, Form, Icon, message} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 
-const Option = Select.Option;
 require('./style/index.less');
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 
@@ -163,7 +164,7 @@ class OpenApp extends React.Component {
     render() {
         const renderRoleFormItem = (role, index) => (
             <FormItem {...itemLayout} key={index} label={role.role_name}>
-                <Select
+                <AntcSelect
                     multiple={true}
                     value={role.userList.map(x => x.user_id)}
                     onChange={this.handleSelectChange.bind(this, role)}
@@ -176,7 +177,7 @@ class OpenApp extends React.Component {
                             <Option key={index} value={user.user_id}>{user.nick_name || user.user_name}</Option>
                         ))
                     }
-                </Select>
+                </AntcSelect>
                 <div className="role-item-btn-bar">
                     {
                         role.showEdit ?

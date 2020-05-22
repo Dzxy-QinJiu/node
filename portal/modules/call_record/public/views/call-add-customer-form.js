@@ -2,14 +2,13 @@ var React = require('react');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
-import {Icon,Form,Input,Select,message}from 'antd';
+import {Icon,Form,Input,message}from 'antd';
 var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 var RightPanelCancel = rightPanelUtil.RightPanelCancel;
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var FormItem = Form.Item;
-var Option = Select.Option;
 var CrmAction = require('../../../crm/public/action/crm-actions');
 import {customerNameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var ContactUtil = require('../../../crm/public/utils/contact-util');
@@ -20,7 +19,8 @@ import ajax from '../../../common/ajax';
 var CallRecordAction = require('../action/call-record-actions');
 var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
-import { AntcAreaSelection } from 'antc';
+import { AntcAreaSelection, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 import {renderCustomerNameMsg} from 'PUB_DIR/sources/utils/common-method-util';
 
@@ -301,7 +301,7 @@ var CallAddCustomerForm = createReactClass({
                                 <div className="industry-list-loading"><ReactIntl.FormattedMessage id="crm.88" defaultMessage="正在获取行业列表" /><Icon type="loading"/></div>) : (
                                 <Validator
                                     rules={[{required: true, message: Intl.get('crm.22', '请选择行业')}]}>
-                                    <Select showSearch placeholder={Intl.get('crm.22', '请选择行业')} name="industry"
+                                    <AntcSelect showSearch placeholder={Intl.get('crm.22', '请选择行业')} name="industry"
                                         searchPlaceholder={Intl.get('crm.89', '输入行业进行搜索')}
                                         optionFilterProp="children"
                                         notFoundContent={!industryList.length ? Intl.get('crm.24', '暂无行业') : Intl.get('crm.23', '无相关行业')}
@@ -311,7 +311,7 @@ var CallAddCustomerForm = createReactClass({
                                         filterOption={(input, option) => ignoreCase(input, option)}
                                     >
                                         {industryOptions}
-                                    </Select>
+                                    </AntcSelect>
                                 </Validator>)}
                         </FormItem >
                         <AntcAreaSelection labelCol="6" wrapperCol="18" width="420"
@@ -366,13 +366,13 @@ var CallAddCustomerForm = createReactClass({
                             help={status.contacts0_role.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_role.errors && status.contacts0_role.errors.join(','))}
                         >
                             <Validator rules={[{required: true,min: 1, message: Intl.get('crm.93', '请输入联系人角色')}]}>
-                                <Select name="contacts0_role" placeholder={Intl.get('crm.94', '请输入角色')}
+                                <AntcSelect name="contacts0_role" placeholder={Intl.get('crm.94', '请输入角色')}
                                     value={this.state.formData.contacts0_role}
                                     onChange={this.setField.bind(this, 'contacts0_role')}
                                     onSelect={this.handleSelect.bind(this, 'contacts0_role')}
                                 >
                                     {roleOptions}
-                                </Select>
+                                </AntcSelect>
                             </Validator>
                         </FormItem>
                         <div className="show-call-phone">

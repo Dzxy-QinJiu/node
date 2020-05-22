@@ -2,11 +2,10 @@
  * 通话分析 
  */
 
-import {Select} from 'antd';
-const Option = Select.Option;
 var RightContent = require('CMP_DIR/privilege/right-content');
 var TopNav = require('CMP_DIR/top-nav');
-import { AntcAnalysis, AntcDatePicker } from 'antc';
+import { AntcAnalysis, AntcDatePicker, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import CallAnalysisAction from '../action/call-analysis-action';
 import CallAnalysisStore from '../store/call-analysis-store';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
