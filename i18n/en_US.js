@@ -30,6 +30,7 @@ var en_US = {
     'menu.competing.product': 'Competing products', // 竞品
     'menu.sales.process': 'Customer Stage', // 客户阶段
     'menu.clue.integration': 'Lead integration', // 线索集成
+    'menu.field.manage': 'Field Manage', // 字段管理
     'menu.clue.allocation': 'Lead allocation', // 线索分配
     'menu.my.company': 'My Company', // 我的企业
     'menu.user': 'Members',//成员管理

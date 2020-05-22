@@ -290,6 +290,14 @@ let routers = [
                 routePath: '/settings/leads/integration',
                 component: `${MODULE_PATH}clue_integration/public`,
                 showPrivileges: ['DATA_INTEGRATION_MANAGE']
+            },
+            {
+                id: 'FIELD_MANAGE',
+                name: 'menu.field.manage',// 字段管理
+                routePath: '/settings/field',
+                component: `${MODULE_PATH}custom_field_manage/public`,
+                //有这个权限，才显示入口图标
+                showPrivileges: ['ORGANIZATION_CONFIG']
             }]
     },
     {

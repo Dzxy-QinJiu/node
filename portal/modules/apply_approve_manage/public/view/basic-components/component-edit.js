@@ -30,6 +30,14 @@ class componentEdit extends React.Component {
         };
     }
 
+    componentWillReceiveProps(nextProps) {
+        if ( !_.isEqual(this.state.formItem, nextProps.formItem) ) {
+            this.setState({
+                formItem: _.cloneDeep(nextProps.formItem),
+            });
+        }
+    }
+
     onStoreChange = () => {
 
     };

@@ -29,6 +29,7 @@ var zh_CN = {
     'menu.competing.product': '竞品',
     'menu.sales.process': '客户阶段',
     'menu.clue.integration': '线索集成',
+    'menu.field.manage': '字段管理',
     'menu.clue.allocation': '线索分配',
     'menu.my.company': '我的企业',
     'menu.user': '成员管理',
@@ -1088,6 +1089,13 @@ var zh_CN = {
     'clue.integration.failed.regenerate.create': '重新生成密钥失败',
     'clue.integration.failed.create': '生成密钥失败',
     // 后台管理-线索集成end
+    
+    // 后台管理-自定义字段start
+    'custom.field.title': '字段名',
+    'custom.field.add.title': '添加{name}字段',
+    'custom.field.edit.title': '{name}字段',
+    'custom.field.input.placeholder': '请输入{name}',
+    // 后台管理-自定义字段end
 
     //应用管理start
     'app.title': '应用管理',
