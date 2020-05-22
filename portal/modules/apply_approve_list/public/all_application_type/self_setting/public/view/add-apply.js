@@ -59,9 +59,9 @@ class AddApply extends React.Component {
             }
             values = _.cloneDeep(values);
             values['customers'] = [_.get(this.state, 'formData.customer')];
-            let customizForm = this.getCustomizeForm();
-            var customerTarget = _.find(customizForm,item => item.component_type === ALL_COMPONENTS.CUSTOMERSEARCH);
-            var userTarget = _.find(customizForm,item => item.component_type === ALL_COMPONENTS.USER_SEARCH);
+            let customizeForm = this.getCustomizeForm();
+            var customerTarget = _.find(customizeForm,item => item.component_type === ALL_COMPONENTS.CUSTOMERSEARCH);
+            var userTarget = _.find(customizeForm,item => item.component_type === ALL_COMPONENTS.USER_SEARCH);
             if (_.get(customerTarget,'is_required') && !_.get(values, 'customers[0].id')){
                 return;
             }
@@ -173,11 +173,11 @@ class AddApply extends React.Component {
     };
     getCustomizeForm = () => {
         var workConfig = _.find(this.state.workFlowList,item => item.type === this.props.addWorkFlowType);
-        let customizForm = [];
+        let customizeForm = [];
         if(workConfig){
-            customizForm = workConfig.customiz_form;
+            customizeForm = workConfig.customiz_form;
         }
-        return customizForm;
+        return customizeForm;
     };
     handleOptionChange = (userData) => {
         this.setState({
@@ -203,7 +203,7 @@ class AddApply extends React.Component {
         };
         let saveResult = this.state.saveResult;
         var workConfig = _.find(this.state.workFlowList,item => item.type === this.props.addWorkFlowType);
-        let customizForm = this.getCustomizeForm();
+        let customizeForm = this.getCustomizeForm();
         return (
             <RightPanel showFlag={true} data-tracename="添加自定义的申请" className="add-leave-container">
                 <span className="iconfont icon-close add-leave-apply-close-btn"
@@ -217,7 +217,7 @@ class AddApply extends React.Component {
                         <GeminiScrollbar>
                             <div className="add-leave-form">
                                 <Form layout='horizontal' className="sales-clue-form" id="add-leave-apply-form">
-                                    {_.map(customizForm,(formItem,index) => {
+                                    {_.map(customizeForm,(formItem,index) => {
                                         var target = _.find(ADDAPPLYFORMCOMPONENTS, item => item.component_type === _.get(formItem, 'component_type'));
                                         if (target.component_type === ALL_COMPONENTS.DATETIME){//时间组件要按type类型进行区分
                                             target = _.find(ADDAPPLYFORMCOMPONENTS, item => item.type === _.get(formItem, 'type'));

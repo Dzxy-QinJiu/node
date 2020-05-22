@@ -396,12 +396,12 @@ class ApplyViewDetail extends React.Component {
 
     renderDetailApplyBlock(detailInfo) {
         //找到流程保存的组件
-        var detail = detailInfo.detail || {}, customizForm = [], showApplyInfo = [];
+        var detail = detailInfo.detail || {}, customizeForm = [], showApplyInfo = [];
         var applyLists = this.state.workFlowList;
         var workFlowConfig = _.find(applyLists, item => item.type === this.props.workFlowType);
         if (workFlowConfig) {
-            customizForm = workFlowConfig.customiz_form;
-            _.forEach(customizForm, item => {
+            customizeForm = workFlowConfig.customiz_form;
+            _.forEach(customizeForm, item => {
                 var showItem = detail[item.key];
                 if (showItem) {
                     //有几个需要特殊处理的组件展示
@@ -443,23 +443,15 @@ class ApplyViewDetail extends React.Component {
                             text: showItem.date_time
                         });
                     }else{
-                        var showDes = _.isString(showItem) ? showItem : '';
-                        if(_.isArray(showItem)){
-                            showDes = showItem.join(',');
-                        }
                         showApplyInfo.push({
                             label: _.get(item, 'title'),
-                            text: showDes
+                            text: this.getShowDes()
                         });
                     }
                 }else{
-                    var showDes = _.isString(showItem) ? showItem : '';
-                    if(_.isArray(showItem)){
-                        showDes = showItem.join(',');
-                    }
                     showApplyInfo.push({
                         label: _.get(item, 'title'),
-                        text: showDes
+                        text: this.getShowDes()
                     });
                 }
             });
@@ -471,6 +463,13 @@ class ApplyViewDetail extends React.Component {
             );
         }
     }
+    getShowDes = (showItem) => {
+        var showDes = _.isString(showItem) ? showItem : '';
+        if(_.isArray(showItem)){
+            showDes = showItem.join(',');
+        }
+        return showDes;
+    };
 
     //添加一条回复
     addReply = (e, callback) => {
