@@ -19,7 +19,7 @@
     "gen-route": "node ./portal/generator/generateRoute.js",
     "start": "node app.js -p",
     "build": "npm run gen-route && npm run dll && npm run webpack && npm run server",
-    "production": "npm run build && npm run start",
+    "production": "npm run build && npm run start"
   },
   "lint-staged": {
     "*.{js,jsx}": [
