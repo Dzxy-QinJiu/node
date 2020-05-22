@@ -4,7 +4,9 @@
  * Created by zhangshujuan on 2019/8/23.
  */
 
-import {Input, Select, Radio, Checkbox, Form} from 'antd';
+import {Input, Radio, Checkbox, Form} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 class CustomerContent extends React.Component {
     constructor(props) {

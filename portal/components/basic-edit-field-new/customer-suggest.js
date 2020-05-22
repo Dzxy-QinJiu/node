@@ -1,7 +1,9 @@
 var React = require('react');
 require('./css/customer-suggest.less');
 import {Link} from 'react-router-dom';
-import {Select, Tag, Form} from 'antd';
+import {Tag, Form} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 var crmCustomerAjax = require('MOD_DIR/crm/public/ajax/index');
 var userData = require('PUB_DIR/sources/user-data');
 var classNames = require('classnames');
@@ -535,7 +537,7 @@ class CustomerSuggest extends React.Component {
 
         var selectBlock = this.state.displayType === 'edit' ? (
             <div ref="customer_searchbox" className="associate-customer-wrap">
-                <Select
+                <AntcSelect
                     ref="selectSearch"
                     className={this.getCustomerTipErrmsg() ? 'err-tip' : ''}
                     name={this.props.name}
@@ -561,7 +563,7 @@ class CustomerSuggest extends React.Component {
                             );
                         })
                     }
-                </Select>
+                </AntcSelect>
                 {this.getCustomerTipBlock()}
                 <div className="buttons">
                     {!this.props.hideButtonBlock ?

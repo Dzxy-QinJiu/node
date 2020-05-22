@@ -7,8 +7,9 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('../css/add-sales-opportunity-apply.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Form, Input, Button, Icon, message, DatePicker, Select} from 'antd';
-var Option = Select.Option;
+import {Form, Input, Button, Icon, message, DatePicker} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
@@ -286,7 +287,7 @@ class AddSalesOpportunityApply extends React.Component {
                                                 rules: [{required: true, message: Intl.get('leave.apply.select.atleast.one.app','请选择至少一个产品')}],
                                                 validateTrigger: 'onBlur'
                                             })(
-                                                <Select
+                                                <AntcSelect
                                                     mode='multiple'
                                                     placeholder={Intl.get('leave.apply.select.product','请选择产品')}
                                                     name="apps"
@@ -298,7 +299,7 @@ class AddSalesOpportunityApply extends React.Component {
                                                             return (<Option key={idx} value={appItem.client_id}>{appItem.client_name}</Option>);
                                                         }) : null
                                                     }
-                                                </Select>
+                                                </AntcSelect>
                                             )}
                                     </FormItem>
                                     <FormItem

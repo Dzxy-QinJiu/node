@@ -3,8 +3,9 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/5/17.
  */
-import {Input, Select, DatePicker, Form, Row, Col} from 'antd';
-const Option = Select.Option;
+import {Input, DatePicker, Form, Row, Col} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
 import classNames from 'classnames';
 import {DELAY_TIME_RANGE, LEAVE_TIME_RANGE, AM_AND_PM} from 'PUB_DIR/sources/utils/consts';
@@ -232,7 +233,7 @@ class TimePeriod extends React.Component {
                                             initialValue: 'AM'
                                         })(
                                             _.get(formItem, 'selected_value') === '0.5day' ?
-                                                <Select
+                                                <AntcSelect
                                                     onChange={this.onBeginTypeChange}
 
                                                 >
@@ -241,7 +242,7 @@ class TimePeriod extends React.Component {
                                                             return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
                                                         }) : null
                                                     }
-                                                </Select>
+                                                </AntcSelect>
                                                 : null
 
                                         )}
@@ -274,7 +275,7 @@ class TimePeriod extends React.Component {
 
                                         {getFieldDecorator(_.get(formItem, 'formItemKey') + '.end_type',{initialValue: 'PM'})(
                                             _.get(formItem, 'selected_value') === '0.5day' ?
-                                                <Select
+                                                <AntcSelect
                                                     onChange={this.onEndTypeChange}
 
                                                 >
@@ -283,7 +284,7 @@ class TimePeriod extends React.Component {
                                                             return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
                                                         }) : null
                                                     }
-                                                </Select> : null
+                                                </AntcSelect> : null
 
                                         )}
                                     </FormItem>

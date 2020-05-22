@@ -14,7 +14,8 @@ var clueFilterAction = require('./action/filter-action');
 var userData = require('../../../public/sources/user-data');
 import Trace from 'LIB_DIR/trace';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
-import {SearchInput, AntcTable} from 'antc';
+import {SearchInput, AntcTable, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 import {
     message,
     Icon,
@@ -22,7 +23,6 @@ import {
     Col,
     Button,
     Alert,
-    Select,
     Modal,
     Radio,
     Input,
@@ -34,7 +34,6 @@ import {
 } from 'antd';
 const {TextArea} = Input;
 const RadioGroup = Radio.Group;
-const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
 import queryString from 'query-string';
 import {removeSpacesAndEnter, getTableContainerHeight, getCertainTabsTitle} from 'PUB_DIR/sources/utils/common-method-util';

@@ -8,7 +8,9 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 var applyBusinessDetailStore = require('../store/apply-business-detail-store');
 var ApplyViewDetailActions = require('../action/apply-view-detail-action');
 import Trace from 'LIB_DIR/trace';
-import {Alert, Icon, Input, Row, Col, Button,Steps,message,DatePicker,Select, Popover} from 'antd';
+import {Alert, Icon, Input, Row, Col, Button,Steps,message,DatePicker,Popover} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const Step = Steps.Step;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -522,7 +524,7 @@ class ApplyViewDetail extends React.Component {
                     value={visit_start_time ? moment(visit_start_time) : ''}
                     disabledDate={disabledDate}
                 />
-                <Select
+                <AntcSelect
                     onChange={this.handleChangeTotalStartType}
                     value={startValue}
                 >
@@ -532,14 +534,14 @@ class ApplyViewDetail extends React.Component {
                             return (<Option key={idx} value={item.value}>{item.name}</Option>);
                         }) : null
                     }
-                </Select>
+                </AntcSelect>
                 <DatePicker
                     allowClear={false}
                     onChange={this.onEndTimeTotalChange}
                     value={visit_end_time ? moment(visit_end_time) : ''}
                     disabledDate={disabledDate}
                 />
-                <Select
+                <AntcSelect
                     onChange={this.handleChangeTotalEndType}
                     value={endValue}
                 >
@@ -548,7 +550,7 @@ class ApplyViewDetail extends React.Component {
                             return (<Option key={idx} value={item.value}>{item.name}</Option>);
                         }) : null
                     }
-                </Select>
+                </AntcSelect>
                 <span>
                     {this.state.isEditting ? <Icon type="loading"/> : <span>
                         <span className="iconfont icon-choose" onClick={this.saveChangeCustomerTotalRange}></span>
@@ -609,7 +611,7 @@ class ApplyViewDetail extends React.Component {
                     value={visit_start_time ? moment(visit_start_time) : ''}
                     disabledDate={disabledDate.bind(this, initialStartTime, initialEndTime)}
                 />
-                <Select
+                <AntcSelect
                     onChange={this.handleChangeStartType}
                     value={startValue}
                 >
@@ -619,14 +621,14 @@ class ApplyViewDetail extends React.Component {
                             return (<Option key={idx} value={item.value}>{item.name}</Option>);
                         }) : null
                     }
-                </Select>
+                </AntcSelect>
                 <DatePicker
                     allowClear={false}
                     onChange={this.onEndTimeCustomerChange}
                     value={visit_end_time ? moment(visit_end_time) : ''}
                     disabledDate={disabledDate.bind(this, initialStartTime, initialEndTime)}
                 />
-                <Select
+                <AntcSelect
                     onChange={this.handleChangeEndType}
                     value={endValue}
                 >
@@ -635,7 +637,7 @@ class ApplyViewDetail extends React.Component {
                             return (<Option key={idx} value={item.value}>{item.name}</Option>);
                         }) : null
                     }
-                </Select>
+                </AntcSelect>
                 <span>
                     {this.state.isEditting ? <Icon type="loading"/> : <span>
                         <span className="iconfont icon-choose" onClick={this.saveChangeCustomerVisistRange.bind(this, record)}></span>

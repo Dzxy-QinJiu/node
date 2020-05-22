@@ -1,6 +1,7 @@
 require('../css/member-add-form.less');
-import {Form, Input, Select, Icon, Button, message} from 'antd';
-const Option = Select.Option;
+import {Form, Input, Icon, Button, message} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
 import HeadIcon from 'CMP_DIR/headIcon';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -591,7 +592,7 @@ class MemberForm extends React.Component {
                                     }],
                                     validateTrigger: 'onBlur'
                                 })(
-                                    <Select
+                                    <AntcSelect
                                         size='large'
                                         optionFilterProp="children"
                                         placeholder={Intl.get('member.select.role', '请选择角色')}
@@ -601,7 +602,7 @@ class MemberForm extends React.Component {
                                         getPopupContainer={() => document.getElementById('user-add-form')}
                                     >
                                         {this.renderRoleOptions()}
-                                    </Select>
+                                    </AntcSelect>
                                 )}
                             </FormItem>
                             <FormItem
@@ -617,7 +618,7 @@ class MemberForm extends React.Component {
                                         <div>
                                             {
                                                 getFieldDecorator('position')(
-                                                    <Select
+                                                    <AntcSelect
                                                         combobox
                                                         name="position"
                                                         id="position"
@@ -637,7 +638,7 @@ class MemberForm extends React.Component {
                                                         getPopupContainer={() => document.getElementById('user-add-form')}
                                                     >
                                                         {this.renderPositionOptions()}
-                                                    </Select>
+                                                    </AntcSelect>
                                                 )
                                             }
                                             {
@@ -723,7 +724,7 @@ class MemberForm extends React.Component {
                                     </div>) : (
                                     <div className={addTeamCls}>
                                         {getFieldDecorator('team')(
-                                            <Select
+                                            <AntcSelect
                                                 name="team"
                                                 id="team"
                                                 placeholder={Intl.get('contract.67', '请选择部门')}
@@ -738,7 +739,7 @@ class MemberForm extends React.Component {
                                                 getPopupContainer={() => document.getElementById('user-add-form')}
                                             >
                                                 {this.renderTeamOptions()}
-                                            </Select>
+                                            </AntcSelect>
                                         )}
                                         {this.props.isShowAddGroupFrom ? <i title={Intl.get('guide.add.member.team.tip', '添加新部门')} className="iconfont icon-add handle-btn-item" onClick={this.setAddGroupForm.bind(this, true)}/> : null}
                                     </div>)

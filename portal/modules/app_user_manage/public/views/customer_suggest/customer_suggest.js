@@ -6,7 +6,8 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }else if (language.lan() === 'zh'){
     require('./customer_suggest-zh_CN.less');
 }
-var Select = require('antd').Select;
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 var Icon = require('antd').Icon;
 import {Link} from 'react-router-dom';
 var crmCustomerAjax = require('MOD_DIR/crm/public/ajax/index');
@@ -354,7 +355,7 @@ class CustomerSuggest extends React.Component {
 
             return (
                 <div ref="customer_searchbox" className={wrapClassName}>
-                    <Select
+                    <AntcSelect
                         combobox
                         searchPlaceholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
                         filterOption={() => _.get(this.state.list, 'length', 0)}
@@ -373,7 +374,7 @@ class CustomerSuggest extends React.Component {
                                 );
                             })
                         }
-                    </Select>
+                    </AntcSelect>
                     {this.getCustomerLoadingBlock()}
                     {this.getCustomerTipBlock()}
                 </div>

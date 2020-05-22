@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 require('../css/crm-add-form.less');
-import { Icon, Form, Input, Select, message } from 'antd';
-import { AntcAreaSelection } from 'antc';
+import { Icon, Form, Input, message } from 'antd';
+import { AntcAreaSelection, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 
 var FormItem = Form.Item;
-var Option = Select.Option;
 var CrmAction = require('../action/crm-actions');
 const GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var crmUtil = require('../utils/crm-util');
@@ -496,7 +496,7 @@ class CRMAddForm extends React.Component {
                                             defaultMessage="正在获取行业列表"/>
                                         <Icon type="loading"/></div>) : (
                                     getFieldDecorator('industry')(
-                                        <Select
+                                        <AntcSelect
                                             showSearch
                                             placeholder={Intl.get('crm.22', '请选择行业')}
                                             searchPlaceholder={Intl.get('crm.89', '输入行业进行搜索')}
@@ -509,7 +509,7 @@ class CRMAddForm extends React.Component {
                                             filterOption={(input, option) => ignoreCase(input, option)}
                                         >
                                             {industryOptions}
-                                        </Select>
+                                        </AntcSelect>
                                     )
                                 )}
                             </FormItem >
@@ -520,12 +520,12 @@ class CRMAddForm extends React.Component {
                                 >
                                     {
                                         getFieldDecorator('administrative_level')(
-                                            <Select
+                                            <AntcSelect
                                                 placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
                                                 getPopupContainer={() => document.getElementById('crm-add-form')}
                                             >
                                                 {this.getAdministrativeLevelOptions()}
-                                            </Select>
+                                            </AntcSelect>
                                         )
                                     }
                                 </FormItem >

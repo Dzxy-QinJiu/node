@@ -8,9 +8,9 @@ import DetailCard from 'CMP_DIR/detail-card';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
-import { AntcChart } from 'antc';
-import { Progress, Tooltip, Icon, Alert, Select, Popover, Checkbox } from 'antd';
-const Option = Select.Option;
+import { AntcChart, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
+import { Progress, Tooltip, Icon, Alert, Popover, Checkbox } from 'antd';
 import PropTypes from 'prop-types';
 import {DATE_SELECT} from 'PUB_DIR/sources/utils/consts';
 //是否在蚁坊域的判断方法
@@ -657,13 +657,13 @@ class UserLoginAnalysis extends React.Component {
                         id="user.login.last.title"
                         defaultMessage={'{title} 的活跃统计'}
                         values={{
-                            'title': <Select
+                            'title': <AntcSelect
                                 style={{ width: 100 }}
                                 value={timeType}
                                 onChange={this.handleSelectDate.bind(this, app)}
                             >
                                 {list}
-                            </Select>
+                            </AntcSelect>
                         }}
                     />:
                 </div>

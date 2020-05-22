@@ -2,8 +2,9 @@
  * onChange 选择行业后调用，会传入选择的行业名
  */
 const crmAjax = require('MOD_DIR/crm/public/ajax');
-import { Select, Spin, Alert } from 'antd';
-const Option = Select.Option;
+import { Spin, Alert } from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const defualtValueObj = {
     industry: Intl.get('oplate_customer_analysis.allIndustries', '全部行业')
 };
@@ -62,13 +63,13 @@ class IndustrySelector extends React.Component {
         }
         if (!loading && !errorMsg) {
             return (
-                <Select
+                <AntcSelect
                     value={this.state.selectedValue}
                     onChange={this.handleSelect.bind(this)}
                     dropdownMatchSelectWidth={false}
                 >
                     {list}
-                </Select>
+                </AntcSelect>
             );
         }
         if (errorMsg) {

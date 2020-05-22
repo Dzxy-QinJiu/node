@@ -8,10 +8,10 @@ import rightPanelUtil from 'CMP_DIR/rightPanel/index';
 const RightPanelClose = rightPanelUtil.RightPanelClose;
 import ClueAnalysisStore from '../store/clue-analysis-store';
 import ClueAnalysisAction from '../action/clue-analysis-action';
-import { AntcDatePicker as DatePicker } from 'antc';
-import {Select, Tabs} from 'antd';
+import { AntcDatePicker as DatePicker, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
+import {Tabs} from 'antd';
 const TabPane = Tabs.TabPane;
-const Option = Select.Option;
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import {AntcAnalysis} from 'antc';
 import PropTypes from 'prop-types';
@@ -229,21 +229,21 @@ class ClueAnalysisPanel extends React.Component {
         return (
             <div className="filter-clue-wrap">
                 {Intl.get('clue.analysis.access.channel', '渠道')}：
-                <Select
+                <AntcSelect
                     value={this.state.selectedAccess}
                     dropdownMatchSelectWidth={false}
                     onChange={this.handleAccessSelect}
                 >
                     {AccessOptions}
-                </Select>
+                </AntcSelect>
                 {Intl.get('clue.analysis.source', '来源')}：
-                <Select
+                <AntcSelect
                     value={this.state.selectedSource}
                     dropdownMatchSelectWidth={false}
                     onChange={this.handleSourceSelect}
                 >
                     {ClueOptions}
-                </Select>
+                </AntcSelect>
             </div>
         );
     }

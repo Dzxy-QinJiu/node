@@ -3,9 +3,10 @@ const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 require('../css/apply-user-form.less');
 require('../../../../public/css/antd-vertical-tabs.css');
-import {Form, Input, Radio, Select, DatePicker,Checkbox} from 'antd';
+import {Form, Input, Radio, DatePicker,Checkbox} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const {TextArea} = Input;
-const Option = Select.Option;
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 import UserTimeRangeField from '../../../../components/user_manage_components/user-time-rangefield';
@@ -560,7 +561,7 @@ const ApplyUserForm = createReactClass({
         }
         if (emailList.length) {
             return (
-                <Select combobox
+                <AntcSelect combobox
                     name="user_name"
                     placeholder={placeholder}
                     filterOption={false}
@@ -571,7 +572,7 @@ const ApplyUserForm = createReactClass({
                     {emailList.map((email, i) => {
                         return (<Option key={i} value={email}>{email}</Option>);
                     })}
-                </Select>
+                </AntcSelect>
             );
         } else {
             return input;
@@ -708,7 +709,7 @@ const ApplyUserForm = createReactClass({
         });*/
         var formData = this.state.formData;
         return (
-            <Select combobox
+            <AntcSelect combobox
                 name="tag"
                 placeholder={Intl.get('crm.input.your.apply.user.type', '请输入或选择您申请的用户类型')}
                 filterOption={false}
@@ -719,7 +720,7 @@ const ApplyUserForm = createReactClass({
                 {UserTypeList.map((userType, i) => {
                     return (<Option key={i} value={userType}>{userType}</Option>);
                 })}
-            </Select>
+            </AntcSelect>
         );
     },
 
@@ -807,7 +808,7 @@ const ApplyUserForm = createReactClass({
                                     message: Intl.get('user.product.select.please','请选择产品'),
                                     type: 'array'
                                 }]}>
-                                    <Select
+                                    <AntcSelect
                                         mode="tags"
                                         value={selectAppIds}
                                         name='selectAppIds'
@@ -815,7 +816,7 @@ const ApplyUserForm = createReactClass({
                                         placeholder={Intl.get('user.product.select.please','请选择产品')}
                                         onChange={this.handleChangeApps.bind(this)}>
                                         {this.getAppOptions(selectAppIds)}
-                                    </Select>
+                                    </AntcSelect>
                                 </Validator>
                             </FormItem>
                             {_.isArray(selectAppIds) && selectAppIds.length ? (

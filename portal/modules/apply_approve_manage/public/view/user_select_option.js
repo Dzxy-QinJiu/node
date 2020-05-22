@@ -3,7 +3,9 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/5/16.
  */
-import {Input, Select, Radio, Checkbox, Form} from 'antd';
+import {Input, Radio, Checkbox, Form} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 import {formItemLayout, maxFormItemLayout} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import {formatUsersmanDataList} from 'PUB_DIR/sources/utils/common-method-util';
@@ -76,7 +78,7 @@ class SelectOption extends React.Component {
                             message: _.get(formItem, 'is_required_errmsg')
                         }, {validator: this.validatorInput}]
                     })(
-                        <Select
+                        <AntcSelect
                             showSearch
                             placeholder={this.props.placeholder}
                             filterOption={(input, option) => ignoreCase(input, option)}
@@ -85,7 +87,7 @@ class SelectOption extends React.Component {
                             {_.map(formatUsersmanDataList(usersManList), (item) => {
                                 return <Option value={item.value + '&&' + item.nickName + '&&' + item.userName}>{item.nickName || item.userName}</Option>;
                             })}
-                        </Select>
+                        </AntcSelect>
                     )}
             </FormItem>
         );

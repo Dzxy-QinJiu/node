@@ -1,5 +1,6 @@
-import {Button, message, Select} from 'antd';
-const Option = Select.Option;
+import {Button, message} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 var ContactUtil = require('../../utils/contact-util');
 var ContactAction = require('../../action/contact-action');
 import Trace from 'LIB_DIR/trace';

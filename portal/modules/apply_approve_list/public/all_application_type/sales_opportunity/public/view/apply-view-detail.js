@@ -6,9 +6,10 @@
 var SalesOpportunityApplyDetailStore = require('../store/sales-opportunity-apply-detail-store');
 var SalesOpportunityApplyDetailAction = require('../action/sales-opportunity-apply-detail-action');
 import Trace from 'LIB_DIR/trace';
-import {Alert, Icon, Input, Row, Col, Button,message, Select, Steps, Popover} from 'antd';
+import {Alert, Icon, Input, Row, Col, Button,message, Steps, Popover} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const Step = Steps.Step;
-const Option = Select.Option;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from 'CMP_DIR/rightPanel';
