@@ -1,6 +1,7 @@
 /**
  * Created by hzl on 2020/5/16.
  */
+import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import { manageCustomTab, customFieldDefaultValue,
     customFieldCheckOptions, customFieldSelectOptions } from 'PUB_DIR/sources/utils/consts';
@@ -12,6 +13,8 @@ import SelectCustomField from './select-custom-field-component';
 import {selectCustomFieldComponents} from '../utils';
 import ajax from '../ajax';
 require('../css/custom-field-panel.less');
+
+const TitleHeight = 100;
 
 class CustomFieldPanel extends React.Component {
     constructor(props) {
@@ -151,54 +154,56 @@ class CustomFieldPanel extends React.Component {
                 }
             }
         }
-        
+        const height = $(window).height() - TitleHeight;
         return (
-            <Form className="form">
-                <FormItem>
-                    {getFieldDecorator('name', {
-                        initialValue: _.get(this.state.editCustomField, 'name'),
-                        rules: [validatorNameRuleRegex(10, name)],
-                        validateTrigger: 'onBlur'
-                    })(
-                        <Input
-                            placeholder={Intl.get('custom.field.input.placeholder', '请输入{name}', {name: name})}
-                        />
-                    )}
-                </FormItem>
-                <FormItem>
-                    {getFieldDecorator('checkbox', {
-                        valuePropName: 'checked'
-                    })(
-                        <CheckboxGroup
-                            options={customFieldCheckOptions}
-                            defaultValue={this.state.defaultCheckedValue}
-                        />
-                    )}
-                </FormItem>
-                <FormItem>
-                    {getFieldDecorator('select', {
-                        initialValue: _.get(this.state.editCustomField, 'field_type')
-                    })(
-                        <Select placeholder="选择字段类型">
-                            {
-                                _.map(customFieldSelectOptions, item => {
-                                    return <Option value={item.value}>{item.name}</Option>;
-                                })
-                            }
-                        </Select>
-                    )}
-                </FormItem>
-                {
-                    selectCustomType ? (
-                        <SelectCustomField
-                            form={this.props.form}
-                            formItem={selectComponent}
-                            handleCancel={this.handleCancel}
-                            handleSubmit={this.handleSubmit}
-                        />
-                    ) : null
-                }
-            </Form>
+            <GeminiScrollBar style={{height: height}}>
+                <Form className="form">
+                    <FormItem>
+                        {getFieldDecorator('name', {
+                            initialValue: _.get(this.state.editCustomField, 'name'),
+                            rules: [validatorNameRuleRegex(10, name)],
+                            validateTrigger: 'onBlur'
+                        })(
+                            <Input
+                                placeholder={Intl.get('custom.field.input.placeholder', '请输入{name}', {name: name})}
+                            />
+                        )}
+                    </FormItem>
+                    <FormItem>
+                        {getFieldDecorator('checkbox', {
+                            valuePropName: 'checked'
+                        })(
+                            <CheckboxGroup
+                                options={customFieldCheckOptions}
+                                defaultValue={this.state.defaultCheckedValue}
+                            />
+                        )}
+                    </FormItem>
+                    <FormItem>
+                        {getFieldDecorator('select', {
+                            initialValue: _.get(this.state.editCustomField, 'field_type')
+                        })(
+                            <Select placeholder="选择字段类型">
+                                {
+                                    _.map(customFieldSelectOptions, item => {
+                                        return <Option value={item.value}>{item.name}</Option>;
+                                    })
+                                }
+                            </Select>
+                        )}
+                    </FormItem>
+                    {
+                        selectCustomType ? (
+                            <SelectCustomField
+                                form={this.props.form}
+                                formItem={selectComponent}
+                                handleCancel={this.handleCancel}
+                                handleSubmit={this.handleSubmit}
+                            />
+                        ) : null
+                    }
+                </Form>
+            </GeminiScrollBar>
         );
     };
 

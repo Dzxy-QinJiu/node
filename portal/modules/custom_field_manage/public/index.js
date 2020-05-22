@@ -8,6 +8,14 @@ import classNames from 'classnames';
 import Spinner from 'CMP_DIR/spinner';
 import CustomFieldPanel from './views/custom-field-panel';
 import ajax from './ajax';
+const LAYOUT_CONSTANTS = {
+    FRIST_NAV_WIDTH: 75, // 一级导航的宽度
+    NAV_WIDTH: 120, // 导航宽度
+    TOP_ZONE_HEIGHT: 80, // 头部（添加成员、筛选的高度）高度
+    TABLE_HEAD_HEIGHT: 40, // 表格头部的高度
+    PADDING_WIDTH: 24 * 2, // padding占的宽度
+    PADDING_HEIGHT: 24 * 2 // padding占的高度
+};
 require('./css/index.less');
 
 class CustomFieldManage extends React.Component {
@@ -24,7 +32,12 @@ class CustomFieldManage extends React.Component {
     }
 
     componentDidMount() {
+        $('body').css('overflow', 'hidden');
         this.getCustomFieldConfig();
+    }
+
+    componentWillUnmount() {
+        $('body').css('overflow', 'auto');
     }
 
     // 获取自定义参数配置
@@ -218,8 +231,10 @@ class CustomFieldManage extends React.Component {
     renderTableContent = () => {
         let columns = this.getTableColumns();
         const dataSource = _.get(this.state.customFieldData, '[0]customized_variables', []);
+        let tableHeight = $(window).height() - LAYOUT_CONSTANTS.PADDING_HEIGHT -
+            LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT - LAYOUT_CONSTANTS.TABLE_HEAD_HEIGHT;
         return (
-            <div className="scroll-load">
+            <div className="scroll-load" style={{height: tableHeight}}>
                 <AntcTable
                     tableType='data'
                     util={{zoomInSortArea: true}}
@@ -229,6 +244,7 @@ class CustomFieldManage extends React.Component {
                     rowClassName={this.handleRowClassName}
                     pagination={false}
                     locale={{ emptyText: Intl.get('common.no.data', '暂无数据')}}
+                    scroll={{ y: tableHeight }}
                 />
             </div>
         );
