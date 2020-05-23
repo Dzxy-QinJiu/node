@@ -25,7 +25,6 @@ class PhoneCallout extends React.Component {
             ableClickCheckPhoneIcon: true,//是否可以点击检测按钮
             checkPhonePopContent: null,
             checkPhoneVisible: false,
-            showConfirmSingleCheckPhone: false,//此号码已检测，需要重新检测
         };
     }
     componentDidMount() {
@@ -49,13 +48,6 @@ class PhoneCallout extends React.Component {
         if(!this.state.ableClickCheckPhoneIcon) {return false;}
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-search'), '单个手机号检测空号');
 
-        if(this.props.phoneStatus) {
-            if(!this.state.showConfirmSingleCheckPhone) {
-                this.setState({showConfirmSingleCheckPhone: true});
-                return false;
-            }
-        }
-
         this.setState({ableClickCheckPhoneIcon: false});
         checkPhoneStatus([{
             clue_id: this.props.id,
@@ -63,9 +55,8 @@ class PhoneCallout extends React.Component {
         }]).then((result) => {
             let newState = {};
             newState.ableClickCheckPhoneIcon = true;
-            newState.showConfirmSingleCheckPhone = false;
             if(!isEmptyPhone(_.get(result, '[0].phone_status'))) {//如果检测的手机号状态不是疑似空号需要提示下
-                newState.checkPhonePopContent = Intl.get('lead.check.phone.no.empty.number', '此号码不是疑似空号');
+                newState.checkPhonePopContent = Intl.get('lead.check.phone.no.empty.number', '非疑似空号');
                 newState.checkPhoneVisible = true;
             }
             this.setState(newState);
@@ -164,15 +155,11 @@ class PhoneCallout extends React.Component {
         }
         //拨打电话按钮展示时，且该电话是可检测的手机号时、沒有检测过状态时，才能展示检测按钮
         if(this.props.showCheckPhone && !this.props.hidePhoneIcon && isSupportCheckPhone(this.props.phoneNumber) && _.indexOf(this.props.showPhoneNum, '(') < 0) {
-            var cls = classNames('check-phone-btn', {
+            var iconCls = classNames('iconfont icon-check handle-btn-item', {
                 'default-show': this.props.showPhoneIcon
             });
-            let content = (
-                <Button size="small" className={cls}>
-                    <i className="iconfont icon-check" title={Intl.get('lead.check.phone.status', '检测空号')}/>
-                    <span>{Intl.get('lead.check.phone.status', '检测空号')}</span>
-                </Button>
-            );
+            let title = this.props.phoneStatus ? Intl.get('lead.single.has.checked.phone', '重新检测') : Intl.get('lead.check.phone.status', '检测空号');
+            let content = <i className={iconCls} title={title}/>;
             if(this.isShowCheckPhonePopover()) {
                 let contentTip = getContactSalesPopoverTip();
                 return (
@@ -185,19 +172,6 @@ class PhoneCallout extends React.Component {
                     </Popover>
                 );
             }else {
-                if(this.state.showConfirmSingleCheckPhone) {
-                    return (
-                        <Popconfirm
-                            placement="top"
-                            visible
-                            onConfirm={this.handleCheckPhone}
-                            onCancel={this.handleCheckPhoneVisibleChange.bind(this, false)}
-                            title={Intl.get('lead.single.has.checked.phone', '此号码已检测，是否重新检测？')}
-                        >
-                            {content}
-                        </Popconfirm>
-                    );
-                }
                 let newContent = React.cloneElement(content, {
                     onClick: this.handleCheckPhone
                 });
@@ -218,7 +192,7 @@ class PhoneCallout extends React.Component {
     };
     handleCheckPhoneVisibleChange = (visible) => {
         if(!visible && this.state.ableClickCheckPhoneIcon) {
-            this.setState({checkPhonePopContent: null, checkPhoneVisible: false, showConfirmSingleCheckPhone: false});
+            this.setState({checkPhonePopContent: null, checkPhoneVisible: false});
         }
     };
     isShowCheckPhonePopover() {
