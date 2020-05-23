@@ -1139,8 +1139,8 @@ class RecommendCluesList extends React.Component {
                         showPop: true,
                         urlPath: '/leads'
                     });
-                    //总的被选中的线索数量
-                    var totalSelectedSize = _.get(disabledCheckedClues,'length',0);
+                    //总的可提取的线索数量
+                    var totalSelectedSize = _.get(submitObj, 'companyIds.length', 0);
                     //已经被提取的线索
                     var hasExtractedLeadIds = _.get(data,'picked',[]);
                     var hasExtractedLeadCount = hasExtractedLeadIds.length;
@@ -1273,7 +1273,7 @@ class RecommendCluesList extends React.Component {
                         //是试用账号或者正式账号
                         (currentVersionType.trial || currentVersionType.formal) &&
                         //已经提取的数量和这次要提取数量之和大于最大限制的提取数
-                        count + _.get(this, 'state.disabledCheckedClues.length') > this.state.maxLimitExtractNumber
+                        count + _.get(selectedIds, 'length') > this.state.maxLimitExtractNumber
                     ){
                         let maxLimitTip = this.handleExtractLimit(disableExtract);
                         let newState = {
