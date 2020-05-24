@@ -6,7 +6,8 @@
 
 require('../../css/recommend-customer-condition.less');
 import React, {Component} from 'react';
-import {Form, Input, Icon, Popover, Button, Dropdown, Menu} from 'antd';
+import {Form, Input, Icon, Popover, Button, Dropdown, Menu, DatePicker} from 'antd';
+const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
 import {AntcAreaSelection, SearchInput, AntcSelect} from 'antc';
 const Option = AntcSelect.Option;
@@ -100,14 +101,17 @@ class RecommendCluesFilterPanel extends Component {
         super(props);
 
         let hasSavedRecommendParams = _.cloneDeep(this.props.hasSavedRecommendParams);
+        let vipFilters = this.dealRecommendParamsVipData(hasSavedRecommendParams);
         this.state = {
             hasSavedRecommendParams,
             vipPopOverVisible: '',
             vipPopOverVisibleContent: null,
             showOtherCondition: false,
             isSaving: false,
-            vipFilters: this.dealRecommendParamsVipData(hasSavedRecommendParams),
+            vipFilters,
             keywordList: [],
+            registerOpen: vipFilters.custom_time,
+            registerPopvisible: false,
         };
 
         this.currentArea = {};
@@ -128,9 +132,11 @@ class RecommendCluesFilterPanel extends Component {
     componentWillReceiveProps(nextProps) {
         if (_.isEmpty(this.state.hasSavedRecommendParams) || !_.isEqual(nextProps.hasSavedRecommendParams, this.state.hasSavedRecommendParams)){
             let hasSavedRecommendParams = _.cloneDeep(nextProps.hasSavedRecommendParams);
+            let vipFilters = this.dealRecommendParamsVipData({...hasSavedRecommendParams, ...this.state.vipFilters});
             this.setState({
                 hasSavedRecommendParams,
-                vipFilters: this.dealRecommendParamsVipData({...hasSavedRecommendParams, ...this.state.vipFilters}),
+                vipFilters,
+                registerOpen: vipFilters.custom_time,
             }, () => {
                 if(this.searchInputRef) {
                     this.searchInputRef.state.keyword = hasSavedRecommendParams.keyword;
@@ -154,6 +160,9 @@ class RecommendCluesFilterPanel extends Component {
         }
         if(condition.endTime) {
             obj.endTime = condition.endTime;
+        }
+        if(condition.custom_time) {//自定义成立时间
+            obj.custom_time = condition.custom_time;
         }
         if(condition.staffnumMax) {
             obj.staffnumMax = condition.staffnumMax;
@@ -352,9 +361,12 @@ class RecommendCluesFilterPanel extends Component {
                     if(isReset) {
                         delete vipFilters.startTime;
                         delete vipFilters.endTime;
+                        delete vipFilters.custom_time;
                         delete hasSavedRecommendParams.startTime;
                         delete hasSavedRecommendParams.endTime;
+                        delete hasSavedRecommendParams.custom_time;
                     }else {
+                        delete vipFilters.custom_time;
                         if (_.get(timeObj, 'min')) {//传到endTime
                             vipFilters.endTime = moment().subtract(_.get(timeObj, 'min'), 'years').endOf('day').valueOf();
                         }else{
@@ -366,6 +378,7 @@ class RecommendCluesFilterPanel extends Component {
                             delete vipFilters.startTime;
                         }
                     }
+                    this.handleRegisterPopvisible(false);
                 }
                 break;
             case VIP_ITEM_MAP.COMPANY_SIZE://公司规模
@@ -509,7 +522,8 @@ class RecommendCluesFilterPanel extends Component {
             );
             this.setState({
                 vipPopOverVisibleContent: content,
-                vipPopOverVisible: key
+                vipPopOverVisible: key,
+                registerPopvisible: false
             });
             return false;
         }
@@ -552,9 +566,11 @@ class RecommendCluesFilterPanel extends Component {
 
     handleToggleOtherCondition = (property) => {
         clueCustomerAction.saveSettingCustomerRecomment({...this.props.hasSavedRecommendParams, ...this.state.hasSavedRecommendParams});
+        let vipFilters = this.dealRecommendParamsVipData(this.props.hasSavedRecommendParams);
         this.setState({
             [property]: !this.state[property],
-            vipFilters: this.dealRecommendParamsVipData(this.props.hasSavedRecommendParams)
+            vipFilters,
+            registerOpen: vipFilters.custom_time,
         }, () => {
             _.isFunction(this.props.handleToggleOtherCondition) && this.props.handleToggleOtherCondition();
         });
@@ -563,7 +579,7 @@ class RecommendCluesFilterPanel extends Component {
     handleSubmit = () => {
         if(!this.props.canClickMoreBatch) { return false;}
         //需要处理下vip选项
-        let vipItems = ['startTime', 'endTime', 'staffnumMax', 'staffnumMin', 'capitalMax', 'capitalMin', 'entTypes', 'openStatus'];
+        let vipItems = ['startTime', 'endTime', 'custom_time' ,'staffnumMax', 'staffnumMin', 'capitalMax', 'capitalMin', 'entTypes', 'openStatus'];
         let hasSavedRecommendParams = _.omit(this.state.hasSavedRecommendParams, vipItems);
         this.getRecommendClueList({...hasSavedRecommendParams, ...this.state.vipFilters});
     };
@@ -588,6 +604,14 @@ class RecommendCluesFilterPanel extends Component {
                 return true;
             }
         });
+        if(condition.custom_time) {//如果是自定义的时间,需要展示2019-01-05 至 2019-05-06成立
+            let startTime = condition.startTime ? moment(condition.startTime).format(oplateConsts.DATE_FORMAT) : '-';
+            let endTime = condition.endTime ? moment(condition.endTime).format(oplateConsts.DATE_FORMAT) : '-';
+            let text = `${startTime} ${Intl.get('common.time.connector', '至')} ${endTime}${Intl.get('clue.recommend.filter.set.up', '成立')}`;
+            timeTarget = {
+                name: text
+            };
+        }
         return timeTarget;
     }
 
@@ -690,6 +714,61 @@ class RecommendCluesFilterPanel extends Component {
         ];
     }
 
+    onDateChange = (dates, dateStrings) => {
+        let hasContinueUse = this.handleVipItemClick(VIP_ITEM_MAP.REGISTER_TIME, '成立时间');
+        if(hasContinueUse) {
+            let {vipFilters} = this.state;
+            if (_.get(dateStrings,'[0]') && _.get(dateStrings,'[1]')){
+                //开始时间要取那天早上的00:00:00
+                //结束时间要取那天晚上的23:59:59
+                vipFilters.startTime = moment(_.get(dateStrings,'[0]')).startOf('day').valueOf();
+                vipFilters.endTime = moment(_.get(dateStrings,'[1]')).endOf('day').valueOf();
+            }else{
+                delete vipFilters.startTime;
+                delete vipFilters.endTime;
+            }
+            this.setState({
+                vipFilters,
+                registerPopvisible: false,
+            });
+        }
+    };
+
+    handleOpenChange = (open) => {
+        if(this.state.vipFilters.custom_time) {//选择了自定义选项，时间选择器不能关闭
+            open = true;
+        }
+        this.setState({registerOpen: open});
+    }
+
+    handleRegisterPopvisible = (visible) => {
+        if(this.state.vipPopOverVisible !== VIP_ITEM_MAP.REGISTER_TIME) {
+            this.setState({registerPopvisible: visible});
+        }
+    };
+
+    //处理成立时间点击自定义事件
+    handleRegisterTimeCustomClick = () => {
+        let hasContinueUse = this.handleVipItemClick(VIP_ITEM_MAP.REGISTER_TIME, '成立时间');
+        if(hasContinueUse) {
+            let {vipFilters} = this.state;
+            vipFilters.custom_time = true;
+            let startTime = vipFilters.startTime ? moment(vipFilters.startTime) : moment();
+            let endTime = vipFilters.endTime ? moment(vipFilters.endTime) : moment();
+            startTime = startTime.startOf('day').valueOf();
+            endTime = endTime.endOf('day').valueOf();
+            if(startTime > endTime) {//如果开始时间大于结束时间，两者对换一下
+                let obj = {startTime, endTime};
+                startTime = obj.endTime;
+                endTime = obj.startTime;
+            }
+
+            vipFilters.startTime = startTime;
+            vipFilters.endTime = endTime;
+            this.setState({vipFilters, registerOpen: true});
+        }
+    };
+
     //渲染高级选项
     renderAdvancedOptions() {
         return _.map(ADVANCED_OPTIONS, (item, idx) => {
@@ -702,12 +781,123 @@ class RecommendCluesFilterPanel extends Component {
         });
     }
 
+    //渲染成立时间内容
+    renderRegisterTimeBlock({btnText, type, list, processValue = () => {}}) {
+        let {isWebMin} = isResponsiveDisplay();
+        let {vipFilters, registerPopvisible} = this.state;
+        let currentValue = processValue(vipFilters);
+        if(_.isEmpty(currentValue)) {
+            currentValue = {
+                name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText})
+            };
+        }
+
+        let trigger, placement, popContent = null, visible, onVisibleChange, overlayClassName;
+        if(this.state.vipPopOverVisibleContent) {
+            trigger = 'click';
+            placement = 'bottomLeft';
+            popContent = this.state.vipPopOverVisibleContent;
+            visible = this.state.vipPopOverVisible === type;
+            onVisibleChange = this.handleVisibleChange;
+            overlayClassName = 'extract-limit-content';
+        }else {
+            let defaultValue = [];
+            let registerStartTime = vipFilters.startTime || '', registerEndTime = vipFilters.endTime || '';
+            if (registerStartTime && registerEndTime){
+                defaultValue = [moment(registerStartTime), moment(registerEndTime)];
+            }
+
+            let obj = {
+                vipFilters,
+                defaultValue,
+                currentValue,
+                btnText,
+                list,
+                type
+            };
+
+            trigger = isWebMin ? 'click' : 'hover';
+            placement = vipFilters.custom_time ? 'bottomLeft' : 'bottom';
+            popContent = registerPopvisible ? this.renderRegisterRangTimeBlock(obj) : null;
+            visible = registerPopvisible;
+            onVisibleChange = this.handleRegisterPopvisible;
+            overlayClassName = 'register-time-container';
+        }
+
+        let text = _.get(currentValue, 'name');
+        let textCls = classNames({
+            'vip-item-active': text && text !== Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText})
+        });
+        text = text ? currentValue.name : btnText;
+
+        return (
+            <div key={type} className="vip-filter-item">
+                <Popover
+                    trigger={trigger}
+                    placement={placement}
+                    content={popContent}
+                    visible={visible}
+                    onVisibleChange={onVisibleChange}
+                    overlayClassName={overlayClassName}
+                >
+                    <span className={textCls}>
+                        {text}<Icon type="down"/>
+                    </span>
+                </Popover>
+            </div>
+        );
+    }
+
+    //渲染带时间选择的下拉框
+    renderRegisterRangTimeBlock(data) {
+        let { vipFilters, list, currentValue, btnText, defaultValue, type } = data;
+        let registerTimeCls = classNames('register-time-wrapper vip-item-dropDown', {
+            'selected-custom': vipFilters.custom_time
+        });
+        return (
+            <div className={registerTimeCls}>
+                <div className="register-time-content">
+                    <ul className="ant-dropdown-menu ant-dropdown-menu-vertical ant-dropdown-menu-light ant-dropdown-menu-root">
+                        {_.map(list, item => {
+                            let liCls = classNames('ant-dropdown-menu-item', {
+                                'ant-dropdown-menu-item-selected': _.isEqual(currentValue, item) && !vipFilters.custom_time
+                            });
+                            return (
+                                <li key={JSON.stringify(item)} className={liCls} onClick={this.onSelect.bind(this, type, JSON.stringify(item), false)}>
+                                    <span data-tracename={`点击了'${btnText}:${item.name}'`}>{item.name}</span>
+                                </li>
+                            );
+                        })}
+                        <li className={`ant-dropdown-menu-item ${vipFilters.custom_time ? 'ant-dropdown-menu-item-selected' : ''}`} onClick={this.handleRegisterTimeCustomClick}>
+                            <span data-tracename={`点击了'${btnText}:自定义'`}>{Intl.get('user.time.custom', '自定义')}</span>
+                        </li>
+                    </ul>
+                </div>
+                <div className="register-time-select-wrapper" onMouseEnter={this.handleRegisterPopvisible.bind(this, true)}>
+                    <RangePicker
+                        open={this.state.registerOpen}
+                        onOpenChange={this.handleOpenChange}
+                        getCalendarContainer={(trigger) => {
+                            return trigger.parentNode;
+                        }}
+                        defaultValue={defaultValue}
+                        onChange={this.onDateChange}
+                    />
+                </div>
+            </div>
+        );
+    }
+
     //渲染vip选项
     renderVipFiltersBlock() {
         let list = this.getVipFilters();
         return _.map(list, item => {
-            if(item.type === VIP_ITEM_MAP.REGISTER_TIME && this.props.isSelectedHalfYearRegister) {
-                return null;
+            if(item.type === VIP_ITEM_MAP.REGISTER_TIME) {
+                if(this.props.isSelectedHalfYearRegister) {
+                    return null;
+                }else {
+                    return this.renderRegisterTimeBlock(item);
+                }
             }
             return (
                 <div key={item.type} className="vip-filter-item">
@@ -764,9 +954,17 @@ class RecommendCluesFilterPanel extends Component {
                 <div className="selected-filter-container" data-tracename="已选条件展示区">
                     <div className="selected-filter-content">
                         <span className="selected-filter-title">{Intl.get('clue.recommend.filter.selected', '已选条件')}：</span>
-                        {_.map(list, item => (
-                            <span key={item.key} className="selected-filter-item"><span>{item.name}：{item.value}</span><i className="iconfont icon-close" data-tracename={`点击关闭${item.name}:${item.value}`} onClick={item.handleClick}/></span>
-                        ))}
+                        {_.map(list, item => {
+                            if(this.props.isSelectedHalfYearRegister && item.key === VIP_ITEM_MAP.REGISTER_TIME) {
+                                return null;
+                            }
+                            return (
+                                <span key={item.key} className="selected-filter-item">
+                                    <span>{item.name}：{item.value}</span>
+                                    <i className="iconfont icon-close" data-tracename={`点击关闭${item.name}:${item.value}`} onClick={item.handleClick}/>
+                                </span>
+                            );
+                        })}
                     </div>
                 </div>
             );
