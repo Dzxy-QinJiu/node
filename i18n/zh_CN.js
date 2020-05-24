@@ -4071,6 +4071,7 @@ var zh_CN = {
     'clue.recommend.filter.company.status.out': '迁出',
     'clue.recommend.filter.company.status.closed': '停业',
     'clue.recommend.filter.company.status.liquidation': '清算',
+    'clue.recommend.filter.set.up': '成立',
 
     'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',

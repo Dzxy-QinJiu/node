@@ -4034,6 +4034,7 @@ var en_US = {
     'clue.recommend.filter.company.status.out': 'Out of',//迁出
     'clue.recommend.filter.company.status.closed': 'closed',//停业
     'clue.recommend.filter.company.status.liquidation': 'The liquidation',//清算
+    'clue.recommend.filter.set.up': 'Set up',//成立
 
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并

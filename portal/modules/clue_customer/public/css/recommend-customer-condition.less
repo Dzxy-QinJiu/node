@@ -302,3 +302,69 @@
     }
   }
 }
+
+.register-time-container{
+  padding-top: 0;
+  .ant-popover-arrow{
+    display: none;
+  }
+  .ant-popover-inner-content{
+    padding: 0;
+  }
+  .register-time-wrapper{
+    display: flex;
+    border-radius: 4px;
+    //选择自定义后样式
+    &.selected-custom{
+      border: 1px solid #ccc;
+      .register-time-select-wrapper{
+        display: block;
+      }
+      .register-time-content{
+        .ant-dropdown-menu-item{
+          &:first-child{
+            border-radius: 0;
+            border-top-left-radius: 4px;
+          }
+        }
+      }
+    }
+    .register-time-content{
+      .ant-dropdown-menu{
+        box-shadow: none;
+      }
+    }
+    //时间选择器样式
+    .register-time-select-wrapper{
+      border-left: 1px solid #f5f5f5;
+      position: relative;
+      display: none;
+      .ant-calendar-picker-input{
+        display: none;
+        &+div{
+          position: unset!important;
+        }
+      }
+      .ant-calendar-picker-container{
+        position: unset!important;
+        z-index: unset;
+        .ant-calendar-input-wrap, .ant-calendar-range-middle{
+          display: none;
+        }
+        .ant-calendar-range{
+          max-width: 410px;
+          width: auto;
+          box-shadow: none;
+          border: unset;
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          .ant-calendar-decade-panel-table,
+          .ant-calendar-year-panel-table,
+          .ant-calendar-month-panel-table{
+            height: 175px;
+          }
+        }
+      }
+    }
+  }
+}
