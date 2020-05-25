@@ -68,7 +68,7 @@ class CustomerSuggest extends React.Component {
     handleCustomerData = (newCustomer) => {
         return _.map(newCustomer, (customerItem) => {
             return {
-                ...newCustomer,
+                ...customerItem,
                 'customer_name': customerItem.name,
                 'customer_id': customerItem.id
             };
@@ -76,11 +76,14 @@ class CustomerSuggest extends React.Component {
     };
     afterAddCustomerSuccess = (newCustomer) => {
         var {list} = this.state;
+        var newCustomerObj = this.handleCustomerData(newCustomer);
         this.setState({
-            list: _.concat(list, this.handleCustomerData(newCustomer)),
+            list: _.concat(list, newCustomerObj),
             suggest_error_msg: '',
-            no_select_error_msg: Intl.get('customer.select.name.tip', '请在下拉框中选择客户'),
-            show_tip: true
+            no_select_error_msg: '',
+            show_tip: false
+        },() =>{
+            this.customerChoosen(_.get(newCustomerObj,'[0].customer_id'));
         });
     };
 
@@ -612,7 +615,7 @@ CustomerSuggest.defaultProps = {
     //客户的name
     customer_name: '',
     //当选中了customer的时候，会调用这个函数
-    onCustomerChoosen: function() {
+    customerChoosen: function() {
     },
     //告诉调用的父组件，隐藏错误提示
     hideCustomerError: function() {
