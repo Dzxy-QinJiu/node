@@ -304,12 +304,18 @@
 }
 
 .register-time-container{
-  padding-top: 0;
-  .ant-popover-arrow{
-    display: none;
+  padding-top: 5px;
+  .ant-dropdown-menu{
+    > .ant-dropdown-menu-item{
+      padding: 0;
+      background-color: #fff;
+    }
   }
-  .ant-popover-inner-content{
-    padding: 0;
+  .ant-dropdown-menu-item{
+    &:first-child{
+      border-radius: 0;
+      border-top-left-radius: 4px;
+    }
   }
   .register-time-wrapper{
     display: flex;
@@ -318,18 +324,13 @@
     &.selected-custom{
       border: 1px solid #ccc;
       .register-time-select-wrapper{
-        display: block;
-      }
-      .register-time-content{
-        .ant-dropdown-menu-item{
-          &:first-child{
-            border-radius: 0;
-            border-top-left-radius: 4px;
-          }
+        .register-time-select-content{
+          display: block;
         }
       }
     }
     .register-time-content{
+      display: flex;
       .ant-dropdown-menu{
         box-shadow: none;
       }
@@ -338,7 +339,12 @@
     .register-time-select-wrapper{
       border-left: 1px solid #f5f5f5;
       position: relative;
-      display: none;
+      z-index: 1040;
+      .register-time-select-content{
+          display: none;
+          padding: 0;
+          background-color: #fff;
+      }
       .ant-calendar-picker-input{
         display: none;
         &+div{
@@ -347,7 +353,7 @@
       }
       .ant-calendar-picker-container{
         position: unset!important;
-        z-index: unset;
+        z-index: 1020;
         .ant-calendar-input-wrap, .ant-calendar-range-middle{
           display: none;
         }
