@@ -34,7 +34,7 @@ class FirstIndexRoute extends React.Component {
             if(Oplate.showWelComePage === 'true' && allMenus[0].id === ROUTE_CONST.CLUES_RECOMMEND) {
                 Oplate.showWelComePage = '';
                 //添加首次登录的标识
-                url += '?firstOpenPage=true';
+                url += '?fl=true';
             }
             history.replace(url);
         }
