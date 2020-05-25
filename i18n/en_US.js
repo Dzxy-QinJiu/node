@@ -1089,6 +1089,17 @@ var en_US = {
     'clue.integration.failed.create': 'Failed to generate key', // 生成密钥失败
     // 后台管理-线索集成end
 
+    // 后台管理-自定义字段start
+    'custom.field.title': 'Field Name', // 字段名
+    'custom.field.add.title': 'Add the {name} field', // 添加{name}字段
+    'custom.field.edit.title': '{name} field', // {name}字段
+    'custom.field.input.placeholder': 'Please enter {name} ', // 请输入{name}
+    'custom.field.set.name': 'Setting {name}', // 设置{name}
+    'custom.field.no.name': 'No {name}', // 暂无{name}
+    'custom.field.add.name': 'Add name', // 添加{name}
+    'custom.field.select.name': 'Please select {name}', // 请选择{name}
+    // 后台管理-自定义字段end
+
     //应用管理start
     'app.title': 'application management', // 应用管理
     'app.search.placeholder': 'name/describe', // 应用名/描述

@@ -133,7 +133,6 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'component_type': ALL_COMPONENTS.INPUT,
         component: InputContent,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容'),
-        customField: 'text',
     },
     {
         'rulename': Intl.get('apply.rule.textare', '多行文字输入'),
@@ -143,7 +142,6 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'type': ALL_COMPONENTS_TYPE.TEXTAREA,
         component: InputContent,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容'),
-        customField: 'multitext',
     },
     {
         'rulename': Intl.get('apply.rule.number', '数字输入'),
@@ -152,7 +150,6 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'component_type': ALL_COMPONENTS.INPUTNUMBER,
         component: InputNumberContent,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容'),
-        customField: 'number',
     },
     {
         'rulename': Intl.get('apply.rule.count', '金额输入'),
@@ -204,7 +201,6 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'type': 'radio',
         component: SelectOption,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容'),
-        customField: 'radio',
     },
     {
         'rulename': Intl.get('apply.rule.check', '多选'), 'iconfontCls': 'icon-fuwu',
@@ -214,7 +210,6 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'type': 'checkbox',
         component: SelectOption,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容'),
-        customField: 'checkbox',
     },
     {
         'rulename': Intl.get('apply.rule.date', '日期选择'), 'iconfontCls': 'icon-fuwu',
@@ -224,7 +219,6 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         component: DatePickerContent,
         'format': oplateConsts.DATE_FORMAT,
         is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容'),
-        customField: 'date',
     },
     {
         'rulename': Intl.get('apply.rule.date.and.time', '日期+时间选择'), 'iconfontCls': 'icon-fuwu',

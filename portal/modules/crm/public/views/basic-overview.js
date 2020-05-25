@@ -567,6 +567,10 @@ class BasicOverview extends React.Component {
         const customVariables = _.get(basicData, 'custom_variables', {});
         const fieldType = _.get(item, 'field_type');
         const name = _.get(item, 'name');
+        const editBtnTip = Intl.get('custom.field.set.name', '设置{name}', {name: name});
+        const noDataTip = Intl.get('custom.field.no.name', '暂无{name}', {name: name});
+        const addDataTip = Intl.get('custom.field.add.name', '添加{name}', {name: name});
+        const selectPlaceholderTip = Intl.get('custom.field.select.name', '请选择{name}', {name: name});
         // 默认的自定义的值
         let value = customVariables[name];
         // 是否是选择类型
@@ -598,10 +602,10 @@ class BasicOverview extends React.Component {
                             crmPrivilegeConst.CUSTOMER_UPDATE,
                             crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
                         ]) && !this.props.disableEdit}
-                        editBtnTip={'设置' + name}
+                        editBtnTip={editBtnTip}
                         saveEditInput={this.saveEditCustomFieldInfo.bind(this)}
-                        noDataTip={'暂无' + name}
-                        addDataTip={'添加' + name}
+                        noDataTip={noDataTip}
+                        addDataTip={addDataTip}
                     />
                 );
 
@@ -619,10 +623,10 @@ class BasicOverview extends React.Component {
                             crmPrivilegeConst.CUSTOMER_UPDATE,
                             crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
                         ]) && !this.props.disableEdit}
-                        editBtnTip={'设置' + name}
+                        editBtnTip={editBtnTip}
                         saveEditSelect={this.saveEditCustomFieldInfo.bind(this)}
-                        noDataTip={'暂无' + name}
-                        addDataTip={'添加' + name}
+                        noDataTip={noDataTip}
+                        addDataTip={addDataTip}
                     />
                 );
             }
@@ -639,15 +643,15 @@ class BasicOverview extends React.Component {
                     field={name}
                     textCut={true}
                     value={value}
-                    editBtnTip={'设置' + name}
+                    editBtnTip={editBtnTip}
                     placeholder={_.get(item, 'select_values[0]')}
                     hasEditPrivilege={crmUtil.checkPrivilege([
                         crmPrivilegeConst.CUSTOMER_UPDATE,
                         crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
                     ]) && !this.props.disableEdit}
                     saveEditInput={this.saveEditCustomFieldInfo.bind(this)}
-                    noDataTip={'暂无' + name}
-                    addDataTip={'添加' + name}
+                    noDataTip={noDataTip}
+                    addDataTip={addDataTip}
                 />
             );
         } else if(_.isEqual(fieldType, 'date')){
@@ -657,14 +661,14 @@ class BasicOverview extends React.Component {
                     displayText={value}
                     value={value}
                     field={name}
-                    placeholder={'请选择' + name}
+                    placeholder={selectPlaceholderTip}
                     hasEditPrivilege={crmUtil.checkPrivilege([
                         crmPrivilegeConst.CUSTOMER_UPDATE,
                         crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
                     ]) && !this.props.disableEdit}
                     saveEditDateInput={this.saveEditCustomFieldInfo.bind(this)}
-                    noDataTip={'暂无' + name}
-                    addDataTip={'添加' + name}
+                    noDataTip={noDataTip}
+                    addDataTip={addDataTip}
                 />
             );
         }
