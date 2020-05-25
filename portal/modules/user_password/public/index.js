@@ -238,22 +238,24 @@ var UserPwdPage = createReactClass({
                                         validator: this.checkPass2
                                     }]
                                 })(
-                                    <Input type="password"
+                                    <Input
+                                        type="password"
                                         placeholder={Intl.get('login.please_enter_new_password', '确认新密码')}
-                                        data-tracename="确认新密码"/>
+                                        data-tracename="确认新密码"
+                                        onPressEnter={this.events_submitUserInfoForm.bind(this)}
+                                    />
                                 )}
                             </FormItem>
                             <div className="user-pwd-indicator">
                                 {
                                     this.renderIndicator()
                                 }
-                                <Button type="primary" className="user-info-edit-pwd-submit-btn btn-primary-sure"
+                                <Button
+                                    type="primary" className="user-info-edit-pwd-submit-btn btn-primary-sure"
                                     onClick={this.events_submitUserInfoForm.bind(this)}
                                     data-tracename="保存密码"
                                 >
-
-                                    <ReactIntl.FormattedMessage id="user.password.save.password"
-                                        defaultMessage="保存密码"/>
+                                    {Intl.get('user.password.save.password', '保存密码')}
                                 </Button>
                             </div>
                         </Form>
