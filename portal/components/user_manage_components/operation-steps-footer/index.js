@@ -8,7 +8,6 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }else if (language.lan() === 'zh'){
     require('./index-zh_CN.less');
 }
-import Button from 'antd';
 import {RightPanelSubmit,RightPanelCancel} from '../../rightPanel';
 import classNames from 'classnames';
 /**

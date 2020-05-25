@@ -87,6 +87,7 @@ const AddOrEditUser = createReactClass({
             selectRealmId: selectRealmId, // 选择的安全域的id
             selectRealmName: selectRealmName, // 选择的安全域的名称
             userId: '', // 用户id
+            disabled: false, // 是否禁用按钮，默认false
             ...AppUserFormStore.getState()
         };
     },
@@ -989,7 +990,7 @@ const AddOrEditUser = createReactClass({
                             totalStep={this.state.selectRealmId ? 4 : 3}
                             onStepChange={this.turnStep}
                             onFinish={this.onStepFinish}
-                            disabled={this.state.disabled}
+                            disabled={this.state.step === 2 ? this.state.disabled : false}
                         >
                             <span
                                 className="operator_person">{Intl.get('user.operator', '操作人')}:{this.state.operator}</span>
