@@ -3992,6 +3992,7 @@ var en_US = {
     'common.signed.customer.activity': 'Signed customer activity',//签约客户活跃度
     'common.number.of.new.user.customer': 'Number of customers opening  accounts',//开通了用户的客户数
     'clue.customer.register.time': 'Register time',//注册时间
+    'clue.customer.no.register.time': 'No register time',//暂无注册时间
     'self.setting.has.no.apply': 'There is no suited apply',//暂无符合条件的申请
     'failed.distribute.apply': 'Failed assign!',//分配失败！
     'apply.approve.required.err.msg': 'Please input tips',//请输入未填写时的提示
@@ -4007,7 +4008,9 @@ var en_US = {
     'clue.recommend.selected.extract.tip': 'The {count} bar has been selected, and the {ableExtract} bar can be extracted',//已选中{count}条，还可提取{ableExtract}条线索
     'clue.extract.count.has.been.exceed': 'The extractable number has been exceeded',//已超过可提取数
     'clue.recommend.clue.scope': 'Scope of business',//经营范围
+    'clue.recommend.no.clue.scope': 'No scope of business',//暂无经营范围
     'clue.recommend.clue.introduction': 'brief introduction',//简介
+    'clue.recommend.no.clue.introduction': 'No brief introduction',//暂无简介
     'clue.recommend.clue.count': '{count}',//{count}个
     'clue.find.recommend.clue': 'Look for clues',//找线索
     'clue.recommend.keyword': 'keywords',//关键词
