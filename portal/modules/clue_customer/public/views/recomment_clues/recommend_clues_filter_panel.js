@@ -315,6 +315,7 @@ class RecommendCluesFilterPanel extends Component {
     updateLocation = (addressObj) => {
         this.currentArea.province = addressObj.provName;
         this.currentArea.city = addressObj.cityName;
+        this.currentArea.district = addressObj.countyName;
         const value = _.chain(this.currentArea).values().filter(item => item).value();
 
         const traceTip = value.join('/') || '全部';
@@ -329,7 +330,7 @@ class RecommendCluesFilterPanel extends Component {
 
     onAreaPanelHide = () => {
         let params = _.clone(this.state.hasSavedRecommendParams);
-        const prevArea = _.pick(params, 'province', 'city');
+        const prevArea = _.pick(params, 'province', 'city', 'district');
 
         if (!_.isEmpty(this.currentArea) && !_.isEqual(this.currentArea, prevArea)) {
             _.extend(params, this.currentArea);
@@ -1039,7 +1040,7 @@ class RecommendCluesFilterPanel extends Component {
                                 countyName={hasSavedRecommendParams.district}
                                 updateLocation={this.updateLocation}
                                 onAreaPanelHide={this.onAreaPanelHide}
-                                hiddenCounty
+                                // hiddenCounty
                                 showAllBtn
                                 filterSomeNewArea
                                 sortProvinceByFirstLetter
