@@ -44,7 +44,14 @@ import clueCustomerAjax from '../ajax/clue-customer-ajax';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 var clueCustomerAction = require('../action/clue-customer-action');
-import {handleSubmitClueItemData, SELECT_TYPE,deleteCluePrivilege, editClueItemIconPrivilege, dealContactPhoneStatus} from '../utils/clue-customer-utils';
+import {
+    handleSubmitClueItemData,
+    SELECT_TYPE,
+    deleteCluePrivilege,
+    editClueItemIconPrivilege,
+    dealContactPhoneStatus,
+    checkClueName
+} from '../utils/clue-customer-utils';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import cluePoolAjax from 'MOD_DIR/clue_pool/public/ajax';
 import userData from 'PUB_DIR/sources/user-data';
@@ -390,6 +397,10 @@ class ClueRightPanel extends React.Component {
                                 }
                                 <div className={clueNameCls}>
                                     <BasicEditInputField
+                                        validators={[
+                                            {required: true, message: Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')},
+                                            checkClueName
+                                        ]}
                                         onDisplayTypeChange={this.setEditNameFlag}
                                         hasEditPrivilege={editClueItemIconPrivilege(curClue)}
                                         displayType={showEditText ? 'edit' : 'text'}
