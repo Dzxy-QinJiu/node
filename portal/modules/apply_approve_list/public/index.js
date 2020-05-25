@@ -49,6 +49,7 @@ import AddDataServiceApply from './all_application_type/eefung-data-service/publ
 import DataServiceDetail from './all_application_type/eefung-data-service/public/view/apply_detail';
 import AddSelfSettingApply from './all_application_type/self_setting/public/view/add-apply';
 import SelfSettingDetail from './all_application_type/self_setting/public/view/apply-view-detail';
+//todo 加新的申请类型的时候记得在销售首页也会有展示申请审批
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';

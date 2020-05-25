@@ -32,6 +32,8 @@ import DocumentApplyDetail from 'MOD_DIR/apply_approve_list/public/all_applicati
 import ReportApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/report_send/public/view/apply-view-detail';
 import VisitApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/visit_apply/public/view/apply-view-detail';
 import DomainApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/domain_application/public/view/apply-view-detail';
+import DataServiceApplyDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/eefung-data-service/public/view/apply_detail';
+import SelfSettingDetail from 'MOD_DIR/apply_approve_list/public/all_application_type/self_setting/public/view/apply-view-detail';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {APPLY_APPROVE_TYPES, AUTO_SIZE_MAP, BOOT_PROCESS_KEYS, TRACE_NULL_TIP} from 'PUB_DIR/sources/utils/consts';
 import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel';
@@ -1561,7 +1563,17 @@ class MyWorkColumn extends React.Component {
                             afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
-                default://用户申请（试用、签约用户申请、修改密码、延期、其他）
+                case APPLY_APPROVE_TYPES.EEFUNG_DATA_SERVICE://数据服务申请
+                     detailContent = (
+                         <DataServiceApplyDetail
+                             isHomeMyWork={true}
+                             detailItem={applyInfo}
+                             selectedApplyStatus='false'//待审批状态
+                             afterApprovedFunc={this.afterFinishApplyWork}
+                         />
+                     );
+                     break;
+                case APPLY_APPROVE_TYPES.USER_OR_GRANT://用户申请（试用、签约用户申请、修改密码、延期、其他）
                     detailContent = (
                         <UserApplyDetail
                             isHomeMyWork={true}
@@ -1569,6 +1581,15 @@ class MyWorkColumn extends React.Component {
                             selectedApplyStatus='false'//待审批状态
                             afterApprovedFunc={this.afterFinishApplyWork}
                             appList={this.state.appList}
+                        />);
+                    break;
+                default:
+                    detailContent = (
+                        <SelfSettingDetail
+                            isHomeMyWork={true}
+                            detailItem={applyInfo}
+                            selectedApplyStatus='false'//待审批状态
+                            afterApprovedFunc={this.afterFinishApplyWork}
                         />);
                     break;
             }
