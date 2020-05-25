@@ -110,7 +110,7 @@ class RecommendCluesFilterPanel extends Component {
             isSaving: false,
             vipFilters,
             keywordList: [],
-            registerOpen: vipFilters.custom_time,
+            registerOpen: true,
             registerPopvisible: false,
         };
 
@@ -136,7 +136,7 @@ class RecommendCluesFilterPanel extends Component {
             this.setState({
                 hasSavedRecommendParams,
                 vipFilters,
-                registerOpen: vipFilters.custom_time,
+                registerOpen: true,
             }, () => {
                 if(this.searchInputRef) {
                     this.searchInputRef.state.keyword = hasSavedRecommendParams.keyword;
@@ -522,8 +522,7 @@ class RecommendCluesFilterPanel extends Component {
             );
             this.setState({
                 vipPopOverVisibleContent: content,
-                vipPopOverVisible: key,
-                registerPopvisible: false
+                vipPopOverVisible: key
             });
             return false;
         }
@@ -570,7 +569,7 @@ class RecommendCluesFilterPanel extends Component {
         this.setState({
             [property]: !this.state[property],
             vipFilters,
-            registerOpen: vipFilters.custom_time,
+            registerOpen: true,
         }, () => {
             _.isFunction(this.props.handleToggleOtherCondition) && this.props.handleToggleOtherCondition();
         });
@@ -735,10 +734,7 @@ class RecommendCluesFilterPanel extends Component {
     };
 
     handleOpenChange = (open) => {
-        if(this.state.vipFilters.custom_time) {//选择了自定义选项，时间选择器不能关闭
-            open = true;
-        }
-        this.setState({registerOpen: open});
+        this.setState({registerOpen: true});
     }
 
     handleRegisterPopvisible = (visible) => {
@@ -765,7 +761,7 @@ class RecommendCluesFilterPanel extends Component {
 
             vipFilters.startTime = startTime;
             vipFilters.endTime = endTime;
-            this.setState({vipFilters, registerOpen: true});
+            this.setState({vipFilters, registerOpen: true, registerPopvisible: true});
         }
     };
 
@@ -792,36 +788,10 @@ class RecommendCluesFilterPanel extends Component {
             };
         }
 
-        let trigger, placement, popContent = null, visible, onVisibleChange, overlayClassName;
-        if(this.state.vipPopOverVisibleContent) {
-            trigger = 'click';
-            placement = 'bottomLeft';
-            popContent = this.state.vipPopOverVisibleContent;
-            visible = this.state.vipPopOverVisible === type;
-            onVisibleChange = this.handleVisibleChange;
-            overlayClassName = 'extract-limit-content';
-        }else {
-            let defaultValue = [];
-            let registerStartTime = vipFilters.startTime || '', registerEndTime = vipFilters.endTime || '';
-            if (registerStartTime && registerEndTime){
-                defaultValue = [moment(registerStartTime), moment(registerEndTime)];
-            }
-
-            let obj = {
-                vipFilters,
-                defaultValue,
-                currentValue,
-                btnText,
-                list,
-                type
-            };
-
-            trigger = isWebMin ? 'click' : 'hover';
-            placement = vipFilters.custom_time ? 'bottomLeft' : 'bottom';
-            popContent = registerPopvisible ? this.renderRegisterRangTimeBlock(obj) : null;
-            visible = registerPopvisible;
-            onVisibleChange = this.handleRegisterPopvisible;
-            overlayClassName = 'register-time-container';
+        let value = [];
+        let registerStartTime = vipFilters.startTime || '', registerEndTime = vipFilters.endTime || '';
+        if (registerStartTime && registerEndTime){
+            value = [moment(registerStartTime), moment(registerEndTime)];
         }
 
         let text = _.get(currentValue, 'name');
@@ -830,34 +800,51 @@ class RecommendCluesFilterPanel extends Component {
         });
         text = text ? currentValue.name : btnText;
 
+        let menu = (
+            <Menu>
+                <Menu.Item>
+                    {this.renderRegisterRangTimeBlock({vipFilters, value, currentValue, btnText, list, type})}
+                </Menu.Item>
+            </Menu>
+        );
+
         return (
             <div key={type} className="vip-filter-item">
-                <Popover
-                    trigger={trigger}
-                    placement={placement}
-                    content={popContent}
-                    visible={visible}
-                    onVisibleChange={onVisibleChange}
-                    overlayClassName={overlayClassName}
+                <Dropdown
+                    trigger={isWebMin ? 'click' : 'hover'}
+                    overlay={menu}
+                    visible={registerPopvisible}
+                    onVisibleChange={this.handleRegisterPopvisible.bind(this)}
+                    overlayClassName="register-time-container vip-item-dropDown"
+                    getPopupContainer={(triggerNode) => {return triggerNode.parentNode;}}
                 >
-                    <span className={textCls}>
-                        {text}<Icon type="down"/>
-                    </span>
-                </Popover>
+                    <Popover
+                        trigger="click"
+                        placement="bottomLeft"
+                        content={this.state.vipPopOverVisibleContent}
+                        visible={this.state.vipPopOverVisible === type}
+                        onVisibleChange={this.handleVisibleChange}
+                        overlayClassName="extract-limit-content"
+                    >
+                        <span className={textCls}>
+                            {text}<Icon type="down"/>
+                        </span>
+                    </Popover>
+                </Dropdown>
             </div>
         );
     }
 
     //渲染带时间选择的下拉框
     renderRegisterRangTimeBlock(data) {
-        let { vipFilters, list, currentValue, btnText, defaultValue, type } = data;
-        let registerTimeCls = classNames('register-time-wrapper vip-item-dropDown', {
+        let { vipFilters, list, currentValue, btnText, value, type } = data;
+        let registerTimeCls = classNames('register-time-wrapper', {
             'selected-custom': vipFilters.custom_time
         });
         return (
             <div className={registerTimeCls}>
                 <div className="register-time-content">
-                    <ul className="ant-dropdown-menu ant-dropdown-menu-vertical ant-dropdown-menu-light ant-dropdown-menu-root">
+                    <div className="register-time-item-content">
                         {_.map(list, item => {
                             let liCls = classNames('ant-dropdown-menu-item', {
                                 'ant-dropdown-menu-item-selected': _.isEqual(currentValue, item) && !vipFilters.custom_time
@@ -871,18 +858,20 @@ class RecommendCluesFilterPanel extends Component {
                         <li className={`ant-dropdown-menu-item ${vipFilters.custom_time ? 'ant-dropdown-menu-item-selected' : ''}`} onClick={this.handleRegisterTimeCustomClick}>
                             <span data-tracename={`点击了'${btnText}:自定义'`}>{Intl.get('user.time.custom', '自定义')}</span>
                         </li>
-                    </ul>
-                </div>
-                <div className="register-time-select-wrapper" onMouseEnter={this.handleRegisterPopvisible.bind(this, true)}>
-                    <RangePicker
-                        open={this.state.registerOpen}
-                        onOpenChange={this.handleOpenChange}
-                        getCalendarContainer={(trigger) => {
-                            return trigger.parentNode;
-                        }}
-                        defaultValue={defaultValue}
-                        onChange={this.onDateChange}
-                    />
+                    </div>
+                    <div className="register-time-select-wrapper">
+                        <div className="register-time-select-content ant-dropdown-menu-item">
+                            <RangePicker
+                                open={this.state.registerOpen}
+                                onOpenChange={this.handleOpenChange}
+                                getCalendarContainer={(trigger) => {
+                                    return trigger.parentNode;
+                                }}
+                                value={value}
+                                onChange={this.onDateChange}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         );
