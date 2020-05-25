@@ -522,7 +522,8 @@ class RecommendCluesFilterPanel extends Component {
             );
             this.setState({
                 vipPopOverVisibleContent: content,
-                vipPopOverVisible: key
+                vipPopOverVisible: key,
+                registerPopvisible: false
             });
             return false;
         }
