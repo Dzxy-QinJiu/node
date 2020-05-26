@@ -153,13 +153,23 @@ class PhoneCallout extends React.Component {
                 </Popover>
             );
         }
-        //拨打电话按钮展示时，且该电话是可检测的手机号时、沒有检测过状态时，才能展示检测按钮
-        if(this.props.showCheckPhone && !this.props.hidePhoneIcon && isSupportCheckPhone(this.props.phoneNumber) && _.indexOf(this.props.showPhoneNum, '(') < 0) {
-            var iconCls = classNames('iconfont icon-check handle-btn-item', {
-                'default-show': this.props.showPhoneIcon
+        //拨打电话按钮展示时，且该电话沒有检测过状态时，才能展示检测按钮
+        if(this.props.showCheckPhone && !this.props.hidePhoneIcon && _.indexOf(this.props.showPhoneNum, '(') < 0) {
+            //该号码是否支持检测
+            let isSupportCheck = isSupportCheckPhone(this.props.phoneNumber);
+            var iconCls = classNames('iconfont icon-check', {
+                'default-show': this.props.showPhoneIcon,
+                'handle-btn-item': isSupportCheck,
+                'disabled-btn-item': !isSupportCheck,
             });
             let title = this.props.phoneStatus ? Intl.get('lead.single.has.checked.phone', '重新检测') : Intl.get('lead.check.phone.status', '检测空号');
+            if(!isSupportCheck) {
+                title = Intl.get('lead.is.not.support.checked.phone', '暂不支持14、16、17、19号段及固话');
+            }
             let content = <i className={iconCls} title={title}/>;
+            if(!isSupportCheck) {
+                return content;
+            }
             if(this.isShowCheckPhonePopover()) {
                 let contentTip = getContactSalesPopoverTip();
                 return (
