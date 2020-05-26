@@ -79,7 +79,7 @@ export function getActivityChart(type, title) {
                 options: [
                     {name: Intl.get('common.all', '全部'), value: 'all'},
                     {name: Intl.get('user.type.employee', '员工'), value: 'internal'},
-                    {name: Intl.get('analysis.exclude.ip.staff': '排除配置ip和员工',), value: 'valid'},
+                    {name: Intl.get('analysis.exclude.ip.staff', '排除配置ip和员工'), value: 'valid'},
                 ],
                 activeOption: 'all',
                 conditionName: 'active_type',
