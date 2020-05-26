@@ -51,13 +51,6 @@ exports.getUserInfo = function(req, res) {
             let userData = userInfoResult.successData;
             //用户组织信息
             userData.organization = _.get(resultList, '[1].successData', {});
-            // 登录时已获取过websiteConfig此处就不需要获取了，直接用session中存的
-            if (req.session.websiteConfig) {
-                userData.websiteConfig = req.session.websiteConfig;
-                // 取完登录后的websiteConfig后，即可删掉session中的websiteConfig，为了刷新时可以重新获取最新数据
-                delete req.session.websiteConfig;
-                req.session.save();
-            }
             //是否是普通销售
             if (hasGetAllTeamPrivilege) {//管理员或运营人员，肯定不是普通销售
                 userData.isCommonSales = false;
@@ -78,6 +71,13 @@ exports.getUserInfo = function(req, res) {
                     //网站个性化
                     userData.websiteConfig = _.get(resultList, '[3].successData', {});
                 }
+            }
+             // 登录时已获取过websiteConfig此处就不需要获取了，直接用session中存的
+             if (req.session.websiteConfig) {
+                userData.websiteConfig = req.session.websiteConfig;
+                // 取完登录后的websiteConfig后，即可删掉session中的websiteConfig，为了刷新时可以重新获取最新数据
+                delete req.session.websiteConfig;
+                req.session.save();
             }
             emitter.emit('success', userData);
         } else if (userInfoResult.errorData) {//只有用户信息获取失败时，才返回失败信息
