@@ -1089,7 +1089,7 @@ var zh_CN = {
     'clue.integration.failed.regenerate.create': '重新生成密钥失败',
     'clue.integration.failed.create': '生成密钥失败',
     // 后台管理-线索集成end
-    
+
     // 后台管理-自定义字段start
     'custom.field.title': '字段名',
     'custom.field.add.title': '添加{name}字段',
@@ -3374,6 +3374,7 @@ var zh_CN = {
     'lead.has.checked.phone': '所选线索中含已检测的号码，是否重新检测？',
     'lead.not.has.check.phone': '所选线索中没有可检测的号码',
     'lead.single.has.checked.phone': '重新检测',
+    'lead.contact.position.reg': '职务只能包含汉字、字母、数字等字符，且长度在1到10（包括10）之间',
 
     //线索模块 end
     'common.memeber.all': '全部成员',

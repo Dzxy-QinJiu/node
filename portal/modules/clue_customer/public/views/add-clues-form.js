@@ -16,7 +16,7 @@ const FormItem = Form.Item;
 import ajax from '../../../crm/common/ajax';
 const routes = require('../../../crm/common/route');
 var clueCustomerAction = require('../action/clue-customer-action');
-import {checkClueName, checkClueSourceIP,contactNameRule, sourceClassifyOptions,isCommonSalesOrPersonnalVersion} from '../utils/clue-customer-utils';
+import {checkClueName, checkClueSourceIP,contactNameRule, contactPositionRule,sourceClassifyOptions} from '../utils/clue-customer-utils';
 import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
@@ -379,16 +379,16 @@ class ClueAddForm extends React.Component {
                                 //如果返回的列表长度不为0，渲染某电话被其他线索占用的警告
                                 const renderWarningMessage = <span>
                                     <span>{Intl.get('clue.customer.phone.used.by.clue','该电话已被其他线索使用，')}</span>
-                                    <a href="javascript:void(0)" 
-                                        onClick={this.props.showRightPanel.bind(this, lead)} 
-                                        className="handle-btn-item" 
+                                    <a href="javascript:void(0)"
+                                        onClick={this.props.showRightPanel.bind(this, lead)}
+                                        className="handle-btn-item"
                                         data-tracename="点击线索名查看线索详情">
                                         {_.get(lead, 'name')}
                                     </a>
                                     <span>{Intl.get('common.period','。')}</span>
-                                    <a href="javascript:void(0)" 
-                                        onClick={this.handleDuplicatePhoneMsg.bind(this,key,false,'')} 
-                                        className="handle-btn-item" 
+                                    <a href="javascript:void(0)"
+                                        onClick={this.handleDuplicatePhoneMsg.bind(this,key,false,'')}
+                                        className="handle-btn-item"
                                         data-tracename="隐藏电话已被其他线索使用的警告">
                                         {Intl.get('clue.customer.phone.still.add.phone',' 仍用此电话？')}
                                     </a>
@@ -541,11 +541,14 @@ class ClueAddForm extends React.Component {
                                 <DynamicAddDelContact
                                     hideContactRequired={this.hideContactRequired}
                                     validateContactName={contactNameRule()}
+                                    validatePositionName={contactPositionRule()}
                                     phoneOnlyOneRules={this.getPhoneInputValidateRules()}
                                     onPhoneChange={this.onPhoneChange}
                                     phoneDuplicateWarning={this.state.phoneDuplicateWarning}
                                     onRemovePhoneInput={this.onRemovePhoneInput}
-                                    form={this.props.form} />
+                                    form={this.props.form}
+                                    isShowPosition={true}
+                                />
                             </FormItem>
                             {this.renderCheckContactMsg()}
                             <FormItem

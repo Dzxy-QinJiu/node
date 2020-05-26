@@ -18,6 +18,16 @@
     }
     form .ant-form-item{
       width:100%;
+      &.contact-name-item{
+        width: 87%;
+      }
+      &.contact-name-item.show-position{
+        width: 52%;
+        margin-right: 2%;
+      }
+    &.contact-position-item{
+      width: 33%;
+    }
       .ant-calendar-picker{
         width: 100%;
       }
@@ -50,11 +60,10 @@
             .contact-name-item{
               .contact-name{
                 float: left;
-                width: 90%;
               }
-              .iconfont.icon-delete.disabled{
-                color: transparent;
-              }
+            }
+            .iconfont.icon-delete.disabled{
+              color: transparent;
             }
             .contact-way-item{
               .contact-item{
