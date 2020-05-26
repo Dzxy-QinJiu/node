@@ -214,7 +214,6 @@ exports.login = function(req, res) {
     //记录上一次登录用户名，到session中
     username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
     req.session.last_login_user = username;
-    console.time('登录相关接口============================');
     DesktopLoginService.login(req, res, username, password, captcha)
         .on('success', loginSuccess(req, res))
         .on('error', loginError(req, res));
@@ -255,7 +254,6 @@ function loginSuccess(req, res) {
         req.session.save(function() {
             //登录成功后获取网站个性化配置:是否是首次登录，来控制是否展示欢迎页
             DesktopLoginService.getWebsiteConfig(req, res).on('success', data => {
-                console.timeEnd('登录相关接口============================');
                 // 记录网站的个性化配置数据，获取用户信息时，不用再发请求获取一遍
                 req.session.websiteConfig = data || {};
                 //获取网站个性化配置,以便判断进入后的首页是否展示欢迎页
@@ -300,13 +298,13 @@ function loginError(req, res) {
             if (data && data.message) {
                 req.session.loginErrorMsg = data.message;
             } else {
-                req.session.loginErrorMsg = backendIntl.get('login.username.password.error', '用户名或密码错误');
+                req.session.loginErrorMsg = backendIntl.get('login.service.error', '很抱歉,服务器出现了异常状况');
             }
         }
         req.session.save(function() {
             if (req.xhr) {
                 //session失效时，登录失败后的处理
-                res.status(500).json(data && data.message || backendIntl.get('login.password.error', '密码错误'));
+                res.status(500).json(data && data.message || backendIntl.get('login.service.error', '很抱歉,服务器出现了异常状况'));
             } else {
                 //登录界面，登录失败的处理
                 res.redirect('/login?lang=' + lang);
