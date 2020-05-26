@@ -3374,7 +3374,7 @@ var zh_CN = {
     'lead.has.checked.phone': '所选线索中含已检测的号码，是否重新检测？',
     'lead.not.has.check.phone': '所选线索中没有可检测的号码',
     'lead.single.has.checked.phone': '重新检测',
-    'lead.contact.position.reg': '名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间',
+    'lead.contact.position.reg': '职务只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间',
 
     //线索模块 end
     'common.memeber.all': '全部成员',

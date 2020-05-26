@@ -18,7 +18,7 @@ export const clueNameContactRule = {
 //线索联系人职务的校验规则
 export const cluePositionContactRule = {
     pattern: regex.getNameRegex(10),
-    message: Intl.get('lead.contact.position.reg', '名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间')
+    message: Intl.get('lead.contact.position.reg', '职务只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间')
 };
 
 //客户名验证的正则表达式（包含大小写字母、下划线、中英文括号、点及汉字，长度1-25之间）
