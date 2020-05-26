@@ -17,9 +17,8 @@ var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
 import userData from 'PUB_DIR/sources/user-data';
 import { DatePicker } from 'antd';
-const { RangePicker } = DatePicker;
 import {checkVersionAndType,isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
-import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import RangePicker from 'CMP_DIR/range-picker/index';
 
 class ClueFilterPanel extends React.Component {
     constructor(props) {
@@ -393,9 +392,6 @@ class ClueFilterPanel extends React.Component {
             callback();
         }
     }
-    setRangeTypeAll = () => {
-
-    };
     onBeginTimeChange = (date, dateString) => {
         let rangeParams = this.state.rangeParams;
         if(date){
@@ -477,23 +473,29 @@ class ClueFilterPanel extends React.Component {
         return(
             <div className="time-range-wrap">
                 <span className="consult-time">{Intl.get('common.login.time', '时间')}</span>
-                <DatePicker
+                <RangePicker
                     disabledDate={this.disabledDate}
-                    showTime={{format: oplateConsts.DATE_FORMAT }}
-                    type='time'
                     format={oplateConsts.DATE_FORMAT}
-                    onChange={this.onBeginTimeChange}
-                    value={timeRange.startTime}
+                    onBeginTimeChange={this.onBeginTimeChange}
+                    onEndTimeChange={this.onEndTimeChange}
                 />
-                <DatePicker
-                    disabledDate={this.disabledDate}
-                    showTime={{format: oplateConsts.DATE_FORMAT }}
-                    type='time'
-                    format={oplateConsts.DATE_FORMAT}
-                    onChange={this.onEndTimeChange}
-                    value={timeRange.endTime }
-                />
-                {this.state.checkTimeErrMsg ? <span>{this.state.checkTimeErrMsg}</span> : null}
+                {/*<DatePicker*/}
+                {/*    disabledDate={this.disabledDate}*/}
+                {/*    showTime={{format: oplateConsts.DATE_FORMAT }}*/}
+                {/*    type='time'*/}
+                {/*    format={oplateConsts.DATE_FORMAT}*/}
+                {/*    onChange={this.onBeginTimeChange}*/}
+                {/*    value={timeRange.startTime}*/}
+                {/*/>*/}
+                {/*<DatePicker*/}
+                {/*    disabledDate={this.disabledDate}*/}
+                {/*    showTime={{format: oplateConsts.DATE_FORMAT }}*/}
+                {/*    type='time'*/}
+                {/*    format={oplateConsts.DATE_FORMAT}*/}
+                {/*    onChange={this.onEndTimeChange}*/}
+                {/*    value={timeRange.endTime}*/}
+                {/*/>*/}
+                {/*{this.state.checkTimeErrMsg ? <span>{this.state.checkTimeErrMsg}</span> : null}*/}
             </div>
         );
     };
