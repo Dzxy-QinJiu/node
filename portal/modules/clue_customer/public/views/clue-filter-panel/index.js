@@ -12,7 +12,7 @@ var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
 import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,SIMILAR_IP,NOT_CONNECTED,EXTRACT_TIME, sourceClassifyArray, isCommonSalesOrPersonnalVersion, APPLY_TRY_LEAD ,otherFilterArray} from '../../utils/clue-customer-utils';
-import {getClueUnhandledPrivilege, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
+import {getClueUnhandledPrivilege, getTimeWithSecondZero, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
 import userData from 'PUB_DIR/sources/user-data';
@@ -30,6 +30,8 @@ class ClueFilterPanel extends React.Component {
             clueClassifyArray: this.props.clueClassifyArray,
             //自定义常用筛选
             customCommonFilter: [],
+            //校验时间是否错误的信息
+            checkTimeErrMsg: '',
             ...clueFilterStore.getState(),
         };
     }
@@ -100,12 +102,12 @@ class ClueFilterPanel extends React.Component {
                 this.setState({customCommonFilter});
             });
     }
-    
+
     //将自定义常用筛选查询条件转换为前端展示用的格式
     getFilterItemFromConditionItem(item) {
         let filters = [];
         let plainFilters = [];
-    
+
         //将处理好的筛选项组装成FilterList所需的格式
         const handleAddItem = nameObj => {
             let filterItem = null;
@@ -129,7 +131,7 @@ class ClueFilterPanel extends React.Component {
                 filters.push(filterItem);
             }
         };
-    
+
         //处理筛选项的value，处理成前端的格式
         const handleValue = (value, key) => {
             let item = null;
@@ -164,7 +166,7 @@ class ClueFilterPanel extends React.Component {
             }
             handleAddItem(nameObj);
         };
-    
+
         if (_.get(item, 'query_condition')) {
             if (_.get(item.query_condition, 'query')) {
                 _.each(item.query_condition.query, (value, key) => {
@@ -218,7 +220,7 @@ class ClueFilterPanel extends React.Component {
                 });
             }
         }
-    
+
         return {
             name: item.name,
             value: item.name,
@@ -376,6 +378,83 @@ class ClueFilterPanel extends React.Component {
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         return getClueStatusValue(filterClueStatus);
     };
+    // 验证起始时间是否小于结束时间
+    validateStartAndEndTime(callback) {
+        var rangeParams = this.state.rangeParams;
+        const begin_time = rangeParams[0].from;
+        const endTime = rangeParams[0].to;
+        if (endTime && begin_time) {
+            if (moment(endTime).isBefore(begin_time)) {
+                    callback(Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间'));
+            } else {
+                callback();
+            }
+        } else {
+            callback();
+        }
+    }
+    setRangeTypeAll = () => {
+
+    };
+    onBeginTimeChange = (date, dateString) => {
+        let rangeParams = this.state.rangeParams;
+        if(date){
+            let startDateValue = moment(getTimeWithSecondZero(date)).startOf('day').valueOf();
+            if(rangeParams[0].to){
+                rangeParams[0].from = startDateValue;
+                this.validateStartAndEndTime((errMsg) => {
+                    if(errMsg){
+                        this.setState({
+                            checkTimeErrMsg: errMsg
+                        });
+                    }else{
+                        this.setState({
+                            checkTimeErrMsg: ''
+                        },() => {
+                            clueCustomerAction.setClueInitialData();
+                            setTimeout(() => {
+                                this.props.getClueList();
+                            });
+                        });
+                    }
+                });
+            }
+        }else{
+            if(rangeParams[0].to){
+
+            }else{
+
+            }
+            FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
+        }
+    };
+    onEndTimeChange = (date, dateString) => {
+        let rangeParams = this.state.rangeParams;
+        if(date){
+            let endDateValue = moment(getTimeWithSecondZero(date)).endOf('day').valueOf();
+            if(rangeParams[0].from){
+                rangeParams[0].to = endDateValue;
+                this.validateStartAndEndTime((errMsg) => {
+                    if(errMsg){
+                        this.setState({
+                            checkTimeErrMsg: errMsg
+                        });
+                    }else{
+                        this.setState({
+                            checkTimeErrMsg: ''
+                        },() => {
+                            clueCustomerAction.setClueInitialData();
+                            setTimeout(() => {
+                                this.props.getClueList();
+                            });
+                        });
+                    }
+                });
+            }
+        }else{
+            FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
+        }
+    };
     changeRangePicker = (date, dateString) => {
         if (!_.get(date,'[0]')){
             FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
@@ -394,14 +473,27 @@ class ClueFilterPanel extends React.Component {
     renderTimeRangeSelect = () => {
         const startTime = this.state.rangeParams[0].from;
         const endTime = this.state.rangeParams[0].to;
-        var timeRange = startTime !== clueStartTime ? [moment(startTime), moment(endTime)] : [];
+        var timeRange = startTime !== clueStartTime ? {startTime: moment(startTime),endTime: moment(endTime)} : {startTime: '',endTime: ''};
         return(
             <div className="time-range-wrap">
                 <span className="consult-time">{Intl.get('common.login.time', '时间')}</span>
-                <RangePicker
+                <DatePicker
                     disabledDate={this.disabledDate}
-                    value={timeRange}
-                    onChange={this.changeRangePicker}/>
+                    showTime={{format: oplateConsts.DATE_FORMAT }}
+                    type='time'
+                    format={oplateConsts.DATE_FORMAT}
+                    onChange={this.onBeginTimeChange}
+                    value={timeRange.startTime}
+                />
+                <DatePicker
+                    disabledDate={this.disabledDate}
+                    showTime={{format: oplateConsts.DATE_FORMAT }}
+                    type='time'
+                    format={oplateConsts.DATE_FORMAT}
+                    onChange={this.onEndTimeChange}
+                    value={timeRange.endTime }
+                />
+                {this.state.checkTimeErrMsg ? <span>{this.state.checkTimeErrMsg}</span> : null}
             </div>
         );
     };
