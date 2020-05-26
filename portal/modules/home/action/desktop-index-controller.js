@@ -89,10 +89,8 @@ exports.getUserData = function(req, res) {
     delete user.auth.access_token;
     delete user.auth.refresh_token;
     var callback = req.query.callback;
-    console.time('用户信息相关接口============================');
     DesktopIndexService.getUserInfo(req, res)
         .on('success', function(data) {
-            console.timeEnd('用户信息相关接口============================');
             //将界面上可能会修改到的登录用户的信息进行刷新
             user.email = data.email;
             user.email_enable = data.email_enable;
