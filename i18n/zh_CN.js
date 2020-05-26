@@ -1005,7 +1005,7 @@ var zh_CN = {
 
     // 后台管理-产品start
     'product.name.input': '请填写产品名称',
-    'product.name.rule': '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间',
+    'product.name.rule': '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间',
     'product.filter.ip.add.ip.placeholder': '请输入要排除的IP',
     'product.filter.ip': '过滤IP',
     'product.global.filter.ip': '请到全部产品{clickContent}页面删除',
@@ -3374,7 +3374,7 @@ var zh_CN = {
     'lead.has.checked.phone': '所选线索中含已检测的号码，是否重新检测？',
     'lead.not.has.check.phone': '所选线索中没有可检测的号码',
     'lead.single.has.checked.phone': '重新检测',
-    'lead.contact.position.reg': '职务只能包含汉字、字母、数字等字符，且长度在1到10（包括10）之间',
+    'lead.contact.position.reg': '名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间',
 
     //线索模块 end
     'common.memeber.all': '全部成员',
@@ -4130,7 +4130,7 @@ var zh_CN = {
     'clue.assignment.no.strategy.tip': '您还没有线索分配策略',
     'clue.assignment.name': '名称',
     'clue.assignment.name.tip': '请输入线索分配策略名称',
-    'clue.assignment.name.required.tip': '线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间',
+    'clue.assignment.name.required.tip': '线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间',
     'clue.assignment.description': '描述',
     'clue.assignment.description.tip': '请描述一下线索分配策略',
     'clue.assignment.no.description.tip': '暂无线索分配策略描述',
