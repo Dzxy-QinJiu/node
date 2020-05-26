@@ -100,6 +100,9 @@ ClueCustomerStore.prototype.getSettingCustomerRecomment = function(result){
     var data = _.get(result,'list.[0]');
     if (data){
         deleteEmptyProperty(data);
+        if(data.feature) {
+            this.feature = data.feature;
+        }
         this.settedCustomerRecommend = {
             loading: false,
             obj: data
