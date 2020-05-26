@@ -736,12 +736,22 @@ class RecommendCluesFilterPanel extends Component {
     };
 
     handleOpenChange = (open) => {
-        this.setState({registerOpen: true});
+        this.setState({registerOpen: open}, () => {
+            //这里延时设置为true，解决选择时间后闪烁的问题
+            setTimeout(() => {
+                this.setState({registerOpen: true});
+            });
+        });
     }
+
+    //解决点击时间选择器上一年、下一年不起作用的问题
+    handleStopPropagetion = (e) => {
+        e.stopPropagation();
+    };
 
     handleRegisterPopvisible = (visible) => {
         if(this.state.vipPopOverVisible !== VIP_ITEM_MAP.REGISTER_TIME) {
-            this.setState({registerPopvisible: visible});
+            this.setState({registerPopvisible: visible, registerOpen: true});
         }
     };
 
@@ -861,7 +871,7 @@ class RecommendCluesFilterPanel extends Component {
                             <span data-tracename={`点击了'${btnText}:自定义'`}>{Intl.get('user.time.custom', '自定义')}</span>
                         </li>
                     </div>
-                    <div className="register-time-select-wrapper">
+                    <div className="register-time-select-wrapper" onClick={this.handleStopPropagetion}>
                         <div className="register-time-select-content ant-dropdown-menu-item">
                             <RangePicker
                                 open={this.state.registerOpen}
