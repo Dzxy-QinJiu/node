@@ -203,15 +203,7 @@ class CallRecord extends React.Component {
 
     onSelectFilterObj = (filterKey, value) => {
         this.state.filterObj[filterKey] = value;
-        if (value === `${CALL_TYPE_OPTION.PHONE},${CALL_TYPE_OPTION.CURTAO_PHONE}`) {
-            this.state.callType = <i className="iconfont icon-call-back" title={Intl.get('call.record.call.center', '呼叫中心')}></i>;
-        } else if (value === CALL_TYPE_OPTION.APP) {
-            this.state.callType = <i className="iconfont icon-ketao-app" title={Intl.get('common.ketao.app', '客套APP')}></i>;
-        } else if (value === CALL_TYPE_OPTION.ALL) {
-            this.state.callType = <i className="iconfont icon-all" title={Intl.get('user.online.all.type', '全部类型')}></i>;
-        } else if (value === CALL_TYPE_OPTION.CALL_BACK) {
-            this.state.callType = <i className='iconfont icon-callback' title={Intl.get('common.callback', '回访')}></i>;
-        }
+        this.state.callType = value
         if (value === CALL_STATUS_OPTION.ALL || value === CALL_TYPE_OPTION.ALL) {
             this.filterCallRecord(filterKey);
             return;
