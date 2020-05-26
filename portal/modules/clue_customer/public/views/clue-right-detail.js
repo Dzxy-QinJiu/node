@@ -305,7 +305,7 @@ class ClueRightPanel extends React.Component {
 
     updateClueProperty = (updateProperty,flag) => {
         var curClue = this.state.curClue;
-        let contactsKey = ['qq','weChat','phone','email'];
+        let contactsKey = ['qq','weChat','phone','email','position'];
         let contact_id = updateProperty.contact_id;
         let contacts = _.find(curClue.contacts, ele => ele.id === contact_id);
 
