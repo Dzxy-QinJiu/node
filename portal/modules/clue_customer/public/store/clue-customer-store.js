@@ -660,5 +660,9 @@ ClueCustomerStore.prototype.setHotSource = function(value) {
     this.feature = value;
     this.sortvalues = [];
 };
+//设置pagesize
+ClueCustomerStore.prototype.setPageSize = function(size) {
+    this.pageSize = size;
+};
 
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');

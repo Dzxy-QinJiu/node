@@ -49,6 +49,7 @@ function ClueCustomerActions() {
         'initialRecommendClues',//初始化推荐线索相关条件及状态
         'afterNewExtract',//提取推荐线索后
         'setHotSource',//设置热门选项
+        'setPageSize',//设置pageSize
     );
     //获取销售列表
     this.getSalesManList = function(cb) {

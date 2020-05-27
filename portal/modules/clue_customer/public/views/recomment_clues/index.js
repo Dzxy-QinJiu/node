@@ -9,6 +9,8 @@ import TopNav from 'CMP_DIR/top-nav';
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {Button, Checkbox, message, Popover, Tag, Icon} from 'antd';
+import {AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import ShearContent from 'CMP_DIR/shear-content';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
@@ -1799,6 +1801,13 @@ class RecommendCluesList extends React.Component {
         this.setState({extractedResult: ''});
     };
 
+    handleLoadSizeSelect = (value) => {
+        clueCustomerAction.setPageSize(value);
+        setTimeout(() => {
+            this.getRecommendClueLists();
+        });
+    };
+
     //手机号状态为其他时，后面添加tip
     handlePhoneOtherStatusTip(phoneNumber) {
         if(phoneNumber.indexOf(Intl.get( 'common.others', '其他')) > -1) {
@@ -1814,12 +1823,28 @@ class RecommendCluesList extends React.Component {
         return null;
     }
 
+    renderSelectLoadSizeBlock() {
+        if(checkCurrentVersionType().formal) {//正式
+            return (
+                <div className="load-size-container" data-tracename="每页展示条数">
+                    <span>{Intl.get('lead.recommend.page.size', '每页')}</span>
+                    <AntcSelect size="small" value={this.state.pageSize} onSelect={this.handleLoadSizeSelect}>
+                        <Option value={20}><span data-tracename="选择：20条">20{Intl.get('clues.leads.strip', '条')}</span></Option>
+                        <Option value={50}><span data-tracename="选择：50条">50{Intl.get('clues.leads.strip', '条')}</span></Option>
+                        <Option value={100}><span data-tracename="选择：100条">100{Intl.get('clues.leads.strip', '条')}</span></Option>
+                    </AntcSelect>
+                </div>
+            );
+        }else {return null;}
+    }
+
     renderBtnClock = (isWebMin) => {
         let moreRotationClass = classNames('iconfont icon-change-new', {
             'change-new-icon-rotation': !this.state.canClickMoreBatch
         });
         return (
             <React.Fragment>
+                {this.renderSelectLoadSizeBlock()}
                 <Button
                     className="btn-item more-batch-btn"
                     data-tracename="点击换一批按钮"

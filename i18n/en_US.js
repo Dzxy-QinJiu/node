@@ -3359,6 +3359,7 @@ var en_US = {
     'lead.single.has.checked.phone': 'To detect',//重新检测
      'lead.is.not.support.checked.phone': 'No support for 14, 16, 17, 19 and fixed line',//暂不支持14、16、17、19号段及固话
     'lead.contact.position.reg': 'The position can only contain Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English bracket characters, and the length is between 1 and 10 (including 10)',//职务只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间
+    'lead.recommend.page.size': 'Each page',//每页
 
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
