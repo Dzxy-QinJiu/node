@@ -27,12 +27,6 @@ function getCompanyRecordNum(isCurtao, backendIntl){
         // 备案号
         recordNum: '鲁ICP备18038856号'
     };
-    //eefung域名下的信息
-    if(!isCurtao){
-        obj.company = backendIntl.get('company.name.eefung', '蚁坊软件');
-        obj.companyLink = 'https://www.eefung.com/';
-        obj.recordNum = '湘ICP备14007253号-1';
-    }
     return obj;
 }
 function renderUserAgreementPrivacyPolicy(req, res){
