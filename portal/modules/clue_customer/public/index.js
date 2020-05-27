@@ -2021,7 +2021,7 @@ class ClueCustomer extends React.Component {
                 }
             },{
                 dataIndex: 'phone',
-                width: '200px',
+                width: '220px',
                 render: (text, salesClueItem, index) => {
                     return this.renderPhoneBlock(salesClueItem);
                 }
@@ -2120,7 +2120,8 @@ class ClueCustomer extends React.Component {
                     delete column.width;
                 }
                 if(column.dataIndex === 'phone') {
-                    column.width = '150px';
+                    column.width = '220px';
+                    column.className = 'middle-phone-container';
                 }
                 return column;
             }).value();
@@ -3363,17 +3364,19 @@ class ClueCustomer extends React.Component {
     };
     //渲染批量空号检测
     renderCheckPhoneBtn = () => {
-        //选中全部后，不展示检测空号按钮
-        if(this.state.selectAllMatched && this.state.selectedClues.length > 1) {
-            return null;
-        }
         if(hasCheckPhoneStatusPrivilege(this.getFilterStatus())) {
             let {phoneList, hasCheckedPhoneList} = getCheckedPhones(this.state.selectedClues);
-            if(this.isShowCheckPhonePopover(phoneList)) {
-                let contentTip = getContactSalesPopoverTip() || Intl.get('crm.suggest.select.clue.first', '请先选择线索');
-                if(this.state.selectedClues.length && !phoneList.length) {//没有可检测的手机号时
-                    contentTip = Intl.get('lead.not.has.check.phone', '所选线索中没有可检测的号码');
+            let selectAllMatched = this.state.selectAllMatched && this.state.selectedClues.length > 1;
+            if(this.isShowCheckPhonePopover(phoneList) || selectAllMatched) {
+                let contentTip = getContactSalesPopoverTip();
+                if(!contentTip) {
+                    if(selectAllMatched) {//选中全部后，展示提示
+                        contentTip = Intl.get('lead.check.phone.count.limit.tip', '一次最多可检测{count}条线索', {count: 20});
+                    }else if(this.state.selectedClues.length && !phoneList.length) {//没有可检测的手机号时
+                        contentTip = Intl.get('lead.not.has.check.phone', '所选线索中没有可检测的号码');
+                    }else contentTip = Intl.get('crm.suggest.select.clue.first', '请先选择线索');
                 }
+
                 return (
                     <Popover
                         placement="bottom"

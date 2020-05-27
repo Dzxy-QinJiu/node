@@ -3379,6 +3379,7 @@ var zh_CN = {
     'lead.not.has.check.phone': '所选线索中没有可检测的号码',
     'lead.single.has.checked.phone': '重新检测',
     'lead.is.not.support.checked.phone': '暂不支持14、16、17、19号段及固话',
+    'lead.check.phone.count.limit.tip': '一次最多可检测{count}条线索',
 
     //线索模块 end
     'common.memeber.all': '全部成员',

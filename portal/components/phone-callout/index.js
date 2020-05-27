@@ -57,8 +57,10 @@ class PhoneCallout extends React.Component {
             newState.ableClickCheckPhoneIcon = true;
             if(!isEmptyPhone(_.get(result, '[0].phone_status'))) {//如果检测的手机号状态不是疑似空号需要提示下
                 newState.checkPhonePopContent = Intl.get('lead.check.phone.no.empty.number', '非疑似空号');
-                newState.checkPhoneVisible = true;
+            }else {
+                newState.checkPhonePopContent = Intl.get('lead.phone.status.null', '疑似空号');
             }
+            newState.checkPhoneVisible = true;
             this.setState(newState);
             _.isFunction(this.props.onCheckPhoneSuccess) && this.props.onCheckPhoneSuccess(result);
         }, (errorMsg) => {
@@ -153,8 +155,8 @@ class PhoneCallout extends React.Component {
                 </Popover>
             );
         }
-        //拨打电话按钮展示时，且该电话沒有检测过状态时，才能展示检测按钮
-        if(this.props.showCheckPhone && !this.props.hidePhoneIcon && _.indexOf(this.props.showPhoneNum, '(') < 0) {
+        //能展示检测电话按钮，并且拨打电话按钮也展示时，才能展示检测按钮
+        if(this.props.showCheckPhone && !this.props.hidePhoneIcon) {
             //该号码是否支持检测
             let isSupportCheck = isSupportCheckPhone(this.props.phoneNumber);
             var iconCls = classNames('iconfont icon-check', {
