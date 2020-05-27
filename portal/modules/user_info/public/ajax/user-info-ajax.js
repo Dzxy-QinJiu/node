@@ -28,7 +28,7 @@ exports.getLogList = function(params) {
             Deferred.resolve(logList);
         },
         error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+            Deferred.reject(errorMsg.responseJSON || Intl.get('user.info.get.log.list.failed', '获取个人操作记录失败'));
         }
     });
     return Deferred.promise();

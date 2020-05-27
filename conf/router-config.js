@@ -311,6 +311,20 @@ let routers = [
             component: `${MODULE_PATH}user_password/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['USER_INFO_UPDATE']
+        },{
+            id: 'USER_INFO_OPERATE_RECORD',
+            name: 'menu.appuser.auditlog',// 操作记录
+            routePath: '/user-preference/operate-record',
+            component: `${MODULE_PATH}user_info/public/views/operate-record`,
+            //有这个权限，才显示入口图标
+            showPrivileges: ['BASE_QUERY_PERMISSION_MEMBER']
+        }, {
+            id: 'USER_PASSWORD',
+            name: 'user.trade.record',//购买记录
+            routePath: '/user-preference/trade-record',
+            component: `${MODULE_PATH}user_info/public/views/trade-record`,
+            //有这个权限，才显示入口图标
+            showPrivileges: ['BASE_QUERY_PERMISSION_MEMBER']
         }]
     }, {
         id: 'NO_MATCH',

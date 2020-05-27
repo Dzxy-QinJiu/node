@@ -20,16 +20,7 @@ function UserInfoActions() {
             });
         });
     };
-    //获取登录日志
-    this.getLogList = function(params) {
-        var _this = this;
-        _this.dispatch({isLoading: true});
-        userInfoAjax.getLogList(params).then(function(logList) {
-            _this.dispatch(logList);
-        }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get('user.info.get.log.list.failed', '获取个人操作记录失败'));
-        });
-    };
+
     //设置邮箱订阅提醒功能
     this.setSubscribeEmail = function(configObj, callback) {
         userInfoAjax.setSubscribeEmail(configObj).then(function(data) {

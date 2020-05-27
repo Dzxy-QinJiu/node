@@ -11,6 +11,8 @@ import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
 import {TRACE_UNIT} from 'PUB_DIR/sources/utils/consts';
 import NoData from 'CMP_DIR/no-data';
 import LoadDataError from 'CMP_DIR/load-data-error';
+import { isResponsiveDisplay } from 'PUB_DIR/sources/utils/common-method-util';
+import DetailCard from 'CMP_DIR/detail-card';
 
 const pageSize = 100;
 const tableHeadHeight = 40;
@@ -159,6 +161,54 @@ class TradeRecord extends React.Component {
         this.getUserTradeRecord({sort_id: this.state.sortId});
     };
 
+    renderCardTitle = (item) => {
+        return (
+            <div className="card-title">
+                <span className="title">
+                    {Intl.get('user.trade.record.order.number','订单号')}:
+                </span>
+                <span className="content">
+                    {_.get(item, 'trade_no')}
+                </span>
+            </div>
+        );
+    };
+
+    renderCardContent = (item) => {
+        let type = _.get(item, 'goods.type');
+        let name = _.get(item, 'goods.name');
+        let num = _.get(item, 'goods_num');
+        let unit = type && _.has(TRACE_UNIT, type) ? TRACE_UNIT[type] : '';
+        let detail = name + num + unit;
+        let totalFee = formatRoundingData(_.get(item, 'total_fee'), 2);
+        return (
+            <div className="card-content">
+                <div className="detail-item detail-import">
+                    <span className="detail-num">{detail}</span>
+                    <span className="detail-fee">{totalFee}</span>
+                </div>
+                <div className="detail-item">
+                    <span className="title">{Intl.get('user.trade.record.time','订单时间')}:</span>
+                    <span className="content">{moment(item.finish_time).format(oplateConsts.DATE_TIME_FORMAT)}</span>
+                </div>
+                <div className="detail-item">
+                    <span className="title">{Intl.get('user.trade.payment.mode','支付方式')}:</span>
+                    <span className="content">
+                        {
+                            _.get(item, 'pay_type') === 'alipay' ?
+                                Intl.get('user.trade.payment.name','{name}支付', {name: Intl.get('user.trade.payment.alipay','支付宝')}) :
+                                Intl.get('user.trade.payment.name','{name}支付', {name: Intl.get('crm.58','微信')})
+                        }
+                    </span>
+                </div>
+                <div className="detail-item">
+                    <span className="title">{Intl.get('user.operator','操作人')}:</span>
+                    <span className="content">{_.get(item, 'user_name')}</span>
+                </div>
+            </div>
+        );
+    }
+
     // 渲染用户的交易记录
     renderUserTradeRecordTable = () => {
         const columns = this.getTradeRecordColumns();
@@ -177,6 +227,22 @@ class TradeRecord extends React.Component {
             emptyText: this.state.errorMsg || Intl.get('common.no.data.tips', '暂无{name}',
                 {name: Intl.get('user.trade.record', '购买记录')})
         };
+        if (isResponsiveDisplay().isWebSmall) {
+            return (
+                <div className="user-trade-record-phone-wrap">
+                    {
+                        _.map(dataSource, item => {
+                            return (
+                                <DetailCard
+                                    title={this.renderCardTitle(item)}
+                                    content={this.renderCardContent(item)}
+                                />
+                            );
+                        })
+                    }
+                </div>
+            );
+        }
         return (
             <div className="user-trade-record-table-wrap scroll-load">
                 <div className="trade-record-table-content" style={{ height: this.props.height }}>
@@ -204,7 +270,7 @@ class TradeRecord extends React.Component {
         if (!this.state.sortId && this.state.loading) {
             return (
                 <div className="trade-record-loading">
-                    <Spinner/>
+                    <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
                 </div>
             );
         } else {

@@ -1,0 +1,54 @@
+@import "../../../../public/css/common-variables.less";
+
+.operate-record-wrap {
+  height: 100%;
+  //登录历史标题样式
+  .log-div-title {
+    height: 40px;
+    line-height: 40px;
+
+    //登录历史样式
+    .log-title {
+      font-size: 16px;
+      padding-left: 40px;
+      margin-bottom: 0;
+      overflow: hidden;
+      color: #506470;
+    }
+
+    //日志信息提示样式
+    label.log-title-tips {
+      font-size: 14px;
+      padding-left: 10px;
+      max-width: 75%;
+      margin-bottom: 0px;
+      font-weight: normal;
+      word-wrap: break-word;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #81939e;
+
+      //修改密码样式
+      .update-pwd {
+        cursor: pointer;
+        padding-left: 5px;
+        color: @primary-color;
+      }
+    }
+  }
+  .trade-record-loading{
+    margin: 220px auto;
+    text-align: center;
+    .load8 {
+      transform: scale(1, 1);
+      position: initial;
+    }
+  }
+  .msg-tips {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
