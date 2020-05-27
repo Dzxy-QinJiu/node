@@ -3369,12 +3369,14 @@ class ClueCustomer extends React.Component {
             let selectAllMatched = this.state.selectAllMatched && this.state.selectedClues.length > 1;
             if(this.isShowCheckPhonePopover(phoneList) || selectAllMatched) {
                 let contentTip = getContactSalesPopoverTip();
-                if(!contentTip) {
-                    if(selectAllMatched) {//选中全部后，展示提示
+                if(!contentTip) {//不是企业账号过期时
+                    if(selectAllMatched) {//选中全部后，需要展示'最多可检测#条线索'提示
                         contentTip = Intl.get('lead.check.phone.count.limit.tip', '一次最多可检测{count}条线索', {count: 20});
                     }else if(this.state.selectedClues.length && !phoneList.length) {//没有可检测的手机号时
                         contentTip = Intl.get('lead.not.has.check.phone', '所选线索中没有可检测的号码');
-                    }else contentTip = Intl.get('crm.suggest.select.clue.first', '请先选择线索');
+                    }else {
+                        contentTip = Intl.get('crm.suggest.select.clue.first', '请先选择线索');
+                    }
                 }
 
                 return (
