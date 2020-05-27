@@ -1802,6 +1802,7 @@ class RecommendCluesList extends React.Component {
     };
 
     handleLoadSizeSelect = (value) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-select-dropdown-menu-item'), `选择了：${value}条`);
         clueCustomerAction.setPageSize(value);
         setTimeout(() => {
             this.getRecommendClueLists();
@@ -1829,9 +1830,9 @@ class RecommendCluesList extends React.Component {
                 <div className="load-size-container" data-tracename="每页展示条数">
                     <span>{Intl.get('lead.recommend.page.size', '每页')}</span>
                     <AntcSelect size="small" value={this.state.pageSize} onSelect={this.handleLoadSizeSelect}>
-                        <Option value={20}><span data-tracename="选择：20条">20{Intl.get('clues.leads.strip', '条')}</span></Option>
-                        <Option value={50}><span data-tracename="选择：50条">50{Intl.get('clues.leads.strip', '条')}</span></Option>
-                        <Option value={100}><span data-tracename="选择：100条">100{Intl.get('clues.leads.strip', '条')}</span></Option>
+                        <Option value={20}>20{Intl.get('clues.leads.strip', '条')}</Option>
+                        <Option value={50}>50{Intl.get('clues.leads.strip', '条')}</Option>
+                        <Option value={100}>100{Intl.get('clues.leads.strip', '条')}</Option>
                     </AntcSelect>
                 </div>
             );
