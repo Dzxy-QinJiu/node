@@ -1003,7 +1003,7 @@ var en_US = {
 
     // 后台管理- 产品start
     'product.name.input': 'Please enter the name of product', // 请填写产品名称
-    'product.name.rule': 'The name of product can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10', // 产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
+    'product.name.rule': 'The name of product can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10', // 产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间
     'product.filter.ip.add.ip.placeholder': 'Please enter the filter IP', // 请输入要排除的IP
     'product.filter.ip': 'Filter IP', // 过滤IP
     'product.global.filter.ip': 'Please go to the global IP {clickContent} page to delete', // 请到全部产品{clickContent}页面删除
@@ -3357,7 +3357,8 @@ var en_US = {
     'lead.has.checked.phone': 'The selected clue contains the detected number. Do you want to redetect it?',//所选线索中含已检测的号码，是否重新检测？
     'lead.not.has.check.phone': 'There is no detectable number in the selected clue',//所选线索中没有可检测的号码
     'lead.single.has.checked.phone': 'To detect',//重新检测
-    'lead.is.not.support.checked.phone': 'No support for 14, 16, 17, 19 and fixed line',//暂不支持14、16、17、19号段及固话
+     'lead.is.not.support.checked.phone': 'No support for 14, 16, 17, 19 and fixed line',//暂不支持14、16、17、19号段及固话
+    'lead.contact.position.reg': 'The position can only contain Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English bracket characters, and the length is between 1 and 10 (including 10)',//职务只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间
 
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
@@ -4004,6 +4005,7 @@ var en_US = {
     'common.signed.customer.activity': 'Signed customer activity',//签约客户活跃度
     'common.number.of.new.user.customer': 'Number of customers opening  accounts',//开通了用户的客户数
     'clue.customer.register.time': 'Register time',//注册时间
+    'clue.customer.no.register.time': 'No register time',//暂无注册时间
     'self.setting.has.no.apply': 'There is no suited apply',//暂无符合条件的申请
     'failed.distribute.apply': 'Failed assign!',//分配失败！
     'apply.approve.required.err.msg': 'Please input tips',//请输入未填写时的提示
@@ -4019,7 +4021,9 @@ var en_US = {
     'clue.recommend.selected.extract.tip': 'The {count} bar has been selected, and the {ableExtract} bar can be extracted',//已选中{count}条，还可提取{ableExtract}条线索
     'clue.extract.count.has.been.exceed': 'The extractable number has been exceeded',//已超过可提取数
     'clue.recommend.clue.scope': 'Scope of business',//经营范围
+    'clue.recommend.no.clue.scope': 'No scope of business',//暂无经营范围
     'clue.recommend.clue.introduction': 'brief introduction',//简介
+    'clue.recommend.no.clue.introduction': 'No brief introduction',//暂无简介
     'clue.recommend.clue.count': '{count}',//{count}个
     'clue.find.recommend.clue': 'Look for clues',//找线索
     'clue.recommend.keyword': 'keywords',//关键词
@@ -4098,7 +4102,7 @@ var en_US = {
     'clue.assignment.name.tip': 'Please input lead assignment name',//请输入线索分配策略名称
     'clue.assignment.no.description.tip': 'There is no lead assignment strategy description',//暂无线索分配策略描述
     'clue.assignment.add.description.tip': 'Add lead assignment strategy description',//添加线索分配策略描述
-    'clue.assignment.name.required.tip': 'The name of lead assignment strategy can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10',//线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
+    'clue.assignment.name.required.tip': 'The name of lead assignment strategy can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10',//线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间
     'clue.assignment.description': 'Description',//描述
     'clue.assignment.description.tip': 'Please describe lead assignment strategy',//请描述一下线索分配策略
     'clue.assignment.needs': 'Needs',//满足条件
