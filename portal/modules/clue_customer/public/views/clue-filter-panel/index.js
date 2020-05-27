@@ -392,14 +392,13 @@ class ClueFilterPanel extends React.Component {
     renderTimeRangeSelect = () => {
         const startTime = this.state.rangeParams[0].from;
         const endTime = this.state.rangeParams[0].to;
+        var rangeObj = startTime !== clueStartTime ? {startTime: moment(startTime),endTime: moment(endTime)} : {startTime: '',endTime: this.state.timeType !== 'all' ? moment(endTime) : ''};
         return(
             <div className="time-range-wrap">
                 <RangePicker
                     disabledDate={this.disabledDate}
-                    format={oplateConsts.DATE_FORMAT}
                     changeRangePicker={this.changeRangePicker}
-                    timeRange={{startTime,endTime}}
-                    timeType={this.state.timeType}
+                    timeRange={rangeObj}
                 />
             </div>
         );

@@ -42,7 +42,7 @@ class RangePicker extends React.Component {
     onBeginTimeChange = (date) => {
         let timeRange = this.state.timeRange;
         if(date){
-            let startDateValue = moment(getTimeWithSecondZero(date)).startOf('day').valueOf();
+            let startDateValue = moment(getTimeWithSecondZero(date)).startOf('day');
             if(timeRange.endTime){
                 timeRange.startTime = startDateValue;
                 this.validateStartAndEndTime((errMsg) => {
@@ -51,18 +51,20 @@ class RangePicker extends React.Component {
                             checkTimeErrMsg: errMsg
                         });
                     }else{
-                        this.props.changeRangePicker(timeRange);
+                        this.clearAllTimeRange({startTime: timeRange.startTime.valueOf(),endTime: timeRange.endTime.valueOf()});
                     }
                 });
+            }else{
+                this.clearAllTimeRange({startTime: startDateValue.valueOf(), endTime: moment().endOf('day').valueOf()});
             }
         }else{
-            this.props.changeRangePicker();
+            this.clearAllTimeRange();
         }
     };
     onEndTimeChange = (date) => {
         let timeRange = this.state.timeRange;
         if(date){
-            let endDateValue = moment(getTimeWithSecondZero(date)).endOf('day').valueOf();
+            let endDateValue = moment(getTimeWithSecondZero(date)).endOf('day');
             if(timeRange.startTime || timeRange.startTime === clueStartTime){
                 timeRange.endTime = endDateValue;
                 this.validateStartAndEndTime((errMsg) => {
@@ -71,34 +73,27 @@ class RangePicker extends React.Component {
                             checkTimeErrMsg: errMsg
                         });
                     }else{
-                        this.setState({
-                            checkTimeErrMsg: ''
-                        },() => {
-                            this.props.changeRangePicker(timeRange);
-                        });
+                        this.clearAllTimeRange({startTime: timeRange.startTime.valueOf(),endTime: timeRange.endTime.valueOf()});
                     }
                 });
+            }else{
+                this.clearAllTimeRange({startTime: clueStartTime, endTime: endDateValue.valueOf()});
             }
         }else{
-            this.setState({
-                checkTimeErrMsg: ''
-            },() => {
-                this.props.changeRangePicker();
-            });
+            this.clearAllTimeRange();
         }
     };
-    clearAllTimeRange = () => {
+    clearAllTimeRange = (rangeObj) => {
         this.setState({
             checkTimeErrMsg: ''
         },() => {
-            this.props.changeRangePicker();
+            this.props.changeRangePicker(rangeObj);
         });
     };
     render = () => {
         let {timeRange} = this.state;
         let startTime = timeRange.startTime;
         let endTime = timeRange.endTime;
-        var rangeObj = startTime !== clueStartTime ? {startTime: moment(startTime),endTime: moment(endTime)} : {startTime: '',endTime: this.props.timeType !== 'all' ? moment(endTime) :''};
         var hasErr = this.state.checkTimeErrMsg;
         var cls = classNames('range-picker-wrap',{
            'has-error': hasErr
@@ -106,7 +101,7 @@ class RangePicker extends React.Component {
         return (
             <div className={cls}>
                 <span className="consult-time">{Intl.get('common.login.time', '时间')}
-                    {rangeObj.startTime || rangeObj.endTime ? <span className='clear-time' onClick={this.clearAllTimeRange}>
+                    {startTime || endTime ? <span className='clear-time' onClick={this.clearAllTimeRange.bind(this,'')}>
                         {Intl.get('lead.filter.clear.time.range', '清空')}
                     </span> : null}
                 </span>
@@ -115,7 +110,7 @@ class RangePicker extends React.Component {
                         allowClear={false}
                         disabledDate={this.props.disabledDate}
                         onChange={this.onBeginTimeChange}
-                        value={rangeObj.startTime}
+                        value={startTime ? moment(startTime) : ''}
                     />
                     <span className='date-connect'>
                         <span className='split-line'>—</span>
@@ -124,7 +119,7 @@ class RangePicker extends React.Component {
                         allowClear={false}
                         disabledDate={this.props.disabledDate}
                         onChange={this.onEndTimeChange}
-                        value={rangeObj.endTime}
+                        value={endTime ? moment(endTime) : ''}
                     />
                     {hasErr ? <span className='err-tip'>{this.state.checkTimeErrMsg}</span> : null}
                 </div>
@@ -136,20 +131,16 @@ class RangePicker extends React.Component {
 RangePicker.defaultProps = {
     disabledDate: function () {
     },
-    format: '',
     changeRangePicker: function () {
     },
-    timeRange: {startTime: '',endTime: ''},
-    timeType: ''
+    timeRange: {startTime: '',endTime: ''}
 
 };
 
 RangePicker.propTypes = {
     disabledDate: PropTypes.func,
-    format: PropTypes.string,
     changeRangePicker: PropTypes.func,
-    timeRange: PropTypes.object,
-    timeType: ''
+    timeRange: PropTypes.object
 
 };
 export default RangePicker;
