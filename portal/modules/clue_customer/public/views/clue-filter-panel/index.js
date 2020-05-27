@@ -28,8 +28,6 @@ class ClueFilterPanel extends React.Component {
             clueClassifyArray: this.props.clueClassifyArray,
             //自定义常用筛选
             customCommonFilter: [],
-            //校验时间是否错误的信息
-            checkTimeErrMsg: '',
             ...clueFilterStore.getState(),
         };
     }
@@ -376,53 +374,6 @@ class ClueFilterPanel extends React.Component {
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         return getClueStatusValue(filterClueStatus);
     };
-    // 验证起始时间是否小于结束时间
-    validateStartAndEndTime(callback) {
-        var rangeParams = this.state.rangeParams;
-        const begin_time = rangeParams[0].from;
-        const endTime = rangeParams[0].to;
-        if (endTime && begin_time) {
-            if (moment(endTime).isBefore(begin_time)) {
-                    callback(Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间'));
-            } else {
-                callback();
-            }
-        } else {
-            callback();
-        }
-    }
-    onBeginTimeChange = (date, dateString) => {
-        let rangeParams = this.state.rangeParams;
-        if(date){
-            let startDateValue = moment(getTimeWithSecondZero(date)).startOf('day').valueOf();
-            if(rangeParams[0].to){
-                rangeParams[0].from = startDateValue;
-                this.validateStartAndEndTime((errMsg) => {
-                    if(errMsg){
-                        this.setState({
-                            checkTimeErrMsg: errMsg
-                        });
-                    }else{
-                        this.setState({
-                            checkTimeErrMsg: ''
-                        },() => {
-                            clueCustomerAction.setClueInitialData();
-                            setTimeout(() => {
-                                this.props.getClueList();
-                            });
-                        });
-                    }
-                });
-            }
-        }else{
-            if(rangeParams[0].to){
-
-            }else{
-
-            }
-            FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
-        }
-    };
     changeRangePicker = (rangeObj) => {
         if(rangeObj){
             FilterAction.setTimeRange({start_time: rangeObj.startTime, end_time: rangeObj.endTime,range: ''});
@@ -441,7 +392,6 @@ class ClueFilterPanel extends React.Component {
     renderTimeRangeSelect = () => {
         const startTime = this.state.rangeParams[0].from;
         const endTime = this.state.rangeParams[0].to;
-        var timeRange = startTime !== clueStartTime ? {startTime: moment(startTime),endTime: moment(endTime)} : {startTime: '',endTime: ''};
         return(
             <div className="time-range-wrap">
                 <RangePicker
@@ -451,23 +401,6 @@ class ClueFilterPanel extends React.Component {
                     timeRange={{startTime,endTime}}
                     timeType={this.state.timeType}
                 />
-                {/*<DatePicker*/}
-                {/*    disabledDate={this.disabledDate}*/}
-                {/*    showTime={{format: oplateConsts.DATE_FORMAT }}*/}
-                {/*    type='time'*/}
-                {/*    format={oplateConsts.DATE_FORMAT}*/}
-                {/*    onChange={this.onBeginTimeChange}*/}
-                {/*    value={timeRange.startTime}*/}
-                {/*/>*/}
-                {/*<DatePicker*/}
-                {/*    disabledDate={this.disabledDate}*/}
-                {/*    showTime={{format: oplateConsts.DATE_FORMAT }}*/}
-                {/*    type='time'*/}
-                {/*    format={oplateConsts.DATE_FORMAT}*/}
-                {/*    onChange={this.onEndTimeChange}*/}
-                {/*    value={timeRange.endTime}*/}
-                {/*/>*/}
-                {/*{this.state.checkTimeErrMsg ? <span>{this.state.checkTimeErrMsg}</span> : null}*/}
             </div>
         );
     };
