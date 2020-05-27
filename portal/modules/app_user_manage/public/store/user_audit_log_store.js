@@ -4,6 +4,7 @@ var DateSelectorUtils = require('antc/lib/components/datepicker/utils');
 var AppUserUtil = require('../util/app-user-util');
 import { ALL_LOG_INFO, AUDIT_LOG} from 'PUB_DIR/sources/utils/consts';
 import { storageUtil } from 'ant-utils';
+import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 // 用户审计日志的store
 function UserAuditLogStore(){
     this.resetState();
@@ -135,8 +136,11 @@ UserAuditLogStore.prototype.setUserLogSelectedAppId = function(appId){
     }
     this.selectAppId = appId;
     ShareObj.app_id = this.selectAppId;
-    let obj = AppUserUtil.getLocalStorageObj('logViewAppId', this.selectAppId );
-    storageUtil.local.set(AppUserUtil.saveSelectAppKeyUserId, JSON.stringify(obj));
+    // 客套组织下，直接显示客套产品，所以不用存储
+    if (!isKetaoOrganizaion()) {
+        let obj = AppUserUtil.getLocalStorageObj('logViewAppId', this.selectAppId );
+        storageUtil.local.set(AppUserUtil.saveSelectAppKeyUserId, JSON.stringify(obj));
+    }
     this.sortId = '';
     this.firstLoading = true;
     this.auditLogList = [];
