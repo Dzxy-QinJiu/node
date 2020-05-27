@@ -100,7 +100,7 @@ class RangePicker extends React.Component {
         });
         return (
             <div className={cls}>
-                <span className="consult-time">{Intl.get('common.login.time', '时间')}
+                <span className="consult-time">{this.props.title || Intl.get('common.login.time', '时间')}
                     {startTime || endTime ? <span className='clear-time' onClick={this.clearAllTimeRange.bind(this,'')}>
                         {Intl.get('lead.filter.clear.time.range', '清空')}
                     </span> : null}
@@ -133,14 +133,16 @@ RangePicker.defaultProps = {
     },
     changeRangePicker: function () {
     },
-    timeRange: {startTime: '',endTime: ''}
+    timeRange: {startTime: '',endTime: ''},
+    title: ''
 
 };
 
 RangePicker.propTypes = {
     disabledDate: PropTypes.func,
     changeRangePicker: PropTypes.func,
-    timeRange: PropTypes.object
+    timeRange: PropTypes.object,
+    title: PropTypes.string
 
 };
 export default RangePicker;

@@ -3,8 +3,8 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/7/24.
  */
-import {Form, Input, DatePicker} from 'antd';
-const { RangePicker } = DatePicker;
+import {Form, Input} from 'antd';
+import RangePicker from 'CMP_DIR/range-picker';
 const FormItem = Form.Item;
 import {AntcAreaSelection, AntcSelect} from 'antc';
 const Option = AntcSelect.Option;
@@ -190,13 +190,11 @@ class RecommendCustomerCondition extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div.submit-button-container'), '取消保存线索推荐查询条件');
         this.props.hideFocusCustomerPanel();
     };
-    onDateChange = (dates, dateStrings) => {
-        if (_.get(dateStrings,'[0]') && _.get(dateStrings,'[1]')){
-            //开始时间要取那天早上的00:00:00
-            //结束时间要取那天晚上的23:59:59
+    onDateChange = (rangeObj) => {
+        if (rangeObj){
             this.setState({
-                registerStartTime: moment(_.get(dateStrings,'[0]')).startOf('day').valueOf(),
-                registerEndTime: moment(_.get(dateStrings,'[1]')).endOf('day').valueOf(),
+                registerStartTime: rangeObj.startTime,
+                registerEndTime: rangeObj.endTime,
             });
         }else{
             this.setState({
@@ -266,10 +264,7 @@ class RecommendCustomerCondition extends React.Component {
         if(hasSavedRecommendParams.capitalMin || hasSavedRecommendParams.capitalMax){
             capitalTarget = _.find(recommendMoneySize, item => item.capitalMin === hasSavedRecommendParams.capitalMin && item.capitalMax === hasSavedRecommendParams.capitalMax );
         }
-        var defaultValue = [];
-        if (registerStartTime && registerEndTime){
-            defaultValue = [moment(registerStartTime), moment(registerEndTime)];
-        }
+        var rangeObj = {startTime: registerStartTime ? moment(registerStartTime) : '',endTime: registerEndTime ? moment(registerEndTime):''};
         var cls = 'other-condition-container',show_tip = '';
         //是否展示其他的筛选条件
         if(showOtherCondition){
@@ -346,13 +341,11 @@ class RecommendCustomerCondition extends React.Component {
                             {/*如果选了'最近半年注册',就不用再显示注册时间*/}
                             {this.props.isSelectedHalfYearRegister ? null : (
                                 <div className="ant-row ant-form-item">
-                                    <div className="ant-form-item-label ant-col-xs-24">
-                                        <label >{Intl.get('clue.customer.register.time', '注册时间')}</label></div>
-                                    <div className="ant-form-item-control-wrapper ant-col-xs-24">
-                                        <div className="ant-form-item-control has-success">
-                                            <RangePicker defaultValue={defaultValue} onChange={this.onDateChange}/>
-                                        </div>
-                                    </div>
+                                    <RangePicker
+                                        title={Intl.get('clue.customer.register.time', '注册时间')}
+                                        changeRangePicker={this.onDateChange}
+                                        timeRange={rangeObj}
+                                    />
                                 </div>
                             )}
                             <FormItem

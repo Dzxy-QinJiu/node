@@ -2,10 +2,9 @@ import { FilterList } from 'CMP_DIR/filter';
 import FilterAction from '../action/filter-action';
 import clueFilterStore from '../store/filter-store';
 import cluePoolAction from '../action';
-import {clueStartTime} from '../utils/clue-pool-utils';
+import {clueStartTime} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import userData from 'PUB_DIR/sources/user-data';
-import { DatePicker } from 'antd';
-const { RangePicker } = DatePicker;
+import RangePicker from 'CMP_DIR/range-picker/index';
 import {
     COMMON_OTHER_ITEM,
     SIMILAR_CUSTOMER,
@@ -109,24 +108,29 @@ class ClueFilterPanel extends React.Component {
         disabledDate = (current) => {
             return current > moment().endOf('day');
         };
-        changeRangePicker = (date, dateString) => {
-            if (!_.get(date,'[0]')){
-                FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
+        changeRangePicker = (rangeObj) => {
+            if(rangeObj){
+                FilterAction.setTimeRange({start_time: rangeObj.startTime, end_time: rangeObj.endTime,range: ''});
             }else{
-                FilterAction.setTimeRange({start_time: moment(_.get(date, '[0]')).startOf('day').valueOf(), end_time: moment(_.get(date, '[1]')).endOf('day').valueOf(), range: ''});
-            }
+                FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
+            };
             cluePoolAction.setClueInitialData();
             setTimeout(() => {
                 this.props.getClueList();
             });
+
         };
     renderTimeRangeSelect = () => {
+        const startTime = this.state.rangeParams[0].from;
+        const endTime = this.state.rangeParams[0].to;
+        var rangeObj = startTime !== clueStartTime ? {startTime: moment(startTime),endTime: moment(endTime)} : {startTime: '',endTime: this.state.timeType !== 'all' ? moment(endTime) : ''};
         return(
             <div className="time-range-wrap">
-                <span className="consult-time">{Intl.get('common.login.time', '时间')}</span>
                 <RangePicker
                     disabledDate={this.disabledDate}
-                    onChange={this.changeRangePicker}/>
+                    changeRangePicker={this.changeRangePicker}
+                    timeRange={rangeObj}
+                />
             </div>
         );
     };

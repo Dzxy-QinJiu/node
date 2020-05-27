@@ -14,8 +14,7 @@ import {
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import { sourceClassifyArray } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import { DatePicker } from 'antd';
-const { RangePicker } = DatePicker;
+import RangePicker from 'CMP_DIR/range-picker';
 import Trace from 'LIB_DIR/trace';
 import crmPrivilegeConst from '../privilege-const';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
@@ -256,14 +255,14 @@ class CrmFilterPanel extends React.Component {
     };
 
     //根据时间范围筛选
-    changeTimeRangPicker = (field, dates) => {
+    changeTimeRangPicker = (field, rangeObj) => {
         let timeFilterCondition = this.state.timeFilterCondition;
-        if (!_.get(dates,'[0]')){
+        if (_.isEmpty(rangeObj)){
             //如果选择了全部，将条件置空
             timeFilterCondition = _.filter(timeFilterCondition, timeFilter => timeFilter.name !== field);
         }else{
-            let from = moment(_.get(dates, '[0]')).startOf('day').valueOf();
-            let to = moment(_.get(dates, '[1]')).endOf('day').valueOf();
+            let from = _.get(rangeObj, 'startTime');
+            let to = _.get(rangeObj, 'endTime');
             let searchedObj = {
                 name: field,
                 type: 'time',
@@ -296,16 +295,23 @@ class CrmFilterPanel extends React.Component {
     };
 
     renderTimeRangeSelect = () => {
+        let timeFilterCondition = this.state.timeFilterCondition;
         return(
             <div className='time-range-wrap-container'>
                 {
                     _.map(TIME_FILTER_MAPS, (value, key) => {
+                        let fieldCondition = _.find(timeFilterCondition, timeFilter => timeFilter.name === key);
+                        const startTime = _.get(fieldCondition,'from');
+                        const endTime = _.get(fieldCondition,'to');
+                        var rangeObj = {startTime: startTime ? moment(startTime) : '',endTime: endTime ? moment(endTime) :''};
                         return (
                             <div className="time-range-wrap" key={key}>
-                                <span className="consult-time">{value}</span>
                                 <RangePicker
+                                    title={value}
                                     disabledDate={this.disabledDate}
-                                    onChange={this.changeTimeRangPicker.bind(this, key)}/>
+                                    changeRangePicker={this.changeTimeRangPicker.bind(this, key)}
+                                    timeRange={rangeObj}
+                                />
                             </div>
                         );
                     })
