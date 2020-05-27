@@ -3357,6 +3357,7 @@ var en_US = {
     'lead.has.checked.phone': 'The selected clue contains the detected number. Do you want to redetect it?',//所选线索中含已检测的号码，是否重新检测？
     'lead.not.has.check.phone': 'There is no detectable number in the selected clue',//所选线索中没有可检测的号码
     'lead.single.has.checked.phone': 'To detect',//重新检测
+    'lead.filter.clear.time.range': 'Clear',//清空
 
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',

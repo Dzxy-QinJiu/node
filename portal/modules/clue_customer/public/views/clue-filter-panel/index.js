@@ -16,8 +16,7 @@ import {getClueUnhandledPrivilege, getTimeWithSecondZero, isSalesRole} from 'PUB
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
 import userData from 'PUB_DIR/sources/user-data';
-import { DatePicker } from 'antd';
-import {checkVersionAndType,isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
+import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 import RangePicker from 'CMP_DIR/range-picker/index';
 
 class ClueFilterPanel extends React.Component {
@@ -424,39 +423,12 @@ class ClueFilterPanel extends React.Component {
             FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
         }
     };
-    onEndTimeChange = (date, dateString) => {
-        let rangeParams = this.state.rangeParams;
-        if(date){
-            let endDateValue = moment(getTimeWithSecondZero(date)).endOf('day').valueOf();
-            if(rangeParams[0].from){
-                rangeParams[0].to = endDateValue;
-                this.validateStartAndEndTime((errMsg) => {
-                    if(errMsg){
-                        this.setState({
-                            checkTimeErrMsg: errMsg
-                        });
-                    }else{
-                        this.setState({
-                            checkTimeErrMsg: ''
-                        },() => {
-                            clueCustomerAction.setClueInitialData();
-                            setTimeout(() => {
-                                this.props.getClueList();
-                            });
-                        });
-                    }
-                });
-            }
+    changeRangePicker = (rangeObj) => {
+        if(rangeObj){
+            FilterAction.setTimeRange({start_time: rangeObj.startTime, end_time: rangeObj.endTime,range: ''});
         }else{
             FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
-        }
-    };
-    changeRangePicker = (date, dateString) => {
-        if (!_.get(date,'[0]')){
-            FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
-        }else{
-            FilterAction.setTimeRange({start_time: moment(_.get(date, '[0]')).startOf('day').valueOf(), end_time: moment(_.get(date, '[1]')).endOf('day').valueOf(), range: ''});
-        }
+        };
         clueCustomerAction.setClueInitialData();
         setTimeout(() => {
             this.props.getClueList();
@@ -472,12 +444,12 @@ class ClueFilterPanel extends React.Component {
         var timeRange = startTime !== clueStartTime ? {startTime: moment(startTime),endTime: moment(endTime)} : {startTime: '',endTime: ''};
         return(
             <div className="time-range-wrap">
-                <span className="consult-time">{Intl.get('common.login.time', '时间')}</span>
                 <RangePicker
                     disabledDate={this.disabledDate}
                     format={oplateConsts.DATE_FORMAT}
-                    onBeginTimeChange={this.onBeginTimeChange}
-                    onEndTimeChange={this.onEndTimeChange}
+                    changeRangePicker={this.changeRangePicker}
+                    timeRange={{startTime,endTime}}
+                    timeType={this.state.timeType}
                 />
                 {/*<DatePicker*/}
                 {/*    disabledDate={this.disabledDate}*/}

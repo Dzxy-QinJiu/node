@@ -3378,6 +3378,7 @@ var zh_CN = {
     'lead.has.checked.phone': '所选线索中含已检测的号码，是否重新检测？',
     'lead.not.has.check.phone': '所选线索中没有可检测的号码',
     'lead.single.has.checked.phone': '重新检测',
+    'lead.filter.clear.time.range': '清空',
 
     //线索模块 end
     'common.memeber.all': '全部成员',
