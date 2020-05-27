@@ -13,12 +13,14 @@ const FormItem = Form.Item;
 var crypto = require('crypto');//用于密码md5SSSS
 var AlertTimer = require('../../../components/alert-timer');
 var UserInfoStore = require('../../user_info/public/store/user-info-store');
-var UserInfoAction = require('../../user_info/public/action/user-info-actions');
 var userInfoAjax = require('../../user_info/public/ajax/user-info-ajax');
 var passwdStrengthFile = require('../../../components/password-strength-bar');
 var PasswdStrengthBar = passwdStrengthFile.PassStrengthBar;
 import {getUserData} from 'PUB_DIR/sources/user-data';
 import { checkPassword, checkConfirmPassword } from 'PUB_DIR/sources/utils/validate-util';
+import { isResponsiveDisplay } from 'PUB_DIR/sources/utils/common-method-util';
+import classNames from 'classnames';
+
 function getStateFromStore() {
     let stateData = UserInfoStore.getState();
     return {
@@ -185,17 +187,30 @@ var UserPwdPage = createReactClass({
     },
 
     render: function() {
-        const {getFieldDecorator} = this.props.form;
-
+        const {getFieldDecorator, getFieldValue} = this.props.form;
+        let formLayout = 'horizontal';
+        if (isResponsiveDisplay().isWebSmall) {
+            formLayout = 'vertical';
+        }
+        const formItemLayout = formLayout === 'horizontal' ? {
+            labelCol: { span: 5 },
+            wrapperCol: { span: 15},
+        } : null;
+        const btnCls = classNames('user-info-edit-pwd-submit-btn btn-primary-sure', {
+            'disabled-btn': _.isEmpty(getFieldValue('rePasswd'))
+        });
         return (
             <div className="userInfoManage_userPwd_content" data-tracename="密码管理">
                 <div className="user-pwd-manage-container">
                     <div className="user-pwd-manage-div">
-                        <Form layout='horizontal' className="user-info-edit-pwd-form" autoComplete="off">
+                        <Form
+                            layout={formLayout}
+                            className="user-info-edit-pwd-form"
+                            autoComplete="off"
+                        >
                             <FormItem
                                 label={Intl.get('user.password.initial.password', '原始密码')}
-                                labelCol={{span: 5}}
-                                wrapperCol={{span: 15}}
+                                {...formItemLayout}
                             >
                                 {getFieldDecorator('passwd', {
                                     rules: [{
@@ -211,17 +226,20 @@ var UserPwdPage = createReactClass({
                             <FormItem
                                 className='new-password-item'
                                 label={Intl.get('user.password.new.password', '新密码')}
-                                labelCol={{span: 5}}
-                                wrapperCol={{span: 15}}
+                                {...formItemLayout}
                             >
                                 {getFieldDecorator('newPasswd', {
                                     rules: [{
+                                        required: true,
                                         validator: this.checkPass
                                     }]
                                 })(
-                                    <Input type="password" autoComplete="off"
+                                    <Input
+                                        type="password"
+                                        autoComplete="off"
                                         placeholder={Intl.get('common.password.compose.rule', '6-18位数字、字母、符号的组合')}
-                                        data-tracename="输入新密码"/>
+                                        data-tracename="输入新密码"
+                                    />
                                 )}
                             </FormItem>
                             <Col span="23">
@@ -230,28 +248,32 @@ var UserPwdPage = createReactClass({
                             </Col>
                             <FormItem
                                 label={Intl.get('common.confirm.password', '确认密码')}
-                                labelCol={{span: 5}}
-                                wrapperCol={{span: 15}}
+                                {...formItemLayout}
                             >
                                 {getFieldDecorator('rePasswd', {
                                     rules: [{
+                                        required: true,
                                         validator: this.checkPass2
                                     }]
                                 })(
-                                    <Input type="password"
+                                    <Input
+                                        type="password"
                                         placeholder={Intl.get('login.please_enter_new_password', '确认新密码')}
-                                        data-tracename="确认新密码"/>
+                                        data-tracename="确认新密码"
+                                    />
                                 )}
                             </FormItem>
                             <div className="user-pwd-indicator">
                                 {
                                     this.renderIndicator()
                                 }
-                                <Button type="primary" className="user-info-edit-pwd-submit-btn btn-primary-sure"
+                                <Button
+                                    type="primary"
+                                    className={btnCls}
                                     onClick={this.events_submitUserInfoForm.bind(this)}
                                     data-tracename="保存密码"
+                                    disabled={_.isEmpty(getFieldValue('rePasswd'))}
                                 >
-
                                     <ReactIntl.FormattedMessage id="user.password.save.password"
                                         defaultMessage="保存密码"/>
                                 </Button>

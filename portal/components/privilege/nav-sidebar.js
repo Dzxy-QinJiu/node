@@ -595,7 +595,7 @@ var NavSidebar = createReactClass({
         return (
             <div className={userInfoCls}>
                 <Popover
-                    content={this.renderSubMenuLinks(userInfoLinkList.routes, true)}
+                    content={this.renderSubMenuLinks(_.slice(userInfoLinkList.routes, 0, 2), true)}
                     trigger={trigger}
                     placement="rightBottom"
                     overlayClassName="nav-sidebar-userinfo"
