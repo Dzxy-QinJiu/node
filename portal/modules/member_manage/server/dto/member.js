@@ -92,7 +92,7 @@ exports.toRestObject = function(frontObj) {
     if (frontObj.phoneOrder) {
         restObject.phone_order = frontObj.phoneOrder;
     }
-    //添加成员成功后，激活邮件中的url（需要区分是https://ketao.antfact.com还是https://csm.curtao.com）
+    //添加成员成功后，激活邮件中的url（需要区分是https://ent.curtao.com还是https://csm.curtao.com）
     if(frontObj.activate_url){
         restObject.activate_url = frontObj.activate_url;
     }

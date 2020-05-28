@@ -37,7 +37,9 @@ const DEFAULT_TIME_RANGE = 'day';
 
 class CallRecordAnalyis extends React.Component {
     static propTypes = {
-        closeCallAnalysisPanel: PropTypes.func
+        closeCallAnalysisPanel: PropTypes.func,
+        isShowEffectiveTimeAndCount: PropTypes.boolean,
+        isFilter114: PropTypes.boolean
     };
 
     constructor(props) {
@@ -374,10 +376,12 @@ class CallRecordAnalyis extends React.Component {
                                     <AntcDatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</AntcDatePicker.Option>
                                     <AntcDatePicker.Option
                                         value="month">{Intl.get('common.time.unit.month', '月')}</AntcDatePicker.Option>
+                                    {/* TODO 后端的分析处理有问题，长时间的数据统计会把es查死，先暂时注释掉，待后端改好后再放开
                                     <AntcDatePicker.Option
                                         value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</AntcDatePicker.Option>
                                     <AntcDatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</AntcDatePicker.Option>
                                     <AntcDatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</AntcDatePicker.Option>
+                                    */}
                                 </AntcDatePicker>
                             </span>
                             {/**

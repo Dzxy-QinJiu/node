@@ -1044,7 +1044,7 @@ exports.isCiviwRealm = () => {
     return realmId === REALM_REMARK.CIVIW;
 };
 
-//获取邮件中激活邮箱的url（需要用浏览器中当前的url基础路径来拼，好区分那个环境中发的邮件（如：https://ketao.antfact.com、https://csm.curtao.com）
+//获取邮件中激活邮箱的url（需要用浏览器中当前的url基础路径来拼，好区分那个环境中发的邮件（如：https://ent.curtao.com、https://csm.curtao.com）
 exports.getEmailActiveUrl = () => {
     return _.get(window, 'location.origin', '') + '/email/active?code=';
 };
