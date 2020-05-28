@@ -906,7 +906,7 @@ class SalesHomePage extends React.Component {
         if (!this.state.emailShowObj.email) {
             return;
         }
-        //将邮箱中激活链接的url传过去，以便区分https://ketao.antfact.com还是https://csm.curtao.com
+        //将邮箱中激活链接的url传过去，以便区分https://ent.curtao.com还是https://csm.curtao.com
         let bodyObj = {activate_url: getEmailActiveUrl()};
         SalesHomeAction.activeUserEmail(bodyObj, (resultObj) => {
             if (resultObj.error) {
@@ -1169,15 +1169,16 @@ class SalesHomePage extends React.Component {
                             onSelect={this.onSelectDate}
                             selectedTimeFormat='int'
                         >
-                            <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
                             <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
                             <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
                             <DatePicker.Option
                                 value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
+                            {/* TODO 后端的分析处理有问题，长时间的数据统计会把es查死，先暂时注释掉，待后端改好后再放开
                             <DatePicker.Option
                                 value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
                             <DatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>
                             <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
+                            */}
                         </DatePicker>
                     </div>
                     {(this.state.currShowType === showTypeConstant.SALESMAN && !this.state.currShowSalesman) ? null :

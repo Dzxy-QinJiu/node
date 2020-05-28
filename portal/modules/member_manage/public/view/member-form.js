@@ -129,7 +129,7 @@ class MemberForm extends React.Component {
                 //设置正在保存中
                 MemberFormAction.setSaveFlag(true);
                 if (this.props.formType === 'add') {
-                    //将邮箱中激活链接的url传过去，以便区分https://ketao.antfact.com还是https://csm.curtao.com
+                    //将邮箱中激活链接的url传过去，以便区分https://ent.curtao.com还是https://csm.curtao.com
                     user.activate_url = getEmailActiveUrl();
                     MemberFormAction.addUser(user);
                 }

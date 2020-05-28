@@ -1031,7 +1031,7 @@ class SalesHomePage extends React.Component {
         if (!this.state.emailShowObj.email) {
             return;
         }
-        //将邮箱中激活链接的url传过去，以便区分https://ketao.antfact.com还是https://csm.curtao.com
+        //将邮箱中激活链接的url传过去，以便区分https://ent.curtao.com还是https://csm.curtao.com
         let bodyObj = {activate_url: getEmailActiveUrl()};
         SalesHomeAction.activeUserEmail(bodyObj, (resultObj) => {
             if (resultObj.error) {
@@ -1205,6 +1205,7 @@ class SalesHomePage extends React.Component {
     }
 }
 SalesHomePage.propTypes = {
-    history: PropTypes.obj
+    history: PropTypes.obj,
+    isEefungCustomerManager: PropTypes.boolean
 };
 module.exports = eefungCustomerManagerHoc(SalesHomePage);

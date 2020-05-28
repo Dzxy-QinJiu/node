@@ -558,7 +558,8 @@ class CustomerUsers extends React.Component {
     }
 
     renderOverDraft(app) {
-        if (app.is_disabled === 'true') {
+        // 原来用字符串'true'判断的，现在需要用boolean类型的true判断，郑鹏飞说后端之前没用过字符串的true，以后也不会用，做下记录，以防后期再变
+        if (app.is_disabled === true) {
             return Intl.get('user.status.stopped', '已停用');
         } else {
             let end_time = app.end_time;
