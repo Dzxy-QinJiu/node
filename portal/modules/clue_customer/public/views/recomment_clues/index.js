@@ -286,6 +286,7 @@ class RecommendCluesList extends React.Component {
         // }
         //是否选择复工企业或者上市企业
         if(this.state.feature) {
+            delete conditionObj.feature;
             //如果选中'最近半年注册'项
             if(this.isSelectedHalfYearRegister()) {
                 // startTime、endTime改为最近半年注册的时间

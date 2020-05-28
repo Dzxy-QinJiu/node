@@ -185,7 +185,7 @@ class RecommendCluesFilterPanel extends Component {
         return obj;
     }
 
-    getRecommendClueList= (condition, isSaveFilter = true) => {
+    getRecommendClueList= (condition, isSaveFilter = true, isRequiredSave = false) => {
         if(searchTimeOut) {
             clearTimeout(searchTimeOut);
         }
@@ -194,8 +194,8 @@ class RecommendCluesFilterPanel extends Component {
             let propsCondition = _.clone(this.props.hasSavedRecommendParams);
             removeEmptyItem(newCondition);
 
-            //条件没有变动时，不用请求接口保存筛选条件
-            if(isSaveFilter && !_.isEqual(newCondition, propsCondition)) {
+            //必须保存时，或者条件没有变动时，不用请求接口保存筛选条件
+            if(isRequiredSave || (isSaveFilter && !_.isEqual(newCondition, propsCondition))) {
                 this.saveRecommendFilter(newCondition);
             }
             if(isSaveFilter) clueCustomerAction.saveSettingCustomerRecomment(newCondition);
@@ -214,7 +214,7 @@ class RecommendCluesFilterPanel extends Component {
             if (data){
                 let targetObj = _.get(data, '[0]');
                 this.setState({hasSavedRecommendParams: targetObj});
-                clueCustomerAction.saveSettingCustomerRecomment(targetObj);
+                clueCustomerAction.saveSettingCustomerRecomment({...targetObj});
             }
         }, () => {
             this.setState({isSaving: false});
@@ -487,10 +487,19 @@ class RecommendCluesFilterPanel extends Component {
             traceTip = `选中'${advancedName}'`;
         }
         Trace.traceEvent(ReactDOM.findDOMNode(this), `点击热门选项,${traceTip}`);
-        clueCustomerAction.saveSettingCustomerRecomment(this.state.hasSavedRecommendParams);
+
+        let feature = currentAdvancedItem.value.split(':');
+        let hasSavedRecommendParams = _.clone(this.state.hasSavedRecommendParams);
+        //如果选中的是feature,并且不是近半年注册,需要保存起来
+        if(advanced && feature[0] === 'feature' && feature[1] !== EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER) {
+            hasSavedRecommendParams.feature = advanced;
+        }else {
+            delete hasSavedRecommendParams.feature;
+        }
+        clueCustomerAction.saveSettingCustomerRecomment(hasSavedRecommendParams);
         clueCustomerAction.setHotSource(advanced);
         setTimeout(() => {
-            this.getRecommendClueList(this.state.hasSavedRecommendParams);
+            this.getRecommendClueList(hasSavedRecommendParams, true, true);
         });
     };
 
@@ -779,9 +788,10 @@ class RecommendCluesFilterPanel extends Component {
 
     //渲染高级选项
     renderAdvancedOptions() {
+        let feature = _.get(this.state.hasSavedRecommendParams,'feature', this.props.feature);
         return _.map(ADVANCED_OPTIONS, (item, idx) => {
             let cls = classNames('advance-btn-item', {
-                'advance-active': this.props.feature === item.value
+                'advance-active': feature === item.value
             });
             return (
                 <span key={idx} className={cls} onClick={this.handleClickAdvanced.bind(this, item.value)}>{item.name}</span>
