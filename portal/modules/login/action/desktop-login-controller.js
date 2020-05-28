@@ -572,7 +572,7 @@ exports.wechatLoginPage = function(req, res) {
         stateData += bindWechatAfterLoginKey;
     }
     let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect?appid=wxf169b2a9aa1958a9'
-        + '&redirect_uri=' + encodeURIComponent('https://ent.curtao.com/wechat/login_bind/code')
+        + '&redirect_uri=' + encodeURIComponent('https://ketao.antfact.com/wechat/login_bind/code')
         + '&response_type=code&scope=snsapi_login&state=' + stateData;
     res.redirect(qrconnecturl);
     // DesktopLoginService.wechatLoginPage(req, res).on('success', function(data) {
