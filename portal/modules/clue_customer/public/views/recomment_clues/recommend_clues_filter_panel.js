@@ -195,7 +195,7 @@ class RecommendCluesFilterPanel extends Component {
             removeEmptyItem(newCondition);
 
             //必须保存时，或者条件没有变动时，不用请求接口保存筛选条件
-            if(isRequiredSave || isSaveFilter && !_.isEqual(newCondition, propsCondition)) {
+            if(isRequiredSave || (isSaveFilter && !_.isEqual(newCondition, propsCondition))) {
                 this.saveRecommendFilter(newCondition);
             }
             if(isSaveFilter) clueCustomerAction.saveSettingCustomerRecomment(newCondition);
