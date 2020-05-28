@@ -771,8 +771,8 @@ class RecommendCluesList extends React.Component {
     }
     //是否展示遮罩层
     showMaskBlock() {
-        //批量检测结果以及单个检测结果显示时，需要加上遮罩层
-        return this.state.batchCheckPhonePopVisible || this.state.singleCheckPhonePopVisible;
+        //批量检测结果以及单个检测结果显示时,或者批量提取时，需要加上遮罩层
+        return this.state.batchCheckPhonePopVisible || this.state.singleCheckPhonePopVisible || this.state.batchExtractLoading;
     }
     //-------------- 检测手机号状态 end -------
 
@@ -1135,7 +1135,7 @@ class RecommendCluesList extends React.Component {
                 this.setState({
                     batchExtractLoading: false,
                     canClickExtract: true,
-                    selectedRecommendClues: disabledCheckedClues,
+                    // selectedRecommendClues: disabledCheckedClues,
                     disabledCheckedClues: [],
                 });
                 var taskId = _.get(data, 'batch_label','');
@@ -1184,7 +1184,7 @@ class RecommendCluesList extends React.Component {
                     canClickExtract: true,
                     batchExtractLoading: false,
                     disabledCheckedClues: [],
-                    selectedRecommendClues: _.get(this.state,'disabledCheckedClues', [])
+                    // selectedRecommendClues: _.get(this.state,'disabledCheckedClues', [])
                     // saveErrorMsg: errTip,
                     // unSelectDataTip: errTip
                 });
@@ -1270,7 +1270,7 @@ class RecommendCluesList extends React.Component {
             //如果获取提取总量失败了,就不校验数字了
             //点击批量提取后把select的check选中状态都取消，并且加上disabled的样式
             this.setState({
-                disabledCheckedClues: this.state.selectedRecommendClues,
+                // disabledCheckedClues: this.state.selectedRecommendClues,
                 batchExtractType
             });
             if(this.state.getMaxLimitExtractNumberError){
@@ -1291,7 +1291,7 @@ class RecommendCluesList extends React.Component {
                             hasNoExtractCountTip: true,
                             canClickExtract: true,
                             disabledCheckedClues: [],
-                            selectedRecommendClues: this.state.disabledCheckedClues,
+                            // selectedRecommendClues: this.state.disabledCheckedClues,
                             showBatchExtractTip: true,
                             batchCheckPhonePopVisible: false,
                             batchCheckPhonePopContent: null
