@@ -14,7 +14,7 @@ exports.getApplyListStartSelf = function(obj) {
         type: 'get',
         data: obj,
         success: function(data) {
-            Deferred.resolve([]);
+            Deferred.resolve(data);
         },
         error: function(data,textStatus) {
             if(textStatus !== 'abort') {
