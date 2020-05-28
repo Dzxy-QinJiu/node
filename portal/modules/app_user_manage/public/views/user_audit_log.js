@@ -29,6 +29,7 @@ import { RETRY_GET_APP } from '../util/consts';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
 import RefreshButton from 'CMP_DIR/refresh-button';
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 // 用户类型的常量
 const USER_TYPE_OPTION = {
     ALL: '', //  全部类型
@@ -820,7 +821,7 @@ class LogView extends React.Component {
             doNotShow = true;
         }
         var columns = Oplate.hideSomeItem ? this.getTableColumnsVe() : this.getTableColumns();
-        var tableHeight = commonMethodUtil.getTableContainerHeight();
+        var tableHeight = commonMethodUtil.getTableContainerHeight(this.props.adaptiveHeight);
         const dropLoadConfig = {
             listenScrollBottom: this.state.listenScrollBottom,
             handleScrollBottom: this.handleScrollBottom,
@@ -889,7 +890,7 @@ class LogView extends React.Component {
 }
 LogView.propTypes = {
     isShowRightPanel: PropTypes.bool,
-    setOperatorRecordSelectTime: PropTypes.func
+    setOperatorRecordSelectTime: PropTypes.func,
+    adaptiveHeight: PropTypes.number
 };
-module.exports = LogView;
-
+export default adaptiveHeightHoc(LogView);

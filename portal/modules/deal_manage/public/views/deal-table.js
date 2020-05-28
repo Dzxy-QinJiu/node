@@ -20,6 +20,8 @@ import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 const parseAmount = antUtilsNum.parseAmount;
 const PAGE_SIZE = 20;
 import {getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
+
 class DealTable extends React.Component {
     constructor(props) {
         super(props);
@@ -234,7 +236,7 @@ class DealTable extends React.Component {
         if (dealListObj.isLoading && (!_.get(dealListObj, 'list[0]'))) {
             return (<Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')} />);
         } else if (_.get(dealListObj, 'list[0]')) {
-            let tableHeight = getTableContainerHeight();
+            let tableHeight = getTableContainerHeight(this.props.adaptiveHeight);
             return (
                 <div className="deal-table-container" style={{height: tableHeight}} data-tracename="订单列表">
                     <AntcTable
@@ -284,6 +286,7 @@ DealTable.propTypes = {
     isDetailPanelShow: PropTypes.bool,
     showDetailPanel: PropTypes.func,
     showCustomerDetail: PropTypes.func,
-    getSearchBody: PropTypes.func
+    getSearchBody: PropTypes.func,
+    adaptiveHeight: PropTypes.number
 };
-export default DealTable;
+export default adaptiveHeightHoc(DealTable);

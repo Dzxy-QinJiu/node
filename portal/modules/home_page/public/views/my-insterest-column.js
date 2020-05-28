@@ -27,6 +27,7 @@ import NoDataIntro from 'CMP_DIR/no-data-intro';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import CustomerLabel from 'CMP_DIR/customer_label';
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 const LOGIN_TYPES = {
     INTEREST_LOGIN: 'interest_login_success',//关注客户登录
     LOGIN_AFTER_STOPPED: 'login_after_stopped',//停用登录
@@ -95,7 +96,7 @@ class MyInsterestColumn extends React.Component {
 
     renderInterestContent() {
         return (
-            <div className='my-insterest-content' style={{height: getColumnHeight()}} data-tracename="我的关注列表">
+            <div className='my-insterest-content' style={{height: getColumnHeight(this.props.adaptiveHeight)}} data-tracename="我的关注列表">
                 <GeminiScrollbar handleScrollBottom={this.handleScrollBarBottom}
                     className="srollbar-out-card-style"
                     listenScrollBottom={this.state.listenScrollBottom}
@@ -423,4 +424,4 @@ class MyInsterestColumn extends React.Component {
             />);
     }
 }
-export default MyInsterestColumn;
+export default adaptiveHeightHoc(MyInsterestColumn);

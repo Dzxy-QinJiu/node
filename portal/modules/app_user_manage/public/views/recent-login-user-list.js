@@ -46,6 +46,7 @@ import SelectAppTerminal from 'CMP_DIR/select-app-terminal';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import Spinner from 'CMP_DIR/spinner';
 import RefreshButton from 'CMP_DIR/refresh-button';
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 
 class RecentLoginUsers extends React.Component {
@@ -791,7 +792,7 @@ class RecentLoginUsers extends React.Component {
         if (isLoading && this.state.lastUserId === '') {
             doNotShow = true;
         }
-        let tableHeight = commonMethodUtil.getTableContainerHeight();
+        let tableHeight = commonMethodUtil.getTableContainerHeight(this.props.adaptiveHeight);
         let columns = this.getTableColumns();
         // 用户类型筛选后，在指定的类型下，不显示类型列
         if (this.state.user_type !== '') {
@@ -867,6 +868,7 @@ RecentLoginUsers.propTypes = {
     teamTreeList: PropTypes.array,
     selectedAppId: PropTypes.string,
     appList: PropTypes.array,
-    hideRecentLoginPanel: PropTypes.func
+    hideRecentLoginPanel: PropTypes.func,
+    adaptiveHeight: PropTypes.number
 };
-export default RecentLoginUsers;
+export default adaptiveHeightHoc(RecentLoginUsers);

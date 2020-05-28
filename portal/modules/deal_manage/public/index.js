@@ -25,8 +25,6 @@ import orderPrivilegeConst from './privilege-const';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const PAGE_SIZE = 20;
-const TOP_NAV_HEIGHT = 64,//头部导航区高度
-    BOTTOM_MARGIN = 5;//看板视图的下边距
 const VIEW_TYPES = {
     BOARD: 'board',//看板视图
     LIST: 'list'//列表视图
@@ -168,11 +166,6 @@ class DealManage extends React.Component {
         }
     };
 
-    getBoardContainerHeight() {
-        //body高度-头部操作区的高度-底部margin
-        return $('body').height() - TOP_NAV_HEIGHT - BOTTOM_MARGIN;
-    }
-
     changViewType = (e) => {
         this.setState({
             viewType: e.target.value
@@ -212,7 +205,6 @@ class DealManage extends React.Component {
         }
         let customerOfCurUser = this.state.customerOfCurUser;
         let dealViewCls = classNames('deal-manage-content', {'board-view-style': this.state.viewType === VIEW_TYPES.BOARD});
-        let containerHeight = this.getBoardContainerHeight();
         return (
             <div className="deal-manage-container" data-tracename="订单管理">
                 <TopNav>
@@ -252,23 +244,16 @@ class DealManage extends React.Component {
                             searchObj={this.state.searchObj}
                             isDetailPanelShow={this.state.isDetailPanelShow}
                         />) : (
-                        <div className="deal-board-view-container"
-                            style={{
-                                height: containerHeight,
-                                width: '100%'
-                            }}>
-                            <DealBoardList
-                                containerHeight={containerHeight}
-                                ref={(boardList) => {
-                                    this.boardListRef = boardList;
-                                }}
-                                showCustomerDetail={this.showCustomerDetail}
-                                showDetailPanel={this.showDetailPanel}
-                                currDeal={this.state.currDeal}
-                                searchObj={this.state.searchObj}
-                                dragChangeStageMsg={this.dragChangeStageMsg}
-                            />
-                        </div>)}
+                        <DealBoardList
+                            ref={(boardList) => {
+                                this.boardListRef = boardList;
+                            }}
+                            showCustomerDetail={this.showCustomerDetail}
+                            showDetailPanel={this.showDetailPanel}
+                            currDeal={this.state.currDeal}
+                            searchObj={this.state.searchObj}
+                            dragChangeStageMsg={this.dragChangeStageMsg}
+                        />)}
                 </div>
                 {this.state.isDetailPanelShow ? (
                     <DealDetailPanel currDeal={this.state.currDeal} isBoardView={isBoardView}

@@ -56,6 +56,7 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import crmPrivilegeConst from './privilege-const';
+import {LAYOUT} from 'LIB_DIR/consts';
 
 const RELEASE_TYPE = crmUtil.RELEASE_TYPE;
 const BATCH_RELEASE_TYPE = crmUtil.BATCH_RELEASE_TYPE;
@@ -532,6 +533,9 @@ class Crm extends React.Component {
     changeTableHeight = (filterPanelHeight = 0) => {
         var tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
         tableHeight -= filterPanelHeight;
+        if(isResponsiveDisplay().isWebSmall){
+            tableHeight -= LAYOUT.BOTTOM_NAV;
+        }
         this.setState({ tableHeight, filterPanelHeight });
     };
 
