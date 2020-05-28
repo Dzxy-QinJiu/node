@@ -1,4 +1,5 @@
 @import "../../../../public/css/common-variables.less";
+@import "../../../../public/css/common-colors.less";
 //编辑按钮主色
 @edit-icon-color: #b6c2c9;
 .user-info-manage-container {
@@ -455,6 +456,42 @@
     .user-log-div {
       background-color: #fff;
       min-width: 625px;
+
+      //登录历史标题样式
+      .log-div-title {
+        height: 40px;
+        line-height: 40px;
+
+        //登录历史样式
+        .log-title {
+          font-size: 16px;
+          padding-left: 40px;
+          margin-bottom: 0;
+          overflow: hidden;
+          color: #506470;
+        }
+
+        //日志信息提示样式
+        label.log-title-tips {
+          font-size: 14px;
+          padding-left: 10px;
+          max-width: 75%;
+          margin-bottom: 0px;
+          font-weight: normal;
+          word-wrap: break-word;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          color: #81939e;
+
+          //修改密码样式
+          .update-pwd {
+            cursor: pointer;
+            padding-left: 5px;
+            color: @primary-color;
+          }
+        }
+      }
 
       .load-content, .errmsg-wrap {
         margin: 220px auto;
