@@ -567,18 +567,104 @@
         }
       }
       .user-info-bottom {
+        padding: 2.4rem;
         .user-info-div {
-          padding: 16px 0;
           border-top: 1px solid #E3E8ED;
+          padding: 0;
           .user-info-item {
-            padding: 0 16px;
+            padding: 0 1.6rem;
+            margin-bottom: 2.4rem;
+            &:hover {
+              background-color: #fff;
+            }
+            .user-info-item-title {
+              display: flex;
+              flex-direction: row;
+              color: #666;
+              font-size: 1.2rem;
+              line-height: 1.2rem;
+              padding-bottom: 0.4rem;
+            }
             .user-info-item-content {
-               color: #333333;
+              color: #333333;
+              font-size: 1.4rem;
+              line-height: 2rem;
+              width: 100%;
+              .bind-webchat-phone, .bind-email-phone {
+                float: right;
+              }
+
+              .phone-show-edit-wrap {
+                width: 100%;
+                .icon-update {
+                  visibility: visible;
+                  float: right;
+                  color: #1976D2;
+                }
+              }
+            }
+            .user-email-item, .user-qq-item {
+              .basic-edit-field-input {
+                width: 100%;
+                .edit-container {
+                  width: 100%;
+                  text-align: left;
+                  .icon-edit-btn {
+                    visibility: visible;
+                    color: #1976D2;
+                  }
+                }
+              }
+            }
+            .user-email-item {
+              .basic-edit-field-input {
+                .icon-edit-btn {
+                  margin-right: -1rem;
+                }
+              }
+            }
+            .user-lang-value {
+              .ant-radio-group {
+                width: 100%;
+                .ant-radio-button-wrapper {
+                  width: 33.33%;
+                }
+              }
+              .icon-edit-btn {
+                display: inline-block;
+                color: #1976D2;
+                visibility: visible;
+              }
             }
           }
           .user-version {
+            position: relative;
             .user-version-upgrade {
-              right: -12px;
+              position: absolute;
+              right: 1.2rem;
+              height: 3.6rem;
+            }
+          }
+        }
+        .user-tips-div {
+          height: 5rem;
+          padding-top: 1.4rem;
+          .user-tips-title-div {
+            .user-tips-name {
+              height: 3rem;
+              line-height: initial;
+              padding-left: 0;
+              font-size: 1.4rem;
+            }
+          }
+        }
+        .logout-btn {
+          width: 100%;
+          height: 3.6rem;
+          .logout {
+            span {
+              font-size: 1.6rem;
+              color: #1976D2;
             }
           }
         }

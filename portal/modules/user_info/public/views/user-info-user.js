@@ -23,6 +23,9 @@ import privilegeConst_user_info from '../privilege-config';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
 import { COMPANY_VERSION_KIND, COMPANY_PHONE } from 'PUB_DIR/sources/utils/consts';
+import { isResponsiveDisplay } from 'PUB_DIR/sources/utils/common-method-util';
+import LogOut from 'MOD_DIR/logout/views';
+import RadioOrCheckBoxEditField from 'CMP_DIR/basic-edit-field-new/radio-checkbox';
 const session = storageUtil.session;
 const CLOSE_TIP_TIME = 56;
 const langArray = [{key: 'zh_CN', val: '简体中文'},
@@ -168,7 +171,8 @@ class UserInfo extends React.Component{
             </a>;
         }else{
             //没有邮箱
-            let bind = Intl.get('apply.error.bind', '您还没有绑定邮箱，请先{bindEmail}',{bindEmail: Intl.get('apply.bind.email.tips','绑定邮箱')});
+            let bind = Intl.get('apply.error.bind', '您还没有绑定邮箱，请先{bindEmail}',
+                {bindEmail: Intl.get('apply.bind.email.tips','绑定邮箱')});
             //未激活邮箱
             let active = Intl.get('apply.error.active', '您还没有激活邮箱，请先{activeEmail}',{activeEmail: Intl.get('apply.active.email.tips', '激活邮箱')});
             content = <Popover
@@ -250,7 +254,7 @@ class UserInfo extends React.Component{
         if (lang && lang.val) {
             return lang.val;
         } else {
-            return '';
+            return '简体中文';
         }
     }
 
@@ -413,7 +417,14 @@ class UserInfo extends React.Component{
         history.push('/leads');
     };
     saveEditLanguage = (saveObj, successFunc, errorFunc) => {
+        if ( isResponsiveDisplay().isWebSmall) {
+            let matchLang = _.find(langArray, langObj => langObj.val === _.get(saveObj, 'language'));
+            saveObj.language = _.get(matchLang, 'key', 'zh_CN');
+        }
         UserInfoAjax.setUserLanguage(saveObj).then((result) => {
+            this.setState({
+                lang: _.get(saveObj, 'language')
+            });
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
                 this.afterEditLangSuccess(saveObj);
@@ -612,7 +623,9 @@ class UserInfo extends React.Component{
                                     values={{'add-email':
                                             <a
                                                 data-tracename="点击绑定邮箱"
-                                                onClick={(e) => this.setEmailEditable(e)}>
+                                                onClick={(e) => this.setEmailEditable(e)}
+                                                className="bind-email-phone"
+                                            >
                                                 {Intl.get('user.info.binding.email','绑定邮箱')}
                                             </a>,
                                     }}/>
@@ -686,9 +699,17 @@ class UserInfo extends React.Component{
                                                 {Intl.get('user.wechat.unbind', '解绑微信')}
                                             </a>
                                         </Popconfirm>) : (
-                                        <a href="/page/login/wechat?isBindWechatAfterLogin=true" data-tracename="绑定微信">
-                                            {Intl.get('user.info.bind.wechat.tip', '绑定微信号')}
-                                        </a>)}
+                                        <span>
+                                                您还没有绑定微信
+                                            <a
+                                                href="/page/login/wechat?isBindWechatAfterLogin=true"
+                                                data-tracename="绑定微信"
+                                                className="bind-webchat-phone"
+                                            >
+                                                {Intl.get('user.info.bind.wechat.tip', '绑定微信号')}
+                                            </a>
+                                        </span>
+                                    )}
                         </span>
                     </div>
                     {
@@ -711,19 +732,37 @@ class UserInfo extends React.Component{
                     }
                     { !Oplate.hideSomeItem && <div className="user-info-item">
                         <span className="user-info-item-title">{Intl.get('common.user.lang', '语言')}：</span>
-                        <span className="user-lang-value user-info-item-content">
-                            <BasicEditSelectField
-                                id={formData.id}
-                                displayText={this.getLangDisplayText()}
-                                value={this.state.lang}
-                                field="language"
-                                selectOptions={this.getLangOptions()}
-                                hasEditPrivilege={hasPrivilege(privilegeConst_user_info.CURTAO_USER_CONFIG)}
-                                onSelectChange={this.onSelectLang.bind(this)}
-                                cancelEditField={this.cancelEditLang.bind(this)}
-                                saveEditSelect={this.saveEditLanguage}
-                            />
-                        </span>
+                        {
+                            isResponsiveDisplay().isWebSmall ? (
+                                <span className="user-lang-value user-info-item-content">
+                                    <RadioOrCheckBoxEditField
+                                        id={formData.id}
+                                        displayText={this.getLangDisplayText()}
+                                        value={this.getLangDisplayText()}
+                                        field="language"
+                                        selectOptions={_.map(langArray, 'val')}
+                                        radioType="radioButton"
+                                        hasEditPrivilege={hasPrivilege(privilegeConst_user_info.CURTAO_USER_CONFIG)}
+                                        saveEditInput={this.saveEditLanguage}
+                                    />
+                                </span>
+                            ) : (
+                                <span className="user-lang-value user-info-item-content">
+                                    <BasicEditSelectField
+                                        id={formData.id}
+                                        displayText={this.getLangDisplayText()}
+                                        value={this.state.lang}
+                                        field="language"
+                                        selectOptions={this.getLangOptions()}
+                                        hasEditPrivilege={hasPrivilege(privilegeConst_user_info.CURTAO_USER_CONFIG)}
+                                        onSelectChange={this.onSelectLang.bind(this)}
+                                        cancelEditField={this.cancelEditLang.bind(this)}
+                                        saveEditSelect={this.saveEditLanguage}
+                                    />
+                                </span>
+                            )
+                        }
+
                     </div>}
                 </div>
             );
@@ -852,6 +891,13 @@ class UserInfo extends React.Component{
                                     </div>
                                 </div>
                             </PrivilegeChecker>
+                        ) : null
+                    }
+                    {
+                        isResponsiveDisplay().isWebSmall ? (
+                            <Button className="logout-btn">
+                                <LogOut />
+                            </Button>
                         ) : null
                     }
                 </div> : null}

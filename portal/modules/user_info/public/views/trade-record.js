@@ -185,7 +185,7 @@ class TradeRecord extends React.Component {
             <div className="card-content">
                 <div className="detail-item detail-import">
                     <span className="detail-num">{detail}</span>
-                    <span className="detail-fee">{totalFee}</span>
+                    <span className="detail-fee">{totalFee}{Intl.get('contract.82', '元')}</span>
                 </div>
                 <div className="detail-item">
                     <span className="title">{Intl.get('user.trade.record.time','订单时间')}:</span>
