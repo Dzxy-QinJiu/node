@@ -2367,6 +2367,7 @@ class Crm extends React.Component {
                         title: name,
                         width: '150px',
                         dataIndex: dataIndex,
+                        className: 'has-filter',
                         render: (text, record, index) => {
                             let customVariables = _.get(record, 'custom_variables');
                             return (
@@ -2380,6 +2381,10 @@ class Crm extends React.Component {
                     };
                     if (_.get(item, 'need_sort')) {
                         customColumn.sorter = true;
+                        //从销售首页跳转过来的不显示排序
+                        if (this.props.fromSalesHome) {
+                            customColumn.sorter = false;
+                        }
                     }
                     columns.push(customColumn);
                 }
