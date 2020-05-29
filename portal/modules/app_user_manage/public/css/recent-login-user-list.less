@@ -1,4 +1,5 @@
 @import '../../../../public/css/common-variables';
+@import '../../../../public/css/common.less';
 // /近期登录用户列表的样式
 .recent-login-users-container {
   .topNav {
@@ -34,9 +35,7 @@
   }
   //近期登录用户列表
   .recent-login-users-table-wrap {
-    .ant-table-fixed-header .ant-table-scroll .ant-table-header{
-      overflow-x: auto !important;
-    }
+    .table-no-data-scroll;
     .user-list-thead {
       .ant-table-content {
         .ant-table-placeholder {
