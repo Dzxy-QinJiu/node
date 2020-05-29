@@ -36,7 +36,6 @@ class CrmScoreCard extends React.Component {
     }
 
     componentDidMount() {
-        this.getHistoryScoreList();
         this.getQualifiedUserList();
     }
 
