@@ -605,7 +605,7 @@ class RecommendCluesList extends React.Component {
                 btnContent = (
                     <React.Fragment>
                         <Button className="check-btn-ghost" onClick={handleCancel} data-tracename="点击单个检测中的'取消'按钮">{Intl.get('common.cancel', '取消')}</Button>
-                        <Button className="check-btn-primary" type="primary" loading={this.state.singleExtractLoading === result.id} onClick={callback} data-tracename={`点击单个检测中的'${traceTip}'按钮`}>{
+                        <Button className="check-btn-primary" type="primary" loading={!this.state.canClickExtract || this.state.singleExtractLoading === result.id} onClick={callback} data-tracename={`点击单个检测中的'${traceTip}'按钮`}>{
                             errorMsg ? Intl.get('lead.direct.extraction', '直接提取') : Intl.get('lead.extract.confirm', '确认提取')
                         }</Button>
                     </React.Fragment>
@@ -635,8 +635,8 @@ class RecommendCluesList extends React.Component {
                         <Button
                             type={hiddenSmartExtractBtn ? 'primary' : 'ghost'}
                             className={hiddenSmartExtractBtn ? '' : 'check-btn-ghost'}
-                            disabled={this.state.batchExtractLoading && this.state.batchExtractType && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ALL}
-                            loading={this.state.batchExtractLoading && this.state.batchExtractType === BATCH_EXTRACT_TYPE.ALL}
+                            disabled={this.getBatchDisable(BATCH_EXTRACT_TYPE.ALL)}
+                            loading={this.getBatchLoading(BATCH_EXTRACT_TYPE.ALL)}
                             onClick={callback.bind(this, BATCH_EXTRACT_TYPE.ALL)}
                             data-tracename={`点击批量检测中的'${traceTip}'按钮`}
                         >{ errorMsg ? Intl.get('lead.direct.extraction', '直接提取') : Intl.get('lead.all.extract', '全部提取')}</Button>
@@ -645,8 +645,8 @@ class RecommendCluesList extends React.Component {
                                 type="primary"
                                 className="check-btn-primary"
                                 title={Intl.get('lead.smart.extract.title', '提取时会排除全部是疑似空号的线索')}
-                                disabled={this.state.batchExtractLoading && this.state.batchExtractType && this.state.batchExtractType !== BATCH_EXTRACT_TYPE.ONLY}
-                                loading={this.state.batchExtractLoading && this.state.batchExtractType === BATCH_EXTRACT_TYPE.ONLY}
+                                disabled={this.getBatchDisable(BATCH_EXTRACT_TYPE.ONLY)}
+                                loading={this.getBatchLoading(BATCH_EXTRACT_TYPE.ONLY)}
                                 onClick={callback.bind(this, BATCH_EXTRACT_TYPE.ONLY, canExtractClueList)}
                                 data-tracename="点击批量检测中的'智能提取'按钮"
                             >{Intl.get('lead.smart.extract.real.phone', '智能提取')}</Button>
@@ -682,6 +682,12 @@ class RecommendCluesList extends React.Component {
             );
         };
         return generateCheckPhoneContent;
+    }
+    getBatchDisable(type) {
+        return (!this.state.canClickExtract || this.state.batchExtractLoading) && this.state.batchExtractType && this.state.batchExtractType !== type;
+    }
+    getBatchLoading(type) {
+        return (!this.state.canClickExtract || this.state.batchExtractLoading) && this.state.batchExtractType === type;
     }
     //是否启用空号检测
     hasEnableCheckPhone = () => {
@@ -743,9 +749,11 @@ class RecommendCluesList extends React.Component {
     renderCheckTitle(handleFunc, isShowCloseBtn = true) {
         return (
             <div className="check-phone-title" data-tracename="空号检测title内容">
-                <i className="iconfont icon-check"/>
-                <span className="check-phone-name">{Intl.get('lead.check.phone', '空号检测')}</span>
-                <span className="check-phone-only">（{Intl.get('lead.check.phone.explain', '仅支持非14、16、17、19号段手机号')})</span>
+                <div className="check-phone-title-content">
+                    <i className="iconfont icon-check"/>
+                    <span className="check-phone-name">{Intl.get('lead.check.phone', '空号检测')}</span>
+                    <span className="check-phone-only">（{Intl.get('lead.check.phone.explain', '仅支持非14、16、17、19号段手机号')})</span>
+                </div>
                 {isShowCloseBtn ? (
                     <i className="iconfont icon-close" data-tracename="点击关闭" title={Intl.get('common.app.status.close', '关闭')} onClick={handleFunc}/>
                 ) : null}
@@ -1314,9 +1322,6 @@ class RecommendCluesList extends React.Component {
     renderExtractOperator = (isWebMin) => {
         const hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length') || _.get(this, 'state.disabledCheckedClues.length');
         let isDisabled = !hasSelectedClue;
-        if(isDisabled) {
-            return null;
-        }
         // 过期的账号不能提取线索
         if(isExpired()) {
             let currentVersionObj = checkVersionAndType();
@@ -1380,7 +1385,7 @@ class RecommendCluesList extends React.Component {
                             disabled={isDisabled}
                         >
                             <span className="iconfont icon-extract"/>
-                            {isWebMin ? null : Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                            {isWebMin ? null : Intl.get('clue.extract', '提取')}
                         </Button>
                     </Popover>
                 );
@@ -1445,7 +1450,7 @@ class RecommendCluesList extends React.Component {
                 loading={this.state.batchExtractLoading}
             >
                 <span className="iconfont icon-extract"/>
-                {isWebMin ? null : Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                {isWebMin ? null : Intl.get('clue.extract', '提取')}
             </Button>
         );
     }
@@ -1830,31 +1835,20 @@ class RecommendCluesList extends React.Component {
                 <div className="load-size-container" data-tracename="每页展示条数">
                     <span>{Intl.get('lead.recommend.page.size', '每页')}</span>
                     <AntcSelect size="small" value={this.state.pageSize} onSelect={this.handleLoadSizeSelect}>
-                        <Option value={20}>20{Intl.get('clues.leads.strip', '条')}</Option>
-                        <Option value={50}>50{Intl.get('clues.leads.strip', '条')}</Option>
-                        <Option value={100}>100{Intl.get('clues.leads.strip', '条')}</Option>
+                        <Option value={20}>20</Option>
+                        <Option value={50}>50</Option>
+                        <Option value={100}>100</Option>
                     </AntcSelect>
+                    <span>{Intl.get('clues.leads.strip', '条')}</span>
                 </div>
             );
         }else {return null;}
     }
 
     renderBtnClock = (isWebMin) => {
-        let moreRotationClass = classNames('iconfont icon-change-new', {
-            'change-new-icon-rotation': !this.state.canClickMoreBatch
-        });
         return (
             <React.Fragment>
                 {this.renderSelectLoadSizeBlock()}
-                <Button
-                    className="btn-item more-batch-btn"
-                    data-tracename="点击换一批按钮"
-                    title={Intl.get('clue.customer.refresh.list', '换一批')}
-                    onClick={this.getRecommendClueLists.bind(this, null, EXTRACT_CLUE_CONST_MAP.ANOTHER_BATCH)}
-                >
-                    <span className={moreRotationClass}/>
-                    <span>{isWebMin ? null : Intl.get('clue.customer.refresh.list', '换一批')}</span>
-                </Button>
                 {/*空号检测*/}
                 <Popover
                     placement="top"
@@ -2083,10 +2077,27 @@ class RecommendCluesList extends React.Component {
                             );
                         })
                     }
-                    {total === recommendClueLists.length ? null : this.renderMoreDataBlock()}
+                    {this.state.pageSize === recommendClueLists.length && total > this.state.pageSize ? this.renderMoreDataBlock() : null}
                 </div>
             );
         }
+    }
+
+    renderMoreClickBtn(isWebMin) {
+        let moreRotationClass = classNames('iconfont icon-change-new', {
+            'change-new-icon-rotation': !this.state.canClickMoreBatch
+        });
+        return (
+            <Button
+                className="btn-item more-batch-btn"
+                data-tracename="点击换一批按钮"
+                title={Intl.get('clue.customer.refresh.list', '换一批')}
+                onClick={this.getRecommendClueLists.bind(this, null, EXTRACT_CLUE_CONST_MAP.ANOTHER_BATCH)}
+            >
+                <span className={moreRotationClass}/>
+                <span>{isWebMin ? null : Intl.get('clue.customer.refresh.list', '换一批')}</span>
+            </Button>
+        );
     }
 
     renderTitle() {
@@ -2097,6 +2108,7 @@ class RecommendCluesList extends React.Component {
                     <Checkbox className="check-all" checked={this.isCheckAll()} onChange={this.handleCheckAllChange} disabled={this.disabledCheckAll()}>{Intl.get('common.all.select', '全选')}</Checkbox>
                     {this.hasNoExtractCountTip()}
                     {isWebMin ? null : this.renderExtractOperator(isWebMin)}
+                    {this.renderMoreClickBtn(isWebMin)}
                 </div>
                 {this.renderBtnClock(isWebMin)}
                 {isWebMin ? this.renderExtractOperator(isWebMin) : null}
