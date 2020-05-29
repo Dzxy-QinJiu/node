@@ -6,6 +6,7 @@ import Trace from 'LIB_DIR/trace';
 import CustomerRecycleBin from './views/customer-recycle-bin';
 import CustomerPool from './views/customer-pool';
 import {crmEmitter} from 'OPLATE_EMITTER';
+import customFieldAjax from '../../custom_field_manage/public/ajax';
 //各视图类型常量
 const VIEW_TYPE = {
     CUSTOMER: 'customer',//客户列表视图
@@ -17,9 +18,24 @@ class CrmIndex extends React.Component {
     state = {
         customerViewType: VIEW_TYPE.CUSTOMER,//客户展示的视图
         crmSearchCondition: {},//客户列表中搜索的筛选条件
+        customerCustomFieldData: {}, // 客户自定义字段的值，默认空
     };
 
+    // 获取客户自定义字段信息
+    getCustomFieldConfig() {
+        const queryObj = {
+            customized_type: 'customer'
+        };
+        customFieldAjax.getCustomFieldConfig(queryObj).then( (result) => {
+            this.setState({
+                customerCustomFieldData: result
+            });
+        } );
+    }
+
     componentDidMount() {
+        // 获取客户自定义字段信息
+        this.getCustomFieldConfig();
         crmEmitter.on(crmEmitter.OPEN_VIEW_PANEL, this.handelCrmViewChange);
         if(_.get(this.props, 'history.action') === 'PUSH') {
             let paramsObj = _.get(this.props, 'location.state.paramsObj');
@@ -84,10 +100,14 @@ class CrmIndex extends React.Component {
             case VIEW_TYPE.CUSTOMER:
                 currView = (
                     <div data-tracename="客户管理">
-                        <CrmList {...this.props} showRepeatCustomer={this.showRepeatCustomer}
+                        <CrmList
+                            {...this.props}
+                            showRepeatCustomer={this.showRepeatCustomer}
                             isExtractSuccess={this.state.isExtractSuccess}
                             showCustomerPool={this.showCustomerPool}
-                            showCustomerRecycleBin={this.showCustomerRecycleBin}/>
+                            showCustomerRecycleBin={this.showCustomerRecycleBin}
+                            customerCustomFieldData={this.state.customerCustomFieldData}
+                        />
                     </div>);
                 break;
             case VIEW_TYPE.REPEAT_CUSTOMER:
