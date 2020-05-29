@@ -158,10 +158,10 @@
             height: @nav-item-height;
             width: @sidebar-min-width;
             &:hover {
-                background-color: @primary-hover-color; 
+                background-color: @primary-hover-color;
             }
             &.active {
-                background-color: @primary-active-color; 
+                background-color: @primary-active-color;
             }
             //线索未读数
             &.leads_icon_container, &.sidebar-applyentry ,&.apply_icon_container{
@@ -175,7 +175,7 @@
                     min-width: 16px;
                     height: 16px;
                     overflow: hidden;
-                    background: #f41919;
+                    background: @error-color;
                     border-radius: 8px;
                     color: #fff;
                     line-height: 16px;
@@ -188,11 +188,7 @@
                 }
             }
             &.apply_icon_container:before{
-                min-width: 10px;
-                height: 10px;
-                top: 11px;
-                right: 16px;
-                border-radius: 10px;
+                right: 11px;
             }
 
             &.sidebar-applyentry:before {
@@ -279,7 +275,7 @@
         @hover-color: @icon-active-color;
         // 展示赢线索详细内容时的样式
         .winning-clue.show-detail {
-            background-color: @primary-hover-color; 
+            background-color: @primary-hover-color;
         }
         .notification, .sidebar-backend-config, .dial-up-keyboard-btn, .customer-service-navicon, .winning-clue, .sidebar-userinfo{
             height: 40px;
@@ -318,14 +314,14 @@
                     color: @nav-icon;
                 }
             }
-        }  
+        }
         .notification {
             .ant-badge-dot {
                 top: 4px;
                 right: 0px;
                 box-shadow: none;
             }
-        }  
+        }
         //拨号按钮的样式
         .dial-up-keyboard-btn.keyboard-expanded{
             background-color: @primary-active-color;
@@ -352,7 +348,7 @@
                 }
             }
         }
-      
+
         .logout {
             float: none;
             margin: 80px 0 0 19px;

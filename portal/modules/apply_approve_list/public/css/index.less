@@ -29,12 +29,20 @@
           cursor: pointer;
           color: #999;
           margin-right: 17px;
-
           &.active-tab {
             color: @primary-color;
             border-bottom: 4px solid @primary-color;
             padding-bottom: 5px;
           }
+        }
+        //有未读回复提示的样式
+        .new-message-tip {
+          position: absolute;
+          top: 0px;
+          right: -10px;
+          height: 14px;
+          width: 14px;
+          font-size: 14px;
         }
       }
 
@@ -430,7 +438,7 @@
   min-width: 14px;
   height: 14px;
   overflow: hidden;
-  background: @import_data_error_color;
+  background: @error-color;
   border-radius: 8px;
   color: #fff;
   line-height: 14px;
@@ -438,10 +446,15 @@
   text-align: center;
 }
 .apply_by_me_container:before,.apply_by_team_container:before{
-  background: @will-distribute-color;
+  background: @warn-color;
   height: 7px;
   width: 7px;
   min-width: 0;
   right: -4px;
-
+}
+.ant-select-dropdown.ant-select-tree-dropdown .ant-select-tree{
+    li .ant-select-tree-title{
+      font-size: 14px;
+      color: #222;
+    }
 }
