@@ -3378,6 +3378,7 @@ var zh_CN = {
     'lead.has.checked.phone': '所选线索中含已检测的号码，是否重新检测？',
     'lead.not.has.check.phone': '所选线索中没有可检测的号码',
     'lead.single.has.checked.phone': '重新检测',
+    'lead.filter.clear.time.range': '清空',
     'lead.is.not.support.checked.phone': '暂不支持14、16、17、19号段及固话',
     'lead.contact.position.reg': '职务只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间',
     'lead.check.phone.count.limit.tip': '一次最多可检测{count}条线索',

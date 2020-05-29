@@ -12,14 +12,12 @@ var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
 import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,SIMILAR_IP,NOT_CONNECTED,EXTRACT_TIME, sourceClassifyArray, isCommonSalesOrPersonnalVersion, APPLY_TRY_LEAD ,otherFilterArray} from '../../utils/clue-customer-utils';
-import {getClueUnhandledPrivilege, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
+import {getClueUnhandledPrivilege, getTimeWithSecondZero, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
 import userData from 'PUB_DIR/sources/user-data';
-import { DatePicker } from 'antd';
-const { RangePicker } = DatePicker;
-import {checkVersionAndType,isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
-import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
+import RangePicker from 'CMP_DIR/range-picker/index';
 
 class ClueFilterPanel extends React.Component {
     constructor(props) {
@@ -100,12 +98,12 @@ class ClueFilterPanel extends React.Component {
                 this.setState({customCommonFilter});
             });
     }
-    
+
     //将自定义常用筛选查询条件转换为前端展示用的格式
     getFilterItemFromConditionItem(item) {
         let filters = [];
         let plainFilters = [];
-    
+
         //将处理好的筛选项组装成FilterList所需的格式
         const handleAddItem = nameObj => {
             let filterItem = null;
@@ -129,7 +127,7 @@ class ClueFilterPanel extends React.Component {
                 filters.push(filterItem);
             }
         };
-    
+
         //处理筛选项的value，处理成前端的格式
         const handleValue = (value, key) => {
             let item = null;
@@ -164,7 +162,7 @@ class ClueFilterPanel extends React.Component {
             }
             handleAddItem(nameObj);
         };
-    
+
         if (_.get(item, 'query_condition')) {
             if (_.get(item.query_condition, 'query')) {
                 _.each(item.query_condition.query, (value, key) => {
@@ -218,7 +216,7 @@ class ClueFilterPanel extends React.Component {
                 });
             }
         }
-    
+
         return {
             name: item.name,
             value: item.name,
@@ -376,11 +374,11 @@ class ClueFilterPanel extends React.Component {
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         return getClueStatusValue(filterClueStatus);
     };
-    changeRangePicker = (date, dateString) => {
-        if (!_.get(date,'[0]')){
-            FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
+    changeRangePicker = (rangeObj) => {
+        if(rangeObj){
+            FilterAction.setTimeRange({start_time: rangeObj.startTime, end_time: rangeObj.endTime,range: ''});
         }else{
-            FilterAction.setTimeRange({start_time: moment(_.get(date, '[0]')).startOf('day').valueOf(), end_time: moment(_.get(date, '[1]')).endOf('day').valueOf(), range: ''});
+            FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
         }
         clueCustomerAction.setClueInitialData();
         setTimeout(() => {
@@ -394,14 +392,14 @@ class ClueFilterPanel extends React.Component {
     renderTimeRangeSelect = () => {
         const startTime = this.state.rangeParams[0].from;
         const endTime = this.state.rangeParams[0].to;
-        var timeRange = startTime !== clueStartTime ? [moment(startTime), moment(endTime)] : [];
+        var rangeObj = startTime !== clueStartTime ? {startTime: moment(startTime),endTime: moment(endTime)} : {startTime: '',endTime: this.state.timeType !== 'all' ? moment(endTime) : ''};
         return(
             <div className="time-range-wrap">
-                <span className="consult-time">{Intl.get('common.login.time', '时间')}</span>
                 <RangePicker
                     disabledDate={this.disabledDate}
-                    value={timeRange}
-                    onChange={this.changeRangePicker}/>
+                    changeRangePicker={this.changeRangePicker}
+                    timeRange={rangeObj}
+                />
             </div>
         );
     };
