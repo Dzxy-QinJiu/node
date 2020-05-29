@@ -35,7 +35,7 @@ class CrmIndex extends React.Component {
 
     componentDidMount() {
         // 获取客户自定义字段信息
-        this.getCustomFieldConfig();
+        // this.getCustomFieldConfig();
         crmEmitter.on(crmEmitter.OPEN_VIEW_PANEL, this.handelCrmViewChange);
         if(_.get(this.props, 'history.action') === 'PUSH') {
             let paramsObj = _.get(this.props, 'location.state.paramsObj');
