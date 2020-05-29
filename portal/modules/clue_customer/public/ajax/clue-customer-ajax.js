@@ -412,10 +412,12 @@ exports.addOrEditSettingCustomerRecomment = function(data) {
 //获取线索的推荐列表
 var getRecommendClueListsAjax = null;
 exports.getRecommendClueLists = function(obj) {
+    let load_size = _.get(obj, 'load_size', 20);
+    delete obj.load_size;
     var Deferred = $.Deferred();
     getRecommendClueListsAjax && getRecommendClueListsAjax.abort();
     getRecommendClueListsAjax = $.ajax({
-        url: '/rest/clue/recommend/lists',
+        url: '/rest/clue/recommend/lists?load_size=' + load_size,
         dataType: 'json',
         type: 'post',
         data: {reqData: JSON.stringify(obj)},
