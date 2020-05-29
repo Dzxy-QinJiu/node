@@ -551,6 +551,13 @@ class BasicOverview extends React.Component {
         } else {
             crmAjax.updateCustomer(submitData).then(result => {
                 if (result) {
+                    //更新列表中的自定义字段
+                    this.editBasicSuccess(submitData);
+                    let basicData = this.state.basicData;
+                    basicData.custom_variables = submitData;
+                    this.setState({
+                        basicData
+                    });
                     if (_.isFunction(successFunc)) successFunc();
                 } else {
                     if (_.isFunction(errorFunc)) errorFunc();
@@ -567,6 +574,7 @@ class BasicOverview extends React.Component {
         const customVariables = _.get(basicData, 'custom_variables', {});
         const fieldType = _.get(item, 'field_type');
         const name = _.get(item, 'name');
+        const field = _.get(item, 'key');
         const editBtnTip = Intl.get('custom.field.set.name', '设置{name}', {name: name});
         const noDataTip = Intl.get('custom.field.no.name', '暂无{name}', {name: name});
         const addDataTip = Intl.get('custom.field.add.name', '添加{name}', {name: name});
@@ -595,7 +603,7 @@ class BasicOverview extends React.Component {
                         id={basicData.id}
                         displayText={value}
                         value={value}
-                        field={name}
+                        field={field}
                         componentType={fieldType}
                         selectOptions={selectOptions}
                         hasEditPrivilege={crmUtil.checkPrivilege([
@@ -616,7 +624,7 @@ class BasicOverview extends React.Component {
                         id={basicData.id}
                         displayText={value}
                         value={value}
-                        field={name}
+                        field={field}
                         selectOptions={selectOptions}
                         validators={[isMultiple ? {type: 'array'} : {}]}
                         hasEditPrivilege={crmUtil.checkPrivilege([
@@ -640,7 +648,7 @@ class BasicOverview extends React.Component {
                 <BasicEditInputField
                     id={basicData.id}
                     type={type}
-                    field={name}
+                    field={field}
                     textCut={true}
                     value={value}
                     editBtnTip={editBtnTip}
@@ -660,7 +668,7 @@ class BasicOverview extends React.Component {
                     id={basicData.id}
                     displayText={value}
                     value={value}
-                    field={name}
+                    field={field}
                     placeholder={selectPlaceholderTip}
                     hasEditPrivilege={crmUtil.checkPrivilege([
                         crmPrivilegeConst.CUSTOMER_UPDATE,
