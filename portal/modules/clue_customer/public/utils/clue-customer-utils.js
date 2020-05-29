@@ -5,7 +5,7 @@ import clueCustomerAction from '../action/clue-customer-action';
 var userData = require('PUB_DIR/sources/user-data');
 import { storageUtil } from 'ant-utils';
 const local = storageUtil.local;
-import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
+import {clueNameContactRule,cluePositionContactRule} from 'PUB_DIR/sources/utils/validate-util';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import { checkCurrentVersion, checkVersionAndType, isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
@@ -300,6 +300,10 @@ export const contactNameRule = function() {
     return [clueNameContactRule,{required: true,
         message: Intl.get('crm.90', '请输入姓名')}];
 };
+export const contactPositionRule = function() {
+    return [cluePositionContactRule];
+};
+
 const TENTHOUSAND = 10000;
 //成立时间
 export const registerSize = [

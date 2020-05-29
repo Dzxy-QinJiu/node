@@ -55,6 +55,7 @@ const { getWebsiteConfig, getLocalWebsiteConfig } = require('LIB_DIR/utils/websi
 //缓存在sessionStorage中的我能查看的团队
 const MY_TEAM_TREE_KEY = 'my_team_tree';
 import {setUserData} from '../user-data';
+import newComment from '../../../static/images/new-comment.svg';
 
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -1628,3 +1629,10 @@ const triggerShowVersionInfo = function(isShowModal = true) {
     paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {isShowModal, versionKind: COMPANY_VERSION_KIND});
 };
 exports.triggerShowVersionInfo = triggerShowVersionInfo;
+exports.renderUnreadMsg = function() {
+    return <img
+        src={newComment}
+        className="new-message-tip"
+        title={Intl.get('user.apply.unread.reply', '有未读回复')}
+    />;
+};

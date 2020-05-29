@@ -4,9 +4,8 @@
 
 import FilterAction from '../action/filter-action';
 const datePickerUtils = require('antc/lib/components/datepicker/utils');
-import {clueStartTime} from '../utils/clue-pool-utils';
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
-import {AVALIBILITYSTATUS, CLUE_DIFF_TYPE, SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {AVALIBILITYSTATUS, CLUE_DIFF_TYPE, SELECT_TYPE,clueStartTime} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 class FilterStore {
     constructor() {
         this.setInitialData();
@@ -52,6 +51,9 @@ class FilterStore {
     setTimeRange(timeRange) {
         this.rangeParams[0].from = timeRange.start_time;
         this.rangeParams[0].to = timeRange.end_time;
+        if(!_.isUndefined(timeRange.range)){
+            this.timeType = timeRange.range;
+        }
     }
 
     //设置时间的类型

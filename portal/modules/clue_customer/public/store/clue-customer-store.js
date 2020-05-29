@@ -100,6 +100,9 @@ ClueCustomerStore.prototype.getSettingCustomerRecomment = function(result){
     var data = _.get(result,'list.[0]');
     if (data){
         deleteEmptyProperty(data);
+        if(data.feature) {
+            this.feature = data.feature;
+        }
         this.settedCustomerRecommend = {
             loading: false,
             obj: data
@@ -659,6 +662,10 @@ ClueCustomerStore.prototype.updateClueItemAfterAssign = function(updateObj) {
 ClueCustomerStore.prototype.setHotSource = function(value) {
     this.feature = value;
     this.sortvalues = [];
+};
+//设置pagesize
+ClueCustomerStore.prototype.setPageSize = function(size) {
+    this.pageSize = size;
 };
 
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');

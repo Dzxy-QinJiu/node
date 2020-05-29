@@ -67,7 +67,12 @@ import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import HistoricalApplyViewDetailStore from './all_application_type/user_apply/public/store/historical-apply-view-detail-store';
 import HistoricalApplyViewDetailAction from './all_application_type/user_apply/public/action/historical-apply-view-detail-actions';
-import {isSalesRole, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
+import {
+    isSalesRole,
+    getContactSalesPopoverTip,
+    isExpired,
+    renderUnreadMsg
+} from 'PUB_DIR/sources/utils/common-method-util';
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 var ApplyApproveUtils = require('./utils/apply_approve_utils');
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
@@ -170,20 +175,9 @@ class ApplyApproveList extends React.Component {
     };
     //更新审批的数字
     updateUnhandleApplyApproveCount = () => {
-        const {unreadMyReplyList, unreadTeamReplyList} = this.state;
-        var unreadMyReplyCount = _.get(unreadMyReplyList, 'length'),
-            // 团队申请，未读数
-            unreadTeamReplyCount = _.get(unreadTeamReplyList, 'length'),
-            // 我审批的，未读数
-            unreadMyApproveCount = getAllUnhandleApplyCount();//我审批的数量
+        var unreadMyApproveCount = getAllUnhandleApplyCount();//我审批的数量
         _.each(APPLY_APPROVE_TAB_TYPES, (item) => {
             var val = _.get(item, 'value');
-            if (APPLY_TYPE.APPLY_BY_ME === val) {
-                this.renderUnhandleNum(val, unreadMyReplyCount, false);
-            }
-            if (APPLY_TYPE.APPLY_BY_TEAM === val) {
-                this.renderUnhandleNum(val, unreadTeamReplyCount, false);
-            }
             if (APPLY_TYPE.APPROVE_BY_ME === val) {
                 this.renderUnhandleNum(val, unreadMyApproveCount, true);
             }
@@ -514,7 +508,16 @@ class ApplyApproveList extends React.Component {
                     <i className='iconfont icon-plus'></i>
                 </Popover>)
         );
-    }
+    };
+    renderUnreadMsgTip = (type) => {
+        //有未读回复
+        const {unreadMyReplyList, unreadTeamReplyList} = this.state;
+        if((type === APPLY_TYPE.APPLY_BY_ME && _.get(unreadMyReplyList,'length')) || (type === APPLY_TYPE.APPLY_BY_TEAM && _.get(unreadTeamReplyList,'length'))){
+            return renderUnreadMsg();
+        }else{
+            return null;
+        }
+    };
     //左侧申请审批不同类型列表
     renderApplyListTab = () => {
         const {activeApplyTab} = this.state;
@@ -533,14 +536,18 @@ class ApplyApproveList extends React.Component {
                                 'active-tab': activeApplyTab === _.get(item, 'value', '')
                             });
                             //如果是普通销售或者是个人版，不需要展示团队这个tab
-                            if(item.value === APPLY_TYPE.APPLY_BY_TEAM && isCommonSalesOrPersonnalVersion()){
+                            if(val === APPLY_TYPE.APPLY_BY_TEAM && isCommonSalesOrPersonnalVersion()){
                                 return null;
                             }else{
                                 //只有我的审批上加红色数字
-                                return <li className={cls}
-                                    onClick={this.handleChangeApplyActiveTab.bind(this, val)}>
-                                    {_.get(item, 'name', '')}
-                                </li>;
+                                return <React.Fragment>
+                                    <li className={cls}
+                                        onClick={this.handleChangeApplyActiveTab.bind(this, val)}>
+                                        {_.get(item, 'name', '')}
+                                        {/*显示有未读回复的提示*/}
+                                        {val !== APPLY_TYPE.APPROVE_BY_ME ? this.renderUnreadMsgTip(val) : null}
+                                    </li>
+                                </React.Fragment>;
                             }
 
                         })}
@@ -588,7 +595,7 @@ class ApplyApproveList extends React.Component {
             }
             return <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
                 <div className='no-list-tip'>
-                    <i className='iconfont icon-tips'></i>
+                    <i className='iconfont icon-apply-ico'></i>
                     <p>{tipMsg}</p>
                 </div>
             </div>;
@@ -1103,8 +1110,6 @@ class ApplyApproveList extends React.Component {
         return (
             <div className='apply_approve_content_wrap user_apply_page'>
                 {this.renderApplyListTab()}
-                {/*这个渲染未读数或者未读回复的不可以删除，在点击全部已读的时候需要重新渲染*/}
-                {this.updateUnhandleApplyApproveCount()}
                 {!_.isEmpty(this.state.showHistoricalItem) ? (
                     <RightPanelModal
                         className="historical-detail-panel"

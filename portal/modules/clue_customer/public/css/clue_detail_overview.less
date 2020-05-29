@@ -4,19 +4,11 @@
   .clear-float{
     clear: both;
   }
-  .clue-contact-container.clue-detail-block{
-    background: #f5f6f8;
-    padding: 0;
-    .contact-item.detail-card-container{
-      margin-bottom: 0;
-    }
-  }
   .clue-detail-block{
     background: #fff;
+    overflow: hidden;
     .clue-info-item{
       border-radius: 4px;
-      //overflow: hidden;
-      min-height: 24px;
       float: left;
       width: 100%;
       .clue-info-label,.item-show-label, .ant-form-item-label label{
@@ -100,51 +92,6 @@
     }
     .clue-info-item.no-margin-bottom{
        margin-bottom: 0;
-    }
-    .contact-item{
-      overflow: hidden;
-      .phone-input-wrap {
-        .phone-validate-error {
-          font-size: 12px;
-          text-align: start;
-          width: 248px;
-          float: left;
-          display: inline-block;
-          line-height: 1.5;
-          color: @import_data_warn_color;
-          margin-top: -15px;
-          margin-left: 59px;
-          margin-bottom: 8px;
-          white-space: break-spaces;
-        }
-      }
-      .contact-item-content{
-        overflow: hidden;
-        .dynamic-item-form{
-            .item-wrap{
-              .item-content .ant-form-item-label{
-                text-align: left;
-              }
-            }
-        }
-        label.ant-form-item-required:before{
-          display: none;
-        }
-
-      }
-
-       .contact-way{
-         display: block;
-         &>.iconfont{
-           float: left;
-           margin:0 5px;
-           width: 10%;
-         }
-         .basic-edit-field{
-          float: left;
-           width: 80%;
-         }
-       }
     }
       .add-person-info {
         border-top: 1px solid @TAB_SOLID_COLOR;
@@ -273,6 +220,56 @@
       }
     }
   }
+  .clue-contact-container.clue-detail-block.contact-item{
+    overflow: hidden;
+    .phone-input-wrap {
+      .phone-validate-error {
+        font-size: 12px;
+        text-align: start;
+        width: 248px;
+        float: left;
+        display: inline-block;
+        line-height: 1.5;
+        color: @import_data_warn_color;
+        margin-top: -15px;
+        margin-left: 59px;
+        margin-bottom: 8px;
+        white-space: break-spaces;
+      }
+    }
+    .contact-item-wrap{
+      .contact-item-content{
+        overflow: hidden;
+        &.not-first-contact-name{
+          margin-top: 10px;
+        }
+        .dynamic-item-form{
+          .item-wrap{
+            .item-content .ant-form-item-label{
+              text-align: left;
+            }
+          }
+        }
+        label.ant-form-item-required:before{
+          display: none;
+        }
+
+      }
+    }
+    .contact-way{
+      display: block;
+      &>.iconfont{
+        float: left;
+        margin:0 5px;
+        width: 10%;
+      }
+      .basic-edit-field{
+        float: left;
+        width: 80%;
+      }
+    }
+  }
+
   .associate-customer-detail.clue-detail-block{
     &.no-margin{
       margin-bottom: 0;

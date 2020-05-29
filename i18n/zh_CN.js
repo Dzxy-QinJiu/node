@@ -1005,7 +1005,7 @@ var zh_CN = {
 
     // 后台管理-产品start
     'product.name.input': '请填写产品名称',
-    'product.name.rule': '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间',
+    'product.name.rule': '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间',
     'product.filter.ip.add.ip.placeholder': '请输入要排除的IP',
     'product.filter.ip': '过滤IP',
     'product.global.filter.ip': '请到全部产品{clickContent}页面删除',
@@ -1089,7 +1089,7 @@ var zh_CN = {
     'clue.integration.failed.regenerate.create': '重新生成密钥失败',
     'clue.integration.failed.create': '生成密钥失败',
     // 后台管理-线索集成end
-    
+
     // 后台管理-自定义字段start
     'custom.field.title': '字段名',
     'custom.field.add.title': '添加{name}字段',
@@ -3378,8 +3378,11 @@ var zh_CN = {
     'lead.has.checked.phone': '所选线索中含已检测的号码，是否重新检测？',
     'lead.not.has.check.phone': '所选线索中没有可检测的号码',
     'lead.single.has.checked.phone': '重新检测',
+    'lead.filter.clear.time.range': '清空',
     'lead.is.not.support.checked.phone': '暂不支持14、16、17、19号段及固话',
+    'lead.contact.position.reg': '职务只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间',
     'lead.check.phone.count.limit.tip': '一次最多可检测{count}条线索',
+    'lead.recommend.page.size': '每页',
 
     //线索模块 end
     'common.memeber.all': '全部成员',
@@ -4035,6 +4038,7 @@ var zh_CN = {
     'common.signed.customer.activity': '签约客户活跃度',
     'common.number.of.new.user.customer': '开通了用户的客户数',
     'clue.customer.register.time': '注册时间',
+    'clue.customer.no.register.time': '暂无注册时间',
     'self.setting.has.no.apply': '暂无符合条件的申请',
     'failed.distribute.apply': '分配失败！',
     'apply.approve.required.err.msg': '请输入未填写时的提示',
@@ -4050,7 +4054,9 @@ var zh_CN = {
     'clue.recommend.selected.extract.tip': '已选中{count}条，还可提取{ableExtract}条线索',
     'clue.extract.count.has.been.exceed': '已超过可提取数',
     'clue.recommend.clue.scope': '经营范围',
+    'clue.recommend.no.clue.scope': '暂无经营范围',
     'clue.recommend.clue.introduction': '简介',
+    'clue.recommend.no.clue.introduction': '暂无简介',
     'clue.recommend.clue.count': '{count}个',
     'clue.find.recommend.clue': '找线索',
     'clue.recommend.keyword': '关键词',
@@ -4132,7 +4138,7 @@ var zh_CN = {
     'clue.assignment.no.strategy.tip': '您还没有线索分配策略',
     'clue.assignment.name': '名称',
     'clue.assignment.name.tip': '请输入线索分配策略名称',
-    'clue.assignment.name.required.tip': '线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间',
+    'clue.assignment.name.required.tip': '线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间',
     'clue.assignment.description': '描述',
     'clue.assignment.description.tip': '请描述一下线索分配策略',
     'clue.assignment.no.description.tip': '暂无线索分配策略描述',
