@@ -398,8 +398,7 @@ class SalesHomePage extends React.Component {
         var constObj = {
             page_size: this.state.page_size,
             start_time: clueStartTime,//开始时间2010年开始
-            //把今天0点作为判断是否过期的时间点
-            end_time: this.getTodayStartAndEndTime().start_time,//今日早上的零点作为结束时间
+            end_time: moment().valueOf(),//当前登录的时间为截止时间
             status: false//日程的状态，未完成的日程
         };
         if (lastId) {
@@ -645,6 +644,11 @@ class SalesHomePage extends React.Component {
         this.setState({
             listenScrollBottom: true,
             showCustomerPanel: customerType,
+        },() => {
+            if(customerType === ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY){
+                SalesHomeAction.clearExpiredList();
+                this.getExpiredScheduleList();
+            }
         });
     };
 

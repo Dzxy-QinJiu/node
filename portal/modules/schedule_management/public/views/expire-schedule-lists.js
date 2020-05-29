@@ -28,6 +28,7 @@ const DELAY_RANGE = {
 const LAYOUT = {PADDING_TOP: 40};
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import {getScheduleCallTypeId} from 'PUB_DIR/sources/utils/common-method-util';
+import {clueStartTime} from "MOD_DIR/clue_customer/public/utils/clue-customer-utils";
 class ExpireScheduleLists extends React.Component {
     constructor(props) {
         super(props);
@@ -54,7 +55,7 @@ class ExpireScheduleLists extends React.Component {
     getExpiredList = () => {
         //获取超时未完成的日程
         this.setState({
-            expired_start_time: new Date().getTime() - 2 * 365 * oplateConsts.ONE_DAY_TIME_RANGE,//开始时间传一个两年前的今天
+            expired_start_time: clueStartTime,//开始时间传一个两年前的今天
             expired_end_time: moment().valueOf(),//当前登录的时间为截止时间
             expired_status: false,//选择日程的状态
         }, () => {
@@ -88,7 +89,6 @@ class ExpireScheduleLists extends React.Component {
     getExpiredScheduleList = () => {
         var constObj = {
             page_size: this.state.pageSize,
-            //把今天0点作为判断是否过期的时间点
             start_time: this.state.expired_start_time,
             end_time: this.state.expired_end_time,
             status: this.state.expired_status

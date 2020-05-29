@@ -205,6 +205,18 @@ SalesHomeStore.prototype.setInitState = function() {
     };
     this.setWebConfigStatus = '';//设置个人配置的状态
 };
+SalesHomeStore.prototype.clearExpiredList = function(){
+    //到今日过期的日程
+    this.scheduleExpiredTodayObj = {
+        loading: true,
+        errMsg: '',
+        curPage: 1,
+        data: {
+            list: [],
+            total: ''
+        }
+    };
+}
 //设置个人信息配置
 SalesHomeStore.prototype.setWebsiteConfig = function(userInfo) {
     if (userInfo.emailLoading) {
@@ -309,6 +321,7 @@ SalesHomeStore.prototype.getNewDistributeCustomer = function(result) {
         newDistributeCustomer.data.total = result.resData.total;
     }
 };
+//
 //获取日程列表
 SalesHomeStore.prototype.getScheduleList = function(result) {
     if (result.type === 'expired') {
