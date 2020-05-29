@@ -11,7 +11,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 import '../css/operate-record.less';
 import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 
-const pageSize = 200;
+const pageSize = 10;
 
 class OperateRecord extends React.Component {
     constructor(props) {
@@ -174,7 +174,7 @@ class OperateRecord extends React.Component {
                 }
                 {
                     this.state.listenScrollBottom ? null : (
-                        <div>{Intl.get('noMoreTip.log', '没有更多日志了')}</div>
+                        <div className="no-more-data-tips">{Intl.get('noMoreTip.log', '没有更多日志了')}</div>
                     )
                 }
             </div>
@@ -222,9 +222,18 @@ class OperateRecord extends React.Component {
         );
     };
 
+    handleScroll = ( e) => {
+        if ( this.state.listenScrollBottom && e.target.scrollHeight - e.target.scrollTop - e.target.clientHeight < 1) {
+            this.getUserOperateRecord({sort_id: this.state.sortId});
+        }
+    }
+
     render() {
         return (
-            <div className="operate-record-wrap" style={{height: this.props.adaptiveHeight}}>
+            <div className="operate-record-wrap"
+                style={{height: this.props.adaptiveHeight}}
+                onScroll={this.handleScroll}
+            >
                 <div className="operate-record-content">
                     <div className="title-zone">
                         <label className="log-title-tips">
