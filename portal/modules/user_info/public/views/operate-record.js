@@ -2,7 +2,6 @@
  * Created by hzl on 2020/5/25.
  * 移动端适配的操作记录
  */
-import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import Spinner from 'CMP_DIR/spinner';
 import userInfoAjax from '../ajax/user-info-ajax';
 import NoData from 'CMP_DIR/no-data';
@@ -12,7 +11,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 import '../css/operate-record.less';
 import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 
-const pageSize = 10;
+const pageSize = 200;
 
 class OperateRecord extends React.Component {
     constructor(props) {
@@ -80,25 +79,6 @@ class OperateRecord extends React.Component {
             listenScrollBottom: true,
         };
     }
-
-    handleScrollBarBottom = () => {
-        console.log('###############:', this.state.listenScrollBottom);
-        if (this.state.listenScrollBottom) {
-            this.getUserOperateRecord({sort_id: this.state.sortId});
-        }
-    };
-
-    renderLoadingBlock = () => {
-        if (!this.state.sortId && this.state.loading) {
-            return (
-                <div className="trade-record-loading">
-                    <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
-                </div>
-            );
-        } else {
-            return null;
-        }
-    };
 
     renderCardTitle = (item) => {
         let timestamp = _.get(item, 'timestamp');
@@ -175,7 +155,6 @@ class OperateRecord extends React.Component {
                         }
                     </span>
                 </div>
-
             </div>
         );
     }
@@ -193,9 +172,26 @@ class OperateRecord extends React.Component {
                         );
                     })
                 }
+                {
+                    this.state.listenScrollBottom ? null : (
+                        <div>{Intl.get('noMoreTip.log', '没有更多日志了')}</div>
+                    )
+                }
             </div>
         );
     }
+
+    renderLoadingBlock = () => {
+        if (!this.state.sortId && this.state.loading) {
+            return (
+                <div className="trade-record-loading">
+                    <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
+                </div>
+            );
+        } else {
+            return null;
+        }
+    };
 
     renderUserOperateRecordContent = () => {
         let recordList = this.state.recordList;
@@ -229,34 +225,31 @@ class OperateRecord extends React.Component {
     render() {
         return (
             <div className="operate-record-wrap" style={{height: this.props.adaptiveHeight}}>
-                <GeminiScrollBar
-                    handleScrollBottom={this.handleScrollBarBottom.bind(this)}
-                    listenScrollBottom={true}
-                >
-                    <div className="operate-record-content">
-                        <div className="title-zone">
-                            <label className="log-title-tips">
-                                <ReactIntl.FormattedMessage
-                                    id="user.info.log.record.tip"
-                                    defaultMessage={'以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}'}
-                                    values={{
-                                        editpassword: <span className="update-pwd">
-                                            <NavLink
-                                                to="/user-preference/password"
-                                                activeClassName="active"
-                                                data-tracename="修改密码"
-                                            >
-                                                {Intl.get('common.edit.password','修改密码')}
-                                            </NavLink>
-                                        </span>
-                                    }}
-                                />
-                            </label>
-                        </div>
-                        {this.renderLoadingBlock()}
-                        {this.renderUserOperateRecordContent()}
+                <div className="operate-record-content">
+                    <div className="title-zone">
+                        <label className="log-title-tips">
+                            <ReactIntl.FormattedMessage
+                                id="user.info.log.record.tip"
+                                defaultMessage={'以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}'}
+                                values={{
+                                    editpassword: <span className="update-pwd">
+                                        <NavLink
+                                            to="/user-preference/password"
+                                            activeClassName="active"
+                                            data-tracename="修改密码"
+                                        >
+                                            {Intl.get('common.edit.password','修改密码')}
+                                        </NavLink>
+                                    </span>
+                                }}
+                            />
+                        </label>
                     </div>
-                </GeminiScrollBar>
+                    {this.renderLoadingBlock()}
+                    {
+                        this.state.loading ? null : this.renderUserOperateRecordContent()
+                    }
+                </div>
             </div>
         );
     }

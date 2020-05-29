@@ -719,6 +719,10 @@ var NavSidebar = createReactClass({
     // 获取当前页面的路由
     getCurrentCategory(){
         const pathName = location.pathname.replace(/^\/|\/$/g, '');
+        // 个人资料点击相应的tab时，个人信息选中的处理
+        if (isResponsiveDisplay().isWebSmall && _.includes(location.pathname, 'user-preference')) {
+            return 'user-preference/info';
+        }
         return pathName.split('/')[0];
     },
     //生成主菜单
