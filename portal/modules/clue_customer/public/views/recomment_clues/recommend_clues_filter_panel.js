@@ -57,11 +57,18 @@ const ADVANCED_OPTIONS = [
             return _.toNumber(value);
         }
     },
-    {
+    /*{
         name: Intl.get('clue.recommend.has.phone', '有电话'),
         value: 'phone_num:1',
         processValue: (value) => {
             return _.toNumber(value);
+        }
+    },*/
+    {
+        name: Intl.get('clue.recommend.has.website', '有官网'),
+        value: 'has_website:true',
+        processValue: (value) => {
+            return value === 'true';
         }
     },
     {
@@ -69,13 +76,6 @@ const ADVANCED_OPTIONS = [
         value: 'phone_num:2',
         processValue: (value) => {
             return _.toNumber(value);
-        }
-    },
-    {
-        name: Intl.get('clue.recommend.has.website', '有官网'),
-        value: 'has_website:true',
-        processValue: (value) => {
-            return value === 'true';
         }
     },
 ];
@@ -488,10 +488,8 @@ class RecommendCluesFilterPanel extends Component {
         }
         Trace.traceEvent(ReactDOM.findDOMNode(this), `点击热门选项,${traceTip}`);
 
-        let feature = currentAdvancedItem.value.split(':');
         let hasSavedRecommendParams = _.clone(this.state.hasSavedRecommendParams);
-        //如果选中的是feature,并且不是近半年注册,需要保存起来
-        if(advanced && feature[0] === 'feature' && feature[1] !== EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER) {
+        if(advanced) {
             hasSavedRecommendParams.feature = advanced;
         }else {
             delete hasSavedRecommendParams.feature;
