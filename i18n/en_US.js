@@ -4052,6 +4052,7 @@ var en_US = {
     'clue.recommend.filter.company.status.closed': 'closed',//停业
     'clue.recommend.filter.company.status.liquidation': 'The liquidation',//清算
     'clue.recommend.filter.set.up': 'Set up',//成立
+    'clue.recommend.legalperson': 'legal person',//法人
 
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
@@ -4094,6 +4095,8 @@ var en_US = {
     'clue.recommend.has.more.contact': 'There are multiple contact information',//多个联系方式
     'clue.recommend.smal.micro.enterprise': 'Small micro enterprise',//小微企业
     'clue.recommend.has.website': 'Have a website',//有官网
+    'clue.more.contacts': 'More contacts',//更多联系人
+    'clue.more.contacts.tip': 'The complete information can be viewed after extraction',//提取后可查看完整信息
 
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
