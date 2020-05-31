@@ -6,7 +6,9 @@ const Validator = Validation.Validator;
  * Created by wangliping on 2016/10/18.
  */
 
-import {Radio,Form,Input,Select,Button,Icon} from 'antd';
+import {Radio,Form,Input,Button,Icon} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const RadioGroup = Radio.Group;
 var FormItem = Form.Item;
 var classNames = require('classnames');
@@ -291,7 +293,7 @@ var OrganizationForm = createReactClass({
                                 >
                                     <Validator
                                         rules={[{required: true, message: Intl.get('organization.select.parent.department', '请选择上级部门')}]} trigger='onBlur'>
-                                        <Select size="large" style={{width: '100%'}}
+                                        <AntcSelect size="large" style={{width: '100%'}}
                                             name="superiorTeam"
                                             value={formData.superiorTeam}
                                             placeholder={Intl.get('organization.select.parent.department', '请选择上级部门')}
@@ -302,7 +304,7 @@ var OrganizationForm = createReactClass({
                                             filterOption={(input, option) => ignoreCase(input, option)}
                                         >
                                             {this.renderSuperiorTeam()}
-                                        </Select>
+                                        </AntcSelect>
                                     </Validator>
                                 </FormItem>) : null
                         }

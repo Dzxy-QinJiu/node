@@ -1,9 +1,9 @@
-import { AntcTable } from 'antc';
-import { Icon, Select, Alert, Button, message } from 'antd';
+import { AntcTable, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
+import { Icon, Alert, Button, message } from 'antd';
 // 加载时的动作显示
 var Spinner = require('../../../../components/spinner');
 var SelectFullWidth = require('../../../../components/select-fullwidth');
-var Option = Select.Option;
 var UserAuditLogAction = require('../action/user_audit_log_action');
 var UserAuditLogStore = require('../store/user_audit_log_store');
 import { AntcDatePicker as DatePicker } from 'antc';
@@ -541,7 +541,7 @@ class LogView extends React.Component {
     // 渲染过滤用户类型
     renderFilterUserType = () => {
         return (
-            <Select
+            <AntcSelect
                 className="select-user-type btn-item"
                 value={this.state.userType}
                 onChange={this.onSelectFilterUserType}
@@ -551,7 +551,7 @@ class LogView extends React.Component {
                         return (<Option key={idx} value={userType.value}> {userType.name} </Option>);
                     })
                 }
-            </Select>
+            </AntcSelect>
         );
     };
     handleFirstSelect = () => {

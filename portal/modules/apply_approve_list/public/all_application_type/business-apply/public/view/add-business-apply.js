@@ -7,8 +7,9 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('../css/add-business-apply.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Form, Input, Button, Icon, message, DatePicker,Select} from 'antd';
-var Option = Select.Option;
+import {Form, Input, Button, Icon, message, DatePicker} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
@@ -334,7 +335,7 @@ class AddBusinessApply extends React.Component {
 
                                         )}
                                         {getFieldDecorator('begin_type', {initialValue: formData.begin_type})(
-                                            <Select
+                                            <AntcSelect
                                                 getPopupContainer={() => document.getElementById('leave-apply-form')}
                                                 onChange={this.handleChangeStartRange}
 
@@ -344,7 +345,7 @@ class AddBusinessApply extends React.Component {
                                                         return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
                                                     }) : null
                                                 }
-                                            </Select>
+                                            </AntcSelect>
                                         )}
 
                                     </FormItem>
@@ -367,7 +368,7 @@ class AddBusinessApply extends React.Component {
                                             />
                                         )}
                                         {getFieldDecorator('end_type', {initialValue: formData.end_type})(
-                                            <Select
+                                            <AntcSelect
                                                 getPopupContainer={() => document.getElementById('leave-apply-form')}
                                                 onChange={this.handleChangeEndRange}
                                                 defaultValue={formData.end_type}
@@ -377,7 +378,7 @@ class AddBusinessApply extends React.Component {
                                                         return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
                                                     }) : null
                                                 }
-                                            </Select>
+                                            </AntcSelect>
                                         )}
 
                                     </FormItem>

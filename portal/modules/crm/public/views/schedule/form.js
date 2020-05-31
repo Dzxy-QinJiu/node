@@ -6,10 +6,9 @@ require('../../css/schedule.less');
 var ScheduleAction = require('../../action/schedule-action');
 var BatchChangeActions = require('../../action/batch-change-actions');
 var basicOverviewAction = require('../../action/basic-overview-actions');
-import {Form, Input, message, Select, Radio, Switch, TimePicker} from 'antd';
+import {Form, Input, message, Radio, Switch, TimePicker} from 'antd';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-const Option = Select.Option;
 const FormItem = Form.Item;
 import 'react-date-picker/index.css';
 import BootstrapDatepicker from '../../../../../components/bootstrap-datepicker';
@@ -22,7 +21,8 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import ClueSuggest from 'CMP_DIR/basic-edit-field-new/clue-suggest';
-import {SearchInput} from 'antc';
+import {SearchInput, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 //日程类型
 const CUSTOMER_SCHEDULE_TYPES = [
     {name: Intl.get('schedule.phone.connect', '电联'), value: 'calls', iconCls: 'icon-phone-call-out'},
@@ -886,13 +886,13 @@ var CrmAlertForm = createReactClass({
                                 label={Intl.get('crm.alert.topic', '标题')}
                             >
                                 <Validator rules={[{required: true}]}>
-                                    <Select onChange={this.handleTopicChange} value={formData.customer_id}>
+                                    <AntcSelect onChange={this.handleTopicChange} value={formData.customer_id}>
                                         {_.map(this.props.customerArr, (customerItem) => {
                                             return (
                                                 <Option value={customerItem.id}>{customerItem.name}</Option>
                                             );
                                         })}
-                                    </Select>
+                                    </AntcSelect>
                                 </Validator>
                             </FormItem> : null
                         ))
@@ -902,11 +902,11 @@ var CrmAlertForm = createReactClass({
                         required
                         label={Intl.get('common.login.time', '时间')}
                     >
-                        {<Select onChange={this.handleTimeRangeChange} value={this.state.selectedTimeRange} getPopupContainer={() => document.getElementById('schedule-form')}>
+                        {<AntcSelect onChange={this.handleTimeRangeChange} value={this.state.selectedTimeRange} getPopupContainer={() => document.getElementById('schedule-form')}>
                             {_.map(CONTACT_TIMES_CONSTS, (key, value) => {
                                 return (<Option value={value}>{key}</Option>);
                             })}
-                        </Select>}
+                        </AntcSelect>}
                     </FormItem>
 
                     {this.state.selectedTimeRange === 'custom' ?
@@ -1016,13 +1016,13 @@ var CrmAlertForm = createReactClass({
                         {...formItemLayout}
                         label={Intl.get('crm.40', '提醒')}
                     >
-                        <Select
+                        <AntcSelect
                             value={this.state.selectedAlertTimeRange}
                             onChange={this.handleAlertTimeChange}
                             getPopupContainer={() => document.getElementById('schedule-form')}
                         >
                             {(this.state.selectedTimeRange === 'custom' && this.state.isSelectFullday) || this.state.selectedTimeRange === '1d' || this.state.selectedTimeRange === '1w' ? this.renderSelectFulldayOptions() : this.renderNotSelectFulldayOptions()}
-                        </Select>
+                        </AntcSelect>
 
                     </FormItem>
                     {/*如果是批量操作的时候，不需要展示保存和取消按钮，用原组件中有的保存和取消*/}

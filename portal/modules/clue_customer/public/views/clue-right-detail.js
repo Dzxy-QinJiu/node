@@ -44,7 +44,14 @@ import clueCustomerAjax from '../ajax/clue-customer-ajax';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 var clueCustomerAction = require('../action/clue-customer-action');
-import {handleSubmitClueItemData, SELECT_TYPE,deleteCluePrivilege, editClueItemIconPrivilege} from '../utils/clue-customer-utils';
+import {
+    handleSubmitClueItemData,
+    SELECT_TYPE,
+    deleteCluePrivilege,
+    editClueItemIconPrivilege,
+    dealContactPhoneStatus,
+    checkClueName
+} from '../utils/clue-customer-utils';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import cluePoolAjax from 'MOD_DIR/clue_pool/public/ajax';
 import userData from 'PUB_DIR/sources/user-data';
@@ -128,6 +135,7 @@ class ClueRightPanel extends React.Component {
         } else { // 线索中获取详情的请求
             clueCustomerAjax.getClueDetailById(id).then(resData => {
                 if (_.isObject(resData)) {
+                    resData.phone_status = dealContactPhoneStatus(resData);
                     this.setState({
                         curClue: resData
                     });
@@ -304,7 +312,7 @@ class ClueRightPanel extends React.Component {
 
     updateClueProperty = (updateProperty,flag) => {
         var curClue = this.state.curClue;
-        let contactsKey = ['qq','weChat','phone','email'];
+        let contactsKey = ['qq','weChat','phone','email','position'];
         let contact_id = updateProperty.contact_id;
         let contacts = _.find(curClue.contacts, ele => ele.id === contact_id);
 
@@ -389,6 +397,10 @@ class ClueRightPanel extends React.Component {
                                 }
                                 <div className={clueNameCls}>
                                     <BasicEditInputField
+                                        validators={[
+                                            {required: true, message: Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')},
+                                            checkClueName
+                                        ]}
                                         onDisplayTypeChange={this.setEditNameFlag}
                                         hasEditPrivilege={editClueItemIconPrivilege(curClue)}
                                         displayType={showEditText ? 'edit' : 'text'}

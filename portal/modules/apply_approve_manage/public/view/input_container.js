@@ -4,9 +4,7 @@
  * Created by zhangshujuan on 2019/5/23.
  */
 
-import {Input, Select, Radio, Checkbox, Form} from 'antd';
-const RadioGroup = Radio.Group;
-const CheckboxGroup = Checkbox.Group;
+import {Input,Form} from 'antd';
 const FormItem = Form.Item;
 
 class InputContent extends React.Component {
@@ -16,17 +14,6 @@ class InputContent extends React.Component {
             inputValue: ''
         };
     }
-
-    // onSaveAllData = () => {
-    //     var submitObj = {};
-    //     submitObj[this.props.labelKey + ''] = this.state.inputValue;
-    //     return submitObj;
-    // };
-    // onChangeInputValue = (e) => {
-    //    this.setState({
-    //        inputValue: e.target.value
-    //    });
-    // };
     validatorInput = (rule, value, callback) => {
         if (_.isFunction(_.get(this.props, 'validator'))){
             this.props.validator(rule, value, callback);

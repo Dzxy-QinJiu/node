@@ -325,11 +325,11 @@
 
         .ant-table-tbody {
           tr {
-            .icon-active-call-records-ico,.icon-search {
+            .icon-active-call-records-ico, .icon-check {
               visibility: hidden;
             }
             &:hover {
-              .icon-active-call-records-ico,.icon-search {
+              .icon-active-call-records-ico, .icon-check {
                 visibility: visible;
               }
             }
@@ -421,6 +421,12 @@
           white-space: nowrap;
           &.has-more-icon {
             min-width: 180px;
+          }
+        }
+        .middle-phone-container{
+          .has-more-icon{
+            min-width: auto!important;
+            width: auto;
           }
         }
         //联系人面板
@@ -715,6 +721,147 @@
 .clue-export-modal .ant-modal-body{
   .modal-tip{
     margin-top: 5px;
+  }
+}
+
+//检查后的内容显示样式
+@tag-color: #FF8B00;
+.check-phone-result-container{
+  min-width: 200px;
+  .ant-popover-arrow {
+    display: none;
+  }
+  //头部样式
+  .ant-popover-title{
+    background-color: @primary-color;
+    padding: 0 8px;
+    border-bottom: none;
+    .check-phone-title{
+      color: #fff;
+      display: flex;
+      align-items: center;
+      .icon-check{
+        margin-right: 8px;
+      }
+      .icon-close{
+        font-weight: bold;
+        color: #fff;
+        margin-left: 24px;
+        position: absolute;
+        right: 8px;
+      }
+      .check-phone-name{
+        font-size: 14px;
+      }
+      .check-phone-only{
+        color: #BBDEFB;
+      }
+    }
+  }
+  .ant-popover-inner-content{
+    padding: 24px;
+    color: @primary-font-color;
+    font-size: 14px;
+  }
+  .icon-warn-icon{
+    color: @tag-color;
+    width:16px;
+    height:16px;
+    margin-right: 8px;
+    &.error-icon{
+      color: @error-color;
+      font-size: 14px!important;
+    }
+  }
+  .extract-count{
+    color: @tag-color;
+    margin: 0 2px;
+  }
+  .primary-count{
+    color: @primary-color;
+    margin: 0 2px;
+  }
+  .icon-close{
+    font-size: 12px;
+    color: @sub-content-font-color;
+    margin-left: 10px;
+    vertical-align: top;
+    cursor: pointer;
+  }
+  //检测手机号状态样式
+  .check-phone-container{
+    position: relative;
+    &.check-phone-error-container{
+      .icon-warn-icon{
+        font-size: 12px;
+        margin-right: 3px;
+      }
+      .check-phone-content{
+        .check-phone-box{
+          .check-phone-text{
+            color: @error-color;
+          }
+        }
+      }
+    }
+    .icon-close{
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    .icon-search{
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      font-size: 20px;
+      text-align: center;
+      color: @primary-color;
+      background: #E3E8ED;
+      border-radius: unset!important;
+      margin-right: 10px;
+    }
+    .check-phone-content{
+      display: flex;
+      align-items: center;
+      .check-phone-box{
+        color: @primary-font-color;
+        .check-phone-title{
+          > span:first-child{
+            font-weight: bold;
+          }
+        }
+        .check-phone-only{
+          color: @secondary-font-color;
+          font-size: 14px;
+        }
+        .check-phone-text{
+          font-size: 16px;
+          display: inline-block;
+        }
+      }
+    }
+    .check-phone-free-tip{
+      color: @primary-font-color;
+      font-size: 12px;
+      margin: 5px 5px 5px 0;
+      .icon-warn-icon{
+        font-size: 14px;
+      }
+    }
+    .check-btn-container{
+      text-align: right;
+      margin-top: 30px;
+      .ant-btn{
+        height: 32px;
+        font-size: 14px;
+      }
+      .check-btn-primary{
+        margin-left: 8px;
+      }
+      .check-btn-ghost{
+        color: @primary-color;
+      }
+    }
   }
 }
 

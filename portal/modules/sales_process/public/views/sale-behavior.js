@@ -2,8 +2,9 @@
  * Created by hzl on 2019/8/13.
  * 销售行为
  */
-import {Icon, Select } from 'antd';
-const { Option } = Select;
+import {Icon } from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import CustomerStageAjax from '../ajax';
 import CustomerStageAction from '../action/customer-stage-action';
@@ -214,7 +215,7 @@ class SaleBehaviorPanel extends React.Component {
             let actionName = _.get(salesActivities[key], 'sales_actions[0].name');
             return (
                 <div className="item-select">
-                    <Select
+                    <AntcSelect
                         value={taskName}
                         style={{width: 150 }}
                         onChange={this.handleSelectTask.bind(this,'task', id, key)}
@@ -225,21 +226,21 @@ class SaleBehaviorPanel extends React.Component {
                                 <Option value={taskItem.name}>{taskItem.name}</Option>
                             )
                         }
-                    </Select>
-                    <Select
+                    </AntcSelect>
+                    <AntcSelect
                         style={{width: 150 }}
                         value={actionName}
                         onChange={this.handleSelectTask.bind(this, 'action', id, key)}
                         className="select-action"
                     >
                         {salesActionOptions}
-                    </Select>
+                    </AntcSelect>
                 </div>
             );
         } else {
             return (
                 <div className="item-select">
-                    <Select
+                    <AntcSelect
                         style={{width: 150 }}
                         placeholder={Intl.get('sales.process.select.task.placeholder', '请选择任务')}
                         onChange={this.handleSelectTask.bind(this, 'task', '', key)}
@@ -250,15 +251,15 @@ class SaleBehaviorPanel extends React.Component {
                                 <Option value={taskItem.name}>{taskItem.name}</Option>
                             )
                         }
-                    </Select>
-                    <Select
+                    </AntcSelect>
+                    <AntcSelect
                         style={{width: 150 }}
                         placeholder={Intl.get('sales.process.select.action.placeholder', '请选择动作')}
                         onChange={this.handleSelectTask.bind(this, 'action', '', key)}
                         className="select-action"
                     >
                         {this.getSalesActionOptions(this.state.taskNames[key])}
-                    </Select>
+                    </AntcSelect>
                 </div>
             );
         }

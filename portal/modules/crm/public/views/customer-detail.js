@@ -167,6 +167,7 @@ class CrmRightPanel extends React.Component {
                                         hideContactWay={this.props.hideContactWay}
                                         updateCustomerLastContact={this.props.updateCustomerLastContact}
                                         showUserDetail={this.showUserDetail}
+                                        customerCustomFieldData={this.props.customerCustomFieldData}
                                     />
                                 ) : null}
                             </TabPane>
@@ -369,6 +370,7 @@ CrmRightPanel.propTypes = {
     returnInfoPanel: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
     isUseCustomerContacts: PropTypes.bool,
+    customerCustomFieldData: PropTypes.object,
 };
 module.exports = CrmRightPanel;
 

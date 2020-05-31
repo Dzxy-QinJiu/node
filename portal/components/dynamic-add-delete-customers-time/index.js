@@ -8,10 +8,11 @@ var React = require('react');
 require('./index.less');
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {Form, Input, Select,TimePicker, Popover} from 'antd';
+import {Form, Input, TimePicker, Popover} from 'antd';
 const FormItem = Form.Item;
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
-import {AntcAreaSelection} from 'antc';
+import {AntcAreaSelection, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 import {disabledHour,getTimeWithSecondZero,disabledMinute,checkCustomerTotalLeaveTime} from 'PUB_DIR/sources/utils/common-method-util';
 
 class DynamicAddDelCustomers extends React.Component {

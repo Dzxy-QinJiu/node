@@ -54,7 +54,7 @@
       }
     }
     .show-hide-tip{
-      font-size: 13px;
+      font-size: 14px;
       cursor:pointer;
       color: @primary-color;
       display: inline-block;
@@ -62,6 +62,11 @@
       vertical-align: sub;
       span, .iconfont{
         vertical-align: middle;
+      }
+      .iconfont{
+        font-size: 14px;
+        margin-left: 2px;
+        font-weight: bold;
       }
     }
     .submit-button-container{
@@ -110,6 +115,7 @@
   }
   //高级筛选样式
   .advance-data-container{
+    position: relative;
     .advance-btn-item{
       padding: 3px 6px;
       font-size: 14px;
@@ -126,6 +132,22 @@
         color: #fff;
         border-color: @warn-color;
       }
+    }
+    .advance-data-content{
+      max-width: 554px;
+      float: left;
+      height: 32px;
+      overflow: hidden;
+      &.show-more{
+        height: auto;
+      }
+      .advance-btn-item{
+        display: inline-block;
+        line-height: normal;
+      }
+    }
+    .show-hide-tip{
+      margin-left: 1px;
     }
   }
   //搜索框样式
@@ -277,6 +299,78 @@
     color: @primary-font-color;
     &.ant-dropdown-menu-item-selected{
       color: #108ee9;
+    }
+  }
+}
+
+.register-time-container{
+  padding-top: 5px;
+  width: auto!important;
+  .ant-dropdown-menu{
+    > .ant-dropdown-menu-item{
+      padding: 0;
+      background-color: #fff;
+    }
+  }
+  .ant-dropdown-menu-item{
+    &:first-child{
+      border-radius: 0;
+      border-top-left-radius: 4px;
+    }
+  }
+  .register-time-wrapper{
+    display: flex;
+    border-radius: 4px;
+    //选择自定义后样式
+    &.selected-custom{
+      border: 1px solid #ccc;
+      .register-time-select-wrapper{
+        .register-time-select-content{
+          display: block;
+        }
+      }
+    }
+    .register-time-content{
+      display: flex;
+      .ant-dropdown-menu{
+        box-shadow: none;
+      }
+    }
+    //时间选择器样式
+    .register-time-select-wrapper{
+      border-left: 1px solid #f5f5f5;
+      position: relative;
+      z-index: 1040;
+      .register-time-select-content{
+          display: none;
+          padding: 0;
+          background-color: #fff;
+      }
+      .ant-calendar-picker-input{
+        display: none;
+        &+div{
+          position: unset!important;
+        }
+      }
+      .ant-calendar-picker-container{
+        position: unset!important;
+        z-index: 1020;
+        .ant-calendar-input-wrap, .ant-calendar-range-middle{
+          display: none;
+        }
+        .ant-calendar-range{
+          max-width: 410px;
+          box-shadow: none;
+          border: unset;
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          .ant-calendar-decade-panel-table,
+          .ant-calendar-year-panel-table,
+          .ant-calendar-month-panel-table{
+            height: 175px;
+          }
+        }
+      }
     }
   }
 }

@@ -1,7 +1,8 @@
 var React = require('react');
 import StatusWrapper from 'CMP_DIR/status-wrapper';
-import { Alert, Icon, Popover, message, Select } from 'antd';
-const Option = Select.Option;
+import { Alert, Icon, Popover, message } from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
@@ -531,7 +532,7 @@ class FilterList extends React.Component {
         let selectValues = _.map(selectItems, 'value');
         return (
             <div className="filter-select-container" id={`${groupItem.groupId}_select_container`}>
-                <Select
+                <AntcSelect
                     className="filter-select"
                     mode="multiple"
                     placeholder={Intl.get('crm.filter.select.placeholder', '请选择要筛选的{groupName}', { groupName: groupItem.groupName })}
@@ -544,7 +545,7 @@ class FilterList extends React.Component {
                     {_.map(groupItem.data, (item, index) => {
                         return (<Option key={index} value={item.value}>{item.name}</Option>);
                     })}
-                </Select>
+                </AntcSelect>
             </div>
         );
     }

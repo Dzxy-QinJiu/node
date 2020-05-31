@@ -1,7 +1,9 @@
 var React = require('react');
 require('./css/customer-suggest.less');
 import {Link} from 'react-router-dom';
-import {Select, Tag, Form} from 'antd';
+import {Tag, Form} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 var crmCustomerAjax = require('MOD_DIR/crm/public/ajax/index');
 var userData = require('PUB_DIR/sources/user-data');
 var classNames = require('classnames');
@@ -66,7 +68,7 @@ class CustomerSuggest extends React.Component {
     handleCustomerData = (newCustomer) => {
         return _.map(newCustomer, (customerItem) => {
             return {
-                ...newCustomer,
+                ...customerItem,
                 'customer_name': customerItem.name,
                 'customer_id': customerItem.id
             };
@@ -74,11 +76,14 @@ class CustomerSuggest extends React.Component {
     };
     afterAddCustomerSuccess = (newCustomer) => {
         var {list} = this.state;
+        var newCustomerObj = this.handleCustomerData(newCustomer);
         this.setState({
-            list: _.concat(list, this.handleCustomerData(newCustomer)),
+            list: _.concat(list, newCustomerObj),
             suggest_error_msg: '',
-            no_select_error_msg: Intl.get('customer.select.name.tip', '请在下拉框中选择客户'),
-            show_tip: true
+            no_select_error_msg: '',
+            show_tip: false
+        },() =>{
+            this.customerChoosen(_.get(newCustomerObj,'[0].customer_id'));
         });
     };
 
@@ -535,7 +540,7 @@ class CustomerSuggest extends React.Component {
 
         var selectBlock = this.state.displayType === 'edit' ? (
             <div ref="customer_searchbox" className="associate-customer-wrap">
-                <Select
+                <AntcSelect
                     ref="selectSearch"
                     className={this.getCustomerTipErrmsg() ? 'err-tip' : ''}
                     name={this.props.name}
@@ -561,7 +566,7 @@ class CustomerSuggest extends React.Component {
                             );
                         })
                     }
-                </Select>
+                </AntcSelect>
                 {this.getCustomerTipBlock()}
                 <div className="buttons">
                     {!this.props.hideButtonBlock ?
@@ -610,7 +615,7 @@ CustomerSuggest.defaultProps = {
     //客户的name
     customer_name: '',
     //当选中了customer的时候，会调用这个函数
-    onCustomerChoosen: function() {
+    customerChoosen: function() {
     },
     //告诉调用的父组件，隐藏错误提示
     hideCustomerError: function() {

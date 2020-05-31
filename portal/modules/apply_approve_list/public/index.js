@@ -21,7 +21,7 @@ import {
     getContentWidth
 } from './utils/apply_approve_utils';
 import classNames from 'classnames';
-import {Dropdown, Menu, Alert, Select, Button, Popover, TreeSelect} from 'antd';
+import {Dropdown, Menu, Alert, Button, Popover, TreeSelect} from 'antd';
 import userData from 'PUB_DIR/sources/user-data';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {
@@ -43,10 +43,13 @@ import AddBusinessWhileApply from './all_application_type/business-while/public/
 import BusinessWhileDetail from './all_application_type/business-while/public/view/apply-view-detail';
 import AddDomainApply from './all_application_type/domain_application/public/view/add-apply';
 import DomainDetail from './all_application_type/domain_application/public/view/apply-view-detail';
-import AddVisitApply from './all_application_type/self_setting/public/view/add-apply';
-import VisitDetail from './all_application_type/self_setting/public/view/apply-view-detail';
+import AddVisitApply from './all_application_type/visit_apply/public/view/add-apply';
+import VisitDetail from './all_application_type/visit_apply/public/view/apply-view-detail';
 import AddDataServiceApply from './all_application_type/eefung-data-service/public/view/add_apply';
 import DataServiceDetail from './all_application_type/eefung-data-service/public/view/apply_detail';
+import AddSelfSettingApply from './all_application_type/self_setting/public/view/add-apply';
+import SelfSettingDetail from './all_application_type/self_setting/public/view/apply-view-detail';
+//todo 加新的申请类型的时候记得在销售首页也会有展示申请审批
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
@@ -57,7 +60,8 @@ import UserApplyViewDetailWrap from './all_application_type/user_apply/public/vi
 import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
 import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
-import {SearchInput} from 'antc';
+import {SearchInput, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 import UserData from '../../../public/sources/user-data';
 import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
@@ -113,6 +117,7 @@ class ApplyApproveList extends React.Component {
                 workFlowList: workFlowList
             });
         });
+        this.updateUnhandleApplyApproveCount();
         notificationEmitter.on(notificationEmitter.MY_UNREAD_REPLY, this.refreshMyUnreadReplyList);
         notificationEmitter.on(notificationEmitter.TEAM_UNREAD_REPLY, this.refreshTeamUnreadReplyList);
         notificationEmitter.on(notificationEmitter.CLEAR_UNREAD_REPLY, this.clearUnreadReplyList);
@@ -165,28 +170,32 @@ class ApplyApproveList extends React.Component {
     };
     //更新审批的数字
     updateUnhandleApplyApproveCount = () => {
-        this.showUnhandleApplyTip();
+        const {unreadMyReplyList, unreadTeamReplyList} = this.state;
+        var unreadMyReplyCount = _.get(unreadMyReplyList, 'length'),
+            // 团队申请，未读数
+            unreadTeamReplyCount = _.get(unreadTeamReplyList, 'length'),
+            // 我审批的，未读数
+            unreadMyApproveCount = getAllUnhandleApplyCount();//我审批的数量
+        _.each(APPLY_APPROVE_TAB_TYPES, (item) => {
+            var val = _.get(item, 'value');
+            if (APPLY_TYPE.APPLY_BY_ME === val) {
+                this.renderUnhandleNum(val, unreadMyReplyCount, false);
+            }
+            if (APPLY_TYPE.APPLY_BY_TEAM === val) {
+                this.renderUnhandleNum(val, unreadTeamReplyCount, false);
+            }
+            if (APPLY_TYPE.APPROVE_BY_ME === val) {
+                this.renderUnhandleNum(val, unreadMyApproveCount, true);
+            }
+        });
     };
     //展示刷新的提示
-    updateUnhandleApplyApproveTip = (data) => {
-        // 推送未读数据长度
-        const length = data.length;
-        const unHandleApplyId = _.map(data, 'id');
-        // 申请列表数据
-        const applyList = _.get(this.state.applyListObj, 'list', []);
-        // 获取申请列表中待审批的数据，和推送数据一样的长的id
-        const applyListId = _ .chain(applyList).filter(item => item.status === 'ongoing').slice(0, length).map(item => item.id).value();
-        // 对比是否有不同的数据，若有则说明有新的推送数据
-        const diffArray = _.difference(unHandleApplyId, applyListId);
+    updateUnhandleApplyApproveTip = () => {
         //如果当前选中的是我审批的
         if(this.state.activeApplyTab === APPLY_TYPE.APPROVE_BY_ME){
-            // 获取申请列表，需要时间，有推送，则待我审批列表，一定是有数据的，
-            // 不同时，说明有推送数据, 需要刷新
-            if (applyList.length && !_.isEmpty(diffArray)) {
-                this.setState({
-                    showRefreshTip: true
-                });
-            }
+            this.setState({
+                showRefreshTip: true
+            });
         }
     };
 
@@ -452,26 +461,6 @@ class ApplyApproveList extends React.Component {
         const {activeApplyTab, unreadMyReplyList, unreadTeamReplyList} = this.state;
         return activeApplyTab === APPLY_TYPE.APPLY_BY_ME ? unreadMyReplyList : unreadTeamReplyList;
     };
-    showUnhandleApplyTip = () => {
-        const {unreadMyReplyList, unreadTeamReplyList} = this.state;
-        var unreadMyReplyCount = _.get(unreadMyReplyList, 'length'),
-            // 团队申请，未读数
-            unreadTeamReplyCount = _.get(unreadTeamReplyList, 'length'),
-            // 我审批的，未读数
-            unreadMyApproveCount = getAllUnhandleApplyCount();//我审批的数量
-        _.each(APPLY_APPROVE_TAB_TYPES, (item) => {
-            var val = _.get(item, 'value');
-            if (APPLY_TYPE.APPLY_BY_ME === val) {
-                this.renderUnhandleNum(val, unreadMyReplyCount, false);
-            }
-            if (APPLY_TYPE.APPLY_BY_TEAM === val) {
-                this.renderUnhandleNum(val, unreadTeamReplyCount, false);
-            }
-            if (APPLY_TYPE.APPROVE_BY_ME === val) {
-                this.renderUnhandleNum(val, unreadMyApproveCount, true);
-            }
-        });
-    };
     // tab 上显示的提示
     // 回复消息的推送，根据审批状态不同，推送的给不同的人
     // 待审批的，是推送给申请人和下一个节点的审批人
@@ -707,7 +696,7 @@ class ApplyApproveList extends React.Component {
             <div className="apply-type-filter btn-item" id="apply-type-container">
                 {
                     UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) || this.isActiveTabMyApproveList() ? null : (
-                        <Select
+                        <AntcSelect
                             className='apply-status-select'
                             value={this.state.selectedApplyStatus}
                             onChange={this.handleChangeSelectedApplyStatus}
@@ -715,7 +704,7 @@ class ApplyApproveList extends React.Component {
                             {_.map(allStatusList, item => {
                                 return <Option value={_.get(item, 'value')}>{_.get(item, 'name')}</Option>;
                             })}
-                        </Select>
+                        </AntcSelect>
                     )
                 }
                 <TreeSelect
@@ -866,121 +855,135 @@ class ApplyApproveList extends React.Component {
         var selectedDetailItem = this.state.selectedDetailItem;
         var applyDetailContent = null;
         //todo 不同的审批类型展示不同的右侧详情
-        switch (_.get(selectedDetailItem, 'workflow_type')) {
-            case APPLY_APPROVE_TYPES.USER_OR_GRANT://新的用户申请
-                applyDetailContent = <UserApplyViewDetailWrap
-                    applyData={this.state.applyId ? applyDetail : null}
-                    detailItem={this.state.selectedDetailItem}
-                    isUnreadDetail={this.getIsUnreadDetail()}
-                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    selectedApplyStatus={this.state.selectedApplyStatus}
-                    handleOpenApplyDetail={this.handleOpenApplyDetail}
-                    appList={this.state.appList}
-                    height={$(window).height()}
-                    afterTransferApplySuccess={this.afterTransferApplySuccess}
-                />;
-                break;
-            case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES://销售机会
-                applyDetailContent = <BusinessOpportunity
-                    applyData={this.state.applyId ? applyDetail : null}
-                    detailItem={this.state.selectedDetailItem}
-                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    selectedApplyStatus={this.state.selectedApplyStatus}
-                    isUnreadDetail={this.getIsUnreadDetail()}
-                    appList={this.state.appList}
-                    height={$(window).height()}
-                    afterTransferApplySuccess={this.afterTransferApplySuccess}
-                />;
-                break;
-            case APPLY_APPROVE_TYPES.CUSTOMER_VISIT://出差申请
-                applyDetailContent = <BusinessDetail
-                    applyData={this.state.applyId ? applyDetail : null}
-                    detailItem={this.state.selectedDetailItem}
-                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    selectedApplyStatus={this.state.selectedApplyStatus}
-                    isUnreadDetail={this.getIsUnreadDetail()}
-                    height={$(window).height()}
-                    afterTransferApplySuccess={this.afterTransferApplySuccess}
-                />;
-                break;
-            case APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE://外出申请
-                applyDetailContent = <BusinessWhileDetail
-                    applyData={this.state.applyId ? applyDetail : null}
-                    detailItem={this.state.selectedDetailItem}
-                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    selectedApplyStatus={this.state.selectedApplyStatus}
-                    isUnreadDetail={this.getIsUnreadDetail()}
-                    height={$(window).height()}
-                    afterTransferApplySuccess={this.afterTransferApplySuccess}
-                />;
-                break;
-            case APPLY_APPROVE_TYPES.PERSONAL_LEAVE://请假申请
-                applyDetailContent = <LeaveDetail
-                    applyData={this.state.applyId ? applyDetail : null}
-                    detailItem={this.state.selectedDetailItem}
-                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    selectedApplyStatus={this.state.selectedApplyStatus}
-                    isUnreadDetail={this.getIsUnreadDetail()}
-                    height={$(window).height()}
-                    afterTransferApplySuccess={this.afterTransferApplySuccess}
-                />;
-                break;
-            case APPLY_APPROVE_TYPES.OPINION_REPORT://舆情报告
-                applyDetailContent = <ReportDetail
-                    applyData={this.state.applyId ? applyDetail : null}
-                    detailItem={this.state.selectedDetailItem}
-                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    selectedApplyStatus={this.state.selectedApplyStatus}
-                    isUnreadDetail={this.getIsUnreadDetail()}
-                    height={$(window).height()}
-                    afterTransferApplySuccess={this.afterTransferApplySuccess}
-                />;
-                break;
-            case APPLY_APPROVE_TYPES.DOCUMENT_WRITING://文件撰写
-                applyDetailContent = <DocumentDetail
-                    applyData={this.state.applyId ? applyDetail : null}
-                    detailItem={this.state.selectedDetailItem}
-                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    selectedApplyStatus={this.state.selectedApplyStatus}
-                    isUnreadDetail={this.getIsUnreadDetail()}
-                    height={$(window).height()}
-                    afterTransferApplySuccess={this.afterTransferApplySuccess}
-                />;
-                break;
-            //联合跟进申请和拜访申请
-            case APPLY_APPROVE_TYPES.VISITAPPLY:
-                applyDetailContent = <VisitDetail
-                    applyData={this.state.applyId ? applyDetail : null}
-                    detailItem={this.state.selectedDetailItem}
-                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    selectedApplyStatus={this.state.selectedApplyStatus}
-                    isUnreadDetail={this.getIsUnreadDetail()}
-                    height={$(window).height()}
-                    afterTransferApplySuccess={this.afterTransferApplySuccess}
-                />;
-                break;
-            case APPLY_APPROVE_TYPES.DOMAINAPPLY://舆情平台申请
-                applyDetailContent = <DomainDetail
-                    applyData={this.state.applyId ? applyDetail : null}
-                    detailItem={this.state.selectedDetailItem}
-                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    selectedApplyStatus={this.state.selectedApplyStatus}
-                    isUnreadDetail={this.getIsUnreadDetail()}
-                    height={$(window).height()}
-                    afterTransferApplySuccess={this.afterTransferApplySuccess}
-                />;
-                break;
-            case APPLY_APPROVE_TYPES.EEFUNG_DATA_SERVICE://蚁坊的数据服务申请
-                applyDetailContent = <DataServiceDetail
-                    applyData={this.state.applyId ? applyDetail : null}
-                    detailItem={this.state.selectedDetailItem}
-                    showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
-                    selectedApplyStatus={this.state.selectedApplyStatus}
-                    isUnreadDetail={this.getIsUnreadDetail()}
-                    height={$(window).height()}
-                    afterTransferApplySuccess={this.afterTransferApplySuccess}
-                />;
-                break;
+        var workFlowType = _.get(selectedDetailItem, 'workflow_type');
+        if(workFlowType){
+            switch (_.get(selectedDetailItem, 'workflow_type')) {
+                case APPLY_APPROVE_TYPES.USER_OR_GRANT://新的用户申请
+                    applyDetailContent = <UserApplyViewDetailWrap
+                        applyData={this.state.applyId ? applyDetail : null}
+                        detailItem={this.state.selectedDetailItem}
+                        isUnreadDetail={this.getIsUnreadDetail()}
+                        showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                        selectedApplyStatus={this.state.selectedApplyStatus}
+                        handleOpenApplyDetail={this.handleOpenApplyDetail}
+                        appList={this.state.appList}
+                        height={$(window).height()}
+                        afterTransferApplySuccess={this.afterTransferApplySuccess}
+                    />;
+                    break;
+                case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES://销售机会
+                    applyDetailContent = <BusinessOpportunity
+                        applyData={this.state.applyId ? applyDetail : null}
+                        detailItem={this.state.selectedDetailItem}
+                        showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                        selectedApplyStatus={this.state.selectedApplyStatus}
+                        isUnreadDetail={this.getIsUnreadDetail()}
+                        appList={this.state.appList}
+                        height={$(window).height()}
+                        afterTransferApplySuccess={this.afterTransferApplySuccess}
+                    />;
+                    break;
+                case APPLY_APPROVE_TYPES.CUSTOMER_VISIT://出差申请
+                    applyDetailContent = <BusinessDetail
+                        applyData={this.state.applyId ? applyDetail : null}
+                        detailItem={this.state.selectedDetailItem}
+                        showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                        selectedApplyStatus={this.state.selectedApplyStatus}
+                        isUnreadDetail={this.getIsUnreadDetail()}
+                        height={$(window).height()}
+                        afterTransferApplySuccess={this.afterTransferApplySuccess}
+                    />;
+                    break;
+                case APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE://外出申请
+                    applyDetailContent = <BusinessWhileDetail
+                        applyData={this.state.applyId ? applyDetail : null}
+                        detailItem={this.state.selectedDetailItem}
+                        showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                        selectedApplyStatus={this.state.selectedApplyStatus}
+                        isUnreadDetail={this.getIsUnreadDetail()}
+                        height={$(window).height()}
+                        afterTransferApplySuccess={this.afterTransferApplySuccess}
+                    />;
+                    break;
+                case APPLY_APPROVE_TYPES.PERSONAL_LEAVE://请假申请
+                    applyDetailContent = <LeaveDetail
+                        applyData={this.state.applyId ? applyDetail : null}
+                        detailItem={this.state.selectedDetailItem}
+                        showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                        selectedApplyStatus={this.state.selectedApplyStatus}
+                        isUnreadDetail={this.getIsUnreadDetail()}
+                        height={$(window).height()}
+                        afterTransferApplySuccess={this.afterTransferApplySuccess}
+                    />;
+                    break;
+                case APPLY_APPROVE_TYPES.OPINION_REPORT://舆情报告
+                    applyDetailContent = <ReportDetail
+                        applyData={this.state.applyId ? applyDetail : null}
+                        detailItem={this.state.selectedDetailItem}
+                        showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                        selectedApplyStatus={this.state.selectedApplyStatus}
+                        isUnreadDetail={this.getIsUnreadDetail()}
+                        height={$(window).height()}
+                        afterTransferApplySuccess={this.afterTransferApplySuccess}
+                    />;
+                    break;
+                case APPLY_APPROVE_TYPES.DOCUMENT_WRITING://文件撰写
+                    applyDetailContent = <DocumentDetail
+                        applyData={this.state.applyId ? applyDetail : null}
+                        detailItem={this.state.selectedDetailItem}
+                        showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                        selectedApplyStatus={this.state.selectedApplyStatus}
+                        isUnreadDetail={this.getIsUnreadDetail()}
+                        height={$(window).height()}
+                        afterTransferApplySuccess={this.afterTransferApplySuccess}
+                    />;
+                    break;
+                //联合跟进申请和拜访申请
+                case APPLY_APPROVE_TYPES.VISITAPPLY:
+                    applyDetailContent = <VisitDetail
+                        applyData={this.state.applyId ? applyDetail : null}
+                        detailItem={this.state.selectedDetailItem}
+                        showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                        selectedApplyStatus={this.state.selectedApplyStatus}
+                        isUnreadDetail={this.getIsUnreadDetail()}
+                        height={$(window).height()}
+                        afterTransferApplySuccess={this.afterTransferApplySuccess}
+                    />;
+                    break;
+                case APPLY_APPROVE_TYPES.DOMAINAPPLY://舆情平台申请
+                    applyDetailContent = <DomainDetail
+                        applyData={this.state.applyId ? applyDetail : null}
+                        detailItem={this.state.selectedDetailItem}
+                        showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                        selectedApplyStatus={this.state.selectedApplyStatus}
+                        isUnreadDetail={this.getIsUnreadDetail()}
+                        height={$(window).height()}
+                        afterTransferApplySuccess={this.afterTransferApplySuccess}
+                    />;
+                    break;
+                case APPLY_APPROVE_TYPES.EEFUNG_DATA_SERVICE://蚁坊的数据导出申请
+                    applyDetailContent = <DataServiceDetail
+                        applyData={this.state.applyId ? applyDetail : null}
+                        detailItem={this.state.selectedDetailItem}
+                        showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                        selectedApplyStatus={this.state.selectedApplyStatus}
+                        isUnreadDetail={this.getIsUnreadDetail()}
+                        height={$(window).height()}
+                        afterTransferApplySuccess={this.afterTransferApplySuccess}
+                    />;
+                    break;
+                default:
+                    applyDetailContent = <SelfSettingDetail
+                        applyData={this.state.applyId ? applyDetail : null}
+                        detailItem={this.state.selectedDetailItem}
+                        showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                        selectedApplyStatus={this.state.selectedApplyStatus}
+                        isUnreadDetail={this.getIsUnreadDetail()}
+                        height={$(window).height()}
+                        afterTransferApplySuccess={this.afterTransferApplySuccess}
+                        workFlowType={workFlowType}
+                    />;
+            }
         }
         //如果是旧版的用户审批
         if (_.get(selectedDetailItem, 'message_type') === APPLY_APPROVE_TYPES.USERAPPLY) {
@@ -1000,57 +1003,63 @@ class ApplyApproveList extends React.Component {
     };
     renderAddApplyForm = () => {
         var addApplyFormPanel = this.state.addApplyFormPanel;
-        switch (addApplyFormPanel) {
-            case APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES://销售机会申请
-                return <AddSalesOpportunityApply hideSalesOpportunityApplyAddForm={this.closeAddApplyForm}/>;
-            case APPLY_APPROVE_TYPES.BUSSINESSTRIP://出差申请
-                return <AddBusinessApply hideBusinessApplyAddForm={this.closeAddApplyForm}/>;
-            case APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE://外出申请
-                return <AddBusinessWhileApply
-                    hideBusinessApplyAddForm={this.closeAddApplyForm}
-                />;
-            case APPLY_APPROVE_TYPES.LEAVE://请假申请
-                return <AddLeaveApply hideLeaveApplyAddForm={this.closeAddApplyForm}/>;
-            case APPLY_APPROVE_TYPES.OPINIONREPORT://舆情报告
-                return <AddDocumentWriteOrReportSendApplyPanel
-                    titleType={Intl.get('apply.approve.report.send', '舆情报告申请')}
-                    applyType={REPORT_TYPE}
-                    applyAjaxType={APPLY_APPROVE_TYPES.REPORT}
-                    hideApplyAddForm={this.closeAddApplyForm}
-                    addType='report_type'
-                    selectTip={Intl.get('leave.apply.select.at.least.one.type', '请选择至少一个舆情报告类型')}
-                    selectPlaceholder={Intl.get('apply.approve.report.select.type', '请选择舆情报告类型')}
-                    applyLabel={Intl.get('common.type', '类型')}
-                    remarkPlaceholder={Intl.get('apply.approve.report.remark', '请填写{type}备注', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')})}
-                />;
-            case APPLY_APPROVE_TYPES.DOCUMENTWRITING://文件撰写申请
-                return <AddDocumentWriteOrReportSendApplyPanel
-                    titleType={Intl.get('apply.approve.document.write', '文件撰写申请')}
-                    hideApplyAddForm={this.closeAddApplyForm}
-                    applyType={DOCUMENT_TYPE}
-                    applyAjaxType={APPLY_APPROVE_TYPES.DOCUMENT}
-                    addType='document_type'
-                    selectTip={Intl.get('apply.approve.write.select.at.least.one.type', '请选择至少一个文件类型')}
-                    selectPlaceholder={Intl.get('apply.approve.document.select.type', '请选择文件报告类型')}
-                    applyLabel={Intl.get('apply.approve.document.write.type', '文件类型')}
-                    remarkPlaceholder={Intl.get('apply.approve.report.remark', '请填写{type}备注', {type: Intl.get('apply.approve.document.writing', '文件撰写')})}
-                />;
-            //联合跟进申请和拜访申请
-            case APPLY_APPROVE_TYPES.VISITAPPLY:
-                return (
-                    <AddVisitApply
+        if(addApplyFormPanel){
+            switch (addApplyFormPanel) {
+                case APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES://销售机会申请
+                    return <AddSalesOpportunityApply hideSalesOpportunityApplyAddForm={this.closeAddApplyForm}/>;
+                case APPLY_APPROVE_TYPES.BUSSINESSTRIP://出差申请
+                    return <AddBusinessApply hideBusinessApplyAddForm={this.closeAddApplyForm}/>;
+                case APPLY_APPROVE_TYPES.BUSINESSTRIPAWHILE://外出申请
+                    return <AddBusinessWhileApply
+                        hideBusinessApplyAddForm={this.closeAddApplyForm}
+                    />;
+                case APPLY_APPROVE_TYPES.LEAVE://请假申请
+                    return <AddLeaveApply hideLeaveApplyAddForm={this.closeAddApplyForm}/>;
+                case APPLY_APPROVE_TYPES.OPINIONREPORT://舆情报告
+                    return <AddDocumentWriteOrReportSendApplyPanel
+                        titleType={Intl.get('apply.approve.report.send', '舆情报告申请')}
+                        applyType={REPORT_TYPE}
+                        applyAjaxType={APPLY_APPROVE_TYPES.REPORT}
+                        hideApplyAddForm={this.closeAddApplyForm}
+                        addType='report_type'
+                        selectTip={Intl.get('leave.apply.select.at.least.one.type', '请选择至少一个舆情报告类型')}
+                        selectPlaceholder={Intl.get('apply.approve.report.select.type', '请选择舆情报告类型')}
+                        applyLabel={Intl.get('common.type', '类型')}
+                        remarkPlaceholder={Intl.get('apply.approve.report.remark', '请填写{type}备注', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')})}
+                    />;
+                case APPLY_APPROVE_TYPES.DOCUMENTWRITING://文件撰写申请
+                    return <AddDocumentWriteOrReportSendApplyPanel
+                        titleType={Intl.get('apply.approve.document.write', '文件撰写申请')}
+                        hideApplyAddForm={this.closeAddApplyForm}
+                        applyType={DOCUMENT_TYPE}
+                        applyAjaxType={APPLY_APPROVE_TYPES.DOCUMENT}
+                        addType='document_type'
+                        selectTip={Intl.get('apply.approve.write.select.at.least.one.type', '请选择至少一个文件类型')}
+                        selectPlaceholder={Intl.get('apply.approve.document.select.type', '请选择文件报告类型')}
+                        applyLabel={Intl.get('apply.approve.document.write.type', '文件类型')}
+                        remarkPlaceholder={Intl.get('apply.approve.report.remark', '请填写{type}备注', {type: Intl.get('apply.approve.document.writing', '文件撰写')})}
+                    />;
+                //联合跟进申请和拜访申请
+                case APPLY_APPROVE_TYPES.VISITAPPLY:
+                    return (
+                        <AddVisitApply
+                            hideLeaveApplyAddForm={this.closeAddApplyForm}
+                        />
+                    );
+                case APPLY_APPROVE_TYPES.DOMAINAPPLY://舆情平台申请
+                    return <AddDomainApply
                         hideLeaveApplyAddForm={this.closeAddApplyForm}
-                    />
-                );
-            case APPLY_APPROVE_TYPES.DOMAINAPPLY://舆情平台申请
-                return <AddDomainApply
-                    hideLeaveApplyAddForm={this.closeAddApplyForm}
-                />;
-            case APPLY_APPROVE_TYPES.EEFUNG_DATA_SERVICE://蚁坊的数据服务申请
-                return <AddDataServiceApply
-                    hideApplyAddForm={this.closeAddApplyForm}
-                />;
-
+                    />;
+                case APPLY_APPROVE_TYPES.EEFUNG_DATA_SERVICE://蚁坊的数据导出申请
+                    return <AddDataServiceApply
+                        hideApplyAddForm={this.closeAddApplyForm}
+                    />;
+                default:
+                    return <AddSelfSettingApply
+                        addWorkFlowType={addApplyFormPanel}
+                        hideApplyAddForm={this.closeAddApplyForm}
+                    />;
+            }
         }
     };
     closeAddApplyForm = (result) => {
@@ -1094,7 +1103,8 @@ class ApplyApproveList extends React.Component {
         return (
             <div className='apply_approve_content_wrap user_apply_page'>
                 {this.renderApplyListTab()}
-                {this.showUnhandleApplyTip()}
+                {/*这个渲染未读数或者未读回复的不可以删除，在点击全部已读的时候需要重新渲染*/}
+                {this.updateUnhandleApplyApproveCount()}
                 {!_.isEmpty(this.state.showHistoricalItem) ? (
                     <RightPanelModal
                         className="historical-detail-panel"

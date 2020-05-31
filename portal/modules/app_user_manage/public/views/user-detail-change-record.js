@@ -11,24 +11,18 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }
 var UserDetailChangeRecordStore = require('../store/user-detail-change-record-store');
 var UserDetailChangeRecordAction = require('../action/user-detail-change-record-actions');
-import {AntcTimeLine} from 'antc';
+import {AntcTimeLine, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 //滚动条
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
-var Spinner = require('../../../../components/spinner');
-import { Select, Alert } from 'antd';
+import { Alert } from 'antd';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
-var Option = Select.Option;
 import {CHANGE_RECORD_TYPE} from 'PUB_DIR/sources/utils/consts';
 import { recordChangeTimeLineItem } from 'PUB_DIR/sources/utils/common-method-util';
 //高度常量
 var LAYOUT_CONSTANTS = {
-    RIGHT_PANEL_PADDING_TOP: 20,//右侧面板顶部padding
-    RIGHT_PANEL_PADDING_BOTTOM: 20,//右侧面板底部padding
-    DYNAMIC_LIST_MARGIN_BOTTOM: 20,//列表距离底部margin
-    RIGHT_PANEL_TAB_HEIGHT: 36,//右侧面板tab高度
-    RIGHT_PANEL_TAB_MARGIN_BOTTOM: 17,//右侧面板tab的margin
-    TOP_PADDING: 100,//选择框留白
+    SELECT_APP_ZONE_HEIGHT: 60 // 筛选区域的高度
 };
 
 class UserDetailChangeRecord extends React.Component {
@@ -52,24 +46,16 @@ class UserDetailChangeRecord extends React.Component {
 
     //如果外层有选中的app时，默认为外层选中的app，如果没有，就用app列表中的第一个
     showSelectedApp = (props, queryObj) => {
-        var appId = props.selectedAppId;
+        var selectedAppId = props.selectedAppId;
         //如果外层有选中的app时，默认为外层选中的app，如果没有，就用app列表中的第一个
-        if (appId) {
-            var selectedApp = _.find(this.props.appLists, (item) => {
-                return item.app_id === appId;
-            });
-            var appName = selectedApp && selectedApp.app_name ? selectedApp.app_name : '';
-            if (appName) {
-                UserDetailChangeRecordAction.setApp(appName);
-            }
-        } else {
-            if (!_.isEmpty(queryObj)) {
-                appId = queryObj[0].app_id;
-                UserDetailChangeRecordAction.setApp(queryObj[0].app_name);
-            }
+        if (!selectedAppId && !_.isEmpty(queryObj)) {
+            selectedAppId = queryObj[0].app_id;
         }
+
+        UserDetailChangeRecordAction.setApp(selectedAppId);
+
         this.getUserDetailChangeRecord({
-            app_id: appId + ',everyapp',
+            app_id: selectedAppId + ',everyapp',
             user_id: props.userId,
             page_size: this.state.page_size,
         });
@@ -93,17 +79,15 @@ class UserDetailChangeRecord extends React.Component {
     componentWillUnmount() {
         UserDetailChangeRecordStore.unlisten(this.onStateChange);
     }
-    
-    handleChange = (value) => {
-        const app = _.find(this.props.appLists, item => item.app_id === value);
-        const appName = app ? app.app_name : '';
+
+    handleChange = (selectedAppId) => {
         let queryObj = {
             user_id: this.props.userId,
-            app_id: value + ',' + 'everyapp',
+            app_id: selectedAppId + ',' + 'everyapp',
             page_size: this.state.page_size,
         };
         UserDetailChangeRecordAction.getUserDetailChangeRecord(queryObj);
-        UserDetailChangeRecordAction.setApp(appName);
+        UserDetailChangeRecordAction.setApp(selectedAppId);
     };
 
     retryChangeRecord = () => {
@@ -127,27 +111,17 @@ class UserDetailChangeRecord extends React.Component {
 
     renderRecordBlock = (height) => {
         var recordLength = this.state.changeRecord.length;
-        var width = 120;
-        if (this.state.changeRecordLoading && this.state.app) {
+        if (this.state.changeRecordLoading && this.state.selectedAppId) {
             //加载中的情况
             return (
                 <div>
-                    <Select value={this.state.app} style={{ width: width }}
-                        onChange={this.handleChange}>
-                        {this.getSelectOptions()}
-                    </Select>
-                    <StatusWrapper loading={true} height={height - LAYOUT_CONSTANTS.TOP_PADDING} />
+                    <StatusWrapper loading={true} height={height}/>
                 </div>
             );
         } else if (recordLength === 0 && !this.state.changeRecordLoading) {
             //加载完成，没有数据的情况
             return (
                 <div>
-                    <Select showSearch value={this.state.app} style={{ width: width }}
-                        onChange={this.handleChange}
-                        filterOption={(input, option) => ignoreCase(input, option)}>
-                        {this.getSelectOptions()}
-                    </Select>
                     <Alert
                         message={Intl.get('common.no.data', '暂无数据')}
                         type="info"
@@ -159,12 +133,6 @@ class UserDetailChangeRecord extends React.Component {
             //加载完成，有数据的情况
             return (
                 <div id="change-record-area">
-                    <Select showSearch value={this.state.app} style={{ width: width }}
-                        onChange={this.handleChange}
-                        getPopupContainer={() => document.getElementById('change-record-area')}
-                        filterOption={(input, option) => ignoreCase(input, option)}>
-                        {this.getSelectOptions()}
-                    </Select>
                     <AntcTimeLine
                         className="icon-blue"
                         data={this.state.changeRecord}
@@ -197,22 +165,30 @@ class UserDetailChangeRecord extends React.Component {
 
     state = this.getStateData();
 
+    renderConditionZone() {
+        return (
+            <AntcSelect
+                showSearch
+                value={this.state.selectedAppId}
+                onChange={this.handleChange}
+                filterOption={(input, option) => ignoreCase(input, option)}>
+                {this.getSelectOptions()}
+            </AntcSelect>
+        );
+    }
+
     render() {
-        var divHeight = $(window).height()
-            - LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_TOP //右侧面板顶部padding
-            - LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_BOTTOM //右侧面板底部padding
-            - LAYOUT_CONSTANTS.DYNAMIC_LIST_MARGIN_BOTTOM //列表距离底部margin
-            - LAYOUT_CONSTANTS.RIGHT_PANEL_TAB_HEIGHT //右侧面板tab高度
-            - LAYOUT_CONSTANTS.RIGHT_PANEL_TAB_MARGIN_BOTTOM //右侧面板tab的margin
-            ;
+        const divHeight = this.props.height - LAYOUT_CONSTANTS.SELECT_APP_ZONE_HEIGHT;
         return (
             <div style={{ height: this.props.height }} className="recordList">
-                <GeminiScrollbar>
-                    {this.renderTraceRecord(divHeight)}
-                </GeminiScrollbar>
+                {this.renderConditionZone()}
+                <div style={{height: divHeight}}>
+                    <GeminiScrollbar>
+                        {this.renderTraceRecord(divHeight)}
+                    </GeminiScrollbar>
+                </div>
             </div>
         );
-
     }
 }
 UserDetailChangeRecord.propTypes = {

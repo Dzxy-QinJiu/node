@@ -18,10 +18,10 @@ import AddOrEditUser from './views/v2/add-or-edit-user';
 
 import UserAuditLog from './views/user-audit-log-show-user-detail';
 
-import {Icon, Select, Button, Popover, message} from 'antd';
-import {SearchInput} from 'antc';
+import {Icon, Button, Popover, message} from 'antd';
+import {SearchInput, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 
-var Option = Select.Option;
 var classNames = require('classnames');
 import BatchChangeUser from './views/batch-change-user';
 

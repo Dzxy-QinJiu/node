@@ -66,27 +66,31 @@ function ClueCustomerActions() {
         //引导页设置了推荐条件后跳转过来时，用引导页设置的推荐条件
         if(!_.isEmpty(condition)){
             handleRecommendClueFilters(condition);
-            _.isFunction(callback) && callback(condition);
             this.dispatch({list: [condition]});
+            _.isFunction(callback) && callback(condition);
         } else {
             clueCustomerAjax.getSettingCustomerRecomment().then((list) => {
                 var data = _.get(list,'[0]');
                 deleteEmptyProperty(data);
                 handleRecommendClueFilters(data);
-                _.isFunction(callback) && callback(data);
                 this.dispatch({list: list});
+                _.isFunction(callback) && callback(data);
             },(errorMsg) => {
                 _.isFunction(callback) && callback();
             });
         }
     };
-    this.getRecommendClueLists = function(obj) {
+    this.getRecommendClueLists = function(obj, isRequest = true) {
         this.dispatch({loading: true, error: false});
-        clueCustomerAjax.getRecommendClueLists(obj).then((data) => {
-            this.dispatch({loading: false, error: false, data});
-        },(errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
+        if(isRequest) {
+            clueCustomerAjax.getRecommendClueLists(obj).then((data) => {
+                this.dispatch({loading: false, error: false, data});
+            },(errorMsg) => {
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            });
+        }else {
+            this.dispatch({loading: false, error: false, data: obj});
+        }
     };
     //添加或更新跟进内容
     this.addCluecustomerTrace = function(submitObj,callback) {

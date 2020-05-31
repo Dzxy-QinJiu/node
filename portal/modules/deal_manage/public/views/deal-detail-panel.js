@@ -13,7 +13,7 @@ import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import DetailCard from 'CMP_DIR/detail-card';
 import StepsBar from 'CMP_DIR/steps-bar';
 import Trace from 'LIB_DIR/trace';
-import {disabledBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
+import {disabledBeforeToday, dealTimeNotLessThanToday} from 'PUB_DIR/sources/utils/common-method-util';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {DEAL_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
@@ -421,6 +421,9 @@ class DealDetailPanel extends React.Component {
         saveObj.property = property;
         if (property === 'oppo_status') {//丢单+丢单原因
             saveObj.oppo_status = DEAL_STATUS.LOSE;
+        }
+        if(property === 'predict_finish_time') {//预计成交时间
+            saveObj.predict_finish_time = dealTimeNotLessThanToday(saveObj.predict_finish_time);
         }
         if (saveObj.id && saveObj.customer_id) {
             dealAjax.editDeal(saveObj).then(result => {

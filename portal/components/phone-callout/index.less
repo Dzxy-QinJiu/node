@@ -1,6 +1,6 @@
 @import "../../public/css/common-variables";
 .phone-callout-container{
-  .icon-active-call-records-ico, .icon-search{
+  .icon-active-call-records-ico, .icon-check{
     cursor: pointer;
     font-size: 14px;
     padding-right: 0;
@@ -8,11 +8,23 @@
     visibility:hidden;
   }
   &:hover{
-    .icon-active-call-records-ico, .icon-search{
+    .icon-active-call-records-ico, .icon-check{
       visibility: visible;
     }
   }
-  .icon-active-call-records-ico.default-show, .icon-search.default-show{
+  .icon-active-call-records-ico.default-show, .icon-check.default-show{
     visibility:visible;
+  }
+  .check-phone-btn{
+    color: @primary-color;
+    margin-left: 5px;
+    .icon-check{
+      font-size: 12px;
+      margin-right: .5em;
+    }
+  }
+  .disabled-btn-item{
+    color: @disable_call_phone_icon!important;
+    cursor: not-allowed!important;
   }
 }

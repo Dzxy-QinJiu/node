@@ -4,8 +4,7 @@
  * Created by wangliping on 2019/6/12.
  */
 import '../css/my-data-column.less';
-import {Progress, Tooltip, Select} from 'antd';
-const Option = Select.Option;
+import {Progress, Tooltip} from 'antd';
 import CardColumnItem from 'CMP_DIR/card-column-item';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import myDataAjax from '../ajax';
@@ -27,7 +26,8 @@ import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import classNames from 'classnames';
 import {contractChart} from 'ant-chart-collection';
 import {isOpenCash, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
-import { AntcAnalysis } from 'antc';
+import { AntcAnalysis, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import { getColumnHeight } from 'MOD_DIR/home_page/public/views/common-util';
 import { getMaxLimitExtractClueCount } from 'PUB_DIR/sources/utils/common-data-util';
 import { checkPrivilege } from 'MOD_DIR/crm/public/utils/crm-util';
@@ -453,13 +453,13 @@ class TeamDataColumn extends React.Component {
                 <div className='my-data-title'>
                     <div className="select-wrapper">
                         <span>{Intl.get('home.page.performance.at.time', '{time}业绩',{time: time})}</span>
-                        <Select
+                        <AntcSelect
                             value={this.state.currentPerforManceDateType}
                             onChange={this.handlePerformanceDateChange}
                             className="performance-select"
                         >
                             {performanceOptions}
-                        </Select>
+                        </AntcSelect>
                     </div>
                 </div>
                 {this.state.performanceLoading ? <Spinner className='home-loading'/> : (
@@ -515,13 +515,13 @@ class TeamDataColumn extends React.Component {
                 <div className='my-data-title'>
                     <div className="select-wrapper">
                         <span>{Intl.get('home.page.callout.time', '呼出总时长')}</span>
-                        <Select
+                        <AntcSelect
                             value={this.state.currentDateType}
                             onChange={this.handleDateChange}
                             className="call-time-select"
                         >
                             {callTimeOptions}
-                        </Select>
+                        </AntcSelect>
                     </div>
                 </div>
                 {

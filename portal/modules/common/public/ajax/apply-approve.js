@@ -9,6 +9,7 @@ trans.register('transferNextCandidate', {url: '/rest/add/apply/new/candidate', t
 trans.register('getApplyListApprovedByMe', {url: '/rest/get/myapproved/apply/list', type: 'get'});
 trans.register('getApplyTaskNode', {url: '/rest/get/apply/node', type: 'get'});
 trans.register('clearAllUnread', {url: '/rest/clear/all/unread', type: 'put'});
+trans.register('addSelfSettingApply', {url: '/rest/add/self_setting/apply', type: 'post'});
 exports.getNextCandidate = function(reqParams) {
     return trans.getAjax('candidateList', reqParams);
 };
@@ -24,5 +25,9 @@ exports.getApplyTaskNode = function(reqParams) {
 };
 exports.clearAllUnread = function() {
     return trans.getAjax('clearAllUnread');
+};
+//添加自定义的申请审批
+exports.addSelfSettingApply = function(reqParams) {
+    return trans.getAjax('addSelfSettingApply', reqParams);
 };
 

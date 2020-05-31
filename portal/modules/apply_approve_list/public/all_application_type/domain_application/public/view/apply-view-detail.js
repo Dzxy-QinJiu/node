@@ -15,7 +15,6 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 require('../css/leave-apply-detail.less');
 import ApplyDetailRemarks from 'CMP_DIR/apply-components/apply-detail-remarks';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
-import ApplyDetailCustomer from 'CMP_DIR/apply-components/apply-detail-customer';
 import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
@@ -290,8 +289,6 @@ class ApplyViewDetail extends React.Component {
             } else if (detailItem.id) {
                 LeaveApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id});
                 LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
-                //根据申请的id获取申请的状态
-                LeaveApplyDetailAction.getLeaveApplyStatusById({id: detailItem.id});
                 //获取该审批所在节点的位置
                 LeaveApplyDetailAction.getApplyTaskNode({id: detailItem.id});
                 this.getNextCandidate(detailItem.id);
@@ -376,12 +373,12 @@ class ApplyViewDetail extends React.Component {
     };
     renderDetailApplyBlock(detailInfo) {
         //找到流程保存的组件
-        var detail = detailInfo.detail || {}, customizForm = [], showApplyInfo = [];
+        var detail = detailInfo.detail || {}, customizeForm = [], showApplyInfo = [];
         var applyLists = this.state.workFlowList;
         var workFlowConfig = _.find(applyLists, item => item.type === SELF_SETTING_FLOW.DOMAINAPPLY);
         if (workFlowConfig){
-            customizForm = workFlowConfig.customiz_form;
-            _.forEach(customizForm, item => {
+            customizeForm = workFlowConfig.customiz_form;
+            _.forEach(customizeForm, item => {
                 var showItem = detail[item.key];
                 if (showItem){
                     //有几个需要特殊处理的组件展示

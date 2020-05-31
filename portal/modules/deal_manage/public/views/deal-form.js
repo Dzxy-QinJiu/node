@@ -3,9 +3,10 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2018/11/2.
  */
-import {Form, Input, DatePicker, Select, message} from 'antd';
+import {Form, Input, DatePicker, message} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
-const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -22,6 +23,7 @@ import {num as antUtilsNum} from 'ant-utils';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 const parseAmount = antUtilsNum.parseAmount;
 const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
+import {disabledBeforeToday, dealTimeNotLessThanToday} from 'PUB_DIR/sources/utils/common-method-util';
 
 const ADD_TITLE_HEIGHT = 70;
 
@@ -97,6 +99,7 @@ class DealForm extends React.Component {
             //需要将预算去掉千分位逗号
             let budget = values.budget ? _.get(values, 'budget', '').replace(/,/g, '') : 0;
             let predictFinishTime = values.predict_finish_time ? moment(values.predict_finish_time).endOf('day').valueOf() : moment().valueOf();
+            predictFinishTime = dealTimeNotLessThanToday(predictFinishTime);
             let customer_id = _.get(this.state, 'formData.customer.id');
             if (!customer_id) {
                 this.setResultData(Intl.get('errorcode.74', '客户不存在'), RESULT_TYPES.ERROR);
@@ -281,7 +284,7 @@ class DealForm extends React.Component {
                                 }],
                                 initialValue: ''
                             })(
-                                <Select size="large" placeholder={Intl.get('deal.stage.select.tip', '请选择订单阶段',)}
+                                <AntcSelect size="large" placeholder={Intl.get('deal.stage.select.tip', '请选择订单阶段',)}
                                     style={{width: '100%'}}
                                     name="sale_stages"
                                     getPopupContainer={() => document.getElementById('deal-form')}
@@ -289,7 +292,7 @@ class DealForm extends React.Component {
                                     {_.map(this.state.stageList, (stage, index) => {
                                         return (<Option value={stage.name} key={index}>{stage.name}</Option>);
                                     })}
-                                </Select>
+                                </AntcSelect>
                             )}
                         </FormItem>
 
@@ -305,7 +308,7 @@ class DealForm extends React.Component {
                                         message: Intl.get('leave.apply.select.atleast.one.app', '请选择至少一个产品')
                                     }],
                                 })(
-                                    <Select
+                                    <AntcSelect
                                         mode='multiple'
                                         placeholder={Intl.get('leave.apply.select.product', '请选择产品')}
                                         name="apps"
@@ -316,7 +319,7 @@ class DealForm extends React.Component {
                                             return (<Option key={idx}
                                                 value={appItem.client_id}>{appItem.client_name}</Option>);
                                         })}
-                                    </Select>
+                                    </AntcSelect>
                                 )}
                         </FormItem>
                         <FormItem
@@ -325,9 +328,10 @@ class DealForm extends React.Component {
                             {...formItemLayout}
                         >
                             {getFieldDecorator('predict_finish_time', {
-                                initialValue: moment()
+                                initialValue: moment().endOf('day'),
+                                rules: [{required: true, message: Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}]
                             })(
-                                <DatePicker style={{width: '100%'}}/>
+                                <DatePicker style={{width: '100%'}} disabledDate={disabledBeforeToday}/>
                             )}
                         </FormItem>
                         <FormItem

@@ -181,9 +181,13 @@ class DynamicAddDelContacts extends React.Component {
             'disabled': index === 0 && size === 1
         });
         const validateContactName = this.props.validateContactName;
+        let {isShowPosition,validatePositionName} = this.props;
+        var contactCls = classNames('contact-name-item',{
+            'show-position': isShowPosition
+        });
         return (
             <div className="contact-wrap" key={`contacts[${contactKey}]`}>
-                <FormItem className="contact-name-item">
+                <FormItem className={contactCls}>
                     {getFieldDecorator(`contacts[${contactKey}].name`, {
                         initialValue: item.name,
                         rules: _.get(validateContactName,'[0]') ? validateContactName : [{
@@ -193,8 +197,18 @@ class DynamicAddDelContacts extends React.Component {
                     })(
                         <Input className='contact-name' placeholder={Intl.get('call.record.contacts', '联系人')}/>
                     )}
-                    <i className={delContactCls} onClick={this.handleDelContact.bind(this, contactKey, index, size)}/>
                 </FormItem>
+                {isShowPosition ?
+                    <FormItem className='contact-position-item'>
+                        {getFieldDecorator(`contacts[${contactKey}].position`, {
+                            initialValue: item.position,
+                            rules: _.get(validatePositionName,'[0]') ? validatePositionName : [],
+                        })(
+                         <Input placeholder={Intl.get('member.position.name.placeholder', '请输入职务名称')}/>
+                        )}
+                    </FormItem>
+                    : null}
+                <i className={delContactCls} onClick={this.handleDelContact.bind(this, contactKey, index, size)}/>
                 <div className="contact-way-item">
                     {_.map(phoneArray, (phone, phoneIndex) => {
                         const phoneKey = `contacts[${contactKey}].phone[${phone.key}]`;
@@ -377,19 +391,23 @@ DynamicAddDelContacts.propTypes = {
     phoneDuplicateWarning: PropTypes.array,
     contacts: PropTypes.array,//编辑时，传入的已有联系人列表
     validateContactName: PropTypes.array,
+    validatePositionName: PropTypes.array,
     hideContactRequired: PropTypes.func,
     onPhoneChange: PropTypes.func,
     onRemovePhoneInput: PropTypes.func,
+    isShowPosition: PropTypes.boolean
 };
 DynamicAddDelContacts.defaultProps = {
     form: {},
     phoneOnlyOneRules: [],//电话唯一性的验证
     phoneDuplicateWarning: [], //电话与已有电话相同时提示，用于线索中电话的处理
     validateContactName: [],
+    validatePositionName: [],
     hideContactRequired: function() {
     },
     onPhoneChange: function() {},//当电话修改时的回调
     onRemovePhoneInput: function() {},//当删除联系方式时的回调
+    isShowPosition: false
 };
 export default DynamicAddDelContacts;
 

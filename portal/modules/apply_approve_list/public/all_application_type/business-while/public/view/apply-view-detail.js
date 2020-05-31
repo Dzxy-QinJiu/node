@@ -8,7 +8,9 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 var applyBusinessDetailStore = require('../store/apply-business-detail-store');
 var ApplyViewDetailActions = require('../action/apply-view-detail-action');
 import Trace from 'LIB_DIR/trace';
-import {Alert, Icon, Input, Row, Col, Button, Steps, message, DatePicker, Select, Popover, TimePicker} from 'antd';
+import {Alert, Icon, Input, Row, Col, Button, Steps, message, DatePicker, Popover, TimePicker} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const Step = Steps.Step;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -459,7 +461,8 @@ class ApplyViewDetail extends React.Component {
                         <span className="iconfont icon-close" onClick={this.cancelChangeCustomerTotalRange}></span>
                     </span>}
                 </span>
-                {this.state.totalTimeEditErrTip ? <Alert
+                {this.state.totalTimeEditErrTip ? <AlertTimer
+                    time={3000}
                     message={this.state.totalTimeEditErrTip}
                     type='error' showIcon
                     onHide={this.hideSaveTooltip}/> : null}
@@ -478,7 +481,7 @@ class ApplyViewDetail extends React.Component {
             isEdittingTotalTime: false,
             detailInfoObj: this.state.beforeEditDetailInfoObj,
             beforeEditDetailInfoObj: {},
-            totalTimeEditErrTip: ''
+            totalTimeEditErrTip: '',
         });
     };
     renderEditVisitRange = (record) => {
@@ -521,16 +524,33 @@ class ApplyViewDetail extends React.Component {
                         <span className="iconfont icon-close" onClick={this.cancelChangeCustomerVisitRange}></span>
                     </span>}
                 </span>
+                {this.state.customerVisitTimeEditErrTip ? <AlertTimer
+                    time={3000}
+                    message={this.state.customerVisitTimeEditErrTip}
+                    type='error' showIcon
+                    onHide={this.hideSaveVisitTooltip}/> : null}
             </div>
         );
     };
+    hideSaveVisitTooltip = () => {
+        this.setState({
+            customerVisitTimeEditErrTip: ''
+        });
+    }
     saveChangeCustomerTotalRange = () => {
         var applyObj = _.get(this, 'state.detailInfoObj.info', {});
         var apply_time = _.get(applyObj, 'detail.apply_time[0]');
         var submitObj = {
             applyId: _.get(applyObj, 'id'),
-            apply_time: apply_time
+            apply_time: [apply_time]
         };
+        if(!_.get(apply_time, 'start') || !_.get(apply_time, 'end')){
+            this.setState({
+                totalTimeEditErrTip: Intl.get('bussiness.while.time.range.no.empty', '外出时间不能为空')
+            });
+            return;
+        }
+
         this.setState({isEditting: true});
         $.ajax({
             url: '/rest/update/customer/business/while',
@@ -559,11 +579,18 @@ class ApplyViewDetail extends React.Component {
             applyId: _.get(applyObj, 'id'),
             customers: _.get(applyObj, 'detail.customers')
         };
+        var noTimeErrTip = false;
         _.forEach(submitObj.customers,(item) => {
             if(!_.get(item, 'visit_time.start') || !_.get(item, 'visit_time.end')){
-                delete item.visit_time;
+                noTimeErrTip = true;
             }
         });
+        if(noTimeErrTip){
+            this.setState({
+                customerVisitTimeEditErrTip: Intl.get('bussiness.while.time.range.no.empty', '外出时间不能为空')
+            });
+            return;
+        }
         this.setState({isEditting: true});
         $.ajax({
             url: '/rest/update/customer/business/while',
@@ -590,6 +617,7 @@ class ApplyViewDetail extends React.Component {
             customerUpdate: {id: '',index: ''},
             detailInfoObj: this.state.beforeEditDetailInfoObj,
             beforeEditDetailInfoObj: {},
+            customerVisitTimeEditErrTip: ''
         });
     };
     calculateStartAndEndRange = (visit_time) => {

@@ -1,11 +1,14 @@
 const Validation = require('rc-form-validation-for-react16');
-import {Form, Input, Select, DatePicker} from 'antd';
+import {Form, Input, DatePicker} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
 const OrderAction = require('../../action/order-actions');
 import SearchIconList from '../../../../../components/search-icon-list';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
+import {disabledBeforeToday, dealTimeNotLessThanToday} from 'PUB_DIR/sources/utils/common-method-util';
 class OrderForm extends React.Component {
     constructor(props){
         super(props);
@@ -29,6 +32,7 @@ class OrderForm extends React.Component {
             if (err) return;
             let reqData = JSON.parse(JSON.stringify(values));
             reqData.predict_finish_time = reqData.predict_finish_time ? moment(reqData.predict_finish_time).valueOf() : moment().valueOf();
+            reqData.predict_finish_time = dealTimeNotLessThanToday(reqData.predict_finish_time);
             //保存
             reqData.customer_id = this.props.customerId;
             this.setState({isLoading: true});
@@ -84,14 +88,14 @@ class OrderForm extends React.Component {
                             initialValue: _.get(this.props,'stageList[0].name',''),
                             rules: [{required: true, message: Intl.get('crm.155', '请选择销售阶段')}]
                         })(
-                            <Select size="large" placeholder={Intl.get('crm.155', '请选择销售阶段')}
+                            <AntcSelect size="large" placeholder={Intl.get('crm.155', '请选择销售阶段')}
                                 style={{width: '100%'}}
                                 getPopupContainer={() => document.getElementById('order-form')}
                             >
                                 {this.props.stageList.map(function(stage, index) {
                                     return (<Option value={stage.name} key={index}>{stage.name}</Option>);
                                 })}
-                            </Select>
+                            </AntcSelect>
                         )}
                     </FormItem>
                     <FormItem
@@ -111,9 +115,10 @@ class OrderForm extends React.Component {
                         {...formItemLayout}
                     >
                         {getFieldDecorator('predict_finish_time', {
+                            initialValue: moment().endOf('day'),
                             rules: [{required: true, message: Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}]
                         })(
-                            <DatePicker allowClear={false}/>
+                            <DatePicker allowClear={false} disabledDate={disabledBeforeToday}/>
                         )}
                     </FormItem>
                     <FormItem

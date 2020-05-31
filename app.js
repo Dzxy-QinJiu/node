@@ -54,6 +54,10 @@ app.use('/upload/', express.static(path.join(__dirname, 'upload')));
 app.use('/6CMRQ4Aa8c.txt', function(req, res) {
     res.sendFile(path.resolve(__dirname, './portal/static/6CMRQ4Aa8c.txt'));
 });
+//添加百度小程序认证文件
+app.use('/bd_mapp_domaincer_18033410.txt', function(req, res) {
+    res.sendFile(path.resolve(__dirname, './portal/static/bd_mapp_domaincer_18033410.txt'));
+});
 
 app.use(require('./portal/lib/middlewares/accesslog'));
 //handle request entity too large

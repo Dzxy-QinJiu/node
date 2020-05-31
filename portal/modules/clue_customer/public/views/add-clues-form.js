@@ -1,4 +1,5 @@
-import {AntcAreaSelection} from 'antc';
+import {AntcAreaSelection, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 
 var React = require('react');
 /**
@@ -10,13 +11,12 @@ import '../css/add-clues-form.less';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import BasicData from './right_panel_top';
-import {Form, Input, Select, DatePicker, Button, Icon} from 'antd';
-var Option = Select.Option;
+import {Form, Input, DatePicker, Button, Icon} from 'antd';
 const FormItem = Form.Item;
 import ajax from '../../../crm/common/ajax';
 const routes = require('../../../crm/common/route');
 var clueCustomerAction = require('../action/clue-customer-action');
-import {checkClueName, checkClueSourceIP,contactNameRule, sourceClassifyOptions,isCommonSalesOrPersonnalVersion} from '../utils/clue-customer-utils';
+import {checkClueName, checkClueSourceIP,contactNameRule, contactPositionRule,sourceClassifyOptions} from '../utils/clue-customer-utils';
 import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
@@ -379,16 +379,16 @@ class ClueAddForm extends React.Component {
                                 //如果返回的列表长度不为0，渲染某电话被其他线索占用的警告
                                 const renderWarningMessage = <span>
                                     <span>{Intl.get('clue.customer.phone.used.by.clue','该电话已被其他线索使用，')}</span>
-                                    <a href="javascript:void(0)" 
-                                        onClick={this.props.showRightPanel.bind(this, lead)} 
-                                        className="handle-btn-item" 
+                                    <a href="javascript:void(0)"
+                                        onClick={this.props.showRightPanel.bind(this, lead)}
+                                        className="handle-btn-item"
                                         data-tracename="点击线索名查看线索详情">
                                         {_.get(lead, 'name')}
                                     </a>
                                     <span>{Intl.get('common.period','。')}</span>
-                                    <a href="javascript:void(0)" 
-                                        onClick={this.handleDuplicatePhoneMsg.bind(this,key,false,'')} 
-                                        className="handle-btn-item" 
+                                    <a href="javascript:void(0)"
+                                        onClick={this.handleDuplicatePhoneMsg.bind(this,key,false,'')}
+                                        className="handle-btn-item"
                                         data-tracename="隐藏电话已被其他线索使用的警告">
                                         {Intl.get('clue.customer.phone.still.add.phone',' 仍用此电话？')}
                                     </a>
@@ -541,11 +541,14 @@ class ClueAddForm extends React.Component {
                                 <DynamicAddDelContact
                                     hideContactRequired={this.hideContactRequired}
                                     validateContactName={contactNameRule()}
+                                    validatePositionName={contactPositionRule()}
                                     phoneOnlyOneRules={this.getPhoneInputValidateRules()}
                                     onPhoneChange={this.onPhoneChange}
                                     phoneDuplicateWarning={this.state.phoneDuplicateWarning}
                                     onRemovePhoneInput={this.onRemovePhoneInput}
-                                    form={this.props.form} />
+                                    form={this.props.form}
+                                    isShowPosition={true}
+                                />
                             </FormItem>
                             {this.renderCheckContactMsg()}
                             <FormItem
@@ -570,14 +573,14 @@ class ClueAddForm extends React.Component {
                                     getFieldDecorator('source_classify', {
                                         initialValue: formData.source_classify
                                     })(
-                                        <Select
+                                        <AntcSelect
                                             placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择获客方式')}
                                             name="source_classify"
                                             value={formData.source_classify}
                                             getPopupContainer={() => document.getElementById('sales-clue-form')}
                                         >
                                             {sourceClassifyOptions}
-                                        </Select>
+                                        </AntcSelect>
                                     )}
                             </FormItem>
                             <FormItem
@@ -586,7 +589,7 @@ class ClueAddForm extends React.Component {
                             >
                                 {
                                     getFieldDecorator('clue_source')(
-                                        <Select
+                                        <AntcSelect
                                             combobox
                                             placeholder={Intl.get('crm.clue.source.placeholder', '请选择或输入线索来源')}
                                             name="clue_source"
@@ -599,7 +602,7 @@ class ClueAddForm extends React.Component {
                                                         return (<Option key={idx} value={source}>{source}</Option>);
                                                     }) : null
                                             }
-                                        </Select>
+                                        </AntcSelect>
                                     )}
                             </FormItem>
                             <FormItem
@@ -628,7 +631,7 @@ class ClueAddForm extends React.Component {
                                             defaultMessage="正在获取行业列表"/>
                                         <Icon type="loading"/></div>) : (
                                     getFieldDecorator('industry')(
-                                        <Select
+                                        <AntcSelect
                                             showSearch
                                             placeholder={Intl.get('crm.22', '请选择行业')}
                                             searchPlaceholder={Intl.get('crm.89', '输入行业进行搜索')}
@@ -641,7 +644,7 @@ class ClueAddForm extends React.Component {
                                             filterOption={(input, option) => ignoreCase(input, option)}
                                         >
                                             {industryOptions}
-                                        </Select>
+                                        </AntcSelect>
                                     )
                                 )}
                             </FormItem>
@@ -676,7 +679,7 @@ class ClueAddForm extends React.Component {
                             >
                                 {
                                     getFieldDecorator('access_channel')(
-                                        <Select
+                                        <AntcSelect
                                             combobox
                                             placeholder={Intl.get('crm.access.channel.placeholder', '请选择或输入接入渠道')}
                                             name="access_channel"
@@ -689,7 +692,7 @@ class ClueAddForm extends React.Component {
                                                     return (<Option key={idx} value={source}>{source}</Option>);
                                                 }) : null
                                             }
-                                        </Select>
+                                        </AntcSelect>
                                     )}
                             </FormItem>
                             <FormItem
@@ -699,7 +702,7 @@ class ClueAddForm extends React.Component {
                             >
                                 {
                                     getFieldDecorator('clue_classify')(
-                                        <Select
+                                        <AntcSelect
                                             combobox
                                             placeholder={Intl.get('crm.clue.classify.placeholder', '请选择或输入线索分类')}
                                             name="clue_classify"
@@ -712,7 +715,7 @@ class ClueAddForm extends React.Component {
                                                     return (<Option key={idx} value={source}>{source}</Option>);
                                                 }) : null
                                             }
-                                        </Select>
+                                        </AntcSelect>
                                     )}
                             </FormItem>
                             <div className="submit-button-container">

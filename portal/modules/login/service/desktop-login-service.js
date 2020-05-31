@@ -124,8 +124,9 @@ function loginSuccess(emitter, data, req) {
     if (emitter) {
         //如果未返回数据
         if (!data) {
+            restLogger.error('登录成功后未返回数据 ============= ' + data);
             let backendIntl = new BackendIntl(req);
-            emitter.emit('error', backendIntl.get('login.service.error', '很抱歉,服务器出现了异常状况'));
+            emitter.emit('error', { httpCode: 500, message: backendIntl.get('login.service.error', '很抱歉,服务器出现了异常状况') });
         } else {
             emitter.emit('success', getLoginResult(data));
         }

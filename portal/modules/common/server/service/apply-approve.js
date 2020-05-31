@@ -38,11 +38,11 @@ var restApis = {
     addDocumentWriteApply: '/rest/base/v1/workflow/document/apply',
     //文件撰写的通过或者驳回
     approveDocumentApplyPassOrReject: '/rest/base/v1/workflow/document/approve',
-    //添加数据服务申请
+    //添加数据导出申请
     addDataServiceApply: '/rest/base/v1/workflow/eefung/dataservice/apply',
-    //数据服务申请审批
+    //数据导出申请审批
     approveDataServiceApply: '/rest/base/v1/workflow/eefung/dataservice/approve',
-    //数据服务申请文件的下载
+    //数据导出申请文件的下载
     downLoadDataServiceFile: '/rest/base/v1/workflow/file/download',
     //上传文件
     uploadReportFile: '/rest/base/v1/workflow/file/upload',
@@ -96,15 +96,6 @@ exports.getApplyTaskNode = function(req, res) {
             res: res
         }, req.query);
 };
-//根据审批的id获取审批的详情
-// exports.getApplyDetailById = function(req, res) {
-//     return restUtil.authRest.get(
-//         {
-//             url: '/rest/base/v1/workflow/detail',
-//             req: req,
-//             res: res
-//         }, req.query);
-// };
 //添加外出申请
 exports.addBusinessWhileApply = function(req, res) {
     return restUtil.authRest.post(

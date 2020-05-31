@@ -1,5 +1,6 @@
-import {Button, message, Select, Menu, Dropdown, Popconfirm} from 'antd';
-const Option = Select.Option;
+import {Button, message, Menu, Dropdown, Popconfirm} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const ModalDialog = require('../../../../../components/ModalDialog');
 const Spinner = require('../../../../../components/spinner');
 const OrderAction = require('../../action/order-actions');
@@ -20,6 +21,7 @@ import ApplyUserForm from '../apply-user-form';
 import StepsBar from 'CMP_DIR/steps-bar';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import orderPrivilegeConst from 'MOD_DIR/deal_manage/public/privilege-const';
+import {disabledBeforeToday, dealTimeNotLessThanToday} from 'PUB_DIR/sources/utils/common-method-util';
 //订单状态
 const ORDER_STATUS = {
     WIN: 'win',//赢单
@@ -170,13 +172,17 @@ class OrderItem extends React.Component {
     //修改订单的预算、备注、预计成交时间, 丢单+丢单原因
     saveOrderBasicInfo = (property, saveObj, successFunc, errorFunc) => {
         //预计成交时间为空时的处理
-        if (property === 'predict_finish_time' && !saveObj.predict_finish_time) {
-            if (_.isFunction(errorFunc)) errorFunc(Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间'));
-            return;
+        if (property === 'predict_finish_time') {
+            if(!saveObj.predict_finish_time) {
+                if (_.isFunction(errorFunc)) errorFunc(Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间'));
+                return;
+            }
+            saveObj.predict_finish_time = dealTimeNotLessThanToday(saveObj.predict_finish_time);
         }
         saveObj.customer_id = this.props.order.customer_id;
         if (property === 'oppo_status') {//丢单+丢单原因
             saveObj.oppo_status = ORDER_STATUS.LOSE;
+            saveObj.lose_reason = _.trim(saveObj.lose_reason);
         }
         if (this.props.isMerge) {
             if (_.isFunction(this.props.updateMergeCustomerOrder)) this.props.updateMergeCustomerOrder(saveObj);
@@ -449,6 +455,7 @@ class OrderItem extends React.Component {
                                 id={order.id}
                                 field="predict_finish_time"
                                 value={order.predict_finish_time}
+                                disabledDate={disabledBeforeToday}
                                 placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
                                 hasEditPrivilege={hasEditPrivilege}
                                 saveEditDateInput={this.saveOrderBasicInfo.bind(this, 'predict_finish_time')}
@@ -587,7 +594,7 @@ class OrderItem extends React.Component {
                     type="textarea"
                     displayType="edit"
                     field="lose_reason"
-                    value={order.lose_reason}
+                    value={_.get(order, 'lose_reason', ' ')}
                     placeholder={Intl.get('crm.order.lose.reason.input', '请输入丢单原因')}
                     saveEditInput={this.saveOrderBasicInfo.bind(this, 'oppo_status')}
                     okBtnText={Intl.get('crm.order.lose.confirm', '确认丢单')}
@@ -602,6 +609,10 @@ class OrderItem extends React.Component {
 
     renderOrderTitle = () => {
         const order = this.state.formData;
+        let btnCls = classNames('order-item-buttons', {
+            'confirm-delete-buttons': this.state.modalDialogFlag,
+            'hidden-btn': this.state.curOrderCloseStatus === ORDER_STATUS.LOSE
+        });
         return (
             <span className="order-item-title">
                 {order.oppo_status ? (
@@ -611,7 +622,7 @@ class OrderItem extends React.Component {
                     <span>
                         {this.state.curOrderCloseStatus === ORDER_STATUS.LOSE ? this.renderLoseOrderForm(order) :
                             this.state.modalDialogFlag ? null : this.renderOrderStage(order.sale_stages)}
-                        <span className="order-item-buttons">
+                        <span className={btnCls}>
                             {
                                 this.state.modalDialogFlag ? (
                                     <span className="item-delete-buttons">

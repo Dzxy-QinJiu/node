@@ -7,7 +7,6 @@ var BusinessApplyAjax = require('../ajax/business-apply-ajax');
 var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import {
-    getApplyStatusById,
     cancelApplyApprove,
     getApplyDetailById, getApplyCommentList, addApplyComments
 } from 'PUB_DIR/sources/utils/apply-common-data-utils';

@@ -3,8 +3,8 @@
  */
 
 import { storageUtil } from 'ant-utils';
-import { Select} from 'antd';
-const Option = Select.Option;
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const emitters = require('PUB_DIR/sources/utils/emitters');
 const appSelectorEmitter = emitters.appSelectorEmitter;
 
@@ -88,7 +88,7 @@ class AppSelector extends React.Component {
         return (
             <div className='app-selector'>
                 {_.isEmpty(appList) ? null : (
-                    <Select
+                    <AntcSelect
                         mode={selectMode}
                         value={selectedValue}
                         onChange={this.onAppChange}
@@ -97,7 +97,7 @@ class AppSelector extends React.Component {
                         {_.map(appList, (item, index) => {
                             return <Option key={index} value={item.app_id}>{item.app_name}</Option>;
                         })}
-                    </Select>
+                    </AntcSelect>
                 )}
             </div>
         );

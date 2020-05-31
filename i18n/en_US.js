@@ -30,6 +30,7 @@ var en_US = {
     'menu.competing.product': 'Competing products', // 竞品
     'menu.sales.process': 'Customer Stage', // 客户阶段
     'menu.clue.integration': 'Lead integration', // 线索集成
+    'menu.field.manage': 'Field Manage', // 字段管理
     'menu.clue.allocation': 'Lead allocation', // 线索分配
     'menu.my.company': 'My Company', // 我的企业
     'menu.user': 'Members',//成员管理
@@ -1002,7 +1003,7 @@ var en_US = {
 
     // 后台管理- 产品start
     'product.name.input': 'Please enter the name of product', // 请填写产品名称
-    'product.name.rule': 'The name of product can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10', // 产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
+    'product.name.rule': 'The name of product can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10', // 产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间
     'product.filter.ip.add.ip.placeholder': 'Please enter the filter IP', // 请输入要排除的IP
     'product.filter.ip': 'Filter IP', // 过滤IP
     'product.global.filter.ip': 'Please go to the global IP {clickContent} page to delete', // 请到全部产品{clickContent}页面删除
@@ -1087,6 +1088,17 @@ var en_US = {
     'clue.integration.failed.regenerate.create': 'Failed to Regenerate', // 重新生成密钥失败
     'clue.integration.failed.create': 'Failed to generate key', // 生成密钥失败
     // 后台管理-线索集成end
+
+    // 后台管理-自定义字段start
+    'custom.field.title': 'Field Name', // 字段名
+    'custom.field.add.title': 'Add the {name} field', // 添加{name}字段
+    'custom.field.edit.title': '{name} field', // {name}字段
+    'custom.field.input.placeholder': 'Please enter {name} ', // 请输入{name}
+    'custom.field.set.name': 'Setting {name}', // 设置{name}
+    'custom.field.no.name': 'No {name}', // 暂无{name}
+    'custom.field.add.name': 'Add name', // 添加{name}
+    'custom.field.select.name': 'Please select {name}', // 请选择{name}
+    // 后台管理-自定义字段end
 
     //应用管理start
     'app.title': 'application management', // 应用管理
@@ -2693,6 +2705,8 @@ var en_US = {
     'errorcode.address.error': 'wrong address format',//地址格式错误
     'errorcode.member.unexist': 'The member does not exist',//该成员不存在
     'errorcode.orgnization.unexist': 'Organization does not exist',//组织不存在
+    'errorcode.check.phone': 'Phone number detection service is abnormal',//手机号检测服务异常
+    'errorcode.has.user': 'Applications have been sent during this time',//该时间段已发过申请
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -3329,14 +3343,25 @@ var en_US = {
     'lead.smart.extract.real.phone': 'Intelligent extraction',//智能提取
     'lead.all.extract': 'All extracts',//全部提取
     'lead.check.phone.free.tip': 'Free phone number blank detection is available this week',//本周免费提供手机号空号检测
-    'lead.check.phone.explain': 'Mobile phone number detection (no 14, 16, 17, 19)',//仅支持手机号检测(不支持14、16、17、19号段)
+    'lead.check.phone.explain': 'Only non-14, 16, 17 and 19 mobile phone Numbers are supported',//仅支持非14、16、17、19号段手机号
     'lead.direct.extraction': 'Direct extraction',//直接提取
     'lead.check.phone.result': 'Null detection results',//空号检测结果
-    'lead.check.phone.free.weekly.tip': 'This week free empty number detection {text}, welcome to try!',//本周免费提供空号检测{text}，欢迎大家试用！
+    'lead.check.phone.enabled.free.weekly.tip': 'Empty number detection has been opened, this week to raise clues free detection, quick to try it!',//空号检测已开启，本周提线索免费检测，快来试试吧！
+    'lead.check.phone.free.weekly.tip': 'Free detection of clues available this week, come and try it!',//本周提线索可免费检测空号，快来试试吧！
     'lead.extract.confirm': 'Confirm to extract',//确认提取
     'lead.single.check.phone.no.empty.phone.tip': 'There are {allCount} Numbers in this clue, but the system has not found any suspected empty Numbers',//此线索有{allCount}个号码，系统未发现疑似空号
     'lead.batch.check.phone.no.empty.phone.tip': 'The system did not find all possible clues to empty Numbers',//系统未发现全部疑似空号的线索
-    
+    'lead.smart.extract.title': 'When extracting, all clues that are suspected to be empty will be eliminated',//提取时会排除全部是疑似空号的线索
+    'lead.clue.check.phone.all': 'The system detected {allCount} Numbers for you, and found {emptyCount} suspected empty Numbers.',//系统帮您检测了{allCount}个号码，发现了{emptyCount}个疑似空号。
+    'lead.clue.check.phone.empty.status': 'The system did not find the suspected empty number',//系统未发现疑似空号
+    'lead.check.phone.no.empty.number': 'Not suspected empty number',//非疑似空号
+    'lead.has.checked.phone': 'The selected clue contains the detected number. Do you want to redetect it?',//所选线索中含已检测的号码，是否重新检测？
+    'lead.not.has.check.phone': 'There is no detectable number in the selected clue',//所选线索中没有可检测的号码
+    'lead.single.has.checked.phone': 'To detect',//重新检测
+    'lead.is.not.support.checked.phone': 'No support for 14, 16, 17, 19 and fixed line',//暂不支持14、16、17、19号段及固话
+    'lead.contact.position.reg': 'The position can only contain Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English bracket characters, and the length is between 1 and 10 (including 10)',//职务只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间
+    'lead.check.phone.count.limit.tip': 'Up to {count} clues can be detected at a time',//一次最多可检测20条线索
+
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3480,6 +3505,7 @@ var en_US = {
     'apply.approve.lyrical.report': 'Lyric report',//舆情报告
     'apply.approve.document.writing': 'Document writing',//文件撰写
     'apply.approve.quarty.report': 'Quarterly report',//季报
+    'apply.approve.simple.report': 'Simple report',//简报
     'apply.approve.tender.documents': 'Bidding Documents',//招标文件
     'apply.approve.bide.documents': 'Tender Documents',//投标文件
     'apply.approve.construction.plan': 'Construction plan',//建设方案
@@ -3495,6 +3521,7 @@ var en_US = {
     'apply.approve.no.condition.list': 'No eligible public opinion report',//暂无符合条件的舆情报告
     'apply.approve.no.document.write': 'No eligible documents for writing',//暂无符合条件的文件撰写
     'apply.approve.expect.submit.time': 'Expected submission time',//期望提交时间
+    'apply.approve.form.expect.submit.time.require': 'Please fill in the expected submission time',//请填写期望提交时间
     'apply.approve.specific.report': 'special report of {customer}',//{customer}客户的{reporttype}
     'apply.approve.import.file': 'upload files',//上传文件
     'apply.approve.confirm.apply': 'Confirm application',//确认申请
@@ -3622,6 +3649,8 @@ var en_US = {
     'apply.detail.show.password': 'Show password',//显示密码
     'apply.detail.hide.password': 'Hide password',//隐藏密码
     'bussiness.trip.time.range': 'Visit time',//拜访时间
+    'bussiness.trip.time.range.no.empty': 'Visit time cannot be empty',//拜访时间不能为空
+    'bussiness.while.time.range.no.empty': 'Travel time cannot be empty',//外出时间不能为空
     'business.while.trip.time.range': 'Out time',//外出时间
     'business.while.trip.go.out': 'Out',//外出
     'business.leave.time.range': 'Bussiness range',//出差时长
@@ -3703,6 +3732,7 @@ var en_US = {
     'apply.cc.when.submit.and.approve': 'Copy the copy approver at the time of submitting the application and copy the applicant after approval',//提交申请时抄送审批人和审批通过后抄送申请人
     'apply.add.condition.workflow': 'Add condition approval process',//添加条件审批流程
     'apply.add.apply.approver': 'Add approver',//添加审批人
+    'apply.edit.apply.approver': 'Edit approver node',//修改审批节点
     'apply.add.approver.higher.level': 'Superior',//上级
     'apply.add.approver.setting.role': 'Specified role',//指定角色
     'apply.add.approver.setting.user': 'Designated member',//指定成员
@@ -3741,7 +3771,7 @@ var en_US = {
     'apply.my.self.setting.work.flow': 'Visit apply',//拜访申请
     'apply.domain.application.work.flow': 'Domain name application',//舆情平台申请
     'apply.leave.while.application.work.flow': 'Out of office application',//外出申请
-    'apply.eefung.data.service': 'Data Service Application',//数据服务申请
+    'apply.eefung.data.service': 'Data Export',//数据导出
     'apply.went.out.while.range': 'Time out',//外出时长
     'apply.domain.descriptipn.reg': 'The domain name description can only contain letters, numbers, underscores (cannot begin or end with a dash), and is between 1 and 32 in length.',//域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间
     'apply.domain.plat.name.reg': 'Platform name length is between 1 and 32 characters (English characters count as one character, and other characters count as 2 characters)',//平台名称长度在1到32个字符之间(英文数字算一个字符，其他字符一个算2个字符)
@@ -3775,7 +3805,9 @@ var en_US = {
     'apply.approved.data.service.template': 'Data export application form-application time-xxx department-contact person',//数据导出申请表-申请时间-xxx部门-联系人
     'apply.approved.receive.email': 'Mail recipient or mailbox',//接收邮件人员或邮箱
     'apply.approved.select.receive.email': 'Please select a member or mailbox to receive mail',//请选择接收邮件的成员或邮箱
-
+    'apply.approved.charge.mode': 'charge mode',//收费模式
+    'apply.approved.charge.free': 'free',//免费
+    'apply.approved.charge.paid': 'paid',//付费
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
@@ -3975,6 +4007,7 @@ var en_US = {
     'common.signed.customer.activity': 'Signed customer activity',//签约客户活跃度
     'common.number.of.new.user.customer': 'Number of customers opening  accounts',//开通了用户的客户数
     'clue.customer.register.time': 'Register time',//注册时间
+    'clue.customer.no.register.time': 'No register time',//暂无注册时间
     'self.setting.has.no.apply': 'There is no suited apply',//暂无符合条件的申请
     'failed.distribute.apply': 'Failed assign!',//分配失败！
     'apply.approve.required.err.msg': 'Please input tips',//请输入未填写时的提示
@@ -3990,7 +4023,9 @@ var en_US = {
     'clue.recommend.selected.extract.tip': 'The {count} bar has been selected, and the {ableExtract} bar can be extracted',//已选中{count}条，还可提取{ableExtract}条线索
     'clue.extract.count.has.been.exceed': 'The extractable number has been exceeded',//已超过可提取数
     'clue.recommend.clue.scope': 'Scope of business',//经营范围
+    'clue.recommend.no.clue.scope': 'No scope of business',//暂无经营范围
     'clue.recommend.clue.introduction': 'brief introduction',//简介
+    'clue.recommend.no.clue.introduction': 'No brief introduction',//暂无简介
     'clue.recommend.clue.count': '{count}',//{count}个
     'clue.find.recommend.clue': 'Look for clues',//找线索
     'clue.recommend.keyword': 'keywords',//关键词
@@ -4017,6 +4052,7 @@ var en_US = {
     'clue.recommend.filter.company.status.out': 'Out of',//迁出
     'clue.recommend.filter.company.status.closed': 'closed',//停业
     'clue.recommend.filter.company.status.liquidation': 'The liquidation',//清算
+    'clue.recommend.filter.set.up': 'Set up',//成立
 
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
@@ -4058,6 +4094,7 @@ var en_US = {
     'clue.recommend.has.phone': 'Have a phone',//有电话
     'clue.recommend.has.more.contact': 'There are multiple contact information',//多个联系方式
     'clue.recommend.smal.micro.enterprise': 'Small micro enterprise',//小微企业
+    'clue.recommend.has.website': 'Have a website',//有官网
 
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
@@ -4067,7 +4104,7 @@ var en_US = {
     'clue.assignment.name.tip': 'Please input lead assignment name',//请输入线索分配策略名称
     'clue.assignment.no.description.tip': 'There is no lead assignment strategy description',//暂无线索分配策略描述
     'clue.assignment.add.description.tip': 'Add lead assignment strategy description',//添加线索分配策略描述
-    'clue.assignment.name.required.tip': 'The name of lead assignment strategy can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10',//线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
+    'clue.assignment.name.required.tip': 'The name of lead assignment strategy can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10',//线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间
     'clue.assignment.description': 'Description',//描述
     'clue.assignment.description.tip': 'Please describe lead assignment strategy',//请描述一下线索分配策略
     'clue.assignment.needs': 'Needs',//满足条件

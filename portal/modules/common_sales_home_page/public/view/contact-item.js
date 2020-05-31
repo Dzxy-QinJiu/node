@@ -54,13 +54,14 @@ class ContactItem extends React.Component {
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
                                 <span className="phone-num-container">
                                     {_.map(contactItem.phone, (phoneItem, index) => {
-                                        let showPhoneNum = getShowPhoneNumber(this.state.customerData, phoneItem);
+                                        let phone = getShowPhoneNumber(this.state.customerData, phoneItem, true);
                                         return (
                                             <PhoneCallout
-                                                showPhoneNum={showPhoneNum}
+                                                showPhoneNum={phone.phoneNumber}
                                                 phoneNumber={phoneItem}
                                                 contactName={contactName}
                                                 showCheckPhone={this.props.showCheckPhone}
+                                                phoneStatus={phone.status}
                                                 showClueDetailPanel={this.props.showClueDetailPanel}
                                                 hidePhoneIcon={this.props.hidePhoneIcon}
                                                 onCheckPhoneSuccess={this.props.onCheckPhoneSuccess}

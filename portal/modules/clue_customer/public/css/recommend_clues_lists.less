@@ -9,6 +9,7 @@
 .recommend-clues-lists-container{
   .recommend-customer-list{
     width: auto;
+    position: relative;
     .iconfont.close-pannel{
       z-index: 14;
     }
@@ -107,7 +108,7 @@
               width: initial;
               margin-bottom: 10px;
               .ant-form-item-control {
-                input, .ant-calendar-picker, .ant-select {
+                input, .ant-select {
                   width: 350px;
                   font-size: 14px;
                 }
@@ -290,6 +291,7 @@
             //display: flex;
             //justify-content: space-between;
             //align-items: flex-start;
+            position: relative;
             .customer-btn{
               height: 24px;
               color: @will-distribute-color;
@@ -497,6 +499,7 @@
                 }
               }
               .single-extract-clue{
+                position: relative;
                 .assign-btn{
                   opacity: 0;
                 }
@@ -568,7 +571,19 @@
         }
       }
     }
-
+    //遮罩层
+    .recommend-clue-mask{
+      display: none;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 5;
+      &.show-mask{
+        display: block;
+      }
+    }
   }
 }
 .ant-message{
@@ -577,6 +592,42 @@
 //超限后的内容显示样式
 .extract-limit-content{
   min-width: 200px;
+  &.check-phone-result-container{
+    .ant-popover-arrow{
+      display: none;
+    }
+    //头部样式
+    .ant-popover-title{
+      background-color: @primary-color;
+      padding: 0 8px;
+      border-bottom: none;
+      .check-phone-title{
+        color: #fff;
+        display: flex;
+        align-items: center;
+        .icon-check{
+          margin-right: 8px;
+        }
+        .icon-close{
+          font-weight: bold;
+          color: #fff;
+          margin-left: 24px;
+        }
+        .check-phone-name{
+          font-size: 14px;
+        }
+        .check-phone-only{
+          color: #BBDEFB;
+        }
+      }
+    }
+    .ant-popover-inner-content{
+      padding: 24px;
+    }
+  }
+  &.batch-check-phone-container{
+    top: -8px!important;
+  }
   .ant-popover-inner-content{
     color: @primary-font-color;
     font-size: 14px;
@@ -650,10 +701,10 @@
         }
         .check-phone-only{
           color: @secondary-font-color;
+          font-size: 14px;
         }
         .check-phone-text{
-          font-size: 14px;
-          margin-top: 6px;
+          font-size: 16px;
           display: inline-block;
         }
       }
@@ -668,9 +719,16 @@
     }
     .check-btn-container{
       text-align: right;
-      margin: 15px 0 10px;
-      .check-btn-cancel{
-        margin-left: 15px;
+      margin-top: 30px;
+      .ant-btn{
+        height: 32px;
+        font-size: 14px;
+      }
+      .check-btn-primary{
+        margin-left: 8px;
+      }
+      .check-btn-ghost{
+        color: @primary-color;
       }
     }
   }
@@ -684,7 +742,6 @@
     align-items: center;
     .img-wrapper {
       width: 56px;
-      height: 56px;
       margin-right: 16px;
       border-radius: 50%;
       background-color: #E8EEF3;
@@ -694,8 +751,18 @@
         height: 100%;
       }
     }
+    .check-phone-text{
+      margin-right: 16px;
+      font-size: 16px;
+    }
     .only-phone-text{
       color: @secondary-font-color;
+    }
+    .icon-close{
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-weight: bold;
     }
   }
 }
@@ -773,6 +840,16 @@
                 width: calc(100% - 35px);
                 li{
                   width: 100%;
+                }
+              }
+              .advance-data-container{
+                display: flex;
+                justify-content: space-between;
+                .advance-data-content{
+                  flex: 1;
+                }
+                .show-hide{
+                  width: 44px;
                 }
               }
             }

@@ -134,7 +134,7 @@ class SessionTimeoutModal extends React.Component {
         sendMessage && sendMessage(username + ' 登录成功 data: ' + JSON.stringify(data));
         userData.getUserDataByAjax().done(() => {
             //重新建立socket连接
-            !Oplate.hideSomeItem && require('PUB_DIR/sources/push').startSocketIo();
+            !Oplate.hideSomeItem && require('PUB_DIR/sources/push').startSocketIo(true);
             const user = userData.getUserData();
             phoneUtil.initPhone(user);
             this.setState({isLogining: false, captchaCode: '', loginErrorMsg: ''});

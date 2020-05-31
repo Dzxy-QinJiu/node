@@ -7,19 +7,21 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('./index.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Form, Input, Button, Icon, message, DatePicker, Select, Upload} from 'antd';
-var Option = Select.Option;
+import {Form, Input, Button, Icon, message, DatePicker, Upload,Radio} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
 import AlertTimer from 'CMP_DIR/alert-timer';
-import {DELAY_TIME_RANGE, FILES_LIMIT} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_APPROVE_TYPES, DELAY_TIME_RANGE, FILES_LIMIT,OTHER_REPORT,CHARGE_MODE} from 'PUB_DIR/sources/utils/consts';
 import {uniteFileSize} from 'PUB_DIR/sources/utils/common-method-util';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import Trace from 'LIB_DIR/trace';
 import UploadAndDeleteFile from 'CMP_DIR/apply-components/upload-and-delete-file';
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 
 class AddReportSendApply extends React.Component {
     constructor(props) {
@@ -92,6 +94,9 @@ class AddReportSendApply extends React.Component {
                 });
             }
             //其他表单的提交项
+            if(values.report_type === OTHER_REPORT){//如果选中的是其他的舆情报告类型，就不需要传收费模式字段
+                values.charge_mode = 'free';
+            }
             _.forEach(values, (value, key) => {
                 formData.append(key,value);
             });
@@ -224,11 +229,13 @@ class AddReportSendApply extends React.Component {
         };
         let saveResult = this.state.saveResult;
         var fileList = uniteFileSize(this.state.fileList);
+        var isReportType = this.props.applyAjaxType === APPLY_APPROVE_TYPES.REPORT;
+        var typeDesc = isReportType ? '舆情报告' : '文件撰写';
         return (
-            <RightPanel showFlag={true} data-tracename="添加舆情报告申请" className="add-leave-container">
+            <RightPanel showFlag={true} data-tracename={`添加${typeDesc}申请`} className="add-leave-container">
                 <span className="iconfont icon-close add-leave-apply-close-btn"
                     onClick={this.hideApplyAddForm}
-                    data-tracename="关闭添加舆情报告申请面板"></span>
+                    data-tracename={`关闭添加${typeDesc}舆情报告申请面板`}></span>
                 <div className="add-leave-apply-wrap">
                     <BasicData
                         clueTypeTitle={this.props.titleType}
@@ -246,7 +253,7 @@ class AddReportSendApply extends React.Component {
                                             getFieldDecorator(this.props.addType, {
                                                 rules: [{required: true, message: this.props.selectTip}],
                                             })(
-                                                <Select
+                                                <AntcSelect
                                                     placeholder={this.props.selectPlaceholder}
                                                     name={this.props.addType}
                                                     getPopupContainer={() => document.getElementById('add-leave-apply-form')}
@@ -258,9 +265,26 @@ class AddReportSendApply extends React.Component {
                                                                 value={reportItem.value}>{reportItem.name}</Option>);
                                                         }) : null
                                                     }
-                                                </Select>
+                                                </AntcSelect>
                                             )}
                                     </FormItem>
+                                    {/*只有舆情报告申请，并且舆情报告的类型不是其他的时候才才加上这个条件*/}
+                                    {isReportType && getFieldValue(this.props.addType) !== OTHER_REPORT ? <FormItem
+                                        className="form-item-label"
+                                        label={Intl.get('apply.approved.charge.mode', '收费模式')}
+                                        {...formItemLayout}
+                                    >
+                                        {getFieldDecorator('charge_mode',{
+                                            initialValue: 'free',
+                                        })(
+                                            <Radio.Group>
+                                                {_.map(CHARGE_MODE,mode => {
+                                                    return <Radio value={_.get(mode,'value')}>{_.get(mode,'name')}</Radio>;
+                                                })}
+                                            </Radio.Group>
+                                        )}
+                                    </FormItem> : null}
+
                                     <FormItem
                                         className="form-item-label require-item"
                                         label={Intl.get('call.record.customer', '客户')}
@@ -328,27 +352,15 @@ class AddReportSendApply extends React.Component {
                                         uploadAndDeletePrivilege={FILES_LIMIT.TOTAL}
                                     />
                                     <div className="submit-button-container">
-                                        <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
-                                            disabled={this.state.isSaving} data-tracename="点击保存添加
-                                            舆情报告申请">
-                                            {Intl.get('common.save', '保存')}
-                                            {this.state.isSaving ? <Icon type="loading"/> : null}
-                                        </Button>
-                                        <Button className="cancel-btn" onClick={this.hideApplyAddForm}
-                                            data-tracename="点击取消添加舆情报告申请按钮">
-                                            {Intl.get('common.cancel', '取消')}
-                                        </Button>
-                                        <div className="indicator">
-                                            {saveResult ?
-                                                (
-                                                    <AlertTimer
-                                                        time={saveResult === 'error' ? DELAY_TIME_RANGE.ERROR_RANGE : DELAY_TIME_RANGE.SUCCESS_RANGE}
-                                                        message={this.state.saveMsg}
-                                                        type={saveResult} showIcon
-                                                        onHide={this.hideSaveTooltip}/>
-                                                ) : ''
-                                            }
-                                        </div>
+                                        <SaveCancelButton loading={this.state.isSaving}
+                                            saveErrorMsg={this.state.saveMsg}
+                                            saveSuccessMsg={this.state.saveMsg}
+                                            handleSubmit={this.handleSubmit}
+                                            handleCancel={this.hideApplyAddForm}
+                                            hideSaveTooltip={this.hideSaveTooltip}
+                                            saveResult={saveResult}
+                                            errorShowTime={DELAY_TIME_RANGE.ERROR_RANGE}
+                                        />
                                     </div>
                                 </Form>
                             </div>

@@ -6,8 +6,7 @@
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 require('./css/index.less');
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
-import {InputNumber, Row, Col, Input, Switch, Select, Alert, Button, Icon, message, Popconfirm} from 'antd';
-const Option = Select.Option;
+import {InputNumber, Row, Col, Input, Switch, Alert, Button, Icon, message, Popconfirm} from 'antd';
 const InputGroup = Input.Group;
 import Slider from 'rc-slider';
 // const Range = Slider.Range;
@@ -26,7 +25,8 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 var className = require('classnames');
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 const spanLength = '8';
-import { StatusWrapper } from 'antc';
+import { StatusWrapper, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 import Trace from 'LIB_DIR/trace';
 class customerScore extends React.Component {
@@ -355,37 +355,37 @@ class customerScore extends React.Component {
                     return (
                         <Row>
                             <Col span={spanLength}>
-                                {isEditCustomerRule ? <Select
+                                {isEditCustomerRule ? <AntcSelect
                                     style={{width: 130}}
                                     value={item.indicator}
                                     onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'indicator')}>
                                     {_.map(subIndicator, (item) => {
                                         return <Option value={item.indicator}>{item.indicator_desc}</Option>;
                                     })}
-                                </Select> : _.get(targetIndicator, 'indicator_desc')}
+                                </AntcSelect> : _.get(targetIndicator, 'indicator_desc')}
 
                             </Col>
                             <Col span={spanLength}>
-                                {isEditCustomerRule ? <Select
+                                {isEditCustomerRule ? <AntcSelect
                                     style={{width: 100}}
                                     value={item.interval}
                                     onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'interval')}>
                                     {_.map(TimeRangeSelect, item => {
                                         return <Option value={item.value}>{item.name}</Option>;
                                     })}
-                                </Select> : _.get(targetTimeRange, 'name')}
+                                </AntcSelect> : _.get(targetTimeRange, 'name')}
 
                             </Col>
                             <Col span={spanLength} className='add-minus-container'>
                                 {item.user_option ?
                                     <span>
-                                        {isEditCustomerRule ? <Select value={item.user_option}
+                                        {isEditCustomerRule ? <AntcSelect value={item.user_option}
                                             style={{width: 100}}
                                             onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'user_option')}>
                                             {_.map(numberSelect, (item) => {
                                                 return <Option value={item.value}>{item.name}</Option>;
                                             })}
-                                        </Select> : _.get(numberTarget, 'name')}
+                                        </AntcSelect> : _.get(numberTarget, 'name')}
 
                                     </span> :
                                     <span> {Intl.get('customer.score.total.count', '总次数')}

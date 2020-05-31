@@ -2,9 +2,10 @@ import { ORGANIZATION_TYPE , OFFDUTY_TYPE } from 'PUB_DIR/sources/utils/consts';
 
 var React = require('react');
 require('./style.less');
-import {AntcAnalysis} from 'antc';
+import {AntcAnalysis, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 import workflowChart from 'MOD_DIR/analysis/public/charts/workflow';
-import {Row, Col, Select, DatePicker} from 'antd';
+import {Row, Col, DatePicker} from 'antd';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import ajax from 'ant-ajax';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
@@ -14,7 +15,6 @@ import publicPrivilegeConst from 'PUB_DIR/privilege-const';
 
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
 
-const Option = Select.Option;
 const MonthPicker = DatePicker.MonthPicker;
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
@@ -486,7 +486,7 @@ class MonthlyReport extends React.Component {
         return (
             <div className="btn-item-container">
                 {selectedTeamId && this.state.teamList.length > 1 ? (
-                    <Select
+                    <AntcSelect
                         defaultValue={selectedTeamId}
                         onChange={this.onTeamChange}
                         dropdownMatchSelectWidth={false}
@@ -495,7 +495,7 @@ class MonthlyReport extends React.Component {
                         {_.map(this.state.teamList, (teamItem, index) => {
                             return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
                         })}
-                    </Select>
+                    </AntcSelect>
                 ) : null}
 
                 <MonthPicker

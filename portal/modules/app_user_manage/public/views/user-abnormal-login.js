@@ -12,17 +12,17 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }
 var UserAbnormalLoginStore = require('../store/user-abnormal-login-store');
 var UserAbnormalLoginAction = require('../action/user-abnormal-login-actions');
-import {AntcTimeLine} from 'antc';
+import {AntcTimeLine, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 //滚动条
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var Spinner = require('CMP_DIR/spinner');
-import { Select, Alert, Button } from 'antd';
+import { Alert, Button } from 'antd';
 import UserAbnormalLoginAjax from '../ajax/user-abnormal-login-ajax';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import ShearContent from '../../../../components/shear-content';
 import userManagePrivilege from '../privilege-const';
-var Option = Select.Option;
 // 没有消息的提醒
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 //用于布局的高度
@@ -250,12 +250,12 @@ class UserAbnormalLogin extends React.Component {
             //加载中的情况
             return (
                 <div>
-                    <Select style={{ width: 120 }}
+                    <AntcSelect style={{ width: 120 }}
                         onChange={this.handleChange}
                         value={this.state.appId}
                     >
                         {list}
-                    </Select>
+                    </AntcSelect>
                     <StatusWrapper loading={true} height={height - 100} />
                 </div>
             );
@@ -278,12 +278,12 @@ class UserAbnormalLogin extends React.Component {
         } else if (this.state.abnormalLoginList.length) {
             return (
                 <div>
-                    <Select style={{ width: 120 }}
+                    <AntcSelect style={{ width: 120 }}
                         onChange={this.handleChange}
                         value={this.state.appId}
                     >
                         {list}
-                    </Select>
+                    </AntcSelect>
                     <AntcTimeLine
                         className="icon-yellow"
                         data={this.state.abnormalLoginList}
@@ -302,12 +302,12 @@ class UserAbnormalLogin extends React.Component {
         } else {
             return (
                 <div>
-                    <Select style={{ width: 120 }}
+                    <AntcSelect style={{ width: 120 }}
                         onChange={this.handleChange}
                         value={this.state.appId}
                     >
                         {list}
-                    </Select>
+                    </AntcSelect>
                     <Alert
                         message={Intl.get('common.no.data', '暂无数据')}
                         type="info"

@@ -4,8 +4,9 @@ import StrategyFormAction from '../action/strategy-form-action';
 import StrategyFormStore from '../store/strategy-form-store';
 import ClueAssignmentAction from '../action';
 
-import {Form, Input, Select, Switch} from 'antd';
-const Option = Select.Option;
+import {Form, Input, Switch} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import AlertTimer from 'CMP_DIR/alert-timer';
@@ -227,7 +228,7 @@ class StrategyForm extends React.Component {
                                                 }],
                                                 validateTrigger: 'onBlur'
                                             })(
-                                                <Select
+                                                <AntcSelect
                                                     mode="multiple"
                                                     placeholder={Intl.get('clue.assignment.needs.region.tip', '请选择或输入地域')}
                                                     optionFilterProp="children"
@@ -238,7 +239,7 @@ class StrategyForm extends React.Component {
                                                     onChange={this.onSelectChange}
                                                 >
                                                     {this.renderRegionsOption()}
-                                                </Select>
+                                                </AntcSelect>
                                             )
                                         }
                                     </FormItem>
@@ -256,7 +257,7 @@ class StrategyForm extends React.Component {
                                 {/*                message: Intl.get('clue.assignment.needs.source.required.tip', '线索来源不能为空')*/}
                                 {/*            }]*/}
                                 {/*        })(*/}
-                                {/*            <Select*/}
+                                {/*            <AntcSelect*/}
                                 {/*                combobox*/}
                                 {/*                placeholder={Intl.get('clue.assignment.needs.source.tip', '请选择或输入线索来源',)}*/}
                                 {/*                name="clue_source"*/}
@@ -269,7 +270,7 @@ class StrategyForm extends React.Component {
                                 {/*                            return (<Option key={idx} value={source}>{source}</Option>);*/}
                                 {/*                        }) : null*/}
                                 {/*                }*/}
-                                {/*            </Select>*/}
+                                {/*            </AntcSelect>*/}
                                 {/*        )}*/}
                                 {/*</FormItem>*/}
                                 {/*<FormItem*/}
@@ -284,7 +285,7 @@ class StrategyForm extends React.Component {
                                 {/*                message: Intl.get('clue.assignment.needs.access.channel.required.tip', '接入渠道不能为空')*/}
                                 {/*            }]*/}
                                 {/*        })(*/}
-                                {/*            <Select*/}
+                                {/*            <AntcSelect*/}
                                 {/*                combobox*/}
                                 {/*                placeholder={Intl.get('clue.assignment.needs.access.channel.tip', '请选择或输入接入渠道')}*/}
                                 {/*                name="access_channel"*/}
@@ -296,7 +297,7 @@ class StrategyForm extends React.Component {
                                 {/*                        return (<Option key={idx} value={source}>{source}</Option>);*/}
                                 {/*                    }) : null*/}
                                 {/*                }*/}
-                                {/*            </Select>*/}
+                                {/*            </AntcSelect>*/}
                                 {/*        )}*/}
                                 {/*</FormItem>*/}
                                 {/*<FormItem*/}
@@ -312,7 +313,7 @@ class StrategyForm extends React.Component {
                                 {/*                message: Intl.get('clue.assignment.needs.clue.classify.required.tip', '线索分类不能为空')*/}
                                 {/*            }]*/}
                                 {/*        })(*/}
-                                {/*            <Select*/}
+                                {/*            <AntcSelect*/}
                                 {/*                combobox*/}
                                 {/*                placeholder={Intl.get('clue.assignment.needs.clue.classify.tip', '请选择或输入线索分类')}*/}
                                 {/*                name="clue_classify"*/}
@@ -324,7 +325,7 @@ class StrategyForm extends React.Component {
                                 {/*                        return (<Option key={idx} value={source}>{source}</Option>);*/}
                                 {/*                    }) : null*/}
                                 {/*                }*/}
-                                {/*            </Select>*/}
+                                {/*            </AntcSelect>*/}
                                 {/*        )}*/}
                                 {/*</FormItem>*/}
                             </div>
@@ -342,7 +343,7 @@ class StrategyForm extends React.Component {
                                     }],
                                     validateTrigger: 'onBlur'
                                 })(
-                                    <Select
+                                    <AntcSelect
                                         showSearch
                                         placeholder={Intl.get('clue.assignment.assignee.tip', '请选择或输入被分配人')}
                                         name="assignee"
@@ -352,7 +353,7 @@ class StrategyForm extends React.Component {
                                         onChange={this.onSalesManChange}
                                     >
                                         {getSalesDataList(_.get(this.state, 'salesManList', []))}
-                                    </Select>
+                                    </AntcSelect>
                                 )}
                         </FormItem>
                         <FormItem

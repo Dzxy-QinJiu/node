@@ -8,20 +8,24 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('../css/add_apply.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Form, Button, Upload, Icon, Popconfirm} from 'antd';
+import {Form, Button, Upload, Icon, Popconfirm, Radio, DatePicker, Input} from 'antd';
 const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import Trace from 'LIB_DIR/trace';
-import {DELAY_TIME_RANGE, FILES_TYPE_FORBIDDEN_RULES, XLSX_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+import {
+    CHARGE_MODE,
+    DELAY_TIME_RANGE,
+    FILES_TYPE_FORBIDDEN_RULES,
+    XLSX_FILES_TYPE_RULES
+} from 'PUB_DIR/sources/utils/consts';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
 import {checkFileNameAllowRule, checkFileNameForbidRule} from 'PUB_DIR/sources/utils/common-method-util';
 var AlertTimer = require('CMP_DIR/alert-timer');
+import {disabledDateBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
 class AddDataService extends React.Component {
     constructor(props) {
         super(props);
@@ -75,17 +79,24 @@ class AddDataService extends React.Component {
             if(!customer_id){
                 return;
             }
+            delete values.customer;
             if(!_.get(fileList,'[0]')){
                 this.setState({
                     warningMsg: Intl.get('apply.approved.upload.annex.list.first', '请先上传附件')
                 });
                 return;
             }
-
             const formData = new FormData();
             //是否有上传过文件
             formData.append('files', _.get(fileList,'[0]'));
             formData.append('customer_id',customer_id);
+            _.forEach(values,(item,key) => {
+                if(key === 'expect_submit_time'){
+                    formData.append(key,item.valueOf());
+                }else{
+                    formData.append(key,item);
+                }
+            });
             this.setState({
                 isSaving: true,
                 saveMsg: '',
@@ -235,7 +246,7 @@ class AddDataService extends React.Component {
         };
         return (
             <div className='upload-and-download'>
-                <div className='ant-col-xs-24 ant-col-sm-20'>
+                <div className='ant-col-xs-24 ant-col-sm-18'>
                     <Upload {...props}>
                         <Button type='primary'>{Intl.get('apply.approved.upload.annex.list', '上传附件')}</Button>
                     </Upload>
@@ -258,11 +269,11 @@ class AddDataService extends React.Component {
         const formItemLayout = {
             labelCol: {
                 xs: {span: 24},
-                sm: {span: 4},
+                sm: {span: 6},
             },
             wrapperCol: {
                 xs: {span: 24},
-                sm: {span: 20},
+                sm: {span: 18},
             },
         };
         var formData = this.state.formData;
@@ -273,12 +284,12 @@ class AddDataService extends React.Component {
             });
         };
         return (
-            <RightPanel showFlag={true} data-tracename="添加数据服务申请" className="add-data-service-apply-container">
+            <RightPanel showFlag={true} data-tracename="添加数据导出申请" className="add-data-service-apply-container">
                 <span className="iconfont icon-close add—leave-apply-close-btn" onClick={this.hideApplyAddForm}
-                    data-tracename="关闭添加数据服务申请面板"></span>
+                    data-tracename="关闭添加数据导出申请面板"></span>
                 <div className="add-leave-apply-wrap">
                     <BasicData
-                        clueTypeTitle={Intl.get('apply.eefung.data.service', '数据服务申请')}
+                        clueTypeTitle={Intl.get('apply.eefung.data.service', '数据导出')}
                     />
                     <div className="add-leave-apply-form-wrap" style={{'height': divHeight}}>
                         <GeminiScrollbar>
@@ -311,7 +322,59 @@ class AddDataService extends React.Component {
                                                 customerChoosen={this.customerChoosen}
                                                 required={true}
                                                 hideCustomerRequiredTip={this.hideCustomerRequiredTip}
-                                                isSearchMyCustomer={true}
+                                            />
+                                        )}
+                                    </FormItem>
+                                    <FormItem
+                                        className="form-item-label"
+                                        label={Intl.get('apply.approved.charge.mode', '收费模式')}
+                                        {...formItemLayout}
+                                    >
+                                        {getFieldDecorator('charge_mode',{
+                                            initialValue: 'free',
+                                            rules: [{
+                                                required: true
+                                            }],
+                                        })(
+                                            <Radio.Group>
+                                                {_.map(CHARGE_MODE,mode => {
+                                                    return <Radio value={_.get(mode,'value')}>{_.get(mode,'name')}</Radio>;
+                                                })}
+                                            </Radio.Group>
+                                        )}
+                                    </FormItem>
+                                    <FormItem
+                                        className="form-item-label add-apply-time"
+                                        label={Intl.get('apply.approve.expect.submit.time', '期望提交时间')}
+                                        {...formItemLayout}
+                                    >
+                                        {getFieldDecorator('expect_submit_time', {
+                                            initialValue: moment(),
+                                            rules: [{
+                                                required: true,
+                                                message: Intl.get('apply.approve.form.expect.submit.time.require', '请填写期望提交时间')
+                                            }],
+                                        })(
+                                            <DatePicker
+                                                disabledDate={disabledDateBeforeToday}
+                                                allowClear={false}
+                                                showTime={{format: 'HH:mm'}}
+                                                format="YYYY-MM-DD HH:mm"
+                                                value={formData.expect_submit_time ? moment(formData.expect_submit_time) : moment()}
+                                            />
+                                        )}
+                                    </FormItem>
+                                    <FormItem
+                                        className="form-item-label"
+                                        label={Intl.get('common.remark', '备注')}
+                                        {...formItemLayout}
+                                    >
+                                        {getFieldDecorator('remarks', {
+                                            initialValue: ''
+                                        })(
+                                            <Input
+                                                type="textarea" id="remarks" rows="3"
+                                                placeholder={Intl.get('user.remark.write.tip', '请填写备注')}
                                             />
                                         )}
                                     </FormItem>

@@ -302,13 +302,21 @@ exports.traversingTeamTree = traversingTeamTree;
 
 //不能选今天之前的时间
 exports.disabledBeforeToday = function(current) {
-    return current && current < moment().subtract(1, 'days').endOf('day');
+    return current && current < moment().startOf('day');
 };
-
 
 //不能选今天之后的时间
 exports.disabledAfterToday = function(current) {
     return current && current > moment().endOf('day');
+};
+
+//处理所传时间,保证时间不小于今天的最晚时间(23:59:59)
+exports.dealTimeNotLessThanToday = function(time) {
+    let todayTime = moment().endOf('day').valueOf();
+    if(time < todayTime) {
+        time = todayTime;
+    }
+    return time;
 };
 
 /**
@@ -650,6 +658,18 @@ exports.formatUsersmanList = function(usersManList) {
     });
     return dataList;
 };
+//用户列表
+exports.formatUsersmanDataList = function(usersManList) {
+    let dataList = [];
+    _.each(usersManList, usersman => {
+        dataList.push({
+            nickName: _.get(usersman, 'nick_name', ''),
+            userName: _.get(usersman, 'user_name', ''),
+            value: `${_.get(usersman, 'user_id', '')}`
+        });
+    });
+    return dataList;
+};
 //待我审批的数量减一
 exports.substractUnapprovedCount = function(applyId) {
     if (Oplate && Oplate.unread) {
@@ -856,6 +876,11 @@ exports.disabledDate = function(startTime, endTime, value){
     }
     return value.valueOf() < moment(startTime).startOf('day').valueOf() || value.valueOf() > moment(endTime).endOf('day').valueOf();
 };
+//今天之前的时间不可选
+exports.disabledDateBeforeToday = function(current) {
+    //不允许选择大于当前的时刻
+    return current && current.valueOf() < moment().startOf('day');
+};
 //时间选择组件中禁用时间的范围
 exports.disabledHour = function(startTime, endTime){
     var startHour = moment(startTime).get('hour'),endHour = moment(endTime).get('hour');
@@ -964,6 +989,12 @@ function isSalesRole() {
     return userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SECRETARY) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER);
 }
 exports.isSalesRole = isSalesRole;
+
+//是否普通销售
+function isCommonSales() {
+    return userData.getUserData().isCommonSales;
+}
+exports.isCommonSales = isCommonSales;
 
 function isAdminRole() {
     return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);

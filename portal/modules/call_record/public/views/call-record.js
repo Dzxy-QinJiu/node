@@ -6,9 +6,9 @@ import TopNav from 'CMP_DIR/top-nav';
 import CallRecordActions from '../action/call-record-actions';
 import CallRecordStore from '../store/call-record-store';
 import Spinner from 'CMP_DIR/spinner';
-import { Alert, Input, Icon, Button, Select, message, Popconfirm, Menu, Dropdown} from 'antd';
-import { AntcTable } from 'antc';
-const Option = Select.Option;
+import { Alert, Input, Icon, Button, message, Popconfirm, Menu, Dropdown} from 'antd';
+import { AntcTable, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import { AntcDatePicker as DatePicker } from 'antc';
 import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import CallAddCustomerForm from './call-add-customer-form'; // 添加客户
@@ -203,15 +203,7 @@ class CallRecord extends React.Component {
 
     onSelectFilterObj = (filterKey, value) => {
         this.state.filterObj[filterKey] = value;
-        if (value === `${CALL_TYPE_OPTION.PHONE},${CALL_TYPE_OPTION.CURTAO_PHONE}`) {
-            this.state.callType = <i className="iconfont icon-call-back" title={Intl.get('call.record.call.center', '呼叫中心')}></i>;
-        } else if (value === CALL_TYPE_OPTION.APP) {
-            this.state.callType = <i className="iconfont icon-ketao-app" title={Intl.get('common.ketao.app', '客套APP')}></i>;
-        } else if (value === CALL_TYPE_OPTION.ALL) {
-            this.state.callType = <i className="iconfont icon-all" title={Intl.get('user.online.all.type', '全部类型')}></i>;
-        } else if (value === CALL_TYPE_OPTION.CALL_BACK) {
-            this.state.callType = <i className='iconfont icon-callback' title={Intl.get('common.callback', '回访')}></i>;
-        }
+        this.state.callType = value;
         if (value === CALL_STATUS_OPTION.ALL || value === CALL_TYPE_OPTION.ALL) {
             this.filterCallRecord(filterKey);
             return;
@@ -251,7 +243,7 @@ class CallRecord extends React.Component {
         const placeholder = Intl.get('call.record.search.placeholder', '根据{search}过滤', { search: columnLabel });
         if (filterKey === 'disposition') { // 通话状态
             return (
-                <Select
+                <AntcSelect
                     className="select-call-status"
                     showSearch
                     placeholder={placeholder}
@@ -264,11 +256,11 @@ class CallRecord extends React.Component {
                     <Option value={CALL_STATUS_OPTION.ANSWERED}> {Intl.get('call.record.state.answer', '已接听')} </Option>
                     <Option value={CALL_STATUS_OPTION.MISSED}> {Intl.get('call.record.state.no.answer', '未接听')} </Option>
                     <Option value={CALL_STATUS_OPTION.BUSY}> {Intl.get('call.record.state.busy', '用户忙')} </Option>
-                </Select>
+                </AntcSelect>
             );
         } else if (filterKey === 'type') { // 通话类型
             return (
-                <Select
+                <AntcSelect
                     showSearch
                     dropdownMatchSelectWidth={false}
                     placeholder={placeholder}
@@ -294,7 +286,7 @@ class CallRecord extends React.Component {
                         <i className='iconfont icon-callback'></i>
                         <span>{Intl.get('common.callback', '回访')}</span>
                     </Option>
-                </Select>
+                </AntcSelect>
             );
         }
     };
@@ -370,7 +362,7 @@ class CallRecord extends React.Component {
             }
         }
         return this.state.isFilter ? (<div>
-            <Select combobox
+            <AntcSelect combobox
                 style={{ width: '140px' }}
                 value={this.state.selectValue}
                 onSearch={this.handleChange}
@@ -380,7 +372,7 @@ class CallRecord extends React.Component {
                 filterOption={false} // 数据是动态设置的
             >
                 {searchContentOptions}
-            </Select>
+            </AntcSelect>
         </div>) : columnLabel;
     };
 
@@ -929,14 +921,14 @@ class CallRecord extends React.Component {
                         <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
                     </DatePicker>
                     <div className="filter-phone-button float-r">
-                        <Select
+                        <AntcSelect
                             className="btn-item"
                             defaultValue="all"
                             dropdownMatchSelectWidth={false}
                             onChange={this.selectFilterPhone}
                         >
                             {filterOptions}
-                        </Select>
+                        </AntcSelect>
                         <Button onClick={this.handleRefresh} className="btn-item">{Intl.get('common.refresh', '刷新')}</Button>
                         <Button className="btn-item btn-m-r-2" onClick={this.handleCallAnalysis} data-tracename="点击通话分析按钮">
                             {Intl.get('user.detail.analysis', '分析')}

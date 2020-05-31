@@ -3,12 +3,12 @@
  * Created by wangliping on 2017/8/31.
  */
 require('../css/recent-login-user-list.less');
-import { Select, Button } from 'antd';
 import ShareObj from '../util/app-id-share-util';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
-import { AntcDatePicker as DatePicker } from 'antc';
+import { AntcDatePicker as DatePicker, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import DateSelectorUtils from 'antc/lib/components/datepicker/utils';
 import { RightPanel } from 'CMP_DIR/rightPanel';
 import { topNavEmitter, selectedAppEmitter, scrollBarEmitter,
@@ -22,7 +22,6 @@ import {
     getTimeList
 } from '../util/app-user-util';
 import userAjax from '../ajax/app-user-ajax';
-const Option = Select.Option;
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
 import { storageUtil } from 'ant-utils';
@@ -48,6 +47,7 @@ import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import Spinner from 'CMP_DIR/spinner';
 import RefreshButton from 'CMP_DIR/refresh-button';
 import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
+import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 
 class RecentLoginUsers extends React.Component {
     constructor(props) {
@@ -138,21 +138,32 @@ class RecentLoginUsers extends React.Component {
     }
 
     getSelectedAppObj(props) {
-        var selectedAppId = '';
-        //上次手动选中的appid
-        let websitConfig = JSON.parse(storageUtil.local.get(WEBSITE_CONFIG));
-        let localSelectedAppId = websitConfig ? websitConfig[RECENT_LOGIN_USER_SELECTED_APP_ID] : '';
-        // 判断记住的应用，在应用列表中，是否还存在，若存在，则使用,否则，不用
-        let matchAppList = _.find(props.appList, app => app.app_id === localSelectedAppId);
-        if (props.selectedAppId) {
-            //如果外面选中一个应用，最近登录的用户，默认用此应用
-            selectedAppId = props.selectedAppId;
-        } else if (matchAppList) {
-            //如果外面没有选中应用，但上次在最近登录的用户的应用列表中选中过一个应用，就用上一次选中的应用
-            selectedAppId = localSelectedAppId;
+        let selectedAppId = '';
+        // 客套组织下，直接显示客套产品
+        if (isKetaoOrganizaion()) {
+            let ketaoId = _.get(window, 'Oplate.clientId'); // 客套id
+            let ketaoApp = _.find(props.appList, app => app.app_id === ketaoId);
+            if (!_.isEmpty(ketaoApp)) {
+                selectedAppId = ketaoId;
+            } else {
+                selectedAppId = _.get(props.appList, '[0]..app_id');
+            }
         } else {
-            //如果上面两种情况都没有，就用应用列表中第一个
-            selectedAppId = props.appList[0] ? props.appList[0].app_id : '';
+            //上次手动选中的appid
+            let websitConfig = JSON.parse(storageUtil.local.get(WEBSITE_CONFIG));
+            let localSelectedAppId = websitConfig ? websitConfig[RECENT_LOGIN_USER_SELECTED_APP_ID] : '';
+            // 判断记住的应用，在应用列表中，是否还存在，若存在，则使用,否则，不用
+            let matchAppList = _.find(props.appList, app => app.app_id === localSelectedAppId);
+            if (props.selectedAppId) {
+                //如果外面选中一个应用，最近登录的用户，默认用此应用
+                selectedAppId = props.selectedAppId;
+            } else if (matchAppList) {
+                //如果外面没有选中应用，但上次在最近登录的用户的应用列表中选中过一个应用，就用上一次选中的应用
+                selectedAppId = localSelectedAppId;
+            } else {
+                //如果上面两种情况都没有，就用应用列表中第一个
+                selectedAppId = props.appList[0] ? props.appList[0].app_id : '';
+            }
         }
         let selectedAppTerminals = approveAppConfigTerminal(selectedAppId, props.appList);
 
@@ -308,7 +319,10 @@ class RecentLoginUsers extends React.Component {
             selectedAppTerminals: selectedAppTerminals,
             terminal_id: ''
         }, () => {
-            setWebsiteConfig(obj);
+            // 客套组织下，直接显示客套产品，所以不用存储
+            if (!isKetaoOrganizaion()) {
+                setWebsiteConfig(obj);
+            }
             this.getRecentLoginUsers();
         });
         //当应用列表重新布局的时候，让顶部导航重新渲染
@@ -611,7 +625,7 @@ class RecentLoginUsers extends React.Component {
         );
         return (
             <div className="team-member-select inline-block btn-item">
-                <Select
+                <AntcSelect
                     value={this.state.selectedSalesId}
                     onChange={this.onMemberChange}
                     showSearch={true}
@@ -621,7 +635,7 @@ class RecentLoginUsers extends React.Component {
                     {
                         memberOptions
                     }
-                </Select>
+                </AntcSelect>
             </div>
         );
     };
@@ -660,6 +674,7 @@ class RecentLoginUsers extends React.Component {
         let appOptions = this.getAppOptions();
         let memberList = this.state.memberList.data; // 成员数据
         let teamlists = this.state.teamlists; // 团队数据
+        let userTypeSelectedList = _.concat(userTypeList, {name: Intl.get('analysis.exclude.ip.staff', '排除配置ip和员工'), value: 'valid'});
         return (
             <div className="recent_login_header-wrap">
                 <ButtonZones>
@@ -733,7 +748,7 @@ class RecentLoginUsers extends React.Component {
                                 onChange={this.onUserTypeChange.bind(this)}
                             >
                                 {
-                                    _.map(userTypeList, (userType, idx) => {
+                                    _.map(userTypeSelectedList, (userType, idx) => {
                                         return <Option key={idx} value={userType.value}>{userType.name}</Option>;
                                     })
                                 }

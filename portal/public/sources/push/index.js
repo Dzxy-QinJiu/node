@@ -994,7 +994,7 @@ function upgradeRefreshListener(newUpgradeTime){
 /**
  *启动socketio
  */
-function startSocketIo() {
+function startSocketIo(isSessionOutReLogin) {
     var transportType = window.WebSocket ? 'websocket' : 'polling';
     socketIo = io({forceNew: true, transports: [transportType]});
     //监听 connect
@@ -1002,7 +1002,7 @@ function startSocketIo() {
         // 升级后，当前版本的时间监听
         // socketIo.on('curUpgradeTime', upgradeRefreshListener);
         // 获取消息数后添加监听
-        getMessageCount(unreadListener);
+        getMessageCount(unreadListener,isSessionOutReLogin);
         //监听node端推送的登录踢出的信息
         socketIo.on('offline', listenOnOffline);
         //监听session过期的消息
@@ -1038,7 +1038,7 @@ function startSocketIo() {
  * 获取消息数
  * @param callback 获取消息数后的回调函数
  */
-function getMessageCount(callback) {
+function getMessageCount(callback,isSessionOutReLogin) {
     //待审批数、及未读数的权限（未读数的除了暂时不需要了所以先注释掉没用的权限判断，以防后期再用先不删）
     // if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST') || hasPrivilege('APP_USER_APPLY_LIST')) {
     //     let type = '';
@@ -1073,7 +1073,7 @@ function getMessageCount(callback) {
             //获取其他类型申请审批未读数，根据type对类型进行区分
             getDiffApplyUnreadReply(callback);
             //获取待我审批的申请列表
-            getUnapproveApplyLists(callback);
+            getUnapproveApplyLists(callback,isSessionOutReLogin);
         }
     }
 
@@ -1119,7 +1119,7 @@ function applyUnreadReplyListener(unreadReply) {
     const TEAM_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.TEAM_UNREAD_REPLY;
     //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
     let unreadMyReplyList = session.get(MY_UNREAD_REPLY);
-    //todo 这里的判断需要修改一下，member_id 推送给的人的id，需要校验的是这条审批的申请人的id，暂时后端还没有加上
+    //member_id 推送给的人的id，需要校验的是这条审批的申请人的id是不是当前登录人，如果是，推送到我的申请这个tab
     if (unreadMyReplyList && userData.getUserData().user_id === _.get(unreadReply,'applicateId')) {
         unreadMyReplyList = JSON.parse(unreadMyReplyList);
         //已有回复列表，将新得回复加入回复列表中
@@ -1235,11 +1235,11 @@ function getClueUnreadNum(data, callback) {
     });
 }
 //获取待我审批的申请
-function getUnapproveApplyLists(callback) {
+function getUnapproveApplyLists(callback,isSessionOutReLogin) {
     getWorklistApplyList().then((data) => {
         var messages = {
             unhandleApply: 0,//待我处理的申请审批的数量
-            unhandleApply_list: []
+            unhandleApplyList: []
         };
         var value = data.total;
         if (typeof value === 'number' && value > 0) {
@@ -1253,7 +1253,14 @@ function getUnapproveApplyLists(callback) {
         if (_.isArray(_.get(data, 'list'))) {
             messages['unhandleApplyList'] = _.get(data, 'list');
         }
-        //更新全局中存的未处理的线索数
+        var diffArray = _.difference(_.map(messages['unhandleApplyList'],'id'), _.map(Oplate.unread['unhandleApplyList'],'id'));//去掉原来申请审批中的数据
+        if(isSessionOutReLogin && !_.isEmpty(diffArray)){
+            //为了解决session超时后再次登录，如果有新的申请，左侧和顶部有数字，列表中没有刷新提示的问题
+            //如果session超时后再次登录，需要比较一下原来的申请审批列表和这次新获取的申请审批列表，
+            // 如果有新的申请审批，需要发送一个展示有新申请审批的提示
+            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_TIP);
+        }
+        //更新全局中存的未处理的待我审批数量数
         updateGlobalUnreadStorage(messages);
         if (typeof callback === 'function') {
             callback(APPLY_APPROVE_TYPES.UNHANDLEAPPLY);

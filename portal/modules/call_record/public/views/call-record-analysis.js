@@ -2,11 +2,10 @@
  * 通话分析 
  */
 
-import {Select} from 'antd';
-const Option = Select.Option;
 var RightContent = require('CMP_DIR/privilege/right-content');
 var TopNav = require('CMP_DIR/top-nav');
-import { AntcAnalysis, AntcDatePicker } from 'antc';
+import { AntcAnalysis, AntcDatePicker, AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 import CallAnalysisAction from '../action/call-analysis-action';
 import CallAnalysisStore from '../store/call-analysis-store';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
@@ -66,10 +65,12 @@ class CallRecordAnalyis extends React.Component {
 
         let reqData = commonMethodUtil.getParamByPrivilege();
 
-        // 获取销售团队数据
-        CallAnalysisAction.getSaleGroupTeams(reqData);
-        // 获取成员数据
-        CallAnalysisAction.getSaleMemberList(reqData);
+        if (!commonMethodUtil.isCommonSales()) {
+            // 获取销售团队数据
+            CallAnalysisAction.getSaleGroupTeams(reqData);
+            // 获取成员数据
+            CallAnalysisAction.getSaleMemberList(reqData);
+        }
     }
 
     componentWillUnmount() {
@@ -236,36 +237,39 @@ class CallRecordAnalyis extends React.Component {
     // 团队和成员筛选框
     renderTeamMembersSelect = () => {
         let teamList = this.state.teamList.list; // 团队数据
-        let memberList = this.state.memberList.list; // 成员数据
 
-        // 第一个选择框渲染的数据
-        let firstOptions = FIRSR_SELECT_DATA.map((item, index) => {
-            return <Option value={item} key={index}>{item}</Option>;
-        });
+        if (_.isEmpty(teamList)) {
+            return null;
+        } else {
+            let memberList = this.state.memberList.list; // 成员数据
 
-        // 第二个选择框的数据
-        let secondOptions = [];
-        if (teamList.length === 1) { // 只展示成员选择框时
-            secondOptions = memberList.map((item, index) => {
-                return <Option value={item.id} key={index}>{item.name}</Option>;
+            // 第一个选择框渲染的数据
+            let firstOptions = FIRSR_SELECT_DATA.map((item, index) => {
+                return <Option value={item} key={index}>{item}</Option>;
             });
-        } else if (teamList.length > 1) { // 展示团队和成员
-            if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
-                secondOptions = teamList.map((item, index) => {
-                    return <Option value={item.id} key={index}>{item.name}</Option>;
-                });
-            } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
+
+            // 第二个选择框的数据
+            let secondOptions = [];
+            if (teamList.length === 1) { // 只展示成员选择框时
                 secondOptions = memberList.map((item, index) => {
                     return <Option value={item.id} key={index}>{item.name}</Option>;
                 });
+            } else if (teamList.length > 1) { // 展示团队和成员
+                if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
+                    secondOptions = teamList.map((item, index) => {
+                        return <Option value={item.id} key={index}>{item.name}</Option>;
+                    });
+                } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
+                    secondOptions = memberList.map((item, index) => {
+                        return <Option value={item.id} key={index}>{item.name}</Option>;
+                    });
+                }
             }
-        }
 
-        secondOptions.unshift(<Option value={LITERAL_CONSTANT.ALL}>{LITERAL_CONSTANT.ALL}</Option>);
+            secondOptions.unshift(<Option value={LITERAL_CONSTANT.ALL}>{LITERAL_CONSTANT.ALL}</Option>);
 
-        return (
-            <div>
-                { teamList.length > 1 ? (
+            return (
+                <div className="team-member-select">
                     <SelectFullWidth
                         defaultValue={FIRSR_SELECT_DATA[0]}
                         onChange={this.handleFirstSelectChange}
@@ -273,8 +277,7 @@ class CallRecordAnalyis extends React.Component {
                     >
                         {firstOptions}
                     </SelectFullWidth>
-                ) : null }
-                { memberList.length > 1 ? (
+
                     <SelectFullWidth
                         multiple
                         showSearch
@@ -286,9 +289,9 @@ class CallRecordAnalyis extends React.Component {
                     >
                         {secondOptions}
                     </SelectFullWidth>
-                ) : null }
-            </div>
-        );
+                </div>
+            );
+        } 
     };
 
     // 团队和成员框的选择
@@ -380,13 +383,7 @@ class CallRecordAnalyis extends React.Component {
                             {/**
                              * 团队和成员筛选框
                              * */}
-                            <div className="team-member-select">
-                                {
-                                    this.state.teamList.list.length ?
-                                        this.renderTeamMembersSelect() :
-                                        null
-                                }
-                            </div>
+                            {this.renderTeamMembersSelect()}
                         </div>
                     </TopNav>
                     <div className="call-data-analysis">

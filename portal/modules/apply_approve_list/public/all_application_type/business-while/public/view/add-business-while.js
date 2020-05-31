@@ -8,9 +8,10 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('../css/add-business-apply.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Form, Input, Button, Icon, message, DatePicker, Select} from 'antd';
+import {Form, Input, Button, Icon, message, DatePicker} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 
-var Option = Select.Option;
 const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
@@ -36,8 +37,8 @@ class AddBusinessWhile extends React.Component {
             hideCustomerRequiredTip: false,
             search_customer_name: '',
             formData: {
-                begin_time: moment().startOf('day').add(8,'hour').valueOf(),//外出开始时间默认当天8:00
-                end_time: moment().startOf('day').add(18,'hour').valueOf(),//外出结束时间默认当天18:00
+                begin_time: moment().startOf('day').add(8,'hour').add(30,'minute').valueOf(),//外出开始时间默认当天8:30
+                end_time: moment().startOf('day').add(17,'hour').add(30,'minute').valueOf(),//外出结束时间默认当天17:30
                 reason: '',
                 customers: [{
                     id: '',

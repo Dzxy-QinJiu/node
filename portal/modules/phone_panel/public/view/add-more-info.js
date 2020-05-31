@@ -9,8 +9,9 @@ var addMoreInfoAction = require('../action/add-more-info-action');
 var addMoreInfoStore = require('../store/add-more-info-store');
 import TopTitleCMP from './top-title-component';
 import BottomSaveCancelCMP from './bottom-save-cancel-component';
-import {Form, Select, Icon, Input} from 'antd';
-const Option = Select.Option;
+import {Form, Icon, Input} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 var FormItem = Form.Item;
 const LAYOUT_CONST = {
     LABELSM: 5,//lable所占的宽度
@@ -100,12 +101,12 @@ class AddMoreInfo extends React.Component {
                                     message: Intl.get('call.record.feedback.prodcut', '请选择需要反馈的应用产品')
                                 }],
                             })(
-                                <Select
+                                <AntcSelect
                                     size="large"
                                     placeholder={Intl.get('call.record.feedback.prodcut', '请选择需要反馈的应用产品')}
                                 >
                                     {appListsOptions}
-                                </Select>
+                                </AntcSelect>
                             ))}
                     </FormItem>
                     <FormItem

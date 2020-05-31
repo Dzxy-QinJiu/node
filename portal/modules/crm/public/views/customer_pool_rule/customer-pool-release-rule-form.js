@@ -4,9 +4,10 @@
  * Created by tangmaoqin on 2020/03/12.
  */
 //添加、编辑释放规则
-import {Form, Col, Select, message, Icon, Popconfirm, InputNumber, Switch, Checkbox} from 'antd';
+import {Form, Col, message, Icon, Popconfirm, InputNumber, Switch, Checkbox} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const FormItem = Form.Item;
-const Option = Select.Option;
 import DetailCard from 'CMP_DIR/detail-card';
 import classNames from 'classnames';
 import Spinner from 'CMP_DIR/spinner';
@@ -283,14 +284,14 @@ class CustomerPoolReleaseRuleForm extends React.Component {
                                             {required: true, message: Intl.get('crm.pool.select.team.placeholder', '选择适用团队')},
                                         ],
                                     })(
-                                        <Select
+                                        <AntcSelect
                                             showSearch
                                             optionFilterProp="children"
                                             placeholder={Intl.get('crm.pool.select.team.placeholder', '选择适用团队')}
                                             onChange={this.handleSelectTeam}
                                         >
                                             {visibleTeamOptions}
-                                        </Select>
+                                        </AntcSelect>
                                     )
                                 }
 
@@ -308,31 +309,31 @@ class CustomerPoolReleaseRuleForm extends React.Component {
                             this.props.isEdit && !isDefaultRuleConfig ? (getFieldDecorator('customer_label', {
                                 initialValue: formData.customer_label
                             })(
-                                <Select
+                                <AntcSelect
                                     showSearch
                                     optionFilterProp="children"
                                     mode="multiple"
                                     placeholder={Intl.get('contract.choose', '请选择')}
                                 >
                                     {customerStageOptions}
-                                </Select>
+                                </AntcSelect>
                             )) : (
                                 <span className="customer-info-text">{formData.customer_label.join(',') || Intl.get('crm.customer.pool.unlimited', '不限')}</span>
                             )
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout} label={Intl.get('crm.customer.label', '客户标签')}>
-                        {this.props.isEdit && !isDefaultRuleConfig ? (getFieldDecorator('label', {
+                        {this.props.isEdit && !isDefaultRuleConfig ? (getFieldDecorator('labels', {
                             initialValue: formData.labels
                         })(
-                            <Select
+                            <AntcSelect
                                 showSearch
                                 optionFilterProp="children"
                                 mode="multiple"
                                 placeholder={Intl.get('contract.choose', '请选择')}
                             >
                                 {customerLabelOptions}
-                            </Select>
+                            </AntcSelect>
                         )) : (
                             <span className="customer-info-text">{_.get(formData, 'labels',[]).join(',') || Intl.get('crm.customer.pool.unlimited', '不限')}</span>
                         )}
@@ -355,12 +356,12 @@ class CustomerPoolReleaseRuleForm extends React.Component {
                                     </FormItem>
                                 </Col>
                                 <Col span={4}>
-                                    <Select
+                                    <AntcSelect
                                         value={formData.interval}
                                         onChange={this.handleSelectInterval}
                                     >
                                         {INTERVAL_KEYS.map(item => (<Option key={item.value} value={item.value}>{item.name}</Option>))}
-                                    </Select>
+                                    </AntcSelect>
                                 </Col>
                                 <Col span={24}>
                                     {
@@ -388,12 +389,12 @@ class CustomerPoolReleaseRuleForm extends React.Component {
                                     {required: true, message: Intl.get('crm.pool.responsible.type.placeholder', '请选择负责类型')},
                                 ]
                             })(
-                                <Select
+                                <AntcSelect
                                     mode="multiple"
                                     placeholder={Intl.get('crm.pool.responsible.type.placeholder', '请选择负责类型')}
                                 >
                                     {RESPONSIBLE_TYPE.map(item => (<Option key={item.value} value={item.value}>{item.name}</Option>))}
-                                </Select>
+                                </AntcSelect>
                             )
                         ) : (
                             <span className="customer-info-text">{_.map(formData.responsible_type,'name').join(',')}</span>

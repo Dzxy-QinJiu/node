@@ -8,7 +8,9 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 var applyBusinessDetailStore = require('../store/apply-business-detail-store');
 var ApplyViewDetailActions = require('../action/apply-view-detail-action');
 import Trace from 'LIB_DIR/trace';
-import {Alert, Icon, Input, Row, Col, Button,Steps,message,DatePicker,Select, Popover} from 'antd';
+import {Alert, Icon, Input, Row, Col, Button,Steps,message,DatePicker,Popover} from 'antd';
+import { AntcSelect } from 'antc';
+const Option = AntcSelect.Option;
 const Step = Steps.Step;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -522,7 +524,7 @@ class ApplyViewDetail extends React.Component {
                     value={visit_start_time ? moment(visit_start_time) : ''}
                     disabledDate={disabledDate}
                 />
-                <Select
+                <AntcSelect
                     onChange={this.handleChangeTotalStartType}
                     value={startValue}
                 >
@@ -532,14 +534,14 @@ class ApplyViewDetail extends React.Component {
                             return (<Option key={idx} value={item.value}>{item.name}</Option>);
                         }) : null
                     }
-                </Select>
+                </AntcSelect>
                 <DatePicker
                     allowClear={false}
                     onChange={this.onEndTimeTotalChange}
                     value={visit_end_time ? moment(visit_end_time) : ''}
                     disabledDate={disabledDate}
                 />
-                <Select
+                <AntcSelect
                     onChange={this.handleChangeTotalEndType}
                     value={endValue}
                 >
@@ -548,7 +550,7 @@ class ApplyViewDetail extends React.Component {
                             return (<Option key={idx} value={item.value}>{item.name}</Option>);
                         }) : null
                     }
-                </Select>
+                </AntcSelect>
                 <span>
                     {this.state.isEditting ? <Icon type="loading"/> : <span>
                         <span className="iconfont icon-choose" onClick={this.saveChangeCustomerTotalRange}></span>
@@ -575,6 +577,7 @@ class ApplyViewDetail extends React.Component {
             isEdittingTotalTime: false,
             detailInfoObj: this.state.beforeEditDetailInfoObj,
             beforeEditDetailInfoObj: {},
+            totalTimeEditErrTip: '',
         });
     };
     renderEditVisitRange = (record) => {
@@ -608,7 +611,7 @@ class ApplyViewDetail extends React.Component {
                     value={visit_start_time ? moment(visit_start_time) : ''}
                     disabledDate={disabledDate.bind(this, initialStartTime, initialEndTime)}
                 />
-                <Select
+                <AntcSelect
                     onChange={this.handleChangeStartType}
                     value={startValue}
                 >
@@ -618,14 +621,14 @@ class ApplyViewDetail extends React.Component {
                             return (<Option key={idx} value={item.value}>{item.name}</Option>);
                         }) : null
                     }
-                </Select>
+                </AntcSelect>
                 <DatePicker
                     allowClear={false}
                     onChange={this.onEndTimeCustomerChange}
                     value={visit_end_time ? moment(visit_end_time) : ''}
                     disabledDate={disabledDate.bind(this, initialStartTime, initialEndTime)}
                 />
-                <Select
+                <AntcSelect
                     onChange={this.handleChangeEndType}
                     value={endValue}
                 >
@@ -634,7 +637,7 @@ class ApplyViewDetail extends React.Component {
                             return (<Option key={idx} value={item.value}>{item.name}</Option>);
                         }) : null
                     }
-                </Select>
+                </AntcSelect>
                 <span>
                     {this.state.isEditting ? <Icon type="loading"/> : <span>
                         <span className="iconfont icon-choose" onClick={this.saveChangeCustomerVisistRange.bind(this, record)}></span>
@@ -659,19 +662,14 @@ class ApplyViewDetail extends React.Component {
         var apply_time = _.get(applyObj, 'detail.apply_time[0]');
         var submitObj = {
             applyId: _.get(applyObj, 'id'),
-            apply_time: apply_time
+            apply_time: [apply_time]
         };
-        var noTimeErrTip = false;
-        if(!_.get(apply_time, 'visit_time.start') || !_.get(apply_time, 'visit_time.end')){
-            noTimeErrTip = true;
-        }
-        if(noTimeErrTip){
+        if(!_.get(apply_time, 'start') || !_.get(apply_time, 'end')){
             this.setState({
                 totalTimeEditErrTip: Intl.get('bussiness.trip.time.range.no.empty', '拜访时间不能为空')
             });
             return;
         }
-
         this.setState({isEditting: true});
         $.ajax({
             url: '/rest/update/customer/visit/range',
@@ -706,7 +704,6 @@ class ApplyViewDetail extends React.Component {
                 noTimeErrTip = true;
             }
         });
-
         if(noTimeErrTip){
             this.setState({
                 customerVisitTimeEditErrTip: Intl.get('bussiness.trip.time.range.no.empty', '拜访时间不能为空')
@@ -739,6 +736,7 @@ class ApplyViewDetail extends React.Component {
             customerUpdate: {id: '',index: ''},
             detailInfoObj: this.state.beforeEditDetailInfoObj,
             beforeEditDetailInfoObj: {},
+            customerVisitTimeEditErrTip: ''
         });
     };
     calculateStartAndEndRange = (visit_time) => {

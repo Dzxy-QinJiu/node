@@ -418,7 +418,7 @@ exports.getRecommendClueLists = function(obj) {
         url: '/rest/clue/recommend/lists',
         dataType: 'json',
         type: 'post',
-        data: obj,
+        data: {reqData: JSON.stringify(obj)},
         success: function(list) {
             Deferred.resolve(list);
         },

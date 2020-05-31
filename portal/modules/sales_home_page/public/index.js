@@ -5,12 +5,12 @@ const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
 var getDataAuthType = require('CMP_DIR/privilege/checker').getDataAuthType;
-import {Select, message, Alert, Button} from 'antd';
-import {AntcTable, AntcAnalysis, AntcCardContainer} from 'antc';
+import {message, Alert, Button} from 'antd';
+import {AntcTable, AntcAnalysis, AntcCardContainer, AntcSelect} from 'antc';
+const Option = AntcSelect.Option;
 import { others as commonFunc } from 'ant-utils';
 import { processTableChartCsvData } from 'antc/lib/components/analysis/utils';
 import Trace from 'LIB_DIR/trace';
-const Option = Select.Option;
 var RightContent = require('../../../components/privilege/right-content');
 var SalesHomeStore = require('./store/sales-home-store');
 var SalesHomeAction = require('./action/sales-home-actions');
@@ -596,7 +596,7 @@ class SalesHomePage extends React.Component {
     filterCallTypeSelect = () => {
         return (
             <div className="call-type-select" data-tracename="电话统计">
-                <Select
+                <AntcSelect
                     showSearch
                     value={this.state.callType}
                     onChange={this.selectCallTypeValue}
@@ -611,7 +611,7 @@ class SalesHomePage extends React.Component {
                     <Option value={CALL_TYPE_OPTION.APP}>
                         <span>{Intl.get('common.ketao.app', '客套APP')}</span>
                     </Option>
-                </Select>
+                </AntcSelect>
             </div>
         );
     };
