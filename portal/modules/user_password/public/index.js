@@ -260,10 +260,7 @@ var UserPwdPage = createReactClass({
                                         type="password"
                                         placeholder={Intl.get('login.please_enter_new_password', '确认新密码')}
                                         data-tracename="确认新密码"
-<<<<<<< portal/modules/user_password/public/index.js
-=======
                                         onPressEnter={this.events_submitUserInfoForm.bind(this)}
->>>>>>> portal/modules/user_password/public/index.js
                                     />
                                 )}
                             </FormItem>
@@ -272,22 +269,13 @@ var UserPwdPage = createReactClass({
                                     this.renderIndicator()
                                 }
                                 <Button
-<<<<<<< portal/modules/user_password/public/index.js
                                     type="primary"
                                     className={btnCls}
-=======
-                                    type="primary" className="user-info-edit-pwd-submit-btn btn-primary-sure"
->>>>>>> portal/modules/user_password/public/index.js
                                     onClick={this.events_submitUserInfoForm.bind(this)}
                                     data-tracename="保存密码"
                                     disabled={_.isEmpty(getFieldValue('rePasswd'))}
                                 >
-<<<<<<< portal/modules/user_password/public/index.js
-                                    <ReactIntl.FormattedMessage id="user.password.save.password"
-                                        defaultMessage="保存密码"/>
-=======
                                     {Intl.get('user.password.save.password', '保存密码')}
->>>>>>> portal/modules/user_password/public/index.js
                                 </Button>
                             </div>
                         </Form>
