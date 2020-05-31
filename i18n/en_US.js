@@ -2915,6 +2915,7 @@ var en_US = {
     'fail.report.phone.err.tip': 'Failed to add invalid phone!',//上报无效电话失败！
     'user.info.no.email': 'You have not bound your mailbox yet,{add-email}',//您还没有绑定邮箱，{add-email}
     'user.info.add.email': 'add email',//添加邮箱
+    'user.info.no.wechat': 'You have not bound your wechat yet', // 您还没有绑定微信
     'schedule.call.out': 'Call out',//拨打
     'weekly.report.total.duration': 'The total duration of this week',//本周总时长
     'weekly.report.total.connected': 'The total number of connected of this week',//本周总接通数
