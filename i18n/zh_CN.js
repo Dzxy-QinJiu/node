@@ -2944,6 +2944,7 @@ var zh_CN = {
     'fail.report.phone.err.tip': '上报无效电话失败！',
     'user.info.no.email': '您还没有绑定邮箱，{add-email}',
     'user.info.add.email': '添加邮箱',
+    'user.info.no.wechat': '您还没有绑定微信',
     'schedule.call.out': '拨打',
     'weekly.report.total.duration': '本周总时长',
     'weekly.report.total.connected': '本周总接通数',

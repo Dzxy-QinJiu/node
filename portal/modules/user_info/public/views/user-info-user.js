@@ -700,7 +700,7 @@ class UserInfo extends React.Component{
                                             </a>
                                         </Popconfirm>) : (
                                         <span>
-                                                您还没有绑定微信
+                                            {Intl.get('user.info.no.wechat','您还没有绑定微信')}
                                             <a
                                                 href="/page/login/wechat?isBindWechatAfterLogin=true"
                                                 data-tracename="绑定微信"
