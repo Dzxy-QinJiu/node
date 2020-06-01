@@ -156,3 +156,12 @@ exports.getSelectedSaleManValue = (strategyInfo) => {
     }
     return selectedValue;
 };
+
+exports.getSelectedSaleManValueId = (strategyInfo) => {
+    let {member_id, sales_team_id} = strategyInfo;
+    let selectedSaleId = member_id;
+    if(!_.isEmpty(sales_team_id)) {
+        selectedSaleId += `&&${sales_team_id}`;
+    }
+    return selectedSaleId;
+};
