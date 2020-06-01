@@ -11,7 +11,7 @@ import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import DetailCard from 'CMP_DIR/detail-card';
 import classNames from 'classnames';
-import {getSalesDataList, getSelectedSaleManValue, getFormattedSalesMan} from '../utils/clue_assignment_utils';
+import {getSalesDataList, getSelectedSaleManValue, getSelectedSaleManValueId, getFormattedSalesMan} from '../utils/clue_assignment_utils';
 import {clueAssignmentStrategyForValidator} from 'PUB_DIR/sources/utils/validate-util';
 
 const LAYOUT = {
@@ -424,8 +424,8 @@ class StrategyInfo extends React.Component {
                     width={LAYOUT.EDIT_FIELD_WIDTH}
                     id={strategyInfo.id}
                     field="assignee"
-                    displayText={getSelectedSaleManValue(this.state.strategyInfo)}
-                    value={getSelectedSaleManValue(this.state.strategyInfo)}
+                    displayText={getSelectedSaleManValue(strategyInfo)}
+                    value={getSelectedSaleManValueId(strategyInfo)}
                     placeholder={Intl.get('clue.assignment.assignee.tip', '请选择或输入被分配人')}
                     hasEditPrivilege={true}
                     selectOptions={getSalesDataList(_.get(this.state, 'salesManList', []))}
