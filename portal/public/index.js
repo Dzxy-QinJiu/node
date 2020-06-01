@@ -67,7 +67,6 @@ function getUserPrivilegeAndStart() {
         unmountPrivilegeGet();
         suppressWarnings();
         const user = userData.getUserData();
-        storageUtil.setUserId(user.user_id);
         commonDataUtil.getAreaInfoAll();
         commonDataUtil.getGuideConfig();
         commonDataUtil.getUserPosition();
