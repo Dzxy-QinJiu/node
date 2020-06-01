@@ -53,8 +53,8 @@ export const callVolumeChart = {
         },
         {
             title: Intl.get('weekly.report.attendance.remarks', '出勤备注'),
-            dataIndex: 'total_callout_success',
-            width: 150,
+            dataIndex: 'leave_info_list',
+            width: 100,
             render: (text, record, index) => {
                 if (record.leave_info_list) {
                     return _.map(record.leave_info_list, remarks => {
