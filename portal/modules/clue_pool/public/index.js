@@ -43,6 +43,7 @@ import filterEmitter from 'CMP_DIR/filter/emitter';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -553,7 +554,7 @@ class ClueExtract extends React.Component {
 
     // 渲染线索内容
     renderClueCustomerBlock = () => {
-        let divHeight = getTableContainerHeight();
+        let divHeight = getTableContainerHeight(this.props.adaptiveHeight, false);
         if (this.state.cluePoolList.length) {
             return (
                 <div id="clue-content-block" className="clue-content-block" ref="clueCustomerList">
@@ -757,15 +758,15 @@ class ClueExtract extends React.Component {
         //待跟进线索无跟进内容
         let typeFilter = this.getFilterStatus();//线索类型
         let willTrace = SELECT_TYPE.WILL_TRACE === typeFilter.status;
-        let contactWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
-        let titleWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
-        let lastWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
-        let followupWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
+        // let contactWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
+        // let titleWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
+        // let lastWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
+        // let followupWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
 
         let columns = [
             {
                 dataIndex: 'clue_name',
-                // width: titleWidth,
+                width: TABLE_WIDTH.TITLE,
                 render: (text, salesClueItem, index) => {
                     //有相似线索
                     let hasSimilarClue = _.get(salesClueItem, 'lead_similarity');
@@ -826,7 +827,7 @@ class ClueExtract extends React.Component {
              ***/
             {
                 dataIndex: 'contact',
-                // width: contactWidth,
+                width: TABLE_WIDTH.CONTACT,
                 render: (text, record, index) => {
                     var contacts = record.contacts ? record.contacts : [];
                     if (_.isArray(contacts) && contacts.length){
@@ -851,7 +852,7 @@ class ClueExtract extends React.Component {
             },
             {
                 // title:'最后联系与跟进内容',
-                width: lastWidth,
+                width: TABLE_WIDTH.TRACE,
                 dataIndex: 'last_contact',
                 render: function(text, record, index) 
                 {
@@ -942,7 +943,7 @@ class ClueExtract extends React.Component {
                 pagination={false}
                 columns={this.getClueTableColunms()}
                 rowClassName={this.handleRowClassName}
-                scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
+                scroll={{y: getTableContainerHeight(this.props.adaptiveHeight, false) - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
             />);
 
     };
@@ -1303,7 +1304,7 @@ class ClueExtract extends React.Component {
                             getClueList={this.getCluePoolList}
                             style={{
                                 width: LAYOUT_CONSTANTS.FILTER_WIDTH,
-                                height: getTableContainerHeight() + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT
+                                height: getTableContainerHeight(this.props.adaptiveHeight, false) + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT
                             }}
                             showSelectTip={_.get(this.state.selectedClues, 'length')}
                             toggleList={this.toggleList.bind(this)}
@@ -1322,6 +1323,7 @@ class ClueExtract extends React.Component {
 ClueExtract.propTypes = {
     closeExtractCluePanel: PropTypes.func,
     clueSearchCondition: PropTypes.object,
+    adaptiveHeight: PropTypes.number
 };
 
-export default ClueExtract;
+export default adaptiveHeightHoc(ClueExtract);

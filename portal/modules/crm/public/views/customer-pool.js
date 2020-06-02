@@ -33,6 +33,7 @@ import BackMainPage from 'CMP_DIR/btn-back';
 import { CRM_VIEW_TYPES, CUSTOMER_POOL_TYPES } from '../utils/crm-util';
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {LAYOUT} from 'LIB_DIR/consts';
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -947,7 +948,10 @@ class CustomerPool extends React.Component {
                 field: 'phone'
             },
         ];
-        let {isWebMin} = isResponsiveDisplay();
+        let {isWebMin, isWEbSmall} = isResponsiveDisplay();
+        if(isResponsiveDisplay().isWebSmall){
+            tableWrapHeight -= LAYOUT.BOTTOM_NAV;
+        }
         let regulateCls = classNames('btn-item extract-btn',{
             'responsive-mini-btn': isWebMin
         });

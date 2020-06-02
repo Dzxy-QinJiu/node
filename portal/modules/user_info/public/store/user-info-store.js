@@ -37,7 +37,7 @@ function UserInfoStore() {
     this.userInfoLoading = false;
     //获取个人资料失败的提示
     this.userInfoErrorMsg = '';
-    
+
     this.bindActions(UserInfoActions);
 }
 //账号日志汉化
@@ -48,7 +48,7 @@ var translate = (list) => {
         'Microsoft Edge': Intl.get('user.login.browser.MicrosoftEdge', 'Edge'),
         'Rest': Intl.get('user.login.browser.Rest', 'Rest接口'),
         'Internet Explorer': Intl.get('user.login.browser.InternetExplorer', 'IE'),
-    }; 
+    };
     let equipmentList = {
         Computer: Intl.get('user.login.equipment.pc', '电脑',),
         Mobile: Intl.get('member.phone', '手机'),
