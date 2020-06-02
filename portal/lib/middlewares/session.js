@@ -35,7 +35,8 @@ var sessionOptions = {
     secret: config.session.secret,
     key: sessionKey,
     rolling: true,
-    store: store
+    store: store,
+    cookie: { httpOnly: false }
 };
 //设置store
 config.sessionStore = store;
