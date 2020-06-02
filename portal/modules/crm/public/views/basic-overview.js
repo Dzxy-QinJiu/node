@@ -608,7 +608,6 @@ class BasicOverview extends React.Component {
                 }
                 return (
                     <RadioOrCheckBoxEditField
-                        className={classNames({'more-select-option': selectOptions.length > 3})}
                         width={editWidth}
                         id={basicData.id}
                         displayText={value}

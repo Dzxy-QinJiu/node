@@ -266,11 +266,24 @@
             .ant-radio-group, .ant-checkbox-group {
               margin-left: 10px;
               margin-top: -5px;
+              word-wrap: break-word;
+              white-space: normal;
+              max-width: 310px;
+              width: auto;
+              .ant-checkbox, .ant-radio {
+                input {
+                  width: 14px;
+                }
+              }
+              .ant-radio + span {
+                margin-left: 4px;
+              }
             }
-            .more-select-option {
-              display: flex;
-              flex-direction: column;
-            }
+          }
+        }
+        .radio-wrap {
+          .ant-form-item {
+            margin-top: -4px;
           }
         }
       }

@@ -102,7 +102,8 @@ class RadioOrCheckBoxEditField extends React.Component {
     render() {
         var displayCls = classNames({
             'basic-edit-field': true,
-            'editing': this.state.displayType === 'edit'
+            'editing': this.state.displayType === 'edit',
+            'radio-wrap': this.state.componentType === 'radio'
         });
 
         var displayText = this.state.value;
