@@ -57,6 +57,7 @@ class BasicOverview extends React.Component {
             competitorList: [],
             isOplateUser: false,
             customerStageList: [], // 客户阶段列表
+            isShowAddRecordPanel: false // 是否显示了添加跟进记录面板，默认false
         };
     }
 
@@ -448,6 +449,12 @@ class BasicOverview extends React.Component {
         );
     };
 
+    toggleAddRecordPanel = (flag) => {
+        this.setState({
+            isShowAddRecordPanel: flag
+        });
+    }
+
     renderCustomerRcord = () => {
         return <CustomerRecord
             isOverViewPanel={true}
@@ -458,6 +465,7 @@ class BasicOverview extends React.Component {
             disableEdit={this.props.disableEdit || this.props.isMerge}
             hideContactWay={this.props.hideContactWay}
             updateCustomerLastContact={this.props.updateCustomerLastContact}
+            toggleAddRecordPanel={this.toggleAddRecordPanel}
         />;
     };
 
@@ -705,7 +713,8 @@ class BasicOverview extends React.Component {
         if (_.isArray(basicData.immutable_labels) && basicData.immutable_labels.length) {
             tagArray = basicData.immutable_labels.concat(tagArray);
         }
-        var noRecordData = !this.state.customerRecord.length && !this.state.customerRecordLoading;
+        var noRecordData = !this.state.customerRecord.length && !this.state.customerRecordLoading
+            && !this.state.isShowAddRecordPanel;
         var subDomain = _.get(basicData, 'sub_domains', '');//域名
         var platformName = _.get(basicData,'platform_name','');//平台名称
         return (
