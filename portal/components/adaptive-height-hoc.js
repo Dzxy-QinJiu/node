@@ -46,7 +46,7 @@ export default function(WrappedComponent, element, marginBottom = 0) {
         }
 
         render() {
-            return <WrappedComponent {...this.props} {...this.state} />;
+            return <WrappedComponent getAdaptiveHeight={this.getAdaptiveHeight.bind(this)} {...this.props} {...this.state} />;
         }
     };
 }
