@@ -2236,10 +2236,10 @@ class ClueCustomer extends React.Component {
         }
     };
     onPageChange = (page) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
-        if (page === this.state.pageNum) {
+        if (page === this.state.pageNum || this.state.isLoading) {
             return;
         } else {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
             let selectedCustomer = this.state.selectedCustomer;
             //不是全选时，清空翻页前选择的客户
             if (_.isArray(selectedCustomer) && selectedCustomer.length && !this.state.selectAllMatched) {
