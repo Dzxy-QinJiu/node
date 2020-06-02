@@ -102,7 +102,8 @@ class RadioOrCheckBoxEditField extends React.Component {
     render() {
         var displayCls = classNames({
             'basic-edit-field': true,
-            'editing': this.state.displayType === 'edit'
+            'editing': this.state.displayType === 'edit',
+            'radio-wrap': this.state.componentType === 'radio'
         });
 
         var displayText = this.state.value;
@@ -123,7 +124,7 @@ class RadioOrCheckBoxEditField extends React.Component {
                             ) : null
                         }
                         <span className="inline-block basic-info-text">
-                            {displayText}
+                            {_.isArray(displayText) ? _.join(displayText, '、') : displayText}
                         </span>
 
                     </div>
@@ -160,6 +161,7 @@ class RadioOrCheckBoxEditField extends React.Component {
                                 <RadioGroup
                                     onChange={this.handleRadioChange.bind(this)}
                                     value={this.state.value}
+                                    className={this.props.className}
                                 >
                                     {_.map(this.state.selectOptions, (item) => {
                                         return (<Radio value={item}>{item}</Radio>);
@@ -170,6 +172,7 @@ class RadioOrCheckBoxEditField extends React.Component {
                                     options={this.state.selectOptions}
                                     onChange={this.handleCheckboxChange.bind(this)}
                                     value={this.state.value}
+                                    className={this.props.className}
                                 />
                             )
                         }
@@ -225,6 +228,7 @@ RadioOrCheckBoxEditField.defaultProps = {
     },
     selectOptions: [],
     componentType: 'radio', // 组件类型，默认是radio
+    className: ''
 };
 RadioOrCheckBoxEditField.propTypes = {
     id: PropTypes.string,
@@ -240,6 +244,7 @@ RadioOrCheckBoxEditField.propTypes = {
     hideButtonBlock: PropTypes.bool,
     saveEditInput: PropTypes.func,
     selectOptions: PropTypes.array,
-    componentType: PropTypes.string
+    componentType: PropTypes.string,
+    className: PropTypes.string
 };
 export default RadioOrCheckBoxEditField;
