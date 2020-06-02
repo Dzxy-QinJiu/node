@@ -332,6 +332,11 @@ const BasicEditField = createReactClass({
                 );
             }
         }
+        // 数字类型，数值限定
+        let inputExtraProps = {};
+        if (this.props.type === 'number') {
+            inputExtraProps.min = '0';
+        }
 
         var inputBlock = this.state.displayType === 'edit' ? (
             <div className="inputWrap" ref="inputWrap">
@@ -357,7 +362,8 @@ const BasicEditField = createReactClass({
                                         onBlur={this.onBlurInput.bind(this, this.props.type)}
                                         autosize={{minRows: 2, maxRows: 6}}
                                     />
-                                    : <Input name="input"
+                                    : <Input
+                                        name="input"
                                         ref={changeInput => this['changeInput' + this.state.setRandomInputId] = changeInput}     
                                         type={this.props.type}
                                         placeholder={this.props.placeholder}
@@ -367,6 +373,7 @@ const BasicEditField = createReactClass({
                                         onFocus={this.onFocusInput.bind(this, this.props.type)}
                                         onBlur={this.onBlurInput.bind(this, this.props.type)}
                                         addonAfter={this.props.afterValTip || ''}
+                                        {...inputExtraProps}
                                     />}
                             </Validator>
                         </FormItem>
