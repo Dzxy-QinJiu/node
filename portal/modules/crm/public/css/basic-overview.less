@@ -248,13 +248,28 @@
           float: left;
           color: #999999;
           line-height: 24px;
+          margin-right: 6px;
         }
-        .basic-info-text {
-          color: #333333;
-          margin-left: 6px;
-        }
-        .basic-edit-field form{
-          display: block;
+
+        .basic-edit-field {
+          .basic-info-text {
+            width: 100%;
+            max-width: 310px;
+            .shear-content-container {
+              width: 100%;
+            }
+          }
+          .ant-form-item {
+            .ant-input, div.ant-select, .ant-calendar-picker {
+              margin-left: 0;
+            }
+            .ant-radio-group, .ant-checkbox-group {
+              display: flex;
+              flex-direction: column;
+              margin-left: 10px;
+              margin-top: -5px;
+            }
+          }
         }
       }
     }

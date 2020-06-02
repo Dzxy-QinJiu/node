@@ -1,4 +1,3 @@
-var React = require('react');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
@@ -228,7 +227,7 @@ let BasicEditSelectField = createReactClass({
             var cls = classNames('edit-container',{
                 'hover-show-edit': this.props.hoverShowEdit && this.props.hasEditPrivilege
             });
-            if (this.state.displayText) {
+            if (!_.isEmpty(this.state.displayText)) {
                 textBlock = (
                     <div className={cls}>
                         {this.props.hasEditPrivilege ? (
@@ -243,8 +242,13 @@ let BasicEditSelectField = createReactClass({
                 textBlock = (
                     <span className="inline-block basic-info-text no-data-descr">
                         {this.props.hasEditPrivilege ? (
-                            <a onClick={this.setEditable.bind(this)} className="handle-btn-item">{this.props.addDataTip}</a>) : <span className="no-data-descr-nodata">{this.props.noDataTip}</span>}
-
+                            <a
+                                onClick={this.setEditable.bind(this)}
+                                className="handle-btn-item">
+                                {this.props.addDataTip}
+                            </a>) : (
+                            <span className="no-data-descr-nodata">{this.props.noDataTip}</span>
+                        )}
                     </span>
                 );
             }

@@ -291,11 +291,27 @@ const BasicEditField = createReactClass({
             if (displayText) {
                 let textContent = displayText;
                 if (this.props.textCut) {
-                    textContent = (
-                        <ShearContent>
-                            {displayText}
-                        </ShearContent>
-                    );
+                    if (this.props.type === 'textarea') {
+                        let mutip = displayText && displayText.split('\n') || [];
+                        textContent = (
+                            <ShearContent>
+                                {
+                                    _.map(mutip, item => {
+                                        return (
+                                            <p>{item}</p>
+                                        );
+                                    })
+                                }
+                            </ShearContent>
+                        );
+                    } else {
+                        textContent = (
+                            <ShearContent>
+                                {displayText}
+                            </ShearContent>
+                        );
+                    }
+
                 }
                 textBlock = (
                     <div className={cls}>

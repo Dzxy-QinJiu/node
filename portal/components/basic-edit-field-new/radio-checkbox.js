@@ -123,7 +123,7 @@ class RadioOrCheckBoxEditField extends React.Component {
                             ) : null
                         }
                         <span className="inline-block basic-info-text">
-                            {displayText}
+                            {_.isArray(displayText) ? _.join(displayText, '、') : displayText}
                         </span>
 
                     </div>

@@ -562,7 +562,7 @@ class BasicOverview extends React.Component {
                     //更新列表中的自定义字段
                     this.editBasicSuccess(submitData);
                     let basicData = this.state.basicData;
-                    basicData.custom_variables = submitData;
+                    basicData.custom_variables = _.get(submitData, 'custom_variables', {});
                     this.setState({
                         basicData
                     });
@@ -578,6 +578,7 @@ class BasicOverview extends React.Component {
 
     renderCustomFieldType = (item) => {
         const basicData = this.state.basicData;
+        const editWidth = 340;
         // 自定义的值
         const customVariables = _.get(basicData, 'custom_variables', {});
         const fieldType = _.get(item, 'field_type');
@@ -607,6 +608,7 @@ class BasicOverview extends React.Component {
                 }
                 return (
                     <RadioOrCheckBoxEditField
+                        width={editWidth}
                         id={basicData.id}
                         displayText={value}
                         value={value}
@@ -627,12 +629,14 @@ class BasicOverview extends React.Component {
             } else {
                 return (
                     <BasicEditSelectField
+                        width={editWidth}
                         multiple={isMultiple}
                         id={basicData.id}
                         displayText={value}
                         value={value}
                         field={name}
                         selectOptions={selectOptions}
+                        placeholder={selectPlaceholderTip}
                         validators={[isMultiple ? {type: 'array'} : {}]}
                         hasEditPrivilege={crmUtil.checkPrivilege([
                             crmPrivilegeConst.CUSTOMER_UPDATE,
@@ -653,6 +657,7 @@ class BasicOverview extends React.Component {
             }
             return (
                 <BasicEditInputField
+                    width={editWidth}
                     id={basicData.id}
                     type={type}
                     field={name}
@@ -672,6 +677,7 @@ class BasicOverview extends React.Component {
         } else if(_.isEqual(fieldType, 'date')){
             return (
                 <BasicEditDateField
+                    width={editWidth}
                     id={basicData.id}
                     displayText={value}
                     value={value}
