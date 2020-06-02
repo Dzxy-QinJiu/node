@@ -858,35 +858,46 @@ function wechatLoginByUnionIdMiniprogram(req, res, unionId) {
         });
 }
 
-//修改session数据
-function modifySessionData(req, data) {
-    var userData = UserDto.toSessionData(req, data);
-    req.session['_USER_TOKEN_'] = userData['_USER_TOKEN_'];
-    req.session.clientInfo = userData.clientInfo;
-    req.session.user = userData.user;
-}
 
 //微信登录及微信小程序账号、密码登录成功处理
 function wechatLoginSuccess(req, res) {
-    return function(data) {
+    return function(userData) {
         //修改session数据
-        modifySessionData(req, data);
+        modifySessionData(req, userData);
         //设置sessionStore，如果是内存session时，需要从req中获取
         global.config.sessionStore = global.config.sessionStore || req.sessionStore;
         req.session.save(function() {
-            if (data) {
-                var result = {
-                    'nick_name': data.nick_name,
-                    'privileges': data.privileges,
-                    'user_id': data.user_id,
-                    'user_name': data.user_name
-                };
-                //登录成功后的处理
-                res.status(200).json(result);
-            } else {
-                res.status(500).json('登录失败');
-                // restLogger.error('小程序登录后，返回数据为空');
-            }
+            DesktopLoginService.getWebsiteConfig(req, res).on('success', data => {
+                // 记录网站的个性化配置数据，获取用户信息时，不用再发请求获取一遍
+                req.session.websiteConfig = data || {};
+                //获取网站个性化配置,以便判断进入后的首页是否展示欢迎页
+                let personnel_setting = _.get(data, 'personnel_setting');
+                if(!_.get(personnel_setting, commonUtil.CONSTS.WELCOME_PAGE_FIELD)) {
+                    req.session.showWelComePage = true;
+                }
+                req.session.save(() => {
+                    //ajax请求返回sussess
+                    if (req.xhr) {
+                        //session失效时，登录成功后的处理
+                        //登录成功后的处理
+                        res.status(200).json(userData);
+                    } else {
+                        //登录界面，登录成功后的处理
+                        res.redirect('/');
+                    }
+                });
+            }).on('error', errorObj => {
+                // 获取组织失败后的处理
+                req.session.user = '';
+                loginError(req, res)(errorObj);
+                /*if (req.xhr) {
+                    //session失效时，登录成功后的处理
+                    res.status(200).json('success');
+                } else {
+                    //登录界面，登录成功后的处理
+                    res.redirect('/login?lang=' + lang);
+                }*/
+            });
         });
     };
 }
