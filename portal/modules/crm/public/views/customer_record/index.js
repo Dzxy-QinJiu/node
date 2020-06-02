@@ -766,7 +766,11 @@ class CustomerRecord extends React.Component {
 
     //添加跟进记录面板的展示与隐藏
     toggleAddRecordPanel = () => {
-        this.setState({addRecordPanelShow: !this.state.addRecordPanelShow});
+        this.setState({
+            addRecordPanelShow: !this.state.addRecordPanelShow
+        }, () => {
+            _.isFunction(this.props.toggleAddRecordPanel) && this.props.toggleAddRecordPanel(this.state.addRecordPanelShow);
+        });
     };
 
     onSelectFilterType = ({item, key, selectedKeys}) => {
@@ -999,6 +1003,7 @@ CustomerRecord.propTypes = {
     changeActiveKey: PropTypes.func,
     disableEdit: PropTypes.bool,
     hideContactWay: PropTypes.bool,
+    toggleAddRecordPanel: PropTypes.func,
 };
 module.exports = CustomerRecord;
 
