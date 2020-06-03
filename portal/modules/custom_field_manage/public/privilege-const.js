@@ -1,0 +1,10 @@
+/**
+ * Created by hzl on 2020/6/3.
+ */
+export default {
+    // 自定义字段查询权限
+    ORGANIZATION_CUSTOMIZEDVAR_QUERY: 'ORGANIZATION_CUSTOMIZEDVAR_QUERY',
+    // 自定义字段配置权限
+    ORGANIZATION_CUSTOMIZEDVAR_CONFIG: 'ORGANIZATION_CUSTOMIZEDVAR_CONFIG'
+};
+
