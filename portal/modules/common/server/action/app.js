@@ -1,5 +1,5 @@
 var appService = require('../service/app');
-
+var _ = require('lodash');
 //获取集成配置
 exports.getIntegrationConfig = function(req, res) {
     appService.getIntegrationConfig(req, res).on('success' , function(data) {
@@ -62,4 +62,19 @@ exports.queryUserCondition = (req, res) => {
         .on('error', (err) => {
             res.status(500).json(err && err.message);
         });
+};
+
+exports.getWxWebviewPage = (req, res) => {
+    var originalUrl = req.originalUrl;
+    var sessionId = originalUrl.split('?')[1];//小程序登录后的cookie，
+    var sessionStore = global.config.sessionStore;
+    if (sessionStore && sessionId && sessionId !== req.session.id) {
+        sessionStore.get(sessionId, (err, session) => {
+            req.session = _.assignIn(req.session, session);
+            _.isFunction(req.session.save) && req.session.save();
+        });
+        res.redirect('/');
+    } else {
+        res.redirect('/login');
+    }
 };
