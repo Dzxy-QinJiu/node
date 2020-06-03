@@ -66,13 +66,15 @@ exports.queryUserCondition = (req, res) => {
 
 exports.getWxWebviewPage = (req, res) => {
     var originalUrl = req.originalUrl;
-    var sessionId = originalUrl.split('?')[1];//小程序登录后的cookie，
+    var sessionId = decodeURIComponent(_.chain(originalUrl).split('?').get('[1]').split('=').get('[1]'));
     var sessionStore = global.config.sessionStore;
     if (sessionStore && sessionId && sessionId !== req.session.id) {
         sessionStore.get(sessionId, (err, session) => {
             req.session = _.assignIn(req.session, session);
             _.isFunction(req.session.save) && req.session.save();
+            sessionStore.destroy(sessionId);//获取后删除
         });
+
         res.redirect('/');
     } else {
         res.redirect('/login');
