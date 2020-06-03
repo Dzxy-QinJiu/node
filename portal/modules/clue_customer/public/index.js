@@ -82,7 +82,6 @@ const RightPanel = rightPanelUtil.RightPanel;
 var RightContent = require('CMP_DIR/privilege/right-content');
 import classNames from 'classnames';
 var crmUtil = require('MOD_DIR/crm/public/utils/crm-util');
-import ajax from 'ant-ajax';
 import commonAjax from 'MOD_DIR/common/ajax';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {pathParamRegex} from 'PUB_DIR/sources/utils/validate-util';
@@ -104,6 +103,7 @@ import ClueExtract from 'MOD_DIR/clue_pool/public';
 import MoreButton from 'CMP_DIR/more-btn';
 import history from 'PUB_DIR/sources/history';
 import {checkPhoneStatus} from 'PUB_DIR/sources/utils/common-data-util';
+
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
