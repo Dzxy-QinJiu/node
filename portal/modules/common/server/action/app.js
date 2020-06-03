@@ -68,20 +68,17 @@ exports.queryUserCondition = (req, res) => {
         });
 };
 
-exports.getWxWevviewPage = (req,res) => {
+exports.getWxWebviewPage = (req, res) => {
     var originalUrl = req.originalUrl;
-    var cookieUpdate = originalUrl.split('?')[1];//小程序登录后的cookie，
-    var cookieParse = cookie.parse(cookieUpdate);
-    var sessionId = cookieParser.signedCookie(cookieParse['sid'], config.session.secret);
+    var sessionId = originalUrl.split('?')[1];//小程序登录后的cookie，
     var sessionStore = global.config.sessionStore;
-    if (sessionStore) {
-        sessionStore.get(sessionId, (err,session) => {
-            if(sessionId !== req.session.id){
-                req.session = _.assignIn(req.session, session);
-                _.isFunction(req.session.save) && req.session.save();
-
-            }
+    if (sessionStore && sessionId !== req.session.id) {
+        sessionStore.get(sessionId, (err, session) => {
+            req.session = _.assignIn(req.session, session);
+            _.isFunction(req.session.save) && req.session.save();
         });
         res.redirect('/');
+    } else {
+        res.redirect('/login');
     }
 };

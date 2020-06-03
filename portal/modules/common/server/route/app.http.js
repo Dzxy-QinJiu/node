@@ -68,8 +68,8 @@ module.exports = {
         }
     },{
         'method': 'get',
-        'path': '/wxWevviewPage',
-        'handler': 'getWxWevviewPage',
+        'path': '/wxWebviewPage',
+        'handler': 'getWxWebviewPage',
         'passport': {
             'needLogin': false
         }
