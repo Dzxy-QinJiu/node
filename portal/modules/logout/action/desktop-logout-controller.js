@@ -36,11 +36,13 @@ exports.logout = function(req, res) {
                 res.redirect(loginUrl);
             });
         });
-    } else {
+    }else {
         //普通的登录,调用logout
         DesktopLogoutService.logout(req, res);
         req.session.destroy(function() {
-            res.redirect(loginUrl);
+            if(!req.query.isWechatLogout){//如果不是在小程序的web-view界面中退出的时候，才跳转到登录页
+                res.redirect(loginUrl);
+            }
         });
     }
 };

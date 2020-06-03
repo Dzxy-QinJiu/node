@@ -8,7 +8,7 @@
 var UI_ERROR = require('../../lib/utils/request-error-util');
 import {Modal} from 'antd';
 import phoneUtil from './utils/phone-util';
-
+import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/common-method-util';
 (function() {
     //socket的emitter
     var socketEmitter = require('./utils/emitters').socketEmitter;
@@ -58,7 +58,7 @@ import phoneUtil from './utils/phone-util';
             content: tipContent,
             okText: Intl.get('retry.login.again', '重新登录'),
             onOk: function() {
-                window.location.href = '/logout';
+                pcAndWechatMiniProgram('/logout');
             }
         });
         setTimeout(function() {
