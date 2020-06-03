@@ -2117,7 +2117,7 @@ class RecommendCluesList extends React.Component {
     }
 
     render() {
-        let divHeight = this.props.adaptiveHeight;
+        let divHeight = _.isFunction(this.props.getAdaptiveHeight) && this.props.getAdaptiveHeight() || this.props.adaptiveHeight;
         let {isWebMin} = isResponsiveDisplay();
         let contentEl = $('.recommend-clue-content');
         if(contentEl.length) {
@@ -2172,14 +2172,15 @@ class RecommendCluesList extends React.Component {
 
 RecommendCluesList.defaultProps = {
     afterSuccess: function() {},
-    onClosePanel: function() {}
+    onClosePanel: function() {},
 };
 RecommendCluesList.propTypes = {
     onClosePanel: PropTypes.func,
     afterSuccess: PropTypes.func,
     guideRecommendCondition: PropTypes.object,
     clearGuideRecomentCondition: PropTypes.func,
-    adaptiveHeight: PropTypes.number
+    adaptiveHeight: PropTypes.number,
+    getAdaptiveHeight: PropTypes.func,
 };
 
 export default adaptiveHeightHoc(RecommendCluesList, '.recommend-clue-detail-content-container .recommend-clue-content');

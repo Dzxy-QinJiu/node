@@ -9,6 +9,11 @@ import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 import {getCompanyListByName} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import Trace from 'LIB_DIR/trace';
+
+const KEYCODE = {
+    ENTER: 13
+};
 
 class SearchInputPanel extends React.Component {
     constructor(props) {
@@ -20,19 +25,34 @@ class SearchInputPanel extends React.Component {
     }
 
     componentDidMount() {
+        let input = '.search-input-container .search-input';
+        //添加keydown事件
+        $(input).on('keydown', this.onKeyDown);
         this.getCompanyListByName(this.state.keyword);
         if(this.searchInputRef) {
             this.searchInputRef.state.keyword = this.state.keyword;
         }
     }
 
+    componentWillUnmount() {
+        let input = '.search-input-container .search-input';
+        $(input).off('keydown', this.onKeyDown);
+    }
+
+    onKeyDown = (e) => {
+        if(e.keyCode === KEYCODE.ENTER) {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '使用enter搜索关键词：' + e.target.value);
+            this.props.handleShowSearchPanel(false);
+            _.isFunction(this.props.onSearchButtonClick) && this.props.onSearchButtonClick(e.target.value);
+        }
+    };
+
     getKeyWordPlaceholder() {
         return [Intl.get('register.company.nickname', '公司名称'), Intl.get('clue.recommend.industry.name', '行业名称'), Intl.get('common.product.name', '产品名称')].join('/');
     }
 
     searchChange = (value) => {
-        let { keyword } = this.state;
-        keyword = _.trim(value || '');
+        let keyword = _.trim(value || '');
         this.getCompanyListByName(keyword);
         this.setState({keyword});
     };
@@ -65,12 +85,11 @@ class SearchInputPanel extends React.Component {
 
     handleShowSearchPanel = () => {
         this.props.handleShowSearchPanel(false);
-        _.isFunction(this.props.onSearchButtonClick) && this.props.onSearchButtonClick(this.props.keyword);
     }
 
     renderSearchInput = () => {
         return (
-            <div className="clue-recommend-filter-search-wrapper mobile-search-input-container">
+            <div className="clue-recommend-filter-search-wrapper mobile-search-input-container search-input-container">
                 <SearchInput
                     key="search-input"
                     ref={ref => this.searchInputRef = ref}
