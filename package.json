@@ -38,7 +38,7 @@
     "@material-ui/core": "4.8.1",
     "@material-ui/styles": "4.7.1",
     "ant-auth-request": "1.0.19",
-    "ant-chart-collection": "1.0.38",
+    "ant-chart-collection": "1.0.39",
     "ant-utils": "1.0.16",
     "app-root-path": "1.0.0",
     "babel": "6.23.0",
