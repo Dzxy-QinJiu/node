@@ -1,13 +1,16 @@
 /**
  * Created by hzl on 2020/5/14.
  */
-import { Button, message} from 'antd';
-import { manageCustomType, customFieldType } from 'PUB_DIR/sources/utils/consts';
+import { Button, message, Popover} from 'antd';
+import { manageCustomType, customFieldType, manageCustomTab } from 'PUB_DIR/sources/utils/consts';
 import { AntcTable } from 'antc';
 import classNames from 'classnames';
 import Spinner from 'CMP_DIR/spinner';
 import CustomFieldPanel from './views/custom-field-panel';
 import ajax from './ajax';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import customFieldPrivilegeConst from './privilege-const';
+
 const LAYOUT_CONSTANTS = {
     FRIST_NAV_WIDTH: 75, // 一级导航的宽度
     NAV_WIDTH: 120, // 导航宽度
@@ -76,6 +79,14 @@ class CustomFieldManage extends React.Component {
     //渲染操作按钮区
     renderTopNavOperation = () => {
         const activeTab = this.state.activeTab;
+        const customizedVariables = _.get(this.state.customFieldData, '[0]customized_variables', []);
+        const customizedFieldLength = _.get(customizedVariables, 'length');
+        let disabled = false;
+        let title = '';
+        if (customizedFieldLength >= 10) {
+            disabled = true;
+            title = Intl.get('custom.field.add.count.limit', '{name}自定义字段数量已达上限', {name: manageCustomTab[activeTab]});
+        }
         return (
             <div className='condition-operator'>
                 <div className='pull-left'>
@@ -98,11 +109,31 @@ class CustomFieldManage extends React.Component {
                         }
                     </ul>
                 </div>
-                <div className='pull-right'>
-                    <Button onClick={this.handleAddCustomField.bind(this)}>
-                        {Intl.get('common.add', '添加')}
-                    </Button>
-                </div>
+                {
+                    hasPrivilege(customFieldPrivilegeConst.ORGANIZATION_CUSTOMIZEDVAR_CONFIG) ? (
+                        <div className='pull-right'>
+                            {
+                                title ? (
+                                    <Popover
+                                        content={title}
+                                        placement="left"
+                                    >
+                                        <Button
+                                            disabled={disabled}
+                                        >
+                                            {Intl.get('common.add', '添加')}
+                                        </Button>
+                                    </Popover>
+                                ) : (
+                                    <Button onClick={this.handleAddCustomField.bind(this)}>
+                                        {Intl.get('common.add', '添加')}
+                                    </Button>
+                                )
+                            }
+                        </div>
+                    )
+                        : null
+                }
             </div>
         );
     };
@@ -213,12 +244,18 @@ class CustomFieldManage extends React.Component {
                                 </span>
                             ) : (
                                 <React.Fragment>
-                                    <span onClick={this.handleEdit.bind(this, rowData, idx)}>
-                                        {Intl.get('common.edit', '编辑')}
-                                    </span>
-                                    <span onClick={this.handleDelete.bind(this, rowData, idx)}>
-                                        {Intl.get('common.delete', '删除')}
-                                    </span>
+                                    <i
+                                        title={Intl.get('common.edit', '编辑')}
+                                        className="iconfont icon-edit-btn handle-btn-item"
+                                        onClick={this.handleEdit.bind(this, rowData, idx)}
+                                    >
+                                    </i>
+                                    <i
+                                        title={Intl.get('common.delete', '删除')}
+                                        className="iconfont icon-delete handle-btn-item"
+                                        onClick={this.handleDelete.bind(this, rowData, idx)}
+                                    >
+                                    </i>
                                 </React.Fragment>
                             )
                         }

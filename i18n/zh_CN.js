@@ -1099,6 +1099,7 @@ var zh_CN = {
     'custom.field.no.name': '暂无{name}',
     'custom.field.add.name': '添加{name}',
     'custom.field.select.name': '请选择{name}',
+    'custom.field.add.count.limit': '{name}自定义字段数量已达上限（10个）',
     // 后台管理-自定义字段end
 
     //应用管理start
