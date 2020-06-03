@@ -19,7 +19,7 @@ const CODE_EFFECTIVE_TIME = 60;
 const CODE_INTERVAL_TIME = 1000;
 let getVerifyErrorCaptchaCodeAJax = null;
 var base64_prefix = 'data:image/png;base64,';
-
+import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/common-method-util';
 class RegisterForm extends React.Component {
     constructor(props) {
         super(props);
@@ -392,8 +392,9 @@ class RegisterForm extends React.Component {
         window.open('/privacy/policy');
     }
     toLogin = (eventTraceDescr, e) => {
+
         Trace.traceEvent(e, eventTraceDescr);
-        window.location.href = '/login';
+        pcAndWechatMiniProgram('/login');
     }
     clearErrorMsg = () => {
         this.setState({

@@ -1637,7 +1637,7 @@ exports.renderUnreadMsg = function() {
     />;
 };
 exports.pcAndWechatMiniProgram = function(hrefUrl) {
-    if (window.__wxjs_environment === 'miniprogram') {//
+    if (window.__wxjs_environment === 'miniprogram') {//是在小程序包裹的web-view中的退出处理
         $.ajax({
             url: '/logout',
             dataType: 'json',
