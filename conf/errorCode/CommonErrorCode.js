@@ -38,7 +38,7 @@ function getConfigJson(req) {
         '10123': {'httpCode': 500, 'message': backendIntl.get('errorcode.14', '原始密码错误')},
         '10124': {'httpCode': 500, 'message': backendIntl.get('errorcode.138', '座席号已存在！')},
         '10126': {'httpCode': 500, 'message': backendIntl.get('errorcode.167', '该手机号已被绑定到其他账号，请先登录原账号解绑')},
-        '10127': {'httpCode': 500, 'message': backendIntl.get('login.fogot.password.picture.code.error', '图片验证码错误')},
+        '10127': {'httpCode': 500, 'message': backendIntl.get('login.forgot.password.picture.code.error', '图片验证码错误')},
         /**用户**/
         '10202': {'httpCode': 500, 'message': backendIntl.get('errorcode.15', '添加用户失败')},
         '10203': {'httpCode': 500, 'message': backendIntl.get('errorcode.16', '获取用户失败')},
@@ -80,9 +80,11 @@ function getConfigJson(req) {
         '11048': {'httpCode': 500, 'message': backendIntl.get('errorcode.39', '用户名或密码错误')},
         //SSO未登录
         '11051': {'httpCode': 500, 'message': backendIntl.get('errorcode.11', '登录失败,请刷新后重试')},
+        //找回密码中，重置密码接口返回的ticket无效、超时的错误
+        '11052': {'httpCode': 500, 'message': backendIntl.get('login.forgot.password.reset.expired', '重置密码超时')},
         '11053': {'httpCode': 500, 'message': backendIntl.get('errorcode.login.failed', '登录失败')},
         //登录、找回密码时，图片验证码输错
-        '11107': {'httpCode': 500, 'message': backendIntl.get('login.fogot.password.picture.code.error', '图片验证码错误')},
+        '11107': {'httpCode': 500, 'message': backendIntl.get('login.forgot.password.picture.code.error', '图片验证码错误')},
         //用户不存在
         '11413': {'httpCode': 500, 'message': backendIntl.get('errorcode.39', '用户名或密码错误')},
         //用户密码错误
@@ -95,18 +97,18 @@ function getConfigJson(req) {
         //客套业务接口报的错
         '19401': {'httpCode': 500, 'message': backendIntl.get('errorcode.36', '在其他应用已退出')},
         '11476': {'httpCode': 500, 'message': backendIntl.get('errorcode.42', '你的账号已被停用，请联系管理员')},
-        //找回密码时，发送短信验证码之前获取操作码错误对应的错误码
-        '11479': {'httpCode': 500, 'message': backendIntl.get('register.code.get.error', '获取短信验证码失败')},
+        //找回密码时，发送短信验证码时，操作码错误（由于操作码是通过接口获取的，一般出错就是操作码超时的情况）
+        '11479': {'httpCode': 500, 'message': backendIntl.get('login.forgot.password.operate.expired', '操作超时')},
         //找回密码时，前三次短信验证码验证错误
-        '11481': {'httpCode': 500, 'message': backendIntl.get('login.fogot.password.phone.code.error', '短信验证码错误')},
-        //找回密码时，短信验证码验证时过期的错误码
-        '11482': {'httpCode': 500, 'message': backendIntl.get('login.fogot.password.phone.code.expired', '短信验证码已过期')},
+        '11481': {'httpCode': 500, 'message': backendIntl.get('login.forgot.password.phone.code.error', '短信验证码错误')},
         //找回密码时，第四次及以后短信验证码验证错误且需要输入图片验证码时验，或者短信验证码错误四次之后图片验证码输对了短信验证码没输对的时候报的错
         '11483': {'httpCode': 500, 'message': 'verification_code_error_and_need_captcha'},
         //绑定微信时报的错
         '11520': {'httpCode': 500, 'message': backendIntl.get('errorcode.invalid.wechat', '无效的微信账号')},
         '11521': {'httpCode': 500, 'message': backendIntl.get('errorcode.bound.wechat', '该账号已绑定到其他微信')},
         '11522': {'httpCode': 500, 'message': backendIntl.get('errorcode.wechat.bound.other', '您的微信已绑定到其他账号')},
+        //找回密码，验证短信验证码时，短信验证码已过期的错误
+        '11542': {'httpCode': 500, 'message': backendIntl.get('login.forgot.password.phone.code.expired', '短信验证码已过期')},
 
         /****************** 安全域  ***************** */
 

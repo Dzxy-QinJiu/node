@@ -375,21 +375,27 @@ function getOperateCode(req, res) {
         });
     });
 }
-
-//发送重置密码时的身份验证信息
-exports.sendResetPasswordMsg = function(req, res) {
-    //先获取操作码
+//找回密码-获取操作码
+exports.getOperateCode = function(req, res) {
     getOperateCode(req, res).then(function(operateCode) {
-        const userName = req.query.user_name;
-        const sendType = req.query.send_type;
-        //发送信息
-        DesktopLoginService.sendResetPasswordMsg(req, res, userName, sendType, operateCode).on('success', function(data) {
-            if (!data) data = true;
-            res.status(200).json(data);
-        }).on('error', function(errorObj) {
-            res.status(500).json(errorObj);
+        req.session.forgot_password_operate_code = operateCode;
+        req.session.save(function() {
+            res.status(200).json('success');
         });
     }).catch(function(errorObj) {
+        res.status(500).json(errorObj);
+    });
+};
+//发送重置密码时的身份验证信息
+exports.sendResetPasswordMsg = function(req, res) {
+    const operateCode = req.session.forgot_password_operate_code;
+    const userName = req.query.user_name;
+    const sendType = req.query.send_type;
+    //发送信息
+    DesktopLoginService.sendResetPasswordMsg(req, res, userName, sendType, operateCode).on('success', function(data) {
+        if (!data) data = true;
+        res.status(200).json(data);
+    }).on('error', function(errorObj) {
         res.status(500).json(errorObj);
     });
 };
