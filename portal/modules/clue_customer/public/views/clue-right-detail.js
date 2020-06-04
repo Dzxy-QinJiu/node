@@ -1,4 +1,3 @@
-var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -452,6 +451,7 @@ class ClueRightPanel extends React.Component {
                                             extractClueOperator={this.props.extractClueOperator}
                                             changeActiveKey={this.changeActiveKey}
                                             hideContactWay={hideContactWay}
+                                            leadCustomFieldData={this.props.leadCustomFieldData}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -547,5 +547,6 @@ ClueRightPanel.propTypes = {
     hasPhonePanel: PropTypes.bool,
     phonePanelHasCustomerSchedule: PropTypes.bool,
     phonePanelFinishTrace: PropTypes.bool,
+    leadCustomFieldData: PropTypes.object,
 };
 export default ClueRightPanel;

@@ -1,5 +1,3 @@
-var React = require('react');
-const PropTypes = require('prop-types');
 var FilterStore = require('../store/filter-store');
 var FilterAction = require('../action/filter-actions');
 import { administrativeLevels, CUSTOMER_TAGS, UNKNOWN } from '../utils/crm-util';

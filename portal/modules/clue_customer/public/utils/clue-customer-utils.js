@@ -285,6 +285,10 @@ export const handleSubmitClueItemData = function(submitObj,isMarkingAvalibility)
     if (_.get(clueContact, '[0]')) {
         updateObj.contacts = clueContact;
     }
+    // 是否更新了自定义字段
+    if (submitObj.custom_variables) {
+        updateObj.custom_variables = _.get(submitObj, 'custom_variables');
+    }
     for (var key in submitObj) {
         data.updateItem = key;
         updateObj[key] = submitObj[key];
