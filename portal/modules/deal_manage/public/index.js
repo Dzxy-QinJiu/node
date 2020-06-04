@@ -20,6 +20,7 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import classNames from 'classnames';
 import DealBoardList from './views/deal-board-list';
 import DealTable from './views/deal-table';
+import customFieldAjax from '../../custom_field_manage/public/ajax';
 import orderPrivilegeConst from './privilege-const';
 
 const RadioButton = Radio.Button;
@@ -47,9 +48,24 @@ class DealManage extends React.Component {
             customerOfCurUser: {},//当前展示用户所属客户的详情
             curShowCustomerId: '',//当前查看的客户详情
             viewType: VIEW_TYPES.LIST,//默认展示看板视图
+            opportunityCustomFieldData: {},  // 机会（订单）自定义字段的值，默认空
         };
         this.boardListRef = null;
         this.dealTableRef = null;
+    }
+
+    //  获取机会自定义字段信息
+    getOpportunityCustomFieldConfig = () => {
+        customFieldAjax.getCustomFieldConfig({customized_type: 'opportunity'}).then( (result) => {
+            this.setState({
+                opportunityCustomFieldData: result
+            });
+        } );
+    }
+
+    componentDidMount() {
+        //  获取机会自定义字段信息
+        this.getOpportunityCustomFieldConfig();
     }
 
     showDetailPanel = (deal) => {
@@ -271,10 +287,17 @@ class DealManage extends React.Component {
                         </div>)}
                 </div>
                 {this.state.isDetailPanelShow ? (
-                    <DealDetailPanel currDeal={this.state.currDeal} isBoardView={isBoardView}
-                        hideDetailPanel={this.hideDetailPanel}/>
+                    <DealDetailPanel
+                        currDeal={this.state.currDeal}
+                        isBoardView={isBoardView}
+                        hideDetailPanel={this.hideDetailPanel}
+                        opportunityCustomFieldData={this.state.opportunityCustomFieldData}
+                    />
                 ) : this.state.isDealFormShow ? (
-                    <DealForm hideDealForm={this.hideDealForm} isBoardView={isBoardView}/>
+                    <DealForm
+                        hideDealForm={this.hideDealForm}
+                        isBoardView={isBoardView}
+                    />
                 ) : null}
                 {/*查看该客户下的用户列表*/}
                 <RightPanel
