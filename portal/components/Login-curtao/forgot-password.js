@@ -453,15 +453,16 @@ class ForgotPassword extends React.Component {
     renderVerifyPhoneCodeView() {
         const { getFieldDecorator, getFieldsValue } = this.props.form;
         const values = getFieldsValue();
-        let curPhone = this.state.sendMsgPhone;
+        // 暂时注释掉手机号的展示，以后需要的话放开注释即可
+        // let curPhone = this.state.sendMsgPhone;
         // 手机号只展示前三位和后三位，中间显示***
-        if (curPhone) {
-            curPhone = curPhone.substr(0, 3) + '***' + curPhone.substr(-3);
-        }
-        curPhone = Intl.get('login.forgot.password.current.phone', '当前手机号') + curPhone; 
+        // if (curPhone) {
+        //     curPhone = curPhone.substr(0, 3) + '***' + curPhone.substr(-3);
+        // }
+        // curPhone = Intl.get('login.forgot.password.current.phone', '当前手机号') + curPhone; 
         return (
             <React.Fragment>
-                <div className='send-msg-phone-num'>{curPhone}</div>
+                {/* <div className='send-msg-phone-num'>{curPhone}</div> */}
                 <FormItem className='input-item' key='phoneCode'>
                     {getFieldDecorator('phoneCode', {
                         rules: [{ required: true, message: Intl.get('login.input.phone.code', '请输入短信验证码', ) }],
