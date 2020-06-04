@@ -32,8 +32,6 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import SearchInputPanel from './search-input-panel';
 import MobileAreaSelector from 'CMP_DIR/mobile-area-selector';
 import AvatarPopoverTip from 'CMP_DIR/avatar-popover-tip';
-import { LAYOUT } from 'LIB_DIR/consts';
-
 
 const ADVANCED_OPTIONS = [
     {
@@ -104,7 +102,7 @@ const KEYCODE = {
 
 const LAYOUT_CONSTS = {
     TOP_TOTAL_HEIGHT: 70,
-    BOTTOM_HEIGHT: LAYOUT.BOTTOM_NAV
+    BOTTOM_HEIGHT: oplateConsts.LAYOUT.BOTTOM_NAV
 };
 
 class RecommendCluesFilterPanel extends Component {

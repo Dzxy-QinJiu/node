@@ -7,7 +7,6 @@ import './style.less';
 import React, {Component} from 'react';
 import {AntcAreaSelection} from 'antc';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import Trace from 'LIB_DIR/trace';
 import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 
 
@@ -27,7 +26,7 @@ class MobileAreaSelector extends Component {
         let tabContentEl = $('.ant-tabs-content');
         let divHeight = $(window).height();
         if(tabContentEl.length) {
-            divHeight -= (tabContentEl.offset().top + 48);
+            divHeight -= (tabContentEl.offset().top + oplateConsts.LAYOUT.BOTTOM_NAV);
             tabContentEl.css({height: divHeight});
         }
     }
