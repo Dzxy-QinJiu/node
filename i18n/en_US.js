@@ -3004,6 +3004,7 @@ var en_US = {
     'common.batch.sales.target': 'Change team sales goals in bulk',//设置团队销售目标
     'common.batch.self.sales.target': 'Change personal sales goals in bulk',//批量设置个人销售目标
     'common.has.been.extracted': 'Already extracted',//已提取
+    'common.has.been.extracted.by.other': 'Has been extracted',//已被提取
 
     //缺失补充start
     'user.third.thirdapp.platform.reuqired': 'Please select or fill in the application platform',//请选择或填写应用平台

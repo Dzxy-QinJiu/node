@@ -3049,6 +3049,7 @@ var zh_CN = {
     'common.sales.data.err': '出错啦',
     'common.sales.data.no.data': '暂无此类信息',
     'common.has.been.extracted': '已提取',
+    'common.has.been.extracted.by.other': '已被提取',
 
     //缺失补充start
     'user.third.thirdapp.platform.reuqired': '请选择或填写应用平台',

@@ -1255,6 +1255,8 @@ class RecommendCluesList extends React.Component {
                 if(_.includes(HASEXTRACTBYOTHERERRTIP, errTip)){
                     this.handleLeadHasExtractedByOther(submitObj.companyIds);
                     this.hiddenDropDownBlock();
+                    this.handleBatchVisibleChange();
+                    this.clearSelectSales();
                 }
                 message.error(errTip);
             }
@@ -1355,13 +1357,14 @@ class RecommendCluesList extends React.Component {
                             canClickExtract: true,
                             disabledCheckedClues: [],
                             // selectedRecommendClues: this.state.disabledCheckedClues,
-                            showBatchExtractTip: true,
+                            showBatchExtractTip: false,
                             batchCheckPhonePopVisible: false,
                             batchCheckPhonePopContent: null,
                             bottomPanelContent: null,
                             showBottomPanel: false
                         };
                         if(maxLimitTip) {//显示超限提示
+                            newState.showBatchExtractTip = true;
                             newState.batchPopoverVisible = true;
                             newState.extractLimitContent = maxLimitTip;
                         }
@@ -1574,6 +1577,8 @@ class RecommendCluesList extends React.Component {
                 if(_.includes(HASEXTRACTBYOTHERERRTIP, errTip)){
                     this.handleLeadHasExtractedByOther(reqData.companyIds);
                     this.hiddenDropDownBlock(leadId);
+                    this.handleSingleVisibleChange();
+                    this.clearSelectSales();
                 }
                 message.error(errTip);
             }
@@ -1616,13 +1621,14 @@ class RecommendCluesList extends React.Component {
                             hasNoExtractCountTip: true,
                             singleExtractLoading: '',
                             canClickExtract: true,
-                            showSingleExtractTip: record.id,
+                            showSingleExtractTip: '',
                             singleCheckPhonePopVisible: '',
                             singleCheckPhonePopContent: null,
                             bottomPanelContent: null,
                             showBottomPanel: false
                         };
                         if(maxLimitTip) {//显示超限提示
+                            newState.showSingleExtractTip = record.id;
                             newState.singlePopoverVisible = record.id;
                             newState.extractLimitContent = maxLimitTip;
                         }
@@ -1968,6 +1974,11 @@ class RecommendCluesList extends React.Component {
             );
         }
 
+        let showLoadSize = true;
+        if(isWebMin) {
+            showLoadSize = this.state.extractedResult !== 'success';
+        }
+
         return (
             <div className={cls}>
                 {isWebMin ? null : alertContent}
@@ -1988,7 +1999,7 @@ class RecommendCluesList extends React.Component {
                         {Intl.get('lead.check.phone', '空号检测')}
                     </Checkbox>
                 </AvatarPopoverTip>
-                {this.renderSelectLoadSizeBlock()}
+                {showLoadSize ? this.renderSelectLoadSizeBlock() : null}
                 {isWebMin ? alertContent : null}
             </div>
         );
@@ -2019,7 +2030,8 @@ class RecommendCluesList extends React.Component {
         let labels = item.labels.concat(item.features);
         let extractBtn;
         if(item.hasExtracted || item.hasExtractedByOther) {
-            extractBtn = <Button disabled type="primary" className="btn-item btn-disabled">{Intl.get('common.has.been.extracted', '已提取')}</Button>;
+            let text = item.hasExtracted ? Intl.get('common.has.been.extracted', '已提取') : Intl.get('common.has.been.extracted.by.other', '已被提取');
+            extractBtn = <Button disabled type="primary" className="btn-item btn-disabled">{text}</Button>;
         }else {
             extractBtn = this.extractClueOperator(item, 'primary');
         }
