@@ -3384,6 +3384,8 @@ var zh_CN = {
     'lead.contact.position.reg': '职务只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间',
     'lead.check.phone.count.limit.tip': '一次最多可检测{count}条线索',
     'lead.recommend.page.size': '每页',
+    'lead.company.legal.person': '法人',
+    'lead.company.no.legal.person': '暂无法人',
 
     //线索模块 end
     'common.memeber.all': '全部成员',

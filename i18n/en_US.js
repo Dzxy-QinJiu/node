@@ -3363,6 +3363,8 @@ var en_US = {
     'lead.contact.position.reg': 'The position can only contain Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English bracket characters, and the length is between 1 and 10 (including 10)',//职务只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间
     'lead.check.phone.count.limit.tip': 'Up to {count} clues can be detected at a time',//一次最多可检测20条线索
     'lead.recommend.page.size': 'Each page',//每页
+    'lead.company.legal.person': 'Legal person',//法人
+    'lead.company.no.legal.person': 'No legal person',//暂无法人
 
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
