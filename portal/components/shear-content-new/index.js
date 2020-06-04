@@ -75,9 +75,4 @@ class ShearContent extends React.Component {
         );
     }
 }
-ShearContent.propTypes = {
-    rowsNum: PropTypes.number,
-    children: PropTypes.object,
-    jsx: PropTypes.element
-};
 export default ShearContent;
