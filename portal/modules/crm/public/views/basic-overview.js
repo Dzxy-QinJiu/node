@@ -29,14 +29,10 @@ import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import CrmScoreCard from './basic_info/crm-score-card';
-import {INTEGRATE_TYPES, PRIVILEGE_MAP, DOMAIN_END, inputType, selectType} from 'PUB_DIR/sources/utils/consts';
-import CustomerStageCard from './basic_info/customer-stage-card';
+import {INTEGRATE_TYPES, PRIVILEGE_MAP, DOMAIN_END} from 'PUB_DIR/sources/utils/consts';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 import crmPrivilegeConst from '../privilege-const';
-import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
-import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
-import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
-import RadioOrCheckBoxEditField from 'CMP_DIR/basic-edit-field-new/radio-checkbox';
+import CustomField from 'CMP_DIR/custom-field';
 import classNames from 'classnames';
 
 class BasicOverview extends React.Component {
@@ -576,142 +572,6 @@ class BasicOverview extends React.Component {
         }
     }
 
-    renderCustomFieldType = (item) => {
-        const basicData = this.state.basicData;
-        const editWidth = 340;
-        // 自定义的值
-        const customVariables = _.get(basicData, 'custom_variables', {});
-        const fieldType = _.get(item, 'field_type');
-        const name = _.get(item, 'name');
-        const editBtnTip = Intl.get('custom.field.set.name', '设置{name}', {name: name});
-        const noDataTip = Intl.get('custom.field.no.name', '暂无{name}', {name: name});
-        const addDataTip = Intl.get('custom.field.add.name', '添加{name}', {name: name});
-        const selectPlaceholderTip = Intl.get('custom.field.select.name', '请选择{name}', {name: name});
-        // 默认的自定义的值
-        let value = customVariables[name];
-        // 是否是选择类型
-        if (_.includes(selectType, fieldType)) {
-            let selectOptions = _.map(_.get(item, 'select_values'), (name, i) => {
-                return (<Option key={i} value={name}>{name}</Option>);
-            });
-            let isMultiple = false;
-            if (_.isEqual(fieldType, 'multiselect')) {
-                isMultiple = true;
-                if ( _.isEmpty(value)) {
-                    value = [];
-                }
-            }
-            if (_.includes(['radio', 'checkbox'], fieldType)) {
-                selectOptions = _.get(item, 'select_values');
-                if (_.isEqual(fieldType, 'checkbox') && _.isEmpty(value)) {
-                    value = [];
-                }
-                return (
-                    <RadioOrCheckBoxEditField
-                        width={editWidth}
-                        id={basicData.id}
-                        displayText={value}
-                        value={value}
-                        field={name}
-                        componentType={fieldType}
-                        selectOptions={selectOptions}
-                        hasEditPrivilege={crmUtil.checkPrivilege([
-                            crmPrivilegeConst.CUSTOMER_UPDATE,
-                            crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
-                        ]) && !this.props.disableEdit}
-                        editBtnTip={editBtnTip}
-                        saveEditInput={this.saveEditCustomFieldInfo.bind(this)}
-                        noDataTip={noDataTip}
-                        addDataTip={addDataTip}
-                    />
-                );
-
-            } else {
-                return (
-                    <BasicEditSelectField
-                        width={editWidth}
-                        multiple={isMultiple}
-                        id={basicData.id}
-                        displayText={value}
-                        value={value}
-                        field={name}
-                        selectOptions={selectOptions}
-                        placeholder={selectPlaceholderTip}
-                        validators={[isMultiple ? {type: 'array'} : {}]}
-                        hasEditPrivilege={crmUtil.checkPrivilege([
-                            crmPrivilegeConst.CUSTOMER_UPDATE,
-                            crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
-                        ]) && !this.props.disableEdit}
-                        editBtnTip={editBtnTip}
-                        saveEditSelect={this.saveEditCustomFieldInfo.bind(this)}
-                        noDataTip={noDataTip}
-                        addDataTip={addDataTip}
-                    />
-                );
-            }
-
-        } else if (_.includes(inputType, fieldType)) {
-            let type = fieldType;
-            if (_.isEqual(type, 'multitext')) {
-                type = 'textarea';
-            }
-            return (
-                <BasicEditInputField
-                    width={editWidth}
-                    id={basicData.id}
-                    type={type}
-                    field={name}
-                    textCut={true}
-                    value={value}
-                    editBtnTip={editBtnTip}
-                    placeholder={_.get(item, 'select_values[0]')}
-                    hasEditPrivilege={crmUtil.checkPrivilege([
-                        crmPrivilegeConst.CUSTOMER_UPDATE,
-                        crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
-                    ]) && !this.props.disableEdit}
-                    saveEditInput={this.saveEditCustomFieldInfo.bind(this)}
-                    noDataTip={noDataTip}
-                    addDataTip={addDataTip}
-                />
-            );
-        } else if(_.isEqual(fieldType, 'date')){
-            return (
-                <BasicEditDateField
-                    width={editWidth}
-                    id={basicData.id}
-                    displayText={value}
-                    value={value}
-                    field={name}
-                    placeholder={selectPlaceholderTip}
-                    hasEditPrivilege={crmUtil.checkPrivilege([
-                        crmPrivilegeConst.CUSTOMER_UPDATE,
-                        crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
-                    ]) && !this.props.disableEdit}
-                    saveEditDateInput={this.saveEditCustomFieldInfo.bind(this)}
-                    noDataTip={noDataTip}
-                    addDataTip={addDataTip}
-                />
-            );
-        }
-    };
-
-    // 自定义
-    renderCustomField = () => {
-        // 客户自定义字段
-        const customizedVariables = _.get(this.props.customerCustomFieldData, '[0].customized_variables');
-        return (
-            _.map(customizedVariables, item => {
-                const name = _.get(item, 'name');
-                return (
-                    <div className="basic-info-item">
-                        <span className="basic-info-label">{name}:</span>
-                        {this.renderCustomFieldType(item)}
-                    </div>
-                );
-            })
-        );
-    };
-
     render() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         let tagArray = _.isArray(basicData.labels) ? basicData.labels : [];
@@ -723,6 +583,10 @@ class BasicOverview extends React.Component {
             && !this.state.isShowAddRecordPanel;
         var subDomain = _.get(basicData, 'sub_domains', '');//域名
         var platformName = _.get(basicData,'platform_name','');//平台名称
+        const hasEditPrivilege = crmUtil.checkPrivilege([
+                crmPrivilegeConst.CUSTOMER_UPDATE,
+                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+            ]) && !this.props.disableEdit;
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
@@ -768,26 +632,33 @@ class BasicOverview extends React.Component {
                             titleDescr={this.renderPlatFormName(platformName)}
                         />
                     ) : null}
-                    {crmUtil.checkPrivilege([crmPrivilegeConst.CUSTOMER_ALL, crmPrivilegeConst.CRM_LIST_CUSTOMERS]) && !this.props.disableEdit && hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) ? (
-                        <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
-                            showUserDetail={this.props.showUserDetail}
-                            customerUserSize={_.get(this.state.crmUserList, 'length', 0)}/>) : null
+                    {
+                        crmUtil.checkPrivilege([crmPrivilegeConst.CUSTOMER_ALL, crmPrivilegeConst.CRM_LIST_CUSTOMERS]) && !this.props.disableEdit && hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) ? (
+                            <CrmScoreCard
+                                customerScore={basicData.score}
+                                customerId={basicData.id}
+                                showUserDetail={this.props.showUserDetail}
+                                customerUserSize={_.get(this.state.crmUserList, 'length', 0)}
+                            />
+                        ) : null
                     }
-                    <TagCard title={`${Intl.get('common.tag', '标签')}:`}
+                    <TagCard
+                        title={`${Intl.get('common.tag', '标签')}:`}
                         placeholder={Intl.get('crm.input.new.tag', '请输入新标签')}
                         data={basicData}
                         tags={tagArray}
                         recommendTags={this.state.recommendTags}
-                        enableEdit={crmUtil.checkPrivilege([crmPrivilegeConst.CUSTOMER_UPDATE, crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL]) && !this.props.disableEdit}
+                        enableEdit={hasEditPrivilege}
                         noDataTip={tagArray.length ? '' : Intl.get('crm.detail.no.tag', '暂无标签')}
                         saveTags={this.saveEditTags}
                     />
-                    <TagCard title={`${Intl.get('crm.competing.products', '竞品')}:`}
+                    <TagCard
+                        title={`${Intl.get('crm.competing.products', '竞品')}:`}
                         placeholder={Intl.get('crm.input.new.competing', '请输入新竞品')}
                         tags={basicData.competing_products}
                         recommendTags={this.state.competitorList}
                         data={basicData}
-                        enableEdit={crmUtil.checkPrivilege([crmPrivilegeConst.CUSTOMER_UPDATE, crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL]) && !this.props.disableEdit}
+                        enableEdit={hasEditPrivilege}
                         noDataTip={_.get(basicData, 'competing_products[0]') ? '' : Intl.get('crm.no.competing', '暂无竞品')}
                         saveTags={this.saveEditCompetitors}
                     />
@@ -796,8 +667,12 @@ class BasicOverview extends React.Component {
                             <DetailCard
                                 content={(
                                     <React.Fragment>
-                                        <span className='detail-card-source-classify'>{`${Intl.get('crm.clue.client.source', '获客方式')}:`}</span>
-                                        <span className='detail-card-source-classify'>{this.getSourceClassify(basicData.source_classify)}</span>
+                                        <span className='detail-card-source-classify'>
+                                        {`${Intl.get('crm.clue.client.source', '获客方式')}:`}
+                                        </span>
+                                        <span className='detail-card-source-classify'>
+                                        {this.getSourceClassify(basicData.source_classify)}
+                                        </span>
                                     </React.Fragment> )}
                             />
                         ) : null
@@ -813,9 +688,11 @@ class BasicOverview extends React.Component {
                     />
                     {
                         _.isEmpty(this.props.customerCustomFieldData) ? null : (
-                            <DetailCard
-                                className="custom-field-detail-card"
-                                content={this.renderCustomField()}
+                            <CustomField
+                                customFieldData={this.props.customerCustomFieldData}
+                                basicDetailData={this.state.basicData}
+                                hasEditPrivilege={hasEditPrivilege}
+                                saveEditCustomFieldInfo={this.saveEditCustomFieldInfo}
                             />
                         )
                     }
