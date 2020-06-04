@@ -114,6 +114,7 @@ var LAYOUT_CONSTANTS = {
     WIDTH_WITHOUT_INPUT: 185,//topnav中除了输入框以外的宽度
     NABSIDE_WIDTH: 64,//左侧导航的宽度
     NAV_PADDING_LEFT: 15,//头部导航左侧的padding
+    TOP_NAV_BTN_WIDTH: 620//topnav上所有按钮的宽度
 };
 import CustomerLabel from 'CMP_DIR/customer_label';
 import { clueEmitter, notificationEmitter } from 'PUB_DIR/sources/utils/emitters';
@@ -246,7 +247,7 @@ class ClueCustomer extends React.Component {
         let needCalWidth = $(window).width() <= LAYOUT_CONSTANTS.MIN_WIDTH_NEED_CAL;
         let searchWap = $('.search-container');
         if(searchWap.length){
-            let btnWidth = $(window).width() <= (searchWap.outerWidth(true) + LAYOUT_CONSTANTS.NABSIDE_WIDTH + LAYOUT_CONSTANTS.NAV_PADDING_LEFT * 2 + 620);
+            let btnWidth = $(window).width() <= (searchWap.outerWidth(true) + LAYOUT_CONSTANTS.NABSIDE_WIDTH + LAYOUT_CONSTANTS.NAV_PADDING_LEFT * 2 + LAYOUT_CONSTANTS.TOP_NAV_BTN_WIDTH);
             if(btnWidth){
                 this.setState({
                     isTopShowMiniBtn: true
@@ -3354,7 +3355,6 @@ class ClueCustomer extends React.Component {
         let {isWebMiddle, isWebMin} = isResponsiveDisplay();
         let {isTopShowMiniBtn} = this.state;
         let showMinBtnAndAddBtn = isWebMiddle || isWebMin || isTopShowMiniBtn;//显示缩小按钮及添加按钮
-        let showOnlyMinBtn = isWebMin || isTopShowMiniBtn;//只展示缩小的按钮
         return (
             <div className="pull-right add-anlysis-handle-btns">
                 {!(showMinBtnAndAddBtn) ? this.renderClueRecommend() : null}
