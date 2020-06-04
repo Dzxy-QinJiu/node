@@ -412,30 +412,32 @@ class RegRulesView extends React.Component {
                     var showDeleteIcon = index === _.get(candidateRules, 'length') - 1;
                     var workflowFormEmailToName = _.get(item,'workflowFormEmailToName',[]);
                     return (
-                        <div className="item-node" onClick={this.handleClickApplyNode.bind(this,item,flowType)}>
-                            <div className="icon-container">
-                                <i className="iconfont icon-active-users"></i>
+                        <div className="item-node">
+                            <div className="item-node-block" onClick={this.handleClickApplyNode.bind(this,item,flowType)}>
+                                <div className="icon-container">
+                                    <i className="iconfont icon-active-users"></i>
+                                </div>
+                                <span className="show-name" title={item.showName}> {item.showName}</span>
+                                {item.submitFiles + '' === 'true' ?
+                                    <span
+                                        className="addition-text">{Intl.get('apply.add.approver.submit.files', '可提交文件')}</span> : null}
+                                {item.assignNextNodeApprover + '' === 'true' ?
+                                    <span
+                                        className="addition-text">{Intl.get('apply.add.approver.distribute', '指定下一审批人')}</span> : null}
+                                {item.distributeSales + '' === 'true' || item.distributeSalesToVisit + '' === 'true' ? <span
+                                    className="addition-text">{Intl.get('leave.apply.general.apply', '分配销售')}</span> : null}
+                                {item.releaseCustomerToTeamPool + '' === 'true' ? <span
+                                    className="addition-text">{Intl.get('apply.approve.distribute.team', '分配团队')}</span> : null}
+                                {_.get(workflowFormEmailToName,'[0]') ?
+                                    <p className="addition-text workflow-to-email">{Intl.get('apply.approved.receive.email', '接收邮件人员或邮箱')}：
+                                        {_.isArray(item.workflowFormEmailToName) ? <p>
+                                            {workflowFormEmailToName.join(',')}</p> : null}
+                                    </p>
+                                    : null}
+                                <span className="connet-bar"></span>
                             </div>
-                            <span className="show-name" title={item.showName}> {item.showName}</span>
                             {showDeleteIcon ? <i className="iconfont icon-close-btn"
                                 onClick={this.handleDeleteNode.bind(this, flowType, item)}></i> : null}
-                            {item.submitFiles + '' === 'true' ?
-                                <span
-                                    className="addition-text">{Intl.get('apply.add.approver.submit.files', '可提交文件')}</span> : null}
-                            {item.assignNextNodeApprover + '' === 'true' ?
-                                <span
-                                    className="addition-text">{Intl.get('apply.add.approver.distribute', '指定下一审批人')}</span> : null}
-                            {item.distributeSales + '' === 'true' || item.distributeSalesToVisit + '' === 'true' ? <span
-                                className="addition-text">{Intl.get('leave.apply.general.apply', '分配销售')}</span> : null}
-                            {item.releaseCustomerToTeamPool + '' === 'true' ? <span
-                                className="addition-text">{Intl.get('apply.approve.distribute.team', '分配团队')}</span> : null}
-                            {_.get(workflowFormEmailToName,'[0]') ?
-                                <p className="addition-text workflow-to-email">{Intl.get('apply.approved.receive.email', '接收邮件人员或邮箱')}：
-                                    {_.isArray(item.workflowFormEmailToName) ? <p>
-                                        {workflowFormEmailToName.join(',')}</p> : null}
-                                </p>
-                                : null}
-                            <span className="connet-bar"></span>
                         </div>
                     );
                 })}
