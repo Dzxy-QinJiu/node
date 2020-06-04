@@ -5,7 +5,6 @@
  */
 
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import Bundle from 'PUB_DIR/sources/route/route-bundle';
 const history = require('../history');
 const userData = require('../user-data');
 const menuUtil = require('../utils/menu-util');
@@ -16,12 +15,9 @@ const ROUTE_CONST = {
     'CLUES_RECOMMEND': 'clues_recommend',//推荐线索id
 };
 const isOpenCaller = require('../utils/common-method-util').isOpenCaller;
-import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 //是否是csm.curtao.com，是否在蚁坊域的判断方法
-import {isCurtao, isOrganizationEefung, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
-import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
+import {isCurtao, isOrganizationEefung, checkVersionAndType, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 import privilegeConst_user_info from '../../../modules/user_info/public/privilege-config';
-import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {hasRecommendPrivilege} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 //如果访问/，跳转到左侧导航菜单的第一个路由
 class FirstIndexRoute extends React.Component {
@@ -244,7 +240,8 @@ function filterCurtaoRoutes(routes) {
 //过滤掉个人版（试用，正式）不用显示的路由
 function filterPersonalRoutes(routes) {
     let versionAndType = checkVersionAndType();
-    if(versionAndType.personal) {
+    //移动端展示去掉首页
+    if(versionAndType.personal || isResponsiveDisplay().isWebMin) {
         let homePageIndex = _.findIndex(routes, item => item.id === ROUTE_CONST.HOME_PAGE);
         if(homePageIndex !== -1) {
             routes.splice(homePageIndex, 1);

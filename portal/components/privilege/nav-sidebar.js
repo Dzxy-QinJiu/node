@@ -721,8 +721,8 @@ var NavSidebar = createReactClass({
     generateMenu: function() {
         const currentPageCategory = this.getCurrentCategory();
         let menus = _.cloneDeep(this.state.menus);
-        // 屏幕缩小到一定宽度，只展示找线索、线索列表、客户列表、个人资料
-        const PHONE_SHOW_MENU_IDS = ['clues_recommend', 'clue_customer', 'crm', 'user_info'];
+        // 屏幕缩小到一定宽度，只展示找线索、线索列表、个人资料
+        const PHONE_SHOW_MENU_IDS = ['clues_recommend', 'clue_customer', 'user_info'];
         if(isResponsiveDisplay().isWebSmall){
             let userInfoLinkList = menuUtil.getMenuById(MENU.USER_INFO);
             let userInfoRoutes = _.get(userInfoLinkList, 'routes');
