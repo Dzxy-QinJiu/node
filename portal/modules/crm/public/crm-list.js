@@ -932,6 +932,10 @@ class Crm extends React.Component {
         if (term_fields.length > 0) {//需精确匹配的字段
             condition.term_fields = term_fields;
         }
+        // 自定义字段，若是空的话，则不需要传向后端
+        if (_.isEmpty(condition.customized_variables)) {
+            delete condition.customized_variables;
+        }
         delete condition.otherSelectedItem;
         return condition;
     }
@@ -2296,7 +2300,7 @@ class Crm extends React.Component {
             },
             {
                 title: Intl.get('user.login.score', '分数'),
-                width: 60,
+                width: '80px',
                 dataIndex: 'score',
                 align: 'right',
                 sorter: this.getSorter(),
@@ -2311,7 +2315,7 @@ class Crm extends React.Component {
             },
             {
                 title: Intl.get('common.operate', '操作'),
-                width: 60,
+                width: '80px',
                 render: (text, record, index) => {
                     //是否是重复的客户
                     const isRepeat = record.repeat;
@@ -2356,6 +2360,7 @@ class Crm extends React.Component {
             }
         ];
         let customerCustomFieldData = this.props.customerCustomFieldData;
+        // 自定义字段，暂时在列表中不显示，先隐藏
         if (false && !_.isEmpty(customerCustomFieldData)) {
             // 客户自定义字段
             const customizedVariables = _.get(customerCustomFieldData, '[0].customized_variables');
@@ -2488,6 +2493,7 @@ class Crm extends React.Component {
                                         changeTableHeight={this.changeTableHeight}
                                         isExtractSuccess={this.props.isExtractSuccess}
                                         toggleList={this.toggleList.bind(this)}
+                                        customerCustomFieldData={this.props.customerCustomFieldData}
                                     />
                                 </div> : null
                         }

@@ -7,7 +7,8 @@ import {
     FILTER_RANGE,
     STAGE_OPTIONS,
     COMMON_OTHER_ITEM,
-    OTHER_FILTER_ITEMS
+    OTHER_FILTER_ITEMS,
+    selectType
 } from 'PUB_DIR/sources/utils/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
@@ -173,15 +174,27 @@ class CrmFilterPanel extends React.Component {
         if (!data.find(group => group.groupId === COMMON_OTHER_ITEM)) {
             condition[COMMON_OTHER_ITEM] = '';
         }
+        // 需要处理自定义字段的数据结构
+        const customizedVariables = _.get(this.props.customerCustomFieldData, '[0].customized_variables');
+        if (!_.isEmpty(customizedVariables)) {
+            condition.customized_variables = {};
+        }
         data.forEach(item => {
-            if (item.groupId) {
+            if (item.groupId){
                 if (item.groupId !== 'sales_opportunities') {
-                    condition[item.groupId] = item.data.map(x => x.value);
-                    if (_.includes(['customer_label', 'province', 'industry', 'member_role', 'administrative_level', 'sales_team_id', 'source_classify',COMMON_OTHER_ITEM], item.groupId)) {
-                        condition[item.groupId] = condition[item.groupId].join(',');
-                    } else if (item.singleSelect) {
-                        condition[item.groupId] = condition[item.groupId][0] || '';
+                    // 自定义字段名称
+                    let customFieldName = _.map(customizedVariables, 'name');
+                    if (_.includes(customFieldName, item.groupId)) {
+                        condition.customized_variables[item.groupId] = item.data.map(x => x.value);
+                    } else {
+                        condition[item.groupId] = item.data.map(x => x.value);
+                        if (_.includes(['customer_label', 'province', 'industry', 'member_role', 'administrative_level', 'sales_team_id', 'source_classify',COMMON_OTHER_ITEM], item.groupId)) {
+                            condition[item.groupId] = condition[item.groupId].join(',');
+                        } else if (item.singleSelect) {
+                            condition[item.groupId] = condition[item.groupId][0] || '';
+                        }
                     }
+
 
                 } else {
                     condition.sales_opportunities = [];
@@ -492,6 +505,31 @@ class CrmFilterPanel extends React.Component {
                 }))
             });
         }
+        if (!_.isEmpty(this.props.customerCustomFieldData)) {
+            const customizedVariables = _.get(this.props.customerCustomFieldData, '[0].customized_variables');
+            _.each(customizedVariables, item => {
+                const fieldType = _.get(item, 'field_type');
+                const name = _.get(item, 'name');
+                const selectValues = _.get(item, 'select_values');
+                // 是否是选择类型（现在先做单选、多选类型的）
+                if (_.includes(selectType, fieldType)) {
+                    let customField = {
+                        groupName: name,
+                        groupId: name,
+                        data: _.map(selectValues, x => ({
+                            name: x,
+                            value: x,
+                            selected: x === _.get(this.state, 'condition.customized_variables[name]', '')
+                        }))
+                    };
+                    // 单选
+                    if (_.includes(['select', 'radio'], fieldType)) {
+                        customField.singleSelect = true;
+                    }
+                    advancedData.splice(advancedData.length - 1, 0, customField);
+                }
+            });
+        }
         //普通销售或者个人版，展示负责人和联合跟进人的筛选（用户来筛选销售是负责人还是联合跟进人）
         if (isCommonSalesOrPersonnalVersion()) {
             let loginUserName = userData.getUserData().nick_name;
@@ -613,7 +651,7 @@ CrmFilterPanel.propTypes = {
     search: PropTypes.func,
     isExtractSuccess: PropTypes.bool,
     toggleList: PropTypes.func,
-
+    customerCustomFieldData: PropTypes.object,
 };
 module.exports = CrmFilterPanel;
 
