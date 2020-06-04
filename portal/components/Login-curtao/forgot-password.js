@@ -53,6 +53,9 @@ class ForgotPassword extends React.Component {
         sendMsgPhone: '',//发送短信验证码的手机号，获取图片验证码时需要
         codeEffectiveTime: 0,//短信验证码倒计时
         isSendingSMSCode: false,//是否正在获取短信验证码
+        isGettingOperateCode: false,//正在获取操作码
+        isValidatingSMSCode: false,//正在验证短信验证码
+        isResetingPwd: false,//正在重置密码
     };
 
     componentDidMount() {
@@ -205,7 +208,7 @@ class ForgotPassword extends React.Component {
             data: submitObj,
             success: (data) => {
                 if (data) {
-                    this.setState({isSendingSMSCode: false});
+                    this.setState({isSendingSMSCode: false, codeEffectiveTime: CODE_EFFECTIVE_TIME});
                     //设置验证码有效时间为一分钟
                     this.setCodeEffectiveInterval();
                 } else {
@@ -224,18 +227,20 @@ class ForgotPassword extends React.Component {
     getOperateCode = (e) => {
         this.props.form.validateFields((err, values) => {
             if (err) return;
+            if(this.state.isGettingOperateCode) return;
             let submitObj = {
                 user_name: _.get(values, 'phone', ''),
                 captcha: _.get(values, 'captchaCode', ''),
                 send_type: 'phone',
             };
+            this.setState({isGettingOperateCode: true});
             $.ajax({
                 url: '/forgot_password/operate_code',
                 dataType: 'json',
                 data: submitObj,
                 success: (data) => {
                     // 第一步获取操作码后，需要将电话保存起来，第二、三步中会用到手机号
-                    this.setState({sendMsgPhone: submitObj.user_name});
+                    this.setState({sendMsgPhone: submitObj.user_name, isGettingOperateCode: false});
                     this.changeView(VIEWS.VERIFY_AUTH_CODE);
                 },
                 error: (errorObj) => {
@@ -246,7 +251,7 @@ class ForgotPassword extends React.Component {
                     if (errorMsg === Intl.get('errorcode.39', '用户名或密码错误')) {
                         errorMsg = Intl.get('errorcode.phone.unbind.account.tip', '此手机号未绑定账号，请换其他手机号再试',);
                     }
-                    this.setState({ errorMsg });
+                    this.setState({ errorMsg, isGettingOperateCode: false });
                 }
             });
         });
@@ -255,6 +260,7 @@ class ForgotPassword extends React.Component {
         e && e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (err) return;
+            if(this.state.isValidatingSMSCode) return;
             let submitObj = {
                 user_name: this.state.sendMsgPhone,
                 code: _.get(values, 'phoneCode'),
@@ -264,15 +270,16 @@ class ForgotPassword extends React.Component {
             if(captchaCode){
                 submitObj.captcha = captchaCode;
             }
+            this.setState({isValidatingSMSCode: true});
             $.ajax({
                 url: '/get_reset_password_ticket',
                 dataType: 'json',
                 data: submitObj,
                 success: (data) => {
                     if (!data) {
-                        this.setState({ errorMsg: Intl.get('errorcode.5', '验证失败') });
+                        this.setState({ errorMsg: Intl.get('errorcode.5', '验证失败'), isValidatingSMSCode: false });
                     } else {
-                        this.setState({ ticket: _.get(data, 'ticket', '') });
+                        this.setState({ ticket: _.get(data, 'ticket', ''), isValidatingSMSCode: false });
                         this.changeView(VIEWS.RESET_PASSWORD);
                     }
                 },
@@ -290,7 +297,7 @@ class ForgotPassword extends React.Component {
                             errorMsg = Intl.get('login.forgot.password.phone.code.error', '短信验证码错误');
                         }
                     }
-                    this.setState({ errorMsg });
+                    this.setState({ errorMsg, isValidatingSMSCode: false });
                 }
             });
         });
@@ -299,13 +306,14 @@ class ForgotPassword extends React.Component {
     resetPassword = (e) => {
         e && e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            if (err) return;
+            if (err || this.state.isResettingPwd) return;
             const ticket = this.state.ticket;
             let new_password = _.get(values, 'newPassword');
             //md5加密
             var md5Hash = crypto.createHash('md5');
             md5Hash.update(new_password);
             new_password = md5Hash.digest('hex');
+            this.setState({isResettingPwd: true});
             $.ajax({
                 url: '/reset_password_with_ticket',
                 dataType: 'json',
@@ -316,13 +324,25 @@ class ForgotPassword extends React.Component {
                 },
                 success: (data) => {
                     if (!data) {
-                        this.setState({ successMsg: Intl.get('login.reset_password_success', '重置密码成功'), errorMsg: ''});
+                        this.setState({
+                            successMsg: Intl.get('login.reset_password_success', '重置密码成功'),
+                            errorMsg: '',
+                            isResettingPwd: false
+                        });
                     } else {
-                        this.setState({ errorMsg: Intl.get('login.reset_password_failure', '重置密码失败'), successMsg: ''});
+                        this.setState({
+                            errorMsg: Intl.get('login.reset_password_failure', '重置密码失败'),
+                            successMsg: '',
+                            isResettingPwd: false
+                        });
                     }
                 },
                 error: (xhr) => {
-                    this.setState({ errorMsg: _.get(xhr, 'responseJSON', Intl.get('login.reset_password_failure', '重置密码失败')), successMsg: ''});
+                    this.setState({
+                        errorMsg: _.get(xhr, 'responseJSON', Intl.get('login.reset_password_failure', '重置密码失败')),
+                        successMsg: '',
+                        isResettingPwd: false
+                    });
                 }
             });
         });
@@ -422,14 +442,15 @@ class ForgotPassword extends React.Component {
                 <button className="forgot-password-button"
                     onClick={this.getOperateCode}
                     data-tracename="点击下一步"
+                    disabled={this.state.isGettingOperateCode}
                 >
                     {Intl.get('user.user.add.next', '下一步')}
+                    {this.state.isGettingOperateCode ? (<Icon type="loading" />) : null}
                 </button>
             </React.Fragment>);
     }
     //渲染短信验证码的验证视图
     renderVerifyPhoneCodeView() {
-        const hasWindow = this.props.hasWindow;
         const { getFieldDecorator, getFieldsValue } = this.props.form;
         const values = getFieldsValue();
         let curPhone = this.state.sendMsgPhone;
@@ -449,7 +470,7 @@ class ForgotPassword extends React.Component {
                             fullWidth
                             className='captcha-input login-input-wrap sms-code-input'
                             id="standard-basic"
-                            label={hasWindow ? Intl.get('register.phone.code', '短信验证码') : null}
+                            label={Intl.get('register.phone.code', '短信验证码')}
                             color='primary'
                             autoComplete="off"
                             maxLength="4"
@@ -470,7 +491,7 @@ class ForgotPassword extends React.Component {
                                 fullWidth
                                 className='captcha-input login-input-wrap'
                                 id="standard-basic"
-                                label={hasWindow ? Intl.get('common.captcha', '验证码') : null}
+                                label={Intl.get('common.captcha', '验证码')}
                                 color='primary'
                                 autoComplete="off"
                                 maxLength="4"
@@ -486,15 +507,16 @@ class ForgotPassword extends React.Component {
                 <button className="forgot-password-button"
                     onClick={this.getTicket}
                     data-tracename={'点击验证按钮'}
+                    disabled={this.state.isValidatingSMSCode}
                 >
-                    {hasWindow ? Intl.get('login.verify.btn', '验证') : null}
+                    {Intl.get('login.verify.btn', '验证')}
+                    {this.state.isValidatingSMSCode ? (<Icon type="loading" />) : null}
                 </button>
             </React.Fragment>);
     }
    
     // 渲染重置密码视图
     renderResetPasswordView() {
-        const hasWindow = this.props.hasWindow;
         const { getFieldDecorator, getFieldsValue } = this.props.form;
         const values = getFieldsValue();
         return (
@@ -548,11 +570,12 @@ class ForgotPassword extends React.Component {
                     )}
                 </FormItem>
                 <button className="forgot-password-button"
-                    disabled={this.state.successMsg}
+                    disabled={this.state.successMsg || this.state.isResettingPwd}
                     onClick={this.resetPassword}
                     data-tracename="点击重置密码按钮"
                 >
-                    {hasWindow ? Intl.get('user.batch.password.reset', '重置密码') : null}
+                    {Intl.get('user.batch.password.reset', '重置密码')}
+                    {this.state.isResettingPwd ? (<Icon type="loading" />) : null}
                 </button>
             </React.Fragment>);
     }
@@ -565,7 +588,7 @@ class ForgotPassword extends React.Component {
         } else {
             return (
                 <Button disabled={this.state.codeEffectiveTime} className='sms-code-btn'>
-                    {Intl.get('login.forgot.password.get.sms.code', '获取短信验证码',)}
+                    {Intl.get('register.get.phone.captcha.code', '获取验证码')}
                     {this.state.isSendingSMSCode ? <Icon type="loading" /> : null}
                 </Button>);
         }
@@ -627,7 +650,6 @@ ForgotPassword.propTypes = {
     userName: PropTypes.string,
     form: PropTypes.obj,
     changeView: PropTypes.func,
-    hasWindow: PropTypes.bool
 };
 export default Form.create()(ForgotPassword);
 

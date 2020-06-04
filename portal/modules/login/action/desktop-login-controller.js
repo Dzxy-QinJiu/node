@@ -383,7 +383,7 @@ exports.getOperateCode = function(req, res) {
             res.status(200).json('success');
         });
     }).catch(function(errorObj) {
-        res.status(500).json(errorObj);
+        res.status(500).json(errorObj && errorObj.message);
     });
 };
 //发送重置密码时的身份验证信息
@@ -396,7 +396,7 @@ exports.sendResetPasswordMsg = function(req, res) {
         if (!data) data = true;
         res.status(200).json(data);
     }).on('error', function(errorObj) {
-        res.status(500).json(errorObj);
+        res.status(500).json(errorObj && errorObj.message);
     });
 };
 
@@ -413,8 +413,12 @@ exports.getTicket = function(req, res) {
 //重置密码
 exports.resetPassword = function(req, res) {
     DesktopLoginService.resetPassword(req, res).on('success', function(data) {
-        if (!data) data = '';
-        res.status(200).json(data);
+        // 重置密码成功后，将session中存储的操作码删掉
+        delete req.session.forgot_password_operate_code;
+        req.session.save(function() {
+            if (!data) data = '';
+            res.status(200).json(data);
+        });
     }).on('error', function(errorObj) {
         res.status(500).json(errorObj && errorObj.message);
     });
