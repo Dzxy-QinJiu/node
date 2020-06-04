@@ -4,6 +4,8 @@
  * Created by liwenjun on 2018/12/20.
  */
 let path = require('path');
+//打包模式
+const { webpackMode } = require('../../conf/config');
 //路由配置
 let routerConfig = require('../../conf/router-config').routers;
 //生成的路由存储的文件
@@ -20,7 +22,10 @@ let COMPONENT_BASE_PATH = '../../../';//组件基础路径
 
 //动态加载文件
 function dynamic(path) {
-    return `(props) => (<Bundle load={() => import('${path}')}>{(DynamicComponet) => <DynamicComponet {...props}/>}</Bundle>)`;
+    //魔法注释，开发模式下在导入模块时加上webpackChunkName魔法注释，以将模块代码单独打包，提高打包速度
+    const magicComment = webpackMode === 'dev' ? '/* webpackChunkName: "module" */ ' : '';
+
+    return `(props) => (<Bundle load={() => import(${magicComment}'${path}')}>{(DynamicComponet) => <DynamicComponet {...props}/>}</Bundle>)`;
 }
 
 

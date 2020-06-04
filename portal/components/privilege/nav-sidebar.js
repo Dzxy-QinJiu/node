@@ -15,7 +15,7 @@ import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES, GIFT_LOGO,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
-import {hasCalloutPrivilege, isCurtao, checkVersionAndType,
+import {hasCalloutPrivilege, isShowCustomerService, checkVersionAndType,
     isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay,isShowWinningClue, getContactSalesPopoverTip, isExpired,renderUnreadMsg} from 'PUB_DIR/sources/utils/common-method-util';
 import {phoneEmitter, notificationEmitter, userInfoEmitter,
     phoneMsgEmitter, clickUpgradeNoiceEmitter, showWiningClueEmitter, leadRecommendEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -497,7 +497,7 @@ var NavSidebar = createReactClass({
         );
     },
     renderCustomerServiceBlock: function() {
-        if(isCurtao()) {
+        if(isShowCustomerService()) {
             let cls = classNames('customer-service-navicon', {
                 active: this.props.isShowCustomerService
             });

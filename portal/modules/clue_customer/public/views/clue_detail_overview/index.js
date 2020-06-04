@@ -1782,7 +1782,16 @@ class ClueDetailOverview extends React.Component {
     renderClueCompanyInfo = () => {
         var {curClue} = this.state;
         return (
-            <div className='clue-info-wrap clue-detail-block company-content'>
+            <div className='clue-info-wrap clue-detail-block'>
+                {curClue.legal_person ? this.renderBasicContent(Intl.get('lead.company.legal.person', '法人'),
+                    <BasicEditInputField
+                        hasEditPrivilege={false}
+                        id={curClue.id}
+                        value={curClue.legal_person}
+                        field='legal_person'
+                        noDataTip={Intl.get('lead.company.no.legal.person', '暂无法人')}
+                    />
+                ) : null}
                 {curClue.formed ? this.renderBasicContent(Intl.get('clue.customer.register.time', '注册时间'),
                     <BasicEditInputField
                         hasEditPrivilege={false}
@@ -2023,10 +2032,9 @@ class ClueDetailOverview extends React.Component {
             'no-margin': this.isClueNotAssociateCustomer(curClue, associatedCustomer)
         });
         //展示公司相关信息 有注册时间 || 经营范围 || 公司简介就展示该卡片
-        var showClueCompany = curClue.formed || curClue.business_scope || curClue.company_profile;
+        var showClueCompany = curClue.formed || curClue.business_scope || curClue.company_profile || curClue.legal_person;
         return (
-            <div className="clue-detail-container" data-tracename="线索基本信息"
-                style={this.hasButtonTabHeight(curClue, associatedCustomer)}>
+            <div className="clue-detail-container" data-tracename="线索基本信息" style={this.hasButtonTabHeight(curClue, associatedCustomer)}>
                 <GeminiScrollbar>
                     {curClue.version_upgrade_id && !_.isEmpty(this.state.versionData) ?
                         <ApplyTryCard versionData={this.state.versionData}/> : null}
