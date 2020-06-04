@@ -403,7 +403,7 @@ class RegisterForm extends React.Component {
     }
     onEnterHandler = (event) => {
         if (event && event.keyCode === 13) {
-            Trace.traceEvent(event, '按enter建提交注册数据');
+            Trace.traceEvent(event, '按enter键提交注册数据');
             this.submitFormData(event);
         }
     }
