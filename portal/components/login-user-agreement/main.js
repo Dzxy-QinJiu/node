@@ -145,10 +145,10 @@ class UserAgreementPage extends React.Component {
                         <div className='content-text'>（2） 未经客套事先明示同意，通过爬虫工具、机器人软件等手段获取会员服务或有关数据信息；</div>
                         <div className='content-text'>（3） 通过系统漏洞、黑色产业、滥用会员身份等不正当手段，侵犯客套或他人合法权益；</div>
                         <div className='content-text'>（4） 其他违反法律、法规或相关监管政策的行为，或违反本协议及其他服务规则的行为。</div>
-                        <div className='content-text'> 我们会基于如下标准判断您的账号是否存在前述违规使用情形：</div>
-                        <div className='content-text'> A. 同一账号近期登录使用设备数量是否异常；</div>
-                        <div className='content-text'> B. 同一账号单日查询次数是否异常；</div>
-                        <div className='content-text'> C. 是否存在其他足以被认定为违规使用的具体行为。</div>
+                        <div className='content-text'>  我们会基于如下标准判断您的账号是否存在前述违规使用情形：</div>
+                        <div className='content-text'>  A. 同一账号近期登录使用设备数量是否异常；</div>
+                        <div className='content-text'>  B. 同一账号单日查询次数是否异常；</div>
+                        <div className='content-text'>  C. 是否存在其他足以被认定为违规使用的具体行为。</div>
                         <div className='content-title'>八、【用户行为规范】</div>
                         <div className='content-title'>8.1 【信息内容规范】</div>
                         <div className='content-text'>8.1.1 本条所述信息内容是指用户使用本软件及服务过程中所制作、复制、发布、传播的任何内容，包括但不限于客套帐号头像、名字、用户说明等注册信息，或文字、语音、图片、文件等发送的图文和相关链接页面，以及其他使用客套帐号或本软件及服务所产生的内容。</div>
@@ -181,7 +181,7 @@ class UserAgreementPage extends React.Component {
                         <div className='content-text'>8.3.8 其他违反法律法规规定、侵犯其他用户合法权益、干扰产品正常运营或客套智能科技未明示授权的行为。</div>
                         <div className='content-title'>8.4 【对自己行为负责】</div>
                         <div className='content-text'>您理解并同意，您必须为自己注册帐号下的一切行为负责，包括您所发表的任何内容以及由此产生的任何后果。您应对本服务中的内容自行加以判断，并承担因使用内容而引起的所有风险，包括因对内容的正确性、完整性或实用性的依赖而产生的风险。客套智能科技无法且不会对因前述风险而导致的任何损失或损害承担责任。</div>
-                        <div className='content-text'>8.5 【违约处理】</div>
+                        <div className='content-title'>8.5 【违约处理】</div>
                         <div className='content-text'>8.5.1 如果客套智能科技发现或收到他人举报或投诉用户违反本协议约定的，客套智能科技有权不经通知随时对相关内容进行删除，并视行为情节对违规帐号处以包括但不限于警告、限制或禁止使用全部或部分功能、帐号封禁直至注销的处罚，并公告处理结果。</div>
                         <div className='content-text'>8.5.2 您理解并同意，客套智能科技有权依合理判断对违反有关法律法规或本协议规定的行为进行处罚，对违法违规的任何用户采取适当的法律行动，并依据法律法规保存有关信息向有关部门报告等，用户应独自承担由此而产生的一切法律责任。</div>
                         <div className='content-text'>8.5.3 您理解并同意，因您违反本协议或相关服务条款的规定，导致或产生第三方主张的任何索赔、要求或损失，您应当独立承担责任；客套智能科技因此遭受损失的，您也应当一并赔偿。</div>
