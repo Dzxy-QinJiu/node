@@ -68,6 +68,7 @@ import { storageUtil } from 'ant-utils';
 import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
 import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 import AvatarPopoverTip from 'CMP_DIR/avatar-popover-tip';
+const CLOSE_BTN_CLICK = AvatarPopoverTip.CLOSE_BTN_CLICK;
 import BottomPanelModal from 'CMP_DIR/bottom-panel-modal';
 
 const LAYOUT_CONSTANCE = {
@@ -760,20 +761,20 @@ class RecommendCluesList extends React.Component {
         const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig')) || {};
         return _.get(websiteConfig, CHECK_PHONE_CONFIG.SHOW_CHECK_PHONE_FEATURE_POP_TIP, true);
     }
-    setShowCheckPhonePopTip = () => {
-        if(this.isFirstShowCheckPhonePop()) {
+    setShowCheckPhonePopTip = (visible, type) => {
+        if(this.isFirstShowCheckPhonePop() && type === CLOSE_BTN_CLICK) {
             setWebsiteConfig({
                 [CHECK_PHONE_CONFIG.SHOW_CHECK_PHONE_FEATURE_POP_TIP]: false
             }, () => {
-                this.checkPhoneFeatureVisibleChange();
+                this.checkPhoneFeatureVisibleChange(false);
             }, (err) => {
                 let websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig')) || {};
                 _.set(websiteConfig, CHECK_PHONE_CONFIG.SHOW_CHECK_PHONE_FEATURE_POP_TIP, false);
                 storageUtil.local.set('websiteConfig', JSON.stringify(websiteConfig));
-                this.checkPhoneFeatureVisibleChange();
+                this.checkPhoneFeatureVisibleChange(false);
             });
         }else {
-            this.checkPhoneFeatureVisibleChange();
+            this.checkPhoneFeatureVisibleChange(visible);
         }
     };
     //空号检测功能pop事件
@@ -1087,7 +1088,7 @@ class RecommendCluesList extends React.Component {
 
         if(maxLimitTip) {
             return (
-                <div>
+                <div className="extract-limit-wrapper">
                     <i className="iconfont icon-warn-icon"/>
                     {maxLimitTip}
                     <i
@@ -1384,7 +1385,7 @@ class RecommendCluesList extends React.Component {
             // 企业账号到期，提示联系销售升级\续费的popover
             if(currentVersionObj.company){
                 return (
-                    <Popover content={getContactSalesPopoverTip()} placement="bottom" trigger="click">
+                    <Popover content={getContactSalesPopoverTip()} placement={isWebMin ? 'topRight' : 'bottom'} trigger="click">
                         {this.renderBatchExtractBtn(() => {}, isWebMin)}
                     </Popover>
                 );
@@ -1393,6 +1394,7 @@ class RecommendCluesList extends React.Component {
                 return this.renderBatchExtractBtn(this.handleUpgradePersonalVersion, isWebMin);
             }
         }else {//渲染可提取线索的按钮
+            let placement = isWebMin ? 'topRight' : 'bottomLeft';
             let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
             let isShowCheckPhoneStatus = this.hasEnableCheckPhone() && !this.state.disableExtract && !this.state.showBatchExtractTip;
             let handleFnc = this.handleSubmitAssignSalesBatch;
@@ -1422,7 +1424,7 @@ class RecommendCluesList extends React.Component {
                 });
                 const batchExtractBtn = (
                     <Popover
-                        placement="bottomLeft"
+                        placement={placement}
                         trigger="click"
                         title={title}
                         content={content}
@@ -1469,7 +1471,7 @@ class RecommendCluesList extends React.Component {
             }else {
                 return (
                     <Popover
-                        placement="bottomLeft"
+                        placement={placement}
                         trigger="click"
                         title={title}
                         content={content}
@@ -1635,7 +1637,7 @@ class RecommendCluesList extends React.Component {
         }
     };
     //渲染单项中的提取按钮
-    extractClueOperator = (record) => {
+    extractClueOperator = (record, bottomType) => {
         let {isWebMin} = isResponsiveDisplay();
         // 过期的账号不能提取线索
         if(isExpired()){
@@ -1643,12 +1645,12 @@ class RecommendCluesList extends React.Component {
             // 企业账号到期，提示联系销售升级\续费的popover
             if(currentVersionObj.company){
                 return (
-                    <Popover content={getContactSalesPopoverTip()} placement="bottomLeft" trigger="click">
-                        {this.renderSingleExtractBtn(() => {}, record)}
+                    <Popover content={getContactSalesPopoverTip()} placement={isWebMin ? 'topRight' : 'bottomLeft'} trigger="click">
+                        {this.renderSingleExtractBtn(() => {}, record, bottomType)}
                     </Popover>
                 );
             } else {//个人版，展示升级\续费的界面
-                return this.renderSingleExtractBtn(this.handleUpgradePersonalVersion, record);
+                return this.renderSingleExtractBtn(this.handleUpgradePersonalVersion, record, bottomType);
             }
         } else {//渲染可提取线索的按钮
             // 提取线索分配给相关的销售人员的权限
@@ -1686,7 +1688,7 @@ class RecommendCluesList extends React.Component {
                         ref={assignSale => this['changeSales' + record.id] = assignSale}
                         content={
                             <Popover
-                                placement={placement}
+                                placement={isWebMin ? 'topRight' : placement}
                                 trigger="click"
                                 title={title}
                                 content={content}
@@ -1695,7 +1697,7 @@ class RecommendCluesList extends React.Component {
                                 overlayClassName={overlayClassName}
                             >
                                 <Button
-                                    type={isWebMin ? 'ghost' : 'primary'}
+                                    type={bottomType || (isWebMin ? 'ghost' : 'primary')}
                                     data-tracename="点击提取按钮"
                                     className="assign-btn btn-item"
                                 >
@@ -1718,7 +1720,7 @@ class RecommendCluesList extends React.Component {
             } else {
                 return (
                     <Popover
-                        placement={placement}
+                        placement={isWebMin ? 'topRight' : placement}
                         trigger="click"
                         title={title}
                         content={content}
@@ -1726,19 +1728,19 @@ class RecommendCluesList extends React.Component {
                         onVisibleChange={this.handleSingleVisibleChange}
                         overlayClassName={overlayClassName}
                     >
-                        {this.renderSingleExtractBtn(handleFnc, record)}
+                        {this.renderSingleExtractBtn(handleFnc, record, bottomType)}
                     </Popover>
                 );
             }
         }
     };
-    renderSingleExtractBtn(clickFunc, record) {
+    renderSingleExtractBtn(clickFunc, record, bottomType) {
         let {isWebMin} = isResponsiveDisplay();
         return (
             <Button
                 onClick={clickFunc}
                 data-tracename='点击单个提取推荐线索按钮'
-                type={isWebMin ? 'ghost' : 'primary'}
+                type={bottomType || (isWebMin ? 'ghost' : 'primary')}
                 className="assign-btn btn-item"
                 loading={this.state.singleExtractLoading === record.id}
             >
@@ -1893,6 +1895,21 @@ class RecommendCluesList extends React.Component {
         });
     };
 
+    //点击展开更多线索详情
+    handleClickMoreDetailBtn = (item) => {
+        this.setState({
+            clueDetail: item,
+            showClueDetailPanel: true
+        });
+    };
+    //关闭线索详情面板
+    handleHiddenClueDetailPanel = () => {
+        this.setState({
+            clueDetail: {},
+            showClueDetailPanel: false
+        });
+    }
+
     //手机号状态为其他时，后面添加tip
     handlePhoneOtherStatusTip(phoneNumber) {
         if(phoneNumber.indexOf(Intl.get( 'common.others', '其他')) > -1) {
@@ -1990,6 +2007,152 @@ class RecommendCluesList extends React.Component {
         );
     };
 
+    //渲染线索详情
+    renderClueDetailBlock() {
+        let item = _.get(this.state,'clueDetail', {});
+        let otherProps = {
+            products: this.handleHighLightStyle(item.products),
+            scope: this.handleHighLightStyle(item.scope),
+            industry: this.handleHighLightStyle(item.industry),
+            companyProfile: this.handleHighLightStyle(item.companyProfile),
+        };
+        let labels = item.labels.concat(item.features);
+        let extractBtn;
+        if(item.hasExtracted || item.hasExtractedByOther) {
+            extractBtn = <Button disabled type="primary" className="btn-item btn-disabled">{Intl.get('common.has.been.extracted', '已提取')}</Button>;
+        }else {
+            extractBtn = this.extractClueOperator(item, 'primary');
+        }
+
+        let handleFunc = (e) => {
+            if(e.target.checked) {//选中时，关闭详情面板
+                this.handleHiddenClueDetailPanel();
+            }
+            this.handleCheckChange(item, e);
+        };
+
+        let content = (
+            <div className="extract-clue-panel-container">
+                <div className="extract-clue-item extract-detail-container" key={item.id}>
+                    <div className="extract-item-title">
+                        <Checkbox checked={this.hasChecked(item)} disabled={this.getDisabledClue(item)} onChange={handleFunc}/>
+                        <div className="extract-clue-text-wrapper">
+                            <div className="extract-clue-text__name">
+                                {item.hasExtractedByOther ? <i className='iconfont icon-warning-tip'/> : null}
+                                <span className="clue-name" dangerouslySetInnerHTML={{__html: this.handleHighLightStyle(item.name).content}}/>
+                                {item.openStatus ? <span className="clue-company-open-status">{item.openStatus.split('（')[0].replace('开业', '在业')}</span> : null}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="extract-item-content extract-clue-text-wrapper">
+                        <div className="extract-clue-text__filters">
+                            {labels.length ? (
+                                <div className="extract-clue-text-item">
+                                    <div className="extract-clue-item-label">{Intl.get('common.tag', '标签')}</div>
+                                    <div className="clue-labels">
+                                        {_.map(labels, (tag, index) => (
+                                            <Tag key={index}><span dangerouslySetInnerHTML={{__html: this.handleTagHighLightText(tag)}}/></Tag>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : null}
+                            {item.startTime ? (
+                                <div className="extract-clue-text-item">
+                                    <div className='extract-clue-info-item'>
+                                        <div className="extract-clue-item-label">{Intl.get('clue.customer.register.time', '注册时间')}：</div>
+                                        <span className="">{moment(item.startTime).format(oplateConsts.DATE_FORMAT)}</span>
+                                    </div>
+                                </div>
+                            ) : null}
+                            <div className="extract-clue-text-item">
+                                <div className="extract-clue-item-label">{Intl.get('crm.5', '联系方式')}：</div>
+                                {_.get(item.contact, 'phones') ? (
+                                    <span className="extract-clue-contacts-item">
+                                        <span className="extract-clue-text-label">{Intl.get('common.phone', '电话')}：</span>
+                                        <Popover trigger="hover" content={_.get(item,'telephones').map(phone => {
+                                            let phoneNumber = getShowPhoneNumber(item, phone);
+                                            return (<div key={phone}>{phoneNumber}{this.handlePhoneOtherStatusTip(phoneNumber)}</div>);
+                                        })}>
+                                            <span className={CONTACT_PHONE_CLS}>{_.get(item.contact, 'phones')}</span>
+                                            {Intl.get('contract.22', '个')}
+                                        </Popover>
+                                    </span>
+                                ) : null}
+                                {_.get(item.contact, 'email') ? (
+                                    <span className="extract-clue-contacts-item">
+                                        <span className="extract-clue-text-label">{Intl.get('common.email', '邮箱')}：</span>
+                                        <span>{Intl.get('clue.recommend.clue.count', '{count}个', {
+                                            count: _.get(item.contact, 'email')
+                                        })}</span>
+                                    </span>
+                                ) : null}
+                                {_.get(item.contact, 'qq') ? (
+                                    <span className="extract-clue-contacts-item">
+                                        <span className="extract-clue-text-label">QQ：</span>
+                                        <span>{Intl.get('clue.recommend.clue.count', '{count}个', {
+                                            count: _.get(item.contact, 'qq')
+                                        })}</span>
+                                    </span>
+                                ) : null}
+                                {_.get(item.contact, 'weChat') ? (
+                                    <span className="extract-clue-contacts-item">
+                                        <span className="extract-clue-text-label">{Intl.get('crm.58', '微信')}：</span>
+                                        <span>{Intl.get('clue.recommend.clue.count', '{count}个', {
+                                            count: _.get(item.contact, 'weChat')
+                                        })}</span>
+                                    </span>
+                                ) : null}
+                            </div>
+                            {/*行业*/}
+                            {otherProps.industry.hasContent ? (
+                                <div className="extract-clue-text-item">
+                                    <div className="extract-clue-item-label">{Intl.get('menu.industry', '行业')}：</div>
+                                    <span dangerouslySetInnerHTML={{__html: otherProps.industry.content}}/>
+                                </div>
+                            ) : null}
+                            {/*产品*/}
+                            {otherProps.products.hasContent ? (
+                                <div className="extract-clue-text-item">
+                                    <div className="extract-clue-item-label">{Intl.get('common.product', '产品')}：</div>
+                                    <span dangerouslySetInnerHTML={{__html: otherProps.products.content}}/>
+                                </div>
+                            ) : null}
+                            {/*经营范围*/}
+                            {otherProps.scope.hasContent ? (
+                                <div className="extract-clue-text-item">
+                                    <div className="extract-clue-item-label">{Intl.get('clue.recommend.clue.scope', '经营范围')}：</div>
+                                    <span dangerouslySetInnerHTML={{__html: otherProps.scope.content}}/>
+                                </div>
+                            ) : null}
+                            {/*简介*/}
+                            {otherProps.companyProfile.hasContent ? (
+                                <div className="extract-clue-text-item">
+                                    <div className="extract-clue-item-label">{Intl.get('clue.recommend.clue.introduction', '简介')}：</div>
+                                    <span dangerouslySetInnerHTML={{__html: otherProps.companyProfile.content}}/>
+                                </div>
+                            ) : null}
+                        </div>
+                    </div>
+                    <div className="extract-item-btn-container">
+                        <Button className="close-btn btn-item" data-tracename="点击详情中的关闭按钮" onClick={this.handleHiddenClueDetailPanel}>{Intl.get('common.app.status.close', '关闭')}</Button>
+                        {extractBtn}
+                    </div>
+                </div>
+            </div>
+        );
+
+        return (
+            <BottomPanelModal
+                isShowModal
+                isShowCloseBtn={false}
+                content={content}
+                dataTracename="线索详情面板"
+                onClosePanel={this.handleHiddenClueDetailPanel}
+                className="recommend-clue-detail-panel"
+            />
+        );
+    }
+
     renderRecommendLists = () => {
         let {
             recommendClueLists,
@@ -2045,6 +2208,13 @@ class RecommendCluesList extends React.Component {
                                     )}
                                 </div>
                             );
+                            //是否显示详情按钮
+                            let showDetailBtn = isWebMin && (
+                                otherProps.products.hasContent
+                                || otherProps.scope.hasContent
+                                || otherProps.companyProfile.hasContent
+                                || otherProps.companyProfile.hasContent
+                            );
 
                             return (
                                 <div className={cls} key={item.id}>
@@ -2088,8 +2258,8 @@ class RecommendCluesList extends React.Component {
                                                             return (<div key={phone}>{phoneNumber}{this.handlePhoneOtherStatusTip(phoneNumber)}</div>);
                                                         })}>
                                                             <span className={CONTACT_PHONE_CLS}>{_.get(item.contact, 'phones')}</span>
+                                                            {Intl.get('contract.22', '个')}
                                                         </Popover>
-                                                        {Intl.get('contract.22', '个')}
                                                     </span>
                                                 ) : null}
                                                 {_.get(item.contact, 'email') ? (
@@ -2155,8 +2325,9 @@ class RecommendCluesList extends React.Component {
                                                     </ShearContent>
                                                 </div>
                                             ) : null}
+                                            {showDetailBtn ? <span className="extract-detail-btn" data-tracename="点击展开更多线索详情按钮" onClick={this.handleClickMoreDetailBtn.bind(this, item)}>{Intl.get('shear.expand', '展开')}</span> : null}
                                         </div>
-                                        {isWebMin ? singleExtractBlock : null}
+                                        {isWebMin && !this.state.showClueDetailPanel ? singleExtractBlock : null}
                                     </div>
                                     {isWebMin ? null : singleExtractBlock}
                                 </div>
@@ -2304,20 +2475,21 @@ class RecommendCluesList extends React.Component {
                                             </div>
                                         )}
                                     />
+                                    {isWebMin && this.state.showBottomPanel ? (
+                                        <BottomPanelModal
+                                            isShowModal
+                                            isShowCloseBtn={false}
+                                            content={content}
+                                            dataTracename="底部操作提示区域"
+                                            onClosePanel={this.handleVisibleChange}
+                                            className="recommend-clue-bottom-panel"
+                                        />
+                                    ) : null}
+                                    {this.state.showClueDetailPanel ? this.renderClueDetailBlock() : null}
                                 </div>
                             </div>
                         </div>
                         <div className={maskCls}/>
-                        {isWebMin && this.state.showBottomPanel ? (
-                            <BottomPanelModal
-                                isShowModal
-                                isShowCloseBtn={false}
-                                content={content}
-                                dataTracename="底部操作提示区域"
-                                onClosePanel={this.handleVisibleChange}
-                                className="recommend-clue-bottom-panel"
-                            />
-                        ) : null}
                     </div>
                 </div>
             </div>

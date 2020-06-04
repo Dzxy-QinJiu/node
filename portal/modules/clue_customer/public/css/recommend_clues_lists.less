@@ -336,11 +336,6 @@
               margin-right: 0 !important;
               float: right;
               position: relative;
-              &.btn-disabled{
-                background-color: @primary-disable-color;
-                color: #fff;
-                border-color: @primary-disable-color;
-              }
               .iconfont {
                 margin-right: 0.5em;
                 &.change-new-icon-rotation + span {
@@ -505,11 +500,6 @@
                     color: @has-transfer-color;
                   }
                 }
-                //高亮文字样式
-                .text-highlight{
-                  color: @confirm-delete-background;
-                  font-style: unset;
-                }
                 .extract-clue-text__info{
                   margin-top: 0px;
                   color: @has-transfer-color;
@@ -537,6 +527,11 @@
               .ant-checkbox-wrapper{
                 margin: -16px 0 0 -16px;
                 padding: 16px 15px 35px;
+              }
+              //高亮文字样式
+              .text-highlight{
+                color: @confirm-delete-background;
+                font-style: unset;
               }
             }
 
@@ -604,6 +599,13 @@
               .ant-select-selection__rendered{
                 line-height: 24px;
               }
+            }
+          }
+          .btn-item{
+            &.btn-disabled{
+              background-color: @primary-disable-color;
+              color: #fff;
+              border-color: @primary-disable-color;
             }
           }
         }
@@ -700,6 +702,9 @@
     vertical-align: top;
     cursor: pointer;
   }
+  .extract-limit-wrapper{
+    display: flex;
+  }
   //检测手机号状态样式
   .check-phone-container{
     position: relative;
@@ -728,7 +733,7 @@
       font-size: 20px;
       text-align: center;
       color: @primary-color;
-      background: #E3E8ED;
+      background: @content-bg-color;
       border-radius: unset!important;
       margin-right: 10px;
     }
@@ -987,6 +992,8 @@
                   opacity: 1!important;
                   color: @primary-color;
                   float: right;
+                  margin-right: 0!important;
+                  margin-top: 10px;
                 }
                 .clue-has-extracted{
                   float: right;
@@ -1010,7 +1017,68 @@
                 }
                 //展开，收起按钮
                 .append-icon{
-                  display: none;
+                  visibility: hidden;
+                }
+                .extract-clue-text__info{
+                  position: relative;
+                  .extract-detail-btn{
+                    color: @primary-color;
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                  }
+                }
+              }
+              //线索详情样式
+              .extract-detail-container{
+                background: #fff;
+                display: block;
+                padding: 0;
+                .extract-item-title{
+                  display: flex;
+                  //align-items: center;
+                  border-bottom: 1px solid @content-bg-color;
+                  padding: 16px;
+                }
+                .extract-item-content{
+                  max-height: calc(90vh - 108px);
+                  width: 100%;
+                  overflow-y: scroll;
+                  padding: 16px;
+                  .extract-clue-text__filters{
+                    margin-top: 0;
+                  }
+                  .extract-clue-text-item{
+                    color: @primary-font-color;
+                    font-size: 14px;
+                    margin-bottom: 18px!important;
+                    &:last-child{
+                      margin-bottom: 0!important;
+                    }
+                    .extract-clue-item-label{
+                      color: @has-transfer-color;
+                      margin-bottom: 9px;
+                      font-size: 14px;
+                    }
+                  }
+                }
+                .extract-item-btn-container{
+                  height: 48px;
+                  display: flex;
+                  align-items: center;
+                  padding: 0 16px;
+                  border-top: 1px solid @content-bg-color;
+                  .ant-btn{
+                    flex: 1;
+                    margin-right: 8px;
+                    font-size: 16px;
+                    &:last-child{
+                      margin-right: 0;
+                    }
+                  }
+                  .close-btn{
+                    color: @primary-color;
+                  }
                 }
               }
             }
@@ -1171,6 +1239,12 @@
         font-size: 16px;
         color: #fff;
       }
+    }
+  }
+  //底部提示面板样式
+  .bottom-panel-modal{
+    &.recommend-clue-bottom-panel{
+      z-index: 112;//底部检测结果提示层级要高于线索详情的面板
     }
   }
 }

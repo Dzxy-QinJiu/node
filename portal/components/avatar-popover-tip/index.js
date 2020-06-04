@@ -9,6 +9,7 @@ import React, {Component} from 'react';
 import {Popover} from 'antd';
 import classNames from 'classnames';
 
+const CLOSE_BTN_CLICK = 'closeBtnClick';
 class AvatarPopoverTip extends Component {
 
     renderContent(content, onVisibleChange) {
@@ -18,7 +19,7 @@ class AvatarPopoverTip extends Component {
                     <img className="image" src="/static/images/curtao-personal.svg"/>
                 </div>
                 <span className="avatar-popover-text">{content}</span>
-                <i className="iconfont icon-close" data-tracename="点击提示中的关闭按钮" title={Intl.get('common.app.status.close', '关闭')} onClick={onVisibleChange.bind(this, false)}/>
+                <i className="iconfont icon-close" data-tracename="点击提示中的关闭按钮" title={Intl.get('common.app.status.close', '关闭')} onClick={onVisibleChange.bind(this, false, CLOSE_BTN_CLICK)}/>
             </div>
         );
     }
@@ -44,5 +45,5 @@ class AvatarPopoverTip extends Component {
         );
     }
 }
-
+AvatarPopoverTip.CLOSE_BTN_CLICK = CLOSE_BTN_CLICK;
 export default AvatarPopoverTip;
