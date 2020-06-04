@@ -6,7 +6,11 @@
   }
   .clue-detail-block{
     background: #fff;
-    overflow: hidden;
+    &:after{
+      content:'';
+      display: block;
+      clear: both;
+    }
     .clue-info-item{
       border-radius: 4px;
       float: left;
