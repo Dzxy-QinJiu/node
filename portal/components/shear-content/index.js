@@ -5,7 +5,7 @@
 */
 /**
  * https://github.com/jeffchan/truncate.js
- * 
+ *
  * ShearContent
  * params {
  *  rowsNum [number] 截断的行数，默认3行
@@ -71,18 +71,19 @@ class ShearContent extends React.Component {
         const showCls = classNames('cut-content clearfix', {
             'hide': !this.state.showDetail
         });
+        let contentCls = classNames('shear-content-container',this.props.className);
         return (
-            <span className="shear-content-container">
+            <span className={contentCls}>
                 <div className={hideCls}>
                     {this.props.children}
-                    {this.props.hasEditBtn ? <i className="iconfont icon-edit-btn-plus handle-btn-item has-data-btn" 
+                    {this.props.hasEditBtn ? <i className="iconfont icon-edit-btn-plus handle-btn-item has-data-btn"
                         title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}
                     /> : null}
                 </div>
                 <div className={showCls}>
                     {this.props.children}<span className="append-icon collapse-btn handle-btn-item">{Intl.get('crm.contact.way.hide', '收起')}</span>
                     {this.props.hasEditBtn ? <i className="iconfont icon-edit-btn-plus handle-btn-item has-data-btn"
-                        title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')} 
+                        title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}
                     /> : null}
                 </div>
             </span>
@@ -96,6 +97,7 @@ ShearContent.defaultProps = {
     jsx: null,
     hasEditBtn: false,
     editBtnChange: '',
+    className: ''
 };
 ShearContent.propTypes = {
     rowsNum: PropTypes.number,
@@ -103,5 +105,6 @@ ShearContent.propTypes = {
     jsx: PropTypes.element,
     hasEditBtn: PropTypes.bool,//是否显示修改按钮
     editBtnChange: PropTypes.object,//修改按钮的回调
+    className: PropTypes.string
 };
 export default ShearContent;
