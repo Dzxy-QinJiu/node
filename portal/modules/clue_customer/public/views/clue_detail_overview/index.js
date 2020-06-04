@@ -1745,6 +1745,15 @@ class ClueDetailOverview extends React.Component {
         var {curClue} = this.state;
         return (
             <div className='clue-info-wrap clue-detail-block'>
+                {curClue.legal_person ? this.renderBasicContent(Intl.get('lead.company.legal.person', '法人'),
+                    <BasicEditInputField
+                        hasEditPrivilege={false}
+                        id={curClue.id}
+                        value={curClue.legal_person}
+                        field='legal_person'
+                        noDataTip={Intl.get('lead.company.no.legal.person', '暂无法人')}
+                    />
+                ) : null}
                 {curClue.formed ? this.renderBasicContent(Intl.get('clue.customer.register.time', '注册时间'),
                     <BasicEditInputField
                         hasEditPrivilege={false}
@@ -1770,15 +1779,6 @@ class ClueDetailOverview extends React.Component {
                         value={<ShearContent rowsNum={3}>{curClue.company_profile}</ShearContent>}
                         field='company_profile'
                         noDataTip={Intl.get('clue.recommend.no.clue.introduction', '暂无简介')}
-                    />
-                ) : null}
-                {curClue.legal_person ? this.renderBasicContent(Intl.get('lead.company.legal.person', '法人'),
-                    <BasicEditInputField
-                        hasEditPrivilege={false}
-                        id={curClue.id}
-                        value={curClue.legal_person}
-                        field='legal_person'
-                        noDataTip={Intl.get('lead.company.no.legal.person', '暂无法人')}
                     />
                 ) : null}
             </div>
