@@ -901,7 +901,8 @@ class ClueCustomer extends React.Component {
             && _.isEmpty(filterStoreData.unexist_fields)
             && _.isEmpty(filterStoreData.filterClueProvince)
             && _.isEmpty(filterStoreData.filterLabels)
-            && _.isEmpty(filterStoreData.filterClueUsers)){
+            && _.isEmpty(filterStoreData.filterClueUsers)
+            && _.isEmpty(filterStoreData.customized_variables)){
             return true;
         }else{
             return false;

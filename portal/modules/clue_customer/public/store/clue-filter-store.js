@@ -254,8 +254,6 @@ ClueFilterStore.prototype.setSimilarFiled = function(similarItem){
 // 筛选自定义字段
 ClueFilterStore.prototype.setFilterCustomField = function(customItem) {
     this.customized_variables = _.extend(this.customized_variables, customItem);
-
-    console.log('this.customized_variables:',this.customized_variables);
 };
 
 module.exports = alt.createStore(ClueFilterStore, 'ClueFilterStore');
