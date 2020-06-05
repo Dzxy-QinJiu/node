@@ -39,7 +39,7 @@ function getOperateTextMap(lang){
     };
 }
 
-//批量处理推送相关    
+//批量处理推送相关
 //缓存socketStore和ioServer,为了拆分代码
 function Batch() {
     this.socketStore = null;
@@ -115,8 +115,13 @@ Batch.prototype.listener = function(data) {
                     socket.emit('batchOperate' , messageObj);
                 });
 
+            }else{
+                pushLogger.info('批量推送socket不存在，ioServer为' + JSON.stringify(this.ioServer));
+                pushLogger.info('批量推送socket不存在，socketId为' + JSON.stringify(socketObj));
             }
         });
+    }else{
+        pushLogger.info('批量推送clients不存在' + JSON.stringify(this.socketStore));
     }
 };
 
