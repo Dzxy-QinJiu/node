@@ -177,7 +177,7 @@ class CrmFilterPanel extends React.Component {
         // 需要处理自定义字段的数据结构
         const customizedVariables = _.get(this.props.customerCustomFieldData, '[0].customized_variables');
         if (!_.isEmpty(customizedVariables)) {
-            condition.customized_variables = {};
+            condition.custom_variables = {};
         }
         data.forEach(item => {
             if (item.groupId){
@@ -185,7 +185,7 @@ class CrmFilterPanel extends React.Component {
                     // 自定义字段名称
                     let customFieldName = _.map(customizedVariables, 'name');
                     if (_.includes(customFieldName, item.groupId)) {
-                        condition.customized_variables[item.groupId] = item.data.map(x => x.value);
+                        condition.custom_variables[item.groupId] = item.data.map(x => x.value);
                     } else {
                         condition[item.groupId] = item.data.map(x => x.value);
                         if (_.includes(['customer_label', 'province', 'industry', 'member_role', 'administrative_level', 'sales_team_id', 'source_classify',COMMON_OTHER_ITEM], item.groupId)) {

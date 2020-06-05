@@ -933,8 +933,8 @@ class Crm extends React.Component {
             condition.term_fields = term_fields;
         }
         // 自定义字段，若是空的话，则不需要传向后端
-        if (_.isEmpty(condition.customized_variables)) {
-            delete condition.customized_variables;
+        if (_.isEmpty(condition.custom_variables)) {
+            delete condition.custom_variables;
         }
         delete condition.otherSelectedItem;
         return condition;
