@@ -33,7 +33,7 @@ class UserAgreementPage extends React.Component {
         this.setState({ contentHeight: this.getContentHeight() });
     }
     getContentHeight() {
-        return $(window).height() - LAYOUT_CONST.MARGAIN - LAYOUT_CONST.TITLE_HEIGHT;
+        return $(window).height() - LAYOUT_CONST.MARGAIN;// - LAYOUT_CONST.TITLE_HEIGHT;
     }
     componentWillUnmount() {
         Trace.detachEventListener(window, 'click', Trace.eventHandler);
