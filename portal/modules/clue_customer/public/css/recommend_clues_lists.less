@@ -447,7 +447,6 @@
                     .more-contacts{
                       font-size: 14px;
                       color: @primary-color;
-                      margin-left: 16px;
                       cursor: pointer;
                     }
                   }
@@ -652,15 +651,12 @@
       padding: 0;
     }
     .more-contacts-wrapper{
-      width: 202px;
-      .gm-scroll-view{
-        overflow: hidden;
-      }
+      max-height: 202px;
+      overflow-y: hidden;
       &.has-scroll{
-        .gm-scroll-view{
-          overflow: scroll;
-        }
+        overflow-y: scroll;
       }
+      .scrollbar-style;
     }
     .more-contacts-content{
       .more-contacts-item{
