@@ -1831,13 +1831,10 @@ class RecommendCluesList extends React.Component {
         return null;
     }
 
-    handleClickContactPopover = (item) => {
-        this.setState({showContactPopvisible: item.id});
-    };
-
-    handleContactPopoverChange = (visible) => {
-        if(!visible) {
-            this.setState({showContactPopvisible: ''});
+    handleContactPopoverChange = (item) => {
+        let onVisibleChange = _.get(this['contactsRef' + item.id], 'refs.tooltip.onVisibleChange');
+        if(_.isFunction(onVisibleChange)) {
+            onVisibleChange(false);
         }
     }
     
@@ -1933,7 +1930,7 @@ class RecommendCluesList extends React.Component {
                         <i className="iconfont icon-app-view"/>
                         <span className="more-contacts-title">{Intl.get('clue.more.contacts.tip', '提取后可查看完整信息')}</span>
                     </div>
-                    <i className="iconfont icon-close" data-tracename="点击关闭" title={Intl.get('common.app.status.close', '关闭')} onClick={this.handleContactPopoverChange.bind(this, false)}/>
+                    <i className="iconfont icon-close" data-tracename="点击关闭" title={Intl.get('common.app.status.close', '关闭')} onClick={this.handleContactPopoverChange.bind(this, item)}/>
                 </div>
             );
             let contentCls = classNames('more-contacts-wrapper', {
@@ -1964,15 +1961,14 @@ class RecommendCluesList extends React.Component {
                 <span className='extract-clue-info-item'>
                     <span className="extract-clue-text-label">{Intl.get('call.record.contacts', '联系人')}：</span>
                     <Popover
-                        trigger="click"
+                        ref={ref => this['contactsRef' + item.id] = ref}
+                        trigger={isResponsiveDisplay().isWebMin ? 'click' : 'hover'}
                         placement="bottomLeft"
                         title={title}
                         content={content}
-                        visible={this.state.showContactPopvisible === item.id}
-                        onVisibleChange={this.handleContactPopoverChange}
                         overlayClassName="extract-limit-content check-phone-result-container more-contacts-container"
                     >
-                        <span className="clickable" data-tracename="点击联系人个数" onClick={this.handleClickContactPopover.bind(this, item)}>
+                        <span className="clickable" data-tracename="点击联系人个数">
                             <span className="more-contacts">{_.get(contacts, 'length')}</span>
                             {Intl.get('contract.22', '个')}
                         </span>
