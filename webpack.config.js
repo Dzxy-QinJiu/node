@@ -110,7 +110,7 @@ var loadersLists = [
         ],
         include: [
             path.resolve(__dirname, 'portal'),
-            path.resolve(__dirname, 'node_modules/bootstrap')
+            path.resolve(__dirname, 'node_modules/bootstrap-datepicker')
         ]
     },
     {
@@ -150,6 +150,7 @@ var loadersLists = [
         use: 'happypack/loader?id=css',
         include: [
             path.resolve(__dirname, 'portal'),
+            path.resolve(__dirname, 'node_modules/bootstrap'),
             path.resolve(__dirname, 'node_modules/rc-calendar'),
             path.resolve(__dirname, 'node_modules/react-date-picker'),
             path.resolve(__dirname, 'node_modules/antc'),
