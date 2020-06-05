@@ -20,7 +20,7 @@ const ERROR_MSGS = {
     ERROR_CAPTCHA: 'error-captcha'//刷新验证码失败
 };
 const base64_prefix = 'data:image/png;base64,';
-import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/common-method-util';
+import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
 
 class SessionTimeoutModal extends React.Component {
     constructor(props) {

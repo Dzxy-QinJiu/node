@@ -56,7 +56,7 @@ const { getWebsiteConfig, getLocalWebsiteConfig } = require('LIB_DIR/utils/websi
 const MY_TEAM_TREE_KEY = 'my_team_tree';
 import {setUserData} from '../user-data';
 import newComment from '../../../static/images/new-comment.svg';
-var wx = require('weixin-js-sdk');
+
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id === curTeamId);
@@ -1644,16 +1644,4 @@ exports.renderUnreadMsg = function() {
         title={Intl.get('user.apply.unread.reply', '有未读回复')}
     />;
 };
-exports.pcAndWechatMiniProgram = function(hrefUrl) {
-    if (window.__wxjs_environment === 'miniprogram') {//是在小程序包裹的web-view中的退出处理
-        $.ajax({
-            url: '/logout',
-            dataType: 'json',
-            type: 'get',
-            data: {isWechatLogout: true},
-        });
-        wx.miniProgram.navigateBack();
-    } else {
-        window.location.href = hrefUrl;
-    }
-};
+

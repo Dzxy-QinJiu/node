@@ -1,5 +1,5 @@
 var React = require('react');
-import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/common-method-util';
+import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
 
 class LogOut extends React.Component {
     render() {

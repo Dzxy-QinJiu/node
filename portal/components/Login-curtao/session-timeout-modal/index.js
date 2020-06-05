@@ -14,7 +14,7 @@ const FormItem = Form.Item;
 import userData from 'PUB_DIR/sources/user-data';
 import ForgotPassword from '../forgot-password';
 import classNames from 'classnames';
-import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/common-method-util';
+import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
 //错误信息提示
 const ERROR_MSGS = {
     NO_SERVICE: Intl.get('login.error.retry', '登录服务暂时不可用，请稍后重试'),
