@@ -1615,71 +1615,69 @@ class ClueDetailOverview extends React.Component {
             });
             return <div className="contact-item-wrap clue-info-item">
                 <React.Fragment>
-                    {index === 0 || isExpandContact ?
-                        <React.Fragment>
-                            <div className={cls}>
-                                <span className="clue-info-label">{Intl.get('call.record.contacts', '联系人')}</span>
-                                <div className="clue-info-detail">
-                                    <BasicEditInputField
-                                        width={EDIT_FEILD_WIDTH}
-                                        hasEditPrivilege={hasPrivilegeEdit}
-                                        id={curClue.id}
-                                        saveEditInput={this.saveEditBasicInfo.bind(this, {
-                                            editItem: 'contact_name',
-                                            id: contactItem.id
-                                        })}
-                                        value={contactItem.name}
-                                        field='contact_name'
-                                        noDataTip={Intl.get('crm.no.contact', '暂无联系人')}
-                                        addDataTip={Intl.get('clue.customer.edit.contact', '请填写联系人名称')}
-                                        placeholder={Intl.get('clue.customer.edit.contact', '请填写联系人名称')}
-                                        validators={contactNameRule()}
-                                    />
-                                </div>
-                            </div>
-                            <div className="contact-item-content">
-                                <span className="clue-info-label">{Intl.get('member.position', '职务')}</span>
-                                <div className="clue-info-detail">
-                                    <BasicEditInputField
-                                        width={EDIT_FEILD_WIDTH}
-                                        hasEditPrivilege={hasPrivilegeEdit}
-                                        id={curClue.id}
-                                        saveEditInput={this.saveEditBasicInfo.bind(this, {
-                                            editItem: 'position',
-                                            id: contactItem.id
-                                        })}
-                                        value={contactItem.position}
-                                        field='position'
-                                        noDataTip={Intl.get('member.no.position', '暂无职务')}
-                                        addDataTip={Intl.get('member.position.name.placeholder', '请输入职务名称')}
-                                        placeholder={Intl.get('member.position.name.placeholder', '请输入职务名称')}
-                                        validators={contactPositionRule()}
-                                    />
-                                </div>
-                            </div>
-                            <div className="contact-item-content">
-                                <DynamicAddDelField
-                                    id={curClue.id}
-                                    field='phone'
-                                    value={contactItem.phone}
-                                    type='phone'
-                                    label={Intl.get('common.phone', '电话')}
+                    <React.Fragment>
+                        <div className={cls}>
+                            <span className="clue-info-label">{Intl.get('call.record.contacts', '联系人')}</span>
+                            <div className="clue-info-detail">
+                                <BasicEditInputField
+                                    width={EDIT_FEILD_WIDTH}
                                     hasEditPrivilege={hasPrivilegeEdit}
-                                    placeholder={Intl.get('crm.95', '请输入联系人电话')}
-                                    saveEditData={this.saveEditBasicInfo.bind(this, {
-                                        editItem: 'phone',
+                                    id={curClue.id}
+                                    saveEditInput={this.saveEditBasicInfo.bind(this, {
+                                        editItem: 'contact_name',
                                         id: contactItem.id
                                     })}
-                                    noDataTip={Intl.get('crm.contact.phone.none', '暂无电话')}
-                                    addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
-                                    contactName={contactItem.name}
-                                    renderItemSelfSettingContent={this.renderItemSelfSettingContent.bind(this, curClue)}
-                                    renderItemSelfSettingForm={this.renderItemSelfSettingForm}
-                                    handleDelItem={this.handleDelItem}
+                                    value={contactItem.name}
+                                    field='contact_name'
+                                    noDataTip={Intl.get('crm.no.contact', '暂无联系人')}
+                                    addDataTip={Intl.get('clue.customer.edit.contact', '请填写联系人名称')}
+                                    placeholder={Intl.get('clue.customer.edit.contact', '请填写联系人名称')}
+                                    validators={contactNameRule()}
                                 />
                             </div>
-                        </React.Fragment>
-                        : null}
+                        </div>
+                        <div className="contact-item-content">
+                            <span className="clue-info-label">{Intl.get('member.position', '职务')}</span>
+                            <div className="clue-info-detail">
+                                <BasicEditInputField
+                                    width={EDIT_FEILD_WIDTH}
+                                    hasEditPrivilege={hasPrivilegeEdit}
+                                    id={curClue.id}
+                                    saveEditInput={this.saveEditBasicInfo.bind(this, {
+                                        editItem: 'position',
+                                        id: contactItem.id
+                                    })}
+                                    value={contactItem.position}
+                                    field='position'
+                                    noDataTip={Intl.get('member.no.position', '暂无职务')}
+                                    addDataTip={Intl.get('member.position.name.placeholder', '请输入职务名称')}
+                                    placeholder={Intl.get('member.position.name.placeholder', '请输入职务名称')}
+                                    validators={contactPositionRule()}
+                                />
+                            </div>
+                        </div>
+                        <div className="contact-item-content">
+                            <DynamicAddDelField
+                                id={curClue.id}
+                                field='phone'
+                                value={contactItem.phone}
+                                type='phone'
+                                label={Intl.get('common.phone', '电话')}
+                                hasEditPrivilege={hasPrivilegeEdit}
+                                placeholder={Intl.get('crm.95', '请输入联系人电话')}
+                                saveEditData={this.saveEditBasicInfo.bind(this, {
+                                    editItem: 'phone',
+                                    id: contactItem.id
+                                })}
+                                noDataTip={Intl.get('crm.contact.phone.none', '暂无电话')}
+                                addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
+                                contactName={contactItem.name}
+                                renderItemSelfSettingContent={this.renderItemSelfSettingContent.bind(this, curClue)}
+                                renderItemSelfSettingForm={this.renderItemSelfSettingForm}
+                                handleDelItem={this.handleDelItem}
+                            />
+                        </div>
+                    </React.Fragment>
                     {isExpandContact ? <React.Fragment>
                         <div className="contact-item-content">
                             <DynamicAddDelField
