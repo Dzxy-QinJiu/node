@@ -4095,6 +4095,7 @@ var zh_CN = {
     'clue.recommend.filter.company.status.closed': '停业',
     'clue.recommend.filter.company.status.liquidation': '清算',
     'clue.recommend.filter.set.up': '成立',
+    'clue.recommend.legalperson': '法人',
 
     'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',
@@ -4143,6 +4144,8 @@ var zh_CN = {
     'clue.recommend.has.more.contact': '多个联系方式',
     'clue.recommend.smal.micro.enterprise': '小微企业',
     'clue.recommend.has.website': '有官网',
+    'clue.more.contacts': '更多联系人',
+    'clue.more.contacts.tip': '提取后可查看完整信息',
     // 线索分配策略
     'clue.assignment.strategy.add': '添加分配策略',
     'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',

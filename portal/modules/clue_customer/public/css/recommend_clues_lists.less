@@ -3,6 +3,7 @@
 @tag-color: #FF8B00;
 @content-bg-color: #E3E8ED;
 @filter-width: 396px;
+@open-status-color: #01C49D;
 @mobile-bg-color: #E7F1F9;
 @mobile-font-color: #1975D1;
 .recommend-clues-page-container{
@@ -450,8 +451,8 @@
                   }
                   .clue-company-open-status{
                     margin-left: 5px;
-                    border: 1px solid @primary-color;
-                    color: @primary-color;
+                    border: 1px solid @open-status-color;
+                    color: @open-status-color;
                     border-radius:2px;
                     font-size: 12px;
                     padding: 0 5px;
@@ -468,6 +469,11 @@
                   .extract-clue-info-item{
                     display: inline-block;
                     margin-right: 15px;
+                    .more-contacts{
+                      font-size: 14px;
+                      color: @primary-color;
+                      cursor: pointer;
+                    }
                   }
                   .extract-clue-contacts-item{
                     margin-right: 15px;
@@ -495,9 +501,15 @@
                 .clue-labels{
                   margin-top: 3px;
                   .ant-tag {
-                    border-radius: 0;
-                    border: none;
+                    border-color: @placeholder-font-color;
                     color: @has-transfer-color;
+                    background-color: #fff;
+                    border-radius: 2px;
+                    &.highlight-tag{
+                      background-color: @tag-color;
+                      border-color: @tag-color;
+                      color: #fff;
+                    }
                   }
                 }
                 .extract-clue-text__info{
@@ -640,8 +652,11 @@
     //头部样式
     .ant-popover-title{
       background-color: @primary-color;
-      padding: 0 8px;
+      padding: 5px 8px;
       border-bottom: none;
+      min-height: 32px;
+      height: auto;
+      line-height: unset;
       .check-phone-title{
         color: #fff;
         display: flex;
@@ -657,18 +672,59 @@
         .icon-close{
           font-weight: bold;
           color: #fff;
-          margin-left: 24px;
+          margin-left: 16px;
         }
         .check-phone-name{
           font-size: 14px;
         }
         .check-phone-only{
           color: #BBDEFB;
+          font-size: 12px;
         }
       }
     }
     .ant-popover-inner-content{
       padding: 24px;
+    }
+  }
+  //更多联系人
+  &.more-contacts-container{
+    padding-top: 0;
+    .icon-app-view{
+      color: #BBDEFB;
+    }
+    .more-contacts-title{
+      color: #BBDEFB;
+      margin-left: 10px;
+    }
+    .ant-popover-inner-content{
+      padding: 0;
+    }
+    .more-contacts-wrapper{
+      max-height: 202px;
+      overflow-y: hidden;
+      &.has-scroll{
+        overflow-y: scroll;
+      }
+      .scrollbar-style;
+    }
+    .more-contacts-content{
+      .more-contacts-item{
+        padding: 16px;
+        border-bottom: 1px solid @content-bg-color;
+        font-size: 14px;
+        color: @has-transfer-color;
+        &:last-child{
+          border-bottom: none;
+        }
+        .more-contacts-name{
+          color: @primary-font-color;
+          margin-right: 8px;
+        }
+        .more-contacts-phone-item{
+
+        }
+      }
     }
   }
   &.batch-check-phone-container{
