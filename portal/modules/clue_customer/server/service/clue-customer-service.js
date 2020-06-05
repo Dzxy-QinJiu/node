@@ -312,7 +312,8 @@ function handleClueParams(req, clueUrl) {
     if (_.isString(req.body.reqData)){
         reqBody = JSON.parse(req.body.reqData);
     }
-    var url = clueUrl.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':page_num',req.params.page_num).replace(':order',req.params.order);
+    var url = clueUrl.replace(':type',req.params.type).replace(':page_size',req.params.page_size).
+        replace(':page_num',req.params.page_num).replace(':order',req.params.order);
     var queryParams = _.get(reqBody,'queryParam',{});
     var self_pending = _.get(queryParams,'self_pending',false);
     url += `?self_pending=${self_pending}`;

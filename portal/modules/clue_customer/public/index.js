@@ -103,7 +103,7 @@ import ClueExtract from 'MOD_DIR/clue_pool/public';
 import MoreButton from 'CMP_DIR/more-btn';
 import history from 'PUB_DIR/sources/history';
 import {checkPhoneStatus} from 'PUB_DIR/sources/utils/common-data-util';
-
+import customFieldAjax from '../../custom_field_manage/public/ajax';
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -188,12 +188,27 @@ class ClueCustomer extends React.Component {
             isShowRewardClueTips: false, // 是否显示赢线索的提示，默认不显示
             isBatchCheckPhoneStatusLoading: false,//是否正在批量检测空号
             showConfirmBatchCheckPhone: false,//是否有已检测状态的手机号，点击重新检测按钮
+            leadCustomFieldData: {}, // 线索自定义字段配置数据
         };
+    }
+
+    // 获取线索自定义字段信息
+    getLeadCustomFieldConfig() {
+        const queryObj = {
+            customized_type: 'lead'
+        };
+        customFieldAjax.getCustomFieldConfig(queryObj).then( (result) => {
+            this.setState({
+                leadCustomFieldData: result
+            });
+        } );
     }
 
     componentDidMount() {
         const query = queryString.parse(this.props.location.search);
         clueCustomerStore.listen(this.onStoreChange);
+        // 获取线索自定义字段信息
+        this.getLeadCustomFieldConfig();
         //获取线索来源
         this.getClueSource();
         //获取线索渠道
@@ -973,6 +988,11 @@ class ClueCustomer extends React.Component {
             if(filterStoreData.appliedTryLead){ //筛选申请试用企业版的线索
                 typeFilter.version_upgrade_label = 'true';
             }
+            // 自定义字段
+            let customized_variables = _.get(filterStoreData, 'customized_variables');
+            if (!_.isEmpty(customized_variables)) {
+                typeFilter.custom_variables = customized_variables;
+            }
 
             if(_.isArray(existFilelds) && existFilelds.length){
                 bodyField.exist_fields = existFilelds;
@@ -1027,7 +1047,7 @@ class ClueCustomer extends React.Component {
                 isShowRefreshPrompt: false
             });
         }
-        //跟据类型筛选
+        //根据类型筛选
         const queryObj = this.getClueSearchCondition();
         if(_.get(conditionObj,'isPageChange')){//点击翻页
             queryObj.isPageChange = true;
@@ -3736,6 +3756,7 @@ class ClueCustomer extends React.Component {
                                 style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight() + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
                                 showSelectTip={_.get(this.state.selectedClues, 'length')}
                                 toggleList={this.toggleList.bind(this)}
+                                leadCustomFieldData={this.state.leadCustomFieldData}
                             />
                         </div>
 
