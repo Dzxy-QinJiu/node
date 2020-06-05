@@ -123,6 +123,7 @@ import { storageUtil } from 'ant-utils';
 import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import AddTraceContentSuccessTips from './views/add-trace-success-tips';
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 const DIFFREF = {
     ASSIGN: 'assign',//分配
     TRACE: 'trace', //跟进
@@ -2288,7 +2289,7 @@ class ClueCustomer extends React.Component {
                 dataSource={customerList}
                 columns={this.getClueTableColunms()}
                 rowClassName={this.setInvalidClassName}
-                scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
+                scroll={{y: getTableContainerHeight(this.props.adaptiveHeight) - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
                 // locale={{
                 //     emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get('common.no.more.filter.crm', '没有符合条件的客户')) : ''
                 // }}
@@ -3712,7 +3713,6 @@ class ClueCustomer extends React.Component {
         //普通销售或者个人注册线索用
         var isCommonSale = isCommonSalesOrPersonnalVersion();//是否是普通销售
         let {isWebMin} = isResponsiveDisplay();
-
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索列表">
@@ -3757,7 +3757,7 @@ class ClueCustomer extends React.Component {
                                 clueClassifyArray={this.state.clueClassifyArray}
                                 salesManList={this.getSalesDataList()}
                                 getClueList={this.saveFilterCondition}
-                                style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight() + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
+                                style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight(this.props.adaptiveHeight) + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
                                 showSelectTip={_.get(this.state.selectedClues, 'length')}
                                 toggleList={this.toggleList.bind(this)}
                             />
@@ -3887,7 +3887,8 @@ class ClueCustomer extends React.Component {
     }
 }
 ClueCustomer.propTypes = {
-    location: PropTypes.object
+    location: PropTypes.object,
+    adaptiveHeight: PropTypes.number
 };
-module.exports = ClueCustomer;
+export default adaptiveHeightHoc(ClueCustomer);
 

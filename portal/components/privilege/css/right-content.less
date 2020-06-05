@@ -14,6 +14,28 @@
       padding: 12px;
       background-color: #f5f5f5;
     }
+    .topnav-links-wrap {
+      .topnav-links {
+        .user-preference_operate-record_ico, .user-preference_trade-record_ico {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+// 宽度缩放适配
+@media (max-width: 600px) {
+  .rightContent {
+    .main {
+      .topnav-links-wrap {
+        .topnav-links {
+          .user-preference_operate-record_ico, .user-preference_trade-record_ico {
+            display: inline-block;
+          }
+        }
+      }
+    }
   }
 }
 
