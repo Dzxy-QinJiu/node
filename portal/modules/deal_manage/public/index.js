@@ -22,6 +22,7 @@ import DealBoardList from './views/deal-board-list';
 import DealTable from './views/deal-table';
 import customFieldAjax from '../../custom_field_manage/public/ajax';
 import orderPrivilegeConst from './privilege-const';
+import DealFilterPanel from './views/deal-filter-panel';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -232,6 +233,18 @@ class DealManage extends React.Component {
         return (
             <div className="deal-manage-container" data-tracename="订单管理">
                 <TopNav>
+                    {
+                        _.isEmpty(this.state.opportunityCustomFieldData) ? null : (
+                            <div className={filterCls}>
+                                <DealFilterPanel
+                                    ref="dealfilterpanel"
+                                    style={{ width: 300, height: this.state.tableHeight + 100 }}
+                                    toggleList={this.toggleList.bind(this)}
+                                    opportunityCustomFieldData={this.props.opportunityCustomFieldData}
+                                />
+                            </div>
+                        )
+                    }
                     <div className="deal-search-block">
                         <SearchInput
                             type="select"
