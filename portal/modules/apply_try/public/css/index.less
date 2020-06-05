@@ -52,16 +52,17 @@
             }
         }
         .ant-form-item{
-            margin-left: 13px;
+            padding-left: 13px;
             .ant-form-item-label{
                 label::after{
                     content:''
                 }
             }
         }
-        .ant-form-item-control-wrapper{
+        .ant-form-item-control-wrapper {
             .ant-form-item-control {
-                input{
+                // 排除掉火狐浏览器中，人数选项radioButton渲染的.ant-radio-button-input，否则，点击人数按钮中间会不起作用)
+                input:not('.ant-radio-button-input'){
                     width: 368px;
                 }
             }
@@ -69,7 +70,7 @@
         }
         .ant-radio-button-wrapper{
             border-radius: 4px;
-            margin: 0 0 0 4px;
+            margin: 0 0 0 5px;
             border: 1px solid #d9d9d9;
             width: 89px;
             text-align: center;
