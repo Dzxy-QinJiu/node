@@ -12,6 +12,14 @@ import classNames from 'classnames';
 const CLOSE_BTN_CLICK = 'closeBtnClick';
 class AvatarPopoverTip extends Component {
 
+    onVisibleChange = (onVisibleChange) => {
+        if(_.isFunction(onVisibleChange)) {
+            onVisibleChange(false, CLOSE_BTN_CLICK);
+        }else {
+            this.avatarPopoverRef.state.visible = false;
+        }
+    };
+
     renderContent(content, onVisibleChange) {
         return (
             <div className="avatar-popover-content" data-tracename="带头像的popover提示">
@@ -19,7 +27,7 @@ class AvatarPopoverTip extends Component {
                     <img className="image" src="/static/images/curtao-personal.svg"/>
                 </div>
                 <span className="avatar-popover-text">{content}</span>
-                <i className="iconfont icon-close" data-tracename="点击提示中的关闭按钮" title={Intl.get('common.app.status.close', '关闭')} onClick={onVisibleChange.bind(this, false, CLOSE_BTN_CLICK)}/>
+                <i className="iconfont icon-close" data-tracename="点击提示中的关闭按钮" title={Intl.get('common.app.status.close', '关闭')} onClick={this.onVisibleChange.bind(this, onVisibleChange)}/>
             </div>
         );
     }
@@ -39,7 +47,7 @@ class AvatarPopoverTip extends Component {
         props.content = this.renderContent(props.content, props.onVisibleChange);
 
         return (
-            <Popover {...props}>
+            <Popover {...props} ref={ref => this.avatarPopoverRef = ref}>
                 {props.children}
             </Popover>
         );
