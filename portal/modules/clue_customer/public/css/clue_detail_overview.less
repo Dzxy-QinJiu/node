@@ -7,7 +7,7 @@
   .clue-detail-block{
     background: #fff;
     &:after{
-      content:'';
+      content: '';
       display: block;
       clear: both;
     }
@@ -206,6 +206,9 @@
         .trace-container {
           display: inline-block;
           width: 100%;
+          .trace-time{
+            padding:0px;
+          }
           .trace-content {
             float: right;
             width: 85%;
@@ -222,6 +225,11 @@
         text-align: right;
         padding: 16px;
       }
+    }
+  }
+  .clue-detail-block.company-content{
+    .less-container{
+      margin-top: 3px;
     }
   }
   .clue-contact-container.clue-detail-block.contact-item{

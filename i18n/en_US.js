@@ -370,9 +370,15 @@ var en_US = {
     'login.user.agreement': 'User agreement', //用户使用协议
     'login.user.agreement.tip': 'Clicked {btn}, you agree to our {userAgreement} and {privacyPolicy}',//点击{btn}表示您已同意我们的{userAgreement}和{privacyPolicy}
     'login.no.account.register.tip': 'No account, go to {register}',//没有账号，去{register}
-    'login.fogot.password.picture.code.error': 'Picture verification code error',//图片验证码错误
-    'login.fogot.password.phone.code.error': 'SMS verification code error',//短信验证码错误
-    'login.fogot.password.phone.code.expired': 'SMS verification code expired',//短信验证码已过期
+    'login.forgot.password.picture.code.error': 'Picture verification code error',//图片验证码错误
+    'login.forgot.password.phone.code.error': 'SMS verification code error',//短信验证码错误
+    'login.forgot.password.phone.code.expired': 'SMS verification code expired',//短信验证码已过期
+    'login.forgot.password.get.captcha.code.failed': 'Failed to get picture verification code',//获取图片验证码失败
+    'login.forgot.password.reset.expired': 'Reset password timeout',//重置密码超时
+    'login.forgot.password.request.failed': 'Failed to request',//请求失败
+    'login.forgot.password.current.phone': 'Current mobile number',//当前手机号
+    'login.forgot.password.get.sms.code': 'Get SMS verification code',//获取短信验证码
+    'login.forgot.password.operate.expired': 'Operation timeout',//操作超时
 
     'register.title.tip': 'Welcome to register',//欢迎注册客套
     'register.slogan.tip': 'Sales acceleration, starting here ...',//销售加速，从这里开始...
@@ -3363,6 +3369,8 @@ var en_US = {
     'lead.contact.position.reg': 'The position can only contain Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English bracket characters, and the length is between 1 and 10 (including 10)',//职务只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间
     'lead.check.phone.count.limit.tip': 'Up to {count} clues can be detected at a time',//一次最多可检测20条线索
     'lead.recommend.page.size': 'Each page',//每页
+    'lead.company.legal.person': 'Legal person',//法人
+    'lead.company.no.legal.person': 'No legal person',//暂无法人
 
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',

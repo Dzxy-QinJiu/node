@@ -8,7 +8,7 @@
 var UI_ERROR = require('../../lib/utils/request-error-util');
 import {Modal} from 'antd';
 import phoneUtil from './utils/phone-util';
-import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/common-method-util';
+import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
 (function() {
     //socket的emitter
     var socketEmitter = require('./utils/emitters').socketEmitter;
