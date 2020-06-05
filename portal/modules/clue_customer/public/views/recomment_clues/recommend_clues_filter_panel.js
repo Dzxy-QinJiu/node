@@ -1252,7 +1252,9 @@ class RecommendCluesFilterPanel extends Component {
                                 className="special-item"
                             >
                                 <div className="advance-data-container">
-                                    {this.renderAdvancedOptions()}
+                                    <div className="advance-data-content">
+                                        {this.renderAdvancedOptions()}
+                                    </div>
                                 </div>
                             </FormItem>
                             {this.renderAreaAndVipBlock()}
