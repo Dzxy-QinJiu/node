@@ -133,10 +133,16 @@ class RecommendCluesFilterPanel extends Component {
         if (_.isEmpty(this.state.hasSavedRecommendParams) || !_.isEqual(nextProps.hasSavedRecommendParams, this.state.hasSavedRecommendParams)){
             let hasSavedRecommendParams = _.cloneDeep(nextProps.hasSavedRecommendParams);
             let vipFilters = this.dealRecommendParamsVipData({...hasSavedRecommendParams, ...this.state.vipFilters});
+            let showOtherCondition = this.state.showOtherCondition;
+            if(!showOtherCondition) {
+                //有选择vip选项时，默认展开vip筛选
+                showOtherCondition = _.isEmpty(this.state.vipFilters) && !_.isEmpty(vipFilters);
+            }
             this.setState({
                 hasSavedRecommendParams,
                 vipFilters,
                 registerOpen: true,
+                showOtherCondition,
             }, () => {
                 if(this.searchInputRef) {
                     this.searchInputRef.state.keyword = hasSavedRecommendParams.keyword;
