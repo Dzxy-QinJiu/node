@@ -21,7 +21,7 @@ exports.toFrontRecommendClueData = function(item) {
         //注册资本
         capital: _.get(item,'capital', ''),
         //法人
-        legalPerson: _.get(item,'legalPerson', ''),
+        legalPerson: replacePartialString(_.get(item,'legalPerson', '')),
         //产品(会有高亮内容<em>###</em>)
         products: _.get(item,'products', ''),
         //行业
@@ -31,8 +31,13 @@ exports.toFrontRecommendClueData = function(item) {
         telephones: _.get(item,'telephones',[]),
         //企业状态
         openStatus: _.get(item,'openStatus', ''),
-        //官网
-        website: _.get(item, 'website', ''),
+        //有官网
+        has_website: !!item.website,
+        //联系人数组
+        contacts: _.get(item, 'contacts', []).map(contact => {
+            contact.name = replacePartialString(contact.name);
+            return contact;
+        }),
         //contact: {phones: 1, qq: 1, weChat: 0, email: 2}
         contact: {
             phones: _.get(item, 'telephones.length', 0),
@@ -42,3 +47,7 @@ exports.toFrontRecommendClueData = function(item) {
         }
     };
 };
+
+function replacePartialString(value) {
+    return value.substr(0, 1) + value.substr(1).replace(/(.)/g, '*');
+}
