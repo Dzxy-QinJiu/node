@@ -50,6 +50,7 @@ class DealManage extends React.Component {
             curShowCustomerId: '',//当前查看的客户详情
             viewType: VIEW_TYPES.LIST,//默认展示看板视图
             opportunityCustomFieldData: {},  // 机会（订单）自定义字段的值，默认空
+            showFilterList: false, // 是否展示订单筛选区域，默认false
         };
         this.boardListRef = null;
         this.dealTableRef = null;
@@ -209,6 +210,12 @@ class DealManage extends React.Component {
         }
     }
 
+    toggleList = () => {
+        this.setState((state, props) => {
+            return {showFilterList: !props.showFilterList};
+        });
+    }
+
     render() {
         const searchFields = [
             {
@@ -228,8 +235,17 @@ class DealManage extends React.Component {
             });
         }
         let customerOfCurUser = this.state.customerOfCurUser;
-        let dealViewCls = classNames('deal-manage-content', {'board-view-style': this.state.viewType === VIEW_TYPES.BOARD});
+        let dealViewCls = classNames('deal-manage-content',
+            {
+                'board-view-style': this.state.viewType === VIEW_TYPES.BOARD,
+                'content-full': !this.state.showFilterList
+            }
+        );
         let containerHeight = this.getBoardContainerHeight();
+
+        const filterCls = classNames('filter-container',{
+            'filter-close': !this.state.showFilterList
+        });
         return (
             <div className="deal-manage-container" data-tracename="订单管理">
                 <TopNav>
@@ -238,7 +254,7 @@ class DealManage extends React.Component {
                             <div className={filterCls}>
                                 <DealFilterPanel
                                     ref="dealfilterpanel"
-                                    style={{ width: 300, height: this.state.tableHeight + 100 }}
+                                    style={{ width: 300}}
                                     toggleList={this.toggleList.bind(this)}
                                     opportunityCustomFieldData={this.props.opportunityCustomFieldData}
                                 />
