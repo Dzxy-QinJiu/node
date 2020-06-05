@@ -569,7 +569,7 @@ exports.getRecommendClueLists = function(req, res) {
     let data = JSON.parse(req.body.reqData);
     return restUtil.authRest.post(
         {
-            url: restApis.getRecommendClueLists,
+            url: restApis.getRecommendClueLists + '?load_size=' + req.query.load_size,
             req: req,
             res: res
         }, data);

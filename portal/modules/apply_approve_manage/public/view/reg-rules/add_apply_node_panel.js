@@ -28,7 +28,8 @@ import {
     isBussinessTripFlow,
     isLeaveFlow,
     ROLES_SETTING,
-    SETTING_APPLY_APPROVER
+    SETTING_APPLY_APPROVER,
+    ASSIGEN_APPROVER
 } from '../../utils/apply-approve-utils';
 
 require('../../style/add-apply-node.less');
@@ -82,6 +83,7 @@ class AddApplyNodePanel extends React.Component {
         this.setState({
             userList: nextProps.userList,
             roleList: nextProps.roleList,
+            isPreviousNodeCheck: this.isPreviousNodeCheck()
         });
     }
 
@@ -280,7 +282,7 @@ class AddApplyNodePanel extends React.Component {
                         <div className="addition-condition">
                             <div className="addition-condition-item">
                                 <AntcSelect showSearch
-defaultValue={_.get(userTarget, 'nickName') ? _.get(userTarget, 'nickName') + '-' + userIndex : ''}
+                                    defaultValue={_.get(userTarget, 'nickName') ? _.get(userTarget, 'nickName') + '-' + userIndex : ''}
                                     onChange={this.handleChangeSelectUser}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
                                     {_.map(this.state.userList, (item, index) => {
@@ -400,26 +402,34 @@ defaultValue={_.get(userTarget, 'nickName') ? _.get(userTarget, 'nickName') + '-
     //上一节点是否选择了指定下一节点审批人
     isPreviousNodeCheck = () => {
         var hideType = false;
-        var applyRulesAndSetting = _.get(this, 'props.applyRulesAndSetting.applyApproveRules');
-        var addNodePanelFlow = this.props.addNodePanelFlow;
-        if (applyRulesAndSetting && _.isObject(applyRulesAndSetting[addNodePanelFlow]) && _.isArray(applyRulesAndSetting[addNodePanelFlow]['bpmnNode'])) {
-            //如果是之前已经添加过的流程，最后一个节点是结束的节点，那就要看倒数第二个是不是指定了需要
-            var bpmnNodeArr = applyRulesAndSetting[addNodePanelFlow]['bpmnNode'];
-            var lastNode = _.last(bpmnNodeArr);
-            if (lastNode) {
-                if (lastNode.type === 'EndEvent') {
-                    var arrLength = bpmnNodeArr.length - 2;
-                    if (arrLength > -1) {
-                        lastNode = _.get(bpmnNodeArr, `[${arrLength}]`);
-                    } else {
-                        lastNode = null;
+        //如果是添加流程，按此方法判断
+        if(_.isEmpty(this.props.isEditNodePanelFlowItem)){
+            var applyRulesAndSetting = _.get(this, 'props.applyRulesAndSetting.applyApproveRules');
+            var addNodePanelFlow = this.props.addNodePanelFlow;
+            if (applyRulesAndSetting && _.isObject(applyRulesAndSetting[addNodePanelFlow]) && _.isArray(applyRulesAndSetting[addNodePanelFlow]['bpmnNode'])) {
+                //如果是之前已经添加过的流程，最后一个节点是结束的节点，那就要看倒数第二个是不是指定了需要
+                var bpmnNodeArr = applyRulesAndSetting[addNodePanelFlow]['bpmnNode'];
+                var lastNode = _.last(bpmnNodeArr);
+                if (lastNode) {
+                    if (lastNode.type === 'EndEvent') {
+                        var arrLength = bpmnNodeArr.length - 2;
+                        if (arrLength > -1) {
+                            lastNode = _.get(bpmnNodeArr, `[${arrLength}]`);
+                        } else {
+                            lastNode = null;
+                        }
+
+                    }
+                    if (lastNode && lastNode.assignNextNodeApprover + '' === 'true') {
+                        hideType = true;
                     }
 
                 }
-                if (lastNode && lastNode.assignNextNodeApprover + '' === 'true') {
-                    hideType = true;
-                }
-
+            }
+        }else{//如果是修改流程
+            var {isEditNodePanelFlowItem} = this.props;
+            if(isEditNodePanelFlowItem.candidateApprover === ASSIGEN_APPROVER){
+                hideType = true;
             }
         }
         return hideType;

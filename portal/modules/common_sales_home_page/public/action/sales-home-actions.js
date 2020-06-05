@@ -12,7 +12,8 @@ function SalesHomeActions() {
         'afterHandleStatus',//修改日程状态后的处理
         'afterHandleMessage',//处理消息后的处理
         'afterRemarkClue',//标记日程无效后的处理
-        'removeClueItem'
+        'removeClueItem',
+        'clearExpiredList'
     );
     this.getPhoneTotal = function(reqData) {
         this.dispatch({loading: true, error: false});

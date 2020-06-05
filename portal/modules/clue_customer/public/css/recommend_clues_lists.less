@@ -308,14 +308,16 @@
               display: flex;
               float: left;
               line-height: 32px;
-              .more-batch-btn{
-                color: @primary-color;
-              }
+            }
+            //换一批样式
+            .more-batch-btn{
+              color: @primary-color;
             }
             .ant-checkbox-wrapper{
               margin-top: 3px;
               margin-bottom: 0;
             }
+            //全选checkbox
             .check-all{
               font-size: 14px;
               color: @primary-font-color;
@@ -336,6 +338,7 @@
               &.btn-disabled{
                 background-color: @primary-disable-color;
                 color: #fff;
+                border-color: @primary-disable-color;
               }
               .iconfont {
                 margin-right: 0.5em;
@@ -347,9 +350,17 @@
             .tip-wrapper{
               font-size: 14px;
               color: @content-font-color;
-              margin: 0 8px;
               > span{
                 vertical-align: middle;
+              }
+              &:before{
+                content: '';
+                display: inline-block;
+                float: left;
+                width: 1px;
+                height: 22px;
+                margin: 6px 16px 0 0;
+                background: #ccc;
               }
             }
             //成功后的提示样式
@@ -576,8 +587,36 @@
             font-size: 14px;
             margin-top: 5px!important;
             margin-left: 5px;
+            margin-right: 0;
             .ant-checkbox{
               vertical-align: middle;
+            }
+          }
+          //每页加载条数样式
+          .load-size-container{
+            float: right;
+            //margin-left: 0.5em;
+            margin-top: 4px;
+            padding-left: 5px;
+            color: @primary-font-color;
+            &:before{
+              content: '';
+              display: inline-block;
+              float: left;
+              width: 1px;
+              height: 22px;
+              margin-left: 8px;
+              margin-right: 16px;
+              background: #ccc;
+            }
+            .ant-select{
+              margin: 0 5px;
+            }
+            .ant-select-selection{
+              height: 24px;
+              .ant-select-selection__rendered{
+                line-height: 24px;
+              }
             }
           }
         }
@@ -617,6 +656,11 @@
         color: #fff;
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        .check-phone-title-content{
+          display: flex;
+          align-items: center;
+        }
         .icon-check{
           margin-right: 8px;
         }

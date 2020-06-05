@@ -66,5 +66,12 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    },{
+        'method': 'get',
+        'path': '/wxWebviewPage',
+        'handler': 'getWxWebviewPage',
+        'passport': {
+            'needLogin': false
+        }
     }]
 };

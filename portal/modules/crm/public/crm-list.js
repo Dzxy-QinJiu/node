@@ -1,4 +1,3 @@
-var React = require('react');
 require('./css/index.less');
 import { Tag, Modal, message, Button, Icon, Dropdown, Menu, Popconfirm, Popover, Input, Radio } from 'antd';
 import { AntcTable } from 'antc';
@@ -1580,10 +1579,10 @@ class Crm extends React.Component {
     };
 
     onPageChange = (page) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
-        if (page === this.state.pageNum) {
+        if (this.state.isLoading || page === this.state.pageNum) {
             return;
         } else {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
             let selectedCustomer = this.state.selectedCustomer;
             //不是全选时，清空翻页前选择的客户
             if (_.isArray(selectedCustomer) && selectedCustomer.length && !this.state.selectAllMatched) {
@@ -2356,6 +2355,41 @@ class Crm extends React.Component {
                 }
             }
         ];
+        // let customerCustomFieldData = this.props.customerCustomFieldData;
+        // if (!_.isEmpty(customerCustomFieldData)) {
+        //     // 客户自定义字段
+        //     const customizedVariables = _.get(customerCustomFieldData, '[0].customized_variables');
+        //     _.map(customizedVariables, item => {
+        //         const name = _.get(item, 'name');
+        //         const dataIndex = _.get(item, 'key');
+        //         if (_.get(item, 'need_show')) {
+        //             let customColumn = {
+        //                 title: name,
+        //                 width: '150px',
+        //                 dataIndex: dataIndex,
+        //                 className: 'has-filter',
+        //                 render: (text, record, index) => {
+        //                     let customVariables = _.get(record, 'custom_variables');
+        //                     return (
+        //                         <div>
+        //                             {
+        //                                 customVariables ? customVariables[dataIndex] : ''
+        //                             }
+        //                         </div>
+        //                     );
+        //                 }
+        //             };
+        //             if (_.get(item, 'need_sort')) {
+        //                 customColumn.sorter = true;
+        //                 //从销售首页跳转过来的不显示排序
+        //                 if (this.props.fromSalesHome) {
+        //                     customColumn.sorter = false;
+        //                 }
+        //             }
+        //             columns.push(customColumn);
+        //         }
+        //     });
+        // }
         //csm.curtao.com域名下不展示订单
         if (isCurtao()) {
             columns = _.filter(columns, column => column.title !== Intl.get('user.apply.detail.order', '订单'));
@@ -2566,6 +2600,7 @@ Crm.propTypes = {
     showCustomerRecycleBin: PropTypes.func,
     showCustomerPool: PropTypes.func,
     isExtractSuccess: PropTypes.bool,
+    customerCustomFieldData: PropTypes.object,
 };
 
 module.exports = Crm;

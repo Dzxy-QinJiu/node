@@ -297,7 +297,7 @@ let routers = [
                 routePath: '/settings/field',
                 component: `${MODULE_PATH}custom_field_manage/public`,
                 //有这个权限，才显示入口图标
-                showPrivileges: ['ORGANIZATION_CONFIG']
+                showPrivileges: ['ORGANIZATION_CUSTOMIZEDVAR_QUERY']
             }]
     },
     {

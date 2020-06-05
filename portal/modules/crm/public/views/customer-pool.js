@@ -726,12 +726,12 @@ class CustomerPool extends React.Component {
     };
 
     onPageChange = (page) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
         let currPageNum = this.state.pageNumBack;
         var curCustomerList = this.state.customersBack;
-        if (page === currPageNum) {
+        if (this.state.isLoading || page === currPageNum) {
             return;
         } else {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
             let selectedCustomer = this.state.selectedCustomer;
             //清空翻页前选择的客户
             if (_.isArray(selectedCustomer) && selectedCustomer.length) {

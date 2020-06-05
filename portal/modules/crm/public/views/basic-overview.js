@@ -57,6 +57,7 @@ class BasicOverview extends React.Component {
             competitorList: [],
             isOplateUser: false,
             customerStageList: [], // 客户阶段列表
+            isShowAddRecordPanel: false // 是否显示了添加跟进记录面板，默认false
         };
     }
 
@@ -448,6 +449,12 @@ class BasicOverview extends React.Component {
         );
     };
 
+    toggleAddRecordPanel = (flag) => {
+        this.setState({
+            isShowAddRecordPanel: flag
+        });
+    }
+
     renderCustomerRcord = () => {
         return <CustomerRecord
             isOverViewPanel={true}
@@ -458,6 +465,7 @@ class BasicOverview extends React.Component {
             disableEdit={this.props.disableEdit || this.props.isMerge}
             hideContactWay={this.props.hideContactWay}
             updateCustomerLastContact={this.props.updateCustomerLastContact}
+            toggleAddRecordPanel={this.toggleAddRecordPanel}
         />;
     };
 
@@ -551,6 +559,13 @@ class BasicOverview extends React.Component {
         } else {
             crmAjax.updateCustomer(submitData).then(result => {
                 if (result) {
+                    //更新列表中的自定义字段
+                    this.editBasicSuccess(submitData);
+                    let basicData = this.state.basicData;
+                    basicData.custom_variables = _.get(submitData, 'custom_variables', {});
+                    this.setState({
+                        basicData
+                    });
                     if (_.isFunction(successFunc)) successFunc();
                 } else {
                     if (_.isFunction(errorFunc)) errorFunc();
@@ -563,6 +578,7 @@ class BasicOverview extends React.Component {
 
     renderCustomFieldType = (item) => {
         const basicData = this.state.basicData;
+        const editWidth = 340;
         // 自定义的值
         const customVariables = _.get(basicData, 'custom_variables', {});
         const fieldType = _.get(item, 'field_type');
@@ -592,6 +608,7 @@ class BasicOverview extends React.Component {
                 }
                 return (
                     <RadioOrCheckBoxEditField
+                        width={editWidth}
                         id={basicData.id}
                         displayText={value}
                         value={value}
@@ -612,12 +629,14 @@ class BasicOverview extends React.Component {
             } else {
                 return (
                     <BasicEditSelectField
+                        width={editWidth}
                         multiple={isMultiple}
                         id={basicData.id}
                         displayText={value}
                         value={value}
                         field={name}
                         selectOptions={selectOptions}
+                        placeholder={selectPlaceholderTip}
                         validators={[isMultiple ? {type: 'array'} : {}]}
                         hasEditPrivilege={crmUtil.checkPrivilege([
                             crmPrivilegeConst.CUSTOMER_UPDATE,
@@ -638,6 +657,7 @@ class BasicOverview extends React.Component {
             }
             return (
                 <BasicEditInputField
+                    width={editWidth}
                     id={basicData.id}
                     type={type}
                     field={name}
@@ -657,6 +677,7 @@ class BasicOverview extends React.Component {
         } else if(_.isEqual(fieldType, 'date')){
             return (
                 <BasicEditDateField
+                    width={editWidth}
                     id={basicData.id}
                     displayText={value}
                     value={value}
@@ -698,7 +719,8 @@ class BasicOverview extends React.Component {
         if (_.isArray(basicData.immutable_labels) && basicData.immutable_labels.length) {
             tagArray = basicData.immutable_labels.concat(tagArray);
         }
-        var noRecordData = !this.state.customerRecord.length && !this.state.customerRecordLoading;
+        var noRecordData = !this.state.customerRecord.length && !this.state.customerRecordLoading
+            && !this.state.isShowAddRecordPanel;
         var subDomain = _.get(basicData, 'sub_domains', '');//域名
         var platformName = _.get(basicData,'platform_name','');//平台名称
         return (

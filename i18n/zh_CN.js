@@ -378,9 +378,15 @@ var zh_CN = {
     'login.user.agreement': '用户使用协议',
     'login.user.agreement.tip': '点击{btn}表示您已同意我们的{userAgreement}和{privacyPolicy}',
     'login.no.account.register.tip': '没有账号，去{register}',
-    'login.fogot.password.picture.code.error': '图片验证码错误',
-    'login.fogot.password.phone.code.error': '短信验证码错误',
-    'login.fogot.password.phone.code.expired': '短信验证码已过期',
+    'login.forgot.password.picture.code.error': '图片验证码错误',
+    'login.forgot.password.phone.code.error': '短信验证码错误',
+    'login.forgot.password.phone.code.expired': '短信验证码已过期',
+    'login.forgot.password.get.captcha.code.failed': '获取图片验证码失败',
+    'login.forgot.password.reset.expired': '重置密码超时',
+    'login.forgot.password.request.failed': '请求失败',
+    'login.forgot.password.current.phone': '当前手机号',
+    'login.forgot.password.get.sms.code': '获取短信验证码',
+    'login.forgot.password.operate.expired': '操作超时',
 
     'register.title.tip': '欢迎注册客套',
     'register.slogan.tip': '销售加速，从这里开始 ...',
@@ -1099,6 +1105,7 @@ var zh_CN = {
     'custom.field.no.name': '暂无{name}',
     'custom.field.add.name': '添加{name}',
     'custom.field.select.name': '请选择{name}',
+    'custom.field.add.count.limit': '{name}自定义字段数量已达上限（10个）',
     // 后台管理-自定义字段end
 
     //应用管理start
@@ -3378,9 +3385,13 @@ var zh_CN = {
     'lead.has.checked.phone': '所选线索中含已检测的号码，是否重新检测？',
     'lead.not.has.check.phone': '所选线索中没有可检测的号码',
     'lead.single.has.checked.phone': '重新检测',
+    'lead.filter.clear.time.range': '清空',
     'lead.is.not.support.checked.phone': '暂不支持14、16、17、19号段及固话',
     'lead.contact.position.reg': '职务只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间',
     'lead.check.phone.count.limit.tip': '一次最多可检测{count}条线索',
+    'lead.recommend.page.size': '每页',
+    'lead.company.legal.person': '法人',
+    'lead.company.no.legal.person': '暂无法人',
 
     //线索模块 end
     'common.memeber.all': '全部成员',

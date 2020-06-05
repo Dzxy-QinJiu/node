@@ -1,0 +1,36 @@
+@import "../../public/css/common-variables";
+.range-picker-wrap{
+  .consult-time{
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: initial;
+    color: @primary-font-color;
+    .clear-time{
+      cursor: pointer;
+      color: #90A8C4;
+      float: right;
+    }
+  }
+  .date-connect{
+    display: inline-block;
+    width: 6%;
+    text-align: center;
+    margin: 0 2%;
+    color: @placeholder-font-color;
+  }
+  .ant-calendar-picker{
+    width: 45%!important;
+  }
+  .err-tip{
+    line-height: 1.5;
+    color:@error_tips_color;
+    margin-top: 5px;
+    display: inline-block;
+  }
+  &.has-error {
+    .ant-input{
+      border: 1px solid @error_tips_color;
+    }
+  }
+}

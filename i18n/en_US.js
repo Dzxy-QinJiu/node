@@ -370,9 +370,15 @@ var en_US = {
     'login.user.agreement': 'User agreement', //用户使用协议
     'login.user.agreement.tip': 'Clicked {btn}, you agree to our {userAgreement} and {privacyPolicy}',//点击{btn}表示您已同意我们的{userAgreement}和{privacyPolicy}
     'login.no.account.register.tip': 'No account, go to {register}',//没有账号，去{register}
-    'login.fogot.password.picture.code.error': 'Picture verification code error',//图片验证码错误
-    'login.fogot.password.phone.code.error': 'SMS verification code error',//短信验证码错误
-    'login.fogot.password.phone.code.expired': 'SMS verification code expired',//短信验证码已过期
+    'login.forgot.password.picture.code.error': 'Picture verification code error',//图片验证码错误
+    'login.forgot.password.phone.code.error': 'SMS verification code error',//短信验证码错误
+    'login.forgot.password.phone.code.expired': 'SMS verification code expired',//短信验证码已过期
+    'login.forgot.password.get.captcha.code.failed': 'Failed to get picture verification code',//获取图片验证码失败
+    'login.forgot.password.reset.expired': 'Reset password timeout',//重置密码超时
+    'login.forgot.password.request.failed': 'Failed to request',//请求失败
+    'login.forgot.password.current.phone': 'Current mobile number',//当前手机号
+    'login.forgot.password.get.sms.code': 'Get SMS verification code',//获取短信验证码
+    'login.forgot.password.operate.expired': 'Operation timeout',//操作超时
 
     'register.title.tip': 'Welcome to register',//欢迎注册客套
     'register.slogan.tip': 'Sales acceleration, starting here ...',//销售加速，从这里开始...
@@ -1098,6 +1104,7 @@ var en_US = {
     'custom.field.no.name': 'No {name}', // 暂无{name}
     'custom.field.add.name': 'Add name', // 添加{name}
     'custom.field.select.name': 'Please select {name}', // 请选择{name}
+    'custom.field.add.count.limit': 'The number of {name} has reached the upper limit(10).', // {name}自定义字段数量已达上限（10个）
     // 后台管理-自定义字段end
 
     //应用管理start
@@ -3357,9 +3364,13 @@ var en_US = {
     'lead.has.checked.phone': 'The selected clue contains the detected number. Do you want to redetect it?',//所选线索中含已检测的号码，是否重新检测？
     'lead.not.has.check.phone': 'There is no detectable number in the selected clue',//所选线索中没有可检测的号码
     'lead.single.has.checked.phone': 'To detect',//重新检测
+    'lead.filter.clear.time.range': 'Clear',//清空
     'lead.is.not.support.checked.phone': 'No support for 14, 16, 17, 19 and fixed line',//暂不支持14、16、17、19号段及固话
     'lead.contact.position.reg': 'The position can only contain Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English bracket characters, and the length is between 1 and 10 (including 10)',//职务只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间
     'lead.check.phone.count.limit.tip': 'Up to {count} clues can be detected at a time',//一次最多可检测20条线索
+    'lead.recommend.page.size': 'Each page',//每页
+    'lead.company.legal.person': 'Legal person',//法人
+    'lead.company.no.legal.person': 'No legal person',//暂无法人
 
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',

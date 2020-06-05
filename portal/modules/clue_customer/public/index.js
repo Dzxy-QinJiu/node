@@ -111,7 +111,10 @@ var LAYOUT_CONSTANTS = {
     TABLE_TITLE_HEIGHT: 60,//带选择框的TH高度
     TH_MORE_HEIGHT: 20,//带选择框的TH60比不带选择框的TH40多出来的高度
     MIN_WIDTH_NEED_CAL: 405,//需要计算输入框时的断点
-    WIDTH_WITHOUT_INPUT: 185//topnav中除了输入框以外的宽度
+    WIDTH_WITHOUT_INPUT: 185,//topnav中除了输入框以外的宽度
+    NABSIDE_WIDTH: 64,//左侧导航的宽度
+    NAV_PADDING_LEFT: 15,//头部导航左侧的padding
+    TOP_NAV_BTN_WIDTH: 620//topnav上所有按钮的宽度
 };
 import CustomerLabel from 'CMP_DIR/customer_label';
 import { clueEmitter, notificationEmitter } from 'PUB_DIR/sources/utils/emitters';
@@ -188,6 +191,7 @@ class ClueCustomer extends React.Component {
             isShowRewardClueTips: false, // 是否显示赢线索的提示，默认不显示
             isBatchCheckPhoneStatusLoading: false,//是否正在批量检测空号
             showConfirmBatchCheckPhone: false,//是否有已检测状态的手机号，点击重新检测按钮
+            isTopShowMiniBtn: false,//topnav上是否展示缩放的按钮
         };
     }
 
@@ -241,6 +245,19 @@ class ClueCustomer extends React.Component {
 
     setFilterInputWidth = () => {
         let needCalWidth = $(window).width() <= LAYOUT_CONSTANTS.MIN_WIDTH_NEED_CAL;
+        let searchWap = $('.search-container');
+        if(searchWap.length){
+            let btnWidth = $(window).width() <= (searchWap.outerWidth(true) + LAYOUT_CONSTANTS.NABSIDE_WIDTH + LAYOUT_CONSTANTS.NAV_PADDING_LEFT * 2 + LAYOUT_CONSTANTS.TOP_NAV_BTN_WIDTH);
+            if(btnWidth){
+                this.setState({
+                    isTopShowMiniBtn: true
+                });
+            }else{
+                this.setState({
+                    isTopShowMiniBtn: false
+                });
+            }
+        }
         if(needCalWidth) {
             let filterInputWidth = $(window).width() - LAYOUT_CONSTANTS.WIDTH_WITHOUT_INPUT;
             this.setState({
@@ -2236,10 +2253,10 @@ class ClueCustomer extends React.Component {
         }
     };
     onPageChange = (page) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
-        if (page === this.state.pageNum) {
+        if (page === this.state.pageNum || this.state.isLoading) {
             return;
         } else {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
             let selectedCustomer = this.state.selectedCustomer;
             //不是全选时，清空翻页前选择的客户
             if (_.isArray(selectedCustomer) && selectedCustomer.length && !this.state.selectAllMatched) {
@@ -3333,11 +3350,14 @@ class ClueCustomer extends React.Component {
                 </Menu.Item> : null}
         </Menu>);
     };
+    //计算
     renderNotSelectClueBtns = () => {
         let {isWebMiddle, isWebMin} = isResponsiveDisplay();
+        let {isTopShowMiniBtn} = this.state;
+        let showMinBtnAndAddBtn = isWebMiddle || isWebMin || isTopShowMiniBtn;//显示缩小按钮及添加按钮
         return (
             <div className="pull-right add-anlysis-handle-btns">
-                {!(isWebMiddle || isWebMin) ? this.renderClueRecommend() : null}
+                {!(showMinBtnAndAddBtn) ? this.renderClueRecommend() : null}
                 {/*是否有查看线索分析的权限
                  CRM_CLUE_STATISTICAL 查看线索概览的权限
                  CRM_CLUE_TREND_STATISTIC_ALL CRM_CLUE_TREND_STATISTIC_SELF 查看线索趋势分析的权限
@@ -3349,13 +3369,13 @@ class ClueCustomer extends React.Component {
                 {/*this.renderClueAnalysisBtn() : null*/}
                 {/*}*/}
                 {
-                    !(isWebMiddle || isWebMin) && freedCluePrivilege() ?
+                    !(showMinBtnAndAddBtn) && freedCluePrivilege() ?
                         this.renderExtractClue() : null
                 }
-                {!(isWebMiddle || isWebMin) ? this.renderExportClue() : null}
+                {!(showMinBtnAndAddBtn) ? this.renderExportClue() : null}
                 {!isWebMin ? this.renderAddBtn() : null}
-                {!(isWebMiddle || isWebMin) ? this.renderCheckPhoneBtn() : null}
-                {isWebMiddle || isWebMin ?
+                {!(showMinBtnAndAddBtn) ? this.renderCheckPhoneBtn() : null}
+                {showMinBtnAndAddBtn ?
                     <MoreButton
                         topBarDropList={this.topBarDropList.bind(this, isWebMin)}
                     /> : null}
@@ -3668,6 +3688,10 @@ class ClueCustomer extends React.Component {
             />
         );
     };
+    saveFilterCondition = () => {
+        this.setFilterInputWidth();
+        this.getClueList();
+    };
 
     render() {
         var isFirstLoading = this.isFirstLoading();
@@ -3732,7 +3756,7 @@ class ClueCustomer extends React.Component {
                                 accessChannelArray={this.state.accessChannelArray}
                                 clueClassifyArray={this.state.clueClassifyArray}
                                 salesManList={this.getSalesDataList()}
-                                getClueList={this.getClueList}
+                                getClueList={this.saveFilterCondition}
                                 style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight() + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
                                 showSelectTip={_.get(this.state.selectedClues, 'length')}
                                 toggleList={this.toggleList.bind(this)}

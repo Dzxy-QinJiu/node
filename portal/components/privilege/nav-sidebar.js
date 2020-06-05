@@ -15,8 +15,8 @@ import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES, GIFT_LOGO,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
-import {hasCalloutPrivilege, isCurtao, checkVersionAndType, 
-    isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay,isShowWinningClue, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasCalloutPrivilege, isShowCustomerService, checkVersionAndType,
+    isShowUnReadNotice, isShowSystemTab, isResponsiveDisplay,isShowWinningClue, getContactSalesPopoverTip, isExpired,renderUnreadMsg} from 'PUB_DIR/sources/utils/common-method-util';
 import {phoneEmitter, notificationEmitter, userInfoEmitter,
     phoneMsgEmitter, clickUpgradeNoiceEmitter, showWiningClueEmitter, leadRecommendEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
@@ -26,7 +26,6 @@ const session = storageUtil.session;
 const { setWebsiteConfigModuleRecord, getWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
 import WinningClue from '../winning-clue';
 import Trace from 'LIB_DIR/trace';
-import newComment from '../../static/images/new-comment.svg';
 
 //需要加引导的模块
 const schedule_menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
@@ -434,7 +433,7 @@ var NavSidebar = createReactClass({
             this.toggleUpgradeNotice(false);
         }
     },
-    
+
     renderNoticeSubMenu() {
         let isUnReadNotice = this.state.isUnReadNotice;
         let noticeSubMenuSelectedType = this.state.noticeSubMenuSelectedType;
@@ -498,7 +497,7 @@ var NavSidebar = createReactClass({
         );
     },
     renderCustomerServiceBlock: function() {
-        if(isCurtao()) {
+        if(isShowCustomerService()) {
             let cls = classNames('customer-service-navicon', {
                 active: this.props.isShowCustomerService
             });
@@ -522,7 +521,7 @@ var NavSidebar = createReactClass({
         linkList = _.filter(linkList, menu => !menuUtil.menuIsNotShow(menu));
         return (
             <ul className="ul-unstyled">
-            
+
                 {
                     _.map(linkList, obj =>
                         <li key={obj.id} onClick={this.closeNotificationAndChatPanel}>
@@ -673,7 +672,7 @@ var NavSidebar = createReactClass({
         // 关闭聊天窗口
         _.isFunction(this.props.closeChatPanel) && this.props.closeChatPanel();
     },
-    
+
     //展示未读回复的图标提示
     renderUnreadReplyTip() {
         //是申请审批，有未读回复数并且，待审批数为0
@@ -687,13 +686,7 @@ var NavSidebar = createReactClass({
             allUnhandleApplyTotal === 0;//待我审批数为0
 
         if (unreadReplyTipShowFlag) {
-            return (
-                <img
-                    src={newComment}
-                    className="new-message-tip"
-                    title={Intl.get('user.apply.unread.reply', '有未读回复')}
-                />
-            );
+            return renderUnreadMsg();
         } else {
             return null;
         }

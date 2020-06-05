@@ -14,6 +14,7 @@ const FormItem = Form.Item;
 import userData from 'PUB_DIR/sources/user-data';
 import ForgotPassword from '../forgot-password';
 import classNames from 'classnames';
+import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
 //错误信息提示
 const ERROR_MSGS = {
     NO_SERVICE: Intl.get('login.error.retry', '登录服务暂时不可用，请稍后重试'),
@@ -196,7 +197,7 @@ class SessionTimeoutModal extends React.Component {
 
     turnToLoginPage = () => {
         //跳转到登录页，用其他账号进行登录
-        window.location.href = '/login';
+        pcAndWechatMiniProgram('/login');
     }
     //验证码\密码输入框中按enter键时，登录的处理
     onInputEnter = (event) => {

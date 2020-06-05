@@ -291,11 +291,27 @@ const BasicEditField = createReactClass({
             if (displayText) {
                 let textContent = displayText;
                 if (this.props.textCut) {
-                    textContent = (
-                        <ShearContent>
-                            {displayText}
-                        </ShearContent>
-                    );
+                    if (this.props.type === 'textarea') {
+                        let mutip = displayText && displayText.split('\n') || [];
+                        textContent = (
+                            <ShearContent>
+                                {
+                                    _.map(mutip, item => {
+                                        return (
+                                            <p>{item}</p>
+                                        );
+                                    })
+                                }
+                            </ShearContent>
+                        );
+                    } else {
+                        textContent = (
+                            <ShearContent>
+                                {displayText}
+                            </ShearContent>
+                        );
+                    }
+
                 }
                 textBlock = (
                     <div className={cls}>
@@ -315,6 +331,11 @@ const BasicEditField = createReactClass({
                     </span>
                 );
             }
+        }
+        // 数字类型，数值限定
+        let inputExtraProps = {};
+        if (this.props.type === 'number') {
+            inputExtraProps.min = '0';
         }
 
         var inputBlock = this.state.displayType === 'edit' ? (
@@ -341,7 +362,8 @@ const BasicEditField = createReactClass({
                                         onBlur={this.onBlurInput.bind(this, this.props.type)}
                                         autosize={{minRows: 2, maxRows: 6}}
                                     />
-                                    : <Input name="input"
+                                    : <Input
+                                        name="input"
                                         ref={changeInput => this['changeInput' + this.state.setRandomInputId] = changeInput}     
                                         type={this.props.type}
                                         placeholder={this.props.placeholder}
@@ -351,6 +373,7 @@ const BasicEditField = createReactClass({
                                         onFocus={this.onFocusInput.bind(this, this.props.type)}
                                         onBlur={this.onBlurInput.bind(this, this.props.type)}
                                         addonAfter={this.props.afterValTip || ''}
+                                        {...inputExtraProps}
                                     />}
                             </Validator>
                         </FormItem>

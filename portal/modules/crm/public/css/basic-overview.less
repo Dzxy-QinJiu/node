@@ -248,13 +248,48 @@
           float: left;
           color: #999999;
           line-height: 24px;
+          margin-right: 6px;
         }
-        .basic-info-text {
-          color: #333333;
-          margin-left: 6px;
+
+        .basic-edit-field {
+          .basic-info-text {
+            width: 100%;
+            max-width: 310px;
+            .shear-content-container {
+              width: 100%;
+            }
+          }
+          .ant-form-item {
+            .ant-input, div.ant-select, .ant-calendar-picker {
+              margin-left: 0;
+            }
+            .ant-radio-group, .ant-checkbox-group {
+              margin-left: 10px;
+              margin-top: -5px;
+              word-wrap: break-word;
+              white-space: normal;
+              max-width: 310px;
+              width: auto;
+              .ant-checkbox, .ant-radio {
+                input {
+                  width: 14px;
+                }
+              }
+              .ant-radio + span {
+                margin-left: 4px;
+              }
+
+              .ant-radio + span, .ant-checkbox + span{
+                color: #5d5d5d;
+                font-weight: normal;
+              }
+            }
+          }
         }
-        .basic-edit-field form{
-          display: block;
+        .radio-wrap {
+          .ant-form-item {
+            margin-top: -5px;
+          }
         }
       }
     }

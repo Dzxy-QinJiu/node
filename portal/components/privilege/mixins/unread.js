@@ -21,7 +21,7 @@ const UNREADCOUNT = [{//待分配或待跟进线索数的数据
     name: APPLY_APPROVE_TYPES.UNHANDLEAPPLY,
     cls: 'apply_icon_container',
     style: 'applyApproveUnhandledStyle',
-    showNum: false
+    showNum: true
 }];
 
 var UnreadMixin = {

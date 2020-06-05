@@ -1,5 +1,4 @@
 require('./sources/dependence');
-import {storageUtil} from 'ant-utils';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import phonePrivilegConst from './privilege-const';
 var userData = require('./sources/user-data');
@@ -7,8 +6,6 @@ var AppStarter = require('./sources/app-starter');
 var PrivilegeGet = require('./sources/privilege-get');
 var PrivilegeGetReact = null;
 var appDom = $('#app')[0];
-var websiteConfig = require('../lib/utils/websiteConfig');
-var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 let commonDataUtil = require('PUB_DIR/sources/utils/common-data-util');
 
@@ -67,7 +64,6 @@ function getUserPrivilegeAndStart() {
         unmountPrivilegeGet();
         suppressWarnings();
         const user = userData.getUserData();
-        storageUtil.setUserId(user.user_id);
         commonDataUtil.getAreaInfoAll();
         commonDataUtil.getGuideConfig();
         commonDataUtil.getUserPosition();

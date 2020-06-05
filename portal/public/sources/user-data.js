@@ -7,6 +7,7 @@ exports.getUserDataByAjax = function() {
     function ajax() {
         $.getJSON('/user/data.js?callback=?').done(function(data) {
             UserData = _.isObject(data) ? data : {};
+            storageUtil.setUserId(UserData.user_id);
             //语言环境的设置
             Oplate.lang = _.isObject(data) ? data.lang : 'zh_CN';
             if (_.get(data, 'websiteConfig.personnel_setting')) {

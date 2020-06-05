@@ -37,7 +37,8 @@ import {
     getClueUnhandledPrivilege,
     getUnhandledClueCountParams,
     isKetaoOrganizaion,
-    substractUnapprovedCount
+    substractUnapprovedCount,
+    pcAndWechatMiniProgram
 } from 'PUB_DIR/sources/utils/common-method-util';
 
 const session = storageUtil.session;
@@ -893,7 +894,7 @@ function listenOnOffline(userObj) {
         content: tipMsg,
         okText: '重新登录',
         onOk: function() {
-            window.location.href = '/logout';
+            pcAndWechatMiniProgram('/logout');
         }
     });
     setTimeout(function() {

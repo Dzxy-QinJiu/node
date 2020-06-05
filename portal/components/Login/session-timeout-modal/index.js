@@ -20,6 +20,7 @@ const ERROR_MSGS = {
     ERROR_CAPTCHA: 'error-captcha'//刷新验证码失败
 };
 const base64_prefix = 'data:image/png;base64,';
+import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
 
 class SessionTimeoutModal extends React.Component {
     constructor(props) {
@@ -184,7 +185,7 @@ class SessionTimeoutModal extends React.Component {
 
     turnToLoginPage = () => {
         //跳转到登录页，用其他账号进行登录
-        window.location.href = '/login';
+        pcAndWechatMiniProgram('/login');
     }
     //验证码\密码输入框中按enter键时，登录的处理
     onInputEnter = (event) => {
