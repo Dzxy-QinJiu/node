@@ -96,12 +96,12 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
                 if (socket) {
                     socket.emit(emitUrl, msgData);
                 }else{
-                    pushLogger.info('拨打电话消息推送，没有socket，socketObj' + JSON.stringify(socketObj));
-                    pushLogger.info('拨打电话消息推送，没有socket，ioServer' + JSON.stringify(ioServer));
+                    pushLogger.info('消息推送，没有socket，socketObj' + JSON.stringify(socketObj));
+                    pushLogger.info('消息推送，没有socket，ioServer' + JSON.stringify(ioServer));
                 }
             });
         }else{
-            pushLogger.info('拨打电话消息推送，没有socketArray' + JSON.stringify(socketStore));
+            pushLogger.info('消息推送，没有socketArray' + JSON.stringify(socketStore));
         }
     }
 }
