@@ -166,7 +166,11 @@ class RecommendCluesList extends React.Component {
         }
         //解析tasks
         var {
-            tasks
+            tasks,
+            total,
+            running,
+            succeed = 0,
+            failed = 0
         } = taskInfo;
         //如果tasks为空，不进行更新
         if (!_.isArray(tasks) || !tasks.length) {
@@ -184,6 +188,10 @@ class RecommendCluesList extends React.Component {
             notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, {});
             //提取成功nav-sidebar线索管理展示加1效果
             leadRecommendEmitter.emit(leadRecommendEmitter.ADD_LEAD_MANAGEMENT_ONE_NUM);
+        }
+        // 如果进度完成,显示提取成功
+        if(running === 0 || _.isEqual(total, succeed + failed)) {
+            this.handleSuccessTip();
         }
 
         var clueArr = _.map(tasks, 'taskDefine');
@@ -1150,7 +1158,6 @@ class RecommendCluesList extends React.Component {
                 var taskId = _.get(data, 'batch_label','');
                 if (taskId){
                     this.hiddenDropDownBlock();
-                    this.handleSuccessTip();
                     //向任务列表id中添加taskId
                     batchOperate.addTaskIdToList(taskId);
                     //存储批量操作参数，后续更新时使用
