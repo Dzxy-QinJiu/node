@@ -4,8 +4,6 @@
  * Created by tangmaoqin on 2020/4/9.
  */
 import '../../css/recommend_clues_lists.less';
-import { RightPanel } from 'CMP_DIR/rightPanel';
-import TopNav from 'CMP_DIR/top-nav';
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {Button, Checkbox, message, Popover, Tag, Icon} from 'antd';
@@ -70,6 +68,7 @@ import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 import AvatarPopoverTip from 'CMP_DIR/avatar-popover-tip';
 const CLOSE_BTN_CLICK = AvatarPopoverTip.CLOSE_BTN_CLICK;
 import BottomPanelModal from 'CMP_DIR/bottom-panel-modal';
+import { num as numUtils } from 'ant-utils';
 
 const LAYOUT_CONSTANCE = {
     FILTER_WIDTH: 396,
@@ -789,8 +788,10 @@ class RecommendCluesList extends React.Component {
             <div className="check-phone-title" data-tracename="空号检测title内容">
                 <div className="check-phone-title-content">
                     <i className="iconfont icon-check"/>
-                    <span className="check-phone-name">{Intl.get('lead.check.phone', '空号检测')}</span>
-                    <span className="check-phone-only">（{Intl.get('lead.check.phone.explain', '仅支持非14、16、17、19号段手机号')})</span>
+                    <span>
+                        <span className="check-phone-name">{Intl.get('lead.check.phone', '空号检测')}</span>
+                        <span className="check-phone-only">（{Intl.get('lead.check.phone.explain', '仅支持非14、16、17、19号段手机号')})</span>
+                    </span>
                 </div>
                 {isShowCloseBtn ? (
                     <i className="iconfont icon-close" data-tracename="点击关闭" title={Intl.get('common.app.status.close', '关闭')} onClick={handleFunc}/>
@@ -2098,6 +2099,11 @@ class RecommendCluesList extends React.Component {
             companyProfile: this.handleHighLightStyle(item.companyProfile),
         };
         let labels = item.labels.concat(item.features);
+
+        if(_.get(item, 'has_website')) {
+            labels.push(Intl.get('clue.recommend.has.website', '有官网'));
+        }
+
         let extractBtn;
         if(item.hasExtracted || item.hasExtractedByOther) {
             let text = item.hasExtracted ? Intl.get('common.has.been.extracted', '已提取') : Intl.get('common.has.been.extracted.by.other', '已被提取');
@@ -2132,9 +2138,20 @@ class RecommendCluesList extends React.Component {
                                 <div className="extract-clue-text-item">
                                     <div className="extract-clue-item-label">{Intl.get('common.tag', '标签')}</div>
                                     <div className="clue-labels">
-                                        {_.map(labels, (tag, index) => (
-                                            <Tag key={index}><span dangerouslySetInnerHTML={{__html: this.handleTagHighLightText(tag)}}/></Tag>
-                                        ))}
+                                        {_.map(labels, (tag, index) => {
+                                            let cls = classNames({
+                                                'highlight-tag': this.handleTagHighLightText(tag)
+                                            });
+                                            return (<Tag key={index} className={cls}>{tag}</Tag>);
+                                        })}
+                                    </div>
+                                </div>
+                            ) : null}
+                            {item.legalPerson ? (
+                                <div className="extract-clue-text-item">
+                                    <div className='extract-clue-info-item'>
+                                        <div className="extract-clue-item-label">{Intl.get('clue.recommend.legalperson', '法人')}：</div>
+                                        <span>{item.legalPerson}</span>
                                     </div>
                                 </div>
                             ) : null}
@@ -2142,16 +2159,25 @@ class RecommendCluesList extends React.Component {
                                 <div className="extract-clue-text-item">
                                     <div className='extract-clue-info-item'>
                                         <div className="extract-clue-item-label">{Intl.get('clue.customer.register.time', '注册时间')}：</div>
-                                        <span className="">{moment(item.startTime).format(oplateConsts.DATE_FORMAT)}</span>
+                                        <span>{moment(item.startTime).format(oplateConsts.DATE_FORMAT)}</span>
+                                    </div>
+                                </div>
+                            ) : null}
+                            {item.capital ? (
+                                <div className="extract-clue-text-item">
+                                    <div className='extract-clue-info-item'>
+                                        <div className="extract-clue-item-label">{Intl.get('clue.recommend.registered.capital', '注册资本')}：</div>
+                                        <span>{Intl.get('crm.149', '{num}万', {num: numUtils.yuanToTenThousandYuan(item.capital)})}</span>
                                     </div>
                                 </div>
                             ) : null}
                             <div className="extract-clue-text-item">
                                 <div className="extract-clue-item-label">{Intl.get('crm.5', '联系方式')}：</div>
+                                {this.renderContactBlock(item)}
                                 {_.get(item.contact, 'phones') ? (
                                     <span className="extract-clue-contacts-item">
                                         <span className="extract-clue-text-label">{Intl.get('common.phone', '电话')}：</span>
-                                        <Popover trigger="hover" content={_.get(item,'telephones').map(phone => {
+                                        <Popover trigger={isResponsiveDisplay().isWebMin ? 'click' : 'hover'} content={_.get(item,'telephones').map(phone => {
                                             let phoneNumber = getShowPhoneNumber(item, phone);
                                             return (<div key={phone}>{phoneNumber}{this.handlePhoneOtherStatusTip(phoneNumber)}</div>);
                                         })}>
@@ -2338,17 +2364,17 @@ class RecommendCluesList extends React.Component {
                                                     item.capital ? (
                                                         <span className='extract-clue-info-item'>
                                                             <span className="extract-clue-text-label">{Intl.get('clue.recommend.registered.capital', '注册资本')}：</span>
-                                                            <span>{Intl.get('crm.149', '{num}万', {num: (item.capital / 10000).toFixed(2)})}</span>
+                                                            <span>{Intl.get('crm.149', '{num}万', {num: numUtils.yuanToTenThousandYuan(item.capital)})}</span>
                                                         </span>
                                                     ) : null
                                                 }
                                             </div>
                                             <div className="extract-clue-text-item">
-                                                {this.renderContactBlock(item)}
+                                                {!this.state.showClueDetailPanel ? this.renderContactBlock(item) : null}
                                                 {_.get(item.contact, 'phones') ? (
                                                     <span className="extract-clue-contacts-item">
                                                         <span className="extract-clue-text-label">{Intl.get('common.phone', '电话')}：</span>
-                                                        <Popover trigger="hover" content={_.get(item,'telephones').map(phone => {
+                                                        <Popover trigger={isWebMin ? 'click' : 'hover'} content={_.get(item,'telephones').map(phone => {
                                                             let phoneNumber = getShowPhoneNumber(item, phone);
                                                             return (<div key={phone}>{phoneNumber}{this.handlePhoneOtherStatusTip(phoneNumber)}</div>);
                                                         })}>

@@ -652,8 +652,11 @@
     //头部样式
     .ant-popover-title{
       background-color: @primary-color;
-      padding: 0 8px;
+      padding: 5px 8px;
       border-bottom: none;
+      min-height: 32px;
+      height: auto;
+      line-height: unset;
       .check-phone-title{
         color: #fff;
         display: flex;
@@ -669,13 +672,14 @@
         .icon-close{
           font-weight: bold;
           color: #fff;
-          margin-left: 24px;
+          margin-left: 16px;
         }
         .check-phone-name{
           font-size: 14px;
         }
         .check-phone-only{
           color: #BBDEFB;
+          font-size: 12px;
         }
       }
     }
