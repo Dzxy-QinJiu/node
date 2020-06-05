@@ -95,8 +95,13 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
                 let socket = _.get(ioServer, `sockets.sockets[${socketObj.socketId}]`);
                 if (socket) {
                     socket.emit(emitUrl, msgData);
+                }else{
+                    pushLogger.info('消息推送，没有socket，socketObj' + JSON.stringify(socketObj));
+                    pushLogger.info('消息推送，没有socket，ioServer' + JSON.stringify(ioServer));
                 }
             });
+        }else{
+            pushLogger.info('消息推送，没有socketArray' + JSON.stringify(socketStore));
         }
     }
 }
