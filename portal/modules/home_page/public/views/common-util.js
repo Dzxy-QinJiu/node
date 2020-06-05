@@ -6,12 +6,12 @@
 
 const LAYOUT_CONSTS = {
     PADDING: 16,//上下间距
-    TITLE_HEIGHT: 38,//标题的高度
+    TITLE_HEIGHT: 42,//标题的高度
     MIN_BODY_WIDTH: 768,//body宽度小于768时折行展示
 };
 
-exports.getColumnHeight = function() {
-    let columnHeight = $('body').height() - 2 * LAYOUT_CONSTS.PADDING - LAYOUT_CONSTS.TITLE_HEIGHT;
+exports.getColumnHeight = function(adaptiveHeight) {
+    let columnHeight = adaptiveHeight - 2 * LAYOUT_CONSTS.PADDING - LAYOUT_CONSTS.TITLE_HEIGHT;
     //body宽度小于768时折行展示
     // if ($('body').width() < 768) {
     //     columnHeight = $('body').height() / 2 - 2 * LAYOUT_CONSTS.PADDING - LAYOUT_CONSTS.TITLE_HEIGHT;

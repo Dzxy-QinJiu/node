@@ -1,6 +1,6 @@
 var language = require('../../../public/language/getLanguage');
 import Trace from 'LIB_DIR/trace';
-import {renderRoutes} from 'react-router-config';
+import { renderRoutes } from 'react-router-config';
 
 require('./index-zh_CN.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
@@ -8,7 +8,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }
 require('./oplate');
 const LAYOUT_CONSTS = require('../../../lib/consts').LAYOUT;
-var LeftMenu = require('../../../components/privilege/nav-sidebar');
+const NavSidebar = require('../../../components/privilege/nav-sidebar');
 import LeftPanel from 'CMP_DIR/left-panel';
 import PhonePanel from 'MOD_DIR/phone_panel/public';
 import ClueDetailPanel from 'MOD_DIR/clue_detail_panel/public';
@@ -21,7 +21,7 @@ import ReportPanel from 'MOD_DIR/daily-report/panel';
 import OfficialPersonalEdition from 'CMP_DIR/official-personal-edition';
 import OrganizationExpiredTip from 'CMP_DIR/organization-expired-tip';
 import ApplyTry from 'MOD_DIR/apply_try/public';
-import{
+import {
     myWorkEmitter,
     notificationEmitter,
     resizeEmitter,
@@ -34,9 +34,10 @@ import{
     clickUpgradeNoiceEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
-import { isShowUnReadNotice, isShowCustomerService } from '../utils/common-method-util';
+import { isShowUnReadNotice, isShowCustomerService, isResponsiveDisplay } from '../utils/common-method-util';
 import {getUpgradeNoticeList, getRewardedCluesCount, getAppList} from '../utils/common-data-util';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
+import classNames from 'classnames';
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
     call_params: null//后端推送过来的通话状态相关的参数
@@ -52,7 +53,7 @@ class PageFrame extends React.Component {
         audioParamObj: {},
         isShowNotificationPanel: false, // 是否展示系统通知面板
         isUnReadNotice: isShowUnReadNotice(), // 是否有未读的公告
-        rightContentHeight: 0,
+        mainContentHeight: 0,
         clueDetailPanelShow: false,
         isShowUserDetailPanel: false, // 是否显示用户详情界面
         isShowDetailPanel: false, // 是否显示报告面板
@@ -74,13 +75,13 @@ class PageFrame extends React.Component {
     };
 
     getRewardedCluesCount() {
-        getRewardedCluesCount().then( (count) => {
+        getRewardedCluesCount().then((count) => {
             // 登录界面的时候，保存一下获取赢取的线索量
             Oplate.todayWinningClueCount = count;
             this.setState({
                 rewardClueCount: count
             });
-        } );
+        });
     }
 
     getLastUpgradeNoticeList() {
@@ -92,7 +93,7 @@ class PageFrame extends React.Component {
             const websiteConfig = getLocalWebsiteConfig() || {};
             let lastUpgradeNoticeTime = _.get(result, 'list[0].create_date', 0); // 最新发布公告的时间
             let showNoticeTime = _.get(websiteConfig, 'show_notice_time', 0);
-            setWebsiteConfig({last_upgrade_notice_time: lastUpgradeNoticeTime});
+            setWebsiteConfig({ last_upgrade_notice_time: lastUpgradeNoticeTime });
             // 公告发布时间大于查看时间时，需要显示提示信息
             if (lastUpgradeNoticeTime > showNoticeTime) {
                 clickUpgradeNoiceEmitter.emit(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, true);
@@ -103,7 +104,7 @@ class PageFrame extends React.Component {
     getLastNoticeTimer = null;
 
     pollingGetNotice() {
-        if(this.getLastNoticeTimer) clearInterval(this.getLastNoticeTimer);
+        if (this.getLastNoticeTimer) clearInterval(this.getLastNoticeTimer);
         this.getLastNoticeTimer = setInterval(() => {
             this.getLastUpgradeNoticeList();
         }, NOTICE_INTERVAL_TIME);
@@ -113,7 +114,7 @@ class PageFrame extends React.Component {
         getAppList((list) => {
             let userDetailParamObj = this.state.userDetailParamObj;
             userDetailParamObj.allAppList = list; // 应用列表
-            this.setState({ userDetailParamObj});
+            this.setState({ userDetailParamObj });
         });
     }
 
@@ -123,7 +124,8 @@ class PageFrame extends React.Component {
         this.getLastUpgradeNoticeList();
         // 影响了session不超时，暂时隐藏获取公告轮询的操作
         // this.pollingGetNotice(); // 轮询获取公告信息
-        this.setContentHeight();
+        this.layoutContentSize();
+        $(window).on('resize', this.resizeHandler);
         //渲染蚁讯客服
         if (isShowCustomerService()) this.renderAntmeCustomerService();
         Trace.addEventListener(window, 'click', Trace.eventHandler);
@@ -156,8 +158,6 @@ class PageFrame extends React.Component {
         clueToCustomerPanelEmitter.on(clueToCustomerPanelEmitter.CLOSE_PANEL, this.closeClueToCustomerPanel);
         //监听申请试用面板打开事件
         paymentEmitter.on(paymentEmitter.OPEN_APPLY_TRY_PANEL, this.showApplyTryPanel);
-
-        $(window).on('resize', this.resizeHandler);
     }
 
     //渲染蚁讯客服
@@ -176,28 +176,22 @@ class PageFrame extends React.Component {
         }
     }
 
-    resizeEmitter = () => {
-        resizeEmitter.emit(resizeEmitter.WINDOW_SIZE_CHANGE, {
-            width: $('#app .col-xs-10').width(),
-            height: this.state.rightContentHeight
-        });
-    };
-
     resizeHandler = () => {
         clearTimeout(this.scrollTimer);
         this.scrollTimer = setTimeout(() => {
-            this.setContentHeight();
-        }, 100);
+            this.layoutContentSize();
+        });
     };
-
-    componentDidUpdate() {
-        this.resizeEmitter();
-    }
-
-    setContentHeight = () => {
-        const height = $(window).height() - LAYOUT_CONSTS.TOP_NAV - LAYOUT_CONSTS.PADDING_BOTTOM;
-        this.setState({
-            rightContentHeight: height
+    // 重新计算内容区域的大小
+    layoutContentSize = () => {
+        let height = $(window).height();
+        // 移动端样式，内容区需要减去底部导航的高度
+        let mainContentHeight = isResponsiveDisplay().isWebSmall ? height - LAYOUT_CONSTS.BOTTOM_NAV : height; 
+        this.setState({ mainContentHeight });
+        // 浏览器缩放后，触发各模块的高、宽重新计算
+        resizeEmitter.emit(resizeEmitter.WINDOW_SIZE_CHANGE, {
+            width: $('#app .main-content-wrap').width(),
+            height: mainContentHeight
         });
     }
 
@@ -229,7 +223,7 @@ class PageFrame extends React.Component {
         //需清除定时获取最新公告的定时器，以防出现问题
         this.getLastNoticeTimer && clearInterval(this.getLastNoticeTimer);
         this.getLastNoticeTimer = null;
-        
+
         $(window).off('resize', this.resizeHandler);
         phoneUtil.unload(() => {
             console.log('成功登出电话系统!');
@@ -252,7 +246,7 @@ class PageFrame extends React.Component {
 
 
     openAudioPanel = (audioParamObj) => {
-        this.setState({audioPanelShow: true, audioParamObj: $.extend(this.state.audioParamObj, audioParamObj)});
+        this.setState({ audioPanelShow: true, audioParamObj: $.extend(this.state.audioParamObj, audioParamObj) });
     };
 
     openPhonePanel = (paramObj) => {
@@ -263,7 +257,7 @@ class PageFrame extends React.Component {
                 Trace.traceEvent(ReactDOM.findDOMNode(this), '查看客户详情');
             }
         }
-        this.setState({phonePanelShow: true, paramObj: $.extend(this.state.paramObj, paramObj)});
+        this.setState({ phonePanelShow: true, paramObj: $.extend(this.state.paramObj, paramObj) });
     };
     //打开线索面板
     openCluePanel = (paramObj) => {
@@ -274,7 +268,7 @@ class PageFrame extends React.Component {
                 Trace.traceEvent(ReactDOM.findDOMNode(this), '查看线索详情');
             }
         }
-        this.setState({clueDetailPanelShow: true, clueParamObj: $.extend(this.state.clueParamObj, paramObj)});
+        this.setState({ clueDetailPanelShow: true, clueParamObj: $.extend(this.state.clueParamObj, paramObj) });
     };
     closeCluePanel = () => {
         //首页我的工作中，打通电话或写了跟进，关闭弹屏前，需要将首页的相关工作去掉
@@ -285,7 +279,7 @@ class PageFrame extends React.Component {
         if (this.state.clueParamObj.call_params && _.isFunction(this.state.clueParamObj.call_params.setInitialPhoneObj)) {
             this.state.clueParamObj.call_params.setInitialPhoneObj();
         }
-        this.setState({clueDetailPanelShow: false, clueParamObj: $.extend(true, {}, emptyParamObj)});
+        this.setState({ clueDetailPanelShow: false, clueParamObj: $.extend(true, {}, emptyParamObj) });
     };
 
     // 打开用户详情面板
@@ -346,11 +340,11 @@ class PageFrame extends React.Component {
         if (this.state.paramObj.call_params && _.isFunction(this.state.paramObj.call_params.setInitialPhoneObj)) {
             this.state.paramObj.call_params.setInitialPhoneObj();
         }
-        this.setState({phonePanelShow: false, paramObj: $.extend(true, {}, emptyParamObj)});
+        this.setState({ phonePanelShow: false, paramObj: $.extend(true, {}, emptyParamObj) });
     };
 
     closeAudioPanel = () => {
-        this.setState({audioPanelShow: false, audioParamObj: {}});
+        this.setState({ audioPanelShow: false, audioParamObj: {} });
         if (this.state.audioParamObj && _.isFunction(this.state.audioParamObj.closeAudioPlayContainer)) {
             this.state.audioParamObj.closeAudioPlayContainer();
         }
@@ -384,28 +378,28 @@ class PageFrame extends React.Component {
     };
 
     showPurchaseLeadsPanel = (paramObj) => {
-        this.setState({isShowPurchaseLeadsPanel: true, cluePaymentParamObj: $.extend(this.state.cluePaymentParamObj, paramObj)});
+        this.setState({ isShowPurchaseLeadsPanel: true, cluePaymentParamObj: $.extend(this.state.cluePaymentParamObj, paramObj) });
     };
     closePurchaseLeadsPanel = () => {
-        this.setState({isShowPurchaseLeadsPanel: false, cluePaymentParamObj: {}});
+        this.setState({ isShowPurchaseLeadsPanel: false, cluePaymentParamObj: {} });
     };
 
     showPersonalVersionPanel = (paramObj) => {
-        this.setState({isShowPersonalVersionPanel: true, personalPaymentParamObj: $.extend(this.state.personalPaymentParamObj, paramObj)});
+        this.setState({ isShowPersonalVersionPanel: true, personalPaymentParamObj: $.extend(this.state.personalPaymentParamObj, paramObj) });
     };
     closePersonalVersionPanel = () => {
-        this.setState({isShowPersonalVersionPanel: false, personalPaymentParamObj: {}});
+        this.setState({ isShowPersonalVersionPanel: false, personalPaymentParamObj: {} });
     };
 
     showApplyTryPanel = (paramObj) => {
-        this.setState({isShowApplyTryPanel: true, applyTryParamObj: $.extend(this.state.applyTryParamObj, paramObj)});
+        this.setState({ isShowApplyTryPanel: true, applyTryParamObj: $.extend(this.state.applyTryParamObj, paramObj) });
     };
     closeApplyTryPanel = () => {
-        this.setState({isShowApplyTryPanel: false, applyTryParamObj: {}});
+        this.setState({ isShowApplyTryPanel: false, applyTryParamObj: {} });
     };
 
     openNavigation = (openNavigationIs) => {
-        this.setState({openNavigationIs});
+        this.setState({ openNavigationIs });
     };
 
     handleTriggerLeftPanel = (flag) => {
@@ -414,7 +408,7 @@ class PageFrame extends React.Component {
             isShowLeftPanel,
         }, () => {
             //展示聊天窗口时，关闭通知
-            if(this.state.isShowLeftPanel){
+            if (this.state.isShowLeftPanel) {
                 this.closeNotificationPanel();
             }
         });
@@ -422,21 +416,30 @@ class PageFrame extends React.Component {
 
     render() {
         var audioParamObj = this.state.audioParamObj;
+        let isWebSmall = isResponsiveDisplay().isWebSmall;
+        let navBarCls = classNames('nav-bar-wrap', {
+            'col-xs-12': isWebSmall,
+            'col-xs-2': !isWebSmall,
+        }); 
+        let contentCls = classNames('main-content-wrap', {
+            'col-xs-12': isWebSmall,
+            'col-xs-10': !isWebSmall,
+        });
         return (
             <div className="container-fluid">
                 <div className="row">
-                    <div className="col-xs-2">
-                        <LeftMenu
+                    <div className={navBarCls}>
+                        <NavSidebar
                             toggleNotificationPanel={this.toggleNotificationPanel}
                             closeNotificationPanel={this.closeNotificationPanel}
                             isShowNotificationPanel={this.state.isShowNotificationPanel}
                             rewardClueCount={this.state.rewardClueCount}
-                            handleOpenLeftPanel={this.handleTriggerLeftPanel.bind(this,true)}
+                            handleOpenLeftPanel={this.handleTriggerLeftPanel.bind(this, true)}
                             isShowCustomerService={this.state.isShowLeftPanel}
-                            closeChatPanel={this.handleTriggerLeftPanel.bind(this,false)}
+                            closeChatPanel={this.handleTriggerLeftPanel.bind(this, false)}
                         />
                     </div>
-                    <div className="col-xs-10">
+                    <div className={contentCls}>
                         {/* <OrganizationExpiredTip/> */}
                         {renderRoutes(this.props.route.routes)}
                         {this.state.phonePanelShow ? (
@@ -495,7 +498,7 @@ class PageFrame extends React.Component {
                         }
                         {
                             this.state.isShowApplyTryPanel ? (
-                                <ApplyTry hideApply={this.closeApplyTryPanel} {...this.state.applyTryParamObj}/>
+                                <ApplyTry hideApply={this.closeApplyTryPanel} {...this.state.applyTryParamObj} />
                             ) : null
                         }
                         {

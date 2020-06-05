@@ -95,6 +95,7 @@
 #menusLists{
   display: block;
 }
+// 高度缩放适配
 @media (max-height: 500px) {
   #hamburger{
     display: block;
@@ -103,8 +104,8 @@
     display: none;
   }
 }
-
-.navbar {
+// 导航左右布局时的样式
+.navbar.navbar-horizontal{
     position: fixed;
     margin: 0 -15px;
     top: 0;
@@ -114,6 +115,8 @@
     border-bottom-width: 0;
     border-radius: 0;
     border: none;
+}
+.navbar {
     background-color: @primary-color;
     .container,
     .container-fluid {
@@ -153,6 +156,9 @@
         float: none;
         margin: 0;
         font-size: @nav-text-fontSize;
+        .user-info-active {
+            background-color: @primary-active-color;
+        }
         >li {
             float: left;
             height: @nav-item-height;
@@ -468,7 +474,7 @@
 }
 
 //左侧响应式导航 汉堡包按钮
-.logo-and-menus .hamburger {
+.navbar-collapse .hamburger {
     margin-top: 20px;
     display: none;
     &:hover {
@@ -566,3 +572,57 @@
         display: none;
     }
 }
+
+// 手机端样式设置
+.nav-bar-wrap.col-xs-12 {
+    .navbar-vertical {
+        position: relative;
+        width: 100%;
+        height: 48px;
+        min-height: 48px;
+        margin-bottom: 0;
+        border: none;
+        .navbar-nav {
+            display: flex;
+            > li.sidebar-menu-li {
+                flex: 1;
+                height: 48px;
+                > a.iconfont {
+                    height: 48px;
+                    line-height: 46px;
+                    &:before {
+                        font-size: 28px;
+                    }
+                }
+            }
+        } 
+    }
+}
+// 宽度缩放适配
+@media (max-width: 600px) {
+    #hamburger{
+      display: none;
+    }
+    #menusLists{
+        display: flex;
+        .avatar_container {
+            text-align: center;
+            // 上传了头像的样式
+            .avatar {
+                i {
+                    float: inherit;
+                    line-height: inherit;
+                }
+            }
+            // 没上传头像时，默认头像样式设置
+            .user-default-logo-wrap,.user-default-logo-wrap.active {
+
+                .icon-user-logo-default {
+                    &:before {
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
+    }
+  }

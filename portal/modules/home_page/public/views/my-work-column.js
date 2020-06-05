@@ -60,6 +60,7 @@ import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import history from 'PUB_DIR/sources/history';
 import {hasRecommendPrivilege} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -1427,7 +1428,7 @@ class MyWorkColumn extends React.Component {
     renderWorkContent() {
         let customerOfCurUser = this.state.customerOfCurUser;
         return (
-            <div className='my-work-content' style={{height: getColumnHeight()}} data-tracename="我的工作列表">
+            <div className='my-work-content' style={{height: getColumnHeight(this.props.adaptiveHeight)}} data-tracename="我的工作列表">
                 <GeminiScrollbar className="srollbar-out-card-style"
                     listenScrollBottom={this.state.listenScrollBottom}
                     handleScrollBottom={this.handleScrollBottom}
@@ -1564,15 +1565,15 @@ class MyWorkColumn extends React.Component {
                         />);
                     break;
                 case APPLY_APPROVE_TYPES.EEFUNG_DATA_SERVICE://数据服务申请
-                     detailContent = (
-                         <DataServiceApplyDetail
-                             isHomeMyWork={true}
-                             detailItem={applyInfo}
-                             selectedApplyStatus='false'//待审批状态
-                             afterApprovedFunc={this.afterFinishApplyWork}
-                         />
-                     );
-                     break;
+                    detailContent = (
+                        <DataServiceApplyDetail
+                            isHomeMyWork={true}
+                            detailItem={applyInfo}
+                            selectedApplyStatus='false'//待审批状态
+                            afterApprovedFunc={this.afterFinishApplyWork}
+                        />
+                    );
+                    break;
                 case APPLY_APPROVE_TYPES.USER_OR_GRANT://用户申请（试用、签约用户申请、修改密码、延期、其他）
                     detailContent = (
                         <UserApplyDetail
@@ -1629,4 +1630,4 @@ class MyWorkColumn extends React.Component {
     }
 }
 
-export default MyWorkColumn;
+export default adaptiveHeightHoc(MyWorkColumn);

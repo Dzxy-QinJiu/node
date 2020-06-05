@@ -51,6 +51,7 @@ import {
     getTableContainerHeight
 } from 'PUB_DIR/sources/utils/common-method-util';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 
 class UserTabContent extends React.Component {
     state = {
@@ -1580,7 +1581,7 @@ class UserTabContent extends React.Component {
         }
         //只有oplate的用户才有批量操作
         var rowSelection = hasSelectAuth && isOplateUser() && this.isShowBatchOperate() ? this.getRowSelection() : null;
-        var divHeight = getTableContainerHeight() - (this.state.filterAreaExpanded ? $(this.refs.filter_adv).outerHeight() || 0 : 0);
+        var divHeight = getTableContainerHeight(this.props.adaptiveHeight) - (this.state.filterAreaExpanded ? $(this.refs.filter_adv).outerHeight() || 0 : 0);
         const dropLoadConfig = {
             listenScrollBottom: this.state.listenScrollBottom,
             handleScrollBottom: this.handleScrollBottom,
@@ -1716,6 +1717,6 @@ UserTabContent.defaultProps = {
 };
 UserTabContent.propTypes = {
     customer_id: PropTypes.string,
-
+    adaptiveHeight: PropTypes.number
 };
-module.exports = UserTabContent;
+export default adaptiveHeightHoc(UserTabContent);

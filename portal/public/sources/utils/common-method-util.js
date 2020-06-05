@@ -969,18 +969,21 @@ exports.ajustTagWidth = (contentWidth) => {
 };
 
 //获取列表容器的高度
-exports.getTableContainerHeight = function() {
+exports.getTableContainerHeight = function(adaptiveHeight, hasSummary = true) {
     const LAYOUT_CONSTANTS = {
         TOP_HANDLE_HEIGHT: 66,//头部操作区的高度
         FIXED_THEAD: 40,//表头的高度
         PADDING_BOTTOM: 20,//底部间距
         SUMMARY: 30//总数统计的高度
     };
-    return $(window).height() -
+    let tableHeight = (adaptiveHeight || $(window).height()) -
         LAYOUT_CONSTANTS.TOP_HANDLE_HEIGHT -
         LAYOUT_CONSTANTS.FIXED_THEAD -
-        LAYOUT_CONSTANTS.PADDING_BOTTOM -
-        LAYOUT_CONSTANTS.SUMMARY;
+        LAYOUT_CONSTANTS.PADDING_BOTTOM;
+    if (hasSummary) {
+        tableHeight -= LAYOUT_CONSTANTS.SUMMARY;
+    }
+    return tableHeight;
 };
 function isSalesRole() {
     return userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SECRETARY) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER);
@@ -1037,7 +1040,7 @@ exports.isCurtao = isCurtao;
 
 //是否显示客服
 const isShowCustomerService = () => {
-    return isCurtao();
+    return isCurtao() && !isResponsiveDisplay().isWebMin;
 };
 exports.isShowCustomerService = isShowCustomerService;
 
@@ -1206,13 +1209,15 @@ exports.isFormalUser = () => {
 };
 
 //判断当前页面是否处于手机端或pad端的断点，用于响应式布局的展示
-exports.isResponsiveDisplay = () => {
+function isResponsiveDisplay() {
     let responsive = {};
     responsive.isWebMiddle = $(window).width() < RESPONSIVE_LAYOUT.MIDDLE_WIDTH;//浏览器是否处于pad端断点位置
     responsive.isWebMin = $(window).width() < RESPONSIVE_LAYOUT.MIN_WIDTH;//浏览器是否处于手机端断点位置
+    responsive.isWebSmall = $(window).width() <= RESPONSIVE_LAYOUT.SMALL_WIDTH;//浏览器是否处于左右布局的最小宽度
     return responsive;
 
-};
+}
+exports.isResponsiveDisplay = isResponsiveDisplay;
 //处理历史申请记录的数据
 exports.handleHistoricalList = function(lists) {
     return _.filter(lists, item => {
