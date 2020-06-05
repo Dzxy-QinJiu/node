@@ -25,7 +25,7 @@ import {
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import classNames from 'classnames';
 import {contractChart} from 'ant-chart-collection';
-import {isOpenCash, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {isOpenCash, checkVersionAndType, isOpenCaller} from 'PUB_DIR/sources/utils/common-method-util';
 import { AntcAnalysis, AntcSelect } from 'antc';
 const Option = AntcSelect.Option;
 import { getColumnHeight } from 'MOD_DIR/home_page/public/views/common-util';
@@ -33,6 +33,7 @@ import { getMaxLimitExtractClueCount } from 'PUB_DIR/sources/utils/common-data-u
 import { checkPrivilege } from 'MOD_DIR/crm/public/utils/crm-util';
 import Trace from 'LIB_DIR/trace';
 import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 const performance = {
     image_1: require('../images/performance_1.png'),
     image_2: require('../images/performance_2.png'),
@@ -139,7 +140,10 @@ class TeamDataColumn extends React.Component {
         if(this.enableGetPerforManceDate()){
             this.getPerformanceData();
         }
-        this.getCallTimeData();
+        // 开通了呼叫中心并且有获取通话统计的权限时，才获取通话记录
+        if (this.hasCallAnalysisPrivilege()) {
+            this.getCallTimeData();
+        }
         this.getContactCustomerCount();
         this.getContactClueCount();
         this.getMaxLimitCount();
@@ -167,7 +171,11 @@ class TeamDataColumn extends React.Component {
     componentDidUpdate() {
         this.changeTableHeight();
     }
-
+    // 是否有通话统计的权限
+    hasCallAnalysisPrivilege() {
+        // 开通了呼叫中心并且有获取通话统计的权限时，才获取通话记录
+        return isOpenCaller() && hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CALLRECORD_STATISTICS);
+    }
     changeTableHeight = () => {
         tableHeight = $(window).height()
             - LAYOUT_CONSTANTS.MY_DATA_TITLE_HEIGHT
@@ -829,7 +837,7 @@ class TeamDataColumn extends React.Component {
             <div className='my-data-content' style={{height: getColumnHeight()}} data-tracename="我的数据">
                 <GeminiScrollbar>
                     {this.enableGetPerforManceDate() ? this.renderPerformanceData() : null}
-                    {this.renderCallTime()}
+                    {this.hasCallAnalysisPrivilege() ? this.renderCallTime() : null}
                     {this.renderContactCustomers()}
                     {this.renderContactClues()}
                     {this.renderExtractCluesPanel()}
@@ -859,4 +867,7 @@ class TeamDataColumn extends React.Component {
             />);
     }
 }
+TeamDataColumn.propTypes = {
+    isEefungCustomerManager: PropTypes.bool
+};
 export default eefungCustomerManagerHoc(TeamDataColumn);
