@@ -22,8 +22,18 @@ class ProductDropdown extends React.Component {
         };
     }
 
+    isSelectedData = false;
+    // 点击快的时候，会出现选不中的错觉，其实是连续点击，有可能点击的时候就取消了
     onProductCheck = (checkedList) => {
-        this.setState({checkedList, addErrorMsg: ''});
+        if (this.isSelectedData) {
+            return;
+        } else {
+            this.isSelectedData = true;
+
+            this.setState({checkedList, addErrorMsg: ''}, () => {
+                this.isSelectedData = false;
+            });
+        }
     }
     onSearchValChange = (e) => {
         this.setState({searchValue: _.trim(e.target.value)});
@@ -40,15 +50,22 @@ class ProductDropdown extends React.Component {
                 />
                 <div className="product-list">
                     <GeminiScrollbar>
-                        <CheckboxGroup value={this.state.checkedList} onChange={this.onProductCheck}>
-                            {_.map(this.state.productList, (item, index) => {
+                        <CheckboxGroup
+                            value={this.state.checkedList}
+                            onChange={this.onProductCheck}
+                        >
+                            {_.map(this.state.productList, item => {
                                 //搜索时，隐藏掉不符合搜索条件的选项
                                 let checkboxCls = classNames('product-checkbox-item', {
                                     'hidden-checkbox': searchValue && item.name && item.name.indexOf(searchValue) === -1
                                 });
                                 return (
-                                    <div key={index} className={checkboxCls}><Checkbox
-                                        value={item.id}>{item.name}</Checkbox></div>);
+                                    <div
+                                        key={item.id}
+                                        className={checkboxCls}
+                                    >
+                                        <Checkbox value={item.id}>{item.name}</Checkbox>
+                                    </div>);
                             })}
                         </CheckboxGroup>
                     </GeminiScrollbar>

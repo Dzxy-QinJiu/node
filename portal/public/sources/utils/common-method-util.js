@@ -1030,9 +1030,17 @@ exports.isOpenCash = () => {
     return _.includes(_.get(organization,'grantProducts', []), _.get(productsIdMap, 'cash', ''));
 };
 //是否是csm.curtao.com域名访问的
-exports.isCurtao = () => {
+const isCurtao = () => {
     return Oplate.isCurtao === 'true';
 };
+exports.isCurtao = isCurtao;
+
+//是否显示客服
+const isShowCustomerService = () => {
+    return isCurtao();
+};
+exports.isShowCustomerService = isShowCustomerService;
+
 // 设置是否已有专属号码
 exports.setExclusiveNumber = (phoneType) => {
     let isDefault = _.isEqual(phoneType, 'default');

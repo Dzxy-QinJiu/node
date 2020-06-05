@@ -272,7 +272,7 @@ class ProductionManage extends React.Component {
                         </Button>
                     </PrivilegeChecker>
                     {
-                        this.isOplateOrMatomoType(this.state.integrateType) && _.get(this.state, 'productList[0]') ? (
+                        _.get(this.state, 'productList[0]') ? (
                             <ProductDropDown
                                 integrateType={this.state.integrateType}
                                 productList={this.state.productList}

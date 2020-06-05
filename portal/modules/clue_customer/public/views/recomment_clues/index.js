@@ -1792,9 +1792,10 @@ class RecommendCluesList extends React.Component {
         if(key === 'feature' && value !== EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER) {
             let feature = _.find(ADVANCED_OPTIONS, item => item.value === this.state.feature);
             let char = new RegExp(feature.name, 'g');
-            text = text.replace(char, `<em class="text-highlight">${feature.name}</em>`);
+            // text = text.replace(char, `<em class="text-highlight">${feature.name}</em>`);
+            return char.test(text);
         }
-        return text;
+        return false;
     }
 
     //处理点击展开全部条件时
@@ -1830,6 +1831,13 @@ class RecommendCluesList extends React.Component {
         return null;
     }
 
+    handleContactPopoverChange = (item) => {
+        let onVisibleChange = _.get(this['contactsRef' + item.id], 'refs.tooltip.onVisibleChange');
+        if(_.isFunction(onVisibleChange)) {
+            onVisibleChange(false);
+        }
+    }
+    
     renderSelectLoadSizeBlock() {
         if(checkCurrentVersionType().formal) {//正式
             return (
@@ -1911,6 +1919,65 @@ class RecommendCluesList extends React.Component {
         );
     };
 
+    renderContactBlock(item) {
+        let contacts = item.contacts;
+        if(!contacts.length) {
+            return null;
+        }else {
+            let title = (
+                <div className="check-phone-title" data-tracename="更多联系人title内容">
+                    <div className="check-phone-title-content">
+                        <i className="iconfont icon-app-view"/>
+                        <span className="more-contacts-title">{Intl.get('clue.more.contacts.tip', '提取后可查看完整信息')}</span>
+                    </div>
+                    <i className="iconfont icon-close" data-tracename="点击关闭" title={Intl.get('common.app.status.close', '关闭')} onClick={this.handleContactPopoverChange.bind(this, item)}/>
+                </div>
+            );
+            let contentCls = classNames('more-contacts-wrapper', {
+                'has-scroll': contacts.length > 2
+            });
+            let content = (
+                <div className={contentCls}>
+                    <div className="more-contacts-content">
+                        {_.map(contacts, contactItem => {
+                            return (
+                                <div key={contactItem.id} className="more-contacts-item">
+                                    <div className="more-contacts-name-content">
+                                        <span className="more-contacts-name">{contactItem.name}</span>
+                                        {contactItem.position ? <span className="more-contacts-position">({contactItem.position})</span> : null}
+                                    </div>
+                                    <div className="more-contacts-phones">
+                                        {_.map(contactItem.phone, phone => (
+                                            <div key={phone} className="more-contacts-phone-item">{phone}</div>
+                                        ))}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+            return (
+                <span className='extract-clue-info-item'>
+                    <span className="extract-clue-text-label">{Intl.get('call.record.contacts', '联系人')}：</span>
+                    <Popover
+                        ref={ref => this['contactsRef' + item.id] = ref}
+                        trigger={isResponsiveDisplay().isWebMin ? 'click' : 'hover'}
+                        placement="bottomLeft"
+                        title={title}
+                        content={content}
+                        overlayClassName="extract-limit-content check-phone-result-container more-contacts-container"
+                    >
+                        <span className="clickable" data-tracename="点击联系人个数">
+                            <span className="more-contacts">{_.get(contacts, 'length')}</span>
+                            {Intl.get('contract.22', '个')}
+                        </span>
+                    </Popover>
+                </span>
+            );
+        }
+    }
+
     renderRecommendLists = () => {
         let {
             recommendClueLists,
@@ -1956,6 +2023,9 @@ class RecommendCluesList extends React.Component {
                                 'extract-clue-text__null': !otherProps.products.hasHighLight && !otherProps.scope.hasHighLight && !otherProps.industry.hasHighLight && !otherProps.companyProfile.hasHighLight
                             });
                             let labels = item.labels.concat(item.features);
+                            if(_.get(item, 'has_website')) {
+                                labels.push(Intl.get('clue.recommend.has.website', '有官网'));
+                            }
                             return (
                                 <div className={cls} key={item.id}>
                                     <Checkbox checked={this.hasChecked(item)} disabled={this.getDisabledClue(item)} onChange={this.handleCheckChange.bind(this, item)}/>
@@ -1966,30 +2036,40 @@ class RecommendCluesList extends React.Component {
                                             {item.openStatus ? <span className="clue-company-open-status">{item.openStatus.split('（')[0].replace('开业', '在业')}</span> : null}
                                             {labels.length ? (
                                                 <div className="clue-labels">
-                                                    {_.map(labels, (tag, index) => (
-                                                        <Tag key={index}><span dangerouslySetInnerHTML={{__html: this.handleTagHighLightText(tag)}}/></Tag>
-                                                    ))}
+                                                    {_.map(labels, (tag, index) => {
+                                                        let cls = classNames({
+                                                            'highlight-tag': this.handleTagHighLightText(tag)
+                                                        });
+                                                        return (<Tag key={index} className={cls}>{tag}</Tag>);
+                                                    })}
                                                 </div>
                                             ) : null}
                                         </div>
                                         <div className="extract-clue-text__filters">
-                                            {item.startTime ? (
-                                                <div className="extract-clue-text-item">
+                                            <div className="extract-clue-text-item">
+                                                {item.legalPerson ? (
+                                                    <span className='extract-clue-info-item'>
+                                                        <span className="extract-clue-text-label">{Intl.get('clue.recommend.legalperson', '法人')}：</span>
+                                                        <span>{item.legalPerson}</span>
+                                                    </span>
+                                                ) : null}
+                                                {item.startTime ? (
                                                     <span className='extract-clue-info-item'>
                                                         <span className="extract-clue-text-label">{Intl.get('clue.customer.register.time', '注册时间')}：</span>
                                                         <span>{moment(item.startTime).format(oplateConsts.DATE_FORMAT)}</span>
                                                     </span>
-                                                    {/*<span className='extract-clue-info-item'>
-                                                        <span className="extract-clue-text-label">{Intl.get('clue.recommend.registered.capital', '注册资本')}：</span>
-                                                        <span>{Intl.get('crm.149', '{num}万', {num: item.capital / 10000})}</span>
-                                                    </span>*/}
-                                                    {/*<span className='extract-clue-info-item'>
-                                                        <span className="extract-clue-text-label">{Intl.get('call.record.contacts', '联系人')}：</span>
-                                                        <span>{item.legalPerson}</span>
-                                                    </span>*/}
-                                                </div>
-                                            ) : null}
+                                                ) : null }
+                                                {
+                                                    item.capital ? (
+                                                        <span className='extract-clue-info-item'>
+                                                            <span className="extract-clue-text-label">{Intl.get('clue.recommend.registered.capital', '注册资本')}：</span>
+                                                            <span>{Intl.get('crm.149', '{num}万', {num: (item.capital / 10000).toFixed(2)})}</span>
+                                                        </span>
+                                                    ) : null
+                                                }
+                                            </div>
                                             <div className="extract-clue-text-item">
+                                                {this.renderContactBlock(item)}
                                                 {_.get(item.contact, 'phones') ? (
                                                     <span className="extract-clue-contacts-item">
                                                         <span className="extract-clue-text-label">{Intl.get('common.phone', '电话')}：</span>

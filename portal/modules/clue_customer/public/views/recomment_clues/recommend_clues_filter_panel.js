@@ -31,39 +31,16 @@ import {toFrontRecommendClueData} from '../../../server/dto/recommend-clue';
 
 const ADVANCED_OPTIONS = [
     {
-        name: Intl.get('clue.recommend.register.half.year', '近半年注册'),
-        value: `feature:${EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER}`
-    },
-    {
-        name: Intl.get('clue.recommend.listed', '上市企业'),
-        value: 'feature:上市'
-    },
-    {
-        name: Intl.get('clue.recommend.high.tech.enterprise.enterprise', '高新技术企业'),
-        value: 'feature:高新'
-    },
-    {
-        name: Intl.get('clue.recommend.state.owned.enterprise', '国有企业'),
-        value: 'feature:国有企业'
-    },
-    {
-        name: Intl.get('clue.recommend.smal.micro.enterprise', '小微企业'),
-        value: 'feature:小微企业'
-    },
-    {
         name: Intl.get('clue.recommend.has.mobile', '有手机号'),
         value: 'mobile_num:1',
         processValue: (value) => {
             return _.toNumber(value);
         }
     },
-    /*{
-        name: Intl.get('clue.recommend.has.phone', '有电话'),
-        value: 'phone_num:1',
-        processValue: (value) => {
-            return _.toNumber(value);
-        }
-    },*/
+    {
+        name: Intl.get('clue.recommend.register.half.year', '近半年注册'),
+        value: `feature:${EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER}`
+    },
     {
         name: Intl.get('clue.recommend.has.website', '有官网'),
         value: 'has_website:true',
@@ -71,6 +48,29 @@ const ADVANCED_OPTIONS = [
             return value === 'true';
         }
     },
+    {
+        name: Intl.get('clue.recommend.smal.micro.enterprise', '小微企业'),
+        value: 'feature:小微企业'
+    },
+    {
+        name: Intl.get('clue.recommend.high.tech.enterprise.enterprise', '高新技术企业'),
+        value: 'feature:高新'
+    },
+    {
+        name: Intl.get('clue.recommend.listed', '上市企业'),
+        value: 'feature:上市'
+    },
+    /*{
+        name: Intl.get('clue.recommend.state.owned.enterprise', '国有企业'),
+        value: 'feature:国有企业'
+    },*/
+    /*{
+        name: Intl.get('clue.recommend.has.phone', '有电话'),
+        value: 'phone_num:1',
+        processValue: (value) => {
+            return _.toNumber(value);
+        }
+    },*/
     {
         name: Intl.get('clue.recommend.has.more.contact', '多个联系方式'),
         value: 'phone_num:2',
@@ -133,10 +133,16 @@ class RecommendCluesFilterPanel extends Component {
         if (_.isEmpty(this.state.hasSavedRecommendParams) || !_.isEqual(nextProps.hasSavedRecommendParams, this.state.hasSavedRecommendParams)){
             let hasSavedRecommendParams = _.cloneDeep(nextProps.hasSavedRecommendParams);
             let vipFilters = this.dealRecommendParamsVipData({...hasSavedRecommendParams, ...this.state.vipFilters});
+            let showOtherCondition = this.state.showOtherCondition;
+            if(!showOtherCondition) {
+                //有选择vip选项时，默认展开vip筛选
+                showOtherCondition = _.isEmpty(this.state.vipFilters) && !_.isEmpty(vipFilters);
+            }
             this.setState({
                 hasSavedRecommendParams,
                 vipFilters,
                 registerOpen: true,
+                showOtherCondition,
             }, () => {
                 if(this.searchInputRef) {
                     this.searchInputRef.state.keyword = hasSavedRecommendParams.keyword;
@@ -996,17 +1002,6 @@ class RecommendCluesFilterPanel extends Component {
             iconCls += ' icon-down-twoline';
         }
 
-        let hotContentCls = 'advance-data-content', hotShowTip = '', hotIconCls = 'iconfont';
-        if(showHotMore) {//是否展示更多热门选项
-            hotContentCls += ' show-more';
-            hotShowTip = Intl.get('crm.contact.way.hide', '收起');
-            hotIconCls += ' icon-up-twoline';
-        }else {
-            hotShowTip = Intl.get('crm.basic.more', '更多');
-            hotIconCls += ' icon-down-twoline';
-        }
-
-
         return (
             <div className="recommend-customer-condition recommend-customer-condition-wrapper" data-tracename="线索推荐筛选面板">
                 <div className="recommend-clue-filter-panel">
@@ -1039,13 +1034,7 @@ class RecommendCluesFilterPanel extends Component {
                                 className="special-item"
                             >
                                 <div className="advance-data-container">
-                                    <div className={hotContentCls}>
-                                        {this.renderAdvancedOptions()}
-                                    </div>
-                                    <div className="show-hide-tip" onClick={this.handleToggleOtherCondition.bind(this, 'showHotMore')} data-tracename='点击更多或收起推荐线索的热门选项'>
-                                        <span>{hotShowTip}</span>
-                                        <i className={hotIconCls}/>
-                                    </div>
+                                    {this.renderAdvancedOptions()}
                                 </div>
                             </FormItem>
                             <AntcAreaSelection

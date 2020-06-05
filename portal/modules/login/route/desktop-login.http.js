@@ -221,6 +221,13 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
+    },{//找回密码-获取操作码
+        'method': 'get',
+        'path': '/forgot_password/operate_code',
+        'handler': 'getOperateCode',
+        'passport': {
+            'needLogin': false
+        }
     },{//找回密码-发送手机/邮箱验证码
         'method': 'get',
         'path': '/send_reset_password_msg',

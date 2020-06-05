@@ -10,7 +10,6 @@ require('./oplate');
 const LAYOUT_CONSTS = require('../../../lib/consts').LAYOUT;
 var LeftMenu = require('../../../components/privilege/nav-sidebar');
 import LeftPanel from 'CMP_DIR/left-panel';
-import CustomerIndex from 'CMP_DIR/customer-index';
 import PhonePanel from 'MOD_DIR/phone_panel/public';
 import ClueDetailPanel from 'MOD_DIR/clue_detail_panel/public';
 import AudioReportFunction from 'CMP_DIR/audio-report-function';
@@ -35,7 +34,7 @@ import{
     clickUpgradeNoiceEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
-import { isShowUnReadNotice, isCurtao} from '../utils/common-method-util';
+import { isShowUnReadNotice, isShowCustomerService } from '../utils/common-method-util';
 import {getUpgradeNoticeList, getRewardedCluesCount, getAppList} from '../utils/common-data-util';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const emptyParamObj = {
@@ -125,6 +124,8 @@ class PageFrame extends React.Component {
         // 影响了session不超时，暂时隐藏获取公告轮询的操作
         // this.pollingGetNotice(); // 轮询获取公告信息
         this.setContentHeight();
+        //渲染蚁讯客服
+        if (isShowCustomerService()) this.renderAntmeCustomerService();
         Trace.addEventListener(window, 'click', Trace.eventHandler);
         //打开拨打电话面板的事件监听
         phoneMsgEmitter.on(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
@@ -157,6 +158,14 @@ class PageFrame extends React.Component {
         paymentEmitter.on(paymentEmitter.OPEN_APPLY_TRY_PANEL, this.showApplyTryPanel);
 
         $(window).on('resize', this.resizeHandler);
+    }
+
+    //渲染蚁讯客服
+    renderAntmeCustomerService() {
+        import(/* webpackChunkName: "CustomerIndex" */ 'CMP_DIR/customer-index').then(({ default: CustomerIndex }) => {
+            this.CustomerIndex = <CustomerIndex/>;
+            this.setState({});
+        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -502,9 +511,11 @@ class PageFrame extends React.Component {
                         closeAudioPanel={this.closeAudioPanel}
                     />
                 ) : null}
-                <LeftPanel isShow={this.state.isShowLeftPanel} openNavigationIs={this.state.openNavigationIs} handleHideLeftPanel={this.handleTriggerLeftPanel.bind(this,false)}>
-                    {isCurtao() ? <CustomerIndex/> : null}
-                </LeftPanel>
+                {isShowCustomerService() ? (
+                    <LeftPanel isShow={this.state.isShowLeftPanel} openNavigationIs={this.state.openNavigationIs} handleHideLeftPanel={this.handleTriggerLeftPanel.bind(this,false)}>
+                        {this.CustomerIndex}
+                    </LeftPanel>
+                ) : null}
             </div>
         );
     }
