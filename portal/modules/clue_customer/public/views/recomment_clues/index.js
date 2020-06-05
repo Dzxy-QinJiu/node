@@ -1838,6 +1838,7 @@ class RecommendCluesList extends React.Component {
     handleContactPopoverChange = (visible) => {
         if(!visible) {
             this.setState({showContactPopvisible: ''});
+        }
     }
     
     renderSelectLoadSizeBlock() {
