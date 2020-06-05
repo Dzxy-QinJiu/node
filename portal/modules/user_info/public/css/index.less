@@ -600,6 +600,14 @@
           }
           .user-info-nickname {
             margin-top: 0;
+            .basic-edit-field {
+              .edit-container {
+                .icon-edit-btn {
+                  visibility: visible;
+                  color: @primary-color;
+                }
+              }
+            }
           }
         }
       }
@@ -636,7 +644,7 @@
                 .icon-update {
                   visibility: visible;
                   float: right;
-                  color: #1976D2;
+                  color: @primary-color;
                 }
               }
             }
@@ -648,7 +656,7 @@
                   text-align: left;
                   .icon-edit-btn {
                     visibility: visible;
-                    color: #1976D2;
+                    color: @primary-color;
                   }
                 }
               }
@@ -669,7 +677,7 @@
               }
               .icon-edit-btn {
                 display: inline-block;
-                color: #1976D2;
+                color: @primary-color;
                 visibility: visible;
               }
             }
@@ -701,11 +709,22 @@
           .logout {
             span {
               font-size: 1.6rem;
-              color: #1976D2;
+              color: @primary-color;
             }
           }
         }
       }
+    }
+  }
+}
+
+// 移动端升级样式
+.user-info-upgrade-version-popover {
+  padding: 1rem;
+  top: 64px !important;
+  .ant-popover-content {
+    .ant-popover-arrow {
+      display: none;
     }
   }
 }

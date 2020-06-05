@@ -16,7 +16,8 @@ class AvatarPopoverTip extends Component {
         if(_.isFunction(onVisibleChange)) {
             onVisibleChange(false, CLOSE_BTN_CLICK);
         }else {
-            this.avatarPopoverRef.state.visible = false;
+            _.isFunction(this.avatarPopoverRef.refs.tooltip.onVisibleChange) &&
+            this.avatarPopoverRef.refs.tooltip.onVisibleChange(false);
         }
     };
 
@@ -27,7 +28,11 @@ class AvatarPopoverTip extends Component {
                     <img className="image" src="/static/images/curtao-personal.svg"/>
                 </div>
                 <span className="avatar-popover-text">{content}</span>
-                <i className="iconfont icon-close" data-tracename="点击提示中的关闭按钮" title={Intl.get('common.app.status.close', '关闭')} onClick={this.onVisibleChange.bind(this, onVisibleChange)}/>
+                <i className="iconfont icon-close"
+                    data-tracename="点击提示中的关闭按钮"
+                    title={Intl.get('common.app.status.close', '关闭')}
+                    onClick={this.onVisibleChange.bind(this, onVisibleChange)}
+                />
             </div>
         );
     }

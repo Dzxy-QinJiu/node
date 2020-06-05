@@ -13,19 +13,18 @@ import { storageUtil } from 'ant-utils';
 import PhoneShowEditField from './phone-show-edit-field';
 import userData from 'PUB_DIR/sources/user-data';
 import {checkQQ, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
-import {getEmailActiveUrl, checkCurrentVersion, checkCurrentVersionType, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import {getEmailActiveUrl, checkCurrentVersion, checkCurrentVersionType, isCurtao, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 import {getOrganizationInfo} from 'PUB_DIR/sources/utils/common-data-util';
 import {paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import history from 'PUB_DIR/sources/history';
 import SavedTips from 'CMP_DIR/saved-tips';
-import DifferentVersion from 'MOD_DIR/different_version/public';
 import privilegeConst_user_info from '../privilege-config';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
 import { COMPANY_VERSION_KIND, COMPANY_PHONE } from 'PUB_DIR/sources/utils/consts';
-import { isResponsiveDisplay } from 'PUB_DIR/sources/utils/common-method-util';
 import LogOut from 'MOD_DIR/logout/views';
 import RadioOrCheckBoxEditField from 'CMP_DIR/basic-edit-field-new/radio-checkbox';
+import AvatarPopoverTip from 'CMP_DIR/avatar-popover-tip';
 const session = storageUtil.session;
 const CLOSE_TIP_TIME = 56;
 const langArray = [{key: 'zh_CN', val: '简体中文'},
@@ -444,6 +443,8 @@ class UserInfo extends React.Component{
     renderBtnBlock = () => {
         let currentVersion = checkCurrentVersion();
         let currentVersionType = checkCurrentVersionType();
+        let isWebSmall = isResponsiveDisplay().isWebSmall; // 是否是手机移动端
+
         //个人试用提示升级，正式提示续费
         //企业试用提示升级，正式提示续费
         if(currentVersion.personal && currentVersionType.formal){ //个人正式版出现续费button
@@ -457,6 +458,22 @@ class UserInfo extends React.Component{
         }
         if(currentVersion.company) {
             if(currentVersionType.trial) {//企业试用
+                if (isWebSmall) {
+                    return (
+                        <AvatarPopoverTip
+                            placement="top"
+                            overlayClassName="user-info-upgrade-version-popover"
+                            content={Intl.get('payment.please.contact.our.sale.upgrade', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: COMPANY_PHONE})}
+                        >
+                            <Button
+                                className="user-version-upgrade"
+                                data-tracename="点击升级为企业版按钮"
+                            >
+                                {Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
+                            </Button>
+                        </AvatarPopoverTip>
+                    );
+                }
                 return (
                     <Popover
                         placement="right"
@@ -472,6 +489,22 @@ class UserInfo extends React.Component{
                     </Popover>
                 );
             }else if(currentVersionType.formal && this.isManager()) {//企业正式并且是管理员
+                if (isWebSmall) {
+                    return (
+                        <AvatarPopoverTip
+                            placement="top"
+                            overlayClassName="user-info-upgrade-version-popover"
+                            content={Intl.get('payment.please.contact.our.sale.renewal', '请联系我们的销售人员进行续费，联系方式：{contact}', {contact: COMPANY_PHONE})}
+                        >
+                            <Button
+                                className="user-version-upgrade"
+                                data-tracename="点击企业续费按钮"
+                            >
+                                {Intl.get('payment.renewal', '续费')}
+                            </Button>
+                        </AvatarPopoverTip>
+                    );
+                }
                 return (
                     <Popover
                         placement="right"
