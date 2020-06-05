@@ -119,11 +119,11 @@ class RegisterForm extends React.Component {
                 error: xhr => {
                     let errorMsg = _.get(xhr, 'responseJSON', Intl.get('register.error.tip', '注册失败'));
                     // 手机验证码验证失败三次后或图片验证码输错后，会报图片验证码错误
-                    if (errorMsg === Intl.get('login.fogot.password.picture.code.error', '图片验证码错误')) {
+                    if (errorMsg === Intl.get('login.forgot.password.picture.code.error', '图片验证码错误')) {
                         this.getVerifyErrorCaptchaCode(values.phone);
                         // 没有图片验证码时，说明是手机验证码验证失败三次后，此时需提示'短信验证码错误'
                         if (!formData.captcha) {
-                            errorMsg = Intl.get('login.fogot.password.phone.code.error', '短信验证码错误');
+                            errorMsg = Intl.get('login.forgot.password.phone.code.error', '短信验证码错误');
                         }
                     }
                     this.setState({
@@ -154,18 +154,18 @@ class RegisterForm extends React.Component {
                 if (data) {
                     if (_.isFunction(successFunc)) successFunc();
                 } else {
-                    this.setState({ registerErrorMsg: Intl.get('login.fogot.password.phone.code.error', '短信验证码错误') });
+                    this.setState({ registerErrorMsg: Intl.get('login.forgot.password.phone.code.error', '短信验证码错误') });
                     this.getVerifyErrorCaptchaCode(values.phone);
                 }
             },
             error: xhr => {
                 let errorMsg = _.get(xhr, 'responseJSON');
                 // 手机验证码验证失败三次后或图片验证码输错后，会报图片验证码错误
-                if (errorMsg === Intl.get('login.fogot.password.picture.code.error', '图片验证码错误')) {
+                if (errorMsg === Intl.get('login.forgot.password.picture.code.error', '图片验证码错误')) {
                     this.getVerifyErrorCaptchaCode(values.phone);
                     // 没有图片验证码时，说明是手机验证码验证失败三次后，此时需提示'短信验证码错误'
                     if (!values.captcha) {
-                        errorMsg = Intl.get('login.fogot.password.phone.code.error', '短信验证码错误');
+                        errorMsg = Intl.get('login.forgot.password.phone.code.error', '短信验证码错误');
                     }
                 }
                 this.setState({
