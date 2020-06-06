@@ -1796,13 +1796,13 @@ class RecommendCluesList extends React.Component {
     //处理标签根据热门中的feature字段进行高亮处理
     handleTagHighLightText(text) {
         let {key, value} = this.getAdvanceItem();
-        if(key === 'feature' && value !== EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER) {
+        if(key === 'has_website' || (key === 'feature' && value !== EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER)) {
             let feature = _.find(ADVANCED_OPTIONS, item => item.value === this.state.feature);
             let char = new RegExp(feature.name, 'g');
-            // text = text.replace(char, `<em class="text-highlight">${feature.name}</em>`);
-            return char.test(text);
+            text = text.replace(char, `<em class="text-highlight">${feature.name}</em>`);
+            // return char.test(text);
         }
-        return false;
+        return text;
     }
 
     //处理点击展开全部条件时
@@ -2043,12 +2043,9 @@ class RecommendCluesList extends React.Component {
                                             {item.openStatus ? <span className="clue-company-open-status">{item.openStatus.split('（')[0].replace('开业', '在业')}</span> : null}
                                             {labels.length ? (
                                                 <div className="clue-labels">
-                                                    {_.map(labels, (tag, index) => {
-                                                        let cls = classNames({
-                                                            'highlight-tag': this.handleTagHighLightText(tag)
-                                                        });
-                                                        return (<Tag key={index} className={cls}>{tag}</Tag>);
-                                                    })}
+                                                    {_.map(labels, (tag, index) => (
+                                                        <Tag key={index}><span dangerouslySetInnerHTML={{__html: this.handleTagHighLightText(tag)}}/></Tag>
+                                                    ))}
                                                 </div>
                                             ) : null}
                                         </div>
