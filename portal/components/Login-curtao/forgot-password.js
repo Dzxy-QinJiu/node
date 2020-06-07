@@ -30,6 +30,8 @@ let getCaptchaCodeAJax = null;
 let lastValidPhone = '';
 //验证码的有效时间：60s
 const CODE_EFFECTIVE_TIME = 60;
+// 重置密码成功后，10s后自动跳转到登录页
+const GOTO_LOGIN_TIME = 10;
 const CODE_INTERVAL_TIME = 1000;
 class ForgotPassword extends React.Component {
     state = {
@@ -56,6 +58,7 @@ class ForgotPassword extends React.Component {
         isGettingOperateCode: false,//正在获取操作码
         isValidatingSMSCode: false,//正在验证短信验证码
         isResetingPwd: false,//正在重置密码
+        gotToLoginTime: 0,//重置密码成功后，自动跳转登录页的倒计时
     };
 
     componentDidMount() {
@@ -83,7 +86,7 @@ class ForgotPassword extends React.Component {
             clearInterval(this.codeEffectiveInterval);
         }
     }
-
+    //隔60s后才能再发送短信验证码的倒计时
     setCodeEffectiveInterval() {
         this.clearCodeEffectiveInterval();
         //设置验证码有效时间为一分钟
@@ -98,7 +101,30 @@ class ForgotPassword extends React.Component {
             }
         }, CODE_INTERVAL_TIME);
     }
-
+    //重置密码成功，10s跳转到登录页的倒计时
+    goToLoginInterval = null;
+    clearGoToLoginInterval(){
+        if (this.goToLoginInterval) {
+            clearInterval(this.goToLoginInterval);
+        }
+    }
+    // 重置密码成功，10s倒计时后自动跳动到登录页
+    setGoToLoginTimeInterval() {
+        this.clearGoToLoginInterval();
+        //自动跳转到登录页的10s倒计时
+        let gotToLoginTime = GOTO_LOGIN_TIME;
+        this.goToLoginInterval = setInterval(() => {
+            if (gotToLoginTime) {
+                gotToLoginTime -= 1;
+                this.setState({ gotToLoginTime });
+                if (gotToLoginTime === 0) {
+                    this.clearGoToLoginInterval();
+                    // 跳转到登录页
+                    this.returnLoginPage();
+                }
+            }
+        }, CODE_INTERVAL_TIME);
+    }
     //获取图片验证码，isVerifyError：验证短信验证码出错三次后获取图片验证码
     getLoginCaptcha = (phone, isVerifyError) => {
         if (!phone) {
@@ -327,8 +353,11 @@ class ForgotPassword extends React.Component {
                         this.setState({
                             successMsg: Intl.get('login.reset_password_success', '重置密码成功'),
                             errorMsg: '',
-                            isResettingPwd: false
+                            isResettingPwd: false,
+                            gotToLoginTime: GOTO_LOGIN_TIME//10s后自动跳转到登录页的倒计时
                         });
+                        //设置10s后自动跳转到登录页的倒计时
+                        this.setGoToLoginTimeInterval();
                     } else {
                         this.setState({
                             errorMsg: Intl.get('login.reset_password_failure', '重置密码失败'),
@@ -621,6 +650,7 @@ class ForgotPassword extends React.Component {
                         {this.state.successMsg ? (
                             <React.Fragment>
                                 <span className='success-msg'>{this.state.successMsg}，</span>
+                                <span>{Intl.get('seconds.after.tip', '{logoutTime}秒后', {logoutTime: this.state.gotToLoginTime})}</span>
                                 <a className='find-password-retry-login' data-tracename="重新登录" onClick={this.returnLoginPage}>
                                     {Intl.get('retry.login.again', '重新登录')}
                                 </a>
