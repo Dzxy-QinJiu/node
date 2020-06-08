@@ -11,6 +11,7 @@ var zh_CN = {
     'weixin.mini.program': '小程序',
     'customer.service': '客服',
     'login.apply.trial': '申请试用',
+    'version.trail.enterprise': '试用企业版',
     //菜单
     'menu.crm': '客户管理',
     'menu.call': '通话记录',

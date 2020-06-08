@@ -457,5 +457,61 @@
     left: 0;
     padding-bottom: 48px;
     background-color: transparent;
+    .extract-clue-panel{
+      //topNav样式
+      .extract-clue-top-nav-wrap.date-picker-wrap{
+        padding-bottom: 15px;
+        .search-container{
+          padding: 0 24px;
+        }
+      }
+      .extract-clue-content-container{
+        margin-top: 0;
+        //筛选面板
+        .filter-container{
+          &.filter-close{
+            left: -120%;
+          }
+          &.mobile-filter-container{
+            width: 100%;
+            z-index: 15;
+          }
+        }
+        .content-container{
+          margin-left: 0!important;
+          .clue-status-wrap{
+            max-width: calc(100% - 62px);
+            overflow: scroll;
+            margin-left: 0;
+            left: 65px;
+            .clue-status-container{
+              white-space: nowrap;
+            }
+          }
+          //table样式
+          .clue-customer-list{
+            .antc-table thead label.ant-checkbox-wrapper,
+            .antc-table tbody label.ant-checkbox-wrapper{
+              padding-left: 15px;
+            }
+            .antc-table tbody{
+              tr{
+                >td{
+                  &:first-child{
+                    margin-right: 15px;
+                  }
+                }
+              }
+            }
+            .clue-top-title{
+              padding: 5px 0!important;
+            }
+            .invalid-td-clue{
+              padding-right: 15px;
+            }
+          }
+        }
+      }
+    }
   }
 }

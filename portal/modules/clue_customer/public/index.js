@@ -1984,7 +1984,12 @@ class ClueCustomer extends React.Component {
                                             </span> : null}
                                         {hasApplyTry ?
                                             <span className='clue-label intent-tag-style'>
-                                                {Intl.get('login.apply.trial','申请试用')}
+                                                {isWebMin ? (
+                                                    <React.Fragment>
+                                                        <span className="clue-trail-name">{Intl.get('home.page.apply.type','申请')}</span>
+                                                        <span>{Intl.get('version.trail.enterprise', '试用企业版')}</span>
+                                                    </React.Fragment>
+                                                ) : Intl.get('login.apply.trial','申请试用')}
                                             </span> : null}
                                     </div>
                                 }
@@ -3695,6 +3700,7 @@ class ClueCustomer extends React.Component {
     };
 
     render() {
+        let {isWebMin} = isResponsiveDisplay();
         var isFirstLoading = this.isFirstLoading();
         var cls = classNames('right-panel-modal',
             {'show-modal': this.state.clueAddFormShow
@@ -3703,8 +3709,10 @@ class ClueCustomer extends React.Component {
             'content-full': !this.state.showFilterList
         });
         var hasSelectedClue = this.hasSelectedClues();
+        let filterHidden = !this.state.showFilterList || isFirstLoading;
         var filterCls = classNames('filter-container',{
-            'filter-close': !this.state.showFilterList || isFirstLoading
+            'filter-close': filterHidden,
+            'mobile-filter-container': isWebMin && !filterHidden
         });
         const animateStyle = {
             transform: `translate(${this.state.x}px, ${this.state.y}px)`,
@@ -3712,7 +3720,7 @@ class ClueCustomer extends React.Component {
         };
         //普通销售或者个人注册线索用
         var isCommonSale = isCommonSalesOrPersonnalVersion();//是否是普通销售
-        let {isWebMin} = isResponsiveDisplay();
+
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索列表">
@@ -3757,7 +3765,7 @@ class ClueCustomer extends React.Component {
                                 clueClassifyArray={this.state.clueClassifyArray}
                                 salesManList={this.getSalesDataList()}
                                 getClueList={this.saveFilterCondition}
-                                style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight(this.props.adaptiveHeight) + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
+                                style={{width: isWebMin ? '100%' : LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight(this.props.adaptiveHeight, isWebMin ? false : true) + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
                                 showSelectTip={_.get(this.state.selectedClues, 'length')}
                                 toggleList={this.toggleList.bind(this)}
                             />

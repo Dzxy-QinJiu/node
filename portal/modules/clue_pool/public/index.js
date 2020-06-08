@@ -753,6 +753,7 @@ class ClueExtract extends React.Component {
 
     // table 列
     getClueTableColunms = () => {
+        const { isWebMin } = isResponsiveDisplay();
         //最后联系时间数据
         let timeData = this.state.cluePoolList;
         //待跟进线索无跟进内容
@@ -897,6 +898,7 @@ class ClueExtract extends React.Component {
         }
         if (freedCluePrivilege()) {
             columns = _.concat(columns, {
+                dataIndex: 'operator',
                 className: 'invalid-td-clue',
                 width: TABLE_WIDTH.EXTRACT,
                 render: (text, record, index) => {
@@ -912,6 +914,18 @@ class ClueExtract extends React.Component {
                     );
                 }
             });
+        }
+        //如果是手机端
+        if(isWebMin) {//只显示线索名一列
+            columns = _.chain(columns)
+                .filter(column => _.includes(['clue_name', 'operator'], column.dataIndex))
+                .map(column => {
+                    /*if(column.dataIndex === 'clue_name') {
+                        delete column.width;
+                    }*/
+                    delete column.width;
+                    return column;
+                }).value();
         }
         return columns;
     };
@@ -934,6 +948,11 @@ class ClueExtract extends React.Component {
             return record.id;
         }
 
+        let height = getTableContainerHeight(this.props.adaptiveHeight, false);
+        if(!isResponsiveDisplay().isWebMin) {
+            height -= LAYOUT_CONSTANTS.TH_MORE_HEIGHT;
+        }
+
         return (
             <AntcTable
                 rowSelection={rowSelection}
@@ -943,7 +962,7 @@ class ClueExtract extends React.Component {
                 pagination={false}
                 columns={this.getClueTableColunms()}
                 rowClassName={this.handleRowClassName}
-                scroll={{y: getTableContainerHeight(this.props.adaptiveHeight, false) - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
+                scroll={{y: height}}
             />);
 
     };
@@ -1254,11 +1273,18 @@ class ClueExtract extends React.Component {
     };
 
     render = () => {
+        let {isWebMin} = isResponsiveDisplay();
         const contentClassName = classNames('content-container', {
             'content-full': !this.state.showFilterList,
             'clue-status-no-check': !this.hasClueSelectPrivilege()
         });
         const hasSelectedClue = this.hasSelectedClues();
+        let filterHidden = !this.state.showFilterList;
+        var filterCls = classNames('filter-container',{
+            'filter-close': filterHidden,
+            'mobile-filter-container': isWebMin && !filterHidden
+        });
+
         return (
             <div className="extract-clue-panel">
                 <div className='extract-clue-top-nav-wrap date-picker-wrap'>
@@ -1292,7 +1318,7 @@ class ClueExtract extends React.Component {
                     }
                 </div>
                 <div className='extract-clue-content-container'>
-                    <div className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
+                    <div className={filterCls}>
                         <ClueFilterPanel
                             ref={filterPanel => this.filterPanel = filterPanel}
                             clueLeadingArray={this.state.clueLeadingArray}
@@ -1303,7 +1329,7 @@ class ClueExtract extends React.Component {
                             salesManList={this.getSalesDataList()}
                             getClueList={this.getCluePoolList}
                             style={{
-                                width: LAYOUT_CONSTANTS.FILTER_WIDTH,
+                                width: isWebMin ? '100%' : LAYOUT_CONSTANTS.FILTER_WIDTH,
                                 height: getTableContainerHeight(this.props.adaptiveHeight, false) + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT
                             }}
                             showSelectTip={_.get(this.state.selectedClues, 'length')}

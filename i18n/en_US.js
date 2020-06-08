@@ -12,6 +12,7 @@ var en_US = {
     'weixin.mini.program': 'Mini program',
     'customer.service': 'Customer service',
     'login.apply.trial': '', // 申请试用
+    'version.trail.enterprise': 'Enterprise edition',//试用企业版
     //菜单
     'menu.crm': 'Customers',//客户管理
     'menu.call': 'Call Records',//通话记录
