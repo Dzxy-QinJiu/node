@@ -360,8 +360,13 @@ function createBackendClient() {
     client.on(crmOperatorChannel, crmOperatorListener);
 
     //监听 disconnect
-    client.on('disconnect', function() {
+    client.on('disconnect', function(reason) {
         pushLogger.info('断开后台连接');
+        pushLogger.info(reason);
+        if(reason === 'io server disconnect'){
+            //重新创建连接
+            createBackendClient();
+        }
     });
     //监听重连失败
     client.on('reconnect_error', function() {
