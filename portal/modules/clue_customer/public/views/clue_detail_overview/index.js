@@ -1616,7 +1616,7 @@ class ClueDetailOverview extends React.Component {
             return <div className="contact-item-wrap clue-info-item">
                 <React.Fragment>
                     <React.Fragment>
-                        {contactItem.name ?
+                        {contactItem.name || isExpandContact ?
                             <div className={cls}>
                                 <span className="clue-info-label">{Intl.get('call.record.contacts', '联系人')}</span>
                                 <div className="clue-info-detail">
@@ -1637,7 +1637,7 @@ class ClueDetailOverview extends React.Component {
                                     />
                                 </div>
                             </div> : null}
-                        {contactItem.position ?
+                        {contactItem.position || isExpandContact ?
                             <div className="contact-item-content">
                                 <span className="clue-info-label">{Intl.get('member.position', '职务')}</span>
                                 <div className="clue-info-detail">
