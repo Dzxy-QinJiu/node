@@ -120,8 +120,6 @@ Batch.prototype.listener = function(data) {
                 pushLogger.info('批量推送socket不存在，socketId为' + JSON.stringify(socketObj));
             }
         });
-    }else{
-        pushLogger.info('批量推送clients不存在' + JSON.stringify(this.socketStore));
     }
 };
 
