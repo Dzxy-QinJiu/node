@@ -100,8 +100,6 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
                     pushLogger.info('消息推送，没有socket，ioServer' + JSON.stringify(ioServer));
                 }
             });
-        }else{
-            pushLogger.info('消息推送，没有socketArray' + JSON.stringify(socketStore));
         }
     }
 }
