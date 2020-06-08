@@ -890,7 +890,7 @@ function wechatLoginSuccess(req, res) {
                     if (req.xhr) {
                         //session失效时，登录成功后的处理
                         //登录成功后的处理
-                        res.status(200).json({...userData,x: req.sessionID});
+                        res.status(200).json({...userData});
                     } else {
                         //登录界面，登录成功后的处理
                         res.redirect('/');
