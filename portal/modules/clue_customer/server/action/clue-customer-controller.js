@@ -567,9 +567,19 @@ exports.getApplyTryData = function(req, res) {
         });
 };
 
-//获取申请试用数据
+//获取联想列表数据
 exports.getCompanyListByName = function(req, res) {
     clueCustomerService.getCompanyListByName(req, res)
+        .on('success',function(data) {
+            res.status(200).json(data);
+        }).on('error',function(err) {
+            res.status(500).json(err.message);
+        });
+};
+
+//获取该线索是否被提取
+exports.getRecommendCluePicked = function(req, res) {
+    clueCustomerService.getRecommendCluePicked(req, res)
         .on('success',function(data) {
             res.status(200).json(data);
         }).on('error',function(err) {
