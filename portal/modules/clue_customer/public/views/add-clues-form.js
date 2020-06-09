@@ -26,7 +26,7 @@ import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 require('../css/add-clues-info.less');
 import DynamicAddDelContact from 'CMP_DIR/dynamic-add-del-contacts';
 import Trace from 'LIB_DIR/trace';
-import {renderClueNameMsg, isSalesRole, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {renderClueNameMsg, isSalesRole, checkVersionAndType, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 import userData from 'PUB_DIR/sources/user-data';
 const DIFCONTACTWAY = {
@@ -649,8 +649,8 @@ class ClueAddForm extends React.Component {
                                 )}
                             </FormItem>
                             <AntcAreaSelection
-                                labelCol="5"
-                                wrapperCol="19"
+                                labelCol={isResponsiveDisplay().isWebMin ? '24' : '5'}
+                                wrapperCol={isResponsiveDisplay().isWebMin ? '24' : '19'}
                                 width="100%"
                                 colon={false}
                                 label={Intl.get('crm.96', '地域')}

@@ -130,3 +130,34 @@
 .file-tip{
   margin-top:10px;
 }
+
+//移动端样式
+.import-step-container{
+  &.mobile-import-step-container{
+    z-index: 111;
+    .import-clue-template-panel.right-pannel-default{
+      .clue-import-detail-wrap{
+        width: 100%!important;
+        .clue-top-title{
+          padding-left: 56px;
+        }
+        .import-detail-container{
+          margin: 0;
+          //第一步
+          .first-step-content{
+            padding: 0;
+            padding-top: 100px;
+          }
+          //第二步
+          .second-step-content{
+            .import-warning{
+              .ant-alert.ant-alert-warning{
+                white-space: normal;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

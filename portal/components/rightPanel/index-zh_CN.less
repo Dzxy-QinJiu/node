@@ -14,7 +14,7 @@
   cursor: pointer;
 }
 
-.col-xs-10 {
+.main-content-wrap {
   /*右侧面板样式 start*/
   .right-pannel-default {
     position: fixed;
@@ -27,6 +27,20 @@
     background-color: #e6edef;
     transform: translateX(@right-pannel-width);
     transition: transform @right-pannel-animationTime;
+    //移动端样式
+    &.mobile-right-panel-default.right-pannel-show{
+      width: 100%!important;
+      .iconfont.icon-close{
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        color: @icon-close-background-color!important;;
+        background-color: transparent!important;
+        font-size: 16px!important;
+        font-weight: bold;
+        z-index: 111;
+      }
+    }
     //新版详情中的编辑按钮
     .icon-edit-btn {
       float: right;

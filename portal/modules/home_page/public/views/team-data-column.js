@@ -34,6 +34,7 @@ import { checkPrivilege } from 'MOD_DIR/crm/public/utils/crm-util';
 import Trace from 'LIB_DIR/trace';
 import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 const performance = {
     image_1: require('../images/performance_1.png'),
     image_2: require('../images/performance_2.png'),
@@ -834,7 +835,7 @@ class TeamDataColumn extends React.Component {
 
     renderTeamDataContent() {
         return (
-            <div className='my-data-content' style={{height: getColumnHeight()}} data-tracename="我的数据">
+            <div className='my-data-content' style={{height: getColumnHeight(this.props.adaptiveHeight)}} data-tracename="我的数据">
                 <GeminiScrollbar>
                     {this.enableGetPerforManceDate() ? this.renderPerformanceData() : null}
                     {this.hasCallAnalysisPrivilege() ? this.renderCallTime() : null}
@@ -870,4 +871,4 @@ class TeamDataColumn extends React.Component {
 TeamDataColumn.propTypes = {
     isEefungCustomerManager: PropTypes.bool
 };
-export default eefungCustomerManagerHoc(TeamDataColumn);
+export default adaptiveHeightHoc(eefungCustomerManagerHoc(TeamDataColumn));

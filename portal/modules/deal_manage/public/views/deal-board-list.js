@@ -7,19 +7,20 @@ import {message, Spin, Icon} from 'antd';
 import {DragDropContext} from 'react-beautiful-dnd';
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 import dealBoardAction from '../action/deal-board-action';
 import dealBoardStore from '../store/deal-board-store';
 import DealStageBoard from './deal-stage-board';
 import dealAjax from '../ajax';
 let DealBoardContainerEl = null;
 let DealBoardScrollLeft = 0;
-
+const TOP_NAV_HEIGHT = 64,//头部导航区高度
+    BOTTOM_MARGIN = 5;//看板视图的下边距
 class DealBoardList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            ...dealBoardStore.getState(),
-            containerHeight: props.containerHeight
+            ...dealBoardStore.getState()
         };
     }
 
@@ -27,12 +28,6 @@ class DealBoardList extends React.Component {
         dealBoardStore.listen(this.onStoreChange);
         this.getDealBoardData();
         DealBoardContainerEl = $('.deal-board-view-container');
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.state.containerHeight !== nextProps.containerHeight) {
-            this.setState({containerHeight: nextProps.containerHeight});
-        }
     }
 
     componentWillUnmount() {
@@ -160,7 +155,12 @@ class DealBoardList extends React.Component {
         if(DealBoardContainerEl) DealBoardContainerEl.scrollLeft(DealBoardScrollLeft || 0);
     };
 
-    render() {
+    getBoardContainerHeight() {
+        //body高度-头部操作区的高度-底部margin
+        return this.props.adaptiveHeight - TOP_NAV_HEIGHT - BOTTOM_MARGIN;
+    }
+
+    renderBoardView() {
         if (this.state.isLoadingStage) {
             return (<Spinner />);
         } else if (_.get(this.state, 'stageList[0]')) {
@@ -176,7 +176,7 @@ class DealBoardList extends React.Component {
                                     showDetailPanel={this.props.showDetailPanel}
                                     showCustomerDetail={this.props.showCustomerDetail}
                                     searchObj={this.props.searchObj}
-                                    containerHeight={this.state.containerHeight}/>);
+                                    containerHeight={this.getBoardContainerHeight()}/>);
                             })}
                         </DragDropContext>
                     </div>
@@ -194,17 +194,27 @@ class DealBoardList extends React.Component {
                 <NoDataIntro noDataTip={noDataTip}/>);
         }
     }
+    render(){
+        return (
+            <div className="deal-board-view-container"
+                style={{
+                    height: this.getBoardContainerHeight(),
+                    width: '100%'
+                }}>
+                {this.renderBoardView()}
+            </div>);
+    }
 }
 
 DealBoardList.propTypes = {
     currDeal: PropTypes.object,
     stageList: PropTypes.array,
-    containerHeight: PropTypes.number,
     searchObj: PropTypes.object,
     showDetailPanel: PropTypes.func,
     showCustomerDetail: PropTypes.func,
     dragChangeStage: PropTypes.func,
     dragChangeStageMsg: PropTypes.func,
+    adaptiveHeight: PropTypes.number
 };
 
-export default DealBoardList;
+export default adaptiveHeightHoc(DealBoardList);

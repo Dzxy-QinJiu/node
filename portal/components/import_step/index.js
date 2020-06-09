@@ -14,6 +14,7 @@ const Step = Steps.Step;
 import {AntcTable} from 'antc';
 import Spinner from 'CMP_DIR/spinner';
 import Trace from 'LIB_DIR/trace';
+import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 const SET_TIME_OUT = {
     TRANSITION_TIME: 600,//右侧面板动画隐藏的时间
     LOADING_TIME: 1500//避免在第三步时关闭太快，加上延时展示loading效果
@@ -88,6 +89,8 @@ class ImportTemplate extends React.Component {
         this.setState({
             isLoading: false,
             current: 1
+        },() => {
+            this.changeTableHeight();
         });
     };
     renderFirstStepContent = () => {
@@ -115,6 +118,8 @@ class ImportTemplate extends React.Component {
         this.setState({
             current: 2,
             isImporting: true
+        },() => {
+            this.changeTableHeight();
         });
         this.props.doImportAjax(() => {
             setTimeout(() => {
@@ -142,6 +147,12 @@ class ImportTemplate extends React.Component {
         );
     };
     calculateTableHeight = () => {
+        if(isResponsiveDisplay().isWebMin) {
+            let tableEl = $('.deal-table-container');
+            if(tableEl.length) {
+                return $(window).height() - tableEl.offset().top - LAYOUT.TABLE_TOP - LAYOUT.BOTTOM_DISTANCE;
+            }
+        }
         return $(window).height() - LAYOUT.TOP_DISTANCE - LAYOUT.BOTTOM_DISTANCE;
     }
     changeTableHeight = () => {
@@ -150,6 +161,15 @@ class ImportTemplate extends React.Component {
     };
     renderSecondStepContent = () => {
         const repeatCustomer = _.find(this.state.previewList, item => (item.repeat));
+        let columns = this.props.getItemPrevList();
+        if(isResponsiveDisplay().isWebMin) {
+            columns = _.map(columns, column => {
+                if(_.isEmpty(column.width)) {
+                    column.width = 200;
+                }
+                return column;
+            });
+        }
         return (
             <div className="second-step-content">
                 {repeatCustomer ? <div
@@ -159,7 +179,7 @@ class ImportTemplate extends React.Component {
                 <div className="deal-table-container" style={{height: this.state.tableHeight + LAYOUT.TABLE_TOP}}>
                     <AntcTable
                         dataSource={this.state.previewList}
-                        columns={this.props.getItemPrevList()}
+                        columns={columns}
                         rowKey={this.getRowKey}
                         pagination={false}
                         scroll={{y: this.state.tableHeight}}
@@ -193,7 +213,8 @@ class ImportTemplate extends React.Component {
             width = $(window).width() - LAYOUT.LARGEWIDTH;
         }
         var cls = className('import-step-container',{
-            'show-modal': this.props.showFlag
+            'show-modal': this.props.showFlag,
+            'mobile-import-step-container': isResponsiveDisplay().isWebMin
         });
         return (
             <div className={cls}>

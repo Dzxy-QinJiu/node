@@ -20,10 +20,11 @@ let PrivilegeChecker = Privilege.PrivilegeChecker;
 import Trace from 'LIB_DIR/trace';
 import ShearContent from '../../../../components/shear-content';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import {isCurtao,checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCurtao,checkVersionAndType, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 import BackMainPage from 'CMP_DIR/btn-back';
 import {CRM_VIEW_TYPES, checkPrivilege} from '../utils/crm-util';
 import crmPrivilegeConst from '../privilege-const';
+import {LAYOUT} from 'LIB_DIR/consts';
 
 let CONSTANTS = {
     PADDING_TOP: 84,
@@ -84,7 +85,11 @@ class CustomerRepeat extends React.Component {
     }
 
     getCrmListHeight = () => {
-        return $(window).height() - CONSTANTS.PADDING_TOP - CONSTANTS.TABLE_HEAD_HEIGHT - CONSTANTS.TOTAL_HEIGHT - CONSTANTS.PADDING_BOTTOM;
+        let crmListHeight = $(window).height() - CONSTANTS.PADDING_TOP - CONSTANTS.TABLE_HEAD_HEIGHT - CONSTANTS.TOTAL_HEIGHT - CONSTANTS.PADDING_BOTTOM;
+        if(isResponsiveDisplay().isWebSmall){
+            crmListHeight -= LAYOUT.BOTTOM_NAV;
+        }
+        return crmListHeight;
     };
 
     //删除选中的重复的客户
