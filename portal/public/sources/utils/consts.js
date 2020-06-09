@@ -800,9 +800,11 @@ export const TRACE_UNIT = {
 export const CLUE_MESSAGE_TYPE = {
     ADD_CUSTOMER_CLUE: 'addCustomerClue',//添加线索
     BASE_EXTRACT_ALLOT: 'base_extract_allot',//推荐线索提取的类型
-    POOL_EXTRACT_ALLOT: 'pool_extract_allot'//线索池提取的线索类型
+    POOL_EXTRACT_ALLOT: 'pool_extract_allot',//线索池提取的线索类型
+    MANUL_NEW_DISTRIBUTION: 'manual_new_distribution',//手动分配线索
+
 };
-export const CLUE_HIDE_NOTICE_TYPE = [CLUE_MESSAGE_TYPE.ADD_CUSTOMER_CLUE, CLUE_MESSAGE_TYPE.BASE_EXTRACT_ALLOT, CLUE_MESSAGE_TYPE.POOL_EXTRACT_ALLOT];
+export const CLUE_HIDE_NOTICE_TYPE = [CLUE_MESSAGE_TYPE.ADD_CUSTOMER_CLUE, CLUE_MESSAGE_TYPE.BASE_EXTRACT_ALLOT, CLUE_MESSAGE_TYPE.POOL_EXTRACT_ALLOT,CLUE_MESSAGE_TYPE.MANUL_NEW_DISTRIBUTION];
 
 export const RECOMMEND_CLUE_FILTERS = [{
     key: 'keyword',
