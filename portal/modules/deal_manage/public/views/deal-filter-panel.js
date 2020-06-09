@@ -3,24 +3,14 @@
  */
 import { FilterList } from 'CMP_DIR/filter';
 import { selectType } from 'PUB_DIR/sources/utils/consts';
+import DealFilterActions from '../action/deal-filter-actions';
 
 class DealFilterPanel extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-        };
     }
 
-
-    componentDidMount = () => {
-
-    };
-    componentWillReceiveProps = (nextProps) => {
-    };
-
-
     handleFilterChange = (data) => {
-
         data.forEach(item => {
             if (item.groupId) {
                 // 需要处理自定义字段的数据结构
@@ -30,18 +20,15 @@ class DealFilterPanel extends React.Component {
                 let customFieldName = _.map(customizedVariables, 'name');
                 if (_.includes(customFieldName, item.groupId)) {
                     custom_variables[item.groupId] = item.data.map(x => x.value);
+                    DealFilterActions.setFilterCustomField(custom_variables);
                 }
             }
         });
 
-        setTimeout(() => {
-            this.props.getClueList();
-        });
+        setTimeout( () => {
+            this.props.getFilterDealData();
+        } );
     };
-
-
-
-
 
     render(){
         const advancedData = [];
@@ -86,7 +73,7 @@ class DealFilterPanel extends React.Component {
     }
 }
 DealFilterPanel.defaultProps = {
-    getClueList: function() {
+    getFilterDealData: function() {
 
     },
     style: {},
@@ -96,7 +83,7 @@ DealFilterPanel.defaultProps = {
     }
 };
 DealFilterPanel.propTypes = {
-    getClueList: PropTypes.func,
+    getFilterDealData: PropTypes.func,
     style: PropTypes.object,
     showSelectTip: PropTypes.bool,
     toggleList: PropTypes.func,
