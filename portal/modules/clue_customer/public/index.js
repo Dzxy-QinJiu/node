@@ -505,7 +505,7 @@ class ClueCustomer extends React.Component {
         if(!_.isEmpty(data) && _.isObject(data)) {
             //该线索是自己提取的或者是我添加的
             if(isExtractOrAddByMe){
-                if(_.get(data,'type') !== CLUE_MESSAGE_TYPE.ADD_CUSTOMER_CLUE){//如果是我自己添加的，不需要再添加了，因为在添加线索完成后，会有添加线索，不能在推送这里添加因为管理员也可以添加线索但是没有推送
+                if(!_.includes([CLUE_MESSAGE_TYPE.ADD_CUSTOMER_CLUE,CLUE_MESSAGE_TYPE.MANUL_NEW_DISTRIBUTION],_.get(data,'type'))){//如果是我自己添加的，不需要再添加了，因为在添加线索完成后，会有添加线索，不能在推送这里添加因为管理员也可以添加线索但是没有推送
                     let clue_list = _.get(data, 'clue_list', []);
                     clueCustomerAction.afterNewExtract(clue_list);
                     clueFilterAction.setFilterType(SELECT_TYPE.WILL_TRACE);
