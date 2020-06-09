@@ -38,7 +38,8 @@ import {
     isCommonSalesOrPersonnalVersion,
     SetLocalSalesClickCount,
     EXTRACT_CLUE_CONST_MAP,
-    getShowPhoneNumber
+    getShowPhoneNumber,
+    AREA_ALL
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {
     checkCurrentVersionType,
@@ -278,6 +279,8 @@ class RecommendCluesList extends React.Component {
 
     getSearchCondition = (condition) => {
         var conditionObj = _.cloneDeep(condition || _.get(this, 'state.settedCustomerRecommend.obj'));
+        //如果选择了全部，需要去掉province
+        if(conditionObj.province === AREA_ALL) { delete conditionObj.province; }
         conditionObj.load_size = this.state.pageSize;
         return conditionObj;
     };
