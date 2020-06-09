@@ -166,19 +166,16 @@ class PhoneCallout extends React.Component {
             });
             let title = this.props.phoneStatus ? Intl.get('lead.single.has.checked.phone', '重新检测') : Intl.get('lead.check.phone.status', '检测空号');
             if(!isSupportCheck) {
-                title = '';
-            }
-            let content = <i className={iconCls} title={title}/>;
-            if(!isSupportCheck) {
                 return (
                     <Popover
                         placement="right"
                         content={Intl.get('lead.is.not.support.checked.phone', '暂不支持14、16、17、19号段及固话')}
                     >
-                        {content}
+                        <i className={iconCls}/>
                     </Popover>
                 );
             }
+            let content = <i className={iconCls} title={title}/>;
             if(this.isShowCheckPhonePopover()) {
                 let contentTip = getContactSalesPopoverTip();
                 return (
