@@ -2047,6 +2047,8 @@ var zh_CN = {
     'crm.search.customer.no.customer.pool.dash': '客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看',
     'crm.batch.second.user': '变更联合跟进人',
     'crm.has.contain.join.user': '是否有联合跟进人',
+    'crm.user.has.no.apply.approve': '有针对用户{userApp}的延期申请尚未审批，暂不能添加新的延期申请',
+    'crm.userName.clientName': '{userName}的{clientName}',
     // 客户管理end
 
     // 客户分析start
