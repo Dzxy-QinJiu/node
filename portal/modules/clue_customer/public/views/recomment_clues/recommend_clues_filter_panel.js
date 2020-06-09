@@ -13,7 +13,7 @@ import {AntcAreaSelection, SearchInput, AntcSelect} from 'antc';
 const Option = AntcSelect.Option;
 import Trace from 'LIB_DIR/trace';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
-import { registerSize, staffSize, moneySize, companyProperty, companyStatus, EXTRACT_CLUE_CONST_MAP } from '../../utils/clue-customer-utils';
+import { registerSize, staffSize, moneySize, companyProperty, companyStatus, EXTRACT_CLUE_CONST_MAP, AREA_ALL } from '../../utils/clue-customer-utils';
 import {
     checkVersionAndType,
     getFormattedCondition,
@@ -324,6 +324,9 @@ class RecommendCluesFilterPanel extends Component {
 
         if (_.isEmpty(value)) {
             let params = _.clone(this.state.hasSavedRecommendParams);
+            if(traceTip === '全部') {
+                this.currentArea.province = AREA_ALL;
+            }
             _.extend(params, this.currentArea);
             this.getRecommendClueList(params);
         }
@@ -1037,7 +1040,7 @@ class RecommendCluesFilterPanel extends Component {
                                 colon={false}
                                 label={Intl.get('crm.96', '地域')}
                                 placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
-                                provName={hasSavedRecommendParams.province}
+                                provName={hasSavedRecommendParams.province === AREA_ALL ? '' : hasSavedRecommendParams.province}
                                 cityName={hasSavedRecommendParams.city}
                                 countyName={hasSavedRecommendParams.district}
                                 updateLocation={this.updateLocation}
