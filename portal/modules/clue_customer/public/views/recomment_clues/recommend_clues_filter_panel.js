@@ -315,6 +315,7 @@ class RecommendCluesFilterPanel extends Component {
 
     //根据关键词获取推荐信息
     getCompanyListByName = (value) => {
+        this.currentListItem = {};
         getCompanyListByName({
             name: value
         }).then((result) => {
