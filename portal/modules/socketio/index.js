@@ -333,7 +333,9 @@ function createBackendClient() {
     let pushServerUrl = global.config.pushServerAddress;
     pushLogger.info('与后台建立连接的服务地址：' + pushServerUrl);
     //创建socket.io的客户端
-    client = ioClient.connect(pushServerUrl, {forceNew: true});
+    client = ioClient(pushServerUrl, { 
+        transports: ['websocket']
+    });
     //监听 connect
     client.on('connect', function() {
         pushLogger.info('已与后台建立连接');
@@ -358,7 +360,9 @@ function createBackendClient() {
     client.on(applyApproveChannel, applyApproveNumListener);
     //创建客户操作提醒的通道
     client.on(crmOperatorChannel, crmOperatorListener);
-
+    client.on('pong', function(latency) {
+        pushLogger.info('pong=======' + latency);
+    });
     //监听 disconnect
     client.on('disconnect', function(reason) {
         pushLogger.info('断开后台连接');
