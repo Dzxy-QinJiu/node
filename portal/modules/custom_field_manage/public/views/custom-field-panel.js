@@ -86,26 +86,25 @@ class CustomFieldPanel extends React.Component {
                     customized_variables.select_values = _.get(formItem, 'select_arr');
                 }
 
+                const id = _.get(this.state.customFieldData, '[0]id');
+
                 // 第一次添加
                 if (_.isEmpty(this.state.customFieldData)) {
                     customized_variables.show_index = 1;
                     submitObj.customized_variables = [customized_variables];
                 } else {
-                    submitObj.id = _.get(this.state.customFieldData, '[0]id');
                     let customizedVariables = _.get(this.state.customFieldData, '[0]customized_variables');
-                    if (_.isEmpty(this.state.editCustomField)) { // 说明是添加
+                    if (_.isEmpty(this.state.editCustomField)) { // 说明是添加（在原来的基础上添加一条）
                         customized_variables.show_index = _.get(customizedVariables, 'length') + 1;
-                        customizedVariables.push(customized_variables);
-                        submitObj.customized_variables = customizedVariables;
                     } else { // 编辑字段
                         const showIndex = _.get(this.state.editCustomField, 'show_index');
+                        const key = _.get(this.state.editCustomField, 'key');
                         customized_variables.show_index = showIndex;
-                        customizedVariables.splice(showIndex - 1,1,customized_variables);
-                        submitObj.customized_variables = customizedVariables;
+                        customized_variables.key = key;
                     }
 
                 }
-                if (_.isEmpty(this.state.editCustomField)) {
+                if (_.isEmpty(this.state.customFieldData)) {
                     ajax.addCustomFieldConfig(submitObj).then( (result) => {
                         if (_.get(result, 'id')) {
                             this.props.updateCustomFieldData([result]);
@@ -118,17 +117,31 @@ class CustomFieldPanel extends React.Component {
                         message.error(errMsg || Intl.get('crm.154', '添加失败'));
                     } );
                 } else {
-                    ajax.updateCustomFieldConfig(submitObj).then( (result) => {
-                        if (result) {
-                            this.props.updateCustomFieldData([submitObj]);
-                            this.handleCancel();
-                            message.success(Intl.get('crm.218', '修改成功！'));
-                        } else {
-                            message.error(Intl.get('crm.219', '修改失败！'));
-                        }
-                    }, (errMsg) => {
-                        message.error(errMsg || Intl.get('crm.219', '修改失败！'));
-                    } );
+                    if (_.isEmpty(this.state.editCustomField)) {
+                        ajax.addItemCustomField(customized_variables, id).then( (result) => {
+                            if (_.get(result, 'key')) {
+                                this.props.updateCustomFieldData(result, 'add');
+                                this.handleCancel();
+                                message.success(Intl.get('user.user.add.success', '添加成功'));
+                            } else {
+                                message.error(Intl.get('crm.154', '添加失败'));
+                            }
+                        }, (errMsg) => {
+                            message.error(errMsg || Intl.get('crm.154', '添加失败'));
+                        } );
+                    } else {
+                        ajax.updateItemCustomField(customized_variables, id).then( (result) => {
+                            if (_.get(result, 'key')) {
+                                this.props.updateCustomFieldData(result, 'update');
+                                this.handleCancel();
+                                message.success(Intl.get('crm.218', '修改成功！'));
+                            } else {
+                                message.error(Intl.get('crm.219', '修改失败！'));
+                            }
+                        }, (errMsg) => {
+                            message.error(errMsg || Intl.get('crm.219', '修改失败！'));
+                        } );
+                    }
                 }
             }
         });
