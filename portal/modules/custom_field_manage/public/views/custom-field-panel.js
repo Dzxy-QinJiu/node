@@ -60,6 +60,48 @@ class CustomFieldPanel extends React.Component {
         }
     }
 
+    firstAddCustomField = (submitObj) => {
+        ajax.addCustomFieldConfig(submitObj).then( (result) => {
+            if (_.get(result, 'id')) {
+                this.props.updateCustomFieldData([result]);
+                this.handleCancel();
+                message.success(Intl.get('user.user.add.success', '添加成功'));
+            } else {
+                message.error(Intl.get('crm.154', '添加失败'));
+            }
+        }, (errMsg) => {
+            message.error(errMsg || Intl.get('crm.154', '添加失败'));
+        } );
+    };
+
+    continueAddCustomField = (customizedVariables, id ) => {
+        ajax.addItemCustomField(customizedVariables, id).then( (result) => {
+            if (_.get(result, 'key')) {
+                this.props.updateCustomFieldData(result, 'add');
+                this.handleCancel();
+                message.success(Intl.get('user.user.add.success', '添加成功'));
+            } else {
+                message.error(Intl.get('crm.154', '添加失败'));
+            }
+        }, (errMsg) => {
+            message.error(errMsg || Intl.get('crm.154', '添加失败'));
+        } );
+    };
+
+    updateCustomField = (customizedVariables, id) => {
+        ajax.updateItemCustomField(customizedVariables, id).then( (result) => {
+            if (_.get(result, 'key')) {
+                this.props.updateCustomFieldData(result, 'update');
+                this.handleCancel();
+                message.success(Intl.get('crm.218', '修改成功！'));
+            } else {
+                message.error(Intl.get('crm.219', '修改失败！'));
+            }
+        }, (errMsg) => {
+            message.error(errMsg || Intl.get('crm.219', '修改失败！'));
+        } );
+    }
+
     handleSubmit = (formItem) => {
         this.props.form.validateFields((err, values) => {
             if (err) {
@@ -102,45 +144,14 @@ class CustomFieldPanel extends React.Component {
                         customized_variables.show_index = showIndex;
                         customized_variables.key = key;
                     }
-
                 }
                 if (_.isEmpty(this.state.customFieldData)) {
-                    ajax.addCustomFieldConfig(submitObj).then( (result) => {
-                        if (_.get(result, 'id')) {
-                            this.props.updateCustomFieldData([result]);
-                            this.handleCancel();
-                            message.success(Intl.get('user.user.add.success', '添加成功'));
-                        } else {
-                            message.error(Intl.get('crm.154', '添加失败'));
-                        }
-                    }, (errMsg) => {
-                        message.error(errMsg || Intl.get('crm.154', '添加失败'));
-                    } );
+                    this.firstAddCustomField(submitObj);
                 } else {
                     if (_.isEmpty(this.state.editCustomField)) {
-                        ajax.addItemCustomField(customized_variables, id).then( (result) => {
-                            if (_.get(result, 'key')) {
-                                this.props.updateCustomFieldData(result, 'add');
-                                this.handleCancel();
-                                message.success(Intl.get('user.user.add.success', '添加成功'));
-                            } else {
-                                message.error(Intl.get('crm.154', '添加失败'));
-                            }
-                        }, (errMsg) => {
-                            message.error(errMsg || Intl.get('crm.154', '添加失败'));
-                        } );
+                        this.continueAddCustomField(customized_variables, id);
                     } else {
-                        ajax.updateItemCustomField(customized_variables, id).then( (result) => {
-                            if (_.get(result, 'key')) {
-                                this.props.updateCustomFieldData(result, 'update');
-                                this.handleCancel();
-                                message.success(Intl.get('crm.218', '修改成功！'));
-                            } else {
-                                message.error(Intl.get('crm.219', '修改失败！'));
-                            }
-                        }, (errMsg) => {
-                            message.error(errMsg || Intl.get('crm.219', '修改失败！'));
-                        } );
+                        this.updateCustomField(customized_variables, id);
                     }
                 }
             }
