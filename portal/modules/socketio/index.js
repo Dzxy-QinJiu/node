@@ -339,7 +339,7 @@ function createBackendClient() {
     });
     //监听 connect
     client.on('connect', function() {
-        pushLogger.info('已与后台建立连接' + client.id);
+        pushLogger.info(client.id + '==== 已与后台建立连接');
     });
     //创建接收消息的通道
     // client.on(notifyChannel, notifyChannelListener);
@@ -362,23 +362,23 @@ function createBackendClient() {
     //创建客户操作提醒的通道
     client.on(crmOperatorChannel, crmOperatorListener);
     client.on('pong', (timeout) => {
-        pushLogger.info(client.id + 'pong=======' + timeout);
+        pushLogger.info(client.id + '==== pong=======' + timeout);
     });
     client.on('ping', () => {
-        pushLogger.info('ping========' + client.id);
+        pushLogger.info(client.id + '==== ping');
     });
     client.on('connect_timeout', (timeout) => {
-        pushLogger.info(client.id + 'connect_timeout=======' + timeout);
+        pushLogger.info(client.id + '==== connect_timeout=======' + timeout);
     });
     client.on('error', (error) => {
-        pushLogger.info(client.id + 'error=======' + JSON.stringify(error));
+        pushLogger.info(client.id + '==== error=======' + JSON.stringify(error));
     });
     client.on('connect_error', (error) => {
-        pushLogger.info(client.id + 'connect_error=======' + JSON.stringify(error));
+        pushLogger.info(client.id + '==== connect_error=======' + JSON.stringify(error));
     });
     //监听 disconnect
     client.on('disconnect', function(reason) {
-        pushLogger.info('断开后台连接' + client.id);
+        pushLogger.info(client.id + '==== 断开后台连接');
         pushLogger.info(_.isString(reason) ? reason : JSON.stringify(reason));
         // the disconnection was initiated by the server, you need to reconnect manually
         if(reason === 'io server disconnect'){
@@ -389,7 +389,7 @@ function createBackendClient() {
     });
     //监听重连失败
     client.on('reconnect_error', function() {
-        pushLogger.info('重新建立连接失败' + client.id);
+        pushLogger.info(client.id + '==== 重新建立连接失败');
         //创建连接失败后，手动断开连接！
         client.disconnect();
         //重新创建连接
