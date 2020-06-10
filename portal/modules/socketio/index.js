@@ -87,6 +87,7 @@ function setSocketSessionid(ioServer) {
 
 //找到对应的socket，将接收到的数据推送到浏览器端
 function emitMsgBySocket(user_id, emitUrl, msgData) {
+    var startTime = new Date().getTime();
     if (user_id) {
         //找到消息接收者对应的socket，将数据推送到浏览器
         let socketArray = socketStore[user_id] || [];
@@ -99,6 +100,9 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
             });
         }
     }
+    let endTime = new Date().getTime();
+    let timeRange = endTime - startTime;
+    pushLogger.debug('处理后端推送数据的时间: startTime===' + startTime + ', endTime====' + endTime + ',timeRange====' + timeRange);
 }
 // /**
 //  * 消息监听器
@@ -335,7 +339,7 @@ function createBackendClient() {
     });
     //监听 connect
     client.on('connect', function() {
-        pushLogger.info('已与后台建立连接');
+        pushLogger.info('已与后台建立连接' + client.id);
     });
     //创建接收消息的通道
     // client.on(notifyChannel, notifyChannelListener);
@@ -357,18 +361,24 @@ function createBackendClient() {
     client.on(applyApproveChannel, applyApproveNumListener);
     //创建客户操作提醒的通道
     client.on(crmOperatorChannel, crmOperatorListener);
+    client.on('pong', (timeout) => {
+        pushLogger.info(client.id + 'pong=======' + timeout);
+    });
+    client.on('ping', () => {
+        pushLogger.info('ping========' + client.id);
+    });
     client.on('connect_timeout', (timeout) => {
-        pushLogger.info('connect_timeout=======' + timeout);
+        pushLogger.info(client.id + 'connect_timeout=======' + timeout);
     });
     client.on('error', (error) => {
-        pushLogger.info('error=======' + JSON.stringify(error));
+        pushLogger.info(client.id + 'error=======' + JSON.stringify(error));
     });
-    socket.on('connect_error', (error) => {
-        pushLogger.info('connect_error=======' + JSON.stringify(error));
+    client.on('connect_error', (error) => {
+        pushLogger.info(client.id + 'connect_error=======' + JSON.stringify(error));
     });
     //监听 disconnect
     client.on('disconnect', function(reason) {
-        pushLogger.info('断开后台连接');
+        pushLogger.info('断开后台连接' + client.id);
         pushLogger.info(_.isString(reason) ? reason : JSON.stringify(reason));
         // the disconnection was initiated by the server, you need to reconnect manually
         if(reason === 'io server disconnect'){
@@ -379,7 +389,7 @@ function createBackendClient() {
     });
     //监听重连失败
     client.on('reconnect_error', function() {
-        pushLogger.info('重新建立连接失败');
+        pushLogger.info('重新建立连接失败' + client.id);
         //创建连接失败后，手动断开连接！
         client.disconnect();
         //重新创建连接
