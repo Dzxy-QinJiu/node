@@ -181,7 +181,6 @@ function getTaskParamByTaskId(taskId) {
     var sessionStorageKey = TASK_PARAMS_PRE + taskId;
     var sessionItem = session.get(sessionStorageKey);
     if (!sessionItem) {
-        sendMessage && sendMessage('按照taskid获取任务参数' + sessionStorageKey);
         return null;
     }
     try {
