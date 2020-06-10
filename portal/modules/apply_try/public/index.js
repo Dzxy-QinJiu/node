@@ -26,7 +26,8 @@ class Index extends React.Component {
     }
 
     onUserScalesChange = (value) => {
-        if(!value) {
+        if(!value) {//值为空或者undefined时
+            //这里需要延时设置使用人数的值，不然会设置不上
             setTimeout(() => {
                 this.props.form.setFieldsValue({userScales: 1});
             });
