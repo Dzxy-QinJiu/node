@@ -95,9 +95,6 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
                 let socket = _.get(ioServer, `sockets.sockets[${socketObj.socketId}]`);
                 if (socket) {
                     socket.emit(emitUrl, msgData);
-                }else{
-                    pushLogger.info('消息推送，没有socket，socketObj' + JSON.stringify(socketObj));
-                    pushLogger.info('消息推送，没有socket，ioServer' + JSON.stringify(ioServer));
                 }
             });
         }
@@ -360,8 +357,14 @@ function createBackendClient() {
     client.on(applyApproveChannel, applyApproveNumListener);
     //创建客户操作提醒的通道
     client.on(crmOperatorChannel, crmOperatorListener);
-    client.on('pong', function(latency) {
-        pushLogger.info('pong=======' + latency);
+    client.on('connect_timeout', (timeout) => {
+        pushLogger.info('connect_timeout=======' + timeout);
+    });
+    client.on('error', (error) => {
+        pushLogger.info('error=======' + JSON.stringify(error));
+    });
+    socket.on('connect_error', (error) => {
+        pushLogger.info('connect_error=======' + JSON.stringify(error));
     });
     //监听 disconnect
     client.on('disconnect', function(reason) {
