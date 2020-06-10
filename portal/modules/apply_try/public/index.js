@@ -1,5 +1,5 @@
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import {Input,Button,Form,Radio} from 'antd';
+import {Input,Button,Form,Radio, InputNumber} from 'antd';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import applyTryAjax from './ajax/applyTryAjax';
 import {userScales} from './util/apply_try_const';
@@ -29,14 +29,13 @@ class Index extends React.Component {
         this.props.form.validateFields((err,values) => {
             if(err) return;
             if(this.state.showLoading) return;
-            const user_scales = _.filter(userScales, ele => ele.key === values.userScales)[0].value;
             this.setState({
                 showLoading: true
             });
             (this.props.versionKind && values.company) &&
             applyTryAjax.postApplyTry({
                 company: values.company,
-                user_scales: user_scales,
+                user_scales: `${values.userScales}${Intl.get('versions.personal.number', '人')}`,
                 version_kind: this.props.versionKind,
                 version_kind_name: this.props.versionKindName,
                 applicant_name: values.name,
@@ -91,14 +90,15 @@ class Index extends React.Component {
                         </Form.Item> 
                         <Form.Item label={Intl.get('common.apply.try.user.scales','使用人数')} {...formLayout} require>
                             {getFieldDecorator('userScales', {
-                                initialValue: userScales[0].key
-                            })(<Radio.Group className='apply-try-content-user-scales-wrapper'>
-                                {
-                                    _.map(userScales, item => {
-                                        return <Radio.Button value={item.key}>{item.value}</Radio.Button>;
-                                    })
-                                }
-                            </Radio.Group>)}
+                                initialValue: 5
+                            })(
+                                <InputNumber
+                                    min={1}
+                                    formatter={value => `${value}${Intl.get('versions.personal.number', '人')}`}
+                                    parser={value => value.replace(Intl.get('versions.personal.number', '人'), '')}
+                                    precision={0}
+                                />
+                            )}
                         </Form.Item>                       
                         <div className='apply-try-content-apply-btn-wrapper'>
                             <Button className='apply-try-content-apply-btn' 
