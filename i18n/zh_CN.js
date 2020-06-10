@@ -4304,6 +4304,7 @@ var zh_CN = {
     'versions.apply.try.enterprise': '申请企业试用',
     'versions.company.trail': '企业试用',
     'versions.personal.trail': '个人试用',
+    'versions.personal.number': '人',
     /*版本信息 --- end */
 
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/
