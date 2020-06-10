@@ -115,9 +115,6 @@ Batch.prototype.listener = function(data) {
                     socket.emit('batchOperate' , messageObj);
                 });
 
-            }else{
-                pushLogger.info('批量推送socket不存在，ioServer为' + JSON.stringify(this.ioServer));
-                pushLogger.info('批量推送socket不存在，socketId为' + JSON.stringify(socketObj));
             }
         });
     }
