@@ -25,6 +25,14 @@ class Index extends React.Component {
         versionKindName: PropTypes.string
     }
 
+    onUserScalesChange = (value) => {
+        if(!value) {
+            setTimeout(() => {
+                this.props.form.setFieldsValue({userScales: 1});
+            });
+        }
+    };
+
     handleApplyClick = () => {
         this.props.form.validateFields((err,values) => {
             if(err) return;
@@ -88,17 +96,17 @@ class Index extends React.Component {
                                 rules: [nameLengthRule],
                             })(<Input className='apply-try-content-componey-input'/>)}
                         </Form.Item> 
-                        <Form.Item label={Intl.get('common.apply.try.user.scales','使用人数')} {...formLayout} require>
+                        <Form.Item label={Intl.get('common.apply.try.user.scales','使用人数')} {...formLayout} require className="user-scales-container">
                             {getFieldDecorator('userScales', {
                                 initialValue: 5
                             })(
                                 <InputNumber
                                     min={1}
-                                    formatter={value => `${value}${Intl.get('versions.personal.number', '人')}`}
-                                    parser={value => value.replace(Intl.get('versions.personal.number', '人'), '')}
                                     precision={0}
+                                    onChange={this.onUserScalesChange}
                                 />
                             )}
+                            <span className="user-personal">{Intl.get('versions.personal.number', '人')}</span>
                         </Form.Item>                       
                         <div className='apply-try-content-apply-btn-wrapper'>
                             <Button className='apply-try-content-apply-btn' 
