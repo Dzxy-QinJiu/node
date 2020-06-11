@@ -1631,7 +1631,7 @@ class ClueDetailOverview extends React.Component {
                                         value={contactItem.name}
                                         field='contact_name'
                                         noDataTip={Intl.get('crm.no.contact', '暂无联系人')}
-                                        addDataTip={Intl.get('clue.customer.edit.contact', '请填写联系人名称')}
+                                        addDataTip={Intl.get('crm.detail.contact.add', '添加联系人')}
                                         placeholder={Intl.get('clue.customer.edit.contact', '请填写联系人名称')}
                                         validators={contactNameRule()}
                                     />
@@ -1652,7 +1652,7 @@ class ClueDetailOverview extends React.Component {
                                         value={contactItem.position}
                                         field='position'
                                         noDataTip={Intl.get('member.no.position', '暂无职务')}
-                                        addDataTip={Intl.get('member.position.name.placeholder', '请输入职务名称')}
+                                        addDataTip={Intl.get('member.add.position', '添加职务')}
                                         placeholder={Intl.get('member.position.name.placeholder', '请输入职务名称')}
                                         validators={contactPositionRule()}
                                     />
