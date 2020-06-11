@@ -61,6 +61,7 @@ import {
     RECOMMEND_CLUE_FILTERS,
     PHONE_STATUS_KEY,
 } from 'PUB_DIR/sources/utils/consts';
+import {num as numUtils} from 'ant-utils';
 import history from 'PUB_DIR/sources/history';
 import React from 'react';
 import {addOrEditSettingCustomerRecomment} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
@@ -1808,6 +1809,19 @@ class RecommendCluesList extends React.Component {
         return text;
     }
 
+    //处理注册资本单位换算
+    handleCapitalUnit(amount) {
+        //换算成万
+        amount = numUtils.yuanToTenThousandYuan(amount);
+        let text = Intl.get('crm.149', '{num}万', {num: amount});
+
+        amount = numUtils.yuanToTenThousandYuan(amount);
+        if(amount >= 1) {//单位为亿
+            text = Intl.get('clue.recommend.hundred.million', '{num}亿', {num: amount});
+        }
+        return text;
+    }
+
     //处理点击展开全部条件时
     handleToggleOtherCondition = () => {
         this.setState({});
@@ -2070,7 +2084,7 @@ class RecommendCluesList extends React.Component {
                                                     item.capital ? (
                                                         <span className='extract-clue-info-item'>
                                                             <span className="extract-clue-text-label">{Intl.get('clue.recommend.registered.capital', '注册资本')}：</span>
-                                                            <span>{Intl.get('crm.149', '{num}万', {num: (item.capital / 10000).toFixed(2)})}</span>
+                                                            <span>{this.handleCapitalUnit(item.capital)}</span>
                                                         </span>
                                                     ) : null
                                                 }
