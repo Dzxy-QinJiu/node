@@ -198,7 +198,7 @@ class RecommendCluesFilterPanel extends Component {
         if(isSaveFilter) clueCustomerAction.saveSettingCustomerRecomment(newCondition);
         this.props.getRecommendClueLists(newCondition, EXTRACT_CLUE_CONST_MAP.RESET);
     };
-    ;l421
+    
     //保存推荐线索的条件
     saveRecommendFilter(hasSavedRecommendParams) {
         if(this.state.isSaving || this.props.isLoading) return false;
