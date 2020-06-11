@@ -187,23 +187,18 @@ class RecommendCluesFilterPanel extends Component {
     }
 
     getRecommendClueList= (condition, isSaveFilter = true, isRequiredSave = false) => {
-        if(searchTimeOut) {
-            clearTimeout(searchTimeOut);
+        let newCondition = _.clone(condition);
+        let propsCondition = _.clone(this.props.hasSavedRecommendParams);
+        removeEmptyItem(newCondition);
+
+        //必须保存时，或者条件没有变动时，不用请求接口保存筛选条件
+        if(isRequiredSave || (isSaveFilter && !_.isEqual(newCondition, propsCondition))) {
+            this.saveRecommendFilter(newCondition);
         }
-        searchTimeOut = setTimeout(() => {
-            let newCondition = _.clone(condition);
-            let propsCondition = _.clone(this.props.hasSavedRecommendParams);
-            removeEmptyItem(newCondition);
-
-            //必须保存时，或者条件没有变动时，不用请求接口保存筛选条件
-            if(isRequiredSave || (isSaveFilter && !_.isEqual(newCondition, propsCondition))) {
-                this.saveRecommendFilter(newCondition);
-            }
-            if(isSaveFilter) clueCustomerAction.saveSettingCustomerRecomment(newCondition);
-            this.props.getRecommendClueLists(newCondition, EXTRACT_CLUE_CONST_MAP.RESET);
-        }, delayTime);
+        if(isSaveFilter) clueCustomerAction.saveSettingCustomerRecomment(newCondition);
+        this.props.getRecommendClueLists(newCondition, EXTRACT_CLUE_CONST_MAP.RESET);
     };
-
+    ;l421
     //保存推荐线索的条件
     saveRecommendFilter(hasSavedRecommendParams) {
         if(this.state.isSaving || this.props.isLoading) return false;
