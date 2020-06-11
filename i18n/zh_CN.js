@@ -3286,6 +3286,7 @@ var zh_CN = {
     'analysis.new.trial.qualified.customer.trend.chart': '新增试用合格客户趋势图',
     'analysis.active.customer.statistics.at.all.stages': '各阶段活跃客户统计',
     'analysis.all.administrative.levels': '全部行政级别',
+    'analysis.trial.to.the.signing.period': '试用到签约周期',
     'common.font.the': '第',
     'common.weeks': '周',
     'clue.add.contacts.tip': '添加联系方式',
