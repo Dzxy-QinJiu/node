@@ -195,6 +195,14 @@ module.exports = {
         passport: {
             needLogin: true
         },
-    },
+    },{
+        method: 'post',
+        path: '/rest/approve/self_setting/apply',
+        handler: 'approveSelfSettingApply',
+        passport: {
+            needLogin: true
+        },
+        'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
+    }
     ]
 };

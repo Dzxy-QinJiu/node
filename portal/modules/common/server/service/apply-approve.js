@@ -55,6 +55,8 @@ var restApis = {
     clearAllUnread: '/rest/base/v1/workflow/comments/notice/unread/clear',
     //判断该审批是否是在最后一个节点
     checkApplyFinalTask: '/rest/base/v1/workflow/task/finished',
+    //自定义流程的审批
+    approveSelfSettingApply: '/rest/base/v1/workflow/customiz/approve',
 };
 exports.restUrls = restApis;
 exports.getNextCandidate = function(req, res) {
@@ -143,11 +145,17 @@ function approveApplyPassOrReject(req, res, url) {
 function approveResultAndCheckLastNode(req,res,url){
     let emitter = new EventEmitter();
     approveApplyPassOrReject(req, res, url).then((approveFlag) => {
-        checkApplyFinalTask(req, res, req.body.id).then((isFinalTask) => {
-            emitter.emit('success', {approveFlag: approveFlag, isFinalTask: isFinalTask});
-        }).catch((errorObj) => {
-            emitter.emit('success', {approveFlag: approveFlag, isFinalTask: false});
-        });
+        //如果是驳回，或者撤销申请，不需要再查是否是最后一个节点了
+        if(req.body.agree === 'pass'){
+            checkApplyFinalTask(req, res, req.body.id).then((isFinalTask) => {
+                emitter.emit('success', {approveFlag: approveFlag, isFinalTask: isFinalTask});
+            }).catch((errorObj) => {
+                emitter.emit('success', {approveFlag: approveFlag, isFinalTask: false});
+            });
+        }else{
+            emitter.emit('success', {approveFlag: approveFlag, isFinalTask: true});
+        }
+
     }).catch(() => {
         emitter.emit('error', {approveFlag: false, isFinalTask: false});
     });
@@ -156,11 +164,15 @@ function approveResultAndCheckLastNode(req,res,url){
 
 //批准或驳回审批
 exports.approveBusinessWhileApplyPassOrReject = function(req, res) {
-    approveResultAndCheckLastNode(req,res,restApis.approveBusinessWhileApplyPassOrReject);
+    return approveResultAndCheckLastNode(req,res,restApis.approveBusinessWhileApplyPassOrReject);
 };
 //批准或驳回审批
 exports.approveBusinessApplyPassOrReject = function(req, res) {
-    approveResultAndCheckLastNode(req,res,restApis.approveBusinessApplyPassOrReject);
+    return approveResultAndCheckLastNode(req,res,restApis.approveBusinessApplyPassOrReject);
+};
+//自定义流程的申请审批
+exports.approveSelfSettingApply = function(req, res) {
+    return approveResultAndCheckLastNode(req,res,restApis.approveSelfSettingApply);
 };
 exports.updateBusinessWhileCustomerTime = function(req, res) {
     let bodyData = req.body;
@@ -243,13 +255,13 @@ exports.addReportSendApply = function(req, res,formData) {
 };
 //批准或驳回审批
 exports.approveReportSendApplyPassOrReject = function(req, res) {
-    approveResultAndCheckLastNode(req,res,restApis.approveOpinionreportApplyPassOrReject);
+    return approveResultAndCheckLastNode(req,res,restApis.approveOpinionreportApplyPassOrReject);
 };
 exports.approveDocumentWriteApplyPassOrReject = function(req, res) {
-    approveResultAndCheckLastNode(req,res,restApis.approveDocumentApplyPassOrReject);
+    return approveResultAndCheckLastNode(req,res,restApis.approveDocumentApplyPassOrReject);
 };
 exports.approveDataServiceApply = function(req, res) {
-    approveResultAndCheckLastNode(req,res,restApis.approveDataServiceApply);
+    return approveResultAndCheckLastNode(req,res,restApis.approveDataServiceApply);
 };
 
 //上传舆情上报文件
@@ -298,11 +310,11 @@ exports.deleteReportSend = function(req, res) {
 };
 //批准或驳回审批
 exports.approveLeaveApplyPassOrReject = function(req, res) {
-    approveResultAndCheckLastNode(req,res,restApis.approveLeaveApplyPassOrReject);
+    return approveResultAndCheckLastNode(req,res,restApis.approveLeaveApplyPassOrReject);
 };
 //批准或驳回审批
 exports.approveSalesOpportunityApplyPassOrReject = function(req, res) {
-    approveResultAndCheckLastNode(req,res,restApis.approveSalesOpportunityApplyPassOrReject);
+    return approveResultAndCheckLastNode(req,res,restApis.approveSalesOpportunityApplyPassOrReject);
 };
 exports.clearAllUnread = function(req, res) {
     return restUtil.authRest.put(

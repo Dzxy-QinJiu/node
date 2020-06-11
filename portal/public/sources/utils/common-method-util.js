@@ -935,10 +935,9 @@ exports.isFinalTask = function(applyNode) {
 };
 //审批通过或者驳回后修改左侧状态
 exports.changeApplyStatusPassOrReject = function(obj,result){
-    //只有通过(是最后一个节点)或者是驳回的时候，才更新选中的申请单类型
-    var approveType = _.get(obj,'agree');
-    if((result.isFinalTask && approveType === 'pass') || approveType === 'reject'){
-        ApplyApproveUtils.emitter.emit('updateSelectedItem', {agree: approveType, status: 'success'});
+    //只有是最后一个节点的时候，才更新选中的申请单类型
+    if(result.isFinalTask){
+        ApplyApproveUtils.emitter.emit('updateSelectedItem', {agree: _.get(obj,'agree'), status: 'success'});
     }
 };
 //判断某个审批所在节点的审批角色是否有管理员

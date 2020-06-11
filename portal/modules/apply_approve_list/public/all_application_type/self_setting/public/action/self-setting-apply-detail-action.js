@@ -5,7 +5,6 @@
  */
 var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
-import SelfSettingApproveAjax from 'MOD_DIR/common/public/ajax/self-setting';
 import {getApplyDetailById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import {changeApplyStatusPassOrReject, checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
@@ -66,7 +65,7 @@ function ApplyViewDetailActions() {
     //通过或者驳回审批
     this.approveLeaveApplyPassOrReject = function(obj,callback) {
         this.dispatch({loading: true, error: false});
-        SelfSettingApproveAjax.approveSelfSettingApply().sendRequest(obj).success((data) => {
+        ApplyApproveAjax.approveSelfSettingApply().sendRequest(obj).success((data) => {
             if(data.approveFlag){
                 this.dispatch({loading: false, error: false});
                 _.isFunction(callback) && callback(true);
