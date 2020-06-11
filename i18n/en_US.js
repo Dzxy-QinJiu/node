@@ -4065,6 +4065,7 @@ var en_US = {
     'clue.recommend.filter.company.status.liquidation': 'The liquidation',//清算
     'clue.recommend.filter.set.up': 'Set up',//成立
     'clue.recommend.legalperson': 'legal person',//法人
+    'clue.recommend.hundred.million': '{num} Hundred million',//{num}亿
 
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
