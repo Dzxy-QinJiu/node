@@ -1815,8 +1815,8 @@ class RecommendCluesList extends React.Component {
         amount = numUtils.yuanToTenThousandYuan(amount);
         let text = Intl.get('crm.149', '{num}万', {num: amount});
 
-        amount = numUtils.yuanToTenThousandYuan(amount);
-        if(amount >= 1) {//单位为亿
+        if(amount >= 10000) {//单位为亿
+            amount = numUtils.yuanToTenThousandYuan(amount);
             text = Intl.get('clue.recommend.hundred.million', '{num}亿', {num: amount});
         }
         return text;
