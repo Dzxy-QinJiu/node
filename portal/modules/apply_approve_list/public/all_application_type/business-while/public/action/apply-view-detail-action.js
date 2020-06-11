@@ -10,7 +10,7 @@ import {
     cancelApplyApprove,
     getApplyDetailById, getApplyCommentList, addApplyComments
 } from 'PUB_DIR/sources/utils/apply-common-data-utils';
-import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
+import {checkIfLeader,changeApplyStatusPassOrReject} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -65,12 +65,15 @@ function ApplyViewDetailActions() {
     this.approveApplyPassOrReject = function(obj, callback) {
         this.dispatch({loading: true, error: false});
         BusinessApplyAjax.approveApplyPassOrReject(obj).then((data) => {
-            this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
-            if (_.isFunction(callback)) {
-                callback();
+            if(data.approveFlag){
+                this.dispatch({loading: false, error: false});
+                _.isFunction(callback) && callback();
+                changeApplyStatusPassOrReject(obj,data);
+            }else{
+                //更新选中的申请单类型
+                ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});
+                this.dispatch({loading: false, error: true, errorMsg: Intl.get('errorcode.19', '审批申请失败')});
             }
-            //更新选中的申请单类型
-            ApplyApproveUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
         }, (errorMsg) => {
             //更新选中的申请单类型
             ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});

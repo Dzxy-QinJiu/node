@@ -7,7 +7,7 @@ var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_a
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import SelfSettingApproveAjax from 'MOD_DIR/common/public/ajax/self-setting';
 import {getApplyDetailById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
-import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
+import {changeApplyStatusPassOrReject, checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -67,17 +67,16 @@ function ApplyViewDetailActions() {
     this.approveLeaveApplyPassOrReject = function(obj,callback) {
         this.dispatch({loading: true, error: false});
         SelfSettingApproveAjax.approveSelfSettingApply().sendRequest(obj).success((data) => {
-            if(data){
-                this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
-                //更新选中的申请单类型
-                ApplyApproveUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
+            if(data.approveFlag){
+                this.dispatch({loading: false, error: false});
                 _.isFunction(callback) && callback(true);
+                changeApplyStatusPassOrReject(obj,data);
             }else{
+                //更新选中的申请单类型
                 ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});
                 this.dispatch({loading: false, error: true, errorMsg: Intl.get('errorcode.19', '审批申请失败')});
                 _.isFunction(callback) && callback(false);
             }
-
         }).error((errorMsg) => {
             _.isFunction(callback) && callback(false);
             //更新选中的申请单类型

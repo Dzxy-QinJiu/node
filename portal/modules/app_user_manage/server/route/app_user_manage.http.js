@@ -103,7 +103,7 @@ module.exports = {
         ]
     }, { // 团队申请 列表
         'method': 'get',
-        'path': '/rest/appuser/apply_list',
+        'path': '_list',
         'handler': 'getApplyList',
         'passport': {
             'needLogin': true

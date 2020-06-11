@@ -77,6 +77,9 @@ function ApplyViewDetailActions() {
                 _.isFunction(callback) && callback(false);
             }
 
+
+
+
         }).error((errorMsg) => {
             _.isFunction(callback) && callback(false);
             //更新选中的申请单类型
