@@ -609,6 +609,8 @@
             text-align: center;
             // 上传了头像的样式
             .avatar {
+                position: relative;
+                top: -2px;
                 i {
                     float: inherit;
                     line-height: inherit;
@@ -616,10 +618,17 @@
             }
             // 没上传头像时，默认头像样式设置
             .user-default-logo-wrap,.user-default-logo-wrap.active {
-
+                display: inline-block;
+                width: 24px;
+                height: 24px;
+                line-height: 24px;
+                margin-top: 8px;
+                border-radius: 50%;
+                background-color: @icon-active-color;
                 .icon-user-logo-default {
                     &:before {
                         font-size: 16px;
+                        color: @primary-color;
                     }
                 }
             }
