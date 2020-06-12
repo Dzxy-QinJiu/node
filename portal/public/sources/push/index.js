@@ -17,6 +17,7 @@ var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsg
 var phoneEmitter = require('../../../public/sources/utils/emitters').phoneEmitter;
 var clueEmitter = require('../../../public/sources/utils/emitters').clueEmitter;
 var userDetailEmitter = require('../../../public/sources/utils/emitters').userDetailEmitter;
+var kickOffEmitter = require('../../../public/sources/utils/emitters').kickOffEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 import {
@@ -929,7 +930,9 @@ function getReloginTooltip(userObj) {
 function handleSessionExpired() {
     ajaxGlobal.handleSessionExpired();
 }
-
+function kickOffAccount(errMsg) {
+    kickOffEmitter.emit(kickOffEmitter.KICKOFF_ACCOUNT, errMsg);
+}
 // /logout退出登录后的处理
 function handleLogout() {
     //退出登录后，退出容联电话系统的登录
@@ -1010,6 +1013,8 @@ function startSocketIo(isSessionOutReLogin) {
         socketIo.on('sessionExpired', handleSessionExpired);
         // 监听退出登录的消息
         socketIo.on('logoutAccount', handleLogout);
+        //监听被踢出的消息
+        socketIo.on('kickOffAccount', kickOffAccount);
         //监听用户批量操作的消息
         socketIo.on('batchOperate', batch.batchOperateListener);
         //监听 disconnect

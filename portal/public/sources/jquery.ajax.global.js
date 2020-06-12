@@ -18,6 +18,13 @@ import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
     var history = require('./history');
     const Router = require('react-router-dom').Router;
     module.exports.handleSessionExpired = handel401Ajax;
+    var kickOffEmitter = require('../../public/sources/utils/emitters').kickOffEmitter;
+    kickOffEmitter.on(kickOffEmitter.KICKOFF_ACCOUNT,handleKickOff);
+    function handleKickOff(errMsg) {
+        let reloginError = Intl.get('login.by.another', '您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！');
+        let kickedByAmdin = Intl.get('kicked.by.admin', '您已被被管理员踢出，请重新登录!');
+        handleReloginError((errMsg === UI_ERROR.LOGIN_ONLY_ONE) ? reloginError : kickedByAmdin);
+    }
 
     /*处理ajax时，session过期的问题*/
     function handel401Ajax() {
@@ -94,13 +101,7 @@ import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
                 break;
             case 403:
                 //不允许多人登录被踢出的统一处理
-                if (xhr.responseJSON === UI_ERROR.LOGIN_ONLY_ONE || xhr.responseJSON === UI_ERROR.KICKED_BY_ADMIN) {
-                    let reloginError = Intl.get('login.by.another', '您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！');
-                    let kickedByAmdin = Intl.get('kicked.by.admin', '您已被被管理员踢出，请重新登录!');
-                    handleReloginError((xhr.responseJSON === UI_ERROR.LOGIN_ONLY_ONE) ? reloginError : kickedByAmdin);
-                } else {
-                    handel403Ajax(xhr);
-                }
+                handel403Ajax(xhr);
                 break;
             case 408:
                 handleTimeout(xhr, options);
