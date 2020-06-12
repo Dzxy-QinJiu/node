@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2019/2/28.
  */
 import {Popover, message, Icon, Button, Popconfirm} from 'antd';
-import {hasCalloutPrivilege, checkVersionAndType, getContactSalesPopoverTip, isExpired, handleUpgradePersonalVersion} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasCalloutPrivilege, checkVersionAndType, getContactSalesPopoverTip, isExpired, handleUpgradePersonalVersion, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 import {showDisabledCallTip, handleCallOutResult, checkPhoneStatus}from 'PUB_DIR/sources/utils/common-data-util';
 import {isRongLianPhoneSystem, handleBeforeCallOutCheck} from 'PUB_DIR/sources/utils/phone-util';
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
@@ -169,6 +169,7 @@ class PhoneCallout extends React.Component {
                 return (
                     <Popover
                         placement="right"
+                        trigger={isResponsiveDisplay().isWebMin ? 'click' : 'hover'}
                         content={Intl.get('lead.is.not.support.checked.phone', '暂不支持14、16、17、19号段及固话')}
                     >
                         <i className={iconCls}/>

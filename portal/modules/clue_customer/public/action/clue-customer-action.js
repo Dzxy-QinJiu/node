@@ -77,6 +77,7 @@ function ClueCustomerActions() {
                 this.dispatch({list: list});
                 _.isFunction(callback) && callback(data);
             },(errorMsg) => {
+                this.dispatch({list: []});
                 _.isFunction(callback) && callback();
             });
         }

@@ -1,0 +1,117 @@
+/**
+ * Copyright (c) 2018-2020 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2018-2020 湖南蚁坊软件股份有限公司。保留所有权利。
+ * Created by tangmaoqin on 2020/6/2.
+ */
+@import '../../public/css/common-variables';
+@mobile-bg-color: #E7F1F9;
+@mobile-font-color: #1975D1;
+
+.mobile-area-selector-container{
+  &.right-panel-modal{
+    .right-panel-modal-content{
+      background-color: #fff;
+      .right-panel-modal-title{
+        margin-bottom: 0;
+        font-size: 16px;
+        color: @primary-font-color;
+        font-weight: normal;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+    }
+  }
+  .area-selector{
+    .ant-form-item{
+      margin-bottom: 0;
+    }
+    .mask, .ant-input-affix-wrapper, .anticon.anticon-down{
+      display: none!important;
+    }
+    .area-selector-container{
+      display: block!important;
+      .ant-tabs{
+        position: relative;
+      }
+      //头部省市区样式
+      .ant-tabs-nav-container{
+        height: 48px;
+        line-height: 48px;
+        margin-bottom: 0;
+        .ant-tabs-nav-wrap{
+          border-radius: 0;
+          background: #fff;
+          border: none;
+          padding: 0 24px;
+        }
+        .ant-tabs-nav{
+          .ant-tabs-ink-bar{
+            visibility: visible;
+          }
+          .ant-tabs-tab{
+            border-left: none;
+            background-color: #fff;
+            padding: 6px 4px !important;
+            color: #656565;
+            margin-right: 8px;
+            line-height: 37px;
+            &.ant-tabs-tab-active{
+              color: #1975D1;
+            }
+          }
+        }
+      }
+      //全部省样式
+      .area-selector-all-container{
+        top: 12px;
+        right: 24px;
+        border-color: #C5D3E1;
+        color: @primary-font-color;
+      }
+      //地域列表样式
+      .ant-tabs-content{
+        border: none;
+        padding: 15px 24px 0;
+        .address-prov{
+          margin-right: -14px;
+          .prov-nav-span{
+            display: block;
+            float: unset;
+            height: auto;
+            color: #656565;
+            margin-bottom: 10px;
+            padding-left: 0;
+          }
+        }
+        label{
+          float: unset;
+          border-radius: 4px;
+          border: 1px solid #C5D3E1;
+          padding: 0 30px;
+          font-size: 14px;
+          margin-right: 8px;
+          line-height: 36px!important;
+          height: 36px;
+          margin-bottom: 8px;
+          min-width: 30.5%;
+          text-align: center;
+          &.active-label{
+            background-color: @mobile-bg-color;
+            border-color: @mobile-bg-color;
+            color: @mobile-font-color;
+          }
+        }
+      }
+    }
+  }
+  //确认按钮样式
+  .confirm-btn-container{
+    background-color: @mobile-font-color;
+    text-align: center;
+    line-height: 48px;
+    font-size: 16px;
+    color: #fff;
+  }
+}

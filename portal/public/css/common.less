@@ -143,7 +143,7 @@
     }
 }
 
-.col-xs-10 {
+.main-content-wrap {
     //以下为默认通用设置
     .border_wrap {
         line-height: 13px;
@@ -276,6 +276,61 @@ span.customize-btn {
 .table-no-data-scroll{
     .ant-table-fixed-header .ant-table-scroll .ant-table-header{
         overflow-x: auto !important;
+    }
+}
+
+@media screen and (max-width: 375px){
+    .range-datepicker{
+        .datepicker_wrap{
+            left: 0!important;
+            width: calc(100vw - 50px);
+            justify-content: space-between;
+            left: 0!important;
+            padding: 10px 0 10px 10px;
+            &.datepicker_wrap_flex{
+                display: flex!important;
+            }
+            .one_calendar{
+                width: auto;
+                float: unset;
+                height: auto;
+                margin-left: 0;
+                .bootstrap-datepicker-wrap{
+                    width: auto;
+                    height: auto;
+                    float: unset;
+                }
+                .datepicker-inline{
+                    width: auto;
+                    position: relative;
+                    top: 0;
+                }
+            }
+            .period-type{
+                float: unset;
+                .ant-radio-group{
+                    .ant-radio-wrapper{
+                        max-width: 92px;
+                        width: auto;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 320px){
+    .range-datepicker{
+        .datepicker_wrap{
+            .bootstrap-datepicker-wrap{
+                margin-right: 0;
+            }
+            .datepicker-inline{
+                table{
+                    margin-left: 0;
+                }
+            }
+        }
     }
 }
 
