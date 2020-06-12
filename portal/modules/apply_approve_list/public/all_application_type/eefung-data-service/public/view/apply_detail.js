@@ -51,6 +51,7 @@ class ApplyViewDetail extends React.Component {
             customerOfCurUser: {},//当前展示用户所属客户的详情
             showBackoutConfirmType: '',//操作的确认框类型
             usersManList: [],//成员列表
+            rejectComment: '',//驳回的理由
             ...ApplyDetailStore.getState()
         };
     }
@@ -202,7 +203,8 @@ class ApplyViewDetail extends React.Component {
     hideBackoutModal = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击关闭模态框按钮');
         this.setState({
-            showBackoutConfirmType: ''
+            showBackoutConfirmType: '',
+            rejectComment: ''
         });
     };
     // 撤销申请
@@ -497,11 +499,21 @@ class ApplyViewDetail extends React.Component {
     };
     passOrRejectApplyApprove = (confirmType) => {
         var detailInfoObj = this.state.detailInfoObj.info;
-        ApplyDetailAction.approveLeaveApplyPassOrReject({id: detailInfoObj.id, agree: confirmType}, () => {
+        var obj = {id: detailInfoObj.id, agree: confirmType};
+        //如果写了驳回的理由
+        if(this.state.rejectComment && confirmType === 'reject'){
+            obj.comment = this.state.rejectComment;
+        }
+        ApplyDetailAction.approveLeaveApplyPassOrReject(obj, () => {
             //调用父组件的方法进行审批完成后的其他处理
             if (_.isFunction(this.props.afterApprovedFunc)) {
                 this.props.afterApprovedFunc();
             }
+        });
+    };
+    changeRejectComment= (e) => {
+        this.setState({
+            rejectComment: e.target.value
         });
     };
     renderCancelApplyApprove = () => {
@@ -517,6 +529,10 @@ class ApplyViewDetail extends React.Component {
                     delete={typeObj.deleteFunction}
                     okText={typeObj.okText}
                     delayClose={true}
+                    modalTitle={typeObj.modalTitle}
+                    cancelText={typeObj.cancelText}
+                    className='apply-modal'
+                    confirmCls={typeObj.confirmCls}
                 />
             );
         }else{
