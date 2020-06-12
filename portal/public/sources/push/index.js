@@ -17,7 +17,6 @@ var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsg
 var phoneEmitter = require('../../../public/sources/utils/emitters').phoneEmitter;
 var clueEmitter = require('../../../public/sources/utils/emitters').clueEmitter;
 var userDetailEmitter = require('../../../public/sources/utils/emitters').userDetailEmitter;
-var kickOffEmitter = require('../../../public/sources/utils/emitters').kickOffEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 import {
@@ -931,7 +930,7 @@ function handleSessionExpired() {
     ajaxGlobal.handleSessionExpired();
 }
 function kickOffAccount(errMsg) {
-    kickOffEmitter.emit(kickOffEmitter.KICKOFF_ACCOUNT, errMsg);
+    ajaxGlobal.handleKickOff(errMsg);
 }
 // /logout退出登录后的处理
 function handleLogout() {

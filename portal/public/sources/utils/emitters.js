@@ -329,7 +329,3 @@ export { dailyReportEmitter };
 const noSelectedAppTerminalEmitter = new EventEmitter();
 noSelectedAppTerminalEmitter.NO_SELECTED_APP_TERMINAL = 'no_selected_app_terminal'; // 修改应用配置
 export { noSelectedAppTerminalEmitter };
-// 有其他登录后被踢出
-const kickOffEmitter = new EventEmitter();
-kickOffEmitter.KICKOFF_ACCOUNT = 'kickoff_account'; // 修改应用配置
-export { kickOffEmitter };

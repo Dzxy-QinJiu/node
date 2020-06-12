@@ -18,8 +18,7 @@ import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
     var history = require('./history');
     const Router = require('react-router-dom').Router;
     module.exports.handleSessionExpired = handel401Ajax;
-    var kickOffEmitter = require('../../public/sources/utils/emitters').kickOffEmitter;
-    kickOffEmitter.on(kickOffEmitter.KICKOFF_ACCOUNT,handleKickOff);
+    module.exports.handleKickOff = handleKickOff;
     function handleKickOff(errMsg) {
         let reloginError = Intl.get('login.by.another', '您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！');
         let kickedByAmdin = Intl.get('kicked.by.admin', '您已被被管理员踢出，请重新登录!');
