@@ -480,36 +480,12 @@ module.exports.startSocketio = function(nodeServer) {
 
 };
 function kickOffAccount(errMsg) {
-    socketKickOffEmitter(errMsg,'kickOffAccount','踢出账号');
+    socketEmitter(errMsg,'kickOffAccount','踢出账号');
 }
 /*
 * 退出账号前发送事件*/
 function logoutAccount(logoutObj) {
     socketEmitter(logoutObj,'logoutAccount','退出账号');
-}
-function socketKickOffEmitter(Obj, emitterChannel,loggerType) {
-    let user = Obj && Obj.user;
-    let sessionId = Obj && Obj.sessionId;
-    if (user && sessionId) {
-        pushLogger.debug((user && user.nickname) + loggerType);
-        var userId = user ? user.userid : '';
-        if (userId) {
-            //找到消息接收者对应的socket，将数据推送到浏览器
-            var socketArray = socketStore[userId] || [];
-            if (socketArray.length > 0) {
-                socketArray.forEach(function(socketObj) {
-                    if (socketObj.sessionId === sessionId) {
-                        //找到相同sessionId的socket
-                        var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
-                        if (socket) {
-                            //推送session过期消息
-                            socket.emit(emitterChannel, Obj.data);
-                        }
-                    }
-                });
-            }
-        }
-    }
 }
 /*发送事件到前端*/
 function socketEmitter(Obj, emitterChannel,loggerType) {
@@ -528,7 +504,12 @@ function socketEmitter(Obj, emitterChannel,loggerType) {
                         var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                         if (socket) {
                             //推送session过期消息
-                            socket.emit(emitterChannel, user);
+                            if(emitterChannel === 'kickOffAccount'){
+                                socket.emit(emitterChannel, Obj.data);
+                            }else{
+                                socket.emit(emitterChannel, user);
+                            }
+
                         }
                     }
                 });

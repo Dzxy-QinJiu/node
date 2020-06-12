@@ -51,34 +51,6 @@ import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
     }
 
     /**
-     *不允许多人登录，被下线的处理
-     * @param tipContent
-     */
-    function handleReloginError(tipContent) {
-        // 登录踢出后，退出容联电话系统的登录
-        phoneUtil.logoutCallClient();
-        //让socket断开连接
-        socketEmitter.emit(socketEmitter.DISCONNECT);
-        Modal.error({
-            wrapClassName: 'socket-io',
-            content: tipContent,
-            okText: Intl.get('retry.login.again', '重新登录'),
-            onOk: function() {
-                pcAndWechatMiniProgram('/logout');
-            }
-        });
-        setTimeout(function() {
-            //设置提示框的样式
-            var $modal = $('body >.ant-modal-container');
-            if ($modal && $modal.length > 0) {
-                $modal.addClass('offline-modal-container');
-            }
-        }, 100);
-        //解除 session失效提示的 事件绑定
-        $(document).off('ajaxError');
-    }
-
-    /**
      * 处理请求超时的情况(408)
      * @param xhr
      * @param options
@@ -99,7 +71,6 @@ import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
                 handel401Ajax();
                 break;
             case 403:
-                //不允许多人登录被踢出的统一处理
                 handel403Ajax(xhr);
                 break;
             case 408:

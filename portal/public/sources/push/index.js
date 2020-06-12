@@ -47,7 +47,7 @@ import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 import {getTimeStr} from 'PUB_DIR/sources/utils/common-method-util';
 import phoneUtil from '../utils/phone-util';
-
+var UI_ERROR = require('../../../lib/utils/request-error-util');
 // 获取弹窗通知的状态
 function getNotifyStatus() {
     const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
@@ -929,8 +929,34 @@ function getReloginTooltip(userObj) {
 function handleSessionExpired() {
     ajaxGlobal.handleSessionExpired();
 }
+/**
+ *不允许多人登录，被下线的处理
+ */
 function kickOffAccount(errMsg) {
-    ajaxGlobal.handleKickOff(errMsg);
+    let reloginError = Intl.get('login.by.another', '您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！');
+    let kickedByAmdin = Intl.get('kicked.by.admin', '您已被被管理员踢出，请重新登录!');
+    let tipContent = errMsg === UI_ERROR.LOGIN_ONLY_ONE ? reloginError : kickedByAmdin;
+    // 登录踢出后，退出容联电话系统的登录
+    phoneUtil.logoutCallClient();
+    //让socket断开连接
+    socketEmitter.emit(socketEmitter.DISCONNECT);
+    Modal.error({
+        wrapClassName: 'socket-io',
+        content: tipContent,
+        okText: Intl.get('retry.login.again', '重新登录'),
+        onOk: function() {
+            pcAndWechatMiniProgram('/logout');
+        }
+    });
+    setTimeout(function() {
+        //设置提示框的样式
+        var $modal = $('body >.ant-modal-container');
+        if ($modal && $modal.length > 0) {
+            $modal.addClass('offline-modal-container');
+        }
+    }, 100);
+    //解除 session失效提示的 事件绑定
+    $(document).off('ajaxError');
 }
 // /logout退出登录后的处理
 function handleLogout() {
