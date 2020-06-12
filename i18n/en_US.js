@@ -1515,6 +1515,10 @@ var en_US = {
     'apply.list.return.back': 'return',//返回
     'apply.list.get.list.err': 'Failed to get the list, please check the network status',//获取列表失败，请检查网络状态
     'apply.list.all.list.read': 'All read',//全部已读
+    'apply.list.reject.comment': 'Reason for rejection (optional)',//选填驳回理由（选填）
+    'apply.list.confirm.reject': 'Confirm rejection',//确认驳回
+    'apply.list.confirm.pass': 'Confirm pass',//确认通过
+    'apply.list.confirm.pass.tip': 'Confirm to apply through this?',//确认通过此申请吗？
     // 用户审批end
 
     // 在线用户start
