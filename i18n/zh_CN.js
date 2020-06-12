@@ -1488,7 +1488,7 @@ var zh_CN = {
     'user.apply.detail.backout.error': '撤销申请失败',
     'user.apply.detail.backout.person': '撤销人',
     'user.apply.detail.approval.person': '审批人',
-    'user.apply.detail.role.modal.content': '中，没有为用户分配角色，是否继续',
+    'user.apply.detail.role.modal.content': '中，未对用户分配角色，确认通过此申请吗？',
     'user.apply.detail.role.modal.continue': '继续',
     'user.apply.detail.role.modal.cancel': '我再改改',
     'user.apply.detail.submit.sending': '审批中...',
@@ -1525,6 +1525,10 @@ var zh_CN = {
     'apply.list.return.back': '返回',
     'apply.list.get.list.err': '获取列表失败，请检查网络状态',
     'apply.list.all.list.read': '全部已读',
+    'apply.list.reject.comment': '选填驳回理由（选填）',
+    'apply.list.confirm.reject': '确认驳回',
+    'apply.list.confirm.pass': '确认通过',
+    'apply.list.confirm.pass.tip': '确认通过此申请吗？',
     // 用户审批end
 
     // 在线用户start

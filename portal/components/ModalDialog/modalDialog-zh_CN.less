@@ -26,6 +26,81 @@
     background-color: #fff !important;
   }
 }
+//申请审批的通过或者驳回确认框
+.apply-modal.modal-dialog{
+  height: 168px;
+  .apply-modal.modal-content{
+    border-radius: 0;
+    .modal-header{
+      padding: 0;
+      height: 32px;
+      &.reject-btn{
+        background:#FDEFEE;
+      }
+      &.pass-btn{
+        background:#E3F1EC;
+      }
+      button.close{
+        margin-top: 2px;
+        margin-right: 8px;
+        &:focus,&:active{
+          outline: none;
+        }
+        >span:focus{
+          outline: none;
+        }
+      }
+      .modal-title{
+        margin: 8px;
+        font-size: 14px;
+        color: #333;
+        line-height: 16px;
+        .iconfont.icon-reject{
+          margin-right: 8px;
+          color: @error-color;
+        }
+        .iconfont.icon-agree{
+          margin-right: 8px;
+          color: @agree-btn-background;
+        }
+      }
+    }
+    .modal-body{
+      padding: 16px;
+      font-size: 16px;
+      color: #333;
+      text-align: left;
+    }
+    .modal-footer{
+      padding: 0 16px 16px 16px;
+      text-align: right;
+      .btn-cancel,.btn-ok{
+        &:hover,&:active,&:focus{
+          outline: none;
+          outline-offset: 0;
+        }
+      }
+      .btn-cancel{
+        width: 64px;
+        margin-left: 8px;
+        &:active{
+          box-shadow: none;
+        }
+      }
+      .btn-ok{
+        border: none;
+        &.reject-btn{
+          background: @error-color;
+        }
+        &.pass-btn{
+          background: @agree-btn-background;
+        }
+      }
+    }
+
+  }
+}
+
 
 .modal-dialog {
 

@@ -618,6 +618,7 @@ class ApplyViewDetail extends React.Component {
                     modalShow={typeObj.modalShow}
                     container={this}
                     hideModalDialog={this.hideBackoutModal}
+                    modalTitle={typeObj.modalTitle}
                     modalContent={typeObj.modalContent}
                     delete={typeObj.deleteFunction}
                     okText={typeObj.okText}

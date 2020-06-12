@@ -1480,7 +1480,7 @@ var en_US = {
     'user.apply.detail.backout.error': 'revoke error', // 撤销申请失败
     'user.apply.detail.backout.person': 'revoker', // 撤销人
     'user.apply.detail.approval.person': 'approver', // 审批人
-    'user.apply.detail.role.modal.content': 'no role, whether to continue', // 中,没有为用户分配角色,是否继续
+    'user.apply.detail.role.modal.content': 'no role, whether to continue?', // 中，未对用户分配角色，确认通过此申请吗
     'user.apply.detail.role.modal.continue': 'continue', // 继续
     'user.apply.detail.role.modal.cancel': 'modify', // 我再改改
     'user.apply.detail.submit.sending': 'Reviewing', // 审批中...
