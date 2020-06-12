@@ -3707,15 +3707,16 @@ class ClueCustomer extends React.Component {
             {'show-modal': this.state.clueAddFormShow
             });
         let filterHidden = !this.state.showFilterList || isFirstLoading;
+        let showFilterPanle = isWebMin && !filterHidden;
         const contentClassName = classNames('content-container',{
             'content-full': !this.state.showFilterList,
-            'content-hidden': isWebMin && !filterHidden,
+            'content-hidden': showFilterPanle,
             'has-transfer-container': SELECT_TYPE.HAS_TRANSFER === this.getFilterStatus().status
         });
         var hasSelectedClue = this.hasSelectedClues();
         var filterCls = classNames('filter-container',{
             'filter-close': filterHidden,
-            'mobile-filter-container': isWebMin && !filterHidden
+            'mobile-filter-container': showFilterPanle
         });
         const animateStyle = {
             transform: `translate(${this.state.x}px, ${this.state.y}px)`,
@@ -3741,7 +3742,7 @@ class ClueCustomer extends React.Component {
                                         showList={this.state.showFilterList}
                                     />}
                                 </div>
-                                {hasSelectedClue ? (
+                                {showFilterPanle ? null : hasSelectedClue ? (
                                     <div className="clue-list-selected-tip">
                                         <span className="iconfont icon-sys-notice" />
                                         {this.renderSelectClueTips()}
@@ -3753,7 +3754,7 @@ class ClueCustomer extends React.Component {
                                     />
                                 </div>}
                             </div>
-                            {hasSelectedClue ? this.renderBatchChangeClues() : this.renderNotSelectClueBtns()}
+                            {showFilterPanle ? null : hasSelectedClue ? this.renderBatchChangeClues() : this.renderNotSelectClueBtns()}
                         </div>
                     </TopNav>
                     <div className="clue-content-container" ref={dom => {
@@ -3768,7 +3769,7 @@ class ClueCustomer extends React.Component {
                                 clueClassifyArray={this.state.clueClassifyArray}
                                 salesManList={this.getSalesDataList()}
                                 getClueList={this.saveFilterCondition}
-                                style={{width: isWebMin ? '100%' : LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight(this.props.adaptiveHeight, isWebMin ? false : true) + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
+                                style={{width: isWebMin ? '100%' : LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight(this.props.adaptiveHeight, isWebMin ? false : true) + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT + (isWebMin ? (oplateConsts.LAYOUT.BOTTOM_NAV + 2) : 0)}}
                                 showSelectTip={_.get(this.state.selectedClues, 'length')}
                                 toggleList={this.toggleList.bind(this)}
                             />

@@ -1283,26 +1283,29 @@ class ClueExtract extends React.Component {
         });
         const hasSelectedClue = this.hasSelectedClues();
         let filterHidden = !this.state.showFilterList;
+        let showFilterPanle = isWebMin && !filterHidden;
         var filterCls = classNames('filter-container',{
             'filter-close': filterHidden,
-            'mobile-filter-container': isWebMin && !filterHidden
+            'mobile-filter-container': showFilterPanle
         });
 
         return (
             <div className="extract-clue-panel">
                 <div className='extract-clue-top-nav-wrap date-picker-wrap'>
                     <div className="search-container">
-                        {hasSelectedClue ? null : <BackMainPage className="clue-back-btn" 
+                        {hasSelectedClue || showFilterPanle ? null : <BackMainPage className="clue-back-btn"
                             handleBackClick={this.closeExtractCluePanel}></BackMainPage>}
-                        <div className="search-input-wrapper">
-                            <FilterInput
-                                ref="filterinput"
-                                toggleList={this.toggleList.bind(this)}
-                                showSelectChangeTip={_.get(this.state.selectedClues, 'length')}
-                                showList={this.state.showFilterList}
-                            />
-                        </div>
-                        {hasSelectedClue ? (
+                        {isWebMin && hasSelectedClue ? null : (
+                            <div className="search-input-wrapper">
+                                <FilterInput
+                                    ref="filterinput"
+                                    toggleList={this.toggleList.bind(this)}
+                                    showSelectChangeTip={_.get(this.state.selectedClues, 'length')}
+                                    showList={this.state.showFilterList}
+                                />
+                            </div>
+                        )}
+                        {showFilterPanle ? null : hasSelectedClue ? (
                             <div className="clue-list-selected-tip">
                                 <span className="iconfont icon-sys-notice"/>
                                 {this.renderSelectClueTips()}
@@ -1333,7 +1336,7 @@ class ClueExtract extends React.Component {
                             getClueList={this.getCluePoolList}
                             style={{
                                 width: isWebMin ? '100%' : LAYOUT_CONSTANTS.FILTER_WIDTH,
-                                height: getTableContainerHeight(this.props.adaptiveHeight, false) + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT
+                                height: getTableContainerHeight(this.props.adaptiveHeight, false) + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT + (isWebMin ? oplateConsts.LAYOUT.BOTTOM_NAV : 0)
                             }}
                             showSelectTip={_.get(this.state.selectedClues, 'length')}
                             toggleList={this.toggleList.bind(this)}
