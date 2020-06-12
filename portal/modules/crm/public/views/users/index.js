@@ -28,10 +28,10 @@ import {isOplateUser, getContactSalesPopoverTip, isExpired} from 'PUB_DIR/source
 import { EventEmitter } from 'events';
 import {getDetailLayoutHeight} from '../../utils/crm-util';
 import DetailCard from 'CMP_DIR/detail-card';
-import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_APPROVE_TYPES,APPLY_TYPES} from 'PUB_DIR/sources/utils/consts';
 
 const PAGE_SIZE = 20;
-const APPLY_TYPES = {
+const APPLY_ADD_TYPES = {
     STOP_USE: 'stopUse',//停用
     DELAY: 'Delay',//延期
     EDIT_PASSWORD: 'editPassword',//修改密码
@@ -145,10 +145,14 @@ class CustomerUsers extends React.Component {
         ];
         Promise.all(promiseList).then((result) => {
             var applyTypes = [APPLY_CONSTANTS.APPLY_USER_OFFICIAL, APPLY_CONSTANTS.APPLY_USER_TRIAL, APPLY_CONSTANTS.APPLY_USER];
-            let userApplyList = _.filter(_.get(result, '[0].list', []), item => _.includes(applyTypes, _.get(item,'detail.user_apply_type')));
+            let delayTypes = [APPLY_TYPES.DELAY, APPLY_TYPES.APPLY_GRANT_DELAY];
+            var applyList = _.get(result, '[0].list', []);
+            let userApplyList = _.filter(applyList, item => _.includes(applyTypes, _.get(item,'detail.user_apply_type')));
+            let delayApplyList = _.filter(applyList,item => _.includes(delayTypes, _.get(item,'detail.user_apply_type')));
             let userList = _.get(result, '[1]', []);
             this.setState({
-                userApplyList
+                userApplyList,
+                delayApplyList
             });
             this.setCrmUserData(userList);
         }).catch((errorMsg) => {
@@ -356,15 +360,15 @@ class CustomerUsers extends React.Component {
 
     handleMenuClick(applyType) {
         let traceDescr = '';
-        if (applyType === APPLY_TYPES.STOP_USE) {
+        if (applyType === APPLY_ADD_TYPES.STOP_USE) {
             traceDescr = '打开申请停用面板';
-        } else if (applyType === APPLY_TYPES.EDIT_PASSWORD) {
+        } else if (applyType === APPLY_ADD_TYPES.EDIT_PASSWORD) {
             traceDescr = '打开申请修改密码面板';
-        } else if (applyType === APPLY_TYPES.DELAY) {
+        } else if (applyType === APPLY_ADD_TYPES.DELAY) {
             traceDescr = '打开申请延期面板';
-        } else if (applyType === APPLY_TYPES.OTHER) {
+        } else if (applyType === APPLY_ADD_TYPES.OTHER) {
             traceDescr = '打开申请其他类型面板';
-        } else if (applyType === APPLY_TYPES.OPEN_APP) {
+        } else if (applyType === APPLY_ADD_TYPES.OPEN_APP) {
             traceDescr = '打开申请开通应用面板';
             // if (_.isFunction(this.props.showOpenAppForm)) {
             //     this.props.showOpenAppForm(applyType);
@@ -383,8 +387,8 @@ class CustomerUsers extends React.Component {
         return (
             applyPrivileged && !isExpired() ? (
                 <div className="crm-user-apply-btns" data-tracename="申请新用户">
-                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
-                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.NEW_USERS) }>
+                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.NEW_USERS)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_ADD_TYPES.NEW_USERS) }>
                         {Intl.get('crm.apply.user.new', '申请新用户')}
                     </Button>
                 </div>) : (
@@ -395,41 +399,104 @@ class CustomerUsers extends React.Component {
                     trigger="click"
                 >
                     <div className="crm-user-apply-btns" data-tracename="申请新用户">
-                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}>
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.NEW_USERS)}>
                             {Intl.get('crm.apply.user.new', '申请新用户')}
                         </Button>
                     </div>
                 </Popover>)
         );
-    }
+    };
+    //计算笛卡尔积
+    calcDescartes = (array) => {
+        if (array.length < 2) return array[0] || [];
+        return [].reduce.call(array, function(col, set) {
+            var res = [];
+            col.forEach(function(c) {
+                set.forEach(function(s) {
+                    res.push({
+                        user_id: _.get(s,'user_id'),
+                        user_name: _.get(s,'user_name'),
+                        client_id: _.get(c,'app_id'),
+                        client_name: _.get(c,'app_name')
+                    });
+                });
+            });
+            return res;
+        });
+    };
 
     //其他申请时，根据返回的状态信息渲染带popover的button和不带popover的button
     renderOtherApplyButton = (batchApplyFlag, openAppFlag) => {
         let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
         let popoverTip = isExpired ? getContactSalesPopoverTip() : _.get(this.state, 'applyState.applyMessage');
+        let delayApplyDisable = !batchApplyFlag, disableTitleTip = '';
+        if(!delayApplyDisable){//延期申请的时候，如果该用户有延期的申请未审批，不可以继续添加延期申请
+            let {delayApplyList,crmUserList} = this.state;
+            //列表已经选中的user和app的对应列表
+            let hasSelectUserAppList = [];
+            _.each(crmUserList,userItem => {
+                //每个用户中被选中的应用
+                var selectedApps = _.filter(userItem.apps, item => item && item.checked);
+                if(!_.isEmpty(selectedApps)){
+                    hasSelectUserAppList = _.concat(hasSelectUserAppList, this.calcDescartes([selectedApps,[userItem.user]]));
+                }
+            });
+            let hasApplyOngoingList = [];
+            _.each(hasSelectUserAppList,item => {
+                // 所有申请审批中的用户列表
+                var userListInApply = _.chain(delayApplyList).map(delayItem => _.get(delayItem,'detail.user_grants_apply')).flattenDeep().valueOf();
+                var targetObj = _.find(userListInApply, userItem => userItem.user_id === item.user_id && userItem.client_id === item.client_id);
+                if(targetObj){
+                    hasApplyOngoingList.push(item);
+                }
+            });
+            if(_.get(hasApplyOngoingList,'length')){
+                delayApplyDisable = true;
+                var userAppTip = [];
+                _.each(hasApplyOngoingList,(appList,index) => {
+                    //提示为哪个用户的哪个应用还有延期申请未审批
+                    // userAppTip.push(Intl.get('crm.userName.clientName', '{userName}的{clientName}',{
+                    //     userName: appList.user_name,
+                    //     clientName: appList.client_name
+                    // }));
+                    userAppTip.push(appList.user_name);
+                });
+                disableTitleTip = Intl.get('crm.user.has.no.apply.approve', '有针对用户{userApp}的延期申请尚未审批，暂不能添加新的延期申请',{userApp: userAppTip.join(',')});
+            }
+        }
+
         return (
             applyPrivileged && !isExpired() ? (
                 <div className="crm-user-apply-btns">
-                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
-                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.STOP_USE)}
+                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.STOP_USE)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_ADD_TYPES.STOP_USE)}
                         disabled={!batchApplyFlag}>
                         {Intl.get('common.stop', '停用')}
                     </Button>
-                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.DELAY)}
-                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.DELAY)} disabled={!batchApplyFlag}>
+                    {delayApplyDisable ? <Popover content={disableTitleTip} trigger="hover" placement="left">
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.DELAY)}
+                            disabled={delayApplyDisable}
+                        >
+                            {Intl.get('crm.user.delay', '延期')}
+                        </Button>
+                    </Popover> : <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.DELAY)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_ADD_TYPES.DELAY)}>
                         {Intl.get('crm.user.delay', '延期')}
-                    </Button>
-                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.EDIT_PASSWORD)}
-                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.EDIT_PASSWORD)}
+                    </Button>}
+
+
+
+                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.EDIT_PASSWORD)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_ADD_TYPES.EDIT_PASSWORD)}
                         disabled={!batchApplyFlag}>
                         {Intl.get('common.edit.password', '修改密码')}
                     </Button>
-                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.OTHER)}
-                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OTHER)} disabled={!batchApplyFlag}>
+                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.OTHER)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_ADD_TYPES.OTHER)} disabled={!batchApplyFlag}>
                         {Intl.get('crm.186', '其他')}
                     </Button>
-                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
-                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OPEN_APP)} disabled={!openAppFlag}>
+                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.OPEN_APP)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_ADD_TYPES.OPEN_APP)} disabled={!openAppFlag}>
                         {Intl.get('user.product.open','开通产品')}
                     </Button>
                 </div>) : (
@@ -440,7 +507,7 @@ class CustomerUsers extends React.Component {
                         content={popoverTip}
                         trigger="click"
                     >
-                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.STOP_USE)}
                             disabled={!batchApplyFlag}>
                             {Intl.get('common.stop', '停用')}
                         </Button>
@@ -451,7 +518,7 @@ class CustomerUsers extends React.Component {
                         content={popoverTip}
                         trigger="click"
                     >
-                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.DELAY)}
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.DELAY)}
                             disabled={!batchApplyFlag}>
                             {Intl.get('crm.user.delay', '延期')}
                         </Button>
@@ -462,7 +529,7 @@ class CustomerUsers extends React.Component {
                         content={popoverTip}
                         trigger="click"
                     >
-                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.EDIT_PASSWORD)}
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.EDIT_PASSWORD)}
                             disabled={!batchApplyFlag}>
                             {Intl.get('common.edit.password', '修改密码')}
                         </Button>
@@ -473,7 +540,7 @@ class CustomerUsers extends React.Component {
                         content={popoverTip}
                         trigger="click"
                     >
-                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.OTHER)}
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.OTHER)}
                             disabled={!batchApplyFlag}>
                             {Intl.get('crm.186', '其他')}
                         </Button>
@@ -484,7 +551,7 @@ class CustomerUsers extends React.Component {
                         content={popoverTip}
                         trigger="click"
                     >
-                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.OPEN_APP)}
                             disabled={!openAppFlag}>
                             {Intl.get('user.product.open','开通产品')}
                         </Button>
@@ -512,7 +579,7 @@ class CustomerUsers extends React.Component {
 
     renderRightPanel() {
         let rightPanelView = null;
-        if (this.state.applyType === APPLY_TYPES.OPEN_APP) {
+        if (this.state.applyType === APPLY_ADD_TYPES.OPEN_APP) {
             let checkedUsers = _.filter(this.state.crmUserList, userObj => userObj.user && userObj.user.checked);
             if (_.isArray(checkedUsers) && checkedUsers.length) {
                 rightPanelView = (
@@ -824,7 +891,7 @@ class CustomerUsers extends React.Component {
                         );
                     })}
                 </ul>);
-        } else if (this.state.applyType !== APPLY_TYPES.NEW_USERS) {//没有用户时，展开申请用户面板时，不展示暂无用户的提示
+        } else if (this.state.applyType !== APPLY_ADD_TYPES.NEW_USERS) {//没有用户时，展开申请用户面板时，不展示暂无用户的提示
             //加载完成，没有数据的情况
             return (<NoDataIconTip tipContent={Intl.get('crm.detail.no.user', '暂无用户')}/>);
         }
@@ -970,9 +1037,9 @@ class CustomerUsers extends React.Component {
                         {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
                     </span>)*/}
             {this.state.applyType ?
-                this.state.applyType === APPLY_TYPES.OPEN_APP || this.state.applyType === APPLY_TYPES.NEW_USERS ?
+                this.state.applyType === APPLY_ADD_TYPES.OPEN_APP || this.state.applyType === APPLY_ADD_TYPES.NEW_USERS ?
                     this.renderUserApplyForm() : (
-                        <CrmUserApplyForm applyType={this.state.applyType} APPLY_TYPES={APPLY_TYPES}
+                        <CrmUserApplyForm applyType={this.state.applyType} APPLY_TYPES={APPLY_ADD_TYPES}
                             closeApplyPanel={this.closeRightPanel.bind(this)}
                             crmUserList={this.state.crmUserList}/>)
                 : null
@@ -985,7 +1052,7 @@ class CustomerUsers extends React.Component {
                 </GeminiScrollbar>
             </div>
             {/*<RightPanel className="crm_user_apply_panel white-space-nowrap"*/}
-            {/*showFlag={this.state.applyType && this.state.applyType === APPLY_TYPES.OPEN_APP}>*/}
+            {/*showFlag={this.state.applyType && this.state.applyType === APPLY_ADD_TYPES.OPEN_APP}>*/}
             {/*{this.renderRightPanel()}*/}
             {/*</RightPanel>*/}
         </div>);
