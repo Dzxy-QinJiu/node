@@ -7,7 +7,7 @@ var ApplyAjax = require('../ajax/apply-ajax');
 var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import {getApplyDetailById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
-import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
+import {changeApplyStatusPassOrReject, checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -65,15 +65,14 @@ function ApplyViewDetailActions() {
     this.approveLeaveApplyPassOrReject = function( obj, callback) {
         this.dispatch({loading: true, error: false});
         ApplyAjax.approveLeaveApplyPassOrReject(obj).then((data) => {
-            this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
-            if (_.isFunction(callback)) {
-                callback();
+            if(data.approveFlag){//approveFlag 审批成功或失败
+                this.dispatch({loading: false, error: false});
+                _.isFunction(callback) && callback();
+                changeApplyStatusPassOrReject(obj,data);
+            }else{
+                this.dispatch({loading: false, error: true, errorMsg: Intl.get('errorcode.19', '审批申请失败')});
             }
-            //更新选中的申请单类型
-            ApplyApproveUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
         }, (errorMsg) => {
-            //更新选中的申请单类型
-            ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };

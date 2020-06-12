@@ -313,7 +313,8 @@ class RegRulesView extends React.Component {
     };
     addApplyNode = (applyFlow) => {
         this.setState({
-            addOrEditNodePanelFlow: applyFlow
+            addOrEditNodePanelFlow: applyFlow,
+            isEditNodePanelFlowItem: {}
         });
     };
     addApplyCC = (applyFlow) => {

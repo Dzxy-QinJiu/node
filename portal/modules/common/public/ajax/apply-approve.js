@@ -10,6 +10,7 @@ trans.register('getApplyListApprovedByMe', {url: '/rest/get/myapproved/apply/lis
 trans.register('getApplyTaskNode', {url: '/rest/get/apply/node', type: 'get'});
 trans.register('clearAllUnread', {url: '/rest/clear/all/unread', type: 'put'});
 trans.register('addSelfSettingApply', {url: '/rest/add/self_setting/apply', type: 'post'});
+trans.register('approveSelfSettingApply', {url: '/rest/approve/self_setting/apply', type: 'post'});
 exports.getNextCandidate = function(reqParams) {
     return trans.getAjax('candidateList', reqParams);
 };
@@ -31,3 +32,7 @@ exports.addSelfSettingApply = function(reqParams) {
     return trans.getAjax('addSelfSettingApply', reqParams);
 };
 
+
+exports.approveSelfSettingApply = function(reqParams) {
+    return trans.getAjax('approveSelfSettingApply', reqParams);
+};

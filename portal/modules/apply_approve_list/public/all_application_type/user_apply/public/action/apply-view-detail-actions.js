@@ -3,7 +3,7 @@ import AppUserAjax from '../ajax/app-user-ajax';
 import AppUserUtil from '../util/app-user-util';
 var ApplyApproveUtil = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
-import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
+import {changeApplyStatusPassOrReject, checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 import {addApplyComments, getApplyCommentList, getApplyDetailById, cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
@@ -140,16 +140,15 @@ class ApplyViewDetailActions {
         //前端调用一个接口，后端再根据类型区分不同的接口
         promise = AppUserAjax.submitApply(obj);
         promise.then((data) => {
-            this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
-            if (_.isFunction(callback)) {
-                callback();
+            if(data.approveFlag){
+                this.dispatch({loading: false, error: false});
+                _.isFunction(callback) && callback();
+                changeApplyStatusPassOrReject(obj,data);
+            }else{
+                this.dispatch({loading: false, error: true, errorMsg: Intl.get('errorcode.19', '审批申请失败')});
             }
-            //更新选中的申请单类型
-            ApplyApproveUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
 
         }, (errorMsg) => {
-            //更新选中的申请单类型
-            ApplyApproveUtil.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     }

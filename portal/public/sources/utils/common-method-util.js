@@ -58,7 +58,7 @@ const { getWebsiteConfig, getLocalWebsiteConfig } = require('LIB_DIR/utils/websi
 const MY_TEAM_TREE_KEY = 'my_team_tree';
 import {setUserData} from '../user-data';
 import newComment from '../../../static/images/new-comment.svg';
-
+var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id === curTeamId);
@@ -942,6 +942,13 @@ exports.isFinalTask = function(applyNode) {
         return _.some(applyNode, item => item.description === FINAL_TASK);
     }else{
         return false;
+    }
+};
+//审批通过或者驳回后修改左侧状态
+exports.changeApplyStatusPassOrReject = function(obj,result){
+    //只有是最后一个节点的时候，才更新选中的申请单类型
+    if(result.isFinalTask){
+        ApplyApproveUtils.emitter.emit('updateSelectedItem', {agree: _.get(obj,'agree'), status: 'success'});
     }
 };
 //判断某个审批所在节点的审批角色是否有管理员

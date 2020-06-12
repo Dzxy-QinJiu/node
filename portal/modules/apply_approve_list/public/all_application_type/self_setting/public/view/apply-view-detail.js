@@ -448,13 +448,13 @@ class ApplyViewDetail extends React.Component {
                     }else{
                         showApplyInfo.push({
                             label: _.get(item, 'title'),
-                            text: this.getShowDes()
+                            text: this.getShowDes(showItem)
                         });
                     }
                 }else{
                     showApplyInfo.push({
                         label: _.get(item, 'title'),
-                        text: this.getShowDes()
+                        text: this.getShowDes(showItem)
                     });
                 }
             });
