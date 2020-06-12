@@ -71,15 +71,11 @@ function ApplyViewDetailActions() {
                 _.isFunction(callback) && callback(true);
                 changeApplyStatusPassOrReject(obj,data);
             }else{
-                //更新选中的申请单类型
-                ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});
                 this.dispatch({loading: false, error: true, errorMsg: Intl.get('errorcode.19', '审批申请失败')});
                 _.isFunction(callback) && callback(false);
             }
         }).error((errorMsg) => {
             _.isFunction(callback) && callback(false);
-            //更新选中的申请单类型
-            ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };

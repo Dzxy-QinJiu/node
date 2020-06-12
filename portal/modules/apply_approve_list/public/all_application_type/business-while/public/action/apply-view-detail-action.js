@@ -65,18 +65,14 @@ function ApplyViewDetailActions() {
     this.approveApplyPassOrReject = function(obj, callback) {
         this.dispatch({loading: true, error: false});
         BusinessApplyAjax.approveApplyPassOrReject(obj).then((data) => {
-            if(data.approveFlag){
+            if(data.approveFlag){//approveFlag 审批成功或失败
                 this.dispatch({loading: false, error: false});
                 _.isFunction(callback) && callback();
                 changeApplyStatusPassOrReject(obj,data);
             }else{
-                //更新选中的申请单类型
-                ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});
                 this.dispatch({loading: false, error: true, errorMsg: Intl.get('errorcode.19', '审批申请失败')});
             }
         }, (errorMsg) => {
-            //更新选中的申请单类型
-            ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };

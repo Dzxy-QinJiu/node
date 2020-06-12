@@ -67,21 +67,16 @@ function ApplyViewDetailActions() {
     this.approveSalesOpportunityApplyPassOrReject = function(obj,callback) {
         this.dispatch({loading: true, error: false});
         SalesOpportunityApplyAjax.approveSalesOpportunityApplyPassOrReject(obj).then((data) => {
-            //返回的data是true才是审批成功的，false也是审批失败的
-            if(data.approveFlag){
+            if(data.approveFlag){//approveFlag 审批成功或失败
                 this.dispatch({loading: false, error: false});
                 _.isFunction(callback) && callback(true);
                 changeApplyStatusPassOrReject(obj,data);
             }else{
-                //更新选中的申请单类型
-                ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});
                 this.dispatch({loading: false, error: true, errorMsg: Intl.get('errorcode.19', '审批申请失败')});
                 _.isFunction(callback) && callback(false);
             }
         }, (errorMsg) => {
             _.isFunction(callback) && callback(false);
-            //更新选中的申请单类型
-            ApplyApproveUtils.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
