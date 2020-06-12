@@ -294,7 +294,6 @@ class RecommendCluesFilterPanel extends Component {
         if(this.searchInputRef) {
             this.searchInputRef.state.keyword = _.get(result.item, 'name', '');
             clueCustomerAction.saveSettingCustomerRecomment({...result.hasSavedRecommendParams, keyword: _.get(result.item, 'name', '')});
-            clueCustomerAction.setHotSource('');
         }
         let listItem = toFrontRecommendClueData(result.item);
         if(_.isEqual(_.get(result, 'total'), 1)) {//被提取过
@@ -514,10 +513,7 @@ class RecommendCluesFilterPanel extends Component {
             delete hasSavedRecommendParams.feature;
         }
         clueCustomerAction.saveSettingCustomerRecomment(hasSavedRecommendParams);
-        clueCustomerAction.setHotSource(advanced);
-        setTimeout(() => {
-            this.getRecommendClueList(hasSavedRecommendParams, true, true);
-        });
+        this.getRecommendClueList(hasSavedRecommendParams, true, true);
     };
 
     //点击vip项处理事件
