@@ -32,6 +32,7 @@ class ModalDialog extends React.Component {
             'transparentBgFlag modal': this.props.transparentBgFlag,
             'modal': !this.props.transparentBgFlag
         });
+        var confirmOkBtn = classNames('btn-ok',this.props.confirmCls);
         var closedModalTip = this.props.closedModalTip ? this.props.closedModalTip : '关闭模态框';
         return (
             <Modal
@@ -40,20 +41,21 @@ class ModalDialog extends React.Component {
                 container={this.props.container}
                 bsClass={btnClass}
             >
-                <Modal.Header closeButton>
-                    <Modal.Title />
+                <Modal.Header closeButton className={this.props.confirmCls}>
+                    <Modal.Title>{this.props.modalTitle}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <p>{this.props.modalContent}</p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button className="btn-ok" onClick={this.delete} disabled={this.props.showResultLoading} >
+                    <Button className={confirmOkBtn} onClick={this.delete} disabled={this.props.showResultLoading} >
                         {this.props.okText || Intl.get('common.sure')}
                         {this.props.showResultLoading ? <Icon type="loading"/> : null}
                     </Button>
                     <Button className="btn-cancel" onClick={this.close} data-tracename={closedModalTip}>
                         {this.props.cancelText || Intl.get('common.cancel')}
                     </Button>
+
                 </Modal.Footer>
             </Modal>
         );
@@ -75,7 +77,10 @@ ModalDialog.defaultProps = {
     showResultLoading: false,
     okText: '',
     cancelText: '',
-    delayClose: false
+    delayClose: false,
+    modalTitle: '',
+    confirmCls: ''
+
 };
 ModalDialog.propTypes = {
     delete: PropTypes.func,
@@ -90,6 +95,8 @@ ModalDialog.propTypes = {
     okText: PropTypes.string,
     cancelText: PropTypes.string,
     delayClose: PropTypes.bool,
+    modalTitle: PropTypes.string,
+    confirmCls: PropTypes.string,
 };
 
 module.exports = ModalDialog;

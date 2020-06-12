@@ -13,6 +13,8 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 // 根据权限，判断获取团队和成员时所传字段的值
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
+import { Input } from 'antd';
+const { TextArea } = Input;
 import {
     APPLY_APPROVE_TYPES,
     USERAPPLY_FINISH_STATUS,
@@ -56,7 +58,7 @@ const { getWebsiteConfig, getLocalWebsiteConfig } = require('LIB_DIR/utils/websi
 const MY_TEAM_TREE_KEY = 'my_team_tree';
 import {setUserData} from '../user-data';
 import newComment from '../../../static/images/new-comment.svg';
-
+var ApplyApproveUtils = require('MOD_DIR/apply_approve_list/public/utils/apply_approve_utils');
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id === curTeamId);
@@ -564,7 +566,7 @@ exports.getFilterReplyList = function(thisState) {
         replyList = _.get(thisState, 'replyListInfo.list');
     }
     replyList = _.filter(replyList, (item) => {
-        return !item.comment;
+        return !(_.has(item,'status') && !item.comment);
     });
     replyList = _.sortBy(_.cloneDeep(replyList), [item => item.comment_time]);
     return replyList;
@@ -585,31 +587,40 @@ exports.getUserApplyFilterReplyList = function(thisState) {
     return replyList;
 };
 
-exports.handleDiffTypeApply = function(that) {
-    var confirmType = that.state.showBackoutConfirmType, modalContent = '', deleteFunction = function() {
-        }, okText = '', modalShow = false, resultType = {};
+exports.handleDiffTypeApply = function(that, isUserApply) {
+    var confirmType = that.state.showBackoutConfirmType,modalTitle = null, modalContent = '', deleteFunction = function() {
+        }, okText = '', modalShow = false, resultType = {}, confirmCls = '';
     //不同类型的操作，展示的描述和后续操作也不一样
     if (confirmType === 'pass' || confirmType === 'reject') {
         deleteFunction = that.passOrRejectApplyApprove.bind(that, confirmType);
-        modalContent = Intl.get('apply.approve.modal.text.pass', '是否通过此申请');
-        okText = Intl.get('user.apply.detail.button.pass', '通过');
+        modalContent = Intl.get('apply.list.confirm.pass.tip', '确认通过此申请吗？');
+        okText = Intl.get('apply.list.confirm.pass', '确认通过');
+        modalTitle = <span><i className='iconfont icon-agree'></i>{Intl.get('user.apply.detail.pass', '通过申请')}</span>;
+        confirmCls = 'pass-btn';
         if (confirmType === 'reject') {
-            modalContent = Intl.get('apply.approve.modal.text.reject', '是否驳回此申请');
-            okText = Intl.get('common.apply.reject', '驳回');
+            modalContent = <TextArea autoSize={true} onChange={that.changeRejectComment} placeholder={Intl.get('apply.list.reject.comment', '请输入驳回理由（选填）')}/>;
+            okText = Intl.get('apply.list.confirm.reject', '确认驳回');
+            modalTitle = <span><i className='iconfont icon-reject'></i>{Intl.get('user.apply.detail.reject', '驳回申请')}</span>;
+            confirmCls = 'reject-btn';
         }
-        resultType = that.state.applyResult;
+        //如果之前没有设置过角色，要加上设置角色的提示
+        if (_.get(that, 'state.rolesNotSettingModalDialog.appNames.length') && isUserApply){
+            modalContent = that.state.rolesNotSettingModalDialog.appNames.join('、') + Intl.get('user.apply.detail.role.modal.content', '中，未对用户分配角色，确认通过此申请吗？');
+        }
     } else if (confirmType === 'cancel') {
         modalContent = Intl.get('user.apply.detail.modal.content', '是否撤销此申请？');
         deleteFunction = that.cancelApplyApprove;
         okText = Intl.get('user.apply.detail.modal.ok', '撤销');
-        resultType = that.state.backApplyResult;
     }
+    resultType = that.state.applyResult;
     modalShow = confirmType && resultType.submitResult === '';
     return {
         modalShow: modalShow,
         modalContent: modalContent,
         deleteFunction: deleteFunction,
-        okText: okText
+        okText: okText,
+        modalTitle: modalTitle,
+        confirmCls: confirmCls
     };
 };
 
@@ -931,6 +942,13 @@ exports.isFinalTask = function(applyNode) {
         return _.some(applyNode, item => item.description === FINAL_TASK);
     }else{
         return false;
+    }
+};
+//审批通过或者驳回后修改左侧状态
+exports.changeApplyStatusPassOrReject = function(obj,result){
+    //只有是最后一个节点的时候，才更新选中的申请单类型
+    if(result.isFinalTask){
+        ApplyApproveUtils.emitter.emit('updateSelectedItem', {agree: _.get(obj,'agree'), status: 'success'});
     }
 };
 //判断某个审批所在节点的审批角色是否有管理员

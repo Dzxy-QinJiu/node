@@ -49,14 +49,6 @@ module.exports = {
             },
             'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
         }, {
-            method: 'post',
-            path: '/rest/approve/self_setting/apply',
-            handler: 'approveSelfSettingApply',
-            passport: {
-                needLogin: true
-            },
-            'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
-        }, {
             method: 'get',
             path: '/rest/get/self_setting/work_flow',
             handler: 'getSelfSettingWorkFlow',

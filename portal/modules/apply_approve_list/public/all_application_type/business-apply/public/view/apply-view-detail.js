@@ -55,6 +55,7 @@ class ApplyViewDetail extends React.Component {
             usersManList: [],//成员列表
             customerUpdate: {id: '',index: ''},//修改拜访时间的客户
             isEdittingTotalTime: false,//是否编辑总的请假时间
+            rejectComment: '',//驳回的理由
             ...applyBusinessDetailStore.getState()
         };
     }
@@ -204,7 +205,8 @@ class ApplyViewDetail extends React.Component {
             this.setState({
                 showBackoutConfirmType: '',
                 isEdittingTotalTime: false,
-                customerUpdate: {id: '',index: ''}
+                customerUpdate: {id: '',index: ''},
+                rejectComment: ''
             });
         }
     }
@@ -995,11 +997,21 @@ class ApplyViewDetail extends React.Component {
     };
     passOrRejectApplyApprove = (confirmType) => {
         var detailInfoObj = this.state.detailInfoObj.info;
-        ApplyViewDetailActions.approveApplyPassOrReject({id: detailInfoObj.id, agree: confirmType}, () => {
+        var obj = {id: detailInfoObj.id, agree: confirmType};
+        //如果写了驳回的理由
+        if(this.state.rejectComment && confirmType === 'reject'){
+            obj.comment = this.state.rejectComment;
+        }
+        ApplyViewDetailActions.approveApplyPassOrReject(obj, () => {
             //调用父组件的方法进行审批完成后的其他处理
             if (_.isFunction(this.props.afterApprovedFunc)) {
                 this.props.afterApprovedFunc();
             }
+        });
+    };
+    changeRejectComment= (e) => {
+        this.setState({
+            rejectComment: e.target.value
         });
     };
     renderCancelApplyApprove = () => {
@@ -1015,6 +1027,10 @@ class ApplyViewDetail extends React.Component {
                     delete={typeObj.deleteFunction}
                     okText={typeObj.okText}
                     delayClose={true}
+                    modalTitle={typeObj.modalTitle}
+                    cancelText={typeObj.cancelText}
+                    className='apply-modal'
+                    confirmCls={typeObj.confirmCls}
                 />
             );
         }else{
@@ -1031,7 +1047,8 @@ class ApplyViewDetail extends React.Component {
     hideBackoutModal = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击关闭模态框按钮');
         this.setState({
-            showBackoutConfirmType: ''
+            showBackoutConfirmType: '',
+            rejectComment: ''
         });
     };
     // 撤销申请

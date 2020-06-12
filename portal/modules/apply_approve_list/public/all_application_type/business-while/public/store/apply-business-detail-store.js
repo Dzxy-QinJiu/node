@@ -61,6 +61,9 @@ ApplyViewDetailStore.prototype.setInitState = function() {
     };
     this.isLeader = false; //当前账号是否是待审批人的上级领导
     this.applyNode = [];
+    //下一节点负责人的列表
+    this.candidateList = [];
+
 };
 //设置某条申请的回复列表
 ApplyViewDetailStore.prototype.setApplyComment = function(list) {

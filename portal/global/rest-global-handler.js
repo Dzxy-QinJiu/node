@@ -20,9 +20,14 @@ function cleanAuthAndSendData(req, res, data) {
         //发送退出事件给chrome extension插件
         logoutMsgEmitter.emit(logoutMsgEmitter.LOGOUT_ACCOUNT,{
             sessionId: req.sessionID,
-            user: req.session.user,
+            user: req.session.user
         });
-        res.status(403).json(data);
+        logoutMsgEmitter.emit(logoutMsgEmitter.KICKOFF_ACCOUNT,{
+            sessionId: req.sessionID,
+            user: req.session.user,
+            data: data
+        });
+        res.status(403).end();
     } catch (e) {
         // eslint-disable-next-line no-console
         console.log(JSON.stringify(e));

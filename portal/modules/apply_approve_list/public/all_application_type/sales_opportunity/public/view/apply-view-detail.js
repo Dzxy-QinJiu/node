@@ -54,6 +54,7 @@ class ApplyViewDetail extends React.Component {
             salesManList: [],//销售列表
             usersManList: [],//成员列表
             showBackoutConfirmType: '',//操作的确认框类型
+            rejectComment: '',//驳回的理由
             ...SalesOpportunityApplyDetailStore.getState()
         };
     }
@@ -207,7 +208,8 @@ class ApplyViewDetail extends React.Component {
             phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
             this.getBusinessApplyDetailData(nextProps.detailItem);
             this.setState({
-                showBackoutConfirmType: ''
+                showBackoutConfirmType: '',
+                rejectComment: ''
             });
         }
     }
@@ -516,7 +518,8 @@ class ApplyViewDetail extends React.Component {
     hideBackoutModal = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击关闭模态框按钮');
         this.setState({
-            showBackoutConfirmType: ''
+            showBackoutConfirmType: '',
+            rejectComment: ''
         });
     };
     // 撤销申请
@@ -590,6 +593,10 @@ class ApplyViewDetail extends React.Component {
             var salesUserIds = assignedSalesUsersIds.split('&&')[0];
             submitObj.user_ids = [salesUserIds];
         }
+        //如果写了驳回的理由
+        if(this.state.rejectComment && confirmType === 'reject'){
+            submitObj.comment = this.state.rejectComment;
+        }
         SalesOpportunityApplyDetailAction.approveSalesOpportunityApplyPassOrReject(submitObj, (flag) => {
             if ((submitObj.assigned_candidate_users || submitObj.user_ids)) {
                 if (flag) {
@@ -609,6 +616,11 @@ class ApplyViewDetail extends React.Component {
         }
 
     };
+    changeRejectComment= (e) => {
+        this.setState({
+            rejectComment: e.target.value
+        });
+    };
     renderCancelApplyApprove = () => {
         var confirmType = this.state.showBackoutConfirmType;
         if (confirmType){
@@ -622,6 +634,10 @@ class ApplyViewDetail extends React.Component {
                     delete={typeObj.deleteFunction}
                     okText={typeObj.okText}
                     delayClose={true}
+                    modalTitle={typeObj.modalTitle}
+                    cancelText={typeObj.cancelText}
+                    className='apply-modal'
+                    confirmCls={typeObj.confirmCls}
                 />
             );
         }else{

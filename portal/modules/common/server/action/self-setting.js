@@ -23,13 +23,6 @@ exports.addSelfSettingApply = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-exports.approveSelfSettingApply = function(req, res) {
-    ApplyApproveManageService.approveSelfSettingApply(req, res).on('success', function(data) {
-        res.status(200).json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
 
 exports.editSelfSettingWorkFlow = function(req, res) {
     ApplyApproveManageService.editSelfSettingWorkFlow(req, res).on('success', function(data) {

@@ -108,9 +108,7 @@ class ApplyViewDetailStore {
             //模态框是否显示
             show: false,
             //应用名称列表
-            appNames: [],
-            //是否继续提交
-            continueSubmit: false
+            appNames: []
         };
 
         // 应用的默认配置信息
@@ -173,8 +171,7 @@ class ApplyViewDetailStore {
         //没有角色的时候，显示模态框，重置
         this.rolesNotSettingModalDialog = {
             show: false,
-            appNames: [],
-            continueSubmit: false
+            appNames: []
         };
 
         if (obj.loading) {
@@ -430,8 +427,9 @@ class ApplyViewDetailStore {
         } else if (obj.error) {
             this.applyResult.submitResult = 'error';
             this.applyResult.errorMsg = obj.errorMsg;
+            this.rolesNotSettingModalDialog.show = false;
+            this.rolesNotSettingModalDialog.appNames = [];
         } else {
-            this.rolesNotSettingModalDialog.continueSubmit = false;
             this.rolesNotSettingModalDialog.show = false;
             this.rolesNotSettingModalDialog.appNames = [];
 
@@ -443,7 +441,6 @@ class ApplyViewDetailStore {
     cancelSendApproval() {
         this.applyResult.submitResult = '';
         this.applyResult.errorMsg = '';
-        this.rolesNotSettingModalDialog.continueSubmit = false;
         this.rolesNotSettingModalDialog.show = false;
         this.rolesNotSettingModalDialog.appNames = [];
     }
@@ -647,7 +644,7 @@ class ApplyViewDetailStore {
             };
         }
     }
-    
+
     getNextCandidate(result) {
         if (result.error) {
             this.candidateList = [];
@@ -673,12 +670,6 @@ class ApplyViewDetailStore {
     setRolesNotSettingModalDialog({ show, appNames }) {
         this.rolesNotSettingModalDialog.show = show;
         this.rolesNotSettingModalDialog.appNames = appNames;
-    }
-    //没有设置角色，但是仍然提交
-    rolesNotSettingContinueSubmit() {
-        this.rolesNotSettingModalDialog.continueSubmit = true;
-        this.rolesNotSettingModalDialog.show = false;
-        this.rolesNotSettingModalDialog.appNames = [];
     }
     setNextCandidateIds(candidateId){
         this.detailInfoObj.info.nextCandidateId = candidateId;

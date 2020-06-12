@@ -1480,7 +1480,7 @@ var en_US = {
     'user.apply.detail.backout.error': 'revoke error', // 撤销申请失败
     'user.apply.detail.backout.person': 'revoker', // 撤销人
     'user.apply.detail.approval.person': 'approver', // 审批人
-    'user.apply.detail.role.modal.content': 'no role, whether to continue', // 中,没有为用户分配角色,是否继续
+    'user.apply.detail.role.modal.content': 'no role, whether to continue?', // 中，未对用户分配角色，确认通过此申请吗
     'user.apply.detail.role.modal.continue': 'continue', // 继续
     'user.apply.detail.role.modal.cancel': 'modify', // 我再改改
     'user.apply.detail.submit.sending': 'Reviewing', // 审批中...
@@ -1515,6 +1515,10 @@ var en_US = {
     'apply.list.return.back': 'return',//返回
     'apply.list.get.list.err': 'Failed to get the list, please check the network status',//获取列表失败，请检查网络状态
     'apply.list.all.list.read': 'All read',//全部已读
+    'apply.list.reject.comment': 'Reason for rejection (optional)',//请输入驳回理由（选填）
+    'apply.list.confirm.reject': 'Confirm rejection',//确认驳回
+    'apply.list.confirm.pass': 'Confirm pass',//确认通过
+    'apply.list.confirm.pass.tip': 'Confirm to apply through this?',//确认通过此申请吗？
     // 用户审批end
 
     // 在线用户start
@@ -2024,6 +2028,9 @@ var en_US = {
     'crm.search.customer.no.customer.pool.dash': 'The customer has been deleted or has been released to the customer pool, please go to {recycle} or {customerpool}',//客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看
     'crm.batch.second.user': 'Change partner',//变更联合跟进人
     'crm.has.contain.join.user': 'Is there a joint follow-up person',//是否有联合跟进人
+    'crm.user.has.no.apply.approve': 'There is an extension request for user {userApp} that has not yet been approved, and a new extension application cannot be added at this time',//有针对用户{userApp}的延期申请尚未审批，暂不能添加新的延期申请
+    'crm.userName.clientName': '{clientName} of {userName}',//{userName}的{clientName}
+
     // 客户管理end
 
     //客户分析 start
