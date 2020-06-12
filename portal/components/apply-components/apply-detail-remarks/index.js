@@ -45,7 +45,7 @@ class ApplyDetailRemarks extends React.Component {
         }
         //回复列表中去掉点击通过或者驳回按钮增加的回复数据
         let replyList = _.cloneDeep(replyListInfo.list);
-        replyList = _.filter(replyList, item => !_.has(item,'status'));
+        replyList = _.filter(replyList, item => !(_.has(item,'status') && !item.comment));
         //按回复时间进行排序
         replyList = _.sortBy(replyList, item => item.comment_time);
         if (_.isArray(replyList) && replyList.length) {

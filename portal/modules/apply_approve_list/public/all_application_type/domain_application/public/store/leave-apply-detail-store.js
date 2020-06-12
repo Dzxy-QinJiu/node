@@ -61,6 +61,8 @@ LeaveApplyDetailStore.prototype.setInitState = function() {
     };
     this.isLeader = false; //当前账号是否是待审批人的上级领导
     this.applyNode = [];
+    //下一节点负责人的列表
+    this.candidateList = [];
 };
 LeaveApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;

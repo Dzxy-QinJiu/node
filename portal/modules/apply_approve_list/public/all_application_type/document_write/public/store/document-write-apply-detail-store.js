@@ -60,6 +60,8 @@ DocumentWriteApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     this.isLeader = false; //当前账号是否是待审批人的上级领导
+    //下一节点负责人的列表
+    this.candidateList = [];
 };
 DocumentWriteApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -81,7 +83,6 @@ DocumentWriteApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(deta
     };
     //下一节点负责人的列表
     this.candidateList = [];
-
 };
 DocumentWriteApplyDetailStore.prototype.setDetailInfo = function(detailObj) {
     this.detailInfoObj = {

@@ -201,6 +201,7 @@ const COLUMN_WIDTH = {
             isHomeMyWork: this.props.isHomeMyWork,
             isShowNoSelectAppTerminalsTips: false, //  是否显示没有选择多终端信息的提示
             isShowTipsClickPass: false, // 点击通过时，是否显示提示信息
+            rejectComment: '',//驳回的理由
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -358,7 +359,8 @@ const COLUMN_WIDTH = {
             this.setState({
                 showBackoutConfirmType: '',
                 curEditExpireDateAppIdr: '',
-                updateDelayTime: ''
+                updateDelayTime: '',
+                rejectComment: ''
             });
         }
         this.setState({
@@ -2061,7 +2063,8 @@ const COLUMN_WIDTH = {
             appNames: []
         });
         this.setState({
-            showBackoutConfirmType: ''
+            showBackoutConfirmType: '',
+            rejectComment: ''
         });
     },
 
@@ -2075,45 +2078,28 @@ const COLUMN_WIDTH = {
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.cancelApplyApprove(backoutObj);
     },
+    changeRejectComment(e){
+        this.setState({
+            rejectComment: e.target.value
+        });
+    },
     renderCancelApplyApprove() {
-        var confirmType = this.state.showBackoutConfirmType, modalContent = '', deleteFunction = function() {
-
-            }, okText = '',cancelText = '', modalShow = false, resultType = {};
+        var confirmType = this.state.showBackoutConfirmType;
         if (confirmType) {
-            //不同类型的操作，展示的描述和后续操作也不一样
-            if (confirmType === 'pass' || confirmType === 'reject') {
-                deleteFunction = this.passOrRejectApplyApprove.bind(this, confirmType);
-                modalContent = Intl.get('apply.approve.modal.text.pass', '是否通过此申请');
-                okText = Intl.get('user.apply.detail.button.pass', '通过');
-                if (confirmType === 'reject') {
-                    modalContent = Intl.get('apply.approve.modal.text.reject', '是否驳回此申请');
-                    okText = Intl.get('common.apply.reject', '驳回');
-                }
-                //如果之前没有设置过角色，要加上设置角色的提示
-                if (_.get(this, 'state.rolesNotSettingModalDialog.show',false)){
-                    modalContent = this.state.rolesNotSettingModalDialog.appNames.join('、') + Intl.get('user.apply.detail.role.modal.content', '中，没有为用户分配角色，是否继续');
-                    okText = Intl.get('user.apply.detail.role.modal.continue', '继续');
-                    cancelText = Intl.get('user.apply.detail.role.modal.cancel', '我再改改');
-                    deleteFunction = this.continueSubmit;
-                }
-                resultType = this.state.applyResult;
-            } else if (confirmType === 'cancel') {
-                modalContent = Intl.get('user.apply.detail.modal.content', '是否撤销此申请？');
-                deleteFunction = this.cancelApplyApprove;
-                okText = Intl.get('user.apply.detail.modal.ok', '撤销');
-                resultType = this.state.backApplyResult;
-            }
-            modalShow = confirmType && resultType.submitResult === '';
+            var typeObj = handleDiffTypeApply(this,true);
             return (
                 <ModalDialog
-                    modalShow={modalShow}
+                    modalShow={typeObj.modalShow}
                     container={this}
+                    modalTitle={typeObj.modalTitle}
                     hideModalDialog={this.hideBackoutModal}
-                    modalContent={modalContent}
-                    delete={deleteFunction}
-                    okText={okText}
-                    cancelText={cancelText}
+                    modalContent={typeObj.modalContent}
+                    delete={typeObj.deleteFunction}
+                    okText={typeObj.okText}
+                    cancelText={typeObj.cancelText}
                     delayClose={true}
+                    className='apply-modal'
+                    confirmCls={typeObj.confirmCls}
                 />
             );
         } else {
@@ -2153,6 +2139,39 @@ const COLUMN_WIDTH = {
                 showWariningTip: true
             });
             return;
+        }
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
+        //详情信息
+        var detailInfo = this.state.detailInfoObj.info;
+        // 申请的应用
+        let appList = detailInfo.apps;
+        //要提交的应用配置
+        var products = this.getProducts();
+        //是否是uem的用户
+        var isUem = !this.state.isOplateUser;
+        //如果是开通用户，需要先检查是否有角色设置，如果没有角色设置，给出一个警告
+        //如果已经有这个警告了，就是继续提交的逻辑，就跳过此判断
+        if (
+            approval === 'pass' &&
+            (detailInfo.type === CONSTANTS.APPLY_USER_OFFICIAL ||
+                detailInfo.type === CONSTANTS.APPLY_USER_TRIAL ||
+                detailInfo.type === CONSTANTS.EXIST_APPLY_FORMAL ||
+                detailInfo.type === CONSTANTS.EXIST_APPLY_TRIAL) && !isUem
+        ) {
+            //遍历每个应用，找到没有设置角色的应用
+            var rolesNotSetAppNames = _.chain(products).filter((obj) => {
+                return _.get(obj,'apply_roles.length') === 0;
+            }).map('client_id').map((app_id) => {
+                var appInfo = _.find(appList, (appObj) => appObj.app_id === app_id);
+                return appInfo && appInfo.app_name || '';
+            }).filter((appName) => appName !== '').value();
+            //当数组大于0的时候，才需要提示模态框
+            if (rolesNotSetAppNames.length) {
+                ApplyViewDetailActions.setRolesNotSettingModalDialog({
+                    show: true,
+                    appNames: rolesNotSetAppNames
+                });
+            }
         }
         // 用户申请时，应用有默认终端配置，没有选择终端信息不能通过
         if (approval === 'pass' && this.state.isShowNoSelectAppTerminalsTips) {
@@ -2467,6 +2486,60 @@ const COLUMN_WIDTH = {
             return res;
         });
     },
+    getProducts(){
+        //要提交的应用配置
+        var products = [];
+        //是否是uem的用户
+        var isUem = !this.state.isOplateUser;
+        //是否是已有用户申请
+        var isExistUserApply = this.isExistUserApply();
+        //详情信息
+        var detailInfo = this.state.detailInfoObj.info;
+        // 申请的应用
+        let appList = detailInfo.apps;
+        const applyAppIds = _.map(appList, 'client_id');
+        //选中的应用，添加到提交参数中
+        if (isUem){
+            products = _.get(this,'state.detailInfoObj.info.apps');
+        }else{
+            _.each(this.appsSetting, function(app_config, app_id) {
+                //app_id含有&&时，是多应用申请时的产品配置信息，不做处理，避免出现多种未知应用
+                // 判断是否都是申请的应用
+                if (app_id.indexOf('&&') === -1 && _.includes(applyAppIds, app_id)) {
+                    //当前应用配置
+                    var appObj = {
+                        //应用id
+                        client_id: app_id,
+                        //角色
+                        apply_roles: _.map(app_config.roles,roleId => {
+                            return {role_id: roleId};
+                        }),
+                        //权限
+                        apply_permissions: _.map(app_config.permissions,permissionId => {
+                            return {permission_id: permissionId};
+                        }),
+                        //到期停用
+                        over_draft: _.get(app_config, 'over_draft.value'),
+                        //开始时间
+                        begin_date: _.get(app_config, 'time.start_time'),
+                        //结束时间
+                        end_date: _.get(app_config, 'time.end_time'),
+                    };
+                    // 多终端信息
+                    let terminals = _.get(app_config, 'terminals.value');
+                    if (!_.isEmpty(terminals)) {
+                        appObj.terminals = _.map(terminals, 'id');
+                    }
+                    //已有用户申请没法指定个数
+                    if (!isExistUserApply) {
+                        appObj.number = _.get(app_config, 'number.value', 1);
+                    }
+                    products.push(appObj);
+                }
+            });
+        }
+        return products;
+    },
     //通过或者驳回申请
     passOrRejectApplyApprove(approval) {
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
@@ -2506,81 +2579,11 @@ const COLUMN_WIDTH = {
                 //左侧选中的申请单
                 var selectedDetailItem = this.props.detailItem;
                 //要提交的应用配置
-                var products = [];
-                //是否是uem的用户
-                var isUem = !this.state.isOplateUser;
+                var products = this.getProducts();
                 //是否是已有用户申请
                 var isExistUserApply = this.isExistUserApply();
                 let applyMaxNumber = this.getApplyMaxUserNumber();
                 let changeMaxNumber = this.getChangeMaxUserNumber();
-                // 申请的应用
-                let appList = detailInfo.apps;
-                const applyAppIds = _.map(appList, 'client_id');
-                //选中的应用，添加到提交参数中
-                if (isUem){
-                    products = _.get(this,'state.detailInfoObj.info.apps');
-                }else{
-                    _.each(this.appsSetting, function(app_config, app_id) {
-                        //app_id含有&&时，是多应用申请时的产品配置信息，不做处理，避免出现多种未知应用
-                        // 判断是否都是申请的应用
-                        if (app_id.indexOf('&&') === -1 && _.includes(applyAppIds, app_id)) {
-                            //当前应用配置
-                            var appObj = {
-                                //应用id
-                                client_id: app_id,
-                                //角色
-                                apply_roles: _.map(app_config.roles,roleId => {
-                                    return {role_id: roleId};
-                                }),
-                                //权限
-                                apply_permissions: _.map(app_config.permissions,permissionId => {
-                                    return {permission_id: permissionId};
-                                }),
-                                //到期停用
-                                over_draft: _.get(app_config, 'over_draft.value'),
-                                //开始时间
-                                begin_date: _.get(app_config, 'time.start_time'),
-                                //结束时间
-                                end_date: _.get(app_config, 'time.end_time'),
-                            };
-                            // 多终端信息
-                            let terminals = _.get(app_config, 'terminals.value');
-                            if (!_.isEmpty(terminals)) {
-                                appObj.terminals = _.map(terminals, 'id');
-                            }
-                            //已有用户申请没法指定个数
-                            if (!isExistUserApply) {
-                                appObj.number = _.get(app_config, 'number.value', 1);
-                            }
-                            products.push(appObj);
-                        }
-                    });
-                }
-                //如果是开通用户，需要先检查是否有角色设置，如果没有角色设置，给出一个警告
-                //如果已经有这个警告了，就是继续提交的逻辑，就跳过此判断
-                if (
-                    approval === 'pass' && !this.state.rolesNotSettingModalDialog.continueSubmit &&
-                    (detailInfo.type === CONSTANTS.APPLY_USER_OFFICIAL ||
-                        detailInfo.type === CONSTANTS.APPLY_USER_TRIAL ||
-                        detailInfo.type === CONSTANTS.EXIST_APPLY_FORMAL ||
-                        detailInfo.type === CONSTANTS.EXIST_APPLY_TRIAL) && !isUem
-                ) {
-                    //遍历每个应用，找到没有设置角色的应用
-                    var rolesNotSetAppNames = _.chain(products).filter((obj) => {
-                        return _.get(obj,'apply_roles.length') === 0;
-                    }).map('client_id').map((app_id) => {
-                        var appInfo = _.find(appList, (appObj) => appObj.app_id === app_id);
-                        return appInfo && appInfo.app_name || '';
-                    }).filter((appName) => appName !== '').value();
-                    //当数组大于0的时候，才需要提示模态框
-                    if (rolesNotSetAppNames.length) {
-                        ApplyViewDetailActions.setRolesNotSettingModalDialog({
-                            show: true,
-                            appNames: rolesNotSetAppNames
-                        });
-                        return;
-                    }
-                }
                 // 点击通过时，当用户数量大于1，并且改为用户数量为1时
                 if (approval !== 'reject' && applyMaxNumber > changeMaxNumber && changeMaxNumber === 1) {
                     if (this.state.isChangeUserName) { // 更改用户名时，校验
@@ -2636,6 +2639,10 @@ const COLUMN_WIDTH = {
                     obj.nick_name = this.state.formData.nick_name;
                 }
             }
+            //如果写了驳回的理由
+            if(this.state.rejectComment && approval === 'reject'){
+                obj.comment = this.state.rejectComment;
+            }
             ApplyViewDetailActions.submitApply(obj, detailInfo.type, () => {
                 //调用父组件的方法进行审批完成后的其他处理
                 if (_.isFunction(this.props.afterApprovedFunc)) {
@@ -2672,16 +2679,6 @@ const COLUMN_WIDTH = {
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
         //设置这条审批不再展示通过和驳回的按钮
         ApplyViewDetailActions.hideApprovalBtns();
-    },
-
-    //继续提交
-    continueSubmit(e) {
-        Trace.traceEvent(e, '点击了继续');
-        var ApplyViewDetailActions = this.getApplyViewDetailAction();
-        ApplyViewDetailActions.rolesNotSettingContinueSubmit();
-        setTimeout(() => {
-            this.passOrRejectApplyApprove(this.state.showBackoutConfirmType);
-        });
     },
 
     //取消发送

@@ -1480,7 +1480,7 @@ var en_US = {
     'user.apply.detail.backout.error': 'revoke error', // 撤销申请失败
     'user.apply.detail.backout.person': 'revoker', // 撤销人
     'user.apply.detail.approval.person': 'approver', // 审批人
-    'user.apply.detail.role.modal.content': 'no role, whether to continue', // 中,没有为用户分配角色,是否继续
+    'user.apply.detail.role.modal.content': 'no role, whether to continue?', // 中，未对用户分配角色，确认通过此申请吗
     'user.apply.detail.role.modal.continue': 'continue', // 继续
     'user.apply.detail.role.modal.cancel': 'modify', // 我再改改
     'user.apply.detail.submit.sending': 'Reviewing', // 审批中...
@@ -1515,6 +1515,10 @@ var en_US = {
     'apply.list.return.back': 'return',//返回
     'apply.list.get.list.err': 'Failed to get the list, please check the network status',//获取列表失败，请检查网络状态
     'apply.list.all.list.read': 'All read',//全部已读
+    'apply.list.reject.comment': 'Reason for rejection (optional)',//请输入驳回理由（选填）
+    'apply.list.confirm.reject': 'Confirm rejection',//确认驳回
+    'apply.list.confirm.pass': 'Confirm pass',//确认通过
+    'apply.list.confirm.pass.tip': 'Confirm to apply through this?',//确认通过此申请吗？
     // 用户审批end
 
     // 在线用户start

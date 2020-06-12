@@ -53,8 +53,6 @@ class ApplyViewDetailActions {
             'resetReplyFormResult',
             //角色没有设置的时候是否显示模态框
             'setRolesNotSettingModalDialog',
-            //没有设置角色，仍然提交
-            'rolesNotSettingContinueSubmit',
             // 显示应用配置面板
             'showAppConfigPanel',
             'showAppConfigRightPanle',
