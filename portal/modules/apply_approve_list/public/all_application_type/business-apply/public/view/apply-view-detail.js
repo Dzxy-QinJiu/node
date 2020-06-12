@@ -205,7 +205,8 @@ class ApplyViewDetail extends React.Component {
             this.setState({
                 showBackoutConfirmType: '',
                 isEdittingTotalTime: false,
-                customerUpdate: {id: '',index: ''}
+                customerUpdate: {id: '',index: ''},
+                rejectComment: ''
             });
         }
     }

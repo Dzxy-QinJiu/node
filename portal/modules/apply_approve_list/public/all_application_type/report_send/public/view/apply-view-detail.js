@@ -234,7 +234,8 @@ class ApplyViewDetail extends React.Component {
             phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
             this.setState({
                 showBackoutConfirmType: '',
-                clickConfirmBtn: false
+                clickConfirmBtn: false,
+                rejectComment: ''
             });
         }
     }

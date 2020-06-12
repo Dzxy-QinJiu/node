@@ -208,7 +208,8 @@ class ApplyViewDetail extends React.Component {
             phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
             this.getBusinessApplyDetailData(nextProps.detailItem);
             this.setState({
-                showBackoutConfirmType: ''
+                showBackoutConfirmType: '',
+                rejectComment: ''
             });
         }
     }

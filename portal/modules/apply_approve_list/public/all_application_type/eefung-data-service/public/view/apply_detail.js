@@ -228,7 +228,8 @@ class ApplyViewDetail extends React.Component {
         }else if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
             this.getBusinessApplyDetailData(nextProps.detailItem);
             this.setState({
-                showBackoutConfirmType: ''
+                showBackoutConfirmType: '',
+                rejectComment: ''
             });
         }
     }

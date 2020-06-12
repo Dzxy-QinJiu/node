@@ -1525,7 +1525,7 @@ var zh_CN = {
     'apply.list.return.back': '返回',
     'apply.list.get.list.err': '获取列表失败，请检查网络状态',
     'apply.list.all.list.read': '全部已读',
-    'apply.list.reject.comment': '选填驳回理由（选填）',
+    'apply.list.reject.comment': '请输入驳回理由（选填）',
     'apply.list.confirm.reject': '确认驳回',
     'apply.list.confirm.pass': '确认通过',
     'apply.list.confirm.pass.tip': '确认通过此申请吗？',

@@ -359,7 +359,8 @@ const COLUMN_WIDTH = {
             this.setState({
                 showBackoutConfirmType: '',
                 curEditExpireDateAppIdr: '',
-                updateDelayTime: ''
+                updateDelayTime: '',
+                rejectComment: ''
             });
         }
         this.setState({

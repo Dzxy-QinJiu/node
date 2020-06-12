@@ -598,7 +598,7 @@ exports.handleDiffTypeApply = function(that, isUserApply) {
         modalTitle = <span><i className='iconfont icon-agree'></i>{Intl.get('user.apply.detail.pass', '通过申请')}</span>;
         confirmCls = 'pass-btn';
         if (confirmType === 'reject') {
-            modalContent = <TextArea autoSize={true} onChange={that.changeRejectComment} placeholder={Intl.get('apply.list.reject.comment', '选填驳回理由（选填）')}/>;
+            modalContent = <TextArea autoSize={true} onChange={that.changeRejectComment} placeholder={Intl.get('apply.list.reject.comment', '请输入驳回理由（选填）')}/>;
             okText = Intl.get('apply.list.confirm.reject', '确认驳回');
             modalTitle = <span><i className='iconfont icon-reject'></i>{Intl.get('user.apply.detail.reject', '驳回申请')}</span>;
             confirmCls = 'reject-btn';
