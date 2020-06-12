@@ -435,17 +435,16 @@ class CustomerUsers extends React.Component {
             //列表已经选中的user和app的对应列表
             let hasSelectUserAppList = [];
             _.each(crmUserList,userItem => {
-                var selectedApps = _.chain(userItem.apps).map(item => item.checked && item).filter(item => !_.isEmpty(item)).valueOf();//每个用户中被选中的应用
+                //每个用户中被选中的应用
+                var selectedApps = _.filter(userItem.apps, item => item && item.checked);
                 if(!_.isEmpty(selectedApps)){
                     hasSelectUserAppList = _.concat(hasSelectUserAppList, this.calcDescartes([selectedApps,[userItem.user]]));
                 }
             });
-            console.log(hasSelectUserAppList);
             let hasApplyOngoingList = [];
             _.each(hasSelectUserAppList,item => {
                 // 所有申请审批中的用户列表
                 var userListInApply = _.chain(delayApplyList).map(delayItem => _.get(delayItem,'detail.user_grants_apply')).flattenDeep().valueOf();
-                console.log(userListInApply);
                 var targetObj = _.find(userListInApply, userItem => userItem.user_id === item.user_id && userItem.client_id === item.client_id);
                 if(targetObj){
                     hasApplyOngoingList.push(item);
