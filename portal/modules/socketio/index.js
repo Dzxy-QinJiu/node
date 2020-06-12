@@ -150,7 +150,9 @@ function clueUnhandledNumListener(data) {
             emitMsgBySocket(user_id, 'apply_upgrade_complete', pushDto.applyTryMsgToFrontend(cluemsgObj));
         });
     }else if (_.indexOf(CLUE_ADD_TYPE,cluemsgObj.type) > -1){
-        emitMsgBySocket(cluemsgObj && cluemsgObj.user_id, 'cluemsg', pushDto.clueMsgToFrontend(cluemsgObj));
+        _.each(cluemsgObj.user_ids, user_id => {
+            emitMsgBySocket(user_id, 'cluemsg', pushDto.clueMsgToFrontend(cluemsgObj));
+        });
     }
 }
 /*处理申请审批消息监听器*/

@@ -38,7 +38,8 @@ import {
     isCommonSalesOrPersonnalVersion,
     SetLocalSalesClickCount,
     EXTRACT_CLUE_CONST_MAP,
-    getShowPhoneNumber
+    getShowPhoneNumber,
+    AREA_ALL
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {
     checkCurrentVersionType,
@@ -60,6 +61,7 @@ import {
     RECOMMEND_CLUE_FILTERS,
     PHONE_STATUS_KEY,
 } from 'PUB_DIR/sources/utils/consts';
+import {num as numUtils} from 'ant-utils';
 import history from 'PUB_DIR/sources/history';
 import React from 'react';
 import {addOrEditSettingCustomerRecomment} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
@@ -278,6 +280,8 @@ class RecommendCluesList extends React.Component {
 
     getSearchCondition = (condition) => {
         var conditionObj = _.cloneDeep(condition || _.get(this, 'state.settedCustomerRecommend.obj'));
+        //如果选择了全部，需要去掉province
+        if(conditionObj.province === AREA_ALL) { delete conditionObj.province; }
         conditionObj.load_size = this.state.pageSize;
         return conditionObj;
     };
@@ -1805,6 +1809,19 @@ class RecommendCluesList extends React.Component {
         return text;
     }
 
+    //处理注册资本单位换算
+    handleCapitalUnit(amount) {
+        //换算成万
+        amount = numUtils.yuanToTenThousandYuan(amount);
+        let text = Intl.get('crm.149', '{num}万', {num: amount});
+
+        if(amount >= 10000) {//单位为亿
+            amount = numUtils.yuanToTenThousandYuan(amount);
+            text = Intl.get('clue.recommend.hundred.million', '{num}亿', {num: amount});
+        }
+        return text;
+    }
+
     //处理点击展开全部条件时
     handleToggleOtherCondition = () => {
         this.setState({});
@@ -2067,7 +2084,7 @@ class RecommendCluesList extends React.Component {
                                                     item.capital ? (
                                                         <span className='extract-clue-info-item'>
                                                             <span className="extract-clue-text-label">{Intl.get('clue.recommend.registered.capital', '注册资本')}：</span>
-                                                            <span>{Intl.get('crm.149', '{num}万', {num: (item.capital / 10000).toFixed(2)})}</span>
+                                                            <span>{this.handleCapitalUnit(item.capital)}</span>
                                                         </span>
                                                     ) : null
                                                 }

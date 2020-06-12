@@ -1,5 +1,9 @@
 var appService = require('../service/app');
 var _ = require('lodash');
+//cookie解析器
+var cookie = require('cookie');
+//cookie解码器
+var cookieParser = require('cookie-parser');
 //获取集成配置
 exports.getIntegrationConfig = function(req, res) {
     appService.getIntegrationConfig(req, res).on('success' , function(data) {
@@ -66,7 +70,9 @@ exports.queryUserCondition = (req, res) => {
 
 exports.getWxWebviewPage = (req, res) => {
     var originalUrl = req.originalUrl;
-    var sessionId = decodeURIComponent(_.chain(originalUrl).split('?').get('[1]').split('=').get('[1]'));
+    var cookieUpdate = originalUrl.split('?')[1];//小程序登录后的cookie，
+    var cookieParse = cookie.parse(cookieUpdate);
+    var sessionId = cookieParser.signedCookie(cookieParse['sid'], config.session.secret);
     var sessionStore = global.config.sessionStore;
     if (sessionStore && sessionId && sessionId !== req.session.id) {
         sessionStore.get(sessionId, (err, session) => {
@@ -74,9 +80,8 @@ exports.getWxWebviewPage = (req, res) => {
             _.isFunction(req.session.save) && req.session.save();
             sessionStore.destroy(sessionId);//获取后删除
         });
-
         res.redirect('/');
-    } else {
+    }else{
         res.redirect('/login');
     }
 };

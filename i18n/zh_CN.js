@@ -3286,6 +3286,7 @@ var zh_CN = {
     'analysis.new.trial.qualified.customer.trend.chart': '新增试用合格客户趋势图',
     'analysis.active.customer.statistics.at.all.stages': '各阶段活跃客户统计',
     'analysis.all.administrative.levels': '全部行政级别',
+    'analysis.trial.to.the.signing.period': '试用到签约周期',
     'common.font.the': '第',
     'common.weeks': '周',
     'clue.add.contacts.tip': '添加联系方式',
@@ -4094,6 +4095,7 @@ var zh_CN = {
     'clue.recommend.filter.company.status.liquidation': '清算',
     'clue.recommend.filter.set.up': '成立',
     'clue.recommend.legalperson': '法人',
+    'clue.recommend.hundred.million': '{num}亿',
 
     'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',
@@ -4304,6 +4306,7 @@ var zh_CN = {
     'versions.apply.try.enterprise': '申请企业试用',
     'versions.company.trail': '企业试用',
     'versions.personal.trail': '个人试用',
+    'versions.personal.number': '人',
     /*版本信息 --- end */
 
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/

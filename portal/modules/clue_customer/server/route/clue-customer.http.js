@@ -288,6 +288,13 @@ module.exports = {
         passport: {
             needLogin: true
         },
+    }, {
+        method: 'get',
+        path: '/rest/recommend/clue/picked',
+        handler: 'getRecommendCluePicked',
+        passport: {
+            needLogin: true
+        },
     }
     ]
 };

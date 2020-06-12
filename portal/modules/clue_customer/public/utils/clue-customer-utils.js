@@ -716,3 +716,5 @@ export const dealContactPhoneStatus = function(obj) {
 export const isEmptyPhone = function(status) {
     return _.includes([PHONE_STATUS_KEY.EMPTY, PHONE_STATUS_KEY.NOTHING, PHONE_STATUS_KEY.SILENCE, PHONE_STATUS_KEY.RISK], status);
 };
+
+export const AREA_ALL = 'all';

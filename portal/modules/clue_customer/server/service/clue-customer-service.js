@@ -88,6 +88,8 @@ const restApis = {
     getApplyTryData: '/rest/base/v1/realm/version/upgrade/apply',
     //根据企业名称模糊获取企业基本信息
     getCompanyListByName: '/rest/company/v1/companys/name',
+    //查看组织内企业信息是否被提取过
+    getRecommendCluePicked: '/rest/clue/v2/ent/clues/picked',
 };
 
 //获取线索来源
@@ -631,6 +633,13 @@ exports.getApplyTryData = function(req, res) {
 exports.getCompanyListByName = function(req, res) {
     return restUtil.authRest.get({
         url: restApis.getCompanyListByName,
+        req: req,
+        res: res
+    }, req.query);
+};
+exports.getRecommendCluePicked = function(req, res) {
+    return restUtil.authRest.get({
+        url: restApis.getRecommendCluePicked,
         req: req,
         res: res
     }, req.query);

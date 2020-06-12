@@ -515,3 +515,23 @@ exports.getCompanyListByName = function(queryObj) {
     });
     return Deferred.promise();
 };
+let getRecommendCluePickedAjax = null;
+exports.getRecommendCluePicked = function(queryObj) {
+    var Deferred = $.Deferred();
+    getRecommendCluePickedAjax && getRecommendCluePickedAjax.abort();
+    getRecommendCluePickedAjax = $.ajax({
+        url: '/rest/recommend/clue/picked',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg, errorText) {
+            if(errorText !== 'abort') {
+                Deferred.reject(errorMsg.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};

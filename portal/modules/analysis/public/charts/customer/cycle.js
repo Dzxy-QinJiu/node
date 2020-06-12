@@ -6,7 +6,7 @@ import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallback
 
 export function getContractCycleChart() {
     return {
-        title: '成交周期分析',
+        title: Intl.get('analysis.trial.to.the.signing.period', '试用到签约周期'),
         chartType: 'bar',
         customOption: {
             showValueAsPercent: true,

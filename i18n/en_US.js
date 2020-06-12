@@ -3265,6 +3265,7 @@ var en_US = {
     'analysis.new.trial.qualified.customer.trend.chart': 'new trial qualified customer trend chart',//新增试用合格客户趋势图
     'analysis.active.customer.statistics.at.all.stages': 'active customer statistics at all stages',//各阶段活跃客户统计
     'analysis.all.administrative.levels': 'all administrative levels',//全部行政级别
+    'analysis.trial.to.the.signing.period': 'trial to the signing period',//试用到签约周期
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
@@ -4064,6 +4065,7 @@ var en_US = {
     'clue.recommend.filter.company.status.liquidation': 'The liquidation',//清算
     'clue.recommend.filter.set.up': 'Set up',//成立
     'clue.recommend.legalperson': 'legal person',//法人
+    'clue.recommend.hundred.million': '{num} Hundred million',//{num}亿
 
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
@@ -4262,6 +4264,7 @@ var en_US = {
     'versions.apply.try.enterprise': 'Apply try enterprise',//申请企业试用
     'versions.company.trail': 'Company trail',//企业试用
     'versions.personal.trail': 'Personal trail',//个人试用
+    'versions.personal.number': 'people',//人
     /*版本信息 --- end */
 
     /*销售出差反馈，弹窗给邮件抄送人 ---start*/
