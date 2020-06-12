@@ -38,7 +38,8 @@ import {
     isCommonSalesOrPersonnalVersion,
     SetLocalSalesClickCount,
     EXTRACT_CLUE_CONST_MAP,
-    getShowPhoneNumber
+    getShowPhoneNumber,
+    AREA_ALL
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {
     checkCurrentVersionType,
@@ -60,6 +61,7 @@ import {
     RECOMMEND_CLUE_FILTERS,
     PHONE_STATUS_KEY,
 } from 'PUB_DIR/sources/utils/consts';
+import {num as numUtils} from 'ant-utils';
 import history from 'PUB_DIR/sources/history';
 import React from 'react';
 import {addOrEditSettingCustomerRecomment} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
@@ -278,6 +280,8 @@ class RecommendCluesList extends React.Component {
 
     getSearchCondition = (condition) => {
         var conditionObj = _.cloneDeep(condition || _.get(this, 'state.settedCustomerRecommend.obj'));
+        //如果选择了全部，需要去掉province
+        if(conditionObj.province === AREA_ALL) { delete conditionObj.province; }
         conditionObj.load_size = this.state.pageSize;
         return conditionObj;
     };
@@ -295,17 +299,18 @@ class RecommendCluesList extends React.Component {
         //     };
         // }
         //是否选择复工企业或者上市企业
-        if(this.state.feature) {
+        if(conditionObj.feature) {
+            let feature = conditionObj.feature;
             delete conditionObj.feature;
             //如果选中'最近半年注册'项
-            if(this.isSelectedHalfYearRegister()) {
+            if(this.isSelectedHalfYearRegister(feature)) {
                 // startTime、endTime改为最近半年注册的时间
                 conditionObj.startTime = moment().subtract(6, 'months').startOf('day').valueOf();
                 conditionObj.endTime = moment().endOf('day').valueOf();
             }else {
-                let feature = this.getAdvanceItem();
-                if(feature.value) {
-                    conditionObj[feature.key] = feature.value;
+                let curFeature = this.getAdvanceItem(feature);
+                if(curFeature.value) {
+                    conditionObj[curFeature.key] = curFeature.value;
                 }
             }
         }
@@ -335,8 +340,8 @@ class RecommendCluesList extends React.Component {
     }
 
     //获取选中的高级筛选
-    getAdvanceItem() {
-        let curFeature = _.find(ADVANCED_OPTIONS, item => item.value === this.state.feature);
+    getAdvanceItem(featureState) {
+        let curFeature = _.find(ADVANCED_OPTIONS, item => item.value === featureState);
         let feature = _.get(curFeature,'value','');
         feature = feature.split(':');
         let value = feature[1];
@@ -349,8 +354,8 @@ class RecommendCluesList extends React.Component {
         };
     }
 
-    isSelectedHalfYearRegister() {
-        let feature = this.getAdvanceItem();
+    isSelectedHalfYearRegister(featureState) {
+        let feature = this.getAdvanceItem(featureState);
         return feature.value === EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER;
     }
 
@@ -1795,12 +1800,26 @@ class RecommendCluesList extends React.Component {
 
     //处理标签根据热门中的feature字段进行高亮处理
     handleTagHighLightText(text) {
-        let {key, value} = this.getAdvanceItem();
+        let feature = _.get(this.state.settedCustomerRecommend, 'obj.feature');
+        let {key, value} = this.getAdvanceItem(feature);
         if(key === 'has_website' || (key === 'feature' && value !== EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER)) {
-            let feature = _.find(ADVANCED_OPTIONS, item => item.value === this.state.feature);
-            let char = new RegExp(feature.name, 'g');
-            text = text.replace(char, `<em class="text-highlight">${feature.name}</em>`);
+            let curFeature = _.find(ADVANCED_OPTIONS, item => item.value === feature);
+            let char = new RegExp(curFeature.name, 'g');
+            text = text.replace(char, `<em class="text-highlight">${curFeature.name}</em>`);
             // return char.test(text);
+        }
+        return text;
+    }
+
+    //处理注册资本单位换算
+    handleCapitalUnit(amount) {
+        //换算成万
+        amount = numUtils.yuanToTenThousandYuan(amount);
+        let text = Intl.get('crm.149', '{num}万', {num: amount});
+
+        if(amount >= 10000) {//单位为亿
+            amount = numUtils.yuanToTenThousandYuan(amount);
+            text = Intl.get('clue.recommend.hundred.million', '{num}亿', {num: amount});
         }
         return text;
     }
@@ -2067,7 +2086,7 @@ class RecommendCluesList extends React.Component {
                                                     item.capital ? (
                                                         <span className='extract-clue-info-item'>
                                                             <span className="extract-clue-text-label">{Intl.get('clue.recommend.registered.capital', '注册资本')}：</span>
-                                                            <span>{Intl.get('crm.149', '{num}万', {num: (item.capital / 10000).toFixed(2)})}</span>
+                                                            <span>{this.handleCapitalUnit(item.capital)}</span>
                                                         </span>
                                                     ) : null
                                                 }
@@ -2216,6 +2235,7 @@ class RecommendCluesList extends React.Component {
         let maskCls = classNames('recommend-clue-mask', {
             'show-mask': this.showMaskBlock()
         });
+        let feature = _.get(this.state.settedCustomerRecommend, 'obj.feature');
         return (
             <div className="recommend-clues-lists-container" data-tracename="推荐线索列表面板">
                 <div className="recommend-customer-list">
@@ -2226,8 +2246,8 @@ class RecommendCluesList extends React.Component {
                                     hasSavedRecommendParams={this.state.settedCustomerRecommend.obj}
                                     isLoading={this.state.settedCustomerRecommend.loading || this.state.isLoadingRecommendClue}
                                     canClickMoreBatch={this.state.canClickMoreBatch}
-                                    isSelectedHalfYearRegister={this.isSelectedHalfYearRegister()}
-                                    feature={this.state.feature}
+                                    isSelectedHalfYearRegister={this.isSelectedHalfYearRegister(feature)}
+                                    feature={feature}
                                     getRecommendClueLists={this.getRecommendClueLists}
                                     style={{width: LAYOUT_CONSTANCE.FILTER_WIDTH, height: $(window).height()}}
                                     handleToggleOtherCondition={this.handleToggleOtherCondition}

@@ -13,7 +13,7 @@ import {AntcAreaSelection, SearchInput, AntcSelect} from 'antc';
 const Option = AntcSelect.Option;
 import Trace from 'LIB_DIR/trace';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
-import { registerSize, staffSize, moneySize, companyProperty, companyStatus, EXTRACT_CLUE_CONST_MAP } from '../../utils/clue-customer-utils';
+import { registerSize, staffSize, moneySize, companyProperty, companyStatus, EXTRACT_CLUE_CONST_MAP, AREA_ALL } from '../../utils/clue-customer-utils';
 import {
     checkVersionAndType,
     getFormattedCondition,
@@ -24,7 +24,7 @@ import {
 import {RECOMMEND_CLUE_FILTERS, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/utils/consts';
 import classNames from 'classnames';
 import { paymentEmitter } from 'OPLATE_EMITTER';
-import {addOrEditSettingCustomerRecomment, getCompanyListByName} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
+import {addOrEditSettingCustomerRecomment, getCompanyListByName, getRecommendCluePicked} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 import {toFrontRecommendClueData} from '../../../server/dto/recommend-clue';
 
@@ -115,6 +115,7 @@ class RecommendCluesFilterPanel extends Component {
         };
 
         this.currentArea = {};
+        this.currentListItem = {};
     }
 
     componentDidMount() {
@@ -151,6 +152,7 @@ class RecommendCluesFilterPanel extends Component {
         $(input).off('keydown', this.onKeyDown);
         $(input).off('focus', this.onInputFocus);
         document.removeEventListener('click', this.onClickOutsideHandler);
+        this.currentListItem = {};
     }
 
     //处理线索推荐条件中的vip选项
@@ -277,20 +279,37 @@ class RecommendCluesFilterPanel extends Component {
         let hasSavedRecommendParams = _.pick(this.state.hasSavedRecommendParams, ['id', 'addTime', 'userId']);
         $('.recommend-clue-sug').css('display', 'none');
         let item = _.find(this.state.keywordList, item => item.id === value);
+        if(_.isEqual(this.currentListItem.id, item.id)) {return false;}
+
+        getRecommendCluePicked({
+            companyIds: item.id
+        }).then((result) => {
+            this.setClueInfo({...result, hasSavedRecommendParams, item});
+        }, () => {
+            this.setClueInfo({hasSavedRecommendParams, item});
+        });
+    };
+
+    setClueInfo(result) {
         if(this.searchInputRef) {
-            this.searchInputRef.state.keyword = _.get(item, 'name', '');
-            clueCustomerAction.saveSettingCustomerRecomment({...hasSavedRecommendParams, keyword: _.get(item, 'name', '')});
-            clueCustomerAction.setHotSource('');
+            this.searchInputRef.state.keyword = _.get(result.item, 'name', '');
+            clueCustomerAction.saveSettingCustomerRecomment({...result.hasSavedRecommendParams, keyword: _.get(result.item, 'name', '')});
+        }
+        let listItem = toFrontRecommendClueData(result.item);
+        if(_.isEqual(_.get(result, 'total'), 1)) {//被提取过
+            listItem.hasExtractedByOther = true;
         }
         let data = {
-            list: [toFrontRecommendClueData(item)],
+            list: [listItem],
             total: 1
         };
+        this.currentListItem = result.item;
         clueCustomerAction.getRecommendClueLists(data, false);
-    };
+    }
 
     //根据关键词获取推荐信息
     getCompanyListByName = (value) => {
+        this.currentListItem = {};
         getCompanyListByName({
             name: value
         }).then((result) => {
@@ -319,6 +338,9 @@ class RecommendCluesFilterPanel extends Component {
 
         if (_.isEmpty(value)) {
             let params = _.clone(this.state.hasSavedRecommendParams);
+            if(traceTip === '全部') {
+                this.currentArea.province = AREA_ALL;
+            }
             _.extend(params, this.currentArea);
             this.getRecommendClueList(params);
         }
@@ -491,10 +513,7 @@ class RecommendCluesFilterPanel extends Component {
             delete hasSavedRecommendParams.feature;
         }
         clueCustomerAction.saveSettingCustomerRecomment(hasSavedRecommendParams);
-        clueCustomerAction.setHotSource(advanced);
-        setTimeout(() => {
-            this.getRecommendClueList(hasSavedRecommendParams, true, true);
-        });
+        this.getRecommendClueList(hasSavedRecommendParams, true, true);
     };
 
     //点击vip项处理事件
@@ -1032,7 +1051,7 @@ class RecommendCluesFilterPanel extends Component {
                                 colon={false}
                                 label={Intl.get('crm.96', '地域')}
                                 placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
-                                provName={hasSavedRecommendParams.province}
+                                provName={hasSavedRecommendParams.province === AREA_ALL ? '' : hasSavedRecommendParams.province}
                                 cityName={hasSavedRecommendParams.city}
                                 countyName={hasSavedRecommendParams.district}
                                 updateLocation={this.updateLocation}

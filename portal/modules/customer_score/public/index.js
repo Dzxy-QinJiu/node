@@ -185,7 +185,7 @@ class customerScore extends React.Component {
                                     placeholder="——"
                                     disabled
                                 />
-                                <Input type="number" min="1" className='max-number' value={lowerHandlePoint}
+                                <InputNumber min="1" className='max-number' value={lowerHandlePoint}
                                     onChange={(e) => {
                                         this.handleCustomerScoreUnqualified(+e.target.value);
                                     }} onBlur={this.handleCustomerRangeValues}/>
@@ -195,7 +195,7 @@ class customerScore extends React.Component {
                             <i className="customer-level-quarter qualified-icon"></i>
                             {Intl.get('common.qualified', '合格')}：
                             {isEditCustomerLevel ? <InputGroup className="input-groups" compact>
-                                <Input type="number" min="0" className='mini-number' value={lowerHandlePoint + 1}
+                                <InputNumber min="0" className='mini-number' value={lowerHandlePoint + 1}
                                     onBlur={this.handleCustomerRangeValues} onChange={(e) => {
                                         this.handleCustomerScoreUnqualified(+e.target.value - 1);
                                     }}/>
@@ -204,7 +204,7 @@ class customerScore extends React.Component {
                                     placeholder="——"
                                     disabled
                                 />
-                                <Input type="number" min="0" className='max-number' value={largerHandlePoint}
+                                <InputNumber min="0" className='max-number' value={largerHandlePoint}
                                     onChange={(e) => {
                                         this.handleCustomerScoreQualified(+e.target.value);
                                     }} onBlur={this.handleCustomerRangeValues}/>
@@ -307,7 +307,7 @@ class customerScore extends React.Component {
                 customerSelectLists = _.filter(customerSelectLists, item => item.indicator !== customerScoreItem.indicator);
             });
         }
-        
+
         if (_.get(customerSelectLists, 'length')) {
             if (_.get(customerSelectLists, '[0].indicator') === 'user') {
                 customerScoreLists.push({
@@ -426,7 +426,7 @@ class customerScore extends React.Component {
                 });
             });
         }
-        
+
         return (<div>
             <Row className='thead-title'>
                 <Col span={spanLength}>{Intl.get('clue.customer.score.indicator', '指标')}</Col>

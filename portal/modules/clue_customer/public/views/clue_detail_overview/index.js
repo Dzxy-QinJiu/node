@@ -1616,46 +1616,49 @@ class ClueDetailOverview extends React.Component {
             return <div className="contact-item-wrap clue-info-item">
                 <React.Fragment>
                     <React.Fragment>
-                        <div className={cls}>
-                            <span className="clue-info-label">{Intl.get('call.record.contacts', '联系人')}</span>
-                            <div className="clue-info-detail">
-                                <BasicEditInputField
-                                    width={EDIT_FEILD_WIDTH}
-                                    hasEditPrivilege={hasPrivilegeEdit}
-                                    id={curClue.id}
-                                    saveEditInput={this.saveEditBasicInfo.bind(this, {
-                                        editItem: 'contact_name',
-                                        id: contactItem.id
-                                    })}
-                                    value={contactItem.name}
-                                    field='contact_name'
-                                    noDataTip={Intl.get('crm.no.contact', '暂无联系人')}
-                                    addDataTip={Intl.get('clue.customer.edit.contact', '请填写联系人名称')}
-                                    placeholder={Intl.get('clue.customer.edit.contact', '请填写联系人名称')}
-                                    validators={contactNameRule()}
-                                />
-                            </div>
-                        </div>
-                        <div className="contact-item-content">
-                            <span className="clue-info-label">{Intl.get('member.position', '职务')}</span>
-                            <div className="clue-info-detail">
-                                <BasicEditInputField
-                                    width={EDIT_FEILD_WIDTH}
-                                    hasEditPrivilege={hasPrivilegeEdit}
-                                    id={curClue.id}
-                                    saveEditInput={this.saveEditBasicInfo.bind(this, {
-                                        editItem: 'position',
-                                        id: contactItem.id
-                                    })}
-                                    value={contactItem.position}
-                                    field='position'
-                                    noDataTip={Intl.get('member.no.position', '暂无职务')}
-                                    addDataTip={Intl.get('member.position.name.placeholder', '请输入职务名称')}
-                                    placeholder={Intl.get('member.position.name.placeholder', '请输入职务名称')}
-                                    validators={contactPositionRule()}
-                                />
-                            </div>
-                        </div>
+                        {contactItem.name || isExpandContact ?
+                            <div className={cls}>
+                                <span className="clue-info-label">{Intl.get('call.record.contacts', '联系人')}</span>
+                                <div className="clue-info-detail">
+                                    <BasicEditInputField
+                                        width={EDIT_FEILD_WIDTH}
+                                        hasEditPrivilege={hasPrivilegeEdit}
+                                        id={curClue.id}
+                                        saveEditInput={this.saveEditBasicInfo.bind(this, {
+                                            editItem: 'contact_name',
+                                            id: contactItem.id
+                                        })}
+                                        value={contactItem.name}
+                                        field='contact_name'
+                                        noDataTip={Intl.get('crm.no.contact', '暂无联系人')}
+                                        addDataTip={Intl.get('crm.detail.contact.add', '添加联系人')}
+                                        placeholder={Intl.get('clue.customer.edit.contact', '请填写联系人名称')}
+                                        validators={contactNameRule()}
+                                    />
+                                </div>
+                            </div> : null}
+                        {contactItem.position || isExpandContact ?
+                            <div className="contact-item-content">
+                                <span className="clue-info-label">{Intl.get('member.position', '职务')}</span>
+                                <div className="clue-info-detail">
+                                    <BasicEditInputField
+                                        width={EDIT_FEILD_WIDTH}
+                                        hasEditPrivilege={hasPrivilegeEdit}
+                                        id={curClue.id}
+                                        saveEditInput={this.saveEditBasicInfo.bind(this, {
+                                            editItem: 'position',
+                                            id: contactItem.id
+                                        })}
+                                        value={contactItem.position}
+                                        field='position'
+                                        noDataTip={Intl.get('member.no.position', '暂无职务')}
+                                        addDataTip={Intl.get('member.add.position', '添加职务')}
+                                        placeholder={Intl.get('member.position.name.placeholder', '请输入职务名称')}
+                                        validators={contactPositionRule()}
+                                    />
+                                </div>
+                            </div> : null}
+
                         <div className="contact-item-content">
                             <DynamicAddDelField
                                 id={curClue.id}
