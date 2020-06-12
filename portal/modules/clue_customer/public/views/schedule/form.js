@@ -1,3 +1,5 @@
+import {disabledBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
+
 var React = require('react');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
@@ -6,7 +8,7 @@ require('../../css/schedule.less');
 var ScheduleAction = require('../../action/schedule-action');
 // var BatchChangeActions = require('../../action/batch-change-actions');
 // var basicOverviewAction = require('../../action/basic-overview-actions');
-import {Form, Input, message, Radio, Switch, TimePicker} from 'antd';
+import {DatePicker, Form, Input, message, Radio, Switch, TimePicker} from 'antd';
 import { AntcSelect } from 'antc';
 const Option = AntcSelect.Option;
 const RadioButton = Radio.Button;
@@ -104,9 +106,9 @@ var CrmAlertForm = createReactClass({
             //是否选中全天的状态
             if (this.state.isSelectFullday) {
                 //开始时间
-                formData.start_time = moment(date).valueOf();
-                //结束时间
-                formData.end_time = (moment(date).valueOf() / 1000 + 24 * 60 * 60 - 1) * 1000;
+                formData.start_time = moment(date).startOf('day').valueOf();
+                //结束时间，
+                formData.end_time = moment(date).endOf('day').valueOf();
             } else {
                 //原有时间
                 const dateTime = this.state.formData.start_time;
@@ -737,15 +739,13 @@ var CrmAlertForm = createReactClass({
                                         name='starttime'
                                         field='starttime'
                                         value=''>
-                                        <BootstrapDatepicker
-                                            className="begin-date-input"
-                                            type="input"
-                                            options={{
-                                                format: 'yyyy-mm-dd',
-                                                startDate: moment().startOf('day').format(DATE_FORMAT)
-                                            }}
-                                            value={moment(formData.start_time).format(DATE_FORMAT)}
+                                        <DatePicker
+                                            allowClear={false}
                                             onChange={this.onScheduleDateChange}
+                                            disabledDate={disabledBeforeToday}
+                                            value={moment(formData.start_time)}
+                                            format={DATE_FORMAT}
+                                            defaultValue={moment().startOf('day')}
                                         />
                                         {this.state.isSelectFullday ? null :
                                             <TimePicker
