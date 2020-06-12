@@ -35,7 +35,7 @@ import{
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 import { isShowUnReadNotice, isShowCustomerService } from '../utils/common-method-util';
-import {getUpgradeNoticeList, getRewardedCluesCount, getAppList} from '../utils/common-data-util';
+import {getUpgradeNoticeList, getAppList} from '../utils/common-data-util';
 const { getLocalWebsiteConfig, setWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
@@ -73,16 +73,6 @@ class PageFrame extends React.Component {
         initAntme: false,//初始化antme
     };
 
-    getRewardedCluesCount() {
-        getRewardedCluesCount().then( (count) => {
-            // 登录界面的时候，保存一下获取赢取的线索量
-            Oplate.todayWinningClueCount = count;
-            this.setState({
-                rewardClueCount: count
-            });
-        } );
-    }
-
     getLastUpgradeNoticeList() {
         getUpgradeNoticeList({
             application_id: _.get(window, 'Oplate.clientId'),
@@ -119,7 +109,6 @@ class PageFrame extends React.Component {
 
     componentDidMount() {
         this.getAppList(); // 获取应用列表
-        this.getRewardedCluesCount();
         this.getLastUpgradeNoticeList();
         // 影响了session不超时，暂时隐藏获取公告轮询的操作
         // this.pollingGetNotice(); // 轮询获取公告信息
