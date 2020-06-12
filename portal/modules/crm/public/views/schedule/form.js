@@ -139,7 +139,7 @@ var CrmAlertForm = createReactClass({
                 //开始时间
                 formData.start_time = moment(date).startOf('day').valueOf();
                 //结束时间
-                formData.end_time = (moment(date).startOf('day').valueOf() / 1000 + 24 * 60 * 60 - 1) * 1000;
+                formData.end_time = moment(date).endOf('day').valueOf();
             } else {
                 //原有时间
                 const dateTime = this.state.formData.start_time;
