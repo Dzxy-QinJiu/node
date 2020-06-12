@@ -385,7 +385,7 @@ function doExport(data, backendIntl, res) {
                         case 'contacts_name':
                             contactDes += _.get(firstContact,'name','');
                             //如果有职务就加上职务
-                            var position = _.get(firstContact,'name','position');
+                            var position = _.get(firstContact,'position');
                             if(position){
                                 contactDes += `(${position})`;
                             }
@@ -409,7 +409,7 @@ function doExport(data, backendIntl, res) {
                                         contactDes += '；';
                                     }
                                     contactDes += _.get(contactItem, 'name', '') ? backendIntl.get('call.record.contacts', '联系人') + '：' + _.get(contactItem, 'name', '') + ' ' : '';
-                                    contactDes += _.get(contactItem, 'position', '') ? '(' + _.get(contactItem, 'positon', '') + ')' : '';
+                                    contactDes += _.get(contactItem, 'position', '') ? '(' + _.get(contactItem, 'position', '') + ')' : '';
                                     contactDes += _.get(contactItem, 'phone[0]', '') ? backendIntl.get('common.phone', '电话') + '：' + _.get(contactItem, 'phone', []).join('，') + ' ' : '';
                                     contactDes += _.get(contactItem, 'email[0]', '') ? backendIntl.get('common.email', '邮箱') + '：' + _.get(contactItem, 'email', []).join('，') + ' ' : '';
                                     contactDes += _.get(contactItem, 'qq[0]', '') ? 'QQ' + '：' + _.get(contactItem, 'qq', []).join('，') + ' ' : '';
