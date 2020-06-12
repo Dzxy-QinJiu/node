@@ -336,7 +336,7 @@ function createBackendClient() {
     let pushServerUrl = global.config.pushServerAddress;
     pushLogger.info('与后台建立连接的服务地址：' + pushServerUrl);
     //创建socket.io的客户端
-    client = ioClient(pushServerUrl, { 
+    client = ioClient(pushServerUrl, {
         transports: ['websocket']
     });
     //监听 connect
@@ -476,8 +476,12 @@ module.exports.startSocketio = function(nodeServer) {
     //添加session过期的监听
     sessionExpireEmitter.on(sessionExpireEmitter.SESSION_EXPIRED, sessionExpired);
     logoutMsgEmitter.on(logoutMsgEmitter.LOGOUT_ACCOUNT,logoutAccount);//账号退出登录后发送事件给extension
+    logoutMsgEmitter.on(logoutMsgEmitter.KICKOFF_ACCOUNT,kickOffAccount);//账号被踢出后发送事件
 
 };
+function kickOffAccount(errMsg) {
+    socketEmitter(errMsg,'kickOffAccount','踢出账号');
+}
 /*
 * 退出账号前发送事件*/
 function logoutAccount(logoutObj) {
@@ -500,7 +504,12 @@ function socketEmitter(Obj, emitterChannel,loggerType) {
                         var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                         if (socket) {
                             //推送session过期消息
-                            socket.emit(emitterChannel, user);
+                            if(emitterChannel === 'kickOffAccount'){
+                                socket.emit(emitterChannel, Obj.data);
+                            }else{
+                                socket.emit(emitterChannel, user);
+                            }
+
                         }
                     }
                 });

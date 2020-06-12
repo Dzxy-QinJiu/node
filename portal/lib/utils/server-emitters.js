@@ -12,3 +12,5 @@ exports.sessionExpireEmitter.SESSION_EXPIRED = 'session_expired';
 //暴露一个emitter，账号退出的时候推送给chrome extension
 exports.logoutMsgEmitter = new EventEmitter();
 exports.logoutMsgEmitter.LOGOUT_ACCOUNT = 'logout_account';
+//被踢出时候
+exports.logoutMsgEmitter.KICKOFF_ACCOUNT = 'kickoff_account';

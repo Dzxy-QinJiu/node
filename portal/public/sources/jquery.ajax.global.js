@@ -18,6 +18,12 @@ import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
     var history = require('./history');
     const Router = require('react-router-dom').Router;
     module.exports.handleSessionExpired = handel401Ajax;
+    module.exports.handleKickOff = handleKickOff;
+    function handleKickOff(errMsg) {
+        let reloginError = Intl.get('login.by.another', '您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！');
+        let kickedByAmdin = Intl.get('kicked.by.admin', '您已被被管理员踢出，请重新登录!');
+        handleReloginError((errMsg === UI_ERROR.LOGIN_ONLY_ONE) ? reloginError : kickedByAmdin);
+    }
 
     /*处理ajax时，session过期的问题*/
     function handel401Ajax() {
@@ -45,34 +51,6 @@ import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
     }
 
     /**
-     *不允许多人登录，被下线的处理
-     * @param tipContent
-     */
-    function handleReloginError(tipContent) {
-        // 登录踢出后，退出容联电话系统的登录
-        phoneUtil.logoutCallClient();
-        //让socket断开连接
-        socketEmitter.emit(socketEmitter.DISCONNECT);
-        Modal.error({
-            wrapClassName: 'socket-io',
-            content: tipContent,
-            okText: Intl.get('retry.login.again', '重新登录'),
-            onOk: function() {
-                pcAndWechatMiniProgram('/logout');
-            }
-        });
-        setTimeout(function() {
-            //设置提示框的样式
-            var $modal = $('body >.ant-modal-container');
-            if ($modal && $modal.length > 0) {
-                $modal.addClass('offline-modal-container');
-            }
-        }, 100);
-        //解除 session失效提示的 事件绑定
-        $(document).off('ajaxError');
-    }
-
-    /**
      * 处理请求超时的情况(408)
      * @param xhr
      * @param options
@@ -93,14 +71,7 @@ import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
                 handel401Ajax();
                 break;
             case 403:
-                //不允许多人登录被踢出的统一处理
-                if (xhr.responseJSON === UI_ERROR.LOGIN_ONLY_ONE || xhr.responseJSON === UI_ERROR.KICKED_BY_ADMIN) {
-                    let reloginError = Intl.get('login.by.another', '您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！');
-                    let kickedByAmdin = Intl.get('kicked.by.admin', '您已被被管理员踢出，请重新登录!');
-                    handleReloginError((xhr.responseJSON === UI_ERROR.LOGIN_ONLY_ONE) ? reloginError : kickedByAmdin);
-                } else {
-                    handel403Ajax(xhr);
-                }
+                handel403Ajax(xhr);
                 break;
             case 408:
                 handleTimeout(xhr, options);
