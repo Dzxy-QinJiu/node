@@ -45,6 +45,10 @@ const emptyParamObj = {
 // 请求公告列表的时间，定为1分钟
 const NOTICE_INTERVAL_TIME = 1000 * 60;
 
+const DATEPICKER_CLS = 'datepicker_wrap_flex';
+const MOBILE_WIDTH = 375;
+const DATEPICKER_TIME = 200;
+
 class PageFrame extends React.Component {
     state = {
         phonePanelShow: false,//是否展示拨打电话面板（包括：客户详情）
@@ -126,6 +130,7 @@ class PageFrame extends React.Component {
         // this.pollingGetNotice(); // 轮询获取公告信息
         this.layoutContentSize();
         $(window).on('resize', this.resizeHandler);
+        $(document).on('mousedown', this.checkClickCalendarLayer);
         //渲染蚁讯客服
         if (isShowCustomerService()) this.renderAntmeCustomerService();
         Trace.addEventListener(window, 'click', Trace.eventHandler);
@@ -159,6 +164,27 @@ class PageFrame extends React.Component {
         //监听申请试用面板打开事件
         paymentEmitter.on(paymentEmitter.OPEN_APPLY_TRY_PANEL, this.showApplyTryPanel);
     }
+
+    checkClickCalendarLayer = (event) => {
+        //如果屏幕宽度小于375px时，需要适配时间选择器的大小
+        if($(window).width() <= MOBILE_WIDTH) {
+            const target = event.target;
+            let datepickerWrapEl = $('.datepicker_wrap');
+            if (!$(target).closest('.range-datepicker').length && !$(target).closest('.date_text').length) {
+                datepickerWrapEl.removeClass(DATEPICKER_CLS);
+            }else {
+                if(!datepickerWrapEl.hasClass(DATEPICKER_CLS)) {
+                    datepickerWrapEl.addClass(DATEPICKER_CLS);
+                }else {
+                    setTimeout(() => {
+                        if(!this.refs.datepicker.state.isShowCalendar) {
+                            datepickerWrapEl.removeClass(DATEPICKER_CLS);
+                        }
+                    }, DATEPICKER_TIME);
+                }
+            }
+        }
+    };
 
     //渲染蚁讯客服
     renderAntmeCustomerService() {
@@ -225,6 +251,7 @@ class PageFrame extends React.Component {
         this.getLastNoticeTimer = null;
 
         $(window).off('resize', this.resizeHandler);
+        $(document).off('mousedown', this.checkClickCalendarLayer);
         phoneUtil.unload(() => {
             console.log('成功登出电话系统!');
         });

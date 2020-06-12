@@ -268,3 +268,58 @@
     }
   }
 }
+
+@media screen and (max-width: 768px){
+  .crm-right-panel.right-pannel-default {
+    width: 100% !important;
+    .right-panel-content{
+      width: 100% !important;
+      .basic-info-contianer{
+        padding-left: 56px;
+        .basic-info-title-block{
+          display: flex;
+          .basic-info-name{
+            width: auto;
+            border-right: none;
+            flex: 1;
+          }
+          .basic-info-btns{
+            .iconfont{
+              margin-left: 0;
+            }
+          }
+        }
+        .basic-info-detail-show{
+          .basic-info-item{
+            .location-edit-field{
+              label{
+                display: none;
+              }
+            }
+          }
+          .basic-info-detail-address{
+            .basic-info-text{
+              padding-right: 16px;
+            }
+          }
+        }
+      }
+      .sales-team,.basic-info-item, .contact-item-content{
+        display: flex;
+      }
+      .basic-edit-field.editing, .basic-edit-field.location-edit-field{
+        flex: 1;
+      }
+      .ant-form, .area-selector{
+        width: 100% !important;
+      }
+      .detail-card-container{
+        overflow: hidden;
+      }
+      .crm-detail-no-data-tip{
+        white-space: normal;
+        padding: 0 24px;
+      }
+    }
+  }
+}

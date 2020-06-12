@@ -32,6 +32,7 @@ class SearchInputPanel extends React.Component {
         if(this.searchInputRef) {
             this.searchInputRef.state.keyword = this.state.keyword;
         }
+        $(input).focus();
     }
 
     componentWillUnmount() {

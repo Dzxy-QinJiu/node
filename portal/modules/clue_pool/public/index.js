@@ -556,6 +556,9 @@ class ClueExtract extends React.Component {
     renderClueCustomerBlock = () => {
         let divHeight = getTableContainerHeight(this.props.adaptiveHeight, false);
         if (this.state.cluePoolList.length) {
+            if(isResponsiveDisplay().isWebMin) {
+                divHeight += (LAYOUT_CONSTANTS.TH_MORE_HEIGHT * 2);
+            }
             return (
                 <div id="clue-content-block" className="clue-content-block" ref="clueCustomerList">
                     <div className="clue-customer-list"
