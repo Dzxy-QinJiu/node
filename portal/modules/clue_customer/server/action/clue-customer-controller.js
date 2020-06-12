@@ -255,6 +255,36 @@ function getClueListColumns(backendIntl) {
         {
             title: backendIntl.get('clue.customer.clue.name', '线索名称'),
             dataIndex: 'name',
+        },{
+            title: backendIntl.get('lead.company.legal.person', '法人'),
+            dataIndex: 'legal_person',
+        },{
+            title: backendIntl.get('clue.customer.register.time', '注册时间'),
+            dataIndex: 'formed',
+        },{
+            title: backendIntl.get('clue.recommend.clue.scope', '经营范围'),
+            dataIndex: 'business_scope',
+        },{
+            title: backendIntl.get('clue.recommend.clue.introduction', '简介'),
+            dataIndex: 'company_profile',
+        },{
+            title: backendIntl.get('call.record.contacts', '联系人'),
+            dataIndex: 'contacts_name',
+        },{
+            title: backendIntl.get('common.phone', '电话'),
+            dataIndex: 'contacts_phone',
+        },{
+            title: backendIntl.get('common.email', '邮箱'),
+            dataIndex: 'contacts_email',
+        },{
+            title: 'QQ',
+            dataIndex: 'contacts_qq',
+        },{
+            title: backendIntl.get('crm.58', '微信'),
+            dataIndex: 'contacts_wechat',
+        },{
+            title: backendIntl.get('clue.customer.other.contact_way', '其他联系方式'),
+            dataIndex: 'contacts_otherways',
         }, {
             title: backendIntl.get('clue.filter.clue.status', '线索状态'),
             dataIndex: 'status'
@@ -288,24 +318,6 @@ function getClueListColumns(backendIntl) {
         },{
             title: backendIntl.get('crm.sales.clue.descr', '线索描述'),
             dataIndex: 'source',
-        },{
-            title: backendIntl.get('call.record.contacts', '联系人'),
-            dataIndex: 'contacts_name',
-        },{
-            title: backendIntl.get('common.phone', '电话'),
-            dataIndex: 'contacts_phone',
-        },{
-            title: backendIntl.get('common.email', '邮箱'),
-            dataIndex: 'contacts_email',
-        },{
-            title: 'QQ',
-            dataIndex: 'contacts_qq',
-        },{
-            title: backendIntl.get('crm.58', '微信'),
-            dataIndex: 'contacts_wechat',
-        },{
-            title: backendIntl.get('clue.customer.other.contact_way', '其他联系方式'),
-            dataIndex: 'contacts_otherways',
         },{
             title: backendIntl.get('clue.customer.associate.customer', '关联客户'),
             dataIndex: 'customer_name'
@@ -352,7 +364,9 @@ function doExport(data, backendIntl, res) {
                 });
                 value = _.get(targetObj,'name') || value;
             }
-
+            if (column.dataIndex === 'formed' && value){
+                value = moment(value).format(DATE_FORMAT);
+            }
             if (column.dataIndex === 'source_time' && value){
                 value = moment(value).format(DATE_FORMAT);
             }
@@ -370,6 +384,11 @@ function doExport(data, backendIntl, res) {
                     switch (column.dataIndex) {
                         case 'contacts_name':
                             contactDes += _.get(firstContact,'name','');
+                            //如果有职务就加上职务
+                            var position = _.get(firstContact,'position');
+                            if(position){
+                                contactDes += `(${position})`;
+                            }
                             break;
                         case 'contacts_phone':
                             contactDes += '\t' + _.get(firstContact,'phone',[]).join('；');//加上\t是为了防止在用wps打开的时候，如果是座机会把前面的0忽略，直接展示成一个数字，例如01085655689会展示成1085655689
@@ -390,6 +409,7 @@ function doExport(data, backendIntl, res) {
                                         contactDes += '；';
                                     }
                                     contactDes += _.get(contactItem, 'name', '') ? backendIntl.get('call.record.contacts', '联系人') + '：' + _.get(contactItem, 'name', '') + ' ' : '';
+                                    contactDes += _.get(contactItem, 'position', '') ? '(' + _.get(contactItem, 'position', '') + ')' : '';
                                     contactDes += _.get(contactItem, 'phone[0]', '') ? backendIntl.get('common.phone', '电话') + '：' + _.get(contactItem, 'phone', []).join('，') + ' ' : '';
                                     contactDes += _.get(contactItem, 'email[0]', '') ? backendIntl.get('common.email', '邮箱') + '：' + _.get(contactItem, 'email', []).join('，') + ' ' : '';
                                     contactDes += _.get(contactItem, 'qq[0]', '') ? 'QQ' + '：' + _.get(contactItem, 'qq', []).join('，') + ' ' : '';
