@@ -1,0 +1,33 @@
+/**
+ * Copyright (c) 2018-2020 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2018-2020 湖南蚁坊软件股份有限公司。保留所有权利。
+ * Created by tangmaoqin on 2020/6/3.
+ */
+@import "../../public/css/common-variables";
+
+.bottom-panel-modal{
+  position: fixed;
+  z-index: 111;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  .right-panel-modal-mask{
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 110;
+  }
+  .bottom-panel-modal-content{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 111;
+    .bottom-panel-content{
+
+    }
+  }
+}

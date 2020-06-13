@@ -38,9 +38,7 @@ import { isShowWinningClue, isWinningClueMaxCount } from 'PUB_DIR/sources/utils/
 import { DISAPPEAR_DELAY_TIME } from 'PUB_DIR/sources/utils/consts';
 import AddTraceContentSuccessTips from '../add-trace-success-tips';
 const OVERVIEW_SHOW_COUNT = 3; //在概览中显示最近三条跟进
-const DATEPICKER_CLS = 'datepicker_wrap_flex';
-const MOIBLE_WIDTH = 375;
-const DATEPICKER_TIME = 200;
+
 
 class ClueTraceList extends React.Component {
     state = {
@@ -65,7 +63,6 @@ class ClueTraceList extends React.Component {
             this.getClueTraceList();
         });
         $(window).on('resize', this.onStoreChange);
-        $(document).on('mousedown', this.checkClickCalendarLayer);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -82,26 +79,6 @@ class ClueTraceList extends React.Component {
             });
         }
     }
-
-    checkClickCalendarLayer = (event) => {
-        if($(window).width() <= MOIBLE_WIDTH) {
-            const target = event.target;
-            let datepickerWrapEl = $('.clue-trace-container .datepicker_wrap');
-            if (!$(target).closest('.range-datepicker').length && !$(target).closest('.date_text').length) {
-                datepickerWrapEl.removeClass(DATEPICKER_CLS);
-            }else {
-                if(!datepickerWrapEl.hasClass(DATEPICKER_CLS)) {
-                    datepickerWrapEl.addClass(DATEPICKER_CLS);
-                }else {
-                    setTimeout(() => {
-                        if(!this.refs.datepicker.state.isShowCalendar) {
-                            datepickerWrapEl.removeClass(DATEPICKER_CLS);
-                        }
-                    }, DATEPICKER_TIME);
-                }
-            }
-        }
-    };
 
     //获取列表失败后重试
     retryChangeRecord = () => {
@@ -162,7 +139,6 @@ class ClueTraceList extends React.Component {
 
     componentWillUnmount() {
         ClueTraceStore.unlisten(this.onStoreChange);
-        $(document).off('mousedown', this.checkClickCalendarLayer);
         setTimeout(() => {
             ClueTraceAction.dismiss();
         });

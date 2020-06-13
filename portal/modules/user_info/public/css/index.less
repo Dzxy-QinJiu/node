@@ -1,4 +1,5 @@
 @import "../../../../public/css/common-variables.less";
+@import "../../../../public/css/common-colors.less";
 //编辑按钮主色
 @edit-icon-color: #b6c2c9;
 .user-info-manage-container {
@@ -491,6 +492,7 @@
           }
         }
       }
+
       .load-content, .errmsg-wrap {
         margin: 220px auto;
         text-align: center;
@@ -541,6 +543,7 @@
     }
     // tabs样式
     .ant-tabs {
+      width: 100%;
       .ant-tabs-bar {
         border-bottom: none;
         .ant-tabs-nav-container {
@@ -559,6 +562,169 @@
   .user-record-container-wrap {
     .ant-tabs {
       padding: 20px 0 0 0;
+    }
+  }
+}
+
+// 移动端样式适配
+@media screen and (max-width: 600px) {
+  .user-info-manage-container {
+    padding: 0;
+    .user-info-container-div {
+      .user-logo-div {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        .user-info-logo {
+          padding-top: 0;
+          .head-image-container {
+            height: 64px;
+            margin-top: 0;
+            margin-bottom: 0;
+            .cirle-image {
+              width: 64px;
+              height: 64px;
+              img {
+                width: 64px;
+                height: 64px;
+              }
+              .upload-img-container {
+                width: 64px;
+                height: 64px;
+                .change-img-container {
+                  width: 64px;
+                  height: 64px;
+                }
+              }
+            }
+          }
+          .user-info-nickname {
+            margin-top: 0;
+            .basic-edit-field {
+              .edit-container {
+                .icon-edit-btn {
+                  visibility: visible;
+                  color: @primary-color;
+                }
+              }
+            }
+          }
+        }
+      }
+      .user-info-bottom {
+        padding: 2.4rem;
+        .user-info-div {
+          border-top: 1px solid #E3E8ED;
+          padding: 1rem 0;
+          .user-info-item {
+            padding: 0 1rem;
+            margin-bottom: 2.4rem;
+            &:hover {
+              background-color: #fff;
+            }
+            .user-info-item-title {
+              display: flex;
+              flex-direction: row;
+              color: #666;
+              font-size: 1.2rem;
+              line-height: 1.2rem;
+              padding-bottom: 0.4rem;
+            }
+            .user-info-item-content {
+              color: #333333;
+              font-size: 1.4rem;
+              line-height: 2rem;
+              width: 100%;
+              .bind-webchat-phone, .bind-email-phone {
+                float: right;
+              }
+
+              .phone-show-edit-wrap {
+                width: 100%;
+                .icon-update {
+                  visibility: visible;
+                  float: right;
+                  color: @primary-color;
+                }
+              }
+            }
+            .user-email-item, .user-qq-item {
+              .basic-edit-field-input {
+                width: 100%;
+                .edit-container {
+                  width: 100%;
+                  text-align: left;
+                  .icon-edit-btn {
+                    visibility: visible;
+                    color: @primary-color;
+                  }
+                }
+              }
+            }
+            .user-email-item {
+              .basic-edit-field-input {
+                .icon-edit-btn {
+                  margin-right: -1rem;
+                }
+              }
+            }
+            .user-lang-value {
+              .ant-radio-group {
+                width: 100%;
+                .ant-radio-button-wrapper {
+                  width: 33.33%;
+                }
+              }
+              .icon-edit-btn {
+                display: inline-block;
+                color: @primary-color;
+                visibility: visible;
+              }
+            }
+          }
+          .user-version {
+            position: relative;
+            .user-version-upgrade {
+              position: absolute;
+              right: 1.2rem;
+              height: 3.6rem;
+            }
+          }
+        }
+        .user-tips-div {
+          height: 5rem;
+          padding-top: 1.4rem;
+          .user-tips-title-div {
+            .user-tips-name {
+              height: 3rem;
+              line-height: initial;
+              padding-left: 0;
+              font-size: 1.4rem;
+            }
+          }
+        }
+        .logout-btn {
+          width: 100%;
+          height: 3.6rem;
+          .logout {
+            span {
+              font-size: 1.6rem;
+              color: @primary-color;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// 移动端升级样式
+.user-info-upgrade-version-popover {
+  padding: 1rem;
+  top: 64px !important;
+  .ant-popover-content {
+    .ant-popover-arrow {
+      display: none;
     }
   }
 }

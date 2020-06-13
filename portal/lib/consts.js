@@ -62,8 +62,9 @@ module.exports = {
     },
     //页面布局常量
     LAYOUT: {
-        TOP_NAV: 64,
-        PADDING_BOTTOM: 16
+        TOP_NAV: 64,//正常左右布局时，内容区头部二级导航或操作区的高度
+        PADDING_BOTTOM: 16,//底部间距
+        BOTTOM_NAV: 48,//移动端样式中，底部导航的高度
     },
     //角色常量
     ROLE_CONSTANS: {

@@ -11,6 +11,7 @@ var zh_CN = {
     'weixin.mini.program': '小程序',
     'customer.service': '客服',
     'login.apply.trial': '申请试用',
+    'version.trail.enterprise': '试用企业版',
     //菜单
     'menu.crm': '客户管理',
     'menu.call': '通话记录',
@@ -2970,6 +2971,7 @@ var zh_CN = {
     'fail.report.phone.err.tip': '上报无效电话失败！',
     'user.info.no.email': '您还没有绑定邮箱，{add-email}',
     'user.info.add.email': '添加邮箱',
+    'user.info.no.wechat': '您还没有绑定微信',
     'schedule.call.out': '拨打',
     'weekly.report.total.duration': '本周总时长',
     'weekly.report.total.connected': '本周总接通数',
@@ -3061,6 +3063,7 @@ var zh_CN = {
     'common.sales.data.err': '出错啦',
     'common.sales.data.no.data': '暂无此类信息',
     'common.has.been.extracted': '已提取',
+    'common.has.been.extracted.by.other': '已被提取',
 
     //缺失补充start
     'user.third.thirdapp.platform.reuqired': '请选择或填写应用平台',

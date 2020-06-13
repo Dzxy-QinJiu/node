@@ -11,6 +11,7 @@ import Trace from 'LIB_DIR/trace';
 import { FILTER_COMMON_RATE_KEY } from './consts';
 import { storageUtil } from 'ant-utils';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 const local = storageUtil.local;
 const CLOSE_COMMENT_HEIGHT = 32;//收起筛选tab的高度
 class FilterList extends React.Component {
@@ -571,18 +572,22 @@ class FilterList extends React.Component {
         var noCommonStatus = !this.state.commonData || this.state.commonData.length === 0;
         var commonStatusCls = noCommonStatus ? ' no-content' : '';
         let styleList = this.props.style;
+        let {isWebMin} = isResponsiveDisplay();
         //减掉‘收起筛选’的高度
         if(_.get(styleList,'height')){
-            styleList.height = styleList.height - CLOSE_COMMENT_HEIGHT;
+            styleList.height = styleList.height - (isWebMin ? oplateConsts.LAYOUT.BOTTOM_NAV : CLOSE_COMMENT_HEIGHT);
         }
+
         return (
             <div>
-                <div className="close-filter-panel" onClick={this.closeFilterPanel}>
-                    <span className="filter-panel-arrow">
-                            &lt;
-                    </span>
-                    {Intl.get('clue.customer.close.filter.panel', '收起筛选')}
-                </div>
+                {isWebMin ? null : (
+                    <div className="close-filter-panel" onClick={this.closeFilterPanel}>
+                        <span className="filter-panel-arrow">
+                                &lt;
+                        </span>
+                        {Intl.get('clue.customer.close.filter.panel', '收起筛选')}
+                    </div>
+                )}
                 <GeminiScrollbar style={styleList} className={this.props.className}>
                     <div className="filter-wrapper filter-list-wrapper">
                         {_.isFunction(this.props.renderOtherDataContent) ? this.props.renderOtherDataContent() : null}
@@ -738,6 +743,11 @@ class FilterList extends React.Component {
                         }
                     </div>
                 </GeminiScrollbar>
+                {isWebMin ? (
+                    <div className="close-filter-panel mobile-close-filter-btn" onClick={this.closeFilterPanel}>
+                        <span>{Intl.get('common.confirm', '确认')}</span>
+                    </div>
+                ) : null}
             </div>
 
         );

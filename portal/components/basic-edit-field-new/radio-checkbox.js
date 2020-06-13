@@ -4,6 +4,7 @@
 import {Form, Radio, Checkbox} from 'antd';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 const CheckboxGroup = Checkbox.Group;
 import classNames from 'classnames';
 import Trace from 'LIB_DIR/trace';
@@ -163,9 +164,17 @@ class RadioOrCheckBoxEditField extends React.Component {
                                     value={this.state.value}
                                     className={this.props.className}
                                 >
-                                    {_.map(this.state.selectOptions, (item) => {
-                                        return (<Radio value={item}>{item}</Radio>);
-                                    })}
+                                    {
+                                        this.props.radioType === 'radio' ? (
+                                            _.map(this.state.selectOptions, (item) => {
+                                                return (<Radio value={item}>{item}</Radio>);
+                                            })
+                                        ) : (
+                                            _.map(this.state.selectOptions, (item) => {
+                                                return (<RadioButton value={item}>{item}</RadioButton>);
+                                            })
+                                        )
+                                    }
                                 </RadioGroup>
                             ) : (
                                 <CheckboxGroup
@@ -228,7 +237,8 @@ RadioOrCheckBoxEditField.defaultProps = {
     },
     selectOptions: [],
     componentType: 'radio', // 组件类型，默认是radio
-    className: ''
+    className: '',
+    radioType: 'radio', // radio 样式，默认是 radio
 };
 RadioOrCheckBoxEditField.propTypes = {
     id: PropTypes.string,
@@ -245,6 +255,7 @@ RadioOrCheckBoxEditField.propTypes = {
     saveEditInput: PropTypes.func,
     selectOptions: PropTypes.array,
     componentType: PropTypes.string,
-    className: PropTypes.string
+    className: PropTypes.string,
+    radioType: PropTypes.string,
 };
 export default RadioOrCheckBoxEditField;

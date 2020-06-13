@@ -20,6 +20,7 @@ import {getTableContainerHeight, isCurtao, checkVersionAndType} from 'PUB_DIR/so
 import BackMainPage from 'CMP_DIR/btn-back';
 import {CRM_VIEW_TYPES, checkPrivilege} from '../utils/crm-util';
 import crmPrivilegeConst from '../privilege-const';
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 const PRIVILEGES = {
     MANAGER_CUSTOMER_BAK_AUTH: crmPrivilegeConst.CRM_MANAGER_CUSTOMER_BAK_OPERATOR_RECORD//管理员获取回收站中客户列表的权限
 };
@@ -470,7 +471,7 @@ class CustomerRecycleBin extends React.Component {
                         util={{zoomInSortArea: true}}
                         onChange={this.onTableChange}
                         pagination={false}
-                        scroll={{y: getTableContainerHeight()}}
+                        scroll={{y: getTableContainerHeight(this.props.adaptiveHeight)}}
                         dropLoad={{
                             listenScrollBottom: this.state.listenScrollBottom,
                             handleScrollBottom: this.handleScrollBottom,
@@ -548,7 +549,7 @@ class CustomerRecycleBin extends React.Component {
                         />
                     </div>
                 </TopNav>
-                <div className="customer-table-container customer-bak-table" style={{height: getTableContainerHeight()}}>
+                <div className="customer-table-container customer-bak-table" style={{height: getTableContainerHeight(this.props.adaptiveHeight)}}>
                     {this.renderTableContent()}
                 </div>
             </div>
@@ -558,7 +559,8 @@ class CustomerRecycleBin extends React.Component {
 
 CustomerRecycleBin.propTypes = {
     closeRecycleBin: PropTypes.func,
-    crmSearchCondition: PropTypes.object
+    crmSearchCondition: PropTypes.object,
+    adaptiveHeight: PropTypes.number
 };
 
-export default CustomerRecycleBin;
+export default adaptiveHeightHoc(CustomerRecycleBin);
