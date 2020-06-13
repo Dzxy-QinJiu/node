@@ -79,7 +79,7 @@ function ApplyViewDetailActions() {
                 _.isFunction(callback) && callback();
                 changeApplyStatusPassOrReject(obj,data);
             }else{
-                this.dispatch({loading: false, error: true, errorMsg: Intl.get('errorcode.19', '审批申请失败')});
+                this.dispatch({loading: false, error: true, errorMsg: Intl.get('fail.apply.approve.result', '审批失败')});
             }
 
         }, (errorMsg) => {
