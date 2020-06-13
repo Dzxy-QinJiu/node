@@ -7,6 +7,7 @@ var ApplyApproveService = require('../service/apply-approve');
 var _ = require('lodash');
 const multiparty = require('multiparty');
 const fs = require('fs');
+var CryptoJS = require('crypto-js');
 exports.getNextCandidate = function(req, res) {
     ApplyApproveService.getNextCandidate(req, res).on('success', function(data) {
         res.status(200).json(data);
@@ -316,5 +317,28 @@ exports.approveSelfSettingApply = function(req, res) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+//提交审批
+exports.submitApply = function(req, res) {
+    var password = req.body.password || '';
+    if (password) {
+        var bytes = CryptoJS.AES.decrypt(password, 'apply_change_password');
+        password = bytes.toString(CryptoJS.enc.Utf8);
+    }
+    if (req.body.passwordObvious){
+        password = req.body.passwordObvious;
+    }
+    req.body.password = password;
+    if (req.body.delay_time) {
+        req.body.delay = req.body.delay_time || '';
+        delete req.body.delay_time;
+    }
+    //发请求进行审批
+    ApplyApproveService.submitApply(req, res).on('success', function(data) {
+        res.status(200).json(data);
+
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message || '审批失败');
     });
 };

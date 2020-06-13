@@ -101,10 +101,6 @@ class ApplyViewDetailActions {
                     this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('user.get.apply.detail.failed', '获取申请审批详情失败')});
                 });
             }
-
-
-
-
         }
     }
     //在审批详情中得到客户的id，然后根据客户的id获取历史申请审批

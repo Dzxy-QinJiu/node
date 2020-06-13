@@ -1,6 +1,6 @@
 var AppUserService = require('../service/app-user-manage.service');
 var extend = require('extend');
-var CryptoJS = require('crypto-js');
+
 const _ = require('lodash');
 var appUserDetailDto = require('../dto/apps');
 const multiparty = require('multiparty');
@@ -199,32 +199,7 @@ exports.cancelApplyApprove = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-//提交审批
-exports.submitApply = function(req, res) {
-    var password = req.body.password || '';
-    if (password) {
-        var bytes = CryptoJS.AES.decrypt(password, 'apply_change_password');
-        password = bytes.toString(CryptoJS.enc.Utf8);
-    }
-    if (req.body.passwordObvious){
-        password = req.body.passwordObvious;
-    }
-    req.body.password = password;
-    if (req.body.delay_time) {
-        req.body.delay = req.body.delay_time || '';
-        delete req.body.delay_time;
-    }
-    //发请求进行审批
-    AppUserService.submitApply(req, res).on('success', function(data) {
-        if (data === true) {
-            res.json(data);
-        } else {
-            res.status(500).json('审批失败');
-        }
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message || '审批失败');
-    });
-};
+
 //为用户添加应用
 exports.addApp = function(req, res) {
     //发请求，添加应用

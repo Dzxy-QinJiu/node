@@ -406,23 +406,18 @@ class CustomerUsers extends React.Component {
                 </Popover>)
         );
     };
-    //计算笛卡尔积
-    calcDescartes = (array) => {
-        if (array.length < 2) return array[0] || [];
-        return [].reduce.call(array, function(col, set) {
-            var res = [];
-            col.forEach(function(c) {
-                set.forEach(function(s) {
-                    res.push({
-                        user_id: _.get(s,'user_id'),
-                        user_name: _.get(s,'user_name'),
-                        client_id: _.get(c,'app_id'),
-                        client_name: _.get(c,'app_name')
-                    });
-                });
+    //应用和用户的对应关系
+    calcAppAndUser = (apps, user) => {
+        var res = [];
+        apps.forEach(function(app) {
+            res.push({
+                user_id: _.get(user, 'user_id'),
+                user_name: _.get(user, 'user_name'),
+                client_id: _.get(app, 'app_id'),
+                client_name: _.get(app, 'app_name')
             });
-            return res;
         });
+        return res;
     };
 
     //其他申请时，根据返回的状态信息渲染带popover的button和不带popover的button
@@ -438,7 +433,7 @@ class CustomerUsers extends React.Component {
                 //每个用户中被选中的应用
                 var selectedApps = _.filter(userItem.apps, item => item && item.checked);
                 if(!_.isEmpty(selectedApps)){
-                    hasSelectUserAppList = _.concat(hasSelectUserAppList, this.calcDescartes([selectedApps,[userItem.user]]));
+                    hasSelectUserAppList = _.concat(hasSelectUserAppList, this.calcAppAndUser(selectedApps,userItem.user));
                 }
             });
             let hasApplyOngoingList = [];

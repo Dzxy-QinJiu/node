@@ -14,7 +14,7 @@ var auth = require('../../../../lib/utils/auth');
 var Promise = require('bluebird');
 var EventEmitter = require('events').EventEmitter;
 //常量定义
-var CONSTANTS = {
+export const CONSTANTS = {
     APPLY_USER_OFFICIAL: 'apply_user_official', //申请正式用户
     APPLY_USER_TRIAL: 'apply_user_trial', //申请试用用户
     APPLY_USER: 'apply_user',//uem类型的账号申请新用户
@@ -31,6 +31,7 @@ var CONSTANTS = {
     APPROVAL_STATE_FALSE: '0', // 待审批
     APPROVAL_STATE_PASS: '1' // 已通过
 };
+
 
 //上传超时时长 5分钟
 const uploadTimeOut = 5 * 60 * 1000;
@@ -74,10 +75,6 @@ var AppUserRestApis = {
     getWorkFlowUnreadReplyList: 'rest/base/v1/workflow/comments/notice/unread',
     //获取申请单详情
     getApplyDetail: '/rest/base/v1/workflow/detail',
-    //审批申请单（创建新用户审批）
-    submitApplyNewUser: '/rest/base/v1/workflow/newuser/approve',
-    //审批申请单（已有用户开通应用审批）
-    submitExistApply: '/rest/base/v1/workflow/newgrant/approve',
     //开通新应用授权
     applyNewgrant: '/rest/base/v1/workflow/newgrant',
     //获取客户对应的用户列表
@@ -86,10 +83,6 @@ var AppUserRestApis = {
     batchDelayUser: '/rest/base/v1/user/batch/grant/delay',
     //修改密码和其他类型申请
     applyChangePasswordAndOther: '/rest/base/v1/workflow/user/change',
-    //审批修改密码和其他类型的申请审批
-    submitApplyChangePasswordOrOther: '/rest/base/v1/workflow/user/change/approve',
-    //延期和启用停用审批
-    submitApplyDelayMultiApp: '/rest/base/v1/workflow/grant/change/approve',
     //审批开通状态
     submitApplyGrantStatus: '/rest/base/v1/user/approve_status',
     //编辑用户应用单个字段
@@ -974,71 +967,6 @@ function getAppPermissionNames(req, res, obj) {
         });
     });
 }
-
-//审批申请单
-exports.submitApply = function(req, res) {
-    var requestObj = req.body;
-    //审批提交地址
-    var applyUrl;
-    //如果有用户名，是新申请
-    // if (requestObj.type === 'apply_grant_delay') {
-    //     applyUrl = AppUserRestApis.approveDelayUser;
-    //     delete requestObj.user_name;
-    //     delete requestObj.products;
-    //     delete requestObj.nick_name;
-    //     delete requestObj.password;
-    // } else
-    if (_.includes([CONSTANTS.APPLY_PWD_CHANGE,CONSTANTS.APPLY_GRANT_OTHER_CHANGE],requestObj.type)) {//审批密码和其他变更的审批 {id:'',agree:'pass'}
-        applyUrl = AppUserRestApis.submitApplyChangePasswordOrOther;
-        delete requestObj.user_name;
-        delete requestObj.products;
-        delete requestObj.nick_name;
-        delete requestObj.delay;
-        delete requestObj.end_date;
-    }
-    // else if (requestObj.type === CONSTANTS.APPLY_GRANT_OTHER_CHANGE) {//用户其他信息变更审批 {id:'',agree:'pass'}
-    //     applyUrl = AppUserRestApis.submitApplyChangeOther;
-    //     delete requestObj.user_name;
-    //     delete requestObj.products;
-    //     delete requestObj.nick_name;
-    //     delete requestObj.delay;
-    //     delete requestObj.end_date;
-    //     delete requestObj.password;
-    // }
-    // else if (requestObj.type === 'apply_grant_status_change') {
-    //     applyUrl = AppUserRestApis.submitApplyGrantStatus;
-    //     delete requestObj.user_name;
-    //     delete requestObj.products;
-    //     delete requestObj.nick_name;
-    //     delete requestObj.delay;
-    //     delete requestObj.end_date;
-    //     delete requestObj.password;
-    // }
-    else if(_.includes([CONSTANTS.DELAY_MULTI_APP ,CONSTANTS.DISABLE_MULTI_APP], requestObj.type)){//延期申请及启用和停用{id:'',agree:'pass',users_or_grants:[]}
-        applyUrl = AppUserRestApis.submitApplyDelayMultiApp;
-    }else{
-        delete requestObj.delay;
-        delete requestObj.end_date;
-        //如果是申请新用户（试用、签约）的审批，不用删除密码
-        if (!_.includes([CONSTANTS.APPLY_USER_OFFICIAL,CONSTANTS.APPLY_USER_TRIAL,CONSTANTS.APPLY_USER], requestObj.type)){
-            delete requestObj.password;
-        }
-        if (requestObj.user_name) {//创建新用户申请
-            applyUrl = AppUserRestApis.submitApplyNewUser;
-        } else {
-            //没有用户名，是已有用户申请 {id:'',agree:'pass',users_or_grants: []}
-            applyUrl = AppUserRestApis.submitExistApply;
-            delete requestObj.user_name;
-            delete requestObj.nick_name;
-        }
-    }
-    delete requestObj.type;
-    return restUtil.authRest.post({
-        url: applyUrl,
-        req: req,
-        res: res
-    }, requestObj);
-};
 
 //根据用户名获取用户信息
 exports.getUserByName = function(req, res, userName) {
