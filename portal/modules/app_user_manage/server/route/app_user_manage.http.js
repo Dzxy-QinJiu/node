@@ -178,13 +178,6 @@ module.exports = {
         ]
     }, {
         'method': 'post',
-        'path': '/rest/appuser/apply',
-        'handler': 'submitApply',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
-        'method': 'post',
         'path': '/rest/appuser/addapp',
         'handler': 'addApp',
         'passport': {

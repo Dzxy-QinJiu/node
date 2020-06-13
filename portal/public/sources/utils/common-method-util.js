@@ -607,12 +607,15 @@ exports.handleDiffTypeApply = function(that, isUserApply) {
         if (_.get(that, 'state.rolesNotSettingModalDialog.appNames.length') && isUserApply){
             modalContent = that.state.rolesNotSettingModalDialog.appNames.join('、') + Intl.get('user.apply.detail.role.modal.content', '中，未对用户分配角色，确认通过此申请吗？');
         }
+        resultType = that.state.applyResult;
     } else if (confirmType === 'cancel') {
         modalContent = Intl.get('user.apply.detail.modal.content', '是否撤销此申请？');
         deleteFunction = that.cancelApplyApprove;
         okText = Intl.get('user.apply.detail.modal.ok', '撤销');
+        modalTitle = <span>{Intl.get('user.apply.detail.backout', '撤销申请')}</span>;
+        confirmCls = 'reject-btn';
+        resultType = that.state.backApplyResult;
     }
-    resultType = that.state.applyResult;
     modalShow = confirmType && resultType.submitResult === '';
     return {
         modalShow: modalShow,

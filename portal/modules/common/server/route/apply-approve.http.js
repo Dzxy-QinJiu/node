@@ -203,6 +203,13 @@ module.exports = {
             needLogin: true
         },
         'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
+    }, {
+        'method': 'post',
+        'path': '/rest/appuser/apply',
+        'handler': 'submitApply',
+        'passport': {
+            'needLogin': true
+        }
     }
     ]
 };
