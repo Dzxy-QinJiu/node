@@ -13,10 +13,10 @@ var AppUserAction = require('./action/app-user-actions');
 
 var AppUserUtil = require('./util/app-user-util');
 
-var UserView = require('./views/user-view');
+import UserView from './views/user-view';
 import AddOrEditUser from './views/v2/add-or-edit-user';
 
-var UserAuditLog = require('./views/user-audit-log-show-user-detail');
+import UserAuditLog from './views/user-audit-log-show-user-detail';
 
 import {Icon, Button, Popover, message} from 'antd';
 import {SearchInput, AntcSelect} from 'antc';

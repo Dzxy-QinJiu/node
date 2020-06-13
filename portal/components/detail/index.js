@@ -67,4 +67,4 @@ class Detail extends React.Component {
     }
 }
 
-export default adaptiveHeightHoc(Detail, '.detail-content');
+export default adaptiveHeightHoc(Detail, '.detail-content', 10);

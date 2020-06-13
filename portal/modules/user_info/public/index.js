@@ -23,6 +23,7 @@ const TabPane = Tabs.TabPane;
 import TradeRecord from './views/trade-record';
 import history from 'PUB_DIR/sources/history';
 import { getOrganizationInfo } from 'PUB_DIR/sources/utils/common-data-util';
+import { isResponsiveDisplay } from 'PUB_DIR/sources/utils/common-method-util';
 import userInfoPrivilege from './privilege-config';
 const TAB_KEYS = {
     OPERATE_RECORD_TAB: '1',// 操作记录
@@ -68,6 +69,7 @@ var UserInfoPage = createReactClass({
         UserInfoAction.getLogList({
             load_size: this.state.loadSize
         });
+
     },
     componentWillReceiveProps(nextProps) {
         // 判断是不是跳转过来的，若是的话，显示购买记录界面
@@ -109,6 +111,7 @@ var UserInfoPage = createReactClass({
         });
     },
 
+
     changeActiveKey(key) {
         this.setState({
             activeKey: key
@@ -128,71 +131,74 @@ var UserInfoPage = createReactClass({
                     userInfoErrorMsg={this.state.userInfoErrorMsg}
                     userInfoLoading={this.state.userInfoLoading}
                 />
-                <div className="col-md-8 user-record-container-wrap">
-                    <Tabs
-                        activeKey={this.state.activeKey}
-                        onChange={this.changeActiveKey}
-                    >
-                        <TabPane
-                            tab={Intl.get('common.operate.record', '操作记录')}
-                            key={TAB_KEYS.OPERATE_RECORD_TAB}
-                        >
-                            {
-                                this.state.activeKey === TAB_KEYS.OPERATE_RECORD_TAB ?
-                                    <div className="user-log-div">
-                                        <div className="log-div-title">
-                                            <label className="log-title-tips">
-                                                <ReactIntl.FormattedMessage
-                                                    id="user.info.log.record.tip"
-                                                    defaultMessage={'以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}'}
-                                                    values={{
-                                                        editpassword: <span className="update-pwd">
-                                                            <NavLink to="/user-preference/password" activeClassName="active"data-tracename="修改密码">
-                                                                <ReactIntl.FormattedMessage id="common.edit.password" defaultMessage="修改密码"/>
-                                                            </NavLink>
-                                                        </span>
-                                                    }}
-                                                />
-                                            </label>
-                                        </div>
-                                        <UserInfoLog
-                                            logErrorMsg={this.state.logErrorMsg}
-                                            logLoading={this.state.logLoading}
-                                            logList={this.state.logList}
-                                            logTotal={this.state.logTotal}
-                                            sortId={this.state.sortId}
-                                            loadSize={this.state.loadSize}
-                                            listenScrollBottom={this.state.listenScrollBottom}
-                                            height={containerHeight}
-                                            handleScrollBottom={this.handleScrollBottom}
-                                        />
-                                    </div>
-                                    : null
-                            }
-                        </TabPane>
-                        {
-                            hasPrivilege(userInfoPrivilege.CURTAO_TRADE_ORDERS) ? (
+                {
+                    isResponsiveDisplay().isWebSmall ? null : (
+                        <div className="col-md-8 user-record-container-wrap">
+                            <Tabs
+                                activeKey={this.state.activeKey}
+                                onChange={this.changeActiveKey}
+                            >
                                 <TabPane
-                                    tab={Intl.get('user.trade.record', '购买记录')}
-                                    key={TAB_KEYS.TRADE_TAB}
+                                    tab={Intl.get('common.operate.record', '操作记录')}
+                                    key={TAB_KEYS.OPERATE_RECORD_TAB}
                                 >
                                     {
-                                        this.state.activeKey === TAB_KEYS.TRADE_TAB ? (
-                                            <TradeRecord
-                                                height={containerHeight + logTitleHeight}
-                                            />
-                                        ) : null
+                                        this.state.activeKey === TAB_KEYS.OPERATE_RECORD_TAB ?
+                                            <div className="user-log-div">
+                                                <div className="log-div-title">
+                                                    <label className="log-title-tips">
+                                                        <ReactIntl.FormattedMessage
+                                                            id="user.info.log.record.tip"
+                                                            defaultMessage={'以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}'}
+                                                            values={{
+                                                                editpassword: <span className="update-pwd">
+                                                                    <NavLink to="/user-preference/password" activeClassName="active"data-tracename="修改密码">
+                                                                        <ReactIntl.FormattedMessage id="common.edit.password" defaultMessage="修改密码"/>
+                                                                    </NavLink>
+                                                                </span>
+                                                            }}
+                                                        />
+                                                    </label>
+                                                </div>
+                                                <UserInfoLog
+                                                    logErrorMsg={this.state.logErrorMsg}
+                                                    logLoading={this.state.logLoading}
+                                                    logList={this.state.logList}
+                                                    logTotal={this.state.logTotal}
+                                                    sortId={this.state.sortId}
+                                                    loadSize={this.state.loadSize}
+                                                    listenScrollBottom={this.state.listenScrollBottom}
+                                                    height={containerHeight}
+                                                    handleScrollBottom={this.handleScrollBottom}
+                                                />
+                                            </div>
+                                            : null
                                     }
                                 </TabPane>
-                            ) : null
-                        }
+                                {
+                                    hasPrivilege(userInfoPrivilege.CURTAO_TRADE_ORDERS) ? (
+                                        <TabPane
+                                            tab={Intl.get('user.trade.record', '购买记录')}
+                                            key={TAB_KEYS.TRADE_TAB}
+                                        >
+                                            {
+                                                this.state.activeKey === TAB_KEYS.TRADE_TAB ? (
+                                                    <TradeRecord
+                                                        height={containerHeight + logTitleHeight}
+                                                    />
+                                                ) : null
+                                            }
+                                        </TabPane>
+                                    ) : null
+                                }
 
-                    </Tabs>
-                </div>
+                            </Tabs>
+                        </div>
+                    )
+                }
             </div>
         );
     },
 });
 
 module.exports = UserInfoPage;
-

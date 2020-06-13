@@ -12,12 +12,14 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }
 var classNames = require('classnames');
 var Button = require('antd').Button;
+import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 
 //渲染右侧推出面板
 class RightPanel extends React.Component {
     render() {
         var btnClass = classNames('right-pannel-default', this.props.className, {
-            'right-pannel-show': this.props.showFlag
+            'right-pannel-show': this.props.showFlag,
+            'mobile-right-panel-default': isResponsiveDisplay().isWebMin
         });
         return (
             <div {...this.props} className={btnClass}>

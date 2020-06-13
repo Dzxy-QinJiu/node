@@ -43,6 +43,7 @@ import filterEmitter from 'CMP_DIR/filter/emitter';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -553,8 +554,11 @@ class ClueExtract extends React.Component {
 
     // 渲染线索内容
     renderClueCustomerBlock = () => {
-        let divHeight = getTableContainerHeight();
+        let divHeight = getTableContainerHeight(this.props.adaptiveHeight, false);
         if (this.state.cluePoolList.length) {
+            if(isResponsiveDisplay().isWebMin) {
+                divHeight += (LAYOUT_CONSTANTS.TH_MORE_HEIGHT * 2);
+            }
             return (
                 <div id="clue-content-block" className="clue-content-block" ref="clueCustomerList">
                     <div className="clue-customer-list"
@@ -752,20 +756,21 @@ class ClueExtract extends React.Component {
 
     // table 列
     getClueTableColunms = () => {
+        const { isWebMin } = isResponsiveDisplay();
         //最后联系时间数据
         let timeData = this.state.cluePoolList;
         //待跟进线索无跟进内容
         let typeFilter = this.getFilterStatus();//线索类型
         let willTrace = SELECT_TYPE.WILL_TRACE === typeFilter.status;
-        let contactWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
-        let titleWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
-        let lastWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
-        let followupWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
+        // let contactWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
+        // let titleWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
+        // let lastWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
+        // let followupWidth = willTrace ? TABLE_WIDTH.TITLE + TABLE_WIDTH.TRACE + TABLE_WIDTH.LAST + TABLE_WIDTH.FOLLOWUP / 4 : TABLE_WIDTH.FOLLOWUP;
 
         let columns = [
             {
                 dataIndex: 'clue_name',
-                // width: titleWidth,
+                width: TABLE_WIDTH.TITLE,
                 render: (text, salesClueItem, index) => {
                     //有相似线索
                     let hasSimilarClue = _.get(salesClueItem, 'lead_similarity');
@@ -826,7 +831,7 @@ class ClueExtract extends React.Component {
              ***/
             {
                 dataIndex: 'contact',
-                // width: contactWidth,
+                width: TABLE_WIDTH.CONTACT,
                 render: (text, record, index) => {
                     var contacts = record.contacts ? record.contacts : [];
                     if (_.isArray(contacts) && contacts.length){
@@ -851,7 +856,7 @@ class ClueExtract extends React.Component {
             },
             {
                 // title:'最后联系与跟进内容',
-                width: lastWidth,
+                width: TABLE_WIDTH.TRACE,
                 dataIndex: 'last_contact',
                 render: function(text, record, index) 
                 {
@@ -896,6 +901,7 @@ class ClueExtract extends React.Component {
         }
         if (freedCluePrivilege()) {
             columns = _.concat(columns, {
+                dataIndex: 'operator',
                 className: 'invalid-td-clue',
                 width: TABLE_WIDTH.EXTRACT,
                 render: (text, record, index) => {
@@ -911,6 +917,18 @@ class ClueExtract extends React.Component {
                     );
                 }
             });
+        }
+        //如果是手机端
+        if(isWebMin) {//只显示线索名一列
+            columns = _.chain(columns)
+                .filter(column => _.includes(['clue_name', 'operator'], column.dataIndex))
+                .map(column => {
+                    /*if(column.dataIndex === 'clue_name') {
+                        delete column.width;
+                    }*/
+                    delete column.width;
+                    return column;
+                }).value();
         }
         return columns;
     };
@@ -933,6 +951,11 @@ class ClueExtract extends React.Component {
             return record.id;
         }
 
+        let height = getTableContainerHeight(this.props.adaptiveHeight, false);
+        if(!isResponsiveDisplay().isWebMin) {
+            height -= LAYOUT_CONSTANTS.TH_MORE_HEIGHT;
+        }
+
         return (
             <AntcTable
                 rowSelection={rowSelection}
@@ -942,7 +965,7 @@ class ClueExtract extends React.Component {
                 pagination={false}
                 columns={this.getClueTableColunms()}
                 rowClassName={this.handleRowClassName}
-                scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
+                scroll={{y: height}}
             />);
 
     };
@@ -1253,18 +1276,26 @@ class ClueExtract extends React.Component {
     };
 
     render = () => {
+        let {isWebMin} = isResponsiveDisplay();
         const contentClassName = classNames('content-container', {
             'content-full': !this.state.showFilterList,
             'clue-status-no-check': !this.hasClueSelectPrivilege()
         });
         const hasSelectedClue = this.hasSelectedClues();
+        let filterHidden = !this.state.showFilterList;
+        let showFilterPanle = isWebMin && !filterHidden;
+        var filterCls = classNames('filter-container',{
+            'filter-close': filterHidden,
+            'mobile-filter-container': showFilterPanle
+        });
+
         return (
             <div className="extract-clue-panel">
                 <div className='extract-clue-top-nav-wrap date-picker-wrap'>
                     <div className="search-container">
-                        {hasSelectedClue ? null : <BackMainPage className="clue-back-btn" 
+                        {hasSelectedClue || showFilterPanle ? null : <BackMainPage className="clue-back-btn"
                             handleBackClick={this.closeExtractCluePanel}></BackMainPage>}
-                        <div className="search-input-wrapper">
+                        <div className="search-input-wrapper" style={{display: isWebMin && hasSelectedClue ? 'none' : 'block'}}>
                             <FilterInput
                                 ref="filterinput"
                                 toggleList={this.toggleList.bind(this)}
@@ -1272,7 +1303,7 @@ class ClueExtract extends React.Component {
                                 showList={this.state.showFilterList}
                             />
                         </div>
-                        {hasSelectedClue ? (
+                        {showFilterPanle ? null : hasSelectedClue ? (
                             <div className="clue-list-selected-tip">
                                 <span className="iconfont icon-sys-notice"/>
                                 {this.renderSelectClueTips()}
@@ -1291,7 +1322,7 @@ class ClueExtract extends React.Component {
                     }
                 </div>
                 <div className='extract-clue-content-container'>
-                    <div className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
+                    <div className={filterCls}>
                         <ClueFilterPanel
                             ref={filterPanel => this.filterPanel = filterPanel}
                             clueLeadingArray={this.state.clueLeadingArray}
@@ -1302,8 +1333,8 @@ class ClueExtract extends React.Component {
                             salesManList={this.getSalesDataList()}
                             getClueList={this.getCluePoolList}
                             style={{
-                                width: LAYOUT_CONSTANTS.FILTER_WIDTH,
-                                height: getTableContainerHeight() + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT
+                                width: isWebMin ? '100%' : LAYOUT_CONSTANTS.FILTER_WIDTH,
+                                height: getTableContainerHeight(this.props.adaptiveHeight, false) + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT + (isWebMin ? oplateConsts.LAYOUT.BOTTOM_NAV : 0)
                             }}
                             showSelectTip={_.get(this.state.selectedClues, 'length')}
                             toggleList={this.toggleList.bind(this)}
@@ -1322,6 +1353,7 @@ class ClueExtract extends React.Component {
 ClueExtract.propTypes = {
     closeExtractCluePanel: PropTypes.func,
     clueSearchCondition: PropTypes.object,
+    adaptiveHeight: PropTypes.number
 };
 
-export default ClueExtract;
+export default adaptiveHeightHoc(ClueExtract);

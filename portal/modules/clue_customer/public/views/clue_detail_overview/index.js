@@ -63,7 +63,7 @@ import PhoneInput from 'CMP_DIR/phone-input';
 
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerStore = require('../../store/clue-customer-store');
-import {renderClueStatus, checkCurrentVersion} from 'PUB_DIR/sources/utils/common-method-util';
+import {renderClueStatus, checkCurrentVersion, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 import crmUtil, {TAB_KEYS} from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -1127,7 +1127,7 @@ class ClueDetailOverview extends React.Component {
                 releaseTip = releaseClueTip();
             }
             return <div>
-                {associatedPrivilege ? <Button type="primary" data-tracename="点击转为客户按钮"
+                {!isResponsiveDisplay().isWebMin && associatedPrivilege ? <Button type="primary" data-tracename="点击转为客户按钮"
                     onClick={this.convertToCustomer.bind(this, curClue)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
                 <Button data-tracename="点击判定线索无效按钮" className='clue-inability-btn'
                     onClick={this.showConfirmInvalid.bind(this, curClue)}>

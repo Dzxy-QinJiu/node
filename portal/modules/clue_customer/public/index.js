@@ -114,7 +114,8 @@ var LAYOUT_CONSTANTS = {
     WIDTH_WITHOUT_INPUT: 185,//topnav中除了输入框以外的宽度
     NABSIDE_WIDTH: 64,//左侧导航的宽度
     NAV_PADDING_LEFT: 15,//头部导航左侧的padding
-    TOP_NAV_BTN_WIDTH: 620//topnav上所有按钮的宽度
+    TOP_NAV_BTN_WIDTH: 620,//topnav上所有按钮的宽度
+    PADDING_BOTTOM: 5,//底部间距
 };
 import CustomerLabel from 'CMP_DIR/customer_label';
 import { clueEmitter, notificationEmitter } from 'PUB_DIR/sources/utils/emitters';
@@ -123,6 +124,7 @@ import { storageUtil } from 'ant-utils';
 import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import AddTraceContentSuccessTips from './views/add-trace-success-tips';
+import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 const DIFFREF = {
     ASSIGN: 'assign',//分配
     TRACE: 'trace', //跟进
@@ -1727,7 +1729,7 @@ class ClueCustomer extends React.Component {
                     <span className="clue-status-num" ref={dom => {this.$hasTrace = dom;}}>{_.get(statics, 'hasTrace', 0)}</span>
                     <span className={hasTraceAddCls}> +1 </span>
                 </span>
-                {filterAllotNoTraced || isCommonSalesOrPersonnalVersion() ? null : <span className={hasTransfer} data-tracename='点击已转化tab'
+                {filterAllotNoTraced || isCommonSalesOrPersonnalVersion() || isResponsiveDisplay().isWebMin ? null : <span className={hasTransfer} data-tracename='点击已转化tab'
                     onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}
                     title={getCertainTabsTitle(SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
                     <span className="clue-status-num" ref={dom => {this.$hasTransfer = dom;}} >{_.get(statics, 'hasTransfer', 0)}</span>
@@ -1765,7 +1767,7 @@ class ClueCustomer extends React.Component {
                         {Intl.get('clue.add.trace.content', '添加跟进内容')}
                     </Menu.Item> : null
                 }
-                {hasHandleAssociateInvalid && transferClueToCustomerIconPrivilege(salesClueItem) ?
+                {!isResponsiveDisplay().isWebMin && hasHandleAssociateInvalid && transferClueToCustomerIconPrivilege(salesClueItem) ?
                     <Menu.Item key={MORE_BTN_CONSTS.ASSOCiATE}>
                         {Intl.get('common.convert.to.customer', '转为客户')}
                     </Menu.Item> : null}
@@ -1983,7 +1985,12 @@ class ClueCustomer extends React.Component {
                                             </span> : null}
                                         {hasApplyTry ?
                                             <span className='clue-label intent-tag-style'>
-                                                {Intl.get('login.apply.trial','申请试用')}
+                                                {isWebMin ? (
+                                                    <React.Fragment>
+                                                        <span className="clue-trail-name">{Intl.get('home.page.apply.type','申请')}</span>
+                                                        <span>{Intl.get('version.trail.enterprise', '试用企业版')}</span>
+                                                    </React.Fragment>
+                                                ) : Intl.get('login.apply.trial','申请试用')}
                                             </span> : null}
                                     </div>
                                 }
@@ -2288,7 +2295,7 @@ class ClueCustomer extends React.Component {
                 dataSource={customerList}
                 columns={this.getClueTableColunms()}
                 rowClassName={this.setInvalidClassName}
-                scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
+                scroll={{y: getTableContainerHeight(this.props.adaptiveHeight) - (isResponsiveDisplay().isWebMin ? LAYOUT_CONSTANTS.PADDING_BOTTOM : LAYOUT_CONSTANTS.TH_MORE_HEIGHT)}}
                 // locale={{
                 //     emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get('common.no.more.filter.crm', '没有符合条件的客户')) : ''
                 // }}
@@ -3694,16 +3701,22 @@ class ClueCustomer extends React.Component {
     };
 
     render() {
+        let {isWebMin} = isResponsiveDisplay();
         var isFirstLoading = this.isFirstLoading();
         var cls = classNames('right-panel-modal',
             {'show-modal': this.state.clueAddFormShow
             });
+        let filterHidden = !this.state.showFilterList || isFirstLoading;
+        let showFilterPanle = isWebMin && !filterHidden;
         const contentClassName = classNames('content-container',{
-            'content-full': !this.state.showFilterList
+            'content-full': !this.state.showFilterList,
+            'content-hidden': showFilterPanle,
+            'has-transfer-container': SELECT_TYPE.HAS_TRANSFER === this.getFilterStatus().status
         });
         var hasSelectedClue = this.hasSelectedClues();
         var filterCls = classNames('filter-container',{
-            'filter-close': !this.state.showFilterList || isFirstLoading
+            'filter-close': filterHidden,
+            'mobile-filter-container': showFilterPanle
         });
         const animateStyle = {
             transform: `translate(${this.state.x}px, ${this.state.y}px)`,
@@ -3711,7 +3724,6 @@ class ClueCustomer extends React.Component {
         };
         //普通销售或者个人注册线索用
         var isCommonSale = isCommonSalesOrPersonnalVersion();//是否是普通销售
-        let {isWebMin} = isResponsiveDisplay();
 
         return (
             <RightContent>
@@ -3719,8 +3731,8 @@ class ClueCustomer extends React.Component {
                     <TopNav>
                         <div className="date-picker-wrap" data-tracename="线索列表顶部topnav">
                             <div className="search-container">
-                                <div className="search-input-wrapper">
-                                    {isWebMin && hasSelectedClue ? null : <FilterInput
+                                <div className="search-input-wrapper" style={{display: isWebMin && hasSelectedClue ? 'none' : 'block'}}>
+                                    <FilterInput
                                         isFirstLoading={isFirstLoading}
                                         ref="filterinput"
                                         showSelectChangeTip={_.get(this.state.selectedClues, 'length')}
@@ -3728,9 +3740,9 @@ class ClueCustomer extends React.Component {
                                         filterType={Intl.get('crm.sales.clue', '线索')}
                                         onSubmit={this.handleAddCommonFilter.bind(this)}
                                         showList={this.state.showFilterList}
-                                    />}
+                                    />
                                 </div>
-                                {hasSelectedClue ? (
+                                {showFilterPanle ? null : hasSelectedClue ? (
                                     <div className="clue-list-selected-tip">
                                         <span className="iconfont icon-sys-notice" />
                                         {this.renderSelectClueTips()}
@@ -3742,7 +3754,7 @@ class ClueCustomer extends React.Component {
                                     />
                                 </div>}
                             </div>
-                            {hasSelectedClue ? this.renderBatchChangeClues() : this.renderNotSelectClueBtns()}
+                            {showFilterPanle ? null : hasSelectedClue ? this.renderBatchChangeClues() : this.renderNotSelectClueBtns()}
                         </div>
                     </TopNav>
                     <div className="clue-content-container" ref={dom => {
@@ -3757,7 +3769,7 @@ class ClueCustomer extends React.Component {
                                 clueClassifyArray={this.state.clueClassifyArray}
                                 salesManList={this.getSalesDataList()}
                                 getClueList={this.saveFilterCondition}
-                                style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight() + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
+                                style={{width: isWebMin ? '100%' : LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight(this.props.adaptiveHeight, isWebMin ? false : true) + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT + (isWebMin ? (oplateConsts.LAYOUT.BOTTOM_NAV + 2) : 0)}}
                                 showSelectTip={_.get(this.state.selectedClues, 'length')}
                                 toggleList={this.toggleList.bind(this)}
                             />
@@ -3887,7 +3899,8 @@ class ClueCustomer extends React.Component {
     }
 }
 ClueCustomer.propTypes = {
-    location: PropTypes.object
+    location: PropTypes.object,
+    adaptiveHeight: PropTypes.number
 };
-module.exports = ClueCustomer;
+export default adaptiveHeightHoc(ClueCustomer);
 

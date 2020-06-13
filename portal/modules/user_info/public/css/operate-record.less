@@ -1,0 +1,59 @@
+@import "../../../../public/css/common-variables.less";
+@import "../../../../public/css/common-colors.less";
+
+.operate-record-wrap {
+  overflow: scroll;
+  .operate-record-content{
+    margin: 1.2rem;
+  }
+  // 头部区域样式
+  .title-zone {
+    margin-top: 1.2rem;
+    .log-title-tips {
+      padding-top: 1.2rem;
+      font-size: 1.2rem;
+      color: @primary-font-color;
+      .update-pwd {
+        color: @primary-color;
+      }
+    }
+  }
+  // 内容区域
+  .content-wrap {
+      .detail-card-container {
+        margin-bottom: 1rem;
+        .detail-card-title {
+          height: 0.3rem;
+          line-height: 0.3rem;
+          color: @has-transfer-color;
+          background-color: @hover-item-color;
+          .content {
+            font-size: 1.2rem;
+            color: @has-transfer-color;
+          }
+        }
+        .detail-card-content {
+          padding: 1rem 2rem;
+          .operate-record-item {
+            height: 1.4rem;
+            margin-bottom: 1rem;
+            color: @primary-font-color;
+            font-size: 1.2rem;
+            .item-content {
+              margin-left: 1.2rem;
+            }
+          }
+        }
+      }
+  }
+  .no-more-data-tips {
+    width: 100%;
+    text-align: center;
+  }
+  .msg-tips {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

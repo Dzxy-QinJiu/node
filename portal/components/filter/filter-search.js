@@ -1,6 +1,6 @@
 var React = require('react');
 import filterEmitter from './emitter';
-import { Icon, Input, Button, Radio, Popover, Alert, message } from 'antd';
+import { Icon, Input, Button, Radio, Popover, Alert, message, Badge } from 'antd';
 import PropTypes from 'prop-types';
 import Trace from 'LIB_DIR/trace';
 import classNames from 'classnames';
@@ -162,9 +162,34 @@ class FilterSearch extends React.Component {
             });
         }
     }
+
+    renderBtnBlock() {
+        let count = _.get(this.state.plainFilterList, 'length');
+        let content = (
+            <Button type={this.props.showList ? 'primary' : ''} title={Intl.get('common.filter', '筛选')} className="btn-item">
+                <i className='iconfont icon-filter1'/>
+            </Button>
+        );
+        //不展示筛选面板时，并且选择了筛选条件
+        if(!this.props.showList && count > 0) {
+            return (
+                <Badge status="processing">
+                    {content}
+                </Badge>
+            );
+        }else {
+            return content;
+        }
+    }
+
     render() {
+        let {isWebMin} = isResponsiveDisplay();
+        let hasPlainFilterList = _.get(this.state.plainFilterList, 'length') > 0 && !this.props.isFirstLoading;
         //是否展示输入框形式的已选择的筛选项
-        const showInput = _.get(this.state.plainFilterList, 'length') > 0 && !this.props.isFirstLoading;
+        let showInput = hasPlainFilterList;
+        if(isWebMin) {
+            showInput = this.props.showList;
+        }
         const clearPopContent = (
             <div className="clear-confirm-pop-container">
                 <h5><Icon type="info-circle" />
@@ -175,40 +200,49 @@ class FilterSearch extends React.Component {
                 </div>
             </div>
         );
-        let {isWebMin} = isResponsiveDisplay();
+
         let minFilterButtonCls = classNames('collapsed search-wrapper', {
             'min-search-icon': isWebMin
+        });
+        let inputCls = classNames({
+            'add-zone-wrapper filter-contianer clearfix': this.state.showAddZone,
+            'filter-contianer clearfix': !this.state.showAddZone,
+            'filter-container-no-plain': !hasPlainFilterList
         });
         return (
             <div className={showInput ? 'search-wrapper' : minFilterButtonCls} style={this.props.style}>
                 {
                     showInput ?
-                        <div className={this.state.showAddZone ? 'add-zone-wrapper filter-contianer clearfix' : 'filter-contianer clearfix'}>
+                        <div className={inputCls}>
                             <div className="show-zone">
                                 <span className={this.props.showList ? 'icon-wrapper active' : 'icon-wrapper'}>
                                     <Icon type="filter" onClick={this.handleToggle.bind(this)} />
                                 </span>
                                 <ul className={this.state.showAddZone ? 'conserve' : (this.changeCollapseClass())}>
                                     {
-                                        this.state.plainFilterList.map((x, idx) => (
+                                        _.map(this.state.plainFilterList, (x, idx) => (
                                             <li className="active" key={idx}>
                                                 {x.name}
                                             </li>
                                         ))
                                     }
                                 </ul>
-                                <div className="btn-bar">
-                                    <span className="handle-btn-item save-screen" onClick={this.showAddZone.bind(this, true)} >{Intl.get('common.save', '保存')}</span>
-                                </div>
-                                <Popover
-                                    overlayClassName="filter-search-confirm-clear-pop"
-                                    placement="bottom"
-                                    content={clearPopContent}
-                                    trigger="click"
-                                    visible={this.state.showConfirmPop && this.props.showSelectChangeTip}
-                                >
-                                    <Icon type="close-circle" onClick={this.handleClearAll.bind(this)} />
-                                </Popover>
+                                {hasPlainFilterList ? (
+                                    <React.Fragment>
+                                        <div className="btn-bar">
+                                            <span className="handle-btn-item save-screen" onClick={this.showAddZone.bind(this, true)} >{Intl.get('common.save', '保存')}</span>
+                                        </div>
+                                        <Popover
+                                            overlayClassName="filter-search-confirm-clear-pop"
+                                            placement="bottom"
+                                            content={clearPopContent}
+                                            trigger="click"
+                                            visible={this.state.showConfirmPop && this.props.showSelectChangeTip}
+                                        >
+                                            <Icon type="close-circle" onClick={this.handleClearAll.bind(this)} />
+                                        </Popover>
+                                    </React.Fragment>
+                                ) : null}
                             </div>
                             {
                                 this.state.showAddZone ?
@@ -266,7 +300,7 @@ class FilterSearch extends React.Component {
                                 trigger="click"
                                 visible={this.state.showConfirmPop && this.props.showSelectChangeTip}
                             >
-                                {isWebMin ? <Button type={this.props.showList ? 'primary' : ''} title={Intl.get('common.filter', '筛选')} className="btn-item"><i className='iconfont icon-filter1'></i></Button>
+                                {isWebMin ? this.renderBtnBlock()
                                     : <Button title={Intl.get('common.filter', '筛选')} type={this.props.showList ? 'primary' : ''} className="btn-item"><i className='iconfont icon-filter1'></i>{Intl.get('common.filter', '筛选')}</Button>}
                             </Popover>
                         </div>

@@ -120,3 +120,46 @@
     }
   }
 }
+@media (max-width: 600px) {
+  .topNav {
+    left: 0;
+    ul.topnav-links {
+      line-height: @top_nav_height - 4;
+      li {
+        padding: 0 16px 0 0;
+      }
+    }
+  }
+}
+@media (device-height:480px) and (-webkit-min-device-pixel-ratio:2){/* 兼容iphone4/4s */
+  .topNav {
+    left: 0;
+    ul.topnav-links {
+      line-height: @top_nav_height - 4;
+      li {
+        padding: 0 12px 0 0;
+        a {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+}
+
+@media (device-height:568px) and (-webkit-min-device-pixel-ratio:2){/* 兼容iphone5 */
+
+  .topNav {
+    left: 0;
+    ul.topnav-links {
+      line-height: @top_nav_height - 4;
+      li {
+        padding: 0 12px 0 0;
+        a {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+}
