@@ -8,14 +8,17 @@ import React, {Component} from 'react';
 import {AntcAreaSelection} from 'antc';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
+import {AREA_ALL} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 
 
 class MobileAreaSelector extends Component {
     constructor(props) {
         super(props);
+        let province = _.get(props, 'area.province', '');
+        province = province === AREA_ALL ? '' : province;
         this.state = {
             area: {
-                provName: _.get(props, 'area.province', ''),
+                provName: province,
                 cityName: _.get(props, 'area.city', ''),
                 countyName: _.get(props, 'area.district', ''),
             }
