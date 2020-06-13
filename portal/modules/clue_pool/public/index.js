@@ -1295,16 +1295,14 @@ class ClueExtract extends React.Component {
                     <div className="search-container">
                         {hasSelectedClue || showFilterPanle ? null : <BackMainPage className="clue-back-btn"
                             handleBackClick={this.closeExtractCluePanel}></BackMainPage>}
-                        {isWebMin && hasSelectedClue ? null : (
-                            <div className="search-input-wrapper">
-                                <FilterInput
-                                    ref="filterinput"
-                                    toggleList={this.toggleList.bind(this)}
-                                    showSelectChangeTip={_.get(this.state.selectedClues, 'length')}
-                                    showList={this.state.showFilterList}
-                                />
-                            </div>
-                        )}
+                        <div className="search-input-wrapper" style={{display: isWebMin && hasSelectedClue ? 'none' : 'block'}}>
+                            <FilterInput
+                                ref="filterinput"
+                                toggleList={this.toggleList.bind(this)}
+                                showSelectChangeTip={_.get(this.state.selectedClues, 'length')}
+                                showList={this.state.showFilterList}
+                            />
+                        </div>
                         {showFilterPanle ? null : hasSelectedClue ? (
                             <div className="clue-list-selected-tip">
                                 <span className="iconfont icon-sys-notice"/>

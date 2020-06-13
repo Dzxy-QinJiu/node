@@ -575,7 +575,7 @@ class FilterList extends React.Component {
         let {isWebMin} = isResponsiveDisplay();
         //减掉‘收起筛选’的高度
         if(_.get(styleList,'height')){
-            styleList.height = styleList.height - CLOSE_COMMENT_HEIGHT;
+            styleList.height = styleList.height - (isWebMin ? oplateConsts.LAYOUT.BOTTOM_NAV : CLOSE_COMMENT_HEIGHT);
         }
 
         return (

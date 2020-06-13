@@ -3731,8 +3731,8 @@ class ClueCustomer extends React.Component {
                     <TopNav>
                         <div className="date-picker-wrap" data-tracename="线索列表顶部topnav">
                             <div className="search-container">
-                                <div className="search-input-wrapper">
-                                    {isWebMin && hasSelectedClue ? null : <FilterInput
+                                <div className="search-input-wrapper" style={{display: isWebMin && hasSelectedClue ? 'none' : 'block'}}>
+                                    <FilterInput
                                         isFirstLoading={isFirstLoading}
                                         ref="filterinput"
                                         showSelectChangeTip={_.get(this.state.selectedClues, 'length')}
@@ -3740,7 +3740,7 @@ class ClueCustomer extends React.Component {
                                         filterType={Intl.get('crm.sales.clue', '线索')}
                                         onSubmit={this.handleAddCommonFilter.bind(this)}
                                         showList={this.state.showFilterList}
-                                    />}
+                                    />
                                 </div>
                                 {showFilterPanle ? null : hasSelectedClue ? (
                                     <div className="clue-list-selected-tip">
