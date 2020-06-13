@@ -11,6 +11,7 @@ var topNavEmitter = require('../../public/sources/utils/emitters').topNavEmitter
 require('./index.less');
 let RIGHT_MARGIN = 10;//右边预留宽度，用户计算
 import {Popover} from 'antd';
+import { isResponsiveDisplay } from 'PUB_DIR/sources/utils/common-method-util';
 
 //顶部导航外层div
 class TopNav extends React.Component {
@@ -59,8 +60,8 @@ class TopNav extends React.Component {
         //         return true;
         //     }
         // });
-        //如果存在覆盖的情况，则将菜单节点变成汉堡包
-        if (intersect) {
+        //如果存在覆盖的情况，则将菜单节点变成汉堡包(在pc端，在手机端，不显示汉堡包)
+        if (!isResponsiveDisplay().isWebSmall() && intersect) {
             $topLinks.attr('hidden', 'true');
             if (isNarrowDropdownOn) {
                 $topLinks.addClass('fixed-layout');
