@@ -1098,6 +1098,7 @@ class RecommendCluesFilterPanel extends Component {
         if(isWebMin) {
             let areaTitle = Intl.get('crm.96', '地域');
             const area = _.pick(hasSavedRecommendParams, 'province', 'city', 'district');
+            area.province = area.province === AREA_ALL ? '' : area.province;
             const value = _.chain(area).values().filter(item => item).value();
             areaTitle = value.join('/') || areaTitle;
 
