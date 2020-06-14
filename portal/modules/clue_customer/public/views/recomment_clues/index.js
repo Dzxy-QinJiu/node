@@ -2159,12 +2159,9 @@ class RecommendCluesList extends React.Component {
                                 <div className="extract-clue-text-item">
                                     <div className="extract-clue-item-label">{Intl.get('common.tag', '标签')}</div>
                                     <div className="clue-labels">
-                                        {_.map(labels, (tag, index) => {
-                                            let cls = classNames({
-                                                'highlight-tag': this.handleTagHighLightText(tag)
-                                            });
-                                            return (<Tag key={index} className={cls}>{tag}</Tag>);
-                                        })}
+                                        {_.map(labels, (tag, index) => (
+                                            <Tag key={index}><span dangerouslySetInnerHTML={{__html: this.handleTagHighLightText(tag)}}/></Tag>
+                                        ))}
                                     </div>
                                 </div>
                             ) : null}
