@@ -37,10 +37,9 @@ import {
     getClueUnhandledPrivilege,
     getUnhandledClueCountParams,
     isKetaoOrganizaion,
-    substractUnapprovedCount,
-    pcAndWechatMiniProgram
+    substractUnapprovedCount
 } from 'PUB_DIR/sources/utils/common-method-util';
-
+import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
 const session = storageUtil.session;
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
