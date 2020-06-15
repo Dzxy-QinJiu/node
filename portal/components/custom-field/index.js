@@ -9,7 +9,10 @@ import BasicEditSelectField from '../basic-edit-field-new/select';
 import BasicEditDateField from '../basic-edit-field-new/date-picker';
 import RadioOrCheckBoxEditField from '../basic-edit-field-new/radio-checkbox';
 import {inputType, selectType} from 'PUB_DIR/sources/utils/consts';
+import classNames from 'classnames';
 import './index.less';
+
+const nameLongEditWidth = 245;
 
 class CustomField extends React.Component {
     constructor(props) {
@@ -21,7 +24,8 @@ class CustomField extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (_.get(nextProps, 'basicDetailData.id') !== _.get(this.state, 'basicDetailData.id')) {
+        if (_.get(nextProps, 'basicDetailData.id') !== _.get(this.state, 'basicDetailData.id') ||
+            !_.isEqual(_.get(nextProps.basicDetailData, 'custom_variables'), _.get(this.state.basicDetailData, 'custom_variables'))) {
             this.setState({
                 basicDetailData: nextProps.basicDetailData,
                 customFieldData: nextProps.customFieldData,
@@ -47,15 +51,18 @@ class CustomField extends React.Component {
 
     renderCustomFieldType = (item) => {
         const basicDetailData = this.state.basicDetailData;
-        const editWidth = this.props.editWidth;
         // 自定义的值
         const customVariables = _.get(basicDetailData, 'custom_variables', {});
         const fieldType = _.get(item, 'field_type');
         const name = _.get(item, 'name');
+        const editWidth = name.length > 6 ? nameLongEditWidth : this.props.editWidth;
         const editBtnTip = Intl.get('custom.field.set.name', '设置{name}', {name: name});
         const noDataTip = Intl.get('custom.field.no.name', '暂无{name}', {name: name});
         const addDataTip = Intl.get('custom.field.add.name', '添加{name}', {name: name});
         const selectPlaceholderTip = Intl.get('custom.field.select.name', '请选择{name}', {name: name});
+        const customCls = classNames({
+            'custom-field-name-long': name.length > 6
+        });
         // 默认的自定义的值
         let value = customVariables[name];
         // 是否是选择类型
@@ -76,40 +83,46 @@ class CustomField extends React.Component {
                     value = [];
                 }
                 return (
-                    <RadioOrCheckBoxEditField
-                        width={editWidth}
-                        id={basicDetailData.id}
-                        displayText={value}
-                        value={value}
-                        field={name}
-                        componentType={fieldType}
-                        selectOptions={selectOptions}
-                        hasEditPrivilege={this.props.hasEditPrivilege}
-                        editBtnTip={editBtnTip}
-                        saveEditInput={this.saveEditCustomFieldInfo.bind(this)}
-                        noDataTip={noDataTip}
-                        addDataTip={addDataTip}
-                    />
+                    <div className={customCls}>
+                        <RadioOrCheckBoxEditField
+                            width={editWidth}
+                            id={basicDetailData.id}
+                            displayText={value}
+                            value={value}
+                            field={name}
+                            componentType={fieldType}
+                            selectOptions={selectOptions}
+                            hasEditPrivilege={this.props.hasEditPrivilege}
+                            editBtnTip={editBtnTip}
+                            saveEditInput={this.saveEditCustomFieldInfo.bind(this)}
+                            noDataTip={noDataTip}
+                            addDataTip={addDataTip}
+                        />
+                    </div>
+
                 );
 
             } else {
                 return (
-                    <BasicEditSelectField
-                        width={editWidth}
-                        multiple={isMultiple}
-                        id={basicDetailData.id}
-                        displayText={value}
-                        value={value}
-                        field={name}
-                        selectOptions={selectOptions}
-                        placeholder={selectPlaceholderTip}
-                        validators={[isMultiple ? {type: 'array'} : {}]}
-                        hasEditPrivilege={this.props.hasEditPrivilege}
-                        editBtnTip={editBtnTip}
-                        saveEditSelect={this.saveEditCustomFieldInfo.bind(this)}
-                        noDataTip={noDataTip}
-                        addDataTip={addDataTip}
-                    />
+                    <div className={customCls}>
+                        <BasicEditSelectField
+                            width={editWidth}
+                            multiple={isMultiple}
+                            id={basicDetailData.id}
+                            displayText={value}
+                            value={value}
+                            field={name}
+                            selectOptions={selectOptions}
+                            placeholder={selectPlaceholderTip}
+                            validators={[isMultiple ? {type: 'array'} : {}]}
+                            hasEditPrivilege={this.props.hasEditPrivilege}
+                            editBtnTip={editBtnTip}
+                            saveEditSelect={this.saveEditCustomFieldInfo.bind(this)}
+                            noDataTip={noDataTip}
+                            addDataTip={addDataTip}
+                        />
+                    </div>
+
                 );
             }
 
@@ -119,20 +132,23 @@ class CustomField extends React.Component {
                 type = 'textarea';
             }
             return (
-                <BasicEditInputField
-                    width={editWidth}
-                    id={basicDetailData.id}
-                    type={type}
-                    field={name}
-                    textCut={true}
-                    value={value}
-                    editBtnTip={editBtnTip}
-                    placeholder={_.get(item, 'select_values[0]')}
-                    hasEditPrivilege={this.props.hasEditPrivilege}
-                    saveEditInput={this.saveEditCustomFieldInfo.bind(this)}
-                    noDataTip={noDataTip}
-                    addDataTip={addDataTip}
-                />
+                <div className={customCls}>
+                    <BasicEditInputField
+                        width={editWidth}
+                        id={basicDetailData.id}
+                        type={type}
+                        field={name}
+                        textCut={true}
+                        value={value}
+                        editBtnTip={editBtnTip}
+                        placeholder={_.get(item, 'select_values[0]')}
+                        hasEditPrivilege={this.props.hasEditPrivilege}
+                        saveEditInput={this.saveEditCustomFieldInfo.bind(this)}
+                        noDataTip={noDataTip}
+                        addDataTip={addDataTip}
+                    />
+                </div>
+
             );
         } else if(_.isEqual(fieldType, 'date')){
             return (
