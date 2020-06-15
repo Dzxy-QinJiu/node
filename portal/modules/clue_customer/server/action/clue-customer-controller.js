@@ -255,36 +255,6 @@ function getClueListColumns(backendIntl) {
         {
             title: backendIntl.get('clue.customer.clue.name', '线索名称'),
             dataIndex: 'name',
-        },{
-            title: backendIntl.get('lead.company.legal.person', '法人'),
-            dataIndex: 'legal_person',
-        },{
-            title: backendIntl.get('clue.customer.register.time', '注册时间'),
-            dataIndex: 'formed',
-        },{
-            title: backendIntl.get('clue.recommend.clue.scope', '经营范围'),
-            dataIndex: 'business_scope',
-        },{
-            title: backendIntl.get('clue.recommend.clue.introduction', '简介'),
-            dataIndex: 'company_profile',
-        },{
-            title: backendIntl.get('call.record.contacts', '联系人'),
-            dataIndex: 'contacts_name',
-        },{
-            title: backendIntl.get('common.phone', '电话'),
-            dataIndex: 'contacts_phone',
-        },{
-            title: backendIntl.get('common.email', '邮箱'),
-            dataIndex: 'contacts_email',
-        },{
-            title: 'QQ',
-            dataIndex: 'contacts_qq',
-        },{
-            title: backendIntl.get('crm.58', '微信'),
-            dataIndex: 'contacts_wechat',
-        },{
-            title: backendIntl.get('clue.customer.other.contact_way', '其他联系方式'),
-            dataIndex: 'contacts_otherways',
         }, {
             title: backendIntl.get('clue.filter.clue.status', '线索状态'),
             dataIndex: 'status'
@@ -319,6 +289,24 @@ function getClueListColumns(backendIntl) {
             title: backendIntl.get('crm.sales.clue.descr', '线索描述'),
             dataIndex: 'source',
         },{
+            title: backendIntl.get('call.record.contacts', '联系人'),
+            dataIndex: 'contacts_name',
+        },{
+            title: backendIntl.get('common.phone', '电话'),
+            dataIndex: 'contacts_phone',
+        },{
+            title: backendIntl.get('common.email', '邮箱'),
+            dataIndex: 'contacts_email',
+        },{
+            title: 'QQ',
+            dataIndex: 'contacts_qq',
+        },{
+            title: backendIntl.get('crm.58', '微信'),
+            dataIndex: 'contacts_wechat',
+        },{
+            title: backendIntl.get('clue.customer.other.contact_way', '其他联系方式'),
+            dataIndex: 'contacts_otherways',
+        },{
             title: backendIntl.get('clue.customer.associate.customer', '关联客户'),
             dataIndex: 'customer_name'
         },{
@@ -330,6 +318,18 @@ function getClueListColumns(backendIntl) {
         },{
             title: backendIntl.get('call.record.follow.content', '跟进内容'),
             dataIndex: 'customer_traces'
+        },{
+            title: backendIntl.get('lead.company.legal.person', '法人'),
+            dataIndex: 'legal_person',
+        },{
+            title: backendIntl.get('clue.customer.register.time', '注册时间'),
+            dataIndex: 'formed',
+        },{
+            title: backendIntl.get('clue.recommend.clue.scope', '经营范围'),
+            dataIndex: 'business_scope',
+        },{
+            title: backendIntl.get('clue.recommend.clue.introduction', '简介'),
+            dataIndex: 'company_profile',
         }
     ];
 }
