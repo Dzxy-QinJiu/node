@@ -121,7 +121,8 @@ class PhonePanel extends React.Component {
 
         phoneAlertStore.listen(this.onStoreChange);
         // 获取客户自定义字段信息
-        this.getCustomFieldConfig();
+        // TODO 暂时隐藏
+        // this.getCustomFieldConfig();
         let phonemsgObj = this.getPhonemsgObj(this.props.paramObj);
         //通话状态下的处理
         if (!_.isEmpty(phonemsgObj)) {
