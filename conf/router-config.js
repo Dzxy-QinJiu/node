@@ -291,15 +291,17 @@ let routers = [
                 component: `${MODULE_PATH}clue_integration/public`,
                 showPrivileges: ['DATA_INTEGRATION_MANAGE']
             },
-            {
-                id: 'FIELD_MANAGE',
-                name: 'menu.field.manage',// 字段管理
-                routePath: '/settings/field',
-                component: `${MODULE_PATH}custom_field_manage/public`,
-                //有这个权限，才显示入口图标,
-                // 管理员有添加的权限，销售有查看的权限，字段管理是管理员才有的功能
-                showPrivileges: ['ORGANIZATION_CUSTOMIZEDVAR_CONFIG']
-            }]
+            // TODO 先上线到exp环境，正式环境暂时隐藏
+            // {
+            //     id: 'FIELD_MANAGE',
+            //     name: 'menu.field.manage',// 字段管理
+            //     routePath: '/settings/field',
+            //     component: `${MODULE_PATH}custom_field_manage/public`,
+            //     //有这个权限，才显示入口图标,
+            //     // 管理员有添加的权限，销售有查看的权限，字段管理是管理员才有的功能
+            //     showPrivileges: ['ORGANIZATION_CUSTOMIZEDVAR_CONFIG']
+            // }
+        ]
     },
     {
         id: 'USER_INFO_MANAGE',//唯一标识
