@@ -270,8 +270,6 @@ class DealManage extends React.Component {
         }
         let customerOfCurUser = this.state.customerOfCurUser;
 
-        let dealViewCls = classNames('deal-manage-content', {'board-view-style': this.state.viewType === VIEW_TYPES.BOARD});
-
         let dealViewCls = classNames('deal-manage-content',
             {
                 'board-view-style': this.state.viewType === VIEW_TYPES.BOARD,
