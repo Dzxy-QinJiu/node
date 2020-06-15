@@ -195,9 +195,9 @@ class customerScore extends React.Component {
                             <i className="customer-level-quarter qualified-icon"></i>
                             {Intl.get('common.qualified', '合格')}：
                             {isEditCustomerLevel ? <InputGroup className="input-groups" compact>
-                                <InputNumber min="0" className='mini-number' value={lowerHandlePoint + 1}
+                                <InputNumber min="0" className='mini-number' value={lowerHandlePoint}
                                     onBlur={this.handleCustomerRangeValues} onChange={(e) => {
-                                        this.handleCustomerScoreUnqualified(+e.target.value - 1);
+                                        this.handleCustomerScoreUnqualified(e.target.value);
                                     }}/>
                                 <Input
                                     className='min-between-max'
@@ -208,7 +208,7 @@ class customerScore extends React.Component {
                                     onChange={(e) => {
                                         this.handleCustomerScoreQualified(+e.target.value);
                                     }} onBlur={this.handleCustomerRangeValues}/>
-                            </InputGroup> : `${lowerHandlePoint + 1}~${largerHandlePoint}`}
+                            </InputGroup> : `${lowerHandlePoint}~${largerHandlePoint}`}
 
                         </span>
                         <span className={labelCls}>
@@ -221,16 +221,16 @@ class customerScore extends React.Component {
                                         defaultMessage={'{score}以上'}
                                         values={{
                                             score: <Input type="number" min="0" className='mini-number'
-                                                value={largerHandlePoint + 1}
+                                                value={largerHandlePoint}
                                                 onBlur={this.handleCustomerRangeValues}
                                                 onChange={(e) => {
-                                                    this.handleCustomerScoreQualified(+e.target.value - 1);
+                                                    this.handleCustomerScoreQualified(e.target.value);
                                                 }}/>
                                         }}
                                     />
                                 </span>
 
-                            </InputGroup> : Intl.get('clue.customer.above.limit', '{score}以上', {score: largerHandlePoint + 1})}
+                            </InputGroup> : Intl.get('clue.customer.above.limit', '{score}以上', {score: largerHandlePoint})}
                         </span>
                         {isEditCustomerLevel ? <span className="customer-level-save-btns-container">
                             {this.state.saveLevelsErr ?
