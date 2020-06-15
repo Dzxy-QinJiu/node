@@ -1099,6 +1099,7 @@ var zh_CN = {
     'custom.field.no.name': '暂无{name}',
     'custom.field.add.name': '添加{name}',
     'custom.field.select.name': '请选择{name}',
+    'custom.field.select.placeholder': '选择字段类型',
     // 后台管理-自定义字段end
 
     //应用管理start

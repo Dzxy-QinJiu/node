@@ -12,7 +12,7 @@ import dealAction from './action';
 import dealBoardAction from './action/deal-board-action';
 import DealForm from './views/deal-form';
 import DealDetailPanel from './views/deal-detail-panel';
-import { DEAL_STATUS } from 'PUB_DIR/sources/utils/consts';
+import { DEAL_STATUS, selectType } from 'PUB_DIR/sources/utils/consts';
 import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { RightPanel } from 'CMP_DIR/rightPanel';
 import Trace from 'LIB_DIR/trace';
@@ -287,18 +287,28 @@ class DealManage extends React.Component {
         const filterCls = classNames('filter-container',{
             'filter-close': !this.state.showFilterList
         });
+
+        const customizedVariables = _.get(this.state.opportunityCustomFieldData, '[0].customized_variables', []);
+        const fieldType = _.map(customizedVariables, 'field_type');
+        // 选择类型
+        const isShowFilerBtn = _.find(fieldType, type => _.includes(selectType, type)) ? true : false;
         return (
             <div className="deal-manage-container" data-tracename="订单管理">
                 <TopNav>
                     <div className="deal-search-block">
-                        <div className="search-input-wrapper">
-                            <FilterInput
-                                ref="filterinput"
-                                toggleList={this.toggleList.bind(this)}
-                                filterType={Intl.get('user.apply.detail.order', '订单')}
-                                showList={this.state.showFilterList}
-                            />
-                        </div>
+                        {
+                            isShowFilerBtn ? (
+                                <div className="search-input-wrapper">
+                                    <FilterInput
+                                        ref="filterinput"
+                                        toggleList={this.toggleList.bind(this)}
+                                        filterType={Intl.get('user.apply.detail.order', '订单')}
+                                        showList={this.state.showFilterList}
+                                    />
+                                </div>
+                            ) : null
+                        }
+
                         <div className="search-input-inner">
                             <SearchInput
                                 type="select"
@@ -324,7 +334,7 @@ class DealManage extends React.Component {
                     </div>
                 </TopNav>
                 {
-                    _.isEmpty(this.state.opportunityCustomFieldData) ? null : (
+                    isShowFilerBtn ? (
                         <div className={filterCls}>
                             <DealFilterPanel
                                 ref="dealfilterpanel"
@@ -334,7 +344,7 @@ class DealManage extends React.Component {
                                 getFilterDealData={this.getFilterDealData.bind(this)}
                             />
                         </div>
-                    )
+                    ) : null
                 }
                 <div className={dealViewCls}>
                     {this.state.viewType === VIEW_TYPES.LIST ? (

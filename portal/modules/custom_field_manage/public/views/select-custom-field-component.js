@@ -100,7 +100,10 @@ class SelectCustomField extends React.Component {
         var formItem = this.state.formItem;
         var options = _.get(formItem,'select_arr');
         options.splice(index ,1, e.target.value);
-        this.setState({formItem});
+        this.setState({formItem}, () => {
+            this.props.modifyCustomFieldContent(formItem);
+        });
+
     };
 
     render = () => {
@@ -182,11 +185,13 @@ SelectCustomField.defaultProps = {
     formItem: {},
     handleCancel: function(){},
     handleSubmit: function(){},
+    modifyCustomFieldContent: function(){},
 };
 
 SelectCustomField.propTypes = {
     formItem: PropTypes.object,
     handleCancel: PropTypes.func,
     handleSubmit: PropTypes.func,
+    modifyCustomFieldContent: PropTypes.func,
 };
 export default SelectCustomField;

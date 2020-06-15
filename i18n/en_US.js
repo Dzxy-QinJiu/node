@@ -1098,6 +1098,7 @@ var en_US = {
     'custom.field.no.name': 'No {name}', // 暂无{name}
     'custom.field.add.name': 'Add name', // 添加{name}
     'custom.field.select.name': 'Please select {name}', // 请选择{name}
+    'custom.field.select.placeholder': 'Please select the type of field', // 选择字段类型
     // 后台管理-自定义字段end
 
     //应用管理start

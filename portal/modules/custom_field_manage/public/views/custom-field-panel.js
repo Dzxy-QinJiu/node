@@ -25,6 +25,7 @@ class CustomFieldPanel extends React.Component {
             defaultCheckedValue: this.getDefaultCheckedValue(props.editCustomField), // 是否统计，是否支持排序，是否出现在表单中，默认全选
             editCustomField: props.editCustomField, // 编辑字段
             customFieldData: _.cloneDeep(props.customFieldData), // 自定义数据
+            formItem: {}
         };
     }
 
@@ -158,12 +159,27 @@ class CustomFieldPanel extends React.Component {
         });
     };
 
+    modifyCustomFieldContent = (formItem) => {
+        this.setState({
+            formItem
+        });
+    }
+    // 修改字段类型时，使用默认的值
+    handleSelectType = (value) => {
+        this.setState({
+            formItem: {}
+        });
+    }
+
     renderFormContent = () => {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const name = Intl.get('custom.field.title', '字段名');
         // 选择字段类型
         const selectCustomType = getFieldValue('select') || _.get(this.state.editCustomField, 'field_type');
         let selectComponent = _.find(selectCustomFieldComponents, item => item.customField === selectCustomType);
+        if (!_.isEmpty(this.state.formItem)) {
+            selectComponent = this.state.formItem;
+        }
         // 编辑单项字段
         if (!_.isEmpty(this.state.editCustomField)) {
             const select_values = _.get(this.state.editCustomField, 'select_values');
@@ -207,7 +223,10 @@ class CustomFieldPanel extends React.Component {
                         {getFieldDecorator('select', {
                             initialValue: _.get(this.state.editCustomField, 'field_type')
                         })(
-                            <Select placeholder="选择字段类型">
+                            <Select
+                                placeholder={Intl.get('custom.field.select.placeholder', '选择字段类型')}
+                                onSelect={this.handleSelectType}
+                            >
                                 {
                                     _.map(customFieldSelectOptions, item => {
                                         return <Option value={item.value}>{item.name}</Option>;
@@ -223,6 +242,7 @@ class CustomFieldPanel extends React.Component {
                                 formItem={selectComponent}
                                 handleCancel={this.handleCancel}
                                 handleSubmit={this.handleSubmit}
+                                modifyCustomFieldContent={this.modifyCustomFieldContent.bind(this)}
                             />
                         ) : null
                     }
