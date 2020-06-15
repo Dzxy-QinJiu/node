@@ -1106,6 +1106,7 @@ var en_US = {
     'custom.field.add.name': 'Add name', // 添加{name}
     'custom.field.select.name': 'Please select {name}', // 请选择{name}
     'custom.field.add.count.limit': 'The number of {name} has reached the upper limit(10).', // {name}自定义字段数量已达上限（10个）
+    'custom.field.select.placeholder': 'Please select the type of field', // 选择字段类型
     // 后台管理-自定义字段end
 
     //应用管理start

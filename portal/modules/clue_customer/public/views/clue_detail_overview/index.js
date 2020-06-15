@@ -5,7 +5,6 @@ import {emailRegex, qqRegex, checkWechat} from 'PUB_DIR/sources/utils/validate-u
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/8/8.
  */
-var React = require('react');
 require('../../css/clue_detail_overview.less');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import {Button, Form, Icon, message, Input, Popover, Popconfirm} from 'antd';
@@ -88,6 +87,8 @@ import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 import ApplyTryCard from 'CMP_DIR/apply-try-card';
 import classNames from 'classnames';
 import ShearContent from 'CMP_DIR/shear-content-new';
+
+import CustomField from 'CMP_DIR/custom-field';
 
 class ClueDetailOverview extends React.Component {
     state = {
@@ -509,38 +510,22 @@ class ClueDetailOverview extends React.Component {
             if (item === 'phone') {
                 saveObj.clueName = _.get(this, 'state.curClue.name');
             }
-            this.changeClueContactInfo(saveObj, successFunc, errorFunc, contact_id);
-
-        } else {
-            //修改线索的基本信息
-            this.changeClueItemInfo(type, saveObj, successFunc, errorFunc);
-
         }
-        this.props.updateClueProperty(saveObj); //切换tab时实时更新线索详情
+        //修改线索的基本信息
+        this.changeClueItemInfo(saveObj, successFunc, errorFunc, contact_id);
+
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存线索${item}的修改`);
     };
-    //修改联系人的相关信息
-    changeClueContactInfo = (saveObj, successFunc, errorFunc, contact_id) => {
-        var data = handleSubmitContactData(_.cloneDeep(saveObj));
-        clueCustomerAjax.updateClueContactDetail(data).then((result) => {
-            if (result) {
-                if (_.isFunction(successFunc)) successFunc();
-                //修改联系人的时候，需要把联系人的下标加上
-                this.changeClueFieldSuccess(saveObj, contact_id);
-            } else {
-                if (_.isFunction(errorFunc)) errorFunc();
-            }
-        }, (errorMsg) => {
-            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
-        });
-    };
+
     //修改线索的相关信息
-    changeClueItemInfo = (type, saveObj, successFunc, errorFunc) => {
+    changeClueItemInfo = (saveObj, successFunc, errorFunc, contact_id) => {
         var data = handleSubmitClueItemData(_.cloneDeep(saveObj));
         clueCustomerAjax.updateClueItemDetail(data).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
-                this.changeClueFieldSuccess(saveObj);
+                this.props.updateClueProperty(saveObj); //切换tab时实时更新线索详情
+                //修改联系人的时候，需要把联系人的下标加上
+                this.changeClueFieldSuccess(saveObj, contact_id);
             } else {
                 if (_.isFunction(errorFunc)) errorFunc();
             }
@@ -1649,12 +1634,12 @@ class ClueDetailOverview extends React.Component {
                                             editItem: 'position',
                                             id: contactItem.id
                                         })}
-                                        value={contactItem.position}
-                                        field='position'
-                                        noDataTip={Intl.get('member.no.position', '暂无职务')}
-                                        addDataTip={Intl.get('member.add.position', '添加职务')}
-                                        placeholder={Intl.get('member.position.name.placeholder', '请输入职务名称')}
-                                        validators={contactPositionRule()}
+                                        value={contactItem.name}
+                                        field='contact_name'
+                                        noDataTip={Intl.get('crm.no.contact', '暂无联系人')}
+                                        addDataTip={Intl.get('clue.customer.edit.contact', '请填写联系人名称')}
+                                        placeholder={Intl.get('clue.customer.edit.contact', '请填写联系人名称')}
+                                        validators={contactNameRule()}
                                     />
                                 </div>
                             </div> : null}
@@ -2020,7 +2005,18 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
-
+    saveEditCustomFieldInfo = (saveObj, successFunc, errorFunc) => {
+        // 自定义的值
+        const customVariables = _.get(this.state.curClue, 'custom_variables', {});
+        let updateObj = _.cloneDeep(saveObj);
+        delete updateObj.id;
+        const submitData = {
+            id: this.state.curClue.id,
+            type: 'custom_variables',
+            custom_variables: _.extend(customVariables, updateObj)
+        };
+        this.changeClueItemInfo(submitData, successFunc, errorFunc);
+    }
     render() {
         var curClue = this.state.curClue;
         //所分配的销售
@@ -2033,14 +2029,29 @@ class ClueDetailOverview extends React.Component {
             'no-margin': this.isClueNotAssociateCustomer(curClue, associatedCustomer)
         });
         //展示公司相关信息 有注册时间 || 经营范围 || 公司简介就展示该卡片
-        var showClueCompany = curClue.formed || curClue.business_scope || curClue.company_profile || curClue.legal_person;
+        var showClueCompany = curClue.formed || curClue.business_scope || curClue.company_profile;
+        //是否有权限修改线索详情
+        const hasPrivilegeEdit = editClueItemIconPrivilege(curClue);
         return (
-            <div className="clue-detail-container" data-tracename="线索基本信息" style={this.hasButtonTabHeight(curClue, associatedCustomer)}>
+            <div
+                className="clue-detail-container"
+                data-tracename="线索基本信息"
+                style={this.hasButtonTabHeight(curClue, associatedCustomer)}
+            >
                 <GeminiScrollbar>
-                    {curClue.version_upgrade_id && !_.isEmpty(this.state.versionData) ?
-                        <ApplyTryCard versionData={this.state.versionData}/> : null}
-                    {this.props.hideContactWay ? null : this.renderClueContact()}
-                    {showClueCompany ? <DetailCard content={this.renderClueCompanyInfo()}/> : null}
+                    {
+                        curClue.version_upgrade_id && !_.isEmpty(this.state.versionData) ?
+                            <ApplyTryCard versionData={this.state.versionData}/> :
+                            null
+                    }
+                    {
+                        this.props.hideContactWay ? null : this.renderClueContact()
+                    }
+                    {
+                        showClueCompany ?
+                            <DetailCard content={this.renderClueCompanyInfo()}/> :
+                            null
+                    }
                     <DetailCard content={this.renderClueAddress()}/>
                     <DetailCard content={this.renderClueTimeAndIndustry()}/>
                     <DetailCard content={this.renderClueSourceAndClassfy()}/>
@@ -2062,7 +2073,17 @@ class ClueDetailOverview extends React.Component {
                     {this.renderAppUserDetail()}
                     {this.state.isShowAddCustomer ? this.renderAddCustomer() : null}
                     {this.renderTraceContent()}
-
+                    {
+                        _.isEmpty(this.props.leadCustomFieldData) ? null : (
+                            <CustomField
+                                customFieldData={this.props.leadCustomFieldData}
+                                basicDetailData={this.state.curClue}
+                                hasEditPrivilege={hasPrivilegeEdit}
+                                saveEditCustomFieldInfo={this.saveEditCustomFieldInfo}
+                                editWidth={330}
+                            />
+                        )
+                    }
                 </GeminiScrollbar>
             </div>
         );
@@ -2104,7 +2125,7 @@ ClueDetailOverview.defaultProps = {
     showClueToCustomerPanel: function() {
 
     },
-
+    leadCustomFieldData: {}
 
 };
 ClueDetailOverview.propTypes = {
@@ -2126,7 +2147,8 @@ ClueDetailOverview.propTypes = {
     extractClueOperator: PropTypes.func,
     showClueToCustomerPanel: PropTypes.func,
     changeActiveKey: PropTypes.func,
-    hideContactWay: PropTypes.bool
+    hideContactWay: PropTypes.bool,
+    leadCustomFieldData: PropTypes.object,// 线索自定义字段数据
 };
 
 module.exports = ClueDetailOverview;

@@ -1,5 +1,3 @@
-var React = require('react');
-const PropTypes = require('prop-types');
 import { Button, Icon } from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {SearchInput} from 'antc';

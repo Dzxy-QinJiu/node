@@ -178,27 +178,6 @@ exports.distributeCluecustomerToSaleBatch = function(submitObj) {
     return Deferred.promise();
 };
 
-var updateClueContactDetailAjax;
-//修改线索联系人相关信息
-exports.updateClueContactDetail = function(data) {
-    var Deferred = $.Deferred();
-    updateClueContactDetailAjax && updateClueContactDetailAjax.abort();
-    updateClueContactDetailAjax = $.ajax({
-        url: '/rest/cluecustomer/v2/update/detailitem',
-        dataType: 'json',
-        type: 'put',
-        data: data,
-        success: function(list) {
-            Deferred.resolve(list);
-        },
-        error: function(xhr, statusText) {
-            if(statusText !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};
 var updateClueItemDetailAjax;
 //修改线索的基本信息
 exports.updateClueItemDetail = function(data) {
@@ -220,6 +199,7 @@ exports.updateClueItemDetail = function(data) {
     });
     return Deferred.promise();
 };
+
 //获取全文搜索的线索
 exports.getClueFulltext = function(queryObj) {
     var pageSize = queryObj.pageSize;

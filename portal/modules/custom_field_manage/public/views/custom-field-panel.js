@@ -25,6 +25,7 @@ class CustomFieldPanel extends React.Component {
             defaultCheckedValue: this.getDefaultCheckedValue(props.editCustomField), // 是否统计，是否支持排序，是否出现在表单中，默认全选
             editCustomField: props.editCustomField, // 编辑字段
             customFieldData: _.cloneDeep(props.customFieldData), // 自定义数据
+            formItem: {}
         };
     }
 
@@ -60,6 +61,48 @@ class CustomFieldPanel extends React.Component {
         }
     }
 
+    firstAddCustomField = (submitObj) => {
+        ajax.addCustomFieldConfig(submitObj).then( (result) => {
+            if (_.get(result, 'id')) {
+                this.props.updateCustomFieldData([result]);
+                this.handleCancel();
+                message.success(Intl.get('user.user.add.success', '添加成功'));
+            } else {
+                message.error(Intl.get('crm.154', '添加失败'));
+            }
+        }, (errMsg) => {
+            message.error(errMsg || Intl.get('crm.154', '添加失败'));
+        } );
+    };
+
+    continueAddCustomField = (customizedVariables, id ) => {
+        ajax.addItemCustomField(customizedVariables, id).then( (result) => {
+            if (_.get(result, 'key')) {
+                this.props.updateCustomFieldData(result, 'add');
+                this.handleCancel();
+                message.success(Intl.get('user.user.add.success', '添加成功'));
+            } else {
+                message.error(Intl.get('crm.154', '添加失败'));
+            }
+        }, (errMsg) => {
+            message.error(errMsg || Intl.get('crm.154', '添加失败'));
+        } );
+    };
+
+    updateCustomField = (customizedVariables, id) => {
+        ajax.updateItemCustomField(customizedVariables, id).then( (result) => {
+            if (_.get(result, 'key')) {
+                this.props.updateCustomFieldData(result, 'update');
+                this.handleCancel();
+                message.success(Intl.get('crm.218', '修改成功！'));
+            } else {
+                message.error(Intl.get('crm.219', '修改失败！'));
+            }
+        }, (errMsg) => {
+            message.error(errMsg || Intl.get('crm.219', '修改失败！'));
+        } );
+    }
+
     handleSubmit = (formItem) => {
         this.props.form.validateFields((err, values) => {
             if (err) {
@@ -86,53 +129,47 @@ class CustomFieldPanel extends React.Component {
                     customized_variables.select_values = _.get(formItem, 'select_arr');
                 }
 
+                const id = _.get(this.state.customFieldData, '[0]id');
+
                 // 第一次添加
                 if (_.isEmpty(this.state.customFieldData)) {
                     customized_variables.show_index = 1;
                     submitObj.customized_variables = [customized_variables];
                 } else {
-                    submitObj.id = _.get(this.state.customFieldData, '[0]id');
                     let customizedVariables = _.get(this.state.customFieldData, '[0]customized_variables');
-                    if (_.isEmpty(this.state.editCustomField)) { // 说明是添加
+                    if (_.isEmpty(this.state.editCustomField)) { // 说明是添加（在原来的基础上添加一条）
                         customized_variables.show_index = _.get(customizedVariables, 'length') + 1;
-                        customizedVariables.push(customized_variables);
-                        submitObj.customized_variables = customizedVariables;
                     } else { // 编辑字段
                         const showIndex = _.get(this.state.editCustomField, 'show_index');
+                        const key = _.get(this.state.editCustomField, 'key');
                         customized_variables.show_index = showIndex;
-                        customizedVariables.splice(showIndex - 1,1,customized_variables);
-                        submitObj.customized_variables = customizedVariables;
+                        customized_variables.key = key;
                     }
-
                 }
-                if (_.isEmpty(this.state.editCustomField)) {
-                    ajax.addCustomFieldConfig(submitObj).then( (result) => {
-                        if (_.get(result, 'id')) {
-                            this.props.updateCustomFieldData([result]);
-                            this.handleCancel();
-                            message.success(Intl.get('user.user.add.success', '添加成功'));
-                        } else {
-                            message.error(Intl.get('crm.154', '添加失败'));
-                        }
-                    }, (errMsg) => {
-                        message.error(errMsg || Intl.get('crm.154', '添加失败'));
-                    } );
+                if (_.isEmpty(this.state.customFieldData)) {
+                    this.firstAddCustomField(submitObj);
                 } else {
-                    ajax.updateCustomFieldConfig(submitObj).then( (result) => {
-                        if (result) {
-                            this.props.updateCustomFieldData([submitObj]);
-                            this.handleCancel();
-                            message.success(Intl.get('crm.218', '修改成功！'));
-                        } else {
-                            message.error(Intl.get('crm.219', '修改失败！'));
-                        }
-                    }, (errMsg) => {
-                        message.error(errMsg || Intl.get('crm.219', '修改失败！'));
-                    } );
+                    if (_.isEmpty(this.state.editCustomField)) {
+                        this.continueAddCustomField(customized_variables, id);
+                    } else {
+                        this.updateCustomField(customized_variables, id);
+                    }
                 }
             }
         });
     };
+
+    modifyCustomFieldContent = (formItem) => {
+        this.setState({
+            formItem
+        });
+    }
+    // 修改字段类型时，使用默认的值
+    handleSelectType = (value) => {
+        this.setState({
+            formItem: {}
+        });
+    }
 
     renderFormContent = () => {
         const {getFieldDecorator, getFieldValue} = this.props.form;
@@ -140,6 +177,9 @@ class CustomFieldPanel extends React.Component {
         // 选择字段类型
         const selectCustomType = getFieldValue('select') || _.get(this.state.editCustomField, 'field_type');
         let selectComponent = _.find(selectCustomFieldComponents, item => item.customField === selectCustomType);
+        if (!_.isEmpty(this.state.formItem)) {
+            selectComponent = this.state.formItem;
+        }
         // 编辑单项字段
         if (!_.isEmpty(this.state.editCustomField)) {
             const select_values = _.get(this.state.editCustomField, 'select_values');
@@ -183,7 +223,10 @@ class CustomFieldPanel extends React.Component {
                         {getFieldDecorator('select', {
                             initialValue: _.get(this.state.editCustomField, 'field_type')
                         })(
-                            <Select placeholder="选择字段类型">
+                            <Select
+                                placeholder={Intl.get('custom.field.select.placeholder', '选择字段类型')}
+                                onSelect={this.handleSelectType}
+                            >
                                 {
                                     _.map(customFieldSelectOptions, item => {
                                         return <Option value={item.value}>{item.name}</Option>;
@@ -199,6 +242,7 @@ class CustomFieldPanel extends React.Component {
                                 formItem={selectComponent}
                                 handleCancel={this.handleCancel}
                                 handleSubmit={this.handleSubmit}
+                                modifyCustomFieldContent={this.modifyCustomFieldContent.bind(this)}
                             />
                         ) : null
                     }

@@ -1,23 +1,59 @@
 @import "../../../../public/css/common-variables";
+
+@filter-width: 300px;
 .deal-manage-container {
+  .topNav {
+    height: 64px;
+    padding: 0 15px;
+    .deal-search-block {
+      float: left;
+      margin-top: 15px;
+      .search-input-wrapper {
+        float: left;
+      }
+      .search-input-inner {
+        display: inline-block;
+        .search-input-container {
+          width: 260px;
+        }
+      }
+    }
+  }
+  .filter-container {
+    height: 100%;
+    float: left;
+    border-right: 1px solid #ccc;
+    min-width: @filter-width - 60;
+    position: absolute;
+    transition: all 0.5s;
+    background: #fff;
+    padding-top: 64px;
+    &.filter-close {
+      left: 0 - @filter-width - 20;
+      border-right: 1px solid transparent;
+    }
+    .gm-scrollbar-container {
+      .gm-scroll-view {
+        overflow-x: hidden;
+      }
+    }
+  }
   .deal-view-radio-container {
     float: right;
     margin-top: 15px;
     margin-right: 20px;
   }
-  .deal-search-block {
-    float: left;
-    width: 260px;
-    margin-top: 15px;
-  }
+
   .add-deal-btn {
     float: right;
     margin-top: 15px;
   }
   .deal-manage-content {
-    float: left;
-    width: 100%;
-    padding: 64px 24px 0 24px;
+    padding-left: @filter-width + 27px;
+    padding-top: 64px;
+    &.content-full {
+      padding-left: 20px;
+    }
     .deal-table-container {
       .current-row, .current-row:hover {
         background: #DFEAF3 !important;

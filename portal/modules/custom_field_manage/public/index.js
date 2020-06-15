@@ -30,6 +30,7 @@ class CustomFieldManage extends React.Component {
             customFieldData: {}, // 自定义字段数据
             isShowRightPanel: false, // 是否显示右侧面板，默认不显示
             editCustomField: {}, // 编辑的内容
+            updateRowIndex: -1, // 变更的行数
             isDeleteCustomFieldKey: '', // 删除自定义字段key
         };
     }
@@ -138,58 +139,36 @@ class CustomFieldManage extends React.Component {
         );
     };
 
-    handleEdit = (rowData) => {
+    handleEdit = (rowData, idx) => {
         this.setState({
             editCustomField: rowData,
-            isShowRightPanel: true
+            isShowRightPanel: true,
+            updateRowIndex: idx
         });
     };
 
     handleConfirmDelete = (rowData) => {
         const customizedVariables = _.get(this.state.customFieldData, '[0]customized_variables', []);
-        const id = _.get(this.state.customFieldData, '[0]id');
-        // 删除接口
-        if (customizedVariables.length === 1) {
-            ajax.deleteCustomFieldConfig(id).then( (result) => {
-                if (result) {
-                    this.setState({
-                        customFieldData: {}
-                    });
+        const paramObj = {
+            id: _.get(this.state.customFieldData, '[0]id'),
+            key: this.state.isDeleteCustomFieldKey
+        };
+        ajax.deleteItemCustomField(paramObj).then( (result) => {
+            if (result) {
+                _.remove(customizedVariables, rowData);
+                const customFieldData = this.state.customFieldData;
+                this.setState({
+                    customFieldData: customFieldData,
+                    isDeleteCustomFieldKey: ''
+                }, () => {
                     message.success(Intl.get('crm.138', '删除成功！'));
-                } else {
-                    message.error(Intl.get('crm.139', '删除失败！'));
-                }
-            }, (errMsg) => {
-                message.error(errMsg || Intl.get('crm.139', '删除失败！'));
-            } );
-        } else { // 编辑接口
-            const deleteIndex = _.get(rowData, 'show_index');
-            const originCustomFieldLength = _.get(customizedVariables, 'length');
-            let updateCustomField = _.filter(customizedVariables, item => item.show_index !== deleteIndex);
-            if (originCustomFieldLength !== deleteIndex) {
-                _.each(updateCustomField, (item, index) => {
-                    item.show_index = index + 1;
-                    delete item.key;
                 });
+            } else {
+                message.error(Intl.get('crm.139', '删除失败！'));
             }
-            let queryObj = {
-                id: id,
-                customized_type: this.state.activeTab,
-                customized_variables: updateCustomField
-            };
-            ajax.updateCustomFieldConfig(queryObj).then( (result) => {
-                if (result) {
-                    this.setState({
-                        customFieldData: [queryObj]
-                    });
-                    message.success(Intl.get('crm.218', '修改成功！'));
-                } else {
-                    message.error(Intl.get('crm.219', '修改失败！'));
-                }
-            }, (errMsg) => {
-                message.error(errMsg || Intl.get('crm.219', '修改失败！'));
-            } );
-        }
+        }, (errMsg) => {
+            message.error(errMsg || Intl.get('crm.139', '删除失败！'));
+        } );
     };
 
     handleDelete = (rowData) => {
@@ -289,12 +268,25 @@ class CustomFieldManage extends React.Component {
 
     handleClosePanel = () => {
         this.setState({
-            isShowRightPanel: false
+            isShowRightPanel: false,
+            updateRowIndex: -1
         });
     };
 
     // 更新数据
-    updateCustomFieldData = (customFieldData) => {
+    updateCustomFieldData = (updateCustom, flag) => {
+        let customFieldData = this.state.customFieldData;
+        const customizedVariables = _.get(customFieldData, '[0]customized_variables', []);
+        if (flag === 'add') {
+            customizedVariables.push(updateCustom);
+        } else if (flag === 'update') {
+            let matchedField = _.find(customizedVariables, item => item.show_index === updateCustom.show_index);
+            if (matchedField && this.state.updateRowIndex !== -1) {
+                customizedVariables.splice(this.state.updateRowIndex, 1, updateCustom);
+            }
+        } else {
+            customFieldData = _.cloneDeep(updateCustom);
+        }
         this.setState({
             customFieldData: customFieldData
         });

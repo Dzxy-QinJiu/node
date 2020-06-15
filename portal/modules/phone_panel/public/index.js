@@ -1,4 +1,3 @@
-var React = require('react');
 /**
  * 电话状态及客户详情展示面板
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.

@@ -936,6 +936,10 @@ class Crm extends React.Component {
         if (term_fields.length > 0) {//需精确匹配的字段
             condition.term_fields = term_fields;
         }
+        // 自定义字段，若是空的话，则不需要传向后端
+        if (_.isEmpty(condition.custom_variables)) {
+            delete condition.custom_variables;
+        }
         delete condition.otherSelectedItem;
         return condition;
     }
@@ -2300,7 +2304,7 @@ class Crm extends React.Component {
             },
             {
                 title: Intl.get('user.login.score', '分数'),
-                width: 60,
+                width: '80px',
                 dataIndex: 'score',
                 align: 'right',
                 sorter: this.getSorter(),
@@ -2315,7 +2319,7 @@ class Crm extends React.Component {
             },
             {
                 title: Intl.get('common.operate', '操作'),
-                width: 60,
+                width: '80px',
                 render: (text, record, index) => {
                     //是否是重复的客户
                     const isRepeat = record.repeat;
@@ -2359,41 +2363,42 @@ class Crm extends React.Component {
                 }
             }
         ];
-        // let customerCustomFieldData = this.props.customerCustomFieldData;
-        // if (!_.isEmpty(customerCustomFieldData)) {
-        //     // 客户自定义字段
-        //     const customizedVariables = _.get(customerCustomFieldData, '[0].customized_variables');
-        //     _.map(customizedVariables, item => {
-        //         const name = _.get(item, 'name');
-        //         const dataIndex = _.get(item, 'key');
-        //         if (_.get(item, 'need_show')) {
-        //             let customColumn = {
-        //                 title: name,
-        //                 width: '150px',
-        //                 dataIndex: dataIndex,
-        //                 className: 'has-filter',
-        //                 render: (text, record, index) => {
-        //                     let customVariables = _.get(record, 'custom_variables');
-        //                     return (
-        //                         <div>
-        //                             {
-        //                                 customVariables ? customVariables[dataIndex] : ''
-        //                             }
-        //                         </div>
-        //                     );
-        //                 }
-        //             };
-        //             if (_.get(item, 'need_sort')) {
-        //                 customColumn.sorter = true;
-        //                 //从销售首页跳转过来的不显示排序
-        //                 if (this.props.fromSalesHome) {
-        //                     customColumn.sorter = false;
-        //                 }
-        //             }
-        //             columns.push(customColumn);
-        //         }
-        //     });
-        // }
+        let customerCustomFieldData = this.props.customerCustomFieldData;
+        // 自定义字段，暂时在列表中不显示，先隐藏
+        if (false && !_.isEmpty(customerCustomFieldData)) {
+            // 客户自定义字段
+            const customizedVariables = _.get(customerCustomFieldData, '[0].customized_variables');
+            _.map(customizedVariables, item => {
+                const name = _.get(item, 'name');
+                const dataIndex = _.get(item, 'key');
+                if (_.get(item, 'need_show')) {
+                    let customColumn = {
+                        title: name,
+                        width: '150px',
+                        dataIndex: dataIndex,
+                        className: 'has-filter',
+                        render: (text, record, index) => {
+                            let customVariables = _.get(record, 'custom_variables');
+                            return (
+                                <div>
+                                    {
+                                        customVariables ? customVariables[dataIndex] : ''
+                                    }
+                                </div>
+                            );
+                        }
+                    };
+                    if (_.get(item, 'need_sort')) {
+                        customColumn.sorter = true;
+                        //从销售首页跳转过来的不显示排序
+                        if (this.props.fromSalesHome) {
+                            customColumn.sorter = false;
+                        }
+                    }
+                    columns.push(customColumn);
+                }
+            });
+        }
         //csm.curtao.com域名下不展示订单
         if (isCurtao()) {
             columns = _.filter(columns, column => column.title !== Intl.get('user.apply.detail.order', '订单'));
@@ -2492,6 +2497,7 @@ class Crm extends React.Component {
                                         changeTableHeight={this.changeTableHeight}
                                         isExtractSuccess={this.props.isExtractSuccess}
                                         toggleList={this.toggleList.bind(this)}
+                                        customerCustomFieldData={this.props.customerCustomFieldData}
                                     />
                                 </div> : null
                         }

@@ -12,7 +12,7 @@ import dealAction from './action';
 import dealBoardAction from './action/deal-board-action';
 import DealForm from './views/deal-form';
 import DealDetailPanel from './views/deal-detail-panel';
-import { DEAL_STATUS } from 'PUB_DIR/sources/utils/consts';
+import { DEAL_STATUS, selectType } from 'PUB_DIR/sources/utils/consts';
 import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { RightPanel } from 'CMP_DIR/rightPanel';
 import Trace from 'LIB_DIR/trace';
@@ -20,7 +20,11 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import classNames from 'classnames';
 import DealBoardList from './views/deal-board-list';
 import DealTable from './views/deal-table';
+import customFieldAjax from '../../custom_field_manage/public/ajax';
 import orderPrivilegeConst from './privilege-const';
+import { FilterInput } from 'CMP_DIR/filter';
+import DealFilterPanel from './views/deal-filter-panel';
+import DealFilterStore from './store/deal-filter';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -45,9 +49,25 @@ class DealManage extends React.Component {
             customerOfCurUser: {},//当前展示用户所属客户的详情
             curShowCustomerId: '',//当前查看的客户详情
             viewType: VIEW_TYPES.LIST,//默认展示看板视图
+            opportunityCustomFieldData: {}, // 机会（订单）自定义字段的值，默认空
+            showFilterList: false, // 是否展示订单筛选区域，默认false
         };
         this.boardListRef = null;
         this.dealTableRef = null;
+    }
+
+    //  获取机会自定义字段信息
+    getOpportunityCustomFieldConfig = () => {
+        customFieldAjax.getCustomFieldConfig({customized_type: 'opportunity'}).then( (result) => {
+            this.setState({
+                opportunityCustomFieldData: result
+            });
+        } );
+    }
+
+    componentDidMount() {
+        //  获取机会自定义字段信息
+        this.getOpportunityCustomFieldConfig();
     }
 
     showDetailPanel = (deal) => {
@@ -61,6 +81,7 @@ class DealManage extends React.Component {
     };
     //获取搜索订单的body参数
     getSearchBody = () => {
+        const filterStoreData = DealFilterStore.getState();
         let searchBody = {};
         //客户、负责人、阶段的搜索
         let searchObj = this.state.searchObj;
@@ -81,13 +102,30 @@ class DealManage extends React.Component {
                 searchBody.query = customerQuery;
             }
         }
+        // 自定义相关的参数
+        if (!_.isEmpty(filterStoreData.custom_variables)) {
+            const custom_variables = {
+                custom_variables: filterStoreData.custom_variables
+            };
+
+            if (_.isEmpty(searchBody.query)) {
+                searchBody.query = {};
+                searchBody.query.sales_opportunities = [custom_variables];
+            } else {
+                if(!_.isEmpty(searchBody.query.sales_opportunities)){
+                    searchBody.query.sales_opportunities[0] = _.extend(searchBody.query.sales_opportunities[0], custom_variables);
+                } else {
+                    searchBody.query.sales_opportunities = [custom_variables];
+                }
+            }
+        }
         return searchBody;
     };
 
     getDealList() {
-        let dealTableState = this.dealTableRef.state;
+        let dealTableState = _.get(this.dealTableRef, 'state');
         let body = this.getSearchBody();
-        let sorter = dealTableState.sorter;
+        let sorter = _.get(dealTableState, 'sorter', {field: 'time', order: 'descend'});
         dealAction.getDealList({
             page_size: PAGE_SIZE,
             page_num: _.get(dealTableState, 'dealListObj.pageNum', 1),
@@ -123,6 +161,7 @@ class DealManage extends React.Component {
             customerOfCurUser: data.customerObj
         });
     };
+
     closeCustomerUserListPanel = () => {
         this.setState({
             isShowCustomerUserListPanel: false,
@@ -166,6 +205,26 @@ class DealManage extends React.Component {
         }
     };
 
+    getFilterDealData = () => {
+        if (this.state.viewType === VIEW_TYPES.BOARD) {
+            dealBoardAction.setInitStageDealData();
+            setTimeout(() => {
+                _.each(this.boardListRef.state.stageList, stage => {
+                    let stageName = _.get(stage, 'name');
+                    if (stageName) {
+                        let pageNum = _.get(this.boardListRef.state, `stageDealMap[${stageName}].pageNum`, 1);
+                        dealBoardAction.getStageDealList(stageName, this.boardListRef.props.searchObj, pageNum);
+                    }
+                });
+            });
+        } else {
+            dealAction.setPageNum(1);
+            setTimeout(() => {
+                this.getDealList();
+            });
+        }
+    };
+
     changViewType = (e) => {
         this.setState({
             viewType: e.target.value
@@ -183,6 +242,12 @@ class DealManage extends React.Component {
             }
             this.setState({currDeal});
         }
+    }
+
+    toggleList = () => {
+        this.setState((prevState) => ({
+            showFilterList: !prevState.showFilterList
+        }));
     }
 
     render() {
@@ -204,18 +269,52 @@ class DealManage extends React.Component {
             });
         }
         let customerOfCurUser = this.state.customerOfCurUser;
+
         let dealViewCls = classNames('deal-manage-content', {'board-view-style': this.state.viewType === VIEW_TYPES.BOARD});
+
+        let dealViewCls = classNames('deal-manage-content',
+            {
+                'board-view-style': this.state.viewType === VIEW_TYPES.BOARD,
+                'content-full': !this.state.showFilterList
+            }
+        );
+
+        const filterCls = classNames('filter-container',{
+            'filter-close': !this.state.showFilterList
+        });
+
+        const customizedVariables = _.get(this.state.opportunityCustomFieldData, '[0].customized_variables', []);
+        const fieldType = _.map(customizedVariables, 'field_type');
+        // 选择类型
+        const isShowFilerBtn = _.find(fieldType, type => _.includes(selectType, type)) ? true : false;
+
         return (
             <div className="deal-manage-container" data-tracename="订单管理">
                 <TopNav>
                     <div className="deal-search-block">
-                        <SearchInput
-                            type="select"
-                            searchFields={searchFields}
-                            searchEvent={this.searchEvent}
-                            className="btn-item"
-                        />
+                        {
+                            isShowFilerBtn ? (
+                                <div className="search-input-wrapper">
+                                    <FilterInput
+                                        ref="filterinput"
+                                        toggleList={this.toggleList.bind(this)}
+                                        filterType={Intl.get('user.apply.detail.order', '订单')}
+                                        showList={this.state.showFilterList}
+                                    />
+                                </div>
+                            ) : null
+                        }
+
+                        <div className="search-input-inner">
+                            <SearchInput
+                                type="select"
+                                searchFields={searchFields}
+                                searchEvent={this.searchEvent}
+                                className="btn-item"
+                            />
+                        </div>
                     </div>
+
                     <PrivilegeChecker check={orderPrivilegeConst.SALESOPPORTUNITY_ADD}>
                         <Button className='btn-item add-deal-btn' onClick={this.showDealForm}>
                             {Intl.get('crm.161', '添加订单')}
@@ -230,6 +329,19 @@ class DealManage extends React.Component {
                         </RadioGroup>
                     </div>
                 </TopNav>
+                {
+                    isShowFilerBtn ? (
+                        <div className={filterCls}>
+                            <DealFilterPanel
+                                ref="dealfilterpanel"
+                                style={{ width: 300}}
+                                toggleList={this.toggleList.bind(this)}
+                                opportunityCustomFieldData={this.state.opportunityCustomFieldData}
+                                getFilterDealData={this.getFilterDealData.bind(this)}
+                            />
+                        </div>
+                    ) : null
+                }
                 <div className={dealViewCls}>
                     {this.state.viewType === VIEW_TYPES.LIST ? (
                         <DealTable
@@ -256,10 +368,17 @@ class DealManage extends React.Component {
                         />)}
                 </div>
                 {this.state.isDetailPanelShow ? (
-                    <DealDetailPanel currDeal={this.state.currDeal} isBoardView={isBoardView}
-                        hideDetailPanel={this.hideDetailPanel}/>
+                    <DealDetailPanel
+                        currDeal={this.state.currDeal}
+                        isBoardView={isBoardView}
+                        hideDetailPanel={this.hideDetailPanel}
+                        opportunityCustomFieldData={this.state.opportunityCustomFieldData}
+                    />
                 ) : this.state.isDealFormShow ? (
-                    <DealForm hideDealForm={this.hideDealForm} isBoardView={isBoardView}/>
+                    <DealForm
+                        hideDealForm={this.hideDealForm}
+                        isBoardView={isBoardView}
+                    />
                 ) : null}
                 {/*查看该客户下的用户列表*/}
                 <RightPanel

@@ -18,7 +18,7 @@ var ClueAnalysisAction = require('../../action/clue-analysis-action');
 import userData from 'PUB_DIR/sources/user-data';
 import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 import RangePicker from 'CMP_DIR/range-picker/index';
-
+import { selectType } from 'PUB_DIR/sources/utils/consts';
 class ClueFilterPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -255,8 +255,15 @@ class ClueFilterPanel extends React.Component {
         }
         data.forEach(item => {
             if (item.groupId) {
-                //线索状态
-                if (item.groupId === 'clue_status'){
+                // 需要处理自定义字段的数据结构
+                const customizedVariables = _.get(this.props.leadCustomFieldData, '[0].customized_variables');
+                let customized_variables = {};
+                // 自定义字段名称
+                let customFieldName = _.map(customizedVariables, 'name');
+                if (_.includes(customFieldName, item.groupId)) {
+                    customized_variables[item.groupId] = item.data.map(x => x.value);
+                    FilterAction.setFilterCustomField(customized_variables);
+                } else if (item.groupId === 'clue_status'){ //线索状态
                     //如果选中的是无效状态
                     if (_.get(item,'data[0]') && _.get(item,'data[0].value') === 'avaibility'){
                         FilterAction.setFilterClueAvailbility();
@@ -360,7 +367,7 @@ class ClueFilterPanel extends React.Component {
                         FilterAction.setLeadFromLeadPool();
                         FilterAction.setAppliedTryLead(APPLY_TRY_LEAD);
                     }
-                }else if (item.groupId === 'user_name'){
+                } else if (item.groupId === 'user_name'){
                     FilterAction.setFilterClueUsername( _.get(item,'data'));
                 }
             }
@@ -544,6 +551,32 @@ class ClueFilterPanel extends React.Component {
             }))
         });
 
+        if (!_.isEmpty(this.props.leadCustomFieldData)) {
+            const customizedVariables = _.get(this.props.leadCustomFieldData, '[0].customized_variables');
+            _.each(customizedVariables, item => {
+                const fieldType = _.get(item, 'field_type');
+                const name = _.get(item, 'name');
+                const selectValues = _.get(item, 'select_values');
+                // 是否是选择类型（现在先做单选、多选类型的）
+                if (_.includes(selectType, fieldType)) {
+                    let customField = {
+                        groupName: name,
+                        groupId: name,
+                        data: _.map(selectValues, x => ({
+                            name: x,
+                            value: x
+                        }))
+                    };
+                    // 单选
+                    if (_.includes(['select', 'radio'], fieldType)) {
+                        customField.singleSelect = true;
+                    }
+                    advancedData.splice(advancedData.length - 1, 0, customField);
+                }
+            });
+        }
+
+
         return (
             <div data-tracename="线索筛选">
                 <div className="clue-filter-panel">
@@ -587,6 +620,7 @@ ClueFilterPanel.propTypes = {
     style: PropTypes.object,
     showSelectTip: PropTypes.bool,
     toggleList: PropTypes.func,
+    leadCustomFieldData: PropTypes.object,
 };
 
 export default ClueFilterPanel;

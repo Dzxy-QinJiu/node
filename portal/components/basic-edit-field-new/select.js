@@ -221,13 +221,13 @@ let BasicEditSelectField = createReactClass({
             'basic-edit-field': true,
             'editing': this.state.displayType === 'edit'
         });
-
+        const displayText = this.state.displayText;
         var textBlock = null;
         if (this.state.displayType === 'text') {
             var cls = classNames('edit-container',{
                 'hover-show-edit': this.props.hoverShowEdit && this.props.hasEditPrivilege
             });
-            if (!_.isEmpty(this.state.displayText)) {
+            if (!_.isEmpty(displayText)) {
                 textBlock = (
                     <div className={cls}>
                         {this.props.hasEditPrivilege ? (
@@ -235,7 +235,9 @@ let BasicEditSelectField = createReactClass({
                                 onClick={this.setEditable.bind(this)}/>) : null
                         }
                         <span className="inline-block basic-info-text">
-                            {this.state.displayText}
+                            {
+                                _.isArray(displayText) ? _.join(displayText, '、') : displayText
+                            }
                         </span>
                     </div>);
             } else {

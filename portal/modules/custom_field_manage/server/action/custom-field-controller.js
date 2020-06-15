@@ -41,3 +41,30 @@ exports.deleteCustomFieldConfig = (req, res) => {
         res.status(500).json(err && err.message);
     });
 };
+
+//  添加一条自定义参数配置
+exports.addItemCustomField = (req, res) => {
+    customFieldService.addItemCustomField(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (err) => {
+        res.status(500).json(err && err.message);
+    });
+};
+
+// 修改一条自定义参数配置
+exports.updateItemCustomField = (req, res) => {
+    customFieldService.updateItemCustomField(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (err) => {
+        res.status(500).json(err && err.message);
+    });
+};
+
+// 删除一条自定义参数配置
+exports.deleteItemCustomField = (req, res) => {
+    customFieldService.deleteItemCustomField(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (err) => {
+        res.status(500).json(err && err.message);
+    });
+};
