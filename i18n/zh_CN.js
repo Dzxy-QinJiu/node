@@ -2054,6 +2054,8 @@ var zh_CN = {
     'crm.has.contain.join.user': '是否有联合跟进人',
     'crm.user.has.no.apply.approve': '有针对用户{userApp}的延期申请尚未审批，暂不能添加新的延期申请',
     'crm.userName.clientName': '{userName}的{clientName}',
+    'crm.user.all.check': '全选{num}个用户',
+    'crm.user.list.click.all.user': '查看全部用户',
     // 客户管理end
 
     // 客户分析start

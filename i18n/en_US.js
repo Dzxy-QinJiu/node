@@ -2031,6 +2031,8 @@ var en_US = {
     'crm.has.contain.join.user': 'Is there a joint follow-up person',//是否有联合跟进人
     'crm.user.has.no.apply.approve': 'There is an extension request for user {userApp} that has not yet been approved, and a new extension application cannot be added at this time',//有针对用户{userApp}的延期申请尚未审批，暂不能添加新的延期申请
     'crm.userName.clientName': '{clientName} of {userName}',//{userName}的{clientName}
+    'crm.user.all.check': 'Select all {num} users',//全选{num}个用户
+    'crm.user.list.click.all.user': 'View all users',//查看全部用户
 
     // 客户管理end
 

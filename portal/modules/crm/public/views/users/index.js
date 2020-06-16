@@ -406,26 +406,34 @@ class CustomerUsers extends React.Component {
     //申请新用户时，根据返回的状态信息渲染带Popover的button和不带Popover的button
     renderApplyButton = () => {
         let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
+        const userNum = this.state.total || 0;
         return (
-            applyPrivileged && !isExpired() ? (
-                <div className="crm-user-apply-btns" data-tracename="申请新用户">
-                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.NEW_USERS)}
-                        onClick={this.handleMenuClick.bind(this, APPLY_ADD_TYPES.NEW_USERS) }>
-                        {Intl.get('crm.apply.user.new', '申请新用户')}
-                    </Button>
-                </div>) : (
-                <Popover
-                    placement="bottomRight"
-                    overlayClassName="apply-invalid-popover"
-                    content={isExpired() ? getContactSalesPopoverTip() : _.get(this.state, 'applyState.applyMessage')}
-                    trigger="click"
-                >
+            <div>
+                {applyPrivileged && !isExpired() ? (
                     <div className="crm-user-apply-btns" data-tracename="申请新用户">
-                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.NEW_USERS)}>
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.NEW_USERS)}
+                            onClick={this.handleMenuClick.bind(this, APPLY_ADD_TYPES.NEW_USERS) }>
                             {Intl.get('crm.apply.user.new', '申请新用户')}
                         </Button>
-                    </div>
-                </Popover>)
+                    </div>) : (
+                    <Popover
+                        placement="bottomRight"
+                        overlayClassName="apply-invalid-popover"
+                        content={isExpired() ? getContactSalesPopoverTip() : _.get(this.state, 'applyState.applyMessage')}
+                        trigger="click"
+                    >
+                        <div className="crm-user-apply-btns" data-tracename="申请新用户">
+                            <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.NEW_USERS)}>
+                                {Intl.get('crm.apply.user.new', '申请新用户')}
+                            </Button>
+                        </div>
+                    </Popover>)}
+                <Button className="crm-detail-add-btn" onClick={this.triggerUserList.bind(this, userNum)}
+                    data-tracename="点击已开通用户数">
+                    {Intl.get('crm.user.list.click.all.user', '查看全部用户')}
+                </Button>
+            </div>
+
         );
     };
     //应用和用户的对应关系
@@ -1014,15 +1022,8 @@ class CustomerUsers extends React.Component {
         if(userNum) {
             return (
                 <span className={userNumClass}>
-                    {this.showCheckBoxPrivilege() ? <Checkbox checked={this.state.allUserCheck} onChange={this.onCheckboxChange}>{Intl.get('common.all.select', '全选')}</Checkbox> : null}
-                    <span onClick={this.triggerUserList.bind(this, userNum)}
-                        data-tracename="点击已开通用户数">
-                        <ReactIntl.FormattedMessage
-                            id="user.apply.has.been.opened"
-                            defaultMessage={'已开通{count}个'}
-                            values={{'count': userNum || '0'}}
-                        />
-                    </span>
+                    {this.showCheckBoxPrivilege() ? <Checkbox checked={this.state.allUserCheck} onChange={this.onCheckboxChange}>{Intl.get('crm.user.all.check', '全选{num}个用户',{num: userNum || '0'})}</Checkbox> : null}
+
                 </span>
             );
         }else if(!userApplyListNum) {
