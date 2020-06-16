@@ -456,6 +456,8 @@ class CustomerUsers extends React.Component {
                     // }));
                     userAppTip.push(appList.user_name);
                 });
+                //对用户名去重
+                userAppTip = _.uniq(userAppTip);
                 disableTitleTip = Intl.get('crm.user.has.no.apply.approve', '有针对用户{userApp}的延期申请尚未审批，暂不能添加新的延期申请',{userApp: userAppTip.join(',')});
             }
         }
