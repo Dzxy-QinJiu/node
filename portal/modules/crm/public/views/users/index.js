@@ -30,7 +30,7 @@ import {getDetailLayoutHeight} from '../../utils/crm-util';
 import DetailCard from 'CMP_DIR/detail-card';
 import {APPLY_APPROVE_TYPES,APPLY_TYPES} from 'PUB_DIR/sources/utils/consts';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 1000;
 const APPLY_ADD_TYPES = {
     STOP_USE: 'stopUse',//停用
     DELAY: 'Delay',//延期
@@ -89,6 +89,7 @@ class CustomerUsers extends React.Component {
             popoverErrorVisible: false,
             userApplyList: [],//客户待审批的用户列表
             isOplateUser: isOplateUser(),
+            allUserCheck: false,
             ...this.getLayoutHeight() //用户列表、申请用户面板的高度
         };
     };
@@ -272,9 +273,27 @@ class CustomerUsers extends React.Component {
                     app.checked = checked;
                 });
             }
-            this.setState({crmUserList: this.state.crmUserList});
+            this.setState({crmUserList: this.state.crmUserList},() => {
+                this.afterUserOrAppCheck(checked);
+            });
+
         }
     }
+    afterUserOrAppCheck = (checked) => {
+        if(!checked){
+            this.setState({
+                allUserCheck: false
+            });
+        }else{
+            var {crmUserList} = this.state;
+            var targetObj = _.find(crmUserList,item => !_.get(item,'user.checked'));
+            if(!targetObj){
+                this.setState({
+                    allUserCheck: true
+                });
+            }
+        }
+    };
 
     //应用选择的处理
     onChangeAppCheckBox(userId, appId, e) {
@@ -298,7 +317,9 @@ class CustomerUsers extends React.Component {
             } else {//取消选中时
                 delete userObj.user.checked;
             }
-            this.setState({crmUserList: this.state.crmUserList});
+            this.setState({crmUserList: this.state.crmUserList},() => {
+                this.afterUserOrAppCheck(checked);
+            });
         }
     }
 
@@ -321,7 +342,8 @@ class CustomerUsers extends React.Component {
     }
 
     //用户的应用
-    getUserAppOptions(userObj, isShowCheckbox) {
+    getUserAppOptions(userObj) {
+        let isShowCheckbox = this.showCheckBoxPrivilege();
         let appList = userObj.apps;
         let userId = userObj.user ? userObj.user.user_id : '';
         if (_.isArray(appList) && appList.length) {
@@ -863,7 +885,7 @@ class CustomerUsers extends React.Component {
             </div>);
     }
 
-    renderCrmUserList(isApplyButtonShow) {
+    renderCrmUserList() {
         if (this.state.isLoading) {
             return <Spinner />;
         }
@@ -872,7 +894,7 @@ class CustomerUsers extends React.Component {
                 // retryFunc={this.getCrmUserList.bind(this)}/>;
                 retryFunc={this.getCrmUserApplyAndPassList.bind(this)}/>;
         }
-        let isShowCheckbox = isApplyButtonShow && !this.props.isMerge;
+
         let crmUserList = this.state.crmUserList;
         let userApplyList = this.state.userApplyList;
         if (_.isArray(crmUserList) && crmUserList.length ||
@@ -884,7 +906,7 @@ class CustomerUsers extends React.Component {
                         return (
                             <DetailCard key={index}
                                 contentNoPadding={true}
-                                content={this.renderCrmUserItem(userObj, index, isShowCheckbox)} />
+                                content={this.renderCrmUserItem(userObj, index)} />
                         );
                     })}
                 </ul>);
@@ -893,7 +915,8 @@ class CustomerUsers extends React.Component {
             return (<NoDataIconTip tipContent={Intl.get('crm.detail.no.user', '暂无用户')}/>);
         }
     }
-    renderCrmUserItem(userObj, index, isShowCheckbox){
+    renderCrmUserItem(userObj, index){
+        let isShowCheckbox = this.showCheckBoxPrivilege();
         let user = _.isObject(userObj) ? userObj.user : {};
         let userNameText = `${_.get(user, 'user_name', '')}(${_.get(user, 'nick_name', '')})`;
         let isManager = _.get(user, 'group_position', '') === 'manager';//该用户是否是管理员
@@ -960,7 +983,7 @@ class CustomerUsers extends React.Component {
                                         </Checkbox>
                                     ) : (<label>{this.renderUserAppTitle()}</label>)}
                                 </div>
-                                {this.getUserAppOptions(userObj, isShowCheckbox)}
+                                {this.getUserAppOptions(userObj)}
                             </div>
                         </div>
                     )
@@ -990,16 +1013,16 @@ class CustomerUsers extends React.Component {
         });
         if(userNum) {
             return (
-                <span
-                    className={userNumClass}
-                    onClick={this.triggerUserList.bind(this, userNum)}
-                    data-tracename="点击已开通用户数"
-                >
-                    <ReactIntl.FormattedMessage
-                        id="user.apply.has.been.opened"
-                        defaultMessage={'已开通{count}个'}
-                        values={{'count': userNum || '0'}}
-                    />
+                <span className={userNumClass}>
+                    {this.showCheckBoxPrivilege() ? <Checkbox checked={this.state.allUserCheck} onChange={this.onCheckboxChange}>{Intl.get('common.all.select', '全选')}</Checkbox> : null}
+                    <span onClick={this.triggerUserList.bind(this, userNum)}
+                        data-tracename="点击已开通用户数">
+                        <ReactIntl.FormattedMessage
+                            id="user.apply.has.been.opened"
+                            defaultMessage={'已开通{count}个'}
+                            values={{'count': userNum || '0'}}
+                        />
+                    </span>
                 </span>
             );
         }else if(!userApplyListNum) {
@@ -1010,7 +1033,33 @@ class CustomerUsers extends React.Component {
             );
         }
     };
-
+    onCheckboxChange = (e) => {
+        let checked = e.target.checked;
+        this.setState({
+            allUserCheck: checked
+        },() => {
+            _.each(this.state.crmUserList, userObj => {
+                if (userObj) {
+                    //用户的（取消）选择处理
+                    userObj.user.checked = checked;
+                    //用户下应用的（取消）选择处理
+                    if (_.isArray(userObj.apps) && userObj.apps.length) {
+                        _.each(userObj.apps, app => {
+                            app.checked = checked;
+                        });
+                    }
+                }
+            });
+            this.setState({crmUserList: this.state.crmUserList});
+        });
+    };
+    showCheckBoxPrivilege = () => {
+        let isApplyButtonShow = false;
+        if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+            isApplyButtonShow = true;
+        }
+        return isApplyButtonShow && !this.props.isMerge;
+    }
     render() {
         let isApplyButtonShow = false;
         if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
@@ -1019,7 +1068,7 @@ class CustomerUsers extends React.Component {
         return (<div className="crm-user-list-container" data-tracename="用户页面">
             <div className="user-number">
                 {this.state.isLoading ? null : this.renderTotalBlock()}
-                {isApplyButtonShow && !this.props.isMerge ? this.renderApplyBtns()
+                {this.showCheckBoxPrivilege() ? this.renderApplyBtns()
                     : null}
             </div>
             {/*userNum ? (
