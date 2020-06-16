@@ -1610,14 +1610,14 @@ class ClueDetailOverview extends React.Component {
         //是否有权限修改线索详情
         var hasPrivilegeEdit = editClueItemIconPrivilege(curClue);
         return (_.map(curClue.contacts, (contactItem, index) => {
-            var cls = classNames('contact-item-content contact-name', {
-                'not-first-contact-name': index !== 0
+            var wrapCls = classNames('contact-item-wrap clue-info-item', {
+                'not-first-contact': index !== 0
             });
-            return <div className="contact-item-wrap clue-info-item">
+            return <div className={wrapCls}>
                 <React.Fragment>
                     <React.Fragment>
                         {contactItem.name || isExpandContact ?
-                            <div className={cls}>
+                            <div className='contact-item-content contact-name'>
                                 <span className="clue-info-label">{Intl.get('call.record.contacts', '联系人')}</span>
                                 <div className="clue-info-detail">
                                     <BasicEditInputField
