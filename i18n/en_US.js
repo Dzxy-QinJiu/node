@@ -1961,6 +1961,7 @@ var en_US = {
     'crm.pool.sales.extract.exist.tip': 'I, as',//我作为
     'crm.pool.release.rule.skip.holiday': 'Do you exclude holidays?',//是否排除节假日
     'crm.pool.release.rule.form.skip.holiday': 'Exclusive holiday',//排除节假日
+    'crm.order.budget.validate': 'Please enter an amount greater than 0',//请输入大于0的金额
 
 
     'crm.customer.rule.name': 'Rules set',//规则设置

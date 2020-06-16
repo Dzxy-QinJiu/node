@@ -16,7 +16,7 @@ import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import CRMAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
 
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
-import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
+import {checkBudgetRule} from 'PUB_DIR/sources/utils/validate-util';
 import dealAction from '../action';
 import dealBoardAction from '../action/deal-board-action';
 import {num as antUtilsNum} from 'ant-utils';
@@ -97,7 +97,7 @@ class DealForm extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
             //需要将预算去掉千分位逗号
-            let budget = values.budget ? _.get(values, 'budget', '').replace(/,/g, '') : 0;
+            let budget = removeCommaFromNum(values.budget);
             let predictFinishTime = values.predict_finish_time ? moment(values.predict_finish_time).endOf('day').valueOf() : moment().valueOf();
             predictFinishTime = dealTimeNotLessThanToday(predictFinishTime);
             let customer_id = _.get(this.state, 'formData.customer.id');
@@ -256,10 +256,7 @@ class DealForm extends React.Component {
                             {...formItemLayout}
                         >
                             {getFieldDecorator('budget', {
-                                rules: [getNumberValidateRule(), {
-                                    required: true,
-                                    message: Intl.get('crm.order.budget.input', '请输入预算金额')
-                                }],
+                                rules: [{required: true, validator: checkBudgetRule}],
                                 getValueFromEvent: (event) => {
                                     // 先remove是处理已经带着逗号的数字，parse后会有多个逗号的问题
                                     return parseAmount(removeCommaFromNum(event.target.value));

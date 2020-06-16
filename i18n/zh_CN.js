@@ -1984,6 +1984,7 @@ var zh_CN = {
     'crm.pool.sales.extract.exist.tip': '我作为',
     'crm.pool.release.rule.skip.holiday': '是否排除节假日',
     'crm.pool.release.rule.form.skip.holiday': '排除节假日',
+    'crm.order.budget.validate': '请输入大于0的金额',
 
 
     'crm.pool.single.extract.tip': '您确定要提取此客户吗？',

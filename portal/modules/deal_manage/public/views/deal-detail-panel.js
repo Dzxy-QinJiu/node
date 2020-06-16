@@ -16,7 +16,7 @@ import Trace from 'LIB_DIR/trace';
 import {disabledBeforeToday, dealTimeNotLessThanToday} from 'PUB_DIR/sources/utils/common-method-util';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {DEAL_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
+import {checkBudgetRule} from 'PUB_DIR/sources/utils/validate-util';
 import userData from 'PUB_DIR/sources/user-data';
 import ApplyUserForm from '../../../crm/public/views/apply-user-form';
 import dealBoardAction from '../action/deal-board-action';
@@ -549,10 +549,7 @@ class DealDetailPanel extends React.Component {
                         // type="number"
                         field="budget"
                         value={formatNumHasDotToFixed(deal.budget, 2)}
-                        validators={[
-                            {required: true, message: Intl.get('crm.order.budget.input', '请输入预算金额')},
-                            getNumberValidateRule()
-                        ]}
+                        validators={[{required: true, validator: checkBudgetRule}]}
                         afterValTip={Intl.get('contract.82', '元')}
                         afterTextTip={Intl.get('contract.82', '元')}
                         placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
