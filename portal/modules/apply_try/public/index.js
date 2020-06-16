@@ -25,12 +25,9 @@ class Index extends React.Component {
         versionKindName: PropTypes.string
     }
 
-    onUserScalesChange = (value) => {
-        if(!value) {//值为空或者undefined时
-            //这里需要延时设置使用人数的值，不然会设置不上
-            setTimeout(() => {
-                this.props.form.setFieldsValue({userScales: 1});
-            });
+    onUserScalesChange = (e) => {
+        if(_.isEmpty(_.get(e, 'target.value'))) {//值为空或者undefined时
+            this.props.form.setFieldsValue({userScales: 1});
         }
     };
 
@@ -99,12 +96,12 @@ class Index extends React.Component {
                         </Form.Item> 
                         <Form.Item label={Intl.get('common.apply.try.user.scales','使用人数')} {...formLayout} require className="user-scales-container">
                             {getFieldDecorator('userScales', {
-                                initialValue: 5
+                                initialValue: 5,
                             })(
                                 <InputNumber
                                     min={1}
                                     precision={0}
-                                    onChange={this.onUserScalesChange}
+                                    onBlur={this.onUserScalesChange}
                                 />
                             )}
                             <span className="user-personal">{Intl.get('versions.personal.number', '人')}</span>
