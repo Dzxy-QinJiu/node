@@ -260,6 +260,40 @@ class DynamicAddDelCustomers extends React.Component {
         return (
             <div className="contact-wrap" key={key}>
                 <FormItem
+                    className="form-item-label add-apply-time"
+                    label={Intl.get('common.login.time', '时间')}
+                    {...formItemLayout}
+                >
+                    {getFieldDecorator(`customers[${key}].visit_start_time`,{
+                        initialValue: moment(curCustomer.visit_start_time),
+                        rules: [{required: true, message: Intl.get('contract.224', '请输入地址')}]
+                    })(
+                        <TimePicker
+                            showTime={{format: oplateConsts.HOUR_MUNITE_FORMAT}}
+                            type='time'
+                            format={oplateConsts.HOUR_MUNITE_FORMAT}
+                            onChange={this.onVisitBeginTimeChange.bind(this, key)}
+                            value={curCustomer.visit_start_time ? moment(curCustomer.visit_start_time) : moment()}
+                            disabledHours={disabledHour.bind(this,initialStartTime, initialEndTime)}
+                            disabledMinutes={disabledMinute.bind(this,initialStartTime, initialEndTime,curCustomer.visit_start_time)}
+                        />
+
+                    )}
+                    <span className="apply-range">{Intl.get('common.time.connector', '至')}</span>
+                    {getFieldDecorator(`customers[${key}].visit_end_time`,{
+                        initialValue: moment(curCustomer.visit_end_time)})(
+                        <TimePicker
+                            showTime={{format: oplateConsts.HOUR_MUNITE_FORMAT }}
+                            type='time'
+                            format={oplateConsts.HOUR_MUNITE_FORMAT}
+                            onChange={this.onVisitEndTimeChange.bind(this, key)}
+                            value={curCustomer.visit_end_time ? moment(curCustomer.visit_end_time) : moment()}
+                            disabledHours={disabledHour.bind(this,initialStartTime, initialEndTime)}
+                            disabledMinutes={disabledMinute.bind(this,initialStartTime, initialEndTime,curCustomer.visit_end_time)}
+                        />
+                    )}
+                </FormItem>
+                <FormItem
                     className="form-item-label customer-name customer-name-item"
                     label={Intl.get('call.record.customer', '客户')}
                     {...formItemLayout}
@@ -285,38 +319,6 @@ class DynamicAddDelCustomers extends React.Component {
                         />
                     )}
                     <i className={delContactCls} onClick={this.handleDelCustomer.bind(this, key, index, size)}/>
-                </FormItem>
-                <FormItem
-                    className="form-item-label add-apply-time"
-                    label={Intl.get('business.while.trip.time.range', '外出时间')}
-                    {...formItemLayout}
-                >
-                    {getFieldDecorator(`customers[${key}].visit_start_time`,{
-                        initialValue: moment(curCustomer.visit_start_time) })(
-                        <TimePicker
-                            showTime={{format: oplateConsts.HOUR_MUNITE_FORMAT}}
-                            type='time'
-                            format={oplateConsts.HOUR_MUNITE_FORMAT}
-                            onChange={this.onVisitBeginTimeChange.bind(this, key)}
-                            value={curCustomer.visit_start_time ? moment(curCustomer.visit_start_time) : moment()}
-                            disabledHours={disabledHour.bind(this,initialStartTime, initialEndTime)}
-                            disabledMinutes={disabledMinute.bind(this,initialStartTime, initialEndTime,curCustomer.visit_start_time)}
-                        />
-
-                    )}
-                    <span className="apply-range">{Intl.get('common.time.connector', '至')}</span>
-                    {getFieldDecorator(`customers[${key}].visit_end_time`,{
-                        initialValue: moment(curCustomer.visit_end_time)})(
-                        <TimePicker
-                            showTime={{format: oplateConsts.HOUR_MUNITE_FORMAT }}
-                            type='time'
-                            format={oplateConsts.HOUR_MUNITE_FORMAT}
-                            onChange={this.onVisitEndTimeChange.bind(this, key)}
-                            value={curCustomer.visit_end_time ? moment(curCustomer.visit_end_time) : moment()}
-                            disabledHours={disabledHour.bind(this,initialStartTime, initialEndTime)}
-                            disabledMinutes={disabledMinute.bind(this,initialStartTime, initialEndTime,curCustomer.visit_end_time)}
-                        />
-                    )}
                 </FormItem>
                 <AntcAreaSelection labelCol="5" wrapperCol="17" width="100%"
                     colon={false}
@@ -405,10 +407,10 @@ DynamicAddDelCustomers.propTypes = {
 DynamicAddDelCustomers.defaultProps = {
     form: {},
     addAssignedCustomer: function() {
-        
+
     },
     handleCustomersChange: function() {
-        
+
     },
     initialVisitStartTime: '',
     initialVisitEndTime: '',
