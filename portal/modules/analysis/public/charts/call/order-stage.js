@@ -4,7 +4,7 @@
 
 export function getCallOrderStageChart() {
     return {
-        title: '订单阶段统计',
+        title: Intl.get('oplate_customer_analysis.11', '订单阶段统计'),
         chartType: 'pie',
         url: '/rest/analysis/callrecord/v1/callrecord/statistics/bakup/data/distribution/sales_stage',
         conditions: [{

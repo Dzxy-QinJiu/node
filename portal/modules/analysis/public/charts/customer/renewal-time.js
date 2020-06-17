@@ -4,7 +4,7 @@
 
 export function getRenewalCustomerTimeChart(paramObj = {}) {
     return {
-        title: '客户续签时间统计',
+        title: Intl.get('analysis.customer.renewal.time.statistics', '客户续签时间统计'),
         layout: {sm: 24},
         height: 'auto',
         url: '/rest/analysis/customer/label/:data_type/renewal/time',
@@ -33,16 +33,16 @@ export function getRenewalCustomerTimeChart(paramObj = {}) {
             columns: (() => {
                 let columns = [
                     {
-                        title: '时间',
+                        title: Intl.get('common.login.time', '时间'),
                         dataIndex: 'time',
                         width: 80
                     }, {
-                        title: '到期客户数',
+                        title: Intl.get('analysis.number.of.customers.due', '到期客户数'),
                         dataIndex: 'due_num',
                         align: 'right',
                         width: 90
                     }, {
-                        title: '当月续签',
+                        title: Intl.get('analysis.renewal.of.current.month', '当月续签'),
                         dataIndex: 'month0',
                         align: 'right',
                         width: 75
@@ -57,7 +57,7 @@ export function getRenewalCustomerTimeChart(paramObj = {}) {
                         columnWidth = 90;
                     } 
                     columns.push({
-                        title: `延期${i}个月`,
+                        title: Intl.get('analysis.renewal.of.current.month', '当月续签') + i + Intl.get('user.apply.detail.delay.month.show', '个月'),
                         dataIndex: `month${i}`,
                         align: 'right',
                         width: columnWidth

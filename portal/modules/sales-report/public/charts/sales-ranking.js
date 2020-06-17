@@ -16,10 +16,10 @@ export function getSalesRankingChart(role) {
 
     //维度
     let dimensions = [
-        '合同数',
-        '回款毛利',
-        '流失客户数',
-        '跟进客户数'
+        Intl.get('analysis.number.of.contracts', '合同数'),
+        Intl.get('contract.29', '回款毛利'),
+        Intl.get('analysis.number.of.lost.customers', '流失客户数'),
+        Intl.get('analysis.number.of.follow-up.customers', '跟进客户数')
     ];
 
     //如果是销售经理
@@ -38,16 +38,16 @@ export function getSalesRankingChart(role) {
         ];
 
         dimensions = [
-            '合格客户数',
-            '电话数',
-            '客户活跃率',
-            '提交机会',
-            '成交数'
+            Intl.get('common.number.of.qualified.customers', '合格客户数'),
+            Intl.get('analysis.number.of.calls', '电话数'),
+            Intl.get('analysis.customer.activity.rate', '客户活跃率'),
+            Intl.get('analysis.submit.opportunity', '提交机会'),
+            Intl.get('common.deal.number', '成交数')
         ];
     }
 
     return {
-        title: '销售排名',
+        title: Intl.get('analysis.sales.ranking', '销售排名'),
         chartType: 'radar',
         layout: {sm: 24},
         height: 300,
@@ -119,11 +119,11 @@ export function getSalesRankingChart(role) {
             const thirdLevelNum = dataWithLevelNum.third_level_num;
 
             //团队内排名
-            let intraTeamRanking = getRankingObj('团队内排名');
+            let intraTeamRanking = getRankingObj(Intl.get('analysis.ranking.within.the.team', '团队内排名'));
             //上级团队内排名
-            let intraSuperiorTeamRanking = getRankingObj('上级团队内排名');
+            let intraSuperiorTeamRanking = getRankingObj(Intl.get('analysis.ranking.within.superior.team', '上级团队内排名'));
             //销售部内排名
-            let intraSalesDepartmentRanking = getRankingObj('销售部内排名');
+            let intraSalesDepartmentRanking = getRankingObj(Intl.get('analysis.ranking.in.sales.department', '销售部内排名'));
 
             _.each(data, dataItem => {
                 //设置团队内排名

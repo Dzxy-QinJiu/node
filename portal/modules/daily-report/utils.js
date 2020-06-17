@@ -53,7 +53,7 @@ export function renderButtonZoneFunc(buttons) {
                         <Button
                             onClick={item.func}
                             type={item.type || 'default'}
-                            data-tracename={`点击${item.name}按钮`}
+                            data-tracename={Intl.get('analysis.click.operation.button', '点击{operation}按钮', {operation: item.name})}
                         >
                             {item.name}
                         </Button>
@@ -153,7 +153,7 @@ export function processReportListData(reportConfigId, data, chart) {
             const { name, value, value_str } = obj;
 
             switch (name) {
-                case '其他':
+                case Intl.get('user.login.analysis.customer.other', '其他'):
                     item[name] = value_str;
                     break;
                 default:
@@ -186,7 +186,7 @@ export function saveReport(data, callback) {
 
 //显示数字详情
 export function showNumberDetail(record, name, e) {
-    Trace.traceEvent(e, '查看数字详情');
+    Trace.traceEvent(e, Intl.get('analysis.view.digital.details', '查看数字详情'));
 
     //只有单个销售的数据允许点击查看详情
     if (!record.nickname) return;
@@ -207,7 +207,7 @@ export function showNumberDetail(record, name, e) {
 export function isShowDailyReport() {
     const org = getOrganization();
     const versionName = _.get(org, 'version.name');
-    const isValidVersion = _.includes(['专业版', '企业版'], versionName);
+    const isValidVersion = _.includes([Intl.get('versions.professional', '专业版'), Intl.get('versions.enterprise', '企业版')], versionName);
 
     if (isCurtao() || !isValidVersion || !hasPrivilege(CRM_DAILY_REPORT)) {
         return false;
@@ -232,7 +232,7 @@ export function handleReportStatusChange(reportConfig) {
 export function numberRender(name, value = 0, record = {}) {
     let showValue = value;
 
-    if (name === '通话时长') {
+    if (name === Intl.get('call.record.call.duration', '通话时长')) {
         showValue += Intl.get('user.time.second', '秒');
     }
 

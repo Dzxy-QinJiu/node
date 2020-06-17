@@ -16,13 +16,13 @@ export function getRemainAccountChart(paramObj = {}) {
     let getNIntervalTitle = count => Intl.get('oplate.user.analysis.25', '{count}天后', {count});
 
     if (interval === 'week') {
-        currentIntervalTitle = '当周';
-        nextIntervalTitle = '次周';
-        getNIntervalTitle = count => count + '周后';
+        currentIntervalTitle = Intl.get('oplate.user.analysis.34', '当周');
+        nextIntervalTitle = Intl.get('oplate.user.analysis.35', '次周');
+        getNIntervalTitle = count => Intl.get('oplate.user.analysis.36', '{count}周后', {count});
     } else if (interval === 'month') {
-        currentIntervalTitle = '当月';
-        nextIntervalTitle = '次月';
-        getNIntervalTitle = count => count + '个月后';
+        currentIntervalTitle = Intl.get('oplate.user.analysis.37', '当月');
+        nextIntervalTitle = Intl.get('oplate.user.analysis.38', '次月');
+        getNIntervalTitle = count => Intl.get('analysis.months.later', '{count}个月后', {count});
     }
 
     return {

@@ -2,9 +2,9 @@
  * 电话行业统计
  */
 
-export function getCallIndustryChart(paramObj = {}) {
+export function getCallIndustryChart() {
     return {
-        title: '电话行业统计',
+        title: Intl.get('analysis.telephone.industry.statistics', '电话行业统计'),
         chartType: 'bar',
         layout: {sm: 24},
         url: '/rest/analysis/callrecord/v1/callrecord/statistics/bakup/data/distribution/industry',

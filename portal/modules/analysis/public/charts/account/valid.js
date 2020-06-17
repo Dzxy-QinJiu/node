@@ -6,7 +6,7 @@ import { ifNotSingleApp } from '../../utils';
 
 export function getAccountValidChart() {
     return {
-        title: '有效账号数统计',
+        title: Intl.get('analysis.statistics.of.effective.accounts', '有效账号数统计'),
         url: '/rest/analysis/user/v3/:data_type/total/valid',
         chartType: 'pie',
         noShowCondition: {
@@ -18,10 +18,10 @@ export function getAccountValidChart() {
         },
         processData: data => {
             return [{
-                name: '未收费数',
+                name: Intl.get('analysis.no.charge', '未收费数'),
                 value: data.valid,
             }, {
-                name: '收费数',
+                name: Intl.get('analysis.number.of.charges', '收费数'),
                 value: data.formal,
             }];
         },

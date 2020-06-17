@@ -4,7 +4,7 @@
 
 export function getCashLossRateChart(paramObj = {}) {
     return {
-        title: '现金流失率',
+        title: Intl.get('analysis.cash.loss.rate', '现金流失率'),
         chartType: 'line',
         customOption: {
             showValueAsPercent: true,

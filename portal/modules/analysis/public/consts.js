@@ -37,12 +37,12 @@ export const USER_TYPES = [
 
 //客户阶段
 export const CUSTOMER_STAGE = {
-    message: '信息',
-    intention: '意向',
-    trial: '试用',
-    signed: '签约',
-    qualified: '合格',
-    unknown: '未知'
+    message: Intl.get('sales.stage.message', '信息'),
+    intention: Intl.get('sales.stage.intention', '意向'),
+    trial: Intl.get('common.trial', '试用'),
+    signed: Intl.get('common.official', '签约'),
+    qualified: Intl.get('common.qualified', '合格'),
+    unknown: Intl.get('common.unknown', '未知')
 };
 
 let userTypeDataObj = {};

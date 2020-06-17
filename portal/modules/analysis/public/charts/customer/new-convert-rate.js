@@ -81,7 +81,7 @@ export function getNewCustomerConvertRateChart(paramObj = {}) {
         },
         processCsvData: (chart, option) => {
             let csvData = [];
-            let thead = ['阶段', '数量', '转化率'];
+            let thead = [Intl.get('deal.stage', '阶段'), Intl.get('common.app.count', '数量'), Intl.get('analysis.conversion.rate', '转化率')];
 
             csvData.push(thead);
 

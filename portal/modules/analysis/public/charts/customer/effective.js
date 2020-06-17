@@ -6,7 +6,7 @@ import { argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getCustomerEffectiveChart() {
     return {
-        title: '有效客户活跃率统计',
+        title: Intl.get('analysis.statistics.of.active.rate.of.effective.customers', '有效客户活跃率统计'),
         url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
         argCallback: arg => {
             argCallbackMemberIdsToMemberId(arg);

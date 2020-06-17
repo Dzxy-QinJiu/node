@@ -39,12 +39,12 @@ class ReportDetail extends React.Component {
             items = reportDetail.item_values;
         }
 
-        const editableFields = ['其他'];
+        const editableFields = [Intl.get('user.login.analysis.customer.other', '其他')];
         const editableItems = _.filter(items, item => _.includes(editableFields, item.name));
         const unEditableItems = _.filter(items, item => !_.includes(editableFields, item.name));
 
         return (
-            <div data-tracename="报告详情视图">
+            <div data-tracename={Intl.get('analysis.report.details.view', '报告详情视图')}>
                 <Form>
                     <DetailCard
                         title={Intl.get('analysis.daily.work', '日常工作')}

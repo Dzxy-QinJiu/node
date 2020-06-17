@@ -55,13 +55,13 @@ class WeeklyReport extends React.Component {
     onSearchInputChange = (keyword) => {
         keyword = keyword ? keyword : '';
         if (_.trim(keyword) !== _.trim(this.state.searchKeyword)) {
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-content'), '根据关键词搜索');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-content'), Intl.get('analysis.search.by.keyword', '根据关键词搜索'));
             WeeklyReportAction.changeSearchInputValue(keyword);
         }
     };
 
     handleClickReportTitle = (obj, idx) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.report-title-item'), '查看周报详情');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.report-title-item'), Intl.get('analysis.view.weekly.report.details', '查看周报详情'));
         WeeklyReportAction.setSelectedWeeklyReportItem({obj, idx});
     };
 
@@ -86,7 +86,7 @@ class WeeklyReport extends React.Component {
     };
 
     onTeamChange = (teamId, e) => {
-        Trace.traceEvent(e, '选择团队');
+        Trace.traceEvent(e, Intl.get('analysis.select.team', '选择团队'));
         WeeklyReportAction.setSelectedTeamId(teamId);
         teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamId);
     };
@@ -124,7 +124,7 @@ class WeeklyReport extends React.Component {
         if (this.state.yearTime === year) {
             return;
         }
-        Trace.traceEvent(e, `时间范围-选择第${year}年`);
+        Trace.traceEvent(e, Intl.get('analysis.time.frame', '时间范围') + '-' + Intl.get('analysis.select.the.some.year', '选择第{year}年', {year: year}));
         WeeklyReportAction.setSelectedYear(year);
 
         const startTime = this.getStartEndTime(year, this.state.nWeek).startTime;
@@ -138,7 +138,7 @@ class WeeklyReport extends React.Component {
         if (this.state.weekTime === week) {
             return;
         }
-        Trace.traceEvent(e, `时间范围-选择第${week}周`);
+        Trace.traceEvent(e, Intl.get('analysis.time.frame', '时间范围') + '-' + Intl.get('analysis.select.the.some.week', '选择第{week}周', {week: week}));
         WeeklyReportAction.setSelectedWeek(week);
 
         const startTime = this.getStartEndTime(this.state.nYear, week).startTime;
@@ -190,7 +190,7 @@ class WeeklyReport extends React.Component {
         const isCommonSales = userData.getUserData().isCommonSales;
 
         return (
-            <div className='weekly-report-container' data-tracename='销售周报'>
+            <div className='weekly-report-container' data-tracename={Intl.get('analysis.sales.weekly.report', '销售周报')}>
                 {
                     this.renderTopNavOperation()
                 }

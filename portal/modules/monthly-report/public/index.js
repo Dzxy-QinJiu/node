@@ -538,7 +538,7 @@ class MonthlyReport extends React.Component {
         const selectedTeamName = _.get(this.state.selectedTeam, 'group_name', '');
 
         return (
-            <div className="monthly-report" data-tracename='销售月报'>
+            <div className="monthly-report" data-tracename={Intl.get('analysis.sales.monthly.report', '销售月报')}>
                 {
                     this.renderTopNavOperation()
                 }

@@ -79,7 +79,7 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
 
     //销售行为统计拜访客户数点击处理函数
     function visitedCustomerNumClickHandler(id, e) {
-        Trace.traceEvent(e, '点击销售个人报告页面上的销售行为统计拜访客户数查看详细列表');
+        Trace.traceEvent(e, Intl.get('analysis.click.the.sales.behavior.statistics.on.the.sales.personal.report.page.to.view.the.detailed.list', '点击销售个人报告页面上的销售行为统计拜访客户数查看详细列表'));
 
         conditionCache.member_id = id;
 

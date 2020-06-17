@@ -9,7 +9,7 @@ export function getCustomerTransferTrendChart() {
     let interval;
     
     return {
-        title: '转出客户数趋势',
+        title: Intl.get('analysis.trend.of.number.of.customers.transferred.out', '转出客户数趋势'),
         chartType: 'line',
         layout: {sm: 24},
         url: '/rest/analysis/customer/v2/:data_type/customer/transfer_record/trend',

@@ -9,7 +9,7 @@ export function getCustomerNumChart(paramsObj = {}) {
     const stage = paramsObj.stage;
 
     return {
-        title: paramsObj.title || '客户数统计',
+        title: paramsObj.title || Intl.get('analysis.number.of.customers.statistics', '客户数统计'),
         chartType: 'table',
         url: '/rest/analysis/customer/stage/label/:auth_type/summary',
         argCallback: (arg) => {
@@ -40,14 +40,14 @@ export function getCustomerNumChart(paramsObj = {}) {
 
             if (_.isObject(data)) {
                 if (stage) {
-                    const title = CUSTOMER_STAGE[stage] + '客户数';
+                    const title = CUSTOMER_STAGE[stage] + Intl.get('contract.169', '客户数');
 
                     dataSource = [{
                         value: title + ': ' + data[stage]
                     }];
                 } else {
-                    const titleTotal = '总客户数';
-                    const titleSigned = '签约客户数';
+                    const titleTotal = Intl.get('analysis.total.customers', '总客户数');
+                    const titleSigned = Intl.get('common.number.of.contracted.customers', '签约客户数');
                     const total = data.message + data.intention + data.trial + data.signed + data.unknown;
 
                     dataSource = [{

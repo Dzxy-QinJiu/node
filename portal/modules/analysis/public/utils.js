@@ -426,7 +426,7 @@ export function funnelWithConvertRateProcessCsvData(chart, option) {
             //取上一阶段的导出列名
             const prevColCsvName = data[index - 1].csvName;
             //构造从上一阶段到当前阶段的转化率列名
-            const rateColName = prevColCsvName + '到' + item.csvName + '转化率';
+            const rateColName = prevColCsvName + Intl.get('analysis.reach', '到') + item.csvName + Intl.get('analysis.conversion.rate', '转化率');
             //将该列名存入转化率相关表头列名数组
             convertRateNames.push(rateColName);
             //将转化率值存入转化率相关值数组
@@ -443,7 +443,7 @@ export function funnelWithConvertRateProcessCsvData(chart, option) {
 
         //如果当前项中包含总转化率
         if (item.totalConvertRate) {
-            thead.push('总转化率');
+            thead.push(Intl.get('analysis.total.conversion', '总转化率'));
             tbody.push(item.totalConvertRate);
         }
     });
@@ -505,7 +505,7 @@ export function get114RatioAndServiceTelProcessOptionFunc() {
     return function(option) {
         if (isCommonSales()) {
             option.tooltip.formatter = params => {
-                return params.marker + params.name + ': ' + params.value + ', 占比: ' + numToPercent(params.data.rate);
+                return params.marker + params.name + ': ' + params.value + ', ' + Intl.get('oplate_bd_analysis_realm_industry.7', '占比') + ': ' + numToPercent(params.data.rate);
             };
         }
 

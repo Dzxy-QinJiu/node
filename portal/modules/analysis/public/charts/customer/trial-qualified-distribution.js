@@ -11,7 +11,7 @@ export function getCustomerTrialQualifiedDistributionChart(title, field) {
         url: '/rest/analysis/customer/v2/:data_type/accounts/login/qualify/statistic',
         conditions: [{
             name: 'customer_label',
-            value: '试用',
+            value: Intl.get('common.trial', '试用')
         }, {
             name: 'distribution_statistics_type',
             value: field
@@ -54,23 +54,23 @@ export function getCustomerTrialQualifiedDistributionChart(title, field) {
             });
 
             let columns = [{
-                title: '名称',
+                title: Intl.get('common.definition', '名称'),
                 dataIndex: 'name',
                 isSetCsvValueBlank: true,
             }, {
-                title: field === 'province' ? '区域' : '行业',
+                title: field === 'province' ? Intl.get('analysis.region', '区域') : Intl.get('menu.industry', '行业'),
                 dataIndex: 'sta_type',
                 isSetCsvValueBlank: true
             }, {
-                title: '已开通试用客户数',
+                title: Intl.get('analysis.number.of.trial.customers.opened', '已开通试用客户数'),
                 align: 'right',
                 dataIndex: 'open_trial'
             }, {
-                title: '有效登录客户数',
+                title: Intl.get('analysis.number.of.valid.login.customers', '有效登录客户数'),
                 align: 'right',
                 dataIndex: 'valid_login'
             }, {
-                title: '试用合格客户数',
+                title: Intl.get('common.number.of.trial.qualified.customer', '试用合格客户数'),
                 align: 'right',
                 dataIndex: 'trial_qualify'
             }];

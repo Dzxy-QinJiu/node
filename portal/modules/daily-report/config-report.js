@@ -14,7 +14,7 @@ class ConfigReport extends React.Component {
         const { updateState, currentTab } = this.props;
 
         return (
-            <div data-tracename="配置报告视图">
+            <div data-tracename={Intl.get('analysis.configure.report.view', '配置报告视图')}>
                 <Tabs defaultActiveKey="1">
                     <TabPane tab={Intl.get('analysis.content.of.the.report', '报告内容')} key="1">
                         <ReportDetail {...this.props} />

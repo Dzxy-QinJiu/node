@@ -34,8 +34,8 @@ const getUserListAjax = require('MOD_DIR/common/public/ajax/user').getUserListAj
 
 //销售角色
 const SALES_ROLE = {
-    sales_manager: '销售经理',
-    customer_manager: '客户经理'
+    sales_manager: Intl.get('crm.customer.transfer.sales', '销售经理'),
+    customer_manager: Intl.get('crm.customer.transfer.manager', '客户经理'),
 };
 
 const now = moment();
@@ -436,12 +436,12 @@ class SalesReport extends React.Component {
                 //客户阶段
                 customerCharts.getCustomerStageChart(),
                 //客户活跃度统计
-                customerCharts.getCustomerActiveTrendChart('客户活跃度统计', 'day', true),
+                customerCharts.getCustomerActiveTrendChart(Intl.get('common.customer.active.statistics', '客户活跃度统计'), 'day', true),
                 //新开客户登录
                 reportCharts.newCustomerLoginChart(),
                 //合格客户数统计
                 customerCharts.getCustomerNumChart({
-                    title: '合格客户数统计',
+                    title: Intl.get('analysis.statistics.of.qualified.customers', '合格客户数统计'),
                     stage: 'qualified'
                 }),
                 //联系客户频率统计
@@ -463,7 +463,7 @@ class SalesReport extends React.Component {
                 //客户流失率统计
                 customerCharts.getCustomerLoseRateChart(),
                 //客户活跃度统计
-                customerCharts.getCustomerActiveTrendChart('客户活跃度统计', 'day', true),
+                customerCharts.getCustomerActiveTrendChart(Intl.get('common.customer.active.statistics', '客户活跃度统计'), 'day', true),
             );
         } else {
             // 开通呼叫中心
@@ -478,7 +478,7 @@ class SalesReport extends React.Component {
                 reportCharts.newCustomerLoginChart(),
                 //合格客户数统计
                 customerCharts.getCustomerNumChart({
-                    title: '合格客户数统计',
+                    title: Intl.get('analysis.statistics.of.qualified.customers', '合格客户数统计'),
                     stage: 'qualified'
                 }),
                 //联系客户频率统计
@@ -496,7 +496,7 @@ class SalesReport extends React.Component {
                 //客户流失率统计
                 customerCharts.getCustomerLoseRateChart(),
                 //客户活跃度统计
-                customerCharts.getCustomerActiveTrendChart('客户活跃度统计', 'day', true),
+                customerCharts.getCustomerActiveTrendChart(Intl.get('common.customer.active.statistics', '客户活跃度统计'), 'day', true),
             );
         }
 
@@ -522,7 +522,7 @@ class SalesReport extends React.Component {
 
         return (
             <dl>
-                <dt>出勤统计</dt>
+                <dt>{Intl.get('analysis.attendance.statistics', '出勤统计')}</dt>
                 <dd>
                     <AntcAnalysis
                         charts={charts}
@@ -540,7 +540,7 @@ class SalesReport extends React.Component {
         const memberId = this.state.currentMember.user_id;
 
         return (
-            <div className="sales-report" data-tracename='销售报告'>
+            <div className="sales-report" data-tracename={Intl.get('analysis.sales.report', '销售报告')}>
                 {this.renderFilter()}
                 <div className="report-content">
                     <Row>
