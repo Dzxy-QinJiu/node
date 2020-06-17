@@ -107,7 +107,7 @@ var config = {
     //是否是正式环境
     isFormal: isFormal,
     // es地址
-    esUrl: process.env.ES,//http://192.168.2.21:9200,
+    esUrl: process.env.ES,//exp\dev:http://10.20.2.67:9211，csm:http://10.20.2.68:9211，ent\cash\caller:http://10.20.2.76:9211
     //进程名
     processTitle: process.env.PROCESS_TITLE || 'ketao',
     //web服务端口
@@ -153,7 +153,7 @@ var config = {
     loggerTag: process.env.LOGGER_TAG || 'ketao-web',//日志标签,用来区分是oplate的还是ketao的
     errorMessagePath: path.join(__dirname, '../portal/lib/utils/errorCode.js'),//错误码处理文件路径，ant-auth-request中需要用
     siteID: process.env.SITE_ID || '1',//piwik需配置site_id,1:oplate,4:ketao
-    pushServerAddress: process.env.PUSH_SERVER_ADDRESS || 'http://10.20.2.60:9093',//推送的服务地址（测试： http://10.20.2.60:9093，正式:http://notify-ketao.antfact.com:80）
+    pushServerAddress: process.env.PUSH_SERVER_ADDRESS || 'http://10.20.2.60:9093',//推送的服务地址（测试： http://10.20.2.60:9093，正式:http://10.20.2.71:9093、http://notify-ketao.antfact.com:80）
     lang: process.env.OPLATE_LANG, //语言环境(优先)
     useSso: process.env.USESSO,//是否使用sso
     ssoUrl: process.env.SSO_URL || 'https://sso-dev.curtao.com',//正式：https://sso.curtao.com，测试：https://sso-dev.curtao.com

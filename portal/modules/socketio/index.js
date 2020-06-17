@@ -87,7 +87,6 @@ function setSocketSessionid(ioServer) {
 
 //找到对应的socket，将接收到的数据推送到浏览器端
 function emitMsgBySocket(user_id, emitUrl, msgData) {
-    var startTime = new Date().getTime();
     if (user_id) {
         //找到消息接收者对应的socket，将数据推送到浏览器
         let socketArray = socketStore[user_id] || [];
@@ -100,9 +99,6 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
             });
         }
     }
-    let endTime = new Date().getTime();
-    let timeRange = endTime - startTime;
-    pushLogger.debug('处理后端推送数据的时间: startTime===' + startTime + ', endTime====' + endTime + ',timeRange====' + timeRange);
 }
 // /**
 //  * 消息监听器
@@ -337,7 +333,7 @@ function createBackendClient() {
     pushLogger.info('与后台建立连接的服务地址：' + pushServerUrl);
     //创建socket.io的客户端
     client = ioClient(pushServerUrl, {
-        transports: ['websocket']
+        forceNew: true
     });
     //监听 connect
     client.on('connect', function() {
@@ -363,25 +359,16 @@ function createBackendClient() {
     client.on(applyApproveChannel, applyApproveNumListener);
     //创建客户操作提醒的通道
     client.on(crmOperatorChannel, crmOperatorListener);
-    client.on('pong', (timeout) => {
-        pushLogger.info(client.id + '==== pong=======' + timeout);
-    });
-    client.on('ping', () => {
-        pushLogger.info(client.id + '==== ping');
-    });
-    client.on('connect_timeout', (timeout) => {
-        pushLogger.info(client.id + '==== connect_timeout=======' + timeout);
-    });
-    client.on('error', (error) => {
-        pushLogger.info(client.id + '==== error=======' + JSON.stringify(error));
-    });
-    client.on('connect_error', (error) => {
-        pushLogger.info(client.id + '==== connect_error=======' + JSON.stringify(error));
-    });
+    // client.on('pong', (timeout) => {
+    //     pushLogger.info(client.id + '==== pong=======' + timeout);
+    // });
+    // client.on('ping', () => {
+    //     pushLogger.info(client.id + '==== ping');
+    // });
     //监听 disconnect
     client.on('disconnect', function(reason) {
         pushLogger.info(client.id + '==== 断开后台连接');
-        pushLogger.info(_.isString(reason) ? reason : JSON.stringify(reason));
+        pushLogger.info( reason || '');
         // the disconnection was initiated by the server, you need to reconnect manually
         if(reason === 'io server disconnect'){
             //重新创建连接
@@ -433,7 +420,7 @@ module.exports.startSocketio = function(nodeServer) {
                 });
                 //将当前用户应用的socket、token保存到内存中
                 socketStore[session.user.userid] = socketArray;
-                pushLogger.debug('用户信息 %s', JSON.stringify(session.user));
+                // pushLogger.debug('用户信息 %s', JSON.stringify(session.user));
                 // 推送最新升级版本的时间到浏览器端，以便于界面判断是否有新版本升级提示用户刷新界面
                 socket.emit('curUpgradeTime', global.config.timeStamp);
             } else {
@@ -492,7 +479,7 @@ function socketEmitter(Obj, emitterChannel,loggerType) {
     let user = Obj && Obj.user;
     let sessionId = Obj && Obj.sessionId;
     if (user && sessionId) {
-        pushLogger.debug((user && user.nickname) + loggerType);
+        // pushLogger.debug((user && user.nickname) + loggerType);
         var userId = user ? user.userid : '';
         if (userId) {
             //找到消息接收者对应的socket，将数据推送到浏览器
