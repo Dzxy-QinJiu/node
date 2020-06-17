@@ -53,8 +53,8 @@ class RecentLoginUsers extends React.Component {
     constructor(props) {
         super(props);
         let timeRange = this.getTodayTimeRange();
-        var teamlists = this.concatTeamList(this.props);
-        const selectedAppInfo = this.getSelectedAppObj(this.props);
+        var teamlists = this.concatTeamList(props);
+        const selectedAppInfo = this.getSelectedAppObj(props);
         this.state = {
             ...RecentUserStore.getState(),
             selectedAppId: _.get(selectedAppInfo, 'selectedAppId'),
@@ -166,7 +166,7 @@ class RecentLoginUsers extends React.Component {
             }
         }
         let selectedAppTerminals = approveAppConfigTerminal(selectedAppId, props.appList);
-
+        this.setState({selectedAppTerminals});
         return {selectedAppId, selectedAppTerminals};
     }
     concatTeamList(props){
