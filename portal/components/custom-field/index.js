@@ -41,7 +41,14 @@ class CustomField extends React.Component {
                 const name = _.get(item, 'name');
                 return (
                     <div className="basic-info-item">
-                        <span className="basic-info-label">{name}:</span>
+                        <span className="basic-info-label">
+                            {name}
+                            {
+                                this.props.isShowColonAfterLabel ? (
+                                    <span>:</span>
+                                ) : null
+                            }
+                        </span>
                         {this.renderCustomFieldType(item)}
                     </div>
                 );
@@ -187,6 +194,7 @@ CustomField.defaultProps = {
     customFieldData: {}, // 配置的自定义字段数据
     hasEditPrivilege: false, // 是否能编辑，默认false
     editWidth: 340, // 默认编辑区域的宽度340
+    isShowColonAfterLabel: true, // label后是否显示冒号，默认true，默认显示
     saveEditCustomFieldInfo: () => {}
 };
 
@@ -195,6 +203,7 @@ CustomField.propTypes = {
     customFieldData: PropTypes.object,
     hasEditPrivilege: PropTypes.bool,
     editWidth: PropTypes.number,
+    isShowColonAfterLabel: PropTypes.bool,
     saveEditCustomFieldInfo: PropTypes.func,
 };
 

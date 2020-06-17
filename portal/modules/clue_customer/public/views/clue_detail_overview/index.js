@@ -2081,6 +2081,7 @@ class ClueDetailOverview extends React.Component {
                                 hasEditPrivilege={hasPrivilegeEdit}
                                 saveEditCustomFieldInfo={this.saveEditCustomFieldInfo}
                                 editWidth={330}
+                                isShowColonAfterLabel={false}
                             />
                         )
                     }
