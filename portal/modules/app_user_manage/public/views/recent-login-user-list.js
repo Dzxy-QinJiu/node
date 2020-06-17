@@ -166,7 +166,6 @@ class RecentLoginUsers extends React.Component {
             }
         }
         let selectedAppTerminals = approveAppConfigTerminal(selectedAppId, props.appList);
-        this.setState({selectedAppTerminals});
         return {selectedAppId, selectedAppTerminals};
     }
     concatTeamList(props){
@@ -182,10 +181,12 @@ class RecentLoginUsers extends React.Component {
         let selectedAppInfo = this.getSelectedAppObj(nextProps);
         let newAppId = _.get(selectedAppInfo, 'selectedAppId');
         if (oldAppId !== newAppId) {
-            this.setState({ selectedAppId: newAppId },
-                () => {
-                    this.getRecentLoginUsers();
-                }
+            this.setState({
+                selectedAppId: newAppId,
+                selectedAppTerminals: _.get(selectedAppInfo, 'selectedAppTerminals')
+            }, () => {
+                this.getRecentLoginUsers();
+            }
             );
         }
         if (_.isArray(nextProps.teamlists) && !isEqualArray(nextProps.teamlists, this.props.teamlists)){
