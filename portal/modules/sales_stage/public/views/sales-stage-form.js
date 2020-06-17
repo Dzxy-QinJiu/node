@@ -5,7 +5,7 @@ import {Form, Input} from 'antd';
 const FormItem = Form.Item;
 const {TextArea} = Input;
 import Trace from 'LIB_DIR/trace';
-import {nameRule} from 'PUB_DIR/sources/utils/validate-util';
+import {validatorNameRuleRegex} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 const SalesStageStore = require('../store/sales-stage-store');
@@ -113,7 +113,7 @@ class SalesStageForm extends React.Component {
                         rules: [{
                             required: true,
                             validator: this.getValidator()
-                        }, nameRule(Intl.get('crm.order.stage', '订单阶段'))],
+                        }, validatorNameRuleRegex(10, Intl.get('crm.order.stage', '订单阶段'))],
                         validateTrigger: 'onBlur'
                     })(
                         <Input placeholder={Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')}/>
