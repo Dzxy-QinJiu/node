@@ -7,8 +7,10 @@ const OrderAction = require('../../action/order-actions');
 import SearchIconList from '../../../../../components/search-icon-list';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
-import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
+import {checkBudgetRule} from 'PUB_DIR/sources/utils/validate-util';
 import {disabledBeforeToday, dealTimeNotLessThanToday} from 'PUB_DIR/sources/utils/common-method-util';
+import { num as antUtilsNum } from 'ant-utils';
+const {parseAmount, removeCommaFromNum} = antUtilsNum;
 class OrderForm extends React.Component {
     constructor(props){
         super(props);
@@ -33,6 +35,8 @@ class OrderForm extends React.Component {
             let reqData = JSON.parse(JSON.stringify(values));
             reqData.predict_finish_time = reqData.predict_finish_time ? moment(reqData.predict_finish_time).valueOf() : moment().valueOf();
             reqData.predict_finish_time = dealTimeNotLessThanToday(reqData.predict_finish_time);
+            //预算取到的值是带千分位的逗号的，往后端传的时候不能传带逗号的
+            reqData.budget = removeCommaFromNum(reqData.budget);
             //保存
             reqData.customer_id = this.props.customerId;
             this.setState({isLoading: true});
@@ -103,7 +107,11 @@ class OrderForm extends React.Component {
                         {...formItemLayout}
                     >
                         {getFieldDecorator('budget', {
-                            rules: [{required: true, message: Intl.get('crm.order.budget.input', '请输入预算金额')},getNumberValidateRule()]
+                            rules: [{required: true, validator: checkBudgetRule}],
+                            getValueFromEvent: (event) => {
+                                // 先remove是处理已经带着逗号的数字，parse后会有多个逗号的问题
+                                return parseAmount(removeCommaFromNum(event.target.value));
+                            },
                         })(
                             <Input placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
                                 addonAfter={Intl.get('contract.82', '元')}
