@@ -127,7 +127,7 @@ class ReportList extends React.Component {
                                 render: numberRender.bind(null, name)
                             };
     
-                            if (name === Intl.get('user.login.analysis.customer.other', '其他')) {
+                            if (name === '其他') {
                                 if (nickname) {
                                     column.isSetCsvValueBlank = true;
                                     column.align = 'left';

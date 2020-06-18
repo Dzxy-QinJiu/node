@@ -41,7 +41,7 @@ class ReportPanel extends React.Component {
 
     render() {
         return (
-            <div className="daily-report daily-report-panel" data-tracename={Intl.get('analysis.sales.daily.report.right.panel', '销售日报右侧面板')}>
+            <div className="daily-report daily-report-panel" data-tracename='销售日报右侧面板'>
                 <Detail
                     title={this.getPanelTitle()}
                     content={this.getPanelContent()}
@@ -75,7 +75,7 @@ class ReportPanel extends React.Component {
                         {nickname}
                         {numberDetail.name} &nbsp;
                         {numberDetail.value} &nbsp;
-                        {numberDetail.name === Intl.get('call.record.call.duration', '通话时长') ? Intl.get('user.time.second', '秒') : Intl.get('contract.22', '个')}
+                        {numberDetail.name === '通话时长' ? Intl.get('user.time.second', '秒') : Intl.get('contract.22', '个')}
                     </span>
                 </span>;
                 break;

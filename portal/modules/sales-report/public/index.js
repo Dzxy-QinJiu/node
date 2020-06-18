@@ -34,8 +34,8 @@ const getUserListAjax = require('MOD_DIR/common/public/ajax/user').getUserListAj
 
 //销售角色
 const SALES_ROLE = {
-    sales_manager: Intl.get('crm.customer.transfer.sales', '销售经理'),
-    customer_manager: Intl.get('crm.customer.transfer.manager', '客户经理'),
+    sales_manager: '销售经理',
+    customer_manager: '客户经理'
 };
 
 const now = moment();

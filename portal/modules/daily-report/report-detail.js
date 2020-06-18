@@ -39,7 +39,7 @@ class ReportDetail extends React.Component {
             items = reportDetail.item_values;
         }
 
-        const editableFields = [Intl.get('user.login.analysis.customer.other', '其他')];
+        const editableFields = ['其他'];
         const editableItems = _.filter(items, item => _.includes(editableFields, item.name));
         const unEditableItems = _.filter(items, item => !_.includes(editableFields, item.name));
 

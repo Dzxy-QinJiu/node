@@ -153,7 +153,7 @@ export function processReportListData(reportConfigId, data, chart) {
             const { name, value, value_str } = obj;
 
             switch (name) {
-                case Intl.get('user.login.analysis.customer.other', '其他'):
+                case '其他':
                     item[name] = value_str;
                     break;
                 default:
@@ -207,7 +207,7 @@ export function showNumberDetail(record, name, e) {
 export function isShowDailyReport() {
     const org = getOrganization();
     const versionName = _.get(org, 'version.name');
-    const isValidVersion = _.includes([Intl.get('versions.professional', '专业版'), Intl.get('versions.enterprise', '企业版')], versionName);
+    const isValidVersion = _.includes(['专业版', '企业版'], versionName);
 
     if (isCurtao() || !isValidVersion || !hasPrivilege(CRM_DAILY_REPORT)) {
         return false;
@@ -232,7 +232,7 @@ export function handleReportStatusChange(reportConfig) {
 export function numberRender(name, value = 0, record = {}) {
     let showValue = value;
 
-    if (name === Intl.get('call.record.call.duration', '通话时长')) {
+    if (name === '通话时长') {
         showValue += Intl.get('user.time.second', '秒');
     }
 
