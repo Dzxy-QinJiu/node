@@ -126,6 +126,7 @@ class RecommendCluesFilterPanel extends Component {
 
         this.currentArea = {};
         this.currentListItem = {};
+        this.isGetClueList = false;
     }
 
     componentDidMount() {
@@ -144,7 +145,6 @@ class RecommendCluesFilterPanel extends Component {
         if (_.isEmpty(this.state.hasSavedRecommendParams) || !_.isEqual(nextProps.hasSavedRecommendParams, this.state.hasSavedRecommendParams)){
             let hasSavedRecommendParams = _.cloneDeep(nextProps.hasSavedRecommendParams);
             let vipFilters = this.dealRecommendParamsVipData({...hasSavedRecommendParams, ...this.state.vipFilters});
-            let showOtherCondition = this.state.showOtherCondition;
             this.setState({
                 hasSavedRecommendParams,
                 vipFilters,
@@ -163,6 +163,7 @@ class RecommendCluesFilterPanel extends Component {
         $(input).off('focus', this.onInputFocus);
         document.removeEventListener('click', this.onClickOutsideHandler);
         this.currentListItem = {};
+        this.isGetClueList = false;
     }
 
     //处理线索推荐条件中的vip选项
@@ -199,6 +200,7 @@ class RecommendCluesFilterPanel extends Component {
     }
 
     getRecommendClueList = (condition, isSaveFilter = true, isRequiredSave = false) => {
+        this.isGetClueList = true;
         this.currentListItem = {};
         let newCondition = _.clone(condition);
         let propsCondition = _.clone(this.props.hasSavedRecommendParams);
@@ -210,6 +212,12 @@ class RecommendCluesFilterPanel extends Component {
         }
         if(isSaveFilter) clueCustomerAction.saveSettingCustomerRecomment(newCondition);
         this.props.getRecommendClueLists(newCondition, EXTRACT_CLUE_CONST_MAP.RESET);
+
+        //延时设置，是因为获取联想推荐列表是延迟获取的，所以这里要延时置为false
+        if(this.isGetClueListTimer) { clearTimeout(this.isGetClueListTimer); }
+        this.isGetClueListTimer = setTimeout(() => {
+            this.isGetClueList = false;
+        }, delayTime);
     };
     
     //保存推荐线索的条件
@@ -255,6 +263,7 @@ class RecommendCluesFilterPanel extends Component {
         }else if(this.state.keywordList.length > 0) {
             $('.recommend-clue-sug').css('display', 'block');
         }else if(this.state.hasSavedRecommendParams.keyword) {
+            this.isGetClueList = false;
             this.getCompanyListByName(this.state.hasSavedRecommendParams.keyword);
         }
     };
@@ -275,6 +284,8 @@ class RecommendCluesFilterPanel extends Component {
         let { hasSavedRecommendParams } = this.state;
         hasSavedRecommendParams.keyword = _.trim(value || '');
         $('.recommend-clue-sug').css('display', 'none');
+        this.getCompanyListByName('');
+        this.isGetClueList = true;
         this.setState({hasSavedRecommendParams, keywordList: []}, () => {
             this.getRecommendClueList(hasSavedRecommendParams);
         });
@@ -330,20 +341,23 @@ class RecommendCluesFilterPanel extends Component {
     //根据关键词获取推荐信息
     getCompanyListByName = (value) => {
         this.currentListItem = {};
-        getCompanyListByName({
-            name: value
-        }).then((result) => {
-            let list = _.isArray(result.list) ? result.list : [];
-            if(list.length > 0) {
-                $('.recommend-clue-sug').css('display', 'block');
-            }else{
+        //在获取推荐线索时，不能获取联想列表
+        if(!this.isGetClueList) {
+            getCompanyListByName({
+                name: value
+            }).then((result) => {
+                let list = _.isArray(result.list) ? result.list : [];
+                if(list.length > 0) {
+                    $('.recommend-clue-sug').css('display', 'block');
+                }else{
+                    $('.recommend-clue-sug').css('display', 'none');
+                }
+                this.setState({keywordList: list});
+            }, () => {
                 $('.recommend-clue-sug').css('display', 'none');
-            }
-            this.setState({keywordList: list});
-        }, () => {
-            $('.recommend-clue-sug').css('display', 'none');
-            this.setState({keywordList: []});
-        });
+                this.setState({keywordList: []});
+            });
+        }
     };
 
     //更新地址
