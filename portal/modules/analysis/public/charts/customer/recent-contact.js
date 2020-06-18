@@ -7,7 +7,7 @@ import { listPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 export function getRecentContactCustomerChart() {
     return {
-        title: '周联系客户统计',
+        title: Intl.get('analysis.weekly.contact.customer.statistics', '周联系客户统计'),
         chartType: 'bar',
         layout: {sm: 24},
         url: '/rest/analysis/callrecord/v1/callrecord/statistics/recent/contact/customer',
@@ -73,7 +73,7 @@ export function getRecentContactCustomerChart() {
             });
 
             chart.title = chart.title.replace(/（.*）/, '');
-            chart.title += `（共联系${total}个客户）`;
+            chart.title += Intl.get('analysis.co.contact.count.customers', '共联系{count}个客户', { count: total });
 
             return processedData;
         },

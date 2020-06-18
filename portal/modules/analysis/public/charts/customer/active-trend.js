@@ -94,8 +94,8 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
 
                     return `
                         ${param.name}<br>
-                        活跃数：${param.value}<br>
-                        活跃率：${activeRate}
+                        ${Intl.get('operation.report.active.num', '活跃数')} : ${param.value}<br>
+                        ${Intl.get('operation.report.active', '活跃率')} : ${activeRate}
                         `;
                 }
             },

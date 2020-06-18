@@ -29,7 +29,7 @@ export function getActivityChart(type, title) {
             //如果统计的是签约用户的
             if (type === 'signed') {
                 //统计用户类型
-                arg.query.type = '正式用户';
+                arg.query.type = Intl.get('common.trial.official', '正式用户');
                 //统计时间间隔用图上选择的而非公共参数里的
                 arg.query.interval = arg.params.param_interval;
             } else {

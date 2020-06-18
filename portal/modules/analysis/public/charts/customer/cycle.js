@@ -28,13 +28,13 @@ export function getContractCycleChart() {
                 let name;
 
                 if (dataItem.to === 0.5) {
-                    name = '6个月内';
+                    name = Intl.get('analysis.within.six.months', '6个月内');
                 } else if (dataItem.to === 1) {
-                    name = '6-12个月';
+                    name = '6-' + Intl.get('user.time.twelve.month', '12个月');
                 } else if (dataItem.from >= 1 && dataItem.to) {
-                    name = dataItem.from + '-' + dataItem.to + '年';
+                    name = dataItem.from + '-' + dataItem.to + Intl.get('common.time.unit.year', '年');
                 } else if (dataItem.from && !dataItem.to) {
-                    name = dataItem.from + '年以上';
+                    name = Intl.get('clue.recommend.condition.register.over.num', '{num}年以上', {num: dataItem.from});
                 } else {
                     name = '';
                 }

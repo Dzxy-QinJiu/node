@@ -6,7 +6,7 @@ import { initialTime } from '../../consts';
 
 export function getCustomerTransferChart() {
     return {
-        title: '转出客户明细',
+        title: Intl.get('analysis.transfer.out.customer.details', '转出客户明细'),
         chartType: 'table',
         layout: {
             sm: 24,

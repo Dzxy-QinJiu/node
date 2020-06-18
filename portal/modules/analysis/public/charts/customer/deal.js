@@ -7,28 +7,28 @@ import { num as antUtilNum } from 'ant-utils';
 
 export function getCustomerDealChart() {
     return {
-        title: '成交分析',
+        title: Intl.get('analysis.transaction.analysis', '成交分析'),
         chartType: 'table',
         url: '/rest/analysis/customer/v2/:data_type/last_contact/deal/statistics',
         argCallback: argCallbackUnderlineTimeToTime,
         option: {
             columns: [{
-                title: '联系客户数',
+                title: Intl.get('common.number.of.customers.contacted', '联系客户数'),
                 dataIndex: 'total',
                 align: 'right',
                 width: '25%',
             }, {
-                title: '成交数',
+                title: Intl.get('common.deal.number', '成交数'),
                 dataIndex: 'deal',
                 align: 'right',
                 width: '25%',
             }, {
-                title: '未成交数',
+                title: Intl.get('analysis.number.of.outstanding.transactions', '未成交数'),
                 dataIndex: 'no_deal',
                 align: 'right',
                 width: '25%',
             }, {
-                title: '成交率',
+                title: Intl.get('common.deal.rate', '成交率'),
                 dataIndex: 'deal_rate',
                 width: '25%',
                 align: 'right'

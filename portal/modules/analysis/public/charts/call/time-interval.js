@@ -26,7 +26,7 @@ const days = [Intl.get('user.time.sunday', '周日'), Intl.get('user.time.monday
 
 export function getCallTimeIntervalChart() {
     return {
-        title: '通话时段统计',
+        title: Intl.get('call.record.interval', '通话时段统计'),
         chartType: 'scatter',
         //数据显示类型，是数量还是时长
         dataType: 'count',

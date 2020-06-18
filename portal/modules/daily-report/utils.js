@@ -53,7 +53,7 @@ export function renderButtonZoneFunc(buttons) {
                         <Button
                             onClick={item.func}
                             type={item.type || 'default'}
-                            data-tracename={`点击${item.name}按钮`}
+                            data-tracename={Intl.get('analysis.click.operation.button', '点击{operation}按钮', {operation: item.name})}
                         >
                             {item.name}
                         </Button>
@@ -186,7 +186,7 @@ export function saveReport(data, callback) {
 
 //显示数字详情
 export function showNumberDetail(record, name, e) {
-    Trace.traceEvent(e, '查看数字详情');
+    Trace.traceEvent(e, Intl.get('analysis.view.digital.details', '查看数字详情'));
 
     //只有单个销售的数据允许点击查看详情
     if (!record.nickname) return;

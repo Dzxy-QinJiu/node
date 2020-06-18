@@ -6,7 +6,7 @@ import { getFunnelWithConvertRateProcessDataFunc, funnelWithConvertRateProcessCs
 
 export function getNewChanceChart(chartType = 'table') {
     let chart = {
-        title: '新机会统计',
+        title: Intl.get('analysis.new.opportunity.statistics', '新机会统计'),
         chartType,
         url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/rate',
         ajaxInstanceFlag: 'sales_opportuniry_new',
@@ -21,15 +21,15 @@ export function getNewChanceChart(chartType = 'table') {
 
         chart.processData = getFunnelWithConvertRateProcessDataFunc([
             {
-                name: '提交数',
+                name: Intl.get('analysis.number.of.submissions', '提交数'),
                 key: 'total',
             },
             {
-                name: '通过数',
+                name: Intl.get('analysis.pass.number', '通过数'),
                 key: 'pass',
             },
             {
-                name: '成交数',
+                name: Intl.get('common.deal.number', '成交数'),
                 key: 'deal',
             }]);
 
@@ -42,17 +42,17 @@ export function getNewChanceChart(chartType = 'table') {
         chart.option = {
             columns: [
                 {
-                    title: '提交数',
+                    title: Intl.get('analysis.number.of.submissions', '提交数'),
                     dataIndex: 'total',
                     align: 'right',
                     width: '20%',
                 }, {
-                    title: '成交数',
+                    title: Intl.get('common.deal.number', '成交数'),
                     dataIndex: 'deal',
                     align: 'right',
                     width: '20%',
                 }, {
-                    title: '成交率',
+                    title: Intl.get('common.deal.rate', '成交率'),
                     dataIndex: 'deal_rate',
                     align: 'right',
                     width: '20%',

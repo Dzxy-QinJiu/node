@@ -4,7 +4,7 @@
 
 import Store from '../../store';
 
-export function getOpenAccountChart(type = 'total') {
+export function getOpenAccountChart() {
     return {
         title: Intl.get('user.analysis.account.login.statistics', '开通用户登录统计'),
         url: '/rest/analysis/user/v3/:data_type/login/detail',
@@ -55,7 +55,7 @@ export function getOpenAccountChart(type = 'total') {
             selectors: [{
                 optionsCallback: () => {
                     let options = [{
-                        name: '全部应用',
+                        name: Intl.get('analysis.apply.all', '全部应用'),
                         value: '',
                     }];
 

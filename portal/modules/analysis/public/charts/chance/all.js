@@ -7,7 +7,7 @@ const TEAM_FIELD = 'sales_team';
 export function getAllChanceChart(specifyColumns) {
     let columnWidth = 80;
     return {
-        title: '机会转化率统计',
+        title: Intl.get('analysis.opportunity.conversion.rate.statistics', '机会转化率统计'),
         chartType: 'table',
         url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/statistics',
         ajaxInstanceFlag: 'sales_opportuniry_all',
@@ -25,30 +25,30 @@ export function getAllChanceChart(specifyColumns) {
         option: {
             columns: [
                 {
-                    title: '团队',
+                    title: Intl.get('user.user.team', '团队'),
                     dataIndex: TEAM_FIELD,
                     width: columnWidth,
                 }, {
-                    title: '成员',
+                    title: Intl.get('menu.member', '成员'),
                     dataIndex: 'nick_name',
                     width: columnWidth,
                 }, {
-                    title: '提交数',
+                    title: Intl.get('analysis.number.of.submissions', '提交数'),
                     dataIndex: 'total',
                     align: 'right',
                     width: columnWidth,
                 }, {
-                    title: '通过数',
+                    title: Intl.get('analysis.pass.number', '通过数'),
                     align: 'right',
                     dataIndex: 'pass',
                     width: columnWidth,
                 }, {
-                    title: '成交数',
+                    title: Intl.get('common.deal.number', '成交数'),
                     align: 'right',
                     dataIndex: 'deal',
                     width: columnWidth,
                 }, {
-                    title: '转化率',
+                    title: Intl.get('analysis.conversion.rate', '转化率'),
                     align: 'right',
                     dataIndex: 'deal_rate',
                     showAsPercent: true,

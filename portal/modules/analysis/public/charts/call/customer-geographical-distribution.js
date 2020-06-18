@@ -4,7 +4,7 @@
 
 export function getCallCustomerGeographicalDistributionChart() {
     return {
-        title: '客户的地域分布',
+        title: Intl.get('call.analysis.zone.distrute', '客户的地域分布'),
         chartType: 'map',
         height: 600,
         url: '/rest/analysis/callrecord/v1/callrecord/statistics/bakup/data/distribution/region',

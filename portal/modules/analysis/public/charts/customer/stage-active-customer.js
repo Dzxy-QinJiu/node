@@ -52,19 +52,19 @@ export function getStageActiveCustomerChart() {
                 },
                 {
                     title: Intl.get('weekly.report.customer.stage.info', '信息阶段'),
-                    dataIndex: '信息',
+                    dataIndex: Intl.get('sales.stage.message', '信息'),
                     align: 'right',
                     width: 100
                 },
                 {
                     title: Intl.get('weekly.report.customer.stage.intentioned', '意向阶段'),
-                    dataIndex: '意向',
+                    dataIndex: Intl.get('sales.stage.intention', '意向'),
                     align: 'right',
                     width: 100
                 },
                 {
                     title: Intl.get('crm.143', '试用阶段'),
-                    dataIndex: '试用',
+                    dataIndex: Intl.get('common.trial', '试用'),
                     align: 'right',
                     width: 100
                 },
@@ -76,19 +76,19 @@ export function getStageActiveCustomerChart() {
                 },
                 {
                     title: Intl.get('common.chance', '机会'),
-                    dataIndex: '机会',
+                    dataIndex: Intl.get('common.chance', '机会'),
                     align: 'right',
                     width: 100
                 },
                 {
                     title: Intl.get('common.official', '签约'),
-                    dataIndex: '签约',
+                    dataIndex: Intl.get('common.official', '签约'),
                     align: 'right',
                     width: 100
                 },
                 {
                     title: Intl.get('contract.163', '续约'),
-                    dataIndex: '续约',
+                    dataIndex: Intl.get('contract.163', '续约'),
                     align: 'right',
                     width: 100
                 },

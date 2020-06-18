@@ -27,7 +27,7 @@ class SetRule extends React.Component {
         const renderButtonZone = renderButtonZoneFunc.bind(this);
 
         return (
-            <div data-tracename="规则设置">
+            <div data-tracename={Intl.get('crm.customer.rule.name', '规则设置')}>
                 <Form>
                     <DetailCard
                         title={Intl.get('sales.process.suitable.objects', '适用范围')}

@@ -152,7 +152,7 @@ class ReportList extends React.Component {
                     ],
                     onRowClick: (record, index, e) => {
                         if (record.nickname) {
-                            Trace.traceEvent(e, '点击表格行，查看报告详情');
+                            Trace.traceEvent(e, Intl.get('analysis.click.on.the.table.row', '点击表格行') + '，' + Intl.get('analysis.view.report.details', '查看报告详情'));
 
                             showReportPanel({
                                 currentView: VIEW_TYPE.REPORT_DETAIL,
@@ -160,7 +160,7 @@ class ReportList extends React.Component {
                                 isPreviewReport: true
                             });
                         } else {
-                            Trace.traceEvent(e, '点击表格行，查看下级团队报告列表');
+                            Trace.traceEvent(e, Intl.get('analysis.click.on.the.table.row', '点击表格行') + '，' + Intl.get('analysis.view.the.list.of.subordinate.team.reports', '查看下级团队报告列表'));
 
                             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, record.sales_team_id);
                         }
@@ -174,7 +174,7 @@ class ReportList extends React.Component {
 
     render() {
         return (
-            <div className="daily-report daily-report-list" data-tracename="销售日报列表">
+            <div className="daily-report daily-report-list" data-tracename={Intl.get('analysis.daily.sales.report.list', '销售日报列表')}>
                 <AntcAnalysis
                     ref={ref => this.analysisInstance = ref}
                     charts={this.getCharts()}

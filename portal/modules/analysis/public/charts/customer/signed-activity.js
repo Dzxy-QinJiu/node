@@ -51,7 +51,7 @@ export function getSignedCustomerActivityChart() {
             value: 'day',
         }, {
             name: 'customer_label',
-            value: '签约,续约',
+            value: Intl.get('common.official', '签约') + Intl.get('contract.163', '续约')
         }],
         option: {
             grid: {

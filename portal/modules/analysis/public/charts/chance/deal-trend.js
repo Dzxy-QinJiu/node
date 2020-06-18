@@ -6,7 +6,7 @@ import { num as antUtilNum } from 'ant-utils';
 
 export function getChanceDealTrendChart() {
     return {
-        title: '成交率趋势统计',
+        title: Intl.get('analysis.transaction.trend.statistics', '成交趋势统计'),
         chartType: 'line',
         url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/rate/trend',
         argCallback: arg => {
@@ -53,8 +53,8 @@ export function getChanceDealTrendChart() {
 
                     return `
                         ${param.name}<br>
-                        成交数: ${data.deal}<br>
-                        成交率: ${antUtilNum.decimalToPercent(data.deal_rate)}
+                        ${Intl.get('common.deal.number', '成交数')} : ${data.deal}<br>
+                        ${Intl.get('common.deal.rate', '成交率')} : ${antUtilNum.decimalToPercent(data.deal_rate)}
                     `;
                 }
             },

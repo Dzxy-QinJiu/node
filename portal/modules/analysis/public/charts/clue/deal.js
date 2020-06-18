@@ -4,7 +4,7 @@
 
 export function getClueDealChart() {
     return {
-        title: '线索成交额及成交数统计',
+        title: Intl.get('analysis.statistics.of.lead.turnover.and.turnover', '线索成交额及成交数统计'),
         chartType: 'line',
         url: '/rest/analysis/customer/v2/clue/:data_type/sign/contract/amount',
         dataField: 'list',

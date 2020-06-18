@@ -4,7 +4,7 @@
 
 export function getSignedCustomerGrossProfitChart(paramObj = {}) {
     return {
-        title: '签约客户毛利分析(单位: 元)',
+        title: Intl.get('analysis.gross.profit.analysis.of.contracted.customers', '签约客户毛利分析') + '(' + Intl.get('contract.160', '单位') + ': ' + Intl.get('contract.82', '元') + ')',
         chartType: 'table',
         url: '/rest/analysis/customer/label/:data_type/sign/customer',
         argCallback: arg => {
@@ -17,27 +17,27 @@ export function getSignedCustomerGrossProfitChart(paramObj = {}) {
         processData: data => [data],
         option: {
             columns: [{
-                title: '新签',
+                title: Intl.get('crm.contract.new.sign', '新签'),
                 dataIndex: 'new_gross_profit',
                 align: 'right',
                 width: '20%',
             }, {
-                title: '回流',
+                title: Intl.get('common.reflux', '回流'),
                 dataIndex: 'reflux_gross_profit',
                 align: 'right',
                 width: '20%',
             }, {
-                title: '扩展',
+                title: Intl.get('analysis.expand', '拓展'),
                 dataIndex: 'expansion_gross_profit',
                 align: 'right',
                 width: '20%',
             }, {
-                title: '流失',
+                title: Intl.get('sales.stage.lost', '流失'),
                 dataIndex: 'churn_gross_profit',
                 align: 'right',
                 width: '20%',
             }, {
-                title: '净增',
+                title: Intl.get('common.net.increase', '净增'),
                 dataIndex: 'net_new_gross_profit',
                 align: 'right',
                 width: '20%',

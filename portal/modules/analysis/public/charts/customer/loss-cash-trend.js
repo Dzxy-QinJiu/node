@@ -4,7 +4,7 @@
 
 export function getLossCashTrendChart(paramObj = {}) {
     return {
-        title: '流失现金趋势',
+        title: Intl.get('analysis.cash.loss.trend', '流失现金趋势'),
         chartType: 'line',
         url: '/rest/analysis/customer/label/:data_type/churn/gross/trend',
         argCallback: paramObj.argCallback,
