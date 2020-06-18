@@ -1028,10 +1028,10 @@ function startSocketIo(isSessionOutReLogin) {
     //监听 connect
     socketIo.on('connect', function() {
         // 浏览器已成功建立连接
-        sendMessage && sendMessage(socketIo.id + '==== 浏览器已成功建立与node端的连接');
+        // sendMessage && sendMessage(socketIo.id + '==== 浏览器已成功建立与node端的连接');
     });
     socketIo.on('disconnect', function(reason) {
-        sendMessage && sendMessage(socketIo.id + '==== 浏览器与noded端的连接已断开====' + (reason || ''));
+        sendMessage && sendMessage(socketIo.id + '==== 浏览器与node端的连接已断开====' + (reason || ''));
         // the disconnection was initiated by the server, you need to reconnect manually
         if(reason === 'io server disconnect'){
             //重新创建连接
