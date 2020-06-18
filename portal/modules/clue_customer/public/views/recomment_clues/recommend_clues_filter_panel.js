@@ -213,6 +213,7 @@ class RecommendCluesFilterPanel extends Component {
         if(isSaveFilter) clueCustomerAction.saveSettingCustomerRecomment(newCondition);
         this.props.getRecommendClueLists(newCondition, EXTRACT_CLUE_CONST_MAP.RESET);
 
+        //延时设置，是因为获取联想推荐列表是延迟获取的，所以这里要延时置为false
         if(this.isGetClueListTimer) { clearTimeout(this.isGetClueListTimer); }
         this.isGetClueListTimer = setTimeout(() => {
             this.isGetClueList = false;
@@ -340,6 +341,7 @@ class RecommendCluesFilterPanel extends Component {
     //根据关键词获取推荐信息
     getCompanyListByName = (value) => {
         this.currentListItem = {};
+        //在获取推荐线索时，不能获取联想列表
         if(!this.isGetClueList) {
             getCompanyListByName({
                 name: value
