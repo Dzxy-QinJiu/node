@@ -1027,41 +1027,60 @@ function startSocketIo(isSessionOutReLogin) {
     socketIo = io({forceNew: true, transports: [transportType]});
     //监听 connect
     socketIo.on('connect', function() {
-        // 升级后，当前版本的时间监听
-        // socketIo.on('curUpgradeTime', upgradeRefreshListener);
-        // 获取消息数后添加监听
-        getMessageCount(unreadListener,isSessionOutReLogin);
-        //监听node端推送的登录踢出的信息
-        socketIo.on('offline', listenOnOffline);
-        //监听session过期的消息
-        socketIo.on('sessionExpired', handleSessionExpired);
-        // 监听退出登录的消息
-        socketIo.on('logoutAccount', handleLogout);
-        //监听被踢出的消息
-        socketIo.on('kickOffAccount', kickOffAccount);
-        //监听用户批量操作的消息
-        socketIo.on('batchOperate', batch.batchOperateListener);
-        //监听 disconnect
-        socketIo.on('disconnect', disconnectListener);
-        //监听拨打电话
-        socketIo.on('phonemsg', phoneEventListener);
-        //监听日程管理
-        socketIo.on('scheduleAlertMsg', scheduleAlertListener);
-        //监听客户操作
-        socketIo.on('crm_operator_alert_msg', crmOperatorAlertListener);
-        //监听销售的拜访反馈，推送给相应的抄送人
-        socketIo.on('applyVisitCustomerMsg', applyVisitCustomerListener);
-        //监听申请试用
-        socketIo.on('apply_upgrade', applyUpgradeListener);
-        //监听升级成功
-        socketIo.on('apply_upgrade_complete', applyUpgradeCompleteListener);
-        //监听后端消息
-        phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
-        //如果接受到主动断开的方法，调用socket的断开
-        socketEmitter.on(socketEmitter.DISCONNECT, socketEmitterListener);
-        // 判断是否已启用桌面通知
-        notificationCheckPermission();
+        // 浏览器已成功建立连接
+        // sendMessage && sendMessage(socketIo.id + '==== 浏览器已成功建立与node端的连接');
     });
+    socketIo.on('disconnect', function(reason) {
+        sendMessage && sendMessage(socketIo.id + '==== 浏览器与node端的连接已断开====' + (reason || ''));
+        // the disconnection was initiated by the server, you need to reconnect manually
+        if(reason === 'io server disconnect'){
+            //重新创建连接
+            startSocketIo();
+        }
+        // else the socket will automatically try to reconnect
+    });
+    //监听重连失败
+    socketIo.on('reconnect_error', function() {
+        sendMessage && sendMessage(socketIo.id + '==== 浏览器重新建立连接失败');
+        //创建连接失败后，手动断开连接！
+        socketIo.disconnect();
+        //重新创建连接
+        startSocketIo();
+    });
+    // 升级后，当前版本的时间监听
+    // socketIo.on('curUpgradeTime', upgradeRefreshListener);
+    // 获取消息数后添加监听
+    getMessageCount(unreadListener,isSessionOutReLogin);
+    //监听node端推送的登录踢出的信息
+    socketIo.on('offline', listenOnOffline);
+    //监听session过期的消息
+    socketIo.on('sessionExpired', handleSessionExpired);
+    // 监听退出登录的消息
+    socketIo.on('logoutAccount', handleLogout);
+    //监听被踢出的消息
+    socketIo.on('kickOffAccount', kickOffAccount);
+    //监听用户批量操作的消息
+    socketIo.on('batchOperate', batch.batchOperateListener);
+    //监听 disconnect
+    socketIo.on('disconnect', disconnectListener);
+    //监听拨打电话
+    socketIo.on('phonemsg', phoneEventListener);
+    //监听日程管理
+    socketIo.on('scheduleAlertMsg', scheduleAlertListener);
+    //监听客户操作
+    socketIo.on('crm_operator_alert_msg', crmOperatorAlertListener);
+    //监听销售的拜访反馈，推送给相应的抄送人
+    socketIo.on('applyVisitCustomerMsg', applyVisitCustomerListener);
+    //监听申请试用
+    socketIo.on('apply_upgrade', applyUpgradeListener);
+    //监听升级成功
+    socketIo.on('apply_upgrade_complete', applyUpgradeCompleteListener);
+    //监听后端消息
+    phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
+    //如果接受到主动断开的方法，调用socket的断开
+    socketEmitter.on(socketEmitter.DISCONNECT, socketEmitterListener);
+    // 判断是否已启用桌面通知
+    notificationCheckPermission();
 }
 
 /**
