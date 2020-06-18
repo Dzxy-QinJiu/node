@@ -2082,6 +2082,7 @@ class ClueDetailOverview extends React.Component {
                                 saveEditCustomFieldInfo={this.saveEditCustomFieldInfo}
                                 editWidth={330}
                                 isShowColonAfterLabel={false}
+                                isEllipsesLabelContent={true}
                             />
                         )
                     }

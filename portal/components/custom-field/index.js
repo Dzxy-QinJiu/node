@@ -36,12 +36,15 @@ class CustomField extends React.Component {
     // 自定义字段
     renderCustomField = () => {
         const customizedVariables = _.get(this.state.customFieldData, '[0].customized_variables');
+        const labelCls = classNames('basic-info-label', {
+            'ellipses-label-content': this.props.isEllipsesLabelContent
+        });
         return (
             _.map(customizedVariables, item => {
                 const name = _.get(item, 'name');
                 return (
                     <div className="basic-info-item">
-                        <span className="basic-info-label">
+                        <span className={labelCls} title={name}>
                             {name}
                             {
                                 this.props.isShowColonAfterLabel ? (
@@ -195,6 +198,7 @@ CustomField.defaultProps = {
     hasEditPrivilege: false, // 是否能编辑，默认false
     editWidth: 340, // 默认编辑区域的宽度340
     isShowColonAfterLabel: true, // label后是否显示冒号，默认true，默认显示
+    isEllipsesLabelContent: false, // 是否是省略部分的label内容，默认false，默认显示全部
     saveEditCustomFieldInfo: () => {}
 };
 
@@ -204,6 +208,7 @@ CustomField.propTypes = {
     hasEditPrivilege: PropTypes.bool,
     editWidth: PropTypes.number,
     isShowColonAfterLabel: PropTypes.bool,
+    isEllipsesLabelContent: PropTypes.bool,
     saveEditCustomFieldInfo: PropTypes.func,
 };
 
