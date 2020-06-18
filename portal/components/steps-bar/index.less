@@ -1,8 +1,12 @@
+@import '../../public/css/common-variables';
 //步骤条的样式
 @waiting-step-color: #c5d4e3;
 @current-step-color: #2698f2;
 @finished-step-color: #8da9c5;
 .step-bar-component {
+  overflow-y: hidden;
+  overflow-x: auto;
+  .scrollbar-style;
   .step-current-item.step-item {
     .step-title, .step-dot-line .step-icon {
       cursor: default;
