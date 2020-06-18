@@ -23,7 +23,7 @@ import {
     getStartEndTimeOfDiffRange,
     getTimeWithSecondZero
 } from 'PUB_DIR/sources/utils/common-method-util';
-import {calculateTotalTimeInterval} from 'PUB_DIR/sources/utils/common-data-util';
+import {calculateTotalTimeInterval, calculateTimeIntervalByMillSecond} from 'PUB_DIR/sources/utils/common-data-util';
 
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
@@ -39,6 +39,7 @@ class AddBusinessWhile extends React.Component {
             formData: {
                 begin_time: moment().startOf('day').add(8,'hour').add(30,'minute').valueOf(),//外出开始时间默认当天8:30
                 end_time: moment().startOf('day').add(17,'hour').add(30,'minute').valueOf(),//外出结束时间默认当天17:30
+                while_date: moment().valueOf(),
                 reason: '',
                 customers: [{
                     id: '',
@@ -65,29 +66,61 @@ class AddBusinessWhile extends React.Component {
     hideBusinessApplyAddForm = (data) => {
         this.props.hideBusinessApplyAddForm(data);
     };
-    onBeginTimeChange = (date, dateString) => {
+    onBusinessWhileChange = (date) => {
         var formData = this.state.formData;
-        formData.begin_time = getTimeWithSecondZero(date);
+        formData.while_date = getTimeWithSecondZero(date);
         this.setState({
             formData: formData
-        }, () => {
-            if (this.props.form.getFieldValue('end_time')) {
-                this.props.form.validateFields(['end_time'], {force: true});
-                this.calculateTotalLeaveRange();
-            }
         });
     };
-    onEndTimeChange = (date, dateString) => {
-        var formData = this.state.formData;
-        formData.end_time = getTimeWithSecondZero(date);
-        this.setState({
-            formData: formData
-        }, () => {
-            if (this.props.form.getFieldValue('begin_time')) {
-                this.props.form.validateFields(['begin_time'], {force: true});
-                this.calculateTotalLeaveRange();
+    //修改每个客户的外出时间后，计算总的外出时长
+    handleCustomersChange = (customers) => {
+        let formData = this.state.formData;
+        formData.customers = customers;
+        //计算具体的外出时间，不同的外出时间计算
+        var total_range = 0, cloneCustomers = _.map(customers, item => {
+            return {
+                visit_start_time: item.visit_start_time,
+                visit_end_time: item.visit_end_time
+            };
+        });
+        //先过滤掉相同的时间的
+        cloneCustomers = _.unionWith(cloneCustomers, _.isEqual);
+        var customerTime = [];
+        _.each(cloneCustomers,(item,index) => {
+            if(index === 0){
+                customerTime.push(item);
+            }else{
+                //判断开始和结束时间和之前的时间是否有交叉的情况
+                var targetObj = _.find(customerTime,timeItem => (item.visit_start_time >= timeItem.visit_start_time && item.visit_start_time < timeItem.visit_end_time) || (item.visit_end_time > timeItem.visit_start_time && item.visit_end_time <= timeItem.visit_end_time));
+                if(targetObj){
+                    if(item.visit_start_time >= targetObj.visit_start_time && item.visit_start_time < targetObj.visit_end_time){
+                        if(targetObj.visit_end_time <= item.visit_end_time){
+                            targetObj.visit_end_time = item.visit_end_time;
+                        }
+                    }
+                    if(item.visit_end_time > targetObj.visit_start_time && item.visit_end_time <= targetObj.visit_end_time){
+                        if(targetObj.visit_start_time >= item.visit_start_time){
+                            targetObj.visit_start_time = item.visit_start_time;
+                        }
+                    }
+                }else{
+                    //是否包含之前的时间
+                    var timeObj = _.find(customerTime,timeItem => (item.visit_start_time <= timeItem.visit_start_time && item.visit_end_time >= timeItem.visit_end_time) );
+                    if(timeObj){
+                        timeObj.visit_start_time = item.visit_start_time;
+                        timeObj.visit_end_time = item.visit_end_time;
+                    }else{
+                        customerTime.push(item);
+                    }
+                }
             }
         });
+        _.each(customerTime,item => {
+            total_range += (item.visit_end_time - item.visit_start_time);
+        });
+        formData.total_range = calculateTimeIntervalByMillSecond(total_range);
+        this.setState({formData});
     };
     calculateTotalLeaveRange = () => {
         var formData = this.state.formData;
@@ -122,9 +155,9 @@ class AddBusinessWhile extends React.Component {
                 customers: []
             };
             if (err) return;
-            submitObj.apply_time = [{
-                start: moment(values.begin_time).format(oplateConsts.DATE_TIME_FORMAT),
-                end: moment(values.end_time).format(oplateConsts.DATE_TIME_FORMAT)
+            submitObj.apply_time = [{//开始和结束时间算所有客户中的最早时间和最晚时间
+                start: moment(_.chain(formData.customers).map('visit_start_time').min().value()).format(oplateConsts.DATE_TIME_FORMAT),
+                end: moment(_.chain(formData.customers).map('visit_end_time').max().value()).format(oplateConsts.DATE_TIME_FORMAT)
             }];
             var hasNoAddress = false;
             _.forEach(formData.customers, (customerItem, index) => {
@@ -159,12 +192,12 @@ class AddBusinessWhile extends React.Component {
                 this.setResultData(Intl.get('business.leave.time.is.required', '外出地域是必填项'), 'error');
                 return;
             }
-            //校验外出的时间
-            const checkCustomerTimeBeforeSubmit = checkCustomerTotalLeaveTime(values.begin_time,values.end_time,formData.customers);
-            if(_.get(checkCustomerTimeBeforeSubmit,'errTip')){
-                this.setResultData(_.get(checkCustomerTimeBeforeSubmit,'errTip'), 'error');
-                return;
-            }
+            // //校验外出的时间
+            // const checkCustomerTimeBeforeSubmit = checkCustomerTotalLeaveTime(values.begin_time,values.end_time,formData.customers);
+            // if(_.get(checkCustomerTimeBeforeSubmit,'errTip')){
+            //     this.setResultData(_.get(checkCustomerTimeBeforeSubmit,'errTip'), 'error');
+            //     return;
+            // }
 
             this.setState({
                 isSaving: true,
@@ -218,45 +251,6 @@ class AddBusinessWhile extends React.Component {
         );
     };
 
-    // 验证起始时间是否小于结束时间
-    validateStartAndEndTime(timeType) {
-        return (rule, value, callback) => {
-            // 如果没有值，则没有错误
-            if (!value) {
-                callback();
-                return;
-            }
-            var formData = this.state.formData;
-            const begin_time = formData.begin_time;
-            const endTime = formData.end_time;
-            const isBeginTime = timeType === 'begin_time';
-            if (endTime && begin_time) {
-                if (moment(endTime).isBefore(begin_time)) {
-                    if (isBeginTime) {
-                        callback(Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间'));
-                    } else {
-                        callback(Intl.get('contract.end.time.less.than.start.time.warning', '结束时间不能小于起始时间'));
-                    }
-                } else if (!moment(endTime).isSame(begin_time, 'day')) {
-                    //是同一天的时候，不能开始时间选下午，结束时间选上午
-                    callback(Intl.get('business.trip.go.out.cannot.over.day', '外出时长不可以跨天'));
-                } else {
-                    callback();
-                }
-
-            } else {
-                callback();
-            }
-        };
-    }
-
-
-    handleCustomersChange = (customers) => {
-        let formData = this.state.formData;
-        formData.customers = customers;
-        this.setState({formData});
-    };
-
     render() {
         var _this = this;
         var divHeight = $(window).height() - FORMLAYOUT.PADDINGTOTAL;
@@ -292,51 +286,29 @@ class AddBusinessWhile extends React.Component {
                                 <Form layout='horizontal' id="leave-apply-form">
                                     <FormItem
                                         className="form-item-label add-apply-time"
-                                        label={Intl.get('contract.120', '开始时间')}
+                                        label={Intl.get('crm.146', '日期')}
                                         {...formItemLayout}
                                     >
-                                        {getFieldDecorator('begin_time', {
+                                        {getFieldDecorator('while_date', {
                                             rules: [{
                                                 required: true,
-                                                message: Intl.get('leave.apply.fill.in.start.time', '请填写开始时间')
-                                            }, {validator: _this.validateStartAndEndTime('begin_time')}],
-                                            initialValue: moment(formData.begin_time)
+                                                message: Intl.get('contract.42', '请选择日期')
+                                            },],
+                                            initialValue: moment(formData.while_date)
                                         })(
                                             <DatePicker
-                                                showTime={{format: oplateConsts.HOUR_MUNITE_FORMAT }}
+                                                showTime={{format: oplateConsts.DATE_FORMAT }}
                                                 type='time'
-                                                format={oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT}
-                                                onChange={this.onBeginTimeChange}
-                                                value={formData.begin_time ? moment(formData.begin_time) : moment()}
+                                                format={oplateConsts.DATE_FORMAT}
+                                                onChange={this.onBusinessWhileChange}
+                                                value={formData.while_date ? moment(formData.while_date) : moment()}
                                             />
                                         )}
-                                    </FormItem>
-                                    <FormItem
-                                        className="form-item-label add-apply-time"
-                                        label={Intl.get('contract.105', '结束时间')}
-                                        {...formItemLayout}
-                                    >
-                                        {getFieldDecorator('end_time', {
-                                            rules: [{
-                                                required: true,
-                                                message: Intl.get('leave.apply.fill.in.end.time', '请填写结束时间')
-                                            }, {validator: _this.validateStartAndEndTime('end_time')}],
-                                            initialValue: moment(formData.end_time)
-                                        })(
-                                            <DatePicker
-                                                showTime={{format: oplateConsts.HOUR_MUNITE_FORMAT }}
-                                                type='time'
-                                                format={oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT}
-                                                onChange={this.onEndTimeChange}
-                                                value={formData.end_time ? moment(formData.end_time) : moment()}
-                                            />
-                                        )}
-
                                     </FormItem>
                                     {formData.total_range ?
                                         <FormItem
                                             className="form-item-label add-apply-time"
-                                            label={Intl.get('apply.went.out.while.range', '外出时长')}
+                                            label={Intl.get('user.duration', '时长')}
                                             {...formItemLayout}
                                         >
                                             {getFieldDecorator('total_range')(
@@ -346,14 +318,19 @@ class AddBusinessWhile extends React.Component {
                                             )}
                                         </FormItem>
                                         : null}
-                                    <DynamicAddDelCustomersTime
-                                        addAssignedCustomer={this.addAssignedCustomer}
-                                        form={this.props.form}
-                                        handleCustomersChange={this.handleCustomersChange}
-                                        initialVisitStartTime={formData.begin_time}
-                                        initialVisitEndTime={formData.end_time}
-                                        isRequired={false}
-                                    />
+                                    <div className='position-wrap'>
+                                        <div className='position-lable ant-form-item-required'>{Intl.get('user.info.login.address', '地点')}：</div>
+                                        <DynamicAddDelCustomersTime
+                                            className='while-apply-position'
+                                            addAssignedCustomer={this.addAssignedCustomer}
+                                            form={this.props.form}
+                                            handleCustomersChange={this.handleCustomersChange}
+                                            initialVisitStartTime={formData.begin_time}
+                                            initialVisitEndTime={formData.end_time}
+                                            isRequired={false}
+                                            while_date={formData.while_date}
+                                        />
+                                    </div>
                                     <div className="submit-button-container" >
                                         <SaveCancelButton loading={this.state.isSaving}
                                             saveErrorMsg={this.state.saveMsg}

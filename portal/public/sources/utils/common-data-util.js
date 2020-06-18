@@ -425,6 +425,21 @@ exports.calculateTotalTimeInterval = (formData) => {
     //按情况显示
     return `${hours ? hours + Intl.get('common.label.hours', '小时') : ''}${minutes ? minutes + Intl.get('common.app.minute', '分钟') : ''}`;
 };
+//根据毫秒数计算时间段
+exports.calculateTimeIntervalByMillSecond = (totalTime) => {
+    //分毫秒数
+    var MINITE_MILLIS = 1 * 60 * 1000;
+    //小时毫秒数
+    var HOUR_MILLIS = 60 * MINITE_MILLIS;
+    //计算小时
+    var hours = Math.floor(totalTime / HOUR_MILLIS);
+    var left_millis = totalTime - hours * HOUR_MILLIS;
+    //计算分钟
+    var minutes = Math.floor(left_millis / MINITE_MILLIS);
+
+    //按情况显示
+    return `${hours ? hours + Intl.get('common.label.hours', '小时') : ''}${minutes ? minutes + Intl.get('common.app.minute', '分钟') : ''}`;
+};
 
 function showAmAndPmDes(time) {
     var des = '';
