@@ -1,5 +1,5 @@
 import { removeCommaFromNum } from '../../../lib/func';
-import {regex} from 'ant-utils';
+import {regex, num} from 'ant-utils';
 import { passwordRegex, getPassStrenth} from 'CMP_DIR/password-strength-bar';
 //名称长度的验证规则
 export const nameLengthRule = {
@@ -24,7 +24,7 @@ export const cluePositionContactRule = {
 //客户名验证的正则表达式（包含大小写字母、下划线、中英文括号、点及汉字，长度1-25之间）
 export const customerNameRegex = regex.getNameRegex(25);
 // 数字验证规则（带千分位以及两位小数）
-exports.getNumberValidateRule = function() {
+export const getNumberValidateRule = function() {
     return {pattern: /^(\d|,)+(\.\d{1,2})?$/, message: Intl.get('common.number.validate.tips', '请填写最多两位小数的数字')};
 };
 //是否是手机号
@@ -292,5 +292,32 @@ export const checkConfirmPassword = (value, callback, password, refreshPasswordV
         }
     } else {
         callback(Intl.get('common.input.confirm.password', '请输入确认密码'));
+    }
+};
+/***
+ * 预算金额的验证
+ * @param rule
+ * @param value
+ * @param callback
+ */
+export const checkBudgetRule = (rule, value, callback) => {
+    value = num.removeCommaFromNum(_.trim(value));
+    if(value) {
+        if(_.toNumber(value) === 0) {
+            callback(new Error(Intl.get('crm.order.budget.validate', '请输入大于0的金额')));
+        }else {
+            let {pattern, message} = getNumberValidateRule();
+            if(pattern.test(value)) {
+                callback();
+            }else {
+                callback(new Error(message));
+            }
+        }
+    }else {
+        if(rule.required) {
+            callback(new Error(Intl.get('crm.order.budget.input', '请输入预算金额')));
+        }else {
+            callback();
+        }
     }
 };
