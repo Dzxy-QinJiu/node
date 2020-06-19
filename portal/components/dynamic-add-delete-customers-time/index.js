@@ -38,11 +38,10 @@ class DynamicAddDelCustomers extends React.Component {
         var customers = this.state.customers;
         if (nextProps.while_date && nextProps.while_date !== this.props.while_date){
             _.forEach(customers, (customerItem) => {//如果父组件中修改了日期，这里需要把时间改成外部日期下的时间
-                var nextPropsDate = moment(nextProps.while_date).startOf('day');
                 let customerStartTime = customerItem.visit_start_time;
                 let customerEndTime = customerItem.visit_end_time;
-                customerItem.visit_start_time = nextPropsDate.add(moment(customerStartTime).hour(),'hour').add(moment(customerStartTime).minute(),'minutes').valueOf();
-                customerItem.visit_end_time = nextPropsDate.add(moment(customerEndTime).hour(),'hour').add(moment(customerEndTime).minute(),'minutes').valueOf();
+                customerItem.visit_start_time = moment(nextProps.while_date).startOf('day').add(moment(customerStartTime).hour(),'hour').add(moment(customerStartTime).minute(),'minutes').valueOf();
+                customerItem.visit_end_time = moment(nextProps.while_date).startOf('day').add(moment(customerEndTime).hour(),'hour').add(moment(customerEndTime).minute(),'minutes').valueOf();
             });
         }
         this.setState({
