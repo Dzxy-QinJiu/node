@@ -389,6 +389,7 @@ var zh_CN = {
     'login.forgot.password.current.phone': '当前手机号',
     'login.forgot.password.get.sms.code': '获取短信验证码',
     'login.forgot.password.operate.expired': '操作超时',
+    'login.account.unregister': '尚未注册',
 
     'register.title.tip': '欢迎注册客套',
     'register.slogan.tip': '销售加速，从这里开始 ...',
