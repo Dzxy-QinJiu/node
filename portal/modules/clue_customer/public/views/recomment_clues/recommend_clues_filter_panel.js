@@ -346,6 +346,7 @@ class RecommendCluesFilterPanel extends Component {
     };
 
     onSelect = (type, value, isReset) => {
+        if(!isResponsiveDisplay().isWebMin && !this.props.canClickMoreBatch) { return false; }
         let vipFilters = _.cloneDeep(this.state.vipFilters);
         let hasSavedRecommendParams = _.cloneDeep(this.state.hasSavedRecommendParams);
         let hasContinueUse = true;
@@ -467,8 +468,8 @@ class RecommendCluesFilterPanel extends Component {
             return false;
         }
         this.setState({vipFilters}, () => {
-            if(isReset) {
-                this.getRecommendClueList(hasSavedRecommendParams);
+            if(isReset || !isResponsiveDisplay().isWebMin) {
+                this.handleSubmit(hasSavedRecommendParams);
             }
         });
     };
@@ -586,12 +587,13 @@ class RecommendCluesFilterPanel extends Component {
         });
     };
 
-    handleSubmit = () => {
+    handleSubmit = (recommendParams) => {
         if(!this.props.canClickMoreBatch) { return false;}
         let {isWebMin} = isResponsiveDisplay();
+        let hasSavedRecommendParams = _.isEmpty(recommendParams) ? this.state.hasSavedRecommendParams : recommendParams;
         //需要处理下vip选项
         let vipItems = ['startTime', 'endTime', 'custom_time' ,'staffnumMax', 'staffnumMin', 'capitalMax', 'capitalMin', 'entTypes', 'openStatus'];
-        let hasSavedRecommendParams = _.omit(this.state.hasSavedRecommendParams, vipItems);
+        hasSavedRecommendParams = _.omit(hasSavedRecommendParams, vipItems);
         this.getRecommendClueList({...hasSavedRecommendParams, ...this.state.vipFilters});
         if(isWebMin) {
             this.handleTriggerHotPanel(false);
@@ -731,7 +733,7 @@ class RecommendCluesFilterPanel extends Component {
 
     onDateChange = (dates, dateStrings) => {
         let hasContinueUse = this.handleVipItemClick(VIP_ITEM_MAP.REGISTER_TIME, '成立时间');
-        if(hasContinueUse) {
+        if(hasContinueUse && this.props.canClickMoreBatch) {
             let {vipFilters} = this.state;
             if (_.get(dateStrings,'[0]') && _.get(dateStrings,'[1]')){
                 //开始时间要取那天早上的00:00:00
@@ -745,6 +747,8 @@ class RecommendCluesFilterPanel extends Component {
             this.setState({
                 vipFilters,
                 registerPopvisible: false,
+            }, () => {
+                this.handleSubmit();
             });
         }
     };
@@ -1104,9 +1108,6 @@ class RecommendCluesFilterPanel extends Component {
                         <FormItem className="vip-filter-container" label={Intl.get('clue.recommend.filter.vip', 'VIP筛选')}>
                             <div className="vip-filter-content" data-tracename="vip筛选列表">
                                 {this.renderVipFiltersBlock()}
-                                <div className="vip-filter-item">
-                                    <Button className={btnCls} type="primary" data-tracename="点击确认按钮" onClick={this.handleSubmit}>{Intl.get('common.confirm', '确认')}</Button>
-                                </div>
                             </div>
                         </FormItem>
                     </div>
