@@ -299,15 +299,7 @@ class FilterSearch extends React.Component {
                                 visible={this.state.showConfirmPop && this.props.showSelectChangeTip}
                             >
                                 {
-                                    isWebMin ? (
-                                        <Button
-                                            type={this.props.showList ? 'primary' : ''}
-                                            title={Intl.get('common.filter', '筛选')}
-                                            className="btn-item"
-                                        >
-                                            <i className='iconfont icon-filter1'></i>
-                                        </Button>
-                                    ) : (
+                                    isWebMin ? this.renderBtnBlock() : (
                                         <Button
                                             title={Intl.get('common.filter', '筛选')}
                                             type={this.props.showList ? 'primary' : ''}

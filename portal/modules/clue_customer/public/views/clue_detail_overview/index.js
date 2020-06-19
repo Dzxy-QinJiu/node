@@ -2029,7 +2029,7 @@ class ClueDetailOverview extends React.Component {
             'no-margin': this.isClueNotAssociateCustomer(curClue, associatedCustomer)
         });
         //展示公司相关信息 有注册时间 || 经营范围 || 公司简介就展示该卡片
-        var showClueCompany = curClue.formed || curClue.business_scope || curClue.company_profile;
+        var showClueCompany = curClue.formed || curClue.business_scope || curClue.company_profile || curClue.legal_person;
         //是否有权限修改线索详情
         const hasPrivilegeEdit = editClueItemIconPrivilege(curClue);
         return (

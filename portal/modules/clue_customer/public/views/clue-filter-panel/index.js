@@ -260,30 +260,31 @@ class ClueFilterPanel extends React.Component {
                 let customized_variables = {};
                 // 自定义字段名称
                 let customFieldName = _.map(customizedVariables, 'name');
+                const itemData = _.get(item,'data', []);
                 if (_.includes(customFieldName, item.groupId)) {
-                    customized_variables[item.groupId] = item.data.map(x => x.value);
+                    customized_variables[item.groupId] = _.map(itemData, x => x.value);
                     FilterAction.setFilterCustomField(customized_variables);
                 } else if (item.groupId === 'clue_status'){ //线索状态
                     //如果选中的是无效状态
                     if (_.get(item,'data[0]') && _.get(item,'data[0].value') === 'avaibility'){
                         FilterAction.setFilterClueAvailbility();
                     }else{
-                        FilterAction.setFilterType( _.get(item,'data'));
+                        FilterAction.setFilterType( itemData);
                     }
-                }else if (item.groupId === 'clue_source' && _.get(item,'data')){
+                }else if (item.groupId === 'clue_source' && itemData){
                     //线索来源
-                    FilterAction.setFilterClueSoure( _.get(item,'data'));
+                    FilterAction.setFilterClueSoure( itemData);
                 }else if (item.groupId === 'access_channel'){
                     //线索接入渠道
                     if(_.isEqual(_.get(item, 'data[0].name'), Intl.get('clue.customer.filter.classify.not.setting', '未设置'))) {
                         FilterAction.setUnexistedFiled('access_channel');
                         FilterAction.setFilterClueAccess();
                     }else {
-                        FilterAction.setFilterClueAccess(_.get(item, 'data'));
+                        FilterAction.setFilterClueAccess(itemData);
                     }
                 }else if (item.groupId === 'sales_team_id'){
                     //销售团队列表
-                    FilterAction.setFilterTeamList( _.get(item,'data'));
+                    FilterAction.setFilterTeamList(itemData);
                 }else if (item.groupId === 'clue_classify'){
                     //线索分类
                     //未设置与其他选项是互斥选项
@@ -291,7 +292,7 @@ class ClueFilterPanel extends React.Component {
                         FilterAction.setUnexistedFiled('clue_classify');
                         FilterAction.setFilterClueClassify();
                     } else {
-                        FilterAction.setFilterClueClassify( _.get(item,'data'));
+                        FilterAction.setFilterClueClassify(itemData);
                     }
                 }else if (item.groupId === 'province'){
                     //线索地域
@@ -303,7 +304,7 @@ class ClueFilterPanel extends React.Component {
                     });
                     FilterAction.setFilterClueProvince(provinceList);
                 } else if(item.groupId === 'source_classify') {
-                    FilterAction.setFilterSourceClassify( _.get(item,'data'));
+                    FilterAction.setFilterSourceClassify(itemData);
                 } else if (item.groupId === COMMON_OTHER_ITEM){
                     if(item.value === SIMILAR_CUSTOMER){
                         FilterAction.setExistedFiled();
@@ -368,7 +369,7 @@ class ClueFilterPanel extends React.Component {
                         FilterAction.setAppliedTryLead(APPLY_TRY_LEAD);
                     }
                 } else if (item.groupId === 'user_name'){
-                    FilterAction.setFilterClueUsername( _.get(item,'data'));
+                    FilterAction.setFilterClueUsername( itemData);
                 }
             }
         });
