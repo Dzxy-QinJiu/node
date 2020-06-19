@@ -18,7 +18,7 @@ let Spinner = require('../../../components/spinner');
 let openTimeout = null;//打开面板时的时间延迟设置
 let hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 let util = require('./utils/production-util');
-import {Button, Icon} from 'antd';
+import {Button, Icon, Popover} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
@@ -27,8 +27,7 @@ import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import IpFilterAjax from './ajax/ip-filter-ajax';
 import IpFilter from './views/ip-filter';
 import production_manager_privilegeConfig from './privilege-config';
-
-
+import {isExpired} from 'PUB_DIR/sources/utils/common-method-util';
 //用来存储获取的oplate\matomo产品列表，不用每次添加产品时都获取一遍
 let productList = [];
 class ProductionManage extends React.Component {
@@ -255,6 +254,46 @@ class ProductionManage extends React.Component {
         });
     };
 
+    // 是否显示添加过滤IP的功能的判断
+    isShowFilterIp = () => {
+        return hasPrivilege(production_manager_privilegeConfig.ORGANIZATION_CONFIG) && (
+            hasPrivilege(production_manager_privilegeConfig.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL) ||
+                hasPrivilege(production_manager_privilegeConfig.CRM_CONTRACT_SALES_REPORTS_MANAGER) ||
+                hasPrivilege(production_manager_privilegeConfig.CRM_DAILY_REPORT)
+        );
+    };
+
+    renderFilterIpBtn = () => {
+        if (isExpired()) {
+            return (
+                <Popover
+                    placement='left'
+                    content={Intl.get('payment.please.upgrade.company.version', '请先升级到基础版以上版本，联系销售：{contact}',{contact: '400-6978-520'})}
+                >
+                    <Button
+                        className="filter-ip-btn"
+                        data-tracename="过滤IP"
+                        disabled={isExpired()}
+                    >
+                        <i className="iconfont icon-filter-ip"></i>
+                        <span>{Intl.get('product.filter.ip', '过滤IP')}</span>
+                    </Button>
+                </Popover>
+            );
+        } else {
+            return (
+                <Button
+                    className="filter-ip-btn"
+                    data-tracename="过滤IP"
+                    onClick={this.showIpFilterPanel}
+                >
+                    <i className="iconfont icon-filter-ip"></i>
+                    <span>{Intl.get('product.filter.ip', '过滤IP')}</span>
+                </Button>
+            );
+        }
+    };
+
     //渲染操作按钮区
     renderTopNavOperation = () => {
         return (
@@ -282,19 +321,13 @@ class ProductionManage extends React.Component {
                     }
                 </div>
                 <div className='pull-right'>
-                    <PrivilegeChecker
-                        check={production_manager_privilegeConfig.PRODUCTS_MANAGE}
-                        className="btn-item"
-                    >
-                        <Button
-                            className="filter-ip-btn"
-                            data-tracename="过滤IP"
-                            onClick={this.showIpFilterPanel}
-                        >
-                            <i className="iconfont icon-filter-ip"></i>
-                            <span>{Intl.get('product.filter.ip', '过滤IP')}</span>
-                        </Button>
-                    </PrivilegeChecker>
+                    {
+                        this.isShowFilterIp() ? (
+                            <div className="btn-item">
+                                {this.renderFilterIpBtn()}
+                            </div>
+                        ) : null
+                    }
                 </div>
             </div>
         );
