@@ -1135,57 +1135,34 @@ class ClueCustomer extends React.Component {
     };
 
 
-    handleContactLists = (contact) => {
-        var clipContact = false;
-        if (contact.length > 1){
-            clipContact = true;
-            contact.splice(1,contact.length - 1);
-        }
-        _.map(contact, (contactItem, idx) => {
-            if (_.isArray(contactItem.phone) && contactItem.phone.length){
-                if (contactItem.phone.length > 1){
-                    contactItem.phone.splice(1, contactItem.phone.length - 1);
-                    clipContact = true;
-                }else if (_.isArray(contactItem.email) && contactItem.email.length || _.isArray(contactItem.qq) && contactItem.qq.length || _.isArray(contactItem.weChat) && contactItem.weChat.length){
-                    clipContact = true;
-
+    handleContactLists = (contact, salesClueItem) => {
+        var clipContact = false, showContact = [];
+        //如果有多个联系人，优先展示法人的电话,qq,email或者weChat
+        var legalPerson = _.find(contact, contactItem => contactItem.name && contactItem.name === _.get(salesClueItem, 'legal_person'));//法人
+        var notLegalPerson = _.filter(contact, contactItem => contactItem.name !== _.get(salesClueItem, 'legal_person'));//不是法人
+        _.each(['phone','qq','email', 'weChat'], item => {
+            var filterLegalPersonHaveItem = _.find(notLegalPerson, contactItem => _.get(contactItem, [item, 0],));
+            if (!showContact.length) {
+                if (_.get(legalPerson, [item, 0])) {
+                    let contactItem = {
+                        name: _.get(legalPerson, 'name')
+                    };
+                    contactItem[item] = _.chain(legalPerson).get(item).slice(0, 1).value();
+                    showContact.push(contactItem);
+                } else if (filterLegalPersonHaveItem) {
+                    let contactItem = {
+                        name: _.get(filterLegalPersonHaveItem, 'name')
+                    };
+                    contactItem[item] = _.chain(filterLegalPersonHaveItem).get(item).slice(0, 1).value();
+                    showContact.push(contactItem);
                 }
-                contactItem.email = [];
-                contactItem.qq = [];
-                contactItem.weChat = [];
-
-            }
-            if (_.isArray(contactItem.email) && contactItem.email.length){
-                if (contactItem.email.length > 1){
-                    contactItem.email.splice(1, contactItem.email.length - 1);
-                    clipContact = true;
-                }else if (_.isArray(contactItem.qq) && contactItem.qq.length || _.isArray(contactItem.weChat) && contactItem.weChat.length) {
-                    clipContact = true;
-
-                }
-                contactItem.qq = [];
-                contactItem.weChat = [];
-            }
-            if (_.isArray(contactItem.qq) && contactItem.qq.length){
-                if (contactItem.qq.length > 1){
-                    contactItem.qq.splice(1, contactItem.qq.length - 1);
-                    clipContact = true;
-                } else if (_.isArray(contactItem.weChat) && contactItem.weChat.length) {
-                    clipContact = true;
-
-                }
-                contactItem.qq.splice(1, contactItem.qq.length - 1);
-                contactItem.weChat = [];
-            }
-            if (_.isArray(contactItem.weChat) && contactItem.weChat.length){
-                if (contactItem.weChat.length > 1){
-                    contactItem.weChat.splice(1, contactItem.weChat.length - 1);
+            }else{
+                if(_.get(legalPerson, [item, 0]) || filterLegalPersonHaveItem){
                     clipContact = true;
                 }
-
             }
         });
-        return {clipContact: clipContact,contact: contact};
+        return {clipContact: clipContact, contact: showContact};
     };
     handleEditTrace = (updateItem) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.foot-text-content'), '点击添加/编辑跟进内容');
@@ -1808,6 +1785,27 @@ class ClueCustomer extends React.Component {
             });
         }
     };
+    getClueContactNameAndPhone = (contacts) => {
+        //展示联系人的时候，有展示的优先顺序
+        //优先展示有电话，有名字的
+        //其次展示有电话没名字的
+        //最后展示只有人名没有电话的
+        var showContact = {};
+        var hasNameAndPhone = _.find(contacts,contactItem => contactItem.name && _.get(contactItem,'phone[0]'));
+        var hasNoNameAndPhone = _.find(contacts,contactItem => !contactItem.name && _.get(contactItem,'phone[0]'));
+        var hasNameAndNoPhone = _.find(contacts,contactItem => contactItem.name && !_.get(contactItem,'phone[0]'));
+        if(hasNameAndPhone){
+            showContact.name = hasNameAndPhone.name;
+            showContact.phone = _.get(hasNameAndPhone,'phone[0]');
+        }else if(hasNoNameAndPhone){
+            showContact.name = '';
+            showContact.phone = _.get(hasNoNameAndPhone,'phone[0]');
+        }else if(hasNameAndNoPhone){
+            showContact.name = hasNameAndPhone.name;
+            showContact.phone = _.get(hasNameAndPhone,'phone[0]');
+        }
+        return showContact;
+    };
 
     //渲染电话内容
     renderPhoneBlock = (salesClueItem) => {
@@ -1816,12 +1814,11 @@ class ClueCustomer extends React.Component {
         let contacts = salesClueItem.contacts ? salesClueItem.contacts : [];
         if (_.isArray(contacts) && contacts.length){
             //处理联系方式，处理成只有一种联系方式
-            let handledContactObj = this.handleContactLists(_.cloneDeep(contacts));
+            let handledContactObj = this.handleContactLists(_.cloneDeep(contacts),salesClueItem);
             let hasMoreIconPrivilege = handledContactObj.clipContact;
             return (
                 <div className="contact-container">
                     <ContactItem
-                        isHideContactName={true}
                         contacts={handledContactObj.contact}
                         customerData={salesClueItem}
                         showCheckPhone
@@ -2019,27 +2016,18 @@ class ClueCustomer extends React.Component {
 
                 }
             },{
-                dataIndex: 'contact',
-                width: '100px',
+                dataIndex: 'legal_person',
+                width: '120px',
                 render: (text, salesClueItem, index) => {
-                    //联系人的相关信息
-                    let contacts = salesClueItem.contacts ? salesClueItem.contacts : [];
-                    if (_.isArray(contacts) && contacts.length) {
-                        var showContact = _.get(contacts,'[0]');
-                        var contactName = _.trim(showContact.name) || '';
-                        var cls = classNames({
-                            'contact-name': contactName
-                        });
-                        return (
-                            <div className="contact-container">
-                                <div className="contact-container">
-                                    <span className={cls} title={contactName}>
-                                        {contactName}
-                                    </span>
-                                </div>
-                            </div>
-                        );
-                    } else {
+                    if(text){
+                        return <span className='legal-btn'>
+                            <span className='legal-label'>{Intl.get('lead.company.legal.person', '法人')}
+                            </span>
+                            <span className='legal-name'>
+                                {text}
+                            </span>
+                        </span>;
+                    }else {
                         return null;
                     }
                 }

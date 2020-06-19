@@ -47,7 +47,7 @@ class ContactItem extends React.Component {
                         <div className="contact-container" key={idx}>
                             {
                                 this.props.isHideContactName ? null : (
-                                    <span className={cls} title={contactName}>{contactName}</span>
+                                    <span className={cls} title={contactName}>{contactName ? contactName + ' : ' : ''}</span>
                                 )
                             }
 
