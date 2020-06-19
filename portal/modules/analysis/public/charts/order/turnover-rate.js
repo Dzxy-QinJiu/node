@@ -4,7 +4,7 @@
 
 export function getOrderTurnoverRateTrendChart() {
     return {
-        title: '订单成交率趋势',
+        title: Intl.get('analysis.order.turnover.trend', '订单成交率趋势'),
         url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/rate/trend',
         chartType: 'line',
         customOption: {

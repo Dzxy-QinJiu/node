@@ -7,7 +7,7 @@ import { ifNotSingleApp, argCallbackUnderlineTimeToTime } from '../../utils';
 
 export function getAccountNumChart(type = 'total', title) {
     return {
-        title: title || '账号数统计',
+        title: title || Intl.get('analysis.account.number.statistics', '账号数统计'),
         url: `/rest/analysis/user/v1/:auth_type/${type}/summary`,
         argCallback: argCallbackUnderlineTimeToTime,
         chartType: 'line',

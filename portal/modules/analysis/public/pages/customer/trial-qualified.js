@@ -28,9 +28,9 @@ function getCharts() {
         //试用合格客户详细统计表
         customerChart.getCustomerTrialQualifiedChart(),
         //地域统计
-        customerChart.getCustomerTrialQualifiedDistributionChart('地域统计', 'province'),
+        customerChart.getCustomerTrialQualifiedDistributionChart(Intl.get('oplate_customer_analysis.3', '地域统计'), 'province'),
         //行业统计
-        customerChart.getCustomerTrialQualifiedDistributionChart('行业统计', 'industry'),
+        customerChart.getCustomerTrialQualifiedDistributionChart(Intl.get('oplate_customer_analysis.5', '行业统计'), 'industry'),
         //趋势图
         customerChart.getCustomerTrialQualifiedTrendChart(),
         //新增试用合格客户趋势统计

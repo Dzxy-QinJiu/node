@@ -6,7 +6,7 @@
 import '../../css/recommend_clues_lists.less';
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Button, Checkbox, message, Popover, Tag, Icon} from 'antd';
+import {Button, Checkbox, Switch, message, Popover, Tag, Icon} from 'antd';
 import {AntcSelect} from 'antc';
 const Option = AntcSelect.Option;
 import NoDataIntro from 'CMP_DIR/no-data-intro';
@@ -187,6 +187,16 @@ class RecommendCluesList extends React.Component {
         if (!tasks.length) {
             return;
         }
+        //给线索管理图标添加已提取线索数
+        let leadIconEl = $('.leads_icon_container'), cls = 'leads_extracted_count_icon_container';
+        let extractedCount = _.get(Oplate, 'has_extracted_clue_count', 0);
+        extractedCount += 1;
+        Oplate.has_extracted_clue_count = extractedCount;
+        if(extractedCount >= 100) {
+            extractedCount = '99+';
+            cls += ' more-than-one-hundred';
+        }
+        leadIconEl.addClass(cls).attr('data-count', extractedCount);
 
         // 如果提取给的销售是自己，则需要提示刷新
         if(_.isEqual(_.get(taskParams,'user_id'), userData.getUserData().user_id)) {
@@ -815,11 +825,11 @@ class RecommendCluesList extends React.Component {
     renderCheckPhonePopTip() {
         let i18n = {
             id: 'lead.check.phone.free.weekly.tip',
-            name: '本周提线索可免费检测空号，快来试试吧！'
+            name: '开启空号检测，可免费检测空号，快来试试吧！'
         };
         if(this.hasEnableCheckPhone()) {//启用空号检测
             i18n.id = 'lead.check.phone.enabled.free.weekly.tip';
-            i18n.name = '空号检测已开启，本周提线索免费检测，快来试试吧！';
+            i18n.name = '空号检测已开启，本周免费，提取线索即可体验。';
         }
         return (
             <ReactIntl.FormattedMessage
@@ -1069,7 +1079,7 @@ class RecommendCluesList extends React.Component {
          */
         if(versionAndType.isPersonalTrial) {//个人试用
             Trace.traceEvent(ReactDOM.findDOMNode(this), '超限后再提取线索自动打开个人升级界面');
-            this.handleUpgradePersonalVersion(Intl.get('payment.upgrade.extract.clue.limit', '提取线索超过{count}条', {count: maxLimitExtractNumber}));
+            this.handleUpgradePersonalVersion(Intl.get('payment.extract.count.limit.upgrade.tip', '提取超过{count}条,请升级正式版', {count: maxLimitExtractNumber}));
         }else if(versionAndType.isPersonalFormal//个人正式版
             || versionAndType.isCompanyFormal && this.isManager()) { //或企业正式版管理员
             Trace.traceEvent(ReactDOM.findDOMNode(this), '超限后再提取线索自动打开增加线索量界面');
@@ -1138,11 +1148,16 @@ class RecommendCluesList extends React.Component {
     }
 
     //------ 升级正式版或者购买线索量的处理start ------//
-    //个人试用升级为正式版
-    handleUpgradePersonalVersion = (tipTitle = '') => {
+    //个人试用升级为正式版，isValidateExpired: 是否需要验证试用版已过期
+    handleUpgradePersonalVersion = (tipTitle = '', isValidateExpired = true) => {
         let currentVersionObj = checkVersionAndType();
+        let needUpgradeFlag = false;
+        // 验证个人试用是否已过期
+        if(isValidateExpired){
+            needUpgradeFlag = currentVersionObj.isPersonalTrial && isExpired();
+        }
         //个人试用版本过期
-        if (currentVersionObj.isPersonalTrial && isExpired()) {
+        if (needUpgradeFlag) {
             // 展示升级个人正式版的界面
             Trace.traceEvent(event, '个人试用到期后点击提取线索，打开个人升级界面');
             tipTitle = Intl.get('payment.upgrade.extract.lead', '升级后可提取线索');
@@ -1922,6 +1937,15 @@ class RecommendCluesList extends React.Component {
 
     handleLoadSizeSelect = (value) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-select-dropdown-menu-item'), `选择了：${value}条`);
+        //添加对试用版的判断处理
+        if(checkVersionAndType().isPersonalTrial) {
+            Trace.traceEvent('个人试用选择了每页展示条数，自动打开个人升级界面');
+            this.handleUpgradePersonalVersion('', false);
+            return false;
+        }else if(checkVersionAndType().isCompanyTrial) {
+            this.setState({showLoadSizePopoverVisible: true});
+            return false;
+        }
         clueCustomerAction.setPageSize(value);
         setTimeout(() => {
             this.getRecommendClueLists();
@@ -1965,9 +1989,21 @@ class RecommendCluesList extends React.Component {
         }
     }
 
+    handleLoadSizeVisibleChange = (visible) => {
+        if(!visible) {
+            this.setState({showLoadSizePopoverVisible: visible});
+        }
+    }
+
     renderSelectLoadSizeBlock() {
-        if(checkCurrentVersionType().formal) {//正式
-            return (
+        return (
+            <Popover
+                placement={isResponsiveDisplay().isWebMin ? 'bottom' : 'bottomRight'}
+                trigger="click"
+                content={getContactSalesPopoverTip(true)}
+                visible={this.state.showLoadSizePopoverVisible}
+                onVisibleChange={this.handleLoadSizeVisibleChange}
+            >
                 <div className="load-size-container" data-tracename="每页展示条数">
                     <span>{Intl.get('lead.recommend.page.size', '每页')}</span>
                     <AntcSelect size="small" value={this.state.pageSize} onSelect={this.handleLoadSizeSelect}>
@@ -1977,8 +2013,8 @@ class RecommendCluesList extends React.Component {
                     </AntcSelect>
                     <span>{Intl.get('clues.leads.strip', '条')}</span>
                 </div>
-            );
-        }else {return null;}
+            </Popover>
+        );
     }
 
     renderBtnClock = (isWebMin) => {
@@ -2024,14 +2060,16 @@ class RecommendCluesList extends React.Component {
                     visible={this.isFirstShowCheckPhonePop() || this.state.showCheckPhoneFeaturePopover}
                     onVisibleChange={this.setShowCheckPhonePopTip}
                 >
-                    <Checkbox
-                        checked={this.hasEnableCheckPhone()}
-                        disabled={this.state.setEnableCheckPhone}
-                        onChange={this.handleCheckPhoneChange}
-                        className="check-phone-enable-checkbox"
-                    >
-                        {Intl.get('lead.check.phone', '空号检测')}
-                    </Checkbox>
+                    <div className="check-phone-enable-checkbox">
+                        <Switch
+                            checked={this.hasEnableCheckPhone()}
+                            disabled={this.state.setEnableCheckPhone}
+                            size='small'
+                            onChange={this.handleCheckPhoneChange}
+
+                        />
+                        <span>{Intl.get('lead.check.phone', '空号检测')}</span>
+                    </div>
                 </AvatarPopoverTip>
                 {showLoadSize ? this.renderSelectLoadSizeBlock() : null}
                 {isWebMin ? alertContent : null}

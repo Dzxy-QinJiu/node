@@ -24,11 +24,11 @@ function getCharts() {
         //阶段统计
         clueChart.getCurrentStageChart(),
         //渠道统计
-        clueChart.getClueSituationChart({title: '渠道统计', field: 'access_channel'}),
+        clueChart.getClueSituationChart({title: Intl.get('clue.analysis.access.chart', '渠道统计'), field: 'access_channel'}),
         //来源统计
-        clueChart.getClueSituationChart({title: '来源统计', field: 'clue_source'}),
+        clueChart.getClueSituationChart({title: Intl.get('clue.analysis.source.chart', '来源统计'), field: 'clue_source'}),
         //分类统计
-        clueChart.getClueSituationChart({title: '分类统计', field: 'clue_classify'}),
+        clueChart.getClueSituationChart({title: Intl.get('clue.analysis.classify.chart', '分类统计'), field: 'clue_classify'}),
     ];
 
     if(isOpenCash()) {

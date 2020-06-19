@@ -200,6 +200,37 @@
             &.sidebar-applyentry:before {
                 left: -29px;
             }
+            //已提取线索数样式
+            &.leads_extracted_count_icon_container{
+                &:before{
+                    opacity: 0!important;
+                }
+                &:after{
+                    content: attr(data-count);
+                    pointer-events: auto;
+                    cursor: pointer;
+                    position: absolute;
+                    right: 11px;
+                    top: 8px;
+                    min-width: 16px;
+                    height: 16px;
+                    overflow: hidden;
+                    background: @warn-color;
+                    border-radius: 8px;
+                    color: #fff;
+                    line-height: 16px;
+                    font-size: 12px;
+                    text-align: center;
+                    z-index: 1000;
+                }
+                //超过100后的样式
+                &.more-than-one-hundred{
+                    &:after{
+                        width: 19px!important;
+                        font-size: 8px!important;
+                    }
+                }
+            }
             //申请审批入口
             &.apply_icon_container {
                 //有未读回复提示的样式

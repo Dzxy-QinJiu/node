@@ -33,6 +33,27 @@ module.exports = {
             passport: {
                 needLogin: true
             }
+        }, { // 添加一条自定义参数配置
+            method: 'post',
+            path: '/rest/add/item/custom/field/:id',
+            handler: 'addItemCustomField',
+            passport: {
+                needLogin: true
+            }
+        }, { // 修改一条自定义参数配置
+            method: 'put',
+            path: '/rest/update/item/custom/field/:id',
+            handler: 'updateItemCustomField',
+            passport: {
+                needLogin: true
+            }
+        }, { // 删除一条自定义参数配置
+            method: 'delete',
+            path: '/rest/delete/item/custom/field/:id/:key',
+            handler: 'deleteItemCustomField',
+            passport: {
+                needLogin: true
+            }
         }
     ]
 };

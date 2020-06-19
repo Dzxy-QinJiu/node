@@ -4,13 +4,14 @@
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import { manageCustomTab, customFieldDefaultValue,
-    customFieldCheckOptions, customFieldSelectOptions } from 'PUB_DIR/sources/utils/consts';
+    customFieldCheckOptions, customFieldSelectOptions, selectType } from 'PUB_DIR/sources/utils/consts';
 import {Form, Input, Checkbox, Select, Button, Icon, message} from 'antd';
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
-import SelectCustomField from './select-custom-field-component';
-import {selectCustomFieldComponents} from '../utils';
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import {defaultOptionValue} from '../utils';
+import CustomFieldOptions from './custom-field-options';
 import ajax from '../ajax';
 require('../css/custom-field-panel.less');
 
@@ -21,10 +22,13 @@ class CustomFieldPanel extends React.Component {
         super(props);
         this.state = {
             loading: false,
+            errMsg: '', // 错误提示信息
             tabType: props.tabType, // tab类型，线索、机会、客户
             defaultCheckedValue: this.getDefaultCheckedValue(props.editCustomField), // 是否统计，是否支持排序，是否出现在表单中，默认全选
             editCustomField: props.editCustomField, // 编辑字段
+            selectOptionValue: _.cloneDeep(_.get(props, 'editCustomField.select_values', [])), // 选择项的值
             customFieldData: _.cloneDeep(props.customFieldData), // 自定义数据
+            isChangeCustomField: false, // 是否修改了字段类型，默认false
         };
     }
 
@@ -55,16 +59,95 @@ class CustomFieldPanel extends React.Component {
         } else if (!_.isEqual(this.state.editCustomField, nextProps.editCustomField)) {
             this.setState({
                 editCustomField: nextProps.editCustomField,
-                defaultCheckedValue: this.getDefaultCheckedValue(nextProps.editCustomField)
+                defaultCheckedValue: this.getDefaultCheckedValue(nextProps.editCustomField),
+                isChangeCustomField: false,
+                selectOptionValue: _.cloneDeep(_.get(nextProps, 'editCustomField.select_values', [])), // 选择项的值
             });
         }
     }
 
-    handleSubmit = (formItem) => {
+    setLoadingErrMsgStatus(errMsg) {
+        this.setState({
+            loading: false,
+            errMsg: errMsg
+        });
+    }
+
+    firstAddCustomField = (submitObj) => {
+        this.setState({
+            loading: true
+        });
+        ajax.addCustomFieldConfig(submitObj).then( (result) => {
+            const successTips = Intl.get('user.user.add.success', '添加成功');
+            const errorTips = Intl.get('crm.154', '添加失败');
+            if (_.get(result, 'id')) {
+                this.props.updateCustomFieldData([result]);
+                this.handleCancel();
+                this.setLoadingErrMsgStatus('');
+                message.success(successTips);
+            } else {
+                this.setLoadingErrMsgStatus(errorTips);
+                message.error(errorTips);
+            }
+        }, (errMsg) => {
+            const errorTips = errMsg || Intl.get('crm.154', '添加失败');
+            this.setLoadingErrMsgStatus(errorTips);
+            message.error(errorTips);
+        } );
+    };
+
+    continueAddCustomField = (customizedVariables, id ) => {
+        this.setState({
+            loading: true
+        });
+        ajax.addItemCustomField(customizedVariables, id).then( (result) => {
+            const successTips = Intl.get('user.user.add.success', '添加成功');
+            const errorTips = Intl.get('crm.154', '添加失败');
+            if (_.get(result, 'key')) {
+                this.props.updateCustomFieldData(result, 'add');
+                this.handleCancel();
+                this.setLoadingErrMsgStatus('');
+                message.success(successTips);
+            } else {
+                this.setLoadingErrMsgStatus(errorTips);
+                message.error(errorTips);
+            }
+        }, (errMsg) => {
+            const errorTips = errMsg || Intl.get('crm.154', '添加失败');
+            this.setLoadingErrMsgStatus(errorTips);
+            message.error(errorTips);
+        } );
+    };
+
+    updateCustomField = (customizedVariables, id) => {
+        this.setState({
+            loading: true
+        });
+        ajax.updateItemCustomField(customizedVariables, id).then( (result) => {
+            const successTips = Intl.get('crm.218', '修改成功！');
+            const errorTips = Intl.get('crm.219', '修改失败！');
+            if (_.get(result, 'key')) {
+                this.props.updateCustomFieldData(result, 'update');
+                this.handleCancel();
+                this.setLoadingErrMsgStatus('');
+                message.success(successTips);
+            } else {
+                this.setLoadingErrMsgStatus(errorTips);
+                message.error(errorTips);
+            }
+        }, (errMsg) => {
+            const errorTips = errMsg || Intl.get('crm.219', '修改失败！');
+            this.setLoadingErrMsgStatus(errorTips);
+            message.error(errorTips);
+        } );
+    }
+
+    handleSubmit = () => {
         this.props.form.validateFields((err, values) => {
             if (err) {
                 return;
             } else {
+
                 let submitObj = {
                     customized_type: this.state.tabType
                 };
@@ -78,82 +161,89 @@ class CustomFieldPanel extends React.Component {
                     customized_variables[item] = true;
                 });
                 // select_value的值
-                if (_.includes(['text', 'multitext', 'number'], selectType)) {
-                    customized_variables.select_values = [_.get(formItem, 'placeholder')];
-                } else if(selectType === 'date') {
-                    customized_variables.select_values = [moment().valueOf()];
-                } else {
-                    customized_variables.select_values = _.get(formItem, 'select_arr');
-                }
+                customized_variables.select_values = this.state.selectOptionValue;
+
+                const id = _.get(this.state.customFieldData, '[0]id');
 
                 // 第一次添加
                 if (_.isEmpty(this.state.customFieldData)) {
                     customized_variables.show_index = 1;
                     submitObj.customized_variables = [customized_variables];
                 } else {
-                    submitObj.id = _.get(this.state.customFieldData, '[0]id');
                     let customizedVariables = _.get(this.state.customFieldData, '[0]customized_variables');
-                    if (_.isEmpty(this.state.editCustomField)) { // 说明是添加
+                    if (_.isEmpty(this.state.editCustomField)) { // 说明是添加（在原来的基础上添加一条）
                         customized_variables.show_index = _.get(customizedVariables, 'length') + 1;
-                        customizedVariables.push(customized_variables);
-                        submitObj.customized_variables = customizedVariables;
                     } else { // 编辑字段
                         const showIndex = _.get(this.state.editCustomField, 'show_index');
+                        const key = _.get(this.state.editCustomField, 'key');
                         customized_variables.show_index = showIndex;
-                        customizedVariables.splice(showIndex - 1,1,customized_variables);
-                        submitObj.customized_variables = customizedVariables;
+                        customized_variables.key = key;
                     }
-
                 }
-                if (_.isEmpty(this.state.editCustomField)) {
-                    ajax.addCustomFieldConfig(submitObj).then( (result) => {
-                        if (_.get(result, 'id')) {
-                            this.props.updateCustomFieldData([result]);
-                            this.handleCancel();
-                            message.success(Intl.get('user.user.add.success', '添加成功'));
-                        } else {
-                            message.error(Intl.get('crm.154', '添加失败'));
-                        }
-                    }, (errMsg) => {
-                        message.error(errMsg || Intl.get('crm.154', '添加失败'));
-                    } );
+                if (_.isEmpty(this.state.customFieldData)) {
+                    this.firstAddCustomField(submitObj);
                 } else {
-                    ajax.updateCustomFieldConfig(submitObj).then( (result) => {
-                        if (result) {
-                            this.props.updateCustomFieldData([submitObj]);
-                            this.handleCancel();
-                            message.success(Intl.get('crm.218', '修改成功！'));
-                        } else {
-                            message.error(Intl.get('crm.219', '修改失败！'));
-                        }
-                    }, (errMsg) => {
-                        message.error(errMsg || Intl.get('crm.219', '修改失败！'));
-                    } );
+                    if (_.isEmpty(this.state.editCustomField)) {
+                        this.continueAddCustomField(customized_variables, id);
+                    } else {
+                        this.updateCustomField(customized_variables, id);
+                    }
                 }
             }
         });
     };
 
+    modifyCustomFieldOptions = (selectOptionValue) => {
+        this.setState({
+            selectOptionValue,
+            isChangeCustomField: false
+        });
+    }
+    // 修改字段类型时，使用默认的值
+    handleSelectType = () => {
+        this.setState({
+            isChangeCustomField: true
+        });
+    }
+    // 编辑字段时，选项内容
+    getEditCustomFieldOptions = (selectCustomType, select_values) => {
+        let selectCustomFieldValue = {};
+        if (_.includes(selectType, selectCustomType)) {
+            selectCustomFieldValue.selectOption = select_values;
+            selectCustomFieldValue.fieldType = 'options';
+        } else {
+            selectCustomFieldValue.selectOption = select_values[0];
+            selectCustomFieldValue.fieldType = selectCustomType;
+        }
+        return selectCustomFieldValue;
+    };
+    
     renderFormContent = () => {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const name = Intl.get('custom.field.title', '字段名');
         // 选择字段类型
         const selectCustomType = getFieldValue('select') || _.get(this.state.editCustomField, 'field_type');
-        let selectComponent = _.find(selectCustomFieldComponents, item => item.customField === selectCustomType);
+        const originEditCustomField = _.cloneDeep(this.props.editCustomField);
+        let selectCustomFieldValue = {};
         // 编辑单项字段
-        if (!_.isEmpty(this.state.editCustomField)) {
-            const select_values = _.get(this.state.editCustomField, 'select_values');
-            // 选择框，修改时，使用默认的值
-            if (!getFieldValue('select')) {
-                if (_.includes(['text', 'multitext', 'number'], selectCustomType)) {
-                    if (select_values[0]) {
-                        selectComponent.placeholder = select_values[0];
-                    }
-                } else {
-                    selectComponent.select_arr = select_values;
-                }
+        if (getFieldValue('select')) {
+            if (_.includes(selectType, selectCustomType)) {
+                selectCustomFieldValue = _.find(defaultOptionValue, item => item.fieldType === 'options');
+            } else {
+                selectCustomFieldValue = _.find(defaultOptionValue, item => item.fieldType === selectCustomType);
+            }
+            // 在编辑状态下，若是再次切换到原来的选项,应该显示原数据的值
+            if (!_.isEmpty(originEditCustomField) && _.get(originEditCustomField, 'field_type') === selectCustomType) {
+                const select_values = _.get(originEditCustomField, 'select_values');
+                selectCustomFieldValue = this.getEditCustomFieldOptions(selectCustomType, select_values);
+            }
+        } else {
+            if (!_.isEmpty(this.state.editCustomField)) { // 编辑单个字段信息
+                const select_values = this.state.selectOptionValue;
+                selectCustomFieldValue = this.getEditCustomFieldOptions(selectCustomType, select_values);
             }
         }
+
         const height = $(window).height() - TitleHeight;
         return (
             <GeminiScrollBar style={{height: height}}>
@@ -161,7 +251,10 @@ class CustomFieldPanel extends React.Component {
                     <FormItem>
                         {getFieldDecorator('name', {
                             initialValue: _.get(this.state.editCustomField, 'name'),
-                            rules: [validatorNameRuleRegex(10, name)],
+                            rules: [{
+                                required: true,
+                                message: Intl.get('custom.field.input.placeholder', '请输入{name}', {name: name}),
+                            },validatorNameRuleRegex(10, name)],
                             validateTrigger: 'onBlur'
                         })(
                             <Input
@@ -183,7 +276,10 @@ class CustomFieldPanel extends React.Component {
                         {getFieldDecorator('select', {
                             initialValue: _.get(this.state.editCustomField, 'field_type')
                         })(
-                            <Select placeholder="选择字段类型">
+                            <Select
+                                placeholder={Intl.get('custom.field.select.placeholder', '选择字段类型')}
+                                onSelect={this.handleSelectType}
+                            >
                                 {
                                     _.map(customFieldSelectOptions, item => {
                                         return <Option value={item.value}>{item.name}</Option>;
@@ -194,14 +290,23 @@ class CustomFieldPanel extends React.Component {
                     </FormItem>
                     {
                         selectCustomType ? (
-                            <SelectCustomField
-                                form={this.props.form}
-                                formItem={selectComponent}
-                                handleCancel={this.handleCancel}
-                                handleSubmit={this.handleSubmit}
-                            />
+                            <FormItem>
+                                <CustomFieldOptions
+                                    isChangeCustomField={this.state.isChangeCustomField}
+                                    formItem={selectCustomFieldValue}
+                                    modifyCustomFieldOptions={this.modifyCustomFieldOptions.bind(this)}
+                                />
+                            </FormItem>
                         ) : null
                     }
+                    <FormItem>
+                        <SaveCancelButton
+                            loading={this.state.loading}
+                            saveErrorMsg={this.state.errMsg}
+                            handleSubmit={this.handleSubmit}
+                            handleCancel={this.handleCancel}
+                        />
+                    </FormItem>
                 </Form>
             </GeminiScrollBar>
         );

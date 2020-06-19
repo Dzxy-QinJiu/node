@@ -1,7 +1,5 @@
-var React = require('react');
 import filterEmitter from './emitter';
 import { Icon, Input, Button, Radio, Popover, Alert, message, Badge } from 'antd';
-import PropTypes from 'prop-types';
 import Trace from 'LIB_DIR/trace';
 import classNames from 'classnames';
 import{FILTER_RANGE_OPTIONS as RANGE_OPTIONS, FILTER_RANGE} from 'PUB_DIR/sources/utils/consts';
@@ -300,8 +298,17 @@ class FilterSearch extends React.Component {
                                 trigger="click"
                                 visible={this.state.showConfirmPop && this.props.showSelectChangeTip}
                             >
-                                {isWebMin ? this.renderBtnBlock()
-                                    : <Button title={Intl.get('common.filter', '筛选')} type={this.props.showList ? 'primary' : ''} className="btn-item"><i className='iconfont icon-filter1'></i>{Intl.get('common.filter', '筛选')}</Button>}
+                                {
+                                    isWebMin ? this.renderBtnBlock() : (
+                                        <Button
+                                            title={Intl.get('common.filter', '筛选')}
+                                            type={this.props.showList ? 'primary' : ''}
+                                            className="btn-item"
+                                        >
+                                            <i className='iconfont icon-filter1'></i>
+                                            {Intl.get('common.filter', '筛选')}
+                                        </Button>
+                                    )}
                             </Popover>
                         </div>
 

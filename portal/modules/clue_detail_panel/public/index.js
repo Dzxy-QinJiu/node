@@ -23,6 +23,7 @@ import {PHONERINGSTATUS,cluePhoneDesArray} from 'MOD_DIR/phone_panel/public/cons
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 import {AVALIBILITYSTATUS} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {clueEmitter} from 'PUB_DIR/sources/utils/emitters';
+import customFieldAjax from '../../custom_field_manage/public/ajax';
 const DIVLAYOUT = {
     CUSTOMER_COUNT_TIP_H: 26 + 80,//对应几个线索提示和写联系计划提示的高度
     PHONE_STATUS_TIP_H: 50,//只展示通话状态时的高度
@@ -64,6 +65,7 @@ class ClueDetailPanel extends React.Component {
             hasPhonePanel: false,//是否有电话面板，用于线索面板计算高度
             phonePanelHasCustomerSchedule: false,//是否正在编辑自定义事件，用于线索面板计算高度
             phonePanelFinishTrace: false,//电话面板是否完成跟进,用于线索面板计算高度
+            leadCustomFieldData: {}, // 线索自定义字段的值，默认空
         };
     }
 
@@ -88,10 +90,24 @@ class ClueDetailPanel extends React.Component {
         return [];
     }
 
+    // 获取线索自定义字段信息
+    getLeadCustomFieldConfig() {
+        const queryObj = {
+            customized_type: 'lead'
+        };
+        customFieldAjax.getCustomFieldConfig(queryObj).then( (result) => {
+            this.setState({
+                leadCustomFieldData: result
+            });
+        } );
+    }
+
     componentDidMount() {
         this._isMounted = true;
 
         phoneAlertStore.listen(this.onStoreChange);
+        //  获取线索自定义字段信息
+        this.getLeadCustomFieldConfig();
         let phonemsgObj = this.getPhonemsgObj(this.props.paramObj);
         //通话状态下的处理
         if (!_.isEmpty(phonemsgObj)) {
@@ -386,6 +402,7 @@ class ClueDetailPanel extends React.Component {
                 hasPhonePanel={this.state.hasPhonePanel}
                 phonePanelHasCustomerSchedule={this.state.phonePanelHasCustomerSchedule}
                 phonePanelFinishTrace={this.state.phonePanelFinishTrace}
+                leadCustomFieldData={this.state.leadCustomFieldData}
             />);
     }
 
@@ -635,12 +652,14 @@ class ClueDetailPanel extends React.Component {
                     {paramObj.call_params ? this.renderPhoneStatus() : null}
                     {/*{只打开线索详情或从当前展示的线索详情中打电话时}*/}
                     {this.isOnlyOpenClueDetail(paramObj) || this.isClueDetailCall(paramObj) ? (
-                        <ClueDetail ref={cluePanel => this.cluePanel = cluePanel}
+                        <ClueDetail
+                            ref={cluePanel => this.cluePanel = cluePanel}
                             {...paramObj.clue_params}
                             hideRightPanel={this.hideClueDetailPanel}
                             hasPhonePanel={this.state.hasPhonePanel}
                             phonePanelHasCustomerSchedule={this.state.phonePanelHasCustomerSchedule}
                             phonePanelFinishTrace={this.state.phonePanelFinishTrace}
+                            leadCustomFieldData={this.state.leadCustomFieldData}
                         />) : null
                     }
                 </div>

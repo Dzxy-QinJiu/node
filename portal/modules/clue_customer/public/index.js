@@ -82,7 +82,6 @@ const RightPanel = rightPanelUtil.RightPanel;
 var RightContent = require('CMP_DIR/privilege/right-content');
 import classNames from 'classnames';
 var crmUtil = require('MOD_DIR/crm/public/utils/crm-util');
-import ajax from 'ant-ajax';
 import commonAjax from 'MOD_DIR/common/ajax';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {pathParamRegex} from 'PUB_DIR/sources/utils/validate-util';
@@ -104,6 +103,7 @@ import ClueExtract from 'MOD_DIR/clue_pool/public';
 import MoreButton from 'CMP_DIR/more-btn';
 import history from 'PUB_DIR/sources/history';
 import {checkPhoneStatus} from 'PUB_DIR/sources/utils/common-data-util';
+import customFieldAjax from '../../custom_field_manage/public/ajax';
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -193,13 +193,28 @@ class ClueCustomer extends React.Component {
             isShowRewardClueTips: false, // 是否显示赢线索的提示，默认不显示
             isBatchCheckPhoneStatusLoading: false,//是否正在批量检测空号
             showConfirmBatchCheckPhone: false,//是否有已检测状态的手机号，点击重新检测按钮
+            leadCustomFieldData: {}, // 线索自定义字段配置数据
             isTopShowMiniBtn: false,//topnav上是否展示缩放的按钮
         };
+    }
+
+    // 获取线索自定义字段信息
+    getLeadCustomFieldConfig() {
+        const queryObj = {
+            customized_type: 'lead'
+        };
+        customFieldAjax.getCustomFieldConfig(queryObj).then( (result) => {
+            this.setState({
+                leadCustomFieldData: result
+            });
+        } );
     }
 
     componentDidMount() {
         const query = queryString.parse(this.props.location.search);
         clueCustomerStore.listen(this.onStoreChange);
+        // 获取线索自定义字段信息
+        this.getLeadCustomFieldConfig();
         //获取线索来源
         this.getClueSource();
         //获取线索渠道
@@ -905,7 +920,8 @@ class ClueCustomer extends React.Component {
             && _.isEmpty(filterStoreData.unexist_fields)
             && _.isEmpty(filterStoreData.filterClueProvince)
             && _.isEmpty(filterStoreData.filterLabels)
-            && _.isEmpty(filterStoreData.filterClueUsers)){
+            && _.isEmpty(filterStoreData.filterClueUsers)
+            && _.isEmpty(filterStoreData.customized_variables)){
             return true;
         }else{
             return false;
@@ -992,6 +1008,11 @@ class ClueCustomer extends React.Component {
             if(filterStoreData.appliedTryLead){ //筛选申请试用企业版的线索
                 typeFilter.version_upgrade_label = 'true';
             }
+            // 自定义字段
+            let customized_variables = _.get(filterStoreData, 'customized_variables');
+            if (!_.isEmpty(customized_variables)) {
+                typeFilter.custom_variables = customized_variables;
+            }
 
             if(_.isArray(existFilelds) && existFilelds.length){
                 bodyField.exist_fields = existFilelds;
@@ -1046,7 +1067,7 @@ class ClueCustomer extends React.Component {
                 isShowRefreshPrompt: false
             });
         }
-        //跟据类型筛选
+        //根据类型筛选
         const queryObj = this.getClueSearchCondition();
         if(_.get(conditionObj,'isPageChange')){//点击翻页
             queryObj.isPageChange = true;
@@ -1135,57 +1156,35 @@ class ClueCustomer extends React.Component {
     };
 
 
-    handleContactLists = (contact) => {
-        var clipContact = false;
-        if (contact.length > 1){
-            clipContact = true;
-            contact.splice(1,contact.length - 1);
-        }
-        _.map(contact, (contactItem, idx) => {
-            if (_.isArray(contactItem.phone) && contactItem.phone.length){
-                if (contactItem.phone.length > 1){
-                    contactItem.phone.splice(1, contactItem.phone.length - 1);
-                    clipContact = true;
-                }else if (_.isArray(contactItem.email) && contactItem.email.length || _.isArray(contactItem.qq) && contactItem.qq.length || _.isArray(contactItem.weChat) && contactItem.weChat.length){
-                    clipContact = true;
+    handleContactLists = (contact, salesClueItem) => {
+        var clipContact = false, showContact = [];
 
+        var legalPerson = _.find(contact, contactItem => contactItem.name && contactItem.name === _.get(salesClueItem, 'legal_person'));//法人
+        var notLegalPerson = _.filter(contact, contactItem => contactItem.name !== _.get(salesClueItem, 'legal_person'));//不是法人
+        _.each(['phone','qq','email', 'weChat'], item => {
+            ////如果有多个联系人，优先展示法人的电话,qq,email或者weChat
+            var filterLegalPersonHaveItem = _.find(notLegalPerson, contactItem => _.get(contactItem, [item, 0]));//不是法人有item这个联系方式
+            if (!showContact.length) {
+                if (_.get(legalPerson, [item, 0])) {//法人有item此联系方式
+                    let contactItem = {
+                        name: _.get(legalPerson, 'name')
+                    };
+                    contactItem[item] = _.chain(legalPerson).get(item).slice(0, 1).value();
+                    showContact.push(contactItem);
+                } else if (filterLegalPersonHaveItem) {
+                    let contactItem = {
+                        name: _.get(filterLegalPersonHaveItem, 'name')
+                    };
+                    contactItem[item] = _.chain(filterLegalPersonHaveItem).get(item).slice(0, 1).value();
+                    showContact.push(contactItem);
                 }
-                contactItem.email = [];
-                contactItem.qq = [];
-                contactItem.weChat = [];
-
-            }
-            if (_.isArray(contactItem.email) && contactItem.email.length){
-                if (contactItem.email.length > 1){
-                    contactItem.email.splice(1, contactItem.email.length - 1);
-                    clipContact = true;
-                }else if (_.isArray(contactItem.qq) && contactItem.qq.length || _.isArray(contactItem.weChat) && contactItem.weChat.length) {
-                    clipContact = true;
-
-                }
-                contactItem.qq = [];
-                contactItem.weChat = [];
-            }
-            if (_.isArray(contactItem.qq) && contactItem.qq.length){
-                if (contactItem.qq.length > 1){
-                    contactItem.qq.splice(1, contactItem.qq.length - 1);
-                    clipContact = true;
-                } else if (_.isArray(contactItem.weChat) && contactItem.weChat.length) {
-                    clipContact = true;
-
-                }
-                contactItem.qq.splice(1, contactItem.qq.length - 1);
-                contactItem.weChat = [];
-            }
-            if (_.isArray(contactItem.weChat) && contactItem.weChat.length){
-                if (contactItem.weChat.length > 1){
-                    contactItem.weChat.splice(1, contactItem.weChat.length - 1);
+            }else{
+                if(_.get(legalPerson, [item, 0]) || filterLegalPersonHaveItem){//除了展示的联系方式外，有其他的联系方式，需要在列表中加上...这个标识
                     clipContact = true;
                 }
-
             }
         });
-        return {clipContact: clipContact,contact: contact};
+        return {clipContact: clipContact, contact: showContact};
     };
     handleEditTrace = (updateItem) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.foot-text-content'), '点击添加/编辑跟进内容');
@@ -1816,12 +1815,11 @@ class ClueCustomer extends React.Component {
         let contacts = salesClueItem.contacts ? salesClueItem.contacts : [];
         if (_.isArray(contacts) && contacts.length){
             //处理联系方式，处理成只有一种联系方式
-            let handledContactObj = this.handleContactLists(_.cloneDeep(contacts));
+            let handledContactObj = this.handleContactLists(_.cloneDeep(contacts),salesClueItem);
             let hasMoreIconPrivilege = handledContactObj.clipContact;
             return (
                 <div className="contact-container">
                     <ContactItem
-                        isHideContactName={true}
                         contacts={handledContactObj.contact}
                         customerData={salesClueItem}
                         showCheckPhone
@@ -2018,32 +2016,26 @@ class ClueCustomer extends React.Component {
                     );
 
                 }
-            },{
-                dataIndex: 'contact',
-                width: '100px',
-                render: (text, salesClueItem, index) => {
-                    //联系人的相关信息
-                    let contacts = salesClueItem.contacts ? salesClueItem.contacts : [];
-                    if (_.isArray(contacts) && contacts.length) {
-                        var showContact = _.get(contacts,'[0]');
-                        var contactName = _.trim(showContact.name) || '';
-                        var cls = classNames({
-                            'contact-name': contactName
-                        });
-                        return (
-                            <div className="contact-container">
-                                <div className="contact-container">
-                                    <span className={cls} title={contactName}>
-                                        {contactName}
-                                    </span>
-                                </div>
-                            </div>
-                        );
-                    } else {
-                        return null;
-                    }
-                }
-            },{
+            }
+            // ,{
+            //     dataIndex: 'legal_person',
+            //     width: '120px',
+            //     render: (text, salesClueItem, index) => {
+            //         if(text){
+            //             return <span className='legal-btn'>
+            //                 <span className='legal-label'>
+            //                     {Intl.get('lead.company.legal.person', '法人')}
+            //                 </span>
+            //                 <span className='legal-name'>
+            //                     {text}
+            //                 </span>
+            //             </span>;
+            //         }else {
+            //             return null;
+            //         }
+            //     }
+            // }
+            ,{
                 dataIndex: 'phone',
                 width: '220px',
                 render: (text, salesClueItem, index) => {
@@ -2299,6 +2291,7 @@ class ClueCustomer extends React.Component {
                 // locale={{
                 //     emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get('common.no.more.filter.crm', '没有符合条件的客户')) : ''
                 // }}
+                isPaginationPositionLeft={true}
                 pagination={{
                     total: this.state.customersSize,
                     showTotal: total => {
@@ -3772,6 +3765,7 @@ class ClueCustomer extends React.Component {
                                 style={{width: isWebMin ? '100%' : LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight(this.props.adaptiveHeight, isWebMin ? false : true) + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT + (isWebMin ? (oplateConsts.LAYOUT.BOTTOM_NAV + 2) : 0)}}
                                 showSelectTip={_.get(this.state.selectedClues, 'length')}
                                 toggleList={this.toggleList.bind(this)}
+                                leadCustomFieldData={this.state.leadCustomFieldData}
                             />
                         </div>
 

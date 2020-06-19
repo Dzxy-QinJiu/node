@@ -4,7 +4,7 @@
 
 export function getAttendanceChart() {
     return {
-        title: '出差请假统计',
+        title: Intl.get('analysis.travel.leave.statistics', '出差请假统计'),
         chartType: 'table',
         url: [
             '/rest/base/v1/workflow/businesstrip/statistic',
@@ -27,13 +27,13 @@ export function getAttendanceChart() {
 
             if (_.isNumber(businessTripNum)) {
                 processedData.push({
-                    value: '出差次数: ' + businessTripNum
+                    value: Intl.get('analysis.number.of.business.trips', '出差次数') + ': ' + businessTripNum
                 });
             }
 
             if (_.isNumber(askForLeaveDuration)) {
                 processedData.push({
-                    value: '请假天数: ' + askForLeaveDuration
+                    value: Intl.get('analysis.days.off', '请假天数') + ': ' + askForLeaveDuration
                 });
             }
 

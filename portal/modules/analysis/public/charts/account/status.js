@@ -2,12 +2,11 @@
  * 账号状态统计
  */
 
-import { userTypeDataMap, USER_TYPES } from '../../consts';
 import { ifNotSingleApp, argCallbackUnderlineTimeToTime } from '../../utils';
 
 export function getAccountStatusChart(type = 'total', title) {
     return {
-        title: title || '账号状态统计',
+        title: title || Intl.get('analysis.account.status.statistics', '账号状态统计'),
         url: `/rest/analysis/user/v1/:auth_type/${type}/status`,
         argCallback: argCallbackUnderlineTimeToTime,
         chartType: 'pie',

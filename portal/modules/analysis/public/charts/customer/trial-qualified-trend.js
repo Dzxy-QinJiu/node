@@ -13,7 +13,7 @@ export function getCustomerTrialQualifiedTrendChart(type) {
             value: 'month',
         }, {
             name: 'label',
-            value: '试用合格',
+            value: Intl.get('common.trial.qualified', '试用合格'),
         }],
         argCallback: arg => {
             let query = arg.query;

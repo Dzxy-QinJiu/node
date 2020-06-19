@@ -123,6 +123,7 @@ var en_US = {
     'common.not.enabled': 'Is not enabled',//未启用
     'common.edit.password': 'Change Password',//修改密码
     'common.login.time': 'Time',//时间
+    'common.login.time.require.msg': 'Please input time',//请输入时间
     'common.login.equipment': 'Equipment',//设备
     'common.operate': 'Operation',//操作
     'common.input.correct.phone': 'Please enter the correct phone number',//请输入正确的电话号码
@@ -1106,6 +1107,7 @@ var en_US = {
     'custom.field.add.name': 'Add name', // 添加{name}
     'custom.field.select.name': 'Please select {name}', // 请选择{name}
     'custom.field.add.count.limit': 'The number of {name} has reached the upper limit(10).', // {name}自定义字段数量已达上限（10个）
+    'custom.field.select.placeholder': 'Please select the type of field', // 选择字段类型
     // 后台管理-自定义字段end
 
     //应用管理start
@@ -2032,6 +2034,8 @@ var en_US = {
     'crm.has.contain.join.user': 'Is there a joint follow-up person',//是否有联合跟进人
     'crm.user.has.no.apply.approve': 'There is an extension request for user {userApp} that has not yet been approved, and a new extension application cannot be added at this time',//有针对用户{userApp}的延期申请尚未审批，暂不能添加新的延期申请
     'crm.userName.clientName': '{clientName} of {userName}',//{userName}的{clientName}
+    'crm.user.all.check': 'Select all {num} users',//全选{num}个用户
+    'crm.user.list.click.all.user': 'View all users',//查看全部用户
 
     // 客户管理end
 
@@ -2762,7 +2766,149 @@ var en_US = {
     'customer.add.customer.trace.detail': 'Please add details of customer follow-up record',//请补充客户跟进记录详情
     'customer.contact.phone': 'contact number',//联系电话
     'user.setting.roles': 'Set the role',//设置角色
-    //补充
+
+    //统计分析及报告部分 国际化补充
+    'analysis.total.conversion': 'Total conversion',//总转化率
+    'analysis.reach': 'reach',//到
+    'analysis.conversion.rate': 'Conversion rate',//转化率
+    'analysis.account.number.statistics': 'Account.number.statistics',//账号数统计
+    'analysis.apply.all': 'Apply all',//全部应用
+    'analysis.months.later': '{count} Months later',//{count}个月后
+    'analysis.account.status.statistics': 'Account status statistics',//账号状态统计
+    'analysis.account.type.statistics': 'Account type statistics',//账号类型统计
+    'analysis.statistics.of.effective.accounts': 'Statistics of effective accounts',//有效账号数统计
+    'analysis.no.charge': 'No charge',//未收费数
+    'analysis.number.of.charges': 'Number of charges',//收费数
+    'analysis.telephone.industry.statistics': 'Telephone industry statistics',//电话行业统计
+    'analysis.opportunity.conversion.rate.statistics': 'Opportunity conversion rate statistics',//机会转化率统计
+    'analysis.number.of.submissions': 'Number of submissions',//提交数
+    'analysis.pass.number': 'Pass number',//通过数
+    'analysis.transaction.trend.statistics': 'Transaction trend statistics',//成交趋势统计
+    'analysis.opportunity.details': 'Opportunity details',//销售机会明细
+    'analysis.transfer.to.team': 'Transfer to team',//转入团队
+    'analysis.sign.or.not': 'Sign or not',//是否签单
+    'analysis.new.opportunity.statistics': 'New opportunity statistics',//新机会统计
+    'analysis.statistics.of.lead.turnover.and.turnover': 'Statistics of lead turnover and turnover',//线索成交额及成交数统计
+    'analysis.transaction.channel.statistics': 'Transaction channel statistics',//成交渠道统计
+    'analysis.classified.statistics.of.transactions': 'Classified statistics of transactions',//成交数分类统计
+    'analysis.statistical.comparison.of.quantity.in.the.same.period.of.history': 'Statistical comparison of quantity in the same period of history',//历史同期数量统计对比
+    'analysis.all.channels': 'All channels',//全部渠道
+    'analysis.all.sources': 'All sources',//全部来源
+    'analysis.cash.loss.rate': 'Cash loss rate',//现金流失率
+    'analysis.and.above': 'And above',//及以上
+    'analysis.contact.customer.interval.statistics': 'Contact customer interval statistics',//联系客户间隔统计
+    'analysis.statistics.of.customer.churn.rate': 'Statistics of customer churn rate',//客户流失率统计
+    'analysis.number.of.lost.customers': 'Number of lost customers',//流失客户数
+    'analysis.churn.rate': 'Churn rate',//流失客户率
+    'analysis.lost.gross.profit': 'Lost gross profit',//流失毛利
+    'analysis.gross.profit.loss.rate': 'Gross profit loss rate',//毛利流失率
+    'analysis.number.of.customers.statistics': 'Number of customers statistics',//客户数统计
+    'analysis.total.customers': 'Total customers',//总客户数
+    'analysis.within.six.months': 'Within six months',//6个月内
+    'analysis.transaction.analysis': 'Transaction analysis',//成交分析
+    'analysis.number.of.outstanding.transactions': 'Number of outstanding transactions',//未成交数
+    'analysis.statistics.of.active.rate.of.effective.customers': 'Statistics of active rate of effective customers',//有效客户活跃率统计
+    'analysis.cash.loss.trend': 'Cash loss trend',//流失现金趋势
+    'analysis.analysis.on.the.general.situation.of.lost.customers': 'Analysis on the general situation of lost customers',//流失客户总体情况分析
+    'analysis.application': 'application',//应用
+    'analysis.analysis.of.lost.customer.team': 'Analysis of lost customer team',//流失客户团队分析
+    'analysis.customer.churn.trend': 'Customer churn trend',//流失客户趋势
+    'analysis.regional.analysis.of.lost.customers': 'Regional analysis of lost customers',//流失客户地域分析
+    'analysis.weekly.contact.customer.statistics': 'Weekly contact customer statistics',//周联系客户统计
+    'analysis.co.contact.count.customers': 'Co contact count Customers',//共联系{count}个客户
+    'analysis.renew.customer.gross.profit.analysis': 'Renew customer gross profit analysis',//续签客户毛利分析
+    'analysis.number.of.customers': 'Number of customers',//客户个数
+    'analysis.contract.gross.profit.before.renewal': 'Contract gross profit before renewal',//续约前合同毛利
+    'analysis.contract.gross.profit.after.renewal': 'Contract gross profit after renewal',//续约后合同毛利
+    'analysis.growth.rate.of.renewal.amount': 'Growth rate of renewal amount',//续约金额增长率
+    'analysis.customer.renewal.time.statistics': 'Customer renewal time statistics',//客户续签时间统计
+    'analysis.number.of.customers.due': 'Number of customers due',//到期客户数
+    'analysis.renewal.of.current.month': 'Renewal of current month',//当月续签
+    'analysis.renewal.customer.trend': 'Renewal customer trend',//续签客户趋势
+    'analysis.renewal.customer.region.analysis': 'Renewal customer region analysis',//续签客户地域分析
+    'analysis.analysis.of.market.share.of.administrative.level.of.contracted.customers': 'Analysis of market share of administrative level of contracted customers',//签约客户行政级别市场占有率分析
+    'analysis.number.of.provincial.customers': 'Number of provincial customers',//省级客户数
+    'analysis.provincial.share': 'Provincial share',//省级占有率
+    'analysis.number.of.municipal.customers': 'Number of municipal customers',//市级客户数
+    'analysis.city.share': 'City share',//市级占有率
+    'analysis.number.of.county.customers': 'Number of county customers',//县级客户数
+    'analysis.county.occupancy': 'County occupancy',//县级占有率
+    'analysis.gross.profit.analysis.of.contracted.customers': 'Gross profit analysis of contracted customers',//签约客户毛利分析
+    'analysis.expand': 'expand',//拓展
+    'analysis.analysis.of.net.increase.of.contracted.customers': 'Analysis of net increase of contracted customers',//签约客户净增分析
+    'analysis.click.the.number.on.the.net.increase.analysis.form.of contracted customers to view the detailed list': 'Click the number on the net increase analysis form of contracted customers to view the detailed list',//点击签约客户净增分析表格上的数字查看详细列表
+    'analysis.distribution.of.newly.signed.industries': 'Distribution of newly signed industries',//新签行业分布
+    'analysis.distribution.of.newly.signed.teams': 'Distribution of newly signed teams',//新签团队分布
+    'analysis.new.customer.trend': 'New customer trend',//新签客户趋势
+    'analysis.industry.distribution.of.contracted.customers': 'Industry distribution of contracted customers',//签约客户行业分布
+    'analysis.distribution.of.contracted.customer.teams': 'Distribution of contracted customer teams',//签约客户团队分布
+    'analysis.general.trend.of.contracted.customers': 'General trend of contracted customers',//签约客户总体趋势
+    'analysis.analysis.of.regional.market.share.of.contracted.customers': 'Analysis of regional market share of contracted customers',//签约客户地域市场占有率分析
+    'analysis.transfer.out.customer.details': 'Transfer out customer details',//转出客户明细
+    'analysis.trend.of.number.of.customers.transferred.out': 'Trend of number of customers transferred out',//转出客户数趋势
+    'analysis.detailed.statistical.table.of.trial.qualification': 'Detailed statistical table of trial qualification',//试用合格详细统计表
+    'analysis.qualified.composition.in.probation.this.month': 'Qualified composition in probation this month',//本月试用合格组成
+    'analysis.region': 'region',//区域
+    'analysis.number.of.trial.customers.opened': 'Number of trial customers opened',//已开通试用客户数
+    'analysis.number.of.valid.login.customers': 'Number of valid login customers',//有效登录客户数
+    'analysis.statistics.of.qualified.customers.in.probation.this.month': 'Statistics of qualified customers in probation this month',//本月试用合格客户数统计
+    'analysis.order.turnover.trend': 'Order turnover trend',//订单成交率趋势
+    'analysis.click.the.sales.behavior.statistics.on.the.sales.personal.report.page.to.view.the.detailed.list': 'Click the sales behavior statistics on the sales personal report page to view the detailed list',//点击销售个人报告页面上的销售行为统计拜访客户数查看详细列表
+    'analysis.travel.leave.statistics': 'Travel leave statistics',//出差请假统计
+    'analysis.number.of.business.trips': 'Number of business trips',//出差次数
+    'analysis.annual.recurring.income': 'Annual recurring income',//年经常性收入情况
+    'analysis.personal.statistics': 'Personal statistics',//个人统计
+    'analysis.cost.statistics': 'Cost statistics',//费用统计
+    'analysis.year.on.year.growth.of.performance': 'Year on year growth of performance',//业绩同比增长情况
+    'analysis.first.half.of.the.year': 'First half of the year',//上半年
+    'analysis.second.half': 'second half',//下半年
+    'analysis.statistical.interval': 'Statistical interval',//统计区间
+    'analysis.statistical.scope': 'Statistical scope',//统计范围
+    'analysis.near.count.year': 'Near count year',//近{count}年
+    'analysis.industry.distribution': 'Industry distribution',//行业分布
+    'analysis.completion.statistics': 'Completion statistics',//完成情况统计
+    'analysis.false.data': 'False data',//假数据
+    'analysis.product.distribution': 'Product distribution',//产品分布
+    'analysis.a.number.of.contracts': 'A number of contracts',//合同个数
+    'analysis.collection.gross.profit.statistics': 'Collection gross profit statistics',//回款毛利统计
+    'analysis.comparison.of.gross.profit.of.payment.collection.in.the.same.period': 'Comparison of gross profit of payment collection in the same period',//回款毛利同期对比
+    'analysis.estimated.collection.statistics': 'Estimated collection statistics',//预计回款统计
+    'analysis.collection.type.comparison': 'Collection type comparison',//回款类型对比
+    'analysis.section.statistics.of.contract.amount': 'Section statistics of contract amount',//合同额分段统计
+    'analysis.more.than.ten.thousand': 'More than ten thousand',//万以上
+    'analysis.less.than.ten.thousand': 'Less than ten thousand',//万以下
+    'analysis.team.distribution': 'Team distribution',//团队分布
+    'analysis.geographical.distribution': 'geographical distribution',//地域分布
+    'analysis.search.by.keyword': 'Search by keyword',//根据关键词搜索
+    'analysis.view.weekly.report.details': 'View weekly report details',//查看周报详情
+    'analysis.select.team': 'Select team',//选择团队
+    'analysis.time.frame': 'time frame',//时间范围 
+    'analysis.select.the.some.year': 'Select the some year',//选择第{year}年
+    'analysis.select.the.some.week': 'Select the some week',//选择第{week}周
+    'analysis.statistics.of.qualified.customers': 'Statistics of qualified customers',//合格客户数统计
+    'analysis.attendance.statistics': 'Attendance statistics',//出勤统计
+    'analysis.sales.report': 'Sales Report',//销售报告
+    'analysis.number.of.contracts': 'Number of contracts',//合同数
+    'analysis.number.of.follow-up.customers': 'Number of follow-up customers',//跟进客户数
+    'analysis.number.of.calls': 'Number of calls',//电话数
+    'analysis.customer.activity.rate': 'Customer activity rate',//客户活跃率
+    'analysis.submit.opportunity': 'Submit opportunity',//提交机会
+    'analysis.sales.ranking': 'Sales ranking',//销售排名
+    'analysis.ranking.within.the.team': 'Ranking within the team',//团队内排名
+    'analysis.ranking.within.superior.team': 'Ranking within superior team',//上级团队内排名
+    'analysis.ranking.in.sales.department': 'Ranking in Sales Department',//销售部内排名
+    'analysis.configure.report.view': 'Configure report view',//配置报告视图
+    'analysis.open.report.view': 'Open report view',//开启报告视图
+    'analysis.click.the.open.button': 'Click the open button',//点击开启按钮
+    'analysis.sales.daily.report.right.panel': 'Sales daily report right panel',//销售日报右侧面板
+    'analysis.report.details.view': 'Report details view',//报告详情视图
+    'analysis.click.on.the.table.row': 'Click on the table row',//点击表格行
+    'analysis.view.report.details': 'View report details',//查看报告详情
+    'analysis.view.the.list.of.subordinate.team.reports': 'View the list of subordinate team reports',//查看下级团队报告列表
+    'analysis.daily.sales.report.list': 'Daily sales report list',//销售日报列表
+    'analysis.view.digital.details': 'View digital details',//查看数字详情
+    'analysis.click.operation.button': 'Click operation button',//点击{operation}按钮
+    
     'fail.get.customer.trace': 'Failed to get customer trace list',//获取客户跟踪记录列表失败
     'fail.add.customer.trace': 'Failed to update follow-up record',//更新跟进记录失败
     'contact.phone': 'Contact number',//联系电话
@@ -3364,8 +3510,8 @@ var en_US = {
     'lead.check.phone.explain': 'Only non-14, 16, 17 and 19 mobile phone Numbers are supported',//仅支持非14、16、17、19号段手机号
     'lead.direct.extraction': 'Direct extraction',//直接提取
     'lead.check.phone.result': 'Null detection results',//空号检测结果
-    'lead.check.phone.enabled.free.weekly.tip': 'Empty number detection has been opened, this week to raise clues free detection, quick to try it!',//空号检测已开启，本周提线索免费检测，快来试试吧！
-    'lead.check.phone.free.weekly.tip': 'Free detection of clues available this week, come and try it!',//本周提线索可免费检测空号，快来试试吧！
+    'lead.check.phone.enabled.free.weekly.tip': 'Empty number detection has been enabled, free this week, extract clues can be experienced.',//空号检测已开启，本周免费，提取线索即可体验。
+    'lead.check.phone.free.weekly.tip': 'Open the empty number detection, free detection of empty number, come and try!',//开启空号检测，可免费检测空号，快来试试吧！
     'lead.extract.confirm': 'Confirm to extract',//确认提取
     'lead.single.check.phone.no.empty.phone.tip': 'There are {allCount} Numbers in this clue, but the system has not found any suspected empty Numbers',//此线索有{allCount}个号码，系统未发现疑似空号
     'lead.batch.check.phone.no.empty.phone.tip': 'The system did not find all possible clues to empty Numbers',//系统未发现全部疑似空号的线索
@@ -3675,6 +3821,7 @@ var en_US = {
     'bussiness.while.time.range.no.empty': 'Travel time cannot be empty',//外出时间不能为空
     'business.while.trip.time.range': 'Out time',//外出时间
     'business.while.trip.go.out': 'Out',//外出
+    'business.while.position.num': 'Place {num}',//地点{num}
     'business.leave.time.range': 'Bussiness range',//出差时长
     'business.change.total.time': 'Please modify the time before adding',//请修改时间再添加
     'business.leave.time.no.overlay': 'Do not repeat time',//外出时间不要重复
@@ -4220,6 +4367,7 @@ var en_US = {
     'payment.platform.order.no': 'platform order no',//平台订单号
     'payment.payment.platform': 'payment platform',//支付平台
     'payment.payment.records': 'payment records',//付费记录
+    'payment.extract.count.limit.upgrade.tip': 'Extract more than {count} bars, please upgrade the official version',//提取超过{count}条,请升级正式版
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/

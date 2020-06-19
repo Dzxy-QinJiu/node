@@ -8,7 +8,7 @@ import {listPanelEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 export function getSignedCustomerNetIncreaseChart(paramObj = {}) {
     return {
-        title: '签约客户净增分析',
+        title: Intl.get('analysis.analysis.of.net.increase.of.contracted.customers', '签约客户净增分析'),
         chartType: 'table',
         url: '/rest/analysis/customer/label/:data_type/sign/customer',
         argCallback: arg => {
@@ -47,7 +47,6 @@ export function getSignedCustomerNetIncreaseChart(paramObj = {}) {
                     width: '25%',
                 }],
             };
-
             return [data];
         },
     };
@@ -65,7 +64,7 @@ function clickableCellRender(conditions, customerType, value) {
 }
 
 function handleNumberClick(conditions, customerType, e) {
-    Trace.traceEvent(e, '点击签约客户净增分析表格上的数字查看详细列表');
+    Trace.traceEvent(e, Intl.get('analysis.click.the.number.on.the.net.increase.analysis.form.of.contracted.customers.to.view.the.detailed.list', '点击签约客户净增分析表格上的数字查看详细列表'));
 
     const dataTypeCondition = _.find(conditions, item => item.name === 'data_type');
     const dataType = _.get(dataTypeCondition, 'value', 'all');

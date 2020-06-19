@@ -7,7 +7,7 @@ import { CUSTOMER_IDS_FIELD } from '../../consts';
 
 export function getCustomerTrialQualifiedChart() {
     return {
-        title: '试用合格详细统计表',
+        title: Intl.get('analysis.detailed.statistical.table.of.trial.qualification', '试用合格详细统计表'),
         chartType: 'table',
         height: 'auto',
         layout: {sm: 24},

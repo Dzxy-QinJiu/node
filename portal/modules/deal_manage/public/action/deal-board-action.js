@@ -6,6 +6,7 @@
 import dealAjax from '../ajax';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
+import DealFilterStore from '../store/deal-filter';
 function dealBoardAction() {
     this.generateActions(
         'setInitData',
@@ -55,6 +56,17 @@ function dealBoardAction() {
         };
         if (searchObj.field) {
             bodyData.query[searchObj.field] = searchObj.value;
+        }
+        // 自定义相关的参数
+        const filterStoreData = DealFilterStore.getState();
+        // 自定义相关的参数
+        if (!_.isEmpty(filterStoreData.custom_variables)) {
+            const custom_variables = {
+                custom_variables: filterStoreData.custom_variables
+            };
+            bodyData.query.sales_opportunities[0] = _.extend(bodyData.query.sales_opportunities[0], custom_variables);
+        } else {
+            bodyData.query.sales_opportunities = [{sale_stages: stage}];
         }
         this.dispatch({loading: true, stage});
         dealAjax.getDealList(params, bodyData).then((data) => {
