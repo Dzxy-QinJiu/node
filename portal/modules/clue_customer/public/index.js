@@ -2299,6 +2299,7 @@ class ClueCustomer extends React.Component {
                 // locale={{
                 //     emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get('common.no.more.filter.crm', '没有符合条件的客户')) : ''
                 // }}
+                isPaginationPositionLeft={true}
                 pagination={{
                     total: this.state.customersSize,
                     showTotal: total => {
