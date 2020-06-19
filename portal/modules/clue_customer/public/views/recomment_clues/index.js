@@ -1138,11 +1138,16 @@ class RecommendCluesList extends React.Component {
     }
 
     //------ 升级正式版或者购买线索量的处理start ------//
-    //个人试用升级为正式版
-    handleUpgradePersonalVersion = (tipTitle = '') => {
+    //个人试用升级为正式版，isValidateExpired: 是否需要验证试用版已过期
+    handleUpgradePersonalVersion = (tipTitle = '', isValidateExpired = true) => {
         let currentVersionObj = checkVersionAndType();
+        let needUpgradeFlag = false;
+        // 验证个人试用是否已过期
+        if(isValidateExpired){
+            needUpgradeFlag = currentVersionObj.isPersonalTrial && isExpired();
+        }
         //个人试用版本过期
-        if (currentVersionObj.isPersonalTrial && isExpired()) {
+        if (needUpgradeFlag) {
             // 展示升级个人正式版的界面
             Trace.traceEvent(event, '个人试用到期后点击提取线索，打开个人升级界面');
             tipTitle = Intl.get('payment.upgrade.extract.lead', '升级后可提取线索');
@@ -1922,6 +1927,15 @@ class RecommendCluesList extends React.Component {
 
     handleLoadSizeSelect = (value) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-select-dropdown-menu-item'), `选择了：${value}条`);
+        //添加对试用版的判断处理
+        if(checkVersionAndType().isPersonalTrial) {
+            Trace.traceEvent('个人试用选择了每页展示条数，自动打开个人升级界面');
+            this.handleUpgradePersonalVersion('', false);
+            return false;
+        }else if(checkVersionAndType().isCompanyTrial) {
+            this.setState({showLoadSizePopoverVisible: true});
+            return false;
+        }
         clueCustomerAction.setPageSize(value);
         setTimeout(() => {
             this.getRecommendClueLists();
@@ -1965,9 +1979,21 @@ class RecommendCluesList extends React.Component {
         }
     }
 
+    handleLoadSizeVisibleChange = (visible) => {
+        if(!visible) {
+            this.setState({showLoadSizePopoverVisible: visible});
+        }
+    }
+
     renderSelectLoadSizeBlock() {
-        if(checkCurrentVersionType().formal) {//正式
-            return (
+        return (
+            <Popover
+                placement={isResponsiveDisplay().isWebMin ? 'bottom' : 'bottomRight'}
+                trigger="click"
+                content={getContactSalesPopoverTip(true)}
+                visible={this.state.showLoadSizePopoverVisible}
+                onVisibleChange={this.handleLoadSizeVisibleChange}
+            >
                 <div className="load-size-container" data-tracename="每页展示条数">
                     <span>{Intl.get('lead.recommend.page.size', '每页')}</span>
                     <AntcSelect size="small" value={this.state.pageSize} onSelect={this.handleLoadSizeSelect}>
@@ -1977,8 +2003,8 @@ class RecommendCluesList extends React.Component {
                     </AntcSelect>
                     <span>{Intl.get('clues.leads.strip', '条')}</span>
                 </div>
-            );
-        }else {return null;}
+            </Popover>
+        );
     }
 
     renderBtnClock = (isWebMin) => {
