@@ -1995,24 +1995,26 @@ class ClueCustomer extends React.Component {
                     );
 
                 }
-            },{
-                dataIndex: 'legal_person',
-                width: '120px',
-                render: (text, salesClueItem, index) => {
-                    if(text){
-                        return <span className='legal-btn'>
-                            <span className='legal-label'>
-                                {Intl.get('lead.company.legal.person', '法人')}
-                            </span>
-                            <span className='legal-name'>
-                                {text}
-                            </span>
-                        </span>;
-                    }else {
-                        return null;
-                    }
-                }
-            },{
+            }
+            // ,{
+            //     dataIndex: 'legal_person',
+            //     width: '120px',
+            //     render: (text, salesClueItem, index) => {
+            //         if(text){
+            //             return <span className='legal-btn'>
+            //                 <span className='legal-label'>
+            //                     {Intl.get('lead.company.legal.person', '法人')}
+            //                 </span>
+            //                 <span className='legal-name'>
+            //                     {text}
+            //                 </span>
+            //             </span>;
+            //         }else {
+            //             return null;
+            //         }
+            //     }
+            // }
+            ,{
                 dataIndex: 'phone',
                 width: '220px',
                 render: (text, salesClueItem, index) => {
