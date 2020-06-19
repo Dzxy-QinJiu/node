@@ -1069,7 +1069,7 @@ class RecommendCluesList extends React.Component {
          */
         if(versionAndType.isPersonalTrial) {//个人试用
             Trace.traceEvent(ReactDOM.findDOMNode(this), '超限后再提取线索自动打开个人升级界面');
-            this.handleUpgradePersonalVersion(Intl.get('payment.upgrade.extract.clue.limit', '提取线索超过{count}条', {count: maxLimitExtractNumber}));
+            this.handleUpgradePersonalVersion(Intl.get('payment.extract.count.limit.upgrade.tip', '提取超过{count}条,请升级正式版', {count: maxLimitExtractNumber}));
         }else if(versionAndType.isPersonalFormal//个人正式版
             || versionAndType.isCompanyFormal && this.isManager()) { //或企业正式版管理员
             Trace.traceEvent(ReactDOM.findDOMNode(this), '超限后再提取线索自动打开增加线索量界面');
