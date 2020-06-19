@@ -29,8 +29,8 @@ class CustomFieldOptions extends React.Component {
         }
     }
 
-    handleSelectDate(value) {
-        const timestamp = value && value.valueOf() || '';
+    handleSelectDate(time) {
+        const timestamp = time && time.valueOf() || '';
         this.setState({
             selectOption: timestamp
         }, () => {
@@ -82,7 +82,7 @@ class CustomFieldOptions extends React.Component {
             return (
                 <div className="select-content">
                     <DatePicker
-                        value={moment(selectValue)}
+                        defaultValue={moment(_.toNumber(selectValue))}
                         onChange={this.handleSelectDate}
                         allowClear={false}
                     />

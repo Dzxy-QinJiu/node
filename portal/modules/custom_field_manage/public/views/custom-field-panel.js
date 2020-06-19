@@ -9,9 +9,8 @@ import {Form, Input, Checkbox, Select, Button, Icon, message} from 'antd';
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
-import SelectCustomField from './select-custom-field-component';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-import {selectCustomFieldComponents, defaultInputPlaceholder} from '../utils';
+import {defaultOptionValue} from '../utils';
 import CustomFieldOptions from './custom-field-options';
 import ajax from '../ajax';
 require('../css/custom-field-panel.less');
@@ -195,7 +194,10 @@ class CustomFieldPanel extends React.Component {
     };
 
     modifyCustomFieldOptions = (selectOptionValue) => {
-        this.setState({selectOptionValue});
+        this.setState({
+            selectOptionValue,
+            isChangeCustomField: false
+        });
     }
     // 修改字段类型时，使用默认的值
     handleSelectType = () => {
@@ -203,35 +205,42 @@ class CustomFieldPanel extends React.Component {
             isChangeCustomField: true
         });
     }
-
+    // 编辑字段时，选项内容
+    getEditCustomFieldOptions = (selectCustomType, select_values) => {
+        let selectCustomFieldValue = {};
+        if (_.includes(selectType, selectCustomType)) {
+            selectCustomFieldValue.selectOption = select_values;
+            selectCustomFieldValue.fieldType = 'options';
+        } else {
+            selectCustomFieldValue.selectOption = select_values[0];
+            selectCustomFieldValue.fieldType = selectCustomType;
+        }
+        return selectCustomFieldValue;
+    };
+    
     renderFormContent = () => {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const name = Intl.get('custom.field.title', '字段名');
         // 选择字段类型
         const selectCustomType = getFieldValue('select') || _.get(this.state.editCustomField, 'field_type');
-
-        let selectComponent = {};
-        
+        const originEditCustomField = _.cloneDeep(this.props.editCustomField);
+        let selectCustomFieldValue = {};
         // 编辑单项字段
         if (getFieldValue('select')) {
             if (_.includes(selectType, selectCustomType)) {
-                selectComponent = _.find(defaultInputPlaceholder, item => item.fieldType === 'options');
+                selectCustomFieldValue = _.find(defaultOptionValue, item => item.fieldType === 'options');
             } else {
-                selectComponent = _.find(defaultInputPlaceholder, item => item.fieldType === selectCustomType);
+                selectCustomFieldValue = _.find(defaultOptionValue, item => item.fieldType === selectCustomType);
+            }
+            // 在编辑状态下，若是再次切换到原来的选项,应该显示原数据的值
+            if (!_.isEmpty(originEditCustomField) && _.get(originEditCustomField, 'field_type') === selectCustomType) {
+                const select_values = _.get(originEditCustomField, 'select_values');
+                selectCustomFieldValue = this.getEditCustomFieldOptions(selectCustomType, select_values);
             }
         } else {
-            if (!_.isEmpty(this.state.editCustomField)) {
+            if (!_.isEmpty(this.state.editCustomField)) { // 编辑单个字段信息
                 const select_values = this.state.selectOptionValue;
-                // 选择框，修改时，使用默认的值
-                if (!getFieldValue('select')) {
-                    if (_.includes(selectType, selectCustomType)) {
-                        selectComponent.selectOption = select_values;
-                        selectComponent.fieldType = 'options';
-                    } else {
-                        selectComponent.selectOption = select_values[0];
-                        selectComponent.fieldType = _.get(this.state, 'editCustomField.field_type');
-                    }
-                }
+                selectCustomFieldValue = this.getEditCustomFieldOptions(selectCustomType, select_values);
             }
         }
 
@@ -284,7 +293,7 @@ class CustomFieldPanel extends React.Component {
                             <FormItem>
                                 <CustomFieldOptions
                                     isChangeCustomField={this.state.isChangeCustomField}
-                                    formItem={selectComponent}
+                                    formItem={selectCustomFieldValue}
                                     modifyCustomFieldOptions={this.modifyCustomFieldOptions.bind(this)}
                                 />
                             </FormItem>
