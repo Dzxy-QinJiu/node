@@ -496,6 +496,11 @@ export const handleRecommendClueFilters = function(condition) {
     if(_.get(condition, 'name')) {
         delete condition.name;
     }
+    //需要处理下feature，判断是否存在热门标签里，不存在就去掉改字段
+    let feature = _.find(ADVANCED_OPTIONS, option => _.isEqual(option.value, _.get(condition, 'feature')));
+    if(!feature) {
+        delete condition.feature;
+    }
 };
 
 export const deleteEmptyProperty = function(data) {
@@ -718,3 +723,55 @@ export const isEmptyPhone = function(status) {
 };
 
 export const AREA_ALL = 'all';
+
+//热门标签
+export const ADVANCED_OPTIONS = [
+    {
+        name: Intl.get('clue.recommend.has.mobile', '有手机号'),
+        value: 'mobile_num:1',
+        processValue: (value) => {
+            return _.toNumber(value);
+        }
+    },
+    // {
+    //     name: Intl.get('clue.recommend.register.half.year', '近半年注册'),
+    //     value: `feature:${EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER}`
+    // },
+    {
+        name: Intl.get('clue.recommend.has.website', '有官网'),
+        value: 'has_website:true',
+        processValue: (value) => {
+            return value === 'true';
+        }
+    },
+    {
+        name: Intl.get('clue.recommend.smal.micro.enterprise', '小微企业'),
+        value: 'feature:小微企业'
+    },
+    {
+        name: Intl.get('clue.recommend.high.tech.enterprise.enterprise', '高新技术企业'),
+        value: 'feature:高新'
+    },
+    {
+        name: Intl.get('clue.recommend.listed', '上市企业'),
+        value: 'feature:上市'
+    },
+    /*{
+        name: Intl.get('clue.recommend.state.owned.enterprise', '国有企业'),
+        value: 'feature:国有企业'
+    },*/
+    /*{
+        name: Intl.get('clue.recommend.has.phone', '有电话'),
+        value: 'phone_num:1',
+        processValue: (value) => {
+            return _.toNumber(value);
+        }
+    },*/
+    {
+        name: Intl.get('clue.recommend.has.more.contact', '多个联系方式'),
+        value: 'phone_num:2',
+        processValue: (value) => {
+            return _.toNumber(value);
+        }
+    },
+];
