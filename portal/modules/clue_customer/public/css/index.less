@@ -313,20 +313,36 @@
         td, th {
           border-right: none !important;
           .legal-btn{
-            border: 1px solid #999;
             padding: 0;
             border-radius: 2px;
+            position: relative;
+            display: inline-block;
+            height: 20px;
+            line-height: 20px;
             .legal-label{
               display: inline-block;
-              height: 100%;
               color: #fff;
+              height: 20px;
+              line-height: 20px;
               background: #999;
-              padding:0 2px;
+              padding:0 4px;
+              font-size: 12px;
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              border-radius: 2px;
+              border-top-right-radius:0;
+              border-bottom-right-radius:0;
             }
             .legal-name{
+              height: 20px;
+              line-height: 18px;
+              border: 1px solid #999;
+              border-radius: 2px;
+              border-left: none;
               display: inline-block;
-              height: 100%;
-              padding:0 2px;
+              font-size: 12px;
+              padding:0 4px 0 36px;
             }
           }
         }

@@ -1137,13 +1137,14 @@ class ClueCustomer extends React.Component {
 
     handleContactLists = (contact, salesClueItem) => {
         var clipContact = false, showContact = [];
-        //如果有多个联系人，优先展示法人的电话,qq,email或者weChat
+
         var legalPerson = _.find(contact, contactItem => contactItem.name && contactItem.name === _.get(salesClueItem, 'legal_person'));//法人
         var notLegalPerson = _.filter(contact, contactItem => contactItem.name !== _.get(salesClueItem, 'legal_person'));//不是法人
         _.each(['phone','qq','email', 'weChat'], item => {
-            var filterLegalPersonHaveItem = _.find(notLegalPerson, contactItem => _.get(contactItem, [item, 0],));
+            ////如果有多个联系人，优先展示法人的电话,qq,email或者weChat
+            var filterLegalPersonHaveItem = _.find(notLegalPerson, contactItem => _.get(contactItem, [item, 0]));//不是法人有item这个联系方式
             if (!showContact.length) {
-                if (_.get(legalPerson, [item, 0])) {
+                if (_.get(legalPerson, [item, 0])) {//法人有item此联系方式
                     let contactItem = {
                         name: _.get(legalPerson, 'name')
                     };
@@ -1157,7 +1158,7 @@ class ClueCustomer extends React.Component {
                     showContact.push(contactItem);
                 }
             }else{
-                if(_.get(legalPerson, [item, 0]) || filterLegalPersonHaveItem){
+                if(_.get(legalPerson, [item, 0]) || filterLegalPersonHaveItem){//除了展示的联系方式外，有其他的联系方式，需要在列表中加上...这个标识
                     clipContact = true;
                 }
             }
@@ -1785,27 +1786,6 @@ class ClueCustomer extends React.Component {
             });
         }
     };
-    getClueContactNameAndPhone = (contacts) => {
-        //展示联系人的时候，有展示的优先顺序
-        //优先展示有电话，有名字的
-        //其次展示有电话没名字的
-        //最后展示只有人名没有电话的
-        var showContact = {};
-        var hasNameAndPhone = _.find(contacts,contactItem => contactItem.name && _.get(contactItem,'phone[0]'));
-        var hasNoNameAndPhone = _.find(contacts,contactItem => !contactItem.name && _.get(contactItem,'phone[0]'));
-        var hasNameAndNoPhone = _.find(contacts,contactItem => contactItem.name && !_.get(contactItem,'phone[0]'));
-        if(hasNameAndPhone){
-            showContact.name = hasNameAndPhone.name;
-            showContact.phone = _.get(hasNameAndPhone,'phone[0]');
-        }else if(hasNoNameAndPhone){
-            showContact.name = '';
-            showContact.phone = _.get(hasNoNameAndPhone,'phone[0]');
-        }else if(hasNameAndNoPhone){
-            showContact.name = hasNameAndPhone.name;
-            showContact.phone = _.get(hasNameAndPhone,'phone[0]');
-        }
-        return showContact;
-    };
 
     //渲染电话内容
     renderPhoneBlock = (salesClueItem) => {
@@ -2021,7 +2001,8 @@ class ClueCustomer extends React.Component {
                 render: (text, salesClueItem, index) => {
                     if(text){
                         return <span className='legal-btn'>
-                            <span className='legal-label'>{Intl.get('lead.company.legal.person', '法人')}
+                            <span className='legal-label'>
+                                {Intl.get('lead.company.legal.person', '法人')}
                             </span>
                             <span className='legal-name'>
                                 {text}
