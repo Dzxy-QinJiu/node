@@ -13,7 +13,7 @@ import {AntcAreaSelection, SearchInput, AntcSelect} from 'antc';
 const Option = AntcSelect.Option;
 import Trace from 'LIB_DIR/trace';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
-import { registerSize, staffSize, moneySize, companyProperty, companyStatus, EXTRACT_CLUE_CONST_MAP, AREA_ALL } from '../../utils/clue-customer-utils';
+import { registerSize, staffSize, moneySize, companyProperty, companyStatus, EXTRACT_CLUE_CONST_MAP, AREA_ALL, ADVANCED_OPTIONS } from '../../utils/clue-customer-utils';
 import {
     checkVersionAndType,
     getFormattedCondition,
@@ -32,57 +32,6 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import SearchInputPanel from './search-input-panel';
 import MobileAreaSelector from 'CMP_DIR/mobile-area-selector';
 import AvatarPopoverTip from 'CMP_DIR/avatar-popover-tip';
-
-const ADVANCED_OPTIONS = [
-    {
-        name: Intl.get('clue.recommend.has.mobile', '有手机号'),
-        value: 'mobile_num:1',
-        processValue: (value) => {
-            return _.toNumber(value);
-        }
-    },
-    {
-        name: Intl.get('clue.recommend.register.half.year', '近半年注册'),
-        value: `feature:${EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER}`
-    },
-    {
-        name: Intl.get('clue.recommend.has.website', '有官网'),
-        value: 'has_website:true',
-        processValue: (value) => {
-            return value === 'true';
-        }
-    },
-    {
-        name: Intl.get('clue.recommend.smal.micro.enterprise', '小微企业'),
-        value: 'feature:小微企业'
-    },
-    {
-        name: Intl.get('clue.recommend.high.tech.enterprise.enterprise', '高新技术企业'),
-        value: 'feature:高新'
-    },
-    {
-        name: Intl.get('clue.recommend.listed', '上市企业'),
-        value: 'feature:上市'
-    },
-    /*{
-        name: Intl.get('clue.recommend.state.owned.enterprise', '国有企业'),
-        value: 'feature:国有企业'
-    },*/
-    /*{
-        name: Intl.get('clue.recommend.has.phone', '有电话'),
-        value: 'phone_num:1',
-        processValue: (value) => {
-            return _.toNumber(value);
-        }
-    },*/
-    {
-        name: Intl.get('clue.recommend.has.more.contact', '多个联系方式'),
-        value: 'phone_num:2',
-        processValue: (value) => {
-            return _.toNumber(value);
-        }
-    },
-];
 
 let searchTimeOut = null;
 const delayTime = 500;
