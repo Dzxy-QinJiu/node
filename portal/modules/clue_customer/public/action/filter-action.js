@@ -25,7 +25,8 @@ function FilterAction() {
         'setSimilarFiled',
         'setNotConnectedClues',
         'setLeadFromLeadPool',
-        'setAppliedTryLead'
+        'setAppliedTryLead',
+        'setFilterCustomField', // 筛选自定义字段
     );
     //获取负责人列表
     this.getTeamMemberList = function() {

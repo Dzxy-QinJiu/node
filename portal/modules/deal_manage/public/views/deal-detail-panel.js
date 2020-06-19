@@ -25,6 +25,7 @@ import dealAjax from '../ajax';
 import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
 import { PrivilegeChecker,hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { orderEmitter } from 'PUB_DIR/sources/utils/emitters';
+import CustomField from 'CMP_DIR/custom-field';
 
 const TOP_STAGE_HEIGHT = 110;//头部阶段
 //展示申请签约用户的阶段
@@ -602,9 +603,24 @@ class DealDetailPanel extends React.Component {
         });
     };
 
+    saveEditCustomFieldInfo = (saveObj, successFunc, errorFunc) => {
+        // 自定义的值
+        const customVariables = _.get(this.state.currDeal, 'custom_variables', {});
+        let updateObj = _.cloneDeep(saveObj);
+        delete updateObj.id;
+        const submitData = {
+            id: _.get(this.state, 'currDeal.id'),
+            custom_variables: _.extend(customVariables, updateObj)
+        };
+        this.saveDealBasicInfo('custom_variables', submitData, successFunc, errorFunc);
+
+    }
+
     renderDetailContent() {
         let deal = this.state.currDeal;
         let dealContentHeight = $('body').height() - TOP_STAGE_HEIGHT;
+        //确认删除状态下和处于关闭状态时，不可修改订单的信息
+        let hasEditPrivilege = !this.state.isDelConfirmShow && !deal.oppo_status && hasPrivilege(HAS_UPDATA);
         return (
             <div className="deal-detail-content" style={{height: dealContentHeight}}>
                 <GeminiScrollbar>
@@ -612,6 +628,17 @@ class DealDetailPanel extends React.Component {
                         content={this.renderDealContent()}
                         bottom={this.renderDealBottom()}
                     />
+                    {
+                        _.isEmpty(this.props.opportunityCustomFieldData) ? null : (
+                            <CustomField
+                                customFieldData={this.props.opportunityCustomFieldData}
+                                basicDetailData={deal}
+                                hasEditPrivilege={hasEditPrivilege}
+                                saveEditCustomFieldInfo={this.saveEditCustomFieldInfo}
+                                editWidth={330}
+                            />
+                        )
+                    }
                     {this.state.isShowApplyUserForm ? (
                         <ApplyUserForm
                             userType={this.state.applyType}
@@ -645,7 +672,8 @@ DealDetailPanel.propTypes = {
     isBoardView: PropTypes.bool,
     currDeal: PropTypes.object,
     currDealId: PropTypes.string,
-    hideDetailPanel: PropTypes.func
+    hideDetailPanel: PropTypes.func,
+    opportunityCustomFieldData: PropTypes.object
 };
 
 export default DealDetailPanel;

@@ -1,4 +1,3 @@
-var React = require('react');
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import { Alert, Icon, Popover, message } from 'antd';
 import { AntcSelect } from 'antc';

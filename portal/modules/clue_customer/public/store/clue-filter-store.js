@@ -77,6 +77,7 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.leadFromLeadPool = false;
     //获取申请试用企业版的线索
     this.appliedTryLead = false;
+    this.customized_variables = {}; // 自定义类型筛选
 };
 //获取未打通电话的线索
 ClueFilterStore.prototype.setNotConnectedClues = function(flag) {
@@ -248,6 +249,11 @@ ClueFilterStore.prototype.setSimilarFiled = function(similarItem){
     }else{
         this.filterLabels = '';
     }
+};
+
+// 筛选自定义字段
+ClueFilterStore.prototype.setFilterCustomField = function(customItem) {
+    this.customized_variables = _.extend(this.customized_variables, customItem);
 };
 
 module.exports = alt.createStore(ClueFilterStore, 'ClueFilterStore');
