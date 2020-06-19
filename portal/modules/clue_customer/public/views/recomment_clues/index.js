@@ -6,7 +6,7 @@
 import '../../css/recommend_clues_lists.less';
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Button, Checkbox, message, Popover, Tag, Icon} from 'antd';
+import {Button, Checkbox, Switch, message, Popover, Tag, Icon} from 'antd';
 import {AntcSelect} from 'antc';
 const Option = AntcSelect.Option;
 import NoDataIntro from 'CMP_DIR/no-data-intro';
@@ -815,11 +815,11 @@ class RecommendCluesList extends React.Component {
     renderCheckPhonePopTip() {
         let i18n = {
             id: 'lead.check.phone.free.weekly.tip',
-            name: '本周提线索可免费检测空号，快来试试吧！'
+            name: '开启空号检测，可免费检测空号，快来试试吧！'
         };
         if(this.hasEnableCheckPhone()) {//启用空号检测
             i18n.id = 'lead.check.phone.enabled.free.weekly.tip';
-            i18n.name = '空号检测已开启，本周提线索免费检测，快来试试吧！';
+            i18n.name = '空号检测已开启，本周免费，提取线索即可体验。';
         }
         return (
             <ReactIntl.FormattedMessage
@@ -2024,14 +2024,16 @@ class RecommendCluesList extends React.Component {
                     visible={this.isFirstShowCheckPhonePop() || this.state.showCheckPhoneFeaturePopover}
                     onVisibleChange={this.setShowCheckPhonePopTip}
                 >
-                    <Checkbox
-                        checked={this.hasEnableCheckPhone()}
-                        disabled={this.state.setEnableCheckPhone}
-                        onChange={this.handleCheckPhoneChange}
-                        className="check-phone-enable-checkbox"
-                    >
-                        {Intl.get('lead.check.phone', '空号检测')}
-                    </Checkbox>
+                    <div className="check-phone-enable-checkbox">
+                        <Switch
+                            checked={this.hasEnableCheckPhone()}
+                            disabled={this.state.setEnableCheckPhone}
+                            size='small'
+                            onChange={this.handleCheckPhoneChange}
+
+                        />
+                        <span>{Intl.get('lead.check.phone', '空号检测')}</span>
+                    </div>
                 </AvatarPopoverTip>
                 {showLoadSize ? this.renderSelectLoadSizeBlock() : null}
                 {isWebMin ? alertContent : null}

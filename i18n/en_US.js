@@ -3506,8 +3506,8 @@ var en_US = {
     'lead.check.phone.explain': 'Only non-14, 16, 17 and 19 mobile phone Numbers are supported',//仅支持非14、16、17、19号段手机号
     'lead.direct.extraction': 'Direct extraction',//直接提取
     'lead.check.phone.result': 'Null detection results',//空号检测结果
-    'lead.check.phone.enabled.free.weekly.tip': 'Empty number detection has been opened, this week to raise clues free detection, quick to try it!',//空号检测已开启，本周提线索免费检测，快来试试吧！
-    'lead.check.phone.free.weekly.tip': 'Free detection of clues available this week, come and try it!',//本周提线索可免费检测空号，快来试试吧！
+    'lead.check.phone.enabled.free.weekly.tip': 'Empty number detection has been enabled, free this week, extract clues can be experienced.',//空号检测已开启，本周免费，提取线索即可体验。
+    'lead.check.phone.free.weekly.tip': 'Open the empty number detection, free detection of empty number, come and try!',//开启空号检测，可免费检测空号，快来试试吧！
     'lead.extract.confirm': 'Confirm to extract',//确认提取
     'lead.single.check.phone.no.empty.phone.tip': 'There are {allCount} Numbers in this clue, but the system has not found any suspected empty Numbers',//此线索有{allCount}个号码，系统未发现疑似空号
     'lead.batch.check.phone.no.empty.phone.tip': 'The system did not find all possible clues to empty Numbers',//系统未发现全部疑似空号的线索
