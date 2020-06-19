@@ -268,6 +268,9 @@ var NavSidebar = createReactClass({
         //     }
         // });
         $('.navbar').on('click', '.leads_icon_container', function(e) {
+            //点击线索管理后，需要移除已提取线索数
+            Oplate.has_extracted_clue_count = 0;
+            $(this).removeClass('.leads_extracted_count_icon_container more-than-one-hundred').attr('data-count', 0);
             //点击到a标签上，不做处理
             if ($(e.target).is('a')) {
                 return;

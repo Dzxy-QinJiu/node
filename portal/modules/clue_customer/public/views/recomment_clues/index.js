@@ -187,6 +187,16 @@ class RecommendCluesList extends React.Component {
         if (!tasks.length) {
             return;
         }
+        //给线索管理图标添加已提取线索数
+        let leadIconEl = $('.leads_icon_container'), cls = 'leads_extracted_count_icon_container';
+        let extractedCount = _.get(Oplate, 'has_extracted_clue_count', 0);
+        extractedCount += 1;
+        Oplate.has_extracted_clue_count = extractedCount;
+        if(extractedCount >= 100) {
+            extractedCount = '99+';
+            cls += ' more-than-one-hundred';
+        }
+        leadIconEl.addClass(cls).attr('data-count', extractedCount);
 
         // 如果提取给的销售是自己，则需要提示刷新
         if(_.isEqual(_.get(taskParams,'user_id'), userData.getUserData().user_id)) {
