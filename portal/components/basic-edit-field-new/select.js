@@ -172,7 +172,7 @@ let BasicEditSelectField = createReactClass({
                             let curOptions = _.find(this.state.selectOptions, option => option.props && option.props.value === item);
                             return _.get(curOptions,'props.children','');
                         });
-                        displayText = _.isArray(valueNames) ? valueNames.join(',') : '';
+                        displayText = _.isArray(valueNames) ? valueNames.join('，') : '';
                     } else {//单选时的处理
                         let curOptions = _.find(this.state.selectOptions, option => option.props && option.props.value === value);
                         displayText = _.get(curOptions,'props.children','');
@@ -235,9 +235,7 @@ let BasicEditSelectField = createReactClass({
                                 onClick={this.setEditable.bind(this)}/>) : null
                         }
                         <span className="inline-block basic-info-text">
-                            {
-                                _.isArray(displayText) ? _.join(displayText, '、') : displayText
-                            }
+                            {displayText}
                         </span>
                     </div>);
             } else {

@@ -75,6 +75,7 @@ class CustomField extends React.Component {
         });
         // 默认的自定义的值
         let value = customVariables[name];
+        let displayText = value;
         // 是否是选择类型
         if (_.includes(selectType, fieldType)) {
             let selectOptions = _.map(_.get(item, 'select_values'), (name, i) => {
@@ -85,6 +86,8 @@ class CustomField extends React.Component {
                 isMultiple = true;
                 if ( _.isEmpty(value)) {
                     value = [];
+                } else if (_.isArray(value) && value.length > 1) {
+                    displayText = _.join(value, '，');
                 }
             }
             if (_.includes(['radio', 'checkbox'], fieldType)) {
@@ -119,7 +122,7 @@ class CustomField extends React.Component {
                             width={editWidth}
                             multiple={isMultiple}
                             id={basicDetailData.id}
-                            displayText={value}
+                            displayText={displayText}
                             value={value}
                             field={name}
                             selectOptions={selectOptions}
