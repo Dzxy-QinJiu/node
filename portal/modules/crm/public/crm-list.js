@@ -2504,6 +2504,7 @@ class Crm extends React.Component {
                                 rowClassName={this.handleRowClassName}
                                 dataSource={this.state.curPageCustomers}
                                 util={{ zoomInSortArea: true }}
+                                isPaginationPositionLeft={true}
                                 pagination={{
                                     total: this.state.customersSize,
                                     showTotal: total => {
