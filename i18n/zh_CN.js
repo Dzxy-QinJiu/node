@@ -4397,6 +4397,7 @@ var zh_CN = {
     'payment.platform.order.no': '平台订单号',
     'payment.platform': '支付平台',
     'payment.records': '付费记录',
+    'payment.extract.count.limit.upgrade.tip': '提取超过{count}条,请升级正式版',
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
