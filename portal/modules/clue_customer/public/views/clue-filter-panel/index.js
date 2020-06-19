@@ -415,7 +415,7 @@ class ClueFilterPanel extends React.Component {
             }
 
         });
-        return _.flattenDeep(provinceList);
+        return _.chain(provinceList).flattenDeep().uniq().value();
     };
     setDefaultSelectCommonFilter = (commonData,notSelfHandle,callback) => {
         var targetIndex = '';
