@@ -123,6 +123,7 @@ var en_US = {
     'common.not.enabled': 'Is not enabled',//未启用
     'common.edit.password': 'Change Password',//修改密码
     'common.login.time': 'Time',//时间
+    'common.login.time.require.msg': 'Please input time',//请输入时间
     'common.login.equipment': 'Equipment',//设备
     'common.operate': 'Operation',//操作
     'common.input.correct.phone': 'Please enter the correct phone number',//请输入正确的电话号码
@@ -3818,6 +3819,7 @@ var en_US = {
     'bussiness.while.time.range.no.empty': 'Travel time cannot be empty',//外出时间不能为空
     'business.while.trip.time.range': 'Out time',//外出时间
     'business.while.trip.go.out': 'Out',//外出
+    'business.while.position.num': 'Place {num}',//地点{num}
     'business.leave.time.range': 'Bussiness range',//出差时长
     'business.change.total.time': 'Please modify the time before adding',//请修改时间再添加
     'business.leave.time.no.overlay': 'Do not repeat time',//外出时间不要重复

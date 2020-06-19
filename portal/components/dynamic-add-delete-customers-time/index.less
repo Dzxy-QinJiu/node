@@ -1,12 +1,32 @@
 //动态添加、删除联系人及联系方式的组件样式
 @import "../../public/css/common-variables";
 .add-delete-customers-time{
-  overflow: hidden;
+
   .contact-wrap{
-    overflow: hidden;
+
     background: #fff;
-    padding: 10px;
+    padding:0;
     margin-bottom: 10px;
+    .contact-title{
+      height: 32px;
+      line-height: 32px;
+      color: #666666;
+      font-size: 14px;
+      padding-left: 8px;
+      background: #F8F9FB;
+      overflow: hidden;
+      i.iconfont.icon-delete{
+        float: right;
+        margin-right:10px;
+        color:@secondary-font-color;
+        &.disabled{
+          color: transparent;
+        }
+      }
+    }
+    .contact-content{
+      padding: 13px 0 5px 0;
+    }
     .add-apply-time{
       .ant-time-picker {
         float: left;
@@ -45,16 +65,6 @@
     }
     .customer-name-item{
       margin-bottom: 13px;
-      .iconfont.icon-delete.disabled{
-        color: transparent;
-      }
-    }
-
-    i.iconfont.icon-delete{
-      margin-right:10px;
-      color:@secondary-font-color;
-      position: absolute;
-      top:0;
     }
 
     .contact-way-buttons{
@@ -76,13 +86,12 @@
     margin-bottom: 0;
   }
   .add-customer{
-    background: #fff;
-    text-align: right;
-    color:#8EAAC5;
+    color:@primary-color;
     cursor: pointer;
     padding-right: 40px;
     font-size: 14px;
     padding-bottom: 10px;
+    margin-top: 5px;
   }
   .form-item-label.visit-end-time{
     .ant-form-item-control-wrapper{

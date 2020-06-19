@@ -35,7 +35,10 @@ import {
     WEEKDAYS,
     CONFIG_TYPE,
     winningClueMaxCount,
-    COMPANY_PHONE, COMPANY_VERSION_KIND
+    COMPANY_PHONE, COMPANY_VERSION_KIND,
+    CHNNUMCHAR,
+    CHNUNITSECTION,
+    CHNUNITCHAR
 } from './consts';
 var DateSelectorUtils = require('antc/lib/components/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -1598,11 +1601,11 @@ exports.checkCustomerTotalLeaveTime = function(startTime,endTime,customers,isAdd
             return customerSelectRange + (customerItem.visit_end_time - customerItem.visit_start_time);
         },customerSelectRange);
 
-        if(customerSelectRange === totalRange){
-            return {
-                errTip: Intl.get('business.change.total.time', '请修改时间再添加')
-            };
-        }
+        // if(customerSelectRange === totalRange){
+        //     return {
+        //         errTip: Intl.get('business.change.total.time', '请修改时间再添加')
+        //     };
+        // }
     }
 };
 
@@ -1671,4 +1674,93 @@ exports.renderUnreadMsg = function() {
         title={Intl.get('user.apply.unread.reply', '有未读回复')}
     />;
 };
+//将数字转换成汉字
+exports.changeNumberToChinese = function(num){
+    function SectionToChinese(section){
+        var strIns = '', chnStr = '';
+        var unitPos = 0;
+        var zero = true;
+        while(section > 0){
+            var v = section % 10;
+            if(v === 0){
+                if(!zero){
+                    zero = true;
+                    chnStr = CHNNUMCHAR[v] + chnStr;
+                }
+            }else{
+                zero = false;
+                strIns = CHNNUMCHAR[v];
+                strIns += CHNUNITCHAR[unitPos];
+                chnStr = strIns + chnStr;
+            }
+            unitPos++;
+            section = Math.floor(section / 10);
+        }
+        return chnStr;
+    }
+    var unitPos = 0;
+    var strIns = '', chnStr = '';
+    var needZero = false;
+    if(num === 0){
+        return CHNNUMCHAR[0];
+    }
+    while(num > 0){
+        var section = num % 10000;
+        if(needZero){
+            chnStr = CHNNUMCHAR[0] + chnStr;
+        }
+        strIns = SectionToChinese(section);
+        strIns += (section !== 0) ? CHNUNITSECTION[unitPos] : CHNUNITSECTION[0];
+        chnStr = strIns + chnStr;
+        needZero = (section < 1000) && (section > 0);
+        num = Math.floor(num / 10000);
+        unitPos++;
+    }
+    return chnStr;
+};
+//根据所有客户的时间间隔计算总时长
+exports.getTotalTimeByInterval = function(cloneCustomers) {
+    //计算具体的外出时间，不同的外出时间计算
+    var total_range = 0;
+    //先过滤掉相同的时间的
+    cloneCustomers = _.unionWith(cloneCustomers, _.isEqual);
+    var customerTime = [];
+    _.each(cloneCustomers,(item,index) => {
+        if(index === 0){
+            customerTime.push(item);
+        }else{
+            //判断开始和结束时间和之前的时间是否有交叉的情况
+            var itemStartTime = item.visit_start_time;
+            var itemEndTime = item.visit_end_time;
+            var targetObj = _.find(customerTime,timeItem => (itemStartTime >= timeItem.visit_start_time && itemStartTime < timeItem.visit_end_time) || (itemEndTime > timeItem.visit_start_time && itemEndTime <= timeItem.visit_end_time));
+            if(targetObj){
+                if(itemStartTime >= targetObj.visit_start_time && itemStartTime < targetObj.visit_end_time){
+                    if(targetObj.visit_end_time <= itemEndTime){
+                        targetObj.visit_end_time = itemEndTime;
+                    }
+                }
+                if(itemEndTime > targetObj.visit_start_time && itemEndTime <= targetObj.visit_end_time){
+                    if(targetObj.visit_start_time >= itemStartTime){
+                        targetObj.visit_start_time = itemStartTime;
+                    }
+                }
+            }else{
+                //是否包含之前的时间
+                var timeObj = _.find(customerTime,timeItem => (itemStartTime <= timeItem.visit_start_time && itemEndTime >= timeItem.visit_end_time) );
+                if(timeObj){
+                    timeObj.visit_start_time = itemStartTime;
+                    timeObj.visit_end_time = itemEndTime;
+                }else{
+                    customerTime.push(item);
+                }
+            }
+        }
+    });
+    _.each(customerTime,item => {
+        total_range += (item.visit_end_time - item.visit_start_time);
+    });
+    return total_range;
+};
+
+
 

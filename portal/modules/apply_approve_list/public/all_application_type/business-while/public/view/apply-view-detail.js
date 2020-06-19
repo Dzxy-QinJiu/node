@@ -39,7 +39,7 @@ import ModalDialog from 'CMP_DIR/ModalDialog';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_APPROVE_TYPES, APPLY_FINISH_STATUS,LEAVE_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
-import {disabledDate, calculateSelectType} from 'PUB_DIR/sources/utils/common-method-util';
+import {disabledDate, calculateSelectType,getTotalTimeByInterval} from 'PUB_DIR/sources/utils/common-method-util';
 import {calculateTotalTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 import classNames from 'classnames';
 import {
@@ -658,18 +658,18 @@ class ApplyViewDetail extends React.Component {
         return detailStart && detailEnd && detailStart === detailEnd;
     };
     renderTextLeaveTotalTime = (detail) => {
-        var detailStart = _.get(detail, 'apply_time[0].start',''), detailEnd = _.get(detail, 'apply_time[0].end','');
-        var begin_time = moment(detailStart).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        var end_time = moment(detailEnd).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        var canEditTime = this.canEditBusinessTime();
-        var whileTime = calculateTotalTimeInterval({begin_time: moment(detailStart).valueOf(), end_time: moment(detailEnd).valueOf()});
+        let cloneCustomers = _.map(_.get(detail, 'customers',[]), item => {
+            return {
+                visit_start_time: moment(item.visit_time.start).valueOf(),
+                visit_end_time: moment(item.visit_time.end).valueOf()
+            };
+        });
+        var whileTime = calculateTotalTimeInterval(getTotalTimeByInterval(cloneCustomers));
         return (
             <span className='total-business-text'>
-                {begin_time + ' - ' + end_time}
                 <span className='while-time'>
                     {Intl.get('apply.total.business.while.time', '共{totalTime}',{totalTime: whileTime})}
                 </span>
-                {canEditTime && !_.get(this.state.customerUpdate,'id') ? <i className="iconfont icon-update" onClick={this.handleEditTotalVisitTime}></i> : null}
             </span>
         );
     };
