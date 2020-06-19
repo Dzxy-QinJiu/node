@@ -343,7 +343,7 @@ class CustomerUsers extends React.Component {
 
     //用户的应用
     getUserAppOptions(userObj) {
-        let isShowCheckbox = this.showCheckBoxPrivilege();
+        let isShowCheckbox = this.checkBoxShowPrivilege();
         let appList = userObj.apps;
         let userId = userObj.user ? userObj.user.user_id : '';
         if (_.isArray(appList) && appList.length) {
@@ -428,10 +428,11 @@ class CustomerUsers extends React.Component {
                             </Button>
                         </div>
                     </Popover>)}
-                <Button className="crm-detail-add-btn" onClick={this.triggerUserList.bind(this, userNum)}
+                {userNum ? <Button className="crm-detail-add-btn" onClick={this.triggerUserList.bind(this, userNum)}
                     data-tracename="点击已开通用户数">
                     {Intl.get('crm.user.list.click.all.user', '查看全部用户')}
-                </Button>
+                </Button> : null}
+
             </div>
 
         );
@@ -924,7 +925,7 @@ class CustomerUsers extends React.Component {
         }
     }
     renderCrmUserItem(userObj, index){
-        let isShowCheckbox = this.showCheckBoxPrivilege();
+        let isShowCheckbox = this.checkBoxShowPrivilege();
         let user = _.isObject(userObj) ? userObj.user : {};
         let userNameText = `${_.get(user, 'user_name', '')}(${_.get(user, 'nick_name', '')})`;
         let isManager = _.get(user, 'group_position', '') === 'manager';//该用户是否是管理员
@@ -1022,8 +1023,7 @@ class CustomerUsers extends React.Component {
         if(userNum) {
             return (
                 <span className={userNumClass}>
-                    {this.showCheckBoxPrivilege() ? <Checkbox checked={this.state.allUserCheck} onChange={this.onCheckboxChange}>{Intl.get('crm.user.all.check', '全选{num}个用户',{num: userNum || '0'})}</Checkbox> : null}
-
+                    {this.checkBoxShowPrivilege() ? <Checkbox checked={this.state.allUserCheck} onChange={this.onCheckboxChange}>{Intl.get('crm.user.all.check', '全选{num}个用户',{num: userNum || '0'})}</Checkbox> : null}
                 </span>
             );
         }else if(!userApplyListNum) {
@@ -1036,25 +1036,24 @@ class CustomerUsers extends React.Component {
     };
     onCheckboxChange = (e) => {
         let checked = e.target.checked;
-        this.setState({
-            allUserCheck: checked
-        },() => {
-            _.each(this.state.crmUserList, userObj => {
-                if (userObj) {
-                    //用户的（取消）选择处理
-                    userObj.user.checked = checked;
-                    //用户下应用的（取消）选择处理
-                    if (_.isArray(userObj.apps) && userObj.apps.length) {
-                        _.each(userObj.apps, app => {
-                            app.checked = checked;
-                        });
-                    }
+        _.each(this.state.crmUserList, userObj => {
+            if (userObj) {
+                //用户的（取消）选择处理
+                userObj.user.checked = checked;
+                //用户下应用的（取消）选择处理
+                if (!_.isEmpty(userObj.apps)) {
+                    _.each(userObj.apps, app => {
+                        app.checked = checked;
+                    });
                 }
-            });
-            this.setState({crmUserList: this.state.crmUserList});
+            }
+        });
+        this.setState({
+            allUserCheck: checked,
+            crmUserList: this.state.crmUserList
         });
     };
-    showCheckBoxPrivilege = () => {
+    checkBoxShowPrivilege = () => {
         let isApplyButtonShow = false;
         if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
             isApplyButtonShow = true;
@@ -1069,7 +1068,7 @@ class CustomerUsers extends React.Component {
         return (<div className="crm-user-list-container" data-tracename="用户页面">
             <div className="user-number">
                 {this.state.isLoading ? null : this.renderTotalBlock()}
-                {this.showCheckBoxPrivilege() ? this.renderApplyBtns()
+                {this.checkBoxShowPrivilege() ? this.renderApplyBtns()
                     : null}
             </div>
             {/*userNum ? (
