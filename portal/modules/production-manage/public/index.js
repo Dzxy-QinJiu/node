@@ -27,7 +27,7 @@ import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import IpFilterAjax from './ajax/ip-filter-ajax';
 import IpFilter from './views/ip-filter';
 import production_manager_privilegeConfig from './privilege-config';
-import {isExpired} from 'PUB_DIR/sources/utils/common-method-util';
+import {isExpired, getContactSalesPopoverTip, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 //用来存储获取的oplate\matomo产品列表，不用每次添加产品时都获取一遍
 let productList = [];
 class ProductionManage extends React.Component {
@@ -256,7 +256,7 @@ class ProductionManage extends React.Component {
 
     // 是否显示添加过滤IP的功能的判断
     isShowFilterIp = () => {
-        return hasPrivilege(production_manager_privilegeConfig.ORGANIZATION_CONFIG) && (
+        return !isCurtao() && hasPrivilege(production_manager_privilegeConfig.ORGANIZATION_CONFIG) && (
             hasPrivilege(production_manager_privilegeConfig.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL) ||
                 hasPrivilege(production_manager_privilegeConfig.CRM_CONTRACT_SALES_REPORTS_MANAGER) ||
                 hasPrivilege(production_manager_privilegeConfig.CRM_DAILY_REPORT)
@@ -268,7 +268,7 @@ class ProductionManage extends React.Component {
             return (
                 <Popover
                     placement='left'
-                    content={Intl.get('payment.please.upgrade.company.version', '请先升级到基础版以上版本，联系销售：{contact}',{contact: '400-6978-520'})}
+                    content={getContactSalesPopoverTip()}
                 >
                     <Button
                         className="filter-ip-btn"
