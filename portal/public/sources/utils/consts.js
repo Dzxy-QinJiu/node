@@ -1007,6 +1007,6 @@ export const PHONE_STATUS_MAP = {
     [PHONE_STATUS_KEY.REAL]: Intl.get('lead.phone.status.real', '实号'),
     [PHONE_STATUS_KEY.STOP]: Intl.get('lead.phone.status.halt', '停机'),
 };
-export const chnNumChar = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
-export const chnUnitSection = ['', '万', '亿', '万亿', '亿亿'];
-export const chnUnitChar = ['', '十', '百', '千'];
+export const CHNNUMCHAR = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+export const CHNUNITSECTION = ['', '万', '亿', '万亿', '亿亿'];
+export const CHNUNITCHAR = ['', '十', '百', '千'];

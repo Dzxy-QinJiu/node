@@ -408,15 +408,15 @@ exports.calculateTotalTimeRange = (formData) => {
     }
     return timeRange;
 };
-//根据时间间隔，计算时间间隔试X小时X分钟
+//根据时间间隔，计算时间间隔是X小时X分钟
 exports.calculateTotalTimeInterval = (totalTime) => {
     //分毫秒数
     const miniteMillis = 1 * 60 * 1000;
     //小时毫秒数
-    var HOUR_MILLIS = 60 * miniteMillis;
+    var hour_millis = 60 * miniteMillis;
     //计算小时
-    var hours = Math.floor(totalTime / HOUR_MILLIS);
-    var leftMillis = totalTime - hours * HOUR_MILLIS;
+    var hours = Math.floor(totalTime / hour_millis);
+    var leftMillis = totalTime - hours * hour_millis;
     //计算分钟
     var minutes = Math.floor(leftMillis / miniteMillis);
     //按情况显示

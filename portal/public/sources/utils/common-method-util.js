@@ -36,9 +36,9 @@ import {
     CONFIG_TYPE,
     winningClueMaxCount,
     COMPANY_PHONE, COMPANY_VERSION_KIND,
-    chnNumChar,
-    chnUnitSection,
-    chnUnitChar
+    CHNNUMCHAR,
+    CHNUNITSECTION,
+    CHNUNITCHAR
 } from './consts';
 var DateSelectorUtils = require('antc/lib/components/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -1684,12 +1684,12 @@ exports.changeNumberToChinese = function(num){
             if(v === 0){
                 if(!zero){
                     zero = true;
-                    chnStr = chnNumChar[v] + chnStr;
+                    chnStr = CHNNUMCHAR[v] + chnStr;
                 }
             }else{
                 zero = false;
-                strIns = chnNumChar[v];
-                strIns += chnUnitChar[unitPos];
+                strIns = CHNNUMCHAR[v];
+                strIns += CHNUNITCHAR[unitPos];
                 chnStr = strIns + chnStr;
             }
             unitPos++;
@@ -1701,15 +1701,15 @@ exports.changeNumberToChinese = function(num){
     var strIns = '', chnStr = '';
     var needZero = false;
     if(num === 0){
-        return chnNumChar[0];
+        return CHNNUMCHAR[0];
     }
     while(num > 0){
         var section = num % 10000;
         if(needZero){
-            chnStr = chnNumChar[0] + chnStr;
+            chnStr = CHNNUMCHAR[0] + chnStr;
         }
         strIns = SectionToChinese(section);
-        strIns += (section !== 0) ? chnUnitSection[unitPos] : chnUnitSection[0];
+        strIns += (section !== 0) ? CHNUNITSECTION[unitPos] : CHNUNITSECTION[0];
         chnStr = strIns + chnStr;
         needZero = (section < 1000) && (section > 0);
         num = Math.floor(num / 10000);
