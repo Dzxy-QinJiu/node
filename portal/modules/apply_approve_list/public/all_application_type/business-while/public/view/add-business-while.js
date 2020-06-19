@@ -21,9 +21,10 @@ var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import {
     checkCustomerTotalLeaveTime,
     getStartEndTimeOfDiffRange,
-    getTimeWithSecondZero
+    getTimeWithSecondZero,
+    getTotalTimeByInterval
 } from 'PUB_DIR/sources/utils/common-method-util';
-import {calculateTotalTimeInterval, calculateTimeIntervalByMillSecond} from 'PUB_DIR/sources/utils/common-data-util';
+import {calculateTotalTimeInterval} from 'PUB_DIR/sources/utils/common-data-util';
 
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
@@ -77,54 +78,18 @@ class AddBusinessWhile extends React.Component {
     handleCustomersChange = (customers) => {
         let formData = this.state.formData;
         formData.customers = customers;
-        //计算具体的外出时间，不同的外出时间计算
-        var total_range = 0, cloneCustomers = _.map(customers, item => {
+        let cloneCustomers = _.map(customers, item => {
             return {
                 visit_start_time: item.visit_start_time,
                 visit_end_time: item.visit_end_time
             };
         });
-        //先过滤掉相同的时间的
-        cloneCustomers = _.unionWith(cloneCustomers, _.isEqual);
-        var customerTime = [];
-        _.each(cloneCustomers,(item,index) => {
-            if(index === 0){
-                customerTime.push(item);
-            }else{
-                //判断开始和结束时间和之前的时间是否有交叉的情况
-                var targetObj = _.find(customerTime,timeItem => (item.visit_start_time >= timeItem.visit_start_time && item.visit_start_time < timeItem.visit_end_time) || (item.visit_end_time > timeItem.visit_start_time && item.visit_end_time <= timeItem.visit_end_time));
-                if(targetObj){
-                    if(item.visit_start_time >= targetObj.visit_start_time && item.visit_start_time < targetObj.visit_end_time){
-                        if(targetObj.visit_end_time <= item.visit_end_time){
-                            targetObj.visit_end_time = item.visit_end_time;
-                        }
-                    }
-                    if(item.visit_end_time > targetObj.visit_start_time && item.visit_end_time <= targetObj.visit_end_time){
-                        if(targetObj.visit_start_time >= item.visit_start_time){
-                            targetObj.visit_start_time = item.visit_start_time;
-                        }
-                    }
-                }else{
-                    //是否包含之前的时间
-                    var timeObj = _.find(customerTime,timeItem => (item.visit_start_time <= timeItem.visit_start_time && item.visit_end_time >= timeItem.visit_end_time) );
-                    if(timeObj){
-                        timeObj.visit_start_time = item.visit_start_time;
-                        timeObj.visit_end_time = item.visit_end_time;
-                    }else{
-                        customerTime.push(item);
-                    }
-                }
-            }
-        });
-        _.each(customerTime,item => {
-            total_range += (item.visit_end_time - item.visit_start_time);
-        });
-        formData.total_range = calculateTimeIntervalByMillSecond(total_range);
+        formData.total_range = calculateTotalTimeInterval(getTotalTimeByInterval(cloneCustomers));
         this.setState({formData});
     };
     calculateTotalLeaveRange = () => {
         var formData = this.state.formData;
-        formData.total_range = calculateTotalTimeInterval(formData);
+        formData.total_range = calculateTotalTimeInterval(formData.end_time - formData.begin_time);
         this.setState({
             formData: formData
         });

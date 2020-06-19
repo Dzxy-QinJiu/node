@@ -13,7 +13,8 @@ const FormItem = Form.Item;
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import {AntcAreaSelection, AntcSelect} from 'antc';
 const Option = AntcSelect.Option;
-import {disabledHour,getTimeWithSecondZero,disabledMinute,checkCustomerTotalLeaveTime,NumberToChinese} from 'PUB_DIR/sources/utils/common-method-util';
+import {disabledHour,getTimeWithSecondZero,disabledMinute,checkCustomerTotalLeaveTime,
+    changeNumberToChinese} from 'PUB_DIR/sources/utils/common-method-util';
 
 class DynamicAddDelCustomers extends React.Component {
     constructor(props) {
@@ -36,9 +37,12 @@ class DynamicAddDelCustomers extends React.Component {
     componentWillReceiveProps(nextProps) {
         var customers = this.state.customers;
         if (nextProps.while_date && nextProps.while_date !== this.props.while_date){
-            _.forEach(customers, (customerItem) => {
-                customerItem.visit_start_time = moment(nextProps.while_date).startOf('day').add(moment(customerItem.visit_start_time).hour(),'hour').add(moment(customerItem.visit_start_time).minute(),'minutes').valueOf();
-                customerItem.visit_end_time = moment(nextProps.while_date).startOf('day').add(moment(customerItem.visit_end_time).hour(),'hour').add(moment(customerItem.visit_end_time).minute(),'minutes').valueOf();
+            _.forEach(customers, (customerItem) => {//如果父组件中修改了日期，这里需要把时间改成外部日期下的时间
+                var nextPropsDate = moment(nextProps.while_date).startOf('day');
+                let customerStartTime = customerItem.visit_start_time;
+                let customerEndTime = customerItem.visit_end_time;
+                customerItem.visit_start_time = nextPropsDate.add(moment(customerStartTime).hour(),'hour').add(moment(customerStartTime).minute(),'minutes').valueOf();
+                customerItem.visit_end_time = nextPropsDate.add(moment(customerEndTime).hour(),'hour').add(moment(customerEndTime).minute(),'minutes').valueOf();
             });
         }
         this.setState({
@@ -251,7 +255,7 @@ class DynamicAddDelCustomers extends React.Component {
         return (
             <div className="contact-wrap" key={key}>
                 <div className='contact-title'>
-                    <span className='positin-number'>{Intl.get('business.while.position.num', '地点{num}',{num: NumberToChinese(index + 1)})}</span>
+                    <span className='positin-number'>{Intl.get('business.while.position.num', '地点{num}',{num: changeNumberToChinese(index + 1)})}</span>
                     <i className={delContactCls} onClick={this.handleDelCustomer.bind(this, key, index, size)}/>
                 </div>
                 <div className="contact-content">
@@ -298,12 +302,12 @@ class DynamicAddDelCustomers extends React.Component {
                             <CustomerSuggest
                                 field={`customers[${key}].name`}
                                 hasEditPrivilege={true}
-                                displayText={''}
-                                displayType={'edit'}
-                                id={''}
+                                displayText=''
+                                displayType='edit'
+                                id=''
                                 noJumpToCrm={true}
-                                customer_name={''}
-                                customer_id={''}
+                                customer_name=''
+                                customer_id=''
                                 addAssignedCustomer={this.props.addAssignedCustomer}
                                 noDataTip={Intl.get('clue.has.no.data', '暂无')}
                                 hideButtonBlock={true}
@@ -398,6 +402,7 @@ DynamicAddDelCustomers.propTypes = {
     initialVisitEndTime: PropTypes.string,
     isRequired: PropTypes.boolean,//是否客户是必填项
     className: PropTypes.string,
+    while_date: PropTypes.string,
 
 };
 DynamicAddDelCustomers.defaultProps = {
@@ -410,7 +415,8 @@ DynamicAddDelCustomers.defaultProps = {
     },
     initialVisitStartTime: '',
     initialVisitEndTime: '',
-    isRequired: true
+    isRequired: true,
+    while_date: '',
 
 };
 export default Form.create()(DynamicAddDelCustomers);
