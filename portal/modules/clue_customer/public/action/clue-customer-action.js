@@ -71,7 +71,7 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback(condition);
         } else {
             clueCustomerAjax.getSettingCustomerRecomment().then((list) => {
-                var data = _.get(list,'[0]');
+                var data = _.get(list,'[0]', {});
                 deleteEmptyProperty(data);
                 handleRecommendClueFilters(data);
                 this.dispatch({list: list});
