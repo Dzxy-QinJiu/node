@@ -502,7 +502,7 @@ export const handleRecommendClueFilters = function(condition) {
     }
     //需要处理下feature，判断是否存在热门标签里，不存在就去掉改字段
     let feature = _.find(ADVANCED_OPTIONS, option => _.isEqual(option.value, _.get(condition, 'feature')));
-    if(!feature) {
+    if (!feature && _.isObject(condition)) {
         delete condition.feature;
     }
 };
