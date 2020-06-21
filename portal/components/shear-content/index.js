@@ -37,6 +37,11 @@ class ShearContent extends React.Component {
         this.$contentDOM.on('click', '.collapse-btn', this.showDetail.bind(this, false));
         this.$contentDOM.on('click', '.icon-edit-btn-plus', this.handleEditBtnChange.bind(this));
     }
+    componentWillReceiveProps(nextProps) {
+        if (!_.isEqual(this.props.children, nextProps.children)) {
+            this.truncated.update(nextProps.children);
+        }
+    }
     handleShear($dom) {
         let ico = this.props.hasEditBtn ? '<i class="iconfont icon-edit-btn-plus handle-btn-item has-data-btn"></i>' : '';
         this.truncated = new Truncate($dom, {
@@ -71,19 +76,19 @@ class ShearContent extends React.Component {
         const showCls = classNames('cut-content clearfix', {
             'hide': !this.state.showDetail
         });
-        let contentCls = classNames('shear-content-container',this.props.className);
+        let contentCls = classNames('shear-content-container', this.props.className);
         return (
             <span className={contentCls}>
                 <div className={hideCls}>
                     {this.props.children}
                     {this.props.hasEditBtn ? <i className="iconfont icon-edit-btn-plus handle-btn-item has-data-btn"
-                        title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}
+                        title={Intl.get('crm.record.edit.record.tip', '点击修改跟进记录')}
                     /> : null}
                 </div>
                 <div className={showCls}>
                     {this.props.children}<span className="append-icon collapse-btn handle-btn-item">{Intl.get('crm.contact.way.hide', '收起')}</span>
                     {this.props.hasEditBtn ? <i className="iconfont icon-edit-btn-plus handle-btn-item has-data-btn"
-                        title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}
+                        title={Intl.get('crm.record.edit.record.tip', '点击修改跟进记录')}
                     /> : null}
                 </div>
             </span>
