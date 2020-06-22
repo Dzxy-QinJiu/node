@@ -477,7 +477,8 @@ ClueCustomerStore.prototype.setUnSelectDataTip = function(tip) {
 ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail) {
     //修改线索相关的属性，直接传属性和线索的id
     //如果修改联系人相关的属性，还要把联系人的id传过去
-    var customerProperty = ['access_channel', 'clue_source', 'source_classify', 'clue_classify', 'source', 'user_id', 'user_name', 'sales_team', 'sales_team_id', 'name', 'availability', 'source_time', 'status','customer_name','customer_id','industry','address', 'phone_status', 'custom_variables'];
+    var customerProperty = ['access_channel', 'clue_source', 'source_classify', 'clue_classify', 'source', 'user_id', 'user_name', 'sales_team', 'sales_team_id', 'name', 'availability', 'source_time', 'status','customer_name','customer_id','industry','address', 'phone_status', 'custom_variables',
+        'city', 'city_code', 'county','county_code','province','province_code'];
     var contact_id = newCustomerDetail.contact_id || '';
     if (newCustomerDetail.contact_id) {
         delete newCustomerDetail.contact_id;
