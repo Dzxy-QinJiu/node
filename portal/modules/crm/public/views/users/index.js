@@ -454,7 +454,7 @@ class CustomerUsers extends React.Component {
     //其他申请时，根据返回的状态信息渲染带popover的button和不带popover的button
     renderOtherApplyButton = (batchApplyFlag, openAppFlag) => {
         let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
-        let popoverTip = isExpired ? getContactSalesPopoverTip() : _.get(this.state, 'applyState.applyMessage');
+        let popoverTip = isExpired() ? getContactSalesPopoverTip() : _.get(this.state, 'applyState.applyMessage');
         let delayApplyDisable = !batchApplyFlag, disableTitleTip = '';
         if(!delayApplyDisable){//延期申请的时候，如果该用户有延期的申请未审批，不可以继续添加延期申请
             let {delayApplyList,crmUserList} = this.state;
@@ -511,9 +511,6 @@ class CustomerUsers extends React.Component {
                         onClick={this.handleMenuClick.bind(this, APPLY_ADD_TYPES.DELAY)}>
                         {Intl.get('crm.user.delay', '延期')}
                     </Button>}
-
-
-
                     <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_ADD_TYPES.EDIT_PASSWORD)}
                         onClick={this.handleMenuClick.bind(this, APPLY_ADD_TYPES.EDIT_PASSWORD)}
                         disabled={!batchApplyFlag}>
