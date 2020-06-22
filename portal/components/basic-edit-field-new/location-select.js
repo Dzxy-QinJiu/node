@@ -3,7 +3,7 @@ import Trace from 'LIB_DIR/trace';
 import { AntcAreaSelection } from 'antc';
 import {DetailEditBtn} from '../rightPanel';
 import SaveCancelButton from '../detail-card/save-cancel-button';
-
+require('./css/location-select.less');
 class LocationSelectField extends React.Component {
     static defaultProps = {
         id: '',
