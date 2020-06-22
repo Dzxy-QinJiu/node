@@ -135,6 +135,13 @@ var methodUtil = {
             delete contact.weChat;
             return contact;
         });
+    },
+    //处理组织信息里lead_limit字段
+    dealLeadLimitField: function(organization) {
+        let version = _.get(organization, 'version', {});
+        //优先使用组织上的lead_limit，不存在再使用version里的lead_limit
+        version.lead_limit = _.get(organization, 'lead_limit', _.get(version, 'lead_limit', ''));
+        return version;
     }
 };
 
