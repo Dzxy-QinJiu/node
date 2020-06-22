@@ -28,7 +28,8 @@ import {PHONERINGSTATUS} from './consts';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import customFieldAjax from '../../custom_field_manage/public/ajax';
-
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import customFieldPrivilege from 'MOD_DIR/custom_field_manage/public/privilege-const';
 const DIVLAYOUT = {
     CUSTOMER_COUNT_TIP_H: 26,//对应几个客户提示的高度
     PHONE_STATUS_TIP_H: 50,//只展示通话状态时的高度
@@ -120,7 +121,9 @@ class PhonePanel extends React.Component {
 
         phoneAlertStore.listen(this.onStoreChange);
         // 获取客户自定义字段信息
-        this.getCustomFieldConfig();
+        if (hasPrivilege(customFieldPrivilege.ORGANIZATION_CUSTOMIZEDVAR_QUERY)) {
+            this.getCustomFieldConfig();
+        }
         let phonemsgObj = this.getPhonemsgObj(this.props.paramObj);
         //通话状态下的处理
         if (!_.isEmpty(phonemsgObj)) {

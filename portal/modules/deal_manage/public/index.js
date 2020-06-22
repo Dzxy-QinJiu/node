@@ -7,7 +7,7 @@ require('./style/index.less');
 import { Button, Radio } from 'antd';
 import { SearchInput } from 'antc';
 import TopNav from 'CMP_DIR/top-nav';
-import { PrivilegeChecker } from 'CMP_DIR/privilege/checker';
+import { PrivilegeChecker, hasPrivilege } from 'CMP_DIR/privilege/checker';
 import dealAction from './action';
 import dealBoardAction from './action/deal-board-action';
 import DealForm from './views/deal-form';
@@ -25,7 +25,7 @@ import orderPrivilegeConst from './privilege-const';
 import { FilterInput } from 'CMP_DIR/filter';
 import DealFilterPanel from './views/deal-filter-panel';
 import DealFilterStore from './store/deal-filter';
-
+import customFieldPrivilege from 'MOD_DIR/custom_field_manage/public/privilege-const';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const PAGE_SIZE = 20;
@@ -67,7 +67,9 @@ class DealManage extends React.Component {
 
     componentDidMount() {
         //  获取机会自定义字段信息
-        this.getOpportunityCustomFieldConfig();
+        if (hasPrivilege(customFieldPrivilege.ORGANIZATION_CUSTOMIZEDVAR_QUERY)) {
+            this.getOpportunityCustomFieldConfig();
+        }
     }
 
     showDetailPanel = (deal) => {

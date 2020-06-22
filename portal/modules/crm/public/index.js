@@ -5,7 +5,9 @@ import Trace from 'LIB_DIR/trace';
 import CustomerRecycleBin from './views/customer-recycle-bin';
 import CustomerPool from './views/customer-pool';
 import {crmEmitter} from 'OPLATE_EMITTER';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import customFieldAjax from '../../custom_field_manage/public/ajax';
+import customFieldPrivilege from 'MOD_DIR/custom_field_manage/public/privilege-const';
 //各视图类型常量
 const VIEW_TYPE = {
     CUSTOMER: 'customer',//客户列表视图
@@ -34,7 +36,9 @@ class CrmIndex extends React.Component {
 
     componentDidMount() {
         // 获取客户自定义字段信息
-        this.getCustomFieldConfig();
+        if (hasPrivilege(customFieldPrivilege.ORGANIZATION_CUSTOMIZEDVAR_QUERY)) {
+            this.getCustomFieldConfig();
+        }
         crmEmitter.on(crmEmitter.OPEN_VIEW_PANEL, this.handelCrmViewChange);
         if(_.get(this.props, 'history.action') === 'PUSH') {
             let paramsObj = _.get(this.props, 'location.state.paramsObj');

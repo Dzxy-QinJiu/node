@@ -104,7 +104,7 @@ import MoreButton from 'CMP_DIR/more-btn';
 import history from 'PUB_DIR/sources/history';
 import {checkPhoneStatus} from 'PUB_DIR/sources/utils/common-data-util';
 import customFieldAjax from '../../custom_field_manage/public/ajax';
-
+import customFieldPrivilege from 'MOD_DIR/custom_field_manage/public/privilege-const';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
@@ -214,7 +214,9 @@ class ClueCustomer extends React.Component {
         const query = queryString.parse(this.props.location.search);
         clueCustomerStore.listen(this.onStoreChange);
         // 获取线索自定义字段信息
-        this.getLeadCustomFieldConfig();
+        if (hasPrivilege(customFieldPrivilege.ORGANIZATION_CUSTOMIZEDVAR_QUERY)) {
+            this.getLeadCustomFieldConfig();
+        }
         //获取线索来源
         this.getClueSource();
         //获取线索渠道
