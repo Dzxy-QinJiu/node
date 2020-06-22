@@ -190,12 +190,8 @@ class RecommendCluesList extends React.Component {
         }
         this.setExtractedCount();
 
-        // 如果提取给的销售是自己，则需要提示刷新
-        if(_.isEqual(_.get(taskParams,'user_id'), userData.getUserData().user_id)) {
-            notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, {});
-            //提取成功nav-sidebar线索管理展示加1效果
-            leadRecommendEmitter.emit(leadRecommendEmitter.ADD_LEAD_MANAGEMENT_ONE_NUM);
-        }
+        //todo 暂时去掉加1效果
+        // this.extractedUserBySelf(taskParams);
         // 如果进度完成,显示提取成功
         if(running === 0 || _.isEqual(total, succeed + failed)) {
             this.saveExtractedCount();
@@ -363,6 +359,14 @@ class RecommendCluesList extends React.Component {
     isSelectedHalfYearRegister(featureState) {
         let feature = this.getAdvanceItem(featureState);
         return feature.value === EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER;
+    }
+
+    // 如果提取给的销售是自己，则需要加一效果
+    extractedUserBySelf(data) {
+        if(_.isEqual(_.get(data, 'user_id'), userData.getUserData().user_id)) {
+            //提取成功nav-sidebar线索管理展示加1效果
+            leadRecommendEmitter.emit(leadRecommendEmitter.ADD_LEAD_MANAGEMENT_ONE_NUM);
+        }
     }
 
     //-------------- 提取成功后处理 start -------
@@ -1596,11 +1600,8 @@ class RecommendCluesList extends React.Component {
                     this.setExtractedCount();
                     this.saveExtractedCount();
                     this.handleSuccessTip();
-                    // 如果提取的是自己，则需要提示刷新
-                    if(_.isEqual(_.get(reqData, 'user_id'), userData.getUserData().user_id)) {
-                        //提取成功nav-sidebar线索管理展示加1效果
-                        leadRecommendEmitter.emit(leadRecommendEmitter.ADD_LEAD_MANAGEMENT_ONE_NUM);
-                    }
+                    //todo 暂时去掉加1效果
+                    // this.extractedUserBySelf(reqData);
                     this.handleSingleVisibleChange();
                     this.clearSelectSales();
                     SetLocalSalesClickCount(salesMan, CLUE_RECOMMEND_SELECTED_SALES);
