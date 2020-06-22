@@ -28,6 +28,9 @@ export function getCustomerTrendChart(paramObj = {}) {
             if (minValue) {
                 _.set(option, 'yAxis[0].min', minValue);
             }
+
+            //让纵轴数值不出现小数
+            _.set(option, 'yAxis[0].minInterval', 1);
         },
         processCsvData: chart => {
             const data = chart.data;
