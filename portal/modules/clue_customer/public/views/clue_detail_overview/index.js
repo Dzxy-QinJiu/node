@@ -510,6 +510,7 @@ class ClueDetailOverview extends React.Component {
             if (item === 'phone') {
                 saveObj.clueName = _.get(this, 'state.curClue.name');
             }
+            saveObj.editItem = type.editItem;
         }
         //修改线索的基本信息
         this.changeClueItemInfo(saveObj, successFunc, errorFunc, contact_id);
@@ -520,6 +521,10 @@ class ClueDetailOverview extends React.Component {
     //修改线索的相关信息
     changeClueItemInfo = (saveObj, successFunc, errorFunc, contact_id) => {
         var data = handleSubmitClueItemData(_.cloneDeep(saveObj));
+        if (_.has(saveObj, 'editItem')) {
+            delete saveObj.editItem;
+            data = handleSubmitContactData(_.cloneDeep(saveObj));
+        }
         clueCustomerAjax.updateClueItemDetail(data).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
