@@ -38,7 +38,7 @@ class ShearContent extends React.Component {
         this.$contentDOM.on('click', '.icon-edit-btn-plus', this.handleEditBtnChange.bind(this));
     }
     componentWillReceiveProps(nextProps) {
-        if (!_.isEqual(this.props.children, nextProps.children)) {
+        if (!_.isEqual(this.props.children, nextProps.children) && _.isString(nextProps.children)) {
             this.truncated.update(nextProps.children);
         }
     }
