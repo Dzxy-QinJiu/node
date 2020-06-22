@@ -99,6 +99,7 @@ const BATCH_EXTRACT_TYPE = {
 const CHECK_PHONE_CONFIG = {
     ENABLE_CHECK_PHONE_STATUS: 'enable_check_phone_status',//是否启用空号检测
     SHOW_CHECK_PHONE_FEATURE_POP_TIP: 'first_show_check_phone_feature_pop_tip',
+    HAS_EXTRACTED_CLUE_COUNT: 'has_extracted_clue_count',//已经提取的线索数
 };
 
 class RecommendCluesList extends React.Component {
@@ -187,16 +188,7 @@ class RecommendCluesList extends React.Component {
         if (!tasks.length) {
             return;
         }
-        //给线索管理图标添加已提取线索数
-        let leadIconEl = $('.leads_icon_container'), cls = 'leads_extracted_count_icon_container';
-        let extractedCount = _.get(Oplate, 'has_extracted_clue_count', 0);
-        extractedCount += 1;
-        Oplate.has_extracted_clue_count = extractedCount;
-        if(extractedCount >= 100) {
-            extractedCount = '99+';
-            cls += ' more-than-one-hundred';
-        }
-        leadIconEl.addClass(cls).attr('data-count', extractedCount);
+        this.setExtractedCount();
 
         // 如果提取给的销售是自己，则需要提示刷新
         if(_.isEqual(_.get(taskParams,'user_id'), userData.getUserData().user_id)) {
@@ -206,6 +198,7 @@ class RecommendCluesList extends React.Component {
         }
         // 如果进度完成,显示提取成功
         if(running === 0 || _.isEqual(total, succeed + failed)) {
+            this.saveExtractedCount();
             this.handleSuccessTip();
         }
 
@@ -371,6 +364,28 @@ class RecommendCluesList extends React.Component {
         let feature = this.getAdvanceItem(featureState);
         return feature.value === EXTRACT_CLUE_CONST_MAP.LAST_HALF_YEAR_REGISTER;
     }
+
+    //-------------- 提取成功后处理 start -------
+    //给线索管理图标添加已提取线索数
+    setExtractedCount() {
+        let leadIconEl = $('.leads_icon_container'), cls = 'leads_extracted_count_icon_container';
+        let extractedCount = +(_.get(Oplate, 'has_extracted_clue_count', 0));
+        extractedCount += 1;
+        Oplate.has_extracted_clue_count = extractedCount;
+        if(extractedCount >= 100) {
+            extractedCount = '99+';
+            cls += ' more-than-one-hundred';
+        }
+        leadIconEl.addClass(cls).attr('data-count', extractedCount);
+    }
+    //保存已提取成功的线索数
+    saveExtractedCount() {
+        setWebsiteConfig({
+            [CHECK_PHONE_CONFIG.HAS_EXTRACTED_CLUE_COUNT]: _.get(Oplate, 'has_extracted_clue_count', 0)
+        });
+    }
+    //-------------- 提取成功后处理 end -------
+
 
     //-------------- 检测手机号状态 start -------
     //获取可检测空号的线索列表
@@ -1578,6 +1593,8 @@ class RecommendCluesList extends React.Component {
                 });
                 if (data){
                     this.hiddenDropDownBlock(leadId);
+                    this.setExtractedCount();
+                    this.saveExtractedCount();
                     this.handleSuccessTip();
                     // 如果提取的是自己，则需要提示刷新
                     if(_.isEqual(_.get(reqData, 'user_id'), userData.getUserData().user_id)) {
