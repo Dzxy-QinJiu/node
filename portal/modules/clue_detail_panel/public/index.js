@@ -24,6 +24,8 @@ import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 import {AVALIBILITYSTATUS} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {clueEmitter} from 'PUB_DIR/sources/utils/emitters';
 import customFieldAjax from '../../custom_field_manage/public/ajax';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import customFieldPrivilege from 'MOD_DIR/custom_field_manage/public/privilege-const';
 const DIVLAYOUT = {
     CUSTOMER_COUNT_TIP_H: 26 + 80,//对应几个线索提示和写联系计划提示的高度
     PHONE_STATUS_TIP_H: 50,//只展示通话状态时的高度
@@ -107,7 +109,9 @@ class ClueDetailPanel extends React.Component {
 
         phoneAlertStore.listen(this.onStoreChange);
         //  获取线索自定义字段信息
-        this.getLeadCustomFieldConfig();
+        if (hasPrivilege(customFieldPrivilege.ORGANIZATION_CUSTOMIZEDVAR_QUERY)) {
+            this.getLeadCustomFieldConfig();
+        }
         let phonemsgObj = this.getPhonemsgObj(this.props.paramObj);
         //通话状态下的处理
         if (!_.isEmpty(phonemsgObj)) {
