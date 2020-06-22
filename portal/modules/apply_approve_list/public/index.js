@@ -343,17 +343,19 @@ class ApplyApproveList extends React.Component {
         UserApplyActions.setSelectedDetailItem({obj, idx});
     };
     openFilterOrSearch = (value) => {
-        this.setState({
-            filterOrSearchType: value
-        }, () => {
-            //如果是选中的有未读回复的
-            if (value === UNREPLY) {
+        if(value !== this.state.filterOrSearchType){
+            this.setState({
+                filterOrSearchType: value
+            }, () => {
+                //如果是选中的有未读回复的
                 UserApplyActions.setIsCheckUnreadApplyList(true);
-                setTimeout(() => {
-                    this.fetchApplyList();
-                });
-            }
-        });
+                if (value === UNREPLY) {
+                    setTimeout(() => {
+                        this.fetchApplyList();
+                    });
+                }
+            });
+        }
     };
     //激活的tab是 “我审批的”
     isActiveTabMyApproveList = () => {
