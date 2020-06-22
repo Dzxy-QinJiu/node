@@ -23,7 +23,7 @@ import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 import {getAllUnhandleApplyCount} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 const session = storageUtil.session;
-const { setWebsiteConfigModuleRecord, getWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
+const { setWebsiteConfigModuleRecord, getWebsiteConfig, setWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
 import WinningClue from '../winning-clue';
 import Trace from 'LIB_DIR/trace';
 
@@ -252,6 +252,8 @@ var NavSidebar = createReactClass({
         this.getMyApplyUnreadReply();
         //获取团队审批的未读回复列表
         this.getTeamApplyUnreadReply();
+        //获取已提取线索数
+        this.getExtractedClueCount();
         // //响应式设计 logo和菜单占据的实际高度
         // responsiveLayout.logoAndMenusHeight = $('.logo-and-menus').outerHeight(true);
         // //计算 拨号按钮、通知、设置、个人信息 占据的实际高度
@@ -267,9 +269,10 @@ var NavSidebar = createReactClass({
         //         this.selectedIntroElement();
         //     }
         // });
-        $('.navbar').on('click', '.leads_icon_container', function(e) {
+        $('.navbar').on('click', '.leads_icon_container', (e) => {
             //点击线索管理后，需要移除已提取线索数
             Oplate.has_extracted_clue_count = 0;
+            this.clearExtractedClueCount();
             $(this).removeClass('.leads_extracted_count_icon_container more-than-one-hundred').attr('data-count', 0);
             //点击到a标签上，不做处理
             if ($(e.target).is('a')) {
@@ -277,6 +280,26 @@ var NavSidebar = createReactClass({
             }
             //点击到线索未处理的数字上，进行跳转
             history.push('/leads', {clickUnhandleNum: true});
+        });
+    },
+    //获取已提取成功的线索数
+    getExtractedClueCount() {
+        const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig')) || {};
+        let count = Oplate.has_extracted_clue_count = _.get(websiteConfig, 'has_extracted_clue_count', 0);
+        //如果有已提取过但是没有查看的线索数，需要展示
+        if(count > 0) {
+            let leadIconEl = $('.leads_icon_container'), cls = 'leads_extracted_count_icon_container';
+            if(count >= 100) {
+                count = '99+';
+                cls += ' more-than-one-hundred';
+            }
+            leadIconEl.addClass(cls).attr('data-count', count);
+        }
+    },
+    //点击线索管理图标，需要清除掉已提取线索数
+    clearExtractedClueCount() {
+        setWebsiteConfig({
+            'has_extracted_clue_count': 0
         });
     },
     //呼叫中心的电话系统初始化完成后，触发拨号键盘是否展示的判断
