@@ -50,7 +50,7 @@ export function getStageChart() {
             setSelector(data, 1, chart, Intl.get( 'analysis.all.channels','全部渠道'), 'access_channel');
 
             //设置来源筛选器
-            setSelector(data, 2, chart, Intl.get( 'analysis.all.channels','全部来源'), 'clue_source');
+            setSelector(data, 2, chart, Intl.get( 'analysis.all.sources','全部来源'), 'clue_source');
 
             const stageData = data[0];
 
