@@ -87,7 +87,7 @@ import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 import ApplyTryCard from 'CMP_DIR/apply-try-card';
 import classNames from 'classnames';
 import ShearContent from 'CMP_DIR/shear-content-new';
-
+import {isURL} from 'PUB_DIR/sources/utils/validate-util';
 import CustomField from 'CMP_DIR/custom-field';
 
 class ClueDetailOverview extends React.Component {
@@ -1815,6 +1815,11 @@ class ClueDetailOverview extends React.Component {
         var {curClue} = this.state;
         //是否有权限修改线索详情
         var hasPrivilegeEdit = editClueItemIconPrivilege(curClue);
+        //提前处理一下网址
+        let website = _.get(curClue,'website','');
+        if (website.indexOf('http') === -1) {
+            website = `http://${website}`;
+        }
         return (
             <div className='clue-info-wrap clue-detail-block'>
                 <div className="clue-basic-info">
@@ -1854,23 +1859,22 @@ class ClueDetailOverview extends React.Component {
                             noDataTip={Intl.get('clue.customer.no.source.ip', '未设置来源IP')}
                         />) : null}
                     {/*有官网字段就展示*/}
-                    {curClue.website ? this.renderBasicContent(Intl.get('lead.info.website.info', '官网'),
-                        <a onClick={this.openNewTabLink.bind(this, curClue.website)}><BasicEditInputField
+                    {curClue.website ? this.renderBasicContent(Intl.get('lead.info.website.info', '官网'), isURL(website) ?
+                        <a onClick={this.openNewTabLink.bind(this, website)}><BasicEditInputField
                             hasEditPrivilege={false}
                             id={curClue.id}
                             value={curClue.website}
                             field='website'
-                        /></a>
-                    ) : null}
+                        /></a> : <div className="basic-edit-field-input basic-edit-field">
+                            <div className="edit-container hover-show-edit"><span
+                                className="inline-block basic-info-text">{curClue.website}</span></div>
+                        </div>) : null}
                     <div className='clear-float'></div>
                 </div>
             </div>
         );
     };
     openNewTabLink = (website) => {
-        if (website.indexOf('http') === -1) {
-            website = `http://${website}`;
-        }
         window.open(website, '_blank');
     };
     //时间，线索描述，行业
