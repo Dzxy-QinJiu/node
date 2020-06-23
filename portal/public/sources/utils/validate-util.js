@@ -32,9 +32,9 @@ export const isPhone = function(value) {
     return /^1[3-9]\d{9}$/.test(value);
 };
 //网址验证规则
-export const websiteRegex = /^\b(((https?|ftp):\/\/)?[-a-z0-9]+(\.[-a-z0-9]+)*\.(?:com|edu|gov|int|mil|net|org|biz|info|name|museum|asia|coop|aero|[a-z][a-z]|((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]\d)|\d))\b(\/[-a-z0-9_:\@&?=+,.!\/~%\$]*)?)$/i;
+export const urlRegex = /^\b(((https?|ftp):\/\/)?[-a-z0-9]+(\.[-a-z0-9]+)*\.(?:com|edu|gov|int|mil|net|org|biz|info|name|museum|asia|coop|aero|[a-z][a-z]|((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]\d)|\d))\b(\/[-a-z0-9_:\@&?=+,.!\/~%\$]*)?)$/i;
 export const isURL = function(strUrl) {
-    if (websiteRegex.test(strUrl)) {
+    if (urlRegex.test(strUrl)) {
         return true;
     } else {
         return false;

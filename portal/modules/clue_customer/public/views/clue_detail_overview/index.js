@@ -1865,10 +1865,10 @@ class ClueDetailOverview extends React.Component {
                             id={curClue.id}
                             value={curClue.website}
                             field='website'
-                        /></a> : <div className="basic-edit-field-input basic-edit-field">
-                            <div className="edit-container hover-show-edit"><span
-                                className="inline-block basic-info-text">{curClue.website}</span></div>
-                        </div>) : null}
+                        /></a> : <BasicEditInputField
+                            hasEditPrivilege={false}
+                            value={curClue.website}
+                        />) : null}
                     <div className='clear-float'></div>
                 </div>
             </div>
