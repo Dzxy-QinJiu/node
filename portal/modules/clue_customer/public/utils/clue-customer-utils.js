@@ -228,34 +228,32 @@ export const SetLocalSalesClickCount = function(sale_id, sessionKey) {
 };
 export const handleSubmitContactData = function(submitObj){
     var data = {},updateObj = {};
-    updateObj.id = submitObj.id;
-    //联系人的id
-    updateObj.contacts = [{'id': submitObj.contact_id}];
+    if(submitObj.contact_name){
+        submitObj.name = submitObj.contact_name;
+        delete submitObj.contact_name;
+    }
+    updateObj.id = submitObj.id;//这是客户的id
+    delete submitObj.id;
+    submitObj.id = submitObj.contact_id;//这是联系人的id
     delete submitObj.contact_id;
-    var clueName = '';
-    if (submitObj.clueName){
-        clueName = submitObj.clueName;
+    if(submitObj.clueName){
+        updateObj.name = submitObj.clueName;
         delete submitObj.clueName;
     }
-    for (var key in submitObj){
-        //要更新的字段
-        data.updateItem = key;
-        if (key === 'contact_name'){
-            //联系人的名字
-            updateObj.contacts[0]['name'] = submitObj[key];
-        }else{
-            //过滤掉值为空 除了职务其他属性都是数组
-            if (_.isArray(submitObj[key])){
-                submitObj[key] = submitObj[key].filter(item => item);
-                updateObj.contacts[0][key] = submitObj[key];
-            }else if(!_.isEmpty(submitObj[key]) && key !== 'id'){
-                updateObj.contacts[0][key] = submitObj[key];
+    _.each(submitObj,(contactKey,key) => {
+        if(key !== 'id'){
+            if(key === 'name'){
+                data.updateItem = 'contact_name';
+            }else{
+                data.updateItem = key;
             }
+
         }
-    }
-    if (clueName){
-        updateObj.name = clueName;
-    }
+        if(_.isArray(contactKey)){
+            contactKey = contactKey.filter(item => item);
+        }
+    });
+    updateObj.contacts = [submitObj];
     data.updateObj = JSON.stringify(updateObj);
     data.type = handlePrivilegeType();
     return data;
