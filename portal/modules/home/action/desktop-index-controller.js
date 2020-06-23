@@ -111,7 +111,7 @@ exports.getUserData = function(req, res) {
                 officialName: _.get(data, 'organization.official_name', ''),
                 functions: _.get(data, 'organization.functions', []),
                 type: _.get(data, 'organization.type', ''),
-                version: _.get(data, 'organization.version', {}),
+                version: commonUtil.method.dealLeadLimitField(_.get(data, 'organization', {})),
                 endTime: _.get(data, 'organization.end_time', ''),
                 expireAfterDays: _.get(data, 'organization.expire_after_days'),
                 grantProducts: _.get(data, 'organization.grant_products', []),

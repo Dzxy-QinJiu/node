@@ -3,11 +3,14 @@
 const memberManageService = require('../service/member-manage-service');
 const BackendIntl = require('../../../../lib/utils/backend_intl');
 const _ = require('lodash');
+const methodUtil = require('../../../../lib/utils/common-utils').method;
 
 // 获取成员的组织信息
 exports.getMemberOrganization = (req, res) => {
     memberManageService.getMemberOrganization(req, res, req.query).on('success', (data) => {
         let user = _.get(req, 'session.user', {});
+        let version = methodUtil.dealLeadLimitField(data);
+        data = Object.assign({}, data, {version});
         if(_.get(req.query, 'update')) {//更新session中用户的组织信息
             user.organization = {
                 id: _.get(data,'id', ''),

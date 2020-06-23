@@ -1191,11 +1191,19 @@ class RecommendCluesList extends React.Component {
     };
     //升级正式后的回调事件
     handleUpdatePersonalVersion = (result) => {
-        //需要更新最大线索量
-        let lead_limit = _.get(result, 'version.lead_limit', '');
-        let clue_number = _.get(lead_limit.split('_'),'[0]',0);
+        //通过接口更新最大线索量，以防购买线索包再续费的这种情况
+        this.getRecommendClueCount((count, disableExtract) => {
+            //获取最大线索量出错后，使用version上的lead_limit
+            if(_.isString(count) && count === 'error') {
+                let lead_limit = _.get(result, 'version.lead_limit', '');
+                let clue_number = _.get(lead_limit.split('_'),'[0]',0);
+                this.setState({
+                    maxLimitExtractNumber: +clue_number,
+                    getMaxLimitExtractNumberError: false
+                });
+            }
+        });
         this.setState({
-            maxLimitExtractNumber: +clue_number,
             getMaxLimitExtractNumberError: false,
             hasNoExtractCountTip: false,
             disabledCheckedClues: [],
