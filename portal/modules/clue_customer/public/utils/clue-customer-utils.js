@@ -244,9 +244,11 @@ export const handleSubmitContactData = function(submitObj){
             //联系人的名字
             updateObj.contacts[0]['name'] = submitObj[key];
         }else{
-            //过滤掉值为空
+            //过滤掉值为空 除了职务其他属性都是数组
             if (_.isArray(submitObj[key])){
                 submitObj[key] = submitObj[key].filter(item => item);
+                updateObj.contacts[0][key] = submitObj[key];
+            }else if(!_.isEmpty(submitObj[key]) && key !== 'id'){
                 updateObj.contacts[0][key] = submitObj[key];
             }
         }
