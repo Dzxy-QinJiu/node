@@ -140,7 +140,11 @@ var methodUtil = {
     dealLeadLimitField: function(organization) {
         let version = _.get(organization, 'version', {});
         //优先使用组织上的lead_limit，不存在再使用version里的lead_limit
-        version.lead_limit = _.get(organization, 'lead_limit', _.get(version, 'lead_limit', ''));
+        let lead_limit = _.get(organization, 'lead_limit');
+        if(_.isEmpty(lead_limit)) {//如果为空，使用version上的lead_limit
+            lead_limit = _.get(version, 'lead_limit', '');
+        }
+        version.lead_limit = lead_limit;
         return version;
     }
 };
