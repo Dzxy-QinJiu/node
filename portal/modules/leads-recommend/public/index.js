@@ -15,8 +15,8 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import DetailCard from 'CMP_DIR/detail-card';
 import AlertTimer from 'CMP_DIR/alert-timer';
-var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
-var clueCustomerStore = require('MOD_DIR/clue_customer/public/store/clue-customer-store');
+var LeadsRecommendAction = require('MOD_DIR/leads-recommend/public/action/leads-recommend-action');
+var LeadsRecommendStore = require('MOD_DIR/leads-recommend/public/store/leads-recommend-store');
 import {
     batchPushEmitter,
     leadRecommendEmitter,
@@ -60,7 +60,7 @@ import {
 } from 'PUB_DIR/sources/utils/consts';
 import history from 'PUB_DIR/sources/history';
 import React from 'react';
-import {addOrEditSettingCustomerRecomment} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
+import {addOrEditSettingCustomerRecomment} from 'MOD_DIR/leads-recommend/public/ajax/leads-recommend-ajax';
 import {isSupportCheckPhone} from 'PUB_DIR/sources/utils/validate-util';
 import { storageUtil } from 'ant-utils';
 import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
@@ -132,14 +132,14 @@ class RecommendCluesList extends React.Component {
             showBatchExtractTip: false,//是否展示批量提取上的tip
             bottomPanelContent: null,
             showBottomPanel: false,
-            ...clueCustomerStore.getState()
+            ...LeadsRecommendStore.getState()
         };
     }
 
     isClearSelectSales = true;
 
     onStoreChange = () => {
-        this.setState(clueCustomerStore.getState());
+        this.setState(LeadsRecommendStore.getState());
     };
 
     componentDidMount() {
@@ -150,7 +150,7 @@ class RecommendCluesList extends React.Component {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         paymentEmitter.on(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
         paymentEmitter.on(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, this.handleUpdateClues);
-        clueCustomerStore.listen(this.onStoreChange);
+        LeadsRecommendStore.listen(this.onStoreChange);
         $('#app .row > .main-content-wrap').addClass('recommend-clues-page-container');
     }
 
@@ -158,8 +158,8 @@ class RecommendCluesList extends React.Component {
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         paymentEmitter.removeListener(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
         paymentEmitter.removeListener(paymentEmitter.ADD_CLUES_PAYMENT_SUCCESS, this.handleUpdateClues);
-        clueCustomerStore.unlisten(this.onStoreChange);
-        clueCustomerAction.initialRecommendClues();
+        LeadsRecommendStore.unlisten(this.onStoreChange);
+        LeadsRecommendAction.initialRecommendClues();
         $('#app .row > .main-content-wrap').removeClass('recommend-clues-page-container');
         this.isClearSelectSales = true;
     }
@@ -214,9 +214,9 @@ class RecommendCluesList extends React.Component {
     getSalesmanList() {
         // 管理员，运营获取所有人
         if (this.isManagerOrOperation()) {
-            clueCustomerAction.getAllSalesUserList();
+            LeadsRecommendAction.getAllSalesUserList();
         } else {
-            clueCustomerAction.getSalesManList();
+            LeadsRecommendAction.getSalesManList();
         }
     }
 
@@ -231,7 +231,7 @@ class RecommendCluesList extends React.Component {
         this.setState({
             settedCustomerRecommend: _.extend(settedCustomerRecommend, {loading: true})
         });
-        clueCustomerAction.getSettingCustomerRecomment(_.get(settedCustomerRecommend,'obj'), (condition) => {
+        LeadsRecommendAction.getSettingCustomerRecomment(_.get(settedCustomerRecommend,'obj'), (condition) => {
             let isNotSavedRecommendFilter = this.isNotSavedRecommendFilter({obj: condition});
             if(isNotSavedRecommendFilter) {//需要判断是否设置过过滤条件，没有则根据手机号获取所在区域
                 this.getAreaByPhone(condition);
@@ -326,7 +326,7 @@ class RecommendCluesList extends React.Component {
         ) {
             conditionObj.ranking = _.get(lastItem, 'ranking') + 1;
         }
-        clueCustomerAction.getRecommendClueLists(conditionObj);
+        LeadsRecommendAction.getRecommendClueLists(conditionObj);
     };
     //保存推荐线索的条件
     saveRecommendFilter(hasSavedRecommendParams) {
@@ -335,7 +335,7 @@ class RecommendCluesList extends React.Component {
         addOrEditSettingCustomerRecomment(hasSavedRecommendParams).then((data) => {
             if (data){
                 let targetObj = _.get(data, '[0]');
-                clueCustomerAction.saveSettingCustomerRecomment(targetObj);
+                LeadsRecommendAction.saveSettingCustomerRecomment(targetObj);
             }
         });
     }
@@ -891,7 +891,7 @@ class RecommendCluesList extends React.Component {
             //判断是否还能提取
             disableExtract: !this.isExtractedCount(hasExtractCount).ableExtract
         });
-        clueCustomerAction.updateRecommendClueLists(updateClueId);
+        LeadsRecommendAction.updateRecommendClueLists(updateClueId);
     };
     //更新选中的推荐线索
     updateSelectedClueLists = (updateClueId) => {
@@ -916,7 +916,7 @@ class RecommendCluesList extends React.Component {
     //标记线索已被其他人提取
     remarkLeadExtractedByOther = (remarkLeadId) => {
         this.updateSelectedClueLists(remarkLeadId);
-        clueCustomerAction.remarkLeadExtractedByOther(remarkLeadId);
+        LeadsRecommendAction.remarkLeadExtractedByOther(remarkLeadId);
     };
 
     //处理被别人提取过的线索
@@ -1650,7 +1650,7 @@ class RecommendCluesList extends React.Component {
             return;
         }
         if (!this.state.salesMan && flag) {
-            clueCustomerAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
+            LeadsRecommendAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
         } else {
             this.setState({
                 singleExtractLoading: record.id
@@ -1971,7 +1971,7 @@ class RecommendCluesList extends React.Component {
             this.setState({showLoadSizePopoverVisible: true});
             return false;
         }
-        clueCustomerAction.setPageSize(value);
+        LeadsRecommendAction.setPageSize(value);
         setTimeout(() => {
             this.getRecommendClueLists();
         });

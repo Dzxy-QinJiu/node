@@ -12,7 +12,7 @@ const FormItem = Form.Item;
 import {AntcAreaSelection, SearchInput, AntcSelect} from 'antc';
 const Option = AntcSelect.Option;
 import Trace from 'LIB_DIR/trace';
-var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
+var LeadsRecommendAction = require('MOD_DIR/leads-recommend/public/action/leads-recommend-action');
 import { registerSize, staffSize, moneySize, companyProperty, companyStatus, EXTRACT_CLUE_CONST_MAP, AREA_ALL, ADVANCED_OPTIONS } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {
     checkVersionAndType,
@@ -24,7 +24,7 @@ import {
 import {RECOMMEND_CLUE_FILTERS, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/utils/consts';
 import classNames from 'classnames';
 import { paymentEmitter } from 'OPLATE_EMITTER';
-import {addOrEditSettingCustomerRecomment, getCompanyListByName, getRecommendCluePicked} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
+import {addOrEditSettingCustomerRecomment, getCompanyListByName, getRecommendCluePicked} from 'MOD_DIR/leads-recommend/public/ajax/leads-recommend-ajax';
 import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 import {toFrontRecommendClueData} from '../../server/dto/recommend-clue';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
@@ -159,7 +159,7 @@ class RecommendCluesFilterPanel extends Component {
         if(isRequiredSave || (isSaveFilter && !_.isEqual(newCondition, propsCondition))) {
             this.saveRecommendFilter(newCondition);
         }
-        if(isSaveFilter) clueCustomerAction.saveSettingCustomerRecomment(newCondition);
+        if(isSaveFilter) LeadsRecommendAction.saveSettingCustomerRecomment(newCondition);
         this.props.getRecommendClueLists(newCondition, EXTRACT_CLUE_CONST_MAP.RESET);
 
         //延时设置，是因为获取联想推荐列表是延迟获取的，所以这里要延时置为false
@@ -180,7 +180,7 @@ class RecommendCluesFilterPanel extends Component {
             if (data){
                 let targetObj = _.get(data, '[0]');
                 this.setState({hasSavedRecommendParams: targetObj});
-                clueCustomerAction.saveSettingCustomerRecomment({...targetObj});
+                LeadsRecommendAction.saveSettingCustomerRecomment({...targetObj});
             }
         }, () => {
             this.setState({isSaving: false});
@@ -273,7 +273,7 @@ class RecommendCluesFilterPanel extends Component {
         if(this.searchInputRef) {
             this.searchInputRef.state.keyword = _.get(result.item, 'name', '');
         }
-        clueCustomerAction.saveSettingCustomerRecomment({...result.hasSavedRecommendParams, keyword: _.get(result.item, 'name', '')});
+        LeadsRecommendAction.saveSettingCustomerRecomment({...result.hasSavedRecommendParams, keyword: _.get(result.item, 'name', '')});
 
         let listItem = toFrontRecommendClueData(result.item);
         if(_.isEqual(_.get(result, 'total'), 1)) {//被提取过
@@ -284,7 +284,7 @@ class RecommendCluesFilterPanel extends Component {
             total: 1
         };
         this.currentListItem = result.item;
-        clueCustomerAction.getRecommendClueLists(data, false);
+        LeadsRecommendAction.getRecommendClueLists(data, false);
     }
 
     //根据关键词获取推荐信息
@@ -496,7 +496,7 @@ class RecommendCluesFilterPanel extends Component {
         }else {
             delete hasSavedRecommendParams.feature;
         }
-        clueCustomerAction.saveSettingCustomerRecomment(hasSavedRecommendParams);
+        LeadsRecommendAction.saveSettingCustomerRecomment(hasSavedRecommendParams);
         this.getRecommendClueList(hasSavedRecommendParams, true, true);
     };
 
@@ -576,7 +576,7 @@ class RecommendCluesFilterPanel extends Component {
     };
 
     handleToggleOtherCondition = (property) => {
-        clueCustomerAction.saveSettingCustomerRecomment({...this.props.hasSavedRecommendParams, ...this.state.hasSavedRecommendParams});
+        LeadsRecommendAction.saveSettingCustomerRecomment({...this.props.hasSavedRecommendParams, ...this.state.hasSavedRecommendParams});
         let vipFilters = this.dealRecommendParamsVipData(this.props.hasSavedRecommendParams);
         this.setState({
             [property]: !this.state[property],

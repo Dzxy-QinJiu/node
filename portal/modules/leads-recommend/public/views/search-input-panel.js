@@ -5,8 +5,7 @@
  */
 import {SearchInput} from 'antc';
 import {Icon} from 'antd';
-import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
-import {getCompanyListByName} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
+import {getCompanyListByName} from 'MOD_DIR/leads-recommend/public/ajax/leads-recommend-ajax';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import Trace from 'LIB_DIR/trace';
