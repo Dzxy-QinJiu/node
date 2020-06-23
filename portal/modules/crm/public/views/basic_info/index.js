@@ -529,16 +529,6 @@ class BasicData extends React.Component {
         );
     };
 
-    handleSubmitRelease = () => {
-        if(!this.state.releaseReason) {
-            this.setState({
-                unFillReasonTip: Intl.get('crm.customer.release.reason', '请填写释放理由')
-            });
-            return false;
-        }
-        this.releaseCustomer();
-    };
-
     render() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         //是否是关注客户的标识
@@ -619,7 +609,7 @@ class BasicData extends React.Component {
                                     overlayTitle={Intl.get('crm.customer.release.customer', '释放客户')}
                                     isSaving={this.state.isReleasingCustomer}
                                     overlayContent={this.renderReleaseCustomerBlock(releaseTip)}
-                                    handleSubmit={this.handleSubmitRelease}
+                                    handleSubmit={this.releaseCustomer}
                                     okTitle={Intl.get('common.confirm', '确认')}
                                     cancelTitle={Intl.get('common.cancel', '取消')}
                                     unSelectDataTip={this.state.unFillReasonTip}

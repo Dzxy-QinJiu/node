@@ -2144,15 +2144,6 @@ class Crm extends React.Component {
         if(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
             releaseTip = crmUtil.releaseCustomerTip();
         }
-        const handleSubmit = () => {
-            if(!_.trim(this.state.releaseReason)) {
-                this.setState({
-                    unFillReasonTip: Intl.get('crm.customer.release.reason', '请填写释放理由')
-                });
-                return;
-            }
-            callback();
-        };
         let isShowDropDownContent = type === 'moreBtn' ? !this.state.isShowMoreButton : false;
         return (
             <AntcDropdown
@@ -2166,7 +2157,7 @@ class Crm extends React.Component {
                 overlayTitle={Intl.get('crm.customer.release.customer', '释放客户')}
                 isSaving={this.state.isReleasingCustomer}
                 overlayContent={this.renderReleaseCustomerBlock(releaseTip, type)}
-                handleSubmit={handleSubmit}
+                handleSubmit={callback}
                 okTitle={Intl.get('common.confirm', '确认')}
                 cancelTitle={Intl.get('common.cancel', '取消')}
                 unSelectDataTip={this.state.unFillReasonTip}
