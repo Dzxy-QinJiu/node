@@ -12,7 +12,6 @@ const moment = require('moment');
 const multiparty = require('multiparty');
 const fs = require('fs');
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
-const recommendClueDto = require('../dto/recommend-clue');
 function getClueSourceClassify(backendIntl) {
     return [
         {
@@ -64,15 +63,6 @@ exports.getClueSource = function(req, res) {
 //获取线索渠道
 exports.getClueChannel = function(req, res) {
     clueCustomerService.getClueChannel(req, res)
-        .on('success', function(data) {
-            res.status(200).json(data);
-        }).on('error', function(err) {
-            res.status(500).json(err && err.message);
-        });
-};
-//获取线索最大提取量及已经提取的线索量
-exports.getMaxLimitCountAndHasExtractedClue = function(req, res) {
-    clueCustomerService.getMaxLimitCountAndHasExtractedClue(req, res)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
@@ -488,58 +478,6 @@ exports.getSimilarCustomerLists = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
-exports.getRecommendClueLists = function(req, res) {
-    clueCustomerService.getRecommendClueLists(req, res)
-        .on('success', function(data) {
-            var result = {list: [],total: _.get(data,'total',0), listId: _.get(data,'id','')};
-            _.forEach(_.get(data,'list',[]), item => {
-                result.list.push(recommendClueDto.toFrontRecommendClueData(item));
-            });
-            res.status(200).json(result);
-        }).on('error', function(err) {
-            res.status(500).json(err && err.message);
-        });
-};
-exports.getClueIndustryLists = function(req, res) {
-    clueCustomerService.getClueIndustryLists(req, res)
-        .on('success', function(data) {
-            res.status(200).json(data);
-        }).on('error', function(err) {
-            res.status(500).json(err && err.message);
-        });
-};
-exports.getSelfClueConditionConfig = function(req, res) {
-    clueCustomerService.getSelfClueConditionConfig(req, res)
-        .on('success', function(data) {
-            res.status(200).json(data);
-        }).on('error', function(err) {
-            res.status(500).json(err && err.message);
-        });
-};
-exports.addOrEditSelfClueConditionConfig = function(req, res) {
-    clueCustomerService.addOrEditSelfClueConditionConfig(req, res)
-        .on('success', function(data) {
-            res.status(200).json(data);
-        }).on('error', function(err) {
-            res.status(500).json(err && err.message);
-        });
-};
-exports.extractRecommendClue = function(req, res) {
-    clueCustomerService.extractRecommendClue(req, res)
-        .on('success', function(data) {
-            res.status(200).json(data);
-        }).on('error', function(err) {
-            res.status(500).json(err && err.message);
-        });
-};
-exports.batchExtractRecommendLists = function(req, res) {
-    clueCustomerService.batchExtractRecommendLists(req, res)
-        .on('success', function(data) {
-            res.status(200).json(data);
-        }).on('error', function(err) {
-            res.status(500).json(err && err.message);
-        });
-};
 exports.getClueListByKeyword = function(req, res) {
     clueCustomerService.getClueListByKeyword(req, res)
         .on('success', function(data) {
@@ -580,26 +518,6 @@ exports.checkOnlyClueNamePhone = function(req, res) {
 //获取申请试用数据
 exports.getApplyTryData = function(req, res) {
     clueCustomerService.getApplyTryData(req, res)
-        .on('success',function(data) {
-            res.status(200).json(data);
-        }).on('error',function(err) {
-            res.status(500).json(err.message);
-        });
-};
-
-//获取联想列表数据
-exports.getCompanyListByName = function(req, res) {
-    clueCustomerService.getCompanyListByName(req, res)
-        .on('success',function(data) {
-            res.status(200).json(data);
-        }).on('error',function(err) {
-            res.status(500).json(err.message);
-        });
-};
-
-//获取该线索是否被提取
-exports.getRecommendCluePicked = function(req, res) {
-    clueCustomerService.getRecommendCluePicked(req, res)
         .on('success',function(data) {
             res.status(200).json(data);
         }).on('error',function(err) {
