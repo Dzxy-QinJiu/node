@@ -119,7 +119,7 @@ class MonthlyReport extends React.Component {
 
         return (
             <AntcAttendanceRemarks
-                readOnly={isCommonSales}
+                readOnly={true}
                 data={data}
                 userId={userId}
                 selectedDate={this.state.selectedMonth}
