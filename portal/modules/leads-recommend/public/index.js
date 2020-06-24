@@ -109,7 +109,6 @@ class RecommendCluesList extends React.Component {
             singleExtractLoading: '', // 单个提取的loading
             batchExtractLoading: false,
             saveErrorMsg: '',
-            selectedRecommendClues: [],//选中状态的推荐线索
             disabledCheckedClues: [],//禁用状态的线索,用于记录提取之前selected中的线索数量
             salesMan: '',
             salesManNames: '',
@@ -138,6 +137,10 @@ class RecommendCluesList extends React.Component {
 
     isClearSelectSales = true;
 
+    hasExtractCount = 0;
+
+    needUpdateClueIds = [];
+
     onStoreChange = () => {
         this.setState(LeadsRecommendStore.getState());
     };
@@ -162,6 +165,8 @@ class RecommendCluesList extends React.Component {
         LeadsRecommendAction.initialRecommendClues();
         $('#app .row > .main-content-wrap').removeClass('recommend-clues-page-container');
         this.isClearSelectSales = true;
+        this.hasExtractCount = 0;
+        this.needUpdateClueIds = [];
     }
 
     batchExtractCluesLists = (taskInfo, taskParams) => {
@@ -187,26 +192,32 @@ class RecommendCluesList extends React.Component {
         if (!tasks.length) {
             return;
         }
-        this.setExtractedCount();
-
-        //todo 暂时去掉加1效果
-        // this.extractedUserBySelf(taskParams);
-        // 如果进度完成,显示提取成功
-        if(running === 0 || _.isEqual(total, succeed + failed)) {
-            this.saveExtractedCount();
-            this.handleSuccessTip();
+        if(total - running === 1) {
+            console.log('第一条推送时间：', moment().format('HH:mm:ss.SSS'));
         }
+        this.setExtractedCount();
 
         var clueArr = _.map(tasks, 'taskDefine');
         // 遍历每一个线索
         _.each(clueArr, (clueItem) => {
             var arr = _.split(clueItem,'_');
             //如果当前线索是需要更新的线索，才更新
-            this.updateRecommendClueLists(arr[0]);
+            this.needUpdateClueIds.push(arr[0]);
         });
-        //列表空时
-        if ( _.isEmpty(this.state.recommendClueLists)) {
-            this.getRecommendClueLists();
+        this.hasExtractCount++;
+
+        //todo 暂时去掉加1效果
+        // this.extractedUserBySelf(taskParams);
+        // 如果进度完成,显示提取成功
+        if(running === 0 || _.isEqual(total, succeed + failed)) {
+            console.log('最后一条推送时间：', moment().format('HH:mm:ss.SSS'));
+            this.saveExtractedCount();
+            //一次性处理需要更新的线索列表
+            LeadsRecommendAction.onceUpdateRecommendClueLists(this.needUpdateClueIds, () => {
+                this.needUpdateClueIds = [];
+                this.updateExtractedCount();
+                this.handleSuccessTip();
+            });
         }
     };
 
@@ -288,7 +299,7 @@ class RecommendCluesList extends React.Component {
     };
     getRecommendClueLists = (condition, type) => {
         if(!_.isEqual(type, EXTRACT_CLUE_CONST_MAP.RESET) && this.state.canClickMoreBatch === false) return;
-        this.setState({selectedRecommendClues: [], disabledCheckedClues: []});
+        LeadsRecommendAction.updateSelectedRecommendClues([]);
         var conditionObj = this.getSearchCondition(condition);
         let lastItem = _.last(this.state.recommendClueLists);
         //去掉为空的数
@@ -371,15 +382,7 @@ class RecommendCluesList extends React.Component {
     //-------------- 提取成功后处理 start -------
     //给线索管理图标添加已提取线索数
     setExtractedCount() {
-        let leadIconEl = $('.leads_icon_container'), cls = 'leads_extracted_count_icon_container';
-        let extractedCount = +(_.get(Oplate, 'has_extracted_clue_count', 0));
-        extractedCount += 1;
-        Oplate.has_extracted_clue_count = extractedCount;
-        if(extractedCount >= 100) {
-            extractedCount = '99+';
-            cls += ' more-than-one-hundred';
-        }
-        leadIconEl.addClass(cls).attr('data-count', extractedCount);
+        leadRecommendEmitter.emit(leadRecommendEmitter.ADD_LEAD_MANAGEMENT_NUM_POINT, true);
     }
     //保存已提取成功的线索数
     saveExtractedCount() {
@@ -880,50 +883,27 @@ class RecommendCluesList extends React.Component {
 
     //更新推荐线索列表,需要给已经提取成功的加上一个类名，界面相应的加上对应的不能处理的样式
     updateRecommendClueLists = (updateClueId) => {
-        this.updateSelectedClueLists(updateClueId);
-        var disabledCheckedClues = this.state.disabledCheckedClues;
-        //todo 更新已提取线索量
-        let hasExtractCount = this.state.hasExtractCount;
-        hasExtractCount++;
+        //更新已提取线索量
+        this.hasExtractCount++;
+        //添加已提取成功以及更新选中的线索
+        LeadsRecommendAction.updateRecommendClueLists(updateClueId);
+    };
+
+    //更新已提取线索数
+    updateExtractedCount() {
+        let hasExtractCount = this.hasExtractCount;
         this.setState({
-            disabledCheckedClues: _.filter(disabledCheckedClues,item => item.id !== updateClueId),
             hasExtractCount: hasExtractCount,
             //判断是否还能提取
             disableExtract: !this.isExtractedCount(hasExtractCount).ableExtract
         });
-        LeadsRecommendAction.updateRecommendClueLists(updateClueId);
-    };
-    //更新选中的推荐线索
-    updateSelectedClueLists = (updateClueId) => {
-        let { selectedRecommendClues, disabledCheckedClues } = this.state;
-        let name = '', list = [];
-        //在这里需要判断selectedRecommendClues是否存在，不存在就使用disabledCheckedClues
-        if(_.get(selectedRecommendClues, 'length')) {
-            name = 'selectedRecommendClues';
-            list = selectedRecommendClues;
-        }else if(_.get(disabledCheckedClues, 'length')) {
-            name = 'disabledCheckedClues';
-            list = disabledCheckedClues;
-        }
-        if(name) {
-            let newDate = {
-                [name]: _.filter(list,item => item.id !== updateClueId)
-            };
-
-            this.setState(newDate);
-        }
-    };
-    //标记线索已被其他人提取
-    remarkLeadExtractedByOther = (remarkLeadId) => {
-        this.updateSelectedClueLists(remarkLeadId);
-        LeadsRecommendAction.remarkLeadExtractedByOther(remarkLeadId);
-    };
+    }
 
     //处理被别人提取过的线索
     handleLeadHasExtractedByOther = (hasExtractedLeadIds) => {
         if(_.isArray(hasExtractedLeadIds)){
             _.each(hasExtractedLeadIds, remarkId => {
-                this.remarkLeadExtractedByOther(remarkId);
+                LeadsRecommendAction.remarkLeadExtractedByOther(remarkId);
             });
         }
     };
@@ -954,6 +934,7 @@ class RecommendCluesList extends React.Component {
                 maxLimitExtractNumber: data.maxCount,
                 disableExtract
             });
+            this.hasExtractCount = data.hasExtractedCount;
             _.isFunction(callback) && callback(data.hasExtractedCount, disableExtract);
         }, (error) => {
             _.isFunction(callback) && callback('error');
@@ -1252,7 +1233,6 @@ class RecommendCluesList extends React.Component {
                 this.setState({
                     batchExtractLoading: false,
                     canClickExtract: true,
-                    // selectedRecommendClues: disabledCheckedClues,
                     disabledCheckedClues: [],
                 });
                 var taskId = _.get(data, 'batch_label','');
@@ -1300,9 +1280,6 @@ class RecommendCluesList extends React.Component {
                     canClickExtract: true,
                     batchExtractLoading: false,
                     disabledCheckedClues: [],
-                    // selectedRecommendClues: _.get(this.state,'disabledCheckedClues', [])
-                    // saveErrorMsg: errTip,
-                    // unSelectDataTip: errTip
                 });
                 //如果提取失败的原因是因为被提取过，将该推荐线索设置不可点击并且前面加提示
                 if(_.includes(HASEXTRACTBYOTHERERRTIP, errTip)){
@@ -1388,7 +1365,6 @@ class RecommendCluesList extends React.Component {
             //如果获取提取总量失败了,就不校验数字了
             //点击批量提取后把select的check选中状态都取消，并且加上disabled的样式
             this.setState({
-                // disabledCheckedClues: this.state.selectedRecommendClues,
                 batchExtractType
             });
             if(this.state.getMaxLimitExtractNumberError){
@@ -1409,7 +1385,6 @@ class RecommendCluesList extends React.Component {
                             hasNoExtractCountTip: true,
                             canClickExtract: true,
                             disabledCheckedClues: [],
-                            // selectedRecommendClues: this.state.disabledCheckedClues,
                             showBatchExtractTip: false,
                             batchCheckPhonePopVisible: false,
                             batchCheckPhonePopContent: null,
@@ -1613,6 +1588,7 @@ class RecommendCluesList extends React.Component {
                     this.clearSelectSales();
                     SetLocalSalesClickCount(salesMan, CLUE_RECOMMEND_SELECTED_SALES);
                     this.updateRecommendClueLists(leadId);
+                    this.updateExtractedCount();
                     //线索提取完后，会到待分配状态中
                 }else{
                     message.error(Intl.get('clue.extract.failed', '提取失败'));
@@ -1836,10 +1812,7 @@ class RecommendCluesList extends React.Component {
                 return recommend.id !== item.id;
             });
         }
-        this.setState({
-            selectedRecommendClues: _.uniqBy(selectedRecommendClues, 'id'),
-            hasNoExtractCountTip: false
-        });
+        LeadsRecommendAction.updateSelectedRecommendClues(_.uniqBy(selectedRecommendClues, 'id'));
     };
     // 全选/反选
     handleCheckAllChange = (e) => {
@@ -1850,7 +1823,7 @@ class RecommendCluesList extends React.Component {
                 return !this.getDisabledClue(item);
             });
         }
-        this.setState({selectedRecommendClues: canExtractClues, hasNoExtractCountTip: false});
+        LeadsRecommendAction.updateSelectedRecommendClues(canExtractClues);
         Trace.traceEvent(e, '点击选中/取消选中全部线索');
     };
     //是否全选

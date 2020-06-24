@@ -248,6 +248,8 @@ var NavSidebar = createReactClass({
         notificationEmitter.on(notificationEmitter.CLICK_NOTICE_TABS_TYPE, this.clickSystemPanelTabsType);
         // 线索管理加1效果
         leadRecommendEmitter.on(leadRecommendEmitter.ADD_LEAD_MANAGEMENT_ONE_NUM, this.handleAddLeadManagementOneNum);
+        // 线索管理图标添加数字点
+        leadRecommendEmitter.on(leadRecommendEmitter.ADD_LEAD_MANAGEMENT_NUM_POINT, this.setExtractedCount);
         //获取我的审批的未读回复列表
         this.getMyApplyUnreadReply();
         //获取团队审批的未读回复列表
@@ -288,12 +290,24 @@ var NavSidebar = createReactClass({
         let count = Oplate.has_extracted_clue_count = _.get(websiteConfig, 'has_extracted_clue_count', 0);
         //如果有已提取过但是没有查看的线索数，需要展示
         if(count > 0) {
-            let leadIconEl = $('.leads_icon_container'), cls = 'leads_extracted_count_icon_container';
-            if(count >= 100) {
-                count = '99+';
+            this.setExtractedCount();
+        }
+    },
+    //给线索管理图标添加已提取线索数
+    setExtractedCount(isAddOne = false) {
+        let leadIconEl = $('.leads_icon_container'), cls = 'leads_extracted_count_icon_container';
+        if(leadIconEl.length) {
+            let extractedCount = +(_.get(Oplate, 'has_extracted_clue_count', 0));
+            //已提取线索数是否需要加1
+            if(isAddOne) {
+                extractedCount += 1;
+                Oplate.has_extracted_clue_count = extractedCount;
+            }
+            if(extractedCount >= 100) {
+                extractedCount = '99+';
                 cls += ' more-than-one-hundred';
             }
-            leadIconEl.addClass(cls).attr('data-count', count);
+            leadIconEl.addClass(cls).attr('data-count', extractedCount);
         }
     },
     //点击线索管理图标，需要清除掉已提取线索数
@@ -441,6 +455,7 @@ var NavSidebar = createReactClass({
         clickUpgradeNoiceEmitter.removeListener(clickUpgradeNoiceEmitter.CLICK_NOITCE_TAB, this.toggleUpgradeNotice);
         notificationEmitter.removeListener(notificationEmitter.CLICK_NOTICE_TABS_TYPE, this.clickSystemPanelTabsType);
         leadRecommendEmitter.removeListener(leadRecommendEmitter.ADD_LEAD_MANAGEMENT_ONE_NUM, this.handleAddLeadManagementOneNum);
+        leadRecommendEmitter.removeListener(leadRecommendEmitter.ADD_LEAD_MANAGEMENT_NUM_POINT, this.setExtractedCount);
     },
 
 

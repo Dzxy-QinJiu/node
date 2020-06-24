@@ -19,6 +19,8 @@ function LeadsRecommendActions() {
         'remarkLeadExtractedByOther',//给被别人提取过的线索加一个标识
         'initialRecommendClues',//初始化推荐线索相关条件及状态
         'setPageSize',//设置pageSize
+        'updateSelectedRecommendClues',//更新选中状态的线索
+        'onceUpdateRecommendClueLists',//一次性更新需要处理的线索
     );
     //获取销售列表
     this.getSalesManList = function(cb) {
@@ -65,6 +67,12 @@ function LeadsRecommendActions() {
         }else {
             this.dispatch({loading: false, error: false, data: obj});
         }
+    };
+
+    //一次性更新需要处理的线索
+    this.onceUpdateRecommendClueLists = function(updateClueIds, cb) {
+        this.dispatch(updateClueIds);
+        _.isFunction(cb) && cb();
     };
 
     // 获取所有成员

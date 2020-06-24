@@ -75,12 +75,13 @@ LeadsRecommendStore.prototype.getSettingCustomerRecomment = function(result){
         this.settedCustomerRecommend.loading = false;
     }
 };
-LeadsRecommendStore.prototype.updateRecommendClueLists = function(extractClues) {
+LeadsRecommendStore.prototype.updateRecommendClueLists = function(extractClueId) {
     //需要给已经提取成功的加上一个类名，界面相应的加上对应的不能处理的样式
-    var targetObj = _.find(this.recommendClueLists, item => item.id === extractClues);
+    var targetObj = _.find(this.recommendClueLists, item => item.id === extractClueId);
     if(targetObj){
         targetObj.hasExtracted = true;
     }
+    this.selectedRecommendClues = _.filter(this.selectedRecommendClues, item => item.id !== extractClueId);
 };
 //给已经被其他人提取的线索加一个标识
 LeadsRecommendStore.prototype.remarkLeadExtractedByOther = function(extractCluesByOtherLeadId) {
@@ -89,6 +90,7 @@ LeadsRecommendStore.prototype.remarkLeadExtractedByOther = function(extractClues
     if(targetObj){
         targetObj.hasExtractedByOther = true;
     }
+    this.selectedRecommendClues = _.filter(this.selectedRecommendClues, item => item.id !== extractCluesByOtherLeadId);
 };
 
 LeadsRecommendStore.prototype.setSalesMan = function(salesObj) {
@@ -119,6 +121,7 @@ LeadsRecommendStore.prototype.initialRecommendClues = function() {
     this.feature = '';
     this.total = 0;
     this.canClickMoreBatch = true;
+    this.selectedRecommendClues = [];//选中状态的推荐线索
 };
 // 获取所有人员
 LeadsRecommendStore.prototype.getAllSalesUserList = function(list) {
@@ -127,6 +130,21 @@ LeadsRecommendStore.prototype.getAllSalesUserList = function(list) {
 //设置pagesize
 LeadsRecommendStore.prototype.setPageSize = function(size) {
     this.pageSize = size;
+};
+//更新选中线索列表
+LeadsRecommendStore.prototype.updateSelectedRecommendClues = function(selectedClues) {
+    this.selectedRecommendClues = selectedClues;
+};
+//一次性处理需要更新的线索列表
+LeadsRecommendStore.prototype.onceUpdateRecommendClueLists = function(updateClueIds) {
+    _.each(updateClueIds, id => {
+        //需要给已经提取成功的加上一个类名，界面相应的加上对应的不能处理的样式
+        var targetObj = _.find(this.recommendClueLists, item => item.id === id);
+        if(targetObj){
+            targetObj.hasExtracted = true;
+        }
+    });
+    this.selectedRecommendClues = _.filter(this.selectedRecommendClues, item => !_.includes(updateClueIds, item.id));
 };
 
 module.exports = alt.createStore(LeadsRecommendStore, 'LeadsRecommendStore');
