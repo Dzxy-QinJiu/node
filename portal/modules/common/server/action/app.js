@@ -70,7 +70,7 @@ exports.queryUserCondition = (req, res) => {
 
 exports.getWxWebviewPage = (req, res) => {
     var originalUrl = req.originalUrl;
-    var cookieUpdate = originalUrl.split('?')[1];//小程序登录后的cookie，
+    var cookieUpdate = decodeURIComponent(_.chain(originalUrl).split('?').get('[1]').split('=').get('[1]'));//小程序登录后的cookie
     var cookieParse = cookie.parse(cookieUpdate);
     var sessionId = cookieParser.signedCookie(cookieParse['sid'], config.session.secret);
     var sessionStore = global.config.sessionStore;
