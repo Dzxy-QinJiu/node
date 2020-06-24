@@ -11,7 +11,7 @@ export function getCustomerTrialQualifiedChart() {
         chartType: 'table',
         height: 'auto',
         layout: {sm: 24},
-        url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
+        url: '/rest/analysis/customer/v3/statistic/:data_type/customer/qualify',
         dataField: 'list',
         processOption: (option, chartProps) => {
             //接口数据
