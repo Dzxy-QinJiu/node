@@ -25,7 +25,7 @@ import {RECOMMEND_CLUE_FILTERS, COMPANY_VERSION_KIND} from 'PUB_DIR/sources/util
 import classNames from 'classnames';
 import { paymentEmitter } from 'OPLATE_EMITTER';
 import {addOrEditSettingCustomerRecomment, getCompanyListByName, getRecommendCluePicked} from 'MOD_DIR/leads-recommend/public/ajax/leads-recommend-ajax';
-import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
+import {isResponsiveDisplay, disabledAfterToday} from 'PUB_DIR/sources/utils/common-method-util';
 import {toFrontRecommendClueData} from '../../server/dto/recommend-clue';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -811,9 +811,11 @@ class RecommendCluesFilterPanel extends Component {
     //渲染成立时间内容
     renderRegisterTimeBlock({btnText, type, list, processValue = () => {}}) {
         let {isWebMin} = isResponsiveDisplay();
-        let {vipFilters, registerPopvisible} = this.state;
-        let currentValue = processValue(vipFilters);
+        let {vipFilters, registerPopvisible, hasSavedRecommendParams} = this.state;
+        let currentValue = processValue(hasSavedRecommendParams);
+        let hasRegisterTime = true;
         if(_.isEmpty(currentValue)) {
+            hasRegisterTime = false;
             currentValue = {
                 name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText})
             };
@@ -821,7 +823,7 @@ class RecommendCluesFilterPanel extends Component {
 
         let value = [];
         let registerStartTime = vipFilters.startTime || '', registerEndTime = vipFilters.endTime || '';
-        if (registerStartTime && registerEndTime){
+        if (hasRegisterTime && registerStartTime && registerEndTime){
             value = [moment(registerStartTime), moment(registerEndTime)];
         }
 
@@ -899,6 +901,7 @@ class RecommendCluesFilterPanel extends Component {
                                     return trigger.parentNode;
                                 }}
                                 value={value}
+                                disabledDate={disabledAfterToday}
                                 onChange={this.onDateChange}
                             />
                         </div>
