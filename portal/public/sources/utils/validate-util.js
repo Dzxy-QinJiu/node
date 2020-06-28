@@ -31,6 +31,16 @@ export const getNumberValidateRule = function() {
 export const isPhone = function(value) {
     return /^1[3-9]\d{9}$/.test(value);
 };
+//网址验证规则
+export const urlRegex = /^\b(((https?|ftp):\/\/)?[-a-z0-9]+(\.[-a-z0-9]+)*\.(?:com|edu|gov|int|mil|net|org|biz|info|name|museum|asia|coop|aero|[a-z][a-z]|((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]\d)|\d))\b(\/[-a-z0-9_:\@&?=+,.!\/~%\$]*)?)$/i;
+export const isURL = function(strUrl) {
+    if (urlRegex.test(strUrl)) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
 //邮箱正则表达式
 export const emailRegex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 //是否是邮箱

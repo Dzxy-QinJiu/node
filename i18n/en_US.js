@@ -3512,7 +3512,7 @@ var en_US = {
     'lead.check.phone.explain': 'Only non-14, 16, 17 and 19 mobile phone Numbers are supported',//仅支持非14、16、17、19号段手机号
     'lead.direct.extraction': 'Direct extraction',//直接提取
     'lead.check.phone.result': 'Null detection results',//空号检测结果
-    'lead.check.phone.enabled.free.weekly.tip': 'Empty number detection has been enabled, free this week, extract clues can be experienced.',//空号检测已开启，本周免费，提取线索即可体验。
+    'lead.check.phone.enabled.free.weekly.tip': 'The empty number detection has been turned on, and you can experience it by extracting clues.',//空号检测已开启，提取线索即可体验。
     'lead.check.phone.free.weekly.tip': 'Open the empty number detection, free detection of empty number, come and try!',//开启空号检测，可免费检测空号，快来试试吧！
     'lead.extract.confirm': 'Confirm to extract',//确认提取
     'lead.single.check.phone.no.empty.phone.tip': 'There are {allCount} Numbers in this clue, but the system has not found any suspected empty Numbers',//此线索有{allCount}个号码，系统未发现疑似空号
@@ -3531,6 +3531,8 @@ var en_US = {
     'lead.recommend.page.size': 'Each page',//每页
     'lead.company.legal.person': 'Legal person',//法人
     'lead.company.no.legal.person': 'No legal person',//暂无法人
+    'recommend.clue.check.phone.status.loading': 'The number is empty, please wait a moment...',//正在检测空号,请稍等...
+    'recommend.clue.extract.loading': 'Are extracting',//正在提取
 
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
@@ -4314,7 +4316,7 @@ var en_US = {
     'personal.official.version': 'Personal',//个人正式版
     'personal.upgrade.to.enterprise.edition': 'Upgrade to enterprise edition',//升级为企业版
     'personal.apply.trial.enterprise.edition': 'Apply for trial enterprise edition',//申请试用企业版
-    'personal.apply.trial.enterprise.dail': 'Apply for enterprise trial experience dial telephone',//申请企业试用体验拨打电话
+    'personal.apply.trial.enterprise.dail': 'Apply for a trial enterprise edition, try to make phone calls',//申请试用企业版，体验拨打电话
     'common.upgrade': 'Upgrade',//升级
     'clues.extract.count.at.month': 'Extract {count} clues per month',//每月可提取 {count} 条线索
     'goods.price.most.favorable': 'The most favorable',//最优惠
@@ -4370,6 +4372,7 @@ var en_US = {
     'payment.payment.platform': 'payment platform',//支付平台
     'payment.payment.records': 'payment records',//付费记录
     'payment.extract.count.limit.upgrade.tip': 'Extract more than {count} bars, please upgrade the official version',//提取超过{count}条,请升级正式版
+    'payment.apply.trial.user.scales.count.limit': 'The number of users cannot exceed {count}',//使用人数不能超过{count}人
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/

@@ -380,6 +380,32 @@ const AppPropertySetting = createReactClass({
         });
     },
 
+    // 渲染多终端的信息
+    renderAppTerminalsContent(isShowAppTerminals, currentApp, terminals, currentAppInfo ) {
+        if (isShowAppTerminals) {
+            return (
+                <div className="form-item">
+                    <div className="form-item-label required_label">
+                        {Intl.get('common.terminals', '终端')}
+                    </div>
+                    <div className="form-item-content">
+                        {
+                            this.renderUserAppTerminalCheckboxBlock({
+                                isCustomSetting: true,
+                                appId: _.get(currentApp, 'app_id'),
+                                globalTerminals: terminals,
+                                appAllTerminals: _.get(currentAppInfo, 'terminals.value', []),
+                                selectedApps: currentApp
+                            })
+                        }
+                    </div>
+                </div>
+            );
+        } else {
+            return null;
+        }
+    },
+
     renderTabContent(app_id) {
         const currentApp = this.state.currentApp;
         if(currentApp.app_id !== app_id) {
@@ -433,22 +459,7 @@ const AppPropertySetting = createReactClass({
                 <div className="app-property-custom-settings">
                     {//多用户的应用设置时，只需要更改角色、权限，其他选项不需要更改
                         this.props.isMultiUser ? (
-                            isShowAppTerminals ? (
-                                <div className="form-item">
-                                    <div className="form-item-label">{Intl.get('common.terminals', '终端')}</div>
-                                    <div className="form-item-content">
-                                        {
-                                            this.renderUserAppTerminalCheckboxBlock({
-                                                isCustomSetting: true,
-                                                appId: appId,
-                                                globalTerminals: _.get(defaultSettings, 'terminals',[]),
-                                                appAllTerminals: currentAppInfo.terminals.value,
-                                                selectedApps: currentApp
-                                            })
-                                        }
-                                    </div>
-                                </div>
-                            ) : null
+                            this.renderAppTerminalsContent(isShowAppTerminals, currentApp, terminals, currentAppInfo)
                         ) : (
                             <div
                                 className="basic-data-form app-property-other-property"
@@ -540,24 +551,7 @@ const AppPropertySetting = createReactClass({
                                         </div>
                                     </div>
                                 ) : null}
-                                {
-                                    isShowAppTerminals ? (
-                                        <div className="form-item">
-                                            <div className="form-item-label">{Intl.get('common.terminals', '终端')}</div>
-                                            <div className="form-item-content">
-                                                {
-                                                    this.renderUserAppTerminalCheckboxBlock({
-                                                        isCustomSetting: true,
-                                                        appId: currentApp.app_id,
-                                                        globalTerminals: terminals,
-                                                        appAllTerminals: currentAppInfo.terminals.value,
-                                                        selectedApps: currentApp
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                    ) : null
-                                }
+                                {this.renderAppTerminalsContent(isShowAppTerminals, currentApp, terminals, currentAppInfo)}
                                 {
                                     this.props.isShowOther && !Oplate.hideSomeItem && <div className="form-item">
                                         <div className="form-item-label">{Intl.get('crm.186', '其他')}</div>

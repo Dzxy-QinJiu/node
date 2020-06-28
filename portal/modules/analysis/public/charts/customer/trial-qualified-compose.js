@@ -7,7 +7,7 @@ import { processFallsChartCsvData } from '../../utils';
 export function getCustomerTrialQualifiedComposeChart() {
     return {
         title: Intl.get('analysis.qualified.composition.in.probation.this.month', '全部产品'),
-        url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
+        url: '/rest/analysis/customer/v3/statistic/:data_type/customer/qualify/month/detail',
         chartType: 'bar',
         processOption: (option, chartProps) => {
             option.legend = {

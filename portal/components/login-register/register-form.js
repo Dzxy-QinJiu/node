@@ -392,9 +392,8 @@ class RegisterForm extends React.Component {
         window.open('/privacy/policy');
     }
     toLogin = (eventTraceDescr, e) => {
-
         Trace.traceEvent(e, eventTraceDescr);
-        pcAndWechatMiniProgram('/login');
+        pcAndWechatMiniProgram('/login',true);
     }
     clearErrorMsg = () => {
         this.setState({

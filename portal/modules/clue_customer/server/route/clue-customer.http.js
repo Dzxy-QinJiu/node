@@ -40,13 +40,6 @@ module.exports = {
         ]
     }, {
         method: 'get',
-        path: '/rest/get/maxlimit/and/hasExtracted/count',
-        handler: 'getMaxLimitCountAndHasExtractedClue',
-        passport: {
-            needLogin: true
-        }
-    }, {
-        method: 'get',
         path: '/rest/sales_clue/classify',
         handler: 'getClueClassify',
         passport: {
@@ -196,48 +189,6 @@ module.exports = {
         passport: {
             'needLogin': true
         }
-    }, {
-        method: 'post',
-        path: '/rest/clue/recommend/lists',
-        handler: 'getRecommendClueLists',
-        passport: {
-            'needLogin': true
-        }
-    }, {
-        method: 'get',
-        path: '/rest/clue/condition/industries',
-        handler: 'getClueIndustryLists',
-        passport: {
-            'needLogin': true
-        }
-    }, {
-        method: 'get',
-        path: '/rest/clue/recommend/condition',
-        handler: 'getSelfClueConditionConfig',
-        passport: {
-            'needLogin': true
-        }
-    }, {
-        method: 'post',
-        path: '/rest/clue/recommend/condition',
-        handler: 'addOrEditSelfClueConditionConfig',
-        passport: {
-            'needLogin': true
-        }
-    }, {
-        method: 'post',
-        path: '/rest/clue/extract/recommend/clue',
-        handler: 'extractRecommendClue',
-        passport: {
-            'needLogin': true
-        }
-    }, {
-        method: 'post',
-        path: '/rest/clue/batch/recommend/list',
-        handler: 'batchExtractRecommendLists',
-        passport: {
-            'needLogin': true
-        }
     }, {//通过关键词获取线索列表
         method: 'post',
         path: '/rest/clue/:type/:page_size/:sort_field/:order',
@@ -281,20 +232,6 @@ module.exports = {
             needLogin: true
         },
         privileges: [cluePrivilegeConst.BASE_QUERY_PERMISSION_ORGANIZATION]
-    }, {
-        method: 'get',
-        path: '/rest/recommend/clue/company/name',
-        handler: 'getCompanyListByName',
-        passport: {
-            needLogin: true
-        },
-    }, {
-        method: 'get',
-        path: '/rest/recommend/clue/picked',
-        handler: 'getRecommendCluePicked',
-        passport: {
-            needLogin: true
-        },
-    }
+    },
     ]
 };
