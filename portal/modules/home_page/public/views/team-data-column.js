@@ -494,11 +494,11 @@ class TeamDataColumn extends React.Component {
     renderCallTime() {
         let callTimeData = this.state.callTimeData || [];
         callTimeData = callTimeData.sort((a, b) => {
-            return b.totalTime - a.totalTime;
+            return b.total_time - a.total_time;
         });
-        const firstTotalTime = _.get(callTimeData, '[0].totalTime', 0);
-        let totalTime = _.sumBy(callTimeData, 'totalTime');
-        let time = TimeUtil.secondsToHourMinuteSecond(totalTime || 0);
+        const firstTotalTime = _.get(callTimeData, '[0].total_time', 0);
+        let total_time = _.sumBy(callTimeData, 'total_time');
+        let time = TimeUtil.secondsToHourMinuteSecond(total_time || 0);
         let timeObj = this.getCallTimeObj();
         //只展示前三条数据
         callTimeData = _.filter(callTimeData, (item, index) => index <= 2);
@@ -558,13 +558,14 @@ class TeamDataColumn extends React.Component {
                                     let percent = 100;
                                     //其他名次占第一名的百分比
                                     if (index !== 0) {
-                                        percent = firstTotalTime ? (item.totalTime / firstTotalTime) * 100 : 0;
+                                        percent = firstTotalTime ? (item.total_time / firstTotalTime) * 100 : 0;
                                     }
-                                    let timeObj = TimeUtil.secondsToHourMinuteSecond(item.totalTime || 0);
+                                    let timeObj = TimeUtil.secondsToHourMinuteSecond(item.total_time || 0);
+                                    const name = item.sales_team || item.nick_name || '';
                                     return (
                                         <div className="call-time-item">
                                             <span className='call-time-name'
-                                                title={_.get(item, 'salesName', '')}>{_.get(item, 'salesName', '')}</span>
+                                                title={name}>{name}</span>
                                             <span className='progress-bar-wrap'>
                                                 <Tooltip title={timeObj.timeDescr} placement="left">
                                                     <Progress size='small' percent={percent} showInfo={false}
