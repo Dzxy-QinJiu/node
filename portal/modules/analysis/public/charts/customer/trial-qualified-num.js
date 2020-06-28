@@ -7,7 +7,7 @@ import { processFallsChartCsvData } from '../../utils';
 export function getCustomerTrialQualifiedNumChart() {
     return {
         title: Intl.get('analysis.statistics.of.qualified.customers.in.probation.this.month', '本月试用合格客户数统计'),
-        url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
+        url: '/rest/analysis/customer/v3/statistic/:data_type/customer/qualify/current/highest',
         chartType: 'bar',
         processOption: (option, chartProps) => {
             option.legend = {

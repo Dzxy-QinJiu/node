@@ -227,33 +227,20 @@ export const SetLocalSalesClickCount = function(sale_id, sessionKey) {
     }
 };
 export const handleSubmitContactData = function(submitObj){
-    var data = {},updateObj = {};
-    updateObj.id = submitObj.id;
-    //联系人的id
-    updateObj.contacts = [{'id': submitObj.contact_id}];
-    delete submitObj.contact_id;
-    var clueName = '';
-    if (submitObj.clueName){
-        clueName = submitObj.clueName;
+    var data = {}, updateObj = {};
+    if(submitObj.clueName){//修改电话的时候，也需要传线索的名字，因为现在的规则是电话可以重复，线索名称也可以重复，但是不可以同时重复
+        updateObj.name = submitObj.clueName;
         delete submitObj.clueName;
     }
-    for (var key in submitObj){
-        //要更新的字段
-        data.updateItem = key;
-        if (key === 'contact_name'){
-            //联系人的名字
-            updateObj.contacts[0]['name'] = submitObj[key];
-        }else{
-            //过滤掉值为空
-            if (_.isArray(submitObj[key])){
-                submitObj[key] = submitObj[key].filter(item => item);
-                updateObj.contacts[0][key] = submitObj[key];
-            }
-        }
+    var {id, contact_id, contact_name, ...contact} = submitObj;
+    updateObj.id = id;
+    if (contact_name) {
+        data.updateItem = 'contact_name';
+        contact = { name: contact_name };
+    } else {
+        data.updateItem = _.keys(contact)[0];
     }
-    if (clueName){
-        updateObj.name = clueName;
-    }
+    updateObj.contacts = [{id: contact_id,...contact}];
     data.updateObj = JSON.stringify(updateObj);
     data.type = handlePrivilegeType();
     return data;

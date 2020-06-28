@@ -8,6 +8,8 @@ import { nameLengthRule } from 'PUB_DIR/sources/utils/validate-util';
 const Spinner = require('CMP_DIR/spinner');
 require('./css/index.less');
 
+const USER_SCALES_COUNT = 100000;
+
 class Index extends React.Component {
     state={
         successFlag: false,
@@ -28,6 +30,14 @@ class Index extends React.Component {
     onUserScalesChange = (e) => {
         if(_.isEmpty(_.get(e, 'target.value'))) {//值为空或者undefined时
             this.props.form.setFieldsValue({userScales: 1});
+        }
+    };
+
+    userScalesValidate = (rule, value, callback) => {
+        if(_.gt(value, USER_SCALES_COUNT)) {//使用人数不能超过10万人
+            callback(new Error(Intl.get('payment.apply.trial.user.scales.count.limit', '使用人数不能超过{count}人', {count: USER_SCALES_COUNT})));
+        }else {
+            callback();
         }
     };
 
@@ -97,6 +107,7 @@ class Index extends React.Component {
                         <Form.Item label={Intl.get('common.apply.try.user.scales','使用人数')} {...formLayout} require className="user-scales-container">
                             {getFieldDecorator('userScales', {
                                 initialValue: 5,
+                                rules: [{validator: this.userScalesValidate}]
                             })(
                                 <InputNumber
                                     min={1}

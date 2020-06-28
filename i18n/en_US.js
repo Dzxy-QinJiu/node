@@ -2728,6 +2728,7 @@ var en_US = {
     'errorcode.orgnization.unexist': 'Organization does not exist',//组织不存在
     'errorcode.check.phone': 'Phone number detection service is abnormal',//手机号检测服务异常
     'errorcode.has.user': 'Applications have been sent during this time',//该时间段已发过申请
+    'errorcode.stage.delete.tips': 'There are orders in this stage. Please modify them before deleting them', // 存在该阶段的订单，请修改后再删除
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -4315,7 +4316,7 @@ var en_US = {
     'personal.official.version': 'Personal',//个人正式版
     'personal.upgrade.to.enterprise.edition': 'Upgrade to enterprise edition',//升级为企业版
     'personal.apply.trial.enterprise.edition': 'Apply for trial enterprise edition',//申请试用企业版
-    'personal.apply.trial.enterprise.dail': 'Apply for enterprise trial experience dial telephone',//申请企业试用体验拨打电话
+    'personal.apply.trial.enterprise.dail': 'Apply for a trial enterprise edition, try to make phone calls',//申请试用企业版，体验拨打电话
     'common.upgrade': 'Upgrade',//升级
     'clues.extract.count.at.month': 'Extract {count} clues per month',//每月可提取 {count} 条线索
     'goods.price.most.favorable': 'The most favorable',//最优惠
@@ -4371,6 +4372,7 @@ var en_US = {
     'payment.payment.platform': 'payment platform',//支付平台
     'payment.payment.records': 'payment records',//付费记录
     'payment.extract.count.limit.upgrade.tip': 'Extract more than {count} bars, please upgrade the official version',//提取超过{count}条,请升级正式版
+    'payment.apply.trial.user.scales.count.limit': 'The number of users cannot exceed {count}',//使用人数不能超过{count}人
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/

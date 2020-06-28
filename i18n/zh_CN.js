@@ -2766,6 +2766,7 @@ var zh_CN = {
     'errorcode.orgnization.unexist': '组织不存在',
     'errorcode.check.phone': '手机号检测服务异常',
     'errorcode.has.user': '该时间段已发过申请',
+    'errorcode.stage.delete.tips': '存在该阶段的订单，请修改后再删除',
 
     //遗漏部分
     'user.input.phone': '请输入手机号',
@@ -4350,7 +4351,7 @@ var zh_CN = {
     'personal.official.version': '个人正式版',
     'personal.upgrade.to.enterprise.edition': '升级为企业版',
     'personal.apply.trial.enterprise.edition': '申请试用企业版',
-    'personal.apply.trial.enterprise.dail': '申请企业试用体验拨打电话',
+    'personal.apply.trial.enterprise.dail': '申请试用企业版，体验拨打电话',
     'common.upgrade': '升级',
     'clues.extract.count.at.month': '每月可提取 {count} 条线索',
     'goods.price.most.favorable': '最优惠',
@@ -4406,6 +4407,7 @@ var zh_CN = {
     'payment.platform': '支付平台',
     'payment.records': '付费记录',
     'payment.extract.count.limit.upgrade.tip': '提取超过{count}条,请升级正式版',
+    'payment.apply.trial.user.scales.count.limit': '使用人数不能超过{count}人',
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/

@@ -204,7 +204,7 @@ class WeeklyReportDetail extends React.Component {
 
                 return (
                     <AntcAttendanceRemarks
-                        readOnly={isCommonSales}
+                        readOnly={true}
                         data={data}
                         userId={userId}
                         selectedDate={selectedDate}

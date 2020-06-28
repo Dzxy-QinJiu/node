@@ -1160,9 +1160,8 @@ class ClueCustomer extends React.Component {
 
     handleContactLists = (contact, salesClueItem) => {
         var clipContact = false, showContact = [];
-
         var legalPerson = _.find(contact, contactItem => contactItem.name && contactItem.name === _.get(salesClueItem, 'legal_person'));//法人
-        var notLegalPerson = _.filter(contact, contactItem => contactItem.name !== _.get(salesClueItem, 'legal_person'));//不是法人
+        var notLegalPerson = _.filter(contact, contactItem => _.get(contactItem,'name','') !== _.get(legalPerson, 'name'));//不是法人
         _.each(['phone','qq','email', 'weChat'], item => {
             ////如果有多个联系人，优先展示法人的电话,qq,email或者weChat
             var filterLegalPersonHaveItem = _.find(notLegalPerson, contactItem => _.get(contactItem, [item, 0]));//不是法人有item这个联系方式

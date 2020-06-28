@@ -47,7 +47,7 @@ export const callVolumeChart = {
         },
         {
             title: Intl.get('sales.home.total.connected', '总接通数'),
-            dataIndex: 'total_callout_success',
+            dataIndex: 'total_success',
             align: 'right',
             width: 80,
         },
