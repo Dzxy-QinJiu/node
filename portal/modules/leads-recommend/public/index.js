@@ -2464,7 +2464,7 @@ class RecommendCluesList extends React.Component {
                                             {/*行业*/}
                                             {otherProps.industry.hasContent ? (
                                                 <div className="extract-clue-text-item">
-                                                    <span>{Intl.get('menu.industry', '行业')}：</span>
+                                                    <span className="extract-clue-text-label">{Intl.get('menu.industry', '行业')}：</span>
                                                     <span dangerouslySetInnerHTML={{__html: otherProps.industry.content}}/>
                                                 </div>
                                             ) : null}
@@ -2472,7 +2472,7 @@ class RecommendCluesList extends React.Component {
                                             {otherProps.products.hasContent ? (
                                                 <div className="extract-clue-text-item">
                                                     <ShearContent rowsNum={1}>
-                                                        <span>{Intl.get('common.product', '产品')}：</span>
+                                                        <span className="extract-clue-text-label">{Intl.get('common.product', '产品')}：</span>
                                                         <span dangerouslySetInnerHTML={{__html: otherProps.products.content}}/>
                                                     </ShearContent>
                                                 </div>
@@ -2481,7 +2481,7 @@ class RecommendCluesList extends React.Component {
                                             {otherProps.scope.hasContent ? (
                                                 <div className="extract-clue-text-item">
                                                     <ShearContent rowsNum={1}>
-                                                        <span>{Intl.get('clue.recommend.clue.scope', '经营范围')}：</span>
+                                                        <span className="extract-clue-text-label">{Intl.get('clue.recommend.clue.scope', '经营范围')}：</span>
                                                         <span dangerouslySetInnerHTML={{__html: otherProps.scope.content}}/>
                                                     </ShearContent>
                                                 </div>
@@ -2492,7 +2492,7 @@ class RecommendCluesList extends React.Component {
                                                     <ShearContent
                                                         rowsNum={1}
                                                     >
-                                                        <span>{Intl.get('clue.recommend.clue.introduction', '简介')}：</span>
+                                                        <span className="extract-clue-text-label">{Intl.get('clue.recommend.clue.introduction', '简介')}：</span>
                                                         <span dangerouslySetInnerHTML={{__html: otherProps.companyProfile.content}}/>
                                                     </ShearContent>
                                                 </div>
