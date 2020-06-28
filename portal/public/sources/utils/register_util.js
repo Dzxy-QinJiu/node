@@ -8,7 +8,7 @@ exports.pcAndWechatMiniProgram = function(hrefUrl,isRegistry) {
             type: 'get',
             data: {isWechatLogout: true},
         });
-        if(_.isBoolean(isRegistry) && isRegistry){
+        if(isRegistry === true){
             wx.miniProgram.redirectTo({url: '/pages/login/index'});
         }else{
             wx.miniProgram.navigateBack();
