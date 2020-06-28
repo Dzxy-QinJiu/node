@@ -2766,6 +2766,7 @@ var zh_CN = {
     'errorcode.orgnization.unexist': '组织不存在',
     'errorcode.check.phone': '手机号检测服务异常',
     'errorcode.has.user': '该时间段已发过申请',
+    'errorcode.stage.delete.tips': '存在该阶段的订单，请修改后再删除',
 
     //遗漏部分
     'user.input.phone': '请输入手机号',
@@ -3532,7 +3533,7 @@ var zh_CN = {
     'lead.check.phone.explain': '仅支持非14、16、17、19号段手机号',
     'lead.direct.extraction': '直接提取',
     'lead.check.phone.result': '空号检测结果',
-    'lead.check.phone.enabled.free.weekly.tip': '空号检测已开启，本周免费，提取线索即可体验。',
+    'lead.check.phone.enabled.free.weekly.tip': '空号检测已开启，提取线索即可体验。',
     'lead.check.phone.free.weekly.tip': '开启空号检测，可免费检测空号，快来试试吧！',
     'lead.extract.confirm': '确认提取',
     'lead.single.check.phone.no.empty.phone.tip': '此线索有{allCount}个号码，系统未发现疑似空号',
@@ -3551,6 +3552,8 @@ var zh_CN = {
     'lead.recommend.page.size': '每页',
     'lead.company.legal.person': '法人',
     'lead.company.no.legal.person': '暂无法人',
+    'recommend.clue.check.phone.status.loading': '正在检测空号,请稍等...',
+    'recommend.clue.extract.loading': '正在提取',
 
     //线索模块 end
     'common.memeber.all': '全部成员',
@@ -4348,7 +4351,7 @@ var zh_CN = {
     'personal.official.version': '个人正式版',
     'personal.upgrade.to.enterprise.edition': '升级为企业版',
     'personal.apply.trial.enterprise.edition': '申请试用企业版',
-    'personal.apply.trial.enterprise.dail': '申请企业试用体验拨打电话',
+    'personal.apply.trial.enterprise.dail': '申请试用企业版，体验拨打电话',
     'common.upgrade': '升级',
     'clues.extract.count.at.month': '每月可提取 {count} 条线索',
     'goods.price.most.favorable': '最优惠',
@@ -4404,6 +4407,7 @@ var zh_CN = {
     'payment.platform': '支付平台',
     'payment.records': '付费记录',
     'payment.extract.count.limit.upgrade.tip': '提取超过{count}条,请升级正式版',
+    'payment.apply.trial.user.scales.count.limit': '使用人数不能超过{count}人',
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
