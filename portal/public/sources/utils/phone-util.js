@@ -4,8 +4,6 @@
  * Created by liwenjun on 2019/1/11.
  */
 
-let callcenter = require('callcenter-sdk-client');
-let CallcenterClient = callcenter.client;
 import {Button, message} from 'antd';
 import commonMethodUtil from './common-method-util';
 import {phoneEmitter} from './emitters';
@@ -16,24 +14,28 @@ import {PHONE_NOT_SETTING_TIP} from './consts';
 import {getOrganizationCallFee} from './common-data-util';
 //初始化
 exports.initPhone = function(user) {
-    let org = commonMethodUtil.getOrganization();
-    callClient = new CallcenterClient(org.id, user.user_id);
-    callClient.init().then((phoneType) => {
-        notificationEmitter.emit(notificationEmitter.PHONE_INITIALIZE, false);
-        oplateConsts.SHOW_SET_PHONE_TIP = false;
-        console.log('可以打电话了!');
-        commonMethodUtil.setExclusiveNumber(phoneType);
-        phoneEmitter.emit(phoneEmitter.CALL_CLIENT_INITED, {phoneType});
-    }, (error) => {
-        //未绑定坐席号和获取坐席号失败都会走到error里面，只能根据error的内容进行判断
-        if (error === PHONE_NOT_SETTING_TIP){
-            oplateConsts.SHOW_SET_PHONE_TIP = true;
-            notificationEmitter.emit(notificationEmitter.PHONE_INITIALIZE, true);
-        }else{
-            oplateConsts.SHOW_SET_PHONE_TIP = false;
+    import(/* webpackChunkName: 'callcenter-sdk-client' */ 'callcenter-sdk-client').then(({ default: callcenter }) => {
+        let CallcenterClient = callcenter.client;
+        let org = commonMethodUtil.getOrganization();
+        callClient = new CallcenterClient(org.id, user.user_id);
+
+        callClient.init().then((phoneType) => {
             notificationEmitter.emit(notificationEmitter.PHONE_INITIALIZE, false);
-        }
-        console.log(error || '电话系统初始化失败了!');
+            oplateConsts.SHOW_SET_PHONE_TIP = false;
+            console.log('可以打电话了!');
+            commonMethodUtil.setExclusiveNumber(phoneType);
+            phoneEmitter.emit(phoneEmitter.CALL_CLIENT_INITED, {phoneType});
+        }, (error) => {
+            //未绑定坐席号和获取坐席号失败都会走到error里面，只能根据error的内容进行判断
+            if (error === PHONE_NOT_SETTING_TIP){
+                oplateConsts.SHOW_SET_PHONE_TIP = true;
+                notificationEmitter.emit(notificationEmitter.PHONE_INITIALIZE, true);
+            }else{
+                oplateConsts.SHOW_SET_PHONE_TIP = false;
+                notificationEmitter.emit(notificationEmitter.PHONE_INITIALIZE, false);
+            }
+            console.log(error || '电话系统初始化失败了!');
+        });
     });
 };
 

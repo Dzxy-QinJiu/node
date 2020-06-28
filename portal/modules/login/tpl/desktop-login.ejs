@@ -126,9 +126,7 @@
 </div>
 <% // 页脚         %>
 <% showFooterContent = hideLangQRcode || useSso ? false : true %>
-<script src="/dll/dll.vendor.js?timestamp=<%= timeStamp %>"></script>
-<script src="/dll/dll.reactRel.js?timestamp=<%= timeStamp %>"></script>
-<script src="/resources/common.bundle.js?timestamp=<%= timeStamp %>"></script>
+<% include ../../common/public/tpl/common-script.ejs %>
 <% if(isCurtao){ %>
 <% // --- curtao的登录界面 ---   %>
 <script src="/resources/login_curtao.bundle.js?timestamp=<%= timeStamp %>"></script>
