@@ -82,7 +82,7 @@ CustomerRecordStore.prototype.getCustomerTraceList = function(result) {
             customerRecord.forEach(function(item) {
                 item.showAdd = false;
             });
-            this.customerRecord = this.customerRecord.concat(customerRecord);
+            this.customerRecord = _.uniqBy(this.customerRecord.concat(customerRecord), 'id');
             //电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型，回访类型）
             const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP, CALL_RECORD_TYPE.CALL_BACK];
             //过滤出所有电话类型的通话记录(eefung、容联、客套APP、回访)
@@ -198,7 +198,7 @@ CustomerRecordStore.prototype.getPublicOpinionReports = function(result) {
     } else {
         this.customerRecordErrMsg = '';
         let reports = processReport(result.data);
-        this.customerRecord = this.customerRecord.concat(reports);
+        this.customerRecord = _.uniqBy(this.customerRecord.concat(reports), 'id');
         this.total = result.data.total;
     }
 };
