@@ -4,7 +4,7 @@
 
 import {regex} from 'ant-utils';
 import {Button} from 'antd';
-import {moneySize, staffSize} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {moneySize, staffSize, ADVANCED_OPTIONS} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import giftLogo from '../../../static/images/gift.png';
 
 export const GIFT_LOGO = giftLogo;
@@ -887,6 +887,13 @@ export const RECOMMEND_CLUE_FILTERS = [{
     key: 'entTypes',
     label: '性质',
     separator: '、',
+}, {
+    key: 'feature',
+    label: '热门',
+    processValue: formData => {
+        let curFeature = _.find(ADVANCED_OPTIONS, item => item.value === _.get(formData, 'feature'));
+        return _.get(curFeature, 'name', '');
+    }
 }];
 
 // 用户标签的key
