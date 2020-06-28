@@ -97,7 +97,7 @@
     "@component-util/sso-login": "git+ssh://git@git.eefung.com:modules-nodejs/component-util.git#sso-login-1.3.3",
     "alt": "0.17.9",
     "ant-ajax": "1.0.2",
-    "antc": "1.1.44",
+    "antc": "1.1.48",
     "antd": "2.13.0",
     "ant-react-catch-errors": "0.0.1",
     "autoprefixer": "8.3.0",
