@@ -12,7 +12,7 @@ const homePageRestUrls = {
     getMyWorkTypes: '/rest/base/v1/realm/dailyjob/types',
     handleMyWorkStatus: '/rest/base/v1/notice/dailyjob/status',
     getContractPerformance: '/rest/analysis/contract/contract/v2/:type/performance',
-    getCallTimeData: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
+    getCallTimeData: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/total/ranking',
     queryCustomer: '/rest/customer/v3/customer/range/:type/1/1/id/descend',
     getMyInterestData: '/rest/customer/v3/interested',
     updateMyInterestStatus: '/rest/customer/v3/interested/:id',
@@ -65,23 +65,7 @@ exports.getCallTimeData = function(req, res) {
             res: res
         }, req.query, {
             success: (eventEmitter, data) => {
-                let salesPhoneList = _.map(_.get(data, 'result', []), function(salesObj) {
-                    return {
-                        salesName: salesObj.name,//销售名称
-                        totalTime: salesObj.total_time,//总时长
-                        totalAnswer: salesObj.total_num,//总接通数
-                        averageTime: parseInt(salesObj.average_time),//日均时长
-                        averageAnswer: parseInt(salesObj.average_num),//日均接通数
-                        callinCount: salesObj.total_callin,//呼入次数
-                        callinSuccess: salesObj.total_callin_success,//成功呼入
-                        callinRate: salesObj.callin_rate,//呼入接通率
-                        calloutCount: salesObj.total_callout,//呼出次数
-                        calloutSuccess: salesObj.total_callout_success,//成功呼出
-                        calloutRate: salesObj.callout_rate,//呼出接通率
-                        effectiveCount: salesObj.total_effective,//有效接通数
-                        effectiveTime: salesObj.total_effective_time,//有效通话时长
-                    };
-                });
+                let salesPhoneList = _.get(data, 'result.call_view_total_list', []);
                 eventEmitter.emit('success', salesPhoneList);
             }
         });
