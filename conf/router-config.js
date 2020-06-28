@@ -19,7 +19,7 @@ let routers = [
         id: 'CLUES_RECOMMEND',
         name: 'clue.find.recommend.clue',//找线索
         routePath: '/leads-recommend',
-        component: `${MODULE_PATH}clue_customer/public/views/recomment_clues`,
+        component: `${MODULE_PATH}leads-recommend/public`,
         shortName: 'clue.find.recommend.clue',//找线索
         //有这个权限，才显示入口图标
         showPrivileges: ['CURTAO_CRM_COMPANY_STORAGE']

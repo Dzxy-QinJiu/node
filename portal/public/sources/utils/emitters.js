@@ -287,6 +287,8 @@ const leadRecommendEmitter = new EventEmitter();
 leadRecommendEmitter.REFRESH_LEAD_LIST = 'refresh_lead_list';//换一批
 leadRecommendEmitter.CHANGE_LEAD_CONDITION = 'change_lead_condition';//修改推荐线索的条件
 leadRecommendEmitter.ADD_LEAD_MANAGEMENT_ONE_NUM = 'add_lead_management_one_num';//线索管理加1效果
+leadRecommendEmitter.ADD_LEAD_MANAGEMENT_NUM_POINT = 'add_lead_management_num_point';//线索管理添加数字点
+leadRecommendEmitter.BATCH_EXTRACT_PRTOGRESS_PERCENT = 'batch_extract_progress_percent';//批量提取线索进度
 export { leadRecommendEmitter };
 
 // 点击查看公告事件
