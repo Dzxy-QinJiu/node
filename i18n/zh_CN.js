@@ -4349,7 +4349,7 @@ var zh_CN = {
     'personal.official.version': '个人正式版',
     'personal.upgrade.to.enterprise.edition': '升级为企业版',
     'personal.apply.trial.enterprise.edition': '申请试用企业版',
-    'personal.apply.trial.enterprise.dail': '申请企业试用体验拨打电话',
+    'personal.apply.trial.enterprise.dail': '申请试用企业版，体验拨打电话',
     'common.upgrade': '升级',
     'clues.extract.count.at.month': '每月可提取 {count} 条线索',
     'goods.price.most.favorable': '最优惠',

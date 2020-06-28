@@ -4314,7 +4314,7 @@ var en_US = {
     'personal.official.version': 'Personal',//个人正式版
     'personal.upgrade.to.enterprise.edition': 'Upgrade to enterprise edition',//升级为企业版
     'personal.apply.trial.enterprise.edition': 'Apply for trial enterprise edition',//申请试用企业版
-    'personal.apply.trial.enterprise.dail': 'Apply for enterprise trial experience dial telephone',//申请企业试用体验拨打电话
+    'personal.apply.trial.enterprise.dail': 'Apply for a trial enterprise edition, try to make phone calls',//申请试用企业版，体验拨打电话
     'common.upgrade': 'Upgrade',//升级
     'clues.extract.count.at.month': 'Extract {count} clues per month',//每月可提取 {count} 条线索
     'goods.price.most.favorable': 'The most favorable',//最优惠
