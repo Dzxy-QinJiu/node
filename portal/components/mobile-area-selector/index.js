@@ -6,7 +6,6 @@
 import './style.less';
 import React, {Component} from 'react';
 import {AntcAreaSelection} from 'antc';
-const TAB_KEYS = AntcAreaSelection.TAB_KEYS;
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 import {AREA_ALL} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
