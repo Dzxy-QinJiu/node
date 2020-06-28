@@ -240,6 +240,7 @@ function getConfigJson(req) {
         '16115': {'httpCode': 500, 'message': backendIntl.get('errorcode.province.code.error', '省份编码错误')},
         '16116': {'httpCode': 500, 'message': backendIntl.get('errorcode.city.code.error', '城市编码错误')},
         '16117': {'httpCode': 500, 'message': backendIntl.get('errorcode.county.code.error', '区县编码错误')},
+        '16118': {'httpCode': 500, 'message': backendIntl.get('errorcode.stage.delete.tips', '存在该阶段的订单，请修改后再删除')},
 
         /**团队**/
         '16201': {'httpCode': 500, 'message': backendIntl.get('errorcode.100', '添加销售团队失败')},

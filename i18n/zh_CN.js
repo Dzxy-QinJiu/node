@@ -2766,6 +2766,7 @@ var zh_CN = {
     'errorcode.orgnization.unexist': '组织不存在',
     'errorcode.check.phone': '手机号检测服务异常',
     'errorcode.has.user': '该时间段已发过申请',
+    'errorcode.stage.delete.tips': '存在该阶段的订单，请修改后再删除',
 
     //遗漏部分
     'user.input.phone': '请输入手机号',

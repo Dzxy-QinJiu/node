@@ -2728,6 +2728,7 @@ var en_US = {
     'errorcode.orgnization.unexist': 'Organization does not exist',//组织不存在
     'errorcode.check.phone': 'Phone number detection service is abnormal',//手机号检测服务异常
     'errorcode.has.user': 'Applications have been sent during this time',//该时间段已发过申请
+    'errorcode.stage.delete.tips': 'There are orders in this stage. Please modify them before deleting them', // 存在该阶段的订单，请修改后再删除
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
