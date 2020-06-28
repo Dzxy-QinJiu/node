@@ -561,7 +561,7 @@ class TeamDataColumn extends React.Component {
                                         percent = firstTotalTime ? (item.total_time / firstTotalTime) * 100 : 0;
                                     }
                                     let timeObj = TimeUtil.secondsToHourMinuteSecond(item.total_time || 0);
-                                    const name = item.sales_team || item.nick_name || '';
+                                    const name = item.nick_name || item.sales_team || '';
                                     return (
                                         <div className="call-time-item">
                                             <span className='call-time-name'
