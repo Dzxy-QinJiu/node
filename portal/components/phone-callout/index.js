@@ -96,7 +96,7 @@ class PhoneCallout extends React.Component {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)), '个人版点击电话按钮');
             paymentEmitter.emit(paymentEmitter.OPEN_APPLY_TRY_PANEL, {
                 versionKind: COMPANY_VERSION_KIND,
-                title: Intl.get('personal.apply.trial.enterprise.dail', '申请企业试用体验拨打电话')
+                title: Intl.get('personal.apply.trial.enterprise.dail', '申请试用企业版，体验拨打电话')
             });
             return;
         }
