@@ -6,6 +6,7 @@
 import './style.less';
 import React, {Component} from 'react';
 import {AntcAreaSelection} from 'antc';
+const TAB_KEYS = AntcAreaSelection.TAB_KEYS;
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 import {AREA_ALL} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
@@ -44,8 +45,11 @@ class MobileAreaSelector extends Component {
         this.setState({area});
     };
 
-    handleSubmit = () => {
-        _.isFunction(this.props.handleSubmit) && this.props.handleSubmit({...this.state.area});
+    handleSubmit = (area) => {
+        if(_.isEmpty(area)) {
+            area = this.state.area;
+        }
+        _.isFunction(this.props.handleSubmit) && this.props.handleSubmit(area);
         _.isFunction(this.props.handleClose) && this.props.handleClose();
     };
 
@@ -74,8 +78,9 @@ class MobileAreaSelector extends Component {
                     filterSomeNewArea
                     sortProvinceByFirstLetter
                     isSetTabsContentHeight={this.isSetTabsContentHeight}
+                    handleSelectedAll={this.handleSubmit}
                 />
-                <div className="confirm-btn-container" onClick={this.handleSubmit} data-tracename="点击确认按钮">
+                <div className="confirm-btn-container" onClick={this.handleSubmit.bind(this, {})} data-tracename="点击确认按钮">
                     <span>{Intl.get('common.confirm', '确认')}</span>
                 </div>
             </React.Fragment>
