@@ -3530,6 +3530,8 @@ var en_US = {
     'lead.recommend.page.size': 'Each page',//每页
     'lead.company.legal.person': 'Legal person',//法人
     'lead.company.no.legal.person': 'No legal person',//暂无法人
+    'recommend.clue.check.phone.status.loading': 'The number is empty, please wait a moment...',//正在检测空号,请稍等...
+    'recommend.clue.extract.loading': 'Are extracting',//正在提取
 
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',

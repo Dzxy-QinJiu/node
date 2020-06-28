@@ -633,6 +633,23 @@
               border-color: @primary-disable-color;
             }
           }
+          //批量操作提取按钮以及提示区域样式
+          .batch-extract-operator-container{
+            display: inline-block;
+            transition: all .5s linear;
+            opacity: 1;
+            &.content-hidden{
+              opacity: 0;
+              z-index: 0!important;
+            }
+          }
+          .extract-operator-container{
+            display: flex;
+            position: relative;
+            .batch-loading-container{
+              position: absolute;
+            }
+          }
         }
       }
     }
@@ -647,6 +664,68 @@
       z-index: 5;
       &.show-mask{
         display: block;
+      }
+    }
+    //批量加载样式
+    .batch-loading-container{
+      height: 32px;
+      transition: all .4s linear;
+      min-width: 250px;
+      opacity: 1;
+      &.batch-loading-hidden, .content-hidden{
+        opacity: 0;
+      }
+      .content-hidden{
+        display: none;
+      }
+      //检测中
+      .batch-check-loading{
+        .batch-check-content{
+          background-color:  #1975D1;
+          padding: 0 8px;
+          border-radius: 4px;
+          color: #fff;
+          display: flex;
+          align-items: center;
+          font-size: 14px;
+          height: 32px;
+          .icon-check{
+            font-size: 14px;
+          }
+          .batch-check-text{
+            margin: 0 20px 0 8px;
+          }
+          .icon-close{
+            font-size: 12px;
+            cursor: pointer;
+          }
+        }
+      }
+      //提取中
+      .batch-progress-loading{
+        .batch-progress-content{
+          min-width: 256px;
+          display: flex;
+          align-items: center;
+          background: #F1F4F8;
+          padding: 0 12px;
+          border-radius: 4px;
+          height: 32px;
+          .batch-progress-text{
+            color: @primary-color;
+            font-size: 14px;
+            margin-right: 8px;
+          }
+          .batch-progress-bar-box{
+            flex: 1;
+            .ant-progress-inner{
+              background-color: @primary-disable-color;
+            }
+            .ant-progress-bg{
+              background-color: @primary-color;
+            }
+          }
+        }
       }
     }
   }
@@ -1057,7 +1136,6 @@
             .load-size-container{
               padding-left: 0;
               &:before{
-                margin-left: 0;
                 margin-right: 8px;
               }
             }
@@ -1189,6 +1267,22 @@
                 }
               }
             }
+          }
+        }
+        //遮罩层
+        .recommend-clue-mask{
+          position: fixed;
+        }
+        .extract-operator-container{
+          min-width: 230px;
+          justify-content: flex-end;
+        }
+        //批量加载样式
+        .batch-loading-container{
+          min-width: unset;
+          width: 100%;
+          .batch-progress-content{
+            min-width: unset;
           }
         }
       }

@@ -15,6 +15,7 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import DetailCard from 'CMP_DIR/detail-card';
 import AlertTimer from 'CMP_DIR/alert-timer';
+import CustomProgress from './views/custom-progress';
 var LeadsRecommendAction = require('MOD_DIR/leads-recommend/public/action/leads-recommend-action');
 var LeadsRecommendStore = require('MOD_DIR/leads-recommend/public/store/leads-recommend-store');
 import {
@@ -101,6 +102,13 @@ const CHECK_PHONE_CONFIG = {
     HAS_EXTRACTED_CLUE_COUNT: 'has_extracted_clue_count',//已经提取的线索数
 };
 
+const BATCH_LOADING_TYPE = {
+    CHECK: 'check',//批量检测
+    PROGRESS: 'progress',//批量进度条任务
+};
+
+const BATCH_SHOW_SUCCESS_TIP_DELAY = 2000;
+
 class RecommendCluesList extends React.Component {
     constructor(props) {
         super(props);
@@ -131,6 +139,7 @@ class RecommendCluesList extends React.Component {
             showBatchExtractTip: false,//是否展示批量提取上的tip
             bottomPanelContent: null,
             showBottomPanel: false,
+            batchLoadingType: '',//批量检测或者进度条展示时
             ...LeadsRecommendStore.getState()
         };
     }
@@ -193,7 +202,7 @@ class RecommendCluesList extends React.Component {
             return;
         }
         if(total - running === 1) {
-            console.log('第一条推送时间：', moment().format('HH:mm:ss.SSS'));
+            console.log('%s, 第一条推送时间', moment().format('HH:mm:ss.SSS'));
         }
         this.setExtractedCount();
 
@@ -204,20 +213,26 @@ class RecommendCluesList extends React.Component {
             //如果当前线索是需要更新的线索，才更新
             this.needUpdateClueIds.push(arr[0]);
         });
+        //已提取量自增1
         this.hasExtractCount++;
+        //进度条百分比
+        let batchProgress = _.round(((total - running) / total) * 100);
+        leadRecommendEmitter.emit(leadRecommendEmitter.BATCH_EXTRACT_PRTOGRESS_PERCENT, batchProgress);
 
         //todo 暂时去掉加1效果
         // this.extractedUserBySelf(taskParams);
         // 如果进度完成,显示提取成功
         if(running === 0 || _.isEqual(total, succeed + failed)) {
-            console.log('最后一条推送时间：', moment().format('HH:mm:ss.SSS'));
+            console.log('%s, 最后一条推送时间', moment().format('HH:mm:ss.SSS'));
             this.saveExtractedCount();
-            //一次性处理需要更新的线索列表
-            LeadsRecommendAction.onceUpdateRecommendClueLists(this.needUpdateClueIds, () => {
-                this.needUpdateClueIds = [];
-                this.updateExtractedCount();
-                this.handleSuccessTip();
-            });
+            setTimeout(() => {
+                //一次性处理需要更新的线索列表
+                LeadsRecommendAction.onceUpdateRecommendClueLists(this.needUpdateClueIds, () => {
+                    this.needUpdateClueIds = [];
+                    this.updateExtractedCount();
+                    this.handleSuccessTip();
+                });
+            }, BATCH_SHOW_SUCCESS_TIP_DELAY);
         }
     };
 
@@ -483,7 +498,7 @@ class RecommendCluesList extends React.Component {
             this.setState({singleExtractLoading: clues.id});
         }
         else if(type === EXTRACT_OPERATOR_TYPE.BATCH) {
-            this.setState({batchExtractLoading: true});
+            this.setState({batchLoadingType: BATCH_LOADING_TYPE.CHECK});
         }
         checkPhoneStatus({ids}, 'recommend-clue').then((result) => {
             let newState = {};
@@ -534,7 +549,7 @@ class RecommendCluesList extends React.Component {
                     newState.batchCheckPhonePopVisible = true;
                 }
                 newState.recommendClueLists = recommendClueLists;
-                newState.batchExtractLoading = false;
+                newState.batchLoadingType = '';
                 this.hiddenDropDownBlock();
             }
             this.setState(newState);
@@ -568,7 +583,7 @@ class RecommendCluesList extends React.Component {
                     newState.batchCheckPhonePopVisible = true;
                     newState.batchPopoverVisible = true;
                 }
-                newState.batchExtractLoading = false;
+                newState.batchLoadingType = '';
                 this.hiddenDropDownBlock();
             }
             this.setState(newState);
@@ -862,7 +877,7 @@ class RecommendCluesList extends React.Component {
     //是否展示遮罩层
     showMaskBlock() {
         //批量检测结果以及单个检测结果显示时,或者批量提取时，需要加上遮罩层
-        return this.state.batchCheckPhonePopVisible || this.state.singleCheckPhonePopVisible || this.state.batchExtractLoading;
+        return this.state.batchCheckPhonePopVisible || this.state.singleCheckPhonePopVisible || this.state.batchExtractLoading || this.state.batchLoadingType;
     }
     //移动端时，检测空号提示内容
     renderMobileCheckPhonePopTip(content, isShowCloseBtn = true) {
@@ -1142,7 +1157,8 @@ class RecommendCluesList extends React.Component {
         this.upDateGuideMark();
         this.props.afterSuccess();
         this.setState({
-            extractedResult: 'success'
+            extractedResult: 'success',
+            batchLoadingType: '',
         });
     }
 
@@ -1230,6 +1246,7 @@ class RecommendCluesList extends React.Component {
             data: submitObj,
             success: (data) => {
                 let disabledCheckedClues = _.get(this.state,'disabledCheckedClues', []);
+                leadRecommendEmitter.emit(leadRecommendEmitter.BATCH_EXTRACT_PRTOGRESS_PERCENT, 0);
                 this.setState({
                     batchExtractLoading: false,
                     canClickExtract: true,
@@ -1243,7 +1260,7 @@ class RecommendCluesList extends React.Component {
                     //存储批量操作参数，后续更新时使用
                     var batchParams = _.cloneDeep(submitObj);
                     batchOperate.saveTaskParamByTaskId(taskId, batchParams, {
-                        showPop: true,
+                        showPop: false,
                         urlPath: '/leads'
                     });
                     //总的可提取的线索数量
@@ -1270,6 +1287,8 @@ class RecommendCluesList extends React.Component {
                     });
                     this.handleBatchVisibleChange();
                     this.clearSelectSales();
+                    //显示进度条
+                    this.setState({batchLoadingType: BATCH_LOADING_TYPE.PROGRESS});
                     let batchSelectedSales = this.state.batchSelectedSales;
                     SetLocalSalesClickCount(batchSelectedSales, CLUE_RECOMMEND_SELECTED_SALES);
                 }
@@ -1559,6 +1578,53 @@ class RecommendCluesList extends React.Component {
             });
         }
     };
+    //渲染批量提取的检测和提取loading效果
+    renderCheckAndExtractLoadingBlock() {
+        let {batchLoadingType} = this.state;
+        //批量检测、进度条显示提示框
+        let cls = classNames('batch-loading-container', {
+            'batch-loading-hidden': !batchLoadingType
+        });
+        let checkContent, progressContent;
+
+        let checkCls = classNames('batch-check-loading', {
+            'content-hidden': batchLoadingType !== BATCH_LOADING_TYPE.CHECK
+        });
+        //检测
+        checkContent = (
+            <div className={checkCls}>
+                <div className="batch-check-content">
+                    <i className='iconfont icon-check change-new-icon-rotation'/>
+                    <span className="batch-check-text">{Intl.get('recommend.clue.check.phone.status.loading', '正在检测空号,请稍等...')}</span>
+                    {/*<i className='iconfont icon-close'/>*/}
+                </div>
+            </div>
+        );
+        let progressCls = classNames('batch-progress-loading', {
+            'content-hidden': batchLoadingType !== BATCH_LOADING_TYPE.PROGRESS
+        });
+        //提取进度
+        progressContent = (
+            <div className={progressCls}>
+                <div className="batch-progress-content">
+                    <span className="batch-progress-text">{Intl.get('recommend.clue.extract.loading', '正在提取')}</span>
+                    <div className="batch-progress-bar-box">
+                        <CustomProgress
+                            strokeWidth={5}
+                            status="active"
+                        />
+                    </div>
+                </div>
+            </div>
+        );
+
+        return (
+            <div className={cls}>
+                {checkContent}
+                {progressContent}
+            </div>
+        );
+    }
     //------ 批量提取处理end ------//
 
     //------ 单个提取start ------//
@@ -2004,7 +2070,7 @@ class RecommendCluesList extends React.Component {
             >
                 <div className="load-size-container" data-tracename="每页展示条数">
                     <span>{Intl.get('lead.recommend.page.size', '每页')}</span>
-                    <AntcSelect size="small" value={this.state.pageSize} onSelect={this.handleLoadSizeSelect}>
+                    <AntcSelect size="small" value={this.state.pageSize} onSelect={this.handleLoadSizeSelect} disabled={this.state.isLoadingRecommendClue}>
                         <Option value={20}>20</Option>
                         <Option value={50}>50</Option>
                         <Option value={100}>100</Option>
@@ -2565,13 +2631,21 @@ class RecommendCluesList extends React.Component {
                 </React.Fragment>
             );
         }else {
+            let cls = classNames('batch-extract-operator-container', {
+                'content-hidden': this.state.batchLoadingType
+            });
             content = (
                 <React.Fragment>
                     <div className="no-extract-count-tip">
                         <Checkbox className="check-all" checked={this.isCheckAll()} onChange={this.handleCheckAllChange} disabled={this.disabledCheckAll()}>{Intl.get('common.all.select', '全选')}</Checkbox>
                         {this.hasNoExtractCountTip()}
-                        {this.renderExtractOperator(isWebMin)}
-                        {this.renderMoreClickBtn(isWebMin)}
+                        <div className="extract-operator-container">
+                            {this.renderCheckAndExtractLoadingBlock()}
+                            <div className={cls}>
+                                {this.renderMoreClickBtn(isWebMin)}
+                                {this.renderExtractOperator(isWebMin)}
+                            </div>
+                        </div>
                     </div>
                     {this.renderBtnClock(isWebMin)}
                 </React.Fragment>
@@ -2586,6 +2660,9 @@ class RecommendCluesList extends React.Component {
 
     renderOperatorBlock() {
         let {isWebMin} = isResponsiveDisplay();
+        let cls = classNames('batch-extract-operator-container', {
+            'content-hidden': this.state.batchLoadingType
+        });
         return (
             <div className="bottom-operator-container">
                 <div className="bottom-operator-content unextract-clue-tip clearfix" id="unextract-clue-tip">
@@ -2593,8 +2670,13 @@ class RecommendCluesList extends React.Component {
                         <Checkbox className="check-all" checked={this.isCheckAll()} onChange={this.handleCheckAllChange} disabled={this.disabledCheckAll()}>{Intl.get('common.all.select', '全选')}</Checkbox>
                     </div>
                     <div className='pull-right'>
-                        {this.hasNoExtractCountTip()}
-                        {this.renderExtractOperator(isWebMin)}
+                        <div className="extract-operator-container">
+                            {this.renderCheckAndExtractLoadingBlock()}
+                            <div className={cls}>
+                                {this.hasNoExtractCountTip()}
+                                {this.renderExtractOperator(isWebMin)}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

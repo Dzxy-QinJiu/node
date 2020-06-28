@@ -3551,6 +3551,8 @@ var zh_CN = {
     'lead.recommend.page.size': '每页',
     'lead.company.legal.person': '法人',
     'lead.company.no.legal.person': '暂无法人',
+    'recommend.clue.check.phone.status.loading': '正在检测空号,请稍等...',
+    'recommend.clue.extract.loading': '正在提取',
 
     //线索模块 end
     'common.memeber.all': '全部成员',
