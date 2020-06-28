@@ -13,7 +13,6 @@ require('../../style/diagram-js.css');
 import classNames from 'classnames';
 import {Checkbox, Radio, Button, message} from 'antd';
 const RadioGroup = Radio.Group;
-import assign from 'lodash/assign';
 // import CamundaModdleDescriptor from 'camunda-bpmn-moddle/camunda';
 import CamundaModdleDescriptor from '../../../../../camunda.json';
 import AddApplyNodePanel from './add_apply_node_panel';
