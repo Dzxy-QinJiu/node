@@ -850,7 +850,7 @@ class RecommendCluesList extends React.Component {
         };
         if(this.hasEnableCheckPhone()) {//启用空号检测
             i18n.id = 'lead.check.phone.enabled.free.weekly.tip';
-            i18n.name = '空号检测已开启，本周免费，提取线索即可体验。';
+            i18n.name = '空号检测已开启，提取线索即可体验。';
         }
         return (
             <ReactIntl.FormattedMessage
