@@ -4405,6 +4405,7 @@ var zh_CN = {
     'payment.platform': '支付平台',
     'payment.records': '付费记录',
     'payment.extract.count.limit.upgrade.tip': '提取超过{count}条,请升级正式版',
+    'payment.apply.trial.user.scales.count.limit': '使用人数不能超过{count}人',
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
