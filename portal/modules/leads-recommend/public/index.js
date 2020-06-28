@@ -1036,40 +1036,46 @@ class RecommendCluesList extends React.Component {
         };
     }
 
-    //还可提取线索的数量展示
-    hasNoExtractCountTip = () => {
+    //已选择线索数
+    hasSelectedClues() {
         let content;
         let selectedClues = this.getSelectedClues();
-        if(selectedClues.length) {
-            content = (
-                <ReactIntl.FormattedMessage
-                    id="clue.recommend.selected.tip"
-                    defaultMessage={'已选{count}条'}
-                    values={{
-                        count: <span className="has-extracted-count">{selectedClues.length}</span>
-                    }}
-                />
-            );
-        }else if(isExpired()) {//过期账号就不用显示还可提取数
-            content = null;
-        }else {
-            let maxLimitExtractNumber = this.state.maxLimitExtractNumber;
-            let ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
-
-            const i18Obj = {
-                hasExtract: <span className="has-extracted-count">{this.state.hasExtractCount}</span>,
-                ableExtract: <span className="has-extracted-count">{ableExtract}</span>, timerange: this.getTimeRangeText()
-            };
-            content = (
-                <ReactIntl.FormattedMessage
-                    id="clue.recommend.default.tip"
-                    defaultMessage={'{timerange}还可提取{ableExtract}条线索'}
-                    values={i18Obj}
-                />
-            );
-        }
+        content = (
+            <ReactIntl.FormattedMessage
+                id="clue.recommend.selected.tip"
+                defaultMessage={'已选{count}条'}
+                values={{
+                    count: <span className="has-extracted-count">{selectedClues.length}</span>
+                }}
+            />
+        );
         return (
             <span className="tip-wrapper">{content}</span>
+        );
+    }
+
+    //还可提取线索的数量展示
+    hasExtractCountTip = () => {
+        if(isExpired()) {//过期账号就不用显示还可提取数
+            return null;
+        }
+
+        let maxLimitExtractNumber = this.state.maxLimitExtractNumber;
+        let ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
+
+        const i18Obj = {
+            hasExtract: <span className="has-extracted-count">{this.state.hasExtractCount}</span>,
+            ableExtract: <span className="has-extracted-count">{ableExtract}</span>, timerange: this.getTimeRangeText()
+        };
+        let content = (
+            <ReactIntl.FormattedMessage
+                id="clue.recommend.default.tip"
+                defaultMessage={'{timerange}还可提取{ableExtract}条线索'}
+                values={i18Obj}
+            />
+        );
+        return (
+            <span className="recommend-clue-tip-wrapper">{content}</span>
         );
     };
 
@@ -2638,7 +2644,7 @@ class RecommendCluesList extends React.Component {
                 <React.Fragment>
                     <div className="no-extract-count-tip">
                         <Checkbox className="check-all" checked={this.isCheckAll()} onChange={this.handleCheckAllChange} disabled={this.disabledCheckAll()}>{Intl.get('common.all.select', '全选')}</Checkbox>
-                        {this.hasNoExtractCountTip()}
+                        {this.hasSelectedClues()}
                         <div className="extract-operator-container">
                             {this.renderCheckAndExtractLoadingBlock()}
                             <div className={cls}>
@@ -2673,7 +2679,7 @@ class RecommendCluesList extends React.Component {
                         <div className="extract-operator-container">
                             {this.renderCheckAndExtractLoadingBlock()}
                             <div className={cls}>
-                                {this.hasNoExtractCountTip()}
+                                {this.hasSelectedClues()}
                                 {this.renderExtractOperator(isWebMin)}
                             </div>
                         </div>
@@ -2704,11 +2710,15 @@ class RecommendCluesList extends React.Component {
                 content = this.state.bottomPanelContent();
             }else { content = this.state.bottomPanelContent; }
         }
+        let contentCls = classNames('recommend-clue-content-container', {
+            'has-extract-count-tip-container': !isExpired()
+        });
+
         return (
             <div className="recommend-clues-lists-container" data-tracename="推荐线索列表面板">
                 <div className="recommend-customer-list">
                     <div className="recommend-clue-panel">
-                        <div className="recommend-clue-content-container">
+                        <div className={contentCls}>
                             <div className="filter-container">
                                 <RecommendCluesFilterPanel
                                     hasSavedRecommendParams={this.state.settedCustomerRecommend.obj}
@@ -2721,8 +2731,9 @@ class RecommendCluesList extends React.Component {
                                     handleToggleOtherCondition={this.handleToggleOtherCondition}
                                 />
                             </div>
-                            <div className="recommend-clue-detail-content-container">
-                                <div className="recommend-clue-detail-content-box clearfix">
+                            <div className="recommend-clue-detail-content-container clearfix">
+                                <div className="recommend-clue-detail-content-box ">
+                                    {this.hasExtractCountTip()}
                                     <DetailCard
                                         title={this.renderTitle()}
                                         content={(

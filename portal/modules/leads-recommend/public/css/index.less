@@ -70,6 +70,11 @@
         }
       }
       .recommend-clue-content-container{
+        &.has-extract-count-tip-container{
+          .recommend-clue-detail-content-box{
+            padding-top: 8px!important;
+          }
+        }
         //筛选条件样式
         .filter-container {
           //float: left;
@@ -233,6 +238,21 @@
               height: 16px;
             }
           }
+          //还可提取数样式
+          .recommend-clue-tip-wrapper{
+            font-size: 14px;
+            color: @content-font-color;
+            margin-bottom: 8px;
+            display: inline-block;
+            > span{
+              vertical-align: middle;
+            }
+          }
+          //还可提取数，已选择数样式
+          .has-extracted-count{
+            color: @primary-color;
+            margin: 2px;
+          }
 
           // 提取线索样式
           .home-loading.load8{
@@ -313,10 +333,6 @@
               height: 24px;
               color: @will-distribute-color;
             }
-            .has-extracted-count{
-              color: @primary-color;
-              margin: 2px;
-            }
             .no-extract-count-tip{
               padding: 0;
               text-align: right;
@@ -361,6 +377,9 @@
             .tip-wrapper{
               font-size: 14px;
               color: @content-font-color;
+              min-width: 104px;
+              text-align: left;
+              display: inline-block;
               > span{
                 vertical-align: middle;
               }
@@ -983,6 +1002,14 @@
     .recommend-customer-list{
       .recommend-clue-panel{
         .recommend-clue-content-container{
+          &.has-extract-count-tip-container{
+            .filter-container{
+              border: none;
+            }
+            .recommend-clue-detail-content-box{
+              padding-top: 8px!important;
+            }
+          }
           //条件设置样式
           .filter-container{
             border-width: 5px;
@@ -1115,6 +1142,9 @@
               .detail-card-container{
                 border-radius: 0;
               }
+            }
+            .recommend-clue-tip-wrapper{
+              padding-left: 16px;
             }
             .unextract-clue-tip{
               .no-extract-count-tip{
