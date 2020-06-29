@@ -165,6 +165,19 @@
       color: @primary-color;
     }
   }
+
+  //被他人提取
+  .ant-table tbody .has-extracted-by-other-row:hover,
+  .ant-table tbody .has-extracted-by-other-row{
+    .iconfont.icon-extract{
+      color: #bbb;
+      cursor: not-allowed;
+    }
+    .icon-warning-tip{
+      color: @import_data_warn_color;
+      margin-right: 6px;
+    }
+  }
 }
 
 .batch-extract-popover{
