@@ -49,7 +49,6 @@ if (config.webpackMode !== 'production') {
     app.use('/resources/', express.static(publicDir));
 }
 app.use('/static/', express.static(path.join(__dirname, './portal/static')));
-app.use('/module/', express.static(path.join(__dirname, './node_modules')));
 app.use('/upload/', express.static(path.join(__dirname, 'upload')));
 //添加微信小程序认证文件
 app.use('/6CMRQ4Aa8c.txt', function(req, res) {

@@ -3,7 +3,7 @@
  */
 
 import { Form } from 'antd';
-import { renderFormItemFunc } from 'antc';
+import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
 import { VIEW_TYPE } from './consts';
 import { renderButtonZoneFunc, hideReportPanel, getReportList, saveReport, saveReportConfig, numberRender } from './utils';
 import DetailCard from 'CMP_DIR/detail-card';
