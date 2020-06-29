@@ -298,6 +298,7 @@ class CustomerPool extends React.Component {
             customerIds: customerIds
         };
         //两种类型都存在时，需要加上选择的哪种类型（负责人/联合跟进人）
+        //对于后端来说，只有当这个客户有两个类型时，才会用到这个type
         if(hasAllExist) {
             paramObj.type = this.state.distributeType;
         }
@@ -324,37 +325,98 @@ class CustomerPool extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.extract-btn'), '提取客户');
         this.setState({isExtracting: true});
         crmAjax.extractCustomer(paramObj).then(result => {
+            result = _.isArray(result) ? result : [];//提取成功后，后端会返回提取成功的客户ids，前端需要根据这个进行过滤
+            let hasExtractedSuccessIds = result.length > 0;//有提取成功的客户id
             let poolCustomerList = this.state.poolCustomerList;
-            let customerIds = paramObj.customerIds;
             let selectedCustomer = this.state.selectedCustomer;
             let totalSize = this.state.totalSize;
             let self = this;
             let isDistributeFollowUp = this.state.distributeType === CUSTOMER_POOL_TYPES.FOLLOWUP;
-            //todo
+            //提取成功后，需要在客户列表中清除掉的ids
+            let needFilterIds = [];
+            //选中的客户列表需要移除的ids
+            let selectedNeedFilterIds = [];
+            //提取成功后的提示信息
+            let successTip = '';
+            //是否有被他人提取的情况
+            let hasExtractedByOther = false;
+            //提取成功后的逻辑处理
             // 1. 如果选择的客户都是需要联合跟进的，提示“提取并分配联合跟进人" ，提取成功，客户在列表中消失
             // 2. 如果选择的客户都是需要负责人的，提示“提取并分配负责人”，提取成功，客户在列表中消失
             // 3. 如果既有需要联合跟进又有需要负责人的客户，提示“ 提取并分配：负责人、联合跟进人，选择销售人员“，
             // 3-1. 选择负责人的，只分配负责人的，联合跟进人不用处理；
             // 3-2. 选择联合跟进人，只分配需要联合跟进人的，需要负责人的不做处理。
-            // 3-3. 提取成功后，
+            // 3-3. 提取成功后，有返回成功的客户ids时，才做以下处理
             // 3-3-1. 分配的负责人，只需要负责人的客户在列表中消失，
             //        既需要负责人又需要联合跟进人的，修改客户信息【去掉需负责人标记】；
             // 3-3-2. 分配的联合跟进人，只需联合跟进人的客户在列表中消失，
             //        既需要负责人又需要联合跟进人的，修改客户信息【去掉需联合跟进标记】
-            if(hasAllExist) {//既有需要联合跟进又有需要负责人的客户
-                customerIds = [];
-                if(operatorType === EXTRACT_TYPE.BATCH) {//批量提取时
-                    _.each(selectedCustomer, customer => {
-                        dealCustomer(customer);
+
+            //提示逻辑处理 (被他人提取的需要加标识,并且从选中客户列表中移除)
+            //1. 没有被他人提取的情况下，显示："提取成功"
+            //2. 有被他人提取的情况下，显示："提取成功##个、已被他人提取##个"
+            //3. 都被他人提取时, 显示："都已被他人提取"
+
+            //有返回成功的客户ids时，才做以下处理
+            if(hasExtractedSuccessIds) {
+                let hasExtractedByOtherIds = [];
+                //需要判断有无被他人提取的情况
+                if(paramObj.customerIds.length === result.length) {//没有被他人提取的情况下
+                    successTip = Intl.get('clue.extract.success', '提取成功');
+                }else{//有被他人提取的情况下
+                    hasExtractedByOther = true;
+                    _.each(paramObj.customerIds, item => {
+                        if(!_.includes(result, item)) {
+                            hasExtractedByOtherIds.push(item);
+                        }
                     });
-                }else {//单个提取时
-                    let curCustomer = _.find(poolCustomerList, customer => customer.id === paramObj.customerIds[0]);
-                    if(curCustomer) {
-                        dealCustomer(curCustomer);
+                    successTip = Intl.get('customer.pool.extract.success.has.extract.by.other', '提取成功{successCount}个、已被他人提取{otherCount}个', {
+                        successCount: _.get(result, 'length', 0),
+                        otherCount: _.get(hasExtractedByOtherIds, 'length', 0),
+                    });
+                }
+                //两种类型时
+                if(hasAllExist) {//既有需要联合跟进又有需要负责人的客户
+                    if(operatorType === EXTRACT_TYPE.BATCH) {//批量提取时
+                        _.each(selectedCustomer, customer => {
+                            if(_.includes(result, customer.id)) {//提取成功
+                                dealCustomer(customer);
+                            }else if(_.includes(hasExtractedByOtherIds, customer.id)) {//被他人提取
+                                let curCustomer = _.find(poolCustomerList, item => item.id === customer.id);
+                                if(curCustomer) {
+                                    curCustomer.hasExtractedByOther = true;
+                                    selectedNeedFilterIds.push(curCustomer.id);
+                                }
+                            }
+                        });
+                    }else {//单个提取时
+                        let curCustomer = _.find(poolCustomerList, customer => customer.id === paramObj.customerIds[0]);
+                        if(curCustomer) {
+                            dealCustomer(curCustomer);
+                        }
+                    }
+                }else {//单一类型时
+                    selectedNeedFilterIds = needFilterIds = result;
+                    totalSize -= _.get(needFilterIds, 'length', 0);
+                    if(hasExtractedByOther) {
+                        selectedNeedFilterIds = paramObj.customerIds;
+                        poolCustomerList = _.map(poolCustomerList, item => {
+                            if(_.includes(hasExtractedByOtherIds, item.id)) {
+                                item.hasExtractedByOther = true;
+                            }
+                            return item;
+                        });
                     }
                 }
-            }else {
-                totalSize -= _.get(customerIds, 'length', 0);
+            }else {//都被他人提取时
+                successTip = Intl.get('customer.pool.has.all.extract.by.other', '都已被他人提取');
+                selectedNeedFilterIds = paramObj.customerIds;
+                poolCustomerList = _.map(poolCustomerList, item => {
+                    if(_.includes(paramObj.customerIds, item.id)) {
+                        item.hasExtractedByOther = true;
+                    }
+                    return item;
+                });
             }
 
             function dealCustomer(customer) {
@@ -374,13 +436,14 @@ class CustomerPool extends React.Component {
                     //分配的负责人，只需要负责人的客户在列表中消失
                     !isDistributeFollowUp && ownerCustomers.length
                 ) {
-                    customerIds.push(customer.id);
+                    needFilterIds.push(customer.id);
+                    selectedNeedFilterIds.push(customer.id);
                     totalSize--;
                 }
             }
 
-            poolCustomerList = _.filter(poolCustomerList, item => !_.includes(customerIds, item.id));
-            selectedCustomer = _.filter(this.state.selectedCustomer, customer => !_.includes(customerIds, customer.id));
+            poolCustomerList = _.filter(poolCustomerList, item => !_.includes(needFilterIds, item.id));
+            selectedCustomer = _.filter(selectedCustomer, customer => !_.includes(selectedNeedFilterIds, customer.id));
 
             this.setState({
                 isExtracting: false,
@@ -389,11 +452,12 @@ class CustomerPool extends React.Component {
                 customersBack: poolCustomerList,
                 selectedCustomer,
                 totalSize,
-                isExtractSuccess: true,
+                isExtractSuccess: hasExtractedSuccessIds,
                 unSelectDataTip: '',
                 distributeType: CUSTOMER_POOL_TYPES.FOLLOWUP
             });
-            message.success(Intl.get('clue.extract.success', '提取成功'));
+            message.success(successTip);
+
             //隐藏批量提取面板
             this.batchExtractRef && this.batchExtractRef.handleCancel();
             // 当前页展示的客户全部释放完后，需要重新获取数据
@@ -576,7 +640,8 @@ class CustomerPool extends React.Component {
                     });
 
                     return (
-                        <span>
+                        <span title={record.hasExtractedByOther ? Intl.get('customer.pool.has.extract.by.other', '已被他人提取') : null}>
+                            {record.hasExtractedByOther ? <i className='iconfont icon-warning-tip'/> : null}
                             <span>{text}</span>
                             <span className="hidden record-id">{record.id}</span>
                             {tags.length ?
@@ -669,7 +734,9 @@ class CustomerPool extends React.Component {
                 title: Intl.get('common.operate', '操作'),
                 width: 40,
                 render: (text, record, index) => {
-                    if(isCommonSalesOrPersonnalVersion()) {
+                    if(record.hasExtractedByOther) {
+                        return null;
+                    }else if(isCommonSalesOrPersonnalVersion()) {
                         let { hasAllExist } = this.getSelectedTypeCustomers([record]);
                         if(hasAllExist) {//如果两种都存在时，需要特殊处理
                             return this.renderExtractCustomer({
@@ -721,6 +788,9 @@ class CustomerPool extends React.Component {
         if ((record.id === this.state.currentId)) {
             return 'current-row';
         }
+        else if(record.hasExtractedByOther) {//被他人提取
+            return 'has-extracted-by-other-row';
+        }
         else {
             return '';
         }
@@ -770,6 +840,9 @@ class CustomerPool extends React.Component {
         } else if (_.get(this.state, 'poolCustomerList[0]')) {
             let rowSelection = userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : {
                 type: 'checkbox',
+                getCheckboxProps: record => ({
+                    disabled: record.hasExtractedByOther, //被他人提取
+                }),
                 selectedRowKeys: _.map(this.state.selectedCustomer, 'id'),
                 onSelect: (record, selected, selectedRows) => {
                     this.setState({selectedCustomer: selectedRows});
