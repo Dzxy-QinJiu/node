@@ -593,7 +593,8 @@ export const BACKGROUG_LAYOUT_CONSTANTS = {
     NAV_WIDTH: 120, // 导航宽度
     TOP_ZONE_HEIGHT: 80, // 头部（添加、相应操作的区域）高度
     PADDING_WIDTH: 24 * 2, // padding占的宽度
-    PADDING_HEIGHT: 24 * 2 // padding占的高度
+    PADDING_HEIGHT: 24 * 2, // padding占的高度
+    BOTTOM_HEIFHT: 16 // 底部区域得高度
 };
 //拨打电话推送的状态
 export const CALL_TYPES = {
