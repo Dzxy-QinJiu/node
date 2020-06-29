@@ -1138,7 +1138,7 @@ class RecommendCluesFilterPanel extends Component {
                         </div>
                     </GeminiScrollbar>
                 </div>
-                <div className="confirm-btn-container" onClick={this.handleSubmit} data-tracename="点击确认按钮">
+                <div className="confirm-btn-container" onClick={this.handleSubmit.bind(this, {})} data-tracename="点击确认按钮">
                     <span>{Intl.get('common.confirm', '确认')}</span>
                 </div>
             </div>
@@ -1209,6 +1209,7 @@ class RecommendCluesFilterPanel extends Component {
                                                 className="search-input"
                                                 value={hasSavedRecommendParams.keyword}
                                                 onFocus={this.handleShowSearchPanel}
+                                                placeholder={this.getKeyWordPlaceholder()}
                                             />
                                         </div>
                                         <span className="ant-input-group-addon" data-tracename="点击搜索关键词按钮" onClick={this.onSearchButtonClick}>
