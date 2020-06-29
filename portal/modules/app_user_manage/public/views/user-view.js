@@ -22,7 +22,7 @@ import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/add-clues-form'
 import {clueSourceArray, accessChannelArray, clueClassifyArray, USER_LABEL_KEY, USER_LABEL} from 'PUB_DIR/sources/utils/consts';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from 'PUB_DIR/sources/utils/validate-util';
-import {isOplateUser, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
+import {isOplateUser, isSalesRole, isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
 import { getProductList } from 'PUB_DIR/sources/utils/common-data-util';
 import userManagePrivilege from '../privilege-const';
 import userData from 'PUB_DIR/sources/user-data';
@@ -648,7 +648,11 @@ class UserTabContent extends React.Component {
                     className: numClass,
                     sorter: sortable,
                     render: (text, rowData, idx) => {
-                        let score = Math.round((_.get(rowData.apps[0], 'score') || 0) * 100);
+                        let score = _.get(rowData.apps[0], 'score') || 0;
+                        // 蚁坊组织的分数需要乘100，其他组织的按返回值展示
+                        if (isOrganizationEefung()) {
+                            score = Math.round(score * 100);
+                        }
                         return (
                             <div className="num-float-right" title={score}>{score} </div>
                         );
