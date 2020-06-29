@@ -8,7 +8,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 } else if (language.lan() === 'zh') {
     require('./card-zh_CN.less');
 }
-let CardItem = require('./cardItem');
+import CardItem from './cardItem';
 let classNames = require('classnames');
 let DefaultUserLogoTitle = require('../default-user-logo-title');
 import Trace from 'LIB_DIR/trace';
@@ -47,17 +47,8 @@ class Card extends React.Component {
 
         for (let key in card) {
             if (card[key] instanceof Object && card[key].showOnCard) {
-                if (key === 'date') {
-                    cardItems.push(<CardItem key={key} cardItem={card[key]} noRihtValue={true}/>);
-                } else {
-                    cardItems.push(<CardItem key={key} cardItem={card[key]}/>);
-                }
+                cardItems.push(<CardItem key={key} cardItem={card[key]} />);
             }
-        }
-        // 选择图标的样式设置
-        let iconClass = 'select-icon';
-        if (this.props.isSelect) {
-            iconClass += ' active';
         }
         let userName = card.userName ? card.userName.value : '';
         let deleteClassName = 'iconfont icon-delete handle-btn-item';
