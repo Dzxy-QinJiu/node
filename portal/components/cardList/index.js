@@ -288,7 +288,6 @@ class CardList extends React.Component {
                     isSelect={isSelect}
                     showCardInfo={_this.showCardInfo}
                     cardWidth={_this.state.cardWidth}
-                    showRightFullScreen={_this.props.showRightFullScreen}
                     showAppOverViewPanel={_this.props.showAppOverViewPanel}
                     type={_this.props.type}
                     removeFailRealm={_this.props.removeFailRealm}
@@ -309,7 +308,6 @@ class CardList extends React.Component {
                     isSelect={isSelect}
                     showCardInfo={_this.showCardInfo}
                     cardWidth={_this.state.cardWidth}
-                    showRightFullScreen={_this.props.showRightFullScreen}
                     showAppOverViewPanel={_this.props.showAppOverViewPanel}
                     type={_this.props.type}
                     removeFailRealm={_this.props.removeFailRealm}

@@ -43,12 +43,7 @@ class Card extends React.Component {
         }
         this.props.showCardInfo(curCard);
     };
-
-    showRightFullScreen = (event) => {
-        event.stopPropagation();
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-role-auth-config'), '查看应用角色列表和权限列表');
-        this.props.showRightFullScreen(this.props.curCard);
-    };
+    
     //删除card
     deleteItem = (id, event) => {
         event.stopPropagation();
@@ -166,9 +161,7 @@ Card.propTypes = {
     selectCard: PropTypes.func,
     removeFailRealm: PropTypes.func,
     showCardInfo: PropTypes.func,
-    showRightFullScreen: PropTypes.func,
     deleteItem: PropTypes.func,
     imgUrl: PropTypes.string,
-    showDelete: PropTypes.bool
 };
 module.exports = Card;

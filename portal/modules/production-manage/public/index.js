@@ -147,10 +147,7 @@ class ProductionManage extends React.Component {
             ProductionAction.showInfoPanel();
         }
     };
-
-    events_searchEvent = (searchContent) => {
-    };
-
+    
     //右侧面板的关闭
     events_closeRightPanel = () => {
         //将数据清空
@@ -372,7 +369,6 @@ class ProductionManage extends React.Component {
                         listTipMsg={this.state.listTipMsg}
                         curPage={this.state.curPage}
                         pageSize={this.state.pageSize}
-                        searchPlaceHolder={Intl.get('common.product.name', '产品名称')}
                         updatePageSize={this.events_updatePageSize.bind(this)}
                         changePageEvent={this.events_onChangePage.bind(this)}
                         showCardInfo={this.events_showDetail.bind(this)}
