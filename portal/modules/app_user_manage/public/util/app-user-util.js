@@ -1,4 +1,5 @@
 var EventEmitter = require('events');
+var CryptoJS = require('crypto-js');
 var classNames = require('classnames');
 var UserData = require('../../../../public/sources/user-data').getUserData();
 import { ALL_LOG_INFO } from 'PUB_DIR/sources/utils/consts';

@@ -3,7 +3,7 @@
  */
 
 import { Form } from 'antd';
-import { renderFormItemFunc } from 'antc';
+import { renderFormItemFunc } from 'antc/lib/utils/form-utils';
 import { getMyTeamTreeAndFlattenList } from 'PUB_DIR/sources/utils/common-data-util';
 import { VIEW_TYPE } from './consts';
 import { hideReportPanel, saveReportConfig, renderButtonZoneFunc } from './utils';

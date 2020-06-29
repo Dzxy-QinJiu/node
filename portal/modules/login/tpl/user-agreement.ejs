@@ -11,7 +11,6 @@
         isCurtao: '<%= isCurtao %>',
         lang: '<%= lang %>',
     };
-    Oplate = {};
 </script>
 <% if(isFormal == "true") { %>
 <!-- Piwik -->
@@ -108,7 +107,9 @@
     </div>
 </div>
 <% // 页脚%>
-<% include ../../common/public/tpl/common-script.ejs %>
+<script src="/dll/dll.vendor.js?timestamp=<%= timeStamp %>"></script>
+<script src="/dll/dll.reactRel.js?timestamp=<%= timeStamp %>"></script>
+<script src="/resources/common.bundle.js?timestamp=<%= timeStamp %>"></script>
 <% if(isUserAgreement){ %>
 <% // --- 用户协议界面 ---   %>
 <script src="/resources/user_agreement.bundle.js?timestamp=<%= timeStamp %>"></script>

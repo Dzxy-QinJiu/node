@@ -31,41 +31,31 @@ if (webpackMode === 'production') {
 module.exports = {
     mode: webpackMode === 'production' ? 'production' : 'development',
     entry: {
-        vendor: [
-            'alt',
-            'history',
-            'immutable',
-            'color',
-            'jquery',
-            'lodash',
-            'moment',
-            'noty',
-            'socket.io-client',
-            'es6-shim',
-        ],
-        reactRel: [
-            'react-intl',
-            'intl-messageformat',
-            'react-router',
-            'bootstrap',
-            'react-bootstrap',
-            'react-date-picker',
-        ],
+        vendor: [path.join(__dirname, 'portal', 'vendors.js')],
+        reactRel: ['react', 'react-dom', 'react-intl',
+            'intl-messageformat', 'react-router', 'bootstrap',
+            'react-bootstrap','react-date-picker','antd'],
     },
     output: {
         path: path.join(__dirname, 'dll'),
         filename: 'dll.[name].js',
         library: '[name]'
     },
+    module: {
+        noParse: [/moment-with-locales/, /alt.min.js/, /jquery.min.js/, /history.min.js/]
+    },
     resolve: {
         modules: [
+            path.resolve(__dirname, 'portal'),
             'node_modules'
         ],
         extensions: ['.js', '.jsx'],
+        alias: {
+            moment$: 'moment/min/moment-with-locales.min.js',
+            alt: 'alt/dist/alt.min.js',
+            jquery: 'jquery/dist/jquery.min.js',
+            history$: 'history/umd/history.min.js'
+        }
     },
     plugins: pluginLists,
-    externals: {
-        'react': 'React',
-        'react-dom': 'ReactDOM',
-    }
 };
