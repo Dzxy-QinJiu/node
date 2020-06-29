@@ -128,7 +128,11 @@ class ProductionManage extends React.Component {
     //切换页数时，当前页展示数据的修改
     events_onChangePage = (count, curPage) => {
         ProductionAction.updateCurPage(curPage);
-        ProductionAction.getProductions({page_size: count, id: this.state.lastId});
+        const queryObj = {
+            page_size: count,
+            id: curPage === 1 ? '' : this.state.lastId,
+        };
+        ProductionAction.getProductions(queryObj);
     };
 
     events_showDetail = (production) => {

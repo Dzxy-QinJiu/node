@@ -9,7 +9,8 @@ var GeminiScrollbar = require('../react-gemini-scrollbar');
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 
 var CONSTANTS = {
-    TOP_NAV_HEIGHT: 64,//头部导航的高度
+    RIGHT_PADDING: 16, // 右侧padding
+    TOP_NAV_HEIGHT: 80,//头部导航的高度
     SEARCH_INPUT_HEIGHT: 55,//成员管理中搜索框的高度设置
     PAGE_NAV_HEIGHT: 30//分页导航的高度
 };
@@ -100,10 +101,13 @@ class CardList extends React.Component {
 
     // 获取卡片容器的高度
     getCardListHeight = () => {
-        //右侧卡片区域的高度设置
-        return $('body').height() - CONSTANTS.TOP_NAV_HEIGHT - CONSTANTS.PAGE_NAV_HEIGHT;
+        return this.props.cardContainerHeight || $('body').height() - CONSTANTS.TOP_NAV_HEIGHT - CONSTANTS.PAGE_NAV_HEIGHT;
     };
 
+    // 获取片容器的宽度
+    getCardListWidth = () => {
+        return $('.card-list-content').width() - CONSTANTS.RIGHT_PADDING;
+    };
 
     //展示详细信息
     showCardInfo = (card) => {
@@ -113,7 +117,7 @@ class CardList extends React.Component {
     // 根据剩余空白宽度调整卡边的宽度
     adjustCardWidth = () => {
         var cardWidth = 0;
-        var cardListWidth = $('.card-list-content').width();
+        const cardListWidth = this.getCardListWidth();
         // 根据固定卡片宽度计算可以放卡片的个数
         var everyRowCardCounts = Math.floor(cardListWidth / CARDCONSTANTS.CARD_WIDTH);
         // 计算空白宽度
@@ -151,7 +155,7 @@ class CardList extends React.Component {
         var newCardWidth = this.adjustCardWidth();
         // 计算卡片容器的高度和高度
         var cardListHeight = this.getCardListHeight();
-        var cardListWidth = $('.card-list-content').width();
+        const cardListWidth = this.getCardListWidth();
         // 根据调整后卡片的宽度，重新计算一行可以放置卡片的个数
         var everyRowCardCounts = Math.floor(cardListWidth / newCardWidth);
         // 计算卡片容器中可以卡片的行数
@@ -269,7 +273,7 @@ class CardList extends React.Component {
             });
         }
 
-        let cardListHeight = this.props.cardContainerHeight ? this.props.cardContainerHeight : this.getCardListHeight();
+        let cardListHeight = this.getCardListHeight();
 
         return (
             <div className="card-list-container">
