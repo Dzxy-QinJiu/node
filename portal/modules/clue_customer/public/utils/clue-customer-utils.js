@@ -766,3 +766,9 @@ export const ADVANCED_OPTIONS = [
         }
     },
 ];
+export const calcTraceContentHeight = function(divHeight) {
+    return divHeight - 55;
+};
+export const calcScheduleContentHeight = function(divHeight) {
+    return divHeight + 40;
+};
