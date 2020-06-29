@@ -648,8 +648,8 @@ class UserTabContent extends React.Component {
                     className: numClass,
                     sorter: sortable,
                     render: (text, rowData, idx) => {
-                        let score = _.get(rowData, 'apps[0].score', 0);
-                        // 蚁坊域的分数需要乘100，其他域的按返回值展示
+                        let score = _.get(rowData.apps[0], 'score') || 0;
+                        // 蚁坊组织的分数需要乘100，其他组织的按返回值展示
                         if (isOrganizationEefung()) {
                             score = Math.round(score * 100);
                         }
