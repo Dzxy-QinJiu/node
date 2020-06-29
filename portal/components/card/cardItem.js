@@ -4,10 +4,11 @@
 
 import classNames from 'classnames';
 
-const CardItem = (props) =>  {
+const CardItem = (props) => {
     const { className, cardItem, noRihtValue} = props;
     const cardCls = classNames('card-item', className);
     const value = _.get(cardItem, 'value', '');
+    
     return (
         <div className={cardCls}>
             <span className="card-item-left">{_.get(cardItem, 'label')}</span>
@@ -20,6 +21,12 @@ const CardItem = (props) =>  {
             }
         </div>
     );
+};
+
+CardItem.propTypes = {
+    className: PropTypes.string,
+    cardItem: PropTypes.Object,
+    noRihtValue: PropTypes.bool
 };
 
 export default CardItem;
