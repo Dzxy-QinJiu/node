@@ -404,7 +404,7 @@ class ForgotPassword extends React.Component {
         let rePassWord = getFieldValue('rePassword');
         checkPassword(this, value, callback, rePassWord, () => {
             // 如果密码验证通过后，需要强制刷新下确认密码的验证，以防密码不一致的提示没有去掉
-            validateFields(['rePassword'], {first: true,force: true});
+            validateFields(['rePassword'], {force: true});
         });
     };
    
