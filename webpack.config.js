@@ -150,12 +150,12 @@ var loadersLists = [
         use: 'happypack/loader?id=css',
         include: [
             path.resolve(__dirname, 'portal'),
-            path.resolve(__dirname, 'node_modules/bootstrap'),
+            path.resolve(__dirname, 'node_modules/bootstrap-datepicker'),
             path.resolve(__dirname, 'node_modules/rc-calendar'),
             path.resolve(__dirname, 'node_modules/react-date-picker'),
-            path.resolve(__dirname, 'node_modules/antc'),
             path.resolve(__dirname, 'node_modules/react-big-calendar'),
             path.resolve(__dirname, 'node_modules/rc-slider'),
+            path.resolve(__dirname, 'node_modules/antc'),
         ]
     },
     {
@@ -163,7 +163,7 @@ var loadersLists = [
         use: 'happypack/loader?id=less',
         include: [
             path.resolve(__dirname, 'portal'),
-            path.resolve(__dirname, 'node_modules/antc')
+            path.resolve(__dirname, 'node_modules/antc'),
         ]
     }
 ];
@@ -239,9 +239,16 @@ var webpackConfig = {
                 commons: {
                     filename: '[name].bundle.js',
                     name: 'common',
-                    test: /(\.js|\.jsx)$/,
+                    test: /node_modules/,
                     chunks: 'initial',
-                    minChunks: 2
+                    minChunks: 1
+                },
+                i18n: {
+                    filename: '[name].bundle.js',
+                    name: 'i18n',
+                    test: /i18n/,
+                    chunks: 'initial',
+                    minChunks: 1
                 }
             }
         }
@@ -249,7 +256,6 @@ var webpackConfig = {
     plugins: pluginLists,
     module: {
         rules: loadersLists,
-        noParse: [/moment-with-locales/, /alt.min.js/, /jquery.min.js/, /history.min.js/]
     },
     resolveLoader: {
         moduleExtensions: ['-loader']
@@ -264,18 +270,17 @@ var webpackConfig = {
         symlinks: webpackMode === 'production',
         extensions: ['.js', '.jsx', '.json'],
         alias: {
-            //加$是为了避免require("moment/locale/xx")的时候报找不到模块的错误的问题
-            //详见https://github.com/ant-design/ant-design/issues/4491
-            moment$: 'moment/min/moment-with-locales.min.js',
-            alt: 'alt/dist/alt.min.js',
-            jquery: 'jquery/dist/jquery.min.js',
-            history$: 'history/umd/history.min.js',
             OPLATE_EMITTER: path.resolve(__dirname, 'portal/public/sources/utils/emitters'),
             PUB_DIR: path.resolve(__dirname, 'portal/public'),
             LIB_DIR: path.resolve(__dirname, 'portal/lib'),
             CMP_DIR: path.resolve(__dirname, 'portal/components'),
             MOD_DIR: path.resolve(__dirname, 'portal/modules'),
         }
+    },
+    externals: {
+        react: 'React',
+        'react-dom': 'ReactDOM',
+        antd: 'antd',
     }
 };
 

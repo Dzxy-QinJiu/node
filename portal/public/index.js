@@ -49,6 +49,8 @@ function suppressWarnings() {
 }
 
 function getUserPrivilegeAndStart() {
+    if (!appDom) return;
+
     loginTime++;
 
     unmountPrivilegeGet();
