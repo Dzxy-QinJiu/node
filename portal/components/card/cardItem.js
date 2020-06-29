@@ -2,7 +2,7 @@
  * Created by wangliping on 2015/12/23.
  */
 var React = require('react');
-import {Icon} from 'antd';
+
 
 class CardItem extends React.Component {
     render() {
@@ -17,11 +17,6 @@ class CardItem extends React.Component {
                     <span className="card-item-right" title={this.props.cardItem.value}>
                         {this.props.cardItem.value}
                     </span>)}
-                {this.props.hasRefreshBtn ? (
-                    <a className="refresh-app-secret"
-                        onClick={this.props.refreshAppSecret}>
-                        {Intl.get('common.refresh', '刷新')} {this.props.appSecretRefreshing ? (<Icon type="loading"/>) : null}</a>
-                ) : null}
             </div>
         );
     }

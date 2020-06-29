@@ -11,7 +11,6 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }
 let ProductionStore = require('./store/production-store');
 let ProductionAction = require('./action/production-actions');
-let RightCardsContainer = require('../../../components/rightCardsContainer');
 let Production = require('./views/production');
 let PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
 let Spinner = require('../../../components/spinner');
@@ -28,6 +27,7 @@ import IpFilterAjax from './ajax/ip-filter-ajax';
 import IpFilter from './views/ip-filter';
 import production_manager_privilegeConfig from './privilege-config';
 import {isExpired, getContactSalesPopoverTip, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import CardList from 'CMP_DIR/cardList';
 //用来存储获取的oplate\matomo产品列表，不用每次添加产品时都获取一遍
 let productList = [];
 class ProductionManage extends React.Component {
@@ -217,15 +217,7 @@ class ProductionManage extends React.Component {
             return '';
         }
     }
-
-    hasNoFilterCondition = () => {
-        if (this.state.searchContent) {
-            return false;
-        } else {
-            return true;
-        }
-
-    };
+    
     renderAddAndImportBtns = () => {
         if (hasPrivilege(production_manager_privilegeConfig.USER_MANAGE_ADD_USER)) {
             return (
@@ -362,8 +354,8 @@ class ProductionManage extends React.Component {
                             <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
                         </div> : null
                     }
-                    <RightCardsContainer
-                        currentCard={this.state.currentProduction}
+                    <CardList
+                        selectCards={this.state.currentProduction}
                         cardListSize={this.state.userListSize}
                         curCardList={this.getCardList()}
                         listTipMsg={this.state.listTipMsg}
@@ -373,12 +365,13 @@ class ProductionManage extends React.Component {
                         changePageEvent={this.events_onChangePage.bind(this)}
                         showCardInfo={this.events_showDetail.bind(this)}
                         renderAddAndImportBtns={this.renderAddAndImportBtns}
-                        showAddBtn={this.hasNoFilterCondition()}
+                        showAddBtn={true}
                         deleteItem={this.deleteItem}
                         cardContainerHeight={cardContainerHeight}
                         type="production"
-                    >
-                        {this.state.formShow ?
+                    />
+                    {
+                        this.state.formShow ? (
                             <Production
                                 integrateType={this.state.integrateType}
                                 formType={this.state.currentProduction.id ? util.CONST.EDIT : util.CONST.ADD}
@@ -389,23 +382,22 @@ class ProductionManage extends React.Component {
                                 globalFilterIpList={this.state.globalFilterIpList}
                                 productionFilterIp={this.state.productionFilterIp}
                                 showIpFilterPanel={this.showIpFilterPanel}
-                            /> : null}
-                        {this.state.deleteError ? (<message></message>) : null}
-                        {
-                            this.state.isShowIpFilterPanel ? (
-                                <IpFilter
-                                    closeIpFilterPanel={this.closeIpFilterPanel}
-                                    globalFilterIpList={this.state.globalFilterIpList}
-                                    updateFilterIpList={this.handleUpdateFilterIp}
-                                />
-                            ) : null
-                        }
-                    </RightCardsContainer>
+                            />
+                        ) : null
+                    }
+                    {
+                        this.state.isShowIpFilterPanel ? (
+                            <IpFilter
+                                closeIpFilterPanel={this.closeIpFilterPanel}
+                                globalFilterIpList={this.state.globalFilterIpList}
+                                updateFilterIpList={this.handleUpdateFilterIp}
+                            />
+                        ) : null
+                    }
                 </div>
             </div>
         );
     }
 }
-
 
 module.exports = ProductionManage;
