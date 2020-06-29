@@ -1934,10 +1934,7 @@ const COLUMN_WIDTH = {
     //确认密码验证
     checkConfirmPassword: function(rule, value, callback) {
         let password = _.get(this, 'state.formData.apply_detail_password');
-        checkConfirmPassword(value, callback, password, () => {
-            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
-            this.refs.validation.forceValidate(['apply_detail_password']);
-        });
+        checkConfirmPassword(value, callback, password);
     },
 
     //延期，修改应用状态，修改密码，渲染“所属客户”

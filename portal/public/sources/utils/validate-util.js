@@ -262,10 +262,8 @@ export const checkPassword = (_this, value, callback, rePassWord, refreshRepassw
             callback(Intl.get('register.password.strength.tip', '密码强度太弱，请更换密码'));
         } else if (oldPassword && value === oldPassword) {// 新密码与原始密码相同时
             callback(Intl.get('user.password.same.password','新密码和原始密码相同'));
-        } else if (rePassWord && value !== rePassWord ) {// 输入确认密码后再判断是否一致
-            callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
         } else {
-            // 确认密码存在时，刷新确认密码的验证（以防密码改成跟确认密码一致时，确认密码还提示不一致）
+            // 确认密码存在时，刷新确认密码的验证（以防确认密码提示不一致）
             if(rePassWord && _.isFunction(refreshRepasswordValidate)){
                 refreshRepasswordValidate();
             }
@@ -285,19 +283,14 @@ export const checkPassword = (_this, value, callback, rePassWord, refreshRepassw
  * @param value 当前输入的确认密码
  * @param callback antd验证方法中用户来传错误提示的回调方法
  * @param passWord 密码，用来判断输入的确认密码和密码是否一致
- * @param refreshPasswordValidate  刷新密码的验证（以防密码改成跟确认密码一致时，密码还提示不一致）
  **/
-export const checkConfirmPassword = (value, callback, password, refreshPasswordValidate) => {
+export const checkConfirmPassword = (value, callback, password) => {
     value = _.trim(value);
     password = _.trim(password);
     if(value) {
         if (value !== password) {
             callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
         } else {
-            // 密码存在时，刷新密码的验证（以防密码改成跟确认密码一致时，密码还提示不一致）
-            if(password && _.isFunction(refreshPasswordValidate)){
-                refreshPasswordValidate();
-            }
             callback();
         }
     } else {

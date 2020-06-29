@@ -259,12 +259,7 @@ class MemberInfo extends React.Component {
     //对确认密码 进行校验
     checkRePass = (rule, value, callback) => {
         let password = _.get(this, 'passwordRef.state.formData.input');
-        checkConfirmPassword(value, callback, password, () => {
-            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
-            if(_.get(this, 'passwordRef.refs.validation')){
-                this.passwordRef.refs.validation.forceValidate(['input']);
-            } 
-        });
+        checkConfirmPassword(value, callback, password);
     };
 
     uploadImg = (src) => {
