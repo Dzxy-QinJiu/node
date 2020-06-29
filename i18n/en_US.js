@@ -3533,6 +3533,9 @@ var en_US = {
     'lead.company.no.legal.person': 'No legal person',//暂无法人
     'recommend.clue.check.phone.status.loading': 'The number is empty, please wait a moment...',//正在检测空号,请稍等...
     'recommend.clue.extract.loading': 'Are extracting',//正在提取
+    'customer.pool.extract.success.has.extract.by.other': 'Successfully extracted {successCount} and extracted {otherCount} by others',//提取成功{successCount}个、已被他人提取{otherCount}个
+    'customer.pool.has.all.extract.by.other': 'Have been extracted by others',//都已被他人提取
+    'customer.pool.has.extract.by.other': 'Has been extracted by someone else',//已被他人提取
 
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
