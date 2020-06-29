@@ -264,10 +264,11 @@
         </div>
     </div>
 </div>
-<script src="/dll/dll.vendor.js?timestamp=<%= timeStamp %>"></script>
-<script src="/dll/dll.reactRel.js?timestamp=<%= timeStamp %>"></script>
-<script src="/resources/common.bundle.js?timestamp=<%= timeStamp %>"></script>
-<script src="/resources/app.bundle.js?timestamp=<%= timeStamp %>"></script>
+<% include ../../common/public/tpl/common-script.ejs %>
+<script src="https://app.cloopen.com/im50/MD5.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://app.cloopen.com/im50/base64.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://app.cloopen.com/im50/pako.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://app.cloopen.com/im50/amrnb.js" type="text/javascript" charset="utf-8"></script>
 <% // 页脚                %>
 <% showFooterContent = false %>
 <% // 主页里边展示客服                %>
