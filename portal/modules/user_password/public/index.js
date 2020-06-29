@@ -80,10 +80,7 @@ var UserPwdPage = createReactClass({
     checkPass2(rule, value, callback) {
         let { getFieldValue, validateFields } = this.props.form;
         let password = getFieldValue('newPasswd');
-        checkConfirmPassword(value, callback, password, () => {
-            // 密码存在时，如果确认密码验证通过后，需要强制刷新下密码的验证，以防密码不一致的提示没有去掉
-            validateFields(['newPasswd'], {force: true});
-        });
+        checkConfirmPassword(value, callback, password);
     },
 
     checkUserInfoPwd(rule, value, callback) {
