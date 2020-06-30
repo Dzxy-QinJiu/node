@@ -26,10 +26,9 @@ var noop = function() {
 import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 import classNames from 'classnames';
 const DYNAMICHEIGHT = {
-    // LAYOUT: 117,//
-    LAYOUT: 50,//
+    LAYOUT: 50 + 30 + 30,//50是tab的高度，30是内容区域上下的margin值
     HAS_PHONE_PANEL: 225,
-    PHONE_PANEL_HAS_CUSTOMER_SCHEDULE: 235,
+    PHONE_PANEL_HAS_CUSTOMER_SCHEDULE: 175,
     PHONE_PANEL_HAS_TRACE_FINISHED: 65
 };
 import PropTypes from 'prop-types';
@@ -93,9 +92,26 @@ class ClueRightPanel extends React.Component {
             this.setTabsContainerHeight();
         });
     };
-    setTabsContainerHeight = () => {
-        let tabsContainerHeight = $('body').height() - $('.clue-detail-content').outerHeight(true);
-        this.setState({tabsContainerHeight: tabsContainerHeight});
+    setTabsContainerHeight = (props = this.props) => {
+        let baseHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
+        //title处的高度
+        const titleEl = $('.clue-basic-info-container');
+        if(titleEl.length) {
+            baseHeight -= titleEl.outerHeight(true);
+        }
+        //如果有电话跟进面板
+        if(_.get(props, 'hasPhonePanel')) {
+            baseHeight -= DYNAMICHEIGHT.HAS_PHONE_PANEL;
+            //如果电话跟进面板正在添加自定义计划
+            if(_.get(props, 'phonePanelHasCustomerSchedule')) {
+                baseHeight -= DYNAMICHEIGHT.PHONE_PANEL_HAS_CUSTOMER_SCHEDULE;
+            }
+            //如果电话跟进面板跟进计划是text状态
+            if(_.get(props, 'phonePanelFinishTrace')) {
+                baseHeight += DYNAMICHEIGHT.PHONE_PANEL_HAS_TRACE_FINISHED;
+            }
+        }
+        this.setState({tabsContainerHeight: baseHeight});
     };
     componentWillReceiveProps(nextProps) {
         //如果有更改后，id不变，但是属性有变化  && nextProps.curClue.id !== this.props.curClue.id
@@ -106,7 +122,7 @@ class ClueRightPanel extends React.Component {
         } else if (nextProps.currentId !== this.props.currentId && nextProps.currentId) {
             this.getCurClue(nextProps.currentId);
         }
-        this.setTabsContainerHeight();
+        this.setTabsContainerHeight(nextProps);
     }
     //是否是从线索池中打开的详情
     isCluePool() {
@@ -337,28 +353,6 @@ class ClueRightPanel extends React.Component {
         this.props.updateCustomerLastContact(saveObj);
         this.updateClueProperty({status: SELECT_TYPE.HAS_TRACE},true);
     };
-
-    getCluePanelHeight = () => {
-        let baseHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
-        //title处的高度
-        const titleEl = $('.clue-basic-info-container');
-        if(titleEl.length) {
-            baseHeight -= titleEl.outerHeight(true);
-        }
-        //如果有电话跟进面板
-        if(_.get(this.props, 'hasPhonePanel')) {
-            baseHeight -= DYNAMICHEIGHT.HAS_PHONE_PANEL;
-            //如果电话跟进面板正在添加自定义计划
-            if(_.get(this.props, 'phonePanelHasCustomerSchedule')) {
-                baseHeight -= DYNAMICHEIGHT.PHONE_PANEL_HAS_CUSTOMER_SCHEDULE;
-            }
-            //如果电话跟进面板跟进计划是text状态
-            if(_.get(this.props, 'phonePanelFinishTrace')) {
-                baseHeight += DYNAMICHEIGHT.PHONE_PANEL_HAS_TRACE_FINISHED;
-            }
-        }
-        return baseHeight;
-    };
     setEditNameFlag = (displayType) => {
         this.setState({
             isClueNameEditFlag: displayType
@@ -367,7 +361,6 @@ class ClueRightPanel extends React.Component {
 
     render() {
         let curClue = _.get(this.state, 'curClue');
-        var divHeight = this.getCluePanelHeight();
         var cls = 'clue_customer_rightpanel white-space-nowrap';
         if (this.props.className){
             cls += ` ${this.props.className}`;
@@ -383,6 +376,7 @@ class ClueRightPanel extends React.Component {
             'is-edit-type': isEditType,
             'no-delete-btn': !deleteCluePrivilege(curClue)
         });
+        let divHeight = this.state.tabsContainerHeight;
         return (
             <div
                 className={cls}
@@ -419,7 +413,7 @@ class ClueRightPanel extends React.Component {
                                         onClick={this.handleRemoveClue.bind(this, curClue)} data-tracename="点击删除线索按钮"></i>
                                 </div> : null}
                         </div>
-                        <div className="clue-detail-content" >
+                        <div className="clue-detail-content" style={{height: divHeight}} >
                             <Tabs
                                 defaultActiveKey={TAB_KEYS.OVERVIEW_TAB}
                                 activeKey={this.state.activeKey}

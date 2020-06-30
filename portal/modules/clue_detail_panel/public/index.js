@@ -475,6 +475,7 @@ class ClueDetailPanel extends React.Component {
                         handleScheduleCancel={this.handleScheduleCancel}
                         currentSchedule={newSchedule}
                         clueArr={clueArr}
+                        isPhoneTop={true}
                     />
                 </div>
             );

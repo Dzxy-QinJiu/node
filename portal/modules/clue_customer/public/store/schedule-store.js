@@ -90,5 +90,10 @@ ClueCustomerScheduleStore.prototype.afterHandleStatus = function(newStatusObj) {
     var curSchedule = _.filter(this.scheduleList, schedule => schedule.id === newStatusObj.id);
     curSchedule[0].status = newStatusObj.status;
 };
+ClueCustomerScheduleStore.prototype.toggleScheduleContact = function(updateObj){
+    let {item,flag} = updateObj;
+    let curSchedule = _.find(this.scheduleList, schedule => schedule.id === item.id);
+    curSchedule.isShowContactPhone = flag;
+};
 
 module.exports = alt.createStore(ClueCustomerScheduleStore , 'ClueCustomerScheduleStore');

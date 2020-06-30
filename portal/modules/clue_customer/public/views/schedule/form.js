@@ -43,7 +43,8 @@ var CrmAlertForm = createReactClass({
         formItemLayout: PropTypes.object,
         clueArr: PropTypes.array,
         isAddToDoClicked: PropTypes.bool,
-        handleScheduleAdd: PropTypes.func
+        handleScheduleAdd: PropTypes.func,
+        isPhoneTop: PropTypes.bool,
     },
     getInitialState: function() {
         var formData = this.getInitialFormData();
@@ -414,9 +415,11 @@ var CrmAlertForm = createReactClass({
                 formData: this.getInitialFormData()
             });
         } else {
-            ScheduleAction.cancelEdit();
-        }
+            if(!this.props.isPhoneTop){
+                ScheduleAction.cancelEdit();
+            }
 
+        }
     },
 
     //修改日程类型

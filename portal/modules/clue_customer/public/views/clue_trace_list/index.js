@@ -29,10 +29,7 @@ const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 var userData = require('PUB_DIR/sources/user-data');
 var clueCustomerAction = require('../../action/clue-customer-action');
-var timeoutFunc;//定时方法
-var timeout = 1000;//1秒后刷新未读数
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-import {SELECT_TYPE, AVALIBILITYSTATUS, editCluePrivilege} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, AVALIBILITYSTATUS, editCluePrivilege, calcTraceContentHeight} from '../../utils/clue-customer-utils';
 import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 import { isShowWinningClue, isWinningClueMaxCount } from 'PUB_DIR/sources/utils/common-method-util';
 import { DISAPPEAR_DELAY_TIME } from 'PUB_DIR/sources/utils/consts';
@@ -49,6 +46,7 @@ class ClueTraceList extends React.Component {
         addRecordNullTip: '',//添加跟进记录内容为空的提示
         editRecordNullTip: '', //编辑跟进内容为空的提示
         newAddClueId: '', // 新添加跟进内容的id
+        divHeight: calcTraceContentHeight(this.props.divHeight),
         ...ClueTraceStore.getState(),
     };
 
@@ -76,6 +74,11 @@ class ClueTraceList extends React.Component {
                 ClueTraceAction.dismiss();
                 //获取客户跟踪记录列表
                 this.getClueTraceList();
+            });
+        }
+        if (nextProps.divHeight !== this.props.divHeight){
+            this.setState({
+                divHeight: calcTraceContentHeight(nextProps.divHeight)
             });
         }
     }
@@ -339,21 +342,6 @@ class ClueTraceList extends React.Component {
         //不是概览页，有跟进记录或有通话状态筛选条件（有数据时才展示状态筛选框，但通过状态筛选后无数据也需要展示），并且不是拜访、舆情报上和其他类型时，展示通话状态筛选框
         return !this.props.isOverViewPanel && (_.get(this.state, 'customerRecord[0]') || this.state.filterStatus);
     }
-    getRecordListShowHeight = () => {
-        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT -
-            LAYOUT_CONSTANTS.TIME_ADD_BTN_HEIGHT - LAYOUT_CONSTANTS.STATISTIC_TYPE_HEIGHT - 3 * LAYOUT_CONSTANTS.MARGIN_BOTTOM;
-        let basicInfoHeight = parseInt($('.clue-basic-info-container').outerHeight(true));
-        //减头部的客户基本信息高度
-        divHeight -= basicInfoHeight;
-        if ($('.phone-alert-modal-title').size()) {
-            divHeight -= $('.phone-alert-modal-title').outerHeight(true);
-        }
-        //减添加跟进记录面版的高度
-        if (this.state.addRecordPanelShow) {
-            divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
-        }
-        return divHeight;
-    };
 
     renderWinningClueTips = () => {
         let hide = () => {
@@ -628,7 +616,7 @@ class ClueTraceList extends React.Component {
     renderClueTraceLists = () => {
         var recordLength = _.get(this, 'state.customerRecord.length');
         //加载状态或加载数据错误时，容器高度的设置
-        let loadingErrorHeight = this.props.isOverViewPanel ? LAYOUT_CONSTANTS.OVER_VIEW_LOADING_HEIGHT : this.getRecordListShowHeight();
+        let loadingErrorHeight = this.props.isOverViewPanel ? LAYOUT_CONSTANTS.OVER_VIEW_LOADING_HEIGHT : this.state.divHeight;
         if (this.state.customerRecordLoading && this.state.curPage === 1) {
             //加载中的情况
             return (
@@ -647,7 +635,7 @@ class ClueTraceList extends React.Component {
         } else if (recordLength === 0 && !this.state.customerRecordLoading && !this.props.isOverViewPanel) {
             //加载完成，没有数据的情况（概览页的跟进记录是在标题上展示）
             return (
-                <div className="no-record-container" style={{'height': this.getRecordListShowHeight()}}>
+                <div className="no-record-container" style={{'height': this.state.divHeight}}>
                     <NoDataIconTip tipContent={Intl.get('common.no.more.trace.record', '暂无跟进记录')}/>
                 </div>);
         } else {
@@ -655,7 +643,7 @@ class ClueTraceList extends React.Component {
             return (
                 <div className="show-customer-trace">
                     {this.props.isOverViewPanel ? this.renderTimeLine() :
-                        (<div className="show-content" style={{'height': this.getRecordListShowHeight()}}>
+                        (<div className="show-content" style={{'height': this.state.divHeight}}>
                             <GeminiScrollbar className="srollbar-out-card-style"
                                 handleScrollBottom={this.handleScrollBarBottom}
                                 listenScrollBottom={this.state.listenScrollBottom}
@@ -669,7 +657,6 @@ class ClueTraceList extends React.Component {
     };
     //监听下拉加载
     handleScrollBarBottom = () => {
-
         var length = this.state.customerRecord.length;
         if (length < this.state.total) {
             var lastId = this.state.customerRecord[length - 1].id;
@@ -728,6 +715,7 @@ ClueTraceList.propTypes = {
     isOverViewPanel: PropTypes.bool,
     changeActiveKey: PropTypes.func,
     hideContactWay: PropTypes.bool,
+    divHeight: PropTypes.number,
 };
 module.exports = ClueTraceList;
 
