@@ -184,6 +184,8 @@ class CallRecordAnalyis extends React.Component {
 
     getCharts() {
         return [
+            //通话时长分布统计
+            callChart.getCallDurationDistributionChart({Store: this.state}),
             //通话趋势统计
             callChart.getCallNumberTimeTrendChart({Store: this.state}),
             //通话记录统计
