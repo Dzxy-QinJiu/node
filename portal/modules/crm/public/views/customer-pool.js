@@ -873,7 +873,7 @@ class CustomerPool extends React.Component {
                             pageSize: this.state.pageSize,
                             onChange: this.onPageChange,
                             current: this.state.pageNum,
-                            isHiddenLastPage: true
+                            isHideLastPage: true
                         }}
                     />
                 </div>);

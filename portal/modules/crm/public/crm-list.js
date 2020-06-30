@@ -2529,7 +2529,7 @@ class Crm extends React.Component {
                                     onChange: this.onPageChange,
                                     current: this.state.pageNum,
                                     isPaginationPositionLeft: true,
-                                    isHiddenLastPage: true
+                                    isHideLastPage: true
                                 }}
                                 onChange={this.onTableChange}
                                 scroll={{ x: tableScrollX, y: this.state.tableHeight }}

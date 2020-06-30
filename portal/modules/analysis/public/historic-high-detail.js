@@ -185,7 +185,7 @@ class HistoricHighDetail extends React.Component {
 
                 return text;
             },
-            isHiddenLastPage: true
+            isHideLastPage: true
         };
     }
 
