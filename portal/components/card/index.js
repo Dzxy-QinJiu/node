@@ -61,7 +61,7 @@ class Card extends React.Component {
             'production-stop': this.props.type === 'production' && card.status === 0,
             'selected': this.props.isSelect
         });
-        
+        console.log('this.props.showDelete:',this.props.showDelete);
         return (
             <div className="card-layout-container " style={{width: this.props.cardWidth}}>
                 <div className={cardBoxCls} onClick={this.showCardInfo}>
@@ -86,17 +86,18 @@ class Card extends React.Component {
                             <div className="card-title" title={card.name}>{card.name}</div>
                             {cardItems}
                         </div>
-
-                        <span className="card-btn-bar">
-                            <div className="attention-icon">
-                                {this.props.showDelete ? (
+                        {
+                            this.props.showDelete ? (
+                                <span className="card-btn-bar">
                                     <Popconfirm
                                         title={Intl.get('organization.whether.del.organization', '确定要删除\'{groupName}\'？', {groupName: card.name})}
-                                        onConfirm={this.deleteItem.bind(this, card.id)}>
+                                        onConfirm={this.deleteItem.bind(this, card.id)}
+                                    >
                                         <i className={deleteClassName} title={deleteTitle}/>
-                                    </Popconfirm>) : null}
-                            </div>
-                        </span>
+                                    </Popconfirm>
+                                </span>
+                            ) : null
+                        }
                     </div>
                 </div>
             </div>
@@ -112,5 +113,8 @@ Card.propTypes = {
     showCardInfo: PropTypes.func,
     deleteItem: PropTypes.func,
     imgUrl: PropTypes.string,
+    type: PropTypes.string,
+    showDelete: PropTypes.bool
+
 };
 module.exports = Card;
