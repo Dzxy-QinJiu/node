@@ -86,13 +86,13 @@ class ClueRightPanel extends React.Component {
         this.getClueChannel();
         this.getClueClassify();
         this.getSaleTeamList();
-        this.setTabsContainerHeight(this.props);
+        this.setTabsContainerHeight();
         $(window).resize(e => {
             e.stopPropagation();
-            this.setTabsContainerHeight(this.props);
+            this.setTabsContainerHeight();
         });
     };
-    setTabsContainerHeight = (props) => {
+    setTabsContainerHeight = (props = this.props) => {
         let baseHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
         //title处的高度
         const titleEl = $('.clue-basic-info-container');
