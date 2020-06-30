@@ -2510,7 +2510,6 @@ class Crm extends React.Component {
                                 rowClassName={this.handleRowClassName}
                                 dataSource={this.state.curPageCustomers}
                                 util={{ zoomInSortArea: true }}
-                                isPaginationPositionLeft={true}
                                 pagination={{
                                     total: this.state.customersSize,
                                     showTotal: total => {
@@ -2528,7 +2527,9 @@ class Crm extends React.Component {
 
                                     pageSize: this.state.pageSize,
                                     onChange: this.onPageChange,
-                                    current: this.state.pageNum
+                                    current: this.state.pageNum,
+                                    isPaginationPositionLeft: true,
+                                    isHideLastPage: true
                                 }}
                                 onChange={this.onTableChange}
                                 scroll={{ x: tableScrollX, y: this.state.tableHeight }}
