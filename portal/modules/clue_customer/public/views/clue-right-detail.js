@@ -26,7 +26,7 @@ var noop = function() {
 import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 import classNames from 'classnames';
 const DYNAMICHEIGHT = {
-    LAYOUT: 50 + 30 + 30,//
+    LAYOUT: 50 + 30 + 30,//50是tab的高度，30是内容区域上下的margin值
     HAS_PHONE_PANEL: 225,
     PHONE_PANEL_HAS_CUSTOMER_SCHEDULE: 175,
     PHONE_PANEL_HAS_TRACE_FINISHED: 65
@@ -92,7 +92,7 @@ class ClueRightPanel extends React.Component {
             this.setTabsContainerHeight(this.props);
         });
     };
-    setTabsContainerHeight = (Props) => {
+    setTabsContainerHeight = (props) => {
         let baseHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
         //title处的高度
         const titleEl = $('.clue-basic-info-container');
@@ -100,14 +100,14 @@ class ClueRightPanel extends React.Component {
             baseHeight -= titleEl.outerHeight(true);
         }
         //如果有电话跟进面板
-        if(_.get(Props, 'hasPhonePanel')) {
+        if(_.get(props, 'hasPhonePanel')) {
             baseHeight -= DYNAMICHEIGHT.HAS_PHONE_PANEL;
             //如果电话跟进面板正在添加自定义计划
-            if(_.get(Props, 'phonePanelHasCustomerSchedule')) {
+            if(_.get(props, 'phonePanelHasCustomerSchedule')) {
                 baseHeight -= DYNAMICHEIGHT.PHONE_PANEL_HAS_CUSTOMER_SCHEDULE;
             }
             //如果电话跟进面板跟进计划是text状态
-            if(_.get(Props, 'phonePanelFinishTrace')) {
+            if(_.get(props, 'phonePanelFinishTrace')) {
                 baseHeight += DYNAMICHEIGHT.PHONE_PANEL_HAS_TRACE_FINISHED;
             }
         }
