@@ -2300,7 +2300,8 @@ class ClueCustomer extends React.Component {
                     },
                     pageSize: this.state.pageSize,
                     onChange: this.onPageChange,
-                    current: this.state.pageNum
+                    current: this.state.pageNum,
+                    isHiddenLastPage: true
                 }}
             />);
 
