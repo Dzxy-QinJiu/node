@@ -11,8 +11,17 @@ const TIME_INTERVAL = {
     '120.0': '通话时长大于120秒的通话个数',
 };
 
+//集客方式
+const SOURCE_CLASSIFY = {
+    inbound: '市场',
+    outbound: '拓展',
+};
+
 export function getCallDurationDistributionChart(paramObj = {}) {
-    let title = '通话时长分布统计';
+    const { type } = paramObj;
+    let title = '线索通话分析';
+
+    if (SOURCE_CLASSIFY[type]) title = SOURCE_CLASSIFY[type] + title;
 
     return {
         title,
@@ -20,6 +29,9 @@ export function getCallDurationDistributionChart(paramObj = {}) {
         height: 'auto',
         chartType: 'table',
         url: '/rest/analysis/callrecord/v1/callrecord/billsec/histogram',
+        argCallback: arg => {
+            if (type) arg.query.source_classify = type;
+        },
         dataField: 'list',
         processData: data => {
             _.each(data, item => {
