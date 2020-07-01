@@ -13,7 +13,17 @@ import {AntcAreaSelection, SearchInput, AntcSelect} from 'antc';
 const Option = AntcSelect.Option;
 import Trace from 'LIB_DIR/trace';
 var LeadsRecommendAction = require('MOD_DIR/leads-recommend/public/action/leads-recommend-action');
-import { registerSize, staffSize, moneySize, companyProperty, companyStatus, EXTRACT_CLUE_CONST_MAP, AREA_ALL, ADVANCED_OPTIONS } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {
+    registerSize,
+    staffSize,
+    moneySize,
+    companyProperty,
+    companyStatus,
+    EXTRACT_CLUE_CONST_MAP,
+    AREA_ALL,
+    ADVANCED_OPTIONS,
+    generateConditionId
+} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {
     checkVersionAndType,
     getFormattedCondition,
@@ -157,6 +167,8 @@ class RecommendCluesFilterPanel extends Component {
 
         //必须保存时，或者条件没有变动时，不用请求接口保存筛选条件
         if(isRequiredSave || (isSaveFilter && !_.isEqual(newCondition, propsCondition))) {
+            //需要前端生成筛选条件的id
+            newCondition.id = generateConditionId();
             this.saveRecommendFilter(newCondition);
         }
         if(isSaveFilter) LeadsRecommendAction.saveSettingCustomerRecomment(newCondition);
