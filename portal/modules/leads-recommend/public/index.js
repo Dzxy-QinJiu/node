@@ -1617,7 +1617,7 @@ class RecommendCluesList extends React.Component {
                     <div className="batch-progress-bar-box">
                         <CustomProgress
                             strokeWidth={5}
-                            status="active"
+                            showInfo={false}
                         />
                     </div>
                 </div>
