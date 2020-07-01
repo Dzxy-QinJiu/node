@@ -136,14 +136,17 @@
                   width: 488px!important;
                 }
               }
-              .anticon-close-circle{
-                font-size: 22px;
-                color: @placeholder-font-color;
-                top: -10px;
-                right: -4px;
-                transition: color 0.3s;
-                &:hover{
-                  color: @secondary-font-color;
+              .ant-input-affix-wrapper{
+                .anticon-close-circle, .anticon-down, .anticon-up{
+                  font-size: 22px;
+                  color: @placeholder-font-color;
+                  top: -10px;
+                  right: -4px;
+                  transition: color 0.3s;
+                  cursor: pointer;
+                  &:hover{
+                    color: @secondary-font-color;
+                  }
                 }
               }
               input{
