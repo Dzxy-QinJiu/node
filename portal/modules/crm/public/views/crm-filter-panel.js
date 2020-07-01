@@ -308,7 +308,7 @@ class CrmFilterPanel extends React.Component {
         FilterAction.setTimeFilterCondition(timeFilterCondition);
         // 选择拜访时间时，将超半年未拜访的筛选条件去掉（去掉后会触发搜索的方法，此处就不用再触发搜索的方法）
         if (field === 'last_visit_time') {
-            filterEmitter.emit(filterEmitter.CLEAR_COMMON_SELECT, OTHER_FILTER_ITEMS.HALF_YEAR_UNVISIT);
+            filterEmitter.emit(filterEmitter.CLEAR_COMMON_SELECT, { field: OTHER_FILTER_ITEMS.HALF_YEAR_UNVISIT });
         } else {
             setTimeout(() => {
                 this.props.search();

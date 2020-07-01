@@ -155,8 +155,9 @@ class FilterList extends React.Component {
             this.props.onFilterChange(this.processSelectedFilters(advancedData));
         });
     }
-    // 清空选中的常用筛选项的处理，field：指定的要清空的选中的常用筛选项，
-    handleClearCommonSelected = (field) => {
+    // 清空选中的常用筛选项, param中没有field时,params为event对象，params.field：指定的要清空的选中的常用筛选项
+    handleClearCommonSelected = (param) => {
+        let field = _.get(param, 'field');
         //如果有传入的指定清空的常用筛选项
         if (field) {
             // 判断该选项是否被选中，选中了清空，未选中不做处理
@@ -628,7 +629,12 @@ class FilterList extends React.Component {
                                 null :
                                 <div className="common-container">
                                     {/* icon-common-filter */}
-                                    <h4 className="title">常用筛选</h4>
+                                    <h4 className="title">
+                                        常用筛选
+                                        {this.state.selectedCommonIndex || this.state.selectedCommonIndex === 0 ? (
+                                            <span className="clear-btn" onClick={this.handleClearCommonSelected}>清空</span>
+                                        ) : null }
+                                    </h4>
                                     {/* todo 用props.commonData */}
                                     <ul>
                                         {
