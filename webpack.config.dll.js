@@ -50,6 +50,9 @@ module.exports = {
             'bootstrap',
             'react-bootstrap',
             'react-date-picker',
+            'react',
+            'react-dom',
+            'antd'
         ],
     },
     output: {
@@ -64,8 +67,4 @@ module.exports = {
         extensions: ['.js', '.jsx'],
     },
     plugins: pluginLists,
-    externals: {
-        'react': 'React',
-        'react-dom': 'ReactDOM',
-    }
 };
