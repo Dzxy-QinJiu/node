@@ -330,6 +330,7 @@ var zh_CN = {
     'common.press.enter.send': '按enter键发送消息',
     'common.customer.service.help.tip': '您好，请问有什么可以帮您？',
     'common.upgrade.refresh.tip': '版本已升级，请{refresh}',
+    'common.all.areas': '全部地区',
     //公共部分--end
 
     'login.login': '登录',

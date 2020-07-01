@@ -2734,7 +2734,7 @@ class RecommendCluesList extends React.Component {
                                 />
                             </div>
                             <div className="recommend-clue-detail-content-container clearfix">
-                                <div className="recommend-clue-detail-content-box ">
+                                <div className="recommend-clue-detail-content-box clearfix">
                                     {this.hasExtractCountTip()}
                                     <DetailCard
                                         title={this.renderTitle()}
