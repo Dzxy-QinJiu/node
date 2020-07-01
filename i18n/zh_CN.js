@@ -3446,6 +3446,8 @@ var zh_CN = {
     'analysis.active.customer.statistics.at.all.stages': '各阶段活跃客户统计',
     'analysis.all.administrative.levels': '全部行政级别',
     'analysis.trial.to.the.signing.period': '试用到签约周期',
+    'analysis.number.of.calls.lasting.interval.seconds': '通话时长{interval}秒的通话个数',
+    'analysis.cue.call.analysis': '线索通话分析',
     'common.font.the': '第',
     'common.weeks': '周',
     'clue.add.contacts.tip': '添加联系方式',

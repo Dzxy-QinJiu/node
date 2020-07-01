@@ -4,22 +4,22 @@
 
 //时间区间
 const TIME_INTERVAL = {
-    '0.0': '通话时长小于30秒的通话个数',
-    '30.0': '通话时长30-60秒的通话个数',
-    '60.0': '通话时长60-90秒的通话个数',
-    '90.0': '通话时长90-120秒的通话个数',
-    '120.0': '通话时长大于120秒的通话个数',
+    '0.0': Intl.get('analysis.number.of.calls.lasting.interval.seconds', '通话时长{interval}秒的通话个数', {interval: Intl.get('apply.add.condition.less', '小于') + '30'}),
+    '30.0': Intl.get('analysis.number.of.calls.lasting.interval.seconds', '通话时长{interval}秒的通话个数', {interval: '30-60'}),
+    '60.0': Intl.get('analysis.number.of.calls.lasting.interval.seconds', '通话时长{interval}秒的通话个数', {interval: '60-90'}),
+    '90.0': Intl.get('analysis.number.of.calls.lasting.interval.seconds', '通话时长{interval}秒的通话个数', {interval: '90-120'}),
+    '120.0': Intl.get('analysis.number.of.calls.lasting.interval.seconds', '通话时长{interval}秒的通话个数', {interval: Intl.get('apply.add.condition.larger', '大于') + '120'}),
 };
 
 //集客方式
 const SOURCE_CLASSIFY = {
-    inbound: '市场',
-    outbound: '拓展',
+    inbound: Intl.get('crm.clue.client.source.inbound', '市场'),
+    outbound: Intl.get('analysis.expand', '拓展'),
 };
 
 export function getCallDurationDistributionChart(paramObj = {}) {
     const { type } = paramObj;
-    let title = '线索通话分析';
+    let title = Intl.get('analysis.cue.call.analysis', '线索通话分析');
 
     if (SOURCE_CLASSIFY[type]) title = SOURCE_CLASSIFY[type] + title;
 
@@ -50,14 +50,14 @@ export function getCallDurationDistributionChart(paramObj = {}) {
 
             if (hasNickName) {
                 columns.push({
-                    title: '成员',
+                    title: Intl.get('menu.member', '成员'),
                     dataIndex: 'nick_name',
                     width: 100,
                 });
             }
 
             columns.push({
-                title: '团队',
+                title: Intl.get('user.user.team', '团队'),
                 dataIndex: 'sales_team',
                 width: 100,
             });
