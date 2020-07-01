@@ -11,6 +11,7 @@ import { checkCurrentVersion, checkVersionAndType, isSalesRole } from 'PUB_DIR/s
 export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
 import {isSupportCheckPhone} from 'PUB_DIR/sources/utils/validate-util';
 import {PHONE_STATUS_MAP, PHONE_STATUS_KEY} from 'PUB_DIR/sources/utils/consts';
+import uuid from 'uuid/v4';
 
 export const checkClueName = function(rule, value, callback) {
     value = _.trim(value);
@@ -766,3 +767,8 @@ export const ADVANCED_OPTIONS = [
         }
     },
 ];
+
+//生成找线索，筛选条件的id
+export const generateConditionId = function() {
+    return `${uuid()}${Date.now()}`;
+};

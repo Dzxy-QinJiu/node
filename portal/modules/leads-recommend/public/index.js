@@ -37,7 +37,8 @@ import {
     SetLocalSalesClickCount,
     EXTRACT_CLUE_CONST_MAP,
     getShowPhoneNumber,
-    AREA_ALL
+    AREA_ALL,
+    generateConditionId
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {
     checkCurrentVersionType,
@@ -287,7 +288,8 @@ class RecommendCluesList extends React.Component {
                     if(_.isObject(data)) {
                         hasSavedRecommendParams.province = data.province;
                         hasSavedRecommendParams.city = data.city;
-                        //保存条件
+                        //保存条件, 需要前端生成筛选条件的id
+                        hasSavedRecommendParams.id = generateConditionId();
                         this.saveRecommendFilter(hasSavedRecommendParams);
                     }
 
@@ -2395,7 +2397,7 @@ class RecommendCluesList extends React.Component {
             getRecommendClueErrMsg,
             total
         } = this.state;
-        if(settedCustomerRecommend.loading || isLoadingRecommendClue) {
+        if(isLoadingRecommendClue) {
             return (
                 <div className="load-content">
                     <Spinner className='home-loading'/>
