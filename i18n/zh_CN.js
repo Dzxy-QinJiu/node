@@ -1725,6 +1725,7 @@ var zh_CN = {
     'crm.never.contact.customer': '从未联系客户',
     'crm.over.day.without.contact': '超{day}天未联系',
     'crm.over.day.no.connection': '近{day}天拨打未接通',
+    'crm.over.half.year.no.visit': '超半年未拜访',
     'crm.recent.week.active': '近一周的活跃客户',
     'crm.recent.month.active': '近一个月的活跃客户',
     'crm.customer.interested': '添加关注',

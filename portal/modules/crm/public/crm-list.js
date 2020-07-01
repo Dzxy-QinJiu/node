@@ -803,6 +803,10 @@ class Crm extends React.Component {
                 dayTime = DAY_TIME.SEVEN_DAY;
                 interval = 7;
                 break;
+            case OTHER_FILTER_ITEMS.HALF_YEAR_UNVISIT://超半年未拜访的客户
+                dayTime = 6 * DAY_TIME.THIRTY_DAY;
+                interval = 180;
+                break;
             case OTHER_FILTER_ITEMS.SEVEN_LOGIN://近一周活跃客户
                 dayTimeLogin = DAY_TIME.SEVEN_DAY;
                 interval = 7;
@@ -882,13 +886,19 @@ class Crm extends React.Component {
                 type: 'time'
             };
         }
-        //超xx天未联系的客户过滤需传的参数
+        //超xx天未联系/超半年未拜访的客户过滤需传的参数
         else if (dayTime) {
             //超30天未打过电话的客户
             if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.THIRTY_NO_CALL) {
                 this.state.rangParams[0] = {
                     to: moment().valueOf() - dayTime,
                     name: 'last_phone_time',
+                    type: 'time'
+                };
+            } else if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.HALF_YEAR_UNVISIT){//超半年未拜访的客户
+                this.state.rangParams[0] = {
+                    to: moment().valueOf() - dayTime,
+                    name: 'last_visit_time',
                     type: 'time'
                 };
             } else {//超xx天未联系的客户过滤需传的参数

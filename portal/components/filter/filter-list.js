@@ -35,6 +35,7 @@ class FilterList extends React.Component {
         filterEmitter.on(filterEmitter.CLEAR_FILTERS + this.props.key, this.handleClearAll);
         filterEmitter.on(filterEmitter.ADD_COMMON + this.props.key, this.handleAddCommon);
         filterEmitter.on(filterEmitter.CHANGE_PERMITTED + this.props.key, this.handleChangePermitted);
+        filterEmitter.on(filterEmitter.CLEAR_COMMON_SELECT + this.props.key, this.handleClearCommonSelected);
         // hasSettedDefaultCommonSelect 是否设置了展示默认搜索项待我处理
         if (this.props.hasSettedDefaultCommonSelect){
             this.setDefaultFilterSetting();
@@ -106,6 +107,7 @@ class FilterList extends React.Component {
         filterEmitter.removeListener(filterEmitter.CLEAR_FILTERS + this.props.key, this.handleClearAll);
         filterEmitter.removeListener(filterEmitter.ADD_COMMON + this.props.key, this.handleAddCommon);
         filterEmitter.removeListener(filterEmitter.CHANGE_PERMITTED + this.props.key, this.handleChangePermitted);
+        filterEmitter.removeListener(filterEmitter.CLEAR_COMMON_SELECT + this.props.key, this.handleClearCommonSelected);
     }
     toggleCollapse(type) {
         switch (type) {
@@ -152,6 +154,32 @@ class FilterList extends React.Component {
             filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, []);
             this.props.onFilterChange(this.processSelectedFilters(advancedData));
         });
+    }
+    // 清空选中的常用筛选项的处理，field：指定的要清空的选中的常用筛选项，
+    handleClearCommonSelected = (field) => {
+        //如果有传入的指定清空的常用筛选项
+        if (field) {
+            // 判断该选项是否被选中，选中了清空，未选中不做处理
+            let fieldIndex = _.findIndex(this.state.commonData, (item) => item.value === field);
+            if (fieldIndex === this.state.selectedCommonIndex) {
+                this.setState({
+                    selectedCommonIndex: ''
+                }); 
+                const filterList = this.processSelectedFilters(this.state.advancedData);
+                //发送选择筛选项事件
+                filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, filterList);
+                this.props.onFilterChange(filterList);
+            }
+        } else {
+            // 清空选中的常用筛选项
+            this.setState({
+                selectedCommonIndex: ''
+            });
+            const filterList = this.processSelectedFilters(this.state.advancedData);
+            //发送选择筛选项事件
+            filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, filterList);
+            this.props.onFilterChange(filterList);
+        }
     }
     clearSelect(groupName) {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.clear-btn'), `清空"${groupName}"筛选条件`);
