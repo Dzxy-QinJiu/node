@@ -13,7 +13,7 @@ const multiparty = require('multiparty');
 const fs = require('fs');
 const iconv = require('iconv-lite');
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
-import {addHyphenToPhoneNumber} from '../../../../../portal/lib/func';
+import {format} from 'ant-utils';
 function getClueSourceClassify(backendIntl) {
     return [
         {
@@ -383,12 +383,12 @@ function doExport(data, backendIntl, res) {
                             }
                             break;
                         case 'contacts_phone':
-                            //如果phoneMsg的第一个数字是0，会被wps认为是数字，自动把0省略，加上-就会认为是文本，不会省略
-                            // 为了防止在用wps打开的时候，如果是座机会把前面的0忽略，直接展示成一个数字，例如01085655689是会展示成1085655689
-                            // 如果换称16进制的，16进制的分隔符是\t所以这里不能用\t
                             var phoneArr = _.get(firstContact,'phone',[]);
                             _.each(phoneArr, (phoneItem,index) => {
-                                phoneItem = addHyphenToPhoneNumber(phoneItem);
+                                phoneItem = format.addHyphenToPhoneNumber(phoneItem);
+                                //如果phoneMsg的第一个数字是0，会被wps认为是数字，自动把0省略，加上-就会认为是文本，不会省略
+                                // 为了防止在用wps打开的时候，如果是座机会把前面的0忽略，直接展示成一个数字，例如01085655689是会展示成1085655689
+                                // 换称16进制的，16进制的分隔符是\t所以这里不能用\t
                                 if(phoneItem.indexOf('-') > -1){
                                     phoneArr[index] = phoneItem;
                                 }
