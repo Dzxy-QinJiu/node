@@ -12,7 +12,7 @@ var history = require('../../../../public/sources/history');
 var FilterAction = require('../action/filter-actions');
 let CrmAction = require('../action/crm-actions');
 let CrmRepeatAction = require('../action/customer-repeat-action');
-import {getSourceClassify, sourceClassifyOptions} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {getSourceClassifyName, sourceClassifyOptions} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import crmUtil from '../utils/crm-util';
 import crmAjax from '../ajax';
 import batchAjax from '../ajax/batch-change-ajax';
@@ -694,7 +694,7 @@ class BasicOverview extends React.Component {
                                             field="source_classify"
                                             selectOptions={sourceClassifyOptions}
                                             value={basicData.source_classify}
-                                            displayText={getSourceClassify(basicData.source_classify)}
+                                            displayText={getSourceClassifyName(basicData.source_classify)}
                                             hasEditPrivilege={hasEditPrivilege}
                                             placeholder={Intl.get('crm.basic.select.source', '请选择获客方式')}
                                             editBtnTip={Intl.get('crm.basic.set.source', '设置获客方式')}

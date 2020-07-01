@@ -773,11 +773,9 @@ export const calcScheduleContentHeight = function(divHeight) {
     return divHeight + 40;
 };
 //获取获客方式
-export const getSourceClassify = function(sourceClassify){
+export const getSourceClassifyName = function(sourceClassify){
     let displayText = '';
-    if (_.isEqual(sourceClassify, SOURCE_CLASSIFY.OTHER)) {
-        displayText = '';
-    } else {
+    if (!_.isEqual(sourceClassify, SOURCE_CLASSIFY.OTHER)) {
         let displayObj = _.find(sourceClassifyArray, item => item.value === sourceClassify);
         if (!_.isEmpty(displayObj)) {
             displayText = displayObj.name;

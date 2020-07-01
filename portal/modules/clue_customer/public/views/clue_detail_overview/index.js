@@ -50,7 +50,7 @@ import {
     releaseClueTip,
     getShowPhoneNumber,
     dealClueCheckPhoneStatus,
-    getSourceClassify
+    getSourceClassifyName
 } from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -1931,7 +1931,7 @@ class ClueDetailOverview extends React.Component {
                         saveEditSelect={this.saveEditBasicInfo.bind(this, 'source_classify')}
                         cancelEditField={this.cancelEditSourceClassify}
                         selectOptions={sourceClassifyOptions}
-                        displayText={getSourceClassify(curClue.source_classify)}
+                        displayText={getSourceClassifyName(curClue.source_classify)}
                         onSelectChange={this.onSelectSourceClassify}
                         value={curClue.source_classify}
                         placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择获客方式')}
