@@ -270,9 +270,11 @@ class RecommendCluesFilterPanel extends Component {
     };
 
     setClueInfo(result) {
+        this.setState({vipFilters: {}});
         if(this.searchInputRef) {
             this.searchInputRef.state.keyword = _.get(result.item, 'name', '');
         }
+        this.saveRecommendFilter({...result.hasSavedRecommendParams, keyword: _.get(result.item, 'name', '')});
         LeadsRecommendAction.saveSettingCustomerRecomment({...result.hasSavedRecommendParams, keyword: _.get(result.item, 'name', '')});
 
         let listItem = toFrontRecommendClueData(result.item);
