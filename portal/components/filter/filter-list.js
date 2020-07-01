@@ -630,9 +630,9 @@ class FilterList extends React.Component {
                                 <div className="common-container">
                                     {/* icon-common-filter */}
                                     <h4 className="title">
-                                        常用筛选
+                                        {Intl.get('common.filter.common', '常用筛选')}
                                         {this.state.selectedCommonIndex || this.state.selectedCommonIndex === 0 ? (
-                                            <span className="clear-btn" onClick={this.handleClearCommonSelected}>清空</span>
+                                            <span className="clear-btn" onClick={this.handleClearCommonSelected}>{Intl.get('lead.filter.clear.time.range', '清空')}</span>
                                         ) : null }
                                     </h4>
                                     {/* todo 用props.commonData */}
@@ -656,7 +656,7 @@ class FilterList extends React.Component {
                                                 );
                                                 const getClickContent = (item, index) => (
                                                     <ul className="btn-container">
-                                                        <li onClick={this.delCommonItem.bind(this, item, index)}>删除</li>
+                                                        <li onClick={this.delCommonItem.bind(this, item, index)}>{Intl.get('common.delete', '删除')}</li>
                                                     </ul>
                                                 );
                                                 const commonItemClass = classNames('titlecut', {
@@ -744,7 +744,7 @@ class FilterList extends React.Component {
                                                                                     className="clear-btn"
                                                                                     onClick={this.clearSelect.bind(this, groupItem.groupName)}
                                                                                 >
-                                                                                清空
+                                                                                    {Intl.get('lead.filter.clear.time.range', '清空')}
                                                                                 </span> : null
                                                                         }
                                                                     </h4>

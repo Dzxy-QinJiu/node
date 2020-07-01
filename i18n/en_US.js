@@ -323,6 +323,9 @@ var en_US = {
     'common.press.enter.send': 'Press enter to send the message',//按enter键发送消息
     'common.customer.service.help.tip': 'Hello, what can I do for you',//您好，请问有什么可以帮您？
     'common.upgrade.refresh.tip': 'Version upgraded, please {refresh}',//版本已升级，请{refresh}
+    'common.filter.common': 'Commonly used filters',//常用筛选
+    'common.filter.common.add': 'Add as a common filter',//添加为常用筛选
+    'common.property.name': 'Name',//名称
     //公共部分--end
 
     'login.login': 'Login',//登录

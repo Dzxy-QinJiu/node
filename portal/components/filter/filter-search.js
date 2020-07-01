@@ -193,7 +193,7 @@ class FilterSearch extends React.Component {
                 <h5><Icon type="info-circle" />
                     {Intl.get('apply.select.search.clear.value','修改筛选范围，已勾选的{type}将被清空',{type: this.props.filterType})}</h5>
                 <div className="btn-bar">
-                    <Button onClick={this.handleConfirmEdit.bind(this)}>确认修改</Button>
+                    <Button onClick={this.handleConfirmEdit.bind(this)}>{Intl.get('common.confirm.modify', '确认修改')}</Button>
                     <Button onClick={this.showConfirmPop.bind(this, false)}>{Intl.get('common.cancel', '取消')}</Button>
                 </div>
             </div>
@@ -245,10 +245,10 @@ class FilterSearch extends React.Component {
                             {
                                 this.state.showAddZone ?
                                     <div className="add-container clearfix">
-                                        <h4>添加为常用筛选</h4>
+                                        <h4>{Intl.get('common.filter.common.add', '添加为常用筛选')}</h4>
                                         <div className="item-container">
                                             <span className="label">
-                                                名称
+                                                {Intl.get('common.property.name', '名称')}
                                             </span>
                                             <div className="item-content">
                                                 <Input placeholder={Intl.get('filters.tip.name', '请输入常用筛选名称')} value={this.state.filterName} onChange={this.handleNameChange.bind(this)} />
