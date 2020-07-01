@@ -52,21 +52,21 @@ export function getCallDurationDistributionChart(paramObj = {}) {
                 columns.push({
                     title: '成员',
                     dataIndex: 'nick_name',
-                    width: 120,
+                    width: 100,
                 });
             }
 
             columns.push({
                 title: '团队',
                 dataIndex: 'sales_team',
-                width: 120,
+                width: 100,
             });
 
             _.each(TIME_INTERVAL, (value, key) => {
                 columns.push({
                     title: value,
                     dataIndex: key,
-                    width: 120,
+                    width: 190,
                     align: 'right',
                 });
             });
