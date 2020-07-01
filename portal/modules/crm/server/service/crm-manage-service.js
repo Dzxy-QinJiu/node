@@ -77,6 +77,8 @@ var crmRestApis = {
         onlyEditCustomerTeam: `${editCustomerBaseUrl}/sales_team`,
         // 修改自定义信息
         updateCustomField: `${editCustomerBaseUrl}/custom_variables`,
+        //修改获客方式
+        updateSourceClassify: `${editCustomerBaseUrl}/source_classify`
 
     },
     // 拨打电话
@@ -424,6 +426,10 @@ exports.updateCustomer = function(req, res, newCustomer) {
             break;
         case 'custom_variables':
             url = crmRestApis.basic.updateCustomField;
+            break;
+        case 'source_classify':
+            url = crmRestApis.basic.updateSourceClassify;
+            break;
     }
     url = url.replace(':url_type', urlType);
     delete newCustomer.type;

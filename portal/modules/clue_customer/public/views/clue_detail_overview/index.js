@@ -49,7 +49,8 @@ import {
     editClueItemIconPrivilege,
     releaseClueTip,
     getShowPhoneNumber,
-    dealClueCheckPhoneStatus
+    dealClueCheckPhoneStatus,
+    getSourceClassifyName
 } from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -1242,19 +1243,6 @@ class ClueDetailOverview extends React.Component {
                 </div>
             )}/>);
     };
-    //获取获客方式
-    getSourceClassify = (sourceClassify) => {
-        let displayText = '';
-        if (_.isEqual(sourceClassify, SOURCE_CLASSIFY.OTHER)) {
-            displayText = '';
-        } else {
-            let displayObj = _.find(sourceClassifyArray, item => item.value === sourceClassify);
-            if (!_.isEmpty(displayObj)) {
-                displayText = displayObj.name;
-            }
-        }
-        return displayText;
-    };
 
     //是否是我团队或下级团队的人
     isMyTeamOrChildUser(teamId) {
@@ -1943,7 +1931,7 @@ class ClueDetailOverview extends React.Component {
                         saveEditSelect={this.saveEditBasicInfo.bind(this, 'source_classify')}
                         cancelEditField={this.cancelEditSourceClassify}
                         selectOptions={sourceClassifyOptions}
-                        displayText={this.getSourceClassify(curClue.source_classify)}
+                        displayText={getSourceClassifyName(curClue.source_classify)}
                         onSelectChange={this.onSelectSourceClassify}
                         value={curClue.source_classify}
                         placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择获客方式')}
