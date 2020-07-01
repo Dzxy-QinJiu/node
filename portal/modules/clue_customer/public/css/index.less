@@ -460,6 +460,7 @@
         }
         //联系人面板
         .contact-container {
+          display: flex;
           position: relative;
           .contact-name {
             display: inline-block;
@@ -467,8 +468,6 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            position: relative;
-            top: 5px;
           }
           .iconfont.icon-more {
             position: absolute;
@@ -1139,9 +1138,17 @@
         display: flex;
         align-items: flex-end;
         justify-content: flex-end;
-        flex-wrap: wrap;
+        //flex-wrap: wrap;
         .handle-and-trace{
           margin-left: 10px;
+          .assign-btn{
+            display: inline-block;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+            max-width: 90px;
+            line-height: 15px;
+          }
         }
       }
       .clue-foot, .invalid-td-clue{
