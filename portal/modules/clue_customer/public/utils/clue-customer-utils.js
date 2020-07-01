@@ -772,3 +772,16 @@ export const calcTraceContentHeight = function(divHeight) {
 export const calcScheduleContentHeight = function(divHeight) {
     return divHeight + 40;
 };
+//获取获客方式
+export const getSourceClassify = function(sourceClassify){
+    let displayText = '';
+    if (_.isEqual(sourceClassify, SOURCE_CLASSIFY.OTHER)) {
+        displayText = '';
+    } else {
+        let displayObj = _.find(sourceClassifyArray, item => item.value === sourceClassify);
+        if (!_.isEmpty(displayObj)) {
+            displayText = displayObj.name;
+        }
+    }
+    return displayText;
+};

@@ -1829,6 +1829,10 @@ var en_US = {
     'crm.basic.add.location': 'Add region',//添加地域信息
     'crm.basic.no.industry': 'No industry',//暂无行业
     'crm.basic.add.industry': 'Add industry',//添加行业
+    'crm.basic.no.source': 'No customer acquisition method',//暂无获客方式
+    'crm.basic.add.source': 'Add customer acquisition method',//添加获客方式
+    'crm.basic.select.source': 'Please select customer acquisition method',//请选择获客方式
+    'crm.basic.set.source': 'Set customer acquisition method',//设置获客方式
     'crm.basic.no.administrative': 'No administrative level',//暂无行政级别
     'crm.basic.add.administrative': 'Add administrative level',//添加行政级别
     'crm.overview.apply.user.tip': 'The customer has no user yet',//该客户还没有用户
@@ -2884,7 +2888,7 @@ var en_US = {
     'analysis.search.by.keyword': 'Search by keyword',//根据关键词搜索
     'analysis.view.weekly.report.details': 'View weekly report details',//查看周报详情
     'analysis.select.team': 'Select team',//选择团队
-    'analysis.time.frame': 'time frame',//时间范围 
+    'analysis.time.frame': 'time frame',//时间范围
     'analysis.select.the.some.year': 'Select the some year',//选择第{year}年
     'analysis.select.the.some.week': 'Select the some week',//选择第{week}周
     'analysis.statistics.of.qualified.customers': 'Statistics of qualified customers',//合格客户数统计
@@ -2910,7 +2914,7 @@ var en_US = {
     'analysis.daily.sales.report.list': 'Daily sales report list',//销售日报列表
     'analysis.view.digital.details': 'View digital details',//查看数字详情
     'analysis.click.operation.button': 'Click operation button',//点击{operation}按钮
-    
+
     'fail.get.customer.trace': 'Failed to get customer trace list',//获取客户跟踪记录列表失败
     'fail.add.customer.trace': 'Failed to update follow-up record',//更新跟进记录失败
     'contact.phone': 'Contact number',//联系电话
