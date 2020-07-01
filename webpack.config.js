@@ -277,11 +277,6 @@ var webpackConfig = {
             MOD_DIR: path.resolve(__dirname, 'portal/modules'),
         }
     },
-    externals: {
-        react: 'React',
-        'react-dom': 'ReactDOM',
-        antd: 'antd',
-    }
 };
 
 if (webpackMode !== 'production') {
