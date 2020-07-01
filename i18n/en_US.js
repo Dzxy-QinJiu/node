@@ -3425,6 +3425,8 @@ var en_US = {
     'analysis.active.customer.statistics.at.all.stages': 'active customer statistics at all stages',//各阶段活跃客户统计
     'analysis.all.administrative.levels': 'all administrative levels',//全部行政级别
     'analysis.trial.to.the.signing.period': 'trial to the signing period',//试用到签约周期
+    'analysis.number.of.calls.lasting.interval.seconds': 'number of calls lasting {interval} seconds',//通话时长interval秒的通话个数
+    'analysis.cue.call.analysis': 'cue call analysis',//线索通话分析
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
