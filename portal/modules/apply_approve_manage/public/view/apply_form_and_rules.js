@@ -5,6 +5,7 @@
  */
 require('../style/add_apply_form.less');
 import {Tabs, Input,Form,Button} from 'antd';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 const TabPane = Tabs.TabPane;
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 const TAB_KEYS = {
@@ -135,41 +136,112 @@ class ApplyFormAndRules extends React.Component {
             </span>
         );
     };
+    onDragEnd = (result) => {
+        if (!result.destination) {
+            return;
+        }
+        // 重新记录数组顺序
+        const reorder = (list, startIndex, endIndex) => {
+            const result = Array.from(list);
+            //删除并记录 删除元素
+            const [removed] = result.splice(startIndex, 1);
+            //将原来的元素添加进数组
+            result.splice(endIndex, 0, removed);
+            return result;
+        };
+        let {applyTypeData} = this.state;
+        applyTypeData.customiz_form = reorder(
+            _.get(applyTypeData,'customiz_form',[]),
+            result.source.index,
+            result.destination.index
+        );
 
+        this.setState({
+            applyTypeData
+        });
+    }
     renderFormComponents = () => {
         var applyTypeData = this.state.applyTypeData;
-        return _.map(applyTypeData.customiz_form, (formItem, key) => {
-            //如果是编辑状态
-            if (formItem.isEditting) {
-                return (
-                    <Form>
-                        <ComponentEdit
-                            form={this.props.form}
-                            formItemKey={formItem.key}
-                            formItem={formItem}
-                            handleCancel={this.handleCancelEditFormItem}
-                            handleSubmit={this.handleSubmitInput}
-                            componentTemple={true}
-                        />
-                    </Form>
-
-                );
-            } else {
-                return (
-                    <Form>
-                        <ComponentShow
-                            form={this.props.form}
-                            formItemKey={formItem.key}
-                            formItem={formItem}
-                            handleRemoveItem={this.removeTargetFormItem}
-                            handleEditItem={this.handleEditItem}
-                            componentTemple={true}
-                        />
-                    </Form>
-
-                );
-            }
+        const grid = 8;
+        const getItemStyle = (isDragging, draggableStyle) => ({
+            // some basic styles to make the items look a bit nicer
+            userSelect: 'none',
+            padding: grid * 2,
+            margin: `0 ${grid}px 0 0 `,
+            // 拖拽的时候背景变化
+            background: isDragging ? 'lightgreen' : '#ffffff',
+            // styles we need to apply on draggables
+            ...draggableStyle
         });
+        const getListStyle = () => ({
+            // background: 'black',
+            // display: 'flex',
+            // padding: grid,
+            // overflow: 'auto',
+        });
+        return <DragDropContext onDragEnd={this.onDragEnd}>
+            <Droppable droppableId="droppable">
+                {(provided, snapshot) => (
+                    <div
+                        //provided.droppableProps应用的相同元素.
+                        {...provided.droppableProps}
+                        // 为了使 droppable 能够正常工作必须 绑定到最高可能的DOM节点中provided.innerRef.
+                        ref={provided.innerRef}
+                        style={getListStyle(snapshot)}
+                    >
+                        {applyTypeData.customiz_form.map((formItem, index) => (
+                            <Draggable key={formItem.key} draggableId={formItem.key} index={index}>
+                                {(provided, snapshot) => (
+                                    <div
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        style={getItemStyle(
+                                            snapshot.isDragging,
+                                            provided.draggableProps.style
+                                        )}>
+                                        {this.renderDragContent(formItem)}
+                                    </div>
+                                )}
+                            </Draggable>
+                        ))}
+                        {provided.placeholder}
+                    </div>
+                )}
+            </Droppable>
+        </DragDropContext>;
+    };
+    renderDragContent = (formItem) => {
+        //如果是编辑状态
+        if (formItem.isEditting) {
+            return (
+                <Form>
+                    <ComponentEdit
+                        form={this.props.form}
+                        formItemKey={formItem.key}
+                        formItem={formItem}
+                        handleCancel={this.handleCancelEditFormItem}
+                        handleSubmit={this.handleSubmitInput}
+                        componentTemple={true}
+                    />
+                </Form>
+
+            );
+        } else {
+            return (
+                <Form>
+                    <ComponentShow
+                        form={this.props.form}
+                        formItemKey={formItem.key}
+                        formItem={formItem}
+                        handleRemoveItem={this.removeTargetFormItem}
+                        handleEditItem={this.handleEditItem}
+                        componentTemple={true}
+                    />
+                </Form>
+
+            );
+        }
     };
     getTargetFormItem = (formKey) => {
         var customiz_form = _.get(this, 'state.applyTypeData.customiz_form');

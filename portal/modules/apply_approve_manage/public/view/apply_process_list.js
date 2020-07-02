@@ -59,7 +59,7 @@ class AddAndShowApplyList extends React.Component {
         //点击客户列表某一行时打开对应的详情
         $('.apply-list-container').on('click', 'td.has-filter', function(e) {
             //td中的开关和省略号不能触发打开右侧面板的事件
-            if ($(e.target).hasClass('ant-switch') || $(e.target).hasClass('icon-suspension-points')) {
+            if ($(e.target).hasClass('ant-switch') || $(e.target).hasClass('icon-apply-list')) {
                 return;
             }
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-tbody'), '打开申请审批详情');
@@ -180,7 +180,7 @@ class AddAndShowApplyList extends React.Component {
                 {/*<Switch size="small" checked={record.approveCheck}*/}
                 {/*onChange={this.changeApplyStatus.bind(this, _.get(record, 'id'))}/>*/}
                 <Dropdown overlay={this.renderOverLayMenu(record)} trigger={['click']}><i
-                    className="iconfont icon-suspension-points icon-hangye"></i>
+                    className="iconfont icon-apply-list"></i>
                 </Dropdown>
             </span>
         );
@@ -328,7 +328,7 @@ AddAndShowApplyList.defaultProps = {
     updateShowApplyList: function() {
     },
     showOrCloseApplyDetail: function() {
-        
+
     }
 };
 
