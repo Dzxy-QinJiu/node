@@ -266,8 +266,16 @@ var CrmAlertForm = createReactClass({
                 // 判断是否是添加日程项
                 if(_this.props.isAddToDoClicked) {
                     if( _.isFunction(_this.props.handleScheduleAdd)) {
-                        //从我的工作中添加日程时，需要将添加后的工作返回放到我的工作列表中；从日程管理中添加时，返回日程添加到日程列表中
-                        _this.props.handleScheduleAdd(submitObj.addFromMyWork ? _.get(result, 'job', {}) : resData);
+                        //从我的工作中添加的今日的日程时，需要将添加后的工作返回放到我的工作列表中；
+                        if(submitObj.addFromMyWork){
+                            if(_.get(result, 'job') &&
+                               submitObj.start_time > moment().startOf('day') && 
+                               submitObj.start_time < moment().endOf('day')){
+                                _this.props.handleScheduleAdd(_.get(result, 'job', {}));
+                            }
+                        } else { //从日程管理中添加时，返回日程添加到日程列表中
+                            _this.props.handleScheduleAdd(resData);
+                        }                        
                     }
                 } else {
                     ScheduleAction.afterAddSchedule(resData);
