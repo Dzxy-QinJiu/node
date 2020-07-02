@@ -14,11 +14,13 @@ import ScheduleItem from './schedule-item';
 import RightPanelScrollBar from 'MOD_DIR/crm/public/views/components/rightPanelScrollBar';
 import ErrorDataTip from 'MOD_DIR/crm/public/views/components/error-data-tip';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
-import {editCluePrivilege} from '../../utils/clue-customer-utils';
+import {editCluePrivilege,calcScheduleContentHeight} from '../../utils/clue-customer-utils';
 import DetailCard from 'CMP_DIR/detail-card';
+
 class CrmSchedule extends React.Component {
     state = {
         clueId: this.props.curClue.id || '',
+        divHeight: calcScheduleContentHeight(this.props.divHeight),
         ...ScheduleStore.getState()
     };
 
@@ -43,6 +45,11 @@ class CrmSchedule extends React.Component {
                     //更新线索id成功后再获取跟进记录列表
                     this.getScheduleList();
                 });
+            });
+        }
+        if (nextProps.divHeight !== this.props.divHeight){
+            this.setState({
+                divHeight: calcScheduleContentHeight(nextProps.divHeight)
             });
         }
     }
@@ -117,9 +124,6 @@ class CrmSchedule extends React.Component {
         ScheduleAction.deleteSchedule(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 ScheduleAction.afterDelSchedule(id);
-                this.setState({
-                    scheduleList: this.state.scheduleList
-                });
             } else {
                 message.error(Intl.get('crm.139', '删除失败'));
             }
@@ -135,24 +139,8 @@ class CrmSchedule extends React.Component {
         }
     };
 
-    updateScheduleList = (newItem, type) => {
-        let scheduleList = this.state.scheduleList;
-        //如果是新增一个提醒
-        if (type === 'add') {
-            newItem.edit = false;
-            scheduleList.unshift(newItem);
-        } else if (type === 'delete') {
-            scheduleList = _.filter(scheduleList, (list) => {
-                return list.id !== newItem.id;
-            });
-        }
-        this.setState({ scheduleList });
-    };
-
     toggleScheduleContact = (item, flag) => {
-        let curSchedule = _.find(this.state.scheduleList, schedule => schedule.id === item.id);
-        curSchedule.isShowContactPhone = flag;
-        this.setState({scheduleList: this.state.scheduleList});
+        ScheduleAction.toggleScheduleContact({item: item, flag: flag});
     };
 
     renderTimeLineItem = (item, hasSplitLine) => {
@@ -210,49 +198,37 @@ class CrmSchedule extends React.Component {
             return <NoDataIconTip tipContent={Intl.get('common.no.more.schedule', '暂无计划')} />;
         }
     };
-
-    renderScheduleTitle = () => {
-        return (
-            <div className="schedule-title">
-                <span>{Intl.get('crm.right.schedule', '联系计划')}:</span>
-                {!_.get(this.state, 'scheduleList[0]') && !this.state.isLoadingScheduleList ? (
-                    <span className="no-data-text">{}</span>) : null}
-                {this.props.isMerge ? null : (
-                    <span className="iconfont icon-add schedule-add-btn handle-btn-item"
-                        title={Intl.get('crm.214', '添加联系计划')}
-                        onClick={this.addSchedule} data-tracename='点击添加联系计划'/>)
-                }
-            </div>);
-    };
-
     render() {
         return (
-            <RightPanelScrollBar handleScrollBottom={this.handleScrollBarBottom}
-                listenScrollBottom={this.state.listenScrollBottom}>
-                <div className="schedule-top-block" data-tracename="线索详情日程面板">
-                    <span className="total-tip crm-detail-total-tip">
-                        {!this.state.getScheduleListErrmsg ? this.state.total ? (
-                            <ReactIntl.FormattedMessage
-                                id="sales.frontpage.total.list"
-                                defaultMessage={'共{n}条'}
-                                values={{'n': this.state.total + ''}}/>) :
-                            Intl.get('clue.has.no.schedule.list', '该线索还没有联系计划') : null}
-                    </span>
-                    {this.props.isMerge || !editCluePrivilege(this.props.curClue) ? null : (
-                        <Button className='crm-detail-add-btn'
-                            onClick={this.addSchedule.bind(this, '')} data-tracename='点击添加联系计划'>
-                            {Intl.get('crm.214', '添加联系计划')}
-                        </Button>
-                    )}
-                </div>
-                {this.renderScheduleContent()}
-            </RightPanelScrollBar>
+            <div className="clue-customer-schedule" style={{ height: this.state.divHeight }} data-tracename="线索变更记录">
+                <GeminiScrollbar handleScrollBottom={this.handleScrollBarBottom}
+                    listenScrollBottom={this.state.listenScrollBottom}>
+                    <div className="schedule-top-block" data-tracename="线索详情日程面板">
+                        <span className="total-tip crm-detail-total-tip">
+                            {!this.state.getScheduleListErrmsg ? this.state.total ? (
+                                <ReactIntl.FormattedMessage
+                                    id="sales.frontpage.total.list"
+                                    defaultMessage={'共{n}条'}
+                                    values={{'n': this.state.total + ''}}/>) :
+                                Intl.get('clue.has.no.schedule.list', '该线索还没有联系计划') : null}
+                        </span>
+                        {this.props.isMerge || !editCluePrivilege(this.props.curClue) ? null : (
+                            <Button className='crm-detail-add-btn'
+                                onClick={this.addSchedule.bind(this, '')} data-tracename='点击添加联系计划'>
+                                {Intl.get('crm.214', '添加联系计划')}
+                            </Button>
+                        )}
+                    </div>
+                    {this.renderScheduleContent()}
+                </GeminiScrollbar>
+            </div>
         );
     }
 }
 CrmSchedule.propTypes = {
     curClue: PropTypes.object,
-    isMerge: PropTypes.bool
+    isMerge: PropTypes.bool,
+    divHeight: PropTypes.number,
 };
 module.exports = CrmSchedule;
 

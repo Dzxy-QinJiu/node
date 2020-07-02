@@ -323,6 +323,9 @@ var en_US = {
     'common.press.enter.send': 'Press enter to send the message',//按enter键发送消息
     'common.customer.service.help.tip': 'Hello, what can I do for you',//您好，请问有什么可以帮您？
     'common.upgrade.refresh.tip': 'Version upgraded, please {refresh}',//版本已升级，请{refresh}
+    'common.filter.common': 'Commonly used filters',//常用筛选
+    'common.filter.common.add': 'Add as a common filter',//添加为常用筛选
+    'common.property.name': 'Name',//名称
     //公共部分--end
 
     'login.login': 'Login',//登录
@@ -1714,6 +1717,7 @@ var en_US = {
     'crm.over.day.no.phone': 'Did not call over {day} days',//超{day}天未打过电话
     'crm.over.day.without.contact': 'Over {day} days without contact',//超{day}天未联系
     'crm.over.day.no.connection': 'No connection in the past {day} days',//近{day}天拨打未接通
+    'crm.over.half.year.no.visit': 'No visit for more than half a year',//超半年未拜访
     'crm.recent.week.active': 'Recent week active customers',//近一周活跃客户
     'crm.recent.month.active': 'Recent month active customers',//近一月活跃客户
     'crm.tag.unknown': 'Non tagged customers',//未打标签的客户
@@ -1829,6 +1833,10 @@ var en_US = {
     'crm.basic.add.location': 'Add region',//添加地域信息
     'crm.basic.no.industry': 'No industry',//暂无行业
     'crm.basic.add.industry': 'Add industry',//添加行业
+    'crm.basic.no.source': 'No customer acquisition method',//暂无获客方式
+    'crm.basic.add.source': 'Add customer acquisition method',//添加获客方式
+    'crm.basic.select.source': 'Please select customer acquisition method',//请选择获客方式
+    'crm.basic.set.source': 'Set customer acquisition method',//设置获客方式
     'crm.basic.no.administrative': 'No administrative level',//暂无行政级别
     'crm.basic.add.administrative': 'Add administrative level',//添加行政级别
     'crm.overview.apply.user.tip': 'The customer has no user yet',//该客户还没有用户
@@ -2884,7 +2892,7 @@ var en_US = {
     'analysis.search.by.keyword': 'Search by keyword',//根据关键词搜索
     'analysis.view.weekly.report.details': 'View weekly report details',//查看周报详情
     'analysis.select.team': 'Select team',//选择团队
-    'analysis.time.frame': 'time frame',//时间范围 
+    'analysis.time.frame': 'time frame',//时间范围
     'analysis.select.the.some.year': 'Select the some year',//选择第{year}年
     'analysis.select.the.some.week': 'Select the some week',//选择第{week}周
     'analysis.statistics.of.qualified.customers': 'Statistics of qualified customers',//合格客户数统计
@@ -2910,7 +2918,7 @@ var en_US = {
     'analysis.daily.sales.report.list': 'Daily sales report list',//销售日报列表
     'analysis.view.digital.details': 'View digital details',//查看数字详情
     'analysis.click.operation.button': 'Click operation button',//点击{operation}按钮
-    
+
     'fail.get.customer.trace': 'Failed to get customer trace list',//获取客户跟踪记录列表失败
     'fail.add.customer.trace': 'Failed to update follow-up record',//更新跟进记录失败
     'contact.phone': 'Contact number',//联系电话
@@ -3425,6 +3433,10 @@ var en_US = {
     'analysis.active.customer.statistics.at.all.stages': 'active customer statistics at all stages',//各阶段活跃客户统计
     'analysis.all.administrative.levels': 'all administrative levels',//全部行政级别
     'analysis.trial.to.the.signing.period': 'trial to the signing period',//试用到签约周期
+    'analysis.number.of.calls.lasting.interval.seconds': 'number of calls lasting {interval} seconds',//通话时长interval秒的通话个数
+    'analysis.cue.call.analysis': 'cue call analysis',//线索通话分析
+    'analysis.number.of.customers.with.an.account': 'number of customers with an account',//有账号的客户数
+    'analysis.number.of.customers.whose.accounts.have.been.logged.in': 'number of customers whose accounts have been logged in',//有账号登录过的客户数
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式

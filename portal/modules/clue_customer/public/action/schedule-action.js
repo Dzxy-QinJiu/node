@@ -16,7 +16,8 @@ function ScheduleAction() {
         'cancelEdit',
         'afterAddSchedule',
         'afterDelSchedule',
-        'afterHandleStatus'
+        'afterHandleStatus',
+        'toggleScheduleContact'
     );
 
     //获取日程管理列表

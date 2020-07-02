@@ -190,6 +190,10 @@ class CallRecordAnalyis extends React.Component {
             callChart.getCallRecordChart({
                 Store: this.state
             }),
+            //市场线索通话分析
+            callChart.getCallDurationDistributionChart({type: 'inbound'}),
+            //拓展线索通话分析
+            callChart.getCallDurationDistributionChart({type: 'outbound'}),
             //电话行业统计
             callChart.getCallIndustryChart(),
             //通话总次数TOP10

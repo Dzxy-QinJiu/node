@@ -12,7 +12,7 @@ var history = require('../../../../public/sources/history');
 var FilterAction = require('../action/filter-actions');
 let CrmAction = require('../action/crm-actions');
 let CrmRepeatAction = require('../action/customer-repeat-action');
-import {sourceClassifyArray} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {getSourceClassifyName, sourceClassifyOptions} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import crmUtil from '../utils/crm-util';
 import crmAjax from '../ajax';
 import batchAjax from '../ajax/batch-change-ajax';
@@ -34,6 +34,8 @@ import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 import crmPrivilegeConst from '../privilege-const';
 import CustomField from 'CMP_DIR/custom-field';
 import classNames from 'classnames';
+import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
+import CrmBasicAjax from 'MOD_DIR/crm/public/ajax';
 
 class BasicOverview extends React.Component {
     constructor(props) {
@@ -234,6 +236,10 @@ class BasicOverview extends React.Component {
                 this.props.editCustomerBasic(newBasic);
             }
         }
+        let basicData = _.extend(this.state.basicData, newBasic);
+        delete basicData.type;
+        delete basicData.urlType;
+        basicOverviewAction.updateBasicData(basicData);
     };
 
     getAdministrativeLevelOptions = () => {
@@ -528,16 +534,6 @@ class BasicOverview extends React.Component {
         return <span className="plat-form-name">{platFormName}</span>;
     };
 
-    //获取获客方式
-    getSourceClassify = (sourceClassify) => {
-        let displayText = '';
-        let displayObj = _.find(sourceClassifyArray, item => item.value === sourceClassify);
-        if(!_.isEmpty(displayObj)){
-            displayText = displayObj.name;
-        }
-        return [displayText];
-    };
-
     saveEditCustomFieldInfo = (saveObj, successFunc, errorFunc) => {
         // 自定义的值
         const customVariables = _.get(this.state.basicData, 'custom_variables', {});
@@ -570,7 +566,27 @@ class BasicOverview extends React.Component {
                 if (_.isFunction(errorFunc)) errorFunc(errorMsg);
             });
         }
-    }
+    };
+    //保存修改的基本信息
+    saveEditBasicInfo = (type, saveObj, successFunc, errorFunc) => {
+        saveObj.type = type;
+        Trace.traceEvent(ReactDOM.findDOMNode(this), `保存客户${type}的修改`);
+        if (this.props.isMerge) {
+            if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(saveObj);
+            if (_.isFunction(successFunc)) successFunc();
+        } else {
+            CrmBasicAjax.updateCustomer(saveObj).then((result) => {
+                if (result) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    this.editBasicSuccess(saveObj);
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc();
+                }
+            }, (errorMsg) => {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+            });
+        }
+    };
 
     render() {
         var basicData = this.state.basicData ? this.state.basicData : {};
@@ -587,6 +603,7 @@ class BasicOverview extends React.Component {
             crmPrivilegeConst.CUSTOMER_UPDATE,
             crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
         ]) && !this.props.disableEdit;
+        const EDIT_FEILD_WIDTH = 335;
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
@@ -670,9 +687,21 @@ class BasicOverview extends React.Component {
                                         <span className='detail-card-source-classify'>
                                             {`${Intl.get('crm.clue.client.source', '获客方式')}:`}
                                         </span>
-                                        <span className='detail-card-source-classify'>
-                                            {this.getSourceClassify(basicData.source_classify)}
-                                        </span>
+                                        <BasicEditSelectField
+                                            width={EDIT_FEILD_WIDTH}
+                                            updateMergeCustomer={this.props.updateMergeCustomer}
+                                            id={basicData.id}
+                                            field="source_classify"
+                                            selectOptions={sourceClassifyOptions}
+                                            value={basicData.source_classify}
+                                            displayText={getSourceClassifyName(basicData.source_classify)}
+                                            hasEditPrivilege={hasEditPrivilege}
+                                            placeholder={Intl.get('crm.basic.select.source', '请选择获客方式')}
+                                            editBtnTip={Intl.get('crm.basic.set.source', '设置获客方式')}
+                                            saveEditSelect={this.saveEditBasicInfo.bind(this, 'source_classify')}
+                                            noDataTip={Intl.get('crm.basic.no.source', '暂无获客方式')}
+                                            addDataTip={Intl.get('crm.basic.add.source', '添加获客方式')}
+                                        />
                                     </React.Fragment> )}
                             />
                         ) : null

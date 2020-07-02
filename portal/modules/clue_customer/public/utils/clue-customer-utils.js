@@ -767,6 +767,23 @@ export const ADVANCED_OPTIONS = [
         }
     },
 ];
+export const calcTraceContentHeight = function(divHeight) {
+    return divHeight - 55;
+};
+export const calcScheduleContentHeight = function(divHeight) {
+    return divHeight + 40;
+};
+//获取获客方式
+export const getSourceClassifyName = function(sourceClassify){
+    let displayText = '';
+    if (!_.isEqual(sourceClassify, SOURCE_CLASSIFY.OTHER)) {
+        let displayObj = _.find(sourceClassifyArray, item => item.value === sourceClassify);
+        if (!_.isEmpty(displayObj)) {
+            displayText = displayObj.name;
+        }
+    }
+    return displayText;
+};
 
 //生成找线索，筛选条件的id
 export const generateConditionId = function() {
