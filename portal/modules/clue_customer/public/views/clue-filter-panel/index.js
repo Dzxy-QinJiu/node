@@ -16,9 +16,9 @@ import {getClueUnhandledPrivilege, getTimeWithSecondZero, isSalesRole} from 'PUB
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
 import userData from 'PUB_DIR/sources/user-data';
-import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
+import { isKetaoOrganizaion, getCustomFieldFilterContent } from 'PUB_DIR/sources/utils/common-method-util';
 import RangePicker from 'CMP_DIR/range-picker/index';
-import { selectType } from 'PUB_DIR/sources/utils/consts';
+
 class ClueFilterPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -554,27 +554,8 @@ class ClueFilterPanel extends React.Component {
 
         if (!_.isEmpty(this.props.leadCustomFieldData)) {
             const customizedVariables = _.get(this.props.leadCustomFieldData, '[0].customized_variables');
-            _.each(customizedVariables, item => {
-                const fieldType = _.get(item, 'field_type');
-                const name = _.get(item, 'name');
-                const selectValues = _.get(item, 'select_values');
-                // 是否是选择类型（现在先做单选、多选类型的）
-                if (_.includes(selectType, fieldType)) {
-                    let customField = {
-                        groupName: name,
-                        groupId: name,
-                        data: _.map(selectValues, x => ({
-                            name: x,
-                            value: x
-                        }))
-                    };
-                    // 单选
-                    if (_.includes(['select', 'radio'], fieldType)) {
-                        customField.singleSelect = true;
-                    }
-                    advancedData.push(customField);
-                }
-            });
+            const customFieldOptions = getCustomFieldFilterContent(customizedVariables);
+            advancedData.push(...customFieldOptions);
         }
 
 

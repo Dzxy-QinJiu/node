@@ -8,10 +8,9 @@ import {
     STAGE_OPTIONS,
     COMMON_OTHER_ITEM,
     OTHER_FILTER_ITEMS,
-    selectType
 } from 'PUB_DIR/sources/utils/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import {isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCurtao, checkVersionAndType, getCustomFieldFilterContent} from 'PUB_DIR/sources/utils/common-method-util';
 import { sourceClassifyArray } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import RangePicker from 'CMP_DIR/range-picker';
 import Trace from 'LIB_DIR/trace';
@@ -507,28 +506,8 @@ class CrmFilterPanel extends React.Component {
         }
         if (!_.isEmpty(this.props.customerCustomFieldData)) {
             const customizedVariables = _.get(this.props.customerCustomFieldData, '[0].customized_variables');
-            _.each(customizedVariables, item => {
-                const fieldType = _.get(item, 'field_type');
-                const name = _.get(item, 'name');
-                const selectValues = _.get(item, 'select_values');
-                // 是否是选择类型（现在先做单选、多选类型的）
-                if (_.includes(selectType, fieldType)) {
-                    let customField = {
-                        groupName: name,
-                        groupId: name,
-                        data: _.map(selectValues, x => ({
-                            name: x,
-                            value: x,
-                            selected: x === _.get(this.state, 'condition.customized_variables[name]', '')
-                        }))
-                    };
-                    // 单选
-                    if (_.includes(['select', 'radio'], fieldType)) {
-                        customField.singleSelect = true;
-                    }
-                    advancedData.push(customField);
-                }
-            });
+            const customFieldOptions = getCustomFieldFilterContent(customizedVariables);
+            advancedData.push(...customFieldOptions);
         }
         //普通销售或者个人版，展示负责人和联合跟进人的筛选（用户来筛选销售是负责人还是联合跟进人）
         if (isCommonSalesOrPersonnalVersion()) {

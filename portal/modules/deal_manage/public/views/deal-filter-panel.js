@@ -2,9 +2,9 @@
  * Created by hzl on 2020/6/5.
  */
 import { FilterList } from 'CMP_DIR/filter';
-import { selectType } from 'PUB_DIR/sources/utils/consts';
-import DealFilterActions from '../action/deal-filter-actions';
 
+import DealFilterActions from '../action/deal-filter-actions';
+import { getCustomFieldFilterContent } from 'PUB_DIR/sources/utils/common-method-util';
 class DealFilterPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -33,28 +33,8 @@ class DealFilterPanel extends React.Component {
     render(){
         const advancedData = [];
         const customizedVariables = _.get(this.props.opportunityCustomFieldData, '[0].customized_variables');
-        _.each(customizedVariables, item => {
-            const fieldType = _.get(item, 'field_type');
-            const name = _.get(item, 'name');
-            const selectValues = _.get(item, 'select_values');
-            // 是否是选择类型（现在先做单选、多选类型的）
-            if (_.includes(selectType, fieldType)) {
-                let customField = {
-                    groupName: name,
-                    groupId: name,
-                    data: _.map(selectValues, x => ({
-                        name: x,
-                        value: x
-                    }))
-                };
-                // 单选
-                if (_.includes(['select', 'radio'], fieldType)) {
-                    customField.singleSelect = true;
-                }
-                advancedData.push(customField);
-            }
-        });
-
+        const customFieldOptions = getCustomFieldFilterContent(customizedVariables);
+        advancedData.push(...customFieldOptions);
 
         return (
             <div data-tracename="订单筛选">
