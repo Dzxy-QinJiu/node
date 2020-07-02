@@ -336,9 +336,7 @@ class RegRulesView extends React.Component {
         var needUpdateFlow = flowTypeNode.slice(targetIndex + 1);//需要更新的属性的数组
         _.each(needUpdateFlow,(flowItem,index) => {
             let oldIndex = flowItem.flowIndex;//原来的flowIndex
-            let arrIndex = _.split(oldIndex,'_');
-            arrIndex.splice(arrIndex.length - 1,1, parseInt(_.last(arrIndex)) - 1);//把flowIndex最后一个数字减一
-            var newIndex = arrIndex.join('_');//更新后的flowIndex
+            var newIndex = this.reduceLastWord(oldIndex);//更新后的flowIndex
             flowItem.id = _.replace(flowItem.id,oldIndex,newIndex);
             flowItem.name = _.replace(flowItem.name,oldIndex,newIndex);
             flowItem.flowIndex = newIndex;
@@ -351,9 +349,7 @@ class RegRulesView extends React.Component {
                     flowItem.conditionTotalRuleDsc = deleteItem.conditionTotalRuleDsc;
                 }
             }else{//修改其他元素的previous属性值
-                let indexArr = _.split(newIndex,'_');
-                indexArr.splice(indexArr.length - 1,1, parseInt(_.last(indexArr)) - 1);
-                flowItem.previous = _.replace(flowItem.previous,newIndex,indexArr.join('_'));
+                flowItem.previous = _.replace(flowItem.previous,newIndex,this.reduceLastWord(newIndex));
             }
             if(flowItem.next && flowItem.next.indexOf('EndTask') === -1){//如果有下一个节点并且不是结束节点，才更新Next属性
                 let flowArr = flowItem.next.split('_');
@@ -366,7 +362,12 @@ class RegRulesView extends React.Component {
         this.setState({
             applyRulesAndSetting: applyRulesAndSetting
         });
-
+    };
+    //将最后一个数字减一
+    reduceLastWord = (newIndex) => {
+        let indexArr = _.split(newIndex,'_');
+        indexArr.splice(indexArr.length - 1,1, parseInt(_.last(indexArr)) - 1);
+        return indexArr.join('_');//把flowIndex最后一个数字减一
     };
 
     handleDeleteCCNode = (flowType, deleteKey) => {
