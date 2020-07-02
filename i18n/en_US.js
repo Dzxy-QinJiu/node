@@ -3435,6 +3435,8 @@ var en_US = {
     'analysis.trial.to.the.signing.period': 'trial to the signing period',//试用到签约周期
     'analysis.number.of.calls.lasting.interval.seconds': 'number of calls lasting {interval} seconds',//通话时长interval秒的通话个数
     'analysis.cue.call.analysis': 'cue call analysis',//线索通话分析
+    'analysis.number.of.customers.with.an.account': 'number of customers with an account',//有账号的客户数
+    'analysis.number.of.customers.whose.accounts.have.been.logged.in': 'number of customers whose accounts have been logged in',//有账号登录过的客户数
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式

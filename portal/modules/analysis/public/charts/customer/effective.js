@@ -25,11 +25,13 @@ export function getCustomerEffectiveChart() {
                 },
                 {
                     title: Intl.get('effective.customer.number', '有效客户数'),
+                    titleTip: Intl.get('analysis.number.of.customers.with.an.account', '有账号的客户数'),
                     dataIndex: 'valid',
                     align: 'right',
                 },
                 {
                     title: Intl.get('active.customer.number', '活跃客户数'),
+                    titleTip: Intl.get('analysis.number.of.customers.whose.accounts.have.been.logged.in', '有账号登录过的客户数'),
                     dataIndex: 'active',
                     align: 'right',
                 },
