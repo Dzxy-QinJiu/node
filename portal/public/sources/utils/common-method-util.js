@@ -38,7 +38,8 @@ import {
     COMPANY_PHONE, COMPANY_VERSION_KIND,
     CHNNUMCHAR,
     CHNUNITSECTION,
-    CHNUNITCHAR
+    CHNUNITCHAR,
+    selectType
 } from './consts';
 var DateSelectorUtils = require('antc/lib/components/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -1763,4 +1764,29 @@ exports.getTotalTimeByInterval = function(cloneCustomers) {
 };
 
 
-
+// 获取自定义筛选内容
+exports.getCustomFieldFilterContent = (customizedVariables) => {
+    const customFieldOptions = [];
+    _.each(customizedVariables, item => {
+        const fieldType = _.get(item, 'field_type');
+        const name = _.get(item, 'name');
+        const selectValues = _.get(item, 'select_values');
+        // 是否是选择类型（现在先做单选、多选类型的）
+        if (_.includes(selectType, fieldType)) {
+            let customField = {
+                groupName: name,
+                groupId: name,
+                data: _.map(selectValues, x => ({
+                    name: x,
+                    value: x
+                }))
+            };
+            // 单选
+            if (_.includes(['select', 'radio'], fieldType)) {
+                customField.singleSelect = true;
+            }
+            customFieldOptions.push(customField);
+        }
+    });
+    return customFieldOptions;
+};
