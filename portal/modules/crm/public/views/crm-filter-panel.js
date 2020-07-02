@@ -526,7 +526,7 @@ class CrmFilterPanel extends React.Component {
                     if (_.includes(['select', 'radio'], fieldType)) {
                         customField.singleSelect = true;
                     }
-                    advancedData.splice(advancedData.length - 1, 0, customField);
+                    advancedData.push(customField);
                 }
             });
         }
