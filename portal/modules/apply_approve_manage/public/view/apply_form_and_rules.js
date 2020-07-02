@@ -168,7 +168,7 @@ class ApplyFormAndRules extends React.Component {
             padding: grid * 2,
             margin: `0 ${grid}px 0 0 `,
             // 拖拽的时候背景变化
-            background: isDragging ? 'lightgreen' : '#ffffff',
+            background: '#ffffff',
             ...draggableStyle
         });
         return <DragDropContext onDragEnd={this.onDragEnd}>
