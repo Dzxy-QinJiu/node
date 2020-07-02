@@ -325,26 +325,24 @@ class RegRulesView extends React.Component {
         var applyRulesAndSetting = this.state.applyRulesAndSetting;
         var applyApproveRules = applyRulesAndSetting.applyApproveRules;
         var flowTypeNode = this.getDiffTypeFlow(flowType);
-        //如果是默认流程
-        var previousNode = _.last(flowTypeNode);
-        //看一下最后一个节点的节点类型
+        var previousNode = _.last(flowTypeNode);//最后一个节点
+        //看一下最后一个节点的节点类型，是否是结束节点，如果是结束节点，把结束节点删除
         if (previousNode.type === 'EndEvent') {
             //删除最后一个节点
             flowTypeNode.pop();
         }
-        //把流程的中待审批人所在的节点过滤出来
-        var targetIndex = _.findIndex(flowTypeNode, item => item.id === deleteItem.id);
-        var notNeedUpdateFlow = flowTypeNode.slice(0,targetIndex);
-        var needUpdateFlow = flowTypeNode.slice(targetIndex + 1);//需要更新的下标的
+        var targetIndex = _.findIndex(flowTypeNode, item => item.id === deleteItem.id);//找到要删除节点的index
+        var notNeedUpdateFlow = flowTypeNode.slice(0,targetIndex);//不需要更新属性的数组
+        var needUpdateFlow = flowTypeNode.slice(targetIndex + 1);//需要更新的属性的数组
         _.each(needUpdateFlow,(flowItem,index) => {
-            let oldIndex = flowItem.flowIndex;
+            let oldIndex = flowItem.flowIndex;//原来的flowIndex
             let arrIndex = _.split(oldIndex,'_');
-            arrIndex.splice(arrIndex.length - 1,1, parseInt(_.last(arrIndex)) - 1);
-            var newIndex = arrIndex.join('_');
+            arrIndex.splice(arrIndex.length - 1,1, parseInt(_.last(arrIndex)) - 1);//把flowIndex最后一个数字减一
+            var newIndex = arrIndex.join('_');//更新后的flowIndex
             flowItem.id = _.replace(flowItem.id,oldIndex,newIndex);
             flowItem.name = _.replace(flowItem.name,oldIndex,newIndex);
             flowItem.flowIndex = newIndex;
-            if(index === 0){
+            if(index === 0){//需要更新的第一个元素，直接用删除元素的相关属性即可，不能更改下标，防止有GateWay网关时候的错误
                 flowItem.previous = deleteItem.previous;
                 if(deleteItem.conditionTotalRule){//如果删除的这个节点有条件
                     flowItem.conditionTotalRule = deleteItem.conditionTotalRule;
@@ -352,16 +350,15 @@ class RegRulesView extends React.Component {
                 if(deleteItem.conditionTotalRuleDsc){
                     flowItem.conditionTotalRuleDsc = deleteItem.conditionTotalRuleDsc;
                 }
-
-            }else{
+            }else{//修改其他元素的previous属性值
                 let indexArr = _.split(newIndex,'_');
                 indexArr.splice(indexArr.length - 1,1, parseInt(_.last(indexArr)) - 1);
                 flowItem.previous = _.replace(flowItem.previous,newIndex,indexArr.join('_'));
             }
-            if(flowItem.next && flowItem.next.indexOf('EndTask') === -1){
+            if(flowItem.next && flowItem.next.indexOf('EndTask') === -1){//如果有下一个节点并且不是结束节点，才更新Next属性
                 let flowArr = flowItem.next.split('_');
                 flowItem.next = _.concat(_.first(flowArr), _.split(oldIndex,'_')).join('_');
-            }else{
+            }else{//其他情况删除next属性
                 delete flowItem.next;
             }
         });
