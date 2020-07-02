@@ -330,6 +330,9 @@ var zh_CN = {
     'common.press.enter.send': '按enter键发送消息',
     'common.customer.service.help.tip': '您好，请问有什么可以帮您？',
     'common.upgrade.refresh.tip': '版本已升级，请{refresh}',
+    'common.filter.common': '常用筛选',
+    'common.filter.common.add': '添加为常用筛选',
+    'common.property.name': '名称',
     //公共部分--end
 
     'login.login': '登录',
@@ -1725,6 +1728,7 @@ var zh_CN = {
     'crm.never.contact.customer': '从未联系客户',
     'crm.over.day.without.contact': '超{day}天未联系',
     'crm.over.day.no.connection': '近{day}天拨打未接通',
+    'crm.over.half.year.no.visit': '超半年未拜访',
     'crm.recent.week.active': '近一周的活跃客户',
     'crm.recent.month.active': '近一个月的活跃客户',
     'crm.customer.interested': '添加关注',

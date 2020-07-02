@@ -323,6 +323,9 @@ var en_US = {
     'common.press.enter.send': 'Press enter to send the message',//按enter键发送消息
     'common.customer.service.help.tip': 'Hello, what can I do for you',//您好，请问有什么可以帮您？
     'common.upgrade.refresh.tip': 'Version upgraded, please {refresh}',//版本已升级，请{refresh}
+    'common.filter.common': 'Commonly used filters',//常用筛选
+    'common.filter.common.add': 'Add as a common filter',//添加为常用筛选
+    'common.property.name': 'Name',//名称
     //公共部分--end
 
     'login.login': 'Login',//登录
@@ -1714,6 +1717,7 @@ var en_US = {
     'crm.over.day.no.phone': 'Did not call over {day} days',//超{day}天未打过电话
     'crm.over.day.without.contact': 'Over {day} days without contact',//超{day}天未联系
     'crm.over.day.no.connection': 'No connection in the past {day} days',//近{day}天拨打未接通
+    'crm.over.half.year.no.visit': 'No visit for more than half a year',//超半年未拜访
     'crm.recent.week.active': 'Recent week active customers',//近一周活跃客户
     'crm.recent.month.active': 'Recent month active customers',//近一月活跃客户
     'crm.tag.unknown': 'Non tagged customers',//未打标签的客户

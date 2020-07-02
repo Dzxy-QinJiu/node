@@ -301,6 +301,7 @@ export const OTHER_FILTER_ITEMS = {
     THIRTY_UNCONTACT: 'thirty_uncontact',
     FIFTEEN_UNCONTACT: 'fifteen_uncontact',
     SEVEN_UNCONTACT: 'seven_uncontact',
+    HALF_YEAR_UNVISIT: 'half_year_unvisit',//超半年未拜访的客户
     THIRTY_NO_CONNECTION: 'thirty_no_connection',//近30天拨打未接通的客户
     THIRTY_NO_CALL: 'thirty_no_call',//超30天未打过电话
     UNDISTRIBUTED: 'undistributed',//未分配的客户
