@@ -8,27 +8,15 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 } else if (language.lan() === 'zh') {
     require('./card-zh_CN.less');
 }
-let CardItem = require('./cardItem');
+import CardItem from './cardItem';
 let classNames = require('classnames');
 let DefaultUserLogoTitle = require('../default-user-logo-title');
-const DELETE_CREATEREALM_DELAYTIME = 4000;//超时时间
 import Trace from 'LIB_DIR/trace';
 import { Popconfirm } from 'antd';
 
 class Card extends React.Component {
     static defaultProps = {
         cardWidth: 'auto'
-    };
-
-    selectCardEvent = () => {
-        let cardId = this.props.curCard.id;
-        if (this.props.isSelect) {
-            //之前选中，则取消选中
-            this.props.unselectCard(cardId);
-        } else {
-            //    之前未选中，则选中
-            this.props.selectCard(cardId);
-        }
     };
 
     showCardInfo = (event) => {
@@ -43,12 +31,7 @@ class Card extends React.Component {
         }
         this.props.showCardInfo(curCard);
     };
-
-    showRightFullScreen = (event) => {
-        event.stopPropagation();
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-role-auth-config'), '查看应用角色列表和权限列表');
-        this.props.showRightFullScreen(this.props.curCard);
-    };
+    
     //删除card
     deleteItem = (id, event) => {
         event.stopPropagation();
@@ -64,27 +47,8 @@ class Card extends React.Component {
 
         for (let key in card) {
             if (card[key] instanceof Object && card[key].showOnCard) {
-                if (key === 'date') {
-                    cardItems.push(<CardItem key={key} cardItem={card[key]} noRihtValue={true}/>);
-                } else {
-                    cardItems.push(<CardItem key={key} cardItem={card[key]}/>);
-                }
+                cardItems.push(<CardItem key={key} cardItem={card[key]} />);
             }
-        }
-        // 选择图标的样式设置
-        let iconClass = 'select-icon';
-        if (this.props.isSelect) {
-            iconClass += ' active';
-        }
-        //禁用卡片的样式设置
-        if (!card.status) {
-            iconClass += ' select-icon-stop';
-        }
-        if (card.createMsg === 'error') {
-            //右上角通知DELETE_CREATEREALM_DELAYTIME 秒后关闭，在通知关闭后再在页面上移除创建失败的安全域card
-            setTimeout(() => {
-                this.props.removeFailRealm(card.taskId);
-            }, DELETE_CREATEREALM_DELAYTIME);
         }
         let userName = card.userName ? card.userName.value : '';
         let deleteClassName = 'iconfont icon-delete handle-btn-item';
@@ -94,31 +58,13 @@ class Card extends React.Component {
             'building-icon-curtao': _.isEqual(card.leftFlagDesc, '客套')
         });
         const cardBoxCls = classNames('card-box',{
-            'production-stop': this.props.type === 'production' && card.status === 0
+            'production-stop': this.props.type === 'production' && card.status === 0,
+            'selected': this.props.isSelect
         });
+        console.log('this.props.showDelete:',this.props.showDelete);
         return (
             <div className="card-layout-container " style={{width: this.props.cardWidth}}>
                 <div className={cardBoxCls} onClick={this.showCardInfo}>
-                    {
-                        this.props.type === 'production' ? null : (
-                            <div className="card-stop-layer" style={{display: card.status === 0 ? 'block' : 'none'}}>
-                                <div className="card-stop-bg"></div>
-                                <div className="stop-icon">
-                                    <ReactIntl.FormattedMessage id="common.stop" defaultMessage="停用"/>
-                                </div>
-                                <div className="stop-triangle"></div>
-                            </div>
-                        )
-                    }
-                    {card.id ? null : (
-                        <div className="card-stop-layer">
-                            <div className="card-stop-bg"></div>
-                            <div className="building-icon">
-                                <ReactIntl.FormattedMessage id="member.is.building" defaultMessage="创建中"/>
-                            </div>
-                            <div className="stop-triangle"></div>
-                        </div>
-                    )}
                     {card.leftFlagDesc ? (
                         <div className="card-left-layer">
                             <div className={buildingIcon}>
@@ -140,17 +86,18 @@ class Card extends React.Component {
                             <div className="card-title" title={card.name}>{card.name}</div>
                             {cardItems}
                         </div>
-
-                        <span className="card-btn-bar">
-                            <div className="attention-icon">
-                                {this.props.showDelete ? (
+                        {
+                            this.props.showDelete ? (
+                                <span className="card-btn-bar">
                                     <Popconfirm
                                         title={Intl.get('organization.whether.del.organization', '确定要删除\'{groupName}\'？', {groupName: card.name})}
-                                        onConfirm={this.deleteItem.bind(this, card.id)}>
+                                        onConfirm={this.deleteItem.bind(this, card.id)}
+                                    >
                                         <i className={deleteClassName} title={deleteTitle}/>
-                                    </Popconfirm>) : null}
-                            </div>
-                        </span>
+                                    </Popconfirm>
+                                </span>
+                            ) : null
+                        }
                     </div>
                 </div>
             </div>
@@ -163,12 +110,11 @@ Card.propTypes = {
     curCard: PropTypes.object,
     isSelect: PropTypes.bool,
     unselectCard: PropTypes.func,
-    selectCard: PropTypes.func,
-    removeFailRealm: PropTypes.func,
     showCardInfo: PropTypes.func,
-    showRightFullScreen: PropTypes.func,
     deleteItem: PropTypes.func,
     imgUrl: PropTypes.string,
+    type: PropTypes.string,
     showDelete: PropTypes.bool
+
 };
 module.exports = Card;
