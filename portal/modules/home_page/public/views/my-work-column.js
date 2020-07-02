@@ -1463,6 +1463,8 @@ class MyWorkColumn extends React.Component {
     }
     // 将新加的日程工作添加到日程列表中
     afterAddSchedule = (scheduleWork) => {
+        //如果工作为空说明我的工作列表中已经存在了对应的相关工作，不需要再加一个了
+        if(_.isEmpty(scheduleWork)) return;
         let myWorkList = this.state.myWorkList || [];
         myWorkList.unshift(scheduleWork);
         this.setState({ myWorkList });

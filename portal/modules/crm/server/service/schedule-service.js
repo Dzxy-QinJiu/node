@@ -21,7 +21,7 @@ exports.addSchedule = function(req, res) {
     let url = restApis.scheduleApis + bodyData.scheduleType;
     // 从我的工作中添加日程，用可以返回工作对象的接口添加
     if (bodyData.addFromMyWork) {
-        url += '/widthjob';
+        url += '/withjob';
         delete bodyData.addFromMyWork;
     }
     return restUtil.authRest.post(
