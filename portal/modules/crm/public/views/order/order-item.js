@@ -223,6 +223,7 @@ class OrderItem extends React.Component {
                         let formData = this.state.formData;
                         formData.sale_stages = sale_stages;
                         this.setState({formData: formData});
+                        OrderAction.afterEditOrder(saveObj);
                     } else {
                         message.error(result || Intl.get('common.save.failed', '保存失败'));
                     }
@@ -260,6 +261,7 @@ class OrderItem extends React.Component {
                         isLoading: false,
                         submitErrorMsg: ''
                     });
+                    OrderAction.afterEditOrder({customer_id, id, apps});
                 } else {
                     this.setState({
                         isLoading: false,
