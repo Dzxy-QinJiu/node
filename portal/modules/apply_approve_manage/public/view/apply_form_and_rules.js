@@ -155,7 +155,6 @@ class ApplyFormAndRules extends React.Component {
             result.source.index,
             result.destination.index
         );
-
         this.setState({
             applyTypeData
         });
@@ -170,14 +169,7 @@ class ApplyFormAndRules extends React.Component {
             margin: `0 ${grid}px 0 0 `,
             // 拖拽的时候背景变化
             background: isDragging ? 'lightgreen' : '#ffffff',
-            // styles we need to apply on draggables
             ...draggableStyle
-        });
-        const getListStyle = () => ({
-            // background: 'black',
-            // display: 'flex',
-            // padding: grid,
-            // overflow: 'auto',
         });
         return <DragDropContext onDragEnd={this.onDragEnd}>
             <Droppable droppableId="droppable">
@@ -187,7 +179,6 @@ class ApplyFormAndRules extends React.Component {
                         {...provided.droppableProps}
                         // 为了使 droppable 能够正常工作必须 绑定到最高可能的DOM节点中provided.innerRef.
                         ref={provided.innerRef}
-                        style={getListStyle(snapshot)}
                     >
                         {applyTypeData.customiz_form.map((formItem, index) => (
                             <Draggable key={formItem.key} draggableId={formItem.key} index={index}>
