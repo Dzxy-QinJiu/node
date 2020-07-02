@@ -57,6 +57,7 @@ var CrmAlertForm = createReactClass({
         isAddToDoClicked: PropTypes.bool,
         handleScheduleAdd: PropTypes.func,
         topicValue: PropTypes.string,
+        addFromMyWork: PropTypes.bool,
     },
     getInitialState: function() {
         var formData = this.getInitialFormData(this.props);
@@ -246,29 +247,41 @@ var CrmAlertForm = createReactClass({
             });
         } else {
             //单独添加一个联系计划
-            ScheduleAction.addSchedule(submitObj, (resData) => {
-                if (resData.id) {
-                    this.showMessage(Intl.get('user.user.add.success', '添加成功'));
-                    _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel(resData);
-                    // 判断是否是添加日程项
-                    if(this.props.isAddToDoClicked) {
-                        _.isFunction(this.props.handleScheduleAdd) && this.props.handleScheduleAdd(resData);
-                    } else {
-                        ScheduleAction.afterAddSchedule(resData);
-                        var todayTimeObj = TimeStampUtil.getTodayTimeStamp();
-                        //如果添加的是今天的电联联系计划，就在基本资料的日程列表中加一个计划
-                        if (resData.type === 'calls' && resData.start_time > todayTimeObj.start_time && resData.end_time < todayTimeObj.end_time){
-                            basicOverviewAction.afterAddSchedule(resData);
-                        }
-                    }
-                } else {
-                    this.showMessage(resData || Intl.get('crm.154', '添加失败'), 'error');
-                }
-                this.setState({isLoading: false});
-            });
+            this.addSingleSchedule(submitObj);
         }
     },
-
+    addSingleSchedule: function(submitObj) {
+        if(this.props.addFromMyWork){
+            //是否从我的工作中添加的日程
+            submitObj.addFromMyWork = true;
+        }
+        //单独添加一个联系计划
+        ScheduleAction.addSchedule(submitObj, (result) => {
+            // 从我的工作添加时，返回的数据中会有日程对应的工作和日程两个对象
+            let resData = this.props.addFromMyWork ? result : _.get(result, 'schedule', {});
+            if (resData.id) {
+                this.showMessage(Intl.get('user.user.add.success', '添加成功'));
+                _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel(resData);
+                // 判断是否是添加日程项
+                if(this.props.isAddToDoClicked) {
+                    if( _.isFunction(this.props.handleScheduleAdd)) {
+                        //从我的工作中添加日程时，需要将添加后的工作返回放到我的工作列表中；从日程管理中添加时，返回日程添加到日程列表中
+                        this.props.handleScheduleAdd(this.props.addFromMyWork ? _.get(result, 'job', {}) : resData);
+                    }
+                } else {
+                    ScheduleAction.afterAddSchedule(resData);
+                    var todayTimeObj = TimeStampUtil.getTodayTimeStamp();
+                    //如果添加的是今天的电联联系计划，就在基本资料的日程列表中加一个计划
+                    if (resData.type === 'calls' && resData.start_time > todayTimeObj.start_time && resData.end_time < todayTimeObj.end_time){
+                        basicOverviewAction.afterAddSchedule(resData);
+                    }
+                }
+            } else {
+                this.showMessage(resData || Intl.get('crm.154', '添加失败'), 'error');
+            }
+            this.setState({isLoading: false});
+        });
+    },
     //提交添加请求
     handleSubmit: function(submitObj) {
         this.refs.validation.validate(valid => {
@@ -1039,6 +1052,7 @@ var CrmAlertForm = createReactClass({
 });
 
 CrmAlertForm.defaultProps = {
+    addFromMyWork: false,//是否从我的工作中添加的日程
     currentSchedule: {},
     topicValue: 'customer', //默认修改为“客户”的联系计划
 };
