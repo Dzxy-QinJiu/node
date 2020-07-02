@@ -47,7 +47,12 @@ function ApplyApproveManageActions() {
         this.dispatch({error: false, loading: true});
         applyApproveManageAjax.saveSelfSettingWorkFlowRules(applyId,data).then((result) => {
             this.dispatch({error: false, loading: false});
-            _.isFunction(callback) && callback(result);
+            if(!result){
+                _.isFunction(callback) && callback(Intl.get('member.add.failed', '添加失败！'));
+            }else{
+                _.isFunction(callback) && callback(result);
+            }
+
         }, (errorMsg) => {
             _.isFunction(callback) && callback(errorMsg || Intl.get('member.add.failed', '添加失败！'));
             this.dispatch({error: true, loading: false, errorMsg: errorMsg});
