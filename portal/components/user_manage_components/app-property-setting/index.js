@@ -459,7 +459,24 @@ const AppPropertySetting = createReactClass({
                 <div className="app-property-custom-settings">
                     {//多用户的应用设置时，只需要更改角色、权限，其他选项不需要更改
                         this.props.isMultiUser ? (
-                            this.renderAppTerminalsContent(isShowAppTerminals, currentApp, terminals, currentAppInfo)
+                            (
+                                isShowAppTerminals ? (
+                                    <div className="form-item">
+                                        <div className="form-item-label">{Intl.get('common.terminals', '终端')}</div>
+                                        <div className="form-item-content">
+                                            {
+                                                this.renderUserAppTerminalCheckboxBlock({
+                                                    isCustomSetting: true,
+                                                    appId: appId,
+                                                    globalTerminals: _.get(defaultSettings, 'terminals',[]),
+                                                    appAllTerminals: currentAppInfo.terminals.value,
+                                                    selectedApps: currentApp
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                ) : null
+                            )
                         ) : (
                             <div
                                 className="basic-data-form app-property-other-property"
