@@ -388,6 +388,7 @@ var en_US = {
 
     'register.title.tip': 'Welcome to register',//欢迎注册客套
     'register.slogan.tip': 'Sales acceleration, starting here ...',//销售加速，从这里开始...
+    'register.enter.website': 'Enter the official website',//进入官网
     'register.set.company.id': 'Set up company ID',//设置公司标识
     'register.valid.phone': 'Phone number verification',//验证手机
     'register.fill.account': 'Set up account',//账号设置

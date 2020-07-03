@@ -6,7 +6,7 @@
 var React = require('react');
 const PropTypes = require('prop-types');
 const QRCode = require('qrcode.react');
-const classnames = require('classnames');
+const classNames = require('classnames');
 const Logo = require('../Logo');
 import RegisterForm from './register-form';
 import {Alert, Tabs, Icon, Button} from 'antd';
@@ -15,6 +15,7 @@ var Spinner = require('../spinner');
 const USER_LANG_KEY = 'userLang';//存储用户语言环境的key
 import {storageUtil} from 'ant-utils';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import {isWxEnvironment} from 'PUB_DIR/sources/utils/register_util';
 const logoSrc = require('./image/curtao_logo_white.svg');
 const LAYOUT = {
     COPY_RIGHT_HEIGHT: 46,//底部公司版权信息高度
@@ -64,9 +65,16 @@ class RegisterPage extends React.Component {
         }
         return formWrapHeight;
     }
-
+    enterToWebsite = (e) => {
+        Trace.traceEvent(e, '进入官网');
+        window.open('https://www.curtao.com');
+    }
     render() {
         const hasWindow = !(typeof window === 'undefined');
+        let isWXEnv = isWxEnvironment();
+        const sloganCls = classNames('register-slogan-tip',{
+            'enter-website-style': !isWXEnv
+        });
         return (
             <div className="register-wrap" data-tracename="个人注册页面">
                 <div className="register-image-container">
@@ -74,7 +82,14 @@ class RegisterPage extends React.Component {
                         <img src={logoSrc} className='register-logo' />
                     </div>
                     <div className='register-left-content-style register-slogan'>
-                        <span className='register-slogan-tip'>{Intl.get('register.slogan.tip', '销售加速，从这里开始...')}</span>
+                        <span className={sloganCls}>
+                            <span className='register-slogin-text'>{Intl.get('register.slogan.tip', '销售加速，从这里开始...')}</span>
+                            {//小程序上不需要进入官网的链接
+                                isWXEnv ? null : (
+                                    <a onClick={this.enterToWebsite} className='enter-to-website'>
+                                        {Intl.get('register.enter.website', '进入官网')}>
+                                    </a>)}
+                        </span>
                     </div>
                 </div>
                 {hasWindow ? (
