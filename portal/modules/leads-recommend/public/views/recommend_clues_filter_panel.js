@@ -66,7 +66,7 @@ const LAYOUT_CONSTS = {
 
 const SCROLL_DELAY = 10;//滚动事件延时
 
-const SCROLL_INSTANCE = 100;//滚动距离
+const SCROLL_INSTANCE = 150;//滚动距离
 
 class RecommendCluesFilterPanel extends Component {
     constructor(props) {
@@ -1040,44 +1040,51 @@ class RecommendCluesFilterPanel extends Component {
         let list = this.handleSelectedFilterList();
         let {isWebMin} = isResponsiveDisplay();
         let feature = _.find(ADVANCED_OPTIONS, feature => feature.value === _.get(this.state.hasSavedRecommendParams,'feature', this.props.feature));
-        let showFeatureFilter = !isWebMin && feature;
 
-        if(list.length || showFeatureFilter) {
-            return (
-                <div className="selected-filter-container" data-tracename="已选条件展示区">
-                    <div className="selected-filter-content">
-                        {isWebMin ? null : <span className="selected-filter-title">{Intl.get('clue.recommend.filter.selected', '已选条件')}：</span>}
-                        {showFeatureFilter ? (
-                            <span className="advance-btn-item advance-active" onClick={this.handleClickAdvanced.bind(this, feature.value)}>{feature.name}</span>
-                        ) : null}
-                        {_.map(list, item => {
-                            if(this.props.isSelectedHalfYearRegister && item.key === VIP_ITEM_MAP.REGISTER_TIME) {
-                                return null;
-                            }
-                            let content = (
-                                <span key={item.key} className="selected-filter-item">
-                                    <span>{item.name}：{item.value}</span>
-                                    <i className="iconfont icon-close" data-tracename={`点击关闭${item.name}:${item.value}`} onClick={item.handleClick}/>
-                                </span>
+        //展示已选条件
+        let showSelectedFilters = this.showSelectedFilters();
+        //展示热门标签
+        let showFeatureFilter = showSelectedFilters && feature;
+
+        let cls = classNames('selected-filter-container', {
+            'show-filters': showSelectedFilters,
+            'mobile-selected-filter-container': isWebMin
+        });
+
+        return (
+            <div className={cls} data-tracename="已选条件展示区">
+                <div className="selected-filter-content">
+                    {isWebMin ? null : <span className="selected-filter-title">{Intl.get('clue.recommend.filter.selected', '已选条件')}：</span>}
+                    {showFeatureFilter ? (
+                        <span className="advance-btn-item advance-active" onClick={this.handleClickAdvanced.bind(this, feature.value)}>{feature.name}</span>
+                    ) : null}
+                    {_.map(list, item => {
+                        if(this.props.isSelectedHalfYearRegister && item.key === VIP_ITEM_MAP.REGISTER_TIME) {
+                            return null;
+                        }
+                        let content = (
+                            <span key={item.key} className="selected-filter-item">
+                                <span>{item.name}：{item.value}</span>
+                                <i className="iconfont icon-close" data-tracename={`点击关闭${item.name}:${item.value}`} onClick={item.handleClick}/>
+                            </span>
+                        );
+                        if(isWebMin) {
+                            return (
+                                <AvatarPopoverTip
+                                    content={this.state.vipPopOverVisibleContent}
+                                    visible={this.state.vipPopOverVisible === item.key && !this.state.showHotOptionPanel}
+                                    onVisibleChange={this.handleVisibleChange}
+                                >
+                                    {content}
+                                </AvatarPopoverTip>
                             );
-                            if(isWebMin) {
-                                return (
-                                    <AvatarPopoverTip
-                                        content={this.state.vipPopOverVisibleContent}
-                                        visible={this.state.vipPopOverVisible === item.key && !this.state.showHotOptionPanel}
-                                        onVisibleChange={this.handleVisibleChange}
-                                    >
-                                        {content}
-                                    </AvatarPopoverTip>
-                                );
-                            }else {
-                                return content;
-                            }
-                        })}
-                    </div>
+                        }else {
+                            return content;
+                        }
+                    })}
                 </div>
-            );
-        }else { return null; }
+            </div>
+        );
     }
 
     //手机端 --- start -----
@@ -1299,7 +1306,7 @@ class RecommendCluesFilterPanel extends Component {
                                     </div>
                                 ) : this.renderSearchInput()}
                             </FormItem>
-                            {this.showSelectedFilters() ? this.renderSelectedFilterBlock() : null}
+                            {isWebMin ? null : this.renderSelectedFilterBlock()}
                             <div className={hotAndVipFilterCls}>
                                 <FormItem
                                     label={Intl.get('clue.recommend.hot.name', '热门')}
@@ -1311,8 +1318,9 @@ class RecommendCluesFilterPanel extends Component {
                                         </div>
                                     </div>
                                 </FormItem>
-                                {this.renderAreaAndVipBlock()}
+                                {isWebMin ? null : this.renderAreaAndVipBlock()}
                             </div>
+                            {isWebMin ? this.renderAreaAndVipBlock() : null}
                         </Form>
                     </div>
                     {this.state.showSearchPanel ? (

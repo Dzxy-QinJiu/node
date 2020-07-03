@@ -221,6 +221,10 @@
   .selected-filter-container{
     margin: 5px 0 20px;
     color: @primary-font-color;
+    display: none;
+    &.show-filters, &.mobile-selected-filter-container{
+      display: block;
+    }
     .selected-filter-title{
       font-size: 14px;
       vertical-align: middle;
