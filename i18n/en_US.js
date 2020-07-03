@@ -2817,7 +2817,8 @@ var en_US = {
     'analysis.within.six.months': 'Within six months',//6个月内
     'analysis.transaction.analysis': 'Transaction analysis',//成交分析
     'analysis.number.of.outstanding.transactions': 'Number of outstanding transactions',//未成交数
-    'analysis.statistics.of.active.rate.of.effective.customers': 'Statistics of active rate of effective customers',//有效客户活跃率统计
+    'analysis.statistics.of.active.rate.of.effective.customers': 'Responsible for customer activity statistics',//负责客户活跃率统计
+    'analysis.statistics.of.active.rate.of.follow.customers': 'Follow up customer activity statistics', // 联合跟进客户活跃率统计
     'analysis.cash.loss.trend': 'Cash loss trend',//流失现金趋势
     'analysis.analysis.on.the.general.situation.of.lost.customers': 'Analysis on the general situation of lost customers',//流失客户总体情况分析
     'analysis.application': 'application',//应用

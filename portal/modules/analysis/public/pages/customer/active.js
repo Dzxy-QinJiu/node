@@ -24,9 +24,11 @@ function getCharts() {
         customerChart.getCustomerActiveTrendChart(Intl.get('common.recent.three.month.weekly.activity', '近三个月周活'), 'week'),
         //近一年活跃客户月活趋势
         customerChart.getCustomerActiveTrendChart(Intl.get('common.recent.year.monthly.activity', '近一年月活'), 'month'),
-        //有效客户活跃率统计
-        customerChart.getCustomerEffectiveChart(),
         //各阶段活跃客户统计
         customerChart.getStageActiveCustomerChart(),
+        // 负责客户活跃率统计（有效客户活跃率统计）
+        customerChart.getCustomerEffectiveChart({type: 'responsible'}),
+        // 联合跟进客户活跃率统计
+        customerChart.getCustomerEffectiveChart({type: 'follow'}),
     ];
 }
