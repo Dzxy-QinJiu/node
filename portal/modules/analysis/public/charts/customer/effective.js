@@ -6,19 +6,32 @@
 import { argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getCustomerEffectiveChart(paramObj = {}) {
-    const { title, url, isFollowUp } = paramObj;
-    return {
-        title: title,
-        url: url,
-        argCallback: arg => {
-            if (isFollowUp) {
-                // 默认true是负责人, 对联合跟进人进行统计，需要传false,
-                arg.query.is_owner = false;
-            } else {
+    const activeParamMap = {
+        'responsible': {
+            title: Intl.get('analysis.statistics.of.active.rate.of.effective.customers', '负责客户活跃率统计'),
+            url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
+            argCallback: arg => {
                 argCallbackMemberIdsToMemberId(arg);
                 _.set(arg, 'query.interval', 'day');
             }
         },
+        'follow': {
+            title: Intl.get('analysis.statistics.of.active.rate.of.follow.customers', '联合跟进客户活跃率统计'),
+            url: '/rest/analysis/customer/v3/:data_type/follow/customer/active_rate',
+            argCallback: arg => {
+                arg.query.is_owner = false; // 默认true是负责人, 对联合跟进人进行统计，需要传false,
+            }
+        }
+
+    };
+    const { type } = paramObj;
+    const activeParam = activeParamMap[type];
+    const isFollowUp = type === 'follow';
+    
+    return {
+        title: activeParam.title,
+        url: activeParam.url,
+        argCallback: activeParam.argCallback,
         chartType: 'table',
         dataField: 'list',
         option: {
