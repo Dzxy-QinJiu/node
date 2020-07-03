@@ -285,8 +285,8 @@ var CrmAlertForm = createReactClass({
                         basicOverviewAction.afterAddSchedule(resData);
                     }
                 }
-            } else {
-                _this.showMessage(resData || Intl.get('crm.154', '添加失败'), 'error');
+            } else if(_.isString(result)) {
+                _this.showMessage(result || Intl.get('crm.154', '添加失败'), 'error');
             }
             _this.setState({isLoading: false});
         });
