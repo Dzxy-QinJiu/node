@@ -4318,6 +4318,7 @@ var zh_CN = {
     'clue.recommend.has.website': '有官网',
     'clue.more.contacts': '更多联系人',
     'clue.more.contacts.tip': '提取后可查看完整信息',
+    'clue.recommend.has.contacts': '有联系人',
     // 线索分配策略
     'clue.assignment.strategy.add': '添加分配策略',
     'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',

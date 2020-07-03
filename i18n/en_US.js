@@ -4282,6 +4282,7 @@ var en_US = {
     'clue.recommend.has.website': 'Have a website',//有官网
     'clue.more.contacts': 'More contacts',//更多联系人
     'clue.more.contacts.tip': 'The complete information can be viewed after extraction',//提取后可查看完整信息
+    'clue.recommend.has.contacts': 'Have a contact',//有联系人
 
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略

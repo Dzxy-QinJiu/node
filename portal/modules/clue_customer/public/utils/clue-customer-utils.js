@@ -766,6 +766,13 @@ export const ADVANCED_OPTIONS = [
             return _.toNumber(value);
         }
     },
+    {
+        name: Intl.get('clue.recommend.has.contacts', '有联系人'),
+        value: 'contact_phone_num:1',
+        processValue: (value) => {
+            return _.toNumber(value);
+        }
+    },
 ];
 export const calcTraceContentHeight = function(divHeight) {
     return divHeight - 55;
