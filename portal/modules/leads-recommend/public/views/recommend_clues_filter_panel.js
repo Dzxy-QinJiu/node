@@ -1285,7 +1285,7 @@ class RecommendCluesFilterPanel extends Component {
         });
 
         return (
-            <div className="recommend-customer-condition recommend-customer-condition-wrapper" data-tracename="线索推荐筛选面板">
+            <div className="recommend-customer-condition recommend-customer-condition-wrapper" data-tracename="找线索筛选面板">
                 <div className="recommend-clue-filter-panel">
                     <div className="add-customer-recommend">
                         <Form layout='horizontal' className="clue-recommend-form" id="clue-recommend-form">

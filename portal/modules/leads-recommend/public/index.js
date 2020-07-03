@@ -462,6 +462,7 @@ class RecommendCluesList extends React.Component {
         if(data.isCanNotCheckPhone) {
             let newState = {};
             let clueId = '';
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '没有可检测的电话时,直接提示检测结果');
             if(type === EXTRACT_OPERATOR_TYPE.SINGLE) {//单个检测时
                 let content = this.renderCheckedStatusTip(type, {clueEmptyPhoneIds: [], phones: clues.telephones, id: clues.id}, () => {
                     _.isFunction(callback) && callback(clues, hasAssignedPrivilege);
@@ -503,6 +504,7 @@ class RecommendCluesList extends React.Component {
             this.setState({batchLoadingType: BATCH_LOADING_TYPE.CHECK});
         }
         checkPhoneStatus({ids}, 'recommend-clue').then((result) => {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '空号检测成功，展示检测结果');
             let newState = {};
             let checkPhoneResult = this.getCheckedPhoneStatus(clues, result);
             if(type === EXTRACT_OPERATOR_TYPE.SINGLE) {//单个检测时
@@ -556,6 +558,7 @@ class RecommendCluesList extends React.Component {
             }
             this.setState(newState);
         }, () => {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '空号检测失败，展示失败提示');
             let newState = {};
             if(type === EXTRACT_OPERATOR_TYPE.SINGLE) {//单个检测时
                 let content = this.renderCheckedStatusTip(type, {error: Intl.get('lead.check.phone.fiald', '空号检测失败'), id: clues.id}, () => {
@@ -845,7 +848,7 @@ class RecommendCluesList extends React.Component {
     //渲染检测结果头部
     renderCheckTitle(handleFunc, isShowCloseBtn = true) {
         return (
-            <div className="check-phone-title" data-tracename="空号检测title内容">
+            <div className="check-phone-title" data-tracename="空号检测头部区域">
                 <div className="check-phone-title-content">
                     <i className="iconfont icon-check"/>
                     <span>
@@ -890,7 +893,7 @@ class RecommendCluesList extends React.Component {
         }, isShowCloseBtn);
 
         return (
-            <div className="extract-limit-content check-phone-result-container">
+            <div className="extract-limit-content check-phone-result-container" data-tracename="mobile时，检测空号结果">
                 <div className="ant-popover-title">{title}</div>
                 <div className="ant-popover-inner-content">{content}</div>
             </div>
@@ -1107,6 +1110,7 @@ class RecommendCluesList extends React.Component {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '超限后再提取线索自动打开增加线索量界面');
             this.handleClickAddClues(Intl.get('payment.upgrade.extract.clue.limit', '提取线索超过{count}条', {count: maxLimitExtractNumber}));
         }else if(disableExtract && versionAndType.isCompanyTrial) {//超限时，企业试用
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '企业试用提取超限，联系销售人员进行升级');
             maxLimitTip = <ReactIntl.FormattedMessage
                 id="clue.recommend.company.trial.extract.num.limit.tip"
                 defaultMessage={'还可提取{count}条，如需继续提取,请联系我们的销售人员进行升级，联系方式：{contact}'}
@@ -1116,6 +1120,7 @@ class RecommendCluesList extends React.Component {
                 }}
             />;
         } else if(disableExtract && versionAndType.isCompanyFormal && !this.isManagerOrOperation()) {//超限时，企业正式版销售（除了管理员和运营人员）
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '企业正式版销售提取超限，联系管理员');
             maxLimitTip = <ReactIntl.FormattedMessage
                 id="clue.recommend.company.formal.sales.extract.num.limit.tip"
                 defaultMessage={'本月{count}条已提取完毕，如需继续提取请联系管理员'}
@@ -1124,6 +1129,7 @@ class RecommendCluesList extends React.Component {
                 }}
             />;
         }else {//选中个数超过可提取数时
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '选中个数超过可提取数');
             maxLimitTip = <ReactIntl.FormattedMessage
                 id="clue.recommend.has.extract.count"
                 defaultMessage="{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索"
@@ -1262,6 +1268,7 @@ class RecommendCluesList extends React.Component {
                 });
                 var taskId = _.get(data, 'batch_label','');
                 if (taskId){
+                    Trace.traceEvent(ReactDOM.findDOMNode(this), '批量提取成功,开始推送');
                     this.hiddenDropDownBlock();
                     //向任务列表id中添加taskId
                     batchOperate.addTaskIdToList(taskId);
@@ -1315,6 +1322,7 @@ class RecommendCluesList extends React.Component {
                     this.handleBatchVisibleChange();
                     this.clearSelectSales();
                 }
+                Trace.traceEvent(ReactDOM.findDOMNode(this), '批量提取结果：' + errTip);
                 message.error(errTip);
             }
         });
@@ -1652,6 +1660,7 @@ class RecommendCluesList extends React.Component {
                     singleCheckPhonePopVisible: ''
                 });
                 if (data){
+                    Trace.traceEvent(ReactDOM.findDOMNode(this), '单个提取成功');
                     this.hiddenDropDownBlock(leadId);
                     this.setExtractedCount();
                     this.saveExtractedCount();
@@ -1665,6 +1674,7 @@ class RecommendCluesList extends React.Component {
                     this.updateExtractedCount();
                     //线索提取完后，会到待分配状态中
                 }else{
+                    Trace.traceEvent(ReactDOM.findDOMNode(this), '单个提取失败');
                     message.error(Intl.get('clue.extract.failed', '提取失败'));
                 }
             },
@@ -1682,6 +1692,7 @@ class RecommendCluesList extends React.Component {
                     this.handleSingleVisibleChange();
                     this.clearSelectSales();
                 }
+                Trace.traceEvent(ReactDOM.findDOMNode(this), '单个提取结果：' + errTip);
                 message.error(errTip);
             }
         });
@@ -2717,7 +2728,7 @@ class RecommendCluesList extends React.Component {
         });
 
         return (
-            <div className="recommend-clues-lists-container" data-tracename="推荐线索列表面板">
+            <div className="recommend-clues-lists-container" data-tracename="找线索页面">
                 <div className="recommend-customer-list">
                     <div className="recommend-clue-panel">
                         <div className={contentCls}>
