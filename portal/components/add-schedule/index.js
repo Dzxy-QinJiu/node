@@ -30,6 +30,7 @@ class AddSchedule extends React.Component {
                 <DetailCard className='add-todo' content={
                     <CrmScheduleForm
                         isAddToDoClicked
+                        addFromMyWork={this.props.addFromMyWork}
                         handleScheduleAdd={this.props.handleScheduleAdd}
                         handleScheduleCancel={this.props.handleCancelAddToDo}
                         topicValue={_.get(this.state, 'topicValue')}
@@ -56,12 +57,14 @@ class AddSchedule extends React.Component {
 }
 
 AddSchedule.defaultProps = {
+    addFromMyWork: false,
     isShowAddToDo: false,
     dataTracename: '',
     handleScheduleAdd: () => { },
 };
 
 AddSchedule.propTypes = {
+    addFromMyWork: PropTypes.bool,//是否从我的工作中添加的日程
     isShowAddToDo: PropTypes.bool,//是否展示面板的flag
     handleCancelAddToDo: PropTypes.func,//控制关闭面板的函数
     handleScheduleAdd: PropTypes.func,//添加完成的回调
