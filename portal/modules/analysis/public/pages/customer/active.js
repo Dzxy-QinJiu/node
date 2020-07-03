@@ -27,8 +27,15 @@ function getCharts() {
         //各阶段活跃客户统计
         customerChart.getStageActiveCustomerChart(),
         // 负责客户活跃率统计（有效客户活跃率统计）
-        customerChart.getCustomerEffectiveChart(),
+        customerChart.getCustomerEffectiveChart({
+            title: Intl.get('analysis.statistics.of.active.rate.of.effective.customers', '负责客户活跃率统计'),
+            url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
+        }),
         // 联合跟进客户活跃率统计
-        customerChart.getFollowUpCustomerEffectiveChart(),
+        customerChart.getCustomerEffectiveChart({
+            title: Intl.get('analysis.statistics.of.active.rate.of.follow.customers', '联合跟进客户活跃率统计'),
+            url: '/rest/analysis/customer/v3/:data_type/follow/customer/active_rate',
+            isFollowUp: true, // 是否时联合跟进人
+        }),
     ];
 }
