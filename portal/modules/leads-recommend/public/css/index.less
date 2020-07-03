@@ -124,7 +124,6 @@
                   width: 40%;
                 }
                 .search-input{
-                  width: 522px;
                   border-top-right-radius: 0;
                   border-bottom-right-radius: 0;
                 }
@@ -1022,11 +1021,11 @@
             .add-customer-recommend{
               padding: 0;
               form {
+                > .ant-form-item:first-child{
+                  padding-top: 20px!important;
+                }
                 .ant-form-item{
                   padding: 0 20px;
-                  &:first-child{
-                    padding-top: 20px;
-                  }
                   .ant-form-item-control-wrapper{
                     display: block;
                   }
@@ -1120,10 +1119,12 @@
               .selected-filter-container{
                 padding: 0 20px;
                 line-height: 32px;
-                margin: 5px 0;
+                margin: 0;
                 overflow: scroll;
+                width: 100%;
                 .selected-filter-content{
                   white-space: nowrap;
+                  margin: 5px 0;
                 }
                 .selected-filter-item{
                   background-color: @mobile-bg-color;

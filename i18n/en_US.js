@@ -323,6 +323,7 @@ var en_US = {
     'common.press.enter.send': 'Press enter to send the message',//按enter键发送消息
     'common.customer.service.help.tip': 'Hello, what can I do for you',//您好，请问有什么可以帮您？
     'common.upgrade.refresh.tip': 'Version upgraded, please {refresh}',//版本已升级，请{refresh}
+    'common.all.areas': 'All areas',//全部地区
     'common.filter.common': 'Commonly used filters',//常用筛选
     'common.filter.common.add': 'Add as a common filter',//添加为常用筛选
     'common.property.name': 'Name',//名称
@@ -4245,6 +4246,7 @@ var en_US = {
     'clue.recommend.filter.set.up': 'Set up',//成立
     'clue.recommend.legalperson': 'legal person',//法人
     'clue.recommend.hundred.million': '{num} Hundred million',//{num}亿
+    'clue.recommend.search.text': 'search',//搜一下
 
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
@@ -4289,6 +4291,7 @@ var en_US = {
     'clue.recommend.has.website': 'Have a website',//有官网
     'clue.more.contacts': 'More contacts',//更多联系人
     'clue.more.contacts.tip': 'The complete information can be viewed after extraction',//提取后可查看完整信息
+    'clue.recommend.has.contacts': 'Have a contact',//有联系人
 
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略

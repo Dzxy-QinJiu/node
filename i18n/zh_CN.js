@@ -330,6 +330,7 @@ var zh_CN = {
     'common.press.enter.send': '按enter键发送消息',
     'common.customer.service.help.tip': '您好，请问有什么可以帮您？',
     'common.upgrade.refresh.tip': '版本已升级，请{refresh}',
+    'common.all.areas': '全部地区',
     'common.filter.common': '常用筛选',
     'common.filter.common.add': '添加为常用筛选',
     'common.property.name': '名称',
@@ -4275,6 +4276,7 @@ var zh_CN = {
     'clue.recommend.filter.set.up': '成立',
     'clue.recommend.legalperson': '法人',
     'clue.recommend.hundred.million': '{num}亿',
+    'clue.recommend.search.text': '搜一下',
 
     'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',
@@ -4325,6 +4327,7 @@ var zh_CN = {
     'clue.recommend.has.website': '有官网',
     'clue.more.contacts': '更多联系人',
     'clue.more.contacts.tip': '提取后可查看完整信息',
+    'clue.recommend.has.contacts': '有联系人',
     // 线索分配策略
     'clue.assignment.strategy.add': '添加分配策略',
     'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',

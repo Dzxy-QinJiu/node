@@ -43,6 +43,9 @@ function batchOperateListener(data) {
     //看批量操作任务在哪个页面进行处理
     //判断当前页面是否是要处理的页面
     var taskParams = getTaskParamByTaskId(taskId);
+    if(_.has(data, 'type') || _.has(data, 'tasks')) {
+        sendMessage && sendMessage('web端接收到批量结果为：' + JSON.stringify(data));
+    }
     //调用页面JS的emitter让业务代码完成后续更新
     batchPushEmitter.emit(`batchtask.${data.type}`, data, taskParams);
 
