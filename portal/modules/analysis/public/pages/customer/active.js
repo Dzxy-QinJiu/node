@@ -26,6 +26,8 @@ function getCharts() {
         customerChart.getCustomerActiveTrendChart(Intl.get('common.recent.year.monthly.activity', '近一年月活'), 'month'),
         //有效客户活跃率统计
         customerChart.getCustomerEffectiveChart(),
+        // 联合跟进客户活跃率统计
+        customerChart.getFollowUpCustomerEffectiveChart(),
         //各阶段活跃客户统计
         customerChart.getStageActiveCustomerChart(),
     ];
