@@ -1,16 +1,17 @@
 /**
- * 增加联合跟进客户活跃率统计
+ * 联合跟进客户活跃率统计
  */
 
 export function getFollowUpCustomerEffectiveChart() {
 
     return {
-        title: Intl.get('analysis.statistics.of.active.rate.of.effective.customers', '联合跟进客户活跃率统计'),
+        title: Intl.get('analysis.statistics.of.active.rate.of.follow.customers', '联合跟进客户活跃率统计'),
         url: '/rest/analysis/customer/v3/:data_type/follow/customer/active_rate',
         argCallback: arg => {
             delete arg.query.app_id;
             delete arg.query.interval;
             delete arg.query.time_range;
+            // 默认true是负责人, 对联合跟进人进行统计，需要传false,
             arg.query.is_owner = false;
         },
         chartType: 'table',
@@ -24,6 +25,7 @@ export function getFollowUpCustomerEffectiveChart() {
                     dataIndex: 'name',
                     width: 100,
                     render: (text, record) => {
+                        // 有昵称的时候显示昵称，没有的时候显示团队名称
                         const nickName = _.get(record, 'nick_name', '');
                         const teamName = _.get(record, 'team_name');
                         const name = nickName ? nickName : teamName;
