@@ -37,7 +37,9 @@ const DEFAULT_TIME_RANGE = 'day';
 
 class CallRecordAnalyis extends React.Component {
     static propTypes = {
-        closeCallAnalysisPanel: PropTypes.func
+        closeCallAnalysisPanel: PropTypes.func,
+        isShowEffectiveTimeAndCount: PropTypes.boolean,
+        isFilter114: PropTypes.boolean
     };
 
     constructor(props) {

@@ -232,7 +232,6 @@ class SalesReport extends React.Component {
                         selectedTimeFormat='int'
                         className="btn-item"
                     >
-                        <AntcDatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</AntcDatePicker.Option>
                         <AntcDatePicker.Option
                             value="day">{Intl.get('common.time.unit.day', '天')}</AntcDatePicker.Option>
                         <AntcDatePicker.Option
