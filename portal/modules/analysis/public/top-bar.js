@@ -252,19 +252,16 @@ class TopBar extends React.Component {
             }, {
                 name: Intl.get('common.time.unit.month', '月'),
                 value: 'month'
-            }
-            // TODO 后端的分析处理有问题，长时间的数据统计会把es查死，先暂时注释掉，待后端改好后再放开
-            // , {
-            //     name: Intl.get('common.time.unit.quarter', '季度'),
-            //     value: 'quarter'
-            // }, {
-            //     name: Intl.get('common.time.unit.year', '年'),
-            //     value: 'year'
-            // }, {
-            //     name: Intl.get('user.time.custom', '自定义'),
-            //     value: 'custom'
-            // }
-            ]
+            }, {
+                name: Intl.get('common.time.unit.quarter', '季度'),
+                value: 'quarter'
+            }, {
+                name: Intl.get('common.time.unit.year', '年'),
+                value: 'year'
+            }, {
+                name: Intl.get('user.time.custom', '自定义'),
+                value: 'custom'
+            }]
         };
 
         const adjustDatePicker = _.get(this.state.currentPage, 'adjustDatePicker');
