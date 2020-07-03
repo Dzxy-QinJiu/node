@@ -381,7 +381,7 @@ const AppPropertySetting = createReactClass({
     },
 
     // 渲染多终端的信息
-    renderAppTerminalsContent(isShowAppTerminals, currentApp, terminals, currentAppInfo ) {
+    renderAppTerminalsContent(isShowAppTerminals, currentApp, terminals, currentAppInfo, appId ) {
         if (isShowAppTerminals) {
             return (
                 <div className="form-item">
@@ -392,7 +392,7 @@ const AppPropertySetting = createReactClass({
                         {
                             this.renderUserAppTerminalCheckboxBlock({
                                 isCustomSetting: true,
-                                appId: _.get(currentApp, 'app_id'),
+                                appId: appId,
                                 globalTerminals: terminals,
                                 appAllTerminals: _.get(currentAppInfo, 'terminals.value', []),
                                 selectedApps: currentApp
@@ -459,24 +459,7 @@ const AppPropertySetting = createReactClass({
                 <div className="app-property-custom-settings">
                     {//多用户的应用设置时，只需要更改角色、权限，其他选项不需要更改
                         this.props.isMultiUser ? (
-                            (
-                                isShowAppTerminals ? (
-                                    <div className="form-item">
-                                        <div className="form-item-label">{Intl.get('common.terminals', '终端')}</div>
-                                        <div className="form-item-content">
-                                            {
-                                                this.renderUserAppTerminalCheckboxBlock({
-                                                    isCustomSetting: true,
-                                                    appId: appId,
-                                                    globalTerminals: _.get(defaultSettings, 'terminals',[]),
-                                                    appAllTerminals: currentAppInfo.terminals.value,
-                                                    selectedApps: currentApp
-                                                })
-                                            }
-                                        </div>
-                                    </div>
-                                ) : null
-                            )
+                            this.renderAppTerminalsContent(isShowAppTerminals, currentApp, terminals, currentAppInfo, appId)
                         ) : (
                             <div
                                 className="basic-data-form app-property-other-property"
@@ -568,7 +551,7 @@ const AppPropertySetting = createReactClass({
                                         </div>
                                     </div>
                                 ) : null}
-                                {this.renderAppTerminalsContent(isShowAppTerminals, currentApp, terminals, currentAppInfo)}
+                                {this.renderAppTerminalsContent(isShowAppTerminals, currentApp, terminals, currentAppInfo, appId)}
                                 {
                                     this.props.isShowOther && !Oplate.hideSomeItem && <div className="form-item">
                                         <div className="form-item-label">{Intl.get('crm.186', '其他')}</div>
