@@ -2,6 +2,8 @@
  * 各阶段活跃客户统计
  */
 
+const columnWidth = 60; // 列宽
+
 export function getStageActiveCustomerChart() {
     return {
         title: Intl.get('analysis.active.customer.statistics.at.all.stages', '各阶段活跃客户统计'),
@@ -52,43 +54,43 @@ export function getStageActiveCustomerChart() {
                     title: Intl.get('sales.stage.message', '信息'),
                     dataIndex: '信息',
                     align: 'right',
-                    width: 60
+                    width: columnWidth
                 },
                 {
                     title: Intl.get('sales.stage.intention', '意向'),
                     dataIndex: '意向',
                     align: 'right',
-                    width: 60
+                    width: columnWidth
                 },
                 {
                     title: Intl.get('common.trial', '试用'),
                     dataIndex: '试用',
                     align: 'right',
-                    width: 60
+                    width: columnWidth
                 },
                 {
                     title: 'AQL',
                     dataIndex: 'AQL',
                     align: 'right',
-                    width: 60
+                    width: columnWidth
                 },
                 {
                     title: Intl.get('common.chance', '机会'),
                     dataIndex: '机会',
                     align: 'right',
-                    width: 60
+                    width: columnWidth
                 },
                 {
                     title: Intl.get('common.official', '签约'),
                     dataIndex: '签约',
                     align: 'right',
-                    width: 60
+                    width: columnWidth
                 },
                 {
                     title: Intl.get('contract.163', '续约'),
                     dataIndex: '续约',
                     align: 'right',
-                    width: 60
+                    width: columnWidth
                 },
             ],
         },
