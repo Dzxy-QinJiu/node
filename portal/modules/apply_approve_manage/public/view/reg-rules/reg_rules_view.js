@@ -325,12 +325,49 @@ class RegRulesView extends React.Component {
         var applyRulesAndSetting = this.state.applyRulesAndSetting;
         var applyApproveRules = applyRulesAndSetting.applyApproveRules;
         var flowTypeNode = this.getDiffTypeFlow(flowType);
-        //把流程的中待审批人所在的节点过滤出来
-        applyApproveRules[flowType].bpmnNode = _.filter(flowTypeNode, (item) => deleteItem.id !== item.id);
+        var previousNode = _.last(flowTypeNode);//最后一个节点
+        //看一下最后一个节点的节点类型，是否是结束节点，如果是结束节点，把结束节点删除
+        if (previousNode.type === 'EndEvent') {
+            //删除最后一个节点
+            flowTypeNode.pop();
+        }
+        var targetIndex = _.findIndex(flowTypeNode, item => item.id === deleteItem.id);//找到要删除节点的index
+        var notNeedUpdateFlow = flowTypeNode.slice(0,targetIndex);//不需要更新属性的数组
+        var needUpdateFlow = flowTypeNode.slice(targetIndex + 1);//需要更新的属性的数组
+        _.each(needUpdateFlow,(flowItem,index) => {
+            let oldIndex = flowItem.flowIndex;//原来的flowIndex
+            var newIndex = this.reduceLastWord(oldIndex);//更新后的flowIndex
+            flowItem.id = _.replace(flowItem.id,oldIndex,newIndex);
+            flowItem.name = _.replace(flowItem.name,oldIndex,newIndex);
+            flowItem.flowIndex = newIndex;
+            if(index === 0){//需要更新的第一个元素，直接用删除元素的相关属性即可，不能更改下标，防止有GateWay网关时候的错误
+                flowItem.previous = deleteItem.previous;
+                if(deleteItem.conditionTotalRule){//如果删除的这个节点有条件
+                    flowItem.conditionTotalRule = deleteItem.conditionTotalRule;
+                }
+                if(deleteItem.conditionTotalRuleDsc){
+                    flowItem.conditionTotalRuleDsc = deleteItem.conditionTotalRuleDsc;
+                }
+            }else{//修改其他元素的previous属性值
+                flowItem.previous = _.replace(flowItem.previous,newIndex,this.reduceLastWord(newIndex));
+            }
+            if(flowItem.next && flowItem.next.indexOf('EndTask') === -1){//如果有下一个节点并且不是结束节点，才更新Next属性
+                let flowArr = flowItem.next.split('_');
+                flowItem.next = _.concat(_.first(flowArr), _.split(oldIndex,'_')).join('_');
+            }else{//其他情况删除next属性
+                delete flowItem.next;
+            }
+        });
+        applyApproveRules[flowType].bpmnNode = _.concat(notNeedUpdateFlow,needUpdateFlow);
         this.setState({
             applyRulesAndSetting: applyRulesAndSetting
         });
-
+    };
+    //将最后一个数字减一
+    reduceLastWord = (newIndex) => {
+        let indexArr = _.split(newIndex,'_');
+        indexArr.splice(indexArr.length - 1,1, parseInt(_.last(indexArr)) - 1);
+        return indexArr.join('_');//把flowIndex最后一个数字减一
     };
 
     handleDeleteCCNode = (flowType, deleteKey) => {
@@ -409,7 +446,6 @@ class RegRulesView extends React.Component {
         return (
             <div className="rule-content apply-node-lists">
                 {_.map(candidateRules, (item, index) => {
-                    var showDeleteIcon = index === _.get(candidateRules, 'length') - 1;
                     var workflowFormEmailToName = _.get(item,'workflowFormEmailToName',[]);
                     return (
                         <div className="item-node">
@@ -436,8 +472,8 @@ class RegRulesView extends React.Component {
                                     : null}
                                 <span className="connet-bar"></span>
                             </div>
-                            {showDeleteIcon ? <i className="iconfont icon-close-btn"
-                                onClick={this.handleDeleteNode.bind(this, flowType, item)}></i> : null}
+                            <i className="iconfont icon-close-btn"
+                                onClick={this.handleDeleteNode.bind(this, flowType, item)}></i>
                         </div>
                     );
                 })}

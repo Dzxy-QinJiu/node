@@ -14,7 +14,11 @@
   }
 }
 .clue_customer_rightpanel{
-
+  &:after{
+    content: '';
+    display: block;
+    clear: both;
+  }
   @extend .ant-tabs-bar;
   .iconfont.icon-close.clue-right-btn{
     color: #fff;

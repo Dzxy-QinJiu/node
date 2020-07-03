@@ -11,7 +11,9 @@ const _ = require('lodash');
 const moment = require('moment');
 const multiparty = require('multiparty');
 const fs = require('fs');
+const iconv = require('iconv-lite');
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
+import {format} from 'ant-utils';
 function getClueSourceClassify(backendIntl) {
     return [
         {
@@ -349,7 +351,7 @@ function doExport(data, backendIntl, res) {
             }
             if (column.dataIndex === 'status'){
                 const CLUE_DIFF_TYPE = getClueDiffType(backendIntl);
-                var targetObj = _.find(CLUE_DIFF_TYPE,(item) => {
+                let targetObj = _.find(CLUE_DIFF_TYPE,(item) => {
                     return value === item.value;
                 });
                 value = _.get(targetObj,'name') || value;
@@ -362,7 +364,7 @@ function doExport(data, backendIntl, res) {
             }
             if (column.dataIndex === 'source_classify' && value){
                 const sourceClassifyArray = getClueSourceClassify(backendIntl);
-                var targetObj = _.find(sourceClassifyArray,(item) => {
+                let targetObj = _.find(sourceClassifyArray,(item) => {
                     return value === item.value;
                 });
                 value = _.get(targetObj,'name') || value;
@@ -381,7 +383,17 @@ function doExport(data, backendIntl, res) {
                             }
                             break;
                         case 'contacts_phone':
-                            contactDes += '\t' + _.get(firstContact,'phone',[]).join('；');//加上\t是为了防止在用wps打开的时候，如果是座机会把前面的0忽略，直接展示成一个数字，例如01085655689会展示成1085655689
+                            var phoneArr = _.get(firstContact,'phone',[]);
+                            _.each(phoneArr, (phoneItem,index) => {
+                                phoneItem = format.addHyphenToPhoneNumber(phoneItem);
+                                //如果phoneMsg的第一个数字是0，会被wps认为是数字，自动把0省略，加上-就会认为是文本，不会省略
+                                // 为了防止在用wps打开的时候，如果是座机会把前面的0忽略，直接展示成一个数字，例如01085655689是会展示成1085655689
+                                // 换称16进制的，16进制的分隔符是\t所以这里不能用\t
+                                if(phoneItem.indexOf('-') > -1){
+                                    phoneArr[index] = phoneItem;
+                                }
+                            });
+                            contactDes += phoneArr.join('；');
                             break;
                         case 'contacts_email':
                             contactDes += _.get(firstContact,'email',[]).join('；');
@@ -432,15 +444,15 @@ function doExport(data, backendIntl, res) {
             value = value.replace(/\n/g, ' ');
             return value;
         });
-        return values.join();
+        return values.join('\t');
     });
-    const head = columnTitles.join();
+    const head = columnTitles.join('\t');
     let csvArr = [];
     csvArr.push(head);
     csvArr = csvArr.concat(rows);
-    let csv = csvArr.join('\n');
+    let csv = iconv.encode(csvArr.join('\n'), 'UTF-16');
     //防止中文乱码
-    csv = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(csv)]);
+    csv = Buffer.concat([new Buffer('\xFF\xFE', 'binary'), new Buffer(csv)]);
     res.setHeader('Content-disposition', `attachement; filename=${encodeURI(backendIntl.get('crm.sales.clue', '线索'))}.csv`);
     res.setHeader('Content-Type', 'application/csv');
     res.send(csv);

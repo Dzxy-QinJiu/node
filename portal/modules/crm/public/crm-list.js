@@ -104,6 +104,9 @@ const RELEASE_OPERATOR_TYPE = {
     BATCH: 'batch_release'
 };
 
+//默认排序字段
+const DEFAULT_SORT_FIELD = 'start_time';
+
 //查看是否可以继续添加客户
 let member_id = userData.getUserData().user_id;
 class Crm extends React.Component {
@@ -146,7 +149,7 @@ class Crm extends React.Component {
             batchChangeShow: _this.state && _this.state.batchChangeShow || false,
             selectedCustomer: this.getSelectedCustomer(list),
             sorter: _this.state && _this.state.sorter || {
-                field: 'start_time',
+                field: DEFAULT_SORT_FIELD,
                 order: 'descend'
             },
             condition: _this.state && _this.state.condition || {},
@@ -318,15 +321,18 @@ class Crm extends React.Component {
     handleSortParams(params, filterStoreCondition){
         const customerSortMap = crmUtil.CUSOTMER_SORT_MAP;
         let sort_and_orders = [];
+        //table有选择排序列
+        let sortColumn = _.get(this.antcTable,'table.state.sortColumn');
+
         //字符串类型的排序字段，key需要在字段后面加上.row
-        //如果常用筛选选中了从客户池中提取的客户
-        if(_.get(filterStoreCondition,'otherSelectedItem') === OTHER_FILTER_ITEMS.EXTRACT_TIME) {
+        //如果常用筛选选中了从客户池中提取的客户，且没有选择排序列时
+        if(_.get(filterStoreCondition,'otherSelectedItem') === OTHER_FILTER_ITEMS.EXTRACT_TIME && _.isEmpty(sortColumn)) {
             sort_and_orders.push({
                 key: OTHER_FILTER_ITEMS.EXTRACT_TIME,
                 value: _.get(this.state, 'sorter.order', 'ascend')
             });
         }
-        if(_.get(sort_and_orders,'[0]')) {
+        if(_.get(sort_and_orders,'[0]') || _.isObject(sortColumn)) {
             sort_and_orders.push({
                 key: customerSortMap[this.state.sorter.field] || customerSortMap['id'],
                 value: _.get(this.state, 'sorter.order', 'ascend')
@@ -803,6 +809,10 @@ class Crm extends React.Component {
                 dayTime = DAY_TIME.SEVEN_DAY;
                 interval = 7;
                 break;
+            case OTHER_FILTER_ITEMS.HALF_YEAR_UNVISIT://超半年未拜访的客户
+                dayTime = 6 * DAY_TIME.THIRTY_DAY;
+                interval = 180;
+                break;
             case OTHER_FILTER_ITEMS.SEVEN_LOGIN://近一周活跃客户
                 dayTimeLogin = DAY_TIME.SEVEN_DAY;
                 interval = 7;
@@ -882,13 +892,19 @@ class Crm extends React.Component {
                 type: 'time'
             };
         }
-        //超xx天未联系的客户过滤需传的参数
+        //超xx天未联系/超半年未拜访的客户过滤需传的参数
         else if (dayTime) {
             //超30天未打过电话的客户
             if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.THIRTY_NO_CALL) {
                 this.state.rangParams[0] = {
                     to: moment().valueOf() - dayTime,
                     name: 'last_phone_time',
+                    type: 'time'
+                };
+            } else if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.HALF_YEAR_UNVISIT){//超半年未拜访的客户
+                this.state.rangParams[0] = {
+                    to: moment().valueOf() - dayTime,
+                    name: 'last_visit_time',
                     type: 'time'
                 };
             } else {//超xx天未联系的客户过滤需传的参数
@@ -2503,6 +2519,7 @@ class Crm extends React.Component {
                         }
                         <div className={contentClassName} style={{ display: shouldTableShow ? 'block' : 'none' }}>
                             {this.state.customersSize || this.state.getErrMsg || this.state.isConcernCustomer ? <AntcTable
+                                ref={ref => this.antcTable = ref}
                                 rowSelection={rowSelection}
                                 rowKey={rowKey}
                                 columns={columns}

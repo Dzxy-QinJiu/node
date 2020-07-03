@@ -17,12 +17,19 @@ exports.getScheduleList = function(req, res) {
 
 //增加日程管理
 exports.addSchedule = function(req, res) {
+    let bodyData = req.body;
+    let url = restApis.scheduleApis + bodyData.scheduleType;
+    // 从我的工作中添加日程，用可以返回工作对象的接口添加
+    if (bodyData.addFromMyWork) {
+        url += '/withjob';
+        delete bodyData.addFromMyWork;
+    }
     return restUtil.authRest.post(
         {
-            url: restApis.scheduleApis + req.body.scheduleType,
+            url: url,
             req: req,
             res: res
-        }, req.body);
+        }, bodyData);
 };
 
 //编辑日程管理

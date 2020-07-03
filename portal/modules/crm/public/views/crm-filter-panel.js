@@ -10,6 +10,7 @@ import {
     OTHER_FILTER_ITEMS,
 } from 'PUB_DIR/sources/utils/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import filterEmitter from 'CMP_DIR/filter/emitter';
 import {isCurtao, checkVersionAndType, getCustomFieldFilterContent} from 'PUB_DIR/sources/utils/common-method-util';
 import { sourceClassifyArray } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import RangePicker from 'CMP_DIR/range-picker';
@@ -42,6 +43,9 @@ let otherFilterArray = [
     }, {
         name: Intl.get('crm.over.day.no.phone', '超{day}天未打过电话', { day: 30 }),
         value: 'thirty_no_call'
+    }, {
+        name: Intl.get('crm.over.half.year.no.visit', '超半年未拜访'),
+        value: OTHER_FILTER_ITEMS.HALF_YEAR_UNVISIT
     }, {
         name: Intl.get('crm.no.contact.way', '无联系方式客户'),
         value: 'no_contact_way'
@@ -205,6 +209,13 @@ class CrmFilterPanel extends React.Component {
 
             }
         });
+        // 选择超半年未拜访的客户筛选时，清空拜访时间的筛选
+        if (condition.otherSelectedItem === OTHER_FILTER_ITEMS.HALF_YEAR_UNVISIT) {
+            let timeFilterCondition = this.state.timeFilterCondition;
+            // 过滤掉拜访时间的筛选参数
+            timeFilterCondition = _.filter(timeFilterCondition, timeFilter => timeFilter.name !== 'last_visit_time');
+            FilterAction.setTimeFilterCondition(timeFilterCondition);
+        }
         FilterAction.setCondition(condition);
         setTimeout(() => {
             this.props.search();
@@ -294,9 +305,14 @@ class CrmFilterPanel extends React.Component {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)), `选择${TIME_FILTER_MAPS[field] || '时间筛选'}`);
         }
         FilterAction.setTimeFilterCondition(timeFilterCondition);
-        setTimeout(() => {
-            this.props.search();
-        });
+        // 选择拜访时间时，将超半年未拜访的筛选条件去掉（去掉后会触发搜索的方法，此处就不用再触发搜索的方法）
+        if (field === 'last_visit_time') {
+            filterEmitter.emit(filterEmitter.CLEAR_COMMON_SELECT, { field: OTHER_FILTER_ITEMS.HALF_YEAR_UNVISIT });
+        } else {
+            setTimeout(() => {
+                this.props.search();
+            });
+        }
     };
 
     //今天之后的日期不可以选

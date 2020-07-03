@@ -9,7 +9,8 @@ var GeminiScrollbar = require('../react-gemini-scrollbar');
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 
 var CONSTANTS = {
-    TOP_NAV_HEIGHT: 64,//头部导航的高度
+    RIGHT_PADDING: 16, // 右侧padding
+    TOP_NAV_HEIGHT: 80,//头部导航的高度
     SEARCH_INPUT_HEIGHT: 55,//成员管理中搜索框的高度设置
     PAGE_NAV_HEIGHT: 30//分页导航的高度
 };
@@ -21,12 +22,6 @@ var CARDCONSTANTS = {
 
 // 卡片的最小宽度为332
 var MINCARDWIDTH = 332;
-
-
-var TYPES = {
-    APP_MANAGE: 'appManage',
-    USER_MANAGE: 'userManage'
-};
 
 const CARD_TYPE = {
     PRODUCTION: 'production',
@@ -40,14 +35,9 @@ class CardList extends React.Component {
         updatePageSize: noop,
         changePageEvent: noop,
         pageSize: 20,
-        isPanelShow: false,
         type: '',
-        editCard: noop,
-        deleteCard: noop,
         showAddBtn: false,
         renderAddAndImportBtns: noop,
-        addSelectCard: noop,
-        subtractSelectCard: noop,
         showCardInfo: noop,
         curPage: 1,
         cardListSize: 0,
@@ -68,7 +58,6 @@ class CardList extends React.Component {
         cardEmitter.on(cardEmitter.ADD_CARD, this.addCard);
     }
    getInitialCardCount= () => {
-
        // 初始加载卡片的个数
        var firstLoaderCount = this.getCardsCount();
        this.props.updatePageSize(firstLoaderCount);
@@ -112,36 +101,12 @@ class CardList extends React.Component {
 
     // 获取卡片容器的高度
     getCardListHeight = () => {
-        //右侧卡片区域的高度设置
-        var cardListHeight = $('body').height() - CONSTANTS.TOP_NAV_HEIGHT - CONSTANTS.PAGE_NAV_HEIGHT;
-        if (this.props.isPanelShow) {
-            if (this.props.type === TYPES.APP_MANAGE) {
-                cardListHeight = cardListHeight - $('.app_content .app-filter-adv').outerHeight(true);
-            } else if (this.props.type === TYPES.USER_MANAGE) {
-                cardListHeight = cardListHeight - $('.backgroundManagement_user_content .user-filter-adv').outerHeight(true);
-            }
-        }
-        return cardListHeight;
+        return this.props.cardContainerHeight || $('body').height() - CONSTANTS.TOP_NAV_HEIGHT - CONSTANTS.PAGE_NAV_HEIGHT;
     };
 
-    //编辑域
-    editCard = (card) => {
-        this.props.editCard(card);
-    };
-
-    //删除域
-    deleteCard = () => {
-        this.props.deleteCard();
-    };
-
-    //选择安全域
-    selectCard = (cardId) => {
-        this.props.addSelectCard(cardId);
-    };
-
-    //取消选择安全域
-    unSelectCard = (cardId) => {
-        this.props.subtractSelectCard(cardId);
+    // 获取片容器的宽度
+    getCardListWidth = () => {
+        return $('.card-list-content').width() - CONSTANTS.RIGHT_PADDING;
     };
 
     //展示详细信息
@@ -152,7 +117,7 @@ class CardList extends React.Component {
     // 根据剩余空白宽度调整卡边的宽度
     adjustCardWidth = () => {
         var cardWidth = 0;
-        var cardListWidth = $('.card-list-content').width();
+        const cardListWidth = this.getCardListWidth();
         // 根据固定卡片宽度计算可以放卡片的个数
         var everyRowCardCounts = Math.floor(cardListWidth / CARDCONSTANTS.CARD_WIDTH);
         // 计算空白宽度
@@ -190,7 +155,7 @@ class CardList extends React.Component {
         var newCardWidth = this.adjustCardWidth();
         // 计算卡片容器的高度和高度
         var cardListHeight = this.getCardListHeight();
-        var cardListWidth = $('.card-list-content').width();
+        const cardListWidth = this.getCardListWidth();
         // 根据调整后卡片的宽度，重新计算一行可以放置卡片的个数
         var everyRowCardCounts = Math.floor(cardListWidth / newCardWidth);
         // 计算卡片容器中可以卡片的行数
@@ -270,7 +235,6 @@ class CardList extends React.Component {
 
     renderScrollBarLazyload = () => {
         var _this = this;
-        var bulkOpersShow = _this.props.bulkOpersShow;
         var curCardListLen = _this.props.curCardList.length;
         var cards = '';
         let isProductionCard = _.isEqual(this.props.cardType, CARD_TYPE.PRODUCTION);
@@ -279,19 +243,14 @@ class CardList extends React.Component {
             cards = _this.props.curCardList.map(function(card, index) {
                 var selectCards = _this.props.selectCards;
                 var isSelect = _.includes(selectCards, card.id);
+
                 return <Card key={index}
                     curCard={card}
                     imgUrl={card.image}
-                    bulkOpersShow={bulkOpersShow}
-                    selectCard={_this.selectCard}
-                    unselectCard={_this.unSelectCard}
                     isSelect={isSelect}
                     showCardInfo={_this.showCardInfo}
                     cardWidth={_this.state.cardWidth}
-                    showRightFullScreen={_this.props.showRightFullScreen}
-                    showAppOverViewPanel={_this.props.showAppOverViewPanel}
                     type={_this.props.type}
-                    removeFailRealm={_this.props.removeFailRealm}
                     showDelete={card.showDelete}
                     deleteItem={_this.props.deleteItem}
                     leftFlagDesc={card.leftFlagDesc}
@@ -303,24 +262,18 @@ class CardList extends React.Component {
                 var isSelect = _.includes(selectCards, card.id);
                 return <StrategyCard key={index}
                     curCard={card}
-                    bulkOpersShow={bulkOpersShow}
                     selectCard={_this.selectCard}
-                    unselectCard={_this.unSelectCard}
                     isSelect={isSelect}
                     showCardInfo={_this.showCardInfo}
                     cardWidth={_this.state.cardWidth}
-                    showRightFullScreen={_this.props.showRightFullScreen}
-                    showAppOverViewPanel={_this.props.showAppOverViewPanel}
                     type={_this.props.type}
-                    removeFailRealm={_this.props.removeFailRealm}
                     showDelete={card.showDelete}
                     deleteItem={_this.props.deleteItem}
-                    leftFlagDesc={card.leftFlagDesc}
                 />;
             });
         }
 
-        let cardListHeight = this.props.cardContainerHeight ? this.props.cardContainerHeight : this.getCardListHeight();
+        let cardListHeight = this.getCardListHeight();
 
         return (
             <div className="card-list-container">
@@ -367,14 +320,9 @@ CardList.propTypes = {
     updatePageSize: PropTypes.func,
     changePageEvent: PropTypes.func,
     pageSize: PropTypes.number,
-    isPanelShow: PropTypes.bool,
     type: PropTypes.string,
-    editCard: PropTypes.func,
-    deleteCard: PropTypes.func,
     showAddBtn: PropTypes.bool,
     renderAddAndImportBtns: PropTypes.func,
-    addSelectCard: PropTypes.func,
-    subtractSelectCard: PropTypes.func,
     showCardInfo: PropTypes.func,
     curPage: PropTypes.number,
     cardListSize: PropTypes.number,

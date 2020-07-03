@@ -2,12 +2,12 @@
  * 各阶段活跃客户统计
  */
 
+const columnWidth = 60; // 列宽
+
 export function getStageActiveCustomerChart() {
     return {
         title: Intl.get('analysis.active.customer.statistics.at.all.stages', '各阶段活跃客户统计'),
         chartType: 'table',
-        layout: {sm: 24},
-        height: 'auto',
         url: '/rest/analysis/customer/v3/:data_type/customer/active/druid',
         cardContainer: {
             selectors: [{
@@ -51,46 +51,46 @@ export function getStageActiveCustomerChart() {
                     width: 100
                 },
                 {
-                    title: Intl.get('weekly.report.customer.stage.info', '信息阶段'),
-                    dataIndex: Intl.get('sales.stage.message', '信息'),
+                    title: Intl.get('sales.stage.message', '信息'),
+                    dataIndex: '信息',
                     align: 'right',
-                    width: 100
+                    width: columnWidth
                 },
                 {
-                    title: Intl.get('weekly.report.customer.stage.intentioned', '意向阶段'),
-                    dataIndex: Intl.get('sales.stage.intention', '意向'),
+                    title: Intl.get('sales.stage.intention', '意向'),
+                    dataIndex: '意向',
                     align: 'right',
-                    width: 100
+                    width: columnWidth
                 },
                 {
-                    title: Intl.get('crm.143', '试用阶段'),
-                    dataIndex: Intl.get('common.trial', '试用'),
+                    title: Intl.get('common.trial', '试用'),
+                    dataIndex: '试用',
                     align: 'right',
-                    width: 100
+                    width: columnWidth
                 },
                 {
                     title: 'AQL',
                     dataIndex: 'AQL',
                     align: 'right',
-                    width: 100
+                    width: columnWidth
                 },
                 {
                     title: Intl.get('common.chance', '机会'),
-                    dataIndex: Intl.get('common.chance', '机会'),
+                    dataIndex: '机会',
                     align: 'right',
-                    width: 100
+                    width: columnWidth
                 },
                 {
                     title: Intl.get('common.official', '签约'),
-                    dataIndex: Intl.get('common.official', '签约'),
+                    dataIndex: '签约',
                     align: 'right',
-                    width: 100
+                    width: columnWidth
                 },
                 {
                     title: Intl.get('contract.163', '续约'),
-                    dataIndex: Intl.get('contract.163', '续约'),
+                    dataIndex: '续约',
                     align: 'right',
-                    width: 100
+                    width: columnWidth
                 },
             ],
         },

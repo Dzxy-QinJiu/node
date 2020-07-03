@@ -49,7 +49,8 @@ import {
     editClueItemIconPrivilege,
     releaseClueTip,
     getShowPhoneNumber,
-    dealClueCheckPhoneStatus
+    dealClueCheckPhoneStatus,
+    getSourceClassifyName
 } from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -71,8 +72,7 @@ import ClueTraceList from 'MOD_DIR/clue_customer/public/views/clue_trace_list';
 import moment from 'moment';
 import ClueTraceAction from '../../action/clue-trace-action';
 
-const HAS_BTN_HEIGHT = 58;//为按钮预留空间
-const HAS_INPUT_HEIGHT = 140;//为无效输入框预留空间
+const HAS_INPUT_HEIGHT = 90;//为无效输入框预留空间
 import {clueEmitter, clueToCustomerPanelEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {
     sourceClassifyArray,
@@ -1150,16 +1150,10 @@ class ClueDetailOverview extends React.Component {
         );
     };
     //判断是否显示按钮控制tab高度
-    hasButtonTabHeight = (curClue, associatedCustomer) => {
-        var avalibility = (avalibilityCluePrivilege())
-            || (hasPrivilege(cluePrivilegeConst.LEAD_TRANSFER_MERGE_CUSTOMER)) && editCluePrivilege(curClue);
-        var associatedClue = (curClue.clue_type !== 'clue_pool')
-            && ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer);
+    hasButtonTabHeight = () => {
         let height = this.state.divHeight;
         if (_.get(this.state, 'isShowInvalidateInputPanel')) {
             height = this.props.divHeight - HAS_INPUT_HEIGHT;
-        } else if (avalibility && associatedClue) {
-            height = this.props.divHeight - HAS_BTN_HEIGHT;
         } else {
             height = this.props.divHeight;
         }
@@ -1248,19 +1242,6 @@ class ClueDetailOverview extends React.Component {
                         data-tracename="查看关联账号详情">{appUserInfo.name}</span>, {containerCls: 'associate-user-item'})}
                 </div>
             )}/>);
-    };
-    //获取获客方式
-    getSourceClassify = (sourceClassify) => {
-        let displayText = '';
-        if (_.isEqual(sourceClassify, SOURCE_CLASSIFY.OTHER)) {
-            displayText = '';
-        } else {
-            let displayObj = _.find(sourceClassifyArray, item => item.value === sourceClassify);
-            if (!_.isEmpty(displayObj)) {
-                displayText = displayObj.name;
-            }
-        }
-        return displayText;
     };
 
     //是否是我团队或下级团队的人
@@ -1950,7 +1931,7 @@ class ClueDetailOverview extends React.Component {
                         saveEditSelect={this.saveEditBasicInfo.bind(this, 'source_classify')}
                         cancelEditField={this.cancelEditSourceClassify}
                         selectOptions={sourceClassifyOptions}
-                        displayText={this.getSourceClassify(curClue.source_classify)}
+                        displayText={getSourceClassifyName(curClue.source_classify)}
                         onSelectChange={this.onSelectSourceClassify}
                         value={curClue.source_classify}
                         placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择获客方式')}
@@ -2042,7 +2023,7 @@ class ClueDetailOverview extends React.Component {
             <div
                 className="clue-detail-container"
                 data-tracename="线索基本信息"
-                style={this.hasButtonTabHeight(curClue, associatedCustomer)}
+                style={this.hasButtonTabHeight()}
             >
                 <GeminiScrollbar>
                     {

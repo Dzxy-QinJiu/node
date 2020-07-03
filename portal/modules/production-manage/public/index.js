@@ -11,7 +11,6 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }
 let ProductionStore = require('./store/production-store');
 let ProductionAction = require('./action/production-actions');
-let RightCardsContainer = require('../../../components/rightCardsContainer');
 let Production = require('./views/production');
 let PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
 let Spinner = require('../../../components/spinner');
@@ -28,6 +27,7 @@ import IpFilterAjax from './ajax/ip-filter-ajax';
 import IpFilter from './views/ip-filter';
 import production_manager_privilegeConfig from './privilege-config';
 import {isExpired, getContactSalesPopoverTip, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import CardList from 'CMP_DIR/cardList';
 //用来存储获取的oplate\matomo产品列表，不用每次添加产品时都获取一遍
 let productList = [];
 class ProductionManage extends React.Component {
@@ -128,7 +128,11 @@ class ProductionManage extends React.Component {
     //切换页数时，当前页展示数据的修改
     events_onChangePage = (count, curPage) => {
         ProductionAction.updateCurPage(curPage);
-        ProductionAction.getProductions({page_size: count, id: this.state.lastId});
+        const queryObj = {
+            page_size: count,
+            id: curPage === 1 ? '' : this.state.lastId,
+        };
+        ProductionAction.getProductions(queryObj);
     };
 
     events_showDetail = (production) => {
@@ -147,10 +151,7 @@ class ProductionManage extends React.Component {
             ProductionAction.showInfoPanel();
         }
     };
-
-    events_searchEvent = (searchContent) => {
-    };
-
+    
     //右侧面板的关闭
     events_closeRightPanel = () => {
         //将数据清空
@@ -220,15 +221,7 @@ class ProductionManage extends React.Component {
             return '';
         }
     }
-
-    hasNoFilterCondition = () => {
-        if (this.state.searchContent) {
-            return false;
-        } else {
-            return true;
-        }
-
-    };
+    
     renderAddAndImportBtns = () => {
         if (hasPrivilege(production_manager_privilegeConfig.USER_MANAGE_ADD_USER)) {
             return (
@@ -349,7 +342,7 @@ class ProductionManage extends React.Component {
     render() {
         let firstLoading = this.state.isLoading;
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
-        let cardContainerHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+        let cardContainerHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT - BACKGROUG_LAYOUT_CONSTANTS.BOTTOM_HEIFHT;
         return (
             <div className='production-manage-container' style={{height: height}}>
                 <div
@@ -365,24 +358,24 @@ class ProductionManage extends React.Component {
                             <Spinner loadingText={Intl.get('common.sales.frontpage.loading', '加载中')}/>
                         </div> : null
                     }
-                    <RightCardsContainer
-                        currentCard={this.state.currentProduction}
+                    <CardList
+                        selectCards={this.state.currentProduction}
                         cardListSize={this.state.userListSize}
                         curCardList={this.getCardList()}
                         listTipMsg={this.state.listTipMsg}
                         curPage={this.state.curPage}
                         pageSize={this.state.pageSize}
-                        searchPlaceHolder={Intl.get('common.product.name', '产品名称')}
                         updatePageSize={this.events_updatePageSize.bind(this)}
                         changePageEvent={this.events_onChangePage.bind(this)}
                         showCardInfo={this.events_showDetail.bind(this)}
                         renderAddAndImportBtns={this.renderAddAndImportBtns}
-                        showAddBtn={this.hasNoFilterCondition()}
+                        showAddBtn={true}
                         deleteItem={this.deleteItem}
                         cardContainerHeight={cardContainerHeight}
                         type="production"
-                    >
-                        {this.state.formShow ?
+                    />
+                    {
+                        this.state.formShow ? (
                             <Production
                                 integrateType={this.state.integrateType}
                                 formType={this.state.currentProduction.id ? util.CONST.EDIT : util.CONST.ADD}
@@ -393,23 +386,22 @@ class ProductionManage extends React.Component {
                                 globalFilterIpList={this.state.globalFilterIpList}
                                 productionFilterIp={this.state.productionFilterIp}
                                 showIpFilterPanel={this.showIpFilterPanel}
-                            /> : null}
-                        {this.state.deleteError ? (<message></message>) : null}
-                        {
-                            this.state.isShowIpFilterPanel ? (
-                                <IpFilter
-                                    closeIpFilterPanel={this.closeIpFilterPanel}
-                                    globalFilterIpList={this.state.globalFilterIpList}
-                                    updateFilterIpList={this.handleUpdateFilterIp}
-                                />
-                            ) : null
-                        }
-                    </RightCardsContainer>
+                            />
+                        ) : null
+                    }
+                    {
+                        this.state.isShowIpFilterPanel ? (
+                            <IpFilter
+                                closeIpFilterPanel={this.closeIpFilterPanel}
+                                globalFilterIpList={this.state.globalFilterIpList}
+                                updateFilterIpList={this.handleUpdateFilterIp}
+                            />
+                        ) : null
+                    }
                 </div>
             </div>
         );
     }
 }
-
 
 module.exports = ProductionManage;

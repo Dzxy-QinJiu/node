@@ -301,6 +301,7 @@ export const OTHER_FILTER_ITEMS = {
     THIRTY_UNCONTACT: 'thirty_uncontact',
     FIFTEEN_UNCONTACT: 'fifteen_uncontact',
     SEVEN_UNCONTACT: 'seven_uncontact',
+    HALF_YEAR_UNVISIT: 'half_year_unvisit',//超半年未拜访的客户
     THIRTY_NO_CONNECTION: 'thirty_no_connection',//近30天拨打未接通的客户
     THIRTY_NO_CALL: 'thirty_no_call',//超30天未打过电话
     UNDISTRIBUTED: 'undistributed',//未分配的客户
@@ -593,7 +594,8 @@ export const BACKGROUG_LAYOUT_CONSTANTS = {
     NAV_WIDTH: 120, // 导航宽度
     TOP_ZONE_HEIGHT: 80, // 头部（添加、相应操作的区域）高度
     PADDING_WIDTH: 24 * 2, // padding占的宽度
-    PADDING_HEIGHT: 24 * 2 // padding占的高度
+    PADDING_HEIGHT: 24 * 2, // padding占的高度
+    BOTTOM_HEIFHT: 16 // 底部区域得高度
 };
 //拨打电话推送的状态
 export const CALL_TYPES = {

@@ -300,7 +300,7 @@ const TENTHOUSAND = 10000;
 //成立时间
 export const registerSize = [
     {
-        name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.established.time', '成立时间')})
+        name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: `${Intl.get('clue.recommend.established.time', '成立时间')}: `})
     },
     {
         name: Intl.get('clue.recommend.condition.register.size', '{num}年以内', {num: 1}),
@@ -326,7 +326,7 @@ export const registerSize = [
 //公司规模
 export const staffSize = [
     {
-        name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.company.size', '公司规模')})
+        name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: `${Intl.get('clue.recommend.company.size', '公司规模')}: `})
     },
     {
         name: Intl.get('clue.customer.condition.staff.size', '{num}人以下', {num: 20}),
@@ -360,7 +360,7 @@ export const staffSize = [
 //注册资本
 export const moneySize = [
     {
-        name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.registered.capital', '注册资本')})
+        name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: `${Intl.get('clue.recommend.registered.capital', '注册资本')}: `})
     },
     {
         name: Intl.get('clue.customer.money.size.less.num', '{num}万以内', {num: 10}),
@@ -388,7 +388,7 @@ export const moneySize = [
 ];
 //企业类型
 export const companyProperty = [
-    { name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.enterprise.class', '企业类型')}) },
+    { name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: `${Intl.get('clue.recommend.enterprise.class', '企业类型')}: `}) },
     {
         name: Intl.get('clue.customer.condition.company.limit', '有限责任公司'),
         value: Intl.get('clue.customer.condition.company.limit', '有限责任公司')
@@ -432,7 +432,7 @@ export const companyProperty = [
 ];
 //企业状态
 export const companyStatus = [
-    { name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: Intl.get('clue.recommend.filter.company.status', '企业状态')}) },
+    { name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: `${Intl.get('clue.recommend.filter.company.status', '企业状态')}: `}) },
     {
         name: Intl.get('clue.recommend.filter.company.status.survival', '存续'),
         value: '存续'
@@ -766,7 +766,31 @@ export const ADVANCED_OPTIONS = [
             return _.toNumber(value);
         }
     },
+    {
+        name: Intl.get('clue.recommend.has.contacts', '有联系人'),
+        value: 'contact_phone_num:1',
+        processValue: (value) => {
+            return _.toNumber(value);
+        }
+    },
 ];
+export const calcTraceContentHeight = function(divHeight) {
+    return divHeight - 55;
+};
+export const calcScheduleContentHeight = function(divHeight) {
+    return divHeight + 40;
+};
+//获取获客方式
+export const getSourceClassifyName = function(sourceClassify){
+    let displayText = '';
+    if (!_.isEqual(sourceClassify, SOURCE_CLASSIFY.OTHER)) {
+        let displayObj = _.find(sourceClassifyArray, item => item.value === sourceClassify);
+        if (!_.isEmpty(displayObj)) {
+            displayText = displayObj.name;
+        }
+    }
+    return displayText;
+};
 
 //生成找线索，筛选条件的id
 export const generateConditionId = function() {
