@@ -112,6 +112,7 @@ Batch.prototype.listener = function(data) {
                         succeed: data.succeed,
                         failedTasks: failedTasks
                     };
+                    pushLogger.info('向web端推送批量结果为:' + JSON.stringify(messageObj));
                     socket.emit('batchOperate' , messageObj);
                 });
 

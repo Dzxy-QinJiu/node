@@ -1,6 +1,9 @@
 @import "../../../../public/css/common-variables";
 @vip-color: #FF8B00;
 .recommend-customer-condition.recommend-customer-condition-wrapper{
+  .add-customer-recommend{
+    position: relative;
+  }
   .recommend-top-title{
     font-size: 14px;
     font-weight: 700;
@@ -18,7 +21,8 @@
       width:100%;
       margin-bottom: 4px;
       input, textarea, .ant-select{
-        width: 100%
+        width: 100%;
+        color: @primary-font-color;
       }
 
       .ant-form-item-label{
@@ -97,6 +101,47 @@
       }
     }
   }
+  //搜索form-item样式
+  .search-input-and-area-form-item{
+    margin-bottom: 0!important;
+    .ant-form-item-label{
+      label{
+        margin-bottom: 0!important;
+      }
+    }
+    > .ant-form-item-control-wrapper{
+      vertical-align: middle;
+      > .ant-form-item-control{
+        display: flex;
+        align-items: center;
+        //地域样式
+        .area-selector{
+          margin-right: 5px;
+          .ant-form-item{
+            margin-bottom: 0!important;
+          }
+          .ant-form-item-label{
+            display: none!important;
+          }
+          input{
+            max-width: 125px;
+          }
+          .area-selector-container{
+            position: absolute;
+            width: 455px;
+          }
+        }
+        //搜索框样式
+        .clue-recommend-filter-search-wrapper{
+          .search-input-container{
+            input{
+              width: 360px;
+            }
+          }
+        }
+      }
+    }
+  }
   //vip样式
   .label-wrapper{
     .label-text{
@@ -114,25 +159,25 @@
     }
   }
   //高级筛选样式
+  .advance-btn-item{
+    padding: 3px 6px;
+    font-size: 14px;
+    color: @vip-color;
+    border: 1px solid @border-color;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-right: 5px;
+    &:hover{
+      border-color: @vip-color;
+    }
+    &.advance-active{
+      background: @vip-color;
+      color: #fff;
+      border-color: @vip-color;
+    }
+  }
   .advance-data-container{
     position: relative;
-    .advance-btn-item{
-      padding: 3px 6px;
-      font-size: 14px;
-      color: @warn-color;
-      border: 1px solid @border-color;
-      border-radius: 2px;
-      cursor: pointer;
-      margin-right: 5px;
-      &:hover{
-        border-color: @warn-color;
-      }
-      &.advance-active{
-        background: @warn-color;
-        color: #fff;
-        border-color: @warn-color;
-      }
-    }
     .advance-data-content{
       &.show-more{
         height: auto;
@@ -148,6 +193,8 @@
   }
   //vip筛选样式
   .vip-filter-container{
+    margin-top: -10px;
+    margin-bottom: 4px!important;
     .vip-filter-content{
       position: relative;
       .vip-filter-item{
@@ -172,10 +219,15 @@
   }
   //已选条件样式
   .selected-filter-container{
-    margin: 5px 0 10px;
+    margin: 5px 0 20px;
     color: @primary-font-color;
+    display: none;
+    &.show-filters, &.mobile-selected-filter-container{
+      display: block;
+    }
     .selected-filter-title{
       font-size: 14px;
+      vertical-align: middle;
     }
     .selected-filter-item{
       color: @primary-color;
@@ -186,6 +238,7 @@
       margin-right: 10px;
       font-size: 12px;
       cursor: pointer;
+      vertical-align: middle;
       &:hover{
         color: #fff;
         background: @primary-hover-color;
@@ -196,7 +249,23 @@
         margin-right: -5px;
       }
     }
+    //热门标签样式
+    .advance-btn-item{
+      vertical-align: middle;
+      padding: 2px 6px;
+    }
   }
+  //热门和vip筛选
+  .hot-and-vip-filters{
+    transition: all .4s linear;
+    //隐藏热门和vip筛选
+    &.hide-filters{
+      position: absolute;
+      opacity: 0;
+      z-index: -1;
+    }
+  }
+
 }
 .ant-calendar-range-right .ant-calendar-date-input-wrap{
   margin-left: 0;
@@ -332,8 +401,8 @@
     display: none;
   }
   .ant-input-group-addon{
-    background-color: @warn-color;
-    border-color: @warn-color;
+    background-color: @primary-color;
+    border-color: @primary-color;
     color: #fff;
     font-size: 14px;
     width: auto;
@@ -341,20 +410,25 @@
     line-height: 32px;
     cursor: pointer;
     padding: 0 10px;
+    display: flex;
+    align-items: center;
     .search-confirm-btn{
       display: block;
       position: relative;
       top: 0;
       right: 0;
-      font-size: 20px;
+      font-size: 18px;
       color: #fff;
-      margin-top: 6px;
+      margin-top: 0;
+    }
+    .search-text{
+      margin-left: 8px;
     }
   }
   .recommend-clue-sug{
     position: absolute;
     top: 33px;
-    width: 522px;
+    width: 350px;
     z-index: 10;
     background: #fff;
     border: 1px solid #ccc;

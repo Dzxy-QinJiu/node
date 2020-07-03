@@ -64,6 +64,10 @@ const LAYOUT_CONSTS = {
     BOTTOM_HEIGHT: oplateConsts.LAYOUT.BOTTOM_NAV
 };
 
+const SCROLL_DELAY = 10;//滚动事件延时
+
+const SCROLL_INSTANCE = 150;//滚动距离
+
 class RecommendCluesFilterPanel extends Component {
     constructor(props) {
         super(props);
@@ -81,6 +85,7 @@ class RecommendCluesFilterPanel extends Component {
             registerOpen: true,
             registerPopvisible: false,
             showSearchPanel: false, //展示搜索页面面板
+            showFilterArea: true,//是否展示所有筛选条件
         };
 
         this.currentArea = {};
@@ -94,6 +99,10 @@ class RecommendCluesFilterPanel extends Component {
         $(input).on('keydown', this.onKeyDown);
         //添加focus
         $(input).on('focus', this.onInputFocus);
+        let scrollWrapElem = document.querySelector('.recommend-clue-detail-content-box .gm-scroll-view');
+        if (scrollWrapElem) {
+            scrollWrapElem.addEventListener('scroll', this.handleScroll, false);
+        }
         document.addEventListener('click', this.onClickOutsideHandler);
         if(this.searchInputRef) {
             this.searchInputRef.state.keyword = this.state.hasSavedRecommendParams.keyword;
@@ -120,6 +129,10 @@ class RecommendCluesFilterPanel extends Component {
         let input = '.clue-recommend-filter-search-wrapper .search-input';
         $(input).off('keydown', this.onKeyDown);
         $(input).off('focus', this.onInputFocus);
+        let scrollWrapElem = document.querySelector('.recommend-clue-detail-content-box .gm-scroll-view');
+        if (scrollWrapElem) {
+            scrollWrapElem.removeEventListener('scroll', this.handleScroll, false);
+        }
         document.removeEventListener('click', this.onClickOutsideHandler);
         this.currentListItem = {};
         this.isGetClueList = false;
@@ -709,6 +722,41 @@ class RecommendCluesFilterPanel extends Component {
         return list;
     }
 
+    scrollTimer = null;
+
+    //滚动监听处理
+    handleScroll = (e) => {
+        clearTimeout(this.scrollTimer);
+        this.scrollTimer = setTimeout(() => {
+            // 向上滚动，展开筛选条件区域
+            if (e.target.scrollTop < SCROLL_INSTANCE && !this.state.showFilterArea) {
+                this.setShowFilterArea(true);
+            }
+            // 向下滚动，收起筛选条件区域
+            if (e.target.scrollTop > SCROLL_INSTANCE && this.state.showFilterArea) {
+                this.setShowFilterArea(false);
+            }
+        }, SCROLL_DELAY);
+    };
+
+    setShowFilterArea(visible) {
+        this.handleVisibleChange();
+        this.setState({
+            showFilterArea: visible
+        }, () => {
+            _.isFunction(this.props.handleToggleOtherCondition) && this.props.handleToggleOtherCondition();
+        });
+    }
+
+    //显示已选条件
+    showSelectedFilters() {
+        let showFilterArea = this.state.showFilterArea;
+        let list = this.handleSelectedFilterList();
+        let feature = _.get(this.state.hasSavedRecommendParams,'feature', this.props.feature);
+        //筛选区域收起时，有选择vip筛选或者热门标签,显示已选条件
+        return !showFilterArea && (list.length || feature);
+    }
+
     //获取vip筛选项
     getVipFilters() {
         return [
@@ -828,10 +876,11 @@ class RecommendCluesFilterPanel extends Component {
         let {vipFilters, registerPopvisible, hasSavedRecommendParams} = this.state;
         let currentValue = processValue(hasSavedRecommendParams);
         let hasRegisterTime = true;
+        let unlimitedText = Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: `${btnText}: `});
         if(_.isEmpty(currentValue)) {
             hasRegisterTime = false;
             currentValue = {
-                name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText})
+                name: unlimitedText
             };
         }
 
@@ -842,10 +891,11 @@ class RecommendCluesFilterPanel extends Component {
         }
 
         let text = _.get(currentValue, 'name');
+        text = text && text !== unlimitedText ? `${btnText}: ${text}` : text;
         let textCls = classNames({
-            'vip-item-active': text && text !== Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText})
+            'vip-item-active': text && text !== unlimitedText
         });
-        text = text ? currentValue.name : btnText;
+        text = text ? text : btnText;
 
         let menu = (
             <Menu>
@@ -948,9 +998,10 @@ class RecommendCluesFilterPanel extends Component {
         let {isWebMin} = isResponsiveDisplay();
         let {vipFilters} = this.state;
         let currentValue = processValue(vipFilters);
+        let unlimitedText = Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: `${btnText}: `});
         if(_.isEmpty(currentValue)) {
             currentValue = {
-                name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText})
+                name: unlimitedText
             };
         }
 
@@ -962,11 +1013,12 @@ class RecommendCluesFilterPanel extends Component {
             </Menu>
         );
         let text = _.get(currentValue, 'name');
+        text = text && text !== unlimitedText ? `${btnText}: ${text}` : text;
         let textCls = classNames({
-            'vip-item-active': text && text !== Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText})
+            'vip-item-active': text && text !== unlimitedText
         });
         return (
-            <Dropdown trigger={isWebMin ? 'click' : 'hover'} overlay={menus} overlayClassName="vip-item-dropDown">
+            <Dropdown minOverlayWidthMatchTrigger={false} trigger={isWebMin ? 'click' : 'hover'} overlay={menus} overlayClassName="vip-item-dropDown">
                 <Popover
                     trigger="click"
                     placement="bottomLeft"
@@ -976,7 +1028,7 @@ class RecommendCluesFilterPanel extends Component {
                     overlayClassName="extract-limit-content"
                 >
                     <span className={textCls}>
-                        {text ? currentValue.name : btnText}<Icon type="down"/>
+                        {text ? text : btnText}<Icon type="down"/>
                     </span>
                 </Popover>
             </Dropdown>
@@ -987,39 +1039,52 @@ class RecommendCluesFilterPanel extends Component {
     renderSelectedFilterBlock() {
         let list = this.handleSelectedFilterList();
         let {isWebMin} = isResponsiveDisplay();
-        if(list.length) {
-            return (
-                <div className="selected-filter-container" data-tracename="已选条件展示区">
-                    <div className="selected-filter-content">
-                        {isWebMin ? null : <span className="selected-filter-title">{Intl.get('clue.recommend.filter.selected', '已选条件')}：</span>}
-                        {_.map(list, item => {
-                            if(this.props.isSelectedHalfYearRegister && item.key === VIP_ITEM_MAP.REGISTER_TIME) {
-                                return null;
-                            }
-                            let content = (
-                                <span key={item.key} className="selected-filter-item">
-                                    <span>{item.name}：{item.value}</span>
-                                    <i className="iconfont icon-close" data-tracename={`点击关闭${item.name}:${item.value}`} onClick={item.handleClick}/>
-                                </span>
+        let feature = _.find(ADVANCED_OPTIONS, feature => feature.value === _.get(this.state.hasSavedRecommendParams,'feature', this.props.feature));
+
+        //展示已选条件
+        let showSelectedFilters = this.showSelectedFilters();
+        //展示热门标签
+        let showFeatureFilter = showSelectedFilters && feature;
+
+        let cls = classNames('selected-filter-container', {
+            'show-filters': showSelectedFilters,
+            'mobile-selected-filter-container': isWebMin
+        });
+
+        return (
+            <div className={cls} data-tracename="已选条件展示区">
+                <div className="selected-filter-content">
+                    {isWebMin ? null : <span className="selected-filter-title">{Intl.get('clue.recommend.filter.selected', '已选条件')}：</span>}
+                    {showFeatureFilter ? (
+                        <span className="advance-btn-item advance-active" onClick={this.handleClickAdvanced.bind(this, feature.value)}>{feature.name}</span>
+                    ) : null}
+                    {_.map(list, item => {
+                        if(this.props.isSelectedHalfYearRegister && item.key === VIP_ITEM_MAP.REGISTER_TIME) {
+                            return null;
+                        }
+                        let content = (
+                            <span key={item.key} className="selected-filter-item">
+                                <span>{item.name}：{item.value}</span>
+                                <i className="iconfont icon-close" data-tracename={`点击关闭${item.name}:${item.value}`} onClick={item.handleClick}/>
+                            </span>
+                        );
+                        if(isWebMin) {
+                            return (
+                                <AvatarPopoverTip
+                                    content={this.state.vipPopOverVisibleContent}
+                                    visible={this.state.vipPopOverVisible === item.key && !this.state.showHotOptionPanel}
+                                    onVisibleChange={this.handleVisibleChange}
+                                >
+                                    {content}
+                                </AvatarPopoverTip>
                             );
-                            if(isWebMin) {
-                                return (
-                                    <AvatarPopoverTip
-                                        content={this.state.vipPopOverVisibleContent}
-                                        visible={this.state.vipPopOverVisible === item.key && !this.state.showHotOptionPanel}
-                                        onVisibleChange={this.handleVisibleChange}
-                                    >
-                                        {content}
-                                    </AvatarPopoverTip>
-                                );
-                            }else {
-                                return content;
-                            }
-                        })}
-                    </div>
+                        }else {
+                            return content;
+                        }
+                    })}
                 </div>
-            );
-        }else { return null; }
+            </div>
+        );
     }
 
     //手机端 --- start -----
@@ -1036,29 +1101,56 @@ class RecommendCluesFilterPanel extends Component {
     handleTriggerAreaSelectorPanel = (flag = true) => {
         this.setState({showAreaSelectorPanel: !!flag});
     };
+    //渲染地域信息
+    renderAreaBlock() {
+        let {hasSavedRecommendParams} = this.state;
+        return (
+            <AntcAreaSelection
+                labelCol="0" wrapperCol="0" width="100%"
+                label={' '}
+                colon={false}
+                allText={Intl.get('common.all.areas', '全部地区')}
+                provName={hasSavedRecommendParams.province === AREA_ALL ? '' : hasSavedRecommendParams.province}
+                cityName={hasSavedRecommendParams.city}
+                countyName={hasSavedRecommendParams.district}
+                updateLocation={this.updateLocation.bind(this, false)}
+                onAreaPanelHide={this.onAreaPanelHide}
+                showAllBtn
+                filterSomeNewArea
+                sortProvinceByFirstLetter
+            />
+        );
+    }
     //渲染搜索页面面板
     renderSearchInput() {
         let {keywordList} = this.state;
         return (
-            <div className="clue-recommend-filter-search-wrapper">
-                <SearchInput
-                    key="search-input"
-                    ref={ref => this.searchInputRef = ref}
-                    searchEvent={this.searchChange}
-                    searchPlaceHolder ={this.getKeyWordPlaceholder()}
-                    closeSearchInput={this.closeSearchInput}
-                />
-                <div ref={ref => this.keywordListRef = ref} className="recommend-clue-sug recommend-clue-sug-new">
-                    <ul>
-                        {_.map(keywordList, item => (
-                            <li key={item.id} className="recommend-clue-sug-overflow" onClick={this.onKeywordListClick.bind(this, item)}>{item.name}</li>
-                        ))}
-                    </ul>
+            <FormItem
+                label={Intl.get('sales.team.search', '搜索')}
+                className="special-item search-input-and-area-form-item"
+            >
+                {this.renderAreaBlock()}
+                <div className="clue-recommend-filter-search-wrapper">
+                    <SearchInput
+                        key="search-input"
+                        ref={ref => this.searchInputRef = ref}
+                        searchEvent={this.searchChange}
+                        searchPlaceHolder ={this.getKeyWordPlaceholder()}
+                        closeSearchInput={this.closeSearchInput}
+                    />
+                    <div ref={ref => this.keywordListRef = ref} className="recommend-clue-sug recommend-clue-sug-new">
+                        <ul>
+                            {_.map(keywordList, item => (
+                                <li key={item.id} className="recommend-clue-sug-overflow" onClick={this.onKeywordListClick.bind(this, item)}>{item.name}</li>
+                            ))}
+                        </ul>
+                    </div>
+                    <span className="ant-input-group-addon" data-tracename="点击搜索关键词按钮" onClick={this.onSearchButtonClick}>
+                        <Icon type="search" className="search-icon search-confirm-btn"/>
+                        <span className="search-text">{Intl.get('clue.recommend.search.text', '搜一下')}</span>
+                    </span>
                 </div>
-                <span className="ant-input-group-addon" data-tracename="点击搜索关键词按钮" onClick={this.onSearchButtonClick}>
-                    <Icon type="search" className="search-icon search-confirm-btn"/>
-                </span>
-            </div>
+            </FormItem>
         );
     }
     //渲染地域和vip选项
@@ -1101,33 +1193,12 @@ class RecommendCluesFilterPanel extends Component {
             );
         }else {
             return (
-                <div>
-                    <AntcAreaSelection
-                        labelCol="0" wrapperCol="0" width="100%"
-                        colon={false}
-                        label={Intl.get('crm.96', '地域')}
-                        placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
-                        provName={hasSavedRecommendParams.province === AREA_ALL ? '' : hasSavedRecommendParams.province}
-                        cityName={hasSavedRecommendParams.city}
-                        countyName={hasSavedRecommendParams.district}
-                        updateLocation={this.updateLocation.bind(this, false)}
-                        onAreaPanelHide={this.onAreaPanelHide}
-                        // hiddenCounty
-                        showAllBtn
-                        filterSomeNewArea
-                        sortProvinceByFirstLetter
-                    />
-                    <div className="show-hide-tip" onClick={this.handleToggleOtherCondition.bind(this, 'showOtherCondition')} data-tracename='点击更多或收起推荐线索的条件'>
-                        <span>{show_tip}</span>
-                        <i className={iconCls}/>
-                    </div>
-                    <div className={cls}>
-                        <FormItem className="vip-filter-container" label={Intl.get('clue.recommend.filter.vip', 'VIP筛选')}>
-                            <div className="vip-filter-content" data-tracename="vip筛选列表">
-                                {this.renderVipFiltersBlock()}
-                            </div>
-                        </FormItem>
-                    </div>
+                <div className={cls}>
+                    <FormItem className="vip-filter-container" label={Intl.get('clue.recommend.filter.vip', 'VIP筛选')}>
+                        <div className="vip-filter-content" data-tracename="vip筛选列表">
+                            {this.renderVipFiltersBlock()}
+                        </div>
+                    </FormItem>
                 </div>
             );
         }
@@ -1173,7 +1244,7 @@ class RecommendCluesFilterPanel extends Component {
         let currentValue = processValue(vipFilters);
         if(_.isEmpty(currentValue)) {
             currentValue = {
-                name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText})
+                name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: `${btnText}: `})
             };
         }
 
@@ -1207,11 +1278,15 @@ class RecommendCluesFilterPanel extends Component {
     //手机端 --- end -----
 
     render() {
-        let { hasSavedRecommendParams } = this.state;
+        let { hasSavedRecommendParams, showFilterArea } = this.state;
         let {isWebMin} = isResponsiveDisplay();
 
+        let hotAndVipFilterCls = classNames('hot-and-vip-filters', {
+            'hide-filters': !showFilterArea
+        });
+
         return (
-            <div className="recommend-customer-condition recommend-customer-condition-wrapper" data-tracename="线索推荐筛选面板">
+            <div className="recommend-customer-condition recommend-customer-condition-wrapper" data-tracename="找线索筛选面板">
                 <div className="recommend-clue-filter-panel">
                     <div className="add-customer-recommend">
                         <Form layout='horizontal' className="clue-recommend-form" id="clue-recommend-form">
@@ -1228,22 +1303,26 @@ class RecommendCluesFilterPanel extends Component {
                                         </div>
                                         <span className="ant-input-group-addon" data-tracename="点击搜索关键词按钮" onClick={this.onSearchButtonClick}>
                                             <Icon type="search" className="search-icon search-confirm-btn"/>
+                                            <span className="search-text">{Intl.get('clue.recommend.search.text', '搜一下')}</span>
                                         </span>
                                     </div>
                                 ) : this.renderSearchInput()}
                             </FormItem>
                             {isWebMin ? null : this.renderSelectedFilterBlock()}
-                            <FormItem
-                                label={Intl.get('clue.recommend.hot.name', '热门')}
-                                className="special-item"
-                            >
-                                <div className="advance-data-container">
-                                    <div className="advance-data-content">
-                                        {this.renderAdvancedOptions()}
+                            <div className={hotAndVipFilterCls}>
+                                <FormItem
+                                    label={Intl.get('clue.recommend.hot.name', '热门')}
+                                    className="special-item"
+                                >
+                                    <div className="advance-data-container">
+                                        <div className="advance-data-content">
+                                            {this.renderAdvancedOptions()}
+                                        </div>
                                     </div>
-                                </div>
-                            </FormItem>
-                            {this.renderAreaAndVipBlock()}
+                                </FormItem>
+                                {isWebMin ? null : this.renderAreaAndVipBlock()}
+                            </div>
+                            {isWebMin ? this.renderAreaAndVipBlock() : null}
                         </Form>
                     </div>
                     {this.state.showSearchPanel ? (
