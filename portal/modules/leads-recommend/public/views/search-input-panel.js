@@ -99,6 +99,7 @@ class SearchInputPanel extends React.Component {
                 />
                 <span className="ant-input-group-addon" data-tracename="点击搜索关键词按钮" onClick={this.onSearchButtonClick}>
                     <Icon type="search" className="search-icon search-confirm-btn"/>
+                    <span className="search-text">{Intl.get('clue.recommend.search.text', '搜一下')}</span>
                 </span>
             </div>
         );

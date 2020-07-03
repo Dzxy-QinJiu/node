@@ -4268,6 +4268,7 @@ var zh_CN = {
     'clue.recommend.filter.set.up': '成立',
     'clue.recommend.legalperson': '法人',
     'clue.recommend.hundred.million': '{num}亿',
+    'clue.recommend.search.text': '搜一下',
 
     'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',

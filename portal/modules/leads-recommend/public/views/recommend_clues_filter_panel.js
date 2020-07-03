@@ -1146,7 +1146,8 @@ class RecommendCluesFilterPanel extends Component {
                         </ul>
                     </div>
                     <span className="ant-input-group-addon" data-tracename="点击搜索关键词按钮" onClick={this.onSearchButtonClick}>
-                        {Intl.get('clue.find.recommend.clue', '找线索')}
+                        <Icon type="search" className="search-icon search-confirm-btn"/>
+                        <span className="search-text">{Intl.get('clue.recommend.search.text', '搜一下')}</span>
                     </span>
                 </div>
             </FormItem>
@@ -1243,7 +1244,7 @@ class RecommendCluesFilterPanel extends Component {
         let currentValue = processValue(vipFilters);
         if(_.isEmpty(currentValue)) {
             currentValue = {
-                name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText})
+                name: Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: `${btnText}: `})
             };
         }
 
@@ -1302,6 +1303,7 @@ class RecommendCluesFilterPanel extends Component {
                                         </div>
                                         <span className="ant-input-group-addon" data-tracename="点击搜索关键词按钮" onClick={this.onSearchButtonClick}>
                                             <Icon type="search" className="search-icon search-confirm-btn"/>
+                                            <span className="search-text">{Intl.get('clue.recommend.search.text', '搜一下')}</span>
                                         </span>
                                     </div>
                                 ) : this.renderSearchInput()}
