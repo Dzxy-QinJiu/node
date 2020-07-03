@@ -730,22 +730,23 @@ class RecommendCluesFilterPanel extends Component {
         this.scrollTimer = setTimeout(() => {
             // 向上滚动，展开筛选条件区域
             if (e.target.scrollTop < SCROLL_INSTANCE && !this.state.showFilterArea) {
-                this.setState({
-                    showFilterArea: true
-                }, () => {
-                    _.isFunction(this.props.handleToggleOtherCondition) && this.props.handleToggleOtherCondition();
-                });
+                this.setShowFilterArea(true);
             }
             // 向下滚动，收起筛选条件区域
             if (e.target.scrollTop > SCROLL_INSTANCE && this.state.showFilterArea) {
-                this.setState({
-                    showFilterArea: false
-                }, () => {
-                    _.isFunction(this.props.handleToggleOtherCondition) && this.props.handleToggleOtherCondition();
-                });
+                this.setShowFilterArea(false);
             }
         }, SCROLL_DELAY);
     };
+
+    setShowFilterArea(visible) {
+        this.handleVisibleChange();
+        this.setState({
+            showFilterArea: visible
+        }, () => {
+            _.isFunction(this.props.handleToggleOtherCondition) && this.props.handleToggleOtherCondition();
+        });
+    }
 
     //显示已选条件
     showSelectedFilters() {
@@ -875,7 +876,7 @@ class RecommendCluesFilterPanel extends Component {
         let {vipFilters, registerPopvisible, hasSavedRecommendParams} = this.state;
         let currentValue = processValue(hasSavedRecommendParams);
         let hasRegisterTime = true;
-        let unlimitedText = Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText});
+        let unlimitedText = Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: `${btnText}: `});
         if(_.isEmpty(currentValue)) {
             hasRegisterTime = false;
             currentValue = {
@@ -890,7 +891,7 @@ class RecommendCluesFilterPanel extends Component {
         }
 
         let text = _.get(currentValue, 'name');
-        text = text && text !== unlimitedText ? `${btnText}：${text}` : text;
+        text = text && text !== unlimitedText ? `${btnText}: ${text}` : text;
         let textCls = classNames({
             'vip-item-active': text && text !== unlimitedText
         });
@@ -997,7 +998,7 @@ class RecommendCluesFilterPanel extends Component {
         let {isWebMin} = isResponsiveDisplay();
         let {vipFilters} = this.state;
         let currentValue = processValue(vipFilters);
-        let unlimitedText = Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: btnText});
+        let unlimitedText = Intl.get('clue.recommend.filter.name.no.limit', '{name}不限', {name: `${btnText}: `});
         if(_.isEmpty(currentValue)) {
             currentValue = {
                 name: unlimitedText
@@ -1012,7 +1013,7 @@ class RecommendCluesFilterPanel extends Component {
             </Menu>
         );
         let text = _.get(currentValue, 'name');
-        text = text && text !== unlimitedText ? `${btnText}：${text}` : text;
+        text = text && text !== unlimitedText ? `${btnText}: ${text}` : text;
         let textCls = classNames({
             'vip-item-active': text && text !== unlimitedText
         });
