@@ -137,6 +137,13 @@ OrderStore.prototype.afterEditOrder = function(order) {
             if (_.has(order,'predict_finish_time')){
                 editOrder.predict_finish_time = order.predict_finish_time;
             }
+            if(_.has(order,'sale_stages')) {
+                editOrder.sale_stages = order.sale_stages;
+            }
+            if(_.has(order, 'apps')) {
+                editOrder.apps = order.apps;
+            }
+
             editOrder.isEdit = false;
         }
     }
