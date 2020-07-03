@@ -5,7 +5,7 @@
 export function getFollowUpCustomerEffectiveChart() {
 
     return {
-        title: '联合跟进客户活跃率统计',
+        title: Intl.get('analysis.statistics.of.active.rate.of.effective.customers', '联合跟进客户活跃率统计'),
         url: '/rest/analysis/customer/v3/:data_type/follow/customer/active_rate',
         argCallback: arg => {
             delete arg.query.app_id;
