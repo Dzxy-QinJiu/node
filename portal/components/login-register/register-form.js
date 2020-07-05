@@ -390,9 +390,9 @@ class RegisterForm extends React.Component {
     }
     toLogin = (eventTraceDescr, e) => {
         Trace.traceEvent(e, eventTraceDescr);
-        let pathname = window.location.pathname || '';
+        let search = window.location.search || '';
         var isRegistry = false;
-        if(pathname.indexOf('isFromHome') !== -1){//从小程序的home页面跳转到注册页才加上这个字段
+        if(search.indexOf('isFromHome') !== -1){//从小程序的home页面跳转到注册页才加上这个字段
             isRegistry = true;
         }
         pcAndWechatMiniProgram('/login',isRegistry);

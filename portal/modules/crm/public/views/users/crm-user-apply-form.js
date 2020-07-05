@@ -153,7 +153,8 @@ class CrmUserApplyForm extends React.Component {
         }).then((result) => {
             if (result) {
                 this.setState({ isApplying: false });
-                this.props.closeApplyPanel();
+                //把添加成功的数据放在已申请的申请审批中
+                this.props.closeApplyPanel(result);
             } else {
                 this.setState({ isApplying: false, applyErrorMsg: Intl.get('user.apply.delay.failed', '申请延期失败') });
             }

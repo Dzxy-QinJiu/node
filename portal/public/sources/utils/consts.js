@@ -151,7 +151,7 @@ export const TIME_RANGE_GLOBAL = {
 };
 export const clueSourceArray = [Intl.get('crm.sales.clue.baidu', '百度搜索'), Intl.get('crm.sales.clue.weibo', '微博推广'), Intl.get('crm.sales.clue.customer.recommend', '客户推荐')];//线索来源
 export const accessChannelArray = [Intl.get('crm.sales.clue.phone', '400电话'), Intl.get('crm.sales.clue.qq', '营销QQ')];//接入渠道
-export const clueClassifyArray = [Intl.get('sales.home.customer', '客户'), Intl.get('clue.customer.classify.agend', '代理商'), Intl.get('clue.customer.classify.search', '学术研究')];//线索分类
+export const clueClassifyArray = [Intl.get('sales.home.customer', '客户'), Intl.get('clue.customer.classify.agend', '代理商')];//线索分类
 //销售团队中角色对应的颜色值（参照echart的颜色列表）
 export const COLOR_LIST = [
     '#33a3dc',
