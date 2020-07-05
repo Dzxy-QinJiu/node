@@ -1282,7 +1282,8 @@ class RecommendCluesFilterPanel extends Component {
         let {isWebMin} = isResponsiveDisplay();
 
         let hotAndVipFilterCls = classNames('hot-and-vip-filters', {
-            'hide-filters': !showFilterArea
+            'hide-filters': !showFilterArea,
+            'mobile-hide-filters': isWebMin && !showFilterArea,
         });
 
         return (
