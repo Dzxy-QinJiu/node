@@ -4,7 +4,7 @@
 require('../style/add-ip-form.less');
 import {Form, Input, Button, Icon} from 'antd';
 const FormItem = Form.Item;
-import {ipRegex} from 'PUB_DIR/sources/utils/validate-util';
+import { ipRegexWildcard } from 'PUB_DIR/sources/utils/validate-util';
 const CHECKIPMSG = Intl.get('config.manage.input.ip','请输入有效的IP（eg:192.168.1.9）');
 
 class AddIpForm extends React.Component {
@@ -38,7 +38,7 @@ class AddIpForm extends React.Component {
                 >
                     {getFieldDecorator('ip', {
                         rules: [{
-                            pattern: ipRegex,
+                            pattern: ipRegexWildcard,
                             message: CHECKIPMSG
                         }],
                         validateTrigger: 'onBlur'
