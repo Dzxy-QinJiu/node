@@ -728,7 +728,8 @@ exports.bindLoginWechatMiniprogram = function(req, res) {
         var password = req.body.password;
         //记录上一次登录用户名，到session中
         username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
-        DesktopLoginService.login(req, res, username, password)
+        var captcha = req.body.retcode;
+        DesktopLoginService.login(req, res, username, password,captcha)
             .on('success', function(data) {
                 // restLogger.info('小程序绑定已有用户，登录成功');
                 modifySessionData(req, data);
