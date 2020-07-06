@@ -20,7 +20,6 @@ export function getCustomerEffectiveChart(paramObj = {}) {
     };
     const { type } = paramObj;
     const activeParam = activeParamMap[type];
-    const isFollowUp = type === 'follow';
 
     return {
         title: activeParam.title,
