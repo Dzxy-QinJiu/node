@@ -4,23 +4,15 @@
  */
 
 export function getCustomerEffectiveChart(paramObj = {}) {
+    const url = '/rest/analysis/customer/v3/:data_type/follow/customer/active_rate';
+
     const activeParamMap = {
         'responsible': {
             title: Intl.get('analysis.statistics.of.active.rate.of.effective.customers', '负责客户活跃率统计'),
-            url: '/rest/analysis/customer/v3/:data_type/follow/customer/active_rate',
-            argCallback: arg => {
-                delete arg.query.app_id;
-                delete arg.query.interval;
-                delete arg.query.time_range;
-            }
         },
         'follow': {
             title: Intl.get('analysis.statistics.of.active.rate.of.follow.customers', '联合跟进客户活跃率统计'),
-            url: '/rest/analysis/customer/v3/:data_type/follow/customer/active_rate',
             argCallback: arg => {
-                delete arg.query.app_id;
-                delete arg.query.interval;
-                delete arg.query.time_range;
                 arg.query.is_owner = false; // 默认true是负责人, 对联合跟进人进行统计，需要传false,
             }
         }
@@ -28,11 +20,17 @@ export function getCustomerEffectiveChart(paramObj = {}) {
     };
     const { type } = paramObj;
     const activeParam = activeParamMap[type];
+    const isFollowUp = type === 'follow';
 
     return {
         title: activeParam.title,
-        url: activeParam.url,
-        argCallback: activeParam.argCallback,
+        url: activeParam.url || url,
+        argCallback: arg => {
+            delete arg.query.app_id;
+            delete arg.query.interval;
+            delete arg.query.time_range;
+            _.isFunction(activeParam.argCallback) && activeParam.argCallback(arg);
+        },
         chartType: 'table',
         dataField: 'list',
         option: {
