@@ -61,7 +61,7 @@ class Card extends React.Component {
             'production-stop': this.props.type === 'production' && card.status === 0,
             'selected': this.props.isSelect
         });
-        console.log('this.props.showDelete:',this.props.showDelete);
+        
         return (
             <div className="card-layout-container " style={{width: this.props.cardWidth}}>
                 <div className={cardBoxCls} onClick={this.showCardInfo}>
