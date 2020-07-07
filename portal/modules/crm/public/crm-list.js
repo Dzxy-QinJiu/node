@@ -1972,7 +1972,7 @@ class Crm extends React.Component {
                 render: (text, record, index) => {
                     return (
                         <span className="cus-op" data-tracename="删除客户">
-                            <Button className="order-btn-class handle-btn-item" 
+                            <Button className="order-btn-class handle-btn-item"
                                 onClick={this.deleteDuplicatImportCustomer.bind(this, index)}
                                 title={Intl.get('common.delete', '删除')}>
                                 <i className="iconfont icon-delete"></i>
@@ -2355,15 +2355,16 @@ class Crm extends React.Component {
                     );
                     return (
                         <span>
+                            {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : this.renderReleaseReasonBlock(content, this.releaseCustomer.bind(this, record.id), RELEASE_OPERATOR_TYPE.SINGLE)}
                             <span className="cus-op" data-tracename="删除客户">
                                 {isDeleteBtnShow ? (
                                     isRepeat ?
-                                        <Button className="order-btn-class delete-btn handle-btn-item" 
+                                        <Button className="order-btn-class delete-btn handle-btn-item"
                                             onClick={_this.deleteDuplicatImportCustomer.bind(_this, index)}
                                             title={Intl.get('common.delete', '删除')} >
                                             <i className="iconfont icon-delete"></i>
-                                        </Button> : 
-                                        <Popconfirm placement="topRight" 
+                                        </Button> :
+                                        <Popconfirm placement="topRight"
                                             onConfirm={this.confirmDelete.bind(this,record.id)}
                                             title={Intl.get('crm.customer.delete', '删除后，可以在回收站中找回该客户，您确定要删除吗？')}>
                                             <a className='release-customer'
@@ -2373,7 +2374,6 @@ class Crm extends React.Component {
                                         </Popconfirm>
                                 ) : null}
                             </span>
-                            {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : this.renderReleaseReasonBlock(content, this.releaseCustomer.bind(this, record.id), RELEASE_OPERATOR_TYPE.SINGLE)}
                         </span>
                     );
                 }
