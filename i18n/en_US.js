@@ -3551,8 +3551,8 @@ var en_US = {
     'customer.pool.extract.success.has.extract.by.other': 'Successfully extracted {successCount} and extracted {otherCount} by others',//提取成功{successCount}个、已被他人提取{otherCount}个
     'customer.pool.has.all.extract.by.other': 'Have been extracted by others',//都已被他人提取
     'customer.pool.has.extract.by.other': 'Has been extracted by someone else',//已被他人提取
-    'lead.delete.clue': 'Delete clue',//删除线索
-    'lead.release.clue': 'Release clue',//释放到线索池
+    'lead.delete.clue': 'Delete lead',//删除线索
+    'lead.release.clue': 'Release lead',//释放到线索池
 
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
