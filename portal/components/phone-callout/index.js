@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2019/2/28.
  */
 import {Popover, message, Icon, Button, Popconfirm} from 'antd';
-import {hasCalloutPrivilege, checkVersionAndType, getContactSalesPopoverTip, isExpired, handleUpgradePersonalVersion, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasCalloutPrivilege, checkVersionAndType, getContactSalesPopoverTip, isExpired, handleUpgradePersonalVersion, isResponsiveDisplay, isOpenCaller} from 'PUB_DIR/sources/utils/common-method-util';
 import {showDisabledCallTip, handleCallOutResult, checkPhoneStatus}from 'PUB_DIR/sources/utils/common-data-util';
 import {isRongLianPhoneSystem, handleBeforeCallOutCheck} from 'PUB_DIR/sources/utils/phone-util';
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
@@ -56,7 +56,7 @@ class PhoneCallout extends React.Component {
             let newState = {};
             newState.ableClickCheckPhoneIcon = true;
             if(!isEmptyPhone(_.get(result, '[0].phone_status'))) {//如果检测的手机号状态不是疑似空号需要提示下
-                newState.checkPhonePopContent = Intl.get('lead.check.phone.no.empty.number', '非疑似空号');
+                newState.checkPhonePopContent = Intl.get('lead.check.phone.have.tested', '已检测');
             }else {
                 newState.checkPhonePopContent = Intl.get('lead.phone.status.null', '疑似空号');
             }
@@ -119,7 +119,8 @@ class PhoneCallout extends React.Component {
     renderPhoneIcon = () => {
         //如果是在线索池中，电话按钮隐藏
         //容联电话系统，如果正在打电话，不展示拨打电话的按钮
-        if ((isRongLianPhoneSystem() && Oplate.isCalling) || this.props.hidePhoneIcon) {
+        //没有开通呼叫中心，电话按钮隐藏
+        if ((isRongLianPhoneSystem() && Oplate.isCalling) || this.props.hidePhoneIcon || !isOpenCaller()) {
             return null;
         }
         var contentTip = showDisabledCallTip();
