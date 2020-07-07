@@ -3572,6 +3572,8 @@ var zh_CN = {
     'customer.pool.extract.success.has.extract.by.other': '提取成功{successCount}个、已被他人提取{otherCount}个',
     'customer.pool.has.all.extract.by.other': '都已被他人提取',
     'customer.pool.has.extract.by.other': '已被他人提取',
+    'lead.delete.clue': '删除线索',
+    'lead.release.clue': '释放到线索池',
 
     //线索模块 end
     'common.memeber.all': '全部成员',

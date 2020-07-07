@@ -258,6 +258,11 @@
       .ant-table tbody .current-row {
         background: #DFEAF3 !important;
       }
+      .ant-table tbody tr:hover{
+        .iconfont.icon-release,.iconfont.icon-delete{
+          visibility: visible !important;
+        }
+      }
       .clue-status-wrap {
         position: absolute;
         font-size: 14px;
@@ -364,15 +369,16 @@
             }
           }
           .action-td-clue {
-            .release-clue-btn {
-              float: left;
-              transform: translateY(2px);
-              width: 25px;
-              height: 28px;
-              margin-left: 6px;
+            .delete-clue-btn,.release-clue-btn {
+              display: inline-block;
+              .release-customer{
+                position: relative;
+                top: -1px;
+              }
               .icon-release {
                 font-size: 14px;
                 margin-left: 6px;
+                visibility: hidden;
               }
             }
             .order-btn-class {
@@ -383,6 +389,7 @@
               border-radius: 100px;
               .icon-delete {
                 font-size: 18px;
+                visibility: hidden;
               }
             }
           }

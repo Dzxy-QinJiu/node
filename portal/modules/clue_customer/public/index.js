@@ -2095,23 +2095,26 @@ class ClueCustomer extends React.Component {
                 render: (text, salesClueItem, index) => {
                     return(
                         <React.Fragment>
-                            {showRelease ? <div className="release-clue-btn">
-                                <Popconfirm placement="topRight" onConfirm={this.releaseClue.bind(this, salesClueItem)}
+                            {showRelease ? <div className='release-clue-btn' id={'release' + salesClueItem.id}>
+                                <Popconfirm getPopupContainer={() => document.getElementById('release' + salesClueItem.id)} placement="topRight" onConfirm={this.releaseClue.bind(this, salesClueItem)}
                                     title={releaseTip}>
                                     <a className='release-customer'
-                                        title={Intl.get('crm.customer.release', '释放')}>
+                                        title={Intl.get('lead.release.clue', '释放到线索池')}>
                                         <i className="iconfont icon-release handle-btn-item"/>
                                     </a>
                                 </Popconfirm>
                             </div> : null}
                             {deleteCluePrivilege(salesClueItem) ?
-                                <Popconfirm placement="topRight" onConfirm={this.deleteClue.bind(this, salesClueItem)}
-                                    title={Intl.get('clue.customer.delete', '删除后无法恢复，您确定要删除吗？')}>
-                                    <a className="order-btn-class delete-btn handle-btn-item"
-                                        title={Intl.get('common.delete', '删除')} >
-                                        <i className="iconfont icon-delete"></i>
-                                    </a>
-                                </Popconfirm> : null}
+                                <div className='delete-clue-btn' id={'delete' + salesClueItem.id}>
+                                    <Popconfirm getPopupContainer={() => document.getElementById('delete' + salesClueItem.id)} placement="topRight" onConfirm={this.deleteClue.bind(this, salesClueItem)}
+                                        title={Intl.get('clue.customer.delete', '删除后无法恢复，您确定要删除吗？')}>
+                                        <a className="order-btn-class delete-btn handle-btn-item"
+                                            title={Intl.get('lead.delete.clue', '删除线索')} >
+                                            <i className="iconfont icon-delete"></i>
+                                        </a>
+                                    </Popconfirm>
+                                </div>
+                                : null}
                         </React.Fragment>
                     );
                 }
