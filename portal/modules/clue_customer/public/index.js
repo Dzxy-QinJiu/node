@@ -1823,7 +1823,7 @@ class ClueCustomer extends React.Component {
                     <ContactItem
                         contacts={handledContactObj.contact}
                         customerData={salesClueItem}
-                        showCheckPhone
+                        showCheckPhone={false}
                         showContactLabel={false}
                         hasMoreIcon={hasMoreIconPrivilege}
                         showClueDetailPanel={this.showClueDetailPanel.bind(this, salesClueItem)}
