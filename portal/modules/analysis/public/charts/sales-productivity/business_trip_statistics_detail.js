@@ -6,7 +6,7 @@ import { MERIDIEM } from 'PUB_DIR/sources/utils/consts';
 
 export function getBusinessTripStatisticsDetailChart() {
     return {
-        title: '出差统计详情',
+        title: Intl.get('analysis.business.trip.statistics', '出差统计详情'),
         chartType: 'table',
         layout: {sm: 24},
         height: 'auto',
@@ -26,31 +26,31 @@ export function getBusinessTripStatisticsDetailChart() {
         },
         option: {
             columns: [{
-                title: '销售',
+                title: Intl.get('sales.home.sales', '销售'),
                 dataIndex: 'nickname',
                 width: 100,
             }, {
-                title: '团队',
+                title: Intl.get('user.user.team', '团队'),
                 dataIndex: 'team_name',
                 width: 100,
             }, {
-                title: '客户名',
+                title: Intl.get('crm.41', '客户名'),
                 dataIndex: 'customer_name',
                 width: 200,
             }, {
-                title: '拜访时间',
+                title: Intl.get('bussiness.trip.time.range', '拜访时间'),
                 dataIndex: 'visit_time',
                 width: 240,
             }, {
-                title: '备注',
+                title: Intl.get('common.remark', '备注'),
                 dataIndex: 'remarks',
                 width: 200,
             }, {
-                title: '跟进记录内容',
+                title: Intl.get('analysis.follow-up.record.content', '跟进记录内容'),
                 dataIndex: 'visit_record',
                 width: 200,
             }, {
-                title: '跟进记录时间',
+                title: Intl.get('analysis.follow-up.time', '跟进记录时间'),
                 dataIndex: 'visit_record_time',
                 width: 100,
             }],

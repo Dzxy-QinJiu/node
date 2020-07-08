@@ -3441,6 +3441,9 @@ var en_US = {
     'analysis.number.of.customers.with.an.account': 'number of customers with an account',//有账号的客户数
     'analysis.number.of.customers.whose.accounts.have.been.logged.in': 'number of customers whose accounts have been logged in',//有账号登录过的客户数
     'analysis.visit.customer.trend.statistics': 'visit customer trend statistics',//拜访客户趋势统计
+    'analysis.business.trip.statistics': 'business trip statistics',//出差统计详情
+    'analysis.follow-up.record.content': 'follow-up record content',//跟进记录内容
+    'analysis.follow-up.time': 'follow-up time',//跟进记录时间
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
