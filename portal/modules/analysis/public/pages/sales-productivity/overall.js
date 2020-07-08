@@ -33,6 +33,8 @@ function getCharts() {
         salesProductivityChart.getVisitCustomerChart(),
         //拜访客户趋势统计
         salesProductivityChart.getVisitCustomerTrendChart(),
+        //出差统计详情
+        salesProductivityChart.getBusinessTripStatisticsDetailChart(),
     ];
 }
 
