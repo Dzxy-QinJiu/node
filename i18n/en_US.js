@@ -419,6 +419,8 @@ var en_US = {
     'register.user.agreement.tip': 'Read and agreed to {useragreement}',//已阅读并同意{userAgreement}
     'register.user.agreement.curtao': 'User agreement',//《用户协议》
     'register.user.agreement.valid.tip': 'Please read and agreed to "Curtao user agreement"',//请先阅读并同意《客套用户协议》
+    'register.curtao.agreement.title': 'User agreement of Curtao',//客套用户协议
+    'register.curtao.privacy.policy.title': 'Privacy policy of Curtao',//客套隐私政策
     'register.to.login.tip': 'Existing account, go to {login}',//已有账号，去{login}
     'register.phone.has.registed': 'The mobile number has been registered',//该手机号已被注册
     'register.privacy.policy': 'Privacy policy',//隐私政策

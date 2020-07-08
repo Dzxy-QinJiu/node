@@ -427,6 +427,9 @@ var zh_CN = {
     'register.user.agreement.tip': '已阅读并同意{userAgreement}',
     'register.user.agreement.curtao': '《用户协议》',
     'register.user.agreement.valid.tip': '请先阅读并同意《客套用户协议》',
+    'register.curtao.agreement.title': '客套用户协议',
+    'register.curtao.privacy.policy.title': '客套隐私政策',
+
     'register.to.login.tip': '已有账号，去{login}',
     'register.phone.has.registed': '该手机号已被注册',
     'register.privacy.policy': '隐私政策',
