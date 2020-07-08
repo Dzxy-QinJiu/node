@@ -3446,6 +3446,8 @@ var en_US = {
     'analysis.business.trip.statistics': 'business trip statistics',//出差统计详情
     'analysis.follow-up.record.content': 'follow-up record content',//跟进记录内容
     'analysis.follow-up.time': 'follow-up time',//跟进记录时间
+    'analysis.login.user.statistics': 'login user statistics',//登录用户统计
+    'analysis.the.total.number.of.delay': 'the total number of delay',//延期总数
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
