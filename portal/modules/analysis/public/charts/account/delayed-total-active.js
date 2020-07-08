@@ -1,12 +1,12 @@
 /**
- * 出差统计详情
+ * 登录用户统计
  */
 
 import { MERIDIEM } from 'PUB_DIR/sources/utils/consts';
 
 export function getDelayedTotalActiveChart() {
     return {
-        title: Intl.get('analysis.business.trip.statistics', '出差统计详情'),
+        title: '登录用户统计',
         chartType: 'table',
         url: '/rest/analysis/user/v3/:data_type/delay/user/team',
         option: {
