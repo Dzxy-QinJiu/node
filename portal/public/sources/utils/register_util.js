@@ -17,6 +17,14 @@ exports.pcAndWechatMiniProgram = function(hrefUrl,isRegistry) {
         window.location.href = hrefUrl;
     }
 };
+exports.pcAndWechatMiniPrivicyAndAgreement = function(hrefUrl) {
+    if (isWxEnvironment()) {//小程序直接调用window.open是不起作用的
+        window.location.href = hrefUrl;
+    } else {
+        window.open(hrefUrl);
+    }
+};
+
 //是否是小程序包裹的web-view
 function isWxEnvironment(){
     return window && window.__wxjs_environment === 'miniprogram';
