@@ -31,6 +31,8 @@ function getCharts() {
         salesProductivityChart.getSalesManagerPerformanceRankingChart(),
         //出差拜访频率统计
         salesProductivityChart.getVisitCustomerChart(),
+        //拜访客户趋势统计
+        salesProductivityChart.getVisitCustomerTrendChart(),
     ];
 }
 

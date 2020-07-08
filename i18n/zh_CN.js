@@ -3461,6 +3461,7 @@ var zh_CN = {
     'analysis.cue.call.analysis': '线索通话分析',
     'analysis.number.of.customers.with.an.account': '有账号的客户数',
     'analysis.number.of.customers.whose.accounts.have.been.logged.in': '有账号登录过的客户数',
+    'analysis.visit.customer.trend.statistics': '拜访客户趋势统计',
     'common.font.the': '第',
     'common.weeks': '周',
     'clue.add.contacts.tip': '添加联系方式',
