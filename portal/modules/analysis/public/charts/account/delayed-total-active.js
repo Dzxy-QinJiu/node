@@ -21,10 +21,12 @@ export function getDelayedTotalActiveChart() {
             }, {
                 title: Intl.get('analysis.the.total.number.of.delay', '延期总数'),
                 dataIndex: 'total',
+                align: 'right',
                 width: 100,
             }, {
                 title: Intl.get('operation.report.active.num', '活跃数'),
                 dataIndex: 'active',
+                align: 'right',
                 width: 100,
             }],
         }
