@@ -55,7 +55,8 @@ function renderUserAgreementPrivacyPolicy(req, res){
             userid: '',
             contact: '',
             custom_service_lang,
-            isUserAgreement
+            isUserAgreement,
+            title: isUserAgreement ? backendIntl.get('register.curtao.agreement.title', '客套用户协议') : backendIntl.get('register.curtao.privacy.policy.title', '客套隐私政策')
         });
     };
 }
