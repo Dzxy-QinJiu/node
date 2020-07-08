@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        @font-face {
+            font-family: 'iconfont';  /* project id 58332 */
+            src: url('https://at.alicdn.com/t/font_58332_wlga3cwq5ga.eot');
+            src: url('https://at.alicdn.com/t/font_58332_wlga3cwq5ga.eot?#iefix') format('embedded-opentype'),
+            url('https://at.alicdn.com/t/font_58332_wlga3cwq5ga.woff2') format('woff2'),
+            url('https://at.alicdn.com/t/font_58332_wlga3cwq5ga.woff') format('woff'),
+            url('https://at.alicdn.com/t/font_58332_wlga3cwq5ga.ttf') format('truetype'),
+            url('https://at.alicdn.com/t/font_58332_wlga3cwq5ga.svg#iconfont') format('svg');
+        }
+        .iconfont{
+            font-family:"iconfont" !important;
+            font-size:16px;font-style:normal;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-stroke-width: 0.2px;
+            -moz-osx-font-smoothing: grayscale;}
+        .icon-ketao:before { content: "\E701" !important; }
+        div,p{
+            margin: 0;
+        }
+        #template-container {
+            width: 480px;
+            margin: 0 auto;
+            box-shadow: -4px 0 20px #cac8c8;
+        }
+        #template-head,#template-foot{
+            background: rgba(241,244,248,1);
+        }
+        #template-head{
+            height: 48px;
+            padding-left: 16px;
+            display: flex;
+            align-items: center;
+        }
+        #template-head img{
+            width: 20px;
+            margin-right: 5px;
+            position: relative;
+            top: -1px;
+        }
+        #template-head span{
+            width: 15px;
+        }
+        #template-body{
+            padding: 24px;
+            color: #333333;
+        }
+        #template-body a{
+            color:#2196F3;
+            cursor: pointer;
+        }
+        #template-body .info-person{
+            font-size: 16px;
+        }
+        #template-body .info-person p{
+            font-family:Source Han Sans CN;
+            font-weight:500;
+            height: 20px;
+            line-height: 20px;
+        }
+        #template-body .info-active-btn{
+            margin: 4px 0;
+        }
+        #template-body .info-content{
+            font-weight: 400;
+            font-size: 14px;
+            margin-top: 12px;
+        }
+        #template-body .info-content p{
+            height: 16px;
+            line-height: 16px;
+        }
+        #template-body .info-content p:not(:last-child){
+            margin-bottom: 12px;
+        }
+        #template-body .info-content-bottom{
+            font-weight: 400;
+            font-size: 14px;
+        }
+        #template-body .info-content-bottom p{
+            word-break: break-all;
+            line-height: 16px;
+        }
+        #template-body .info-content-bottom p:not(:last-child){
+            margin-bottom: 8px;
+        }
+        #template-foot{
+            padding: 24px;
+            font-size: 12px;
+            color: #999;
+        }
+        #template-foot p{
+            height: 14px;
+            line-height: 14px;
+        }
+        #template-foot p:not(:last-child){
+            margin-bottom: 8px;
+        }
+        #template-foot a{
+            color:#2196F3;
+            cursor: pointer;
+        }
+
+
+
+        #template-body .info-active-btn a{
+            display: inline-block;
+            background: #2196f3;
+            color: #fff;
+            line-height: 48px;
+            text-align: center;
+            width:240px;
+            height:48px;
+            background:rgba(33,150,243,1);
+            border-radius:4px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 16px 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id="template-container">
+    <div id="template-head">
+        <img src="https://img.curtao.com/curtao/images/logo.png" alt="">
+        <i class="iconfont icon-ketao"></i>
+    </div>
+    <div id="template-body">
+        <div class="info-person">
+            <p>李文君，您好！</p>
+        </div>
+        <div class="info-active-btn">
+            邮箱激活成功!
+        </div>
+        <div class="info-active-btn">
+            <p>点击下方按钮前往客套页面。</p>
+            <a href="https://www.baidu.com">前往客套</a>
+        </div>
+        <div class="info-content-bottom">
+            <p>如果点击按钮，没有响应，请复制以下链接到浏览器地址栏中。</p>
+            <p><a href="https://ketao.antfact.com/login">https://ketao.antfact.com/login</a></p>
+        </div>
+    </div>
+    <div id="template-foot">
+        <p>该邮件来自客套的自动提醒，请勿回复。</p>
+        <p>查看详情请登录客套：<a href="https://ketao.antfact.com">ketao.antfact.com</a></p>
+        <p>&copy;客套智能科技 鲁ICP备18038856号 服务热线: 400-6978-520</p>
+    </div>
+</div>
+</body>
+</html>

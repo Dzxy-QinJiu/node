@@ -72,8 +72,8 @@ exports.getUserInfo = function(req, res) {
                     userData.websiteConfig = _.get(resultList, '[3].successData', {});
                 }
             }
-             // 登录时已获取过websiteConfig此处就不需要获取了，直接用session中存的
-             if (req.session.websiteConfig) {
+            // 登录时已获取过websiteConfig此处就不需要获取了，直接用session中存的
+            if (req.session.websiteConfig) {
                 userData.websiteConfig = req.session.websiteConfig;
                 // 取完登录后的websiteConfig后，即可删掉session中的websiteConfig，为了刷新时可以重新获取最新数据
                 delete req.session.websiteConfig;
@@ -196,7 +196,7 @@ var baseUrl = 'http://dataservice.curtao.com';
 var userInfoRestApis = {
     getUserInfo: '/rest/base/v1/user/member/self', // 登录用户信息
     getMemberRoles: '/rest/base/v1/user/member/roles',
-    activeEmail: '/rest/base/v1/user/email/confirm',
+    activeEmail: '/rest/base/v1/user/email/confirm222',
     getUserLanguage: '/rest/base/v1/user/member/language/setting',
     getMyTeamWithSubteams: '/rest/base/v1/group/teams/tree/self',
     getOrganizationInfoById: '/rest/base/v1/realm/organization',

@@ -187,8 +187,16 @@ exports.activeEmail = function(req, res) {
         res.set('Content-Type', 'text/html');
         res.send(data);
     }).on('error', function(errorObj) {
-        res.set('Content-Type', 'text/html');
-        res.send(errorObj && errorObj.message);
+        var fullUrl = req.protocol + '://' + req.get('host');
+        fs.readFile(path.join(__dirname, '../tpl/active-email-error.html'), (err,data) => {
+            if(err){
+                console.log('读取出错了');
+            }else{
+                res.set('Content-Type', 'text/html');
+                res.send(_.replace(data.toString(),'targetUrl',fullUrl));
+            }
+        });
+
     });
 };
 
