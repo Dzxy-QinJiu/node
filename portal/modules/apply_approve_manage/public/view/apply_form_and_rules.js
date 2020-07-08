@@ -259,6 +259,9 @@ class ApplyFormAndRules extends React.Component {
         //todo 待优化这里的判断
         if (formItem.title) {
             target.isEditting = false;
+
+            //避免报 "Uncaught TypeError: Cannot call a class as a function" 错误
+            delete target.component;
         } else {
             applyTypeData.customiz_form = _.filter(customiz_form, item => item.key !== formKey);
         }
@@ -281,6 +284,10 @@ class ApplyFormAndRules extends React.Component {
         });
         successFunc();
         target.isEditting = false;
+
+        //避免报 "Uncaught TypeError: Cannot call a class as a function" 错误
+        delete target.component;
+
         this.setState({
             applyTypeData: this.state.applyTypeData
         });
