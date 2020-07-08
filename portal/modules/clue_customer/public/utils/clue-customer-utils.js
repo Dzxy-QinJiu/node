@@ -627,7 +627,7 @@ export const getCheckedPhones = function(clues) {
     let phoneList = [];//要检测的手机号列表
     let hasCheckedPhoneList = [];//已经检测过状态的手机号列表
     _.each(clues, clue => {
-        if(clue.contacts.length) {
+        if(_.get(clue,'contacts.length')) {
             let phones = _.chain(clue.contacts)
                 .filter(item => _.isArray(item.phone) && item.phone.length)
                 .map('phone')
