@@ -16,6 +16,7 @@ import GeminiScrollbar from '../react-gemini-scrollbar';
 const LAYOUT_CONST = {
     TITLE_HEIGHT: 96,//标题的高度
     MARGAIN: 108,//上下边距的和54+54
+    MOBILE_MARGIN: 45
 };
 class UserAgreementPage extends React.Component {
     constructor(props) {
@@ -33,7 +34,11 @@ class UserAgreementPage extends React.Component {
         this.setState({ contentHeight: this.getContentHeight() });
     }
     getContentHeight() {
-        return $(window).height() - LAYOUT_CONST.MARGAIN;// - LAYOUT_CONST.TITLE_HEIGHT;
+        let margin = LAYOUT_CONST.MARGAIN;
+        if($(window).width() <= 720){
+            margin = LAYOUT_CONST.MOBILE_MARGIN;
+        }
+        return $(window).height() - margin;// - LAYOUT_CONST.TITLE_HEIGHT;
     }
     componentWillUnmount() {
         Trace.detachEventListener(window, 'click', Trace.eventHandler);

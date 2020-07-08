@@ -4,7 +4,7 @@
  @import "../../../public/css/common-variables";
 @user-agree-width: 912px;
 @user-agree-width-middle: 600px;
-@user-agree-width-small: 300px;
+@user-agree-width-small: 100%;
 body{
   margin: 0;
 }
@@ -94,12 +94,28 @@ body{
   .user-agreement-wrap{
     .user-agreement-title{
       width: @user-agree-width-small;
+      padding: 12px;
+      margin: 0 auto;
+      .user-agreement-text{
+        font-size: 16px;
+        margin-left: 12px;
+        padding-left: 12px; 
+      }
     }
     .user-agreement-content{
       width: @user-agree-width-small;
+      padding-left: 12px; 
+      margin-top: 45px;
+      .content-text {
+        padding-right: 12px;
+      }
+      .content-mini-margin {
+        padding-right: 12px;
+      }
     }
   }
   #footer .footer-content {
+    display: none;
     font-size: 10px;
     padding: 14px 0 !important;
   }
