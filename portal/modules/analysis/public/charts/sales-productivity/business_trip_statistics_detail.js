@@ -14,6 +14,7 @@ export function getBusinessTripStatisticsDetailChart() {
         processData: data => {
             _.each(data, item => {
                 item.visit_record_time = moment(item.visit_record_time).format(oplateConsts.DATE_FORMAT);
+
                 if (item.visit_start === item.visit_end) {
                     item.visit_time = transAmPm(item.visit_start);
                 } else {
@@ -35,19 +36,19 @@ export function getBusinessTripStatisticsDetailChart() {
             }, {
                 title: '客户名',
                 dataIndex: 'customer_name',
-                width: 100,
+                width: 200,
             }, {
                 title: '拜访时间',
                 dataIndex: 'visit_time',
-                width: 100,
+                width: 240,
             }, {
                 title: '备注',
                 dataIndex: 'remarks',
-                width: 100,
+                width: 200,
             }, {
                 title: '跟进记录内容',
                 dataIndex: 'visit_record',
-                width: 100,
+                width: 200,
             }, {
                 title: '跟进记录时间',
                 dataIndex: 'visit_record_time',
@@ -56,6 +57,7 @@ export function getBusinessTripStatisticsDetailChart() {
         }
     };
 
+    //将日期字符串中的AM转成上午,PM转成下午
     function transAmPm(dateStr = '') {
         return dateStr.replace('_', '').replace('AM', MERIDIEM.AM).replace('PM', MERIDIEM.PM);
     }
