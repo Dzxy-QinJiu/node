@@ -558,12 +558,13 @@ ClueCustomerStore.prototype.getSalesManList = function(list) {
 ClueCustomerStore.prototype.setKeyWord = function(keyword) {
     this.keyword = keyword;
 };
+//修改总的线索数和对应类别的数量
 ClueCustomerStore.prototype.minusCount = function(type) {
     if(this.allClueCount > 0){
         this.allClueCount -= 1;
     }
     if(type && this.agg_list[type] > 0){
-        this.agg_list[type] = this.agg_list[type] - 1;
+        this.agg_list[type] -= 1;
     }
 };
 //删除某个线索
