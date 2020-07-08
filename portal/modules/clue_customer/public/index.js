@@ -1675,7 +1675,7 @@ class ClueCustomer extends React.Component {
     //删除线索
     deleteClue = (curDeleteClue) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确定删除线索');
-        clueCustomerAction.deleteClueById({customer_clue_ids: curDeleteClue.id, clueStatus: curDeleteClue.status}, (errorMsg) => {
+        clueCustomerAction.deleteClueById({customer_clue_ids: curDeleteClue.id, clueStatus: curDeleteClue.status,availability: curDeleteClue.availability}, (errorMsg) => {
             if (errorMsg) {
                 message.error(errorMsg);
             } else {
@@ -1823,7 +1823,7 @@ class ClueCustomer extends React.Component {
                     <ContactItem
                         contacts={handledContactObj.contact}
                         customerData={salesClueItem}
-                        showCheckPhone={false}
+                        showCheckPhone
                         showContactLabel={false}
                         hasMoreIcon={hasMoreIconPrivilege}
                         showClueDetailPanel={this.showClueDetailPanel.bind(this, salesClueItem)}
@@ -2095,26 +2095,23 @@ class ClueCustomer extends React.Component {
                 render: (text, salesClueItem, index) => {
                     return(
                         <React.Fragment>
-                            {showRelease ? <div className='release-clue-btn' id={'release' + salesClueItem.id}>
-                                <Popconfirm getPopupContainer={() => document.getElementById('release' + salesClueItem.id)} placement="topRight" onConfirm={this.releaseClue.bind(this, salesClueItem)}
+                            {showRelease ? <div className="release-clue-btn">
+                                <Popconfirm placement="topRight" onConfirm={this.releaseClue.bind(this, salesClueItem)}
                                     title={releaseTip}>
                                     <a className='release-customer'
-                                        title={Intl.get('lead.release.clue', '释放到线索池')}>
+                                        title={Intl.get('crm.customer.release', '释放')}>
                                         <i className="iconfont icon-release handle-btn-item"/>
                                     </a>
                                 </Popconfirm>
                             </div> : null}
                             {deleteCluePrivilege(salesClueItem) ?
-                                <div className='delete-clue-btn' id={'delete' + salesClueItem.id}>
-                                    <Popconfirm getPopupContainer={() => document.getElementById('delete' + salesClueItem.id)} placement="topRight" onConfirm={this.deleteClue.bind(this, salesClueItem)}
-                                        title={Intl.get('clue.customer.delete', '删除后无法恢复，您确定要删除吗？')}>
-                                        <a className="order-btn-class delete-btn handle-btn-item"
-                                            title={Intl.get('lead.delete.clue', '删除线索')} >
-                                            <i className="iconfont icon-delete"></i>
-                                        </a>
-                                    </Popconfirm>
-                                </div>
-                                : null}
+                                <Popconfirm placement="topRight" onConfirm={this.deleteClue.bind(this, salesClueItem)}
+                                    title={Intl.get('clue.customer.delete', '删除后无法恢复，您确定要删除吗？')}>
+                                    <a className="order-btn-class delete-btn handle-btn-item"
+                                        title={Intl.get('common.delete', '删除')} >
+                                        <i className="iconfont icon-delete"></i>
+                                    </a>
+                                </Popconfirm> : null}
                         </React.Fragment>
                     );
                 }

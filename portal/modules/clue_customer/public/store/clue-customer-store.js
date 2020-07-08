@@ -525,11 +525,9 @@ ClueCustomerStore.prototype.afterAddClueTrace = function(item) {
             this.allClueCount += 1;
         }
         if (clueStatus === SELECT_TYPE.WILL_DISTRIBUTE){
-            this.agg_list['willDistribute'] = this.agg_list['willDistribute'] - 1;
-            this.allClueCount -= 1;
+            this.minusCount('willDistribute');
         }else if (clueStatus === SELECT_TYPE.WILL_TRACE){
-            this.agg_list['willTrace'] = this.agg_list['willTrace'] - 1;
-            this.allClueCount -= 1;
+            this.minusCount('willTrace');
         }
         this.curClueList = _.filter(this.curClueList, clue => updateId !== clue.id);
         this.customersSize--;
@@ -560,6 +558,15 @@ ClueCustomerStore.prototype.getSalesManList = function(list) {
 ClueCustomerStore.prototype.setKeyWord = function(keyword) {
     this.keyword = keyword;
 };
+//修改总的线索数和对应类别的数量
+ClueCustomerStore.prototype.minusCount = function(type) {
+    if(this.allClueCount > 0){
+        this.allClueCount -= 1;
+    }
+    if(type && this.agg_list[type] > 0){
+        this.agg_list[type] -= 1;
+    }
+};
 //删除某个线索
 ClueCustomerStore.prototype.deleteClueById = function(data) {
     var clueId = data.customer_clue_ids || data.id;
@@ -568,21 +575,16 @@ ClueCustomerStore.prototype.deleteClueById = function(data) {
     this.customersSize--;
     //删除线索后，更新线索的统计值
     if (data.availability === AVALIBILITYSTATUS.INAVALIBILITY){
-        this.agg_list['invalidClue'] = this.agg_list['invalidClue'] - 1;
         //总数要减一
-        this.allClueCount -= 1;
+        this.minusCount('invalidClue');
     }else if (clueStatus === SELECT_TYPE.WILL_DISTRIBUTE){
-        this.agg_list['willDistribute'] = this.agg_list['willDistribute'] - 1;
-        this.allClueCount -= 1;
+        this.minusCount('willDistribute');
     }else if (clueStatus === SELECT_TYPE.WILL_TRACE){
-        this.agg_list['willTrace'] = this.agg_list['willTrace'] - 1;
-        this.allClueCount -= 1;
+        this.minusCount('willTrace');
     }else if (clueStatus === SELECT_TYPE.HAS_TRACE){
-        this.agg_list['hasTrace'] = this.agg_list['hasTrace'] - 1;
-        this.allClueCount -= 1;
+        this.minusCount('hasTrace');
     }else if (clueStatus === SELECT_TYPE.HAS_TRANSFER){
-        this.agg_list['hasTransfer'] = this.agg_list['hasTransfer'] - 1;
-        this.allClueCount -= 1;
+        this.minusCount('hasTransfer');
     }
 };
 ClueCustomerStore.prototype.updateClueTabNum = function(type) {
