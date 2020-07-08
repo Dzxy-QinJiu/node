@@ -17,6 +17,7 @@ exports.pcAndWechatMiniProgram = function(hrefUrl,isRegistry) {
         window.location.href = hrefUrl;
     }
 };
+//web端和小程序端展示的用户协议和隐私政策的展示
 exports.pcAndWechatMiniPrivicyAndAgreement = function(hrefUrl) {
     if (isWxEnvironment()) {//小程序直接调用window.open是不起作用的
         window.location.href = hrefUrl;

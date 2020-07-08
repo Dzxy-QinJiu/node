@@ -19,7 +19,7 @@ const CODE_EFFECTIVE_TIME = 60;
 const CODE_INTERVAL_TIME = 1000;
 let getVerifyErrorCaptchaCodeAJax = null;
 var base64_prefix = 'data:image/png;base64,';
-import {pcAndWechatMiniProgram,pcAndWechatMiniPrivicyAndAgreement} from 'PUB_DIR/sources/utils/register_util';
+import {pcAndWechatMiniProgram, pcAndWechatMiniPrivicyAndAgreement} from 'PUB_DIR/sources/utils/register_util';
 class RegisterForm extends React.Component {
     constructor(props) {
         super(props);
