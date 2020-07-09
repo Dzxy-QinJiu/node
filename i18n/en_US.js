@@ -969,7 +969,7 @@ var en_US = {
     'member.position.delete.office': 'Delete position', // 删除职务
     'member.position.set.default': 'Setting default', // 设为默认
     'member.continue.add.member': 'Continue', // 继续添加成员
-    'member.add.member.rule': 'The username can only be mailbox or composed of letters, Numbers, dash, underlined, and length from 1 to 50 (including 50).', // 用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间
+    'member.add.member.rule': 'The username can only be mailbox or composed of letters, Numbers, dash, underlined, and length from 1 to 30 (including 30).', // 用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间
     'member.record.member.operate': 'The member was {operate}', // {operate}了该成员。
     'member.record.change.field': 'Changed {field} for the member', // 修改了该成员的{field}。
     'member.record.change.field.name': 'Changed {field} of the member to {name}', // 修改了该成员的{field}，改为{name}

@@ -813,7 +813,7 @@ class MemberInfo extends React.Component {
                             validators={[{
                                 required: true,
                                 message: Intl.get('organization.tree.name.placeholder', '请输入{name}名称', {name: name}),
-                            }, validatorNameRuleRegex(50, name)]}
+                            }, validatorNameRuleRegex(30, name)]}
                             placeholder={Intl.get('user.info.input.nickname', '请输入昵称')}
                             hasEditPrivilege={hasPrivilege(memberManagePrivilege.EDIT_MEMBER)}
                             saveEditInput={this.saveEditMemberInfo.bind(this, 'nick_name')}

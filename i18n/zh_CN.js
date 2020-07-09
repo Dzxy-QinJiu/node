@@ -971,7 +971,7 @@ var zh_CN = {
     'member.position.delete.office': '删除职务',
     'member.position.set.default': '设为默认',
     'member.continue.add.member': '继续添加成员',
-    'member.add.member.rule': '用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间',
+    'member.add.member.rule': '用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到30（包括30）之间',
     'member.record.member.operate': '{operate}了该成员。',
     'member.record.change.field': '修改了该成员的{field}。',
     'member.record.change.field.name': '修改了该成员的{field}，改为{name}',
