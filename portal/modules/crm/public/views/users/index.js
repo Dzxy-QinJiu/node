@@ -231,7 +231,10 @@ class CustomerUsers extends React.Component {
 
     closeRightPanel(result) {
         let {delayApplyList} = this.state;
-        this.setState({applyType: '',delayApplyList: _.concat([result],delayApplyList)});
+        if(!_.isEmpty(result)){
+            delayApplyList = _.concat([result],delayApplyList);
+        }
+        this.setState({applyType: '',delayApplyList});
         if (_.isFunction(this.props.closeOpenAppPanel)) {
             this.props.closeOpenAppPanel();
         }
