@@ -21,6 +21,7 @@ const commonUtil = require('../../../lib/utils/common-utils');
 const authRouters = require('../../../lib/authRouters');
 let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
 const restLogger = require('../../../lib/utils/logger').getLogger('rest');
+const errFileName = 'active-email-error', successFileName = 'active-email-success';
 /*
  * home page handler.
  */
@@ -187,7 +188,11 @@ function readFileAndSendFront(req,res,fileName){
     var fullUrl = req.protocol + '://' + req.get('host');
     fs.readFile(path.join(__dirname, `../tpl/${fileName}.html`), (err,data) => {
         if(err){
-            restLogger.error('读取文件出错了');
+            if(fileName === errFileName){
+                restLogger.error('读取激活邮箱失败文件出错了');
+            }else{
+                restLogger.error('读取激活邮箱成功文件出错了');
+            }
         }else{
             res.set('Content-Type', 'text/html');
             res.send(data.toString().replace(/targetUrl/g,fullUrl));
@@ -196,7 +201,6 @@ function readFileAndSendFront(req,res,fileName){
 }
 //邮箱激活
 exports.activeEmail = function(req, res) {
-    const errFileName = 'active-email-error', successFileName = 'active-email-success';
     DesktopIndexService.activeEmail(req, res, req.query.code).on('success', function(result) {
         if(result){
             readFileAndSendFront(req, res,successFileName);
