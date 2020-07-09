@@ -80,11 +80,7 @@ export function getStageChart() {
 
                 //后端暂时不支持查看总数和有效阶段的详情
                 //总数, 有效为后端返回数据，无需国际化
-                if (['总数', '有效'].includs(label)) {
-                    //临时信息，暂不做国际化
-                    message.info('暂不支持查看该阶段的数据详情');
-                    return;
-                }
+                if (_.includes(['总数', '有效'], label)) return;
 
                 let type = hasPrivilege('CURTAO_CRM_CUSTOMER_ANALYSIS_ALL') ? 'all' : 'self';
                 const paramObj = {
