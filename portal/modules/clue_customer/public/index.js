@@ -2043,8 +2043,8 @@ class ClueCustomer extends React.Component {
                     return this.renderPhoneBlock(salesClueItem);
                 }
             }];
-        //如果是个人版，不需要加跟进人
-        if(!checkCurrentVersion().personal){
+        //如果是个人版或者是普通销售，不需要加跟进人
+        if(!isCommonSalesOrPersonnalVersion()){
             columns.push({
                 dataIndex: 'trace_person',
                 width: column_width,
