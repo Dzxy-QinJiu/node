@@ -5,12 +5,12 @@
 import { phoneMsgEmitter } from 'OPLATE_EMITTER';
 import { dataType } from '../../consts';
 
-export function getUnrenewedCustomerStatisticsChart() {
+export function getUnrenewedCustomerChart() {
     return {
         title: Intl.get('analysis.unrenewed.customer.statistics', '超3个月没有续约的客户'),
         chartType: 'table',
         layout: {sm: 24},
-        height: 'auto',
+        height: 450,
         url: `/rest/analysis/contract/contract/v2/${dataType}/expired/customer`,
         processData: data => {
             _.each(data, item => {
@@ -26,19 +26,19 @@ export function getUnrenewedCustomerStatisticsChart() {
                 render: (value, record) => {
                     return <a href="javascript:void(0)" onClick={showCustomer.bind(null, record.customer_id)}>{value}</a>;
                 },
-                width: 200,
+                width: 150,
             }, {
                 title: Intl.get('menu.sales.process', '客户阶段'),
                 dataIndex: 'customer_label',
-                width: 100,
+                width: 80,
             }, {
                 title: Intl.get('crm.6', '负责人'),
                 dataIndex: 'member_name',
-                width: 100,
+                width: 80,
             }, {
                 title: Intl.get('user.user.team', '团队'),
                 dataIndex: 'sales_team',
-                width: 100,
+                width: 80,
             }, {
                 title: Intl.get('user.time.end', '到期时间'),
                 dataIndex: 'timestamp',

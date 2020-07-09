@@ -61,6 +61,9 @@ import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import history from 'PUB_DIR/sources/history';
 import {hasRecommendPrivilege} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
+import { AntcAnalysis } from 'antc';
+import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
+
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -1435,6 +1438,11 @@ class MyWorkColumn extends React.Component {
                     itemCssSelector=".my-work-content .detail-card-container">
                     {this.renderBootProcessBlock()}
                     {this.renderMyWorkList()}
+
+                    <AntcAnalysis
+                        charts={[customerCharts.getUnrenewedCustomerChart()]}
+                        isGetDataOnMount={true}
+                    />
                 </GeminiScrollbar>
                 {/*该客户下的用户列表*/}
                 <RightPanel
@@ -1458,7 +1466,6 @@ class MyWorkColumn extends React.Component {
                     handleScheduleAdd={this.afterAddSchedule}
                 />
                 {this.renderExtractClue()}
-
             </div>);
     }
     // 将新加的日程工作添加到日程列表中
