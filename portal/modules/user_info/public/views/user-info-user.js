@@ -32,7 +32,7 @@ const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'es_VE', val: 'Español'}];
 function noop() {
 }
-
+import {isWxEnvironment} from 'PUB_DIR/sources/utils/register_util';
 class UserInfo extends React.Component{
 
     static defaultProps = {
@@ -575,7 +575,23 @@ class UserInfo extends React.Component{
             />
         );
     }
-
+    bindAccountWithWechat = () => {
+        $.ajax({
+            url: '/page/login/wechat?isFromWechat=true',
+            dataType: 'json',
+            type: 'get',
+            success: (result) => {
+                this.setState({
+                    isBindWechat: true,
+                });
+            },
+            error: (errorMsg) => {
+                this.setState({
+                    isBindWechat: false,
+                });
+            }
+        });
+    };
     renderUserInfo() {
         let formData = this.props.userInfo;
         //根据是否拥有邮箱改变渲染input默认文字
@@ -601,6 +617,14 @@ class UserInfo extends React.Component{
         // 根据是否拥有qq改变渲染input默认文字
         let qqInputInfo = _.get(formData, 'qq', '');
         let currentVersion = checkCurrentVersion();
+        let clickProperty = {
+            'data-tracename': '绑定微信',
+            'className': 'bind-webchat-phone'};
+        if(isWxEnvironment()){
+            clickProperty['onClick'] = this.bindAccountWithWechat;
+        }else{
+            clickProperty['href'] = '/page/login/wechat?isBindWechatAfterLogin=true';
+        }
 
         if (this.props.userInfoErrorMsg) {
             var errMsg = <span>{this.props.userInfoErrorMsg}<a onClick={this.retryUserInfo.bind(this)}
@@ -734,11 +758,7 @@ class UserInfo extends React.Component{
                                         </Popconfirm>) : (
                                         <span>
                                             {Intl.get('user.info.no.wechat','您还没有绑定微信')}
-                                            <a
-                                                href="/page/login/wechat?isBindWechatAfterLogin=true"
-                                                data-tracename="绑定微信"
-                                                className="bind-webchat-phone"
-                                            >
+                                            <a {...clickProperty}>
                                                 {Intl.get('user.info.bind.wechat.tip', '绑定微信号')}
                                             </a>
                                         </span>

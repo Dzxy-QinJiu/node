@@ -19,7 +19,7 @@ const CODE_EFFECTIVE_TIME = 60;
 const CODE_INTERVAL_TIME = 1000;
 let getVerifyErrorCaptchaCodeAJax = null;
 var base64_prefix = 'data:image/png;base64,';
-import {pcAndWechatMiniProgram} from 'PUB_DIR/sources/utils/register_util';
+import {pcAndWechatMiniProgram, pcAndWechatMiniOpenUrl} from 'PUB_DIR/sources/utils/register_util';
 class RegisterForm extends React.Component {
     constructor(props) {
         super(props);
@@ -382,11 +382,11 @@ class RegisterForm extends React.Component {
     // }
     openUserAgreement = (e) => {
         Trace.traceEvent(e, '点击用户协议');
-        window.open('/user/agreement');
+        pcAndWechatMiniOpenUrl('/user/agreement');
     }
     openPrivacyPolicy = (e) => {
         Trace.traceEvent(e, '点击隐私策略');
-        window.open('/privacy/policy');
+        pcAndWechatMiniOpenUrl('/privacy/policy');
     }
     toLogin = (eventTraceDescr, e) => {
         Trace.traceEvent(e, eventTraceDescr);
