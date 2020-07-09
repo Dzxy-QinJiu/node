@@ -196,7 +196,7 @@ var baseUrl = 'http://dataservice.curtao.com';
 var userInfoRestApis = {
     getUserInfo: '/rest/base/v1/user/member/self', // 登录用户信息
     getMemberRoles: '/rest/base/v1/user/member/roles',
-    activeEmail: '/rest/base/v1/user/email/confirm222',
+    activeEmail: '/rest/base/v1/user/email/confirm',
     getUserLanguage: '/rest/base/v1/user/member/language/setting',
     getMyTeamWithSubteams: '/rest/base/v1/group/teams/tree/self',
     getOrganizationInfoById: '/rest/base/v1/realm/organization',

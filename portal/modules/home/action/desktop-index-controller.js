@@ -181,22 +181,28 @@ exports.test = function(req, res) {
 exports.getAppQrCodeAgent = function(req, res) {
     res.render('home/tpl/weixin-inspector');
 };
+//读取文件并返回前端
+function readFileAndSendFront(req,res,fileName){
+    var fullUrl = req.protocol + '://' + req.get('host');
+    fs.readFile(path.join(__dirname, `../tpl/${fileName}.html`), (err,data) => {
+        if(err){
+            console.log('读取出错了');
+        }else{
+            res.set('Content-Type', 'text/html');
+            res.send(data.toString().replace(/targetUrl/g,fullUrl));
+        }
+    });
+}
 //邮箱激活
 exports.activeEmail = function(req, res) {
-    DesktopIndexService.activeEmail(req, res, req.query.code).on('success', function(data) {
-        res.set('Content-Type', 'text/html');
-        res.send(data);
+    DesktopIndexService.activeEmail(req, res, req.query.code).on('success', function(result) {
+        if(result){
+            readFileAndSendFront('active-email-success');
+        }else{
+            readFileAndSendFront('active-email-error');
+        }
     }).on('error', function(errorObj) {
-        var fullUrl = req.protocol + '://' + req.get('host');
-        fs.readFile(path.join(__dirname, '../tpl/active-email-error.html'), (err,data) => {
-            if(err){
-                console.log('读取出错了');
-            }else{
-                res.set('Content-Type', 'text/html');
-                res.send(_.replace(data.toString(),'targetUrl',fullUrl));
-            }
-        });
-
+        readFileAndSendFront('active-email-error');
     });
 };
 
