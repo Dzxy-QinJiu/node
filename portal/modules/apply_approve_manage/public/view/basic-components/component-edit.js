@@ -11,7 +11,7 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
 
 require('./index.less');
-import {ALL_COMPONENTS, ADDAPPLYFORMCOMPONENTS} from '../../utils/apply-approve-utils';
+import {ALL_COMPONENTS, ADDAPPLYFORMCOMPONENTS, getApplyNameRegMsg} from '../../utils/apply-approve-utils';
 import classNames from 'classnames';
 import Trace from 'LIB_DIR/trace';
 
@@ -27,6 +27,7 @@ class componentEdit extends React.Component {
             submitErrorMsg: '',
             titleRequiredMsg: '',
             templateList: [],//上传的文件模板
+            componentTitleErrMsg: '',//组件名字校验的错误信息
         };
     }
 
@@ -51,16 +52,11 @@ class componentEdit extends React.Component {
     };
     handleChangeTopic = (e) => {
         var formItem = this.state.formItem;
-        var value = e.target.value;
-        // if (value){
-        //     var errTip = value.length > 6 ? Intl.get('apply.components.length.character', '标题长度不能超过6个字符') : '';
-        //     this.setState({
-        //         submitErrorMsg: errTip
-        //     });
-        // }
+        var value = _.trim(e.target.value);
         formItem.title = value;
         this.setState({
-            formItem
+            formItem,
+            componentTitleErrMsg: getApplyNameRegMsg(value, Intl.get('apply.approve.component', '组件'))
         });
     };
     handleChangeTip = (e) => {
@@ -71,7 +67,7 @@ class componentEdit extends React.Component {
         });
     };
     handleSubmit = () => {
-        if (this.state.loading || this.state.submitErrorMsg) {
+        if (this.state.loading || this.state.submitErrorMsg || this.state.componentTitleErrMsg) {
             return;
         }
         var formItem = this.state.formItem;
@@ -191,7 +187,7 @@ class componentEdit extends React.Component {
         return {selectArr, defaultArr};
     };
     render = () => {
-        var formItem = this.state.formItem, hasErrTip = this.state.titleRequiredMsg;
+        var formItem = this.state.formItem, hasErrTip = this.state.titleRequiredMsg || this.state.componentTitleErrMsg;
         var cls = classNames('', {
             'err-tip': hasErrTip
         });

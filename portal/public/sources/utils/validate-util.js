@@ -239,6 +239,10 @@ export const validatorNameRuleRegex = (length, name) => {
         message: Intl.get('common.name.rule.regex', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到{length}（包括{length}）之间', {name: name, length: length}),
     };
 };
+//名称的校验规则
+export const getNameRuleRegex = (length) => {
+    return regex.getNameRegex(length);
+};
 
 /**
  * 密码验证

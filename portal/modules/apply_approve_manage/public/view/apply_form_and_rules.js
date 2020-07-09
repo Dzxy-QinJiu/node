@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2019/3/27.
  */
 require('../style/add_apply_form.less');
-import {Tabs, Input,Form,Button} from 'antd';
+import {Tabs, Input,Form,Button,Alert} from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 const TabPane = Tabs.TabPane;
 import NoDataIntro from 'CMP_DIR/no-data-intro';
@@ -20,7 +20,7 @@ import {
     ALL_COMPONENTS,
     ALL_COMPONENTS_TYPE,
     ADDAPPLYFORMCOMPONENTS,
-    ROLES_SETTING
+    ROLES_SETTING, getApplyNameRegMsg
 } from '../utils/apply-approve-utils';
 import ComponentEdit from './basic-components/component-edit';
 import ComponentShow from './basic-components/component-show';
@@ -353,6 +353,9 @@ class ApplyFormAndRules extends React.Component {
     };
     //修改申请审批的名字后保存
     handleSaveApproveTitle = (initialValue) => {
+        if(this.state.applyNameRegErrMsg){
+            return;
+        }
         var updateName = this.state.updateApplyName;
         //如果名字没有修改，不需要发请求保存
         if (_.trim(initialValue) === _.trim(updateName)) {
@@ -545,12 +548,14 @@ class ApplyFormAndRules extends React.Component {
         });
     };
     handleApplyTitleChange = (e) => {
+        var inputValue = _.trim(_.get(e, 'target.value', '')), applyNameRegErrMsg = getApplyNameRegMsg(inputValue);
         this.setState({
-            updateApplyName: e.target.value
+            updateApplyName: inputValue,
+            applyNameRegErrMsg
         });
     };
     render = () => {
-        var applyTypeData = this.state.applyTypeData;
+        let {applyNameRegErrMsg,applyTypeData} = this.state;
         var initialApplyTitle = _.get(applyTypeData, 'description') || _.get(applyTypeData, 'type');
         if(this.state.getSelfSettingWorkFlowLoading){
             return(
@@ -574,9 +579,14 @@ class ApplyFormAndRules extends React.Component {
                                     loading={this.state.editApplyTitleLoading}
                                     handleSubmit={this.handleSaveApproveTitle.bind(this, initialApplyTitle)}
                                     handleCancel={this.handleCancelSaveTitle}
-                                    saveErrorMsg={this.state.editApplyTitleErrMsg}
+                                    saveErrorMsg={this.state.editWorkFlowErrMsg}
                                 />
-
+                                {applyNameRegErrMsg ?
+                                    <Alert
+                                        message={applyNameRegErrMsg}
+                                        type="error"
+                                        showIcon/>
+                                    : null}
                             </span> : <span className="show-name-container">
                                 {initialApplyTitle}
                                 {/*如果是内置的流程，不让修改流程的名称*/}
