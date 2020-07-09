@@ -1,13 +1,7 @@
 import { removeCommaFromNum } from '../../../lib/func';
 import {regex, num} from 'ant-utils';
 import { passwordRegex, getPassStrenth} from 'CMP_DIR/password-strength-bar';
-//名称长度的验证规则
-export const nameLengthRule = {
-    required: true,
-    min: 1,
-    max: 50,
-    message: Intl.get('common.input.character.prompt', '最少1个字符,最多50个字符')
-};
+
 //名称验证的正则表达式（包含大小写字母、下划线、中英文括号、点及汉字，长度1-50之间）
 export const nameRegex = regex.getNameRegex(50);
 //线索联系人的校验规则
