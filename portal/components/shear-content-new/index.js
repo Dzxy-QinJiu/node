@@ -14,6 +14,8 @@ class ShearContent extends React.Component {
         text: PropTypes.node,
         lines: PropTypes.number,
         lineHeight: PropTypes.number,
+        hasEditBtn: PropTypes.bool,
+        editBtnChange: PropTypes.func
     };
 
     static defaultProps = {
@@ -23,18 +25,15 @@ class ShearContent extends React.Component {
         less: Intl.get('crm.contact.way.hide', '收起')
     };
 
-    constructor(...args) {
-        super(...args);
+    constructor(props) {
+        super(props);
         this.state = {
             expanded: false,
             truncated: false
         };
-
-        this.handleTruncate = this.handleTruncate.bind(this);
-        this.toggleLines = this.toggleLines.bind(this);
     }
 
-    handleTruncate(truncated) {
+    handleTruncate = (truncated) => {
         if (this.state.truncated !== truncated) {
             this.setState({
                 truncated
@@ -42,36 +41,48 @@ class ShearContent extends React.Component {
         }
     }
 
-    toggleLines(event) {
+    toggleLines = (event) => {
         event.preventDefault();
 
         this.setState({
             expanded: !this.state.expanded
         });
     }
-
+    onClickEdit = (event) => {
+        _.isFunction(this.props.editBtnChange) && this.props.editBtnChange(event);
+    }
     render() {
         const {lines,lineHeight, more, less, children} = this.props;
 
         const {truncated, expanded} = this.state;
-
+        let editBtn = this.props.hasEditBtn ? (<i className='iconfont icon-edit-btn handle-btn-item' title={Intl.get('common.edit', '编辑')} onClick={this.onClickEdit} />) : null;
         return (
-            <Truncate
-                numberOfLines={!expanded && lines}
-                lineHeight={lineHeight}
-                ellipsis={
-                    (<span>...<a className="more-click" href="#" onClick={this.toggleLines}>{more}</a></span>)
-                }
-                onTruncate={this.handleTruncate}
-            >
-                <p className="less-container">
-                    {children}
-                    {truncated && expanded && (
-                        <span>
-                            <a className="less-click" href="#" onClick={this.toggleLines}>{less}</a>
-                        </span> )}
-                </p>
-            </Truncate>
+            <React.Fragment>
+                {children ? (
+                    <Truncate
+                        numberOfLines={!expanded && lines}
+                        lineHeight={lineHeight}
+                        ellipsis={
+                            (<span>
+                                        ...
+                                <a className="more-click" href="#" onClick={this.toggleLines}>{more}</a>
+                                {/* {editBtn} */}
+                            </span>)
+                        }
+                        onTruncate={this.handleTruncate}
+                    >
+                        <p className="less-container">
+                            {children}
+                            {/* {!truncated ? editBtn : null} */}
+                            {truncated && expanded && (
+                                <span>
+                                    <a className="less-click" href="#" onClick={this.toggleLines}>{less}</a>
+                                    {/* {editBtn} */}
+                                </span>)}
+                        </p>
+                    </Truncate>) : null }
+                {editBtn}
+            </React.Fragment>
         );
     }
 }
