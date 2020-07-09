@@ -10,7 +10,8 @@ export function getUnrenewedCustomerChart() {
         title: Intl.get('analysis.unrenewed.customer.statistics', '超3个月没有续约的客户'),
         chartType: 'table',
         layout: {sm: 24},
-        height: 450,
+        height: 500,
+        hideIfNoData: true,
         url: `/rest/analysis/contract/contract/v2/${dataType}/expired/customer`,
         processData: data => {
             _.each(data, item => {
