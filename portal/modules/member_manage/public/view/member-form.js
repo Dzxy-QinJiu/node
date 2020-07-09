@@ -237,7 +237,7 @@ class MemberForm extends React.Component {
                 } else {
                     //延迟1秒钟后再显示错误信息，以防止一输入就报错
                     setTimeout(() => {
-                        callback(Intl.get('member.add.member.rule', '用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到30（包括30）之间'));
+                        callback(Intl.get('member.add.member.rule', '用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间'));
                     }, 1000);
                 }
             } else {
