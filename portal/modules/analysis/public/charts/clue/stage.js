@@ -19,13 +19,15 @@ export function getStageChart() {
         value: 'other',
         name: Intl.get('crm.clue.client.source.other', '未知')
     }];
-    //储存当前的key值
-    let cacheKey = '';
+
+    //查询参数缓存
+    let queryArgCache = [];
+
     return {
         title: Intl.get('clue.funnel.statics', '线索漏斗统计'),
         chartType: 'funnel',
         url: [
-            '/rest/analysis/customer/v2/clue/:data_type/realtime/stage',
+            '/rest/analysis/customer/v3/lead/:data_type/realtime/stage/new',
             '/rest/analysis/customer/v2/clue/:data_type/statistical/field/access_channel',
             '/rest/analysis/customer/v2/clue/:data_type/statistical/field/clue_source',
             '/rest/analysis/customer/v2/clue/:data_type/statistical/field/source_classify'
@@ -40,9 +42,10 @@ export function getStageChart() {
             name: 'source_classify',
             value: '',
         }],
+        argCallback: arg => {
+            queryArgCache = _.map(arg.query, (value, name) => ({name, value}));
+        },
         processData: (data, chart) => {
-            //保存cache_key
-            cacheKey = data[0].cache_key;
             //设置获客方式筛选器
             setSelector(data, 3, chart, Intl.get( 'clue.analysis.all.source.classify','全部获客方式'), 'source_classify', sourceClassifyOptionItems);
 
@@ -53,35 +56,17 @@ export function getStageChart() {
             setSelector(data, 2, chart, Intl.get( 'analysis.all.sources','全部来源'), 'clue_source');
 
             const stageData = data[0];
+            const stageIndex = _.get(stageData, 'stage_index', []);
+            const stageResult = _.get(stageData, 'stage_result', {});
 
-            const func = getFunnelWithConvertRateProcessDataFunc([
-                {
-                    key: 'total',
-                    name: Intl.get('common.all', '全部')
-                },
-                {
-                    key: 'vailid',
-                    name: Intl.get('clue.analysis.ability', '有效')
-                },
-                {
-                    key: 'information',
-                    name: Intl.get('sales.stage.message', '信息')
-                },
-                {
-                    key: 'intention',
-                    name: Intl.get('sales.stage.intention', '意向')
-                },
-                {
-                    key: 'trial',
-                    name: Intl.get('common.trial', '试用')
-                },
-                {
-                    key: 'sign',
-                    name: Intl.get('common.official', '签约')
-                }
-            ], '', 'STAGE_NAME');
+            const stages = _.map(stageIndex, item => ({
+                name: item.name,
+                key: item.en_name
+            }));
 
-            return func(stageData);
+            const func = getFunnelWithConvertRateProcessDataFunc(stages, '', 'STAGE_NAME');
+
+            return func(stageResult);
         },
         processCsvData: funnelWithConvertRateProcessCsvData,
         customOption: {
@@ -92,17 +77,23 @@ export function getStageChart() {
             name: 'click',
             func: (name, params) => {
                 let label = getName(params);
+
+                //后端暂时不支持查看总数和有效阶段的详情
+                //总数, 有效为后端返回数据，无需国际化
+                if (['总数', '有效'].includs(label)) {
+                    //临时信息，暂不做国际化
+                    message.info('暂不支持查看该阶段的数据详情');
+                    return;
+                }
+
                 let type = hasPrivilege('CURTAO_CRM_CUSTOMER_ANALYSIS_ALL') ? 'all' : 'self';
                 const paramObj = {
                     listType: 'customer',
-                    url: '/rest/analysis/customer/v3/lead/:type/realtime/stage/detail/:page_size/:page_num',
+                    url: '/rest/analysis/customer/v3/lead/:type/realtime/stage/detail/new/:page_size/:page_num',
                     type: 'get',
-                    conditions: [{
+                    conditions: _.concat(queryArgCache, [{
                         name: 'label',
                         value: label
-                    }, {
-                        name: 'cache_key',
-                        value: cacheKey
                     }, {
                         type: 'params',
                         name: 'page_size',
@@ -115,7 +106,7 @@ export function getStageChart() {
                         type: 'params',
                         name: 'type',
                         value: type
-                    }],
+                    }]),
                     columns: [
                         {
                             title: Intl.get('clue.customer.clue.name.abbrev', '线索名'),
