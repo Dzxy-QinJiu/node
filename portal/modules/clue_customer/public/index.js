@@ -2044,7 +2044,7 @@ class ClueCustomer extends React.Component {
                 }
             }];
         //如果是个人版或者是普通销售，不需要加跟进人
-        if(!(isCommonSalesOrPersonnalVersion())){
+        if(!isCommonSalesOrPersonnalVersion()){
             columns.push({
                 dataIndex: 'trace_person',
                 width: column_width,
