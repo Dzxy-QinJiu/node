@@ -6,6 +6,7 @@
 require('../css/clue-right-detail.less');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
+import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 import {Button, Tabs, message, Icon} from 'antd';
 var TabPane = Tabs.TabPane;
 const TAB_KEYS = {
@@ -47,8 +48,7 @@ import {
     SELECT_TYPE,
     deleteCluePrivilege,
     editClueItemIconPrivilege,
-    dealContactPhoneStatus,
-    checkClueName
+    dealContactPhoneStatus
 } from '../utils/clue-customer-utils';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import cluePoolAjax from 'MOD_DIR/clue_pool/public/ajax';
@@ -390,9 +390,10 @@ class ClueRightPanel extends React.Component {
                                 }
                                 <div className={clueNameCls}>
                                     <BasicEditInputField
-                                        validators={[
-                                            {required: true, message: Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')},
-                                            checkClueName
+                                        validators={[{
+                                            required: true,
+                                            message: Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')
+                                        }, validatorNameRuleRegex(25,Intl.get('clue.customer.clue.name', '线索名称'))
                                         ]}
                                         onDisplayTypeChange={this.setEditNameFlag}
                                         hasEditPrivilege={editClueItemIconPrivilege(curClue)}

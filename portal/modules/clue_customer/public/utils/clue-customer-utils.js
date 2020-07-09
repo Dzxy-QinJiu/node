@@ -1,15 +1,13 @@
 //客户名格式验证
-import {nameRegex, ipRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {nameRegex, ipRegex, validatorNameRuleRegex, isSupportCheckPhone} from 'PUB_DIR/sources/utils/validate-util';
 const hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 import clueCustomerAction from '../action/clue-customer-action';
 var userData = require('PUB_DIR/sources/user-data');
 import { storageUtil } from 'ant-utils';
 const local = storageUtil.local;
-import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import { checkCurrentVersion, checkVersionAndType, isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
-import {isSupportCheckPhone} from 'PUB_DIR/sources/utils/validate-util';
 import {PHONE_STATUS_MAP, PHONE_STATUS_KEY} from 'PUB_DIR/sources/utils/consts';
 import uuid from 'uuid/v4';
 

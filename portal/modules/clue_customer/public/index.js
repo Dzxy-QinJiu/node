@@ -2829,7 +2829,7 @@ class ClueCustomer extends React.Component {
                         });
                         let title = '';
                         if (name_verify) {
-                            title = Intl.get('clue.name.rule', '线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间');
+                            title = Intl.get('common.name.rule.regex', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到{length}（包括{length}）之间', {name: Intl.get('clue.customer.clue.name', '线索名称'), length: 25});
                         } else if (import_name_repeat) {
                             title = Intl.get('crm.import.name.repeat', '导入数据中存在同名{type}',{type: Intl.get('crm.sales.clue', '线索')});
                         } else if (name_repeat) {
