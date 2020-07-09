@@ -52,7 +52,6 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import Trace from 'LIB_DIR/trace';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import AddSchedule from 'CMP_DIR/add-schedule';
-import ajax from 'ant-ajax';
 import CRMAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import CustomerRecordActions from 'MOD_DIR/crm/public/action/customer-record-action';
@@ -61,6 +60,7 @@ import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import history from 'PUB_DIR/sources/history';
 import {hasRecommendPrivilege} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
+
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -1458,7 +1458,6 @@ class MyWorkColumn extends React.Component {
                     handleScheduleAdd={this.afterAddSchedule}
                 />
                 {this.renderExtractClue()}
-
             </div>);
     }
     // 将新加的日程工作添加到日程列表中

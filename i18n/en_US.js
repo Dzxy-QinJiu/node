@@ -3448,6 +3448,7 @@ var en_US = {
     'analysis.follow-up.time': 'follow-up time',//跟进记录时间
     'analysis.login.user.statistics': 'login user statistics',//登录用户统计
     'analysis.the.total.number.of.delay': 'the total number of delay',//延期总数
+    'analysis.unrenewed.customer.statistics': 'customers who have not renewed their contracts in more than 3 months',//超3个月没有续约的客户
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
