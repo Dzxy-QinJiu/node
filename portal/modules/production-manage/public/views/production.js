@@ -7,7 +7,7 @@
 import '../style/production-info.less';
 import {Form, Icon, Input, Switch,message, Popover} from 'antd';
 import Trace from 'LIB_DIR/trace';
-import {productNameRule, getNumberValidateRule, productNameRuleForValidator} from 'PUB_DIR/sources/utils/validate-util';
+import { getNumberValidateRule, validatorNameRuleRegex} from 'PUB_DIR/sources/utils/validate-util';
 import { num as antUtilsNum } from 'ant-utils';
 const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
@@ -195,6 +195,7 @@ class Production extends React.Component {
             labelCol: {span: 5},
             wrapperCol: {span: 19},
         };
+        const productName = Intl.get('common.product.name', '产品名称');
         return (
             <Form layout='horizontal' className="form" autoComplete="off">
                 <FormItem id="preview_image">
@@ -217,12 +218,12 @@ class Production extends React.Component {
                     <GeminiScrollbar className="geminiScrollbar-vertical">
                         <div id="product-add-form">
                             <FormItem
-                                label={Intl.get('common.product.name', '产品名称')}
+                                label={productName}
                                 {...formItemLayout}
                             >
                                 {getFieldDecorator('name', {
                                     initialValue: this.props.info.name,
-                                    rules: [productNameRule, {
+                                    rules: [validatorNameRuleRegex(10, productName), {
                                         validator: this.getValidatorName()
                                     }],
                                     validateTrigger: 'onBlur'
@@ -700,6 +701,7 @@ class Production extends React.Component {
 
     //渲染编辑面板内容
     renderProductDetails = () => {
+        const productName = Intl.get('common.product.name', '产品名称');
         //产品单价
         let productPrice = (<div className="product-detail-item">
             <span className="product-detail-item-title">{Intl.get('config.product.price', '产品单价')}：</span>
@@ -821,7 +823,7 @@ class Production extends React.Component {
                             value={this.props.info.name}
                             field='name'
                             type='textarea'
-                            validators={[productNameRuleForValidator, this.getValidatorName()]}
+                            validators={[validatorNameRuleRegex(10, productName), this.getValidatorName()]}
                             placeholder={Intl.get('config.product.input.name', '请输入产品名称')}
                             hasMoreRow={true}
                         />

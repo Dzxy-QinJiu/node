@@ -14,7 +14,7 @@ import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 import {getSalesDataList, getFormattedSalesMan} from '../utils/clue_assignment_utils';
-import {clueAssignmentStrategy} from 'PUB_DIR/sources/utils/validate-util';
+import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 
 function noop() {
 }
@@ -202,7 +202,7 @@ class StrategyForm extends React.Component {
                             {...formItemLayout}
                         >
                             {getFieldDecorator('name', {
-                                rules: [clueAssignmentStrategy],
+                                rules: [validatorNameRuleRegex(10, Intl.get('clue.assignment.strategy.name', '线索分配策略'))],
                                 validateTrigger: 'onBlur'
                             })(
                                 <Input
