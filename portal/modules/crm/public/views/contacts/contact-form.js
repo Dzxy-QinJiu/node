@@ -569,6 +569,7 @@ class ContactForm extends React.Component {
                             {
                                 getFieldDecorator('department', {
                                     initialValue: _.get(formData, 'department', ''),
+                                    rules: [validatorNameRuleRegex(10, Intl.get('crm.113', '部门'))]
                                 })(
                                     <Input
                                         value={formData.department}
@@ -585,6 +586,7 @@ class ContactForm extends React.Component {
                             {
                                 getFieldDecorator('position', {
                                     initialValue: _.get(formData, 'position', ''),
+                                    rules: [validatorNameRuleRegex(10, Intl.get('crm.91', '职位'))]
                                 })(
                                     <Input
                                         value={formData.position}
