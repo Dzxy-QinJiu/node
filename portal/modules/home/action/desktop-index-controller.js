@@ -20,6 +20,7 @@ let moment = require('moment');
 const commonUtil = require('../../../lib/utils/common-utils');
 const authRouters = require('../../../lib/authRouters');
 let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
+const restLogger = require('../../../lib/utils/logger').getLogger('rest');
 /*
  * home page handler.
  */
@@ -186,7 +187,7 @@ function readFileAndSendFront(req,res,fileName){
     var fullUrl = req.protocol + '://' + req.get('host');
     fs.readFile(path.join(__dirname, `../tpl/${fileName}.html`), (err,data) => {
         if(err){
-            console.log('读取出错了');
+            restLogger.error('读取文件出错了');
         }else{
             res.set('Content-Type', 'text/html');
             res.send(data.toString().replace(/targetUrl/g,fullUrl));
@@ -195,14 +196,15 @@ function readFileAndSendFront(req,res,fileName){
 }
 //邮箱激活
 exports.activeEmail = function(req, res) {
+    const errFileName = 'active-email-error', successFileName = 'active-email-success';
     DesktopIndexService.activeEmail(req, res, req.query.code).on('success', function(result) {
         if(result){
-            readFileAndSendFront(req, res,'active-email-success');
+            readFileAndSendFront(req, res,successFileName);
         }else{
-            readFileAndSendFront(req, res,'active-email-error');
+            readFileAndSendFront(req, res,errFileName);
         }
     }).on('error', function(errorObj) {
-        readFileAndSendFront(req, res,'active-email-error');
+        readFileAndSendFront(req, res,errFileName);
     });
 };
 
