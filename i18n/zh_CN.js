@@ -3470,6 +3470,7 @@ var zh_CN = {
     'analysis.follow-up.time': '跟进记录时间',
     'analysis.login.user.statistics': '登录用户统计',
     'analysis.the.total.number.of.delay': '延期总数',
+    'analysis.unrenewed.customer.statistics': '超3个月没有续约的客户',
     'common.font.the': '第',
     'common.weeks': '周',
     'clue.add.contacts.tip': '添加联系方式',
