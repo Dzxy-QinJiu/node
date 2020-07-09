@@ -11,7 +11,6 @@ const {TextArea} = Input;
 import Trace from 'LIB_DIR/trace';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import SalesProcessStore from '../store';
 import {nameRule} from 'PUB_DIR/sources/utils/validate-util';
 
