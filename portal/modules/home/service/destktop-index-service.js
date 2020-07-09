@@ -72,8 +72,8 @@ exports.getUserInfo = function(req, res) {
                     userData.websiteConfig = _.get(resultList, '[3].successData', {});
                 }
             }
-             // 登录时已获取过websiteConfig此处就不需要获取了，直接用session中存的
-             if (req.session.websiteConfig) {
+            // 登录时已获取过websiteConfig此处就不需要获取了，直接用session中存的
+            if (req.session.websiteConfig) {
                 userData.websiteConfig = req.session.websiteConfig;
                 // 取完登录后的websiteConfig后，即可删掉session中的websiteConfig，为了刷新时可以重新获取最新数据
                 delete req.session.websiteConfig;
