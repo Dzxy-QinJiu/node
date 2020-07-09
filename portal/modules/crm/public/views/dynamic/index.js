@@ -9,7 +9,7 @@ import {AntcTimeLine} from 'antc';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
-import ShearContent from '../../../../../components/shear-content';
+import ShearContent from '../../../../../components/shear-content-new';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DetailCard from 'CMP_DIR/detail-card';
 class Dynamic extends React.Component {

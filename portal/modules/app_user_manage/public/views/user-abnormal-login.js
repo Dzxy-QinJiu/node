@@ -21,7 +21,7 @@ import { Alert, Button } from 'antd';
 import UserAbnormalLoginAjax from '../ajax/user-abnormal-login-ajax';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
-import ShearContent from '../../../../components/shear-content';
+import ShearContent from '../../../../components/shear-content-new';
 import userManagePrivilege from '../privilege-const';
 // 没有消息的提醒
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');

@@ -9,7 +9,7 @@ var ClueTraceAction = require('../../action/clue-trace-action');
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import ShearContent from '../../../../../components/shear-content';
+import ShearContent from '../../../../../components/shear-content-new';
 import {Dropdown, Icon, Button, Form, Input, Menu, message} from 'antd';
 const FormItem = Form.Item;
 const {TextArea} = Input;
@@ -411,11 +411,7 @@ class ClueTraceList extends React.Component {
         let showEidtBtn = item.remark && !this.props.disableEdit && !this.state.isEdit && !this.state.addRecordPanelShow && editCluePrivilege(this.props.curClue);
         return (
             <div className="record-content-show">
-                {item.remark ? (<ShearContent key={item.id}>{item.remark}</ShearContent>) : this.renderSupplementTip(item)}
-                {showEidtBtn ? <DetailEditBtn
-                    title={Intl.get('common.edit', '编辑')}
-                    onClick={this.editDetailContent.bind(this, item)}
-                /> : null}
+                {item.remark ? (<ShearContent hasEditBtn={showEidtBtn} editBtnChange={this.editDetailContent.bind(this, item)} key={item.id}>{item.remark}</ShearContent>) : this.renderSupplementTip(item)}
             </div>);
     };
 
