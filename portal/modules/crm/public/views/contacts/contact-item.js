@@ -330,6 +330,7 @@ class ContactItem extends React.Component {
                                 saveEditInput={this.saveContactInfo.bind(this, 'department')}
                                 noDataTip={Intl.get('contract.68', '暂无部门')}
                                 addDataTip={Intl.get('organization.add.department', '添加部门')}
+                                validators={[validatorNameRuleRegex(10, Intl.get('crm.113', '部门'))]}
                             />
                         </div>
                         <div className="contact-item-content">
@@ -345,6 +346,7 @@ class ContactItem extends React.Component {
                                 saveEditInput={this.saveContactInfo.bind(this, 'position')}
                                 noDataTip={Intl.get('crm.contact.positon.none', '未设置职位')}
                                 addDataTip={Intl.get('crm.contact.positon.add', '设置职位')}
+                                validators={[validatorNameRuleRegex(10, Intl.get('crm.91', '职位'))]}
                             />
                         </div>
                         <div className="contact-item-content">
