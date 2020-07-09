@@ -11,7 +11,6 @@ export function getUnrenewedCustomerChart() {
         chartType: 'table',
         layout: {sm: 24},
         height: 'auto',
-        hideIfNoData: true,
         url: `/rest/analysis/contract/contract/v2/${dataType}/expired/customer`,
         processData: data => {
             _.each(data, item => {
