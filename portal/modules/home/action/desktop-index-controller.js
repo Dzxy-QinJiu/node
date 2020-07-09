@@ -197,12 +197,12 @@ function readFileAndSendFront(req,res,fileName){
 exports.activeEmail = function(req, res) {
     DesktopIndexService.activeEmail(req, res, req.query.code).on('success', function(result) {
         if(result){
-            readFileAndSendFront('active-email-success');
+            readFileAndSendFront(req, res,'active-email-success');
         }else{
-            readFileAndSendFront('active-email-error');
+            readFileAndSendFront(req, res,'active-email-error');
         }
     }).on('error', function(errorObj) {
-        readFileAndSendFront('active-email-error');
+        readFileAndSendFront(req, res,'active-email-error');
     });
 };
 
