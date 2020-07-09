@@ -10,7 +10,7 @@ export function getUnrenewedCustomerChart() {
         title: Intl.get('analysis.unrenewed.customer.statistics', '超3个月没有续约的客户'),
         chartType: 'table',
         layout: {sm: 24},
-        height: 500,
+        height: 'auto',
         hideIfNoData: true,
         url: `/rest/analysis/contract/contract/v2/${dataType}/expired/customer`,
         processData: data => {
@@ -27,7 +27,7 @@ export function getUnrenewedCustomerChart() {
                 render: (value, record) => {
                     return <a href="javascript:void(0)" onClick={showCustomer.bind(null, record.customer_id)}>{value}</a>;
                 },
-                width: 150,
+                width: 200,
             }, {
                 title: Intl.get('menu.sales.process', '客户阶段'),
                 dataIndex: 'customer_label',
