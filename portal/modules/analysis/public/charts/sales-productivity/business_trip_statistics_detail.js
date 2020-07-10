@@ -40,7 +40,7 @@ export function getBusinessTripStatisticsDetailChart() {
             }, {
                 title: Intl.get('bussiness.trip.time.range', '拜访时间'),
                 dataIndex: 'visit_time',
-                width: 240,
+                width: 260,
             }, {
                 title: Intl.get('common.remark', '备注'),
                 dataIndex: 'remarks',
@@ -52,7 +52,7 @@ export function getBusinessTripStatisticsDetailChart() {
             }, {
                 title: Intl.get('analysis.follow-up.time', '跟进记录时间'),
                 dataIndex: 'visit_record_time',
-                width: 100,
+                width: 120,
             }],
         }
     };
