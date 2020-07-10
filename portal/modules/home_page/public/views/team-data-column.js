@@ -35,6 +35,12 @@ import Trace from 'LIB_DIR/trace';
 import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
+import ajax from 'ant-ajax';
+import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
+
+//超3个月没有续约的客户统计表
+let unrenewedCustomerChart = customerCharts.getUnrenewedCustomerChart();
+
 const performance = {
     image_1: require('../images/performance_1.png'),
     image_2: require('../images/performance_2.png'),
@@ -125,6 +131,10 @@ class TeamDataColumn extends React.Component {
             curExpireContractDateType: DATE_TYPE_KEYS.NEARLY_THREE_MONTH,
             expireContracts: {},
             isShowExpireContractPanel: false,
+            //超3个月没有续约的客户
+            unrenewedCustomers: [],
+            //是否显示超3个月没有续约的客户
+            isShowUnrenewedCustomerNumberDetail: false,
             //本组织提取线索总量
             extractCluesTotal: 0,
             //提取线索条数（正式用户（显示本月提取数），测试用户（显示今天提取数））
@@ -152,6 +162,7 @@ class TeamDataColumn extends React.Component {
         if(isOpenCash()){
             this.getExpireContractData();
         }
+        this.getUnrenewedCustomerData();
         this.changeTableHeight();
         $(window).on('resize', e => this.changeTableHeight());
     }
@@ -250,6 +261,15 @@ class TeamDataColumn extends React.Component {
         }
         myDataAjax.getExpireContractData(queryObj).then((result) => {
             this.setState({expireContracts: result});
+        });
+    }
+
+    //获取超3个月没有续约的客户数据
+    getUnrenewedCustomerData() {
+        ajax.send({
+            url: unrenewedCustomerChart.url
+        }).done(result => {
+            this.setState({ unrenewedCustomers: result });
         });
     }
 
@@ -635,8 +655,34 @@ class TeamDataColumn extends React.Component {
         );
     }
 
+    //渲染超3个月没有续约的客户统计数字卡片
+    renderUnrenewedCustomerNumberCard() {
+        const content = (
+            <div>
+                <div className='my-data-title'>
+                    {Intl.get('analysis.unrenewed.customer.statistics', '超3个月没有续约的客户')}
+                </div>
+                <div className='expire-contract-count my-data-title-data'>
+                    <a className='see-expire-contract-btn' title={Intl.get('call.record.show.customer.detail', '查看详情')} onClick={this.toggleUnrenewedCustomerNumberDetailPanel.bind(this, true)}>{Intl.get('sales.home.count', '{count}个', {count: _.get(this.state.unrenewedCustomers, 'length', 0)})}</a>
+                </div>
+            </div>
+        );
+
+        return (
+            <DetailCard
+                content={content}
+                className='my-data-expire-contract-card'
+            />
+        );
+    }
+
     setExpireContractPanel = (flag) => {
         this.setState({ isShowExpireContractPanel: flag });
+    };
+
+    //控制超3个月没有续约的客户数字详情面板的显示隐藏
+    toggleUnrenewedCustomerNumberDetailPanel = (flag) => {
+        this.setState({ isShowUnrenewedCustomerNumberDetail: flag });
     };
 
     // 到期合同（可选本月，本季度，近三个月）
@@ -808,6 +854,34 @@ class TeamDataColumn extends React.Component {
         }
     }
 
+    //渲染超3个月没有续约的客户数字详情
+    renderUnrenewedCustomerNumberDetail() {
+        const chart = _.extend({}, unrenewedCustomerChart, {
+            data: this.state.unrenewedCustomers,
+            resultType: '',
+        });
+
+        chart.option.scroll = {
+            x: TABLE_CONSTS.TABLE_MIN_WIDTH,
+            y: tableHeight
+        };
+
+        chart.option.pagination = { 
+            pageSize: PAGE_SIZE
+        };
+
+        delete chart.url;
+
+        return (
+            <div className="contract-expire-wrapper">
+                <AntcAnalysis
+                    charts={[chart]}
+                    isGetDataOnMount={true}
+                />
+            </div>
+        );
+    }
+
     //组织提取线索量统计
     renderExtractCluesPanel() {
         let residueExtractCluesCount = this.state.maxLimitExtractNumber - this.state.extractCluesCount;
@@ -844,6 +918,7 @@ class TeamDataColumn extends React.Component {
                     {this.renderContactClues()}
                     {this.renderExtractCluesPanel()}
                     {isOpenCash() ? this.renderExpireContracts() : null}
+                    {this.renderUnrenewedCustomerNumberCard()}
                 </GeminiScrollbar>
                 {
                     this.state.isShowExpireContractPanel ? (
@@ -854,6 +929,18 @@ class TeamDataColumn extends React.Component {
                             isShowCloseBtn
                             onClosePanel={this.setExpireContractPanel.bind(this, false)}
                             content={this.renderExpireContractsPanel()}
+                        />
+                    ) : null
+                }
+                {
+                    this.state.isShowUnrenewedCustomerNumberDetail ? (
+                        <RightPanelModal
+                            width={1000}
+                            className=""
+                            isShowMadal
+                            isShowCloseBtn
+                            onClosePanel={this.toggleUnrenewedCustomerNumberDetailPanel.bind(this, false)}
+                            content={this.renderUnrenewedCustomerNumberDetail()}
                         />
                     ) : null
                 }

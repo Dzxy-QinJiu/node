@@ -420,6 +420,8 @@ var en_US = {
     'register.user.agreement.tip': 'Read and agreed to {useragreement}',//已阅读并同意{userAgreement}
     'register.user.agreement.curtao': 'User agreement',//《用户协议》
     'register.user.agreement.valid.tip': 'Please read and agreed to "Curtao user agreement"',//请先阅读并同意《客套用户协议》
+    'register.curtao.agreement.title': 'User agreement of Curtao',//客套用户协议
+    'register.curtao.privacy.policy.title': 'Privacy policy of Curtao',//客套隐私政策
     'register.to.login.tip': 'Existing account, go to {login}',//已有账号，去{login}
     'register.phone.has.registed': 'The mobile number has been registered',//该手机号已被注册
     'register.privacy.policy': 'Privacy policy',//隐私政策
@@ -3441,6 +3443,18 @@ var en_US = {
     'analysis.cue.call.analysis': 'cue call analysis',//线索通话分析
     'analysis.number.of.customers.with.an.account': 'number of customers with an account',//有账号的客户数
     'analysis.number.of.customers.whose.accounts.have.been.logged.in': 'number of customers whose accounts have been logged in',//有账号登录过的客户数
+    'analysis.visit.customer.trend.statistics': 'visit customer trend statistics',//拜访客户趋势统计
+    'analysis.business.trip.statistics': 'business trip statistics',//出差统计详情
+    'analysis.follow-up.record.content': 'follow-up record content',//跟进记录内容
+    'analysis.follow-up.time': 'follow-up time',//跟进记录时间
+    'analysis.login.user.statistics': 'login user statistics',//登录用户统计
+    'analysis.the.total.number.of.delay': 'the total number of delay',//延期总数
+    'analysis.unrenewed.customer.statistics': 'customers who have not renewed their contracts in more than 3 months',//超3个月没有续约的客户
+    // 用户分析-新增用户分析
+    'user.analysis.new.account.title': 'New account statistics', // 新开账号数统计
+    'user.analysis.account.active.count': 'Effective number of login', // 有效登录数
+    'user.analysis.account.active.percent': 'Login rate', // 登录率
+    
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
@@ -3555,6 +3569,7 @@ var en_US = {
     'lead.check.phone.have.tested': 'Have tested',//已检测
     'lead.delete.clue': 'Delete lead',//删除线索
     'lead.release.clue': 'Release lead',//释放到线索池
+    'lead.export.clue.item': 'Export field',//导出字段
 
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
@@ -4001,8 +4016,9 @@ var en_US = {
     'apply.approved.receive.email': 'Mail recipient or mailbox',//接收邮件人员或邮箱
     'apply.approved.select.receive.email': 'Please select a member or mailbox to receive mail',//请选择接收邮件的成员或邮箱
     'apply.approved.charge.mode': 'charge mode',//收费模式
-    'apply.approved.charge.free': 'free',//免费
-    'apply.approved.charge.paid': 'paid',//付费
+    'apply.approved.charge.free': 'free report',//免费报告
+    'apply.approved.charge.paid': 'paid report',//付费报告
+    'apply.approve.document.file.remark': 'The report is produced by the support department by default.',//该报告默认由支持部制作，如需舆情部制作请备注
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
@@ -4298,6 +4314,7 @@ var en_US = {
     'clue.recommend.has.contacts': 'Have a contact',//有联系人
 
     // 线索分配策略
+    'clue.assignment.strategy.name': 'Assignment strategy', // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
     'clue.assignment.strategy.fail.to.get': 'Fail to fetch lead assignment strategy list',//获取线索分配策略列表失败
     'clue.assignment.no.strategy.tip': 'There is no lead assignment strategy yet',//您还没有线索分配策略
@@ -4460,6 +4477,5 @@ var en_US = {
     'leave-feedback-visit-consumer': 'visit', //拜访了
     'leave-feedback-visit-record': 'Leave feedback record:', //拜访记录：
     /*销售出差反馈，弹窗给邮件抄送人 ---end*/
-
 };
 export default en_US;

@@ -1034,7 +1034,7 @@ class ApplyApproveList extends React.Component {
                         selectTip={Intl.get('leave.apply.select.at.least.one.type', '请选择至少一个舆情报告类型')}
                         selectPlaceholder={Intl.get('apply.approve.report.select.type', '请选择舆情报告类型')}
                         applyLabel={Intl.get('common.type', '类型')}
-                        remarkPlaceholder={Intl.get('apply.approve.report.remark', '请填写{type}备注', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')})}
+                        remarkPlaceholder={Intl.get('apply.approve.document.file.remark', '该报告默认由支持部制作，如需舆情部制作请备注')}
                     />;
                 case APPLY_APPROVE_TYPES.DOCUMENTWRITING://文件撰写申请
                     return <AddDocumentWriteOrReportSendApplyPanel

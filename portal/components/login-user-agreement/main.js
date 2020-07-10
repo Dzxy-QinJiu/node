@@ -16,6 +16,7 @@ import GeminiScrollbar from '../react-gemini-scrollbar';
 const LAYOUT_CONST = {
     TITLE_HEIGHT: 96,//标题的高度
     MARGAIN: 108,//上下边距的和54+54
+    MOBILE_MARGIN: 45
 };
 class UserAgreementPage extends React.Component {
     constructor(props) {
@@ -33,7 +34,11 @@ class UserAgreementPage extends React.Component {
         this.setState({ contentHeight: this.getContentHeight() });
     }
     getContentHeight() {
-        return $(window).height() - LAYOUT_CONST.MARGAIN;// - LAYOUT_CONST.TITLE_HEIGHT;
+        let margin = LAYOUT_CONST.MARGAIN;
+        if($(window).width() <= 720){
+            margin = LAYOUT_CONST.MOBILE_MARGIN;
+        }
+        return $(window).height() - margin;// - LAYOUT_CONST.TITLE_HEIGHT;
     }
     componentWillUnmount() {
         Trace.detachEventListener(window, 'click', Trace.eventHandler);
@@ -51,7 +56,7 @@ class UserAgreementPage extends React.Component {
                 </div>
                 <div className='user-agreement-content' style={{ height: contentHeight }}>
                     <GeminiScrollbar>
-                        <div className='content-title'>【首部及导言】</div>
+                        <div className='content-title first-content-title'>【首部及导言】</div>
                         <div className='content-mini-margin text-indent-style'>欢迎您使用客套的服务！</div>
                         <div className='content-mini-margin text-indent-style'>
                             为使用客套的服务，您应当阅读并遵守《客套用户使用协议》（以下简称“本协议”），及《客套隐私政策》。本协议自开始使用网站及服务，并成为网站的注册用户时即产生法律效力。您在使用客套提供的各项服务之前，请您务必审慎阅读、充分理解各条款，以及开通或使用某项服务的单独协议。如您不同意本协议的条款或随时对其的修改，您可以主动取消客套提供的服务；您一旦使用客套服务，即视为您已理解并完全同意本协议各项条款，并成为客套用户（以下简称“用户”）。

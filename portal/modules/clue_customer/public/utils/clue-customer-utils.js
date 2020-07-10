@@ -1,15 +1,13 @@
 //客户名格式验证
-import {nameRegex, ipRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {nameRegex, ipRegex, validatorNameRuleRegex, isSupportCheckPhone} from 'PUB_DIR/sources/utils/validate-util';
 const hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 import clueCustomerAction from '../action/clue-customer-action';
 var userData = require('PUB_DIR/sources/user-data');
 import { storageUtil } from 'ant-utils';
 const local = storageUtil.local;
-import {clueNameContactRule,cluePositionContactRule} from 'PUB_DIR/sources/utils/validate-util';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import { checkCurrentVersion, checkVersionAndType, isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
-import {isSupportCheckPhone} from 'PUB_DIR/sources/utils/validate-util';
 import {PHONE_STATUS_MAP, PHONE_STATUS_KEY} from 'PUB_DIR/sources/utils/consts';
 import uuid from 'uuid/v4';
 
@@ -289,11 +287,11 @@ export const handleSubmitClueItemData = function(submitObj,isMarkingAvalibility)
     return data;
 };
 export const contactNameRule = function() {
-    return [clueNameContactRule,{required: true,
+    return [validatorNameRuleRegex(30, Intl.get('call.record.contacts', '联系人')),{required: true,
         message: Intl.get('crm.90', '请输入姓名')}];
 };
 export const contactPositionRule = function() {
-    return [cluePositionContactRule];
+    return [validatorNameRuleRegex(10, Intl.get('member.position', '职务'))];
 };
 
 const TENTHOUSAND = 10000;
@@ -796,3 +794,87 @@ export const getSourceClassifyName = function(sourceClassify){
 export const generateConditionId = function() {
     return `${uuid()}${Date.now()}`;
 };
+export const defaultItem = ['name','contacts_name','contacts_phone','contacts_email','contacts_qq','contacts_wechat','contacts_otherways',
+    'province','address','legal_person','formed','status','customer_traces'];
+//导出线索的自定义字段
+export const exportClueItem = [
+    {
+        label: Intl.get('clue.customer.clue.name', '线索名称'),
+        value: 'name',
+    }, {
+        label: Intl.get('clue.filter.clue.status', '线索状态'),
+        value: 'status'
+    },
+    {
+        label: Intl.get('common.login.time', '时间'),
+        value: 'source_time',
+    },
+    {
+        label: Intl.get('crm.clue.client.source', '获客方式'),
+        value: 'source_classify'
+    },
+    {
+        label: Intl.get('clue.analysis.source', '来源'),
+        value: 'clue_source',
+    },{
+        label: Intl.get('clue.customer.source.ip', '来源IP'),
+        value: 'source_ip',
+    },{
+        label: Intl.get('crm.96', '地域'),
+        value: 'province',
+    },{
+        label: Intl.get('common.full.address', '详细地址'),
+        value: 'address',
+    },{
+        label: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
+        value: 'access_channel',
+    },{
+        label: Intl.get('clue.customer.classify', '线索分类'),
+        value: 'clue_classify'
+    },{
+        label: Intl.get('crm.sales.clue.descr', '线索描述'),
+        value: 'source',
+    },{
+        label: Intl.get('call.record.contacts', '联系人'),
+        value: 'contacts_name',
+    },{
+        label: Intl.get('common.phone', '电话'),
+        value: 'contacts_phone',
+    },{
+        label: Intl.get('common.email', '邮箱'),
+        value: 'contacts_email',
+    },{
+        label: 'QQ',
+        value: 'contacts_qq',
+    },{
+        label: Intl.get('crm.58', '微信'),
+        value: 'contacts_wechat',
+    },{
+        label: Intl.get('clue.customer.other.contact_way', '其他联系方式'),
+        value: 'contacts_otherways',
+    },{
+        label: Intl.get('clue.customer.associate.customer', '关联客户'),
+        value: 'customer_name'
+    },{
+        label: Intl.get('crm.6', '负责人'),
+        value: 'user_name'
+    },{
+        label: Intl.get('clue.list.clue.availibility','无效线索'),
+        value: 'availability'
+    },{
+        label: Intl.get('call.record.follow.content', '跟进内容'),
+        value: 'customer_traces'
+    },{
+        label: Intl.get('lead.company.legal.person', '法人'),
+        value: 'legal_person',
+    },{
+        label: Intl.get('clue.customer.register.time', '注册时间'),
+        value: 'formed',
+    },{
+        label: Intl.get('clue.recommend.clue.scope', '经营范围'),
+        value: 'business_scope',
+    },{
+        label: Intl.get('clue.recommend.clue.introduction', '简介'),
+        value: 'company_profile',
+    }
+];

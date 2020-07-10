@@ -77,6 +77,15 @@ export const WEEKDAY = [
     Intl.get('user.time.saturday', '周六')
 ];
 
+//时间间隔
+export const TIME_INTERVALS = [
+    {name: Intl.get('common.time.unit.day', '天'), value: 'day'},
+    {name: Intl.get('common.time.unit.week', '周'), value: 'week'},
+    {name: Intl.get('common.time.unit.month', '月'), value: 'month'},
+    {name: Intl.get('common.time.unit.quarter', '季度'), value: 'quarter'},
+    {name: Intl.get('common.time.unit.year', '年'), value: 'year'},
+];
+
 //localstorage中存储选中的应用ID的键
 export const STORED_APP_ID_KEY = 'analysis_account_active_app_id';
 

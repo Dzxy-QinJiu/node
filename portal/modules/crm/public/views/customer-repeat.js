@@ -18,7 +18,7 @@ import classNames from 'classnames';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 let PrivilegeChecker = Privilege.PrivilegeChecker;
 import Trace from 'LIB_DIR/trace';
-import ShearContent from '../../../../components/shear-content';
+import ShearContent from '../../../../components/shear-content-new';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {isCurtao,checkVersionAndType, isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 import BackMainPage from 'CMP_DIR/btn-back';

@@ -40,6 +40,8 @@ function getCharts() {
         accountChart.getLoginTimesChart('delay'),
         //平均在线时长
         accountChart.getAverageOnlineTimeChart('delay'),
+        //登录用户统计
+        accountChart.getDelayedTotalActiveChart(),
         //活跃用户地域统计
         accountChart.getActiveAreaChart('delay'),
     ];
