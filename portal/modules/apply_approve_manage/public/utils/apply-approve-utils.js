@@ -535,8 +535,9 @@ export const getAllWorkFlowList = function(callback){
 };
 export const getApplyNameRegMsg = function(inputValue, name) {
     var applyNameRegErrMsg = '', length = 10;
-    if (!validatorNameRuleRegex(length).pattern.test(_.trim(inputValue))) {
-        applyNameRegErrMsg = validatorNameRuleRegex(length,name || Intl.get('user.apply.type', '申请类型')).message;
+    var validatorObj = validatorNameRuleRegex(length,name || Intl.get('user.apply.type', '申请类型'));
+    if (!validatorObj.pattern.test(_.trim(inputValue))) {
+        applyNameRegErrMsg = validatorObj.message;
     }
     return applyNameRegErrMsg;
 };
