@@ -90,7 +90,7 @@ class ClueToCustomerPanel extends React.Component {
                     afterAddCustomer={this.handleAfterAddCustomer}
                     formData={this.props.clue}
                     isAssociateClue={true}
-                    isContactWayExpanded={true}
+                    isContactWayExpanded={false}
                     notShowFormItems={NOT_SHOW_FORM_ITEMS}
                     isConvert={true}
                     phoneNum={_.get(this.props, 'clue.phones[0]', '')}
