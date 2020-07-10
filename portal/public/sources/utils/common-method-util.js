@@ -48,7 +48,7 @@ import {notificationEmitter, modifyAppConfigEmitter, paymentEmitter} from './emi
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 import {getMyTeamTreeAndFlattenList} from './common-data-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
-import ShearContent from 'CMP_DIR/shear-content';
+import ShearContent from 'CMP_DIR/shear-content-new';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import {
     isCommonSalesOrPersonnalVersion,

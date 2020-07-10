@@ -574,11 +574,7 @@ class CustomerRecord extends React.Component {
         let showEidtBtn = item.remark && !this.props.disableEdit && !this.state.isEdit && !this.state.addRecordPanelShow;
         return (
             <div className="record-content-show">
-                {item.remark ? (<ShearContent key={item.id} >{item.remark}</ShearContent>) : this.renderSupplementTip(item)}
-                {showEidtBtn ? <DetailEditBtn
-                    title={Intl.get('common.edit', '编辑')}
-                    onClick={this.editDetailContent.bind(this, item)}
-                /> : null}
+                {item.remark ? (<ShearContent hasEditBtn={showEidtBtn} editBtnChange={this.editDetailContent.bind(this, item)} key={item.id} >{item.remark}</ShearContent>) : this.renderSupplementTip(item)}
             </div>);
     };
 

@@ -16,7 +16,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-import ShearContent from '../../../../../components/shear-content';
+import ShearContent from '../../../../../components/shear-content-new';
 import DetailCard from 'CMP_DIR/detail-card';
 
 class Dynamic extends React.Component {
