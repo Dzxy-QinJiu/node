@@ -3449,6 +3449,11 @@ var en_US = {
     'analysis.login.user.statistics': 'login user statistics',//登录用户统计
     'analysis.the.total.number.of.delay': 'the total number of delay',//延期总数
     'analysis.unrenewed.customer.statistics': 'customers who have not renewed their contracts in more than 3 months',//超3个月没有续约的客户
+    // 用户分析-新增用户分析
+    'user.analysis.new.account.title': 'New account statistics', // 新开账号数统计
+    'user.analysis.account.active.count': 'Effective number of login', // 有效登录数
+    'user.analysis.account.active.percent': 'Login rate', // 登录率
+    
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
@@ -4468,14 +4473,5 @@ var en_US = {
     'leave-feedback-visit-consumer': 'visit', //拜访了
     'leave-feedback-visit-record': 'Leave feedback record:', //拜访记录：
     /*销售出差反馈，弹窗给邮件抄送人 ---end*/
-
-    /*分析--- start */
-    // 用户分析-新增用户分析
-    'user.analysis.new.account.title': 'New account statistics', // 新开账号数统计
-    'user.analysis.account.active.count': 'Effective number of login', // 有效登录数
-    'user.analysis.account.active.percent': 'Login rate', // 登录率
-
-    /*分析--- end */
-
 };
 export default en_US;
