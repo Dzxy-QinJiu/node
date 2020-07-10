@@ -1,25 +1,9 @@
 import { removeCommaFromNum } from '../../../lib/func';
 import {regex, num} from 'ant-utils';
 import { passwordRegex, getPassStrenth} from 'CMP_DIR/password-strength-bar';
-//名称长度的验证规则
-export const nameLengthRule = {
-    required: true,
-    min: 1,
-    max: 50,
-    message: Intl.get('common.input.character.prompt', '最少1个字符,最多50个字符')
-};
+
 //名称验证的正则表达式（包含大小写字母、下划线、中英文括号、点及汉字，长度1-50之间）
 export const nameRegex = regex.getNameRegex(50);
-//线索联系人的校验规则
-export const clueNameContactRule = {
-    pattern: nameRegex,
-    message: Intl.get('clue.contact.name.within.ten.character', '联系人名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间')
-};
-//线索联系人职务的校验规则
-export const cluePositionContactRule = {
-    pattern: regex.getNameRegex(10),
-    message: Intl.get('lead.contact.position.reg', '职务只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间')
-};
 
 //客户名验证的正则表达式（包含大小写字母、下划线、中英文括号、点及汉字，长度1-25之间）
 export const customerNameRegex = regex.getNameRegex(25);
@@ -182,43 +166,10 @@ export const productDesRule = {
     message: Intl.get('app.user.manage.product.des.validate', '自定义属性key只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到20（包括20）之间')
 };
 
-// 产品名称长度的验证规则（包含大小写字母、下划线、中英文括号、点及汉字，长度1-10之间）
-export const productNameLengthRule = regex.getNameRegex(10);
-
-export const productNameRuleForValidator = {
-    required: true,
-    min: 1,
-    max: 10,
-    message: Intl.get('product.name.rule', '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间')
-};
-export const productNameRule = {
-    required: true,
-    pattern: productNameLengthRule,
-    message: Intl.get('product.name.rule', '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间'),
-};
-// 线索分配策略长度的验证规则（包含大小写字母、下划线、中英文括号、点及汉字，长度1-10之间）
-export const clueAssignmentStrategyRule = regex.getNameRegex(10);
-export const clueAssignmentStrategyForValidator = {
-    required: true,
-    min: 1,
-    max: 10,
-    message: Intl.get('clue.assignment.name.required.tip', '线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间')
-};
-export const clueAssignmentStrategy = {
-    required: true,
-    pattern: clueAssignmentStrategyRule,
-    message: Intl.get('clue.assignment.name.required.tip', '线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到10（包括10）之间'),
-};
 // 用户名校验规则（字母、数字、横线或下划线组成的字符）
 export const userNameRule = /^[a-zA-Z0-9_-]{1,50}$/;
 //域名的校验规则 (由字母、数字、中划线组成的1~32位字符且不能以中划线开头或结尾)
 export const domainNameRule = /^(?!-)(?!.*-$)[a-zA-Z0-9-]{1,32}$/;
-// 用户名的校验规则
-export const userNameValidationRules = {
-    required: true,
-    pattern: userNameRule,
-    message: Intl.get('member.add.member.rule', '用户名只能包含字母、数字、横线、下划线，且长度在1到50（包括50）之间')
-};
 
 // 名称长度的验证规则（包含大小写字母、下划线、中英文括号、点及汉字，长度1-50之间）
 export const nameLengthRuleRegex = regex.getNameRegex(50);

@@ -11,7 +11,7 @@ import CrmAction from '../../action/crm-actions';
 import {validateRequiredOne, disabledAfterToday} from 'PUB_DIR/sources/utils/common-method-util';
 
 import DetailCard from 'CMP_DIR/detail-card';
-import { clueNameContactRule, emailRegex, qqRegex, checkWechat } from 'PUB_DIR/sources/utils/validate-util';
+import { emailRegex, qqRegex, checkWechat, validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 var uuid = require('uuid/v4');
 //滚动条
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -551,7 +551,7 @@ class ContactForm extends React.Component {
                             {
                                 getFieldDecorator('name', {
                                     initialValue: _.get(formData, 'name', ''),
-                                    rules: [clueNameContactRule]
+                                    rules: [validatorNameRuleRegex(30, Intl.get('call.record.contacts', '联系人'))]
                                 })(
                                     <Input
                                         name="name"
@@ -569,6 +569,7 @@ class ContactForm extends React.Component {
                             {
                                 getFieldDecorator('department', {
                                     initialValue: _.get(formData, 'department', ''),
+                                    rules: [validatorNameRuleRegex(10, Intl.get('crm.113', '部门'))]
                                 })(
                                     <Input
                                         value={formData.department}
@@ -585,6 +586,7 @@ class ContactForm extends React.Component {
                             {
                                 getFieldDecorator('position', {
                                     initialValue: _.get(formData, 'position', ''),
+                                    rules: [validatorNameRuleRegex(10, Intl.get('crm.91', '职位'))]
                                 })(
                                     <Input
                                         value={formData.position}

@@ -4297,6 +4297,7 @@ var en_US = {
     'clue.recommend.has.contacts': 'Have a contact',//有联系人
 
     // 线索分配策略
+    'clue.assignment.strategy.name': 'Assignment strategy', // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
     'clue.assignment.strategy.fail.to.get': 'Fail to fetch lead assignment strategy list',//获取线索分配策略列表失败
     'clue.assignment.no.strategy.tip': 'There is no lead assignment strategy yet',//您还没有线索分配策略

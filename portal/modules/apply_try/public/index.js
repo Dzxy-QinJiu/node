@@ -4,7 +4,7 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 import applyTryAjax from './ajax/applyTryAjax';
 import {userScales} from './util/apply_try_const';
 import OperateSuccessTip from 'CMP_DIR/operate-success-tip';
-import { nameLengthRule } from 'PUB_DIR/sources/utils/validate-util';
+import { validatorNameRuleRegex} from 'PUB_DIR/sources/utils/validate-util';
 const Spinner = require('CMP_DIR/spinner');
 require('./css/index.less');
 
@@ -89,19 +89,30 @@ class Index extends React.Component {
                 sm: {span: 20},
             },
         };
+        const companyName = Intl.get('register.company.nickname','公司名称');
+        const userName = Intl.get('common.name','姓名');
         return <div className='apply-try-content'>
             {this.state.successFlag ? this.renderApplyResult() : (
                 <div className='apply-try-content-wrapper'>
                     <div className='apply-try-content-title'>{this.props.title || Intl.get('personal.apply.trial.enterprise.edition','申请试用企业版')}</div>
                     <Form>
-                        <Form.Item label={Intl.get('register.company.nickname','公司名称')} className='apply-try-content-componey' {...formLayout} require>
+                        <Form.Item
+                            label={companyName}
+                            className='apply-try-content-componey'
+                            {...formLayout}
+                            require
+                        >
                             {getFieldDecorator('company', {
-                                rules: [nameLengthRule],
+                                rules: [validatorNameRuleRegex(25, companyName)],
                             })(<Input className='apply-try-content-componey-input'/>)}
                         </Form.Item>
-                        <Form.Item label={Intl.get('common.name','姓名')} className='apply-try-content-componey' {...formLayout}>
+                        <Form.Item
+                            label={userName}
+                            className='apply-try-content-componey'
+                            {...formLayout}
+                        >
                             {getFieldDecorator('name', {
-                                rules: [nameLengthRule],
+                                rules: [validatorNameRuleRegex(30, userName)],
                             })(<Input className='apply-try-content-componey-input'/>)}
                         </Form.Item> 
                         <Form.Item label={Intl.get('common.apply.try.user.scales','使用人数')} {...formLayout} require className="user-scales-container">
