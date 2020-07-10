@@ -1835,7 +1835,6 @@ class ClueCustomer extends React.Component {
                         type='lead'
                         hidePhoneIcon={!editCluePrivilege(salesClueItem)}
                     />
-                    {hasMoreIconPrivilege && !(isWebMiddle || isWebMin) ? <i className="iconfont icon-more" data-tracename='点击线索列表中多个联系人省略号打开线索详情' onClick={this.showClueDetailOut.bind(this, salesClueItem)}/> : null}
                 </div>
             );
         }else{
