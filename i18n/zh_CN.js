@@ -3471,6 +3471,11 @@ var zh_CN = {
     'analysis.login.user.statistics': '登录用户统计',
     'analysis.the.total.number.of.delay': '延期总数',
     'analysis.unrenewed.customer.statistics': '超3个月没有续约的客户',
+    // 用户分析-新增用户分析
+    'user.analysis.new.account.title': '新开账号数统计',
+    'user.analysis.account.active.count': '有效登录数',
+    'user.analysis.account.active.percent': '登录率',
+
     'common.font.the': '第',
     'common.weeks': '周',
     'clue.add.contacts.tip': '添加联系方式',
@@ -4514,6 +4519,5 @@ var zh_CN = {
     'leave-feedback-visit-consumer': '拜访了',
     'leave-feedback-visit-record': '拜访记录：',
     /*销售出差反馈，弹窗给邮件抄送人 ---end*/
-
 };
 export default zh_CN;
