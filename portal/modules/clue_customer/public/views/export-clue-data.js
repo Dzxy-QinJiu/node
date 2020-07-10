@@ -8,7 +8,7 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('../css/export-data.less');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
-import {Form, Input, Button, Icon, message, DatePicker, Radio, Checkbox} from 'antd';
+import {Radio, Checkbox} from 'antd';
 import {exportClueItem, defaultItem} from '../utils/clue-customer-utils';
 const RadioGroup = Radio.Group;
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
@@ -23,14 +23,6 @@ class ExportClueData extends React.Component {
             checkedValues: defaultItem
         };
     }
-
-    componentDidMount() {
-
-    }
-
-    closeExportData = () => {
-
-    };
     renderClueExportRangeContent = () => {
         return <div>
             <div className='export-clue-item'>
@@ -100,7 +92,7 @@ class ExportClueData extends React.Component {
     render() {
         let {checkedValues} = this.state;
         return (
-            <div className="show-panel">
+            <div className="clue-export-show-panel">
                 <RightPanel showFlag={true} data-tracename="导出线索" className="export-clue-container">
                     <span className="iconfont icon-close export-data-close-btn"
                         onClick={this.props.closeExportData}
@@ -113,11 +105,6 @@ class ExportClueData extends React.Component {
                             {this.renderClueExportRange()}
                             {this.renderClueExportColumn()}
                             <SaveCancelButton
-                                // saveErrorMsg={this.state.saveMsg}
-                                // saveSuccessMsg={this.state.saveMsg}
-                                // hideSaveTooltip={this.hideSaveTooltip}
-                                // saveResult={saveResult}
-                                // errorShowTime={200}
                                 disabledBtn={_.isEmpty(this.state.checkedValues)}
                                 handleSubmit={this.props.exportData.bind(this,checkedValues)}
                                 okBtnText={Intl.get('common.export', '导出')}

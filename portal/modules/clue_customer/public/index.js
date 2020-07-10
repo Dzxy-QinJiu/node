@@ -838,7 +838,7 @@ class ClueCustomer extends React.Component {
         );
         return(
             <div className="export-clue-customer-container pull-right">
-                {this.isShowExportPopover(currentVersionObj) && false ?
+                {this.isShowExportPopover(currentVersionObj) ?
                     (<Popover content={getContactSalesPopoverTip(true)} trigger="click" overlayClassName="explain-pop" data-tracename='点击导出线索按钮'>
                         <Button className="btn-item">
                             {exportBtnContent}

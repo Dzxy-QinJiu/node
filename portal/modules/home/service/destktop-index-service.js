@@ -151,8 +151,7 @@ exports.activeEmail = function(req, res, activeCode) {
             url: userInfoRestApis.activeEmail,
             req: req,
             res: res,
-            json: false,
-            headers: {accept: 'text/html'}
+            json: false
         }, {code: activeCode});
 };
 //获取用户语言

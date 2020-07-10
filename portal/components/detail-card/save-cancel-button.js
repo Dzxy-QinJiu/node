@@ -94,7 +94,7 @@ SaveCancelButton.defaultProps = {
     successShowTime: 600,//成功后，提示信息显示的时间
     saveSuccessMsg: '',//成功的提示信息(跟saveResult一起使用)
     errorShowTime: 0 ,//有失败提示，过多久要消失
-    disabledBtn: false
+    disabledBtn: false//保存按钮不可用
 };
 SaveCancelButton.propTypes = {
     handleSubmit: PropTypes.func,
