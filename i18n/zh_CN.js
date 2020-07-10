@@ -3952,6 +3952,7 @@ var zh_CN = {
     'apply.rule.allow.point': '允许小数点',
     'apply.rule.limit.int': '仅限整数',
     'apply.components.name': '组件名称',
+    'apply.approve.component': '组件',
     'apply.components.tip.msg': '提示说明',
     'apply.components.required.item': '必填',
     'apply.components.write.title': '请填写标题！',

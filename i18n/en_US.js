@@ -3927,6 +3927,7 @@ var en_US = {
     'apply.rule.allow.point': 'Allow decimal point',//允许小数点
     'apply.rule.limit.int': 'Integer only',//仅限整数
     'apply.components.name': 'Component name',//组件名称
+    'apply.approve.component': 'Component',//组件
     'apply.components.tip.msg': 'Prompt description',//提示说明
     'apply.components.required.item': 'Required',//必填
     'apply.components.write.title': 'Please fill in the title!',//请填写标题！
