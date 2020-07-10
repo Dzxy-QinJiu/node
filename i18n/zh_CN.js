@@ -4344,6 +4344,7 @@ var zh_CN = {
     'clue.more.contacts.tip': '提取后可查看完整信息',
     'clue.recommend.has.contacts': '有联系人',
     // 线索分配策略
+    'clue.assignment.strategy.name': '线索分配策略',
     'clue.assignment.strategy.add': '添加分配策略',
     'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',
     'clue.assignment.no.strategy.tip': '您还没有线索分配策略',

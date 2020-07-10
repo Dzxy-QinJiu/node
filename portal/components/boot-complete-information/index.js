@@ -8,7 +8,7 @@ import './style.less';
 import KefuImage from './kefu.png';
 import { Form, Input, Button, message, Col, Row } from 'antd';
 const FormItem = Form.Item;
-import { nameLengthRule, validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
+import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {getOrganization, getFormattedCondition, isResponsiveDisplay, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
@@ -294,6 +294,7 @@ class BootCompleteInformation extends React.Component{
         };
         const organization = getOrganization();
         const userInfo = userData.getUserData();
+        const nickName = Intl.get('common.nickname', '昵称');
         return (
             <div className="personal-complete-container">
                 <div className="personal-complete-content">
@@ -315,13 +316,13 @@ class BootCompleteInformation extends React.Component{
                     <div className="personal-complete-box">
                         <Form layout='horizontal' className="personal-complete-form">
                             <FormItem
-                                label={Intl.get('common.nickname', '昵称')}
+                                label={nickName}
                                 {...formItemLayout}
                             >
                                 {
                                     getFieldDecorator('nick_name', {
                                         initialValue: _.get(userInfo,'nick_name',''),
-                                        rules: [nameLengthRule],
+                                        rules: [validatorNameRuleRegex(30,nickName)],
                                         validateTrigger: 'onBlur'
                                     })(
                                         <Input

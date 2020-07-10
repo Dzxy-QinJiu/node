@@ -16,8 +16,8 @@ const FormItem = Form.Item;
 import ajax from '../../../crm/common/ajax';
 const routes = require('../../../crm/common/route');
 var clueCustomerAction = require('../action/clue-customer-action');
-import {checkClueName, checkClueSourceIP,contactNameRule, contactPositionRule,sourceClassifyOptions} from '../utils/clue-customer-utils';
-import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
+import { checkClueSourceIP,contactNameRule, contactPositionRule,sourceClassifyOptions} from '../utils/clue-customer-utils';
+import {nameRegex, validatorNameRuleRegex} from 'PUB_DIR/sources/utils/validate-util';
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
 var uuid = require('uuid/v4');
@@ -486,6 +486,7 @@ class ClueAddForm extends React.Component {
         let industryOptions = industryList.map(function(industry, index) {
             return (<Option key={index} value={industry}>{industry}</Option>);
         });
+        const clueName = Intl.get('clue.customer.clue.name', '线索名称');
         return (
             <RightPanel showFlag={true} data-tracename="添加线索" className="sales-clue-add-container">
                 <BasicData
@@ -512,14 +513,14 @@ class ClueAddForm extends React.Component {
                             </FormItem>
                             <FormItem
                                 className="form-item-label"
-                                label={Intl.get('clue.customer.clue.name', '线索名称')}
+                                label={clueName}
                                 {...formItemLayout}
                             >
                                 {getFieldDecorator('name', {
                                     rules: [{
                                         required: true,
                                         message: Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')
-                                    }, {validator: checkClueName}],
+                                    }, validatorNameRuleRegex(25, clueName)],
                                     validateTrigger: 'onBlur'
                                 })(
                                     <Input
