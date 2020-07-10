@@ -373,6 +373,7 @@ var en_US = {
     'login.wechat.login.error': 'WeChat login failed',//微信登录失败
     'login.wechat.bind.error': 'WeChat binding failed',//微信绑定失败
     'login.wechat.bind.check.error': 'Check whether or not to bind WeChat is failed',//检查是否绑定微信出错了
+    'login.wechat.mini.program': 'WeChat Mini Program',//微信小程序
     'login.user.agreement': 'User agreement', //用户使用协议
     'login.user.agreement.tip': 'Clicked {btn}, you agree to our {userAgreement} and {privacyPolicy}',//点击{btn}表示您已同意我们的{userAgreement}和{privacyPolicy}
     'login.no.account.register.tip': 'No account, go to {register}',//没有账号，去{register}

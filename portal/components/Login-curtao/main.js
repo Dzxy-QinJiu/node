@@ -8,7 +8,7 @@ const LoginForm = require('./login-form');
 import ketaoLogoSrc from './image/ketao-logo.svg';
 import {Alert, Tabs, Icon, Button} from 'antd';
 import {ssoLogin, callBackUrl} from '../../lib/websso';
-import SideBar from '../side-bar';
+import RightSideBar from './right-side-bar';
 import ForgotPassword from './forgot-password';
 const TabPane = Tabs.TabPane;
 var Spinner = require('../spinner');
@@ -181,7 +181,7 @@ class LoginMain extends React.Component {
                             </GeminiScrollbar>
                         </div>
                     ) : null }
-                    <SideBar showChat={Oplate.isCurtao}></SideBar>
+                    <RightSideBar/>
                 </div>
             );
         }

@@ -381,6 +381,7 @@ var zh_CN = {
     'login.wechat.bind.error': '微信绑定失败',
     'login.wechat.bind.check.error': '检查是否绑定微信出错了',
     'login.wechat.register.login.error': '微信号注册登录失败',
+    'login.wechat.mini.program': '微信小程序',
     'login.user.agreement': '用户使用协议',
     'login.user.agreement.tip': '点击{btn}表示您已同意我们的{userAgreement}和{privacyPolicy}',
     'login.no.account.register.tip': '没有账号，去{register}',
