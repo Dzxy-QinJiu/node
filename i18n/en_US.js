@@ -4010,8 +4010,9 @@ var en_US = {
     'apply.approved.receive.email': 'Mail recipient or mailbox',//接收邮件人员或邮箱
     'apply.approved.select.receive.email': 'Please select a member or mailbox to receive mail',//请选择接收邮件的成员或邮箱
     'apply.approved.charge.mode': 'charge mode',//收费模式
-    'apply.approved.charge.free': 'free',//免费
-    'apply.approved.charge.paid': 'paid',//付费
+    'apply.approved.charge.free': 'free report',//免费报告
+    'apply.approved.charge.paid': 'paid report',//付费报告
+    'apply.approve.document.file.remark': 'The report is produced by the support department by default.',//该报告默认由支持部制作，如需舆情部制作请备注
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
