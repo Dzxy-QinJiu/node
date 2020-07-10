@@ -3,7 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/4/4.
  */
-import {domainNameRule, getNameRuleRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {domainNameRule, validatorNameRuleRegex} from 'PUB_DIR/sources/utils/validate-util';
 import {Input, Radio} from 'antd';
 import { AntcSelect } from 'antc';
 const Option = AntcSelect.Option;
@@ -535,11 +535,8 @@ export const getAllWorkFlowList = function(callback){
 };
 export const getApplyNameRegMsg = function(inputValue, name) {
     var applyNameRegErrMsg = '', length = 10;
-    if (!getNameRuleRegex(length).test(_.trim(inputValue))) {
-        applyNameRegErrMsg = Intl.get('common.name.rule.regex', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到{length}（包括{length}）之间', {
-            name: name || Intl.get('user.apply.type', '申请类型'),
-            length: length
-        });
+    if (!validatorNameRuleRegex(length).pattern.test(_.trim(inputValue))) {
+        applyNameRegErrMsg = validatorNameRuleRegex(length,name || Intl.get('user.apply.type', '申请类型')).message;
     }
     return applyNameRegErrMsg;
 };

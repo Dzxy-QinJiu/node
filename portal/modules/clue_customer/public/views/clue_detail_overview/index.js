@@ -2046,13 +2046,13 @@ class ClueDetailOverview extends React.Component {
                     {this.renderIpClueLists()}
                     {/*分配线索给某个销售*/}
                     {/*有分配的权限，但是该线索没有分配给某个销售的时候，展示分配按钮，其他情况都展示分配详情就可以*/}
-                    <DetailCard content={(
+                    {isCommonSalesOrPersonnalVersion() ? null : <DetailCard content={(
                         <div className="assign-sales-warp clue-detail-block">
                             {hasAssignedPrivilege && !assignedSales && !this.state.clickAssigenedBtn ?
                                 this.renderAssigendClueText() : this.renderAssignedClueEdit()
                             }
                         </div>
-                    )}/>
+                    )}/>}
                     <div className={associateCls}>
                         {/*线索处理，已跟进或待跟进的线索并且没有关联客户*/}
                         {this.renderAssociatedClue(curClue, associatedCustomer)}
