@@ -56,7 +56,7 @@ export function getNewAccountChart(paramObj = {}) {
 //处理图表
 function processOptions(paramObj, props) {
     let option = props.option = {};
-    const data = props.data;
+    const data = _.get(props, 'data', []);
 
     if (!data.length) {
         option.columns = [];
