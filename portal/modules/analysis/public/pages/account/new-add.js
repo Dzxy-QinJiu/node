@@ -55,5 +55,7 @@ function getCharts() {
         accountChart.getSalesOpenAccountLoginChart(),
         //活跃用户地域统计
         accountChart.getActiveAreaChart('add'),
+        // 新开账户统计
+        accountChart.getNewAccountChart()
     ];
 }

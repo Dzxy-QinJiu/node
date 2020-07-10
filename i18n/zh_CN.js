@@ -4512,5 +4512,13 @@ var zh_CN = {
     'leave-feedback-visit-record': '拜访记录：',
     /*销售出差反馈，弹窗给邮件抄送人 ---end*/
 
+    /*分析--- start */
+    // 用户分析-新增用户分析
+    'user.analysis.new.account.title': '新开账号数统计',
+    'user.analysis.account.active.count': '有效登录数',
+    'user.analysis.account.active.percent': '登录率',
+    
+    /*分析--- end */
+
 };
 export default zh_CN;

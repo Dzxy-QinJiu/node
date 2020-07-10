@@ -4469,5 +4469,13 @@ var en_US = {
     'leave-feedback-visit-record': 'Leave feedback record:', //拜访记录：
     /*销售出差反馈，弹窗给邮件抄送人 ---end*/
 
+    /*分析--- start */
+    // 用户分析-新增用户分析
+    'user.analysis.new.account.title': 'New account statistics', // 新开账号数统计
+    'user.analysis.account.active.count': 'Effective number of login', // 有效登录数
+    'user.analysis.account.active.percent': 'Login rate', // 登录率
+
+    /*分析--- end */
+
 };
 export default en_US;
