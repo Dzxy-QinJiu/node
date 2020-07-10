@@ -5,11 +5,11 @@
  */
 require('../style/add_and_show_apply.less');
 import {AntcTable} from 'antc';
-import {Switch, Input, Button, Dropdown, Menu, Icon} from 'antd';
+import {Switch, Input, Button, Dropdown, Menu, Icon, Alert} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import ApplyFormAndRules from './apply_form_and_rules';
 var classNames = require('classnames');
-import {calculateHeight, APPLYAPPROVE_LAYOUT, getAllWorkFlowList} from '../utils/apply-approve-utils';
+import {calculateHeight, APPLYAPPROVE_LAYOUT, getAllWorkFlowList,getApplyNameRegMsg} from '../utils/apply-approve-utils';
 var applyApproveManageStore = require('../store/apply_approve_manage_store');
 var applyApproveManageAction = require('../action/apply_approve_manage_action');
 var uuid = require('uuid/v4');
@@ -25,6 +25,7 @@ class AddAndShowApplyList extends React.Component {
             showApplyDetailForm: false,//是否展示审批的详情
             showApplyDetailId: '',
             tableHeight: 610,
+            applyNameRegErrMsg: '',//校验名字的后错误信息
             ...applyApproveManageStore.getState()
         };
     }
@@ -82,8 +83,10 @@ class AddAndShowApplyList extends React.Component {
         this.setState(applyApproveManageStore.getState());
     };
     handleInputValue = (e) => {
+        var inputValue = _.trim(_.get(e, 'target.value', '')), applyNameRegErrMsg = getApplyNameRegMsg(inputValue);
         this.setState({
-            newApplyTitle: _.get(e, 'target.value')
+            newApplyTitle: inputValue,
+            applyNameRegErrMsg
         });
     };
 
@@ -94,6 +97,9 @@ class AddAndShowApplyList extends React.Component {
 
     //保存新加的审批类型
     handleSaveApplyTitle = () => {
+        if(this.state.applyNameRegErrMsg){
+            return;
+        }
         //只能用数字，字母，下划线组成这个任意的type，但是任意生成的会有-
         var randomType = 'work_flow_' + uuid();
         var reg = new RegExp('-', 'g');
@@ -126,6 +132,7 @@ class AddAndShowApplyList extends React.Component {
         this.props.updateShowApplyList();
     };
     renderAddApplyProcessTitle = () => {
+        let {applyNameRegErrMsg} = this.state;
         return (
             <span className="add-form">
                 <Input onChange={this.handleInputValue} placeholder={Intl.get('apply.approve.name.apply', '申请类型名称')}/>
@@ -134,6 +141,12 @@ class AddAndShowApplyList extends React.Component {
                     {this.state.addWorkFlowLoading ? <Icon type="loading"/> : null}
                 </Button>
                 <Button onClick={this.handleCancelSaveApplyTitle}>{Intl.get('common.cancel', '取消')}</Button>
+                {applyNameRegErrMsg ?
+                    <Alert
+                        message={applyNameRegErrMsg}
+                        type="error"
+                        showIcon/>
+                    : null}
             </span>
         );
     };
