@@ -448,7 +448,7 @@ class RecentLoginUsers extends React.Component {
             {
                 title: Intl.get('user.time.start', '开通时间'),
                 dataIndex: 'grant_create_date',
-                width: Oplate.hideUserManageItem ? '120px' : '85px',
+                width: Oplate.hideUserManageItem ? '120px' : '100px',
                 key: 'grant_create_date',
                 className: 'has-filter',
                 render: function($1, rowData, idx) {
@@ -458,7 +458,7 @@ class RecentLoginUsers extends React.Component {
             {
                 title: Intl.get('user.time.end', '到期时间'),
                 dataIndex: 'end_date',
-                width: Oplate.hideUserManageItem ? '120px' : '85px',
+                width: Oplate.hideUserManageItem ? '120px' : '100px',
                 key: 'end_date',
                 className: 'has-filter',
                 render: function($1, rowData, idx) {

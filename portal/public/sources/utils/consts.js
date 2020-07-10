@@ -457,10 +457,10 @@ export const REPORT_TYPE = [
         name: Intl.get('crm.186', '其他'), value: OTHER_REPORT
     },];
 export const CHARGE_MODE = [{
-    name: Intl.get('apply.approved.charge.free', '免费'),
+    name: Intl.get('apply.approved.charge.free', '免费报告'),
     value: 'free',
 }, {
-    name: Intl.get('apply.approved.charge.paid', '付费'),
+    name: Intl.get('apply.approved.charge.paid', '付费报告'),
     value: 'paid'
 }];
 //文件撰写类型

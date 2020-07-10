@@ -186,7 +186,7 @@ class CurtaoAnalysis extends React.Component {
                 if (foundPrivilege) {
                     let isShow = true;
 
-                    //若果定义了是否显示该菜单的回调函数，则调用该函数，以控制菜单的显示隐藏
+                    //如果定义了是否显示该菜单的回调函数，则调用该函数，以控制菜单的显示隐藏
                     if (_.isFunction(menu.isShowCallback)) {
                         isShow = menu.isShowCallback();
                     }

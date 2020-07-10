@@ -1,0 +1,37 @@
+@import "../../../public/css/common-variables";
+// 小程序二维码的样式设置
+.side-bar-wrap{
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  right: 8px;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  border-radius: 4px;
+  box-shadow: 0 0 8px #b5b2b2;
+  cursor: pointer;
+  .qrcode.weixin {
+    width: 32px;
+    height: 32px;
+    margin: 8px;
+  }
+  .wechat-code-title {
+    display: none;
+    padding: 8px 0 0 8px;
+    font-size: 12px;
+    color: #333333;
+  }
+  //鼠标移入后，放大二维码的效果
+  &:hover{
+    width: 176px;
+    height: 196px;
+    .wechat-code-title {
+      display: block;
+    }
+    .qrcode.weixin {
+      width: 160px;
+      height: 160px;
+    }
+  }
+}

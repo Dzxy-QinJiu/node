@@ -5,6 +5,7 @@
  */
 var _ = require('lodash');
 exports.toFrontRecommendClueData = function(item) {
+    let telephones = _.uniq(_.get(item,'telephones',[]));
     return {
         id: item.id,
         //(会有高亮内容<em>###</em>)
@@ -28,7 +29,7 @@ exports.toFrontRecommendClueData = function(item) {
         industry: _.get(item,'industry', ''),
         //简介(会有高亮内容<em>###</em>)
         companyProfile: _.get(item,'companyProfile', ''),
-        telephones: _.get(item,'telephones',[]),
+        telephones: telephones,
         //企业状态
         openStatus: _.get(item,'openStatus', ''),
         //有官网
@@ -40,7 +41,7 @@ exports.toFrontRecommendClueData = function(item) {
         }),
         //contact: {phones: 1, qq: 1, weChat: 0, email: 2}
         contact: {
-            phones: _.get(item, 'telephones.length', 0),
+            phones: _.get(telephones, 'length', 0),
             qq: 0,//qq信息后端暂未实现，这里先占位
             weChat: _.get(item, 'gongzhonghao') ? 1 : 0,
             email: _.get(item, 'email.length', 0),
