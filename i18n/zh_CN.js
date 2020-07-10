@@ -4036,8 +4036,9 @@ var zh_CN = {
     'apply.approved.receive.email': '接收邮件人员或邮箱',
     'apply.approved.select.receive.email': '请选择接收邮件的成员或邮箱',
     'apply.approved.charge.mode': '收费模式',
-    'apply.approved.charge.free': '免费',
-    'apply.approved.charge.paid': '付费',
+    'apply.approved.charge.free': '免费报告',
+    'apply.approved.charge.paid': '付费报告',
+    'apply.approve.document.file.remark': '该报告默认由支持部制作，如需舆情部制作请备注',
     /*自定义流程 end*/
     'app.user.manage.role.name': '角色名称',
     'app.user.manage.organaization.name': '所在单位或公司',
