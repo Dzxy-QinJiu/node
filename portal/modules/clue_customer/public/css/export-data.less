@@ -1,0 +1,79 @@
+@import "../../../../public/css/common-variables";
+.show-panel{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 12;
+  background: rgba(0, 0, 0, 0.5);
+  .export-clue-container.right-pannel-default{
+    width: 504px!important;
+    background-color:transparent!important;
+    transform: translateX(504px);
+    overflow: visible;
+    .iconfont.icon-close.export-data-close-btn{
+      color: #fff;
+      background-color: #8ea9c4;
+      border-radius: 0 !important;
+      width: 24px;
+      height: 24px;
+      float: left;
+      font-size: 14px;
+    }
+    .export-data-wrap{
+      float: left;
+      height: 100%;
+      width: 480px !important;
+      background-color: @NOTICE-BACKGROUND !important;
+      position: relative;
+      box-shadow: -4px 0 20px @box_shadow_color;
+      .clue-export-data{
+        padding: 16px 24px 0px 24px;
+        &:after{
+          content: '';
+          clear: both;
+          display: block;
+        }
+        .export-clue-item{
+          font-size: 14px;
+          color: #333;
+          display: flex;
+          align-items: flex-start;
+          &:not(:last-child){
+            margin-bottom: 7px;
+          }
+          .export-label{
+            color: #999;
+            display: inline-block;
+            width: 80px;
+          }
+            .ant-radio-wrapper,.ant-checkbox-wrapper{
+              font-size: 14px;
+              font-weight: 400;
+              margin-bottom: 0;
+            }
+          .ant-checkbox-group{
+            display: inline-block;
+            .ant-checkbox-wrapper{
+              display: block;
+            }
+          }
+        }
+        .button-container{
+          &:after{
+            content:'';
+            display: block;
+            clear: both;
+          }
+          .button-save{
+            margin-top: 16px;
+          }
+        }
+      }
+
+    }
+  }
+}
+
+

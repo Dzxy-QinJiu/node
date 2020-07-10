@@ -13,6 +13,7 @@ const multiparty = require('multiparty');
 const fs = require('fs');
 const iconv = require('iconv-lite');
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
+const DATE_FORMAT_WITHOUT_SECOND = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 import {format} from 'ant-utils';
 function getClueSourceClassify(backendIntl) {
     return [
@@ -328,16 +329,27 @@ function getClueListColumns(backendIntl) {
 
 //导出数据
 exports.exportClueFulltext = function(req, res) {
+    let reqBody = {};
+    if (_.isString(req.body.reqData)){
+        reqBody = JSON.parse(req.body.reqData);
+    }
+    var checkedValues = _.get(reqBody,'checkedValues',[]);
     clueCustomerService.exportClueFulltext(req, res).on('success', result => {
         let backendIntl = new BackendIntl(req);
-        doExport(result, backendIntl,res);
+        doExport(result, backendIntl,res,checkedValues);
     }).on('error', codeMessage => {
         res.status(500).json(codeMessage);
     });
 };
 //执行导出
-function doExport(data, backendIntl, res) {
-    const CLUE_LIST_COLUMNS = getClueListColumns(backendIntl);
+function doExport(data, backendIntl, res, checkedValues) {
+    let CLUE_LIST_COLUMNS = [],allListColumn = getClueListColumns(backendIntl);
+    _.each(checkedValues,item => {
+        var targetObj = _.find(allListColumn,column => column.dataIndex === item);
+        if(targetObj){
+            CLUE_LIST_COLUMNS.push(targetObj);
+        }
+    });
     const columnTitles = _.map(CLUE_LIST_COLUMNS, 'title');
     const list = _.isArray(data.result) ? data.result : [];
     const rows = list.map(item => {
@@ -360,7 +372,7 @@ function doExport(data, backendIntl, res) {
                 value = moment(value).format(DATE_FORMAT);
             }
             if (column.dataIndex === 'source_time' && value){
-                value = moment(value).format(DATE_FORMAT);
+                value = moment(value).format(DATE_FORMAT_WITHOUT_SECOND);
             }
             if (column.dataIndex === 'source_classify' && value){
                 const sourceClassifyArray = getClueSourceClassify(backendIntl);
