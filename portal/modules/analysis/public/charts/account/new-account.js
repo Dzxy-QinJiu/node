@@ -5,7 +5,7 @@ import { TIME_INTERVALS } from '../../consts';
 
 const APP_COLUMN_WIDTH = 240;
 
-export function getNewAccountChart(paramObj = {}) {
+export function getNewAccountChart() {
     return {
         title: Intl.get('user.analysis.new.account.title', '新开账号数统计'),
         url: '/rest/analysis/user/v3/:data_type/apply/user',
@@ -26,7 +26,7 @@ export function getNewAccountChart(paramObj = {}) {
         chartType: 'table',
         height: 'auto',
         layout: {sm: 24},
-        processChart: processOptions.bind(this, paramObj),
+        processChart: processChart.bind(this),
         processCsvData: chart => {
             let rows = [], row1 = [], row2 = [];
             const columns = chart.option.columns;
@@ -54,7 +54,7 @@ export function getNewAccountChart(paramObj = {}) {
 }
 
 //处理图表
-function processOptions(paramObj, props) {
+function processChart(props) {
     let option = props.option = {};
     const data = _.get(props, 'data', []);
 
