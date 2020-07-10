@@ -3563,6 +3563,7 @@ var en_US = {
     'lead.check.phone.have.tested': 'Have tested',//已检测
     'lead.delete.clue': 'Delete lead',//删除线索
     'lead.release.clue': 'Release lead',//释放到线索池
+    'lead.export.clue.item': 'Export field',//导出字段
 
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',

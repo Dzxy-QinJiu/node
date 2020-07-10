@@ -69,7 +69,7 @@ class SaveCancelButton extends React.Component {
                 </Button> }
                 <Button className="button-save" type="primary"
                     onClick={this.props.handleSubmit.bind(this)}
-                    disabled={this.props.loading}
+                    disabled={this.props.loading || this.props.disabledBtn}
                 >
                     {this.props.okBtnText || Intl.get('common.save', '保存')}
                 </Button>
@@ -93,7 +93,8 @@ SaveCancelButton.defaultProps = {
     saveResult: '',//保存后的结果（success, error）
     successShowTime: 600,//成功后，提示信息显示的时间
     saveSuccessMsg: '',//成功的提示信息(跟saveResult一起使用)
-    errorShowTime: 0 //有失败提示，过多久要消失
+    errorShowTime: 0 ,//有失败提示，过多久要消失
+    disabledBtn: false//保存按钮不可用
 };
 SaveCancelButton.propTypes = {
     handleSubmit: PropTypes.func,
@@ -108,6 +109,7 @@ SaveCancelButton.propTypes = {
     successShowTime: PropTypes.number,
     saveSuccessMsg: PropTypes.string,
     errorShowTime: PropTypes.number,
+    disabledBtn: false
 };
 //保存后的结果类型
 SaveCancelButton.RESULT_TYPES = RESULT_TYPES;

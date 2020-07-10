@@ -3585,6 +3585,7 @@ var zh_CN = {
     'lead.check.phone.have.tested': '已检测',
     'lead.delete.clue': '删除线索',
     'lead.release.clue': '释放到线索池',
+    'lead.export.clue.item': '导出字段',
 
     //线索模块 end
     'common.memeber.all': '全部成员',
