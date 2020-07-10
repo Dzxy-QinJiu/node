@@ -4,7 +4,7 @@
  @import "../../../public/css/common-variables";
 @user-agree-width: 912px;
 @user-agree-width-middle: 600px;
-@user-agree-width-small: 300px;
+@user-agree-width-small: 100%;
 body{
   margin: 0;
 }
@@ -14,7 +14,7 @@ body{
   font-family: 'Noto Sans CJK SC', 'Noto Sans CJK', 'Source Han Sans', source-han-sans-simplified-c, sans-serif !important;
   .user-agreement-title{
     position: absolute;
-    width: @user-agree-width + 96;
+    width: @user-agree-width;
     left: 0;
     right: 0;
     margin: 15px auto;
@@ -33,9 +33,12 @@ body{
     right: 0;
     width: @user-agree-width;
     margin: 54px auto;
-    padding: 48px 0 48px 48px;
+    padding: 0 0 0 48px;
     color: @primary-font-color;
     background-color: #ffffff;
+    .first-content-title{
+      margin-top: 48px;
+    }
     .content-title {
       margin-bottom: 30px;
       padding-right: 48px;
@@ -60,6 +63,10 @@ body{
     }
     .bottom-right-company{
       float: right;
+      margin-bottom: 48px;
+    }
+    .last-content-text{
+      margin-bottom: 48px;
     }
   }
 }
@@ -76,7 +83,7 @@ body{
 @media (max-width: 1024px) {
   .user-agreement-wrap{
     .user-agreement-title{
-      width: @user-agree-width-middle + 96;
+      width: @user-agree-width-middle;
     }
     .user-agreement-content{
       width: @user-agree-width-middle;
@@ -86,13 +93,29 @@ body{
 @media (max-width: 720px) {
   .user-agreement-wrap{
     .user-agreement-title{
-      width: @user-agree-width-small + 96;
+      width: @user-agree-width-small;
+      padding: 12px;
+      margin: 0 auto;
+      .user-agreement-text{
+        font-size: 16px;
+        margin-left: 12px;
+        padding-left: 12px; 
+      }
     }
     .user-agreement-content{
       width: @user-agree-width-small;
+      padding-left: 12px; 
+      margin-top: 45px;
+      .content-text {
+        padding-right: 12px;
+      }
+      .content-mini-margin {
+        padding-right: 12px;
+      }
     }
   }
   #footer .footer-content {
+    display: none;
     font-size: 10px;
     padding: 14px 0 !important;
   }

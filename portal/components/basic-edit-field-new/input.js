@@ -18,7 +18,7 @@ import Trace from 'LIB_DIR/trace';
 import {DetailEditBtn} from '../rightPanel';
 import SaveCancelButton from '../detail-card/save-cancel-button';
 import {parseAmount} from 'LIB_DIR/func';
-import ShearContent from '../shear-content';
+import ShearContent from '../shear-content-new';
 var uuid = require('uuid/v4');
 
 const BasicEditField = createReactClass({

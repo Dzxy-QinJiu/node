@@ -30,7 +30,7 @@ import RefreshButton from 'CMP_DIR/refresh-button';
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
-import ShearContent from 'CMP_DIR/shear-content';
+import ShearContent from 'CMP_DIR/shear-content-new';
 import eefungCustomerManagerHoc from 'CMP_DIR/eefung-customer-manager-hoc';
 import adaptiveHeightHoc from 'CMP_DIR/adaptive-height-hoc';
 //接听状态
@@ -560,21 +560,13 @@ class CallRecord extends React.Component {
     }
     //修改跟进记录的按钮和内容
     editButton = (record) => {
-        if(record.remark){
-            return(
-                <span className="text-show line-clamp " >
-                    <ShearContent lines={2} hasEditBtn={true} editBtnChange={this.handleEditBtnClick.bind(this,record)}>{record.remark}</ShearContent>
-                </span>
-            );
-        }else{
-            return(
-                <span className="text-show line-clamp " >
-                    <i className="iconfont icon-edit-btn-plus handle-btn-item " 
-                        onClick={this.handleClickTextArea.bind(this, record)}
-                        title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
-                </span>
-            );
-        }                      
+        return(<ShearContent 
+            lines={2} 
+            hasEditBtn={true}
+            editBtnChange={this.handleEditBtnClick.bind(this,record)} 
+            key={record.id}>
+            {record.remark}
+        </ShearContent>);                    
     }
 
     //通话记录表格列
@@ -724,27 +716,27 @@ class CallRecord extends React.Component {
                 render: (text, record) => {
                     return (
                         <div className="add-content">
-                            <Popconfirm title={Intl.get('call.record.is.save.content.title', '是否保存跟进内容？')}
-                                visible={record.confirmVisible}
-                                onConfirm={this.handleContentSubmit.bind(this, record)}
-                                onCancel={this.cancelConfirm.bind(this, record, record.remark)}
-                                okText={Intl.get('user.yes', '是')}
-                                cancelText={Intl.get('user.no', '否')}
-                            >
-                                {
-                                    record.showTextEdit ? <textarea
+                            {record.showTextEdit ? (
+                                <Popconfirm title={Intl.get('call.record.is.save.content.title', '是否保存跟进内容？')}
+                                    visible={record.confirmVisible}
+                                    onConfirm={this.handleContentSubmit.bind(this, record)}
+                                    onCancel={this.cancelConfirm.bind(this, record, record.remark)}
+                                    okText={Intl.get('user.yes', '是')}
+                                    cancelText={Intl.get('user.no', '否')}
+                                >
+                                    <textarea
                                         autoFocus
                                         className="textarea-fix"
                                         defaultValue={record.remark}
-                                        onFocus={this.cursorBackward.bind(this,record, record.remark)}
+                                        onFocus={this.cursorBackward.bind(this, record, record.remark)}
                                         onBlur={this.toggleConfirm.bind(this, record, record.remark)}
                                         type="text"
                                         id={'content' + record.id}
                                         onKeyUp={this.checkEnter.bind(this, record.id)}
                                         onScroll={event => event.stopPropagation()}
-                                    /> : this.editButton(record)
-                                }
-                            </Popconfirm>
+                                    />
+                                </Popconfirm>
+                            ) : this.editButton(record)}
                         </div>
                     );
                 }

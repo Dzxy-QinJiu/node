@@ -12,7 +12,7 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import DetailCard from 'CMP_DIR/detail-card';
 import classNames from 'classnames';
 import {getSalesDataList, getSelectedSaleManValue, getSelectedSaleManValueId, getFormattedSalesMan} from '../utils/clue_assignment_utils';
-import {clueAssignmentStrategyForValidator} from 'PUB_DIR/sources/utils/validate-util';
+import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 
 const LAYOUT = {
     TITLE_INPUT_WIDTH: 88,//顶部
@@ -250,7 +250,7 @@ class StrategyInfo extends React.Component {
                             width={LAYOUT.NAME_EDIT_FIELD_WIDTH}
                             id={strategyInfo.id}
                             value={strategyInfo.name}
-                            validators={[clueAssignmentStrategyForValidator]}
+                            validators={[validatorNameRuleRegex(10, Intl.get('clue.assignment.strategy.name', '线索分配策略'))]}
                             field="name"
                             type="input"
                             placeholder={Intl.get('clue.assignment.name.tip', '请输入线索分配策略名称')}

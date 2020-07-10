@@ -10,7 +10,7 @@ import MemberFormStore from '../store/member-form-store';
 import MemberFormAction from '../action/member-form-actions';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
-import {nameLengthRule, emailRegex, commonPhoneRegex, userNameRule, checkQQ} from 'PUB_DIR/sources/utils/validate-util';
+import { emailRegex, commonPhoneRegex, userNameRule, checkQQ,validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import MemberManageAjax from '../ajax';
@@ -490,6 +490,7 @@ class MemberForm extends React.Component {
                 }
             }
         }
+        const nickName = Intl.get('common.nickname', '昵称');
         return (
             <Form layout='horizontal' className="form" autoComplete="off">
                 <FormItem id="image">
@@ -519,7 +520,6 @@ class MemberForm extends React.Component {
                                 {getFieldDecorator('userName', {
                                     rules: [{
                                         required: true,
-                                        type: 'userName',
                                         validator: this.userNameValidationRules()
                                     }],
                                     validateTrigger: 'onBlur'
@@ -534,13 +534,11 @@ class MemberForm extends React.Component {
                                 )}
                             </FormItem>
                             <FormItem
-                                label={Intl.get('common.nickname', '昵称')}
+                                label={nickName}
                                 {...formItemLayout}
                             >
                                 {getFieldDecorator('name', {
-                                    rules: [{
-                                        message: nameLengthRule
-                                    }],
+                                    rules: [validatorNameRuleRegex(30, nickName)],
                                     validateTrigger: 'onBlur'
                                 })(
                                     <Input

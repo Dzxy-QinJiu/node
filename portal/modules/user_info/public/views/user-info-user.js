@@ -6,7 +6,7 @@ var PrivilegeChecker = require('../../../../components/privilege/checker').Privi
 var Spinner = require('../../../../components/spinner');
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
-import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
+import {validatorNameRuleRegex} from 'PUB_DIR/sources/utils/validate-util';
 import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
@@ -919,7 +919,7 @@ class UserInfo extends React.Component{
                                 value={formData.nickName}
                                 hasEditPrivilege={true}
                                 hoverShowEdit={false}
-                                validators={[nameLengthRule]}
+                                validators={[validatorNameRuleRegex(30, Intl.get('common.nickname', '昵称'))]}
                                 saveEditInput={this.saveNicknameEditInput}
                                 noDataTip={Intl.get('user.nickname.no.tip', '暂无昵称')}
                                 addDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}

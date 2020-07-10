@@ -16,6 +16,7 @@ import GeminiScrollbar from '../react-gemini-scrollbar';
 const LAYOUT_CONST = {
     TITLE_HEIGHT: 96,//标题的高度
     MARGAIN: 108,//上下边距的和54+54
+    MOBILE_MARGIN: 45
 };
 class PrivacyPolicyPage extends React.Component {
     constructor(props) {
@@ -33,7 +34,11 @@ class PrivacyPolicyPage extends React.Component {
         this.setState({ contentHeight: this.getContentHeight() });
     }
     getContentHeight() {
-        return $(window).height() - LAYOUT_CONST.MARGAIN;//- LAYOUT_CONST.TITLE_HEIGHT;
+        let margin = LAYOUT_CONST.MARGAIN;
+        if($(window).width() <= 720){
+            margin = LAYOUT_CONST.MOBILE_MARGIN;
+        }
+        return $(window).height() - margin;// - LAYOUT_CONST.TITLE_HEIGHT;
     }
     componentWillUnmount() {
         Trace.detachEventListener(window, 'click', Trace.eventHandler);
@@ -51,7 +56,7 @@ class PrivacyPolicyPage extends React.Component {
                 </div>
                 <div className='user-agreement-content' style={{ height: contentHeight }}>
                     <GeminiScrollbar>
-                        <div className='content-title'>引言</div>
+                        <div className='content-title first-content-title'>引言</div>
                         <div className='content-mini-margin text-indent-style'>客套智能科技严格遵守法律法规，遵循以下隐私保护原则，为您提供安全、可靠的服务</div>
                         <div className='content-mini-margin text-indent-style'>
                             我们努力使用简明易懂的表述，向您介绍我们隐私政策。您成为客套智能科技用户前务必仔细阅读本隐私条款并同意所有隐私条款。本隐私政策条款在您注册或登录客套产品或服务后立即生效，并对您及客套智能科技产生约束力。
@@ -142,7 +147,7 @@ class PrivacyPolicyPage extends React.Component {
                         <div className='content-mini-margin'>（3） 您参与个人信息处理方面的权利及其行使方式发生重大变化；</div>
                         <div className='content-text'>（4） 其他可能对您的个人信息权益产生重大影响的变化时。</div>
                         <div className='content-title'>九、如何联系我们</div>
-                        <div className='content-text text-indent-style'>您对本隐私政策有任何意见或建议，您可通过400-6978-520电话联系我们。</div>
+                        <div className='content-text text-indent-style last-content-text'>您对本隐私政策有任何意见或建议，您可通过400-6978-520电话联系我们。</div>
                     </GeminiScrollbar>
                 </div>
             </div>

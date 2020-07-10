@@ -20,6 +20,8 @@ let moment = require('moment');
 const commonUtil = require('../../../lib/utils/common-utils');
 const authRouters = require('../../../lib/authRouters');
 let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
+const restLogger = require('../../../lib/utils/logger').getLogger('rest');
+const errFileName = 'active-email-error', successFileName = 'active-email-success';
 /*
  * home page handler.
  */
@@ -181,14 +183,32 @@ exports.test = function(req, res) {
 exports.getAppQrCodeAgent = function(req, res) {
     res.render('home/tpl/weixin-inspector');
 };
+//读取文件并返回前端
+function readFileAndSendFront(req,res,fileName){
+    var fullUrl = req.protocol + '://' + req.get('host');
+    fs.readFile(path.join(__dirname, `../tpl/${fileName}.html`), (err,data) => {
+        if(err){
+            if(fileName === errFileName){
+                restLogger.error('读取激活邮箱失败文件出错了');
+            }else{
+                restLogger.error('读取激活邮箱成功文件出错了');
+            }
+        }else{
+            res.set('Content-Type', 'text/html');
+            res.send(data.toString().replace(/targetUrl/g,fullUrl));
+        }
+    });
+}
 //邮箱激活
 exports.activeEmail = function(req, res) {
-    DesktopIndexService.activeEmail(req, res, req.query.code).on('success', function(data) {
-        res.set('Content-Type', 'text/html');
-        res.send(data);
+    DesktopIndexService.activeEmail(req, res, req.query.code).on('success', function(result) {
+        if(result){
+            readFileAndSendFront(req, res,successFileName);
+        }else{
+            readFileAndSendFront(req, res,errFileName);
+        }
     }).on('error', function(errorObj) {
-        res.set('Content-Type', 'text/html');
-        res.send(errorObj && errorObj.message);
+        readFileAndSendFront(req, res,errFileName);
     });
 };
 

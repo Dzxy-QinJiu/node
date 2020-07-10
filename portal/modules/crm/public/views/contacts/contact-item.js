@@ -15,7 +15,7 @@ import contactAjax from '../../ajax/contact-ajax';
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import {emailRegex,qqRegex,checkWechat} from 'PUB_DIR/sources/utils/validate-util';
 import {disabledAfterToday} from 'PUB_DIR/sources/utils/common-method-util';
-import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
+import {validatorNameRuleRegex} from 'PUB_DIR/sources/utils/validate-util';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import PhoneInput from 'CMP_DIR/phone-input';
@@ -314,7 +314,7 @@ class ContactItem extends React.Component {
                                 saveEditInput={this.saveContactInfo.bind(this, 'name')}
                                 noDataTip={Intl.get('crm.contact.name.none', '未添加姓名')}
                                 addDataTip={Intl.get('crm.contact.name.add', '添加姓名')}
-                                validators={[clueNameContactRule]}
+                                validators={[validatorNameRuleRegex(30, Intl.get('call.record.contacts', '联系人'))]}
                             />
                         </div>
                         <div className="contact-item-content">
@@ -330,6 +330,7 @@ class ContactItem extends React.Component {
                                 saveEditInput={this.saveContactInfo.bind(this, 'department')}
                                 noDataTip={Intl.get('contract.68', '暂无部门')}
                                 addDataTip={Intl.get('organization.add.department', '添加部门')}
+                                validators={[validatorNameRuleRegex(10, Intl.get('crm.113', '部门'))]}
                             />
                         </div>
                         <div className="contact-item-content">
@@ -345,6 +346,7 @@ class ContactItem extends React.Component {
                                 saveEditInput={this.saveContactInfo.bind(this, 'position')}
                                 noDataTip={Intl.get('crm.contact.positon.none', '未设置职位')}
                                 addDataTip={Intl.get('crm.contact.positon.add', '设置职位')}
+                                validators={[validatorNameRuleRegex(10, Intl.get('crm.91', '职位'))]}
                             />
                         </div>
                         <div className="contact-item-content">

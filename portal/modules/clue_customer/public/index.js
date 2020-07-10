@@ -105,6 +105,7 @@ import history from 'PUB_DIR/sources/history';
 import {checkPhoneStatus} from 'PUB_DIR/sources/utils/common-data-util';
 import customFieldAjax from '../../custom_field_manage/public/ajax';
 import customFieldPrivilege from 'MOD_DIR/custom_field_manage/public/privilege-const';
+import ExportClueData from './views/export-clue-data';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
@@ -874,9 +875,10 @@ class ClueCustomer extends React.Component {
             });
         }
     };
-    hideExportModal = () => {
+    hideExportPanel = () => {
         this.setState({
-            isExportModalShow: false
+            isExportModalShow: false,
+            exportRange: 'filtered',
         });
     };
 
@@ -1091,7 +1093,7 @@ class ClueCustomer extends React.Component {
 
     };
 
-    exportData = () => {
+    exportData = (checkedValues) => {
         Trace.traceEvent('线索管理', '导出线索');
         const sorter = this.state.sorter;
         var type = 'user';
@@ -1130,13 +1132,14 @@ class ClueCustomer extends React.Component {
         });
 
         let form = $('<form>', {action: url, method: 'post'});
+        reqData.checkedValues = checkedValues;
         form.append($('<input>', {name: 'reqData', value: JSON.stringify(reqData)}));
         //将构造的表单添加到body上
         //Chrome 56 以后不在body上的表单不允许提交了
         $(document.body).append(form);
         form.submit();
         form.remove();
-        this.hideExportModal();
+        this.hideExportPanel();
     };
 
     errTipBlock = () => {
@@ -2043,8 +2046,8 @@ class ClueCustomer extends React.Component {
                     return this.renderPhoneBlock(salesClueItem);
                 }
             }];
-        //如果是个人版，不需要加跟进人
-        if(!checkCurrentVersion().personal){
+        //如果是个人版或者是普通销售，不需要加跟进人
+        if(!isCommonSalesOrPersonnalVersion()){
             columns.push({
                 dataIndex: 'trace_person',
                 width: column_width,
@@ -2829,7 +2832,7 @@ class ClueCustomer extends React.Component {
                         });
                         let title = '';
                         if (name_verify) {
-                            title = Intl.get('clue.name.rule', '线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间');
+                            title = Intl.get('common.name.rule.regex', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到{length}（包括{length}）之间', {name: Intl.get('clue.customer.clue.name', '线索名称'), length: 25});
                         } else if (import_name_repeat) {
                             title = Intl.get('crm.import.name.repeat', '导入数据中存在同名{type}',{type: Intl.get('crm.sales.clue', '线索')});
                         } else if (name_repeat) {
@@ -3837,38 +3840,13 @@ class ClueCustomer extends React.Component {
                             closeClueAnalysisPanel={this.closeClueAnalysisPanel}
                         />
                     </RightPanel> : null}
-                    <Modal
-                        className="clue-export-modal"
-                        visible={this.state.isExportModalShow}
-                        closable={false}
-                        onOk={this.exportData}
-                        onCancel={this.hideExportModal}
-                    >
-                        <div className='modal-tip'>
-                            {Intl.get('contract.116', '导出范围')}：
-                            {/*如果当前有选中的线索就提示导出选中的线索，如果没有就提示导出全部或者符合当前条件的线索*/}
-                            {this.hasSelectedClues() ?
-                                <span>
-                                    {Intl.get('clue.customer.export.select.clue', '导出选中的线索')}
-                                </span>
-                                : <RadioGroup
-                                    value={this.state.exportRange}
-                                    onChange={this.onExportRangeChange}
-                                >
-                                    <Radio key="all" value="all">
-                                        {Intl.get('common.all', '全部')}
-                                    </Radio>
-                                    <Radio key="filtered" value="filtered">
-                                        {Intl.get('contract.117', '符合当前筛选条件')}
-                                    </Radio>
-                                </RadioGroup>}
-
-                        </div>
-                        <div className='modal-tip'>
-                            {Intl.get('contract.118','导出类型')}：
-                            {Intl.get('contract.152','excel格式')}
-                        </div>
-                    </Modal>
+                    {this.state.isExportModalShow ? <ExportClueData
+                        hasSelectedClues={this.hasSelectedClues()}
+                        closeExportData={this.hideExportPanel}
+                        exportData={this.exportData}
+                        exportRange={this.state.exportRange}
+                        onExportRangeChange={this.onExportRangeChange}
+                    /> : null}
                     {/*该客户下的用户列表*/}
                     {
                         this.state.isShowCustomerUserListPanel ?

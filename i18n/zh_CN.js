@@ -428,6 +428,9 @@ var zh_CN = {
     'register.user.agreement.tip': '已阅读并同意{userAgreement}',
     'register.user.agreement.curtao': '《用户协议》',
     'register.user.agreement.valid.tip': '请先阅读并同意《客套用户协议》',
+    'register.curtao.agreement.title': '客套用户协议',
+    'register.curtao.privacy.policy.title': '客套隐私政策',
+
     'register.to.login.tip': '已有账号，去{login}',
     'register.phone.has.registed': '该手机号已被注册',
     'register.privacy.policy': '隐私政策',
@@ -3462,6 +3465,18 @@ var zh_CN = {
     'analysis.cue.call.analysis': '线索通话分析',
     'analysis.number.of.customers.with.an.account': '有账号的客户数',
     'analysis.number.of.customers.whose.accounts.have.been.logged.in': '有账号登录过的客户数',
+    'analysis.visit.customer.trend.statistics': '拜访客户趋势统计',
+    'analysis.business.trip.statistics': '出差统计详情',
+    'analysis.follow-up.record.content': '跟进记录内容',
+    'analysis.follow-up.time': '跟进记录时间',
+    'analysis.login.user.statistics': '登录用户统计',
+    'analysis.the.total.number.of.delay': '延期总数',
+    'analysis.unrenewed.customer.statistics': '超3个月没有续约的客户',
+    // 用户分析-新增用户分析
+    'user.analysis.new.account.title': '新开账号数统计',
+    'user.analysis.account.active.count': '有效登录数',
+    'user.analysis.account.active.percent': '登录率',
+
     'common.font.the': '第',
     'common.weeks': '周',
     'clue.add.contacts.tip': '添加联系方式',
@@ -3576,6 +3591,7 @@ var zh_CN = {
     'lead.check.phone.have.tested': '已检测',
     'lead.delete.clue': '删除线索',
     'lead.release.clue': '释放到线索池',
+    'lead.export.clue.item': '导出字段',
 
     //线索模块 end
     'common.memeber.all': '全部成员',
@@ -4026,8 +4042,9 @@ var zh_CN = {
     'apply.approved.receive.email': '接收邮件人员或邮箱',
     'apply.approved.select.receive.email': '请选择接收邮件的成员或邮箱',
     'apply.approved.charge.mode': '收费模式',
-    'apply.approved.charge.free': '免费',
-    'apply.approved.charge.paid': '付费',
+    'apply.approved.charge.free': '免费报告',
+    'apply.approved.charge.paid': '付费报告',
+    'apply.approve.document.file.remark': '该报告默认由支持部制作，如需舆情部制作请备注',
     /*自定义流程 end*/
     'app.user.manage.role.name': '角色名称',
     'app.user.manage.organaization.name': '所在单位或公司',
@@ -4333,6 +4350,7 @@ var zh_CN = {
     'clue.more.contacts.tip': '提取后可查看完整信息',
     'clue.recommend.has.contacts': '有联系人',
     // 线索分配策略
+    'clue.assignment.strategy.name': '线索分配策略',
     'clue.assignment.strategy.add': '添加分配策略',
     'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',
     'clue.assignment.no.strategy.tip': '您还没有线索分配策略',
@@ -4502,6 +4520,5 @@ var zh_CN = {
     'leave-feedback-visit-consumer': '拜访了',
     'leave-feedback-visit-record': '拜访记录：',
     /*销售出差反馈，弹窗给邮件抄送人 ---end*/
-
 };
 export default zh_CN;
