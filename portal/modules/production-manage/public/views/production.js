@@ -767,6 +767,7 @@ class Production extends React.Component {
                     value={this.props.info.description}
                     field='description'
                     type='textarea'
+                    textCut={true}
                     addDataTip={Intl.get('config.product.add.desc', '添加产品描述')}
                     placeholder={Intl.get('config.product.input.desc', '请输入产品描述')}
                 />
