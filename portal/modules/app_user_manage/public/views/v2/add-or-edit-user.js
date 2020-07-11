@@ -49,7 +49,7 @@ import AppUserAjax from '../../ajax/app-user-ajax';
 import AppUserStore from '../../store/app-user-store';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import { userDetailEmitter, noSelectedAppTerminalEmitter } from 'PUB_DIR/sources/utils/emitters';
-
+import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 require('../../css/add-user.less');
 //动态添加的样式
 var dynamicStyle;
@@ -560,6 +560,7 @@ const AddOrEditUser = createReactClass({
             'form-item-label': true,
             required_label: this.state.user_type === AppUserUtil.USER_TYPE_VALUE_MAP.SIGN_USER
         });
+        const nickName = Intl.get('common.nickname', '昵称');
         return (
             <OperationScrollBar className="basic-data-form-wrap">
                 <div className="basic-data-form">                    
@@ -604,8 +605,7 @@ const AddOrEditUser = createReactClass({
                         +formData.count_number === 1 ? (
                             <div>
                                 <div className="form-item">
-                                    <div className="form-item-label required_label"><ReactIntl.FormattedMessage
-                                        id="common.nickname" defaultMessage="昵称"/></div>
+                                    <div className="form-item-label required_label">{nickName}</div>
                                     <div className="form-item-content input-item user-nickname-textfield-block">
                                         <FormItem
                                             label=""
@@ -617,7 +617,7 @@ const AddOrEditUser = createReactClass({
                                             <Validator rules={[{
                                                 required: true,
                                                 message: Intl.get('user.nickname.write.tip', '请填写昵称')
-                                            }]} trigger='onBlur'>
+                                            }, validatorNameRuleRegex(30, nickName)]} trigger='onBlur'>
                                                 <Input name="nick_name"
                                                     placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
                                                     value={formData.nick_name}
