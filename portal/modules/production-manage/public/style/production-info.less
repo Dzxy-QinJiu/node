@@ -214,14 +214,21 @@
           line-height: 24px;
         }
         .product-detail-item-des {
+          .edit-container {
+            &:hover {
+              .icon-edit-btn {
+                float: right;
+              }
+            }
+          }
           .basic-info-text {
+            display: flex;
             font-size: 14px;
-          }
-          .icon-edit-btn {
-            float: right;
-          }
-          .basic-info-text {
+            color: @primary-font-color;
             max-width: 320px;
+            .shear-content-container {
+              width: 100%;
+            }
           }
           .ant-form-item {
             padding-right: 0;
