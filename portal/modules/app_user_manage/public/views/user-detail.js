@@ -35,8 +35,9 @@ import classNames from 'classnames';
 import userManagePrivilege from '../privilege-const';
 import publicPrivilege from 'PUB_DIR/privilege-const';
 import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
-import { checkPassword, checkConfirmPassword } from 'PUB_DIR/sources/utils/validate-util';
+import { checkPassword, checkConfirmPassword, validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 import UserDetailEditAppAction from '../action/v2/user-detail-edit-app-actions';
+
 const EDIT_PASSWORD_WIDTH = 260;
 //当前面板z-index
 let thisPanelZIndex;
@@ -360,6 +361,7 @@ class UserDetail extends React.Component {
         const errorMsg = this.state.getDetailErrorMsg;
         const hasEditPrivilege = hasPrivilege(userManagePrivilege.USER_MANAGE) && this.state.isOplateUser;
         const EDIT_FEILD_WIDTH = 395;
+        const nickName = Intl.get('common.nickname', '昵称');
         return (
             <StatusWrapper>
                 {
@@ -420,7 +422,7 @@ class UserDetail extends React.Component {
                                                 </div> :
                                                 <div>
                                                     <div className="basic-info-remark basic-info-item">
-                                                        <span className="basic-info-label">{Intl.get('common.nickname', '昵称')}:</span>
+                                                        <span className="basic-info-label">{nickName}:</span>
                                                         <BasicEditInputField
                                                             width={EDIT_FEILD_WIDTH}
                                                             id={_.get(userInfo, 'data.user_id')}
@@ -431,6 +433,7 @@ class UserDetail extends React.Component {
                                                             placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
                                                             hasEditPrivilege={hasPrivilege(userManagePrivilege.USER_MANAGE)}
                                                             saveEditInput={this.handleUserInfoEdit}
+                                                            validators={[validatorNameRuleRegex(30, nickName)]}
                                                             noDataTip={Intl.get('user.nickname.no.tip', '暂无昵称')}
                                                             addDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}
                                                         />
