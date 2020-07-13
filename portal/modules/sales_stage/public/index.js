@@ -95,7 +95,7 @@ class SalesStagePage extends React.Component {
             if (!result.error) {
                 message.success(Intl.get('crm.138', '删除成功！'));
             } else {
-                message.error(Intl.get('crm.139', '删除失败！'));
+                message.error(this.state.deleteStageErrMsg || Intl.get('crm.139', '删除失败！'));
             }
         });
 
