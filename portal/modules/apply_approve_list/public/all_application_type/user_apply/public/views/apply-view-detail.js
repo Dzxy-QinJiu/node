@@ -2130,54 +2130,68 @@ const COLUMN_WIDTH = {
         } else if (approval === 'cancel') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击撤销申请按钮');
         }
-        //用户申请时，选择了手动设置密码时，未输入密码，不能通过
-        if (this.showPassWordPrivilege() && this.settingPasswordManuWithNoValue() && approval === 'pass'){
-            this.setState({
-                showWariningTip: true
-            });
+        var validation = this.refs.validation;
+        if (!validation) {
             return;
-        }
-        var ApplyViewDetailActions = this.getApplyViewDetailAction();
-        //详情信息
-        var detailInfo = this.state.detailInfoObj.info;
-        // 申请的应用
-        let appList = detailInfo.apps;
-        //要提交的应用配置
-        var products = this.getProducts();
-        //是否是uem的用户
-        var isUem = !this.state.isOplateUser;
-        //如果是开通用户，需要先检查是否有角色设置，如果没有角色设置，给出一个警告
-        //如果已经有这个警告了，就是继续提交的逻辑，就跳过此判断
-        if (
-            approval === 'pass' &&
-            (detailInfo.type === CONSTANTS.APPLY_USER_OFFICIAL ||
-                detailInfo.type === CONSTANTS.APPLY_USER_TRIAL ||
-                detailInfo.type === CONSTANTS.EXIST_APPLY_FORMAL ||
-                detailInfo.type === CONSTANTS.EXIST_APPLY_TRIAL) && !isUem
-        ) {
-            //遍历每个应用，找到没有设置角色的应用
-            var rolesNotSetAppNames = _.chain(products).filter((obj) => {
-                return _.get(obj,'apply_roles.length') === 0;
-            }).map('client_id').map((app_id) => {
-                var appInfo = _.find(appList, (appObj) => appObj.app_id === app_id);
-                return appInfo && appInfo.app_name || '';
-            }).filter((appName) => appName !== '').value();
-            //当数组大于0的时候，才需要提示模态框
-            if (rolesNotSetAppNames.length) {
-                ApplyViewDetailActions.setRolesNotSettingModalDialog({
-                    show: true,
-                    appNames: rolesNotSetAppNames
-                });
-            }
-        }
-        // 用户申请时，应用有默认终端配置，没有选择终端信息不能通过
-        if (approval === 'pass' && this.state.isShowNoSelectAppTerminalsTips) {
-            this.setState({
-                isShowTipsClickPass: true
+        }else{
+            validation.validate((valid) => {
+                if (!valid) {
+                    return;
+                }else{
+                    //用户申请时，选择了手动设置密码时，未输入密码，不能通过
+                    if (this.showPassWordPrivilege() && this.settingPasswordManuWithNoValue() && approval === 'pass'){
+                        this.setState({
+                            showWariningTip: true
+                        });
+                        return;
+                    }
+                    var ApplyViewDetailActions = this.getApplyViewDetailAction();
+                    //详情信息
+                    var detailInfo = this.state.detailInfoObj.info;
+                    // 申请的应用
+                    let appList = detailInfo.apps;
+                    //要提交的应用配置
+                    var products = this.getProducts();
+                    //是否是uem的用户
+                    var isUem = !this.state.isOplateUser;
+                    //如果是开通用户，需要先检查是否有角色设置，如果没有角色设置，给出一个警告
+                    //如果已经有这个警告了，就是继续提交的逻辑，就跳过此判断
+                    if (
+                        approval === 'pass' &&
+                        (detailInfo.type === CONSTANTS.APPLY_USER_OFFICIAL ||
+                            detailInfo.type === CONSTANTS.APPLY_USER_TRIAL ||
+                            detailInfo.type === CONSTANTS.EXIST_APPLY_FORMAL ||
+                            detailInfo.type === CONSTANTS.EXIST_APPLY_TRIAL) && !isUem
+                    ) {
+                        //遍历每个应用，找到没有设置角色的应用
+                        var rolesNotSetAppNames = _.chain(products).filter((obj) => {
+                            return _.get(obj,'apply_roles.length') === 0;
+                        }).map('client_id').map((app_id) => {
+                            var appInfo = _.find(appList, (appObj) => appObj.app_id === app_id);
+                            return appInfo && appInfo.app_name || '';
+                        }).filter((appName) => appName !== '').value();
+                        //当数组大于0的时候，才需要提示模态框
+                        if (rolesNotSetAppNames.length) {
+                            ApplyViewDetailActions.setRolesNotSettingModalDialog({
+                                show: true,
+                                appNames: rolesNotSetAppNames
+                            });
+                        }
+                    }
+                    // 用户申请时，应用有默认终端配置，没有选择终端信息不能通过
+                    if (approval === 'pass' && this.state.isShowNoSelectAppTerminalsTips) {
+                        this.setState({
+                            isShowTipsClickPass: true
+                        });
+                        return;
+                    }
+
+                    this.showConfirmModal(approval);
+                }
+
             });
-            return;
         }
-        this.showConfirmModal(approval);
+
     },
 
     showConfirmModal(approval) {
@@ -2647,24 +2661,14 @@ const COLUMN_WIDTH = {
                 }
             });
         };
-        var validation = this.refs.validation;
-        if (!validation) {
-            realSubmit();
-        } else if (approval === 'reject') {
+        if (approval === 'reject') {
             //当点击驳回按钮时，不用对输入的密码进行校验
             //如果之前密码验证有错误提示，先将错误提示去掉
             state.status.apply_detail_password = {};
             state.status.confirmPassword = {};
             this.setState({status: state.status});
-            realSubmit();
-        } else {
-            validation.validate((valid) => {
-                if (!valid) {
-                    return;
-                }
-                realSubmit();
-            });
         }
+        realSubmit();
     },
 
     viewApprovalResult(e) {
