@@ -59,7 +59,8 @@ import {
     transferBtnContent,
     getSalesManList,
     renderApproveBtn,
-    renderStepContent
+    renderStepContent,
+    getApplyListDivHeight
 } from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import classNames from 'classnames';
 
@@ -276,11 +277,6 @@ class ApplyViewDetail extends React.Component {
 
     componentWillUnmount() {
         ApplyDetailStore.unlisten(this.onStoreChange);
-    }
-
-    getApplyListDivHeight() {
-        var height = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
-        return height;
     }
 
     retryFetchDetail = (e) => {
@@ -862,7 +858,7 @@ class ApplyViewDetail extends React.Component {
             return;
         }
         //详情高度
-        let applyDetailHeight = this.getApplyListDivHeight();
+        let applyDetailHeight = getApplyListDivHeight();
         return (
             <div>
                 <div className="apply-detail-title">
