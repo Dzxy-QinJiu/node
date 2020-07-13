@@ -40,7 +40,7 @@ import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {renderStepContent, transferBtnContent} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
+import {renderStepContent, transferBtnContent,getApplyListDivHeight} from 'MOD_DIR/apply_approve_list/public/utils/apply_approve_utils';
 import classNames from 'classnames';
 import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
 class ApplyViewDetail extends React.Component {
@@ -236,15 +236,6 @@ class ApplyViewDetail extends React.Component {
 
     componentWillUnmount() {
         ApplyDetailStore.unlisten(this.onStoreChange);
-    }
-
-    getApplyListDivHeight() {
-        let height = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
-        //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
-        if (!this.props.isHomeMyWork) {
-            height -= APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
-        }
-        return height;
     }
 
     retryFetchDetail = (e) => {
@@ -553,7 +544,7 @@ class ApplyViewDetail extends React.Component {
             return;
         }
         //详情高度
-        let applyDetailHeight = this.getApplyListDivHeight();
+        let applyDetailHeight = getApplyListDivHeight();
         return (
             <div>
                 <div className="apply-detail-title">
