@@ -5,6 +5,7 @@
  */
 'use strict';
 var clueCustomerService = require('../service/clue-customer-service');
+var DesktopIndexService = require('../../../home/service/destktop-index-service');
 var path = require('path');
 let BackendIntl = require('../../../../lib/utils/backend_intl');
 const _ = require('lodash');
@@ -336,19 +337,24 @@ exports.exportClueFulltext = function(req, res) {
     var checkedValues = _.get(reqBody,'checkedValues',[]);
     clueCustomerService.exportClueFulltext(req, res).on('success', result => {
         let backendIntl = new BackendIntl(req);
-        doExport(result, backendIntl,res,checkedValues);
+        doExport(req,res,result, backendIntl,checkedValues);
     }).on('error', codeMessage => {
         res.status(500).json(codeMessage);
     });
 };
 //执行导出
-function doExport(data, backendIntl, res, checkedValues) {
+function doExport(req,res,data, backendIntl, checkedValues) {
     let CLUE_LIST_COLUMNS = [],allListColumn = getClueListColumns(backendIntl);
     _.each(checkedValues,item => {
         var targetObj = _.find(allListColumn,column => column.dataIndex === item);
         if(targetObj){
             CLUE_LIST_COLUMNS.push(targetObj);
         }
+    });
+    //存储到后端
+    let exportField = _.map(CLUE_LIST_COLUMNS,'dataIndex');
+    DesktopIndexService.setWebsiteConfig(req, res,{
+        [oplateConsts.EXPORT_CLUE_FEILD]: exportField
     });
     const columnTitles = _.map(CLUE_LIST_COLUMNS, 'title');
     const list = _.isArray(data.result) ? data.result : [];
@@ -548,4 +554,5 @@ exports.getApplyTryData = function(req, res) {
             res.status(500).json(err.message);
         });
 };
+
 

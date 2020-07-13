@@ -13,16 +13,21 @@ import {exportClueItem, defaultItem} from '../utils/clue-customer-utils';
 const RadioGroup = Radio.Group;
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import DetailCard from 'CMP_DIR/detail-card';
+import {storageUtil} from 'ant-utils';
 const FORMLAYOUT = {
     PADDINGTOTAL: 270
 };
 class ExportClueData extends React.Component {
     constructor(props) {
         super(props);
+        let websiteConfig = storageUtil.local.get('websiteConfig');
+        websiteConfig = websiteConfig ? JSON.parse(websiteConfig) : {};
+        let export_clue_feild = _.get(websiteConfig, oplateConsts.EXPORT_CLUE_FEILD, []);
         this.state = {
-            checkedValues: defaultItem
+            checkedValues: _.isEmpty(export_clue_feild) ? _.map(exportClueItem,'value') : export_clue_feild
         };
     }
+
     renderClueExportRangeContent = () => {
         return <div>
             <div className='export-clue-item'>
