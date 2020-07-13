@@ -1133,11 +1133,9 @@ class ClueCustomer extends React.Component {
 
         let form = $('<form>', {action: url, method: 'post'});
         reqData.checkedValues = checkedValues;
-        //本地存储
-        let websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig')) || {};
-        _.set(websiteConfig, oplateConsts.EXPORT_CLUE_FEILD, checkedValues);
-        storageUtil.local.set('websiteConfig', JSON.stringify(websiteConfig));
-
+        setWebsiteConfig({
+            [oplateConsts.EXPORT_CLUE_FEILD]: checkedValues
+        });
         form.append($('<input>', {name: 'reqData', value: JSON.stringify(reqData)}));
         //将构造的表单添加到body上
         //Chrome 56 以后不在body上的表单不允许提交了

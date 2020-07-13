@@ -5,7 +5,6 @@
  */
 'use strict';
 var clueCustomerService = require('../service/clue-customer-service');
-var DesktopIndexService = require('../../../home/service/destktop-index-service');
 var path = require('path');
 let BackendIntl = require('../../../../lib/utils/backend_intl');
 const _ = require('lodash');
@@ -350,11 +349,6 @@ function doExport(req,res,data, backendIntl, checkedValues) {
         if(targetObj){
             CLUE_LIST_COLUMNS.push(targetObj);
         }
-    });
-    //存储到后端
-    let exportField = _.map(CLUE_LIST_COLUMNS,'dataIndex');
-    DesktopIndexService.setWebsiteConfig(req, res,{
-        [oplateConsts.EXPORT_CLUE_FEILD]: exportField
     });
     const columnTitles = _.map(CLUE_LIST_COLUMNS, 'title');
     const list = _.isArray(data.result) ? data.result : [];

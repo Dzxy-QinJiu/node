@@ -9,19 +9,18 @@ require('../css/export-data.less');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import {Radio, Checkbox} from 'antd';
-import {exportClueItem, defaultItem} from '../utils/clue-customer-utils';
+import {exportClueItem} from '../utils/clue-customer-utils';
 const RadioGroup = Radio.Group;
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import DetailCard from 'CMP_DIR/detail-card';
-import {storageUtil} from 'ant-utils';
+const { getLocalWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
 const FORMLAYOUT = {
     PADDINGTOTAL: 270
 };
 class ExportClueData extends React.Component {
     constructor(props) {
         super(props);
-        let websiteConfig = storageUtil.local.get('websiteConfig');
-        websiteConfig = websiteConfig ? JSON.parse(websiteConfig) : {};
+        const websiteConfig = getLocalWebsiteConfig() || {};
         let export_clue_feild = _.get(websiteConfig, oplateConsts.EXPORT_CLUE_FEILD, []);
         this.state = {
             checkedValues: _.isEmpty(export_clue_feild) ? _.map(exportClueItem,'value') : export_clue_feild
