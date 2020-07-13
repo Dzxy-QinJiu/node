@@ -336,13 +336,13 @@ exports.exportClueFulltext = function(req, res) {
     var checkedValues = _.get(reqBody,'checkedValues',[]);
     clueCustomerService.exportClueFulltext(req, res).on('success', result => {
         let backendIntl = new BackendIntl(req);
-        doExport(result, backendIntl,res,checkedValues);
+        doExport(req,res,result, backendIntl,checkedValues);
     }).on('error', codeMessage => {
         res.status(500).json(codeMessage);
     });
 };
 //执行导出
-function doExport(data, backendIntl, res, checkedValues) {
+function doExport(req,res,data, backendIntl, checkedValues) {
     let CLUE_LIST_COLUMNS = [],allListColumn = getClueListColumns(backendIntl);
     _.each(checkedValues,item => {
         var targetObj = _.find(allListColumn,column => column.dataIndex === item);
@@ -548,4 +548,5 @@ exports.getApplyTryData = function(req, res) {
             res.status(500).json(err.message);
         });
 };
+
 

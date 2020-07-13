@@ -92,5 +92,7 @@ module.exports = {
         OPERATION_ID: '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq935r28nqj72MLm3t0Hk4AjcpK1grOSTFAl', // 运营人员
         SALE_ID: '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq935r28nqj738DG8Y4Z157AbUG1eig9umMB', // 销售
         ADMIN_ID: '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq935r28nqj74Ci0il2tt58nbtW0YDRmUUh4' // 管理员
-    }
+    },
+    //导出线索存储的字段
+    EXPORT_CLUE_FEILD: 'export_clue_feild'
 };
