@@ -72,7 +72,7 @@ class DealStageBoard extends React.Component {
                     </GeminiScrollbar>
                 </div>);
         } else {
-            let noDataTip = Intl.get('deal.no.data', '暂无订单');
+            let noDataTip = Intl.get('deal.no.data', '暂无机会');
             if (stageObj.errorMsg) {
                 noDataTip = stageObj.errorMsg;
             }

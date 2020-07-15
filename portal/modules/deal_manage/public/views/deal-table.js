@@ -42,7 +42,7 @@ class DealTable extends React.Component {
         let _this = this;
         //点击订单列表某一行时打开对应的详情
         $('.deal-manage-content').on('click', 'td.has-filter', function(e) {
-            Trace.traceEvent(e, '打开订单详情');
+            Trace.traceEvent(e, '打开机会详情');
             var $tr = $(this).closest('tr');
             var id = $tr.find('.record-id').text();
             let currDeal = _.find(_this.state.dealListObj.list, deal => deal.id === id);
@@ -217,7 +217,7 @@ class DealTable extends React.Component {
             sorterChanged = true;
         }
         if (!sorterChanged) return;
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('th.has-sorter'), `订单按 ${sorter.field} - ${sorter.order} 排序`);
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('th.has-sorter'), `机会按 ${sorter.field} - ${sorter.order} 排序`);
         this.setState({sorter}, () => {
             dealAction.setPageNum(1);
             setTimeout(() => {
@@ -238,7 +238,7 @@ class DealTable extends React.Component {
         } else if (_.get(dealListObj, 'list[0]')) {
             let tableHeight = getTableContainerHeight(this.props.adaptiveHeight);
             return (
-                <div className="deal-table-container" style={{height: tableHeight}} data-tracename="订单列表">
+                <div className="deal-table-container" style={{height: tableHeight}} data-tracename="机会列表">
                     <AntcTable
                         rowKey={this.rowKey}
                         rowClassName={this.handleRowClassName}
@@ -254,13 +254,13 @@ class DealTable extends React.Component {
                             handleScrollBottom: this.handleScrollBottom,
                             loading: dealListObj.isLoading,
                             showNoMoreDataTip: this.showNoMoreDataTip(),
-                            noMoreDataText: Intl.get('deal.no.more.tip', '没有更多订单了')
+                            noMoreDataText: Intl.get('deal.no.more.tip', '没有更多机会了')
                         }}
                     />
                     {dealListObj.total ?
                         <BottomTotalCount totalCount={ <ReactIntl.FormattedMessage
                             id='deal.total.tip'
-                            defaultMessage={'共{count}个订单'}
+                            defaultMessage={'共{count}个机会'}
                             values={{
                                 'count': dealListObj.total
                             }}
@@ -268,11 +268,11 @@ class DealTable extends React.Component {
                     }
                 </div>);
         } else {
-            let noDataTip = Intl.get('deal.no.data', '暂无订单');
+            let noDataTip = Intl.get('deal.no.data', '暂无机会');
             if (dealListObj.errorMsg) {
                 noDataTip = dealListObj.errorMsg;
             } else if (this.props.searchObj.value) {
-                noDataTip = Intl.get('deal.no.filter.deal', '没有符合条件的订单');
+                noDataTip = Intl.get('deal.no.filter.deal', '没有符合条件的机会');
             }
             return (
                 <NoDataIntro noDataTip={noDataTip}/>);

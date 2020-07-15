@@ -114,7 +114,7 @@ class DealForm extends React.Component {
                 predict_finish_time: predictFinishTime,
                 remarks: values.remarks
             };
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.button-save'), '保存添加的订单');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.button-save'), '保存添加的机会');
             this.setState({ isSaving: true, saveMsg: '', saveResult: '' });
             $.ajax({
                 url: '/rest/deal',
@@ -204,7 +204,7 @@ class DealForm extends React.Component {
         });
     };
     closeDealForm = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.button-cancel'), '关闭添加订单面板');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.button-cancel'), '关闭添加机会面板');
         this.props.hideDealForm();
         this.setState(this.getInitialState(this.props));
     }
@@ -277,11 +277,11 @@ class DealForm extends React.Component {
                             {getFieldDecorator('sale_stages', {
                                 rules: [{
                                     required: true,
-                                    message: Intl.get('deal.stage.select.tip', '请选择订单阶段')
+                                    message: Intl.get('deal.stage.select.tip', '请选择机会阶段')
                                 }],
                                 initialValue: ''
                             })(
-                                <AntcSelect size="large" placeholder={Intl.get('deal.stage.select.tip', '请选择订单阶段',)}
+                                <AntcSelect size="large" placeholder={Intl.get('deal.stage.select.tip', '请选择机会阶段',)}
                                     style={{width: '100%'}}
                                     name="sale_stages"
                                     getPopupContainer={() => document.getElementById('deal-form')}
@@ -371,9 +371,9 @@ class DealForm extends React.Component {
                 isShowMadal={true}
                 isShowCloseBtn={true}
                 onClosePanel={this.closeDealForm}
-                title={Intl.get('crm.161', '添加订单')}
+                title={ Intl.get('crm.161', '添加机会')}
                 content={this.renderFormContent()}
-                dataTracename="添加订单"
+                dataTracename="添加机会"
             />
         );
     }

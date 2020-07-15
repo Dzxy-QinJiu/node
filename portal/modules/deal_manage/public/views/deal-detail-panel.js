@@ -116,28 +116,28 @@ class DealDetailPanel extends React.Component {
         });
     };
     closeDetailPanel = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.close-modal-btn'), '关闭订单详情界面');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.close-modal-btn'), '关闭机会详情界面');
         if (_.isFunction(this.props.hideDetailPanel)) {
             this.props.hideDetailPanel();
         }
     }
 
     hideDelConfirmTip = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.item-delete-confirm'), '取消删除订单');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.item-delete-confirm'), '取消删除机会');
         this.setState({
             isDelConfirmShow: false
         });
     };
     //展示是否删除的模态框
     showDelConfirmTip = (e) => {
-        Trace.traceEvent(e, '点击删除订单按钮');
+        Trace.traceEvent(e, '点击删除机会按钮');
         this.setState({
             isDelConfirmShow: true
         });
     };
     //确定删除订单的处理
     deleteDeal = (deal) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.item-delete-confirm'), '确定删除订单');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.item-delete-confirm'), '确定删除机会');
         if (deal.id) {
             this.setState({isDeleting: true});
             dealAjax.deleteDeal(deal.id).then(result => {
@@ -189,7 +189,7 @@ class DealDetailPanel extends React.Component {
             property: 'sale_stages'
         };
         if (saveObj.customer_id && saveObj.id) {
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.deal-item-title'), '保存订单阶段的修改');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.deal-item-title'), '保存机会阶段的修改');
             dealAjax.editDeal(saveObj).then(result => {
                 currDeal.sale_stages = sale_stages;
                 this.setState({currDeal});
@@ -212,13 +212,13 @@ class DealDetailPanel extends React.Component {
     };
 
     cancelCloseDeal = (e) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.deal-item-title'), '取消关闭订单');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.deal-item-title'), '取消关闭机会');
         this.setState({curDealCloseStatus: ''});
     };
 
     //关闭订单（赢单）
     closeDeal = (status) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.deal-item-title'), '关闭订单并设为赢单');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.deal-item-title'), '关闭机会并设为赢单');
         if (this.state.isClosingDeal) return;
         this.setState({isClosingDeal: true});
         let deal = this.state.currDeal;
@@ -248,7 +248,7 @@ class DealDetailPanel extends React.Component {
             }, (errorMsg) => {
                 this.setState({
                     isClosingDeal: false,
-                    closeDealErrorMsg: errorMsg || Intl.get('crm.order.close.failed', '关闭订单失败')
+                    closeDealErrorMsg: errorMsg || Intl.get('crm.order.close.failed', '关闭机会失败')
                 });
             });
         }
@@ -266,7 +266,7 @@ class DealDetailPanel extends React.Component {
                     title: stageName,
                     //该步骤的处理元素渲染             
                     stepHandleElement: (
-                        <Popconfirm title={Intl.get('crm.order.update.confirm', '确定要修改订单阶段？')}
+                        <Popconfirm title={Intl.get('crm.order.update.confirm', '确定要修改机会阶段？')}
                             onConfirm={this.editDealStage.bind(this, stage.name)} key={index}>
                             <span className="deal-stage-name"/>
                         </Popconfirm>
@@ -290,13 +290,13 @@ class DealDetailPanel extends React.Component {
                 {this.state.curDealCloseStatus === DEAL_STATUS.WIN ? (
                     <Popconfirm placement="topRight" visible={true} onCancel={this.cancelCloseDeal}
                         onConfirm={this.closeDeal.bind(this, DEAL_STATUS.WIN)}
-                        title={Intl.get('crm.order.close.win.confirm', '确定将订单的关闭状态设为赢单吗？')}>
+                        title={Intl.get('crm.order.close.win.confirm', '确定将机会的关闭状态设为赢单吗？')}>
                         <span className="deal-stage-win"/>
                     </Popconfirm>) : (<span className="deal-stage-name"/>)}
             </Dropdown>);
         hasPrivilege(HAS_UPDATA) ?
             stageStepList.push({
-                title: Intl.get('crm.order.close.step', '关闭订单'), 
+                title: Intl.get('crm.order.close.step', '关闭机会'), 
                 stepHandleElement: closeDealStep,}) : null;
         return (
             <StepsBar stepDataList={stageStepList} currentStepIndex={currentStageIndex}
@@ -307,7 +307,7 @@ class DealDetailPanel extends React.Component {
     };
 
     showApplyForm = (applyType, deal, apps, e) => {
-        Trace.traceEvent(e, '点击订单的申请用户按钮');
+        Trace.traceEvent(e, '点击机会的申请用户按钮');
         if (apps && !apps.length) {
             this.setState({isAddAppTipShow: true});
             setTimeout(() => {
@@ -351,7 +351,7 @@ class DealDetailPanel extends React.Component {
                     <span>
                         {this.state.curDealCloseStatus === DEAL_STATUS.LOSE ? this.renderLoseDealForm(deal) :
                             this.state.isDelConfirmShow ? (
-                                <span>{Intl.get('crm.137', '确定要删除这个订单吗')}?</span>) : this.renderDealStage(deal.sale_stages)}
+                                <span>{Intl.get('crm.137', '确定要删除这个机会吗')}?</span>) : this.renderDealStage(deal.sale_stages)}
                         <span className="deal-item-buttons">
                             {this.state.isDelConfirmShow ? (
                                 <span className="item-delete-buttons">
@@ -576,7 +576,7 @@ class DealDetailPanel extends React.Component {
                     /> 
                 </div>
                 <div className="deal-item-content">
-                    <span className="deal-key">{Intl.get('crm.order.remarks', '订单备注')}:</span>
+                    <span className="deal-key">{Intl.get('crm.order.remarks', '机会备注')}:</span>
                     <BasicEditInputField
                         width={EDIT_FEILD_WIDTH}
                         id={deal.id}
@@ -663,7 +663,7 @@ class DealDetailPanel extends React.Component {
                 onClosePanel={this.closeDetailPanel}
                 title={this.renderDealTitle()}
                 content={this.renderDetailContent()}
-                dataTracename="订单详情"
+                dataTracename="机会详情"
             />);
     }
 }

@@ -112,6 +112,7 @@ const hamburgerIntroModalLayout = {
     tipAreaTop: -50,
 };
 
+// eslint-disable-next-line react/prefer-es6-class
 var NavSidebar = createReactClass({
     displayName: 'NavSidebar',
     mixins: [UnreadMixin],
@@ -834,7 +835,7 @@ var NavSidebar = createReactClass({
                 routeContent = this.disableClickBlock(extraClass, '', getContactSalesPopoverTip());
             }
             return (
-                <li key={i} title={menu.name} className={routeCls}>
+                <li key={i} title={menu.name === '订单' ? '机会' : menu.name} className={routeCls}>
                     {routeContent}
                     {addNum}
                 </li>

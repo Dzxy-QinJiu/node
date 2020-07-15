@@ -71,7 +71,7 @@ class DealBoardList extends React.Component {
         if (source.droppableId === destination.droppableId) return;
         //拖动的是关闭的订单时
         if (source.droppableId === 'win' || source.droppableId === 'lose') {
-            message.warn(Intl.get('deal.drag.data.disabled', '关闭的订单不可以修改'));
+            message.warn(Intl.get('deal.drag.data.disabled', '关闭的机会不可以修改'));
             return;
         }
         //关闭订单（赢单、丢单）
@@ -183,12 +183,12 @@ class DealBoardList extends React.Component {
                 </Spin>
             );
         } else {
-            let noDataTip = Intl.get('deal.no.data', '暂无订单');
+            let noDataTip = Intl.get('deal.no.data', '暂无机会');
             // if (this.state.getStageErrorMsg) {
             //     noDataTip = this.state.getStageErrorMsg;
             // } else
             if (_.get(this.props, 'searchObj.value')) {
-                noDataTip = Intl.get('deal.no.filter.deal', '没有符合条件的订单');
+                noDataTip = Intl.get('deal.no.filter.deal', '没有符合条件的机会');
             }
             return (
                 <NoDataIntro noDataTip={noDataTip}/>);

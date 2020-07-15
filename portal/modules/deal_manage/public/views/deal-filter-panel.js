@@ -37,7 +37,7 @@ class DealFilterPanel extends React.Component {
         advancedData.push(...customFieldOptions);
 
         return (
-            <div data-tracename="订单筛选">
+            <div data-tracename="机会筛选">
                 <div className="deal-filter-panel">
                     <FilterList
                         ref={filterList => this.filterList = filterList}

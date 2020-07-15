@@ -172,7 +172,7 @@ class DealManage extends React.Component {
     };
 
     showDealForm = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-deal-btn'), '点击添加订单按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-deal-btn'), '点击添加机会按钮');
         this.setState({isDealFormShow: true});
     };
 
@@ -289,7 +289,7 @@ class DealManage extends React.Component {
         const isShowFilerBtn = _.find(fieldType, type => _.includes(selectType, type)) ? true : false;
 
         return (
-            <div className="deal-manage-container" data-tracename="订单管理">
+            <div className="deal-manage-container" data-tracename="机会管理">
                 <TopNav>
                     <div className="deal-search-block">
                         {
@@ -298,7 +298,7 @@ class DealManage extends React.Component {
                                     <FilterInput
                                         ref="filterinput"
                                         toggleList={this.toggleList.bind(this)}
-                                        filterType={Intl.get('user.apply.detail.order', '订单')}
+                                        filterType={Intl.get('user.apply.detail.order', '机会')}
                                         showList={this.state.showFilterList}
                                     />
                                 </div>
@@ -317,7 +317,7 @@ class DealManage extends React.Component {
 
                     <PrivilegeChecker check={orderPrivilegeConst.SALESOPPORTUNITY_ADD}>
                         <Button className='btn-item add-deal-btn' onClick={this.showDealForm}>
-                            {Intl.get('crm.161', '添加订单')}
+                            {Intl.get('crm.161', '添加机会')}
                         </Button>
                     </PrivilegeChecker>
                     <div className="deal-view-radio-container">
